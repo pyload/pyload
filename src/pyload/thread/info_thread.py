@@ -6,8 +6,8 @@ from builtins import _, str
 
 from pyload.api import OnlineStatus
 from pyload.datatype.pyfile import PyFile
-from pyload.utils.packagetools import parseNames
 from pyload.thread.plugin_thread import PluginThread
+from pyload.utils.packagetools import parseNames
 
 
 class InfoThread(PluginThread):

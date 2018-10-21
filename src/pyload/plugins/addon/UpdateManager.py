@@ -357,12 +357,12 @@ class UpdateManager(Addon):
 
             self.log_info(
                 msg.format(
-                        type=plugin_type.rstrip(
-                            "s"
-                        ).upper(),  # TODO: Remove rstrip in 0.6.x
-                        name=plugin_name,
-                        oldver=oldver,
-                        newver=newver
+                    type=plugin_type.rstrip(
+                        "s"
+                    ).upper(),  # TODO: Remove rstrip in 0.6.x
+                    name=plugin_name,
+                    oldver=oldver,
+                    newver=newver,
                 )
             )
             try:

@@ -270,7 +270,10 @@ class ConfigParser(object):
                     except UnicodeEncodeError:
                         f.write(
                             '\t{} {} : "{}" = {}'.format(
-                                data["type"], option, data["desc"], value.encode("utf-8")
+                                data["type"],
+                                option,
+                                data["desc"],
+                                value.encode("utf-8"),
                             )
                         )
 

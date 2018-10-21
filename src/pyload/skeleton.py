@@ -24,10 +24,10 @@ import pyload.utils.pylgettext as gettext
 from pyload import __version__ as PYLOAD_VERSION
 from pyload import __version_info__ as PYLOAD_VERSION_INFO
 from pyload import exc_logger
-from pyload.log_factory import LogFactory
 from pyload.config.config_parser import ConfigParser
 from pyload.database.database_backend import DatabaseBackend
 from pyload.database.file_database import FileHandler
+from pyload.log_factory import LogFactory
 from pyload.manager.account_manager import AccountManager
 from pyload.manager.captcha_manager import CaptchaManager
 from pyload.manager.event_manager import EventManager
@@ -286,8 +286,8 @@ class Core(object):
 
         self.logfactory = LogFactory(self)
         self.logfactory.init_logger(exc_logger.name)
-        self.log = self.logfactory.get_logger('pyload')
-        
+        self.log = self.logfactory.get_logger("pyload")
+
         self.log.info(_("Starting pyLoad {}").format(self.version))
         self.log.info(_("Using home directory: {}").format(os.getcwd()))
 

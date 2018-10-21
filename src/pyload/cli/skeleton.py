@@ -468,19 +468,18 @@ def print_packages(data):
 def print_file(download):
     return "#{id:-6d} {name:-30} {statusmsg:-10} {plugin:-8}".format(
         id=download.fid,
-            name=download.name,
-            statusmsg=download.statusmsg,
-            plugin=download.plugin,
+        name=download.name,
+        statusmsg=download.statusmsg,
+        plugin=download.plugin,
     )
 
 
 def print_status(download):
     return "#{id:-6} {name:-40} Status: {statusmsg:-10} Size: {size}".format(
-       
-            id=download.fid,
-            name=download.name,
-            statusmsg=download.statusmsg,
-            size=download.format_size,
+        id=download.fid,
+        name=download.name,
+        statusmsg=download.statusmsg,
+        size=download.format_size,
     )
 
 
@@ -518,7 +517,9 @@ def print_commands():
 
 def writeConfig(opts):
     try:
-        with open(os.path.join(HOMEDIR, "pyLoad", ".pyload-cli.conf"), mode="w") as cfgfile:
+        with open(
+            os.path.join(HOMEDIR, "pyLoad", ".pyload-cli.conf"), mode="w"
+        ) as cfgfile:
             cfgfile.write("[cli]")
             for opt in opts:
                 cfgfile.write("{}={}\n".format(opt, opts[opt]))

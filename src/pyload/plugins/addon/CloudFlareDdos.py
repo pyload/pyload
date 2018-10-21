@@ -15,9 +15,9 @@ from pyload.plugins.utils import parse_html_header
 
 def plugin_id(plugin):
     return "<{plugintype} {pluginname}{id}>".format(
-            plugintype=plugin.__type__.upper(),
-            pluginname=plugin.__name__,
-            id="[{}]".format(plugin.pyfile.id if plugin.pyfile else "")
+        plugintype=plugin.__type__.upper(),
+        pluginname=plugin.__name__,
+        id="[{}]".format(plugin.pyfile.id if plugin.pyfile else ""),
     )
 
 

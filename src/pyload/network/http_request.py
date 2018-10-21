@@ -61,7 +61,7 @@ class BadHeader(Exception):
                 responses.get(
                     int_code, unofficial_responses.get(int_code, "unknown error code")
                 ),
-            ),
+            )
         )
         self.code = int_code
         self.header = header

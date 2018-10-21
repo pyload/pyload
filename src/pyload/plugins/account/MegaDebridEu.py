@@ -65,8 +65,14 @@ class MegaDebridEu(MultiAccount):
 
         else:
             if res["response_code"] == "ok":
-                hosters = reduce((lambda x, y: x + y), [_h['domains'] for _h in res['hosters']
-                                                        if 'domains' in _h and isinstance(_h['domains'], list)])
+                hosters = reduce(
+                    (lambda x, y: x + y),
+                    [
+                        _h["domains"]
+                        for _h in res["hosters"]
+                        if "domains" in _h and isinstance(_h["domains"], list)
+                    ],
+                )
 
             else:
                 self.log_error(

@@ -10,7 +10,6 @@ from threading import Thread
 from types import MethodType
 
 
-
 class PluginThread(Thread):
     """
     abstract base class for thread types.
@@ -41,7 +40,9 @@ class PluginThread(Thread):
             import zipfile
 
             with zipfile.ZipFile(dump_name, "w") as zip:
-                for f in os.listdir(os.path.join(HOMEDIR, "pyLoad", ".tmp", pyfile.pluginname)):
+                for f in os.listdir(
+                    os.path.join(HOMEDIR, "pyLoad", ".tmp", pyfile.pluginname)
+                ):
                     try:
                         # avoid encoding errors
                         zip.write(

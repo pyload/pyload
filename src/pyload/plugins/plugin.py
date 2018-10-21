@@ -402,7 +402,8 @@ class Plugin(Base):
         with open(
             os.path.join(
                 HOMEDIR,
-                "pyLoad", ".tmp",
+                "pyLoad",
+                ".tmp",
                 "tmpCaptcha_{}_{}.{}".format(self.__name__, id, imgtype),
             ),
             "wb",
@@ -610,7 +611,9 @@ class Plugin(Base):
         finally:
             self.pyfile.size = self.req.size
 
-        if disposition and newname and newname != name:  #: triple check, just to be sure
+        if (
+            disposition and newname and newname != name
+        ):  #: triple check, just to be sure
             self.log.info(
                 "{name} saved as {newname}".format(name=name, newname=newname)
             )

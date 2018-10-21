@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 
-
 import os
 from base64 import standard_b64decode
 from binascii import unhexlify
@@ -12,8 +11,7 @@ import flask
 import js2py
 from cryptography.fernet import Fernet
 
-
-bp = flask.Blueprint('cnl', __name__)
+bp = flask.Blueprint("cnl", __name__)
 
 
 def local_check(func):
@@ -32,14 +30,14 @@ def local_check(func):
     return _view
 
 
-@bp.route(r"/flash/<id>", endpoint='flash')
-@bp.route(r"/flash", methods=['GET', 'POST'], endpoint='flash')
+@bp.route(r"/flash/<id>", endpoint="flash")
+@bp.route(r"/flash", methods=["GET", "POST"], endpoint="flash")
 @local_check
 def flash(id="0"):
     return "JDownloader\r\n"
 
 
-@bp.route(r"/flash/add", methods=['POST'], endpoint='add')
+@bp.route(r"/flash/add", methods=["POST"], endpoint="add")
 @local_check
 def add():
     package = flask.request.form.get(
@@ -48,7 +46,7 @@ def add():
     )
     urls = list(filter(None, map(str.strip, flask.request.form["urls"].split("\n"))))
 
-    api = flask.current_app.config['PYLOAD_API']
+    api = flask.current_app.config["PYLOAD_API"]
     if package:
         api.addPackage(package, urls, 0)
     else:
@@ -57,7 +55,7 @@ def add():
     return ""
 
 
-@bp.route(r"/flash/addcrypted", methods=['POST'], endpoint='addcrypted')
+@bp.route(r"/flash/addcrypted", methods=["POST"], endpoint="addcrypted")
 @local_check
 def addcrypted():
     package = flask.request.form.get(
@@ -66,8 +64,8 @@ def addcrypted():
     )
     dlc = flask.request.form["crypted"].replace(" ", "+")
 
-    api = flask.current_app.config['PYLOAD_API']
-    
+    api = flask.current_app.config["PYLOAD_API"]
+
     dl_path = api.getConfigValue("general", "download_folder")
     dlc_path = os.path.join(
         dl_path, package.replace("/", "").replace("\\", "").replace(":", "") + ".dlc"
@@ -83,7 +81,7 @@ def addcrypted():
         return "success\r\n"
 
 
-@bp.route(r"/flash/addcrypted2", methods=['POST'], endpoint='addcrypted2')
+@bp.route(r"/flash/addcrypted2", methods=["POST"], endpoint="addcrypted2")
 @local_check
 def addcrypted2():
     package = flask.request.form.get(
@@ -108,7 +106,7 @@ def addcrypted2():
 
     urls = list(filter(None, map(str.strip, urls)))
 
-    api = flask.current_app.config['PYLOAD_API']
+    api = flask.current_app.config["PYLOAD_API"]
     try:
         if package:
             api.addPackage(package, urls, 0)
@@ -120,9 +118,8 @@ def addcrypted2():
         return "success\r\n"
 
 
-
-@bp.route(r"/flashgot", methods=['GET', 'POST'], endpoint='flashgot')
-@bp.route(r"/flashgot_pyload", methods=['GET', 'POST'], endpoint='flashgot')
+@bp.route(r"/flashgot", methods=["GET", "POST"], endpoint="flashgot")
+@bp.route(r"/flashgot_pyload", methods=["GET", "POST"], endpoint="flashgot")
 @local_check
 def flashgot():
     if flask.request.environ["HTTP_REFERER"] not in (
@@ -137,7 +134,7 @@ def flashgot():
     urls = list(filter(None, map(str.strip, flask.request.form["urls"].split("\n"))))
     # folder = flask.request.form.get('dir', None)
 
-    api = flask.current_app.config['PYLOAD_API']
+    api = flask.current_app.config["PYLOAD_API"]
     if package:
         api.addPackage(package, urls, autostart)
     else:
@@ -146,7 +143,7 @@ def flashgot():
     return ""
 
 
-@bp.route(r"/crossdomain.xml", endpoint='crossdomain')
+@bp.route(r"/crossdomain.xml", endpoint="crossdomain")
 @local_check
 def crossdomain():
     rep = '<?xml version="1.0"?>\n'
@@ -157,10 +154,10 @@ def crossdomain():
     return rep
 
 
-@bp.route(r"/flash/checkSupportForUrl", endpoint='checksupport')
+@bp.route(r"/flash/checkSupportForUrl", endpoint="checksupport")
 @local_check
 def checksupport():
-    api = flask.current_app.config['PYLOAD_API']
+    api = flask.current_app.config["PYLOAD_API"]
     url = flask.request.form.get("url")
     res = api.checkURLs([url])
     supported = not res[0][1] is None
@@ -168,7 +165,7 @@ def checksupport():
     return str(supported).lower()
 
 
-@bp.route(r"/jdcheck.js", endpoint='jdcheck')
+@bp.route(r"/jdcheck.js", endpoint="jdcheck")
 @local_check
 def jdcheck():
     rep = "jdownloader=true;\n"

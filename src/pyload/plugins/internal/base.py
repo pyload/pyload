@@ -121,10 +121,10 @@ class Base(Plugin):
 
         log(
             "{plugintype} {pluginname}[{id}]: {msg}".format(
-                    plugintype=plugintype.upper(),
-                    pluginname=pluginname,
-                    id=self.pyfile.id,
-                    msg=msg
+                plugintype=plugintype.upper(),
+                pluginname=pluginname,
+                id=self.pyfile.id,
+                msg=msg,
             )
         )
 

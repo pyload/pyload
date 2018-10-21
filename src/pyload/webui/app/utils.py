@@ -12,15 +12,15 @@ def clear_session():
     flask.session.clear()
     flask.session.modified = True
 
-    
+
 def render_template(template, context={}, proc=[]):
     for p in proc:
         context.update(p())
-    api = flask.current_app.config['PYLOAD_API']
+    api = flask.current_app.config["PYLOAD_API"]
     theme = api.getConfigValue("webui", "theme").lower()
     return flask_themes2.render_theme_template(theme, template, **context)
 
-    
+
 def parse_permissions(session):
     perms = {x: False for x in dir(PERMS) if not x.startswith("_")}
     perms["ADMIN"] = False
@@ -95,7 +95,7 @@ def parse_userdata(session):
 def apiver_check(func):
     # if no apiver is provided assumes latest
     def _view(*args, **kwargs):
-        api = flask.current_app.config['PYLOAD_API']
+        api = flask.current_app.config["PYLOAD_API"]
         core_apiver = api.__version__
         if int(kwargs.get("apiver", core_apiver).strip("v")) < core_apiver:
             return "Obsolete API", 404
@@ -140,8 +140,8 @@ def toDict(obj):
 
 
 # class CherryPyWSGI(bottle.ServerAdapter):
-    # def run(self, handler):
-        # from wsgiserver import CherryPyWSGIServer
+# def run(self, handler):
+# from wsgiserver import CherryPyWSGIServer
 
-        # server = CherryPyWSGIServer((self.host, self.port), handler)
-        # server.start()
+# server = CherryPyWSGIServer((self.host, self.port), handler)
+# server.start()

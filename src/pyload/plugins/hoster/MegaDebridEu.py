@@ -72,7 +72,7 @@ class MegaDebridEu(MultiHoster):
                 raise
 
         if res["response_code"] == "ok":
-            self.link = res['debridLink']
+            self.link = res["debridLink"]
 
         elif res["response_code"] == "TOKEN_ERROR":
             self.account.relogin()

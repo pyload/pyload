@@ -3871,7 +3871,10 @@ class generatePackages_args(TBase):
     - links
     """
 
-    thrift_spec = (None, (1, TType.LIST, "links", (TType.STRING, None), None))  #: 0  #: 1
+    thrift_spec = (
+        None,
+        (1, TType.LIST, "links", (TType.STRING, None), None),
+    )  #: 0  #: 1
 
     def __init__(self, links=None):
         self.links = links
@@ -3905,7 +3908,10 @@ class checkURLs_args(TBase):
     - urls
     """
 
-    thrift_spec = (None, (1, TType.LIST, "urls", (TType.STRING, None), None))  #: 0  #: 1
+    thrift_spec = (
+        None,
+        (1, TType.LIST, "urls", (TType.STRING, None), None),
+    )  #: 0  #: 1
 
     def __init__(self, urls=None):
         self.urls = urls
@@ -3979,7 +3985,10 @@ class checkOnlineStatus_args(TBase):
     - urls
     """
 
-    thrift_spec = (None, (1, TType.LIST, "urls", (TType.STRING, None), None))  #: 0  #: 1
+    thrift_spec = (
+        None,
+        (1, TType.LIST, "urls", (TType.STRING, None), None),
+    )  #: 0  #: 1
 
     def __init__(self, urls=None):
         self.urls = urls
@@ -3993,7 +4002,13 @@ class checkOnlineStatus_result(TBase):
     """
 
     thrift_spec = (
-        (0, TType.STRUCT, "success", (OnlineCheck, OnlineCheck.thrift_spec), None),  #: 0
+        (
+            0,
+            TType.STRUCT,
+            "success",
+            (OnlineCheck, OnlineCheck.thrift_spec),
+            None,
+        ),  #: 0
     )
 
     def __init__(self, success=None):
@@ -4030,7 +4045,13 @@ class checkOnlineStatusContainer_result(TBase):
     """
 
     thrift_spec = (
-        (0, TType.STRUCT, "success", (OnlineCheck, OnlineCheck.thrift_spec), None),  #: 0
+        (
+            0,
+            TType.STRUCT,
+            "success",
+            (OnlineCheck, OnlineCheck.thrift_spec),
+            None,
+        ),  #: 0
     )
 
     def __init__(self, success=None):
@@ -4058,7 +4079,13 @@ class pollResults_result(TBase):
     """
 
     thrift_spec = (
-        (0, TType.STRUCT, "success", (OnlineCheck, OnlineCheck.thrift_spec), None),  #: 0
+        (
+            0,
+            TType.STRUCT,
+            "success",
+            (OnlineCheck, OnlineCheck.thrift_spec),
+            None,
+        ),  #: 0
     )
 
     def __init__(self, success=None):
@@ -4113,7 +4140,13 @@ class getPackageData_result(TBase):
     """
 
     thrift_spec = (
-        (0, TType.STRUCT, "success", (PackageData, PackageData.thrift_spec), None),  #: 0
+        (
+            0,
+            TType.STRUCT,
+            "success",
+            (PackageData, PackageData.thrift_spec),
+            None,
+        ),  #: 0
         (
             1,
             TType.STRUCT,
@@ -4150,7 +4183,13 @@ class getPackageInfo_result(TBase):
     """
 
     thrift_spec = (
-        (0, TType.STRUCT, "success", (PackageData, PackageData.thrift_spec), None),  #: 0
+        (
+            0,
+            TType.STRUCT,
+            "success",
+            (PackageData, PackageData.thrift_spec),
+            None,
+        ),  #: 0
         (
             1,
             TType.STRUCT,
@@ -5252,7 +5291,13 @@ class getCaptchaTask_result(TBase):
     """
 
     thrift_spec = (
-        (0, TType.STRUCT, "success", (CaptchaTask, CaptchaTask.thrift_spec), None),  #: 0
+        (
+            0,
+            TType.STRUCT,
+            "success",
+            (CaptchaTask, CaptchaTask.thrift_spec),
+            None,
+        ),  #: 0
     )
 
     def __init__(self, success=None):

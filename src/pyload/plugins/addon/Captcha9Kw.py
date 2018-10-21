@@ -212,10 +212,9 @@ class Captcha9Kw(Addon):
 
     def captcha_task(self, task):
         if task.isInteractive():
-            if (
-                task.captchaParams["captcha_plugin"] != "ReCaptcha"
-                or not self.config.get("solve_interactive")
-            ):
+            if task.captchaParams[
+                "captcha_plugin"
+            ] != "ReCaptcha" or not self.config.get("solve_interactive"):
                 return
         else:
             if not task.isTextual() and not task.isPositional():

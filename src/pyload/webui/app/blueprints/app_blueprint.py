@@ -2,6 +2,7 @@
 # @author: RaNaN, vuolter
 
 import datetime
+import logging  # test
 import operator
 import os
 import sys
@@ -18,10 +19,9 @@ from pyload.webui.app.utils import (clear_session, get_permission, login_require
                                     render_template, set_permission, set_session,
                                     toDict)
 
+bp = flask.Blueprint("app", __name__)
 
-bp = flask.Blueprint('app', __name__)
 
- 
 # Helper
 def pre_processor():
     s = flask.session
@@ -31,12 +31,12 @@ def pre_processor():
     captcha = False
     update = False
     plugins = False
-    api = flask.current_app.config['PYLOAD_API']
-    
+    api = flask.current_app.config["PYLOAD_API"]
+
     if user["is_authenticated"]:
         status = api.statusServer()
         captcha = api.isCaptchaWaiting()
-        
+
         # check if update check is available
         info = api.getInfoByPlugin("UpdateManager")
         if info:
@@ -53,72 +53,73 @@ def pre_processor():
         "plugins": plugins,
     }
 
+
 def base(messages):
     return render_template("base.html", {"messages": messages}, [pre_processor])
 
-    
+
 # Views
 # @bp.errorhandler(403)
 # def error403(error):
-    # return "The parameter you passed has the wrong format"
+# return "The parameter you passed has the wrong format"
 
 
 # @bp.errorhandler(404)
 # def error404(error):
-    # return "Sorry, this page does not exist"
+# return "Sorry, this page does not exist"
 
 
 # @bp.errorhandler(500)
 # def error500(error):
-    # if error.traceback:
-        # print(error.traceback)
+# if error.traceback:
+# print(error.traceback)
 
-    # return base(
-        # [
-            # "An Error occured, please enable debug mode to get more details.",
-            # error,
-            # error.traceback.replace("\n", "<br>")
-            # if error.traceback
-            # else "No Traceback",
-        # ]
-    # )
+# return base(
+# [
+# "An Error occured, please enable debug mode to get more details.",
+# error,
+# error.traceback.replace("\n", "<br>")
+# if error.traceback
+# else "No Traceback",
+# ]
+# )
 
 
 # render js
 # @bp.route('/<path:re:.+\.js>')
 # def server_js(path):
-    # flask.response.headers['Content-Type'] = "text/javascript; charset=UTF-8"
+# flask.response.headers['Content-Type'] = "text/javascript; charset=UTF-8"
 
-    # if "/render/" in path or ".render." in path:
-        # flask.response.headers['Expires'] = time.strftime("%a, %d %b %Y %H:%M:%S GMT",
-                                                    # time.gmtime(time.time() + 24 * 7 * 60 * 60))
-        # flask.response.headers['Cache-control'] = "public"
+# if "/render/" in path or ".render." in path:
+# flask.response.headers['Expires'] = time.strftime("%a, %d %b %Y %H:%M:%S GMT",
+# time.gmtime(time.time() + 24 * 7 * 60 * 60))
+# flask.response.headers['Cache-control'] = "public"
 
-        # return render_template(path)
-    # else:
-        # return serve_static(path)
-        
+# return render_template(path)
+# else:
+# return serve_static(path)
+
 
 # @bp.route(r"/<path:path>")
 # def serve_static(path):
-    # flask.response.headers["Expires"] = time.strftime(
-        # "%a, %d %b %Y %H:%M:%S GMT", time.gmtime(time.time() + 60 * 60 * 24 * 7)
-    # )
-    # flask.response.headers["Cache-control"] = "public"
-    # root = os.path.join('.', 'themes', get_theme_name())
-    # return bottle.static_file(path, root=root)
+# flask.response.headers["Expires"] = time.strftime(
+# "%a, %d %b %Y %H:%M:%S GMT", time.gmtime(time.time() + 60 * 60 * 24 * 7)
+# )
+# flask.response.headers["Cache-control"] = "public"
+# root = os.path.join('.', 'themes', get_theme_name())
+# return bottle.static_file(path, root=root)
 
 
 # @bp.route(r"/favicon.ico")
 # def favicon():
-    # return bottle.static_file("favicon.ico", root=".")
+# return bottle.static_file("favicon.ico", root=".")
 
 
 # @bp.route(r"/robots.txt")
 # def robots():
-    # return bottle.static_file("robots.txt", root=".")
+# return bottle.static_file("robots.txt", root=".")
 
-    
+
 @bp.route(r"/login", methods=["GET"])
 def login():
     return render_template("login.html", proc=[pre_processor])
@@ -129,12 +130,12 @@ def nopermission():
     return base([_("You dont have permission to access this page.")])
 
 
-@bp.route(r"/login", methods=['POST'])
+@bp.route(r"/login", methods=["POST"])
 def login_post():
     user = flask.request.form.get("username")
     password = flask.request.form.get("password")
 
-    api = flask.current_app.config['PYLOAD_API']
+    api = flask.current_app.config["PYLOAD_API"]
     info = api.checkAuth(user, password)
 
     if not info:
@@ -149,12 +150,14 @@ def logout():
     clear_session()
     return render_template("logout.html", proc=[pre_processor])
 
-import logging  # test
-@bp.route(r"/", endpoint='home')
-@bp.route(r"/home", endpoint='home')
+
+
+
+@bp.route(r"/", endpoint="home")
+@bp.route(r"/home", endpoint="home")
 @login_required("LIST")
 def home():
-    api = flask.current_app.config['PYLOAD_API']
+    api = flask.current_app.config["PYLOAD_API"]
     try:
         res = [toDict(x) for x in api.statusDownloads()]
     except Exception:
@@ -170,10 +173,10 @@ def home():
     return render_template("home.html", {"res": res}, [pre_processor])
 
 
-@bp.route(r"/queue", endpoint='queue')
+@bp.route(r"/queue", endpoint="queue")
 @login_required("LIST")
 def queue():
-    api = flask.current_app.config['PYLOAD_API']
+    api = flask.current_app.config["PYLOAD_API"]
     queue = api.getQueue()
 
     queue.sort(key=operator.attrgetter("order"))
@@ -183,10 +186,10 @@ def queue():
     )
 
 
-@bp.route(r"/collector", endpoint='collector')
+@bp.route(r"/collector", endpoint="collector")
 @login_required("LIST")
 def collector():
-    api = flask.current_app.config['PYLOAD_API']
+    api = flask.current_app.config["PYLOAD_API"]
     queue = api.getCollector()
 
     queue.sort(key=operator.attrgetter("order"))
@@ -196,10 +199,10 @@ def collector():
     )
 
 
-@bp.route(r"/downloads", endpoint='downloads')
+@bp.route(r"/downloads", endpoint="downloads")
 @login_required("DOWNLOAD")
 def downloads():
-    api = flask.current_app.config['PYLOAD_API']
+    api = flask.current_app.config["PYLOAD_API"]
     root = api.getConfigValue("general", "download_folder")
 
     if not os.path.isdir(root):
@@ -226,19 +229,19 @@ def downloads():
     return render_template("downloads.html", {"files": data}, [pre_processor])
 
 
-@bp.route(r"/downloads/get/<filename>", endpoint='get_download')
+@bp.route(r"/downloads/get/<filename>", endpoint="get_download")
 @login_required("DOWNLOAD")
 def get_download(filename):
-    api = flask.current_app.config['PYLOAD_API']
+    api = flask.current_app.config["PYLOAD_API"]
     filename = unquote(filename).decode("utf-8").replace("..", "")
     directory = api.getConfigValue("general", "download_folder")
     return flask.send_from_directory(directory, filename, as_attachment=True)
 
 
-@bp.route(r"/settings", endpoint='settings')
+@bp.route(r"/settings", endpoint="settings")
 @login_required("SETTINGS")
 def settings():
-    api = flask.current_app.config['PYLOAD_API']
+    api = flask.current_app.config["PYLOAD_API"]
     conf = api.getConfig()
     plugin = api.getPluginConfig()
 
@@ -308,8 +311,8 @@ def settings():
     )
 
 
-@bp.route(r"/pathchooser", endpoint='filemanager')
-@bp.route(r"/pathchooser/<path:path>", endpoint='filemanager')
+@bp.route(r"/pathchooser", endpoint="filemanager")
+@bp.route(r"/pathchooser/<path:path>", endpoint="filemanager")
 @login_required("STATUS")
 def filemanager(path):
     browse_for = "folder" if os.path.isdir(path) else "file"
@@ -408,13 +411,13 @@ def filemanager(path):
     )
 
 
-@bp.route(r"/logs", methods=['GET', 'POST'], endpoint='logs')
-@bp.route(r"/logs/<item>", methods=['GET', 'POST'], endpoint='logs')
+@bp.route(r"/logs", methods=["GET", "POST"], endpoint="logs")
+@bp.route(r"/logs/<item>", methods=["GET", "POST"], endpoint="logs")
 @login_required("LOGS")
 def logs(item=-1):
     s = flask.session
-    api = flask.current_app.config['PYLOAD_API']
-    
+    api = flask.current_app.config["PYLOAD_API"]
+
     perpage = s.get("perpage", 34)
     reversed = s.get("reversed", False)
 
@@ -518,10 +521,10 @@ def logs(item=-1):
     )
 
 
-@bp.route(r"/admin", methods=['GET', 'POST'], endpoint='admin')
+@bp.route(r"/admin", methods=["GET", "POST"], endpoint="admin")
 @login_required("ADMIN")
 def admin():
-    api = flask.current_app.config['PYLOAD_API']
+    api = flask.current_app.config["PYLOAD_API"]
     # convert to dict
     user = {name: toDict(y) for name, y in api.getAllUserData().items()}
     perms = permlist()
@@ -550,9 +553,7 @@ def admin():
 
             user[name]["permission"] = set_permission(user[name]["perms"])
 
-            api.setUserPermission(
-                name, user[name]["permission"], user[name]["role"]
-            )
+            api.setUserPermission(name, user[name]["permission"], user[name]["role"])
 
     return render_template(
         "admin.html", {"users": user, "permlist": perms}, [pre_processor]
@@ -562,18 +563,18 @@ def admin():
 @bp.route(r"/setup")
 def setup():
     return base([_("Run pyLoad -s to access the setup.")])
-    
-    
+
+
 # @bp.route("/refresh")
 # def refresh():
-    # bp.app.theme_manager.refresh()
-    # return flask.redirect(flask.url_for('themes'))
-    
-    
-@bp.route(r"/info", endpoint='info')
+# bp.app.theme_manager.refresh()
+# return flask.redirect(flask.url_for('themes'))
+
+
+@bp.route(r"/info", endpoint="info")
 @login_required("STATUS")
 def info():
-    api = flask.current_app.config['PYLOAD_API']
+    api = flask.current_app.config["PYLOAD_API"]
     conf = api.getConfigDict()
     extra = os.uname() if hasattr(os, "uname") else tuple()
 

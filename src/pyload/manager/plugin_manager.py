@@ -338,9 +338,7 @@ class PluginManager(object):
                 return module
             except Exception as e:
                 self.log.error(
-                    _("Error importing {name}: {msg}").format(
-                        name=name, msg=str(e)
-                    )
+                    _("Error importing {name}: {msg}").format(name=name, msg=str(e))
                 )
                 if self.pyload.debug:
                     traceback.print_exc()

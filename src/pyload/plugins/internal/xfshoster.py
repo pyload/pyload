@@ -278,7 +278,7 @@ class XFSHoster(SimpleHoster):
 
         if captcha_key:
             self.captcha = recaptcha
-            inputs['g-recaptcha-response'], challenge = recaptcha.challenge(captcha_key)
+            inputs["g-recaptcha-response"], challenge = recaptcha.challenge(captcha_key)
             return
 
         solvemedia = SolveMedia(self.pyfile)

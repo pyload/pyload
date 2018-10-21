@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 
-
 def blue(string):
     return "\033[1;34m{}\033[0m".format(string)
 
