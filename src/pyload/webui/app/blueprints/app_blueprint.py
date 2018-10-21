@@ -14,110 +14,24 @@ import flask
 
 from pyload.core.utils.utils import formatSize, fs_decode, fs_encode
 from pyload.webui.app.filters import unquotepath
-from pyload.webui.app.utils import (clear_session, get_permission, login_required,
+from pyload.webui.app.helpers import (clear_session, get_permission, login_required,
                                     parse_permissions, parse_userdata, permlist,
                                     render_template, set_permission, set_session,
                                     toDict)
+from pyload.webui.app.helpers import pre_processor, base
 
 bp = flask.Blueprint("app", __name__)
 
 
-# Helper
-def pre_processor():
-    s = flask.session
-    user = parse_userdata(s)
-    perms = parse_permissions(s)
-    status = {}
-    captcha = False
-    update = False
-    plugins = False
-    api = flask.current_app.config["PYLOAD_API"]
-
-    if user["is_authenticated"]:
-        status = api.statusServer()
-        captcha = api.isCaptchaWaiting()
-
-        # check if update check is available
-        info = api.getInfoByPlugin("UpdateManager")
-        if info:
-            update = info["pyload"] == "True"
-            plugins = info["plugins"] == "True"
-
-    return {
-        "user": user,
-        "status": status,
-        "captcha": captcha,
-        "perms": perms,
-        "url": flask.request.url,
-        "update": update,
-        "plugins": plugins,
-    }
+@bp.route(r"/favicon.ico")
+def favicon():
+    filename = os.path.join('img', 'favicon.ico')
+    return flask.send_from_directory(bp.static_folder, filename)
 
 
-def base(messages):
-    return render_template("base.html", {"messages": messages}, [pre_processor])
-
-
-# Views
-# @bp.errorhandler(403)
-# def error403(error):
-# return "The parameter you passed has the wrong format"
-
-
-# @bp.errorhandler(404)
-# def error404(error):
-# return "Sorry, this page does not exist"
-
-
-# @bp.errorhandler(500)
-# def error500(error):
-# if error.traceback:
-# print(error.traceback)
-
-# return base(
-# [
-# "An Error occured, please enable debug mode to get more details.",
-# error,
-# error.traceback.replace("\n", "<br>")
-# if error.traceback
-# else "No Traceback",
-# ]
-# )
-
-
-# render js
-# @bp.route('/<path:re:.+\.js>')
-# def server_js(path):
-# flask.response.headers['Content-Type'] = "text/javascript; charset=UTF-8"
-
-# if "/render/" in path or ".render." in path:
-# flask.response.headers['Expires'] = time.strftime("%a, %d %b %Y %H:%M:%S GMT",
-# time.gmtime(time.time() + 24 * 7 * 60 * 60))
-# flask.response.headers['Cache-control'] = "public"
-
-# return render_template(path)
-# else:
-# return serve_static(path)
-
-
-# @bp.route(r"/<path:path>")
-# def serve_static(path):
-# flask.response.headers["Expires"] = time.strftime(
-# "%a, %d %b %Y %H:%M:%S GMT", time.gmtime(time.time() + 60 * 60 * 24 * 7)
-# )
-# flask.response.headers["Cache-control"] = "public"
-# root = os.path.join('.', 'themes', get_theme_name())
-# return bottle.static_file(path, root=root)
-
-
-# @bp.route(r"/favicon.ico")
-# def favicon():
-# return bottle.static_file("favicon.ico", root=".")
-
-
-# @bp.route(r"/robots.txt")
-# def robots():
-# return bottle.static_file("robots.txt", root=".")
+@bp.route("/robots.txt")
+def robots_dot_txt():
+    return "User-agent: *\nDisallow: /"
 
 
 @bp.route(r"/login", methods=["GET"])

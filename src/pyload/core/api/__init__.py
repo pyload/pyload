@@ -1114,7 +1114,7 @@ class Api(Iface):
         self.pyload.accountManager.removeAccount(plugin, account)
 
     @permission(PERMS.ALL)
-    def login(self, username, password, remoteip=None):
+    def login(self, username, password):
         """
         Login into pyLoad, this **must** be called when using rpc before any
         methods can be used.
@@ -1124,9 +1124,9 @@ class Api(Iface):
         :param remoteip: Omit this argument, its only used internal
         :return: bool indicating login was successful
         """
-        return True if self.checkAuth(username, password, remoteip) else False
+        return True if self.checkAuth(username, password) else False
 
-    def checkAuth(self, username, password, remoteip=None):
+    def checkAuth(self, username, password):
         """
         Check authentication and returns details.
 
@@ -1135,8 +1135,8 @@ class Api(Iface):
         :param remoteip:
         :return: dict with info, empty when login is incorrect
         """
-        if self.pyload.config.get("remote", "nolocalauth") and remoteip == "127.0.0.1":
-            return "local"
+        # if self.pyload.config.get("remote", "nolocalauth") and remoteip == "127.0.0.1":
+            # return "local"
 
         return self.pyload.db.checkAuth(username, password)
 

@@ -32,8 +32,6 @@ class style(object):
     def queue(cls, fn):
         @staticmethod
         def x(*args, **kwargs):
-            print(fn.name)
-            print(cls.db)
             if cls.db:
                 return cls.db.queue(fn, *args, **kwargs)
         return x
@@ -97,11 +95,11 @@ class DatabaseJob(object):
         self.done.wait()
 
 
-class DatabaseBackend(Thread):
+class DatabaseThread(Thread):
     subs = []
 
     def __init__(self, core):
-        super()
+        super().__init__()
         self.daemon = True
         self.pyload = core
 
@@ -313,6 +311,6 @@ class DatabaseBackend(Thread):
         cls.subs.remove(klass)
 
     def __getattr__(self, attr):
-        for sub in DatabaseBackend.subs:
+        for sub in DatabaseThread.subs:
             if hasattr(sub, attr):
                 return getattr(sub, attr)

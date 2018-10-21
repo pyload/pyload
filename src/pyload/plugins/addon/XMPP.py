@@ -3,13 +3,16 @@
 from builtins import _, object
 
 import pyxmpp2
-import pyxmpp2.all
+import pyxmpp2.jid
+import pyxmpp2.message
 import pyxmpp2.interfaces
+import pyxmpp2.streamtls
+import pyxmpp2.client
 
 from pyload.plugins.addon.IRC import IRC
 
 
-class XMPP(IRC, pyxmpp2.jabber.client.JabberClient):
+class XMPP(IRC, pyxmpp2.client.Client):
     __name__ = "XMPP"
     __type__ = "addon"
     __version__ = "0.18"
@@ -43,12 +46,12 @@ class XMPP(IRC, pyxmpp2.jabber.client.JabberClient):
     def __init__(self, *args, **kwargs):
         IRC.__init__(self, *args, **kwargs)
 
-        self.jid = pyxmpp2.all.JID(self.config.get("jid"))
+        self.jid = pyxmpp2.jid.JID(self.config.get("jid"))
         password = self.config.get("pw")
 
         #: If bare JID is provided add a resource -- it is required
         if not self.jid.resource:
-            self.jid = pyxmpp2.all.JID(self.jid.node, self.jid.domain, "pyLoad")
+            self.jid = pyxmpp2.jid.JID(self.jid.node, self.jid.domain, "pyLoad")
 
         if self.config.get("tls"):
             tls_settings = pyxmpp2.streamtls.TLSSettings(
@@ -61,7 +64,7 @@ class XMPP(IRC, pyxmpp2.jabber.client.JabberClient):
 
         #: Setup client with provided connection information
         #: And identity data
-        pyxmpp2.jabber.client.JabberClient.__init__(
+        pyxmpp2.client.Client.__init__(
             self,
             self.jid,
             password,
@@ -154,7 +157,7 @@ class XMPP(IRC, pyxmpp2.jabber.client.JabberClient):
         to_jid = stanza.get_from()
         from_jid = stanza.get_to()
 
-        # j = pyxmpp2.all.JID()
+        # j = pyxmpp2.jid.JID()
         to_name = to_jid.as_utf8()
 
         names = self.config.get("owners").split(";")
@@ -178,7 +181,7 @@ class XMPP(IRC, pyxmpp2.jabber.client.JabberClient):
             try:
                 res = handler(args)
                 for line in res:
-                    m = pyxmpp2.all.Message(
+                    m = pyxmpp2.message.Message(
                         to_jid=to_jid,
                         from_jid=from_jid,
                         stanza_type=stanza.get_type(),
@@ -206,9 +209,9 @@ class XMPP(IRC, pyxmpp2.jabber.client.JabberClient):
         for user in self.config.get("owners").split(";"):
             self.log_debug("Send message to", user)
 
-            to_jid = pyxmpp2.all.JID(user)
+            to_jid = pyxmpp2.jid.JID(user)
 
-            m = pyxmpp2.all.Message(
+            m = pyxmpp2.message.Message(
                 from_jid=self.jid, to_jid=to_jid, stanza_type="chat", body=message
             )
 

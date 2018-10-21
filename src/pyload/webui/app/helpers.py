@@ -8,6 +8,41 @@ import flask_themes2
 from pyload.core.api import PERMS, ROLE, has_permission
 
 
+def pre_processor():
+    s = flask.session
+    user = parse_userdata(s)
+    perms = parse_permissions(s)
+    status = {}
+    captcha = False
+    update = False
+    plugins = False
+    api = flask.current_app.config["PYLOAD_API"]
+
+    if user["is_authenticated"]:
+        status = api.statusServer()
+        captcha = api.isCaptchaWaiting()
+
+        # check if update check is available
+        info = api.getInfoByPlugin("UpdateManager")
+        if info:
+            update = info["pyload"] == "True"
+            plugins = info["plugins"] == "True"
+
+    return {
+        "user": user,
+        "status": status,
+        "captcha": captcha,
+        "perms": perms,
+        "url": flask.request.url,
+        "update": update,
+        "plugins": plugins,
+    }
+
+
+def base(messages):
+    return render_template("base.html", {"messages": messages}, [pre_processor])
+    
+    
 def clear_session():
     flask.session.clear()
     flask.session.modified = True
@@ -137,11 +172,4 @@ def toDict(obj):
     for att in obj.__slots__:
         ret[att] = getattr(obj, att)
     return ret
-
-
-# class CherryPyWSGI(bottle.ServerAdapter):
-# def run(self, handler):
-# from wsgiserver import CherryPyWSGIServer
-
-# server = CherryPyWSGIServer((self.host, self.port), handler)
-# server.start()
+    

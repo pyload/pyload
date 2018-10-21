@@ -9,7 +9,7 @@ from urllib.parse import unquote
 import flask
 
 from pyload.core.api import BaseObject
-from pyload.webui.app.utils import clear_session, set_session, toDict
+from pyload.webui.app.helpers import clear_session, set_session, toDict
 
 bp = flask.Blueprint("api", __name__, url_prefix="/api")
 
@@ -122,3 +122,6 @@ def login():
 # @apiver_check
 def logout():
     clear_session()
+    resp = flask.json.jsonify(True)
+    resp.headers.append("Cache-Control", "no-cache, must-revalidate")
+    return resp

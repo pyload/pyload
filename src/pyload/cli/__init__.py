@@ -21,7 +21,7 @@ from threading import Lock, Thread
 
 from easy_getch import getch
 
-import pyload.utils.pylgettext as gettext
+import pyload.core.utils.pylgettext as gettext
 from pyload.core.api import Destination
 from pyload.cli.addpackage import AddPackage
 from pyload.cli.managefiles import ManageFiles
@@ -408,7 +408,7 @@ class Cli(object):
 
 class RefreshThread(Thread):
     def __init__(self, cli):
-        super()
+        super().__init__()
         self.daemon = True
         self.cli = cli
 

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from builtins import _
 
-from pyload.core.database.database_backend import style
+from pyload.core.database.database_thread import style
 from pyload.plugins.internal.addon import Addon
 
 

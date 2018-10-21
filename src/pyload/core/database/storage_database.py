@@ -3,7 +3,7 @@
 
 from builtins import object
 
-from pyload.core.database.database_backend import DatabaseBackend, style
+from pyload.core.database.database_thread import DatabaseThread, style
 
 
 class StorageMethods(object):
@@ -49,4 +49,4 @@ class StorageMethods(object):
         )
 
 
-DatabaseBackend.registerSub(StorageMethods)
+DatabaseThread.registerSub(StorageMethods)

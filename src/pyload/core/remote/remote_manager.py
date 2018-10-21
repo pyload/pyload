@@ -7,7 +7,7 @@ from threading import Thread
 
 class BackendBase(Thread):
     def __init__(self, manager):
-        super()
+        super().__init__()
         self.m = manager
         self.pyload = manager.pyload
         self.enabled = True
@@ -55,7 +55,7 @@ class RemoteManager(object):
         for b in self.available:
             klass = getattr(
                 __import__(
-                    "pyload.remote.{}".format(b.lower()), globals(), locals(), [b], 0
+                    "pyload.core.remote.{}".format(b.lower()), globals(), locals(), [b], 0
                 ),
                 b,
             )
@@ -64,7 +64,7 @@ class RemoteManager(object):
                 continue
             try:
                 backend.setup(host, port)
-                self.pyload.log.info(
+                self.pyload.log.warning(
                     _("Starting {name}: {addr}:{port}").format(
                         name=b, addr=host, port=port
                     )

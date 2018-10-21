@@ -9,7 +9,7 @@ from builtins import PKGDIR
 from pyload.core.remote.thriftbackend.thriftgen import ttypes
 from pyload.core.remote.thriftbackend.thriftgen.Pyload import Iface
 
-sys.path.append(os.path.join(PKGDIR, "remote"))
+sys.path.append(os.path.join(PKGDIR, "core", "remote"))
 
 
 def main():

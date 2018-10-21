@@ -4,7 +4,7 @@
 from builtins import _, object, range, str, zip
 from threading import RLock
 
-from pyload.core.database.database_backend import DatabaseBackend, style
+from pyload.core.database.database_thread import DatabaseThread, style
 from pyload.core.datatype.pyfile import PyFile
 from pyload.core.datatype.pypackage import PyPackage
 from pyload.core.manager.event_manager import (InsertEvent, ReloadAllEvent, RemoveEvent,
@@ -743,7 +743,6 @@ class FileMethods(object):
 
     @style.queue
     def deletePackage(self, p):
-
         self.c.execute("DELETE FROM links WHERE package=?", (str(p.id),))
         self.c.execute("DELETE FROM packages WHERE id=?", (str(p.id),))
         self.c.execute(
@@ -753,7 +752,6 @@ class FileMethods(object):
 
     @style.queue
     def deleteLink(self, f):
-
         self.c.execute("DELETE FROM links WHERE id=?", (str(f.id),))
         self.c.execute(
             "UPDATE links SET linkorder=linkorder-1 WHERE linkorder > ? AND package=?",
@@ -1091,4 +1089,4 @@ class FileMethods(object):
         self.c.execute("DELETE FROM packages;")
 
 
-DatabaseBackend.registerSub(FileMethods)
+DatabaseThread.registerSub(FileMethods)

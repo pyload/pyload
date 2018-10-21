@@ -20,12 +20,12 @@ from getopt import GetoptError, getopt
 from imp import find_module
 from sys import argv, executable, exit
 
-import pyload.utils.pylgettext as gettext
+import pyload.core.utils.pylgettext as gettext
 from pyload import __version__ as PYLOAD_VERSION
 from pyload import __version_info__ as PYLOAD_VERSION_INFO
 from pyload import exc_logger
 from pyload.core.config.config_parser import ConfigParser
-from pyload.core.database.database_backend import DatabaseBackend
+from pyload.core.database import DatabaseThread
 from pyload.core.database.file_database import FileHandler
 from pyload.core.log_factory import LogFactory
 from pyload.core.manager.account_manager import AccountManager
@@ -428,7 +428,7 @@ class Core(object):
             self.scheduler.work()
 
     def setupDB(self):
-        self.db = DatabaseBackend(self)  #: the backend
+        self.db = DatabaseThread(self)  #: the backend
         self.db.setup()
 
         self.files = FileHandler(self)
@@ -548,9 +548,6 @@ class Core(object):
             self.shuttedDown = True
 
         self.deletePidFile()
-
-    def path(self, *args):
-        return os.path.join(PKGDIR, *args)
 
 
 def daemon():

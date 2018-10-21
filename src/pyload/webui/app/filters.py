@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
+
 import os
 
-quotechar = "::%2F"
+
+QUOTECHAR = "::%2F"
 
 
 def quotepath(path):
     try:
-        return path.replace(".." + os.path.sep, quotechar)
+        return path.replace(".." + os.path.sep, QUOTECHAR)
     except AttributeError:
         return path
     except Exception:
@@ -15,7 +17,7 @@ def quotepath(path):
 
 def unquotepath(path):
     try:
-        return path.replace(quotechar, ".." + os.path.sep)
+        return path.replace(QUOTECHAR, ".." + os.path.sep)
     except AttributeError:
         return path
     except Exception:

@@ -13,7 +13,7 @@ from pyload.webui.app import create_app
 # TODO: make configurable to serve API
 class WebServer(threading.Thread):
     def __init__(self, core):
-        super()
+        super().__init__()
         self.daemon = True
 
         self.pyload = core
@@ -41,7 +41,7 @@ class WebServer(threading.Thread):
             server.ssl_private_key = self.keyfile
 
     def run(self):
-        self.pyload.log.info(
+        self.pyload.log.warning(
             _("Starting webserver: {host}:{port:d}").format(
                 host=self.host, port=self.port
             )
