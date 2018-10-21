@@ -9,7 +9,6 @@ from pyload.utils.utils import random_string
 class Config(object):
     DEBUG = False
     TESTING = False
-    SESSION_COOKIE_HTTPONLY = True
     SESSION_COOKIE_SAMESITE = 'Lax'
     #: extensions
     BCRYPT_LOG_ROUNDS = 13
@@ -34,6 +33,7 @@ class DevelopmentConfig(Config):
     EXPLAIN_TEMPLATE_LOADING = True
     #: extensions
     DEBUG_TB_ENABLED = True
+    CACHE_NO_NULL_WARNING = True
 
     
 class TestingConfig(DevelopmentConfig):

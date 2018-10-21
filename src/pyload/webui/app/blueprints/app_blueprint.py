@@ -14,7 +14,7 @@ import flask
 
 from pyload.utils.utils import formatSize, fs_decode, fs_encode
 from pyload.webui.app.filters import unquotepath
-from pyload.webui.app.utils import (get_permission, login_required,
+from pyload.webui.app.utils import (clear_session, get_permission, login_required,
                                     parse_permissions, parse_userdata, permlist,
                                     render_template, set_permission, set_session,
                                     toDict)
@@ -53,7 +53,6 @@ def pre_processor():
         "update": update,
         "plugins": plugins,
     }
-
 
 def base(messages):
     return render_template("base.html", {"messages": messages}, [pre_processor])
@@ -148,8 +147,7 @@ def login_post():
 
 @bp.route(r"/logout")
 def logout():
-    flask.session.clear()
-    flask.session.modified = True
+    clear_session()
     return render_template("logout.html", proc=[pre_processor])
 
 import logging  # test
@@ -161,8 +159,7 @@ def home():
     try:
         res = [toDict(x) for x in api.statusDownloads()]
     except Exception:
-        flask.session.clear()
-        flask.session.modified = True
+        clear_session()
         return flask.redirect("/login")
 
     for link in res:

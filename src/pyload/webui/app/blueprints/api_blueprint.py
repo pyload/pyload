@@ -9,7 +9,7 @@ from urllib.parse import unquote
 import flask
 
 from pyload.api import BaseObject
-from pyload.webui.app.utils import apiver_check, set_session, toDict
+from pyload.webui.app.utils import clear_session, apiver_check, set_session, toDict
 
 
 bp = flask.Blueprint('api', __name__, url_prefix='/api')
@@ -31,9 +31,6 @@ class TBaseEncoder(json.JSONEncoder):
 )
 # @apiver_check
 def call_api(func, args=""):
-    flask.response.headers.replace("Content-type", "application/json")
-    flask.response.headers.append("Cache-Control", "no-cache, must-revalidate")
-
     api = flask.current_app.config['PYLOAD_API']
     
     if "u" in flask.request.form and "p" in flask.request.form:
@@ -71,11 +68,14 @@ def call_api(func, args=""):
         kwargs[x] = unquote(y)
 
     try:
-        return callApi(func, *args, **kwargs)
+        resp = callApi(func, *args, **kwargs)
     except Exception as e:
-        return json.dumps({"error": e.message, "traceback": traceback.format_exc()}), 500
-
-
+        resp = flask.json.jsonify({"error": e.message, "traceback": traceback.format_exc()}), 500
+        
+    resp.headers.append("Cache-Control", "no-cache, must-revalidate")
+    return resp
+    
+    
 def callApi(func, *args, **kwargs):
     api = flask.current_app.config['PYLOAD_API']
 
@@ -83,22 +83,19 @@ def callApi(func, *args, **kwargs):
         print("Invalid API call", func)
         return "Not Found", 404
 
-    result = getattr(PYLOAD_API, func)(
+    result = getattr(api, func)(
         *[literal_eval(x) for x in args],
         **{x: literal_eval(y) for x, y in kwargs.items()},
     )
-
+    
     # null is invalid json  response
-    return json.dumps(result or True, cls=TBaseEncoder)
+    return flask.json.jsonify(result or True, cls=TBaseEncoder)
 
 
 # post -> username, password
 @bp.route(r"/login", methods=['POST'])
 # @apiver_check
 def login():
-    flask.response.headers.replace("Content-type", "application/json")
-    flask.response.headers.append("Cache-Control", "no-cache, must-revalidate")
-
     user = flask.request.form.get("username")
     password = flask.request.form.get("password")
 
@@ -106,22 +103,22 @@ def login():
     info = api.checkAuth(user, password)
 
     if not info:
-        return json.dumps(False)
+        return flask.json.jsonify(False)
 
     s = set_session(info)
 
     # get the session id by dirty way, documentations seems wrong
     try:
         sid = s.headers["cookie_out"].split("=")[1].split(";")[0]
-        return json.dumps(sid)
+        resp = flask.json.jsonify(sid)
     except Exception:
-        return json.dumps(True)
+        resp = flask.json.jsonify(True)
+        
+    resp.headers.append("Cache-Control", "no-cache, must-revalidate")
+    return resp
 
 
 @bp.route(r"/logout")
 # @apiver_check
 def logout():
-    flask.response.headers.replace("Content-type", "application/json")
-    flask.response.headers.append("Cache-Control", "no-cache, must-revalidate")
-    flask.session.clear()
-    flask.session.modified = True
+    clear_session()

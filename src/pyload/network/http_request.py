@@ -33,7 +33,7 @@ def myurlencode(data):
     )
 
 
-bad_headers = list(range(400, 404)) + list(range(405, 418)) + list(range(500, 506))
+BAD_STATUS_CODES = list(range(400, 404)) + list(range(405, 418)) + list(range(500, 506))
 
 unofficial_responses = {
     440: "Login Timeout - The client's session has expired and must log in again.",
@@ -291,7 +291,7 @@ class HTTPRequest(object):
         raise an exceptions on bad headers.
         """
         code = int(self.c.getinfo(pycurl.RESPONSE_CODE))
-        if code in bad_headers:
+        if code in BAD_STATUS_CODES:
             # 404 will NOT raise an exception
             raise BadHeader(code, self.header, self.getResponse())
         return code
@@ -300,7 +300,7 @@ class HTTPRequest(object):
         """
         check if header indicates failure.
         """
-        return int(self.c.getinfo(pycurl.RESPONSE_CODE)) not in bad_headers
+        return int(self.c.getinfo(pycurl.RESPONSE_CODE)) not in BAD_STATUS_CODES
 
     def getResponse(self):
         """

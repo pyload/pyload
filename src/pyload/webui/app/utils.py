@@ -11,12 +11,16 @@ import flask_themes2
 from pyload.api import PERMS, ROLE, has_permission
 
 
+def clear_session():
+    flask.session.clear()
+    flask.session.modified = True
+
+    
 def render_template(template, context={}, proc=[]):
     for p in proc:
         context.update(p())
     api = flask.current_app.config['PYLOAD_API']
     theme = api.getConfigValue("webui", "theme").lower()
-    theme = "flat"  # test
     return flask_themes2.render_theme_template(theme, template, **context)
 
     
