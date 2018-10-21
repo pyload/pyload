@@ -9,7 +9,7 @@ Install:
     pip install .[all]
     
 > **Note:**
-> On Windows pycurl installation fails sometimes (the unlucky part).
+> On Windows `pycurl` installation fails sometimes (the unlucky part).
 
 Run:
     
@@ -18,6 +18,8 @@ Run:
 Help:
 
     pyLoad -h
+    
+The web user interface will be available at the url `http://localhost:8001`.
     
     
 -------------------------

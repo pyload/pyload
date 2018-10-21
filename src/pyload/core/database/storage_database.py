@@ -8,43 +8,43 @@ from pyload.core.database.database_thread import DatabaseThread, style
 
 class StorageMethods(object):
     @style.queue
-    def setStorage(self, db, identifier, key, value):
-        db.c.execute(
+    def setStorage(self, identifier, key, value):
+        self.c.execute(
             "SELECT id FROM storage WHERE identifier=? AND key=?", (identifier, key)
         )
-        if db.c.fetchone() is not None:
-            db.c.execute(
+        if self.c.fetchone() is not None:
+            self.c.execute(
                 "UPDATE storage SET value=? WHERE identifier=? AND key=?",
                 (value, identifier, key),
             )
         else:
-            db.c.execute(
+            self.c.execute(
                 "INSERT INTO storage (identifier, key, value) VALUES (?, ?, ?)",
                 (identifier, key, value),
             )
 
     @style.queue
-    def getStorage(self, db, identifier, key=None):
+    def getStorage(self, identifier, key=None):
         if key is not None:
-            db.c.execute(
+            self.c.execute(
                 "SELECT value FROM storage WHERE identifier=? AND key=?",
                 (identifier, key),
             )
-            row = db.c.fetchone()
+            row = self.c.fetchone()
             if row is not None:
                 return row[0]
         else:
-            db.c.execute(
+            self.c.execute(
                 "SELECT key, value FROM storage WHERE identifier=?", (identifier,)
             )
             d = {}
-            for row in db.c:
+            for row in self.c:
                 d[row[0]] = row[1]
             return d
 
     @style.queue
-    def delStorage(self, db, identifier, key):
-        db.c.execute(
+    def delStorage(self, identifier, key):
+        self.c.execute(
             "DELETE FROM storage WHERE identifier=? AND key=?", (identifier, key)
         )
 

@@ -11,13 +11,12 @@ from pyload.core.database.database_thread import DatabaseThread, style
 
 class UserMethods(object):
     @style.queue
-    def checkAuth(self, db, user, password):
-        c = db.c
-        c.execute(
+    def checkAuth(self, user, password):
+        self.c.execute(
             'SELECT id, name, password, role, permission, template, email FROM "users" WHERE name=?',
             (user,),
         )
-        r = c.fetchone()
+        r = self.c.fetchone()
         if not r:
             return {}
 
@@ -37,26 +36,25 @@ class UserMethods(object):
             return {}
 
     @style.queue
-    def addUser(self, db, user, password):
+    def addUser(self, user, password):
         salt = reduce(
             lambda x, y: x + y, [str(random.randint(0, 9)) for i in range(0, 5)]
         )
         h = sha1(salt + password)
         password = salt + h.hexdigest()
 
-        c = db.c
-        c.execute("SELECT name FROM users WHERE name=?", (user,))
-        if c.fetchone() is not None:
-            c.execute("UPDATE users SET password=? WHERE name=?", (password, user))
+        self.c.execute("SELECT name FROM users WHERE name=?", (user,))
+        if self.c.fetchone() is not None:
+            self.c.execute("UPDATE users SET password=? WHERE name=?", (password, user))
         else:
-            c.execute(
+            self.c.execute(
                 "INSERT INTO users (name, password) VALUES (?, ?)", (user, password)
             )
 
     @style.queue
-    def changePassword(self, db, user, oldpw, newpw):
-        db.c.execute("SELECT id, name, password FROM users WHERE name=?", (user,))
-        r = db.c.fetchone()
+    def changePassword(self, user, oldpw, newpw):
+        self.c.execute("SELECT id, name, password FROM users WHERE name=?", (user,))
+        r = self.c.fetchone()
         if not r:
             return False
 
@@ -70,32 +68,32 @@ class UserMethods(object):
             h = sha1(salt + newpw)
             password = salt + h.hexdigest()
 
-            db.c.execute("UPDATE users SET password=? WHERE name=?", (password, user))
+            self.c.execute("UPDATE users SET password=? WHERE name=?", (password, user))
             return True
 
         return False
 
     @style.async_
-    def setPermission(self, db, user, perms):
-        db.c.execute("UPDATE users SET permission=? WHERE name=?", (perms, user))
+    def setPermission(self, user, perms):
+        self.c.execute("UPDATE users SET permission=? WHERE name=?", (perms, user))
 
     @style.async_
-    def setRole(self, db, user, role):
-        db.c.execute("UPDATE users SET role=? WHERE name=?", (role, user))
+    def setRole(self, user, role):
+        self.c.execute("UPDATE users SET role=? WHERE name=?", (role, user))
 
     @style.queue
-    def listUsers(self, db):
-        db.c.execute("SELECT name FROM users")
+    def listUsers(self):
+        self.c.execute("SELECT name FROM users")
         users = []
-        for row in db.c:
+        for row in self.c:
             users.append(row[0])
         return users
 
     @style.queue
-    def getAllUserData(self, db):
-        db.c.execute("SELECT name, permission, role, template, email FROM users")
+    def getAllUserData(self):
+        self.c.execute("SELECT name, permission, role, template, email FROM users")
         user = {}
-        for r in db.c:
+        for r in self.c:
             user[r[0]] = {
                 "permission": r[1],
                 "role": r[2],
@@ -106,8 +104,8 @@ class UserMethods(object):
         return user
 
     @style.queue
-    def removeUser(self, db, user):
-        db.c.execute("DELETE FROM users WHERE name=?", (user,))
+    def removeUser(self, user):
+        self.c.execute("DELETE FROM users WHERE name=?", (user,))
 
 
 DatabaseThread.registerSub(UserMethods)

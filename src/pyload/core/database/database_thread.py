@@ -24,24 +24,21 @@ class style(object):
     def inner(cls, fn):
         @staticmethod
         def x(*args, **kwargs):
-            if cls.db:
-                return fn(cls.db, *args, **kwargs)
+            return fn(cls.db, *args, **kwargs)
         return x
 
     @classmethod
     def queue(cls, fn):
         @staticmethod
         def x(*args, **kwargs):
-            if cls.db:
-                return cls.db.queue(fn, *args, **kwargs)
+            return cls.db.queue(fn, *args, **kwargs)
         return x
 
     @classmethod
     def async_(cls, fn):
         @staticmethod
         def x(*args, **kwargs):
-            if cls.db:
-                return cls.db.async_(fn, *args, **kwargs)
+            return cls.db.async_(fn, *args, **kwargs)
         return x
 
 
