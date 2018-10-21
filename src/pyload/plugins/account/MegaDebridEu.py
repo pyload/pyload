@@ -4,7 +4,7 @@ from builtins import _
 from functools import reduce
 
 import pycurl
-from pyload.network.http_request import BadHeader
+from pyload.core.network.http_request import BadHeader
 from pyload.plugins.internal.multiaccount import MultiAccount
 from pyload.plugins.utils import encode
 

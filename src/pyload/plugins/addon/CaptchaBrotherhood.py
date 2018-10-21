@@ -9,7 +9,7 @@ from builtins import _, range
 
 import pycurl
 from Pillow import Image
-from pyload.network.request_factory import getRequest as get_request
+from pyload.core.network.request_factory import getRequest as get_request
 from pyload.plugins.internal.addon import Addon
 from pyload.plugins.utils import threaded
 

@@ -12,7 +12,7 @@ from builtins import object
 from thrift.protocol.TBase import TBase
 from thrift.Thrift import TMessageType, TProcessor, TType
 
-from pyload.remote.thriftbackend.thriftgen.ttypes import *
+from pyload.core.remote.thriftbackend.thriftgen.ttypes import *
 
 
 class Iface(object):

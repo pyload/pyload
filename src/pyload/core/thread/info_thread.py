@@ -4,10 +4,10 @@
 import time
 from builtins import _, str
 
-from pyload.api import OnlineStatus
-from pyload.datatype.pyfile import PyFile
-from pyload.thread.plugin_thread import PluginThread
-from pyload.utils.packagetools import parseNames
+from pyload.core.api import OnlineStatus
+from pyload.core.datatype.pyfile import PyFile
+from pyload.core.thread.plugin_thread import PluginThread
+from pyload.core.utils.packagetools import parseNames
 
 
 class InfoThread(PluginThread):

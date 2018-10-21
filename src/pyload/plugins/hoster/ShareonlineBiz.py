@@ -3,7 +3,7 @@ import re
 import time
 from builtins import _
 
-from pyload.network.request_factory import getURL as get_url
+from pyload.core.network.request_factory import getURL as get_url
 from pyload.plugins.captcha.ReCaptcha import ReCaptcha
 from pyload.plugins.internal.simplehoster import SimpleHoster
 

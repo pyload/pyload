@@ -9,10 +9,10 @@ from getpass import getpass
 from thrift import Thrift
 from thrift.transport import TTransport
 
-from pyload.remote.thriftbackend.protocol import Protocol
-from pyload.remote.thriftbackend.socket import Socket
-from pyload.remote.thriftbackend.thriftgen import Pyload
-from pyload.remote.thriftbackend.thriftgen.ttypes import *
+from pyload.core.remote.thriftbackend.protocol import Protocol
+from pyload.core.remote.thriftbackend.socket import Socket
+from pyload.core.remote.thriftbackend.thriftgen import Pyload
+from pyload.core.remote.thriftbackend.thriftgen.ttypes import *
 
 
 def bench(f, *args, **kwargs):

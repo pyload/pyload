@@ -7,7 +7,7 @@ from queue import Queue
 
 import pycurl
 from pyload.plugins.plugin import Abort, Fail, Reconnect, Retry, SkipDownload
-from pyload.thread.plugin_thread import PluginThread
+from pyload.core.thread.plugin_thread import PluginThread
 
 
 class DownloadThread(PluginThread):

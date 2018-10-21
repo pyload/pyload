@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from pyload.network.request_factory import getRequest as get_request
+from pyload.core.network.request_factory import getRequest as get_request
 from pyload.plugins.internal.notifier import Notifier
 
 

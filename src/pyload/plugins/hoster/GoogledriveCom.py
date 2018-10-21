@@ -7,7 +7,7 @@
 
 import json
 
-from pyload.network.http_request import BadHeader
+from pyload.core.network.http_request import BadHeader
 from pyload.plugins.internal.hoster import Hoster
 
 

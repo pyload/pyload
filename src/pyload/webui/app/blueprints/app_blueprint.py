@@ -12,7 +12,7 @@ from urllib.parse import unquote
 
 import flask
 
-from pyload.utils.utils import formatSize, fs_decode, fs_encode
+from pyload.core.utils.utils import formatSize, fs_decode, fs_encode
 from pyload.webui.app.filters import unquotepath
 from pyload.webui.app.utils import (clear_session, get_permission, login_required,
                                     parse_permissions, parse_userdata, permlist,

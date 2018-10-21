@@ -8,7 +8,7 @@ import urllib.parse
 import urllib.request
 from builtins import _, chr
 
-from pyload.network.request_factory import getURL as get_url
+from pyload.core.network.request_factory import getURL as get_url
 from pyload.plugins.internal.simplehoster import SimpleHoster
 
 

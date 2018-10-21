@@ -12,8 +12,8 @@ from builtins import _, filter, range, str
 
 from cryptography.fernet import Fernet
 
-from pyload.network.cookie_jar import CookieJar
-from pyload.network.http_request import BadHeader, HTTPRequest
+from pyload.core.network.cookie_jar import CookieJar
+from pyload.core.network.http_request import BadHeader, HTTPRequest
 from pyload.plugins.captcha.CoinHive import CoinHive
 from pyload.plugins.captcha.ReCaptcha import ReCaptcha
 from pyload.plugins.captcha.SolveMedia import SolveMedia

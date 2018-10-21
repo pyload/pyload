@@ -4,7 +4,7 @@ import re
 from builtins import _
 
 import pycurl
-from pyload.network.http_request import BadHeader
+from pyload.core.network.http_request import BadHeader
 from pyload.plugins.captcha.AdsCaptcha import AdsCaptcha
 from pyload.plugins.captcha.ReCaptcha import ReCaptcha
 from pyload.plugins.captcha.SolveMedia import SolveMedia

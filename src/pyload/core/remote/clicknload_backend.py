@@ -12,7 +12,7 @@ from urllib.parse import unquote
 import js2py
 from cryptography.fernet import Fernet
 
-from pyload.remote.remote_manager import BackendBase
+from pyload.core.remote.remote_manager import BackendBase
 
 core = None
 js = None

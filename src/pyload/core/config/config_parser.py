@@ -7,7 +7,7 @@ import time
 from builtins import HOMEDIR, PKGDIR, object, str
 
 from pyload import exc_logger
-from pyload.utils.utils import chmod
+from pyload.core.utils.utils import chmod
 
 # CONFIG_VERSION
 __version__ = 1

@@ -4,11 +4,11 @@
 from builtins import REQUESTS, object
 from threading import Lock
 
-from pyload.network.browser import Browser
-from pyload.network.bucket import Bucket
-from pyload.network.cookie_jar import CookieJar
-from pyload.network.http_request import HTTPRequest
-from pyload.network.xdcc_request import XDCCRequest
+from pyload.core.network.browser import Browser
+from pyload.core.network.bucket import Bucket
+from pyload.core.network.cookie_jar import CookieJar
+from pyload.core.network.http_request import HTTPRequest
+from pyload.core.network.xdcc_request import XDCCRequest
 
 
 class RequestFactory(object):

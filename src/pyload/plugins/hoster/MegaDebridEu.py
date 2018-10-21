@@ -3,7 +3,7 @@ import json
 from builtins import _
 
 import pycurl
-from pyload.network.http_request import BadHeader
+from pyload.core.network.http_request import BadHeader
 from pyload.plugins.internal.multihoster import MultiHoster
 from pyload.plugins.utils import encode
 

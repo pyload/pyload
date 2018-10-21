@@ -3,8 +3,8 @@ import json
 import re
 from builtins import _
 
-from pyload.datatype.pyfile import statusMap
-from pyload.network.request_factory import getURL as get_url
+from pyload.core.datatype.pyfile import statusMap
+from pyload.core.network.request_factory import getURL as get_url
 from pyload.plugins.internal.hoster import Hoster
 
 

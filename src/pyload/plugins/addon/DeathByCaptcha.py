@@ -7,8 +7,8 @@ import time
 from builtins import _, range, str
 
 import pycurl
-from pyload.network.http_request import BadHeader
-from pyload.network.request_factory import getRequest as get_request
+from pyload.core.network.http_request import BadHeader
+from pyload.core.network.request_factory import getRequest as get_request
 from pyload.plugins.internal.addon import Addon
 from pyload.plugins.utils import threaded
 

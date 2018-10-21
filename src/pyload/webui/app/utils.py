@@ -5,7 +5,7 @@
 import flask
 import flask_themes2
 
-from pyload.api import PERMS, ROLE, has_permission
+from pyload.core.api import PERMS, ROLE, has_permission
 
 
 def clear_session():

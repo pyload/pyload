@@ -9,7 +9,7 @@ import urllib.request
 from builtins import HOMEDIR, _, range
 
 import pycurl
-from pyload.network.http_request import BadHeader
+from pyload.core.network.http_request import BadHeader
 from pyload.plugins.internal.hoster import Hoster
 from pyload.plugins.utils import exists
 

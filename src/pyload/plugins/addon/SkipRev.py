@@ -2,7 +2,7 @@
 import re
 from builtins import _
 
-from pyload.datatype.pyfile import PyFile
+from pyload.core.datatype.pyfile import PyFile
 from pyload.plugins.internal.addon import Addon
 
 

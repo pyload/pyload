@@ -48,7 +48,7 @@ In case you want to use python, pyload has already all files included to access 
 
 A basic script that prints out some information: ::
 
-    from pyload.remote.thriftbackend.thriftClient import ThriftClient, WrongLogin
+    from pyload.core.remote.thriftbackend.thriftClient import ThriftClient, WrongLogin
 
     try:
         client = ThriftClient(host="127.0.0.1", port=7227, user="User", password="yourpw")

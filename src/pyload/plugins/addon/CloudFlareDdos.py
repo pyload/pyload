@@ -7,7 +7,7 @@ from builtins import _, hex, next, object, str
 
 import js2py
 
-from pyload.network.http_request import BadHeader
+from pyload.core.network.http_request import BadHeader
 from pyload.plugins.captcha.ReCaptcha import ReCaptcha
 from pyload.plugins.internal.addon import Addon
 from pyload.plugins.utils import parse_html_header

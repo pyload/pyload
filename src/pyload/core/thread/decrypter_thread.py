@@ -4,7 +4,7 @@
 from builtins import _, str
 
 from pyload.plugins.plugin import Abort, Fail, Retry
-from pyload.thread.plugin_thread import PluginThread
+from pyload.core.thread.plugin_thread import PluginThread
 
 
 class DecrypterThread(PluginThread):

@@ -6,8 +6,8 @@ import os
 import sys
 from builtins import PKGDIR
 
-from pyload.remote.thriftbackend.thriftgen import ttypes
-from pyload.remote.thriftbackend.thriftgen.Pyload import Iface
+from pyload.core.remote.thriftbackend.thriftgen import ttypes
+from pyload.core.remote.thriftbackend.thriftgen.Pyload import Iface
 
 sys.path.append(os.path.join(PKGDIR, "remote"))
 

@@ -2,7 +2,7 @@
 
 import socketserver
 
-from pyload.remote.remote_manager import BackendBase
+from pyload.core.remote.remote_manager import BackendBase
 
 
 class RequestHandler(socketserver.BaseRequestHandler):

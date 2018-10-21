@@ -22,13 +22,13 @@ from threading import Lock, Thread
 from easy_getch import getch
 
 import pyload.utils.pylgettext as gettext
-from pyload.api import Destination
+from pyload.core.api import Destination
 from pyload.cli.addpackage import AddPackage
 from pyload.cli.managefiles import ManageFiles
 from pyload.cli.printer import *
-from pyload.remote.thriftbackend.thrift_client import (ConnectionClosed, NoConnection,
+from pyload.core.remote.thriftbackend.thrift_client import (ConnectionClosed, NoConnection,
                                                        NoSSL, ThriftClient, WrongLogin)
-from pyload.utils.utils import decode, formatSize
+from pyload.core.utils.utils import decode, formatSize
 
 if os.name == "nt":
     enc = "cp850"

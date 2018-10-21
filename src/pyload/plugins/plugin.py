@@ -7,7 +7,7 @@ from builtins import HOMEDIR, _, object, str
 from itertools import islice
 from random import randint
 
-from pyload.utils.utils import fs_decode, fs_encode, save_path
+from pyload.core.utils.utils import fs_decode, fs_encode, save_path
 
 if os.name != "nt":
     from pwd import getpwnam

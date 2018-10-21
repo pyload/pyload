@@ -2,8 +2,8 @@
 import re
 from builtins import _
 
-from pyload.network.http_request import BadHeader
-from pyload.network.request_factory import getURL as get_url
+from pyload.core.network.http_request import BadHeader
+from pyload.core.network.request_factory import getURL as get_url
 from pyload.plugins.internal.hoster import Hoster
 from pyload.plugins.utils import (encode, parse_name, parse_size, parse_time,
                                   replace_patterns)

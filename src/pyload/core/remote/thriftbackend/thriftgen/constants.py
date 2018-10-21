@@ -10,4 +10,4 @@
 
 from thrift.Thrift import TException, TMessageType, TType
 
-from pyload.remote.thriftbackend.thriftgen.ttypes import *
+from pyload.core.remote.thriftbackend.thriftgen.ttypes import *

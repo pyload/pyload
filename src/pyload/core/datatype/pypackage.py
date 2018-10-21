@@ -3,8 +3,8 @@
 
 from builtins import object
 
-from pyload.manager.event_manager import UpdateEvent
-from pyload.utils.utils import save_path
+from pyload.core.manager.event_manager import UpdateEvent
+from pyload.core.utils.utils import save_path
 
 
 class PyPackage(object):

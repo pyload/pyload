@@ -4,12 +4,12 @@
 from builtins import _, object, range, str, zip
 from threading import RLock
 
-from pyload.database.database_backend import DatabaseBackend, style
-from pyload.datatype.pyfile import PyFile
-from pyload.datatype.pypackage import PyPackage
-from pyload.manager.event_manager import (InsertEvent, ReloadAllEvent, RemoveEvent,
+from pyload.core.database.database_backend import DatabaseBackend, style
+from pyload.core.datatype.pyfile import PyFile
+from pyload.core.datatype.pypackage import PyPackage
+from pyload.core.manager.event_manager import (InsertEvent, ReloadAllEvent, RemoveEvent,
                                           UpdateEvent)
-from pyload.utils.utils import formatSize, lock
+from pyload.core.utils.utils import formatSize, lock
 
 
 class FileHandler(object):

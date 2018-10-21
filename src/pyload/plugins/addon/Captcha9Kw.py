@@ -6,7 +6,7 @@ import time
 import urllib.parse
 from builtins import _, map, range
 
-from pyload.network.http_request import BadHeader
+from pyload.core.network.http_request import BadHeader
 from pyload.plugins.internal.addon import Addon
 from pyload.plugins.utils import threaded
 

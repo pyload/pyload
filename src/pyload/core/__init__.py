@@ -24,18 +24,18 @@ import pyload.utils.pylgettext as gettext
 from pyload import __version__ as PYLOAD_VERSION
 from pyload import __version_info__ as PYLOAD_VERSION_INFO
 from pyload import exc_logger
-from pyload.config.config_parser import ConfigParser
-from pyload.database.database_backend import DatabaseBackend
-from pyload.database.file_database import FileHandler
-from pyload.log_factory import LogFactory
-from pyload.manager.account_manager import AccountManager
-from pyload.manager.captcha_manager import CaptchaManager
-from pyload.manager.event_manager import EventManager
-from pyload.manager.plugin_manager import PluginManager
-from pyload.network.request_factory import RequestFactory
-from pyload.remote.remote_manager import RemoteManager
-from pyload.scheduler import Scheduler
-from pyload.utils.utils import formatSize, freeSpace
+from pyload.core.config.config_parser import ConfigParser
+from pyload.core.database.database_backend import DatabaseBackend
+from pyload.core.database.file_database import FileHandler
+from pyload.core.log_factory import LogFactory
+from pyload.core.manager.account_manager import AccountManager
+from pyload.core.manager.captcha_manager import CaptchaManager
+from pyload.core.manager.event_manager import EventManager
+from pyload.core.manager.plugin_manager import PluginManager
+from pyload.core.network.request_factory import RequestFactory
+from pyload.core.remote.remote_manager import RemoteManager
+from pyload.core.scheduler import Scheduler
+from pyload.core.utils.utils import formatSize, freeSpace
 from pyload.webui.server_thread import WebServer
 
 # TODO: List
@@ -339,9 +339,9 @@ class Core(object):
 
         # later imported because they would trigger api import, and remote value
         # not set correctly
-        from pyload.api import Api
-        from pyload.manager.addon_manager import AddonManager
-        from pyload.manager.thread_manager import ThreadManager
+        from pyload.core.api import Api
+        from pyload.core.manager.addon_manager import AddonManager
+        from pyload.core.manager.thread_manager import ThreadManager
 
         self.api = Api(self)
 

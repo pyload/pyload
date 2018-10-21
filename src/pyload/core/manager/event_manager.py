@@ -4,7 +4,7 @@
 import time
 from builtins import object
 
-from pyload.utils.utils import uniqify
+from pyload.core.utils.utils import uniqify
 
 
 class EventManager(object):

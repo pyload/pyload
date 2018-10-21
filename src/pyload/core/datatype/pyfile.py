@@ -5,8 +5,8 @@ import time
 from builtins import object
 from threading import RLock
 
-from pyload.manager.event_manager import UpdateEvent
-from pyload.utils.utils import formatSize, lock
+from pyload.core.manager.event_manager import UpdateEvent
+from pyload.core.utils.utils import formatSize, lock
 
 statusMap = {
     "finished": 0,

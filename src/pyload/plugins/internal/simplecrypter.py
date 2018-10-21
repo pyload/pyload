@@ -3,8 +3,8 @@
 import re
 from builtins import _, range
 
-from pyload.network.http_request import BadHeader
-from pyload.network.request_factory import getURL as get_url
+from pyload.core.network.http_request import BadHeader
+from pyload.core.network.request_factory import getURL as get_url
 from pyload.plugins.internal.crypter import Crypter
 from pyload.plugins.utils import parse_name, parse_time, replace_patterns
 

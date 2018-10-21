@@ -9,7 +9,7 @@ from math import floor
 from random import choice, randint, sample
 from threading import Thread
 
-from pyload.remote.thriftbackend.thriftClient import Destination, ThriftClient
+from pyload.core.remote.thriftbackend.thriftClient import Destination, ThriftClient
 
 
 def createURLs():

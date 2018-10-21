@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from builtins import _
 
-from pyload.network.http_request import BadHeader
+from pyload.core.network.http_request import BadHeader
 from pyload.plugins.hoster.Http import Http
 
 # Support onlinetvrecorder.com

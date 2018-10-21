@@ -3,7 +3,7 @@ import re
 import urllib.parse
 from builtins import _
 
-from pyload.network.http_request import BadHeader
+from pyload.core.network.http_request import BadHeader
 from pyload.plugins.captcha.ReCaptcha import ReCaptcha
 from pyload.plugins.internal.simplecrypter import SimpleCrypter
 

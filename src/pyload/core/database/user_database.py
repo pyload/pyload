@@ -6,7 +6,7 @@ from builtins import object, range, str
 from functools import reduce
 from hashlib import sha1
 
-from pyload.database.database_backend import DatabaseBackend, style
+from pyload.core.database.database_backend import DatabaseBackend, style
 
 
 class UserMethods(object):
