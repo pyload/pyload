@@ -15,6 +15,7 @@ class RequestFactory(object):
     def __init__(self, core):
         self.lock = Lock()
         self.pyload = core
+        self._ = core._
         self.bucket = Bucket()
         self.updateBucket()
         self.cookiejars = {}

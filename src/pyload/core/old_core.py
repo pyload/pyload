@@ -424,8 +424,8 @@ class Core(object):
                 self.shutdown()
                 os._exit(0)  # TODO: thrift blocks shutdown
 
-            self.threadManager.work()
-            self.scheduler.work()
+            self.threadManager.run()
+            self.scheduler.run()
 
     def setupDB(self):
         self.db = DatabaseThread(self)  #: the backend

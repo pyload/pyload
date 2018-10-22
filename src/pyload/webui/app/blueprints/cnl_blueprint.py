@@ -52,8 +52,6 @@ def add():
     else:
         api.generateAndAddPackages(urls, 0)
 
-    return ""
-
 
 @bp.route(r"/flash/addcrypted", methods=["POST"], endpoint="addcrypted")
 @local_check
@@ -76,7 +74,7 @@ def addcrypted():
     try:
         api.addPackage(package, [dlc_path], 0)
     except Exception:
-        return flask.abort(500)
+        flask.abort(500)
     else:
         return "success\r\n"
 
@@ -98,8 +96,7 @@ def addcrypted2():
     try:
         key = unhexlify(jk)
     except Exception:
-        print("Could not decrypt key, please install py-spidermonkey or ossp-js")
-        return "failed"
+        return "Could not decrypt key", 500
 
     obj = Fernet(key)
     urls = obj.decrypt(crypted).replace("\x00", "").replace("\r", "").split("\n")
@@ -113,7 +110,7 @@ def addcrypted2():
         else:
             api.generateAndAddPackages(urls, 0)
     except Exception:
-        return "failed can't add"
+        return "failed can't add", 500
     else:
         return "success\r\n"
 
@@ -126,7 +123,7 @@ def flashgot():
         "http://localhost:9666/flashgot",
         "http://127.0.0.1:9666/flashgot",
     ):
-        return flask.abort(500)
+    flask.abort(500)
 
     autostart = int(flask.request.form.get("autostart", 0))
     package = flask.request.form.get("package", None)
@@ -139,8 +136,6 @@ def flashgot():
         api.addPackage(package, urls, autostart)
     else:
         api.generateAndAddPackages(urls, autostart)
-
-    return ""
 
 
 @bp.route(r"/crossdomain.xml", endpoint="crossdomain")

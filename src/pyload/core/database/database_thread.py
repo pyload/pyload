@@ -99,6 +99,7 @@ class DatabaseThread(Thread):
         super().__init__()
         self.daemon = True
         self.pyload = core
+        self._ = core._
 
         self.jobs = Queue()
 

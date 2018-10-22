@@ -86,8 +86,7 @@ class Captcha(Plugin):
 
         with open(
             os.path.join(
-                HOMEDIR,
-                "pyLoad",
+                self.pyload.userdir,
                 ".tmp",
                 "captcha_image_{}_{}.{}".format(
                     self.pyfile.plugin.__name__, time_ref, input_type

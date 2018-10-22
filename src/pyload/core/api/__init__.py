@@ -95,6 +95,7 @@ class Api(Iface):
 
     def __init__(self, core):
         self.pyload = core
+        self._ = core._
 
     def _convertPyFile(self, p):
         f = FileData(
@@ -1155,13 +1156,19 @@ class Api(Iface):
         :param userdata: dictionary of user data
         :return: boolean
         """
-        if userdata == "local" or userdata["role"] == ROLE.ADMIN:
+        if userdata["role"] == ROLE.ADMIN:
             return True
         elif func in permMap and has_permission(userdata["permission"], permMap[func]):
             return True
         else:
             return False
 
+            
+    # TODO: add security permission check
+    def get_userdir(self):
+        return os.path.abspath(self.pyload.userdir)
+        
+        
     @permission(PERMS.ALL)
     def getUserData(self, username, password):
         """

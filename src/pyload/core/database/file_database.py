@@ -23,6 +23,7 @@ class FileHandler(object):
         Constructor.
         """
         self.pyload = core
+        self._ = core._
 
         # translations
         self.statusMsg = [

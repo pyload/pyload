@@ -10,6 +10,7 @@ class BackendBase(Thread):
         super().__init__()
         self.m = manager
         self.pyload = manager.pyload
+        self._ = manager.pyload._
         self.enabled = True
 
     def run(self):
@@ -40,6 +41,7 @@ class RemoteManager(object):
 
     def __init__(self, core):
         self.pyload = core
+        self._ = core._
         self.backends = []
 
         if self.pyload.remote:

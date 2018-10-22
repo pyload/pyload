@@ -6,7 +6,7 @@ import configparser
 import os
 import sys
 import time
-from builtins import HOMEDIR, PKGDIR, _, input, object, range, str
+from builtins import PKGDIR, _, input, object, range, str
 from getopt import GetoptError, getopt
 from sys import exit
 from threading import Lock, Thread
@@ -22,6 +22,7 @@ from pyload.core.remote.thriftbackend.thrift_client import (ConnectionClosed, No
                                                        NoSSL, ThriftClient, WrongLogin)
 from pyload.core.utils.utils import decode, formatSize
 
+
 # if os.name == "nt":
     # enc = "cp850"
 # else:
@@ -29,6 +30,7 @@ from pyload.core.utils.utils import decode, formatSize
 # sys.stdout = codecs.getwriter(enc)(sys.stdout, errors="replace")
 
 
+# TODO: use client.api instead client
 class Cli(object):
     def __init__(self, client, command):
         self.client = client
@@ -250,7 +252,7 @@ class Cli(object):
             self.setHandler(ManageFiles)
             self.bodyHandler.target = Destination.Collector
         elif char == "4":
-            self.client.togglePause()
+            self.client.api.togglePause()
             self.setInput()
         elif char == "5":
             self.client.kill()
@@ -359,7 +361,7 @@ class Cli(object):
             self.client.unpause()
 
         elif command == "toggle":
-            self.client.togglePause()
+            self.client.api.togglePause()
 
         elif command == "kill":
             self.client.kill()

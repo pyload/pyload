@@ -36,11 +36,11 @@ from pyload.webui.app.filters import (
     truncate,
 )
 from pyload.webui.app.helpers import render_template
+from flask.logging import default_handler
 
 
 FLASK_ROOT_PATH = os.path.join(PKGDIR, "webui", "app")
 
-JINJA_CACHE_PATH = os.path.join(HOMEDIR, "pyLoad", ".tmp", "jinja")
 JINJA_FILTERS = {
     "quotepath": quotepath,
     "truncate": truncate,
@@ -77,7 +77,7 @@ def configure_blueprints(app, blueprints):
 
 
 def configure_logging(app):
-    pass
+    app.logger.removeHandler(default_handler)
 
 
 def configure_extensions(app):
@@ -95,25 +95,33 @@ def configure_extensions(app):
 def configure_error_handlers(app):
     """Register error handlers."""
 
-    def render_error(error):
+    def render_error(response):
         """Render error template."""
-        # If a HTTPException, pull the `code` attribute; default to 500
-        error_code = getattr(error, "code", 500)
-        error_msg = getattr(error, "message", "Internal Server Error")
-        trace_msg = getattr(error, "traceback", "No Traceback Available").replace("\n", "<br>")
+        if response.is_json:
+            json_obj = response.get_json()
+            error_msg = json_obj.get('error', 'Server Error')
+            trace_msg = json_obj.get('traceback', "No Traceback Available").replace("\n", "<br>")
+        else:
+            error_msg = str(response.data) or 'Server Error'
+            trace_msg = "No Traceback Available"
         
-        messages = (str(error_code), error_msg, trace_msg)
-        return render_template("error.html", {"messages": messages}, [pre_processor]), error_code
+        app.logger.error("Error {}: {}".format(response.status, error_msg))
+        
+        messages = [response.status, error_msg, trace_msg]
+        return render_template("error.html", {"messages": messages}, [pre_processor]), response.status_code
 
     for errcode in BAD_HTTP_STATUS_CODES:
-        app.errorhandler(errcode)(render_error)
+        app.register_error_handler(errcode, render_error)
 
 
 def configure_jinja_env(app):
-    os.makedirs(JINJA_CACHE_PATH, exist_ok=True)
+    userdir = app.config["PYLOAD_API"].get_userdir()
+    cache_path = os.path.join(userdir, ".tmp", "jinja")
+    
+    os.makedirs(cache_path, exist_ok=True)
 
     app.create_jinja_environment()
-    app.jinja_env.bytecode_cache = jinja2.FileSystemBytecodeCache(JINJA_CACHE_PATH)
+    app.jinja_env.bytecode_cache = jinja2.FileSystemBytecodeCache(cache_path)
     app.jinja_env.filters.update(JINJA_FILTERS)
 
 
@@ -129,7 +137,7 @@ def create_app(api, debug=False):
     # configure_hook(app)
     configure_blueprints(app, blueprints)
     configure_extensions(app)
-    # configure_logging(app)
+    configure_logging(app)
     configure_error_handlers(app)
     configure_jinja_env(app)
 

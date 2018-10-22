@@ -15,7 +15,7 @@ from pkg_resources import resource_filename
 
 from pyload import __version__ as PYLOAD_VERSION
 from pyload import __version_info__ as PYLOAD_VERSION_INFO
-from builtins import HOMEDIR, PKGDIR
+from builtins import PKGDIR
 
 from pyload.config import ConfigParser
 from pyload.core.log import LoggerFactory
@@ -48,7 +48,6 @@ class Exit(Exception):
 #  improve external scripts
 class Core(object):
 
-    DEFAULT_CONFIGNAME = 'config.ini'
     DEFAULT_LANGUAGE = 'english'
     DEFAULT_USERNAME = 'admin'
     DEFAULT_PASSWORD = 'pyload'
@@ -83,7 +82,7 @@ class Core(object):
         # if refresh:
         # cleanpy(PACKDIR)
 
-        self.config = ConfigParser(self.DEFAULT_CONFIGNAME)
+        self.config = ConfigParser(self.userdir)
         self.debug = self.config.get(
             'log', 'debug') if debug is None else debug
         self.log = LoggerFactory(self, self.debug)
@@ -102,8 +101,7 @@ class Core(object):
         self.api = Api(self)
 
     def _init_database(self, restore):
-        # TODO: Move inside DatabaseThread
-        newdb = not os.path.isfile(DatabaseThread.DB_FILE)
+        newdb = True  # TODO: implement
         
         self.db = DatabaseThread(self)
         self.db.setup()
@@ -111,11 +109,13 @@ class Core(object):
         self.files = FileHandler(self)
         self.db.manager = self.files  #: ugly?
         
+        userpw = (self.DEFAULT_USERNAME, self.DEFAULT_PASSWORD)
+        # nousers = bool(self.db.listUsers())
         if restore or newdb:
-            self.db.add_user(self.DEFAULT_USERNAME, self.DEFAULT_PASSWORD)
+            self.db.add_user(*userpw)
         if restore:
             self.log.warning(
-                self._('Restored default login credentials `admin|pyload`'))
+                self._('Restored default login credentials `{}|{}`').format(*userpw))
 
     def _init_managers(self):
         self.scheduler = sched.scheduler(time.time, time.sleep)
@@ -224,8 +224,8 @@ class Core(object):
             self._setup_language()
             self._setup_permissions()
 
-            self.log.info(self._('Config directory: {0}').format(self.cfgdir))
-            self.log.info(self._('Cache directory: {0}').format(self.tmpdir))
+            self.log.info(self._('User directory: {0}').format(self.userdir))
+            self.log.info(self._('Cache directory: {0}').format(self.cachedir))
 
             self._setup_storage()
             self._setup_network()
@@ -248,9 +248,9 @@ class Core(object):
             self.tsm.pause = False  # NOTE: Recheck...
             while True:
                 self._running.wait()
-                self.tsm.work()
-                self.iom.work()
-                self.exm.work()
+                # self.tsm.work()
+                # self.iom.work()
+                # self.exm.work()
                 if self.__do_restart:
                     raise Restart
                 if self.__do_exit:

@@ -34,10 +34,8 @@ class PluginManager(object):
 
     def __init__(self, core):
         self.pyload = core
-
-        # self.config = self.pyload.config
-        self.log = core.log
-
+        self._ = core._
+        
         self.plugins = {}
         self.createIndex()
 
@@ -63,9 +61,9 @@ class PluginManager(object):
                 else:
                     dst[name] = src[name]
 
-        sys.path.append(os.path.join(HOMEDIR, "pyLoad", "userplugins"))
+        sys.path.append(os.path.join(self.pyload.userdir, "userplugins"))
 
-        userplugins_dir = os.path.join(HOMEDIR, "pyLoad", "userplugins")
+        userplugins_dir = os.path.join(self.pyload.userdir, "userplugins")
         os.makedirs(userplugins_dir, exist_ok=True)
 
         try:
@@ -108,9 +106,9 @@ class PluginManager(object):
             try:
                 self.pyload.config.addPluginConfig(name, config, desc)
             except Exception:
-                self.log.error("Invalid config in {}: {}".format(name, config))
+                self.pyload.log.error("Invalid config in {}: {}".format(name, config))
 
-        self.log.debug("created index of plugins")
+        self.pyload.log.debug("created index of plugins")
 
     def parse(self, folder, pattern=False, home={}):
         """
@@ -124,7 +122,7 @@ class PluginManager(object):
         """
         plugins = {}
         if home:
-            pfolder = os.path.join(HOMEDIR, "pyLoad", "userplugins", folder)
+            pfolder = os.path.join(self.pyload.userdir, "userplugins", folder)
             os.makedirs(pfolder, exist_ok=True)
             try:
                 f = open(os.path.join(pfolder, "__init__.py"), mode="wb")
@@ -149,7 +147,7 @@ class PluginManager(object):
 
                 m_pyver = self._PYLOAD_VERSION.search(content)
                 if m_pyver is None:
-                    self.log.debug(
+                    self.pyload.log.debug(
                         "__pyload_version__ not found in plugin {}".format(name)
                     )
                 else:
@@ -166,7 +164,7 @@ class PluginManager(object):
                         plugin_version = requires_version_info.minor
 
                     if core_version > plugin_version:
-                        self.log.warning(
+                        self.pyload.log.warning(
                             self._(
                                 "Plugin {} not compatible with current pyLoad version"
                             ).format(name)
@@ -175,7 +173,7 @@ class PluginManager(object):
 
                 m_ver = self._VERSION.search(content)
                 if m_ver is None:
-                    self.log.debug("__version__ not found in plugin {}".format(name))
+                    self.pyload.log.debug("__version__ not found in plugin {}".format(name))
                     version = 0
                 else:
                     version = float(m_ver.group(1))
@@ -203,7 +201,7 @@ class PluginManager(object):
                     try:
                         plugins[name]["re"] = re.compile(pattern)
                     except Exception:
-                        self.log.error(self._("{} has a invalid pattern.").format(name))
+                        self.pyload.log.error(self._("{} has a invalid pattern.").format(name))
 
                 # internals have no config
                 if folder == "internal":
@@ -231,7 +229,7 @@ class PluginManager(object):
                 ):
                     config = {x[0]: x[1:] for x in config}
                 else:
-                    self.log.error("Invalid config in {}: {}".format(name, config))
+                    self.pyload.log.error("Invalid config in {}: {}".format(name, config))
                     continue
 
                 if folder == "addons" and "activated" not in config:
@@ -297,7 +295,7 @@ class PluginManager(object):
         plugin, type = self.findPlugin(name)
 
         if not plugin:
-            self.log.warning("Plugin {} not found.".format(name))
+            self.pyload.log.warning("Plugin {} not found.".format(name))
             plugin = self.hosterPlugins["BasePlugin"]
 
         if "new_module" in plugin and not original:
@@ -337,14 +335,14 @@ class PluginManager(object):
                 plugins[name]["pyload"] = module  #: cache import, maybe unneeded
                 return module
             except Exception as e:
-                self.log.error(
+                self.pyload.log.error(
                     self._("Error importing {name}: {msg}").format(name=name, msg=str(e))
                 )
                 if self.pyload.debug:
                     traceback.print_exc()
         else:
-            self.log.debug("Plugin {} not found".format(name))
-            self.log.debug("Available plugins : {}".format(str(plugins)))
+            self.pyload.log.debug("Plugin {} not found".format(name))
+            self.pyload.log.debug("Available plugins : {}".format(str(plugins)))
 
     def loadClass(self, type, name):
         """
@@ -395,7 +393,7 @@ class PluginManager(object):
 
             base, plugin = newname.rsplit(".", 1)
 
-            self.log.debug("Redirected import {} -> {}".format(name, newname))
+            self.pyload.log.debug("Redirected import {} -> {}".format(name, newname))
 
             module = __import__(newname, globals(), locals(), [plugin])
             # inject under new an old name
@@ -426,7 +424,7 @@ class PluginManager(object):
         if not type_plugins:
             return False
 
-        self.log.debug("Request reload of plugins: {}".format(type_plugins))
+        self.pyload.log.debug("Request reload of plugins: {}".format(type_plugins))
 
         as_dict = {}
         for t, n in type_plugins:
@@ -443,7 +441,7 @@ class PluginManager(object):
             for plugin in as_dict[type]:
                 if plugin in self.plugins[type]:
                     if "pyload" in self.plugins[type][plugin]:
-                        self.log.debug("Reloading {}".format(plugin))
+                        self.pyload.log.debug("Reloading {}".format(plugin))
                         importlib.reload(self.plugins[type][plugin]["pyload"])
 
         # index creation
@@ -473,7 +471,7 @@ class PluginManager(object):
             try:
                 self.pyload.config.addPluginConfig(name, config, desc)
             except Exception:
-                self.log.error("Invalid config in {}: {}".format(name, config))
+                self.pyload.log.error("Invalid config in {}: {}".format(name, config))
 
         if "account" in as_dict:  #: accounts needs to be reloaded
             self.pyload.accountManager.initPlugins()

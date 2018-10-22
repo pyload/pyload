@@ -5,7 +5,7 @@ import threading
 from builtins import _
 
 from cheroot.wsgi import PathInfoDispatcher
-from cheroot.wsgi import Server as WSGIServer
+from cheroot.wsgi import Server
 
 from pyload.webui.app import create_app
 
@@ -17,6 +17,7 @@ class WebServer(threading.Thread):
         self.daemon = True
 
         self.pyload = core
+        self._ = core._
 
         self.use_ssl = core.config.get("webui", "use_ssl")  #: recheck
         self.host = core.config.get("webui", "host")
@@ -26,9 +27,13 @@ class WebServer(threading.Thread):
         bind_addr = (self.host, self.port)
         bind_path = "{}/".format(self.prefix.strip("/"))
 
-        self.app = create_app(core.api, self.pyload.debug)
-        self.server = WSGIServer(bind_addr, PathInfoDispatcher({bind_path: self.app}))
+        self.app = create_app(core.api, core.debug)
+        self.server = Server(bind_addr, PathInfoDispatcher({bind_path: self.app}))
 
+        #: logging patches
+        core.logfactory.init_logger(self.app.logger.name)
+        self.server.error_log = core.logfactory.init_logger("cheroot").log
+        
         if not self.use_ssl:
             return
 
@@ -39,7 +44,7 @@ class WebServer(threading.Thread):
             server.ssl_certificate = self.certfile
         if self.keyfile:
             server.ssl_private_key = self.keyfile
-
+        
     def run(self):
         self.pyload.log.warning(
             self._("Starting Webserver: {host}:{port:d}").format(

@@ -44,12 +44,14 @@ class LogFactory(object):
 
     def __init__(self, core):
         self.pyload = core
+        self._ = core._
         self.loggers = {}
 
     def init_logger(self, name):
         logger = logging.getLogger(name)
         self.loggers[name] = logger
-        return self._init_logger(logger)
+        self._init_logger(logger)
+        return logger
 
     def _init_logger(self, logger):
         debug = self.pyload.config.get("general", "debug_mode")

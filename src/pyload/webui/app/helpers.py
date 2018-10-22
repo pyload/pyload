@@ -142,25 +142,27 @@ def apiver_check(func):
 def login_required(perm=None):
     def _dec(func):
         def _view(*args, **kwargs):
+            if flask.request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                    return "Forbidden", 403
+                            
             s = flask.session
             if s.get("name", None) and s.get("authenticated", False):
                 if perm:
                     perms = parse_permissions(s)
                     if perm not in perms or not perms[perm]:
-                        if (
-                            flask.request.headers.get("X-Requested-With")
-                            == "XMLHttpRequest"
-                        ):
-                            return "Forbidden", 403
-                        else:
-                            return flask.redirect("/nopermission")
-
+                        return flask.redirect("/nopermission")
                 return func(*args, **kwargs)
-            else:
-                if flask.request.headers.get("X-Requested-With") == "XMLHttpRequest":
-                    return "Forbidden", 403
-                else:
-                    return flask.redirect("/login")
+                
+            api = flask.current_app.config["PYLOAD_API"]
+            autologin = api.getConfigValue("webui", "autologin")
+            if autologin:  # TODO: check if localhost
+                users = api.getAllUserData()
+                if len(users) == 1:
+                    info = next(iter(users.values()))
+                    set_session(info)
+                    return func(*args, **kwargs)
+            
+            return flask.redirect("/login")
 
         return _view
 

@@ -28,7 +28,7 @@ class ThreadManager(object):
         Constructor.
         """
         self.pyload = core
-        self.log = core.log
+        self._ = core._
 
         self.threads = []  #: thread list
         self.localThreads = []  #: addon+decrypter threads
@@ -123,7 +123,7 @@ class ThreadManager(object):
         """
         return [x.id for x in self.getActiveFiles()]
 
-    def work(self):
+    def run(self):
         """
         run all task which have to be done (this is for repetivive call by
         core)
@@ -131,14 +131,14 @@ class ThreadManager(object):
         try:
             self.tryReconnect()
         except Exception as e:
-            self.log.error(self._("Reconnect Failed: {}").format(str(e)))
+            self.pyload.log.error(self._("Reconnect Failed: {}").format(str(e)))
             self.reconnecting.clear()
         self.checkThreadCount()
 
         try:
             self.assignJob()
         except Exception as e:
-            self.log.warning("Assign job error", e)
+            self.pyload.log.warning("Assign job error", e)
 
             time.sleep(0.5)
             self.assignJob()
@@ -147,7 +147,7 @@ class ThreadManager(object):
         if (self.infoCache or self.infoResults) and self.timestamp < time.time():
             self.infoCache.clear()
             self.infoResults.clear()
-            self.log.debug("Cleared Result cache")
+            self.pyload.log.debug("Cleared Result cache")
 
     # ----------------------------------------------------------------------
     def tryReconnect(self):
@@ -172,26 +172,24 @@ class ThreadManager(object):
 
         if not os.path.exists(self.pyload.config.get("reconnect", "method")):
             if os.path.exists(
-                os.path.join(
-                    HOMEDIR, "pyLoad", self.pyload.config.get("reconnect", "method")
+                os.path.join(self.pyload.userdir, self.pyload.config.get("reconnect", "method")
                 )
             ):
                 self.pyload.config.set(
                     "reconnect",
                     "method",
-                    os.path.join(
-                        HOMEDIR, "pyLoad", self.pyload.config.get("reconnect", "method")
+                    os.path.join(self.pyload.userdir, self.pyload.config.get("reconnect", "method")
                     ),
                 )
             else:
                 self.pyload.config.set("reconnect", "activated", False)
-                self.log.warning(self._("Reconnect script not found!"))
+                self.pyload.log.warning(self._("Reconnect script not found!"))
                 return
 
         self.reconnecting.set()
 
         # Do reconnect
-        self.log.info(self._("Starting reconnect"))
+        self.pyload.log.info(self._("Starting reconnect"))
 
         while [x.active.plugin.waiting for x in self.threads if x.active].count(
             True
@@ -202,14 +200,14 @@ class ThreadManager(object):
 
         self.pyload.addonManager.beforeReconnecting(ip)
 
-        self.log.debug("Old IP: {}".format(ip))
+        self.pyload.log.debug("Old IP: {}".format(ip))
 
         try:
             reconn = subprocess.Popen(
                 self.pyload.config.get("reconnect", "method"), bufsize=-1, shell=True
             )  #: , stdout=subprocess.PIPE)
         except Exception:
-            self.log.warning(self._("Failed executing reconnect script!"))
+            self.pyload.log.warning(self._("Failed executing reconnect script!"))
             self.pyload.config.set("reconnect", "activated", False)
             self.reconnecting.clear()
             return
@@ -219,7 +217,7 @@ class ThreadManager(object):
         ip = self.getIP()
         self.pyload.addonManager.afterReconnecting(ip)
 
-        self.log.info(self._("Reconnected, new IP: {}").format(ip))
+        self.pyload.log.info(self._("Reconnected, new IP: {}").format(ip))
 
         self.reconnecting.clear()
 
@@ -269,7 +267,7 @@ class ThreadManager(object):
         pycurl.global_cleanup()
         pycurl.global_init(pycurl.GLOBAL_DEFAULT)
         self.downloaded = 0
-        self.log.debug("Cleaned up pycurl")
+        self.pyload.log.debug("Cleaned up pycurl")
         return True
 
     # ----------------------------------------------------------------------
@@ -324,7 +322,7 @@ class ThreadManager(object):
             try:
                 job.initPlugin()
             except Exception as e:
-                self.log.critical(str(e))
+                self.pyload.log.critical(str(e))
                 job.setStatus("failed")
                 job.error = str(e)
                 job.release()
@@ -336,7 +334,7 @@ class ThreadManager(object):
                     >> 20
                 )
                 if spaceLeft < self.pyload.config.get("general", "min_free_space"):
-                    self.log.warning(self._("Not enough space left on device"))
+                    self.pyload.log.warning(self._("Not enough space left on device"))
                     self.pause = True
 
                 if free and not self.pause:

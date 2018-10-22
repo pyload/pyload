@@ -10,6 +10,7 @@ class CaptchaManager(object):
     def __init__(self, core):
         self.lock = Lock()
         self.pyload = core
+        self._ = core._
         self.tasks = []  #: Task store, for outgoing tasks only
 
         self.ids = 0  #: Only for internal purpose

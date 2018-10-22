@@ -71,8 +71,7 @@ class RealdebridComTorrent(Hoster):
             if self.pyfile.url.startswith("http"):
                 torrent_content = self.load(self.pyfile.url, decode=False)
                 torrent_filename = os.path.join(
-                    HOMEDIR,
-                    "pyLoad",
+                    self.pyload.userdir,
                     ".tmp",
                     "tmp_{}.torrent".format(self.pyfile.package().name),
                 )

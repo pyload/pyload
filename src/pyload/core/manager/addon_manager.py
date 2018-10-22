@@ -45,11 +45,10 @@ class AddonManager(object):
 
     def __init__(self, core):
         self.pyload = core
-        self.config = self.pyload.config
+        self._ = core._
 
         builtins.ADDONMANAGER = self  #: needed to let addons register themself
 
-        self.log = self.pyload.log
         self.plugins = []
         self.pluginMap = {}
         self.methods = {}  #: dict of names and list of methods usable by rpc
@@ -57,7 +56,7 @@ class AddonManager(object):
         self.events = {}  #: contains events
 
         # registering callback for config event
-        self.config.pluginCB = MethodType(self.dispatchEvent, "pluginConfigChanged")
+        self.pyload.config.pluginCB = MethodType(self.dispatchEvent, "pluginConfigChanged")
 
         self.addEvent("pluginConfigChanged", self.manageAddons)
 
@@ -118,10 +117,10 @@ class AddonManager(object):
                     deactive.append(pluginname)
 
             except Exception:
-                self.log.warning(self._("Failed activating {}").format(pluginname))
+                self.pyload.log.warning(self._("Failed activating {}").format(pluginname))
 
-        self.log.info(self._("Activated plugins: {}").format(", ".join(sorted(active))))
-        self.log.info(self._("Deactivate plugins: {}").format(", ".join(sorted(deactive))))
+        self.pyload.log.info(self._("Activated plugins: {}").format(", ".join(sorted(active))))
+        self.pyload.log.info(self._("Deactivate plugins: {}").format(", ".join(sorted(deactive))))
 
         self.plugins = plugins
 
@@ -143,7 +142,7 @@ class AddonManager(object):
         if not pluginClass:
             return
 
-        self.log.debug("Plugin loaded: {}".format(plugin))
+        self.pyload.log.debug("Plugin loaded: {}".format(plugin))
 
         plugin = pluginClass(self.pyload, self)
         self.plugins.append(plugin)
@@ -162,12 +161,12 @@ class AddonManager(object):
         if not addon:
             return
 
-        self.log.debug("Plugin unloaded: {}".format(plugin))
+        self.pyload.log.debug("Plugin unloaded: {}".format(plugin))
 
         addon.unload()
 
         # remove periodic call
-        self.log.debug(
+        self.pyload.log.debug(
             "Removed callback {}".format(self.pyload.scheduler.removeJob(addon.cb))
         )
         self.plugins.remove(addon)
@@ -306,7 +305,7 @@ class AddonManager(object):
                 try:
                     f(*args)
                 except Exception as e:
-                    self.log.warning(
+                    self.pyload.log.warning(
                         "Error calling event handler {}: {}, {}, {}".format(
                             event, f, args, str(e)
                         )

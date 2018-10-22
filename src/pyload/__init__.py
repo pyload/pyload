@@ -20,6 +20,9 @@ import sys
 import tempfile
 import traceback
 
+
+### Info ###
+
 try:
     dist_name = "pyload"
     pkgdir = pkg_resources.resource_filename(dist_name, "")
@@ -48,20 +51,16 @@ builtins.REQUESTS = None
 builtins.ADDONMANAGER = None
 
 
+### Locale ###
+
 locale.setlocale(locale.LC_ALL, "")
 if os.name == "nt":
     _locale._getdefaultlocale = lambda *args: ["en_US", "utf_8_sig"]
 
-
-# TODO: remove
-# userdir = os.path.join(builtins.HOMEDIR, "pyLoad")
-# os.makedirs(userdir, exist_ok=True)
-# os.chdir(userdir)
-# del userdir
-
+    
+### Exception logger ###
 
 exc_logger = logging.getLogger("exception")
-
 
 def excepthook(exc_type, exc_value, exc_traceback):
     if issubclass(exc_type, KeyboardInterrupt):
@@ -71,10 +70,11 @@ def excepthook(exc_type, exc_value, exc_traceback):
     exc_info = (exc_type, exc_value, exc_traceback)
     exc_logger.exception(msg_list[-1], exc_info=exc_info)
 
-
 sys.excepthook = excepthook
 del excepthook
 
+
+### Cleanup ###
 
 del _locale
 del pkgdir
@@ -83,4 +83,3 @@ del logging
 del os
 del sys
 del tempfile
-# del traceback

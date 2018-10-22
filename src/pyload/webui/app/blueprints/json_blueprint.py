@@ -33,7 +33,7 @@ def status():
         status["captcha"] = api.isCaptchaWaiting()
         return status
     except Exception:
-        return flask.abort(500)
+        flask.abort(500)
 
 
 @bp.route(r"/links", methods=["GET", "POST"], endpoint="links")
@@ -55,21 +55,20 @@ def links():
                 link["percent"] = 0
                 link["size"] = 0
                 link["bleft"] = 0
-                link["info"] = self._("waiting {}").format(link["format_wait"])
+                link["info"] = api._("waiting {}").format(link["format_wait"])
             else:
                 link["info"] = ""
 
         data = {"links": links, "ids": ids}
         return data
     except Exception as e:
-        return flask.abort(500)
+        flask.abort(500)
 
 
 @bp.route(r"/packages", endpoint="packages")
 # @apiver_check
 @login_required("LIST")
 def packages():
-    print("/json/packages")
     api = flask.current_app.config["PYLOAD_API"]
     try:
         data = api.getQueue()
@@ -82,7 +81,7 @@ def packages():
         return data
 
     except Exception:
-        return flask.abort(500)
+        flask.abort(500)
 
 
 @bp.route(r"/package/<int:id>", endpoint="package")
@@ -118,7 +117,7 @@ def package(id):
         return data
 
     except Exception:
-        return flask.abort(500)
+        flask.abort(500)
 
 
 @bp.route(r"/package_order/<ids>", endpoint="package_order")
@@ -131,7 +130,7 @@ def package_order(ids):
         api.orderPackage(int(pid), int(pos))
         return {"response": "success"}
     except Exception:
-        return flask.abort(500)
+        flask.abort(500)
 
 
 @bp.route(r"/abort_link/<int:id>", endpoint="abort_link")
@@ -143,7 +142,7 @@ def abort_link(id):
         api.stopDownloads([id])
         return {"response": "success"}
     except Exception:
-        return flask.abort(500)
+        flask.abort(500)
 
 
 @bp.route(r"/link_order/<ids>", endpoint="link_order")
@@ -156,7 +155,7 @@ def link_order(ids):
         api.orderFile(int(pid), int(pos))
         return {"response": "success"}
     except Exception:
-        return flask.abort(500)
+        flask.abort(500)
 
 
 @bp.route(r"/add_package", methods=["GET", "POST"], endpoint="add_package")
@@ -203,7 +202,7 @@ def move_package(dest, id):
         api.movePackage(dest, id)
         return {"response": "success"}
     except Exception:
-        return flask.abort(500)
+        flask.abort(500)
 
 
 @bp.route(r"/edit_package", methods=["POST"], endpoint="edit_package")
@@ -223,7 +222,7 @@ def edit_package():
         return {"response": "success"}
 
     except Exception:
-        return flask.abort(500)
+        flask.abort(500)
 
 
 @bp.route(r"/set_captcha", methods=["GET", "POST"], endpoint="set_captcha")
@@ -344,5 +343,4 @@ def change_password():
     newpw = flask.request.form["login_new_password"]
 
     if not api.changePassword(user, oldpw, newpw):
-        print("Wrong password")
-        return flask.abort(500)
+        return "Wrong password", 500

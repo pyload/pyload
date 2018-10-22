@@ -52,7 +52,7 @@ class TORRENT(Container):
                 pack_name = safename(m.group(1))
 
         torrent_filename = os.path.join(
-            HOMEDIR, "pyLoad", ".tmp", "tmp_{}.torrent".format(pack_name)
+            self.pyload.userdir, ".tmp", "tmp_{}.torrent".format(pack_name)
         )
         with open(torrent_filename, mode="wb") as f:
             f.write(torrent_content)

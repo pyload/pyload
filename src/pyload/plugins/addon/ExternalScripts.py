@@ -79,7 +79,7 @@ class ExternalScripts(Addon):
 
     def make_folders(self):
         for folder in self.folders:
-            dir = os.path.join(HOMEDIR, "pyLoad", "scripts", folder)
+            dir = os.path.join(self.pyload.userdir, "scripts", folder)
 
             if os.path.isdir(dir):
                 continue

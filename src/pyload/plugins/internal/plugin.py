@@ -52,6 +52,7 @@ class Plugin(object):
     def _init(self, core):
         #: Internal modules
         self.pyload = core
+        self._ = core._
         self.db = DB(self)
         self.config = Config(self)
 
@@ -414,8 +415,7 @@ class Plugin(object):
 
         try:
             framefile = os.path.join(
-                HOMEDIR,
-                "pyLoad",
+                self.pyload.userdir,
                 ".tmp",
                 self.classname,
                 "{}_line{}.dump.html".format(
@@ -424,7 +424,7 @@ class Plugin(object):
             )
 
             os.makedirs(
-                os.path.join(HOMEDIR, "pyLoad", ".tmp", self.classname), exist_ok=True
+                os.path.join(self.pyload.userdir, ".tmp", self.classname), exist_ok=True
             )
 
             with open(framefile, mode="w") as f:

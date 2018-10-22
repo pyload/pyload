@@ -34,7 +34,7 @@ class Deferred(object):
 class Scheduler(object):
     def __init__(self, core):
         self.pyload = core
-
+        self._ = core._
         self.queue = PriorityQueue()
 
     def addJob(self, t, call, args=[], kwargs={}, threaded=True):
@@ -61,7 +61,7 @@ class Scheduler(object):
 
         return False
 
-    def work(self):
+    def run(self):
         while True:
             t, j = self.queue.get()
             if not j:

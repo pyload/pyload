@@ -25,6 +25,7 @@ class AccountManager(object):
         """
 
         self.pyload = core
+        self._ = core._
         self.lock = Lock()
 
         self.initPlugins()

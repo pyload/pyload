@@ -41,7 +41,9 @@ def login():
 
 @bp.route(r"/nopermission")
 def nopermission():
-    return base([self._("You dont have permission to access this page.")])
+    api = flask.current_app.config["PYLOAD_API"]
+    messages = [api._("You dont have permission to access this page.")]
+    return base(messages)
 
 
 @bp.route(r"/login", methods=["POST"])
@@ -63,8 +65,6 @@ def login_post():
 def logout():
     clear_session()
     return render_template("logout.html", proc=[pre_processor])
-
-
 
 
 @bp.route(r"/", endpoint="home")
@@ -120,7 +120,8 @@ def downloads():
     root = api.getConfigValue("general", "download_folder")
 
     if not os.path.isdir(root):
-        return base([self._("Download directory not found.")])
+        messages = [api._("Download directory not found.")]
+        return base(messages)
     data = {"folder": [], "files": []}
 
     items = os.listdir(fs_encode(root))
@@ -172,16 +173,16 @@ def settings():
 
     for data in api.getAccounts(False):
         if data.trafficleft == -1:
-            trafficleft = self._("unlimited")
+            trafficleft = api._("unlimited")
         elif not data.trafficleft:
-            trafficleft = self._("not available")
+            trafficleft = api._("not available")
         else:
             trafficleft = formatSize(data.trafficleft << 10)
 
         if data.validuntil == -1:
-            validuntil = self._("unlimited")
+            validuntil = api._("unlimited")
         elif not data.validuntil:
-            validuntil = self._("not available")
+            validuntil = api._("not available")
         else:
             t = time.localtime(data.validuntil)
             validuntil = time.strftime("%Y-%m-%d %H:%M:%S", t)
@@ -476,7 +477,9 @@ def admin():
 
 @bp.route(r"/setup")
 def setup():
-    return base([self._("Run pyLoad -s to access the setup.")])
+    api = flask.current_app.config["PYLOAD_API"]
+    messages = [api._("Run pyLoad -s to access the setup.")]
+    return base(messages)
 
 
 # @bp.route("/refresh")
@@ -497,7 +500,7 @@ def info():
         "os": " ".join((os.name, sys.platform) + extra),
         "version": api.getServerVersion(),
         "folder": os.path.abspath(PKGDIR),
-        "config": os.path.abspath(os.path.join(HOMEDIR, "pyLoad")),
+        "config": os.path.abspath(api.get_userdir()),
         "download": os.path.abspath(conf["general"]["download_folder"]["value"]),
         "freespace": formatSize(api.freeSpace()),
         "remote": conf["remote"]["port"]["value"],

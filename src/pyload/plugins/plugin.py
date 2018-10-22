@@ -62,6 +62,7 @@ class Base(object):
     def __init__(self, core):
         #: Core instance
         self.pyload = core
+        self._ = core._
         #: logging instance
         self.log = core.log
         #: core config
@@ -401,8 +402,7 @@ class Plugin(Base):
         id = "{:.2f}".format(time.time())[-6:].replace(".", "")
         with open(
             os.path.join(
-                HOMEDIR,
-                "pyLoad",
+                self.pyload.userdir,
                 ".tmp",
                 "tmpCaptcha_{}_{}.{}".format(self.__name__, id, imgtype),
             ),
@@ -501,13 +501,12 @@ class Plugin(Base):
 
             frame = currentframe()
             os.makedirs(
-                os.path.join(HOMEDIR, "pyLoad", ".tmp", self.__name__), exist_ok=True
+                os.path.join(self.pyload.userdir, ".tmp", self.__name__), exist_ok=True
             )
 
             with open(
                 os.path.join(
-                    HOMEDIR,
-                    "pyLoad",
+                    self.pyload.userdir,
                     ".tmp",
                     self.__name__,
                     "{}_line{}.dump.html".format(

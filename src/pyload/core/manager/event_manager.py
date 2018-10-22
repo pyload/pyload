@@ -10,6 +10,7 @@ from pyload.core.utils.utils import uniqify
 class EventManager(object):
     def __init__(self, core):
         self.pyload = core
+        self._ = core._
         self.clients = []
 
     def newClient(self, uuid):

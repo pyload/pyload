@@ -37,15 +37,15 @@ class ConfigParser(object):
     )
     _VERSION = re.compile(r"\s*version\s*:\s*(\d+)")
 
-    def __init__(self):
+    def __init__(self, userdir):
         """
         Constructor.
         """
         self.config = {}  #: the config values
         self.plugin = {}  #: the config for plugins
 
-        self.configpath = os.path.join(HOMEDIR, "pyLoad", "pyload.conf")
-        self.pluginpath = os.path.join(HOMEDIR, "pyLoad", "plugins.conf")
+        self.configpath = os.path.join(userdir, "pyload.conf")
+        self.pluginpath = os.path.join(userdir, "plugins.conf")
 
         self.oldRemoteData = {}
 
