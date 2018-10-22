@@ -349,7 +349,7 @@ class ExtractArchive(Addon):
                             self.log_debug("Extracted files: {}".format(new_files))
 
                             new_folders = uniqify(
-                                os.path.dirname(_f) for _f in new_files
+                                os.path.dirname(f) for f in new_files
                             )
                             for foldername in new_folders:
                                 self.set_permissions(
@@ -498,7 +498,7 @@ class ExtractArchive(Addon):
                 archive.extract(password)
             else:
                 for pw in [
-                    _f for _f in uniqify([password] + self.get_passwords(False)) if _f
+                    f for f in uniqify([password] + self.get_passwords(False)) if f
                 ]:
                     try:
                         self.log_debug("Extracting using password: {}".format(pw))

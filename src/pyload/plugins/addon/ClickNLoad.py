@@ -43,8 +43,8 @@ class ClickNLoad(Addon):
         self.web_ip = (
             "127.0.0.1"
             if any(
-                _ip == self.pyload.config.get("webui", "host")
-                for _ip in ("0.0.0.0", "")
+                ip == self.pyload.config.get("webui", "host")
+                for ip in ("0.0.0.0", "")
             )
             else self.pyload.config.get("webui", "host")
         )
@@ -74,7 +74,7 @@ class ClickNLoad(Addon):
                 wakeup_socket.connect(
                     (
                         "127.0.0.1"
-                        if any(_ip == self.cnl_ip for _ip in ("0.0.0.0", ""))
+                        if any(ip == self.cnl_ip for ip in ("0.0.0.0", ""))
                         else self.cnl_ip,
                         self.cnl_port,
                     )

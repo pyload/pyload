@@ -89,7 +89,7 @@ class SevenZip(Extractor):
             p = subprocess.Popen(
                 [cls.CMD], stdout=subprocess.PIPE, stderr=subprocess.PIPE
             )
-            out, err = (_r.strip() if _r else "" for _r in p.communicate())
+            out, err = (r.strip() if r else "" for r in p.communicate())
 
         except OSError:
             return False
@@ -108,7 +108,7 @@ class SevenZip(Extractor):
     def verify(self, password=None):
         #: 7z can't distinguish crc and pw error in test
         p = self.call_cmd("l", "-slt", self.filename)
-        out, err = (_r.strip() if _r else "" for _r in p.communicate())
+        out, err = (r.strip() if r else "" for r in p.communicate())
 
         if self._RE_BADPWD.search(out):
             raise PasswordError
@@ -147,7 +147,7 @@ class SevenZip(Extractor):
 
         #: Communicate and retrieve stderr
         self.progress(p)
-        out, err = (_r.strip() if _r else "" for _r in p.communicate())
+        out, err = (r.strip() if r else "" for r in p.communicate())
 
         if err:
             if self._RE_BADPWD.search(err):
@@ -183,9 +183,9 @@ class SevenZip(Extractor):
         command = "l" if self.fullpath else "l"
 
         p = self.call_cmd(command, self.filename, password=password)
-        out, err = (_r.strip() if _r else "" for _r in p.communicate())
+        out, err = (r.strip() if r else "" for r in p.communicate())
 
-        if any(_e in err for _e in ("Can not open", "cannot find the file")):
+        if any(e in err for e in ("Can not open", "cannot find the file")):
             raise ArchiveError(self._("Cannot open file"))
 
         if p.returncode > 1:

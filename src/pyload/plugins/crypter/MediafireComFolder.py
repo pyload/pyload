@@ -62,8 +62,8 @@ class MediafireComFolder(Crypter):
             content_type="files",
         )
         pack_links = [
-            "http://www.mediafire.com/file/{}".format(_f["quickkey"])
-            for _f in api_data["response"]["folder_content"]["files"]
+            "http://www.mediafire.com/file/{}".format(f["quickkey"])
+            for f in api_data["response"]["folder_content"]["files"]
         ]
 
         if pack_links:

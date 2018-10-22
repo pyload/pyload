@@ -162,7 +162,7 @@ class Captcha9Kw(Addon):
             }
         )
 
-        for _i in range(5):
+        for _ in range(5):
             try:
                 res = self.load(self.API_URL, post=post_data)
 
@@ -184,7 +184,7 @@ class Captcha9Kw(Addon):
 
         task.data["ticket"] = res
 
-        for _i in range(int(self.config.get("timeout") // 5)):
+        for _ in range(int(self.config.get("timeout") // 5)):
             result = self.load(
                 self.API_URL,
                 get={
@@ -236,7 +236,7 @@ class Captcha9Kw(Addon):
         timeout = min(max(self.config.get("timeout"), 300), 3999)
         pluginname = task.captchaParams["plugin"]
 
-        for _i in range(5):
+        for _ in range(5):
             servercheck = self.load("http://www.9kw.eu/grafik/servercheck.txt")
             if max_queue > int(re.search(r"queue=(\d+)", servercheck).group(1)):
                 break
@@ -282,7 +282,7 @@ class Captcha9Kw(Addon):
 
         passkey = self.config.get("passkey")
 
-        for _i in range(3):
+        for _ in range(3):
             res = self.load(
                 self.API_URL,
                 get={

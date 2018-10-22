@@ -68,9 +68,9 @@ class MegaDebridEu(MultiAccount):
                 hosters = reduce(
                     (lambda x, y: x + y),
                     [
-                        _h["domains"]
-                        for _h in res["hosters"]
-                        if "domains" in _h and isinstance(_h["domains"], list)
+                        h["domains"]
+                        for h in res["hosters"]
+                        if "domains" in h and isinstance(h["domains"], list)
                     ],
                 )
 

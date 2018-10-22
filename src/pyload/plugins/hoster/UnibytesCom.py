@@ -39,7 +39,7 @@ class UnibytesCom(SimpleHoster):
         domain = "http://www.{}/".format(self.PLUGIN_DOMAIN)
         action, post_data = self.parse_html_form('id="startForm"')
 
-        for _i in range(3):
+        for _ in range(3):
             self.log_debug(action, post_data)
             self.data = self.load(
                 urllib.parse.urljoin(domain, action), post=post_data, redirect=False

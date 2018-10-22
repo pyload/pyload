@@ -300,20 +300,20 @@ class FilecryptCc(Crypter):
         if not dlcs:
             return
 
-        for _dlc in dlcs:
+        for dlc in dlcs:
             self.urls.append(
-                urllib.parse.urljoin(self.pyfile.url, "/DLC/{}.dlc".format(_dlc))
+                urllib.parse.urljoin(self.pyfile.url, "/DLC/{}.dlc".format(dlc))
             )
 
     def handle_weblinks(self):
         try:
             links = re.findall(self.WEBLINK_PATTERN, self.site_with_links)
 
-            for _link in links:
-                _link = "http://filecrypt.cc/Link/{}.html".format(_link)
+            for link in links:
+                link = "http://filecrypt.cc/Link/{}.html".format(link)
                 for i in range(5):
-                    self.data = self._filecrypt_load_url(_link)
-                    res = self.handle_captcha(_link)
+                    self.data = self._filecrypt_load_url(link)
+                    res = self.handle_captcha(link)
                     if res not in (None, ""):
                         break
 

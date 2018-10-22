@@ -51,18 +51,18 @@ class CloudMailRuFolder(Crypter):
                         {
                             "u": "{}{}?etag={}&key={}".format(
                                 json_data["dispatcher"]["weblink_view"][0]["url"],
-                                urllib.parse.quote(_link["weblink"]),
-                                _link["hash"],
+                                urllib.parse.quote(link["weblink"]),
+                                link["hash"],
                                 json_data["params"]["tokens"]["download"],
                             ),
-                            "n": urllib.parse.quote_plus(_link["name"]),
-                            "s": _link["size"],
+                            "n": urllib.parse.quote_plus(link["name"]),
+                            "s": link["size"],
                         }
                     )
                 )
             )
-            for _link in json_data["folders"]["folder"]["list"]
-            if _link["kind"] == "file"
+            for link in json_data["folders"]["folder"]["list"]
+            if link["kind"] == "file"
         ]
 
         if pack_links:

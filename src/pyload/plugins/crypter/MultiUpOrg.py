@@ -50,9 +50,9 @@ class MultiUpOrg(SimpleCrypter):
     def get_links(self):
         m_type = self.info["pattern"]["TYPE"]
         hosts_priority = [
-            _h for _h in self.config.get("hosts_priority").split("|") if _h
+            h for h in self.config.get("hosts_priority").split("|") if h
         ]
-        ignored_hosts = [_h for _h in self.config.get("ignored_hosts").split("|") if _h]
+        ignored_hosts = [h for h in self.config.get("ignored_hosts").split("|") if h]
         grab_all = self.config.get("grab_all")
 
         if m_type == "project":
@@ -95,31 +95,31 @@ class MultiUpOrg(SimpleCrypter):
         self.check_errors()
 
         hosts_data = {}
-        for _a in re.findall(
+        for a in re.findall(
             r'<a\s*class="btn btn-small disabled link host"(.+?)/a>', self.data, re.S
         ):
-            validity = re.search(r"validity=(\w+)", _a).group(1)
+            validity = re.search(r"validity=(\w+)", a).group(1)
             if validity in ("valid", "unknown"):
-                host = re.search(r'nameHost="(.+?)"', _a).group(1)
-                url = re.search(r'href="(.+?)"', _a).group(1)
+                host = re.search(r'nameHost="(.+?)"', a).group(1)
+                url = re.search(r'href="(.+?)"', a).group(1)
                 hosts_data[host] = url
 
         chosen_hosts = []
         # priority hosts goes first
-        for _h in hosts_priority:
-            if _h in hosts_data and _h not in ignored_hosts:
-                self.log_debug("Adding '{}' link".format(_h))
-                chosen_hosts.append(_h)
+        for h in hosts_priority:
+            if h in hosts_data and h not in ignored_hosts:
+                self.log_debug("Adding '{}' link".format(h))
+                chosen_hosts.append(h)
                 if not grab_all:
                     break
 
         # Now the rest of the hosts
         if grab_all or (not grab_all and not chosen_hosts):
-            for _h in hosts_data:
-                if _h not in ignored_hosts and _h not in chosen_hosts:
-                    self.log_debug("Adding '{}' link".format(_h))
-                    chosen_hosts.append(_h)
+            for h in hosts_data:
+                if h not in ignored_hosts and h not in chosen_hosts:
+                    self.log_debug("Adding '{}' link".format(h))
+                    chosen_hosts.append(h)
                     if not grab_all:
                         break
 
-        return [hosts_data[_h] for _h in chosen_hosts]
+        return [hosts_data[h] for h in chosen_hosts]

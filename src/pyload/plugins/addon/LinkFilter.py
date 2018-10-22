@@ -50,7 +50,7 @@ class LinkFilter(Addon):
         links[:] = [
             link
             for link in links
-            if any(link.find(_filter) != -1 for _filter in filters)
+            if any(link.find(fltr) != -1 for fltr in filters)
             or not self.is_hoster_link(link)
             and plugindict[link] != "BasePlugin"
         ]
@@ -66,12 +66,12 @@ class LinkFilter(Addon):
             )
 
     def blacklist(self, links, filters):
-        for _filter in filters:
+        for fltr in filters:
             linkcount = len(links)
             links[:] = [
                 link
                 for link in links
-                if link.find(_filter) == -1 or not self.is_hoster_link(link)
+                if link.find(fltr) == -1 or not self.is_hoster_link(link)
             ]
             linkcount -= len(links)
 
@@ -80,7 +80,7 @@ class LinkFilter(Addon):
                 linkstring += "link" if linkcount == 1 else "links"
                 self.log_warning(
                     "Blacklist filter removed {} {} containing {}".format(
-                        linkcount, linkstring, _filter
+                        linkcount, linkstring, fltr
                     )
                 )
 

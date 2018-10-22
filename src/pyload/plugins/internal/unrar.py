@@ -68,7 +68,7 @@ class UnRar(Extractor):
             p = subprocess.Popen(
                 [cls.CMD], stdout=subprocess.PIPE, stderr=subprocess.PIPE
             )
-            out, err = (_r.strip() if _r else "" for _r in p.communicate())
+            out, err = (r.strip() if r else "" for r in p.communicate())
             # cls.__name__ = "RAR"
             cls.REPAIR = True
 
@@ -82,7 +82,7 @@ class UnRar(Extractor):
                 p = subprocess.Popen(
                     [cls.CMD], stdout=subprocess.PIPE, stderr=subprocess.PIPE
                 )
-                out, err = (_r.strip() if _r else "" for _r in p.communicate())
+                out, err = (r.strip() if r else "" for r in p.communicate())
 
             except OSError:
                 return False
@@ -99,7 +99,7 @@ class UnRar(Extractor):
 
     def verify(self, password=None):
         p = self.call_cmd("l", "-v", self.filename, password=password)
-        out, err = (_r.strip() if _r else "" for _r in p.communicate())
+        out, err = (r.strip() if r else "" for r in p.communicate())
 
         if self._RE_BADPWD.search(err):
             raise PasswordError
@@ -117,14 +117,14 @@ class UnRar(Extractor):
 
         #: Communicate and retrieve stderr
         self.progress(p)
-        out, err = (_r.strip() if _r else "" for _r in p.communicate())
+        out, err = (r.strip() if r else "" for r in p.communicate())
 
         if err or p.returncode:
             p = self.call_cmd("r", self.filename)
 
             # communicate and retrieve stderr
             self.progress(p)
-            out, err = (_r.strip() if _r else "" for _r in p.communicate())
+            out, err = (r.strip() if r else "" for r in p.communicate())
 
             if err or p.returncode:
                 return False
@@ -162,7 +162,7 @@ class UnRar(Extractor):
 
         #: Communicate and retrieve stderr
         self.progress(p)
-        out, err = (_r.strip() if _r else "" for _r in p.communicate())
+        out, err = (r.strip() if r else "" for r in p.communicate())
 
         if err:
             if self._RE_BADPWD.search(err):
@@ -205,7 +205,7 @@ class UnRar(Extractor):
         command = "vb" if self.fullpath else "lb"
 
         p = self.call_cmd(command, "-v", self.filename, password=password)
-        out, err = (_r.strip() if _r else "" for _r in p.communicate())
+        out, err = (r.strip() if r else "" for r in p.communicate())
 
         if "Cannot open" in err:
             raise ArchiveError(self._("Cannot open file"))

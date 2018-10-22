@@ -85,16 +85,16 @@ class GoogledriveComFolder(Crypter):
         if "error" in json_data:
             self.fail(json_data["error"]["message"])
 
-        for _f in json_data.get("files", []):
-            if _f["mimeType"] != "application/vnd.google-apps.folder":
-                links.append("https://drive.google.com/file/d/" + _f["id"])
+        for f in json_data.get("files", []):
+            if f["mimeType"] != "application/vnd.google-apps.folder":
+                links.append("https://drive.google.com/file/d/" + f["id"])
 
             elif self.config.get("dl_subfolders"):
                 if self.config.get("package_subfolder"):
-                    links.append("https://drive.google.com/drive/folders/" + _f["id"])
+                    links.append("https://drive.google.com/drive/folders/" + f["id"])
 
                 else:
-                    links.extend(self.enum_folder(_f["id"]))
+                    links.extend(self.enum_folder(f["id"]))
 
         next_page = json_data.get("nextPageToken", None)
         while next_page:
@@ -112,18 +112,18 @@ class GoogledriveComFolder(Crypter):
             if "error" in json_data:
                 self.fail(json_data["error"]["message"])
 
-            for _f in json_data.get("files", []):
-                if _f["mimeType"] != "application/vnd.google-apps.folder":
-                    links.append("https://drive.google.com/file/d/" + _f["id"])
+            for f in json_data.get("files", []):
+                if f["mimeType"] != "application/vnd.google-apps.folder":
+                    links.append("https://drive.google.com/file/d/" + f["id"])
 
                 elif self.config.get("dl_subfolders"):
                     if self.config.get("package_subfolder"):
                         links.append(
-                            "https://drive.google.com/drive/folders/" + _f["id"]
+                            "https://drive.google.com/drive/folders/" + f["id"]
                         )
 
                     else:
-                        links.extend(self.enum_folder(_f["id"]))
+                        links.extend(self.enum_folder(f["id"]))
 
             next_page = json_data.get("nextPageToken", None)
 

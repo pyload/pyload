@@ -31,7 +31,7 @@ class Http(Hoster):
         url = re.sub(r"^(jd|py)", "http", pyfile.url)
         netloc = urllib.parse.urlparse(url).netloc
 
-        for _i in range(2):
+        for _ in range(2):
             try:
                 self.download(url, ref=False, disposition=True)
 

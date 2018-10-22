@@ -38,10 +38,10 @@ class MirrorcreatorCom(Crypter):
         pyfile.url = replace_patterns(pyfile.url, self.URL_REPLACEMENTS)
 
         hosters_priority = [
-            _h for _h in self.config.get("hosters_priority").split("|") if _h
+            h for h in self.config.get("hosters_priority").split("|") if h
         ]
         ignored_hosters = [
-            _h for _h in self.config.get("ignored_hosters").split("|") if _h
+            h for h in self.config.get("ignored_hosters").split("|") if h
         ]
 
         self.data = self.load(pyfile.url)
@@ -61,11 +61,11 @@ class MirrorcreatorCom(Crypter):
         self.data = self.load(self.fixurl(m.group(1)))
 
         hosters_data = {}
-        for _tr in re.findall(r"<tr>(.+?)</tr>", self.data, re.S):
+        for tr in re.findall(r"<tr>(.+?)</tr>", self.data, re.S):
             m = re.search(
                 r'<a href="(/showlink\.php\?uid={}.+?)".*&hname=(\w+)'
                 % self.info["pattern"]["ID"],
-                _tr,
+                tr,
                 re.S,
             )
             if m is not None:
@@ -73,10 +73,10 @@ class MirrorcreatorCom(Crypter):
 
         choosen_hosters = []
         # priority hosters goes first
-        for _h in hosters_priority:
-            if _h in hosters_data and _h not in ignored_hosters:
-                self.log_debug("Adding '{}' link".format(_h))
-                choosen_hosters.append(_h)
+        for h in hosters_priority:
+            if h in hosters_data and h not in ignored_hosters:
+                self.log_debug("Adding '{}' link".format(h))
+                choosen_hosters.append(h)
                 if not self.config.get("grab_all"):
                     break
 
@@ -84,14 +84,14 @@ class MirrorcreatorCom(Crypter):
         if self.config.get("grab_all") or (
             not self.config.get("grab_all") and not choosen_hosters
         ):
-            for _h in hosters_data:
-                if _h not in ignored_hosters and _h not in choosen_hosters:
-                    self.log_debug("Adding '{}' link".format(_h))
-                    choosen_hosters.append(_h)
+            for h in hosters_data:
+                if h not in ignored_hosters and h not in choosen_hosters:
+                    self.log_debug("Adding '{}' link".format(h))
+                    choosen_hosters.append(h)
                     if not self.config.get("grab_all"):
                         break
 
-        pack_links = [self.resolve_hoster(hosters_data[_h]) for _h in choosen_hosters]
+        pack_links = [self.resolve_hoster(hosters_data[h]) for h in choosen_hosters]
 
         if pack_links:
             self.packages.append((pack_name, pack_links, pack_folder))

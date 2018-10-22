@@ -124,8 +124,8 @@ class MegaCrypto(object):
         data = MegaCrypto.base64_decode(data)
         return sum(
             (
-                MegaCrypto.str_to_a32(MegaCrypto.cbc_decrypt(data[_i : _i + 16], key))
-                for _i in range(0, len(data), 16)
+                MegaCrypto.str_to_a32(MegaCrypto.cbc_decrypt(data[i: i + 16], key))
+                for i in range(0, len(data), 16)
             ),
             (),
         )
@@ -138,8 +138,8 @@ class MegaCrypto(object):
         data = MegaCrypto.base64_decode(data)
         return sum(
             (
-                MegaCrypto.str_to_a32(MegaCrypto.cbc_encrypt(data[_i : _i + 16], key))
-                for _i in range(0, len(data), 16)
+                MegaCrypto.str_to_a32(MegaCrypto.cbc_encrypt(data[i: i + 16], key))
+                for i in range(0, len(data), 16)
             ),
             (),
         )
@@ -391,7 +391,7 @@ class MegaCoNz(Hoster):
                 "retry_action", default="fail", plugin="Checksum"
             )
 
-            if all(_r < max_tries for _id, _r in self.retries.items()):
+            if all(r < max_tries for _, r in self.retries.items()):
                 os.remove(local_file)
                 wait_time = self.config.get("wait_time", default=1, plugin="Checksum")
                 self.retry(max_tries, wait_time, msg)

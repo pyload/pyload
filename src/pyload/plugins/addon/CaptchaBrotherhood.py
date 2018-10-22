@@ -113,7 +113,7 @@ class CaptchaBrotherhood(Addon):
 
         ticket = res[3:]
 
-        for _i in range(15):
+        for _ in range(15):
             time.sleep(5)
             res = self.api_response("askCaptchaResult", ticket)
             if res.startswith("OK-answered"):

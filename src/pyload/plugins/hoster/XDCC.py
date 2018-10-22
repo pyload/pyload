@@ -600,9 +600,9 @@ class XDCC(Hoster):
         ident = self.config.get("ident")
         realname = self.config.get("realname")
         invite_opts = [
-            _x.split("/")
-            for _x in self.config.get("invite_opts").strip().split(",")
-            if len(_x.split("/")) == 4
+            x.split("/")
+            for x in self.config.get("invite_opts").strip().split(",")
+            if len(x.split("/")) == 4
         ]
 
         #: Remove leading '#' from channel name
@@ -617,7 +617,7 @@ class XDCC(Hoster):
         self.pyfile.setCustomStatus("connect irc")
 
         self.irc_client = IRC(self, nick, ident, realname)
-        for _i in range(0, 3):
+        for _ in range(0, 3):
             try:
                 if self.irc_client.connect_server(host, port):
                     try:

@@ -57,7 +57,7 @@ class UploadedTo(SimpleHoster):
     def api_info(cls, url):
         info = {}
 
-        for _i in range(5):
+        for _ in range(5):
             html = get_url(
                 "http://uploaded.net/api/filemultiple",
                 get={

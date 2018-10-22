@@ -259,7 +259,7 @@ class MultiAccount(Account):
         if cached and self.plugins:
             return self.plugins
 
-        for _i in range(5):
+        for _ in range(5):
             try:
                 plugin_set = set(self._grab_hosters())
                 break

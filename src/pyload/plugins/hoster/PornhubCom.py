@@ -117,9 +117,9 @@ class PornhubCom(SimpleHoster):
         json_data = json.loads(res)
 
         urls = {
-            int(re.search("^(\d+)", _x["text"]).group(0)): _x["url"]
-            for _x in json_data
-            if _x["url"]
+            int(re.search("^(\d+)", x["text"]).group(0)): x["url"]
+            for x in json_data
+            if x["url"]
         }
 
         quality = max(urls.keys())

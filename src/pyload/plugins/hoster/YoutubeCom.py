@@ -93,7 +93,7 @@ class Ffmpeg(object):
             p = subprocess.Popen(
                 [cmd, "-version"], stdout=subprocess.PIPE, stderr=subprocess.PIPE
             )
-            out, err = (_r.strip() if _r else "" for _r in p.communicate())
+            out, err = (r.strip() if r else "" for r in p.communicate())
         except OSError:
             return False
 
@@ -165,7 +165,7 @@ class Ffmpeg(object):
         else:
             last_line = ""
 
-        out, err = (_r.strip() if _r else "" for _r in p.communicate())
+        out, err = (r.strip() if r else "" for r in p.communicate())
         if err or p.returncode:
             self.error_message = last_line
             return False
@@ -580,7 +580,7 @@ class YoutubeCom(Hoster):
 
             def decrypt_func(s):
                 return "".join(
-                    s[_i] for _i in cache_info["cache"][player_url]["decrypt_map"]
+                    s[i] for i in cache_info["cache"][player_url]["decrypt_map"]
                 )
 
             decrypted_sig = decrypt_func(encrypted_sig)
@@ -627,9 +627,9 @@ class YoutubeCom(Hoster):
                 self.fail(e)
 
         #: Remove old records from cache
-        for _k in cache_info["cache"].keys():
-            if time.time() >= cache_info["cache"][_k]["time"] + 24 * 60 * 60:
-                cache_info["cache"].pop(_k, None)
+        for k in cache_info["cache"].keys():
+            if time.time() >= cache_info["cache"][k]["time"] + 24 * 60 * 60:
+                cache_info["cache"].pop(k, None)
                 cache_dirty = True
 
         if cache_dirty:
@@ -689,12 +689,12 @@ class YoutubeCom(Hoster):
             return self.config.get(self.formats[x]["ext"])
 
         video_streams = {
-            _s[0]: _s[1:]
-            for _s in self.streams
-            if _s[0] in self.formats
-            and allowed_suffix(_s[0])
-            and is_video(_s[0])
-            and self.formats[_s[0]]["3d"] == use3d
+            s[0]: s[1:]
+            for s in self.streams
+            if s[0] in self.formats
+            and allowed_suffix(s[0])
+            and is_video(s[0])
+            and self.formats[s[0]]["3d"] == use3d
         }
 
         if not video_streams:
@@ -727,8 +727,8 @@ class YoutubeCom(Hoster):
             self.log_debug(
                 "Choosing nearest stream: {}".format(
                     [
-                        (_s, allowed_suffix(_s), quality_distance(_s, desired_fmt))
-                        for _s in video_streams.keys()
+                        (s, allowed_suffix(s), quality_distance(s, desired_fmt))
+                        for s in video_streams.keys()
                     ]
                 )
             )
@@ -813,12 +813,12 @@ class YoutubeCom(Hoster):
             )
 
         audio_streams = {
-            _s[0]: _s[1:]
-            for _s in self.streams
-            if _s[0] in self.formats
-            and is_audio(_s[0])
-            and allowed_codec(_s[0])
-            and allowed_suffix(_s[0])
+            s[0]: s[1:]
+            for s in self.streams
+            if s[0] in self.formats
+            and is_audio(s[0])
+            and allowed_codec(s[0])
+            and allowed_suffix(s[0])
         }
 
         if not audio_streams:
@@ -837,8 +837,8 @@ class YoutubeCom(Hoster):
             self.log_debug(
                 "Choosing nearest stream: {}".format(
                     [
-                        (_s, allowed_suffix(_s), quality_distance(_s, desired_fmt))
-                        for _s in audio_streams.keys()
+                        (s, allowed_suffix(s), quality_distance(s, desired_fmt))
+                        for s in audio_streams.keys()
                     ]
                 )
             )
@@ -936,11 +936,11 @@ class YoutubeCom(Hoster):
                 "captions"
             ]["playerCaptionsTracklistRenderer"]["captionTracks"]
             subtitles_urls = {
-                _subtitle["languageCode"]: urllib.parse.unquote(
-                    _subtitle["baseUrl"]
+                subtitle["languageCode"]: urllib.parse.unquote(
+                    subtitle["baseUrl"]
                 ).decode("unicode-escape")
                 + "&fmt=3"
-                for _subtitle in subs
+                for subtitle in subs
             }
             self.log_debug(
                 "AVAILABLE SUBTITLES: {}".format(list(subtitles_urls.keys()) or "None")
@@ -961,12 +961,12 @@ class YoutubeCom(Hoster):
             if subs_dl_langs:
                 # Download only listed subtitles (`subs_dl_langs` config gives the
                 # priority)
-                for _lang in subs_dl_langs:
-                    if _lang in subtitles_urls:
+                for lang in subs_dl_langs:
+                    if lang in subtitles_urls:
                         srt_filename = os.path.join(
                             self.pyload.config.get("general", "download_folder"),
                             self.pyfile.package().folder,
-                            os.path.splitext(self.file_name)[0] + "." + _lang + ".srt",
+                            os.path.splitext(self.file_name)[0] + "." + lang + ".srt",
                         )
 
                         if (
@@ -979,10 +979,10 @@ class YoutubeCom(Hoster):
                                     os.path.basename(srt_filename)
                                 )
                             )
-                            srt_files.append((srt_filename, _lang))
+                            srt_files.append((srt_filename, lang))
                             continue
 
-                        timed_text = self.load(subtitles_urls[_lang], decode=False)
+                        timed_text = self.load(subtitles_urls[lang], decode=False)
                         srt = timedtext_to_srt(timed_text)
 
                         with open(srt_filename, mode="w") as f:
@@ -991,19 +991,19 @@ class YoutubeCom(Hoster):
                         self.log_debug(
                             "Saved subtitle: {}".format(os.path.basename(srt_filename))
                         )
-                        srt_files.append((srt_filename, _lang))
+                        srt_files.append((srt_filename, lang))
                         if subs_dl == "first_available":
                             break
 
             else:
                 # Download any available subtitle
-                for _subtitle in subtitles_urls.items():
+                for subtitle in subtitles_urls.items():
                     srt_filename = os.path.join(
                         self.pyload.config.get("general", "download_folder"),
                         self.pyfile.package().folder,
                         os.path.splitext(self.file_name)[0]
                         + "."
-                        + _subtitle[0]
+                        + subtitle[0]
                         + ".srt",
                     )
 
@@ -1017,10 +1017,10 @@ class YoutubeCom(Hoster):
                                 os.path.basename(srt_filename)
                             )
                         )
-                        srt_files.append((srt_filename, _subtitle[0]))
+                        srt_files.append((srt_filename, subtitle[0]))
                         continue
 
-                    timed_text = self.load(_subtitle[1], decode=False)
+                    timed_text = self.load(subtitle[1], decode=False)
                     srt = timedtext_to_srt(timed_text)
 
                     with open(srt_filename, mode="w") as f:
@@ -1177,7 +1177,7 @@ class YoutubeCom(Hoster):
         self.start_time = (0, 0)
         m = re.search(r"t=(?:(\d+)m)?(\d+)s", pyfile.url)
         if self.ffmpeg and m:
-            self.start_time = tuple(0 if _x is None else int(_x) for _x in m.groups())
+            self.start_time = tuple(0 if x is None else int(x) for x in m.groups())
             self.file_name += " (starting at {}m{}s)".format(
                 self.start_time[0], self.start_time[1]
             )
@@ -1195,21 +1195,21 @@ class YoutubeCom(Hoster):
         self.streams = []
         for streams_key in streams_keys:
             streams = self.player_config["args"][streams_key]
-            streams = [_s.split("&") for _s in streams.split(",")]
-            streams = [dict(_x.split("=", 1) for _x in _s) for _s in streams]
+            streams = [s.split("&") for s in streams.split(",")]
+            streams = [dict(x.split("=", 1) for x in s) for s in streams]
             streams = [
                 (
-                    int(_s["itag"]),
-                    urllib.parse.unquote(_s["url"]),
-                    _s.get("s", _s.get("sig", None)),
-                    "s" in _s,
+                    int(s["itag"]),
+                    urllib.parse.unquote(s["url"]),
+                    s.get("s", s.get("sig", None)),
+                    "s" in s,
                 )
-                for _s in streams
+                for s in streams
             ]
 
             self.streams += streams
 
-        self.log_debug("AVAILABLE STREAMS: {}".format(_s[0] for _s in self.streams))
+        self.log_debug("AVAILABLE STREAMS: {}".format(s[0] for s in self.streams))
 
         video_filename, video_itag = self._handle_video()
 

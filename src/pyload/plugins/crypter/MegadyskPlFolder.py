@@ -90,9 +90,9 @@ class MegadyskPlFolder(SimpleCrypter):
             self.error(self._("Missing JSON data"))
 
         pack_links = [
-            self.fixurl(_l["downloadUrl"])
-            for _l in self.info["entities"]
-            if _l["downloadUrl"].startswith("/dl/")
+            self.fixurl(l["downloadUrl"])
+            for l in self.info["entities"]
+            if l["downloadUrl"].startswith("/dl/")
         ]
 
         if pack_links:

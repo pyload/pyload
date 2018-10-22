@@ -50,7 +50,7 @@ class TransmissionRPC(Addon):
     def send_to_transmission(self, url):
         transmission_rpc_url = self.config.get("rpc_url")
         client_request_id = self.classname + "".join(
-            random.choice("0123456789ABCDEF") for _i in range(4)
+            random.choice("0123456789ABCDEF") for _ in range(4)
         )
         req = get_request()
 

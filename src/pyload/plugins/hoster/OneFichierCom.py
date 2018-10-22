@@ -86,8 +86,8 @@ class OneFichierCom(SimpleHoster):
                     if headers.get("content-type") == "application/octet-stream":
                         if "filename=" in headers.get("content-disposition"):
                             _name = dict(
-                                _i.split("=")
-                                for _i in list(
+                                i.split("=")
+                                for i in list(
                                     map(
                                         str.strip,
                                         headers["content-disposition"].split(";"),

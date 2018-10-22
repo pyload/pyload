@@ -38,7 +38,7 @@ class YadiSk(SimpleHoster):
         if html:
             if "idclient" not in info:
                 info["idclient"] = ""
-                for _i in range(32):
+                for _ in range(32):
                     info["idclient"] += random.choice("0123456abcdef")
 
             m = re.search(
@@ -76,7 +76,7 @@ class YadiSk(SimpleHoster):
 
     def handle_free(self, pyfile):
         if any(
-            True for _k in ["id", "sk", "version", "idclient"] if _k not in self.info
+            True for k in ["id", "sk", "version", "idclient"] if k not in self.info
         ):
             self.error(self._("Missing JSON data"))
 

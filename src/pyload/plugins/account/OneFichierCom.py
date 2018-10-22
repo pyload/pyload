@@ -69,8 +69,8 @@ class OneFichierCom(Account):
             )
 
             if any(
-                _x in html
-                for _x in (
+                x in html
+                for x in (
                     ">Invalid username or Password",
                     ">Invalid email address",
                     ">Invalid password",

@@ -43,8 +43,8 @@ class DatafileCom(SimpleHoster):
         m = re.search(r'<span class="time">([\d:]+)<', self.data)
         if m is not None:
             wait_time = sum(
-                int(_d) * 60 ** _i
-                for _i, _d in enumerate(reversed(m.group(1).split(":")))
+                int(d) * 60 ** i
+                for i, d in enumerate(reversed(m.group(1).split(":")))
             )
 
         else:

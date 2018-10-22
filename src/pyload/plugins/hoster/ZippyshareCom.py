@@ -101,9 +101,9 @@ class ZippyshareCom(SimpleHoster):
         for m in re.findall(eltRE, " ".join(scripts)):
             JSid, JSattr = m[0], m[3]
             values = [
-                _f
-                for _f in (elt.get(JSattr, None) for elt in soup.findAll(id=JSid))
-                if _f
+                f
+                for f in (elt.get(JSattr, None) for elt in soup.findAll(id=JSid))
+                if f
             ]
             if values:
                 inits.append(

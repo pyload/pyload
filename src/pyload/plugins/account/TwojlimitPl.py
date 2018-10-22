@@ -44,10 +44,10 @@ class TwojlimitPl(MultiAccount):
 
         json_data = json.loads(html)
         return [
-            _h
-            for _row in json_data
-            for _h in _row["domains"]
-            if _row["sdownload"] == "0"
+            h
+            for row in json_data
+            for h in _row["domains"]
+            if row["sdownload"] == "0"
         ]
 
     def grab_info(self, user, password, data):

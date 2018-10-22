@@ -42,7 +42,7 @@ class DateiTo(SimpleHoster):
         data = {"P": "I", "ID": self.info["pattern"]["ID"]}
         self.captcha = ReCaptcha(pyfile)
 
-        for _i in range(3):
+        for _ in range(3):
             self.log_debug("URL", url, "POST", data)
             self.data = self.load(url, post=data)
             self.check_errors()

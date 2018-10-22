@@ -45,9 +45,9 @@ class AlldebridCom(MultiAccount):
             return reduce(
                 lambda x, y: x + y,
                 [
-                    [_h["domain"]] + _h.get("altDomains", [])
-                    for _h in json_data["hosts"].values()
-                    if _h["status"] is True
+                    [h["domain"]] + h.get("altDomains", [])
+                    for h in json_data["hosts"].values()
+                    if h["status"] is True
                 ],
             )
 

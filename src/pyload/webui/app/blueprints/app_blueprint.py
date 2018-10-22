@@ -21,7 +21,7 @@ from pyload.webui.app.helpers import (clear_session, get_permission, login_requi
 from pyload.webui.app.helpers import pre_processor, base
 
 
-from flask.ext.login import login_required, login_user, logout_user
+from flask_login import login_required, login_user, logout_user
 
 
 bp = flask.Blueprint("app", __name__)

@@ -145,7 +145,7 @@ class TurbobitNet(SimpleHoster):
             url = "http://turbobit.net{}{}".format(*m.groups())
         else:
             url = "http://turbobit.net/files/timeout.js?ver={}".format(
-                "".join(random.choice("0123456789ABCDEF") for _i in range(32))
+                "".join(random.choice("0123456789ABCDEF") for _ in range(32))
             )
 
         fun = self.load(url)

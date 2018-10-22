@@ -117,7 +117,7 @@ class ExternalScripts(Addon):
 
                     scripts.append(file)
 
-            new_scripts = [_s for _s in scripts if _s not in self.scripts[folder]]
+            new_scripts = [s for s in scripts if s not in self.scripts[folder]]
 
             if new_scripts:
                 script_names = list(map(os.path.basename, new_scripts))
@@ -127,7 +127,7 @@ class ExternalScripts(Addon):
                     )
                 )
 
-            removed_scripts = [_s for _s in self.scripts[folder] if _s not in scripts]
+            removed_scripts = [s for s in self.scripts[folder] if s not in scripts]
 
             if removed_scripts:
                 script_names = list(map(os.path.basename, removed_scripts))
@@ -144,7 +144,7 @@ class ExternalScripts(Addon):
 
         self.log_debug(
             "EXECUTE "
-            + " ".join('"' + _arg + '"' if " " in _arg else _arg for _arg in call)
+            + " ".join('"' + arg + '"' if " " in arg else arg for arg in call)
         )
 
         p = subprocess.Popen(call, bufsize=-1)  # NOTE: output goes to pyload

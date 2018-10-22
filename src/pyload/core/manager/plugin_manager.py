@@ -56,8 +56,8 @@ class PluginManager(object):
                     if overwrite:
                         dst[name].update(src[name])
                     else:
-                        for _k in set(src[name].keys()) - set(dst[name].keys()):
-                            dst[name][_k] = src[name][_k]
+                        for k in set(src[name].keys()) - set(dst[name].keys()):
+                            dst[name][k] = src[name][k]
                 else:
                     dst[name] = src[name]
 
@@ -416,8 +416,8 @@ class PluginManager(object):
                     if overwrite:
                         dst[name].update(src[name])
                     else:
-                        for _k in set(src[name].keys()) - set(dst[name].keys()):
-                            dst[name][_k] = src[name][_k]
+                        for k in set(src[name].keys()) - set(dst[name].keys()):
+                            dst[name][k] = src[name][k]
                 else:
                     dst[name] = src[name]
 

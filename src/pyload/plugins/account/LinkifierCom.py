@@ -51,9 +51,9 @@ class LinkifierCom(MultiAccount):
             return []
 
         return [
-            _x["hostername"]
-            for _x in json_data["hosters"]
-            if _x["hostername"] and _x["isActive"]
+            x["hostername"]
+            for x in json_data["hosters"]
+            if x["hostername"] and x["isActive"]
         ]
 
     def grab_info(self, user, password, data):
