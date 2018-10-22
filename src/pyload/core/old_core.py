@@ -146,7 +146,7 @@ class Core(object):
 
     def quit(self, a, b):
         self.shutdown()
-        self.log.info(_("Received Quit signal"))
+        self.log.info(self._("Received Quit signal"))
         os._exit(1)
 
     def writePidFile(self):
@@ -252,7 +252,7 @@ class Core(object):
 
         pid = self.isAlreadyRunning()
         if pid:
-            print(_("pyLoad already running with pid {}").format(pid))
+            print(self._("pyLoad already running with pid {}").format(pid))
             exit()
 
         if os.name != "nt" and self.config.get("general", "renice"):
@@ -268,7 +268,7 @@ class Core(object):
                     group = getgrnam(self.config.get("permission", "group"))
                     os.setgid(group[2])
                 except Exception as e:
-                    print(_("Failed changing group: {}").format(e))
+                    print(self._("Failed changing group: {}").format(e))
 
         if self.config.get("permission", "change_user"):
             if os.name != "nt":
@@ -278,7 +278,7 @@ class Core(object):
                     user = getpwnam(self.config.get("permission", "user"))
                     os.setuid(user[2])
                 except Exception as e:
-                    print(_("Failed changing user: {}").format(e))
+                    print(self._("Failed changing user: {}").format(e))
 
         self.do_kill = False
         self.do_restart = False
@@ -288,48 +288,48 @@ class Core(object):
         self.logfactory.init_logger(exc_logger.name)
         self.log = self.logfactory.get_logger("pyload")
 
-        self.log.info(_("Starting pyLoad {}").format(self.version))
-        self.log.info(_("Using home directory: {}").format(os.getcwd()))
+        self.log.info(self._("Starting pyLoad {}").format(self.version))
+        self.log.info(self._("Using home directory: {}").format(os.getcwd()))
 
         self.writePidFile()
 
         # TODO: refractor
         self.log.debug("Remote activated: {}".format(self.remote))
 
-        self.check_install("cryptography", _("pycrypto to decode container files"))
-        # img = self.check_install("Image", _("Python Image Libary (Pillow) for captcha reading"))
-        # self.check_install("pycurl", _("pycurl to download any files"), True, True)
+        self.check_install("cryptography", self._("pycrypto to decode container files"))
+        # img = self.check_install("Image", self._("Python Image Libary (Pillow) for captcha reading"))
+        # self.check_install("pycurl", self._("pycurl to download any files"), True, True)
         self.check_file(
             os.path.join(HOMEDIR, "pyLoad", ".tmp"),
-            _("folder for temporary files"),
+            self._("folder for temporary files"),
             True,
         )
-        # tesser = self.check_install("tesseract", _("tesseract for captcha reading"), False) if os.name != "nt" else True
+        # tesser = self.check_install("tesseract", self._("tesseract for captcha reading"), False) if os.name != "nt" else True
 
         self.captcha = True  #: checks seems to fail, althoug tesseract is available
 
         self.check_file(
             self.config.get("general", "download_folder"),
-            _("folder for downloads"),
+            self._("folder for downloads"),
             True,
         )
 
         if self.config.get("ssl", "activated"):
-            self.check_install("OpenSSL", _("OpenSSL for secure connection"))
+            self.check_install("OpenSSL", self._("OpenSSL for secure connection"))
 
         self.setupDB()
         
         if self.config.oldRemoteData:
-            self.log.info(_("Moving old user config to DB"))
+            self.log.info(self._("Moving old user config to DB"))
             self.db.addUser(
                 self.config.oldRemoteData["username"],
                 self.config.oldRemoteData["password"],
             )
 
-            self.log.info(_("Please check your logindata with pyLoad -u"))
+            self.log.info(self._("Please check your logindata with pyLoad -u"))
 
         if self.deleteLinks:
-            self.log.info(_("All links os.removed"))
+            self.log.info(self._("All links os.removed"))
             self.db.purgeLinks()
 
         self.requestFactory = RequestFactory(self)
@@ -356,7 +356,7 @@ class Core(object):
         self.addonManager = AddonManager(self)
         self.remoteManager = RemoteManager(self)
 
-        self.log.info(_("Download time: {}").format(self.api.isTimeDownload()))
+        self.log.info(self._("Download time: {}").format(self.api.isTimeDownload()))
 
         if rpc:
             self.remoteManager.startBackends()
@@ -366,7 +366,7 @@ class Core(object):
 
         spaceLeft = freeSpace(self.config.get("general", "download_folder"))
 
-        self.log.info(_("Free space: {}").format(formatSize(spaceLeft)))
+        self.log.info(self._("Free space: {}").format(formatSize(spaceLeft)))
 
         self.config.save()  #: save so config files gets filled
 
@@ -384,15 +384,15 @@ class Core(object):
                     self.api.addPackage("links.txt", [link_file], 1)
 
         # self.scheduler.addJob(0, self.accountManager.getAccountInfos)
-        self.log.info(_("Activating Accounts..."))
+        self.log.info(self._("Activating Accounts..."))
         self.accountManager.getAccountInfos()
 
         self.threadManager.pause = False
 
-        self.log.info(_("Activating Plugins..."))
+        self.log.info(self._("Activating Plugins..."))
         self.addonManager.coreReady()
 
-        self.log.info(_("pyLoad is up and running"))
+        self.log.info(self._("pyLoad is up and running"))
 
         # test api
         #        from tests.api_exerciser import startApiExerciser
@@ -416,11 +416,11 @@ class Core(object):
                     raise
 
             if self.do_restart:
-                self.log.info(_("Restarting pyLoad"))
+                self.log.info(self._("Restarting pyLoad"))
                 self.restart()
 
             if self.do_kill:
-                self.log.info(_("pyLoad quits"))
+                self.log.info(self._("pyLoad quits"))
                 self.shutdown()
                 os._exit(0)  # TODO: thrift blocks shutdown
 
@@ -453,7 +453,7 @@ class Core(object):
             return True
         except Exception:
             if essential:
-                self.log.info(_("Install {}").format(legend))
+                self.log.info(self._("Install {}").format(legend))
                 exit()
 
             return False
@@ -494,18 +494,18 @@ class Core(object):
 
             if not file_exists and not quiet:
                 if file_created:
-                    # self.log.info( _("{} created").format(description))
+                    # self.log.info( self._("{} created").format(description))
                     pass
                 else:
                     if not empty:
                         self.log.warning(
-                            _("could not find {desc}: {name}").format(
+                            self._("could not find {desc}: {name}").format(
                                 desc=description, name=tmp_name
                             )
                         )
                     else:
                         print(
-                            _("could not create {desc}: {name}").format(
+                            self._("could not create {desc}: {name}").format(
                                 desc=description, name=tmp_name
                             )
                         )
@@ -528,7 +528,7 @@ class Core(object):
         os._exit(0)
 
     def shutdown(self):
-        self.log.info(_("shutting down..."))
+        self.log.info(self._("shutting down..."))
         try:
             if self.webserver.is_alive():
                 self.webserver.stop()
@@ -605,7 +605,7 @@ def main(args):
         try:
             pyload_core.start()
         except KeyboardInterrupt:
-            pyload_core.log.info(_("killed pyLoad from Terminal"))
+            pyload_core.log.info(self._("killed pyLoad from Terminal"))
             pyload_core.shutdown()
             os._exit(1)
 

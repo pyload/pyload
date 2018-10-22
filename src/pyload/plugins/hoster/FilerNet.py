@@ -48,7 +48,7 @@ class FilerNet(SimpleHoster):
 
         inputs = self.parse_html_form(input_names={"hash": re.compile(r".+")})[1]
         if inputs is None or "hash" not in inputs:
-            self.error(_("Unable to detect hash"))
+            self.error(self._("Unable to detect hash"))
 
         self.captcha = ReCaptcha(pyfile)
         response, challenge = self.captcha.challenge()
@@ -66,7 +66,7 @@ class FilerNet(SimpleHoster):
 
         if self.scan_download({"html": re.compile(r"\A\s*<!DOCTYPE html")}) == "html":
             self.log_warning(
-                _(
+                self._(
                     "There was HTML code in the downloaded file ({})...bad captcha? The download will be restarted."
                     % self.pyfile.name
                 )

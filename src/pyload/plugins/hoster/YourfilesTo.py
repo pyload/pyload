@@ -68,7 +68,7 @@ class YourfilesTo(Hoster):
             )
             return url
         else:
-            self.error(_("Absolute filepath not found"))
+            self.error(self._("Absolute filepath not found"))
 
     def get_file_name(self):
         if not self.data:

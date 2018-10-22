@@ -85,7 +85,7 @@ class XMPP(IRC, pyxmpp2.client.Client):
     def package_finished(self, pypack):
         try:
             if self.config.get("info_pack"):
-                self.announce(_("Package finished: {}").format(pypack.name))
+                self.announce(self._("Package finished: {}").format(pypack.name))
 
         except Exception:
             pass
@@ -94,7 +94,7 @@ class XMPP(IRC, pyxmpp2.client.Client):
         try:
             if self.config.get("info_file"):
                 self.announce(
-                    _("Download finished: {name} @ {plugin}").format(
+                    self._("Download finished: {name} @ {plugin}").format(
                         name=pyfile.name, plugin=pyfile.pluginname
                     )
                 )

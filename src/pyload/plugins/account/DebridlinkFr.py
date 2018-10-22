@@ -73,7 +73,7 @@ class DebridlinkFr(MultiAccount):
             validuntil = res["value"]["premiumLeft"] + time.time()
 
         else:
-            self.log_error(_("Unable to retrieve account information"), res["ERR"])
+            self.log_error(self._("Unable to retrieve account information"), res["ERR"])
             validuntil = None
             premium = None
 

@@ -116,7 +116,7 @@ class OneFichierCom(SimpleHoster):
                 break
 
         else:
-            info = {"status": 8, "error": _("Too many redirects")}
+            info = {"status": 8, "error": self._("Too many redirects")}
 
         return info
 
@@ -124,7 +124,7 @@ class OneFichierCom(SimpleHoster):
         url, inputs = self.parse_html_form(r'action="https://1fichier.com/\?[\w^_]+')
 
         if not url:
-            self.log_error(_("Free download form not found"))
+            self.log_error(self._("Free download form not found"))
             return
 
         if "pass" in inputs:
@@ -134,7 +134,7 @@ class OneFichierCom(SimpleHoster):
                 inputs["pass"] = password
 
             else:
-                self.fail(_("Download is password protected"))
+                self.fail(self._("Download is password protected"))
 
         inputs.pop("save", None)
         inputs["dl_no_ssl"] = "on"

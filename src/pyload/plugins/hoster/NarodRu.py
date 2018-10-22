@@ -52,7 +52,7 @@ class NarodRu(SimpleHoster):
 
         m = re.search(self.CAPTCHA_PATTERN, self.data)
         if m is None:
-            self.error(_("Captcha"))
+            self.error(self._("Captcha"))
 
         post_data = {"action": "sendcapcha"}
         captcha_url, post_data["key"] = m.groups()

@@ -41,7 +41,7 @@ class UlozTo(Account):
 
         except (ValueError, KeyError):
             self.log_error(
-                _("Unable to retrieve account information, unexpected response")
+                self._("Unable to retrieve account information, unexpected response")
             )
             return {"validuntil": None, "trafficleft": None, "premium": False}
 
@@ -61,7 +61,7 @@ class UlozTo(Account):
 
             else:
                 self.log_error(
-                    _("Unable to retrieve account information, pattern not found")
+                    self._("Unable to retrieve account information, pattern not found")
                 )
                 validuntil = None
                 trafficleft = None

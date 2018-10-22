@@ -442,7 +442,7 @@ class Plugin(Base):
                 task.error and has_plugin
             ):  #: ignore default error message since the user could use OCR
                 self.fail(
-                    _(
+                    self._(
                         "Pil and tesseract not installed and no Client connected for captcha decrypting"
                     )
                 )
@@ -450,7 +450,7 @@ class Plugin(Base):
                 self.fail(task.error)
             elif not task.result:
                 self.fail(
-                    _(
+                    self._(
                         "No captcha result obtained in appropiate time by any of the plugins."
                     )
                 )
@@ -583,7 +583,7 @@ class Plugin(Base):
 
                 os.chown(location, uid, gid)
             except Exception as e:
-                self.log.warning(_("Setting User and Group failed: {}").format(str(e)))
+                self.log.warning(self._("Setting User and Group failed: {}").format(str(e)))
 
         # convert back to unicode
         location = fs_decode(location)
@@ -632,7 +632,7 @@ class Plugin(Base):
 
                 os.chown(fs_filename, uid, gid)
             except Exception as e:
-                self.log.warning(_("Setting User and Group failed: {}").format(str(e)))
+                self.log.warning(self._("Setting User and Group failed: {}").format(str(e)))
 
         self.lastDownload = filename
         return self.lastDownload

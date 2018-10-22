@@ -57,7 +57,7 @@ class ClickNLoad(Addon):
     def activate(self):
         if not self.pyload.config.get("webui", "activated"):
             self.log_warning(
-                _("pyLoad's Web interface is not active, ClickNLoad cannot start")
+                self._("pyLoad's Web interface is not active, ClickNLoad cannot start")
             )
             return
 
@@ -65,7 +65,7 @@ class ClickNLoad(Addon):
 
     def deactivate(self):
         if self.server_running:
-            self.log_info(_("Shutting down proxy..."))
+            self.log_info(self._("Shutting down proxy..."))
 
             self.do_exit = True
 
@@ -87,7 +87,7 @@ class ClickNLoad(Addon):
             if self.exit_done.isSet():
                 self.log_debug("Server exited successfully")
             else:
-                self.log_warning(_("Server was not exited gracefully, shutdown forced"))
+                self.log_warning(self._("Server was not exited gracefully, shutdown forced"))
 
     @lock
     @threaded
@@ -105,7 +105,7 @@ class ClickNLoad(Addon):
     @threaded
     def proxy(self):
         self.log_info(
-            _("Proxy listening on {}:{}").format(
+            self._("Proxy listening on {}:{}").format(
                 self.cnl_ip or "0.0.0.0", self.cnl_port
             )
         )
@@ -138,14 +138,14 @@ class ClickNLoad(Addon):
 
                             except NameError:
                                 self.log_error(
-                                    _("Missing SSL lib"),
-                                    _("Please disable HTTPS in pyLoad settings"),
+                                    self._("Missing SSL lib"),
+                                    self._("Please disable HTTPS in pyLoad settings"),
                                 )
                                 client_socket.close()
                                 continue
 
                             except Exception as e:
-                                self.log_error(_("SSL error: {}").format(e))
+                                self.log_error(self._("SSL error: {}").format(e))
                                 client_socket.close()
                                 continue
 

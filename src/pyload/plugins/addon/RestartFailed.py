@@ -22,7 +22,7 @@ class RestartFailed(Addon):
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
     def periodical_task(self):
-        self.log_info(_("Restarting all failed downloads..."))
+        self.log_info(self._("Restarting all failed downloads..."))
         self.pyload.api.restartFailed()
 
     def activate(self):

@@ -57,7 +57,7 @@ class RealdebridCom(MultiAccount):
         except BadHeader as e:
             if e.code == 401:
                 self.log_error(
-                    _(
+                    self._(
                         "Password for Real-debrid should be the API token - get it from: https://real-debrid.com/apitoken"
                     )
                 )

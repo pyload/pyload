@@ -42,14 +42,14 @@ class HostujeNet(SimpleHoster):
             if m is not None:
                 self.load("http://hostuje.net/" + m.group(1))
             else:
-                self.error(_("Unexpected javascript format"))
+                self.error(self._("Unexpected javascript format"))
         else:
-            self.error(_("Script not found"))
+            self.error(self._("Script not found"))
 
         action, inputs = self.parse_html_form(
             pyfile.url.replace(".", "\.").replace("?", "\?")
         )
         if not action:
-            self.error(_("Form not found"))
+            self.error(self._("Form not found"))
 
         self.download(action, post=inputs)

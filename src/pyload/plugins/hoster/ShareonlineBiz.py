@@ -101,7 +101,7 @@ class ShareonlineBiz(SimpleHoster):
         self.link = res.decode("base64")
 
         if not self.link.startswith("http://"):
-            self.error(_("Invalid url"))
+            self.error(self._("Invalid url"))
 
         self.wait()
 
@@ -114,10 +114,10 @@ class ShareonlineBiz(SimpleHoster):
         )
 
         if check == "cookie":
-            self.retry_captcha(5, 60, _("Cookie failure"))
+            self.retry_captcha(5, 60, self._("Cookie failure"))
 
         elif check == "fail":
-            self.retry_captcha(5, 5 * 60, _("Download failed"))
+            self.retry_captcha(5, 5 * 60, self._("Download failed"))
 
         return SimpleHoster.check_download(self)
 
@@ -170,19 +170,19 @@ class ShareonlineBiz(SimpleHoster):
             self.log_error(errmsg, re.search(self.ERROR_PATTERN, self.data).group(1))
 
         except Exception:
-            self.log_error(_("Unknown error occurred"), errmsg)
+            self.log_error(self._("Unknown error occurred"), errmsg)
 
         if errmsg == "invalid":
-            self.fail(_("File not available"))
+            self.fail(self._("File not available"))
 
         elif errmsg in ("freelimit", "size", "proxy"):
-            self.fail(_("Premium account needed"))
+            self.fail(self._("Premium account needed"))
 
         elif errmsg in ("expired", "server"):
             self.retry(wait=600, msg=errmsg)
 
         elif errmsg == "full":
-            self.fail(_("Server is full"))
+            self.fail(self._("Server is full"))
 
         elif "slot" in errmsg:
             self.wait(3600, reconnect=True)

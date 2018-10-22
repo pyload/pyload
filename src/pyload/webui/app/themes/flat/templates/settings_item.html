@@ -11,9 +11,9 @@
                     {% if option.type == "bool" %}
                         <select id="{{skey}}|{{okey}}" name="{{skey}}|{{okey}}">
                             <option {% if option.value %} selected="selected"
-                                                          {% endif %}value="True">{{ _("on") }}</option>
+                                                          {% endif %}value="True">{{ self._("on") }}</option>
                             <option {% if not option.value %} selected="selected"
-                                                              {% endif %}value="False">{{ _("off") }}</option>
+                                                              {% endif %}value="False">{{ self._("off") }}</option>
                         </select>
                         {% elif ";" in option.type %}
                         <select id="{{skey}}|{{okey}}" name="{{skey}}|{{okey}}">

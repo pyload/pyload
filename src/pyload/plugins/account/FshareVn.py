@@ -44,7 +44,7 @@ class FshareVn(Account):
             )
 
         else:
-            self.log_error(_("TRAFFIC_LEFT_PATTERN not found"))
+            self.log_error(self._("TRAFFIC_LEFT_PATTERN not found"))
 
         if re.search(self.LIFETIME_PATTERN, html):
             self.log_debug("Lifetime membership detected")

@@ -42,7 +42,7 @@ class WebServer(threading.Thread):
 
     def run(self):
         self.pyload.log.warning(
-            _("Starting Webserver: {host}:{port:d}").format(
+            self._("Starting Webserver: {host}:{port:d}").format(
                 host=self.host, port=self.port
             )
         )
@@ -52,5 +52,5 @@ class WebServer(threading.Thread):
             self.stop()
 
     def stop(self):
-        self.pyload.log.info(_("Stopping Webserver"))
+        self.pyload.log.info(self._("Stopping Webserver"))
         self.server.stop()

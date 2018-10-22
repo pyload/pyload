@@ -89,13 +89,13 @@ class TenluaVn(SimpleHoster):
                     "filemanager_builddownload_checkpassword", **args
                 )
                 if password_status["status"] == "0":
-                    self.fail(_("Wrong password"))
+                    self.fail(self._("Wrong password"))
 
                 else:
                     url = password_status["url"]
 
             else:
-                self.fail(_("Download is password protected"))
+                self.fail(self._("Download is password protected"))
 
         else:
             url = self.info["tenlua"]["link"]

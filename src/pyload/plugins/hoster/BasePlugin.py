@@ -24,4 +24,4 @@ class BasePlugin(Http):
         self.resume_download = True
 
         if not self.pyfile.url.startswith("http"):
-            self.fail(_("No plugin matched"))
+            self.fail(self._("No plugin matched"))

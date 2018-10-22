@@ -87,5 +87,5 @@ class WebshareCz(Account):
             data["wst"] = re.search("<token>(.+?)</token>", login).group(1)
 
         else:
-            self.log_warning(_("passlib is not installed"))
-            self.fail_login(_("passlib is not installed"))
+            self.log_warning(self._("passlib is not installed"))
+            self.fail_login(self._("passlib is not installed"))

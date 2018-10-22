@@ -37,7 +37,7 @@ class YibaishiwuCom(SimpleHoster):
     def handle_free(self, pyfile):
         m = re.search(self.LINK_FREE_PATTERN, self.data)
         if m is None:
-            self.error(_("LINK_FREE_PATTERN not found"))
+            self.error(self._("LINK_FREE_PATTERN not found"))
 
         url = m.group(1)
 
@@ -65,4 +65,4 @@ class YibaishiwuCom(SimpleHoster):
             except Exception:
                 pass
         else:
-            self.fail(_("No working link found"))
+            self.fail(self._("No working link found"))

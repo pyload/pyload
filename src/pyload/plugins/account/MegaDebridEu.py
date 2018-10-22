@@ -58,10 +58,10 @@ class MegaDebridEu(MultiAccount):
 
         except BadHeader as e:
             if e.code == 405:
-                self.log_error(_("Unable to retrieve hosters list: Banned IP"))
+                self.log_error(self._("Unable to retrieve hosters list: Banned IP"))
 
             else:
-                self.log_error(_("Unable to retrieve hosters list: error {}"), e.code)
+                self.log_error(self._("Unable to retrieve hosters list: error {}"), e.code)
 
         else:
             if res["response_code"] == "ok":
@@ -76,7 +76,7 @@ class MegaDebridEu(MultiAccount):
 
             else:
                 self.log_error(
-                    _("Unable to retrieve hoster list: {}").format(res["response_text"])
+                    self._("Unable to retrieve hoster list: {}").format(res["response_text"])
                 )
 
         return hosters
@@ -112,7 +112,7 @@ class MegaDebridEu(MultiAccount):
                 self.fail_login()
 
             elif e.code == 405:
-                self.fail(_("Banned IP"))
+                self.fail(self._("Banned IP"))
 
             else:
                 raise
@@ -126,7 +126,7 @@ class MegaDebridEu(MultiAccount):
                 self.fail_login()
 
             elif res["response_code"] == "UNALLOWED_IP":
-                self.fail_login(_("Banned IP"))
+                self.fail_login(self._("Banned IP"))
 
             else:
                 self.log_error(res["response_text"])

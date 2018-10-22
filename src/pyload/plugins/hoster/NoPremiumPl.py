@@ -85,13 +85,13 @@ class NoPremiumPl(MultiHoster):
                 #: Error code isn't yet added to plugin
                 self.fail(
                     parsed["errstring"]
-                    or _("Unknown error (code: {})").format(parsed["errno"])
+                    or self._("Unknown error (code: {})").format(parsed["errno"])
                 )
 
         if "sdownload" in parsed:
             if parsed["sdownload"] == "1":
                 self.fail(
-                    _(
+                    self._(
                         "Download from {} is possible only using NoPremium.pl website  directly"
                     ).format(parsed["hosting"])
                 )

@@ -60,7 +60,7 @@ class NitroflareCom(Account):
             self.fail_login()
 
         elif data["result"].get("status") == "banned":
-            self.fail_login(_("Banned"))
+            self.fail_login(self._("Banned"))
 
         elif "recaptchaPublic" in data["result"]:
-            self.fail_login(_("Account Login Requires Recaptcha"))
+            self.fail_login(self._("Account Login Requires Recaptcha"))

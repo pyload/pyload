@@ -71,7 +71,7 @@ class Captcha9Kw(Addon):
         )
 
         if res.isdigit():
-            self.log_info(_("{} credits left").format(res))
+            self.log_info(self._("{} credits left").format(res))
             credits = self.info["credits"] = int(res)
             return credits
         else:
@@ -83,7 +83,7 @@ class Captcha9Kw(Addon):
         if task.isInteractive():
             url_p = urllib.parse.urlparse(task.captchaParams["url"])
             if url_p.scheme not in ("http", "https"):
-                self.log_error(_("Invalid url"))
+                self.log_error(self._("Invalid url"))
                 return
 
             post_data = {
@@ -175,7 +175,7 @@ class Captcha9Kw(Addon):
                     break
 
         else:
-            self.log_error(_("Bad request: {}").format(res))
+            self.log_error(self._("Bad request: {}").format(res))
             return
 
         self.log_debug(
@@ -206,7 +206,7 @@ class Captcha9Kw(Addon):
             self.log_debug("Could not send request: {}".format(res))
             result = None
 
-        self.log_info(_("Captcha result for ticket {}: {}").format(res, result))
+        self.log_info(self._("Captcha result for ticket {}: {}").format(res, result))
 
         task.setResult(result)
 
@@ -229,7 +229,7 @@ class Captcha9Kw(Addon):
         credits = self.get_credits()
 
         if not credits:
-            self.log_error(_("Your captcha 9kw.eu account has not enough credits"))
+            self.log_error(self._("Your captcha 9kw.eu account has not enough credits"))
             return
 
         max_queue = min(self.config.get("queue"), 999)
@@ -244,7 +244,7 @@ class Captcha9Kw(Addon):
             time.sleep(10)
 
         else:
-            self.log_error(_("Too many captchas in queue"))
+            self.log_error(self._("Too many captchas in queue"))
             return
 
         for opt in [x for x in self.config.get("hoster_options", "").split("|") if x]:

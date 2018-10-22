@@ -54,7 +54,7 @@ class MegaRapidCz(SimpleHoster):
 
         elif re.search(self.ERR_LOGIN_PATTERN, self.data):
             self.account.relogin()
-            self.retry(wait=60, msg=_("User login failed"))
+            self.retry(wait=60, msg=self._("User login failed"))
 
         elif re.search(self.ERR_CREDIT_PATTERN, self.data):
-            self.fail(_("Not enough credit left"))
+            self.fail(self._("Not enough credit left"))

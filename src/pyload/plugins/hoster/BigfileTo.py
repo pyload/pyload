@@ -79,7 +79,7 @@ class BigfileTo(SimpleHoster):
 
     def check_download(self):
         if self.scan_download({"wait": re.compile("Please wait for")}):
-            self.log_info(_("Downloadlimit reached, please wait or reconnect"))
+            self.log_info(self._("Downloadlimit reached, please wait or reconnect"))
             self.wait(60 * 60, True)
             self.retry()
 

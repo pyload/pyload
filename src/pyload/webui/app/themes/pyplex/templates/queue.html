@@ -17,9 +17,9 @@ $(function() {
 {% endblock %}
 
 {% if target %}
-    {% set name = _("Queue") %}
+    {% set name = self._("Queue") %}
 {% else %}
-    {% set name = _("Collector") %}
+    {% set name = self._("Collector") %}
 {% endif %}
 
 {% block pageactions %}

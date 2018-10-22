@@ -52,7 +52,7 @@ class KatfileCom(SimpleHoster):
     def handle_free(self, pyfile):
         url, inputs = self.parse_html_form('id="btn_download"')
         if inputs is None:
-            self.error(_("Form 1 not found"))
+            self.error(self._("Form 1 not found"))
 
         inputs.pop("method_premium", None)
 
@@ -60,7 +60,7 @@ class KatfileCom(SimpleHoster):
 
         url, inputs = self.parse_html_form('name="F1"')
         if inputs is None:
-            self.error(_("Form 2 not found"))
+            self.error(self._("Form 2 not found"))
 
         self.check_errors()
 
@@ -74,7 +74,7 @@ class KatfileCom(SimpleHoster):
             inputs["adcopy_response"] = response
 
         else:
-            self.error(_("Captcha not found"))
+            self.error(self._("Captcha not found"))
 
         self.data = self.load(pyfile.url, post=inputs)
 

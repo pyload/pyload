@@ -79,7 +79,7 @@ class SafelinkingNet(Crypter):
                 self.links = [header.get("location")]
 
             else:
-                self.error(_("Couldn't find forwarded Link"))
+                self.error(self._("Couldn't find forwarded Link"))
 
         else:  #: Process protected links
             self.package_password = self.get_password()
@@ -106,7 +106,7 @@ class SafelinkingNet(Crypter):
                     post_data["password"] = self.package_password
 
                 else:
-                    self.fail(_("Password required"))
+                    self.fail(self._("Password required"))
 
             if link_info["security"].get("useCaptcha", False):
                 self.captcha = SolveMedia(pyfile)
@@ -122,19 +122,19 @@ class SafelinkingNet(Crypter):
 
             # Evaluate response
             if json_res is None:
-                self.fail(_("Invalid JSON response"))
+                self.fail(self._("Invalid JSON response"))
 
             # Response: Wrong password
             elif "passwordFail" in json_res:
-                self.log_error(_('Wrong password: "{}"') % self.package_password)
-                self.fail(_("Wrong password"))
+                self.log_error(self._('Wrong password: "{}"') % self.package_password)
+                self.fail(self._("Wrong password"))
 
             elif "captchaFail" in json_res:
                 self.retry_captcha()
 
             # Response: Error message
             elif "message" in json_res:
-                self.log_error(_("Site error: {}").format(json_res["message"]))
+                self.log_error(self._("Site error: {}").format(json_res["message"]))
                 self.retry(wait=60, msg=json_res["message"])
 
             # Response: Links
@@ -143,4 +143,4 @@ class SafelinkingNet(Crypter):
                     self.links.append(link["url"])
 
             else:
-                self.fail(_("Unexpected JSON response"))
+                self.fail(self._("Unexpected JSON response"))

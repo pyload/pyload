@@ -27,10 +27,10 @@ class DeleteFinished(Addon):
         if not self.info["sleep"]:
             deloffline = self.config.get("deloffline")
             mode = "0,1,4" if deloffline else "0,4"
-            msg = _(
+            msg = self._(
                 "delete all finished packages in queue list ({} packages with offline links)"
             )
-            self.log_info(msg % (_("including") if deloffline else _("excluding")))
+            self.log_info(msg % (self._("including") if deloffline else self._("excluding")))
             self.delete_finished(mode)
             self.info["sleep"] = True
             self.add_event("package_finished", self.wakeup)

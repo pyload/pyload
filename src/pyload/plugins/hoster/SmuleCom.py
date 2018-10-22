@@ -46,14 +46,14 @@ class SmuleCom(SimpleHoster):
         # translating the URL
         m = re.search(self.MEDIA_URL_PATTERN, self.data)
         if m is None:
-            self.fail(_("Could not find any media URLs"))
+            self.fail(self._("Could not find any media URLs"))
 
         encoded_media_url = m.group(1)
         self.log_debug("Found encoded media URL: {}".format(encoded_media_url))
 
         m = re.search(self.COMMUNITY_JS_PATTERN, self.data)
         if m is None:
-            self.fail(_("Could not find necessary javascript script to load"))
+            self.fail(self._("Could not find necessary javascript script to load"))
 
         community_js_url = m.group(1)
         self.log_debug("Found community js at {}".format(community_js_url))
@@ -66,14 +66,14 @@ class SmuleCom(SimpleHoster):
 
         m = re.search(self.JS_HEADER_PATTERN, community_js_code)
         if m is None:
-            self.fail(_("Could not parse the necessary parts off the javascript"))
+            self.fail(self._("Could not parse the necessary parts off the javascript"))
 
         decoder_function = m.group("decoder")
         initialization = m.group("initvars")
 
         m = re.search(self.JS_PROCESS_PATTERN, community_js_code)
         if m is None:
-            self.fail(_("Could not parse the processing function off the javascript"))
+            self.fail(self._("Could not parse the processing function off the javascript"))
 
         process_function = m.group(0)
 

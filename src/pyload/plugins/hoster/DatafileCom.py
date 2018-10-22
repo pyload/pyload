@@ -93,7 +93,7 @@ class DatafileCom(SimpleHoster):
 
                 elif error_code == 7:
                     wait_time = seconds_to_midnight()
-                    self.retry(wait=wait_time, msg=_("Download limit exceeded"))
+                    self.retry(wait=wait_time, msg=self._("Download limit exceeded"))
 
                 elif error_code == 9:
                     self.temp_offline()

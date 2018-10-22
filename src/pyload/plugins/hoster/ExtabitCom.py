@@ -40,7 +40,7 @@ class ExtabitCom(SimpleHoster):
 
     def handle_free(self, pyfile):
         if r">Only premium users can download this file" in self.data:
-            self.fail(_("Only premium users can download this file"))
+            self.fail(self._("Only premium users can download this file"))
 
         m = re.search(
             r"Next free download from your ip will be available in <b>(\d+)\s*minutes",
@@ -49,7 +49,7 @@ class ExtabitCom(SimpleHoster):
         if m is not None:
             self.wait(int(m.group(1)) * 60, True)
         elif "The daily downloads limit from your IP is exceeded" in self.data:
-            self.log_warning(_("You have reached your daily downloads limit for today"))
+            self.log_warning(self._("You have reached your daily downloads limit for today"))
             self.wait(seconds_to_midnight(), True)
 
         self.log_debug("URL: " + self.req.http.lastEffectiveURL)
@@ -74,10 +74,10 @@ class ExtabitCom(SimpleHoster):
             else:
                 self.retry_captcha()
         else:
-            self.error(_("Captcha"))
+            self.error(self._("Captcha"))
 
         if "href" not in res:
-            self.error(_("Bad JSON response"))
+            self.error(self._("Bad JSON response"))
 
         self.data = self.load(
             "http://extabit.com/file/{}{}".format(fileID, res["href"])
@@ -85,6 +85,6 @@ class ExtabitCom(SimpleHoster):
 
         m = re.search(self.LINK_FREE_PATTERN, self.data)
         if m is None:
-            self.error(_("LINK_FREE_PATTERN not found"))
+            self.error(self._("LINK_FREE_PATTERN not found"))
 
         self.link = m.group(1)

@@ -82,7 +82,7 @@ class XFSHoster(SimpleHoster):
 
     def _prepare(self):
         if not self.PLUGIN_DOMAIN:
-            self.fail(_("Missing PLUGIN DOMAIN"))
+            self.fail(self._("Missing PLUGIN DOMAIN"))
 
         if self.COOKIES:
             self._set_xfs_cookie()
@@ -120,14 +120,14 @@ class XFSHoster(SimpleHoster):
                 self.link = m.group(1)
                 break
         else:
-            self.error(_("Too many OPs"))
+            self.error(self._("Too many OPs"))
 
     def handle_premium(self, pyfile):
         return self.handle_free(pyfile)
 
     def handle_multi(self, pyfile):
         if not self.account:
-            self.fail(_("Only registered or premium users can use url leech feature"))
+            self.fail(self._("Only registered or premium users can use url leech feature"))
 
         #: Only tested with easybytez.com
         self.data = self.load("http://www.{}/".format(self.PLUGIN_DOMAIN))
@@ -152,7 +152,7 @@ class XFSHoster(SimpleHoster):
 
         action, inputs = self.parse_html_form("F1")
         if not inputs:
-            self.retry(msg=self.info.get("error") or _("TEXTAREA F1 not found"))
+            self.retry(msg=self.info.get("error") or self._("TEXTAREA F1 not found"))
 
         self.log_debug(inputs)
 
@@ -162,11 +162,11 @@ class XFSHoster(SimpleHoster):
             self.data = self.load(action, post=inputs)
 
         elif "Can not leech file" in stmsg:
-            self.retry(20, 3 * 60, _("Can not leech file"))
+            self.retry(20, 3 * 60, self._("Can not leech file"))
 
         elif "today" in stmsg:
             self.retry(
-                wait=seconds_to_midnight(), msg=_("You've used all Leech traffic today")
+                wait=seconds_to_midnight(), msg=self._("You've used all Leech traffic today")
             )
 
         else:
@@ -175,7 +175,7 @@ class XFSHoster(SimpleHoster):
         #: Get easybytez.com link for uploaded file
         m = re.search(self.LINK_LEECH_PATTERN, self.data)
         if m is None:
-            self.error(_("LINK_LEECH_PATTERN not found"))
+            self.error(self._("LINK_LEECH_PATTERN not found"))
 
         self.link = self.load(m.group(1), just_header=True).get("location")
 
@@ -192,7 +192,7 @@ class XFSHoster(SimpleHoster):
         if not inputs:
             action, inputs = self.parse_html_form("F1")
             if not inputs:
-                self.retry(msg=self.info.get("error") or _("TEXTAREA F1 not found"))
+                self.retry(msg=self.info.get("error") or self._("TEXTAREA F1 not found"))
 
         self.log_debug(inputs)
 
@@ -202,7 +202,7 @@ class XFSHoster(SimpleHoster):
                 if password:
                     inputs["password"] = password
                 else:
-                    self.fail(_("Missing password"))
+                    self.fail(self._("Missing password"))
 
             if not self.premium:
                 m = re.search(self.WAIT_PATTERN, self.data)

@@ -133,7 +133,7 @@ class FilecryptCc(Crypter):
 
         mirror = re.findall(self.MIRROR_PAGE_PATTERN, self.site_with_links)
 
-        self.log_info(_("Found {} mirrors").format(len(mirror)))
+        self.log_info(self._("Found {} mirrors").format(len(mirror)))
 
         for i in mirror[1:]:
             self.site_with_links = self.site_with_links + self._filecrypt_load_url(i)
@@ -148,12 +148,12 @@ class FilecryptCc(Crypter):
         ):
             return
 
-        self.log_info(_("Folder is password protected"))
+        self.log_info(self._("Folder is password protected"))
 
         password = self.get_password()
 
         if not password:
-            self.fail(_("Please enter the password in package section and try again"))
+            self.fail(self._("Please enter the password in package section and try again"))
 
         self.data = self._filecrypt_load_url(
             self.pyfile.url, post={"password": password}
@@ -184,11 +184,11 @@ class FilecryptCc(Crypter):
                     return res
 
             else:
-                self.log_warning(_("Unknown captcha found, retrying"))
+                self.log_warning(self._("Unknown captcha found, retrying"))
                 return ""
 
         else:
-            self.log_info(_("No captcha found"))
+            self.log_info(self._("No captcha found"))
             return self.data
 
     def _handle_internal_captcha(self, url):
@@ -318,7 +318,7 @@ class FilecryptCc(Crypter):
                         break
 
                 else:
-                    self.fail(_("Max captcha retries reached"))
+                    self.fail(self._("Max captcha retries reached"))
 
                 link2 = re.search('<iframe .* noresize src="(.*)"></iframe>', res)
                 if link2:

@@ -58,7 +58,7 @@ class MegaCoNzFolder(Crypter):
             )
 
         self.links = [
-            _("https://mega.co.nz/#N!{}!{}###n={}").format(
+            self._("https://mega.co.nz/#N!{}!{}###n={}").format(
                 _f["h"], get_node_key(_f["k"][_f["k"].index(":") + 1 :]), id
             )
             for _f in res["f"]

@@ -131,7 +131,7 @@ class ThreadManager(object):
         try:
             self.tryReconnect()
         except Exception as e:
-            self.log.error(_("Reconnect Failed: {}").format(str(e)))
+            self.log.error(self._("Reconnect Failed: {}").format(str(e)))
             self.reconnecting.clear()
         self.checkThreadCount()
 
@@ -185,13 +185,13 @@ class ThreadManager(object):
                 )
             else:
                 self.pyload.config.set("reconnect", "activated", False)
-                self.log.warning(_("Reconnect script not found!"))
+                self.log.warning(self._("Reconnect script not found!"))
                 return
 
         self.reconnecting.set()
 
         # Do reconnect
-        self.log.info(_("Starting reconnect"))
+        self.log.info(self._("Starting reconnect"))
 
         while [x.active.plugin.waiting for x in self.threads if x.active].count(
             True
@@ -209,7 +209,7 @@ class ThreadManager(object):
                 self.pyload.config.get("reconnect", "method"), bufsize=-1, shell=True
             )  #: , stdout=subprocess.PIPE)
         except Exception:
-            self.log.warning(_("Failed executing reconnect script!"))
+            self.log.warning(self._("Failed executing reconnect script!"))
             self.pyload.config.set("reconnect", "activated", False)
             self.reconnecting.clear()
             return
@@ -219,7 +219,7 @@ class ThreadManager(object):
         ip = self.getIP()
         self.pyload.addonManager.afterReconnecting(ip)
 
-        self.log.info(_("Reconnected, new IP: {}").format(ip))
+        self.log.info(self._("Reconnected, new IP: {}").format(ip))
 
         self.reconnecting.clear()
 
@@ -336,7 +336,7 @@ class ThreadManager(object):
                     >> 20
                 )
                 if spaceLeft < self.pyload.config.get("general", "min_free_space"):
-                    self.log.warning(_("Not enough space left on device"))
+                    self.log.warning(self._("Not enough space left on device"))
                     self.pause = True
 
                 if free and not self.pause:

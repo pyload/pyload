@@ -89,10 +89,10 @@ class IRC(object):
         Connect to the IRC server and wait for RPL_WELCOME message.
         """
         if self.connected:
-            self.plugin.log_warning(_("Already connected to server, not connecting"))
+            self.plugin.log_warning(self._("Already connected to server, not connecting"))
             return False
 
-        self.plugin.log_info(_("Connecting to: {}:{}").format(host, port))
+        self.plugin.log_info(self._("Connecting to: {}:{}").format(host, port))
 
         self.irc_sock.settimeout(30)
         self.irc_sock.connect((host, port))
@@ -118,12 +118,12 @@ class IRC(object):
                     pass
 
                 self.plugin.log_debug(
-                    _("Successfully connected to {}:{}").format(host, port)
+                    self._("Successfully connected to {}:{}").format(host, port)
                 )
 
                 return True
 
-        self.plugin.log_error(_("Connection to {}:{} failed.").format(host, port))
+        self.plugin.log_error(self._("Connection to {}:{} failed.").format(host, port))
 
         return False
 
@@ -131,14 +131,14 @@ class IRC(object):
     def disconnect_server(self):
         if self.connected:
             self.plugin.log_info(
-                _("Diconnecting from {}:{}").format(self.host, self.port)
+                self._("Diconnecting from {}:{}").format(self.host, self.port)
             )
             self.irc_sock.send("QUIT :byebye\r\n")
-            self.plugin.log_debug(_("Disconnected"))
+            self.plugin.log_debug(self._("Disconnected"))
             self.connected = False
 
         else:
-            self.plugin.log_warning(_("Not connected to server, cannot disconnect"))
+            self.plugin.log_warning(self._("Not connected to server, cannot disconnect"))
 
         self.irc_sock.close()
 
@@ -150,7 +150,7 @@ class IRC(object):
             origin, command, args = self._parse_irc_msg(line)
 
             if command == "PING":
-                self.plugin.log_debug(_("[{}] Ping? Pong!").format(args[0]))
+                self.plugin.log_debug(self._("[{}] Ping? Pong!").format(args[0]))
                 self.irc_sock.send("PONG :{}\r\n".format(args[0]))
 
             elif origin and command == "PRIVMSG":
@@ -166,7 +166,7 @@ class IRC(object):
                     if recipient[0 : len(self.nick)] == self.nick:
                         if ctcp_command == "VERSION":
                             self.plugin.log_debug(
-                                _("[{}] CTCP VERSION").format(sender_nick)
+                                self._("[{}] CTCP VERSION").format(sender_nick)
                             )
                             self.irc_sock.send(
                                 "NOTICE {} :\x01VERSION {}\x01\r\n".format(
@@ -176,7 +176,7 @@ class IRC(object):
 
                         elif ctcp_command == "TIME":
                             self.plugin.log_debug(
-                                _("[{}] CTCP TIME").format(sender_nick)
+                                self._("[{}] CTCP TIME").format(sender_nick)
                             )
                             self.irc_sock.send(
                                 "NOTICE {} :\x01{}\x01\r\n".format(
@@ -186,7 +186,7 @@ class IRC(object):
 
                         elif ctcp_command == "PING":
                             self.plugin.log_debug(
-                                _("[{}] Ping? Pong!").format(sender_nick)
+                                self._("[{}] Ping? Pong!").format(sender_nick)
                             )
                             self.irc_sock.send(
                                 "NOTICE {} :\x01PING {}\x01\r\n".format(
@@ -209,7 +209,7 @@ class IRC(object):
     def join_channel(self, chan):
         chan = "#" + chan if chan[0] != "#" else chan
 
-        self.plugin.log_info(_("Joining channel {}").format(chan))
+        self.plugin.log_info(self._("Joining channel {}").format(chan))
         self.irc_sock.send("JOIN {}\r\n".format(chan))
 
         start_time = time.time()
@@ -222,28 +222,28 @@ class IRC(object):
                 and args[1].lower() == chan.lower()
             ):
                 self.plugin.log_error(
-                    _("Cannot join channel {} (error {}: '{}')").format(
+                    self._("Cannot join channel {} (error {}: '{}')").format(
                         chan, command, args[2]
                     )
                 )
                 return False
 
             elif command == "353" and args[2].lower() == chan.lower():  #: RPL_NAMREPLY
-                self.plugin.log_debug(_("Successfully joined channel {}").format(chan))
+                self.plugin.log_debug(self._("Successfully joined channel {}").format(chan))
                 return True
 
         return False
 
     @lock
     def nickserv_identify(self, password):
-        self.plugin.log_info(_("Authenticating nickname"))
+        self.plugin.log_info(self._("Authenticating nickname"))
 
         bot = "nickserv"
         bot_host = self.get_bot_host(bot)
 
         if not bot_host:
             self.plugin.log_warning(
-                _("Server does not seems to support nickserv commands")
+                self._("Server does not seems to support nickserv commands")
             )
             return
 
@@ -271,12 +271,12 @@ class IRC(object):
                 text = str(args[1], "latin1", "replace")
 
             sender_nick = origin.split("@")[0].split("!")[0]
-            self.plugin.log_info(_("PrivMsg: <{}> {}").format(sender_nick, text))
+            self.plugin.log_info(self._("PrivMsg: <{}> {}").format(sender_nick, text))
             break
 
         else:
             self.plugin.log_warning(
-                _("'{}' did not respond to the request").format(bot)
+                self._("'{}' did not respond to the request").format(bot)
             )
 
     @lock
@@ -284,10 +284,10 @@ class IRC(object):
         bot_host = self.get_bot_host(bot)
         if bot_host:
             self.plugin.log_info(
-                _("Sending invite request for #{} to '{}'").format(chan, bot)
+                self._("Sending invite request for #{} to '{}'").format(chan, bot)
             )
         else:
-            self.plugin.log_warning(_("Cannot send invite request"))
+            self.plugin.log_warning(self._("Cannot send invite request"))
             return
 
         self.irc_sock.send(
@@ -316,21 +316,21 @@ class IRC(object):
 
             sender_nick = origin.split("@")[0].split("!")[0]
             if command == "INVITE":
-                self.plugin.log_info(_("Got invite to #{}").format(chan))
+                self.plugin.log_info(self._("Got invite to #{}").format(chan))
 
             else:
-                self.plugin.log_info(_("PrivMsg: <{}> {}").format(sender_nick, text))
+                self.plugin.log_info(self._("PrivMsg: <{}> {}").format(sender_nick, text))
 
             break
 
         else:
             self.plugin.log_warning(
-                _("'{}' did not respond to the request").format(bot)
+                self._("'{}' did not respond to the request").format(bot)
             )
 
     @lock
     def is_bot_online(self, bot):
-        self.plugin.log_info(_("Checking if bot '{}' is online").format(bot))
+        self.plugin.log_info(self._("Checking if bot '{}' is online").format(bot))
         self.irc_sock.send("WHOIS {}\r\n".format(bot))
 
         start_time = time.time()
@@ -341,7 +341,7 @@ class IRC(object):
                 and args[0] == self.nick
                 and args[1].lower() == bot.lower()
             ):  #: ERR_NOSUCHNICK
-                self.plugin.log_debug(_("Bot '{}' is offline").format(bot))
+                self.plugin.log_debug(self._("Bot '{}' is offline").format(bot))
                 return False
 
             #: RPL_WHOISUSER
@@ -350,7 +350,7 @@ class IRC(object):
                 and args[0] == self.nick
                 and args[1].lower() == bot.lower()
             ):
-                self.plugin.log_debug(_("Bot '{}' is online").format(bot))
+                self.plugin.log_debug(self._("Bot '{}' is online").format(bot))
                 self.bot_host[bot] = args[3]  #: bot host
                 return True
 
@@ -358,7 +358,7 @@ class IRC(object):
                 time.sleep(0.1)
 
         else:
-            self.plugin.log_error(_("Server did not respond in a reasonable time"))
+            self.plugin.log_error(self._("Server did not respond in a reasonable time"))
             return False
 
     @lock
@@ -376,19 +376,19 @@ class IRC(object):
 
     @lock
     def xdcc_request_pack(self, bot, pack):
-        self.plugin.log_info(_("Requesting pack #{}").format(pack))
+        self.plugin.log_info(self._("Requesting pack #{}").format(pack))
         self.xdcc_request_time = time.time()
         self.irc_sock.send("PRIVMSG {} :xdcc send #{}\r\n".format(bot, pack))
 
     @lock
     def xdcc_cancel_pack(self, bot):
         if self.xdcc_request_time:
-            self.plugin.log_info(_("Requesting XDCC cancellation"))
+            self.plugin.log_info(self._("Requesting XDCC cancellation"))
             self.xdcc_request_time = None
             self.irc_sock.send("PRIVMSG {} :xdcc cancel\r\n".format(bot))
 
         else:
-            self.plugin.log_warning(_("No XDCC request pending, cannot cancel"))
+            self.plugin.log_warning(self._("No XDCC request pending, cannot cancel"))
 
     @lock
     def xdcc_request_resume(self, bot, dcc_port, file_name, resume_position):
@@ -396,7 +396,7 @@ class IRC(object):
             bot_host = self.get_bot_host(bot)
 
             self.plugin.log_info(
-                _("Requesting XDCC resume of '{}' at position {}").format(
+                self._("Requesting XDCC resume of '{}' at position {}").format(
                     file_name, resume_position
                 )
             )
@@ -433,7 +433,7 @@ class IRC(object):
 
                     sender_nick = origin.split("@")[0].split("!")[0]
                     self.plugin.log_debug(
-                        _("PrivMsg: <{}> {}").format(sender_nick, text)
+                        self._("PrivMsg: <{}> {}").format(sender_nick, text)
                     )
 
                     m = re.match(
@@ -444,7 +444,7 @@ class IRC(object):
                     )
                     if m:
                         self.plugin.log_debug(
-                            _("Bot '{}' acknowledged resume at position {}").format(
+                            self._("Bot '{}' acknowledged resume at position {}").format(
                                 sender_nick, m.group("RESUME_POS")
                             )
                         )
@@ -454,11 +454,11 @@ class IRC(object):
                     time.sleep(0.1)
 
             self.plugin.log_warning(
-                _("Timeout while waiting for resume acknowledge, not resuming")
+                self._("Timeout while waiting for resume acknowledge, not resuming")
             )
 
         else:
-            self.plugin.log_error(_("No XDCC request pending, cannot resume"))
+            self.plugin.log_error(self._("No XDCC request pending, cannot resume"))
 
         return 0
 
@@ -466,7 +466,7 @@ class IRC(object):
     def xdcc_get_pack_info(self, bot, pack):
         bot_host = self.get_bot_host(bot)
 
-        self.plugin.log_info(_("Requesting pack #{} info").format(pack))
+        self.plugin.log_info(self._("Requesting pack #{} info").format(pack))
         self.irc_sock.send("PRIVMSG {} :xdcc info #{}\r\n".format(bot, pack))
 
         info = {}
@@ -495,17 +495,17 @@ class IRC(object):
 
                 pack_info = text.split()
                 if pack_info[0].lower() == "filename":
-                    self.plugin.log_debug(_("Filename: '{}'").format(pack_info[1]))
+                    self.plugin.log_debug(self._("Filename: '{}'").format(pack_info[1]))
                     info.update({"status": "online", "name": pack_info[1]})
 
                 elif pack_info[0].lower() == "filesize":
-                    self.plugin.log_debug(_("Filesize: '{}'").format(pack_info[1]))
+                    self.plugin.log_debug(self._("Filesize: '{}'").format(pack_info[1]))
                     info.update({"status": "online", "size": pack_info[1]})
 
                 else:
                     sender_nick = origin.split("@")[0].split("!")[0]
                     self.plugin.log_debug(
-                        _("PrivMsg: <{}> {}").format(sender_nick, text)
+                        self._("PrivMsg: <{}> {}").format(sender_nick, text)
                     )
 
             else:
@@ -516,7 +516,7 @@ class IRC(object):
 
         else:
             if len(info) == 0:
-                self.plugin.log_error(_("XDCC Bot '{}' did not answer").format(bot))
+                self.plugin.log_error(self._("XDCC Bot '{}' did not answer").format(bot))
                 return {"status": "offline", "msg": "XDCC Bot did not answer"}
 
         return info
@@ -593,7 +593,7 @@ class XDCC(Hoster):
             host, port = temp[0], 6667
 
         else:
-            self.fail(_("Invalid hostname for IRC Server: {}").format(server))
+            self.fail(self._("Invalid hostname for IRC Server: {}").format(server))
 
         nick = self.config.get("nick")
         nick_pw = self.config.get("nick_pw")
@@ -635,10 +635,10 @@ class XDCC(Hoster):
                                 break
 
                         if not self.irc_client.join_channel(chan):
-                            self.fail(_("Cannot join channel"))
+                            self.fail(self._("Cannot join channel"))
 
                         if not self.irc_client.is_bot_online(bot):
-                            self.fail(_("Bot is offline"))
+                            self.fail(self._("Bot is offline"))
 
                         self.pyfile.setStatus("waiting")
 
@@ -665,8 +665,8 @@ class XDCC(Hoster):
                                         > 90
                                     ):
                                         self.irc_client.disconnect_server()
-                                        self.log_error(_("XDCC Bot did not answer"))
-                                        self.retry(3, 60, _("XDCC Bot did not answer"))
+                                        self.log_error(self._("XDCC Bot did not answer"))
+                                        self.retry(3, 60, self._("XDCC Bot did not answer"))
 
                             origin, command, args = self.irc_client.get_irc_command()
                             self.proccess_irc_command(origin, command, args)
@@ -690,21 +690,21 @@ class XDCC(Hoster):
 
                     else:
                         self.log_error(
-                            _("Failed due to socket errors. Code: {}").format(err_no)
+                            self._("Failed due to socket errors. Code: {}").format(err_no)
                         )
                         self.fail(
-                            _("Failed due to socket errors. Code: {}").format(err_no)
+                            self._("Failed due to socket errors. Code: {}").format(err_no)
                         )
 
                 else:
                     err_msg = e.args[0]
                     self.log_error(
-                        _("Failed due to socket errors: '{}'").format(err_msg)
+                        self._("Failed due to socket errors: '{}'").format(err_msg)
                     )
-                    self.fail(_("Failed due to socket errors: '{}'").format(err_msg))
+                    self.fail(self._("Failed due to socket errors: '{}'").format(err_msg))
 
-        self.log_error(_("Server blocked our ip, retry again later manually"))
-        self.fail(_("Server blocked our ip, retry again later manually"))
+        self.log_error(self._("Server blocked our ip, retry again later manually"))
+        self.fail(self._("Server blocked our ip, retry again later manually"))
 
     def proccess_irc_command(self, origin, command, args):
         bot = self.info["pattern"]["BOT"]
@@ -733,7 +733,7 @@ class XDCC(Hoster):
             text = str(args[1], "latin1", "replace")
 
         sender_nick = origin.split("@")[0].split("!")[0]
-        self.log_debug(_("PrivMsg: <{}> {}").format(sender_nick, text))
+        self.log_debug(self._("PrivMsg: <{}> {}").format(sender_nick, text))
 
         if text in (
             "You already requested that pack",
@@ -743,12 +743,12 @@ class XDCC(Hoster):
             self.request_again = True
 
         elif "you must be on a known channel to request a pack" in text:
-            self.log_error(_("Invalid channel"))
-            self.fail(_("Invalid channel"))
+            self.log_error(self._("Invalid channel"))
+            self.fail(self._("Invalid channel"))
 
         elif "Invalid Pack Number" in text:
-            self.log_error(_("Invalid Pack Number"))
-            self.fail(_("Invalid Pack Number"))
+            self.log_error(self._("Invalid Pack Number"))
+            self.fail(self._("Invalid Pack Number"))
 
         m = re.match(
             r'\x01DCC SEND "?(?P<NAME>.*?)"? (?P<IP>\d+) (?P<PORT>\d+)(?: (?P<SIZE>\d+))?\x01',
@@ -790,7 +790,7 @@ class XDCC(Hoster):
             dl_file = os.path.join(dl_folder, self.pyfile.name)
 
             self.log_debug(
-                _("DOWNLOAD XDCC '{}' from {}:{}").format(file_name, ip, port)
+                self._("DOWNLOAD XDCC '{}' from {}:{}").format(file_name, ip, port)
             )
 
             self.pyload.addonManager.dispatchEvent(
@@ -806,7 +806,7 @@ class XDCC(Hoster):
             )
             if newname and newname != dl_file:
                 self.log_info(
-                    _("{name} saved as {newname}").format(
+                    self._("{name} saved as {newname}").format(
                         name=self.pyfile.name, newname=newname
                     )
                 )

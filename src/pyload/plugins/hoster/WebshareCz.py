@@ -55,7 +55,7 @@ class WebshareCz(SimpleHoster):
 
         else:
             info["status"] = 8
-            info["error"] = _("Could not find required xml data")
+            info["error"] = self._("Could not find required xml data")
 
         return info
 

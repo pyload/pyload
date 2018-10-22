@@ -72,7 +72,7 @@ class TXT(Container):
                 txt.close()
 
             except IOError:
-                self.log_warning(_("Failed to flush list"))
+                self.log_warning(self._("Failed to flush list"))
 
         for name, links in packages.items():
             self.packages.append((name, links, name))

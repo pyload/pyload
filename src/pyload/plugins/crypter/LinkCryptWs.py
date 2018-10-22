@@ -56,7 +56,7 @@ class LinkCryptWs(Crypter):
 
     def decrypt(self, pyfile):
         if not self.js:
-            self.fail(_("Missing JS Engine"))
+            self.fail(self._("Missing JS Engine"))
 
         self.prepare()
 
@@ -64,7 +64,7 @@ class LinkCryptWs(Crypter):
             self.offline()
 
         if self.is_key_captcha_protected():
-            self.retry(8, 15, _("Can't handle Key-Captcha"))
+            self.retry(8, 15, self._("Can't handle Key-Captcha"))
 
         if self.is_captcha_protected():
             self.unlock_captcha_protection()
@@ -135,7 +135,7 @@ class LinkCryptWs(Crypter):
                 self.pyfile.url, post={"password": password, "x": "0", "y": "0"}
             )
         else:
-            self.fail(_("Folder is password protected"))
+            self.fail(self._("Folder is password protected"))
 
     def unlock_captcha_protection(self):
         captcha_url = "http://linkcrypt.ws/captx.html?secid=id=&id="
@@ -167,7 +167,7 @@ class LinkCryptWs(Crypter):
 
     def handle_errors(self):
         if self.is_password_protected():
-            self.fail(_("Wrong password"))
+            self.fail(self._("Wrong password"))
 
     def handle_captcha_errors(self):
         if "Your choice was wrong" in self.data:
@@ -187,7 +187,7 @@ class LinkCryptWs(Crypter):
 
         else:
             # TODO: Replace with self.error in 0.6.x
-            self.fail(_("Unknown source type: {}").format(source_type))
+            self.fail(self._("Unknown source type: {}").format(source_type))
 
     def handle_web_links(self):
         self.log_debug("Search for Web links ")
@@ -251,7 +251,7 @@ class LinkCryptWs(Crypter):
             not container_type.isalnum()
         ):  #: Check to prevent broken re-pattern (cnl2, rsdf, ccf, dlc, web are all alpha-numeric)
             # TODO: Replace with self.error in 0.6.x
-            self.fail(_("Unknown container type: {}").format(container_type))
+            self.fail(self._("Unknown container type: {}").format(container_type))
 
         for line in self.container_html:
             if container_type in line:
@@ -298,7 +298,7 @@ class LinkCryptWs(Crypter):
 
         except Exception:
             self.log_error(
-                _("Unable to decrypt CNL links (JS Error) try to get over links"),
+                self._("Unable to decrypt CNL links (JS Error) try to get over links"),
                 trace=True,
             )
             return self.handle_web_links()

@@ -94,7 +94,7 @@ class BypassCaptcha(Addon):
                 },
             )
         except BadHeader as e:
-            self.log_error(_("Could not send response"), e)
+            self.log_error(self._("Could not send response"), e)
 
     def captcha_task(self, task):
         if "service" in task.data:
@@ -116,7 +116,7 @@ class BypassCaptcha(Addon):
             self._process_captcha(task)
 
         else:
-            self.log_info(_("Your account has not enough credits"))
+            self.log_info(self._("Your account has not enough credits"))
 
     def captcha_correct(self, task):
         if task.data["service"] == self.classname and "ticket" in task.data:

@@ -79,18 +79,18 @@ class ManageFiles(Handler):
 
     def renderBody(self, line):
         if self.package < 0:
-            println(line, white(_("Manage Packages:")))
+            println(line, white(self._("Manage Packages:")))
         else:
-            println(line, white((_("Manage Links:"))))
+            println(line, white((self._("Manage Links:"))))
         line += 1
 
         if self.mode:
             if self.mode == "m":
-                println(line, _("What do you want to move?"))
+                println(line, self._("What do you want to move?"))
             elif self.mode == "d":
-                println(line, _("What do you want to delete?"))
+                println(line, self._("What do you want to delete?"))
             elif self.mode == "r":
-                println(line, _("What do you want to restart?"))
+                println(line, self._("What do you want to restart?"))
 
             println(
                 line + 1,
@@ -98,11 +98,11 @@ class ManageFiles(Handler):
             )
             line += 2
         else:
-            println(line, _("Choose what you want to do or enter package number."))
+            println(line, self._("Choose what you want to do or enter package number."))
             println(
                 line + 1,
                 "{} - {}, {} - {}, {} - {}".format(
-                    mag("d"), _("delete"), mag("m"), _("move"), mag("r"), _("restart")
+                    mag("d"), self._("delete"), mag("m"), self._("move"), mag("r"), self._("restart")
                 ),
             )
             line += 2
@@ -142,8 +142,8 @@ class ManageFiles(Handler):
                 println(line, "")
                 line += 1
 
-        println(line, mag("p") + _(" - previous") + " | " + mag("n") + _(" - next"))
-        println(line + 1, mag("0.") + _(" back to main menu"))
+        println(line, mag("p") + self._(" - previous") + " | " + mag("n") + self._(" - next"))
+        println(line + 1, mag("0.") + self._(" back to main menu"))
 
         return line + 2
 

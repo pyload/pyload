@@ -91,7 +91,7 @@ class MultiAccount(Account):
 
         else:
             self.log_warning(
-                _(
+                self._(
                     "Multi-hoster feature will be deactivated due missing plugin reference"
                 )
             )
@@ -144,7 +144,7 @@ class MultiAccount(Account):
 
         except Exception as e:
             self.log_warning(
-                _("Error loading hoster list for user `{}`").format(self.user),
+                self._("Error loading hoster list for user `{}`").format(self.user),
                 e,
                 trace=True,
             )
@@ -210,7 +210,7 @@ class MultiAccount(Account):
                 self.unload_plugin(plugin)
 
         if not self.supported and not new_supported:
-            self.log_error(_("No {} loaded").format(self.plugintype))
+            self.log_error(self._("No {} loaded").format(self.plugintype))
             return
 
         #: Inject plugin plugin
@@ -227,7 +227,7 @@ class MultiAccount(Account):
 
         if excluded:
             self.log_info(
-                _("{}s not overwritten: {}").format(
+                self._("{}s not overwritten: {}").format(
                     self.plugintype.capitalize(), ", ".join(sorted(excluded))
                 )
             )
@@ -265,11 +265,11 @@ class MultiAccount(Account):
                 break
 
             except Exception as e:
-                self.log_warning(e, _("Waiting 1 minute and retry"), trace=True)
+                self.log_warning(e, self._("Waiting 1 minute and retry"), trace=True)
                 time.sleep(60)
 
         else:
-            self.log_warning(_("No hoster list retrieved"))
+            self.log_warning(self._("No hoster list retrieved"))
             return []
 
         try:
@@ -314,14 +314,14 @@ class MultiAccount(Account):
             if self.fail_count < 3:
                 if reloading:
                     self.log_error(
-                        _(
+                        self._(
                             "Could not reload hoster list - invalid account, retry in 5 minutes"
                         )
                     )
 
                 else:
                     self.log_error(
-                        _(
+                        self._(
                             "Could not load hoster list - invalid account, retry in 5 minutes"
                         )
                     )
@@ -331,14 +331,14 @@ class MultiAccount(Account):
             else:
                 if reloading:
                     self.log_error(
-                        _(
+                        self._(
                             "Could not reload hoster list - invalid account, deactivating"
                         )
                     )
 
                 else:
                     self.log_error(
-                        _("Could not load hoster list - invalid account, deactivating")
+                        self._("Could not load hoster list - invalid account, deactivating")
                     )
 
                 self.deactivate()
@@ -351,14 +351,14 @@ class MultiAccount(Account):
                 if self.fail_count < 3:
                     if reloading:
                         self.log_error(
-                            _(
+                            self._(
                                 "Could not reload hoster list - login failed, retry in 5 minutes"
                             )
                         )
 
                     else:
                         self.log_error(
-                            _(
+                            self._(
                                 "Could not load hoster list - login failed, retry in 5 minutes"
                             )
                         )
@@ -368,14 +368,14 @@ class MultiAccount(Account):
                 else:
                     if reloading:
                         self.log_error(
-                            _(
+                            self._(
                                 "Could not reload hoster list - login failed, deactivating"
                             )
                         )
 
                     else:
                         self.log_error(
-                            _("Could not load hoster list - login failed, deactivating")
+                            self._("Could not load hoster list - login failed, deactivating")
                         )
 
                     self.deactivate()
@@ -396,7 +396,7 @@ class MultiAccount(Account):
                 self.fail_count += 1
                 if self.fail_count < 3:
                     self.log_error(
-                        _(
+                        self._(
                             "Failed to load hoster list for user `{}`, retry in 5 minutes"
                         ).format(self.user)
                     )
@@ -404,7 +404,7 @@ class MultiAccount(Account):
 
                 else:
                     self.log_error(
-                        _(
+                        self._(
                             "Failed to load hoster list for user `{}`, deactivating"
                         ).format(self.user)
                     )
@@ -424,7 +424,7 @@ class MultiAccount(Account):
         """
         Remove override for all plugins.
         """
-        self.log_info(_("Reverting back to default hosters"))
+        self.log_info(self._("Reverting back to default hosters"))
 
         try:
             self.pyload.addonManager.removeEvent("plugin_updated", self.plugins_updated)

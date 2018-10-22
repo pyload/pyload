@@ -64,7 +64,7 @@ class DLC(Container):
             )
 
         except AttributeError:
-            self.fail(_("Container is corrupted"))
+            self.fail(self._("Container is corrupted"))
 
         cipher = Cipher(
             algorithms.AES(self.KEY), modes.CBC(self.IV), backend=default_backend()

@@ -36,7 +36,7 @@ class ExpertDecoders(Addon):
         )
 
         if res.isdigit():
-            self.log_info(_("{} credits left").format(res))
+            self.log_info(self._("{} credits left").format(res))
             self.info["credits"] = credits = int(res)
             return credits
         else:
@@ -85,7 +85,7 @@ class ExpertDecoders(Addon):
             self._process_captcha(task)
 
         else:
-            self.log_info(_("Your ExpertDecoders Account has not enough credits"))
+            self.log_info(self._("Your ExpertDecoders Account has not enough credits"))
 
     def captcha_invalid(self, task):
         if "ticket" in task.data:
@@ -99,7 +99,7 @@ class ExpertDecoders(Addon):
                         "gen_task_id": task.data["ticket"],
                     },
                 )
-                self.log_info(_("Request refund"), res)
+                self.log_info(self._("Request refund"), res)
 
             except BadHeader as e:
-                self.log_error(_("Could not send refund request"), e)
+                self.log_error(self._("Could not send refund request"), e)

@@ -36,7 +36,7 @@ class MyfastfileCom(MultiAccount):
             validuntil = time.time() + self.json_data["days_left"] * 24 * 60 * 60
             return {"premium": True, "validuntil": validuntil, "trafficleft": -1}
         else:
-            self.log_error(_("Unable to get account information"))
+            self.log_error(self._("Unable to get account information"))
 
     def signin(self, user, password, data):
         #: Password to use is the API-Password written in http://myfastfile.com/myaccount
@@ -48,4 +48,4 @@ class MyfastfileCom(MultiAccount):
 
         self.json_data = json.loads(html)
         if self.json_data["status"] != "ok":
-            self.fail_login(_("Invalid username or password"))
+            self.fail_login(self._("Invalid username or password"))

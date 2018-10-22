@@ -248,7 +248,7 @@ class MegaClient(object):
 
         except BadHeader as e:
             if e.code == 500:
-                self.plugin.retry(wait_time=60, reason=_("Server busy"))
+                self.plugin.retry(wait_time=60, reason=self._("Server busy"))
             else:
                 raise
 
@@ -271,11 +271,11 @@ class MegaClient(object):
 
         elif ecode in (1, 4, 6, 10, 15, 21):
             self.plugin.retry(
-                max_tries=5, wait_time=30, reason=_("Error code: [{}]").format(-ecode)
+                max_tries=5, wait_time=30, reason=self._("Error code: [{}]").format(-ecode)
             )
 
         else:
-            self.plugin.fail(_("Error code: [{}]").format(-ecode))
+            self.plugin.fail(self._("Error code: [{}]").format(-ecode))
 
 
 class MegaCoNz(Hoster):
@@ -357,26 +357,26 @@ class MegaCoNz(Hoster):
         f.close()
         df.close()
 
-        self.log_info(_("File decrypted"))
+        self.log_info(self._("File decrypted"))
         os.remove(file_crypted)
 
         if checksum_activated and check_checksum:
             file_mac = cbc_mac.digest()
             if file_mac == meta_mac:
                 self.log_info(
-                    _(
+                    self._(
                         'File integrity of "{}" verified by CBC-MAC checksum ({})'
                     ).format(self.pyfile.name.rsplit(self.FILE_SUFFIX)[0], meta_mac)
                 )
             else:
                 self.log_warning(
-                    _(
+                    self._(
                         'CBC-MAC checksum for file "{}" does not match ({} != {})'
                     ).format(
                         self.pyfile.name.rsplit(self.FILE_SUFFIX)[0], file_mac, meta_mac
                     )
                 )
-                self.checksum_failed(file_decrypted, _("Checksums do not match"))
+                self.checksum_failed(file_decrypted, self._("Checksums do not match"))
 
         self.last_download = decode(file_decrypted)
 
@@ -425,7 +425,7 @@ class MegaCoNz(Hoster):
             )
             if exists(dest_file):
                 self.pyfile.name = name
-                self.skip(_("File exists."))
+                self.skip(self._("File exists."))
 
     def process(self, pyfile):
         id = self.info["pattern"]["ID"]
@@ -434,20 +434,20 @@ class MegaCoNz(Hoster):
         owner = self.info["pattern"]["OWNER"]
 
         if not public and not owner:
-            self.log_error(_("Missing owner in URL"))
-            self.fail(_("Missing owner in URL"))
+            self.log_error(self._("Missing owner in URL"))
+            self.fail(self._("Missing owner in URL"))
 
         self.log_debug(
             "ID: {}".format(id),
-            _("Key: {}").format(key),
-            _("Type: {}").format("public" if public else "node"),
-            _("Owner: {}").format(owner),
+            self._("Key: {}").format(key),
+            self._("Type: {}").format("public" if public else "node"),
+            self._("Owner: {}").format(owner),
         )
 
         key = MegaCrypto.base64_to_a32(key)
         if len(key) != 8:
-            self.log_error(_("Invalid key length"))
-            self.fail(_("Invalid key length"))
+            self.log_error(self._("Invalid key length"))
+            self.fail(self._("Invalid key length"))
 
         mega = MegaClient(
             self, self.info["pattern"]["OWNER"] or self.info["pattern"]["ID"]
@@ -467,7 +467,7 @@ class MegaCoNz(Hoster):
 
         attr = MegaCrypto.decrypt_attr(res["at"], key)
         if not attr:
-            self.fail(_("Decryption failed"))
+            self.fail(self._("Decryption failed"))
 
         self.log_debug("Decrypted Attr: {}".format(decode(attr)))
 
@@ -480,8 +480,8 @@ class MegaCoNz(Hoster):
 
         time_left = res.get("tl", 0)
         if time_left:
-            self.log_warning(_("Free download limit reached"))
-            self.retry(wait=time_left, msg=_("Free download limit reached"))
+            self.log_warning(self._("Free download limit reached"))
+            self.retry(wait=time_left, msg=self._("Free download limit reached"))
 
         # self.req.http.c.setopt(pycurl.SSL_CIPHER_LIST, "RC4-MD5:DEFAULT")
 
@@ -490,7 +490,7 @@ class MegaCoNz(Hoster):
 
         except BadHeader as e:
             if e.code == 509:
-                self.fail(_("Bandwidth Limit Exceeded"))
+                self.fail(self._("Bandwidth Limit Exceeded"))
 
             else:
                 raise

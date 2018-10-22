@@ -49,7 +49,7 @@ class LinksnappyCom(MultiHoster):
         j = json.loads(r)["links"][0]
 
         if j["error"]:
-            self.error(_("Error converting the link"))
+            self.error(self._("Error converting the link"))
 
         pyfile.name = j["filename"]
         self.link = j["generated"]

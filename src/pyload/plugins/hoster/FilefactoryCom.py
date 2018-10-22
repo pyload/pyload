@@ -59,9 +59,9 @@ class FilefactoryCom(SimpleHoster):
 
     def handle_free(self, pyfile):
         if "Currently only Premium Members can download files larger than" in self.data:
-            self.fail(_("File too large for free download"))
+            self.fail(self._("File too large for free download"))
         elif "All free download slots on this server are currently in use" in self.data:
-            self.retry(50, 15 * 60, _("All free slots are busy"))
+            self.retry(50, 15 * 60, self._("All free slots are busy"))
 
         m = re.search(self.LINK_FREE_PATTERN, self.data)
         if m is None:
@@ -83,9 +83,9 @@ class FilefactoryCom(SimpleHoster):
 
         if check == "multiple":
             self.log_debug("Parallel downloads detected; waiting 15 minutes")
-            self.retry(wait=15 * 60, msg=_("Parallel downloads"))
+            self.retry(wait=15 * 60, msg=self._("Parallel downloads"))
 
         elif check == "error":
-            self.error(_("Unknown error"))
+            self.error(self._("Unknown error"))
 
         return SimpleHoster.check_download(self)

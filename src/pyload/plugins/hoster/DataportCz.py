@@ -40,12 +40,12 @@ class DataportCz(SimpleHoster):
         action, inputs = self.parse_html_form("free_download_form")
         self.log_debug(action, inputs)
         if not action or not inputs:
-            self.error(_("free_download_form"))
+            self.error(self._("free_download_form"))
 
         if "captchaId" in inputs and inputs["captchaId"] in captchas:
             inputs["captchaCode"] = captchas[inputs["captchaId"]]
         else:
-            self.error(_("Captcha not found"))
+            self.error(self._("Captcha not found"))
 
         self.download("http://www.dataport.cz{}".format(action, post=inputs))
 

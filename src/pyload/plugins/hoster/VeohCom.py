@@ -51,6 +51,6 @@ class VeohCom(SimpleHoster):
                 self.link = m.group(1).replace("\\", "")
                 return
             else:
-                self.log_info(_("No {} quality video found").format(q.upper()))
+                self.log_info(self._("No {} quality video found").format(q.upper()))
         else:
-            self.fail(_("No video found!"))
+            self.fail(self._("No video found!"))

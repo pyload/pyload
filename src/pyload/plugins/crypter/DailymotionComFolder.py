@@ -103,7 +103,7 @@ class DailymotionComFolder(Crypter):
             )
 
         if not playlists:
-            self.fail(_("No playlist available"))
+            self.fail(self._("No playlist available"))
 
         for p_id, p_name, p_owner in playlists:
             p_videos = self.get_videos(p_id)

@@ -66,7 +66,7 @@ class PremiumizeMe(MultiHoster):
             # self.link        = res['result']['location']
 
         elif status == 400:
-            self.fail(_("Invalid url"))
+            self.fail(self._("Invalid url"))
 
         elif status == 404:
             self.offline()

@@ -44,6 +44,6 @@ class MystoreTo(SimpleHoster):
             fid = re.search(r'wert="(.+?)"', self.data).group(1)
 
         except AttributeError:
-            self.error(_("File-ID not found"))
+            self.error(self._("File-ID not found"))
 
         self.link = self.load("http://mystore.to/api/download", post={"FID": fid})

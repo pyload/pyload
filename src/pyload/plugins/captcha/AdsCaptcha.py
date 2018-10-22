@@ -47,7 +47,7 @@ class AdsCaptcha(CaptchaService):
             server = re.search("server: '(.+?)',", html).group(1)
 
         except AttributeError:
-            self.fail(_("AdsCaptcha challenge pattern not found"))
+            self.fail(self._("AdsCaptcha challenge pattern not found"))
 
         self.log_debug("Challenge: {}".format(challenge))
 

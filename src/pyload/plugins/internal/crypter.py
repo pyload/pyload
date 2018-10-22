@@ -46,7 +46,7 @@ class Crypter(Base):
             self._generate_packages()
 
         elif not self.packages:
-            self.error(_("No link grabbed"), "decrypt")
+            self.error(self._("No link grabbed"), "decrypt")
 
         self._create_packages()
 
@@ -91,7 +91,7 @@ class Crypter(Base):
 
         for name, links, folder in self.packages:
             self.log_info(
-                _("Create package: {}").format(name), _("{} links").format(len(links))
+                self._("Create package: {}").format(name), self._("{} links").format(len(links))
             )
 
             links = list(map(self.fixurl, links))
@@ -115,7 +115,7 @@ class Crypter(Base):
                 folder = parse_name(name)
 
             self.log_info(
-                _("Save package `{name}` to folder: {folder}").format(
+                self._("Save package `{name}` to folder: {folder}").format(
                     name=name, folder=folder
                 )
             )

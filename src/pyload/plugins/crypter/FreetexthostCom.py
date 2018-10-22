@@ -35,6 +35,6 @@ class FreetexthostCom(SimpleCrypter):
             r'<div id="contentsinner">\s*(.+)<div class="viewcount">', self.data, re.S
         )
         if m is None:
-            self.error(_("Unable to extract links"))
+            self.error(self._("Unable to extract links"))
         links = m.group(1)
         return links.strip().split("<br />\r\n")

@@ -37,7 +37,7 @@ class CloudzillaTo(SimpleHoster):
             if pw:
                 self.data = self.load(self.pyfile.url, get={"key": pw})
             else:
-                self.fail(_("Missing password"))
+                self.fail(self._("Missing password"))
 
         if re.search(self.PASSWORD_PATTERN, self.data):
             self.retry(msg="Wrong password")

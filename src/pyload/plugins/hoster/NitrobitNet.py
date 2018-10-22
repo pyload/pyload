@@ -58,7 +58,7 @@ class NitrobitNet(SimpleHoster):
         if m is not None:
             validuntil = time.time() + float(m.group(1))
             self.log_info(
-                _("Account valid until {}").format(
+                self._("Account valid until {}").format(
                     time.strftime("%d/%m/%Y"), time.gmtime(validuntil)
                 )
             )
@@ -66,7 +66,7 @@ class NitrobitNet(SimpleHoster):
         m = re.search(r'id="dailyVolume" value="(\d+)?/(\d+)"', self.data)
         if m is not None:
             trafficleft = int(m.group(2)) - int((m.group(1) or "0"))
-            self.log_info(_("Daily traffic left {}").format(format_size(trafficleft)))
+            self.log_info(self._("Daily traffic left {}").format(format_size(trafficleft)))
 
         m = re.search(self.LINK_PREMIUM_PATTERN, self.data)
         if m is not None:

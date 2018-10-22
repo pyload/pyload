@@ -404,7 +404,7 @@ class Api(Iface):
         self.pyload.files.addLinks(links, pid)
 
         self.pyload.log.info(
-            _("Added package {name} containing {count:d} links").format(
+            self._("Added package {name} containing {count:d} links").format(
                 name=name, count=len(links)
             )
         )
@@ -756,7 +756,7 @@ class Api(Iface):
         self.pyload.files.addLinks(links, int(pid))
 
         self.pyload.log.info(
-            _("Added {count:d} links to package #{package:d} ").format(
+            self._("Added {count:d} links to package #{package:d} ").format(
                 count=len(links), package=pid
             )
         )

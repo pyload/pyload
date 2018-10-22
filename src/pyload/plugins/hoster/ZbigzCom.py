@@ -55,7 +55,7 @@ class ZbigzCom(Hoster):
         self.data = self.load("http://m.zbigz.com/myfiles", post={"url": pyfile.url})
 
         if "Error. Only premium members are able to download" in self.data:
-            self.fail(_("File can be downloaded by premium users only"))
+            self.fail(self._("File can be downloaded by premium users only"))
 
         m = re.search(r'&hash=(\w+)"', self.data)
         if m is None:

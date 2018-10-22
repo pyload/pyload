@@ -87,7 +87,7 @@ class MultiHoster(SimpleHoster):
                 hdict["new_module"] = tmp_module
                 hdict["new_name"] = tmp_name
 
-                self.restart(_("Revert to original hoster plugin"))
+                self.restart(self._("Revert to original hoster plugin"))
 
             else:
                 raise
@@ -100,4 +100,4 @@ class MultiHoster(SimpleHoster):
             raise NotImplementedError
 
         else:
-            self.fail(_("MultiHoster download failed"))
+            self.fail(self._("MultiHoster download failed"))

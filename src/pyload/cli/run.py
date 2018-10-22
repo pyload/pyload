@@ -84,31 +84,31 @@ def print_status(download):
 
 def print_commands():
     commands = [
-        ("status", _("Prints server status")),
-        ("queue", _("Prints downloads in queue")),
-        ("collector", _("Prints downloads in collector")),
-        ("add <name> <link1> <link2>...", _("Adds package to queue")),
-        ("add_coll <name> <link1> <link2>...", _("Adds package to collector")),
-        ("del_file <fid> <fid2>...", _("Delete Files from Queue/Collector")),
-        ("del_package <pid> <pid2>...", _("Delete Packages from Queue/Collector")),
+        ("status", self._("Prints server status")),
+        ("queue", self._("Prints downloads in queue")),
+        ("collector", self._("Prints downloads in collector")),
+        ("add <name> <link1> <link2>...", self._("Adds package to queue")),
+        ("add_coll <name> <link1> <link2>...", self._("Adds package to collector")),
+        ("del_file <fid> <fid2>...", self._("Delete Files from Queue/Collector")),
+        ("del_package <pid> <pid2>...", self._("Delete Packages from Queue/Collector")),
         (
             "move <pid> <pid2>...",
-            _("Move Packages from Queue to Collector or vice versa"),
+            self._("Move Packages from Queue to Collector or vice versa"),
         ),
-        ("restart_file <fid> <fid2>...", _("Restart files")),
-        ("restart_package <pid> <pid2>...", _("Restart packages")),
+        ("restart_file <fid> <fid2>...", self._("Restart files")),
+        ("restart_package <pid> <pid2>...", self._("Restart packages")),
         (
             "check <container|url> ...",
-            _("Check online status, works with local container"),
+            self._("Check online status, works with local container"),
         ),
-        ("check_container path", _("Checks online status of a container file")),
-        ("pause", _("Pause the server")),
-        ("unpause", _("continue downloads")),
-        ("toggle", _("Toggle pause/unpause")),
-        ("kill", _("kill server")),
+        ("check_container path", self._("Checks online status of a container file")),
+        ("pause", self._("Pause the server")),
+        ("unpause", self._("continue downloads")),
+        ("toggle", self._("Toggle pause/unpause")),
+        ("kill", self._("kill server")),
     ]
 
-    print(_("List of commands:"))
+    print(self._("List of commands:"))
     print()
     for c in commands:
         print("%-35s {}".format(c))
@@ -123,7 +123,7 @@ def writeConfig(opts):
             for opt in opts:
                 cfgfile.write("{}={}\n".format(opt, opts[opt]))
     except Exception:
-        print(_("Couldn't write user config file"))
+        print(self._("Couldn't write user config file"))
 
 
 def run(args=sys.argv[1:]):
@@ -224,7 +224,7 @@ def run(args=sys.argv[1:]):
         except WrongLogin:
             pass
         except NoSSL:
-            print(_("You need py-openssl to connect to this pyLoad Core."))
+            print(self._("You need py-openssl to connect to this pyLoad Core."))
             exit()
         except NoConnection:
             config["addr"] = False
@@ -232,25 +232,25 @@ def run(args=sys.argv[1:]):
 
         if not client:
             if not config["addr"]:
-                config["addr"] = input(_("Address: "))
+                config["addr"] = input(self._("Address: "))
             if not config["port"]:
-                config["port"] = input(_("Port: "))
+                config["port"] = input(self._("Port: "))
             if not username:
-                username = input(_("Username: "))
+                username = input(self._("Username: "))
             if not password:
                 from getpass import getpass
 
-                password = getpass(_("Password: "))
+                password = getpass(self._("Password: "))
 
             try:
                 client = ThriftClient(
                     config["addr"], int(config["port"]), username, password
                 )
             except WrongLogin:
-                print(_("Login data is wrong."))
+                print(self._("Login data is wrong."))
             except NoConnection:
                 print(
-                    _("Could not establish connection to {addr}:{port}.").format(
+                    self._("Could not establish connection to {addr}:{port}.").format(
                         addr=config["addr"], port=config["port"]
                     )
                 )
@@ -261,18 +261,18 @@ def run(args=sys.argv[1:]):
                 config["addr"], int(config["port"]), username, password
             )
         except WrongLogin:
-            print(_("Login data is wrong."))
+            print(self._("Login data is wrong."))
         except NoConnection:
             print(
-                _("Could not establish connection to {addr}:{port}.").format(
+                self._("Could not establish connection to {addr}:{port}.").format(
                     addr=config["addr"], port=config["port"]
                 )
             )
         except NoSSL:
-            print(_("You need py-openssl to connect to this pyLoad core."))
+            print(self._("You need py-openssl to connect to this pyLoad core."))
 
     if interactive and command:
-        print(_("Interactive mode ignored since you passed some commands."))
+        print(self._("Interactive mode ignored since you passed some commands."))
 
     if client:
         writeConfig(config)

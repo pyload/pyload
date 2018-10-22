@@ -52,7 +52,7 @@ class LoadTo(SimpleHoster):
         #: Search for Download URL
         m = re.search(self.LINK_FREE_PATTERN, self.data)
         if m is None:
-            self.error(_("LINK_FREE_PATTERN not found"))
+            self.error(self._("LINK_FREE_PATTERN not found"))
 
         self.link = m.group(1)
 

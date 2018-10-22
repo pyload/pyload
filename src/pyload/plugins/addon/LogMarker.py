@@ -32,10 +32,10 @@ class LogMarker(Addon):
     def periodical_task(self):
         if self.config.get("mark_day") and datetime.datetime.today().hour == 0:
             self.log_info("------------------------------------------------")
-            self.log_info(_("------------------- DAY MARK -------------------"))
+            self.log_info(self._("------------------- DAY MARK -------------------"))
             self.log_info("------------------------------------------------")
 
         elif self.config.get("mark_hour"):
             self.log_info("------------------------------------------------")
-            self.log_info(_("------------------- HOUR MARK ------------------"))
+            self.log_info(self._("------------------- HOUR MARK ------------------"))
             self.log_info("------------------------------------------------")

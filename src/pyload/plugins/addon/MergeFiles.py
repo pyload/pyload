@@ -41,7 +41,7 @@ class MergeFiles(Addon):
             dl_folder = os.path.join(dl_folder, pack.folder)
 
         for name, file_list in files.items():
-            self.log_info(_("Starting merging of"), name)
+            self.log_info(self._("Starting merging of"), name)
 
             with open(os.path.join(dl_folder, name), mode="wb") as final_file:
                 for splitted_file in file_list:
@@ -79,4 +79,4 @@ class MergeFiles(Addon):
                         pyfile.setStatus("finished")
                         pyfile.release()
 
-            self.log_info(_("Finished merging of"), name)
+            self.log_info(self._("Finished merging of"), name)

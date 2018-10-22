@@ -76,7 +76,7 @@ class MegasharesCom(SimpleHoster):
             )
 
             self.log_info(
-                _("Reactivating passport {}: {} {}").format(
+                self._("Reactivating passport {}: {} {}").format(
                     passport_num, random_num, verifyinput
                 )
             )
@@ -97,38 +97,38 @@ class MegasharesCom(SimpleHoster):
                 self.captcha.correct()
                 self.restart()
             else:
-                self.retry_captcha(msg=_("Failed to reactivate passport"))
+                self.retry_captcha(msg=self._("Failed to reactivate passport"))
 
         m = re.search(self.PASSPORT_RENEW_PATTERN, self.data)
         if m is not None:
             time = [int(x) for x in m.groups()]
             renew = time[0] + (time[1] * 60) + (time[2] * 60)
             self.log_debug("Waiting {} seconds for a new passport".format(renew))
-            self.retry(wait=renew, msg=_("Passport renewal"))
+            self.retry(wait=renew, msg=self._("Passport renewal"))
 
         #: Check traffic left on passport
         m = re.search(self.PASSPORT_LEFT_PATTERN, self.data, re.M | re.S)
         if m is None:
-            self.fail(_("Passport not found"))
+            self.fail(self._("Passport not found"))
 
-        self.log_info(_("Download passport: {}").format(m.group(1)))
+        self.log_info(self._("Download passport: {}").format(m.group(1)))
         data_left = (
             float(m.group(2)) << 10 ** {"B": 0, "KB": 1, "MB": 2, "GB": 3}[m.group(3)]
         )
         self.log_info(
-            _("Data left: {} {} ({} MiB needed)").format(
+            self._("Data left: {} {} ({} MiB needed)").format(
                 m.group(2), m.group(3), self.pyfile.size // 1_048_576
             )
         )
 
         if not data_left:
-            self.retry(wait=600, msg=_("Passport renewal"))
+            self.retry(wait=600, msg=self._("Passport renewal"))
 
         self.handle_download(False)
 
     def handle_download(self, premium=False):
         m = re.search(self.LINK_PATTERN.format(1 if premium else 2), self.data)
-        msg = _("{} download URL").format("Premium" if premium else "Free")
+        msg = self._("{} download URL").format("Premium" if premium else "Free")
         if m is None:
             self.error(msg)
 

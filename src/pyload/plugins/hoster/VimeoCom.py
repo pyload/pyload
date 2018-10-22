@@ -61,7 +61,7 @@ class VimeoCom(SimpleHoster):
             password = self.get_password()
 
             if not password:
-                self.fail(_("Video is password protected"))
+                self.fail(self._("Video is password protected"))
 
             token = re.search(r'"vimeo":{"xsrft":"(.+?)"}', self.data).group(1)
             inputs["token"] = token
@@ -70,7 +70,7 @@ class VimeoCom(SimpleHoster):
             self.data = self.load(urllib.parse.urljoin(pyfile.url, url), post=inputs)
 
             if "Sorry, that password was incorrect. Please try again." in self.data:
-                self.fail(_("Wrong password"))
+                self.fail(self._("Wrong password"))
 
         m = re.search(r"clip_page_config = ({.+?});", self.data)
         if m is None:
@@ -81,7 +81,7 @@ class VimeoCom(SimpleHoster):
         json_data = self.load(player_config_url)
 
         if not json_data.startswith("{"):
-            self.fail(_("Unexpected response, expected JSON data"))
+            self.fail(self._("Unexpected response, expected JSON data"))
 
         json_data = json.loads(json_data)
 
@@ -105,6 +105,6 @@ class VimeoCom(SimpleHoster):
                 return
 
             else:
-                self.log_info(_("No {} quality video found").format(q))
+                self.log_info(self._("No {} quality video found").format(q))
         else:
-            self.fail(_("No video found!"))
+            self.fail(self._("No video found!"))

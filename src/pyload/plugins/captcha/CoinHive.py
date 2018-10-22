@@ -68,7 +68,7 @@ class CoinHive(CaptchaService):
             self.log_debug("Key: {}".format(self.key))
             return self.key
         else:
-            self.log_warning(_("Key pattern not found"))
+            self.log_warning(self._("Key pattern not found"))
             return None
 
     def detect_hashes(self, data=None):
@@ -79,7 +79,7 @@ class CoinHive(CaptchaService):
             self.log_debug("Hashes: {}".format(self.hashes))
             return self.hashes
         else:
-            self.log_warning(_("Hashes pattern not found"))
+            self.log_warning(self._("Hashes pattern not found"))
             return None
 
     def challenge(self, key=None, hashes=None, data=None):

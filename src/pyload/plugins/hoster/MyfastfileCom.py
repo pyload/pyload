@@ -43,6 +43,6 @@ class MyfastfileCom(MultiHoster):
 
         self.data = json.loads(self.data)
         if self.data["status"] != "ok":
-            self.fail(_("Unable to unrestrict link"))
+            self.fail(self._("Unable to unrestrict link"))
 
         self.link = self.data["link"]

@@ -95,7 +95,7 @@ class SkipRev(Addon):
                 if revtokeep > -1 or pyfile.name.endswith(".rev"):
                     pyfile_new.setStatus("queued")
                 else:
-                    pyfile_new.setCustomStatus(_("unskipped"), "queued")
+                    pyfile_new.setCustomStatus(self._("unskipped"), "queued")
 
                 self.pyload.files.save()
                 pyfile_new.release()

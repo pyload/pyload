@@ -112,7 +112,7 @@ class ExternalScripts(Addon):
 
                     if not os.access(file, os.X_OK):
                         self.log_warning(
-                            _("Script `{}` is not executable").format(entry)
+                            self._("Script `{}` is not executable").format(entry)
                         )
 
                     scripts.append(file)
@@ -122,7 +122,7 @@ class ExternalScripts(Addon):
             if new_scripts:
                 script_names = list(map(os.path.basename, new_scripts))
                 self.log_info(
-                    _("Activated scripts in folder `{}`: {}").format(
+                    self._("Activated scripts in folder `{}`: {}").format(
                         folder, ", ".join(script_names)
                     )
                 )
@@ -132,7 +132,7 @@ class ExternalScripts(Addon):
             if removed_scripts:
                 script_names = list(map(os.path.basename, removed_scripts))
                 self.log_info(
-                    _("Deactivated scripts in folder `{}`: {}").format(
+                    self._("Deactivated scripts in folder `{}`: {}").format(
                         folder, ", ".join(script_names)
                     )
                 )
@@ -163,7 +163,7 @@ class ExternalScripts(Addon):
             self.log_debug("No script found under folder `{}`".format(folder))
             return
 
-        self.log_info(_("Executing scripts in folder `{}`...").format(folder))
+        self.log_info(self._("Executing scripts in folder `{}`...").format(folder))
 
         for file in scripts:
             try:
@@ -171,7 +171,7 @@ class ExternalScripts(Addon):
 
             except Exception as e:
                 self.log_error(
-                    _("Runtime error: {}").format(file), e or _("Unknown error")
+                    self._("Runtime error: {}").format(file), e or self._("Unknown error")
                 )
 
             else:

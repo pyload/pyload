@@ -50,7 +50,7 @@ class ZDF(Hoster):
 
         status = xml.findtext("./status/statuscode")
         if status != "ok":
-            self.fail(_("Error retrieving manifest"))
+            self.fail(self._("Error retrieving manifest"))
 
         video = xml.find("video")
         title = video.findtext("information/title")

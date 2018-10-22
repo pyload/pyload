@@ -60,7 +60,7 @@ class LinkFilter(Addon):
             linkstring = "" if self.config.get("filter_all") else "hoster "
             linkstring += "link" if linkcount == 1 else "links"
             self.log_warning(
-                _("Whitelist filter removed {} {} not containing ({})").format(
+                self._("Whitelist filter removed {} {} not containing ({})").format(
                     linkcount, linkstring, ", ".join(filters)
                 )
             )

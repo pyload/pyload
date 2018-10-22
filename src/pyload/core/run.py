@@ -55,7 +55,7 @@ def run(args=sys.argv[1:]):
         try:
             pyload_core.start()
         except KeyboardInterrupt:
-            pyload_core.log.info(_("killed pyLoad from Terminal"))
+            pyload_core.log.info(self._("killed pyLoad from Terminal"))
             pyload_core.shutdown()
             os._exit(1)
             

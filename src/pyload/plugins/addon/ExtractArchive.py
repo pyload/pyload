@@ -117,12 +117,12 @@ class ExtractArchive(Addon):
 
             except OSError as e:
                 if e.errno == 2:
-                    self.log_warning(_("No {} installed").format(p))
+                    self.log_warning(self._("No {} installed").format(p))
                 else:
-                    self.log_warning(_("Could not activate: {}").format(p), e)
+                    self.log_warning(self._("Could not activate: {}").format(p), e)
 
             except Exception as e:
-                self.log_warning(_("Could not activate: {}").format(p), e)
+                self.log_warning(self._("Could not activate: {}").format(p), e)
 
         if self.extractors:
             self.log_debug(
@@ -133,7 +133,7 @@ class ExtractArchive(Addon):
             )
             self.extract_queued()  #: Resume unfinished extractions
         else:
-            self.log_info(_("No Extract plugins activated"))
+            self.log_info(self._("No Extract plugins activated"))
 
     @threaded
     def extract_queued(self, thread):
@@ -236,7 +236,7 @@ class ExtractArchive(Addon):
                 self.queue.remove(pid)
                 continue
 
-            self.log_info(_("Check package: {}").format(pypack.name))
+            self.log_info(self._("Check package: {}").format(pypack.name))
 
             pack_dl_folder = os.path.join(
                 dl_folder, pypack.folder, ""
@@ -305,7 +305,7 @@ class ExtractArchive(Addon):
                                 self.log_debug(name, "File not found")
                                 continue
 
-                            self.log_info(name, _("Extract to: {}").format(fout))
+                            self.log_info(name, self._("Extract to: {}").format(fout))
                             try:
                                 pyfile = self.pyload.files.getFile(fid)
                                 archive = Extractor(
@@ -421,7 +421,7 @@ class ExtractArchive(Addon):
 
                     self.failed.add(pid)
             else:
-                self.log_info(_("No files found to extract"))
+                self.log_info(self._("No files found to extract"))
 
             if not matched or not success and subfolder:
                 try:
@@ -450,26 +450,26 @@ class ExtractArchive(Addon):
 
             for pw in passwords:
                 try:
-                    pyfile.setCustomStatus(_("archive testing"))
+                    pyfile.setCustomStatus(self._("archive testing"))
                     pyfile.setProgress(0)
                     archive.verify(pw)
                     pyfile.setProgress(100)
 
                 except PasswordError:
                     if not encrypted:
-                        self.log_info(name, _("Password protected"))
+                        self.log_info(name, self._("Password protected"))
                         encrypted = True
 
                 except CRCError as e:
                     self.log_debug(name, e)
-                    self.log_info(name, _("CRC Error"))
+                    self.log_info(name, self._("CRC Error"))
 
                     if not self.repair:
                         raise CRCError("Archive damaged")
 
                     else:
-                        self.log_warning(name, _("Repairing..."))
-                        pyfile.setCustomStatus(_("archive repairing"))
+                        self.log_warning(name, self._("Repairing..."))
+                        pyfile.setCustomStatus(self._("archive repairing"))
                         pyfile.setProgress(0)
                         repaired = archive.repair()
                         pyfile.setProgress(100)
@@ -488,7 +488,7 @@ class ExtractArchive(Addon):
                     self.add_password(pw)
                     break
 
-            pyfile.setCustomStatus(_("archive extracting"))
+            pyfile.setCustomStatus(self._("archive extracting"))
             pyfile.setProgress(0)
 
             if not encrypted or not self.config.get("usepasswordfile"):
@@ -521,7 +521,7 @@ class ExtractArchive(Addon):
             self.log_debug("Would delete: " + ", ".join(delfiles))
 
             if self.config.get("delete"):
-                self.log_info(_("Deleting {} files").format(len(delfiles)))
+                self.log_info(self._("Deleting {} files").format(len(delfiles)))
 
                 deltotrash = self.config.get("deltotrash")
                 for f in delfiles:
@@ -538,15 +538,15 @@ class ExtractArchive(Addon):
 
                         except NameError:
                             self.log_warning(
-                                _("Unable to move {} to trash").format(
+                                self._("Unable to move {} to trash").format(
                                     os.path.basename(f)
                                 ),
-                                _("Send2Trash lib not found"),
+                                self._("Send2Trash lib not found"),
                             )
 
                         except Exception as e:
                             self.log_warning(
-                                _("Unable to move {} to trash").format(
+                                self._("Unable to move {} to trash").format(
                                     os.path.basename(f)
                                 ),
                                 e,
@@ -554,30 +554,30 @@ class ExtractArchive(Addon):
 
                         else:
                             self.log_info(
-                                _("Moved {} to trash").format(os.path.basename(f))
+                                self._("Moved {} to trash").format(os.path.basename(f))
                             )
 
-            self.log_info(name, _("Extracting finished"))
+            self.log_info(name, self._("Extracting finished"))
 
             return extracted_files
 
         except PasswordError:
             self.log_error(
-                name, _("Wrong password" if password else "No password found")
+                name, self._("Wrong password" if password else "No password found")
             )
 
         except CRCError as e:
-            self.log_error(name, _("CRC mismatch"), e)
+            self.log_error(name, self._("CRC mismatch"), e)
 
         except ArchiveError as e:
-            self.log_error(name, _("Archive error"), e)
+            self.log_error(name, self._("Archive error"), e)
 
         except Exception as e:
-            self.log_error(name, _("Unknown error"), e)
+            self.log_error(name, self._("Unknown error"), e)
 
         self.m.dispatchEvent("archive_extract_failed", pyfile, archive)
 
-        raise Exception(_("Extract failed"))
+        raise Exception(self._("Extract failed"))
 
     #: Deprecated method, use `get_passwords` instead
     @Expose

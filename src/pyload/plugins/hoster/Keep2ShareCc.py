@@ -75,10 +75,10 @@ class Keep2ShareCc(SimpleHoster):
         file_id = self.info["pattern"]["ID"]
 
         if self.info["access"] == "premium":
-            self.fail(_("File can be downloaded by premium users only"))
+            self.fail(self._("File can be downloaded by premium users only"))
 
         elif self.info["access"] == "private":
-            self.fail(_("This is a private file"))
+            self.fail(self._("This is a private file"))
 
         try:
             json_data = self.api_response(
@@ -93,7 +93,7 @@ class Keep2ShareCc(SimpleHoster):
                 for i in range(10):
                     json_data = self.api_response("RequestCaptcha")
                     if json_data["code"] != 200:
-                        self.fail(_("Request captcha API failed"))
+                        self.fail(self._("Request captcha API failed"))
 
                     captcha_response = self.captcha.decrypt(json_data["captcha_url"])
                     try:
@@ -130,7 +130,7 @@ class Keep2ShareCc(SimpleHoster):
                         break
 
                 else:
-                    self.fail(_("Max captcha retries reached"))
+                    self.fail(self._("Max captcha retries reached"))
 
                 self.wait(json_data["time_wait"])
 
@@ -155,7 +155,7 @@ class Keep2ShareCc(SimpleHoster):
         file_id = self.info["pattern"]["ID"]
 
         if self.info["access"] == "private":
-            self.fail(_("This is a private file"))
+            self.fail(self._("This is a private file"))
 
         json_data = self.api_response(
             "GetUrl",

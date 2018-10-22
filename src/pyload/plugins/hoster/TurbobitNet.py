@@ -81,7 +81,7 @@ class TurbobitNet(SimpleHoster):
 
         action, inputs = self.parse_html_form("action='#'")
         if not inputs:
-            self.error(_("Captcha form not found"))
+            self.error(self._("Captcha form not found"))
 
         self.log_debug(inputs)
 
@@ -93,7 +93,7 @@ class TurbobitNet(SimpleHoster):
         else:
             m = re.search(self.CAPTCHA_PATTERN, self.data)
             if m is None:
-                self.error(_("Captcha pattern not found"))
+                self.error(self._("Captcha pattern not found"))
             captcha_url = m.group(1)
             inputs["captcha_response"] = self.captcha.decrypt(captcha_url)
 
@@ -132,7 +132,7 @@ class TurbobitNet(SimpleHoster):
             self.db.store("timestamp", timestamp())
             self.db.store("version", self.__version__)
         else:
-            self.log_error(_("Unable to download, wait for update..."))
+            self.log_error(self._("Unable to download, wait for update..."))
             self.temp_offline()
 
         return rtUpdate

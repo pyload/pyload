@@ -5,8 +5,8 @@
 {% endblock %}
 
 
-{% block title %}{{ _("Administrate") }} - {{ super() }} {% endblock %}
-{% block subtitle %}{{ _("Administrate") }}{% endblock %}
+{% block title %}{{ self._("Administrate") }} - {{ super() }} {% endblock %}
+{% block subtitle %}{{ self._("Administrate") }}{% endblock %}
 
 {% block content %}
     <div class="btn-group">
@@ -16,31 +16,31 @@
     <br>
     <br>
 
-    {{ _("To add user or change passwords use:") }} <b>python pyLoadCore.py -u</b><br>
-    {{ _("Important: Admin user have always all permissions!") }}
+    {{ self._("To add user or change passwords use:") }} <b>python pyLoadCore.py -u</b><br>
+    {{ self._("Important: Admin user have always all permissions!") }}
 <br>
 <br>
     <form action="" method="POST" >
         <table class="settable table" style="width:50%;">
             <thead>
             <th>
-                {{ _("Name") }}
+                {{ self._("Name") }}
             </th>
             <th>
-                {{ _("Change Password") }}
+                {{ self._("Change Password") }}
             </th>
             <th>
-                {{ _("Admin") }}
+                {{ self._("Admin") }}
             </th>
             <th>
-                {{ _("Permissions") }}
+                {{ self._("Permissions") }}
             </th>
             </thead>
 
             {% for name, data in users.iteritems() %}
                 <tr>
                     <td>{{ name }}</td>
-                    <td><a class="change_password btn btn-default btn-xs" href="#" id="change_pw|{{name}}"><span class="glyphicon glyphicon-pencil"></span> {{ _("change") }}</a></td>
+                    <td><a class="change_password btn btn-default btn-xs" href="#" id="change_pw|{{name}}"><span class="glyphicon glyphicon-pencil"></span> {{ self._("change") }}</a></td>
                     <td><input name="{{ name }}|admin" type="checkbox" {% if data.perms.admin %} checked="True" {% endif %}></td>
                     <td>
                         <select multiple="multiple" size="{{ permlist|length }}" name="{{ name }}|perms">
@@ -59,40 +59,40 @@
 
         </table>
 
-        <button class="btn btn-primary" type="submit">{{ _("Submit") }}</button>
+        <button class="btn btn-primary" type="submit">{{ self._("Submit") }}</button>
     </form>
 {% endblock %}
 {% block hidden %}
     <div id="password_box" style="z-index: 2">
         <form id="password_form" class="from-group" action="{{'/json/change_password'}}" method="POST" enctype="multipart/form-data">
-            <h3>{{ _("Change Password") }}</h3>
-            <p>{{ _("Enter your current and desired Password.") }}</p>
+            <h3>{{ self._("Change Password") }}</h3>
+            <p>{{ self._("Enter your current and desired Password.") }}</p>
 
 <div class="form-group">
-    <label for="user_login">{{ _("User") }}</label>
+    <label for="user_login">{{ self._("User") }}</label>
     <input class="form-control" id="user_login" name="user_login" type="text"/>
-    <p class="help-block">{{ _("Your username.") }}</p>
+    <p class="help-block">{{ self._("Your username.") }}</p>
   </div>
   <div class="form-group">
-      <label for="login_current_password">{{ _("Current password") }}</label>
+      <label for="login_current_password">{{ self._("Current password") }}</label>
       <input class="form-control" id="login_current_password" name="login_current_password" type="password"/>
-      <p class="help-block">{{ _("The password for this account.") }}</p>
+      <p class="help-block">{{ self._("The password for this account.") }}</p>
   </div>
   <div class="form-group">
-        <label for="login_new_password">{{ _("New password") }}</label>
+        <label for="login_new_password">{{ self._("New password") }}</label>
         <input class="form-control" id="login_new_password" name="login_new_password" type="password"/>
-        <p class="help-block">{{ _("The new password.") }}</p>
+        <p class="help-block">{{ self._("The new password.") }}</p>
   </div>
   <div class="form-group">
-        <label for="login_new_password2">{{ _("New password (repeat)") }}</label>
+        <label for="login_new_password2">{{ self._("New password (repeat)") }}</label>
         <input class="form-control" id="login_new_password2" name="login_new_password2" type="password" />
-        <p class="help-block">{{ _("Please repeat the new password.") }}</p>
+        <p class="help-block">{{ self._("Please repeat the new password.") }}</p>
   </div>
 
 
 
-            <button class="btn btn-primary" id="login_password_button" type="submit" style="float: right">{{ _("Submit") }}</button>
-            <button class="btn btn-default" id="login_password_reset" style="margin-right: 5px; float: right" type="reset">{{ _("Reset") }}</button>
+            <button class="btn btn-primary" id="login_password_button" type="submit" style="float: right">{{ self._("Submit") }}</button>
+            <button class="btn btn-default" id="login_password_reset" style="margin-right: 5px; float: right" type="reset">{{ self._("Reset") }}</button>
             <div class="spacer"></div>
         </form>
 

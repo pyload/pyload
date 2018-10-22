@@ -40,13 +40,13 @@ class UploadgigCom(SimpleHoster):
     def handle_free(self, pyfile):
         url, inputs = self.parse_html_form('id="dl_captcha_form"')
         if inputs is None:
-            self.error(_("Free download form not found"))
+            self.error(self._("Free download form not found"))
 
         recaptcha = ReCaptcha(pyfile)
 
         captcha_key = recaptcha.detect_key()
         if captcha_key is None:
-            self.error(_("ReCaptcha key not found"))
+            self.error(self._("ReCaptcha key not found"))
 
         self.captcha = recaptcha
         response, challenge = recaptcha.challenge(captcha_key)

@@ -97,7 +97,7 @@ class Hoster(Base):
             self.pyfile.setStatus("starting")
 
             try:
-                self.log_info(_("Processing url: ") + self.pyfile.url)
+                self.log_info(self._("Processing url: ") + self.pyfile.url)
                 self.process(self.pyfile)
                 self.check_status()
 
@@ -105,9 +105,9 @@ class Hoster(Base):
 
             except Fail as e:  # TODO: Move to PluginThread in 0.6.x
                 self.log_warning(
-                    _("Premium download failed")
+                    self._("Premium download failed")
                     if self.premium
-                    else _("Free download failed"),
+                    else self._("Free download failed"),
                     e,
                 )
                 if (
@@ -242,7 +242,7 @@ class Hoster(Base):
 
         except IOError as e:
             self.log_error(e)
-            self.fail(_("IOError {}").format(e.errno))
+            self.fail(self._("IOError {}").format(e.errno))
 
         except BadHeader as e:
             self.req.http.code = e.code
@@ -254,7 +254,7 @@ class Hoster(Base):
                 if self.remove(bad_file):
                     return ""
             else:
-                self.log_info(_("File saved"))
+                self.log_info(self._("File saved"))
 
             return newname
 
@@ -338,12 +338,12 @@ class Hoster(Base):
 
                 except OSError as e:
                     self.log_warning(
-                        _("Error renaming `{}` to `{}`").format(newname, safename), e
+                        self._("Error renaming `{}` to `{}`").format(newname, safename), e
                     )
                     safename = newname
 
                 self.log_info(
-                    _("`{}` saved as `{}`").format(self.pyfile.name, safename)
+                    self._("`{}` saved as `{}`").format(self.pyfile.name, safename)
                 )
 
             self.pyfile.name = safename
@@ -369,7 +369,7 @@ class Hoster(Base):
         dl_file = encode(self.last_download)  # TODO: Recheck in 0.6.x
 
         if not self.last_download:
-            self.log_warning(_("No file to scan"))
+            self.log_warning(self._("No file to scan"))
             return
 
         with open(dl_file, mode="rb") as f:
@@ -389,25 +389,25 @@ class Hoster(Base):
                     return name
 
     def _check_download(self):
-        self.log_info(_("Checking download..."))
-        self.pyfile.setCustomStatus(_("checking"))
+        self.log_info(self._("Checking download..."))
+        self.pyfile.setCustomStatus(self._("checking"))
 
         if not self.last_download:
             if self.captcha.task:
                 self.retry_captcha()
             else:
-                self.error(_("No file downloaded"))
+                self.error(self._("No file downloaded"))
 
         elif self.scan_download({"Empty file": re.compile(r"\A((.|)(\2|\s)*)\Z")}):
             if self.remove(self.last_download):
                 self.last_download = ""
-            self.error(_("Empty file"))
+            self.error(self._("Empty file"))
 
         else:
             self.pyload.addonManager.dispatchEvent("download_check", self.pyfile)
             self.check_status()
 
-        self.log_info(_("File is OK"))
+        self.log_info(self._("File is OK"))
 
     def out_of_traffic(self):
         if not self.account:
@@ -425,8 +425,8 @@ class Hoster(Base):
             # TODO: Rewrite in 0.6.x
             size = self.pyfile.size >> 10
             self.log_info(
-                _("Filesize: {} KiB").format(size),
-                _("Traffic left for user `{}`: {} KiB").format(
+                self._("Filesize: {} KiB").format(size),
+                self._("Traffic left for user `{}`: {} KiB").format(
                     self.account.user, traffic
                 ),
             )
@@ -439,10 +439,10 @@ class Hoster(Base):
     # :param file_size: expected file size
     # :param size_tolerance: size check tolerance
     # """
-    # self.log_info(_("Checking file size..."))
+    # self.log_info(self._("Checking file size..."))
 
     # if not self.last_download:
-    # self.log_warning(_("No file to check"))
+    # self.log_warning(self._("No file to check"))
     # return
 
     # dl_file = encode(self.last_download)
@@ -451,22 +451,22 @@ class Hoster(Base):
     # try:
     # if dl_size == 0:
     # delete = True
-    # self.fail(_("Empty file"))
+    # self.fail(self._("Empty file"))
 
     # elif file_size > 0:
     # diff = abs(file_size - dl_size)
 
     # if diff > size_tolerance:
-    # self.fail(_("File size mismatch | Expected file size: {} bytes | Downloaded file size: {} bytes").format((file_size), dl_size))
+    # self.fail(self._("File size mismatch | Expected file size: {} bytes | Downloaded file size: {} bytes").format((file_size), dl_size))
 
     # elif diff != 0:
-    # self.log_warning(_("File size is not equal to expected download size, but does not exceed the tolerance threshold"))
+    # self.log_warning(self._("File size is not equal to expected download size, but does not exceed the tolerance threshold"))
     # self.log_debug("Expected file size: {} bytes".format(file_size)
     # "Downloaded file size: {} bytes".format(dl_size)
     # "Tolerance threshold: {} bytes".format(size_tolerance))
     # else:
     # delete = False
-    # self.log_info(_("File size match"))
+    # self.log_info(self._("File size match"))
 
     # finally:
     # if delete:
@@ -475,10 +475,10 @@ class Hoster(Base):
     # def check_hash(self, type, digest, delete=False):
     # hashtype = type.strip('-').upper()
 
-    # self.log_info(_("Checking file hashsum {}...").format(hashtype))
+    # self.log_info(self._("Checking file hashsum {}...").format(hashtype))
 
     # if not self.last_download:
-    # self.log_warning(_("No file to check"))
+    # self.log_warning(self._("No file to check"))
     # return
 
     # dl_file = encode(self.last_download)
@@ -488,14 +488,14 @@ class Hoster(Base):
     # file_hash = compute_checksum(dl_file, hashtype)
 
     # if not file_hash:
-    # self.fail(_("Unsupported hashing algorithm: ") + hashtype)
+    # self.fail(self._("Unsupported hashing algorithm: ") + hashtype)
 
     # elif dl_hash == file_hash:
     # delete = False
-    # self.log_info(_("File hashsum {} match").format(hashtype))
+    # self.log_info(self._("File hashsum {} match").format(hashtype))
 
     # else:
-    # self.fail(_("File hashsum {} mismatch | Expected file hashsum: {} | Downloaded file hashsum: {}").format(hashtype, dl_hash, file_hash))
+    # self.fail(self._("File hashsum {} mismatch | Expected file hashsum: {} | Downloaded file hashsum: {}").format(hashtype, dl_hash, file_hash))
     # finally:
     # if delete:
     # self.remove(dl_file, trash=False)
@@ -537,7 +537,7 @@ class Hoster(Base):
             plugin = self.pyload.db.findDuplicates(
                 self.pyfile.id, pack_folder, self.pyfile.name
             )
-            msg = plugin[0] if plugin else _("File exists")
+            msg = plugin[0] if plugin else self._("File exists")
             self.skip(msg)
 
         else:

@@ -20,13 +20,13 @@ class UnSkipOnFail(Addon):
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
     def download_failed(self, pyfile):
-        msg = _("Looking for skipped duplicates of: {} (pid:{})")
+        msg = self._("Looking for skipped duplicates of: {} (pid:{})")
         self.log_info(msg.format(pyfile.name, pyfile.package().id))
 
         link = self.find_duplicate(pyfile)
         if link:
             self.log_info(
-                _("Queue found duplicate: {} (pid:{})").format(
+                self._("Queue found duplicate: {} (pid:{})").format(
                     link.name, link.packageID
                 )
             )
@@ -40,13 +40,13 @@ class UnSkipOnFail(Addon):
             #: The pyload.files-manager to save its data.
             pyfile_new = self._create_pyFile(link)
 
-            pyfile_new.setCustomStatus(_("unskipped"), "queued")
+            pyfile_new.setCustomStatus(self._("unskipped"), "queued")
 
             self.pyload.files.save()
             pyfile_new.release()
 
         else:
-            self.log_info(_("No duplicates found"))
+            self.log_info(self._("No duplicates found"))
 
     def find_duplicate(self, pyfile):
         """

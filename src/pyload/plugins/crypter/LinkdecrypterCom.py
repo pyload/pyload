@@ -59,7 +59,7 @@ class LinkdecrypterCom(MultiCrypter):
 
                 m = re.search(r"<p><i><b>(.+?)</b></i></p>", self.data)
                 msg = m.group(1) if m else ""
-                self.log_info(_("Captcha protected link"), result_type, msg)
+                self.log_info(self._("Captcha protected link"), result_type, msg)
 
                 captcha = self.captcha.decrypt(captcha_url, output_type=result_type)
                 if result_type == "positional":
@@ -72,12 +72,12 @@ class LinkdecrypterCom(MultiCrypter):
             elif self.PASSWORD_PATTERN in self.data:
                 password = self.get_password()
                 if password:
-                    self.log_info(_("Password protected link"))
+                    self.log_info(self._("Password protected link"))
                     self.data = self.load(
                         "http://linkdecrypter.com/", post={"password": password}
                     )
                 else:
-                    self.fail(_("Missing password"))
+                    self.fail(self._("Missing password"))
 
             else:
                 retries -= 1

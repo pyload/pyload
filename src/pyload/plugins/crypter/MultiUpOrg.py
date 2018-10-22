@@ -75,7 +75,7 @@ class MultiUpOrg(SimpleCrypter):
                         and "Please enable JavaScript to get a reCAPTCHA challenge"
                         in e.content
                     ):
-                        self.log_warning(_("Unsupported reCAPTCHA, retrying"))
+                        self.log_warning(self._("Unsupported reCAPTCHA, retrying"))
                         self.retry()
 
                     else:

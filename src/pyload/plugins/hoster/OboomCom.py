@@ -61,7 +61,7 @@ class OboomCom(Hoster):
             if "session" in accountInfo:
                 self.session_token = accountInfo["session"]
             else:
-                self.fail(_("Could not retrieve premium session"))
+                self.fail(self._("Could not retrieve premium session"))
         else:
             apiUrl = "http://www.oboom.com/1.0/guestsession"
             result = self.load_url(apiUrl)
@@ -69,7 +69,7 @@ class OboomCom(Hoster):
                 self.session_token = result[1]
             else:
                 self.fail(
-                    _("Could not retrieve token for guest session. Error code: {}")
+                    self._("Could not retrieve token for guest session. Error code: {}")
                     % result[0]
                 )
 
@@ -106,7 +106,7 @@ class OboomCom(Hoster):
             self.retry()
 
         elif result[0] == 400 and result[1] == "forbidden":
-            self.retry(5, 15 * 60, _("Service unavailable"))
+            self.retry(5, 15 * 60, self._("Service unavailable"))
 
         else:
             self.retry_captcha()
@@ -125,7 +125,7 @@ class OboomCom(Hoster):
                 self.offline()
         else:
             self.fail(
-                _("Could not retrieve file info. Error code {}: {}").format(
+                self._("Could not retrieve file info. Error code {}: {}").format(
                     result[0], result[1]
                 )
             )
@@ -144,8 +144,8 @@ class OboomCom(Hoster):
             self.download_domain = result[1]
             self.download_ticket = result[2]
         elif result[0] == 421:
-            self.retry(wait=result[2] + 60, msg=_("Connection limit exceeded"))
+            self.retry(wait=result[2] + 60, msg=self._("Connection limit exceeded"))
         else:
             self.fail(
-                _("Could not retrieve download ticket. Error code: {}") % result[0]
+                self._("Could not retrieve download ticket. Error code: {}") % result[0]
             )

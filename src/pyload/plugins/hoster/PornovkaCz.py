@@ -30,16 +30,16 @@ class PornovkaCz(Hoster):
         pornovka_resp = self.load(pyfile.url)
         data_url = re.findall(r'data-url="([^"]+)', pornovka_resp)
         if not data_url:
-            self.error(_("Data url not found"))
+            self.error(self._("Data url not found"))
 
         data_resp = self.load(data_url[0])
         video_url = re.findall(r"""src=.([^'"]+).></video>""", data_resp)
         if not video_url:
-            self.error(_("Video url not found"))
+            self.error(self._("Video url not found"))
 
         # ascii codec can't encode character...
         self.pyfile.name = re.search(self.NAME_PATTERN, pornovka_resp).group(1)
         self.pyfile.name += "." + video_url[0].split(".")[-1]
 
-        self.log_info(_("Downloading file..."))
+        self.log_info(self._("Downloading file..."))
         self.download(video_url[0])

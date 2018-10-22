@@ -38,7 +38,7 @@ class SoundcloudCom(SimpleHoster):
             song_id = re.search(r'sounds:(\d+)"', self.data).group(1)
 
         except Exception:
-            self.error(_("Could not find song id"))
+            self.error(self._("Could not find song id"))
 
         try:
             script = re.search(

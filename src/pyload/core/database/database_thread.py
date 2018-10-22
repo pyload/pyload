@@ -160,7 +160,7 @@ class DatabaseThread(Thread):
             if v < 2:
                 try:
                     self.m.pyload.log.warning(
-                        _("Filedatabase was deleted due to incompatible version.")
+                        self._("Filedatabase was deleted due to incompatible version.")
                     )
                 except Exception:
                     print("Filedatabase was deleted due to incompatible version.")
@@ -175,7 +175,7 @@ class DatabaseThread(Thread):
             getattr(self, "_convertV{}".format(v))()
         except Exception:
             try:
-                self.pyload.log.error(_("Filedatabase could NOT be converted."))
+                self.pyload.log.error(self._("Filedatabase could NOT be converted."))
             except Exception:
                 print("Filedatabase could NOT be converted.")
 
@@ -186,7 +186,7 @@ class DatabaseThread(Thread):
             'CREATE TABLE IF NOT EXISTS "storage" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "identifier" TEXT NOT NULL, "key" TEXT NOT NULL, "value" TEXT DEFAULT "")'
         )
         try:
-            self.m.pyload.log.info(_("Database was converted from v2 to v3."))
+            self.m.pyload.log.info(self._("Database was converted from v2 to v3."))
         except Exception:
             print("Database was converted from v2 to v3.")
         self._convertV3()
@@ -196,7 +196,7 @@ class DatabaseThread(Thread):
             'CREATE TABLE IF NOT EXISTS "users" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "name" TEXT NOT NULL, "email" TEXT DEFAULT "" NOT NULL, "password" TEXT NOT NULL, "role" INTEGER DEFAULT 0 NOT NULL, "permission" INTEGER DEFAULT 0 NOT NULL, "template" TEXT DEFAULT "default" NOT NULL)'
         )
         try:
-            self.m.pyload.log.info(_("Database was converted from v3 to v4."))
+            self.m.pyload.log.info(self._("Database was converted from v3 to v4."))
         except Exception:
             print("Database was converted from v3 to v4.")
 
@@ -254,7 +254,7 @@ class DatabaseThread(Thread):
     def _migrateUser(self):
         if os.path.exists("pyload.db"):
             try:
-                self.pyload.log.info(_("Converting old Django DB"))
+                self.pyload.log.info(self._("Converting old Django DB"))
             except Exception:
                 print("Converting old Django DB")
             with sqlite3.connect("pyload.db", isolation_level=None) as conn:

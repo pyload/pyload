@@ -91,4 +91,4 @@ class FiregetCom(SimpleHoster):
 
         if check == "wrong_captcha":
             self.captcha.invalid()
-            self.retry(msg=_("Wrong captcha code"))
+            self.retry(msg=self._("Wrong captcha code"))

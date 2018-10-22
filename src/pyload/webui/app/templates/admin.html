@@ -5,8 +5,8 @@
 {% endblock %}
 
 
-{% block title %}{{ _("Administrate") }} - {{ super() }} {% endblock %}
-{% block subtitle %}{{ _("Administrate") }}{% endblock %}
+{% block title %}{{ self._("Administrate") }} - {{ super() }} {% endblock %}
+{% block subtitle %}{{ self._("Administrate") }}{% endblock %}
 
 {% block content %}
 
@@ -15,30 +15,30 @@
     <br>
     <br>
 
-    {{ _("To add user or change passwords use:") }} <b>pyLoad -u</b><br>
-    {{ _("Important: Admin user have always all permissions!") }}
+    {{ self._("To add user or change passwords use:") }} <b>pyLoad -u</b><br>
+    {{ self._("Important: Admin user have always all permissions!") }}
 
     <form action="" method="POST">
         <table class="settable wide">
             <thead style="font-size: 11px">
             <th>
-                {{ _("Name") }}
+                {{ self._("Name") }}
             </th>
             <th>
-                {{ _("Change Password") }}
+                {{ self._("Change Password") }}
             </th>
             <th>
-                {{ _("Admin") }}
+                {{ self._("Admin") }}
             </th>
             <th>
-                {{ _("Permissions") }}
+                {{ self._("Permissions") }}
             </th>
             </thead>
 
             {% for name, data in users.iteritems() %}
                 <tr>
                     <td>{{ name }}</td>
-                    <td><a class="change_password" href="#" id="change_pw|{{name}}">{{ _("change") }}</a></td>
+                    <td><a class="change_password" href="#" id="change_pw|{{name}}">{{ self._("change") }}</a></td>
                     <td><input name="{{ name }}|admin" type="checkbox" {% if data.perms.admin %}
                                checked="True" {% endif %}"></td>
                     <td>
@@ -58,38 +58,38 @@
 
         </table>
 
-        <button class="styled_button" type="submit">{{ _("Submit") }}</button>
+        <button class="styled_button" type="submit">{{ self._("Submit") }}</button>
     </form>
 {% endblock %}
 {% block hidden %}
     <div id="password_box" class="window_box" style="z-index: 2">
         <form id="password_form" action="{{'/json/change_password'}}" method="POST" enctype="multipart/form-data">
-            <h1>{{ _("Change Password") }}</h1>
+            <h1>{{ self._("Change Password") }}</h1>
 
-            <p>{{ _("Enter your current and desired Password.") }}</p>
-            <label for="user_login">{{ _("User") }}
-                <span class="small">{{ _("Your username.") }}</span>
+            <p>{{ self._("Enter your current and desired Password.") }}</p>
+            <label for="user_login">{{ self._("User") }}
+                <span class="small">{{ self._("Your username.") }}</span>
             </label>
             <input id="user_login" name="user_login" type="text" size="20"/>
 
-            <label for="login_current_password">{{ _("Current password") }}
-                <span class="small">{{ _("The password for this account.") }}</span>
+            <label for="login_current_password">{{ self._("Current password") }}
+                <span class="small">{{ self._("The password for this account.") }}</span>
             </label>
             <input id="login_current_password" name="login_current_password" type="password" size="20"/>
 
-            <label for="login_new_password">{{ _("New password") }}
-                <span class="small">{{ _("The new password.") }}</span>
+            <label for="login_new_password">{{ self._("New password") }}
+                <span class="small">{{ self._("The new password.") }}</span>
             </label>
             <input id="login_new_password" name="login_new_password" type="password" size="20"/>
 
-            <label for="login_new_password2">{{ _("New password (repeat)") }}
-                <span class="small">{{ _("Please repeat the new password.") }}</span>
+            <label for="login_new_password2">{{ self._("New password (repeat)") }}
+                <span class="small">{{ self._("Please repeat the new password.") }}</span>
             </label>
             <input id="login_new_password2" name="login_new_password2" type="password" size="20"/>
 
 
-            <button id="login_password_button" type="submit">{{ _("Submit") }}</button>
-            <button id="login_password_reset" style="margin-left: 0" type="reset">{{ _("Reset") }}</button>
+            <button id="login_password_button" type="submit">{{ self._("Submit") }}</button>
+            <button id="login_password_reset" style="margin-left: 0" type="reset">{{ self._("Reset") }}</button>
             <div class="spacer"></div>
 
         </form>

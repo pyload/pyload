@@ -49,7 +49,7 @@ class TurbobitNet(Account):
             'class="form-horizontal login mail"', self.data
         )
         if not inputs:
-            self.fail_login(_("Login form not found"))
+            self.fail_login(self._("Login form not found"))
 
         inputs["user[login]"] = user
         inputs["user[pass]"] = password
@@ -57,7 +57,7 @@ class TurbobitNet(Account):
 
         if inputs.get("user[captcha_type]"):
             self.fail_login(
-                _(
+                self._(
                     "Logging in with captcha is not supported, please disable catcha in turbobit's account settings"
                 )
             )
@@ -72,10 +72,10 @@ class TurbobitNet(Account):
 
         elif ">Please enter the captcha code.</div>" in self.data:
             self.fail_login(
-                _(
+                self._(
                     "Logging in with captcha is not supported, please disable catcha in turbobit's account settings"
                 )
             )
 
         else:
-            self.fail_login(_("Unknown response"))
+            self.fail_login(self._("Unknown response"))

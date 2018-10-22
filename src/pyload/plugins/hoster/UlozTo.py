@@ -73,7 +73,7 @@ class UlozTo(SimpleHoster):
     def adult_confirmation(self, pyfile):
         if re.search(self.ADULT_PATTERN, self.data):
             adult = True
-            self.log_info(_("Adult content confirmation needed"))
+            self.log_info(self._("Adult content confirmation needed"))
 
             url = pyfile.url.replace("ulozto.net", "pornfile.cz")
             self.load(
@@ -99,7 +99,7 @@ class UlozTo(SimpleHoster):
             'id="frm-download-freeDownloadTab-freeDownloadForm"'
         )
         if not action or not inputs:
-            self.error(_("Free download form not found"))
+            self.error(self._("Free download form not found"))
 
         self.log_debug("inputs.keys = {}".format(list(inputs.keys())))
         #: Get and decrypt captcha
@@ -184,7 +184,7 @@ class UlozTo(SimpleHoster):
             )
 
         else:
-            self.error(_("CAPTCHA form changed"))
+            self.error(self._("CAPTCHA form changed"))
 
         domain = "https://pornfile.cz" if is_adult else "https://ulozto.net"
         jsvars = self.get_json_response(domain + action, inputs)
@@ -199,7 +199,7 @@ class UlozTo(SimpleHoster):
             password = self.get_password()
 
             if password:
-                self.log_info(_("Password protected link, trying ") + password)
+                self.log_info(self._("Password protected link, trying ") + password)
                 self.data = self.load(
                     self.pyfile.url,
                     get={"do": "passwordProtectedForm-submit"},
@@ -207,9 +207,9 @@ class UlozTo(SimpleHoster):
                 )
 
                 if self.PASSWD_PATTERN in self.data:
-                    self.fail(_("Wrong password"))
+                    self.fail(self._("Wrong password"))
             else:
-                self.fail(_("No password found"))
+                self.fail(self._("No password found"))
 
         if re.search(self.VIPLINK_PATTERN, self.data):
             self.data = self.load(self.pyfile.url, get={"disclaimer": "1"})
@@ -230,22 +230,22 @@ class UlozTo(SimpleHoster):
 
         if check == "wrong_captcha":
             self.captcha.invalid()
-            self.retry(msg=_("Wrong captcha code"))
+            self.retry(msg=self._("Wrong captcha code"))
 
         elif check == "offline":
             self.offline()
 
         elif check == "passwd":
-            self.fail(_("Wrong password"))
+            self.fail(self._("Wrong password"))
 
         elif check == "server_error":
-            self.log_error(_("Server error, try downloading later"))
+            self.log_error(self._("Server error, try downloading later"))
             self.multiDL = False
             self.wait(1 * 60 * 60, True)
             self.retry()
 
         elif check == "not_found":
-            self.fail(_("Server error, file not downloadable"))
+            self.fail(self._("Server error, file not downloadable"))
 
         return SimpleHoster.check_download(self)
 
@@ -256,12 +256,12 @@ class UlozTo(SimpleHoster):
         self.req.http.c.setopt(pycurl.HTTPHEADER, ["X-Requested-With:"])
 
         if not res.startswith("{"):
-            self.retry(msg=_("Something went wrong"))
+            self.retry(msg=self._("Something went wrong"))
 
         jsonres = json.loads(res)
         if jsonres["status"] == "error" and "new_captcha_data" in jsonres:
             self.captcha.invalid()
-            self.retry(msg=_("Wrong captcha code"))
+            self.retry(msg=self._("Wrong captcha code"))
 
         self.log_debug(url, res)
         return jsonres

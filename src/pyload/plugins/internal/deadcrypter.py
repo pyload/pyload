@@ -26,4 +26,4 @@ class DeadCrypter(Crypter):
         return info
 
     def setup(self):
-        self.offline(_("Crypter is no longer available"))
+        self.offline(self._("Crypter is no longer available"))

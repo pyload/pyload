@@ -45,7 +45,7 @@ class SolidfilesCom(SimpleHoster):
     def handle_free(self, pyfile):
         action, inputs = self.parse_html_form('action="/v/')
         if not action or not inputs:
-            self.error(_("Free download form not found"))
+            self.error(self._("Free download form not found"))
 
         self.data = self.load(self.fixurl(action), post=inputs)
 

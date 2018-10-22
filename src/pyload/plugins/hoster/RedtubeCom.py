@@ -31,7 +31,7 @@ class RedtubeCom(Hoster):
 
         m = re.search(r"sources: ({.+?}),", html)
         if m is None:
-            self.error(_("sources pattern not found"))
+            self.error(self._("sources pattern not found"))
 
         sources = json.loads(m.group(1))
         quality = str(max(int(q) for q in sources.keys()))
@@ -40,7 +40,7 @@ class RedtubeCom(Hoster):
 
         m = re.search(self.NAME_PATTERN, html)
         if m is None:
-            self.error(_("name pattern not found"))
+            self.error(self._("name pattern not found"))
 
         ext = os.path.splitext(urllib.parse.urlparse(link).path)[1]
         pyfile.name = m.group(1) + ext

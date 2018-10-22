@@ -127,7 +127,7 @@ class RapidgatorNet(SimpleHoster):
 
         m = re.search(self.IP_BLOCKED_ERROR_PATTERN, self.data)
         if m is not None:
-            msg = _(
+            msg = self._(
                 "You can't download more than one file within a certain time period in free mode"
             )
             self.log_warning(msg)
@@ -163,7 +163,7 @@ class RapidgatorNet(SimpleHoster):
             captcha = self.handle_captcha()
 
             if not captcha:
-                self.error(_("Captcha pattern not found"))
+                self.error(self._("Captcha pattern not found"))
 
             response, challenge = captcha.challenge()
 

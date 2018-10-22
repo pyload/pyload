@@ -49,7 +49,7 @@ class UpstoreNet(SimpleHoster):
         #: STAGE 1: get link to continue
         m = re.search(self.CHASH_PATTERN, self.data)
         if m is None:
-            self.error(_("CHASH_PATTERN not found"))
+            self.error(self._("CHASH_PATTERN not found"))
 
         chash = m.group(1)
         self.log_debug("Read hash " + chash)
@@ -66,7 +66,7 @@ class UpstoreNet(SimpleHoster):
         for i in range(5):
             m = re.search(self.WAIT_PATTERN, self.data)
             if m is None:
-                self.error(_("Wait pattern not found"))
+                self.error(self._("Wait pattern not found"))
 
             #: then, do the waiting
             wait_time = int(m.group(1))
@@ -92,7 +92,7 @@ class UpstoreNet(SimpleHoster):
                 break
 
         else:
-            self.fail(_("Max captcha retries reached"))
+            self.fail(self._("Max captcha retries reached"))
 
         # STAGE 3: get direct link or wait time
         self.check_errors()

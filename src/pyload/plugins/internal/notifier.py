@@ -52,64 +52,64 @@ class Notifier(Addon):
         if not self.config.get("update", True):
             return
 
-        self.notify(_("pyLoad updated"), etag)
+        self.notify(self._("pyLoad updated"), etag)
 
     def exit(self):
         if not self.config.get("exit", True):
             return
 
         if self.pyload.do_restart:
-            self.notify(_("Restarting pyLoad"))
+            self.notify(self._("Restarting pyLoad"))
         else:
-            self.notify(_("Exiting pyLoad"))
+            self.notify(self._("Exiting pyLoad"))
 
     def captcha_task(self, task):
         if not self.config.get("captcha", True):
             return
 
-        self.notify(_("Captcha"), _("New request waiting user input"))
+        self.notify(self._("Captcha"), self._("New request waiting user input"))
 
     def before_reconnect(self, ip):
         if not self.config.get("reconnection", False):
             return
 
-        self.notify(_("Waiting reconnection"), _("Current IP: {}").format(ip))
+        self.notify(self._("Waiting reconnection"), self._("Current IP: {}").format(ip))
 
     def after_reconnect(self, ip, oldip):
         if not self.config.get("reconnection", False):
             return
 
-        self.notify(_("Reconnection failed"), _("Current IP: {}").format(ip))
+        self.notify(self._("Reconnection failed"), self._("Current IP: {}").format(ip))
 
     def package_finished(self, pypack):
         if not self.config.get("packagefinished", True):
             return
 
-        self.notify(_("Package finished"), pypack.name)
+        self.notify(self._("Package finished"), pypack.name)
 
     def package_failed(self, pypack):
         if not self.config.get("packagefailed", True):
             return
 
-        self.notify(_("Package failed"), pypack.name)
+        self.notify(self._("Package failed"), pypack.name)
 
     def download_finished(self, pyfile):
         if not self.config.get("downloadfinished", False):
             return
 
-        self.notify(_("Download finished"), pyfile.name)
+        self.notify(self._("Download finished"), pyfile.name)
 
     def download_failed(self, pyfile):
         if self.config.get("downloadfailed", True):
             return
 
-        self.notify(_("Download failed"), pyfile.name)
+        self.notify(self._("Download failed"), pyfile.name)
 
     def all_downloads_processed(self):
-        self.notify(_("All downloads processed"))
+        self.notify(self._("All downloads processed"))
 
     def all_downloads_finished(self):
-        self.notify(_("All downloads finished"))
+        self.notify(self._("All downloads finished"))
 
     @Expose
     def notify(self, event, msg=None, key=None):
@@ -144,7 +144,7 @@ class Notifier(Addon):
             self.send(event, msg, key)
 
         except Exception as e:
-            self.log_error(_("Error sending notification"), e)
+            self.log_error(self._("Error sending notification"), e)
             return False
 
         else:

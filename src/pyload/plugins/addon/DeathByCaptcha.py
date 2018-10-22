@@ -188,8 +188,8 @@ class DeathByCaptcha(Addon):
 
         balance, rate = self.info["balance"], self.info["rate"]
         self.log_info(
-            _("Account balance"),
-            _("US${:.3f} ({} captchas left at {:.2f} cents each)").format(
+            self._("Account balance"),
+            self._("US${:.3f} ({} captchas left at {:.2f} cents each)").format(
                 balance // 100, balance // rate, rate
             ),
         )

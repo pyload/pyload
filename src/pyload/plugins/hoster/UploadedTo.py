@@ -112,8 +112,8 @@ class UploadedTo(SimpleHoster):
         check = self.scan_download({"dl_limit": self.DL_LIMIT_PATTERN})
 
         if check == "dl_limit":
-            self.log_warning(_("Free download limit reached"))
+            self.log_warning(self._("Free download limit reached"))
             os.remove(self.last_download)
-            self.retry(wait=10800, msg=_("Free download limit reached"))
+            self.retry(wait=10800, msg=self._("Free download limit reached"))
 
         return SimpleHoster.check_download(self)

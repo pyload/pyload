@@ -140,7 +140,7 @@ class UpdateManager(Addon):
             )
 
         except Exception:
-            self.log_warning(_("Unable to connect to the server to retrieve updates"))
+            self.log_warning(self._("Unable to connect to the server to retrieve updates"))
 
         else:
             res = html.splitlines()
@@ -166,8 +166,8 @@ class UpdateManager(Addon):
             self.pyload.api.restart()
         else:
             self.log_warning(
-                _("pyLoad restart scheduled"),
-                _(
+                self._("pyLoad restart scheduled"),
+                self._(
                     "Downloads are active, pyLoad restart postponed once the download is done"
                 ),
             )
@@ -184,13 +184,13 @@ class UpdateManager(Addon):
             exitcode = 0
 
         elif newversion == self.pyload.api.getServerVersion():
-            self.log_info(_("pyLoad is up to date!"))
+            self.log_info(self._("pyLoad is up to date!"))
             exitcode = self.update_plugins()
 
         elif re.search(r"^\d+(?:\.\d+){0,3}[a-z]?$", newversion):
-            self.log_info(_("***  New pyLoad {} available  ***").format(newversion))
+            self.log_info(self._("***  New pyLoad {} available  ***").format(newversion))
             self.log_info(
-                _("***  Get it here: https://github.com/pyload/pyload/releases  ***")
+                self._("***  Get it here: https://github.com/pyload/pyload/releases  ***")
             )
             self.info["pyload"] = True
             exitcode = 3
@@ -215,13 +215,13 @@ class UpdateManager(Addon):
         updated = self._update_plugins(server_data)
 
         if updated:
-            self.log_info(_("*** Plugins updated ***"))
+            self.log_info(self._("*** Plugins updated ***"))
 
             if self.pyload.pluginManager.reloadPlugins(updated):
                 exitcode = 1
             else:
                 self.log_warning(
-                    _("You have to restart pyLoad to use the updated plugins")
+                    self._("You have to restart pyLoad to use the updated plugins")
                 )
                 self.info["plugins"] = True
                 exitcode = 2
@@ -232,7 +232,7 @@ class UpdateManager(Addon):
             if not paused:
                 self.pyload.api.unpauseServer()
         else:
-            self.log_info(_("All plugins are up to date!"))
+            self.log_info(self._("All plugins are up to date!"))
             exitcode = 0
 
         #: Exit codes:
@@ -319,7 +319,7 @@ class UpdateManager(Addon):
 
             for t, n in self.remove_plugins(blacklisted_plugins):
                 self.log_info(
-                    _("Removed blacklisted plugin: {type} {name}").format(
+                    self._("Removed blacklisted plugin: {type} {name}").format(
                         type=t.upper(), name=n
                     )
                 )
@@ -341,10 +341,10 @@ class UpdateManager(Addon):
                 newver = float(plugin_version)
             except ValueError:
                 self.log_error(
-                    _("Error updating plugin: {} {}").format(
+                    self._("Error updating plugin: {} {}").format(
                         plugin_type.rstrip("s").upper(), plugin_name
                     ),
-                    _("Bad version number on the server"),
+                    self._("Bad version number on the server"),
                 )
                 continue
 
@@ -369,7 +369,7 @@ class UpdateManager(Addon):
                 content = self.load(url.format(plugin + ".py"), decode=False, req=req)
 
                 if req.code == 404:
-                    raise Exception(_("URL not found"))
+                    raise Exception(self._("URL not found"))
 
                 m = self._VERSION.search(content)
                 if m is not None and m.group(2) == plugin_version:
@@ -381,11 +381,11 @@ class UpdateManager(Addon):
 
                     updated.append((plugin_type, plugin_name))
                 else:
-                    raise Exception(_("Version mismatch"))
+                    raise Exception(self._("Version mismatch"))
 
             except Exception as e:
                 self.log_error(
-                    _("Error updating plugin: {} {}").format(
+                    self._("Error updating plugin: {} {}").format(
                         plugin_type.rstrip("s").upper(), plugin_name
                     ),
                     e,
@@ -436,7 +436,7 @@ class UpdateManager(Addon):
                         os.remove(filename)
 
                     except OSError as e:
-                        self.log_warning(_("Error removing `{}`").format(filename), e)
+                        self.log_warning(self._("Error removing `{}`").format(filename), e)
 
                     else:
                         plugin_id = (plugin_type, plugin_name)

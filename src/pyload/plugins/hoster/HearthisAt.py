@@ -29,7 +29,7 @@ class HearthisAt(Hoster):
 
         m = re.search(r"intTrackId = (\d+);", self.data)
         if m is None:
-            self.fail(_("Track ID not found"))
+            self.fail(self._("Track ID not found"))
 
         track_id = m.group(1)
 

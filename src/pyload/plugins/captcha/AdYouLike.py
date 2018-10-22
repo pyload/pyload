@@ -53,7 +53,7 @@ class AdYouLike(CaptchaService):
             challenge = json.loads(re.search(callback + r"\s*\((.+?)\)", html).group(1))
 
         except AttributeError:
-            self.fail(_("AdYouLike challenge pattern not found"))
+            self.fail(self._("AdYouLike challenge pattern not found"))
 
         self.log_debug("Challenge: {}".format(challenge))
 
@@ -83,7 +83,7 @@ class AdYouLike(CaptchaService):
             response = re.search("«(.+?)»", instructions_visual).group(1).strip()
 
         except AttributeError:
-            self.fail(_("AdYouLike result not found"))
+            self.fail(self._("AdYouLike result not found"))
 
         result = {
             "_ayl_captcha_engine": "adyoulike",

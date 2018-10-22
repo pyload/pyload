@@ -117,7 +117,7 @@ class SevenZip(Extractor):
             raise PasswordError
 
         elif self._RE_BADCRC.search(out):
-            raise CRCError(_("Header protected"))
+            raise CRCError(self._("Header protected"))
 
         elif self._RE_BADCRC.search(err):
             raise CRCError(err)
@@ -160,7 +160,7 @@ class SevenZip(Extractor):
                 raise ArchiveError(err)
 
         if p.returncode > 1:
-            raise ArchiveError(_("Process return code: {}").format(p.returncode))
+            raise ArchiveError(self._("Process return code: {}").format(p.returncode))
 
     def chunks(self):
         files = []
@@ -186,10 +186,10 @@ class SevenZip(Extractor):
         out, err = (_r.strip() if _r else "" for _r in p.communicate())
 
         if any(_e in err for _e in ("Can not open", "cannot find the file")):
-            raise ArchiveError(_("Cannot open file"))
+            raise ArchiveError(self._("Cannot open file"))
 
         if p.returncode > 1:
-            raise ArchiveError(_("Process return code: {}").format(p.returncode))
+            raise ArchiveError(self._("Process return code: {}").format(p.returncode))
 
         files = set()
         for groups in self._RE_FILES.findall(out):

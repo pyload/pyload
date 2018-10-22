@@ -47,7 +47,7 @@ class SolveMedia(CaptchaService):
                 magic = re.search(r'name="magic" value="(.+?)"', html).group(1)
 
             except AttributeError:
-                self.log_warning(_("Magic pattern not found"))
+                self.log_warning(self._("Magic pattern not found"))
                 magic = None
 
             try:
@@ -57,7 +57,7 @@ class SolveMedia(CaptchaService):
                 ).group(1)
 
             except AttributeError:
-                self.fail(_("SolveMedia challenge pattern not found"))
+                self.fail(self._("SolveMedia challenge pattern not found"))
 
             else:
                 self.log_debug("Challenge: {}".format(challenge))
@@ -87,18 +87,18 @@ class SolveMedia(CaptchaService):
                 redirect = re.search(r'URL=(.+?)">', html).group(1)
 
             except AttributeError:
-                self.fail(_("SolveMedia verify pattern not found"))
+                self.fail(self._("SolveMedia verify pattern not found"))
 
             else:
                 if "error" in html:
-                    self.log_warning(_("Captcha code was invalid"))
+                    self.log_warning(self._("Captcha code was invalid"))
                     self.log_debug("Retry #{}".format(i))
                     html = self.pyfile.plugin.load(redirect)
                 else:
                     break
 
         else:
-            self.fail(_("SolveMedia max retries exceeded"))
+            self.fail(self._("SolveMedia max retries exceeded"))
 
         return result, challenge
 

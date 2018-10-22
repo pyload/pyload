@@ -62,7 +62,7 @@ class KingfilesNet(SimpleHoster):
         #: Make the downloadlink appear and load the file
         m = re.search(self.RAND_ID_PATTERN, self.data)
         if m is None:
-            self.error(_("Random key not found"))
+            self.error(self._("Random key not found"))
 
         rand = m.group(1)
         self.log_debug("rand = " + rand)
@@ -83,6 +83,6 @@ class KingfilesNet(SimpleHoster):
 
         m = re.search(self.LINK_FREE_PATTERN, self.data)
         if m is None:
-            self.error(_("Download url not found"))
+            self.error(self._("Download url not found"))
 
         self.link = m.group(1)

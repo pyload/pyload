@@ -198,7 +198,7 @@ class Base(Plugin):
         else:
             name = decode(self.pyfile.name)
 
-        self.log_info(_("Link name: {}").format(name))
+        self.log_info(self._("Link name: {}").format(name))
 
     def _update_size(self):
         size = self.info.get("size")
@@ -210,15 +210,15 @@ class Base(Plugin):
             size = self.pyfile.size
 
         if size:
-            self.log_info(_("Link size: {} ({} bytes)").format(format_size(size), size))
+            self.log_info(self._("Link size: {} ({} bytes)").format(format_size(size), size))
         else:
-            self.log_info(_("Link size: N/D"))
+            self.log_info(self._("Link size: N/D"))
 
     def _update_status(self):
         self.pyfile.status = self.info.get("status", 14)
         self.pyfile.sync()
 
-        self.log_info(_("Link status: ") + self.pyfile.getStatusName())
+        self.log_info(self._("Link status: ") + self.pyfile.getStatusName())
 
     def sync_info(self):
         self._update_name()
@@ -226,7 +226,7 @@ class Base(Plugin):
         self._update_status()
 
     def grab_info(self):
-        self.log_info(_("Grabbing link info..."))
+        self.log_info(self._("Grabbing link info..."))
 
         old_info = dict(self.info)
         new_info = self.get_info(self.pyfile.url, self.data)
@@ -261,10 +261,10 @@ class Base(Plugin):
         self.log_debug("Plugin status: " + self.__status__)
 
         if self.__status__ == "broken":
-            self.abort(_("Plugin is temporarily unavailable"))
+            self.abort(self._("Plugin is temporarily unavailable"))
 
         elif self.__status__ == "testing":
-            self.log_warning(_("Plugin may be unstable"))
+            self.log_warning(self._("Plugin may be unstable"))
 
     def _process(self, thread):
         """
@@ -286,7 +286,7 @@ class Base(Plugin):
 
         self.pyfile.setStatus("starting")
 
-        self.log_info(_("Processing url: ") + self.pyfile.url)
+        self.log_info(self._("Processing url: ") + self.pyfile.url)
         self.process(self.pyfile)
         self.check_status()
 
@@ -352,7 +352,7 @@ class Base(Plugin):
         wait_time = self.pyfile.waitUntil - time.time()
 
         if wait_time < 1:
-            self.log_warning(_("Invalid wait time interval"))
+            self.log_warning(self._("Invalid wait time interval"))
             return
 
         self.waiting = True
@@ -360,12 +360,12 @@ class Base(Plugin):
         status = self.pyfile.status  # NOTE: Recheck in 0.6.x
         self.pyfile.setStatus("waiting")
 
-        self.log_info(_("Waiting {}...").format(format_time(wait_time)))
+        self.log_info(self._("Waiting {}...").format(format_time(wait_time)))
 
         if self.wantReconnect:
-            self.log_info(_("Requiring reconnection..."))
+            self.log_info(self._("Requiring reconnection..."))
             if self.account:
-                self.log_warning(_("Reconnection ignored due logged account"))
+                self.log_warning(self._("Reconnection ignored due logged account"))
 
         if not self.wantReconnect or self.account:
             while self.pyfile.waitUntil > time.time():
@@ -415,9 +415,9 @@ class Base(Plugin):
 
         raise Fail(encode(msg))  # TODO: Remove `encode` in 0.6.x
 
-    def error(self, msg="", type=_("Parse")):
-        type = _("{} error").format(type.strip().capitalize() if type else _("Unknown"))
-        msg = _("{type}: {msg} | Plugin may be out of date").format(
+    def error(self, msg="", type=self._("Parse")):
+        type = self._("{} error").format(type.strip().capitalize() if type else self._("Unknown"))
+        msg = self._("{type}: {msg} | Plugin may be out of date").format(
             type=type, msg=msg or self.pyfile.error
         )
 
@@ -449,19 +449,19 @@ class Base(Plugin):
 
     def restart(self, msg="", premium=True):
         if not msg:
-            msg = _("Restart plugin") if premium else _("Fallback to free processing")
+            msg = self._("Restart plugin") if premium else self._("Fallback to free processing")
 
         if not premium:
             if self.premium:
                 self.restart_free = True
             else:
-                self.fail("{} | {}".format(msg, _("Url was already processed as free")))
+                self.fail("{} | {}".format(msg, self._("Url was already processed as free")))
 
         self.req.clearCookies()
 
         raise Retry(encode(msg))  # TODO: Remove `encode` in 0.6.x
 
-    def retry(self, attemps=5, wait=1, msg="", msgfail=_("Max retries reached")):
+    def retry(self, attemps=5, wait=1, msg="", msgfail=self._("Max retries reached")):
         """
         Retries and begin again from the beginning.
 
@@ -489,10 +489,10 @@ class Base(Plugin):
         raise Retry(encode(msg))  # TODO: Remove `encode` in 0.6.x
 
     def retry_captcha(
-        self, attemps=10, wait=1, msg="", msgfail=_("Max captcha retries reached")
+        self, attemps=10, wait=1, msg="", msgfail=self._("Max captcha retries reached")
     ):
         self.captcha.invalid(msg)
-        self.retry(attemps, wait, msg=_("Retry Captcha"), msgfail=msgfail)
+        self.retry(attemps, wait, msg=self._("Retry Captcha"), msgfail=msgfail)
 
     def fixurl(self, url, baseurl=None, unquote=True):
         url = fixurl(url, unquote=True)

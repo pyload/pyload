@@ -53,6 +53,6 @@ class TenluaVn(Account):
                 self.fail_login()
 
             else:
-                self.fail_login(_("BadHeader {}").format(e.code))
+                self.fail_login(self._("BadHeader {}").format(e.code))
 
         data["sid"] = login_info[0]

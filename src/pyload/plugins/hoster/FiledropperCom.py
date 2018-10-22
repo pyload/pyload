@@ -39,7 +39,7 @@ class FiledropperCom(SimpleHoster):
     def handle_free(self, pyfile):
         m = re.search(r'img id="img" src="(.+?)"', self.data)
         if m is None:
-            self.fail(_("Captcha not found"))
+            self.fail(self._("Captcha not found"))
 
         captcha_code = self.captcha.decrypt(
             "http://www.filedropper.com/{}" % m.group(1)

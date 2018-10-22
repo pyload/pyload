@@ -149,7 +149,7 @@ class OCR(Plugin):
         except Exception:
             self.result_captcha = ""
 
-        self.log_info(_("OCR result: ") + self.result_captcha)
+        self.log_info(self._("OCR result: ") + self.result_captcha)
 
         self.remove(tmpTif.name, trash=False)
         self.remove(tmpTxt.name, trash=False)

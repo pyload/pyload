@@ -43,7 +43,7 @@ class Container(Crypter):
             self._generate_packages()
 
         elif not self.packages:
-            self.error(_("No link grabbed"), "decrypt")
+            self.error(self._("No link grabbed"), "decrypt")
 
         self._delete_tmpfile()
 
@@ -76,4 +76,4 @@ class Container(Crypter):
                 self.fail(e)
 
         elif not exists(self.pyfile.url):
-            self.fail(_("File not found"))
+            self.fail(self._("File not found"))

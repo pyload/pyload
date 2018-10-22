@@ -60,7 +60,7 @@ class IRC(Thread, Notifier):
     def package_finished(self, pypack):
         try:
             if self.config.get("info_pack"):
-                self.response(_("Package finished: {}").format(pypack.name))
+                self.response(self._("Package finished: {}").format(pypack.name))
 
         except Exception:
             pass
@@ -69,7 +69,7 @@ class IRC(Thread, Notifier):
         try:
             if self.config.get("info_file"):
                 self.response(
-                    _("Download finished: {name} @ {plugin} ").format(
+                    self._("Download finished: {name} @ {plugin} ").format(
                         name=pyfile.name, plugin=pyfile.pluginname
                     )
                 )
@@ -88,8 +88,8 @@ class IRC(Thread, Notifier):
             )
 
             url = re.search(r"src='([^']+)'", html).group(1)
-            self.response(_("New Captcha Request: {}").format(url))
-            self.response(_("Answer with 'c {} text on the captcha'").format(task.id))
+            self.response(self._("New Captcha Request: {}").format(url))
+            self.response(self._("Answer with 'c {} text on the captcha'").format(task.id))
 
     def run(self):
         #: Connect to IRC etc.
@@ -109,8 +109,8 @@ class IRC(Thread, Notifier):
             t = t.strip()
             if t.startswith("#"):
                 self.sock.send("JOIN {}\r\n".format(t))
-        self.log_info(_("Connected to"), host)
-        self.log_info(_("Switching to listening mode!"))
+        self.log_info(self._("Connected to"), host)
+        self.log_info(self._("Switching to listening mode!"))
         try:
             self.main_loop()
 

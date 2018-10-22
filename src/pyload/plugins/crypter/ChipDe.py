@@ -35,7 +35,7 @@ class ChipDe(Crypter):
             f = re.search(r'"(http://video\.chip\.de/.+)"', self.data)
 
         except Exception:
-            self.fail(_("Failed to find the URL"))
+            self.fail(self._("Failed to find the URL"))
 
         else:
             self.links = [f.group(1)]

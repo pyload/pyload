@@ -47,7 +47,7 @@ class BasketbuildCom(SimpleHoster):
             self.data = self.load(link1)
 
         except AttributeError:
-            self.error(_("Hop #1 not found"))
+            self.error(self._("Hop #1 not found"))
 
         else:
             self.log_debug("Next hop: {}".format(link1))
@@ -64,4 +64,4 @@ class BasketbuildCom(SimpleHoster):
             self.link = re.search(r'id="dlLink">\s*<a href="(.+?)"', self.data).group(1)
 
         except AttributeError:
-            self.error(_("DL-Link not found"))
+            self.error(self._("DL-Link not found"))

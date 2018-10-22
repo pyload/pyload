@@ -61,7 +61,7 @@ class CaptchaManager(object):
             self.tasks.append(task)
             return True
 
-        task.error = _("No Client connected for captcha decrypting")
+        task.error = self._("No Client connected for captcha decrypting")
 
         return False
 

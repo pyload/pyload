@@ -61,11 +61,11 @@ class YadiSk(SimpleHoster):
 
                 except Exception as e:
                     info["status"] = 8
-                    info["error"] = _("Unexpected server response: {}").format(e)
+                    info["error"] = self._("Unexpected server response: {}").format(e)
 
             else:
                 info["status"] = 8
-                info["error"] = _("could not find required json data")
+                info["error"] = self._("could not find required json data")
 
         return info
 
@@ -78,7 +78,7 @@ class YadiSk(SimpleHoster):
         if any(
             True for _k in ["id", "sk", "version", "idclient"] if _k not in self.info
         ):
-            self.error(_("Missing JSON data"))
+            self.error(self._("Missing JSON data"))
 
         try:
             self.data = self.load(

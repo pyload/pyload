@@ -40,7 +40,7 @@ class CloudMailRuFolder(Crypter):
 
         m = re.search(r"window\.cloudSettings\s*=\s*({{.+?}});", self.data, re.S)
         if m is None:
-            self.fail(_("Json pattern not found"))
+            self.fail(self._("Json pattern not found"))
 
         json_data = json.loads(m.group(1).replace("\\x3c", "<"))
 

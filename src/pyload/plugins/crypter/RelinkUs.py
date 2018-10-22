@@ -189,8 +189,8 @@ class RelinkUs(Crypter):
                 }
 
             else:
-                self.log_error(_("Unknown captcha type detected"))
-                self.fail(_("Unknown captcha type"))
+                self.log_error(self._("Unknown captcha type detected"))
+                self.fail(self._("Unknown captcha type"))
 
         self.data = self.load(
             self.CAPTCHA_SUBMIT_URL,
@@ -230,7 +230,7 @@ class RelinkUs(Crypter):
 
     def handle_errors(self):
         if self.PASSWORD_ERROR_ROKEN in self.data:
-            self.fail(_("Wrong password"))
+            self.fail(self._("Wrong password"))
 
         if self.captcha.task:
             if self.CAPTCHA_ERROR_ROKEN in self.data:
@@ -246,7 +246,7 @@ class RelinkUs(Crypter):
         elif source == "web":
             return self.handle_WEB_links()
         else:
-            self.error(_('Unknown source type "{}"').format(source))
+            self.error(self._('Unknown source type "{}"').format(source))
 
     def handle_CNL2Links(self):
         self.log_debug("Search for CNL2 links")
@@ -282,7 +282,7 @@ class RelinkUs(Crypter):
                 pack_links.append(dlc_filepath)
 
             except Exception:
-                self.fail(_("Unable to download DLC container"))
+                self.fail(self._("Unable to download DLC container"))
 
         return pack_links
 

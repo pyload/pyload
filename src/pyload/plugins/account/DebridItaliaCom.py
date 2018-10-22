@@ -46,7 +46,7 @@ class DebridItaliaCom(MultiAccount):
             validuntil = int(m.group(1))
 
         else:
-            self.log_error(_("Unable to retrieve account information"))
+            self.log_error(self._("Unable to retrieve account information"))
 
         return {"validuntil": validuntil, "trafficleft": -1, "premium": True}
 

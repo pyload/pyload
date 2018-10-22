@@ -85,7 +85,7 @@ class MultiHome(Addon):
     def get_request(self, plugin_name, account=None):
         iface = self.best_interface(plugin_name, account)
         if iface is None:
-            self.log_warning(_("Best interface not found"))
+            self.log_warning(self._("Best interface not found"))
             return self.old_get_request(plugin_name, account)
 
         iface.use_for(plugin_name, account)

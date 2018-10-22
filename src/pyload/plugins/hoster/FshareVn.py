@@ -54,13 +54,13 @@ class FshareVn(SimpleHoster):
                 inputs["DownloadPasswordForm[password]"] = password
 
             else:
-                self.fail(_("Download is password protected"))
+                self.fail(self._("Download is password protected"))
 
             url = urllib.parse.urljoin(pyfile.url, action)
 
             self.data = self.load(url, post=inputs)
             if r"Sai mật khẩu" in self.data:
-                self.fail(_("Wrong password"))
+                self.fail(self._("Wrong password"))
 
         action, inputs = self.parse_html_form(
             'id="form-download"', input_names={"withFcode5": "0"}
@@ -68,7 +68,7 @@ class FshareVn(SimpleHoster):
         url = urllib.parse.urljoin(pyfile.url, action)
 
         if not inputs:
-            self.error(_("Free Download form not found"))
+            self.error(self._("Free Download form not found"))
 
         self.data = self.load(url, post=inputs)
 
@@ -76,14 +76,14 @@ class FshareVn(SimpleHoster):
             json_data = json.loads(self.data)
 
         except Exception:
-            self.fail(_("Expected JSON data"))
+            self.fail(self._("Expected JSON data"))
 
         err_msg = json_data.get("msg")
         if err_msg:
             self.fail(err_msg)
 
         elif "url" not in json_data:
-            self.fail(_("Unexpected response"))
+            self.fail(self._("Unexpected response"))
 
         wait_time = json_data.get("wait_time", None)
         wait_time = 35 if wait_time is None else int(wait_time)

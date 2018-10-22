@@ -37,12 +37,12 @@ class DecrypterThread(PluginThread):
         retry = False
 
         try:
-            self.m.log.info(_("Decrypting starts: {}").format(self.active.name))
+            self.m.log.info(self._("Decrypting starts: {}").format(self.active.name))
             self.active.plugin.preprocessing(self)
 
         except NotImplementedError:
             self.m.log.error(
-                _("Plugin {} is missing a function.").format(self.active.pluginname)
+                self._("Plugin {} is missing a function.").format(self.active.pluginname)
             )
             return
 
@@ -52,12 +52,12 @@ class DecrypterThread(PluginThread):
             if msg == "offline":
                 self.active.setStatus("offline")
                 self.m.log.warning(
-                    _("Download is offline: {}").format(self.active.name)
+                    self._("Download is offline: {}").format(self.active.name)
                 )
             else:
                 self.active.setStatus("failed")
                 self.m.log.error(
-                    _("Decrypting failed: {name} | {msg}").format(
+                    self._("Decrypting failed: {name} | {msg}").format(
                         name=self.active.name, msg=msg
                     )
                 )
@@ -66,20 +66,20 @@ class DecrypterThread(PluginThread):
             return
 
         except Abort:
-            self.m.log.info(_("Download aborted: {}").format(pyfile.name))
+            self.m.log.info(self._("Download aborted: {}").format(pyfile.name))
             pyfile.setStatus("aborted")
 
             return
 
         except Retry:
-            self.m.log.info(_("Retrying {}").format(self.active.name))
+            self.m.log.info(self._("Retrying {}").format(self.active.name))
             retry = True
             return self.run()
 
         except Exception as e:
             self.active.setStatus("failed")
             self.m.log.error(
-                _("Decrypting failed: {name} | {msg}").format(
+                self._("Decrypting failed: {name} | {msg}").format(
                     name=self.active.name, msg=str(e)
                 )
             )

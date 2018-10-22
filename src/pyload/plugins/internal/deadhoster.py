@@ -26,4 +26,4 @@ class DeadHoster(Hoster):
         return info
 
     def setup(self):
-        self.offline(_("Hoster is no longer available"))
+        self.offline(self._("Hoster is no longer available"))

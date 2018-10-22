@@ -61,16 +61,16 @@ class CzshareCom(SimpleHoster):
         try:
             credit = parse_size(m.group(1).replace(" ", ""), m.group(2))
             self.log_info(
-                _("Premium download for %i KiB of Credit").format(
+                self._("Premium download for %i KiB of Credit").format(
                     self.pyfile.size >> 10
                 )
             )
             self.log_info(
-                _("User {} has %i KiB left").format(self.account.user, credit >> 10)
+                self._("User {} has %i KiB left").format(self.account.user, credit >> 10)
             )
             if credit < self.pyfile.size:
                 self.log_info(
-                    _("Not enough credit to download file: {}") % self.pyfile.name
+                    self._("Not enough credit to download file: {}") % self.pyfile.name
                 )
                 return True
 
@@ -96,7 +96,7 @@ class CzshareCom(SimpleHoster):
         #: Get free url
         m = re.search(self.FREE_URL_PATTERN, self.data)
         if m is None:
-            self.error(_("FREE_URL_PATTERN not found"))
+            self.error(self._("FREE_URL_PATTERN not found"))
 
         parsed_url = "http://sdilej.cz" + m.group(1)
 
@@ -105,7 +105,7 @@ class CzshareCom(SimpleHoster):
         #: Get download ticket and parse html
         self.data = self.load(parsed_url)
         if re.search(self.MULTIDL_PATTERN, self.data):
-            self.retry(5 * 60, 12, _("Download limit reached"))
+            self.retry(5 * 60, 12, self._("Download limit reached"))
 
         try:
             form = re.search(self.FREE_FORM_PATTERN, self.data, re.S).group(1)
@@ -114,7 +114,7 @@ class CzshareCom(SimpleHoster):
 
         except Exception as e:
             self.log_error(e, trace=True)
-            self.error(_("Form"))
+            self.error(self._("Form"))
 
         #: Get and decrypt captcha
         captcha_url = "http://sdilej.cz/captcha.php"
@@ -125,7 +125,7 @@ class CzshareCom(SimpleHoster):
             self.retry_captcha()
 
         elif re.search(self.MULTIDL_PATTERN, self.data):
-            self.retry(5 * 60, 12, _("Download limit reached"))
+            self.retry(5 * 60, 12, self._("Download limit reached"))
 
         else:
             self.captcha.correct()
@@ -138,7 +138,7 @@ class CzshareCom(SimpleHoster):
 
         m = re.search("free_wait.php\?server=(.*?)&(.*)", self.req.lastEffectiveURL)
         if m is None:
-            self.error(_("Download URL not found"))
+            self.error(self._("Download URL not found"))
 
         self.link = "http://{}/download.php?{}".format(m.group(1), m.group(2))
 
@@ -156,13 +156,13 @@ class CzshareCom(SimpleHoster):
         )
 
         if check == "temp offline":
-            self.fail(_("File not available - try later"))
+            self.fail(self._("File not available - try later"))
 
         elif check == "credit":
             self.restart(premium=False)
 
         elif check == "multi-dl":
-            self.retry(5 * 60, 12, _("Download limit reached"))
+            self.retry(5 * 60, 12, self._("Download limit reached"))
 
         elif check == "captcha":
             self.retry_captcha()

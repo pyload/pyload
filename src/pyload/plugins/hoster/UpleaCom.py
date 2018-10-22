@@ -78,7 +78,7 @@ class UpleaCom(SimpleHoster):
     def handle_free(self, pyfile):
         m = re.search(self.STEP_PATTERN, self.data)
         if m is None:
-            self.error(_("STEP_PATTERN not found"))
+            self.error(self._("STEP_PATTERN not found"))
 
         self.data = self.load(urllib.parse.urljoin("http://uplea.com/", m.group(1)))
 
@@ -89,7 +89,7 @@ class UpleaCom(SimpleHoster):
 
         m = re.search(self.LINK_PATTERN, self.data)
         if m is None:
-            self.error(_("LINK_PATTERN not found"))
+            self.error(self._("LINK_PATTERN not found"))
 
         self.link = m.group(1)
 

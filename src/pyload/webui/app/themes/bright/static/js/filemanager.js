@@ -177,7 +177,7 @@ var Item = new Class({
           //if this was the only child, add a "empty folder" div
           if(!ul.getChildren('li')[0])
           {
-            var div = new Element("div", { 'html': '{{ _("Folder is empty") }}' });
+            var div = new Element("div", { 'html': '{{ self._("Folder is empty") }}' });
             div.replaces(ul);
           }
 

@@ -97,11 +97,11 @@ class FileserveCom(Hoster):
                 self.do_long_wait(re.search(self.LONG_WAIT_PATTERN, self.data))
 
             elif action["fail"] == "parallelDownload":
-                self.log_warning(_("Parallel download error, now waiting 60s"))
-                self.retry(wait=60, msg=_("parallelDownload"))
+                self.log_warning(self._("Parallel download error, now waiting 60s"))
+                self.retry(wait=60, msg=self._("parallelDownload"))
 
             else:
-                self.fail(_("Download check returned: {}").format(action["fail"]))
+                self.fail(self._("Download check returned: {}").format(action["fail"]))
 
         elif "success" in action:
             if action["success"] == "showCaptcha":
@@ -111,13 +111,13 @@ class FileserveCom(Hoster):
                 self.do_timmer()
 
         else:
-            self.error(_("Unknown server response"))
+            self.error(self._("Unknown server response"))
 
         #: Show download link
         res = self.load(self.url, post={"downloadLink": "show"})
         self.log_debug("Show downloadLink response: {}".format(res))
         if "fail" in res:
-            self.error(_("Couldn't retrieve download url"))
+            self.error(self._("Couldn't retrieve download url"))
 
         #: This may either download our file or forward us to an error page
         self.download(self.url, post={"download": "normal"})
@@ -139,7 +139,7 @@ class FileserveCom(Hoster):
             self.do_long_wait(self.last_check)
 
         elif check == "limit":
-            self.log_warning(_("Download limited reached for today"))
+            self.log_warning(self._("Download limited reached for today"))
             self.wait(seconds_to_midnight(), True)
             self.retry()
 
@@ -151,12 +151,12 @@ class FileserveCom(Hoster):
         self.log_debug("Wait response: {}".format(res[:80]))
 
         if "fail" in res:
-            self.fail(_("Failed getting wait time"))
+            self.fail(self._("Failed getting wait time"))
 
         if self.__name__ == "FilejungleCom":
             m = re.search(r'"waitTime":(\d+)', res)
             if m is None:
-                self.fail(_("Cannot get wait time"))
+                self.fail(self._("Cannot get wait time"))
             wait_time = int(m.group(1))
         else:
             wait_time = int(res) + 3
@@ -226,4 +226,4 @@ class FileserveCom(Hoster):
             {"login": re.compile(self.NOT_LOGGED_IN_PATTERN)}
         ):
             self.account.relogin()
-            self.retry(msg=_("Not logged in"))
+            self.retry(msg=self._("Not logged in"))

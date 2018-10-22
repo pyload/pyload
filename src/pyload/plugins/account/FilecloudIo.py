@@ -36,7 +36,7 @@ class FilecloudIo(Account):
                 rep["status"] == "error"
                 and rep["message"] == "no such user or wrong password"
             ):
-                self.log_error(_("Wrong username or password"))
+                self.log_error(self._("Wrong username or password"))
                 return {"valid": False, "premium": False}
         else:
             return {"premium": False}

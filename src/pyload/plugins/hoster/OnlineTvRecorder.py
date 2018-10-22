@@ -39,4 +39,4 @@ class OnlineTvRecorder(Http):
             self.log_debug("OnlineTvRecorder httpcode: {}".format(e.code))
             if e.code == 503:
                 # max queueing for 3 hours
-                self.retry(360, 30, _("Waiting in download queue"))
+                self.retry(360, 30, self._("Waiting in download queue"))

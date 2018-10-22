@@ -64,6 +64,6 @@ class MegaRapidoNet(MultiHoster):
         )
 
         if "desloga e loga novamente para gerar seus links" in self.data.lower():
-            self.error(_("You have logged in at another place"))
+            self.error(self._("You have logged in at another place"))
 
         return MultiHoster.handle_premium(self, pyfile)

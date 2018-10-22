@@ -62,7 +62,7 @@ class Http(Hoster):
                     if ":" in pwd:
                         self.req.addAuth(pwd)
                     else:
-                        self.fail(_("Authorization required"))
+                        self.fail(self._("Authorization required"))
             else:
                 break
 
@@ -90,5 +90,5 @@ class Http(Hoster):
         except Exception:
             pass
 
-        self.log_warning(_("Check result: ") + errmsg, _("Waiting 1 minute and retry"))
+        self.log_warning(self._("Check result: ") + errmsg, self._("Waiting 1 minute and retry"))
         self.retry(3, 60, errmsg)

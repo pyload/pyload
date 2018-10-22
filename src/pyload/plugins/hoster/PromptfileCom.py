@@ -38,7 +38,7 @@ class PromptfileCom(SimpleHoster):
         #: STAGE 1: get link to continue
         m = re.search(self.CHASH_PATTERN, self.data)
         if m is None:
-            self.error(_("CHASH_PATTERN not found"))
+            self.error(self._("CHASH_PATTERN not found"))
 
         mod = re.search(self.MODIFY_PATTERN, self.data)
         payload = {m.group(1): mod.group(1) + m.group(2)}

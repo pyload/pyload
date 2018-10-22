@@ -85,7 +85,7 @@ class ShareLinksBiz(Crypter):
             header = self.load(url, just_header=True)
 
             if "location" not in header:
-                self.fail(_("Unable to initialize download"))
+                self.fail(self._("Unable to initialize download"))
             else:
                 url = header.get("location")
 
@@ -101,7 +101,7 @@ class ShareLinksBiz(Crypter):
                     url, self.__pattern__
                 )
             )
-            self.fail(_("Unsupported download link"))
+            self.fail(self._("Unsupported download link"))
 
         self.package = pyfile.package()
 
@@ -149,7 +149,7 @@ class ShareLinksBiz(Crypter):
         )
         if m is None:
             self.log_debug("Captcha url data not found, maybe plugin out of date?")
-            self.fail(_("Captcha url data not found"))
+            self.fail(self._("Captcha url data not found"))
 
         captcha_url = self.base_url + "/captcha.gif?d={}&PHPSESSID={}".format(
             m.group(1), m.group(2)
@@ -187,7 +187,7 @@ class ShareLinksBiz(Crypter):
 
     def handle_errors(self):
         if "The inserted password was wrong" in self.data:
-            self.fail(_("Wrong password"))
+            self.fail(self._("Wrong password"))
 
         if self.captcha:
             if "Your choice was wrong" in self.data:
@@ -248,7 +248,7 @@ class ShareLinksBiz(Crypter):
                     res,
                     re.S,
                 ).group(1)
-                jscode = js2py.eval_js(_("f = {}").format(jscode))
+                jscode = js2py.eval_js(self._("f = {}").format(jscode))
                 jslauncher = "window=''; parent={frames:{Main:{location:{href:''}}},location:''}; {}; parent.frames.Main.location.href"
 
                 dl_link = js2py.eval_js(jslauncher.format(jscode))
@@ -296,7 +296,7 @@ class ShareLinksBiz(Crypter):
                 pack_links.extend(self._get_links(crypted, jk))
 
             except Exception:
-                self.fail(_("Unable to decrypt CNL2 links"))
+                self.fail(self._("Unable to decrypt CNL2 links"))
 
         self.log_debug("{} links".format(len(pack_links)))
 
@@ -322,7 +322,7 @@ class ShareLinksBiz(Crypter):
 
     def _get_links(self, crypted, jk):
         #: Get key
-        jreturn = js2py.eval_js(_("{} f()").format(jk))
+        jreturn = js2py.eval_js(self._("{} f()").format(jk))
         self.log_debug("JsEngine returns value [{}]".format(jreturn))
         key = binascii.unhexlify(jreturn)
 

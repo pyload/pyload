@@ -60,7 +60,7 @@ class HoerbuchIn(Crypter):
         m = self.hoster_links.search(url) or self.protection.search(url)
 
         if m is None:
-            self.fail(_("Bad URL"))
+            self.fail(self._("Bad URL"))
         url = m.group(0)
 
         if self.hoster_links.match(url):

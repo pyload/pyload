@@ -99,13 +99,13 @@ class PornhubCom(SimpleHoster):
             re.S,
         )
         if m is None:
-            self.error(_("Player Javascript data not found"))
+            self.error(self._("Player Javascript data not found"))
 
         script = m.group(1)
 
         m = re.search(r"qualityItems_\d+", script)
         if m is None:
-            self.error(_("`qualityItems` variable no found"))
+            self.error(self._("`qualityItems` variable no found"))
 
         result_var = re.search(r"qualityItems_\d+", script).group(0)
 

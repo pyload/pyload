@@ -180,7 +180,7 @@ class UnRar(Extractor):
                 raise ArchiveError(err)
 
         if p.returncode:
-            raise ArchiveError(_("Process return code: {}").format(p.returncode))
+            raise ArchiveError(self._("Process return code: {}").format(p.returncode))
 
         return self.list(password)
 
@@ -208,7 +208,7 @@ class UnRar(Extractor):
         out, err = (_r.strip() if _r else "" for _r in p.communicate())
 
         if "Cannot open" in err:
-            raise ArchiveError(_("Cannot open file"))
+            raise ArchiveError(self._("Cannot open file"))
 
         if err:  #: Only log error at this point
             self.log_error(err)

@@ -48,7 +48,7 @@ class AntiVirus(Addon):
         avargs = encode(self.config.get("avargs").strip())
 
         if not os.path.isfile(avfile):
-            self.fail(_("Antivirus executable not found"))
+            self.fail(self._("Antivirus executable not found"))
 
         scanfolder = self.config.get("avtarget") == "folder"
 
@@ -69,7 +69,7 @@ class AntiVirus(Addon):
             return
 
         thread.addActive(pyfile)
-        pyfile.setCustomStatus(_("virus scanning"))
+        pyfile.setCustomStatus(self._("virus scanning"))
         pyfile.setProgress(0)
 
         try:
@@ -97,11 +97,11 @@ class AntiVirus(Addon):
                 if scanfolder:
                     if action == "Antivirus default":
                         self.log_warning(
-                            _("Delete/Quarantine task skipped in folder scan mode")
+                            self._("Delete/Quarantine task skipped in folder scan mode")
                         )
                     return
 
-                pyfile.error = _("Infected file")
+                pyfile.error = self._("Infected file")
 
                 try:
                     if action == "Delete":
@@ -114,28 +114,28 @@ class AntiVirus(Addon):
 
                             except NameError:
                                 self.log_warning(
-                                    _(
+                                    self._(
                                         "Send2Trash lib not found, moving to quarantine instead"
                                     )
                                 )
-                                pyfile.setCustomStatus(_("file moving"))
+                                pyfile.setCustomStatus(self._("file moving"))
                                 shutil.move(target, self.config.get("quardir"))
 
                             except Exception as e:
                                 self.log_warning(
-                                    _(
+                                    self._(
                                         "Unable to move file to trash: {}, moving to quarantine instead"
                                     )
                                     % e
                                 )
-                                pyfile.setCustomStatus(_("file moving"))
+                                pyfile.setCustomStatus(self._("file moving"))
                                 shutil.move(target, self.config.get("quardir"))
 
                             else:
                                 self.log_debug("Successfully moved file to trash")
 
                     elif action == "Quarantine":
-                        pyfile.setCustomStatus(_("file moving"))
+                        pyfile.setCustomStatus(self._("file moving"))
                         shutil.move(target, self.config.get("quardir"))
 
                 except (IOError, shutil.Error) as e:

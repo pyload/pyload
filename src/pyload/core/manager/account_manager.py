@@ -82,7 +82,7 @@ class AccountManager(object):
             with open("accounts.conf", mode="w") as f:
                 f.write("version: {}".format(__version__))
             self.pyload.log.warning(
-                _("Account settings deleted, due to new config format.")
+                self._("Account settings deleted, due to new config format.")
             )
             return
 

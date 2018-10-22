@@ -67,21 +67,21 @@ class XHamsterCom(Hoster):
         video_data_search = re.search(video_data_re, self.data)
 
         if not video_data_search:
-            self.error(_("video data not found"))
+            self.error(self._("video data not found"))
 
         video_data = json.loads(video_data_search.group(1))
 
         video_model = video_data.get("videoModel", None)
         if video_model is None:
-            self.error(_("Could not find video model!"))
+            self.error(self._("Could not find video model!"))
 
         sources = video_model.get("sources", None)
         if sources is None:
-            self.error(_("Could not find sources!"))
+            self.error(self._("Could not find sources!"))
 
         mp4_sources = sources.get("mp4", None)
         if mp4_sources is None:
-            self.error(_("Could not find mp4 sources!"))
+            self.error(self._("Could not find mp4 sources!"))
 
         long_url = quality_fallback(self.desired_quality, mp4_sources)
 

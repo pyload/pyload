@@ -67,7 +67,7 @@ class RSDF(Container):
                 raw_links = binascii.unhexlify("".join(data.split())).splitlines()
 
             except TypeError:
-                self.fail(_("Container is corrupted"))
+                self.fail(self._("Container is corrupted"))
 
             for link in raw_links:
                 if not link:

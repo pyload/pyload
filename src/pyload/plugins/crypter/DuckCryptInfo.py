@@ -38,7 +38,7 @@ class DuckCryptInfo(Crypter):
 
         m = re.match(self.__pattern__, url)
         if m is None:
-            self.fail(_("Weird error in link"))
+            self.fail(self._("Weird error in link"))
         if str(m.group(1)) == "link":
             self.handle_link(url)
         else:
@@ -55,7 +55,7 @@ class DuckCryptInfo(Crypter):
         cryptlinks = soup.findAll("div", attrs={"class": "folderbox"})
         self.log_debug("Redirect to " + cryptlinks)
         if not cryptlinks:
-            self.error(_("No link found"))
+            self.error(self._("No link found"))
         for clink in cryptlinks:
             if clink.find("a"):
                 self.handle_link(clink.find("a")["href"])
@@ -65,4 +65,4 @@ class DuckCryptInfo(Crypter):
         soup = BeautifulSoup(html)
         self.links = [soup.find("iframe")["src"]]
         if not self.links:
-            self.log_info(_("No link found"))
+            self.log_info(self._("No link found"))

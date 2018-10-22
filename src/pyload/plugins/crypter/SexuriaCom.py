@@ -114,7 +114,7 @@ class SexuriaCom(Crypter):
             html = self.load(url)
             links = re.findall(self.PATTERN_REDIRECT_LINKS, html, re.I)
             if not links:
-                self.log_error(_("Broken for link: {}").format(link))
+                self.log_error(self._("Broken for link: {}").format(link))
             else:
                 for link in links:
                     link = link.replace(
@@ -122,13 +122,13 @@ class SexuriaCom(Crypter):
                     )
                     finallink = self.load(link, just_header=True)["url"]
                     if not finallink or "sexuria.com/" in finallink:
-                        self.log_error(_("Broken for link: {}").format(link))
+                        self.log_error(self._("Broken for link: {}").format(link))
                     else:
                         linklist.append(finallink)
 
         #: Log result
         if not linklist:
-            self.fail(_("Unable to extract links (maybe plugin out of date?)"))
+            self.fail(self._("Unable to extract links (maybe plugin out of date?)"))
         else:
             for i, link in enumerate(linklist):
                 self.log_debug(

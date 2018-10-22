@@ -86,7 +86,7 @@ class RPNetBiz(MultiHoster):
 
             if my_try > attemps:  #: We went over the limit!
                 self.fail(
-                    _("Waited for about 15 minutes for download to finish but failed")
+                    self._("Waited for about 15 minutes for download to finish but failed")
                 )
 
         if "generated" in link_status:
@@ -95,4 +95,4 @@ class RPNetBiz(MultiHoster):
         elif "error" in link_status:
             self.fail(link_status["error"])
         else:
-            self.fail(_("Something went wrong, not supposed to enter here"))
+            self.fail(self._("Something went wrong, not supposed to enter here"))

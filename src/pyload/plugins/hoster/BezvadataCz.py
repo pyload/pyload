@@ -40,7 +40,7 @@ class BezvadataCz(SimpleHoster):
         #: Download button
         m = re.search(r'<a class="stahnoutSoubor".*?href="(.*?)"', self.data)
         if m is None:
-            self.error(_("Page 1 URL not found"))
+            self.error(self._("Page 1 URL not found"))
         url = "http://bezvadata.cz{}".format(m.group(1))
 
         #: Captcha form
@@ -49,7 +49,7 @@ class BezvadataCz(SimpleHoster):
 
         action, inputs = self.parse_html_form("frm-stahnoutFreeForm")
         if not inputs:
-            self.error(_("FreeForm"))
+            self.error(self._("FreeForm"))
 
         m = re.search(r'<img src="data:image/png;base64,(.*?)"', self.data)
         if m is None:
@@ -64,7 +64,7 @@ class BezvadataCz(SimpleHoster):
         self.check_errors()
         m = re.search(r'<a class="stahnoutSoubor2" href="(.*?)">', self.data)
         if m is None:
-            self.error(_("Page 2 URL not found"))
+            self.error(self._("Page 2 URL not found"))
         url = "http://bezvadata.cz{}".format(m.group(1))
         self.log_debug("DL URL {}".format(url))
 
@@ -78,7 +78,7 @@ class BezvadataCz(SimpleHoster):
     def check_errors(self):
         if "images/button-download-disable.png" in self.data:
             #: Parallel dl limit
-            self.retry(5 * 60, 24, _("Download limit reached"))
+            self.retry(5 * 60, 24, self._("Download limit reached"))
         elif '<div class="infobox' in self.data:
             self.temp_offline()
         else:

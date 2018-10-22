@@ -73,7 +73,7 @@ class HotFolder(Addon):
                 )
                 shutil.move(path, newpath)
 
-                self.log_info(_("Added {} from HotFolder").format(f))
+                self.log_info(self._("Added {} from HotFolder").format(f))
                 self.pyload.api.addPackage(f, [newpath], 1)
 
         except (IOError, OSError) as e:

@@ -116,7 +116,7 @@ class DailymotionCom(Hoster):
 
         s = streams[idx]
 
-        self.log_info(_("Download video quality {}x{}").format(s[0]))
+        self.log_info(self._("Download video quality {}x{}").format(s[0]))
 
         return s[1]
 
@@ -139,6 +139,6 @@ class DailymotionCom(Hoster):
         quality = self.get_quality()
 
         if not streams:
-            self.fail(_("Failed to get any streams."))
+            self.fail(self._("Failed to get any streams."))
 
         self.download(self.get_link(streams, quality))

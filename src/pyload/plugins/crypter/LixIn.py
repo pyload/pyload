@@ -39,7 +39,7 @@ class LixIn(Crypter):
 
         m = re.match(self.__pattern__, url)
         if m is None:
-            self.error(_("Unable to identify file ID"))
+            self.error(self._("Unable to identify file ID"))
 
         id = m.group("ID")
         self.log_debug("File id is {}".format(id))
@@ -48,7 +48,7 @@ class LixIn(Crypter):
 
         m = re.search(self.SUBMIT_PATTERN, self.data)
         if m is None:
-            self.error(_("Link doesn't seem valid"))
+            self.error(self._("Link doesn't seem valid"))
 
         m = re.search(self.CAPTCHA_PATTERN, self.data)
         if m is not None:
@@ -60,14 +60,14 @@ class LixIn(Crypter):
             )
 
             if re.search(self.CAPTCHA_PATTERN, self.data):
-                self.fail(_("No captcha solved"))
+                self.fail(self._("No captcha solved"))
 
         else:
             self.data = self.load(url, post={"submit": "submit", "tiny": id})
 
         m = re.search(self.LINK_PATTERN, self.data)
         if m is None:
-            self.error(_("Unable to find destination url"))
+            self.error(self._("Unable to find destination url"))
         else:
             self.links = [m.group(1)]
             self.log_debug("Found link {}, adding to package".format(self.links[0]))

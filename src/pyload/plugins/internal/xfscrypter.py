@@ -54,7 +54,7 @@ class XFSCrypter(SimpleCrypter):
 
     def _prepare(self):
         if not self.PLUGIN_DOMAIN:
-            self.fail(_("Missing PLUGIN DOMAIN"))
+            self.fail(self._("Missing PLUGIN DOMAIN"))
 
         if self.COOKIES:
             self._set_xfs_cookie()

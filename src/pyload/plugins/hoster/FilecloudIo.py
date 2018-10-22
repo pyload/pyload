@@ -48,7 +48,7 @@ class FilecloudIo(SimpleHoster):
     def handle_free(self, pyfile):
         m = re.search(r"__requestUrl\s*=\s*\'(.+)\';", self.data)
         if m is None:
-            self.error(_("requestUrl not found"))
+            self.error(self._("requestUrl not found"))
 
         post_url = m.group(1)
 
@@ -56,7 +56,7 @@ class FilecloudIo(SimpleHoster):
             r"\$\.ajax\(.*data:\s*({{.+?}})\s*\}\)\.done\(function", self.data, re.S
         )
         if m is None:
-            self.error(_("post parameters pattern not found"))
+            self.error(self._("post parameters pattern not found"))
 
         post_data = dict(re.findall(r"'(\w+)'\s*:\s*'(\w+)'", m.group(1)))
 

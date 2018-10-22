@@ -167,7 +167,7 @@ class PluginManager(object):
 
                     if core_version > plugin_version:
                         self.log.warning(
-                            _(
+                            self._(
                                 "Plugin {} not compatible with current pyLoad version"
                             ).format(name)
                         )
@@ -203,7 +203,7 @@ class PluginManager(object):
                     try:
                         plugins[name]["re"] = re.compile(pattern)
                     except Exception:
-                        self.log.error(_("{} has a invalid pattern.").format(name))
+                        self.log.error(self._("{} has a invalid pattern.").format(name))
 
                 # internals have no config
                 if folder == "internal":
@@ -338,7 +338,7 @@ class PluginManager(object):
                 return module
             except Exception as e:
                 self.log.error(
-                    _("Error importing {name}: {msg}").format(name=name, msg=str(e))
+                    self._("Error importing {name}: {msg}").format(name=name, msg=str(e))
                 )
                 if self.pyload.debug:
                     traceback.print_exc()

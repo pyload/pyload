@@ -47,7 +47,7 @@ class HearthisAtFolder(Crypter):
             #: Playlist
             m = re.search(r"intInternalId = (\d+);", self.data)
             if m is None:
-                self.fail(_("Internal Id not found"))
+                self.fail(self._("Internal Id not found"))
 
             self.data = self.load(
                 "https://hearthis.at/user_ajax_more.php",

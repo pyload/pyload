@@ -66,7 +66,7 @@ class MegaDebridEu(MultiHoster):
 
         except BadHeader as e:
             if e.code == 405:
-                self.fail(_("Banned IP"))
+                self.fail(self._("Banned IP"))
 
             else:
                 raise
@@ -79,7 +79,7 @@ class MegaDebridEu(MultiHoster):
             self.retry()
 
         elif res["response_code"] == "UNALLOWED_IP":
-            self.fail(_("Banned IP"))
+            self.fail(self._("Banned IP"))
 
         else:
             self.log_error(res["response_text"])

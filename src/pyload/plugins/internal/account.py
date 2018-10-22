@@ -106,9 +106,9 @@ class Account(Plugin):
 
     def login(self):
         if not self.req:
-            self.log_info(_("Login user `{}`...").format(self.user))
+            self.log_info(self._("Login user `{}`...").format(self.user))
         else:
-            self.log_info(_("Relogin user `{}`...").format(self.user))
+            self.log_info(self._("Relogin user `{}`...").format(self.user))
             self.clean()
 
         self.req = self.pyload.requestFactory.getRequest(self.classname, self.user)
@@ -122,7 +122,7 @@ class Account(Plugin):
             self.signin(self.user, self.info["login"]["password"], self.info["data"])
 
         except Skip as e:
-            self.log_warning(_("Skipped login user `{}`").format(self.user), e)
+            self.log_warning(self._("Skipped login user `{}`").format(self.user), e)
             self.info["login"]["valid"] = True
 
             new_timeout = timestamp - self.info["login"]["timestamp"]
@@ -130,7 +130,7 @@ class Account(Plugin):
                 self.timeout = new_timeout
 
         except Exception as e:
-            self.log_error(_("Could not login user `{}`").format(self.user), e)
+            self.log_error(self._("Could not login user `{}`").format(self.user), e)
             self.info["login"]["valid"] = False
 
         else:
@@ -208,7 +208,7 @@ class Account(Plugin):
                 self.reset()
 
         if refresh and self.info["login"]["valid"]:
-            self.log_info(_("Grabbing account info for user `{}`...").format(self.user))
+            self.log_info(self._("Grabbing account info for user `{}`...").format(self.user))
             self.info = self._grab_info()
 
             self.syncback()
@@ -237,7 +237,7 @@ class Account(Plugin):
                 self.info["data"].update(data)
 
         except Exception as e:
-            self.log_warning(_("Error loading info for user `{}`").format(self.user), e)
+            self.log_warning(self._("Error loading info for user `{}`").format(self.user), e)
 
         finally:
             return self.info
@@ -288,11 +288,11 @@ class Account(Plugin):
 
     @lock
     def add(self, user, password=None, options={}):
-        self.log_info(_("Adding user `{}`...").format(user[:3] + "*******"))
+        self.log_info(self._("Adding user `{}`...").format(user[:3] + "*******"))
 
         if user in self.accounts:
             self.log_error(
-                _("Error adding user `{}`").format(user), _("User already exists")
+                self._("Error adding user `{}`").format(user), self._("User already exists")
             )
             return False
 
@@ -322,7 +322,7 @@ class Account(Plugin):
         Updates account and return true if anything changed.
         """
         if user in self.accounts:
-            self.log_info(_("Updating account info for user `{}`...").format(user))
+            self.log_info(self._("Updating account info for user `{}`...").format(user))
 
             u = self.accounts[user]
             if password:
@@ -338,7 +338,7 @@ class Account(Plugin):
 
     @lock
     def removeAccount(self, user):
-        self.log_info(_("Removing user `{}`...").format(user))
+        self.log_info(self._("Removing user `{}`...").format(user))
         self.accounts.pop(user, None)
         if user is self.user:
             self.choose()
@@ -366,14 +366,14 @@ class Account(Plugin):
 
                 except Exception:
                     self.log_warning(
-                        _(
+                        self._(
                             "Invalid time format `{}` for account `{}`, use 1:22-3:44"
                         ).format(user, time_data)
                     )
 
             if data["trafficleft"] == 0:
                 self.log_warning(
-                    _(
+                    self._(
                         "Not using account `{}` because the account has no traffic left"
                     ).format(user)
                 )
@@ -381,7 +381,7 @@ class Account(Plugin):
 
             if time.time() > data["validuntil"] > 0:
                 self.log_warning(
-                    _("Not using account `{}` because the account has expired").format(
+                    self._("Not using account `{}` because the account has expired").format(
                         user
                     )
                 )
@@ -420,7 +420,7 @@ class Account(Plugin):
 
         elif user not in self.accounts:
             self.log_error(
-                _("Error choosing user `{}`").format(user), _("User does not exists")
+                self._("Error choosing user `{}`").format(user), self._("User does not exists")
             )
             return False
 
@@ -451,8 +451,8 @@ class Account(Plugin):
         # TODO: Remove `>> 10` in 0.6.x
         return parse_size(size, unit or "byte") >> 10
 
-    def fail_login(self, msg=_("Login handshake has failed")):
+    def fail_login(self, msg=self._("Login handshake has failed")):
         return self.fail(msg)
 
-    def skip_login(self, msg=_("Already signed in")):
+    def skip_login(self, msg=self._("Already signed in")):
         return self.skip(msg)

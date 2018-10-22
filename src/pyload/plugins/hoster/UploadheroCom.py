@@ -52,7 +52,7 @@ class UploadheroCom(SimpleHoster):
     def handle_free(self, pyfile):
         m = re.search(self.CAPTCHA_PATTERN, self.data)
         if m is None:
-            self.error(_("Captcha not found"))
+            self.error(self._("Captcha not found"))
 
         captcha = self.captcha.decrypt(
             urllib.parse.urljoin("http://uploadhero.co/", m.group(1))

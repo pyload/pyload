@@ -49,7 +49,7 @@ class FileStoreTo(SimpleHoster):
         self.check_errors()
         m = re.search(r'name="DID" value="(.+?)"', self.data)
         if m is None:
-            self.fail(_("DID pattern not found"))
+            self.fail(self._("DID pattern not found"))
 
         self.data = self.load(
             pyfile.url, post={"DID": m.group(1), "Aktion": "Downloading"}

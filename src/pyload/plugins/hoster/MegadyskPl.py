@@ -56,7 +56,7 @@ class MegadyskPl(SimpleHoster):
         m = re.search(r"window\['.*?'\]\s*=\s*\"(.*?)\"", html)
         if m is None:
             info["status"] = 8
-            info["error"] = _("Encrypted info pattern not found")
+            info["error"] = self._("Encrypted info pattern not found")
             return info
 
         encrypted_info = m.group(1)
@@ -66,7 +66,7 @@ class MegadyskPl(SimpleHoster):
         m = re.search(r't.ISK\s*=\s*"(\w+)"', html)
         if m is None:
             info["status"] = 8
-            info["error"] = _("Encryption key pattern not found")
+            info["error"] = self._("Encryption key pattern not found")
             return info
 
         key = m.group(1)
@@ -98,6 +98,6 @@ class MegadyskPl(SimpleHoster):
 
     def handle_free(self, pyfile):
         if "download_url" not in self.info:
-            self.error(_("Missing JSON data"))
+            self.error(self._("Missing JSON data"))
 
         self.link = self.fixurl(self.info["download_url"])

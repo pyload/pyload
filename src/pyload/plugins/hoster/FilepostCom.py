@@ -40,12 +40,12 @@ class FilepostCom(SimpleHoster):
     def handle_free(self, pyfile):
         m = re.search(self.FLP_TOKEN_PATTERN, self.data)
         if m is None:
-            self.error(_("Token"))
+            self.error(self._("Token"))
         flp_token = m.group(1)
 
         m = re.search(self.RECAPTCHA_PATTERN, self.data)
         if m is None:
-            self.error(_("Captcha key"))
+            self.error(self._("Captcha key"))
         captcha_key = m.group(1)
 
         #: Get wait time
@@ -73,7 +73,7 @@ class FilepostCom(SimpleHoster):
             #: Solve password
             password = self.get_password()
             if password:
-                self.log_info(_("Password protected link, trying ") + password)
+                self.log_info(self._("Password protected link, trying ") + password)
 
                 get_dict["JsHttpRequest"] = str(int(time.time() * 10000)) + "-xml"
                 post_dict["file_pass"] = password
@@ -81,9 +81,9 @@ class FilepostCom(SimpleHoster):
                 self.link = self.get_json_response(get_dict, post_dict, "link")
 
                 if not self.link:
-                    self.fail(_("Wrong password"))
+                    self.fail(self._("Wrong password"))
             else:
-                self.fail(_("No password found"))
+                self.fail(self._("No password found"))
 
         else:
             get_dict["JsHttpRequest"] = str(int(time.time() * 10000)) + "-xml"
@@ -106,7 +106,7 @@ class FilepostCom(SimpleHoster):
         self.log_debug(res)
 
         if "js" not in res:
-            self.error(_("JSON {} 1").format(field))
+            self.error(self._("JSON {} 1").format(field))
 
         #: I changed js_answer to res['js'] since js_answer is nowhere set.
         #: I don't know the JSON-HTTP specs in detail, but the previous author
@@ -133,6 +133,6 @@ class FilepostCom(SimpleHoster):
                 self.fail(res["js"]["error"])
 
         if "answer" not in res["js"] or field not in res["js"]["answer"]:
-            self.error(_("JSON {} 2").format(field))
+            self.error(self._("JSON {} 2").format(field))
 
         return res["js"]["answer"][field]

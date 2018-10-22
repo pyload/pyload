@@ -41,7 +41,7 @@ def login():
 
 @bp.route(r"/nopermission")
 def nopermission():
-    return base([_("You dont have permission to access this page.")])
+    return base([self._("You dont have permission to access this page.")])
 
 
 @bp.route(r"/login", methods=["POST"])
@@ -120,7 +120,7 @@ def downloads():
     root = api.getConfigValue("general", "download_folder")
 
     if not os.path.isdir(root):
-        return base([_("Download directory not found.")])
+        return base([self._("Download directory not found.")])
     data = {"folder": [], "files": []}
 
     items = os.listdir(fs_encode(root))
@@ -172,16 +172,16 @@ def settings():
 
     for data in api.getAccounts(False):
         if data.trafficleft == -1:
-            trafficleft = _("unlimited")
+            trafficleft = self._("unlimited")
         elif not data.trafficleft:
-            trafficleft = _("not available")
+            trafficleft = self._("not available")
         else:
             trafficleft = formatSize(data.trafficleft << 10)
 
         if data.validuntil == -1:
-            validuntil = _("unlimited")
+            validuntil = self._("unlimited")
         elif not data.validuntil:
-            validuntil = _("not available")
+            validuntil = self._("not available")
         else:
             t = time.localtime(data.validuntil)
             validuntil = time.strftime("%Y-%m-%d %H:%M:%S", t)
@@ -476,7 +476,7 @@ def admin():
 
 @bp.route(r"/setup")
 def setup():
-    return base([_("Run pyLoad -s to access the setup.")])
+    return base([self._("Run pyLoad -s to access the setup.")])
 
 
 # @bp.route("/refresh")

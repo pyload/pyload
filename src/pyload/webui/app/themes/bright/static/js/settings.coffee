@@ -67,11 +67,11 @@ class SettingsUI
             "method": "post"
             "url": "/json/save_config/#{category}"
             "onSuccess" : ->
-                root.notify.alert '{{ _("Settings saved.")}}', {
+                root.notify.alert '{{ self._("Settings saved.")}}', {
                             'className': 'success'
                         }
             "onFailure": ->
-                root.notify.alert '{{ _("Error occured.")}}', {
+                root.notify.alert '{{ self._("Error occured.")}}', {
                             'className': 'error'
                         }
         }
@@ -98,7 +98,7 @@ class SettingsUI
              "method": "post",
              "onSuccess" : -> window.location.reload()
              "onFailure": ->
-                 root.notify.alert('{{ _("Error occured.") }}', {
+                 root.notify.alert('{{ self._("Error occured.") }}', {
                              'className': 'error'
                          });
              }

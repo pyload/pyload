@@ -805,13 +805,13 @@ class CircleCaptcha(OCR):
         file = io.StringIO(urllib.request.urlopen(url).read())
         img = Image.open(file)
         coords = self.decrypt(img)
-        self.log_info(_("Coords: {}").format(coords))
+        self.log_info(self._("Coords: {}").format(coords))
 
     #: Return coordinates of opened circle (eg (x, y))
     def decrypt_from_file(self, filename):
         #: Can be many different formats.
         coords = self.decrypt(Image.open(filename))
-        self.log_info(_("Coords: {}").format(coords))
+        self.log_info(self._("Coords: {}").format(coords))
 
 
 # DEBUG

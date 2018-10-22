@@ -258,7 +258,7 @@ class HTTPDownload(object):
                     # note that other chunks are closed and downloaded with init too
                     if failed and init not in failed and init.c not in chunksDone:
                         self.log.error(
-                            _(
+                            self._(
                                 "Download chunks failed, fallback to single connection | {}".format(
                                     str(ex)
                                 )

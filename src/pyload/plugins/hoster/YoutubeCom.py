@@ -552,14 +552,14 @@ class YoutubeCom(Hoster):
         # try:
         #     player_url = json.loads(re.search(r'"assets":.+?"js":\s*("[^"]+")',self.data).group(1))
         # except (AttributeError, IndexError):
-        #     self.fail(_("Player URL not found"))
+        #     self.fail(self._("Player URL not found"))
         player_url = self.player_config["assets"]["js"]
 
         if player_url.startswith("//"):
             player_url = "https:" + player_url
 
         if not player_url.endswith(".js"):
-            self.fail(_("Unsupported player type {}").format(player_url))
+            self.fail(self._("Unsupported player type {}").format(player_url))
 
         cache_info = self.db.retrieve("cache")
         cache_dirty = False
@@ -598,7 +598,7 @@ class YoutubeCom(Hoster):
                 function_name = m.group("sig")
 
             except (AttributeError, IndexError):
-                self.fail(_("Signature decode function name not found"))
+                self.fail(self._("Signature decode function name not found"))
 
             try:
                 jsi = JSInterpreter(player_data)
@@ -623,7 +623,7 @@ class YoutubeCom(Hoster):
                 decrypted_sig = decrypt_func(encrypted_sig)
 
             except (JSInterpreterError, AssertionError) as e:
-                self.log_error(_("Signature decode failed"), e)
+                self.log_error(self._("Signature decode failed"), e)
                 self.fail(e)
 
         #: Remove old records from cache
@@ -680,7 +680,7 @@ class YoutubeCom(Hoster):
 
         if desired_fmt not in self.formats or not is_video(desired_fmt):
             self.log_warning(
-                _("VIDEO ITAG {} unknown, using default").format(desired_fmt)
+                self._("VIDEO ITAG {} unknown, using default").format(desired_fmt)
             )
             desired_fmt = 22
 
@@ -698,7 +698,7 @@ class YoutubeCom(Hoster):
         }
 
         if not video_streams:
-            self.fail(_("No available video stream meets your preferences"))
+            self.fail(self._("No available video stream meets your preferences"))
 
         self.log_debug(
             "DESIRED VIDEO STREAM: ITAG:{} ({} {}x{} Q:{} 3D:{}) {}found, {}allowed".format(
@@ -784,7 +784,7 @@ class YoutubeCom(Hoster):
                 self.pyfile.name,
             )
             self.log_info(
-                _("Download skipped: {} due to {}").format(self.pyfile.name, e)
+                self._("Download skipped: {} due to {}").format(self.pyfile.name, e)
             )
 
         return filename, chosen_fmt
@@ -797,7 +797,7 @@ class YoutubeCom(Hoster):
 
         if desired_fmt not in self.formats or not is_audio(desired_fmt):
             self.log_warning(
-                _("AUDIO ITAG {} unknown, using default").format(desired_fmt)
+                self._("AUDIO ITAG {} unknown, using default").format(desired_fmt)
             )
             desired_fmt = 141
 
@@ -822,7 +822,7 @@ class YoutubeCom(Hoster):
         }
 
         if not audio_streams:
-            self.fail(_("No available audio stream meets your preferences"))
+            self.fail(self._("No available audio stream meets your preferences"))
 
         if desired_fmt in audio_streams and allowed_suffix(desired_fmt):
             chosen_fmt = desired_fmt
@@ -891,7 +891,7 @@ class YoutubeCom(Hoster):
                 self.pyfile.name,
             )
             self.log_info(
-                _("Download skipped: {} due to {}").format(self.pyfile.name, e)
+                self._("Download skipped: {} due to {}").format(self.pyfile.name, e)
             )
 
         return filename, chosen_fmt
@@ -1079,7 +1079,7 @@ class YoutubeCom(Hoster):
                             self.remove(subtitle[0])
 
                 else:
-                    self.log_warning(_("ffmpeg error"), self.ffmpeg.error_message)
+                    self.log_warning(self._("ffmpeg error"), self.ffmpeg.error_message)
                     final_filename = video_filename
 
             elif (
@@ -1109,7 +1109,7 @@ class YoutubeCom(Hoster):
                             self.remove(subtitle[0])
 
                 else:
-                    self.log_warning(_("ffmpeg error"), self.ffmpeg.error_message)
+                    self.log_warning(self._("ffmpeg error"), self.ffmpeg.error_message)
 
         else:
             if audio_filename is not None:
@@ -1164,7 +1164,7 @@ class YoutubeCom(Hoster):
 
         m = re.search(r"ytplayer.config = ({.+?});", self.data)
         if m is None:
-            self.fail(_("Player config pattern not found"))
+            self.fail(self._("Player config pattern not found"))
 
         self.player_config = json.loads(m.group(1))
 

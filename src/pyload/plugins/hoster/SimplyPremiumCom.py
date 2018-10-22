@@ -44,20 +44,20 @@ class SimplyPremiumCom(MultiHoster):
             self.offline()
 
         elif "downloadlimit" in self.data:
-            self.log_warning(_("Reached maximum connctions"))
-            self.retry(5, 60, _("Reached maximum connctions"))
+            self.log_warning(self._("Reached maximum connctions"))
+            self.retry(5, 60, self._("Reached maximum connctions"))
 
         elif "trafficlimit" in self.data:
-            self.log_warning(_("Reached daily limit for this host"))
+            self.log_warning(self._("Reached daily limit for this host"))
             self.retry(
                 wait=seconds_to_midnight(), msg="Daily limit for this host reached"
             )
 
         elif "hostererror" in self.data:
             self.log_warning(
-                _("Hoster temporarily unavailable, waiting 1 minute and retry")
+                self._("Hoster temporarily unavailable, waiting 1 minute and retry")
             )
-            self.retry(5, 60, _("Hoster is temporarily unavailable"))
+            self.retry(5, 60, self._("Hoster is temporarily unavailable"))
 
     def handle_premium(self, pyfile):
         for i in range(5):
@@ -70,8 +70,8 @@ class SimplyPremiumCom(MultiHoster):
                 self.log_debug("JSON data: " + self.data)
                 break
         else:
-            self.log_info(_("Unable to get API data, waiting 1 minute and retry"))
-            self.retry(5, 60, _("Unable to get API data"))
+            self.log_info(self._("Unable to get API data, waiting 1 minute and retry"))
+            self.retry(5, 60, self._("Unable to get API data"))
 
         self.check_errors()
 

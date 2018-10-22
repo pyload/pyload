@@ -82,8 +82,8 @@ class DepositfilesCom(SimpleHoster):
             )
 
         else:
-            self.log_error(_("Captcha pattern not found"))
-            self.fail(_("Captcha pattern not found"))
+            self.log_error(self._("Captcha pattern not found"))
+            self.fail(self._("Captcha pattern not found"))
 
         self.data = self.load("https://depositfiles.com/get_file.php", get=params)
 
@@ -93,7 +93,7 @@ class DepositfilesCom(SimpleHoster):
 
     def handle_premium(self, pyfile):
         if '<span class="html_download_api-gold_traffic_limit">' in self.data:
-            self.log_warning(_("Download limit reached"))
+            self.log_warning(self._("Download limit reached"))
             self.retry(25, 60 * 60, "Download limit reached")
 
         elif 'onClick="show_gold_offer' in self.data:

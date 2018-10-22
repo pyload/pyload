@@ -117,14 +117,14 @@ class XFileSharing(Addon):
             plugin_set.difference_update(("", ""))
 
             if not plugin_set:
-                self.log_info(_("No {} to handle").format(type))
+                self.log_info(self._("No {} to handle").format(type))
                 return
 
             match_list = "|".join(sorted(plugin_set)).replace(".", "\.")
             pattern = self._regexmap[type][1].format(match_list)
 
             self.log_info(
-                _("Handle {} {}{}: {}").format(
+                self._("Handle {} {}{}: {}").format(
                     len(plugin_set),
                     type,
                     "" if len(plugin_set) == 1 else "s",
@@ -158,7 +158,7 @@ class XFileSharing(Addon):
             else:
                 pattern = self._regexmap[type][0]
 
-            self.log_info(_("Auto-discover new {}s").format(type))
+            self.log_info(self._("Auto-discover new {}s").format(type))
 
         return pattern
 

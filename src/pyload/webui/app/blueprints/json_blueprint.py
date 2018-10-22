@@ -55,7 +55,7 @@ def links():
                 link["percent"] = 0
                 link["size"] = 0
                 link["bleft"] = 0
-                link["info"] = _("waiting {}").format(link["format_wait"])
+                link["info"] = self._("waiting {}").format(link["format_wait"])
             else:
                 link["info"] = ""
 

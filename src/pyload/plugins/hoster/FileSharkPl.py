@@ -59,7 +59,7 @@ class FileSharkPl(SimpleHoster):
         #: Check if file is now available for download (-> file name can be found in html body)
         m = re.search(self.WAIT_PATTERN, self.data)
         if m is not None:
-            errmsg = self.info["error"] = _("Another download already run")
+            errmsg = self.info["error"] = self._("Another download already run")
             self.retry(15, int(m.group(1)), errmsg)
 
         m = re.search(self.ERROR_PATTERN, self.data)
@@ -67,23 +67,23 @@ class FileSharkPl(SimpleHoster):
             alert = m.group(1)
 
             if re.match(self.IP_ERROR_PATTERN, alert):
-                self.fail(_("Only connections from Polish IP are allowed"))
+                self.fail(self._("Only connections from Polish IP are allowed"))
 
             elif re.match(self.SLOT_ERROR_PATTERN, alert):
-                errmsg = self.info["error"] = _("No free download slots available")
+                errmsg = self.info["error"] = self._("No free download slots available")
                 self.log_warning(errmsg)
-                self.retry(10, 30 * 60, _("Still no free download slots available"))
+                self.retry(10, 30 * 60, self._("Still no free download slots available"))
 
             else:
                 self.info["error"] = alert
-                self.retry(10, 10 * 60, _("Try again later"))
+                self.retry(10, 10 * 60, self._("Try again later"))
 
         self.info.pop("error", None)
 
     def handle_free(self, pyfile):
         m = re.search(self.LINK_FREE_PATTERN, self.data)
         if m is None:
-            self.error(_("Download url not found"))
+            self.error(self._("Download url not found"))
 
         link = urllib.parse.urljoin("https://fileshark.pl/", m.group(1))
 
@@ -99,13 +99,13 @@ class FileSharkPl(SimpleHoster):
 
         m = re.search(self.TOKEN_PATTERN, self.data)
         if m is None:
-            self.retry(msg=_("Captcha form not found"))
+            self.retry(msg=self._("Captcha form not found"))
 
         inputs["form[_token]"] = m.group(1)
 
         m = re.search(self.CAPTCHA_PATTERN, self.data)
         if m is None:
-            self.retry(msg=_("Captcha image not found"))
+            self.retry(msg=self._("Captcha image not found"))
 
         inputs["form[captcha]"] = self.captcha.decrypt_image(
             m.group(1).decode("base64"), input_type="jpeg"

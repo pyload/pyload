@@ -69,7 +69,7 @@ class ImgurCom(SimpleCrypter):
             # Extract some metadata (ID, Title, NumImages)
             gallery_id = embedded_json["hash"]
             self.gallery_name = self.sanitize(
-                _("{}_{}").format(gallery_id, embedded_json["title"])
+                self._("{}_{}").format(gallery_id, embedded_json["title"])
             )
             self.total_num_images = int(embedded_json["num_images"])
 
@@ -160,7 +160,7 @@ class ImgurCom(SimpleCrypter):
         except (TypeError, KeyError, ValueError) as e:
             # Fail gracefull as we already had some success
             self.log_error(
-                _("Processing of additional links unsuccessful - {}: {}").format(
+                self._("Processing of additional links unsuccessful - {}: {}").format(
                     type(e).__name__, str(e)
                 )
             )
@@ -170,7 +170,7 @@ class ImgurCom(SimpleCrypter):
         num_images_found = len(direct_links) + len(indirect_links)
         if num_images_found < self.total_num_images:
             self.log_error(
-                _("Could not save all images of this gallery: {}/{}").format(
+                self._("Could not save all images of this gallery: {}/{}").format(
                     num_images_found, self.total_num_images
                 )
             )

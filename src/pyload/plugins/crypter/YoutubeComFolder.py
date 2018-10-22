@@ -150,7 +150,7 @@ class YoutubeComFolder(Crypter):
             playlists = [self.get_playlist(m_id)]
 
         if not playlists:
-            self.fail(_("No playlist available"))
+            self.fail(self._("No playlist available"))
 
         addedvideos = []
         urlize = lambda x: "https://www.youtube.com/watch?v=" + x

@@ -31,7 +31,7 @@ class OboomCom(Account):
         result = json.loads(html)
 
         if result[0] != 200:
-            self.log_warning(_("Failed to log in: {}").format(result[1]))
+            self.log_warning(self._("Failed to log in: {}").format(result[1]))
             self.fail_login()
 
         return result[1]

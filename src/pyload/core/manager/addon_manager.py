@@ -69,7 +69,7 @@ class AddonManager(object):
             try:
                 return func(*args)
             except Exception as e:
-                args[0].log.error(_("Error executing addons: {}").format(str(e)))
+                args[0].log.error(self._("Error executing addons: {}").format(str(e)))
 
         return new
 
@@ -118,10 +118,10 @@ class AddonManager(object):
                     deactive.append(pluginname)
 
             except Exception:
-                self.log.warning(_("Failed activating {}").format(pluginname))
+                self.log.warning(self._("Failed activating {}").format(pluginname))
 
-        self.log.info(_("Activated plugins: {}").format(", ".join(sorted(active))))
-        self.log.info(_("Deactivate plugins: {}").format(", ".join(sorted(deactive))))
+        self.log.info(self._("Activated plugins: {}").format(", ".join(sorted(active))))
+        self.log.info(self._("Deactivate plugins: {}").format(", ".join(sorted(deactive))))
 
         self.plugins = plugins
 

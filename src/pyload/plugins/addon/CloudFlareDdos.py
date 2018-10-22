@@ -65,7 +65,7 @@ class CloudFlare(object):
 
                 else:
                     addon_plugin.log_warning(
-                        _("Unknown CloudFlare response code {}").format(e.code)
+                        self._("Unknown CloudFlare response code {}").format(e.code)
                     )
                     raise
 
@@ -81,7 +81,7 @@ class CloudFlare(object):
     @staticmethod
     def _solve_cf_ddos_challenge(addon_plugin, owner_plugin, data):
         try:
-            addon_plugin.log_info(_("Detected CloudFlare's DDoS protection page"))
+            addon_plugin.log_info(self._("Detected CloudFlare's DDoS protection page"))
             # Cloudflare requires a delay before solving the challenge
             owner_plugin.set_wait(5)
 
@@ -114,7 +114,7 @@ class CloudFlare(object):
                 # This may indicate CloudFlare has changed their anti-bot
                 # technique.
                 owner_plugin.log_error(
-                    _("Unable to parse CloudFlare's DDoS protection page")
+                    self._("Unable to parse CloudFlare's DDoS protection page")
                 )
                 return None  #: Tell the exception handler to re-throw the exception
 
@@ -138,7 +138,7 @@ class CloudFlare(object):
 
             captcha_key = captcha.detect_key(data)
             if captcha_key:
-                addon_plugin.log_info(_("Detected CloudFlare's security check page"))
+                addon_plugin.log_info(self._("Detected CloudFlare's security check page"))
 
                 response, challenge = captcha.challenge(captcha_key, data)
                 return owner_plugin.load(
@@ -148,7 +148,7 @@ class CloudFlare(object):
                 )
 
             else:
-                addon_plugin.log_warning(_("Got unexpected CloudFlare html page"))
+                addon_plugin.log_warning(self._("Got unexpected CloudFlare html page"))
                 return None  #: Tell the exception handler to re-throw the exception
 
         except Exception as e:
@@ -211,7 +211,7 @@ class CloudFlareDdos(Addon):
 
         else:
             self.log_warning(
-                _("No _preload() override found for {}, cannot un-override>")
+                self._("No _preload() override found for {}, cannot un-override>")
                 % plugin_id(plugin)
             )
 
@@ -225,7 +225,7 @@ class CloudFlareDdos(Addon):
 
         else:
             self.log_warning(
-                _("Already overrided _preload() for {}") % plugin_id(plugin)
+                self._("Already overrided _preload() for {}") % plugin_id(plugin)
             )
 
     def _override_get_url(self):
@@ -268,7 +268,7 @@ class CloudFlareDdos(Addon):
         attr = getattr(pyfile.plugin, "_preload", None)
         if not attr and not callable(attr):
             self.log_error(
-                _("{} is missing _preload() function, cannot override!")
+                self._("{} is missing _preload() function, cannot override!")
                 % plugin_id(pyfile.plugin)
             )
             return
@@ -282,7 +282,7 @@ class CloudFlareDdos(Addon):
     def my_get_url(self, *args, **kwargs):
         owner_plugin = self._find_owner_plugin()
         if owner_plugin is None:
-            self.log_warning(_("Owner plugin not found, cannot process"))
+            self.log_warning(self._("Owner plugin not found, cannot process"))
             return self.old_get_url(*args, **kwargs)
 
         else:

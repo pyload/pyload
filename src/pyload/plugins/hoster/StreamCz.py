@@ -92,5 +92,5 @@ class StreamCz(SimpleHoster):
             link_name, container = os.path.splitext(link)
             self.pyfile.name = data["name"] + container
 
-            self.log_info(_("Downloading file..."))
+            self.log_info(self._("Downloading file..."))
             self.download(link)

@@ -65,7 +65,7 @@ class ImageTyperz(Addon):
         except Exception:
             raise ImageTyperzException("Invalid response")
 
-        self.log_info(_("Account balance: ${} left").format(res))
+        self.log_info(self._("Account balance: ${} left").format(res))
         return balance
 
     def submit(self, captcha, captchaType="file", match=None):
@@ -126,7 +126,7 @@ class ImageTyperz(Addon):
             self._process_captcha(task)
 
         else:
-            self.log_info(_("Your account has not enough credits"))
+            self.log_info(self._("Your account has not enough credits"))
 
     def captcha_invalid(self, task):
         if task.data["service"] == self.classname and "ticket" in task.data:
@@ -141,10 +141,10 @@ class ImageTyperz(Addon):
             )
 
             if res == "SUCCESS":
-                self.log_info(_("Bad captcha solution received, requested refund"))
+                self.log_info(self._("Bad captcha solution received, requested refund"))
             else:
                 self.log_error(
-                    _("Bad captcha solution received, refund request failed"), res
+                    self._("Bad captcha solution received, refund request failed"), res
                 )
 
     @threaded

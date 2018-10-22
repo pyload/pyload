@@ -55,7 +55,7 @@ class VeehdCom(Hoster):
 
         m = re.search(r"<title.*?>(.+?) on Veehd</title>", self.data)
         if m is None:
-            self.error(_("Video title not found"))
+            self.error(self._("Video title not found"))
 
         name = m.group(1)
 
@@ -79,6 +79,6 @@ class VeehdCom(Hoster):
             self.data,
         )
         if m is None:
-            self.error(_("Embedded video url not found"))
+            self.error(self._("Embedded video url not found"))
 
         return m.group(1)

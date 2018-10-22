@@ -56,7 +56,7 @@ class MultishareCz(SimpleHoster):
         infodata = self.account.get_data()
 
         if self.out_of_traffic():
-            self.fail(_("Not enough credit left to download file"))
+            self.fail(self._("Not enough credit left to download file"))
 
         self.download(
             "http://dl{}.mms.multishare.cz/html/mms_process.php".format(

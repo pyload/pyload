@@ -98,7 +98,7 @@ class Captcha(Plugin):
             img_f.write(img)
 
         if ocr:
-            self.log_info(_("Using OCR to decrypt captcha..."))
+            self.log_info(self._("Using OCR to decrypt captcha..."))
 
             if isinstance(ocr, str):
                 _OCR = self.pyload.pluginManager.loadClass(
@@ -109,7 +109,7 @@ class Captcha(Plugin):
                 result = self.recognize(img_f.name)
 
                 if not result:
-                    self.log_warning(_("No OCR result"))
+                    self.log_warning(self._("No OCR result"))
 
         if not result:
             captchaManager = self.pyload.captchaManager
@@ -139,17 +139,17 @@ class Captcha(Plugin):
 
             if self.task.error:
                 if not self.task.handler and not self.pyload.isClientConnected():
-                    self.log_warning(_("No Client connected for captcha decrypting"))
-                    self.fail(_("No Client connected for captcha decrypting"))
+                    self.log_warning(self._("No Client connected for captcha decrypting"))
+                    self.fail(self._("No Client connected for captcha decrypting"))
                 else:
                     self.pyfile.plugin.retry_captcha(msg=self.task.error)
 
             elif self.task.result:
-                self.log_info(_("Captcha result: `{}`").format(result))
+                self.log_info(self._("Captcha result: `{}`").format(result))
 
             else:
                 self.pyfile.plugin.retry_captcha(
-                    msg=_(
+                    msg=self._(
                         "No captcha result obtained in appropriate timing ({}s)"
                     ).format(timeout)
                 )
@@ -182,17 +182,17 @@ class Captcha(Plugin):
 
         if self.task.error:
             if not self.task.handler and not self.pyload.isClientConnected():
-                self.log_warning(_("No Client connected for captcha decrypting"))
-                self.fail(_("No Client connected for captcha decrypting"))
+                self.log_warning(self._("No Client connected for captcha decrypting"))
+                self.fail(self._("No Client connected for captcha decrypting"))
             else:
                 self.pyfile.plugin.retry_captcha(msg=self.task.error)
 
         elif self.task.result:
-            self.log_info(_("Captcha result: `{}`").format(result))
+            self.log_info(self._("Captcha result: `{}`").format(result))
 
         else:
             self.pyfile.plugin.retry_captcha(
-                msg=_("No captcha result obtained in appropriate timing ({}s)").format(
+                msg=self._("No captcha result obtained in appropriate timing ({}s)").format(
                     timeout
                 )
             )
@@ -203,7 +203,7 @@ class Captcha(Plugin):
         if not self.task:
             return
 
-        self.log_warning(_("Invalid captcha"), msg, self.task.result)
+        self.log_warning(self._("Invalid captcha"), msg, self.task.result)
         self.task.invalid()
         self.task = None
 
@@ -211,6 +211,6 @@ class Captcha(Plugin):
         if not self.task:
             return
 
-        self.log_info(_("Correct captcha"), self.task.result)
+        self.log_info(self._("Correct captcha"), self.task.result)
         self.task.correct()
         self.task = None

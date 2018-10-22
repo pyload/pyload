@@ -3,17 +3,17 @@
 {% block head %}
 {% endblock %}
 
-{% block title %}{{ _("Information") }} - {{ super() }} {% endblock %}
-{% block subtitle %}{{ _("Information") }}{% endblock %}
+{% block title %}{{ self._("Information") }} - {{ super() }} {% endblock %}
+{% block subtitle %}{{ self._("Information") }}{% endblock %}
 
 {% block content %}
-    <h3>{{ _("News") }}</h3>
+    <h3>{{ self._("News") }}</h3>
 
     <ul id="twitter_update_list"></ul>
     <script type="text/javascript" src="{{'http://twitter.com/javascripts/blogger.min.js'}}"></script>
     <script type="text/javascript" src="{{'http://api.twitter.com/1/statuses/user_timeline.json?screen_name=pyLoad&include_rts=true&count=5&callback=twitterCallback2'}}"></script>
 
-    <h3>{{ _("Support") }}</h3>
+    <h3>{{ self._("Support") }}</h3>
 
     <ul>
         <li style="font-weight:bold;">
@@ -29,46 +29,46 @@
 
     </ul>
 
-    <h3>{{ _("System") }}</h3>
+    <h3>{{ self._("System") }}</h3>
     <table class="system">
          <tr>
-            <td>{{ _("Python:") }}</td>
+            <td>{{ self._("Python:") }}</td>
             <td>{{ python }}</td>
         </tr>
         <tr>
-            <td>{{ _("OS:") }}</td>
+            <td>{{ self._("OS:") }}</td>
             <td>{{ os }}</td>
         </tr>
         <tr>
-            <td>{{ _("pyLoad version:") }}</td>
+            <td>{{ self._("pyLoad version:") }}</td>
             <td>{{ version }}</td>
         </tr>
         <tr>
-            <td>{{ _("Installation Folder:") }}</td>
+            <td>{{ self._("Installation Folder:") }}</td>
             <td>{{ folder }}</td>
         </tr>
         <tr>
-            <td>{{ _("Config Folder:") }}</td>
+            <td>{{ self._("Config Folder:") }}</td>
             <td>{{ config }}</td>
         </tr>
         <tr>
-            <td>{{ _("Download Folder:") }}</td>
+            <td>{{ self._("Download Folder:") }}</td>
             <td>{{ download }}</td>
         </tr>
         <tr>
-            <td>{{ _("Free Space:") }}</td>
+            <td>{{ self._("Free Space:") }}</td>
             <td>{{ freespace }}</td>
         </tr>
         <tr>
-            <td>{{ _("Language:") }}</td>
+            <td>{{ self._("Language:") }}</td>
             <td>{{ language }}</td>
         </tr>
         <tr>
-            <td>{{ _("Webinterface Port:") }}</td>
+            <td>{{ self._("Webinterface Port:") }}</td>
             <td>{{ webif }}</td>
         </tr>
         <tr>
-            <td>{{ _("Remote Interface Port:") }}</td>
+            <td>{{ self._("Remote Interface Port:") }}</td>
             <td>{{ remote }}</td>
         </tr>
     </table>

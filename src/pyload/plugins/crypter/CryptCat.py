@@ -41,7 +41,7 @@ class CryptCat(SimpleCrypter):
         if ">Enter your password.<" in self.data:
             password = self.get_password()
             if not password:
-                self.fail(_("Password required"))
+                self.fail(self._("Password required"))
 
             inputs["Pass1"] = password
 
@@ -60,7 +60,7 @@ class CryptCat(SimpleCrypter):
         self.data = self.load(baseurl, post=inputs, ref=baseurl)
 
         if "You have entered an incorrect password." in self.data:
-            self.fail(_("Wrong password"))
+            self.fail(self._("Wrong password"))
 
         elif "Your filled the captcha wrongly!" in self.data:
             self.retry_captcha()

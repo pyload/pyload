@@ -26,21 +26,21 @@ class FileHandler(object):
 
         # translations
         self.statusMsg = [
-            _("finished"),
-            _("offline"),
-            _("online"),
-            _("queued"),
-            _("skipped"),
-            _("waiting"),
-            _("temp. offline"),
-            _("starting"),
-            _("failed"),
-            _("aborted"),
-            _("decrypting"),
-            _("custom"),
-            _("downloading"),
-            _("processing"),
-            _("unknown"),
+            self._("finished"),
+            self._("offline"),
+            self._("online"),
+            self._("queued"),
+            self._("skipped"),
+            self._("waiting"),
+            self._("temp. offline"),
+            self._("starting"),
+            self._("failed"),
+            self._("aborted"),
+            self._("decrypting"),
+            self._("custom"),
+            self._("downloading"),
+            self._("processing"),
+            self._("unknown"),
         ]
 
         self.cache = {}  #: holds instances for files
@@ -606,7 +606,7 @@ class FileHandler(object):
         if not ids or (pyfile.id in ids and len(ids) == 1):
             if not pyfile.package().setFinished:
                 self.pyload.log.info(
-                    _("Package finished: {}").format(pyfile.package().name)
+                    self._("Package finished: {}").format(pyfile.package().name)
                 )
                 self.pyload.addonManager.packageFinished(pyfile.package())
                 pyfile.package().setFinished = True

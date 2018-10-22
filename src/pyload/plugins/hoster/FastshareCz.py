@@ -48,11 +48,11 @@ class FastshareCz(SimpleHoster):
 
     def check_errors(self):
         if self.SLOT_ERROR in self.data:
-            errmsg = self.info["error"] = _("No free slots")
+            errmsg = self.info["error"] = self._("No free slots")
             self.retry(12, 60, errmsg)
 
         if self.CREDIT_ERROR in self.data:
-            errmsg = self.info["error"] = _("Not enough traffic left")
+            errmsg = self.info["error"] = self._("Not enough traffic left")
             self.log_warning(errmsg)
             self.restart(premium=False)
 
@@ -61,7 +61,7 @@ class FastshareCz(SimpleHoster):
     def handle_free(self, pyfile):
         m = re.search(self.LINK_FREE_PATTERN, self.data)
         if m is None:
-            self.error(_("LINK_FREE_PATTERN not found"))
+            self.error(self._("LINK_FREE_PATTERN not found"))
 
         self.link = urllib.parse.urljoin("https://fastshare.cz", m.group(1))
         baseurl = "https://fastshare.cz"
@@ -78,7 +78,7 @@ class FastshareCz(SimpleHoster):
         )
 
         if check == "paralell-dl":
-            self.retry(6, 10 * 60, _("Paralell download"))
+            self.retry(6, 10 * 60, self._("Paralell download"))
 
         elif check == "wrong captcha":
             self.retry_captcha()

@@ -46,11 +46,11 @@ class RealdebridComTorrent(Hoster):
             if e.code == 400:
                 self.fail(error_msg)
             elif e.code == 401:
-                self.fail(_("Bad token (expired, invalid)"))
+                self.fail(self._("Bad token (expired, invalid)"))
             elif e.code == 403:
-                self.fail(_("Permission denied (account locked, not premium)"))
+                self.fail(self._("Permission denied (account locked, not premium)"))
             elif e.code == 503:
-                self.fail(_("Service unavailable - {}").format(error_msg))
+                self.fail(self._("Service unavailable - {}").format(error_msg))
 
     def setup(self):
         self.resume_download = True
@@ -81,7 +81,7 @@ class RealdebridComTorrent(Hoster):
             else:
                 torrent_filename = urllib.request.url2pathname(self.pyfile.url[7:])
                 if not exists(torrent_filename):
-                    self.fail(_("File does not exists"))
+                    self.fail(self._("File does not exists"))
 
             if os.path.abspath(torrent_filename).startswith(
                 os.path.abspath(os.getcwd()) + os.sep
@@ -99,15 +99,15 @@ class RealdebridComTorrent(Hoster):
                     if e.code == 400:
                         self.fail(error_msg)
                     elif e.code == 401:
-                        self.fail(_("Bad token (expired, invalid)"))
+                        self.fail(self._("Bad token (expired, invalid)"))
                     elif e.code == 403:
-                        self.fail(_("Permission denied (account locked, not premium)"))
+                        self.fail(self._("Permission denied (account locked, not premium)"))
                     elif e.code == 503:
-                        self.fail(_("Service unavailable - {}").format(error_msg))
+                        self.fail(self._("Service unavailable - {}").format(error_msg))
 
             else:
                 # : We don't allow files outside pyLoad's config directory
-                self.fail(_("Illegal URL"))
+                self.fail(self._("Illegal URL"))
 
         else:
             #: magnet URL
@@ -199,11 +199,11 @@ class RealdebridComTorrent(Hoster):
 
     def process(self, pyfile):
         if "RealdebridCom" not in self.pyload.accountManager.plugins:
-            self.fail(_("This plugin requires an active Realdebrid.com account"))
+            self.fail(self._("This plugin requires an active Realdebrid.com account"))
 
         account_plugin = self.pyload.accountManager.getAccountPlugin("RealdebridCom")
         if len(account_plugin.accounts) == 0:
-            self.fail(_("This plugin requires an active Realdebrid.com account"))
+            self.fail(self._("This plugin requires an active Realdebrid.com account"))
 
         self.api_token = account_plugin.accounts[
             list(account_plugin.accounts.keys())[0]

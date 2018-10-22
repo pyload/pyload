@@ -118,11 +118,11 @@ class Plugin(object):
             remove(path, trash)
 
         except (NameError, OSError) as e:
-            self.log_warning(_("Error removing `{}`").format(os.path.abspath(path)), e)
+            self.log_warning(self._("Error removing `{}`").format(os.path.abspath(path)), e)
             return False
 
         else:
-            self.log_info(_("Path deleted: ") + os.path.abspath(path))
+            self.log_info(self._("Path deleted: ") + os.path.abspath(path))
             return True
 
     def set_permissions(self, path):

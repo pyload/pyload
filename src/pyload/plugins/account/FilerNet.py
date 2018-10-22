@@ -48,7 +48,7 @@ class FilerNet(Account):
             }
 
         else:
-            self.log_error(_("Unable to retrieve account information"))
+            self.log_error(self._("Unable to retrieve account information"))
             return {"premium": False, "validuntil": None, "trafficleft": None}
 
     def signin(self, user, password, data):

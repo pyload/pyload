@@ -51,7 +51,7 @@ class Cli(object):
 
             os.system("clear")
             println(
-                1, blue("py") + yellow("Load") + white(_(" Command Line Interface"))
+                1, blue("py") + yellow("Load") + white(self._(" Command Line Interface"))
             )
             println(2, "")
 
@@ -116,7 +116,7 @@ class Cli(object):
         refresh screen.
         """
 
-        println(1, blue("py") + yellow("Load") + white(_(" Command Line Interface")))
+        println(1, blue("py") + yellow("Load") + white(self._(" Command Line Interface")))
         println(2, "")
 
         self.lock.acquire()
@@ -142,14 +142,14 @@ class Cli(object):
         """
         # print(updated information)
         #        print("\033[J" #clear screen)
-        #        self.println(1, blue("py") + yellow("Load") + white(_(" Command Line Interface")))
+        #        self.println(1, blue("py") + yellow("Load") + white(self._(" Command Line Interface")))
         #        self.println(2, "")
-        #        self.println(3, white(_("{} Downloads:").format(len(data))))
+        #        self.println(3, white(self._("{} Downloads:").format(len(data))))
 
         data = self.client.statusDownloads()
         speed = 0
 
-        println(line, white(_("{} Downloads:").format(len(data))))
+        println(line, white(self._("{} Downloads:").format(len(data))))
         line += 1
 
         for download in data:
@@ -165,39 +165,39 @@ class Cli(object):
                     + yellow(z * "#" + (25 - z) * " ")
                     + blue("] ")
                     + green(str(percent) + "%")
-                    + _(" Speed: ")
+                    + self._(" Speed: ")
                     + green(formatSize(download.speed) + "/s")
-                    + _(" Size: ")
+                    + self._(" Size: ")
                     + green(download.format_size)
-                    + _(" Finished in: ")
+                    + self._(" Finished in: ")
                     + green(download.format_eta)
-                    + _(" ID: ")
+                    + self._(" ID: ")
                     + green(download.fid),
                 )
                 line += 1
             if download.status == 5:
                 println(line, cyan(download.name))
                 line += 1
-                println(line, _("waiting: ") + green(download.format_wait))
+                println(line, self._("waiting: ") + green(download.format_wait))
                 line += 1
 
         println(line, "")
         line += 1
         status = self.client.statusServer()
         if status.pause:
-            paused = _("Status:") + " " + red(_("paused"))
+            paused = self._("Status:") + " " + red(self._("paused"))
         else:
-            paused = _("Status:") + " " + red(_("running"))
+            paused = self._("Status:") + " " + red(self._("running"))
 
         println(
             line,
             "{} {}: {} {}: {} {}: {}".format(
                 paused,
-                _("total Speed"),
+                self._("total Speed"),
                 red(formatSize(speed) + "/s"),
-                _("Files in queue"),
+                self._("Files in queue"),
                 red(status.queue),
-                _("Total"),
+                self._("Total"),
                 red(status.total),
             ),
         )
@@ -208,14 +208,14 @@ class Cli(object):
         """
         prints initial menu.
         """
-        println(line, white(_("Menu:")))
+        println(line, white(self._("Menu:")))
         println(line + 1, "")
-        println(line + 2, mag("1.") + _(" Add Links"))
-        println(line + 3, mag("2.") + _(" Manage Queue"))
-        println(line + 4, mag("3.") + _(" Manage Collector"))
-        println(line + 5, mag("4.") + _(" (Un)Pause Server"))
-        println(line + 6, mag("5.") + _(" Kill Server"))
-        println(line + 7, mag("6.") + _(" Quit"))
+        println(line + 2, mag("1.") + self._(" Add Links"))
+        println(line + 3, mag("2.") + self._(" Manage Queue"))
+        println(line + 4, mag("3.") + self._(" Manage Collector"))
+        println(line + 5, mag("4.") + self._(" (Un)Pause Server"))
+        println(line + 6, mag("5.") + self._(" Kill Server"))
+        println(line + 7, mag("6.") + self._(" Quit"))
 
         return line + 8
 
@@ -304,7 +304,7 @@ class Cli(object):
         elif command == "add":
             if len(args) < 2:
                 print(
-                    _("Please use this syntax: add <Package name> <link> <link2> ...")
+                    self._("Please use this syntax: add <Package name> <link> <link2> ...")
                 )
                 return
 
@@ -313,7 +313,7 @@ class Cli(object):
         elif command == "add_coll":
             if len(args) < 2:
                 print(
-                    _("Please use this syntax: add <Package name> <link> <link2> ...")
+                    self._("Please use this syntax: add <Package name> <link> <link2> ...")
                 )
                 return
 
@@ -333,7 +333,7 @@ class Cli(object):
                 self.client.movePackage((pack.dest + 1) % 2, pack.pid)
 
         elif command == "check":
-            print(_("Checking {} links:").format(len(args)))
+            print(self._("Checking {} links:").format(len(args)))
             print()
             rid = self.client.checkOnlineStatus(args).rid
             self.printOnlineCheck(self.client, rid)
@@ -341,7 +341,7 @@ class Cli(object):
         elif command == "check_container":
             path = args[0]
             if not os.path.exists(path):
-                print(_("File does not exists."))
+                print(self._("File does not exists."))
                 return
 
             with open(path, mode="rb") as f:
@@ -410,7 +410,7 @@ class RefreshThread(Thread):
                 self.cli.refresh()
             except ConnectionClosed:
                 os.system("clear")
-                print(_("pyLoad was terminated"))
+                print(self._("pyLoad was terminated"))
                 os._exit(0)
             except Exception as e:
                 println(2, red(str(e)))

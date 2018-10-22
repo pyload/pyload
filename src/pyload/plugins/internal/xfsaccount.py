@@ -60,7 +60,7 @@ class XFSAccount(Account):
 
     def setup(self):
         if not self.PLUGIN_DOMAIN:
-            self.fail_login(_("Missing PLUGIN DOMAIN"))
+            self.fail_login(self._("Missing PLUGIN DOMAIN"))
 
         if not self.PLUGIN_URL:
             self.PLUGIN_URL = "http://www.{}/".format(self.PLUGIN_DOMAIN)
@@ -199,10 +199,10 @@ class XFSAccount(Account):
         self.check_errors()
 
     def check_errors(self):
-        self.log_info(_("Checking for link errors..."))
+        self.log_info(self._("Checking for link errors..."))
 
         if not self.data:
-            self.log_warning(_("No data to check"))
+            self.log_warning(self._("No data to check"))
             return
 
         m = re.search(self.LOGIN_BAN_PATTERN, self.data)
@@ -236,4 +236,4 @@ class XFSAccount(Account):
             self.timeout = self.LOGIN_TIMEOUT
             self.fail_login(errmsg)
 
-        self.log_info(_("No errors found"))
+        self.log_info(self._("No errors found"))

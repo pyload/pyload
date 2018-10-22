@@ -48,7 +48,7 @@ class SimplydebridCom(MultiHoster):
             or "Invalid Link" in self.data
             or ("API" in self.data and "ERROR" in self.data)
         ):
-            self.error(_("Unable to unrestrict link"))
+            self.error(self._("Unable to unrestrict link"))
 
         self.link = self.data
 
@@ -56,6 +56,6 @@ class SimplydebridCom(MultiHoster):
 
     def check_download(self):
         if self.scan_download({"error": "No address associated with hostname"}):
-            self.retry(24, 3 * 60, _("Bad file downloaded"))
+            self.retry(24, 3 * 60, self._("Bad file downloaded"))
 
         return MultiHoster.check_download(self)

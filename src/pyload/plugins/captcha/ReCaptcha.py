@@ -107,7 +107,7 @@ class ReCaptcha(CaptchaService):
             self.log_debug("Key: {}".format(self.key))
             return self.key
         else:
-            self.log_warning(_("Key pattern not found"))
+            self.log_warning(self._("Key pattern not found"))
             return None
 
     def detect_secure_token(self, data=None):
@@ -119,7 +119,7 @@ class ReCaptcha(CaptchaService):
             self.log_debug("Secure Token: {}".format(self.secure_token))
             return self.secure_token
         else:
-            self.log_warning(_("Secure Token pattern not found"))
+            self.log_warning(self._("Secure Token pattern not found"))
             return None
 
     def detect_version(self, data=None):
@@ -138,7 +138,7 @@ class ReCaptcha(CaptchaService):
 
         else:
             self.log_warning(
-                _("Could not properly detect reCAPTCHA version, defaulting to v2")
+                self._("Could not properly detect reCAPTCHA version, defaulting to v2")
             )
             return 2
 
@@ -171,7 +171,7 @@ class ReCaptcha(CaptchaService):
             server = re.search("server : '(.+?)',", html).group(1)
 
         except (AttributeError, IndexError):
-            self.fail(_("reCAPTCHA challenge pattern not found"))
+            self.fail(self._("reCAPTCHA challenge pattern not found"))
 
         self.log_debug("Challenge: {}".format(challenge))
 
@@ -188,7 +188,7 @@ class ReCaptcha(CaptchaService):
             challenge = re.search(r"\(\'(.+?)\',", html).group(1)
 
         except (AttributeError, IndexError):
-            self.fail(_("reCAPTCHA second challenge pattern not found"))
+            self.fail(self._("reCAPTCHA second challenge pattern not found"))
 
         self.log_debug("Second challenge: {}".format(challenge))
         result = self.decrypt(
@@ -360,7 +360,7 @@ class ReCaptcha(CaptchaService):
             is not None
         ):
             self.log_warning(
-                _("reCAPTCHA noscript is blocked, trying reCAPTCHA interactive")
+                self._("reCAPTCHA noscript is blocked, trying reCAPTCHA interactive")
             )
             return self._challenge_v2js(key, secure_token=secure_token)
 
@@ -369,7 +369,7 @@ class ReCaptcha(CaptchaService):
                 challenge = re.search(r'name="c"\s+value=\s*"([^"]+)', html).group(1)
 
             except (AttributeError, IndexError):
-                self.fail(_("reCAPTCHA challenge pattern not found"))
+                self.fail(self._("reCAPTCHA challenge pattern not found"))
 
             try:
                 challenge_msg = re.search(
@@ -385,7 +385,7 @@ class ReCaptcha(CaptchaService):
                     ).group(1)
 
                 except (AttributeError, IndexError):
-                    self.fail(_("reCAPTCHA challenge message not found"))
+                    self.fail(self._("reCAPTCHA challenge message not found"))
 
             challenge_msg = re.sub(r"<.*?>", "", challenge_msg)
 
@@ -425,7 +425,7 @@ class ReCaptcha(CaptchaService):
                 self.invalid()
 
         else:
-            self.fail(_("reCAPTCHA max retries exceeded"))
+            self.fail(self._("reCAPTCHA max retries exceeded"))
 
         return result, challenge
 

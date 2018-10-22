@@ -61,9 +61,9 @@ class Ftp(Hoster):
 
         except pycurl.error as e:
             if "530" in e.args[1]:
-                self.fail(_("Authorization required"))
+                self.fail(self._("Authorization required"))
             else:
-                self.fail(_("Error {}: {}").format(e.args))
+                self.fail(self._("Error {}: {}").format(e.args))
 
         self.req.http.c.setopt(pycurl.NOBODY, 0)
         self.log_debug(self.req.http.header)
@@ -94,4 +94,4 @@ class Ftp(Hoster):
                 self.pyload.api.addPackage(pkgname, links)
 
             else:
-                self.fail(_("Unexpected server response"))
+                self.fail(self._("Unexpected server response"))

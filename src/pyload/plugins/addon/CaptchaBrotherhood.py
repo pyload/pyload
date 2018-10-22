@@ -61,7 +61,7 @@ class CaptchaBrotherhood(Addon):
             raise CaptchaBrotherhoodException(res)
         else:
             credits = int(res[3:])
-            self.log_info(_("{} credits left").format(credits))
+            self.log_info(self._("{} credits left").format(credits))
             self.info["credits"] = credits
             return credits
 
@@ -154,7 +154,7 @@ class CaptchaBrotherhood(Addon):
             task.setWaiting(100)
             self._process_captcha(task)
         else:
-            self.log_info(_("Your CaptchaBrotherhood Account has not enough credits"))
+            self.log_info(self._("Your CaptchaBrotherhood Account has not enough credits"))
 
     def captcha_invalid(self, task):
         if task.data["service"] == self.classname and "ticket" in task.data:

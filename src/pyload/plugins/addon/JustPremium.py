@@ -80,7 +80,7 @@ class JustPremium(Addon):
             return
 
         for pluginname in set(linkdict.keys()) - hosterlist:
-            self.log_info(_("Remove links of plugin: {}").format(pluginname))
+            self.log_info(self._("Remove links of plugin: {}").format(pluginname))
             for link in linkdict[pluginname]:
                 self.log_debug("Remove link: {}".format(link))
                 links.remove(link)

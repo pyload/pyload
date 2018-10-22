@@ -58,7 +58,7 @@ class CCF(Container):
             )
 
         except AttributeError:
-            self.fail(_("Container is corrupted"))
+            self.fail(self._("Container is corrupted"))
 
         with open(dlc_file, mode="w") as tempdlc:
             tempdlc.write(dlc)

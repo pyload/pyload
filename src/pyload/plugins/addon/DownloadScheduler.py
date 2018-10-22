@@ -63,7 +63,7 @@ class DownloadScheduler(Addon):
             schedule.lower().replace("full", "-1").replace("none", "0"),
         )
         if not schedule:
-            self.log_error(_("Invalid schedule"))
+            self.log_error(self._("Invalid schedule"))
             return
 
         t0 = time.localtime()
@@ -95,9 +95,9 @@ class DownloadScheduler(Addon):
         if speed == 0:
             abort = self.config.get("abort")
             self.log_info(
-                _("Stopping download server. (Running downloads will be aborted.)")
+                self._("Stopping download server. (Running downloads will be aborted.)")
                 if abort
-                else _(
+                else self._(
                     "Stopping download server. (Running downloads will not be aborted.)"
                 )
             )
@@ -110,12 +110,12 @@ class DownloadScheduler(Addon):
             self.pyload.api.unpauseServer()
 
             if speed > 0:
-                self.log_info(_("Setting download speed to {} kB/s").format(speed))
+                self.log_info(self._("Setting download speed to {} kB/s").format(speed))
                 self.pyload.config.set("download", "limit_speed", 1)
                 self.pyload.config.set("download", "max_speed", speed)
 
             else:
-                self.log_info(_("Setting download speed to FULL"))
+                self.log_info(self._("Setting download speed to FULL"))
                 self.pyload.config.set("download", "limit_speed", 0)
                 self.pyload.config.set("download", "max_speed", -1)
 

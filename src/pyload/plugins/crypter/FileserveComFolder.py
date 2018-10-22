@@ -39,7 +39,7 @@ class FileserveComFolder(Crypter):
 
         folder = re.search(self.FOLDER_PATTERN, html, re.S)
         if folder is None:
-            self.error(_("FOLDER_PATTERN not found"))
+            self.error(self._("FOLDER_PATTERN not found"))
 
         new_links.extend(re.findall(self.LINK_PATTERN, folder.group(1)))
 

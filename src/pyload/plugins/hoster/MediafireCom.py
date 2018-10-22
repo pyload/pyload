@@ -83,12 +83,12 @@ class MediafireCom(SimpleHoster):
             password = self.get_password()
 
             if not password:
-                self.fail(_("No password found"))
+                self.fail(self._("No password found"))
             else:
-                self.log_info(_("Password protected link, trying: {}").format(password))
+                self.log_info(self._("Password protected link, trying: {}").format(password))
                 self.data = self.load(self.link, post={"downloadp": password})
 
                 if self.PASSWORD_PATTERN in self.data:
-                    self.fail(_("Wrong password"))
+                    self.fail(self._("Wrong password"))
 
         return SimpleHoster.handle_free(self, pyfile)
