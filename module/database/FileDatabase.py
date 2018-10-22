@@ -621,13 +621,13 @@ class FileMethods():
         """ links is a list of tupels (url,plugin)"""
         order = self._nextFileOrder(package)
         orders = [order + x for x in range(len(links))]
-        links = [(x[0], x[0], x[1], package, o) for x, o in zip(links, orders)]
+        links = [(x[0].decode('utf-8'), x[0].decode('utf-8'), x[1].decode('utf-8'), package, o) for x, o in zip(links, orders)]
         self.c.executemany('INSERT INTO links(url, name, plugin, package, linkorder) VALUES(?,?,?,?,?)', links)
 
     @style.queue
     def addPackage(self, name, folder, queue):
         order = self._nextPackageOrder(queue)
-        self.c.execute('INSERT INTO packages(name, folder, queue, packageorder) VALUES(?,?,?,?)', (name, folder, queue, order))
+        self.c.execute('INSERT INTO packages(name, folder, queue, packageorder) VALUES(?,?,?,?)', (name.decode('utf-8'), folder.decode('utf-8'), queue, order))
         return self.c.lastrowid
 
     @style.queue
