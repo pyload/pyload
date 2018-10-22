@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 import json
 import re
 import time
@@ -12,7 +13,7 @@ from ..internal.account import Account
 class UlozTo(Account):
     __name__ = "UlozTo"
     __type__ = "account"
-    __version__ = "0.28"
+    __version__ = "0.29"
     __status__ = "testing"
 
     __pyload_version__ = "0.5"
@@ -74,7 +75,7 @@ class UlozTo(Account):
         }
 
     def signin(self, user, password, data):
-        login_page = self.load("https://www.ulozto.net/?do=web-login")
+        login_page = self.load('https://ulozto.net/?do=web-login')
         if ">Log out<" in login_page:
             self.skip_login()
 
@@ -82,7 +83,7 @@ class UlozTo(Account):
         token = re.search('_token_" value="(.+?)"', login_page).group(1)
 
         html = self.load(
-            urllib.parse.urljoin("https://www.ulozto.net/", action),
+            urllib.parse.urljoin("https://ulozto.net/", action),
             post={
                 "_token_": token,
                 "_do": "loginForm-submit",
