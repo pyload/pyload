@@ -21,6 +21,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 
 # from flask_talisman import Talisman
 from flask_babel import Babel
+from flask_login import LoginManager
 from pyload.webui.app.helpers import pre_processor
 from pyload.webui.app.blueprints import (
     api_blueprint,
@@ -51,7 +52,7 @@ JINJA_FILTERS = {
     "getitem": lambda x, y: x.__getitem__(y),
 }
 
-DEFAULT_BLUEPRINTS = [
+BLUEPRINTS = [
     api_blueprint.bp,
     cnl_blueprint.bp,
     json_blueprint.bp,
@@ -59,40 +60,44 @@ DEFAULT_BLUEPRINTS = [
 ]
 
 
-def configure_blueprint(app, config):
+def setup_config(app, config):
     app.config.from_object(config)
 
     
-# test
-def configure_hook(app):
+def setup_hook(app):
     # log every incoming requests
     @app.before_request
     def before_request():
-        app.logger.debug("Hitting %s" % flask.request.url)
+        app.logger.debug("Requesting {}".format(flask.request.url))
 
 
-def configure_blueprints(app, blueprints):
+def setup_blueprints(app, blueprints):
     for blueprint in blueprints:
         app.register_blueprint(blueprint)
 
 
-def configure_logging(app):
+def setup_logging(app):
     app.logger.removeHandler(default_handler)
 
 
-def configure_extensions(app):
+def setup_extensions(app):
     Babel(app)
     # Bcrypt(app)
     # Cache(app)
     Compress(app)
     DebugToolbarExtension(app)
     # FlaskStaticCompress(app)
+    login_manager = LoginManager(app)
     minify(app)
     # Talisman(app)
     Themes(app, app_identifier="pyload")
+    
+    @login_manager.user_loader
+    def load_user(userid):
+        return User(userid)
 
 
-def configure_error_handlers(app):
+def setup_error_handlers(app):
     """Register error handlers."""
 
     def render_error(response):
@@ -114,7 +119,7 @@ def configure_error_handlers(app):
         app.register_error_handler(errcode, render_error)
 
 
-def configure_jinja_env(app):
+def setup_jinja_env(app):
     userdir = app.config["PYLOAD_API"].get_userdir()
     cache_path = os.path.join(userdir, ".tmp", "jinja")
     
@@ -124,21 +129,22 @@ def configure_jinja_env(app):
     app.jinja_env.bytecode_cache = jinja2.FileSystemBytecodeCache(cache_path)
     app.jinja_env.filters.update(JINJA_FILTERS)
 
-
+    
+def setup_api(app, api):
+    app.config["PYLOAD_API"] = api
+    
+    
 def create_app(api, debug=False):
     """Run Flask server"""
     app = flask.Flask(__name__.split(".")[0], root_path=FLASK_ROOT_PATH)
-    app.config["PYLOAD_API"] = api
-
-    config = get_config(debug)
-    blueprints = DEFAULT_BLUEPRINTS
-
-    configure_blueprint(app, config)
-    # configure_hook(app)
-    configure_blueprints(app, blueprints)
-    configure_extensions(app)
-    configure_logging(app)
-    configure_error_handlers(app)
-    configure_jinja_env(app)
+    
+    setup_api(app, api)
+    setup_config(app, get_config(debug))
+    # setup_hook(app)
+    setup_blueprints(app, BLUEPRINTS)
+    setup_extensions(app)
+    setup_logging(app)
+    setup_error_handlers(app)
+    setup_jinja_env(app)
 
     return app

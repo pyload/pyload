@@ -22,6 +22,7 @@ bp = flask.Blueprint("api", __name__, url_prefix="/api")
 def call_api(func, args=""):
     api = flask.current_app.config["PYLOAD_API"]
 
+    # TODO: change u/p to username/password
     if "u" in flask.request.form and "p" in flask.request.form:
         info = api.checkAuth(flask.request.form["u"], flask.request.form["p"])
         if info:

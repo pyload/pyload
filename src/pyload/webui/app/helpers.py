@@ -110,7 +110,7 @@ def set_permission(perms):
 def set_session(info):
     s = flask.session
     s["authenticated"] = True
-    s["user_id"] = info["id"]
+    s["id"] = info["id"]
     s["name"] = info["name"]
     s["role"] = info["role"]
     s["perms"] = info["permission"]
@@ -139,7 +139,7 @@ def apiver_check(func):
     return _view
 
 
-def login_required(perm=None):
+def login_required_old(perm=None):
     def _dec(func):
         def _view(*args, **kwargs):
             if flask.request.headers.get("X-Requested-With") == "XMLHttpRequest":

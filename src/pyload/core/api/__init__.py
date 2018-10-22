@@ -1165,6 +1165,7 @@ class Api(Iface):
 
             
     # TODO: add security permission check
+    # remove?
     def get_userdir(self):
         return os.path.abspath(self.pyload.userdir)
         

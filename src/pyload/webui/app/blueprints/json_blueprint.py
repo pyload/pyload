@@ -6,7 +6,7 @@ from builtins import _
 import flask
 
 from pyload.core.utils.utils import decode, formatSize
-from pyload.webui.app.helpers import apiver_check, login_required, render_template, toDict
+from pyload.webui.app.helpers import apiver_check, login_required_old, render_template, toDict
 
 bp = flask.Blueprint("json", __name__, url_prefix="/json")
 
@@ -25,7 +25,7 @@ def get_sort_key(item):
 
 @bp.route(r"/status", methods=["GET", "POST"], endpoint="status")
 # @apiver_check
-@login_required("LIST")
+@login_required_old("LIST")
 def status():
     api = flask.current_app.config["PYLOAD_API"]
     try:
@@ -38,7 +38,7 @@ def status():
 
 @bp.route(r"/links", methods=["GET", "POST"], endpoint="links")
 # @apiver_check
-@login_required("LIST")
+@login_required_old("LIST")
 def links():
     api = flask.current_app.config["PYLOAD_API"]
     try:
@@ -67,7 +67,7 @@ def links():
 
 @bp.route(r"/packages", endpoint="packages")
 # @apiver_check
-@login_required("LIST")
+@login_required_old("LIST")
 def packages():
     api = flask.current_app.config["PYLOAD_API"]
     try:
@@ -86,7 +86,7 @@ def packages():
 
 @bp.route(r"/package/<int:id>", endpoint="package")
 # @apiver_check
-@login_required("LIST")
+@login_required_old("LIST")
 def package(id):
     api = flask.current_app.config["PYLOAD_API"]
     try:
@@ -122,7 +122,7 @@ def package(id):
 
 @bp.route(r"/package_order/<ids>", endpoint="package_order")
 # @apiver_check
-@login_required("ADD")
+@login_required_old("ADD")
 def package_order(ids):
     api = flask.current_app.config["PYLOAD_API"]
     try:
@@ -135,7 +135,7 @@ def package_order(ids):
 
 @bp.route(r"/abort_link/<int:id>", endpoint="abort_link")
 # @apiver_check
-@login_required("DELETE")
+@login_required_old("DELETE")
 def abort_link(id):
     api = flask.current_app.config["PYLOAD_API"]
     try:
@@ -147,7 +147,7 @@ def abort_link(id):
 
 @bp.route(r"/link_order/<ids>", endpoint="link_order")
 # @apiver_check
-@login_required("ADD")
+@login_required_old("ADD")
 def link_order(ids):
     api = flask.current_app.config["PYLOAD_API"]
     try:
@@ -160,7 +160,7 @@ def link_order(ids):
 
 @bp.route(r"/add_package", methods=["GET", "POST"], endpoint="add_package")
 # @apiver_check
-@login_required("ADD")
+@login_required_old("ADD")
 def add_package():
     name = flask.request.form.get("add_name", "New Package").strip()
     queue = int(flask.request.form["add_dest"])
@@ -195,7 +195,7 @@ def add_package():
 
 @bp.route(r"/move_package/<int:dest>/<int:id>", endpoint="move_package")
 # @apiver_check
-@login_required("MODIFY")
+@login_required_old("MODIFY")
 def move_package(dest, id):
     api = flask.current_app.config["PYLOAD_API"]
     try:
@@ -207,7 +207,7 @@ def move_package(dest, id):
 
 @bp.route(r"/edit_package", methods=["POST"], endpoint="edit_package")
 # @apiver_check
-@login_required("MODIFY")
+@login_required_old("MODIFY")
 def edit_package():
     api = flask.current_app.config["PYLOAD_API"]
     try:
@@ -227,7 +227,7 @@ def edit_package():
 
 @bp.route(r"/set_captcha", methods=["GET", "POST"], endpoint="set_captcha")
 # @apiver_check
-@login_required("ADD")
+@login_required_old("ADD")
 def set_captcha():
     api = flask.current_app.config["PYLOAD_API"]
     if flask.request.environ.get("REQUEST_METHOD", "GET") == "POST":
@@ -253,7 +253,7 @@ def set_captcha():
 
 @bp.route(r"/load_config/<category>/<section>", endpoint="load_config")
 # @apiver_check
-@login_required("SETTINGS")
+@login_required_old("SETTINGS")
 def load_config(category, section):
     conf = None
     api = flask.current_app.config["PYLOAD_API"]
@@ -278,7 +278,7 @@ def load_config(category, section):
 
 @bp.route(r"/save_config/<category>", methods=["POST"], endpoint="save_config")
 # @apiver_check
-@login_required("SETTINGS")
+@login_required_old("SETTINGS")
 def save_config(category):
     api = flask.current_app.config["PYLOAD_API"]
     for key, value in flask.request.form.items():
@@ -295,7 +295,7 @@ def save_config(category):
 
 @bp.route(r"/add_account", methods=["POST"], endpoint="add_account")
 # @apiver_check
-@login_required("ACCOUNTS")
+@login_required_old("ACCOUNTS")
 def add_account():
     api = flask.current_app.config["PYLOAD_API"]
     login = flask.request.form["account_login"]
@@ -307,7 +307,7 @@ def add_account():
 
 @bp.route(r"/update_accounts", methods=["POST"], endpoint="update_accounts")
 # @apiver_check
-@login_required("ACCOUNTS")
+@login_required_old("ACCOUNTS")
 def update_accounts():
     deleted = []  #: dont update deleted accs or they will be created again
     api = flask.current_app.config["PYLOAD_API"]
