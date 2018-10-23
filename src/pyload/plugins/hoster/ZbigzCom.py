@@ -19,7 +19,7 @@ class ZbigzCom(Hoster):
     __pyload_version__ = "0.5"
 
     __pattern__ = r"https?://.+\.torrent|magnet:\?.+"
-    __config__ = [("activated", "bool", "Activated", False)]
+    __config__ = [("enabled", "bool", "Activated", False)]
 
     __description__ = """Zbigz.com hoster plugin"""
     __license__ = "GPLv3"

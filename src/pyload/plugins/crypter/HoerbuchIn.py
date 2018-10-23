@@ -16,7 +16,7 @@ class HoerbuchIn(Crypter):
 
     __pattern__ = r"http://(?:www\.)?hoerbuch\.us/(wp/horbucher/\d+/|tp/out\.php\?.+|protection/folder_\d+\.html)"
     __config__ = [
-        ("activated", "bool", "Activated", True),
+        ("enabled", "bool", "Activated", True),
         ("use_premium", "bool", "Use premium account if available", True),
         (
             "folder_per_package",

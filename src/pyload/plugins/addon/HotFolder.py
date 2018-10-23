@@ -17,7 +17,7 @@ class HotFolder(Addon):
     __pyload_version__ = "0.5"
 
     __config__ = [
-        ("activated", "bool", "Activated", False),
+        ("enabled", "bool", "Activated", False),
         ("folder", "str", "Folder to watch", "watchdir"),
         ("watchfile", "bool", "Watch link file", False),
         ("delete", "bool", "Delete added containers", False),

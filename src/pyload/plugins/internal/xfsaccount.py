@@ -17,7 +17,7 @@ class XFSAccount(Account):
     __pyload_version__ = "0.5"
 
     __config__ = [
-        ("activated", "bool", "Activated", True),
+        ("enabled", "bool", "Activated", True),
         ("multi", "bool", "Multi-hoster", True),
         ("multi_mode", "all;listed;unlisted", "Hosters to use", "all"),
         ("multi_list", "str", "Hoster list (comma separated)", ""),

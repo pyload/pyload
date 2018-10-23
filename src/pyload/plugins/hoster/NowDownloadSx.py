@@ -12,7 +12,7 @@ class NowDownloadSx(DeadHoster):
     __pyload_version__ = "0.5"
 
     __pattern__ = r"http://(?:www\.)?(nowdownload\.[a-zA-Z]{2,}/(dl/|download\.php.+?id=|mobile/(#/files/|.+?id=))|likeupload\.org/)\w+"
-    __config__ = [("activated", "bool", "Activated", True)]
+    __config__ = [("enabled", "bool", "Activated", True)]
 
     __description__ = """NowDownload.sx hoster plugin"""
     __license__ = "GPLv3"

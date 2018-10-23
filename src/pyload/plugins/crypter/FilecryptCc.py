@@ -57,7 +57,7 @@ class FilecryptCc(Crypter):
 
     __pattern__ = r"https?://(?:www\.)?filecrypt\.cc/Container/\w+"
     __config__ = [
-        ("activated", "bool", "Activated", True),
+        ("enabled", "bool", "Activated", True),
         ("handle_mirror_pages", "bool", "Handle Mirror Pages", True),
     ]
 

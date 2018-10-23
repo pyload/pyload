@@ -15,7 +15,7 @@ class MultiloadCz(Crypter):
 
     __pattern__ = r"http://(?:[^/]*\.)?multiload\.cz/(stahnout|slozka)/.+"
     __config__ = [
-        ("activated", "bool", "Activated", True),
+        ("enabled", "bool", "Activated", True),
         ("use_premium", "bool", "Use premium account if available", True),
         ("use_subfolder", "bool", "Save package to subfolder", True),
         ("subfolder_per_package", "bool", "Create a subfolder for each package", True),

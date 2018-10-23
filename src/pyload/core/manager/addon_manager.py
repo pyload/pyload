@@ -101,7 +101,7 @@ class AddonManager(object):
             try:
                 # addonClass = getattr(plugin, plugin.__name__)
 
-                if self.pyload.config.getPlugin(pluginname, "activated"):
+                if self.pyload.config.getPlugin(pluginname, "enabled"):
                     pluginClass = self.pyload.pluginManager.loadClass(
                         "addon", pluginname
                     )
@@ -125,9 +125,9 @@ class AddonManager(object):
         self.plugins = plugins
 
     def manageAddons(self, plugin, name, value):
-        if name == "activated" and value:
+        if name == "enabled" and value:
             self.activateAddon(plugin)
-        elif name == "activated" and not value:
+        elif name == "enabled" and not value:
             self.deactivateAddon(plugin)
 
     def activateAddon(self, plugin):

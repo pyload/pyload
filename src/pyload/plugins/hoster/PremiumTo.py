@@ -14,7 +14,7 @@ class PremiumTo(MultiHoster):
 
     __pattern__ = r"^unmatchable$"
     __config__ = [
-        ("activated", "bool", "Activated", True),
+        ("enabled", "bool", "Activated", True),
         ("use_premium", "bool", "Use premium account if available", True),
         ("fallback", "bool", "Fallback to free download if premium fails", False),
         ("revert_failed", "bool", "Revert to standard download if fails", True),

@@ -12,7 +12,7 @@ class MBLinkInfo(DeadCrypter):
     __pyload_version__ = "0.5"
 
     __pattern__ = r"http://(?:www\.)?mblink\.info/?\?id=(\d+)"
-    __config__ = [("activated", "bool", "Activated", True)]
+    __config__ = [("enabled", "bool", "Activated", True)]
 
     __description__ = """MBLink.info decrypter plugin"""
     __license__ = "GPLv3"

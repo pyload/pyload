@@ -12,7 +12,7 @@ class Movie2KTo(DeadCrypter):
     __pyload_version__ = "0.5"
 
     __pattern__ = r"http://(?:www\.)?movie2k\.to/(.+)\.html"
-    __config__ = [("activated", "bool", "Activated", True)]
+    __config__ = [("enabled", "bool", "Activated", True)]
 
     __description__ = """Movie2k.to decrypter plugin"""
     __license__ = "GPLv3"

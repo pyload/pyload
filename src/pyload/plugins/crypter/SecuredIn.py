@@ -12,7 +12,7 @@ class SecuredIn(DeadCrypter):
     __pyload_version__ = "0.5"
 
     __pattern__ = r"http://(?:www\.)?secured\.in/download-[\d]+\-\w{8}\.html"
-    __config__ = [("activated", "bool", "Activated", True)]
+    __config__ = [("enabled", "bool", "Activated", True)]
 
     __description__ = """Secured.in decrypter plugin"""
     __license__ = "GPLv3"

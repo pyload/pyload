@@ -12,7 +12,7 @@ class MultihostersCom(ZeveraCom):
     __pyload_version__ = "0.5"
 
     __pattern__ = r"https?://(?:www\.)multihosters\.com/(getFiles\.ashx|Members/download\.ashx)\?.*ourl=.+"
-    __config__ = [("activated", "bool", "Activated", True)]
+    __config__ = [("enabled", "bool", "Activated", True)]
 
     __description__ = """Multihosters.com multi-hoster plugin"""
     __license__ = "GPLv3"

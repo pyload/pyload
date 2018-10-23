@@ -13,7 +13,7 @@ class DeadCrypter(Crypter):
     __pyload_version__ = "0.5"
 
     __pattern__ = r"^unmatchable$"
-    __config__ = [("activated", "bool", "Activated", True)]
+    __config__ = [("enabled", "bool", "Activated", True)]
 
     __description__ = """Crypter is no longer available"""
     __license__ = "GPLv3"

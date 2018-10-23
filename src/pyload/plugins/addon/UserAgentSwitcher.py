@@ -16,7 +16,7 @@ class UserAgentSwitcher(Addon):
     __pyload_version__ = "0.5"
 
     __config__ = [
-        ("activated", "bool", "Activated", True),
+        ("enabled", "bool", "Activated", True),
         ("connecttimeout", "int", "Max timeout for link connection in seconds", 60),
         ("maxredirs", "int", "Maximum number of redirects to follow", 10),
         (

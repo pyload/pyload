@@ -16,7 +16,7 @@ class PushBullet(Notifier):
     __pyload_version__ = "0.5"
 
     __config__ = [
-        ("activated", "bool", "Activated", False),
+        ("enabled", "bool", "Activated", False),
         ("tokenkey", "str", "Access Token", ""),
         ("captcha", "bool", "Notify captcha request", True),
         ("reconnection", "bool", "Notify reconnection request", False),

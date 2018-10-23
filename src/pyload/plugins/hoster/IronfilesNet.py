@@ -15,7 +15,7 @@ class IronfilesNet(SimpleHoster):
 
     __pattern__ = r"https?://ironfiles\.net/file/download/id/(?P<ID>\d+)(?:/key/(?P<KEY>65a2bfa38c2c1899))?"
     __config__ = [
-        ("activated", "bool", "Activated", True),
+        ("enabled", "bool", "Activated", True),
         ("use_premium", "bool", "Use premium account if available", True),
         ("fallback", "bool", "Fallback to free download if premium fails", False),
         ("chk_filesize", "bool", "Check file size", True),

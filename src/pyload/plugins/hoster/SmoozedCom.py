@@ -16,7 +16,7 @@ class SmoozedCom(MultiHoster):
     #: Since we want to allow the user to specify the list of hoster to use we let MultiHoster.activate
     __pattern__ = r"^unmatchable$"
     __config__ = [
-        ("activated", "bool", "Activated", True),
+        ("enabled", "bool", "Activated", True),
         ("use_premium", "bool", "Use premium account if available", True),
         ("fallback", "bool", "Fallback to free download if premium fails", False),
         ("chk_filesize", "bool", "Check file size", True),

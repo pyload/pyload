@@ -13,7 +13,7 @@ class ShSt(Crypter):
     __pyload_version__ = "0.5"
 
     __pattern__ = r"http://sh\.st/\w+"
-    __config__ = [("activated", "bool", "Activated", True)]
+    __config__ = [("enabled", "bool", "Activated", True)]
 
     __description__ = """Sh.St decrypter plugin"""
     __license__ = "GPLv3"

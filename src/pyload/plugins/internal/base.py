@@ -33,7 +33,7 @@ class Base(Plugin):
 
     __pattern__ = r"^unmatchable$"
     __config__ = [
-        ("activated", "bool", "Activated", True),
+        ("enabled", "bool", "Activated", True),
         ("use_premium", "bool", "Use premium account if available", True),
     ]
 
@@ -306,7 +306,7 @@ class Base(Plugin):
         raise NotImplementedError
 
     def set_reconnect(self, reconnect):
-        if self.pyload.config.get("reconnect", "activated"):
+        if self.pyload.config.get("reconnect", "enabled"):
             reconnect = reconnect and self.pyload.api.isTimeReconnect()
             self.log_debug(
                 "RECONNECT{} required".format("" if reconnect else " not"),

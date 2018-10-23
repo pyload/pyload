@@ -17,7 +17,7 @@ class Http(Hoster):
     __pyload_version__ = "0.5"
 
     __pattern__ = r"(?:jd|pys?)://.+"
-    __config__ = [("activated", "bool", "Activated", True)]
+    __config__ = [("enabled", "bool", "Activated", True)]
 
     __description__ = """Download simple http link"""
     __license__ = "GPLv3"

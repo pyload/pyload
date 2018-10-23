@@ -248,7 +248,7 @@ class Core(object):
         translation.install(True)
 
         self.debug = self.doDebug or self.config.get("general", "debug_mode")
-        self.remote &= self.config.get("remote", "activated")
+        self.remote &= self.config.get("remote", "enabled")
 
         pid = self.isAlreadyRunning()
         if pid:
@@ -314,7 +314,7 @@ class Core(object):
             True,
         )
 
-        if self.config.get("ssl", "activated"):
+        if self.config.get("ssl", "enabled"):
             self.check_install("OpenSSL", self._("OpenSSL for secure connection"))
 
         self.setupDB()
@@ -435,7 +435,7 @@ class Core(object):
         self.db.manager = self.files  #: ugly?
 
     def init_webserver(self):
-        if self.config.get("webui", "activated"):
+        if self.config.get("webui", "enabled"):
             self.webserver = WebServer(self)
             self.webserver.start()
 

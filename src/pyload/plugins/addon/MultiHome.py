@@ -33,7 +33,7 @@ class MultiHome(Addon):
     __pyload_version__ = "0.5"
 
     __config__ = [
-        ("activated", "bool", "Activated", False),
+        ("enabled", "bool", "Activated", False),
         ("interfaces", "str", "Interfaces", "None"),
     ]
 

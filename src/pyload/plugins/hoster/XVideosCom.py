@@ -17,7 +17,7 @@ class XVideosCom(Hoster):
     __pyload_version__ = "0.5"
 
     __pattern__ = r"https?://(?:www\.)?xvideos\.com/video(\d+)"
-    __config__ = [("activated", "bool", "Activated", True)]
+    __config__ = [("enabled", "bool", "Activated", True)]
 
     __description__ = """XVideos.com hoster plugin"""
     __license__ = "GPLv3"

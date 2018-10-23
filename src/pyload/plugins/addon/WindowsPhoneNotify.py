@@ -15,7 +15,7 @@ class WindowsPhoneNotify(Notifier):
     __pyload_version__ = "0.5"
 
     __config__ = [
-        ("activated", "bool", "Activated", False),
+        ("enabled", "bool", "Activated", False),
         ("pushid", "str", "Push ID", ""),
         ("pushurl", "str", "Push url", ""),
         ("captcha", "bool", "Notify captcha request", True),

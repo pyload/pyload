@@ -12,7 +12,7 @@ class SpeedLoadOrgFolder(DeadCrypter):
     __pyload_version__ = "0.5"
 
     __pattern__ = r"http://(?:www\.)?speedload\.org/(\d+~f$|folder/\d+/)"
-    __config__ = [("activated", "bool", "Activated", True)]
+    __config__ = [("enabled", "bool", "Activated", True)]
 
     __description__ = """Speedload decrypter plugin"""
     __license__ = "GPLv3"

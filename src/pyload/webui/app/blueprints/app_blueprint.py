@@ -484,13 +484,7 @@ def setup():
     messages = ["Run pyLoad -s to access the setup."]
     return base(messages)
 
-
-# @bp.route("/refresh")
-# def refresh():
-# bp.app.theme_manager.refresh()
-# return flask.redirect(flask.url_for('themes'))
-
-
+    
 @bp.route(r"/info", endpoint="info")
 @login_required_old("STATUS")
 def info():

@@ -14,7 +14,7 @@ class JustPremium(Addon):
     __pyload_version__ = "0.5"
 
     __config__ = [
-        ("activated", "bool", "Activated", False),
+        ("enabled", "bool", "Activated", False),
         ("excluded", "str", "Exclude hosters (comma separated)", ""),
         ("included", "str", "Include hosters (comma separated)", ""),
     ]

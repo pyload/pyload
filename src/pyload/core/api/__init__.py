@@ -246,8 +246,8 @@ class Api(Iface):
 
         :return: new reconnect state
         """
-        self.pyload.config.toggle("reconnect", "activated")
-        return self.pyload.config.get("reconnect", "activated")
+        self.pyload.config.toggle("reconnect", "enabled")
+        return self.pyload.config.get("reconnect", "enabled")
 
     @permission(PERMS.LIST)
     def statusServer(self):
@@ -263,7 +263,7 @@ class Api(Iface):
             self.pyload.files.getFileCount(),
             0,
             not self.pyload.threadManager.pause and self.isTimeDownload(),
-            self.pyload.config.get("reconnect", "activated") and self.isTimeReconnect(),
+            self.pyload.config.get("reconnect", "enabled") and self.isTimeReconnect(),
         )
 
         for pyfile in [
@@ -326,8 +326,8 @@ class Api(Iface):
 
         :return: bool
         """
-        start = self.pyload.config.get("downloadTime", "start").split(":")
-        end = self.pyload.config.get("downloadTime", "end").split(":")
+        start = self.pyload.config.get("download", "start_time").split(":")
+        end = self.pyload.config.get("download", "end_time").split(":")
         return compare_time(start, end)
 
     @permission(PERMS.STATUS)
@@ -337,10 +337,10 @@ class Api(Iface):
 
         :return: bool
         """
-        start = self.pyload.config.get("reconnect", "startTime").split(":")
-        end = self.pyload.config.get("reconnect", "endTime").split(":")
+        start = self.pyload.config.get("reconnect", "start_time").split(":")
+        end = self.pyload.config.get("reconnect", "end_time").split(":")
         return compare_time(start, end) and self.pyload.config.get(
-            "reconnect", "activated"
+            "reconnect", "enabled"
         )
 
     @permission(PERMS.LIST)

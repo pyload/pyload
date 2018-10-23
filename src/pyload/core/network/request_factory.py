@@ -72,7 +72,7 @@ class RequestFactory(object):
         """
         returns a proxy list for the request classes.
         """
-        if not self.pyload.config.get("proxy", "proxy"):
+        if not self.pyload.config.get("proxy", "enabled"):
             return {}
         else:
             type = "http"
@@ -98,7 +98,7 @@ class RequestFactory(object):
 
             return {
                 "type": type,
-                "address": self.pyload.config.get("proxy", "address"),
+                "host": self.pyload.config.get("proxy", "host"),
                 "port": self.pyload.config.get("proxy", "port"),
                 "username": username,
                 "password": pw,

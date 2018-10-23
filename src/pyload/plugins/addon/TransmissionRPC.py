@@ -21,7 +21,7 @@ class TransmissionRPC(Addon):
 
     __pattern__ = r"https?://.+\.torrent|magnet:\?.+"
     __config__ = [
-        ("activated", "bool", "Activated", False),
+        ("enabled", "bool", "Activated", False),
         (
             "rpc_url",
             "str",

@@ -14,7 +14,7 @@ class PornovkaCz(Hoster):
     __pyload_version__ = "0.5"
 
     __pattern__ = r"https?://(?:www\.)?pornovka\.cz/(.+)"
-    __config__ = [("activated", "bool", "Activated", True)]
+    __config__ = [("enabled", "bool", "Activated", True)]
 
     __description__ = """Pornovka.cz hoster plugin"""
     __license__ = "GPLv3"

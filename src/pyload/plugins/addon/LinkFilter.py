@@ -13,7 +13,7 @@ class LinkFilter(Addon):
     __pyload_version__ = "0.5"
 
     __config__ = [
-        ("activated", "bool", "Activated", False),
+        ("enabled", "bool", "Activated", False),
         ("filter", "str", "Filter links containing (comma separated)", ""),
         ("list_type", "listed;unlisted", "Allow only links that are", "unlisted"),
         (

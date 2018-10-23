@@ -12,7 +12,7 @@ class FilesonicComFolder(DeadCrypter):
     __pyload_version__ = "0.5"
 
     __pattern__ = r"http://(?:www\.)?filesonic\.com/folder/\w+"
-    __config__ = [("activated", "bool", "Activated", True)]
+    __config__ = [("enabled", "bool", "Activated", True)]
 
     __description__ = """Filesonic.com folder decrypter plugin"""
     __license__ = "GPLv3"

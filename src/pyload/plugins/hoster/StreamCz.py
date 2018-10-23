@@ -60,7 +60,7 @@ class StreamCz(SimpleHoster):
 
     __pattern__ = r"https?://(?:www\.)?stream\.cz/[^/]+/(?P<EP>\d+).+"
     __config__ = [
-        ("activated", "bool", "Activated", True),
+        ("enabled", "bool", "Activated", True),
         ("quality", "144p;240p;360p;480p;720p;1080p", "Quality", "720p"),
         ("container", "mp4;webm", "Container", "mp4"),
     ]

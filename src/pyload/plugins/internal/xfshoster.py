@@ -22,7 +22,7 @@ class XFSHoster(SimpleHoster):
 
     __pattern__ = r"^unmatchable$"
     __config__ = [
-        ("activated", "bool", "Activated", True),
+        ("enabled", "bool", "Activated", True),
         ("use_premium", "bool", "Use premium account if available", True),
         ("fallback", "bool", "Fallback to free download if premium fails", True),
         ("chk_filesize", "bool", "Check file size", True),
@@ -217,7 +217,7 @@ class XFSHoster(SimpleHoster):
                     self.set_wait(wait_time)
                     if (
                         wait_time < self.config.get("max_wait", 10) * 60
-                        or not self.pyload.config.get("reconnect", "activated")
+                        or not self.pyload.config.get("reconnect", "enabled")
                         or not self.pyload.api.isTimeReconnect()
                     ):
                         self.handle_captcha(inputs)

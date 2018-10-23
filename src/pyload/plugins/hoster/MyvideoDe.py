@@ -16,7 +16,7 @@ class MyvideoDe(Hoster):
     __pyload_version__ = "0.5"
 
     __pattern__ = r"http://(?:www\.)?myvideo\.de/watch/"
-    __config__ = [("activated", "bool", "Activated", True)]
+    __config__ = [("enabled", "bool", "Activated", True)]
 
     __description__ = """Myvideo.de hoster plugin"""
     __license__ = "GPLv3"

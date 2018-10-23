@@ -54,7 +54,7 @@ class ExtractArchive(Addon):
     __pyload_version__ = "0.5"
 
     __config__ = [
-        ("activated", "bool", "Activated", False),
+        ("enabled", "bool", "Activated", False),
         ("fullpath", "bool", "Extract with full paths", True),
         ("overwrite", "bool", "Overwrite files", False),
         ("keepbroken", "bool", "Try to extract broken archives", False),

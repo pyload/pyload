@@ -235,7 +235,7 @@ class YoutubeCom(Hoster):
         r"https?://(?:[^/]*\.)?(?:youtu\.be/|youtube\.com/watch\?(?:.*&)?v=)[\w\-]+"
     )
     __config__ = [
-        ("activated", "bool", "Activated", True),
+        ("enabled", "bool", "Activated", True),
         (
             "quality",
             "sd;hd;fullhd;240p;360p;480p;720p;1080p;1440p;2160p;3072p;4320p",

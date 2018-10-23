@@ -29,7 +29,7 @@ class ThriftBackend(BackendBase):
         key = None
         cert = None
 
-        if self.pyload.config.get("ssl", "activated"):
+        if self.pyload.config.get("ssl", "enabled"):
             if os.path.exists(self.pyload.config.get("ssl", "cert")) and os.path.exists(
                 self.pyload.config.get("ssl", "key")
             ):

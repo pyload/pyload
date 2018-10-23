@@ -11,7 +11,7 @@ class EventMapper(Addon):
 
     __pyload_version__ = "0.5"
 
-    __config__ = [("activated", "bool", "Activated", True)]
+    __config__ = [("enabled", "bool", "Activated", True)]
 
     __description__ = """Map old events to new events"""
     __license__ = "GPLv3"

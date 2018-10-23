@@ -287,7 +287,7 @@ class MegaCoNz(Hoster):
     __pyload_version__ = "0.5"
 
     __pattern__ = r"(https?://(?:www\.)?mega(\.co)?\.nz/|mega:|chrome:.+?)#(?P<TYPE>N|)!(?P<ID>[\w^_]+)!(?P<KEY>[\w\-,=]+)(?:###n=(?P<OWNER>[\w^_]+))?"
-    __config__ = [("activated", "bool", "Activated", True)]
+    __config__ = [("enabled", "bool", "Activated", True)]
 
     __description__ = """Mega.co.nz hoster plugin"""
     __license__ = "GPLv3"
@@ -327,7 +327,7 @@ class MegaCoNz(Hoster):
         encrypted_size = os.path.getsize(file_crypted)
 
         checksum_activated = self.config.get(
-            "activated", default=False, plugin="Checksum"
+            "enabled", default=False, plugin="Checksum"
         )
         check_checksum = self.config.get(
             "check_checksum", default=True, plugin="Checksum"

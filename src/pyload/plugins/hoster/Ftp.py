@@ -17,7 +17,7 @@ class Ftp(Hoster):
     __pyload_version__ = "0.5"
 
     __pattern__ = r"(?:ftps?|sftp)://([\w\-.]+(:[\w\-.]+)?@)?[\w\-.]+(:\d+)?/.+"
-    __config__ = [("activated", "bool", "Activated", True)]
+    __config__ = [("enabled", "bool", "Activated", True)]
 
     __description__ = """Download from ftp directory"""
     __license__ = "GPLv3"

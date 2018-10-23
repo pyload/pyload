@@ -21,7 +21,7 @@ class XMPP(IRC, pyxmpp2.client.Client):
     __pyload_version__ = "0.5"
 
     __config__ = [
-        ("activated", "bool", "Activated", False),
+        ("enabled", "bool", "Activated", False),
         ("jid", "str", "Jabber ID", "user@exmaple-jabber-server.org"),
         ("pw", "str", "Password", ""),
         ("tls", "bool", "Use TLS", False),

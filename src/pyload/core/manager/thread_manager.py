@@ -156,7 +156,7 @@ class ThreadManager(object):
         """
 
         if not (
-            self.pyload.config.get("reconnect", "activated")
+            self.pyload.config.get("reconnect", "enabled")
             and self.pyload.api.isTimeReconnect()
         ):
             return False
@@ -182,7 +182,7 @@ class ThreadManager(object):
                     ),
                 )
             else:
-                self.pyload.config.set("reconnect", "activated", False)
+                self.pyload.config.set("reconnect", "enabled", False)
                 self.pyload.log.warning(self._("Reconnect script not found!"))
                 return
 
@@ -208,7 +208,7 @@ class ThreadManager(object):
             )  #: , stdout=subprocess.PIPE)
         except Exception:
             self.pyload.log.warning(self._("Failed executing reconnect script!"))
-            self.pyload.config.set("reconnect", "activated", False)
+            self.pyload.config.set("reconnect", "enabled", False)
             self.reconnecting.clear()
             return
 

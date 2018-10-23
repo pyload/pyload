@@ -16,7 +16,7 @@ class CatShareNet(SimpleHoster):
 
     __pattern__ = r"http://(?:www\.)?catshare\.net/\w{15,16}"
     __config__ = [
-        ("activated", "bool", "Activated", True),
+        ("enabled", "bool", "Activated", True),
         ("use_premium", "bool", "Use premium account if available", True),
         ("fallback", "bool", "Fallback to free download if premium fails", True),
         ("chk_filesize", "bool", "Check file size", True),

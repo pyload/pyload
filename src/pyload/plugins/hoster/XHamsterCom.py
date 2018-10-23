@@ -32,7 +32,7 @@ class XHamsterCom(Hoster):
 
     __pattern__ = r"https?://(?:\w+\.)?xhamster\.com/videos/.+"
     __config__ = [
-        ("activated", "bool", "Activated", True),
+        ("enabled", "bool", "Activated", True),
         ("quality", "720p;480p;240p", "Preferred quality", "480p"),
     ]
 

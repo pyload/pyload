@@ -23,7 +23,7 @@ class ClickNLoad(Addon):
     __pyload_version__ = "0.5"
 
     __config__ = [
-        ("activated", "bool", "Activated", True),
+        ("enabled", "bool", "Activated", True),
         ("port", "int", "Port", 9666),
         ("extern", "bool", "Listen for external connections", True),
         ("dest", "queue;collector", "Add packages to", "collector"),
@@ -55,7 +55,7 @@ class ClickNLoad(Addon):
         self.exit_done = threading.Event()
 
     def activate(self):
-        if not self.pyload.config.get("webui", "activated"):
+        if not self.pyload.config.get("webui", "enabled"):
             self.log_warning(
                 self._("pyLoad's Web interface is not active, ClickNLoad cannot start")
             )

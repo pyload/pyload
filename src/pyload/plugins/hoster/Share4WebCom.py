@@ -12,7 +12,7 @@ class Share4WebCom(UnibytesCom):
     __pyload_version__ = "0.5"
 
     __pattern__ = r"https?://(?:www\.)?share4web\.com/get/\w+"
-    __config__ = [("activated", "bool", "Activated", True)]
+    __config__ = [("enabled", "bool", "Activated", True)]
 
     __description__ = """Share4web.com hoster plugin"""
     __license__ = "GPLv3"

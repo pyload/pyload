@@ -14,7 +14,7 @@ class DeleteFinished(Addon):
     __pyload_version__ = "0.5"
 
     __config__ = [
-        ("activated", "bool", "Activated", False),
+        ("enabled", "bool", "Activated", False),
         ("interval", "int", "Check interval in hours", 72),
         ("deloffline", "bool", "Delete package with offline links", False),
     ]

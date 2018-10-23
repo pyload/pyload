@@ -214,7 +214,7 @@ class PluginManager(object):
                 config = self._CONFIG.findall(content)
                 if not config:
                     new_config = {
-                        "activated": ["bool", "Activated", False],
+                        "enabled": ["bool", "Activated", False],
                         "desc": desc,
                     }
                     configs[name] = new_config
@@ -232,8 +232,8 @@ class PluginManager(object):
                     self.pyload.log.error("Invalid config in {}: {}".format(name, config))
                     continue
 
-                if folder == "addons" and "activated" not in config:
-                    config["activated"] = ["bool", "Activated", False]
+                if folder == "addons" and "enabled" not in config:
+                    config["enabled"] = ["bool", "Activated", False]
 
                 config["desc"] = desc
                 configs[name] = config

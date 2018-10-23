@@ -13,7 +13,7 @@ class CrockoComFolder(SimpleCrypter):
 
     __pattern__ = r"http://(?:www\.)?crocko\.com/f/.+"
     __config__ = [
-        ("activated", "bool", "Activated", True),
+        ("enabled", "bool", "Activated", True),
         ("use_premium", "bool", "Use premium account if available", True),
         (
             "folder_per_package",

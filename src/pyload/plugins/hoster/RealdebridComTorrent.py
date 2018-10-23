@@ -24,7 +24,7 @@ class RealdebridComTorrent(Hoster):
 
     __pattern__ = r"(?:file|https?)://.+\.torrent|magnet:\?.+"
     __config__ = [
-        ("activated", "bool", "Activated", False),
+        ("enabled", "bool", "Activated", False),
         ("chk_filesize", "bool", "Check file size", True),
         ("del_finished", "bool", "Delete donloaded torrents from the server", True),
     ]

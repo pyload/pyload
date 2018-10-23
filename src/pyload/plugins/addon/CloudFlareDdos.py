@@ -185,7 +185,7 @@ class CloudFlareDdos(Addon):
 
     __pyload_version__ = "0.5"
 
-    __config__ = [("activated", "bool", "Activated", False)]
+    __config__ = [("enabled", "bool", "Activated", False)]
 
     __description__ = """CloudFlare DDoS protection support"""
     __license__ = "GPLv3"

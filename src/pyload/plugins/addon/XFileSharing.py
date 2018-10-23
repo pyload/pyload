@@ -15,7 +15,7 @@ class XFileSharing(Addon):
     __pyload_version__ = "0.5"
 
     __config__ = [
-        ("activated", "bool", "Activated", False),
+        ("enabled", "bool", "Activated", False),
         ("use_hoster_list", "bool", "Load listed hosters only", False),
         ("use_crypter_list", "bool", "Load listed crypters only", False),
         ("use_builtin_list", "bool", "Load built-in plugin list", True),

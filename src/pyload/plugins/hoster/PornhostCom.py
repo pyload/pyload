@@ -14,7 +14,7 @@ class PornhostCom(Hoster):
     __pyload_version__ = "0.5"
 
     __pattern__ = r"http://(?:www\.)?pornhost\.com/(\d+/\d+\.html|\d+)"
-    __config__ = [("activated", "bool", "Activated", True)]
+    __config__ = [("enabled", "bool", "Activated", True)]
 
     __description__ = """Pornhost.com hoster plugin"""
     __license__ = "GPLv3"

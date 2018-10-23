@@ -45,7 +45,7 @@ class Addon(Plugin):
         """
         Checks if addon is activated.
         """
-        return self.config.get("activated")
+        return self.config.get("enabled")
 
     # TODO: Remove in 0.6.x
     def _log(self, level, plugintype, pluginname, messages):
@@ -83,7 +83,7 @@ class Addon(Plugin):
     def periodical_task(self):
         raise NotImplementedError
 
-    #: Deprecated method, use `activated` property instead (Remove in 0.6.x)
+    #: Deprecated method, use `enabled` property instead (Remove in 0.6.x)
     def isActivated(self):
         return self.activated
 

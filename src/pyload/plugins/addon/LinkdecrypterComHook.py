@@ -14,7 +14,7 @@ class LinkdecrypterComHook(Addon):
     __pyload_version__ = "0.5"
 
     __config__ = [
-        ("activated", "bool", "Activated", False),
+        ("enabled", "bool", "Activated", False),
         ("pluginmode", "all;listed;unlisted", "Use for plugins", "all"),
         ("pluginlist", "str", "Plugin list (comma separated)", ""),
         ("reload", "bool", "Reload plugin list", True),

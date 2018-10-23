@@ -20,7 +20,7 @@ class Captcha9Kw(Addon):
     __pyload_version__ = "0.5"
 
     __config__ = [
-        ("activated", "bool", "Activated", False),
+        ("enabled", "bool", "Activated", False),
         ("check_client", "bool", "Don't use if client is connected", True),
         ("confirm", "bool", "Confirm Captcha (cost +6 credits)", False),
         ("captchaperhour", "int", "Captcha per hour", "9999"),

@@ -12,7 +12,7 @@ class PushOver(Notifier):
     __pyload_version__ = "0.5"
 
     __config__ = [
-        ("activated", "bool", "Activated", False),
+        ("enabled", "bool", "Activated", False),
         ("tokenkey", "str", "Token key", ""),
         ("userkey", "str", "User key", ""),
         ("captcha", "bool", "Notify captcha request", True),

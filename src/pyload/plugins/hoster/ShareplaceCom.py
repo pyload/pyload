@@ -17,7 +17,7 @@ class ShareplaceCom(SimpleHoster):
     __pyload_version__ = "0.5"
 
     __pattern__ = r"http://(?:www\.)?shareplace\.(com|org)/\?\w+"
-    __config__ = [("activated", "bool", "Activated", True)]
+    __config__ = [("enabled", "bool", "Activated", True)]
 
     __description__ = """Shareplace.com hoster plugin"""
     __license__ = "GPLv3"

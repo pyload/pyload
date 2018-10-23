@@ -12,7 +12,7 @@ class MultiuploadCom(DeadCrypter):
     __pyload_version__ = "0.5"
 
     __pattern__ = r"http://(?:www\.)?multiupload\.(com|nl)/\w+"
-    __config__ = [("activated", "bool", "Activated", True)]
+    __config__ = [("enabled", "bool", "Activated", True)]
 
     __description__ = """MultiUpload.com decrypter plugin"""
     __license__ = "GPLv3"

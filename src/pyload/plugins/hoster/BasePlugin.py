@@ -13,7 +13,7 @@ class BasePlugin(Http):
     __pyload_version__ = "0.5"
 
     __pattern__ = r"^unmatchable$"
-    __config__ = [("activated", "bool", "Activated", True)]
+    __config__ = [("enabled", "bool", "Activated", True)]
 
     __description__ = """Default hoster plugin when any other didnt fit"""
     __license__ = "GPLv3"

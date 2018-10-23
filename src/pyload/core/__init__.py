@@ -9,4 +9,4 @@
 #           \/
 
 from pyload.core.core import Core
-from pyload.core.run import run
+from pyload.core.run import run, start, stop, restart

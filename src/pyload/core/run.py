@@ -41,6 +41,18 @@ def daemon():
     pyload_core.start()
     
     
+def start():
+    pass
+    
+    
+def stop():
+    pass
+
+    
+def restart():
+    pass
+
+    
 def run(args=sys.argv[1:]):
     """
     Entry point for console_scripts

@@ -14,7 +14,7 @@ class PastedCo(Crypter):
     __pyload_version__ = "0.5"
 
     __pattern__ = r"http://pasted\.co/\w+"
-    __config__ = [("activated", "bool", "Activated", True)]
+    __config__ = [("enabled", "bool", "Activated", True)]
 
     __description__ = """Pasted.co decrypter plugin"""
     __license__ = "GPLv3"

@@ -15,7 +15,7 @@ class LogMarker(Addon):
     __pyload_version__ = "0.5"
 
     __config__ = [
-        ("activated", "bool", "Activated", False),
+        ("enabled", "bool", "Activated", False),
         ("mark_hour", "bool", "Mark hours", True),
         ("mark_day", "bool", "Mark days", True),
     ]

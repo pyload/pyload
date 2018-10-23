@@ -16,7 +16,7 @@ class UpfileVn(SimpleHoster):
 
     __pattern__ = r"http://(?:www\.)?upfile\.vn/(?P<ID>.+?)/.+?\.html"
     __config__ = [
-        ("activated", "bool", "Activated", True),
+        ("enabled", "bool", "Activated", True),
         ("use_premium", "bool", "Use premium account if available", True),
         ("fallback", "bool", "Fallback to free download if premium fails", True),
         ("chk_filesize", "bool", "Check file size", True),

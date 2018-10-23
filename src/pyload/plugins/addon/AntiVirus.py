@@ -21,7 +21,7 @@ class AntiVirus(Addon):
 
     # TODO: add trash option (use Send2Trash lib)
     __config__ = [
-        ("activated", "bool", "Activated", False),
+        ("enabled", "bool", "Activated", False),
         (
             "action",
             "Antivirus default;Delete;Quarantine",

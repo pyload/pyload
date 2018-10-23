@@ -12,7 +12,7 @@ class CryptItCom(DeadCrypter):
     __pyload_version__ = "0.5"
 
     __pattern__ = r"http://(?:www\.)?crypt-it\.com/(s|e|d|c)/\w+"
-    __config__ = [("activated", "bool", "Activated", True)]
+    __config__ = [("enabled", "bool", "Activated", True)]
 
     __description__ = """Crypt-it.com decrypter plugin"""
     __license__ = "GPLv3"

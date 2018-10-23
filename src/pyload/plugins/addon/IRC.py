@@ -23,7 +23,7 @@ class IRC(Thread, Notifier):
     __pyload_version__ = "0.5"
 
     __config__ = [
-        ("activated", "bool", "Activated", False),
+        ("enabled", "bool", "Activated", False),
         ("host", "str", "IRC-Server Address", "Enter your server here!"),
         ("port", "int", "IRC-Server Port", 6667),
         ("ident", "str", "Clients ident", "pyload-irc"),

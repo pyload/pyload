@@ -32,7 +32,7 @@ class AntiStandby(Addon):
     __pyload_version__ = "0.5"
 
     __config__ = [
-        ("activated", "bool", "Activated", False),
+        ("enabled", "bool", "Activated", False),
         ("hdd", "bool", "Prevent HDD standby", True),
         ("system", "bool", "Prevent OS standby", True),
         ("display", "bool", "Prevent display standby", False),

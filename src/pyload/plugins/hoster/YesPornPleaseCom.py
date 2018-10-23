@@ -15,7 +15,7 @@ class YesPornPleaseCom(Hoster):
 
     __pattern__ = r"https?://(?:www\.)?yespornplease\.com/view/(\d+)"
     __config__ = [
-        ("activated", "bool", "Activated", True),
+        ("enabled", "bool", "Activated", True),
         ("quality", "240p;360p;480p;720p", "Quality", "720p"),
     ]
 

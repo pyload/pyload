@@ -12,7 +12,7 @@ class C1NeonCom(DeadCrypter):
     __pyload_version__ = "0.5"
 
     __pattern__ = r"http://(?:www\.)?c1neon\.com/.+"
-    __config__ = [("activated", "bool", "Activated", True)]
+    __config__ = [("enabled", "bool", "Activated", True)]
 
     __description__ = """C1neon.com decrypter plugin"""
     __license__ = "GPLv3"

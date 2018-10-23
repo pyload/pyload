@@ -18,7 +18,7 @@ class FileserveCom(Hoster):
     __pyload_version__ = "0.5"
 
     __pattern__ = r"http://(?:www\.)?fileserve\.com/file/(?P<ID>[^/]+)"
-    __config__ = [("activated", "bool", "Activated", True)]
+    __config__ = [("enabled", "bool", "Activated", True)]
 
     __description__ = """Fileserve.com hoster plugin"""
     __license__ = "GPLv3"

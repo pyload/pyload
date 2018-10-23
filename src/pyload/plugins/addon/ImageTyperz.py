@@ -32,7 +32,7 @@ class ImageTyperz(Addon):
     __pyload_version__ = "0.5"
 
     __config__ = [
-        ("activated", "bool", "Activated", False),
+        ("enabled", "bool", "Activated", False),
         ("username", "str", "Username", ""),
         ("password", "password", "Password", ""),
         ("check_client", "bool", "Don't use if client is connected", True),

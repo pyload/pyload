@@ -17,7 +17,7 @@ class MirrorcreatorCom(Crypter):
 
     __pattern__ = r"https?://(?:www\.)?(?:mirrorcreator\.com/(?:files/|download\.php\?uid=)|mir\.cr/)(?P<ID>\w{8})"
     __config__ = [
-        ("activated", "bool", "Activated", True),
+        ("enabled", "bool", "Activated", True),
         ("hosters_priority", "str", "Prefered hoster priority (bar-separated)", ""),
         ("ignored_hosters", "str", "Ignored hoster list (bar-separated)", ""),
         ("grab_all", "bool", "Grab all URLs (default only first match)", False),

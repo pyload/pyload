@@ -15,7 +15,7 @@ class MergeFiles(Addon):
 
     __pyload_version__ = "0.5"
 
-    __config__ = [("activated", "bool", "Activated", False)]
+    __config__ = [("enabled", "bool", "Activated", False)]
 
     __description__ = """Merges parts splitted with hjsplit"""
     __license__ = "GPLv3"

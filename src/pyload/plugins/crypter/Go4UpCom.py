@@ -17,7 +17,7 @@ class Go4UpCom(SimpleCrypter):
 
     __pattern__ = r"http://go4up\.com/(dl/\w{12}|rd/\w{12}/\d+)"
     __config__ = [
-        ("activated", "bool", "Activated", True),
+        ("enabled", "bool", "Activated", True),
         ("use_premium", "bool", "Use premium account if available", True),
         (
             "folder_per_package",

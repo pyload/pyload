@@ -17,7 +17,7 @@ class MultiAccount(Account):
     __pyload_version__ = "0.5"
 
     __config__ = [
-        ("activated", "bool", "Activated", True),
+        ("enabled", "bool", "Activated", True),
         ("mh_mode", "all;listed;unlisted", "Hosters to use", "all"),
         ("mh_list", "str", "Hoster list (comma separated)", ""),
         ("mh_interval", "int", "Reload interval in hours", 12),

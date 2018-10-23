@@ -20,7 +20,7 @@ class FourChanOrg(Crypter):
 
     __pattern__ = r"http://(?:www\.)?boards\.4chan\.org/\w+/res/(\d+)"
     __config__ = [
-        ("activated", "bool", "Activated", True),
+        ("enabled", "bool", "Activated", True),
         ("use_premium", "bool", "Use premium account if available", True),
         (
             "folder_per_package",
