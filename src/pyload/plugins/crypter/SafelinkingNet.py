@@ -3,7 +3,7 @@ import json
 from builtins import _
 
 import pycurl
-from pyload.core.network.http_request import BadHeader
+from pyload.core.network.http.http_request import BadHeader
 from ..captcha.SolveMedia import SolveMedia
 from ..internal.crypter import Crypter
 

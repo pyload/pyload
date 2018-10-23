@@ -39,7 +39,7 @@ class PyFile(object):
     def __init__(
         self, manager, id, url, name, size, status, error, pluginname, package, order
     ):
-        self.m = manager
+        self.m = self.manager = manager
 
         self.id = int(id)
         self.url = url

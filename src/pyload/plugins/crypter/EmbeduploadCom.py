@@ -2,7 +2,7 @@
 
 import re
 
-from pyload.core.network.http_request import BadHeader
+from pyload.core.network.http.http_request import BadHeader
 from ..internal.crypter import Crypter
 
 

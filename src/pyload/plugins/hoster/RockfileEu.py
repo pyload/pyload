@@ -6,7 +6,7 @@ import urllib.parse
 import urllib.request
 from builtins import chr
 
-from pyload.core.network.http_request import BadHeader
+from pyload.core.network.http.http_request import BadHeader
 from ..captcha.ReCaptcha import ReCaptcha
 from ..internal.simplehoster import SimpleHoster
 

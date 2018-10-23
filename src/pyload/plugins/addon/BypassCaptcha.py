@@ -2,7 +2,7 @@
 from builtins import _
 
 import pycurl
-from pyload.core.network.http_request import BadHeader
+from pyload.core.network.http.http_request import BadHeader
 from pyload.core.network.request_factory import getRequest as get_request
 from ..internal.addon import Addon
 from ..utils import threaded

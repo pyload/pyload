@@ -11,7 +11,7 @@ from builtins import _, object, range, str
 import Cryptodome.Cipher.AES
 import Cryptodome.Util.Counter
 
-from pyload.core.network.http_request import BadHeader
+from pyload.core.network.http.http_request import BadHeader
 from ..internal.hoster import Hoster
 from ..utils import decode, encode, exists
 

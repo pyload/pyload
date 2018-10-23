@@ -15,7 +15,8 @@ bp = flask.Blueprint("cnl", __name__)
 
 
 def local_check(func):
-    def _view(*args, **kwargs):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
         if flask.request.environ.get("REMOTE_ADDR", "0") in (
             "127.0.0.1",
             "localhost",
@@ -27,7 +28,7 @@ def local_check(func):
         else:
             return "Forbidden", 403
 
-    return _view
+    return wrapper
 
 
 @bp.route(r"/flash/<id>", endpoint="flash")

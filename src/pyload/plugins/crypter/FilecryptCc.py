@@ -13,7 +13,7 @@ from builtins import _, filter, range, str
 from cryptography.fernet import Fernet
 
 from pyload.core.network.cookie_jar import CookieJar
-from pyload.core.network.http_request import BadHeader, HTTPRequest
+from pyload.core.network.http.http_request import BadHeader, HTTPRequest
 from ..captcha.CoinHive import CoinHive
 from ..captcha.ReCaptcha import ReCaptcha
 from ..captcha.SolveMedia import SolveMedia

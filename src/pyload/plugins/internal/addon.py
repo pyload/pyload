@@ -24,7 +24,7 @@ class Addon(Plugin):
         self._init(core)
 
         #: `AddonManager`
-        self.m = manager
+        self.m = self.manager = manager
         self.lock = threading.Lock()
 
         #: Automatically register event listeners for functions, attribute will be deleted dont use it yourself

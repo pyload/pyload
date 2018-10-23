@@ -13,7 +13,7 @@ class PyPackage(object):
     """
 
     def __init__(self, manager, id, name, folder, site, password, queue, order):
-        self.m = manager
+        self.m = self.manager = manager
         self.m.packageCache[int(id)] = self
 
         self.id = int(id)

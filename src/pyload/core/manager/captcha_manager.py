@@ -20,28 +20,23 @@ class CaptchaManager(object):
         self.ids += 1
         return task
 
+    @lock
     def removeTask(self, task):
-        self.lock.acquire()
         if task in self.tasks:
             self.tasks.remove(task)
-        self.lock.release()
 
+    @lock
     def getTask(self):
-        self.lock.acquire()
         for task in self.tasks:
             if task.status in ("waiting", "shared-user"):
-                self.lock.release()
                 return task
-        self.lock.release()
         return None
 
+    @lock
     def getTaskByID(self, tid):
-        self.lock.acquire()
         for task in self.tasks:
             if task.id == str(tid):  #: Task ids are strings
-                self.lock.release()
                 return task
-        self.lock.release()
         return None
 
     def handleCaptcha(self, task, timeout):

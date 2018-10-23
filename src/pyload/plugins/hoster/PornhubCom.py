@@ -7,7 +7,7 @@ from builtins import _
 import js2py
 
 from pyload.core.network.cookie_jar import CookieJar
-from pyload.core.network.http_request import HTTPRequest
+from pyload.core.network.http.http_request import HTTPRequest
 from ..internal.plugin import Abort
 from ..internal.simplehoster import SimpleHoster
 

@@ -28,7 +28,7 @@ class Account(Plugin):
     def __init__(self, manager, accounts):
         self._init(manager.pyload)
 
-        self.m = manager
+        self.m = self.manager = manager
         self.lock = threading.RLock()
 
         self.accounts = accounts  # TODO: Recheck in 0.6.x

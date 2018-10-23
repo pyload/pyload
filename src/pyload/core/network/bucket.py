@@ -7,42 +7,44 @@ from threading import Lock
 
 
 class Bucket(object):
+
+    MIN_RATE = 10 << 10  # 10kb minimum rate
+
     def __init__(self):
-        self.rate = 0
-        self.tokens = 0
+        self._rate = 0
+        self.token = 0
         self.timestamp = time.time()
         self.lock = Lock()
 
     def __bool__(self):
-        return not self.rate < 10 << 10
+        return self._rate >= self.MIN_RATE
 
-    def setRate(self, rate):
-        self.lock.acquire()
-        self.rate = int(rate)
-        self.lock.release()
-
+    rate = property(get_rate, set_rate)
+    
+    @lock
+    def set_rate(self, rate):
+        self._rate = int(rate)
+        
+    def get_rate(self):
+        return self._rate
+        
+    def _calc_token(self):
+        if self.token >= self._rate:
+            return
+        now = time.time()
+        delta = self._rate * (now - self.timestamp)
+        self.token = min(self._rate, self.token + delta)
+        self.timestamp = now
+        
+    @lock
     def consumed(self, amount):
         """
-        return time the process have to sleep, after consumed specified amount.
+        Return time the process have to sleep, after consumed specified amount.
         """
-        if self.rate < 10 << 10:
-            return 0  #: min. 10kb, may become unresponsive otherwise
-        self.lock.acquire()
-
-        self.calc_tokens()
-        self.tokens -= amount
-
-        if self.tokens < 0:
-            time = -self.tokens / self.rate
-        else:
-            time = 0
-
-        self.lock.release()
-        return time
-
-    def calc_tokens(self):
-        if self.tokens < self.rate:
-            now = time.time()
-            delta = self.rate * (now - self.timestamp)
-            self.tokens = min(self.rate, self.tokens + delta)
-            self.timestamp = now
+        if self.rate < self.MIN_RATE:
+            return 0  # NOTE: May become unresponsive otherwise
+        self._calc_token()
+        self.token -= amount
+        consumed = -self.token // self._rate if self.token < 0 else 0
+        return consumed
+        

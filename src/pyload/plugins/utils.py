@@ -213,16 +213,18 @@ class SimpleQueue(object):
         return self.set(queue)
 
 
-def lock(fn):
-    def new(*args, **kwargs):
-        args[0].lock.acquire()
-        try:
-            return fn(*args, **kwargs)
-
-        finally:
-            args[0].lock.release()
-
-    return new
+# NOTE: decorator
+def lock(**kwgs):
+    def decorator(func)
+        @wraps(func)
+        def wrapped(self, *args, **kwargs):
+            self.lock.acquire(**kwgs)
+            try:
+                return func(self, *args, **kwargs)
+            finally:
+                self.lock.release()
+        return wrapped
+    return decorator
 
 
 def threaded(fn):

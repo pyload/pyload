@@ -83,36 +83,28 @@ class Cli(object):
                 os.system("clear")
                 sys.exit()  #: ctrl + c
             elif ord(inp) == 13:  #: enter
-                try:
-                    self.lock.acquire()
-                    self.inputHandler.onEnter(self.input)
-
-                except Exception as e:
-                    println(2, red(e))
-                finally:
-                    self.lock.release()
+                with self.lock:
+                    try:
+                        self.inputHandler.onEnter(self.input)
+                    except Exception as e:
+                        println(2, red(e))
 
             elif ord(inp) == 127:
                 self.input = self.input[:-1]  #: backspace
-                try:
-                    self.lock.acquire()
+                with self.lock:
                     self.inputHandler.onBackSpace()
-                finally:
-                    self.lock.release()
 
             elif ord(inp) == 27:  #: ugly symbol
                 pass
             else:
                 self.input += inp
-                try:
-                    self.lock.acquire()
+                with self.lock:
                     self.inputHandler.onChar(inp)
-                finally:
-                    self.lock.release()
 
             self.inputline = self.bodyHandler.renderBody(self.menuline)
             self.renderFooter(self.inputline)
 
+    @lock
     def refresh(self):
         """
         refresh screen.
@@ -121,14 +113,10 @@ class Cli(object):
         println(1, blue("py") + yellow("Load") + white(self._(" Command Line Interface")))
         println(2, "")
 
-        self.lock.acquire()
-
         self.menuline = self.headerHandler.renderHeader(3) + 1
         println(self.menuline - 1, "")
         self.inputline = self.bodyHandler.renderBody(self.menuline)
         self.renderFooter(self.inputline)
-
-        self.lock.release()
 
     def setInput(self, string=""):
         self.input = string

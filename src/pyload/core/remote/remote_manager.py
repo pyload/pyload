@@ -8,7 +8,7 @@ from threading import Thread
 class BackendBase(Thread):
     def __init__(self, manager):
         super().__init__()
-        self.m = manager
+        self.m = self.manager = manager
         self.pyload = manager.pyload
         self._ = manager.pyload._
         self.enabled = True

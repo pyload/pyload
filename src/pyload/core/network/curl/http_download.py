@@ -60,7 +60,7 @@ class HTTPDownload(object):
             self.info = ChunkInfo(filename)
 
         self.chunkSupport = None
-        self.m = pycurl.CurlMulti()
+        self.m = self.manager = pycurl.CurlMulti()
 
         # needed for speed calculation
         self.lastArrived = []

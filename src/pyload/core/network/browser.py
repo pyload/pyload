@@ -3,8 +3,8 @@
 from builtins import object
 from logging import getLogger
 
-from .http_download import HTTPDownload
-from .http_request import HTTPRequest
+from .http.http_download import HTTPDownload
+from .http.http_request import HTTPRequest
 
 
 class Browser(object):

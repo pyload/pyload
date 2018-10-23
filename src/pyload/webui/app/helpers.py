@@ -184,19 +184,21 @@ def parse_userdata(session):
 
 def apiver_check(func):
     # if no apiver is provided assumes latest
-    def _view(*args, **kwargs):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
         api = flask.current_app.config["PYLOAD_API"]
         core_apiver = api.__version__
         if int(kwargs.get("apiver", core_apiver).strip("v")) < core_apiver:
             return "Obsolete API", 404
         return func(*args, **kwargs)
 
-    return _view
+    return wrapper
 
 
 def login_required_old(perm=None):
-    def _dec(func):
-        def _view(*args, **kwargs):
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
             if flask.request.headers.get("X-Requested-With") == "XMLHttpRequest":
                     return "Forbidden", 403
                             
@@ -219,9 +221,9 @@ def login_required_old(perm=None):
             
             return flask_login.login_url("app.login", flask.request.url)
 
-        return _view
+        return wrapper
 
-    return _dec
+    return decorator
 
 
 def toDict(obj):

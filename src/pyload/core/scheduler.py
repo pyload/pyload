@@ -112,20 +112,17 @@ class PriorityQueue(object):
     def __delitem__(self, key):
         del self.queue[key]
 
+    @lock
     def put(self, element):
-        self.lock.acquire()
         heappush(self.queue, element)
-        self.lock.release()
 
+    @lock
     def get(self):
         """
         return element or None.
         """
-        self.lock.acquire()
         try:
             el = heappop(self.queue)
             return el
         except IndexError:
             return None, None
-        finally:
-            self.lock.release()

@@ -5,7 +5,7 @@ import os
 import re
 from builtins import _, range
 
-from pyload.core.network.http_request import BadHeader
+from pyload.core.network.http.http_request import BadHeader
 from .base import Base
 from .plugin import Fail
 from ..utils import encode, exists, parse_name, safejoin

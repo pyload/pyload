@@ -3,7 +3,7 @@ import json
 import time
 from builtins import _
 
-from pyload.core.network.http_request import BadHeader
+from pyload.core.network.http.http_request import BadHeader
 from ..internal.multiaccount import MultiAccount
 
 

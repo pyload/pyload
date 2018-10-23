@@ -7,8 +7,8 @@ from threading import Lock
 from .browser import Browser
 from .bucket import Bucket
 from .cookie_jar import CookieJar
-from .http_request import HTTPRequest
-from .xdcc_request import XDCCRequest
+from .http.http_request import HTTPRequest
+from .xdcc.xdcc_request import XDCCRequest
 
 
 class RequestFactory(object):
@@ -23,9 +23,8 @@ class RequestFactory(object):
     def iface(self):
         return self.pyload.config.get("download", "interface")
 
+    @lock
     def getRequest(self, pluginName, account=None, type="HTTP", **kwargs):
-        self.lock.acquire()
-
         options = self.getOptions()
         options.update(kwargs)  #: submit kwargs as additional options
 
@@ -41,7 +40,6 @@ class RequestFactory(object):
             else:
                 req.setCookieJar(CookieJar(pluginName))
 
-        self.lock.release()
         return req
 
     def getHTTPRequest(self, **kwargs):

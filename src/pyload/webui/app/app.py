@@ -7,7 +7,7 @@ import jinja2
 from pyload.core.utils.utils import formatSize
 import flask
 
-from pyload.core.network.http_request import BAD_STATUS_CODES as BAD_HTTP_STATUS_CODES
+from pyload.core.network.http.http_request import BAD_STATUS_CODES as BAD_HTTP_STATUS_CODES
 
 # from flask_static_compress import FlaskStaticCompress
 from flask_minify import minify
