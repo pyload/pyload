@@ -14,14 +14,14 @@ import flask
 
 from pyload.core.utils.utils import formatSize, fs_decode, fs_encode
 from .filters import unquotepath
-from .helpers import (clear_session, get_permission, login_required_old,
+from .helpers import (clear_session, get_permission, login_required,
                                     parse_permissions, parse_userdata, permlist,
                                     render_template, set_permission, set_session,
                                     toDict)
 from .helpers import pre_processor, base, get_redirect_target
 
 
-from flask_login import login_required, login_user, logout_user
+# from flask_login import login_required, login_user, logout_user
 
 
 bp = flask.Blueprint("app", __name__)
@@ -52,28 +52,26 @@ def login():
     if not info:
         return render_template("login.html", {"errors": True}, [pre_processor])
         
-    user = User(info['id'])
-    login_user(user)
+    # user = User(info['id'])
+    # login_user(user)
     
+    set_session(info)
     flask.flash('Logged in successfully.')
     
     next = get_redirect_target()
     return flask.redirect(next or flask.url_for('index'))
 
-    # set_session(info)
-    # return flask.redirect(flask.url_for("index"))
-
 
 @bp.route(r"/logout")
 def logout():
-    logout_user()
+    # logout_user()
     clear_session()
     return render_template("logout.html", proc=[pre_processor])
 
 
 @bp.route(r"/", endpoint="index")
 @bp.route(r"/home", endpoint="home")
-@login_required_old("LIST")
+@login_required("LIST")
 def home():
     api = flask.current_app.config["PYLOAD_API"]
     try:
@@ -92,7 +90,7 @@ def home():
 
 
 @bp.route(r"/queue", endpoint="queue")
-@login_required_old("LIST")
+@login_required("LIST")
 def queue():
     api = flask.current_app.config["PYLOAD_API"]
     queue = api.getQueue()
@@ -105,7 +103,7 @@ def queue():
 
 
 @bp.route(r"/collector", endpoint="collector")
-@login_required_old("LIST")
+@login_required("LIST")
 def collector():
     api = flask.current_app.config["PYLOAD_API"]
     queue = api.getCollector()
@@ -118,7 +116,7 @@ def collector():
 
 
 @bp.route(r"/downloads", endpoint="downloads")
-@login_required_old("DOWNLOAD")
+@login_required("DOWNLOAD")
 def downloads():
     api = flask.current_app.config["PYLOAD_API"]
     root = api.getConfigValue("general", "download_folder")
@@ -149,7 +147,7 @@ def downloads():
 
 
 @bp.route(r"/downloads/get/<filename>", endpoint="get_download")
-@login_required_old("DOWNLOAD")
+@login_required("DOWNLOAD")
 def get_download(filename):
     api = flask.current_app.config["PYLOAD_API"]
     filename = unquote(filename).decode("utf-8").replace("..", "")
@@ -158,7 +156,7 @@ def get_download(filename):
 
 
 @bp.route(r"/settings", endpoint="settings")
-@login_required_old("SETTINGS")
+@login_required("SETTINGS")
 def settings():
     api = flask.current_app.config["PYLOAD_API"]
     conf = api.getConfig()
@@ -232,7 +230,7 @@ def settings():
 
 @bp.route(r"/pathchooser", endpoint="filemanager")
 @bp.route(r"/pathchooser/<path:path>", endpoint="filemanager")
-@login_required_old("STATUS")
+@login_required("STATUS")
 def filemanager(path):
     browse_for = "folder" if os.path.isdir(path) else "file"
     path = os.path.normpath(unquotepath(path))
@@ -332,7 +330,7 @@ def filemanager(path):
 
 @bp.route(r"/logs", methods=["GET", "POST"], endpoint="logs")
 @bp.route(r"/logs/<item>", methods=["GET", "POST"], endpoint="logs")
-@login_required_old("LOGS")
+@login_required("LOGS")
 def logs(item=-1):
     s = flask.session
     api = flask.current_app.config["PYLOAD_API"]
@@ -441,7 +439,7 @@ def logs(item=-1):
 
 
 @bp.route(r"/admin", methods=["GET", "POST"], endpoint="admin")
-@login_required_old("ADMIN")
+@login_required("ADMIN")
 def admin():
     api = flask.current_app.config["PYLOAD_API"]
     # convert to dict
@@ -486,7 +484,7 @@ def setup():
 
     
 @bp.route(r"/info", endpoint="info")
-@login_required_old("STATUS")
+@login_required("STATUS")
 def info():
     api = flask.current_app.config["PYLOAD_API"]
     conf = api.getConfigDict()

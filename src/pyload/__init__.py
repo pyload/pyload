@@ -24,7 +24,7 @@ import traceback
 ### Info ###
 
 try:
-    dist_name = "pyload"
+    dist_name = __name__
     pkgdir = pkg_resources.resource_filename(dist_name, "")
     __version__ = pkg_resources.get_distribution(dist_name).version
 

@@ -51,7 +51,6 @@ class Core(object):
     DEFAULT_LANGUAGE = 'english'
     DEFAULT_USERNAME = 'admin'
     DEFAULT_PASSWORD = 'pyload'
-    DEFAULT_STORAGENAME = 'downloads'
 
     @property
     def version(self):
@@ -65,6 +64,7 @@ class Core(object):
     def running(self):
         return self._running.is_set()
 
+    # TODO: `restore` should reset config as well
     def __init__(self, userdir, cachedir, debug=False, restore=False):
         self._running = Event()
         self.__do_restart = False
@@ -100,6 +100,12 @@ class Core(object):
         from .api import Api
         self.api = Api(self)
 
+    def _init_webserver(self):
+        if not self.config.get("webui", "enabled"):
+            return
+        self.webserver = WebServer(self)
+        self.webserver.start()
+            
     def _init_database(self, restore):
         db_path = os.path.join(self.userdir, DatabaseThread.DB_FILENAME)
         newdb = not os.path.isfile(db_path)
@@ -195,9 +201,9 @@ class Core(object):
         self.log.debug('Setup storage...')
 
         storage_folder = self.config.get('general', 'storage_folder')
-        if storage_folder is None:
-            storage_folder = os.path.join(
-                builtins.USERDIR, self.DEFAULT_STORAGENAME)
+        # if storage_folder is None:
+            # storage_folder = os.path.join(
+                # builtins.USERDIR, self.DEFAULT_STORAGENAME)
         self.log.info(self._('Storage: {0}'.format(storage_folder)))
         makedirs(storage_folder, exist_ok=True)
         avail_space = format.size(availspace(storage_folder))
@@ -269,6 +275,9 @@ class Core(object):
             self.log.critical(exc, exc_info=True)
             self.terminate()
 
+    def isClientConnected(self):
+        return (self.lastClientConnected + 30) > time.time()
+        
     def restart(self):
         self.stop()
         self.log.info(self._('Restarting pyLoad...'))
@@ -289,10 +298,20 @@ class Core(object):
         try:
             self.log.debug('Stopping pyLoad...')
             # self.evm.fire('pyload:stopping')
-            self.adm.deactivate_addons()
-            self.api.stop_all_downloads()
+            
+            if self.webserver.is_alive():
+                self.webserver.stop()
+
+            for thread in self.threadManager.threads:
+                thread.put("quit")
+            
+            for pyfile in self.files.cache.values():
+                pyfile.abortDownload()
+
+            self.addonManager.coreExiting()
+            
         finally:
-            self.files.sync_save()
+            self.files.syncSave()
             self.logfactory.shutdown()
             self._running.clear()
             # self.evm.fire('pyload:stopped')

@@ -88,20 +88,20 @@ def setup_extensions(app):
     Compress(app)
     DebugToolbarExtension(app)
     # FlaskStaticCompress(app)
-    login_manager = LoginManager(app)
-    login_manager.login_view = "app.login"
+    # login_manager = LoginManager(app)
+    # login_manager.login_view = "app.login"
     minify(app)
     # Talisman(app)
     Themes(app, app_identifier="pyload")
     
-    @login_manager.user_loader
-    def load_user(userid):
-        return User(userid)
+    # @login_manager.user_loader
+    # def load_user(userid):
+        # return User(userid)
         
-    @login_manager.unauthorized_handler
-    def unauthorized():
-        messages = ["You dont have permission to access this page."]
-        return base(messages)
+    # @login_manager.unauthorized_handler
+    # def unauthorized():
+        # messages = ["You dont have permission to access this page."]
+        # return base(messages)
 
 
 def setup_error_handlers(app):

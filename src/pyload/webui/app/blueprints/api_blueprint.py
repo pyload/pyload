@@ -88,7 +88,6 @@ def callApi(func, *args, **kwargs):
     return jsonify(result or True)
 
 
-# post -> username, password
 @bp.route(r"/login", methods=["POST"])
 # @apiver_check
 def login():
@@ -101,26 +100,23 @@ def login():
     if not info:
         return jsonify(False)
 
-    user = User(info['id'])
-    login_user(user)
+    # user = User(info['id'])
+    # login_user(user)
     
+    s = set_session(info)
     flask.flash('Logged in successfully.')
-    
-    return jsonify(True)
-    
-    # s = set_session(info)
 
     # get the session id by dirty way, documentations seems wrong
-    # try:
-        # sid = s.headers["cookie_out"].split("=")[1].split(";")[0]
-        # return jsonify(sid)
-    # except Exception:
-        # return jsonify(True)
+    try:
+        sid = s.headers["cookie_out"].split("=")[1].split(";")[0]
+        return jsonify(sid)
+    except Exception:
+        return jsonify(True)
 
 
 @bp.route(r"/logout")
 # @apiver_check
 def logout():
-    logout_user()
+    # logout_user()
     clear_session()
     return jsonify(True)
