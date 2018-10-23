@@ -7,6 +7,7 @@ from itertools import chain
 from urllib.parse import unquote
 
 import flask
+from flask.json import jsonify
 
 from pyload.core.api import BaseObject
 from pyload.webui.app.helpers import clear_session, set_session, toDict
@@ -35,15 +36,16 @@ def call_api(func, args=""):
             return "Forbidden", 403
 
     else:
-        s = flask.session
-        if "session" in flask.request.form:
-            s = s.get_by_id(flask.request.form["session"])
+        return "Unauthorized", 401
+        # s = flask.session
+        # if "session" in flask.request.form:
+            # s = s.get_by_id(flask.request.form["session"])
 
-        if not s or not s.get("authenticated", False):
-            return "Forbidden", 403
+        # if not s or not s.get("authenticated", False):
+            # return "Forbidden", 403
 
-        if not api.isAuthorized(func, {"role": s["role"], "permission": s["perms"]}):
-            return "Unauthorized", 401
+        # if not api.isAuthorized(func, {"role": s["role"], "permission": s["perms"]}):
+            # return "Unauthorized", 401
 
     args = args.split("/")
     kwargs = {}
@@ -59,7 +61,7 @@ def call_api(func, args=""):
         return callApi(func, *args, **kwargs)
     except Exception as e:
         return (
-            flask.json.jsonify(
+            jsonify(
                 {"error": e.message, "traceback": traceback.format_exc()}
             ),
             500,
@@ -83,7 +85,7 @@ def callApi(func, *args, **kwargs):
         result = toDict(result)
             
     # null is invalid json response
-    return flask.json.jsonify(result or True)
+    return jsonify(result or True)
 
 
 # post -> username, password
@@ -97,20 +99,28 @@ def login():
     info = api.checkAuth(user, password)
 
     if not info:
-        return flask.json.jsonify(False)
+        return jsonify(False)
 
-    s = set_session(info)
+    user = User(info['id'])
+    login_user(user)
+    
+    flask.flash('Logged in successfully.')
+    
+    return jsonify(True)
+    
+    # s = set_session(info)
 
     # get the session id by dirty way, documentations seems wrong
-    try:
-        sid = s.headers["cookie_out"].split("=")[1].split(";")[0]
-        return flask.json.jsonify(sid)
-    except Exception:
-        return flask.json.jsonify(True)
+    # try:
+        # sid = s.headers["cookie_out"].split("=")[1].split(";")[0]
+        # return jsonify(sid)
+    # except Exception:
+        # return jsonify(True)
 
 
 @bp.route(r"/logout")
 # @apiver_check
 def logout():
+    logout_user()
     clear_session()
-    return flask.json.jsonify(True)
+    return jsonify(True)

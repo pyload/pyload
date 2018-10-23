@@ -22,7 +22,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 # from flask_talisman import Talisman
 from flask_babel import Babel
 from flask_login import LoginManager
-from pyload.webui.app.helpers import pre_processor
+from pyload.webui.app.helpers import pre_processor, User
 from pyload.webui.app.blueprints import (
     api_blueprint,
     cnl_blueprint,
@@ -40,8 +40,9 @@ from pyload.webui.app.helpers import render_template
 from flask.logging import default_handler
 
 
-FLASK_ROOT_PATH = os.path.join(PKGDIR, "webui", "app")
+APP_ROOT_PATH = os.path.join(PKGDIR, "webui", "app")
 
+JINJA_TMPDIR_NAME = "jinja"
 JINJA_FILTERS = {
     "quotepath": quotepath,
     "truncate": truncate,
@@ -88,6 +89,7 @@ def setup_extensions(app):
     DebugToolbarExtension(app)
     # FlaskStaticCompress(app)
     login_manager = LoginManager(app)
+    login_manager.login_view = "app.login"
     minify(app)
     # Talisman(app)
     Themes(app, app_identifier="pyload")
@@ -95,6 +97,11 @@ def setup_extensions(app):
     @login_manager.user_loader
     def load_user(userid):
         return User(userid)
+        
+    @login_manager.unauthorized_handler
+    def unauthorized():
+        messages = ["You dont have permission to access this page."]
+        return base(messages)
 
 
 def setup_error_handlers(app):
@@ -121,7 +128,7 @@ def setup_error_handlers(app):
 
 def setup_jinja_env(app):
     userdir = app.config["PYLOAD_API"].get_userdir()
-    cache_path = os.path.join(userdir, ".tmp", "jinja")
+    cache_path = os.path.join(userdir, ".tmp", JINJA_TMPDIR_NAME)
     
     os.makedirs(cache_path, exist_ok=True)
 
@@ -136,7 +143,7 @@ def setup_api(app, api):
     
 def create_app(api, debug=False):
     """Run Flask server"""
-    app = flask.Flask(__name__.split(".")[0], root_path=FLASK_ROOT_PATH)
+    app = flask.Flask(__name__.split(".")[0], root_path=APP_ROOT_PATH)
     
     setup_api(app, api)
     setup_config(app, get_config(debug))

@@ -34,6 +34,8 @@ class DevelopmentConfig(Config):
     #: extensions
     DEBUG_TB_ENABLED = True
     CACHE_NO_NULL_WARNING = True
+    LOGIN_DISABLED = True
+    SESSION_PROTECTION = None
 
 
 class TestingConfig(DevelopmentConfig):

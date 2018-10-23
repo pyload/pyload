@@ -6,8 +6,63 @@ import flask
 import flask_themes2
 
 from pyload.core.api import PERMS, ROLE, has_permission
+from urllib.parse import urlparse, urljoin
+from flask import request, url_for
 
 
+class User(UserMixin):
+
+    def __init__(self, id):
+        self.id = id
+        
+    def is_active(self):
+        """True, as all users are active."""
+        return True
+
+    def get_id(self):
+        """Return the email address to satisfy Flask-Login's requirements."""
+        return self.email
+
+    def is_authenticated(self):
+        """Return True if the user is authenticated."""
+        return self.authenticated
+
+    def is_anonymous(self):
+        """False, as anonymous users aren't supported."""
+        return False
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+
+def is_safe_url(target):
+    ref_url = urlparse(request.host_url)
+    test_url = urlparse(urljoin(request.host_url, target))
+    return test_url.scheme in ('http', 'https') and ref_url.netloc == test_url.netloc
+
+
+def get_redirect_target():
+    for target in request.values.get('next'), request.referrer:
+        if not target:
+            continue
+        if is_safe_url(target):
+            return target
+            
+           
 def pre_processor():
     s = flask.session
     user = parse_userdata(s)
@@ -150,7 +205,7 @@ def login_required_old(perm=None):
                 if perm:
                     perms = parse_permissions(s)
                     if perm not in perms or not perms[perm]:
-                        return flask.redirect("/nopermission")
+                        return flask.redirect(flask.url_for("nopermission"))
                 return func(*args, **kwargs)
                 
             api = flask.current_app.config["PYLOAD_API"]
@@ -162,7 +217,7 @@ def login_required_old(perm=None):
                     set_session(info)
                     return func(*args, **kwargs)
             
-            return flask.redirect("/login")
+            return flask_login.login_url("app.login", flask.request.url)
 
         return _view
 

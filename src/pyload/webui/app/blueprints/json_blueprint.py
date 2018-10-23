@@ -296,6 +296,7 @@ def save_config(category):
 @bp.route(r"/add_account", methods=["POST"], endpoint="add_account")
 # @apiver_check
 @login_required_old("ACCOUNTS")
+@fresh_login_required
 def add_account():
     api = flask.current_app.config["PYLOAD_API"]
     login = flask.request.form["account_login"]
@@ -308,6 +309,7 @@ def add_account():
 @bp.route(r"/update_accounts", methods=["POST"], endpoint="update_accounts")
 # @apiver_check
 @login_required_old("ACCOUNTS")
+@fresh_login_required
 def update_accounts():
     deleted = []  #: dont update deleted accs or they will be created again
     api = flask.current_app.config["PYLOAD_API"]
@@ -336,6 +338,7 @@ def update_accounts():
 
 @bp.route(r"/change_password", methods=["POST"])
 # @apiver_check
+@fresh_login_required
 def change_password():
     api = flask.current_app.config["PYLOAD_API"]
     user = flask.request.form["user_login"]

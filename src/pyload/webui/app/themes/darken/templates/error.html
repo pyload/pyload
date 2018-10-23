@@ -57,11 +57,11 @@
 
     <img src="{{theme_static('img/head-login.png')}}" alt="User:" style="vertical-align:middle; margin:2px" /><span style="padding-right: 2px;">{{user.name}}</span>
   <ul id="user-actions">
-    <li><a href="{{theme_static('logout')}}"  class="action logout" rel="nofollow">{{_("Logout")}}</a></li>
+    <li><a href="{{ url_for('app.logout')}}"  class="action logout" rel="nofollow">{{_("Logout")}}</a></li>
     {% if user.is_admin %}
-    <li><a href="{{theme_static('admin')}}" class="action profile" rel="nofollow">{{_("Administrate")}}</a></li>
+    <li><a href="{{ url_for('app.admin')}}" class="action profile" rel="nofollow">{{_("Administrate")}}</a></li>
     {% endif %}
-        <li><a href="{{theme_static('info')}}"  class="action info" rel="nofollow">{{_("Info")}}</a></li>
+        <li><a href="{{ url_for('app.info')}}"  class="action info" rel="nofollow">{{_("Info")}}</a></li>
 
   </ul>
 {% else %}
@@ -71,7 +71,7 @@
     {% endblock %}
   </div>
 
-  <a href="/"><img id="head-logo" src="{{theme_static('img/pyload_banner.png')}}" alt="pyLoad" /></a>
+  <a href="{{ url_for('app.home')}}"><img id="head-logo" src="{{theme_static('img/pyload_banner.png')}}" alt="pyLoad" /></a>
 {% if user.is_authenticated %}
   <div id="head-menu">
     <ul>
@@ -84,21 +84,21 @@
 
     {% block menu %}
     <li>
-        <a href="/" title=""><img src="{{theme_static('img/head-menu-home.png')}}" alt="" /> {{_("Home")}}</a>
+        <a href="{{ url_for('app.home')}}" title=""><img src="{{theme_static('img/head-menu-home.png')}}" alt="" /> {{_("Home")}}</a>
     </li>
-    <li {{ selected('queue') }}>
+    <li {{ selected('app.queue') }}>
         <a href="{{ url_for('app.queue') }}" title=""><img src="{{theme_static('img/head-menu-queue.png')}}" alt="" /> {{_("Queue")}}</a>
     </li>
-    <li {{ selected('collector') }}>
+    <li {{ selected('app.collector') }}>
         <a href="{{ url_for('app.collector') }}" title=""><img src="{{theme_static('img/head-menu-collector.png')}}" alt="" /> {{_("Collector")}}</a>
     </li>
-    <li {{ selected('downloads') }}>
+    <li {{ selected('app.downloads') }}>
         <a href="{{ url_for('app.downloads') }}" title=""><img src="{{theme_static('img/head-menu-development.png')}}" alt="" /> {{_("Downloads")}}</a>
     </li>
-    <li {{ selected('logs', True) }}>
+    <li {{ selected('app.logs', True) }}>
         <a href="{{ url_for('app.logs') }}"  title=""><img src="{{theme_static('img/head-menu-index.png')}}" alt="" />{{_("Logs")}}</a>
     </li>
-    <li {{ selected('settings', True) }}>
+    <li {{ selected('app.settings', True) }}>
         <a href="{{ url_for('app.settings') }}"  title=""><img src="{{theme_static('img/head-menu-config.png')}}" alt="" />{{_("Config")}}</a>
     </li>
     {% endblock %}

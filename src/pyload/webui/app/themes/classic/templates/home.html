@@ -208,7 +208,7 @@ var LinkEntry = new Class({
 
 {% block menu %}
 <li class="selected">
-    <a href="{{'/'}}" title=""><img src="{{theme_static('img/head-menu-home.png')}}" alt="" /> {{_("Home")}}</a>
+    <a href="{{'home'}}" title=""><img src="{{theme_static('img/head-menu-home.png')}}" alt="" /> {{_("Home")}}</a>
 </li>
 <li>
     <a href="{{ url_for('app.queue') }}" title=""><img src="{{theme_static('img/head-menu-queue.png')}}" alt="" /> {{_("Queue")}}</a>

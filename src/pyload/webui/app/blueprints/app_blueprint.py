@@ -18,7 +18,7 @@ from pyload.webui.app.helpers import (clear_session, get_permission, login_requi
                                     parse_permissions, parse_userdata, permlist,
                                     render_template, set_permission, set_session,
                                     toDict)
-from pyload.webui.app.helpers import pre_processor, base
+from pyload.webui.app.helpers import pre_processor, base, get_redirect_target
 
 
 from flask_login import login_required, login_user, logout_user
@@ -38,40 +38,40 @@ def robots():
     return "User-agent: *\nDisallow: /"
 
 
-@bp.route(r"/login", methods=["GET"])
+@bp.route(r"/login", methods=["GET", "POST"])
 def login():
-    return render_template("login.html", proc=[pre_processor])
-
-
-@bp.route(r"/nopermission")
-def nopermission():
-    api = flask.current_app.config["PYLOAD_API"]
-    messages = [api._("You dont have permission to access this page.")]
-    return base(messages)
-
-
-@bp.route(r"/login", methods=["POST"])
-def login_post():
+    if request.method == 'GET':
+        return render_template("login.html", proc=[pre_processor])
+    
     user = flask.request.form.get("username")
     password = flask.request.form.get("password")
 
     api = flask.current_app.config["PYLOAD_API"]
     info = api.checkAuth(user, password)
-
+    
     if not info:
         return render_template("login.html", {"errors": True}, [pre_processor])
+        
+    user = User(info['id'])
+    login_user(user)
+    
+    flask.flash('Logged in successfully.')
+    
+    next = get_redirect_target()
+    return flask.redirect(next or flask.url_for('index'))
 
-    set_session(info)
-    return flask.redirect("/")
+    # set_session(info)
+    # return flask.redirect(flask.url_for("index"))
 
 
 @bp.route(r"/logout")
 def logout():
+    logout_user()
     clear_session()
     return render_template("logout.html", proc=[pre_processor])
 
 
-@bp.route(r"/", endpoint="home")
+@bp.route(r"/", endpoint="index")
 @bp.route(r"/home", endpoint="home")
 @login_required_old("LIST")
 def home():
@@ -80,7 +80,7 @@ def home():
         res = [toDict(x) for x in api.statusDownloads()]
     except Exception:
         clear_session()
-        return flask.redirect("/login")
+        return flask_login.login_url("app.login", flask.request.url)
 
     for link in res:
         if link["status"] == 12:
@@ -124,7 +124,7 @@ def downloads():
     root = api.getConfigValue("general", "download_folder")
 
     if not os.path.isdir(root):
-        messages = [api._("Download directory not found.")]
+        messages = ["Download directory not found."]
         return base(messages)
     data = {"folder": [], "files": []}
 
@@ -177,16 +177,16 @@ def settings():
 
     for data in api.getAccounts(False):
         if data.trafficleft == -1:
-            trafficleft = api._("unlimited")
+            trafficleft = "unlimited"
         elif not data.trafficleft:
-            trafficleft = api._("not available")
+            trafficleft = "not available"
         else:
             trafficleft = formatSize(data.trafficleft << 10)
 
         if data.validuntil == -1:
-            validuntil = api._("unlimited")
+            validuntil = "unlimited"
         elif not data.validuntil:
-            validuntil = api._("not available")
+            validuntil = "not available"
         else:
             t = time.localtime(data.validuntil)
             validuntil = time.strftime("%Y-%m-%d %H:%M:%S", t)
@@ -481,8 +481,7 @@ def admin():
 
 @bp.route(r"/setup")
 def setup():
-    api = flask.current_app.config["PYLOAD_API"]
-    messages = [api._("Run pyLoad -s to access the setup.")]
+    messages = ["Run pyLoad -s to access the setup."]
     return base(messages)
 
 

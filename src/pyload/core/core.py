@@ -101,7 +101,8 @@ class Core(object):
         self.api = Api(self)
 
     def _init_database(self, restore):
-        newdb = True  # TODO: implement
+        db_path = os.path.join(self.userdir, DatabaseThread.DB_FILENAME)
+        newdb = not os.path.isfile(db_path)
         
         self.db = DatabaseThread(self)
         self.db.setup()

@@ -93,13 +93,20 @@ class DatabaseJob(object):
 
 
 class DatabaseThread(Thread):
+
     subs = []
+    
+    DB_FILENAME = 'pyload.db'
+    VERSION_FILENAME = 'db.version'
 
     def __init__(self, core):
         super().__init__()
         self.daemon = True
         self.pyload = core
         self._ = core._
+        
+        self.db_path = os.path.join(core.userdir, self.DB_FILENAME)
+        self.version_path = os.path.join(core.userdir, self.VERSION_FILENAME)
 
         self.jobs = Queue()
 
@@ -117,8 +124,9 @@ class DatabaseThread(Thread):
         """
         convert = self._checkVersion()  #: returns None or current version
 
-        self.conn = sqlite3.connect("files.db", isolation_level=None)
-        os.chmod("files.db", 0o600)
+        
+        self.conn = sqlite3.connect(self.db_path, isolation_level=None)
+        os.chmod(self.db_path, 0o600)
 
         self.c = self.conn.cursor()  #: compatibility
 
@@ -149,12 +157,12 @@ class DatabaseThread(Thread):
         """
         check db version and delete it if needed.
         """
-        if not os.path.exists("files.version"):
-            with open("files.version", mode="w") as f:
+        if not os.path.exists(self.version_path):
+            with open(self.version_path, mode="w") as f:
                 f.write(str(__version__))
             return
 
-        with open("files.version") as f:
+        with open(self.version_path) as f:
             v = int(f.read().strip())
 
         if v < __version__:
@@ -165,9 +173,9 @@ class DatabaseThread(Thread):
                     )
                 except Exception:
                     print("Filedatabase was deleted due to incompatible version.")
-                os.remove("files.version")
-                shutil.move("files.db", "files.backup.db")
-            with open("files.version", mode="w") as f:
+                os.remove(self.version_path)
+                shutil.move(self.db_path, "files.backup.db")
+            with open(self.version_path, mode="w") as f:
                 f.write(str(__version__))
             return v
 

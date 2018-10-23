@@ -78,30 +78,30 @@
 
         {% block menu %}
          {% if user.is_authenticated %}
-          <li ondragstart="return false;" {{selected('home')}}>
-              <a href="{{theme_static('home/')}}" title=""><span class="glyphicon glyphicon-home"></span><span class="hidden-sm"> {{_('Home')}}</span></a>
+          <li ondragstart="return false;" {{selected('app.home')}}>
+              <a href="{{ url_for('app.home')}}" title=""><span class="glyphicon glyphicon-home"></span><span class="hidden-sm"> {{_('Home')}}</span></a>
           </li>
-          <li ondragstart="return false;" {{selected('queue')}}>
+          <li ondragstart="return false;" {{selected('app.queue')}}>
               <a href="{{ url_for('app.queue') }}" title=""><span class="glyphicon glyphicon-tasks"></span><span class="hidden-sm"> {{_('Queue')}}</span></a>
           </li>
-          <li ondragstart="return false;" {{selected('collector')}}>
+          <li ondragstart="return false;" {{selected('app.collector')}}>
               <a href="{{ url_for('app.collector') }}" title=""><span class="glyphicon glyphicon-magnet"></span><span class="hidden-sm"> {{_('Collector')}}</span></a>
           </li>
-          <li ondragstart="return false;" {{selected('downloads')}}>
+          <li ondragstart="return false;" {{selected('app.downloads')}}>
               <a href="{{ url_for('app.downloads') }}" title=""> <span class="glyphicon glyphicon-download"></span><span class="hidden-sm"> {{_('Downloads')}}</span></a>
           </li>
-    {#  <li ondragstart="return false;" {{selected('filemanager')}}>#}
+    {#  <li ondragstart="return false;" {{selected('app.filemanager')}}>#}
     {#      <a href="{{ url_for('app.filemanager') }}" title=""><span class="glyphicon glyphicon-magnet"></span><span class="hidden-sm"> {{_('FileManager')}}</span></a>#}
     {#  </li>#}
-          <li ondragstart="return false;" {{selected('logs')}}>
+          <li ondragstart="return false;" {{selected('app.logs')}}>
               <a href="{{ url_for('app.logs') }}" title=""><span class="glyphicon glyphicon-list"></span><span class="hidden-sm"> {{_('Logs')}}</span></a>
           </li>
         {% if user.is_admin %}
-          <li ondragstart="return false;" {{selected('admin')}}>
+          <li ondragstart="return false;" {{selected('app.admin')}}>
               <a href="{{ url_for('app.admin') }}" title=""><span class="glyphicon glyphicon-cog"></span><span class="hidden-sm">  {{_('Administration')}}</span></a>
           </li>
         {% endif %}
-          <li ondragstart="return false;" {{selected('settings', True)}}>
+          <li ondragstart="return false;" {{selected('app.settings', True)}}>
               <a href="{{ url_for('app.settings') }}"  title=""><span class="glyphicon glyphicon-wrench"></span><span class="hidden-sm"> {{_('Config')}}</span></a>
           </li>
          {% endif %}
@@ -111,8 +111,8 @@
         {% if user.is_authenticated %}
           <ul class="nav navbar-nav navbar-right">
             <li><span class="navbar-text"><span class="glyphicon glyphicon-user"></span><span class="hidden-sm hidden-md"> {{user.name}}</span></span></li>
-            <li><a href="{{theme_static('logout')}}"  class="action logout" rel="nofollow"><span class="glyphicon glyphicon-log-out"></span><span class="hidden-sm hidden-md">  {{_('Logout')}}</span></a></li>
-            <li><a href="{{theme_static('info')}}"  class="action info" rel="nofollow"><span class="glyphicon glyphicon-info-sign"></span><span class="hidden-sm hidden-md">  {{_('Info')}}</span></a></li>
+            <li><a href="{{ url_for('app.logout')}}"  class="action logout" rel="nofollow"><span class="glyphicon glyphicon-log-out"></span><span class="hidden-sm hidden-md">  {{_('Logout')}}</span></a></li>
+            <li><a href="{{ url_for('app.info')}}"  class="action info" rel="nofollow"><span class="glyphicon glyphicon-info-sign"></span><span class="hidden-sm hidden-md">  {{_('Info')}}</span></a></li>
           </ul>
         {% endif %}
       </div><!-- /.navbar-collapse -->

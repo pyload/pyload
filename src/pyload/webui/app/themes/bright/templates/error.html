@@ -77,7 +77,7 @@
               <a class="navbar-brand" href="#"><img id="head-logo" src="{{theme_static('img/pyload_logo.png')}}" alt="pyLoad" style="height:30px;"/></a>
             </div>
 
-    <a href="/"></a>
+    <a href="{{ url_for('app.home')}}"></a>
 
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
               <ul class="nav navbar-nav">
@@ -90,24 +90,24 @@
 
         {% block menu %}
         <li>
-            <a href="/" title=""><span class="glyphicon glyphicon-home"></span> {{_("Home")}}</a>
+            <a href="{{ url_for('app.home')}}" title=""><span class="glyphicon glyphicon-home"></span> {{_("Home")}}</a>
         </li>
-        <li {{ selected('queue') }}>
+        <li {{ selected('app.queue') }}>
             <a href="{{ url_for('app.queue') }}" title=""><span class="glyphicon glyphicon-tasks"></span> {{_("Queue")}}</a>
         </li>
-        <li {{ selected('collector') }}>
+        <li {{ selected('app.collector') }}>
             <a href="{{ url_for('app.collector') }}" title=""><span class="glyphicon glyphicon-magnet"></span>  {{_("Collector")}}</a>
         </li>
-        <li {{ selected('downloads') }}>
+        <li {{ selected('app.downloads') }}>
             <a href="{{ url_for('app.downloads') }}" title=""> <span class="glyphicon glyphicon-download"></span> {{_("Downloads")}}</a>
         </li>
-{#        <li {{ selected('filemanager') }}>#}
+{#        <li {{ selected('app.filemanager') }}>#}
 {#            <a href="{{ url_for('app.filemanager') }}" title=""><span class="glyphicon glyphicon-magnet"></span>  {{_("FileManager")}}</a>#}
 {#        </li>#}
-        <li {{ selected('logs', True) }}>
+        <li {{ selected('app.logs', True) }}>
             <a href="{{ url_for('app.logs') }}"  class="action index" accesskey="x" rel="nofollow"><span class="glyphicon glyphicon-list"></span> {{_("Logs")}}</a>
         </li>
-        <li {{ selected('settings', True) }}>
+        <li {{ selected('app.settings', True) }}>
             <a href="{{ url_for('app.settings') }}"  class="action index" accesskey="x" rel="nofollow"><span class="glyphicon glyphicon-wrench"></span> {{_("Config")}}</a>
         </li>
         {% endblock %}
@@ -115,11 +115,11 @@
 
                       </ul>
                     <ul class="nav navbar-nav navbar-right">
-                      <li><a href="{{theme_static('info')}}"  class="action info" rel="nofollow"><span class="glyphicon glyphicon-user"></span> {{user.name}}</a></li>
+                      <li><a href="{{ url_for('app.info')}}"  class="action info" rel="nofollow"><span class="glyphicon glyphicon-user"></span> {{user.name}}</a></li>
                      {% if user.is_admin %}
-                     <li><a href="{{theme_static('admin')}}" class="action profile" rel="nofollow"><span class="glyphicon glyphicon-cog"></span></a></li>
+                     <li><a href="{{ url_for('app.admin')}}" class="action profile" rel="nofollow"><span class="glyphicon glyphicon-cog"></span></a></li>
                      {% endif %}
-                      <li><a href="{{theme_static('info')}}"  class="action info" rel="nofollow"><span class="glyphicon glyphicon-info-sign"></span></a></li>
+                      <li><a href="{{ url_for('app.info')}}"  class="action info" rel="nofollow"><span class="glyphicon glyphicon-info-sign"></span></a></li>
 
                     </ul>
                   </div><!-- /.navbar-collapse -->
