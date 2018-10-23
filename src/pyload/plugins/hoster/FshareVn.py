@@ -3,7 +3,7 @@ import json
 import urllib.parse
 from builtins import _
 
-from pyload.plugins.internal.simplehoster import SimpleHoster
+from ..internal.simplehoster import SimpleHoster
 
 
 def double_decode(m):

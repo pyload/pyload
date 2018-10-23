@@ -10,7 +10,7 @@ import urllib.request
 from builtins import _, range, str
 
 from Pillow import Image, ImageDraw, ImageFont
-from pyload.plugins.internal.captcha_service import CaptchaService
+from ..internal.captcha_service import CaptchaService
 
 
 class ReCaptcha(CaptchaService):
@@ -453,7 +453,7 @@ if __name__ == "__main__":
     # Sign with the command `python -m pyload.plugins.captcha.ReCaptcha
     # pyload.private.pem pem_passphrase`
     import sys
-    from pyload.plugins.utils import sign_string
+    from ..utils import sign_string
 
     if len(sys.argv) > 2:
         with open(sys.argv[1]) as f:

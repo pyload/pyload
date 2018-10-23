@@ -2,7 +2,7 @@
 
 import re
 
-from pyload.plugins.internal.xfshoster import XFSHoster
+from ..internal.xfshoster import XFSHoster
 
 
 class UploadrocketNet(XFSHoster):

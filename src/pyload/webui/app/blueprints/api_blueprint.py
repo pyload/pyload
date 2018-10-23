@@ -10,7 +10,7 @@ import flask
 from flask.json import jsonify
 
 from pyload.core.api import BaseObject
-from pyload.webui.app.helpers import clear_session, set_session, toDict
+from .helpers import clear_session, set_session, toDict
 
 bp = flask.Blueprint("api", __name__, url_prefix="/api")
 

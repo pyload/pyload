@@ -3,7 +3,7 @@
 import re
 from builtins import str
 
-from pyload.plugins.internal.xfscrypter import XFSCrypter
+from ..internal.xfscrypter import XFSCrypter
 
 
 class XFileSharingFolder(XFSCrypter):

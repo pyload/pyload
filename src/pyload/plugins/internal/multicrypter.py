@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from pyload.plugins.internal.simplecrypter import SimpleCrypter
+from .simplecrypter import SimpleCrypter
 
 
 class MultiCrypter(SimpleCrypter):

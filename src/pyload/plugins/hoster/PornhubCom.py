@@ -8,8 +8,8 @@ import js2py
 
 from pyload.core.network.cookie_jar import CookieJar
 from pyload.core.network.http_request import HTTPRequest
-from pyload.plugins.internal.plugin import Abort
-from pyload.plugins.internal.simplehoster import SimpleHoster
+from ..internal.plugin import Abort
+from ..internal.simplehoster import SimpleHoster
 
 
 class BIGHTTPRequest(HTTPRequest):

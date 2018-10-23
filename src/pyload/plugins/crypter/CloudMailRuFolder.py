@@ -7,7 +7,7 @@ import urllib.parse
 import urllib.request
 from builtins import _
 
-from pyload.plugins.internal.crypter import Crypter
+from ..internal.crypter import Crypter
 
 
 class CloudMailRuFolder(Crypter):

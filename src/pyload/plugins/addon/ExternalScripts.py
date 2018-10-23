@@ -4,8 +4,8 @@ import os
 import subprocess
 from builtins import HOMEDIR, _, map
 
-from pyload.plugins.internal.addon import Addon
-from pyload.plugins.utils import Expose, encode
+from ..internal.addon import Addon
+from ..utils import Expose, encode
 
 
 class ExternalScripts(Addon):

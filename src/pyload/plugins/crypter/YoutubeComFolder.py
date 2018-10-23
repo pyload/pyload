@@ -6,7 +6,7 @@ import re
 import urllib.parse
 from builtins import _, map
 
-from pyload.plugins.internal.crypter import Crypter
+from ..internal.crypter import Crypter
 
 
 class YoutubeComFolder(Crypter):

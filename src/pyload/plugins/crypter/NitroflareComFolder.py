@@ -2,7 +2,7 @@
 
 import json
 
-from pyload.plugins.internal.simplecrypter import SimpleCrypter
+from ..internal.simplecrypter import SimpleCrypter
 
 
 class NitroflareComFolder(SimpleCrypter):

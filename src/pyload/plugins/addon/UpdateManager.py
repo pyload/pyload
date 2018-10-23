@@ -7,8 +7,8 @@ import sys
 import time
 from builtins import HOMEDIR, PKGDIR, _, zip
 
-from pyload.plugins.internal.addon import Addon
-from pyload.plugins.utils import Expose, encode, exists, threaded
+from ..internal.addon import Addon
+from ..utils import Expose, encode, exists, threaded
 
 
 class UpdateManager(Addon):

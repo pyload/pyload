@@ -3,8 +3,8 @@ import json
 import re
 from builtins import _
 
-from pyload.plugins.captcha.ReCaptcha import ReCaptcha
-from pyload.plugins.internal.hoster import Hoster
+from ..captcha.ReCaptcha import ReCaptcha
+from ..internal.hoster import Hoster
 
 #
 # Test links:

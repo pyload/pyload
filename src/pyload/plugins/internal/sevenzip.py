@@ -5,9 +5,9 @@ import re
 import subprocess
 from builtins import PKGDIR, _, filter, map
 
-from pyload.plugins.internal.extractor import (ArchiveError, CRCError, Extractor,
+from .extractor import (ArchiveError, CRCError, Extractor,
                                                PasswordError)
-from pyload.plugins.utils import encode, renice
+from ..utils import encode, renice
 
 
 class SevenZip(Extractor):

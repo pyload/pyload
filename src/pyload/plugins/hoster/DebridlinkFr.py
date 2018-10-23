@@ -6,7 +6,7 @@ import time
 from builtins import str
 
 import pycurl
-from pyload.plugins.internal.multihoster import MultiHoster
+from ..internal.multihoster import MultiHoster
 
 
 def args(**kwargs):

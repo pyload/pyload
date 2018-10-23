@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from pyload.plugins.internal.simplehoster import SimpleHoster
+from ..internal.simplehoster import SimpleHoster
 
 
 class TwoSharedCom(SimpleHoster):

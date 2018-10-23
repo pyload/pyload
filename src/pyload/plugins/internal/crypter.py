@@ -2,8 +2,8 @@
 
 from builtins import _, map
 
-from pyload.plugins.internal.base import Base
-from pyload.plugins.utils import parse_name, safename
+from .base import Base
+from ..utils import parse_name, safename
 
 
 class Crypter(Base):

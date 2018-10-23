@@ -2,8 +2,8 @@
 
 import threading
 
-from pyload.plugins.internal.plugin import Plugin
-from pyload.plugins.utils import Periodical, isiterable
+from .plugin import Plugin
+from ..utils import Periodical, isiterable
 
 
 class Addon(Plugin):

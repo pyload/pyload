@@ -2,8 +2,8 @@
 import time
 from builtins import _
 
-from pyload.plugins.internal.addon import Addon
-from pyload.plugins.utils import Expose, encode, isiterable
+from .addon import Addon
+from ..utils import Expose, encode, isiterable
 
 
 class Notifier(Addon):

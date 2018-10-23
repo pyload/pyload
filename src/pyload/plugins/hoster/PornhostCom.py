@@ -2,7 +2,7 @@
 
 import re
 
-from pyload.plugins.internal.hoster import Hoster
+from ..internal.hoster import Hoster
 
 
 class PornhostCom(Hoster):

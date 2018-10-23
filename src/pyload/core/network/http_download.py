@@ -8,10 +8,10 @@ from builtins import _, object, range, str
 from logging import getLogger
 
 import pycurl
-from pyload.core.network.http_chunk import ChunkInfo, HTTPChunk
-from pyload.core.network.http_request import BadHeader
+from .http_chunk import ChunkInfo, HTTPChunk
+from .http_request import BadHeader
 from pyload.plugins.plugin import Abort
-from pyload.core.utils.utils import fs_encode
+from ..utils.utils import fs_encode
 
 
 class HTTPDownload(object):

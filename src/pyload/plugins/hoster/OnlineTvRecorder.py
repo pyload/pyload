@@ -2,7 +2,7 @@
 from builtins import _
 
 from pyload.core.network.http_request import BadHeader
-from pyload.plugins.hoster.Http import Http
+from .Http import Http
 
 # Support onlinetvrecorder.com
 

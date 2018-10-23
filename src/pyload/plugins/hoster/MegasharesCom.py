@@ -4,7 +4,7 @@ import re
 import time
 from builtins import _, str
 
-from pyload.plugins.internal.simplehoster import SimpleHoster
+from ..internal.simplehoster import SimpleHoster
 
 
 class MegasharesCom(SimpleHoster):

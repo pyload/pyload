@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from builtins import _
 
-from pyload.plugins.internal.crypter import Crypter
+from .crypter import Crypter
 
 
 class DeadCrypter(Crypter):

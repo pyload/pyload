@@ -2,7 +2,7 @@
 
 import re
 
-from pyload.plugins.internal.account import Account
+from ..internal.account import Account
 
 
 class DatoidCz(Account):

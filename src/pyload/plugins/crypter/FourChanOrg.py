@@ -7,7 +7,7 @@
 import re
 import urllib.parse
 
-from pyload.plugins.internal.crypter import Crypter
+from ..internal.crypter import Crypter
 
 
 class FourChanOrg(Crypter):

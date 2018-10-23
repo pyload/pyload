@@ -2,8 +2,8 @@
 # @author: RaNaN
 from builtins import _
 
-from pyload.cli.handler import Handler
-from pyload.cli.printer import *
+from .handler import Handler
+from .printer import *
 
 
 class AddPackage(Handler):

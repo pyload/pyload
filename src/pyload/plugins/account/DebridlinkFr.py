@@ -6,7 +6,7 @@ import time
 from builtins import _, str
 
 import pycurl
-from pyload.plugins.internal.multiaccount import MultiAccount
+from ..internal.multiaccount import MultiAccount
 
 
 def args(**kwargs):

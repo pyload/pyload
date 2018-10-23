@@ -6,7 +6,7 @@
 
 import re
 
-from pyload.plugins.internal.simplehoster import SimpleHoster
+from ..internal.simplehoster import SimpleHoster
 
 
 class VkCom(SimpleHoster):

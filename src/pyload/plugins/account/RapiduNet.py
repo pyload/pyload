@@ -4,7 +4,7 @@ import json
 import re
 import time
 
-from pyload.plugins.internal.account import Account
+from ..internal.account import Account
 
 
 class RapiduNet(Account):

@@ -4,8 +4,8 @@ import json
 import re
 from builtins import _, map, str
 
-from pyload.plugins.internal.simplecrypter import SimpleCrypter
-from pyload.plugins.utils import uniqify
+from ..internal.simplecrypter import SimpleCrypter
+from ..utils import uniqify
 
 
 class ImgurCom(SimpleCrypter):

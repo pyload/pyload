@@ -3,8 +3,8 @@
 import re
 from builtins import _, range
 
-from pyload.plugins.internal.multihoster import MultiHoster
-from pyload.plugins.utils import seconds_to_midnight
+from ..internal.multihoster import MultiHoster
+from ..utils import seconds_to_midnight
 
 
 class SimplyPremiumCom(MultiHoster):

@@ -9,7 +9,7 @@ import pyxmpp2.interfaces
 import pyxmpp2.streamtls
 import pyxmpp2.client
 
-from pyload.plugins.addon.IRC import IRC
+from .IRC import IRC
 
 
 class XMPP(IRC, pyxmpp2.client.Client):

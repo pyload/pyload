@@ -13,13 +13,13 @@ from builtins import _
 
 from thrift.server import TServer
 
-from pyload.core.remote.remote_manager import BackendBase
-from pyload.core.remote.thriftbackend.processor import Processor
-from pyload.core.remote.thriftbackend.protocol import ProtocolFactory
-from pyload.core.remote.thriftbackend.socket import ServerSocket
-from pyload.core.remote.thriftbackend.transport import TransportFactory
+from .remote.remote_manager import BackendBase
+from .processor import Processor
+from .protocol import ProtocolFactory
+from .socket import ServerSocket
+from .transport import TransportFactory
 
-# from pyload.core.remote.thriftbackend.transport import TransportFactoryCompressed
+# from .transport import TransportFactoryCompressed
 
 
 class ThriftBackend(BackendBase):

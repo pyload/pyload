@@ -3,7 +3,7 @@ import re
 import xml.etree.ElementTree as etree
 from builtins import _
 
-from pyload.plugins.internal.hoster import Hoster
+from ..internal.hoster import Hoster
 
 
 # Based on zdfm by Roland Beermann (http://github.com/enkore/zdfm/)

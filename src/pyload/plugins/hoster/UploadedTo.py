@@ -6,8 +6,8 @@ import time
 from builtins import _, range
 
 from pyload.core.network.request_factory import getURL as get_url
-from pyload.plugins.captcha.ReCaptcha import ReCaptcha
-from pyload.plugins.internal.simplehoster import SimpleHoster
+from ..captcha.ReCaptcha import ReCaptcha
+from ..internal.simplehoster import SimpleHoster
 
 
 class UploadedTo(SimpleHoster):

@@ -8,5 +8,5 @@
 #          \  /
 #           \/
 
-from pyload.core.core import Core
-from pyload.core.run import run, start, stop, restart
+from .core import Core
+from .run import run, start, stop, restart

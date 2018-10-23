@@ -3,7 +3,7 @@ import re
 import urllib.parse
 from builtins import _
 
-from pyload.plugins.internal.crypter import Crypter
+from ..internal.crypter import Crypter
 
 
 class LixIn(Crypter):

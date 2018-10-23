@@ -2,8 +2,8 @@
 import re
 from builtins import _
 
-from pyload.plugins.captcha.SolveMedia import SolveMedia
-from pyload.plugins.internal.simplehoster import SimpleHoster
+from ..captcha.SolveMedia import SolveMedia
+from ..internal.simplehoster import SimpleHoster
 
 
 class KingfilesNet(SimpleHoster):

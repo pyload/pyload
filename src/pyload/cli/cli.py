@@ -15,9 +15,9 @@ from easy_getch import getch
 
 import pyload.core.utils.pylgettext as gettext
 from pyload.core.api import Destination
-from pyload.cli.addpackage import AddPackage
-from pyload.cli.managefiles import ManageFiles
-from pyload.cli.printer import *
+from .addpackage import AddPackage
+from .managefiles import ManageFiles
+from .printer import *
 from pyload.core.remote.thriftbackend.thrift_client import (ConnectionClosed, NoConnection,
                                                        NoSSL, ThriftClient, WrongLogin)
 from pyload.core.utils.utils import decode, formatSize

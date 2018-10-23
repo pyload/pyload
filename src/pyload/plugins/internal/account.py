@@ -4,8 +4,8 @@ import threading
 import time
 from builtins import _
 
-from pyload.plugins.internal.plugin import Plugin, Skip
-from pyload.plugins.utils import (Periodical, compare_time, decode, isiterable, lock,
+from .plugin import Plugin, Skip
+from ..utils import (Periodical, compare_time, decode, isiterable, lock,
                                   parse_size)
 
 

@@ -4,7 +4,7 @@ from builtins import _
 
 import js2py
 
-from pyload.plugins.internal.simplehoster import SimpleHoster
+from ..internal.simplehoster import SimpleHoster
 
 
 class SmuleCom(SimpleHoster):

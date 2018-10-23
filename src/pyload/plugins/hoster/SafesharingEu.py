@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from pyload.plugins.internal.xfshoster import XFSHoster
+from ..internal.xfshoster import XFSHoster
 
 
 class SafesharingEu(XFSHoster):

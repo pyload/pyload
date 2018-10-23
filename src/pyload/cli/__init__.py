@@ -8,5 +8,5 @@
 #          \  /
 #           \/
 
-from pyload.cli.cli import Cli
-from pyload.cli.run import run
+from .cli import Cli
+from .run import run

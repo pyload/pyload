@@ -8,10 +8,10 @@ from builtins import _, filter, zip
 import js2py
 from cryptography.fernet import Fernet
 
-from pyload.plugins.captcha.SolveMedia import SolveMedia
-from pyload.plugins.internal.captcha import Captcha
-from pyload.plugins.internal.crypter import Crypter
-from pyload.plugins.utils import replace_patterns
+from ..captcha.SolveMedia import SolveMedia
+from ..internal.captcha import Captcha
+from ..internal.crypter import Crypter
+from ..utils import replace_patterns
 
 
 class RelinkUs(Crypter):

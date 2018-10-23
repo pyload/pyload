@@ -2,7 +2,7 @@
 import re
 from builtins import _
 
-from pyload.plugins.internal.addon import Addon
+from ..internal.addon import Addon
 
 
 class JustPremium(Addon):

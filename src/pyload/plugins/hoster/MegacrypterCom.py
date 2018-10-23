@@ -3,7 +3,7 @@
 import json
 import re
 
-from pyload.plugins.hoster.MegaCoNz import MegaCoNz, MegaCrypto
+from .MegaCoNz import MegaCoNz, MegaCrypto
 
 
 class MegacrypterCom(MegaCoNz):

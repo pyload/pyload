@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import pycurl
-from pyload.plugins.internal.crypter import Crypter
+from ..internal.crypter import Crypter
 
 
 class ShSt(Crypter):

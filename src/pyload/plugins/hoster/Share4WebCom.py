@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from pyload.plugins.hoster.UnibytesCom import UnibytesCom
+from .UnibytesCom import UnibytesCom
 
 
 class Share4WebCom(UnibytesCom):

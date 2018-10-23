@@ -4,7 +4,7 @@ import json
 import re
 import urllib.parse
 
-from pyload.plugins.internal.simplecrypter import SimpleCrypter
+from ..internal.simplecrypter import SimpleCrypter
 
 
 class Go4UpCom(SimpleCrypter):

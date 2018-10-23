@@ -13,17 +13,17 @@ from contextlib import closing
 from future import standard_library
 from pkg_resources import resource_filename
 
-from pyload import __version__ as PYLOAD_VERSION
-from pyload import __version_info__ as PYLOAD_VERSION_INFO
+from . import __version__ as PYLOAD_VERSION
+from . import __version_info__ as PYLOAD_VERSION_INFO
 from builtins import PKGDIR
 
-from pyload.config import ConfigParser
-from pyload.core.log import LoggerFactory
-from pyload.core.network.factory import RequestFactory
-from pyload.utils import format
-from pyload.utils.fs import availspace, fullpath, makedirs
-from pyload.utils.layer.safethreading import Event
-from pyload.utils.system import (ionice, renice, set_process_group,
+from .config.config_parser import ConfigParser
+from .log_factory import LoggerFactory
+from ..network.request_factory import RequestFactory
+from .utils.utils import format
+from .utils.utils.fs import availspace, fullpath, makedirs
+from .utils.utils.layer.safethreading import Event
+from .utils.utils.system import (ionice, renice, set_process_group,
                                  set_process_user)
 
 
@@ -97,7 +97,7 @@ class Core(object):
         atexit.register(self.terminate)
 
     def _init_api(self):
-        from pyload.api import Api
+        from .api import Api
         self.api = Api(self)
 
     def _init_database(self, restore):

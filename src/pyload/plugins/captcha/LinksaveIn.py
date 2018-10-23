@@ -5,7 +5,7 @@ import os
 from builtins import range
 
 from Pillow import Image
-from pyload.plugins.internal.ocr import OCR
+from ..internal.ocr import OCR
 
 
 class LinksaveIn(OCR):

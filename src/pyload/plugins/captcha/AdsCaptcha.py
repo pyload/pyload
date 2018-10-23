@@ -3,7 +3,7 @@ import random
 import re
 from builtins import _
 
-from pyload.plugins.internal.captcha_service import CaptchaService
+from ..internal.captcha_service import CaptchaService
 
 
 class AdsCaptcha(CaptchaService):

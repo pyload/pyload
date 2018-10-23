@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
-from pyload.plugins.internal.XFSHoster import XFSHoster
+from ..internal.XFSHoster import XFSHoster
 
 
 class SuprafilesMe(XFSHoster):

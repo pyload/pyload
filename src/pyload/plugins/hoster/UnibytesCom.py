@@ -4,7 +4,7 @@ import re
 import urllib.parse
 from builtins import range
 
-from pyload.plugins.internal.simplehoster import SimpleHoster
+from ..internal.simplehoster import SimpleHoster
 
 
 class UnibytesCom(SimpleHoster):

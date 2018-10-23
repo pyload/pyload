@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from pyload.plugins.internal.multihoster import MultiHoster
-from pyload.plugins.utils import encode
+from ..internal.multihoster import MultiHoster
+from ..utils import encode
 
 
 class PremiumTo(MultiHoster):

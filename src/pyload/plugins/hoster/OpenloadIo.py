@@ -4,7 +4,7 @@ import json
 import re
 
 from pyload.core.network.request_factory import getURL as get_url
-from pyload.plugins.internal.simplehoster import SimpleHoster
+from ..internal.simplehoster import SimpleHoster
 
 
 class OpenloadIo(SimpleHoster):

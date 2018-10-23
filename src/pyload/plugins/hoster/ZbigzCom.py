@@ -7,7 +7,7 @@ import time
 import urllib.parse
 from builtins import _, range
 
-from pyload.plugins.internal.hoster import Hoster
+from ..internal.hoster import Hoster
 
 
 class ZbigzCom(Hoster):

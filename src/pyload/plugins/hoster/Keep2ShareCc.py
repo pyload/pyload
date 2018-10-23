@@ -6,7 +6,7 @@ from builtins import _, range
 
 from pyload.core.network.http_request import BadHeader
 from pyload.core.network.request_factory import getURL as get_url
-from pyload.plugins.internal.simplehoster import SimpleHoster
+from ..internal.simplehoster import SimpleHoster
 
 
 class Keep2ShareCc(SimpleHoster):

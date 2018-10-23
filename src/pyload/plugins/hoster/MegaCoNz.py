@@ -12,8 +12,8 @@ import Cryptodome.Cipher.AES
 import Cryptodome.Util.Counter
 
 from pyload.core.network.http_request import BadHeader
-from pyload.plugins.internal.hoster import Hoster
-from pyload.plugins.utils import decode, encode, exists
+from ..internal.hoster import Hoster
+from ..utils import decode, encode, exists
 
 ############################ General errors ###################################
 # EINTERNAL            (-1): An internal error has occurred. Please submit a bug report, detailing the exact circumstances in which this error occurred

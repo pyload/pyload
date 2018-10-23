@@ -24,18 +24,18 @@ import pyload.core.utils.pylgettext as gettext
 from pyload import __version__ as PYLOAD_VERSION
 from pyload import __version_info__ as PYLOAD_VERSION_INFO
 from pyload import exc_logger
-from pyload.core.config.config_parser import ConfigParser
-from pyload.core.database import DatabaseThread
-from pyload.core.database.file_database import FileHandler
-from pyload.core.log_factory import LogFactory
-from pyload.core.manager.account_manager import AccountManager
-from pyload.core.manager.captcha_manager import CaptchaManager
-from pyload.core.manager.event_manager import EventManager
-from pyload.core.manager.plugin_manager import PluginManager
-from pyload.core.network.request_factory import RequestFactory
-from pyload.core.remote.remote_manager import RemoteManager
-from pyload.core.scheduler import Scheduler
-from pyload.core.utils.utils import formatSize, freeSpace
+from .config.config_parser import ConfigParser
+from .database import DatabaseThread
+from .database.file_database import FileHandler
+from .log_factory import LogFactory
+from .manager.account_manager import AccountManager
+from .manager.captcha_manager import CaptchaManager
+from .manager.event_manager import EventManager
+from .manager.plugin_manager import PluginManager
+from .network.request_factory import RequestFactory
+from .remote.remote_manager import RemoteManager
+from .scheduler import Scheduler
+from .utils.utils import formatSize, freeSpace
 from pyload.webui.server_thread import WebServer
 
 # TODO: List
@@ -339,9 +339,9 @@ class Core(object):
 
         # later imported because they would trigger api import, and remote value
         # not set correctly
-        from pyload.core.api import Api
-        from pyload.core.manager.addon_manager import AddonManager
-        from pyload.core.manager.thread_manager import ThreadManager
+        from .api import Api
+        from .manager.addon_manager import AddonManager
+        from .manager.thread_manager import ThreadManager
 
         self.api = Api(self)
 

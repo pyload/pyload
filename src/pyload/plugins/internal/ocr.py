@@ -5,8 +5,8 @@ import subprocess
 from builtins import HOMEDIR, PKGDIR, _, map, range, str
 
 from Pillow import Image
-from pyload.plugins.internal.plugin import Plugin
-from pyload.plugins.utils import encode
+from .plugin import Plugin
+from ..utils import encode
 
 # import tempfile
 

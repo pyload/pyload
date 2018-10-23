@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from pyload.plugins.internal.xfsaccount import XFSAccount
+from ..internal.xfsaccount import XFSAccount
 
 
 class CloudsixMe(XFSAccount):

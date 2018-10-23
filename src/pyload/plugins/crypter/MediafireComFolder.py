@@ -2,7 +2,7 @@
 
 import json
 
-from pyload.plugins.internal.crypter import Crypter
+from ..internal.crypter import Crypter
 
 
 class MediafireComFolder(Crypter):

@@ -7,9 +7,9 @@ from builtins import HOMEDIR, _, object
 import pycurl
 from pyload.core.network.request_factory import getRequest as get_request
 # TODO: Remove in 0.6.x
-from pyload.plugins.plugin import Abort, Fail, Reconnect, Retry
-from pyload.plugins.plugin import SkipDownload as Skip
-from pyload.plugins.utils import (DB, Config, decode, encode, exists, fixurl,
+from ..plugin import Abort, Fail, Reconnect, Retry
+from ..plugin import SkipDownload as Skip
+from ..utils import (DB, Config, decode, encode, exists, fixurl,
                                   format_exc, html_unescape, parse_html_header, remove,
                                   set_cookies)
 

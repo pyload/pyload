@@ -2,9 +2,9 @@
 import re
 from builtins import _
 
-from pyload.plugins.captcha.ReCaptcha import ReCaptcha
-from pyload.plugins.internal.hoster import Hoster
-from pyload.plugins.utils import seconds_to_midnight
+from ..captcha.ReCaptcha import ReCaptcha
+from ..internal.hoster import Hoster
+from ..utils import seconds_to_midnight
 
 
 class FreakshareCom(Hoster):

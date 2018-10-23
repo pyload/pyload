@@ -2,8 +2,8 @@
 import re
 from builtins import _
 
-from pyload.plugins.internal.plugin import Fail
-from pyload.plugins.internal.simplehoster import SimpleHoster
+from .plugin import Fail
+from .simplehoster import SimpleHoster
 
 
 class MultiHoster(SimpleHoster):

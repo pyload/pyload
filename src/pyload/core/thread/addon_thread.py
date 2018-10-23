@@ -3,7 +3,7 @@
 
 from copy import copy
 
-from pyload.core.thread.plugin_thread import PluginThread
+from .plugin_thread import PluginThread
 
 
 class AddonThread(PluginThread):

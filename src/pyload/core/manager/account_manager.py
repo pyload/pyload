@@ -6,8 +6,8 @@ import shutil
 from builtins import _, object
 from threading import Lock
 
-from pyload.core.manager.event_manager import AccountUpdateEvent
-from pyload.core.utils.utils import chmod, lock
+from .event_manager import AccountUpdateEvent
+from ..utils.utils import chmod, lock
 
 # MANAGER VERSION
 __version__ = 1

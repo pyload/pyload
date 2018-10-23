@@ -10,12 +10,12 @@ from random import choice
 from threading import Event, Lock
 
 import pycurl
-from pyload.core.datatype.pyfile import PyFile
-from pyload.core.network.request_factory import getURL
-from pyload.core.thread.decrypter_thread import DecrypterThread
-from pyload.core.thread.download_thread import DownloadThread
-from pyload.core.thread.info_thread import InfoThread
-from pyload.core.utils.utils import freeSpace, lock
+from ..datatype.pyfile import PyFile
+from ..network.request_factory import getURL
+from ..thread.decrypter_thread import DecrypterThread
+from ..thread.download_thread import DownloadThread
+from ..thread.info_thread import InfoThread
+from ..utils.utils import freeSpace, lock
 
 
 class ThreadManager(object):

@@ -3,7 +3,7 @@
 import base64
 import json
 
-from pyload.plugins.internal.hoster import Hoster
+from ..internal.hoster import Hoster
 
 
 class CloudMailRu(Hoster):

@@ -2,7 +2,7 @@
 import json
 from builtins import _
 
-from pyload.plugins.internal.multihoster import MultiHoster
+from ..internal.multihoster import MultiHoster
 
 
 class TwojlimitPl(MultiHoster):

@@ -2,7 +2,7 @@
 
 import re
 
-from pyload.plugins.internal.multihoster import MultiHoster
+from ..internal.multihoster import MultiHoster
 
 
 class DebridItaliaCom(MultiHoster):

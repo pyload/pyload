@@ -5,9 +5,9 @@ from builtins import _, object
 
 import send2trash
 
-from pyload.plugins.internal.addon import Addon
-from pyload.plugins.internal.extractor import ArchiveError, CRCError, PasswordError
-from pyload.plugins.utils import Expose, encode, exists, safename, threaded, uniqify
+from ..internal.addon import Addon
+from ..internal.extractor import ArchiveError, CRCError, PasswordError
+from ..utils import Expose, encode, exists, safename, threaded, uniqify
 
 
 class ArchiveQueue(object):

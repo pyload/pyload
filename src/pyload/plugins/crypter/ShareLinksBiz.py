@@ -7,7 +7,7 @@ from builtins import _, filter
 import js2py
 from cryptography.fernet import Fernet
 
-from pyload.plugins.internal.crypter import Crypter
+from ..internal.crypter import Crypter
 
 
 class ShareLinksBiz(Crypter):

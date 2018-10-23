@@ -5,7 +5,7 @@ import time
 import urllib.parse
 from builtins import str
 
-from pyload.plugins.internal.simplehoster import SimpleHoster
+from ..internal.simplehoster import SimpleHoster
 
 
 class DatoidCz(SimpleHoster):

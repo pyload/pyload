@@ -4,8 +4,8 @@ import urllib.parse
 from builtins import _
 
 import pycurl
-from pyload.plugins.internal.hoster import Hoster
-from pyload.plugins.utils import parse_name
+from ..internal.hoster import Hoster
+from ..utils import parse_name
 
 
 class Ftp(Hoster):

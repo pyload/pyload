@@ -3,7 +3,7 @@
 import json
 
 from pyload.core.network.request_factory import getURL as get_url
-from pyload.plugins.internal.simplecrypter import SimpleCrypter
+from ..internal.simplecrypter import SimpleCrypter
 
 
 class TenluaVnFolder(SimpleCrypter):

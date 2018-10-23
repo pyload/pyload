@@ -3,7 +3,7 @@
 import json
 
 from pyload.core.network.http_request import BadHeader
-from pyload.plugins.internal.crypter import Crypter
+from ..internal.crypter import Crypter
 
 
 class GoogledriveComDereferer(Crypter):

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from pyload.plugins.internal.deadcrypter import DeadCrypter
+from ..internal.deadcrypter import DeadCrypter
 
 
 class OronComFolder(DeadCrypter):

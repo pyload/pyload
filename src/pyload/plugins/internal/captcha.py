@@ -4,7 +4,7 @@ import os
 import time
 from builtins import HOMEDIR, _
 
-from pyload.plugins.internal.plugin import Plugin
+from .plugin import Plugin
 
 
 class Captcha(Plugin):

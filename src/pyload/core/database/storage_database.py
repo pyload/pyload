@@ -3,7 +3,7 @@
 
 from builtins import object
 
-from pyload.core.database.database_thread import DatabaseThread, style
+from .database_thread import DatabaseThread, style
 
 
 class StorageMethods(object):

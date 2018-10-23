@@ -5,8 +5,8 @@ import time
 from builtins import _, str
 
 import pycurl
-from pyload.plugins.captcha.ReCaptcha import ReCaptcha
-from pyload.plugins.internal.simplehoster import SimpleHoster
+from ..captcha.ReCaptcha import ReCaptcha
+from ..internal.simplehoster import SimpleHoster
 
 
 class RapiduNet(SimpleHoster):

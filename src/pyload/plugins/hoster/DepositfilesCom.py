@@ -6,8 +6,8 @@ import urllib.parse
 import urllib.request
 from builtins import _, chr
 
-from pyload.plugins.captcha.SolveMedia import SolveMedia
-from pyload.plugins.internal.simplehoster import SimpleHoster
+from ..captcha.SolveMedia import SolveMedia
+from ..internal.simplehoster import SimpleHoster
 
 
 class DepositfilesCom(SimpleHoster):

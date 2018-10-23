@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from builtins import _
 
-from pyload.plugins.hoster.Http import Http
+from .Http import Http
 
 
 class BasePlugin(Http):

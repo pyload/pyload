@@ -3,7 +3,7 @@
 import re
 
 import pycurl
-from pyload.plugins.internal.simplehoster import SimpleHoster
+from ..internal.simplehoster import SimpleHoster
 
 
 class AndroidfilehostCom(SimpleHoster):

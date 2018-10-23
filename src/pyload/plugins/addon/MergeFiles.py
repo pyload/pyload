@@ -3,8 +3,8 @@ import os
 import re
 from builtins import _
 
-from pyload.plugins.internal.addon import Addon
-from pyload.plugins.utils import threaded
+from ..internal.addon import Addon
+from ..utils import threaded
 
 
 class MergeFiles(Addon):

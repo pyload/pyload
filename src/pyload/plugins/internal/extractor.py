@@ -3,8 +3,8 @@
 import os
 import re
 
-from pyload.plugins.internal.plugin import Plugin
-from pyload.plugins.utils import encode
+from .plugin import Plugin
+from ..utils import encode
 
 
 class ArchiveError(Exception):

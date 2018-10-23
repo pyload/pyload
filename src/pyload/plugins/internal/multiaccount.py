@@ -4,8 +4,8 @@ import re
 import time
 from builtins import _, range
 
-from pyload.plugins.internal.account import Account
-from pyload.plugins.utils import decode, remove_chars, uniqify
+from .account import Account
+from ..utils import decode, remove_chars, uniqify
 
 
 class MultiAccount(Account):

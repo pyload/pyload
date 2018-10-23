@@ -13,12 +13,12 @@ from urllib.parse import unquote
 import flask
 
 from pyload.core.utils.utils import formatSize, fs_decode, fs_encode
-from pyload.webui.app.filters import unquotepath
-from pyload.webui.app.helpers import (clear_session, get_permission, login_required_old,
+from .filters import unquotepath
+from .helpers import (clear_session, get_permission, login_required_old,
                                     parse_permissions, parse_userdata, permlist,
                                     render_template, set_permission, set_session,
                                     toDict)
-from pyload.webui.app.helpers import pre_processor, base, get_redirect_target
+from .helpers import pre_processor, base, get_redirect_target
 
 
 from flask_login import login_required, login_user, logout_user

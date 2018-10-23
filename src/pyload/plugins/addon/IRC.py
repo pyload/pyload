@@ -10,8 +10,8 @@ from threading import Thread
 
 import pycurl
 from pyload.core.api import FileDoesNotExists, PackageDoesNotExists
-from pyload.plugins.internal.notifier import Notifier
-from pyload.plugins.utils import format_size
+from ..internal.notifier import Notifier
+from ..utils import format_size
 
 
 class IRC(Thread, Notifier):

@@ -5,8 +5,8 @@ import re
 import time
 from builtins import _, str
 
-from pyload.plugins.captcha.ReCaptcha import ReCaptcha
-from pyload.plugins.internal.simplehoster import SimpleHoster
+from ..captcha.ReCaptcha import ReCaptcha
+from ..internal.simplehoster import SimpleHoster
 
 
 class FilepostCom(SimpleHoster):

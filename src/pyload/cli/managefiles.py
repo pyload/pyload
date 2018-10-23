@@ -6,8 +6,8 @@ from builtins import _, map, range, str
 from itertools import islice
 
 from pyload.core.api import Destination, PackageData
-from pyload.cli.handler import Handler
-from pyload.cli.printer import *
+from .handler import Handler
+from .printer import *
 
 
 class ManageFiles(Handler):

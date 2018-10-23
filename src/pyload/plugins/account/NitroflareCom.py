@@ -3,7 +3,7 @@ import json
 import time
 from builtins import _
 
-from pyload.plugins.internal.account import Account
+from ..internal.account import Account
 
 
 class NitroflareCom(Account):

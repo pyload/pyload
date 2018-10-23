@@ -2,8 +2,8 @@
 import codecs
 from builtins import _
 
-from pyload.plugins.internal.container import Container
-from pyload.plugins.utils import encode
+from ..internal.container import Container
+from ..utils import encode
 
 
 class TXT(Container):

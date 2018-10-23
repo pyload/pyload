@@ -9,8 +9,8 @@ from builtins import _, range, str
 import pycurl
 from pyload.core.network.http_request import BadHeader
 from pyload.core.network.request_factory import getRequest as get_request
-from pyload.plugins.internal.addon import Addon
-from pyload.plugins.utils import threaded
+from ..internal.addon import Addon
+from ..utils import threaded
 
 
 class DeathByCaptchaException(Exception):

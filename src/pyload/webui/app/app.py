@@ -11,7 +11,7 @@ from pyload.core.network.http_request import BAD_STATUS_CODES as BAD_HTTP_STATUS
 
 # from flask_static_compress import FlaskStaticCompress
 from flask_minify import minify
-from pyload.webui.app.settings import get_config
+from .settings import get_config
 from flask_themes2 import Themes
 
 from flask_compress import Compress
@@ -22,21 +22,21 @@ from flask_debugtoolbar import DebugToolbarExtension
 # from flask_talisman import Talisman
 from flask_babel import Babel
 from flask_login import LoginManager
-from pyload.webui.app.helpers import pre_processor, User
-from pyload.webui.app.blueprints import (
+from .helpers import pre_processor, User
+from .blueprints import (
     api_blueprint,
     cnl_blueprint,
     json_blueprint,
     app_blueprint,
 )
-from pyload.webui.app.filters import (
+from .filters import (
     date,
     path_make_absolute,
     path_make_relative,
     quotepath,
     truncate,
 )
-from pyload.webui.app.helpers import render_template
+from .helpers import render_template
 from flask.logging import default_handler
 
 

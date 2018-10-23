@@ -7,8 +7,8 @@ from builtins import _, map
 
 import send2trash
 
-from pyload.plugins.internal.addon import Addon
-from pyload.plugins.utils import Expose, encode, exists, threaded
+from ..internal.addon import Addon
+from ..utils import Expose, encode, exists, threaded
 
 
 class AntiVirus(Addon):

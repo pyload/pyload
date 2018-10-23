@@ -58,7 +58,7 @@ def run(args=sys.argv[1:]):
     Entry point for console_scripts
     """
     # change name to 'pyLoad'
-    # from pyload.lib.rename_process import renameProcess
+    # from .lib.rename_process import renameProcess
     # renameProcess('pyLoad')
     if "--daemon" in sys.argv:
         daemon()

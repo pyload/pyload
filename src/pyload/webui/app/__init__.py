@@ -8,4 +8,4 @@
 #          \  /
 #           \/
 
-from pyload.webui.app.app import create_app
+from .app import create_app

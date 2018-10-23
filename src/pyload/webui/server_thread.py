@@ -7,7 +7,7 @@ from builtins import _
 from cheroot.wsgi import PathInfoDispatcher
 from cheroot.wsgi import Server
 
-from pyload.webui.app import create_app
+from .app import create_app
 
 
 # TODO: make configurable to serve API

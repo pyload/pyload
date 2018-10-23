@@ -6,8 +6,8 @@ from builtins import _
 
 import requests
 
-from pyload.plugins.internal.container import Container
-from pyload.plugins.utils import encode
+from ..internal.container import Container
+from ..utils import encode
 
 
 class CCF(Container):

@@ -10,9 +10,9 @@ import threading
 import time
 from builtins import _, object, range, str
 
-from pyload.plugins.internal.hoster import Hoster
-from pyload.plugins.plugin import Abort
-from pyload.plugins.utils import encode, lock, threaded
+from ..internal.hoster import Hoster
+from ..plugin import Abort
+from ..utils import encode, lock, threaded
 
 
 class IRC(object):

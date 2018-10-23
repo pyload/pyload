@@ -2,7 +2,7 @@
 
 import re
 
-from pyload.plugins.internal.crypter import Crypter
+from ..internal.crypter import Crypter
 
 
 class MultiloadCz(Crypter):

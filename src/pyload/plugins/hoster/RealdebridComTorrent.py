@@ -10,8 +10,8 @@ from builtins import HOMEDIR, _, range
 
 import pycurl
 from pyload.core.network.http_request import BadHeader
-from pyload.plugins.internal.hoster import Hoster
-from pyload.plugins.utils import exists
+from ..internal.hoster import Hoster
+from ..utils import exists
 
 
 class RealdebridComTorrent(Hoster):

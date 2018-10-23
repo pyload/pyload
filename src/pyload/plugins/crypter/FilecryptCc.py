@@ -14,11 +14,11 @@ from cryptography.fernet import Fernet
 
 from pyload.core.network.cookie_jar import CookieJar
 from pyload.core.network.http_request import BadHeader, HTTPRequest
-from pyload.plugins.captcha.CoinHive import CoinHive
-from pyload.plugins.captcha.ReCaptcha import ReCaptcha
-from pyload.plugins.captcha.SolveMedia import SolveMedia
-from pyload.plugins.internal.crypter import Crypter
-from pyload.plugins.internal.plugin import Abort
+from ..captcha.CoinHive import CoinHive
+from ..captcha.ReCaptcha import ReCaptcha
+from ..captcha.SolveMedia import SolveMedia
+from ..internal.crypter import Crypter
+from ..internal.plugin import Abort
 
 
 class BIGHTTPRequest(HTTPRequest):

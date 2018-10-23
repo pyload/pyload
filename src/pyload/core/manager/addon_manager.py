@@ -7,9 +7,9 @@ from threading import RLock
 from types import MethodType
 
 from _thread import start_new_thread
-from pyload.core.manager.plugin_manager import literal_eval
-from pyload.core.thread.addon_thread import AddonThread
-from pyload.core.utils.utils import lock
+from .plugin_manager import literal_eval
+from ..thread.addon_thread import AddonThread
+from ..utils.utils import lock
 
 
 class AddonManager(object):

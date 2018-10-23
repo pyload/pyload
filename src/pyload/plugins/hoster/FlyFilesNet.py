@@ -5,7 +5,7 @@ import urllib.parse
 import urllib.request
 from builtins import _
 
-from pyload.plugins.internal.simplehoster import SimpleHoster
+from ..internal.simplehoster import SimpleHoster
 
 
 class FlyFilesNet(SimpleHoster):

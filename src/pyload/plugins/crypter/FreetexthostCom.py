@@ -2,7 +2,7 @@
 import re
 from builtins import _
 
-from pyload.plugins.internal.simplecrypter import SimpleCrypter
+from ..internal.simplecrypter import SimpleCrypter
 
 
 class FreetexthostCom(SimpleCrypter):

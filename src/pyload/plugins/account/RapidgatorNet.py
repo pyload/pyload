@@ -3,7 +3,7 @@
 import json
 from builtins import str
 
-from pyload.plugins.internal.account import Account
+from ..internal.account import Account
 
 
 class RapidgatorNet(Account):

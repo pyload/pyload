@@ -2,8 +2,8 @@
 
 import re
 
-from pyload.plugins.internal.account import Account
-from pyload.plugins.utils import set_cookie
+from ..internal.account import Account
+from ..utils import set_cookie
 
 
 class FastshareCz(Account):

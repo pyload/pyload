@@ -6,9 +6,9 @@ import re
 from builtins import _, range
 
 from pyload.core.network.http_request import BadHeader
-from pyload.plugins.internal.base import Base
-from pyload.plugins.internal.plugin import Fail
-from pyload.plugins.utils import encode, exists, parse_name, safejoin
+from .base import Base
+from .plugin import Fail
+from ..utils import encode, exists, parse_name, safejoin
 
 
 class Hoster(Base):

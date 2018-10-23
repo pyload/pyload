@@ -5,10 +5,10 @@ import random
 import re
 from builtins import _, range
 
-from pyload.plugins.captcha.ReCaptcha import ReCaptcha
-from pyload.plugins.captcha.SolveMedia import SolveMedia
-from pyload.plugins.internal.simplehoster import SimpleHoster
-from pyload.plugins.utils import (html_unescape, parse_time, seconds_to_midnight,
+from ..captcha.ReCaptcha import ReCaptcha
+from ..captcha.SolveMedia import SolveMedia
+from .simplehoster import SimpleHoster
+from ..utils import (html_unescape, parse_time, seconds_to_midnight,
                                   set_cookie)
 
 

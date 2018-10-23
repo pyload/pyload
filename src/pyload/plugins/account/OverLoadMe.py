@@ -3,7 +3,7 @@
 import json
 from builtins import map
 
-from pyload.plugins.internal.multiaccount import MultiAccount
+from ..internal.multiaccount import MultiAccount
 
 
 class OverLoadMe(MultiAccount):

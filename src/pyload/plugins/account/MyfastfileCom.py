@@ -3,7 +3,7 @@ import json
 import time
 from builtins import _
 
-from pyload.plugins.internal.multiaccount import MultiAccount
+from ..internal.multiaccount import MultiAccount
 
 
 class MyfastfileCom(MultiAccount):

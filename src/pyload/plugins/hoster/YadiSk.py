@@ -5,7 +5,7 @@ import random
 import re
 from builtins import _, range
 
-from pyload.plugins.internal.simplehoster import SimpleHoster
+from ..internal.simplehoster import SimpleHoster
 
 
 class YadiSk(SimpleHoster):

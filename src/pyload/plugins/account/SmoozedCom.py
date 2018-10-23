@@ -6,7 +6,7 @@ import time
 
 from beaker.crypto.pbkdf2 import PBKDF2
 
-from pyload.plugins.internal.multiaccount import MultiAccount
+from ..internal.multiaccount import MultiAccount
 
 
 class SmoozedCom(MultiAccount):

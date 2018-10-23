@@ -2,8 +2,8 @@
 import re
 from builtins import _
 
-from pyload.plugins.internal.simplehoster import SimpleHoster
-from pyload.plugins.utils import parse_size
+from ..internal.simplehoster import SimpleHoster
+from ..utils import parse_size
 
 
 class CzshareCom(SimpleHoster):

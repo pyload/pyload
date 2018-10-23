@@ -2,8 +2,8 @@
 
 import json
 
-from pyload.plugins.internal.multihoster import MultiHoster
-from pyload.plugins.utils import parse_size
+from ..internal.multihoster import MultiHoster
+from ..utils import parse_size
 
 
 class LeechThreeHundreedSixtyCom(MultiHoster):
