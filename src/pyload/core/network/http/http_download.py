@@ -223,7 +223,7 @@ class HTTPDownload(object):
                         chunk.verifyHeader()
                     except BadHeader as exc:
                         self.log.debug(
-                            "Chunk {} failed: {}".format(chunk.id + 1, str(exc))
+                            "Chunk {} failed: {}".format(chunk.id + 1, exc)
                         )
                         failed.append(chunk)
                         ex = exc
@@ -246,7 +246,7 @@ class HTTPDownload(object):
                         chunk.verifyHeader()
                     except BadHeader as exc:
                         self.log.debug(
-                            "Chunk {} failed: {}".format(chunk.id + 1, str(exc))
+                            "Chunk {} failed: {}".format(chunk.id + 1, exc)
                         )
                         failed.append(chunk)
                         ex = exc
@@ -338,7 +338,7 @@ class HTTPDownload(object):
         try:
             self.m.remove_handle(chunk.c)
         except pycurl.error as exc:
-            self.log.debug("Error removing chunk: {}".format(str(exc)))
+            self.log.debug("Error removing chunk: {}".format(exc))
         finally:
             chunk.close()
 

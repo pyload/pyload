@@ -59,7 +59,7 @@ class Core(object):
     @property
     def running(self):
         return self._running.is_set()
-        
+
     @property
     def debug(self):
         return self._debug
@@ -72,7 +72,7 @@ class Core(object):
         self._ = lambda x: x
         self._debug = self.config.get(
             'log', 'debug') if debug is None else debug
-            
+
         self.userdir = os.path.abspath(userdir)
         self.cachedir = os.path.abspath(cachedir)
         os.makedirs(self.userdir, exist_ok=True)
@@ -86,7 +86,7 @@ class Core(object):
 
         # TODO: remove here
         self.lastClientConnected = 0
-        
+
         self._init_config()
         self._init_log()
         self._init_database(restore)
@@ -94,36 +94,36 @@ class Core(object):
         self._init_network()
         self._init_api()
         self._init_webserver()
-        
+
         atexit.register(self.terminate)
 
     def _init_config(self):
         self.config = ConfigParser(self.userdir)
-        
+
     def _init_log(self):
         self.log = LoggerFactory(self, self.debug)
-    
+
     def _init_network(self):
         self.request = self.req = RequestFactory(self)
         builtins.REQUESTS = self.requestFactory
-        
+
     def _init_api(self):
         from .api import Api
         self.api = Api(self)
 
     def _init_webserver(self):
         self.webserver = WebServer(self)
-            
+
     def _init_database(self, restore):
         db_path = os.path.join(self.userdir, DatabaseThread.DB_FILENAME)
         newdb = not os.path.isfile(db_path)
-        
+
         self.db = DatabaseThread(self)
         self.db.setup()
 
         self.files = FileHandler(self)
         self.db.manager = self.files  #: ugly?
-        
+
         userpw = (self.DEFAULT_USERNAME, self.DEFAULT_PASSWORD)
         # nousers = bool(self.db.listUsers())
         if restore or newdb:
@@ -213,7 +213,7 @@ class Core(object):
         avail_space = format.size(availspace(storage_folder))
         self.log.info(
             self._('Available storage space: {0}').format(avail_space))
-            
+
         self.config.save()  #: save so config files gets filled
 
     def _setup_network(self):
@@ -223,18 +223,18 @@ class Core(object):
         self.log.info(self._('Activating accounts...'))
         self.acm.getAccountInfos()
         # self.scheduler.addJob(0, self.acm.getAccountInfos)
-        
+
         self.log.info(self._("Activating Plugins..."))
         self.adm.coreReady()
 
-        
+
     def _start_servers(self):
         if self.config.get("webui", "enabled"):
             self.webserver.start()
         if self.config.get("remote", "enabled"):
             self.remoteManager.startBackends()
-            
-            
+
+
     def _parse_linkstxt(self):
         link_file = os.path.join(self.userdir, "links.txt")
         try:
@@ -243,8 +243,8 @@ class Core(object):
                     self.api.addPackage("links.txt", [link_file], 1)
         except Exception as exc:
             self.log.debug(exc)
-                 
-                 
+
+
     def start(self):
         self.log.info('Welcome to pyLoad v{0}'.format(self.version))
         if self.debug:
@@ -277,7 +277,7 @@ class Core(object):
 
             self.log.debug('pyLoad is up and running')
             # self.evm.fire('pyload:started')
-            
+
             self._start_servers()
             self._parse_linkstxt()
 
@@ -305,7 +305,7 @@ class Core(object):
     # TODO: remove here
     def isClientConnected(self):
         return (self.lastClientConnected + 30) > time.time()
-        
+
     def restart(self):
         self.stop()
         self.log.info(self._('Restarting pyLoad...'))
@@ -326,21 +326,20 @@ class Core(object):
         try:
             self.log.debug('Stopping pyLoad...')
             # self.evm.fire('pyload:stopping')
-            
+
             if self.webserver.is_alive():
                 self.webserver.stop()
 
             for thread in self.threadManager.threads:
                 thread.put("quit")
-            
+
             for pyfile in self.files.cache.values():
                 pyfile.abortDownload()
 
             self.addonManager.coreExiting()
-            
+
         finally:
             self.files.syncSave()
             self.logfactory.shutdown()
             self._running.clear()
             # self.evm.fire('pyload:stopped')
-            

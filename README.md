@@ -7,20 +7,20 @@ Requires **Python 3.6** and good luck.
 Install:
 
     pip install .[all]
-    
+
 > **Note:**
 > On Windows `pycurl` installation fails sometimes (the unlucky part).
 
 Run:
-    
+
     pyLoad
-    
+
 Help:
 
     pyLoad -h
-    
+
 The web user interface will be available at the url `http://localhost:8001`.
-    
-    
+
+
 -------------------------
 ###### © 2018 pyLoad team

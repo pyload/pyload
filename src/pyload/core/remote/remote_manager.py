@@ -74,7 +74,7 @@ class RemoteManager(object):
             except Exception as exc:
                 self.pyload.log.error(
                     self._("Failed loading backend {name} | {error}").format(
-                        name=b, error=str(exc)
+                        name=b, error=exc
                     )
                 )
             else:

@@ -184,7 +184,7 @@ class InfoThread(PluginThread):
         except Exception as exc:
             self.m.log.warning(
                 self._("Info Fetching for {name} failed | {err}").format(
-                    name=pluginname, err=str(exc)
+                    name=pluginname, err=exc
                 )
             )
 
@@ -219,7 +219,7 @@ class InfoThread(PluginThread):
             self.m.log.debug("Got {} links.".format(len(data)))
 
         except Exception as exc:
-            self.m.log.debug("Pre decrypting error: {}".format(str(exc)))
+            self.m.log.debug("Pre decrypting error: {}".format(exc))
         finally:
             pyfile.release()
 

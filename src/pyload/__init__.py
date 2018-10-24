@@ -57,7 +57,7 @@ locale.setlocale(locale.LC_ALL, "")
 if os.name == "nt":
     _locale._getdefaultlocale = lambda *args: ["en_US", "utf_8_sig"]
 
-    
+
 ### Exception logger ###
 
 exc_logger = logging.getLogger("exception")

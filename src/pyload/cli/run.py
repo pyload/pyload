@@ -262,7 +262,6 @@ def run(args=sys.argv[1:]):
         writeConfig(config)
         Cli(client, command)
 
-        
+
 if __name__ == "__main__":
     run()
-    

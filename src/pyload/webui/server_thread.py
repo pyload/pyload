@@ -33,7 +33,7 @@ class WebServer(threading.Thread):
         #: logging patches
         core.logfactory.init_logger(self.app.logger.name)
         self.server.error_log = core.logfactory.init_logger("cheroot").log
-        
+
         if not self.use_ssl:
             return
 
@@ -44,7 +44,7 @@ class WebServer(threading.Thread):
             self.server.ssl_certificate = self.certfile
         if self.keyfile:
             self.server.ssl_private_key = self.keyfile
-        
+
     def run(self):
         self.pyload.log.warning(
             self._("Starting Webserver: {host}:{port:d}").format(

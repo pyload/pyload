@@ -21,14 +21,14 @@ class Bucket(object):
         return self._rate >= self.MIN_RATE
 
     rate = property(get_rate, set_rate)
-    
+
     @lock
     def set_rate(self, rate):
         self._rate = int(rate)
-        
+
     def get_rate(self):
         return self._rate
-        
+
     def _calc_token(self):
         if self.token >= self._rate:
             return
@@ -36,7 +36,7 @@ class Bucket(object):
         delta = self._rate * (now - self.timestamp)
         self.token = min(self._rate, self.token + delta)
         self.timestamp = now
-        
+
     @lock
     def consumed(self, amount):
         """
@@ -48,4 +48,3 @@ class Bucket(object):
         self.token -= amount
         consumed = -self.token // self._rate if self.token < 0 else 0
         return consumed
-        

@@ -173,7 +173,7 @@ class Periodical(object):
             self.task()
 
         except Exception as exc:
-            self.plugin.log_error(self._("Error performing periodical task"), e)
+            self.plugin.log_error(self._("Error performing periodical task"), exc)
 
         if not self.stopped:
             self.restart(threaded=threaded, delay=self.interval)

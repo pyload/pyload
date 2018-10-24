@@ -80,7 +80,7 @@ class DecrypterThread(PluginThread):
             self.active.setStatus("failed")
             self.m.log.error(
                 self._("Decrypting failed: {name} | {msg}").format(
-                    name=self.active.name, msg=str(exc)
+                    name=self.active.name, msg=exc
                 )
             )
             self.active.error = str(exc)

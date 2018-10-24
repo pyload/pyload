@@ -43,22 +43,22 @@ def robots():
 def login():
     if flask.request.method == 'GET':
         return render_template("login.html", proc=[pre_processor])
-    
+
     user = flask.request.form.get("username")
     password = flask.request.form.get("password")
 
     api = flask.current_app.config["PYLOAD_API"]
     info = api.checkAuth(user, password)
-    
+
     if not info:
         return render_template("login.html", {"errors": True}, [pre_processor])
-        
+
     # user = User(info['id'])
     # login_user(user)
-    
+
     set_session(info)
     flask.flash('Logged in successfully.')
-    
+
     next = get_redirect_target()
     return flask.redirect(next or flask.url_for('index'))
 
@@ -483,7 +483,7 @@ def setup():
     messages = ["Run pyLoad -s to access the setup."]
     return base(messages)
 
-    
+
 @bp.route(r"/info", endpoint="info")
 @login_required("STATUS")
 def info():

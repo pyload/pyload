@@ -33,8 +33,8 @@ def print_status(download):
         statusmsg=download.statusmsg,
         size=download.format_size,
     )
-    
-    
+
+
 # TODO: use client.api instead client
 class Cli(object):
     def __init__(self, client, command):
@@ -410,7 +410,7 @@ class RefreshThread(Thread):
                 print(self._("pyLoad was terminated"))
                 os._exit(0)
             except Exception as exc:
-                println(2, red(str(exc)))
+                println(2, red(exc))
                 self.cli.reset()
 
 

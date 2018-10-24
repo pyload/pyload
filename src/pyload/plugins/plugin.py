@@ -582,7 +582,7 @@ class Plugin(Base):
 
                 os.chown(location, uid, gid)
             except Exception as exc:
-                self.log.warning(self._("Setting User and Group failed: {}").format(str(exc)))
+                self.log.warning(self._("Setting User and Group failed: {}").format(exc))
 
         # convert back to unicode
         location = fs_decode(location)
@@ -631,7 +631,7 @@ class Plugin(Base):
 
                 os.chown(fs_filename, uid, gid)
             except Exception as exc:
-                self.log.warning(self._("Setting User and Group failed: {}").format(str(exc)))
+                self.log.warning(self._("Setting User and Group failed: {}").format(exc))
 
         self.lastDownload = filename
         return self.lastDownload

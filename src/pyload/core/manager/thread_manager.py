@@ -131,7 +131,7 @@ class ThreadManager(object):
         try:
             self.tryReconnect()
         except Exception as exc:
-            self.pyload.log.error(self._("Reconnect Failed: {}").format(str(exc)))
+            self.pyload.log.error(self._("Reconnect Failed: {}").format(exc))
             self.reconnecting.clear()
         self.checkThreadCount()
 
@@ -322,7 +322,7 @@ class ThreadManager(object):
             try:
                 job.initPlugin()
             except Exception as exc:
-                self.pyload.log.critical(str(exc))
+                self.pyload.log.critical(exc)
                 job.setStatus("failed")
                 job.error = str(exc)
                 job.release()

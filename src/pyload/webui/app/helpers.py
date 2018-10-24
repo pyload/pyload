@@ -15,7 +15,7 @@ from functools import wraps
 
     # def __init__(self, id):
         # self.id = id
-        
+
     # def is_active(self):
         # """True, as all users are active."""
         # return True
@@ -31,8 +31,8 @@ from functools import wraps
     # def is_anonymous(self):
         # """False, as anonymous users aren't supported."""
         # return False
-        
-        
+
+
 def is_safe_url(target):
     ref_url = urlparse(request.host_url)
     test_url = urlparse(urljoin(request.host_url, target))
@@ -45,8 +45,8 @@ def get_redirect_target():
             continue
         if is_safe_url(target):
             return target
-            
-           
+
+
 def pre_processor():
     s = flask.session
     user = parse_userdata(s)
@@ -80,8 +80,8 @@ def pre_processor():
 
 def base(messages):
     return render_template("base.html", {"messages": messages}, [pre_processor])
-    
-    
+
+
 def clear_session():
     flask.session.clear()
     flask.session.modified = True
@@ -185,7 +185,7 @@ def login_required(perm=None):
         def wrapper(*args, **kwargs):
             if flask.request.headers.get("X-Requested-With") == "XMLHttpRequest":
                     return "Forbidden", 403
-                            
+
             s = flask.session
             if s.get("name", None) and s.get("authenticated", False):
                 if perm:
@@ -193,7 +193,7 @@ def login_required(perm=None):
                     if perm not in perms or not perms[perm]:
                         return flask.redirect(flask.url_for("nopermission"))
                 return func(*args, **kwargs)
-                
+
             api = flask.current_app.config["PYLOAD_API"]
             autologin = api.getConfigValue("webui", "autologin")
             if autologin:  # TODO: check if localhost
@@ -202,7 +202,7 @@ def login_required(perm=None):
                     info = next(iter(users.values()))
                     set_session(info)
                     return func(*args, **kwargs)
-            
+
             return flask_login.login_url("app.login", flask.request.url)
 
         return wrapper
@@ -215,4 +215,3 @@ def toDict(obj):
     for att in obj.__slots__:
         ret[att] = getattr(obj, att)
     return ret
-    

@@ -63,7 +63,7 @@ BLUEPRINTS = [
 def setup_config(app, config):
     app.config.from_object(config)
 
-    
+
 def setup_hook(app):
     # log every incoming requests
     @app.before_request
@@ -92,11 +92,11 @@ def setup_extensions(app):
     minify(app)
     # Talisman(app)
     Themes(app, app_identifier="pyload")
-    
+
     # @login_manager.user_loader
     # def load_user(userid):
         # return User(userid)
-        
+
     # @login_manager.unauthorized_handler
     # def unauthorized():
         # messages = ["You dont have permission to access this page."]
@@ -115,9 +115,9 @@ def setup_error_handlers(app):
         else:
             error_msg = str(response.data) or 'Server Error'
             trace_msg = "No Traceback Available"
-        
+
         app.logger.error("Error {}: {}".format(response.status, error_msg))
-        
+
         messages = [response.status, error_msg, trace_msg]
         return render_template("error.html", {"messages": messages}, [pre_processor]), response.status_code
 
@@ -128,22 +128,22 @@ def setup_error_handlers(app):
 def setup_jinja_env(app):
     userdir = app.config["PYLOAD_API"].get_userdir()
     cache_path = os.path.join(userdir, ".tmp", JINJA_TMPDIR_NAME)
-    
+
     os.makedirs(cache_path, exist_ok=True)
 
     app.create_jinja_environment()
     app.jinja_env.bytecode_cache = jinja2.FileSystemBytecodeCache(cache_path)
     app.jinja_env.filters.update(JINJA_FILTERS)
 
-    
+
 def setup_api(app, api):
     app.config["PYLOAD_API"] = api
-    
-    
+
+
 def create_app(api, debug=False):
     """Run Flask server"""
     app = flask.Flask(__name__.split(".")[0], root_path=APP_ROOT_PATH)
-    
+
     setup_api(app, api)
     setup_config(app, get_config(debug))
     # setup_hook(app)

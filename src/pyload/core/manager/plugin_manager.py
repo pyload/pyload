@@ -35,7 +35,7 @@ class PluginManager(object):
     def __init__(self, core):
         self.pyload = core
         self._ = core._
-        
+
         self.plugins = {}
         self.createIndex()
 
@@ -336,7 +336,7 @@ class PluginManager(object):
                 return module
             except Exception as exc:
                 self.pyload.log.error(
-                    self._("Error importing {name}: {msg}").format(name=name, msg=str(exc))
+                    self._("Error importing {name}: {msg}").format(name=name, msg=exc)
                 )
                 if self.pyload.debug:
                     traceback.print_exc()

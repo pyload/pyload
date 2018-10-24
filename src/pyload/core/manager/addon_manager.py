@@ -19,10 +19,10 @@ def try_catch(func):
             try:
                 return func(self, *args)
             except Exception as exc:
-                self.log.error(self._("Error executing addons: {}").format(str(exc)))
+                self.log.error(self._("Error executing addons: {}").format(exc))
         return wrapper
-        
-        
+
+
 class AddonManager(object):
     """
     Manages addons, delegates and handles Events.
@@ -309,6 +309,6 @@ class AddonManager(object):
                 except Exception as exc:
                     self.pyload.log.warning(
                         "Error calling event handler {}: {}, {}, {}".format(
-                            event, f, args, str(exc)
+                            event, f, args, exc
                         )
                     )

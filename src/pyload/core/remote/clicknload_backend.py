@@ -83,7 +83,7 @@ class CNLHandler(BaseHTTPRequestHandler):
                 self.start_response(resp)
                 self.wfile.write(resp)
             except Exception as exc:
-                self.send_error(500, str(exc))
+                self.send_error(500, exc)
         else:
             self.send_error(404, "Not Found")
 

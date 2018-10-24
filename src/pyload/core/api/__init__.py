@@ -1163,13 +1163,13 @@ class Api(Iface):
         else:
             return False
 
-            
+
     # TODO: add security permission check
     # remove?
     def get_userdir(self):
         return os.path.abspath(self.pyload.userdir)
-        
-        
+
+
     @permission(PERMS.ALL)
     def getUserData(self, username, password):
         """

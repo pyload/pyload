@@ -84,7 +84,7 @@ class DatabaseJob(object):
             except Exception:
                 pass
 
-            self.exception = e
+            self.exception = exc
         finally:
             self.done.set()
 
@@ -95,7 +95,7 @@ class DatabaseJob(object):
 class DatabaseThread(Thread):
 
     subs = []
-    
+
     DB_FILENAME = 'pyload.db'
     VERSION_FILENAME = 'db.version'
 
@@ -104,7 +104,7 @@ class DatabaseThread(Thread):
         self.daemon = True
         self.pyload = core
         self._ = core._
-        
+
         self.db_path = os.path.join(core.userdir, self.DB_FILENAME)
         self.version_path = os.path.join(core.userdir, self.VERSION_FILENAME)
 
@@ -124,7 +124,7 @@ class DatabaseThread(Thread):
         """
         convert = self._checkVersion()  #: returns None or current version
 
-        
+
         self.conn = sqlite3.connect(self.db_path, isolation_level=None)
         os.chmod(self.db_path, 0o600)
 

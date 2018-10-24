@@ -161,7 +161,7 @@ class ImgurCom(SimpleCrypter):
             # Fail gracefull as we already had some success
             self.log_error(
                 self._("Processing of additional links unsuccessful - {}: {}").format(
-                    type(exc).__name__, str(exc)
+                    type(exc).__name__, exc
                 )
             )
             indirect_links = []

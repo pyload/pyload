@@ -190,7 +190,7 @@ class DownloadThread(PluginThread):
                 pyfile.setStatus("failed")
                 self.m.log.warning(
                     self._("Download failed: {name} | {msg}").format(
-                        name=pyfile.name, msg=str(exc)
+                        name=pyfile.name, msg=exc
                     )
                 )
                 pyfile.error = str(exc)

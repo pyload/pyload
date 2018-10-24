@@ -82,7 +82,7 @@ def callApi(func, *args, **kwargs):
     # convert TBase objects
     if isinstance(result, BaseObject):
         result = toDict(result)
-            
+
     # null is invalid json response
     return jsonify(result or True)
 
@@ -101,7 +101,7 @@ def login():
 
     # user = User(info['id'])
     # login_user(user)
-    
+
     s = set_session(info)
     flask.flash('Logged in successfully.')
 

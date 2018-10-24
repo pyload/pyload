@@ -46,8 +46,8 @@ def daemon():
 
     pyload_core = Core()
     pyload_core.start()
-    
-    
+
+
 def parse_args(args):
     """Parse command line parameters
 
@@ -84,7 +84,7 @@ def parse_args(args):
         const=logging.DEBUG)
     return parser.parse_args(args)
 
-    
+
 def run(args=sys.argv[1:]):
     """
     Entry point for console_scripts
@@ -93,7 +93,7 @@ def run(args=sys.argv[1:]):
     # from .lib.rename_process import renameProcess
     # renameProcess('pyLoad')
     args = parse_args(args)
-    
+
     # TODO: use parsed args
     if args.daemon:
         daemon()
@@ -105,7 +105,7 @@ def run(args=sys.argv[1:]):
             pyload_core.log.info(self._("Killed from terminal"))
             pyload_core.shutdown()
             os._exit(1)
-            
-            
+
+
 if __name__ == "__main__":
     run()
