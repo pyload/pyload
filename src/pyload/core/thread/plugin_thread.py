@@ -22,6 +22,8 @@ class PluginThread(Thread):
         """
         super().__init__()
         self.daemon = True
+        self.pyload = manager.pyload
+        self._ = manager._
         self.m = self.manager = manager  #: thread manager
 
     def writeDebugReport(self, pyfile):

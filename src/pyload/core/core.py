@@ -13,8 +13,8 @@ from contextlib import closing
 from future import standard_library
 from pkg_resources import resource_filename
 
-from . import __version__ as PYLOAD_VERSION
-from . import __version_info__ as PYLOAD_VERSION_INFO
+from .. import __version__ as PYLOAD_VERSION
+from .. import __version_info__ as PYLOAD_VERSION_INFO
 from builtins import PKGDIR
 
 from .config.config_parser import ConfigParser

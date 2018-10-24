@@ -6,7 +6,7 @@ import shutil
 import time
 from builtins import HOMEDIR, PKGDIR, object, str
 
-from .. import exc_logger
+from ... import exc_logger
 from ..utils.utils import chmod
 
 # CONFIG_VERSION

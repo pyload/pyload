@@ -451,8 +451,8 @@ class Account(Plugin):
         # TODO: Remove `>> 10` in 0.6.x
         return parse_size(size, unit or "byte") >> 10
 
-    def fail_login(self, msg=self._("Login handshake has failed")):
+    def fail_login(self, msg="Login handshake has failed"):
         return self.fail(msg)
 
-    def skip_login(self, msg=self._("Already signed in")):
+    def skip_login(self, msg="Already signed in"):
         return self.skip(msg)

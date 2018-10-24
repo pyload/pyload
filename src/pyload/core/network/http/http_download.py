@@ -11,7 +11,7 @@ import pycurl
 from .http_chunk import ChunkInfo, HTTPChunk
 from .http_request import BadHeader
 from pyload.plugins.plugin import Abort
-from ..utils.utils import fs_encode
+from .,.utils.utils import fs_encode
 
 
 class HTTPDownload(object):
@@ -258,10 +258,8 @@ class HTTPDownload(object):
                     # note that other chunks are closed and downloaded with init too
                     if failed and init not in failed and init.c not in chunksDone:
                         self.log.error(
-                            self._(
-                                "Download chunks failed, fallback to single connection | {}".format(
-                                    str(ex)
-                                )
+                            "Download chunks failed, fallback to single connection | {}".format(
+                                str(ex)
                             )
                         )
 

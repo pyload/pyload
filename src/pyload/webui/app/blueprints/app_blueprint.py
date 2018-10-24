@@ -10,11 +10,12 @@ import time
 from builtins import HOMEDIR, PKGDIR, _
 from urllib.parse import unquote
 
+import flask_login
 import flask
 
 from pyload.core.utils.utils import formatSize, fs_decode, fs_encode
-from .filters import unquotepath
-from .helpers import (clear_session, get_permission, login_required,
+from ..filters import unquotepath
+from ..helpers import (clear_session, get_permission, login_required,
                                     parse_permissions, parse_userdata, permlist,
                                     render_template, set_permission, set_session,
                                     toDict)
@@ -40,7 +41,7 @@ def robots():
 
 @bp.route(r"/login", methods=["GET", "POST"])
 def login():
-    if request.method == 'GET':
+    if flask.request.method == 'GET':
         return render_template("login.html", proc=[pre_processor])
     
     user = flask.request.form.get("username")

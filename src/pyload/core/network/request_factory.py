@@ -9,6 +9,7 @@ from .bucket import Bucket
 from .cookie_jar import CookieJar
 from .http.http_request import HTTPRequest
 from .xdcc.xdcc_request import XDCCRequest
+from pyload.plugins.utils import lock
 
 
 class RequestFactory(object):
@@ -117,9 +118,9 @@ class RequestFactory(object):
         set values in the bucket according to settings.
         """
         if not self.pyload.config.get("download", "limit_speed"):
-            self.bucket.setRate(-1)
+            self.bucket.set_rate(-1)
         else:
-            self.bucket.setRate(self.pyload.config.get("download", "max_speed") << 10)
+            self.bucket.set_rate(self.pyload.config.get("download", "max_speed") << 10)
 
 
 # needs REQUESTS in global namespace

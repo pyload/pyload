@@ -32,22 +32,22 @@ class AddPackage(Handler):
             self.setInput()
 
     def renderBody(self, line):
-        println(line, white(self._("Add Package:")))
+        println(line, white("Add Package:"))
         println(line + 1, "")
         line += 2
 
         if not self.name:
-            println(line, self._("Enter a name for the new package"))
+            println(line, "Enter a name for the new package")
             println(line + 1, "")
             line += 2
         else:
-            println(line, self._("Package: {}").format(self.name))
-            println(line + 1, self._("Parse the links you want to add."))
-            println(line + 2, self._("Type {} when done.").format(mag("END")))
-            println(line + 3, self._("Links added: ") + mag(len(self.urls)))
+            println(line, "Package: {}".format(self.name))
+            println(line + 1, "Parse the links you want to add.")
+            println(line + 2, "Type {} when done.".format(mag("END")))
+            println(line + 3, "Links added: " + mag(len(self.urls)))
             line += 4
 
         println(line, "")
-        println(line + 1, mag("0.") + self._(" back to main menu"))
+        println(line + 1, mag("0.") + " back to main menu")
 
         return line + 2

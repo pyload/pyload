@@ -13,7 +13,6 @@ from threading import Lock, Thread
 
 from easy_getch import getch
 
-import pyload.core.utils.pylgettext as gettext
 from pyload.core.api import Destination
 from .addpackage import AddPackage
 from .managefiles import ManageFiles
@@ -21,7 +20,7 @@ from .printer import *
 from pyload.core.remote.thriftbackend.thrift_client import (ConnectionClosed, NoConnection,
                                                        NoSSL, ThriftClient, WrongLogin)
 from pyload.core.utils.utils import decode, formatSize
-
+from pyload.plugins.utils import lock
 
 # if os.name == "nt":
     # enc = "cp850"
@@ -35,6 +34,7 @@ class Cli(object):
     def __init__(self, client, command):
         self.client = client
         self.command = command
+        self._ = client._
 
         if not self.command:
             # renameProcess('pyLoadCLI')
@@ -392,6 +392,7 @@ class RefreshThread(Thread):
         super().__init__()
         self.daemon = True
         self.cli = cli
+        self._ = cli._
 
     def run(self):
         while True:

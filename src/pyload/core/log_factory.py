@@ -82,7 +82,7 @@ class LogFactory(object):
         logger = self.loggers.get(name)
         if not logger:
             return
-        self._init_logger(logger, name)
+        self._init_logger(logger)
 
     def _remove_handlers(self, logger):
         for handler in logger.handlers:

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from .thriftgen import Pyload
+from .thriftgen import pyload as Pyload
 
 
 class Processor(Pyload.Processor):

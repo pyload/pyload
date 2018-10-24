@@ -124,7 +124,7 @@ def flashgot():
         "http://localhost:9666/flashgot",
         "http://127.0.0.1:9666/flashgot",
     ):
-    flask.abort(500)
+        flask.abort(500)
 
     autostart = int(flask.request.form.get("autostart", 0))
     package = flask.request.form.get("package", None)

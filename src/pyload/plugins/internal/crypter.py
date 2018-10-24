@@ -66,7 +66,7 @@ class Crypter(Base):
             links = list(map(self.fixurl, self.links))
             pdict = self.pyload.api.generatePackages(links)
             packages = [
-                (name, links, parse_name(_name)) for name, links in pdict.items()
+                (name, links, parse_name(name)) for name, links in pdict.items()
             ]
 
         else:

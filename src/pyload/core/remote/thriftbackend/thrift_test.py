@@ -11,7 +11,7 @@ from thrift.transport import TTransport
 
 from .protocol import Protocol
 from .socket import Socket
-from .thriftgen import Pyload
+from .thriftgen import pyload as Pyload
 from .thriftgen.ttypes import *
 
 

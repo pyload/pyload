@@ -10,8 +10,19 @@ from _thread import start_new_thread
 from .plugin_manager import literal_eval
 from ..thread.addon_thread import AddonThread
 from ..utils.utils import lock
+from functools import wraps
 
 
+def try_catch(func):
+        @wraps
+        def wrapper(self, *args):
+            try:
+                return func(self, *args)
+            except Exception as e:
+                self.log.error(self._("Error executing addons: {}").format(str(e)))
+        return wrapper
+        
+        
 class AddonManager(object):
     """
     Manages addons, delegates and handles Events.
@@ -62,15 +73,6 @@ class AddonManager(object):
 
         self.lock = RLock()
         self.createIndex()
-
-    def try_catch(func):
-        def new(*args):
-            try:
-                return func(*args)
-            except Exception as e:
-                args[0].log.error(self._("Error executing addons: {}").format(str(e)))
-
-        return new
 
     def addRPC(self, plugin, func, doc):
         plugin = plugin.rpartition(".")[2]

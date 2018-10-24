@@ -4,51 +4,35 @@
 
 import flask
 import flask_themes2
+import flask_login
 
 from pyload.core.api import PERMS, ROLE, has_permission
 from urllib.parse import urlparse, urljoin
 from flask import request, url_for
+from functools import wraps
 
+# class User(UserMixin):
 
-class User(UserMixin):
+    # def __init__(self, id):
+        # self.id = id
+        
+    # def is_active(self):
+        # """True, as all users are active."""
+        # return True
 
-    def __init__(self, id):
-        self.id = id
-        
-    def is_active(self):
-        """True, as all users are active."""
-        return True
+    # def get_id(self):
+        # """Return the email address to satisfy Flask-Login's requirements."""
+        # return self.email
 
-    def get_id(self):
-        """Return the email address to satisfy Flask-Login's requirements."""
-        return self.email
+    # def is_authenticated(self):
+        # """Return True if the user is authenticated."""
+        # return self.authenticated
 
-    def is_authenticated(self):
-        """Return True if the user is authenticated."""
-        return self.authenticated
-
-    def is_anonymous(self):
-        """False, as anonymous users aren't supported."""
-        return False
+    # def is_anonymous(self):
+        # """False, as anonymous users aren't supported."""
+        # return False
         
         
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-
 def is_safe_url(target):
     ref_url = urlparse(request.host_url)
     test_url = urlparse(urljoin(request.host_url, target))

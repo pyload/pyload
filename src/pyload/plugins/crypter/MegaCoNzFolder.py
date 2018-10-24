@@ -61,6 +61,6 @@ class MegaCoNzFolder(Crypter):
             self._("https://mega.co.nz/#N!{}!{}###n={}").format(
                 f["h"], get_node_key(f["k"][f["k"].index(":") + 1 :]), id
             )
-            for _ in res["f"]
+            for f in res["f"]
             if f["t"] == 0 and ":" in f["k"]
         ]

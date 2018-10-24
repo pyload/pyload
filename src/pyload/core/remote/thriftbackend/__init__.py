@@ -13,7 +13,7 @@ from builtins import _
 
 from thrift.server import TServer
 
-from .remote.remote_manager import BackendBase
+from ..remote_manager import BackendBase
 from .processor import Processor
 from .protocol import ProtocolFactory
 from .socket import ServerSocket

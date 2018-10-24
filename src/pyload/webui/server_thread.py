@@ -41,9 +41,9 @@ class WebServer(threading.Thread):
         self.keyfile = core.config.get("ssl", "keyfile")
 
         if self.certfile:
-            server.ssl_certificate = self.certfile
+            self.server.ssl_certificate = self.certfile
         if self.keyfile:
-            server.ssl_private_key = self.keyfile
+            self.server.ssl_private_key = self.keyfile
         
     def run(self):
         self.pyload.log.warning(

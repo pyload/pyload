@@ -18,8 +18,8 @@ from thrift.protocol import TBinaryProtocol
 
 from ast import literal_eval
 
-import Pyload
-from ttypes import *
+from . import pyload as Pyload
+from .ttypes import *
 
 if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print('')

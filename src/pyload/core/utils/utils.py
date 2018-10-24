@@ -50,9 +50,9 @@ def remove_chars(value, repl):
 def save_path(name):
     # os.remove some chars
     if os.name == "nt":
-        return os.remove_chars(name, '/\\?%*:|"<>')
+        return remove_chars(name, '/\\?%*:|"<>')
     else:
-        return os.remove_chars(name, '/\\"')
+        return remove_chars(name, '/\\"')
 
 
 def save_join(*args):

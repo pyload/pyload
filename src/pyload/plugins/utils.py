@@ -24,7 +24,7 @@ import urllib.request
 import xml.sax.saxutils  # TODO: Remove in 0.6.x
 import zlib
 from builtins import ADDONMANAGER, _, map, object, str
-
+from functools import wraps
 import send2trash
 
 
@@ -129,6 +129,7 @@ class Periodical(object):
         self.plugin = plugin
         self.task = task
         self.cb = None
+        self._ = self.plugin.pyload
         self.interval = interval
 
     def set_interval(self, value):
@@ -215,7 +216,7 @@ class SimpleQueue(object):
 
 # NOTE: decorator
 def lock(**kwgs):
-    def decorator(func)
+    def decorator(func):
         @wraps(func)
         def wrapped(self, *args, **kwargs):
             self.lock.acquire(**kwgs)

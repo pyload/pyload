@@ -46,7 +46,7 @@ class TwojlimitPl(MultiAccount):
         return [
             h
             for row in json_data
-            for h in _row["domains"]
+            for h in row["domains"]
             if row["sdownload"] == "0"
         ]
 

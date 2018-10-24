@@ -5,7 +5,7 @@ import time
 from builtins import object
 from heapq import heappop, heappush
 from threading import Lock
-
+from pyload.plugins.utils import lock
 from _thread import start_new_thread
 
 

@@ -6,7 +6,7 @@ from builtins import _
 import flask
 
 from pyload.core.utils.utils import decode, formatSize
-from .helpers import apiver_check, login_required, render_template, toDict
+from ..helpers import apiver_check, login_required, render_template, toDict
 
 bp = flask.Blueprint("json", __name__, url_prefix="/json")
 

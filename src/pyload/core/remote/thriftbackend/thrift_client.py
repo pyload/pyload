@@ -7,7 +7,7 @@ from thrift.transport import TTransport
 from .protocol import Protocol
 # from thrift.transport.TZlibTransport import TZlibTransport
 from .socket import Socket, error
-from .thriftgen import Pyload
+from .thriftgen import pyload as Pyload
 
 # modules should import ttypes from here, when want to avoid importing API
 

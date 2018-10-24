@@ -108,7 +108,7 @@ class MegaCoNz(Account):
                     rsa_private_key[1],
                 )
             )
-            sid = "{:x}".format(rsa.key._decrypt(encrypted_sid))
+            sid = "{:x}".format(rsa._decrypt(encrypted_sid))
             sid = "0" * (-len(sid) % 2) + sid
             sid = "".join(chr(int(sid[i : i + 2], 16)) for i in range(0, len(sid), 2))
             sid = MegaCrypto.base64_encode(sid[:43]).replace("=", "")

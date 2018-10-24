@@ -65,7 +65,7 @@ class CloudFlare(object):
 
                 else:
                     addon_plugin.log_warning(
-                        self._("Unknown CloudFlare response code {}").format(e.code)
+                        addon_plugin._("Unknown CloudFlare response code {}").format(e.code)
                     )
                     raise
 
@@ -81,7 +81,7 @@ class CloudFlare(object):
     @staticmethod
     def _solve_cf_ddos_challenge(addon_plugin, owner_plugin, data):
         try:
-            addon_plugin.log_info(self._("Detected CloudFlare's DDoS protection page"))
+            addon_plugin.log_info(addon_plugin._("Detected CloudFlare's DDoS protection page"))
             # Cloudflare requires a delay before solving the challenge
             owner_plugin.set_wait(5)
 
@@ -114,7 +114,7 @@ class CloudFlare(object):
                 # This may indicate CloudFlare has changed their anti-bot
                 # technique.
                 owner_plugin.log_error(
-                    self._("Unable to parse CloudFlare's DDoS protection page")
+                    addon_plugin._("Unable to parse CloudFlare's DDoS protection page")
                 )
                 return None  #: Tell the exception handler to re-throw the exception
 
@@ -138,7 +138,7 @@ class CloudFlare(object):
 
             captcha_key = captcha.detect_key(data)
             if captcha_key:
-                addon_plugin.log_info(self._("Detected CloudFlare's security check page"))
+                addon_plugin.log_info(addon_plugin._("Detected CloudFlare's security check page"))
 
                 response, challenge = captcha.challenge(captcha_key, data)
                 return owner_plugin.load(
@@ -148,7 +148,7 @@ class CloudFlare(object):
                 )
 
             else:
-                addon_plugin.log_warning(self._("Got unexpected CloudFlare html page"))
+                addon_plugin.log_warning(addon_plugin._("Got unexpected CloudFlare html page"))
                 return None  #: Tell the exception handler to re-throw the exception
 
         except Exception as e:
