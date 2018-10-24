@@ -3,7 +3,6 @@ import json
 import re
 import urllib.parse
 
-
 from ..internal.multihoster import MultiHoster
 
 

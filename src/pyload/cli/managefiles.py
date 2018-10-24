@@ -6,6 +6,7 @@ from builtins import map, range, str
 from itertools import islice
 
 from pyload.core.api import Destination, PackageData
+
 from .handler import Handler
 from .printer import *
 

@@ -2,8 +2,8 @@
 import re
 import time
 
-
 from pyload.core.network.request_factory import getURL as get_url
+
 from ..captcha.ReCaptcha import ReCaptcha
 from ..internal.simplehoster import SimpleHoster
 

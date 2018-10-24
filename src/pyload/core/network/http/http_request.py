@@ -5,9 +5,9 @@ import codecs
 import io
 from builtins import object, range, str
 from http.client import responses
+from itertools import chain
 from logging import getLogger
 from urllib.parse import quote, urlencode
-from itertools import chain
 
 import pycurl
 from pyload.plugins.plugin import Abort
@@ -34,7 +34,9 @@ def myurlencode(data):
     )
 
 
-BAD_STATUS_CODES = tuple(chain((400,), (401,), range(403, 406), range(408, 418), range(500, 506)))
+BAD_STATUS_CODES = tuple(
+    chain((400,), (401,), range(403, 406), range(408, 418), range(500, 506))
+)
 
 PROPRIETARY_RESPONSES = {
     440: "Login Timeout - The client's session has expired and must log in again.",

@@ -6,6 +6,7 @@ import time
 from builtins import str
 
 import pycurl
+
 from ..internal.multiaccount import MultiAccount
 
 

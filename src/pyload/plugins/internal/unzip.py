@@ -3,9 +3,8 @@
 import sys
 import zipfile
 
-from .extractor import (ArchiveError, CRCError, Extractor,
-                                               PasswordError)
 from ..utils import encode
+from .extractor import ArchiveError, CRCError, Extractor, PasswordError
 
 
 class UnZip(Extractor):

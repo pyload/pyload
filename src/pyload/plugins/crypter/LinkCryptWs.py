@@ -8,6 +8,7 @@ import js2py
 from cryptography.fernet import Fernet
 
 import pycurl
+
 from ..internal.crypter import Crypter
 from ..utils import html_unescape, set_cookie
 

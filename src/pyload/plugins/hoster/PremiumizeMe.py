@@ -2,7 +2,6 @@
 import json
 import urllib.parse
 
-
 from ..internal.multihoster import MultiHoster
 
 

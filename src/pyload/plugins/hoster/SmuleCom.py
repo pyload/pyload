@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import re
 
-
 import js2py
 
 from ..internal.simplehoster import SimpleHoster
@@ -73,7 +72,9 @@ class SmuleCom(SimpleHoster):
 
         m = re.search(self.JS_PROCESS_PATTERN, community_js_code)
         if m is None:
-            self.fail(self._("Could not parse the processing function off the javascript"))
+            self.fail(
+                self._("Could not parse the processing function off the javascript")
+            )
 
         process_function = m.group(0)
 

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from pyload.core.network.http.http_request import BadHeader
+
 from ..internal.plugin import Retry
 from ..internal.xfshoster import XFSHoster
 

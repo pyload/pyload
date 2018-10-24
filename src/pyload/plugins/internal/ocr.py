@@ -5,8 +5,9 @@ import subprocess
 from builtins import PKGDIR, map, range, str
 
 from Pillow import Image
-from .plugin import Plugin
+
 from ..utils import encode
+from .plugin import Plugin
 
 # import tempfile
 
@@ -121,7 +122,9 @@ class OCR(Plugin):
             # tmpSub = tempfile.NamedTemporaryFile(suffix=".subset")
             with open(
                 os.path.join(
-                    self.pyload.userdir, ".tmp", "tmpSub_{}.subset".format(self.classname)
+                    self.pyload.userdir,
+                    ".tmp",
+                    "tmpSub_{}.subset".format(self.classname),
                 ),
                 "wb",
             ) as tmpSub:

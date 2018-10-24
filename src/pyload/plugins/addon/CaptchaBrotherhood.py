@@ -10,6 +10,7 @@ from builtins import range
 import pycurl
 from Pillow import Image
 from pyload.core.network.request_factory import getRequest as get_request
+
 from ..internal.addon import Addon
 from ..utils import threaded
 
@@ -154,7 +155,9 @@ class CaptchaBrotherhood(Addon):
             task.setWaiting(100)
             self._process_captcha(task)
         else:
-            self.log_info(self._("Your CaptchaBrotherhood Account has not enough credits"))
+            self.log_info(
+                self._("Your CaptchaBrotherhood Account has not enough credits")
+            )
 
     def captcha_invalid(self, task):
         if task.data["service"] == self.classname and "ticket" in task.data:

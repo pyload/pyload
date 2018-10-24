@@ -2,7 +2,6 @@
 import os
 import re
 
-
 from ..internal.addon import Addon
 from ..utils import threaded
 

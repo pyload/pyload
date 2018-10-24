@@ -4,12 +4,12 @@
 from builtins import object, range, str, zip
 from threading import RLock
 
-from .database_thread import DatabaseThread, style
 from ..datatype.pyfile import PyFile
 from ..datatype.pypackage import PyPackage
 from ..manager.event_manager import (InsertEvent, ReloadAllEvent, RemoveEvent,
-                                          UpdateEvent)
+                                     UpdateEvent)
 from ..utils.utils import formatSize, lock
+from .database_thread import DatabaseThread, style
 
 
 class FileHandler(object):

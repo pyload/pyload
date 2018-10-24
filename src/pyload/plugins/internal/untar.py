@@ -3,8 +3,8 @@
 import sys
 import tarfile
 
-from .extractor import ArchiveError, CRCError, Extractor
 from ..utils import encode
+from .extractor import ArchiveError, CRCError, Extractor
 
 
 class UnTar(Extractor):

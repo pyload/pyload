@@ -3,7 +3,6 @@ import random
 import re
 import urllib.parse
 
-
 from ..internal.simplehoster import SimpleHoster
 
 

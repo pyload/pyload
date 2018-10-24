@@ -10,17 +10,16 @@ import time
 from builtins import PKGDIR
 from urllib.parse import unquote
 
-import flask_login
 import flask
+import flask_login
 
 from pyload.core.utils.utils import formatSize, fs_decode, fs_encode
-from ..filters import unquotepath
-from ..helpers import (clear_session, get_permission, login_required,
-                                    parse_permissions, parse_userdata, permlist,
-                                    render_template, set_permission, set_session,
-                                    toDict)
-from .helpers import pre_processor, base, get_redirect_target
 
+from ..filters import unquotepath
+from ..helpers import (clear_session, get_permission, login_required, parse_permissions,
+                       parse_userdata, permlist, render_template, set_permission,
+                       set_session, toDict)
+from .helpers import base, get_redirect_target, pre_processor
 
 # from flask_login import login_required, login_user, logout_user
 
@@ -30,7 +29,7 @@ bp = flask.Blueprint("app", __name__)
 
 @bp.route(r"/favicon.ico")
 def favicon():
-    filename = os.path.join('img', 'favicon.ico')
+    filename = os.path.join("img", "favicon.ico")
     return flask.send_from_directory(bp.static_folder, filename)
 
 
@@ -41,7 +40,7 @@ def robots():
 
 @bp.route(r"/login", methods=["GET", "POST"])
 def login():
-    if flask.request.method == 'GET':
+    if flask.request.method == "GET":
         return render_template("login.html", proc=[pre_processor])
 
     user = flask.request.form.get("username")
@@ -57,10 +56,10 @@ def login():
     # login_user(user)
 
     set_session(info)
-    flask.flash('Logged in successfully.')
+    flask.flash("Logged in successfully.")
 
     next = get_redirect_target()
-    return flask.redirect(next or flask.url_for('index'))
+    return flask.redirect(next or flask.url_for("index"))
 
 
 @bp.route(r"/logout")

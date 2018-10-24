@@ -11,18 +11,20 @@ from threading import Lock, Thread
 from easy_getch import getch
 
 from pyload.core.api import Destination
-from .addpackage import AddPackage
-from .managefiles import ManageFiles
-from .printer import *
-from pyload.core.remote.thriftbackend.thrift_client import (ConnectionClosed, NoConnection,
-                                                       NoSSL, ThriftClient, WrongLogin)
+from pyload.core.remote.thriftbackend.thrift_client import (ConnectionClosed,
+                                                            NoConnection, NoSSL,
+                                                            ThriftClient, WrongLogin)
 from pyload.core.utils.utils import decode, formatSize
 from pyload.plugins.utils import lock
 
+from .addpackage import AddPackage
+from .managefiles import ManageFiles
+from .printer import *
+
 # if os.name == "nt":
-    # enc = "cp850"
+# enc = "cp850"
 # else:
-    # enc = "utf-8"
+# enc = "utf-8"
 # sys.stdout = codecs.getwriter(enc)(sys.stdout, errors="replace")
 
 
@@ -59,7 +61,8 @@ class Cli(object):
 
             os.system("clear")
             println(
-                1, blue("py") + yellow("Load") + white(self._(" Command Line Interface"))
+                1,
+                blue("py") + yellow("Load") + white(self._(" Command Line Interface")),
             )
             println(2, "")
 
@@ -116,7 +119,9 @@ class Cli(object):
         refresh screen.
         """
 
-        println(1, blue("py") + yellow("Load") + white(self._(" Command Line Interface")))
+        println(
+            1, blue("py") + yellow("Load") + white(self._(" Command Line Interface"))
+        )
         println(2, "")
 
         self.menuline = self.headerHandler.renderHeader(3) + 1
@@ -300,7 +305,9 @@ class Cli(object):
         elif command == "add":
             if len(args) < 2:
                 print(
-                    self._("Please use this syntax: add <Package name> <link> <link2> ...")
+                    self._(
+                        "Please use this syntax: add <Package name> <link> <link2> ..."
+                    )
                 )
                 return
 
@@ -309,7 +316,9 @@ class Cli(object):
         elif command == "add_coll":
             if len(args) < 2:
                 print(
-                    self._("Please use this syntax: add <Package name> <link> <link2> ...")
+                    self._(
+                        "Please use this syntax: add <Package name> <link> <link2> ..."
+                    )
                 )
                 return
 
@@ -412,5 +421,3 @@ class RefreshThread(Thread):
             except Exception as exc:
                 println(2, red(exc))
                 self.cli.reset()
-
-

@@ -10,6 +10,7 @@ from random import choice
 from threading import Event, Lock
 
 import pycurl
+
 from ..datatype.pyfile import PyFile
 from ..network.request_factory import getURL
 from ..thread.decrypter_thread import DecrypterThread
@@ -172,13 +173,16 @@ class ThreadManager(object):
 
         if not os.path.exists(self.pyload.config.get("reconnect", "method")):
             if os.path.exists(
-                os.path.join(self.pyload.userdir, self.pyload.config.get("reconnect", "method")
+                os.path.join(
+                    self.pyload.userdir, self.pyload.config.get("reconnect", "method")
                 )
             ):
                 self.pyload.config.set(
                     "reconnect",
                     "method",
-                    os.path.join(self.pyload.userdir, self.pyload.config.get("reconnect", "method")
+                    os.path.join(
+                        self.pyload.userdir,
+                        self.pyload.config.get("reconnect", "method"),
                     ),
                 )
             else:

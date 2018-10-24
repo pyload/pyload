@@ -7,20 +7,17 @@ import gettext
 import locale
 import os
 import time
-
+from builtins import PKGDIR
 
 from .. import __version__ as PYLOAD_VERSION
 from .. import __version_info__ as PYLOAD_VERSION_INFO
-from builtins import PKGDIR
-
+from ..network.request_factory import RequestFactory
 from .config.config_parser import ConfigParser
 from .log_factory import LoggerFactory
-from ..network.request_factory import RequestFactory
 from .utils.utils import format
 from .utils.utils.fs import availspace, makedirs
 from .utils.utils.layer.safethreading import Event
-from .utils.utils.system import (ionice, renice, set_process_group,
-                                 set_process_user)
+from .utils.utils.system import ionice, renice, set_process_group, set_process_user
 
 
 class Restart(Exception):
@@ -44,9 +41,9 @@ class Exit(Exception):
 #  improve external scripts
 class Core(object):
 
-    LOCALE_DOMAIN = 'core'
-    DEFAULT_USERNAME = 'admin'
-    DEFAULT_PASSWORD = 'pyload'
+    LOCALE_DOMAIN = "core"
+    DEFAULT_USERNAME = "admin"
+    DEFAULT_PASSWORD = "pyload"
 
     @property
     def version(self):
@@ -70,8 +67,7 @@ class Core(object):
         self._do_restart = False
         self._do_exit = False
         self._ = lambda x: x
-        self._debug = self.config.get(
-            'log', 'debug') if debug is None else debug
+        self._debug = self.config.get("log", "debug") if debug is None else debug
 
         self.userdir = os.path.abspath(userdir)
         self.cachedir = os.path.abspath(cachedir)
@@ -109,6 +105,7 @@ class Core(object):
 
     def _init_api(self):
         from .api import Api
+
         self.api = Api(self)
 
     def _init_webserver(self):
@@ -130,7 +127,8 @@ class Core(object):
             self.db.add_user(*userpw)
         if restore:
             self.log.warning(
-                self._('Restored default login credentials `{}|{}`').format(*userpw))
+                self._("Restored default login credentials `{}|{}`").format(*userpw)
+            )
 
     def _init_managers(self):
         self.scheduler = scheduler(self)
@@ -140,38 +138,37 @@ class Core(object):
         self.thm = self.threadManager = ThreadManager(self)
         self.cpm = self.captchaManager = CaptchaManager(self)
         # TODO: Remove builtins.ADDONMANAGER
-        builtins.ADDONMANAGER = self.adm = self.addonmanager = AddonManager(
-            self)
+        builtins.ADDONMANAGER = self.adm = self.addonmanager = AddonManager(self)
         self.rem = self.remotemanager = RemoteManager(self)
 
     def _setup_permissions(self):
-        self.log.debug('Setup permissions...')
+        self.log.debug("Setup permissions...")
 
-        if os.name == 'nt':
+        if os.name == "nt":
             return
 
-        change_group = self.config.get('permission', 'change_group')
-        change_user = self.config.get('permission', 'change_user')
+        change_group = self.config.get("permission", "change_group")
+        change_user = self.config.get("permission", "change_user")
 
         if change_group:
             try:
-                group = self.config.get('permission', 'group')
+                group = self.config.get("permission", "group")
                 set_process_group(group)
             except Exception as exc:
-                self.log.error(self._('Unable to change gid'))
+                self.log.error(self._("Unable to change gid"))
                 self.log.error(exc, exc_info=self.debug)
 
         if change_user:
             try:
-                user = self.config.get('permission', 'user')
+                user = self.config.get("permission", "user")
                 set_process_user(user)
             except Exception as exc:
-                self.log.error(self._('Unable to change uid'))
+                self.log.error(self._("Unable to change uid"))
                 self.log.error(exc, exc_info=self.debug)
 
     def set_language(self, lang):
-        localedir = os.path.join(PKGDIR, 'locale')
-        languages = (locale.locale_alias[lang.lower()].split('_', 1)[0],)
+        localedir = os.path.join(PKGDIR, "locale")
+        languages = (locale.locale_alias[lang.lower()].split("_", 1)[0],)
         self._set_language(self.LOCALE_DOMAIN, localedir, languages)
 
     def _set_language(self, *args, **kwargs):
@@ -182,12 +179,12 @@ class Core(object):
             self._ = trans.gettext
 
     def _setup_language(self):
-        self.log.debug('Setup language...')
+        self.log.debug("Setup language...")
 
-        lang = self.config.get('general', 'language')
+        lang = self.config.get("general", "language")
         if not lang:
             lc = locale.getlocale()[0] or locale.getdefaultlocale()[0]
-            lang = lc.split('_', 1)[0] if lc else 'en'
+            lang = lc.split("_", 1)[0] if lc else "en"
 
         try:
             self.set_language(lang)
@@ -196,44 +193,41 @@ class Core(object):
             self._set_language(self.LOCALE_DOMAIN, fallback=True)
 
     # def _setup_niceness(self):
-        # niceness = self.config.get('general', 'niceness')
-        # renice(niceness=niceness)
-        # ioniceness = int(self.config.get('general', 'ioniceness'))
-        # ionice(niceness=ioniceness)
+    # niceness = self.config.get('general', 'niceness')
+    # renice(niceness=niceness)
+    # ioniceness = int(self.config.get('general', 'ioniceness'))
+    # ionice(niceness=ioniceness)
 
     def _setup_storage(self):
-        self.log.debug('Setup storage...')
+        self.log.debug("Setup storage...")
 
-        storage_folder = self.config.get('general', 'storage_folder')
+        storage_folder = self.config.get("general", "storage_folder")
         # if storage_folder is None:
-            # storage_folder = os.path.join(
-                # builtins.USERDIR, self.DEFAULT_STORAGENAME)
-        self.log.info(self._('Storage: {0}'.format(storage_folder)))
+        # storage_folder = os.path.join(
+        # builtins.USERDIR, self.DEFAULT_STORAGENAME)
+        self.log.info(self._("Storage: {0}".format(storage_folder)))
         makedirs(storage_folder, exist_ok=True)
         avail_space = format.size(availspace(storage_folder))
-        self.log.info(
-            self._('Available storage space: {0}').format(avail_space))
+        self.log.info(self._("Available storage space: {0}").format(avail_space))
 
         self.config.save()  #: save so config files gets filled
 
     def _setup_network(self):
-        self.log.debug('Setup network...')
+        self.log.debug("Setup network...")
 
         # TODO: Move to accountmanager
-        self.log.info(self._('Activating accounts...'))
+        self.log.info(self._("Activating accounts..."))
         self.acm.getAccountInfos()
         # self.scheduler.addJob(0, self.acm.getAccountInfos)
 
         self.log.info(self._("Activating Plugins..."))
         self.adm.coreReady()
 
-
     def _start_servers(self):
         if self.config.get("webui", "enabled"):
             self.webserver.start()
         if self.config.get("remote", "enabled"):
             self.remoteManager.startBackends()
-
 
     def _parse_linkstxt(self):
         link_file = os.path.join(self.userdir, "links.txt")
@@ -244,21 +238,20 @@ class Core(object):
         except Exception as exc:
             self.log.debug(exc)
 
-
     def start(self):
-        self.log.info('Welcome to pyLoad v{0}'.format(self.version))
+        self.log.info("Welcome to pyLoad v{0}".format(self.version))
         if self.debug:
-            self.log.warning('*** DEBUG MODE ***')
+            self.log.warning("*** DEBUG MODE ***")
         try:
-            self.log.debug('Starting pyLoad...')
+            self.log.debug("Starting pyLoad...")
             # self.evm.fire('pyload:starting')
             self._running.set()
 
             self._setup_language()
             self._setup_permissions()
 
-            self.log.info(self._('User directory: {0}').format(self.userdir))
-            self.log.info(self._('Cache directory: {0}').format(self.cachedir))
+            self.log.info(self._("User directory: {0}").format(self.userdir))
+            self.log.info(self._("Cache directory: {0}").format(self.cachedir))
 
             self._setup_storage()
             self._setup_network()
@@ -275,7 +268,7 @@ class Core(object):
             # from meliae import scanner
             # scanner.dump_all_objects(os.path.join(PACKDIR, 'objs.json'))
 
-            self.log.debug('pyLoad is up and running')
+            self.log.debug("pyLoad is up and running")
             # self.evm.fire('pyload:started')
 
             self._start_servers()
@@ -308,13 +301,13 @@ class Core(object):
 
     def restart(self):
         self.stop()
-        self.log.info(self._('Restarting pyLoad...'))
+        self.log.info(self._("Restarting pyLoad..."))
         # self.evm.fire('pyload:restarting')
         self.start()
 
     def terminate(self):
         self.stop()
-        self.log.info(self._('Exiting pyLoad...'))
+        self.log.info(self._("Exiting pyLoad..."))
         # self.tsm.exit()
         # self.db.exit()  # NOTE: Why here?
         self.logfactory.shutdown()
@@ -324,7 +317,7 @@ class Core(object):
 
     def stop(self):
         try:
-            self.log.debug('Stopping pyLoad...')
+            self.log.debug("Stopping pyLoad...")
             # self.evm.fire('pyload:stopping')
 
             if self.webserver.is_alive():

@@ -140,7 +140,9 @@ class UpdateManager(Addon):
             )
 
         except Exception:
-            self.log_warning(self._("Unable to connect to the server to retrieve updates"))
+            self.log_warning(
+                self._("Unable to connect to the server to retrieve updates")
+            )
 
         else:
             res = html.splitlines()
@@ -188,9 +190,13 @@ class UpdateManager(Addon):
             exitcode = self.update_plugins()
 
         elif re.search(r"^\d+(?:\.\d+){0,3}[a-z]?$", newversion):
-            self.log_info(self._("***  New pyLoad {} available  ***").format(newversion))
             self.log_info(
-                self._("***  Get it here: https://github.com/pyload/pyload/releases  ***")
+                self._("***  New pyLoad {} available  ***").format(newversion)
+            )
+            self.log_info(
+                self._(
+                    "***  Get it here: https://github.com/pyload/pyload/releases  ***"
+                )
             )
             self.info["pyload"] = True
             exitcode = 3
@@ -436,7 +442,9 @@ class UpdateManager(Addon):
                         os.remove(filename)
 
                     except OSError as exc:
-                        self.log_warning(self._("Error removing `{}`").format(filename), exc)
+                        self.log_warning(
+                            self._("Error removing `{}`").format(filename), exc
+                        )
 
                     else:
                         plugin_id = (plugin_type, plugin_name)

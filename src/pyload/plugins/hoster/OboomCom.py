@@ -2,7 +2,6 @@
 import json
 import re
 
-
 from ..captcha.ReCaptcha import ReCaptcha
 from ..internal.hoster import Hoster
 

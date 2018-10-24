@@ -4,6 +4,7 @@
 from builtins import str
 
 from pyload.plugins.plugin import Abort, Fail, Retry
+
 from .plugin_thread import PluginThread
 
 
@@ -42,7 +43,9 @@ class DecrypterThread(PluginThread):
 
         except NotImplementedError:
             self.m.log.error(
-                self._("Plugin {} is missing a function.").format(self.active.pluginname)
+                self._("Plugin {} is missing a function.").format(
+                    self.active.pluginname
+                )
             )
             return
 

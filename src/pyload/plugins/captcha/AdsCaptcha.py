@@ -2,7 +2,6 @@
 import random
 import re
 
-
 from ..internal.captcha_service import CaptchaService
 
 

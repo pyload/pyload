@@ -7,6 +7,7 @@ from queue import Queue
 
 import pycurl
 from pyload.plugins.plugin import Abort, Fail, Reconnect, Retry, SkipDownload
+
 from .plugin_thread import PluginThread
 
 
@@ -104,7 +105,9 @@ class DownloadThread(PluginThread):
 
                 if msg == "offline":
                     pyfile.setStatus("offline")
-                    self.m.log.warning(self._("Download is offline: {}").format(pyfile.name))
+                    self.m.log.warning(
+                        self._("Download is offline: {}").format(pyfile.name)
+                    )
                 elif msg == "temp. offline":
                     pyfile.setStatus("temp. offline")
                     self.m.log.warning(
@@ -148,7 +151,9 @@ class DownloadThread(PluginThread):
                             break
 
                     if pyfile.abort:
-                        self.m.log.info(self._("Download aborted: {}").format(pyfile.name))
+                        self.m.log.info(
+                            self._("Download aborted: {}").format(pyfile.name)
+                        )
                         pyfile.setStatus("aborted")
 
                         self.clean(pyfile)

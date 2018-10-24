@@ -2,9 +2,9 @@
 import json
 import re
 
-
 import pycurl
 from pyload.core.network.http.http_request import BadHeader
+
 from ..captcha.AdsCaptcha import AdsCaptcha
 from ..captcha.ReCaptcha import ReCaptcha
 from ..captcha.SolveMedia import SolveMedia

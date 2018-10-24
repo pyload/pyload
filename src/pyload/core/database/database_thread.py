@@ -25,6 +25,7 @@ class style(object):
         @staticmethod
         def x(*args, **kwargs):
             return fn(cls.db, *args, **kwargs)
+
         return x
 
     @classmethod
@@ -32,6 +33,7 @@ class style(object):
         @staticmethod
         def x(*args, **kwargs):
             return cls.db.queue(fn, *args, **kwargs)
+
         return x
 
     @classmethod
@@ -39,6 +41,7 @@ class style(object):
         @staticmethod
         def x(*args, **kwargs):
             return cls.db.async_(fn, *args, **kwargs)
+
         return x
 
 
@@ -96,8 +99,8 @@ class DatabaseThread(Thread):
 
     subs = []
 
-    DB_FILENAME = 'pyload.db'
-    VERSION_FILENAME = 'db.version'
+    DB_FILENAME = "pyload.db"
+    VERSION_FILENAME = "db.version"
 
     def __init__(self, core):
         super().__init__()
@@ -123,7 +126,6 @@ class DatabaseThread(Thread):
         main loop, which executes commands.
         """
         convert = self._checkVersion()  #: returns None or current version
-
 
         self.conn = sqlite3.connect(self.db_path, isolation_level=None)
         os.chmod(self.db_path, 0o600)

@@ -4,8 +4,8 @@ import re
 import time
 from builtins import range
 
-from .account import Account
 from ..utils import decode, remove_chars, uniqify
+from .account import Account
 
 
 class MultiAccount(Account):
@@ -338,7 +338,9 @@ class MultiAccount(Account):
 
                 else:
                     self.log_error(
-                        self._("Could not load hoster list - invalid account, deactivating")
+                        self._(
+                            "Could not load hoster list - invalid account, deactivating"
+                        )
                     )
 
                 self.deactivate()
@@ -375,7 +377,9 @@ class MultiAccount(Account):
 
                     else:
                         self.log_error(
-                            self._("Could not load hoster list - login failed, deactivating")
+                            self._(
+                                "Could not load hoster list - login failed, deactivating"
+                            )
                         )
 
                     self.deactivate()

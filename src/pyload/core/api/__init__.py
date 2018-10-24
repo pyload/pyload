@@ -1144,7 +1144,7 @@ class Api(Iface):
         :return: dict with info, empty when login is incorrect
         """
         # if self.pyload.config.get("remote", "nolocalauth") and remoteip == "127.0.0.1":
-            # return "local"
+        # return "local"
 
         return self.pyload.db.checkAuth(username, password)
 
@@ -1163,12 +1163,10 @@ class Api(Iface):
         else:
             return False
 
-
     # TODO: add security permission check
     # remove?
     def get_userdir(self):
         return os.path.abspath(self.pyload.userdir)
-
 
     @permission(PERMS.ALL)
     def getUserData(self, username, password):

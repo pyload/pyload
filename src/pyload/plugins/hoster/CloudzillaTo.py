@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import re
 
-
 from ..internal.simplehoster import SimpleHoster
 
 

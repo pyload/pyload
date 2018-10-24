@@ -4,6 +4,7 @@ import re
 
 from pyload.core.network.cookie_jar import CookieJar
 from pyload.core.network.http.http_request import HTTPRequest
+
 from ..internal.plugin import Abort
 from ..internal.simplehoster import SimpleHoster
 

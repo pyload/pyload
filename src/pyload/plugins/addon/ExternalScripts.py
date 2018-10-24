@@ -171,7 +171,8 @@ class ExternalScripts(Addon):
 
             except Exception as exc:
                 self.log_error(
-                    self._("Runtime error: {}").format(file), exc or self._("Unknown error")
+                    self._("Runtime error: {}").format(file),
+                    exc or self._("Unknown error"),
                 )
 
             else:

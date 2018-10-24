@@ -5,6 +5,7 @@ import urllib.parse
 from builtins import range
 
 from pyload.core.network.http.http_request import BadHeader
+
 from ..internal.hoster import Hoster
 
 
@@ -90,5 +91,7 @@ class Http(Hoster):
         except Exception:
             pass
 
-        self.log_warning(self._("Check result: ") + errmsg, self._("Waiting 1 minute and retry"))
+        self.log_warning(
+            self._("Check result: ") + errmsg, self._("Waiting 1 minute and retry")
+        )
         self.retry(3, 60, errmsg)

@@ -2,45 +2,46 @@
 # @author: RaNaN
 
 
+from functools import wraps
+from urllib.parse import urljoin, urlparse
+
 import flask
-import flask_themes2
 import flask_login
+import flask_themes2
+from flask import request
 
 from pyload.core.api import PERMS, ROLE, has_permission
-from urllib.parse import urlparse, urljoin
-from flask import request
-from functools import wraps
 
 # class User(UserMixin):
 
-    # def __init__(self, id):
-        # self.id = id
+# def __init__(self, id):
+# self.id = id
 
-    # def is_active(self):
-        # """True, as all users are active."""
-        # return True
+# def is_active(self):
+# """True, as all users are active."""
+# return True
 
-    # def get_id(self):
-        # """Return the email address to satisfy Flask-Login's requirements."""
-        # return self.email
+# def get_id(self):
+# """Return the email address to satisfy Flask-Login's requirements."""
+# return self.email
 
-    # def is_authenticated(self):
-        # """Return True if the user is authenticated."""
-        # return self.authenticated
+# def is_authenticated(self):
+# """Return True if the user is authenticated."""
+# return self.authenticated
 
-    # def is_anonymous(self):
-        # """False, as anonymous users aren't supported."""
-        # return False
+# def is_anonymous(self):
+# """False, as anonymous users aren't supported."""
+# return False
 
 
 def is_safe_url(target):
     ref_url = urlparse(request.host_url)
     test_url = urlparse(urljoin(request.host_url, target))
-    return test_url.scheme in ('http', 'https') and ref_url.netloc == test_url.netloc
+    return test_url.scheme in ("http", "https") and ref_url.netloc == test_url.netloc
 
 
 def get_redirect_target():
-    for target in request.values.get('next'), request.referrer:
+    for target in request.values.get("next"), request.referrer:
         if not target:
             continue
         if is_safe_url(target):
@@ -184,7 +185,7 @@ def login_required(perm=None):
         @wraps(func)
         def wrapper(*args, **kwargs):
             if flask.request.headers.get("X-Requested-With") == "XMLHttpRequest":
-                    return "Forbidden", 403
+                return "Forbidden", 403
 
             s = flask.session
             if s.get("name", None) and s.get("authenticated", False):

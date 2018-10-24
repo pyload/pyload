@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 
-from .simplecrypter import SimpleCrypter
 from ..utils import set_cookie
+from .simplecrypter import SimpleCrypter
 
 
 class XFSCrypter(SimpleCrypter):

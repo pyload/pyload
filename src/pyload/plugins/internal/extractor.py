@@ -3,8 +3,8 @@
 import os
 import re
 
-from .plugin import Plugin
 from ..utils import encode
+from .plugin import Plugin
 
 
 class ArchiveError(Exception):

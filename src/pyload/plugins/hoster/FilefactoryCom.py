@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import re
 
-
 from pyload.core.network.request_factory import getURL as get_url
+
 from ..internal.base import parse_fileInfo
 from ..internal.simplehoster import SimpleHoster
 

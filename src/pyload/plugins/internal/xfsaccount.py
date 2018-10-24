@@ -3,9 +3,8 @@ import re
 import time
 import urllib.parse
 
-
-from .account import Account
 from ..utils import parse_html_form, parse_time, set_cookie
+from .account import Account
 
 
 class XFSAccount(Account):

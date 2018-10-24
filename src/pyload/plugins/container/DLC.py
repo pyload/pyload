@@ -2,10 +2,9 @@
 import re
 import xml.dom.minidom
 
-
+from cryptography.fernet import Fernet
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
-from cryptography.fernet import Fernet
 
 from ..internal.container import Container
 from ..utils import decode, encode

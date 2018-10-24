@@ -2,7 +2,6 @@
 import json
 import re
 
-
 from ..captcha.ReCaptcha import ReCaptcha
 from ..internal.simplehoster import SimpleHoster
 from ..utils import seconds_to_midnight
@@ -49,7 +48,9 @@ class ExtabitCom(SimpleHoster):
         if m is not None:
             self.wait(int(m.group(1)) * 60, True)
         elif "The daily downloads limit from your IP is exceeded" in self.data:
-            self.log_warning(self._("You have reached your daily downloads limit for today"))
+            self.log_warning(
+                self._("You have reached your daily downloads limit for today")
+            )
             self.wait(seconds_to_midnight(), True)
 
         self.log_debug("URL: " + self.req.http.lastEffectiveURL)

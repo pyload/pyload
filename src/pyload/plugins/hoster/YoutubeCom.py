@@ -15,6 +15,7 @@ from xml.dom.minidom import parseString as parse_xml
 
 from pyload.core.network.cookie_jar import CookieJar
 from pyload.core.network.http.http_request import HTTPRequest
+
 from ..internal.hoster import Hoster
 from ..internal.plugin import Abort, Skip
 from ..utils import exists, isexecutable, renice, replace_patterns, which

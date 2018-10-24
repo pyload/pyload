@@ -6,8 +6,8 @@ from builtins import str
 
 from ..api import OnlineStatus
 from ..datatype.pyfile import PyFile
-from .plugin_thread import PluginThread
 from ..utils.packagetools import parseNames
+from .plugin_thread import PluginThread
 
 
 class InfoThread(PluginThread):

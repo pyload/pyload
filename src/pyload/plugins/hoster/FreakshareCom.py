@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import re
 
-
 from ..captcha.ReCaptcha import ReCaptcha
 from ..internal.hoster import Hoster
 from ..utils import seconds_to_midnight

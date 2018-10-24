@@ -2,9 +2,8 @@
 import os
 import urllib.parse
 
-
-from .crypter import Crypter
 from ..utils import encode, exists
+from .crypter import Crypter
 
 
 class Container(Crypter):

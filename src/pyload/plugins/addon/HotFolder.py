@@ -3,7 +3,6 @@ import os
 import shutil
 import time
 
-
 from ..internal.addon import Addon
 from ..utils import encode
 

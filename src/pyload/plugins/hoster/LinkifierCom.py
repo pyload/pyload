@@ -4,6 +4,7 @@ import hashlib
 import json
 
 import pycurl
+
 from ..internal.multihoster import MultiHoster
 from ..utils import seconds_to_midnight
 

@@ -4,6 +4,7 @@ from builtins import str
 
 import pycurl
 from pyload.core.network.request_factory import getRequest as get_request
+
 from ..internal.notifier import Notifier
 
 

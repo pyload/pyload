@@ -3,6 +3,7 @@
 import json
 
 from pyload.core.network.request_factory import getURL as get_url
+
 from ..internal.simplecrypter import SimpleCrypter
 
 

@@ -7,9 +7,8 @@ from builtins import range
 
 from ..captcha.ReCaptcha import ReCaptcha
 from ..captcha.SolveMedia import SolveMedia
+from ..utils import html_unescape, parse_time, seconds_to_midnight, set_cookie
 from .simplehoster import SimpleHoster
-from ..utils import (html_unescape, parse_time, seconds_to_midnight,
-                                  set_cookie)
 
 
 class XFSHoster(SimpleHoster):
@@ -127,7 +126,9 @@ class XFSHoster(SimpleHoster):
 
     def handle_multi(self, pyfile):
         if not self.account:
-            self.fail(self._("Only registered or premium users can use url leech feature"))
+            self.fail(
+                self._("Only registered or premium users can use url leech feature")
+            )
 
         #: Only tested with easybytez.com
         self.data = self.load("http://www.{}/".format(self.PLUGIN_DOMAIN))
@@ -166,7 +167,8 @@ class XFSHoster(SimpleHoster):
 
         elif "today" in stmsg:
             self.retry(
-                wait=seconds_to_midnight(), msg=self._("You've used all Leech traffic today")
+                wait=seconds_to_midnight(),
+                msg=self._("You've used all Leech traffic today"),
             )
 
         else:
@@ -192,7 +194,9 @@ class XFSHoster(SimpleHoster):
         if not inputs:
             action, inputs = self.parse_html_form("F1")
             if not inputs:
-                self.retry(msg=self.info.get("error") or self._("TEXTAREA F1 not found"))
+                self.retry(
+                    msg=self.info.get("error") or self._("TEXTAREA F1 not found")
+                )
 
         self.log_debug(inputs)
 

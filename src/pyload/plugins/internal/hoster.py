@@ -6,9 +6,10 @@ import re
 from builtins import range
 
 from pyload.core.network.http.http_request import BadHeader
+
+from ..utils import encode, exists, parse_name, safejoin
 from .base import Base
 from .plugin import Fail
-from ..utils import encode, exists, parse_name, safejoin
 
 
 class Hoster(Base):
@@ -338,7 +339,8 @@ class Hoster(Base):
 
                 except OSError as exc:
                     self.log_warning(
-                        self._("Error renaming `{}` to `{}`").format(newname, safename), exc
+                        self._("Error renaming `{}` to `{}`").format(newname, safename),
+                        exc,
                     )
                     safename = newname
 

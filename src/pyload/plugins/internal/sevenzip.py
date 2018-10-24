@@ -5,9 +5,8 @@ import re
 import subprocess
 from builtins import PKGDIR, filter, map
 
-from .extractor import (ArchiveError, CRCError, Extractor,
-                                               PasswordError)
 from ..utils import encode, renice
+from .extractor import ArchiveError, CRCError, Extractor, PasswordError
 
 
 class SevenZip(Extractor):

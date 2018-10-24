@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import re
 
-
 from .plugin import Fail
 from .simplehoster import SimpleHoster
 

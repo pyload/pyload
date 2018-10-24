@@ -4,6 +4,7 @@ import hashlib
 import json
 
 import pycurl
+
 from ..internal.multiaccount import MultiAccount
 
 

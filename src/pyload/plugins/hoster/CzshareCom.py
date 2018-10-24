@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import re
 
-
 from ..internal.simplehoster import SimpleHoster
 from ..utils import parse_size
 
@@ -66,7 +65,9 @@ class CzshareCom(SimpleHoster):
                 )
             )
             self.log_info(
-                self._("User {} has %i KiB left").format(self.account.user, credit >> 10)
+                self._("User {} has %i KiB left").format(
+                    self.account.user, credit >> 10
+                )
             )
             if credit < self.pyfile.size:
                 self.log_info(

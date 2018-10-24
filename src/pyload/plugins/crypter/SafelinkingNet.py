@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 import json
 
-
 import pycurl
 from pyload.core.network.http.http_request import BadHeader
+
 from ..captcha.SolveMedia import SolveMedia
 from ..internal.crypter import Crypter
 

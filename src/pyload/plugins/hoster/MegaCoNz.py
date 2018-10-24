@@ -12,6 +12,7 @@ import Cryptodome.Cipher.AES
 import Cryptodome.Util.Counter
 
 from pyload.core.network.http.http_request import BadHeader
+
 from ..internal.hoster import Hoster
 from ..utils import decode, encode, exists
 
@@ -124,7 +125,7 @@ class MegaCrypto(object):
         data = MegaCrypto.base64_decode(data)
         return sum(
             (
-                MegaCrypto.str_to_a32(MegaCrypto.cbc_decrypt(data[i: i + 16], key))
+                MegaCrypto.str_to_a32(MegaCrypto.cbc_decrypt(data[i : i + 16], key))
                 for i in range(0, len(data), 16)
             ),
             (),
@@ -138,7 +139,7 @@ class MegaCrypto(object):
         data = MegaCrypto.base64_decode(data)
         return sum(
             (
-                MegaCrypto.str_to_a32(MegaCrypto.cbc_encrypt(data[i: i + 16], key))
+                MegaCrypto.str_to_a32(MegaCrypto.cbc_encrypt(data[i : i + 16], key))
                 for i in range(0, len(data), 16)
             ),
             (),
@@ -272,7 +273,9 @@ class MegaClient(object):
 
         elif ecode in (1, 4, 6, 10, 15, 21):
             self.plugin.retry(
-                max_tries=5, wait_time=30, reason=self._("Error code: [{}]").format(-ecode)
+                max_tries=5,
+                wait_time=30,
+                reason=self._("Error code: [{}]").format(-ecode),
             )
 
         else:

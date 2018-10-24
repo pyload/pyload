@@ -2,42 +2,29 @@
 # @author: vuolter
 
 import os
-from builtins import str, PKGDIR
-import jinja2
-from pyload.core.utils.utils import formatSize
+from builtins import PKGDIR, str
+
 import flask
-
-from pyload.core.network.http.http_request import BAD_STATUS_CODES as BAD_HTTP_STATUS_CODES
-
-# from flask_static_compress import FlaskStaticCompress
-from flask_minify import minify
-from .settings import get_config
-from flask_themes2 import Themes
-
+import jinja2
+from flask.logging import default_handler
+# from flask_talisman import Talisman
+from flask_babel import Babel
 from flask_compress import Compress
 # from flask_bcrypt import Bcrypt
 # from flask_caching import Cache
 from flask_debugtoolbar import DebugToolbarExtension
+# from flask_static_compress import FlaskStaticCompress
+from flask_minify import minify
+from flask_themes2 import Themes
 
-# from flask_talisman import Talisman
-from flask_babel import Babel
-from .helpers import pre_processor
-from .blueprints import (
-    api_blueprint,
-    cnl_blueprint,
-    json_blueprint,
-    app_blueprint,
-)
-from .filters import (
-    date,
-    path_make_absolute,
-    path_make_relative,
-    quotepath,
-    truncate,
-)
-from .helpers import render_template
-from flask.logging import default_handler
+from pyload.core.network.http.http_request import (
+    BAD_STATUS_CODES as BAD_HTTP_STATUS_CODES)
+from pyload.core.utils.utils import formatSize
 
+from .blueprints import api_blueprint, app_blueprint, cnl_blueprint, json_blueprint
+from .filters import date, path_make_absolute, path_make_relative, quotepath, truncate
+from .helpers import pre_processor, render_template
+from .settings import get_config
 
 APP_ROOT_PATH = os.path.join(PKGDIR, "webui", "app")
 
@@ -52,12 +39,7 @@ JINJA_FILTERS = {
     "getitem": lambda x, y: x.__getitem__(y),
 }
 
-BLUEPRINTS = [
-    api_blueprint.bp,
-    cnl_blueprint.bp,
-    json_blueprint.bp,
-    app_blueprint.bp,
-]
+BLUEPRINTS = [api_blueprint.bp, cnl_blueprint.bp, json_blueprint.bp, app_blueprint.bp]
 
 
 def setup_config(app, config):
@@ -95,12 +77,12 @@ def setup_extensions(app):
 
     # @login_manager.user_loader
     # def load_user(userid):
-        # return User(userid)
+    # return User(userid)
 
     # @login_manager.unauthorized_handler
     # def unauthorized():
-        # messages = ["You dont have permission to access this page."]
-        # return base(messages)
+    # messages = ["You dont have permission to access this page."]
+    # return base(messages)
 
 
 def setup_error_handlers(app):
@@ -110,16 +92,21 @@ def setup_error_handlers(app):
         """Render error template."""
         if response.is_json:
             json_obj = response.get_json()
-            error_msg = json_obj.get('error', 'Server Error')
-            trace_msg = json_obj.get('traceback', "No Traceback Available").replace("\n", "<br>")
+            error_msg = json_obj.get("error", "Server Error")
+            trace_msg = json_obj.get("traceback", "No Traceback Available").replace(
+                "\n", "<br>"
+            )
         else:
-            error_msg = str(response.data) or 'Server Error'
+            error_msg = str(response.data) or "Server Error"
             trace_msg = "No Traceback Available"
 
         app.logger.error("Error {}: {}".format(response.status, error_msg))
 
         messages = [response.status, error_msg, trace_msg]
-        return render_template("error.html", {"messages": messages}, [pre_processor]), response.status_code
+        return (
+            render_template("error.html", {"messages": messages}, [pre_processor]),
+            response.status_code,
+        )
 
     for errcode in BAD_HTTP_STATUS_CODES:
         app.register_error_handler(errcode, render_error)

@@ -2,8 +2,8 @@
 import json
 import time
 
-
 from pyload.core.network.http.http_request import BadHeader
+
 from ..internal.multiaccount import MultiAccount
 
 

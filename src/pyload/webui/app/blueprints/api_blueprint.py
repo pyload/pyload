@@ -9,6 +9,7 @@ import flask
 from flask.json import jsonify
 
 from pyload.core.api import BaseObject
+
 from ..helpers import clear_session, set_session, toDict
 
 bp = flask.Blueprint("api", __name__, url_prefix="/api")
@@ -38,13 +39,13 @@ def call_api(func, args=""):
         return "Unauthorized", 401
         # s = flask.session
         # if "session" in flask.request.form:
-            # s = s.get_by_id(flask.request.form["session"])
+        # s = s.get_by_id(flask.request.form["session"])
 
         # if not s or not s.get("authenticated", False):
-            # return "Forbidden", 403
+        # return "Forbidden", 403
 
         # if not api.isAuthorized(func, {"role": s["role"], "permission": s["perms"]}):
-            # return "Unauthorized", 401
+        # return "Unauthorized", 401
 
     args = args.split("/")
     kwargs = {}
@@ -60,9 +61,7 @@ def call_api(func, args=""):
         return callApi(func, *args, **kwargs)
     except Exception as exc:
         return (
-            jsonify(
-                {"error": exc.message, "traceback": traceback.format_exc()}
-            ),
+            jsonify({"error": exc.message, "traceback": traceback.format_exc()}),
             500,
         )
 
@@ -103,7 +102,7 @@ def login():
     # login_user(user)
 
     s = set_session(info)
-    flask.flash('Logged in successfully.')
+    flask.flash("Logged in successfully.")
 
     # get the session id by dirty way, documentations seems wrong
     try:

@@ -2,7 +2,6 @@
 import inspect
 import re
 
-
 from ..internal.addon import Addon
 
 

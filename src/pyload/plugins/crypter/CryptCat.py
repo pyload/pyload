@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import re
 
-
 from ..internal.simplecrypter import SimpleCrypter
 
 

@@ -2,9 +2,9 @@
 import json
 import re
 
-
 from pyload.core.datatype.pyfile import statusMap
 from pyload.core.network.request_factory import getURL as get_url
+
 from ..internal.hoster import Hoster
 
 

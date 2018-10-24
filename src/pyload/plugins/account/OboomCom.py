@@ -2,7 +2,6 @@
 
 import json
 
-
 from beaker.crypto.pbkdf2 import PBKDF2
 
 from ..internal.account import Account

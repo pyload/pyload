@@ -4,12 +4,13 @@
 from builtins import REQUESTS, object
 from threading import Lock
 
+from pyload.plugins.utils import lock
+
 from .browser import Browser
 from .bucket import Bucket
 from .cookie_jar import CookieJar
 from .http.http_request import HTTPRequest
 from .xdcc.xdcc_request import XDCCRequest
-from pyload.plugins.utils import lock
 
 
 class RequestFactory(object):

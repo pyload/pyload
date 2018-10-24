@@ -3,24 +3,26 @@
 
 import builtins
 from builtins import object, str
+from functools import wraps
 from threading import RLock
 from types import MethodType
 
 from _thread import start_new_thread
-from .plugin_manager import literal_eval
+
 from ..thread.addon_thread import AddonThread
 from ..utils.utils import lock
-from functools import wraps
+from .plugin_manager import literal_eval
 
 
 def try_catch(func):
-        @wraps
-        def wrapper(self, *args):
-            try:
-                return func(self, *args)
-            except Exception as exc:
-                self.log.error(self._("Error executing addons: {}").format(exc))
-        return wrapper
+    @wraps
+    def wrapper(self, *args):
+        try:
+            return func(self, *args)
+        except Exception as exc:
+            self.log.error(self._("Error executing addons: {}").format(exc))
+
+    return wrapper
 
 
 class AddonManager(object):
@@ -67,7 +69,9 @@ class AddonManager(object):
         self.events = {}  #: contains events
 
         # registering callback for config event
-        self.pyload.config.pluginCB = MethodType(self.dispatchEvent, "pluginConfigChanged")
+        self.pyload.config.pluginCB = MethodType(
+            self.dispatchEvent, "pluginConfigChanged"
+        )
 
         self.addEvent("pluginConfigChanged", self.manageAddons)
 
@@ -119,10 +123,16 @@ class AddonManager(object):
                     deactive.append(pluginname)
 
             except Exception:
-                self.pyload.log.warning(self._("Failed activating {}").format(pluginname))
+                self.pyload.log.warning(
+                    self._("Failed activating {}").format(pluginname)
+                )
 
-        self.pyload.log.info(self._("Activated plugins: {}").format(", ".join(sorted(active))))
-        self.pyload.log.info(self._("Deactivate plugins: {}").format(", ".join(sorted(deactive))))
+        self.pyload.log.info(
+            self._("Activated plugins: {}").format(", ".join(sorted(active)))
+        )
+        self.pyload.log.info(
+            self._("Deactivate plugins: {}").format(", ".join(sorted(deactive)))
+        )
 
         self.plugins = plugins
 

@@ -2,7 +2,6 @@
 import json
 import re
 
-
 from ..internal.hoster import Hoster
 
 

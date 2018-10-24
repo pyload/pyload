@@ -2,7 +2,6 @@
 
 import re
 
-
 from ..internal.simplehoster import SimpleHoster
 
 

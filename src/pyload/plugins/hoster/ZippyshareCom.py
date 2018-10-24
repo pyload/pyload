@@ -8,6 +8,7 @@ import urllib.request
 import js2py
 
 import BeautifulSoup
+
 from ..captcha.ReCaptcha import ReCaptcha
 from ..internal.simplehoster import SimpleHoster
 
@@ -101,9 +102,7 @@ class ZippyshareCom(SimpleHoster):
         for m in re.findall(eltRE, " ".join(scripts)):
             JSid, JSattr = m[0], m[3]
             values = [
-                f
-                for f in (elt.get(JSattr, None) for elt in soup.findAll(id=JSid))
-                if f
+                f for f in (elt.get(JSattr, None) for elt in soup.findAll(id=JSid)) if f
             ]
             if values:
                 inits.append(

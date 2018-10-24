@@ -90,7 +90,9 @@ class IRC(object):
         Connect to the IRC server and wait for RPL_WELCOME message.
         """
         if self.connected:
-            self.plugin.log_warning(self._("Already connected to server, not connecting"))
+            self.plugin.log_warning(
+                self._("Already connected to server, not connecting")
+            )
             return False
 
         self.plugin.log_info(self._("Connecting to: {}:{}").format(host, port))
@@ -139,7 +141,9 @@ class IRC(object):
             self.connected = False
 
         else:
-            self.plugin.log_warning(self._("Not connected to server, cannot disconnect"))
+            self.plugin.log_warning(
+                self._("Not connected to server, cannot disconnect")
+            )
 
         self.irc_sock.close()
 
@@ -320,7 +324,9 @@ class IRC(object):
                 self.plugin.log_info(self._("Got invite to #{}").format(chan))
 
             else:
-                self.plugin.log_info(self._("PrivMsg: <{}> {}").format(sender_nick, text))
+                self.plugin.log_info(
+                    self._("PrivMsg: <{}> {}").format(sender_nick, text)
+                )
 
             break
 
@@ -445,9 +451,9 @@ class IRC(object):
                     )
                     if m:
                         self.plugin.log_debug(
-                            self._("Bot '{}' acknowledged resume at position {}").format(
-                                sender_nick, m.group("RESUME_POS")
-                            )
+                            self._(
+                                "Bot '{}' acknowledged resume at position {}"
+                            ).format(sender_nick, m.group("RESUME_POS"))
                         )
                         return int(m.group("RESUME_POS"))
 
@@ -517,7 +523,9 @@ class IRC(object):
 
         else:
             if len(info) == 0:
-                self.plugin.log_error(self._("XDCC Bot '{}' did not answer").format(bot))
+                self.plugin.log_error(
+                    self._("XDCC Bot '{}' did not answer").format(bot)
+                )
                 return {"status": "offline", "msg": "XDCC Bot did not answer"}
 
         return info
@@ -666,8 +674,12 @@ class XDCC(Hoster):
                                         > 90
                                     ):
                                         self.irc_client.disconnect_server()
-                                        self.log_error(self._("XDCC Bot did not answer"))
-                                        self.retry(3, 60, self._("XDCC Bot did not answer"))
+                                        self.log_error(
+                                            self._("XDCC Bot did not answer")
+                                        )
+                                        self.retry(
+                                            3, 60, self._("XDCC Bot did not answer")
+                                        )
 
                             origin, command, args = self.irc_client.get_irc_command()
                             self.proccess_irc_command(origin, command, args)
@@ -691,10 +703,14 @@ class XDCC(Hoster):
 
                     else:
                         self.log_error(
-                            self._("Failed due to socket errors. Code: {}").format(err_no)
+                            self._("Failed due to socket errors. Code: {}").format(
+                                err_no
+                            )
                         )
                         self.fail(
-                            self._("Failed due to socket errors. Code: {}").format(err_no)
+                            self._("Failed due to socket errors. Code: {}").format(
+                                err_no
+                            )
                         )
 
                 else:
@@ -702,7 +718,9 @@ class XDCC(Hoster):
                     self.log_error(
                         self._("Failed due to socket errors: '{}'").format(err_msg)
                     )
-                    self.fail(self._("Failed due to socket errors: '{}'").format(err_msg))
+                    self.fail(
+                        self._("Failed due to socket errors: '{}'").format(err_msg)
+                    )
 
         self.log_error(self._("Server blocked our ip, retry again later manually"))
         self.fail(self._("Server blocked our ip, retry again later manually"))

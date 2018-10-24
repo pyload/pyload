@@ -10,6 +10,7 @@ from threading import Thread
 
 import pycurl
 from pyload.core.api import FileDoesNotExists, PackageDoesNotExists
+
 from ..internal.notifier import Notifier
 from ..utils import format_size
 
@@ -89,7 +90,9 @@ class IRC(Thread, Notifier):
 
             url = re.search(r"src='([^']+)'", html).group(1)
             self.response(self._("New Captcha Request: {}").format(url))
-            self.response(self._("Answer with 'c {} text on the captcha'").format(task.id))
+            self.response(
+                self._("Answer with 'c {} text on the captcha'").format(task.id)
+            )
 
     def run(self):
         #: Connect to IRC etc.

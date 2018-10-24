@@ -4,6 +4,7 @@ import json
 import re
 
 import pycurl
+
 from ..internal.crypter import Crypter
 from ..utils import replace_patterns
 

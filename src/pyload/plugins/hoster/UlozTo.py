@@ -6,6 +6,7 @@ import re
 from builtins import str
 
 import pycurl
+
 from ..internal.simplehoster import SimpleHoster
 from ..utils import parse_name, timestamp
 

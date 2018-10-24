@@ -25,6 +25,7 @@ import xml.sax.saxutils  # TODO: Remove in 0.6.x
 import zlib
 from builtins import ADDONMANAGER, map, object, str
 from functools import wraps
+
 import send2trash
 
 
@@ -224,7 +225,9 @@ def lock(**kwgs):
                 return func(self, *args, **kwargs)
             finally:
                 self.lock.release()
+
         return wrapped
+
     return decorator
 
 

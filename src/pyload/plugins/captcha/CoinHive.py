@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 import re
 
-
 from ..internal.captcha_service import CaptchaService
 
 

@@ -3,9 +3,7 @@
 
 import threading
 
-
-from cheroot.wsgi import PathInfoDispatcher
-from cheroot.wsgi import Server
+from cheroot.wsgi import PathInfoDispatcher, Server
 
 from .app import create_app
 

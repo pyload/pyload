@@ -4,7 +4,6 @@ import urllib.error
 import urllib.parse
 import urllib.request
 
-
 from ..internal.simplehoster import SimpleHoster
 
 

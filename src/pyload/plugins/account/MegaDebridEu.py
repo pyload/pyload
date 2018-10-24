@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 import json
-
 from functools import reduce
 
 import pycurl
 from pyload.core.network.http.http_request import BadHeader
+
 from ..internal.multiaccount import MultiAccount
 from ..utils import encode
 
@@ -61,7 +61,9 @@ class MegaDebridEu(MultiAccount):
                 self.log_error(self._("Unable to retrieve hosters list: Banned IP"))
 
             else:
-                self.log_error(self._("Unable to retrieve hosters list: error {}"), exc.code)
+                self.log_error(
+                    self._("Unable to retrieve hosters list: error {}"), exc.code
+                )
 
         else:
             if res["response_code"] == "ok":
@@ -76,7 +78,9 @@ class MegaDebridEu(MultiAccount):
 
             else:
                 self.log_error(
-                    self._("Unable to retrieve hoster list: {}").format(res["response_text"])
+                    self._("Unable to retrieve hoster list: {}").format(
+                        res["response_text"]
+                    )
                 )
 
         return hosters

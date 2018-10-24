@@ -2,7 +2,6 @@
 import json
 import urllib.parse
 
-
 from ..internal.simplehoster import SimpleHoster
 
 

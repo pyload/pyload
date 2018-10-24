@@ -5,8 +5,8 @@ import re
 import time
 import urllib.parse
 
-
 import pycurl
+
 from ..internal.account import Account
 
 
@@ -75,7 +75,7 @@ class UlozTo(Account):
         }
 
     def signin(self, user, password, data):
-        login_page = self.load('https://ulozto.net/?do=web-login')
+        login_page = self.load("https://ulozto.net/?do=web-login")
         if ">Log out<" in login_page:
             self.skip_login()
 

@@ -3,8 +3,8 @@ import hashlib
 import re
 import time
 
-
 from pyload.core.network.request_factory import getURL as get_url
+
 from ..internal.account import Account
 
 try:

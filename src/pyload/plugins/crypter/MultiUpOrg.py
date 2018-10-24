@@ -2,8 +2,8 @@
 import re
 import urllib.parse
 
-
 from pyload.core.network.http.http_request import BadHeader
+
 from ..captcha.ReCaptcha import ReCaptcha
 from ..internal.simplecrypter import SimpleCrypter
 
@@ -49,9 +49,7 @@ class MultiUpOrg(SimpleCrypter):
 
     def get_links(self):
         m_type = self.info["pattern"]["TYPE"]
-        hosts_priority = [
-            h for h in self.config.get("hosts_priority").split("|") if h
-        ]
+        hosts_priority = [h for h in self.config.get("hosts_priority").split("|") if h]
         ignored_hosts = [h for h in self.config.get("ignored_hosts").split("|") if h]
         grab_all = self.config.get("grab_all")
 

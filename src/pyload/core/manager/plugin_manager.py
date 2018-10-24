@@ -173,7 +173,9 @@ class PluginManager(object):
 
                 m_ver = self._VERSION.search(content)
                 if m_ver is None:
-                    self.pyload.log.debug("__version__ not found in plugin {}".format(name))
+                    self.pyload.log.debug(
+                        "__version__ not found in plugin {}".format(name)
+                    )
                     version = 0
                 else:
                     version = float(m_ver.group(1))
@@ -201,7 +203,9 @@ class PluginManager(object):
                     try:
                         plugins[name]["re"] = re.compile(pattern)
                     except Exception:
-                        self.pyload.log.error(self._("{} has a invalid pattern.").format(name))
+                        self.pyload.log.error(
+                            self._("{} has a invalid pattern.").format(name)
+                        )
 
                 # internals have no config
                 if folder == "internal":
@@ -213,10 +217,7 @@ class PluginManager(object):
 
                 config = self._CONFIG.findall(content)
                 if not config:
-                    new_config = {
-                        "enabled": ["bool", "Activated", False],
-                        "desc": desc,
-                    }
+                    new_config = {"enabled": ["bool", "Activated", False], "desc": desc}
                     configs[name] = new_config
                     continue
 
@@ -229,7 +230,9 @@ class PluginManager(object):
                 ):
                     config = {x[0]: x[1:] for x in config}
                 else:
-                    self.pyload.log.error("Invalid config in {}: {}".format(name, config))
+                    self.pyload.log.error(
+                        "Invalid config in {}: {}".format(name, config)
+                    )
                     continue
 
                 if folder == "addons" and "enabled" not in config:

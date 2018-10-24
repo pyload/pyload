@@ -2,7 +2,6 @@
 import re
 import xml.etree.ElementTree as etree
 
-
 from ..internal.hoster import Hoster
 
 

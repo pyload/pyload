@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import re
 
-
 import BeautifulSoup
+
 from ..internal.crypter import Crypter
 
 

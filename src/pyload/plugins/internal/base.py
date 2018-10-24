@@ -4,11 +4,10 @@ import re
 import time
 import urllib.parse
 
-
+from ..utils import (decode, encode, fixurl, format_size, format_time, parse_html_form,
+                     parse_name, replace_patterns)
 from .captcha import Captcha
 from .plugin import Abort, Fail, Plugin, Reconnect, Retry, Skip
-from ..utils import (decode, encode, fixurl, format_size, format_time,
-                                  parse_html_form, parse_name, replace_patterns)
 
 
 # TODO: Recheck in 0.6.x
@@ -210,7 +209,9 @@ class Base(Plugin):
             size = self.pyfile.size
 
         if size:
-            self.log_info(self._("Link size: {} ({} bytes)").format(format_size(size), size))
+            self.log_info(
+                self._("Link size: {} ({} bytes)").format(format_size(size), size)
+            )
         else:
             self.log_info(self._("Link size: N/D"))
 
@@ -416,7 +417,9 @@ class Base(Plugin):
         raise Fail(encode(msg))  # TODO: Remove `encode` in 0.6.x
 
     def error(self, msg="", type="Parse"):
-        type = self._("{} error").format(type.strip().capitalize() if type else self._("Unknown"))
+        type = self._("{} error").format(
+            type.strip().capitalize() if type else self._("Unknown")
+        )
         msg = self._("{type}: {msg} | Plugin may be out of date").format(
             type=type, msg=msg or self.pyfile.error
         )
@@ -449,13 +452,19 @@ class Base(Plugin):
 
     def restart(self, msg="", premium=True):
         if not msg:
-            msg = self._("Restart plugin") if premium else self._("Fallback to free processing")
+            msg = (
+                self._("Restart plugin")
+                if premium
+                else self._("Fallback to free processing")
+            )
 
         if not premium:
             if self.premium:
                 self.restart_free = True
             else:
-                self.fail("{} | {}".format(msg, self._("Url was already processed as free")))
+                self.fail(
+                    "{} | {}".format(msg, self._("Url was already processed as free"))
+                )
 
         self.req.clearCookies()
 
@@ -489,7 +498,8 @@ class Base(Plugin):
         raise Retry(encode(msg))  # TODO: Remove `encode` in 0.6.x
 
     def retry_captcha(
-        self, attemps=10, wait=1, msg="", msgfail="Max captcha retries reached"):
+        self, attemps=10, wait=1, msg="", msgfail="Max captcha retries reached"
+    ):
         self.captcha.invalid(msg)
         self.retry(attemps, wait, msg=self._("Retry Captcha"), msgfail=msgfail)
 

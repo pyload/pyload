@@ -7,8 +7,9 @@ from builtins import object, range, str
 from re import search
 
 import pycurl
-from .http_request import HTTPRequest
+
 from ...utils.utils import fs_encode
+from .http_request import HTTPRequest
 
 
 class WrongFormat(Exception):

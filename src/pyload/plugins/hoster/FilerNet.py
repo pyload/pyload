@@ -2,7 +2,6 @@
 import os
 import re
 
-
 from ..captcha.ReCaptcha import ReCaptcha
 from ..internal.simplehoster import SimpleHoster
 

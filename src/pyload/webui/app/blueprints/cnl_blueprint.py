@@ -5,12 +5,12 @@ import os
 from base64 import standard_b64decode
 from binascii import unhexlify
 from builtins import str
+from functools import wraps
 from urllib.parse import unquote
 
 import flask
 import js2py
 from cryptography.fernet import Fernet
-from functools import wraps
 
 bp = flask.Blueprint("cnl", __name__)
 

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import json
 
-
 from ..internal.multihoster import MultiHoster
 
 
@@ -86,7 +85,9 @@ class RPNetBiz(MultiHoster):
 
             if my_try > attemps:  #: We went over the limit!
                 self.fail(
-                    self._("Waited for about 15 minutes for download to finish but failed")
+                    self._(
+                        "Waited for about 15 minutes for download to finish but failed"
+                    )
                 )
 
         if "generated" in link_status:

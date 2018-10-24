@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import re
 
-
 from ..captcha.SolveMedia import SolveMedia
 from ..internal.simplehoster import SimpleHoster
 

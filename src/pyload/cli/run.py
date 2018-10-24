@@ -2,8 +2,6 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN, vuolter
 
-from .cli import Cli
-
 import configparser
 import os
 import sys
@@ -11,11 +9,13 @@ from builtins import HOMEDIR, PKGDIR, input
 from getopt import GetoptError, getopt
 from sys import exit
 
-
 import pyload.core.utils.pylgettext as gettext
+from pyload.core.remote.thriftbackend.thrift_client import (ConnectionClosed,
+                                                            NoConnection, NoSSL,
+                                                            ThriftClient, WrongLogin)
+
+from .cli import Cli
 from .printer import *
-from pyload.core.remote.thriftbackend.thrift_client import (ConnectionClosed, NoConnection,
-                                                       NoSSL, ThriftClient, WrongLogin)
 
 
 def print_help(config):

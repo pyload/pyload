@@ -7,6 +7,7 @@ import urllib.parse
 from builtins import map, range
 
 from pyload.core.network.http.http_request import BadHeader
+
 from ..internal.addon import Addon
 from ..utils import threaded
 

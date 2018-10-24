@@ -2,8 +2,8 @@
 import re
 import time
 
-
 import pycurl
+
 from ..internal.simplehoster import SimpleHoster
 from ..utils import format_size
 
@@ -66,7 +66,9 @@ class NitrobitNet(SimpleHoster):
         m = re.search(r'id="dailyVolume" value="(\d+)?/(\d+)"', self.data)
         if m is not None:
             trafficleft = int(m.group(2)) - int((m.group(1) or "0"))
-            self.log_info(self._("Daily traffic left {}").format(format_size(trafficleft)))
+            self.log_info(
+                self._("Daily traffic left {}").format(format_size(trafficleft))
+            )
 
         m = re.search(self.LINK_PREMIUM_PATTERN, self.data)
         if m is not None:

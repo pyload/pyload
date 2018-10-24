@@ -2,8 +2,8 @@
 
 from builtins import map
 
-from .base import Base
 from ..utils import parse_name, safename
+from .base import Base
 
 
 class Crypter(Base):
@@ -91,7 +91,8 @@ class Crypter(Base):
 
         for name, links, folder in self.packages:
             self.log_info(
-                self._("Create package: {}").format(name), self._("{} links").format(len(links))
+                self._("Create package: {}").format(name),
+                self._("{} links").format(len(links)),
             )
 
             links = list(map(self.fixurl, links))

@@ -4,6 +4,7 @@ import re
 from builtins import str
 
 import BeautifulSoup
+
 from ..internal.crypter import Crypter
 
 

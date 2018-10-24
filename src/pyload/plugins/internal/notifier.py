@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 import time
 
-
-from .addon import Addon
 from ..utils import Expose, encode, isiterable
+from .addon import Addon
 
 
 class Notifier(Addon):

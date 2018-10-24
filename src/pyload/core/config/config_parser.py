@@ -63,7 +63,8 @@ class ConfigParser(object):
             if not os.path.exists(self.configpath):
                 os.makedirs(os.path.dirname(self.configpath), exist_ok=True)
                 shutil.copy(
-                    os.path.join(PKGDIR, "core", "config", "default.conf"), self.configpath
+                    os.path.join(PKGDIR, "core", "config", "default.conf"),
+                    self.configpath,
                 )
                 chmod(self.configpath, 0o600)
 
@@ -79,7 +80,8 @@ class ConfigParser(object):
             m_ver = self._VERSION.search(content)
             if m_ver is None or int(m_ver.group(1)) < __version__:
                 shutil.copy(
-                    os.path.join(PKGDIR, "core", "config", "default.conf"), self.configpath
+                    os.path.join(PKGDIR, "core", "config", "default.conf"),
+                    self.configpath,
                 )
                 print("Old version of config was replaced")
 
@@ -105,7 +107,9 @@ class ConfigParser(object):
         reads the config file.
         """
 
-        self.config = self.parseConfig(os.path.join(PKGDIR, "core", "config", "default.conf"))
+        self.config = self.parseConfig(
+            os.path.join(PKGDIR, "core", "config", "default.conf")
+        )
         self.plugin = self.parseConfig(self.pluginpath)
 
         try:

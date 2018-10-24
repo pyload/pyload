@@ -5,6 +5,7 @@ import os
 from builtins import range
 
 from Pillow import Image
+
 from ..internal.ocr import OCR
 
 

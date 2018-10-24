@@ -2,8 +2,8 @@
 import re
 import urllib.parse
 
-
 import pycurl
+
 from ..internal.hoster import Hoster
 from ..utils import parse_name
 

@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 import re
 
-
 from pyload.core.network.http.http_request import BadHeader
 from pyload.core.network.request_factory import getURL as get_url
+
+from ..utils import encode, parse_name, parse_size, parse_time, replace_patterns
 from .hoster import Hoster
-from ..utils import (encode, parse_name, parse_size, parse_time,
-                                  replace_patterns)
 
 
 class SimpleHoster(Hoster):
@@ -334,7 +333,8 @@ class SimpleHoster(Hoster):
                     pass
 
                 self.log_warning(
-                    self._("Check result: ") + errmsg, self._("Waiting 1 minute and retry")
+                    self._("Check result: ") + errmsg,
+                    self._("Waiting 1 minute and retry"),
                 )
                 self.wait(60, reconnect=True)
                 self.restart(errmsg)

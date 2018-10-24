@@ -8,10 +8,11 @@ from builtins import object, range, str
 from logging import getLogger
 
 import pycurl
+from pyload.plugins.plugin import Abort
+
+from ...utils.utils import fs_encode
 from .http_chunk import ChunkInfo, HTTPChunk
 from .http_request import BadHeader
-from pyload.plugins.plugin import Abort
-from ...utils.utils import fs_encode
 
 
 class HTTPDownload(object):
@@ -222,9 +223,7 @@ class HTTPDownload(object):
                     try:  #: check if the header implies success, else add it to failed list
                         chunk.verifyHeader()
                     except BadHeader as exc:
-                        self.log.debug(
-                            "Chunk {} failed: {}".format(chunk.id + 1, exc)
-                        )
+                        self.log.debug("Chunk {} failed: {}".format(chunk.id + 1, exc))
                         failed.append(chunk)
                         ex = exc
                     else:
@@ -245,9 +244,7 @@ class HTTPDownload(object):
                     try:  #: check if the header implies success, else add it to failed list
                         chunk.verifyHeader()
                     except BadHeader as exc:
-                        self.log.debug(
-                            "Chunk {} failed: {}".format(chunk.id + 1, exc)
-                        )
+                        self.log.debug("Chunk {} failed: {}".format(chunk.id + 1, exc))
                         failed.append(chunk)
                         ex = exc
                     else:

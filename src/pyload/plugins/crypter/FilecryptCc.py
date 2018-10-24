@@ -14,6 +14,7 @@ from cryptography.fernet import Fernet
 
 from pyload.core.network.cookie_jar import CookieJar
 from pyload.core.network.http.http_request import BadHeader, HTTPRequest
+
 from ..captcha.CoinHive import CoinHive
 from ..captcha.ReCaptcha import ReCaptcha
 from ..captcha.SolveMedia import SolveMedia
@@ -153,7 +154,9 @@ class FilecryptCc(Crypter):
         password = self.get_password()
 
         if not password:
-            self.fail(self._("Please enter the password in package section and try again"))
+            self.fail(
+                self._("Please enter the password in package section and try again")
+            )
 
         self.data = self._filecrypt_load_url(
             self.pyfile.url, post={"password": password}

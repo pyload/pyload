@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import json
 
-
 from ..internal.multihoster import MultiHoster
 
 

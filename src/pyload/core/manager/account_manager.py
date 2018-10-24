@@ -6,8 +6,8 @@ import shutil
 from builtins import object
 from threading import Lock
 
-from .event_manager import AccountUpdateEvent
 from ..utils.utils import chmod, lock
+from .event_manager import AccountUpdateEvent
 
 # MANAGER VERSION
 __version__ = 1

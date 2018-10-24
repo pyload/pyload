@@ -4,6 +4,7 @@
 import time
 from builtins import object, str
 from threading import Lock
+
 from pyload.plugins.utils import lock
 
 

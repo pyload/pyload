@@ -2,6 +2,7 @@
 
 
 from pyload.core.datatype.pyfile import PyFile
+
 from ..internal.addon import Addon
 
 

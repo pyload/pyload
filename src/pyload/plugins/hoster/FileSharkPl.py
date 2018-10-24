@@ -2,7 +2,6 @@
 import re
 import urllib.parse
 
-
 from ..internal.simplehoster import SimpleHoster
 
 
@@ -72,7 +71,9 @@ class FileSharkPl(SimpleHoster):
             elif re.match(self.SLOT_ERROR_PATTERN, alert):
                 errmsg = self.info["error"] = self._("No free download slots available")
                 self.log_warning(errmsg)
-                self.retry(10, 30 * 60, self._("Still no free download slots available"))
+                self.retry(
+                    10, 30 * 60, self._("Still no free download slots available")
+                )
 
             else:
                 self.info["error"] = alert

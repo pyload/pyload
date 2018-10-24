@@ -10,6 +10,7 @@ from builtins import range
 
 import pycurl
 from pyload.core.network.http.http_request import BadHeader
+
 from ..internal.hoster import Hoster
 from ..utils import exists
 
@@ -83,7 +84,9 @@ class RealdebridComTorrent(Hoster):
                     f.write(torrent_content)
             else:
                 #: URL is local torrent file (uploaded container)
-                torrent_filename = urllib.request.url2pathname(self.pyfile.url[7:])  #: trim the starting `file://`
+                torrent_filename = urllib.request.url2pathname(
+                    self.pyfile.url[7:]
+                )  #: trim the starting `file://`
                 if not exists(torrent_filename):
                     self.fail(self._("File does not exists"))
 
@@ -107,7 +110,9 @@ class RealdebridComTorrent(Hoster):
                     elif exc.code == 401:
                         self.fail(self._("Bad token (expired, invalid)"))
                     elif exc.code == 403:
-                        self.fail(self._("Permission denied (account locked, not premium)"))
+                        self.fail(
+                            self._("Permission denied (account locked, not premium)")
+                        )
                     elif exc.code == 503:
                         self.fail(self._("Service unavailable - {}").format(error_msg))
 

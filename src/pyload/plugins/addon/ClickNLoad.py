@@ -3,7 +3,6 @@ import socket
 import threading
 import time
 
-
 from ..internal.addon import Addon
 from ..utils import forward, lock, threaded
 
@@ -43,8 +42,7 @@ class ClickNLoad(Addon):
         self.web_ip = (
             "127.0.0.1"
             if any(
-                ip == self.pyload.config.get("webui", "host")
-                for ip in ("0.0.0.0", "")
+                ip == self.pyload.config.get("webui", "host") for ip in ("0.0.0.0", "")
             )
             else self.pyload.config.get("webui", "host")
         )
@@ -87,7 +85,9 @@ class ClickNLoad(Addon):
             if self.exit_done.isSet():
                 self.log_debug("Server exited successfully")
             else:
-                self.log_warning(self._("Server was not exited gracefully, shutdown forced"))
+                self.log_warning(
+                    self._("Server was not exited gracefully, shutdown forced")
+                )
 
     @lock
     @threaded

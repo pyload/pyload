@@ -2,8 +2,8 @@
 import json
 import re
 
-
 from pyload.core.network.request_factory import getURL as get_url
+
 from ..captcha.ReCaptcha import ReCaptcha
 from ..internal.hoster import Hoster
 from ..utils import parse_size, seconds_to_midnight

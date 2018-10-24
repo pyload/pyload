@@ -75,9 +75,7 @@ class YadiSk(SimpleHoster):
         self.chunk_limit = 1
 
     def handle_free(self, pyfile):
-        if any(
-            True for k in ["id", "sk", "version", "idclient"] if k not in self.info
-        ):
+        if any(True for k in ["id", "sk", "version", "idclient"] if k not in self.info):
             self.error(self._("Missing JSON data"))
 
         try:

@@ -4,7 +4,6 @@ import os
 import re
 import time
 import zlib
-
 from threading import Event
 
 from ..internal.addon import Addon
@@ -106,7 +105,9 @@ class Checksum(Addon):
 
     def activate(self):
         if not self.config.get("check_checksum"):
-            self.log_info(self._("Checksum validation is disabled in plugin configuration"))
+            self.log_info(
+                self._("Checksum validation is disabled in plugin configuration")
+            )
 
     def init(self):
         self.algorithms = sorted(
@@ -363,9 +364,9 @@ class Checksum(Addon):
 
                 else:
                     self.log_info(
-                        self._('All files specified by "{}" verified successfully').format(
-                            fdata["name"]
-                        )
+                        self._(
+                            'All files specified by "{}" verified successfully'
+                        ).format(fdata["name"])
                     )
 
             if failed_queue:
@@ -397,7 +398,9 @@ class Checksum(Addon):
                         self.retries[fid] = retry_count + 1
 
                         wait_time = self.config.get("wait_time")
-                        self.log_info(self._("Waiting {}...").format(format_time(wait_time)))
+                        self.log_info(
+                            self._("Waiting {}...").format(format_time(wait_time))
+                        )
                         time.sleep(wait_time)
 
                         pyfile.package().setFinished = (

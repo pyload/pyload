@@ -3,10 +3,8 @@ import random
 import threading
 import time
 
-
+from ..utils import Periodical, compare_time, decode, isiterable, lock, parse_size
 from .plugin import Plugin, Skip
-from ..utils import (Periodical, compare_time, decode, isiterable, lock,
-                                  parse_size)
 
 
 class Account(Plugin):
@@ -208,7 +206,9 @@ class Account(Plugin):
                 self.reset()
 
         if refresh and self.info["login"]["valid"]:
-            self.log_info(self._("Grabbing account info for user `{}`...").format(self.user))
+            self.log_info(
+                self._("Grabbing account info for user `{}`...").format(self.user)
+            )
             self.info = self._grab_info()
 
             self.syncback()
@@ -237,7 +237,9 @@ class Account(Plugin):
                 self.info["data"].update(data)
 
         except Exception as exc:
-            self.log_warning(self._("Error loading info for user `{}`").format(self.user), exc)
+            self.log_warning(
+                self._("Error loading info for user `{}`").format(self.user), exc
+            )
 
         finally:
             return self.info
@@ -292,7 +294,8 @@ class Account(Plugin):
 
         if user in self.accounts:
             self.log_error(
-                self._("Error adding user `{}`").format(user), self._("User already exists")
+                self._("Error adding user `{}`").format(user),
+                self._("User already exists"),
             )
             return False
 
@@ -381,9 +384,9 @@ class Account(Plugin):
 
             if time.time() > data["validuntil"] > 0:
                 self.log_warning(
-                    self._("Not using account `{}` because the account has expired").format(
-                        user
-                    )
+                    self._(
+                        "Not using account `{}` because the account has expired"
+                    ).format(user)
                 )
                 continue
 
@@ -420,7 +423,8 @@ class Account(Plugin):
 
         elif user not in self.accounts:
             self.log_error(
-                self._("Error choosing user `{}`").format(user), self._("User does not exists")
+                self._("Error choosing user `{}`").format(user),
+                self._("User does not exists"),
             )
             return False
 

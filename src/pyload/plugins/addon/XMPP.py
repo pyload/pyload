@@ -3,11 +3,11 @@
 from builtins import object
 
 import pyxmpp2
+import pyxmpp2.client
+import pyxmpp2.interfaces
 import pyxmpp2.jid
 import pyxmpp2.message
-import pyxmpp2.interfaces
 import pyxmpp2.streamtls
-import pyxmpp2.client
 
 from .IRC import IRC
 

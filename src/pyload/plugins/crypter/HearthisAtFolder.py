@@ -2,7 +2,6 @@
 import re
 import urllib.parse
 
-
 from ..internal.crypter import Crypter
 
 

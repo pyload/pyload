@@ -48,7 +48,9 @@ class PluginThread(Thread):
                     try:
                         # avoid encoding errors
                         zip.write(
-                            os.path.join(self.pyload.userdir, ".tmp", pyfile.pluginname, f),
+                            os.path.join(
+                                self.pyload.userdir, ".tmp", pyfile.pluginname, f
+                            ),
                             os.path.join(pyfile.pluginname, f),
                         )
                     except Exception:

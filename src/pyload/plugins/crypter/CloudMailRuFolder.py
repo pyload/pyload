@@ -6,7 +6,6 @@ import urllib.error
 import urllib.parse
 import urllib.request
 
-
 from ..internal.crypter import Crypter
 
 

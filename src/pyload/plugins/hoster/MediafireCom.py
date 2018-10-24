@@ -85,7 +85,9 @@ class MediafireCom(SimpleHoster):
             if not password:
                 self.fail(self._("No password found"))
             else:
-                self.log_info(self._("Password protected link, trying: {}").format(password))
+                self.log_info(
+                    self._("Password protected link, trying: {}").format(password)
+                )
                 self.data = self.load(self.link, post={"downloadp": password})
 
                 if self.PASSWORD_PATTERN in self.data:

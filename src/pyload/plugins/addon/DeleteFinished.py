@@ -2,6 +2,7 @@
 
 
 from pyload.core.database.database_thread import style
+
 from ..internal.addon import Addon
 
 
@@ -30,7 +31,9 @@ class DeleteFinished(Addon):
             msg = self._(
                 "delete all finished packages in queue list ({} packages with offline links)"
             )
-            self.log_info(msg % (self._("including") if deloffline else self._("excluding")))
+            self.log_info(
+                msg % (self._("including") if deloffline else self._("excluding"))
+            )
             self.delete_finished(mode)
             self.info["sleep"] = True
             self.add_event("package_finished", self.wakeup)
