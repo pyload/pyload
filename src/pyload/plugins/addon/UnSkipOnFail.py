@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from builtins import _
+
 
 from pyload.core.datatype.pyfile import PyFile
 from ..internal.addon import Addon

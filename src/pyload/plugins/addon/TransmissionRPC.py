@@ -67,8 +67,8 @@ class TransmissionRPC(Addon):
                 req=req,
             )
 
-        except Exception as e:
-            if isinstance(e, BadHeader) and e.code == 409:
+        except Exception as exc:
+            if isinstance(exc, BadHeader) and exc.code == 409:
                 headers = dict(
                     re.findall(r"(?P<name>.+?): (?P<value>.+?)\r?\n", req.header)
                 )
@@ -93,8 +93,8 @@ class TransmissionRPC(Addon):
                     if "result" in res:
                         self.log_debug("Result: {}".format(res["result"]))
 
-                except Exception as e:
-                    self.log_error(e)
+                except Exception as exc:
+                    self.log_error(exc)
 
             else:
-                self.log_error(e)
+                self.log_error(exc)

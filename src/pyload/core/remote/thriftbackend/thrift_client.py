@@ -33,16 +33,16 @@ class ThriftClient(object):
         self.createConnection(host, port)
         try:
             self.transport.open()
-        except error as e:
-            if e.args and e.args[0] in (111, 10061):
+        except error as exc:
+            if exc.args and exc.args[0] in (111, 10061):
                 raise NoConnection
             else:
                 raise NoConnection
 
         try:
             correct = self.client.login(user, password)
-        except error as e:
-            if e.args and e.args[0] == 104:
+        except error as exc:
+            if exc.args and exc.args[0] == 104:
                 # connection reset by peer, probably wants ssl
                 try:
                     self.createConnection(host, port, True)
@@ -58,7 +58,7 @@ class ThriftClient(object):
                     correct = self.client.login(user, password)
                 finally:
                     self.socket.setTimeout(None)
-            elif e.args and e.args[0] == 32:
+            elif exc.args and exc.args[0] == 32:
                 raise NoConnection
             else:
                 raise NoConnection

@@ -5,7 +5,7 @@ import random
 import re
 import time
 import urllib.parse
-from builtins import _, range
+from builtins import range
 
 from ..internal.hoster import Hoster
 

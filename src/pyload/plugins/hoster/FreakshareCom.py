@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import re
-from builtins import _
+
 
 from ..captcha.ReCaptcha import ReCaptcha
 from ..internal.hoster import Hoster

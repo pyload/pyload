@@ -40,8 +40,8 @@ class OneFichierCom(Account):
             try:
                 validuntil = time.mktime(time.strptime(expiredate, "%Y-%m-%d"))
 
-            except Exception as e:
-                self.log_error(e, trace=True)
+            except Exception as exc:
+                self.log_error(exc, trace=True)
 
             else:
                 premium = True
@@ -78,8 +78,8 @@ class OneFichierCom(Account):
             ):
                 self.fail_login()
 
-        except BadHeader as e:
-            if e.code == 403:
+        except BadHeader as exc:
+            if exc.code == 403:
                 self.fail_login()
             else:
                 raise

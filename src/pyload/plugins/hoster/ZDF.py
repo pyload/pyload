@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import re
 import xml.etree.ElementTree as etree
-from builtins import _
+
 
 from ..internal.hoster import Hoster
 

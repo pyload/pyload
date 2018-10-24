@@ -5,7 +5,7 @@ import os
 import re
 import subprocess
 import time
-from builtins import HOMEDIR, _, object, range, str
+from builtins import HOMEDIR, object, range, str
 from random import choice
 from threading import Event, Lock
 
@@ -130,15 +130,15 @@ class ThreadManager(object):
         """
         try:
             self.tryReconnect()
-        except Exception as e:
-            self.pyload.log.error(self._("Reconnect Failed: {}").format(str(e)))
+        except Exception as exc:
+            self.pyload.log.error(self._("Reconnect Failed: {}").format(str(exc)))
             self.reconnecting.clear()
         self.checkThreadCount()
 
         try:
             self.assignJob()
-        except Exception as e:
-            self.pyload.log.warning("Assign job error", e)
+        except Exception as exc:
+            self.pyload.log.warning("Assign job error", exc)
 
             time.sleep(0.5)
             self.assignJob()
@@ -321,10 +321,10 @@ class ThreadManager(object):
         if job:
             try:
                 job.initPlugin()
-            except Exception as e:
-                self.pyload.log.critical(str(e))
+            except Exception as exc:
+                self.pyload.log.critical(str(exc))
                 job.setStatus("failed")
-                job.error = str(e)
+                job.error = str(exc)
                 job.release()
                 return
 

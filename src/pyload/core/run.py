@@ -14,8 +14,8 @@ def daemon():
         pid = os.fork()
         if pid > 0:
             sys.exit(0)
-    except OSError as e:
-        sys.stderr.write("fork #1 failed: {} ({})\n".format(e.errno, e.strerror))
+    except OSError as exc:
+        sys.stderr.write("fork #1 failed: {} ({})\n".format(exc.errno, exc.strerror))
         sys.exit(1)
 
     # decouple from parent environment
@@ -29,8 +29,8 @@ def daemon():
             # exit from second parent, print(eventual PID before)
             print("Daemon PID {}".format(pid))
             sys.exit(0)
-    except OSError as e:
-        sys.stderr.write("fork #2 failed: {} ({})\n".format(e.errno, e.strerror))
+    except OSError as exc:
+        sys.stderr.write("fork #2 failed: {} ({})\n".format(exc.errno, exc.strerror))
         sys.exit(1)
 
     # Iterate through and close some file descriptors.

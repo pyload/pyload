@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-from builtins import _, range
+from builtins import range
 
 from ..internal.multihoster import MultiHoster
 from ..utils import seconds_to_midnight

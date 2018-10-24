@@ -68,8 +68,8 @@ class TwojlimitPl(MultiAccount):
 
             trafficleft = json_data["balance"]
 
-        except Exception as e:
-            self.log_error(e)
+        except Exception as exc:
+            self.log_error(exc)
 
         return {
             "validuntil": validuntil,
@@ -83,8 +83,8 @@ class TwojlimitPl(MultiAccount):
         try:
             response = json.loads(self.run_auth_query())
 
-        except Exception as e:
-            self.log_error(e)
+        except Exception as exc:
+            self.log_error(exc)
             self.fail_login()
 
         else:

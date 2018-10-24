@@ -46,8 +46,8 @@ class RapidgatorNet(Account):
             else:
                 self.log_error(json_data["response_details"])
 
-        except Exception as e:
-            self.log_error(e, trace=True)
+        except Exception as exc:
+            self.log_error(exc, trace=True)
 
         return {
             "validuntil": validuntil,
@@ -74,7 +74,7 @@ class RapidgatorNet(Account):
             else:
                 self.log_error(json_data["response_details"])
 
-        except Exception as e:
-            self.log_error(e, trace=True)
+        except Exception as exc:
+            self.log_error(exc, trace=True)
 
         self.fail_login()

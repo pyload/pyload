@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import re
 import urllib.parse
-from builtins import _
+
 
 from pyload.core.network.http.http_request import BadHeader
 from ..captcha.ReCaptcha import ReCaptcha
@@ -69,11 +69,11 @@ class MultiUpOrg(SimpleCrypter):
                 mirror_page = urllib.parse.urljoin("http://www.multiup.eu/", url)
                 try:
                     response, challenge = recaptcha.challenge(captcha_key)
-                except BadHeader as e:
+                except BadHeader as exc:
                     if (
-                        e.code == 400
+                        exc.code == 400
                         and "Please enable JavaScript to get a reCAPTCHA challenge"
-                        in e.content
+                        in exc.content
                     ):
                         self.log_warning(self._("Unsupported reCAPTCHA, retrying"))
                         self.retry()

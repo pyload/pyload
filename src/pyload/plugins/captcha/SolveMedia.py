@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-from builtins import _, range
+from builtins import range
 
 from ..internal.captcha_service import CaptchaService
 from ..internal.plugin import Fail
@@ -65,8 +65,8 @@ class SolveMedia(CaptchaService):
             try:
                 result = self.result("http://api.solvemedia.com/papi/media", challenge)
 
-            except Fail as e:
-                self.log_warning(e, trace=True)
+            except Fail as exc:
+                self.log_warning(exc, trace=True)
                 self.pyfile.plugin.captcha.invalid()
                 result = None
 

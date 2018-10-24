@@ -7,7 +7,7 @@ import operator
 import os
 import sys
 import time
-from builtins import HOMEDIR, PKGDIR, _
+from builtins import HOMEDIR, PKGDIR
 from urllib.parse import unquote
 
 import flask_login

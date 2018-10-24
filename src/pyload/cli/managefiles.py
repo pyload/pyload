@@ -2,7 +2,7 @@
 # @author: RaNaN
 
 import time
-from builtins import _, map, range, str
+from builtins import map, range, str
 from itertools import islice
 
 from pyload.core.api import Destination, PackageData
@@ -116,7 +116,7 @@ class ManageFiles(Handler):
                     println(line, mag(str(value.pid)) + ": " + value.name)
                     line += 1
                     i += 1
-                except Exception as e:
+                except Exception:
                     pass
             for x in range(5 - i):
                 println(line, "")
@@ -136,7 +136,7 @@ class ManageFiles(Handler):
                     )
                     line += 1
                     i += 1
-                except Exception as e:
+                except Exception:
                     pass
             for x in range(5 - i):
                 println(line, "")

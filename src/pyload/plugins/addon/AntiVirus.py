@@ -3,7 +3,7 @@
 import os
 import shutil
 import subprocess
-from builtins import _, map
+from builtins import map
 
 import send2trash
 
@@ -121,12 +121,11 @@ class AntiVirus(Addon):
                                 pyfile.setCustomStatus(self._("file moving"))
                                 shutil.move(target, self.config.get("quardir"))
 
-                            except Exception as e:
+                            except Exception as exc:
                                 self.log_warning(
                                     self._(
                                         "Unable to move file to trash: {}, moving to quarantine instead"
-                                    )
-                                    % e
+                                    ).format(exc)
                                 )
                                 pyfile.setCustomStatus(self._("file moving"))
                                 shutil.move(target, self.config.get("quardir"))
@@ -138,8 +137,8 @@ class AntiVirus(Addon):
                         pyfile.setCustomStatus(self._("file moving"))
                         shutil.move(target, self.config.get("quardir"))
 
-                except (IOError, shutil.Error) as e:
-                    self.log_error(target_repr, action + " action failed!", e)
+                except (IOError, shutil.Error) as exc:
+                    self.log_error(target_repr, action + " action failed!", exc)
 
             elif not err:
                 self.log_debug(target_repr, "No infected file found")

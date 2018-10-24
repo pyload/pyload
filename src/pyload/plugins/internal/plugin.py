@@ -2,7 +2,7 @@
 
 import inspect
 import os
-from builtins import HOMEDIR, _, object
+from builtins import HOMEDIR, object
 
 import pycurl
 from pyload.core.network.request_factory import getRequest as get_request
@@ -118,7 +118,7 @@ class Plugin(object):
         try:
             remove(path, trash)
 
-        except (NameError, OSError) as e:
+        except (NameError, OSError) as exc:
             self.log_warning(self._("Error removing `{}`").format(os.path.abspath(path)), e)
             return False
 
@@ -430,8 +430,8 @@ class Plugin(object):
             with open(framefile, mode="w") as f:
                 f.write(self.last_html)
 
-        except IOError as e:
-            self.log_error(e)
+        except IOError as exc:
+            self.log_error(exc)
 
         finally:
             del frame  #: Delete the frame or it wont be cleaned

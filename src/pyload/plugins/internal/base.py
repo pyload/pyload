@@ -3,7 +3,7 @@ import inspect
 import re
 import time
 import urllib.parse
-from builtins import _
+
 
 from .captcha import Captcha
 from .plugin import Abort, Fail, Plugin, Reconnect, Retry, Skip

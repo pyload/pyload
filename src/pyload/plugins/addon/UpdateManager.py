@@ -5,7 +5,7 @@ import os
 import re
 import sys
 import time
-from builtins import HOMEDIR, PKGDIR, _, zip
+from builtins import HOMEDIR, PKGDIR, zip
 
 from ..internal.addon import Addon
 from ..utils import Expose, encode, exists, threaded
@@ -383,12 +383,12 @@ class UpdateManager(Addon):
                 else:
                     raise Exception(self._("Version mismatch"))
 
-            except Exception as e:
+            except Exception as exc:
                 self.log_error(
                     self._("Error updating plugin: {} {}").format(
                         plugin_type.rstrip("s").upper(), plugin_name
                     ),
-                    e,
+                    exc,
                 )  # TODO: Remove rstrip in 0.6.x
 
         return updated
@@ -425,8 +425,8 @@ class UpdateManager(Addon):
                     try:
                         self.m.deactivateAddon(plugin_name)
 
-                    except Exception as e:
-                        self.log_debug(e, trace=True)
+                    except Exception as exc:
+                        self.log_debug(exc, trace=True)
 
                 for filename in (py_filename, pyc_filename):
                     if not exists(filename):
@@ -435,8 +435,8 @@ class UpdateManager(Addon):
                     try:
                         os.remove(filename)
 
-                    except OSError as e:
-                        self.log_warning(self._("Error removing `{}`").format(filename), e)
+                    except OSError as exc:
+                        self.log_warning(self._("Error removing `{}`").format(filename), exc)
 
                     else:
                         plugin_id = (plugin_type, plugin_name)

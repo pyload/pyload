@@ -9,7 +9,7 @@
 #           \/
 
 import os
-from builtins import _
+
 
 from thrift.server import TServer
 

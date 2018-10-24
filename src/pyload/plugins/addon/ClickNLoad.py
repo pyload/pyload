@@ -2,7 +2,7 @@
 import socket
 import threading
 import time
-from builtins import _
+
 
 from ..internal.addon import Addon
 from ..utils import forward, lock, threaded
@@ -144,8 +144,8 @@ class ClickNLoad(Addon):
                                 client_socket.close()
                                 continue
 
-                            except Exception as e:
-                                self.log_error(self._("SSL error: {}").format(e))
+                            except Exception as exc:
+                                self.log_error(self._("SSL error: {}").format(exc))
                                 client_socket.close()
                                 continue
 
@@ -168,7 +168,7 @@ class ClickNLoad(Addon):
             self.log_debug("Connection timed out, retrying...")
             return self._server()
 
-        except socket.error as e:
-            self.log_error(e)
+        except socket.error as exc:
+            self.log_error(exc)
             time.sleep(240)
             return self._server()

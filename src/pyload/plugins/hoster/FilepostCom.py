@@ -3,7 +3,7 @@
 import json
 import re
 import time
-from builtins import _, str
+from builtins import str
 
 from ..captcha.ReCaptcha import ReCaptcha
 from ..internal.simplehoster import SimpleHoster

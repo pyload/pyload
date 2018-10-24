@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
-from builtins import _, object
+from builtins import object
 
 import send2trash
 
@@ -115,14 +115,14 @@ class ExtractArchive(Addon):
                 if klass.REPAIR:
                     self.repair = self.config.get("repair")
 
-            except OSError as e:
-                if e.errno == 2:
+            except OSError as exc:
+                if exc.errno == 2:
                     self.log_warning(self._("No {} installed").format(p))
                 else:
-                    self.log_warning(self._("Could not activate: {}").format(p), e)
+                    self.log_warning(self._("Could not activate: {}").format(p), exc)
 
-            except Exception as e:
-                self.log_warning(self._("Could not activate: {}").format(p), e)
+            except Exception as exc:
+                self.log_warning(self._("Could not activate: {}").format(p), exc)
 
         if self.extractors:
             self.log_debug(
@@ -335,8 +335,8 @@ class ExtractArchive(Addon):
                                     pyfile.setProgress(100)
                                     thread.finishFile(pyfile)
 
-                            except Exception as e:
-                                self.log_error(name, e)
+                            except Exception as exc:
+                                self.log_error(name, exc)
                                 success = False
                                 continue
 
@@ -460,8 +460,8 @@ class ExtractArchive(Addon):
                         self.log_info(name, self._("Password protected"))
                         encrypted = True
 
-                except CRCError as e:
-                    self.log_debug(name, e)
+                except CRCError as exc:
+                    self.log_debug(name, exc)
                     self.log_info(name, self._("CRC Error"))
 
                     if not self.repair:
@@ -481,8 +481,8 @@ class ExtractArchive(Addon):
                             self.add_password(pw)
                             break
 
-                except ArchiveError as e:
-                    raise ArchiveError(e)
+                except ArchiveError as exc:
+                    raise ArchiveError(exc)
 
                 else:
                     self.add_password(pw)
@@ -544,12 +544,12 @@ class ExtractArchive(Addon):
                                 self._("Send2Trash lib not found"),
                             )
 
-                        except Exception as e:
+                        except Exception as exc:
                             self.log_warning(
                                 self._("Unable to move {} to trash").format(
                                     os.path.basename(f)
                                 ),
-                                e,
+                                exc,
                             )
 
                         else:
@@ -566,14 +566,14 @@ class ExtractArchive(Addon):
                 name, self._("Wrong password" if password else "No password found")
             )
 
-        except CRCError as e:
-            self.log_error(name, self._("CRC mismatch"), e)
+        except CRCError as exc:
+            self.log_error(name, self._("CRC mismatch"), exc)
 
-        except ArchiveError as e:
-            self.log_error(name, self._("Archive error"), e)
+        except ArchiveError as exc:
+            self.log_error(name, self._("Archive error"), exc)
 
-        except Exception as e:
-            self.log_error(name, self._("Unknown error"), e)
+        except Exception as exc:
+            self.log_error(name, self._("Unknown error"), exc)
 
         self.m.dispatchEvent("archive_extract_failed", pyfile, archive)
 
@@ -606,13 +606,13 @@ class ExtractArchive(Addon):
                 for pw in f.read().splitlines():
                     passwords.append(pw)
 
-        except IOError as e:
-            if e.errno == 2:
+        except IOError as exc:
+            if exc.errno == 2:
                 f = open(file, mode="w")
                 f.close()
 
             else:
-                self.log_error(e)
+                self.log_error(exc)
 
         else:
             self.passwords = passwords
@@ -638,5 +638,5 @@ class ExtractArchive(Addon):
                 for pw in self.passwords:
                     f.write(pw + "\n")
 
-        except IOError as e:
-            self.log_error(e)
+        except IOError as exc:
+            self.log_error(exc)

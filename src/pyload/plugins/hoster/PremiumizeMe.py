@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import json
 import urllib.parse
-from builtins import _
+
 
 from ..internal.multihoster import MultiHoster
 

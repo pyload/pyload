@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import binascii
 import re
-from builtins import _
+
 
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
@@ -56,8 +56,8 @@ class RSDF(Container):
             with open(fs_filename, mode="rb") as rsdf:
                 data = rsdf.read()
 
-        except IOError as e:
-            self.fail(e)
+        except IOError as exc:
+            self.fail(exc)
 
         if re.search(r"<title>404 - Not Found</title>", data):
             pyfile.setStatus("offline")

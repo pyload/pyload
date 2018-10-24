@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from builtins import _, map
+from builtins import map
 
 from .base import Base
 from ..utils import parse_name, safename

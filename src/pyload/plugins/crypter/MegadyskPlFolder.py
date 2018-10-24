@@ -6,7 +6,7 @@ import re
 import urllib.error
 import urllib.parse
 import urllib.request
-from builtins import _, chr
+from builtins import chr
 
 from pyload.core.network.request_factory import getURL as get_url
 from ..internal.simplecrypter import SimpleCrypter

@@ -3,7 +3,7 @@
 import json
 import random
 import re
-from builtins import _, range
+from builtins import range
 
 from ..internal.simplehoster import SimpleHoster
 
@@ -59,9 +59,9 @@ class YadiSk(SimpleHoster):
                                 info["size"] = sect["data"]["meta"]["size"]
                                 info["name"] = sect["data"]["name"]
 
-                except Exception as e:
+                except Exception as exc:
                     info["status"] = 8
-                    info["error"] = "Unexpected server response: {}".format(e)
+                    info["error"] = "Unexpected server response: {}".format(exc)
 
             else:
                 info["status"] = 8

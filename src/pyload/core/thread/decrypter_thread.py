@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN, vuolter
 
-from builtins import _, str
+from builtins import str
 
 from pyload.plugins.plugin import Abort, Fail, Retry
 from .plugin_thread import PluginThread
@@ -46,8 +46,8 @@ class DecrypterThread(PluginThread):
             )
             return
 
-        except Fail as e:
-            msg = e.args[0]
+        except Fail as exc:
+            msg = exc.args[0]
 
             if msg == "offline":
                 self.active.setStatus("offline")
@@ -76,14 +76,14 @@ class DecrypterThread(PluginThread):
             retry = True
             return self.run()
 
-        except Exception as e:
+        except Exception as exc:
             self.active.setStatus("failed")
             self.m.log.error(
                 self._("Decrypting failed: {name} | {msg}").format(
-                    name=self.active.name, msg=str(e)
+                    name=self.active.name, msg=str(exc)
                 )
             )
-            self.active.error = str(e)
+            self.active.error = str(exc)
 
             if self.m.pyload.debug:
                 self.writeDebugReport(pyfile)

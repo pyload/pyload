@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from builtins import _
+
 
 from .simplecrypter import SimpleCrypter
 from ..utils import set_cookie

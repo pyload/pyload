@@ -5,7 +5,7 @@ import inspect
 import os
 import shutil
 import sqlite3
-from builtins import _, object, range, str
+from builtins import object, range, str
 from queue import Queue
 from threading import Event, Thread
 
@@ -76,10 +76,10 @@ class DatabaseJob(object):
     def processJob(self):
         try:
             self.result = self.f(*self.args, **self.kwargs)
-        except Exception as e:
+        except Exception as exc:
             try:
                 print(
-                    "Database Error @", self.f.__name__, self.args[1:], self.kwargs, e
+                    "Database Error @", self.f.__name__, self.args[1:], self.kwargs, exc
                 )
             except Exception:
                 pass

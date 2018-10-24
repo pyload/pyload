@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import re
-from builtins import _
+
 
 from pyload.core.network.request_factory import getURL as get_url
 from ..internal.base import parse_fileInfo

@@ -6,7 +6,7 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
-from builtins import HOMEDIR, _, range
+from builtins import HOMEDIR, range
 
 import pycurl
 from pyload.core.network.http.http_request import BadHeader
@@ -41,15 +41,15 @@ class RealdebridComTorrent(Hoster):
 
             return json.loads(json_data) if len(json_data) > 0 else {}
 
-        except BadHeader as e:
-            error_msg = json.loads(e.content)["error"]
-            if e.code == 400:
+        except BadHeader as exc:
+            error_msg = json.loads(exc.content)["error"]
+            if exc.code == 400:
                 self.fail(error_msg)
-            elif e.code == 401:
+            elif exc.code == 401:
                 self.fail(self._("Bad token (expired, invalid)"))
-            elif e.code == 403:
+            elif exc.code == 403:
                 self.fail(self._("Permission denied (account locked, not premium)"))
-            elif e.code == 503:
+            elif exc.code == 503:
                 self.fail(self._("Service unavailable - {}").format(error_msg))
 
     def setup(self):
@@ -100,15 +100,15 @@ class RealdebridComTorrent(Hoster):
                             get={"auth_token": self.api_token},
                         )
                     )
-                except BadHeader as e:
-                    error_msg = json.loads(e.content)["error"]
-                    if e.code == 400:
+                except BadHeader as exc:
+                    error_msg = json.loads(exc.content)["error"]
+                    if exc.code == 400:
                         self.fail(error_msg)
-                    elif e.code == 401:
+                    elif exc.code == 401:
                         self.fail(self._("Bad token (expired, invalid)"))
-                    elif e.code == 403:
+                    elif exc.code == 403:
                         self.fail(self._("Permission denied (account locked, not premium)"))
-                    elif e.code == 503:
+                    elif exc.code == 503:
                         self.fail(self._("Service unavailable - {}").format(error_msg))
 
             else:

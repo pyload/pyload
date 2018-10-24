@@ -2,7 +2,7 @@
 
 import re
 import time
-from builtins import _, range
+from builtins import range
 
 from .account import Account
 from ..utils import decode, remove_chars, uniqify
@@ -142,10 +142,10 @@ class MultiAccount(Account):
                 self.info["data"]["hosters"] = sorted(domains)
                 self.sync(reverse=True)
 
-        except Exception as e:
+        except Exception as exc:
             self.log_warning(
                 self._("Error loading hoster list for user `{}`").format(self.user),
-                e,
+                exc,
                 trace=True,
             )
 
@@ -264,8 +264,8 @@ class MultiAccount(Account):
                 plugin_set = set(self._grab_hosters())
                 break
 
-            except Exception as e:
-                self.log_warning(e, self._("Waiting 1 minute and retry"), trace=True)
+            except Exception as exc:
+                self.log_warning(exc, self._("Waiting 1 minute and retry"), trace=True)
                 time.sleep(60)
 
         else:
@@ -289,8 +289,8 @@ class MultiAccount(Account):
                 else:
                     plugin_set -= config_set
 
-        except Exception as e:
-            self.log_error(e)
+        except Exception as exc:
+            self.log_error(exc)
 
         self.plugins = list(plugin_set)
 

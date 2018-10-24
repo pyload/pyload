@@ -46,8 +46,8 @@ class Keep2ShareCc(Account):
             try:
                 json_data = self.api_response("test", auth_token=data["token"])
 
-            except BadHeader as e:
-                if e.code == 403:
+            except BadHeader as exc:
+                if exc.code == 403:
                     pass
 
                 else:
@@ -58,8 +58,8 @@ class Keep2ShareCc(Account):
         try:
             json_data = self.api_response("login", username=user, password=password)
 
-        except BadHeader as e:
-            if e.code == 406:
+        except BadHeader as exc:
+            if exc.code == 406:
                 self.fail_login()
 
             else:

@@ -2,7 +2,7 @@
 import base64
 import os
 import time
-from builtins import HOMEDIR, _
+from builtins import HOMEDIR
 
 from .plugin import Plugin
 

@@ -6,7 +6,7 @@ import os
 import random
 import re
 import struct
-from builtins import _, object, range, str
+from builtins import object, range, str
 
 import Cryptodome.Cipher.AES
 import Cryptodome.Util.Counter
@@ -247,8 +247,8 @@ class MegaClient(object):
                 self.API_URL, get=get_params, post=json.dumps([kwargs])
             )
 
-        except BadHeader as e:
-            if e.code == 500:
+        except BadHeader as exc:
+            if exc.code == 500:
                 self.plugin.retry(wait_time=60, reason=self._("Server busy"))
             else:
                 raise
@@ -322,8 +322,8 @@ class MegaCoNz(Hoster):
             f = open(file_crypted, mode="rb")
             df = open(file_decrypted, mode="wb")
 
-        except IOError as e:
-            self.fail(e)
+        except IOError as exc:
+            self.fail(exc)
 
         encrypted_size = os.path.getsize(file_crypted)
 
@@ -489,8 +489,8 @@ class MegaCoNz(Hoster):
         try:
             self.download(res["g"])
 
-        except BadHeader as e:
-            if e.code == 509:
+        except BadHeader as exc:
+            if exc.code == 509:
                 self.fail(self._("Bandwidth Limit Exceeded"))
 
             else:

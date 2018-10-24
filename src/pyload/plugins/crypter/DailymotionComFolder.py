@@ -3,7 +3,7 @@
 import json
 import os
 import urllib.parse
-from builtins import _
+
 
 from ..internal.crypter import Crypter
 

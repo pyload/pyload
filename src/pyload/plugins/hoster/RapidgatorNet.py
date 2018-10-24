@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import json
 import re
-from builtins import _
+
 
 import pycurl
 from pyload.core.network.http.http_request import BadHeader
@@ -78,9 +78,9 @@ class RapidgatorNet(SimpleHoster):
             status = json_data["response_status"]
             message = json_data["response_details"]
 
-        except BadHeader as e:
-            status = e.code
-            message = e.message
+        except BadHeader as exc:
+            status = exc.code
+            message = exc.message
 
         if status == 200:
             return json_data["response"]

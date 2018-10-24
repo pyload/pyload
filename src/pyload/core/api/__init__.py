@@ -9,7 +9,7 @@
 #           \/
 
 import re
-from builtins import _, object, str
+from builtins import object, str
 import os
 import time
 
@@ -293,13 +293,13 @@ class Api(Iface):
         """
         Clean way to quit pyLoad.
         """
-        self.pyload.do_kill = True
+        self.pyload._do_exit = True
 
     def restart(self):
         """
         Restart pyload core.
         """
-        self.pyload.do_restart = True
+        self.pyload._do_restart = True
 
     @permission(PERMS.LOGS)
     def getLog(self, offset=0):
@@ -1042,7 +1042,7 @@ class Api(Iface):
         :param uuid:
         :return: list of `Events`
         """
-        events = self.pyload.pullManager.getEvents(uuid)
+        events = self.pyload.eventManager.getEvents(uuid)
         newEvents = []
 
         def convDest(d):
@@ -1245,8 +1245,8 @@ class Api(Iface):
         try:
             ret = self.pyload.addonManager.callRPC(plugin, func, args, parse)
             return str(ret)
-        except Exception as e:
-            raise ServiceException(e)
+        except Exception as exc:
+            raise ServiceException(exc)
 
     @permission(PERMS.STATUS)
     def getAllInfo(self):

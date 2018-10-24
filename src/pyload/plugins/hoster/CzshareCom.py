@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import re
-from builtins import _
+
 
 from ..internal.simplehoster import SimpleHoster
 from ..utils import parse_size
@@ -74,9 +74,9 @@ class CzshareCom(SimpleHoster):
                 )
                 return True
 
-        except Exception as e:
+        except Exception as exc:
             #: let's continue and see what happens...
-            self.log_error(e, trace=True)
+            self.log_error(exc, trace=True)
 
         return False
 
@@ -85,8 +85,8 @@ class CzshareCom(SimpleHoster):
             form = re.search(self.PREMIUM_FORM_PATTERN, self.data, re.S).group(1)
             inputs = dict(re.findall(self.FORM_INPUT_PATTERN, form))
 
-        except Exception as e:
-            self.log_error(e, trace=True)
+        except Exception as exc:
+            self.log_error(exc, trace=True)
             self.restart(premium=False)
 
         #: Download the file, destination is determined by pyLoad
@@ -112,8 +112,8 @@ class CzshareCom(SimpleHoster):
             inputs = dict(re.findall(self.FORM_INPUT_PATTERN, form))
             pyfile.size = int(inputs["size"])
 
-        except Exception as e:
-            self.log_error(e, trace=True)
+        except Exception as exc:
+            self.log_error(exc, trace=True)
             self.error(self._("Form"))
 
         #: Get and decrypt captcha

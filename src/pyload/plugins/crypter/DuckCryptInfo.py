@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-from builtins import _, str
+from builtins import str
 
 import BeautifulSoup
 from ..internal.crypter import Crypter

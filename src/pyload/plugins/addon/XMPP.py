@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from builtins import _, object
+from builtins import object
 
 import pyxmpp2
 import pyxmpp2.jid
@@ -191,8 +191,8 @@ class XMPP(IRC, pyxmpp2.client.Client):
 
                     messages.append(m)
 
-            except Exception as e:
-                self.log_error(e, trace=True)
+            except Exception as exc:
+                self.log_error(exc, trace=True)
 
             return messages
 

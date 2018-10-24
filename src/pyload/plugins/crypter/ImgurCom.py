@@ -2,7 +2,7 @@
 
 import json
 import re
-from builtins import _, map, str
+from builtins import map, str
 
 from ..internal.simplecrypter import SimpleCrypter
 from ..utils import uniqify
@@ -157,11 +157,11 @@ class ImgurCom(SimpleCrypter):
             indirect_links = self.get_indirect_links(direct_links)
             self.log_debug("Found {} additional links".format(len(indirect_links)))
 
-        except (TypeError, KeyError, ValueError) as e:
+        except (TypeError, KeyError, ValueError) as exc:
             # Fail gracefull as we already had some success
             self.log_error(
                 self._("Processing of additional links unsuccessful - {}: {}").format(
-                    type(e).__name__, str(e)
+                    type(exc).__name__, str(exc)
                 )
             )
             indirect_links = []

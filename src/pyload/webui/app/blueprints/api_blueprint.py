@@ -59,10 +59,10 @@ def call_api(func, args=""):
 
     try:
         return callApi(func, *args, **kwargs)
-    except Exception as e:
+    except Exception as exc:
         return (
             jsonify(
-                {"error": e.message, "traceback": traceback.format_exc()}
+                {"error": exc.message, "traceback": traceback.format_exc()}
             ),
             500,
         )

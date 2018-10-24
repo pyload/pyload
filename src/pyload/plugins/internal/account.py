@@ -2,7 +2,7 @@
 import random
 import threading
 import time
-from builtins import _
+
 
 from .plugin import Plugin, Skip
 from ..utils import (Periodical, compare_time, decode, isiterable, lock,
@@ -121,16 +121,16 @@ class Account(Plugin):
         try:
             self.signin(self.user, self.info["login"]["password"], self.info["data"])
 
-        except Skip as e:
-            self.log_warning(self._("Skipped login user `{}`").format(self.user), e)
+        except Skip as exc:
+            self.log_warning(self._("Skipped login user `{}`").format(self.user), exc)
             self.info["login"]["valid"] = True
 
             new_timeout = timestamp - self.info["login"]["timestamp"]
             if self.TUNE_TIMEOUT and new_timeout > self.timeout:
                 self.timeout = new_timeout
 
-        except Exception as e:
-            self.log_error(self._("Could not login user `{}`").format(self.user), e)
+        except Exception as exc:
+            self.log_error(self._("Could not login user `{}`").format(self.user), exc)
             self.info["login"]["valid"] = False
 
         else:
@@ -236,8 +236,8 @@ class Account(Plugin):
             if data and isinstance(data, dict):
                 self.info["data"].update(data)
 
-        except Exception as e:
-            self.log_warning(self._("Error loading info for user `{}`").format(self.user), e)
+        except Exception as exc:
+            self.log_warning(self._("Error loading info for user `{}`").format(self.user), exc)
 
         finally:
             return self.info

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import re
 import time
-from builtins import _
+
 
 from ..internal.addon import Addon
 

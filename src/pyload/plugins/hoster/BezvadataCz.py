@@ -2,7 +2,7 @@
 
 import re
 
-from builtins import _
+
 
 from ..internal.simplehoster import SimpleHoster
 

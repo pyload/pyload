@@ -3,7 +3,7 @@
 import os
 import re
 import subprocess
-from builtins import PKGDIR, _, filter, map
+from builtins import PKGDIR, filter, map
 
 from .extractor import (ArchiveError, CRCError, Extractor,
                                                PasswordError)

@@ -83,6 +83,6 @@ class UploadedTo(Account):
             if m is not None:
                 self.fail_login(m.group(1))
 
-        except Exception as e:
-            self.log_error(e, trace=True)
-            self.fail_login(e)
+        except Exception as exc:
+            self.log_error(exc, trace=True)
+            self.fail_login(exc)

@@ -23,7 +23,7 @@ import urllib.parse
 import urllib.request
 import xml.sax.saxutils  # TODO: Remove in 0.6.x
 import zlib
-from builtins import ADDONMANAGER, _, map, object, str
+from builtins import ADDONMANAGER, map, object, str
 from functools import wraps
 import send2trash
 
@@ -172,7 +172,7 @@ class Periodical(object):
         try:
             self.task()
 
-        except Exception as e:
+        except Exception as exc:
             self.plugin.log_error(self._("Error performing periodical task"), e)
 
         if not self.stopped:

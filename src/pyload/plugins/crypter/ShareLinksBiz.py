@@ -2,7 +2,7 @@
 
 import binascii
 import re
-from builtins import _, filter
+from builtins import filter
 
 import js2py
 from cryptography.fernet import Fernet

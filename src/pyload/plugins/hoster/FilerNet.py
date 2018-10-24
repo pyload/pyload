@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 import re
-from builtins import _
+
 
 from ..captcha.ReCaptcha import ReCaptcha
 from ..internal.simplehoster import SimpleHoster

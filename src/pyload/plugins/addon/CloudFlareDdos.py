@@ -3,7 +3,7 @@
 import inspect
 import re
 import urllib.parse
-from builtins import _, hex, next, object, str
+from builtins import hex, next, object, str
 
 import js2py
 
@@ -45,32 +45,32 @@ class CloudFlare(object):
             addon_plugin.log_debug("{}() returned successfully".format(func_name))
             return data
 
-        except BadHeader as e:
+        except BadHeader as exc:
             addon_plugin.log_debug(
-                "{}(): got BadHeader exception {}".format(func_name, e.code)
+                "{}(): got BadHeader exception {}".format(func_name, exc.code)
             )
 
             header = parse_html_header(get_plugin_last_header(owner_plugin))
 
             if header.get("server") == "cloudflare":
-                if e.code == 403:
+                if exc.code == 403:
                     data = CloudFlare._solve_cf_security_check(
-                        addon_plugin, owner_plugin, e.content
+                        addon_plugin, owner_plugin, exc.content
                     )
 
-                elif e.code == 503:
+                elif exc.code == 503:
                     data = CloudFlare._solve_cf_ddos_challenge(
-                        addon_plugin, owner_plugin, e.content
+                        addon_plugin, owner_plugin, exc.content
                     )
 
                 else:
                     addon_plugin.log_warning(
-                        addon_plugin._("Unknown CloudFlare response code {}").format(e.code)
+                        addon_plugin._("Unknown CloudFlare response code {}").format(exc.code)
                     )
                     raise
 
                 if data is None:
-                    raise e
+                    raise exc
 
                 else:
                     return data
@@ -125,8 +125,8 @@ class CloudFlare(object):
 
             return owner_plugin.load(submit_url, get=get_params, ref=last_url)
 
-        except Exception as e:
-            addon_plugin.log_error(e)
+        except Exception as exc:
+            addon_plugin.log_error(exc)
             return None  #: Tell the exception handler to re-throw the exception
 
     @staticmethod
@@ -151,8 +151,8 @@ class CloudFlare(object):
                 addon_plugin.log_warning(addon_plugin._("Got unexpected CloudFlare html page"))
                 return None  #: Tell the exception handler to re-throw the exception
 
-        except Exception as e:
-            addon_plugin.log_error(e)
+        except Exception as exc:
+            addon_plugin.log_error(exc)
             return None  #: Tell the exception handler to re-throw the exception
 
 

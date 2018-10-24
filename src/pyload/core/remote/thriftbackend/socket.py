@@ -67,8 +67,8 @@ class Socket(TSocket):
     def read(self, sz):
         try:
             buff = self.handle.recv(sz)
-        except socket.error as e:
-            if e.args[0] == errno.ECONNRESET and (
+        except socket.error as exc:
+            if exc.args[0] == errno.ECONNRESET and (
                 sys.platform == "darwin" or sys.platform.startswith("freebsd")
             ):
                 # freebsd and Mach don't follow POSIX semantic of recv
@@ -80,11 +80,11 @@ class Socket(TSocket):
                 buff = ""
             else:
                 raise
-        except Exception as e:
+        except Exception as exc:
             # SSL connection was closed
-            if e.args == (-1, "Unexpected EOF"):
+            if exc.args == (-1, "Unexpected EOF"):
                 buff = ""
-            elif e.args == (
+            elif exc.args == (
                 [("SSL routines", "SSL23_GET_CLIENT_HELLO", "unknown protocol")],
             ):
                 # a socket not using ssl tried to connect

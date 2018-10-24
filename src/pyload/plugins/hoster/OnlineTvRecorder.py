@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from builtins import _
+
 
 from pyload.core.network.http.http_request import BadHeader
 from .Http import Http
@@ -35,8 +35,8 @@ class OnlineTvRecorder(Http):
         try:
             return Http.process(self, pyfile)
 
-        except BadHeader as e:
-            self.log_debug("OnlineTvRecorder httpcode: {}".format(e.code))
-            if e.code == 503:
+        except BadHeader as exc:
+            self.log_debug("OnlineTvRecorder httpcode: {}".format(exc.code))
+            if exc.code == 503:
                 # max queueing for 3 hours
                 self.retry(360, 30, self._("Waiting in download queue"))

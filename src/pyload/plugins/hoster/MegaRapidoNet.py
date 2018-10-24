@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import random
-from builtins import _, range, str
+from builtins import range, str
 
 from ..internal.multihoster import MultiHoster
 

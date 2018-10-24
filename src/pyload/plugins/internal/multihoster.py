@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import re
-from builtins import _
+
 
 from .plugin import Fail
 from .simplehoster import SimpleHoster
@@ -73,7 +73,7 @@ class MultiHoster(SimpleHoster):
         try:
             SimpleHoster._process(self, thread)
 
-        except Fail as e:
+        except Fail as exc:
             hdict = self.pyload.pluginManager.hosterPlugins.get(
                 self.pyfile.pluginname, {}
             )

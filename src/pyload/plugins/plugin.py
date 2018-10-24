@@ -3,7 +3,7 @@
 
 import os
 import time
-from builtins import HOMEDIR, _, object, str
+from builtins import HOMEDIR, object, str
 from itertools import islice
 from random import randint
 
@@ -581,8 +581,8 @@ class Plugin(Base):
                 gid = getgrnam(self.config.get("permission", "group"))[2]
 
                 os.chown(location, uid, gid)
-            except Exception as e:
-                self.log.warning(self._("Setting User and Group failed: {}").format(str(e)))
+            except Exception as exc:
+                self.log.warning(self._("Setting User and Group failed: {}").format(str(exc)))
 
         # convert back to unicode
         location = fs_decode(location)
@@ -630,8 +630,8 @@ class Plugin(Base):
                 gid = getgrnam(self.config.get("permission", "group"))[2]
 
                 os.chown(fs_filename, uid, gid)
-            except Exception as e:
-                self.log.warning(self._("Setting User and Group failed: {}").format(str(e)))
+            except Exception as exc:
+                self.log.warning(self._("Setting User and Group failed: {}").format(str(exc)))
 
         self.lastDownload = filename
         return self.lastDownload

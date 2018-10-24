@@ -2,7 +2,7 @@
 # @author: RaNaN, mkaay
 
 import builtins
-from builtins import _, object, str
+from builtins import object, str
 from threading import RLock
 from types import MethodType
 
@@ -18,8 +18,8 @@ def try_catch(func):
         def wrapper(self, *args):
             try:
                 return func(self, *args)
-            except Exception as e:
-                self.log.error(self._("Error executing addons: {}").format(str(e)))
+            except Exception as exc:
+                self.log.error(self._("Error executing addons: {}").format(str(exc)))
         return wrapper
         
         
@@ -306,9 +306,9 @@ class AddonManager(object):
             for f in self.events[event]:
                 try:
                     f(*args)
-                except Exception as e:
+                except Exception as exc:
                     self.pyload.log.warning(
                         "Error calling event handler {}: {}, {}, {}".format(
-                            event, f, args, str(e)
+                            event, f, args, str(exc)
                         )
                     )

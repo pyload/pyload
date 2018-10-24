@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import re
 import time
-from builtins import _
+
 
 from ..internal.account import Account
 

@@ -305,7 +305,7 @@ class PyFile(object):
         e = UpdateEvent(
             "file", self.id, "collector" if not self.package().queue else "queue"
         )
-        self.m.pyload.pullManager.addEvent(e)
+        self.m.pyload.eventManager.addEvent(e)
 
     def setProgress(self, value):
         if not value == self.progress:

@@ -4,7 +4,7 @@ import os
 import subprocess
 import sys
 import time
-from builtins import _, object
+from builtins import object
 
 from ..internal.addon import Addon
 from ..utils import Expose, encode
@@ -112,8 +112,8 @@ class AntiStandby(Addon):
                 self._("Unable to change power state"), self._("caffeine lib not found")
             )
 
-        except Exception as e:
-            self.log_warning(self._("Unable to change power state"), e)
+        except Exception as exc:
+            self.log_warning(self._("Unable to change power state"), exc)
 
     @Expose
     def linux_standby(self, system=True, display=True):
@@ -125,8 +125,8 @@ class AntiStandby(Addon):
             elif not self.pid:
                 self.pid = subprocess.Popen(["caffeine"])
 
-        except Exception as e:
-            self.log_warning(self._("Unable to change system power state"), e)
+        except Exception as exc:
+            self.log_warning(self._("Unable to change system power state"), exc)
 
         try:
             if display:
@@ -134,8 +134,8 @@ class AntiStandby(Addon):
             else:
                 subprocess.call(["xset", "-dpms", "s", "off"])
 
-        except Exception as e:
-            self.log_warning(self._("Unable to change display power state"), e)
+        except Exception as exc:
+            self.log_warning(self._("Unable to change display power state"), exc)
 
     @Expose
     def touch(self, path):

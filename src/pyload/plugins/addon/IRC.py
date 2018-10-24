@@ -5,7 +5,7 @@ import select
 import socket
 import ssl
 import time
-from builtins import _, map
+from builtins import map
 from threading import Thread
 
 import pycurl
@@ -199,8 +199,8 @@ class IRC(Thread, Notifier):
             for line in res:
                 self.response(line, msg["origin"])
 
-        except Exception as e:
-            self.log_error(e, trace=True)
+        except Exception as exc:
+            self.log_error(exc, trace=True)
 
     def response(self, msg, origin=""):
         if origin == "":

@@ -49,9 +49,9 @@ class AddonThread(PluginThread):
             try:
                 self.kwargs["thread"] = self
                 self.f(*self.args, **self.kwargs)
-            except TypeError as e:
+            except TypeError as exc:
                 # dirty method to filter out exceptions
-                if "unexpected keyword argument 'thread'" not in e.args[0]:
+                if "unexpected keyword argument 'thread'" not in exc.args[0]:
                     raise
 
                 del self.kwargs["thread"]

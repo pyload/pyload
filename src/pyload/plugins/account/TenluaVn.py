@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import json
 import time
-from builtins import _
+
 
 from pyload.core.network.http.http_request import BadHeader
 from pyload.core.network.request_factory import getURL as get_url
@@ -48,11 +48,11 @@ class TenluaVn(Account):
                 "user_login", user=user, password=password, permanent=False
             )
 
-        except BadHeader as e:
-            if e.code == 401:
+        except BadHeader as exc:
+            if exc.code == 401:
                 self.fail_login()
 
             else:
-                self.fail_login(self._("BadHeader {}").format(e.code))
+                self.fail_login(self._("BadHeader {}").format(exc.code))
 
         data["sid"] = login_info[0]

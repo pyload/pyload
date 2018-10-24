@@ -4,7 +4,7 @@ import base64
 import re
 import time
 import urllib.parse
-from builtins import _, map, range
+from builtins import map, range
 
 from pyload.core.network.http.http_request import BadHeader
 from ..internal.addon import Addon
@@ -97,8 +97,8 @@ class Captcha9Kw(Addon):
                 with open(task.captchaParams["file"], mode="rb") as f:
                     data = f.read()
 
-            except IOError as e:
-                self.log_error(e)
+            except IOError as exc:
+                self.log_error(exc)
                 return
 
             post_data = {"file-upload-01": base64.b64encode(data)}
@@ -166,8 +166,8 @@ class Captcha9Kw(Addon):
             try:
                 res = self.load(self.API_URL, post=post_data)
 
-            except BadHeader as e:
-                res = e.content
+            except BadHeader as exc:
+                res = exc.content
                 time.sleep(3)
 
             else:

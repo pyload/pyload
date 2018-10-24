@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import os.path
-from builtins import _
+
 
 from ..internal.ocr import OCR
 

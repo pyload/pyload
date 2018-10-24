@@ -2,7 +2,7 @@
 import os
 import shutil
 import time
-from builtins import _
+
 
 from ..internal.addon import Addon
 from ..utils import encode
@@ -76,5 +76,5 @@ class HotFolder(Addon):
                 self.log_info(self._("Added {} from HotFolder").format(f))
                 self.pyload.api.addPackage(f, [newpath], 1)
 
-        except (IOError, OSError) as e:
-            self.log_error(e, trace=True)
+        except (IOError, OSError) as exc:
+            self.log_error(exc, trace=True)

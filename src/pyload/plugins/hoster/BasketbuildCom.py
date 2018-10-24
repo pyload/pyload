@@ -6,7 +6,7 @@
 #   https://s.basketbuild.com/filedl/gapps?dl=gapps-gb-20110828-signed.zip
 
 import re
-from builtins import _
+
 
 from ..internal.simplehoster import SimpleHoster
 

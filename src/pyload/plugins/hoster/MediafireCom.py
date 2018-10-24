@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from builtins import _
+
 
 from ..captcha.ReCaptcha import ReCaptcha
 from ..captcha.SolveMedia import SolveMedia

@@ -38,8 +38,8 @@ class TestJson(object):
     def test_access(self):
         try:
             urlopen(url.format("getServerVersion"))
-        except HTTPError as e:
-            assert e.code == 403
+        except HTTPError as exc:
+            assert exc.code == 403
         else:
             assert False
 
@@ -52,7 +52,7 @@ class TestJson(object):
     def test_unknown_method(self):
         try:
             self.call("notExisting")
-        except HTTPError as e:
-            assert e.code == 404
+        except HTTPError as exc:
+            assert exc.code == 404
         else:
             assert False

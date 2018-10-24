@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 import urllib.parse
-from builtins import _
+
 
 from .crypter import Crypter
 from ..utils import encode, exists
@@ -72,8 +72,8 @@ class Container(Crypter):
                 with open(self.pyfile.url, mode="wb") as f:
                     f.write(encode(content))
 
-            except IOError as e:
-                self.fail(e)
+            except IOError as exc:
+                self.fail(exc)
 
         elif not exists(self.pyfile.url):
             self.fail(self._("File not found"))

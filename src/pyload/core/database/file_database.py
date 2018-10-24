@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN, mkaay
 
-from builtins import _, object, range, str, zip
+from builtins import object, range, str, zip
 from threading import RLock
 
 from .database_thread import DatabaseThread, style
@@ -142,7 +142,7 @@ class FileHandler(object):
         self.pyload.threadManager.createInfoThread(data, package)
 
         # TODO: change from reloadAll event to package update event
-        self.pyload.pullManager.addEvent(ReloadAllEvent("collector"))
+        self.pyload.eventManager.addEvent(ReloadAllEvent("collector"))
 
     # ----------------------------------------------------------------------
     @lock
@@ -154,7 +154,7 @@ class FileHandler(object):
         lastID = self.db.addPackage(name, folder, queue)
         p = self.db.getPackage(lastID)
         e = InsertEvent("pack", lastID, p.order, "collector" if not queue else "queue")
-        self.pyload.pullManager.addEvent(e)
+        self.pyload.eventManager.addEvent(e)
         return lastID
 
     # ----------------------------------------------------------------------
@@ -184,7 +184,7 @@ class FileHandler(object):
                 pyfile.release()
 
         self.db.deletePackage(p)
-        self.pyload.pullManager.addEvent(e)
+        self.pyload.eventManager.addEvent(e)
         self.pyload.addonManager.dispatchEvent("packageDeleted", id)
 
         if id in self.packageCache:
@@ -221,7 +221,7 @@ class FileHandler(object):
 
         self.db.deleteLink(f)
 
-        self.pyload.pullManager.addEvent(e)
+        self.pyload.eventManager.addEvent(e)
 
         p = self.getPackage(pid)
         if not len(p.getChildren()):
@@ -259,7 +259,7 @@ class FileHandler(object):
         e = UpdateEvent(
             "file", pyfile.id, "collector" if not pyfile.package().queue else "queue"
         )
-        self.pyload.pullManager.addEvent(e)
+        self.pyload.eventManager.addEvent(e)
 
     # ----------------------------------------------------------------------
     def updatePackage(self, pypack):
@@ -269,7 +269,7 @@ class FileHandler(object):
         self.db.updatePackage(pypack)
 
         e = UpdateEvent("pack", pypack.id, "collector" if not pypack.queue else "queue")
-        self.pyload.pullManager.addEvent(e)
+        self.pyload.eventManager.addEvent(e)
 
     # ----------------------------------------------------------------------
     def getPackage(self, id):
@@ -462,7 +462,7 @@ class FileHandler(object):
         e = UpdateEvent(
             "pack", id, "collector" if not self.getPackage(id).queue else "queue"
         )
-        self.pyload.pullManager.addEvent(e)
+        self.pyload.eventManager.addEvent(e)
 
     @lock
     @change
@@ -481,7 +481,7 @@ class FileHandler(object):
         e = UpdateEvent(
             "file", id, "collector" if not self.getFile(id).package().queue else "queue"
         )
-        self.pyload.pullManager.addEvent(e)
+        self.pyload.eventManager.addEvent(e)
 
     @lock
     @change
@@ -494,7 +494,7 @@ class FileHandler(object):
         oldorder = p.order
 
         e = RemoveEvent("pack", id, "collector" if not p.queue else "queue")
-        self.pyload.pullManager.addEvent(e)
+        self.pyload.eventManager.addEvent(e)
 
         self.db.clearPackageOrder(p)
 
@@ -516,7 +516,7 @@ class FileHandler(object):
         p = self.getPackage(id)
 
         e = InsertEvent("pack", id, p.order, "collector" if not p.queue else "queue")
-        self.pyload.pullManager.addEvent(e)
+        self.pyload.eventManager.addEvent(e)
 
     @lock
     @change
@@ -524,7 +524,7 @@ class FileHandler(object):
         p = self.getPackage(id)
 
         e = RemoveEvent("pack", id, "collector" if not p.queue else "queue")
-        self.pyload.pullManager.addEvent(e)
+        self.pyload.eventManager.addEvent(e)
         self.db.reorderPackage(p, position)
 
         packs = list(self.packageCache.values())
@@ -544,7 +544,7 @@ class FileHandler(object):
         self.db.commit()
 
         e = InsertEvent("pack", id, position, "collector" if not p.queue else "queue")
-        self.pyload.pullManager.addEvent(e)
+        self.pyload.eventManager.addEvent(e)
 
     @lock
     @change
@@ -557,7 +557,7 @@ class FileHandler(object):
             id,
             "collector" if not self.getPackage(f["package"]).queue else "queue",
         )
-        self.pyload.pullManager.addEvent(e)
+        self.pyload.eventManager.addEvent(e)
 
         self.db.reorderLink(f, position)
 
@@ -585,7 +585,7 @@ class FileHandler(object):
             position,
             "collector" if not self.getPackage(f["package"]).queue else "queue",
         )
-        self.pyload.pullManager.addEvent(e)
+        self.pyload.eventManager.addEvent(e)
 
     @change
     def updateFileInfo(self, data, pid):
@@ -596,7 +596,7 @@ class FileHandler(object):
         e = UpdateEvent(
             "pack", pid, "collector" if not self.getPackage(pid).queue else "queue"
         )
-        self.pyload.pullManager.addEvent(e)
+        self.pyload.eventManager.addEvent(e)
 
     def checkPackageFinished(self, pyfile):
         """

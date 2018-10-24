@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import json
 import re
-from builtins import _
+
 
 from ..internal.captcha_service import CaptchaService
 

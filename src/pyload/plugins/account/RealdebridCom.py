@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import json
 import time
-from builtins import _
+
 
 from pyload.core.network.http.http_request import BadHeader
 from ..internal.multiaccount import MultiAccount
@@ -54,8 +54,8 @@ class RealdebridCom(MultiAccount):
         try:
             account = self.api_response("/user", args(auth_token=password))
 
-        except BadHeader as e:
-            if e.code == 401:
+        except BadHeader as exc:
+            if exc.code == 401:
                 self.log_error(
                     self._(
                         "Password for Real-debrid should be the API token - get it from: https://real-debrid.com/apitoken"

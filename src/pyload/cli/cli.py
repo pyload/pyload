@@ -6,7 +6,7 @@ import configparser
 import os
 import sys
 import time
-from builtins import PKGDIR, _, input, object, range, str
+from builtins import PKGDIR, input, object, range, str
 from getopt import GetoptError, getopt
 from sys import exit
 from threading import Lock, Thread
@@ -95,8 +95,8 @@ class Cli(object):
                 with self.lock:
                     try:
                         self.inputHandler.onEnter(self.input)
-                    except Exception as e:
-                        println(2, red(e))
+                    except Exception as exc:
+                        println(2, red(exc))
 
             elif ord(inp) == 127:
                 self.input = self.input[:-1]  #: backspace
@@ -412,8 +412,8 @@ class RefreshThread(Thread):
                 os.system("clear")
                 print(self._("pyLoad was terminated"))
                 os._exit(0)
-            except Exception as e:
-                println(2, red(str(e)))
+            except Exception as exc:
+                println(2, red(str(exc)))
                 self.cli.reset()
 
 

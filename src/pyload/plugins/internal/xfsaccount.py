@@ -2,7 +2,7 @@
 import re
 import time
 import urllib.parse
-from builtins import _
+
 
 from .account import Account
 from ..utils import parse_html_form, parse_time, set_cookie
@@ -98,8 +98,8 @@ class XFSAccount(Account):
             try:
                 validuntil = time.mktime(time.strptime(expiredate, "%d %B %Y"))
 
-            except Exception as e:
-                self.log_error(e)
+            except Exception as exc:
+                self.log_error(exc)
 
             else:
                 self.log_debug("Valid until: {}".format(validuntil))
@@ -136,8 +136,8 @@ class XFSAccount(Account):
 
                     trafficleft = self.parse_traffic(size + unit)
 
-            except Exception as e:
-                self.log_error(e)
+            except Exception as exc:
+                self.log_error(exc)
         else:
             self.log_debug("TRAFFIC LEFT PATTERN not found")
 
@@ -165,8 +165,8 @@ class XFSAccount(Account):
 
                         leechtraffic += self.parse_traffic(size + unit)
 
-            except Exception as e:
-                self.log_error(e)
+            except Exception as exc:
+                self.log_error(exc)
         else:
             self.log_debug("LEECH TRAFFIC PATTERN not found")
 

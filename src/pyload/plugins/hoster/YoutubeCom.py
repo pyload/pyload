@@ -9,7 +9,7 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
-from builtins import PKGDIR, _, map, object, range, str, zip
+from builtins import PKGDIR, map, object, range, str, zip
 from functools import reduce
 from xml.dom.minidom import parseString as parse_xml
 
@@ -622,9 +622,9 @@ class YoutubeCom(Hoster):
 
                 decrypted_sig = decrypt_func(encrypted_sig)
 
-            except (JSInterpreterError, AssertionError) as e:
-                self.log_error(self._("Signature decode failed"), e)
-                self.fail(e)
+            except (JSInterpreterError, AssertionError) as exc:
+                self.log_error(self._("Signature decode failed"), exc)
+                self.fail(exc)
 
         #: Remove old records from cache
         for k in cache_info["cache"].keys():
@@ -777,14 +777,14 @@ class YoutubeCom(Hoster):
 
         try:
             filename = self.download(url, disposition=False)
-        except Skip as e:
+        except Skip as exc:
             filename = os.path.join(
                 self.pyload.config.get("general", "download_folder"),
                 self.pyfile.package().folder,
                 self.pyfile.name,
             )
             self.log_info(
-                self._("Download skipped: {} due to {}").format(self.pyfile.name, e)
+                self._("Download skipped: {} due to {}").format(self.pyfile.name, exc)
             )
 
         return filename, chosen_fmt
@@ -884,14 +884,14 @@ class YoutubeCom(Hoster):
 
         try:
             filename = self.download(url, disposition=False)
-        except Skip as e:
+        except Skip as exc:
             filename = os.path.join(
                 self.pyload.config.get("general", "download_folder"),
                 self.pyfile.package().folder,
                 self.pyfile.name,
             )
             self.log_info(
-                self._("Download skipped: {} due to {}").format(self.pyfile.name, e)
+                self._("Download skipped: {} due to {}").format(self.pyfile.name, exc)
             )
 
         return filename, chosen_fmt

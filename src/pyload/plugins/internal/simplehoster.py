@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import re
-from builtins import _
+
 
 from pyload.core.network.http.http_request import BadHeader
 from pyload.core.network.request_factory import getURL as get_url
@@ -158,8 +158,8 @@ class SimpleHoster(Hoster):
                 try:
                     html = get_url(url, cookies=cls.COOKIES, decode=cls.TEXT_ENCODING)
 
-                except BadHeader as e:
-                    info["error"] = "{}: {}".format(e.code, e.content)
+                except BadHeader as exc:
+                    info["error"] = "{}: {}".format(exc.code, exc.content)
 
                 except Exception:
                     pass

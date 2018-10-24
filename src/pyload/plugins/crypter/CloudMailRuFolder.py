@@ -5,7 +5,7 @@ import re
 import urllib.error
 import urllib.parse
 import urllib.request
-from builtins import _
+
 
 from ..internal.crypter import Crypter
 

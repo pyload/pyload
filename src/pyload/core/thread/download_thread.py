@@ -2,7 +2,7 @@
 # @author: RaNaN, vuolter
 
 import time
-from builtins import _, str
+from builtins import str
 from queue import Queue
 
 import pycurl
@@ -89,8 +89,8 @@ class DownloadThread(PluginThread):
 
                 continue
 
-            except Retry as e:
-                reason = e.args[0]
+            except Retry as exc:
+                reason = exc.args[0]
                 self.m.log.info(
                     self._("Download restarted: {name} | {msg}").format(
                         name=pyfile.name, msg=reason
@@ -99,8 +99,8 @@ class DownloadThread(PluginThread):
                 self.queue.put(pyfile)
                 continue
 
-            except Fail as e:
-                msg = e.args[0]
+            except Fail as exc:
+                msg = exc.args[0]
 
                 if msg == "offline":
                     pyfile.setStatus("offline")
@@ -123,12 +123,12 @@ class DownloadThread(PluginThread):
                 self.clean(pyfile)
                 continue
 
-            except pycurl.error as e:
-                if len(e.args) == 2:
-                    code, msg = e.args
+            except pycurl.error as exc:
+                if len(exc.args) == 2:
+                    code, msg = exc.args
                 else:
                     code = 0
-                    msg = e.args
+                    msg = exc.args
 
                 self.m.log.debug("pycurl exception {}: {}".format(code, msg))
 
@@ -168,12 +168,12 @@ class DownloadThread(PluginThread):
                 self.clean(pyfile)
                 continue
 
-            except SkipDownload as e:
+            except SkipDownload as exc:
                 pyfile.setStatus("skipped")
 
                 self.m.log.info(
                     self._("Download skipped: {name} due to {plugin}").format(
-                        name=pyfile.name, plugin=e
+                        name=pyfile.name, plugin=exc
                     )
                 )
 
@@ -186,14 +186,14 @@ class DownloadThread(PluginThread):
 
                 continue
 
-            except Exception as e:
+            except Exception as exc:
                 pyfile.setStatus("failed")
                 self.m.log.warning(
                     self._("Download failed: {name} | {msg}").format(
-                        name=pyfile.name, msg=str(e)
+                        name=pyfile.name, msg=str(exc)
                     )
                 )
-                pyfile.error = str(e)
+                pyfile.error = str(exc)
 
                 if self.m.pyload.debug:
                     self.writeDebugReport(pyfile)

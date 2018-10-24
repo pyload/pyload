@@ -2,7 +2,7 @@
 
 import os
 import subprocess
-from builtins import HOMEDIR, PKGDIR, _, map, range, str
+from builtins import HOMEDIR, PKGDIR, map, range, str
 
 from Pillow import Image
 from .plugin import Plugin
@@ -97,8 +97,8 @@ class OCR(Plugin):
             )
             tmpTxt.close()
 
-        except IOError as e:
-            self.log_error(e)
+        except IOError as exc:
+            self.log_error(exc)
             return
 
         self.log_debug("Saving tiff...")

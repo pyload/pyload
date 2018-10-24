@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
-from builtins import _
+
 
 import flask
 
@@ -61,7 +61,7 @@ def links():
 
         data = {"links": links, "ids": ids}
         return data
-    except Exception as e:
+    except Exception as exc:
         flask.abort(500)
 
 

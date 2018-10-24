@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from builtins import _
+
 
 from ..hoster.MegaCoNz import MegaClient, MegaCrypto
 from ..internal.crypter import Crypter

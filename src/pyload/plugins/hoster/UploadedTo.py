@@ -3,7 +3,7 @@
 import os
 import re
 import time
-from builtins import _, range
+from builtins import range
 
 from pyload.core.network.request_factory import getURL as get_url
 from ..captcha.ReCaptcha import ReCaptcha

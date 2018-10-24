@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import random
-from builtins import _
+
 
 from ..internal.simplehoster import SimpleHoster
 

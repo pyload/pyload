@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import json
-from builtins import _
+
 from functools import reduce
 
 import pycurl
@@ -56,12 +56,12 @@ class MegaDebridEu(MultiAccount):
         try:
             res = self.api_response("getHostersList")
 
-        except BadHeader as e:
-            if e.code == 405:
+        except BadHeader as exc:
+            if exc.code == 405:
                 self.log_error(self._("Unable to retrieve hosters list: Banned IP"))
 
             else:
-                self.log_error(self._("Unable to retrieve hosters list: error {}"), e.code)
+                self.log_error(self._("Unable to retrieve hosters list: error {}"), exc.code)
 
         else:
             if res["response_code"] == "ok":
@@ -107,11 +107,11 @@ class MegaDebridEu(MultiAccount):
         try:
             res = self.api_response("connectUser", args(login=user, password=password))
 
-        except BadHeader as e:
-            if e.code == 401:
+        except BadHeader as exc:
+            if exc.code == 401:
                 self.fail_login()
 
-            elif e.code == 405:
+            elif exc.code == 405:
                 self.fail(self._("Banned IP"))
 
             else:

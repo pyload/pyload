@@ -4,7 +4,7 @@ import base64
 import json
 import re
 import time
-from builtins import _, range, str
+from builtins import range, str
 
 import pycurl
 from pyload.core.network.http.http_request import BadHeader
@@ -102,17 +102,17 @@ class DeathByCaptcha(Addon):
                 elif "status" not in res:
                     raise DeathByCaptchaException(str(res))
 
-            except BadHeader as e:
-                if e.code == 403:
+            except BadHeader as exc:
+                if exc.code == 403:
                     raise DeathByCaptchaException("not-logged-in")
 
-                elif e.code == 413:
+                elif exc.code == 413:
                     raise DeathByCaptchaException("invalid-captcha")
 
-                elif e.code == 503:
+                elif exc.code == 503:
                     raise DeathByCaptchaException("service-overload")
 
-                elif e.code in (400, 405):
+                elif exc.code in (400, 405):
                     raise DeathByCaptchaException("invalid-request")
 
                 else:
@@ -182,8 +182,8 @@ class DeathByCaptcha(Addon):
         try:
             self.get_status()
             self.get_credits()
-        except DeathByCaptchaException as e:
-            self.log_error(e)
+        except DeathByCaptchaException as exc:
+            self.log_error(exc)
             return False
 
         balance, rate = self.info["balance"], self.info["rate"]
@@ -207,20 +207,20 @@ class DeathByCaptcha(Addon):
                     "captcha/{}/report".format(task.data["ticket"]), True
                 )
 
-            except DeathByCaptchaException as e:
-                self.log_error(e)
+            except DeathByCaptchaException as exc:
+                self.log_error(exc)
 
-            except Exception as e:
-                self.log_error(e, trace=True)
+            except Exception as exc:
+                self.log_error(exc, trace=True)
 
     @threaded
     def _process_captcha(self, task):
         c = task.captchaParams["file"]
         try:
             ticket, result = self.submit(c)
-        except DeathByCaptchaException as e:
-            task.error = e.get_code()
-            self.log_error(e)
+        except DeathByCaptchaException as exc:
+            task.error = exc.get_code()
+            self.log_error(exc)
             return
 
         task.data["ticket"] = ticket

@@ -2,7 +2,7 @@
 
 import re
 import time
-from builtins import _, str
+from builtins import str
 
 from ..internal.simplehoster import SimpleHoster
 

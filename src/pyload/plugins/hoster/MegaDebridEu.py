@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import json
-from builtins import _
+
 
 import pycurl
 from pyload.core.network.http.http_request import BadHeader
@@ -64,8 +64,8 @@ class MegaDebridEu(MultiHoster):
                 post=args(link=pyfile.url),
             )
 
-        except BadHeader as e:
-            if e.code == 405:
+        except BadHeader as exc:
+            if exc.code == 405:
                 self.fail(self._("Banned IP"))
 
             else:

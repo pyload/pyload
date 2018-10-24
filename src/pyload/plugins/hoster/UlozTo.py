@@ -3,7 +3,7 @@
 import json
 import os
 import re
-from builtins import _, str
+from builtins import str
 
 import pycurl
 from ..internal.simplehoster import SimpleHoster

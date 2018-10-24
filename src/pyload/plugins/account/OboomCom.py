@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import json
-from builtins import _
+
 
 from beaker.crypto.pbkdf2 import PBKDF2
 

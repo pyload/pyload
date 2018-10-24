@@ -33,8 +33,8 @@ class MegasharesCom(Account):
             self.log_debug(timestr)
             validuntil = time.mktime(time.strptime(timestr, "%b %d, %Y"))
 
-        except Exception as e:
-            self.log_error(e, trace=True)
+        except Exception as exc:
+            self.log_error(exc, trace=True)
 
         return {"validuntil": validuntil, "trafficleft": -1, "premium": premium}
 

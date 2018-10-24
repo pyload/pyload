@@ -120,8 +120,8 @@ class ConfigParser(object):
                 del homeconf["remote"]["username"]
             self.updateValues(homeconf, self.config)
 
-        except Exception as e:
-            exc_logger.exception(e)
+        except Exception as exc:
+            exc_logger.exception(exc)
 
     def parseConfig(self, config):
         """
@@ -210,8 +210,8 @@ class ConfigParser(object):
                                     "value": value,
                                 }
 
-                except Exception as e:
-                    exc_logger.exception(e)
+                except Exception as exc:
+                    exc_logger.exception(exc)
 
         return conf
 

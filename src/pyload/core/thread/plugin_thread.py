@@ -64,8 +64,8 @@ class PluginThread(Thread):
             if not os.stat(dump_name).st_size:
                 raise Exception("Empty Zipfile")
 
-        except Exception as e:
-            self.m.log.debug("Error creating zip file: {}".format(e))
+        except Exception as exc:
+            self.m.log.debug("Error creating zip file: {}".format(exc))
 
             dump_name = dump_name.replace(".zip", ".txt")
             with open(dump_name, mode="wb") as f:
@@ -96,8 +96,8 @@ class PluginThread(Thread):
                 dump += "\t{:20} = ".format(key)
                 try:
                     dump += pprint.pformat(value) + "\n"
-                except Exception as e:
-                    dump += "<ERROR WHILE PRINTING VALUE> {}\n".format(e)
+                except Exception as exc:
+                    dump += "<ERROR WHILE PRINTING VALUE> {}\n".format(exc)
 
             del frame
 
@@ -111,8 +111,8 @@ class PluginThread(Thread):
                 dump += "\t{:20} = ".format(name)
                 try:
                     dump += pprint.pformat(attr) + "\n"
-                except Exception as e:
-                    dump += "<ERROR WHILE PRINTING VALUE> {}\n".format(e)
+                except Exception as exc:
+                    dump += "<ERROR WHILE PRINTING VALUE> {}\n".format(exc)
 
         dump += "\nPYFILE OBJECT DUMP: \n\n"
 
@@ -122,8 +122,8 @@ class PluginThread(Thread):
                 dump += "\t{:20} = ".format(name)
                 try:
                     dump += pprint.pformat(attr) + "\n"
-                except Exception as e:
-                    dump += "<ERROR WHILE PRINTING VALUE> {}\n".format(e)
+                except Exception as exc:
+                    dump += "<ERROR WHILE PRINTING VALUE> {}\n".format(exc)
 
         if pyfile.pluginname in self.m.pyload.config.plugin:
             dump += "\n\nCONFIG: \n\n"

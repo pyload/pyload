@@ -4,7 +4,7 @@ import json
 import re
 import time
 import urllib.parse
-from builtins import _
+
 
 import pycurl
 from ..internal.account import Account

@@ -11,7 +11,7 @@ import sys
 import urllib.error
 import urllib.parse
 import urllib.request
-from builtins import _, input, object, range, str
+from builtins import input, object, range, str
 
 from Pillow import Image, ImageDraw
 from ..internal.ocr import OCR

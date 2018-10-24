@@ -52,22 +52,22 @@ class GoogledriveCom(Hoster):
             self.log_debug("API response: {}".format(json_data))
             return json_data
 
-        except BadHeader as e:
+        except BadHeader as exc:
             try:
-                json_data = json.loads(e.content)
+                json_data = json.loads(exc.content)
                 self.log_error(
                     "API Error: {}".format(cmd),
                     json_data["error"]["message"],
                     "ID: {}".format(self.info["pattern"]["ID"]),
-                    "Error code: {}".format(e.code),
+                    "Error code: {}".format(exc.code),
                 )
 
             except ValueError:
                 self.log_error(
                     "API Error: {}".format(cmd),
-                    e,
+                    exc,
                     "ID: {}".format(self.info["pattern"]["ID"]),
-                    "Error code: {}".format(e.code),
+                    "Error code: {}".format(exc.code),
                 )
             return None
 
@@ -82,11 +82,11 @@ class GoogledriveCom(Hoster):
                 },
             )
 
-        except BadHeader as e:
-            if e.code == 404:
+        except BadHeader as exc:
+            if exc.code == 404:
                 self.offline()
 
-            elif e.code == 403:
+            elif exc.code == 403:
                 self.temp_offline()
 
             else:

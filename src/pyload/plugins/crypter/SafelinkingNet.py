@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import json
-from builtins import _
+
 
 import pycurl
 from pyload.core.network.http.http_request import BadHeader
@@ -51,9 +51,9 @@ class SafelinkingNet(Crypter):
         try:
             res = json.loads(self.load(url, post=json.dumps(post_data)))
 
-        except (BadHeader, ValueError) as e:
-            self.log_error(e)
-            self.fail(e)
+        except (BadHeader, ValueError) as exc:
+            self.log_error(exc)
+            self.fail(exc)
 
         # Headers back to normal
         self.req.http.c.setopt(

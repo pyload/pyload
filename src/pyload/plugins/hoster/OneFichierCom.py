@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-from builtins import _, map, range
+from builtins import map, range
 
 from pyload.core.network.request_factory import getURL as get_url
 from ..internal.simplehoster import SimpleHoster
@@ -110,9 +110,9 @@ class OneFichierCom(SimpleHoster):
 
                     break
 
-            except Exception as e:
+            except Exception as exc:
                 print(format_exc())
-                info = {"status": 8, "error": e}
+                info = {"status": 8, "error": exc}
                 break
 
         else:

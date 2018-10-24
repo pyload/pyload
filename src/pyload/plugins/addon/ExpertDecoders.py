@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import base64
 import uuid
-from builtins import _
+
 
 import pycurl
 from pyload.core.network.http.http_request import BadHeader
@@ -101,5 +101,5 @@ class ExpertDecoders(Addon):
                 )
                 self.log_info(self._("Request refund"), res)
 
-            except BadHeader as e:
-                self.log_error(self._("Could not send refund request"), e)
+            except BadHeader as exc:
+                self.log_error(self._("Could not send refund request"), exc)

@@ -2,7 +2,7 @@
 
 import json
 import re
-from builtins import _
+
 
 import js2py
 

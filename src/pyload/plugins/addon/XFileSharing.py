@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import inspect
 import re
-from builtins import _
+
 
 from ..internal.addon import Addon
 
@@ -141,8 +141,8 @@ class XFileSharing(Addon):
                 try:
                     klass = self.pyload.pluginManager.loadClass(type, p["name"])
 
-                except AttributeError as e:
-                    self.log_debug(e, trace=True)
+                except AttributeError as exc:
+                    self.log_debug(exc, trace=True)
                     continue
 
                 if (

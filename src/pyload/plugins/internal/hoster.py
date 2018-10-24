@@ -3,7 +3,7 @@
 import mimetypes
 import os
 import re
-from builtins import _, range
+from builtins import range
 
 from pyload.core.network.http.http_request import BadHeader
 from .base import Base
@@ -103,12 +103,12 @@ class Hoster(Base):
 
                 self._check_download()
 
-            except Fail as e:  # TODO: Move to PluginThread in 0.6.x
+            except Fail as exc:  # TODO: Move to PluginThread in 0.6.x
                 self.log_warning(
                     self._("Premium download failed")
                     if self.premium
                     else self._("Free download failed"),
-                    e,
+                    exc,
                 )
                 if (
                     not self.no_fallback
@@ -118,7 +118,7 @@ class Hoster(Base):
                     self.restart(premium=False)
 
                 else:
-                    raise Fail(encode(e))
+                    raise Fail(encode(exc))
 
         finally:
             self._finalize()
@@ -240,12 +240,12 @@ class Hoster(Base):
                 disposition,
             )
 
-        except IOError as e:
-            self.log_error(e)
-            self.fail(self._("IOError {}").format(e.errno))
+        except IOError as exc:
+            self.log_error(exc)
+            self.fail(self._("IOError {}").format(exc.errno))
 
-        except BadHeader as e:
-            self.req.http.code = e.code
+        except BadHeader as exc:
+            self.req.http.code = exc.code
             raise
 
         else:
@@ -336,9 +336,9 @@ class Hoster(Base):
                     new_file = os.path.join(dl_dirname, safename)
                     os.rename(old_file, new_file)
 
-                except OSError as e:
+                except OSError as exc:
                     self.log_warning(
-                        self._("Error renaming `{}` to `{}`").format(newname, safename), e
+                        self._("Error renaming `{}` to `{}`").format(newname, safename), exc
                     )
                     safename = newname
 

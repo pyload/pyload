@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from builtins import _
+
 
 import pycurl
 from pyload.core.network.http.http_request import BadHeader
@@ -93,8 +93,8 @@ class BypassCaptcha(Addon):
                     "cv": 1 if success else 0,
                 },
             )
-        except BadHeader as e:
-            self.log_error(self._("Could not send response"), e)
+        except BadHeader as exc:
+            self.log_error(self._("Could not send response"), exc)
 
     def captcha_task(self, task):
         if "service" in task.data:
@@ -131,8 +131,8 @@ class BypassCaptcha(Addon):
         c = task.captchaParams["file"]
         try:
             ticket, result = self.submit(c)
-        except BypassCaptchaException as e:
-            task.error = e.get_code()
+        except BypassCaptchaException as exc:
+            task.error = exc.get_code()
             return
 
         task.data["ticket"] = ticket

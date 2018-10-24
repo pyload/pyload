@@ -8,7 +8,7 @@ import configparser
 import os
 import sys
 import time
-from builtins import HOMEDIR, PKGDIR, _, input, object, range, str
+from builtins import HOMEDIR, PKGDIR, input, object, range, str
 from getopt import GetoptError, getopt
 from sys import exit
 from threading import Lock, Thread

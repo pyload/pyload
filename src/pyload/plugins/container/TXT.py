@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import codecs
-from builtins import _
+
 
 from ..internal.container import Container
 from ..utils import encode

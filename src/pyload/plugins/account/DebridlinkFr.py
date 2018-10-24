@@ -3,7 +3,7 @@
 import hashlib
 import json
 import time
-from builtins import _, str
+from builtins import str
 
 import pycurl
 from ..internal.multiaccount import MultiAccount

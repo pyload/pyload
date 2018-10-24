@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import json
 import re
-from builtins import _
+
 
 from pyload.core.datatype.pyfile import statusMap
 from pyload.core.network.request_factory import getURL as get_url

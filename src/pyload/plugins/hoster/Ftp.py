@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import re
 import urllib.parse
-from builtins import _
+
 
 import pycurl
 from ..internal.hoster import Hoster
@@ -59,11 +59,11 @@ class Ftp(Hoster):
         try:
             headers = self.load(pyfile.url, just_header=True)
 
-        except pycurl.error as e:
-            if "530" in e.args[1]:
+        except pycurl.error as exc:
+            if "530" in exc.args[1]:
                 self.fail(self._("Authorization required"))
             else:
-                self.fail(self._("Error {}: {}").format(e.args))
+                self.fail(self._("Error {}: {}").format(exc.args))
 
         self.req.http.c.setopt(pycurl.NOBODY, 0)
         self.log_debug(self.req.http.header)

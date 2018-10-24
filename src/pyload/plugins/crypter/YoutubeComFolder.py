@@ -4,7 +4,7 @@ import json
 import os
 import re
 import urllib.parse
-from builtins import _, map
+from builtins import map
 
 from ..internal.crypter import Crypter
 

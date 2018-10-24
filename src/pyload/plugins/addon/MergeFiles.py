@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 import re
-from builtins import _
+
 
 from ..internal.addon import Addon
 from ..utils import threaded
@@ -71,8 +71,8 @@ class MergeFiles(Addon):
                                     break
                         self.log_debug("Finished merging part", splitted_file)
 
-                    except Exception as e:
-                        self.log_error(e, trace=True)
+                    except Exception as exc:
+                        self.log_error(exc, trace=True)
 
                     finally:
                         pyfile.setProgress(100)

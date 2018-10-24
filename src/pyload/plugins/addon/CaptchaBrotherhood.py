@@ -5,7 +5,7 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
-from builtins import _, range
+from builtins import range
 
 import pycurl
 from Pillow import Image
@@ -77,9 +77,9 @@ class CaptchaBrotherhood(Addon):
                     img.save(output, "JPEG")
                 data = output.getvalue()
 
-        except Exception as e:
+        except Exception as exc:
             raise CaptchaBrotherhoodException(
-                "Reading or converting captcha image failed: {}".format(e)
+                "Reading or converting captcha image failed: {}".format(exc)
             )
 
         with get_request() as req:
@@ -105,7 +105,7 @@ class CaptchaBrotherhood(Addon):
                 req.c.perform()
                 res = req.getResponse()
 
-            except Exception as e:
+            except Exception as exc:
                 raise CaptchaBrotherhoodException("Submit captcha image failed")
 
         if not res.startswith("OK"):
@@ -165,8 +165,8 @@ class CaptchaBrotherhood(Addon):
         c = task.captchaParams["file"]
         try:
             ticket, result = self.submit(c)
-        except CaptchaBrotherhoodException as e:
-            task.error = e.get_code()
+        except CaptchaBrotherhoodException as exc:
+            task.error = exc.get_code()
             return
 
         task.data["ticket"] = ticket

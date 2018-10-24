@@ -118,8 +118,8 @@ class RockfileEu(SimpleHoster):
         try:
             self.download(self.link)
 
-        except BadHeader as e:
-            if e.code == 503:
+        except BadHeader as exc:
+            if exc.code == 503:
                 self.retry()
 
             else:

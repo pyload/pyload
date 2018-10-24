@@ -8,7 +8,7 @@
 import binascii
 import re
 import urllib.parse
-from builtins import _, filter, range, str
+from builtins import filter, range, str
 
 from cryptography.fernet import Fernet
 
@@ -325,8 +325,8 @@ class FilecryptCc(Crypter):
                     res2 = self._filecrypt_load_url(link2.group(1), just_header=True)
                     self.urls.append(res2["location"])
 
-        except Exception as e:
-            self.log_debug("Error decrypting weblinks: {}".format(e))
+        except Exception as exc:
+            self.log_debug("Error decrypting weblinks: {}".format(exc))
 
     def handle_CNL(self):
         try:
@@ -337,8 +337,8 @@ class FilecryptCc(Crypter):
             for index in CNLdata:
                 self.urls.extend(self._get_links(index[2], index[1]))
 
-        except Exception as e:
-            self.log_debug("Error decrypting CNL: {}".format(e))
+        except Exception as exc:
+            self.log_debug("Error decrypting CNL: {}".format(exc))
 
     def _get_links(self, crypted, jk):
         #: Get key
@@ -357,8 +357,8 @@ class FilecryptCc(Crypter):
     def _filecrypt_load_url(self, *args, **kwargs):
         try:
             return self.load(*args, **kwargs)
-        except BadHeader as e:
-            if e.code == 500:
-                return e.content
+        except BadHeader as exc:
+            if exc.code == 500:
+                return exc.content
             else:
                 raise

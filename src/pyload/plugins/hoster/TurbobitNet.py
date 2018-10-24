@@ -7,7 +7,7 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
-from builtins import _, range
+from builtins import range
 
 import js2py
 from cryptography.hazmat.backends import default_backend
@@ -164,8 +164,8 @@ class TurbobitNet(SimpleHoster):
                 if out.startswith("/download/"):
                     return "http://turbobit.net{}".format(out.strip())
 
-            except Exception as e:
-                self.log_error(e, trace=True)
+            except Exception as exc:
+                self.log_error(exc, trace=True)
         else:
             if self.retries >= 2:
                 #: Retry with updated js

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import base64
 import re
-from builtins import _
+
 
 import pycurl
 from pyload.core.network.request_factory import getRequest as get_request
@@ -152,8 +152,8 @@ class ImageTyperz(Addon):
         c = task.captchaParams["file"]
         try:
             ticket, result = self.submit(c)
-        except ImageTyperzException as e:
-            task.error = e.get_code()
+        except ImageTyperzException as exc:
+            task.error = exc.get_code()
             return
 
         task.data["ticket"] = ticket

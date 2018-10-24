@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import json
-from builtins import _
+
 
 from ..internal.multihoster import MultiHoster
 
@@ -56,8 +56,8 @@ class TwojlimitPl(MultiHoster):
         try:
             data = self.run_file_query(pyfile.url, "fileinfo")
 
-        except Exception as e:
-            self.log_error(e)
+        except Exception as exc:
+            self.log_error(exc)
             self.temp_offline("Query error #1")
 
         try:
@@ -93,8 +93,8 @@ class TwojlimitPl(MultiHoster):
         try:
             self.download(self.run_file_query(pyfile.url, "filedownload"), fixurl=False)
 
-        except Exception as e:
-            self.log_error(e)
+        except Exception as exc:
+            self.log_error(exc)
             self.temp_offline("Query error #2")
 
     def run_file_query(self, url, mode=None):

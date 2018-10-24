@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import json
 import re
-from builtins import _
+
 
 from pyload.core.network.request_factory import getURL as get_url
 from ..captcha.ReCaptcha import ReCaptcha

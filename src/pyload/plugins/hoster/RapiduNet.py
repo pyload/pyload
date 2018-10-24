@@ -2,7 +2,7 @@
 
 import json
 import time
-from builtins import _, str
+from builtins import str
 
 import pycurl
 from ..captcha.ReCaptcha import ReCaptcha

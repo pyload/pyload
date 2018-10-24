@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import re
 import time
-from builtins import _
+
 
 from ..internal.account import Account
 
@@ -52,8 +52,8 @@ class HellshareCz(Account):
                     trafficleft = self.parse_traffic(credit, "MiB")
                     validuntil = -1
 
-            except Exception as e:
-                self.log_error(self._("Unable to parse credit info"), e)
+            except Exception as exc:
+                self.log_error(self._("Unable to parse credit info"), exc)
                 validuntil = -1
                 trafficleft = -1
 

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import json
-from builtins import _, range
+from builtins import range
 
 from ..internal.account import Account
 from ..utils import set_cookie

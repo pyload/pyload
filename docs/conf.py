@@ -54,8 +54,8 @@ try:
         args = args[1:]
 
     apidoc.main(args)
-except Exception as e:
-    print("Running `sphinx-apidoc` failed!\n{}".format(e))
+except Exception as exc:
+    print("Running `sphinx-apidoc` failed!\n{}".format(exc))
 
 # -- General configuration -----------------------------------------------------
 

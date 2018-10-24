@@ -7,7 +7,7 @@ import re
 import sys
 import traceback
 from ast import literal_eval
-from builtins import HOMEDIR, PKGDIR, _, object, str
+from builtins import HOMEDIR, PKGDIR, object, str
 from itertools import chain
 
 import semver
@@ -334,9 +334,9 @@ class PluginManager(object):
                 )
                 plugins[name]["pyload"] = module  #: cache import, maybe unneeded
                 return module
-            except Exception as e:
+            except Exception as exc:
                 self.pyload.log.error(
-                    self._("Error importing {name}: {msg}").format(name=name, msg=str(e))
+                    self._("Error importing {name}: {msg}").format(name=name, msg=str(exc))
                 )
                 if self.pyload.debug:
                     traceback.print_exc()

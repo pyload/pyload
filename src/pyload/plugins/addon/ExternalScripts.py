@@ -2,7 +2,7 @@
 
 import os
 import subprocess
-from builtins import HOMEDIR, _, map
+from builtins import HOMEDIR, map
 
 from ..internal.addon import Addon
 from ..utils import Expose, encode
@@ -169,9 +169,9 @@ class ExternalScripts(Addon):
             try:
                 p = self.call_cmd(file, *args)
 
-            except Exception as e:
+            except Exception as exc:
                 self.log_error(
-                    self._("Runtime error: {}").format(file), e or self._("Unknown error")
+                    self._("Runtime error: {}").format(file), exc or self._("Unknown error")
                 )
 
             else:
@@ -186,7 +186,7 @@ class ExternalScripts(Addon):
         self.call_script("pyload_start")
 
     def exit(self):
-        event = "restart" if self.pyload.do_restart else "stop"
+        event = "restart" if self.pyload._do_restart else "stop"
         self.call_script("pyload_" + event, lock=True)
 
     def before_reconnect(self, ip):

@@ -2,7 +2,7 @@
 # @author: RaNaN, vuolter
 
 import time
-from builtins import _, str
+from builtins import str
 
 from ..api import OnlineStatus
 from ..datatype.pyfile import PyFile
@@ -181,10 +181,10 @@ class InfoThread(PluginThread):
                     cb(pluginname, result)
 
             self.m.log.debug("Finished Info Fetching for {}".format(pluginname))
-        except Exception as e:
+        except Exception as exc:
             self.m.log.warning(
                 self._("Info Fetching for {name} failed | {err}").format(
-                    name=pluginname, err=str(e)
+                    name=pluginname, err=str(exc)
                 )
             )
 
@@ -218,8 +218,8 @@ class InfoThread(PluginThread):
 
             self.m.log.debug("Got {} links.".format(len(data)))
 
-        except Exception as e:
-            self.m.log.debug("Pre decrypting error: {}".format(str(e)))
+        except Exception as exc:
+            self.m.log.debug("Pre decrypting error: {}".format(str(exc)))
         finally:
             pyfile.release()
 

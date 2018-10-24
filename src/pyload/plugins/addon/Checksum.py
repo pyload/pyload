@@ -4,7 +4,7 @@ import os
 import re
 import time
 import zlib
-from builtins import _
+
 from threading import Event
 
 from ..internal.addon import Addon

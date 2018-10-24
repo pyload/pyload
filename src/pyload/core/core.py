@@ -88,6 +88,7 @@ class Core(object):
         # if refresh:
         # cleanpy(PACKDIR)
 
+        # TODO: remove here
         self.lastClientConnected = 0
         
         self._init_config()
@@ -138,7 +139,7 @@ class Core(object):
     def _init_managers(self):
         self.scheduler = scheduler(self)
         self.pgm = self.pluginmanager = PluginManager(self)
-        self.evm = self.eventmanager = EventManager(self)
+        self.evm = self.eventManager = EventManager(self)
         self.acm = self.accountmanager = AccountManager(self)
         self.thm = self.threadManager = ThreadManager(self)
         self.cpm = self.captchaManager = CaptchaManager(self)
@@ -244,8 +245,8 @@ class Core(object):
             with open(link_file) as f:
                 if f.read().strip():
                     self.api.addPackage("links.txt", [link_file], 1)
-        except Exception as e:
-            self.log.debug(e)
+        except Exception as exc:
+            self.log.debug(exc)
             pass
                  
                  
@@ -306,6 +307,7 @@ class Core(object):
             self.log.critical(exc, exc_info=True)
             self.terminate()
 
+    # TODO: remove here
     def isClientConnected(self):
         return (self.lastClientConnected + 30) > time.time()
         

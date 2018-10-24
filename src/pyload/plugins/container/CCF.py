@@ -2,7 +2,7 @@
 
 import os
 import re
-from builtins import _
+
 
 import requests
 

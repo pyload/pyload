@@ -7,7 +7,7 @@ import re
 import urllib.error
 import urllib.parse
 import urllib.request
-from builtins import _, range, str
+from builtins import range, str
 
 from Pillow import Image, ImageDraw, ImageFont
 from ..internal.captcha_service import CaptchaService

@@ -4,7 +4,7 @@
 import os
 import shutil
 import time
-from builtins import _, object, range, str
+from builtins import object, range, str
 from logging import getLogger
 
 import pycurl
@@ -128,9 +128,9 @@ class HTTPDownload(object):
 
         try:
             self._download(chunks, resume)
-        except pycurl.error as e:
+        except pycurl.error as exc:
             # code 33 - no resume
-            code = e.args[0]
+            code = exc.args[0]
             if code == 33:
                 # try again without resume
                 self.log.debug("Errno 33 -> Restart without resume")
@@ -221,12 +221,12 @@ class HTTPDownload(object):
                     chunk = self.findChunk(c)
                     try:  #: check if the header implies success, else add it to failed list
                         chunk.verifyHeader()
-                    except BadHeader as e:
+                    except BadHeader as exc:
                         self.log.debug(
-                            "Chunk {} failed: {}".format(chunk.id + 1, str(e))
+                            "Chunk {} failed: {}".format(chunk.id + 1, str(exc))
                         )
                         failed.append(chunk)
-                        ex = e
+                        ex = exc
                     else:
                         chunksDone.add(c)
 
@@ -244,12 +244,12 @@ class HTTPDownload(object):
 
                     try:  #: check if the header implies success, else add it to failed list
                         chunk.verifyHeader()
-                    except BadHeader as e:
+                    except BadHeader as exc:
                         self.log.debug(
-                            "Chunk {} failed: {}".format(chunk.id + 1, str(e))
+                            "Chunk {} failed: {}".format(chunk.id + 1, str(exc))
                         )
                         failed.append(chunk)
-                        ex = e
+                        ex = exc
                     else:
                         chunksDone.add(curl)
                 if not num_q:  #: no more infos to get
@@ -337,8 +337,8 @@ class HTTPDownload(object):
     def closeChunk(self, chunk):
         try:
             self.m.remove_handle(chunk.c)
-        except pycurl.error as e:
-            self.log.debug("Error removing chunk: {}".format(str(e)))
+        except pycurl.error as exc:
+            self.log.debug("Error removing chunk: {}".format(str(exc)))
         finally:
             chunk.close()
 

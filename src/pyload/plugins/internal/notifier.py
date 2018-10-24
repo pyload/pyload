@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import time
-from builtins import _
+
 
 from .addon import Addon
 from ..utils import Expose, encode, isiterable
@@ -58,7 +58,7 @@ class Notifier(Addon):
         if not self.config.get("exit", True):
             return
 
-        if self.pyload.do_restart:
+        if self.pyload._do_restart:
             self.notify(self._("Restarting pyLoad"))
         else:
             self.notify(self._("Exiting pyLoad"))
@@ -143,7 +143,7 @@ class Notifier(Addon):
         try:
             self.send(event, msg, key)
 
-        except Exception as e:
+        except Exception as exc:
             self.log_error(self._("Error sending notification"), e)
             return False
 

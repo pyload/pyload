@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # @author: mkaay
 
-from builtins import _, object, str
+from builtins import object, str
 from threading import Thread
 
 
@@ -16,8 +16,8 @@ class BackendBase(Thread):
     def run(self):
         try:
             self.serve()
-        except Exception as e:
-            self.pyload.log.error(self._("Remote backend error: {}").format(e))
+        except Exception as exc:
+            self.pyload.log.error(self._("Remote backend error: {}").format(exc))
 
     def setup(self, host, port):
         pass
@@ -71,10 +71,10 @@ class RemoteManager(object):
                         name=b, addr=host, port=port
                     )
                 )
-            except Exception as e:
+            except Exception as exc:
                 self.pyload.log.error(
                     self._("Failed loading backend {name} | {error}").format(
-                        name=b, error=str(e)
+                        name=b, error=str(exc)
                     )
                 )
             else:

@@ -2,7 +2,7 @@
 
 import re
 import urllib.parse
-from builtins import _, range
+from builtins import range
 
 from pyload.core.network.http.http_request import BadHeader
 from ..internal.hoster import Hoster
@@ -35,8 +35,8 @@ class Http(Hoster):
             try:
                 self.download(url, ref=False, disposition=True)
 
-            except BadHeader as e:
-                if e.code not in (401, 403, 404, 410):
+            except BadHeader as exc:
+                if exc.code not in (401, 403, 404, 410):
                     raise
 
             if self.req.code in (404, 410):

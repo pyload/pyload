@@ -3,7 +3,7 @@
 
 import os
 import shutil
-from builtins import _, object
+from builtins import object
 from threading import Lock
 
 from .event_manager import AccountUpdateEvent
@@ -195,9 +195,9 @@ class AccountManager(object):
             else:
                 data[p] = []
         e = AccountUpdateEvent()
-        self.pyload.pullManager.addEvent(e)
+        self.pyload.eventManager.addEvent(e)
         return data
 
     def sendChange(self):
         e = AccountUpdateEvent()
-        self.pyload.pullManager.addEvent(e)
+        self.pyload.eventManager.addEvent(e)

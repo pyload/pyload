@@ -2,7 +2,7 @@
 import json
 import re
 import urllib.parse
-from builtins import _
+
 
 from ..internal.multihoster import MultiHoster
 

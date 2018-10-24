@@ -128,8 +128,8 @@ class XDCCRequest(object):
                 try:
                     data = self.dccsock.recv(16384)
 
-                except socket.error as e:
-                    if e.errno == errno.EAGAIN or e.errno == errno.EWOULDBLOCK:
+                except socket.error as exc:
+                    if exc.errno == errno.EAGAIN or exc.errno == errno.EWOULDBLOCK:
                         continue
 
                     else:

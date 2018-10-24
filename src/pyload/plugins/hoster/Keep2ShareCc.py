@@ -2,7 +2,7 @@
 
 import json
 import re
-from builtins import _, range
+from builtins import range
 
 from pyload.core.network.http.http_request import BadHeader
 from pyload.core.network.request_factory import getURL as get_url
@@ -88,8 +88,8 @@ class Keep2ShareCc(SimpleHoster):
                 captcha_challenge=None,
                 captcha_response=None,
             )
-        except BadHeader as e:
-            if e.code == 406:
+        except BadHeader as exc:
+            if exc.code == 406:
                 for i in range(10):
                     json_data = self.api_response("RequestCaptcha")
                     if json_data["code"] != 200:
@@ -105,9 +105,9 @@ class Keep2ShareCc(SimpleHoster):
                             captcha_response=captcha_response,
                         )
 
-                    except BadHeader as e:
-                        if e.code == 406:
-                            json_data = json.loads(e.content)
+                    except BadHeader as exc:
+                        if exc.code == 406:
+                            json_data = json.loads(exc.content)
                             if json_data["errorCode"] == 31:  #: ERROR_CAPTCHA_INVALID
                                 self.captcha.invalid()
                                 continue

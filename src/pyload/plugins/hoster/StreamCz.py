@@ -5,7 +5,7 @@ import json
 import os
 import time
 import urllib.parse
-from builtins import _, range, str
+from builtins import range, str
 
 from ..internal.simplehoster import SimpleHoster
 

@@ -39,8 +39,8 @@ class CzshareCom(Account):
             v = re.search(self.VALID_UNTIL_PATTERN, html, re.MULTILINE)
             validuntil = time.mktime(time.strptime(v.group(1), "%d.%m.%y %H:%M"))
 
-        except Exception as e:
-            self.log_error(e, trace=True)
+        except Exception as exc:
+            self.log_error(exc, trace=True)
 
         else:
             premium = True

@@ -3,7 +3,7 @@
 import operator
 import random
 import re
-from builtins import _, range
+from builtins import range
 
 from ..captcha.ReCaptcha import ReCaptcha
 from ..captcha.SolveMedia import SolveMedia

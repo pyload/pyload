@@ -8,7 +8,7 @@ import struct
 import sys
 import threading
 import time
-from builtins import _, object, range, str
+from builtins import object, range, str
 
 from ..internal.hoster import Hoster
 from ..plugin import Abort
@@ -680,9 +680,9 @@ class XDCC(Hoster):
 
                 return
 
-            except socket.error as e:
-                if hasattr(e, "errno") and e.errno is not None:
-                    err_no = e.errno
+            except socket.error as exc:
+                if hasattr(exc, "errno") and exc.errno is not None:
+                    err_no = exc.errno
 
                     if err_no in (10054, 10061):
                         self.log_warning("Server blocked our ip, retry in 5 min")
@@ -698,7 +698,7 @@ class XDCC(Hoster):
                         )
 
                 else:
-                    err_msg = e.args[0]
+                    err_msg = exc.args[0]
                     self.log_error(
                         self._("Failed due to socket errors: '{}'").format(err_msg)
                     )
@@ -818,7 +818,7 @@ class XDCC(Hoster):
         except Abort:
             pass
 
-        except Exception as e:
+        except Exception as exc:
             bot = self.info["pattern"]["BOT"]
             self.irc_client.xdcc_cancel_pack(bot)
 

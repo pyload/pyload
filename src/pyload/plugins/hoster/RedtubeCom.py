@@ -4,7 +4,7 @@ import json
 import os
 import re
 import urllib.parse
-from builtins import _, str
+from builtins import str
 
 from ..internal.hoster import Hoster
 
