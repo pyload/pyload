@@ -2,7 +2,7 @@
 
 import os
 import subprocess
-from builtins import HOMEDIR, PKGDIR, map, range, str
+from builtins import PKGDIR, map, range, str
 
 from Pillow import Image
 from .plugin import Plugin

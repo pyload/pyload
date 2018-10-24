@@ -9,4 +9,4 @@
 #           \/
 
 from .core import Core
-from .run import run, start, stop, restart
+from .run import run
