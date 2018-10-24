@@ -7,17 +7,12 @@ import gettext
 import locale
 import os
 import time
-from builtins import PKGDIR
 
+from builtins import PKGDIR
 from .. import __version__ as PYLOAD_VERSION
 from .. import __version_info__ as PYLOAD_VERSION_INFO
-from ..network.request_factory import RequestFactory
-from .config.config_parser import ConfigParser
-from .log_factory import LoggerFactory
-from .utils.utils import format
-from .utils.utils.fs import availspace, makedirs
-from .utils.utils.layer.safethreading import Event
-from .utils.utils.system import ionice, renice, set_process_group, set_process_user
+from .utils.utils import formatSize, freeSpace
+from threading import Event
 
 
 class Restart(Exception):
@@ -94,24 +89,30 @@ class Core(object):
         atexit.register(self.terminate)
 
     def _init_config(self):
+        from .config.config_parser import ConfigParser
         self.config = ConfigParser(self.userdir)
 
     def _init_log(self):
-        self.log = LoggerFactory(self, self.debug)
+        from .log_factory import LogFactory
+        self.logfactory = LogFactory(self)
+        self.log = self.logfactory.get_logger('pyload')  # NOTE: forced debug mode from console not working
 
     def _init_network(self):
+        from .network.request_factory import RequestFactory
         self.request = self.req = RequestFactory(self)
         builtins.REQUESTS = self.requestFactory
 
     def _init_api(self):
         from .api import Api
-
         self.api = Api(self)
 
     def _init_webserver(self):
+        from pyload.webui.server_thread import WebServer
         self.webserver = WebServer(self)
 
     def _init_database(self, restore):
+        from .database import DatabaseThread, FileHandler
+        
         db_path = os.path.join(self.userdir, DatabaseThread.DB_FILENAME)
         newdb = not os.path.isfile(db_path)
 
@@ -131,10 +132,19 @@ class Core(object):
             )
 
     def _init_managers(self):
-        self.scheduler = scheduler(self)
-        self.pgm = self.pluginmanager = PluginManager(self)
+        from .manager.account_manager import AccountManager
+        from .manager.addon_manager import AddonManager
+        from .manager.captcha_manager import CaptchaManager
+        from .manager.event_manager import EventManager
+        from .manager.plugin_manager import PluginManager
+        from .remote.remote_manager import RemoteManager
+        from .manager.thread_manager import ThreadManager
+        from .scheduler import Scheduler
+        
+        self.scheduler = Scheduler(self)
+        self.pgm = self.pluginManager = PluginManager(self)
         self.evm = self.eventManager = EventManager(self)
-        self.acm = self.accountmanager = AccountManager(self)
+        self.acm = self.accountManager = AccountManager(self)
         self.thm = self.threadManager = ThreadManager(self)
         self.cpm = self.captchaManager = CaptchaManager(self)
         # TODO: Remove builtins.ADDONMANAGER
@@ -153,7 +163,7 @@ class Core(object):
         if change_group:
             try:
                 group = self.config.get("permission", "group")
-                set_process_group(group)
+                os.setgid(group[2])
             except Exception as exc:
                 self.log.error(self._("Unable to change gid"))
                 self.log.error(exc, exc_info=self.debug)
@@ -161,7 +171,7 @@ class Core(object):
         if change_user:
             try:
                 user = self.config.get("permission", "user")
-                set_process_user(user)
+                os.setuid(user[2])
             except Exception as exc:
                 self.log.error(self._("Unable to change uid"))
                 self.log.error(exc, exc_info=self.debug)
@@ -206,8 +216,8 @@ class Core(object):
         # storage_folder = os.path.join(
         # builtins.USERDIR, self.DEFAULT_STORAGENAME)
         self.log.info(self._("Storage: {0}".format(storage_folder)))
-        makedirs(storage_folder, exist_ok=True)
-        avail_space = format.size(availspace(storage_folder))
+        os.makedirs(storage_folder, exist_ok=True)
+        avail_space = formatSize(freeSpace(storage_folder))
         self.log.info(self._("Available storage space: {0}").format(avail_space))
 
         self.config.save()  #: save so config files gets filled

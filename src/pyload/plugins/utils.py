@@ -216,7 +216,7 @@ class SimpleQueue(object):
 
 
 # NOTE: decorator
-def lock(**kwgs):
+def lock(func, **kwgs):
     def decorator(func):
         @wraps(func)
         def wrapped(self, *args, **kwargs):
@@ -225,17 +225,15 @@ def lock(**kwgs):
                 return func(self, *args, **kwargs)
             finally:
                 self.lock.release()
-
         return wrapped
-
     return decorator
 
 
-def threaded(fn):
-    def run(*args, **kwargs):
-        ADDONMANAGER.startThread(fn, *args, **kwargs)
-
-    return run
+def threaded(func):
+    @wraps(func)
+    def wrapped(*args, **kwargs):
+        ADDONMANAGER.startThread(func, *args, **kwargs)
+    return wrapped
 
 
 def sign_string(message, pem_private, pem_passphrase="", sign_algo="SHA384"):

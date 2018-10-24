@@ -180,7 +180,7 @@ def apiver_check(func):
     return wrapper
 
 
-def login_required(perm=None):
+def login_required(func, perm=None):
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):

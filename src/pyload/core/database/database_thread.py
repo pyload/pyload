@@ -8,6 +8,7 @@ import sqlite3
 from builtins import object, range, str
 from queue import Queue
 from threading import Event, Thread
+from contextlib import closing
 
 # DATABASE VERSION
 __version__ = 4
@@ -269,7 +270,7 @@ class DatabaseThread(Thread):
             except Exception:
                 print("Converting old Django DB")
             with sqlite3.connect("pyload.db", isolation_level=None) as conn:
-                with conn.cursor() as c:
+                with closing(conn.cursor()) as c:
                     c.execute(
                         "SELECT username, password, email from auth_user WHERE is_superuser"
                     )

@@ -21,14 +21,14 @@ class Bucket(object):
     def __bool__(self):
         return self._rate >= self.MIN_RATE
 
-    rate = property(get_rate, set_rate)
-
     @lock
     def set_rate(self, rate):
         self._rate = int(rate)
 
     def get_rate(self):
         return self._rate
+        
+    rate = property(get_rate, set_rate)
 
     def _calc_token(self):
         if self.token >= self._rate:

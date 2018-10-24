@@ -44,8 +44,7 @@ class RemoteManager(object):
         self._ = core._
         self.backends = []
 
-        if self.pyload.remote:
-            self.available.append("ThriftBackend")
+        self.available.append("ThriftBackend")
 
     #        else:
     #            self.available.append("SocketBackend")

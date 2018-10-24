@@ -6,10 +6,12 @@ import argparse
 import os
 import sys
 
+from builtins import HOMEDIR
 from .core import Core
+from .. import __version__
 
 
-def daemon():
+def daemon(core_args):
     try:
         pid = os.fork()
         if pid > 0:
@@ -44,7 +46,7 @@ def daemon():
     os.dup2(0, 1)  #: standard output (1)
     os.dup2(0, 2)
 
-    pyload_core = Core()
+    pyload_core = Core(*core_args)
     pyload_core.start()
 
 
@@ -57,51 +59,49 @@ def parse_args(args):
     Returns:
       :obj:`argparse.Namespace`: command line parameters namespace
     """
-    parser = argparse.ArgumentParser(description="pyLoad Download Manager")
-    parser.add_argument(
-        "--version", action="version", version="snakel {ver}".format(ver=__version__)
+    parser = argparse.ArgumentParser(description="Free and open-source Download Manager written in pure Python")
+    group = parser.add_mutually_exclusive_group()
+    
+    group.add_argument(
+        "--version", action="version", version="pyLoad {ver}".format(ver=__version__)
     )
-    parser.add_argument(dest="n", help="n-th Fibonacci number", type=int, metavar="INT")
-    parser.add_argument(
-        "-v",
-        "--verbose",
-        dest="loglevel",
-        help="set loglevel to INFO",
-        action="store_const",
-        const=logging.INFO,
-    )
-    parser.add_argument(
-        "-vv",
-        "--very-verbose",
-        dest="loglevel",
-        help="set loglevel to DEBUG",
-        action="store_const",
-        const=logging.DEBUG,
-    )
+    
+    default_userdir = os.path.join(HOMEDIR, 'pyLoad')
+    default_cachedir = os.path.join(default_userdir, '.tmp')
+    
+    parser.add_argument("-d","--debug",action="store_true",help="Enable debug mode")
+    parser.add_argument("--userdir",help="Run with custom user folder", default=default_userdir)
+    parser.add_argument("--cachedir",help="Run with custom cache folder", default=default_cachedir)
+    parser.add_argument("--daemon",action="store_true",help="Daemonmize after start")
+    parser.add_argument("--restore",action="store_true", help="Restore default admin user")
+    
     return parser.parse_args(args)
 
-
-def run(args=sys.argv[1:]):
-    """
-    Entry point for console_scripts
-    """
+    
+def run(core_args, daemon=False):
     # change name to 'pyLoad'
     # from .lib.rename_process import renameProcess
     # renameProcess('pyLoad')
-    args = parse_args(args)
-
-    # TODO: use parsed args
-    if args.daemon:
-        daemon()
-    else:
-        pyload_core = Core()
-        try:
-            pyload_core.start()
-        except KeyboardInterrupt:
-            pyload_core.log.info(self._("Killed from terminal"))
-            pyload_core.shutdown()
-            os._exit(1)
+    if daemon:
+        return daemon(core_args)
+        
+    pyload_core = Core(*core_args)
+    try:
+        pyload_core.start()
+    except KeyboardInterrupt:
+        pyload_core.log.info(self._("Killed from terminal"))
+        pyload_core.shutdown()
+        os._exit(1)
+    
+    
+def main():
+    """
+    Entry point for console_scripts
+    """
+    args = parse_args(sys.argv[1:])
+    core_args = (args.userdir, args.cachedir, args.debug, args.restore)
+    run(core_args, args.daemon)
 
 
 if __name__ == "__main__":
-    run()
+    main()
