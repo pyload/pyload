@@ -8,7 +8,7 @@ import flask_login
 
 from pyload.core.api import PERMS, ROLE, has_permission
 from urllib.parse import urlparse, urljoin
-from flask import request, url_for
+from flask import request
 from functools import wraps
 
 # class User(UserMixin):

@@ -7,22 +7,15 @@ from .cli import Cli
 import configparser
 import os
 import sys
-import time
-from builtins import HOMEDIR, PKGDIR, input, object, range, str
+from builtins import HOMEDIR, PKGDIR, input
 from getopt import GetoptError, getopt
 from sys import exit
-from threading import Lock, Thread
 
-from easy_getch import getch
 
 import pyload.core.utils.pylgettext as gettext
-from pyload.core.api import Destination
-from .addpackage import AddPackage
-from .managefiles import ManageFiles
 from .printer import *
 from pyload.core.remote.thriftbackend.thrift_client import (ConnectionClosed, NoConnection,
                                                        NoSSL, ThriftClient, WrongLogin)
-from pyload.core.utils.utils import decode, formatSize
 
 
 def print_help(config):

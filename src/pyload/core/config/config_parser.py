@@ -4,7 +4,7 @@ import os
 import re
 import shutil
 import time
-from builtins import HOMEDIR, PKGDIR, object, str
+from builtins import PKGDIR, object, str
 
 from ... import exc_logger
 from ..utils.utils import chmod

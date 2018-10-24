@@ -6,7 +6,7 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
-from builtins import HOMEDIR, range
+from builtins import range
 
 import pycurl
 from pyload.core.network.http.http_request import BadHeader

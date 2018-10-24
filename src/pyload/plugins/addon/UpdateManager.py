@@ -5,7 +5,7 @@ import os
 import re
 import sys
 import time
-from builtins import HOMEDIR, PKGDIR, zip
+from builtins import PKGDIR, zip
 
 from ..internal.addon import Addon
 from ..utils import Expose, encode, exists, threaded

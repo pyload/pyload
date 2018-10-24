@@ -6,7 +6,6 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
-from builtins import HOMEDIR
 
 from ..internal.container import Container
 from ..utils import safename

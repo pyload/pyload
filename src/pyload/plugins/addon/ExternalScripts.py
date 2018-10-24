@@ -2,7 +2,7 @@
 
 import os
 import subprocess
-from builtins import HOMEDIR, map
+from builtins import map
 
 from ..internal.addon import Addon
 from ..utils import Expose, encode

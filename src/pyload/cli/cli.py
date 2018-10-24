@@ -2,13 +2,10 @@
 # @author: RaNaN
 
 # import codecs
-import configparser
 import os
 import sys
 import time
-from builtins import PKGDIR, input, object, range, str
-from getopt import GetoptError, getopt
-from sys import exit
+from builtins import object, range, str
 from threading import Lock, Thread
 
 from easy_getch import getch
