@@ -10,6 +10,7 @@ from urllib.parse import unquote
 import flask
 import js2py
 from cryptography.fernet import Fernet
+from functools import wraps
 
 bp = flask.Blueprint("cnl", __name__)
 

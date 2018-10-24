@@ -1030,7 +1030,7 @@ class YoutubeCom(Hoster):
                     self.log_debug(
                         "Saved subtitle: {}".format(os.path.basename(srt_filename))
                     )
-                    srt_files.append((srt_filename, _lang))
+                    srt_files.append((srt_filename, lang))
                     if subs_dl == "first_available":
                         break
 

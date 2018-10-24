@@ -61,11 +61,11 @@ class YadiSk(SimpleHoster):
 
                 except Exception as e:
                     info["status"] = 8
-                    info["error"] = self._("Unexpected server response: {}").format(e)
+                    info["error"] = "Unexpected server response: {}".format(e)
 
             else:
                 info["status"] = 8
-                info["error"] = self._("could not find required json data")
+                info["error"] = "could not find required json data"
 
         return info
 

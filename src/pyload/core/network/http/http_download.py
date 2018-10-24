@@ -11,7 +11,7 @@ import pycurl
 from .http_chunk import ChunkInfo, HTTPChunk
 from .http_request import BadHeader
 from pyload.plugins.plugin import Abort
-from .,.utils.utils import fs_encode
+from ...utils.utils import fs_encode
 
 
 class HTTPDownload(object):

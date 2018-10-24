@@ -18,6 +18,7 @@ from ..utils import encode, lock, threaded
 class IRC(object):
     def __init__(self, plugin, nick, ident, realname):
         self.plugin = plugin
+        self._ = plugin._
         self.lock = threading.RLock()
 
         #: last 4 digits

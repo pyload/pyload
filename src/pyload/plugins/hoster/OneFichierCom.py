@@ -116,7 +116,7 @@ class OneFichierCom(SimpleHoster):
                 break
 
         else:
-            info = {"status": 8, "error": self._("Too many redirects")}
+            info = {"status": 8, "error": "Too many redirects"}
 
         return info
 

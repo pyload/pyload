@@ -73,15 +73,6 @@ def print_file(download):
     )
 
 
-def print_status(download):
-    return "#{id:-6} {name:-40} Status: {statusmsg:-10} Size: {size}".format(
-        id=download.fid,
-        name=download.name,
-        statusmsg=download.statusmsg,
-        size=download.format_size,
-    )
-
-
 def print_commands():
     commands = [
         ("status", self._("Prints server status")),

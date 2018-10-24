@@ -22,7 +22,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 # from flask_talisman import Talisman
 from flask_babel import Babel
 from flask_login import LoginManager
-from .helpers import pre_processor, User
+from .helpers import pre_processor
 from .blueprints import (
     api_blueprint,
     cnl_blueprint,

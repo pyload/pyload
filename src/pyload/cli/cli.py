@@ -29,6 +29,15 @@ from pyload.plugins.utils import lock
 # sys.stdout = codecs.getwriter(enc)(sys.stdout, errors="replace")
 
 
+def print_status(download):
+    return "#{id:-6} {name:-40} Status: {statusmsg:-10} Size: {size}".format(
+        id=download.fid,
+        name=download.name,
+        statusmsg=download.statusmsg,
+        size=download.format_size,
+    )
+    
+    
 # TODO: use client.api instead client
 class Cli(object):
     def __init__(self, client, command):

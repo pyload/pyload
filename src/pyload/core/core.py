@@ -48,7 +48,7 @@ class Exit(Exception):
 #  improve external scripts
 class Core(object):
 
-    DEFAULT_LANGUAGE = 'english'
+    LOCALE_DOMAIN = 'core'
     DEFAULT_USERNAME = 'admin'
     DEFAULT_PASSWORD = 'pyload'
 
@@ -63,14 +63,20 @@ class Core(object):
     @property
     def running(self):
         return self._running.is_set()
+        
+    @property
+    def debug(self):
+        return self._debug
 
     # TODO: `restore` should reset config as well
-    def __init__(self, userdir, cachedir, debug=False, restore=False):
+    def __init__(self, userdir, cachedir, debug=None, restore=False):
         self._running = Event()
-        self.__do_restart = False
-        self.__do_exit = False
+        self._do_restart = False
+        self._do_exit = False
         self._ = lambda x: x
-
+        self._debug = self.config.get(
+            'log', 'debug') if debug is None else debug
+            
         self.userdir = os.path.abspath(userdir)
         self.cachedir = os.path.abspath(cachedir)
         os.makedirs(self.userdir, exist_ok=True)
@@ -82,29 +88,34 @@ class Core(object):
         # if refresh:
         # cleanpy(PACKDIR)
 
-        self.config = ConfigParser(self.userdir)
-        self.debug = self.config.get(
-            'log', 'debug') if debug is None else debug
-        self.log = LoggerFactory(self, self.debug)
-
+        self.lastClientConnected = 0
+        
+        self._init_config()
+        self._init_log()
         self._init_database(restore)
         self._init_managers()
-
-        self.request = self.req = RequestFactory(self)
-
+        self._init_network()
         self._init_api()
-
+        self._init_webserver()
+        
         atexit.register(self.terminate)
 
+    def _init_config(self):
+        self.config = ConfigParser(self.userdir)
+        
+    def _init_log(self):
+        self.log = LoggerFactory(self, self.debug)
+    
+    def _init_network(self):
+        self.request = self.req = RequestFactory(self)
+        builtins.REQUESTS = self.requestFactory
+        
     def _init_api(self):
         from .api import Api
         self.api = Api(self)
 
     def _init_webserver(self):
-        if not self.config.get("webui", "enabled"):
-            return
         self.webserver = WebServer(self)
-        self.webserver.start()
             
     def _init_database(self, restore):
         db_path = os.path.join(self.userdir, DatabaseThread.DB_FILENAME)
@@ -125,19 +136,16 @@ class Core(object):
                 self._('Restored default login credentials `{}|{}`').format(*userpw))
 
     def _init_managers(self):
-        self.scheduler = sched.scheduler(time.time, time.sleep)
-        self.pluginmanager = self.pgm = PluginManager(self)
-        self.exchangemanager = self.exm = ExchangeManager(self)
-        self.eventmanager = self.evm = EventManager(self)
-        self.accountmanager = self.acm = AccountManager(self)
-        self.infomanager = self.iom = InfoManager(self)
-        self.transfermanager = self.tsm = TransferManager(self)
+        self.scheduler = scheduler(self)
+        self.pgm = self.pluginmanager = PluginManager(self)
+        self.evm = self.eventmanager = EventManager(self)
+        self.acm = self.accountmanager = AccountManager(self)
+        self.thm = self.threadManager = ThreadManager(self)
+        self.cpm = self.captchaManager = CaptchaManager(self)
         # TODO: Remove builtins.ADDONMANAGER
-        builtins.ADDONMANAGER = self.addonmanager = self.adm = AddonManager(
+        builtins.ADDONMANAGER = self.adm = self.addonmanager = AddonManager(
             self)
-        # self.remotemanager = self.rem = RemoteManager(self)
-        # self.servermanager = self.svm = ServerManager(self)
-        self.db.manager = self.files  # ugly?
+        self.rem = self.remotemanager = RemoteManager(self)
 
     def _setup_permissions(self):
         self.log.debug('Setup permissions...')
@@ -165,10 +173,9 @@ class Core(object):
                 self.log.error(exc, exc_info=self.debug)
 
     def set_language(self, lang):
-        domain = 'core'
         localedir = os.path.join(PKGDIR, 'locale')
         languages = (locale.locale_alias[lang.lower()].split('_', 1)[0],)
-        self._set_language(domain, localedir, languages)
+        self._set_language(self.LOCALE_DOMAIN, localedir, languages)
 
     def _set_language(self, *args, **kwargs):
         trans = gettext.translation(*args, **kwargs)
@@ -189,7 +196,7 @@ class Core(object):
             self.set_language(lang)
         except IOError as exc:
             self.log.error(exc, exc_info=self.debug)
-            self._set_language('core', fallback=True)
+            self._set_language(self.LOCALE_DOMAIN, fallback=True)
 
     # def _setup_niceness(self):
         # niceness = self.config.get('general', 'niceness')
@@ -209,23 +216,46 @@ class Core(object):
         avail_space = format.size(availspace(storage_folder))
         self.log.info(
             self._('Available storage space: {0}').format(avail_space))
+            
+        self.config.save()  #: save so config files gets filled
 
     def _setup_network(self):
         self.log.debug('Setup network...')
 
         # TODO: Move to accountmanager
         self.log.info(self._('Activating accounts...'))
-        self.acm.load_accounts()
-        # self.scheduler.enter(0, 0, self.acm.load_accounts)
-        self.adm.activate_addons()
+        self.acm.getAccountInfos()
+        # self.scheduler.addJob(0, self.acm.getAccountInfos)
+        
+        self.log.info(self._("Activating Plugins..."))
+        self.adm.coreReady()
 
+        
+    def _start_servers(self):
+        if self.config.get("webui", "enabled"):
+            self.webserver.start()
+        if self.config.get("remote", "enabled"):
+            self.remoteManager.startBackends()
+            
+            
+    def _parse_linkstxt(self):
+        link_file = os.path.join(self.userdir, "links.txt")
+        try:
+            with open(link_file) as f:
+                if f.read().strip():
+                    self.api.addPackage("links.txt", [link_file], 1)
+        except Exception as e:
+            self.log.debug(e)
+            pass
+                 
+                 
     def start(self):
         self.log.info('Welcome to pyLoad v{0}'.format(self.version))
         if self.debug:
             self.log.warning('*** DEBUG MODE ***')
         try:
             self.log.debug('Starting pyLoad...')
-            self.evm.fire('pyload:starting')
+            # self.evm.fire('pyload:starting')
             self._running.set()
 
             self._setup_language()
@@ -250,17 +280,18 @@ class Core(object):
             # scanner.dump_all_objects(os.path.join(PACKDIR, 'objs.json'))
 
             self.log.debug('pyLoad is up and running')
-            self.evm.fire('pyload:started')
+            # self.evm.fire('pyload:started')
+            
+            self._start_servers()
+            self._parse_linkstxt()
 
-            self.tsm.pause = False  # NOTE: Recheck...
+            self.thm.pause = False  # NOTE: Recheck...
             while True:
                 self._running.wait()
-                # self.tsm.work()
-                # self.iom.work()
-                # self.exm.work()
-                if self.__do_restart:
+                self.threadManager.run()
+                if self._do_restart:
                     raise Restart
-                if self.__do_exit:
+                if self._do_exit:
                     raise Exit
                 self.scheduler.run()
                 time.sleep(1)

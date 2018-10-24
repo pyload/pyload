@@ -2,6 +2,13 @@
 # -*- coding: utf-8 -*-
 # @author: vuolter
 
+import os
+import sys
+import argparse
+
+from .core import Core
+
+
 def daemon():
     try:
         pid = os.fork()
@@ -41,16 +48,41 @@ def daemon():
     pyload_core.start()
     
     
-def start():
-    pass
-    
-    
-def stop():
-    pass
+def parse_args(args):
+    """Parse command line parameters
 
-    
-def restart():
-    pass
+    Args:
+      args ([str]): command line parameters as list of strings
+
+    Returns:
+      :obj:`argparse.Namespace`: command line parameters namespace
+    """
+    parser = argparse.ArgumentParser(
+        description="pyLoad Download Manager")
+    parser.add_argument(
+        '--version',
+        action='version',
+        version='snakel {ver}'.format(ver=__version__))
+    parser.add_argument(
+        dest="n",
+        help="n-th Fibonacci number",
+        type=int,
+        metavar="INT")
+    parser.add_argument(
+        '-v',
+        '--verbose',
+        dest="loglevel",
+        help="set loglevel to INFO",
+        action='store_const',
+        const=logging.INFO)
+    parser.add_argument(
+        '-vv',
+        '--very-verbose',
+        dest="loglevel",
+        help="set loglevel to DEBUG",
+        action='store_const',
+        const=logging.DEBUG)
+    return parser.parse_args(args)
 
     
 def run(args=sys.argv[1:]):
@@ -60,16 +92,20 @@ def run(args=sys.argv[1:]):
     # change name to 'pyLoad'
     # from .lib.rename_process import renameProcess
     # renameProcess('pyLoad')
-    if "--daemon" in sys.argv:
+    args = parse_args(args)
+    
+    # TODO: use parsed args
+    if args.daemon:
         daemon()
     else:
         pyload_core = Core()
         try:
             pyload_core.start()
         except KeyboardInterrupt:
-            pyload_core.log.info(self._("killed pyLoad from Terminal"))
+            pyload_core.log.info(self._("Killed from terminal"))
             pyload_core.shutdown()
             os._exit(1)
+            
             
 if __name__ == "__main__":
     run()

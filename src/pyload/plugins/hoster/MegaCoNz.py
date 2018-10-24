@@ -212,6 +212,7 @@ class MegaClient(object):
 
     def __init__(self, plugin, node_id):
         self.plugin = plugin
+        self._ = plugin._
         self.node_id = node_id
 
     def api_response(self, **kwargs):
