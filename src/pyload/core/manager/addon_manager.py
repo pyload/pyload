@@ -21,7 +21,6 @@ def try_catch(func):
             return func(self, *args)
         except Exception as exc:
             self.log.error(self._("Error executing addons: {}").format(exc))
-
     return wrapper
 
 

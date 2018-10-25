@@ -105,8 +105,8 @@ class PluginManager(object):
             config = [[k] + list(v) for k, v in config.items()]
             try:
                 self.pyload.config.addPluginConfig(name, config, desc)
-            except Exception:
-                self.pyload.log.error("Invalid config in {}: {}".format(name, config))
+            except Exception as exc:
+                self.pyload.log.error("Invalid config in {}: {}".format(name, config), exc)
 
         self.pyload.log.debug("created index of plugins")
 

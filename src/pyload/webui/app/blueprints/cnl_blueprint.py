@@ -28,7 +28,6 @@ def local_check(func):
             return func(*args, **kwargs)
         else:
             return "Forbidden", 403
-
     return wrapper
 
 

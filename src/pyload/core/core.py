@@ -99,7 +99,7 @@ class Core(object):
 
     def _init_network(self):
         from .network.request_factory import RequestFactory
-        self.request = self.req = RequestFactory(self)
+        self.req = self.requestFactory = RequestFactory(self)
         builtins.REQUESTS = self.requestFactory
 
     def _init_api(self):

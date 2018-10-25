@@ -176,11 +176,10 @@ def apiver_check(func):
         if int(kwargs.get("apiver", core_apiver).strip("v")) < core_apiver:
             return "Obsolete API", 404
         return func(*args, **kwargs)
-
     return wrapper
 
 
-def login_required(func, perm=None):
+def login_required(_func=None, perm=None):
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
@@ -208,7 +207,10 @@ def login_required(func, perm=None):
 
         return wrapper
 
-    return decorator
+    if _func is None:
+        return decorator
+    else:
+        return decorator(_func)
 
 
 def toDict(obj):
