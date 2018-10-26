@@ -88,7 +88,7 @@ def formatSize(size):
     """formats size of bytes"""
     size = int(size)
     steps = 0
-    sizes = ["B", "KiB", "MiB", "GiB", "TiB"]
+    sizes = ["B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB"]
     while size > 1000:
         size /= 1024.0
         steps += 1
