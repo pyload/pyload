@@ -271,7 +271,7 @@ def format_time(value):
 
 
 def format_size(value):
-    for unit in ("B", "KiB", "MiB", "GiB", "TiB", "PiB"):
+    for unit in ("B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB"):
         if abs(value) < 1 << 10:
             return "{:3.2f} {}".format(value, unit)
         else:
