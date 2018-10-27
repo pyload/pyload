@@ -9,7 +9,7 @@ from ..utils import parse_html_form, set_cookie
 class TurbobitNet(Account):
     __name__ = "TurbobitNet"
     __type__ = "account"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __status__ = "testing"
 
     __pyload_version__ = "0.5"
@@ -24,7 +24,7 @@ class TurbobitNet(Account):
     LOGIN_FAIL_PATTERN = r">(?:E-Mail address appears to be invalid\. Please try again|Incorrect login or password)</div>"
 
     def grab_info(self, user, password, data):
-        html = self.load("http://turbobit.net/")
+        html = self.load("https://turbobit.net/")
 
         m = re.search(r">Turbo access till ([\d.]+)<", html)
         if m is not None:
@@ -39,7 +39,7 @@ class TurbobitNet(Account):
     def signin(self, user, password, data):
         set_cookie(self.req.cj, "turbobit.net", "user_lang", "en")
 
-        self.data = self.load("http://turbobit.net/login")
+        self.data = self.load("https://turbobit.net/login")
 
         if "<a href='/user/logout'" in self.data:
             self.skip_login()
@@ -61,7 +61,7 @@ class TurbobitNet(Account):
                 )
             )
 
-        self.data = self.load("http://turbobit.net/user/login", post=inputs)
+        self.data = self.load("https://turbobit.net/user/login", post=inputs)
 
         if "<a href='/user/logout'" in self.data:
             self.log_debug("Login successful")
