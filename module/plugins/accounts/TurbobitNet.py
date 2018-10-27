@@ -10,7 +10,7 @@ from ..internal.misc import parse_html_form, set_cookie
 class TurbobitNet(Account):
     __name__ = "TurbobitNet"
     __type__ = "account"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __status__ = "testing"
 
     __description__ = """TurbobitNet account plugin"""
@@ -21,7 +21,7 @@ class TurbobitNet(Account):
     LOGIN_FAIL_PATTERN = r'>(?:E-Mail address appears to be invalid\. Please try again|Incorrect login or password)</div>'
 
     def grab_info(self, user, password, data):
-        html = self.load("http://turbobit.net/")
+        html = self.load("https://turbobit.net/")
 
         m = re.search(r'>Turbo access till ([\d.]+)<', html)
         if m is not None:
@@ -31,19 +31,19 @@ class TurbobitNet(Account):
             premium = False
             validuntil = -1
 
-        return {'premium': premium, 'trafficleft': -
-                1, 'validuntil': validuntil}
+        return {'premium': premium,
+                'trafficleft': -1,
+                'validuntil': validuntil}
 
     def signin(self, user, password, data):
         set_cookie(self.req.cj, "turbobit.net", "user_lang", "en")
 
-        self.data = self.load("http://turbobit.net/login")
+        self.data = self.load("https://turbobit.net/login")
 
         if "<a href='/user/logout'" in self.data:
             self.skip_login()
 
-        action, inputs = parse_html_form(
-            'class="form-horizontal login mail"', self.data)
+        action, inputs = parse_html_form('class="form-horizontal login mail"', self.data)
         if not inputs:
             self.fail_login(_("Login form not found"))
 
@@ -52,10 +52,9 @@ class TurbobitNet(Account):
         inputs['user[submit]'] = "Sign in"
 
         if inputs.get('user[captcha_type]'):
-            self.fail_login(
-                _("Logging in with captcha is not supported, please disable catcha in turbobit's account settings"))
+            self.fail_login(_("Logging in with captcha is not supported, please disable catcha in turbobit's account settings"))
 
-        self.data = self.load("http://turbobit.net/user/login", post=inputs)
+        self.data = self.load("https://turbobit.net/user/login", post=inputs)
 
         if "<a href='/user/logout'" in self.data:
             self.log_debug("Login successful")
@@ -64,8 +63,7 @@ class TurbobitNet(Account):
             self.fail_login()
 
         elif ">Please enter the captcha code.</div>" in self.data:
-            self.fail_login(
-                _("Logging in with captcha is not supported, please disable catcha in turbobit's account settings"))
+            self.fail_login(_("Logging in with captcha is not supported, please disable catcha in turbobit's account settings"))
 
         else:
             self.fail_login(_("Unknown response"))
