@@ -10,7 +10,7 @@ from ..internal.MultiAccount import MultiAccount
 class ZeveraCom(MultiAccount):
     __name__ = "ZeveraCom"
     __type__ = "account"
-    __version__ = "0.37"
+    __version__ = "0.38"
     __status__ = "testing"
 
     __config__ = [("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),
@@ -55,4 +55,5 @@ class ZeveraCom(MultiAccount):
     def signin(self, user, password, data):
         res = self.api_response("account/info", password)
         if res['status'] != "success":
+            self.log_error( _("Password for Zevera should be the API token - get it from: https://www.zevera.com/account"))
             self.fail_login()
