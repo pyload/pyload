@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 
+from ..internal.misc import json
 from ..base.multi_downloader import MultiDownloader
 
 
 class ZeveraCom(MultiDownloader):
     __name__ = "ZeveraCom"
     __type__ = "downloader"
-    __version__ = "0.38"
+    __version__ = "0.39"
     __status__ = "testing"
 
     __pyload_version__ = "0.5"
@@ -26,9 +27,28 @@ class ZeveraCom(MultiDownloader):
     __authors__ = [
         ("zoidberg", "zoidberg@mujmail.cz"),
         ("Walter Purcaro", "vuolter@gmail.com"),
+        ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")
     ]
 
-    FILE_ERRORS = [("Error", r'action="ErrorDownload.aspx')]
+    API_URL = "https://www.zevera.com/api/"
+
+    def api_response(self, method, api_key, **kwargs):
+        get_data = {'client_id': "452508742",
+                    'apikey': api_key}
+
+        get_data.update(kwargs)
+
+        res = self.load(self.API_URL + method,
+                        get=get_data)
+
+        return json.loads(res)
 
     def handle_premium(self, pyfile):
-        self.link = "https://zevera.com/getFiles.ashx?ourl={}".format(pyfile.url)
+        res = self.api_response("transfer/directdl", self.account.info['login']['password'], src=pyfile.url)
+        if res['status'] == "success":
+            self.link = res['location']
+            pyfile.name = res['filename']
+            pyfile.size = res['filesize']
+
+        else:
+            self.fail(res['message'])
