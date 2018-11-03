@@ -15,7 +15,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class RapidgatorNet(SimpleHoster):
     __name__ = "RapidgatorNet"
     __type__ = "hoster"
-    __version__ = "0.52"
+    __version__ = "0.53"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(?:rapidgator\.net|rg\.to)/file/\w+'
@@ -149,10 +149,16 @@ class RapidgatorNet(SimpleHoster):
 
             response, challenge = captcha.challenge()
 
+            if isinstance(captcha, ReCaptcha):
+                post_params = {'g-recaptcha-response': response}
+
+            elif isinstance(captcha, SolveMedia):
+                post_params = {'adcopy_challenge': challenge,
+                               'adcopy_response': response}
+
+            post_params['DownloadCaptchaForm[verifyCode]'] = response
             self.data = self.load(url,
-                                  post={'DownloadCaptchaForm[captcha]': "",
-                                        'adcopy_challenge': challenge,
-                                        'adcopy_response': response},
+                                  post=post_params,
                                   ref=url)
 
             if "The verification code is incorrect" in self.data:
@@ -165,7 +171,7 @@ class RapidgatorNet(SimpleHoster):
                     self.download(m.group(1), ref=url)
 
     def handle_captcha(self):
-        for klass in (AdsCaptcha, ReCaptcha, SolveMedia):
+        for klass in (ReCaptcha, SolveMedia):
             captcha = klass(self.pyfile)
             if captcha.detect_key():
                 self.captcha = captcha
