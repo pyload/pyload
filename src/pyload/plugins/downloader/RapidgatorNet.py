@@ -15,7 +15,7 @@ from ..utils import seconds_to_midnight
 class RapidgatorNet(SimpleDownloader):
     __name__ = "RapidgatorNet"
     __type__ = "downloader"
-    __version__ = "0.52"
+    __version__ = "0.53"
     __status__ = "testing"
 
     __pyload_version__ = "0.5"
@@ -167,13 +167,17 @@ class RapidgatorNet(SimpleDownloader):
 
             response, challenge = captcha.challenge()
 
+            if isinstance(captcha, ReCaptcha):
+                post_params = {'g-recaptcha-response': response}
+
+            elif isinstance(captcha, SolveMedia):
+                post_params = {'adcopy_challenge': challenge,
+                               'adcopy_response': response}
+
+            post_params['DownloadCaptchaForm[verifyCode]'] = response            
             self.data = self.load(
                 url,
-                post={
-                    "DownloadCaptchaForm[captcha]": "",
-                    "adcopy_challenge": challenge,
-                    "adcopy_response": response,
-                },
+                post=post_params,
                 ref=url,
             )
 
@@ -187,7 +191,7 @@ class RapidgatorNet(SimpleDownloader):
                     self.download(m.group(1), ref=url)
 
     def handle_captcha(self):
-        for klass in (AdsCaptcha, ReCaptcha, SolveMedia):
+        for klass in (ReCaptcha, SolveMedia):
             captcha = klass(self.pyfile)
             if captcha.detect_key():
                 self.captcha = captcha
