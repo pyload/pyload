@@ -5,7 +5,6 @@ import re
 import pycurl
 from pyload.core.network.http.http_request import BadHeader
 
-from ..captcha.AdsCaptcha import AdsCaptcha
 from ..captcha.ReCaptcha import ReCaptcha
 from ..captcha.SolveMedia import SolveMedia
 from ..base.simple_downloader import SimpleDownloader
@@ -15,7 +14,7 @@ from ..utils import seconds_to_midnight
 class RapidgatorNet(SimpleDownloader):
     __name__ = "RapidgatorNet"
     __type__ = "downloader"
-    __version__ = "0.53"
+    __version__ = "0.54"
     __status__ = "testing"
 
     __pyload_version__ = "0.5"
