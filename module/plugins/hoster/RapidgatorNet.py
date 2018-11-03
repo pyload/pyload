@@ -5,7 +5,6 @@ import re
 import pycurl
 from module.network.HTTPRequest import BadHeader
 
-from ..captcha.AdsCaptcha import AdsCaptcha
 from ..captcha.ReCaptcha import ReCaptcha
 from ..captcha.SolveMedia import SolveMedia
 from ..internal.misc import json, seconds_to_midnight
@@ -15,7 +14,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class RapidgatorNet(SimpleHoster):
     __name__ = "RapidgatorNet"
     __type__ = "hoster"
-    __version__ = "0.53"
+    __version__ = "0.54"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(?:rapidgator\.net|rg\.to)/file/\w+'
