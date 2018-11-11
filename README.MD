@@ -32,7 +32,7 @@ Some plugins require additional packages, only install these when needed.
 
 - pycrypto: RSDF/CCF/DLC support
 - tesseract, python-pil a.k.a python-imaging: Automatic captcha recognition for a small amount of plugins
-- jsengine (spidermonkey, ossp-js, pyv8, rhino, js2py): Used for several hoster, ClickNLoad
+- jsengine (js2py, node, spidermonkey, ossp-js, pyv8, rhino): Used for several hoster, ClickNLoad
 - feedparser
 - BeautifulSoup
 - pyOpenSSL: For SSL connection
