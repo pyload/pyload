@@ -227,7 +227,7 @@ class Ffmpeg(object):
 class YoutubeCom(Hoster):
     __name__ = "YoutubeCom"
     __type__ = "hoster"
-    __version__ = "0.68"
+    __version__ = "0.69"
     __status__ = "testing"
 
     __pyload_version__ = "0.5"
@@ -591,6 +591,8 @@ class YoutubeCom(Hoster):
 
             m = re.search(
                 r"\.sig\|\|(?P<sig>[a-zA-Z0-9$]+)\(", player_data
+            ) or re.search(
+                r'\bc\s*&&\s*d\.set\([^,]+\s*,\s*\([^)]*\)\s*\(\s*(?P<sig>[a-zA-Z0-9$]+)\(', player_data
             ) or re.search(
                 r'(["\'])signature\1\s*,\s*(?P<sig>[a-zA-Z0-9$]+)\(', player_data
             )
@@ -1141,7 +1143,7 @@ class YoutubeCom(Hoster):
         self.req.http = BIGHTTPRequest(
             cookies=CookieJar(None),
             options=self.pyload.requestFactory.getOptions(),
-            limit=2_500_000,
+            limit=5_000_000,
         )
 
     def process(self, pyfile):
