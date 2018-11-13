@@ -206,7 +206,7 @@ class Ffmpeg(object):
 class YoutubeCom(Hoster):
     __name__ = "YoutubeCom"
     __type__ = "hoster"
-    __version__ = "0.68"
+    __version__ = "0.69"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:[^/]*\.)?(?:youtu\.be/|youtube\.com/watch\?(?:.*&)?v=)[\w\-]+'
@@ -324,6 +324,7 @@ class YoutubeCom(Hoster):
             player_data = self.load(self.fixurl(player_url))
 
             m = re.search(r'\.sig\|\|(?P<sig>[a-zA-Z0-9$]+)\(', player_data) or \
+                re.search(r'\bc\s*&&\s*d\.set\([^,]+\s*,\s*\([^)]*\)\s*\(\s*(?P<sig>[a-zA-Z0-9$]+)\(', player_data) or \
                 re.search(r'(["\'])signature\1\s*,\s*(?P<sig>[a-zA-Z0-9$]+)\(', player_data)
 
             try:
@@ -689,7 +690,7 @@ class YoutubeCom(Hoster):
         self.req.http = BIGHTTPRequest(
             cookies=CookieJar(None),
             options=self.pyload.requestFactory.getOptions(),
-            limit=2500000)
+            limit=5000000)
 
     def process(self, pyfile):
         pyfile.url = replace_patterns(pyfile.url, self.URL_REPLACEMENTS)
