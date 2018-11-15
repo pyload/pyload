@@ -1,23 +1,16 @@
 # -*- coding: utf-8 -*-
 
-import binascii
-import random
-import re
-import time
-import urllib
-
-import Crypto.Cipher.ARC4
 import pycurl
+import re
 
 from ..captcha.ReCaptcha import ReCaptcha
-from ..internal.misc import timestamp
 from ..internal.SimpleHoster import SimpleHoster
 
 
 class TurbobitNet(SimpleHoster):
     __name__ = "TurbobitNet"
     __type__ = "hoster"
-    __version__ = "0.32"
+    __version__ = "0.33"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?turbobit\.net/(?:download/free/)?(?P<ID>\w+)'
@@ -38,15 +31,61 @@ class TurbobitNet(SimpleHoster):
 
     COOKIES = [("turbobit.net", "user_lang", "en")]
 
-    LOGIN_PREMIUM = True  #: Free download unsupported
-
     INFO_PATTERN = r'<title>\s*Download file (?P<N>.+?) \((?P<S>[\d.,]+) (?P<U>[\w^_]+)\)'
     OFFLINE_PATTERN = r'<h2>File Not Found</h2>|html\(\'File (?:was )?not found'
     TEMP_OFFLINE_PATTERN = r''
 
-    LINK_PATTERN = r'<a href=[\'"](.+?/download/redirect/[^"\']+)'
+    LINK_FREE_PATTERN = r'(/download/redirect/[^"\']+)'
+    LINK_PREMIUM_PATTERN = r'<a href=[\'"](.+?/download/redirect/[^"\']+)'
+
+    LIMIT_WAIT_PATTERN = r'<div id=\'timeout\'>(\d+)<'
+
+
+    def handle_free(self, pyfile):
+        self.free_url = "http://turbobit.net/download/free/%s" % self.info['pattern']['ID']
+        self.data = self.load(self.free_url)
+
+        m = re.search(self.LIMIT_WAIT_PATTERN, self.data)
+        if m is not None:
+            self.retry(wait=m.group(1))
+
+        self.solve_captcha()
+
+        m = re.search(r'minLimit : (.+?),', self.data)
+        if m is None:
+            self.fail(_("minLimit pattern not found"))
+
+        wait_time = self.js.eval(m.group(1))
+        self.wait(wait_time)
+
+        self.req.http.c.setopt(pycurl.HTTPHEADER, ["X-Requested-With: XMLHttpRequest"])
+        self.data = self.load("http://turbobit.net/download/getLinkTimeout/%s" % self.info['pattern']['ID'],
+                              ref=self.free_url)
+        self.req.http.c.setopt(pycurl.HTTPHEADER, ["X-Requested-With:"])
+
+        if "/download/started/" in self.data:
+            self.data = self.load("http://turbobit.net/download/started/%s" % self.info['pattern']['ID'])
+
+            m = re.search(self.LINK_FREE_PATTERN, self.data)
+            if m is not None:
+                self.link = "http://turbobit.net%s" % m.group(1)
+
+    def solve_captcha(self):
+        action, inputs = self.parse_html_form("action='#'")
+        if not inputs:
+            self.fail(_("Captcha form not found"))
+
+        if inputs['captcha_type'] == "recaptcha2":
+            self.captcha = ReCaptcha(self.pyfile)
+            inputs['g-recaptcha-response'], challenge = self.captcha.challenge()
+
+        else:
+            self.fail(_("Unknown captcha type"))
+
+        self.data = self.load(self.free_url,
+                              post=inputs)
 
     def handle_premium(self, pyfile):
-        m = re.search(self.LINK_PATTERN, self.data)
+        m = re.search(self.LINK_PREMIUM_PATTERN, self.data)
         if m is not None:
             self.link = m.group(1)
