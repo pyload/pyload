@@ -6,7 +6,7 @@ from ..internal.xfshoster import XFSHoster
 class EasybytezCom(XFSHoster):
     __name__ = "EasybytezCom"
     __type__ = "hoster"
-    __version__ = "0.29"
+    __version__ = "0.30"
     __status__ = "testing"
 
     __pyload_version__ = "0.5"
@@ -28,7 +28,5 @@ class EasybytezCom(XFSHoster):
     ]
 
     PLUGIN_DOMAIN = "easybytez.com"
-
     OFFLINE_PATTERN = r">File not available"
-
-    LINK_PATTERN = r'(http://(\w+\.(easybytez|easyload|ezbytez|zingload)\.(com|to)|\d+\.\d+\.\d+\.\d+)/files/\d+/\w+/.+?)["\'<]'
+    LINK_PATTERN = r'(http://(\w+\.(easybytez|easyload|ezbytez|ezybytez|zingload)\.(com|to)|\d+\.\d+\.\d+\.\d+)/files/\d+/\w+/.+?)["\'<]'
