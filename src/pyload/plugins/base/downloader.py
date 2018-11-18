@@ -15,7 +15,7 @@ from .plugin import Fail
 class Downloader(Hoster):
     __name__ = "Downloader"
     __type__ = "downloader"
-    __version__ = "0.73"
+    __version__ = "0.74"
     __status__ = "stable"
 
     __pyload_version__ = "0.5"
@@ -545,11 +545,12 @@ class Downloader(Hoster):
         else:
             # Same file exists but it does not belongs to our pack, add a trailing
             # counter
-            m = re.match(r"(.+?)(?: \((\d+)\))?(\..+)?$", self.pyfile.name)
+            name, ext = os.path.splitext(self.pyfile.name)
+            m = re.match(r'(.+?)(?:\((\d+)\))?$', name)
             dl_n = int(m.group(2) or "0")
 
             while True:
-                name = "{} ({}){}".format(m.group(1), dl_n + 1, m.group(3) or "")
+                name = "%s (%s)%s" % (m.group(1), dl_n + 1, ext)
                 dl_file = os.path.join(dl_folder, pack_folder, name)
                 if not exists(dl_file):
                     break
