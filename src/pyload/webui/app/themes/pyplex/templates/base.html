@@ -112,7 +112,7 @@
           <ul class="nav navbar-nav navbar-right">
             <li><span class="navbar-text"><span class="glyphicon glyphicon-user"></span><span class="hidden-sm hidden-md"> {{user.name}}</span></span></li>
             <li><a href="{{ url_for('app.logout')}}"  class="action logout" rel="nofollow"><span class="glyphicon glyphicon-log-out"></span><span class="hidden-sm hidden-md">  {{_('Logout')}}</span></a></li>
-            <li><a href="{{ url_for('app.info')}}"  class="action info" rel="nofollow"><span class="glyphicon glyphicon-info-sign"></span><span class="hidden-sm hidden-md">  {{_('Info')}}</span></a></li>
+            <li ondragstart="return false;" {{selected('info')}}><a href="{{ url_for('app.info')}}"  class="action info" rel="nofollow"><span class="glyphicon glyphicon-info-sign"></span><span class="hidden-sm hidden-md">  {{_('Info')}}</span></a></li>
           </ul>
         {% endif %}
       </div><!-- /.navbar-collapse -->

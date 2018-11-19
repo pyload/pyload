@@ -85,6 +85,7 @@ hr {
 @extend . navbar-fixed-bottom;
   position: absolute;
   border-width: 1px 0 0;
+  border-radius: 0;
   min-height: 25px;
   height: 25px;
   line-height: 25px;
@@ -343,12 +344,13 @@ textarea.form-control:focus {
   background-color: #000;
 }
 
-.nav > li.selected > a > span,
-.nav > li.selected > a:hover > span,
-.nav > li.selected > a:focus > span,
-.nav > li.selected > a {
+.nav > li.selected > a,
+.nav > li.selected > a:focus {
   background-color: #282828;
-  color: #f9be03;
+  color: #F9BE03;
+}
+.nav > li.selected > a:hover {
+  color: #F9BE03;
 }
 
 .btn-group .btn + .btn,
