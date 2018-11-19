@@ -142,10 +142,10 @@
 
 {% if perms.LIST %}
     <div class="btn-group btn-group-sm col-xs-12 col-sm-auto" role="group" aria-label="..." style="float:right;">
-        <button class="btn btn-dark col-xs-3 col-sm-auto"><span class="hidden-sm">{{_('Download:')}}</span><span class="glyphicon glyphicon-download hidden-xs hidden-md hidden-lg"></span> <span id="time"  class="label label-{% if status.download %}success{% else %}danger{% endif %}">{% if status.download %}{{_('on')}}{% else %}{{_('off')}}{% endif %}</span></button>
-        <button type="button" class="btn btn-dark col-xs-3 col-sm-auto"><span class="hidden-sm">{{_('Reconnect:')}}</span><span class="glyphicon glyphicon-refresh hidden-xs hidden-md hidden-lg"></span> <span id="reconnect" class="label label-{% if status.reconnect %}success{% else %}danger{% endif %}">{% if status.reconnect %}{{_('on')}}{% else %}{{_('off')}}{% endif %}</span></button>
-        <button type="button" class="btn btn-dark col-xs-3 col-sm-auto"><span class="action backlink"><span class="hidden-xs hidden-sm">{{_('Speed:')}} </span><b id="speed">{{status.speed}}</b></span></button>
-        <button type="button" class="btn btn-dark col-xs-3 col-sm-auto"><span class="action cog">{{_('Active:')}} <b id="aktiv" title="{{_('Active')}}">{{status.active}}</b> / <b id="aktiv_from" title="{{_('Queued')}}">{{status.queue}}</b> / <b id="aktiv_total" title="{{_('Total')}}">{{status.total}}</b></span></button>
+        <button class="btn col-xs-3 col-sm-auto"><span class="hidden-sm">{{_('Download:')}}</span><span class="glyphicon glyphicon-download hidden-xs hidden-md hidden-lg"></span> <span id="time"  class="label label-{% if status.download %}success{% else %}danger{% endif %}">{% if status.download %}{{_('on')}}{% else %}{{_('off')}}{% endif %}</span></button>
+        <button type="button" class="btn col-xs-3 col-sm-auto"><span class="hidden-sm">{{_('Reconnect:')}}</span><span class="glyphicon glyphicon-refresh hidden-xs hidden-md hidden-lg"></span> <span id="reconnect" class="label label-{% if status.reconnect %}success{% else %}danger{% endif %}">{% if status.reconnect %}{{_('on')}}{% else %}{{_('off')}}{% endif %}</span></button>
+        <button type="button" class="btn col-xs-3 col-sm-auto"><span class="action backlink"><span class="hidden-xs hidden-sm">{{_('Speed:')}} </span><b id="speed">{{status.speed}}</b></span></button>
+        <button type="button" class="btn col-xs-3 col-sm-auto"><span class="action cog">{{_('Active:')}} <b id="aktiv" title="{{_('Active')}}">{{status.active}}</b> / <b id="aktiv_from" title="{{_('Queued')}}">{{status.queue}}</b> / <b id="aktiv_total" title="{{_('Total')}}">{{status.total}}</b></span></button>
     </div>
 {% endif %}
 </div>
@@ -177,7 +177,7 @@
 <hr style="clear: both;" />
 <div id="foot" class="navbar navbar-static-bottom" style="width: 100%; text-align:center;">&copy; 2008-2018 pyLoad Team</div>
 
-<div id="goto_top" class="btn-dark hidden" style="position: fixed; width: 25px; height: 25px;background-color: #007bff; color: #0b0b0b; opacity: 0.5; cursor: pointer; z-index: 10; border-radius: 5px; display: block;" title="{{_('Back to top')}}">
+<div id="goto_top" class="btn-primary hidden" style="position: fixed; width: 25px; height: 25px;background-color: #007bff; color: #0b0b0b; opacity: 0.5; cursor: pointer; z-index: 10; border-radius: 5px; display: block;" title="{{_('Back to top')}}">
     <div class="glyphicon glyphicon-chevron-up" style="padding-top: 5px; padding-left: 6px; opacity: 0.5;"></div>
 </div>
 
