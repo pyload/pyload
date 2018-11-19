@@ -329,7 +329,7 @@ class Setup():
 
         templates = [t for t in os.listdir(os.path.join(pypath, "module", "web", "templates"))
                      if os.path.isdir(os.path.join(pypath, "module", "web", "templates", t))]
-        self.config["webinterface"]["template"] = self.ask(_("Template"), "classic", templates)
+        self.config["webinterface"]["template"] = self.ask(_("Template"), "modern", templates)
 
     def conf_ssl(self):
         print ""
