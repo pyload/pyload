@@ -1,0 +1,19 @@
+{% extends 'modern/base.html' %}
+
+{% block head %}
+<style type="text/css">
+.h3, h3 {
+    display:none;
+}
+</style>
+
+<meta http-equiv="refresh" content="5; url={{'/'|url}}">
+{% endblock %}
+
+{% block content %}
+<div class="col-sm-4 col-sm-offset-4">
+  <div align="center" class="alert alert-success" style="padding:8px;">
+    <p>{{_('You were successfully logged out.')}}</p>
+  </div>
+</div>
+{% endblock %}
