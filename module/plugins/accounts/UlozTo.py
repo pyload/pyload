@@ -2,6 +2,7 @@
 
 import re
 import time
+import urlparse
 
 import pycurl
 
@@ -12,7 +13,7 @@ from ..internal.misc import json, parse_html_form, timestamp
 class UlozTo(Account):
     __name__ = "UlozTo"
     __type__ = "account"
-    __version__ = "0.31"
+    __version__ = "0.32"
     __status__ = "testing"
 
     __description__ = """Uloz.to account plugin"""
@@ -72,6 +73,7 @@ class UlozTo(Account):
         inputs['username'] = user
         inputs['password'] = password
 
-        html = self.load("https://ulozto.net/login", post=inputs)
+        html = self.load(urlparse.urljoin("https://ulozto.net/", url),
+                         post=inputs)
         if not '>Log out<' in html:
             self.fail_login()
