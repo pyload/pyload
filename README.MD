@@ -34,7 +34,7 @@ Some plugins require additional packages, only install these when needed.
 - tesseract, pillow (or python-pil a.k.a python-imaging): Automatic captcha recognition for a small amount of plugins
 - jsengine (js2py, node, spidermonkey, ossp-js, pyv8, rhino): Used for several hoster, ClickNLoad
 - feedparser
-- BeautifulSoup
+- BeautifulSoup (shipped with pyLoad)
 - pyOpenSSL: For SSL connection
 
 # First start
