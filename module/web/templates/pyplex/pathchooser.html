@@ -21,9 +21,9 @@
     {% endif %}
     document.addEventListener("readystatechange", function(event) {
       if (this.readyState === "complete") {
-        document.getElementById("tbody").style.height = (window.innerHeight - 35) + "px";
+        document.getElementById("tbody").style.height = (window.innerHeight - 25) + "px";
         window.onresize = function (event) {
-          document.getElementById("tbody").style.height = (window.innerHeight - 35) + "px";
+          document.getElementById("tbody").style.height = (window.innerHeight - 25) + "px";
         };
         var clickables = document.getElementsByClassName("tr-clickable");
         for (var i = 0; i < clickables.length; i++) {
