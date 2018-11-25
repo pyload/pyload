@@ -73,6 +73,8 @@ def get_console_encoding(enc):
     else:
         enc = "utf8"
 
+    return enc
+
 def compare_time(start, end):
     start = map(int, start)
     end = map(int, end)
