@@ -68,7 +68,7 @@ def get_console_encoding(enc):
             enc = "cp850"
 
         elif enc is None:  #: piped
-            enc = "utf8"
+            enc = "cp850"
 
     else:
         enc = "utf8"
