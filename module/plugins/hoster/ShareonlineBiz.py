@@ -12,7 +12,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class ShareonlineBiz(SimpleHoster):
     __name__ = "ShareonlineBiz"
     __type__ = "hoster"
-    __version__ = "0.66"
+    __version__ = "0.68"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(share-online\.biz|egoshare\.com)/(download\.php\?id=|dl/)(?P<ID>\w+)'
@@ -28,15 +28,12 @@ class ShareonlineBiz(SimpleHoster):
     __authors__ = [("spoob", "spoob@pyload.org"),
                    ("mkaay", "mkaay@mkaay.de"),
                    ("zoidberg", "zoidberg@mujmail.cz"),
-                   ("Walter Purcaro", "vuolter@gmail.com")]
+                   ("Walter Purcaro", "vuolter@gmail.com"),
+                   ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
-    URL_REPLACEMENTS = [
-        (__pattern__ + ".*",
-         "http://www.share-online.biz/dl/\g<ID>")]
+    URL_REPLACEMENTS = [(__pattern__ + ".*", "http://www.share-online.biz/dl/\g<ID>")]
 
     CHECK_TRAFFIC = True
-
-    RECAPTCHA_KEY = "6LdatrsSAAAAAHZrB70txiV5p-8Iv8BtVxlTtjKX"
 
     ERROR_PATTERN = r'<p class="b">Information:</p>\s*<div>\s*<strong>(.*?)</strong>'
 
@@ -52,8 +49,7 @@ class ShareonlineBiz(SimpleHoster):
                 info['status'] = 2
                 info['name'] = field[2]
                 info['size'] = field[3]  #: In bytes
-                info['md5'] = field[4].strip().lower(
-                ).replace("\n\n", "")  #: md5
+                info['md5'] = field[4].strip().lower().replace("\n\n", "")  #: md5
 
             elif field[1] in ("DELETED", "NOTFOUND"):
                 info['status'] = 1
@@ -69,7 +65,7 @@ class ShareonlineBiz(SimpleHoster):
 
     def handle_captcha(self):
         self.captcha = ReCaptcha(self.pyfile)
-        response, challenge = self.captcha.challenge(self.RECAPTCHA_KEY)
+        response, challenge = self.captcha.challenge()
 
         m = re.search(r'var wait=(\d+);', self.data)
         self.set_wait(int(m.group(1)) if m else 30)
@@ -78,9 +74,11 @@ class ShareonlineBiz(SimpleHoster):
                         post={'dl_free': "1",
                               'recaptcha_challenge_field': challenge,
                               'recaptcha_response_field': response})
+
         if res != "0":
             self.captcha.correct()
             return res
+
         else:
             self.retry_captcha()
 
@@ -112,39 +110,6 @@ class ShareonlineBiz(SimpleHoster):
 
         return SimpleHoster.check_download(self)
 
-    #: Should be working better loading (account) api internally
-    def handle_premium(self, pyfile):
-        self.api_data = dlinfo = {}
-
-        html = self.load("https://api.share-online.biz/account.php",
-                         get={'username': self.account.user,
-                              'password': self.account.get_login('password'),
-                              'act': "download",
-                              'lid': self.info['fileid']})
-
-        self.log_debug(html)
-
-        for line in html.splitlines():
-            try:
-                key, value = line.split(": ")
-                dlinfo[key.lower()] = value
-
-            except ValueError:
-                pass
-
-        if dlinfo['status'] != "online":
-            self.offline()
-        else:
-            pyfile.name = dlinfo['name']
-            pyfile.size = int(dlinfo['size'])
-
-            self.link = dlinfo['url']
-
-            if self.link == "server_under_maintenance":
-                self.temp_offline()
-            else:
-                self.multiDL = True
-
     def check_errors(self):
         m = re.search(r'/failure/(.*?)/', self.req.lastEffectiveURL)
         if m is None:
@@ -154,11 +119,7 @@ class ShareonlineBiz(SimpleHoster):
         errmsg = m.group(1).lower()
 
         try:
-            self.log_error(
-                errmsg,
-                re.search(
-                    self.ERROR_PATTERN,
-                    self.data).group(1))
+            self.log_error(errmsg, re.search(self.ERROR_PATTERN, self.data).group(1))
 
         except Exception:
             self.log_error(_("Unknown error occurred"), errmsg)
@@ -182,3 +143,35 @@ class ShareonlineBiz(SimpleHoster):
         else:
             self.wait(60, reconnect=True)
             self.restart(errmsg)
+
+    def handle_premium(self, pyfile):
+        html = self.load("https://api.share-online.biz/account.php",
+                         get={'username': self.account.user,
+                              'password': self.account.info['login']['password'],
+                              'act': "download",
+                              'lid': self.info['fileid']})
+
+        self.log_debug(html)
+
+        dlinfo = {}
+        for line in html.splitlines():
+            try:
+                key, value = line.split(": ")
+                dlinfo[key.lower()] = value
+
+            except ValueError:
+                pass
+
+        if dlinfo['status'] != "online":
+            self.offline()
+
+        else:
+            pyfile.name = dlinfo['name']
+            pyfile.size = int(dlinfo['size'])
+
+            if dlinfo['url'] == "server_under_maintenance":
+                self.temp_offline()
+
+            else:
+                self.multiDL = True
+                self.link = dlinfo['url']
