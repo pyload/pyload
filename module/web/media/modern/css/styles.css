@@ -105,6 +105,12 @@ input[type="color"],
   line-height: 1.42857143;
 }
 
+select {
+  border: 1px solid #ccc;
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+}
+
 select.form-control,
 textarea.form-control {
   height: 100%;
