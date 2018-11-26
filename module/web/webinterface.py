@@ -59,7 +59,14 @@ from module.common.JsEngine import JsEngine
 
 JS = JsEngine()
 
+TEMPLATES = [t for t in os.listdir(os.path.join(pypath, "module", "web", "templates"))
+             if os.path.isdir(os.path.join(pypath, "module", "web", "templates", t))]
 TEMPLATE = config.get('webinterface', 'template')
+if TEMPLATE not in TEMPLATES:
+    TEMPLATE = TEMPLATES[0]
+config.config['webinterface']['template']['type'] = ';'.join(TEMPLATES)
+config.set('webinterface', 'template', TEMPLATE)
+
 DL_ROOT = config.get('general', 'download_folder')
 LOG_ROOT = config.get('log', 'log_folder')
 PREFIX = config.get('webinterface', 'prefix')
@@ -79,8 +86,7 @@ if not exists(cache):
 bcc = FileSystemBytecodeCache(cache, '%s.cache')
 
 mapping = {'js': FileSystemLoader(join(PROJECT_DIR, 'media', 'js'))}
-for template in os.listdir(join(PROJECT_DIR, "templates")):
-    if os.path.isdir(join(PROJECT_DIR, "templates", template)):
+for template in TEMPLATES:
         mapping[template] = FileSystemLoader(join(PROJECT_DIR, "templates", template))
 
 loader = PrefixLoader(mapping)
