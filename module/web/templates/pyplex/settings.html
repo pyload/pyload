@@ -4,7 +4,7 @@
 {% block subtitle %}{{_('Config')}}{% endblock %}
 
 {% block head %}
-<meta id="plugins-list" data-plugin='{{conf.plugin|replace('(', '[')|replace(')', ']')|replace('\'', '"')}}'/>
+<meta id="plugins-list" data-plugin='{{conf.plugin|tojson}}'/>
 
 <style type="text/css">
 #plugin_form_content h3,
