@@ -5,6 +5,7 @@ from __future__ import with_statement
 import base64
 import re
 import time
+import urlparse
 
 from module.network.HTTPRequest import BadHeader
 
@@ -15,7 +16,7 @@ from ..internal.misc import threaded
 class Captcha9Kw(Addon):
     __name__ = "Captcha9Kw"
     __type__ = "hook"
-    __version__ = "0.38"
+    __version__ = "0.39"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", False),
@@ -25,21 +26,17 @@ class Captcha9Kw(Addon):
                   ("captchapermin", "int", "Captcha per minute", "9999"),
                   ("prio", "int", "Priority (max 10)(cost +0 -> +10 credits)", "0"),
                   ("queue", "int", "Max. Queue (max 999)", "50"),
-                  ("hoster_options",
-                   "str",
-                   "Hoster options (format pluginname;prio 1;selfsolve 1;confirm 1;timeout 900|...)",
-                   ""),
-                  ("selfsolve",
-                   "bool",
-                   "Selfsolve (manually solve your captcha in your 9kw client if active)",
-                   "0"),
+                  ("hoster_options", "str", "Hoster options (format pluginname;prio 1;selfsolve 1;confirm 1;timeout 900|...)", ""),
+                  ("selfsolve", "bool", "Selfsolve (manually solve your captcha in your 9kw client if active)", False),
+                  ("solve_interactive", "bool", "Solve ReCaptcha Interactive (cost 30 credits)", True),
                   ("passkey", "password", "API key", ""),
                   ("timeout", "int", "Timeout in seconds (min 60, max 3999)", "900")]
 
     __description__ = """Send captchas to 9kw.eu"""
     __license__ = "GPLv3"
     __authors__ = [("RaNaN", "RaNaN@pyload.org"),
-                   ("Walter Purcaro", "vuolter@gmail.com")]
+                   ("Walter Purcaro", "vuolter@gmail.com"),
+                   ("GammaC0de", "nitzo2001[AT]yahho[DOT]com")]
 
     API_URL = "https://www.9kw.eu/index.cgi"
 
@@ -60,15 +57,28 @@ class Captcha9Kw(Addon):
 
     @threaded
     def _process_captcha(self, task):
-        try:
-            with open(task.captchaFile, 'rb') as f:
-                data = f.read()
+        if task.isInteractive():
+            url_p = urlparse.urlparse(task.captchaParams['url'])
+            if  url_p.scheme not in ("http", "https"):
+                self.log_error(_("Invalid url"))
+                return
 
-        except IOError, e:
-            self.log_error(e)
-            return
+            post_data = {'pageurl': "%s://%s/" % (url_p.scheme, url_p.netloc),
+                         'data-sitekey': task.captchaParams['sitekey'],
+                         'securetoken': task.captchaParams['securetoken'] or ""}
 
-        pluginname = re.search(r'_(.+?)_\d+.\w+', task.captchaFile).group(1)
+        else:
+            try:
+                with open(task.captchaParams['file'], 'rb') as f:
+                    data = f.read()
+
+            except IOError, e:
+                self.log_error(e)
+                return
+
+            post_data = {'file-upload-01': base64.b64encode(data)}
+
+        pluginname = task.captchaParams['plugin']
         option = {'min': 2,
                   'max': 50,
                   'phrase': 0,
@@ -82,7 +92,7 @@ class Captcha9Kw(Addon):
                   'cph': self.config.get('captchaperhour'),
                   'cpm': self.config.get('captchapermin')}
 
-        for opt in str(self.config.get('hoster_options').split('|')):
+        for opt in [x for x in self.config.get('hoster_options', "").split('|') if x]:
             details = map(str.strip, opt.split(';'))
 
             if not details or details[0].lower() != pluginname.lower():
@@ -100,32 +110,33 @@ class Captcha9Kw(Addon):
 
             break
 
-        post_data = {'apikey': self.config.get('passkey'),
-                     'prio': option['prio'],
-                     'confirm': option['confirm'],
-                     'maxtimeout': option['timeout'],
-                     'selfsolve': option['selfsolve'],
-                     'captchaperhour': option['cph'],
-                     'captchapermin': option['cpm'],
-                     'case-sensitive': option['case_sensitive'],
-                     'min_len': option['min'],
-                     'max_len': option['max'],
-                     'phrase': option['phrase'],
-                     'numeric': option['numeric'],
-                     'math': option['math'],
-                     'oldsource': pluginname,
-                     'pyload': 1,
-                     'source': "pyload",
-                     'base64': 1,
-                     'mouse': 1 if task.isPositional() else 0,
-                     'file-upload-01': base64.b64encode(data),
-                     'action': "usercaptchaupload"}
+        post_data.update({'apikey': self.config.get('passkey'),
+                          'prio': option['prio'],
+                          'confirm': option['confirm'],
+                          'maxtimeout': option['timeout'],
+                          'selfsolve': option['selfsolve'],
+                          'captchaperhour': option['cph'],
+                          'captchapermin': option['cpm'],
+                          'case-sensitive': option['case_sensitive'],
+                          'min_len': option['min'],
+                          'max_len': option['max'],
+                          'phrase': option['phrase'],
+                          'numeric': option['numeric'],
+                          'math': option['math'],
+                          'oldsource': pluginname,
+                          'pyload': 1,
+                          'source': "pyload",
+                          'base64': 0 if task.isInteractive() else 1,
+                          'mouse': 1 if task.isPositional() else 0,
+                          "interactive": 1 if task.isInteractive() else 0,
+                          'action': "usercaptchaupload"})
 
         for _i in range(5):
             try:
                 res = self.load(self.API_URL, post=post_data)
 
             except BadHeader, e:
+                res = e.content
                 time.sleep(3)
 
             else:
@@ -133,10 +144,10 @@ class Captcha9Kw(Addon):
                     break
 
         else:
-            self.log_error(_("Bad upload: %s") % res)
+            self.log_error(_("Bad request: %s") % res)
             return
 
-        self.log_debug("NewCaptchaID ticket: %s" % res, task.captchaFile)
+        self.log_debug("NewCaptchaID ticket: %s" % res, task.captchaParams.get('file', ""))
 
         task.data['ticket'] = res
 
@@ -163,8 +174,12 @@ class Captcha9Kw(Addon):
         task.setResult(result)
 
     def captcha_task(self, task):
-        if not task.isTextual() and not task.isPositional():
-            return
+        if task.isInteractive():
+            if task.captchaParams['captcha_plugin'] != "ReCaptcha" or self.config.get('solve_interactive') is False:
+                return
+        else:
+            if not task.isTextual() and not task.isPositional():
+                return
 
         if not self.config.get('passkey'):
             return
@@ -175,25 +190,25 @@ class Captcha9Kw(Addon):
         credits = self.get_credits()
 
         if not credits:
-            self.log_error(
-                _("Your captcha 9kw.eu account has not enough credits"))
+            self.log_error(_("Your captcha 9kw.eu account has not enough credits"))
             return
 
-        queue = min(self.config.get('queue'), 999)
+        max_queue = min(self.config.get('queue'), 999)
         timeout = min(max(self.config.get('timeout'), 300), 3999)
-        pluginname = re.search(r'_(.+?)_\d+.\w+', task.captchaFile).group(1)
+        pluginname = task.captchaParams['plugin']
 
         for _i in range(5):
             servercheck = self.load("http://www.9kw.eu/grafik/servercheck.txt")
-            if queue < re.search(r'queue=(\d+)', servercheck).group(1):
+            if max_queue > int(re.search(r'queue=(\d+)', servercheck).group(1)):
                 break
 
             time.sleep(10)
 
         else:
-            self.fail(_("Too many captchas in queue"))
+            self.log_error(_("Too many captchas in queue"))
+            return
 
-        for opt in str(self.config.get('hoster_options').split('|')):
+        for opt in [x for x in self.config.get('hoster_options', "").split('|') if x]:
             details = map(str.strip, opt.split(':'))
 
             if not details or details[0].lower() != pluginname.lower():
@@ -219,9 +234,7 @@ class Captcha9Kw(Addon):
         request_type = "correct" if correct else "refund"
 
         if 'ticket' not in task.data:
-            self.log_debug(
-                "No CaptchaID for %s request (task: %s)" %
-                (request_type, task))
+            self.log_debug("No CaptchaID for %s request (task: %s)" % (request_type, task))
             return
 
         passkey = self.config.get('passkey')
@@ -243,9 +256,7 @@ class Captcha9Kw(Addon):
 
             time.sleep(5)
         else:
-            self.log_debug(
-                "Could not send %s request: %s" %
-                (request_type, res))
+            self.log_debug("Could not send %s request: %s" % (request_type, res))
 
     def captcha_correct(self, task):
         self._captcha_response(task, True)
