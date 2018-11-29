@@ -11,7 +11,7 @@ from ..captcha.ReCaptcha import ReCaptcha
 class MultiUpOrg(SimpleCrypter):
     __name__ = "MultiUpOrg"
     __type__ = "crypter"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?multiup\.(?:org|eu)/(?:en/|fr/)?(?:(?P<TYPE>project|download|mirror)/)?\w+(?:/\w+)?'
@@ -25,9 +25,10 @@ class MultiUpOrg(SimpleCrypter):
 
     __description__ = """MultiUp.org crypter plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
+    __authors__ = [("Walter Purcaro", "vuolter@gmail.com"),
+                   ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
-    NAME_PATTERN = r'<title>.*(?:Project|Projet|ownload|élécharger) (?P<N>.+?) (\(|- )'
+    NAME_PATTERN = r'<title>.*(?:Project|Projet|Download|Télécharger) (?P<N>.+?) (\(|- )'
     OFFLINE_PATTERN = r'File not found'
     TEMP_OFFLINE_PATTERN = r'^unmatchable$'
     DIRECT_LINK = False
@@ -44,7 +45,7 @@ class MultiUpOrg(SimpleCrypter):
         grab_all = self.config.get('grab_all')
 
         if m_type == "project":
-            return re.findall(r'\n(http://www\.multiup\.org/(?:en|fr)/download/.*)', self.data)
+            return re.findall(r'(https?://www\.multiup\.org/(?:en/|fr/)?download/.*)', self.data)
 
         elif m_type in ("download", None):
             url, inputs = self.parse_html_form()
