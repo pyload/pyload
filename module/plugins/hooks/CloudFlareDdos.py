@@ -25,42 +25,34 @@ def is_simple_plugin(obj):
 
 def get_plugin_last_header(plugin):
     # @NOTE: req can be a HTTPRequest or a Browser object
-    return plugin.req.http.header if hasattr(
-        plugin.req, "http") else plugin.req.header
+    return plugin.req.http.header if hasattr(plugin.req, "http") else plugin.req.header
 
 
 class CloudFlare(object):
 
     @staticmethod
-    def handle_function(addon_plugin, owner_plugin,
-                        func_name, orig_func, args):
-        addon_plugin.log_debug(
-            "Calling %s() of %s" % (func_name, plugin_id(owner_plugin)))
+    def handle_function(addon_plugin, owner_plugin, func_name, orig_func, args):
+        addon_plugin.log_debug("Calling %s() of %s" % (func_name, plugin_id(owner_plugin)))
 
         try:
             data = orig_func(*args[0], **args[1])
-            addon_plugin.log_debug(
-                "%s() returned successfully" % func_name)
+            addon_plugin.log_debug("%s() returned successfully" % func_name)
             return data
 
         except BadHeader, e:
-            addon_plugin.log_debug(
-                "%s(): got BadHeader exception %s" % (func_name, e.code))
+            addon_plugin.log_debug("%s(): got BadHeader exception %s" % (func_name, e.code))
 
             header = parse_html_header(get_plugin_last_header(owner_plugin))
 
             if header.get('server') == "cloudflare":
                 if e.code == 403:
-                    data = CloudFlare._solve_cf_security_check(
-                        addon_plugin, owner_plugin, e.content)
+                    data = CloudFlare._solve_cf_security_check(addon_plugin, owner_plugin, e.content)
 
                 elif e.code == 503:
-                    data = CloudFlare._solve_cf_ddos_challenge(
-                        addon_plugin, owner_plugin, e.content)
+                    data = CloudFlare._solve_cf_ddos_challenge(addon_plugin, owner_plugin, e.content)
 
                 else:
-                    addon_plugin.log_warning(
-                        _("Unknown CloudFlare response code %s") % e.code)
+                    addon_plugin.log_warning(_("Unknown CloudFlare response code %s") % e.code)
                     raise
 
                 if data is None:
@@ -75,8 +67,7 @@ class CloudFlare(object):
     @staticmethod
     def _solve_cf_ddos_challenge(addon_plugin, owner_plugin, data):
         try:
-            addon_plugin.log_info(
-                _("Detected CloudFlare's DDoS protection page"))
+            addon_plugin.log_info(_("Detected CloudFlare's DDoS protection page"))
             # Cloudflare requires a delay before solving the challenge
             owner_plugin.set_wait(5)
 
@@ -88,29 +79,31 @@ class CloudFlare(object):
             get_params = {}
 
             try:
-                get_params['jschl_vc'] = re.search(
-                    r'name="jschl_vc" value="(\w+)"', data).group(1)
-                get_params['pass'] = re.search(
-                    r'name="pass" value="(.+?)"', data).group(1)
+                get_params['jschl_vc'] = re.search(r'name="jschl_vc" value="(\w+)"', data).group(1)
+                get_params['pass'] = re.search(r'name="pass" value="(.+?)"', data).group(1)
 
                 # Extract the arithmetic operation
                 js = re.search(r'setTimeout\(function\(\){\s+(var s,t,o,p,b,r,e,a,k,i,n,g,f.+?\r?\n[\s\S]+?a\.value =.+?)\r?\n',
                                data).group(1)
-                js = re.sub(r'a\.value = (parseInt\(.+?\)).+', r'\1', js)
-                js = re.sub(r'\s{3,}[a-z](?: = |\.).+', "", js)
+                js = re.sub(r'a\.value = (.+ \+ t\.length).+', r'\1', js)
+                js = re.sub(r'\s{3,}[a-z](?: = |\.).+', "", js).replace("t.length", str(len(domain)))
                 js = re.sub(r"[\n\\']", "", js)
 
             except Exception:
                 # Something is wrong with the page.
                 # This may indicate CloudFlare has changed their anti-bot
                 # technique.
-                owner_plugin.log_error(
-                    _("Unable to parse CloudFlare's DDoS protection page"))
+                owner_plugin.log_error(_("Unable to parse CloudFlare's DDoS protection page"))
+                return None  # Tell the exception handler to re-throw the exception
+
+            if "toFixed" not in js:
+                owner_plugin.log_error(_("Unable to parse CloudFlare's DDoS protection page"))
                 return None  # Tell the exception handler to re-throw the exception
 
             # Safely evaluate the Javascript expression
-            get_params['jschl_answer'] = str(
-                int(owner_plugin.js.eval(js)) + len(domain))
+            res = owner_plugin.js.eval(js)
+
+            get_params['jschl_answer'] = str(float(res))
 
             owner_plugin.wait()  # Do the actual wait
 
@@ -131,18 +124,15 @@ class CloudFlare(object):
 
             captcha_key = captcha.detect_key(data)
             if captcha_key:
-                addon_plugin.log_info(
-                    _("Detected CloudFlare's security check page"))
+                addon_plugin.log_info(_("Detected CloudFlare's security check page"))
 
                 response, challenge = captcha.challenge(captcha_key, data)
                 return owner_plugin.load(owner_plugin.fixurl("/cdn-cgi/l/chk_captcha"),
-                                         get={
-                    'g-recaptcha-response': response},
-                    ref=last_url)
+                                         get={'g-recaptcha-response': response},
+                                         ref=last_url)
 
             else:
-                addon_plugin.log_warning(
-                    _("Got unexpected CloudFlare html page"))
+                addon_plugin.log_warning(_("Got unexpected CloudFlare html page"))
                 return None  # Tell the exception handler to re-throw the exception
 
         except Exception, e:
@@ -158,13 +148,7 @@ class PreloadStub(object):
         self.old_preload = owner_plugin._preload
 
     def my_preload(self, *args, **kwargs):
-        data = CloudFlare.handle_function(
-            self.addon_plugin,
-            self.owner_plugin,
-            "_preload",
-            self.old_preload,
-            (args,
-             kwargs))
+        data = CloudFlare.handle_function(self.addon_plugin, self.owner_plugin, "_preload", self.old_preload, (args, kwargs))
         if data is not None:
             self.owner_plugin.data = data
 
@@ -175,7 +159,7 @@ class PreloadStub(object):
 class CloudFlareDdos(Addon):
     __name__ = "CloudFlareDdos"
     __type__ = "hook"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", False)]
@@ -197,15 +181,13 @@ class CloudFlareDdos(Addon):
 
     def _unoverride_preload(self, plugin):
         if id(plugin) in self.stubs:
-            self.log_debug(
-                "Unoverriding _preload() for %s" % plugin_id(plugin))
+            self.log_debug("Unoverriding _preload() for %s" % plugin_id(plugin))
 
             stub = self.stubs.pop(id(plugin))
             stub.owner_plugin._preload = stub.old_preload
 
         else:
-            self.log_warning(
-                _("No _preload() override found for %s, cannot un-override>") %
+            self.log_warning(_("No _preload() override found for %s, cannot un-override>") %
                 plugin_id(plugin))
 
     def _override_preload(self, plugin):
@@ -213,14 +195,11 @@ class CloudFlareDdos(Addon):
             stub = PreloadStub(self, plugin)
             self.stubs[id(plugin)] = stub
 
-            self.log_debug(
-                "Overriding _preload() for %s" % plugin_id(plugin))
+            self.log_debug("Overriding _preload() for %s" % plugin_id(plugin))
             plugin._preload = stub.my_preload
 
         else:
-            self.log_warning(
-                _("Already overrided _preload() for %s") %
-                plugin_id(plugin))
+            self.log_warning(_("Already overrided _preload() for %s") % plugin_id(plugin))
 
     def _override_get_url(self):
         self.log_debug("Overriding get_url()")
@@ -261,9 +240,7 @@ class CloudFlareDdos(Addon):
 
         attr = getattr(pyfile.plugin, "_preload", None)
         if not attr and not callable(attr):
-            self.log_error(
-                _("%s is missing _preload() function, cannot override!") %
-                plugin_id(pyfile.plugin))
+            self.log_error(_("%s is missing _preload() function, cannot override!") % plugin_id(pyfile.plugin))
             return
 
         self._override_preload(pyfile.plugin)
@@ -281,8 +258,7 @@ class CloudFlareDdos(Addon):
         else:
             #@NOTE: Better use owner_plugin.load() instead of get_url() so cookies are saved and so captcha credits
             #@NOTE: Also that way we can use 'owner_plugin.req.header' to get the headers, otherwise we cannot get them
-            res = CloudFlare.handle_function(
-                self, owner_plugin, "get_url", owner_plugin.load, (args, kwargs))
+            res = CloudFlare.handle_function(self, owner_plugin, "get_url", owner_plugin.load, (args, kwargs))
             if kwargs.get('just_header', False):
                 # @NOTE: SimpleHoster/SimpleCrypter returns a dict while get_url() returns raw headers string,
                 # make sure we return a string for get_url('just_header'=True)
