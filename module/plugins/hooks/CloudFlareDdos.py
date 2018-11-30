@@ -42,14 +42,33 @@ class CloudFlare(object):
         except BadHeader, e:
             addon_plugin.log_debug("%s(): got BadHeader exception %s" % (func_name, e.code))
 
-            header = parse_html_header(get_plugin_last_header(owner_plugin))
+            header = parse_html_header(e.header)
 
             if header.get('server') == "cloudflare":
                 if e.code == 403:
                     data = CloudFlare._solve_cf_security_check(addon_plugin, owner_plugin, e.content)
 
                 elif e.code == 503:
-                    data = CloudFlare._solve_cf_ddos_challenge(addon_plugin, owner_plugin, e.content)
+                    for _i in range(3):
+                        try:
+                            data = CloudFlare._solve_cf_ddos_challenge(addon_plugin, owner_plugin, e.content)
+                            break
+
+                        except BadHeader, e:  #: Possibly we got another ddos challenge
+                            addon_plugin.log_debug("%s(): got BadHeader exception %s" % (func_name, e.code))
+
+                            header = parse_html_header(e.header)
+
+                            if e.code == 503 and header.get('server') == "cloudflare":
+                                continue  #: Yes, it's a ddos challenge again..
+
+                            else:
+                                data = None  # Tell the exception handler to re-throw the exception
+                                break
+
+                    else:
+                        addon_plugin.log_debug("%s(): Max solve retries reached" % func_name)
+                        data = None  # Tell the exception handler to re-throw the exception
 
                 else:
                     addon_plugin.log_warning(_("Unknown CloudFlare response code %s") % e.code)
@@ -111,6 +130,9 @@ class CloudFlare(object):
                                      get=get_params,
                                      ref=last_url)
 
+        except BadHeader, e:
+            raise e  #: Huston, we have a BadHeader!
+
         except Exception, e:
             addon_plugin.log_error(e)
             return None  # Tell the exception handler to re-throw the exception
@@ -159,7 +181,7 @@ class PreloadStub(object):
 class CloudFlareDdos(Addon):
     __name__ = "CloudFlareDdos"
     __type__ = "hook"
-    __version__ = "0.14"
+    __version__ = "0.15"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", False)]
