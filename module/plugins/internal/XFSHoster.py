@@ -3,6 +3,7 @@
 import operator
 import random
 import re
+import urlparse
 
 from ..captcha.ReCaptcha import ReCaptcha
 from ..captcha.SolveMedia import SolveMedia
@@ -13,7 +14,7 @@ from .SimpleHoster import SimpleHoster
 class XFSHoster(SimpleHoster):
     __name__ = "XFSHoster"
     __type__ = "hoster"
-    __version__ = "0.81"
+    __version__ = "0.82"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -97,6 +98,7 @@ class XFSHoster(SimpleHoster):
 
             self.data = self.load(pyfile.url,
                                   post=self._post_parameters(),
+                                  ref = self.pyfile.url,
                                   redirect=False)
 
             if not "op=" in self.last_header.get('location', "op="):
@@ -231,7 +233,7 @@ class XFSHoster(SimpleHoster):
     def handle_captcha(self, inputs):
         m = re.search(self.CAPTCHA_PATTERN, self.data)
         if m is not None:
-            captcha_url = m.group(1)
+            captcha_url = urlparse.urljoin(self.pyfile.url, m.group(1))
             inputs['code'] = self.captcha.decrypt(captcha_url)
             return
 
