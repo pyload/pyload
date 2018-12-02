@@ -11,7 +11,7 @@ from ..internal.XFSHoster import XFSHoster
 class FilejokerNet(XFSHoster):
     __name__ = "FilejokerNet"
     __type__ = "hoster"
-    __version__ = "0.05"
+    __version__ = "0.06"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?filejoker\.net/\w{12}'
@@ -27,7 +27,7 @@ class FilejokerNet(XFSHoster):
 
     PLUGIN_DOMAIN = "filejoker.net"
 
-    WAIT_PATTERN = r'Please [Ww]ait (?:<span id="count" class="alert-success">)?([\w ]+?)(?:</span> seconds</p>| until the next download)'
+    WAIT_PATTERN = r'[Ww]ait (?:<span id="count" class="alert-success">)?([\w ]+?)(?:</span> seconds</p>| until the next download| to download)'
     ERROR_PATTERN = r'Wrong Captcha|Session expired'
 
     PREMIUM_ONLY_PATTERN = 'Free Members can download files no bigger'
