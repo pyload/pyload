@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# @author: vuolter
+# AUTHOR: vuolter
 
 import atexit
 import builtins
@@ -112,7 +112,7 @@ class Core(object):
 
     def _init_database(self, restore):
         from .database import DatabaseThread, FileHandler
-        
+
         db_path = os.path.join(self.userdir, DatabaseThread.DB_FILENAME)
         newdb = not os.path.isfile(db_path)
 
@@ -140,7 +140,7 @@ class Core(object):
         from .remote.remote_manager import RemoteManager
         from .manager.thread_manager import ThreadManager
         from .scheduler import Scheduler
-        
+
         self.scheduler = Scheduler(self)
         self.pgm = self.pluginManager = PluginManager(self)
         self.evm = self.eventManager = EventManager(self)

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# @author: vuolter
+# AUTHOR: vuolter
 
 import os
 from builtins import PKGDIR, str

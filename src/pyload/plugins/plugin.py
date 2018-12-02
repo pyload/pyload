@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# @author: RaNaN, spoob, mkaay
+# AUTHOR: RaNaN, spoob, mkaay
 
 import os
 import time

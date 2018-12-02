@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# @author: RaNaN
+# AUTHOR: RaNaN
 
 import time
 from builtins import object
@@ -27,7 +27,7 @@ class Bucket(object):
 
     def get_rate(self):
         return self._rate
-        
+
     rate = property(get_rate, set_rate)
 
     def _calc_token(self):

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# @author: RaNaN
+# AUTHOR: RaNaN
 
 import socket
 from builtins import object

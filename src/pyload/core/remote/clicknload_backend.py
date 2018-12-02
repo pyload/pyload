@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# @author: RaNaN
+# AUTHOR: RaNaN
 
 import re
 from base64 import standard_b64decode

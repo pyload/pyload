@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# @author: vuolter
+# AUTHOR: vuolter
 
 import argparse
 import os
@@ -61,30 +61,30 @@ def parse_args(args):
     """
     parser = argparse.ArgumentParser(description="Free and open-source Download Manager written in pure Python")
     group = parser.add_mutually_exclusive_group()
-    
+
     group.add_argument(
         "--version", action="version", version="pyLoad {ver}".format(ver=__version__)
     )
-    
+
     default_userdir = os.path.join(HOMEDIR, 'pyLoad')
     default_cachedir = os.path.join(default_userdir, '.tmp')
-    
+
     parser.add_argument("-d","--debug",action="store_true",help="Enable debug mode")
     parser.add_argument("--userdir",help="Run with custom user folder", default=default_userdir)
     parser.add_argument("--cachedir",help="Run with custom cache folder", default=default_cachedir)
     parser.add_argument("--daemon",action="store_true",help="Daemonmize after start")
     parser.add_argument("--restore",action="store_true", help="Restore default admin user")
-    
+
     return parser.parse_args(args)
 
-    
+
 def run(core_args, daemon=False):
     # change name to 'pyLoad'
     # from .lib.rename_process import renameProcess
     # renameProcess('pyLoad')
     if daemon:
         return daemon(core_args)
-        
+
     pyload_core = Core(*core_args)
     try:
         pyload_core.start()
@@ -92,8 +92,8 @@ def run(core_args, daemon=False):
         pyload_core.log.info(self._("Killed from terminal"))
         pyload_core.terminate()
         os._exit(1)
-    
-    
+
+
 def main():
     """
     Entry point for console_scripts

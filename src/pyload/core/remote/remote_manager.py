@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# @author: mkaay
+# AUTHOR: mkaay
 
 from builtins import object, str
 from threading import Thread

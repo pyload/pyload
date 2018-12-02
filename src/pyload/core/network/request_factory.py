@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# @author: mkaay, RaNaN
+# AUTHOR: mkaay, RaNaN
 
 from builtins import REQUESTS, object
 from threading import Lock

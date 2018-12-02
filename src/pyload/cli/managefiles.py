@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# @author: RaNaN
+# AUTHOR: RaNaN
 
 import time
 from builtins import map, range, str

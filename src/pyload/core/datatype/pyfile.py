@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# @author: RaNaN, mkaay
+# AUTHOR: RaNaN, mkaay
 
 import time
 from builtins import object

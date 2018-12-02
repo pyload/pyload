@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# @author: RaNaN, vuolter
+# AUTHOR: RaNaN, vuolter
 
 from copy import copy
 

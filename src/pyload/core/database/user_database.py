@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# @author: mkaay
+# AUTHOR: mkaay
 
 import random
 from builtins import object, range, str

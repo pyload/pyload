@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# @author: RaNaN, mkaay
+# AUTHOR: RaNaN, mkaay
 
 from builtins import object, range, str, zip
 from threading import RLock

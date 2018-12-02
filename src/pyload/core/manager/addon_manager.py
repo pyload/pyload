@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# @author: RaNaN, mkaay
+# AUTHOR: RaNaN, mkaay
 
 import builtins
 from builtins import object, str

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# @author: RaNaN, vuolter
+# AUTHOR: RaNaN, vuolter
 
 import configparser
 import os
@@ -259,7 +259,7 @@ def run():
         writeConfig(config)
         Cli(client, command)
 
-        
+
 def main():
     """
     Entry point for console_scripts
