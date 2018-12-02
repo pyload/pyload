@@ -7,11 +7,6 @@ from pyload.core.network.request_factory import getURL as get_url
 
 from ..internal.account import Account
 
-try:
-    import passlib.hash
-except ImportError:
-    passlib = None
-
 
 class WebshareCz(Account):
     __name__ = "WebshareCz"
@@ -55,37 +50,32 @@ class WebshareCz(Account):
         return {"validuntil": validuntil, "trafficleft": -1, "premium": premium}
 
     def signin(self, user, password, data):
-        if passlib:
-            salt = self.api_response("salt", username_or_email=user, wst="")
+        salt = self.api_response("salt", username_or_email=user, wst="")
 
-            if "<status>OK</status>" not in salt:
-                message = re.search(r"<message>(.+?)</message>", salt).group(1)
-                self.log_warning(message)
-                self.fail_login()
+        if "<status>OK</status>" not in salt:
+            message = re.search(r"<message>(.+?)</message>", salt).group(1)
+            self.log_warning(message)
+            self.fail_login()
 
-            salt = re.search("<salt>(.+?)</salt>", salt).group(1)
+        salt = re.search("<salt>(.+?)</salt>", salt).group(1)
 
-            password = hashlib.sha1(
-                passlib.hash.md5_crypt.encrypt(password, salt=salt)
-            ).hexdigest()
-            digest = hashlib.md5(user + ":Webshare:" + password).hexdigest()
+        password = hashlib.sha1(
+            hashlib.md5((salt + password).encode()).digest()
+        ).hexdigest()
+        digest = hashlib.md5(user + ":Webshare:" + password).hexdigest()
 
-            login = self.api_response(
-                "login",
-                digest=digest,
-                keep_logged_in=1,
-                username_or_email=user,
-                password=password,
-                wst="",
-            )
+        login = self.api_response(
+            "login",
+            digest=digest,
+            keep_logged_in=1,
+            username_or_email=user,
+            password=password,
+            wst="",
+        )
 
-            if "<status>OK</status>" not in login:
-                message = re.search(r"<message>(.+?)</message>", salt).group(1)
-                self.log_warning(message)
-                self.fail_login()
+        if "<status>OK</status>" not in login:
+            message = re.search(r"<message>(.+?)</message>", salt).group(1)
+            self.log_warning(message)
+            self.fail_login()
 
-            data["wst"] = re.search("<token>(.+?)</token>", login).group(1)
-
-        else:
-            self.log_warning(self._("passlib is not installed"))
-            self.fail_login(self._("passlib is not installed"))
+        data["wst"] = re.search("<token>(.+?)</token>", login).group(1)

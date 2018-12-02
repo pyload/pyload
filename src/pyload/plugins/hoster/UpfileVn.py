@@ -32,7 +32,8 @@ class UpfileVn(SimpleHoster):
     WAIT_PATTERN = r"data-count=\'(\d+)\'"
 
     def handle_free(self, pyfile):
-        token = hashlib.sha256(self.info["pattern"]["ID"] + "7891").hexdigest().upper()
+        id = self.info["pattern"]["ID"] + "7891"
+        token = hashlib.sha256(id.encode()).hexdigest().upper()
 
         self.data = self.load(pyfile.url, post={"Token": token})
 

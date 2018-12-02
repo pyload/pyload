@@ -125,7 +125,7 @@ class Core(object):
         userpw = (self.DEFAULT_USERNAME, self.DEFAULT_PASSWORD)
         # nousers = bool(self.db.listUsers())
         if restore or newdb:
-            self.db.add_user(*userpw)
+            self.db.addUser(*userpw)
         if restore:
             self.log.warning(
                 self._("Restored default login credentials `{}|{}`").format(*userpw)

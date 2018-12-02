@@ -75,7 +75,7 @@ class TwojlimitPl(MultiAccount):
         }
 
     def signin(self, user, password, data):
-        data["hash_password"] = hashlib.md5(password).hexdigest()
+        data["hash_password"] = hashlib.md5(password.encode()).hexdigest()
 
         try:
             response = json.loads(self.run_auth_query())

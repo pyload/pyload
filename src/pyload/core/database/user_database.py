@@ -20,58 +20,74 @@ class UserMethods(object):
         if not r:
             return {}
 
-        salt = r[2][:5]
-        pw = r[2][5:]
-        h = sha1(salt + password)
-        if h.hexdigest() == pw:
-            return {
-                "id": r[0],
-                "name": r[1],
-                "role": r[3],
-                "permission": r[4],
-                "template": r[5],
-                "email": r[6],
-            }
-        else:
+        stored_salt = r[2][:5]
+        stored_pw = r[2][5:]
+        
+        pw = self._salt_password(password, stored_salt)
+        if pw != stored_pw:
             return {}
+            
+        return {
+            "id": r[0],
+            "name": r[1],
+            "role": r[3],
+            "permission": r[4],
+            "template": r[5],
+            "email": r[6],
+        }
 
+    # TODO: move to utils and use crypto lib to salt
+    def _salt_password(self, password, salt):
+        try:
+            enc_password = password.encode()
+        except AttributeError:
+            enc_password = password
+        try:
+            enc_salt = salt.encode()
+        except AttributeError:
+            enc_salt = salt
+            
+        enc_pw = enc_salt + sha1(enc_salt + enc_password).digest()
+        pw = enc_pw.decode()
+        
+        return pw
+    
     @style.queue
     def addUser(self, user, password):
         salt = reduce(
             lambda x, y: x + y, [str(random.randint(0, 9)) for i in range(0, 5)]
         )
-        h = sha1(salt + password)
-        password = salt + h.hexdigest()
+        pw = self._salt_password(password, salt)
 
         self.c.execute("SELECT name FROM users WHERE name=?", (user,))
         if self.c.fetchone() is not None:
-            self.c.execute("UPDATE users SET password=? WHERE name=?", (password, user))
+            self.c.execute("UPDATE users SET password=? WHERE name=?", (pw, user))
         else:
             self.c.execute(
-                "INSERT INTO users (name, password) VALUES (?, ?)", (user, password)
+                "INSERT INTO users (name, password) VALUES (?, ?)", (user, pw)
             )
 
     @style.queue
-    def changePassword(self, user, oldpw, newpw):
+    def changePassword(self, user, old_password, new_password):
         self.c.execute("SELECT id, name, password FROM users WHERE name=?", (user,))
         r = self.c.fetchone()
         if not r:
             return False
 
-        salt = r[2][:5]
-        pw = r[2][5:]
-        h = sha1(salt + oldpw)
-        if h.hexdigest() == pw:
-            salt = reduce(
-                lambda x, y: x + y, [str(random.randint(0, 9)) for i in range(0, 5)]
-            )
-            h = sha1(salt + newpw)
-            password = salt + h.hexdigest()
+        stored_salt = r[2][:5]
+        stored_pw = r[2][5:]
+        
+        oldpw = self._salt_password(old_password, stored_salt)
+        if oldpw != stored_pw:
+            return False
+            
+        new_salt = reduce(
+            lambda x, y: x + y, [str(random.randint(0, 9)) for i in range(0, 5)]
+        )
+        newpw = self._salt_password(new_password, new_salt)
 
-            self.c.execute("UPDATE users SET password=? WHERE name=?", (password, user))
-            return True
-
-        return False
+        self.c.execute("UPDATE users SET password=? WHERE name=?", (newpw, user))
+        return True
 
     @style.async_
     def setPermission(self, user, perms):

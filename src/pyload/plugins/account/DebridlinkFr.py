@@ -41,7 +41,8 @@ class DebridlinkFr(MultiAccount):
             ts = str(int(time.time() - float(session["tsd"])))
 
             m = hashlib.sha1()
-            m.update(ts + method + session["key"])
+            data = ts + method + session["key"]
+            m.update(data.encode())
             sign = m.hexdigest()
 
             self.req.http.c.setopt(

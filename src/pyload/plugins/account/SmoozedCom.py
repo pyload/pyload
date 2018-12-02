@@ -68,7 +68,7 @@ class SmoozedCom(MultiAccount):
 
     def get_account_status(self, user, password):
         password = password
-        salt = hashlib.sha256(password).hexdigest()
+        salt = hashlib.sha256(password.encode()).hexdigest()
         encrypted = PBKDF2(password, salt, iterations=1000).hexread(32)
 
         html = self.load(

@@ -16,7 +16,7 @@ def get_api_password(episode):
     timestamp = int(round(time.time() // 24 // 3600))
     api_pass = api_key + "/episode/" + episode + str(timestamp)
 
-    m = hashlib.md5(api_pass)
+    m = hashlib.md5(api_pass.encode())
 
     return m.hexdigest()
 

@@ -37,7 +37,7 @@ class LinkifierCom(MultiHoster):
     def api_response(self, method, user, password, **kwargs):
         post = {
             "login": user,
-            "md5Pass": hashlib.md5(password).hexdigest(),
+            "md5Pass": hashlib.md5(password.encode()).hexdigest(),
             "apiKey": self.API_KEY,
         }
         post.update(kwargs)
