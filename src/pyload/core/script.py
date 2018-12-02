@@ -11,7 +11,7 @@ from .core import Core
 from .. import __version__
 
 
-def daemon(core_args):
+def _daemon(core_args):
     try:
         pid = os.fork()
         if pid > 0:
@@ -50,11 +50,11 @@ def daemon(core_args):
     pyload_core.start()
 
 
-def parse_args(args):
+def _parse_args(cmd_args):
     """Parse command line parameters
 
     Args:
-      args ([str]): command line parameters as list of strings
+      cmd_args ([str]): command line parameters as list of strings
 
     Returns:
       :obj:`argparse.Namespace`: command line parameters namespace
@@ -75,7 +75,7 @@ def parse_args(args):
     parser.add_argument("--daemon",action="store_true",help="Daemonmize after start")
     parser.add_argument("--restore",action="store_true", help="Restore default admin user")
 
-    return parser.parse_args(args)
+    return parser.parse_args(cmd_args)
 
 
 def run(core_args, daemon=False):
@@ -83,23 +83,24 @@ def run(core_args, daemon=False):
     # from .lib.rename_process import renameProcess
     # renameProcess('pyLoad')
     if daemon:
-        return daemon(core_args)
+        return _daemon(core_args)
 
     pyload_core = Core(*core_args)
     try:
         pyload_core.start()
     except KeyboardInterrupt:
-        pyload_core.log.info(self._("Killed from terminal"))
+        pyload_core.log.info(pyload_core._("Killed from terminal"))
         pyload_core.terminate()
         os._exit(1)
 
 
-def main():
+def main(cmd_args=sys.argv[1:]):
     """
     Entry point for console_scripts
     """
-    args = parse_args(sys.argv[1:])
+    args = _parse_args(cmd_args)
     core_args = (args.userdir, args.cachedir, args.debug, args.restore)
+
     run(core_args, args.daemon)
 
 
