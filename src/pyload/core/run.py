@@ -90,7 +90,7 @@ def run(core_args, daemon=False):
         pyload_core.start()
     except KeyboardInterrupt:
         pyload_core.log.info(self._("Killed from terminal"))
-        pyload_core.shutdown()
+        pyload_core.terminate()
         os._exit(1)
     
     

@@ -148,8 +148,8 @@ class Core(object):
         self.thm = self.threadManager = ThreadManager(self)
         self.cpm = self.captchaManager = CaptchaManager(self)
         # TODO: Remove builtins.ADDONMANAGER
-        builtins.ADDONMANAGER = self.adm = self.addonmanager = AddonManager(self)
-        self.rem = self.remotemanager = RemoteManager(self)
+        builtins.ADDONMANAGER = self.adm = self.addonManager = AddonManager(self)
+        self.rem = self.remoteManager = RemoteManager(self)
 
     def _setup_permissions(self):
         self.log.debug("Setup permissions...")

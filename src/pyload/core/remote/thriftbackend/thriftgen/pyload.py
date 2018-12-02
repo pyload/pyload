@@ -10,7 +10,7 @@
 from builtins import object
 
 from thrift.protocol.TBase import TBase
-from thrift.Thrift import TMessageType, TProcessor, TType
+from thrift.Thrift import TMessageType, TProcessor, TType, TApplicationException
 
 from .ttypes import *
 
@@ -3005,7 +3005,7 @@ class Processor(Iface, TProcessor):
         try:
             result.success = self._handler.getPackageData(args.pid)
         except PackageDoesNotExists as exc:
-            result.e = e
+            result.e = exc
         oprot.writeMessageBegin("getPackageData", TMessageType.REPLY, seqid)
         result.write(oprot)
         oprot.writeMessageEnd()
@@ -3019,7 +3019,7 @@ class Processor(Iface, TProcessor):
         try:
             result.success = self._handler.getPackageInfo(args.pid)
         except PackageDoesNotExists as exc:
-            result.e = e
+            result.e = exc
         oprot.writeMessageBegin("getPackageInfo", TMessageType.REPLY, seqid)
         result.write(oprot)
         oprot.writeMessageEnd()
@@ -3033,7 +3033,7 @@ class Processor(Iface, TProcessor):
         try:
             result.success = self._handler.getFileData(args.fid)
         except FileDoesNotExists as exc:
-            result.e = e
+            result.e = exc
         oprot.writeMessageBegin("getFileData", TMessageType.REPLY, seqid)
         result.write(oprot)
         oprot.writeMessageEnd()
@@ -3311,7 +3311,7 @@ class Processor(Iface, TProcessor):
         try:
             self._handler.setPackageData(args.pid, args.data)
         except PackageDoesNotExists as exc:
-            result.e = e
+            result.e = exc
         oprot.writeMessageBegin("setPackageData", TMessageType.REPLY, seqid)
         result.write(oprot)
         oprot.writeMessageEnd()
@@ -3461,7 +3461,7 @@ class Processor(Iface, TProcessor):
         except ServiceDoesNotExists as ex:
             result.ex = ex
         except ServiceException as exc:
-            result.e = e
+            result.e = exc
         oprot.writeMessageBegin("call", TMessageType.REPLY, seqid)
         result.write(oprot)
         oprot.writeMessageEnd()

@@ -61,7 +61,7 @@ class Socket(TSocket):
 
         # errno 104 connection reset
 
-        self.handle.settimeout(self._timeout)
+        self.handle.setTimeout(self._timeout)
         self.handle.connect((self.host, self.port))
 
     def read(self, sz):

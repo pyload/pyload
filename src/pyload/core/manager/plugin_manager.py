@@ -265,6 +265,7 @@ class PluginManager(object):
                 continue
             found = False
 
+            # NOTE: E1136: Value 'last' is unsubscriptable (unsubscriptable-object)
             if last and last[1]["re"].match(url):
                 res.append((url, last[0]))
                 continue

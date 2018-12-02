@@ -15,6 +15,7 @@ class Browser(object):
         self.bucket = bucket
 
         self.cj = None  #: needs to be setted later
+        self.http = None
         self._size = 0
 
         self.renewHTTPRequest()

@@ -97,9 +97,9 @@ class IRC(object):
 
         self.plugin.log_info(self._("Connecting to: {}:{}").format(host, port))
 
-        self.irc_sock.settimeout(30)
+        self.irc_sock.setTimeout(30)
         self.irc_sock.connect((host, port))
-        self.irc_sock.settimeout(None)
+        self.irc_sock.setTimeout(None)
 
         self.irc_sock.send("NICK {}\r\n".format(self.nick))
         self.irc_sock.send(

@@ -352,6 +352,7 @@ class ConfigParser(object):
 
         value = self.cast(self.plugin[plugin][option]["type"], value)
 
+        # TODO: check if callable
         if self.pluginCB:
             self.pluginCB(plugin, option, value)
 
