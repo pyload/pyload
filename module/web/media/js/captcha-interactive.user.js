@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         pyLoad Script for Interactive Captcha
 // @namespace    https://pyload.net/
-// @version      0.18
+// @version      0.19
 // @author       Michi-F, GammaC0de
 // @description  pyLoad Script for Interactive Captcha
 // @homepage     https://github.com/pyload/pyload
@@ -38,7 +38,6 @@
     'use strict';
 
     // this function listens to messages from the pyload main page
-    window.addEventListener('message', function(e) {
     window.addEventListener('message', function(e) {
         try {
             var request = JSON.parse(e.data);
