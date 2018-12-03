@@ -8,7 +8,7 @@ import time
 from builtins import zip
 from pyload import PKGDIR
 
-from ..internal.addon import Addon, threaded, Expose
+from ..internal.addon import Addon, threaded, expose
 from ..utils import encode, exists
 
 
@@ -92,14 +92,14 @@ class UpdateManager(Addon):
                 self.pyload.api.restart()
 
     #: Deprecated method, use `autoreload_plugins` instead
-    @Expose
+    @expose
     def autoreloadPlugins(self, *args, **kwargs):
         """
         See `autoreload_plugins`
         """
         return self.autoreload_plugins(*args, **kwargs)
 
-    @Expose
+    @expose
     def autoreload_plugins(self):
         """
         Reload and reindex all modified plugins.
@@ -156,7 +156,7 @@ class UpdateManager(Addon):
 
             return res
 
-    @Expose
+    @expose
     @threaded
     def update(self):
         """
@@ -212,7 +212,7 @@ class UpdateManager(Addon):
         #:  2 = Plugins updated, but restart required
         return exitcode
 
-    @Expose
+    @expose
     def update_plugins(self):
         server_data = self.server_response()
 
@@ -401,14 +401,14 @@ class UpdateManager(Addon):
         return updated
 
     #: Deprecated method, use `remove_plugins` instead
-    @Expose
+    @expose
     def removePlugins(self, *args, **kwargs):
         """
         See `remove_plugins`
         """
         return self.remove_plugins(*args, **kwargs)
 
-    @Expose
+    @expose
     def remove_plugins(self, plugin_ids):
         """
         Delete plugins from disk.

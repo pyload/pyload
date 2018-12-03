@@ -5,7 +5,7 @@ from builtins import object
 
 import send2trash
 
-from ..internal.addon import Addon, threaded, Expose
+from ..internal.addon import Addon, threaded, expose
 from ..internal.extractor import ArchiveError, CRCError, PasswordError
 from ..utils import encode, exists, safename, uniqify
 
@@ -164,14 +164,14 @@ class ExtractArchive(Addon):
         self.extracting = False
 
     #: Deprecated method, use `extract_package` instead
-    @Expose
+    @expose
     def extractPackage(self, *args, **kwargs):
         """
         See `extract_package`
         """
         return self.extract_package(*args, **kwargs)
 
-    @Expose
+    @expose
     def extract_package(self, *ids):
         """
         Extract packages with given id.
@@ -194,7 +194,7 @@ class ExtractArchive(Addon):
         if self.config.get("waitall") and not self.extracting:
             self.extract_queued()
 
-    @Expose
+    @expose
     def extract(
         self, ids, thread=None
     ):  # TODO: Use pypack, not pid to improve method usability
@@ -578,14 +578,14 @@ class ExtractArchive(Addon):
         raise Exception(self._("Extract failed"))
 
     #: Deprecated method, use `get_passwords` instead
-    @Expose
+    @expose
     def getPasswords(self, *args, **kwargs):
         """
         See `get_passwords`
         """
         return self.get_passwords(*args, **kwargs)
 
-    @Expose
+    @expose
     def get_passwords(self, reload=True):
         """
         List of saved passwords.
@@ -616,14 +616,14 @@ class ExtractArchive(Addon):
             self.passwords = passwords
 
     #: Deprecated method, use `add_password` instead
-    @Expose
+    @expose
     def addPassword(self, *args, **kwargs):
         """
         See `add_password`
         """
         return self.add_password(*args, **kwargs)
 
-    @Expose
+    @expose
     def add_password(self, password):
         """
         Adds a password to saved list.

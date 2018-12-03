@@ -15,15 +15,15 @@ def threaded(func):
     return wrapper
     
     
-class Expose(object):
+def expose(func):
     """
     Used for decoration to declare rpc services.
     """
-    
-    def __new__(cls, func, self, *args, **kwargs):
+    @wraps(func)
+    def wrapper(self, *args, **kwargs):
         self.pyload.adm.addRPC(func.__module__, func.__name__, func.__doc__)
-        return func
-        
+    return wrapper
+    
         
 class Addon(Plugin):
     __name__ = "Addon"

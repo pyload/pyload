@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import time
 
-from ..utils import Expose, encode, isiterable
-from .addon import Addon
+from ..utils import encode, isiterable
+from .addon import Addon, expose
 
 
 class Notifier(Addon):
@@ -110,7 +110,7 @@ class Notifier(Addon):
     def all_downloads_finished(self):
         self.notify(self._("All downloads finished"))
 
-    @Expose
+    @expose
     def notify(self, event, msg=None, key=None):
         key = key or self.get_key()
         if not key or isiterable(key) and not all(key):

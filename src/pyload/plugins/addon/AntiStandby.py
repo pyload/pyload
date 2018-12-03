@@ -6,7 +6,7 @@ import sys
 import time
 from builtins import object
 
-from ..internal.addon import Addon, Expose
+from ..internal.addon import Addon, expose
 from ..utils import encode
 
 try:
@@ -78,7 +78,7 @@ class AntiStandby(Addon):
         else:
             self.linux_standby(True)
 
-    @Expose
+    @expose
     def win_standby(self, system=True, display=True):
         import ctypes
 
@@ -99,7 +99,7 @@ class AntiStandby(Addon):
                     | Kernel32.ES_DISPLAY_REQUIRED
                 )
 
-    @Expose
+    @expose
     def osx_standby(self, system=True, display=True):
         try:
             if system:
@@ -115,7 +115,7 @@ class AntiStandby(Addon):
         except Exception as exc:
             self.log_warning(self._("Unable to change power state"), exc)
 
-    @Expose
+    @expose
     def linux_standby(self, system=True, display=True):
         try:
             if system:
@@ -137,14 +137,14 @@ class AntiStandby(Addon):
         except Exception as exc:
             self.log_warning(self._("Unable to change display power state"), exc)
 
-    @Expose
+    @expose
     def touch(self, path):
         with open(path, mode="w"):
             os.utime(path, None)
 
         self.mtime = time.time()
 
-    @Expose
+    @expose
     def max_mtime(self, path):
         return max(
             0,

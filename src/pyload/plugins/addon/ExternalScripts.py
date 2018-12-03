@@ -4,7 +4,7 @@ import os
 import subprocess
 from builtins import map
 
-from ..internal.addon import Addon, Expose
+from ..internal.addon import Addon, expose
 from ..utils import encode
 
 
@@ -151,7 +151,7 @@ class ExternalScripts(Addon):
 
         return p
 
-    @Expose
+    @expose
     def call_script(self, folder, *args, **kwargs):
         scripts = self.scripts.get(folder)
 

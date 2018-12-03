@@ -7,7 +7,7 @@ from builtins import map
 
 import send2trash
 
-from ..internal.addon import Addon, threaded, Expose
+from ..internal.addon import Addon, threaded, expose
 from ..utils import encode, exists
 
 
@@ -41,7 +41,7 @@ class AntiVirus(Addon):
     __license__ = "GPLv3"
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
-    @Expose
+    @expose
     @threaded
     def scan(self, pyfile, thread):
         avfile = encode(self.config.get("avfile"))
