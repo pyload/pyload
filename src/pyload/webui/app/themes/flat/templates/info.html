@@ -11,14 +11,14 @@
     </script>
 {% endblock %}
 
-{% block title %}{{ self._("Info") }} - {{ super() }} {% endblock %}
-{% block subtitle %}{{ self._("Info") }}{% endblock %}
+{% block title %}{{ _("Info") }} - {{ super() }} {% endblock %}
+{% block subtitle %}{{ _("Info") }}{% endblock %}
 
 {% block content %}
-    <h3>{{ self._("News") }}</h3>
+    <h3>{{ _("News") }}</h3>
     <div id="twitter"></div>
 
-    <h3>{{ self._("Support") }}</h3>
+    <h3>{{ _("Support") }}</h3>
 
     <ul>
         <li style="font-weight:bold;">
@@ -34,46 +34,46 @@
 
     </ul>
 
-    <h3>{{ self._("System") }}</h3>
+    <h3>{{ _("System") }}</h3>
     <table class="system">
          <tr>
-            <td>{{ self._("Python:") }}</td>
+            <td>{{ _("Python:") }}</td>
             <td>{{ python }}</td>
         </tr>
         <tr>
-            <td>{{ self._("OS:") }}</td>
+            <td>{{ _("OS:") }}</td>
             <td>{{ os }}</td>
         </tr>
         <tr>
-            <td>{{ self._("pyLoad version:") }}</td>
+            <td>{{ _("pyLoad version:") }}</td>
             <td>{{ version }}</td>
         </tr>
         <tr>
-            <td>{{ self._("Installation Folder:") }}</td>
+            <td>{{ _("Installation Folder:") }}</td>
             <td>{{ folder }}</td>
         </tr>
         <tr>
-            <td>{{ self._("Config Folder:") }}</td>
+            <td>{{ _("Config Folder:") }}</td>
             <td>{{ config }}</td>
         </tr>
         <tr>
-            <td>{{ self._("Download Folder:") }}</td>
+            <td>{{ _("Download Folder:") }}</td>
             <td>{{ download }}</td>
         </tr>
         <tr>
-            <td>{{ self._("Free Space:") }}</td>
+            <td>{{ _("Free Space:") }}</td>
             <td>{{ freespace }}</td>
         </tr>
         <tr>
-            <td>{{ self._("Language:") }}</td>
+            <td>{{ _("Language:") }}</td>
             <td>{{ language }}</td>
         </tr>
         <tr>
-            <td>{{ self._("Web UI Port:") }}</td>
+            <td>{{ _("Web UI Port:") }}</td>
             <td>{{ webif }}</td>
         </tr>
         <tr>
-            <td>{{ self._("Remote Interface Port:") }}</td>
+            <td>{{ _("Remote Interface Port:") }}</td>
             <td>{{ remote }}</td>
         </tr>
     </table>

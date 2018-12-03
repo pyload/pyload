@@ -1,7 +1,7 @@
 {% extends theme('base.html') %}
 
-{% block title %}{{ self._("Config") }} - {{ super() }} {% endblock %}
-{% block subtitle %}{{ self._("Config") }}{% endblock %}
+{% block title %}{{ _("Config") }} - {{ super() }} {% endblock %}
+{% block subtitle %}{{ _("Config") }}{% endblock %}
 
 {% block head %}
     <script type="text/javascript" src="{{theme_static('vendor/MooTools/TinyTab/tinytab.js')}}"></script>
@@ -13,9 +13,9 @@
 {% block content %}
 
     <ul id="toptabs" class="tabs">
-            <li><a class="selected" href="#">{{ self._("General") }}</a></li>
-            <li><a href="#">{{ self._("Plugins") }}</a></li>
-            <li><a href="#">{{ self._("Accounts") }}</a></li>
+            <li><a class="selected" href="#">{{ _("General") }}</a></li>
+            <li><a href="#">{{ _("Plugins") }}</a></li>
+            <li><a href="#">{{ _("Accounts") }}</a></li>
     </ul>
 
     <div id="tabsback" style="height: 20px; padding-left: 150px; color: white; font-weight: bold;">
@@ -42,7 +42,7 @@
                 <form id="general_form" action="" method="POST" autocomplete="off">
                     <span id="general_form_content">
                     <br>
-                    <h3>&nbsp;&nbsp; {{ self._("Choose a section from the menu") }}</h3>
+                    <h3>&nbsp;&nbsp; {{ _("Choose a section from the menu") }}</h3>
                     <br>
                     </span>
 
@@ -71,7 +71,7 @@
 
                      <span id="plugin_form_content">
                     <br>
-                    <h3>&nbsp;&nbsp; {{ self._("Choose a section from the menu") }}</h3>
+                    <h3>&nbsp;&nbsp; {{ _("Choose a section from the menu") }}</h3>
                     <br>
                          </span>
                      <input id="plugin|submit" class="styled_button" type="submit" value="{{_("Submit")}}"/>
@@ -87,16 +87,16 @@
 
                         <thead>
                         <tr>
-                            <th>{{ self._("Plugin") }}</th>
-                            <th>{{ self._("Name") }}</th>
-                            <th>{{ self._("Password") }}</th>
-                            <th>{{ self._("Status") }}</th>
-                            <th>{{ self._("Premium") }}</th>
-                            <th>{{ self._("Valid until") }}</th>
-                            <th>{{ self._("Traffic left") }}</th>
-                            <th>{{ self._("Time") }}</th>
-                            <th>{{ self._("Max Parallel") }}</th>
-                            <th>{{ self._("Delete?") }}</th>
+                            <th>{{ _("Plugin") }}</th>
+                            <th>{{ _("Name") }}</th>
+                            <th>{{ _("Password") }}</th>
+                            <th>{{ _("Status") }}</th>
+                            <th>{{ _("Premium") }}</th>
+                            <th>{{ _("Valid until") }}</th>
+                            <th>{{ _("Traffic left") }}</th>
+                            <th>{{ _("Time") }}</th>
+                            <th>{{ _("Max Parallel") }}</th>
+                            <th>{{ _("Delete?") }}</th>
                         </tr>
                         </thead>
 
@@ -118,20 +118,20 @@
                                            <td>
                                                {% if account.valid %}
                                                    <span style="font-weight: bold; color: #006400;">
-                                                   {{ self._("valid") }}
+                                                   {{ _("valid") }}
                                                {% else %}
                                                    <span style="font-weight: bold; color: #8b0000;">
-                                                   {{ self._("not valid") }}
+                                                   {{ _("not valid") }}
                                                {% endif %}
                                                </span>
                                            </td>
                                           <td>
                                                {% if account.premium %}
                                                    <span style="font-weight: bold; color: #006400;">
-                                                   {{ self._("yes") }}
+                                                   {{ _("yes") }}
                                                {% else %}
                                                    <span style="font-weight: bold; color: #8b0000;">
-                                                   {{ self._("no") }}
+                                                   {{ _("no") }}
                                                {% endif %}
                                                </span>
                                            </td>

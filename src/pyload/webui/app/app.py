@@ -10,13 +10,15 @@ import jinja2
 from flask.logging import default_handler
 # from flask_talisman import Talisman
 from flask_babel import Babel
-from flask_compress import Compress
+# from flask_compress import Compress
 # from flask_bcrypt import Bcrypt
 # from flask_caching import Cache
 from flask_debugtoolbar import DebugToolbarExtension
 # from flask_static_compress import FlaskStaticCompress
-from flask_minify import minify
+# from flask_minify import minify
 from flask_themes2 import Themes
+
+from werkzeug.exceptions import HTTPException
 
 from pyload.core.network.http.http_request import (
     BAD_STATUS_CODES as BAD_HTTP_STATUS_CODES)
@@ -89,24 +91,28 @@ def setup_extensions(app):
 def setup_error_handlers(app):
     """Register error handlers."""
 
-    def render_error(response):
+    def render_error(error):
         """Render error template."""
-        if response.is_json:
-            json_obj = response.get_json()
-            error_msg = json_obj.get("error", "Server Error")
-            trace_msg = json_obj.get("traceback", "No Traceback Available").replace(
-                "\n", "<br>"
-            )
+        
+        #: https://github.com/pallets/flask/issues/2778
+        if not isinstance(error, HTTPException):
+            error_code = 500
+            error_status = "Server Error"
+            error_message = str(error)
         else:
-            error_msg = str(response.data) or "Server Error"
-            trace_msg = "No Traceback Available"
-
-        app.logger.error("Error {}: {}".format(response.status, error_msg))
-
-        messages = [response.status, error_msg, trace_msg]
+            error_code = error.status_code
+            error_status = error.status
+            
+            if error.is_json:
+                error_message = error.get_json().get("error", "Server Error")
+            else:
+                error_message = str(error.data) or "Server Error"
+            
+        app.logger.debug("Error {}: {}".format(error_code, error_status), error_message, exc_info=True)
+        
         return (
-            render_template("error.html", {"messages": messages}, [pre_processor]),
-            response.status_code,
+            render_template("error.html", {"messages": [error_status, error_message]}, [pre_processor]),
+            error_code,
         )
 
     for errcode in BAD_HTTP_STATUS_CODES:
