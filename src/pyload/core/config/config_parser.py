@@ -46,7 +46,7 @@ class ConfigParser(object):
         self.plugin = {}  #: the config for plugins
 
         # TODO: Recheck
-        configdir = os.path.join(core.userdir, "settings")
+        configdir = os.path.join(userdir, "settings")
         os.makedirs(configdir, exist_ok=True)
         
         self.configpath = os.path.join(configdir, "core.conf")

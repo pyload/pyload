@@ -8,8 +8,8 @@ import time
 from builtins import zip
 from pyload import PKGDIR
 
-from ..internal.addon import Addon
-from ..utils import Expose, encode, exists, threaded
+from ..internal.addon import Addon, threaded, Expose
+from ..utils import encode, exists
 
 
 class UpdateManager(Addon):

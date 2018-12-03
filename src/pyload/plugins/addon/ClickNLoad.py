@@ -3,8 +3,8 @@ import socket
 import threading
 import time
 
-from ..internal.addon import Addon
-from ..utils import forward, lock, threaded
+from ..internal.addon import Addon, threaded
+from ..utils import forward, lock
 
 try:
     import ssl

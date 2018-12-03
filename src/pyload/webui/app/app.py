@@ -67,12 +67,12 @@ def setup_extensions(app):
     Babel(app)
     # Bcrypt(app)
     # Cache(app)
-    Compress(app)
+    # Compress(app)
     DebugToolbarExtension(app)
     # FlaskStaticCompress(app)
     # login_manager = LoginManager(app)
     # login_manager.login_view = "app.login"
-    minify(app)
+    # minify(app)
     # Talisman(app)
     Themes(app, app_identifier="pyload")
 

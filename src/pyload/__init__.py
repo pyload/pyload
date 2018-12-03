@@ -51,7 +51,6 @@ os.chdir(USERHOMEDIR)
 
 # TODO: remove
 builtins.REQUESTS = None
-builtins.ADDONMANAGER = None
 
 
 ### Locale ############################################################################

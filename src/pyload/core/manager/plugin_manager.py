@@ -7,7 +7,8 @@ import re
 import sys
 import traceback
 from ast import literal_eval
-from pyload import PKGDIR, object, str
+from pyload import PKGDIR
+from builtins import object, str
 from itertools import chain
 
 import semver

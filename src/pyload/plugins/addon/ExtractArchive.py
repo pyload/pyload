@@ -5,9 +5,9 @@ from builtins import object
 
 import send2trash
 
-from ..internal.addon import Addon
+from ..internal.addon import Addon, threaded, Expose
 from ..internal.extractor import ArchiveError, CRCError, PasswordError
-from ..utils import Expose, encode, exists, safename, threaded, uniqify
+from ..utils import encode, exists, safename, uniqify
 
 
 class ArchiveQueue(object):

@@ -147,8 +147,7 @@ class Core(object):
         self.acm = self.accountManager = AccountManager(self)
         self.thm = self.threadManager = ThreadManager(self)
         self.cpm = self.captchaManager = CaptchaManager(self)
-        # TODO: Remove builtins.ADDONMANAGER
-        builtins.ADDONMANAGER = self.adm = self.addonManager = AddonManager(self)
+        self.adm = self.addonManager = AddonManager(self)
         self.rem = self.remoteManager = RemoteManager(self)
 
     def _setup_permissions(self):
@@ -212,9 +211,6 @@ class Core(object):
         self.log.debug("Setup storage...")
 
         storage_folder = self.config.get("general", "storage_folder")
-        # if storage_folder is None:
-        # storage_folder = os.path.join(
-        # builtins.USERDIR, self.DEFAULT_STORAGENAME)
         
         # NOTE: Remove in 0.6
         storage_folder = os.path.abspath(storage_folder)

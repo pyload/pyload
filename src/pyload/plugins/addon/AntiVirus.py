@@ -7,8 +7,8 @@ from builtins import map
 
 import send2trash
 
-from ..internal.addon import Addon
-from ..utils import Expose, encode, exists, threaded
+from ..internal.addon import Addon, threaded, Expose
+from ..utils import encode, exists
 
 
 class AntiVirus(Addon):

@@ -4,8 +4,8 @@ import os
 import subprocess
 from builtins import map
 
-from ..internal.addon import Addon
-from ..utils import Expose, encode
+from ..internal.addon import Addon, Expose
+from ..utils import encode
 
 
 class ExternalScripts(Addon):

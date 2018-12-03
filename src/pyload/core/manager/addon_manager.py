@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # AUTHOR: RaNaN, mkaay
 
-import builtins
 from builtins import object, str
 from functools import wraps
 from threading import RLock
@@ -58,8 +57,6 @@ class AddonManager(object):
     def __init__(self, core):
         self.pyload = core
         self._ = core._
-
-        builtins.ADDONMANAGER = self  #: needed to let addons register themself
 
         self.plugins = []
         self.pluginMap = {}

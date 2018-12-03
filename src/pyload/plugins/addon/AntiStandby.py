@@ -6,8 +6,8 @@ import sys
 import time
 from builtins import object
 
-from ..internal.addon import Addon
-from ..utils import Expose, encode
+from ..internal.addon import Addon, Expose
+from ..utils import encode
 
 try:
     import caffeine

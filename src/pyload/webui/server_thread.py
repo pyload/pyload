@@ -55,5 +55,5 @@ class WebServer(threading.Thread):
             self.stop()
 
     def stop(self):
-        self.pyload.log.info(self._("Stopping Webserver..."))
+        self.pyload.log.info(self._("Stopping webserver..."))
         self.server.stop()

@@ -120,47 +120,58 @@ class LogFactory(object):
         fmt = "{asctime} {name}: {message}"
         datefmt = "%b %e %H:%M:%S"
 
-        syslogform = logging.Formatter(fmt, datefmt, self.LINESTYLE)
-        syslogaddr = None
+        syslog_form = logging.Formatter(fmt, datefmt, self.LINESTYLE)
+        syslog_addr = None
 
         location = self.pyload.config.get("log", "syslog_location")
         if location == "remote":
             host = self.pyload.config.get("log", "syslog_host")
             port = self.pyload.config.get("log", "syslog_port")
-            syslogaddr = (host, port)
+            syslog_addr = (host, port)
         else:
             folder = self.pyload.config.get("log", "syslog_folder")
-            if syslogaddr:
-                syslogaddr = folder
+            if folder:
+                syslog_addr = folder
             elif sys.platform == "darwin":
-                syslogaddr = "/var/run/syslog"
-            elif os.name != "nt":
-                syslogaddr = "/dev/log"
+                syslog_addr = "/var/run/syslog"
+            elif os.name == "nt":
+                # TODO: Recheck
+                syslog_addr = os.path.join(self.pyload.userdir, "logs", "syslog")
+            else:
+                syslog_addr = "/dev/log"
+                
+            os.makedirs(syslog_addr, exist_ok=True)
 
-        sysloghdlr = logging.handlers.SysLogHandler(syslogaddr)
-        sysloghdlr.setFormatter(syslogform)
+        sysloghdlr = logging.handlers.SysLogHandler(syslog_addr)
+        sysloghdlr.setFormatter(syslog_form)
         logger.addHandler(sysloghdlr)
 
     def _init_filelog_handler(self, logger):
-        fileform = logging.Formatter(self.LINEFORMAT, self.DATEFORMAT, self.LINESTYLE)
+        filename = logger.name + self.FILE_EXTENSION
+        dirname = None
 
         folder = self.pyload.config.get("log", "filelog_folder")
-        os.makedirs(folder, exist_ok=True)
+        if folder:
+            dirname = folder
+        else:
+            dirname = os.path.join(self.pyload.userdir, "logs")
 
-        filename = logger.name + self.FILE_EXTENSION
-        filelog = os.path.join(folder, filename)
+        os.makedirs(dirname, exist_ok=True)
+        
+        filelog_form = logging.Formatter(self.LINEFORMAT, self.DATEFORMAT, self.LINESTYLE)
+        filelog_path = os.path.join(dirname, filename)
+        
         encoding = locale.getpreferredencoding(do_setlocale=False)
-
         if self.pyload.config.get("log", "filelog_rotate"):
             max_size = self.pyload.config.get("log", "filelog_size") << 10
             max_entries = self.pyload.config.get("log", "filelog_entries")
 
             filehdlr = logging.handlers.RotatingFileHandler(
-                filelog, maxBytes=max_size, backupCount=max_entries, encoding=encoding
+                filelog_path, maxBytes=max_size, backupCount=max_entries, encoding=encoding
             )
 
         else:
-            filehdlr = logging.FileHandler(filelog, encoding=encoding)
+            filehdlr = logging.FileHandler(filelog_path, encoding=encoding)
 
-        filehdlr.setFormatter(fileform)
+        filehdlr.setFormatter(filelog_form)
         logger.addHandler(filehdlr)

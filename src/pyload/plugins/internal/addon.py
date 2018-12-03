@@ -5,7 +5,26 @@ import threading
 from ..utils import Periodical, isiterable
 from .plugin import Plugin
 
+from functools import wraps
 
+
+def threaded(func):
+    @wraps(func)
+    def wrapper(self, *args, **kwargs):
+        self.pyload.adm.startThread(func, *args, **kwargs)
+    return wrapper
+    
+    
+class Expose(object):
+    """
+    Used for decoration to declare rpc services.
+    """
+    
+    def __new__(cls, func, self, *args, **kwargs):
+        self.pyload.adm.addRPC(func.__module__, func.__name__, func.__doc__)
+        return func
+        
+        
 class Addon(Plugin):
     __name__ = "Addon"
     __type__ = "addon"  # TODO: Change to `addon` in 0.6.x

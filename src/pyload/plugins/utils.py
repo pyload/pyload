@@ -23,7 +23,7 @@ import urllib.parse
 import urllib.request
 import xml.sax.saxutils  # TODO: Remove in 0.6.x
 import zlib
-from builtins import ADDONMANAGER, map, object, str
+from builtins import map, object, str
 from functools import wraps
 
 import send2trash
@@ -115,14 +115,7 @@ class DB(object):
         self.plugin.pyload.db.delStorage(self.plugin.classname, key)
 
 
-class Expose(object):
-    """
-    Used for decoration to declare rpc services.
-    """
 
-    def __new__(cls, fn, *args, **kwargs):
-        ADDONMANAGER.addRPC(fn.__module__, fn.__name__, fn.__doc__)
-        return fn
 
 
 class Periodical(object):
@@ -216,27 +209,20 @@ class SimpleQueue(object):
 
 
 # NOTE: decorator
-def lock(_func=None, *_args, **_kwargs):
+def lock(decor_func=None, *decor_args, **decor_kwargs):
     def decorator(func):
         @wraps(func)
         def wrapper(self, *args, **kwargs):
-            self.lock.acquire(*_args, **_kwargs)
+            self.lock.acquire(*decor_args, **decor_kwargs)
             try:
                 return func(self, *args, **kwargs)
             finally:
                 self.lock.release()
         return wrapper
-    if _func is None:
+    if decor_func is None:
         return decorator
     else:
-        return decorator(_func)
-
-
-def threaded(func):
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        ADDONMANAGER.startThread(func, *args, **kwargs)
-    return wrapper
+        return decorator(decor_func)
 
 
 def sign_string(message, pem_private, pem_passphrase="", sign_algo="SHA384"):

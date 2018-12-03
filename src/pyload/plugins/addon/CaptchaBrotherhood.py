@@ -11,8 +11,7 @@ import pycurl
 from Pillow import Image
 from pyload.core.network.request_factory import getRequest as get_request
 
-from ..internal.addon import Addon
-from ..utils import threaded
+from ..internal.addon import Addon, threaded
 
 
 class CaptchaBrotherhoodException(Exception):
