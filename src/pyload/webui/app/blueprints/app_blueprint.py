@@ -70,7 +70,7 @@ def logout():
 
 @bp.route(r"/", endpoint="index")
 @bp.route(r"/home", endpoint="home")
-@login_required("LIST")
+# @login_required("LIST")
 def home():
     api = flask.current_app.config["PYLOAD_API"]
     try:
@@ -89,7 +89,7 @@ def home():
 
 
 @bp.route(r"/queue", endpoint="queue")
-@login_required("LIST")
+# @login_required("LIST")
 def queue():
     api = flask.current_app.config["PYLOAD_API"]
     queue = api.getQueue()
@@ -102,7 +102,7 @@ def queue():
 
 
 @bp.route(r"/collector", endpoint="collector")
-@login_required("LIST")
+# @login_required("LIST")
 def collector():
     api = flask.current_app.config["PYLOAD_API"]
     queue = api.getCollector()
@@ -115,7 +115,7 @@ def collector():
 
 
 @bp.route(r"/downloads", endpoint="downloads")
-@login_required("DOWNLOAD")
+# @login_required("DOWNLOAD")
 def downloads():
     api = flask.current_app.config["PYLOAD_API"]
     root = api.getConfigValue("general", "download_folder")
@@ -146,7 +146,7 @@ def downloads():
 
 
 @bp.route(r"/downloads/get/<filename>", endpoint="get_download")
-@login_required("DOWNLOAD")
+# @login_required("DOWNLOAD")
 def get_download(filename):
     api = flask.current_app.config["PYLOAD_API"]
     filename = unquote(filename).decode("utf-8").replace("..", "")
@@ -155,7 +155,7 @@ def get_download(filename):
 
 
 @bp.route(r"/settings", endpoint="settings")
-@login_required("SETTINGS")
+# @login_required("SETTINGS")
 def settings():
     api = flask.current_app.config["PYLOAD_API"]
     conf = api.getConfig()
@@ -229,7 +229,7 @@ def settings():
 
 @bp.route(r"/pathchooser", endpoint="filemanager")
 @bp.route(r"/pathchooser/<path:path>", endpoint="filemanager")
-@login_required("STATUS")
+# @login_required("STATUS")
 def filemanager(path):
     browse_for = "folder" if os.path.isdir(path) else "file"
     path = os.path.normpath(unquotepath(path))
@@ -329,7 +329,7 @@ def filemanager(path):
 
 @bp.route(r"/logs", methods=["GET", "POST"], endpoint="logs")
 @bp.route(r"/logs/<item>", methods=["GET", "POST"], endpoint="logs")
-@login_required("LOGS")
+# @login_required("LOGS")
 def logs(item=-1):
     s = flask.session
     api = flask.current_app.config["PYLOAD_API"]
@@ -438,7 +438,7 @@ def logs(item=-1):
 
 
 @bp.route(r"/admin", methods=["GET", "POST"], endpoint="admin")
-@login_required("ADMIN")
+# @login_required("ADMIN")
 def admin():
     api = flask.current_app.config["PYLOAD_API"]
     # convert to dict
@@ -483,7 +483,7 @@ def setup():
 
 
 @bp.route(r"/info", endpoint="info")
-@login_required("STATUS")
+# @login_required("STATUS")
 def info():
     api = flask.current_app.config["PYLOAD_API"]
     conf = api.getConfigDict()

@@ -9,6 +9,12 @@ from hashlib import sha1
 from .database_thread import DatabaseThread, style
 
 
+# TODO: move to utils and rewrite to use argon2_cffi
+def _salt_password(password, salt):
+    salt_pw = salt + password
+    return salt + sha1(salt_pw.encode()).hexdigest()
+
+        
 class UserMethods(object):
     @style.queue
     def checkAuth(self, user, password):
@@ -23,7 +29,7 @@ class UserMethods(object):
         stored_salt = r[2][:5]
         stored_pw = r[2][5:]
         
-        pw = self._salt_password(password, stored_salt)
+        pw = _salt_password(password, stored_salt)
         if pw != stored_pw:
             return {}
             
@@ -35,29 +41,13 @@ class UserMethods(object):
             "template": r[5],
             "email": r[6],
         }
-
-    # TODO: move to utils and use crypto lib to salt
-    def _salt_password(self, password, salt):
-        try:
-            enc_password = password.encode()
-        except AttributeError:
-            enc_password = password
-        try:
-            enc_salt = salt.encode()
-        except AttributeError:
-            enc_salt = salt
-            
-        enc_pw = enc_salt + sha1(enc_salt + enc_password).digest()
-        pw = enc_pw.decode()
-        
-        return pw
     
     @style.queue
     def addUser(self, user, password):
         salt = reduce(
             lambda x, y: x + y, [str(random.randint(0, 9)) for i in range(0, 5)]
         )
-        pw = self._salt_password(password, salt)
+        pw = _salt_password(password, salt)
 
         self.c.execute("SELECT name FROM users WHERE name=?", (user,))
         if self.c.fetchone() is not None:
@@ -77,14 +67,14 @@ class UserMethods(object):
         stored_salt = r[2][:5]
         stored_pw = r[2][5:]
         
-        oldpw = self._salt_password(old_password, stored_salt)
+        oldpw = _salt_password(old_password, stored_salt)
         if oldpw != stored_pw:
             return False
             
         new_salt = reduce(
             lambda x, y: x + y, [str(random.randint(0, 9)) for i in range(0, 5)]
         )
-        newpw = self._salt_password(new_password, new_salt)
+        newpw = _salt_password(new_password, new_salt)
 
         self.c.execute("UPDATE users SET password=? WHERE name=?", (newpw, user))
         return True

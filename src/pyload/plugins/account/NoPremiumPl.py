@@ -76,7 +76,7 @@ class NoPremiumPl(MultiAccount):
 
     def signin(self, user, password, data):
         data["hash_password"] = hashlib.sha1(
-            hashlib.md5(password.encode()).digest()
+            hashlib.md5(password.encode()).hexdigest().encode()
         ).hexdigest()
 
         try:

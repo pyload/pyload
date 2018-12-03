@@ -58,9 +58,10 @@ class WebshareCz(Account):
             self.fail_login()
 
         salt = re.search("<salt>(.+?)</salt>", salt).group(1)
-
+        salt_pw = salt + password
+        
         password = hashlib.sha1(
-            hashlib.md5((salt + password).encode()).digest()
+            hashlib.md5(salt_pw.encode()).hexdigest().encode()
         ).hexdigest()
         digest = hashlib.md5(user + ":Webshare:" + password).hexdigest()
 

@@ -15,7 +15,7 @@ from .plugin_manager import literal_eval
 
 
 def try_catch(func):
-    @wraps
+    @wraps(func)
     def wrapper(self, *args):
         try:
             return func(self, *args)

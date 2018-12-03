@@ -215,7 +215,11 @@ class Core(object):
         # if storage_folder is None:
         # storage_folder = os.path.join(
         # builtins.USERDIR, self.DEFAULT_STORAGENAME)
-        self.log.info(self._("Storage: {0}".format(storage_folder)))
+        
+        # NOTE: Remove in 0.6
+        storage_folder = os.path.abspath(storage_folder)
+        
+        self.log.info(self._("Storage folder: {0}".format(storage_folder)))
         os.makedirs(storage_folder, exist_ok=True)
         avail_space = formatSize(freeSpace(storage_folder))
         self.log.info(self._("Available storage space: {0}").format(avail_space))
@@ -278,12 +282,12 @@ class Core(object):
             # from meliae import scanner
             # scanner.dump_all_objects(os.path.join(PACKDIR, 'objs.json'))
 
-            self.log.debug("pyLoad is up and running")
-            # self.evm.fire('pyload:started')
-
             self._start_servers()
             self._parse_linkstxt()
-
+                        
+            self.log.debug("pyLoad is up and running")
+            # self.evm.fire('pyload:started')
+            
             self.thm.pause = False  # NOTE: Recheck...
             while True:
                 self._running.wait()
