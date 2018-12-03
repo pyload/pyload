@@ -67,13 +67,13 @@ class PluginThread(Thread):
                 raise Exception("Empty Zipfile")
 
         except Exception as exc:
-            self.m.log.debug("Error creating zip file: {}".format(exc))
+            self.pyload.log.debug("Error creating zip file: {}".format(exc))
 
             dump_name = dump_name.replace(".zip", ".txt")
             with open(dump_name, mode="wb") as f:
                 f.write(dump)
 
-        self.m.pyload.log.info("Debug Report written to {}".format(dump_name))
+        self.pyload.log.info("Debug Report written to {}".format(dump_name))
 
     def getDebugDump(self, pyfile):
         dump = "pyLoad {} Debug Report of {} {} \n\nTRACEBACK:\n {} \n\nFRAMESTACK:\n".format(

@@ -38,11 +38,11 @@ class DecrypterThread(PluginThread):
         retry = False
 
         try:
-            self.m.log.info(self._("Decrypting starts: {}").format(self.active.name))
+            self.pyload.log.info(self._("Decrypting starts: {}").format(self.active.name))
             self.active.plugin.preprocessing(self)
 
         except NotImplementedError:
-            self.m.log.error(
+            self.pyload.log.error(
                 self._("Plugin {} is missing a function.").format(
                     self.active.pluginname
                 )
@@ -54,12 +54,12 @@ class DecrypterThread(PluginThread):
 
             if msg == "offline":
                 self.active.setStatus("offline")
-                self.m.log.warning(
+                self.pyload.log.warning(
                     self._("Download is offline: {}").format(self.active.name)
                 )
             else:
                 self.active.setStatus("failed")
-                self.m.log.error(
+                self.pyload.log.error(
                     self._("Decrypting failed: {name} | {msg}").format(
                         name=self.active.name, msg=msg
                     )
@@ -69,22 +69,22 @@ class DecrypterThread(PluginThread):
             return
 
         except Abort:
-            self.m.log.info(self._("Download aborted: {}").format(pyfile.name))
+            self.pyload.log.info(self._("Download aborted: {}").format(pyfile.name))
             pyfile.setStatus("aborted")
 
             return
 
         except Retry:
-            self.m.log.info(self._("Retrying {}").format(self.active.name))
+            self.pyload.log.info(self._("Retrying {}").format(self.active.name))
             retry = True
             return self.run()
 
         except Exception as exc:
             self.active.setStatus("failed")
-            self.m.log.error(
+            self.pyload.log.warning(
                 self._("Decrypting failed: {name} | {msg}").format(
                     name=self.active.name, msg=exc
-                )
+                ), exc_info=self.pyload.debug
             )
             self.active.error = str(exc)
 

@@ -349,8 +349,9 @@ class HTTPRequest(object):
 
         except LookupError:
             self.log.debug("No Decoder foung for {}".format(encoding))
+            
         except Exception:
-            self.log.debug("Error when decoding string from {}.".format(encoding))
+            self.log.debug("Error when decoding string from {}.".format(encoding), exc_info=True)
 
         return rep
 

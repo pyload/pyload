@@ -14,6 +14,7 @@ from cryptography.fernet import Fernet
 
 from .remote_manager import BackendBase
 
+
 core = None
 js = None
 

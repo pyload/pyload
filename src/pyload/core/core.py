@@ -164,16 +164,14 @@ class Core(object):
                 group = self.config.get("permission", "group")
                 os.setgid(group[2])
             except Exception as exc:
-                self.log.error(self._("Unable to change gid"))
-                self.log.error(exc, exc_info=self.debug)
+                self.log.warning(self._("Unable to change gid"), exc, exc_info=self.debug)
 
         if change_user:
             try:
                 user = self.config.get("permission", "user")
                 os.setuid(user[2])
             except Exception as exc:
-                self.log.error(self._("Unable to change uid"))
-                self.log.error(exc, exc_info=self.debug)
+                self.log.warning(self._("Unable to change uid"), exc, exc_info=self.debug)
 
     def set_language(self, lang):
         localedir = os.path.join(PKGDIR, "locale")
@@ -247,7 +245,7 @@ class Core(object):
                 if f.read().strip():
                     self.api.addPackage("links.txt", [link_file], 1)
         except Exception as exc:
-            self.log.debug(exc)
+            self.log.debug(exc, exc_info=True)
 
     def start(self):
         self.log.info("Welcome to pyLoad v{0}".format(self.version))

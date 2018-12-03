@@ -10,6 +10,8 @@ from queue import Queue
 from threading import Event, Thread
 from contextlib import closing
 
+from ... import exc_logger
+
 # DATABASE VERSION
 __version__ = 4
 
@@ -81,13 +83,7 @@ class DatabaseJob(object):
         try:
             self.result = self.f(*self.args, **self.kwargs)
         except Exception as exc:
-            try:
-                print(
-                    "Database Error @", self.f.__name__, self.args[1:], self.kwargs, exc
-                )
-            except Exception:
-                pass
-
+            exc_logger.exception("Database Error @", self.f.__name__, self.args[1:], self.kwargs, exc)
             self.exception = exc
         finally:
             self.done.set()
@@ -170,12 +166,9 @@ class DatabaseThread(Thread):
 
         if v < __version__:
             if v < 2:
-                try:
-                    self.m.pyload.log.warning(
+                self.pyload.log.warning(
                         self._("Filedatabase was deleted due to incompatible version.")
                     )
-                except Exception:
-                    print("Filedatabase was deleted due to incompatible version.")
                 os.remove(self.version_path)
                 shutil.move(self.db_path, "files.backup.db")
             with open(self.version_path, mode="w") as f:
@@ -186,10 +179,7 @@ class DatabaseThread(Thread):
         try:
             getattr(self, "_convertV{}".format(v))()
         except Exception:
-            try:
-                self.pyload.log.error(self._("Filedatabase could NOT be converted."))
-            except Exception:
-                print("Filedatabase could NOT be converted.")
+            self.pyload.log.error(self._("Filedatabase could NOT be converted."))
 
     # --convert scripts start
 
@@ -197,20 +187,14 @@ class DatabaseThread(Thread):
         self.c.execute(
             'CREATE TABLE IF NOT EXISTS "storage" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "identifier" TEXT NOT NULL, "key" TEXT NOT NULL, "value" TEXT DEFAULT "")'
         )
-        try:
-            self.m.pyload.log.info(self._("Database was converted from v2 to v3."))
-        except Exception:
-            print("Database was converted from v2 to v3.")
+        self.pyload.log.info(self._("Database was converted from v2 to v3."))
         self._convertV3()
 
     def _convertV3(self):
         self.c.execute(
             'CREATE TABLE IF NOT EXISTS "users" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "name" TEXT NOT NULL, "email" TEXT DEFAULT "" NOT NULL, "password" TEXT NOT NULL, "role" INTEGER DEFAULT 0 NOT NULL, "permission" INTEGER DEFAULT 0 NOT NULL, "template" TEXT DEFAULT "default" NOT NULL)'
         )
-        try:
-            self.m.pyload.log.info(self._("Database was converted from v3 to v4."))
-        except Exception:
-            print("Database was converted from v3 to v4.")
+        self.pyload.log.info(self._("Database was converted from v3 to v4."))
 
     # --convert scripts end
 
@@ -265,10 +249,8 @@ class DatabaseThread(Thread):
 
     def _migrateUser(self):
         if os.path.exists("pyload.db"):
-            try:
-                self.pyload.log.info(self._("Converting old Django DB"))
-            except Exception:
-                print("Converting old Django DB")
+            self.pyload.log.info(self._("Converting old Django DB"))
+            
             with sqlite3.connect("pyload.db", isolation_level=None) as conn:
                 with closing(conn.cursor()) as c:
                     c.execute(

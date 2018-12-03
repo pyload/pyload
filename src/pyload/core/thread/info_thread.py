@@ -73,7 +73,7 @@ class InfoThread(PluginThread):
 
             packs = parseNames((name, url) for name, x, y, url in self.cache)
 
-            self.m.log.debug("Fetched and generated {} packages".format(len(packs)))
+            self.pyload.log.debug("Fetched and generated {} packages".format(len(packs)))
 
             for k, v in packs:
                 self.m.pyload.api.addPackage(k, v)
@@ -88,7 +88,7 @@ class InfoThread(PluginThread):
                 try:
                     data = self.decryptContainer(name, url)
                 except Exception:
-                    self.m.log.error("Could not decrypt container.")
+                    self.pyload.log.warning("Could not decrypt container.", exc_info=self.pyload.debug)
                     data = []
 
                 for url, plugin in data:
@@ -161,7 +161,7 @@ class InfoThread(PluginThread):
                     process.append(url)
 
             if result:
-                self.m.log.debug(
+                self.pyload.log.debug(
                     "Fetched {} values from cache for {}".format(
                         len(result), pluginname
                     )
@@ -169,7 +169,7 @@ class InfoThread(PluginThread):
                 cb(pluginname, result)
 
             if process:
-                self.m.log.debug("Run Info Fetching for {}".format(pluginname))
+                self.pyload.log.debug("Run Info Fetching for {}".format(pluginname))
                 for result in plugin.getInfo(process):
                     # result = [ .. (name, size, status, url) .. ]
                     if not isinstance(result, list):
@@ -180,12 +180,12 @@ class InfoThread(PluginThread):
 
                     cb(pluginname, result)
 
-            self.m.log.debug("Finished Info Fetching for {}".format(pluginname))
+            self.pyload.log.debug("Finished Info Fetching for {}".format(pluginname))
         except Exception as exc:
-            self.m.log.warning(
+            self.pyload.log.warning(
                 self._("Info Fetching for {name} failed | {err}").format(
                     name=pluginname, err=exc
-                )
+                ), exc_info=self.pyload.debug
             )
 
             # generate default results
@@ -197,7 +197,7 @@ class InfoThread(PluginThread):
         data = []
         # only works on container plugins
 
-        self.m.log.debug("Pre decrypting {} with {}".format(url, plugin))
+        self.pyload.log.debug("Pre decrypting {} with {}".format(url, plugin))
 
         # dummy pyfile
         pyfile = PyFile(self.m.pyload.files, -1, url, url, 0, 0, "", plugin, -1, -1)
@@ -216,10 +216,10 @@ class InfoThread(PluginThread):
 
             data = self.m.pyload.pluginManager.parseUrls(pyfile.plugin.urls)
 
-            self.m.log.debug("Got {} links.".format(len(data)))
+            self.pyload.log.debug("Got {} links.".format(len(data)))
 
         except Exception as exc:
-            self.m.log.debug("Pre decrypting error: {}".format(exc))
+            self.pyload.log.debug("Pre decrypting error: {}".format(exc), exc_info=True
         finally:
             pyfile.release()
 
