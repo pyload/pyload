@@ -8,7 +8,7 @@ import locale
 import os
 import time
 
-from builtins import PKGDIR
+from pyload import PKGDIR
 from .. import __version__ as PYLOAD_VERSION
 from .. import __version_info__ as PYLOAD_VERSION_INFO
 from .utils.utils import formatSize, freeSpace
@@ -221,6 +221,7 @@ class Core(object):
         
         self.log.info(self._("Storage folder: {0}".format(storage_folder)))
         os.makedirs(storage_folder, exist_ok=True)
+        
         avail_space = formatSize(freeSpace(storage_folder))
         self.log.info(self._("Available storage space: {0}").format(avail_space))
 

@@ -3,7 +3,8 @@
 import os
 import re
 import subprocess
-from builtins import PKGDIR, filter, map
+from builtins import filter, map
+from pyload import PKGDIR
 
 from ..utils import decode, encode, renice
 from .extractor import ArchiveError, CRCError, Extractor, PasswordError

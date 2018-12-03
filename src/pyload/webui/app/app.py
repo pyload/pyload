@@ -2,7 +2,8 @@
 # AUTHOR: vuolter
 
 import os
-from builtins import PKGDIR, str
+from pyload import PKGDIR
+from builtins import str
 
 import flask
 import jinja2
@@ -113,8 +114,8 @@ def setup_error_handlers(app):
 
 
 def setup_jinja_env(app):
-    userdir = app.config["PYLOAD_API"].get_userdir()
-    cache_path = os.path.join(userdir, ".tmp", JINJA_TMPDIR_NAME)
+    cachedir = app.config["PYLOAD_API"].get_cachedir()
+    cache_path = os.path.join(cachedir, JINJA_TMPDIR_NAME)
 
     os.makedirs(cache_path, exist_ok=True)
 

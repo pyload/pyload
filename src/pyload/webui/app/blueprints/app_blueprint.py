@@ -7,7 +7,7 @@ import operator
 import os
 import sys
 import time
-from builtins import PKGDIR
+from pyload import PKGDIR
 from urllib.parse import unquote
 
 import flask

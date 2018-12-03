@@ -21,7 +21,7 @@ import tempfile
 import traceback
 
 
-### Info ###
+### Info ##############################################################################
 
 try:
     dist_name = __name__
@@ -39,26 +39,29 @@ finally:
     del pkg_resources
     del semver
 
-# remove from builtins and keep them just here?
-builtins.PKGDIR = pkgdir
-builtins.HOMEDIR = os.path.expanduser("~")
-builtins.DATADIR = os.getenv("APPDATA") if os.name == "nt" else builtins.HOMEDIR
-builtins.TMPDIR = tempfile.gettempdir()
+PKGDIR = pkgdir
+USERHOMEDIR = os.path.expanduser("~")
+DATADIR = os.path.join(os.getenv("APPDATA") if os.name == "nt" else USERHOMEDIR, "pyLoad")
+TMPDIR = os.path.join(tempfile.gettempdir(), "pyLoad")
+
+os.makedirs(DATADIR, exist_ok=True)
+os.makedirs(TMPDIR, exist_ok=True)
+
+os.chdir(USERHOMEDIR)
 
 # TODO: remove
-builtins._ = lambda x: x
 builtins.REQUESTS = None
 builtins.ADDONMANAGER = None
 
 
-### Locale ###
+### Locale ############################################################################
 
 locale.setlocale(locale.LC_ALL, "")
 if os.name == "nt":
     _locale._getdefaultlocale = lambda *args: ["en_US", "utf_8_sig"]
 
 
-### Exception logger ###
+### Exception logger ##################################################################
 
 exc_logger = logging.getLogger("exception")
 
@@ -76,7 +79,7 @@ sys.excepthook = excepthook
 del excepthook
 
 
-### Cleanup ###
+### Cleanup ###########################################################################
 
 del _locale
 del pkgdir

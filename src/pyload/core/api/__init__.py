@@ -1167,6 +1167,11 @@ class Api(Iface):
     # remove?
     def get_userdir(self):
         return os.path.abspath(self.pyload.userdir)
+        
+    # TODO: add security permission check
+    # remove?
+    def get_cachedir(self):
+        return os.path.abspath(self.pyload.cachedir)
 
     @permission(PERMS.ALL)
     def getUserData(self, username, password):

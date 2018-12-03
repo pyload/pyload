@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
-from builtins import PKGDIR
+from pyload import PKGDIR
 
 from pyload.core.utils.utils import random_string
 

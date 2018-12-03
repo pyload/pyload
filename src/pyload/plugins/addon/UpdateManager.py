@@ -5,7 +5,8 @@ import os
 import re
 import sys
 import time
-from builtins import PKGDIR, zip
+from builtins import zip
+from pyload import PKGDIR
 
 from ..internal.addon import Addon
 from ..utils import Expose, encode, exists, threaded

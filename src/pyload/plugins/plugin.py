@@ -402,8 +402,7 @@ class Plugin(Base):
         id = "{:.2f}".format(time.time())[-6:].replace(".", "")
         with open(
             os.path.join(
-                self.pyload.userdir,
-                ".tmp",
+                self.pyload.cachedir,
                 "tmpCaptcha_{}_{}.{}".format(self.__name__, id, imgtype),
             ),
             "wb",
@@ -501,13 +500,12 @@ class Plugin(Base):
 
             frame = currentframe()
             os.makedirs(
-                os.path.join(self.pyload.userdir, ".tmp", self.__name__), exist_ok=True
+                os.path.join(self.pyload.cachedir, self.__name__), exist_ok=True
             )
 
             with open(
                 os.path.join(
-                    self.pyload.userdir,
-                    ".tmp",
+                    self.pyload.cachedir,
                     self.__name__,
                     "{}_line{}.dump.html".format(
                         frame.f_back.f_code.co_name, frame.f_back.f_lineno

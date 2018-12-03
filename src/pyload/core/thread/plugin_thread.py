@@ -43,13 +43,13 @@ class PluginThread(Thread):
 
             with zipfile.ZipFile(dump_name, "w") as zip:
                 for f in os.listdir(
-                    os.path.join(self.pyload.userdir, ".tmp", pyfile.pluginname)
+                    os.path.join(self.pyload.cachedir, pyfile.pluginname)
                 ):
                     try:
                         # avoid encoding errors
                         zip.write(
                             os.path.join(
-                                self.pyload.userdir, ".tmp", pyfile.pluginname, f
+                                self.pyload.cachedir, pyfile.pluginname, f
                             ),
                             os.path.join(pyfile.pluginname, f),
                         )

@@ -417,8 +417,7 @@ class Plugin(object):
 
         try:
             framefile = os.path.join(
-                self.pyload.userdir,
-                ".tmp",
+                self.pyload.cachedir,
                 self.classname,
                 "{}_line{}.dump.html".format(
                     frame.f_back.f_code.co_name, frame.f_back.f_lineno
@@ -426,7 +425,7 @@ class Plugin(object):
             )
 
             os.makedirs(
-                os.path.join(self.pyload.userdir, ".tmp", self.classname), exist_ok=True
+                os.path.dirname(framefile), exist_ok=True
             )
 
             with open(framefile, mode="w") as f:

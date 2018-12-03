@@ -2,7 +2,8 @@
 
 import os
 import subprocess
-from builtins import PKGDIR, map, range, str
+from builtins import map, range, str
+from pyload import PKGDIR
 
 from Pillow import Image
 
@@ -83,7 +84,7 @@ class OCR(Plugin):
         try:
             tmpTif = open(
                 os.path.join(
-                    self.pyload.userdir, ".tmp", "tmpTif_{}.tif" % self.classname
+                    self.pyload.cachedir, "tmpTif_{}.tif" % self.classname
                 ),
                 mode="wb",
             )
@@ -92,7 +93,7 @@ class OCR(Plugin):
             # tmpTxt = tempfile.NamedTemporaryFile(suffix=".txt")
             tmpTxt = open(
                 os.path.join(
-                    self.pyload.userdir, ".tmp", "tmpTxt_{}.txt" % self.classname
+                    self.pyload.cachedir, "tmpTxt_{}.txt" % self.classname
                 ),
                 mode="wb",
             )
@@ -122,8 +123,7 @@ class OCR(Plugin):
             # tmpSub = tempfile.NamedTemporaryFile(suffix=".subset")
             with open(
                 os.path.join(
-                    self.pyload.userdir,
-                    ".tmp",
+                    self.pyload.cachedir,
                     "tmpSub_{}.subset".format(self.classname),
                 ),
                 "wb",

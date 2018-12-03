@@ -6,7 +6,7 @@ import argparse
 import os
 import sys
 
-from builtins import HOMEDIR
+from pyload import DATADIR, TMPDIR
 from .core import Core
 from .. import __version__
 
@@ -66,12 +66,9 @@ def _parse_args(cmd_args):
         "--version", action="version", version="pyLoad {ver}".format(ver=__version__)
     )
 
-    default_userdir = os.path.join(HOMEDIR, 'pyLoad')
-    default_cachedir = os.path.join(default_userdir, '.tmp')
-
     parser.add_argument("-d","--debug",action="store_true",help="Enable debug mode")
-    parser.add_argument("--userdir",help="Run with custom user folder", default=default_userdir)
-    parser.add_argument("--cachedir",help="Run with custom cache folder", default=default_cachedir)
+    parser.add_argument("--userdir",help="Run with custom user folder", default=DATADIR)
+    parser.add_argument("--cachedir",help="Run with custom cache folder", default=TMPDIR)
     parser.add_argument("--daemon",action="store_true",help="Daemonmize after start")
     parser.add_argument("--restore",action="store_true", help="Restore default admin user")
 

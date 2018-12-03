@@ -4,7 +4,7 @@
 import inspect
 import os
 import sys
-from builtins import PKGDIR
+from pyload import PKGDIR
 
 from ..thriftbackend.thriftgen import ttypes
 from ..thriftbackend.thriftgen.pyload import Iface

@@ -4,7 +4,8 @@ import os
 import re
 import shutil
 import time
-from builtins import PKGDIR, object, str
+from builtins import object, str
+from pyload import PKGDIR
 
 from ... import exc_logger
 from ..utils.utils import chmod
@@ -44,8 +45,12 @@ class ConfigParser(object):
         self.config = {}  #: the config values
         self.plugin = {}  #: the config for plugins
 
-        self.configpath = os.path.join(userdir, "core.conf")
-        self.pluginpath = os.path.join(userdir, "plugins.conf")
+        # TODO: Recheck
+        configdir = os.path.join(core.userdir, "settings")
+        os.makedirs(configdir, exist_ok=True)
+        
+        self.configpath = os.path.join(configdir, "core.conf")
+        self.pluginpath = os.path.join(configdir, "plugins.conf")
 
         self.oldRemoteData = {}
 
