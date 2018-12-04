@@ -11,7 +11,7 @@ from functools import wraps
 def threaded(func):
     @wraps(func)
     def wrapper(self, *args, **kwargs):
-        return self.pyload.adm.startThread(func, *args, **kwargs)
+        return self.pyload.adm.startThread(func, self, *args, **kwargs)
     return wrapper
     
     

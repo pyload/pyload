@@ -3,7 +3,7 @@
 import re
 from builtins import str
 
-import BeautifulSoup
+from bs4 import BeautifulSoup
 
 from ..internal.crypter import Crypter
 
@@ -52,7 +52,7 @@ class DuckCryptInfo(Crypter):
         m = re.match(self.__pattern__, html)
         self.log_debug("Redirect to " + m.group(0))
         html = self.load(str(m.group(0)))
-        soup = BeautifulSoup.BeautifulSoup(html)
+        soup = BeautifulSoup(html)
         cryptlinks = soup.findAll("div", attrs={"class": "folderbox"})
         self.log_debug("Redirect to " + cryptlinks)
         if not cryptlinks:

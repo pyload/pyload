@@ -4,7 +4,7 @@ import glob
 import os
 from builtins import range
 
-from Pillow import Image
+from PIL import Image
 
 from ..internal.ocr import OCR
 

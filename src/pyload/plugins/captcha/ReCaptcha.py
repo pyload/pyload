@@ -9,7 +9,7 @@ import urllib.parse
 import urllib.request
 from builtins import range, str
 
-from Pillow import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont
 
 from ..internal.captcha_service import CaptchaService
 

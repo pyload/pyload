@@ -105,7 +105,7 @@ class Core(object):
         
         self.log.info("*** Welcome to pyLoad v{} ***".format(self.version))
         if self.debug:
-            self.log.warning(">>> DEBUG MODE ON <<<")
+            self.log.warning(">>> DEBUG MODE ON AIR <<<")
 
     def _init_network(self):
         from .network.request_factory import RequestFactory

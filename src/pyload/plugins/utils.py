@@ -140,7 +140,6 @@ class Periodical(object):
         return True
 
     def start(self, interval=None, threaded=False, delay=0):
-        print("TYPE", type(interval), interval)  # TEST
         if interval is not None and self.set_interval(interval) is False:
             return False
         else:

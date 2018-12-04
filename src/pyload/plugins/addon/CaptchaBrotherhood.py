@@ -8,7 +8,7 @@ import urllib.request
 from builtins import range
 
 import pycurl
-from Pillow import Image
+from PIL import Image
 from pyload.core.network.request_factory import getRequest as get_request
 
 from ..internal.addon import Addon, threaded

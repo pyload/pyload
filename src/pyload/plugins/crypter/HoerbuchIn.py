@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import re
 
-import BeautifulSoup
+from bs4 import BeautifulSoup
 
 from ..internal.crypter import Crypter
 
@@ -42,7 +42,7 @@ class HoerbuchIn(Crypter):
 
         if self.article.match(pyfile.url):
             html = self.load(pyfile.url)
-            soup = BeautifulSoup.BeautifulSoup(
+            soup = BeautifulSoup(
                 html, convertEntities=BeautifulSoup.BeautifulStoneSoup.HTML_ENTITIES
             )
 
@@ -73,7 +73,7 @@ class HoerbuchIn(Crypter):
 
         links = []
 
-        soup = BeautifulSoup.BeautifulSoup(
+        soup = BeautifulSoup(
             html, convertEntities=BeautifulSoup.BeautifulStoneSoup.HTML_ENTITIES
         )
 

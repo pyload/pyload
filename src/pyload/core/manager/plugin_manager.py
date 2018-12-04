@@ -343,8 +343,6 @@ class PluginManager(object):
                 self.pyload.log.error(
                     self._("Error importing {name}: {msg}").format(name=name, msg=exc), exc_info=self.pyload.debug
                 )
-                if self.pyload.debug:
-                    traceback.print_exc()
         else:
             self.pyload.log.debug("Plugin {} not found".format(name))
             self.pyload.log.debug("Available plugins : {}".format(str(plugins)))

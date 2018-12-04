@@ -5,7 +5,7 @@ import subprocess
 from builtins import map, range, str
 from pyload import PKGDIR
 
-from Pillow import Image
+from PIL import Image
 
 from ..utils import encode
 from .plugin import Plugin

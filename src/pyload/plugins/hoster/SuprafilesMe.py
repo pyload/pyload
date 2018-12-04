@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
-from ..internal.XFSHoster import XFSHoster
+from ..internal.XFSHoster import xfshoster
 
 
 class SuprafilesMe(XFSHoster):
