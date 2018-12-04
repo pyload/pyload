@@ -4,7 +4,7 @@
 from builtins import object
 
 from ..manager.event_manager import UpdateEvent
-from ..utils.utils import save_path
+from ..utils import save_path
 
 
 class PyPackage(object):

@@ -13,7 +13,7 @@ from urllib.parse import unquote
 import flask
 import flask_login
 
-from pyload.core.utils.utils import formatSize, fs_decode, fs_encode
+from pyload.core.utils import formatSize, fs_decode, fs_encode
 
 from ..filters import unquotepath
 from ..helpers import (clear_session, get_permission, login_required, parse_permissions,

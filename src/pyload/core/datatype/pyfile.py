@@ -6,7 +6,7 @@ from builtins import object
 from threading import RLock
 
 from ..manager.event_manager import UpdateEvent
-from ..utils.utils import formatSize, lock
+from ..utils import formatSize, lock
 
 statusMap = {
     "finished": 0,

@@ -16,7 +16,7 @@ import time
 from ..datatype.pyfile import PyFile
 from ..network.request_factory import getURL
 from ..utils.packagetools import parseNames
-from ..utils.utils import compare_time, freeSpace
+from ..utils import compare_time, freeSpace
 import json
 
 try:

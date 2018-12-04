@@ -19,7 +19,7 @@ import time
 from pyload import PKGDIR
 from .. import __version__ as PYLOAD_VERSION
 from .. import __version_info__ as PYLOAD_VERSION_INFO
-from .utils.utils import formatSize, freeSpace, invertmap
+from .utils import formatSize, freeSpace, invertmap
 from threading import Event
 
 

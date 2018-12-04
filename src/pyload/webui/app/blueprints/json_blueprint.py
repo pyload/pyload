@@ -4,7 +4,7 @@ import os
 
 import flask
 
-from pyload.core.utils.utils import decode, formatSize
+from pyload.core.utils import decode, formatSize
 
 from ..helpers import login_required, render_template, toDict
 

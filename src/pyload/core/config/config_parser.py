@@ -8,7 +8,7 @@ from builtins import object, str
 from pyload import PKGDIR
 
 from ... import exc_logger
-from ..utils.utils import chmod
+from ..utils import chmod
 
 # CONFIG_VERSION
 __version__ = 1

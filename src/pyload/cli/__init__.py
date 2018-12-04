@@ -22,7 +22,7 @@ from pyload.core.api import Destination
 from pyload.core.remote.thriftbackend.thrift_client import (ConnectionClosed,
                                                             NoConnection, NoSSL,
                                                             ThriftClient, WrongLogin)
-from pyload.core.utils.utils import decode, formatSize
+from pyload.core.utils import decode, formatSize
 from pyload.plugins.utils import lock
 
 from .addpackage import AddPackage

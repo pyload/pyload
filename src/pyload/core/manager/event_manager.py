@@ -4,7 +4,7 @@
 import time
 from builtins import object
 
-from ..utils.utils import uniqify
+from ..utils import uniqify
 
 
 class EventManager(object):

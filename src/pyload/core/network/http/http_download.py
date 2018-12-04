@@ -10,7 +10,7 @@ from logging import getLogger
 import pycurl
 from pyload.plugins.plugin import Abort
 
-from ...utils.utils import fs_encode
+from ...utils import fs_encode
 from .http_chunk import ChunkInfo, HTTPChunk
 from .http_request import BadHeader
 

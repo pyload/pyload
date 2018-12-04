@@ -22,7 +22,7 @@ from werkzeug.exceptions import HTTPException
 
 from pyload.core.network.http.http_request import (
     BAD_STATUS_CODES as BAD_HTTP_STATUS_CODES)
-from pyload.core.utils.utils import formatSize
+from pyload.core.utils import formatSize
 
 from .blueprints import api_blueprint, app_blueprint, cnl_blueprint, json_blueprint
 from .filters import date, path_make_absolute, path_make_relative, quotepath, truncate

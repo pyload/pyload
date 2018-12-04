@@ -8,7 +8,7 @@ from re import search
 
 import pycurl
 
-from ...utils.utils import fs_encode
+from ...utils import fs_encode
 from .http_request import HTTPRequest
 
 

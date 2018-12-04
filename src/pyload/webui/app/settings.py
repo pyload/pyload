@@ -3,7 +3,7 @@
 import os
 from pyload import PKGDIR
 
-from pyload.core.utils.utils import random_string
+from pyload.core.utils import random_string
 
 
 class Config(object):

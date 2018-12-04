@@ -6,7 +6,7 @@ import shutil
 from builtins import object
 from threading import Lock
 
-from ..utils.utils import chmod, lock
+from ..utils import chmod, lock
 from .event_manager import AccountUpdateEvent
 
 # MANAGER VERSION
