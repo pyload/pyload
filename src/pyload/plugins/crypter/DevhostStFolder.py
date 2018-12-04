@@ -66,7 +66,7 @@ class DevhostStFolder(SimpleCrypter):
             self.pyfile.name = m.group(1)
 
         except Exception as exc:
-            self.log_debug(exc, trace=True)
+            self.log_debug(exc, exc_info=True)
             self.pyfile.name = self.info["pattern"]["USER"]
 
         try:

@@ -146,7 +146,7 @@ class MultiAccount(Account):
             self.log_warning(
                 self._("Error loading hoster list for user `{}`").format(self.user),
                 exc,
-                trace=True,
+                exc_info=self.pyload.debug,
             )
 
         finally:
@@ -265,7 +265,7 @@ class MultiAccount(Account):
                 break
 
             except Exception as exc:
-                self.log_warning(exc, self._("Waiting 1 minute and retry"), trace=True)
+                self.log_warning(exc, self._("Waiting 1 minute and retry"), exc_info=self.pyload.debug)
                 time.sleep(60)
 
         else:

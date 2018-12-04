@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 
 import re
-
+import base64
 
 from ..internal.simplehoster import SimpleHoster
 
@@ -55,7 +55,7 @@ class BezvadataCz(SimpleHoster):
             self.retry_captcha()
 
         inputs["captcha"] = self.captcha.decrypt_image(
-            m.group(1).decode("base64"), input_type="png"
+            base64.b64decode(m.group(1)), input_type="png"
         )
 
         #: Download url

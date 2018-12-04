@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import base64
 import binascii
 import re
 from builtins import filter
@@ -310,11 +311,11 @@ class ShareLinksBiz(Crypter):
         params = res.split(";;")
 
         #: Get jk
-        strlist = list(params[1].decode("base64"))
+        strlist = list(base64.b64decode(params[1]))
         jk = "".join(strlist[::-1])
 
         #: Get crypted
-        strlist = list(params[2].decode("base64"))
+        strlist = list(base64.b64decode(params[2]))
         crypted = "".join(strlist[::-1])
 
         #: Log and return
@@ -328,7 +329,7 @@ class ShareLinksBiz(Crypter):
 
         #: Decrypt
         obj = Fernet(key)
-        text = obj.decrypt(crypted.decode("base64"))
+        text = obj.decrypt(base64.b64decode(crypted))
 
         #: Extract links
         text = text.replace("\x00", "").replace("\r", "")

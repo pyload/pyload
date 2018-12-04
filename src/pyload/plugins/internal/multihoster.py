@@ -40,9 +40,9 @@ class MultiHoster(SimpleHoster):
             "name"
         ]
 
-    def _log(self, level, plugintype, pluginname, messages):
-        messages = (self.PLUGIN_NAME,) + messages
-        return SimpleHoster._log(self, level, plugintype, pluginname, messages)
+    def _log(self, level, plugintype, pluginname, args, kwargs):
+        args = (self.PLUGIN_NAME,) + args
+        return SimpleHoster._log(self, level, plugintype, pluginname, args, kwargs)
 
     def setup(self):
         self.no_fallback = True

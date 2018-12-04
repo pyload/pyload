@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import base64
 import binascii
 import os
 import re
@@ -260,7 +261,7 @@ class RelinkUs(Crypter):
                     pack_links.extend(self._get_links(crypted, jk))
 
             except Exception:
-                self.log_debug("Unable to decrypt CNL2 links", trace=True)
+                self.log_debug("Unable to decrypt CNL2 links", exc_info=True)
 
         return pack_links
 
@@ -333,7 +334,7 @@ class RelinkUs(Crypter):
 
         #: Decrypt
         obj = Fernet(key)
-        text = obj.decrypt(crypted.decode("base64"))
+        text = obj.decrypt(base64.b64decode(crypted))
 
         #: Extract links
         text = text.replace("\x00", "").replace("\r", "")

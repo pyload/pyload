@@ -2,7 +2,7 @@
 # AUTHOR: RaNaN
 
 
-from functools import wraps
+from functools import wraps, partial
 from urllib.parse import urljoin, urlparse
 
 import flask
@@ -179,38 +179,35 @@ def apiver_check(func):
     return wrapper
 
 
-def login_required(_func=None, perm=None):
-    def decorator(func):
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            if flask.request.headers.get("X-Requested-With") == "XMLHttpRequest":
-                return "Forbidden", 403
+def login_required(func=None, perm=None):
+    if func is None:
+        return partial(login_required, perm)
+        
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        if flask.request.headers.get("X-Requested-With") == "XMLHttpRequest":
+            return "Forbidden", 403
 
-            s = flask.session
-            if s.get("name", None) and s.get("authenticated", False):
-                if perm:
-                    perms = parse_permissions(s)
-                    if perm not in perms or not perms[perm]:
-                        return flask.redirect(flask.url_for("nopermission"))
+        s = flask.session
+        if s.get("name", None) and s.get("authenticated", False):
+            if perm:
+                perms = parse_permissions(s)
+                if perm not in perms or not perms[perm]:
+                    return flask.redirect(flask.url_for("nopermission"))
+            return func(*args, **kwargs)
+
+        api = flask.current_app.config["PYLOAD_API"]
+        autologin = api.getConfigValue("webui", "autologin")
+        if autologin:  # TODO: check if localhost
+            users = api.getAllUserData()
+            if len(users) == 1:
+                info = next(iter(users.values()))
+                set_session(info)
                 return func(*args, **kwargs)
 
-            api = flask.current_app.config["PYLOAD_API"]
-            autologin = api.getConfigValue("webui", "autologin")
-            if autologin:  # TODO: check if localhost
-                users = api.getAllUserData()
-                if len(users) == 1:
-                    info = next(iter(users.values()))
-                    set_session(info)
-                    return func(*args, **kwargs)
+        return flask_login.login_url("app.login", flask.request.url)
 
-            return flask_login.login_url("app.login", flask.request.url)
-
-        return wrapper
-
-    if _func is None:
-        return decorator
-    else:
-        return decorator(_func)
+    return wrapper
 
 
 def toDict(obj):

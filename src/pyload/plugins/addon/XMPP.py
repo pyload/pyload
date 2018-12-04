@@ -192,7 +192,7 @@ class XMPP(IRC, pyxmpp2.client.Client):
                     messages.append(m)
 
             except Exception as exc:
-                self.log_error(exc, trace=True)
+                self.log_error(exc, exc_info=self.pyload.debug)
 
             return messages
 

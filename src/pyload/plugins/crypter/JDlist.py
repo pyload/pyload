@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import base64
+
 from ..internal.crypter import Crypter
 
 
@@ -28,4 +30,4 @@ class JDlist(Crypter):
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
     def decrypt(self, pyfile):
-        self.links.extend(self.info["pattern"]["LIST"].decode("base64").split(","))
+        self.links.extend(base64.b64decode(self.info["pattern"]["LIST"]).split(","))

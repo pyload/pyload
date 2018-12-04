@@ -4,7 +4,7 @@
 # Test links:
 #   http://filecrypt.cc/Container/64E039F859.html
 
-
+import base64
 import binascii
 import re
 import urllib.parse
@@ -349,7 +349,7 @@ class FilecryptCc(Crypter):
 
         #: Decrypt
         obj = Fernet(key)
-        text = obj.decrypt(crypted.decode("base64"))
+        text = obj.decrypt(base64.b64decode(crypted))
 
         #: Extract links
         text = text.replace("\x00", "").replace("\r", "")

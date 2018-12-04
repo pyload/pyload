@@ -31,9 +31,9 @@ class XFileSharingFolder(XFSCrypter):
     __license__ = "GPLv3"
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
-    def _log(self, level, plugintype, pluginname, messages):
-        messages = (self.PLUGIN_NAME,) + messages
-        return XFSCrypter._log(self, level, plugintype, pluginname, messages)
+    def _log(self, level, plugintype, pluginname, args, kwargs):
+        args = (self.PLUGIN_NAME,) + args
+        return XFSCrypter._log(self, level, plugintype, pluginname, args, kwargs)
 
     def init(self):
         self.__pattern__ = self.pyload.pluginManager.crypterPlugins[self.classname][

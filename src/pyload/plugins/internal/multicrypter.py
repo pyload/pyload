@@ -32,6 +32,6 @@ class MultiCrypter(SimpleCrypter):
             "name"
         ]
 
-    def _log(self, level, plugintype, pluginname, messages):
-        messages = (self.PLUGIN_NAME,) + messages
-        return SimpleCrypter._log(self, level, plugintype, pluginname, messages)
+    def _log(self, level, plugintype, pluginname, args, kwargs):
+        args = (self.PLUGIN_NAME,) + args
+        return SimpleCrypter._log(self, level, plugintype, pluginname, args, kwargs)

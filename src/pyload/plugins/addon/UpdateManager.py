@@ -433,7 +433,7 @@ class UpdateManager(Addon):
                         self.m.deactivateAddon(plugin_name)
 
                     except Exception as exc:
-                        self.log_debug(exc, trace=True)
+                        self.log_debug(exc, exc_info=True)
 
                 for filename in (py_filename, pyc_filename):
                     if not exists(filename):

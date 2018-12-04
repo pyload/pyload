@@ -2,6 +2,8 @@
 
 import binascii
 import re
+import base64
+
 from builtins import filter, zip
 
 import js2py
@@ -300,7 +302,7 @@ class LinkCryptWs(Crypter):
         except Exception:
             self.log_error(
                 self._("Unable to decrypt CNL links (JS Error) try to get over links"),
-                trace=True,
+                exc_info=self.pyload.debug,
             )
             return self.handle_web_links()
 
@@ -329,7 +331,7 @@ class LinkCryptWs(Crypter):
 
         #: Decrypt
         obj = Fernet(key)
-        text = obj.decrypt(crypted.decode("base64"))
+        text = obj.decrypt(base64.b64decode(crypted))
 
         #: Extract links
         text = text.replace("\x00", "").replace("\r", "")

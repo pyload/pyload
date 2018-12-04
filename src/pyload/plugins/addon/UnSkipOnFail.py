@@ -39,7 +39,7 @@ class UnSkipOnFail(Addon):
             #: It creates a temporary PyFile object using
             #: "link" data, changes its status, and tells
             #: The pyload.files-manager to save its data.
-            pyfile_new = self._create_pyFile(link)
+            pyfile_new = self._create_pyfile(link)
 
             pyfile_new.setCustomStatus(self._("unskipped"), "queued")
 
@@ -77,7 +77,7 @@ class UnSkipOnFail(Addon):
                 if link.name == pyfile.name and link.fid != pyfile.id:
                     return link
 
-    def _create_pyFile(self, pylink):
+    def _create_pyfile(self, pylink):
         return PyFile(
             self.pyload.files,
             pylink.fid,

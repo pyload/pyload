@@ -64,25 +64,20 @@ class Account(Plugin):
     def premium(self):
         return bool(self.get_data("premium"))
 
-    def _log(self, level, plugintype, pluginname, messages):
+    def _log(self, level, plugintype, pluginname, args, kwargs):
         log = getattr(self.pyload.log, level)
-        msg = " | ".join(decode(a).strip() for a in messages if a)
 
         #: Hide any user/password
-        try:
-            msg = msg.replace(self.user, self.user[:3] + "*******")
-        except Exception:
-            pass
-
-        try:
-            msg = msg.replace(self.info["login"]["password"], "**********")
-        except Exception:
-            pass
-
+        user = self.user
+        pw = self.info["login"]["password"]
+        hidden_user = "{0:*<{1}}".format(self.user[:3], 7)
+        hidden_pw = "*" * 10
+        args = (a.replace(user, hidden_user).replace(pw, hidden_pw) for a in args if a)
+        
         log(
-            "{plugintype} {pluginname}: {msg}".format(
-                plugintype=plugintype.upper(), pluginname=pluginname, msg=msg
-            )
+            "{plugintype} {pluginname}: ".format(
+                plugintype=plugintype.upper(), pluginname=pluginname
+            ), *args, **kwargs
         )
 
     def setup(self):

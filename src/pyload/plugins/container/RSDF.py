@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import binascii
 import re
+import base64
 
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
@@ -73,6 +74,6 @@ class RSDF(Container):
                     continue
                 cipher = Cipher(algorithms.AES(KEY), modes.CFB(iv), backend=backend)
                 decryptor = cipher.decryptor()
-                value = decryptor.update(link.decode("base64")) + decryptor.finalize()
+                value = decryptor.update(base64.b64decode(link) + decryptor.finalize()
                 link = value.replace("CCF: ", "")
                 self.links.append(link)

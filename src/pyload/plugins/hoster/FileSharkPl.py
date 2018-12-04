@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import re
 import urllib.parse
+import base64
 
 from ..internal.simplehoster import SimpleHoster
 
@@ -109,7 +110,7 @@ class FileSharkPl(SimpleHoster):
             self.retry(msg=self._("Captcha image not found"))
 
         inputs["form[captcha]"] = self.captcha.decrypt_image(
-            m.group(1).decode("base64"), input_type="jpeg"
+            base64.b64decode(m.group(1)), input_type="jpeg"
         )
         inputs["form[start]"] = ""
 

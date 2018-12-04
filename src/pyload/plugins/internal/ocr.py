@@ -30,10 +30,10 @@ class OCR(Plugin):
         self.pyfile = pyfile
         self.init()
 
-    def _log(self, level, plugintype, pluginname, messages):
-        messages = (self.__name__,) + messages
+    def _log(self, level, plugintype, pluginname, args, kwargs):
+        args = (self.__name__,) + args
         return self.pyfile.plugin._log(
-            level, plugintype, self.pyfile.plugin.__name__, messages
+            level, plugintype, self.pyfile.plugin.__name__, args, kwargs
         )
 
     def load_image(self, image):

@@ -29,9 +29,9 @@ class XFileSharing(XFSHoster):
 
     URL_REPLACEMENTS = [("/embed-", "/")]
 
-    def _log(self, level, plugintype, pluginname, messages):
-        messages = (self.PLUGIN_NAME,) + messages
-        return XFSHoster._log(self, level, plugintype, pluginname, messages)
+    def _log(self, level, plugintype, pluginname, args, kwargs):
+        args = (self.PLUGIN_NAME,) + args
+        return XFSHoster._log(self, level, plugintype, pluginname, args, kwargs)
 
     def init(self):
         self.__pattern__ = self.pyload.pluginManager.hosterPlugins[self.classname][

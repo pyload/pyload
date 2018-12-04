@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import re
 import time
+import base64
 
 from pyload.core.network.request_factory import getURL as get_url
 
@@ -98,7 +99,7 @@ class ShareonlineBiz(SimpleHoster):
         self.check_errors()
 
         res = self.handle_captcha()
-        self.link = res.decode("base64")
+        self.link = base64.b64decode(res)
 
         if not self.link.startswith("http://"):
             self.error(self._("Invalid url"))

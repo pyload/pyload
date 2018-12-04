@@ -344,11 +344,7 @@ class ConfigParser(object):
         """
         gets a value for a plugin.
         """
-        val = self.plugin[plugin][option]["value"]
-        try:
-            return str(val)
-        except Exception:
-            return val
+        return self.plugin[plugin][option]["value"]
 
     def setPlugin(self, plugin, option, value):
         """

@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+
+import base64
 import re
 import xml.dom.minidom
 
@@ -53,15 +55,11 @@ class DLC(Container):
         data += "=" * (-len(data) % 4)
 
         dlc_key = data[-88:]
-        dlc_data = data[:-88].decode("base64")
+        dlc_data = base64.b64decode(data[:-88])
         dlc_content = self.load(self.API_URL.format(dlc_key))
 
         try:
-            rc = (
-                re.search(r"<rc>(.+)</rc>", dlc_content, re.S)
-                .group(1)
-                .decode("base64")[:16]
-            )
+            rc = base64.b64decode(re.search(r"<rc>(.+)</rc>", dlc_content, re.S).group(1))[:16]
 
         except AttributeError:
             self.fail(self._("Container is corrupted"))
@@ -72,7 +70,7 @@ class DLC(Container):
         decryptor = cipher.decryptor()
         key = decryptor.update(rc) + decryptor.finalize()
 
-        self.data = Fernet(key).decrypt(dlc_data).decode("base64")
+        self.data = base64.b64decode(Fernet(key).decrypt(dlc_data))
 
         self.packages = [
             (name or pyfile.name, links, name or pyfile.name)
@@ -86,12 +84,12 @@ class DLC(Container):
 
     def parse_packages(self, startNode):
         return [
-            (decode(node.getAttribute("name")).decode("base64"), self.parse_links(node))
+            (base64.b64decode(decode(node.getAttribute("name"))), self.parse_links(node))
             for node in startNode.getElementsByTagName("package")
         ]
 
     def parse_links(self, startNode):
         return [
-            node.getElementsByTagName("url")[0].firstChild.data.decode("base64")
+            base64.b64decode(node.getElementsByTagName("url")[0].firstChild.data)
             for node in startNode.getElementsByTagName("file")
         ]

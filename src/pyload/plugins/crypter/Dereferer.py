@@ -35,9 +35,9 @@ class Dereferer(SimpleCrypter):
 
     DIRECT_LINK = False
 
-    def _log(self, level, plugintype, pluginname, messages):
-        messages = (self.PLUGIN_NAME,) + messages
-        return SimpleCrypter._log(self, level, plugintype, pluginname, messages)
+    def _log(self, level, plugintype, pluginname, args, kwargs):
+        args = (self.PLUGIN_NAME,) + args
+        return SimpleCrypter._log(self, level, plugintype, pluginname, args, kwargs)
 
     def init(self):
         self.__pattern__ = self.pyload.pluginManager.crypterPlugins[self.classname][

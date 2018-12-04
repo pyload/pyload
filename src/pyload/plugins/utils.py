@@ -24,7 +24,7 @@ import urllib.request
 import xml.sax.saxutils  # TODO: Remove in 0.6.x
 import zlib
 from builtins import map, object, str
-from functools import wraps
+from functools import wraps, partial
 from base64 import b85encode, b85decode
 
 from collections.abc import Sequence
@@ -212,20 +212,19 @@ class SimpleQueue(object):
 
 
 # NOTE: decorator
-def lock(decor_func=None, *decor_args, **decor_kwargs):
-    def decorator(func):
-        @wraps(func)
-        def wrapper(self, *args, **kwargs):
-            self.lock.acquire(*decor_args, **decor_kwargs)
-            try:
-                return func(self, *args, **kwargs)
-            finally:
-                self.lock.release()
-        return wrapper
-    if decor_func is None:
-        return decorator
-    else:
-        return decorator(decor_func)
+def lock(func=None, *decor_args, **decor_kwargs):
+    if func is None:
+        return partial(lock, *decor_args, **decor_kwargs)
+    
+    @wraps(func)
+    def wrapper(self, *args, **kwargs):
+        self.lock.acquire(*decor_args, **decor_kwargs)
+        try:
+            return func(self, *args, **kwargs)
+        finally:
+            self.lock.release()
+            
+    return wrapper
 
 
 def sign_string(message, pem_private, pem_passphrase="", sign_algo="SHA384"):

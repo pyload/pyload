@@ -103,28 +103,22 @@ class Base(Plugin):
         self.init_base()
         self.init()
 
-    def _log(self, level, plugintype, pluginname, messages):
+    def _log(self, level, plugintype, pluginname, args, kwargs):
         log = getattr(self.pyload.log, level)
-        msg = " | ".join(decode(a).strip() for a in messages if a)
 
         #: Hide any user/password
-        try:
-            msg = msg.replace(self.account.user, self.account.user[:3] + "*******")
-        except Exception:
-            pass
-
-        try:
-            msg = msg.replace(self.account.info["login"]["password"], "**********")
-        except Exception:
-            pass
-
+        user = self.account.user
+        pw = self.account.info["login"]["password"]
+        hidden_user = "{0:*<{1}}".format(self.account.user[:3], 7)
+        hidden_pw = "*" * 10
+        args = (a.replace(user, hidden_user).replace(pw, hidden_pw) for a in args if a)
+        
         log(
-            "{plugintype} {pluginname}[{id}]: {msg}".format(
+            "{plugintype} {pluginname}[{id}]: ".format(
                 plugintype=plugintype.upper(),
                 pluginname=pluginname,
-                id=self.pyfile.id,
-                msg=msg,
-            )
+                id=self.pyfile.id
+            ), *args, **kwargs
         )
 
     def init_base(self):

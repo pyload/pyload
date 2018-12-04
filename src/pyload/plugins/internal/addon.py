@@ -11,20 +11,25 @@ from functools import wraps
 def threaded(func):
     @wraps(func)
     def wrapper(self, *args, **kwargs):
-        self.pyload.adm.startThread(func, *args, **kwargs)
+        return self.pyload.adm.startThread(func, *args, **kwargs)
     return wrapper
     
     
+# NOTE: Performance penalty than original 'Expose' class decorator :(
 def expose(func):
     """
     Used for decoration to declare rpc services.
     """
     @wraps(func)
     def wrapper(self, *args, **kwargs):
-        self.pyload.adm.addRPC(func.__module__, func.__name__, func.__doc__)
+        if not wrapper._exposed:
+            self.pyload.adm.addRPC(func.__module__, func.__name__, func.__doc__)
+            wrapper._exposed = True
+        return func(self, *args, **kwargs)
+    wrapper._exposed = False
     return wrapper
     
-        
+    
 class Addon(Plugin):
     __name__ = "Addon"
     __type__ = "addon"  # TODO: Change to `addon` in 0.6.x
@@ -67,9 +72,9 @@ class Addon(Plugin):
         return self.config.get("enabled")
 
     # TODO: Remove in 0.6.x
-    def _log(self, level, plugintype, pluginname, messages):
+    def _log(self, level, plugintype, pluginname, args, kwargs):
         plugintype = "addon" if plugintype == "addon" else plugintype
-        return Plugin._log(self, level, plugintype, pluginname, messages)
+        return Plugin._log(self, level, plugintype, pluginname, args, kwargs)
 
     # TODO: Remove in 0.6.x
     def _init_events(self):

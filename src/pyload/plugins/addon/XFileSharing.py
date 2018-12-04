@@ -141,7 +141,7 @@ class XFileSharing(Addon):
                     klass = self.pyload.pluginManager.loadClass(type, p["name"])
 
                 except AttributeError as exc:
-                    self.log_debug(exc, trace=True)
+                    self.log_debug(exc, exc_info=True)
                     continue
 
                 if (

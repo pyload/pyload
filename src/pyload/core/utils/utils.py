@@ -32,7 +32,7 @@ def decode(value):
     decode string with utf if possible.
     """
     try:
-        return str.decode("utf-8", "replace")
+        return value.decode("utf-8", "replace")
     except Exception:
         return value
 

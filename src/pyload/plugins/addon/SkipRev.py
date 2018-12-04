@@ -27,7 +27,7 @@ class SkipRev(Addon):
     def _name(self, pyfile):
         return pyfile.pluginclass.get_info(pyfile.url)["name"]
 
-    def _create_pyFile(self, data):
+    def _create_pyfile(self, data):
         pylink = self.pyload.api._convertPyFile(data)
         return PyFile(
             self.pyload.files,
@@ -90,7 +90,7 @@ class SkipRev(Addon):
 
         for fid, fdata in pyfile.package().getChildren().items():
             if fdata["status"] == 4 and pyname.match(fdata["name"]):
-                pyfile_new = self._create_pyFile(fdata)
+                pyfile_new = self._create_pyfile(fdata)
 
                 if revtokeep > -1 or pyfile.name.endswith(".rev"):
                     pyfile_new.setStatus("queued")
