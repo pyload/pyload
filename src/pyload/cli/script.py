@@ -15,7 +15,7 @@ from pyload.core.remote.thriftbackend.thrift_client import (ConnectionClosed,
                                                             NoConnection, NoSSL,
                                                             ThriftClient, WrongLogin)
 
-from .cli import Cli
+from . import Cli
 from .printer import *
 
 
