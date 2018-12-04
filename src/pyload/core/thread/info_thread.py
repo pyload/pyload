@@ -88,7 +88,7 @@ class InfoThread(PluginThread):
                 try:
                     data = self.decryptContainer(name, url)
                 except Exception:
-                    self.pyload.log.warning("Could not decrypt container.", exc_info=self.pyload.debug)
+                    self.pyload.log.warning("Could not decrypt container.", exc_info=self.pyload.debug > 1, stack_info=self.pyload.debug > 2)
                     data = []
 
                 for url, plugin in data:
@@ -185,7 +185,7 @@ class InfoThread(PluginThread):
             self.pyload.log.warning(
                 self._("Info Fetching for {name} failed | {err}").format(
                     name=pluginname, err=exc
-                ), exc_info=self.pyload.debug
+                ), exc_info=self.pyload.debug > 1, stack_info=self.pyload.debug > 2
             )
 
             # generate default results
@@ -219,7 +219,7 @@ class InfoThread(PluginThread):
             self.pyload.log.debug("Got {} links.".format(len(data)))
 
         except Exception as exc:
-            self.pyload.log.debug("Pre decrypting error: {}".format(exc), exc_info=True)
+            self.pyload.log.debug("Pre decrypting error: {}".format(exc), exc_info=self.pyload.debug > 1, stack_info=self.pyload.debug > 2)
         finally:
             pyfile.release()
 

@@ -351,7 +351,7 @@ class HTTPRequest(object):
             self.log.debug("No Decoder foung for {}".format(encoding))
             
         except Exception:
-            self.log.debug("Error when decoding string from {}.".format(encoding), exc_info=True)
+            self.log.debug("Error when decoding string from {}.".format(encoding), exc_info=self.pyload.debug > 1, stack_info=self.pyload.debug > 2)
 
         return rep
 

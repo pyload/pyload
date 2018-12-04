@@ -19,7 +19,7 @@ def try_catch(func):
         try:
             return func(self, *args)
         except Exception as exc:
-            self.pyload.log.error(self._("Error executing addon: {}").format(exc), exc_info=self.pyload.debug)
+            self.pyload.log.error(self._("Error executing addon: {}").format(exc), exc_info=self.pyload.debug > 1, stack_info=self.pyload.debug > 2)
     return wrapper
 
 
@@ -120,7 +120,7 @@ class AddonManager(object):
 
             except Exception as exc:
                 self.pyload.log.warning(
-                    self._("Failed activating {}").format(pluginname), exc_info=self.pyload.debug
+                    self._("Failed activating {}").format(pluginname), exc_info=self.pyload.debug > 1, stack_info=self.pyload.debug > 2
                 )
 
         self.pyload.log.info(
@@ -316,5 +316,5 @@ class AddonManager(object):
                     self.pyload.log.warning(
                         "Error calling event handler {}: {}, {}, {}".format(
                             event, f, args, exc
-                        ), exc_info=self.pyload.debug
+                        ), exc_info=self.pyload.debug > 1, stack_info=self.pyload.debug > 2
                     )

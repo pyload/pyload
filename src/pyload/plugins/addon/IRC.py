@@ -203,7 +203,7 @@ class IRC(Thread, Notifier):
                 self.response(line, msg["origin"])
 
         except Exception as exc:
-            self.log_error(exc, exc_info=self.pyload.debug)
+            self.log_error(exc, exc_info=self.pyload.debug > 1, stack_info=self.pyload.debug > 2)
 
     def response(self, msg, origin=""):
         if origin == "":

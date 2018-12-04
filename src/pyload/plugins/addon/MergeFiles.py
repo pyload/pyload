@@ -70,7 +70,7 @@ class MergeFiles(Addon):
                         self.log_debug("Finished merging part", splitted_file)
 
                     except Exception as exc:
-                        self.log_error(exc, exc_info=self.pyload.debug)
+                        self.log_error(exc, exc_info=self.pyload.debug > 1, stack_info=self.pyload.debug > 2)
 
                     finally:
                         pyfile.setProgress(100)

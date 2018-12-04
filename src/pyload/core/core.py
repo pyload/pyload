@@ -16,12 +16,10 @@ from threading import Event
 
 
 class Restart(Exception):
-
     __slots__ = []
 
 
 class Exit(Exception):
-
     __slots__ = []
 
 
@@ -36,9 +34,10 @@ class Exit(Exception):
 #  improve external scripts
 class Core(object):
 
-    LOCALE_DOMAIN = "core"
-    DEFAULT_USERNAME = "admin"
-    DEFAULT_PASSWORD = "pyload"
+    _LOCALE_DOMAIN = "core"
+    _DEFAULT_USERNAME = "admin"
+    _DEFAULT_PASSWORD = "pyload"
+    _DEBUG_LEVEL_MAP = {'info': 1, 'trace': 2, 'stack': 3}
 
     @property
     def version(self):
@@ -62,7 +61,7 @@ class Core(object):
         self._do_restart = False
         self._do_exit = False
         self._ = lambda x: x
-        self._debug = False
+        self._debug = 0
         
         # if self.tmpdir not in sys.path:
         # sys.path.append(self.tmpdir)
@@ -94,7 +93,13 @@ class Core(object):
         os.makedirs(self.cachedir, exist_ok=True)
         
         self.config = ConfigParser(self.userdir)
-        self._debug = self.config.get("general", "debug_mode") if debug is None else bool(debug)
+        
+        if debug is None
+            if self.config.get("general", "debug_mode"):
+                debug_level = self.config.get("general", "debug_level")
+                self._debug = self._DEBUG_LEVEL_MAP[debug_level]
+        else:
+            self._debug = max(0, int(debug))
         
 
     def _init_log(self):
@@ -133,7 +138,7 @@ class Core(object):
         self.files = FileHandler(self)
         self.db.manager = self.files  #: ugly?
 
-        userpw = (self.DEFAULT_USERNAME, self.DEFAULT_PASSWORD)
+        userpw = (self._DEFAULT_USERNAME, self._DEFAULT_PASSWORD)
         # nousers = bool(self.db.listUsers())
         if restore or newdb:
             self.db.addUser(*userpw)
@@ -175,19 +180,19 @@ class Core(object):
                 group = self.config.get("permission", "group")
                 os.setgid(group[2])
             except Exception as exc:
-                self.log.warning(self._("Unable to change gid"), exc, exc_info=self.debug)
+                self.log.warning(self._("Unable to change gid"), exc, exc_info=self.debug > 1, stack_info=self.debug > 2)
 
         if change_user:
             try:
                 user = self.config.get("permission", "user")
                 os.setuid(user[2])
             except Exception as exc:
-                self.log.warning(self._("Unable to change uid"), exc, exc_info=self.debug)
+                self.log.warning(self._("Unable to change uid"), exc, exc_info=self.debug > 1, stack_info=self.debug > 2)
 
     def set_language(self, lang):
         localedir = os.path.join(PKGDIR, "locale")
         languages = (locale.locale_alias[lang.lower()].split("_", 1)[0],)
-        self._set_language(self.LOCALE_DOMAIN, localedir, languages)
+        self._set_language(self._LOCALE_DOMAIN, localedir, languages)
 
     def _set_language(self, *args, **kwargs):
         trans = gettext.translation(*args, **kwargs)
@@ -207,8 +212,8 @@ class Core(object):
         try:
             self.set_language(lang)
         except IOError as exc:
-            self.log.error(exc, exc_info=self.debug)
-            self._set_language(self.LOCALE_DOMAIN, fallback=True)
+            self.log.error(exc, exc_info=self.debug > 1, stack_info=self.debug > 2)
+            self._set_language(self._LOCALE_DOMAIN, fallback=True)
 
     # def _setup_niceness(self):
     # niceness = self.config.get('general', 'niceness')
@@ -256,7 +261,7 @@ class Core(object):
                 if f.read().strip():
                     self.api.addPackage("links.txt", [link_file], 1)
         except Exception as exc:
-            self.log.debug(exc, exc_info=True)
+            self.log.debug(exc, exc_info=self.pyload.debug > 1, stack_info=self.pyload.debug > 2)
 
     def start(self):
         try:
@@ -309,7 +314,7 @@ class Core(object):
             self.terminate()
 
         except Exception as exc:
-            self.log.critical(exc, exc_info=True)
+            self.log.critical(exc, exc_info=True, stack_info=self.pyload.debug > 2)
             self.terminate()
 
     # TODO: remove here

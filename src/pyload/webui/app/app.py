@@ -108,7 +108,7 @@ def setup_error_handlers(app):
             else:
                 error_message = str(error.data) or "Server Error"
             
-        app.logger.debug("Error {}: {}".format(error_code, error_status), error_message, exc_info=True)
+        app.logger.debug("Error {}: {}".format(error_code, error_status), error_message, exc_info=self.pyload.debug > 1, stack_info=self.pyload.debug > 2)
         
         return (
             render_template("error.html", {"messages": [error_status, error_message]}, [pre_processor]),

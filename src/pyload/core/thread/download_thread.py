@@ -191,7 +191,7 @@ class DownloadThread(PluginThread):
                 self.pyload.log.warning(
                     self._("Download failed: {name} | {msg}").format(
                         name=pyfile.name, msg=exc
-                    ), exc_info=self.pyload.debug
+                    ), exc_info=self.pyload.debug > 1, stack_info=self.pyload.debug > 2
                 )
                 pyfile.error = str(exc)
 

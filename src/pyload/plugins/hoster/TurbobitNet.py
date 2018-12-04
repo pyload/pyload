@@ -166,7 +166,7 @@ class TurbobitNet(SimpleHoster):
                     return "http://turbobit.net{}".format(out.strip())
 
             except Exception as exc:
-                self.log_error(exc, exc_info=self.pyload.debug)
+                self.log_error(exc, exc_info=self.pyload.debug > 1, stack_info=self.pyload.debug > 2)
         else:
             if self.retries >= 2:
                 #: Retry with updated js

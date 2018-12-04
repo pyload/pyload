@@ -84,5 +84,5 @@ class UploadedTo(Account):
                 self.fail_login(m.group(1))
 
         except Exception as exc:
-            self.log_error(exc, exc_info=self.pyload.debug)
+            self.log_error(exc, exc_info=self.pyload.debug > 1, stack_info=self.pyload.debug > 2)
             self.fail_login(exc)
