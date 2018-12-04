@@ -77,8 +77,8 @@ class Plugin(object):
     def _log(self, level, plugintype, pluginname, args, kwargs):
         log = getattr(self.pyload.log, level)
         log(
-            "{plugintype} {pluginname}: %s".format(
-                plugintype=plugintype.upper(), pluginname=pluginname
+            "{plugintype} {pluginname}: {msg}".format(
+                plugintype=plugintype.upper(), pluginname=pluginname, msg="%s" * len(args)
             ), *args, **kwargs
         )
 

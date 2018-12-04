@@ -75,8 +75,8 @@ class Account(Plugin):
         args = (a.replace(user, hidden_user).replace(pw, hidden_pw) for a in args if a)
         
         log(
-            "{plugintype} {pluginname}: %s".format(
-                plugintype=plugintype.upper(), pluginname=pluginname
+            "{plugintype} {pluginname}: {msg}".format(
+                plugintype=plugintype.upper(), pluginname=pluginname, msg="%s" * len(args)
             ), *args, **kwargs
         )
 

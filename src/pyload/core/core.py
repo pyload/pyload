@@ -94,7 +94,7 @@ class Core(object):
         
         self.config = ConfigParser(self.userdir)
         
-        if debug is None
+        if debug is None:
             if self.config.get("general", "debug_mode"):
                 debug_level = self.config.get("general", "debug_level")
                 self._debug = self._DEBUG_LEVEL_MAP[debug_level]
@@ -261,7 +261,7 @@ class Core(object):
                 if f.read().strip():
                     self.api.addPackage("links.txt", [link_file], 1)
         except Exception as exc:
-            self.log.debug(exc, exc_info=self.pyload.debug > 1, stack_info=self.pyload.debug > 2)
+            self.log.debug(exc, exc_info=self.debug > 1, stack_info=self.debug > 2)
 
     def start(self):
         try:
@@ -314,7 +314,7 @@ class Core(object):
             self.terminate()
 
         except Exception as exc:
-            self.log.critical(exc, exc_info=True, stack_info=self.pyload.debug > 2)
+            self.log.critical(exc, exc_info=True, stack_info=self.debug > 2)
             self.terminate()
 
     # TODO: remove here

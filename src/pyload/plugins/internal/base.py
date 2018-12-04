@@ -114,10 +114,11 @@ class Base(Plugin):
         args = (a.replace(user, hidden_user).replace(pw, hidden_pw) for a in args if a)
         
         log(
-            "{plugintype} {pluginname}[{id}]: %s".format(
+            "{plugintype} {pluginname}[{id}]: {msg}".format(
                 plugintype=plugintype.upper(),
                 pluginname=pluginname,
-                id=self.pyfile.id
+                id=self.pyfile.id,
+                msg="%s" * len(args)
             ), *args, **kwargs
         )
 
