@@ -19,7 +19,7 @@ import time
 from pyload import PKGDIR
 from .. import __version__ as PYLOAD_VERSION
 from .. import __version_info__ as PYLOAD_VERSION_INFO
-from .utils.utils import formatSize, freeSpace
+from .utils.utils import formatSize, freeSpace, invertmap
 from threading import Event
 
 
@@ -118,7 +118,8 @@ class Core(object):
         
         self.log.info("*** Welcome to pyLoad v{} ***".format(self.version))
         if self.debug:
-            self.log.warning(">>> DEBUG MODE ON AIR <<<")
+            debug_level = invertmap(_DEBUG_LEVEL_MAP)[self.debug]
+            self.log.warning(">>> DEBUG {} MODE ON AIR <<<".format(debug_level))
 
     def _init_network(self):
         from .network.request_factory import RequestFactory

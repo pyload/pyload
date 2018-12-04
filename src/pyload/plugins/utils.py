@@ -325,7 +325,7 @@ def fsbsize(path):
     else:
         return os.statvfs(path).f_frsize
 
-
+    
 def uniqify(seq):
     """
     Remove duplicates from list preserving order Originally by Dave Kirby.
