@@ -54,12 +54,11 @@ class LogFactory(object):
         return logger
 
     def _init_logger(self, logger):
-        debug = self.pyload.config.get("general", "debug_mode")
         console = self.pyload.config.get("log", "console")
         syslog = self.pyload.config.get("log", "syslog")
         filelog = self.pyload.config.get("log", "filelog")
 
-        level = logging.DEBUG if debug else logging.INFO
+        level = logging.DEBUG if self.pyload.debug else logging.INFO
         logger.setLevel(level)
 
         if console:

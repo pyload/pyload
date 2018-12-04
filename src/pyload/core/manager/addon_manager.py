@@ -19,7 +19,7 @@ def try_catch(func):
         try:
             return func(self, *args)
         except Exception as exc:
-            self.log.error(self._("Error executing addons: {}").format(exc), exc_info=self.pyload.debug)
+            self.pyload.log.error(self._("Error executing addon: {}").format(exc), exc_info=self.pyload.debug)
     return wrapper
 
 

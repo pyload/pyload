@@ -22,8 +22,10 @@ class Browser(object):
         self.dl = None
 
     def renewHTTPRequest(self):
-        if hasattr(self, "http"):
+        try:
             self.http.close()
+        except Exception:
+            pass
         self.http = HTTPRequest(self.cj, self.options)
 
     def setLastURL(self, val):

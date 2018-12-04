@@ -56,14 +56,16 @@ class Core(object):
     def debug(self):
         return self._debug
 
-    # TODO: `restore` should reset config as well
+    # NOTE: should `restore` reset config as well?
     def __init__(self, userdir, cachedir, debug=None, restore=False):
+        self.log.info("*** Welcome to pyLoad v{0} ***".format(self.version))
+            
         self._running = Event()
         self._do_restart = False
         self._do_exit = False
         self._ = lambda x: x
-        self._debug = self.config.get("log", "debug") if debug is None else debug
-
+        self._debug = False
+        
         self.userdir = os.path.abspath(userdir)
         self.cachedir = os.path.abspath(cachedir)
         os.makedirs(self.userdir, exist_ok=True)
@@ -75,22 +77,26 @@ class Core(object):
         # if refresh:
         # cleanpy(PACKDIR)
 
-        # TODO: remove here
-        self.lastClientConnected = 0
-
-        self._init_config()
+        self._init_config(debug)
         self._init_log()
         self._init_database(restore)
-        self._init_managers()
         self._init_network()
         self._init_api()
+        self._init_managers()
         self._init_webserver()
 
         atexit.register(self.terminate)
+        
+        # TODO: Remove...
+        self.lastClientConnected = 0
 
-    def _init_config(self):
+
+    def _init_config(self, debug):
         from .config.config_parser import ConfigParser
         self.config = ConfigParser(self.userdir)
+        self._debug = self.config.get("general", "debug_mode") if debug is None else bool(debug)
+        if self.debug:
+            self.log.warning(">>> DEBUG MODE ON <<<")
 
     def _init_log(self):
         from .log_factory import LogFactory
@@ -100,7 +106,7 @@ class Core(object):
     def _init_network(self):
         from .network.request_factory import RequestFactory
         self.req = self.requestFactory = RequestFactory(self)
-        builtins.REQUESTS = self.requestFactory
+        builtins.REQUESTS = self.requestFactory  # TODO: Remove...
 
     def _init_api(self):
         from .api import Api
@@ -128,7 +134,7 @@ class Core(object):
             self.db.addUser(*userpw)
         if restore:
             self.log.warning(
-                self._("Restored default login credentials `{}|{}`").format(*userpw)
+                self._("Successfully restored default login credentials `{}|{}`").format(*userpw)
             )
 
     def _init_managers(self):
@@ -213,11 +219,11 @@ class Core(object):
         # NOTE: Remove in 0.6
         storage_folder = os.path.abspath(storage_folder)
         
-        self.log.info(self._("Storage folder: {0}".format(storage_folder)))
+        self.log.info(self._("Storage directory: {0}".format(storage_folder)))
         os.makedirs(storage_folder, exist_ok=True)
         
         avail_space = formatSize(freeSpace(storage_folder))
-        self.log.info(self._("Available storage space: {0}").format(avail_space))
+        self.log.info(self._("Storage free space: {0}").format(avail_space))
 
         self.config.save()  #: save so config files gets filled
 
@@ -248,9 +254,6 @@ class Core(object):
             self.log.debug(exc, exc_info=True)
 
     def start(self):
-        self.log.info("Welcome to pyLoad v{0}".format(self.version))
-        if self.debug:
-            self.log.warning("*** DEBUG MODE ***")
         try:
             self.log.debug("Starting pyLoad...")
             # self.evm.fire('pyload:starting')

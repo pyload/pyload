@@ -219,7 +219,7 @@ class InfoThread(PluginThread):
             self.pyload.log.debug("Got {} links.".format(len(data)))
 
         except Exception as exc:
-            self.pyload.log.debug("Pre decrypting error: {}".format(exc), exc_info=True
+            self.pyload.log.debug("Pre decrypting error: {}".format(exc), exc_info=True)
         finally:
             pyfile.release()
 

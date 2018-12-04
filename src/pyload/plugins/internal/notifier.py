@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import time
 
-from ..utils import encode, isiterable
+from ..utils import encode, is_sequence
 from .addon import Addon, expose
 
 
@@ -113,10 +113,10 @@ class Notifier(Addon):
     @expose
     def notify(self, event, msg=None, key=None):
         key = key or self.get_key()
-        if not key or isiterable(key) and not all(key):
+        if not key or is_sequence(key) and not all(key):
             return
 
-        if isiterable(msg):
+        if is_sequence(msg):
             msg = " | ".join(encode(a).strip() for a in msg if a)
         else:
             msg = encode(msg)

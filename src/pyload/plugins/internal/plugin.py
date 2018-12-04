@@ -73,46 +73,36 @@ class Plugin(object):
         """
         pass
 
-    def _log(self, level, plugintype, pluginname, messages):
+    # TODO: Rewrite to use unique logger from logfactory
+    def _log(self, level, plugintype, pluginname, args, kwargs):
         log = getattr(self.pyload.log, level)
-        msg = " | ".join(decode(a).strip() for a in messages if a)
         log(
-            "{plugintype} {pluginname}: {msg}".format(
-                plugintype=plugintype.upper(), pluginname=pluginname, msg=msg
-            )
+            "{plugintype} {pluginname}: ".format(
+                plugintype=plugintype.upper(), pluginname=pluginname
+            ), *args, **kwargs
         )
 
     def log_debug(self, *args, **kwargs):
-        self._log("debug", self.__type__, self.__name__, args)
-        if self.pyload.debug and kwargs.get("trace"):
-            self._print_exc()
+        self._log("debug", self.__type__, self.__name__, args, kwargs)
 
     def log_info(self, *args, **kwargs):
-        self._log("info", self.__type__, self.__name__, args)
-        if self.pyload.debug and kwargs.get("trace"):
-            self._print_exc()
+        self._log("info", self.__type__, self.__name__, args, kwargs)
 
     def log_warning(self, *args, **kwargs):
-        self._log("warning", self.__type__, self.__name__, args)
-        if self.pyload.debug and kwargs.get("trace"):
-            self._print_exc()
+        self._log("warning", self.__type__, self.__name__, args, kwargs)
 
     def log_error(self, *args, **kwargs):
-        self._log("error", self.__type__, self.__name__, args)
-        if self.pyload.debug and kwargs.get("trace", True):
-            self._print_exc()
+        self._log("error", self.__type__, self.__name__, args, kwargs)
 
     def log_critical(self, *args, **kwargs):
-        self._log("critical", self.__type__, self.__name__, args)
-        if kwargs.get("trace", True):
-            self._print_exc()
+        self._log("critical", self.__type__, self.__name__, args, kwargs)
 
-    def _print_exc(self):
-        frame = inspect.currentframe()
-        try:
-            print(format_exc(frame.f_back))
-        finally:
-            del frame
+    # def _print_exc(self):
+        # frame = inspect.currentframe()
+        # try:
+            # print(format_exc(frame.f_back))
+        # finally:
+            # del frame
 
     def remove(self, path, trash=False):  # TODO: Change to `trash=True` in 0.6.x
         try:

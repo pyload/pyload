@@ -25,6 +25,9 @@ import xml.sax.saxutils  # TODO: Remove in 0.6.x
 import zlib
 from builtins import map, object, str
 from functools import wraps
+from base64 import b85encode, b85decode
+
+from collections.abc import Sequence
 
 import send2trash
 
@@ -86,7 +89,9 @@ class DB(object):
         """
         Saves a value persistently to the database.
         """
-        entry = json.dumps(value, ensure_ascii=False).encode("base64")
+        
+        # NOTE: value must not be <bytes> otherwise BOOM! and moreover our sqlite db always return strings as <str>
+        entry = b85encode(json.dumps(value, ensure_ascii=False).encode()).decode()
         self.plugin.pyload.db.setStorage(self.plugin.classname, key, entry)
 
     def retrieve(self, key=None, default=None):
@@ -99,12 +104,12 @@ class DB(object):
             if entry is None:
                 value = default
             else:
-                value = json.loads(entry.decode("base64"))
+                value = json.loads(b85decode(entry).decode())
         else:
             if not entry:
                 value = default
             else:
-                value = {k: json.loads(v.decode("base64")) for k, v in value.items()}
+                value = {k: json.loads(b85decode(v).decode()) for k, v in value.items()}
 
         return value
 
@@ -113,9 +118,6 @@ class DB(object):
         Delete entry in db.
         """
         self.plugin.pyload.db.delStorage(self.plugin.classname, key)
-
-
-
 
 
 class Periodical(object):
@@ -138,6 +140,7 @@ class Periodical(object):
         return True
 
     def start(self, interval=None, threaded=False, delay=0):
+        print("TYPE", type(interval), interval)  # TEST
         if interval is not None and self.set_interval(interval) is False:
             return False
         else:
@@ -356,6 +359,10 @@ def isiterable(obj):
     Check if object is iterable (string excluded)
     """
     return hasattr(obj, "__iter__")
+    
+    
+def is_sequence(obj):
+    return isinstance(obj, Sequence) and not isinstance(obj, (str, bytes, bytearray))
 
 
 def get_console_encoding(enc):

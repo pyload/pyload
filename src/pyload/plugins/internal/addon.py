@@ -2,7 +2,7 @@
 
 import threading
 
-from ..utils import Periodical, isiterable
+from ..utils import Periodical, is_sequence
 from .plugin import Plugin
 
 from functools import wraps
@@ -90,11 +90,10 @@ class Addon(Plugin):
     def init_events(self):
         if self.event_map:
             for event, funcs in self.event_map.items():
-                if isiterable(funcs):
-                    for f in funcs:
-                        self.m.addEvent(event, getattr(self, f))
-                else:
-                    self.m.addEvent(event, getattr(self, funcs))
+                if not is_sequence(funcs):
+                    funcs = [funcs]
+                for fn in funcs:
+                    self.m.addEvent(event, getattr(self, fn))
 
             #: Delete for various reasons
             self.event_map = None

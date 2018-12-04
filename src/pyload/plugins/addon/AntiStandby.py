@@ -55,6 +55,7 @@ class AntiStandby(Addon):
         display = not self.config.get("display")
 
         if hdd:
+            print("INTERVAL", type(self.config.get("interval")))
             self.periodical.start(self.config.get("interval"), threaded=True)
 
         if os.name == "nt":

@@ -3,7 +3,7 @@ import random
 import threading
 import time
 
-from ..utils import Periodical, compare_time, decode, isiterable, lock, parse_size
+from ..utils import Periodical, compare_time, decode, is_sequence, lock, parse_size
 from .plugin import Plugin, Skip
 
 
@@ -182,7 +182,7 @@ class Account(Plugin):
         self.sync()
 
         def clear(x):
-            return {} if isinstance(x, dict) else [] if isiterable(x) else None
+            return {} if isinstance(x, dict) else [] if is_sequence(x) else None
 
         self.info["data"] = {k: clear(v) for k, v in self.info["data"].items()}
         self.info["data"]["options"] = {"limitDL": ["0"]}
