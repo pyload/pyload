@@ -550,7 +550,7 @@ class Downloader(Hoster):
             dl_n = int(m.group(2) or "0")
 
             while True:
-                name = "%s (%s)%s" % (m.group(1), dl_n + 1, ext)
+                name = "{} ({}){}".format(m.group(1), dl_n + 1, ext)
                 dl_file = os.path.join(dl_folder, pack_folder, name)
                 if not exists(dl_file):
                     break

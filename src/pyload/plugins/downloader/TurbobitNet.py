@@ -45,7 +45,7 @@ class TurbobitNet(SimpleDownloader):
 
 
     def handle_free(self, pyfile):
-        self.free_url = "http://turbobit.net/download/free/%s" % self.info['pattern']['ID']
+        self.free_url = "http://turbobit.net/download/free/{}".format(self.info['pattern']['ID'])
         self.data = self.load(self.free_url)
 
         m = re.search(self.LIMIT_WAIT_PATTERN, self.data)
@@ -62,16 +62,16 @@ class TurbobitNet(SimpleDownloader):
         self.wait(wait_time)
 
         self.req.http.c.setopt(pycurl.HTTPHEADER, ["X-Requested-With: XMLHttpRequest"])
-        self.data = self.load("http://turbobit.net/download/getLinkTimeout/%s" % self.info['pattern']['ID'],
+        self.data = self.load("http://turbobit.net/download/getLinkTimeout/{}".format(self.info['pattern']['ID']),
                               ref=self.free_url)
         self.req.http.c.setopt(pycurl.HTTPHEADER, ["X-Requested-With:"])
 
         if "/download/started/" in self.data:
-            self.data = self.load("http://turbobit.net/download/started/%s" % self.info['pattern']['ID'])
+            self.data = self.load("http://turbobit.net/download/started/{}".format(self.info['pattern']['ID']))
 
             m = re.search(self.LINK_FREE_PATTERN, self.data)
             if m is not None:
-                self.link = "http://turbobit.net%s" % m.group(1)
+                self.link = "http://turbobit.net{}".format(m.group(1))
 
     def solve_captcha(self):
         action, inputs = self.parse_html_form("action='#'")

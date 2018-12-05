@@ -70,7 +70,7 @@ class Account(Plugin):
         #: Hide any user/password
         user = self.user
         pw = self.info["login"]["password"]
-        hidden_user = "{0:*<{1}}".format(self.user[:3], 7)
+        hidden_user = "{:*<{}}".format(self.user[:3], 7)
         hidden_pw = "*" * 10
         args = (a.replace(user, hidden_user).replace(pw, hidden_pw) for a in args if a)
 

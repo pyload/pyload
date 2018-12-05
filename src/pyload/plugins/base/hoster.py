@@ -109,7 +109,7 @@ class Hoster(Plugin):
         #: Hide any user/password
         user = self.account.user
         pw = self.account.info["login"]["password"]
-        hidden_user = "{0:*<{1}}".format(self.account.user[:3], 7)
+        hidden_user = "{:*<{}}".format(self.account.user[:3], 7)
         hidden_pw = "*" * 10
         args = (a.replace(user, hidden_user).replace(pw, hidden_pw) for a in args if a)
 
