@@ -2,24 +2,30 @@
 <h2 align="center"></h2>
 <h6 align="right">Development branch 0.5.x</h6>
 
-Requires **Python 3.6** and good luck.
+Requires **Python 3.6** (or later) and good luck.
 
 Install:
 
-    pip install .[all]
+    pip install pyload-dev[all]
 
 > **Note:**
-> On Windows `pycurl` installation fails sometimes (the unlucky part).
+> Remove the `[all]` keyword to install just the mandatory dependencies of pyLoad.
 
-Run:
+If the installation fails due `pycurl` (the unlucky part), you have to install it separately before.
 
-    pyLoad
+Visit http://pycurl.io/docs/latest/install.html to learn how to install the appropriate PycURL package for your system.
+You can found [HERE](https://www.lfd.uci.edu/~gohlke/pythonlibs/#pycurl) the latest unofficial binary packages for Windows.
+
+Run (from terminal/command prompt):
+
+    pyload
 
 Help:
 
-    pyLoad -h
+    pyload -h
 
-The web user interface will be available at the url `http://localhost:8001`.
+The pyLoad web interface will be reachable pointing your browser to the url `http://localhost:8001`.
+Default username is `admin`, default password is `pyload`.
 
 
 -------------------------

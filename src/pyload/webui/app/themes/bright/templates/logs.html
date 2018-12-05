@@ -9,7 +9,7 @@
 {% block content %}
 <div style="clear: both;"></div>
 
-<div class="logpaginator"><a href="{{ url_for('app.logs', item=1) }}"><span class="glyphicon glyphicon-fast-backward"></span></a>  <a href="{{ "/logs/"|iprev|string }}"><span class="glyphicon glyphicon-step-backward"></span></a>  <a href="{{ "/logs/"|inext|string }}"><span class="glyphicon glyphicon-step-forward"></span></a> <a href="{{ url_for('app.logs') }}"><span class="glyphicon glyphicon-fast-forward"></span></a></div>
+<div class="logpaginator"><a href="{{ url_for('app.logs', page=1) }}"><span class="glyphicon glyphicon-fast-backward"></span></a>  <a href="{{ url_for('app.logs', page={{ iprev|int }}) }}"><span class="glyphicon glyphicon-step-backward"></span></a>  <a href="{{ url_for('app.logs', page={{ inext|int }}) }}"><span class="glyphicon glyphicon-step-forward"></span></a> <a href="{{ url_for('app.logs') }}"><span class="glyphicon glyphicon-fast-forward"></span></a></div>
 <div class="logperpage">
     <form id="logform1" action="" method="POST">
         <label for="reversed">Reversed:</label>

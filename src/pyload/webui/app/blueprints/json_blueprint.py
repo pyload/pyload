@@ -269,9 +269,8 @@ def load_config(category, section):
 
         option["value"] = decode(option["value"])
 
-    return render_template(
-        "settings_item.html", {"skey": section, "section": conf[section]}
-    )
+    context = {"skey": section, "section": conf[section]}
+    return render_template("settings_item.html", context)
 
 
 @bp.route(r"/save_config/<category>", methods=["POST"], endpoint="save_config")

@@ -15,8 +15,8 @@ class XFileSharing(Addon):
 
     __config__ = [
         ("enabled", "bool", "Activated", False),
-        ("use_hoster_list", "bool", "Load listed hosters only", False),
-        ("use_crypter_list", "bool", "Load listed crypters only", False),
+        ("use_downloader_list", "bool", "Load listed hosters only", False),
+        ("use_decrypter_list", "bool", "Load listed crypters only", False),
         ("use_builtin_list", "bool", "Load built-in plugin list", True),
         ("hoster_list", "str", "Hoster list (comma separated)", ""),
         ("crypter_list", "str", "Crypter list (comma separated)", ""),

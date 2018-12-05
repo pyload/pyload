@@ -22,7 +22,7 @@ class UpdateManager(Addon):
     __pyload_version__ = "0.5"
 
     __config__ = [
-        ("enabled", "bool", "Activated", True),
+        ("enabled", "bool", "Activated", False),
         ("checkinterval", "int", "Check interval in hours", 6),
         ("autorestart", "bool", "Auto-restart pyLoad when required", True),
         ("checkonstart", "bool", "Check for updates on startup", True),

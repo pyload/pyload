@@ -21,11 +21,11 @@ except VersionConflict:
     sys.exit(1)
 
 
+# TODO: Check if works!
 class BuildLocale(Command):
     """
     Build translations
     """
-
     description = "build locales"
     user_options = []
 

@@ -17,7 +17,7 @@ class ExternalScripts(Addon):
     __pyload_version__ = "0.5"
 
     __config__ = [
-        ("enabled", "bool", "Activated", True),
+        ("enabled", "bool", "Activated", False),
         ("unlock", "bool", "Execute script concurrently", False),
     ]
 

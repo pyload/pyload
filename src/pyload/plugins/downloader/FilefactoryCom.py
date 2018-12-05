@@ -3,7 +3,7 @@ import re
 
 from pyload.core.network.request_factory import getURL as get_url
 
-from ..base.base import parse_fileInfo
+from ..base.hoster import parse_fileInfo
 from ..base.simple_downloader import SimpleDownloader
 
 

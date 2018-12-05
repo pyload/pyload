@@ -85,7 +85,7 @@ def home():
             link["information"] = "{} KiB @ {} KiB/s".format(
                 link["size"] - link["bleft"], link["speed"]
             )
-
+            
     return render_template("home.html", {"res": res}, [pre_processor])
 
 
@@ -97,9 +97,8 @@ def queue():
 
     queue.sort(key=operator.attrgetter("order"))
 
-    return render_template(
-        "queue.html", {"content": queue, "target": 1}, [pre_processor]
-    )
+    context = {"content": queue, "target": 1}
+    return render_template("queue.html", context, [pre_processor])
 
 
 @bp.route(r"/collector", endpoint="collector")
@@ -110,9 +109,8 @@ def collector():
 
     queue.sort(key=operator.attrgetter("order"))
 
-    return render_template(
-        "queue.html", {"content": queue, "target": 0}, [pre_processor]
-    )
+    context = {"content": queue, "target": 0}
+    return render_template("queue.html", context, [pre_processor])
 
 
 @bp.route(r"/downloads", endpoint="downloads")
@@ -218,12 +216,13 @@ def settings():
             }
         )
 
+    context = {
+        "conf": {"plugin": plugin_menu, "general": conf_menu, "accs": accs},
+        "types": api.getAccountTypes(),
+    }
     return render_template(
         "settings.html",
-        {
-            "conf": {"plugin": plugin_menu, "general": conf_menu, "accs": accs},
-            "types": api.getAccountTypes(),
-        },
+        context,
         [pre_processor],
     )
 
@@ -313,25 +312,22 @@ def filemanager(path):
         files.append(data)
 
     files = sorted(files, key=operator.itemgetter("type", "sort"))
-
-    return render_template(
-        "pathchooser.html",
-        {
-            "cwd": cwd,
-            "files": files,
-            "parentdir": parentdir,
-            "type": browse_for,
-            "oldfile": oldfile,
-            "absolute": abs,
-        },
-        [],
-    )
+    
+    context = {
+        "cwd": cwd,
+        "files": files,
+        "parentdir": parentdir,
+        "type": browse_for,
+        "oldfile": oldfile,
+        "absolute": abs,
+    }
+    return render_template("pathchooser.html", context)
 
 
 @bp.route(r"/logs", methods=["GET", "POST"], endpoint="logs")
-@bp.route(r"/logs/<item>", methods=["GET", "POST"], endpoint="logs")
+@bp.route(r"/logs/<page>", methods=["GET", "POST"], endpoint="logs")
 # @login_required("LOGS")
-def logs(item=-1):
+def logs(page=-1):
     s = flask.session
     api = flask.current_app.config["PYLOAD_API"]
 
@@ -364,22 +360,23 @@ def logs(item=-1):
 
         s.modified = True
 
-    try:
-        item = int(item)
-    except Exception:
-        pass
+    # TEST DISABLED
+    # try:
+        # page = int(page)
+    # except Exception:
+        # pass
 
     log = api.getLog()
     if not perpage:
-        item = 0
+        page = 0
 
-    if item < 1 or not isinstance(item, int):
-        item = (
+    if page < 1 or not isinstance(page, int):
+        page = (
             1 if len(log) - perpage + 1 < 1 or perpage == 0 else len(log) - perpage + 1
         )
 
     if isinstance(fro, datetime.datetime):  #: we will search for datetime.datetime
-        item = -1
+        page = -1
 
     data = []
     counter = 0
@@ -387,7 +384,7 @@ def logs(item=-1):
     for l in log:
         counter += 1
 
-        if counter >= item:
+        if counter >= page:
             try:
                 date, time, level, message = l.decode("utf-8", "ignore").split(" ", 3)
                 dtime = datetime.datetime.strptime(
@@ -399,9 +396,9 @@ def logs(item=-1):
                 time = " "
                 level = "?"
                 message = l
-            if item == -1 and dtime is not None and fro <= dtime:
-                item = counter  #: found our datetime.datetime
-            if item >= 0:
+            if page == -1 and dtime is not None and fro <= dtime:
+                page = counter  #: found our datetime.datetime
+            if page >= 0:
                 data.append(
                     {
                         "line": counter,
@@ -420,20 +417,23 @@ def logs(item=-1):
 
     if fro is None:  #: still not set, empty log?
         fro = datetime.datetime.now()
+    
     if reversed:
         data.reverse()
+    
+    context = {
+        "warning": warning,
+        "log": data,
+        "from": fro.strftime("%Y-%m-%d %H:%M:%S"),
+        "reversed": reversed,
+        "perpage": perpage,
+        "perpage_p": sorted(perpage_p),
+        "iprev": 1 if page - perpage < 1 else page - perpage,
+        "inext": (page + perpage) if page + perpage < len(log) else page,
+    }
     return render_template(
         "logs.html",
-        {
-            "warning": warning,
-            "log": data,
-            "from": fro.strftime("%Y-%m-%d %H:%M:%S"),
-            "reversed": reversed,
-            "perpage": perpage,
-            "perpage_p": sorted(perpage_p),
-            "iprev": 1 if item - perpage < 1 else item - perpage,
-            "inext": (item + perpage) if item + perpage < len(log) else item,
-        },
+        context,
         [pre_processor],
     )
 
@@ -472,9 +472,8 @@ def admin():
 
             api.setUserPermission(name, user[name]["permission"], user[name]["role"])
 
-    return render_template(
-        "admin.html", {"users": user, "permlist": perms}, [pre_processor]
-    )
+    context = {"users": user, "permlist": perms}
+    return render_template("admin.html", context, [pre_processor])
 
 
 @bp.route(r"/setup")
@@ -490,7 +489,7 @@ def info():
     conf = api.getConfigDict()
     extra = os.uname() if hasattr(os, "uname") else tuple()
 
-    data = {
+    context = {
         "python": sys.version,
         "os": " ".join((os.name, sys.platform) + extra),
         "version": api.getServerVersion(),
@@ -502,5 +501,4 @@ def info():
         "webif": conf["webui"]["port"]["value"],
         "language": conf["general"]["language"]["value"],
     }
-
-    return render_template("info.html", data, [pre_processor])
+    return render_template("info.html", context, [pre_processor])

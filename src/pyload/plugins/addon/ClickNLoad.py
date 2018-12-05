@@ -22,7 +22,7 @@ class ClickNLoad(Addon):
     __pyload_version__ = "0.5"
 
     __config__ = [
-        ("enabled", "bool", "Activated", True),
+        ("enabled", "bool", "Activated", False),
         ("port", "int", "Port", 9666),
         ("extern", "bool", "Listen for external connections", True),
         ("dest", "queue;collector", "Add packages to", "collector"),
