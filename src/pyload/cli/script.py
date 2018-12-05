@@ -5,19 +5,15 @@
 import configparser
 import os
 import sys
-from pyload import DATADIR, PKGDIR
 from builtins import input
 from getopt import GetoptError, getopt
 from sys import exit
 
 import pyload.core.utils.pylgettext as gettext
-from pyload.core.remote.thriftbackend.thrift_client import (
-    ConnectionClosed,
-    NoConnection,
-    NoSSL,
-    ThriftClient,
-    WrongLogin,
-)
+from pyload import DATADIR, PKGDIR
+from pyload.core.remote.thriftbackend.thrift_client import (ConnectionClosed,
+                                                            NoConnection, NoSSL,
+                                                            ThriftClient, WrongLogin)
 
 from . import Cli
 from .printer import *

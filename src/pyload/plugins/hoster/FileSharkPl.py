@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
+import base64
 import re
 import urllib.parse
-import base64
 
 from ..internal.simplehoster import SimpleHoster
 

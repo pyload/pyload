@@ -10,7 +10,7 @@
 from builtins import object
 
 from thrift.protocol.TBase import TBase
-from thrift.Thrift import TMessageType, TProcessor, TType, TApplicationException
+from thrift.Thrift import TApplicationException, TMessageType, TProcessor, TType
 
 from .ttypes import *
 

@@ -5,7 +5,7 @@ from builtins import object
 
 import send2trash
 
-from ..internal.addon import Addon, threaded, expose
+from ..internal.addon import Addon, expose, threaded
 from ..internal.extractor import ArchiveError, CRCError, PasswordError
 from ..utils import encode, exists, safename, uniqify
 

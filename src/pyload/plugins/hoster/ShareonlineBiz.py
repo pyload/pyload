@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
+import base64
 import re
 import time
-import base64
 
 from pyload.core.network.request_factory import getURL as get_url
 

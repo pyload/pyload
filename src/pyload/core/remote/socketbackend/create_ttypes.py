@@ -4,6 +4,7 @@
 import inspect
 import os
 import sys
+
 from pyload import PKGDIR
 
 from ..thriftbackend.thriftgen import ttypes

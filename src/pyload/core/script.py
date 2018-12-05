@@ -7,6 +7,7 @@ import os
 import sys
 
 from pyload import DATADIR, TMPDIR
+
 from . import Core
 from .. import __version__
 

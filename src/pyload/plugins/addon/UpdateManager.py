@@ -6,9 +6,10 @@ import re
 import sys
 import time
 from builtins import zip
+
 from pyload import PKGDIR
 
-from ..internal.addon import Addon, threaded, expose
+from ..internal.addon import Addon, expose, threaded
 from ..utils import encode, exists
 
 

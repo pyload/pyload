@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import threading
+from functools import wraps
 
 from ..utils import Periodical, is_sequence
 from .plugin import Plugin
-
-from functools import wraps
 
 
 def threaded(func):

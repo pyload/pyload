@@ -6,12 +6,8 @@ from threading import RLock
 
 from ..datatype.pyfile import PyFile
 from ..datatype.pypackage import PyPackage
-from ..manager.event_manager import (
-    InsertEvent,
-    ReloadAllEvent,
-    RemoveEvent,
-    UpdateEvent,
-)
+from ..manager.event_manager import (InsertEvent, ReloadAllEvent, RemoveEvent,
+                                     UpdateEvent)
 from ..utils import formatSize, lock
 from .database_thread import DatabaseThread, style
 

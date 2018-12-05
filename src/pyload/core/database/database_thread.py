@@ -6,9 +6,9 @@ import os
 import shutil
 import sqlite3
 from builtins import object, range, str
+from contextlib import closing
 from queue import Queue
 from threading import Event, Thread
-from contextlib import closing
 
 from ... import exc_logger
 

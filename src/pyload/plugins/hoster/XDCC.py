@@ -10,10 +10,10 @@ import threading
 import time
 from builtins import object, range, str
 
+from ..internal.addon import threaded
 from ..internal.hoster import Hoster
 from ..plugin import Abort
 from ..utils import encode, lock
-from ..internal.addon import threaded
 
 
 class IRC(object):

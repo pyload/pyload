@@ -7,8 +7,9 @@ import urllib.parse
 import urllib.request
 from builtins import range
 
-import pycurl
 from PIL import Image
+
+import pycurl
 from pyload.core.network.request_factory import getRequest as get_request
 
 from ..internal.addon import Addon, threaded

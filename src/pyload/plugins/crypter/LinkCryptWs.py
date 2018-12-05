@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 
+import base64
 import binascii
 import re
-import base64
-
 from builtins import filter, zip
 
 import js2py

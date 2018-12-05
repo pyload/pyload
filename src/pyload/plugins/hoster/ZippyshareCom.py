@@ -6,7 +6,6 @@ import urllib.parse
 import urllib.request
 
 import js2py
-
 from bs4 import BeautifulSoup
 
 from ..captcha.ReCaptcha import ReCaptcha

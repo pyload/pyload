@@ -2,7 +2,7 @@
 # AUTHOR: RaNaN
 
 
-from functools import wraps, partial
+from functools import partial, wraps
 from urllib.parse import urljoin, urlparse
 
 import flask

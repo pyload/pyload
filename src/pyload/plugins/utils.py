@@ -23,11 +23,10 @@ import urllib.parse
 import urllib.request
 import xml.sax.saxutils  # TODO: Remove in 0.6.x
 import zlib
+from base64 import b85decode, b85encode
 from builtins import map, object, str
-from functools import wraps, partial
-from base64 import b85encode, b85decode
-
 from collections.abc import Sequence
+from functools import partial, wraps
 
 import send2trash
 
