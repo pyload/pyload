@@ -24,8 +24,8 @@ from ..utils import exists, isexecutable, renice, replace_patterns, which
 
 class BIGHTTPRequest(HTTPRequest):
     """
-    Overcome HTTPRequest's load() size limit to allow loading very big web
-    pages by overrding HTTPRequest's write() function.
+    Overcome HTTPRequest's load() size limit to allow loading very big web pages by
+    overrding HTTPRequest's write() function.
     """
 
     # TODO: Add 'limit' parameter to HTTPRequest in v0.6.x

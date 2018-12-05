@@ -32,7 +32,7 @@ class Handler(object):
 
     def renderBody(self, line):
         """
-        gets the line where to render output and should return the line number
-        below its content.
+        gets the line where to render output and should return the line number below its
+        content.
         """
         return line + 1

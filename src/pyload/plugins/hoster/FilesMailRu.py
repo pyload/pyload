@@ -49,8 +49,8 @@ class FilesMailRu(Hoster):
         """
         You have to wait some seconds.
 
-        Otherwise you will get a 40Byte HTML Page instead of the file
-        you expected
+        Otherwise you will get a 40Byte HTML Page instead of the file you
+        expected
         """
         self.wait(10)
         return True

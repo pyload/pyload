@@ -51,7 +51,8 @@ def _daemon(core_args):
 
 
 def _parse_args(cmd_args):
-    """Parse command line parameters
+    """
+    Parse command line parameters.
 
     Args:
       cmd_args ([str]): command line parameters as list of strings
@@ -106,7 +107,7 @@ def run(core_args, daemon=False):
 
 def main(cmd_args=sys.argv[1:]):
     """
-    Entry point for console_scripts
+    Entry point for console_scripts.
     """
     args = _parse_args(cmd_args)
     core_args = (args.userdir, args.cachedir, args.debug, args.restore)

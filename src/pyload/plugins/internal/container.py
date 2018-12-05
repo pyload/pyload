@@ -54,8 +54,8 @@ class Container(Crypter):
 
     def _make_tmpfile(self):
         """
-        Loads container to disk if its stored remotely and overwrite url, or
-        check existent on several places at disk.
+        Loads container to disk if its stored remotely and overwrite url, or check
+        existent on several places at disk.
         """
         remote = bool(urllib.parse.urlparse(self.pyfile.url).netloc)
 

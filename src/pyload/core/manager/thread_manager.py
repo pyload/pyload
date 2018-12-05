@@ -126,8 +126,7 @@ class ThreadManager(object):
 
     def run(self):
         """
-        run all task which have to be done (this is for repetivive call by
-        core)
+        run all task which have to be done (this is for repetivive call by core)
         """
         try:
             self.tryReconnect()

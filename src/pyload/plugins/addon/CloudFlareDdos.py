@@ -250,8 +250,8 @@ class CloudFlareDdos(Addon):
 
     def _find_owner_plugin(self):
         """
-        Walk the callstack until we find SimpleHoster or SimpleCrypter class
-        Dirty but works.
+        Walk the callstack until we find SimpleHoster or SimpleCrypter class Dirty but
+        works.
         """
         f = frame = inspect.currentframe()
         try:

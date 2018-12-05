@@ -86,8 +86,8 @@ class Account(Plugin):
 
     def setup(self):
         """
-        Setup for enviroment and other things, called before logging (possibly
-        more than one time)
+        Setup for enviroment and other things, called before logging (possibly more than
+        one time)
         """
         pass
 
@@ -96,8 +96,7 @@ class Account(Plugin):
 
     def signin(self, user, password, data):
         """
-        Login into account, the cookies will be saved so user can be
-        recognized.
+        Login into account, the cookies will be saved so user can be recognized.
         """
         pass
 
@@ -190,8 +189,8 @@ class Account(Plugin):
 
     def get_info(self, refresh=True):
         """
-        Retrieve account infos for an user, do **not** overwrite this method!
-        just use it to retrieve infos in hoster plugins. see `grab_info`
+        Retrieve account infos for an user, do **not** overwrite this method! just use
+        it to retrieve infos in hoster plugins. see `grab_info`
 
         :param user: username
         :param relogin: reloads cached account information
@@ -245,8 +244,8 @@ class Account(Plugin):
 
     def grab_info(self, user, password, data):
         """
-        This should be overwritten in account plugin and retrieving account
-        information for user.
+        This should be overwritten in account plugin and retrieving account information
+        for user.
 
         :param user:
         :param req: `Request` instance

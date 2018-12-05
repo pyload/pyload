@@ -96,8 +96,7 @@ class PyFile(object):
     @lock
     def hasPlugin(self):
         """
-        Thread safe way to determine this file has initialized plugin
-        attribute.
+        Thread safe way to determine this file has initialized plugin attribute.
 
         :return:
         """
@@ -203,8 +202,7 @@ class PyFile(object):
 
     def finishIfDone(self):
         """
-        set status to finish and release file if every thread is finished with
-        it.
+        set status to finish and release file if every thread is finished with it.
         """
 
         if self.id in self.m.pyload.threadManager.processingIds():

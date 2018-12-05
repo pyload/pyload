@@ -222,8 +222,8 @@ class Addon(Plugin):
 
     def captcha_task(self, task):
         """
-        New captcha task for the plugin, it MUST set the handler and timeout or
-        will be ignored.
+        New captcha task for the plugin, it MUST set the handler and timeout or will be
+        ignored.
         """
         pass
 

@@ -113,8 +113,8 @@ class XMPP(IRC, pyxmpp2.client.Client):
 
     def stream_state_changed(self, state, arg):
         """
-        This one is called when the state of stream connecting the component to
-        a server changes.
+        This one is called when the state of stream connecting the component to a server
+        changes.
 
         This will usually be used to let the user know what is going on.
         """
@@ -133,8 +133,8 @@ class XMPP(IRC, pyxmpp2.client.Client):
         """
         Return list of (message_type, message_handler) tuples.
 
-        The handlers returned will be called when matching message is
-        received in a client session.
+        The handlers returned will be called when matching message is received in
+        a client session.
         """
         return [("normal", self.message)]
 
@@ -237,8 +237,8 @@ class VersionHandler(object):
     """
     Provides handler for a version query.
 
-    This class will answer version query and announce
-    'jabber:iq:version' namespace in the client's disco#info results.
+    This class will answer version query and announce 'jabber:iq:version'
+    namespace in the client's disco#info results.
     """
 
     pyxmpp2.interface.implements(
@@ -253,22 +253,21 @@ class VersionHandler(object):
 
     def get_features(self):
         """
-        Return namespace which should the client include in its reply to a
-        disco#info query.
+        Return namespace which should the client include in its reply to a disco#info
+        query.
         """
         return ["jabber:iq:version"]
 
     def get_iq_get_handlers(self):
         """
-        Return list of tuples (element_name, namespace, handler) describing
-        handlers of <iq type='get'/> stanzas.
+        Return list of tuples (element_name, namespace, handler) describing handlers of
+        <iq type='get'/> stanzas.
         """
         return [("query", "jabber:iq:version", self.get_version)]
 
     def get_iq_set_handlers(self):
         """
-        Return empty list, as this class provides no <iq type='set'/> stanza
-        handler.
+        Return empty list, as this class provides no <iq type='set'/> stanza handler.
         """
         return []
 
@@ -276,9 +275,9 @@ class VersionHandler(object):
         """
         Handler for jabber:iq:version queries.
 
-        jabber:iq:version queries are not supported directly by PyXMPP,
-        so the XML node is accessed directly through the libxml2 API.
-        This should be used very carefully!
+        jabber:iq:version queries are not supported directly by PyXMPP, so the
+        XML node is accessed directly through the libxml2 API. This should be
+        used very carefully!
         """
         iq = iq.make_result_response()
         q = iq.new_query("jabber:iq:version")

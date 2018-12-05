@@ -52,8 +52,7 @@ class Crypter(Base):
 
     def decrypt(self, pyfile):
         """
-        The "main" method of every crypter plugin, you **have to** overwrite
-        it.
+        The "main" method of every crypter plugin, you **have to** overwrite it.
         """
         raise NotImplementedError
 

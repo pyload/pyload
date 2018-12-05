@@ -103,10 +103,14 @@ class App(object):
 
     @classmethod
     def _new_error_handler(cls, app):
-        """Register error handlers"""
+        """
+        Register error handlers.
+        """
 
         def handle_error(error):
-            """Render error template"""
+            """
+            Render error template.
+            """
             assert isinstance(error, HTTPException)
 
             messages = [error.description]

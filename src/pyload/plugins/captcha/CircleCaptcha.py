@@ -226,8 +226,8 @@ class CircleCaptcha(OCR):
 
     def verify_circle_new(self, im, pix, c):
         """
-        This is the MAIN function to recognize the circle returns: 1 -> Found
-        closed circle 0 -> Found open circle.
+        This is the MAIN function to recognize the circle returns: 1 -> Found closed
+        circle 0 -> Found open circle.
 
         -1 -> Not found circle
         -2 -> Found black position then leave position
@@ -303,8 +303,8 @@ class CircleCaptcha(OCR):
 
     def verify_circle(self, im, pix, c):
         """
-        This is the MAIN function to recognize the circle returns: 1 -> Found
-        closed circle 0 -> Found open circle.
+        This is the MAIN function to recognize the circle returns: 1 -> Found closed
+        circle 0 -> Found open circle.
 
         -1 -> Not found circle
         -2 -> Found black position then leave position

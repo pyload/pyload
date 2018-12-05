@@ -324,8 +324,7 @@ class HTTPDownload(object):
 
     def findChunk(self, handle):
         """
-        linear search to find a chunk (should be ok since chunk size is usually
-        low)
+        linear search to find a chunk (should be ok since chunk size is usually low)
         """
         for chunk in self.chunks:
             if chunk.c == handle:

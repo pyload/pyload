@@ -188,16 +188,16 @@ class MegaCrypto(object):
 
         def digest(self):
             """
-            Return the **binary** (non-printable) CBC-MAC of the message that
-            has been authenticated so far.
+            Return the **binary** (non-printable) CBC-MAC of the message that has been
+            authenticated so far.
             """
             d = MegaCrypto.str_to_a32(self.hash)
             return (d[0] ^ d[1], d[2] ^ d[3])
 
         def hexdigest(self):
             """
-            Return the **printable** CBC-MAC of the message that has been
-            authenticated so far.
+            Return the **printable** CBC-MAC of the message that has been authenticated
+            so far.
             """
             return "".join(
                 "{:2x}".format(ord(x)) for x in MegaCrypto.a32_to_str(self.digest())
@@ -411,12 +411,12 @@ class MegaCoNz(Hoster):
 
     def check_exists(self, name):
         """
-        Because of Mega downloads a temporary encrypted file with the extension
-        of '.crypted', pyLoad cannot correctly detect if the file exists before
+        Because of Mega downloads a temporary encrypted file with the extension of
+        '.crypted', pyLoad cannot correctly detect if the file exists before
         downloading. This function corrects this.
 
-        Raises Skip() if file exists and 'skip_existing' configuration
-        option is set to True.
+        Raises Skip() if file exists and 'skip_existing' configuration option is
+        set to True.
         """
         if self.pyload.config.get("download", "skip_existing"):
             download_folder = self.pyload.config.get("general", "download_folder")

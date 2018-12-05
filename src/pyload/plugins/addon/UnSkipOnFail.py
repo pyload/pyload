@@ -53,12 +53,11 @@ class UnSkipOnFail(Addon):
         """
         Search all packages for duplicate links to "pyfile".
 
-        Duplicates are links that would overwrite "pyfile". To test on
-        duplicity the package-folder and link-name of twolinks are
-        compared (link.name). So this method returns a list of all links
-        with equal package-folders and filenames as "pyfile", but except
-        the data for "pyfile" iotselöf. It does MOT check the link's
-        status.
+        Duplicates are links that would overwrite "pyfile". To test on duplicity
+        the package-folder and link-name of twolinks are compared (link.name). So
+        this method returns a list of all links with equal package-folders and
+        filenames as "pyfile", but except the data for "pyfile" iotselöf. It does
+        MOT check the link's status.
         """
         for pinfo in self.pyload.api.getQueue():
             #: Check if package-folder equals pyfile's package folder

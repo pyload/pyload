@@ -265,7 +265,7 @@ def run():
 
 def main():
     """
-    Entry point for console_scripts
+    Entry point for console_scripts.
     """
     # args = parse_args(sys.argv[1:])
     run()

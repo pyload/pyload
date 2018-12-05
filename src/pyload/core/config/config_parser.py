@@ -226,8 +226,7 @@ class ConfigParser(object):
 
     def updateValues(self, config, dest):
         """
-        sets the config values from a parsed config file to values in
-        destination.
+        sets the config values from a parsed config file to values in destination.
         """
 
         for section in config.keys():

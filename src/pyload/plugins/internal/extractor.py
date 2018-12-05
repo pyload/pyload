@@ -152,8 +152,8 @@ class Extractor(Plugin):
 
     def verify(self, password=None):
         """
-        Testing with Extractors built-in method Raise error if password is
-        needed, integrity is questionable or else.
+        Testing with Extractors built-in method Raise error if password is needed,
+        integrity is questionable or else.
         """
         pass
 

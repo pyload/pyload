@@ -18,8 +18,8 @@ from .database_thread import DatabaseThread, style
 
 class FileHandler(object):
     """
-    Handles all request made to obtain information, modify status or other
-    request for links or packages.
+    Handles all request made to obtain information, modify status or other request for
+    links or packages.
     """
 
     def __init__(self, core):
@@ -430,8 +430,8 @@ class FileHandler(object):
 
     def checkAllLinksProcessed(self, fid):
         """
-        checks if all files was processed and pyload would idle now, needs fid
-        which will be ignored when counting.
+        checks if all files was processed and pyload would idle now, needs fid which
+        will be ignored when counting.
         """
 
         # reset count so statistic will update (this is called when dl was processed)
@@ -802,8 +802,7 @@ class FileMethods(object):
     @style.queue
     def getAllPackages(self, q):
         """
-        return information about packages in queue q (only useful in get all
-        data)
+        return information about packages in queue q (only useful in get all data)
 
         q0 queue
         q1 collector
@@ -1016,8 +1015,8 @@ class FileMethods(object):
     @style.queue
     def getJob(self, occ):
         """
-        return pyfile ids, which are suitable for download and dont use a
-        occupied plugin.
+        return pyfile ids, which are suitable for download and dont use a occupied
+        plugin.
         """
 
         # TODO: improve this hardcoded method

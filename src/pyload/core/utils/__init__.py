@@ -20,7 +20,7 @@ from html.entities import name2codepoint
 
 def invertmap(obj):
     """
-    Invert mapping object preserving type and ordering
+    Invert mapping object preserving type and ordering.
     """
     return obj.__class__(map(reversed, obj.items()))
 

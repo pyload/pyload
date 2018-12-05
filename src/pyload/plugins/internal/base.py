@@ -140,8 +140,8 @@ class Base(Plugin):
 
     def setup(self):
         """
-        Setup for enviroment and other things, called before downloading
-        (possibly more than one time)
+        Setup for enviroment and other things, called before downloading (possibly more
+        than one time)
         """
         pass
 
@@ -450,8 +450,7 @@ class Base(Plugin):
     # TODO: Recheck in 0.6.x
     def temp_offline(self, msg=""):
         """
-        Fail and indicates file ist temporary offline, the core may take
-        consequences.
+        Fail and indicates file ist temporary offline, the core may take consequences.
         """
         self.fail("temp. offline")
 

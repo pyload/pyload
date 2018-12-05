@@ -243,8 +243,8 @@ class Plugin(Base):
 
     def setup(self):
         """
-        setup for enviroment and other things, called before downloading
-        (possibly more than one time)
+        setup for enviroment and other things, called before downloading (possibly more
+        than one time)
         """
         pass
 
@@ -338,8 +338,7 @@ class Plugin(Base):
 
     def tempOffline(self):
         """
-        fail and indicates file ist temporary offline, the core may take
-        consequences.
+        fail and indicates file ist temporary offline, the core may take consequences.
         """
         raise Fail("temp. offline")
 
@@ -642,8 +641,7 @@ class Plugin(Base):
         self, rules, api_size=0, max_size=50000, delete=True, read_size=0
     ):
         """
-        checks the content of the last downloaded file, re match is saved to
-        `lastCheck`
+        checks the content of the last downloaded file, re match is saved to `lastCheck`
 
         :param rules: dict with names and rules to match (compiled regexp or strings)
         :param api_size: expected file size

@@ -214,8 +214,7 @@ class Api(Iface):
     @permission(PERMS.STATUS)
     def pauseServer(self):
         """
-        Pause server: Tt wont start any new downloads, but nothing gets
-        aborted.
+        Pause server: Tt wont start any new downloads, but nothing gets aborted.
         """
         self.pyload.threadManager.pause = True
 
@@ -416,8 +415,8 @@ class Api(Iface):
     @permission(PERMS.ADD)
     def parseURLs(self, html=None, url=None):
         """
-        Parses html content or any arbitaty text for links and returns result
-        of `checkURLs`
+        Parses html content or any arbitaty text for links and returns result of
+        `checkURLs`
 
         :param html: html source
         :return:
@@ -543,8 +542,8 @@ class Api(Iface):
     @permission(PERMS.ADD)
     def checkAndAddPackages(self, links, dest=Destination.Queue):
         """
-        Checks online status, retrieves names, and will add packages.\ Because
-        of this packages are not added immediatly, only for internal use.
+        Checks online status, retrieves names, and will add packages.\ Because of this
+        packages are not added immediatly, only for internal use.
 
         :param links: list of urls
         :param dest: `Destination`
@@ -582,8 +581,8 @@ class Api(Iface):
     @permission(PERMS.LIST)
     def getPackageInfo(self, pid):
         """
-        Returns information about package, without detailed information about
-        containing files.
+        Returns information about package, without detailed information about containing
+        files.
 
         :param pid: package id
         :return: `PackageData` with .fid attribute
@@ -648,8 +647,8 @@ class Api(Iface):
     @permission(PERMS.LIST)
     def getQueue(self):
         """
-        Returns info about queue and packages, **not** about files, see
-        `getQueueData` \ or `getPackageData` instead.
+        Returns info about queue and packages, **not** about files, see `getQueueData` \
+        or `getPackageData` instead.
 
         :return: list of `PackageInfo`
         """
@@ -673,8 +672,8 @@ class Api(Iface):
     @permission(PERMS.LIST)
     def getQueueData(self):
         """
-        Return complete data about everything in queue, this is very expensive
-        use it sparely.\ See `getQueue` for alternative.
+        Return complete data about everything in queue, this is very expensive use it
+        sparely.\ See `getQueue` for alternative.
 
         :return: list of `PackageData`
         """
@@ -801,8 +800,8 @@ class Api(Iface):
     @permission(PERMS.MODIFY)
     def recheckPackage(self, pid):
         """
-        Proofes online status of all files in a package, also a default action
-        when package is added.
+        Proofes online status of all files in a package, also a default action when
+        package is added.
 
         :param pid:
         :return:
@@ -1123,8 +1122,8 @@ class Api(Iface):
     @permission(PERMS.ALL)
     def login(self, username, password):
         """
-        Login into pyLoad, this **must** be called when using rpc before any
-        methods can be used.
+        Login into pyLoad, this **must** be called when using rpc before any methods can
+        be used.
 
         :param username:
         :param password:
@@ -1253,8 +1252,7 @@ class Api(Iface):
     @permission(PERMS.STATUS)
     def getAllInfo(self):
         """
-        Returns all information stored by addon plugins. Values are always
-        strings.
+        Returns all information stored by addon plugins. Values are always strings.
 
         :return: {"plugin": {"name": value } }
         """

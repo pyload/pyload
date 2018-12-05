@@ -56,8 +56,7 @@ class ImgurCom(SimpleCrypter):
 
     def get_ids_from_json(self):
         """
-        Check the embedded JSON and if needed the external JSON for more
-        images.
+        Check the embedded JSON and if needed the external JSON for more images.
         """
 
         # Greedy re should match the closing bracket of json assuming JSON data
@@ -142,8 +141,8 @@ class ImgurCom(SimpleCrypter):
 
     def get_links(self):
         """
-        Extract embedded links from HTML // then check if there are further
-        images which will be lazy-loaded.
+        Extract embedded links from HTML // then check if there are further images which
+        will be lazy-loaded.
         """
 
         def f(url):

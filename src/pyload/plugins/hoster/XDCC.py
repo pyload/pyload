@@ -63,8 +63,7 @@ class IRC(object):
 
     def _parse_irc_msg(self, line):
         """
-        Breaks a message from an IRC server into its origin, command, and
-        arguments.
+        Breaks a message from an IRC server into its origin, command, and arguments.
         """
         origin = ""
         if not line:
