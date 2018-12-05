@@ -20,7 +20,7 @@ def try_catch(func):
             return func(self, *args)
         except Exception as exc:
             self.pyload.log.error(
-                self._("Error executing addon: {}").format(exc),
+                exc,
                 exc_info=self.pyload.debug > 1,
                 stack_info=self.pyload.debug > 2,
             )

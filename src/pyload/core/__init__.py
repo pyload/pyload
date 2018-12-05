@@ -116,7 +116,7 @@ class Core(object):
             "pyload"
         )  # NOTE: forced debug mode from console not working
 
-        self.log.info("*** Welcome to pyLoad v{} ***".format(self.version))
+        self.log.info("*** Welcome to pyLoad {} ***".format(self.version))
         if self.debug:
             self.log.warning(">>> DEBUG MODE ON AIR <<<")
 
