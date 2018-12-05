@@ -13,11 +13,11 @@
     {% endif %}
 
     {% if type == 'folder' %} {# browsing for folder #}
-      var abspath = "{{ url_for('app.filemanager', path={{ cwd|path_make_absolute|quotepath|replace('\\', '\\\\') }}) }}";
-      var relpath = "{{ url_for('app.filemanager', path={{ cwd|path_make_relative|quotepath|replace('\\', '\\\\') }}) }}";
+      var abspath = "{{ url_for('app.filemanager', path=cwd|path_make_absolute|quotepath|replace('\\', '\\\\')) }}";
+      var relpath = "{{ url_for('app.filemanager', path=cwd|path_make_relative|quotepath|replace('\\', '\\\\')) }}";
     {% else %} {# browsing for file #}
-      var abspath = "{{ url_for('app.filemanager', path={{ oldfile|default(cwd, True)|path_make_absolute|quotepath|replace('\\', '\\\\')}}) }}";
-      var relpath = "{{ url_for('app.filemanager', path={{ oldfile|default(cwd, True)|path_make_relative|quotepath|replace('\\', '\\\\')}}) }}";
+      var abspath = "{{ url_for('app.filemanager', path=oldfile|default(cwd, True)|path_make_absolute|quotepath|replace('\\', '\\\\')) }}";
+      var relpath = "{{ url_for('app.filemanager', path=oldfile|default(cwd, True)|path_make_relative|quotepath|replace('\\', '\\\\')) }}";
     {% endif %}
     document.addEventListener("readystatechange", function(event) {
       if (this.readyState === "complete") {
@@ -63,8 +63,8 @@
     {
         cwd = fullpath;
         {% if type == "file" %} {# browsing for file #}
-          abspath = "{{ url_for('app.filemanager', path={{ cwd|path_make_absolute|quotepath|replace('\\', '\\\\') }}) }}" + name;
-          relpath = "{{ url_for('app.filemanager', path={{ cwd|path_make_relative|quotepath|replace('\\', '\\\\')}}) }}" + name;
+          abspath = "{{ url_for('app.filemanager', path=cwd|path_make_absolute|quotepath|replace('\\', '\\\\')) }}" + name;
+          relpath = "{{ url_for('app.filemanager', path=cwd|path_make_relative|quotepath|replace('\\', '\\\\')) }}" + name;
         {% endif %}
         setValid();
     }
@@ -83,7 +83,7 @@
     </thead>
     <tbody id="tbody">
     {% if parentdir %}
-        <tr class='tr-clickable' data-href="{% if type == 'folder' %}{{ url_for('app.filemanager', path={{ parentdir|quotepath }}) }}{% else %}{{ url_for('app.filemanager', path={{ parentdir|quotepath}}) }}{% endif %}">
+        <tr class='tr-clickable' data-href="{% if type == 'folder' %}{{ url_for('app.filemanager', path=parentdir|quotepath) }}{% else %}{{ url_for('app.filemanager', path=parentdir|quotepath) }}{% endif %}">
           <td title="{{_('Parent Directory')}}"><span class="parentdir">..</span></td>
           <td></td>
           <td colspan="2">&lt;DIR&gt;</td>
