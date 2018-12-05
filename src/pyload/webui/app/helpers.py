@@ -81,8 +81,8 @@ def pre_processor():
 
 def render_base(messages):
     return render_template("base.html", {"messages": messages}, [pre_processor])
-    
-    
+
+
 def render_error(messages):
     return render_template("error.html", {"messages": messages}, [pre_processor])
 
@@ -180,13 +180,14 @@ def apiver_check(func):
         if int(kwargs.get("apiver", core_apiver).strip("v")) < core_apiver:
             return "Obsolete API", 404
         return func(*args, **kwargs)
+
     return wrapper
 
 
 def login_required(func=None, perm=None):
     if func is None:
         return partial(login_required, perm)
-        
+
     @wraps(func)
     def wrapper(*args, **kwargs):
         if flask.request.headers.get("X-Requested-With") == "XMLHttpRequest":

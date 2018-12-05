@@ -31,7 +31,12 @@ class WebServer(threading.Thread):
         self.server = Server(bind_addr, PathInfoDispatcher({bind_path: self.app}))
 
         self.log = self.app.logger
-        self.server.error_log = lambda *args, **kwgs: self.log.log(kwgs.get("level", logging.ERROR), args[0], exc_info=self.develop, stack_info=self.develop)  #: use our custom logger in cheroot with few hacks
+        self.server.error_log = lambda *args, **kwgs: self.log.log(
+            kwgs.get("level", logging.ERROR),
+            args[0],
+            exc_info=self.develop,
+            stack_info=self.develop,
+        )  #: use our custom logger in cheroot with few hacks
 
         if not self.use_ssl:
             return

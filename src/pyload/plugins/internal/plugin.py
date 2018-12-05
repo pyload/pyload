@@ -10,8 +10,19 @@ from pyload.core.network.request_factory import getRequest as get_request
 # TODO: Remove in 0.6.x
 from ..plugin import Abort, Fail, Reconnect, Retry
 from ..plugin import SkipDownload as Skip
-from ..utils import (DB, Config, decode, encode, exists, fixurl, format_exc,
-                     html_unescape, parse_html_header, remove, set_cookies)
+from ..utils import (
+    DB,
+    Config,
+    decode,
+    encode,
+    exists,
+    fixurl,
+    format_exc,
+    html_unescape,
+    parse_html_header,
+    remove,
+    set_cookies,
+)
 
 if os.name != "nt":
     import grp
@@ -78,8 +89,12 @@ class Plugin(object):
         log = getattr(self.pyload.log, level)
         log(
             "{plugintype} {pluginname}: {msg}".format(
-                plugintype=plugintype.upper(), pluginname=pluginname, msg="%s" * len(args)
-            ), *args, **kwargs
+                plugintype=plugintype.upper(),
+                pluginname=pluginname,
+                msg="%s" * len(args),
+            ),
+            *args,
+            **kwargs,
         )
 
     def log_debug(self, *args, **kwargs):
@@ -98,11 +113,11 @@ class Plugin(object):
         self._log("critical", self.__type__, self.__name__, args, kwargs)
 
     # def _print_exc(self):
-        # frame = inspect.currentframe()
-        # try:
-            # print(format_exc(frame.f_back))
-        # finally:
-            # del frame
+    # frame = inspect.currentframe()
+    # try:
+    # print(format_exc(frame.f_back))
+    # finally:
+    # del frame
 
     def remove(self, path, trash=False):  # TODO: Change to `trash=True` in 0.6.x
         try:
@@ -414,9 +429,7 @@ class Plugin(object):
                 ),
             )
 
-            os.makedirs(
-                os.path.dirname(framefile), exist_ok=True
-            )
+            os.makedirs(os.path.dirname(framefile), exist_ok=True)
 
             with open(framefile, mode="w") as f:
                 f.write(self.last_html)

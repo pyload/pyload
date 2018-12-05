@@ -107,7 +107,12 @@ class PluginManager(object):
             try:
                 self.pyload.config.addPluginConfig(name, config, desc)
             except Exception as exc:
-                self.pyload.log.error("Invalid config in {}: {}".format(name, config), exc, exc_info=self.pyload.debug > 1, stack_info=self.pyload.debug > 2)
+                self.pyload.log.error(
+                    "Invalid config in {}: {}".format(name, config),
+                    exc,
+                    exc_info=self.pyload.debug > 1,
+                    stack_info=self.pyload.debug > 2,
+                )
 
         self.pyload.log.debug("created index of plugins")
 
@@ -341,7 +346,9 @@ class PluginManager(object):
                 return module
             except Exception as exc:
                 self.pyload.log.error(
-                    self._("Error importing {name}: {msg}").format(name=name, msg=exc), exc_info=self.pyload.debug > 1, stack_info=self.pyload.debug > 2
+                    self._("Error importing {name}: {msg}").format(name=name, msg=exc),
+                    exc_info=self.pyload.debug > 1,
+                    stack_info=self.pyload.debug > 2,
                 )
         else:
             self.pyload.log.debug("Plugin {} not found".format(name))
@@ -474,7 +481,11 @@ class PluginManager(object):
             try:
                 self.pyload.config.addPluginConfig(name, config, desc)
             except Exception:
-                self.pyload.log.error("Invalid config in {}: {}".format(name, config), exc_info=self.pyload.debug > 1, stack_info=self.pyload.debug > 2)
+                self.pyload.log.error(
+                    "Invalid config in {}: {}".format(name, config),
+                    exc_info=self.pyload.debug > 1,
+                    stack_info=self.pyload.debug > 2,
+                )
 
         if "account" in as_dict:  #: accounts needs to be reloaded
             self.pyload.accountManager.initPlugins()

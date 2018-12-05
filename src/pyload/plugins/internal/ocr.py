@@ -83,18 +83,14 @@ class OCR(Plugin):
         # tmpTif = tempfile.NamedTemporaryFile(suffix=".tif")
         try:
             tmpTif = open(
-                os.path.join(
-                    self.pyload.cachedir, "tmpTif_{}.tif" % self.classname
-                ),
+                os.path.join(self.pyload.cachedir, "tmpTif_{}.tif" % self.classname),
                 mode="wb",
             )
             tmpTif.close()
 
             # tmpTxt = tempfile.NamedTemporaryFile(suffix=".txt")
             tmpTxt = open(
-                os.path.join(
-                    self.pyload.cachedir, "tmpTxt_{}.txt" % self.classname
-                ),
+                os.path.join(self.pyload.cachedir, "tmpTxt_{}.txt" % self.classname),
                 mode="wb",
             )
             tmpTxt.close()
@@ -123,8 +119,7 @@ class OCR(Plugin):
             # tmpSub = tempfile.NamedTemporaryFile(suffix=".subset")
             with open(
                 os.path.join(
-                    self.pyload.cachedir,
-                    "tmpSub_{}.subset".format(self.classname),
+                    self.pyload.cachedir, "tmpSub_{}.subset".format(self.classname)
                 ),
                 "wb",
             ) as tmpSub:

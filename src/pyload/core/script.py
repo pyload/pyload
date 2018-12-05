@@ -59,18 +59,31 @@ def _parse_args(cmd_args):
     Returns:
       :obj:`argparse.Namespace`: command line parameters namespace
     """
-    parser = argparse.ArgumentParser(description="Free and open-source Download Manager written in pure Python")
+    parser = argparse.ArgumentParser(
+        description="Free and open-source Download Manager written in pure Python"
+    )
     group = parser.add_mutually_exclusive_group()
 
     group.add_argument(
         "--version", action="version", version="pyLoad {ver}".format(ver=__version__)
     )
 
-    parser.add_argument("-d","--debug",action="store_true",help="Enable debug mode", default=None)
-    parser.add_argument("--userdir",help="Run with custom user folder", default=DATADIR)
-    parser.add_argument("--cachedir",help="Run with custom cache folder", default=TMPDIR)
-    parser.add_argument("--daemon",action="store_true",help="Daemonmize after start")
-    parser.add_argument("--restore",action="store_true", help="Restore default admin user", default=None)
+    parser.add_argument(
+        "-d", "--debug", action="store_true", help="Enable debug mode", default=None
+    )
+    parser.add_argument(
+        "--userdir", help="Run with custom user folder", default=DATADIR
+    )
+    parser.add_argument(
+        "--cachedir", help="Run with custom cache folder", default=TMPDIR
+    )
+    parser.add_argument("--daemon", action="store_true", help="Daemonmize after start")
+    parser.add_argument(
+        "--restore",
+        action="store_true",
+        help="Restore default admin user",
+        default=None,
+    )
 
     return parser.parse_args(cmd_args)
 

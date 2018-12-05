@@ -42,7 +42,11 @@ class OneFichierCom(Account):
                 validuntil = time.mktime(time.strptime(expiredate, "%Y-%m-%d"))
 
             except Exception as exc:
-                self.log_error(exc, exc_info=self.pyload.debug > 1, stack_info=self.pyload.debug > 2)
+                self.log_error(
+                    exc,
+                    exc_info=self.pyload.debug > 1,
+                    stack_info=self.pyload.debug > 2,
+                )
 
             else:
                 premium = True

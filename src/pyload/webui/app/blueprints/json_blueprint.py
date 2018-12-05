@@ -28,7 +28,7 @@ def status():
         data = toDict(api.statusServer())
         data["captcha"] = api.isCaptchaWaiting()
         return jsonify(data)
-        
+
     except Exception:
         flask.abort(500)
 
@@ -57,7 +57,7 @@ def links():
                 link["info"] = ""
 
         return jsonify(links=links, ids=ids)
-        
+
     except Exception as exc:
         flask.abort(500)
 
@@ -245,7 +245,7 @@ def set_captcha():
         }
     else:
         data = {"captcha": False}
-        
+
     return jsonify(data)
 
 

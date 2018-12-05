@@ -16,9 +16,21 @@ import flask_login
 from pyload.core.utils import formatSize, fs_decode, fs_encode
 
 from ..filters import unquotepath
-from ..helpers import (clear_session, get_permission, login_required, parse_permissions,
-                       parse_userdata, permlist, render_template, set_permission,
-                       set_session, toDict, render_base, get_redirect_target, pre_processor)
+from ..helpers import (
+    clear_session,
+    get_permission,
+    login_required,
+    parse_permissions,
+    parse_userdata,
+    permlist,
+    render_template,
+    set_permission,
+    set_session,
+    toDict,
+    render_base,
+    get_redirect_target,
+    pre_processor,
+)
 
 # from flask_login import login_required, login_user, logout_user
 

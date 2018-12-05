@@ -5,6 +5,7 @@ from builtins import object
 from thrift.transport import TTransport
 
 from .protocol import Protocol
+
 # from thrift.transport.TZlibTransport import TZlibTransport
 from .socket import Socket, error
 from .thriftgen import pyload as Pyload

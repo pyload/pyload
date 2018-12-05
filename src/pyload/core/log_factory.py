@@ -138,7 +138,7 @@ class LogFactory(object):
                 syslog_addr = os.path.join(self.pyload.userdir, "logs", "syslog")
             else:
                 syslog_addr = "/dev/log"
-                
+
             os.makedirs(syslog_addr, exist_ok=True)
 
         sysloghdlr = logging.handlers.SysLogHandler(syslog_addr)
@@ -156,17 +156,22 @@ class LogFactory(object):
             dirname = os.path.join(self.pyload.userdir, "logs")
 
         os.makedirs(dirname, exist_ok=True)
-        
-        filelog_form = logging.Formatter(self.LINEFORMAT, self.DATEFORMAT, self.LINESTYLE)
+
+        filelog_form = logging.Formatter(
+            self.LINEFORMAT, self.DATEFORMAT, self.LINESTYLE
+        )
         filelog_path = os.path.join(dirname, filename)
-        
+
         encoding = locale.getpreferredencoding(do_setlocale=False)
         if self.pyload.config.get("log", "filelog_rotate"):
             max_size = self.pyload.config.get("log", "filelog_size") << 10
             max_entries = self.pyload.config.get("log", "filelog_entries")
 
             filehdlr = logging.handlers.RotatingFileHandler(
-                filelog_path, maxBytes=max_size, backupCount=max_entries, encoding=encoding
+                filelog_path,
+                maxBytes=max_size,
+                backupCount=max_entries,
+                encoding=encoding,
             )
 
         else:

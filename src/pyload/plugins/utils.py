@@ -89,7 +89,7 @@ class DB(object):
         """
         Saves a value persistently to the database.
         """
-        
+
         # NOTE: value must not be <bytes> otherwise BOOM! and moreover our sqlite db always return strings as <str>
         entry = b85encode(json.dumps(value, ensure_ascii=False).encode()).decode()
         self.plugin.pyload.db.setStorage(self.plugin.classname, key, entry)
@@ -214,7 +214,7 @@ class SimpleQueue(object):
 def lock(func=None, *decor_args, **decor_kwargs):
     if func is None:
         return partial(lock, *decor_args, **decor_kwargs)
-    
+
     @wraps(func)
     def wrapper(self, *args, **kwargs):
         self.lock.acquire(*decor_args, **decor_kwargs)
@@ -222,7 +222,7 @@ def lock(func=None, *decor_args, **decor_kwargs):
             return func(self, *args, **kwargs)
         finally:
             self.lock.release()
-            
+
     return wrapper
 
 
@@ -325,7 +325,7 @@ def fsbsize(path):
     else:
         return os.statvfs(path).f_frsize
 
-    
+
 def uniqify(seq):
     """
     Remove duplicates from list preserving order Originally by Dave Kirby.
@@ -357,8 +357,8 @@ def isiterable(obj):
     Check if object is iterable (string excluded)
     """
     return hasattr(obj, "__iter__")
-    
-    
+
+
 def is_sequence(obj):
     return isinstance(obj, Sequence) and not isinstance(obj, (str, bytes, bytearray))
 

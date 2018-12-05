@@ -74,6 +74,6 @@ class RSDF(Container):
                     continue
                 cipher = Cipher(algorithms.AES(KEY), modes.CFB(iv), backend=backend)
                 decryptor = cipher.decryptor()
-                value = decryptor.update(base64.b64decode(link) + decryptor.finalize()
+                value = decryptor.update(base64.b64decode(link) + decryptor.finalize())
                 link = value.replace("CCF: ", "")
                 self.links.append(link)

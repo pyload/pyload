@@ -73,11 +73,15 @@ class Account(Plugin):
         hidden_user = "{0:*<{1}}".format(self.user[:3], 7)
         hidden_pw = "*" * 10
         args = (a.replace(user, hidden_user).replace(pw, hidden_pw) for a in args if a)
-        
+
         log(
             "{plugintype} {pluginname}: {msg}".format(
-                plugintype=plugintype.upper(), pluginname=pluginname, msg="%s" * len(args)
-            ), *args, **kwargs
+                plugintype=plugintype.upper(),
+                pluginname=pluginname,
+                msg="%s" * len(args),
+            ),
+            *args,
+            **kwargs,
         )
 
     def setup(self):

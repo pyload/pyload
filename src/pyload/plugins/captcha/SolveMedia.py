@@ -66,7 +66,11 @@ class SolveMedia(CaptchaService):
                 result = self.result("http://api.solvemedia.com/papi/media", challenge)
 
             except Fail as exc:
-                self.log_warning(exc, exc_info=self.pyload.debug > 1, stack_info=self.pyload.debug > 2)
+                self.log_warning(
+                    exc,
+                    exc_info=self.pyload.debug > 1,
+                    stack_info=self.pyload.debug > 2,
+                )
                 self.pyfile.plugin.captcha.invalid()
                 result = None
 

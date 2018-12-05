@@ -77,7 +77,9 @@ class CzshareCom(SimpleHoster):
 
         except Exception as exc:
             #: let's continue and see what happens...
-            self.log_error(exc, exc_info=self.pyload.debug > 1, stack_info=self.pyload.debug > 2)
+            self.log_error(
+                exc, exc_info=self.pyload.debug > 1, stack_info=self.pyload.debug > 2
+            )
 
         return False
 
@@ -87,7 +89,9 @@ class CzshareCom(SimpleHoster):
             inputs = dict(re.findall(self.FORM_INPUT_PATTERN, form))
 
         except Exception as exc:
-            self.log_error(exc, exc_info=self.pyload.debug > 1, stack_info=self.pyload.debug > 2)
+            self.log_error(
+                exc, exc_info=self.pyload.debug > 1, stack_info=self.pyload.debug > 2
+            )
             self.restart(premium=False)
 
         #: Download the file, destination is determined by pyLoad
@@ -114,7 +118,9 @@ class CzshareCom(SimpleHoster):
             pyfile.size = int(inputs["size"])
 
         except Exception as exc:
-            self.log_error(exc, exc_info=self.pyload.debug > 1, stack_info=self.pyload.debug > 2)
+            self.log_error(
+                exc, exc_info=self.pyload.debug > 1, stack_info=self.pyload.debug > 2
+            )
             self.error(self._("Form"))
 
         #: Get and decrypt captcha

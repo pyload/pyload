@@ -17,7 +17,11 @@ class BackendBase(Thread):
         try:
             self.serve()
         except Exception as exc:
-            self.pyload.log.error(self._("Remote backend error: {}").format(exc), exc_info=self.pyload.debug > 1, stack_info=self.pyload.debug > 2)
+            self.pyload.log.error(
+                self._("Remote backend error: {}").format(exc),
+                exc_info=self.pyload.debug > 1,
+                stack_info=self.pyload.debug > 2,
+            )
 
     def setup(self, host, port):
         pass
@@ -78,7 +82,9 @@ class RemoteManager(object):
                 self.pyload.log.error(
                     self._("Failed loading backend {name} | {error}").format(
                         name=b, error=exc
-                    ), exc_info=self.pyload.debug > 1, stack_info=self.pyload.debug > 2
+                    ),
+                    exc_info=self.pyload.debug > 1,
+                    stack_info=self.pyload.debug > 2,
                 )
             else:
                 backend.start()

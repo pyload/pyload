@@ -45,7 +45,7 @@ class Core(object):
     _LOCALE_DOMAIN = "pyload"
     _DEFAULT_USERNAME = "admin"
     _DEFAULT_PASSWORD = "pyload"
-    _DEBUG_LEVEL_MAP = {'debug': 1, 'trace': 2, 'stack': 3}
+    _DEBUG_LEVEL_MAP = {"debug": 1, "trace": 2, "stack": 3}
 
     @property
     def version(self):
@@ -64,13 +64,13 @@ class Core(object):
         return self._debug
 
     # NOTE: should `restore` reset config as well?
-    def __init__(self, userdir, cachedir, debug=None, restore=False):            
+    def __init__(self, userdir, cachedir, debug=None, restore=False):
         self._running = Event()
         self._do_restart = False
         self._do_exit = False
         self._ = lambda x: x
         self._debug = 0
-        
+
         # if self.tmpdir not in sys.path:
         # sys.path.append(self.tmpdir)
 
@@ -79,7 +79,7 @@ class Core(object):
 
         self._init_config(userdir, cachedir, debug)
         self._init_log()
-        
+
         self._init_database(restore)
         self._init_network()
         self._init_api()
@@ -87,51 +87,53 @@ class Core(object):
         self._init_webserver()
 
         atexit.register(self.terminate)
-        
+
         # TODO: Remove...
         self.lastClientConnected = 0
 
-
     def _init_config(self, userdir, cachedir, debug):
         from .config.config_parser import ConfigParser
-        
+
         self.userdir = os.path.abspath(userdir)
         self.cachedir = os.path.abspath(cachedir)
         os.makedirs(self.userdir, exist_ok=True)
         os.makedirs(self.cachedir, exist_ok=True)
-        
+
         self.config = ConfigParser(self.userdir)
-        
+
         if debug is None:
             if self.config.get("general", "debug_mode"):
                 debug_level = self.config.get("general", "debug_level")
                 self._debug = self._DEBUG_LEVEL_MAP[debug_level]
         else:
             self._debug = max(0, int(debug))
-        
 
     def _init_log(self):
         from .log_factory import LogFactory
-        
+
         self.logfactory = LogFactory(self)
-        self.log = self.logfactory.get_logger('pyload')  # NOTE: forced debug mode from console not working
-        
+        self.log = self.logfactory.get_logger(
+            "pyload"
+        )  # NOTE: forced debug mode from console not working
+
         self.log.info("*** Welcome to pyLoad v{} ***".format(self.version))
         if self.debug:
             self.log.warning(">>> DEBUG MODE ON AIR <<<")
 
     def _init_network(self):
         from .network.request_factory import RequestFactory
-        
+
         self.req = self.requestFactory = RequestFactory(self)
         builtins.REQUESTS = self.requestFactory  # TODO: Remove...
 
     def _init_api(self):
         from .api import Api
+
         self.api = Api(self)
 
     def _init_webserver(self):
         from pyload.webui.server_thread import WebServer
+
         self.webserver = WebServer(self)
 
     def _init_database(self, restore):
@@ -152,7 +154,9 @@ class Core(object):
             self.db.addUser(*userpw)
         if restore:
             self.log.warning(
-                self._("Successfully restored default login credentials `{}|{}`").format(*userpw)
+                self._(
+                    "Successfully restored default login credentials `{}|{}`"
+                ).format(*userpw)
             )
 
     def _init_managers(self):
@@ -188,14 +192,24 @@ class Core(object):
                 group = self.config.get("permission", "group")
                 os.setgid(group[2])
             except Exception as exc:
-                self.log.warning(self._("Unable to change gid"), exc, exc_info=self.debug > 1, stack_info=self.debug > 2)
+                self.log.warning(
+                    self._("Unable to change gid"),
+                    exc,
+                    exc_info=self.debug > 1,
+                    stack_info=self.debug > 2,
+                )
 
         if change_user:
             try:
                 user = self.config.get("permission", "user")
                 os.setuid(user[2])
             except Exception as exc:
-                self.log.warning(self._("Unable to change uid"), exc, exc_info=self.debug > 1, stack_info=self.debug > 2)
+                self.log.warning(
+                    self._("Unable to change uid"),
+                    exc,
+                    exc_info=self.debug > 1,
+                    stack_info=self.debug > 2,
+                )
 
     def set_language(self, lang):
         localedir = os.path.join(PKGDIR, "locale")
@@ -233,13 +247,13 @@ class Core(object):
         self.log.debug("Setup storage...")
 
         storage_folder = self.config.get("general", "storage_folder")
-        
+
         # NOTE: Remove in 0.6
         storage_folder = os.path.abspath(storage_folder)
-        
+
         self.log.info(self._("Storage directory: {}".format(storage_folder)))
         os.makedirs(storage_folder, exist_ok=True)
-        
+
         avail_space = formatSize(freeSpace(storage_folder))
         self.log.info(self._("Storage free space: {}").format(avail_space))
 
@@ -274,16 +288,16 @@ class Core(object):
     def start(self):
         try:
             self.log.debug("Starting...")
-            
+
             debug_level = invertmap(self._DEBUG_LEVEL_MAP)[self.debug]
             self.log.debug("Debug level: {}".format(debug_level.upper()))
-            
+
             # self.evm.fire('pyload:starting')
             self._running.set()
 
             self._setup_language()
             self._setup_permissions()
-            
+
             self.log.info(self._("User directory: {}").format(self.userdir))
             self.log.info(self._("Cache directory: {}").format(self.cachedir))
 
@@ -304,10 +318,10 @@ class Core(object):
 
             self._start_servers()
             self._parse_linkstxt()
-                        
+
             self.log.debug("*** pyLoad is up and running ***")
             # self.evm.fire('pyload:started')
-            
+
             self.thm.pause = False  # NOTE: Recheck...
             while True:
                 self._running.wait()

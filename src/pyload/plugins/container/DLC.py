@@ -59,7 +59,9 @@ class DLC(Container):
         dlc_content = self.load(self.API_URL.format(dlc_key))
 
         try:
-            rc = base64.b64decode(re.search(r"<rc>(.+)</rc>", dlc_content, re.S).group(1))[:16]
+            rc = base64.b64decode(
+                re.search(r"<rc>(.+)</rc>", dlc_content, re.S).group(1)
+            )[:16]
 
         except AttributeError:
             self.fail(self._("Container is corrupted"))
@@ -84,7 +86,10 @@ class DLC(Container):
 
     def parse_packages(self, startNode):
         return [
-            (base64.b64decode(decode(node.getAttribute("name"))), self.parse_links(node))
+            (
+                base64.b64decode(decode(node.getAttribute("name"))),
+                self.parse_links(node),
+            )
             for node in startNode.getElementsByTagName("package")
         ]
 

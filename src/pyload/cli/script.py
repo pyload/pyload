@@ -11,9 +11,13 @@ from getopt import GetoptError, getopt
 from sys import exit
 
 import pyload.core.utils.pylgettext as gettext
-from pyload.core.remote.thriftbackend.thrift_client import (ConnectionClosed,
-                                                            NoConnection, NoSSL,
-                                                            ThriftClient, WrongLogin)
+from pyload.core.remote.thriftbackend.thrift_client import (
+    ConnectionClosed,
+    NoConnection,
+    NoSSL,
+    ThriftClient,
+    WrongLogin,
+)
 
 from . import Cli
 from .printer import *
@@ -101,9 +105,7 @@ def print_commands():
 
 def writeConfig(opts):
     try:
-        with open(
-            os.path.join(DATADIR, "pyload-cli.conf"), mode="w"
-        ) as cfgfile:
+        with open(os.path.join(DATADIR, "pyload-cli.conf"), mode="w") as cfgfile:
             cfgfile.write("[cli]")
             for opt in opts:
                 cfgfile.write("{}={}\n".format(opt, opts[opt]))

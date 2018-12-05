@@ -48,7 +48,7 @@ class ConfigParser(object):
         # TODO: Recheck
         configdir = os.path.join(userdir, "settings")
         os.makedirs(configdir, exist_ok=True)
-        
+
         self.configpath = os.path.join(configdir, "pyload.conf")
         self.pluginpath = os.path.join(configdir, "plugins.conf")
 

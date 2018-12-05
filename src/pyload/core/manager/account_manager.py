@@ -31,9 +31,9 @@ class AccountManager(object):
         # TODO: Recheck
         configdir = os.path.join(core.userdir, "settings")
         os.makedirs(configdir, exist_ok=True)
-        
+
         self.configpath = os.path.join(configdir, "accounts.conf")
-        
+
         self.initPlugins()
         self.saveAccounts()  #: save to add categories to conf
 

@@ -590,12 +590,15 @@ class YoutubeCom(Hoster):
         else:
             player_data = self.load(self.fixurl(player_url))
 
-            m = re.search(
-                r"\.sig\|\|(?P<sig>[a-zA-Z0-9$]+)\(", player_data
-            ) or re.search(
-                r'\bc\s*&&\s*d\.set\([^,]+\s*,\s*\([^)]*\)\s*\(\s*(?P<sig>[a-zA-Z0-9$]+)\(', player_data
-            ) or re.search(
-                r'(["\'])signature\1\s*,\s*(?P<sig>[a-zA-Z0-9$]+)\(', player_data
+            m = (
+                re.search(r"\.sig\|\|(?P<sig>[a-zA-Z0-9$]+)\(", player_data)
+                or re.search(
+                    r"\bc\s*&&\s*d\.set\([^,]+\s*,\s*\([^)]*\)\s*\(\s*(?P<sig>[a-zA-Z0-9$]+)\(",
+                    player_data,
+                )
+                or re.search(
+                    r'(["\'])signature\1\s*,\s*(?P<sig>[a-zA-Z0-9$]+)\(', player_data
+                )
             )
 
             try:

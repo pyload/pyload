@@ -59,7 +59,7 @@ class WebshareCz(Account):
 
         salt = re.search("<salt>(.+?)</salt>", salt).group(1)
         salt_pw = salt + password
-        
+
         password = hashlib.sha1(
             hashlib.md5(salt_pw.encode()).hexdigest().encode()
         ).hexdigest()

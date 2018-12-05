@@ -14,7 +14,7 @@ def _salt_password(password, salt):
     salt_pw = salt + password
     return salt + sha1(salt_pw.encode()).hexdigest()
 
-        
+
 class UserMethods(object):
     @style.queue
     def checkAuth(self, user, password):
@@ -28,11 +28,11 @@ class UserMethods(object):
 
         stored_salt = r[2][:5]
         stored_pw = r[2][5:]
-        
+
         pw = _salt_password(password, stored_salt)
         if pw != stored_pw:
             return {}
-            
+
         return {
             "id": r[0],
             "name": r[1],
@@ -41,7 +41,7 @@ class UserMethods(object):
             "template": r[5],
             "email": r[6],
         }
-    
+
     @style.queue
     def addUser(self, user, password):
         salt = reduce(
@@ -66,11 +66,11 @@ class UserMethods(object):
 
         stored_salt = r[2][:5]
         stored_pw = r[2][5:]
-        
+
         oldpw = _salt_password(old_password, stored_salt)
         if oldpw != stored_pw:
             return False
-            
+
         new_salt = reduce(
             lambda x, y: x + y, [str(random.randint(0, 9)) for i in range(0, 5)]
         )

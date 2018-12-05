@@ -47,7 +47,9 @@ class RapidgatorNet(Account):
                 self.log_error(json_data["response_details"])
 
         except Exception as exc:
-            self.log_error(exc, exc_info=self.pyload.debug > 1, stack_info=self.pyload.debug > 2)
+            self.log_error(
+                exc, exc_info=self.pyload.debug > 1, stack_info=self.pyload.debug > 2
+            )
 
         return {
             "validuntil": validuntil,
@@ -75,6 +77,8 @@ class RapidgatorNet(Account):
                 self.log_error(json_data["response_details"])
 
         except Exception as exc:
-            self.log_error(exc, exc_info=self.pyload.debug > 1, stack_info=self.pyload.debug > 2)
+            self.log_error(
+                exc, exc_info=self.pyload.debug > 1, stack_info=self.pyload.debug > 2
+            )
 
         self.fail_login()

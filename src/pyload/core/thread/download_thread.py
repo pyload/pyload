@@ -57,7 +57,9 @@ class DownloadThread(PluginThread):
                 self.m.pyload.addonManager.downloadPreparing(pyfile)
                 pyfile.plugin.preprocessing(self)
 
-                self.pyload.log.info(self._("Download finished: {}").format(pyfile.name))
+                self.pyload.log.info(
+                    self._("Download finished: {}").format(pyfile.name)
+                )
                 self.m.pyload.addonManager.downloadFinished(pyfile)
                 self.m.pyload.files.checkPackageFinished(pyfile)
 
@@ -191,7 +193,9 @@ class DownloadThread(PluginThread):
                 self.pyload.log.warning(
                     self._("Download failed: {name} | {msg}").format(
                         name=pyfile.name, msg=exc
-                    ), exc_info=self.pyload.debug > 1, stack_info=self.pyload.debug > 2
+                    ),
+                    exc_info=self.pyload.debug > 1,
+                    stack_info=self.pyload.debug > 2,
                 )
                 pyfile.error = str(exc)
 

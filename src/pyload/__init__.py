@@ -41,7 +41,9 @@ finally:
 
 PKGDIR = pkgdir
 USERHOMEDIR = os.path.expanduser("~")
-DATADIR = os.path.join(os.getenv("APPDATA") if os.name == "nt" else USERHOMEDIR, "pyLoad")
+DATADIR = os.path.join(
+    os.getenv("APPDATA") if os.name == "nt" else USERHOMEDIR, "pyLoad"
+)
 TMPDIR = os.path.join(tempfile.gettempdir(), "pyLoad")
 
 os.makedirs(DATADIR, exist_ok=True)

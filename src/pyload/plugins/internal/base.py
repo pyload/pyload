@@ -4,8 +4,16 @@ import re
 import time
 import urllib.parse
 
-from ..utils import (decode, encode, fixurl, format_size, format_time, parse_html_form,
-                     parse_name, replace_patterns)
+from ..utils import (
+    decode,
+    encode,
+    fixurl,
+    format_size,
+    format_time,
+    parse_html_form,
+    parse_name,
+    replace_patterns,
+)
 from .captcha import Captcha
 from .plugin import Abort, Fail, Plugin, Reconnect, Retry, Skip
 
@@ -112,14 +120,16 @@ class Base(Plugin):
         hidden_user = "{0:*<{1}}".format(self.account.user[:3], 7)
         hidden_pw = "*" * 10
         args = (a.replace(user, hidden_user).replace(pw, hidden_pw) for a in args if a)
-        
+
         log(
             "{plugintype} {pluginname}[{id}]: {msg}".format(
                 plugintype=plugintype.upper(),
                 pluginname=pluginname,
                 id=self.pyfile.id,
-                msg="%s" * len(args)
-            ), *args, **kwargs
+                msg="%s" * len(args),
+            ),
+            *args,
+            **kwargs,
         )
 
     def init_base(self):

@@ -76,4 +76,6 @@ class HotFolder(Addon):
                 self.pyload.api.addPackage(f, [newpath], 1)
 
         except (IOError, OSError) as exc:
-            self.log_error(exc, exc_info=self.pyload.debug > 1, stack_info=self.pyload.debug > 2)
+            self.log_error(
+                exc, exc_info=self.pyload.debug > 1, stack_info=self.pyload.debug > 2
+            )

@@ -83,7 +83,9 @@ class DatabaseJob(object):
         try:
             self.result = self.f(*self.args, **self.kwargs)
         except Exception as exc:
-            exc_logger.exception("Database Error @", self.f.__name__, self.args[1:], self.kwargs, exc)
+            exc_logger.exception(
+                "Database Error @", self.f.__name__, self.args[1:], self.kwargs, exc
+            )
             self.exception = exc
         finally:
             self.done.set()
@@ -107,7 +109,7 @@ class DatabaseThread(Thread):
 
         datadir = os.path.join(self.pyload.userdir, "data")
         os.makedirs(datadir, exist_ok=True)
-        
+
         self.db_path = os.path.join(datadir, self.DB_FILENAME)
         self.version_path = os.path.join(datadir, self.VERSION_FILENAME)
 
@@ -170,8 +172,8 @@ class DatabaseThread(Thread):
         if v < __version__:
             if v < 2:
                 self.pyload.log.warning(
-                        self._("Filedatabase was deleted due to incompatible version.")
-                    )
+                    self._("Filedatabase was deleted due to incompatible version.")
+                )
                 os.remove(self.version_path)
                 shutil.move(self.db_path, "files.backup.db")
             with open(self.version_path, mode="w") as f:
@@ -253,7 +255,7 @@ class DatabaseThread(Thread):
     def _migrateUser(self):
         if os.path.exists("pyload.db"):
             self.pyload.log.info(self._("Converting old Django DB"))
-            
+
             with sqlite3.connect("pyload.db", isolation_level=None) as conn:
                 with closing(conn.cursor()) as c:
                     c.execute(

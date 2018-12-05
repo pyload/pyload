@@ -302,7 +302,8 @@ class LinkCryptWs(Crypter):
         except Exception:
             self.log_error(
                 self._("Unable to decrypt CNL links (JS Error) try to get over links"),
-                exc_info=self.pyload.debug > 1, stack_info=self.pyload.debug > 2
+                exc_info=self.pyload.debug > 1,
+                stack_info=self.pyload.debug > 2,
             )
             return self.handle_web_links()
 

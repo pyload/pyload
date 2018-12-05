@@ -22,6 +22,7 @@ import json
 try:
     from ..remote.thriftbackend.thriftgen.ttypes import *
     from ..remote.thriftbackend.thriftgen.Pyload import Iface
+
     BaseObject = TBase
 except ImportError:
     from ..remote.socketbackend.ttypes import *
@@ -305,7 +306,9 @@ class Api(Iface):
         :param offset: line offset
         :return: List of log entries
         """
-        filename = os.path.join(self.pyload.config.get("log", "filelog_folder"), "log.txt")
+        filename = os.path.join(
+            self.pyload.config.get("log", "filelog_folder"), "log.txt"
+        )
         try:
             with open(filename) as fh:
                 lines = fh.readlines()
@@ -1163,7 +1166,7 @@ class Api(Iface):
     # remove?
     def get_userdir(self):
         return os.path.abspath(self.pyload.userdir)
-        
+
     # TODO: add security permission check
     # remove?
     def get_cachedir(self):

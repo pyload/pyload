@@ -42,4 +42,3 @@ class TestingConfig(DevelopmentConfig):
     TESTING = True
     #: Extensions
     BCRYPT_LOG_ROUNDS = 4
-    

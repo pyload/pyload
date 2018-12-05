@@ -51,7 +51,9 @@ class CCF(Container):
         dlc_file = os.path.join(dl_folder, "tmp_{}.dlc".format(pyfile.name))
 
         try:
-            dlc = base64.b64decode(re.search(r"<dlc>(.+)</dlc>", dlc_content, re.S).group(1))
+            dlc = base64.b64decode(
+                re.search(r"<dlc>(.+)</dlc>", dlc_content, re.S).group(1)
+            )
 
         except AttributeError:
             self.fail(self._("Container is corrupted"))

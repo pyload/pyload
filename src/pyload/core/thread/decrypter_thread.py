@@ -38,7 +38,9 @@ class DecrypterThread(PluginThread):
         retry = False
 
         try:
-            self.pyload.log.info(self._("Decrypting starts: {}").format(self.active.name))
+            self.pyload.log.info(
+                self._("Decrypting starts: {}").format(self.active.name)
+            )
             self.active.plugin.preprocessing(self)
 
         except NotImplementedError:
@@ -84,7 +86,9 @@ class DecrypterThread(PluginThread):
             self.pyload.log.warning(
                 self._("Decrypting failed: {name} | {msg}").format(
                     name=self.active.name, msg=exc
-                ), exc_info=self.pyload.debug > 1, stack_info=self.pyload.debug > 2
+                ),
+                exc_info=self.pyload.debug > 1,
+                stack_info=self.pyload.debug > 2,
             )
             self.active.error = str(exc)
 
