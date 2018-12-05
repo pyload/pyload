@@ -2,7 +2,7 @@
 
 import json
 import re
-from builtins import map, str
+from builtins import map
 
 from ..internal.simplecrypter import SimpleCrypter
 from ..utils import uniqify

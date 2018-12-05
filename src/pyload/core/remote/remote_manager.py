@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # AUTHOR: mkaay
 
-from builtins import object, str
+from builtins import object
 from threading import Thread
 
 

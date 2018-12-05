@@ -5,7 +5,6 @@ import importlib
 import os
 import re
 import sys
-import traceback
 from ast import literal_eval
 from pyload import PKGDIR
 from builtins import object, str

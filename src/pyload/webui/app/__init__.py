@@ -10,7 +10,6 @@
 #           \/
 
 import os
-from builtins import str
 
 import jinja2
 
@@ -37,7 +36,6 @@ from .filters import date, path_make_absolute, path_make_relative, quotepath, tr
 from .helpers import render_error
 from .settings import ProductionConfig, DevelopmentConfig
 
-import logging
 from flask import Flask
 from flask.helpers import locked_cached_property
 

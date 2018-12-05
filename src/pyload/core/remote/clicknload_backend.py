@@ -4,7 +4,6 @@
 import re
 from base64 import standard_b64decode
 from binascii import unhexlify
-from builtins import str
 from cgi import FieldStorage
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from urllib.parse import unquote

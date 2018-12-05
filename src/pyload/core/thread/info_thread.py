@@ -2,7 +2,6 @@
 # AUTHOR: RaNaN, vuolter
 
 import time
-from builtins import str
 
 from ..api import OnlineStatus
 from ..datatype.pyfile import PyFile
