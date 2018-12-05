@@ -6,7 +6,7 @@ from pyload import PKGDIR
 from pyload.core.utils import random_string
 
 
-class Config(object):
+class BaseConfig(object):
     DEBUG = False
     TESTING = False
     SESSION_COOKIE_SAMESITE = "Lax"
@@ -18,17 +18,17 @@ class Config(object):
     THEME_PATHS = os.path.join(PKGDIR, "webui", "app", "themes")
 
 
-class ProductionConfig(Config):
+class ProductionConfig(BaseConfig):
     ENV = "production"
-    SECRET_KEY = "dev"  # TODO: change
+    SECRET_KEY = random_string(16)
     #: Extensions
     CACHE_TYPE = "simple"
 
 
-class DevelopmentConfig(Config):
+class DevelopmentConfig(BaseConfig):
     ENV = "development"
     DEBUG = True
-    SECRET_KEY = random_string(16)
+    SECRET_KEY = "dev"
     TEMPLATES_AUTO_RELOAD = True
     EXPLAIN_TEMPLATE_LOADING = True
     #: Extensions
@@ -42,7 +42,4 @@ class TestingConfig(DevelopmentConfig):
     TESTING = True
     #: Extensions
     BCRYPT_LOG_ROUNDS = 4
-
-
-def get_config(debug=False):
-    return DevelopmentConfig if debug else ProductionConfig
+    

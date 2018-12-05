@@ -105,8 +105,11 @@ class DatabaseThread(Thread):
         self.pyload = core
         self._ = core._
 
-        self.db_path = os.path.join(core.userdir, self.DB_FILENAME)
-        self.version_path = os.path.join(core.userdir, self.VERSION_FILENAME)
+        datadir = os.path.join(self.pyload.userdir, "data")
+        os.makedirs(datadir, exist_ok=True)
+        
+        self.db_path = os.path.join(datadir, self.DB_FILENAME)
+        self.version_path = os.path.join(datadir, self.VERSION_FILENAME)
 
         self.jobs = Queue()
 

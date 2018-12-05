@@ -3,6 +3,7 @@
 import os
 
 import flask
+from flask.json import jsonify
 
 from pyload.core.utils import decode, formatSize
 
@@ -13,14 +14,9 @@ bp = flask.Blueprint("json", __name__, url_prefix="/json")
 
 def format_time(seconds):
     seconds = int(seconds)
-
     hours, seconds = divmod(seconds, 3600)
     minutes, seconds = divmod(seconds, 60)
     return "{:02}:{:02}:{:02}".format(hours, minutes, seconds)
-
-
-def get_sort_key(item):
-    return item["order"]
 
 
 @bp.route(r"/status", methods=["GET", "POST"], endpoint="status")
@@ -29,9 +25,10 @@ def get_sort_key(item):
 def status():
     api = flask.current_app.config["PYLOAD_API"]
     try:
-        status = toDict(api.statusServer())
-        status["captcha"] = api.isCaptchaWaiting()
-        return status
+        data = toDict(api.statusServer())
+        data["captcha"] = api.isCaptchaWaiting()
+        return jsonify(data)
+        
     except Exception:
         flask.abort(500)
 
@@ -59,8 +56,8 @@ def links():
             else:
                 link["info"] = ""
 
-        data = {"links": links, "ids": ids}
-        return data
+        return jsonify(links=links, ids=ids)
+        
     except Exception as exc:
         flask.abort(500)
 
@@ -78,7 +75,7 @@ def packages():
             for file in api.get_package_files(package["id"]):
                 package["links"].append(api.get_file_info(file))
 
-        return data
+        return jsonify(data)
 
     except Exception:
         flask.abort(500)
@@ -112,9 +109,9 @@ def package(id):
                 pyfile["icon"] = "status_downloading.png"
 
         tmp = data["links"]
-        tmp.sort(key=get_sort_key)
+        tmp.sort(key=lambda entry: entry["order"])
         data["links"] = tmp
-        return data
+        return jsonify(data)
 
     except Exception:
         flask.abort(500)
@@ -128,7 +125,7 @@ def package_order(ids):
     try:
         pid, pos = ids.split("|")
         api.orderPackage(int(pid), int(pos))
-        return {"response": "success"}
+        return jsonify(response="success")
     except Exception:
         flask.abort(500)
 
@@ -140,7 +137,7 @@ def abort_link(id):
     api = flask.current_app.config["PYLOAD_API"]
     try:
         api.stopDownloads([id])
-        return {"response": "success"}
+        return jsonify(response="success")
     except Exception:
         flask.abort(500)
 
@@ -153,7 +150,7 @@ def link_order(ids):
     try:
         pid, pos = ids.split("|")
         api.orderFile(int(pid), int(pos))
-        return {"response": "success"}
+        return jsonify(response="success")
     except Exception:
         flask.abort(500)
 
@@ -176,7 +173,7 @@ def add_package():
             name = f.name
 
         fpath = os.path.join(
-            api.getConfigValue("general", "download_folder"), "tmp_" + f.filename
+            api.getConfigValue("general", "storage_folder"), "tmp_" + f.filename
         )
         f.save(fpath)
         links.insert(0, fpath)
@@ -200,7 +197,7 @@ def move_package(dest, id):
     api = flask.current_app.config["PYLOAD_API"]
     try:
         api.movePackage(dest, id)
-        return {"response": "success"}
+        return jsonify(response="success")
     except Exception:
         flask.abort(500)
 
@@ -219,7 +216,7 @@ def edit_package():
         }
 
         api.setPackageData(id, data)
-        return {"response": "success"}
+        return jsonify(response="success")
 
     except Exception:
         flask.abort(500)
@@ -239,16 +236,17 @@ def set_captcha():
             pass
 
     task = api.getCaptchaTask()
-
     if task.tid >= 0:
-        return {
+        data = {
             "captcha": True,
             "id": task.tid,
             "params": task.data,
             "result_type": task.resultType,
         }
     else:
-        return {"captcha": False}
+        data = {"captcha": False}
+        
+    return jsonify(data)
 
 
 @bp.route(r"/load_config/<category>/<section>", endpoint="load_config")

@@ -16,7 +16,7 @@ import semver
 
 class PluginManager(object):
     ROOT = "pyload.plugins."
-    USERROOT = "userplugins."
+    USERROOT = "plugins."
     TYPES = (
         "crypter",
         "container",
@@ -62,9 +62,9 @@ class PluginManager(object):
                 else:
                     dst[name] = src[name]
 
-        sys.path.append(os.path.join(self.pyload.userdir, "userplugins"))
+        sys.path.append(os.path.join(self.pyload.userdir, "plugins"))
 
-        userplugins_dir = os.path.join(self.pyload.userdir, "userplugins")
+        userplugins_dir = os.path.join(self.pyload.userdir, "plugins")
         os.makedirs(userplugins_dir, exist_ok=True)
 
         try:
@@ -123,7 +123,7 @@ class PluginManager(object):
         """
         plugins = {}
         if home:
-            pfolder = os.path.join(self.pyload.userdir, "userplugins", folder)
+            pfolder = os.path.join(self.pyload.userdir, "plugins", folder)
             os.makedirs(pfolder, exist_ok=True)
             try:
                 f = open(os.path.join(pfolder, "__init__.py"), mode="wb")

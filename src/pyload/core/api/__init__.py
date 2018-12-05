@@ -22,10 +22,8 @@ import json
 try:
     from ..remote.thriftbackend.thriftgen.ttypes import *
     from ..remote.thriftbackend.thriftgen.Pyload import Iface
-
     BaseObject = TBase
 except ImportError:
-    print("Thrift not imported")
     from ..remote.socketbackend.ttypes import *
 
 # contains function names mapped to their permissions
@@ -278,7 +276,7 @@ class Api(Iface):
         """
         Available free space at download directory in bytes.
         """
-        return freeSpace(self.pyload.config.get("general", "download_folder"))
+        return freeSpace(self.pyload.config.get("general", "storage_folder"))
 
     @permission(PERMS.ALL)
     def getServerVersion(self):
@@ -307,7 +305,7 @@ class Api(Iface):
         :param offset: line offset
         :return: List of log entries
         """
-        filename = os.path.join(self.pyload.config.get("log", "log_folder"), "log.txt")
+        filename = os.path.join(self.pyload.config.get("log", "filelog_folder"), "log.txt")
         try:
             with open(filename) as fh:
                 lines = fh.readlines()
@@ -490,7 +488,7 @@ class Api(Iface):
         """
         with open(
             os.path.join(
-                self.pyload.config.get("general", "download_folder"), "tmp_" + container
+                self.pyload.config.get("general", "storage_folder"), "tmp_" + container
             ),
             "wb",
         ) as th:
@@ -878,7 +876,7 @@ class Api(Iface):
         """
         with open(
             os.path.join(
-                self.pyload.config.get("general", "download_folder"), "tmp_" + filename
+                self.pyload.config.get("general", "storage_folder"), "tmp_" + filename
             ),
             "wb",
         ) as th:

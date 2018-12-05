@@ -15,13 +15,17 @@ from cryptography.fernet import Fernet
 bp = flask.Blueprint("cnl", __name__)
 
 
+#: decorator
 def local_check(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
-        if flask.request.environ.get("REMOTE_ADDR", "0") in (
+        remote_addr = flask.request.environ.get("REMOTE_ADDR", "0")
+        http_host = flask.request.environ.get("HTTP_HOST", "0")
+        
+        if remote_addr in (
             "127.0.0.1",
             "localhost",
-        ) or flask.request.environ.get("HTTP_HOST", "0") in (
+        ) or http_host in (
             "127.0.0.1:9666",
             "localhost:9666",
         ):
@@ -65,7 +69,7 @@ def addcrypted():
 
     api = flask.current_app.config["PYLOAD_API"]
 
-    dl_path = api.getConfigValue("general", "download_folder")
+    dl_path = api.getConfigValue("general", "storage_folder")
     dlc_path = os.path.join(
         dl_path, package.replace("/", "").replace("\\", "").replace(":", "") + ".dlc"
     )

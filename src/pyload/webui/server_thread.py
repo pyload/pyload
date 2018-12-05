@@ -1,42 +1,43 @@
 # -*- coding: utf-8 -*-
 # AUTHOR: vuolter
 
+import logging
 import threading
 
 from cheroot.wsgi import PathInfoDispatcher, Server
 
-from .app import create_app
+from .app import App
 
 
 # TODO: make configurable to serve API
 class WebServer(threading.Thread):
-    def __init__(self, core):
+    def __init__(self, pycore):
         super().__init__()
         self.daemon = True
 
-        self.pyload = core
-        self._ = core._
+        self.pyload = pycore
+        self._ = pycore._
 
-        self.use_ssl = core.config.get("webui", "use_ssl")  #: recheck
-        self.host = core.config.get("webui", "host")
-        self.port = core.config.get("webui", "port")
-        self.prefix = core.config.get("webui", "prefix")
+        self.develop = self.pyload.config.get("webui", "develop")
+        self.use_ssl = self.pyload.config.get("webui", "use_ssl")  #: recheck
+        self.host = self.pyload.config.get("webui", "host")
+        self.port = self.pyload.config.get("webui", "port")
+        self.prefix = self.pyload.config.get("webui", "prefix")
 
         bind_addr = (self.host, self.port)
         bind_path = "{}/".format(self.prefix.strip("/"))
 
-        self.app = create_app(core.api, core.debug)
+        self.app = App(self.pyload, self.develop)
         self.server = Server(bind_addr, PathInfoDispatcher({bind_path: self.app}))
 
-        #: logging patches
-        core.logfactory.init_logger(self.app.logger.name)
-        self.server.error_log = core.logfactory.init_logger("cheroot").log
+        self.log = self.app.logger
+        self.server.error_log = lambda *args, **kwgs: self.log.log(kwgs.get("level", logging.ERROR), args[0], exc_info=self.develop, stack_info=self.develop)  #: use our custom logger in cheroot with few hacks
 
         if not self.use_ssl:
             return
 
-        self.certfile = core.config.get("ssl", "certfile")
-        self.keyfile = core.config.get("ssl", "keyfile")
+        self.certfile = self.pyload.config.get("ssl", "certfile")
+        self.keyfile = self.pyload.config.get("ssl", "keyfile")
 
         if self.certfile:
             self.server.ssl_certificate = self.certfile
@@ -44,7 +45,7 @@ class WebServer(threading.Thread):
             self.server.ssl_private_key = self.keyfile
 
     def run(self):
-        self.pyload.log.warning(
+        self.log.warning(
             self._("Starting webserver: {host}:{port:d}").format(
                 host=self.host, port=self.port
             )
@@ -55,5 +56,5 @@ class WebServer(threading.Thread):
             self.stop()
 
     def stop(self):
-        self.pyload.log.info(self._("Stopping webserver..."))
+        self.log.info(self._("Stopping webserver..."))
         self.server.stop()

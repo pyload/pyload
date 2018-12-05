@@ -79,8 +79,12 @@ def pre_processor():
     }
 
 
-def base(messages):
+def render_base(messages):
     return render_template("base.html", {"messages": messages}, [pre_processor])
+    
+    
+def render_error(messages):
+    return render_template("error.html", {"messages": messages}, [pre_processor])
 
 
 def clear_session():

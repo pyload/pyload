@@ -170,25 +170,12 @@ class ThreadManager(object):
 
         if not (0 < active.count(True) == len(active)):
             return False
-
-        if not os.path.exists(self.pyload.config.get("reconnect", "method")):
-            if os.path.exists(
-                os.path.join(
-                    self.pyload.userdir, self.pyload.config.get("reconnect", "method")
-                )
-            ):
-                self.pyload.config.set(
-                    "reconnect",
-                    "method",
-                    os.path.join(
-                        self.pyload.userdir,
-                        self.pyload.config.get("reconnect", "method"),
-                    ),
-                )
-            else:
-                self.pyload.config.set("reconnect", "enabled", False)
-                self.pyload.log.warning(self._("Reconnect script not found!"))
-                return
+            
+        reconnect_script = self.pyload.config.get("reconnect", "script")
+        if not os.path.isfile(reconnect_script):
+            self.pyload.config.set("reconnect", "enabled", False)
+            self.pyload.log.warning(self._("Reconnect script not found!"))
+            return
 
         self.reconnecting.set()
 
@@ -208,7 +195,7 @@ class ThreadManager(object):
 
         try:
             reconn = subprocess.Popen(
-                self.pyload.config.get("reconnect", "method"), bufsize=-1, shell=True
+                reconnect_script, bufsize=-1, shell=True
             )  #: , stdout=subprocess.PIPE)
         except Exception:
             self.pyload.log.warning(self._("Failed executing reconnect script!"))

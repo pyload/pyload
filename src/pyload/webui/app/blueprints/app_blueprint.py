@@ -18,7 +18,7 @@ from pyload.core.utils import formatSize, fs_decode, fs_encode
 from ..filters import unquotepath
 from ..helpers import (clear_session, get_permission, login_required, parse_permissions,
                        parse_userdata, permlist, render_template, set_permission,
-                       set_session, toDict, base, get_redirect_target, pre_processor)
+                       set_session, toDict, render_base, get_redirect_target, pre_processor)
 
 # from flask_login import login_required, login_user, logout_user
 
@@ -118,11 +118,11 @@ def collector():
 # @login_required("DOWNLOAD")
 def downloads():
     api = flask.current_app.config["PYLOAD_API"]
-    root = api.getConfigValue("general", "download_folder")
+    root = api.getConfigValue("general", "storage_folder")
 
     if not os.path.isdir(root):
         messages = ["Download directory not found."]
-        return base(messages)
+        return render_base(messages)
     data = {"folder": [], "files": []}
 
     items = os.listdir(fs_encode(root))
@@ -150,7 +150,7 @@ def downloads():
 def get_download(filename):
     api = flask.current_app.config["PYLOAD_API"]
     filename = unquote(filename).decode("utf-8").replace("..", "")
-    directory = api.getConfigValue("general", "download_folder")
+    directory = api.getConfigValue("general", "storage_folder")
     return flask.send_from_directory(directory, filename, as_attachment=True)
 
 
@@ -338,7 +338,7 @@ def logs(item=-1):
     reversed = s.get("reversed", False)
 
     warning = ""
-    conf = api.getConfigValue("log", "file_log")
+    conf = api.getConfigValue("log", "filelog")
     if not conf:
         warning = "Warning: File log is disabled, see settings page."
 
@@ -479,7 +479,7 @@ def admin():
 @bp.route(r"/setup")
 def setup():
     messages = ["Run pyLoad -s to access the setup."]
-    return base(messages)
+    return render_base(messages)
 
 
 @bp.route(r"/info", endpoint="info")
@@ -495,7 +495,7 @@ def info():
         "version": api.getServerVersion(),
         "folder": os.path.abspath(PKGDIR),
         "config": os.path.abspath(api.get_userdir()),
-        "download": os.path.abspath(conf["general"]["download_folder"]["value"]),
+        "download": os.path.abspath(conf["general"]["storage_folder"]["value"]),
         "freespace": formatSize(api.freeSpace()),
         "remote": conf["remote"]["port"]["value"],
         "webif": conf["webui"]["port"]["value"],

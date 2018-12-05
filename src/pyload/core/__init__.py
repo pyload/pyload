@@ -42,10 +42,10 @@ class Exit(Exception):
 #  improve external scripts
 class Core(object):
 
-    _LOCALE_DOMAIN = "core"
+    _LOCALE_DOMAIN = "pyload"
     _DEFAULT_USERNAME = "admin"
     _DEFAULT_PASSWORD = "pyload"
-    _DEBUG_LEVEL_MAP = {'info': 1, 'trace': 2, 'stack': 3}
+    _DEBUG_LEVEL_MAP = {'debug': 1, 'trace': 2, 'stack': 3}
 
     @property
     def version(self):
@@ -118,8 +118,7 @@ class Core(object):
         
         self.log.info("*** Welcome to pyLoad v{} ***".format(self.version))
         if self.debug:
-            debug_level = invertmap(_DEBUG_LEVEL_MAP)[self.debug]
-            self.log.warning(">>> DEBUG {} MODE ON AIR <<<".format(debug_level))
+            self.log.warning(">>> DEBUG MODE ON AIR <<<")
 
     def _init_network(self):
         from .network.request_factory import RequestFactory
@@ -274,13 +273,17 @@ class Core(object):
 
     def start(self):
         try:
-            self.log.debug("Starting pyLoad...")
+            self.log.debug("Starting...")
+            
+            debug_level = invertmap(self._DEBUG_LEVEL_MAP)[self.debug]
+            self.log.debug("Debug level: {}".format(debug_level.upper()))
+            
             # self.evm.fire('pyload:starting')
             self._running.set()
 
             self._setup_language()
             self._setup_permissions()
-
+            
             self.log.info(self._("User directory: {}").format(self.userdir))
             self.log.info(self._("Cache directory: {}").format(self.cachedir))
 
@@ -302,7 +305,7 @@ class Core(object):
             self._start_servers()
             self._parse_linkstxt()
                         
-            self.log.debug("pyLoad is up and running")
+            self.log.debug("*** pyLoad is up and running ***")
             # self.evm.fire('pyload:started')
             
             self.thm.pause = False  # NOTE: Recheck...
@@ -332,13 +335,13 @@ class Core(object):
 
     def restart(self):
         self.stop()
-        self.log.info(self._("Restarting pyLoad..."))
+        self.log.info(self._("Restarting..."))
         # self.evm.fire('pyload:restarting')
         self.start()
 
     def terminate(self):
         self.stop()
-        self.log.info(self._("Exiting pyLoad..."))
+        self.log.info(self._("Exiting..."))
         # self.tsm.exit()
         # self.db.exit()  # NOTE: Why here?
         self.logfactory.shutdown()
@@ -348,7 +351,7 @@ class Core(object):
 
     def stop(self):
         try:
-            self.log.debug("Stopping pyLoad...")
+            self.log.debug("Stopping...")
             # self.evm.fire('pyload:stopping')
 
             if self.webserver.is_alive():

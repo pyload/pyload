@@ -49,7 +49,7 @@ class ConfigParser(object):
         configdir = os.path.join(userdir, "settings")
         os.makedirs(configdir, exist_ok=True)
         
-        self.configpath = os.path.join(configdir, "core.conf")
+        self.configpath = os.path.join(configdir, "pyload.conf")
         self.pluginpath = os.path.join(configdir, "plugins.conf")
 
         self.oldRemoteData = {}
