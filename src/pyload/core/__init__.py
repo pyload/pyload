@@ -287,7 +287,7 @@ class Core(object):
 
     def start(self):
         try:
-            self.log.debug("Starting...")
+            self.log.debug("Starting core...")
 
             debug_level = invertmap(self._DEBUG_LEVEL_MAP)[self.debug]
             self.log.debug("Debug level: {}".format(debug_level.upper()))
@@ -349,13 +349,13 @@ class Core(object):
 
     def restart(self):
         self.stop()
-        self.log.info(self._("Restarting..."))
+        self.log.info(self._("Restarting core..."))
         # self.evm.fire('pyload:restarting')
         self.start()
 
     def terminate(self):
         self.stop()
-        self.log.info(self._("Exiting..."))
+        self.log.info(self._("Exiting core..."))
         # self.tsm.exit()
         # self.db.exit()  # NOTE: Why here?
         self.logfactory.shutdown()
@@ -365,7 +365,7 @@ class Core(object):
 
     def stop(self):
         try:
-            self.log.debug("Stopping...")
+            self.log.debug("Stopping core...")
             # self.evm.fire('pyload:stopping')
 
             if self.webserver.is_alive():
