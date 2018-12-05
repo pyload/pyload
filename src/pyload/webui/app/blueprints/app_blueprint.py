@@ -27,18 +27,18 @@ from ..helpers import (clear_session, get_permission, get_redirect_target,
 bp = flask.Blueprint("app", __name__)
 
 
-@bp.route(r"/favicon.ico")
+@bp.route(r"/favicon.ico", endpoint="favicon")
 def favicon():
     filename = os.path.join("img", "favicon.ico")
     return flask.send_from_directory(bp.static_folder, filename)
 
 
-@bp.route("/robots.txt")
+@bp.route("/robots.txt", endpoint="robots")
 def robots():
     return "User-agent: *\nDisallow: /"
 
 
-@bp.route(r"/login", methods=["GET", "POST"])
+@bp.route(r"/login", methods=["GET", "POST"], endpoint="login")
 def login():
     if flask.request.method == "GET":
         return render_template("login.html", proc=[pre_processor])
@@ -62,7 +62,7 @@ def login():
     return flask.redirect(next or flask.url_for("index"))
 
 
-@bp.route(r"/logout")
+@bp.route(r"/logout", endpoint="logout")
 def logout():
     # logout_user()
     clear_session()
@@ -227,8 +227,13 @@ def settings():
     )
 
 
+# TODO: Remove `filechooser` and `pathchooser` in 0.6.x
+@bp.route(r"/filechooser", endpoint="filemanager")
+@bp.route(r"/filechooser/<path:path>", endpoint="filemanager")
 @bp.route(r"/pathchooser", endpoint="filemanager")
 @bp.route(r"/pathchooser/<path:path>", endpoint="filemanager")
+@bp.route(r"/filemanager", endpoint="filemanager")
+@bp.route(r"/filemanager/<path:path>", endpoint="filemanager")
 # @login_required("STATUS")
 def filemanager(path):
     browse_for = "folder" if os.path.isdir(path) else "file"
@@ -476,7 +481,7 @@ def admin():
     return render_template("admin.html", context, [pre_processor])
 
 
-@bp.route(r"/setup")
+@bp.route(r"/setup", endpoint="setup")
 def setup():
     messages = ["Run pyLoad -s to access the setup."]
     return render_base(messages)

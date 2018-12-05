@@ -36,9 +36,9 @@
     </form>
 
     {% if type == 'folder' %}
-    <span class="path_abs_rel">{{_("Path")}}: <a href="{{ "/pathchooser" + cwd|path_make_absolute|quotepath }}"{% if absolute %} style="text-decoration: underline;"{% endif %}>{{_("absolute")}}</a> | <a href="{{ "/pathchooser/" + cwd|path_make_relative|quotepath }}"{% if not absolute %} style="text-decoration: underline;"{% endif %}>{{_("relative")}}</a></span>
+    <span class="path_abs_rel">{{_("Path")}}: <a href="{{ url_for('app.filemanager', path={{ cwd|path_make_absolute|quotepath }}) }}"{% if absolute %} style="text-decoration: underline;"{% endif %}>{{_("absolute")}}</a> | <a href="{{ url_for('app.filemanager', path={{ cwd|path_make_relative|quotepath }}) }}"{% if not absolute %} style="text-decoration: underline;"{% endif %}>{{_("relative")}}</a></span>
     {% else %}
-    <span class="path_abs_rel">{{_("Path")}}: <a href="{{ "/filechooser/" + cwd|path_make_absolute|quotepath }}"{% if absolute %} style="text-decoration: underline;"{% endif %}>{{_("absolute")}}</a> | <a href="{{ "/filechooser/" + cwd|path_make_relative|quotepath }}"{% if not absolute %} style="text-decoration: underline;"{% endif %}>{{_("relative")}}</a></span>
+    <span class="path_abs_rel">{{_("Path")}}: <a href="{{ url_for('app.filemanager', path={{ cwd|path_make_absolute|quotepath }}) }}"{% if absolute %} style="text-decoration: underline;"{% endif %}>{{_("absolute")}}</a> | <a href="{{ url_for('app.filemanager', path={{ cwd|path_make_relative|quotepath }}) }}"{% if not absolute %} style="text-decoration: underline;"{% endif %}>{{_("relative")}}</a></span>
     {% endif %}
     </div>
     <table border="0" cellspacing="0" cellpadding="3">
@@ -51,16 +51,16 @@
     {% if parentdir %}
         <tr>
             <td colspan="4">
-                <a href="{% if type == 'folder' %}{{ "/pathchooser/" + parentdir|quotepath }}{% else %}{{ "/filechooser/" + parentdir|quotepath }}{% endif %}"><span class="parentdir">{{_("parent directory")}}</span></a>
+                <a href="{% if type == 'folder' %}{{ url_for('app.filemanager', path={{ parentdir|quotepath }}) }}{% else %}{{ url_for('app.filemanager', path={{ parentdir|quotepath }}) }}{% endif %}"><span class="parentdir">{{_("parent directory")}}</span></a>
             </td>
         </tr>
     {% endif %}
 {% for file in files %}
         <tr>
             {% if type == 'folder' %}
-                <td class="name">{% if file.type == 'dir' %}<a href="{{ "/pathchooser/" + file.fullpath|quotepath }}" title="{{ file.fullpath }}"><span class="path_directory">{{ file.name|truncate(25) }}</span></a>{% else %}<span class="path_file" title="{{ file.fullpath }}">{{ file.name|truncate(25) }}{% endif %}</span></td>
+                <td class="name">{% if file.type == 'dir' %}<a href="{{ url_for('app.filemanager', path={{ file.fullpath|quotepath }}) }}" title="{{ file.fullpath }}"><span class="path_directory">{{ file.name|truncate(25) }}</span></a>{% else %}<span class="path_file" title="{{ file.fullpath }}">{{ file.name|truncate(25) }}{% endif %}</span></td>
             {% else %}
-                <td class="name">{% if file.type == 'dir' %}<a href="{{ "/filechooser/" + file.fullpath|quotepath }}" title="{{ file.fullpath }}"><span class="file_directory">{{ file.name|truncate(25) }}</span></a>{% else %}<a href="#" onclick="setFile('{{ file.fullpath }}');" title="{{ file.fullpath }}"><span class="file_file">{{ file.name|truncate(25) }}{% endif %}</span></a></td>
+                <td class="name">{% if file.type == 'dir' %}<a href="{{ url_for('app.filemanager', path={{ file.fullpath|quotepath }}) }}" title="{{ file.fullpath }}"><span class="file_directory">{{ file.name|truncate(25) }}</span></a>{% else %}<a href="#" onclick="setFile('{{ file.fullpath }}');" title="{{ file.fullpath }}"><span class="file_file">{{ file.name|truncate(25) }}{% endif %}</span></a></td>
             {% endif %}
             <td class="size">{{ file.size|float|filesizeformat }}</td>
             <td class="type">{% if file.type == 'dir' %}directory{% else %}{{ file.ext|default("file") }}{% endif %}</td>

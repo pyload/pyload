@@ -333,7 +333,7 @@ def update_accounts():
             api.removeAccount(plugin, user)
 
 
-@bp.route(r"/change_password", methods=["POST"])
+@bp.route(r"/change_password", methods=["POST"], endpoint="change_password")
 # @apiver_check
 # @fresh_login_required
 # @login_required("ACCOUNTS")
