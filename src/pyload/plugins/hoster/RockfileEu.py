@@ -103,7 +103,7 @@ class RockfileEu(SimpleHoster):
 
         self.data = self.load(pyfile.url, post=inputs)
 
-        if r"> Preparing download link ...<" not in self.data:
+        if r"> Preparing download link...<" not in self.data:
             self.retry_captcha()
 
         else:

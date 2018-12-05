@@ -15,7 +15,6 @@ class DownloadThread(PluginThread):
     """
     thread for downloading files from 'real' hoster plugins.
     """
-
     # ----------------------------------------------------------------------
     def __init__(self, manager):
         """

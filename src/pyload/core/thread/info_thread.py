@@ -31,7 +31,6 @@ class InfoThread(PluginThread):
         """
         run method.
         """
-
         plugins = {}
         container = []
 

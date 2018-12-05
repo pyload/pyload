@@ -19,7 +19,6 @@ class HTTPDownload(object):
     """
     loads a url http + ftp.
     """
-
     def __init__(
         self,
         url,
@@ -123,7 +122,6 @@ class HTTPDownload(object):
         """
         returns new filename or None.
         """
-
         chunks = max(1, chunks)
         resume = self.info.resume and resume
 

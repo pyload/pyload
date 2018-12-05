@@ -15,7 +15,6 @@ class ManageFiles(Handler):
     """
     possibility to manage queue/collector.
     """
-
     def init(self):
         self.target = Destination.Queue
         self.pos = 0  #: position in queue

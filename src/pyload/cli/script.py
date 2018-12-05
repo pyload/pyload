@@ -83,7 +83,7 @@ def print_commands():
         ("restart_file <fid> <fid2>...", self._("Restart files")),
         ("restart_package <pid> <pid2>...", self._("Restart packages")),
         (
-            "check <container|url> ...",
+            "check <container|url>...",
             self._("Check online status, works with local container"),
         ),
         ("check_container path", self._("Checks online status of a container file")),

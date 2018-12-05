@@ -17,7 +17,6 @@ class FileHandler(object):
     Handles all request made to obtain information, modify status or other request for
     links or packages.
     """
-
     def __init__(self, core):
         """
         Constructor.
@@ -96,7 +95,6 @@ class FileHandler(object):
         """
         gets a complete data representation.
         """
-
         data = self.db.getAllLinks(queue)
         packs = self.db.getAllPackages(queue)
 
@@ -118,7 +116,6 @@ class FileHandler(object):
         """
         gets a data representation without links.
         """
-
         packs = self.db.getAllPackages(queue)
         for x in self.packageCache.values():
             if x.queue != queue or x.id not in packs:
@@ -133,7 +130,6 @@ class FileHandler(object):
         """
         adds links.
         """
-
         self.pyload.addonManager.dispatchEvent("linksAdded", urls, package)
 
         data = self.pyload.pluginManager.parseUrls(urls)
@@ -164,7 +160,6 @@ class FileHandler(object):
         """
         delete package and all contained links.
         """
-
         p = self.getPackage(id)
         if not p:
             if id in self.packageCache:
@@ -203,7 +198,6 @@ class FileHandler(object):
         """
         deletes links.
         """
-
         f = self.getFile(id)
         if not f:
             return None
@@ -276,7 +270,6 @@ class FileHandler(object):
         """
         return package instance.
         """
-
         if id in self.packageCache:
             return self.packageCache[id]
         else:
@@ -334,7 +327,6 @@ class FileHandler(object):
         """
         get suitable job.
         """
-
         # TODO: clean mess
         # TODO: improve selection of valid jobs
 
@@ -397,7 +389,6 @@ class FileHandler(object):
         """
         returns number of files.
         """
-
         if self.filecount == -1:
             self.filecount = self.db.filecount(1)
 
@@ -416,7 +407,6 @@ class FileHandler(object):
         """
         checks if all files are finished and dispatch event.
         """
-
         if not self.getQueueCount(True):
             self.pyload.addonManager.dispatchEvent("allDownloadsFinished")
             self.pyload.log.debug("All downloads finished")
@@ -429,7 +419,6 @@ class FileHandler(object):
         checks if all files was processed and pyload would idle now, needs fid which
         will be ignored when counting.
         """
-
         # reset count so statistic will update (this is called when dl was processed)
         self.resetCount()
 
@@ -489,7 +478,6 @@ class FileHandler(object):
         """
         push package to queue.
         """
-
         p = self.db.getPackage(id)
         oldorder = p.order
 
@@ -602,7 +590,6 @@ class FileHandler(object):
         """
         checks if package is finished and calls addonManager.
         """
-
         ids = self.db.getUnfinished(pyfile.packageid)
         if not ids or (pyfile.id in ids and len(ids) == 1):
             if not pyfile.package().setFinished:
@@ -632,7 +619,6 @@ class FileHandler(object):
         """
         deletes finished links and packages, return deleted packages.
         """
-
         old_packs = self.getInfoData(0)
         old_packs.update(self.getInfoData(1))
 
@@ -1014,7 +1000,6 @@ class FileMethods(object):
         return pyfile ids, which are suitable for download and dont use a occupied
         plugin.
         """
-
         # TODO: improve this hardcoded method
         # plugins which are processed in collector
         pre = "('DLC', 'LinkList', 'SerienjunkiesOrg', 'CCF', 'RSDF')"
@@ -1054,7 +1039,6 @@ class FileMethods(object):
         return list of max length 3 ids with pyfiles in package not finished or
         processed.
         """
-
         self.c.execute(
             "SELECT id FROM links WHERE package=? AND status NOT IN (0, 4, 13) LIMIT 3",
             (str(pid),),

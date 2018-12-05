@@ -11,7 +11,6 @@ class PyPackage(object):
     """
     Represents a package object at runtime.
     """
-
     def __init__(self, manager, id, name, folder, site, password, queue, order):
         self.m = self.manager = manager
         self.m.packageCache[int(id)] = self

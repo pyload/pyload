@@ -35,7 +35,6 @@ class PyFile(object):
     """
     Represents a file object at runtime.
     """
-
     def __init__(
         self, manager, id, url, name, size, status, error, pluginname, package, order
     ):
@@ -204,7 +203,6 @@ class PyFile(object):
         """
         set status to finish and release file if every thread is finished with it.
         """
-
         if self.id in self.m.pyload.threadManager.processingIds():
             return False
 

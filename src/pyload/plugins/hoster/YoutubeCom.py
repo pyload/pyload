@@ -27,7 +27,6 @@ class BIGHTTPRequest(HTTPRequest):
     Overcome HTTPRequest's load() size limit to allow loading very big web pages by
     overrding HTTPRequest's write() function.
     """
-
     # TODO: Add 'limit' parameter to HTTPRequest in v0.6.x
     def __init__(self, cookies=None, options=None, limit=2_000_000):
         self.limit = limit
@@ -1240,7 +1239,6 @@ class YoutubeCom(Hoster):
 
 
 """Credit to this awesome piece of code below goes to the 'youtube_dl' project, kudos!"""
-
 
 class JSInterpreterError(Exception):
     pass

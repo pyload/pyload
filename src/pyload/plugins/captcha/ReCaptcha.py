@@ -98,7 +98,6 @@ class ReCaptcha(CaptchaService):
                 js_script.async = true;
                 document.getElementsByTagName('head')[0].appendChild(js_script);
             }"""
-
     def detect_key(self, data=None):
         html = data or self.retrieve_data()
 

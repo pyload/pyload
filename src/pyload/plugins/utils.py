@@ -88,7 +88,6 @@ class DB(object):
         """
         Saves a value persistently to the database.
         """
-
         # NOTE: value must not be <bytes> otherwise BOOM! and moreover our sqlite db always return strings as <str>
         entry = b85encode(json.dumps(value, ensure_ascii=False).encode()).decode()
         self.plugin.pyload.db.setStorage(self.plugin.classname, key, entry)

@@ -47,7 +47,6 @@ class PluginManager(object):
         """
         create information for all plugins available.
         """
-
         def merge(dst, src, overwrite=False):
             """
             merge dict of dicts.
@@ -258,7 +257,6 @@ class PluginManager(object):
         """
         parse plugins for given list of urls.
         """
-
         last = None
         res = []  #: tupels of (url, plugin)
 
@@ -416,7 +414,6 @@ class PluginManager(object):
         """
         reloads and reindexes plugins.
         """
-
         def merge(dst, src, overwrite=False):
             """
             merge dict of dicts.

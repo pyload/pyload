@@ -12,7 +12,6 @@ class DecrypterThread(PluginThread):
     """
     thread for decrypting.
     """
-
     def __init__(self, manager, pyfile):
         """
         constructor.
@@ -33,7 +32,6 @@ class DecrypterThread(PluginThread):
         """
         run method.
         """
-
         pyfile = self.active
         retry = False
 

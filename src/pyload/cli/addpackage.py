@@ -10,7 +10,6 @@ class AddPackage(Handler):
     """
     let the user add packages.
     """
-
     def init(self):
         self.name = ""
         self.urls = []

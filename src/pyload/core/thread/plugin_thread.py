@@ -14,7 +14,6 @@ class PluginThread(Thread):
     """
     abstract base class for thread types.
     """
-
     # ----------------------------------------------------------------------
     def __init__(self, manager):
         """
@@ -32,7 +31,6 @@ class PluginThread(Thread):
 
         :return:
         """
-
         dump_name = "debug_{}_{}.zip".format(
             pyfile.pluginname, time.strftime("%Y-%m-%d_%H-%M-%S")
         )

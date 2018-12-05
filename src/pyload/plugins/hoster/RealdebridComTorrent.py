@@ -71,7 +71,6 @@ class RealdebridComTorrent(Hoster):
         """
         Send torrent/magnet to the server.
         """
-
         if self.pyfile.url.endswith(".torrent"):
             #: torrent URL
             if self.pyfile.url.startswith("http"):
@@ -143,7 +142,6 @@ class RealdebridComTorrent(Hoster):
         """
         Show progress while the server does the download.
         """
-
         torrent_info = self.api_response(
             "/torrents/info/" + torrent_id, get={"auth_token": self.api_token}
         )
@@ -172,7 +170,6 @@ class RealdebridComTorrent(Hoster):
         """
         Download the file after the server finished downloading the torrent.
         """
-
         api_data = self.api_response(
             "/unrestrict/link",
             get={"auth_token": self.api_token},
@@ -193,7 +190,6 @@ class RealdebridComTorrent(Hoster):
         """
         Remove the torrent from the server.
         """
-
         with pycurl.Curl() as c:
             c.setopt(
                 pycurl.URL,

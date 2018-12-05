@@ -58,7 +58,6 @@ class ImgurCom(SimpleCrypter):
         """
         Check the embedded JSON and if needed the external JSON for more images.
         """
-
         # Greedy re should match the closing bracket of json assuming JSON data
         # is placed on a single line
         m = re.search(r"\simage\s+:\s+({.*})", self.data)
@@ -116,7 +115,6 @@ class ImgurCom(SimpleCrypter):
         """
         Try to find a list of all images and add those we didn't find already.
         """
-
         # Extract IDs of known direct links
         ids_direct = set(
             l for link in links_direct for l in re.findall(r"(\w{7})", link)
@@ -144,7 +142,6 @@ class ImgurCom(SimpleCrypter):
         Extract embedded links from HTML // then check if there are further images which
         will be lazy-loaded.
         """
-
         def f(url):
             return "http://" + re.sub(r"(\w{7})s\.", r"\1.", url)
 

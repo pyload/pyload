@@ -57,7 +57,6 @@ class CoinHive(CaptchaService):
             document.getElementsByTagName('head')[0].appendChild(js_script);
 
             gpyload.activated();"""
-
     def detect_key(self, data=None):
         html = data or self.retrieve_data()
 

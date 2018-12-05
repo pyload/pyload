@@ -64,7 +64,6 @@ class SimpleCrypter(Crypter):
       def load_page(self, page_n):
           return the html of the page number page_n
     """
-
     NAME_REPLACEMENTS = []
     URL_REPLACEMENTS = []
 

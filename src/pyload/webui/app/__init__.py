@@ -106,7 +106,6 @@ class App(object):
         """
         Register error handlers.
         """
-
         def handle_error(error):
             """
             Render error template.

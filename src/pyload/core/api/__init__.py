@@ -87,7 +87,6 @@ class Api(Iface):
     These can be configured via webinterface.
     Admin user have all permissions, and are the only ones who can access the methods with no specific permission.
     """
-
     EXTERNAL = Iface  #: let the json api know which methods are external
 
     def __init__(self, core):
@@ -813,7 +812,6 @@ class Api(Iface):
         """
         Aborts all running downloads.
         """
-
         pyfiles = list(self.pyload.files.cache.values())
         for pyfile in pyfiles:
             pyfile.abortDownload()
@@ -950,7 +948,6 @@ class Api(Iface):
         :param destination: `Destination`
         :return: dict mapping order to package id
         """
-
         packs = self.pyload.files.getInfoData(destination)
         order = {}
 

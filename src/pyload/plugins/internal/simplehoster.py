@@ -86,7 +86,6 @@ class SimpleHoster(Hoster):
         LINK_PREMIUM_PATTERN: (optional) group(1) should be the direct link for premium download
           example: LINK_PREMIUM_PATTERN = r'<div class="link"><a href="(.+?)"'
     """
-
     NAME_REPLACEMENTS = []
     SIZE_REPLACEMENTS = []
     URL_REPLACEMENTS = []

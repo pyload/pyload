@@ -148,7 +148,6 @@ class HTTPChunk(HTTPRequest):
         """
         returns a Curl handle ready to use for perform/multiperform.
         """
-
         self.setRequestContext(
             self.p.url, self.p.get, self.p.post, self.p.referer, self.p.cj
         )

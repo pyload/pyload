@@ -58,7 +58,6 @@ class AddonManager(object):
     |    allDownloadsProcessed is *always* called before allDownloadsFinished.
     |    configChanged is *always* called before pluginConfigChanged.
     """
-
     def __init__(self, core):
         self.pyload = core
         self._ = core._

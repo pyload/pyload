@@ -130,7 +130,6 @@ class Cli(object):
         """
         refresh screen.
         """
-
         println(
             1, blue("py") + yellow("Load") + white(self._(" Command Line Interface"))
         )
@@ -318,7 +317,7 @@ class Cli(object):
             if len(args) < 2:
                 print(
                     self._(
-                        "Please use this syntax: add <Package name> <link> <link2> ..."
+                        "Please use this syntax: add <Package name> <link> <link2>..."
                     )
                 )
                 return
@@ -329,7 +328,7 @@ class Cli(object):
             if len(args) < 2:
                 print(
                     self._(
-                        "Please use this syntax: add <Package name> <link> <link2> ..."
+                        "Please use this syntax: add <Package name> <link> <link2>..."
                     )
                 )
                 return

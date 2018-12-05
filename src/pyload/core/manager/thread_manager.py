@@ -23,7 +23,6 @@ class ThreadManager(object):
     """
     manages the download threads, assign jobs, reconnect etc.
     """
-
     def __init__(self, core):
         """
         Constructor.
@@ -63,7 +62,6 @@ class ThreadManager(object):
         """
         create a download thread.
         """
-
         thread = DownloadThread(self)
         self.threads.append(thread)
 
@@ -163,7 +161,6 @@ class ThreadManager(object):
         """
         checks if reconnect needed.
         """
-
         if not (
             self.pyload.config.get("reconnect", "enabled")
             and self.pyload.api.isTimeReconnect()
@@ -247,7 +244,6 @@ class ThreadManager(object):
         """
         checks if there are need for increasing or reducing thread count.
         """
-
         if len(self.threads) == self.pyload.config.get("download", "max_downloads"):
             return True
         elif len(self.threads) < self.pyload.config.get("download", "max_downloads"):
@@ -274,7 +270,6 @@ class ThreadManager(object):
         """
         assing a job to a thread if possible.
         """
-
         if self.pause or not self.pyload.api.isTimeDownload():
             return
 

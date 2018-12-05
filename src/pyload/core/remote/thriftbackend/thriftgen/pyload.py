@@ -3545,7 +3545,6 @@ class getConfigValue_args(TBase):
     - option
     - section
     """
-
     thrift_spec = (
         None,  #: 0
         (1, TType.STRING, "category", None, None),  #: 1
@@ -3565,7 +3564,6 @@ class getConfigValue_result(TBase):
 
     - success
     """
-
     thrift_spec = ((0, TType.STRING, "success", None, None),)  #: 0
 
     def __init__(self, success=None):
@@ -3581,7 +3579,6 @@ class setConfigValue_args(TBase):
     - value
     - section
     """
-
     thrift_spec = (
         None,  #: 0
         (1, TType.STRING, "category", None, None),  #: 1
@@ -3613,7 +3610,6 @@ class getConfig_result(TBase):
 
     - success
     """
-
     thrift_spec = (
         (
             0,
@@ -3644,7 +3640,6 @@ class getPluginConfig_result(TBase):
 
     - success
     """
-
     thrift_spec = (
         (
             0,
@@ -3695,7 +3690,6 @@ class togglePause_result(TBase):
 
     - success
     """
-
     thrift_spec = ((0, TType.BOOL, "success", None, None),)  #: 0
 
     def __init__(self, success=None):
@@ -3713,7 +3707,6 @@ class statusServer_result(TBase):
 
     - success
     """
-
     thrift_spec = (
         (
             0,
@@ -3739,7 +3732,6 @@ class freeSpace_result(TBase):
 
     - success
     """
-
     thrift_spec = ((0, TType.I64, "success", None, None),)  #: 0
 
     def __init__(self, success=None):
@@ -3757,7 +3749,6 @@ class getServerVersion_result(TBase):
 
     - success
     """
-
     thrift_spec = ((0, TType.STRING, "success", None, None),)  #: 0
 
     def __init__(self, success=None):
@@ -3790,7 +3781,6 @@ class getLog_args(TBase):
 
     - offset
     """
-
     thrift_spec = (None, (1, TType.I32, "offset", None, None))  #: 0  #: 1
 
     def __init__(self, offset=None):
@@ -3803,7 +3793,6 @@ class getLog_result(TBase):
 
     - success
     """
-
     thrift_spec = ((0, TType.LIST, "success", (TType.STRING, None), None),)  #: 0
 
     def __init__(self, success=None):
@@ -3821,7 +3810,6 @@ class isTimeDownload_result(TBase):
 
     - success
     """
-
     thrift_spec = ((0, TType.BOOL, "success", None, None),)  #: 0
 
     def __init__(self, success=None):
@@ -3839,7 +3827,6 @@ class isTimeReconnect_result(TBase):
 
     - success
     """
-
     thrift_spec = ((0, TType.BOOL, "success", None, None),)  #: 0
 
     def __init__(self, success=None):
@@ -3857,7 +3844,6 @@ class toggleReconnect_result(TBase):
 
     - success
     """
-
     thrift_spec = ((0, TType.BOOL, "success", None, None),)  #: 0
 
     def __init__(self, success=None):
@@ -3870,7 +3856,6 @@ class generatePackages_args(TBase):
 
     - links
     """
-
     thrift_spec = (
         None,
         (1, TType.LIST, "links", (TType.STRING, None), None),
@@ -3886,7 +3871,6 @@ class generatePackages_result(TBase):
 
     - success
     """
-
     thrift_spec = (
         (
             0,
@@ -3907,7 +3891,6 @@ class checkURLs_args(TBase):
 
     - urls
     """
-
     thrift_spec = (
         None,
         (1, TType.LIST, "urls", (TType.STRING, None), None),
@@ -3923,7 +3906,6 @@ class checkURLs_result(TBase):
 
     - success
     """
-
     thrift_spec = (
         (
             0,
@@ -3945,7 +3927,6 @@ class parseURLs_args(TBase):
     - html
     - url
     """
-
     thrift_spec = (
         None,  #: 0
         (1, TType.STRING, "html", None, None),  #: 1
@@ -3963,7 +3944,6 @@ class parseURLs_result(TBase):
 
     - success
     """
-
     thrift_spec = (
         (
             0,
@@ -3984,7 +3964,6 @@ class checkOnlineStatus_args(TBase):
 
     - urls
     """
-
     thrift_spec = (
         None,
         (1, TType.LIST, "urls", (TType.STRING, None), None),
@@ -4000,7 +3979,6 @@ class checkOnlineStatus_result(TBase):
 
     - success
     """
-
     thrift_spec = (
         (
             0,
@@ -4023,7 +4001,6 @@ class checkOnlineStatusContainer_args(TBase):
     - filename
     - data
     """
-
     thrift_spec = (
         None,  #: 0
         (1, TType.LIST, "urls", (TType.STRING, None), None),  #: 1
@@ -4043,7 +4020,6 @@ class checkOnlineStatusContainer_result(TBase):
 
     - success
     """
-
     thrift_spec = (
         (
             0,
@@ -4064,7 +4040,6 @@ class pollResults_args(TBase):
 
     - rid
     """
-
     thrift_spec = (None, (1, TType.I32, "rid", None, None))  #: 0  #: 1
 
     def __init__(self, rid=None):
@@ -4077,7 +4052,6 @@ class pollResults_result(TBase):
 
     - success
     """
-
     thrift_spec = (
         (
             0,
@@ -4103,7 +4077,6 @@ class statusDownloads_result(TBase):
 
     - success
     """
-
     thrift_spec = (
         (
             0,
@@ -4124,7 +4097,6 @@ class getPackageData_args(TBase):
 
     - pid
     """
-
     thrift_spec = (None, (1, TType.I32, "pid", None, None))  #: 0  #: 1
 
     def __init__(self, pid=None):
@@ -4138,7 +4110,6 @@ class getPackageData_result(TBase):
     - success
     - e
     """
-
     thrift_spec = (
         (
             0,
@@ -4167,7 +4138,6 @@ class getPackageInfo_args(TBase):
 
     - pid
     """
-
     thrift_spec = (None, (1, TType.I32, "pid", None, None))  #: 0  #: 1
 
     def __init__(self, pid=None):
@@ -4181,7 +4151,6 @@ class getPackageInfo_result(TBase):
     - success
     - e
     """
-
     thrift_spec = (
         (
             0,
@@ -4210,7 +4179,6 @@ class getFileData_args(TBase):
 
     - fid
     """
-
     thrift_spec = (None, (1, TType.I32, "fid", None, None))  #: 0  #: 1
 
     def __init__(self, fid=None):
@@ -4224,7 +4192,6 @@ class getFileData_result(TBase):
     - success
     - e
     """
-
     thrift_spec = (
         (0, TType.STRUCT, "success", (FileData, FileData.thrift_spec), None),  #: 0
         (
@@ -4252,7 +4219,6 @@ class getQueue_result(TBase):
 
     - success
     """
-
     thrift_spec = (
         (
             0,
@@ -4278,7 +4244,6 @@ class getCollector_result(TBase):
 
     - success
     """
-
     thrift_spec = (
         (
             0,
@@ -4304,7 +4269,6 @@ class getQueueData_result(TBase):
 
     - success
     """
-
     thrift_spec = (
         (
             0,
@@ -4330,7 +4294,6 @@ class getCollectorData_result(TBase):
 
     - success
     """
-
     thrift_spec = (
         (
             0,
@@ -4351,7 +4314,6 @@ class getPackageOrder_args(TBase):
 
     - destination
     """
-
     thrift_spec = (None, (1, TType.I32, "destination", None, None))  #: 0  #: 1
 
     def __init__(self, destination=None):
@@ -4364,7 +4326,6 @@ class getPackageOrder_result(TBase):
 
     - success
     """
-
     thrift_spec = (
         (0, TType.MAP, "success", (TType.I16, None, TType.I32, None), None),  #: 0
     )
@@ -4379,7 +4340,6 @@ class getFileOrder_args(TBase):
 
     - pid
     """
-
     thrift_spec = (None, (1, TType.I32, "pid", None, None))  #: 0  #: 1
 
     def __init__(self, pid=None):
@@ -4392,7 +4352,6 @@ class getFileOrder_result(TBase):
 
     - success
     """
-
     thrift_spec = (
         (0, TType.MAP, "success", (TType.I16, None, TType.I32, None), None),  #: 0
     )
@@ -4408,7 +4367,6 @@ class generateAndAddPackages_args(TBase):
     - links
     - dest
     """
-
     thrift_spec = (
         None,  #: 0
         (1, TType.LIST, "links", (TType.STRING, None), None),  #: 1
@@ -4426,7 +4384,6 @@ class generateAndAddPackages_result(TBase):
 
     - success
     """
-
     thrift_spec = ((0, TType.LIST, "success", (TType.I32, None), None),)  #: 0
 
     def __init__(self, success=None):
@@ -4441,7 +4398,6 @@ class addPackage_args(TBase):
     - links
     - dest
     """
-
     thrift_spec = (
         None,  #: 0
         (1, TType.STRING, "name", None, None),  #: 1
@@ -4461,7 +4417,6 @@ class addPackage_result(TBase):
 
     - success
     """
-
     thrift_spec = ((0, TType.I32, "success", None, None),)  #: 0
 
     def __init__(self, success=None):
@@ -4475,7 +4430,6 @@ class addFiles_args(TBase):
     - pid
     - links
     """
-
     thrift_spec = (
         None,  #: 0
         (1, TType.I32, "pid", None, None),  #: 1
@@ -4499,7 +4453,6 @@ class uploadContainer_args(TBase):
     - filename
     - data
     """
-
     thrift_spec = (
         None,  #: 0
         (1, TType.STRING, "filename", None, None),  #: 1
@@ -4522,7 +4475,6 @@ class deleteFiles_args(TBase):
 
     - fids
     """
-
     thrift_spec = (None, (1, TType.LIST, "fids", (TType.I32, None), None))  #: 0  #: 1
 
     def __init__(self, fids=None):
@@ -4540,7 +4492,6 @@ class deletePackages_args(TBase):
 
     - pids
     """
-
     thrift_spec = (None, (1, TType.LIST, "pids", (TType.I32, None), None))  #: 0  #: 1
 
     def __init__(self, pids=None):
@@ -4558,7 +4509,6 @@ class pushToQueue_args(TBase):
 
     - pid
     """
-
     thrift_spec = (None, (1, TType.I32, "pid", None, None))  #: 0  #: 1
 
     def __init__(self, pid=None):
@@ -4576,7 +4526,6 @@ class pullFromQueue_args(TBase):
 
     - pid
     """
-
     thrift_spec = (None, (1, TType.I32, "pid", None, None))  #: 0  #: 1
 
     def __init__(self, pid=None):
@@ -4594,7 +4543,6 @@ class restartPackage_args(TBase):
 
     - pid
     """
-
     thrift_spec = (None, (1, TType.I32, "pid", None, None))  #: 0  #: 1
 
     def __init__(self, pid=None):
@@ -4612,7 +4560,6 @@ class restartFile_args(TBase):
 
     - fid
     """
-
     thrift_spec = (None, (1, TType.I32, "fid", None, None))  #: 0  #: 1
 
     def __init__(self, fid=None):
@@ -4630,7 +4577,6 @@ class recheckPackage_args(TBase):
 
     - pid
     """
-
     thrift_spec = (None, (1, TType.I32, "pid", None, None))  #: 0  #: 1
 
     def __init__(self, pid=None):
@@ -4658,7 +4604,6 @@ class stopDownloads_args(TBase):
 
     - fids
     """
-
     thrift_spec = (None, (1, TType.LIST, "fids", (TType.I32, None), None))  #: 0  #: 1
 
     def __init__(self, fids=None):
@@ -4677,7 +4622,6 @@ class setPackageName_args(TBase):
     - pid
     - name
     """
-
     thrift_spec = (
         None,  #: 0
         (1, TType.I32, "pid", None, None),  #: 1
@@ -4701,7 +4645,6 @@ class movePackage_args(TBase):
     - destination
     - pid
     """
-
     thrift_spec = (
         None,  #: 0
         (1, TType.I32, "destination", None, None),  #: 1
@@ -4725,7 +4668,6 @@ class moveFiles_args(TBase):
     - fids
     - pid
     """
-
     thrift_spec = (
         None,  #: 0
         (1, TType.LIST, "fids", (TType.I32, None), None),  #: 1
@@ -4749,7 +4691,6 @@ class orderPackage_args(TBase):
     - pid
     - position
     """
-
     thrift_spec = (
         None,  #: 0
         (1, TType.I32, "pid", None, None),  #: 1
@@ -4773,7 +4714,6 @@ class orderFile_args(TBase):
     - fid
     - position
     """
-
     thrift_spec = (
         None,  #: 0
         (1, TType.I32, "fid", None, None),  #: 1
@@ -4797,7 +4737,6 @@ class setPackageData_args(TBase):
     - pid
     - data
     """
-
     thrift_spec = (
         None,  #: 0
         (1, TType.I32, "pid", None, None),  #: 1
@@ -4815,7 +4754,6 @@ class setPackageData_result(TBase):
 
     - e
     """
-
     thrift_spec = (
         None,  #: 0
         (
@@ -4842,7 +4780,6 @@ class deleteFinished_result(TBase):
 
     - success
     """
-
     thrift_spec = ((0, TType.LIST, "success", (TType.I32, None), None),)  #: 0
 
     def __init__(self, success=None):
@@ -4865,7 +4802,6 @@ class getEvents_args(TBase):
 
     - uuid
     """
-
     thrift_spec = (None, (1, TType.STRING, "uuid", None, None))  #: 0  #: 1
 
     def __init__(self, uuid=None):
@@ -4878,7 +4814,6 @@ class getEvents_result(TBase):
 
     - success
     """
-
     thrift_spec = (
         (
             0,
@@ -4899,7 +4834,6 @@ class getAccounts_args(TBase):
 
     - refresh
     """
-
     thrift_spec = (None, (1, TType.BOOL, "refresh", None, None))  #: 0  #: 1
 
     def __init__(self, refresh=None):
@@ -4912,7 +4846,6 @@ class getAccounts_result(TBase):
 
     - success
     """
-
     thrift_spec = (
         (
             0,
@@ -4938,7 +4871,6 @@ class getAccountTypes_result(TBase):
 
     - success
     """
-
     thrift_spec = ((0, TType.LIST, "success", (TType.STRING, None), None),)  #: 0
 
     def __init__(self, success=None):
@@ -4954,7 +4886,6 @@ class updateAccount_args(TBase):
     - password
     - options
     """
-
     thrift_spec = (
         None,  #: 0
         (1, TType.STRING, "plugin", None, None),  #: 1
@@ -4982,7 +4913,6 @@ class removeAccount_args(TBase):
     - plugin
     - account
     """
-
     thrift_spec = (
         None,  #: 0
         (1, TType.STRING, "plugin", None, None),  #: 1
@@ -5006,7 +4936,6 @@ class login_args(TBase):
     - username
     - password
     """
-
     thrift_spec = (
         None,  #: 0
         (1, TType.STRING, "username", None, None),  #: 1
@@ -5024,7 +4953,6 @@ class login_result(TBase):
 
     - success
     """
-
     thrift_spec = ((0, TType.BOOL, "success", None, None),)  #: 0
 
     def __init__(self, success=None):
@@ -5038,7 +4966,6 @@ class getUserData_args(TBase):
     - username
     - password
     """
-
     thrift_spec = (
         None,  #: 0
         (1, TType.STRING, "username", None, None),  #: 1
@@ -5056,7 +4983,6 @@ class getUserData_result(TBase):
 
     - success
     """
-
     thrift_spec = (
         (0, TType.STRUCT, "success", (UserData, UserData.thrift_spec), None),  #: 0
     )
@@ -5076,7 +5002,6 @@ class getAllUserData_result(TBase):
 
     - success
     """
-
     thrift_spec = (
         (
             0,
@@ -5102,7 +5027,6 @@ class getServices_result(TBase):
 
     - success
     """
-
     thrift_spec = (
         (
             0,
@@ -5124,7 +5048,6 @@ class hasService_args(TBase):
     - plugin
     - func
     """
-
     thrift_spec = (
         None,  #: 0
         (1, TType.STRING, "plugin", None, None),  #: 1
@@ -5142,7 +5065,6 @@ class hasService_result(TBase):
 
     - success
     """
-
     thrift_spec = ((0, TType.BOOL, "success", None, None),)  #: 0
 
     def __init__(self, success=None):
@@ -5155,7 +5077,6 @@ class call_args(TBase):
 
     - info
     """
-
     thrift_spec = (
         None,  #: 0
         (1, TType.STRUCT, "info", (ServiceCall, ServiceCall.thrift_spec), None),  #: 1
@@ -5173,7 +5094,6 @@ class call_result(TBase):
     - ex
     - e
     """
-
     thrift_spec = (
         (0, TType.STRING, "success", None, None),  #: 0
         (
@@ -5209,7 +5129,6 @@ class getAllInfo_result(TBase):
 
     - success
     """
-
     thrift_spec = (
         (
             0,
@@ -5230,7 +5149,6 @@ class getInfoByPlugin_args(TBase):
 
     - plugin
     """
-
     thrift_spec = (None, (1, TType.STRING, "plugin", None, None))  #: 0  #: 1
 
     def __init__(self, plugin=None):
@@ -5243,7 +5161,6 @@ class getInfoByPlugin_result(TBase):
 
     - success
     """
-
     thrift_spec = (
         (0, TType.MAP, "success", (TType.STRING, None, TType.STRING, None), None),  #: 0
     )
@@ -5263,7 +5180,6 @@ class isCaptchaWaiting_result(TBase):
 
     - success
     """
-
     thrift_spec = ((0, TType.BOOL, "success", None, None),)  #: 0
 
     def __init__(self, success=None):
@@ -5276,7 +5192,6 @@ class getCaptchaTask_args(TBase):
 
     - exclusive
     """
-
     thrift_spec = (None, (1, TType.BOOL, "exclusive", None, None))  #: 0  #: 1
 
     def __init__(self, exclusive=None):
@@ -5289,7 +5204,6 @@ class getCaptchaTask_result(TBase):
 
     - success
     """
-
     thrift_spec = (
         (
             0,
@@ -5310,7 +5224,6 @@ class getCaptchaTaskStatus_args(TBase):
 
     - tid
     """
-
     thrift_spec = (None, (1, TType.I32, "tid", None, None))  #: 0  #: 1
 
     def __init__(self, tid=None):
@@ -5323,7 +5236,6 @@ class getCaptchaTaskStatus_result(TBase):
 
     - success
     """
-
     thrift_spec = ((0, TType.STRING, "success", None, None),)  #: 0
 
     def __init__(self, success=None):
@@ -5337,7 +5249,6 @@ class setCaptchaResult_args(TBase):
     - tid
     - result
     """
-
     thrift_spec = (
         None,  #: 0
         (1, TType.I32, "tid", None, None),  #: 1

@@ -198,7 +198,6 @@ class HTTPRequest(object):
         """
         sets everything needed for the request.
         """
-
         self.rep = io.StringIO()
 
         url = myquote(url)
@@ -252,7 +251,6 @@ class HTTPRequest(object):
         """
         load and returns a given page.
         """
-
         self.setRequestContext(url, get, post, referer, cookies, multipart)
 
         self.header = ""

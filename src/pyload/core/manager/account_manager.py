@@ -17,13 +17,11 @@ class AccountManager(object):
     """
     manages all accounts.
     """
-
     # ----------------------------------------------------------------------
     def __init__(self, core):
         """
         Constructor.
         """
-
         self.pyload = core
         self._ = core._
         self.lock = Lock()
@@ -62,7 +60,6 @@ class AccountManager(object):
         """
         get all account instances.
         """
-
         plugins = []
         for plugin in self.accounts.keys():
             plugins.append(self.getAccountPlugin(plugin))
@@ -75,7 +72,6 @@ class AccountManager(object):
         """
         loads all accounts available.
         """
-
         if not os.path.exists(self.configpath):
             with open(self.configpath, mode="w") as f:
                 f.write("version: {}".format(__version__))
@@ -135,7 +131,6 @@ class AccountManager(object):
         """
         save all account information.
         """
-
         with open(self.configpath, mode="w") as f:
             f.write("version: {}\n".format(__version__))
 
@@ -179,7 +174,6 @@ class AccountManager(object):
         """
         remove account.
         """
-
         if plugin in self.accounts:
             p = self.getAccountPlugin(plugin)
             p.removeAccount(user)

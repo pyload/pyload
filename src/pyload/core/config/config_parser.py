@@ -33,7 +33,6 @@ class ConfigParser(object):
 
     }
     """
-
     _CONFLINE = re.compile(
         r'\s*(?P<T>.+?)\s+(?P<N>[^ ]+?)\s*:\s*"(?P<D>.+?)"\s*=\s?(?P<V>.*)'
     )
@@ -112,7 +111,6 @@ class ConfigParser(object):
         """
         reads the config file.
         """
-
         self.config = self.parseConfig(
             os.path.join(PKGDIR, "core", "config", "default.conf")
         )
@@ -137,7 +135,6 @@ class ConfigParser(object):
         """
         parses a given configfile.
         """
-
         with open(config) as f:
 
             config = f.read()
@@ -229,7 +226,6 @@ class ConfigParser(object):
         """
         sets the config values from a parsed config file to values in destination.
         """
-
         for section in config.keys():
             if section in dest:
                 for option in config[section].keys():
@@ -311,7 +307,6 @@ class ConfigParser(object):
         """
         saves the configs to disk.
         """
-
         self.saveConfig(self.config, self.configpath)
         self.saveConfig(self.plugin, self.pluginpath)
 
@@ -331,7 +326,6 @@ class ConfigParser(object):
         """
         set value.
         """
-
         value = self.cast(self.config[section][option]["type"], value)
 
         self.config[section][option]["value"] = value
@@ -350,7 +344,6 @@ class ConfigParser(object):
         """
         sets a value for a plugin.
         """
-
         value = self.cast(self.plugin[plugin][option]["type"], value)
 
         # TODO: check if callable
@@ -405,7 +398,6 @@ class Section(object):
     """
     provides dictionary like access for configparser.
     """
-
     def __init__(self, parser, section):
         """
         Constructor.

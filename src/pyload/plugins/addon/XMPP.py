@@ -240,7 +240,6 @@ class VersionHandler(object):
     This class will answer version query and announce 'jabber:iq:version'
     namespace in the client's disco#info results.
     """
-
     pyxmpp2.interface.implements(
         pyxmpp2.interfaces.IIqHandlersProvider, pyxmpp2.interfaces.IFeaturesProvider
     )
