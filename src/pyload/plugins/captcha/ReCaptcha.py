@@ -11,7 +11,7 @@ from builtins import range, str
 
 from PIL import Image, ImageDraw, ImageFont
 
-from ..internal.captcha_service import CaptchaService
+from ..base.captcha_service import CaptchaService
 
 
 class ReCaptcha(CaptchaService):

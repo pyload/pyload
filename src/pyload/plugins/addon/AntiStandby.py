@@ -6,7 +6,7 @@ import sys
 import time
 from builtins import object
 
-from ..internal.addon import Addon, expose
+from ..base.addon import Addon, expose
 from ..utils import encode
 
 try:

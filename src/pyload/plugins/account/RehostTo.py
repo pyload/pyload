@@ -2,7 +2,7 @@
 
 from builtins import map
 
-from ..internal.multiaccount import MultiAccount
+from ..base.multi_account import MultiAccount
 
 
 class RehostTo(MultiAccount):

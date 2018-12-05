@@ -4,8 +4,8 @@ from builtins import chr, range
 
 import Cryptodome.PublicKey.RSA
 
-from ..hoster.MegaCoNz import MegaClient, MegaCrypto
-from ..internal.account import Account
+from ..downloader.MegaCoNz import MegaClient, MegaCrypto
+from ..base.account import Account
 
 
 class MegaCoNz(Account):

@@ -15,7 +15,7 @@ from builtins import input, object, range, str
 
 from PIL import Image, ImageDraw
 
-from ..internal.ocr import OCR
+from ..base.ocr import OCR
 
 
 class ImageSequence(object):

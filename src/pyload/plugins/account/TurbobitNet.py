@@ -2,7 +2,7 @@
 import re
 import time
 
-from ..internal.account import Account
+from ..base.account import Account
 from ..utils import parse_html_form, set_cookie
 
 

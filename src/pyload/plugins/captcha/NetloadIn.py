@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from ..internal.ocr import OCR
+from ..base.ocr import OCR
 
 
 class NetloadIn(OCR):

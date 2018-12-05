@@ -7,7 +7,7 @@ import urllib.error
 import urllib.parse
 import urllib.request
 
-from ..internal.container import Container
+from ..base.container import Container
 from ..utils import safename
 
 

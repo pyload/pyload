@@ -4,7 +4,7 @@ import re
 import time
 import urllib.parse
 
-from ..internal.account import Account
+from ..base.account import Account
 
 
 class FilejungleCom(Account):

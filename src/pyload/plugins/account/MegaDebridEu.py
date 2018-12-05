@@ -5,7 +5,7 @@ from functools import reduce
 import pycurl
 from pyload.core.network.http.http_request import BadHeader
 
-from ..internal.multiaccount import MultiAccount
+from ..base.multi_account import MultiAccount
 from ..utils import encode
 
 

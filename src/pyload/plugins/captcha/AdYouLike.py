@@ -2,7 +2,7 @@
 import json
 import re
 
-from ..internal.captcha_service import CaptchaService
+from ..base.captcha_service import CaptchaService
 
 
 class AdYouLike(CaptchaService):

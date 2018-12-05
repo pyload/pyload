@@ -6,7 +6,7 @@ import re
 
 import requests
 
-from ..internal.container import Container
+from ..base.container import Container
 from ..utils import encode
 
 

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 import re
 
-from ..internal.captcha_service import CaptchaService
+from ..base.captcha_service import CaptchaService
 
 
 class CoinHive(CaptchaService):

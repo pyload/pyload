@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from ..hoster.ZeveraCom import ZeveraCom
+from ..downloader.ZeveraCom import ZeveraCom
 
 
 class PutdriveCom(ZeveraCom):

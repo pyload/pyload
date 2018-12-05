@@ -3,7 +3,7 @@
 import json
 from builtins import str
 
-from ..internal.account import Account
+from ..base.account import Account
 
 
 class RapidgatorNet(Account):

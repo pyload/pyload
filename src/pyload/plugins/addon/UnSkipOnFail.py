@@ -3,7 +3,7 @@
 
 from pyload.core.datatype.pyfile import PyFile
 
-from ..internal.addon import Addon
+from ..base.addon import Addon
 
 
 class UnSkipOnFail(Addon):

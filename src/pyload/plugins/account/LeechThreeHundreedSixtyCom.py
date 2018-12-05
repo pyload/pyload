@@ -3,7 +3,7 @@
 import json
 import time
 
-from ..internal.multiaccount import MultiAccount
+from ..base.multi_account import MultiAccount
 
 
 class LeechThreeHundreedSixtyCom(MultiAccount):

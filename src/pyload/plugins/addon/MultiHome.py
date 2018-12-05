@@ -3,7 +3,7 @@
 import time
 from builtins import object, str
 
-from ..internal.addon import Addon
+from ..base.addon import Addon
 
 
 class Interface(object):

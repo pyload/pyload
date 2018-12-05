@@ -4,7 +4,7 @@ import json
 import re
 import time
 
-from ..internal.account import Account
+from ..base.account import Account
 
 
 class EuroshareEu(Account):

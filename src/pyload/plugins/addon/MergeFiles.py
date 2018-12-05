@@ -2,7 +2,7 @@
 import os
 import re
 
-from ..internal.addon import Addon, threaded
+from ..base.addon import Addon, threaded
 
 
 class MergeFiles(Addon):

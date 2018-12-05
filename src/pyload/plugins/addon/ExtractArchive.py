@@ -5,8 +5,8 @@ from builtins import object
 
 import send2trash
 
-from ..internal.addon import Addon, expose, threaded
-from ..internal.extractor import ArchiveError, CRCError, PasswordError
+from ..base.addon import Addon, expose, threaded
+from ..base.extractor import ArchiveError, CRCError, PasswordError
 from ..utils import encode, exists, safename, uniqify
 
 
@@ -108,7 +108,7 @@ class ExtractArchive(Addon):
     def activate(self):
         for p in ("UnRar", "SevenZip", "UnZip", "UnTar"):
             try:
-                module = self.pyload.pluginManager.loadModule("internal", p)
+                module = self.pyload.pluginManager.loadModule("base", p)
                 klass = getattr(module, p)
                 if klass.find():
                     self.extractors.append(klass)

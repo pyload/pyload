@@ -3,7 +3,7 @@ import socket
 import threading
 import time
 
-from ..internal.addon import Addon, threaded
+from ..base.addon import Addon, threaded
 from ..utils import forward, lock
 
 try:

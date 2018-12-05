@@ -5,7 +5,7 @@ import json
 
 import pycurl
 
-from ..internal.multiaccount import MultiAccount
+from ..base.multi_account import MultiAccount
 
 
 class LinkifierCom(MultiAccount):

@@ -9,7 +9,7 @@ from builtins import zip
 
 from pyload import PKGDIR
 
-from ..internal.addon import Addon, expose, threaded
+from ..base.addon import Addon, expose, threaded
 from ..utils import encode, exists
 
 

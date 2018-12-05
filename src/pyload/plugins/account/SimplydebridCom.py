@@ -3,7 +3,7 @@
 import time
 from builtins import str
 
-from ..internal.multiaccount import MultiAccount
+from ..base.multi_account import MultiAccount
 
 
 class SimplydebridCom(MultiAccount):

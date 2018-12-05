@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import codecs
 
-from ..internal.container import Container
+from ..base.container import Container
 from ..utils import encode
 
 

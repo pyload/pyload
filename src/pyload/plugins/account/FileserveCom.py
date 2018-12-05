@@ -3,7 +3,7 @@
 import json
 import time
 
-from ..internal.account import Account
+from ..base.account import Account
 
 
 class FileserveCom(Account):

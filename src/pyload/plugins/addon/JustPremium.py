@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import re
 
-from ..internal.addon import Addon
+from ..base.addon import Addon
 
 
 class JustPremium(Addon):

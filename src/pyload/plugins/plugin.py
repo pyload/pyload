@@ -149,14 +149,14 @@ class Base(object):
 
 class Plugin(Base):
     """
-    Base plugin for hoster/crypter.
+    Base plugin for downloader/decrypter.
 
     Overwrite `process` / `decrypt` in your subclassed plugin.
     """
     __name__ = "Plugin"
     __version__ = "0.4"
     __pattern__ = None
-    __type__ = "hoster"
+    __type__ = "downloader"
     __config__ = [("name", "type", "desc", "default")]
     __description__ = """Base Plugin"""
     __author_name__ = ("RaNaN", "spoob", "mkaay")
@@ -197,7 +197,7 @@ class Plugin(Base):
             self.resumeDownload = True
             self.multiDL = (
                 True
-            )  #: every hoster with account should provide multiple downloads
+            )  #: every downloader with account should provide multiple downloads
             #: premium status
             self.premium = self.account.isPremium(self.user)
         else:

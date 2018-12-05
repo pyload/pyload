@@ -3,7 +3,7 @@
 import json
 from builtins import range
 
-from ..internal.account import Account
+from ..base.account import Account
 from ..utils import set_cookie
 
 

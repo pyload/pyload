@@ -3,7 +3,7 @@
 
 from pyload.core.database.database_thread import style
 
-from ..internal.addon import Addon
+from ..base.addon import Addon
 
 
 class DeleteFinished(Addon):

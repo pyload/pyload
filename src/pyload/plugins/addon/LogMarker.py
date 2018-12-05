@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import datetime
 
-from ..internal.addon import Addon
+from ..base.addon import Addon
 from ..utils import seconds_to_nexthour
 
 

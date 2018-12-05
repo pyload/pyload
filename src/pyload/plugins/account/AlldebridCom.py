@@ -3,7 +3,7 @@
 import json
 from functools import reduce
 
-from ..internal.multiaccount import MultiAccount
+from ..base.multi_account import MultiAccount
 
 
 class AlldebridCom(MultiAccount):

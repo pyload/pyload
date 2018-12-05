@@ -2,7 +2,7 @@
 
 import json
 
-from ..internal.multiaccount import MultiAccount
+from ..base.multi_account import MultiAccount
 
 
 class LinksnappyCom(MultiAccount):

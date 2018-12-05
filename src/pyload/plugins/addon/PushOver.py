@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from ..internal.notifier import Notifier
+from ..base.notifier import Notifier
 
 
 class PushOver(Notifier):

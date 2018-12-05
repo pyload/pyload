@@ -12,7 +12,7 @@ from PIL import Image
 import pycurl
 from pyload.core.network.request_factory import getRequest as get_request
 
-from ..internal.addon import Addon, threaded
+from ..base.addon import Addon, threaded
 
 
 class CaptchaBrotherhoodException(Exception):

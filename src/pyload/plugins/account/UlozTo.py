@@ -7,7 +7,7 @@ import urllib.parse
 
 import pycurl
 
-from ..internal.account import Account
+from ..base.account import Account
 
 
 class UlozTo(Account):

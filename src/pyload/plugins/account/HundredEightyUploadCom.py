@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from ..internal.xfsaccount import XFSAccount
+from ..base.xfs_account import XFSAccount
 
 
 class HundredEightyUploadCom(XFSAccount):

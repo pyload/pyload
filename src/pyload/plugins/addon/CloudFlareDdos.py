@@ -10,7 +10,7 @@ import js2py
 from pyload.core.network.http.http_request import BadHeader
 
 from ..captcha.ReCaptcha import ReCaptcha
-from ..internal.addon import Addon
+from ..base.addon import Addon
 from ..utils import parse_html_header
 
 
@@ -24,7 +24,7 @@ def plugin_id(plugin):
 
 def is_simple_plugin(obj):
     return any(
-        k.__name__ in ("SimpleHoster", "SimpleCrypter")
+        k.__name__ in ("SimpleDownloader", "SimpleDecrypter")
         for k in inspect.getmro(type(obj))
     )
 
@@ -250,7 +250,7 @@ class CloudFlareDdos(Addon):
 
     def _find_owner_plugin(self):
         """
-        Walk the callstack until we find SimpleHoster or SimpleCrypter class Dirty but
+        Walk the callstack until we find SimpleDownloader or SimpleDecrypter class Dirty but
         works.
         """
         f = frame = inspect.currentframe()
@@ -269,7 +269,7 @@ class CloudFlareDdos(Addon):
             del frame
 
     def download_preparing(self, pyfile):
-        #: Only SimpleHoster and SimpleCrypter based plugins are supported
+        #: Only SimpleDownloader and SimpleDecrypter based plugins are supported
         if not is_simple_plugin(pyfile.plugin):
             self.log_debug("Skipping plugin {}".format(plugin_id(pyfile.plugin)))
             return
@@ -302,7 +302,7 @@ class CloudFlareDdos(Addon):
                 self, owner_plugin, "get_url", owner_plugin.load, (args, kwargs)
             )
             if kwargs.get("just_header", False):
-                # NOTE: SimpleHoster/SimpleCrypter returns a dict while get_url() returns raw headers string,
+                # NOTE: SimpleDownloader/SimpleDecrypter returns a dict while get_url() returns raw headers string,
                 # make sure we return a string for get_url('just_header'=True)
                 res = get_plugin_last_header(owner_plugin)
 

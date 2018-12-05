@@ -4,7 +4,7 @@ import time
 
 from pyload.core.network.http.http_request import BadHeader
 
-from ..internal.multiaccount import MultiAccount
+from ..base.multi_account import MultiAccount
 
 
 def args(**kwargs):

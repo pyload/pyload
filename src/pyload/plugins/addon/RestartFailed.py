@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
-from ..internal.addon import Addon
+from ..base.addon import Addon
 
 
 class RestartFailed(Addon):

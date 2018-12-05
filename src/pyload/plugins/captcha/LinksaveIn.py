@@ -6,7 +6,7 @@ from builtins import range
 
 from PIL import Image
 
-from ..internal.ocr import OCR
+from ..base.ocr import OCR
 
 
 class LinksaveIn(OCR):

@@ -7,7 +7,7 @@ from builtins import map
 
 import send2trash
 
-from ..internal.addon import Addon, expose, threaded
+from ..base.addon import Addon, expose, threaded
 from ..utils import encode, exists
 
 

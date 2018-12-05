@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from ..internal.account import Account
+from ..base.account import Account
 from ..utils import set_cookie
 
 

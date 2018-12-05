@@ -6,7 +6,7 @@ import time
 import zlib
 from threading import Event
 
-from ..internal.addon import Addon, threaded
+from ..base.addon import Addon, threaded
 from ..utils import encode, format_time
 
 

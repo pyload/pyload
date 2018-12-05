@@ -2,7 +2,7 @@
 
 import re
 
-from ..internal.account import Account
+from ..base.account import Account
 
 
 class YibaishiwuCom(Account):

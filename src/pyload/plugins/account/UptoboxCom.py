@@ -2,7 +2,7 @@
 
 import re
 
-from ..internal.xfsaccount import XFSAccount
+from ..base.xfs_account import XFSAccount
 
 
 class UptoboxCom(XFSAccount):

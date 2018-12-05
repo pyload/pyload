@@ -18,13 +18,13 @@ class PluginManager(object):
     ROOT = "pyload.plugins."
     USERROOT = "plugins."
     TYPES = (
-        "crypter",
+        "decrypter",
         "container",
-        "hoster",
+        "downloader",
         "captcha",
         "account",
         "addon",
-        "internal",
+        "base",
     )
 
     _PATTERN = re.compile(r'\s*__pattern__\s*=\s*r?(?:"|\')([^"\']+)')
@@ -72,16 +72,16 @@ class PluginManager(object):
         except Exception:
             pass
 
-        self.crypterPlugins, config = self.parse("crypter", pattern=True)
-        self.plugins["crypter"] = self.crypterPlugins
+        self.crypterPlugins, config = self.parse("decrypter", pattern=True)
+        self.plugins["decrypter"] = self.crypterPlugins
         default_config = config
 
         self.containerPlugins, config = self.parse("container", pattern=True)
         self.plugins["container"] = self.containerPlugins
         merge(default_config, config)
 
-        self.hosterPlugins, config = self.parse("hoster", pattern=True)
-        self.plugins["hoster"] = self.hosterPlugins
+        self.hosterPlugins, config = self.parse("downloader", pattern=True)
+        self.plugins["downloader"] = self.hosterPlugins
         merge(default_config, config)
 
         self.addonPlugins, config = self.parse("addon")
@@ -96,8 +96,8 @@ class PluginManager(object):
         self.plugins["account"] = self.accountPlugins
         merge(default_config, config)
 
-        self.internalPlugins, config = self.parse("internal")
-        self.plugins["internal"] = self.internalPlugins
+        self.internalPlugins, config = self.parse("base")
+        self.plugins["base"] = self.internalPlugins
         merge(default_config, config)
 
         for name, config in default_config.items():
@@ -213,7 +213,7 @@ class PluginManager(object):
                         )
 
                 # internals have no config
-                if folder == "internal":
+                if folder == "base":
                     self.pyload.config.deleteConfig(name)
                     continue
 
@@ -290,7 +290,7 @@ class PluginManager(object):
 
         return res
 
-    def findPlugin(self, name, pluginlist=("hoster", "crypter", "container")):
+    def findPlugin(self, name, pluginlist=("decrypter", "downloader", "container")):
         for ptype in pluginlist:
             if name in self.plugins[ptype]:
                 return self.plugins[ptype][name], ptype
@@ -298,7 +298,7 @@ class PluginManager(object):
 
     def getPlugin(self, name, original=False):
         """
-        return plugin module from hoster|decrypter|container.
+        return plugin module from downloader|decrypter|container.
         """
         plugin, type = self.findPlugin(name)
 
@@ -441,7 +441,7 @@ class PluginManager(object):
                 as_dict[t] = [n]
 
         # we do not reload addons or internals, would cause to much side effects
-        if "addons" in as_dict or "internal" in as_dict:
+        if "addon" in as_dict or "base" in as_dict:
             return False
 
         for type in as_dict.keys():
@@ -452,24 +452,24 @@ class PluginManager(object):
                         importlib.reload(self.plugins[type][plugin]["pyload"])
 
         # index creation
-        self.crypterPlugins, config = self.parse("crypter", pattern=True)
-        self.plugins["crypter"] = self.crypterPlugins
+        self.crypterPlugins, config = self.parse("decrypter", pattern=True)
+        self.plugins["decrypter"] = self.crypterPlugins
         default_config = config
 
         self.containerPlugins, config = self.parse("container", pattern=True)
         self.plugins["container"] = self.containerPlugins
         merge(default_config, config)
 
-        self.hosterPlugins, config = self.parse("hoster", pattern=True)
-        self.plugins["hoster"] = self.hosterPlugins
+        self.hosterPlugins, config = self.parse("downloader", pattern=True)
+        self.plugins["downloader"] = self.hosterPlugins
         merge(default_config, config)
 
         self.captchaPlugins, config = self.parse("captcha")
         self.plugins["captcha"] = self.captchaPlugins
         merge(default_config, config)
 
-        self.accountPlugins, config = self.parse("accounts")
-        self.plugins["accounts"] = self.accountPlugins
+        self.accountPlugins, config = self.parse("account")
+        self.plugins["account"] = self.accountPlugins
         merge(default_config, config)
 
         for name, config in default_config.items():

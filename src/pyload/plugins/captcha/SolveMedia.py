@@ -3,8 +3,8 @@
 import re
 from builtins import range
 
-from ..internal.captcha_service import CaptchaService
-from ..internal.plugin import Fail
+from ..base.captcha_service import CaptchaService
+from ..base.plugin import Fail
 
 
 class SolveMedia(CaptchaService):

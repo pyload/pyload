@@ -3,7 +3,7 @@
 import http.client
 from contextlib import closing
 
-from ..internal.notifier import Notifier
+from ..base.notifier import Notifier
 
 
 class WindowsPhoneNotify(Notifier):

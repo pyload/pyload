@@ -2,7 +2,7 @@
 import inspect
 import re
 
-from ..internal.addon import Addon
+from ..base.addon import Addon
 
 
 class XFileSharing(Addon):
@@ -29,11 +29,11 @@ class XFileSharing(Addon):
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
     _regexmap = {
-        "hoster": (
+        "downloader": (
             r"(?:https?://(?:www\.)?)(?!(?:www\.)?(?:{}))(?P<DOMAIN>(?:[\d.]+|[\w\-^_]{3,63}(?:\.[a-zA-Z]{2,})+)(?:\:\d+)?)/(?:embed-)?\w{12}(?:\W|$)",
             r"https?://(?:[^/]+\.)?(?P<DOMAIN>{})/(?:embed-)?\w+",
         ),
-        "crypter": (
+        "decrypter": (
             r"(?:https?://(?:www\.)?)(?!(?:www\.)?(?:{}))(?P<DOMAIN>(?:[\d.]+|[\w\-^_]{3,63}(?:\.[a-zA-Z]{2,})+)(?:\:\d+)?)/(?:user|folder)s?/\w+",
             r"https?://(?:[^/]+\.)?(?P<DOMAIN>{})/(?:user|folder)s?/\w+",
         ),
@@ -88,15 +88,15 @@ class XFileSharing(Addon):
 
     def activate(self):
         for type, plugin in (
-            ("hoster", "XFileSharing"),
-            ("crypter", "XFileSharingFolder"),
+            ("downloader", "XFileSharing"),
+            ("decrypter", "XFileSharingFolder"),
         ):
             self._load(type, plugin)
 
     def deactivate(self):
         for type, plugin in (
-            ("hoster", "XFileSharing"),
-            ("crypter", "XFileSharingFolder"),
+            ("downloader", "XFileSharing"),
+            ("decrypter", "XFileSharingFolder"),
         ):
             self._unload(type, plugin)
 

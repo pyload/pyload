@@ -3,7 +3,7 @@
 import re
 import time
 
-from ..internal.account import Account
+from ..base.account import Account
 
 
 class CzshareCom(Account):

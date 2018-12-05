@@ -5,7 +5,7 @@ import json
 from pyload.core.network.http.http_request import BadHeader
 from pyload.core.network.request_factory import getURL as get_url
 
-from ..internal.account import Account
+from ..base.account import Account
 
 
 class Keep2ShareCc(Account):
