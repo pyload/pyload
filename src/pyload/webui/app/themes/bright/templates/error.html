@@ -191,10 +191,8 @@
 </div>
 
 <div style="display: none;">
-    {% include theme('window.html', False) %}
-    {% include theme('captcha.html', False) %}
-    {% block hidden %}
-    {% endblock %}
+    {% include theme('window.html') %}
+    {% include theme('captcha.html') %}
 </div>
 <noscript><h1>Enable JavaScript to use the webinterface.</h1></noscript>
 </body>

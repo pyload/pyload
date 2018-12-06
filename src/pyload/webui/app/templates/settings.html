@@ -1,12 +1,12 @@
-{% extends theme('base.html') %}
+{% extends 'base.html' %}
 
 {% block title %}{{ _("Config") }} - {{ super() }} {% endblock %}
 {% block subtitle %}{{ _("Config") }}{% endblock %}
 
 {% block head %}
-    <script type="text/javascript" src="{{theme_static('js/vendor/MooTools/TinyTab/tinytab.js')}}"></script>
-    <script type="text/javascript" src="{{theme_static('js/vendor/MooTools/MooDropMenu/MooDropMenu.js')}}"></script>
-    <script type="text/javascript" src="{{theme_static('js/settings.js')}}"></script>
+    <script type="text/javascript" src="{{url_for('static', filename='js/vendor/MooTools/TinyTab/tinytab.js')}}"></script>
+    <script type="text/javascript" src="{{url_for('static', filename='js/vendor/MooTools/MooDropMenu/MooDropMenu.js')}}"></script>
+    <script type="text/javascript" src="{{url_for('static', filename='js/settings.js')}}"></script>
 
 {% endblock %}
 

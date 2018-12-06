@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import os
-
-from pyload import PKGDIR
 from pyload.core.utils import random_string
 
 
@@ -15,7 +12,6 @@ class BaseConfig(object):
     DEBUG_TB_ENABLED = False
     DEBUG_TB_INTERCEPT_REDIRECTS = False
     CACHE_TYPE = "null"
-    THEME_PATHS = os.path.join(PKGDIR, "webui", "app", "themes")
 
 
 class ProductionConfig(BaseConfig):

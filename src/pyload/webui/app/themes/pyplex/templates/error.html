@@ -16,7 +16,7 @@
 <style type="text/css">
 .ui-icon,
 .ui-widget-content .ui-icon {
-  background-image: url("{{'/vendor/jQuery/jQuery UI/images/ui-icons_444444_256x240.png'}}");
+  background-image: url("{{ theme_static('vendor/jQuery/jQuery UI/images/ui-icons_444444_256x240.png') }}");
 }
 
 #goto_top.affix-top {
@@ -183,14 +183,12 @@
 </div>
 
 <div style="display: none;">
-    {% block hidden %}
-    {% endblock %}
 </div>
 {% block dialog %}
 {% endblock %}
 
-{% include theme('window.html', False) %}
-{% include theme('captcha.html', False) %}
+{% include theme('window.html') %}
+{% include theme('captcha.html') %}
 <noscript><h1>Enable JavaScript to use the webinterface.</h1></noscript>
 
 <script type="text/javascript" src="{{theme_static('vendor/jQuery/jquery.min.js')}}"></script>

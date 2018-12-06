@@ -1,7 +1,7 @@
-{% extends theme('base.html') %}
+{% extends 'base.html' %}
 
 {% block head %}
-    <script type="text/javascript" src="{{theme_static('js/admin.js')}}"></script>
+    <script type="text/javascript" src="{{url_for('static', filename='js/admin.js')}}"></script>
 {% endblock %}
 
 

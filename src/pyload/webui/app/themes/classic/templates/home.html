@@ -129,7 +129,7 @@ var LinkEntry = new Class({
                 'html': item.percent+ '% / '+ humanFileSize(item.size-item.bleft)
                 }),
                 remove: new Element('img',{
-                'src': "{{'/img/control_cancel.png'}}",
+                'src': "{{ theme_static('img/control_cancel.png') }}",
                 'styles':{
                     'vertical-align': 'middle',
                     'margin-right': '-20px',
@@ -165,7 +165,7 @@ var LinkEntry = new Class({
             this.fadeBar = new Fx.Tween(this.elements.pgbTr);
 
             this.elements.remove.addEvent('click', function(){
-                new Request({method: 'get', url: "{{'/json/abort_link/'}}" + this.id}).send();
+                new Request({method: 'get', url: "{{ theme_static('json/abort_link/') }}" + this.id}).send();
             }.bind(this));
 
         },

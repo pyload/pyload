@@ -1,9 +1,9 @@
-{% extends theme('base.html') %}
+{% extends 'base.html' %}
 
 {% block title %}{{_("Logs")}} - {{super()}} {% endblock %}
 {% block subtitle %}{{_("Logs")}}{% endblock %}
 {% block head %}
-<link rel="stylesheet" type="text/css" href="{{theme_static('css/log.css')}}"/>
+<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/log.css')}}"/>
 {% endblock %}
 
 {% block content %}
