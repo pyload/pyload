@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from ..internal.misc import json
+import json
+
 from ..base.multi_downloader import MultiDownloader
 
 
