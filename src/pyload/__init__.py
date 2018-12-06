@@ -23,6 +23,8 @@ import traceback
 
 ### Info ##############################################################################
 
+APPID = "pyload"
+
 try:
     dist_name = __name__
     pkgdir = pkg_resources.resource_filename(dist_name, "")
