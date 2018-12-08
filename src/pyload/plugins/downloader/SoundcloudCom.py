@@ -65,7 +65,7 @@ class SoundcloudCom(SimpleDownloader):
             reverse=True,
         )
 
-        self.log_debug("Streams found: {}".format(http_streams or "None"))
+        self.log_debug(f"Streams found: {http_streams or None}")
 
         if http_streams:
             stream_name, self.link = http_streams[

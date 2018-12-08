@@ -70,7 +70,7 @@ class OCR(Plugin):
         popen.stderr.close()
 
         self.log_debug(
-            "Tesseract ReturnCode {}" % popen.returncode, "Output: {}" % output
+            f"Tesseract ReturnCode {popen.returncode}", f"Output: {output}" 
         )
 
     def run_tesser(
@@ -84,14 +84,14 @@ class OCR(Plugin):
         # tmpTif = tempfile.NamedTemporaryFile(suffix=".tif")
         try:
             tmpTif = open(
-                os.path.join(self.pyload.cachedir, "tmpTif_{}.tif" % self.classname),
+                os.path.join(self.pyload.cachedir, f"tmpTif_{self.classname}.tif"),
                 mode="wb",
             )
             tmpTif.close()
 
             # tmpTxt = tempfile.NamedTemporaryFile(suffix=".txt")
             tmpTxt = open(
-                os.path.join(self.pyload.cachedir, "tmpTxt_{}.txt" % self.classname),
+                os.path.join(self.pyload.cachedir, f"tmpTxt_{self.classname}.txt"),
                 mode="wb",
             )
             tmpTxt.close()

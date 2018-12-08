@@ -65,9 +65,9 @@ class FourSharedCom(SimpleDownloader):
 
         try:
             m = re.search(self.ID_PATTERN, self.data)
+            id = m.group(1)
             res = self.load(
-                "http://www.4shared.com/web/d2/getFreeDownloadLimitInfo?fileId={}"
-                % m.group(1)
+                f"http://www.4shared.com/web/d2/getFreeDownloadLimitInfo?fileId={id}"
             )
             self.log_debug(res)
 

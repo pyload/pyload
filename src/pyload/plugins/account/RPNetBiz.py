@@ -79,6 +79,6 @@ class RPNetBiz(MultiAccount):
                 "action": "showAccountInformation",
             },
         )
-        self.log_debug("JSON data: {}".format(res))
+        self.log_debug(f"JSON data: {res}")
 
         return json.loads(res)

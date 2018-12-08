@@ -76,7 +76,7 @@ class ConfigParser(object):
             if not os.path.exists(self.pluginpath):
                 os.makedirs(os.path.dirname(self.pluginpath), exist_ok=True)
                 with open(self.pluginpath, mode="w") as f:
-                    f.write("version: {}".format(__version__))
+                    f.write(f"version: {__version__}")
                 chmod(self.pluginpath, 0o600)
 
             with open(self.configpath) as f:
@@ -96,7 +96,7 @@ class ConfigParser(object):
             m_ver = self._VERSION.search(content)
             if m_ver is None or int(m_ver.group(1)) < __version__:
                 with open(self.pluginpath, mode="w") as f:
-                    f.write("version: {}".format(__version__))
+                    f.write(f"version: {__version__}")
 
                 print("Old version of plugin-config replaced")
 
@@ -249,9 +249,9 @@ class ConfigParser(object):
         """
         with open(filename, mode="w") as f:
             chmod(filename, 0o600)
-            f.write("version: {} \n".format(__version__))
+            f.write(f"version: {__version__} \n")
             for section in sorted(config.keys()):
-                f.write('\n{} - "{}":\n'.format(section, config[section]["desc"]))
+                f.write(f'\n{section} - "{config[section]["desc"]}":\n')
 
                 for option, data in sorted(
                     list(config[section].items()), key=lambda _x: _x[0]
@@ -262,15 +262,13 @@ class ConfigParser(object):
                     if isinstance(data["value"], list):
                         value = "[ \n"
                         for x in data["value"]:
-                            value += "\t\t{},\n".format(x)
+                            value += f"\t\t{x},\n"
                         value += "\t\t]\n"
                     else:
                         value = str(data["value"]) + "\n"
                     try:
                         f.write(
-                            '\t{} {} : "{}" = {}'.format(
-                                data["type"], option, data["desc"], value
-                            )
+                            f'\t{data["type"]} {option} : "{data["desc"]}" = {value}'
                         )
                     except UnicodeEncodeError:
                         f.write(

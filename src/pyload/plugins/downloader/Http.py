@@ -45,7 +45,7 @@ class Http(Downloader):
 
             elif self.req.code in (401, 403):
                 self.log_debug(
-                    "Auth required", "Received HTTP status code: {}" % self.req.code
+                    "Auth required", f"Received HTTP status code: {self.req.code}"
                 )
 
                 # TODO: Recheck in 0.6.x
@@ -55,7 +55,7 @@ class Http(Downloader):
                     servers = []
 
                 if netloc in servers:
-                    self.log_debug("Logging on to {}".format(netloc))
+                    self.log_debug(f"Logging on to {netloc}")
                     self.req.addAuth(self.account.get_login("password"))
 
                 else:

@@ -29,7 +29,7 @@ class Processor(Pyload.Processor):
             iprot.readMessageEnd()
             x = Pyload.TApplicationException(
                 Pyload.TApplicationException.UNKNOWN_METHOD,
-                "Unknown function {}".format(name),
+                f"Unknown function {name}",
             )
             oprot.writeMessageBegin(name, Pyload.TMessageType.EXCEPTION, seqid)
             x.write(oprot)

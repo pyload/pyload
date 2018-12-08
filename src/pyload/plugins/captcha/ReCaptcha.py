@@ -104,7 +104,7 @@ class ReCaptcha(CaptchaService):
         m = re.search(self.KEY_V2_PATTERN, html) or re.search(self.KEY_V1_PATTERN, html)
         if m is not None:
             self.key = urllib.parse.unquote(m.group(1).strip())
-            self.log_debug("Key: {}".format(self.key))
+            self.log_debug(f"Key: {self.key}")
             return self.key
         else:
             self.log_warning(self._("Key pattern not found"))
@@ -116,7 +116,7 @@ class ReCaptcha(CaptchaService):
         m = re.search(self.STOKEN_V2_PATTERN, html)
         if m is not None:
             self.secure_token = m.group(1).strip()
-            self.log_debug("Secure Token: {}".format(self.secure_token))
+            self.log_debug(f"Secure Token: {self.secure_token}")
             return self.secure_token
         else:
             self.log_warning(self._("Secure Token pattern not found"))
@@ -173,7 +173,7 @@ class ReCaptcha(CaptchaService):
         except (AttributeError, IndexError):
             self.fail(self._("reCAPTCHA challenge pattern not found"))
 
-        self.log_debug("Challenge: {}".format(challenge))
+        self.log_debug(f"Challenge: {challenge}")
 
         return self.result(server, challenge, key)
 
@@ -190,7 +190,7 @@ class ReCaptcha(CaptchaService):
         except (AttributeError, IndexError):
             self.fail(self._("reCAPTCHA second challenge pattern not found"))
 
-        self.log_debug("Second challenge: {}".format(challenge))
+        self.log_debug(f"Second challenge: {challenge}")
         result = self.decrypt(
             urllib.parse.urljoin(server, "image"),
             get={"c": challenge},
@@ -205,17 +205,17 @@ class ReCaptcha(CaptchaService):
         a = re.search(r"po.src = \'(.*?)\';", html).group(1)
         vers = a.split("/")[5]
 
-        self.log_debug("API version: {}".format(vers))
+        self.log_debug(f"API version: {vers}")
 
         language = a.split("__")[1].split(".")[0]
 
-        self.log_debug("API language: {}".format(language))
+        self.log_debug(f"API language: {language}")
 
         html = self.pyfile.plugin.load("https://apis.google.com/js/api.js")
         b = re.search(r'"h":"(.*?)","', html).group(1)
         jsh = b.decode("unicode-escape")
 
-        self.log_debug("API jsh-string: {}".format(jsh))
+        self.log_debug(f"API jsh-string: {jsh}")
 
         return vers, language, jsh
 

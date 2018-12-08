@@ -43,4 +43,4 @@ class UpfileVn(SimpleDownloader):
             self.link = json_data["Link"]
 
         else:
-            self.log_debug("Download failed: {}".format(json_data))
+            self.log_debug(f"Download failed: {json_data}")

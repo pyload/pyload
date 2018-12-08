@@ -64,7 +64,7 @@ class DownloadThread(PluginThread):
 
             except NotImplementedError:
                 self.pyload.log.error(
-                    self._("Plugin {} is missing a function.").format(pyfile.pluginname)
+                    self._("Plugin {} is missing a function").format(pyfile.pluginname)
                 )
                 pyfile.setStatus("failed")
                 pyfile.error = "Plugin does not work"
@@ -129,7 +129,7 @@ class DownloadThread(PluginThread):
                     code = 0
                     msg = exc.args
 
-                self.pyload.log.debug("pycurl exception {}: {}".format(code, msg))
+                self.pyload.log.debug(f"pycurl exception {code}: {msg}")
 
                 if code in (7, 18, 28, 52, 56):
                     self.pyload.log.warning(
@@ -160,7 +160,7 @@ class DownloadThread(PluginThread):
 
                 else:
                     pyfile.setStatus("failed")
-                    self.pyload.log.error("pycurl error {}: {}".format(code, msg))
+                    self.pyload.log.error(self._("pycurl error {}: {}").format(code, msg))
                     if self.m.pyload.debug:
                         self.writeDebugReport(pyfile)
 

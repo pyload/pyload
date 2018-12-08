@@ -65,7 +65,7 @@ class BezvadataCz(SimpleDownloader):
         if m is None:
             self.error(self._("Page 2 URL not found"))
         url = "http://bezvadata.cz{}".format(m.group(1))
-        self.log_debug("DL URL {}".format(url))
+        self.log_debug(f"DL URL {url}")
 
         #: countdown
         m = re.search(r'id="countdown">(\d\d):(\d\d)<', self.data)

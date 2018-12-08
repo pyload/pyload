@@ -67,8 +67,9 @@ class DepositfilesCom(SimpleDownloader):
         if m is None:
             self.retry(wait=5)
 
-        params = {"fid": m.group(1)}
-        self.log_debug("FID: {}".format(params["fid"]))
+        fid = m.group(1)
+        params = {"fid": fid}
+        self.log_debug(f"FID: {fid}")
 
         self.data = self.load("https://depositfiles.com/get_file.php", get=params)
 

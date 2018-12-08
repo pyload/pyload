@@ -58,13 +58,11 @@ PROPRIETARY_RESPONSES = {
 class BadHeader(Exception):
     def __init__(self, code, header="", content=""):
         int_code = int(code)
-        super().__init__(
-            "Bad server response: {} {}".format(
-                code,
-                responses.get(
+        response = responses.get(
                     int_code, PROPRIETARY_RESPONSES.get(int_code, "unknown error code")
-                ),
-            )
+                )
+        super().__init__(
+            f"Bad server response: {code} {response}"
         )
         self.code = int_code
         self.header = header
@@ -159,9 +157,10 @@ class HTTPRequest(object):
             self.c.setopt(pycurl.PROXYPORT, proxy["port"])
 
             if proxy["username"]:
+                user = proxy["username"]
+                pw = proxy["password"]
                 self.c.setopt(
-                    pycurl.PROXYUSERPWD,
-                    str("{}:{}".format(proxy["username"], proxy["password"])),
+                    pycurl.PROXYUSERPWD, f"{user}:{pw}"
                 )
 
         if ipv6:
@@ -204,7 +203,7 @@ class HTTPRequest(object):
 
         if get:
             get = urlencode(get)
-            url = "{}?{}".format(url, get)
+            url = f"{url}?{get}"
 
         self.c.setopt(pycurl.URL, url)
         self.c.lastUrl = url
@@ -334,7 +333,7 @@ class HTTPRequest(object):
                     encoding = charset[0]
 
         try:
-            # self.log.debug("Decoded {}".format(encoding ))
+            # self.log.debug(f"Decoded {encoding}")
             if codecs.lookup(encoding).name == "utf-8" and rep.startswith(
                 codecs.BOM_UTF8
             ):
@@ -346,11 +345,11 @@ class HTTPRequest(object):
             # TODO: html_unescape as default
 
         except LookupError:
-            self.log.debug("No Decoder foung for {}".format(encoding))
+            self.log.debug(f"No Decoder foung for {encoding}")
 
         except Exception:
             self.log.debug(
-                "Error when decoding string from {}.".format(encoding),
+                f"Error when decoding string from {encoding}",
                 exc_info=self.pyload.debug > 1,
                 stack_info=self.pyload.debug > 2,
             )
@@ -378,7 +377,7 @@ class HTTPRequest(object):
         self.header += buf
 
     def putHeader(self, name, value):
-        self.headers.append("{}: {}".format(name, value))
+        self.headers.append(f"{name}: {value}")
 
     def clearHeaders(self):
         self.headers = []

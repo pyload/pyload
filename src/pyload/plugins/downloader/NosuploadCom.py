@@ -41,7 +41,7 @@ class NosuploadCom(XFSDownloader):
         #: Stage2: wait some time and press the "Download File" button
         data = self._post_parameters()
         wait_time = re.search(self.WAIT_PATTERN, self.data, re.M | re.S).group(1)
-        self.log_debug("Hoster told us to wait {} seconds".format(wait_time))
+        self.log_debug(f"Hoster told us to wait {wait_time} seconds")
         self.wait(wait_time)
         self.data = self.load(self.pyfile.url, post=data)
 

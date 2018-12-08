@@ -123,8 +123,7 @@ class CNLHandler(BaseHTTPRequestHandler):
         jk = self.get_post("jk")
 
         crypted = standard_b64decode(unquote(crypted.replace(" ", "+")))
-        jk = "{} f()".format(jk)
-        jk = js2py.eval_js(jk)
+        jk = js2py.eval_js(f"{jk} f()")
         key = unhexlify(jk)
 
         obj = Fernet(key)

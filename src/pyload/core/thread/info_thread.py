@@ -72,7 +72,7 @@ class InfoThread(PluginThread):
             packs = parseNames((name, url) for name, x, y, url in self.cache)
 
             self.pyload.log.debug(
-                "Fetched and generated {} packages".format(len(packs))
+                f"Fetched and generated {len(packs)} packages"
             )
 
             for k, v in packs:
@@ -166,14 +166,12 @@ class InfoThread(PluginThread):
 
             if result:
                 self.pyload.log.debug(
-                    "Fetched {} values from cache for {}".format(
-                        len(result), pluginname
-                    )
+                    f"Fetched {len(result)} values from cache for {pluginname}"
                 )
                 cb(pluginname, result)
 
             if process:
-                self.pyload.log.debug("Run Info Fetching for {}".format(pluginname))
+                self.pyload.log.debug(f"Run Info Fetching for {pluginname}")
                 for result in plugin.getInfo(process):
                     # result = [ .. (name, size, status, url) .. ]
                     if not isinstance(result, list):
@@ -184,7 +182,7 @@ class InfoThread(PluginThread):
 
                     cb(pluginname, result)
 
-            self.pyload.log.debug("Finished Info Fetching for {}".format(pluginname))
+            self.pyload.log.debug(f"Finished Info Fetching for {pluginname}")
         except Exception as exc:
             self.pyload.log.warning(
                 self._("Info Fetching for {name} failed | {err}").format(
@@ -203,7 +201,7 @@ class InfoThread(PluginThread):
         data = []
         # only works on container plugins
 
-        self.pyload.log.debug("Pre decrypting {} with {}".format(url, plugin))
+        self.pyload.log.debug(f"Pre-decrypting {url} with {plugin}")
 
         # dummy pyfile
         pyfile = PyFile(self.m.pyload.files, -1, url, url, 0, 0, "", plugin, -1, -1)
@@ -221,12 +219,11 @@ class InfoThread(PluginThread):
                 pyfile.plugin.urls.extend(pack[1])
 
             data = self.m.pyload.pluginManager.parseUrls(pyfile.plugin.urls)
-
-            self.pyload.log.debug("Got {} links.".format(len(data)))
+            self.pyload.log.debug(f"Got {len(data)} links.")
 
         except Exception as exc:
             self.pyload.log.debug(
-                "Pre decrypting error: {}".format(exc),
+                f"Pre decrypting error: {exc}",
                 exc_info=self.pyload.debug > 1,
                 stack_info=self.pyload.debug > 2,
             )

@@ -37,7 +37,7 @@ class OnlineTvRecorder(Http):
             return Http.process(self, pyfile)
 
         except BadHeader as exc:
-            self.log_debug("OnlineTvRecorder httpcode: {}".format(exc.code))
+            self.log_debug(f"OnlineTvRecorder httpcode: {exc.code}")
             if exc.code == 503:
                 # max queueing for 3 hours
                 self.retry(360, 30, self._("Waiting in download queue"))

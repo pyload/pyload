@@ -126,7 +126,7 @@ class SafelinkingNet(Decrypter):
 
             # Response: Wrong password
             elif "passwordFail" in json_res:
-                self.log_error(self._('Wrong password: "{}"') % self.package_password)
+                self.log_error(self._('Wrong password: "{}"').format(self.package_password))
                 self.fail(self._("Wrong password"))
 
             elif "captchaFail" in json_res:

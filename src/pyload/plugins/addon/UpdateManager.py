@@ -419,7 +419,7 @@ class UpdateManager(Addon):
 
         removed = set()
 
-        self.log_debug("Requested deletion of plugins: {}".format(plugin_ids))
+        self.log_debug(f"Requested deletion of plugins: {plugin_ids}")
 
         for plugin_type, plugin_name in plugin_ids:
             userplugins = os.path.join(self.pyload.userdir, "plugins")

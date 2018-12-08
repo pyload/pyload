@@ -47,7 +47,7 @@ class GoogledriveComDereferer(Decrypter):
             json_data = json.loads(
                 self.load("{}{}".format(self.API_URL, cmd), get=kwargs)
             )
-            self.log_debug("API response: {}".format(json_data))
+            self.log_debug(f"API response: {json_data}")
             return json_data
 
         except BadHeader as exc:

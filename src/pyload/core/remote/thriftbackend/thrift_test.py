@@ -20,16 +20,16 @@ def bench(f, *args, **kwargs):
     ret = [f(*args, **kwargs) for i in range(0, 100)]
     e = time.time()
     try:
-        print("{}: {} s".format(f._Method__name, e - s))
+        print(f"{f._Method__name}: {e - s} s")
     except BaseException:
-        print("{}: {} s".format(f.__name__, e - s))
+        print(f"{f.__name__}: {e - s} s")
     return ret
 
 
 user = input("user ")
 passwd = getpass("password ")
 
-server_url = "http{}://{}:{}@{}:{}/".format("", user, passwd, "127.0.0.1", 7227)
+server_url = "http://{user}:{passwd}@127.0.0.1:7227/"
 proxy = xmlrpc.client.ServerProxy(server_url, allow_none=True)
 
 bench(proxy.get_server_version)
@@ -74,4 +74,4 @@ try:
             print("Package Name: ", data.name)
 
 except Thrift.TException as tx:
-    print("ThriftExpection: {}".format(tx.message))
+    print(f"ThriftExpection: {tx.message}")

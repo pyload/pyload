@@ -116,9 +116,7 @@ class Core(object):
             "pyload"
         )  # NOTE: forced debug mode from console not working
 
-        self.log.info("*** Welcome to pyLoad {} ***".format(self.version))
-        if self.debug:
-            self.log.warning(">>> DEBUG MODE ON AIR <<<")
+        self.log.info(f"*** Welcome to pyLoad {self.version} ***")
 
     def _init_network(self):
         from .network.request_factory import RequestFactory
@@ -289,8 +287,8 @@ class Core(object):
         try:
             self.log.debug("Starting core...")
 
-            debug_level = invertmap(self._DEBUG_LEVEL_MAP)[self.debug]
-            self.log.debug("Debug level: {}".format(debug_level.upper()))
+            debug_level = invertmap(self._DEBUG_LEVEL_MAP)[self.debug].upper()
+            self.log.debug(f"Debug level: {debug_level}")
 
             # self.evm.fire('pyload:starting')
             self._running.set()
@@ -343,7 +341,7 @@ class Core(object):
             self.log.critical(exc, exc_info=True, stack_info=self.debug > 2)
             self.terminate()
 
-    # TODO: remove here
+    # TODO: Remove
     def isClientConnected(self):
         return (self.lastClientConnected + 30) > time.time()
 
@@ -368,9 +366,6 @@ class Core(object):
             self.log.debug("Stopping core...")
             # self.evm.fire('pyload:stopping')
 
-            if self.webserver.is_alive():
-                self.webserver.stop()
-
             for thread in self.threadManager.threads:
                 thread.put("quit")
 
@@ -378,9 +373,8 @@ class Core(object):
                 pyfile.abortDownload()
 
             self.addonManager.coreExiting()
-
+            
         finally:
             self.files.syncSave()
-            self.logfactory.shutdown()
             self._running.clear()
             # self.evm.fire('pyload:stopped')

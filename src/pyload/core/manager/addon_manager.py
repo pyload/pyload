@@ -156,7 +156,7 @@ class AddonManager(object):
         if not pluginClass:
             return
 
-        self.pyload.log.debug("Plugin loaded: {}".format(plugin))
+        self.pyload.log.debug(f"Plugin loaded: {plugin}")
 
         plugin = pluginClass(self.pyload, self)
         self.plugins.append(plugin)
@@ -175,14 +175,13 @@ class AddonManager(object):
         if not addon:
             return
 
-        self.pyload.log.debug("Plugin unloaded: {}".format(plugin))
+        self.pyload.log.debug(f"Plugin unloaded: {plugin}")
 
         addon.unload()
 
         # remove periodic call
-        self.pyload.log.debug(
-            "Removed callback {}".format(self.pyload.scheduler.removeJob(addon.cb))
-        )
+        res = self.pyload.scheduler.removeJob(addon.cb)
+        self.pyload.log.debug(f"Removed callback {res}")
         self.plugins.remove(addon)
         del self.pluginMap[addon.__name__]
 
@@ -320,7 +319,7 @@ class AddonManager(object):
                     f(*args)
                 except Exception as exc:
                     self.pyload.log.warning(
-                        "Error calling event handler {}: {}, {}, {}".format(
+                        self._("Error calling event handler {}: {}, {}, {}").format(
                             event, f, args, exc
                         ),
                         exc_info=self.pyload.debug > 1,

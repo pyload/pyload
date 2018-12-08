@@ -151,7 +151,7 @@ class ImgurCom(SimpleDecrypter):
         # the rest now!
         try:
             indirect_links = self.get_indirect_links(direct_links)
-            self.log_debug("Found {} additional links".format(len(indirect_links)))
+            self.log_debug(f"Found {len(indirect_links)} additional links")
 
         except (TypeError, KeyError, ValueError) as exc:
             # Fail gracefull as we already had some success

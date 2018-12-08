@@ -43,7 +43,7 @@ class VeohCom(SimpleDownloader):
             quality = ("High", "Low")
 
         for q in quality:
-            pattern = r'"fullPreviewHash{}Path":"(.+?)"'.format(q)
+            pattern = rf'"fullPreviewHash{q}Path":"(.+?)"'
             m = re.search(pattern, self.data)
             if m is not None:
                 pyfile.name += ".mp4"

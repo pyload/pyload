@@ -35,7 +35,7 @@ class HighWayMe(MultiAccount):
 
         json_data = self.load("https://high-way.me/api.php?user")
 
-        self.log_debug("JSON data: {}".format(json_data))
+        self.log_debug(f"JSON data: {json_data}")
 
         json_data = json.loads(json_data)
 

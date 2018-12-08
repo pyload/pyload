@@ -60,18 +60,18 @@ class CzshareCom(SimpleDownloader):
         try:
             credit = parse_size(m.group(1).replace(" ", ""), m.group(2))
             self.log_info(
-                self._("Premium download for %i KiB of Credit").format(
+                self._("Premium download for {} KiB of Credit").format(
                     self.pyfile.size >> 10
                 )
             )
             self.log_info(
-                self._("User {} has %i KiB left").format(
+                self._("User {} has {} KiB left").format(
                     self.account.user, credit >> 10
                 )
             )
             if credit < self.pyfile.size:
                 self.log_info(
-                    self._("Not enough credit to download file: {}") % self.pyfile.name
+                    self._("Not enough credit to download file: {}").format(self.pyfile.name)
                 )
                 return True
 

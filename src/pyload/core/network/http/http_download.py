@@ -93,7 +93,7 @@ class HTTPDownload(object):
                     # input file
                     # seek to beginning of chunk, to get rid of overlapping chunks
                     fo.seek(self.info.getChunkRange(i - 1)[1] + 1)
-                    fname = fs_encode("{}.chunk{}".format(self.filename, i))
+                    fname = fs_encode(f"{self.filename}.chunk{i}")
                     with open(fname, mode="rb") as fi:
                         buf = 32 << 10
                         while True:  #: copy in chunks, consumes less memory
@@ -152,7 +152,7 @@ class HTTPDownload(object):
         if not resume:
             self.info.clear()
             self.info.addChunk(
-                "{}.chunk0".format(self.filename), (0, 0)
+                f"{self.filename}.chunk0", (0, 0)
             )  #: create an initial entry)
 
         self.chunks = []
@@ -221,7 +221,7 @@ class HTTPDownload(object):
                     try:  #: check if the header implies success, else add it to failed list
                         chunk.verifyHeader()
                     except BadHeader as exc:
-                        self.log.debug("Chunk {} failed: {}".format(chunk.id + 1, exc))
+                        self.log.debug(f"Chunk {chunk.id + 1} failed: {exc}")
                         failed.append(chunk)
                         ex = exc
                     else:
@@ -235,14 +235,14 @@ class HTTPDownload(object):
                         failed.append(chunk)
                         ex = pycurl.error(errno, msg)
                         self.log.debug(
-                            "Chunk {} failed: {}".format(chunk.id + 1, str(ex))
+                            f"Chunk {chunk.id + 1} failed: {ex}"
                         )
                         continue
 
                     try:  #: check if the header implies success, else add it to failed list
                         chunk.verifyHeader()
                     except BadHeader as exc:
-                        self.log.debug("Chunk {} failed: {}".format(chunk.id + 1, exc))
+                        self.log.debug(f"Chunk {chunk.id + 1} failed: {exc}")
                         failed.append(chunk)
                         ex = exc
                     else:
@@ -253,9 +253,7 @@ class HTTPDownload(object):
                     # note that other chunks are closed and downloaded with init too
                     if failed and init not in failed and init.c not in chunksDone:
                         self.log.error(
-                            "Download chunks failed, fallback to single connection | {}".format(
-                                str(ex)
-                            )
+                            f"Download chunks failed, fallback to single connection | {ex}"
                         )
 
                         # list of chunks to clean and os.remove
@@ -269,7 +267,7 @@ class HTTPDownload(object):
                         init.resetRange()
                         self.info.clear()
                         self.info.addChunk(
-                            "{}.chunk0".format(self.filename), (0, self.size)
+                            f"{self.filename}.chunk0", (0, self.size)
                         )
                         self.info.save()
                     elif failed:
@@ -332,7 +330,7 @@ class HTTPDownload(object):
         try:
             self.m.remove_handle(chunk.c)
         except pycurl.error as exc:
-            self.log.debug("Error removing chunk: {}".format(exc))
+            self.log.debug(f"Error removing chunk: {exc}")
         finally:
             chunk.close()
 

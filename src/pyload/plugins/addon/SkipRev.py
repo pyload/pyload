@@ -58,8 +58,9 @@ class SkipRev(Addon):
 
         if revtokeep:
             status_list = (1, 4, 8, 9, 14) if revtokeep < 0 else (1, 3, 4, 8, 9, 14)
+            basename = name.rsplit(".", 2)[0].replace(".", "\.")
             pyname = re.compile(
-                r"{}\.part\d+\.rev$" % name.rsplit(".", 2)[0].replace(".", "\.")
+                rf"{basename}\.part\d+\.rev$"
             )
 
             queued = [
@@ -84,8 +85,9 @@ class SkipRev(Addon):
         if not revtokeep:
             return
 
+        basename = pyfile.name.rsplit(".", 2)[0].replace(".", "\.")
         pyname = re.compile(
-            r"{}\.part\d+\.rev$" % pyfile.name.rsplit(".", 2)[0].replace(".", "\.")
+            rf"{basename}\.part\d+\.rev$"
         )
 
         for fid, fdata in pyfile.package().getChildren().items():

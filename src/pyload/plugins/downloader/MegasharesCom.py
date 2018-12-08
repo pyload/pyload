@@ -103,7 +103,7 @@ class MegasharesCom(SimpleDownloader):
         if m is not None:
             time = [int(x) for x in m.groups()]
             renew = time[0] + (time[1] * 60) + (time[2] * 60)
-            self.log_debug("Waiting {} seconds for a new passport".format(renew))
+            self.log_debug(f"Waiting {renew} seconds for a new passport")
             self.retry(wait=renew, msg=self._("Passport renewal"))
 
         #: Check traffic left on passport
@@ -133,4 +133,4 @@ class MegasharesCom(SimpleDownloader):
             self.error(msg)
 
         self.link = m.group(1)
-        self.log_debug("{}: {}".format(msg, self.link))
+        self.log_debug(f"{msg}: {self.link}")

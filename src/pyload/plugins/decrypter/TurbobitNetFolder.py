@@ -52,6 +52,6 @@ class TurbobitNetFolder(SimpleDecrypter):
 
     def get_links(self):
         return [
-            "http://turbobit.net/{}.html" % id
+            f"http://turbobit.net/{id}.html"
             for id in self._get_links(self.info["pattern"]["ID"])
         ]

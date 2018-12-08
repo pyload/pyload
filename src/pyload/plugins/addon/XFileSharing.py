@@ -30,11 +30,11 @@ class XFileSharing(Addon):
 
     _regexmap = {
         "downloader": (
-            r"(?:https?://(?:www\.)?)(?!(?:www\.)?(?:{}))(?P<DOMAIN>(?:[\d.]+|[\w\-^_]{3,63}(?:\.[a-zA-Z]{2,})+)(?:\:\d+)?)/(?:embed-)?\w{12}(?:\W|$)",
+            r"(?:https?://(?:www\.)?)(?!(?:www\.)?(?:{}))(?P<DOMAIN>(?:[\d.]+|[\w\-^_]{{3,63}}(?:\.[a-zA-Z]{{2,}})+)(?:\:\d+)?)/(?:embed-)?\w{{12}}(?:\W|$)",
             r"https?://(?:[^/]+\.)?(?P<DOMAIN>{})/(?:embed-)?\w+",
         ),
         "decrypter": (
-            r"(?:https?://(?:www\.)?)(?!(?:www\.)?(?:{}))(?P<DOMAIN>(?:[\d.]+|[\w\-^_]{3,63}(?:\.[a-zA-Z]{2,})+)(?:\:\d+)?)/(?:user|folder)s?/\w+",
+            r"(?:https?://(?:www\.)?)(?!(?:www\.)?(?:{}))(?P<DOMAIN>(?:[\d.]+|[\w\-^_]{{3,63}}(?:\.[a-zA-Z]{{2,}})+)(?:\:\d+)?)/(?:user|folder)s?/\w+",
             r"https?://(?:[^/]+\.)?(?P<DOMAIN>{})/(?:user|folder)s?/\w+",
         ),
     }
@@ -155,11 +155,8 @@ class XFileSharing(Addon):
                 ):
                     plugin_list.append(klass.PLUGIN_DOMAIN)
 
-            if plugin_list:
-                unmatch_list = "|".join(sorted(plugin_list)).replace(".", "\.")
-                pattern = self._regexmap[type][0].format(unmatch_list)
-            else:
-                pattern = self._regexmap[type][0]
+            unmatch_list = "|".join(sorted(plugin_list)).replace(".", "\.")
+            pattern = self._regexmap[type][0].format(unmatch_list)
 
             self.log_info(self._("Auto-discover new {}s").format(type))
 
@@ -175,7 +172,7 @@ class XFileSharing(Addon):
         dict["pattern"] = pattern
         dict["re"] = re.compile(pattern)
 
-        self.log_debug("Pattern for {}s: {}".format(type, pattern))
+        self.log_debug(f"Pattern for {type}: {pattern}")
 
     def _unload(self, type, plugin):
         dict = self.pyload.pluginManager.plugins[type][plugin]

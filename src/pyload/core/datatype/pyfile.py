@@ -77,7 +77,7 @@ class PyFile(object):
     size = property(lambda self: self._size, setSize)
 
     def __repr__(self):
-        return "PyFile {}: {}@{}".format(self.id, self.name, self.pluginname)
+        return f"PyFile {self.id}: {self.name}@{self.pluginname}"
 
     @lock
     def initPlugin(self):

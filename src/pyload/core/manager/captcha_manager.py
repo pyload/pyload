@@ -153,4 +153,4 @@ class CaptchaTask(object):
         [x.captchaCorrect(self) for x in self.handler]
 
     def __str__(self):
-        return "<CaptchaTask '{}'>".format(self.id)
+        return f"<CaptchaTask '{self.id}'>"

@@ -203,15 +203,7 @@ class Cli(object):
 
         println(
             line,
-            "{} {}: {} {}: {} {}: {}".format(
-                paused,
-                self._("total Speed"),
-                red(formatSize(speed) + "/s"),
-                self._("Files in queue"),
-                red(status.queue),
-                self._("Total"),
-                red(status.total),
-            ),
+            f'{paused} {self._("total Speed")}: {red(formatSize(speed) + "/s")} {self._("Files in queue")}: {red(status.queue)} {self._("Total")}: {red(status.total)}'
         )
 
         return line + 1
@@ -248,7 +240,7 @@ class Cli(object):
         self.lastLowestLine = line
 
         # set cursor to position
-        print("\033[{};0H".format(self.inputline))
+        print(f"\033[{self.inputline};0H")
 
     def onChar(self, char):
         """
@@ -292,18 +284,15 @@ class Cli(object):
 
             for download in files:
                 if download.status == 12:  #: downloading
+                    formatted_speed = formatSize(download.speed)
+                    downloaded_size = formatSize(download.size - download.bleft),
                     print(print_status(download))
                     print(
-                        "\tDownloading: {} @ {}/s\t {} ({}%%)".format(
-                            download.format_eta,
-                            formatSize(download.speed),
-                            formatSize(download.size - download.bleft),
-                            download.percent,
-                        )
+                        f"\tDownloading: {download.format_eta} @ {formatted_speed}/s\t {downloaded_size} ({download.percent}%%)"
                     )
                 elif download.status == 5:
                     print(print_status(download))
-                    print("\tWaiting: {}".format(download.format_wait))
+                    print(f"\tWaiting: {download.format_wait}")
                 else:
                     print(print_status(download))
 

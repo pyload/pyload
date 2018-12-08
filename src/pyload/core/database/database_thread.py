@@ -65,19 +65,18 @@ class DatabaseJob(object):
 
         frame = self.frame.f_back
         output = ""
+        
         for i in range(5):
-            output += "\t{}:{}, {}\n".format(
-                os.path.basename(frame.f_code.co_filename),
-                frame.f_lineno,
-                frame.f_code.co_name,
-            )
+            bn = os.path.basename(frame.f_code.co_filename)
+            ln = frame.f_lineno
+            cn = frame.f_code.co_name
+            output += f"\t{bn}:{ln}, {cn}\n"
             frame = frame.f_back
+            
         del frame
         del self.frame
 
-        return "DataBase Job {}:{}\n{}Result: {}".format(
-            self.f.__name__, self.args[1:], output, self.result
-        )
+        return f"DataBase Job {self.f.__name__}:{self.args[1:]}\n{output} Result: {self.result}"
 
     def processJob(self):
         try:
@@ -182,7 +181,7 @@ class DatabaseThread(Thread):
 
     def _convertDB(self, v):
         try:
-            getattr(self, "_convertV{}".format(v))()
+            getattr(self, f"_convertV{v}")()
         except Exception:
             self.pyload.log.error(self._("Filedatabase could NOT be converted."))
 

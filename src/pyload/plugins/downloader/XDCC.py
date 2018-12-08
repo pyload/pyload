@@ -126,7 +126,7 @@ class IRC(object):
 
                 return True
 
-        self.plugin.log_error(self._("Connection to {}:{} failed.").format(host, port))
+        self.plugin.log_error(self._("Connection to {}:{} failed").format(host, port))
 
         return False
 
@@ -155,7 +155,7 @@ class IRC(object):
             origin, command, args = self._parse_irc_msg(line)
 
             if command == "PING":
-                self.plugin.log_debug("[{}] Ping? Pong!".format(args[0]))
+                self.plugin.log_debug(f"[{args[0]}] Ping? Pong!")
                 self.irc_sock.send("PONG :{}\r\n".format(args[0]))
 
             elif origin and command == "PRIVMSG":
@@ -234,7 +234,7 @@ class IRC(object):
                 return False
 
             elif command == "353" and args[2].lower() == chan.lower():  #: RPL_NAMREPLY
-                self.plugin.log_debug("Successfully joined channel {}".format(chan))
+                self.plugin.log_debug(f"Successfully joined channel {chan}")
                 return True
 
         return False
@@ -348,7 +348,7 @@ class IRC(object):
                 and args[0] == self.nick
                 and args[1].lower() == bot.lower()
             ):  #: ERR_NOSUCHNICK
-                self.plugin.log_debug("Bot '{}' is offline".format(bot))
+                self.plugin.log_debug(f"Bot '{bot}' is offline")
                 return False
 
             #: RPL_WHOISUSER
@@ -357,7 +357,7 @@ class IRC(object):
                 and args[0] == self.nick
                 and args[1].lower() == bot.lower()
             ):
-                self.plugin.log_debug("Bot '{}' is online".format(bot))
+                self.plugin.log_debug(f"Bot '{bot}' is online")
                 self.bot_host[bot] = args[3]  #: bot host
                 return True
 
@@ -502,11 +502,11 @@ class IRC(object):
 
                 pack_info = text.split()
                 if pack_info[0].lower() == "filename":
-                    self.plugin.log_debug("Filename: '{}'".format(pack_info[1]))
+                    self.plugin.log_debug(f"Filename: '{pack_info[1]}'")
                     info.update({"status": "online", "name": pack_info[1]})
 
                 elif pack_info[0].lower() == "filesize":
-                    self.plugin.log_debug("Filesize: '{}'".format(pack_info[1]))
+                    self.plugin.log_debug(f"Filesize: '{pack_info[1]}'")
                     info.update({"status": "online", "size": pack_info[1]})
 
                 else:
@@ -752,7 +752,7 @@ class XDCC(Downloader):
             text = str(args[1], "latin1", "replace")
 
         sender_nick = origin.split("@")[0].split("!")[0]
-        self.log_debug("PrivMsg: <{}> {}".format(sender_nick, text))
+        self.log_debug(f"PrivMsg: <{sender_nick}> {text}")
 
         if text in (
             "You already requested that pack",

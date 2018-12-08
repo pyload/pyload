@@ -52,8 +52,9 @@ class MirrorcreatorCom(Decrypter):
 
         pack_name, pack_folder = self.get_package_info()
 
+        uid = self.info["pattern"]["ID"]
         m = re.search(
-            r'"(/mstat\.php\?uid={}.+?)"' % self.info["pattern"]["ID"], self.data
+            rf'"(/mstat\.php\?uid={uid}.+?)"', self.data
         )
         if m is None:
             self.fail("mstat URL not found")
@@ -62,9 +63,9 @@ class MirrorcreatorCom(Decrypter):
 
         hosters_data = {}
         for tr in re.findall(r"<tr>(.+?)</tr>", self.data, re.S):
+            uid = self.info["pattern"]["ID"]
             m = re.search(
-                r'<a href="(/showlink\.php\?uid={}.+?)".*&hname=(\w+)'
-                % self.info["pattern"]["ID"],
+                rf'<a href="(/showlink\.php\?uid={uid}.+?)".*&hname=(\w+)',
                 tr,
                 re.S,
             )
@@ -75,7 +76,7 @@ class MirrorcreatorCom(Decrypter):
         # priority hosters goes first
         for h in hosters_priority:
             if h in hosters_data and h not in ignored_hosters:
-                self.log_debug("Adding '{}' link".format(h))
+                self.log_debug(f"Adding '{h}' link")
                 choosen_hosters.append(h)
                 if not self.config.get("grab_all"):
                     break
@@ -86,7 +87,7 @@ class MirrorcreatorCom(Decrypter):
         ):
             for h in hosters_data:
                 if h not in ignored_hosters and h not in choosen_hosters:
-                    self.log_debug("Adding '{}' link".format(h))
+                    self.log_debug(f"Adding '{h}' link")
                     choosen_hosters.append(h)
                     if not self.config.get("grab_all"):
                         break

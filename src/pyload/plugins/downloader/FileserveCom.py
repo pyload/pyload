@@ -49,7 +49,7 @@ class FileserveCom(Downloader):
         self.file_id = re.match(self.__pattern__, self.pyfile.url).group("ID")
         self.url = "{}{}".format(self.URLS[0], self.file_id)
 
-        self.log_debug("File ID: {} URL: {}".format(self.file_id, self.url))
+        self.log_debug(f"File ID: {self.file_id} URL: {self.url}")
 
     def _get_info(self, url):
         html = get_url(self.URLS[1], post={"urls": url})
@@ -74,7 +74,7 @@ class FileserveCom(Downloader):
         pyfile.name, pyfile.size, status, self.url = self._get_info(self.url)
         if status != 2:
             self.offline()
-        self.log_debug("File Name: {} Size: {}".format(pyfile.name, pyfile.size))
+        self.log_debug(f"File Name: {pyfile.name} Size: {pyfile.size}")
 
         if self.premium:
             self.handle_premium()
@@ -115,7 +115,7 @@ class FileserveCom(Downloader):
 
         #: Show download link
         res = self.load(self.url, post={"downloadLink": "show"})
-        self.log_debug("Show downloadLink response: {}".format(res))
+        self.log_debug(f"Show downloadLink response: {res}")
         if "fail" in res:
             self.error(self._("Couldn't retrieve download url"))
 
@@ -148,7 +148,7 @@ class FileserveCom(Downloader):
 
     def do_timmer(self):
         res = self.load(self.url, post={"downloadLink": "wait"})
-        self.log_debug("Wait response: {}".format(res[:80]))
+        self.log_debug(f"Wait response: {res[:80]}")
 
         if "fail" in res:
             self.fail(self._("Failed getting wait time"))

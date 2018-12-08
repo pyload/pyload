@@ -49,7 +49,7 @@ class EmbeduploadCom(Decrypter):
             prefered_set = set(self.config.get("preferedHoster").split("|"))
             prefered_set = [s.lower().split(".")[0] for s in prefered_set]
 
-            self.log_debug("PF: {}".format(prefered_set))
+            self.log_debug(f"PF: {prefered_set}")
 
             tmp_links.extend(x[1] for x in m if x[0] in prefered_set)
             self.links = self.get_location(tmp_links)
@@ -58,7 +58,7 @@ class EmbeduploadCom(Decrypter):
                 ignored_set = set(self.config.get("ignoredHoster").split("|"))
                 ignored_set = [s.lower().split(".")[0] for s in ignored_set]
 
-                self.log_debug("IG: {}".format(ignored_set))
+                self.log_debug(f"IG: {ignored_set}")
 
                 tmp_links.extend(x[1] for x in m if x[0] not in ignored_set)
                 self.links = self.get_location(tmp_links)

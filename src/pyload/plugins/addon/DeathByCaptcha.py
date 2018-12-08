@@ -71,7 +71,7 @@ class DeathByCaptcha(Addon):
                 pycurl.HTTPHEADER,
                 [
                     "Accept: application/json",
-                    "User-Agent: pyLoad {}" % self.pyload.version,
+                    f"User-Agent: pyLoad {self.pyload.version}",
                 ],
             )
 
@@ -162,7 +162,7 @@ class DeathByCaptcha(Addon):
             raise DeathByCaptchaException("timed-out")
 
         result = res["text"]
-        self.log_debug("Result {} : {}".format(ticket, result))
+        self.log_debug(f"Result {ticket}: {result}")
 
         return ticket, result
 

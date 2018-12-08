@@ -42,7 +42,7 @@ class RPNetBiz(MultiDownloader):
             },
         )
 
-        self.log_debug("JSON data: {}".format(res))
+        self.log_debug(f"JSON data: {res}")
         #: Get the first link... since we only queried one
         link_status = json.loads(res)["links"][0]
 
@@ -55,7 +55,7 @@ class RPNetBiz(MultiDownloader):
             attemps = 30
             my_try = 0
             while my_try <= attemps:
-                self.log_debug("Try: {} ; Max Tries: {}".format(my_try, attemps))
+                self.log_debug(f"Try: {my_try}; Max Tries: {attemps}")
                 res = self.load(
                     "https://premium.rpnet.biz/client_api.php",
                     get={
@@ -65,19 +65,19 @@ class RPNetBiz(MultiDownloader):
                         "id": link_status["id"],
                     },
                 )
-                self.log_debug("JSON data hdd query: {}".format(res))
+                self.log_debug(f"JSON data hdd query: {res}")
                 download_status = json.loads(res)["download"]
 
-                if download_status["status"] == "100":
-                    link_status["generated"] = download_status["rpnet_link"]
+                dl_status = download_status["status"]
+                if dl_status == "100":
+                    lk_status = link_status["generated"] = download_status["rpnet_link"]
                     self.log_debug(
-                        "Successfully downloaded to rpnet HDD: {}"
-                        % link_status["generated"]
+                        f"Successfully downloaded to rpnet HDD: {lk_status}"
                     )
                     break
                 else:
                     self.log_debug(
-                        "At {}%% for the file download" % download_status["status"]
+                        f"At {dl_status}% for the file download"
                     )
 
                 self.wait(30)

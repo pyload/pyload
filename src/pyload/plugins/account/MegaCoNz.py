@@ -37,7 +37,7 @@ class MegaCoNz(Account):
                 ) >> 10
 
             # if res['rtt']:
-            #     self.log_debug("Tranfare history:{}".format(res['tah']))
+            #     self.log_debug(f"Tranfare history:{res['tah']}")
 
         return {
             "validuntil": validuntil,

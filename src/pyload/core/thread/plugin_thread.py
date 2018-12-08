@@ -31,9 +31,8 @@ class PluginThread(Thread):
 
         :return:
         """
-        dump_name = "debug_{}_{}.zip".format(
-            pyfile.pluginname, time.strftime("%Y-%m-%d_%H-%M-%S")
-        )
+        date = time.strftime("%Y-%m-%d_%H-%M-%S")
+        dump_name = f"debug_{pyfile.pluginname}_{date}.zip"
         dump = self.getDebugDump(pyfile)
 
         try:
@@ -63,21 +62,17 @@ class PluginThread(Thread):
                 raise Exception("Empty Zipfile")
 
         except Exception as exc:
-            self.pyload.log.debug("Error creating zip file: {}".format(exc))
+            self.pyload.log.debug(f"Error creating zip file: {exc}")
 
             dump_name = dump_name.replace(".zip", ".txt")
             with open(dump_name, mode="wb") as f:
                 f.write(dump)
 
-        self.pyload.log.info("Debug Report written to {}".format(dump_name))
+        self.pyload.log.info(self._("Debug Report written to {}").format(dump_name))
 
     def getDebugDump(self, pyfile):
-        dump = "pyLoad {} Debug Report of {} {} \n\nTRACEBACK:\n {} \n\nFRAMESTACK:\n".format(
-            self.m.pyload.api.getServerVersion(),
-            pyfile.pluginname,
-            pyfile.plugin.__version__,
-            traceback.format_exc(),
-        )
+        version = self.m.pyload.api.getServerVersion()
+        dump = f"pyLoad {version} Debug Report of {pyfile.pluginname} {pyfile.plugin.__version__} \n\nTRACEBACK:\n {traceback.format_exc()} \n\nFRAMESTACK:\n"
 
         tb = exc_info()[2]
         stack = []
@@ -86,16 +81,14 @@ class PluginThread(Thread):
             tb = tb.tb_next
 
         for frame in stack[1:]:
-            dump += "\nFrame {} in {} at line {}\n".format(
-                frame.f_code.co_name, frame.f_code.co_filename, frame.f_lineno
-            )
+            dump += f"\nFrame {frame.f_code.co_name} in {frame.f_code.co_filename} at line {frame.f_lineno}\n"
 
             for key, value in frame.f_locals.items():
                 dump += "\t{:20} = ".format(key)
                 try:
                     dump += pprint.pformat(value) + "\n"
                 except Exception as exc:
-                    dump += "<ERROR WHILE PRINTING VALUE> {}\n".format(exc)
+                    dump += f"<ERROR WHILE PRINTING VALUE> {exc}\n"
 
             del frame
 
@@ -110,7 +103,7 @@ class PluginThread(Thread):
                 try:
                     dump += pprint.pformat(attr) + "\n"
                 except Exception as exc:
-                    dump += "<ERROR WHILE PRINTING VALUE> {}\n".format(exc)
+                    dump += f"<ERROR WHILE PRINTING VALUE> {exc}\n"
 
         dump += "\nPYFILE OBJECT DUMP: \n\n"
 
@@ -121,7 +114,7 @@ class PluginThread(Thread):
                 try:
                     dump += pprint.pformat(attr) + "\n"
                 except Exception as exc:
-                    dump += "<ERROR WHILE PRINTING VALUE> {}\n".format(exc)
+                    dump += f"<ERROR WHILE PRINTING VALUE> {exc}\n"
 
         if pyfile.pluginname in self.m.pyload.config.plugin:
             dump += "\n\nCONFIG: \n\n"

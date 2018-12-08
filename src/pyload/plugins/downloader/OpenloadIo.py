@@ -77,12 +77,11 @@ class OpenloadIo(SimpleDownloader):
             "captcha_url" in ticket_json["result"]
             and ticket_json["result"]["captcha_url"]
         ):
+            captcha_url = ticket_json["result"]["captcha_url"]
             self.log_debug(
-                "This download requires a captcha solution: {}"
-                % ticket_json["result"]["captcha_url"]
+                f"This download requires a captcha solution: {captcha_url}"
             )
-            captcha_response = self.captcha.decrypt(
-                ticket_json["result"]["captcha_url"]
+            captcha_response = self.captcha.decrypt(captcha_url
             )
 
         ticket = ticket_json["result"]["ticket"]

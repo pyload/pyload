@@ -45,10 +45,10 @@ class AndroidfilehostCom(SimpleDownloader):
     def handle_free(self, pyfile):
         wait = re.search(self.WAIT_PATTERN, self.data)
         if wait is not None:
-            self.log_debug("Waiting time: {} seconds".format(wait.group(1)))
+            self.log_debug(f"Waiting time: {wait.group(1)} seconds")
 
         fid = re.search(r'id="fid" value="(\d+)" />', self.data).group(1)
-        self.log_debug("FID: {}".format(fid))
+        self.log_debug(f"FID: {fid}")
 
         self.req.http.c.setopt(pycurl.HTTPHEADER, ["X-MOD-SBB-CTYPE: xhr"])
 
@@ -61,7 +61,7 @@ class AndroidfilehostCom(SimpleDownloader):
         self.link = re.findall('"url":"(.*?)"', html)[0].replace("\\", "")
         mirror_host = self.link.split("/")[2]
 
-        self.log_debug("Mirror Host: {}".format(mirror_host))
+        self.log_debug(f"Mirror Host: {mirror_host}")
 
         html = self.load(
             "https://androidfilehost.com/libs/otf/stats.otf.php",

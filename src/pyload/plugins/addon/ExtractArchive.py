@@ -221,7 +221,7 @@ class ExtractArchive(Addon):
         excludefiles = toList(self.config.get("excludefiles"))
 
         if extensions:
-            self.log_debug("Use for extensions: .{}".format("|.".join(extensions)))
+            self.log_debug(f"Use for extensions: .{'|.'.join(extensions)}")
 
         #: Reload from txt file
         self.reload_passwords()
@@ -346,7 +346,7 @@ class ExtractArchive(Addon):
                                 for fid, fname, fout in files_ids
                                 if fname not in chunks
                             ]
-                            self.log_debug("Extracted files: {}".format(new_files))
+                            self.log_debug(f"Extracted files: {new_files}")
 
                             new_folders = uniqify(os.path.dirname(f) for f in new_files)
                             for foldername in new_folders:
@@ -439,7 +439,7 @@ class ExtractArchive(Addon):
 
         encrypted = False
         try:
-            self.log_debug("Password: {}".format(password or "None provided"))
+            self.log_debug(f"Password: {password or None}")
             passwords = (
                 uniqify([password] + self.get_passwords(False))
                 if self.config.get("usepasswordfile")
@@ -499,7 +499,7 @@ class ExtractArchive(Addon):
                     f for f in uniqify([password] + self.get_passwords(False)) if f
                 ]:
                     try:
-                        self.log_debug("Extracting using password: {}".format(pw))
+                        self.log_debug(f"Extracting using password: {pw}")
 
                         archive.extract(pw)
                         self.add_password(pw)

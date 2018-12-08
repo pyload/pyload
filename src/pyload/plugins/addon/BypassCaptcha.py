@@ -79,7 +79,7 @@ class BypassCaptcha(Addon):
 
         result = data["Value"]
         ticket = data["TaskId"]
-        self.log_debug("Result {} : {}".format(ticket, result))
+        self.log_debug(f"Result {ticket} : {result}")
 
         return ticket, result
 

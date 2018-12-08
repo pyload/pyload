@@ -31,10 +31,7 @@ class CookieJar(object):
     def setCookie(
         self, domain, name, value, path="/", exp=time.time() + 3600 * 24 * 180
     ):
-        s = ".{}    TRUE    {}    FALSE    {}    {}    {}".format(
-            domain, path, exp, name, value
-        )
-        self.cookies[name] = s
+        self.cookies[name] = f".{domain}    TRUE    {path}    FALSE    {exp}    {name}    {value}"
 
     def clear(self):
         self.cookies = {}

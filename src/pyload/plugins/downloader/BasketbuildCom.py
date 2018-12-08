@@ -49,11 +49,11 @@ class BasketbuildCom(SimpleDownloader):
             self.error(self._("Hop #1 not found"))
 
         else:
-            self.log_debug("Next hop: {}".format(link1))
+            self.log_debug(f"Next hop: {link1}")
 
         try:
             wait = re.search(r"var sec = (\d+)", self.data).group(1)
-            self.log_debug("Wait {} seconds".format(wait))
+            self.log_debug(f"Wait {wait} seconds")
             self.wait(wait)
 
         except AttributeError:

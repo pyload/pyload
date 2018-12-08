@@ -45,13 +45,13 @@ class Ftp(Downloader):
                 servers = []
 
             if netloc in servers:
-                self.log_debug("Logging on to {}".format(netloc))
+                self.log_debug(f"Logging on to {netloc}")
                 self.req.addAuth(self.account.get_login("password"))
 
             else:
                 pwd = self.get_password()
                 if ":" in pwd:
-                    self.log_debug("Logging on to {}".format(netloc))
+                    self.log_debug(f"Logging on to {netloc}")
                     self.req.addAuth(pwd)
                 else:
                     self.log_debug("Using anonymous logon")

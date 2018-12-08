@@ -27,8 +27,10 @@ class AdsCaptcha(CaptchaService):
         n = re.search(self.CAPTCHAID_PATTERN, html)
         if m and n:
             #: Key is the tuple(PublicKey, CaptchaId)
-            self.key = (m.group(1).strip(), n.group(1).strip())
-            self.log_debug("Key: {} | ID: {}".format(*self.key))
+            key = m.group(1).strip()
+            id = n.group(1).strip()
+            self.key = (key, id)
+            self.log_debug(f"Key: {key} | ID: {id}")
             return self.key
         else:
             self.log_debug("Key or id pattern not found")
@@ -48,7 +50,7 @@ class AdsCaptcha(CaptchaService):
         except AttributeError:
             self.fail(self._("AdsCaptcha challenge pattern not found"))
 
-        self.log_debug("Challenge: {}".format(challenge))
+        self.log_debug(f"Challenge: {challenge}")
 
         return self.result(server, challenge), challenge
 

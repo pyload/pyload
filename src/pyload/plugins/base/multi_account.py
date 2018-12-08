@@ -206,7 +206,7 @@ class MultiAccount(Account):
 
         removed = [plugin for plugin in prev_supported if plugin not in self.supported]
         if removed:
-            self.log_debug("Unload: {}".format(", ".join(removed)))
+            self.log_debug(f"Unload: {', '.join(removed)}")
             for plugin in removed:
                 self.unload_plugin(plugin)
 
@@ -236,21 +236,20 @@ class MultiAccount(Account):
         if new_supported:
             plugins = sorted(new_supported)
 
-            self.log_debug("New {}s: {}".format(self.plugintype, ", ".join(plugins)))
+            self.log_debug(f"New {self.plugintype}: {', '.join(plugins)}")
 
             #: Create new regexp
-            pattern = r".*(?P<DOMAIN>{}).*".format(
-                "|".join(x.replace(".", "\.") for x in plugins)
-            )
+            domains = "|".join(x.replace(".", "\.") for x in plugins)
+            pattern = rf".*(?P<DOMAIN>{domains}).*"
 
             if (
                 hasattr(self.pluginclass, "__pattern__")
                 and isinstance(self.pluginclass.__pattern__, str)
                 and "://" in self.pluginclass.__pattern__
             ):
-                pattern = r"{}|{}".format(self.pluginclass.__pattern__, pattern)
+                pattern = rf"{self.pluginclass.__pattern__}|{pattern}"
 
-            self.log_debug("Pattern: {}".format(pattern))
+            self.log_debug(f"Pattern: {pattern}")
 
             hdict = self.pyload.pluginManager.plugins[self.plugintype][self.classname]
             hdict["pattern"] = pattern
@@ -447,7 +446,7 @@ class MultiAccount(Account):
         self.fail_count = 0
 
         if self.supported:
-            self.log_debug("Unload: {}".format(", ".join(self.supported)))
+            self.log_debug(f"Unload: {', '.join(self.supported)}")
             for plugin in self.supported:
                 self.unload_plugin(plugin)
 

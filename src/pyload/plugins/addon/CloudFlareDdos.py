@@ -43,7 +43,7 @@ class CloudFlare(object):
 
         try:
             data = orig_func(*args[0], **args[1])
-            addon_plugin.log_debug("{}() returned successfully".format(func_name))
+            addon_plugin.log_debug(f"{func_name}() returned successfully")
             return data
 
         except BadHeader as exc:
@@ -213,15 +213,14 @@ class CloudFlareDdos(Addon):
 
     def _unoverride_preload(self, plugin):
         if id(plugin) in self.stubs:
-            self.log_debug("Unoverriding _preload() for {}".format(plugin_id(plugin)))
+            self.log_debug(f"Unoverriding _preload() for {plugin_id(plugin)}")
 
             stub = self.stubs.pop(id(plugin))
             stub.owner_plugin._preload = stub.old_preload
 
         else:
             self.log_warning(
-                self._("No _preload() override found for {}, cannot un-override>")
-                % plugin_id(plugin)
+                self._("No _preload() override found for {}, cannot un-override>").format(plugin_id(plugin))
             )
 
     def _override_preload(self, plugin):
@@ -229,12 +228,12 @@ class CloudFlareDdos(Addon):
             stub = PreloadStub(self, plugin)
             self.stubs[id(plugin)] = stub
 
-            self.log_debug("Overriding _preload() for {}".format(plugin_id(plugin)))
+            self.log_debug(f"Overriding _preload() for {plugin_id(plugin)}")
             plugin._preload = stub.my_preload
 
         else:
             self.log_warning(
-                self._("Already overrided _preload() for {}") % plugin_id(plugin)
+                self._("Already overrided _preload() for {}").format(plugin_id(plugin))
             )
 
     def _override_get_url(self):
@@ -271,14 +270,13 @@ class CloudFlareDdos(Addon):
     def download_preparing(self, pyfile):
         #: Only SimpleDownloader and SimpleDecrypter based plugins are supported
         if not is_simple_plugin(pyfile.plugin):
-            self.log_debug("Skipping plugin {}".format(plugin_id(pyfile.plugin)))
+            self.log_debug(f"Skipping plugin {plugin_id(pyfile.plugin)}")
             return
 
         attr = getattr(pyfile.plugin, "_preload", None)
         if not attr and not callable(attr):
             self.log_error(
-                self._("{} is missing _preload() function, cannot override!")
-                % plugin_id(pyfile.plugin)
+                self._("{} is missing _preload() function, cannot override!").format(plugin_id(pyfile.plugin))
             )
             return
 

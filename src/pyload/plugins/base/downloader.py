@@ -184,7 +184,7 @@ class Downloader(Hoster):
                 code = header.get("code")
 
                 if code in (301, 302) or resumable:
-                    self.log_debug("Redirect #{} to: {}".format(i, location))
+                    self.log_debug(f"Redirect #{i} to: {location}")
                     header = self.load(location, just_header=True)
                     url = location
                     continue
@@ -378,7 +378,7 @@ class Downloader(Hoster):
             content = f.read(read_size)
 
         #: Produces encoding errors, better log to other file in the future?
-        # self.log_debug("Content: {}".format(content))
+        # self.log_debug(f"Content: {content}")
         for name, rule in rules.items():
             if isinstance(rule, str):
                 if rule in content:
@@ -463,7 +463,7 @@ class Downloader(Hoster):
 
     # elif diff != 0:
     # self.log_warning(self._("File size is not equal to expected download size, but does not exceed the tolerance threshold"))
-    # self.log_debug("Expected file size: {} bytes".format(file_size)
+    # self.log_debug(f"Expected file size: {file_size} bytes"
     # "Downloaded file size: {} bytes".format(dl_size)
     # "Tolerance threshold: {} bytes".format(size_tolerance))
     # else:

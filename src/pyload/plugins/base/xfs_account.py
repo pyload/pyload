@@ -101,7 +101,7 @@ class XFSAccount(Account):
                 self.log_error(exc)
 
             else:
-                self.log_debug("Valid until: {}".format(validuntil))
+                self.log_debug(f"Valid until: {validuntil}")
 
                 if validuntil > time.mktime(time.gmtime()):
                     premium = True

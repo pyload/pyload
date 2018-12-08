@@ -107,7 +107,7 @@ class SexuriaCom(Decrypter):
                 pwd = pwddata.group("PWD").strip()
                 if pwd and pwd not in self.LIST_PWDIGNORE:
                     password = pwd
-                    self.log_debug("Package info found, password [{}]".format(password))
+                    self.log_debug(f"Package info found, password [{password}]")
 
             #: Process links (dl_link)
             html = self.load(url)

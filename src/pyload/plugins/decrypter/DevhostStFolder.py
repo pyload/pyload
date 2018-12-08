@@ -47,9 +47,9 @@ class DevhostStFolder(SimpleDecrypter):
     # TODO: Rewrite
     def check_name_size(self, getinfo=True):
         if not self.info or getinfo:
-            self.log_debug("File info (BEFORE): {}".format(self.info))
+            self.log_debug(f"File info (BEFORE): {self.info}")
             self.info.update(self.get_info(self.pyfile.url, self.data))
-            self.log_debug("File info (AFTER): {}".format(self.info))
+            self.log_debug(f"File info (AFTER): {self.info}")
 
         try:
             if self.info["pattern"]["ID"] == "0":

@@ -196,7 +196,7 @@ class ThreadManager(object):
 
         self.pyload.addonManager.beforeReconnecting(ip)
 
-        self.pyload.log.debug("Old IP: {}".format(ip))
+        self.pyload.log.debug(f"Old IP: {ip}")
 
         try:
             reconn = subprocess.Popen(

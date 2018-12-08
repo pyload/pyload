@@ -156,11 +156,11 @@ class ExternalScripts(Addon):
         scripts = self.scripts.get(folder)
 
         if folder not in self.scripts:
-            self.log_debug("Folder `{}` not found".format(folder))
+            self.log_debug(f"Folder `{folder}` not found")
             return
 
         if not scripts:
-            self.log_debug("No script found under folder `{}`".format(folder))
+            self.log_debug(f"No script found under folder `{folder}`")
             return
 
         self.log_info(self._("Executing scripts in folder `{}`...").format(folder))

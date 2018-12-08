@@ -118,7 +118,7 @@ class XMPP(IRC, pyxmpp2.client.Client):
 
         This will usually be used to let the user know what is going on.
         """
-        self.log_debug("*** State changed: {} {!r} ***".format(state, arg))
+        self.log_debug(f"State changed: {state} {repr(arg)}")
 
     def disconnected(self):
         self.log_debug("Client was disconnected")
@@ -145,8 +145,10 @@ class XMPP(IRC, pyxmpp2.client.Client):
         subject = stanza.get_subject()
         body = stanza.get_body()
         t = stanza.get_type()
-        self.log_debug("Message from {} received.".format(stanza.get_from()))
-        self.log_debug("Body: {} Subject: {} Type: {}".format(body, subject, t))
+        sender = stanza.get_from()
+        
+        self.log_debug(f"Message from {sender} received.")
+        self.log_debug(f"Body: {body} Subject: {subject} Type: {t}")
 
         if t == "headline":
             #: 'headline' messages should never be replied to

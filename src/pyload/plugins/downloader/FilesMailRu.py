@@ -95,8 +95,6 @@ class FilesMailRu(Downloader):
         if self.scan_download({"html": "<meta name="}, read_size=50000) == "html":
             self.log_info(
                 self._(
-                    "There was HTML Code in the Downloaded File ({})...redirect error? The Download will be restarted."
-                    % self.pyfile.name
-                )
+                    "There was HTML Code in the Downloaded File ({})...redirect error? The Download will be restarted").format(self.pyfile.name)
             )
             self.retry()

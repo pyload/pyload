@@ -126,7 +126,8 @@ class ClickNLoad(Addon):
                     client_socket, client_addr = dock_socket.accept()
 
                     if not self.do_exit:
-                        self.log_debug("Connection from {}:{}".format(*client_addr))
+                        host, port = client_addr
+                        self.log_debug(f"Connection from {host}:{port}")
 
                         server_socket = socket.socket(
                             socket.AF_INET, socket.SOCK_STREAM

@@ -80,7 +80,7 @@ class DatafileCom(SimpleDownloader):
             )
             if file_info["success"]:
                 self.link = file_info["link"]
-                self.log_debug("URL:{}".format(file_info["link"]))
+                self.log_debug(f"URL:{self.link}")
 
         else:
             m = re.search(r"error\.html\?code=(\d+)", self.req.lastEffectiveURL)
@@ -97,4 +97,4 @@ class DatafileCom(SimpleDownloader):
                     self.temp_offline()
 
                 else:
-                    self.log_debug("Unknown error code {}".format(error_code))
+                    self.log_debug(f"Unknown error code {error_code}")

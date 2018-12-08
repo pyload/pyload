@@ -66,12 +66,12 @@ class HellshareCz(Account):
         html = self.load("http://www.hellshare.com/")
         if self.req.lastEffectiveURL != "http://www.hellshare.com/":
             #: Switch to English
-            self.log_debug("Switch lang - URL: {}".format(self.req.lastEffectiveURL))
+            self.log_debug(f"Switch lang - URL: {self.req.lastEffectiveURL}")
 
-            json = self.load("{}?do=locRouter-show" % self.req.lastEffectiveURL)
+            json = self.load(f"{self.req.lastEffectiveURL}?do=locRouter-show")
             hash = re.search(r"(--[0-9a-f]+\-)", json).group(1)
 
-            self.log_debug("Switch lang - HASH: {}".format(hash))
+            self.log_debug(f"Switch lang - HASH: {hash}")
 
             html = self.load("http://www.hellshare.com/{}/".format(hash))
 

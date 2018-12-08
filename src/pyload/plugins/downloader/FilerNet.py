@@ -66,9 +66,7 @@ class FilerNet(SimpleDownloader):
         if self.scan_download({"html": re.compile(r"\A\s*<!DOCTYPE html")}) == "html":
             self.log_warning(
                 self._(
-                    "There was HTML code in the downloaded file ({})...bad captcha? The download will be restarted."
-                    % self.pyfile.name
-                )
+                    "There was HTML code in the downloaded file ({})...bad captcha? The download will be restarted").format(self.pyfile.name)
             )
             os.remove(self.last_download)
             self.retry_captcha()

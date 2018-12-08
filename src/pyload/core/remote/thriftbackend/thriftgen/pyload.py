@@ -2727,7 +2727,7 @@ class Processor(Iface, TProcessor):
             iprot.skip(TType.STRUCT)
             iprot.readMessageEnd()
             x = TApplicationException(
-                TApplicationException.UNKNOWN_METHOD, "Unknown function {}".format(name)
+                TApplicationException.UNKNOWN_METHOD, f"Unknown function {name}"
             )
             oprot.writeMessageBegin(name, TMessageType.EXCEPTION, seqid)
             x.write(oprot)

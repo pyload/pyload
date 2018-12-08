@@ -198,7 +198,7 @@ class FilecryptCc(Decrypter):
         if m is not None:
             captcha_url = urllib.parse.urljoin(self.pyfile.url, m.group(1))
 
-            self.log_debug("Internal Captcha URL: {}".format(captcha_url))
+            self.log_debug(f"Internal Captcha URL: {captcha_url}")
 
             captcha_code = self.captcha.decrypt(captcha_url, input_type="gif")
 
@@ -220,7 +220,7 @@ class FilecryptCc(Decrypter):
 
             captcha_url = urllib.parse.urljoin(self.pyfile.url, m.group(1))
 
-            self.log_debug("Circle Captcha URL: {}".format(captcha_url))
+            self.log_debug(f"Circle Captcha URL: {captcha_url}")
 
             captcha_code = self.captcha.decrypt(
                 captcha_url, input_type="png", output_type="positional"
@@ -328,7 +328,7 @@ class FilecryptCc(Decrypter):
                     self.urls.append(res2["location"])
 
         except Exception as exc:
-            self.log_debug("Error decrypting weblinks: {}".format(exc))
+            self.log_debug(f"Error decrypting weblinks: {exc}")
 
     def handle_CNL(self):
         try:
@@ -340,7 +340,7 @@ class FilecryptCc(Decrypter):
                 self.urls.extend(self._get_links(index[2], index[1]))
 
         except Exception as exc:
-            self.log_debug("Error decrypting CNL: {}".format(exc))
+            self.log_debug(f"Error decrypting CNL: {exc}")
 
     def _get_links(self, crypted, jk):
         #: Get key

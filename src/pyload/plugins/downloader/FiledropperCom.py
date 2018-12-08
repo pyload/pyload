@@ -41,7 +41,7 @@ class FiledropperCom(SimpleDownloader):
             self.fail(self._("Captcha not found"))
 
         captcha_code = self.captcha.decrypt(
-            "http://www.filedropper.com/{}" % m.group(1)
+            f"http://www.filedropper.com/{m.group(1)}"
         )
 
         m = re.search(r'method="post" action="(.+?)"', self.data)

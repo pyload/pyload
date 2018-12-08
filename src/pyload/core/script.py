@@ -18,7 +18,7 @@ def _daemon(core_args):
         if pid > 0:
             sys.exit(0)
     except OSError as exc:
-        sys.stderr.write("fork #1 failed: {} ({})\n".format(exc.errno, exc.strerror))
+        sys.stderr.write(f"fork #1 failed: {exc.errno} ({exc.strerror})\n")
         sys.exit(1)
 
     # decouple from parent environment
@@ -30,10 +30,10 @@ def _daemon(core_args):
         pid = os.fork()
         if pid > 0:
             # exit from second parent, print(eventual PID before)
-            print("Daemon PID {}".format(pid))
+            print(f"Daemon PID {pid}")
             sys.exit(0)
     except OSError as exc:
-        sys.stderr.write("fork #2 failed: {} ({})\n".format(exc.errno, exc.strerror))
+        sys.stderr.write(f"fork #2 failed: {exc.errno} ({exc.strerror})\n")
         sys.exit(1)
 
     # Iterate through and close some file descriptors.
@@ -67,7 +67,7 @@ def _parse_args(cmd_args):
     group = parser.add_mutually_exclusive_group()
 
     group.add_argument(
-        "--version", action="version", version="pyLoad {ver}".format(ver=__version__)
+        "--version", action="version", version=f"pyLoad {__version__}"
     )
 
     parser.add_argument(

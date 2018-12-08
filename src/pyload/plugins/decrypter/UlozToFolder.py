@@ -39,7 +39,7 @@ class UlozToFolder(Decrypter):
 
         new_links = []
         for i in range(1, 100):
-            self.log_info(self._("Fetching links from page %i").format(i))
+            self.log_info(self._("Fetching links from page {}").format(i))
             m = re.search(self.FOLDER_PATTERN, html, re.S)
             if m is None:
                 self.error(self._("FOLDER_PATTERN not found"))

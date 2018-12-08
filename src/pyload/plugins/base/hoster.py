@@ -231,8 +231,8 @@ class Hoster(Plugin):
 
         self.info.update(new_info)
 
-        self.log_debug("Link info: {}".format(self.info))
-        self.log_debug("Previous link info: {}".format(old_info))
+        self.log_debug(f"Link info: {self.info}")
+        self.log_debug(f"Previous link info: {old_info}")
 
         self.sync_info()
 

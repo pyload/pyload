@@ -198,7 +198,7 @@ class LinkCryptWs(Decrypter):
         pattern = r'<form action="http://linkcrypt.ws/out.html"[^>]*?>.*?<input[^>]*?value="(.+?)"[^>]*?name="file"'
         ids = re.findall(pattern, self.data, re.I | re.S)
 
-        self.log_debug("Decrypting {} Web links".format(len(ids)))
+        self.log_debug(f"Decrypting {len(ids)} Web links")
 
         for idx, weblink_id in enumerate(ids):
             try:
@@ -247,7 +247,7 @@ class LinkCryptWs(Decrypter):
         pack_links = []
         container_type = container_type.lower()
 
-        self.log_debug("Search for {} Container links".format(container_type.upper()))
+        self.log_debug(f"Search for {container_type.upper()} Container links")
 
         if (
             not container_type.isalnum()
@@ -320,14 +320,14 @@ class LinkCryptWs(Decrypter):
         vcrypted = re.findall(crypted_re, cnl_section)
 
         #: Log and return
-        self.log_debug("Detected {} crypted blocks".format(len(vcrypted)))
+        self.log_debug(f"Detected {len(vcrypted)} crypted blocks")
         return vcrypted, vjk
 
     def _get_links(self, crypted, jk):
         #: Get key
         key = binascii.unhexlify(jk)
 
-        self.log_debug("JsEngine returns value [{}]".format(key))
+        self.log_debug(f"JsEngine returns value [{key}]")
 
         #: Decrypt
         obj = Fernet(key)
@@ -338,6 +338,6 @@ class LinkCryptWs(Decrypter):
         links = list(filter(bool, text.split("\n")))
 
         #: Log and return
-        self.log_debug("Package has {} links".format(len(links)))
+        self.log_debug(f"Package has {len(links)} links")
 
         return links

@@ -55,13 +55,13 @@ class BaseObject(object):
         # generate enums
         for enum in enums:
             name = enum.__name__
-            f.write("class {}:\n".format(name))
+            f.write(f"class {name}:\n")
 
             for attr in dir(enum):
                 if attr.startswith("_") or attr in ("read", "write"):
                     continue
-
-                f.write("\t{} = {}\n".format(attr, getattr(enum, attr)))
+                value = getattr(enum, attr)
+                f.write(f"\t{attr} = {value}\n")
 
             f.write("\n")
 
@@ -72,15 +72,15 @@ class BaseObject(object):
                 if issubclass(klass, ttypes.TExceptionBase)
                 else "BaseObject"
             )
-            f.write("class {}({}):\n".format(name, base))
-            f.write("\t__slots__ = {}\n\n".format(klass.__slots__))
+            f.write(f"class {name}({base}):\n")
+            f.write(f"\t__slots__ = {klass.__slots__}\n\n")
 
             # create init
-            args = ["self"] + ["{}=None".format(x for x in klass.__slots__)]
-
-            f.write("\tdef __init__({}):\n".format(", ".join(args)))
+            args = ["self"] + [f"{x}=None" for x in klass.__slots__]
+            params = ", ".join(args)
+            f.write(f"\tdef __init__({params}):\n")
             for attr in klass.__slots__:
-                f.write("\t\tself.{} = {}\n".format(attr, attr))
+                f.write(f"\t\tself.{attr} = {attr}\n")
 
             f.write("\n")
 
@@ -92,7 +92,8 @@ class BaseObject(object):
 
             func = inspect.getargspec(getattr(Iface, name))
 
-            f.write("\tdef {}({}):\n\t\tpass\n".format(name, ", ".join(func.args)))
+            params = ", ".join(func.args)
+            f.write(f"\tdef {name}({params}):\n\t\tpass\n")
 
         f.write("\n")
 

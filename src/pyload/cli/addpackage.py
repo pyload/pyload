@@ -40,10 +40,10 @@ class AddPackage(Handler):
             println(line + 1, "")
             line += 2
         else:
-            println(line, "Package: {}".format(self.name))
-            println(line + 1, "Parse the links you want to add.")
-            println(line + 2, "Type {} when done.".format(mag("END")))
-            println(line + 3, "Links added: " + mag(len(self.urls)))
+            println(line, f"Package: {self.name}")
+            println(line + 1, "Parse the links you want to add")
+            println(line + 2, f"Type {mag('END')} when done")
+            println(line + 3, f"Links added: mag(len(self.urls))")
             line += 4
 
         println(line, "")

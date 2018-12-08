@@ -1,33 +1,33 @@
 # -*- coding: utf-8 -*-
 
 
-def blue(string):
-    return "\033[1;34m{}\033[0m".format(string)
+def blue(text):
+    return f"\033[1;34m{text}\033[0m"
 
 
-def green(string):
-    return "\033[1;32m{}\033[0m".format(string)
+def green(text):
+    return f"\033[1;32m{text}\033[0m"
 
 
-def yellow(string):
-    return "\033[1;33m{}\033[0m".format(string)
+def yellow(text):
+    return f"\033[1;33m{text}\033[0m"
 
 
-def red(string):
-    return "\033[1;31m{}\033[0m".format(string)
+def red(text):
+    return f"\033[1;31m{text}\033[0m"
 
 
-def cyan(string):
-    return "\033[1;36m{}\033[0m".format(string)
+def cyan(text):
+    return f"\033[1;36m{text}\033[0m"
 
 
-def mag(string):
-    return "\033[1;35m{}\033[0m".format(string)
+def mag(text):
+    return f"\033[1;35m{text}\033[0m"
 
 
-def white(string):
-    return "\033[1;37m{}\033[0m".format(string)
+def white(text):
+    return f"\033[1;37m{text}\033[0m"
 
 
 def println(line, content):
-    print("\033[{};0H\033[2K".format(line), content)
+    print(f"\033[{line};0H\033[2K", content)

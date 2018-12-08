@@ -55,7 +55,7 @@ class Account(Plugin):
             or self.timeout != -1
             and self.info["login"]["timestamp"] + self.timeout < time.time()
         ):
-            self.log_debug("Reached login timeout for user `{}`".format(self.user))
+            self.log_debug(f"Reached login timeout for user `{self.user}`")
             return False
         else:
             return True
@@ -288,7 +288,7 @@ class Account(Plugin):
 
     @lock
     def add(self, user, password=None, options={}):
-        self.log_info(self._("Adding user `{}`...").format(user[:3] + "*******"))
+        self.log_info(self._("Adding user `{}`...").format(user[:3] + "*" * 7))
 
         if user in self.accounts:
             self.log_error(
@@ -449,7 +449,7 @@ class Account(Plugin):
     ###########################################################################
 
     def parse_traffic(self, size, unit=None):  # NOTE: Returns kilobytes only in 0.5.0
-        self.log_debug("Size: {}".format(size), "Unit: {}".format(unit or "N/D"))
+        self.log_debug(f"Size: {size}", "Unit: {unit or 'N/D'}")
         # TODO: Remove `>> 10` in 0.6.x
         return parse_size(size, unit or "byte") >> 10
 

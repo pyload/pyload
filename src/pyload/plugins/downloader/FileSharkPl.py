@@ -94,7 +94,7 @@ class FileSharkPl(SimpleDownloader):
         m = re.search(self.WAIT_PATTERN, self.data)
         if m is not None:
             seconds = int(m.group(1))
-            self.log_debug("Wait {} seconds".format(seconds))
+            self.log_debug(f"Wait {seconds} seconds")
             self.wait(seconds)
 
         action, inputs = self.parse_html_form('name="form" method="post"')

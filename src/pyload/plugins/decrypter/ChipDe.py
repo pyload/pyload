@@ -38,4 +38,4 @@ class ChipDe(Decrypter):
 
         else:
             self.links = [f.group(1)]
-            self.log_debug("The file URL is {}".format(self.links[0]))
+            self.log_debug(f"The file URL is {self.links[0]}")

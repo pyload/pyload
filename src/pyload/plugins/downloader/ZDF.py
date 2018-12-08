@@ -21,7 +21,7 @@ class ZDF(Downloader):
     __license__ = "GPLv3"
     __authors__ = []
 
-    XML_API = "http://www.zdf.de/ZDFmediathek/xmlservice/web/beitragsDetails?id=%i"
+    XML_API = "http://www.zdf.de/ZDFmediathek/xmlservice/web/beitragsDetails?id={}"
 
     @staticmethod
     def video_key(video):
@@ -43,8 +43,10 @@ class ZDF(Downloader):
         return int(re.search(r"\D*(\d{4,})\D*", url).group(1))
 
     def process(self, pyfile):
+        id = self.get_id(pyfile.url)
+        url = self.XML_API.format(id)
         xml = etree.fromstring(
-            self.load(self.XML_API % self.get_id(pyfile.url), decode=False)
+            self.load(url, decode=False)
         )
 
         status = xml.findtext("./status/statuscode")

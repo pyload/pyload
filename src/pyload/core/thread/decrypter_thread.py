@@ -43,7 +43,7 @@ class DecrypterThread(PluginThread):
 
         except NotImplementedError:
             self.pyload.log.error(
-                self._("Plugin {} is missing a function.").format(
+                self._("Plugin {} is missing a function").format(
                     self.active.pluginname
                 )
             )

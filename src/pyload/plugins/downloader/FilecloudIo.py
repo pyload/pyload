@@ -78,7 +78,7 @@ class FilecloudIo(SimpleDownloader):
     def handle_premium(self, pyfile):
         akey = self.account.get_data("akey")
         ukey = self.info["pattern"]["ID"]
-        self.log_debug("Akey: {} | Ukey: {}".format(akey, ukey))
+        self.log_debug(f"Akey: {akey} | Ukey: {ukey}")
         rep = self.load(
             "http://api.filecloud.io/api-fetch_download_url.api",
             post={"akey": akey, "ukey": ukey},

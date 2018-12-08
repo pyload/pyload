@@ -143,7 +143,7 @@ class RelinkUs(Decrypter):
     def unlock_password_protection(self):
         password = self.get_password()
 
-        self.log_debug("Submitting password [{}] for protected links".format(password))
+        self.log_debug(f"Submitting password [{password}] for protected links")
 
         if password:
             passwd_url = self.PASSWORD_SUBMIT_URL + "?id={}".format(self.file_id)
@@ -275,7 +275,7 @@ class RelinkUs(Decrypter):
         m = re.search(self.DLC_LINK_PATTERN, self.data)
         if m is not None:
             container_url = self.DLC_DOWNLOAD_URL + "?id={}&dlc=1".format(self.file_id)
-            self.log_debug("Downloading DLC container link [{}]".format(container_url))
+            self.log_debug(f"Downloading DLC container link [{container_url}]")
             try:
                 dlc = self.load(container_url)
                 dlc_filename = self.file_id + ".dlc"
@@ -297,13 +297,13 @@ class RelinkUs(Decrypter):
         pack_links = []
         params = re.findall(self.WEB_FORWARD_PATTERN, self.data)
 
-        self.log_debug("Decrypting {} Web links".format(len(params)))
+        self.log_debug(f"Decrypting {len(params)} Web links")
 
         for index, param in enumerate(params):
             try:
                 url = self.WEB_FORWARD_URL + "?{}".format(param)
 
-                self.log_debug("Decrypting Web link {}, {}".format(index + 1, url))
+                self.log_debug(f"Decrypting Web link {index + 1}, {url}")
 
                 res = self.load(url)
                 link = re.search(self.WEB_LINK_PATTERN, res).group(1)
@@ -311,7 +311,7 @@ class RelinkUs(Decrypter):
                 pack_links.append(link)
 
             except Exception as detail:
-                self.log_debug("Error decrypting Web link {}, {}".format(index, detail))
+                self.log_debug(f"Error decrypting Web link {index}, {detail}")
 
             self.wait(4)
 
@@ -327,13 +327,13 @@ class RelinkUs(Decrypter):
         vcrypted = re.findall(crypted_re, cnl2_form, re.I)
 
         #: Log and return
-        self.log_debug("Detected {} crypted blocks".format(len(vcrypted)))
+        self.log_debug(f"Detected {len(vcrypted)} crypted blocks")
         return vcrypted, vjk
 
     def _get_links(self, crypted, jk):
         #: Get key
         jreturn = js2py.eval_js("{} f()".format(jk))
-        self.log_debug("JsEngine returns value [{}]".format(jreturn))
+        self.log_debug(f"JsEngine returns value [{jreturn}]")
         key = binascii.unhexlify(jreturn)
 
         #: Decrypt
@@ -345,5 +345,5 @@ class RelinkUs(Decrypter):
         links = list(filter(bool, text.split("\n")))
 
         #: Log and return
-        self.log_debug("Package has {} links".format(len(links)))
+        self.log_debug(f"Package has {len(links)} links")
         return links

@@ -101,9 +101,7 @@ class ManageFiles(Handler):
             println(line, "Choose what you want to do or enter package number.")
             println(
                 line + 1,
-                "{} - {}, {} - {}, {} - {}".format(
-                    mag("d"), "delete", mag("m"), "move", mag("r"), "restart"
-                ),
+                f"{mag('d')} - delete, mag('m') - move, mag('r') - restart"
             )
             line += 2
 
@@ -130,9 +128,7 @@ class ManageFiles(Handler):
                     println(
                         line,
                         mag(value.fid)
-                        + ": {} | {} | {}".format(
-                            value.name, value.statusmsg, value.plugin
-                        ),
+                        + f": {value.name} | {value.statusmsg} | {value.plugin}"
                     )
                     line += 1
                     i += 1

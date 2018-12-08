@@ -44,7 +44,7 @@ class OboomCom(Downloader):
             self.solve_captcha()
         self.get_download_ticket()
         self.download(
-            "http://{}/1.0/dlh" % self.download_domain,
+            f"http://{self.download_domain}/1.0/dlh",
             get={"ticket": self.download_ticket, "http_errors": 0},
         )
 
@@ -68,8 +68,7 @@ class OboomCom(Downloader):
                 self.session_token = result[1]
             else:
                 self.fail(
-                    self._("Could not retrieve token for guest session. Error code: {}")
-                    % result[0]
+                    self._("Could not retrieve token for guest session. Error code: {}").format(result[0])
                 )
 
     def solve_captcha(self):
@@ -146,5 +145,5 @@ class OboomCom(Downloader):
             self.retry(wait=result[2] + 60, msg=self._("Connection limit exceeded"))
         else:
             self.fail(
-                self._("Could not retrieve download ticket. Error code: {}") % result[0]
+                self._("Could not retrieve download ticket. Error code: {}").format(result[0])
             )

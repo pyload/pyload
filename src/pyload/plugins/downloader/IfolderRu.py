@@ -49,8 +49,10 @@ class IfolderRu(SimpleDownloader):
         self.chunk_limit = 1
 
     def handle_free(self, pyfile):
-        url = "http://rusfolder.com/{}".format(self.info["pattern"]["ID"])
-        self.data = self.load("http://rusfolder.com/{}" % self.info["pattern"]["ID"])
+        id = self.info["pattern"]["ID"]
+        url = f"http://rusfolder.com/{id}"
+        
+        self.data = self.load(url)
         self.get_fileInfo()
 
         session_id = re.search(self.SESSION_ID_PATTERN, self.data).groups()

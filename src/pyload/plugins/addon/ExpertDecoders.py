@@ -65,7 +65,7 @@ class ExpertDecoders(Addon):
                 req=req,
             )
 
-        self.log_debug("Result {} : {}".format(ticket, result))
+        self.log_debug(f"Result {ticket}: {result}")
         task.setResult(result)
 
     def captcha_task(self, task):

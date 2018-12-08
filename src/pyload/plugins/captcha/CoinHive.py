@@ -63,7 +63,7 @@ class CoinHive(CaptchaService):
         m = re.search(self.KEY_PATTERN, html)
         if m is not None:
             self.key = m.group(1).strip()
-            self.log_debug("Key: {}".format(self.key))
+            self.log_debug(f"Key: {self.key}")
             return self.key
         else:
             self.log_warning(self._("Key pattern not found"))
@@ -74,7 +74,7 @@ class CoinHive(CaptchaService):
         m = re.search(self.HASHES_PATTERN, html)
         if m is not None:
             self.hashes = m.group(1).strip()
-            self.log_debug("Hashes: {}".format(self.hashes))
+            self.log_debug(f"Hashes: {self.hashes}")
             return self.hashes
         else:
             self.log_warning(self._("Hashes pattern not found"))

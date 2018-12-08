@@ -102,20 +102,19 @@ class UlozTo(SimpleDownloader):
         if not action or not inputs:
             self.error(self._("Free download form not found"))
 
-        self.log_debug("inputs.keys = {}".format(list(inputs.keys())))
+        input_keys = list(inputs.keys())
+        self.log_debug(f"inputs.keys = {input_keys}")
         #: Get and decrypt captcha
         if all(key in inputs for key in ("captcha_value", "captcha_id", "captcha_key")):
             #: Old version - last seen 9.12.2013
             self.log_debug('Using "old" version')
 
+            captcha_id = inputs["captcha_id"]
             captcha_value = self.captcha.decrypt(
-                "https://img.uloz.to/captcha/{}.png" % inputs["captcha_id"]
+                f"https://img.uloz.to/captcha/{captcha_id}.png"
             )
             self.log_debug(
-                "CAPTCHA ID: "
-                + inputs["captcha_id"]
-                + ", CAPTCHA VALUE: "
-                + captcha_value
+                f"CAPTCHA ID: {captcha_id}, CAPTCHA VALUE: {captcha_value}"
             )
 
             inputs.update(
@@ -139,7 +138,7 @@ class UlozTo(SimpleDownloader):
             xapca = xapca.replace('sound":"', 'sound":"https:').replace(
                 'image":"', 'image":"https:'
             )
-            self.log_debug("xapca: {}".format(xapca))
+            self.log_debug(f"xapca: {xapca}")
 
             data = json.loads(xapca)
             if self.config.get("captcha") == "Sound":
@@ -152,7 +151,7 @@ class UlozTo(SimpleDownloader):
                 captcha_value = self.captcha.decrypt(data["image"])
             self.log_debug(
                 "CAPTCHA HASH: " + data["hash"],
-                "CAPTCHA SALT: {}" % data["salt"],
+                "CAPTCHA SALT: " + data["salt"],
                 "CAPTCHA VALUE: " + captcha_value,
             )
 

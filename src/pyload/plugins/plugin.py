@@ -446,7 +446,7 @@ class Plugin(Base):
                 )
 
             result = task.result
-            self.log.debug("Received captcha result: {}".format(str(result)))
+            self.log.debug(f"Received captcha result: {result}")
 
         if not self.pyload.debug:
             try:
@@ -652,11 +652,11 @@ class Plugin(Base):
             return None
         elif size > max_size and not read_size:
             return None
-        self.log.debug("Download Check triggered")
+        self.log.debug(f"Download Check triggered")
         with open(lastDownload, mode="rb") as f:
             content = f.read(read_size if read_size else -1)
         # produces encoding errors, better log to other file in the future?
-        # self.log.debug("Content: {}".format(content))
+        # self.log.debug(f"Content: {content}")
         for name, rule in rules.items():
             if type(rule) in (str, bytes):
                 if rule in content:

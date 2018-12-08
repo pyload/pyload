@@ -472,7 +472,7 @@ class MegaCoNz(Downloader):
         if not attr:
             self.fail(self._("Decryption failed"))
 
-        self.log_debug("Decrypted Attr: {}".format(decode(attr)))
+        self.log_debug(f"Decrypted Attr: {decode(attr)}")
 
         name = attr["n"]
 

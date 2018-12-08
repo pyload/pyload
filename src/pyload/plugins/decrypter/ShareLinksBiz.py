@@ -98,9 +98,7 @@ class ShareLinksBiz(Decrypter):
 
         else:
             self.log_debug(
-                "Could not initialize, URL [{}] does not match pattern [{}]".format(
-                    url, self.__pattern__
-                )
+                f"Could not initialize, URL [{url}] does not match pattern [{self.__pattern__}]"
             )
             self.fail(self._("Unsupported download link"))
 
@@ -132,7 +130,7 @@ class ShareLinksBiz(Decrypter):
 
     def unlock_password_protection(self):
         password = self.get_password()
-        self.log_debug("Submitting password [{}] for protected links".format(password))
+        self.log_debug(f"Submitting password [{password}] for protected links")
         post = {"password": password, "login": "Submit form"}
         url = self.base_url + "/" + self.file_id
         self.data = self.load(url, post=post)
@@ -159,7 +157,7 @@ class ShareLinksBiz(Decrypter):
         coords = self.captcha.decrypt(
             captcha_url, input_type="gif", output_type="positional"
         )
-        self.log_debug("Captcha resolved! Coords: {}, {}".format(coords[0], coords[1]))
+        self.log_debug(f"Captcha resolved! Coords: {coords[0]}, {coords[1]}")
 
         #: Resolve captcha
         href = self._resolve_coords(coords, captcha_map)
@@ -232,10 +230,10 @@ class ShareLinksBiz(Decrypter):
         # TODO: Gather paginated web links
         pattern = r"javascript:_get\(\'(.*?)\', \d+, \'\'\)"
         ids = re.findall(pattern, self.data)
-        self.log_debug("Decrypting {} Web links".format(len(ids)))
+        self.log_debug(f"Decrypting {len(ids)} Web links")
         for i, ID in enumerate(ids):
             try:
-                self.log_debug("Decrypting Web link {}, [{}]".format(i + 1, ID))
+                self.log_debug(f"Decrypting Web link {i + 1}, [{ID}]")
 
                 dw_link = self.base_url + "/get/lnk/" + ID
                 res = self.load(dw_link)
@@ -261,9 +259,9 @@ class ShareLinksBiz(Decrypter):
                 pack_links.append(dl_link)
 
             except Exception as detail:
-                self.log_debug("Error decrypting Web link [{}], {}".format(ID, detail))
+                self.log_debug(f"Error decrypting Web link [{ID}], {detail}")
 
-        self.log_debug("{} links".format(len(pack_links)))
+        self.log_debug(f"{len(pack_links)} links")
 
         return pack_links
 
@@ -275,7 +273,7 @@ class ShareLinksBiz(Decrypter):
 
         containers_links = re.findall(pattern, self.data)
 
-        self.log_debug("Decrypting {} Container links".format(len(containers_links)))
+        self.log_debug(f"Decrypting {len(containers_links)} Container links")
 
         for container_link in containers_links:
             link = "{}/get/{}/{}".format(
@@ -283,7 +281,7 @@ class ShareLinksBiz(Decrypter):
             )
             pack_links.append(link)
 
-        self.log_debug("{} links".format(len(pack_links)))
+        self.log_debug(f"{len(pack_links)} links")
 
         return pack_links
 
@@ -299,7 +297,7 @@ class ShareLinksBiz(Decrypter):
             except Exception:
                 self.fail(self._("Unable to decrypt CNL2 links"))
 
-        self.log_debug("{} links".format(len(pack_links)))
+        self.log_debug(f"{len(pack_links)} links")
 
         return pack_links
 
@@ -324,7 +322,7 @@ class ShareLinksBiz(Decrypter):
     def _get_links(self, crypted, jk):
         #: Get key
         jreturn = js2py.eval_js(self._("{} f()").format(jk))
-        self.log_debug("JsEngine returns value [{}]".format(jreturn))
+        self.log_debug(f"JsEngine returns value [{jreturn}]")
         key = binascii.unhexlify(jreturn)
 
         #: Decrypt
@@ -336,5 +334,5 @@ class ShareLinksBiz(Decrypter):
         links = list(filter(bool, text.split("\n")))
 
         #: Log and return
-        self.log_debug("Block has {} links".format(len(links)))
+        self.log_debug(f"Block has {len(links)} links")
         return links

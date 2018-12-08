@@ -11,7 +11,7 @@ import _thread
 
 class Forwarder(object):
     def __init__(self, extip, extport=9666):
-        print("Start portforwarding to {}:{}".format(extip, extport))
+        print(f"Start portforwarding to {extip}:{extport}")
         proxy(extip, extport, 9666)
 
 

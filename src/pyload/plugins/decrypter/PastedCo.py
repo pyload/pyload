@@ -32,7 +32,7 @@ class PastedCo(Decrypter):
         pack_folder = package.folder
         html = self.load(pyfile.url, decode=True).splitlines()
         fs_url = None
-        FS_URL_RE = re.compile("{}/fullscreen\.php\?hash=[0-9a-f]*" % pyfile.url)
+        FS_URL_RE = re.compile(rf"{pyfile.url}/fullscreen\.php\?hash=[0-9a-f]*")
         for line in html:
             match = FS_URL_RE.search(line)
             if match:

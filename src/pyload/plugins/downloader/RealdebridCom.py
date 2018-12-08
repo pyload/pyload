@@ -55,7 +55,7 @@ class RealdebridCom(MultiDownloader):
             args(link=pyfile.url, password=self.get_password()),
         )
 
-        self.log_debug("Returned Data: {}".format(data))
+        self.log_debug(f"Returned Data: {data}")
 
         if "error" in data:
             self.fail("{} (code: {})".format(data["error"], data["error_code"]))

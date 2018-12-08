@@ -29,7 +29,7 @@ class SolveMedia(CaptchaService):
         m = re.search(self.KEY_PATTERN, html)
         if m is not None:
             self.key = m.group(1).strip()
-            self.log_debug("Key: {}".format(self.key))
+            self.log_debug(f"Key: {self.key}")
             return self.key
         else:
             self.log_debug("Key pattern not found")
@@ -60,7 +60,7 @@ class SolveMedia(CaptchaService):
                 self.fail(self._("SolveMedia challenge pattern not found"))
 
             else:
-                self.log_debug("Challenge: {}".format(challenge))
+                self.log_debug(f"Challenge: {challenge}")
 
             try:
                 result = self.result("http://api.solvemedia.com/papi/media", challenge)
@@ -96,7 +96,7 @@ class SolveMedia(CaptchaService):
             else:
                 if "error" in html:
                     self.log_warning(self._("Captcha code was invalid"))
-                    self.log_debug("Retry #{}".format(i))
+                    self.log_debug(f"Retry #{i}")
                     html = self.pyfile.plugin.load(redirect)
                 else:
                     break

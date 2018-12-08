@@ -60,7 +60,7 @@ class RemoteManager(object):
         for b in self.available:
             klass = getattr(
                 __import__(
-                    "pyload.core.remote.{}".format(b.lower()),
+                    f"pyload.core.remote.{b.lower()}",
                     globals(),
                     locals(),
                     [b],

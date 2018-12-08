@@ -902,10 +902,9 @@ class FileMethods(object):
             data,
         )
         ids = []
+        statuses = "','".join(x[3] for x in data)
         self.c.execute(
-            "SELECT id FROM links WHERE url IN ('{}')".format(
-                "','".join(x[3] for x in data)
-            )
+            f"SELECT id FROM links WHERE url IN ('{statuses}')"
         )
         for r in self.c:
             ids.append(int(r[0]))
@@ -1008,13 +1007,10 @@ class FileMethods(object):
         for i, item in enumerate(occ):
             if i:
                 cmd += ", "
-            cmd += "'{}'".format(item)
+            cmd += f"'{item}'"
 
         cmd += ")"
-
-        cmd = "SELECT l.id FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE ((p.queue=1 AND l.plugin NOT IN {}) OR l.plugin IN {}) AND l.status IN (2,3,14) ORDER BY p.packageorder ASC, l.linkorder ASC LIMIT 5".format(
-            cmd, pre
-        )
+        cmd = f"SELECT l.id FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE ((p.queue=1 AND l.plugin NOT IN {cmd}) OR l.plugin IN {pre}) AND l.status IN (2,3,14) ORDER BY p.packageorder ASC, l.linkorder ASC LIMIT 5"
 
         self.c.execute(cmd)  #: very bad!
 
@@ -1025,9 +1021,7 @@ class FileMethods(object):
         """
         returns pyfile ids with suited plugins.
         """
-        cmd = "SELECT l.id FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE l.plugin IN {} AND l.status IN (2,3,14) ORDER BY p.packageorder ASC, l.linkorder ASC LIMIT 5".format(
-            plugins
-        )
+        cmd = f"SELECT l.id FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE l.plugin IN {plugins} AND l.status IN (2,3,14) ORDER BY p.packageorder ASC, l.linkorder ASC LIMIT 5"
 
         self.c.execute(cmd)  #: very bad!
 

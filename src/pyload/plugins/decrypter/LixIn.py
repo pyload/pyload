@@ -41,7 +41,7 @@ class LixIn(Decrypter):
             self.error(self._("Unable to identify file ID"))
 
         id = m.group("ID")
-        self.log_debug("File id is {}".format(id))
+        self.log_debug(f"File id is {id}")
 
         self.data = self.load(url)
 
@@ -69,4 +69,4 @@ class LixIn(Decrypter):
             self.error(self._("Unable to find destination url"))
         else:
             self.links = [m.group(1)]
-            self.log_debug("Found link {}, adding to package".format(self.links[0]))
+            self.log_debug(f"Found link {self.links[0]}, adding to package")

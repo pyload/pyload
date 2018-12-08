@@ -203,7 +203,7 @@ class Captcha9Kw(Addon):
                 break
 
         else:
-            self.log_debug("Could not send request: {}".format(res))
+            self.log_debug(f"Could not send request: {res}")
             result = None
 
         self.log_info(self._("Captcha result for ticket {}: {}").format(res, result))
@@ -296,14 +296,14 @@ class Captcha9Kw(Addon):
                 },
             )
 
-            self.log_debug("Request {}: {}".format(request_type, res))
+            self.log_debug(f"Request {request_type}: {res}")
 
             if res == "OK":
                 break
 
             time.sleep(5)
         else:
-            self.log_debug("Could not send {} request: {}".format(request_type, res))
+            self.log_debug(f"Could not send {request_type} request: {res}")
 
     def captcha_correct(self, task):
         self._captcha_response(task, True)

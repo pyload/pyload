@@ -539,7 +539,7 @@ class CircleCaptcha(OCR):
                         result = 1
                 if curpix <= self.BLACKCOLOR:
                     result = -1
-        # self.log_debug("{} = {}".format((x, y), result))
+        # self.log_debug(f"{(x, y)} = {result}")
         return result
 
     def decrypt(self, img):
@@ -594,11 +594,11 @@ class CircleCaptcha(OCR):
                     if x1 == -1:
                         break
                     if self.pyload.debug:
-                        self.log_debug("x1, y1 -> {}: {}".format((x1, y1), pix[x1, y1]))
+                        self.log_debug(f"x1, y1 -> {(x1, y1)}: {pix[x1, y1]}")
 
                     if (x1, y1) in self.pointsofcirclefound:
                         if self.pyload.debug:
-                            self.log_debug("Found {}".format((x1, y1)))
+                            self.log_debug(f"Found {(x1, y1)}")
                         continue
 
                     if self.pyload.debug:
@@ -822,4 +822,4 @@ class CircleCaptcha(OCR):
 # coords = x.decrypt_from_file("decripter/captx.html2.gif")
 # coords = x.decrypt_from_web("http://ncrypt.in/classes/captcha/circlecaptcha.php")
 # b = datetime.now()
-# self.log_debug("Elapsed time: {} seconds".format(b-a).seconds)
+# self.log_debug(f"Elapsed time: {(b-a).seconds} seconds")

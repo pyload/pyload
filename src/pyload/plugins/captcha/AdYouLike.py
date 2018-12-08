@@ -26,8 +26,10 @@ class AdYouLike(CaptchaService):
         m = re.search(self.AYL_PATTERN, html)
         n = re.search(self.CALLBACK_PATTERN, html)
         if m and n:
-            self.key = (m.group(1).strip(), n.group(1).strip())
-            self.log_debug("Ayl: {} | Callback: {}".format(*self.key))
+            ayl = m.group(1).strip()
+            cb = n.group(1).strip()
+            self.key = (ayl, id)
+            self.log_debug(f"Ayl: {ayl} | Callback: {cb}")
             return self.key  #: Key is the tuple(ayl, callback)
         else:
             self.log_debug("Ayl or callback pattern not found")
@@ -54,7 +56,7 @@ class AdYouLike(CaptchaService):
         except AttributeError:
             self.fail(self._("AdYouLike challenge pattern not found"))
 
-        self.log_debug("Challenge: {}".format(challenge))
+        self.log_debug(f"Challenge: {challenge}")
 
         return self.result(ayl, challenge), challenge
 

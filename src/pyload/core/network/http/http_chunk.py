@@ -24,9 +24,9 @@ class ChunkInfo(object):
         self.chunks = []
 
     def __repr__(self):
-        ret = "ChunkInfo: {}, {}\n".format(self.name, self.size)
+        ret = f"ChunkInfo: {self.name}, {self.size}\n"
         for i, c in enumerate(self.chunks):
-            ret += "{}# {}\n".format(i, c[1])
+            ret += f"{i}# {c[1]}\n"
 
         return ret
 
@@ -46,22 +46,22 @@ class ChunkInfo(object):
         current = 0
         for i in range(chunks):
             end = self.size - 1 if (i == chunks - 1) else current + chunk_size
-            self.addChunk("{}.chunk{}".format(self.name, i), (current, end))
+            self.addChunk(f"{self.name}.chunk{i}", (current, end))
             current += chunk_size + 1
 
     def save(self):
-        fs_name = fs_encode("{}.chunks".format(self.name))
+        fs_name = fs_encode(f"{self.name}.chunks")
         with open(fs_name, mode="w", encoding="utf-8") as fh:
-            fh.write("name:{}\n".format(self.name))
-            fh.write("size:{}\n".format(self.size))
+            fh.write(f"name:{self.name}\n")
+            fh.write(f"size:{self.size}\n")
             for i, c in enumerate(self.chunks):
-                fh.write("#{}:\n".format(i))
-                fh.write("\tname:{}\n".format(c[0]))
-                fh.write("\trange:{}-{}\n".format(*c[1]))
+                fh.write(f"#{i}:\n")
+                fh.write(f"\tname:{c[0]}\n")
+                fh.write(f"\trange:{c[1][0]}-{c[1][1]}\n")
 
     @staticmethod
     def load(name):
-        fs_name = fs_encode("{}.chunks".format(name))
+        fs_name = fs_encode(f"{name}.chunks")
         if not os.path.exists(fs_name):
             raise IOError
         with open(fs_name, encoding="utf-8") as fh:
@@ -92,7 +92,7 @@ class ChunkInfo(object):
         return ci
 
     def remove(self):
-        fs_name = fs_encode("{}.chunks".format(self.name))
+        fs_name = fs_encode(f"{self.name}.chunks")
         if os.path.exists(fs_name):
             os.remove(fs_name)
 
@@ -136,9 +136,7 @@ class HTTPChunk(HTTPRequest):
         self.lastSize = 0
 
     def __repr__(self):
-        return "<HTTPChunk id={}, size={}, arrived={}>".format(
-            self.id, self.size, self.arrived
-        )
+        return f"<HTTPChunk id={self.id}, size={self.size}, arrived={self.arrived}>"
 
     @property
     def cj(self):
@@ -169,32 +167,33 @@ class HTTPChunk(HTTPRequest):
                 if self.arrived + self.range[0] >= self.range[1]:
                     return None
 
+                start = self.arrived + self.range[0]
                 if (
                     self.id == len(self.p.info.chunks) - 1
                 ):  #: as last chunk dont set end range, so we get everything
-                    range = "{}-".format(self.arrived + self.range[0])
+                    end = ""
                 else:
-                    range = "{}-{}".format(
-                        self.arrived + self.range[0],
-                        min(self.range[1] + 1, self.p.size - 1),
-                    )
+                    end = min(self.range[1] + 1, self.p.size - 1)
+                
+                range = f"{start}-{end}"
 
-                self.log.debug("Chunked resume with range {}".format(range))
+                self.log.debug(f"Chunked resume with range {range}")
                 self.c.setopt(pycurl.RANGE, range)
             else:
-                self.log.debug("Resume File from {}".format(self.arrived))
+                self.log.debug(f"Resume File from {self.arrived}")
                 self.c.setopt(pycurl.RESUME_FROM, self.arrived)
 
         else:
             if self.range:
+                start = self.range[0]
                 if self.id == len(self.p.info.chunks) - 1:  #: see above
-                    range = "{}-".format(self.range[0])
+                    end = ""
                 else:
-                    range = "{}-{}".format(
-                        self.range[0], min(self.range[1] + 1, self.p.size - 1)
-                    )
+                    end = min(self.range[1] + 1, self.p.size - 1)
+                    
+                range = f"{start}-{end}"
 
-                self.log.debug("Chunked with range {}".format(range))
+                self.log.debug(f"Chunked with range {range}")
                 self.c.setopt(pycurl.RANGE, range)
 
             self.fp = open(fs_name, mode="wb")
@@ -261,7 +260,7 @@ class HTTPChunk(HTTPRequest):
                 name = orgline.partition("filename=")[2]
                 name = name.replace('"', "").replace("'", "").replace(";", "").strip()
                 self.p.nameDisposition = name
-                self.log.debug("Content-Disposition: {}".format(name))
+                self.log.debug(f"Content-Disposition: {name}")
 
             if not self.resume and line.startswith("content-length"):
                 self.p.size = int(line.split(":")[1])

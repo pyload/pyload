@@ -33,17 +33,20 @@ def print_help(config):
     print()
     print("  -u, --username=", " " * 2, "Specify Username")
     print("  --pw=<password>", " " * 2, "Password")
+    addr = config["addr"]
     print(
         "  -a, --address=",
         " " * 3,
-        "Specify address (current={})".format(config["addr"]),
+        f"Specify address (current={addr})",
     )
-    print("  -p, --port", " " * 7, "Specify port (current={})".format(config["port"]))
+    port = config["port"]
+    print(f"  -p, --port", " " * 7, "Specify port (current={port})")
     print()
+    lang = config["language"]
     print(
         "  -l, --language",
         " " * 3,
-        "Set user interface language (current={})".format(config["language"]),
+        f"Set user interface language (current={lang})",
     )
     print("  -h, --help", " " * 7, "Display this help screen")
     print("  -c, --commands", " " * 3, "List all available commands")
@@ -52,7 +55,7 @@ def print_help(config):
 
 def print_packages(data):
     for pack in data:
-        print("Package {} (#{}):".format(pack.name, pack.pid))
+        print(f"Package {pack.name} (#{pack.pid}):")
         for download in pack.links:
             print("\t" + print_file(download))
         print()
@@ -96,7 +99,7 @@ def print_commands():
     print(self._("List of commands:"))
     print()
     for c in commands:
-        print("%-35s {}".format(c))
+        print(f"%-35s {c}")
 
 
 def writeConfig(opts):
@@ -104,7 +107,7 @@ def writeConfig(opts):
         with open(os.path.join(DATADIR, "pyload-cli.conf"), mode="w") as cfgfile:
             cfgfile.write("[cli]")
             for opt in opts:
-                cfgfile.write("{}={}\n".format(opt, opts[opt]))
+                cfgfile.write(f"{opt}={opts[opt]}\n")
     except Exception:
         print(self._("Couldn't write user config file"))
 
@@ -230,7 +233,7 @@ def run():
                 print(self._("Login data is wrong."))
             except NoConnection:
                 print(
-                    self._("Could not establish connection to {addr}:{port}.").format(
+                    self._("Could not establish connection to {addr}:{port}").format(
                         addr=config["addr"], port=config["port"]
                     )
                 )
@@ -244,7 +247,7 @@ def run():
             print(self._("Login data is wrong."))
         except NoConnection:
             print(
-                self._("Could not establish connection to {addr}:{port}.").format(
+                self._("Could not establish connection to {addr}:{port}").format(
                     addr=config["addr"], port=config["port"]
                 )
             )

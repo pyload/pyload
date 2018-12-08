@@ -87,8 +87,8 @@ class XFSDownloader(SimpleDownloader):
             self._set_xfs_cookie()
 
         if not self.LINK_PATTERN:
-            pattern = r'(?:file: "(.+?)"|(https?://(?:www\.)?([^/]*?{}|\d+\.\d+\.\d+\.\d+)(\:\d+)?(/d/|(/files)?/\d+/\w+/).+?)["\'<])'
-            self.LINK_PATTERN = pattern.format(self.PLUGIN_DOMAIN.replace("."), r"\.")
+            domain = self.PLUGIN_DOMAIN.replace(".", r"\.")
+            self.LINK_PATTERN = rf'(?:file: "(.+?)"|(https?://(?:www\.)?([^/]*?{domain}|\d+\.\d+\.\d+\.\d+)(\:\d+)?(/d/|(/files)?/\d+/\w+/).+?)["\'<])'
 
         SimpleDownloader._prepare(self)
 
@@ -97,7 +97,7 @@ class XFSDownloader(SimpleDownloader):
 
     def handle_free(self, pyfile):
         for i in range(1, 6):
-            self.log_debug("Getting download link #{}...".format(i))
+            self.log_debug(f"Getting download link #{i}...")
 
             self.check_errors()
 
@@ -263,11 +263,11 @@ class XFSDownloader(SimpleDownloader):
 
             self.log_debug(captcha_div)
 
-            inputs["code"] = "".join(
+            code = inputs["code"] = "".join(
                 a[1] for a in sorted(numerals, key=operator.itemgetter(0))
             )
 
-            self.log_debug("Captcha code: {}".format(inputs["code"]), numerals)
+            self.log_debug(f"Captcha code: {code}", numerals)
             return
 
         recaptcha = ReCaptcha(self.pyfile)
@@ -278,7 +278,7 @@ class XFSDownloader(SimpleDownloader):
             captcha_key = recaptcha.detect_key()
 
         else:
-            self.log_debug("ReCaptcha key: {}".format(captcha_key))
+            self.log_debug(f"ReCaptcha key: {captcha_key}")
 
         if captcha_key:
             self.captcha = recaptcha
@@ -293,7 +293,7 @@ class XFSDownloader(SimpleDownloader):
             captcha_key = solvemedia.detect_key()
 
         else:
-            self.log_debug("SolveMedia key: {}".format(captcha_key))
+            self.log_debug(f"SolveMedia key: {captcha_key}")
 
         if captcha_key:
             self.captcha = solvemedia

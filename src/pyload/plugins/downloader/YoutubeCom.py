@@ -1215,7 +1215,8 @@ class YoutubeCom(Downloader):
 
             self.streams += streams
 
-        self.log_debug("AVAILABLE STREAMS: {}".format(s[0] for s in self.streams))
+        available_streams = (s[0] for s in self.streams)
+        self.log_debug(f"AVAILABLE STREAMS: {available_streams}")
 
         video_filename, video_itag = self._handle_video()
 
