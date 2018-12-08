@@ -4,7 +4,7 @@
 import logging
 import threading
 
-from cheroot.wsgi import PathInfoDispatcher, Server
+import cheroot
 
 from .app import App
 
@@ -19,48 +19,51 @@ class WebServer(threading.Thread):
         self._ = pycore._
 
         self.develop = self.pyload.config.get("webui", "develop")
+        
         self.use_ssl = self.pyload.config.get("webui", "use_ssl")  #: recheck
+        self.certfile = self.pyload.config.get("ssl", "certfile")
+        self.keyfile = self.pyload.config.get("ssl", "keyfile")
+            
         self.host = self.pyload.config.get("webui", "host")
         self.port = self.pyload.config.get("webui", "port")
         self.prefix = self.pyload.config.get("webui", "prefix")
 
-        bind_addr = (self.host, self.port)
-        bind_path = "{}/".format(self.prefix.strip("/"))
-
+        # NOTE: Is really the right choice pass the pycore obj directly to app?!
+        #       Or should we pass just core.api and server.logger instead?
         self.app = App(self.pyload, self.develop)
-        self.server = Server(bind_addr, PathInfoDispatcher({bind_path: self.app}))
-
         self.log = self.app.logger
         
+    def _run_develop(self):
+        # TODO: inject our custom logger in werkzeug code
+        self.app.run(self.host, self.port, use_reloader=False)
+        
+    def _run_produc(self):
+        bind_path = self.prefix.strip("/") + "/"
+        bind_addr = (self.host, self.port)
+        wsgi_app = cheroot.wsgi.PathInfoDispatcher({bind_path: self.app})
+        
+        server = cheroot.wsgi.Server(bind_addr, wsgi_app)
+        
+        if self.use_ssl:
+            server.ssl_adapter = cheroot.ssl.builtin.BuiltinSSLAdapter(self.certfile, self.keyfile)
+            
         #: hack cheroot to use our custom logger
-        self.server.error_log = lambda *args, **kwgs: self.log.log(
+        server.error_log = lambda *args, **kwgs: self.log.log(
             kwgs.get("level", logging.ERROR),
             args[0],
             exc_info=self.develop
         ) 
-
-        if not self.use_ssl:
-            return
-
-        self.certfile = self.pyload.config.get("ssl", "certfile")
-        self.keyfile = self.pyload.config.get("ssl", "keyfile")
-
-        if self.certfile:
-            self.server.ssl_certificate = self.certfile
-        if self.keyfile:
-            self.server.ssl_private_key = self.keyfile
-
+        
+        server.safe_start()
+        
     def run(self):
         self.log.warning(
-            self._("Starting webserver: {host}:{port:d}").format(
+            self._("Starting webserver: {host}:{port}").format(
                 host=self.host, port=self.port
             )
         )
-        try:
-            self.server.safe_start()
-        except KeyboardInterrupt:
-            self.stop()
-
-    def stop(self):
-        self.log.info(self._("Stopping webserver..."))
-        self.server.stop()
+        if self.develop:
+            self._run_develop()
+        else:
+            self._run_produc()
+            

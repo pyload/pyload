@@ -2,12 +2,15 @@
 
 import os
 
-QUOTECHAR = "::%2F"
+from pyload.core.utils import formatSize
+
+
+_QUOTECHAR = "::%2F"
 
 
 def quotepath(path):
     try:
-        return path.replace(".." + os.path.sep, QUOTECHAR)
+        return path.replace(".." + os.path.sep, _QUOTECHAR)
     except AttributeError:
         return path
     except Exception:
@@ -16,7 +19,7 @@ def quotepath(path):
 
 def unquotepath(path):
     try:
-        return path.replace(QUOTECHAR, ".." + os.path.sep)
+        return path.replace(_QUOTECHAR, ".." + os.path.sep)
     except AttributeError:
         return path
     except Exception:
@@ -51,3 +54,15 @@ def truncate(value, n):
 
 def date(date, format):
     return date
+    
+    
+FILTERS = {
+    "quotepath": quotepath,
+    "unquotepath": unquotepath,
+    "truncate": truncate,
+    "date": date,
+    "path_make_relative": path_make_relative,
+    "path_make_absolute": path_make_absolute,
+    "formatsize": formatSize,
+    "getitem": lambda x, y: x.__getitem__(y),
+}

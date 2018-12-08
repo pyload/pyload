@@ -19,7 +19,7 @@ def format_time(seconds):
     return "{:02}:{:02}:{:02}".format(hours, minutes, seconds)
 
 
-@bp.route(r"/status", methods=["GET", "POST"], endpoint="status")
+@bp.route("/status", methods=["GET", "POST"], endpoint="status")
 # @apiver_check
 # @login_required("LIST")
 def status():
@@ -33,7 +33,7 @@ def status():
         flask.abort(500)
 
 
-@bp.route(r"/links", methods=["GET", "POST"], endpoint="links")
+@bp.route("/links", methods=["GET", "POST"], endpoint="links")
 # @apiver_check
 # @login_required("LIST")
 def links():
@@ -45,9 +45,10 @@ def links():
             ids.append(link["fid"])
 
             if link["status"] == 12:
-                link["info"] = "{} @ {}/s".format(
-                    link["format_eta"], formatSize(link["speed"])
-                )
+                formatted_eta = link["format_eta"]
+                formatted_speed = formatSize(link["speed"])
+                link["info"] = f"{formatted_eta} @ {formatted_speed}/s"
+                
             elif link["status"] == 5:
                 link["percent"] = 0
                 link["size"] = 0
@@ -62,7 +63,7 @@ def links():
         flask.abort(500)
 
 
-@bp.route(r"/packages", endpoint="packages")
+@bp.route("/packages", endpoint="packages")
 # @apiver_check
 # @login_required("LIST")
 def packages():
@@ -81,7 +82,7 @@ def packages():
         flask.abort(500)
 
 
-@bp.route(r"/package/<int:id>", endpoint="package")
+@bp.route("/package/<int:id>", endpoint="package")
 # @apiver_check
 # @login_required("LIST")
 def package(id):
@@ -117,7 +118,7 @@ def package(id):
         flask.abort(500)
 
 
-@bp.route(r"/package_order/<ids>", endpoint="package_order")
+@bp.route("/package_order/<ids>", endpoint="package_order")
 # @apiver_check
 # @login_required("ADD")
 def package_order(ids):
@@ -130,7 +131,7 @@ def package_order(ids):
         flask.abort(500)
 
 
-@bp.route(r"/abort_link/<int:id>", endpoint="abort_link")
+@bp.route("/abort_link/<int:id>", endpoint="abort_link")
 # @apiver_check
 # @login_required("DELETE")
 def abort_link(id):
@@ -142,7 +143,7 @@ def abort_link(id):
         flask.abort(500)
 
 
-@bp.route(r"/link_order/<ids>", endpoint="link_order")
+@bp.route("/link_order/<ids>", endpoint="link_order")
 # @apiver_check
 # @login_required("ADD")
 def link_order(ids):
@@ -155,7 +156,7 @@ def link_order(ids):
         flask.abort(500)
 
 
-@bp.route(r"/add_package", methods=["GET", "POST"], endpoint="add_package")
+@bp.route("/add_package", methods=["GET", "POST"], endpoint="add_package")
 # @apiver_check
 # @login_required("ADD")
 def add_package():
@@ -190,7 +191,7 @@ def add_package():
         api.setPackageData(pack, data)
 
 
-@bp.route(r"/move_package/<int:dest>/<int:id>", endpoint="move_package")
+@bp.route("/move_package/<int:dest>/<int:id>", endpoint="move_package")
 # @apiver_check
 # @login_required("MODIFY")
 def move_package(dest, id):
@@ -202,7 +203,7 @@ def move_package(dest, id):
         flask.abort(500)
 
 
-@bp.route(r"/edit_package", methods=["POST"], endpoint="edit_package")
+@bp.route("/edit_package", methods=["POST"], endpoint="edit_package")
 # @apiver_check
 # @login_required("MODIFY")
 def edit_package():
@@ -222,7 +223,7 @@ def edit_package():
         flask.abort(500)
 
 
-@bp.route(r"/set_captcha", methods=["GET", "POST"], endpoint="set_captcha")
+@bp.route("/set_captcha", methods=["GET", "POST"], endpoint="set_captcha")
 # @apiver_check
 # @login_required("ADD")
 def set_captcha():
@@ -249,7 +250,7 @@ def set_captcha():
     return jsonify(data)
 
 
-@bp.route(r"/load_config/<category>/<section>", endpoint="load_config")
+@bp.route("/load_config/<category>/<section>", endpoint="load_config")
 # @apiver_check
 # @login_required("SETTINGS")
 def load_config(category, section):
@@ -273,7 +274,7 @@ def load_config(category, section):
     return render_template("settings_item.html", context)
 
 
-@bp.route(r"/save_config/<category>", methods=["POST"], endpoint="save_config")
+@bp.route("/save_config/<category>", methods=["POST"], endpoint="save_config")
 # @apiver_check
 # @login_required("SETTINGS")
 def save_config(category):
@@ -290,7 +291,7 @@ def save_config(category):
         api.setConfigValue(section, option, decode(value), category)
 
 
-@bp.route(r"/add_account", methods=["POST"], endpoint="add_account")
+@bp.route("/add_account", methods=["POST"], endpoint="add_account")
 # @apiver_check
 # @login_required("ACCOUNTS")
 # @fresh_login_required
@@ -303,7 +304,7 @@ def add_account():
     api.updateAccount(type, login, password)
 
 
-@bp.route(r"/update_accounts", methods=["POST"], endpoint="update_accounts")
+@bp.route("/update_accounts", methods=["POST"], endpoint="update_accounts")
 # @apiver_check
 # @login_required("ACCOUNTS")
 # @fresh_login_required
@@ -333,7 +334,7 @@ def update_accounts():
             api.removeAccount(plugin, user)
 
 
-@bp.route(r"/change_password", methods=["POST"], endpoint="change_password")
+@bp.route("/change_password", methods=["POST"], endpoint="change_password")
 # @apiver_check
 # @fresh_login_required
 # @login_required("ACCOUNTS")

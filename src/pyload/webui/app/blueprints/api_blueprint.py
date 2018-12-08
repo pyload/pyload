@@ -18,7 +18,7 @@ bp = flask.Blueprint("api", __name__, url_prefix="/api")
 # accepting positional arguments, as well as kwargs via post and get
 # @bottle.route(
 # r"/api/<func><args:re:[a-zA-Z0-9\-_/\"\'\[\]%{},]*>")
-@bp.route(r"/<func>/<path:args>", methods=["GET", "POST"], endpoint="rpc")
+@bp.route("/<func>/<path:args>", methods=["GET", "POST"], endpoint="rpc")
 # @apiver_check
 def rpc(func, args=""):
     api = flask.current_app.config["PYLOAD_API"]
@@ -83,7 +83,7 @@ def call_api(func, *args, **kwargs):
     return jsonify(result or True)
 
 
-@bp.route(r"/login", methods=["POST"], endpoint="login")
+@bp.route("/login", methods=["POST"], endpoint="login")
 # @apiver_check
 def login():
     user = flask.request.form.get("username")
@@ -109,7 +109,7 @@ def login():
         return jsonify(True)
 
 
-@bp.route(r"/logout", endpoint="logout")
+@bp.route("/logout", endpoint="logout")
 # @apiver_check
 def logout():
     # logout_user()

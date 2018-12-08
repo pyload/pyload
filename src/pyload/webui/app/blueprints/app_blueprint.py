@@ -27,7 +27,7 @@ from ..helpers import (clear_session, get_permission, get_redirect_target,
 bp = flask.Blueprint("app", __name__)
 
 
-@bp.route(r"/favicon.ico", endpoint="favicon")
+@bp.route("/favicon.ico", endpoint="favicon")
 def favicon():
     filename = os.path.join("img", "favicon.ico")
     return flask.send_from_directory(bp.static_folder, filename)
@@ -38,7 +38,7 @@ def robots():
     return "User-agent: *\nDisallow: /"
 
 
-@bp.route(r"/login", methods=["GET", "POST"], endpoint="login")
+@bp.route("/login", methods=["GET", "POST"], endpoint="login")
 def login():
     if flask.request.method == "GET":
         return render_template("login.html", proc=[pre_processor])
@@ -62,15 +62,15 @@ def login():
     return flask.redirect(next or flask.url_for("index"))
 
 
-@bp.route(r"/logout", endpoint="logout")
+@bp.route("/logout", endpoint="logout")
 def logout():
     # logout_user()
     clear_session()
     return render_template("logout.html", proc=[pre_processor])
 
 
-@bp.route(r"/", endpoint="index")
-@bp.route(r"/home", endpoint="home")
+@bp.route("/", endpoint="index")
+@bp.route("/home", endpoint="home")
 # @login_required("LIST")
 def home():
     api = flask.current_app.config["PYLOAD_API"]
@@ -82,14 +82,14 @@ def home():
 
     for link in res:
         if link["status"] == 12:
-            link["information"] = "{} KiB @ {} KiB/s".format(
-                link["size"] - link["bleft"], link["speed"]
-            )
+            current_size = link["size"] - link["bleft"]
+            speed = link["speed"]
+            link["information"] = f"{current_size} KiB @ {speed} KiB/s"
             
     return render_template("home.html", {"res": res}, [pre_processor])
 
 
-@bp.route(r"/queue", endpoint="queue")
+@bp.route("/queue", endpoint="queue")
 # @login_required("LIST")
 def queue():
     api = flask.current_app.config["PYLOAD_API"]
@@ -101,7 +101,7 @@ def queue():
     return render_template("queue.html", context, [pre_processor])
 
 
-@bp.route(r"/collector", endpoint="collector")
+@bp.route("/collector", endpoint="collector")
 # @login_required("LIST")
 def collector():
     api = flask.current_app.config["PYLOAD_API"]
@@ -113,7 +113,7 @@ def collector():
     return render_template("queue.html", context, [pre_processor])
 
 
-@bp.route(r"/downloads", endpoint="downloads")
+@bp.route("/downloads", endpoint="downloads")
 # @login_required("DOWNLOAD")
 def downloads():
     api = flask.current_app.config["PYLOAD_API"]
@@ -144,7 +144,7 @@ def downloads():
     return render_template("downloads.html", {"files": data}, [pre_processor])
 
 
-@bp.route(r"/downloads/get/<filename>", endpoint="get_download")
+@bp.route("/downloads/get/<filename>", endpoint="get_download")
 # @login_required("DOWNLOAD")
 def get_download(filename):
     api = flask.current_app.config["PYLOAD_API"]
@@ -153,7 +153,7 @@ def get_download(filename):
     return flask.send_from_directory(directory, filename, as_attachment=True)
 
 
-@bp.route(r"/settings", endpoint="settings")
+@bp.route("/settings", endpoint="settings")
 # @login_required("SETTINGS")
 def settings():
     api = flask.current_app.config["PYLOAD_API"]
@@ -228,12 +228,12 @@ def settings():
 
 
 # TODO: Remove `filechooser` and `pathchooser` in 0.6.x
-@bp.route(r"/filechooser", endpoint="filemanager")
-@bp.route(r"/filechooser/<path:path>", endpoint="filemanager")
-@bp.route(r"/pathchooser", endpoint="filemanager")
-@bp.route(r"/pathchooser/<path:path>", endpoint="filemanager")
-@bp.route(r"/filemanager", endpoint="filemanager")
-@bp.route(r"/filemanager/<path:path>", endpoint="filemanager")
+@bp.route("/filechooser", endpoint="filemanager")
+@bp.route("/filechooser/<path:path>", endpoint="filemanager")
+@bp.route("/pathchooser", endpoint="filemanager")
+@bp.route("/pathchooser/<path:path>", endpoint="filemanager")
+@bp.route("/filemanager", endpoint="filemanager")
+@bp.route("/filemanager/<path:path>", endpoint="filemanager")
 # @login_required("STATUS")
 def filemanager(path):
     browse_for = "folder" if os.path.isdir(path) else "file"
@@ -329,8 +329,8 @@ def filemanager(path):
     return render_template("pathchooser.html", context)
 
 
-@bp.route(r"/logs", methods=["GET", "POST"], endpoint="logs")
-@bp.route(r"/logs/<page>", methods=["GET", "POST"], endpoint="logs")
+@bp.route("/logs", methods=["GET", "POST"], endpoint="logs")
+@bp.route("/logs/<page>", methods=["GET", "POST"], endpoint="logs")
 # @login_required("LOGS")
 def logs(page=-1):
     s = flask.session
@@ -443,7 +443,7 @@ def logs(page=-1):
     )
 
 
-@bp.route(r"/admin", methods=["GET", "POST"], endpoint="admin")
+@bp.route("/admin", methods=["GET", "POST"], endpoint="admin")
 # @login_required("ADMIN")
 def admin():
     api = flask.current_app.config["PYLOAD_API"]
@@ -459,7 +459,7 @@ def admin():
     s = flask.session
     if flask.request.environ.get("REQUEST_METHOD", "GET") == "POST":
         for name in user:
-            if flask.request.form.get("{}|admin".format(name), False):
+            if flask.request.form.get(f"{name}|admin", False):
                 user[name]["role"] = 0
                 user[name]["perms"]["admin"] = True
             elif name != s["name"]:
@@ -470,7 +470,7 @@ def admin():
             for perm in perms:
                 user[name]["perms"][perm] = False
 
-            for perm in flask.request.form.getlist("{}|perms".format(name)):
+            for perm in flask.request.form.getlist(f"{name}|perms"):
                 user[name]["perms"][perm] = True
 
             user[name]["permission"] = set_permission(user[name]["perms"])
@@ -481,13 +481,13 @@ def admin():
     return render_template("admin.html", context, [pre_processor])
 
 
-@bp.route(r"/setup", endpoint="setup")
+@bp.route("/setup", endpoint="setup")
 def setup():
     messages = ["Run pyLoad -s to access the setup."]
     return render_base(messages)
 
 
-@bp.route(r"/info", endpoint="info")
+@bp.route("/info", endpoint="info")
 # @login_required("STATUS")
 def info():
     api = flask.current_app.config["PYLOAD_API"]

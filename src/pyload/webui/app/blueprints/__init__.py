@@ -7,3 +7,19 @@
 #  \______\    /______|_|___|__/________________________//______ /___/__/
 #          \  /
 #           \/
+
+from .app_blueprint import bp as app_bp
+from .api_blueprint import bp as api_bp
+from .cnl_blueprint import bp as cnl_bp
+from .json_blueprint import bp as json_bp
+
+
+# TODO: make it auto
+BLUEPRINTS = [app_bp, api_bp, cnl_bp, json_bp]
+
+
+#: Cleanup
+del app_bp
+del api_bp
+del cnl_bp
+del json_bp

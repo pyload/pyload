@@ -11,8 +11,10 @@ from urllib.parse import unquote
 import flask
 import js2py
 from cryptography.fernet import Fernet
+from .app_blueprint import bp as app_bp
 
-bp = flask.Blueprint("cnl", __name__)
+
+bp = flask.Blueprint("cnl", __name__, url_prefix='/flash')
 
 
 #: decorator
@@ -33,14 +35,14 @@ def local_check(func):
     return wrapper
 
 
-@bp.route(r"/flash/<id>", endpoint="flash")
-@bp.route(r"/flash", methods=["GET", "POST"], endpoint="flash")
+@bp.route("/", methods=["GET", "POST"], endpoint="flash")
+@bp.route("/<id>", endpoint="flash")
 @local_check
 def flash(id="0"):
     return "JDownloader\r\n"
 
 
-@bp.route(r"/flash/add", methods=["POST"], endpoint="add")
+@bp.route("/add", methods=["POST"], endpoint="add")
 @local_check
 def add():
     package = flask.request.form.get(
@@ -56,7 +58,7 @@ def add():
         api.generateAndAddPackages(urls, 0)
 
 
-@bp.route(r"/flash/addcrypted", methods=["POST"], endpoint="addcrypted")
+@bp.route("/addcrypted", methods=["POST"], endpoint="addcrypted")
 @local_check
 def addcrypted():
     package = flask.request.form.get(
@@ -82,7 +84,7 @@ def addcrypted():
         return "success\r\n"
 
 
-@bp.route(r"/flash/addcrypted2", methods=["POST"], endpoint="addcrypted2")
+@bp.route("/addcrypted2", methods=["POST"], endpoint="addcrypted2")
 @local_check
 def addcrypted2():
     package = flask.request.form.get(
@@ -93,8 +95,7 @@ def addcrypted2():
     jk = flask.request.form["jk"]
 
     crypted = standard_b64decode(unquote(crypted.replace(" ", "+")))
-    jk = "{} f()".format(jk)
-    jk = js2py.eval_js(jk)
+    jk = js2py.eval_js("{jk} f()")
 
     try:
         key = unhexlify(jk)
@@ -118,8 +119,8 @@ def addcrypted2():
         return "success\r\n"
 
 
-@bp.route(r"/flashgot", methods=["GET", "POST"], endpoint="flashgot")
-@bp.route(r"/flashgot_pyload", methods=["GET", "POST"], endpoint="flashgot")
+@app_bp.route("/flashgot", methods=["GET", "POST"], endpoint="flashgot")
+@app_bp.route("/flashgot_pyload", methods=["GET", "POST"], endpoint="flashgot")
 @local_check
 def flashgot():
     if flask.request.environ["HTTP_REFERER"] not in (
@@ -141,7 +142,7 @@ def flashgot():
         api.generateAndAddPackages(urls, autostart)
 
 
-@bp.route(r"/crossdomain.xml", endpoint="crossdomain")
+@app_bp.route("/crossdomain.xml", endpoint="crossdomain")
 @local_check
 def crossdomain():
     rep = '<?xml version="1.0"?>\n'
@@ -152,7 +153,7 @@ def crossdomain():
     return rep
 
 
-@bp.route(r"/flash/checkSupportForUrl", endpoint="checksupport")
+@bp.route("/checkSupportForUrl", endpoint="checksupport")
 @local_check
 def checksupport():
     api = flask.current_app.config["PYLOAD_API"]
@@ -163,7 +164,7 @@ def checksupport():
     return str(supported).lower()
 
 
-@bp.route(r"/jdcheck.js", endpoint="jdcheck")
+@app_bp.route("/jdcheck.js", endpoint="jdcheck")
 @local_check
 def jdcheck():
     rep = "jdownloader=true;\n"

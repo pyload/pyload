@@ -13,28 +13,19 @@ import os
 
 import jinja2
 
-# from flask_talisman import Talisman
 from werkzeug.exceptions import HTTPException
 from flask_babel import Babel
-
-# from flask_compress import Compress
-# from flask_bcrypt import Bcrypt
-# from flask_caching import Cache
 from flask_debugtoolbar import DebugToolbarExtension
-
-# from flask_static_compress import FlaskStaticCompress
-# from flask_minify import minify
 from flask_themes2 import Themes
 
 from pyload.core.network.http.http_request import (
     BAD_STATUS_CODES as BAD_HTTP_STATUS_CODES,
 )
-from pyload.core.utils import formatSize
 
-from .blueprints import api_blueprint, app_blueprint, cnl_blueprint, json_blueprint
-from .filters import date, path_make_absolute, path_make_relative, quotepath, truncate
+from .blueprints import BLUEPRINTS
+from .filters import FILTERS
 from .helpers import render_error
-from .settings import ProductionConfig, DevelopmentConfig
+from .config import get_default_config
 
 from flask import Flask
 from flask.helpers import locked_cached_property
@@ -44,52 +35,33 @@ from flask.helpers import locked_cached_property
 class App(object):
 
     JINJA_TMPDIR_NAME = "jinja"
-    JINJA_FILTERS = {
-        "quotepath": quotepath,
-        "truncate": truncate,
-        "date": date,
-        "path_make_relative": path_make_relative,
-        "path_make_absolute": path_make_absolute,
-        "formatsize": formatSize,
-        "getitem": lambda x, y: x.__getitem__(y),
-    }
-
-    FLASK_BLUEPRINTS = [
-        api_blueprint.bp,
-        cnl_blueprint.bp,
-        json_blueprint.bp,
-        app_blueprint.bp,
-    ]
+    JINJA_FILTERS = FILTERS
+    FLASK_BLUEPRINTS = BLUEPRINTS
 
     @classmethod
     def _new_config(cls, app, develop):
-        config = DevelopmentConfig if develop else ProductionConfig
-        app.config.from_object(config)
+        conf_obj = get_default_config(develop)
+        app.config.from_object(conf_obj)
 
     @classmethod
     def _new_hook(cls, app):
         # log every incoming requests
         @app.before_request
         def before_request():
-            app.logger.debug("Requesting {}".format(flask.request.url))
+            app.logger.debug(f"Requesting {flask.request.url}")
 
     @classmethod
     def _new_blueprints(cls, app):
-        for blueprint in cls.FLASK_BLUEPRINTS:
+        for blueprint in BLUEPRINTS:
             app.register_blueprint(blueprint)
 
     @classmethod
     def _new_extensions(cls, app):
         Babel(app)
-        # Bcrypt(app)
-        # Cache(app)
-        # Compress(app)
         DebugToolbarExtension(app)
         # FlaskStaticCompress(app)
         # login_manager = LoginManager(app)
         # login_manager.login_view = "app.login"
-        # minify(app)
-        # Talisman(app)
         Themes(app, app_identifier="pyload")
 
         # @login_manager.user_loader
@@ -110,6 +82,9 @@ class App(object):
             """
             Render error template.
             """
+            
+            # TEST
+            print("HEEEEEELLLLLP", dir(error))
             assert isinstance(error, HTTPException)
 
             messages = [error.description]
@@ -141,7 +116,6 @@ class App(object):
     def __new__(cls, pycore, develop=False):
 
         # Use custom logger name
-        # NOTE: flask.app logger is still logging somewhere...
         class _Flask(Flask):
             @locked_cached_property
             def logger(self):
