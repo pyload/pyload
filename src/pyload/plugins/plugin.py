@@ -27,30 +27,36 @@ class Abort(Exception):
     raised when aborted.
     """
 
+
 class Fail(Exception):
     """
     raised when failed.
     """
+
 
 class Reconnect(Exception):
     """
     raised when reconnected.
     """
 
+
 class Retry(Exception):
     """
     raised when start again from beginning.
     """
+
 
 class SkipDownload(Exception):
     """
     raised when download should be skipped.
     """
 
+
 class Base(object):
     """
     A Base class with log/config/db methods *all* plugin types can use.
     """
+
     __name__ = "Base"
 
     def __init__(self, core):
@@ -153,6 +159,7 @@ class Plugin(Base):
 
     Overwrite `process` / `decrypt` in your subclassed plugin.
     """
+
     __name__ = "Plugin"
     __version__ = "0.4"
     __pattern__ = None

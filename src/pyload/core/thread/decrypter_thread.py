@@ -12,6 +12,7 @@ class DecrypterThread(PluginThread):
     """
     thread for decrypting.
     """
+
     def __init__(self, manager, pyfile):
         """
         constructor.
@@ -43,9 +44,7 @@ class DecrypterThread(PluginThread):
 
         except NotImplementedError:
             self.pyload.log.error(
-                self._("Plugin {} is missing a function").format(
-                    self.active.pluginname
-                )
+                self._("Plugin {} is missing a function").format(self.active.pluginname)
             )
             return
 

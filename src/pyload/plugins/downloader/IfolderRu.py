@@ -51,7 +51,7 @@ class IfolderRu(SimpleDownloader):
     def handle_free(self, pyfile):
         id = self.info["pattern"]["ID"]
         url = f"http://rusfolder.com/{id}"
-        
+
         self.data = self.load(url)
         self.get_fileInfo()
 

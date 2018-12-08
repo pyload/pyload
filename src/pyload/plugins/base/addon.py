@@ -20,6 +20,7 @@ def expose(func):
     """
     Used for decoration to declare rpc services.
     """
+
     @wraps(func)
     def wrapper(self, *args, **kwargs):
         if not wrapper._exposed:

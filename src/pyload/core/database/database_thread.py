@@ -65,14 +65,14 @@ class DatabaseJob(object):
 
         frame = self.frame.f_back
         output = ""
-        
+
         for i in range(5):
             bn = os.path.basename(frame.f_code.co_filename)
             ln = frame.f_lineno
             cn = frame.f_code.co_name
             output += f"\t{bn}:{ln}, {cn}\n"
             frame = frame.f_back
-            
+
         del frame
         del self.frame
 

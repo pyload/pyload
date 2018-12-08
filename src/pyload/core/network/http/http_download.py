@@ -19,6 +19,7 @@ class HTTPDownload(object):
     """
     loads a url http + ftp.
     """
+
     def __init__(
         self,
         url,
@@ -234,9 +235,7 @@ class HTTPDownload(object):
                     if errno != 23 or "0 !=" not in msg:
                         failed.append(chunk)
                         ex = pycurl.error(errno, msg)
-                        self.log.debug(
-                            f"Chunk {chunk.id + 1} failed: {ex}"
-                        )
+                        self.log.debug(f"Chunk {chunk.id + 1} failed: {ex}")
                         continue
 
                     try:  #: check if the header implies success, else add it to failed list
@@ -266,9 +265,7 @@ class HTTPDownload(object):
                         # let first chunk load the rest and update the info file
                         init.resetRange()
                         self.info.clear()
-                        self.info.addChunk(
-                            f"{self.filename}.chunk0", (0, self.size)
-                        )
+                        self.info.addChunk(f"{self.filename}.chunk0", (0, self.size))
                         self.info.save()
                     elif failed:
                         raise ex or Exception

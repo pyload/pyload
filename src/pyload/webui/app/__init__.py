@@ -78,11 +78,12 @@ class App(object):
         """
         Register error handlers.
         """
+
         def handle_error(error):
             """
             Render error template.
             """
-            
+
             # TEST
             print("HEEEEEELLLLLP", dir(error))
             assert isinstance(error, HTTPException)

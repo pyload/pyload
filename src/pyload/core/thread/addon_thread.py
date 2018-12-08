@@ -10,6 +10,7 @@ class AddonThread(PluginThread):
     """
     thread for addons.
     """
+
     # ----------------------------------------------------------------------
     def __init__(self, manager, function, args, kwargs):
         """

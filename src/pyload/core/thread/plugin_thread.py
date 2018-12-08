@@ -14,6 +14,7 @@ class PluginThread(Thread):
     """
     abstract base class for thread types.
     """
+
     # ----------------------------------------------------------------------
     def __init__(self, manager):
         """

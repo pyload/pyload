@@ -32,7 +32,7 @@ class ZeveraCom(MultiAccount):
     API_URL = "https://www.zevera.com/api/"
 
     def api_response(self, method, api_key, **kwargs):
-        get_data = {'client_id': "452508742", 'apikey': api_key}
+        get_data = {"client_id": "452508742", "apikey": api_key}
 
         get_data.update(kwargs)
 
@@ -44,15 +44,21 @@ class ZeveraCom(MultiAccount):
 
     def grab_hosters(self, user, password, data):
         res = self.api_response("services/list", password)
-        return res['directdl']
+        return res["directdl"]
 
     def grab_info(self, user, password, data):
         trafficleft = None
 
         res = self.api_response("account/info", password)
 
-        premium = res['premium_until'] is not False
-        validuntil = time.mktime(datetime.datetime.fromtimestamp(res['premium_until']).timetuple()) if premium else -1
+        premium = res["premium_until"] is not False
+        validuntil = (
+            time.mktime(
+                datetime.datetime.fromtimestamp(res["premium_until"]).timetuple()
+            )
+            if premium
+            else -1
+        )
 
         return {
             "validuntil": validuntil,
@@ -62,6 +68,10 @@ class ZeveraCom(MultiAccount):
 
     def signin(self, user, password, data):
         res = self.api_response("account/info", password)
-        if res['status'] != "success":
-            self.log_error( _("Password for Zevera should be the API token - get it from: https://www.zevera.com/account"))
+        if res["status"] != "success":
+            self.log_error(
+                _(
+                    "Password for Zevera should be the API token - get it from: https://www.zevera.com/account"
+                )
+            )
             self.fail_login()

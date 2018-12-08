@@ -20,9 +20,7 @@ def try_catch(func):
             return func(self, *args)
         except Exception as exc:
             self.pyload.log.error(
-                exc,
-                exc_info=self.pyload.debug > 1,
-                stack_info=self.pyload.debug > 2,
+                exc, exc_info=self.pyload.debug > 1, stack_info=self.pyload.debug > 2
             )
 
     return wrapper
@@ -58,6 +56,7 @@ class AddonManager(object):
     |    allDownloadsProcessed is *always* called before allDownloadsFinished.
     |    configChanged is *always* called before pluginConfigChanged.
     """
+
     def __init__(self, core):
         self.pyload = core
         self._ = core._

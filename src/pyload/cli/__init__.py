@@ -203,7 +203,7 @@ class Cli(object):
 
         println(
             line,
-            f'{paused} {self._("total Speed")}: {red(formatSize(speed) + "/s")} {self._("Files in queue")}: {red(status.queue)} {self._("Total")}: {red(status.total)}'
+            f'{paused} {self._("total Speed")}: {red(formatSize(speed) + "/s")} {self._("Files in queue")}: {red(status.queue)} {self._("Total")}: {red(status.total)}',
         )
 
         return line + 1
@@ -285,7 +285,7 @@ class Cli(object):
             for download in files:
                 if download.status == 12:  #: downloading
                     formatted_speed = formatSize(download.speed)
-                    downloaded_size = formatSize(download.size - download.bleft),
+                    downloaded_size = formatSize(download.size - download.bleft)
                     print(print_status(download))
                     print(
                         f"\tDownloading: {download.format_eta} @ {formatted_speed}/s\t {downloaded_size} ({download.percent}%%)"

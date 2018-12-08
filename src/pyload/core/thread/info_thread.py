@@ -71,9 +71,7 @@ class InfoThread(PluginThread):
 
             packs = parseNames((name, url) for name, x, y, url in self.cache)
 
-            self.pyload.log.debug(
-                f"Fetched and generated {len(packs)} packages"
-            )
+            self.pyload.log.debug(f"Fetched and generated {len(packs)} packages")
 
             for k, v in packs:
                 self.m.pyload.api.addPackage(k, v)

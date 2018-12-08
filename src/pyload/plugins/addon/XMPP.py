@@ -146,7 +146,7 @@ class XMPP(IRC, pyxmpp2.client.Client):
         body = stanza.get_body()
         t = stanza.get_type()
         sender = stanza.get_from()
-        
+
         self.log_debug(f"Message from {sender} received.")
         self.log_debug(f"Body: {body} Subject: {subject} Type: {t}")
 
@@ -242,6 +242,7 @@ class VersionHandler(object):
     This class will answer version query and announce 'jabber:iq:version'
     namespace in the client's disco#info results.
     """
+
     pyxmpp2.interface.implements(
         pyxmpp2.interfaces.IIqHandlersProvider, pyxmpp2.interfaces.IFeaturesProvider
     )

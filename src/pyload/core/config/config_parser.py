@@ -33,6 +33,7 @@ class ConfigParser(object):
 
     }
     """
+
     _CONFLINE = re.compile(
         r'\s*(?P<T>.+?)\s+(?P<N>[^ ]+?)\s*:\s*"(?P<D>.+?)"\s*=\s?(?P<V>.*)'
     )
@@ -396,6 +397,7 @@ class Section(object):
     """
     provides dictionary like access for configparser.
     """
+
     def __init__(self, parser, section):
         """
         Constructor.

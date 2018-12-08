@@ -15,6 +15,7 @@ class DownloadThread(PluginThread):
     """
     thread for downloading files from 'real' hoster plugins.
     """
+
     # ----------------------------------------------------------------------
     def __init__(self, manager):
         """
@@ -160,7 +161,9 @@ class DownloadThread(PluginThread):
 
                 else:
                     pyfile.setStatus("failed")
-                    self.pyload.log.error(self._("pycurl error {}: {}").format(code, msg))
+                    self.pyload.log.error(
+                        self._("pycurl error {}: {}").format(code, msg)
+                    )
                     if self.m.pyload.debug:
                         self.writeDebugReport(pyfile)
 

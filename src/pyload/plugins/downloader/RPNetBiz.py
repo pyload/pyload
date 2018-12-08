@@ -71,14 +71,10 @@ class RPNetBiz(MultiDownloader):
                 dl_status = download_status["status"]
                 if dl_status == "100":
                     lk_status = link_status["generated"] = download_status["rpnet_link"]
-                    self.log_debug(
-                        f"Successfully downloaded to rpnet HDD: {lk_status}"
-                    )
+                    self.log_debug(f"Successfully downloaded to rpnet HDD: {lk_status}")
                     break
                 else:
-                    self.log_debug(
-                        f"At {dl_status}% for the file download"
-                    )
+                    self.log_debug(f"At {dl_status}% for the file download")
 
                 self.wait(30)
                 my_try += 1

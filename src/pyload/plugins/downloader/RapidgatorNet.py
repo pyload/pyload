@@ -167,18 +167,16 @@ class RapidgatorNet(SimpleDownloader):
             response, challenge = captcha.challenge()
 
             if isinstance(captcha, ReCaptcha):
-                post_params = {'g-recaptcha-response': response}
+                post_params = {"g-recaptcha-response": response}
 
             elif isinstance(captcha, SolveMedia):
-                post_params = {'adcopy_challenge': challenge,
-                               'adcopy_response': response}
+                post_params = {
+                    "adcopy_challenge": challenge,
+                    "adcopy_response": response,
+                }
 
-            post_params['DownloadCaptchaForm[verifyCode]'] = response            
-            self.data = self.load(
-                url,
-                post=post_params,
-                ref=url,
-            )
+            post_params["DownloadCaptchaForm[verifyCode]"] = response
+            self.data = self.load(url, post=post_params, ref=url)
 
             if "The verification code is incorrect" in self.data:
                 self.retry_captcha()

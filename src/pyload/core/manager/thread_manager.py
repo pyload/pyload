@@ -23,6 +23,7 @@ class ThreadManager(object):
     """
     manages the download threads, assign jobs, reconnect etc.
     """
+
     def __init__(self, core):
         """
         Constructor.

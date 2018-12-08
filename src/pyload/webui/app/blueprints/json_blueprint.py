@@ -48,7 +48,7 @@ def links():
                 formatted_eta = link["format_eta"]
                 formatted_speed = formatSize(link["speed"])
                 link["info"] = f"{formatted_eta} @ {formatted_speed}/s"
-                
+
             elif link["status"] == 5:
                 link["percent"] = 0
                 link["size"] = 0

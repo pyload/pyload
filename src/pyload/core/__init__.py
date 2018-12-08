@@ -373,7 +373,7 @@ class Core(object):
                 pyfile.abortDownload()
 
             self.addonManager.coreExiting()
-            
+
         finally:
             self.files.syncSave()
             self._running.clear()

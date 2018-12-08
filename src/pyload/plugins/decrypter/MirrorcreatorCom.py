@@ -53,9 +53,7 @@ class MirrorcreatorCom(Decrypter):
         pack_name, pack_folder = self.get_package_info()
 
         uid = self.info["pattern"]["ID"]
-        m = re.search(
-            rf'"(/mstat\.php\?uid={uid}.+?)"', self.data
-        )
+        m = re.search(rf'"(/mstat\.php\?uid={uid}.+?)"', self.data)
         if m is None:
             self.fail("mstat URL not found")
 
@@ -65,9 +63,7 @@ class MirrorcreatorCom(Decrypter):
         for tr in re.findall(r"<tr>(.+?)</tr>", self.data, re.S):
             uid = self.info["pattern"]["ID"]
             m = re.search(
-                rf'<a href="(/showlink\.php\?uid={uid}.+?)".*&hname=(\w+)',
-                tr,
-                re.S,
+                rf'<a href="(/showlink\.php\?uid={uid}.+?)".*&hname=(\w+)', tr, re.S
             )
             if m is not None:
                 hosters_data[m.group(2)] = m.group(1)

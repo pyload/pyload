@@ -220,7 +220,9 @@ class CloudFlareDdos(Addon):
 
         else:
             self.log_warning(
-                self._("No _preload() override found for {}, cannot un-override>").format(plugin_id(plugin))
+                self._(
+                    "No _preload() override found for {}, cannot un-override>"
+                ).format(plugin_id(plugin))
             )
 
     def _override_preload(self, plugin):
@@ -276,7 +278,9 @@ class CloudFlareDdos(Addon):
         attr = getattr(pyfile.plugin, "_preload", None)
         if not attr and not callable(attr):
             self.log_error(
-                self._("{} is missing _preload() function, cannot override!").format(plugin_id(pyfile.plugin))
+                self._("{} is missing _preload() function, cannot override!").format(
+                    plugin_id(pyfile.plugin)
+                )
             )
             return
 

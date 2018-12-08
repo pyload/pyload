@@ -5,8 +5,8 @@ from pyload.core.utils import random_string
 
 def get_default_config(develop):
     return DevelopmentConfig if develop else ProductionConfig
-    
-    
+
+
 class BaseConfig(object):
     DEBUG = False
     TESTING = False

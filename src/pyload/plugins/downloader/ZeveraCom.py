@@ -28,28 +28,28 @@ class ZeveraCom(MultiDownloader):
     __authors__ = [
         ("zoidberg", "zoidberg@mujmail.cz"),
         ("Walter Purcaro", "vuolter@gmail.com"),
-        ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")
+        ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com"),
     ]
 
     API_URL = "https://www.zevera.com/api/"
 
     def api_response(self, method, api_key, **kwargs):
-        get_data = {'client_id': "452508742",
-                    'apikey': api_key}
+        get_data = {"client_id": "452508742", "apikey": api_key}
 
         get_data.update(kwargs)
 
-        res = self.load(self.API_URL + method,
-                        get=get_data)
+        res = self.load(self.API_URL + method, get=get_data)
 
         return json.loads(res)
 
     def handle_premium(self, pyfile):
-        res = self.api_response("transfer/directdl", self.account.info['login']['password'], src=pyfile.url)
-        if res['status'] == "success":
-            self.link = res['location']
-            pyfile.name = res['filename']
-            pyfile.size = res['filesize']
+        res = self.api_response(
+            "transfer/directdl", self.account.info["login"]["password"], src=pyfile.url
+        )
+        if res["status"] == "success":
+            self.link = res["location"]
+            pyfile.name = res["filename"]
+            pyfile.size = res["filesize"]
 
         else:
-            self.fail(res['message'])
+            self.fail(res["message"])

@@ -47,6 +47,7 @@ class PluginManager(object):
         """
         create information for all plugins available.
         """
+
         def merge(dst, src, overwrite=False):
             """
             merge dict of dicts.
@@ -178,9 +179,7 @@ class PluginManager(object):
 
                 m_ver = self._VERSION.search(content)
                 if m_ver is None:
-                    self.pyload.log.debug(
-                        f"__version__ not found in plugin {name}"
-                    )
+                    self.pyload.log.debug(f"__version__ not found in plugin {name}")
                     version = 0
                 else:
                     version = float(m_ver.group(1))
@@ -414,6 +413,7 @@ class PluginManager(object):
         """
         reloads and reindexes plugins.
         """
+
         def merge(dst, src, overwrite=False):
             """
             merge dict of dicts.

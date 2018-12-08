@@ -69,9 +69,7 @@ class OCR(Plugin):
         popen.stdout.close()
         popen.stderr.close()
 
-        self.log_debug(
-            f"Tesseract ReturnCode {popen.returncode}", f"Output: {output}" 
-        )
+        self.log_debug(f"Tesseract ReturnCode {popen.returncode}", f"Output: {output}")
 
     def run_tesser(
         self,

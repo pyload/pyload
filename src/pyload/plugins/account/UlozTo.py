@@ -75,7 +75,7 @@ class UlozTo(Account):
         }
 
     def signin(self, user, password, data):
-        html = self.load('https://ulozto.net/?do=web-login')
+        html = self.load("https://ulozto.net/?do=web-login")
         if ">Log out<" in html:
             self.skip_login()
 
@@ -83,10 +83,9 @@ class UlozTo(Account):
         if inputs is None:
             self.fail_login("Login form not found")
 
-        inputs['username'] = user
-        inputs['password'] = password
+        inputs["username"] = user
+        inputs["password"] = password
 
-        html = self.load(urllib.parse.urljoin("https://ulozto.net/", url),
-                         post=inputs)
-        if not '>Log out<' in html:
+        html = self.load(urllib.parse.urljoin("https://ulozto.net/", url), post=inputs)
+        if not ">Log out<" in html:
             self.fail_login()

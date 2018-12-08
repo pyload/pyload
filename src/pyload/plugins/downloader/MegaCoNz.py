@@ -166,6 +166,7 @@ class MegaCrypto(object):
         """
         interface for checking CBC-MAC checksum.
         """
+
         def __init__(self, key):
             k, iv, meta_mac = MegaCrypto.get_cipher_key(key)
             self.hash = "\0" * 16

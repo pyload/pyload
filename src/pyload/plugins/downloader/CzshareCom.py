@@ -71,7 +71,9 @@ class CzshareCom(SimpleDownloader):
             )
             if credit < self.pyfile.size:
                 self.log_info(
-                    self._("Not enough credit to download file: {}").format(self.pyfile.name)
+                    self._("Not enough credit to download file: {}").format(
+                        self.pyfile.name
+                    )
                 )
                 return True
 

@@ -15,6 +15,7 @@ class ManageFiles(Handler):
     """
     possibility to manage queue/collector.
     """
+
     def init(self):
         self.target = Destination.Queue
         self.pos = 0  #: position in queue
@@ -100,8 +101,7 @@ class ManageFiles(Handler):
         else:
             println(line, "Choose what you want to do or enter package number.")
             println(
-                line + 1,
-                f"{mag('d')} - delete, mag('m') - move, mag('r') - restart"
+                line + 1, f"{mag('d')} - delete, mag('m') - move, mag('r') - restart"
             )
             line += 2
 
@@ -128,7 +128,7 @@ class ManageFiles(Handler):
                     println(
                         line,
                         mag(value.fid)
-                        + f": {value.name} | {value.statusmsg} | {value.plugin}"
+                        + f": {value.name} | {value.statusmsg} | {value.plugin}",
                     )
                     line += 1
                     i += 1

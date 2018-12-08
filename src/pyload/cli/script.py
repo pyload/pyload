@@ -11,9 +11,13 @@ from sys import exit
 
 import pyload.core.utils.pylgettext as gettext
 from pyload import DATADIR, PKGDIR
-from pyload.core.remote.thriftbackend.thrift_client import (ConnectionClosed,
-                                                            NoConnection, NoSSL,
-                                                            ThriftClient, WrongLogin)
+from pyload.core.remote.thriftbackend.thrift_client import (
+    ConnectionClosed,
+    NoConnection,
+    NoSSL,
+    ThriftClient,
+    WrongLogin,
+)
 
 from . import Cli
 from .printer import *
@@ -34,20 +38,12 @@ def print_help(config):
     print("  -u, --username=", " " * 2, "Specify Username")
     print("  --pw=<password>", " " * 2, "Password")
     addr = config["addr"]
-    print(
-        "  -a, --address=",
-        " " * 3,
-        f"Specify address (current={addr})",
-    )
+    print("  -a, --address=", " " * 3, f"Specify address (current={addr})")
     port = config["port"]
     print(f"  -p, --port", " " * 7, "Specify port (current={port})")
     print()
     lang = config["language"]
-    print(
-        "  -l, --language",
-        " " * 3,
-        f"Set user interface language (current={lang})",
-    )
+    print("  -l, --language", " " * 3, f"Set user interface language (current={lang})")
     print("  -h, --help", " " * 7, "Display this help screen")
     print("  -c, --commands", " " * 3, "List all available commands")
     print()

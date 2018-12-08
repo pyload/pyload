@@ -14,7 +14,7 @@ from cryptography.fernet import Fernet
 from .app_blueprint import bp as app_bp
 
 
-bp = flask.Blueprint("cnl", __name__, url_prefix='/flash')
+bp = flask.Blueprint("cnl", __name__, url_prefix="/flash")
 
 
 #: decorator

@@ -16,10 +16,21 @@ from pyload import PKGDIR
 from pyload.core.utils import formatSize, fs_decode, fs_encode
 
 from ..filters import unquotepath
-from ..helpers import (clear_session, get_permission, get_redirect_target,
-                       login_required, parse_permissions, parse_userdata, permlist,
-                       pre_processor, render_base, render_template, set_permission,
-                       set_session, toDict)
+from ..helpers import (
+    clear_session,
+    get_permission,
+    get_redirect_target,
+    login_required,
+    parse_permissions,
+    parse_userdata,
+    permlist,
+    pre_processor,
+    render_base,
+    render_template,
+    set_permission,
+    set_session,
+    toDict,
+)
 
 # from flask_login import login_required, login_user, logout_user
 
@@ -85,7 +96,7 @@ def home():
             current_size = link["size"] - link["bleft"]
             speed = link["speed"]
             link["information"] = f"{current_size} KiB @ {speed} KiB/s"
-            
+
     return render_template("home.html", {"res": res}, [pre_processor])
 
 
@@ -220,11 +231,7 @@ def settings():
         "conf": {"plugin": plugin_menu, "general": conf_menu, "accs": accs},
         "types": api.getAccountTypes(),
     }
-    return render_template(
-        "settings.html",
-        context,
-        [pre_processor],
-    )
+    return render_template("settings.html", context, [pre_processor])
 
 
 # TODO: Remove `filechooser` and `pathchooser` in 0.6.x
@@ -317,7 +324,7 @@ def filemanager(path):
         files.append(data)
 
     files = sorted(files, key=operator.itemgetter("type", "sort"))
-    
+
     context = {
         "cwd": cwd,
         "files": files,
@@ -367,9 +374,9 @@ def logs(page=-1):
 
     # TEST DISABLED
     # try:
-        # page = int(page)
+    # page = int(page)
     # except Exception:
-        # pass
+    # pass
 
     log = api.getLog()
     if not perpage:
@@ -422,10 +429,10 @@ def logs(page=-1):
 
     if fro is None:  #: still not set, empty log?
         fro = datetime.datetime.now()
-    
+
     if reversed:
         data.reverse()
-    
+
     context = {
         "warning": warning,
         "log": data,
@@ -436,11 +443,7 @@ def logs(page=-1):
         "iprev": 1 if page - perpage < 1 else page - perpage,
         "inext": (page + perpage) if page + perpage < len(log) else page,
     }
-    return render_template(
-        "logs.html",
-        context,
-        [pre_processor],
-    )
+    return render_template("logs.html", context, [pre_processor])
 
 
 @bp.route("/admin", methods=["GET", "POST"], endpoint="admin")

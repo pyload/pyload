@@ -54,8 +54,8 @@ def truncate(value, n):
 
 def date(date, format):
     return date
-    
-    
+
+
 FILTERS = {
     "quotepath": quotepath,
     "unquotepath": unquotepath,

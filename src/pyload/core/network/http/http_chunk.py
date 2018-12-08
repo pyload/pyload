@@ -174,7 +174,7 @@ class HTTPChunk(HTTPRequest):
                     end = ""
                 else:
                     end = min(self.range[1] + 1, self.p.size - 1)
-                
+
                 range = f"{start}-{end}"
 
                 self.log.debug(f"Chunked resume with range {range}")
@@ -190,7 +190,7 @@ class HTTPChunk(HTTPRequest):
                     end = ""
                 else:
                     end = min(self.range[1] + 1, self.p.size - 1)
-                    
+
                 range = f"{start}-{end}"
 
                 self.log.debug(f"Chunked with range {range}")

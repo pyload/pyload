@@ -546,7 +546,7 @@ class Downloader(Hoster):
             # Same file exists but it does not belongs to our pack, add a trailing
             # counter
             name, ext = os.path.splitext(self.pyfile.name)
-            m = re.match(r'(.+?)(?:\((\d+)\))?$', name)
+            m = re.match(r"(.+?)(?:\((\d+)\))?$", name)
             dl_n = int(m.group(2) or "0")
 
             while True:

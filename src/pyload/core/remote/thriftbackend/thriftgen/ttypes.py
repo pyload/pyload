@@ -152,6 +152,7 @@ class DownloadInfo(TBase):
     - packageName
     - plugin
     """
+
     thrift_spec = (
         None,  #: 0
         (1, TType.I32, "fid", None, None),  #: 1
@@ -221,6 +222,7 @@ class ServerStatus(TBase):
     - download
     - reconnect
     """
+
     thrift_spec = (
         None,  #: 0
         (1, TType.BOOL, "pause", None, None),  #: 1
@@ -260,6 +262,7 @@ class ConfigItem(TBase):
     - value
     - type
     """
+
     thrift_spec = (
         None,  #: 0
         (1, TType.STRING, "name", None, None),  #: 1
@@ -284,6 +287,7 @@ class ConfigSection(TBase):
     - items
     - outline
     """
+
     thrift_spec = (
         None,  #: 0
         (1, TType.STRING, "name", None, None),  #: 1
@@ -321,6 +325,7 @@ class FileData(TBase):
     - error
     - order
     """
+
     thrift_spec = (
         None,  #: 0
         (1, TType.I32, "fid", None, None),  #: 1
@@ -381,6 +386,7 @@ class PackageData(TBase):
     - links
     - fids
     """
+
     thrift_spec = (
         None,  #: 0
         (1, TType.I32, "pid", None, None),  #: 1
@@ -449,6 +455,7 @@ class InteractionTask(TBase):
     - description
     - plugin
     """
+
     thrift_spec = (
         None,  #: 0
         (1, TType.I32, "iid", None, None),  #: 1
@@ -494,6 +501,7 @@ class CaptchaTask(TBase):
     - type
     - resultType
     """
+
     thrift_spec = (
         None,  #: 0
         (1, TType.I16, "tid", None, None),  #: 1
@@ -518,6 +526,7 @@ class EventInfo(TBase):
     - type
     - destination
     """
+
     thrift_spec = (
         None,  #: 0
         (1, TType.STRING, "eventname", None, None),  #: 1
@@ -543,6 +552,7 @@ class UserData(TBase):
     - permission
     - templateName
     """
+
     thrift_spec = (
         None,  #: 0
         (1, TType.STRING, "name", None, None),  #: 1
@@ -575,6 +585,7 @@ class AccountInfo(TBase):
     - premium
     - type
     """
+
     thrift_spec = (
         None,  #: 0
         (1, TType.I64, "validuntil", None, None),  #: 1
@@ -623,6 +634,7 @@ class ServiceCall(TBase):
     - arguments
     - parseArguments
     """
+
     thrift_spec = (
         None,  #: 0
         (1, TType.STRING, "plugin", None, None),  #: 1
@@ -648,6 +660,7 @@ class OnlineStatus(TBase):
     - status
     - size
     """
+
     thrift_spec = (
         None,  #: 0
         (1, TType.STRING, "name", None, None),  #: 1
@@ -674,6 +687,7 @@ class OnlineCheck(TBase):
     - rid
     - data
     """
+
     thrift_spec = (
         None,  #: 0
         (1, TType.I32, "rid", None, None),  #: 1
@@ -702,6 +716,7 @@ class PackageDoesNotExists(TExceptionBase):
 
     - pid
     """
+
     thrift_spec = (None, (1, TType.I32, "pid", None, None))  #: 0  #: 1
 
     def __init__(self, pid=None):
@@ -717,6 +732,7 @@ class FileDoesNotExists(TExceptionBase):
 
     - fid
     """
+
     thrift_spec = (None, (1, TType.I32, "fid", None, None))  #: 0  #: 1
 
     def __init__(self, fid=None):
@@ -733,6 +749,7 @@ class ServiceDoesNotExists(TExceptionBase):
     - plugin
     - func
     """
+
     thrift_spec = (
         None,  #: 0
         (1, TType.STRING, "plugin", None, None),  #: 1
@@ -753,6 +770,7 @@ class ServiceException(TExceptionBase):
 
     - msg
     """
+
     thrift_spec = (None, (1, TType.STRING, "msg", None, None))  #: 0  #: 1
 
     def __init__(self, msg=None):

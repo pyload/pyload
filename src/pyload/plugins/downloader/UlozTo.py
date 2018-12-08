@@ -113,9 +113,7 @@ class UlozTo(SimpleDownloader):
             captcha_value = self.captcha.decrypt(
                 f"https://img.uloz.to/captcha/{captcha_id}.png"
             )
-            self.log_debug(
-                f"CAPTCHA ID: {captcha_id}, CAPTCHA VALUE: {captcha_value}"
-            )
+            self.log_debug(f"CAPTCHA ID: {captcha_id}, CAPTCHA VALUE: {captcha_value}")
 
             inputs.update(
                 {

@@ -66,9 +66,7 @@ def _parse_args(cmd_args):
     )
     group = parser.add_mutually_exclusive_group()
 
-    group.add_argument(
-        "--version", action="version", version=f"pyLoad {__version__}"
-    )
+    group.add_argument("--version", action="version", version=f"pyLoad {__version__}")
 
     parser.add_argument(
         "-d", "--debug", action="store_true", help="Enable debug mode", default=None

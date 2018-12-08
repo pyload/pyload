@@ -142,6 +142,7 @@ class ImgurCom(SimpleDecrypter):
         Extract embedded links from HTML // then check if there are further images which
         will be lazy-loaded.
         """
+
         def f(url):
             return "http://" + re.sub(r"(\w{7})s\.", r"\1.", url)
 

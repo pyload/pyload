@@ -35,6 +35,7 @@ class PyFile(object):
     """
     Represents a file object at runtime.
     """
+
     def __init__(
         self, manager, id, url, name, size, status, error, pluginname, package, order
     ):

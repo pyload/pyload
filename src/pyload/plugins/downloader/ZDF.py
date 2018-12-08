@@ -45,9 +45,7 @@ class ZDF(Downloader):
     def process(self, pyfile):
         id = self.get_id(pyfile.url)
         url = self.XML_API.format(id)
-        xml = etree.fromstring(
-            self.load(url, decode=False)
-        )
+        xml = etree.fromstring(self.load(url, decode=False))
 
         status = xml.findtext("./status/statuscode")
         if status != "ok":

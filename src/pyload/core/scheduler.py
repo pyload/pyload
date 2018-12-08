@@ -102,6 +102,7 @@ class PriorityQueue(object):
     """
     a non blocking priority queue.
     """
+
     def __init__(self):
         self.queue = []
         self.lock = Lock()

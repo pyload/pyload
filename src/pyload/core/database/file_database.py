@@ -6,8 +6,12 @@ from threading import RLock
 
 from ..datatype.pyfile import PyFile
 from ..datatype.pypackage import PyPackage
-from ..manager.event_manager import (InsertEvent, ReloadAllEvent, RemoveEvent,
-                                     UpdateEvent)
+from ..manager.event_manager import (
+    InsertEvent,
+    ReloadAllEvent,
+    RemoveEvent,
+    UpdateEvent,
+)
 from ..utils import formatSize, lock
 from .database_thread import DatabaseThread, style
 
@@ -17,6 +21,7 @@ class FileHandler(object):
     Handles all request made to obtain information, modify status or other request for
     links or packages.
     """
+
     def __init__(self, core):
         """
         Constructor.
@@ -903,9 +908,7 @@ class FileMethods(object):
         )
         ids = []
         statuses = "','".join(x[3] for x in data)
-        self.c.execute(
-            f"SELECT id FROM links WHERE url IN ('{statuses}')"
-        )
+        self.c.execute(f"SELECT id FROM links WHERE url IN ('{statuses}')")
         for r in self.c:
             ids.append(int(r[0]))
         return ids

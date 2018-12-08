@@ -26,26 +26,31 @@ class TurbobitNet(SimpleDownloader):
 
     __description__ = """Turbobit.net downloader plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
-                   ("prOq", None),
-                   ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
+    __authors__ = [
+        ("zoidberg", "zoidberg@mujmail.cz"),
+        ("prOq", None),
+        ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com"),
+    ]
 
     URL_REPLACEMENTS = [(__pattern__ + ".*", "https://turbobit.net/\g<ID>.html")]
 
     COOKIES = [("turbobit.net", "user_lang", "en")]
 
-    INFO_PATTERN = r'<title>\s*Download file (?P<N>.+?) \((?P<S>[\d.,]+) (?P<U>[\w^_]+)\)'
-    OFFLINE_PATTERN = r'<h2>File Not Found</h2>|html\(\'File (?:was )?not found'
-    TEMP_OFFLINE_PATTERN = r''
+    INFO_PATTERN = (
+        r"<title>\s*Download file (?P<N>.+?) \((?P<S>[\d.,]+) (?P<U>[\w^_]+)\)"
+    )
+    OFFLINE_PATTERN = r"<h2>File Not Found</h2>|html\(\'File (?:was )?not found"
+    TEMP_OFFLINE_PATTERN = r""
 
     LINK_FREE_PATTERN = r'(/download/redirect/[^"\']+)'
     LINK_PREMIUM_PATTERN = r'<a href=[\'"](.+?/download/redirect/[^"\']+)'
 
-    LIMIT_WAIT_PATTERN = r'<div id=\'timeout\'>(\d+)<'
-
+    LIMIT_WAIT_PATTERN = r"<div id=\'timeout\'>(\d+)<"
 
     def handle_free(self, pyfile):
-        self.free_url = "http://turbobit.net/download/free/{}".format(self.info['pattern']['ID'])
+        self.free_url = "http://turbobit.net/download/free/{}".format(
+            self.info["pattern"]["ID"]
+        )
         self.data = self.load(self.free_url)
 
         m = re.search(self.LIMIT_WAIT_PATTERN, self.data)
@@ -54,7 +59,7 @@ class TurbobitNet(SimpleDownloader):
 
         self.solve_captcha()
 
-        m = re.search(r'minLimit : (.+?),', self.data)
+        m = re.search(r"minLimit : (.+?),", self.data)
         if m is None:
             self.fail(_("minLimit pattern not found"))
 
@@ -62,12 +67,20 @@ class TurbobitNet(SimpleDownloader):
         self.wait(wait_time)
 
         self.req.http.c.setopt(pycurl.HTTPHEADER, ["X-Requested-With: XMLHttpRequest"])
-        self.data = self.load("http://turbobit.net/download/getLinkTimeout/{}".format(self.info['pattern']['ID']),
-                              ref=self.free_url)
+        self.data = self.load(
+            "http://turbobit.net/download/getLinkTimeout/{}".format(
+                self.info["pattern"]["ID"]
+            ),
+            ref=self.free_url,
+        )
         self.req.http.c.setopt(pycurl.HTTPHEADER, ["X-Requested-With:"])
 
         if "/download/started/" in self.data:
-            self.data = self.load("http://turbobit.net/download/started/{}".format(self.info['pattern']['ID']))
+            self.data = self.load(
+                "http://turbobit.net/download/started/{}".format(
+                    self.info["pattern"]["ID"]
+                )
+            )
 
             m = re.search(self.LINK_FREE_PATTERN, self.data)
             if m is not None:
@@ -78,18 +91,16 @@ class TurbobitNet(SimpleDownloader):
         if not inputs:
             self.fail(_("Captcha form not found"))
 
-        if inputs['captcha_type'] == "recaptcha2":
+        if inputs["captcha_type"] == "recaptcha2":
             self.captcha = ReCaptcha(self.pyfile)
-            inputs['g-recaptcha-response'], challenge = self.captcha.challenge()
+            inputs["g-recaptcha-response"], challenge = self.captcha.challenge()
 
         else:
             self.fail(_("Unknown captcha type"))
 
-        self.data = self.load(self.free_url,
-                              post=inputs)
-    
+        self.data = self.load(self.free_url, post=inputs)
+
     def handle_premium(self, pyfile):
         m = re.search(self.LINK_PREMIUM_PATTERN, self.data)
         if m is not None:
             self.link = m.group(1)
-            

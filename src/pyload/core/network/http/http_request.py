@@ -59,11 +59,9 @@ class BadHeader(Exception):
     def __init__(self, code, header="", content=""):
         int_code = int(code)
         response = responses.get(
-                    int_code, PROPRIETARY_RESPONSES.get(int_code, "unknown error code")
-                )
-        super().__init__(
-            f"Bad server response: {code} {response}"
+            int_code, PROPRIETARY_RESPONSES.get(int_code, "unknown error code")
         )
+        super().__init__(f"Bad server response: {code} {response}")
         self.code = int_code
         self.header = header
         self.content = content
@@ -159,9 +157,7 @@ class HTTPRequest(object):
             if proxy["username"]:
                 user = proxy["username"]
                 pw = proxy["password"]
-                self.c.setopt(
-                    pycurl.PROXYUSERPWD, f"{user}:{pw}"
-                )
+                self.c.setopt(pycurl.PROXYUSERPWD, f"{user}:{pw}")
 
         if ipv6:
             self.c.setopt(pycurl.IPRESOLVE, pycurl.IPRESOLVE_WHATEVER)

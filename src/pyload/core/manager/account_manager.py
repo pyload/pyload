@@ -17,6 +17,7 @@ class AccountManager(object):
     """
     manages all accounts.
     """
+
     # ----------------------------------------------------------------------
     def __init__(self, core):
         """
