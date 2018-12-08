@@ -27,7 +27,7 @@ from .filters import FILTERS
 from .helpers import render_error
 from .config import get_default_config
 
-from flask import Flask
+import flask
 from flask.helpers import locked_cached_property
 
 
@@ -117,7 +117,7 @@ class App(object):
     def __new__(cls, pycore, develop=False):
 
         # Use custom logger name
-        class _Flask(Flask):
+        class _Flask(flask.Flask):
             @locked_cached_property
             def logger(self):
                 return pycore.log.getChild("webui")

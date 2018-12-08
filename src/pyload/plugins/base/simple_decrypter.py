@@ -153,13 +153,13 @@ class SimpleDecrypter(Decrypter):
             self.req = self.pyload.requestFactory.getRequest(account_name)
             self.premium = False
 
-        Crypter.setup_base(self)
+        Decrypter.setup_base(self)
 
     # TODO: Remove in 0.6.x
     def load_account(self):
         class_name = self.classname
         self.__class__.__name__ = class_name.rsplit("Folder", 1)[0]
-        Crypter.load_account(self)
+        Decrypter.load_account(self)
         self.__class__.__name__ = class_name
 
     def handle_direct(self, pyfile):

@@ -82,9 +82,8 @@ class DatabaseJob(object):
         try:
             self.result = self.f(*self.args, **self.kwargs)
         except Exception as exc:
-            exc_logger.exception(
-                "Database Error @", self.f.__name__, self.args[1:], self.kwargs, exc
-            )
+            msg = f"Database Error @ {self.f.__name__} {self.args[1:]} {self.kwargs}"
+            exc_logger.exception(msg)
             self.exception = exc
         finally:
             self.done.set()

@@ -8,7 +8,7 @@ import urllib.parse
 import pycurl
 
 from ..base.account import Account
-from ..internal.misc import parse_html_form, timestamp
+from ..utils import parse_html_form, timestamp
 
 
 class UlozTo(Account):

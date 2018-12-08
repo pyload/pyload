@@ -101,8 +101,8 @@ class MegasharesCom(SimpleDownloader):
 
         m = re.search(self.PASSPORT_RENEW_PATTERN, self.data)
         if m is not None:
-            time = [int(x) for x in m.groups()]
-            renew = time[0] + (time[1] * 60) + (time[2] * 60)
+            times = [int(x) for x in m.groups()]
+            renew = times[0] + (times[1] * 60) + (times[2] * 60)
             self.log_debug(f"Waiting {renew} seconds for a new passport")
             self.retry(wait=renew, msg=self._("Passport renewal"))
 

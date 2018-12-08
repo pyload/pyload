@@ -315,7 +315,7 @@ class SimpleDownloader(Downloader):
             self.download(self.link, disposition=self.DISPOSITION)
 
     def _check_download(self):
-        Hoster._check_download(self)
+        Downloader._check_download(self)
         self.check_download()
 
     def check_download(self):

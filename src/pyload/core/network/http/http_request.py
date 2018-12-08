@@ -346,8 +346,7 @@ class HTTPRequest(object):
         except Exception:
             self.log.debug(
                 f"Error when decoding string from {encoding}",
-                exc_info=self.pyload.debug > 1,
-                stack_info=self.pyload.debug > 2,
+                exc_info=True
             )
 
         return rep

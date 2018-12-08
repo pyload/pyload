@@ -61,7 +61,7 @@ class TurbobitNet(SimpleDownloader):
 
         m = re.search(r"minLimit : (.+?),", self.data)
         if m is None:
-            self.fail(_("minLimit pattern not found"))
+            self.fail(self._("minLimit pattern not found"))
 
         wait_time = self.js.eval(m.group(1))
         self.wait(wait_time)
@@ -89,14 +89,14 @@ class TurbobitNet(SimpleDownloader):
     def solve_captcha(self):
         action, inputs = self.parse_html_form("action='#'")
         if not inputs:
-            self.fail(_("Captcha form not found"))
+            self.fail(self._("Captcha form not found"))
 
         if inputs["captcha_type"] == "recaptcha2":
             self.captcha = ReCaptcha(self.pyfile)
             inputs["g-recaptcha-response"], challenge = self.captcha.challenge()
 
         else:
-            self.fail(_("Unknown captcha type"))
+            self.fail(self._("Unknown captcha type"))
 
         self.data = self.load(self.free_url, post=inputs)
 
