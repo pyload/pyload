@@ -4,6 +4,7 @@ import json
 import os
 import re
 from builtins import str
+import datetime
 
 import pycurl
 
@@ -239,7 +240,7 @@ class UlozTo(SimpleDownloader):
         elif check == "server_error":
             self.log_error(self._("Server error, try downloading later"))
             self.multiDL = False
-            self.wait(1 * 60 * 60, True)
+            self.wait(datetime.timedelta(hours=1).seconds, True)
             self.retry()
 
         elif check == "not_found":

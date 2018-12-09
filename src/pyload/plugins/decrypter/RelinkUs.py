@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import base64
-import binascii
 import os
 import re
 from builtins import filter, zip
@@ -334,7 +333,7 @@ class RelinkUs(Decrypter):
         #: Get key
         jreturn = js2py.eval_js("{} f()".format(jk))
         self.log_debug(f"JsEngine returns value [{jreturn}]")
-        key = binascii.unhexlify(jreturn)
+        key = bytes.fromhex(jreturn)
 
         #: Decrypt
         obj = Fernet(key)

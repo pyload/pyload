@@ -154,5 +154,5 @@ class MegaCoNz(Account):
         Convert GCRYMPI_FMT_PGP bignum format to integer.
         """
         return int(
-            "".join("{:2x}".format(ord(s[2:][x])) for x in range(0, len(s[2:]))), 16
+            "".join("{:2x}".format(ord(s[2:][x])) for x in range(len(s[2:]))), 16
         )

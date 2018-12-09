@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import base64
-import binascii
 import re
 
 from cryptography.hazmat.backends import default_backend
@@ -42,8 +41,8 @@ class RSDF(Container):
     IV = "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"
 
     def decrypt(self, pyfile):
-        KEY = binascii.unhexlify(self.KEY)
-        IV = binascii.unhexlify(self.IV)
+        KEY = bytes.fromhex(self.KEY)
+        IV = bytes.fromhex(self.IV)
 
         backend = default_backend()
 
@@ -64,7 +63,7 @@ class RSDF(Container):
 
         else:
             try:
-                raw_links = binascii.unhexlify("".join(data.split())).splitlines()
+                raw_links = bytes.fromhex("".join(data.split())).splitlines()
 
             except TypeError:
                 self.fail(self._("Container is corrupted"))

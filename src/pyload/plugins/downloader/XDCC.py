@@ -626,7 +626,7 @@ class XDCC(Downloader):
         self.pyfile.setCustomStatus("connect irc")
 
         self.irc_client = IRC(self, nick, ident, realname)
-        for _ in range(0, 3):
+        for _ in range(3):
             try:
                 if self.irc_client.connect_server(host, port):
                     try:

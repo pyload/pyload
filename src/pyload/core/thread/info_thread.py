@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # AUTHOR: RaNaN, vuolter
 
+import datetime
 import time
 
 from ..api import OnlineStatus
@@ -120,7 +121,7 @@ class InfoThread(PluginThread):
 
             self.m.infoResults[self.rid]["ALL_INFO_FETCHED"] = {}
 
-        self.m.timestamp = time.time() + 5 * 60
+        self.m.timestamp = time.time() + datetime.timedelta(minutes=5).seconds
 
     def updateDB(self, plugin, result):
         self.m.pyload.files.updateFileInfo(result, self.pid)

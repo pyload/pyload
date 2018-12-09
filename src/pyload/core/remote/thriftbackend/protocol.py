@@ -16,11 +16,6 @@ class Protocol(TBinaryProtocol.TBinaryProtocol):
     def readString(self):
         len = self.readI32()
         str = self.trans.readAll(len)
-        try:
-            str = str.decode("utf-8", "ignore")
-        except Exception:
-            pass
-
         return str
 
 

@@ -17,7 +17,7 @@ from .thriftgen.ttypes import *
 
 def bench(f, *args, **kwargs):
     s = time.time()
-    ret = [f(*args, **kwargs) for i in range(0, 100)]
+    ret = [f(*args, **kwargs) for i in range(100)]
     e = time.time()
     try:
         print(f"{f._Method__name}: {e - s} s")

@@ -3,6 +3,7 @@
 
 import time
 from builtins import object
+import datetime
 
 
 class CookieJar(object):
@@ -29,7 +30,7 @@ class CookieJar(object):
         return self.parseCookie(name)
 
     def setCookie(
-        self, domain, name, value, path="/", exp=time.time() + 3600 * 24 * 180
+        self, domain, name, value, path="/", exp=time.time() + datetime.timedelta(hours=744).seconds  #: 31 days retention
     ):
         self.cookies[
             name

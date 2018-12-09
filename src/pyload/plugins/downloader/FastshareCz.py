@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+
+import datetime
 import re
 import urllib.parse
 
@@ -77,7 +79,7 @@ class FastshareCz(SimpleDownloader):
         )
 
         if check == "paralell-dl":
-            self.retry(6, 10 * 60, self._("Paralell download"))
+            self.retry(6, datetime.timedelta(minutes=10).seconds, self._("Paralell download"))
 
         elif check == "wrong captcha":
             self.retry_captcha()

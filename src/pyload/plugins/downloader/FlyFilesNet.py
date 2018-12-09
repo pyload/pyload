@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+
+import datetime
 import re
 import urllib.error
 import urllib.parse
@@ -47,7 +49,7 @@ class FlyFilesNet(SimpleDownloader):
             self.log_warning(
                 self._("Could not get the download URL. Please wait 10 minutes")
             )
-            self.wait(10 * 60, True)
+            self.wait(datetime.timedelta(minutes=10).seconds, True)
             self.retry()
 
         self.link = parsed_url.replace("#downlink|", "")

@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import json
-
-from beaker.crypto.pbkdf2 import PBKDF2
+import hashlib
 
 from ..base.account import Account
 
@@ -21,11 +20,11 @@ class OboomCom(Account):
 
     def load_account_data(self, user, password):
         salt = password[::-1]
-        pbkdf2 = PBKDF2(password, salt, 1000).hexread(16)
+        pw = hashlib.pbkdf2_hmac(password.encode(), salt.encode(), 1000).hex()[16]
 
         html = self.load(
             "http://www.oboom.com/1/login",  # TODO: Revert to `https` in 0.6.x
-            get={"auth": user, "pass": pbkdf2},
+            get={"auth": user, "pass": pw},
         )
         result = json.loads(html)
 

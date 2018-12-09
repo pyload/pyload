@@ -630,7 +630,7 @@ class CircleCaptcha(OCR):
                         #: found 2 pixel, seeking x3, y3
                         #: Verify cord
 
-                        for invert in range(0, 2):
+                        for invert in range(2):
                             x3 = math.floor(x2 - ((x2 - x1) / 2))
                             y3 = y1
                             for j in range(1, 50):

@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+
+import datetime
 import json
 import re
 
@@ -79,7 +81,7 @@ class BigfileTo(SimpleDownloader):
     def check_download(self):
         if self.scan_download({"wait": re.compile("Please wait for")}):
             self.log_info(self._("Downloadlimit reached, please wait or reconnect"))
-            self.wait(60 * 60, True)
+            self.wait(datetime.timedelta(hours=1).seconds, True)
             self.retry()
 
         return SimpleDownloader.check_download(self)

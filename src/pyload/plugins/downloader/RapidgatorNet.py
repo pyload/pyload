@@ -4,6 +4,7 @@ import re
 
 import pycurl
 from pyload.core.network.http.http_request import BadHeader
+import datetime
 
 from ..captcha.ReCaptcha import ReCaptcha
 from ..captcha.SolveMedia import SolveMedia
@@ -120,7 +121,7 @@ class RapidgatorNet(SimpleDownloader):
             if m.group(1) == "daily":
                 wait_time = seconds_to_midnight()
             else:
-                wait_time = 1 * 60 * 60
+                wait_time = datetime.timedelta(hours=1).seconds
 
             self.retry(wait=wait_time, msg=m.group(0))
 
@@ -130,7 +131,7 @@ class RapidgatorNet(SimpleDownloader):
                 "You can't download more than one file within a certain time period in free mode"
             )
             self.log_warning(msg)
-            self.retry(wait=24 * 60 * 60, msg=msg)
+            self.retry(wait=datetime.timedelta(hours=24).seconds, msg=msg)
 
     def handle_free(self, pyfile):
         jsvars = dict(re.findall(self.JSVARS_PATTERN, self.data))

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 import datetime
 
 from ..base.addon import Addon
@@ -25,11 +26,11 @@ class LogMarker(Addon):
 
     def activated(self):
         self.periodical.start(
-            1 * 60 * 60 - 1, delay=seconds_to_nexthour(strict=True) - 1
+            datetime.timedelta(hours=1).seconds - 1, delay=seconds_to_nexthour(strict=True) - 1
         )
 
     def periodical_task(self):
-        if self.config.get("mark_day") and datetime.datetime.today().hour == 0:
+        if self.config.get("mark_day") and datetime.today().hour == 0:
             self.log_info("------------------------------------------------")
             self.log_info(self._("------------------- DAY MARK -------------------"))
             self.log_info("------------------------------------------------")

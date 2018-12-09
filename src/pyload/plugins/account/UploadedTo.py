@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import datetime
 import re
 import time
 
@@ -46,10 +47,10 @@ class UploadedTo(Account):
                             validuntil += (
                                 float(n)
                                 * {
-                                    "week": 3600 * 168,
-                                    "day": 3600 * 24,
-                                    "hour": 3600,
-                                    "minute": 60,
+                                    "week": datetime.timedelta(weeks=1).seconds,
+                                    "day": datetime.timedelta(hours=24).seconds,
+                                    "hour": datetime.timedelta(hours=1).seconds,
+                                    "minute": datetime.timedelta(minutes=1).seconds,
                                     "second": 1,
                                 }[u]
                             )

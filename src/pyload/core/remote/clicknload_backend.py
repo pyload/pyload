@@ -3,7 +3,6 @@
 
 import re
 from base64 import standard_b64decode
-from binascii import unhexlify
 from cgi import FieldStorage
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from urllib.parse import unquote
@@ -124,7 +123,7 @@ class CNLHandler(BaseHTTPRequestHandler):
 
         crypted = standard_b64decode(unquote(crypted.replace(" ", "+")))
         jk = js2py.eval_js(f"{jk} f()")
-        key = unhexlify(jk)
+        key = bytes.fromhex(jk)
 
         obj = Fernet(key)
         result = obj.decrypt(crypted).replace("\x00", "").replace("\r", "").split("\n")

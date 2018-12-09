@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import base64
-import binascii
 import re
 from builtins import filter
 
@@ -323,7 +322,7 @@ class ShareLinksBiz(Decrypter):
         #: Get key
         jreturn = js2py.eval_js(self._("{} f()").format(jk))
         self.log_debug(f"JsEngine returns value [{jreturn}]")
-        key = binascii.unhexlify(jreturn)
+        key = bytes.fromhex(jreturn)
 
         #: Decrypt
         obj = Fernet(key)

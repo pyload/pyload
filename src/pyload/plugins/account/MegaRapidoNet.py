@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import datetime
 import re
 import time
 
@@ -101,9 +102,9 @@ class MegaRapidoNet(MultiAccount):
             #: Hier weitermachen!!! (müssen umbedingt die zeit richtig machen damit! (sollte aber möglich))
             validuntil = (
                 time.time()
-                + int(validuntil.group(1)) * 24 * 3600
-                + int(validuntil.group(2)) * 3600
-                + int(validuntil.group(3)) * 60
+                + datetime.timedelta(hours=int(validuntil.group(1)) * 24).seconds
+                + datetime.timedelta(hours=int(validuntil.group(2))).seconds
+                + datetime.timedelta(minutes=int(validuntil.group(3))).seconds
                 + int(validuntil.group(4))
             )
             trafficleft = -1

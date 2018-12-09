@@ -5,7 +5,6 @@
 #   http://filecrypt.cc/Container/64E039F859.html
 
 import base64
-import binascii
 import re
 import urllib.parse
 from builtins import filter, range, str
@@ -345,7 +344,7 @@ class FilecryptCc(Decrypter):
 
     def _get_links(self, crypted, jk):
         #: Get key
-        key = binascii.unhexlify(str(jk))
+        key = bytes.fromhex(jk)
 
         #: Decrypt
         obj = Fernet(key)

@@ -62,6 +62,8 @@ class PluginManager(object):
                 else:
                     dst[name] = src[name]
 
+        self.pyload.log.debug("Indexing plugins...")
+        
         sys.path.append(os.path.join(self.pyload.userdir, "plugins"))
 
         userplugins_dir = os.path.join(self.pyload.userdir, "plugins")
@@ -113,8 +115,6 @@ class PluginManager(object):
                     exc_info=self.pyload.debug > 1,
                     stack_info=self.pyload.debug > 2,
                 )
-
-        self.pyload.log.debug("created index of plugins")
 
     def parse(self, folder, pattern=False, home={}):
         """

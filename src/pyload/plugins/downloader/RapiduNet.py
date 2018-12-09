@@ -3,6 +3,7 @@
 import json
 import time
 from builtins import str
+import datetime
 
 import pycurl
 
@@ -57,7 +58,7 @@ class RapiduNet(SimpleDownloader):
         )
 
         if str(jsvars["timeToDownload"]) == "stop":
-            t = (24 * 60 * 60) - (int(time.time()) % 24 * 60 * 60) + time.altzone
+            t = (datetime.timedelta(hours=24).seconds) - (int(time.time()) % datetime.timedelta(hours=24).seconds) + time.altzone
 
             self.log_info(self._("You've reach your daily download transfer"))
 

@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+
+import datetime
 import re
 
 from ..base.simple_downloader import SimpleDownloader
@@ -83,7 +85,7 @@ class QuickshareCz(SimpleDownloader):
         m = re.search(r"/chyba/(\d+)", self.link)
         if m is not None:
             if m.group(1) == "1":
-                self.retry(60, 2 * 60, "This IP is already downloading")
+                self.retry(60, datetime.timedelta(minutes=2).seconds, "This IP is already downloading")
             elif m.group(1) == "2":
                 self.retry(60, 60, "No free slots available")
             else:

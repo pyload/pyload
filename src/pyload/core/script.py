@@ -37,7 +37,7 @@ def _daemon(core_args):
         sys.exit(1)
 
     # Iterate through and close some file descriptors.
-    for fd in range(0, 3):
+    for fd in range(3):
         try:
             os.close(fd)
         except OSError:  #: ERROR as fd wasn't open to begin with (ignored)

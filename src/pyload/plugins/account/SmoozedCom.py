@@ -4,8 +4,6 @@ import hashlib
 import json
 import time
 
-from beaker.crypto.pbkdf2 import PBKDF2
-
 from ..base.multi_account import MultiAccount
 
 
@@ -67,9 +65,8 @@ class SmoozedCom(MultiAccount):
             self.fail_login()
 
     def get_account_status(self, user, password):
-        password = password
-        salt = hashlib.sha256(password.encode()).hexdigest()
-        encrypted = PBKDF2(password, salt, iterations=1000).hexread(32)
+        b_password = password.encode()
+        encrypted = hashlib.pbkdf2_hmac('sha256', b_password, b_password, 1000).hex()[32]
 
         html = self.load(
             "http://www2.smoozed.com/api/login",

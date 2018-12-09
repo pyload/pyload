@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import datetime
 import re
 import time
 
@@ -39,7 +40,7 @@ class CatShareNet(Account):
                 validuntil = time.time()
                 for n, u in m:
                     validuntil += (
-                        float(n) * 60 * 60 * {"tydzień": 168, "dni": 24, "godzin": 1}[u]
+                        datetime.timedelta(hours=n).seconds * {"tydzień": 168, "dni": 24, "godzin": 1}[u]
                     )
 
         m = re.search(self.TRAFFIC_LEFT_PATTERN, html)

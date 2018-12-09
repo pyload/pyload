@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import base64
-import binascii
 import re
 from builtins import filter, zip
 
@@ -325,7 +324,7 @@ class LinkCryptWs(Decrypter):
 
     def _get_links(self, crypted, jk):
         #: Get key
-        key = binascii.unhexlify(jk)
+        key = bytes.fromhex(jk)
 
         self.log_debug(f"JsEngine returns value [{key}]")
 

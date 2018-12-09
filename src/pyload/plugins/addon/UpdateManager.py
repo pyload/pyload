@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import datetime
 import operator
 import os
 import re
@@ -40,7 +41,7 @@ class UpdateManager(Addon):
     # SERVER_URL     = "http://updatemanager.pyload.net"
     # SERVER_URL = "http://updatemanager-spyload.rhcloud.com"
     SERVER_URL = "https://raw.githubusercontent.com/pyload/updates/master/plugins.txt"
-    CHECK_INTERVAL = 3 * 60 * 60  #: 3 hours
+    CHECK_INTERVAL = datetime.timedelta(hours=3).seconds  #: 3 hours
 
     def activate(self):
         if self.checkonstart:
@@ -80,7 +81,7 @@ class UpdateManager(Addon):
         if (
             self.config.get("checkperiod")
             and time.time()
-            - max(self.CHECK_INTERVAL, self.config.get("checkinterval") * 60 * 60)
+            - max(self.CHECK_INTERVAL, datetime.timedelta(hours=self.config.get("checkinterval")).seconds)
             > self.info["last_check"]
         ):
             self.update()

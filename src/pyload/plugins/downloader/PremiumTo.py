@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import datetime
 from ..base.multi_downloader import MultiDownloader
 from ..utils import encode
 
@@ -46,7 +47,7 @@ class PremiumTo(MultiDownloader):
 
     def check_download(self):
         if self.scan_download({"nopremium": "No premium account available"}):
-            self.retry(60, 5 * 60, "No premium account available")
+            self.retry(60, datetime.timedelta(minutes=5).seconds, "No premium account available")
 
         err = ""
         if self.req.http.code == 420:

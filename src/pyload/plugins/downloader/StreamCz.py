@@ -24,7 +24,7 @@ def get_api_password(episode):
 def get_all_link(data, container):
     videos = []
 
-    for i in range(0, len(data["video_qualities"])):
+    for i in range(len(data["video_qualities"])):
         if container == "webm" and len(data["video_qualities"][i]["formats"]) != 1:
             videos.append(data["video_qualities"][i]["formats"][1]["source"])
 
