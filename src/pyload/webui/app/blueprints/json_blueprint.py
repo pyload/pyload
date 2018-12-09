@@ -7,7 +7,7 @@ from flask.json import jsonify
 
 from pyload.core.utils import decode, formatSize
 
-from ..helpers import render_template, toDict
+from ..helpers import render_template, toDict, login_required
 
 bp = flask.Blueprint("json", __name__, url_prefix="/json")
 
@@ -21,7 +21,7 @@ def format_time(seconds):
 
 @bp.route("/status", methods=["GET", "POST"], endpoint="status")
 # @apiver_check
-# @login_required("LIST")
+@login_required("LIST")
 def status():
     api = flask.current_app.config["PYLOAD_API"]
     try:
@@ -35,7 +35,7 @@ def status():
 
 @bp.route("/links", methods=["GET", "POST"], endpoint="links")
 # @apiver_check
-# @login_required("LIST")
+@login_required("LIST")
 def links():
     api = flask.current_app.config["PYLOAD_API"]
     try:
@@ -65,7 +65,7 @@ def links():
 
 @bp.route("/packages", endpoint="packages")
 # @apiver_check
-# @login_required("LIST")
+@login_required("LIST")
 def packages():
     api = flask.current_app.config["PYLOAD_API"]
     try:
@@ -84,7 +84,7 @@ def packages():
 
 @bp.route("/package/<int:id>", endpoint="package")
 # @apiver_check
-# @login_required("LIST")
+@login_required("LIST")
 def package(id):
     api = flask.current_app.config["PYLOAD_API"]
     try:
@@ -120,7 +120,7 @@ def package(id):
 
 @bp.route("/package_order/<ids>", endpoint="package_order")
 # @apiver_check
-# @login_required("ADD")
+@login_required("ADD")
 def package_order(ids):
     api = flask.current_app.config["PYLOAD_API"]
     try:
@@ -133,7 +133,7 @@ def package_order(ids):
 
 @bp.route("/abort_link/<int:id>", endpoint="abort_link")
 # @apiver_check
-# @login_required("DELETE")
+@login_required("DELETE")
 def abort_link(id):
     api = flask.current_app.config["PYLOAD_API"]
     try:
@@ -145,7 +145,7 @@ def abort_link(id):
 
 @bp.route("/link_order/<ids>", endpoint="link_order")
 # @apiver_check
-# @login_required("ADD")
+@login_required("ADD")
 def link_order(ids):
     api = flask.current_app.config["PYLOAD_API"]
     try:
@@ -158,7 +158,7 @@ def link_order(ids):
 
 @bp.route("/add_package", methods=["GET", "POST"], endpoint="add_package")
 # @apiver_check
-# @login_required("ADD")
+@login_required("ADD")
 def add_package():
     name = flask.request.form.get("add_name", "New Package").strip()
     queue = int(flask.request.form["add_dest"])
@@ -193,7 +193,7 @@ def add_package():
 
 @bp.route("/move_package/<int:dest>/<int:id>", endpoint="move_package")
 # @apiver_check
-# @login_required("MODIFY")
+@login_required("MODIFY")
 def move_package(dest, id):
     api = flask.current_app.config["PYLOAD_API"]
     try:
@@ -205,7 +205,7 @@ def move_package(dest, id):
 
 @bp.route("/edit_package", methods=["POST"], endpoint="edit_package")
 # @apiver_check
-# @login_required("MODIFY")
+@login_required("MODIFY")
 def edit_package():
     api = flask.current_app.config["PYLOAD_API"]
     try:
@@ -225,10 +225,10 @@ def edit_package():
 
 @bp.route("/set_captcha", methods=["GET", "POST"], endpoint="set_captcha")
 # @apiver_check
-# @login_required("ADD")
+@login_required("ADD")
 def set_captcha():
     api = flask.current_app.config["PYLOAD_API"]
-    if flask.request.environ.get("REQUEST_METHOD", "GET") == "POST":
+    if flask.request.method == "POST":
         try:
             api.setCaptchaResult(
                 flask.request.form["cap_id"], flask.request.form["cap_result"]
@@ -252,7 +252,7 @@ def set_captcha():
 
 @bp.route("/load_config/<category>/<section>", endpoint="load_config")
 # @apiver_check
-# @login_required("SETTINGS")
+@login_required("SETTINGS")
 def load_config(category, section):
     conf = None
     api = flask.current_app.config["PYLOAD_API"]
@@ -276,7 +276,7 @@ def load_config(category, section):
 
 @bp.route("/save_config/<category>", methods=["POST"], endpoint="save_config")
 # @apiver_check
-# @login_required("SETTINGS")
+@login_required("SETTINGS")
 def save_config(category):
     api = flask.current_app.config["PYLOAD_API"]
     for key, value in flask.request.form.items():
@@ -293,7 +293,7 @@ def save_config(category):
 
 @bp.route("/add_account", methods=["POST"], endpoint="add_account")
 # @apiver_check
-# @login_required("ACCOUNTS")
+@login_required("ACCOUNTS")
 # @fresh_login_required
 def add_account():
     api = flask.current_app.config["PYLOAD_API"]
@@ -306,7 +306,7 @@ def add_account():
 
 @bp.route("/update_accounts", methods=["POST"], endpoint="update_accounts")
 # @apiver_check
-# @login_required("ACCOUNTS")
+@login_required("ACCOUNTS")
 # @fresh_login_required
 def update_accounts():
     deleted = []  #: dont update deleted accs or they will be created again
@@ -337,7 +337,7 @@ def update_accounts():
 @bp.route("/change_password", methods=["POST"], endpoint="change_password")
 # @apiver_check
 # @fresh_login_required
-# @login_required("ACCOUNTS")
+@login_required("ACCOUNTS")
 def change_password():
     api = flask.current_app.config["PYLOAD_API"]
     user = flask.request.form["user_login"]

@@ -3,7 +3,6 @@
 
 import os
 from base64 import standard_b64decode
-from binascii import unhexlify
 from builtins import str
 from functools import wraps
 from urllib.parse import unquote
@@ -98,7 +97,7 @@ def addcrypted2():
     jk = js2py.eval_js("{jk} f()")
 
     try:
-        key = unhexlify(jk)
+        key = bytes.fromhex(jk)
     except Exception:
         return "Could not decrypt key", 500
 
@@ -123,7 +122,7 @@ def addcrypted2():
 @app_bp.route("/flashgot_pyload", methods=["GET", "POST"], endpoint="flashgot")
 @local_check
 def flashgot():
-    if flask.request.environ["HTTP_REFERER"] not in (
+    if flask.request.referrer not in (
         "http://localhost:9666/flashgot",
         "http://127.0.0.1:9666/flashgot",
     ):

@@ -10,7 +10,6 @@ import time
 from urllib.parse import unquote
 
 import flask
-import flask_login
 
 from pyload import PKGDIR
 from pyload.core.utils import formatSize, fs_decode, fs_encode
@@ -58,16 +57,13 @@ def login():
     password = flask.request.form.get("password")
 
     api = flask.current_app.config["PYLOAD_API"]
-    info = api.checkAuth(user, password)
-
-    if not info:
+    user_info = api.checkAuth(user, password)
+    
+    if not user_info:
         return render_template("login.html", {"errors": True}, [pre_processor])
 
-    # user = User(info['id'])
-    # login_user(user)
-
-    set_session(info)
-    flask.flash("Logged in successfully.")
+    set_session(user_info)
+    flask.flash("Logged in successfully")
 
     next = get_redirect_target()
     return flask.redirect(next or flask.url_for("index"))
@@ -82,14 +78,15 @@ def logout():
 
 @bp.route("/", endpoint="index")
 @bp.route("/home", endpoint="home")
-# @login_required("LIST")
+@login_required("LIST")
 def home():
     api = flask.current_app.config["PYLOAD_API"]
     try:
         res = [toDict(x) for x in api.statusDownloads()]
     except Exception:
         clear_session()
-        return flask_login.login_url("app.login", flask.request.url)
+        # return flask_login.login_url("app.login", flask.request.url)
+        return flask.redirect(flask.url_for("app.login"))
 
     for link in res:
         if link["status"] == 12:
@@ -101,7 +98,7 @@ def home():
 
 
 @bp.route("/queue", endpoint="queue")
-# @login_required("LIST")
+@login_required("LIST")
 def queue():
     api = flask.current_app.config["PYLOAD_API"]
     queue = api.getQueue()
@@ -113,7 +110,7 @@ def queue():
 
 
 @bp.route("/collector", endpoint="collector")
-# @login_required("LIST")
+@login_required("LIST")
 def collector():
     api = flask.current_app.config["PYLOAD_API"]
     queue = api.getCollector()
@@ -125,7 +122,7 @@ def collector():
 
 
 @bp.route("/downloads", endpoint="downloads")
-# @login_required("DOWNLOAD")
+@login_required("DOWNLOAD")
 def downloads():
     api = flask.current_app.config["PYLOAD_API"]
     root = api.getConfigValue("general", "storage_folder")
@@ -156,7 +153,7 @@ def downloads():
 
 
 @bp.route("/downloads/get/<filename>", endpoint="get_download")
-# @login_required("DOWNLOAD")
+@login_required("DOWNLOAD")
 def get_download(filename):
     api = flask.current_app.config["PYLOAD_API"]
     filename = unquote(filename).decode("utf-8").replace("..", "")
@@ -165,7 +162,7 @@ def get_download(filename):
 
 
 @bp.route("/settings", endpoint="settings")
-# @login_required("SETTINGS")
+@login_required("SETTINGS")
 def settings():
     api = flask.current_app.config["PYLOAD_API"]
     conf = api.getConfig()
@@ -241,7 +238,7 @@ def settings():
 @bp.route("/pathchooser/<path:path>", endpoint="filemanager")
 @bp.route("/filemanager", endpoint="filemanager")
 @bp.route("/filemanager/<path:path>", endpoint="filemanager")
-# @login_required("STATUS")
+@login_required("STATUS")
 def filemanager(path):
     browse_for = "folder" if os.path.isdir(path) else "file"
     path = os.path.normpath(unquotepath(path))
@@ -337,8 +334,8 @@ def filemanager(path):
 
 
 @bp.route("/logs", methods=["GET", "POST"], endpoint="logs")
-@bp.route("/logs/<page>", methods=["GET", "POST"], endpoint="logs")
-# @login_required("LOGS")
+@bp.route("/logs/<int:page>", methods=["GET", "POST"], endpoint="logs")
+@login_required("LOGS")
 def logs(page=-1):
     s = flask.session
     api = flask.current_app.config["PYLOAD_API"]
@@ -354,7 +351,7 @@ def logs(page=-1):
     perpage_p = ((20, 20), (34, 34), (40, 40), (100, 100), (0, "all"))
     fro = None
 
-    if flask.request.environ.get("REQUEST_METHOD", "GET") == "POST":
+    if flask.request.method == "POST":
         try:
             fro = datetime.datetime.strptime(
                 flask.request.form["from"], "%Y-%m-%d %H:%M:%S"
@@ -370,7 +367,7 @@ def logs(page=-1):
         except Exception:
             pass
 
-        s.modified = True
+        # s.modified = True
 
     # TEST DISABLED
     # try:
@@ -447,7 +444,7 @@ def logs(page=-1):
 
 
 @bp.route("/admin", methods=["GET", "POST"], endpoint="admin")
-# @login_required("ADMIN")
+@login_required("ADMIN")
 def admin():
     api = flask.current_app.config["PYLOAD_API"]
     # convert to dict
@@ -460,7 +457,7 @@ def admin():
         data["perms"]["admin"] = data["role"] is 0
 
     s = flask.session
-    if flask.request.environ.get("REQUEST_METHOD", "GET") == "POST":
+    if flask.request.method == "POST":
         for name in user:
             if flask.request.form.get(f"{name}|admin", False):
                 user[name]["role"] = 0
@@ -491,7 +488,7 @@ def setup():
 
 
 @bp.route("/info", endpoint="info")
-# @login_required("STATUS")
+@login_required("STATUS")
 def info():
     api = flask.current_app.config["PYLOAD_API"]
     conf = api.getConfigDict()

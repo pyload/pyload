@@ -34,8 +34,10 @@ class WebServer(threading.Thread):
         self.log = self.app.logger
 
     def _run_develop(self):
-        # TODO: inject our custom logger in werkzeug code
+        # TODO: inject our custom logger in werkzeug code?
+        # NOTE: use_reloader=True -> 'ValueError: signal only works in main thread'
         self.app.run(self.host, self.port, use_reloader=False)
+        
 
     def _run_produc(self):
         bind_path = self.prefix.strip("/") + "/"

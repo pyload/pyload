@@ -6,7 +6,6 @@ from functools import partial, wraps
 from urllib.parse import urljoin, urlparse
 
 import flask
-import flask_login
 import flask_themes2
 from flask import request
 
@@ -87,9 +86,11 @@ def render_error(messages):
     return render_template("error.html", {"messages": messages}, [pre_processor])
 
 
-def clear_session():
-    flask.session.clear()
-    flask.session.modified = True
+def clear_session(permanent=True):
+    s = flask.session
+    s.permanent = bool(permanent)
+    s.clear()
+    # s.modified = True
 
 
 def render_template(template, context={}, proc=[]):
@@ -151,18 +152,20 @@ def set_permission(perms):
     return permission
 
 
-def set_session(info):
+def set_session(user_info, permanent=True):
     s = flask.session
+    s.permanent = bool(permanent)
     s["authenticated"] = True
-    s["id"] = info["id"]
-    s["name"] = info["name"]
-    s["role"] = info["role"]
-    s["perms"] = info["permission"]
-    s["template"] = info["template"]
-    s.modified = True
+    s["id"] = user_info["id"]
+    s["name"] = user_info["name"]
+    s["role"] = user_info["role"]
+    s["perms"] = user_info["permission"]
+    s["template"] = user_info["template"]
+    # s.modified = True
     return s
 
 
+# TODO: Recheck...
 def parse_userdata(session):
     return {
         "name": session.get("name", "Anonymous"),
@@ -184,7 +187,33 @@ def apiver_check(func):
     return wrapper
 
 
-def login_required(func=None, perm=None):
+
+def login_required(perm=None):
+    def _dec(func):
+        def _view(*args, **kwargs):
+            s = flask.session
+            if s.get("name", None) and s.get("authenticated", False):
+                if perm:
+                    perms = parse_permissions(s)
+                    if perm not in perms or not perms[perm]:
+                        if flask.request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                            return "Forbidden", 403
+                        else:
+                            return flask.redirect(flask.url_for("nopermission"))
+
+                return func(*args, **kwargs)
+            else:
+                if flask.request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                    return flask.redirect(flask.url_for("nopermission"))
+                else:
+                    return flask.redirect(flask.url_for("app.login"))
+
+        return _view
+
+    return _dec
+    
+    
+def Xlogin_required(func=None, perm=None):
     if func is None:
         return partial(login_required, perm)
 
@@ -206,11 +235,12 @@ def login_required(func=None, perm=None):
         if autologin:  # TODO: check if localhost
             users = api.getAllUserData()
             if len(users) == 1:
-                info = next(iter(users.values()))
-                set_session(info)
+                user_info = next(iter(users.values()))
+                set_session(user_info)
                 return func(*args, **kwargs)
 
-        return flask_login.login_url("app.login", flask.request.url)
+        # return flask_login.login_url("app.login", flask.request.url)
+        return flask.redirect(flask.url_for("app.login"))
 
     return wrapper
 

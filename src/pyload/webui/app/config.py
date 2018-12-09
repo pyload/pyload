@@ -16,6 +16,7 @@ class BaseConfig(object):
     DEBUG_TB_ENABLED = False
     DEBUG_TB_INTERCEPT_REDIRECTS = False
     # CACHE_TYPE = "null"
+    SESSION_TYPE = "filesystem"
 
 
 class ProductionConfig(BaseConfig):
@@ -23,6 +24,7 @@ class ProductionConfig(BaseConfig):
     SECRET_KEY = random_string(16)
     #: Extensions
     # CACHE_TYPE = "simple"
+    SESSION_USE_SIGNER = True
 
 
 class DevelopmentConfig(BaseConfig):
