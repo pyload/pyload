@@ -10,9 +10,9 @@ from .database_thread import DatabaseThread, style
 
 
 # TODO: move to utils and rewrite to use argon2_cffi
-def _salt_password(password, salt):
+def _salted_password(password, salt):
     salt_pw = salt + password
-    return salt + sha1(salt_pw.encode()).hexdigest()
+    return sha1(salt_pw.encode()).hexdigest()
 
 
 class UserMethods(object):
@@ -29,7 +29,7 @@ class UserMethods(object):
         stored_salt = r[2][:5]
         stored_pw = r[2][5:]
 
-        pw = _salt_password(password, stored_salt)
+        pw = _salted_password(password, stored_salt)
         if pw != stored_pw:
             return {}
 
@@ -45,16 +45,16 @@ class UserMethods(object):
     @style.queue
     def addUser(self, user, password):
         salt = reduce(
-            lambda x, y: x + y, [str(random.randint(0, 9)) for i in range(0, 5)]
+            lambda x, y: x + y, [str(random.randint(0, 9)) for i in range(5)]
         )
-        pw = _salt_password(password, salt)
+        salt_pw = salt + _salted_password(password, salt)
 
         self.c.execute("SELECT name FROM users WHERE name=?", (user,))
         if self.c.fetchone() is not None:
-            self.c.execute("UPDATE users SET password=? WHERE name=?", (pw, user))
+            self.c.execute("UPDATE users SET password=? WHERE name=?", (salt_pw, user))
         else:
             self.c.execute(
-                "INSERT INTO users (name, password) VALUES (?, ?)", (user, pw)
+                "INSERT INTO users (name, password) VALUES (?, ?)", (user, salt_pw)
             )
 
     @style.queue
@@ -67,14 +67,14 @@ class UserMethods(object):
         stored_salt = r[2][:5]
         stored_pw = r[2][5:]
 
-        oldpw = _salt_password(old_password, stored_salt)
+        oldpw = _salted_password(old_password, stored_salt)
         if oldpw != stored_pw:
             return False
 
         new_salt = reduce(
-            lambda x, y: x + y, [str(random.randint(0, 9)) for i in range(0, 5)]
+            lambda x, y: x + y, [str(random.randint(0, 9)) for i in range(5)]
         )
-        newpw = _salt_password(new_password, new_salt)
+        newpw = _salted_password(new_password, new_salt)
 
         self.c.execute("UPDATE users SET password=? WHERE name=?", (newpw, user))
         return True
