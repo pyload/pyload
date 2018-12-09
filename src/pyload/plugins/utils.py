@@ -27,8 +27,12 @@ from base64 import b85decode, b85encode
 from builtins import map, object, str
 from collections.abc import Sequence
 from functools import partial, wraps
+from .. import exc_logger
 
-import send2trash
+try:
+    import send2trash
+except ImportError:
+    send2trash = None
 
 
 # TODO: Remove in 0.6.x
@@ -439,6 +443,7 @@ def exists(path):
         return False
 
 
+# TODO: Change 'trash' to False because send2trash is optional now
 def remove(path, trash=True):
     path = encode(path)
 
@@ -446,7 +451,10 @@ def remove(path, trash=True):
         return
 
     if trash:
-        send2trash.send2trash(path)
+        try:
+            send2trash.send2trash(path)
+        except AttributeError as exc:
+            exc_logger.exception(exc)
 
     elif os.path.isdir(path):
         shutil.rmtree(path, ignore_errors=True)
@@ -742,7 +750,7 @@ def format_exc(frame=None):
 
 
 def seconds_to_nexthour(strict=False):
-    now = datetime.datetime.today()
+    now = datetime.today()
     nexthour = now.replace(
         minute=0 if strict else 1, second=0, microsecond=0
     ) + datetime.timedelta(hours=1)
@@ -751,9 +759,9 @@ def seconds_to_nexthour(strict=False):
 
 def seconds_to_midnight(utc=None, strict=False):
     if isinstance(utc, int):
-        now = datetime.datetime.utcnow() + datetime.timedelta(hours=utc)
+        now = datetime.utcnow() + datetime.timedelta(hours=utc)
     else:
-        now = datetime.datetime.today()
+        now = datetime.today()
 
     midnight = now.replace(
         hour=0, minute=0 if strict else 1, second=0, microsecond=0
@@ -777,7 +785,7 @@ def replace_patterns(value, rules):
 
 
 # TODO: Remove in 0.6.x and fix exp in CookieJar.setCookie
-def set_cookie(cj, domain, name, value, path="/", exp=time.time() + 180 * 24 * 3600):
+def set_cookie(cj, domain, name, value, path="/", exp=time.time() + datetime.timedelta(hours=744).seconds):  #: 31 days retention
     args = list(map(encode, [domain, name, value, path])) + [int(exp)]
     return cj.setCookie(*args)
 

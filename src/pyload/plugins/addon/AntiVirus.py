@@ -5,8 +5,11 @@ import shutil
 import subprocess
 from builtins import map
 
-import send2trash
-
+try:
+    import send2trash
+except ImportError:
+    send2trash = None
+    
 from ..base.addon import Addon, expose, threaded
 from ..utils import encode, exists
 
@@ -112,7 +115,7 @@ class AntiVirus(Addon):
                             try:
                                 send2trash.send2trash(target)
 
-                            except NameError:
+                            except AttributeError:
                                 self.log_warning(
                                     self._(
                                         "Send2Trash lib not found, moving to quarantine instead"
