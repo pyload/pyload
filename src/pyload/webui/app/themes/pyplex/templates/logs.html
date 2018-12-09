@@ -90,7 +90,7 @@ td.loglevel
     <input type="checkbox" name="reversed" id="reversed" onchange="this.form.submit();" {% if reversed %} checked="checked" {% endif %} />&nbsp;
     <label for="perpage">{{_('Lines per page')}}:</label>&nbsp;
     <select name="perpage" id ="perpage" style="width: auto; height: auto; padding: 0; border: 0; display:inline;" onchange="this.form.submit();">
-      {% for value in  perpage_p %}
+      {% for value in perpage_p %}
         <option value="{{value.0}}"{% if value.0 == perpage %} selected="selected" {% endif %}>{{value.1}}</option>
       {% endfor %}
     </select>

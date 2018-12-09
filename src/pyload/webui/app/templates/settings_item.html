@@ -2,7 +2,7 @@
     {% if section.outline %}
     <tr><th colspan="2">{{ section.outline }}</th></tr>
     {% endif %}
-    {% for okey, option in section.iteritems() %}
+    {% for okey, option in section.items() %}
         {% if okey not in ("desc","outline") %}
             <tr>
                 <td><label for="{{skey}}|{{okey}}"

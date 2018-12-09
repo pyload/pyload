@@ -37,7 +37,7 @@
             </th>
             </thead>
 
-            {% for name, data in users.iteritems() %}
+            {% for name, data in users.items() %}
                 <tr>
                     <td>{{ name }}</td>
                     <td><a class="change_password btn btn-default btn-xs" href="#" id="change_pw|{{name}}"><span class="glyphicon glyphicon-pencil"></span> {{ _("change") }}</a></td>
