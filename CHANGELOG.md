@@ -3,6 +3,22 @@ Release History
 
 ### 0.5.0 (N/D)
 
+- Code rewritten to run under Python 3 (natively)
+- Several Python 3.6+ optimizations
+- Dropped Python 2 support
+- Switched to CherryPy's Cheroot webserver
+- Webui migrated to Flask (from Bottle.py)
+- Real theme management
+- Themes updated
+- Interactive captcha support
+- Better project package structure
+- Removed all the old crap in the codebase (dependecies, modules, etc.)
+- New core
+- PyPI and easy install support
+- All plugins updated to work within the new core
+- API not changed
+- Code style cleanup and pep8 compliant
+- A lot of un-tracked fixes... :(
 - ...
 
 ### 0.4.9 (2011-12-14)
