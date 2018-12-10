@@ -62,7 +62,7 @@ SettingsUI = (function() {
         f.dissolve();
         return new Request({
             method: "get",
-            url: "/json/load_config/" + c + "/" + g,
+            url: "{{'/json/load_config/'}}" + c + "/" + g,
             onSuccess: __bind(function(e) {
                 f.set("html", e);
                 f.reveal();
@@ -76,7 +76,7 @@ SettingsUI = (function() {
         b = $("" + c + "_form");
         b.set("send", {
             method: "post",
-            url: "/json/save_config/" + c,
+            url: "{{'/json/save_config/'}}" + c,
             onSuccess: function() {
                 return root.notify.alert('{{ self._("Settings saved.")}}', {
                     className: "success"
