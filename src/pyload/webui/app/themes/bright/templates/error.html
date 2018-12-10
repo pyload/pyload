@@ -77,7 +77,7 @@
               <a class="navbar-brand" href="#"><img id="head-logo" src="{{theme_static('img/pyload_logo.png')}}" alt="pyLoad" style="height:30px;"/></a>
             </div>
 
-    <a href="{{ url_for('app.home')}}"></a>
+    <a href="{{ url_for('app.dashboard')}}"></a>
 
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
               <ul class="nav navbar-nav">
@@ -90,7 +90,7 @@
 
         {% block menu %}
         <li>
-            <a href="{{ url_for('app.home')}}" title=""><span class="glyphicon glyphicon-home"></span> {{_("Home")}}</a>
+            <a href="{{ url_for('app.dashboard')}}" title=""><span class="glyphicon glyphicon-home"></span> {{_("Dashboard")}}</a>
         </li>
         <li {{ selected('app.queue') }}>
             <a href="{{ url_for('app.queue') }}" title=""><span class="glyphicon glyphicon-tasks"></span> {{_("Queue")}}</a>
@@ -101,9 +101,9 @@
         <li {{ selected('app.downloads') }}>
             <a href="{{ url_for('app.downloads') }}" title=""> <span class="glyphicon glyphicon-download"></span> {{_("Downloads")}}</a>
         </li>
-{#        <li {{ selected('app.filemanager') }}>#}
-{#            <a href="{{ url_for('app.filemanager') }}" title=""><span class="glyphicon glyphicon-magnet"></span>  {{_("FileManager")}}</a>#}
-{#        </li>#}
+        <!-- <li {{ selected('app.filemanager') }}> -->
+            <!-- <a href="{{ url_for('app.filemanager') }}" title=""><span class="glyphicon glyphicon-magnet"></span>  {{_("Files")}}</a> -->
+        <!-- </li> -->
         <li {{ selected('app.logs', True) }}>
             <a href="{{ url_for('app.logs') }}"  class="action index" accesskey="x" rel="nofollow"><span class="glyphicon glyphicon-list"></span> {{_("Logs")}}</a>
         </li>

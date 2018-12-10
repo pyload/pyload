@@ -1,4 +1,4 @@
-{% extends theme('base.html') %}
+{% extends 'base.html' %}
 {% block head %}
 
 <script type="text/javascript">
@@ -7,21 +7,21 @@ var em;
 var operafix = (navigator.userAgent.toLowerCase().search("opera") >= 0);
 
 document.addEvent("domready", function(){
-    em = new EntryManager();
+	em = new EntryManager();
 });
 
 var EntryManager = new Class({
     initialize: function(){
         this.json = new Request.JSON({
-    url: "json/links",
+		url: "{{ url_for('json.links') }}",
                 secure: false,
                 async: true,
-    onSuccess: this.update.bind(this),
-    initialDelay: 0,
-    delay: 2500,
-    limit: 30000
-  });
-
+		onSuccess: this.update.bind(this),
+		initialDelay: 0,
+		delay: 2500,
+		limit: 30000
+	});
+	
         this.ids = [{% for link in content %}
         {% if forloop.last %}
             {{ link.id }}
@@ -129,7 +129,7 @@ var LinkEntry = new Class({
                 'html': item.percent+ '% / '+ humanFileSize(item.size-item.bleft)
                 }),
                 remove: new Element('img',{
-                'src': '/img/control_cancel.png',
+                'src': "{{ url_for('static', filename='img/control_cancel.png') }}",
                 'styles':{
                     'vertical-align': 'middle',
                     'margin-right': '-20px',
@@ -165,7 +165,7 @@ var LinkEntry = new Class({
             this.fadeBar = new Fx.Tween(this.elements.pgbTr);
 
             this.elements.remove.addEvent('click', function(){
-                new Request({method: 'get', url: '/json/abort_link/'+this.id}).send();
+                new Request({method: 'get', url: "{{ url_for('static', filename='json/abort_link/') }}" + this.id}).send();
             }.bind(this));
 
         },
@@ -208,22 +208,25 @@ var LinkEntry = new Class({
 
 {% block menu %}
 <li class="selected">
-    <a href="{{ url_for('app.home')}}" title=""><img src="{{theme_static('img/head-menu-home.png')}}" alt="" /> {{_("Home")}}</a>
+    <a href="{{'dashboard'}}" title=""><img src="{{url_for('static', filename='img/head-menu-home.png')}}" alt="" /> {{_("Dashboard")}}</a>
 </li>
 <li>
-    <a href="{{ url_for('app.queue') }}" title=""><img src="{{theme_static('img/head-menu-queue.png')}}" alt="" /> {{_("Queue")}}</a>
+    <a href="{{ url_for('app.queue') }}" title=""><img src="{{url_for('static', filename='img/head-menu-queue.png')}}" alt="" /> {{_("Queue")}}</a>
 </li>
 <li>
-    <a href="{{ url_for('app.collector') }}" title=""><img src="{{theme_static('img/head-menu-collector.png')}}" alt="" /> {{_("Collector")}}</a>
+    <a href="{{ url_for('app.collector') }}" title=""><img src="{{url_for('static', filename='img/head-menu-collector.png')}}" alt="" /> {{_("Collector")}}</a>
 </li>
 <li>
-    <a href="{{ url_for('app.downloads') }}" title=""><img src="{{theme_static('img/head-menu-development.png')}}" alt="" /> {{_("Downloads")}}</a>
+    <a href="{{ url_for('app.downloads') }}" title=""><img src="{{url_for('static', filename='img/head-menu-development.png')}}" alt="" /> {{_("Downloads")}}</a>
+</li>
+<li>
+    <a href="{{ url_for('app.filemanager') }}" title=""><img src="{{url_for('static', filename='img/head-menu-download.png')}}" alt="" /> {{_("Files")}}</a>
 </li>
 <li class="right">
-    <a href="{{ url_for('app.logs') }}"  title=""><img src="{{theme_static('img/head-menu-index.png')}}" alt="" />{{_("Logs")}}</a>
+    <a href="{{ url_for('app.logs') }}" class="action index" accesskey="x" rel="nofollow"><img src="{{url_for('static', filename='img/head-menu-index.png')}}" alt="" />{{_("Logs")}}</a>
 </li>
 <li class="right">
-    <a href="{{ url_for('app.settings') }}"  title=""><img src="{{theme_static('img/head-menu-config.png')}}" alt="" />{{_("Config")}}</a>
+    <a href="{{ url_for('app.settings') }}" class="action index" accesskey="x" rel="nofollow"><img src="{{url_for('static', filename='img/head-menu-config.png')}}" alt="" />{{_("Config")}}</a>
 </li>
 {% endblock %}
 
@@ -248,7 +251,7 @@ var LinkEntry = new Class({
     <td id="link_{{ link.id }}_bleft">{{ link.format_size }}</td>
     <td>
         <span id="link_{{ link.id }}_percent">{{ link.percent }}% /{{ link.bleft }}</span>
-        <img id="link_{{ link.id }}_remove" style="vertical-align: middle; margin-right: -20px; margin-left: 5px; margin-top: -2px; cursor:pointer;" src="{{theme_static('img/control_cancel.png')}}"/>
+        <img id="link_{{ link.id }}_remove" style="vertical-align: middle; margin-right: -20px; margin-left: 5px; margin-top: -2px; cursor:pointer;" src="{{url_for('static', filename='img/control_cancel.png')}}"/>
     </td>
   </tr>
   <tr id="link_{{ link.id }}_pgb_tr">

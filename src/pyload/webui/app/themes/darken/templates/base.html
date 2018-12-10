@@ -18,7 +18,7 @@
 <script type="text/javascript" src="{{theme_static('vendor/MooTools/Purr/purr.js')}}"></script>
 
 
-<script type="text/javascript" src="{{theme_static('js/base.min.js')}}"></script>
+<script type="text/javascript" src="{{theme_static('js/base.js')}}"></script>
 
 <title>{% block title %}pyLoad{% endblock %}</title>
 
@@ -71,7 +71,7 @@
     {% endblock %}
   </div>
 
-  <a href="{{ url_for('app.home')}}"><img id="head-logo" src="{{theme_static('img/pyload_banner.png')}}" alt="pyLoad" /></a>
+  <a href="{{ url_for('app.dashboard')}}"><img id="head-logo" src="{{theme_static('img/pyload_banner.png')}}" alt="pyLoad" /></a>
 {% if user.is_authenticated %}
   <div id="head-menu">
     <ul>
@@ -84,7 +84,7 @@
 
     {% block menu %}
     <li>
-        <a href="{{ url_for('app.home')}}" title=""><img src="{{theme_static('img/head-menu-home.png')}}" alt="" /> {{_("Home")}}</a>
+        <a href="{{ url_for('app.dashboard')}}" title=""><img src="{{theme_static('img/head-menu-home.png')}}" alt="" /> {{_("Dashboard")}}</a>
     </li>
     <li {{ selected('app.queue') }}>
         <a href="{{ url_for('app.queue') }}" title=""><img src="{{theme_static('img/head-menu-queue.png')}}" alt="" /> {{_("Queue")}}</a>

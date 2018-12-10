@@ -78,8 +78,8 @@
 
         {% block menu %}
          {% if user.is_authenticated %}
-          <li ondragstart="return false;" {{selected('app.home')}}>
-              <a href="{{ url_for('app.home')}}" title=""><span class="glyphicon glyphicon-home"></span><span class="hidden-sm"> {{_('Home')}}</span></a>
+          <li ondragstart="return false;" {{selected('app.dashboard')}}>
+              <a href="{{ url_for('app.dashboard')}}" title=""><span class="glyphicon glyphicon-home"></span><span class="hidden-sm"> {{_('Home')}}</span></a>
           </li>
           <li ondragstart="return false;" {{selected('app.queue')}}>
               <a href="{{ url_for('app.queue') }}" title=""><span class="glyphicon glyphicon-tasks"></span><span class="hidden-sm"> {{_('Queue')}}</span></a>
@@ -90,9 +90,9 @@
           <li ondragstart="return false;" {{selected('app.downloads')}}>
               <a href="{{ url_for('app.downloads') }}" title=""> <span class="glyphicon glyphicon-download"></span><span class="hidden-sm"> {{_('Downloads')}}</span></a>
           </li>
-    {#  <li ondragstart="return false;" {{selected('app.filemanager')}}>#}
-    {#      <a href="{{ url_for('app.filemanager') }}" title=""><span class="glyphicon glyphicon-magnet"></span><span class="hidden-sm"> {{_('FileManager')}}</span></a>#}
-    {#  </li>#}
+          <!-- <li ondragstart="return false;" {{selected('app.pathchooser')}}> -->
+              <!-- <a href="{{ url_for('app.pathchooser') }}" title=""><span class="glyphicon glyphicon-magnet"></span><span class="hidden-sm"> {{_('Files')}}</span></a> -->
+          <!-- </li> -->
           <li ondragstart="return false;" {{selected('app.logs')}}>
               <a href="{{ url_for('app.logs') }}" title=""><span class="glyphicon glyphicon-list"></span><span class="hidden-sm"> {{_('Logs')}}</span></a>
           </li>

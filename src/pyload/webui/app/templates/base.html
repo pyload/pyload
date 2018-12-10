@@ -182,7 +182,7 @@ a.cog {
     {% endblock %}
 	</div>
 
-	<a href="{{'home'}}"><img id="head-logo" src="{{url_for('static', filename='img/pyload_banner.png')}}" alt="pyLoad" /></a>
+	<a href="{{'dashboard'}}"><img id="head-logo" src="{{url_for('static', filename='img/pyload_banner.png')}}" alt="pyLoad" /></a>
 
 	<div id="head-menu">
 		<ul>
@@ -194,7 +194,7 @@ a.cog {
 
 		{% block menu %}
 		<li>
-		    <a href="{{'home'}}" title=""><img src="{{url_for('static', filename='img/head-menu-home.png')}}" alt="" /> {{_("Home")}}</a>
+		    <a href="{{'dashboard'}}" title=""><img src="{{url_for('static', filename='img/head-menu-home.png')}}" alt="" /> {{_("Dashboard")}}</a>
 		</li>
 		<li {{ selected('app.queue') }}>
 		    <a href="{{ url_for('app.queue') }}" title=""><img src="{{url_for('static', filename='img/head-menu-queue.png')}}" alt="" /> {{_("Queue")}}</a>
@@ -205,9 +205,9 @@ a.cog {
 		<li {{ selected('app.downloads') }}>
 		    <a href="{{ url_for('app.downloads') }}" title=""><img src="{{url_for('static', filename='img/head-menu-development.png')}}" alt="" /> {{_("Downloads")}}</a>
 		</li>
-{#		<li {{ selected('app.filemanager') }}>#}
-{#		    <a href="{{ url_for('app.filemanager') }}" title=""><img src="{{url_for('static', filename='img/head-menu-download.png')}}" alt="" /> {{_("FileManager")}}</a>#}
-{#		</li>#}
+		<li {{ selected('app.filemanager') }}>
+		    <a href="{{ url_for('app.filemanager') }}" title=""><img src="{{url_for('static', filename='img/head-menu-download.png')}}" alt="" /> {{_("Files")}}</a>
+		</li>
 		<li {{ selected('app.logs', True) }}>
 		    <a href="{{ url_for('app.logs') }}"  class="action index" accesskey="x" rel="nofollow"><img src="{{url_for('static', filename='img/head-menu-index.png')}}" alt="" />{{_("Logs")}}</a>
 		</li>

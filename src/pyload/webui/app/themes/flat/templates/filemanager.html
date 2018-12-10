@@ -2,7 +2,7 @@
 
 {% block head %}
 
-<script type="text/javascript" src="{{theme_static('js/filemanager.min.js')}}"></script>
+<script type="text/javascript" src="{{theme_static('js/filemanager.js')}}"></script>
 
 <script type="text/javascript">
 
@@ -16,7 +16,7 @@ document.addEvent("domready", function(){
 
 
 {% block subtitle %}
-{{_("FileManager")}}
+{{_("Files")}}
 {% endblock %}
 
 {% macro display_file(file) %}

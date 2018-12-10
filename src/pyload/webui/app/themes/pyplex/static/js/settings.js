@@ -176,7 +176,7 @@ SettingsUI = (function() {
                 $(this).data('targetinput', targetInput);
                 if (browseFor === "file") {
                     $(this).find("#chooser_title").text("{{_('Select File')}}");
-                    chooserIfrm.attr("src", "{{'/filechooser/'}}" + val);
+                    chooserIfrm.attr("src", "{{'/pathchooser/'}}" + val);
                 }
                 else if (browseFor === "folder") {
                     $(this).find("#chooser_title").text("{{_('Select Folder')}}");

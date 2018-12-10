@@ -208,7 +208,7 @@ var LinkEntry = new Class({
 
 {% block menu %}
 <li class="selected">
-    <a href="{{ url_for('app.home')}}" title=""><img src="{{theme_static('img/head-menu-home.png')}}" alt="" /> {{_("Home")}}</a>
+    <a href="{{ url_for('app.dashboard')}}" title=""><img src="{{theme_static('img/head-menu-home.png')}}" alt="" /> {{_("Dashboard")}}</a>
 </li>
 <li>
     <a href="{{ url_for('app.queue') }}" title=""><img src="{{theme_static('img/head-menu-queue.png')}}" alt="" /> {{_("Queue")}}</a>
@@ -218,9 +218,6 @@ var LinkEntry = new Class({
 </li>
 <li>
     <a href="{{ url_for('app.downloads') }}" title=""><img src="{{theme_static('img/head-menu-development.png')}}" alt="" /> {{_("Downloads")}}</a>
-</li>
-<li>
-    <a href="{{ url_for('app.filemanager') }}" title=""><img src="{{theme_static('img/head-menu-download.png')}}" alt="" /> {{_("FileManager")}}</a>
 </li>
 <li class="right">
     <a href="{{ url_for('app.logs') }}"  title=""><img src="{{theme_static('img/head-menu-index.png')}}" alt="" />{{_("Logs")}}</a>
