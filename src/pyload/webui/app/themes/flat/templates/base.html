@@ -20,7 +20,7 @@
 <script type="text/javascript">{{render_template('js/base.js')}}</script>
 {% endautoescape %}
 
-<title>{% block title %}pyLoad {{_("Web UI")}}{% endblock %}</title>
+<title>pyLoad</title>
 
 {% block head %}
 {% endblock %}
@@ -59,7 +59,7 @@
   <ul id="user-actions">
     <li><a href="{{ url_for('app.logout')}}"  class="action logout" rel="nofollow">{{_("Logout")}}</a></li>
     {% if user.is_admin %}
-    <li><a href="{{ url_for('app.admin')}}" class="action profile" rel="nofollow">{{_("Administrate")}}</a></li>
+    <li><a href="{{ url_for('app.admin')}}" class="action profile" rel="nofollow">{{_("Profile")}}</a></li>
     {% endif %}
         <li><a href="{{ url_for('app.info')}}"  class="action info" rel="nofollow">{{_("Info")}}</a></li>
 
@@ -90,7 +90,7 @@
         <a href="{{ url_for('app.queue') }}" title=""><img src="{{theme_static('img/head-menu-queue.png')}}" alt="" /> {{_("Queue")}}</a>
     </li>
     <li {{ selected('app.collector') }}>
-        <a href="{{ url_for('app.collector') }}" title=""><img src="{{theme_static('img/head-menu-collector.png')}}" alt="" /> {{_("Collector")}}</a>
+        <a href="{{ url_for('app.collector') }}" title=""><img src="{{theme_static('img/head-menu-collector.png')}}" alt="" /> {{_("Packages")}}</a>
     </li>
     <li {{ selected('app.downloads') }}>
         <a href="{{ url_for('app.downloads') }}" title=""><img src="{{theme_static('img/head-menu-development.png')}}" alt="" /> {{_("Downloads")}}</a>

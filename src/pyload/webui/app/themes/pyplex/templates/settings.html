@@ -1,7 +1,7 @@
 {% extends theme('base.html') %}
 
-{% block title %}{{_('Config')}} - {{super()}} {% endblock %}
-{% block subtitle %}{{_('Config')}}{% endblock %}
+{% block title %}{{_('Settings')}} - {{super()}} {% endblock %}
+{% block subtitle %}{{_('Settings')}}{% endblock %}
 
 {% block head %}
 <meta id="plugins-list" data-plugin='{{conf.plugin|replace('(', '[')|replace(')', ']')|replace('\'', '"')}}'/>

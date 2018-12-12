@@ -136,13 +136,13 @@ a.cog {
     background: url("{{ url_for('static', filename='img/dialog-error.png') }}") no-repeat;
 }
 </style>
-<title>{% block title %}pyLoad{% endblock %}</title>
+<title>pyLoad</title>
 
 {% block head %}
 {% endblock %}
 </head>
 <body>
-<a class="anchor" name="top" id="top"></a>
+<a class="anchor" name="#" id="#"></a>
 
 <div id="head-panel">
 
@@ -172,9 +172,9 @@ a.cog {
     <ul id="user-actions">
         <li><a href="/logout" class="action logout" rel="nofollow">{{_("Logout")}}</a></li>
         {% if user.is_admin %}
-        <li><a href="/admin" class="action profile" rel="nofollow">{{_("Administrate")}}</a></li>
+        <li><a href="/admin" class="action profile" rel="nofollow">{{_("Profile")}}</a></li>
         {% endif %}
-        <li><a href="/info" class="action info" rel="nofollow">{{_("Info")}}</a></li>
+        <li><a href="/info" class="action info" rel="nofollow">{{_("Status")}}</a></li>
 
     </ul>
 {% else %}
@@ -202,19 +202,19 @@ a.cog {
             <a href="/queue" title=""><img src="{{url_for('static', filename='img/head-menu-queue.png')}}" alt="" /> {{_("Queue")}}</a>
         </li>
         <li {{ selected('app.collector') }}>
-            <a href="/collector" title=""><img src="{{url_for('static', filename='img/head-menu-collector.png')}}" alt="" /> {{_("Collector")}}</a>
+            <a href="/collector" title=""><img src="{{url_for('static', filename='img/head-menu-collector.png')}}" alt="" /> {{_("Packages")}}</a>
         </li>
         <li {{ selected('app.downloads') }}>
-            <a href="/downloads" title=""><img src="{{url_for('static', filename='img/head-menu-development.png')}}" alt="" /> {{_("Downloads")}}</a>
+            <a href="/downloads" title=""><img src="{{url_for('static', filename='img/head-menu-development.png')}}" alt="" /> {{_("Files")}}</a>
         </li>
-        <li {{ selected('app.filemanager') }}>
-            <a href="/filemanager" title=""><img src="{{url_for('static', filename='img/head-menu-download.png')}}" alt="" /> {{_("Files")}}</a>
-        </li>
+        <!-- <li {{ selected('app.filemanager') }}> -->
+            <!-- <a href="/filemanager" title=""><img src="{{url_for('static', filename='img/head-menu-download.png')}}" alt="" /> {{_("File Manager")}}</a> -->
+        <!-- </li> -->
         <li {{ selected('app.logs', True) }}>
             <a href="/logs"  class="action index" accesskey="x" rel="nofollow"><img src="{{url_for('static', filename='img/head-menu-index.png')}}" alt="" />{{_("Logs")}}</a>
         </li>
         <li {{ selected('app.settings', True) }}>
-            <a href="/settings"  class="action index" accesskey="x" rel="nofollow"><img src="{{url_for('static', filename='img/head-menu-config.png')}}" alt="" />{{_("Config")}}</a>
+            <a href="/settings"  class="action index" accesskey="x" rel="nofollow"><img src="{{url_for('static', filename='img/head-menu-config.png')}}" alt="" />{{_("Settings")}}</a>
         </li>
         {% endblock %}
 
@@ -235,10 +235,10 @@ a.cog {
 
 {% if perms.LIST %}
 <ul id="page-actions">
-    <li><span class="time">{{_("Download:")}}</span><a id="time" style=" background-color: {% if status.download %}#8ffc25{% else %} #fc6e26{% endif %}; padding-left: 0cm; padding-right: 0.1cm; "> {% if status.download %}{{_("on")}}{% else %}{{_("off")}}{% endif %}</a></li>
+    <li><span class="time">{{_("Running:")}}</span><a id="time" style=" background-color: {% if status.download %}#8ffc25{% else %} #fc6e26{% endif %}; padding-left: 0cm; padding-right: 0.1cm; "> {% if status.download %}{{_("on")}}{% else %}{{_("off")}}{% endif %}</a></li>
     <li><span class="reconnect">{{_("Reconnect:")}}</span><a id="reconnect" style=" background-color: {% if status.reconnect %}#8ffc25{% else %} #fc6e26{% endif %}; padding-left: 0cm; padding-right: 0.1cm; "> {% if status.reconnect %}{{_("on")}}{% else %}{{_("off")}}{% endif %}</a></li>
     <li><a class="action backlink">{{_("Speed:")}} <b id="speed">{{ status.speed }}</b></a></li>
-    <li><a class="action cog">{{_("Active:")}} <b id="aktiv" title="{{_("Active")}}">{{ status.active }}</b> / <b id="aktiv_from" title="{{_("Queued")}}">{{ status.queue }}</b> / <b id="aktiv_total" title="{{_("Total")}}">{{ status.total }}</b></a></li>
+    <li><a class="action cog">{{_("Active:")}} <b id="aktiv" title="{{_("Active")}}">{{ status.active }}</b> | <b id="aktiv_from" title="{{_("Queued")}}">{{ status.queue }}</b> | <b id="aktiv_total" title="{{_("Total")}}">{{ status.total }}</b></a></li>
     <li><a href=""  class="action revisions" accesskey="o" rel="nofollow">{{_("Reload page")}}</a></li>
 </ul>
 {% endif %}
@@ -277,7 +277,7 @@ a.cog {
     <hr style="clear: both;" />
 
 <div id="foot">&copy; 2018 pyLoad team
-<a href="#top" class="action top" accesskey="x"><span>{{_("Back to top")}}</span></a><br />
+<a href="#" class="action top" accesskey="x"><span>{{_("Back to top")}}</span></a><br />
 <!--<div class="breadcrumbs"></div>-->
 
 </div>

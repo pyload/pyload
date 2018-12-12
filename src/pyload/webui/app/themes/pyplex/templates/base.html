@@ -32,7 +32,7 @@
 }
 </style>
 
-<title>{% block title %}pyLoad{% endblock %}</title>
+<title>pyLoad</title>
 
 {% block head %}
 {% endblock %}
@@ -79,13 +79,13 @@
         {% block menu %}
          {% if user.is_authenticated %}
           <li ondragstart="return false;" {{selected('app.dashboard')}}>
-              <a href="/dashboard" title=""><span class="glyphicon glyphicon-home"></span><span class="hidden-sm"> {{_('Home')}}</span></a>
+              <a href="/dashboard" title=""><span class="glyphicon glyphicon-home"></span><span class="hidden-sm"> {{_('Dashboard')}}</span></a>
           </li>
           <li ondragstart="return false;" {{selected('app.queue')}}>
               <a href="/queue" title=""><span class="glyphicon glyphicon-tasks"></span><span class="hidden-sm"> {{_('Queue')}}</span></a>
           </li>
           <li ondragstart="return false;" {{selected('app.collector')}}>
-              <a href="/collector" title=""><span class="glyphicon glyphicon-magnet"></span><span class="hidden-sm"> {{_('Collector')}}</span></a>
+              <a href="/collector" title=""><span class="glyphicon glyphicon-magnet"></span><span class="hidden-sm"> {{_('Packages')}}</span></a>
           </li>
           <li ondragstart="return false;" {{selected('app.downloads')}}>
               <a href="/downloads" title=""> <span class="glyphicon glyphicon-download"></span><span class="hidden-sm"> {{_('Downloads')}}</span></a>
@@ -102,7 +102,7 @@
           </li>
         {% endif %}
           <li ondragstart="return false;" {{selected('app.settings', True)}}>
-              <a href="/settings"  title=""><span class="glyphicon glyphicon-wrench"></span><span class="hidden-sm"> {{_('Config')}}</span></a>
+              <a href="/settings"  title=""><span class="glyphicon glyphicon-wrench"></span><span class="hidden-sm"> {{_('Settings')}}</span></a>
           </li>
          {% endif %}
         {% endblock %}

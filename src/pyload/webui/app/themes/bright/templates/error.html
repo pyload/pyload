@@ -21,7 +21,7 @@
 <script type="text/javascript">{{render_template('js/base.js')}}</script>
 {% endautoescape %}
 
-<title>{% block title %}pyLoad{% endblock %}</title>
+<title>pyLoad</title>
 
 {% block head %}
 {% endblock %}
@@ -95,7 +95,7 @@
             <a href="{{ url_for('app.queue') }}" title=""><span class="glyphicon glyphicon-tasks"></span> {{_("Queue")}}</a>
         </li>
         <li {{ selected('app.collector') }}>
-            <a href="{{ url_for('app.collector') }}" title=""><span class="glyphicon glyphicon-magnet"></span>  {{_("Collector")}}</a>
+            <a href="{{ url_for('app.collector') }}" title=""><span class="glyphicon glyphicon-magnet"></span>  {{_("Packages")}}</a>
         </li>
         <li {{ selected('app.downloads') }}>
             <a href="{{ url_for('app.downloads') }}" title=""> <span class="glyphicon glyphicon-download"></span> {{_("Downloads")}}</a>
@@ -107,7 +107,7 @@
             <a href="{{ url_for('app.logs') }}"  class="action index" accesskey="x" rel="nofollow"><span class="glyphicon glyphicon-list"></span> {{_("Logs")}}</a>
         </li>
         <li {{ selected('app.settings', True) }}>
-            <a href="{{ url_for('app.settings') }}"  class="action index" accesskey="x" rel="nofollow"><span class="glyphicon glyphicon-wrench"></span> {{_("Config")}}</a>
+            <a href="{{ url_for('app.settings') }}"  class="action index" accesskey="x" rel="nofollow"><span class="glyphicon glyphicon-wrench"></span> {{_("Settings")}}</a>
         </li>
         {% endblock %}
 

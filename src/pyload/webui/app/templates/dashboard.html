@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block subtitle %}
-{{_("Active Downloads")}}
+{{_("Active Connections")}}
 {% endblock %}
 
 {% block menu %}
@@ -18,19 +18,19 @@
     <a href="/queue" title=""><img src="{{url_for('static', filename='img/head-menu-queue.png')}}" alt="" /> {{_("Queue")}}</a>
 </li>
 <li>
-    <a href="/collector" title=""><img src="{{url_for('static', filename='img/head-menu-collector.png')}}" alt="" /> {{_("Collector")}}</a>
+    <a href="/collector" title=""><img src="{{url_for('static', filename='img/head-menu-collector.png')}}" alt="" /> {{_("Packages")}}</a>
 </li>
 <li>
-    <a href="/downloads" title=""><img src="{{url_for('static', filename='img/head-menu-development.png')}}" alt="" /> {{_("Downloads")}}</a>
+    <a href="/downloads" title=""><img src="{{url_for('static', filename='img/head-menu-development.png')}}" alt="" /> {{_("Files")}}</a>
 </li>
-<li>
-    <a href="/filemanager" title=""><img src="{{url_for('static', filename='img/head-menu-download.png')}}" alt="" /> {{_("Files")}}</a>
-</li>
+<!-- <li> -->
+    <!-- <a href="/filemanager" title=""><img src="{{url_for('static', filename='img/head-menu-download.png')}}" alt="" /> {{_("File Manager")}}</a> -->
+<!-- </li> -->
 <li class="right">
     <a href="/logs" class="action index" accesskey="x" rel="nofollow"><img src="{{url_for('static', filename='img/head-menu-index.png')}}" alt="" />{{_("Logs")}}</a>
 </li>
 <li class="right">
-    <a href="/settings" class="action index" accesskey="x" rel="nofollow"><img src="{{url_for('static', filename='img/head-menu-config.png')}}" alt="" />{{_("Config")}}</a>
+    <a href="/settings" class="action index" accesskey="x" rel="nofollow"><img src="{{url_for('static', filename='img/head-menu-config.png')}}" alt="" />{{_("Settings")}}</a>
 </li>
 {% endblock %}
 
@@ -40,7 +40,7 @@
   <tr class="header">
     <th>{{_("Name")}}</th>
     <th>{{_("Status")}}</th>
-    <th>{{_("Information")}}</th>
+    <th>{{_("Info")}}</th>
     <th>{{_("Size")}}</th>
     <th>{{_("Progress")}}</th>
   </tr>

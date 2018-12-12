@@ -7,9 +7,9 @@
 {% endblock %}
 
 {% if target %}
-    {% set name = _("Queue") %}
+    {% set name = _("Running Packages") %}
 {% else %}
-    {% set name = _("Collector") %}
+    {% set name = _("Saved Packages") %}
 {% endif %}
 
 {% block title %}{{name}} - {{super()}} {% endblock %}
