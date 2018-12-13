@@ -157,17 +157,17 @@ def link_order(ids):
         flask.abort(500)
 
 
-@bp.route("/add_package", methods=["GET", "POST"], endpoint="add_package")
+@bp.route("/add_package", methods=["POST"], endpoint="add_package")
 # @apiver_check
 @login_required("ADD")
 def add_package():
+    api = flask.current_app.config["PYLOAD_API"]
+    
     name = flask.request.form.get("add_name", "New Package").strip()
     queue = int(flask.request.form["add_dest"])
-    links = decode(flask.request.form["add_links"])
-    links = links.split("\n")
+    links = decode(flask.request.form["add_links"]).split("\n")
     pw = flask.request.form.get("add_password", "").strip("\n\r")
-    api = flask.current_app.config["PYLOAD_API"]
-
+    
     try:
         f = flask.request.files["add_file"]
 
@@ -184,8 +184,8 @@ def add_package():
         pass
 
     name = name.decode("utf-8", "ignore")
-    links = list(filter(None, map(str.strip, links)))
-    pack = api.addPackage(name, links, queue)
+    urls = [url for url in links if url.strip()]
+    pack = api.addPackage(name, urls, queue)
     if pw:
         pw = pw.decode("utf-8", "ignore")
         data = {"password": pw}
@@ -210,11 +210,11 @@ def move_package(dest, id):
 def edit_package():
     api = flask.current_app.config["PYLOAD_API"]
     try:
-        id = int(flask.request.form.get("pack_id"))
+        id = int(flask.request.form["pack_id"])
         data = {
-            "name": flask.request.form.get("pack_name").decode("utf-8", "ignore"),
-            "folder": flask.request.form.get("pack_folder").decode("utf-8", "ignore"),
-            "password": flask.request.form.get("pack_pws").decode("utf-8", "ignore"),
+            "name": flask.request.form["pack_name"].decode("utf-8", "ignore"),
+            "folder": flask.request.form["pack_folder"].decode("utf-8", "ignore"),
+            "password": flask.request.form["pack_pws"].decode("utf-8", "ignore"),
         }
 
         api.setPackageData(id, data)
@@ -229,13 +229,11 @@ def edit_package():
 @login_required("ADD")
 def set_captcha():
     api = flask.current_app.config["PYLOAD_API"]
+    
     if flask.request.method == "POST":
-        try:
-            api.setCaptchaResult(
-                flask.request.form["cap_id"], flask.request.form["cap_result"]
-            )
-        except Exception:
-            pass
+        tid = int(flask.request.form["cap_id"])
+        result = flask.request.form["cap_result"]
+        api.setCaptchaResult(tid, result)
 
     task = api.getCaptchaTask()
     if task.tid >= 0:
@@ -297,6 +295,7 @@ def save_config(category):
 # @fresh_login_required
 def add_account():
     api = flask.current_app.config["PYLOAD_API"]
+    
     login = flask.request.form["account_login"]
     password = flask.request.form["account_password"]
     type = flask.request.form["account_type"]
@@ -340,9 +339,11 @@ def update_accounts():
 @login_required("ACCOUNTS")
 def change_password():
     api = flask.current_app.config["PYLOAD_API"]
+    
     user = flask.request.form["user_login"]
     oldpw = flask.request.form["login_current_password"]
     newpw = flask.request.form["login_new_password"]
 
-    if not api.changePassword(user, oldpw, newpw):
+    done = api.changePassword(user, oldpw, newpw)
+    if not done:
         return "Wrong password", 500

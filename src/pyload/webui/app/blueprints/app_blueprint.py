@@ -52,8 +52,8 @@ def login():
     next = get_redirect_url(fallback=flask.url_for("app.dashboard"))
     
     if flask.request.method == "POST":
-        user = flask.request.form.get("username")
-        password = flask.request.form.get("password")
+        user = flask.request.form["username"]
+        password = flask.request.form["password"]
         user_info = api.checkAuth(user, password)
         
         if not user_info:
@@ -352,16 +352,15 @@ def logs(page=-1):
 
     if flask.request.method == "POST":
         try:
-            fro = datetime.datetime.strptime(
-                flask.request.form["from"], "%Y-%m-%d %H:%M:%S"
-            )
+            from_form = flask.request.form["from"]
+            fro = datetime.datetime.strptime(from_form, "%Y-%m-%d %H:%M:%S")
         except Exception:
             pass
             
-        perpage = int(flask.request.form.get("perpage"))
+        perpage = int(flask.request.form["perpage"])
         s["perpage"] = perpage
 
-        reversed = bool(flask.request.form.get("reversed", False))
+        reversed = bool(flask.request.form["reversed"])
         s["reversed"] = reversed
         
         # s.modified = True
@@ -450,7 +449,7 @@ def admin():
     s = flask.session
     if flask.request.method == "POST":
         for name, data in users.items():
-            if flask.request.form.get(f"{name}|admin", False):
+            if flask.request.form.get(f"{name}|admin"):
                 data["role"] = 0
                 data["perms"]["admin"] = True
             elif name != s["name"]:

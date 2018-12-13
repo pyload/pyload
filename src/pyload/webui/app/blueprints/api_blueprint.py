@@ -34,7 +34,7 @@ def rpc(func, args=""):
     kwargs = {}
 
     for x, y in chain(
-        iter(flask.request.args.items()), iter(flask.request.form.items())
+        flask.request.args.items(), flask.request.form.items()
     ):
         kwargs[x] = unquote(y)
 
@@ -63,8 +63,8 @@ def call_api(func, *args, **kwargs):
 @bp.route("/login", methods=["POST"], endpoint="login")
 # @apiver_check
 def login():
-    user = flask.request.form.get("username")
-    password = flask.request.form.get("password")
+    user = flask.request.form["username"]
+    password = flask.request.form["password"]
 
     api = flask.current_app.config["PYLOAD_API"]
     user_info = api.checkAuth(user, password)

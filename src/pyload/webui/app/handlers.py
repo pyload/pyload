@@ -5,15 +5,14 @@ from .helpers import render_error
 
 
 def handle_error(exc):
-    code = 500
     try:
         code = exc.code
     except AttributeError:
-        pass
+        code = 500
         
     flask.current_app.logger.debug(exc, exc_info=True)
     
-    messages = ["Sorry, something went wrong... :(", str(exc)]
+    messages = ["Sorry, something went wrong... :(", f"Error {code}: {exc}"]
     return render_error(messages), code
             
             
