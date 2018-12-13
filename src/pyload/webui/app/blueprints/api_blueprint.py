@@ -10,7 +10,7 @@ from flask.json import jsonify
 
 from pyload.core.api import BaseObject
 
-from ..helpers import clear_session, set_session, toDict, login_required
+from ..helpers import clear_session, set_session, login_required
 
 
 bp = flask.Blueprint("api", __name__, url_prefix="/api")
@@ -55,10 +55,6 @@ def call_api(func, *args, **kwargs):
         *[literal_eval(x) for x in args],
         **{x: literal_eval(y) for x, y in kwargs.items()},
     )
-
-    # convert TBase objects
-    if isinstance(result, BaseObject):
-        result = toDict(result)
 
     # null is invalid json response
     return jsonify(result or True)

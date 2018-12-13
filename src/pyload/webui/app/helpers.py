@@ -11,7 +11,7 @@ import flask_themes2
 from pyload.core.api import PERMS, ROLE, has_permission
     
 
-#: Check if location belongs to same host address
+#: Checks if location belongs to same host address
 def is_safe_url(location):
     ref_url = urlparse(flask.request.host_url)
     test_url = urlparse(urljoin(flask.request.host_url, location))
@@ -43,9 +43,24 @@ def clear_session(session=flask.session, permanent=True):
     # session.modified = True
 
 
-def render_template(template, **context):
+def get_current_theme_name():
     api = flask.current_app.config["PYLOAD_API"]
-    theme = api.getConfigValue("webui", "theme").lower()
+    return api.getConfigValue("webui", "theme")
+    
+    
+#: tries to serve the file from the static directory of the current theme otherwise fallback to builtin one
+def static_file_url(filename):
+    theme = get_current_theme_name()
+    try:
+        url = flask_themes2.static_file_url(theme, filename)
+    except KeyError:
+        url = flask.url_for(filename)
+    return url
+    
+    
+#: tries to render the template of the current theme otherwise fallback to builtin template
+def render_template(template, **context):
+    theme = get_current_theme_name()
     return flask_themes2.render_theme_template(theme, template, **context)
 
 
@@ -159,7 +174,7 @@ def login_required(perm):
                 response = "Forbidden", 403     
                 
             else:
-                location = flask.url_for("app.login", next=flask.request.url)
+                location = flask.url_for("app.login")  # flask.url_for("app.login", next=flask.request.url)
                 response = flask.redirect(location)
                 
             return response
@@ -169,8 +184,8 @@ def login_required(perm):
     return decorator
     
 
-def toDict(obj):
-    ret = {}
-    for att in obj.__slots__:
-        ret[att] = getattr(obj, att)
-    return ret
+# def todict(obj):
+    # ret = {}
+    # for att in obj.__slots__:
+        # ret[att] = getattr(obj, att)
+    # return ret

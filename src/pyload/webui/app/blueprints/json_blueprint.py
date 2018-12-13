@@ -7,7 +7,7 @@ from flask.json import jsonify
 
 from pyload.core.utils import decode, formatSize
 
-from ..helpers import render_template, toDict, login_required
+from ..helpers import render_template, login_required
 
 
 bp = flask.Blueprint("json", __name__, url_prefix="/json")
@@ -26,7 +26,7 @@ def format_time(seconds):
 def status():
     api = flask.current_app.config["PYLOAD_API"]
     try:
-        data = toDict(api.statusServer())
+        data = api.statusServer()
         data["captcha"] = api.isCaptchaWaiting()
         return jsonify(data)
 
@@ -40,7 +40,7 @@ def status():
 def links():
     api = flask.current_app.config["PYLOAD_API"]
     try:
-        links = [toDict(x) for x in api.statusDownloads()]
+        links = api.statusDownloads()
         ids = []
         for link in links:
             ids.append(link["fid"])
@@ -89,9 +89,7 @@ def packages():
 def package(id):
     api = flask.current_app.config["PYLOAD_API"]
     try:
-        data = toDict(api.getPackageData(id))
-        data["links"] = [toDict(x) for x in data["links"]]
-
+        data = api.getPackageData(id)
         for pyfile in data["links"]:
             if pyfile["status"] == 0:
                 pyfile["icon"] = "status_finished.png"

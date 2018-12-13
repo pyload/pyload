@@ -11,13 +11,12 @@ from urllib.parse import unquote
 
 import flask
 
-from flask_themes2 import global_theme_static
-
 from pyload import PKGDIR
 from pyload.core.utils import formatSize, fs_decode, fs_encode
 
 from ..filters import unquotepath
 from ..helpers import (
+    static_file_url,
     clear_session,
     get_permission,
     login_required,
@@ -26,7 +25,6 @@ from ..helpers import (
     render_template,
     set_permission,
     set_session,
-    toDict,
     is_authenticated,
     get_redirect_url
 )
@@ -35,12 +33,10 @@ from ..helpers import (
 bp = flask.Blueprint("app", __name__)
 
 
-# @bp.route("/favicon.ico", endpoint="favicon")
-# def favicon(ctx):
-    # print("CONTEXTTTTTTTt")
-    # print(ctx)
-    # location = global_theme_static(ctx, 'img/favicon.ico')
-    # return flask.redirect(location)
+@bp.route("/favicon.ico", endpoint="favicon")
+def favicon():
+    location = static_file_url('img/favicon.ico')
+    return flask.redirect(location)
 
 
 @bp.route("/robots.txt", endpoint="robots")
@@ -69,15 +65,17 @@ def login():
     if is_authenticated():
         return flask.redirect(next)
         
-    # if api.getConfigValue("webui", "autologin"):
-        # users = api.getAllUserData()
-        # user_info = next(iter(users.values()))
-        # if user_info and len(users) == 1:  # TODO: check if localhost
-            # set_session(user_info)
+    if api.getConfigValue("webui", "autologin"):        
+        users = api.getAllUserData()
+        if len(users) == 1: # TODO: check if localhost
+            user_info = next(users.values())
+            print("DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD")
+            print(user_info)
+            set_session(user_info)
             # NOTE: Double-check autentication here because if session[name] is empty, 
             #       next login_required redirects here again and all loop out.
-            # if is_authenticated():
-                # return flask.redirect(next)
+            if is_authenticated():
+                return flask.redirect(next)
         
     return render_template("login.html", next=next)
             
@@ -94,19 +92,15 @@ def logout():
 @login_required("ALL")
 def dashboard():
     api = flask.current_app.config["PYLOAD_API"]
-    try:
-        res = [toDict(x) for x in api.statusDownloads()]
-    except Exception:
-        clear_session()
-        return dashboard()
+    links = api.statusDownloads()
 
-    for link in res:
+    for link in links:
         if link["status"] == 12:
             current_size = link["size"] - link["bleft"]
             speed = link["speed"]
             link["information"] = f"{current_size} KiB @ {speed} KiB/s"
 
-    return render_template("dashboard.html", res=res)
+    return render_template("dashboard.html", res=links)
 
 
 @bp.route("/queue", endpoint="queue")
@@ -445,36 +439,36 @@ def logs(page=-1):
 def admin():
     api = flask.current_app.config["PYLOAD_API"]
     # convert to dict
-    user = {name: toDict(y) for name, y in api.getAllUserData().items()}
+    users = api.getAllUserData()
     perms = permlist()
 
-    for data in user.values():
+    for data in users.values():
         data["perms"] = {}
         get_permission(data["perms"], data["permission"])
         data["perms"]["admin"] = data["role"] is 0
 
     s = flask.session
     if flask.request.method == "POST":
-        for name in user:
+        for name, data in users.items():
             if flask.request.form.get(f"{name}|admin", False):
-                user[name]["role"] = 0
-                user[name]["perms"]["admin"] = True
+                data["role"] = 0
+                data["perms"]["admin"] = True
             elif name != s["name"]:
-                user[name]["role"] = 1
-                user[name]["perms"]["admin"] = False
+                data["role"] = 1
+                data["perms"]["admin"] = False
 
             # set all perms to false
             for perm in perms:
-                user[name]["perms"][perm] = False
+                data["perms"][perm] = False
 
             for perm in flask.request.form.getlist(f"{name}|perms"):
-                user[name]["perms"][perm] = True
+                data["perms"][perm] = True
 
-            user[name]["permission"] = set_permission(user[name]["perms"])
+            data["permission"] = set_permission(data["perms"])
 
-            api.setUserPermission(name, user[name]["permission"], user[name]["role"])
+            api.setUserPermission(name, data["permission"], data["role"])
 
-    return render_template("admin.html", users=user, permlist=perms)
+    return render_template("admin.html", users=users, permlist=perms)
     
     
 @bp.route("/filemanager", endpoint="filemanager")
