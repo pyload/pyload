@@ -274,9 +274,9 @@ class PluginManager(object):
                 continue
 
             for name, value in chain(
-                iter(self.crypterPlugins.items()),
-                iter(self.hosterPlugins.items()),
-                iter(self.containerPlugins.items()),
+                self.crypterPlugins.items(),
+                self.hosterPlugins.items(),
+                self.containerPlugins.items(),
             ):
                 if value["re"].match(url):
                     res.append((url, name))

@@ -29,7 +29,7 @@ def myurlencode(data):
             else x: y.encode("utf_8")
             if isinstance(y, str)
             else y
-            for x, y in iter(data.items())
+            for x, y in data.items()
         }
     )
 

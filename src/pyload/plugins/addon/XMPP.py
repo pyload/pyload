@@ -64,8 +64,7 @@ class XMPP(IRC, pyxmpp2.client.Client):
 
         #: Setup client with provided connection information
         #: And identity data
-        pyxmpp2.client.Client.__init__(
-            self,
+        super().__init__(
             self.jid,
             password,
             disco_name="pyLoad XMPP Client",
