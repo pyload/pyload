@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import datetime
+from datetime import timedelta
 import base64
 import re
 import urllib.parse
@@ -75,12 +75,12 @@ class FileSharkPl(SimpleDownloader):
                 errmsg = self.info["error"] = self._("No free download slots available")
                 self.log_warning(errmsg)
                 self.retry(
-                    10, datetime.timedelta(minutes=30).seconds, self._("Still no free download slots available")
+                    10, timedelta(minutes=30).seconds, self._("Still no free download slots available")
                 )
 
             else:
                 self.info["error"] = alert
-                self.retry(10, datetime.timedelta(minutes=10).seconds, self._("Try again later"))
+                self.retry(10, timedelta(minutes=10).seconds, self._("Try again later"))
 
         self.info.pop("error", None)
 

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import datetime
+from datetime import timedelta
 import random
 import threading
 import time
@@ -22,7 +22,7 @@ class Account(Plugin):
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
     #: Relogin account every 30 minutes, use -1 for never expire, you have to explicitly call relogin() when needed
-    LOGIN_TIMEOUT = datetime.timedelta(minutes=30).seconds
+    LOGIN_TIMEOUT = timedelta(minutes=30).seconds
     TUNE_TIMEOUT = True  #: Automatically tune relogin interval
 
     def __init__(self, manager, accounts):

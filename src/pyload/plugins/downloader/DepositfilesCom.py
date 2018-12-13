@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import datetime
+from datetime import timedelta
 import re
 import urllib.error
 import urllib.parse
@@ -96,7 +96,7 @@ class DepositfilesCom(SimpleDownloader):
     def handle_premium(self, pyfile):
         if '<span class="html_download_api-gold_traffic_limit">' in self.data:
             self.log_warning(self._("Download limit reached"))
-            self.retry(25, datetime.timedelta(hours=1).seconds, "Download limit reached")
+            self.retry(25, timedelta(hours=1).seconds, "Download limit reached")
 
         elif 'onClick="show_gold_offer' in self.data:
             self.account.relogin()

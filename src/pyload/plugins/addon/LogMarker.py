@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import datetime
+from datetime import timedelta
 
 from ..base.addon import Addon
 from ..utils import seconds_to_nexthour
@@ -26,7 +27,7 @@ class LogMarker(Addon):
 
     def activated(self):
         self.periodical.start(
-            datetime.timedelta(hours=1).seconds - 1, delay=seconds_to_nexthour(strict=True) - 1
+            timedelta(hours=1).seconds - 1, delay=seconds_to_nexthour(strict=True) - 1
         )
 
     def periodical_task(self):

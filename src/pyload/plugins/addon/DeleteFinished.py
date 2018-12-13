@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import datetime
+from datetime import timedelta
 from pyload.core.database.database_thread import style
 
 from ..base.addon import Addon
@@ -44,7 +44,7 @@ class DeleteFinished(Addon):
     def activate(self):
         self.info["sleep"] = True
         self.add_event("package_finished", self.wakeup)
-        self.periodical.start(datetime.timedelta(hours=self.config.get("interval")).seconds)
+        self.periodical.start(timedelta(hours=self.config.get("interval")).seconds)
 
     ## own methods ##
     @style.queue

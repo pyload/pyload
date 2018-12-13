@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # AUTHOR: RaNaN
 
-import datetime
+from datetime import timedelta
 import os
 import re
 import subprocess
@@ -72,7 +72,7 @@ class ThreadManager(object):
         start a thread whichs fetches online status and other infos
         data = [ .. () .. ]
         """
-        self.timestamp = time.time() + datetime.timedelta(minutes=5).seconds
+        self.timestamp = time.time() + timedelta(minutes=5).seconds
 
         InfoThread(self, data, pid)
 
@@ -81,7 +81,7 @@ class ThreadManager(object):
         """
         creates a thread to fetch online status, returns result id.
         """
-        self.timestamp = time.time() + datetime.timedelta(minutes=5).seconds
+        self.timestamp = time.time() + timedelta(minutes=5).seconds
 
         rid = self.resultIDs
         self.resultIDs += 1
@@ -95,7 +95,7 @@ class ThreadManager(object):
         """
         returns result and clears it.
         """
-        self.timestamp = time.time() + datetime.timedelta(minutes=5).seconds
+        self.timestamp = time.time() + timedelta(minutes=5).seconds
 
         if rid in self.infoResults:
             data = self.infoResults[rid]

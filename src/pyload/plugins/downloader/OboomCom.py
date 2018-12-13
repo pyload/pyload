@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import datetime
+from datetime import timedelta
 import json
 import re
 
@@ -97,7 +97,7 @@ class OboomCom(Downloader):
 
         elif result[0] == 403:
             if result[1] == -1:  #: Another download is running
-                wait_time = datetime.timedelta(minutes=15).seconds
+                wait_time = timedelta(minutes=15).seconds
                 reconnect = None
             else:
                 wait_time = result[1]
@@ -108,7 +108,7 @@ class OboomCom(Downloader):
             self.retry()
 
         elif result[0] == 400 and result[1] == "forbidden":
-            self.retry(5, datetime.timedelta(minutes=15).seconds, self._("Service unavailable"))
+            self.retry(5, timedelta(minutes=15).seconds, self._("Service unavailable"))
 
         else:
             self.retry_captcha()

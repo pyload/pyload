@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import datetime
+from datetime import timedelta
 import re
 
 from ..captcha.ReCaptcha import ReCaptcha
@@ -72,7 +72,7 @@ class FreakshareCom(Downloader):
                 self.retry_captcha()
 
             elif check == "downloadserver":
-                self.retry(5, datetime.timedelta(minutes=15).seconds, self._("No Download server"))
+                self.retry(5, timedelta(minutes=15).seconds, self._("No Download server"))
 
     def prepare(self):
         pyfile = self.pyfile

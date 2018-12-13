@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import datetime
+from datetime import timedelta
 import re
 import time
 from builtins import range
@@ -87,7 +87,7 @@ class MultiAccount(Account):
 
             self.pyload.addonManager.addEvent("plugin_updated", self.plugins_updated)
 
-            interval = datetime.timedelta(hours=self.config.get("mh_interval", 12)).seconds
+            interval = timedelta(hours=self.config.get("mh_interval", 12)).seconds
             self.periodical.start(interval, threaded=True, delay=2)
 
         else:
@@ -332,7 +332,7 @@ class MultiAccount(Account):
                         )
                     )
 
-                self.periodical.set_interval(datetime.timedelta(minutes=5).seconds)
+                self.periodical.set_interval(timedelta(minutes=5).seconds)
 
             else:
                 if reloading:
@@ -371,7 +371,7 @@ class MultiAccount(Account):
                             )
                         )
 
-                    self.periodical.set_interval(datetime.timedelta(minutes=5).seconds)
+                    self.periodical.set_interval(timedelta(minutes=5).seconds)
 
                 else:
                     if reloading:
@@ -410,7 +410,7 @@ class MultiAccount(Account):
                             "Failed to load hoster list for user `{}`, retry in 5 minutes"
                         ).format(self.user)
                     )
-                    self.periodical.set_interval(datetime.timedelta(minutes=5).seconds)
+                    self.periodical.set_interval(timedelta(minutes=5).seconds)
 
                 else:
                     self.log_error(
@@ -425,7 +425,7 @@ class MultiAccount(Account):
         if self.fail_count:
             self.fail_count = 0
 
-            interval = datetime.timedelta(hours=self.config.get("mh_interval", 12)).seconds
+            interval = timedelta(hours=self.config.get("mh_interval", 12)).seconds
             self.periodical.set_interval(interval)
 
         self._override()
@@ -460,7 +460,7 @@ class MultiAccount(Account):
     def updateAccounts(self, user, password=None, options={}):
         Account.updateAccounts(self, user, password, options)
         if self.need_reactivate:
-            interval = datetime.timedelta(hours=self.config.get("mh_interval", 12)).seconds
+            interval = timedelta(hours=self.config.get("mh_interval", 12)).seconds
             self.periodical.restart(interval, threaded=True, delay=2)
 
         self.need_reactivate = True

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import datetime
+from datetime import timedelta
 from ..base.multi_downloader import MultiDownloader
 from ..utils import replace_patterns
 
@@ -56,6 +56,6 @@ class SimplydebridCom(MultiDownloader):
 
     def check_download(self):
         if self.scan_download({"error": "No address associated with hostname"}):
-            self.retry(24, datetime.timedelta(minutes=3).seconds, self._("Bad file downloaded"))
+            self.retry(24, timedelta(minutes=3).seconds, self._("Bad file downloaded"))
 
         return MultiDownloader.check_download(self)

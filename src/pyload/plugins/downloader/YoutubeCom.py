@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import datetime
+from datetime import timedelta
 import json
 import operator
 import os
@@ -189,7 +189,7 @@ class Ffmpeg(object):
             m = self._RE_DURATION.search(line)
             if m is not None:
                 duration = sum(
-                    int(v) * [datetime.timedelta(hours=100).seconds, datetime.timedelta(minutes=100).seconds, 100, 1][i]
+                    int(v) * [timedelta(hours=100).seconds, timedelta(minutes=100).seconds, 100, 1][i]
                     for i, v in enumerate(m.groups())
                 )
                 break
@@ -212,7 +212,7 @@ class Ffmpeg(object):
                 m = self._RE_TIME.search(last_line)
                 if m is not None:
                     current_time = sum(
-                        int(v) * [datetime.timedelta(hours=100).seconds, datetime.timedelta(minutes=100).seconds, 100, 1][i]
+                        int(v) * [timedelta(hours=100).seconds, timedelta(minutes=100).seconds, 100, 1][i]
                         for i, v in enumerate(m.groups())
                     )
                     if self.plugin:
@@ -577,7 +577,7 @@ class YoutubeCom(Downloader):
 
         if (
             player_url in cache_info["cache"]
-            and time.time() < cache_info["cache"][player_url]["time"] + datetime.timedelta(hours=24).seconds
+            and time.time() < cache_info["cache"][player_url]["time"] + timedelta(hours=24).seconds
         ):
             self.log_debug("Using cached decode function to decrypt the URL")
 
@@ -636,7 +636,7 @@ class YoutubeCom(Downloader):
 
         #: Remove old records from cache
         for k in cache_info["cache"].keys():
-            if time.time() >= cache_info["cache"][k]["time"] + datetime.timedelta(hours=24).seconds:
+            if time.time() >= cache_info["cache"][k]["time"] + timedelta(hours=24).seconds:
                 cache_info["cache"].pop(k, None)
                 cache_dirty = True
 

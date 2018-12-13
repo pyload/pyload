@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import datetime
+from datetime import timedelta
 import re
 
 from ..base.simple_downloader import SimpleDownloader
@@ -114,7 +114,7 @@ class CzshareCom(SimpleDownloader):
         #: Get download ticket and parse html
         self.data = self.load(parsed_url)
         if re.search(self.MULTIDL_PATTERN, self.data):
-            self.retry(datetime.timedelta(minutes=5).seconds, 12, self._("Download limit reached"))
+            self.retry(timedelta(minutes=5).seconds, 12, self._("Download limit reached"))
 
         try:
             form = re.search(self.FREE_FORM_PATTERN, self.data, re.S).group(1)
@@ -136,7 +136,7 @@ class CzshareCom(SimpleDownloader):
             self.retry_captcha()
 
         elif re.search(self.MULTIDL_PATTERN, self.data):
-            self.retry(datetime.timedelta(minutes=5).seconds, 12, self._("Download limit reached"))
+            self.retry(timedelta(minutes=5).seconds, 12, self._("Download limit reached"))
 
         else:
             self.captcha.correct()
@@ -173,7 +173,7 @@ class CzshareCom(SimpleDownloader):
             self.restart(premium=False)
 
         elif check == "multi-dl":
-            self.retry(datetime.timedelta(minutes=5).seconds, 12, self._("Download limit reached"))
+            self.retry(timedelta(minutes=5).seconds, 12, self._("Download limit reached"))
 
         elif check == "captcha":
             self.retry_captcha()

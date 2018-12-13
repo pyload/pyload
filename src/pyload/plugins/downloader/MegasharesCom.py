@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import datetime
+from datetime import timedelta
 import re
 import time
 from builtins import str
@@ -62,7 +62,7 @@ class MegasharesCom(SimpleDownloader):
 
     def handle_free(self, pyfile):
         if self.NO_SLOTS_PATTERN in self.data:
-            self.retry(wait=datetime.timedelta(minutes=5).seconds)
+            self.retry(wait=timedelta(minutes=5).seconds)
 
         m = re.search(self.REACTIVATE_PASSPORT_PATTERN, self.data)
         if m is not None:
@@ -103,7 +103,7 @@ class MegasharesCom(SimpleDownloader):
         m = re.search(self.PASSPORT_RENEW_PATTERN, self.data)
         if m is not None:
             times = [int(x) for x in m.groups()]
-            renew = times[0] + datetime.timedelta(minutes=times[1]).seconds + datetime.timedelta(minutes=times[2]).seconds
+            renew = times[0] + timedelta(minutes=times[1]).seconds + timedelta(minutes=times[2]).seconds
             self.log_debug(f"Waiting {renew} seconds for a new passport")
             self.retry(wait=renew, msg=self._("Passport renewal"))
 

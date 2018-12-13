@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import datetime
+from datetime import timedelta
 import json
 import time
 
@@ -25,7 +25,7 @@ class LeechThreeHundreedSixtyCom(MultiAccount):
         ("mh_interval", "int", "Reload interval in hours", 12),
     ]
 
-    LOGIN_TIMEOUT = datetime.timedelta(minutes=8).seconds
+    LOGIN_TIMEOUT = timedelta(minutes=8).seconds
     TUNE_TIMEOUT = False
 
     API_URL = "https://leech360.com/api/get_"

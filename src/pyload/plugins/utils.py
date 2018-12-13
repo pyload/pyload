@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
 
-#
 # TODO: Move to utils directory in 0.6.x
 
-
 # import HTMLParser  # TODO: Use in 0.6.x
-
 import datetime
+from datetime import timedelta
 import hashlib
 import itertools
 import json
@@ -249,7 +247,7 @@ def sign_string(message, pem_private, pem_passphrase="", sign_algo="SHA384"):
 
 
 def format_time(value):
-    dt = datetime.datetime(1, 1, 1) + datetime.timedelta(seconds=abs(int(value)))
+    dt = datetime.datetime(1, 1, 1) + timedelta(seconds=abs(int(value)))
     days = ("{} days".format(dt.day - 1)) if dt.day > 1 else ""
     tm = ", ".join(
         "{} {}s".format(getattr(dt, attr), attr)
@@ -753,19 +751,19 @@ def seconds_to_nexthour(strict=False):
     now = datetime.today()
     nexthour = now.replace(
         minute=0 if strict else 1, second=0, microsecond=0
-    ) + datetime.timedelta(hours=1)
+    ) + timedelta(hours=1)
     return (nexthour - now).seconds
 
 
 def seconds_to_midnight(utc=None, strict=False):
     if isinstance(utc, int):
-        now = datetime.utcnow() + datetime.timedelta(hours=utc)
+        now = datetime.utcnow() + timedelta(hours=utc)
     else:
         now = datetime.today()
 
     midnight = now.replace(
         hour=0, minute=0 if strict else 1, second=0, microsecond=0
-    ) + datetime.timedelta(days=1)
+    ) + timedelta(days=1)
 
     return (midnight - now).seconds
 
@@ -785,7 +783,7 @@ def replace_patterns(value, rules):
 
 
 # TODO: Remove in 0.6.x and fix exp in CookieJar.setCookie
-def set_cookie(cj, domain, name, value, path="/", exp=time.time() + datetime.timedelta(hours=744).seconds):  #: 31 days retention
+def set_cookie(cj, domain, name, value, path="/", exp=time.time() + timedelta(hours=744).seconds):  #: 31 days retention
     args = list(map(encode, [domain, name, value, path])) + [int(exp)]
     return cj.setCookie(*args)
 

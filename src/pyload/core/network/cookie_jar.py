@@ -3,8 +3,7 @@
 
 import time
 from builtins import object
-import datetime
-
+from datetime import timedelta
 
 class CookieJar(object):
     def __init__(self, pluginname, account=None):
@@ -30,7 +29,7 @@ class CookieJar(object):
         return self.parseCookie(name)
 
     def setCookie(
-        self, domain, name, value, path="/", exp=time.time() + datetime.timedelta(hours=744).seconds  #: 31 days retention
+        self, domain, name, value, path="/", exp=time.time() + timedelta(hours=744).seconds  #: 31 days retention
     ):
         self.cookies[
             name

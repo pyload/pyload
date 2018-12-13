@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import datetime
+from datetime import timedelta
 import re
 import time
 
@@ -27,7 +28,7 @@ class UploadheroCom(Account):
         html = self.load("http://uploadhero.co/my-account")
 
         if _re_premium.search(html):
-            end_date = datetime.date.today() + datetime.timedelta(
+            end_date = datetime.date.today() + timedelta(
                 days=int(_re_premium.search(html).group(1))
             )
             end_date = time.mktime(end_date.timetuple())
