@@ -4,7 +4,8 @@
 import logging
 import threading
 
-import cheroot
+from cheroot import wsgi
+from cheroot.ssl.builtin import BuiltinSSLAdapter
 
 from .app import App
 
@@ -42,12 +43,12 @@ class WebServer(threading.Thread):
     def _run_produc(self):
         bind_path = self.prefix.strip("/") + "/"
         bind_addr = (self.host, self.port)
-        wsgi_app = cheroot.wsgi.PathInfoDispatcher({bind_path: self.app})
+        wsgi_app = wsgi.PathInfoDispatcher({bind_path: self.app})
 
-        server = cheroot.wsgi.Server(bind_addr, wsgi_app)
+        server = wsgi.Server(bind_addr, wsgi_app)
 
         if self.use_ssl:
-            server.ssl_adapter = cheroot.ssl.builtin.BuiltinSSLAdapter(
+            server.ssl_adapter = BuiltinSSLAdapter(
                 self.certfile, self.keyfile
             )
 
