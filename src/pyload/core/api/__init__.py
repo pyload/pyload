@@ -19,13 +19,7 @@ from ..utils.packagetools import parseNames
 from ..utils import compare_time, freeSpace
 import json
 
-try:
-    from ..remote.thriftbackend.thriftgen.ttypes import *
-    from ..remote.thriftbackend.thriftgen.Pyload import Iface
-
-    BaseObject = TBase
-except ImportError:
-    from ..remote.socketbackend.ttypes import *
+from ..datatype import *
 
 # contains function names mapped to their permissions
 # unlisted functions are for admins only
@@ -616,8 +610,9 @@ class Api(Iface):
         info = self.pyload.files.getFileData(int(fid))
         if not info:
             raise FileDoesNotExists(fid)
-
-        fdata = self._convertPyFile(list(info.values())[0])
+        
+        fileinfo = next(iter(info.values()))
+        fdata = self._convertPyFile(fileinfo)
         return fdata
 
     @permission(PERMS.DELETE)
@@ -813,7 +808,7 @@ class Api(Iface):
         """
         Aborts all running downloads.
         """
-        pyfiles = list(self.pyload.files.cache.values())
+        pyfiles = self.pyload.files.cache.values()
         for pyfile in pyfiles:
             pyfile.abortDownload()
 
@@ -825,8 +820,7 @@ class Api(Iface):
         :param fids: list of file ids
         :return:
         """
-        pyfiles = list(self.pyload.files.cache.values())
-
+        pyfiles = self.pyload.files.cache.values()
         for pyfile in pyfiles:
             if pyfile.id in fids:
                 pyfile.abortDownload()
