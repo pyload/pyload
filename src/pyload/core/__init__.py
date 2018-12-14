@@ -158,13 +158,13 @@ class Core(object):
             )
 
     def _init_managers(self):
-        from .manager.account_manager import AccountManager
-        from .manager.addon_manager import AddonManager
-        from .manager.captcha_manager import CaptchaManager
-        from .manager.event_manager import EventManager
-        from .manager.plugin_manager import PluginManager
+        from .managers.account_manager import AccountManager
+        from .managers.addon_manager import AddonManager
+        from .managers.captcha_manager import CaptchaManager
+        from .managers.event_manager import EventManager
+        from .managers.plugin_manager import PluginManager
         from .remote.remote_manager import RemoteManager
-        from .manager.thread_manager import ThreadManager
+        from .managers.thread_manager import ThreadManager
         from .scheduler import Scheduler
 
         self.scheduler = Scheduler(self)

@@ -3,7 +3,7 @@
 
 from builtins import object
 
-from ..manager.event_manager import UpdateEvent
+from ..managers.event_manager import UpdateEvent
 from ..utils import save_path
 
 

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
-from pyload.core.datatype.pyfile import PyFile
+from pyload.core.datatypes.pyfile import PyFile
 
 from ..base.addon import Addon
 

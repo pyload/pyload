@@ -8,7 +8,7 @@ from types import MethodType
 
 from _thread import start_new_thread
 
-from ..thread.addon_thread import AddonThread
+from ..threads.addon_thread import AddonThread
 from ..utils import lock
 from .plugin_manager import literal_eval
 

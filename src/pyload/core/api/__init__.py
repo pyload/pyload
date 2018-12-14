@@ -13,13 +13,13 @@ from builtins import object, str
 import os
 import time
 
-from ..datatype.pyfile import PyFile
+from ..datatypes.pyfile import PyFile
 from ..network.request_factory import getURL
 from ..utils.packagetools import parseNames
 from ..utils import compare_time, freeSpace
 import json
 
-from ..datatype import *
+from ..datatypes import *
 
 # contains function names mapped to their permissions
 # unlisted functions are for admins only

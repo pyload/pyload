@@ -4,9 +4,9 @@
 from builtins import object, range, str, zip
 from threading import RLock
 
-from ..datatype.pyfile import PyFile
-from ..datatype.pypackage import PyPackage
-from ..manager.event_manager import (
+from ..datatypes.pyfile import PyFile
+from ..datatypes.pypackage import PyPackage
+from ..managers.event_manager import (
     InsertEvent,
     ReloadAllEvent,
     RemoveEvent,

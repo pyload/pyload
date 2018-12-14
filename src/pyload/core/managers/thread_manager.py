@@ -12,11 +12,11 @@ from threading import Event, Lock
 
 import pycurl
 
-from ..datatype.pyfile import PyFile
+from ..datatypes.pyfile import PyFile
 from ..network.request_factory import getURL
-from ..thread.decrypter_thread import DecrypterThread
-from ..thread.download_thread import DownloadThread
-from ..thread.info_thread import InfoThread
+from ..threads.decrypter_thread import DecrypterThread
+from ..threads.download_thread import DownloadThread
+from ..threads.info_thread import InfoThread
 from ..utils import freeSpace, lock
 
 

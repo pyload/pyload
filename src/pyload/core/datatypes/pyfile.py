@@ -5,7 +5,7 @@ import time
 from builtins import object
 from threading import RLock
 
-from ..manager.event_manager import UpdateEvent
+from ..managers.event_manager import UpdateEvent
 from ..utils import formatSize, lock
 
 statusMap = {

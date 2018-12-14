@@ -5,7 +5,7 @@ from datetime import timedelta
 import time
 
 from ..api import OnlineStatus
-from ..datatype.pyfile import PyFile
+from ..datatypes.pyfile import PyFile
 from ..utils.packagetools import parseNames
 from .plugin_thread import PluginThread
 
