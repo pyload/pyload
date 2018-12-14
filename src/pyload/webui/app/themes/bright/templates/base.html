@@ -97,8 +97,8 @@
         <li {{ selected('app.collector') }}>
             <a href="{{ url_for('app.collector') }}" title=""><span class="glyphicon glyphicon-magnet"></span>  {{_("Packages")}}</a>
         </li>
-        <li {{ selected('app.downloads') }}>
-            <a href="{{ url_for('app.downloads') }}" title=""> <span class="glyphicon glyphicon-download"></span> {{_("Files")}}</a>
+        <li {{ selected('app.files') }}>
+            <a href="{{ url_for('app.files') }}" title=""> <span class="glyphicon glyphicon-download"></span> {{_("Files")}}</a>
         </li>
         <!-- <li {{ selected('app.filemanager') }}> -->
             <!-- <a href="{{ url_for('app.filemanager') }}" title=""><span class="glyphicon glyphicon-magnet"></span>  {{_("File Manager")}}</a> -->
@@ -147,10 +147,10 @@
 {% if perms.LIST %}
 
 <div class="btn-group btn-group-sm" role="group" aria-label="..." style="margin-right:10px; float:right;">
-  <button id="action_play" class="btn btn-default"><span >{{_("Download:")}}</span>&nbsp;<span  class="label label-{% if status.download %}success{% else %}danger{% endif %}">{% if status.download %}{{_("on")}}{% else %}{{_("off")}}{% endif %}</span></button>
+  <button id="action_play" class="btn btn-default"><span >{{_("Running:")}}</span>&nbsp;<span  class="label label-{% if status.download %}success{% else %}danger{% endif %}">{% if status.download %}{{_("on")}}{% else %}{{_("off")}}{% endif %}</span></button>
   <button id="action_stop" type="button" class="btn btn-default"><span>{{_("Reconnect:")}}</span>&nbsp;<span class="label label-{% if status.reconnect %}success{% else %}danger{% endif %}">{% if status.reconnect %}{{_("on")}}{% else %}{{_("off")}}{% endif %}</span></button>
   <button id="action_cancel" type="button" class="btn btn-default"><span class="action backlink">{{_("Speed:")}} <b id="speed">{{ status.speed }}</b></span></button>
-  <button id="action_add" type="button" class="btn btn-default"><span class="action cog">{{_("Active:")}} <b id="aktiv" title="{{_("Active")}}">{{ status.active }}</b> / <b id="aktiv_from" title="{{_("Queued")}}">{{ status.queue }}</b> / <b id="aktiv_total" title="{{_("Total")}}">{{ status.total }}</b></span></button>
+  <button id="action_add" type="button" class="btn btn-default"><span class="action cog">{{_("Active:")}} <b id="aktiv" title="{{_("Active")}}">{{ status.active }}</b> | <b id="aktiv_from" title="{{_("Queued")}}">{{ status.queue }}</b> | <b id="aktiv_total" title="{{_("Total")}}">{{ status.total }}</b></span></button>
 </div>
 
 {% endif %}

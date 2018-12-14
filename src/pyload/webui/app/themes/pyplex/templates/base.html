@@ -87,7 +87,7 @@
           <li ondragstart="return false;" {{selected('app.collector')}}>
               <a href="/collector" title=""><span class="glyphicon glyphicon-magnet"></span><span class="hidden-sm"> {{_('Packages')}}</span></a>
           </li>
-          <li ondragstart="return false;" {{selected('app.downloads')}}>
+          <li ondragstart="return false;" {{selected('app.files')}}>
               <a href="/downloads" title=""> <span class="glyphicon glyphicon-download"></span><span class="hidden-sm"> {{_('Files')}}</span></a>
           </li>
           <!-- <li ondragstart="return false;" {{selected('app.filemanager')}}> -->
@@ -143,10 +143,10 @@
 
 {% if perms.LIST %}
     <div class="btn-group btn-group-sm col-xs-12 col-sm-auto" role="group" aria-label="..." style="float:right;">
-        <button class="btn btn-dark col-xs-3 col-sm-auto"><span class="hidden-sm">{{_('Download:')}}</span><span class="glyphicon glyphicon-download hidden-xs hidden-md hidden-lg"></span> <span id="time"  class="label label-{% if status.download %}success{% else %}danger{% endif %}">{% if status.download %}{{_('on')}}{% else %}{{_('off')}}{% endif %}</span></button>
+        <button class="btn btn-dark col-xs-3 col-sm-auto"><span class="hidden-sm">{{_('Running:')}}</span><span class="glyphicon glyphicon-download hidden-xs hidden-md hidden-lg"></span> <span id="time"  class="label label-{% if status.download %}success{% else %}danger{% endif %}">{% if status.download %}{{_('on')}}{% else %}{{_('off')}}{% endif %}</span></button>
         <button type="button" class="btn btn-dark col-xs-3 col-sm-auto"><span class="hidden-sm">{{_('Reconnect:')}}</span><span class="glyphicon glyphicon-refresh hidden-xs hidden-md hidden-lg"></span> <span id="reconnect" class="label label-{% if status.reconnect %}success{% else %}danger{% endif %}">{% if status.reconnect %}{{_('on')}}{% else %}{{_('off')}}{% endif %}</span></button>
         <button type="button" class="btn btn-dark col-xs-3 col-sm-auto"><span class="action backlink"><span class="hidden-xs hidden-sm">{{_('Speed:')}} </span><b id="speed">{{status.speed}}</b></span></button>
-        <button type="button" class="btn btn-dark col-xs-3 col-sm-auto"><span class="action cog">{{_('Active:')}} <b id="aktiv" title="{{_('Active')}}">{{status.active}}</b> / <b id="aktiv_from" title="{{_('Queued')}}">{{status.queue}}</b> / <b id="aktiv_total" title="{{_('Total')}}">{{status.total}}</b></span></button>
+        <button type="button" class="btn btn-dark col-xs-3 col-sm-auto"><span class="action cog">{{_('Active:')}} <b id="aktiv" title="{{_('Active')}}">{{status.active}}</b> | <b id="aktiv_from" title="{{_('Queued')}}">{{status.queue}}</b> | <b id="aktiv_total" title="{{_('Total')}}">{{status.total}}</b></span></button>
     </div>
 {% endif %}
 </div>

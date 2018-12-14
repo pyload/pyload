@@ -8,7 +8,7 @@
 
 const root = this;
 
-window.addEvent("domready", function() {
+document.addEvent("domready", function() {
 
     root.passwordDialog = new MooDialog({destroyOnHide: false});
     root.passwordDialog.setContent($('password_box'));

@@ -8,7 +8,7 @@
 
 const root = this;
 
-window.addEvent('domready', function() {
+document.addEvent('domready', function() {
   root.accountDialog = new MooDialog({destroyOnHide: false});
   root.accountDialog.setContent($('account_box'));
 

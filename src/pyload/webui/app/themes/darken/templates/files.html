@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends theme('base.html') %}
 
 {% block title %}{{_("Saved Files")}} - {{super()}} {% endblock %}
 
@@ -14,14 +14,14 @@
         {{ folder.name }}
         <ul>
         {% for file in folder.files %}
-        <li><a href='get/{{ folder.path|escape }}/{{ file|escape }}'>{{file}}</a></li>
+        <li><a href='files/get/{{ folder.path|escape }}/{{ file|escape }}'>{{file}}</a></li>
         {% endfor %}
         </ul>
     </li>
     {% endfor %}
 
     {% for file in files.files %}
-    <li> <a href='get/{{ file|escape }}'>{{ file }}</a></li>
+    <li> <a href='files/get/{{ file|escape }}'>{{ file }}</a></li>
     {% endfor %}
 
 </ul>

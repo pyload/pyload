@@ -14,14 +14,14 @@
         <span style="margin-right: 5px" class="glyphicon glyphicon-folder-close"></span>{{ folder.name }}
         <ul>
         {% for file in folder.files %}
-        <li style="list-style-type: none;"><span style="margin-right: 5px" class="glyphicon glyphicon-file"></span><a href='get/{{ folder.path|escape }}/{{ file|escape }}'>{{file}}</a></li>
+        <li style="list-style-type: none;"><span style="margin-right: 5px" class="glyphicon glyphicon-file"></span><a href='files/get/{{ folder.path|escape }}/{{ file|escape }}'>{{file}}</a></li>
         {% endfor %}
         </ul>
     </li>
     {% endfor %}
 
     {% for file in files.files %}
-    <li style="list-style-type: none;"> <span style="margin-right: 5px" class="glyphicon glyphicon-file"></span><a href='get/{{ file|escape }}'>{{ file }}</a></li>
+    <li style="list-style-type: none;"> <span style="margin-right: 5px" class="glyphicon glyphicon-file"></span><a href='files/get/{{ file|escape }}'>{{ file }}</a></li>
     {% endfor %}
 
 </ul>

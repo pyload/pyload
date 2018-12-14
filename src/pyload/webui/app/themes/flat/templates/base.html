@@ -92,8 +92,8 @@
     <li {{ selected('app.collector') }}>
         <a href="{{ url_for('app.collector') }}" title=""><img src="{{theme_static('img/head-menu-collector.png')}}" alt="" /> {{_("Packages")}}</a>
     </li>
-    <li {{ selected('app.downloads') }}>
-        <a href="{{ url_for('app.downloads') }}" title=""><img src="{{theme_static('img/head-menu-development.png')}}" alt="" /> {{_("Files")}}</a>
+    <li {{ selected('app.files') }}>
+        <a href="{{ url_for('app.files') }}" title=""><img src="{{theme_static('img/head-menu-development.png')}}" alt="" /> {{_("Files")}}</a>
     </li>
     <!-- <li {{ selected('app.filemanager') }}> -->
         <!-- <a href="{{ url_for('app.filemanager') }}" title=""><img src="{{theme_static('img/head-menu-download.png')}}" alt="" /> {{_("File Manager")}}</a> -->
@@ -123,10 +123,10 @@
 
 {% if perms.LIST %}
 <ul id="page-actions">
-    <li><span class="time">{{_("Download:")}}</span><a id="time" style=" background-color: {% if status.download %}#8ffc25{% else %} #fc6e26{% endif %}; padding-left: 0cm; padding-right: 0.1cm; "> {% if status.download %}{{_("on")}}{% else %}{{_("off")}}{% endif %}</a></li>
+    <li><span class="time">{{_("Running:")}}</span><a id="time" style=" background-color: {% if status.download %}#8ffc25{% else %} #fc6e26{% endif %}; padding-left: 0cm; padding-right: 0.1cm; "> {% if status.download %}{{_("on")}}{% else %}{{_("off")}}{% endif %}</a></li>
     <li><span class="reconnect">{{_("Reconnect:")}}</span><a id="reconnect" style=" background-color: {% if status.reconnect %}#8ffc25{% else %} #fc6e26{% endif %}; padding-left: 0cm; padding-right: 0.1cm;color:black; "> {% if status.reconnect %}{{_("on")}}{% else %}{{_("off")}}{% endif %}</a></li>
     <li><a class="action backlink">{{_("Speed:")}} <b id="speed">{{ status.speed }}</b></a></li>
-    <li><a class="action cog">{{_("Active:")}} <b id="aktiv" title="{{_("Active")}}">{{ status.active }}</b> / <b id="aktiv_from" title="{{_("Queued")}}">{{ status.queue }}</b> / <b id="aktiv_total" title="{{_("Total")}}">{{ status.total }}</b></a></li>
+    <li><a class="action cog">{{_("Active:")}} <b id="aktiv" title="{{_("Active")}}">{{ status.active }}</b> | <b id="aktiv_from" title="{{_("Queued")}}">{{ status.queue }}</b> | <b id="aktiv_total" title="{{_("Total")}}">{{ status.total }}</b></a></li>
     <li><a href=""  class="action revisions" accesskey="o" rel="nofollow">{{_("Reload page")}}</a></li>
 </ul>
 {% endif %}
