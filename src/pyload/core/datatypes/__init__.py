@@ -10,6 +10,7 @@
 
 from builtins import object
 from collections.abc import Mapping
+from enum import IntEnum
 
 
 class BaseObject(Mapping):
@@ -19,41 +20,42 @@ class BaseObject(Mapping):
         return getattr(self, key)
 
     def __iter__(self):
-        return iter(attr for attr in dir(self) if not attr.startswith('__'))
+        for attr in self.__slots__:
+            yield attr
 
     def __len__(self):
-        return sum(1 for _ in self)
+        return len(self.__slots__)
 
 
-class Destination(object):
-    Collector = 0
-    Queue = 1
+class Destination(IntEnum):
+    COLLECTOR = 0
+    QUEUE = 1
 
 
-class DownloadStatus(object):
-    Aborted = 9
-    Custom = 11
-    Decrypting = 10
-    Downloading = 12
-    Failed = 8
-    Finished = 0
-    Offline = 1
-    Online = 2
-    Processing = 13
-    Queued = 3
-    Skipped = 4
-    Starting = 7
-    TempOffline = 6
-    Unknown = 14
-    Waiting = 5
+class DownloadStatus(IntEnum):
+    ABORTED = 9
+    CUSTOM = 11
+    DECRYPTING = 10
+    DOWNLOADING = 12
+    FAILED = 8
+    FINISHED = 0
+    OFFLINE = 1
+    ONLINE = 2
+    PROCESSING = 13
+    QUEUED = 3
+    SKIPPED = 4
+    STARTING = 7
+    TEMPOFFLINE = 6
+    UNKNOWN = 14
+    WAITING = 5
 
 
-class ElementType(object):
-    File = 1
-    Package = 0
+class ElementType(IntEnum):
+    FILE = 1
+    PACKAGE = 0
 
 
-class Input(object):
+class Input(IntEnum):
     BOOL = 4
     CHOICE = 6
     CLICK = 5
@@ -66,7 +68,7 @@ class Input(object):
     TEXTBOX = 2
 
 
-class Output(object):
+class Output(IntEnum):
     CAPTCHA = 1
     NOTIFICATION = 4
     QUESTION = 2
@@ -364,7 +366,7 @@ class PackageDoesNotExists(Exception):
 
 
 class ServerStatus(BaseObject):
-    __slots__ = ["pause", "active", "queue", "total", "speed", "download", "reconnect"]
+    __slots__ = ["pause", "active", "queue", "total", "speed", "download", "reconnect", "captcha"]
 
     def __init__(
         self,
@@ -375,6 +377,7 @@ class ServerStatus(BaseObject):
         speed=None,
         download=None,
         reconnect=None,
+        captcha=None
     ):
         self.pause = pause
         self.active = active
@@ -383,6 +386,7 @@ class ServerStatus(BaseObject):
         self.speed = speed
         self.download = download
         self.reconnect = reconnect
+        self.captcha = captcha
 
 
 class ServiceCall(BaseObject):
@@ -421,215 +425,3 @@ class UserData(BaseObject):
         self.role = role
         self.permission = permission
         self.templateName = templateName
-
-
-class Iface(object):
-    def addFiles(self, pid, links):
-        pass
-
-    def addPackage(self, name, links, dest):
-        pass
-
-    def call(self, info):
-        pass
-
-    def checkOnlineStatus(self, urls):
-        pass
-
-    def checkOnlineStatusContainer(self, urls, filename, data):
-        pass
-
-    def checkURLs(self, urls):
-        pass
-
-    def deleteFiles(self, fids):
-        pass
-
-    def deleteFinished(self):
-        pass
-
-    def deletePackages(self, pids):
-        pass
-
-    def freeSpace(self):
-        pass
-
-    def generateAndAddPackages(self, links, dest):
-        pass
-
-    def generatePackages(self, links):
-        pass
-
-    def getAccountTypes(self):
-        pass
-
-    def getAccounts(self, refresh):
-        pass
-
-    def getAllInfo(self):
-        pass
-
-    def getAllUserData(self):
-        pass
-
-    def getCaptchaTask(self, exclusive):
-        pass
-
-    def getCaptchaTaskStatus(self, tid):
-        pass
-
-    def getCollector(self):
-        pass
-
-    def getCollectorData(self):
-        pass
-
-    def getConfig(self):
-        pass
-
-    def getConfigValue(self, category, option, section):
-        pass
-
-    def getEvents(self, uuid):
-        pass
-
-    def getFileData(self, fid):
-        pass
-
-    def getFileOrder(self, pid):
-        pass
-
-    def getInfoByPlugin(self, plugin):
-        pass
-
-    def getLog(self, offset):
-        pass
-
-    def getPackageData(self, pid):
-        pass
-
-    def getPackageInfo(self, pid):
-        pass
-
-    def getPackageOrder(self, destination):
-        pass
-
-    def getPluginConfig(self):
-        pass
-
-    def getQueue(self):
-        pass
-
-    def getQueueData(self):
-        pass
-
-    def getServerVersion(self):
-        pass
-
-    def getServices(self):
-        pass
-
-    def getUserData(self, username, password):
-        pass
-
-    def hasService(self, plugin, func):
-        pass
-
-    def isCaptchaWaiting(self):
-        pass
-
-    def isTimeDownload(self):
-        pass
-
-    def isTimeReconnect(self):
-        pass
-
-    def kill(self):
-        pass
-
-    def login(self, username, password):
-        pass
-
-    def moveFiles(self, fids, pid):
-        pass
-
-    def movePackage(self, destination, pid):
-        pass
-
-    def orderFile(self, fid, position):
-        pass
-
-    def orderPackage(self, pid, position):
-        pass
-
-    def parseURLs(self, html, url):
-        pass
-
-    def pauseServer(self):
-        pass
-
-    def pollResults(self, rid):
-        pass
-
-    def pullFromQueue(self, pid):
-        pass
-
-    def pushToQueue(self, pid):
-        pass
-
-    def recheckPackage(self, pid):
-        pass
-
-    def removeAccount(self, plugin, account):
-        pass
-
-    def restart(self):
-        pass
-
-    def restartFailed(self):
-        pass
-
-    def restartFile(self, fid):
-        pass
-
-    def restartPackage(self, pid):
-        pass
-
-    def setCaptchaResult(self, tid, result):
-        pass
-
-    def setConfigValue(self, category, option, value, section):
-        pass
-
-    def setPackageData(self, pid, data):
-        pass
-
-    def setPackageName(self, pid, name):
-        pass
-
-    def statusDownloads(self):
-        pass
-
-    def statusServer(self):
-        pass
-
-    def stopAllDownloads(self):
-        pass
-
-    def stopDownloads(self, fids):
-        pass
-
-    def togglePause(self):
-        pass
-
-    def toggleReconnect(self):
-        pass
-
-    def unpauseServer(self):
-        pass
-
-    def updateAccount(self, plugin, account, password, options):
-        pass
-
-    def uploadContainer(self, filename, data):
-        pass

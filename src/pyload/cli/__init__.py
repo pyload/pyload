@@ -18,7 +18,7 @@ from threading import Lock, Thread
 
 from easy_getch import getch
 
-from pyload.core.api import Destination
+from pyload.core.datatypes import Destination
 # from pyload.core.remote.thriftbackend.thrift_client import (
     # ConnectionClosed,
     # NoConnection,
@@ -252,7 +252,7 @@ class Cli(object):
             self.setHandler(ManageFiles)
         elif char == "3":
             self.setHandler(ManageFiles)
-            self.bodyHandler.target = Destination.Collector
+            self.bodyHandler.target = Destination.COLLECTOR
         elif char == "4":
             self.client.api.togglePause()
             self.setInput()
@@ -311,7 +311,7 @@ class Cli(object):
                 )
                 return
 
-            self.client.addPackage(args[0], args[1:], Destination.Queue)
+            self.client.addPackage(args[0], args[1:], Destination.QUEUE)
 
         elif command == "add_coll":
             if len(args) < 2:
@@ -322,7 +322,7 @@ class Cli(object):
                 )
                 return
 
-            self.client.addPackage(args[0], args[1:], Destination.Collector)
+            self.client.addPackage(args[0], args[1:], Destination.COLLECTOR)
 
         elif command == "del_file":
             self.client.deleteFiles(int(x) for x in args)

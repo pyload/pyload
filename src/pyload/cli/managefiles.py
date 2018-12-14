@@ -5,7 +5,7 @@ import time
 from builtins import map, range, str
 from itertools import islice
 
-from pyload.core.api import Destination, PackageData
+from pyload.core.datatypes import Destination, PackageData
 
 from .handler import Handler
 from .printer import *
@@ -17,7 +17,7 @@ class ManageFiles(Handler):
     """
 
     def init(self):
-        self.target = Destination.Queue
+        self.target = Destination.QUEUE
         self.pos = 0  #: position in queue
         self.package = -1  #: choosen package
         self.mode = ""  #: move/delete/restart
@@ -147,7 +147,7 @@ class ManageFiles(Handler):
         if self.cache and self.time + 2 < time.time():
             return self.cache
 
-        if self.target == Destination.Queue:
+        if self.target == Destination.QUEUE:
             data = self.client.getQueue()
         else:
             data = self.client.getCollector()

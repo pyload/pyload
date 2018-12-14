@@ -14,6 +14,7 @@ from ..managers.event_manager import (
 )
 from ..utils import formatSize, lock
 from .database_thread import DatabaseThread, style
+from ..datatypes import Destination
 
 
 class FileHandler(object):
@@ -96,10 +97,11 @@ class FileHandler(object):
         self.db.syncSave()
 
     @lock
-    def getCompleteData(self, queue=1):
+    def getCompleteData(self, queue=Destination.QUEUE):
         """
         gets a complete data representation.
         """
+        queue = queue.value
         data = self.db.getAllLinks(queue)
         packs = self.db.getAllPackages(queue)
 
@@ -117,10 +119,11 @@ class FileHandler(object):
         return packs
 
     @lock
-    def getInfoData(self, queue=1):
+    def getInfoData(self, queue=Destination.QUEUE):
         """
         gets a data representation without links.
         """
+        queue = queue.value
         packs = self.db.getAllPackages(queue)
         for x in self.packageCache.values():
             if x.queue != queue or x.id not in packs:
@@ -148,13 +151,13 @@ class FileHandler(object):
     # ----------------------------------------------------------------------
     @lock
     @change
-    def addPackage(self, name, folder, queue=0):
+    def addPackage(self, name, folder, queue=Destination.QUEUE):
         """
         adds a package, default to link collector.
         """
-        lastID = self.db.addPackage(name, folder, queue)
+        lastID = self.db.addPackage(name, folder, queue.value)
         p = self.db.getPackage(lastID)
-        e = InsertEvent("pack", lastID, p.order, "collector" if not queue else "queue")
+        e = InsertEvent("pack", lastID, p.order, "collector" if queue is Destination.COLLECTOR else "queue")
         self.pyload.eventManager.addEvent(e)
         return lastID
 
@@ -483,6 +486,7 @@ class FileHandler(object):
         """
         push package to queue.
         """
+        queue = queue.value
         p = self.db.getPackage(id)
         oldorder = p.order
 

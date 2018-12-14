@@ -8,7 +8,7 @@ from urllib.parse import urljoin, urlparse
 import flask
 import flask_themes2
 
-from pyload.core.api import PERMS, ROLE, has_permission
+from pyload.core.api import Perms, Role, has_permission
     
 
 class JSONEncoder(flask.json.JSONEncoder):
@@ -71,37 +71,35 @@ def render_template(template, **context):
 
 
 def parse_permissions(session=flask.session):
-    perms = {x: False for x in dir(PERMS) if not x.startswith("_")}
+    perms = {x.name: False for x in Perms}
     perms["ADMIN"] = False
     perms["is_admin"] = False
 
     if not session.get("authenticated", False):
         return perms
 
-    if session.get("role") == ROLE.ADMIN:
-        for k in perms.keys():
-            perms[k] = True
+    if session.get("role") == Role.ADMIN:
+        for key in perms.keys():
+            perms[key] = True
 
     elif session.get("perms"):
         p = session.get("perms")
-        get_permission(perms, p)
+        perms.update(get_permission(p))
 
     return perms
 
 
 def permlist():
-    return [x for x in dir(PERMS) if not x.startswith("_") and x != "ALL"]
+    return [x.name for x in Perms if x.name != "ALL"]
 
 
-def get_permission(perms, p):
+def get_permission(userperms):
     """
     Returns a dict with permission key.
 
-    :param perms: dictionary
-    :param p:  bits
+    :param userperms: permission bits
     """
-    for name in permlist():
-        perms[name] = has_permission(p, getattr(PERMS, name))
+    return {name: has_permission(userperms, getattr(Perms, name).value) for name in permlist()}
 
 
 def set_permission(perms):
@@ -111,12 +109,12 @@ def set_permission(perms):
     :param perms: dict
     """
     permission = 0
-    for name in dir(PERMS):
+    for name in Perms:
         if name.startswith("_"):
             continue
 
         if name in perms and perms[name]:
-            permission |= getattr(PERMS, name)
+            permission |= getattr(Perms, name)
 
     return permission
 
