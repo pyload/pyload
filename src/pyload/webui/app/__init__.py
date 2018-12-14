@@ -20,6 +20,7 @@ from .handlers import ERROR_HANDLERS
 from .extensions import EXTENSIONS
 from .processors import CONTEXT_PROCESSORS
 from .config import get_default_config
+from .helpers import JSONEncoder
 
 
 #: flask app singleton
@@ -55,6 +56,10 @@ class App(object):
         for exc, fn in cls.FLASK_ERROR_HANDLERS:
             app.register_error_handler(exc, fn)
             
+    @classmethod
+    def _configure_json_encoding(cls, app):    
+        app.json_encoder = JSONEncoder
+        
     @classmethod
     def _configure_templating(cls, app):        
         cachedir = app.config["PYLOAD_API"].get_cachedir()
@@ -103,6 +108,7 @@ class App(object):
         cls._configure_api(app, pycore)
         cls._configure_config(app, develop)
         cls._configure_templating(app)
+        cls._configure_json_encoding(app)
         cls._configure_session(app)
         cls._configure_blueprints(app)
         cls._configure_extensions(app)

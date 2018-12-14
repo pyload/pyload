@@ -108,7 +108,6 @@ def dashboard():
 def queue():
     api = flask.current_app.config["PYLOAD_API"]
     queue = api.getQueue()
-
     queue.sort(key=operator.attrgetter("order"))
 
     return render_template("queue.html", content=queue, target=1)
@@ -125,9 +124,9 @@ def collector():
     return render_template("queue.html", content=queue, target=0)
 
 
-@bp.route("/downloads", endpoint="downloads")
+@bp.route("/files", endpoint="files")
 @login_required("DOWNLOAD")
-def downloads():
+def files():
     api = flask.current_app.config["PYLOAD_API"]
     root = api.getConfigValue("general", "storage_folder")
 
@@ -153,12 +152,12 @@ def downloads():
         elif os.path.isfile(os.path.join(root, item)):
             data["files"].append(item)
 
-    return render_template("downloads.html", files=data)
+    return render_template("files.html", files=data)
 
 
-@bp.route("/downloads/get/<filename>", endpoint="get_download")
+@bp.route("/files/get/<filename>", endpoint="get_file")
 @login_required("DOWNLOAD")
-def get_download(filename):
+def get_file(filename):
     api = flask.current_app.config["PYLOAD_API"]
     filename = unquote(filename).decode("utf-8").replace("..", "")
     directory = api.getConfigValue("general", "storage_folder")

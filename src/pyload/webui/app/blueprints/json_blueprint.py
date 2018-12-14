@@ -25,13 +25,8 @@ def format_time(seconds):
 @login_required("LIST")
 def status():
     api = flask.current_app.config["PYLOAD_API"]
-    try:
-        data = api.statusServer()
-        data["captcha"] = api.isCaptchaWaiting()
-        return jsonify(data)
-
-    except Exception:
-        flask.abort(500)
+    data = api.statusServer()
+    return jsonify(data)
 
 
 @bp.route("/links", methods=["GET", "POST"], endpoint="links")

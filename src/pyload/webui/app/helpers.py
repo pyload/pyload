@@ -11,6 +11,16 @@ import flask_themes2
 from pyload.core.api import PERMS, ROLE, has_permission
     
 
+class JSONEncoder(flask.json.JSONEncoder):
+    
+    def default(self, obj):
+        try:
+            return dict(obj)
+        except TypeError:
+            pass
+        return super().default(obj)
+
+
 #: Checks if location belongs to same host address
 def is_safe_url(location):
     ref_url = urlparse(flask.request.host_url)
@@ -33,10 +43,6 @@ def render_base(messages):
     return render_template("base.html", messages=messages)
 
 
-def render_error(messages):
-    return render_template("error.html", messages=messages)
-
-
 def clear_session(session=flask.session, permanent=True):
     session.permanent = bool(permanent)
     session.clear()
@@ -54,7 +60,7 @@ def static_file_url(filename):
     try:
         url = flask_themes2.static_file_url(theme, filename)
     except KeyError:
-        url = flask.url_for(filename)
+        url = flask.url_for('static', filename=filename)
     return url
     
     
@@ -156,9 +162,7 @@ def is_authenticated(session=flask.session):
 
 
 def login_required(perm):
-
     def decorator(func):
-    
         @wraps(func)
         def wrapper(*args, **kwargs):
             s = flask.session
@@ -178,14 +182,6 @@ def login_required(perm):
                 response = flask.redirect(location)
                 
             return response
-
         return wrapper
-
     return decorator
     
-
-# def todict(obj):
-    # ret = {}
-    # for att in obj.__slots__:
-        # ret[att] = getattr(obj, att)
-    # return ret

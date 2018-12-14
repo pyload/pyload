@@ -47,9 +47,9 @@ def rpc(func, args=""):
 def call_api(func, *args, **kwargs):
     api = flask.current_app.config["PYLOAD_API"]
 
-    if not hasattr(api.EXTERNAL, func) or func.startswith("_"):
+    if func.startswith("_"):
         flask.flash(f"Invalid API call '{func}'")
-        return "Not Found", 404
+        return "Forbidden", 403
 
     result = getattr(api, func)(
         *[literal_eval(x) for x in args],
