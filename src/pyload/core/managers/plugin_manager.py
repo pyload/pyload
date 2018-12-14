@@ -11,7 +11,7 @@ from itertools import chain
 
 import semver
 
-from pyload import PKGDIR
+from pyload import PKGDIR, APPID
 
 
 class PluginManager(object):
@@ -330,8 +330,8 @@ class PluginManager(object):
         """
         plugins = self.plugins[type]
         if name in plugins:
-            if "pyload" in plugins[name]:
-                return plugins[name]["pyload"]
+            if APPID in plugins[name]:
+                return plugins[name][APPID]
             try:
                 module = __import__(
                     self.ROOT + f"{type}.{plugins[name]['name']}",
@@ -339,7 +339,7 @@ class PluginManager(object):
                     locals(),
                     plugins[name]["name"],
                 )
-                plugins[name]["pyload"] = module  #: cache import, maybe unneeded
+                plugins[name][APPID] = module  #: cache import, maybe unneeded
                 return module
             except Exception as exc:
                 self.pyload.log.error(
@@ -447,9 +447,9 @@ class PluginManager(object):
         for type in as_dict.keys():
             for plugin in as_dict[type]:
                 if plugin in self.plugins[type]:
-                    if "pyload" in self.plugins[type][plugin]:
+                    if APPID in self.plugins[type][plugin]:
                         self.pyload.log.debug(f"Reloading {plugin}")
-                        importlib.reload(self.plugins[type][plugin]["pyload"])
+                        importlib.reload(self.plugins[type][plugin][APPID])
 
         # index creation
         self.crypterPlugins, config = self.parse("decrypter", pattern=True)

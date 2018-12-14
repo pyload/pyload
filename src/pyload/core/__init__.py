@@ -16,7 +16,7 @@ import locale
 import os
 import time
 
-from pyload import PKGDIR
+from pyload import PKGDIR, APPID
 from .. import __version__ as PYLOAD_VERSION
 from .. import __version_info__ as PYLOAD_VERSION_INFO
 from .utils import formatSize, freeSpace, invertmap
@@ -42,9 +42,9 @@ class Exit(Exception):
 #  improve external scripts
 class Core(object):
 
-    _LOCALE_DOMAIN = "pyload"
-    _DEFAULT_USERNAME = "admin"
-    _DEFAULT_PASSWORD = "pyload"
+    _LOCALE_DOMAIN = APPID
+    _DEFAULT_USERNAME = APPID
+    _DEFAULT_PASSWORD = APPID
     _DEBUG_LEVEL_MAP = {"debug": 1, "trace": 2, "stack": 3}
 
     @property

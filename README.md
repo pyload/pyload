@@ -25,7 +25,7 @@ Help:
     pyload -h
 
 The pyLoad web interface will be reachable pointing your browser to the url `http://localhost:8001`.
-Default username is `admin`, default password is `pyload`.
+Default username (and password) is `pyload`.
 
 
 -------------------------

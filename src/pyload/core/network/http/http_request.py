@@ -12,6 +12,8 @@ from urllib.parse import quote, urlencode
 import pycurl
 from pyload.plugins.plugin import Abort
 
+from pyload import APPID
+
 
 def myquote(url):
     return quote(
@@ -89,7 +91,7 @@ class HTTPRequest(object):
         self.c.setopt(pycurl.WRITEFUNCTION, self.write)
         self.c.setopt(pycurl.HEADERFUNCTION, self.writeHeader)
 
-        self.log = getLogger("pyload")
+        self.log = getLogger(APPID)
 
     def __enter__(self):
         return self

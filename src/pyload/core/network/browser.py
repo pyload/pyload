@@ -6,10 +6,12 @@ from logging import getLogger
 from .http.http_download import HTTPDownload
 from .http.http_request import HTTPRequest
 
+from pyload import APPID
+
 
 class Browser(object):
     def __init__(self, bucket=None, options={}):
-        self.log = getLogger("pyload")
+        self.log = getLogger(APPID)
 
         self.options = options  #: holds pycurl options
         self.bucket = bucket

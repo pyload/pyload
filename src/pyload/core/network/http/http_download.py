@@ -14,6 +14,8 @@ from ...utils import fs_encode
 from .http_chunk import ChunkInfo, HTTPChunk
 from .http_request import BadHeader
 
+from pyload import APPID
+
 
 class HTTPDownload(object):
     """
@@ -50,7 +52,7 @@ class HTTPDownload(object):
 
         self.chunks = []
 
-        self.log = getLogger("pyload")
+        self.log = getLogger(APPID)
 
         try:
             self.info = ChunkInfo.load(filename)
