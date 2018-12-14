@@ -11,7 +11,7 @@ from .app import App
 
 
 # TODO: make configurable to serve API
-class WebServer(threading.Thread):
+class WebServerThread(threading.Thread):
     def __init__(self, pycore):
         super().__init__()
         self.daemon = True

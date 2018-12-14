@@ -130,9 +130,9 @@ class Core(object):
         self.api = Api(self)
 
     def _init_webserver(self):
-        from pyload.webui.server_thread import WebServer
+        from pyload.webui.webserver_thread import WebServerThread
 
-        self.webserver = WebServer(self)
+        self.webserver = WebServerThread(self)
 
     def _init_database(self, restore):
         from .database import DatabaseThread, FileHandler
@@ -266,9 +266,10 @@ class Core(object):
         self.log.info(self._("Activating Plugins..."))
         self.adm.coreReady()
 
-    def _start_webui(self):
-        if self.config.get("webui", "enabled"):
-            self.webserver.start()
+    def _start_webserver(self):
+        if not self.config.get("webui", "enabled"):
+            return
+        self.webserver.start()
 
     def _parse_linkstxt(self):
         link_file = os.path.join(self.userdir, "links.txt")
@@ -310,7 +311,7 @@ class Core(object):
             # from meliae import scanner
             # scanner.dump_all_objects(os.path.join(PACKDIR, 'objs.json'))
 
-            self._start_webui()
+            self._start_webserver()
             self._parse_linkstxt()
 
             self.log.debug("*** pyLoad is up and running ***")
