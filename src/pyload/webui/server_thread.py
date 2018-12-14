@@ -53,7 +53,7 @@ class WebServer(threading.Thread):
 
         #: hack cheroot to use our custom logger
         server.error_log = lambda *args, **kwgs: self.log.log(
-            kwgs.get("level", logging.ERROR), args[0], exc_info=self.develop
+            kwgs.get("level", logging.ERROR), args[0], exc_info=self.pyload.debug
         )
 
         server.safe_start()

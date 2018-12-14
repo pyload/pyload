@@ -7,101 +7,49 @@ from urllib.parse import urljoin, urlparse
 
 import flask
 import flask_themes2
-from flask import request
 
 from pyload.core.api import PERMS, ROLE, has_permission
+    
 
-# class User(UserMixin):
-
-# def __init__(self, id):
-# self.id = id
-
-# def is_active(self):
-# """True, as all users are active."""
-# return True
-
-# def get_id(self):
-# """Return the email address to satisfy Flask-Login's requirements."""
-# return self.email
-
-# def is_authenticated(self):
-# """Return True if the user is authenticated."""
-# return self.authenticated
-
-# def is_anonymous(self):
-# """False, as anonymous users aren't supported."""
-# return False
+#: Check if location belongs to same host address
+def is_safe_url(location):
+    ref_url = urlparse(flask.request.host_url)
+    test_url = urlparse(urljoin(flask.request.host_url, location))
+    return ref_url.netloc == test_url.netloc
 
 
-def is_safe_url(target):
-    ref_url = urlparse(request.host_url)
-    test_url = urlparse(urljoin(request.host_url, target))
-    return test_url.scheme in ("http", "https") and ref_url.netloc == test_url.netloc
-
-
-def get_redirect_target():
-    for target in request.values.get("next"), request.referrer:
-        if not target:
+def get_redirect_url(fallback=None):
+    for location in flask.request.values.get('next'), flask.request.referrer:
+        if not location:
             continue
-        if is_safe_url(target):
-            return target
-
-
-def pre_processor():
-    s = flask.session
-    user = parse_userdata(s)
-    perms = parse_permissions(s)
-    status = {}
-    captcha = False
-    update = False
-    plugins = False
-    api = flask.current_app.config["PYLOAD_API"]
-
-    if user["is_authenticated"]:
-        status = api.statusServer()
-        captcha = api.isCaptchaWaiting()
-
-        # check if update check is available
-        info = api.getInfoByPlugin("UpdateManager")
-        if info:
-            update = info["pyload"] == "True"
-            plugins = info["plugins"] == "True"
-
-    return {
-        "user": user,
-        "status": status,
-        "captcha": captcha,
-        "perms": perms,
-        "url": flask.request.url,
-        "update": update,
-        "plugins": plugins,
-    }
-
-
+        if location == flask.request.url:  # don't redirect to same location
+            continue
+        if is_safe_url(location):
+            return location
+    return fallback
+           
+           
 def render_base(messages):
-    return render_template("base.html", {"messages": messages}, [pre_processor])
+    return render_template("base.html", messages=messages)
 
 
 def render_error(messages):
-    return render_template("error.html", {"messages": messages}, [pre_processor])
+    return render_template("error.html", messages=messages)
 
 
-def clear_session(permanent=True):
-    s = flask.session
-    s.permanent = bool(permanent)
-    s.clear()
-    # s.modified = True
+def clear_session(session=flask.session, permanent=True):
+    session.permanent = bool(permanent)
+    session.clear()
+    # session.modified = True
 
 
-def render_template(template, context={}, proc=[]):
-    for p in proc:
-        context.update(p())
+def render_template(template, **context):
     api = flask.current_app.config["PYLOAD_API"]
     theme = api.getConfigValue("webui", "theme").lower()
     return flask_themes2.render_theme_template(theme, template, **context)
 
 
-def parse_permissions(session):
+def parse_permissions(session=flask.session):
     perms = {x: False for x in dir(PERMS) if not x.startswith("_")}
     perms["ADMIN"] = False
     perms["is_admin"] = False
@@ -152,21 +100,22 @@ def set_permission(perms):
     return permission
 
 
-def set_session(user_info, permanent=True):
-    s = flask.session
-    s.permanent = bool(permanent)
-    s["authenticated"] = True
-    s["id"] = user_info["id"]
-    s["name"] = user_info["name"]
-    s["role"] = user_info["role"]
-    s["perms"] = user_info["permission"]
-    s["template"] = user_info["template"]
-    # s.modified = True
-    return s
+def set_session(user_info, session=flask.session, permanent=True):
+    session.permanent = bool(permanent)
+    session.update({
+        "authenticated": True,
+        "id": user_info["id"],
+        "name": user_info["name"],
+        "role": user_info["role"],
+        "perms": user_info["permission"],
+        "template": user_info["template"]
+    })
+    # session.modified = True
+    return session
 
 
 # TODO: Recheck...
-def parse_userdata(session):
+def parse_userdata(session=flask.session):
     return {
         "name": session.get("name", "Anonymous"),
         "is_admin": session.get("role", 1) == 0,
@@ -187,63 +136,38 @@ def apiver_check(func):
     return wrapper
 
 
+def is_authenticated(session=flask.session):
+    return session.get("name") and session.get("authenticated")  # NOTE: why checks name?
 
-def login_required(perm=None):
-    def _dec(func):
-        def _view(*args, **kwargs):
+
+def login_required(perm):
+
+    def decorator(func):
+    
+        @wraps(func)
+        def wrapper(*args, **kwargs):
             s = flask.session
-            if s.get("name", None) and s.get("authenticated", False):
-                if perm:
-                    perms = parse_permissions(s)
-                    if perm not in perms or not perms[perm]:
-                        if flask.request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                            return "Forbidden", 403
-                        else:
-                            return flask.redirect(flask.url_for("nopermission"))
-
-                return func(*args, **kwargs)
-            else:
-                if flask.request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                    return flask.redirect(flask.url_for("nopermission"))
-                else:
-                    return flask.redirect(flask.url_for("app.login"))
-
-        return _view
-
-    return _dec
-    
-    
-def Xlogin_required(func=None, perm=None):
-    if func is None:
-        return partial(login_required, perm)
-
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        if flask.request.headers.get("X-Requested-With") == "XMLHttpRequest":
-            return "Forbidden", 403
-
-        s = flask.session
-        if s.get("name", None) and s.get("authenticated", False):
-            if perm:
+            #: already authenticated
+            if is_authenticated(s):
                 perms = parse_permissions(s)
                 if perm not in perms or not perms[perm]:
-                    return flask.redirect(flask.url_for("nopermission"))
-            return func(*args, **kwargs)
+                    response = "Forbidden", 403
+                else:
+                    response = func(*args, **kwargs)
+                
+            elif flask.request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                response = "Forbidden", 403     
+                
+            else:
+                location = flask.url_for("app.login", next=flask.request.url)
+                response = flask.redirect(location)
+                
+            return response
 
-        api = flask.current_app.config["PYLOAD_API"]
-        autologin = api.getConfigValue("webui", "autologin")
-        if autologin:  # TODO: check if localhost
-            users = api.getAllUserData()
-            if len(users) == 1:
-                user_info = next(iter(users.values()))
-                set_session(user_info)
-                return func(*args, **kwargs)
+        return wrapper
 
-        # return flask_login.login_url("app.login", flask.request.url)
-        return flask.redirect(flask.url_for("app.login"))
-
-    return wrapper
-
+    return decorator
+    
 
 def toDict(obj):
     ret = {}

@@ -9,6 +9,7 @@ from pyload.core.utils import decode, formatSize
 
 from ..helpers import render_template, toDict, login_required
 
+
 bp = flask.Blueprint("json", __name__, url_prefix="/json")
 
 
@@ -118,6 +119,7 @@ def package(id):
         flask.abort(500)
 
 
+# NOTE: 'ids' is a string
 @bp.route("/package_order/<ids>", endpoint="package_order")
 # @apiver_check
 @login_required("ADD")
@@ -143,6 +145,7 @@ def abort_link(id):
         flask.abort(500)
 
 
+# NOTE: 'ids' is a string
 @bp.route("/link_order/<ids>", endpoint="link_order")
 # @apiver_check
 @login_required("ADD")
@@ -270,8 +273,7 @@ def load_config(category, section):
 
         option["value"] = decode(option["value"])
 
-    context = {"skey": section, "section": conf[section]}
-    return render_template("settings_item.html", context)
+    return render_template("settings_item.html", skey=section, section=conf[section])
 
 
 @bp.route("/save_config/<category>", methods=["POST"], endpoint="save_config")

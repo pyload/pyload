@@ -12,6 +12,7 @@ from pyload.core.api import BaseObject
 
 from ..helpers import clear_session, set_session, toDict, login_required
 
+
 bp = flask.Blueprint("api", __name__, url_prefix="/api")
 
 
@@ -19,6 +20,7 @@ bp = flask.Blueprint("api", __name__, url_prefix="/api")
 # @bottle.route(
 # r"/api/<func><args:re:[a-zA-Z0-9\-_/\"\'\[\]%{},]*>")
 @login_required("ALL")
+@bp.route("/<func>", methods=["GET", "POST"], endpoint="rpc")
 @bp.route("/<func>/<path:args>", methods=["GET", "POST"], endpoint="rpc")
 # @apiver_check
 def rpc(func, args=""):
@@ -74,20 +76,10 @@ def login():
     if not user_info:
         return jsonify(False)
 
-    # user = User(user_info['id'])
-    # login_user(user)
-
     s = set_session(user_info)
     flask.flash("Logged in successfully")
-
-    # get the session id by dirty way, documentations seems wrong
-    try:
-        sid = s.headers["cookie_out"].split("=")[1].split(";")[0]
-        response = jsonify(sid)
-    except Exception:
-        response = jsonify(True)
-        
-    return response
+    
+    return jsonify(s)
 
 
 @bp.route("/logout", endpoint="logout")

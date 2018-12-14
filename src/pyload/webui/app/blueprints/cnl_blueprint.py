@@ -13,7 +13,7 @@ from cryptography.fernet import Fernet
 from .app_blueprint import bp as app_bp
 
 
-bp = flask.Blueprint("cnl", __name__, url_prefix="/flash")
+bp = flask.Blueprint("flash", __name__, url_prefix="/flash")
 
 
 #: decorator
@@ -34,8 +34,8 @@ def local_check(func):
     return wrapper
 
 
-@bp.route("/", methods=["GET", "POST"], endpoint="flash")
-@bp.route("/<id>", endpoint="flash")
+@bp.route("/", methods=["GET", "POST"], endpoint="index")
+@bp.route("/<id>", endpoint="index")
 @local_check
 def flash(id="0"):
     return "JDownloader\r\n"
@@ -48,7 +48,12 @@ def add():
         "package",
         flask.request.form.get("source", flask.request.form.get("referer", None)),
     )
-    urls = list(filter(None, map(str.strip, flask.request.form["urls"].split("\n"))))
+    
+    urls = flask.request.form.get("urls")
+    if not urls:
+        return jsonify(False)
+    
+    urls = list(filter(None, map(str.strip, urls.split("\n"))))
 
     api = flask.current_app.config["PYLOAD_API"]
     if package:

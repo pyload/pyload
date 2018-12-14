@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import datetime
 
 from pyload.core.utils import formatSize
 
@@ -26,7 +27,7 @@ def unquotepath(path):
         return ""
 
 
-def path_make_absolute(path):
+def abspath(path):
     p = os.path.abspath(path)
     if os.path.isfile(p):
         return p
@@ -36,7 +37,7 @@ def path_make_absolute(path):
         return p + os.path.sep
 
 
-def path_make_relative(path):
+def relpath(path):
     p = os.path.relpath(path)
     if os.path.isfile(p):
         return p
@@ -46,23 +47,15 @@ def path_make_relative(path):
         return p + os.path.sep
 
 
-def truncate(value, n):
-    if (n - len(value)) < 3:
-        return value[:n] + "..."
-    return value
+# NOTE: recheck
+def date(text, format):
+    return datetime.datetime.strptime(text, format).strftime(format)
 
 
-def date(date, format):
-    return date
-
-
-FILTERS = {
-    "quotepath": quotepath,
-    "unquotepath": unquotepath,
-    "truncate": truncate,
-    "date": date,
-    "path_make_relative": path_make_relative,
-    "path_make_absolute": path_make_absolute,
-    "formatsize": formatSize,
-    "getitem": lambda x, y: x.__getitem__(y),
-}
+#: Use formatsize directly in 0.6.x
+def formatsize(*args, **kwargs):
+    return formatSize(*args, **kwargs)
+    
+    
+TEMPLATE_FILTERS = [quotepath, unquotepath, date, relpath, abspath, formatsize]
+           

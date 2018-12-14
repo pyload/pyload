@@ -11,6 +11,8 @@ from urllib.parse import unquote
 
 import flask
 
+from flask_themes2 import global_theme_static
+
 from pyload import PKGDIR
 from pyload.core.utils import formatSize, fs_decode, fs_encode
 
@@ -18,29 +20,27 @@ from ..filters import unquotepath
 from ..helpers import (
     clear_session,
     get_permission,
-    get_redirect_target,
     login_required,
-    parse_permissions,
-    parse_userdata,
     permlist,
-    pre_processor,
     render_base,
     render_template,
     set_permission,
     set_session,
     toDict,
+    is_authenticated,
+    get_redirect_url
 )
-
-# from flask_login import login_required, login_user, logout_user
 
 
 bp = flask.Blueprint("app", __name__)
 
 
-@bp.route("/favicon.ico", endpoint="favicon")
-def favicon():
-    filename = os.path.join("img", "favicon.ico")
-    return flask.send_from_directory(bp.static_folder, filename)
+# @bp.route("/favicon.ico", endpoint="favicon")
+# def favicon(ctx):
+    # print("CONTEXTTTTTTTt")
+    # print(ctx)
+    # location = global_theme_static(ctx, 'img/favicon.ico')
+    # return flask.redirect(location)
 
 
 @bp.route("/robots.txt", endpoint="robots")
@@ -48,45 +48,57 @@ def robots():
     return "User-agent: *\nDisallow: /"
 
 
+# TODO: Rewrite login route using flask-login
 @bp.route("/login", methods=["GET", "POST"], endpoint="login")
 def login():
-    if flask.request.method == "GET":
-        return render_template("login.html", proc=[pre_processor])
-
-    user = flask.request.form.get("username")
-    password = flask.request.form.get("password")
-
     api = flask.current_app.config["PYLOAD_API"]
-    user_info = api.checkAuth(user, password)
     
-    if not user_info:
-        return render_template("login.html", {"errors": True}, [pre_processor])
+    next = get_redirect_url(fallback=flask.url_for("app.dashboard"))
+    
+    if flask.request.method == "POST":
+        user = flask.request.form.get("username")
+        password = flask.request.form.get("password")
+        user_info = api.checkAuth(user, password)
+        
+        if not user_info:
+            return render_template("login.html", next=next, errors=True)
 
-    set_session(user_info)
-    flask.flash("Logged in successfully")
-
-    next = get_redirect_target()
-    return flask.redirect(next or flask.url_for("index"))
-
+        set_session(user_info)
+        flask.flash("Logged in successfully")
+    
+    if is_authenticated():
+        return flask.redirect(next)
+        
+    # if api.getConfigValue("webui", "autologin"):
+        # users = api.getAllUserData()
+        # user_info = next(iter(users.values()))
+        # if user_info and len(users) == 1:  # TODO: check if localhost
+            # set_session(user_info)
+            # NOTE: Double-check autentication here because if session[name] is empty, 
+            #       next login_required redirects here again and all loop out.
+            # if is_authenticated():
+                # return flask.redirect(next)
+        
+    return render_template("login.html", next=next)
+            
 
 @bp.route("/logout", endpoint="logout")
 def logout():
     # logout_user()
     clear_session()
-    return render_template("logout.html", proc=[pre_processor])
+    return render_template("logout.html")
 
 
 @bp.route("/", endpoint="index")
-@bp.route("/home", endpoint="home")
-@login_required("LIST")
-def home():
+@bp.route("/dashboard", endpoint="dashboard")
+@login_required("ALL")
+def dashboard():
     api = flask.current_app.config["PYLOAD_API"]
     try:
         res = [toDict(x) for x in api.statusDownloads()]
     except Exception:
         clear_session()
-        # return flask_login.login_url("app.login", flask.request.url)
-        return flask.redirect(flask.url_for("app.login"))
+        return dashboard()
 
     for link in res:
         if link["status"] == 12:
@@ -94,7 +106,7 @@ def home():
             speed = link["speed"]
             link["information"] = f"{current_size} KiB @ {speed} KiB/s"
 
-    return render_template("home.html", {"res": res}, [pre_processor])
+    return render_template("dashboard.html", res=res)
 
 
 @bp.route("/queue", endpoint="queue")
@@ -105,8 +117,7 @@ def queue():
 
     queue.sort(key=operator.attrgetter("order"))
 
-    context = {"content": queue, "target": 1}
-    return render_template("queue.html", context, [pre_processor])
+    return render_template("queue.html", content=queue, target=1)
 
 
 @bp.route("/collector", endpoint="collector")
@@ -117,8 +128,7 @@ def collector():
 
     queue.sort(key=operator.attrgetter("order"))
 
-    context = {"content": queue, "target": 0}
-    return render_template("queue.html", context, [pre_processor])
+    return render_template("queue.html", content=queue, target=0)
 
 
 @bp.route("/downloads", endpoint="downloads")
@@ -149,7 +159,7 @@ def downloads():
         elif os.path.isfile(os.path.join(root, item)):
             data["files"].append(item)
 
-    return render_template("downloads.html", {"files": data}, [pre_processor])
+    return render_template("downloads.html", files=data)
 
 
 @bp.route("/downloads/get/<filename>", endpoint="get_download")
@@ -228,18 +238,13 @@ def settings():
         "conf": {"plugin": plugin_menu, "general": conf_menu, "accs": accs},
         "types": api.getAccountTypes(),
     }
-    return render_template("settings.html", context, [pre_processor])
+    return render_template("settings.html", **context)
 
 
-# TODO: Remove `filechooser` and `pathchooser` in 0.6.x
-@bp.route("/filechooser", endpoint="filemanager")
-@bp.route("/filechooser/<path:path>", endpoint="filemanager")
-@bp.route("/pathchooser", endpoint="filemanager")
-@bp.route("/pathchooser/<path:path>", endpoint="filemanager")
-@bp.route("/filemanager", endpoint="filemanager")
-@bp.route("/filemanager/<path:path>", endpoint="filemanager")
+@bp.route("/pathchooser", endpoint="pathchooser")
+@bp.route("/pathchooser/<path:path>", endpoint="pathchooser")
 @login_required("STATUS")
-def filemanager(path):
+def pathchooser(path):
     browse_for = "folder" if os.path.isdir(path) else "file"
     path = os.path.normpath(unquotepath(path))
 
@@ -330,7 +335,7 @@ def filemanager(path):
         "oldfile": oldfile,
         "absolute": abs,
     }
-    return render_template("pathchooser.html", context)
+    return render_template("pathchooser.html", **context)
 
 
 @bp.route("/logs", methods=["GET", "POST"], endpoint="logs")
@@ -358,22 +363,14 @@ def logs(page=-1):
             )
         except Exception:
             pass
-        try:
-            perpage = int(flask.request.form["perpage"])
-            s["perpage"] = perpage
+            
+        perpage = int(flask.request.form.get("perpage"))
+        s["perpage"] = perpage
 
-            reversed = bool(flask.request.form.get("reversed", False))
-            s["reversed"] = reversed
-        except Exception:
-            pass
-
+        reversed = bool(flask.request.form.get("reversed", False))
+        s["reversed"] = reversed
+        
         # s.modified = True
-
-    # TEST DISABLED
-    # try:
-    # page = int(page)
-    # except Exception:
-    # pass
 
     log = api.getLog()
     if not perpage:
@@ -440,7 +437,7 @@ def logs(page=-1):
         "iprev": 1 if page - perpage < 1 else page - perpage,
         "inext": (page + perpage) if page + perpage < len(log) else page,
     }
-    return render_template("logs.html", context, [pre_processor])
+    return render_template("logs.html", **context)
 
 
 @bp.route("/admin", methods=["GET", "POST"], endpoint="admin")
@@ -477,14 +474,13 @@ def admin():
 
             api.setUserPermission(name, user[name]["permission"], user[name]["role"])
 
-    context = {"users": user, "permlist": perms}
-    return render_template("admin.html", context, [pre_processor])
-
-
-@bp.route("/setup", endpoint="setup")
-def setup():
-    messages = ["Run pyLoad -s to access the setup."]
-    return render_base(messages)
+    return render_template("admin.html", users=user, permlist=perms)
+    
+    
+@bp.route("/filemanager", endpoint="filemanager")
+@login_required("MODIFY")
+def filemanager(path):
+    return render_template("filemanager.html") 
 
 
 @bp.route("/info", endpoint="info")
@@ -506,4 +502,4 @@ def info():
         "webif": conf["webui"]["port"]["value"],
         "language": conf["general"]["language"]["value"],
     }
-    return render_template("info.html", context, [pre_processor])
+    return render_template("info.html", **context)

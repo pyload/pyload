@@ -12,105 +12,100 @@
 import os
 import jinja2
 import flask
-from flask.helpers import locked_cached_property
 
 from .blueprints import BLUEPRINTS
-from .filters import FILTERS
+from .filters import TEMPLATE_FILTERS
+from .globals import TEMPLATE_GLOBALS
+from .handlers import ERROR_HANDLERS
 from .extensions import EXTENSIONS
-from .helpers import render_error
+from .processors import CONTEXT_PROCESSORS
 from .config import get_default_config
 
 
 #: flask app singleton
 class App(object):
 
-    JINJA_FILTERS = FILTERS
+    JINJA_TEMPLATE_GLOBALS = TEMPLATE_GLOBALS
+    JINJA_TEMPLATE_FILTERS = TEMPLATE_FILTERS
+    JINJA_CONTEXT_PROCESSORS = CONTEXT_PROCESSORS
+    FLASK_ERROR_HANDLERS = ERROR_HANDLERS
     FLASK_BLUEPRINTS = BLUEPRINTS
     FLASK_EXTENSIONS = EXTENSIONS
 
     @classmethod
-    def _new_config(cls, app, develop):
+    def _configure_config(cls, app, develop):
         conf_obj = get_default_config(develop)
         app.config.from_object(conf_obj)
 
     @classmethod
-    def _new_blueprints(cls, app):
+    def _configure_blueprints(cls, app):
         for blueprint in cls.FLASK_BLUEPRINTS:
             app.register_blueprint(blueprint)
 
     @classmethod
-    def _new_extensions(cls, app):
+    def _configure_extensions(cls, app):
         for extension in cls.FLASK_EXTENSIONS:
             extension.init_app(app)
-        # FlaskStaticCompress(app)
-        # login_manager = LoginManager(app)
-        # login_manager.login_view = "app.login"
-
-        # @login_manager.user_loader
-        # def load_user(userid):
-        # return User(userid)
-
-        # @login_manager.unauthorized_handler
-        # def unauthorized():
-        # messages = ["You dont have permission to access this page."]
-        # return render_base(messages)
 
     @classmethod
-    def _new_error_handler(cls, app):
+    def _configure_handlers(cls, app):
         """
         Register error handlers.
         """
-        def handle_error(exc):
-            code = 500
-            try:
-                code = exc.code
-            except AttributeError:
-                pass
-            messages = ["Sorry, something went wrong... :(", str(exc)]
-            return render_error(messages), code
+        for exc, fn in cls.FLASK_ERROR_HANDLERS:
+            app.register_error_handler(exc, fn)
             
-        app.register_error_handler(Exception, handle_error)
-            
-
     @classmethod
-    def _new_jinja_env(cls, app):
+    def _configure_templating(cls, app):        
         cachedir = app.config["PYLOAD_API"].get_cachedir()
         cache_path = os.path.join(cachedir, "jinja")
 
         os.makedirs(cache_path, exist_ok=True)
 
         app.create_jinja_environment()
+        
+        # NOTE: enable autoescape for all file extensions (included .js)
+        #       maybe this will break .txt rendering, but we don't render this kind of files actually
+        #       that does not change 'default_for_string=False' (by default)
+        # NOTE: Seems not working at all...
+        # app.jinja_env.autoescape = jinja2.select_autoescape(default=True)
         app.jinja_env.bytecode_cache = jinja2.FileSystemBytecodeCache(cache_path)
-        app.jinja_env.filters.update(cls.JINJA_FILTERS)
+        
+        for fn in cls.JINJA_TEMPLATE_FILTERS:
+            app.add_template_filter(fn)
+            
+        for fn in cls.JINJA_TEMPLATE_GLOBALS:
+            app.add_template_global(fn)
+            
+        for fn in cls.JINJA_CONTEXT_PROCESSORS:
+            app.context_processor(fn)
 
     @classmethod
-    def _new_session(cls, app):
+    def _configure_session(cls, app):
         cachedir = app.config["PYLOAD_API"].get_cachedir()
-        cache_path = os.path.join(cachedir, "flask")
-        
-        os.makedirs(cache_path, exist_ok=True)
-        
+        cache_path = os.path.join(cachedir, "flask")        
+        os.makedirs(cache_path, exist_ok=True)        
         app.config["SESSION_FILE_DIR"] = cache_path
     
     @classmethod
-    def _new_api(cls, app, pycore):
+    def _configure_api(cls, app, pycore):
         app.config["PYLOAD_API"] = pycore.api
+        
+    @classmethod
+    def _configure_logging(cls, app, pycore):
+        # Inject our custom logger
+        app.logger = pycore.log.getChild("webui")
 
     def __new__(cls, pycore, develop=False):
-        # Use custom logger name
-        class Flask(flask.Flask):
-            @locked_cached_property
-            def logger(self):
-                return pycore.log.getChild("webui")
+        app = flask.Flask(__name__)
 
-        app = Flask(__name__)
-
-        cls._new_api(app, pycore)
-        cls._new_config(app, develop)
-        cls._new_jinja_env(app)
-        cls._new_session(app)
-        cls._new_blueprints(app)
-        cls._new_extensions(app)
-        cls._new_error_handler(app)
+        cls._configure_logging(app, pycore)
+        cls._configure_api(app, pycore)
+        cls._configure_config(app, develop)
+        cls._configure_templating(app)
+        cls._configure_session(app)
+        cls._configure_blueprints(app)
+        cls._configure_extensions(app)
+        cls._configure_handlers(app)
 
         return app

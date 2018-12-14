@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 
-import flask_babel
-import flask_debugtoolbar
-import flask_themes2
+from flask_babel import Babel
+from flask_debugtoolbar import DebugToolbarExtension
+from flask_themes2 import Themes as _Themes
 
 
-class Themes(flask_themes2.Themes):
+class Themes(_Themes):
     def init_app(self, app):
         return super().init_themes(app, app_identifier="pyload")
 
 
-babel = flask_babel.Babel()
-debugtoolbar = flask_debugtoolbar.DebugToolbarExtension()
+babel = Babel()
+debugtoolbar = DebugToolbarExtension()
 themes = Themes()
 
 EXTENSIONS = [babel, debugtoolbar, themes]
