@@ -163,7 +163,6 @@ class Core(object):
         from .managers.captcha_manager import CaptchaManager
         from .managers.event_manager import EventManager
         from .managers.plugin_manager import PluginManager
-        from .remote.remote_manager import RemoteManager
         from .managers.thread_manager import ThreadManager
         from .scheduler import Scheduler
 
@@ -174,7 +173,6 @@ class Core(object):
         self.thm = self.threadManager = ThreadManager(self)
         self.cpm = self.captchaManager = CaptchaManager(self)
         self.adm = self.addonManager = AddonManager(self)
-        self.rem = self.remoteManager = RemoteManager(self)
 
     def _setup_permissions(self):
         self.log.debug("Setup permissions...")
@@ -268,11 +266,9 @@ class Core(object):
         self.log.info(self._("Activating Plugins..."))
         self.adm.coreReady()
 
-    def _start_servers(self):
+    def _start_webui(self):
         if self.config.get("webui", "enabled"):
             self.webserver.start()
-        if self.config.get("remote", "enabled"):
-            self.remoteManager.startBackends()
 
     def _parse_linkstxt(self):
         link_file = os.path.join(self.userdir, "links.txt")
@@ -314,7 +310,7 @@ class Core(object):
             # from meliae import scanner
             # scanner.dump_all_objects(os.path.join(PACKDIR, 'objs.json'))
 
-            self._start_servers()
+            self._start_webui()
             self._parse_linkstxt()
 
             self.log.debug("*** pyLoad is up and running ***")

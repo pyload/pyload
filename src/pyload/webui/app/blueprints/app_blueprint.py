@@ -491,7 +491,6 @@ def info():
         "config": os.path.abspath(api.get_userdir()),
         "download": os.path.abspath(conf["general"]["storage_folder"]["value"]),
         "freespace": formatSize(api.freeSpace()),
-        "remote": conf["remote"]["port"]["value"],
         "webif": conf["webui"]["port"]["value"],
         "language": conf["general"]["language"]["value"],
     }

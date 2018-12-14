@@ -11,13 +11,13 @@ from sys import exit
 
 import pyload.core.utils.pylgettext as gettext
 from pyload import DATADIR, PKGDIR
-from pyload.core.remote.thriftbackend.thrift_client import (
-    ConnectionClosed,
-    NoConnection,
-    NoSSL,
-    ThriftClient,
-    WrongLogin,
-)
+# from pyload.core.remote.thriftbackend.thrift_client import (
+    # ConnectionClosed,
+    # NoConnection,
+    # NoSSL,
+    # ThriftClient,
+    # WrongLogin,
+# )
 
 from . import Cli
 from .printer import *

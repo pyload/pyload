@@ -1133,9 +1133,6 @@ class Api(Iface):
         :param remoteip:
         :return: dict with info, empty when login is incorrect
         """
-        # if self.pyload.config.get("remote", "nolocalauth") and remoteip == "127.0.0.1":
-        # return "local"
-
         return self.pyload.db.checkAuth(username, password)
 
     def isAuthorized(self, func, userdata):
