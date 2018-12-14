@@ -68,7 +68,8 @@ def login():
     if api.getConfigValue("webui", "autologin"):
         allusers = api.getAllUserData()
         if len(allusers) == 1: # TODO: check if localhost
-            user_info = next(allusers.values())
+            user_info = next(iter(allusers.values()))
+            # user_info = allusers[next(allusers)]            
             set_session(user_info)
             # NOTE: Double-check autentication here because if session[name] is empty, 
             #       next login_required redirects here again and all loop out.
