@@ -98,10 +98,10 @@
             <a href="{{ url_for('app.collector') }}" title=""><span class="glyphicon glyphicon-magnet"></span>  {{_("Packages")}}</a>
         </li>
         <li {{ selected('app.downloads') }}>
-            <a href="{{ url_for('app.downloads') }}" title=""> <span class="glyphicon glyphicon-download"></span> {{_("Downloads")}}</a>
+            <a href="{{ url_for('app.downloads') }}" title=""> <span class="glyphicon glyphicon-download"></span> {{_("Files")}}</a>
         </li>
         <!-- <li {{ selected('app.filemanager') }}> -->
-            <!-- <a href="{{ url_for('app.filemanager') }}" title=""><span class="glyphicon glyphicon-magnet"></span>  {{_("Files")}}</a> -->
+            <!-- <a href="{{ url_for('app.filemanager') }}" title=""><span class="glyphicon glyphicon-magnet"></span>  {{_("File Manager")}}</a> -->
         <!-- </li> -->
         <li {{ selected('app.logs', True) }}>
             <a href="{{ url_for('app.logs') }}"  class="action index" accesskey="x" rel="nofollow"><span class="glyphicon glyphicon-list"></span> {{_("Logs")}}</a>

@@ -206,7 +206,7 @@ var LinkEntry = new Class({
 {% endblock %}
 
 {% block subtitle %}
-{{_("Active Downloads")}}
+{{_("Active Connections")}}
 {% endblock %}
 
 {% block menu %}
@@ -220,7 +220,7 @@ var LinkEntry = new Class({
     <a href="{{ url_for('app.collector') }}" title=""><img src="{{theme_static('img/head-menu-collector.png')}}" alt="" /> {{_("Packages")}}</a>
 </li>
 <li>
-    <a href="{{ url_for('app.downloads') }}" title=""><img src="{{theme_static('img/head-menu-development.png')}}" alt="" /> {{_("Downloads")}}</a>
+    <a href="{{ url_for('app.downloads') }}" title=""><img src="{{theme_static('img/head-menu-development.png')}}" alt="" /> {{_("Files")}}</a>
 </li>
 <li class="right">
     <a href="{{ url_for('app.logs') }}"  title=""><img src="{{theme_static('img/head-menu-index.png')}}" alt="" />{{_("Logs")}}</a>
@@ -236,7 +236,7 @@ var LinkEntry = new Class({
   <tr class="header">
     <th>{{_("Name")}}</th>
     <th>{{_("Status")}}</th>
-    <th>{{_("Information")}}</th>
+    <th>{{_("Info")}}</th>
     <th>{{_("Size")}}</th>
     <th>{{_("Progress")}}</th>
   </tr>

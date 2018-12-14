@@ -61,7 +61,7 @@
     {% if user.is_admin %}
     <li><a href="{{ url_for('app.admin')}}" class="action profile" rel="nofollow">{{_("Profile")}}</a></li>
     {% endif %}
-        <li><a href="{{ url_for('app.info')}}"  class="action info" rel="nofollow">{{_("Info")}}</a></li>
+        <li><a href="{{ url_for('app.info')}}"  class="action info" rel="nofollow">{{_("Status")}}</a></li>
 
   </ul>
 {% else %}
@@ -93,10 +93,10 @@
         <a href="{{ url_for('app.collector') }}" title=""><img src="{{theme_static('img/head-menu-collector.png')}}" alt="" /> {{_("Packages")}}</a>
     </li>
     <li {{ selected('app.downloads') }}>
-        <a href="{{ url_for('app.downloads') }}" title=""><img src="{{theme_static('img/head-menu-development.png')}}" alt="" /> {{_("Downloads")}}</a>
+        <a href="{{ url_for('app.downloads') }}" title=""><img src="{{theme_static('img/head-menu-development.png')}}" alt="" /> {{_("Files")}}</a>
     </li>
     <!-- <li {{ selected('app.filemanager') }}> -->
-        <!-- <a href="{{ url_for('app.filemanager') }}" title=""><img src="{{theme_static('img/head-menu-download.png')}}" alt="" /> {{_("Files")}}</a> -->
+        <!-- <a href="{{ url_for('app.filemanager') }}" title=""><img src="{{theme_static('img/head-menu-download.png')}}" alt="" /> {{_("File Manager")}}</a> -->
     <!-- </li> -->
     <li {{ selected('app.logs', True) }}>
         <a href="{{ url_for('app.logs') }}" title=""><img src="{{theme_static('img/head-menu-index.png')}}" alt="" />{{_("Logs")}}</a>

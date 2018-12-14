@@ -15,9 +15,9 @@ document.addEvent("domready", function(){
 {% endblock %}
 
 {% if target %}
-    {% set name = _("Queue") %}
+    {% set name = _("Running Packages") %}
 {% else %}
-    {% set name = _("Packages") %}
+    {% set name = _("Saved Packages") %}
 {% endif %}
 
 {% block pageactions %}
