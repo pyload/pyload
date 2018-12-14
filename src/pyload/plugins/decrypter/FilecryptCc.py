@@ -352,7 +352,7 @@ class FilecryptCc(Decrypter):
 
         #: Extract links
         text = text.replace("\x00", "").replace("\r", "")
-        links = list(filter(bool, text.split("\n")))
+        links = [link for link in text.split("\n") if link]
 
         return links
 
