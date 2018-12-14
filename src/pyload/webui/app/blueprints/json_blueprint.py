@@ -5,7 +5,7 @@ import os
 import flask
 from flask.json import jsonify
 
-from pyload.core.utils import decode, formatSize
+from pyload.core.utils import formatSize
 
 from ..helpers import render_template, login_required
 
@@ -160,7 +160,7 @@ def add_package():
     
     name = flask.request.form.get("add_name", "New Package").strip()
     queue = int(flask.request.form["add_dest"])
-    links = decode(flask.request.form["add_links"]).split("\n")
+    links = flask.request.form["add_links"].split("\n")
     pw = flask.request.form.get("add_password", "").strip("\n\r")
     
     try:
@@ -178,11 +178,9 @@ def add_package():
     except Exception:
         pass
 
-    name = name.decode("utf-8", "ignore")
     urls = [url for url in links if url.strip()]
     pack = api.addPackage(name, urls, queue)
     if pw:
-        pw = pw.decode("utf-8", "ignore")
         data = {"password": pw}
         api.setPackageData(pack, data)
 
@@ -207,9 +205,9 @@ def edit_package():
     try:
         id = int(flask.request.form["pack_id"])
         data = {
-            "name": flask.request.form["pack_name"].decode("utf-8", "ignore"),
-            "folder": flask.request.form["pack_folder"].decode("utf-8", "ignore"),
-            "password": flask.request.form["pack_pws"].decode("utf-8", "ignore"),
+            "name": flask.request.form["pack_name"],
+            "folder": flask.request.form["pack_folder"],
+            "password": flask.request.form["pack_pws"],
         }
 
         api.setPackageData(id, data)
@@ -262,8 +260,6 @@ def load_config(category, section):
         if ";" in option["type"]:
             option["list"] = option["type"].split(";")
 
-        option["value"] = decode(option["value"])
-
     return render_template("settings_item.html", skey=section, section=conf[section])
 
 
@@ -281,7 +277,7 @@ def save_config(category):
         if category == "general":
             category = "core"
 
-        api.setConfigValue(section, option, decode(value), category)
+        api.setConfigValue(section, option, value, category)
 
 
 @bp.route("/add_account", methods=["POST"], endpoint="add_account")

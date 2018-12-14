@@ -12,7 +12,7 @@ from urllib.parse import unquote
 import flask
 
 from pyload import PKGDIR
-from pyload.core.utils import formatSize, fs_decode, fs_encode
+from pyload.core.utils import formatSize
 
 from ..filters import unquotepath
 from ..helpers import (
@@ -65,12 +65,10 @@ def login():
     if is_authenticated():
         return flask.redirect(next)
         
-    if api.getConfigValue("webui", "autologin"):        
-        users = api.getAllUserData()
-        if len(users) == 1: # TODO: check if localhost
-            user_info = next(users.values())
-            print("DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD")
-            print(user_info)
+    if api.getConfigValue("webui", "autologin"):
+        allusers = api.getAllUserData()
+        if len(allusers) == 1: # TODO: check if localhost
+            user_info = next(allusers.values())
             set_session(user_info)
             # NOTE: Double-check autentication here because if session[name] is empty, 
             #       next login_required redirects here again and all loop out.
@@ -135,13 +133,13 @@ def files():
         return render_base(messages)
     data = {"folder": [], "files": []}
 
-    items = os.listdir(fs_encode(root))
+    items = os.listdir(root)
 
-    for item in sorted(fs_decode(x) for x in items):
+    for item in sorted(items):
         if os.path.isdir(os.path.join(root, item)):
             folder = {"name": item, "path": item, "files": []}
             files = os.listdir(os.path.join(root, item))
-            for file in sorted(fs_decode(x) for x in files):
+            for file in sorted(files):
                 try:
                     if os.path.isfile(os.path.join(root, item, file)):
                         folder["files"].append(file)
@@ -159,7 +157,7 @@ def files():
 @login_required("DOWNLOAD")
 def get_file(filename):
     api = flask.current_app.config["PYLOAD_API"]
-    filename = unquote(filename).decode("utf-8").replace("..", "")
+    filename = unquote(filename).replace("..", "")
     directory = api.getConfigValue("general", "storage_folder")
     return flask.send_from_directory(directory, filename, as_attachment=True)
 
@@ -241,11 +239,6 @@ def pathchooser(path):
     browse_for = "folder" if os.path.isdir(path) else "file"
     path = os.path.normpath(unquotepath(path))
 
-    try:
-        path = os.path.decode("utf-8")
-    except Exception:
-        pass
-
     if os.path.isfile(path):
         oldfile = path
         path = os.path.dirname(path)
@@ -275,11 +268,6 @@ def pathchooser(path):
     if os.path.abspath(cwd) == os.path.abspath("/"):
         parentdir = ""
 
-    # try:
-    #     cwd = cwd.encode("utf-8")
-    # except Exception:
-    #     pass
-    #
     try:
         folders = os.listdir(cwd)
     except Exception:
@@ -289,7 +277,6 @@ def pathchooser(path):
 
     for f in folders:
         try:
-            # f = f.decode(getfilesystemencoding())
             data = {"name": f, "fullpath": os.path.join(cwd, f)}
             data["sort"] = data["fullpath"].lower()
             data["modified"] = datetime.datetime.fromtimestamp(
@@ -384,7 +371,7 @@ def logs(page=-1):
 
         if counter >= page:
             try:
-                date, time, level, message = l.decode("utf-8", "ignore").split(" ", 3)
+                date, time, level, message = l.split(" ", 3)
                 dtime = datetime.datetime.strptime(
                     date + " " + time, "%Y-%m-%d %H:%M:%S"
                 )
@@ -436,14 +423,16 @@ def logs(page=-1):
 @login_required("ADMIN")
 def admin():
     api = flask.current_app.config["PYLOAD_API"]
-    # convert to dict
-    users = api.getAllUserData()
+    
+    allusers = api.getAllUserData()
+    
     perms = permlist()
-
-    for data in users.values():
-        data["perms"] = {}
-        get_permission(data["perms"], data["permission"])
-        data["perms"]["admin"] = data["role"] is 0
+    users = {}
+    
+    # NOTE: messy code... users just need "perms" data in admin template
+    for name, data in allusers.items():
+        users[name] = {'perms': get_permission(data["permission"])}
+        users[name]["perms"]["admin"] = data["role"] is 0
 
     s = flask.session
     if flask.request.method == "POST":
