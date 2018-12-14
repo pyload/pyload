@@ -8,7 +8,6 @@ from re import search
 
 import pycurl
 
-from ...utils import fs_encode
 from .http_request import HTTPRequest
 
 
@@ -50,7 +49,7 @@ class ChunkInfo(object):
             current += chunk_size + 1
 
     def save(self):
-        fs_name = fs_encode(f"{self.name}.chunks")
+        fs_name = os.fsencode(f"{self.name}.chunks")
         with open(fs_name, mode="w", encoding="utf-8") as fh:
             fh.write(f"name:{self.name}\n")
             fh.write(f"size:{self.size}\n")
@@ -61,7 +60,7 @@ class ChunkInfo(object):
 
     @staticmethod
     def load(name):
-        fs_name = fs_encode(f"{name}.chunks")
+        fs_name = os.fsencode(f"{name}.chunks")
         if not os.path.exists(fs_name):
             raise IOError
         with open(fs_name, encoding="utf-8") as fh:
@@ -92,7 +91,7 @@ class ChunkInfo(object):
         return ci
 
     def remove(self):
-        fs_name = fs_encode(f"{self.name}.chunks")
+        fs_name = os.fsencode(f"{self.name}.chunks")
         if os.path.exists(fs_name):
             os.remove(fs_name)
 
@@ -155,7 +154,7 @@ class HTTPChunk(HTTPRequest):
         # request all bytes, since some servers in russia seems to have a defect
         # arihmetic unit
 
-        fs_name = fs_encode(self.p.info.getChunkName(self.id))
+        fs_name = os.fsencode(self.p.info.getChunkName(self.id))
         if self.resume:
             self.fp = open(fs_name, mode="ab")
             self.arrived = self.fp.tell()
