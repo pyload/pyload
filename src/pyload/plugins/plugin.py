@@ -7,7 +7,7 @@ from builtins import object, str
 from itertools import islice
 from random import randint
 
-from pyload.core.utils import fs_decode, fs_encode, save_path
+from pyload.core.utils import save_path
 
 if os.name != "nt":
     from pwd import getpwnam
@@ -582,7 +582,7 @@ class Plugin(Base):
                 )
 
         # convert back to unicode
-        location = fs_decode(location)
+        # location = fs_decode(location)
         name = save_path(self.pyfile.name)
 
         filename = os.path.join(location, name)
@@ -616,17 +616,15 @@ class Plugin(Base):
             self.pyfile.name = newname
             filename = os.path.join(location, newname)
 
-        fs_filename = fs_encode(filename)
-
         if self.pyload.config.get("permission", "change_file"):
-            os.chmod(fs_filename, int(self.pyload.config.get("permission", "file"), 8))
+            os.chmod(filename, int(self.pyload.config.get("permission", "file"), 8))
 
         if self.pyload.config.get("permission", "change_dl") and os.name != "nt":
             try:
                 uid = getpwnam(self.config.get("permission", "user"))[2]
                 gid = getgrnam(self.config.get("permission", "group"))[2]
 
-                os.chown(fs_filename, uid, gid)
+                os.chown(filename, uid, gid)
             except Exception as exc:
                 self.log.warning(
                     self._("Setting User and Group failed: {}").format(exc)
@@ -648,11 +646,10 @@ class Plugin(Base):
         :param read_size: amount of bytes to read from files larger then max_size
         :return: dictionary key of the first rule that matched
         """
-        lastDownload = fs_encode(self.lastDownload)
-        if not os.path.exists(lastDownload):
+        if not os.path.exists(self.lastDownload):
             return None
 
-        size = os.stat(lastDownload)
+        size = os.stat(self.lastDownload)
         size = size.st_size
 
         if api_size and api_size <= size:
@@ -660,7 +657,7 @@ class Plugin(Base):
         elif size > max_size and not read_size:
             return None
         self.log.debug(f"Download Check triggered")
-        with open(lastDownload, mode="rb") as f:
+        with open(self.lastDownload, mode="rb") as f:
             content = f.read(read_size if read_size else -1)
         # produces encoding errors, better log to other file in the future?
         # self.log.debug(f"Content: {content}")
@@ -668,13 +665,13 @@ class Plugin(Base):
             if type(rule) in (str, bytes):
                 if rule in content:
                     if delete:
-                        os.remove(lastDownload)
+                        os.remove(self.lastDownload)
                     return name
             elif hasattr(rule, "search"):
                 m = rule.search(content)
                 if m:
                     if delete:
-                        os.remove(lastDownload)
+                        os.remove(self.lastDownload)
                     self.lastCheck = m
                     return name
 
