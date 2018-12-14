@@ -22,8 +22,8 @@ class WebServerThread(threading.Thread):
         self.develop = self.pyload.config.get("webui", "develop")
 
         self.use_ssl = self.pyload.config.get("webui", "use_ssl")  #: recheck
-        self.certfile = self.pyload.config.get("ssl", "certfile")
-        self.keyfile = self.pyload.config.get("ssl", "keyfile")
+        self.certfile = self.pyload.config.get("webui", "ssl_certfile")
+        self.keyfile = self.pyload.config.get("webui", "ssl_keyfile")
 
         self.host = self.pyload.config.get("webui", "host")
         self.port = self.pyload.config.get("webui", "port")

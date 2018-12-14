@@ -230,7 +230,7 @@ class Core(object):
         try:
             self.set_language(lang)
         except IOError as exc:
-            self.log.error(exc, exc_info=self.debug > 1, stack_info=self.debug > 2)
+            self.log.warning(exc, exc_info=self.debug > 1, stack_info=self.debug > 2)
             self._set_language(self._LOCALE_DOMAIN, fallback=True)
 
     # def _setup_niceness(self):
