@@ -1,7 +1,10 @@
 {% extends theme('base.html') %}
+
 {% block head %}
 
-<script type="text/javascript" src="{{theme_static('js/package.js')}}"></script>
+{% autoescape false %}
+<script type="text/javascript">{{render_template('js/queue.js')}}</script>
+{% endautoescape %}
 
 <script type="text/javascript">
 

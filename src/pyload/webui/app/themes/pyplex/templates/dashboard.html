@@ -1,10 +1,14 @@
 {% extends theme('base.html') %}
+
 {% block head %}
 <link rel="stylesheet" href="{{theme_static('css/dashboard.css')}}">
 {% endblock %}
 
 {% block footer %}
-<script type="text/javascript" src="{{theme_static('js/dashboard.js')}}"></script>
+
+{% autoescape false %}
+<script type="text/javascript">{{render_template('js/dashboard.js')}}</script>
+{% endautoescape %}
 {% endblock %}
 
 {% block pageactions %}

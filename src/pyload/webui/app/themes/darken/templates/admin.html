@@ -1,7 +1,9 @@
 {% extends theme('base.html') %}
 
 {% block head %}
-    <script type="text/javascript" src="{{theme_static('js/admin.js')}}"></script>
+{% autoescape false %}
+<script type="text/javascript">{{render_template('js/admin.js')}}</script>
+{% endautoescape %}
 {% endblock %}
 
 
@@ -44,7 +46,7 @@
                     <td>
                         <select multiple="multiple" size="{{ permlist|length }}" name="{{ name }}|perms">
                             {% for perm in permlist %}
-                            {% if data.perms|getitem(perm) %}
+                            {% if data.perms|attr(perm) %}
                                 <option selected="selected">{{ perm }}</option>
                             {% else %}
                                 <option>{{ perm }}</option>

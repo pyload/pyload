@@ -5,19 +5,19 @@
   <script class="javascript">
     var submit = true;
     {% if absolute %}
-      var cwd = "{{oldfile|default(cwd, True)|path_make_absolute|quotepath|replace('\\', '\\\\')}}";
+      var cwd = "{{oldfile|default(cwd, True)|abspath|quotepath|replace('\\', '\\\\')}}";
       var isabsolute = true;
     {% else %}
-      var cwd = "{{oldfile|default(cwd, True)|path_make_relative|quotepath|replace('\\', '\\\\')}}";
+      var cwd = "{{oldfile|default(cwd, True)|relpath|quotepath|replace('\\', '\\\\')}}";
       var isabsolute = false;
     {% endif %}
 
     {% if type == 'folder' %} {# browsing for folder #}
-      var abspath = "{{ url_for('app.pathchooser', path=cwd|path_make_absolute|quotepath|replace('\\', '\\\\')) }}";
-      var relpath = "{{ url_for('app.pathchooser', path=cwd|path_make_relative|quotepath|replace('\\', '\\\\')) }}";
+      var abspath = "/pathchooser/{{cwd|abspath|quotepath|replace('\\', '\\\\')}}";
+      var relpath = "/pathchooser/{{cwd|relpath|quotepath|replace('\\', '\\\\')}}";
     {% else %} {# browsing for file #}
-      var abspath = "{{ url_for('app.pathchooser', path=oldfile|default(cwd, True)|path_make_absolute|quotepath|replace('\\', '\\\\')) }}";
-      var relpath = "{{ url_for('app.pathchooser', path=oldfile|default(cwd, True)|path_make_relative|quotepath|replace('\\', '\\\\')) }}";
+      var abspath = "/pathchooser/{{cwd}}";
+      var relpath = "/pathchooser/{{cwd}}";
     {% endif %}
     document.addEventListener("readystatechange", function(event) {
       if (this.readyState === "complete") {
@@ -63,8 +63,9 @@
     {
         cwd = fullpath;
         {% if type == "file" %} {# browsing for file #}
-          abspath = "{{ url_for('app.pathchooser', path=cwd|path_make_absolute|quotepath|replace('\\', '\\\\')) }}" + name;
-          relpath = "{{ url_for('app.pathchooser', path=cwd|path_make_relative|quotepath|replace('\\', '\\\\')) }}" + name;
+          <!-- TODO: Recheck -->
+          abspath = "/pathchooser/{{cwd|abspath|quotepath|replace('\\', '\\\\')}}/" + name;
+          relpath = "/pathchooser/{{cwd|relpath|quotepath|replace('\\', '\\\\')}}/" + name;
         {% endif %}
         setValid();
     }
@@ -83,7 +84,7 @@
     </thead>
     <tbody id="tbody">
     {% if parentdir %}
-        <tr class='tr-clickable' data-href="{% if type == 'folder' %}{{ url_for('app.pathchooser', path=parentdir|quotepath) }}{% else %}{{ url_for('app.pathchooser', path=parentdir|quotepath) }}{% endif %}">
+        <tr class='tr-clickable' data-href="/pathchooser/{{ parentdir|quotepath }}">
           <td title="{{_('Parent Directory')}}"><span class="parentdir">..</span></td>
           <td></td>
           <td colspan="2">&lt;DIR&gt;</td>
@@ -112,7 +113,7 @@
               {% if file.unit == 'Byte' %}1 KiB{% else %}{{(file.size|round(precision=0, method='common'))|int}} {{file.unit|replace('Byte', 'B')}}{% endif %}
               {% endif %}</td>
             <td class="type">{% if file.type == 'dir' %}&lt;DIR&gt;{% else %}{{file.ext|default('file', True)}}{% endif %}</td>
-            <td class="mtime">{{file.modified|date('d.m.Y - H:i:s')}}</td>
+            <td class="mtime">{{file.modified|date("%Y/%m/%d %H:%M:%S")}}</td>
         </tr>
     {% endfor %}
     </tbody>

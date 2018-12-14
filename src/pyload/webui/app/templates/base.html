@@ -14,22 +14,24 @@
 <script type="text/javascript" src="{{url_for('static', filename='vendor/MooTools/MooDialog/MooDialog.js')}}"></script>
 <script type="text/javascript" src="{{url_for('static', filename='vendor/MooTools/Purr/purr.js')}}"></script>
 
-<script type="text/javascript" src="{{url_for('static', filename='js/base.js')}}"></script>
+{% autoescape false %}
+<script type="text/javascript">{{render_template('js/base.js')}}</script>
+{% endautoescape %}
 
 <link rel="icon" type="image/ico" href="{{url_for('static', filename='img/favicon.ico')}}" />
 
 <style type="text/css">
 #head-menu {
-	background:transparent url("{{ url_for('static', filename='img/tabs-border-bottom.png') }}") 0 100% repeat-x;
+    background:transparent url("{{ url_for('static', filename='img/tabs-border-bottom.png') }}") 0 100% repeat-x;
 }
 a.action.index {
-	background:transparent url("{{ url_for('static', filename='img/wiki-tools-index.png') }}") 0px 1px no-repeat;
+    background:transparent url("{{ url_for('static', filename='img/wiki-tools-index.png') }}") 0px 1px no-repeat;
 }
 a.action.recent {
-	background:transparent url("{{ url_for('static', filename='img/wiki-tools-recent.png') }}") 0px 1px no-repeat;
+    background:transparent url("{{ url_for('static', filename='img/wiki-tools-recent.png') }}") 0px 1px no-repeat;
 }
 a.logout {
-	background:transparent url("{{ url_for('static', filename='img/user-actions-logout.png') }}") 0px 1px no-repeat;
+    background:transparent url("{{ url_for('static', filename='img/user-actions-logout.png') }}") 0px 1px no-repeat;
 }
 
 a.info {
@@ -37,101 +39,101 @@ a.info {
 }
 
 a.admin {
-	background:transparent url("{{ url_for('static', filename='img/user-actions-admin.png') }}") 0px 1px no-repeat;
+    background:transparent url("{{ url_for('static', filename='img/user-actions-admin.png') }}") 0px 1px no-repeat;
 }
 a.profile {
-	background:transparent url("{{ url_for('static', filename='img/user-actions-profile.png') }}") 0px 1px no-repeat;
+    background:transparent url("{{ url_for('static', filename='img/user-actions-profile.png') }}") 0px 1px no-repeat;
 }
 a.create, a.edit {
-	background:transparent url("{{ url_for('static', filename='img/page-tools-edit.png') }}") 0px 1px no-repeat;
+    background:transparent url("{{ url_for('static', filename='img/page-tools-edit.png') }}") 0px 1px no-repeat;
 }
 a.source, a.show {
-	background:transparent url("{{ url_for('static', filename='img/page-tools-source.png') }}") 0px 1px no-repeat;
+    background:transparent url("{{ url_for('static', filename='img/page-tools-source.png') }}") 0px 1px no-repeat;
 }
 a.revisions {
-	background:transparent url("{{ url_for('static', filename='img/page-tools-revisions.png') }}") 0px 1px no-repeat;
+    background:transparent url("{{ url_for('static', filename='img/page-tools-revisions.png') }}") 0px 1px no-repeat;
 }
 a.subscribe, a.unsubscribe {
-	background:transparent url("{{ url_for('static', filename='img/page-tools-subscribe.png') }}") 0px 1px no-repeat;
+    background:transparent url("{{ url_for('static', filename='img/page-tools-subscribe.png') }}") 0px 1px no-repeat;
 }
 a.backlink {
-	background:transparent url("{{ url_for('static', filename='img/page-tools-backlinks.png') }}") 0px 1px no-repeat;
+    background:transparent url("{{ url_for('static', filename='img/page-tools-backlinks.png') }}") 0px 1px no-repeat;
 }
 a.play {
-	background:transparent url("{{ url_for('static', filename='img/control_play.png') }}") 0px 1px no-repeat;
+    background:transparent url("{{ url_for('static', filename='img/control_play.png') }}") 0px 1px no-repeat;
 }
 .time {
-	background:transparent url("{{ url_for('static', filename='img/status_None.png') }}") 0px 1px no-repeat;
+    background:transparent url("{{ url_for('static', filename='img/status_None.png') }}") 0px 1px no-repeat;
 }
 a.play:hover {
-	background:transparent url("{{ url_for('static', filename='img/control_play_blue.png') }}") 0px 1px no-repeat;
+    background:transparent url("{{ url_for('static', filename='img/control_play_blue.png') }}") 0px 1px no-repeat;
 }
 a.cancel {
-	background:transparent url("{{ url_for('static', filename='img/control_cancel.png') }}") 0px 1px no-repeat;
+    background:transparent url("{{ url_for('static', filename='img/control_cancel.png') }}") 0px 1px no-repeat;
 }
 a.cancel:hover {
-	background:transparent url("{{ url_for('static', filename='img/control_cancel_blue.png') }}") 0px 1px no-repeat;
+    background:transparent url("{{ url_for('static', filename='img/control_cancel_blue.png') }}") 0px 1px no-repeat;
 }
 a.pause {
-	background:transparent url("{{ url_for('static', filename='img/control_pause.png') }}") 0px 1px no-repeat;
+    background:transparent url("{{ url_for('static', filename='img/control_pause.png') }}") 0px 1px no-repeat;
 }
 a.pause:hover {
-	background:transparent url("{{ url_for('static', filename='img/control_pause_blue.png') }}") 0px 1px no-repeat;
-	font-weight: bold;
+    background:transparent url("{{ url_for('static', filename='img/control_pause_blue.png') }}") 0px 1px no-repeat;
+    font-weight: bold;
 }
 a.stop {
-	background:transparent url("{{ url_for('static', filename='img/control_stop.png') }}") 0px 1px no-repeat;
+    background:transparent url("{{ url_for('static', filename='img/control_stop.png') }}") 0px 1px no-repeat;
 }
 a.stop:hover {
-	background:transparent url("{{ url_for('static', filename='img/control_stop_blue.png') }}") 0px 1px no-repeat;
+    background:transparent url("{{ url_for('static', filename='img/control_stop_blue.png') }}") 0px 1px no-repeat;
 }
 a.add {
-	background:transparent url("{{ url_for('static', filename='img/control_add.png') }}") 0px 1px no-repeat;
+    background:transparent url("{{ url_for('static', filename='img/control_add.png') }}") 0px 1px no-repeat;
 }
 a.add:hover {
-	background:transparent url("{{ url_for('static', filename='img/control_add_blue.png') }}") 0px 1px no-repeat;
+    background:transparent url("{{ url_for('static', filename='img/control_add_blue.png') }}") 0px 1px no-repeat;
 }
 a.cog {
-	background:transparent url("{{ url_for('static', filename='img/cog.png') }}") 0px 1px no-repeat;
+    background:transparent url("{{ url_for('static', filename='img/cog.png') }}") 0px 1px no-repeat;
 }
 #head-panel {
-	background:#525252 url("{{ url_for('static', filename='img/head_bg1.png') }}") bottom left repeat-x;
+    background:#525252 url("{{ url_for('static', filename='img/head_bg1.png') }}") bottom left repeat-x;
 }
 .reconnect {
-	background:transparent url("{{ url_for('static', filename='img/reconnect.png') }}") 0px 1px no-repeat;
+    background:transparent url("{{ url_for('static', filename='img/reconnect.png') }}") 0px 1px no-repeat;
 }
 #head-menu ul li a, #head-menu ul li a:link {
-	background:#eaeaea url("{{ url_for('static', filename='img/tab-background.png') }}") 0 100% repeat-x;
+    background:#eaeaea url("{{ url_for('static', filename='img/tab-background.png') }}") 0 100% repeat-x;
 }
 .purr-alert.error{
-	background:url("{{ url_for('static', filename='img/error.png') }}") no-repeat #000 7px 10px;
+    background:url("{{ url_for('static', filename='img/error.png') }}") no-repeat #000 7px 10px;
 }
 .purr-alert.success{
 }
-	background:url("{{ url_for('static', filename='img/success.png') }}") no-repeat #000 7px 10px;
+    background:url("{{ url_for('static', filename='img/success.png') }}") no-repeat #000 7px 10px;
 }
 .purr-alert.notice{
-	background:url("{{ url_for('static', filename='img/notice.png') }}") no-repeat #000 7px 10px;
+    background:url("{{ url_for('static', filename='img/notice.png') }}") no-repeat #000 7px 10px;
 }
 .MooDialog .close {
-	background: url("{{ url_for('static', filename='img/dialog-close.png') }}") no-repeat;
+    background: url("{{ url_for('static', filename='img/dialog-close.png') }}") no-repeat;
 }
 .MooDialog .MooDialogAlert,
 .MooDialog .MooDialogConfirm,
 .MooDialog .MooDialogPrompt,
 .MooDialog .MooDialogError {
-	background: url("{{ url_for('static', filename='img/dialog-warning.png') }}") no-repeat;
-	padding-left: 40px;
-	min-height: 40px;
+    background: url("{{ url_for('static', filename='img/dialog-warning.png') }}") no-repeat;
+    padding-left: 40px;
+    min-height: 40px;
 }
 
 .MooDialog .MooDialogConfirm,
 .MooDialog .MooDialogPromt {
-	background: url("{{ url_for('static', filename='img/dialog-question.png') }}") no-repeat;
+    background: url("{{ url_for('static', filename='img/dialog-question.png') }}") no-repeat;
 }
 
 .MooDialog .MooDialogError {
-	background: url("{{ url_for('static', filename='img/dialog-error.png') }}") no-repeat;
+    background: url("{{ url_for('static', filename='img/dialog-error.png') }}") no-repeat;
 }
 </style>
 <title>{% block title %}pyLoad{% endblock %}</title>
@@ -167,64 +169,64 @@ a.cog {
 </span>
 
     <img src="{{url_for('static', filename='img/head-login.png')}}" alt="User:" style="vertical-align:middle; margin:2px" /><span style="padding-right: 2px;">{{user.name}}</span>
-	<ul id="user-actions">
-		<li><a href="{{ url_for('app.logout')}}" class="action logout" rel="nofollow">{{_("Logout")}}</a></li>
-		{% if user.is_admin %}
-		<li><a href="{{ url_for('app.admin')}}" class="action profile" rel="nofollow">{{_("Administrate")}}</a></li>
-		{% endif %}
-        <li><a href="{{ url_for('app.info')}}" class="action info" rel="nofollow">{{_("Info")}}</a></li>
+    <ul id="user-actions">
+        <li><a href="/logout" class="action logout" rel="nofollow">{{_("Logout")}}</a></li>
+        {% if user.is_admin %}
+        <li><a href="/admin" class="action profile" rel="nofollow">{{_("Administrate")}}</a></li>
+        {% endif %}
+        <li><a href="/info" class="action info" rel="nofollow">{{_("Info")}}</a></li>
 
-	</ul>
+    </ul>
 {% else %}
     <span style="padding-right: 2px;">{{_("Please Login!")}}</span>
 {% endif %}
 
     {% endblock %}
-	</div>
+    </div>
 
-	<a href="{{'dashboard'}}"><img id="head-logo" src="{{url_for('static', filename='img/pyload_banner.png')}}" alt="pyLoad" /></a>
+    <a href="{{'dashboard'}}"><img id="head-logo" src="{{url_for('static', filename='img/pyload_banner.png')}}" alt="pyLoad" /></a>
 
-	<div id="head-menu">
-		<ul>
+    <div id="head-menu">
+        <ul>
 
         {% macro selected(name, right=False) -%}
             {% if name in url -%}class="{% if right -%}right {% endif %}selected"{%- endif %}
             {% if name not in url and right -%}class="right"{%- endif %}
         {%- endmacro %}
 
-		{% block menu %}
-		<li>
-		    <a href="{{'dashboard'}}" title=""><img src="{{url_for('static', filename='img/head-menu-home.png')}}" alt="" /> {{_("Dashboard")}}</a>
-		</li>
-		<li {{ selected('app.queue') }}>
-		    <a href="{{ url_for('app.queue') }}" title=""><img src="{{url_for('static', filename='img/head-menu-queue.png')}}" alt="" /> {{_("Queue")}}</a>
-		</li>
-		<li {{ selected('app.collector') }}>
-		    <a href="{{ url_for('app.collector') }}" title=""><img src="{{url_for('static', filename='img/head-menu-collector.png')}}" alt="" /> {{_("Collector")}}</a>
-		</li>
-		<li {{ selected('app.downloads') }}>
-		    <a href="{{ url_for('app.downloads') }}" title=""><img src="{{url_for('static', filename='img/head-menu-development.png')}}" alt="" /> {{_("Downloads")}}</a>
-		</li>
-		<li {{ selected('app.filemanager') }}>
-		    <a href="{{ url_for('app.filemanager') }}" title=""><img src="{{url_for('static', filename='img/head-menu-download.png')}}" alt="" /> {{_("Files")}}</a>
-		</li>
-		<li {{ selected('app.logs', True) }}>
-		    <a href="{{ url_for('app.logs') }}"  class="action index" accesskey="x" rel="nofollow"><img src="{{url_for('static', filename='img/head-menu-index.png')}}" alt="" />{{_("Logs")}}</a>
-		</li>
-		<li {{ selected('app.settings', True) }}>
-		    <a href="{{ url_for('app.settings') }}"  class="action index" accesskey="x" rel="nofollow"><img src="{{url_for('static', filename='img/head-menu-config.png')}}" alt="" />{{_("Config")}}</a>
-		</li>
-		{% endblock %}
+        {% block menu %}
+        <li>
+            <a href="{{'dashboard'}}" title=""><img src="{{url_for('static', filename='img/head-menu-home.png')}}" alt="" /> {{_("Dashboard")}}</a>
+        </li>
+        <li {{ selected('app.queue') }}>
+            <a href="/queue" title=""><img src="{{url_for('static', filename='img/head-menu-queue.png')}}" alt="" /> {{_("Queue")}}</a>
+        </li>
+        <li {{ selected('app.collector') }}>
+            <a href="/collector" title=""><img src="{{url_for('static', filename='img/head-menu-collector.png')}}" alt="" /> {{_("Collector")}}</a>
+        </li>
+        <li {{ selected('app.downloads') }}>
+            <a href="/downloads" title=""><img src="{{url_for('static', filename='img/head-menu-development.png')}}" alt="" /> {{_("Downloads")}}</a>
+        </li>
+        <li {{ selected('app.filemanager') }}>
+            <a href="/filemanager" title=""><img src="{{url_for('static', filename='img/head-menu-download.png')}}" alt="" /> {{_("Files")}}</a>
+        </li>
+        <li {{ selected('app.logs', True) }}>
+            <a href="/logs"  class="action index" accesskey="x" rel="nofollow"><img src="{{url_for('static', filename='img/head-menu-index.png')}}" alt="" />{{_("Logs")}}</a>
+        </li>
+        <li {{ selected('app.settings', True) }}>
+            <a href="/settings"  class="action index" accesskey="x" rel="nofollow"><img src="{{url_for('static', filename='img/head-menu-config.png')}}" alt="" />{{_("Config")}}</a>
+        </li>
+        {% endblock %}
 
-		</ul>
-	</div>
+        </ul>
+    </div>
 
-	<div style="clear:both;"></div>
+    <div style="clear:both;"></div>
 </div>
 
 {% if perms.STATUS %}
 <ul id="page-actions2">
-	<li id="action_play"><a href="#"  class="action play" accesskey="o" rel="nofollow">{{_("Start")}}</a></li>
+    <li id="action_play"><a href="#"  class="action play" accesskey="o" rel="nofollow">{{_("Start")}}</a></li>
     <li id="action_stop"><a href="#"  class="action stop" accesskey="o" rel="nofollow">{{_("Stop")}}</a></li>
     <li id="action_cancel"><a href="#"  class="action cancel" accesskey="o" rel="nofollow">{{_("Cancel")}}</a></li>
     <li id="action_add"><a href="#"  class="action add" accesskey="o" rel="nofollow" >{{_("Add")}}</a></li>
@@ -261,7 +263,7 @@ a.cog {
 <noscript><h1>Enable JavaScript to use the webinterface.</h1></noscript>
 
 {% for message in messages %}
-	<b><p>{{message}}</p></b>
+    <b><p>{{message}}</p></b>
 {% endfor %}
 
 <div id="load-indicator" style="opacity: 0; float: right; margin-top: -10px;">
@@ -272,7 +274,7 @@ a.cog {
 {% block content %}
 {% endblock content %}
 
-	<hr style="clear: both;" />
+    <hr style="clear: both;" />
 
 <div id="foot">&copy; 2018 pyLoad team
 <a href="#top" class="action top" accesskey="x"><span>{{_("Back to top")}}</span></a><br />
@@ -286,5 +288,6 @@ a.cog {
     {% include 'window.html' %}
     {% include 'captcha.html' %}
 </div>
+
 </body>
 </html>

@@ -35,11 +35,8 @@
       <input type="submit" value="Ok" name="send">
   </form>
 
-    {% if type == 'folder' %}
-  <span class="path_abs_rel">{{_("Path")}}: <a href="{{ url_for('app.pathchooser', path=cwd|path_make_absolute|quotepath) }}"{% if absolute %} style="text-decoration: underline;"{% endif %}>{{_("absolute")}}</a> | <a href="{{ url_for('app.pathchooser', path=cwd|path_make_relative|quotepath) }}"{% if not absolute %} style="text-decoration: underline;"{% endif %}>{{_("relative")}}</a></span>
-    {% else %}
-  <span class="path_abs_rel">{{_("Path")}}: <a href="{{ url_for('app.pathchooser', path=cwd|path_make_absolute|quotepath) }}"{% if absolute %} style="text-decoration: underline;"{% endif %}>{{_("absolute")}}</a> | <a href="{{ url_for('app.pathchooser', path=cwd|path_make_relative|quotepath) }}"{% if not absolute %} style="text-decoration: underline;"{% endif %}>{{_("relative")}}</a></span>
-    {% endif %}
+    <span class="path_abs_rel">{{_("Path")}}: <a href="{{ url_for('app.pathchooser', path=cwd|abspath|quotepath) }}"{% if absolute %} style="text-decoration: underline;"{% endif %}>{{_("absolute")}}</a> | <a href="{{ url_for('app.pathchooser', path=cwd|relpath|quotepath) }}"{% if not absolute %} style="text-decoration: underline;"{% endif %}>{{_("relative")}}</a></span>
+
     </div>
     <table border="0" cellspacing="0" cellpadding="3">
         <tr>
@@ -64,7 +61,7 @@
             {% endif %}
             <td class="size">{{ file.size|float|filesizeformat }}</td>
             <td class="type">{% if file.type == 'dir' %}directory{% else %}{{ file.ext|default("file") }}{% endif %}</td>
-            <td class="mtime">{{ file.modified|date("d.m.Y - H:i:s") }}</td>
+            <td class="mtime">{{ file.modified|date("%Y/%m/%d %H:%M:%S") }}</td>
         <tr>
 <!--        <tr>
             <td colspan="4">{{_("no content")}}</td>

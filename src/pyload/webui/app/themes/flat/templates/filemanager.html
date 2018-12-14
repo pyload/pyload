@@ -2,7 +2,9 @@
 
 {% block head %}
 
-<script type="text/javascript" src="{{theme_static('js/filemanager.js')}}"></script>
+{% autoescape false %}
+<script type="text/javascript">{{render_template('js/filemanager.js')}}</script>
+{% endautoescape %}
 
 <script type="text/javascript">
 

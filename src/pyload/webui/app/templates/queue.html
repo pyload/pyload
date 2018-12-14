@@ -1,14 +1,9 @@
 {% extends 'base.html' %}
+
 {% block head %}
-
-<script type="text/javascript" src="{{url_for('static', filename='js/package.js')}}"></script>
-
-<script type="text/javascript">
-
-document.addEvent("domready", function(){
-    var pUI = new PackageUI("url", {{ target }});
-});
-</script>
+{% autoescape false %}
+<script type="text/javascript">{{render_template('js/queue.js')}}</script>
+{% endautoescape %}
 {% endblock %}
 
 {% if target %}
@@ -75,7 +70,7 @@ document.addEvent("domready", function(){
 
 {% block hidden %}
 <div id="pack_box" class="window_box" style="z-index: 2">
-    <form id="pack_form" action="{{ url_for('json.edit_package') }}" method="POST" enctype="multipart/form-data">
+    <form id="pack_form" action="/json/edit_package" method="POST" enctype="multipart/form-data">
     <h1>{{_("Edit Package")}}</h1>
     <p>{{_("Edit the package detais below.")}}</p>
     <input name="pack_id" id="pack_id" type="hidden" value=""/>

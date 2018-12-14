@@ -177,20 +177,20 @@ $(function() {
         }
     }).draggable({ scroll: false });
 
-	$('input[type=password].reveal-pass').map(function() {
-	    var reveal_id;
+    $('input[type=password].reveal-pass').map(function() {
+        var reveal_id;
 
-	    $(this).wrap( "<div class=\"form-group has-feedback\"></div>" );
-		var button = $("<button class='close form-control-feedback hidden' type='button' style='pointer-events: auto;'><span class='glyphicon glyphicon-eye-close' style='font-size: 11px;'></span></button>");
-		reveal_id = Date.now();
-		button.attr("data-reveal-pass-id", reveal_id);
-		$(this).after(button);
-		$(this).attr("data-reveal-pass-id", reveal_id);
-		$(this).on('input', function () {
+        $(this).wrap( "<div class=\"form-group has-feedback\"></div>" );
+        var button = $("<button class='close form-control-feedback hidden' type='button' style='pointer-events: auto;'><span class='glyphicon glyphicon-eye-close' style='font-size: 11px;'></span></button>");
+        reveal_id = Date.now();
+        button.attr("data-reveal-pass-id", reveal_id);
+        $(this).after(button);
+        $(this).attr("data-reveal-pass-id", reveal_id);
+        $(this).on('input', function () {
             var visible =  Boolean($(this).val());
             $(this).siblings('button[data-reveal-pass-id="' + $(this).attr("data-reveal-pass-id") + '"]').toggleClass('hidden', !visible);
         });
-		button.mousedown(function(event) {
+        button.mousedown(function(event) {
             event.preventDefault();
             $(this).find("span.glyphicon").removeClass('glyphicon-eye-close').addClass('glyphicon-eye-open');
             $(this).siblings('input[data-reveal-pass-id="' + $(this).attr("data-reveal-pass-id") + '"]').attr('type', 'text');
@@ -201,7 +201,7 @@ $(function() {
         }).click(function (event) {
             event.preventDefault();
         });
-	});
+    });
 
     $('.btn, input[type="radio"]').focus(function() { this.blur(); });
 
@@ -210,11 +210,11 @@ $(function() {
         var formData = new FormData(this);
         var $this = $(this);
         if ($this.find("#add_name").val() === "" && $this.find("#add_file").val() === "") {
-            alert("{{_('Please Enter a package name.')}}");
+            alert("{{_('Please Enter a package name')}}");
             return false;
         } else {
             $.ajax({
-                url: "{{'/json/add_package'}}",
+                url: '/json/add_package',
                 method: "POST",
                 data: formData,
                 processData: false,
@@ -240,10 +240,10 @@ $(function() {
     });
 
     $("#action_play").click(function() {
-        $.get("{{'/api/unpauseServer'}}", function () {
+        $.get('/api/unpauseServer', function () {
             $.ajax({
                 method: "POST",
-                url: "{{'/json/status'}}",
+                url: '/json/status',
                 async: true,
                 timeout: 3000,
                 success: LoadJsonToContent
@@ -252,14 +252,14 @@ $(function() {
     });
 
     $("#action_cancel").click(function() {
-        $.get("{{'/api/stopAllDownloads'}}");
+        $.get('/api/stopAllDownloads');
     });
 
     $("#action_stop").click(function() {
-        $.get("{{'/api/pauseServer'}}", function () {
+        $.get('/api/pauseServer'}}", function () {
             $.ajax({
                 method: "POST",
-                url: "{{'/json/status'}}",
+                url: '/json/status',
                 async: true,
                 timeout: 3000,
                 success: LoadJsonToContent
@@ -280,7 +280,7 @@ $(function() {
 
     $.ajax({
         method:"post",
-        url: "{{'/json/status'}}",
+        url: '/json/status',
         async: true,
         timeout: 3000,
         success:LoadJsonToContent
@@ -289,7 +289,7 @@ $(function() {
     setInterval(function() {
         $.ajax({
             method: "POST",
-            url: "{{'/json/status'}}",
+            url: '/json/status',
             async: true,
             timeout: 3000,
             success:LoadJsonToContent
@@ -319,7 +319,7 @@ function LoadJsonToContent(a) {
         }
         if (desktopNotifications && !document.hasFocus() && !notificationVisible) {
             notification = new Notification('pyLoad', {
-                icon: "{{'/img/favicon.ico'}}",
+                icon: "{{ theme_static('img/favicon.ico') }}",
                 body: "{{_('New Captcha Request')}}",
                 tag: 'pyload_captcha'
             });
@@ -361,7 +361,7 @@ function set_captcha(a) {
         $("#cap_textual").css("display", "block");
     } else if (a.result_type === "positional") {
         $("#cap_positional_img").attr("src", params.src);
-        $("#cap_box #cap_title").text("{{_('Please click on the right captcha position.')}}");
+        $("#cap_box #cap_title").text("{{_('Please click on the right captcha position')}}");
         $("#cap_positional").css("display", "block");
     } else if (a.result_type === "interactive") {
         $("#cap_box #cap_title").text("");
@@ -378,7 +378,7 @@ function set_captcha(a) {
 
 function load_captcha(b, a) {
     $.ajax({
-            url: "{{'/json/set_captcha'}}",
+            url: '/json/set_captcha',
             async: true,
             method: b,
             data: a,
@@ -395,7 +395,7 @@ function captcha_reset_default() {
     $("#cap_positional_img").attr("src", "");
     $("#cap_interactive").css("display", "none");
     $("#cap_submit").css("display", "none");
-    // $("#cap_box #cap_title").text("{{_('No Captchas to read.')}}");
+    // $("#cap_box #cap_title").text("{{_('No Captchas to read')}}");
     $("#cap_interactive_iframe").attr("src", "").css({display: "none", top: "", left: ""})
         .parent().css({height: "", width: ""});
     if(interactiveCaptchaHandlerInstance) {

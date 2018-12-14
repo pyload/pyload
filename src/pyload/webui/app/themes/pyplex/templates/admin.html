@@ -22,7 +22,9 @@ select:focus {
 {% endblock %}
 
 {% block footer %}
-<script type="text/javascript" src="{{theme_static('js/admin.js')}}"></script>
+{% autoescape false %}
+<script type="text/javascript">{{render_template('js/admin.js')}}</script>
+{% endautoescape %}
 {% endblock %}
 
 
@@ -66,7 +68,7 @@ select:focus {
                     <td>
                         <select multiple="multiple" size="{{permlist|length}}" name="{{name}}|perms">
                             {% for perm in permlist %}
-                            {% if data.perms|getitem(perm) %}
+                            {% if data.perms|attr(perm) %}
                                 <option selected="selected">{{perm}}</option>
                             {% else %}
                                 <option>{{perm}}</option>
@@ -129,7 +131,7 @@ select:focus {
     <div class="modal-content">
       <div class="modal-header bg-info navbar-inverse text-center" style="padding: 5px" >{{_('Change Password')}}</div>
         <div class="modal-body" style="margin-bottom: 30px;">
-        <form id="password_form" class="from-group" action="{{ url_for('json.change_password') }}" method="POST" enctype="multipart/form-data" style="margin-bottom: 40px;">
+        <form id="password_form" class="from-group" action="/json/change_password" method="POST" enctype="multipart/form-data" style="margin-bottom: 40px;">
           <p>{{_('Enter your current and desired Password.')}}</p>
           <div class="form-group">
             <label for="user_login">{{_('User')}}</label>

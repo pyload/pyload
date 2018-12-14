@@ -10,7 +10,7 @@ $(function() {
         if (i === g) {
             $.ajax({
                 method: "post",
-                url: "{{'/json/change_password'}}",
+                url: '/json/change_password',
                 data: $("#password_form").serialize(),
                 async: true,
                 success: function () {
@@ -22,7 +22,7 @@ $(function() {
             });
             $('#password_box').modal('hide');
         } else {
-            alert("{{_('Passwords did not match.')}}")
+            alert("{{_('Passwords did not match')}}")
         }
         j.stopPropagation();
         j.preventDefault();
@@ -35,7 +35,7 @@ $(function() {
     });
 
     $("#quit_box").on('click', '#quit_button', function () {
-        $.get( "{{'/api/kill'}}", function() {
+        $.get('/api/kill', function() {
             $('#quit_box').modal('hide');
             $('#content').addClass("hidden");
             $('#shutdown_msg').removeClass("hidden");
@@ -43,12 +43,12 @@ $(function() {
     });
 
     $("#restart_box").on('click', '#restart_button', function () {
-        $.get( "{{'/api/restart'}}", function() {
+        $.get('/api/restart', function() {
             $('#restart_box').modal('hide');
             $('#content').addClass("hidden");
             $('#restart_msg').removeClass("hidden");
             setTimeout(function() {
-                window.location = "{{'home'}}";
+                window.location = "{{'dashboard'}}";
             }, 10000);
         });
     });

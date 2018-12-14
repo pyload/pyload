@@ -4,10 +4,11 @@
 {% block subtitle %}{{ _("Config") }}{% endblock %}
 
 {% block head %}
-    <script type="text/javascript" src="{{theme_static('vendor/MooTools/TinyTab/tinytab.js')}}"></script>
-    <script type="text/javascript" src="{{theme_static('vendor/MooTools/MooDropMenu/MooDropMenu.js')}}"></script>
-    <script type="text/javascript" src="{{theme_static('js/settings.js')}}"></script>
-
+<script type="text/javascript" src="{{theme_static('vendor/MooTools/TinyTab/tinytab.js')}}"></script>
+<script type="text/javascript" src="{{theme_static('vendor/MooTools/MooDropMenu/MooDropMenu.js')}}"></script>
+{% autoescape false %}
+<script type="text/javascript">{{render_template('js/settings.js')}}</script>
+{% endautoescape %}
 {% endblock %}
 
 {% block content %}

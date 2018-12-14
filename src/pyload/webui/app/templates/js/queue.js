@@ -1,5 +1,5 @@
-{% autoescape true %}
 var root = this;
+
 document.addEvent("domready", function() {
     root.load = new Fx.Tween($("load-indicator"), {
         link: "cancel"
@@ -13,6 +13,8 @@ document.addEvent("domready", function() {
         $('pack_form').reset();
         root.packageBox.close();
     });
+
+    var pUI = new PackageUI("url", {{ target }});
 });
 
 function indicateLoad() {
@@ -25,14 +27,14 @@ function indicateFinish() {
 
 function indicateSuccess() {
     indicateFinish();
-    root.notify.alert('{{_("Success")}}.', {
+    root.notify.alert('{{_("Success")}}', {
         'className': 'success'
     });
 }
 
 function indicateFail() {
     indicateFinish();
-    root.notify.alert('{{_("Failed")}}.', {
+    root.notify.alert('{{_("Failed")}}', {
         'className': 'error'
     });
 }
@@ -64,7 +66,7 @@ var PackageUI = new Class({
         indicateLoad();
         new Request.JSON({
             method: 'get',
-            url: "{{'/api/deleteFinished'}}",
+            url: '/api/deleteFinished',
             onSuccess: function(data) {
                 if (data.length > 0) {
                     window.location.reload()
@@ -82,7 +84,7 @@ var PackageUI = new Class({
         indicateLoad();
         new Request.JSON({
             method: 'get',
-            url: "{{'/api/restartFailed'}}",
+            url: '/api/restartFailed',
             onSuccess: function(data) {
                 this.packages.each(function(pack) {
                     pack.close();
@@ -105,7 +107,7 @@ var PackageUI = new Class({
             indicateLoad();
             new Request.JSON({
                 method: 'get',
-                url: "{{'/json/package_order/'}}" + order[0],
+                url: '/json/package_order/' + order[0],
                 onSuccess: indicateFinish,
                 onFailure: indicateFail
             }).send();
@@ -156,14 +158,14 @@ var Package = new Class({
         indicateLoad();
         new Request.JSON({
             method: 'get',
-            url: "{{'/json/package/'}}" + this.id,
+            url: '/json/package/' + this.id,
             onSuccess: this.createLinks.bind(this),
             onFailure: indicateFail
         }).send();
     },
     createLinks: function(data) {
         var ul = $("sort_children_{id}".substitute({
-            "id": this.id
+            id: this.id
         }));
         ul.set("html", "");
         data.links.each(function(link) {
@@ -173,26 +175,24 @@ var Package = new Class({
                     "margin-left": 0
                 }
             });
-            var html = "<span style='cursor: move' class='child_status sorthandle'><img src='{{'/img/{icon}'}}' style='width: 12px; height:12px;'/></span>\n".substitute({
-                "icon": link.icon
+            var html = "<span style='cursor: move' class='child_status sorthandle'><img src='{{url_for('static', filename='img')}}/{icon}' style='width: 12px; height:12px;'/></span>\n".substitute({
+                icon: link.icon
             });
             html += "<span style='font-size: 15px'>{name}</span><br /><div class='child_secrow'>".substitute({
-                "name": link.name
+                name: link.name
             });
             html += "<span class='child_status'>{statusmsg}</span>{error}&nbsp;".substitute({
-                "statusmsg": link.statusmsg,
-                "error": link.error
+                statusmsg: link.statusmsg,
+                error: link.error
             });
             html += "<span class='child_status'>{format_size}</span>".substitute({
-                "format_size": link.format_size
+                format_size: link.format_size
             });
             html += "<span class='child_status'>{plugin}</span>&nbsp;&nbsp;".substitute({
-                "plugin": link.plugin
+                plugin: link.plugin
             });
-            html += "<img title='{{_("
-            Delete Link ")}}' style='cursor: pointer;' width='10px' height='10px' src='{{'/img/delete.png'}}' />&nbsp;&nbsp;";
-            html += "<img title='{{_("
-            Restart Link ")}}' style='cursor: pointer;margin-left: -4px' width='10px' height='10px' src='{{'/img/arrow_refresh.png'}}' /></div>";
+            html += "<img title='{{_('Delete Link')}}' style='cursor: pointer;' width='10px' height='10px' src='{{ url_for('static', filename='img/delete.png') }}' />&nbsp;&nbsp;";
+            html += "<img title='{{_('Restart Link')}}' style='cursor: pointer;margin-left: -4px' width='10px' height='10px' src='{{ url_for('static', filename='img/arrow_refresh.png') }}' /></div>";
             var div = new Element("div", {
                 "id": "file_" + link.id,
                 "class": "child",
@@ -223,7 +223,7 @@ var Package = new Class({
             imgs[0].addEvent('click', function(e) {
                 new Request({
                     method: 'get',
-                    url: "{{'/api/deleteFiles/'}}" + "[" + this + "]",
+                    url: '/api/deleteFiles/[' + this.id + ']',
                     onSuccess: function() {
                         $('file_' + this).nix()
                     }.bind(this),
@@ -233,11 +233,11 @@ var Package = new Class({
             imgs[1].addEvent('click', function(e) {
                 new Request({
                     method: 'get',
-                    url: "{{'/api/restartFile/'}}" + this,
+                    url: '/api/restartFile/' + this.id,
                     onSuccess: function() {
                         var ele = $('file_' + this);
                         var imgs = ele.getElements("img");
-                        imgs[0].set("src", "{{'/img/status_queue.png'}}");
+                        imgs[0].set("src", "{{ url_for('static', filename='img/status_queue.png') }}");
                         var spans = ele.getElements(".child_status");
                         spans[1].set("html", "queued");
                         indicateSuccess();
@@ -263,7 +263,7 @@ var Package = new Class({
         indicateLoad();
         new Request({
             method: 'get',
-            url: "{{'/api/deletePackages/'}}" + "[" + this.id + "]",
+            url: '/api/deletePackages/[' + this.id + ']',
             onSuccess: function() {
                 this.ele.nix();
                 indicateFinish();
@@ -276,7 +276,7 @@ var Package = new Class({
         indicateLoad();
         new Request({
             method: 'get',
-            url: "{{'/api/restartPackage/'}}" + this.id,
+            url: '/api/restartPackage/' + this.id,
             onSuccess: function() {
                 this.close();
                 indicateSuccess();
@@ -291,7 +291,7 @@ var Package = new Class({
             child.dissolve();
         }
         var ul = $("sort_children_{id}".substitute({
-            "id": this.id
+            id: this.id
         }));
         ul.erase("html");
         this.linksLoaded = false;
@@ -300,7 +300,7 @@ var Package = new Class({
         indicateLoad();
         new Request({
             method: 'get',
-            url: "{{'/json/move_package/'}}" + ((this.ui.type + 1) % 2) + "/" + this.id,
+            url: '/json/move_package/' + ((this.ui.type + 1) % 2) + "/" + this.id,
             onSuccess: function() {
                 this.ele.nix();
                 indicateFinish();
@@ -339,11 +339,10 @@ var Package = new Class({
             indicateLoad();
             new Request.JSON({
                 method: 'get',
-                url: "{{'/json/link_order/'}}" + order[0],
+                url: '/json/link_order/' + order[0],
                 onSuccess: indicateFinish,
                 onFailure: indicateFail
             }).send();
         }
     }
 });
-{% endautoescape %}

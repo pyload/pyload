@@ -17,10 +17,9 @@
 <script type="text/javascript" src="{{theme_static('vendor/MooTools/MooDialog/MooDialog.js')}}"></script>
 <script type="text/javascript" src="{{theme_static('vendor/MooTools/Purr/purr.js')}}"></script>
 
-
-<script type="text/javascript" src="{{theme_static('js/base.js')}}"></script>
-
-
+{% autoescape false %}
+<script type="text/javascript">{{render_template('js/base.js')}}</script>
+{% endautoescape %}
 
 <title>{% block title %}pyLoad{% endblock %}</title>
 
@@ -182,7 +181,7 @@
 
     <hr style="clear: both;" />
 
-<div id="foot" style="with: 98%; margin-left: 10px; margin-right:10px">&copy; 2008-2015 pyLoad Team
+<div id="foot" style="with: 98%; margin-left: 10px; margin-right:10px">&copy; 2018 pyLoad team
 <a href="#top" class="action top" accesskey="x"><span>{{_("Back to top")}}</span></a><br />
 <!--<div class="breadcrumbs"></div>-->
 
@@ -194,6 +193,8 @@
     {% include theme('window.html') %}
     {% include theme('captcha.html') %}
 </div>
+
 <noscript><h1>Enable JavaScript to use the webinterface.</h1></noscript>
+
 </body>
 </html>

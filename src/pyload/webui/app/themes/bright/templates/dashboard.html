@@ -1,4 +1,5 @@
 {% extends theme('base.html') %}
+
 {% block head %}
 
 <script type="text/javascript">
@@ -188,7 +189,7 @@ var LinkEntry = new Class({
 
             this.elements.remove.addEvent('click', function(){
                 new Request({
-                    method: 'get', url: "{{ url_for('json.abort_link', id='{id}') }}".substitute({id: this.id})
+                    method: 'get', url: "{{ url_for('json.abort_link', id={id}) }}".substitute({id: this.id})
                 }).send();
             }.bind(this));
 

@@ -5,7 +5,6 @@
  * DS208: Avoid top-level this
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
  */
-{% autoescape true %}
 
 const root = this;
 
@@ -62,7 +61,7 @@ class SettingsUI {
 
     return new Request({
       "method" : "get",
-      "url" : `{{ url_for("json.load_config", category=${category}, section=${section}) }}`,
+      "url" : `/json/load_config/${category}/${section}`,
       'onSuccess': data => {
         target.set("html", data);
         target.reveal();
@@ -78,14 +77,14 @@ class SettingsUI {
 
     form.set("send", {
       'method': "post",
-      'url': `{{ url_for("json.save_config", category=${category}) }}`,
+      'url': `/json/save_config/${category}`,
       "onSuccess"() {
-        return root.notify.alert('{{ self._("Settings saved.")}}', {
+        return root.notify.alert('{{ _("Settings saved")}}', {
               'className': 'success'
             });
       },
       'onFailure'() {
-        return root.notify.alert('{{ self._("Error occured.")}}', {
+        return root.notify.alert('{{ _("Error occured")}}', {
               'className': 'error'
             });
       }
@@ -100,7 +99,7 @@ class SettingsUI {
       'method': "post",
       "onSuccess"() { return window.location.reload(); },
       'onFailure'() {
-        return root.notify.alert('{{_("Error occured.")}}', {
+        return root.notify.alert('{{_("Error occured")}}', {
           'className': 'error'
           });
       }
@@ -116,7 +115,7 @@ class SettingsUI {
        'method': "post",
        "onSuccess"() { return window.location.reload(); },
        'onFailure'() {
-         return root.notify.alert('{{ self._("Error occured.") }}', {
+         return root.notify.alert('{{ _("Error occured") }}', {
                'className': 'error'
              });
        }
@@ -126,4 +125,3 @@ class SettingsUI {
     return e.stop();
   }
 }
-{% endautoescape %}
