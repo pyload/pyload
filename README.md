@@ -4,9 +4,9 @@
 
 Requires **Python 3.6** (or later) and good luck.
 
-Install:
+Install (develop mode):
 
-    pip install pyload-dev[all]
+    pip install -e .[all]
 
 > **Note:**
 > Remove the `[all]` keyword to install just the mandatory dependencies of pyLoad.
