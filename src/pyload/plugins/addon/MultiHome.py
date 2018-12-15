@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import time
-from builtins import object, str
+
 
 from ..base.addon import Addon
 

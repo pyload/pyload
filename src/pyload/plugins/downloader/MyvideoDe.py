@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-from builtins import str
+
 
 from ..base.downloader import Downloader
 from ..utils import html_unescape

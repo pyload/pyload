@@ -14,7 +14,6 @@ import re
 import string
 import sys
 import time
-from builtins import chr, map
 from html.entities import name2codepoint
 
 

@@ -6,7 +6,7 @@ import os
 import random
 import re
 import struct
-from builtins import object, range, str
+
 
 import Cryptodome.Cipher.AES
 import Cryptodome.Util.Counter

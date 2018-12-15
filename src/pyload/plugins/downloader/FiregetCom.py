@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-from builtins import chr
+
 
 from ..captcha.ReCaptcha import ReCaptcha
 from ..base.simple_downloader import SimpleDownloader

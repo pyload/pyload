@@ -2,7 +2,7 @@
 # AUTHOR: RaNaN, vuolter
 
 import time
-from builtins import str
+
 from queue import Queue
 
 import pycurl

@@ -2,7 +2,7 @@
 
 import json
 import time
-from builtins import str
+
 from datetime import timedelta
 
 import pycurl

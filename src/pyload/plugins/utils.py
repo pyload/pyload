@@ -22,7 +22,6 @@ import urllib.request
 import xml.sax.saxutils  # TODO: Remove in 0.6.x
 import zlib
 from base64 import b85decode, b85encode
-from builtins import map, object, str
 from collections.abc import Sequence
 from functools import partial, wraps
 from .. import exc_logger

@@ -3,7 +3,7 @@
 from datetime import timedelta
 import re
 import time
-from builtins import range
+
 
 from ..utils import decode, remove_chars, uniqify
 from .account import Account

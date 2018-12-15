@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from builtins import chr, range
-
 import Cryptodome.PublicKey.RSA
 
 from ..downloader.MegaCoNz import MegaClient, MegaCrypto

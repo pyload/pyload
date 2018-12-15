@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # AUTHOR: RaNaN, mkaay
 
-from builtins import object
+
 
 from ..managers.event_manager import UpdateEvent
 from ..utils import save_path

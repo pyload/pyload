@@ -2,7 +2,7 @@
 # AUTHOR: RaNaN, mkaay
 
 import time
-from builtins import object
+
 from threading import RLock
 
 from ..managers.event_manager import UpdateEvent

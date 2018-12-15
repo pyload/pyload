@@ -7,7 +7,6 @@
 import base64
 import re
 import urllib.parse
-from builtins import filter, range, str
 
 from cryptography.fernet import Fernet
 

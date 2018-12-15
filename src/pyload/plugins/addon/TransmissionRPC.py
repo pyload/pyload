@@ -3,7 +3,7 @@
 import json
 import random
 import re
-from builtins import range
+
 
 import pycurl
 from pyload.core.network.http.http_request import BadHeader

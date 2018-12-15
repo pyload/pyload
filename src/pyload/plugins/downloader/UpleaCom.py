@@ -2,7 +2,6 @@
 
 import re
 import urllib.parse
-from builtins import chr, range
 
 from ..base.simple_downloader import SimpleDownloader
 

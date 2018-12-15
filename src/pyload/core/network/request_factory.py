@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # AUTHOR: mkaay, RaNaN
 
-from builtins import REQUESTS, object
+from builtins import REQUESTS
 from threading import Lock
 
 from pyload.plugins.utils import lock

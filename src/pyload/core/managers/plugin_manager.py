@@ -6,7 +6,7 @@ import os
 import re
 import sys
 from ast import literal_eval
-from builtins import object, str
+
 from itertools import chain
 
 import semver

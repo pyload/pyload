@@ -5,7 +5,7 @@ import json
 import os
 import time
 import urllib.parse
-from builtins import range, str
+
 
 from ..base.simple_downloader import SimpleDownloader
 

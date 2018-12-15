@@ -3,7 +3,7 @@
 from datetime import timedelta
 import re
 import time
-from builtins import str
+
 
 from ..base.simple_downloader import SimpleDownloader
 

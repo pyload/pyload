@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from builtins import map
+
 
 from ..utils import parse_name, safename
 from .hoster import Hoster

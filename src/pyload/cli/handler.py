@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # AUTHOR: RaNaN
 
-from builtins import object
+
 
 
 class Handler(object):

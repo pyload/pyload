@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import random
-from builtins import range, str
+
 
 from ..base.multi_downloader import MultiDownloader
 

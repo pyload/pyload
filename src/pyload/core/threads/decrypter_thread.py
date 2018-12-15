@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # AUTHOR: RaNaN, vuolter
 
-from builtins import str
+
 
 from pyload.plugins.plugin import Abort, Fail, Retry
 

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-from builtins import str
+
 
 from ..base.xfs_decrypter import XFSDecrypter
 

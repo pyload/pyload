@@ -3,7 +3,7 @@
 
 import os
 from base64 import standard_b64decode
-from builtins import str
+
 from functools import wraps
 from urllib.parse import unquote
 

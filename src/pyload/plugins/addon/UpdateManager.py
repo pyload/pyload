@@ -6,7 +6,7 @@ import os
 import re
 import sys
 import time
-from builtins import zip
+
 
 from pyload import PKGDIR
 

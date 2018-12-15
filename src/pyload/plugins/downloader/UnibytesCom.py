@@ -3,7 +3,7 @@
 from datetime import timedelta
 import re
 import urllib.parse
-from builtins import range
+
 
 from ..base.simple_downloader import SimpleDownloader
 

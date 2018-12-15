@@ -3,7 +3,6 @@
 import inspect
 import re
 import urllib.parse
-from builtins import hex, next, object, str
 
 import js2py
 

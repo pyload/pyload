@@ -3,7 +3,7 @@
 
 import os
 import shutil
-from builtins import object
+
 from threading import Lock
 
 from ..utils import chmod, lock

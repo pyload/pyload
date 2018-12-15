@@ -3,7 +3,7 @@
 import os
 import re
 import time
-from builtins import range
+
 
 from pyload.core.network.request_factory import getURL as get_url
 

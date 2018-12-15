@@ -5,7 +5,7 @@ import random
 import re
 import time
 import urllib.parse
-from builtins import range
+
 
 from ..base.downloader import Downloader
 

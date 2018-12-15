@@ -4,7 +4,7 @@ import base64
 import json
 import re
 import time
-from builtins import range, str
+
 
 import pycurl
 from pyload.core.network.http.http_request import BadHeader

@@ -4,7 +4,7 @@ from datetime import timedelta
 import operator
 import random
 import re
-from builtins import range
+
 
 from ..captcha.ReCaptcha import ReCaptcha
 from ..captcha.SolveMedia import SolveMedia

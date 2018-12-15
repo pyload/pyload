@@ -8,7 +8,7 @@
 #          \  /
 #           \/
 
-from builtins import object
+
 from collections.abc import Mapping
 from enum import IntEnum
 

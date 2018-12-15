@@ -9,7 +9,7 @@
 #           \/
 
 import re
-from builtins import object, str
+
 import os
 import time
 

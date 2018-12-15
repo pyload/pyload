@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # AUTHOR: RaNaN, mkaay
 
-from builtins import object, str
+
 from functools import wraps
 from threading import RLock
 from types import MethodType

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from builtins import object
+
 
 import pyxmpp2
 import pyxmpp2.client

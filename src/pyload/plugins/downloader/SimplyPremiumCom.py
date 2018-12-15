@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-from builtins import range
+
 
 from ..base.multi_downloader import MultiDownloader
 from ..utils import seconds_to_midnight

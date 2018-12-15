@@ -4,7 +4,7 @@ import os
 import re
 import shutil
 import time
-from builtins import object, str
+
 
 from pyload import PKGDIR
 

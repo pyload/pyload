@@ -7,7 +7,7 @@ import re
 import urllib.error
 import urllib.parse
 import urllib.request
-from builtins import range, str
+
 
 from PIL import Image, ImageDraw, ImageFont
 

@@ -2,7 +2,7 @@
 
 import re
 import urllib.parse
-from builtins import range
+
 
 from pyload.core.network.http.http_request import BadHeader
 

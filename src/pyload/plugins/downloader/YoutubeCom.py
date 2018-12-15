@@ -10,7 +10,6 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
-from builtins import map, object, range, str, zip
 from functools import reduce
 from xml.dom.minidom import parseString as parse_xml
 

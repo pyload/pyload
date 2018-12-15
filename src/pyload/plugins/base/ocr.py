@@ -2,7 +2,6 @@
 
 import os
 import subprocess
-from builtins import map, range, str
 
 from PIL import Image
 

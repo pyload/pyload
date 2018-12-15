@@ -2,7 +2,6 @@
 # AUTHOR: RaNaN
 
 import time
-from builtins import map, range, str
 from itertools import islice
 
 from pyload.core.datatypes import Destination, PackageData

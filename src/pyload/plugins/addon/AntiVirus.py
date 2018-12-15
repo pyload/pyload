@@ -3,7 +3,7 @@
 import os
 import shutil
 import subprocess
-from builtins import map
+
 
 try:
     import send2trash

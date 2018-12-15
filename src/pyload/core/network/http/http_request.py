@@ -3,7 +3,7 @@
 
 import codecs
 import io
-from builtins import object, range, str
+
 from http.client import responses
 from itertools import chain
 from logging import getLogger

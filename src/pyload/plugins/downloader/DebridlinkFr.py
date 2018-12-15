@@ -3,7 +3,7 @@
 import hashlib
 import json
 import time
-from builtins import str
+
 
 import pycurl
 

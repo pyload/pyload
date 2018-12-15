@@ -3,7 +3,7 @@
 import mimetypes
 import os
 import re
-from builtins import range
+
 
 from pyload.core.network.http.http_request import BadHeader
 

@@ -13,7 +13,7 @@
 import os
 import sys
 import time
-from builtins import object, range, str
+
 from threading import Lock, Thread
 
 from easy_getch import getch

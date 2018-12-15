@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-from builtins import range
+
 
 from ..base.decrypter import Decrypter
 

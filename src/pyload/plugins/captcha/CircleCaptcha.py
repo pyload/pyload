@@ -11,7 +11,6 @@ import sys
 import urllib.error
 import urllib.parse
 import urllib.request
-from builtins import input, object, range, str
 
 from PIL import Image, ImageDraw
 

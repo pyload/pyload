@@ -4,7 +4,7 @@ import os
 import subprocess
 import sys
 import time
-from builtins import object
+
 
 from ..base.addon import Addon, expose
 from ..utils import encode

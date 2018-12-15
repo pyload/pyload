@@ -4,7 +4,7 @@ import json
 import os
 import re
 import urllib.parse
-from builtins import str
+
 
 from ..base.downloader import Downloader
 

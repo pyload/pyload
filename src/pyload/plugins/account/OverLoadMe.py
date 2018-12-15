@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import json
-from builtins import map
+
 
 from ..base.multi_account import MultiAccount
 

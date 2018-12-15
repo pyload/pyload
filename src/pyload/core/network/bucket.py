@@ -2,7 +2,7 @@
 # AUTHOR: RaNaN
 
 import time
-from builtins import object
+
 from threading import Lock
 
 from pyload.plugins.utils import lock

@@ -2,7 +2,7 @@
 # AUTHOR: mkaay
 
 import time
-from builtins import object
+
 
 from ..utils import uniqify
 

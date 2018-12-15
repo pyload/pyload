@@ -2,7 +2,7 @@
 
 import os
 import subprocess
-from builtins import map
+
 
 from ..base.addon import Addon, expose
 from ..utils import encode

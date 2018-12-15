@@ -5,7 +5,7 @@ import select
 import socket
 import ssl
 import time
-from builtins import map
+
 from threading import Thread
 
 import pycurl

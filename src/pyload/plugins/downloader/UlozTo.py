@@ -3,7 +3,7 @@
 import json
 import os
 import re
-from builtins import str
+
 from datetime import timedelta
 
 import pycurl

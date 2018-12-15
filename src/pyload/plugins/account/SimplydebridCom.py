@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import time
-from builtins import str
+
 
 from ..base.multi_account import MultiAccount
 

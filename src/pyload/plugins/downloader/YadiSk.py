@@ -3,7 +3,7 @@
 import json
 import random
 import re
-from builtins import range
+
 
 from ..base.simple_downloader import SimpleDownloader
 

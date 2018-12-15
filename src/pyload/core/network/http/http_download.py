@@ -4,7 +4,7 @@
 import os
 import shutil
 import time
-from builtins import object, range, str
+
 from logging import getLogger
 
 import pycurl

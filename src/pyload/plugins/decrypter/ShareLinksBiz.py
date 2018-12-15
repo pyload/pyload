@@ -2,7 +2,6 @@
 
 import base64
 import re
-from builtins import filter
 
 import js2py
 from cryptography.fernet import Fernet

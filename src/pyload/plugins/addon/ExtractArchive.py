@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
-from builtins import object
+
 
 try:
     import send2trash

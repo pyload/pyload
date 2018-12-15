@@ -3,7 +3,7 @@
 import json
 import time
 import urllib.parse
-from builtins import str
+
 
 from ..base.simple_downloader import SimpleDownloader
 

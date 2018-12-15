@@ -4,7 +4,7 @@ import base64
 import re
 import time
 import urllib.parse
-from builtins import map, range
+
 
 from pyload.core.network.http.http_request import BadHeader
 

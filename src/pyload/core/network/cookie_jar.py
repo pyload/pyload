@@ -2,7 +2,7 @@
 # AUTHOR: mkaay, RaNaN
 
 import time
-from builtins import object
+
 from datetime import timedelta
 
 class CookieJar(object):

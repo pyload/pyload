@@ -5,7 +5,7 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
-from builtins import range
+
 
 from PIL import Image
 

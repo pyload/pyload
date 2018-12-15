@@ -3,7 +3,7 @@
 import math
 import re
 import urllib.parse
-from builtins import range, str
+
 
 from ..base.xfs_decrypter import XFSDecrypter
 

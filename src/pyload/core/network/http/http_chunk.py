@@ -3,7 +3,7 @@
 
 import os
 import time
-from builtins import object, range, str
+
 from re import search
 
 import pycurl

@@ -4,7 +4,7 @@ import json
 import os
 import re
 import urllib.parse
-from builtins import map
+
 
 from ..base.decrypter import Decrypter
 

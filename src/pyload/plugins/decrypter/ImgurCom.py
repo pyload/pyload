@@ -2,7 +2,7 @@
 
 import json
 import re
-from builtins import map
+
 
 from ..base.simple_decrypter import SimpleDecrypter
 from ..utils import uniqify

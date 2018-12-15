@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 # AUTHOR: RaNaN, mkaay
 
-from builtins import object, range, str, zip
-
 from ..datatypes.pyfile import PyFile
 from ..datatypes.pypackage import PyPackage
 from ..utils import formatSize

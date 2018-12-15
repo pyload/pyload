@@ -3,7 +3,6 @@
 import os
 import re
 import subprocess
-from builtins import filter, map
 
 from pyload import PKGDIR
 

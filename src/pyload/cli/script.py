@@ -5,7 +5,7 @@
 import configparser
 import os
 import sys
-from builtins import input
+
 from getopt import GetoptError, getopt
 from sys import exit
 

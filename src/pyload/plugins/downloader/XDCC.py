@@ -8,7 +8,7 @@ import struct
 import sys
 import threading
 import time
-from builtins import object, range, str
+
 
 from ..base.addon import threaded
 from ..base.downloader import Downloader
