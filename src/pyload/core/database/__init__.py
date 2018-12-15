@@ -9,6 +9,6 @@
 #           \/
 
 from .database_thread import DatabaseThread
-from .file_database import FileHandler
-from .user_database import UserMethods
-from .storage_database import StorageMethods
+from .file_database import FileDatabaseMethods
+from .user_database import UserDatabaseMethods
+from .storage_database import StorageDatabaseMethods

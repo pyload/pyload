@@ -15,7 +15,7 @@ def _salted_password(password, salt):
     return sha1(salt_pw.encode()).hexdigest()
 
 
-class UserMethods(object):
+class UserDatabaseMethods(object):
     @style.queue
     def checkAuth(self, user, password):
         self.c.execute(
@@ -114,4 +114,4 @@ class UserMethods(object):
         self.c.execute("DELETE FROM users WHERE name=?", (user,))
 
 
-DatabaseThread.registerSub(UserMethods)
+DatabaseThread.registerSub(UserDatabaseMethods)

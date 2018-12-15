@@ -6,7 +6,7 @@ from builtins import object
 from .database_thread import DatabaseThread, style
 
 
-class StorageMethods(object):
+class StorageDatabaseMethods(object):
     @style.queue
     def setStorage(self, identifier, key, value):
         self.c.execute(
@@ -49,4 +49,4 @@ class StorageMethods(object):
         )
 
 
-DatabaseThread.registerSub(StorageMethods)
+DatabaseThread.registerSub(StorageDatabaseMethods)

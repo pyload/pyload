@@ -116,10 +116,12 @@ class DatabaseThread(Thread):
         self.setuplock = Event()
 
         style.setDB(self)
-
+        
+        
     def setup(self):
         self.start()
         self.setuplock.wait()
+
 
     def run(self):
         """
