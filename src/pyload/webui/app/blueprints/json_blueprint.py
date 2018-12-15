@@ -57,6 +57,8 @@ def links():
 
     except Exception as exc:
         flask.abort(500)
+        
+    return jsonify(False)
 
 
 @bp.route("/packages", endpoint="packages")
@@ -76,6 +78,8 @@ def packages():
 
     except Exception:
         flask.abort(500)
+        
+    return jsonify(False)
 
 
 @bp.route("/package/<int:id>", endpoint="package")
@@ -110,6 +114,8 @@ def package(id):
 
     except Exception:
         flask.abort(500)
+        
+    return jsonify(False)
 
 
 # NOTE: 'ids' is a string
@@ -124,6 +130,8 @@ def package_order(ids):
         return jsonify(response="success")
     except Exception:
         flask.abort(500)
+        
+    return jsonify(False)
 
 
 @bp.route("/abort_link/<int:id>", endpoint="abort_link")
@@ -136,6 +144,8 @@ def abort_link(id):
         return jsonify(response="success")
     except Exception:
         flask.abort(500)
+        
+    return jsonify(False)
 
 
 # NOTE: 'ids' is a string
@@ -150,6 +160,8 @@ def link_order(ids):
         return jsonify(response="success")
     except Exception:
         flask.abort(500)
+        
+    return jsonify(False)
 
 
 @bp.route("/add_package", methods=["POST"], endpoint="add_package")
@@ -183,6 +195,8 @@ def add_package():
     if pw:
         data = {"password": pw}
         api.setPackageData(pack, data)
+        
+    return jsonify(True)
 
 
 @bp.route("/move_package/<int:dest>/<int:id>", endpoint="move_package")
@@ -195,6 +209,8 @@ def move_package(dest, id):
         return jsonify(response="success")
     except Exception:
         flask.abort(500)
+        
+    return jsonify(False)
 
 
 @bp.route("/edit_package", methods=["POST"], endpoint="edit_package")
@@ -215,6 +231,8 @@ def edit_package():
 
     except Exception:
         flask.abort(500)
+        
+    return jsonify(False)
 
 
 @bp.route("/set_captcha", methods=["GET", "POST"], endpoint="set_captcha")
@@ -278,6 +296,8 @@ def save_config(category):
             category = "core"
 
         api.setConfigValue(section, option, value, category)
+        
+    return jsonify(True)
 
 
 @bp.route("/add_account", methods=["POST"], endpoint="add_account")
@@ -292,6 +312,7 @@ def add_account():
     type = flask.request.form["account_type"]
 
     api.updateAccount(type, login, password)
+    return jsonify(True)
 
 
 @bp.route("/update_accounts", methods=["POST"], endpoint="update_accounts")
@@ -322,6 +343,8 @@ def update_accounts():
         elif action == "delete":
             deleted.append((plugin, user))
             api.removeAccount(plugin, user)
+            
+    return jsonify(True)
 
 
 @bp.route("/change_password", methods=["POST"], endpoint="change_password")
@@ -338,3 +361,5 @@ def change_password():
     done = api.changePassword(user, oldpw, newpw)
     if not done:
         return "Wrong password", 500
+        
+    return jsonify(True)

@@ -39,9 +39,11 @@ def rpc(func, args=""):
         kwargs[x] = unquote(y)
 
     try:
-        return call_api(func, *args, **kwargs)
+        response = call_api(func, *args, **kwargs)
     except Exception as exc:
-        return jsonify(error=exc, traceback=traceback.format_exc()), 500
+        response = jsonify(error=exc, traceback=traceback.format_exc()), 500
+        
+    return response
 
 
 def call_api(func, *args, **kwargs):
