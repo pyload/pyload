@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 
-
 from ..utils import parse_name, safename
 from .hoster import Hoster
 

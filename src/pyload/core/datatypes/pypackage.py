@@ -2,7 +2,6 @@
 # AUTHOR: RaNaN, mkaay
 
 
-
 from ..managers.event_manager import UpdateEvent
 from ..utils import save_path
 
@@ -15,7 +14,7 @@ class PyPackage(object):
     def __init__(self, manager, id, name, folder, site, password, queue, order):
         self.m = self.manager = manager
         self.m.packageCache[int(id)] = self
-        
+
         self.id = int(id)
         self.name = name
         self._folder = folder
@@ -24,7 +23,7 @@ class PyPackage(object):
         self.queue = queue
         self.order = order
         self.setFinished = False
-        
+
     @property
     def folder(self):
         return save_path(self._folder)

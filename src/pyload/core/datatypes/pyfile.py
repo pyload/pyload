@@ -42,7 +42,7 @@ class PyFile(object):
     ):
         self.m = self.manager = manager
         self.m.cache[int(id)] = self
-        
+
         self.id = int(id)
         self.url = url
         self.name = name
@@ -72,7 +72,7 @@ class PyFile(object):
         self.statusname = None
 
         self.progress = 0
-        self.maxprogress = 100        
+        self.maxprogress = 100
 
     # will convert all sizes to ints
     size = property(lambda self: self._size, setSize)

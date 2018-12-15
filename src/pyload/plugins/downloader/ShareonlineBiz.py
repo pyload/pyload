@@ -120,7 +120,9 @@ class ShareonlineBiz(SimpleDownloader):
             self.retry_captcha(5, 60, self._("Cookie failure"))
 
         elif check == "fail":
-            self.retry_captcha(5, timedelta(minutes=5).seconds, self._("Download failed"))
+            self.retry_captcha(
+                5, timedelta(minutes=5).seconds, self._("Download failed")
+            )
 
         return SimpleDownloader.check_download(self)
 

@@ -44,9 +44,7 @@ class UserDatabaseMethods(object):
 
     @style.queue
     def addUser(self, user, password):
-        salt = reduce(
-            lambda x, y: x + y, [str(random.randint(0, 9)) for i in range(5)]
-        )
+        salt = reduce(lambda x, y: x + y, [str(random.randint(0, 9)) for i in range(5)])
         salt_pw = salt + _salted_password(password, salt)
 
         self.c.execute("SELECT name FROM users WHERE name=?", (user,))

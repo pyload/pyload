@@ -2,12 +2,7 @@
 # AUTHOR: RaNaN, mkaay
 
 from threading import RLock
-from .event_manager import (
-    InsertEvent,
-    ReloadAllEvent,
-    RemoveEvent,
-    UpdateEvent,
-)
+from .event_manager import InsertEvent, ReloadAllEvent, RemoveEvent, UpdateEvent
 from ..utils import lock
 from ..datatypes import Destination
 
@@ -47,7 +42,7 @@ class FileManager(object):
         # TODO: purge the cache
         self.cache = {}  #: holds instances for files
         self.packageCache = {}  #: same for packages
-        
+
         self.jobCache = {}
 
         self.lock = RLock()  # TODO: should be a Lock w/o R
@@ -56,7 +51,6 @@ class FileManager(object):
         self.filecount = -1  #: if an invalid value is set get current value from db
         self.queuecount = -1  #: number of package to be loaded
         self.unchanged = False  #: determines if any changes was made since last call
-        
 
     def change(func):
         def new(*args):
@@ -150,8 +144,13 @@ class FileManager(object):
         adds a package, default to link collector.
         """
         lastID = self.pyload.db.addPackage(name, folder, queue.value)
-        p = self.pyload.db.getPackage(lastID)        
-        e = InsertEvent("pack", lastID, p.order, "collector" if queue is Destination.COLLECTOR else "queue")
+        p = self.pyload.db.getPackage(lastID)
+        e = InsertEvent(
+            "pack",
+            lastID,
+            p.order,
+            "collector" if queue is Destination.COLLECTOR else "queue",
+        )
         self.pyload.eventManager.addEvent(e)
         return lastID
 

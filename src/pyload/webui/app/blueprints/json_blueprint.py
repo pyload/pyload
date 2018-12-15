@@ -57,7 +57,7 @@ def links():
 
     except Exception as exc:
         flask.abort(500)
-        
+
     return jsonify(False)
 
 
@@ -78,7 +78,7 @@ def packages():
 
     except Exception:
         flask.abort(500)
-        
+
     return jsonify(False)
 
 
@@ -114,7 +114,7 @@ def package(id):
 
     except Exception:
         flask.abort(500)
-        
+
     return jsonify(False)
 
 
@@ -130,7 +130,7 @@ def package_order(ids):
         return jsonify(response="success")
     except Exception:
         flask.abort(500)
-        
+
     return jsonify(False)
 
 
@@ -144,7 +144,7 @@ def abort_link(id):
         return jsonify(response="success")
     except Exception:
         flask.abort(500)
-        
+
     return jsonify(False)
 
 
@@ -160,7 +160,7 @@ def link_order(ids):
         return jsonify(response="success")
     except Exception:
         flask.abort(500)
-        
+
     return jsonify(False)
 
 
@@ -169,12 +169,12 @@ def link_order(ids):
 @login_required("ADD")
 def add_package():
     api = flask.current_app.config["PYLOAD_API"]
-    
+
     name = flask.request.form.get("add_name", "New Package").strip()
     queue = int(flask.request.form["add_dest"])
     links = flask.request.form["add_links"].split("\n")
     pw = flask.request.form.get("add_password", "").strip("\n\r")
-    
+
     try:
         f = flask.request.files["add_file"]
 
@@ -195,7 +195,7 @@ def add_package():
     if pw:
         data = {"password": pw}
         api.setPackageData(pack, data)
-        
+
     return jsonify(True)
 
 
@@ -209,7 +209,7 @@ def move_package(dest, id):
         return jsonify(response="success")
     except Exception:
         flask.abort(500)
-        
+
     return jsonify(False)
 
 
@@ -231,7 +231,7 @@ def edit_package():
 
     except Exception:
         flask.abort(500)
-        
+
     return jsonify(False)
 
 
@@ -240,7 +240,7 @@ def edit_package():
 @login_required("ADD")
 def set_captcha():
     api = flask.current_app.config["PYLOAD_API"]
-    
+
     if flask.request.method == "POST":
         tid = int(flask.request.form["cap_id"])
         result = flask.request.form["cap_result"]
@@ -296,7 +296,7 @@ def save_config(category):
             category = "core"
 
         api.setConfigValue(section, option, value, category)
-        
+
     return jsonify(True)
 
 
@@ -306,7 +306,7 @@ def save_config(category):
 # @fresh_login_required
 def add_account():
     api = flask.current_app.config["PYLOAD_API"]
-    
+
     login = flask.request.form["account_login"]
     password = flask.request.form["account_password"]
     type = flask.request.form["account_type"]
@@ -343,7 +343,7 @@ def update_accounts():
         elif action == "delete":
             deleted.append((plugin, user))
             api.removeAccount(plugin, user)
-            
+
     return jsonify(True)
 
 
@@ -353,7 +353,7 @@ def update_accounts():
 @login_required("ACCOUNTS")
 def change_password():
     api = flask.current_app.config["PYLOAD_API"]
-    
+
     user = flask.request.form["user_login"]
     oldpw = flask.request.form["login_current_password"]
     newpw = flask.request.form["login_new_password"]
@@ -361,5 +361,5 @@ def change_password():
     done = api.changePassword(user, oldpw, newpw)
     if not done:
         return "Wrong password", 500
-        
+
     return jsonify(True)

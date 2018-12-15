@@ -58,7 +58,11 @@ class RapiduNet(SimpleDownloader):
         )
 
         if str(jsvars["timeToDownload"]) == "stop":
-            t = (timedelta(hours=24).seconds) - (int(time.time()) % timedelta(hours=24).seconds) + time.altzone
+            t = (
+                (timedelta(hours=24).seconds)
+                - (int(time.time()) % timedelta(hours=24).seconds)
+                + time.altzone
+            )
 
             self.log_info(self._("You've reach your daily download transfer"))
 

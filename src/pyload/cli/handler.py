@@ -2,8 +2,6 @@
 # AUTHOR: RaNaN
 
 
-
-
 class Handler(object):
     def __init__(self, cli):
         self.cli = cli

@@ -40,7 +40,8 @@ class CatShareNet(Account):
                 validuntil = time.time()
                 for n, u in m:
                     validuntil += (
-                        timedelta(hours=n).seconds * {"tydzień": 168, "dni": 24, "godzin": 1}[u]
+                        timedelta(hours=n).seconds
+                        * {"tydzień": 168, "dni": 24, "godzin": 1}[u]
                     )
 
         m = re.search(self.TRAFFIC_LEFT_PATTERN, html)

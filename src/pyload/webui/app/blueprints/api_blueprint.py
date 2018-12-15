@@ -29,20 +29,18 @@ def rpc(func, args=""):
     s = flask.session
     if not api.isAuthorized(func, {"role": s["role"], "permission": s["perms"]}):
         return "Unauthorized", 401
-        
+
     args = args.split("/")
     kwargs = {}
 
-    for x, y in chain(
-        flask.request.args.items(), flask.request.form.items()
-    ):
+    for x, y in chain(flask.request.args.items(), flask.request.form.items()):
         kwargs[x] = unquote(y)
 
     try:
         response = call_api(func, *args, **kwargs)
     except Exception as exc:
         response = jsonify(error=exc, traceback=traceback.format_exc()), 500
-        
+
     return response
 
 
@@ -76,7 +74,7 @@ def login():
 
     s = set_session(user_info)
     flask.flash("Logged in successfully")
-    
+
     return jsonify(s)
 
 

@@ -7,7 +7,7 @@ try:
     import send2trash
 except ImportError:
     send2trash = None
-    
+
 from ..base.addon import Addon, expose, threaded
 from ..base.extractor import ArchiveError, CRCError, PasswordError
 from ..utils import encode, exists, safename, uniqify
@@ -542,7 +542,7 @@ class ExtractArchive(Addon):
                                 self._("Unable to move {} to trash").format(
                                     os.path.basename(f)
                                 ),
-                                self._("Send2Trash lib not found")
+                                self._("Send2Trash lib not found"),
                             )
 
                         except Exception as exc:

@@ -55,7 +55,6 @@ def date(text, format):
 #: Use formatsize directly in 0.6.x
 def formatsize(*args, **kwargs):
     return formatSize(*args, **kwargs)
-    
-    
+
+
 TEMPLATE_FILTERS = [quotepath, unquotepath, date, relpath, abspath, formatsize]
-           

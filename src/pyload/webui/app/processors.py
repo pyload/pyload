@@ -13,7 +13,7 @@ def pre_processor():
     captcha = False
     update = False
     plugins = False
-    
+
     api = flask.current_app.config["PYLOAD_API"]
 
     if user["is_authenticated"]:
@@ -35,6 +35,6 @@ def pre_processor():
         "update": update,
         "plugins": plugins,
     }
-    
-    
+
+
 CONTEXT_PROCESSORS = [pre_processor]

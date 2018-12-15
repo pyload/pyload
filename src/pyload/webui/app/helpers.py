@@ -9,10 +9,9 @@ import flask
 import flask_themes2
 
 from pyload.core.api import Perms, Role, has_permission
-    
+
 
 class JSONEncoder(flask.json.JSONEncoder):
-    
     def default(self, obj):
         try:
             return dict(obj)
@@ -29,7 +28,7 @@ def is_safe_url(location):
 
 
 def get_redirect_url(fallback=None):
-    for location in flask.request.values.get('next'), flask.request.referrer:
+    for location in flask.request.values.get("next"), flask.request.referrer:
         if not location:
             continue
         if location == flask.request.url:  # don't redirect to same location
@@ -37,8 +36,8 @@ def get_redirect_url(fallback=None):
         if is_safe_url(location):
             return location
     return fallback
-           
-           
+
+
 def render_base(messages):
     return render_template("base.html", messages=messages)
 
@@ -52,18 +51,18 @@ def clear_session(session=flask.session, permanent=True):
 def get_current_theme_name():
     api = flask.current_app.config["PYLOAD_API"]
     return api.getConfigValue("webui", "theme")
-    
-    
+
+
 #: tries to serve the file from the static directory of the current theme otherwise fallback to builtin one
 def static_file_url(filename):
     theme = get_current_theme_name()
     try:
         url = flask_themes2.static_file_url(theme, filename)
     except KeyError:
-        url = flask.url_for('static', filename=filename)
+        url = flask.url_for("static", filename=filename)
     return url
-    
-    
+
+
 #: tries to render the template of the current theme otherwise fallback to builtin template
 def render_template(template, **context):
     theme = get_current_theme_name()
@@ -99,7 +98,10 @@ def get_permission(userperms):
 
     :param userperms: permission bits
     """
-    return {name: has_permission(userperms, getattr(Perms, name).value) for name in permlist()}
+    return {
+        name: has_permission(userperms, getattr(Perms, name).value)
+        for name in permlist()
+    }
 
 
 def set_permission(perms):
@@ -121,14 +123,16 @@ def set_permission(perms):
 
 def set_session(user_info, session=flask.session, permanent=True):
     session.permanent = bool(permanent)
-    session.update({
-        "authenticated": True,
-        "id": user_info["id"],
-        "name": user_info["name"],
-        "role": user_info["role"],
-        "perms": user_info["permission"],
-        "template": user_info["template"]
-    })
+    session.update(
+        {
+            "authenticated": True,
+            "id": user_info["id"],
+            "name": user_info["name"],
+            "role": user_info["role"],
+            "perms": user_info["permission"],
+            "template": user_info["template"],
+        }
+    )
     # session.modified = True
     return session
 
@@ -156,7 +160,9 @@ def apiver_check(func):
 
 
 def is_authenticated(session=flask.session):
-    return session.get("name") and session.get("authenticated")  # NOTE: why checks name?
+    return session.get("name") and session.get(
+        "authenticated"
+    )  # NOTE: why checks name?
 
 
 def login_required(perm):
@@ -171,15 +177,18 @@ def login_required(perm):
                     response = "Forbidden", 403
                 else:
                     response = func(*args, **kwargs)
-                
-            elif flask.request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                response = "Forbidden", 403     
-                
+
+            elif flask.request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                response = "Forbidden", 403
+
             else:
-                location = flask.url_for("app.login")  # flask.url_for("app.login", next=flask.request.url)
+                location = flask.url_for(
+                    "app.login"
+                )  # flask.url_for("app.login", next=flask.request.url)
                 response = flask.redirect(location)
-                
+
             return response
+
         return wrapper
+
     return decorator
-    

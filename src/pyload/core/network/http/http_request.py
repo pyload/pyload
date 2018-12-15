@@ -346,10 +346,7 @@ class HTTPRequest(object):
             self.log.debug(f"No Decoder foung for {encoding}")
 
         except Exception:
-            self.log.debug(
-                f"Error when decoding string from {encoding}",
-                exc_info=True
-            )
+            self.log.debug(f"Error when decoding string from {encoding}", exc_info=True)
 
         return rep
 

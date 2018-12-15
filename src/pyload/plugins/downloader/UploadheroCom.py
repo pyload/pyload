@@ -74,7 +74,11 @@ class UploadheroCom(SimpleDownloader):
             )
 
             m = re.search(self.IP_WAIT_PATTERN, self.data)
-            wait_time = (timedelta(minutes=int(m.group(1))).seconds + int(m.group(2))) if m else timedelta(minutes=5).seconds
+            wait_time = (
+                (timedelta(minutes=int(m.group(1))).seconds + int(m.group(2)))
+                if m
+                else timedelta(minutes=5).seconds
+            )
             self.wait(wait_time, True)
             self.retry()
 

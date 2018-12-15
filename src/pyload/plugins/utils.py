@@ -782,7 +782,9 @@ def replace_patterns(value, rules):
 
 
 # TODO: Remove in 0.6.x and fix exp in CookieJar.setCookie
-def set_cookie(cj, domain, name, value, path="/", exp=time.time() + timedelta(hours=744).seconds):  #: 31 days retention
+def set_cookie(
+    cj, domain, name, value, path="/", exp=time.time() + timedelta(hours=744).seconds
+):  #: 31 days retention
     args = list(map(encode, [domain, name, value, path])) + [int(exp)]
     return cj.setCookie(*args)
 

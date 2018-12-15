@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 
-
 import pyxmpp2
 import pyxmpp2.client
 import pyxmpp2.interfaces

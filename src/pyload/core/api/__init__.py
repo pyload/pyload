@@ -253,7 +253,7 @@ class Api(object):
             0,
             not self.pyload.threadManager.pause and self.isTimeDownload(),
             self.pyload.config.get("reconnect", "enabled") and self.isTimeReconnect(),
-            self.isCaptchaWaiting()
+            self.isCaptchaWaiting(),
         )
 
         for pyfile in [
@@ -610,7 +610,7 @@ class Api(object):
         info = self.pyload.files.getFileData(int(fid))
         if not info:
             raise FileDoesNotExists(fid)
-        
+
         fileinfo = next(iter(info.values()))
         fdata = self._convertPyFile(fileinfo)
         return fdata
@@ -1046,7 +1046,9 @@ class Api(object):
             event.eventname = e[0]
             if e[0] in ("update", "remove", "insert"):
                 event.id = e[3]
-                event.type = (ElementType.PACKAGE if e[2] == "pack" else ElementType.FILE).value
+                event.type = (
+                    ElementType.PACKAGE if e[2] == "pack" else ElementType.FILE
+                ).value
                 event.destination = convDest(e[1])
             elif e[0] == "order":
                 if e[1]:

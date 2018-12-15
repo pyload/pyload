@@ -162,19 +162,18 @@ class Core(object):
         from .managers.plugin_manager import PluginManager
         from .managers.thread_manager import ThreadManager
         from .managers.file_manager import FileManager
-        
+
         from .scheduler import Scheduler
 
         self.files = self.fileManager = FileManager(self)
         self.scheduler = Scheduler(self)
-        
+
         self.pgm = self.pluginManager = PluginManager(self)
         self.evm = self.eventManager = EventManager(self)
         self.acm = self.accountManager = AccountManager(self)
         self.thm = self.threadManager = ThreadManager(self)
         self.cpm = self.captchaManager = CaptchaManager(self)
         self.adm = self.addonManager = AddonManager(self)
-        
 
     def _setup_permissions(self):
         self.log.debug("Setup permissions...")

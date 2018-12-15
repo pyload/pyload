@@ -34,7 +34,9 @@ class MyfastfileCom(MultiAccount):
 
     def grab_info(self, user, password, data):
         if "days_left" in self.json_data:
-            validuntil = time.time() + timedelta(hours=self.json_data["days_left"] * 24).seconds
+            validuntil = (
+                time.time() + timedelta(hours=self.json_data["days_left"] * 24).seconds
+            )
             return {"premium": True, "validuntil": validuntil, "trafficleft": -1}
         else:
             self.log_error(self._("Unable to get account information"))

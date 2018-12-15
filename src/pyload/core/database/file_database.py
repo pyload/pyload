@@ -331,7 +331,7 @@ class FileDatabaseMethods(object):
         """
         self.c.execute(
             "SELECT name,folder,site,password,queue,packageorder FROM packages WHERE id=?",
-            (str(id),)
+            (str(id),),
         )
         r = self.c.fetchone()
         if not r:

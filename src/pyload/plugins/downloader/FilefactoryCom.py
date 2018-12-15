@@ -63,7 +63,9 @@ class FilefactoryCom(SimpleDownloader):
         if "Currently only Premium Members can download files larger than" in self.data:
             self.fail(self._("File too large for free download"))
         elif "All free download slots on this server are currently in use" in self.data:
-            self.retry(50, timedelta(minutes=15).seconds, self._("All free slots are busy"))
+            self.retry(
+                50, timedelta(minutes=15).seconds, self._("All free slots are busy")
+            )
 
         m = re.search(self.LINK_FREE_PATTERN, self.data)
         if m is None:
@@ -85,7 +87,9 @@ class FilefactoryCom(SimpleDownloader):
 
         if check == "multiple":
             self.log_debug("Parallel downloads detected; waiting 15 minutes")
-            self.retry(wait=timedelta(minutes=15).seconds, msg=self._("Parallel downloads"))
+            self.retry(
+                wait=timedelta(minutes=15).seconds, msg=self._("Parallel downloads")
+            )
 
         elif check == "error":
             self.error(self._("Unknown error"))

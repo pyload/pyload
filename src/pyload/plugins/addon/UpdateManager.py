@@ -81,7 +81,10 @@ class UpdateManager(Addon):
         if (
             self.config.get("checkperiod")
             and time.time()
-            - max(self.CHECK_INTERVAL, timedelta(hours=self.config.get("checkinterval")).seconds)
+            - max(
+                self.CHECK_INTERVAL,
+                timedelta(hours=self.config.get("checkinterval")).seconds,
+            )
             > self.info["last_check"]
         ):
             self.update()

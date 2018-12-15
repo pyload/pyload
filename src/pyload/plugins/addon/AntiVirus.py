@@ -9,7 +9,7 @@ try:
     import send2trash
 except ImportError:
     send2trash = None
-    
+
 from ..base.addon import Addon, expose, threaded
 from ..utils import encode, exists
 

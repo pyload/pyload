@@ -38,7 +38,6 @@ class WebServerThread(threading.Thread):
         # TODO: inject our custom logger in werkzeug code?
         # NOTE: use_reloader=True -> 'ValueError: signal only works in main thread'
         self.app.run(self.host, self.port, use_reloader=False)
-        
 
     def _run_produc(self):
         bind_path = self.prefix.strip("/") + "/"
@@ -48,9 +47,7 @@ class WebServerThread(threading.Thread):
         server = wsgi.Server(bind_addr, wsgi_app)
 
         if self.use_ssl:
-            server.ssl_adapter = BuiltinSSLAdapter(
-                self.certfile, self.keyfile
-            )
+            server.ssl_adapter = BuiltinSSLAdapter(self.certfile, self.keyfile)
 
         #: hack cheroot to use our custom logger
         server.error_log = lambda *args, **kwgs: self.log.log(

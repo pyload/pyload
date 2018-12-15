@@ -49,7 +49,9 @@ class EuroshareEu(SimpleDownloader):
 
     def handle_free(self, pyfile):
         if re.search(self.DL_LIMIT_PATTERN, self.data):
-            self.retry(timedelta(minutes=5).seconds, 12, self._("Download limit reached"))
+            self.retry(
+                timedelta(minutes=5).seconds, 12, self._("Download limit reached")
+            )
 
         self.data = self.load(pyfile.url, get={"download": "true"})
 

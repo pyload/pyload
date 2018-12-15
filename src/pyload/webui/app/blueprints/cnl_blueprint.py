@@ -45,14 +45,13 @@ def index(id="0"):
 @local_check
 def add():
     package = flask.request.form.get(
-        "package",
-        flask.request.form.get("source", flask.request.form.get("referer"))
+        "package", flask.request.form.get("source", flask.request.form.get("referer"))
     )
-    
+
     urls = [url for url in flask.request.form["urls"].split("\n") if url.strip()]
     if not urls:
         return jsonify(False)
-        
+
     api = flask.current_app.config["PYLOAD_API"]
     if package:
         api.addPackage(package, urls, 0)
@@ -62,12 +61,11 @@ def add():
 
 @bp.route("/addcrypted", methods=["POST"], endpoint="addcrypted")
 @local_check
-def addcrypted():   
+def addcrypted():
     api = flask.current_app.config["PYLOAD_API"]
-    
+
     package = flask.request.form.get(
-        "package",
-        flask.request.form.get("source", flask.request.form.get("referer"))
+        "package", flask.request.form.get("source", flask.request.form.get("referer"))
     )
     dl_path = api.getConfigValue("general", "storage_folder")
     dlc_path = os.path.join(
@@ -89,8 +87,7 @@ def addcrypted():
 @local_check
 def addcrypted2():
     package = flask.request.form.get(
-        "package",
-        flask.request.form.get("source", flask.request.form.get("referer"))
+        "package", flask.request.form.get("source", flask.request.form.get("referer"))
     )
     crypted = flask.request.form["crypted"]
     jk = flask.request.form["jk"]
@@ -124,7 +121,8 @@ def addcrypted2():
 @local_check
 def flashgot():
     if flask.request.referrer not in (
-        "http://localhost:9666/flashgot", "http://127.0.0.1:9666/flashgot",
+        "http://localhost:9666/flashgot",
+        "http://127.0.0.1:9666/flashgot",
     ):
         flask.abort(500)
 
@@ -151,14 +149,14 @@ def crossdomain():
     return rep
 
 
-@bp.route("/checkSupportForUrl", methods=['POST'], endpoint="checksupport")
+@bp.route("/checkSupportForUrl", methods=["POST"], endpoint="checksupport")
 @local_check
 def checksupport():
     api = flask.current_app.config["PYLOAD_API"]
-    
+
     url = flask.request.form["url"]
     res = api.checkURLs([url])
-    
+
     supported = not res[0][1] is None
     return str(supported).lower()
 

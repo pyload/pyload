@@ -66,7 +66,9 @@ class SmoozedCom(MultiAccount):
 
     def get_account_status(self, user, password):
         b_password = password.encode()
-        encrypted = hashlib.pbkdf2_hmac('sha256', b_password, b_password, 1000).hex()[32]
+        encrypted = hashlib.pbkdf2_hmac("sha256", b_password, b_password, 1000).hex()[
+            32
+        ]
 
         html = self.load(
             "http://www2.smoozed.com/api/login",

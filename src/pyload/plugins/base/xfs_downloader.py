@@ -221,7 +221,8 @@ class XFSDownloader(SimpleDownloader):
                     wait_time = parse_time(waitmsg)
                     self.set_wait(wait_time)
                     if (
-                        wait_time < timedelta(minutes=self.config.get("max_wait", 10)).seconds
+                        wait_time
+                        < timedelta(minutes=self.config.get("max_wait", 10)).seconds
                         or not self.pyload.config.get("reconnect", "enabled")
                         or not self.pyload.api.isTimeReconnect()
                     ):

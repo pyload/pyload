@@ -15,7 +15,7 @@ from enum import IntEnum
 
 class BaseObject(Mapping):
     __slots__ = []
-    
+
     def __getitem__(self, key):
         return getattr(self, key)
 
@@ -366,7 +366,16 @@ class PackageDoesNotExists(Exception):
 
 
 class ServerStatus(BaseObject):
-    __slots__ = ["pause", "active", "queue", "total", "speed", "download", "reconnect", "captcha"]
+    __slots__ = [
+        "pause",
+        "active",
+        "queue",
+        "total",
+        "speed",
+        "download",
+        "reconnect",
+        "captcha",
+    ]
 
     def __init__(
         self,
@@ -377,7 +386,7 @@ class ServerStatus(BaseObject):
         speed=None,
         download=None,
         reconnect=None,
-        captcha=None
+        captcha=None,
     ):
         self.pause = pause
         self.active = active

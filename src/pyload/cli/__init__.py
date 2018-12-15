@@ -19,12 +19,13 @@ from threading import Lock, Thread
 from easy_getch import getch
 
 from pyload.core.datatypes import Destination
+
 # from pyload.core.remote.thriftbackend.thrift_client import (
-    # ConnectionClosed,
-    # NoConnection,
-    # NoSSL,
-    # ThriftClient,
-    # WrongLogin,
+# ConnectionClosed,
+# NoConnection,
+# NoSSL,
+# ThriftClient,
+# WrongLogin,
 # )
 from pyload.core.utils import decode, formatSize
 from pyload.plugins.utils import lock

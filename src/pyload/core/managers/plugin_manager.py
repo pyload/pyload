@@ -63,7 +63,7 @@ class PluginManager(object):
                     dst[name] = src[name]
 
         self.pyload.log.debug("Indexing plugins...")
-        
+
         sys.path.append(os.path.join(self.pyload.userdir, "plugins"))
 
         userplugins_dir = os.path.join(self.pyload.userdir, "plugins")

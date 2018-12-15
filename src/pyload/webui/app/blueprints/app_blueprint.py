@@ -26,7 +26,7 @@ from ..helpers import (
     set_permission,
     set_session,
     is_authenticated,
-    get_redirect_url
+    get_redirect_url,
 )
 
 
@@ -35,7 +35,7 @@ bp = flask.Blueprint("app", __name__)
 
 @bp.route("/favicon.ico", endpoint="favicon")
 def favicon():
-    location = static_file_url('img/favicon.ico')
+    location = static_file_url("img/favicon.ico")
     return flask.redirect(location)
 
 
@@ -48,36 +48,36 @@ def robots():
 @bp.route("/login", methods=["GET", "POST"], endpoint="login")
 def login():
     api = flask.current_app.config["PYLOAD_API"]
-    
+
     next = get_redirect_url(fallback=flask.url_for("app.dashboard"))
-    
+
     if flask.request.method == "POST":
         user = flask.request.form["username"]
         password = flask.request.form["password"]
         user_info = api.checkAuth(user, password)
-        
+
         if not user_info:
             return render_template("login.html", next=next, errors=True)
 
         set_session(user_info)
         flask.flash("Logged in successfully")
-    
+
     if is_authenticated():
         return flask.redirect(next)
-        
+
     if api.getConfigValue("webui", "autologin"):
         allusers = api.getAllUserData()
-        if len(allusers) == 1: # TODO: check if localhost
+        if len(allusers) == 1:  # TODO: check if localhost
             user_info = next(iter(allusers.values()))
-            # user_info = allusers[next(allusers)]            
+            # user_info = allusers[next(allusers)]
             set_session(user_info)
-            # NOTE: Double-check autentication here because if session[name] is empty, 
+            # NOTE: Double-check autentication here because if session[name] is empty,
             #       next login_required redirects here again and all loop out.
             if is_authenticated():
                 return flask.redirect(next)
-        
+
     return render_template("login.html", next=next)
-            
+
 
 @bp.route("/logout", endpoint="logout")
 def logout():
@@ -343,13 +343,13 @@ def logs(page=-1):
             fro = datetime.datetime.strptime(from_form, "%Y-%m-%d %H:%M:%S")
         except Exception:
             pass
-            
+
         perpage = int(flask.request.form["perpage"])
         s["perpage"] = perpage
 
         reversed = bool(flask.request.form["reversed"])
         s["reversed"] = reversed
-        
+
         # s.modified = True
 
     log = api.getLog()
@@ -424,15 +424,15 @@ def logs(page=-1):
 @login_required("ADMIN")
 def admin():
     api = flask.current_app.config["PYLOAD_API"]
-    
+
     allusers = api.getAllUserData()
-    
+
     perms = permlist()
     users = {}
-    
+
     # NOTE: messy code... users just need "perms" data in admin template
     for name, data in allusers.items():
-        users[name] = {'perms': get_permission(data["permission"])}
+        users[name] = {"perms": get_permission(data["permission"])}
         users[name]["perms"]["admin"] = data["role"] is 0
 
     s = flask.session
@@ -457,12 +457,12 @@ def admin():
             api.setUserPermission(name, data["permission"], data["role"])
 
     return render_template("admin.html", users=users, permlist=perms)
-    
-    
+
+
 @bp.route("/filemanager", endpoint="filemanager")
 @login_required("MODIFY")
 def filemanager(path):
-    return render_template("filemanager.html") 
+    return render_template("filemanager.html")
 
 
 @bp.route("/info", endpoint="info")

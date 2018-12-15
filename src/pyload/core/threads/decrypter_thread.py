@@ -2,7 +2,6 @@
 # AUTHOR: RaNaN, vuolter
 
 
-
 from pyload.plugins.plugin import Abort, Fail, Retry
 
 from .plugin_thread import PluginThread
