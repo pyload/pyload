@@ -8,7 +8,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class UploadgigCom(SimpleHoster):
     __name__ = "UploadgigCom"
     __type__ = "hoster"
-    __version__ = "0.05"
+    __version__ = "0.06"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?uploadgig.com/file/download/\w+'
@@ -73,5 +73,4 @@ class UploadgigCom(SimpleHoster):
 
             self.wait(res['cd'])
 
-            # self.link = res['dlpath']
             self.link = "http://" + res['fopg'] + res['fghre'] +"/dlfile"
