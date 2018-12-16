@@ -93,9 +93,6 @@ class Hoster(Plugin):
         #: Holds thread in future
         self.thread = None
 
-        #: Js engine, see `JsEngine`
-        self.js = self.pyload.js
-
         #: Captcha stuff
         # TODO: Replace in 0.6.x:
         # _Captcha = self.pyload.pluginManager.loadClass("captcha", self.classname) or Captcha

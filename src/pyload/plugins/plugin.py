@@ -218,8 +218,7 @@ class Plugin(Base):
         self.lastDownload = ""
         #: re match of the last call to `checkDownload`
         self.lastCheck = None
-        #: js engine, see `JsEngine`
-        self.js = self.pyload.js
+        
         self.cTask = None  #: captcha task
 
         self.retries = 0  #: amount of retries already made
