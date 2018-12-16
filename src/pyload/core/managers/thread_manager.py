@@ -328,7 +328,7 @@ class ThreadManager(object):
 
             if job.plugin.__type__ == "downloader":
                 spaceLeft = (
-                    freeSpace(self.pyload.config.get("general", "download_folder"))
+                    freeSpace(self.pyload.config.get("general", "storage_folder"))
                     >> 20
                 )
                 if spaceLeft < self.pyload.config.get("general", "min_free_space"):
