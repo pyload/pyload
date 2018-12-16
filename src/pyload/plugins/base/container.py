@@ -2,7 +2,7 @@
 import os
 import urllib.parse
 
-from ..utils import encode, exists
+from ..helpers import encode, exists
 from .decrypter import Decrypter
 
 

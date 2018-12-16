@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import time
 
-from ..utils import encode, is_sequence
+from ..helpers import encode, is_sequence
 from .addon import Addon, expose
 
 

@@ -6,7 +6,7 @@ import re
 import pycurl
 
 from ..base.decrypter import Decrypter
-from ..utils import replace_patterns
+from ..helpers import replace_patterns
 
 
 class FshareVnFolder(Decrypter):

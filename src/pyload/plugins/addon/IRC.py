@@ -12,7 +12,7 @@ import pycurl
 from pyload.core.api import FileDoesNotExists, PackageDoesNotExists
 
 from ..base.notifier import Notifier
-from ..utils import format_size
+from ..helpers import format_size
 
 
 class IRC(Thread, Notifier):

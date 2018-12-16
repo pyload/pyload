@@ -3,7 +3,7 @@ import re
 import time
 
 from ..base.account import Account
-from ..utils import parse_html_form, set_cookie
+from ..helpers import parse_html_form, set_cookie
 
 
 class TurbobitNet(Account):

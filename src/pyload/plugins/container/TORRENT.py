@@ -8,7 +8,7 @@ import urllib.parse
 import urllib.request
 
 from ..base.container import Container
-from ..utils import safename
+from ..helpers import safename
 
 
 class TORRENT(Container):

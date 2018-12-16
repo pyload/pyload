@@ -14,7 +14,7 @@ import Cryptodome.Util.Counter
 from pyload.core.network.http.http_request import BadHeader
 
 from ..base.downloader import Downloader
-from ..utils import decode, encode, exists
+from ..helpers import decode, encode, exists
 
 ############################ General errors ###################################
 # EINTERNAL            (-1): An internal error has occurred. Please submit a bug report, detailing the exact circumstances in which this error occurred

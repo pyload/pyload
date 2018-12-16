@@ -5,7 +5,7 @@ import time
 import pycurl
 
 from ..base.simple_downloader import SimpleDownloader
-from ..utils import format_size
+from ..helpers import format_size
 
 
 class NitrobitNet(SimpleDownloader):

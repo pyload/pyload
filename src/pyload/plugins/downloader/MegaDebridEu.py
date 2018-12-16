@@ -5,7 +5,7 @@ import pycurl
 from pyload.core.network.http.http_request import BadHeader
 
 from ..base.multi_downloader import MultiDownloader
-from ..utils import encode
+from ..helpers import encode
 
 
 def args(**kwargs):

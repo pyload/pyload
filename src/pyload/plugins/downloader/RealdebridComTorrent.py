@@ -12,7 +12,7 @@ import pycurl
 from pyload.core.network.http.http_request import BadHeader
 
 from ..base.downloader import Downloader
-from ..utils import exists
+from ..helpers import exists
 
 
 class RealdebridComTorrent(Downloader):

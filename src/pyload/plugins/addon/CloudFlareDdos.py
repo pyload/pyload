@@ -10,7 +10,7 @@ from pyload.core.network.http.http_request import BadHeader
 
 from ..captcha.ReCaptcha import ReCaptcha
 from ..base.addon import Addon
-from ..utils import parse_html_header
+from ..helpers import parse_html_header
 
 
 def plugin_id(plugin):

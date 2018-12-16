@@ -2,7 +2,7 @@
 import codecs
 
 from ..base.container import Container
-from ..utils import encode
+from ..helpers import encode
 
 
 class TXT(Container):

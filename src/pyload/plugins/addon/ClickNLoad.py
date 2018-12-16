@@ -4,7 +4,7 @@ import threading
 import time
 
 from ..base.addon import Addon, threaded
-from ..utils import forward, lock
+from ..helpers import forward, lock
 
 try:
     import ssl

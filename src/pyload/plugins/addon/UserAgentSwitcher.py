@@ -5,7 +5,7 @@ from pyload.core.network.browser import Browser
 from pyload.core.network.http.http_request import HTTPRequest
 
 from ..base.addon import Addon
-from ..utils import encode
+from ..helpers import encode
 
 
 class UserAgentSwitcher(Addon):

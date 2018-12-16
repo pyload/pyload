@@ -7,7 +7,7 @@ from PIL import Image
 
 from pyload import PKGDIR
 
-from ..utils import encode
+from ..helpers import encode
 from .plugin import Plugin
 
 # import tempfile

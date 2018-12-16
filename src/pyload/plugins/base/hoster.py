@@ -4,7 +4,7 @@ import re
 import time
 import urllib.parse
 
-from ..utils import (
+from ..helpers import (
     decode,
     encode,
     fixurl,

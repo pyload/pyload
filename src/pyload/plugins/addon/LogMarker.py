@@ -4,7 +4,7 @@ import datetime
 from datetime import timedelta
 
 from ..base.addon import Addon
-from ..utils import seconds_to_nexthour
+from ..helpers import seconds_to_nexthour
 
 
 class LogMarker(Addon):

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
-from ..utils import set_cookie
+from ..helpers import set_cookie
 from .simple_decrypter import SimpleDecrypter
 
 

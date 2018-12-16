@@ -7,7 +7,7 @@ import re
 import requests
 
 from ..base.container import Container
-from ..utils import encode
+from ..helpers import encode
 
 
 class CCF(Container):

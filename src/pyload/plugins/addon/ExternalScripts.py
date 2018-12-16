@@ -5,7 +5,7 @@ import subprocess
 
 
 from ..base.addon import Addon, expose
-from ..utils import encode
+from ..helpers import encode
 
 
 class ExternalScripts(Addon):

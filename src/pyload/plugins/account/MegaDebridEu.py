@@ -6,7 +6,7 @@ import pycurl
 from pyload.core.network.http.http_request import BadHeader
 
 from ..base.multi_account import MultiAccount
-from ..utils import encode
+from ..helpers import encode
 
 
 def args(**kwargs):

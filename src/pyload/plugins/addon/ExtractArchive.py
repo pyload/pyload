@@ -10,7 +10,7 @@ except ImportError:
 
 from ..base.addon import Addon, expose, threaded
 from ..base.extractor import ArchiveError, CRCError, PasswordError
-from ..utils import encode, exists, safename, uniqify
+from ..helpers import encode, exists, safename, uniqify
 
 
 class ArchiveQueue(object):

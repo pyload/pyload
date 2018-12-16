@@ -7,7 +7,7 @@ import time
 
 
 from ..base.addon import Addon, expose
-from ..utils import encode
+from ..helpers import encode
 
 try:
     import caffeine

@@ -2,7 +2,7 @@
 
 from datetime import timedelta
 from ..base.multi_downloader import MultiDownloader
-from ..utils import replace_patterns
+from ..helpers import replace_patterns
 
 
 class SimplydebridCom(MultiDownloader):

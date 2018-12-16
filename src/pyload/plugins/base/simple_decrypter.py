@@ -6,7 +6,7 @@ import re
 from pyload.core.network.http.http_request import BadHeader
 from pyload.core.network.request_factory import getURL as get_url
 
-from ..utils import parse_name, parse_time, replace_patterns
+from ..helpers import parse_name, parse_time, replace_patterns
 from .decrypter import Decrypter
 
 

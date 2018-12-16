@@ -8,7 +8,7 @@ import re
 
 from ..captcha.ReCaptcha import ReCaptcha
 from ..captcha.SolveMedia import SolveMedia
-from ..utils import html_unescape, parse_time, seconds_to_midnight, set_cookie
+from ..helpers import html_unescape, parse_time, seconds_to_midnight, set_cookie
 from .simple_downloader import SimpleDownloader
 
 

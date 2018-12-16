@@ -3,7 +3,7 @@
 import os
 import re
 
-from ..utils import encode
+from ..helpers import encode
 from .plugin import Plugin
 
 

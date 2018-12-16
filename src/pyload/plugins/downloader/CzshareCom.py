@@ -4,7 +4,7 @@ from datetime import timedelta
 import re
 
 from ..base.simple_downloader import SimpleDownloader
-from ..utils import parse_size
+from ..helpers import parse_size
 
 
 class CzshareCom(SimpleDownloader):

@@ -10,7 +10,7 @@ from cryptography.fernet import Fernet
 import pycurl
 
 from ..base.decrypter import Decrypter
-from ..utils import html_unescape, set_cookie
+from ..helpers import html_unescape, set_cookie
 
 
 class LinkCryptWs(Decrypter):

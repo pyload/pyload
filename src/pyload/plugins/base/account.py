@@ -5,7 +5,7 @@ import random
 import threading
 import time
 
-from ..utils import Periodical, compare_time, is_sequence, lock, parse_size
+from ..helpers import Periodical, compare_time, is_sequence, lock, parse_size
 from .plugin import Plugin, Skip
 
 

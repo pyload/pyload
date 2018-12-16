@@ -4,7 +4,7 @@ import re
 
 from ..captcha.ReCaptcha import ReCaptcha
 from ..base.simple_downloader import SimpleDownloader
-from ..utils import seconds_to_midnight
+from ..helpers import seconds_to_midnight
 
 
 class DatafileCom(SimpleDownloader):

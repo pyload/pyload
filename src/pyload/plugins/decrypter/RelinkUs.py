@@ -11,7 +11,7 @@ from cryptography.fernet import Fernet
 from ..captcha.SolveMedia import SolveMedia
 from ..base.captcha import Captcha
 from ..base.decrypter import Decrypter
-from ..utils import replace_patterns
+from ..helpers import replace_patterns
 
 
 class RelinkUs(Decrypter):

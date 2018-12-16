@@ -4,7 +4,7 @@ import re
 
 
 from ..base.multi_downloader import MultiDownloader
-from ..utils import seconds_to_midnight
+from ..helpers import seconds_to_midnight
 
 
 class SimplyPremiumCom(MultiDownloader):

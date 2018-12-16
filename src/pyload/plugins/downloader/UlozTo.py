@@ -9,7 +9,7 @@ from datetime import timedelta
 import pycurl
 
 from ..base.simple_downloader import SimpleDownloader
-from ..utils import parse_name, timestamp
+from ..helpers import parse_name, timestamp
 
 
 def convert_decimal_prefix(m):

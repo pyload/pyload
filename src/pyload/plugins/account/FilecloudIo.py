@@ -4,7 +4,7 @@ import json
 
 
 from ..base.account import Account
-from ..utils import set_cookie
+from ..helpers import set_cookie
 
 
 class FilecloudIo(Account):

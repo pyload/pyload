@@ -5,7 +5,7 @@ import re
 import time
 
 
-from ..utils import decode, remove_chars, uniqify
+from ..helpers import decode, remove_chars, uniqify
 from .account import Account
 
 

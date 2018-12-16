@@ -3,7 +3,7 @@
 import threading
 from functools import wraps
 
-from ..utils import Periodical, is_sequence
+from ..helpers import Periodical, is_sequence
 from .plugin import Plugin
 
 

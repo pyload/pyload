@@ -5,7 +5,7 @@ import re
 
 from ..captcha.ReCaptcha import ReCaptcha
 from ..base.downloader import Downloader
-from ..utils import seconds_to_midnight
+from ..helpers import seconds_to_midnight
 
 
 class FreakshareCom(Downloader):

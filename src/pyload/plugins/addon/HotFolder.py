@@ -4,7 +4,7 @@ import shutil
 import time
 
 from ..base.addon import Addon
-from ..utils import encode
+from ..helpers import encode
 
 
 class HotFolder(Addon):

@@ -3,7 +3,7 @@ import re
 
 from ..captcha.SolveMedia import SolveMedia
 from ..base.simple_downloader import SimpleDownloader
-from ..utils import parse_time
+from ..helpers import parse_time
 
 
 class KatfileCom(SimpleDownloader):

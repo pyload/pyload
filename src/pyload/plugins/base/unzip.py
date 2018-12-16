@@ -3,7 +3,7 @@
 import sys
 import zipfile
 
-from ..utils import encode
+from ..helpers import encode
 from .extractor import ArchiveError, CRCError, Extractor, PasswordError
 
 

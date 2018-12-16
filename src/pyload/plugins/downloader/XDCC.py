@@ -13,7 +13,7 @@ import time
 from ..base.addon import threaded
 from ..base.downloader import Downloader
 from ..plugin import Abort
-from ..utils import encode, lock
+from ..helpers import encode, lock
 
 
 class IRC(object):

@@ -3,7 +3,7 @@ import re
 import time
 import urllib.parse
 
-from ..utils import parse_html_form, parse_time, set_cookie
+from ..helpers import parse_html_form, parse_time, set_cookie
 from .account import Account
 
 

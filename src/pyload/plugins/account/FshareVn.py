@@ -3,7 +3,7 @@ import re
 import time
 
 from ..base.account import Account
-from ..utils import parse_html_form
+from ..helpers import parse_html_form
 
 
 class FshareVn(Account):

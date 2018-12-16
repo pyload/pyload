@@ -3,7 +3,7 @@
 import json
 
 from ..base.multi_account import MultiAccount
-from ..utils import set_cookie
+from ..helpers import set_cookie
 
 
 class SimplyPremiumCom(MultiAccount):

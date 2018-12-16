@@ -11,7 +11,7 @@ import time
 from pyload import PKGDIR
 
 from ..base.addon import Addon, expose, threaded
-from ..utils import encode, exists
+from ..helpers import encode, exists
 
 
 class UpdateManager(Addon):

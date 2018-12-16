@@ -5,7 +5,7 @@ import re
 
 
 from ..base.simple_decrypter import SimpleDecrypter
-from ..utils import uniqify
+from ..helpers import uniqify
 
 
 class ImgurCom(SimpleDecrypter):

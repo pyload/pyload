@@ -3,7 +3,7 @@
 import json
 
 from ..base.multi_downloader import MultiDownloader
-from ..utils import parse_size
+from ..helpers import parse_size
 
 
 class LeechThreeHundreedSixtyCom(MultiDownloader):

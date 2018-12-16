@@ -19,7 +19,7 @@ from pyload.core.network.http.http_request import HTTPRequest
 
 from ..base.downloader import Downloader
 from ..base.plugin import Abort, Skip
-from ..utils import exists, isexecutable, renice, replace_patterns, which
+from ..helpers import exists, isexecutable, renice, replace_patterns, which
 
 
 class BIGHTTPRequest(HTTPRequest):

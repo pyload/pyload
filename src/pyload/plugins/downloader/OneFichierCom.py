@@ -6,7 +6,7 @@ import re
 from pyload.core.network.request_factory import getURL as get_url
 
 from ..base.simple_downloader import SimpleDownloader
-from ..utils import format_exc
+from ..helpers import format_exc
 
 
 class OneFichierCom(SimpleDownloader):

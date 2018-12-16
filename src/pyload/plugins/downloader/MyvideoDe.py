@@ -4,7 +4,7 @@ import re
 
 
 from ..base.downloader import Downloader
-from ..utils import html_unescape
+from ..helpers import html_unescape
 
 
 class MyvideoDe(Downloader):
