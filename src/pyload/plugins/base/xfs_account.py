@@ -5,7 +5,7 @@ import urllib.parse
 
 from ..helpers import parse_html_form, set_cookie
 from pyload.core.utils import parse_time
-from .account import Account
+from .accounts import Account
 
 
 class XFSAccount(Account):

@@ -6,7 +6,7 @@ from pyload.core.network.request_factory import getURL as get_url
 
 from ..helpers import encode, replace_patterns
 from pyload.core.utils import parse_name, parse_size, parse_time
-from .downloader import Downloader
+from .downloaders import Downloader
 
 
 class SimpleDownloader(Downloader):

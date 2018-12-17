@@ -5,7 +5,7 @@ import re
 import time
 
 from pyload.core.utils import decode, remove_chars, uniqify
-from .account import Account
+from .accounts import Account
 
 
 class MultiAccount(Account):

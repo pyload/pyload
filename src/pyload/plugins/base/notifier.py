@@ -2,7 +2,7 @@
 import time
 
 from ..helpers import encode, is_sequence
-from .addon import Addon, expose
+from .addons import Addon, expose
 
 
 class Notifier(Addon):

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
-from .downloader import Downloader
+from .downloaders import Downloader
 
 
 class DeadDownloader(Downloader):

@@ -6,8 +6,8 @@ import random
 import re
 
 
-from ..captcha.ReCaptcha import ReCaptcha
-from ..captcha.SolveMedia import SolveMedia
+from ..anticaptchas.ReCaptcha import ReCaptcha
+from ..anticaptchas.SolveMedia import SolveMedia
 from ..helpers import set_cookie
 from pyload.core.utils import seconds_to_midnight, html_unescape, parse_time
 from .simple_downloader import SimpleDownloader
