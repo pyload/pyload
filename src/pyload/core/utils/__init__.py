@@ -41,7 +41,7 @@ def random_string(lenght):
     seq = string.ascii_letters + string.digits + string.punctuation
     return "".join(random.choice(seq) for _ in range(lenght))
 
-        
+
 # Hotfix UnicodeDecodeError: 'ascii' codec can't decode..
 def normalize(value):
     return unicodedata.normalize("NFKD", value).encode("ascii", "ignore")
@@ -91,10 +91,10 @@ def safepath(value):
     Remove invalid characters and truncate the path if needed.
     """
     drive, filename = os.path.splitdrive(value)
-    
+
     filesep = os.sep if os.path.isabs(filename) else ""
     fileparts = (safename(name) for name in filename.split(os.sep))
-    
+
     filename = os.path.join(filesep, *fileparts)
     path = drive + filename
 
@@ -232,7 +232,7 @@ def seconds_to_midnight(utc=None, strict=False):
     ) + timedelta(days=1)
 
     return (midnight - now).seconds
-    
+
 
 def seconds_to_nexthour(strict=False):
     now = datetime.today()
@@ -241,7 +241,7 @@ def seconds_to_nexthour(strict=False):
     ) + timedelta(hours=1)
     return (nexthour - now).seconds
 
-    
+
 def fixurl(url, unquote=None):
     old = url
     url = urllib.parse.unquote(url)
@@ -262,8 +262,8 @@ def fixurl(url, unquote=None):
         url = urllib.parse.quote(url)
 
     return url
-    
-    
+
+
 def parse_name(value, safechar=True):
     path = fixurl(decode(value), unquote=False)
     url_p = urllib.parse.urlparse(path.rstrip("/"))

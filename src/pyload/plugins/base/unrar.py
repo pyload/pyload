@@ -191,9 +191,9 @@ class UnRar(Extractor):
 
         #: eventually Multipart Files
         files.extend(
-            os.path.join(dir, os.path.basename(file))
-            for file in os.listdir(dir) if self.ismultipart(file)
-            and self._RE_PART.sub("", name) == self._RE_PART.sub("", file)
+            os.path.join(dir, os.path.basename(entry))
+            for entry in os.listdir(dir) if self.ismultipart(entry)
+            and self._RE_PART.sub("", name) == self._RE_PART.sub("", entry)
         )
 
         #: Actually extracted file
@@ -217,25 +217,25 @@ class UnRar(Extractor):
         result = set()
         if not self.fullpath and self.VERSION.startswith("5"):
             # NOTE: Unrar 5 always list full path
-            for f in decode(out).splitlines():
-                f = os.path.join(self.dest, os.path.basename(f.strip()))
-                if os.path.isfile(f):
-                    result.add(os.path.join(self.dest, os.path.basename(f)))
+            for filename in decode(out).splitlines():
+                filename = os.path.join(self.dest, os.path.basename(filename.strip()))
+                if os.path.isfile(filename):
+                    result.add(os.path.join(self.dest, os.path.basename(filename)))
         else:
             if self.fullpath:
-                for f in decode(out).splitlines():
+                for filename in decode(out).splitlines():
                     # Unrar fails to list all directories for some archives
-                    f = f.strip()
-                    while f:
-                        fabs = os.path.join(self.dest, f)
+                    filename = filename.strip()
+                    while filename:
+                        fabs = os.path.join(self.dest, filename)
                         if fabs not in result:
                             result.add(fabs)
-                            f = os.path.dirname(f)
+                            filename = os.path.dirname(filename)
                         else:
                             break
             else:
-                for f in decode(out).splitlines():
-                    result.add(os.path.join(self.dest, f.strip()))
+                for filename in decode(out).splitlines():
+                    result.add(os.path.join(self.dest, filename.strip()))
 
         self.files = list(result)
         return self.files

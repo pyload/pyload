@@ -77,8 +77,8 @@ class RealdebridComTorrent(Downloader):
                     self.pyload.cachedir,
                     "tmp_{}.torrent".format(self.pyfile.package().name),
                 )  #: `tmp_` files are deleted automatically
-                with open(torrent_filename, mode="wb") as f:
-                    f.write(torrent_content)
+                with open(torrent_filename, mode="wb") as file:
+                    file.write(torrent_content)
             else:
                 #: URL is local torrent file (uploaded container)
                 torrent_filename = urllib.request.url2pathname(

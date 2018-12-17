@@ -9,7 +9,7 @@ from ..base.plugin import Fail
 
 class SolveMedia(CaptchaService):
     __name__ = "SolveMedia"
-    __type__ = "captcha"
+    __type__ = "anticaptcha"
     __version__ = "0.22"
     __status__ = "testing"
 

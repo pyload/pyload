@@ -11,7 +11,7 @@ except ImportError:
 
 class UlozTo(OCR):
     __name__ = "UlozTo"
-    __type__ = "captcha"
+    __type__ = "anticaptcha"
     __version__ = "0.05"
     __status__ = "testing"
 

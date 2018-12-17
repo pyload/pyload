@@ -34,8 +34,8 @@ class TORRENT(Container):
     __authors__ = [("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
     def decrypt(self, pyfile):
-        with open(pyfile.url, mode="rb") as f:
-            torrent_content = f.read()
+        with open(pyfile.url, mode="rb") as file:
+            torrent_content = file.read()
 
         time_ref = "{:.2f}".format(time.time())[-6:].replace(".", "")
 
@@ -51,8 +51,8 @@ class TORRENT(Container):
         torrent_filename = os.path.join(
             self.pyload.cachedir, "tmp_{}.torrent".format(pack_name)
         )
-        with open(torrent_filename, mode="wb") as f:
-            f.write(torrent_content)
+        with open(torrent_filename, mode="wb") as file:
+            file.write(torrent_content)
 
         self.packages.append(
             (

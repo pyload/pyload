@@ -33,8 +33,8 @@ try:
 except pkg_resources.DistributionNotFound:
     pkgdir = os.path.realpath(os.path.join(__file__, ".."))
     ver_path = os.path.join(pkgdir, "..", "..", "VERSION.md")
-    with open(ver_path) as f:
-        __version__ = f.read().strip()
+    with open(ver_path) as file:
+        __version__ = file.read().strip()
 
 finally:
     __version_info__ = semver.parse_version_info(__version__)

@@ -91,7 +91,7 @@ class Hoster(Plugin):
 
         #: Captcha stuff
         # TODO: Replace in 0.6.x:
-        # _Captcha = self.pyload.pluginManager.loadClass("captcha", self.classname) or Captcha
+        # _Captcha = self.pyload.pluginManager.loadClass("anticaptcha", self.classname) or Captcha
         # self.captcha = _Captcha(pyfile)
         self.captcha = Captcha(pyfile)
 
@@ -117,7 +117,7 @@ class Hoster(Plugin):
             hidden_user = "{:*<{}}".format(self.account.user[:3], 7)
             hidden_pw = "*" * 10
             args = (a.replace(user, hidden_user).replace(pw, hidden_pw) for a in args if a)
-            
+
         log(
             "{plugintype} {pluginname}[{id}]: {msg}".format(
                 plugintype=plugintype.upper(),

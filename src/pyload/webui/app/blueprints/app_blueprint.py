@@ -134,22 +134,21 @@ def files():
         return render_base(messages)
     data = {"folder": [], "files": []}
 
-    items = os.listdir(root)
-
-    for item in sorted(items):
-        if os.path.isdir(os.path.join(root, item)):
-            folder = {"name": item, "path": item, "files": []}
-            files = os.listdir(os.path.join(root, item))
+    for entry in sorted(os.listdir(root)):
+        if os.path.isdir(os.path.join(root, entry)):
+            folder = {"name": entry, "path": entry, "files": []}
+            files = os.listdir(os.path.join(root, entry))
             for file in sorted(files):
                 try:
-                    if os.path.isfile(os.path.join(root, item, file)):
+                    if os.path.isfile(os.path.join(root, entry, file)):
                         folder["files"].append(file)
                 except Exception:
                     pass
 
             data["folder"].append(folder)
-        elif os.path.isfile(os.path.join(root, item)):
-            data["files"].append(item)
+
+        elif os.path.isfile(os.path.join(root, entry)):
+            data["files"].append(entry)
 
     return render_template("files.html", files=data)
 

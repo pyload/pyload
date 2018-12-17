@@ -275,8 +275,8 @@ class Core(object):
     def _parse_linkstxt(self):
         link_file = os.path.join(self.userdir, "links.txt")
         try:
-            with open(link_file) as f:
-                if f.read().strip():
+            with open(link_file) as file:
+                if file.read().strip():
                     self.api.addPackage("links.txt", [link_file], 1)
         except Exception as exc:
             self.log.debug(exc, exc_info=self.debug > 1, stack_info=self.debug > 2)

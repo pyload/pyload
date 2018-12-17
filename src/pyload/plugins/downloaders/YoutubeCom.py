@@ -39,8 +39,8 @@ class BIGHTTPRequest(HTTPRequest):
             rep = self.getResponse()
             if self.abort:
                 raise Abort
-            with open("response.dump", mode="wb") as f:
-                f.write(rep)
+            with open("response.dump", mode="wb") as file:
+                file.write(rep)
             raise Exception("Loaded Url exceeded limit")
 
         self.rep.write(buf)
@@ -1005,8 +1005,8 @@ class YoutubeCom(Downloader):
                         timed_text = self.load(subtitles_urls[lang], decode=False)
                         srt = timedtext_to_srt(timed_text)
 
-                        with open(srt_filename, mode="w") as f:
-                            f.write(srt.encode("utf-8"))
+                        with open(srt_filename, mode="w") as file:
+                            file.write(srt.encode("utf-8"))
                         self.set_permissions(srt_filename)
                         self.log_debug(
                             "Saved subtitle: {}".format(os.path.basename(srt_filename))
@@ -1043,8 +1043,8 @@ class YoutubeCom(Downloader):
                     timed_text = self.load(subtitle[1], decode=False)
                     srt = timedtext_to_srt(timed_text)
 
-                    with open(srt_filename, mode="w") as f:
-                        f.write(srt.encode("utf-8"))
+                    with open(srt_filename, mode="w") as file:
+                        file.write(srt.encode("utf-8"))
                     self.set_permissions(srt_filename)
 
                     self.log_debug(
@@ -1500,9 +1500,9 @@ class JSInterpreter(object):
             r"(?P<key>[a-zA-Z$0-9]+)\s*:\s*function\((?P<args>[a-z,]+)\){(?P<code>[^}]+)}",
             fields,
         )
-        for f in fields_m:
-            argnames = f.group("args").split(",")
-            obj[f.group("key")] = self.build_function(argnames, f.group("code"))
+        for field in fields_m:
+            argnames = field.group("args").split(",")
+            obj[field.group("key")] = self.build_function(argnames, field.group("code"))
 
         return obj
 

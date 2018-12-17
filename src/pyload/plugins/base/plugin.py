@@ -309,7 +309,7 @@ class Plugin(object):
                 ],
             )
 
-        with open(path, mode="rb") as f:
+        with open(path, mode="rb") as file:
             url = fixurl(url, unquote=True)  #: Recheck in 0.6.x
 
             if req is False:
@@ -340,7 +340,7 @@ class Plugin(object):
             http_req.c.setopt(pycurl.HTTPHEADER, http_req.headers)
 
             http_req.c.setopt(pycurl.UPLOAD, 1)
-            http_req.c.setopt(pycurl.READFUNCTION, f.read)
+            http_req.c.setopt(pycurl.READFUNCTION, file.read)
             http_req.c.setopt(pycurl.INFILESIZE, os.path.getsize(path))
 
             if just_header:
@@ -427,8 +427,8 @@ class Plugin(object):
 
             os.makedirs(os.path.dirname(framefile), exist_ok=True)
 
-            with open(framefile, mode="w") as f:
-                f.write(self.last_html)
+            with open(framefile, mode="w") as file:
+                file.write(self.last_html)
 
         except IOError as exc:
             self.log_error(exc)

@@ -42,7 +42,7 @@ class InfoThread(PluginThread):
                 plugins[plugin] = [url]
 
         # filter out container plugins
-        for name in self.m.pyload.pluginManager.containerPlugins:
+        for name in self.pyload.pluginManager.containerPlugins:
             if name in plugins:
                 container.extend((name, url) for url in plugins[name])
 
@@ -51,14 +51,14 @@ class InfoThread(PluginThread):
         # directly write to database
         if self.pid > -1:
             for pluginname, urls in plugins.items():
-                plugin = self.m.pyload.pluginManager.getPlugin(pluginname, True)
+                plugin = self.pyload.pluginManager.getPlugin(pluginname, True)
                 if hasattr(plugin, "getInfo"):
                     self.fetchForPlugin(pluginname, plugin, urls, self.updateDB)
-                    self.m.pyload.files.save()
+                    self.pyload.files.save()
 
         elif self.add:
             for pluginname, urls in plugins.items():
-                plugin = self.m.pyload.pluginManager.getPlugin(pluginname, True)
+                plugin = self.pyload.pluginManager.getPlugin(pluginname, True)
                 if hasattr(plugin, "getInfo"):
                     self.fetchForPlugin(
                         pluginname, plugin, urls, self.updateCache, True
@@ -75,7 +75,7 @@ class InfoThread(PluginThread):
             self.pyload.log.debug(f"Fetched and generated {len(packs)} packages")
 
             for k, v in packs:
-                self.m.pyload.api.addPackage(k, v)
+                self.pyload.api.addPackage(k, v)
 
             # empty cache
             del self.cache[:]
@@ -103,7 +103,7 @@ class InfoThread(PluginThread):
             self.m.infoResults[self.rid] = {}
 
             for pluginname, urls in plugins.items():
-                plugin = self.m.pyload.pluginManager.getPlugin(pluginname, True)
+                plugin = self.pyload.pluginManager.getPlugin(pluginname, True)
                 if hasattr(plugin, "getInfo"):
                     self.fetchForPlugin(
                         pluginname, plugin, urls, self.updateResult, True
@@ -124,7 +124,7 @@ class InfoThread(PluginThread):
         self.m.timestamp = time.time() + timedelta(minutes=5).seconds
 
     def updateDB(self, plugin, result):
-        self.m.pyload.files.updateFileInfo(result, self.pid)
+        self.pyload.files.updateFileInfo(result, self.pid)
 
     def updateResult(self, plugin, result, force=False):
         # parse package name and generate result
@@ -203,7 +203,7 @@ class InfoThread(PluginThread):
         self.pyload.log.debug(f"Pre-decrypting {url} with {plugin}")
 
         # dummy pyfile
-        pyfile = PyFile(self.m.pyload.files, -1, url, url, 0, 0, "", plugin, -1, -1)
+        pyfile = PyFile(self.pyload.files, -1, url, url, 0, 0, "", plugin, -1, -1)
 
         pyfile.initPlugin()
 
@@ -217,7 +217,7 @@ class InfoThread(PluginThread):
             for pack in pyfile.plugin.packages:
                 pyfile.plugin.urls.extend(pack[1])
 
-            data = self.m.pyload.pluginManager.parseUrls(pyfile.plugin.urls)
+            data = self.pyload.pluginManager.parseUrls(pyfile.plugin.urls)
             self.pyload.log.debug(f"Got {len(data)} links.")
 
         except Exception as exc:

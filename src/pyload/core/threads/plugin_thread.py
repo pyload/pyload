@@ -40,14 +40,14 @@ class PluginThread(Thread):
             import zipfile
 
             with zipfile.ZipFile(dump_name, "w") as zip:
-                for f in os.listdir(
+                for entry in os.listdir(
                     os.path.join(self.pyload.cachedir, pyfile.pluginname)
                 ):
                     try:
                         # avoid encoding errors
                         zip.write(
-                            os.path.join(self.pyload.cachedir, pyfile.pluginname, f),
-                            os.path.join(pyfile.pluginname, f),
+                            os.path.join(self.pyload.cachedir, pyfile.pluginname, entry),
+                            os.path.join(pyfile.pluginname, entry),
                         )
                     except Exception:
                         pass
@@ -66,13 +66,13 @@ class PluginThread(Thread):
             self.pyload.log.debug(f"Error creating zip file: {exc}")
 
             dump_name = dump_name.replace(".zip", ".txt")
-            with open(dump_name, mode="w") as f:
-                f.write(dump)
+            with open(dump_name, mode="w") as file:
+                file.write(dump)
 
         self.pyload.log.info(self._("Debug Report written to {}").format(dump_name))
 
     def getDebugDump(self, pyfile):
-        version = self.m.pyload.api.getServerVersion()
+        version = self.pyload.api.getServerVersion()
         dump = f"pyLoad {version} Debug Report of {pyfile.pluginname} {pyfile.plugin.__version__} \n\nTRACEBACK:\n {traceback.format_exc()} \n\nFRAMESTACK:\n"
 
         tb = exc_info()[2]
@@ -117,10 +117,10 @@ class PluginThread(Thread):
                 except Exception as exc:
                     dump += f"<ERROR WHILE PRINTING VALUE> {exc}\n"
 
-        if pyfile.pluginname in self.m.pyload.config.plugin:
+        if pyfile.pluginname in self.pyload.config.plugin:
             dump += "\n\nCONFIG: \n\n"
             dump += (
-                pprint.pformat(self.m.pyload.config.plugin[pyfile.pluginname]) + "\n"
+                pprint.pformat(self.pyload.config.plugin[pyfile.pluginname]) + "\n"
             )
 
         return dump

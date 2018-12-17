@@ -218,7 +218,7 @@ class Plugin(Base):
         self.lastDownload = ""
         #: re match of the last call to `checkDownload`
         self.lastCheck = None
-        
+
         self.cTask = None  #: captcha task
 
         self.retries = 0  #: amount of retries already made
@@ -409,7 +409,7 @@ class Plugin(Base):
         has_plugin = self.__name__ in self.pyload.pluginManager.captchaPlugins
 
         if self.pyload.captcha:
-            Ocr = self.pyload.pluginManager.loadClass("captcha", self.__name__)
+            Ocr = self.pyload.pluginManager.loadClass("anticaptcha", self.__name__)
         else:
             Ocr = None
 
@@ -509,7 +509,7 @@ class Plugin(Base):
                     ),
                 ),
                 "wb",
-            ) as f:
+            ) as file:
                 del frame  #: delete the frame or it wont be cleaned
 
                 try:
@@ -517,7 +517,7 @@ class Plugin(Base):
                 except Exception:
                     tmp = res
 
-                f.write(tmp)
+                file.write(tmp)
 
         if just_header:
             # parse header
@@ -656,8 +656,8 @@ class Plugin(Base):
         elif size > max_size and not read_size:
             return None
         self.log.debug(f"Download Check triggered")
-        with open(self.lastDownload, mode="rb") as f:
-            content = f.read(read_size if read_size else -1)
+        with open(self.lastDownload, mode="rb") as file:
+            content = file.read(read_size if read_size else -1)
         # produces encoding errors, better log to other file in the future?
         # self.log.debug(f"Content: {content}")
         for name, rule in rules.items():

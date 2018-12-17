@@ -7,7 +7,7 @@ from ..base.captcha_service import CaptchaService
 
 class CoinHive(CaptchaService):
     __name__ = "CoinHive"
-    __type__ = "captcha"
+    __type__ = "anticaptcha"
     __version__ = "0.01"
     __status__ = "testing"
 
@@ -106,8 +106,8 @@ if __name__ == "__main__":
     from ..helpers import sign_string
 
     if len(sys.argv) > 2:
-        with open(sys.argv[1]) as f:
-            pem_private = f.read()
+        with open(sys.argv[1]) as file:
+            pem_private = file.read()
 
         print(
             sign_string(

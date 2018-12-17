@@ -349,11 +349,11 @@ class Cli(object):
                 print(self._("File does not exists."))
                 return
 
-            with open(path, mode="rb") as f:
-                content = f.read()
+            with open(path, mode="rb") as file:
+                content = file.read()
 
             rid = self.client.checkOnlineStatusContainer(
-                [], os.path.basename(f.name), content
+                [], os.path.basename(file.name), content
             ).rid
             self.printOnlineCheck(self.client, rid)
 

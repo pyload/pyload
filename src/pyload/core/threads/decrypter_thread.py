@@ -88,7 +88,7 @@ class DecrypterThread(PluginThread):
             )
             self.active.error = str(exc)
 
-            if self.m.pyload.debug:
+            if self.pyload.debug:
                 self.writeDebugReport(pyfile)
 
             return
@@ -97,11 +97,11 @@ class DecrypterThread(PluginThread):
             if not retry:
                 self.active.release()
                 self.active = False
-                self.m.pyload.files.save()
+                self.pyload.files.save()
                 self.m.localThreads.remove(self)
                 # exc_clear()
 
-        # self.m.pyload.addonManager.downloadFinished(pyfile)
+        # self.pyload.addonManager.downloadFinished(pyfile)
 
         # self.m.localThreads.remove(self)
         # self.active.finishIfDone()

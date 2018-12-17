@@ -94,8 +94,8 @@ class Captcha9Kw(Addon):
 
         else:
             try:
-                with open(task.captchaParams["file"], mode="rb") as f:
-                    data = f.read()
+                with open(task.captchaParams["file"], mode="rb") as file:
+                    data = file.read()
 
             except IOError as exc:
                 self.log_error(exc)
@@ -122,7 +122,7 @@ class Captcha9Kw(Addon):
         for opt in self.config.get("hoster_options", "").split("|"):
             if not opt:
                 continue
-                
+
             details = (x.strip() for x in opt.split(";"))
 
             if not details or details[0].lower() != pluginname.lower():
@@ -253,7 +253,7 @@ class Captcha9Kw(Addon):
         for opt in self.config.get("hoster_options", "").split("|"):
             if not opt:
                 continue
-            
+
             details = (x.strip() for x in opt.split(":"))
 
             if not details or details[0].lower() != pluginname.lower():

@@ -358,8 +358,8 @@ class HTTPRequest(object):
             rep = self.getResponse()
             if self.abort:
                 raise Abort
-            with open("response.dump", mode="wb") as f:
-                f.write(rep)
+            with open("response.dump", mode="wb") as file:
+                file.write(rep)
             raise Exception("Loaded Url exceeded limit")
 
         self.rep.write(buf)

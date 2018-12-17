@@ -68,8 +68,8 @@ class Container(Decrypter):
             )
 
             try:
-                with open(self.pyfile.url, mode="wb") as f:
-                    f.write(encode(content))
+                with open(self.pyfile.url, mode="wb") as file:
+                    file.write(encode(content))
 
             except IOError as exc:
                 self.fail(exc)

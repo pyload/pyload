@@ -7,7 +7,7 @@ from ..base.captcha_service import CaptchaService
 
 class AdYouLike(CaptchaService):
     __name__ = "AdYouLike"
-    __type__ = "captcha"
+    __type__ = "anticaptcha"
     __version__ = "0.11"
     __status__ = "testing"
 

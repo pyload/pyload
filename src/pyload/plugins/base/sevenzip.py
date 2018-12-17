@@ -168,9 +168,9 @@ class SevenZip(Extractor):
 
         #: eventually Multipart Files
         files.extend(
-            os.path.join(dir, os.path.basename(file))
-            for file in os.listdir(dir) if self.ismultipart(file)
-            and self._RE_PART.sub("", name) == self._RE_PART.sub("", file)
+            os.path.join(dir, os.path.basename(entry))
+            for entry in os.listdir(dir) if self.ismultipart(entry)
+            and self._RE_PART.sub("", name) == self._RE_PART.sub("", entry)
         )
 
         #: Actually extracted file

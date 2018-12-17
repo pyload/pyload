@@ -54,14 +54,14 @@ class DownloadThread(PluginThread):
                 self.pyload.log.info(self._("Download starts: {}".format(pyfile.name)))
 
                 # start download
-                self.m.pyload.addonManager.downloadPreparing(pyfile)
+                self.pyload.addonManager.downloadPreparing(pyfile)
                 pyfile.plugin.preprocessing(self)
 
                 self.pyload.log.info(
                     self._("Download finished: {}").format(pyfile.name)
                 )
-                self.m.pyload.addonManager.downloadFinished(pyfile)
-                self.m.pyload.files.checkPackageFinished(pyfile)
+                self.pyload.addonManager.downloadFinished(pyfile)
+                self.pyload.files.checkPackageFinished(pyfile)
 
             except NotImplementedError:
                 self.pyload.log.error(
@@ -119,7 +119,7 @@ class DownloadThread(PluginThread):
                     )
                     pyfile.error = msg
 
-                self.m.pyload.addonManager.downloadFailed(pyfile)
+                self.pyload.addonManager.downloadFailed(pyfile)
                 self.clean(pyfile)
                 continue
 
@@ -164,10 +164,10 @@ class DownloadThread(PluginThread):
                     self.pyload.log.error(
                         self._("pycurl error {}: {}").format(code, msg)
                     )
-                    if self.m.pyload.debug:
+                    if self.pyload.debug:
                         self.writeDebugReport(pyfile)
 
-                    self.m.pyload.addonManager.downloadFailed(pyfile)
+                    self.pyload.addonManager.downloadFailed(pyfile)
 
                 self.clean(pyfile)
                 continue
@@ -183,10 +183,10 @@ class DownloadThread(PluginThread):
 
                 self.clean(pyfile)
 
-                self.m.pyload.files.checkPackageFinished(pyfile)
+                self.pyload.files.checkPackageFinished(pyfile)
 
                 self.active = False
-                self.m.pyload.files.save()
+                self.pyload.files.save()
 
                 continue
 
@@ -201,15 +201,15 @@ class DownloadThread(PluginThread):
                 )
                 pyfile.error = str(exc)
 
-                if self.m.pyload.debug:
+                if self.pyload.debug:
                     self.writeDebugReport(pyfile)
 
-                self.m.pyload.addonManager.downloadFailed(pyfile)
+                self.pyload.addonManager.downloadFailed(pyfile)
                 self.clean(pyfile)
                 continue
 
             finally:
-                self.m.pyload.files.save()
+                self.pyload.files.save()
                 pyfile.checkIfProcessed()
                 # exc_clear()
 
@@ -217,7 +217,7 @@ class DownloadThread(PluginThread):
 
             self.active = False
             pyfile.finishIfDone()
-            self.m.pyload.files.save()
+            self.pyload.files.save()
 
     def put(self, job):
         """

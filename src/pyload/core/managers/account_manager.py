@@ -50,7 +50,7 @@ class AccountManager(object):
         if plugin in self.accounts:
             if plugin not in self.plugins:
                 self.plugins[plugin] = self.pyload.pluginManager.loadClass(
-                    "accounts", plugin
+                    "account", plugin
                 )(self, self.accounts[plugin])
 
             return self.plugins[plugin]
@@ -74,17 +74,17 @@ class AccountManager(object):
         loads all accounts available.
         """
         if not os.path.exists(self.configpath):
-            with open(self.configpath, mode="w") as f:
-                f.write(f"version: {__version__}")
+            with open(self.configpath, mode="w") as file:
+                file.write(f"version: {__version__}")
 
-        with open(self.configpath) as f:
-            content = f.readlines()
+        with open(self.configpath) as file:
+            content = file.readlines()
             version = content[0].split(":")[1].strip() if content else ""
 
         if not version or int(version) < __version__:
             shutil.copy(self.configpath, "accounts.backup")
-            with open(self.configpath, mode="w") as f:
-                f.write(f"version: {__version__}")
+            with open(self.configpath, mode="w") as file:
+                file.write(f"version: {__version__}")
             self.pyload.log.warning(
                 self._("Account settings deleted, due to new config format.")
             )
@@ -132,21 +132,21 @@ class AccountManager(object):
         """
         save all account information.
         """
-        with open(self.configpath, mode="w") as f:
-            f.write(f"version: {__version__}\n")
+        with open(self.configpath, mode="w") as file:
+            file.write(f"version: {__version__}\n")
 
             for plugin, accounts in self.accounts.items():
-                f.write("\n")
-                f.write(plugin + ":\n")
+                file.write("\n")
+                file.write(plugin + ":\n")
 
                 for name, data in accounts.items():
                     pw = data["password"]
-                    f.write(f"\n\t{name}:{pw}\n")
+                    file.write(f"\n\t{name}:{pw}\n")
                     if data["options"]:
                         for option, values in data["options"].items():
                             line = " ".join(values)
-                            f.write(f"\t@{option} {line}\n")
-        os.chmod(f.name, 0o600)
+                            file.write(f"\t@{option} {line}\n")
+        os.chmod(file.name, 0o600)
 
     # ----------------------------------------------------------------------
 

@@ -21,7 +21,7 @@ class PluginManager(object):
         "decrypter",
         "container",
         "downloader",
-        "captcha",
+        "anticaptcha",
         "account",
         "addon",
         "base",
@@ -70,32 +70,32 @@ class PluginManager(object):
         os.makedirs(userplugins_dir, exist_ok=True)
 
         try:
-            f = open(os.path.join(userplugins_dir, "__init__.py"), mode="wb")
-            f.close()
+            file = open(os.path.join(userplugins_dir, "__init__.py"), mode="wb")
+            file.close()
         except Exception:
             pass
 
-        self.crypterPlugins, config = self.parse("decrypter", pattern=True)
+        self.crypterPlugins, config = self.parse("decrypters", pattern=True)
         self.plugins["decrypter"] = self.crypterPlugins
         default_config = config
 
-        self.containerPlugins, config = self.parse("container", pattern=True)
+        self.containerPlugins, config = self.parse("containers", pattern=True)
         self.plugins["container"] = self.containerPlugins
         merge(default_config, config)
 
-        self.hosterPlugins, config = self.parse("downloader", pattern=True)
+        self.hosterPlugins, config = self.parse("downloaders", pattern=True)
         self.plugins["downloader"] = self.hosterPlugins
         merge(default_config, config)
 
-        self.addonPlugins, config = self.parse("addon")
+        self.addonPlugins, config = self.parse("addons")
         self.plugins["addon"] = self.addonPlugins
         merge(default_config, config)
 
-        self.captchaPlugins, config = self.parse("captcha")
-        self.plugins["captcha"] = self.captchaPlugins
+        self.captchaPlugins, config = self.parse("anticaptchas")
+        self.plugins["anticaptcha"] = self.captchaPlugins
         merge(default_config, config)
 
-        self.accountPlugins, config = self.parse("account")
+        self.accountPlugins, config = self.parse("accounts")
         self.plugins["account"] = self.accountPlugins
         merge(default_config, config)
 
@@ -131,23 +131,23 @@ class PluginManager(object):
             pfolder = os.path.join(self.pyload.userdir, "plugins", folder)
             os.makedirs(pfolder, exist_ok=True)
             try:
-                f = open(os.path.join(pfolder, "__init__.py"), mode="wb")
-                f.close()
+                file = open(os.path.join(pfolder, "__init__.py"), mode="wb")
+                file.close()
             except Exception:
                 pass
         else:
             pfolder = os.path.join(PKGDIR, "plugins", folder)
 
         configs = {}
-        for f in os.listdir(pfolder):
+        for entry in os.listdir(pfolder):
             if (
-                os.path.isfile(os.path.join(pfolder, f)) and f.endswith(".py")
-            ) and not f.startswith("_"):
+                os.path.isfile(os.path.join(pfolder, entry)) and entry.endswith(".py")
+            ) and not entry.startswith("_"):
 
-                with open(os.path.join(pfolder, f)) as data:
+                with open(os.path.join(pfolder, entry)) as data:
                     content = data.read()
 
-                name = f[:-3]
+                name = entry[:-3]
                 if name[-1] == ".":
                     name = name[:-4]
 
@@ -192,7 +192,7 @@ class PluginManager(object):
                 plugins[name] = {}
                 plugins[name]["v"] = version
 
-                module = f.replace(".pyc", "").replace(".py", "")
+                module = entry.replace(".pyc", "").replace(".py", "")
 
                 # the plugin is loaded from user directory
                 plugins[name]["user"] = True if home else False
@@ -452,23 +452,23 @@ class PluginManager(object):
                         importlib.reload(self.plugins[type][plugin][APPID])
 
         # index creation
-        self.crypterPlugins, config = self.parse("decrypter", pattern=True)
+        self.crypterPlugins, config = self.parse("decrypters", pattern=True)
         self.plugins["decrypter"] = self.crypterPlugins
         default_config = config
 
-        self.containerPlugins, config = self.parse("container", pattern=True)
+        self.containerPlugins, config = self.parse("containers", pattern=True)
         self.plugins["container"] = self.containerPlugins
         merge(default_config, config)
 
-        self.hosterPlugins, config = self.parse("downloader", pattern=True)
+        self.hosterPlugins, config = self.parse("downloaders", pattern=True)
         self.plugins["downloader"] = self.hosterPlugins
         merge(default_config, config)
 
-        self.captchaPlugins, config = self.parse("captcha")
-        self.plugins["captcha"] = self.captchaPlugins
+        self.captchaPlugins, config = self.parse("anticaptchas")
+        self.plugins["anticaptcha"] = self.captchaPlugins
         merge(default_config, config)
 
-        self.accountPlugins, config = self.parse("account")
+        self.accountPlugins, config = self.parse("accounts")
         self.plugins["account"] = self.accountPlugins
         merge(default_config, config)
 

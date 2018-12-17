@@ -388,8 +388,8 @@ class UpdateManager(Addon):
                     with open(
                         os.path.join(userplugins, plugin_type, plugin_name + ".py"),
                         "wb",
-                    ) as f:
-                        f.write(encode(content))
+                    ) as file:
+                        file.write(encode(content))
 
                     updated.append((plugin_type, plugin_name))
                 else:

@@ -342,8 +342,8 @@ class SimpleDownloader(Downloader):
             if self.CHECK_FILE:
                 self.log_info(self._("Checking file (with custom rules)..."))
 
-                with open(encode(self.last_download), mode="rb") as f:
-                    self.data = f.read(1_048_576)  # TODO: Recheck in 0.6.x
+                with open(encode(self.last_download), mode="rb") as file:
+                    self.data = file.read(1_048_576)  # TODO: Recheck in 0.6.x
 
                 self.check_errors()
 

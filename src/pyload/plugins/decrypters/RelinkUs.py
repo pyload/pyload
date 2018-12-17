@@ -281,8 +281,8 @@ class RelinkUs(Decrypter):
                 dlc_filepath = os.path.join(
                     self.pyload.config.get("general", "download_folder"), dlc_filename
                 )
-                with open(dlc_filepath, mode="wb") as f:
-                    f.write(dlc)
+                with open(dlc_filepath, mode="wb") as file:
+                    file.write(dlc)
                 pack_links.append(dlc_filepath)
 
             except Exception:

@@ -19,20 +19,6 @@ from base64 import b85decode, b85encode
 from collections.abc import Sequence
 
 
-# TODO: Remove in 0.6.x
-class utils(object):
-    __name__ = "utils"
-    __type__ = "plugin"
-    __status__ = "stable"
-
-    __pattern__ = r"^unmatchable$"
-    __config__ = []
-
-    __description__ = """Dummy utils class"""
-    __license__ = "GPLv3"
-    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
-
-
 class Config(object):
     def __init__(self, plugin):
         self.plugin = plugin
@@ -594,8 +580,8 @@ def compute_checksum(filename, hashtype):
         hf = getattr(zlib, hashtype)
         last = 0
 
-        with open(file, mode="rb") as f:
-            for chunk in iter(lambda: f.read(buf), ""):
+        with open(file, mode="rb") as file:
+            for chunk in iter(lambda: file.read(buf), ""):
                 last = hf(chunk, last)
 
         return "{:x}".format(last)
@@ -603,8 +589,8 @@ def compute_checksum(filename, hashtype):
     elif hashtype in hashlib.algorithms_available:
         h = hashlib.new(hashtype)
 
-        with open(file, mode="rb") as f:
-            for chunk in iter(lambda: f.read(buf * h.block_size), ""):
+        with open(file, mode="rb") as file:
+            for chunk in iter(lambda: file.read(buf * h.block_size), ""):
                 h.update(chunk)
 
         return h.hexdigest()

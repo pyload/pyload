@@ -8,7 +8,7 @@ from .plugin import Plugin
 
 class Captcha(Plugin):
     __name__ = "Captcha"
-    __type__ = "captcha"
+    __type__ = "anticaptcha"
     __version__ = "0.56"
     __status__ = "stable"
 
@@ -99,7 +99,7 @@ class Captcha(Plugin):
 
             if isinstance(ocr, str):
                 _OCR = self.pyload.pluginManager.loadClass(
-                    "captcha", ocr
+                    "anticaptcha", ocr
                 )  #: Rename `captcha` to `ocr` in 0.6.x
                 result = _OCR(self.pyfile).recognize(img_f.name)
             else:

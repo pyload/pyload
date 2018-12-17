@@ -41,39 +41,39 @@ class HotFolder(Addon):
                 os.makedirs(os.path.join(folder, "finished"), exist_ok=True)
 
             if self.config.get("watchfile"):
-                with open(file, mode="a+") as f:
-                    f.seek(0)
-                    content = f.read().strip()
+                with open(file, mode="a+") as file:
+                    file.seek(0)
+                    content = file.read().strip()
 
                 if content:
-                    f = open(file, mode="w")
-                    f.close()
+                    file = open(file, mode="w")
+                    file.close()
 
                     name = "{}_{}.txt".format(file, time.strftime("%H-%M-%S_%d%b%Y"))
 
-                    with open(os.path.join(folder, "finished", name), mode="wb") as f:
-                        f.write(content)
+                    with open(os.path.join(folder, "finished", name), mode="wb") as file:
+                        file.write(content)
 
-                    self.pyload.api.addPackage(f.name, [f.name], 1)
+                    self.pyload.api.addPackage(file.name, [file.name], 1)
 
-            for f in os.listdir(folder):
-                path = os.path.join(folder, f)
+            for entry in os.listdir(folder):
+                path = os.path.join(folder, entry)
 
                 if (
                     not os.path.isfile(path)
-                    or f.endswith("~")
-                    or f.startswith("#")
-                    or f.startswith(".")
+                    or entry.endswith("~")
+                    or entry.startswith("#")
+                    or entry.startswith(".")
                 ):
                     continue
 
                 newpath = os.path.join(
-                    folder, "finished", "tmp_" + f if self.config.get("delete") else f
+                    folder, "finished", "tmp_" + entry if self.config.get("delete") else entry
                 )
                 shutil.move(path, newpath)
 
-                self.log_info(self._("Added {} from HotFolder").format(f))
-                self.pyload.api.addPackage(f, [newpath], 1)
+                self.log_info(self._("Added {} from HotFolder").format(entry))
+                self.pyload.api.addPackage(entry, [newpath], 1)
 
         except (IOError, OSError) as exc:
             self.log_error(

@@ -6,7 +6,7 @@ from .anticaptchas import Captcha
 
 class CaptchaService(Captcha):
     __name__ = "CaptchaService"
-    __type__ = "captcha"
+    __type__ = "anticaptcha"
     __version__ = "0.36"
     __status__ = "stable"
 

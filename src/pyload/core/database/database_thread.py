@@ -160,12 +160,12 @@ class DatabaseThread(Thread):
         check db version and delete it if needed.
         """
         if not os.path.exists(self.version_path):
-            with open(self.version_path, mode="w") as f:
-                f.write(str(__version__))
+            with open(self.version_path, mode="w") as file:
+                file.write(str(__version__))
             return
 
-        with open(self.version_path) as f:
-            v = int(f.read().strip())
+        with open(self.version_path) as file:
+            v = int(file.read().strip())
 
         if v < __version__:
             if v < 2:
@@ -174,8 +174,8 @@ class DatabaseThread(Thread):
                 )
                 os.remove(self.version_path)
                 shutil.move(self.db_path, "files.backup.db")
-            with open(self.version_path, mode="w") as f:
-                f.write(str(__version__))
+            with open(self.version_path, mode="w") as file:
+                file.write(str(__version__))
             return v
 
     def _convertDB(self, v):
