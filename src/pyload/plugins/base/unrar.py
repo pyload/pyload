@@ -6,7 +6,8 @@ import subprocess
 
 from pyload import PKGDIR
 
-from ..helpers import decode, encode, renice
+from ..helpers import encode, renice
+from pyload.core.utils import decode
 from .extractor import ArchiveError, CRCError, Extractor, PasswordError
 
 

@@ -4,8 +4,7 @@ from datetime import timedelta
 import re
 import time
 
-
-from ..helpers import decode, remove_chars, uniqify
+from pyload.core.utils import decode, remove_chars, uniqify
 from .account import Account
 
 

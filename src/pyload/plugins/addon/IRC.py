@@ -12,7 +12,7 @@ import pycurl
 from pyload.core.api import FileDoesNotExists, PackageDoesNotExists
 
 from ..base.notifier import Notifier
-from ..helpers import format_size
+from pyload.core.utils import format_speed
 
 
 class IRC(Thread, Notifier):
@@ -237,7 +237,7 @@ class IRC(Thread, Notifier):
                     data.fid,
                     data.name,
                     data.statusmsg,
-                    "{}/s".format(format_size(data.speed)),
+                    "{}".format(format_speed(data.speed)),
                     "{}".format(data.format_eta),
                     temp_progress,
                 )

@@ -7,7 +7,8 @@ import zlib
 from threading import Event
 
 from ..base.addon import Addon, threaded
-from ..helpers import encode, format_time
+from ..helpers import encode
+from pyload.core.utils import format_time
 
 
 def compute_checksum(local_file, algorithm, progress_notify=None, abort=None):

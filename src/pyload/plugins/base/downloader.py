@@ -7,7 +7,8 @@ import re
 
 from pyload.core.network.http.http_request import BadHeader
 
-from ..helpers import encode, exists, parse_name, safejoin
+from ..helpers import encode, exists
+from pyload.core.utils import parse_name, safejoin
 from .hoster import Hoster
 from .plugin import Fail
 

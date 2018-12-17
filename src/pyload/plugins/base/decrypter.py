@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
-from ..helpers import parse_name, safename
+from pyload.core.utils import parse_name, safename
 from .hoster import Hoster
 
 

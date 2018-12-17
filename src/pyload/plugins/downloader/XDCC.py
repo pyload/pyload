@@ -13,7 +13,8 @@ import time
 from ..base.addon import threaded
 from ..base.downloader import Downloader
 from ..plugin import Abort
-from ..helpers import encode, lock
+from ..helpers import encode
+from pyload.core.utils import lock
 
 
 class IRC(object):

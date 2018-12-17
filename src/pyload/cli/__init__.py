@@ -27,7 +27,7 @@ from pyload.core.datatypes import Destination
 # ThriftClient,
 # WrongLogin,
 # )
-from pyload.core.utils import decode, format_size, lock
+from pyload.core.utils import decode, format_size, format_speed, lock
 
 from .addpackage import AddPackage
 from .managefiles import ManageFiles
@@ -178,7 +178,7 @@ class Cli(object):
                     + blue("] ")
                     + green(str(percent) + "%")
                     + self._(" Speed: ")
-                    + green(format_size(download.speed) + "/s")
+                    + green(format_speed(download.speed))
                     + self._(" Size: ")
                     + green(download.format_size)
                     + self._(" Finished in: ")
@@ -203,7 +203,7 @@ class Cli(object):
 
         println(
             line,
-            f'{paused} {self._("total Speed")}: {red(format_size(speed) + "/s")} {self._("Files in queue")}: {red(status.queue)} {self._("Total")}: {red(status.total)}',
+            f'{paused} {self._("total Speed")}: {red(format_speed(speed))} {self._("Files in queue")}: {red(status.queue)} {self._("Total")}: {red(status.total)}',
         )
 
         return line + 1
@@ -284,11 +284,11 @@ class Cli(object):
 
             for download in files:
                 if download.status == 12:  #: downloading
-                    formatted_speed = format_size(download.speed)
+                    formatted_speed = format_speed(download.speed)
                     downloaded_size = format_size(download.size - download.bleft)
                     print(print_status(download))
                     print(
-                        f"\tDownloading: {download.format_eta} @ {formatted_speed}/s\t {downloaded_size} ({download.percent}%%)"
+                        f"\tDownloading: {download.format_eta} @ {formatted_speed}\t {downloaded_size} ({download.percent}%%)"
                     )
                 elif download.status == 5:
                     print(print_status(download))

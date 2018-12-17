@@ -5,7 +5,7 @@ import re
 
 
 from ..base.simple_decrypter import SimpleDecrypter
-from ..helpers import uniqify
+from pyload.core.utils import uniqify
 
 
 class ImgurCom(SimpleDecrypter):

@@ -3,7 +3,7 @@
 import json
 
 from ..base.multi_downloader import MultiDownloader
-from ..helpers import parse_size
+from pyload.core.utils import parse_size
 
 
 class AlldebridCom(MultiDownloader):

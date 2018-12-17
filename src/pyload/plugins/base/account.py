@@ -5,7 +5,8 @@ import random
 import threading
 import time
 
-from ..helpers import Periodical, compare_time, is_sequence, lock, parse_size
+from ..helpers import Periodical, is_sequence
+from pyload.core.utils import compare_time, lock, parse_size
 from .plugin import Plugin, Skip
 
 

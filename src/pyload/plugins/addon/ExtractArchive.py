@@ -10,7 +10,8 @@ except ImportError:
 
 from ..base.addon import Addon, expose, threaded
 from ..base.extractor import ArchiveError, CRCError, PasswordError
-from ..helpers import encode, exists, safename, uniqify
+from ..helpers import encode, exists
+from pyload.core.utils import safename, uniqify
 
 
 class ArchiveQueue(object):

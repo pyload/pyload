@@ -6,7 +6,7 @@ import time
 import urllib.request
 
 from ..base.container import Container
-from ..helpers import safename
+from pyload.core.utils import safename
 
 
 class TORRENT(Container):

@@ -223,6 +223,27 @@ def remove(path, trash=True):
         os.remove(path)
 
 
+def seconds_to_midnight(utc=None, strict=False):
+    if isinstance(utc, int):
+        now = datetime.utcnow() + timedelta(hours=utc)
+    else:
+        now = datetime.today()
+
+    midnight = now.replace(
+        hour=0, minute=0 if strict else 1, second=0, microsecond=0
+    ) + timedelta(days=1)
+
+    return (midnight - now).seconds
+    
+
+def seconds_to_nexthour(strict=False):
+    now = datetime.today()
+    nexthour = now.replace(
+        minute=0 if strict else 1, second=0, microsecond=0
+    ) + timedelta(hours=1)
+    return (nexthour - now).seconds
+
+    
 def fixurl(url, unquote=None):
     old = url
     url = urllib.parse.unquote(url)
@@ -292,6 +313,21 @@ def parse_size(value, unit=""):  #: returns bytes
     return integer + decimal
 
 
+def parse_time(value):
+    if re.search("da(il)?y|today", value):
+        seconds = seconds_to_midnight()
+
+    else:
+        _re = re.compile(r"(\d+| (?:this|an?) )\s*(hr|hour|min|sec|)", re.I)
+        seconds = sum(
+            (int(v) if v.strip() not in ("this", "a", "an") else 1)
+            * {"hr": 3600, "hour": 3600, "min": 60, "sec": 1, "": 1}[u.lower()]
+            for v, u in _re.findall(value)
+        )
+    return seconds
+
+
+# NOTE: decorator
 def lock(func=None, *decor_args, **decor_kwargs):
     if func is None:
         return partial(lock, *decor_args, **decor_kwargs)

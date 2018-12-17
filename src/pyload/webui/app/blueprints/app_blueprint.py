@@ -12,7 +12,7 @@ from urllib.parse import unquote
 import flask
 
 from pyload import PKGDIR
-from pyload.core.utils import format_size
+from pyload.core.utils import format_size, format_speed
 
 from ..filters import unquotepath
 from ..helpers import (
@@ -96,8 +96,8 @@ def dashboard():
     for link in links:
         if link["status"] == 12:
             current_size = link["size"] - link["bleft"]
-            speed = link["speed"]
-            link["information"] = f"{current_size} KiB @ {speed} KiB/s"
+            formatted_speed = format_speed(link["speed"])
+            link["information"] = f"{current_size} KiB @ {formatted_speed}"
 
     return render_template("dashboard.html", res=links)
 

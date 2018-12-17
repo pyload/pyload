@@ -8,7 +8,7 @@ from pyload.core.network.request_factory import getURL as get_url
 
 from ..captcha.ReCaptcha import ReCaptcha
 from ..base.downloader import Downloader
-from ..helpers import parse_size, seconds_to_midnight
+from pyload.core.utils import parse_size, seconds_to_midnight
 
 
 class FileserveCom(Downloader):

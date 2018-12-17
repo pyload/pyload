@@ -3,7 +3,6 @@
 import inspect
 import os
 
-
 import pycurl
 from pyload.core.network.request_factory import getRequest as get_request
 
@@ -13,16 +12,13 @@ from ..plugin import SkipDownload as Skip
 from ..helpers import (
     DB,
     Config,
-    decode,
     encode,
     exists,
-    fixurl,
     format_exc,
-    html_unescape,
     parse_html_header,
-    remove,
     set_cookies,
 )
+from pyload.core.utils import fixurl, decode, html_unescape, remove
 
 if os.name != "nt":
     import grp

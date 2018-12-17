@@ -4,7 +4,8 @@ import threading
 import time
 
 from ..base.addon import Addon, threaded
-from ..helpers import forward, lock
+from ..helpers import forward
+from pyload.core.utils import lock
 
 try:
     import ssl

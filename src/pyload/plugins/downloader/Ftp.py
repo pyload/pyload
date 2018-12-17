@@ -5,7 +5,7 @@ import urllib.parse
 import pycurl
 
 from ..base.downloader import Downloader
-from ..helpers import parse_name
+from pyload.core.utils import parse_name
 
 
 class Ftp(Downloader):

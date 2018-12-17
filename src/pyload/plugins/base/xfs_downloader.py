@@ -8,7 +8,8 @@ import re
 
 from ..captcha.ReCaptcha import ReCaptcha
 from ..captcha.SolveMedia import SolveMedia
-from ..helpers import html_unescape, parse_time, seconds_to_midnight, set_cookie
+from ..helpers import set_cookie
+from pyload.core.utils import seconds_to_midnight, html_unescape, parse_time
 from .simple_downloader import SimpleDownloader
 
 

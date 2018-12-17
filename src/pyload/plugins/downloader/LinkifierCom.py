@@ -6,7 +6,7 @@ import json
 import pycurl
 
 from ..base.multi_downloader import MultiDownloader
-from ..helpers import seconds_to_midnight
+from pyload.core.utils import seconds_to_midnight
 
 
 class LinkifierCom(MultiDownloader):

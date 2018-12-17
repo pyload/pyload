@@ -5,15 +5,11 @@ import time
 import urllib.parse
 
 from ..helpers import (
-    decode,
     encode,
-    fixurl,
-    format_size,
-    format_time,
     parse_html_form,
-    parse_name,
     replace_patterns,
 )
+from pyload.core.utils import decode, parse_name, fixurl, format_size, format_time
 from .captcha import Captcha
 from .plugin import Abort, Fail, Plugin, Reconnect, Retry, Skip
 

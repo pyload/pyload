@@ -2,8 +2,6 @@
 
 # TODO: Move to utils directory in 0.6.x
 
-# import HTMLParser  # TODO: Use in 0.6.x
-import datetime
 from datetime import timedelta
 import hashlib
 import itertools
@@ -16,18 +14,9 @@ import subprocess
 import sys
 import time
 import traceback
-import urllib.parse
-import xml.sax.saxutils  # TODO: Remove in 0.6.x
 import zlib
 from base64 import b85decode, b85encode
 from collections.abc import Sequence
-from functools import partial, wraps
-from .. import exc_logger
-
-try:
-    import send2trash
-except ImportError:
-    send2trash = None
 
 
 # TODO: Remove in 0.6.x
@@ -207,22 +196,6 @@ class SimpleQueue(object):
         return self.set(queue)
 
 
-# NOTE: decorator
-def lock(func=None, *decor_args, **decor_kwargs):
-    if func is None:
-        return partial(lock, *decor_args, **decor_kwargs)
-
-    @wraps(func)
-    def wrapper(self, *args, **kwargs):
-        self.lock.acquire(*decor_args, **decor_kwargs)
-        try:
-            return func(self, *args, **kwargs)
-        finally:
-            self.lock.release()
-
-    return wrapper
-
-
 def sign_string(message, pem_private, pem_passphrase="", sign_algo="SHA384"):
     """
     Generate a signature for string using the `sign_algo` and `RSA` algorithms.
@@ -241,61 +214,6 @@ def sign_string(message, pem_private, pem_passphrase="", sign_algo="SHA384"):
     ).new()
     digest.update(message)
     return b2a_hex(signer.sign(digest))
-
-
-def format_time(value):
-    dt = datetime.datetime(1, 1, 1) + timedelta(seconds=abs(int(value)))
-    days = ("{} days".format(dt.day - 1)) if dt.day > 1 else ""
-    tm = ", ".join(
-        "{} {}s".format(getattr(dt, attr), attr)
-        for attr in ("hour", "minute", "second")
-        if getattr(dt, attr)
-    )
-    return days + (" and " if days and tm else "") + tm
-
-
-def format_size(value):
-    for unit in ("B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB"):
-        if abs(value) < 1 << 10:
-            return "{:3.2f} {}".format(value, unit)
-        else:
-            value >>= 10
-
-    return "{:.2f} {}".format(value, "EiB")
-
-
-def compare_time(start, end):
-    start = list(map(int, start))
-    end = list(map(int, end))
-
-    if start == end:
-        return True
-
-    now = list(time.localtime()[3:5])
-
-    if start < end:
-        if now < end:
-            return True
-
-    elif now > start or now < end:
-        return True
-
-    return False
-
-
-def free_space(folder):
-    if os.name == "nt":
-        import ctypes
-
-        free_bytes = ctypes.c_ulonglong(0)
-        ctypes.windll.kernel32.GetDiskFreeSpaceExW(
-            ctypes.c_wchar_p(folder), None, None, ctypes.pointer(free_bytes)
-        )
-        return free_bytes.value
-
-    else:
-        s = os.statvfs(folder)
-        return s.f_frsize * s.f_bavail
 
 
 def fsbsize(path):
@@ -323,30 +241,11 @@ def fsbsize(path):
         return os.statvfs(path).f_frsize
 
 
-def uniqify(seq):
-    """
-    Remove duplicates from list preserving order Originally by Dave Kirby.
-    """
-    seen = set()
-    seen_add = seen.add
-    return [x for x in seq if x not in seen and not seen_add(x)]
-
-
 def has_method(obj, name):
     """
     Check if function 'name' was defined in obj.
     """
     return callable(getattr(obj, name, None))
-
-
-def html_unescape(text):
-    """
-    Removes HTML or XML character references and entities from a text string.
-    """
-    return xml.sax.saxutils.unescape(text)
-    # TODO: Replace in 0.6.x with:
-    # h = HTMLParser.HTMLParser()
-    # return h.unescape(text)
 
 
 def isiterable(obj):
@@ -369,36 +268,6 @@ def get_console_encoding(enc):
         enc = "utf-8"
 
     return enc
-
-
-# Hotfix UnicodeDecodeError: 'ascii' codec can't decode..
-def normalize(value):
-    import unicodedata
-
-    return unicodedata.normalize("NFKD", value).encode("ascii", "ignore")
-
-
-# NOTE: Revert to `decode` in Python 3
-def decode(value, encoding=None, errors="strict"):
-    """
-    Encoded string (default to own system encoding) -> unicode string.
-    """
-    if isinstance(value, str):
-        res = str(value, encoding or get_console_encoding(sys.stdout.encoding), errors)
-
-    elif isinstance(value, str):
-        res = value
-
-    else:
-        res = str(value)
-
-    # Hotfix UnicodeDecodeError
-    try:
-        str(res)
-    except UnicodeEncodeError:
-        return normalize(res)
-
-    return res
 
 
 def transcode(value, decoding, encoding):
@@ -436,168 +305,6 @@ def exists(path):
             return True
     else:
         return False
-
-
-# TODO: Change 'trash' to False because send2trash is optional now
-def remove(path, trash=True):
-    path = encode(path)
-
-    if not exists(path):
-        return
-
-    if trash:
-        try:
-            send2trash.send2trash(path)
-        except AttributeError as exc:
-            exc_logger.exception(exc)
-
-    elif os.path.isdir(path):
-        shutil.rmtree(path, ignore_errors=True)
-
-    else:
-        os.remove(path)
-
-
-def remove_chars(value, repl):
-    """
-    Remove all chars in repl from string.
-    """
-    if isinstance(repl, str):
-        for badc in repl:
-            value = value.replace(badc, "")
-        return value
-
-    elif isinstance(value, str):
-        return value.translate({ord(s): None for s in repl})
-
-    elif isinstance(value, str):
-        return value.translate(str.maketrans("", ""), repl)
-
-
-def fixurl(url, unquote=None):
-    old = url
-    url = urllib.parse.unquote(url)
-
-    if unquote is None:
-        unquote = url is old
-
-    url = decode(url)
-    try:
-        url = url.decode("unicode-escape")
-    except UnicodeDecodeError:
-        pass
-
-    url = html_unescape(url)
-    url = re.sub(r"(?<!:)/{2,}", "/", url).strip().lstrip(".")
-
-    if not unquote:
-        url = urllib.parse.quote(url)
-
-    return url
-
-
-def truncate(name, length):
-    max_trunc = len(name) // 2
-    if length > max_trunc:
-        raise OSError("File name too long")
-
-    trunc = (len(name) - length) // 3
-    return "{}~{}".format(name[: trunc * 2], name[-trunc:])
-
-
-# TODO: Recheck in 0.6.x
-def safepath(value):
-    """
-    Remove invalid characters and truncate the path if needed.
-    """
-    if os.name == "nt":
-        unt, value = os.path.splitunc(value)
-    else:
-        unt = ""
-    drive, filename = os.path.splitdrive(value)
-    filename = os.path.join(
-        os.sep if os.path.isabs(filename) else "",
-        *list(map(safename, filename.split(os.sep))),
-    )
-    path = unt + drive + filename
-
-    try:
-        if os.name != "nt":
-            return
-
-        length = len(path) - 259
-        if length < 1:
-            return
-
-        dirname, basename = os.path.split(filename)
-        name, ext = os.path.splitext(basename)
-        path = unt + drive + dirname + truncate(name, length) + ext
-
-    finally:
-        return path
-
-
-def safejoin(*args):
-    """
-    os.path.join + safepath.
-    """
-    return safepath(os.path.join(*args))
-
-
-def safename(value):
-    """
-    Remove invalid characters.
-    """
-    repl = '<>:"/\\|?*' if os.name == "nt" else '\0/\\"'
-    name = remove_chars(value, repl)
-    return name
-
-
-def parse_name(value, safechar=True):
-    path = fixurl(decode(value), unquote=False)
-    url_p = urllib.parse.urlparse(path.rstrip("/"))
-    name = (
-        url_p.path.split("/")[-1]
-        or url_p.query.split("=", 1)[::-1][0].split("&", 1)[0]
-        or url_p.netloc.split(".", 1)[0]
-    )
-
-    name = urllib.parse.unquote(name)
-    return safename(name) if safechar else name
-
-
-def parse_size(value, unit=""):  #: returns bytes
-    m = re.match(r"((?:[\d.,]*)\d)\s*([\w^_]*)", str(value).lower())
-
-    if m is None:
-        return 0
-
-    if re.match(r"\d{1,3}(?:,\d{3})+(?:\.\d+)?$", m.group(1)):
-        size = float(m.group(1).replace(",", ""))
-
-    elif re.match(r"\d+,\d{2}$", m.group(1)):
-        size = float(m.group(1).replace(",", "."))
-
-    elif re.match(r"\d+(?:\.\d+)?$", m.group(1)):
-        size = float(m.group(1))
-
-    else:
-        return 0  #: Unknown format
-
-    unit = (unit.strip().lower() or m.group(2) or "byte")[0]
-
-    if unit == "b":
-        return int(size)
-
-    sizeunits = ["b", "k", "m", "g", "t", "p", "e"]
-    sizemap = {u: i * 10 for i, u in enumerate(sizeunits)}
-    magnitude = sizemap[unit]
-
-    i, d = divmod(size, 1)
-    integer = int(i) << magnitude
-    decimal = int(d * (1 << 10 ** (magnitude // 10)))
-
-    return integer + decimal
 
 
 def str2int(value):
@@ -651,20 +358,6 @@ def str2int(value):
         return sum(numwords[word] for word in tokens)
     except Exception:
         return 0
-
-
-def parse_time(value):
-    if re.search("da(il)?y|today", value):
-        seconds = seconds_to_midnight()
-
-    else:
-        _re = re.compile(r"(\d+| (?:this|an?) )\s*(hr|hour|min|sec|)", re.I)
-        seconds = sum(
-            (int(v) if v.strip() not in ("this", "a", "an") else 1)
-            * {"hr": 3600, "hour": 3600, "min": 60, "sec": 1, "": 1}[u.lower()]
-            for v, u in _re.findall(value)
-        )
-    return seconds
 
 
 def timestamp():
@@ -742,27 +435,6 @@ def format_exc(frame=None):
     msg += exc_desc
 
     return msg
-
-
-def seconds_to_nexthour(strict=False):
-    now = datetime.today()
-    nexthour = now.replace(
-        minute=0 if strict else 1, second=0, microsecond=0
-    ) + timedelta(hours=1)
-    return (nexthour - now).seconds
-
-
-def seconds_to_midnight(utc=None, strict=False):
-    if isinstance(utc, int):
-        now = datetime.utcnow() + timedelta(hours=utc)
-    else:
-        now = datetime.today()
-
-    midnight = now.replace(
-        hour=0, minute=0 if strict else 1, second=0, microsecond=0
-    ) + timedelta(days=1)
-
-    return (midnight - now).seconds
 
 
 def replace_patterns(value, rules):

@@ -9,7 +9,7 @@ from datetime import timedelta
 from ..captcha.ReCaptcha import ReCaptcha
 from ..captcha.SolveMedia import SolveMedia
 from ..base.simple_downloader import SimpleDownloader
-from ..helpers import seconds_to_midnight
+from pyload.core.utils import seconds_to_midnight
 
 
 class RapidgatorNet(SimpleDownloader):
