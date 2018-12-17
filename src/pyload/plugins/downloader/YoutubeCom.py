@@ -629,7 +629,7 @@ class YoutubeCom(Downloader):
                 decrypt_map = [
                     ord(c)
                     for c in decrypt_func(
-                        "".join(map(chr, list(range(len(encrypted_sig)))))
+                        "".join(chr(x) for x in range(len(encrypted_sig)))
                     )
                 ]
                 cache_info["cache"][player_url] = {

@@ -108,12 +108,16 @@ class Hoster(Plugin):
         log = getattr(self.pyload.log, level)
 
         #: Hide any user/password
-        user = self.account.user
-        pw = self.account.info["login"]["password"]
-        hidden_user = "{:*<{}}".format(self.account.user[:3], 7)
-        hidden_pw = "*" * 10
-        args = (a.replace(user, hidden_user).replace(pw, hidden_pw) for a in args if a)
-
+        try:
+            user = self.account.user
+            pw = self.account.info["login"]["password"]
+        except AttributeError:
+            pass
+        else:
+            hidden_user = "{:*<{}}".format(self.account.user[:3], 7)
+            hidden_pw = "*" * 10
+            args = (a.replace(user, hidden_user).replace(pw, hidden_pw) for a in args if a)
+            
         log(
             "{plugintype} {pluginname}[{id}]: {msg}".format(
                 plugintype=plugintype.upper(),

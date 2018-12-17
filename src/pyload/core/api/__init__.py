@@ -488,7 +488,7 @@ class Api(object):
             ),
             "wb",
         ) as th:
-            th.write(str(data))
+            th.write(data)
 
         return self.checkOnlineStatus(urls + [th.name])
 
@@ -878,7 +878,7 @@ class Api(object):
             ),
             "wb",
         ) as th:
-            th.write(str(data))
+            th.write(data)
 
         self.addPackage(th.name, [th.name], Destination.QUEUE.value)
 

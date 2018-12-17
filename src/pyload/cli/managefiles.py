@@ -62,7 +62,8 @@ class ManageFiles(Handler):
             if self.mode == "d":
                 self.client.deleteFiles(links)
             elif self.mode == "r":
-                list(map(self.client.restartFile, links))
+                for link in links:
+                    self.client.restartFile(link)
 
         else:
             # look into package
@@ -176,7 +177,7 @@ class ManageFiles(Handler):
             l, n, h = inp.partition("-")
             l = int(l)
             h = int(h)
-            r = list(range(l, h + 1))
+            r = range(l, h + 1)
 
             ret = []
             if package:

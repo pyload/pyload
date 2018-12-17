@@ -49,7 +49,7 @@ class PremiumTo(MultiAccount):
 
         if self.req.code == 200:
             # TODO: Remove `>> 10` in 0.6.x
-            trafficleft = sum(map(float, traffic.split(";"))) >> 10
+            trafficleft = sum(float(x) for x in traffic.split(";")) >> 10
             return {"premium": True, "trafficleft": trafficleft, "validuntil": -1}
 
         else:

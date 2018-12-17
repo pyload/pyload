@@ -244,7 +244,7 @@ class ConfigParser(object):
                 f.write(f'\n{section} - "{config[section]["desc"]}":\n')
 
                 for option, data in sorted(
-                    list(config[section].items()), key=lambda _x: _x[0]
+                    config[section].items(), key=lambda _x: _x[0]
                 ):
                     if option in ("desc", "outline"):
                         continue

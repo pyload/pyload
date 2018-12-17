@@ -22,7 +22,7 @@ from datetime import timedelta
 import shutil
 import urllib.parse
 from functools import partial, wraps
-from .. import exc_logger
+from ... import exc_logger
 
 try:
     import send2trash
@@ -34,7 +34,7 @@ def invertmap(obj):
     """
     Invert mapping object preserving type and ordering.
     """
-    return obj.__class__(map(reversed, obj.items()))
+    return obj.__class__(reversed(item) for item in obj.items())
 
 
 def random_string(lenght):
@@ -85,21 +85,18 @@ def truncate(name, length):
     return "{}~{}".format(name[: trunc * 2], name[-trunc:])
 
 
-# TODO: Recheck in 0.6.x
+# TODO: Remove in 0.6.x
 def safepath(value):
     """
     Remove invalid characters and truncate the path if needed.
     """
-    if os.name == "nt":
-        unt, value = os.path.splitunc(value)
-    else:
-        unt = ""
     drive, filename = os.path.splitdrive(value)
-    filename = os.path.join(
-        os.sep if os.path.isabs(filename) else "",
-        *list(map(safename, filename.split(os.sep))),
-    )
-    path = unt + drive + filename
+    
+    filesep = os.sep if os.path.isabs(filename) else ""
+    fileparts = (safename(name) for name in filename.split(os.sep))
+    
+    filename = os.path.join(filesep, *fileparts)
+    path = drive + filename
 
     try:
         if os.name != "nt":
@@ -111,7 +108,7 @@ def safepath(value):
 
         dirname, basename = os.path.split(filename)
         name, ext = os.path.splitext(basename)
-        path = unt + drive + dirname + truncate(name, length) + ext
+        path = drive + dirname + truncate(name, length) + ext
 
     finally:
         return path
@@ -133,14 +130,15 @@ def safename(value):
     return name
 
 
+# TODO: Check where it's used...
 def compare_time(start, end):
-    start = map(int, start)
-    end = map(int, end)
+    start = (int(n) for n in start)
+    end = (int(n) for n in end)
 
     if start == end:
         return True
 
-    now = list(time.localtime()[3:5])
+    now = time.localtime()[3:5]
 
     if start < end:
         if now < end:

@@ -27,7 +27,7 @@ class RehostTo(MultiAccount):
             "http://rehost.to/api.php",
             get={"cmd": "get_supported_och_dl", "long_ses": data["session"]},
         )
-        return [x for x in map(str.strip, html.replace('"', "").split(",")) if x]
+        return [x.strip() for x in html.replace('"', "").split(",") if x.strip()]
 
     def grab_info(self, user, password, data):
         premium = False

@@ -88,7 +88,7 @@ class YoutubeComFolder(Decrypter):
                 yield item
 
     def get_playlists(self, ch_id):
-        return list(map(self.get_playlist, self._get_playlists(ch_id)))
+        return [self.get_playlist(p_id) for p_id in self._get_playlists(ch_id)]
 
     def _get_videos_id(self, id, token=None):
         req = {"part": "contentDetails", "maxResults": "50", "playlistId": id}
@@ -176,7 +176,7 @@ class YoutubeComFolder(Decrypter):
                     )
                 )
             else:
-                p_urls = list(map(urlize, p_videos))
+                p_urls = [urlize(url) for url in p_videos]
 
             #: Folder is NOT recognized by pyload 0.5.0!
             self.packages.append((p_name, p_urls, p_folder))

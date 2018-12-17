@@ -57,7 +57,7 @@ class OCR(Plugin):
         call = (command,) + args
         self.log_debug("EXECUTE " + " ".join(call))
 
-        call = list(map(encode, call))
+        call = (encode(cmd) for cmd in call)
         popen = subprocess.Popen(
             call, bufsize=-1, stdout=subprocess.PIPE, stderr=subprocess.PIPE
         )

@@ -61,7 +61,7 @@ class Decrypter(Hoster):
         """
         name = self.info["pattern"].get("N")
         if name is None:
-            links = list(map(self.fixurl, self.links))
+            links = [self.fixurl(url) for url in self.links]
             pdict = self.pyload.api.generatePackages(links)
             packages = [
                 (name, links, parse_name(name)) for name, links in pdict.items()
@@ -93,8 +93,8 @@ class Decrypter(Hoster):
                 self._("{} links").format(len(links)),
             )
 
-            links = list(map(self.fixurl, links))
-            self.log_debug("LINKS for package " + name, *links)
+            links = [self.fixurl(url) for url in links]
+            self.log_debug("LINKS for package " + name, links)
 
             pid = self.pyload.api.addPackage(name, links, pack_queue)
 

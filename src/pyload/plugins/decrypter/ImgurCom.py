@@ -146,7 +146,7 @@ class ImgurCom(SimpleDecrypter):
         def f(url):
             return "http://" + re.sub(r"(\w{7})s\.", r"\1.", url)
 
-        direct_links = uniqify(list(map(f, re.findall(self.LINK_PATTERN, self.data))))
+        direct_links = uniqify(f(x) for x in re.findall(self.LINK_PATTERN, self.data))
 
         # Imgur Galleryies may contain more images than initially shown. Find
         # the rest now!

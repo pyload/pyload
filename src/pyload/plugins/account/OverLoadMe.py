@@ -31,7 +31,7 @@ class OverLoadMe(MultiAccount):
                 "auth": "0001-cb1f24dadb3aa487bda5afd3b76298935329be7700cd7-5329be77-00cf-1ca0135f"
             },
         )
-        return [x for x in map(str.strip, html.replace('"', "").split(",")) if x]
+        return [x.strip() for x in html.replace('"', "").split(",") if x.strip()]
 
     def grab_info(self, user, password, data):
         html = self.load(

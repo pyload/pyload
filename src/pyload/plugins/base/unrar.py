@@ -192,8 +192,8 @@ class UnRar(Extractor):
         #: eventually Multipart Files
         files.extend(
             os.path.join(dir, os.path.basename(file))
-            for file in filter(self.ismultipart, os.listdir(dir))
-            if self._RE_PART.sub("", name) == self._RE_PART.sub("", file)
+            for file in os.listdir(dir) if self.ismultipart(file)
+            and self._RE_PART.sub("", name) == self._RE_PART.sub("", file)
         )
 
         #: Actually extracted file
@@ -272,7 +272,7 @@ class UnRar(Extractor):
         call = [self.CMD, command] + args + list(xargs)
         self.log_debug("EXECUTE " + " ".join(call))
 
-        call = list(map(encode, call))
+        call = (encode(cmd) for cmd in call)
         p = subprocess.Popen(call, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         renice(p.pid, self.priority)

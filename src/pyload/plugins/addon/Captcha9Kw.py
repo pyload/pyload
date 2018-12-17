@@ -119,8 +119,11 @@ class Captcha9Kw(Addon):
             "cpm": self.config.get("captchapermin"),
         }
 
-        for opt in [x for x in self.config.get("hoster_options", "").split("|") if x]:
-            details = list(map(str.strip, opt.split(";")))
+        for opt in self.config.get("hoster_options", "").split("|"):
+            if not opt:
+                continue
+                
+            details = (x.strip() for x in opt.split(";"))
 
             if not details or details[0].lower() != pluginname.lower():
                 continue
@@ -247,8 +250,11 @@ class Captcha9Kw(Addon):
             self.log_error(self._("Too many captchas in queue"))
             return
 
-        for opt in [x for x in self.config.get("hoster_options", "").split("|") if x]:
-            details = list(map(str.strip, opt.split(":")))
+        for opt in self.config.get("hoster_options", "").split("|"):
+            if not opt:
+                continue
+            
+            details = (x.strip() for x in opt.split(":"))
 
             if not details or details[0].lower() != pluginname.lower():
                 continue

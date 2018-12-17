@@ -390,11 +390,11 @@ class IRC(Thread, Notifier):
             ]
 
         if args[0] == "-p":
-            ret = self.pyload.api.deletePackages(list(map(int, args[1:])))
+            ret = self.pyload.api.deletePackages(int(arg) for arg in args[1:])
             return ["INFO: Deleted {} packages!".format(len(args[1:]))]
 
         elif args[0] == "-l":
-            ret = self.pyload.api.delLinks(list(map(int, args[1:])))
+            ret = self.pyload.api.delLinks(int(arg) for arg in args[1:])
             return ["INFO: Deleted {} links!".format(len(args[1:]))]
 
         else:

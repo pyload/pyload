@@ -120,27 +120,25 @@ class ExternalScripts(Addon):
             new_scripts = [s for s in scripts if s not in self.scripts[folder]]
 
             if new_scripts:
-                script_names = list(map(os.path.basename, new_scripts))
                 self.log_info(
                     self._("Activated scripts in folder `{}`: {}").format(
-                        folder, ", ".join(script_names)
+                        folder, ", ".join(os.path.basename(x) for x in new_scripts)
                     )
                 )
 
             removed_scripts = [s for s in self.scripts[folder] if s not in scripts]
 
             if removed_scripts:
-                script_names = list(map(os.path.basename, removed_scripts))
                 self.log_info(
                     self._("Deactivated scripts in folder `{}`: {}").format(
-                        folder, ", ".join(script_names)
+                        folder, ", ".join(os.path.basename(x) for x in removed_scripts)
                     )
                 )
 
             self.scripts[folder] = scripts
 
     def call_cmd(self, command, *args, **kwargs):
-        call = list(map(encode, [command] + list(args)))
+        call = (encode(cmd) for cmd in [command] + list(args))
 
         self.log_debug(
             "EXECUTE "

@@ -7,7 +7,7 @@ from heapq import heappop, heappush
 from threading import Lock
 
 from _thread import start_new_thread
-from ..utils import lock
+from .utils import lock
 
 
 class AlreadyCalled(Exception):

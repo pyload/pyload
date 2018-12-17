@@ -74,11 +74,11 @@ class FileManager(object):
         """
         saves all data to backend and waits until all data are written.
         """
-        pyfiles = list(self.cache.values())
+        pyfiles = self.cache.values()
         for pyfile in pyfiles:
             pyfile.sync()
 
-        pypacks = list(self.packageCache.values())
+        pypacks = self.packageCache.values()
         for pypack in pypacks:
             pypack.sync()
 
@@ -172,8 +172,7 @@ class FileManager(object):
 
         e = RemoveEvent("pack", id, "collector" if not p.queue else "queue")
 
-        pyfiles = list(self.cache.values())
-
+        pyfiles = self.cache.values()
         for pyfile in pyfiles:
             if pyfile.packageid == id:
                 pyfile.abortDownload()
@@ -186,7 +185,7 @@ class FileManager(object):
         if id in self.packageCache:
             del self.packageCache[id]
 
-        packs = list(self.packageCache.values())
+        packs = self.packageCache.values()
         for pack in packs:
             if pack.queue == queue and pack.order > oldorder:
                 pack.order -= 1
@@ -222,7 +221,7 @@ class FileManager(object):
         if not len(p.getChildren()):
             p.delete()
 
-        pyfiles = list(self.cache.values())
+        pyfiles = self.cache.values()
         for pyfile in pyfiles:
             if pyfile.packageid == pid and pyfile.order > oldorder:
                 pyfile.order -= 1
@@ -292,7 +291,7 @@ class FileManager(object):
 
         tmplist = []
 
-        cache = list(self.cache.values())
+        cache = self.cache.values()
         for x in cache:
             if int(x.toDbDict()[x.id]["package"]) == int(id):
                 tmplist.append((x.id, x.toDbDict()[x.id]))
@@ -439,7 +438,7 @@ class FileManager(object):
         """
         restart package.
         """
-        pyfiles = list(self.cache.values())
+        pyfiles = self.cache.values()
         for pyfile in pyfiles:
             if pyfile.packageid == id:
                 self.restartFile(pyfile.id)
@@ -495,7 +494,7 @@ class FileManager(object):
 
         self.pyload.db.reorderPackage(p, -1, True)
 
-        packs = list(self.packageCache.values())
+        packs = self.packageCache.values()
         for pack in packs:
             if pack.queue != queue and pack.order > oldorder:
                 pack.order -= 1
@@ -517,7 +516,7 @@ class FileManager(object):
         self.pyload.eventManager.addEvent(e)
         self.pyload.db.reorderPackage(p, position)
 
-        packs = list(self.packageCache.values())
+        packs = self.packageCache.values()
         for pack in packs:
             if pack.queue != p.queue or pack.order < 0 or pack == p:
                 continue
@@ -551,7 +550,7 @@ class FileManager(object):
 
         self.pyload.db.reorderLink(f, position)
 
-        pyfiles = list(self.cache.values())
+        pyfiles = self.cache.values()
         for pyfile in pyfiles:
             if pyfile.packageid != f["package"] or pyfile.order < 0:
                 continue

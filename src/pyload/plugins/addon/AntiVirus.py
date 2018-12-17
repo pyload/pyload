@@ -83,7 +83,7 @@ class AntiVirus(Addon):
                 stderr=subprocess.PIPE,
             )
 
-            out, err = list(map(str.strip, p.communicate()))
+            out, err = (x.strip() for x in p.communicate())
 
             if out:
                 self.log_info(target_repr, out)

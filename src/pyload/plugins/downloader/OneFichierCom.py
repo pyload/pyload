@@ -87,13 +87,8 @@ class OneFichierCom(SimpleDownloader):
                     if headers.get("content-type") == "application/octet-stream":
                         if "filename=" in headers.get("content-disposition"):
                             _name = dict(
-                                i.split("=")
-                                for i in list(
-                                    map(
-                                        str.strip,
-                                        headers["content-disposition"].split(";"),
-                                    )
-                                )[1:]
+                                i.strip().split("=")
+                                for i in headers["content-disposition"].split(";")[1:]
                             )
                             name = _name["filename"].strip("\"'")
                         else:

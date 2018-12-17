@@ -300,7 +300,8 @@ def exists(path):
     if os.path.exists(path):
         if os.name == "nt":
             dir, name = os.path.split(path.rstrip(os.sep))
-            return name.upper() in map(str.upper, os.listdir(dir))
+            name_lw = name.lower()
+            return any(True for entry in os.listdir(dir) if entry.lower() == name_lw)
         else:
             return True
     else:
@@ -455,7 +456,7 @@ def replace_patterns(value, rules):
 def set_cookie(
     cj, domain, name, value, path="/", exp=time.time() + timedelta(hours=744).seconds
 ):  #: 31 days retention
-    args = list(map(encode, [domain, name, value, path])) + [int(exp)]
+    args = [encode(x) for x in (domain, name, value, path)] + [int(exp)]
     return cj.setCookie(*args)
 
 
