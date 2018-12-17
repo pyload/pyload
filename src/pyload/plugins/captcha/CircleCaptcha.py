@@ -8,8 +8,6 @@ import io
 import math
 import operator
 import sys
-import urllib.error
-import urllib.parse
 import urllib.request
 
 from PIL import Image, ImageDraw

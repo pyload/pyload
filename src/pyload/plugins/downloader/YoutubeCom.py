@@ -7,9 +7,7 @@ import os
 import re
 import subprocess
 import time
-import urllib.error
 import urllib.parse
-import urllib.request
 from functools import reduce
 from xml.dom.minidom import parseString as parse_xml
 

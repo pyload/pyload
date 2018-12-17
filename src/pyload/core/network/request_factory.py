@@ -4,7 +4,7 @@
 from builtins import REQUESTS
 from threading import Lock
 
-from pyload.plugins.utils import lock
+from ..utils import lock
 
 from .browser import Browser
 from .bucket import Bucket

@@ -16,9 +16,7 @@ import subprocess
 import sys
 import time
 import traceback
-import urllib.error
 import urllib.parse
-import urllib.request
 import xml.sax.saxutils  # TODO: Remove in 0.6.x
 import zlib
 from base64 import b85decode, b85encode

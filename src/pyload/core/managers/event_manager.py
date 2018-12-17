@@ -37,7 +37,7 @@ class EventManager(object):
                 ReloadAllEvent("queue").toList(),
                 ReloadAllEvent("collector").toList(),
             ]
-        return uniqify(events, repr)
+        return uniqify(events)  # return uniqify(events, repr)
 
     def addEvent(self, event):
         for client in self.clients:

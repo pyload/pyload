@@ -4,10 +4,7 @@
 import io
 import os
 import re
-import urllib.error
 import urllib.parse
-import urllib.request
-
 
 from PIL import Image, ImageDraw, ImageFont
 

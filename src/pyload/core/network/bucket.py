@@ -5,7 +5,7 @@ import time
 
 from threading import Lock
 
-from pyload.plugins.utils import lock
+from ..utils import lock
 
 
 class Bucket(object):

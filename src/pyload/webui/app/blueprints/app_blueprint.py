@@ -12,7 +12,7 @@ from urllib.parse import unquote
 import flask
 
 from pyload import PKGDIR
-from pyload.core.utils import formatSize
+from pyload.core.utils import format_size
 
 from ..filters import unquotepath
 from ..helpers import (
@@ -187,7 +187,7 @@ def settings():
         elif not data.trafficleft:
             trafficleft = "not available"
         else:
-            trafficleft = formatSize(data.trafficleft << 10)
+            trafficleft = format_size(data.trafficleft << 10)
 
         if data.validuntil == -1:
             validuntil = "unlimited"
@@ -479,7 +479,7 @@ def info():
         "folder": os.path.abspath(PKGDIR),
         "config": os.path.abspath(api.get_userdir()),
         "download": os.path.abspath(conf["general"]["storage_folder"]["value"]),
-        "freespace": formatSize(api.freeSpace()),
+        "freespace": format_size(api.freeSpace()),
         "webif": conf["webui"]["port"]["value"],
         "language": conf["general"]["language"]["value"],
     }

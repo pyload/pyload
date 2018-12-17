@@ -6,7 +6,7 @@ import shutil
 
 from threading import Lock
 
-from ..utils import chmod, lock
+from ..utils import lock
 from .event_manager import AccountUpdateEvent
 
 # MANAGER VERSION
@@ -146,7 +146,7 @@ class AccountManager(object):
                         for option, values in data["options"].items():
                             line = " ".join(values)
                             f.write(f"\t@{option} {line}\n")
-        chmod(f.name, 0o600)
+        os.chmod(f.name, 0o600)
 
     # ----------------------------------------------------------------------
 

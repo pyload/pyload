@@ -16,7 +16,7 @@ import time
 from ..datatypes.pyfile import PyFile
 from ..network.request_factory import getURL
 from ..utils.packagetools import parseNames
-from ..utils import compare_time, freeSpace
+from ..utils import compare_time, free_space
 import json
 from enum import IntFlag
 
@@ -270,7 +270,7 @@ class Api(object):
         """
         Available free space at download directory in bytes.
         """
-        return freeSpace(self.pyload.config.get("general", "storage_folder"))
+        return free_space(self.pyload.config.get("general", "storage_folder"))
 
     @permission(Perms.ALL)
     def getServerVersion(self):

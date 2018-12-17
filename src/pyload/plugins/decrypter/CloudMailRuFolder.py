@@ -2,9 +2,7 @@
 import base64
 import json
 import re
-import urllib.error
 import urllib.parse
-import urllib.request
 
 from ..base.decrypter import Decrypter
 

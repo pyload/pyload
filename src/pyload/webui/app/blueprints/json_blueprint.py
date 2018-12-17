@@ -5,7 +5,7 @@ import os
 import flask
 from flask.json import jsonify
 
-from pyload.core.utils import formatSize
+from pyload.core.utils import format_size
 
 from ..helpers import render_template, login_required
 
@@ -42,7 +42,7 @@ def links():
 
             if link["status"] == 12:
                 formatted_eta = link["format_eta"]
-                formatted_speed = formatSize(link["speed"])
+                formatted_speed = format_size(link["speed"])
                 link["info"] = f"{formatted_eta} @ {formatted_speed}/s"
 
             elif link["status"] == 5:

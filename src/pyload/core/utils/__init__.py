@@ -41,13 +41,6 @@ def random_string(lenght):
     seq = string.ascii_letters + string.digits + string.punctuation
     return "".join(random.choice(seq) for _ in range(lenght))
 
-
-def chmod(*args):
-    try:
-        os.chmod(*args)
-    except Exception:
-        pass
-
         
 # Hotfix UnicodeDecodeError: 'ascii' codec can't decode..
 def normalize(value):
@@ -72,14 +65,6 @@ def remove_chars(value, repl):
     for char in repl:
         value = value.replace(char, "")
     return value
-
-
-# def save_path(name):
-    # # os.remove some chars
-    # if os.name == "nt":
-        # return remove_chars(name, '/\\?%*:|"<>')
-    # else:
-        # return remove_chars(name, '/\\"')
 
 
 # def save_join(*args):
@@ -190,22 +175,8 @@ def format_size(value):
     return "{:.2f} {}".format(value, "YiB")
 
 
-def formatSpeed(speed):
+def format_speed(speed):
     return format_size(speed) + "/s"
-
-
-# def freeSpace(folder):
-    # if os.name == "nt":
-        # import ctypes
-
-        # free_bytes = ctypes.c_ulonglong(0)
-        # ctypes.windll.kernel32.GetDiskFreeSpaceExW(
-            # ctypes.c_wchar_p(folder), None, None, ctypes.pointer(free_bytes)
-        # )
-        # return free_bytes.value
-    # else:
-        # s = os.statvfs(folder)
-        # return s.f_bsize * s.f_bavail
 
 
 def free_space(folder):
@@ -230,33 +201,6 @@ def uniqify(seq):
     seen = set()
     seen_add = seen.add
     return [x for x in seq if x not in seen and not seen_add(x)]
-
-
-# def parseFileSize(value, unit=None):  #: returns bytes
-    # if not unit:
-        # m = re.match(r"(\d*[\.,]?\d+)(.*)", value.strip().lower())
-        # if m:
-            # traffic = float(m.group(1).replace(",", "."))
-            # unit = m.group(2)
-        # else:
-            # return 0
-    # else:
-        # if isinstance(value, str):
-            # traffic = float(value.replace(",", "."))
-        # else:
-            # traffic = value
-
-    # # ignore case
-    # unit = unit.lower().strip()
-
-    # if unit in ("gb", "gig", "gbyte", "gigabyte", "gib", "g"):
-        # traffic *= 1 << 30
-    # elif unit in ("mb", "mbyte", "megabyte", "mib", "m"):
-        # traffic *= 1 << 20
-    # elif unit in ("kb", "kib", "kilobyte", "kbyte", "k"):
-        # traffic *= 1 << 10
-
-    # return traffic
 
 
 # TODO: Change 'trash' to False because send2trash is optional now
@@ -361,28 +305,6 @@ def lock(func=None, *decor_args, **decor_kwargs):
             self.lock.release()
 
     return wrapper
-
-
-# def fixup(m):
-    # text = m.group(0)
-    # if text[:2] == "&#":
-        # # character reference
-        # try:
-            # if text[:3] == "&#x":
-                # return chr(int(text[3:-1], 16))
-            # else:
-                # return chr(int(text[2:-1]))
-        # except ValueError:
-            # pass
-    # else:
-        # # named entity
-        # try:
-            # name = text[1:-1]
-            # text = chr(name2codepoint[name])
-        # except KeyError:
-            # pass
-
-    # return text  #: leave as is
 
 
 def html_unescape(text):

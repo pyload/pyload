@@ -27,8 +27,7 @@ from pyload.core.datatypes import Destination
 # ThriftClient,
 # WrongLogin,
 # )
-from pyload.core.utils import decode, formatSize
-from pyload.plugins.utils import lock
+from pyload.core.utils import decode, format_size, lock
 
 from .addpackage import AddPackage
 from .managefiles import ManageFiles
@@ -179,7 +178,7 @@ class Cli(object):
                     + blue("] ")
                     + green(str(percent) + "%")
                     + self._(" Speed: ")
-                    + green(formatSize(download.speed) + "/s")
+                    + green(format_size(download.speed) + "/s")
                     + self._(" Size: ")
                     + green(download.format_size)
                     + self._(" Finished in: ")
@@ -204,7 +203,7 @@ class Cli(object):
 
         println(
             line,
-            f'{paused} {self._("total Speed")}: {red(formatSize(speed) + "/s")} {self._("Files in queue")}: {red(status.queue)} {self._("Total")}: {red(status.total)}',
+            f'{paused} {self._("total Speed")}: {red(format_size(speed) + "/s")} {self._("Files in queue")}: {red(status.queue)} {self._("Total")}: {red(status.total)}',
         )
 
         return line + 1
@@ -285,8 +284,8 @@ class Cli(object):
 
             for download in files:
                 if download.status == 12:  #: downloading
-                    formatted_speed = formatSize(download.speed)
-                    downloaded_size = formatSize(download.size - download.bleft)
+                    formatted_speed = format_size(download.speed)
+                    downloaded_size = format_size(download.size - download.bleft)
                     print(print_status(download))
                     print(
                         f"\tDownloading: {download.format_eta} @ {formatted_speed}/s\t {downloaded_size} ({download.percent}%%)"
@@ -395,7 +394,7 @@ class Cli(object):
 
                 print(
                     "{:-45} {:-12}\t {:-15}\t {}".format(
-                        status.name, formatSize(status.size), status.plugin, check
+                        status.name, format_size(status.size), status.plugin, check
                     )
                 )
 

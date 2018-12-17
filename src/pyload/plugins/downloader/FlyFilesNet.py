@@ -2,9 +2,7 @@
 
 from datetime import timedelta
 import re
-import urllib.error
 import urllib.parse
-import urllib.request
 
 from ..base.simple_downloader import SimpleDownloader
 

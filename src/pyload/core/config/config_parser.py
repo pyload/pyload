@@ -9,7 +9,6 @@ import time
 from pyload import PKGDIR
 
 from ... import exc_logger
-from ..utils import chmod
 
 # CONFIG_VERSION
 __version__ = 1
@@ -70,13 +69,13 @@ class ConfigParser(object):
                     os.path.join(PKGDIR, "core", "config", "default.conf"),
                     self.configpath,
                 )
-                chmod(self.configpath, 0o600)
+                os.chmod(self.configpath, 0o600)
 
             if not os.path.exists(self.pluginpath):
                 os.makedirs(os.path.dirname(self.pluginpath), exist_ok=True)
                 with open(self.pluginpath, mode="w") as f:
                     f.write(f"version: {__version__}")
-                chmod(self.pluginpath, 0o600)
+                os.chmod(self.pluginpath, 0o600)
 
             with open(self.configpath) as f:
                 content = f.read()
@@ -239,7 +238,7 @@ class ConfigParser(object):
         saves config to filename.
         """
         with open(filename, mode="w") as f:
-            chmod(filename, 0o600)
+            os.chmod(filename, 0o600)
             f.write(f"version: {__version__} \n")
             for section in sorted(config.keys()):
                 f.write(f'\n{section} - "{config[section]["desc"]}":\n')

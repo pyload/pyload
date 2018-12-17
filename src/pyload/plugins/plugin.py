@@ -7,7 +7,7 @@ import time
 from itertools import islice
 from random import randint
 
-from pyload.core.utils import save_path
+from pyload.core.utils import safepath
 
 if os.name != "nt":
     from pwd import getpwnam
@@ -582,7 +582,7 @@ class Plugin(Base):
 
         # convert back to unicode
         # location = fs_decode(location)
-        name = save_path(self.pyfile.name)
+        name = safepath(self.pyfile.name)
 
         filename = os.path.join(location, name)
 

@@ -3,7 +3,7 @@
 
 
 from ..managers.event_manager import UpdateEvent
-from ..utils import save_path
+from ..utils import safepath
 
 
 class PyPackage(object):
@@ -26,7 +26,7 @@ class PyPackage(object):
 
     @property
     def folder(self):
-        return save_path(self._folder)
+        return safepath(self._folder)
 
     def toDict(self):
         """

@@ -17,7 +17,7 @@ from ..network.request_factory import getURL
 from ..threads.decrypter_thread import DecrypterThread
 from ..threads.download_thread import DownloadThread
 from ..threads.info_thread import InfoThread
-from ..utils import freeSpace, lock
+from ..utils import free_space, lock
 
 
 class ThreadManager(object):
@@ -328,7 +328,7 @@ class ThreadManager(object):
 
             if job.plugin.__type__ == "downloader":
                 spaceLeft = (
-                    freeSpace(self.pyload.config.get("general", "storage_folder"))
+                    free_space(self.pyload.config.get("general", "storage_folder"))
                     >> 20
                 )
                 if spaceLeft < self.pyload.config.get("general", "min_free_space"):

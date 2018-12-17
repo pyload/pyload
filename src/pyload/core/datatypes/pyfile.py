@@ -6,7 +6,7 @@ import time
 from threading import RLock
 
 from ..managers.event_manager import UpdateEvent
-from ..utils import formatSize, lock
+from ..utils import format_size, lock
 
 
 statusMap = {
@@ -232,7 +232,7 @@ class PyFile(object):
         """
         formats size to readable format.
         """
-        return formatSize(self.getSize())
+        return format_size(self.getSize())
 
     def formatETA(self):
         """

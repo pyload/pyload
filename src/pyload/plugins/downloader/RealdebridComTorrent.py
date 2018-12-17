@@ -3,10 +3,7 @@
 import json
 import os
 import time
-import urllib.error
-import urllib.parse
 import urllib.request
-
 
 import pycurl
 from pyload.core.network.http.http_request import BadHeader

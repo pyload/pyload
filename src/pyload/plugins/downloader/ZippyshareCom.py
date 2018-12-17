@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-import urllib.error
 import urllib.parse
-import urllib.request
 
 import js2py
 from bs4 import BeautifulSoup

@@ -19,7 +19,7 @@ import time
 from pyload import PKGDIR, APPID
 from .. import __version__ as PYLOAD_VERSION
 from .. import __version_info__ as PYLOAD_VERSION_INFO
-from .utils import formatSize, freeSpace, invertmap
+from .utils import format_size, free_space, invertmap
 from threading import Event
 
 
@@ -251,7 +251,7 @@ class Core(object):
         self.log.info(self._("Storage directory: {}".format(storage_folder)))
         os.makedirs(storage_folder, exist_ok=True)
 
-        avail_space = formatSize(freeSpace(storage_folder))
+        avail_space = format_size(free_space(storage_folder))
         self.log.info(self._("Storage free space: {}").format(avail_space))
 
         self.config.save()  #: save so config files gets filled

@@ -3,7 +3,7 @@
 import os
 import datetime
 
-from pyload.core.utils import formatSize
+from pyload.core.utils import format_size
 
 
 _QUOTECHAR = "::%2F"
@@ -54,7 +54,7 @@ def date(text, format):
 
 #: Use formatsize directly in 0.6.x
 def formatsize(*args, **kwargs):
-    return formatSize(*args, **kwargs)
+    return format_size(*args, **kwargs)
 
 
 TEMPLATE_FILTERS = [quotepath, unquotepath, date, relpath, abspath, formatsize]

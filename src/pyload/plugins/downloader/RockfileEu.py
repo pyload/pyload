@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-import urllib.error
 import urllib.parse
-import urllib.request
-
 
 from pyload.core.network.http.http_request import BadHeader
 

@@ -3,7 +3,7 @@
 
 from ..datatypes.pyfile import PyFile
 from ..datatypes.pypackage import PyPackage
-from ..utils import formatSize
+from ..utils import format_size
 from .database_thread import DatabaseThread, style
 
 
@@ -132,7 +132,7 @@ class FileDatabaseMethods(object):
                 "url": r[1],
                 "name": r[2],
                 "size": r[3],
-                "format_size": formatSize(r[3]),
+                "format_size": format_size(r[3]),
                 "status": r[4],
                 "statusmsg": self.pyload.files.statusMsg[r[4]],
                 "error": r[5],
@@ -201,7 +201,7 @@ class FileDatabaseMethods(object):
             "url": r[1],
             "name": r[2],
             "size": r[3],
-            "format_size": formatSize(r[3]),
+            "format_size": format_size(r[3]),
             "status": r[4],
             "statusmsg": self.pyload.files.statusMsg[r[4]],
             "error": r[5],
@@ -229,7 +229,7 @@ class FileDatabaseMethods(object):
                 "url": r[1],
                 "name": r[2],
                 "size": r[3],
-                "format_size": formatSize(r[3]),
+                "format_size": format_size(r[3]),
                 "status": r[4],
                 "statusmsg": self.pyload.files.statusMsg[r[4]],
                 "error": r[5],

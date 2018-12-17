@@ -3,10 +3,7 @@
 import base64
 import json
 import re
-import urllib.error
 import urllib.parse
-import urllib.request
-
 
 from pyload.core.network.request_factory import getURL as get_url
 
