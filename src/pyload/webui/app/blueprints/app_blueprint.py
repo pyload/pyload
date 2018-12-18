@@ -66,10 +66,9 @@ def login():
         return flask.redirect(next)
 
     if api.getConfigValue("webui", "autologin"):
-        allusers = api.getAllUserData()
+        allusers = api.get_all_userdata()
         if len(allusers) == 1:  # TODO: check if localhost
-            user_info = next(iter(allusers.values()))
-            # user_info = allusers[next(allusers)]
+            user_info = list(allusers.values())[0]
             set_session(user_info)
             # NOTE: Double-check autentication here because if session[name] is empty,
             #       next login_required redirects here again and all loop out.
@@ -424,13 +423,14 @@ def logs(page=-1):
 def admin():
     api = flask.current_app.config["PYLOAD_API"]
 
-    allusers = api.getAllUserData()
+    allusers = api.get_all_userdata()
 
     perms = permlist()
     users = {}
 
     # NOTE: messy code... users just need "perms" data in admin template
-    for name, data in allusers.items():
+    for data in allusers.values():
+        name = data['name']
         users[name] = {"perms": get_permission(data["permission"])}
         users[name]["perms"]["admin"] = data["role"] is 0
 

@@ -19,7 +19,7 @@ class UserDatabaseMethods(object):
     @style.queue
     def checkAuth(self, user, password):
         self.c.execute(
-            'SELECT id, name, password, role, permission, template, email FROM "users" WHERE name=?',
+            'SELECT id, name, password, role, permission, template, email FROM users WHERE name=?',
             (user,),
         )
         r = self.c.fetchone()
@@ -95,14 +95,15 @@ class UserDatabaseMethods(object):
 
     @style.queue
     def getAllUserData(self):
-        self.c.execute("SELECT name, permission, role, template, email FROM users")
+        self.c.execute("SELECT id, name, permission, role, template, email FROM users")
         user = {}
         for r in self.c:
             user[r[0]] = {
-                "permission": r[1],
-                "role": r[2],
-                "template": r[3],
-                "email": r[4],
+                "name": r[1],
+                "permission": r[2],
+                "role": r[3],
+                "template": r[4],
+                "email": r[5],
             }
 
         return user

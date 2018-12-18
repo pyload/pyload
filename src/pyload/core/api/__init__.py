@@ -611,7 +611,7 @@ class Api(object):
         if not info:
             raise FileDoesNotExists(fid)
 
-        fileinfo = next(iter(info.values()))
+        fileinfo = list(info.values())[0]
         fdata = self._convertPyFile(fileinfo)
         return fdata
 
@@ -1165,6 +1165,7 @@ class Api(object):
     def get_cachedir(self):
         return os.path.abspath(self.pyload.cachedir)
 
+    #: Old API
     @permission(Perms.ALL)
     def getUserData(self, username, password):
         """
@@ -1172,7 +1173,26 @@ class Api(object):
         """
         user = self.checkAuth(username, password)
         if user:
+            return OldUserData(
+                user["name"],
+                user["email"],
+                user["role"],
+                user["permission"],
+                user["template"]
+            )
+        else:
+            return OldUserData()
+            
+            
+    @permission(Perms.ALL)
+    def get_userdata(self, username, password):
+        """
+        similar to `checkAuth` but returns UserData thrift type.
+        """
+        user = self.checkAuth(username, password)
+        if user:
             return UserData(
+                user["id"],
                 user["name"],
                 user["email"],
                 user["role"],
@@ -1182,18 +1202,33 @@ class Api(object):
         else:
             return UserData()
 
+
+    #: Old API
     def getAllUserData(self):
         """
         returns all known user and info.
         """
         res = {}
-        for user, data in self.pyload.db.getAllUserData().items():
-            res[user] = UserData(
-                user, data["email"], data["role"], data["permission"], data["template"]
+        for id, data in self.pyload.db.getAllUserData().items():
+            res[data['name']] = OldUserData(
+                data['name'], data["email"], data["role"], data["permission"], data["template"]
             )
 
         return res
 
+
+    def get_all_userdata(self):
+        """
+        returns all known user and info.
+        """
+        res = {}
+        for id, data in self.pyload.db.getAllUserData().items():
+            res[id] = UserData(
+                id, data["name"], data["email"], data["role"], data["permission"], data["template"]
+            )
+        return res
+        
+        
     @permission(Perms.STATUS)
     def getServices(self):
         """

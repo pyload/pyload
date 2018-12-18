@@ -423,7 +423,8 @@ class ServiceException(Exception):
         self.msg = msg
 
 
-class UserData(BaseObject):
+#: Needed by legacy API
+class OldUserData(BaseObject):
     __slots__ = ["name", "email", "role", "permission", "templateName"]
 
     def __init__(
@@ -434,3 +435,18 @@ class UserData(BaseObject):
         self.role = role
         self.permission = permission
         self.templateName = templateName
+        
+        
+class UserData(BaseObject):
+    __slots__ = ["id", "name", "email", "role", "permission", "template"]
+
+    def __init__(
+        self, id=None, name=None, email=None, role=None, permission=None, template=None
+    ):
+        self.id = id
+        self.name = name
+        self.email = email
+        self.role = role
+        self.permission = permission
+        self.template = template
+        
