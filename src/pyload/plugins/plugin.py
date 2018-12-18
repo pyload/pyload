@@ -559,9 +559,9 @@ class Plugin(Base):
 
         self.pyfile.setStatus("downloading")
 
-        download_folder = self.config.get("general", "download_folder")
+        storage_folder = self.config.get("general", "storage_folder")
 
-        location = os.path.join(download_folder, self.pyfile.package().folder)
+        location = os.path.join(storage_folder, self.pyfile.package().folder)
 
         os.makedirs(
             location,
@@ -705,8 +705,8 @@ class Plugin(Base):
                 ):  #: a download is waiting/starting and was appenrently started before
                     raise SkipDownload(pyfile.pluginname)
 
-        download_folder = self.config.get("general", "download_folder")
-        location = os.path.join(download_folder, pack.folder, self.pyfile.name)
+        storage_folder = self.config.get("general", "storage_folder")
+        location = os.path.join(storage_folder, pack.folder, self.pyfile.name)
 
         if (
             starting

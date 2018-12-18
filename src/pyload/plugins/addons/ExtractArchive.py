@@ -230,7 +230,7 @@ class ExtractArchive(Addon):
         #: Reload from txt file
         self.reload_passwords()
 
-        dl_folder = self.pyload.config.get("general", "download_folder")
+        dl_folder = self.pyload.config.get("general", "storage_folder")
 
         #: Iterate packages -> extractors -> targets
         for pid in ids:

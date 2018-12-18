@@ -800,7 +800,7 @@ class YoutubeCom(Downloader):
             filename = self.download(url, disposition=False)
         except Skip as exc:
             filename = os.path.join(
-                self.pyload.config.get("general", "download_folder"),
+                self.pyload.config.get("general", "storage_folder"),
                 self.pyfile.package().folder,
                 self.pyfile.name,
             )
@@ -907,7 +907,7 @@ class YoutubeCom(Downloader):
             filename = self.download(url, disposition=False)
         except Skip as exc:
             filename = os.path.join(
-                self.pyload.config.get("general", "download_folder"),
+                self.pyload.config.get("general", "storage_folder"),
                 self.pyfile.package().folder,
                 self.pyfile.name,
             )
@@ -984,7 +984,7 @@ class YoutubeCom(Downloader):
                 for lang in subs_dl_langs:
                     if lang in subtitles_urls:
                         srt_filename = os.path.join(
-                            self.pyload.config.get("general", "download_folder"),
+                            self.pyload.config.get("general", "storage_folder"),
                             self.pyfile.package().folder,
                             os.path.splitext(self.file_name)[0] + "." + lang + ".srt",
                         )
@@ -1019,7 +1019,7 @@ class YoutubeCom(Downloader):
                 # Download any available subtitle
                 for subtitle in subtitles_urls.items():
                     srt_filename = os.path.join(
-                        self.pyload.config.get("general", "download_folder"),
+                        self.pyload.config.get("general", "storage_folder"),
                         self.pyfile.package().folder,
                         os.path.splitext(self.file_name)[0]
                         + "."

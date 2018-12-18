@@ -107,7 +107,7 @@ class DailymotionComFolder(Decrypter):
         for p_id, p_name, p_owner in playlists:
             p_videos = self.get_videos(p_id)
             p_folder = os.path.join(
-                self.pyload.config.get("general", "download_folder"), p_owner, p_name
+                self.pyload.config.get("general", "storage_folder"), p_owner, p_name
             )
             self.log_debug(
                 '{} video\s found on playlist "{}"'.format(len(p_videos), p_name)

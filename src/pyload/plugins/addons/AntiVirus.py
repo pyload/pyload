@@ -56,7 +56,7 @@ class AntiVirus(Addon):
         scanfolder = self.config.get("avtarget") == "folder"
 
         if scanfolder:
-            dl_folder = self.pyload.config.get("general", "download_folder")
+            dl_folder = self.pyload.config.get("general", "storage_folder")
             package_folder = (
                 pyfile.package().folder
                 if self.pyload.config.get("general", "folder_per_package")

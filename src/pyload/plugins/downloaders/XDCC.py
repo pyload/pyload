@@ -797,7 +797,7 @@ class XDCC(Downloader):
             self.pyfile.setStatus("downloading")
 
             dl_folder = os.path.join(
-                self.pyload.config.get("general", "download_folder"),
+                self.pyload.config.get("general", "storage_folder"),
                 self.pyfile.package().folder
                 if self.pyload.config.get("general", "folder_per_package")
                 else "",

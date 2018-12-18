@@ -222,7 +222,7 @@ class ExternalScripts(Addon):
         self.call_script("archive_extracted", *args)
 
     def package_finished(self, pypack):
-        dl_folder = self.pyload.config.get("general", "download_folder")
+        dl_folder = self.pyload.config.get("general", "storage_folder")
 
         if self.pyload.config.get("general", "folder_per_package"):
             dl_folder = os.path.join(dl_folder, pypack.folder)
@@ -231,7 +231,7 @@ class ExternalScripts(Addon):
         self.call_script("package_finished", *args)
 
     def package_processed(self, pypack):
-        dl_folder = self.pyload.config.get("general", "download_folder")
+        dl_folder = self.pyload.config.get("general", "storage_folder")
 
         if self.pyload.config.get("general", "folder_per_package"):
             dl_folder = os.path.join(dl_folder, pypack.folder)
@@ -240,7 +240,7 @@ class ExternalScripts(Addon):
         self.call_script("package_processed", *args)
 
     def package_deleted(self, pid):
-        dl_folder = self.pyload.config.get("general", "download_folder")
+        dl_folder = self.pyload.config.get("general", "storage_folder")
         pdata = self.pyload.api.getPackageInfo(pid)
 
         if self.pyload.config.get("general", "folder_per_package"):
@@ -250,7 +250,7 @@ class ExternalScripts(Addon):
         self.call_script("package_deleted", *args)
 
     def package_failed(self, pypack):
-        dl_folder = self.pyload.config.get("general", "download_folder")
+        dl_folder = self.pyload.config.get("general", "storage_folder")
 
         if self.pyload.config.get("general", "folder_per_package"):
             dl_folder = os.path.join(dl_folder, pypack.folder)
@@ -259,7 +259,7 @@ class ExternalScripts(Addon):
         self.call_script("package_failed", *args)
 
     def package_extract_failed(self, pypack):
-        dl_folder = self.pyload.config.get("general", "download_folder")
+        dl_folder = self.pyload.config.get("general", "storage_folder")
 
         if self.pyload.config.get("general", "folder_per_package"):
             dl_folder = os.path.join(dl_folder, pypack.folder)
@@ -268,7 +268,7 @@ class ExternalScripts(Addon):
         self.call_script("package_extract_failed", *args)
 
     def package_extracted(self, pypack):
-        dl_folder = self.pyload.config.get("general", "download_folder")
+        dl_folder = self.pyload.config.get("general", "storage_folder")
 
         if self.pyload.config.get("general", "folder_per_package"):
             dl_folder = os.path.join(dl_folder, pypack.folder)

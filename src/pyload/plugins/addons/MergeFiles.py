@@ -33,7 +33,7 @@ class MergeFiles(Addon):
                 files[data["name"][:-4]].sort()
                 fid_dict[data["name"]] = fid
 
-        dl_folder = self.pyload.config.get("general", "download_folder")
+        dl_folder = self.pyload.config.get("general", "storage_folder")
 
         if self.pyload.config.get("general", "folder_per_package"):
             dl_folder = os.path.join(dl_folder, pack.folder)

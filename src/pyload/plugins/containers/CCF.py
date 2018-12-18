@@ -47,7 +47,7 @@ class CCF(Container):
                 files={"upload": f},
             ).read()
 
-        dl_folder = self.pyload.config.get("general", "download_folder")
+        dl_folder = self.pyload.config.get("general", "storage_folder")
         dlc_file = os.path.join(dl_folder, "tmp_{}.dlc".format(pyfile.name))
 
         try:

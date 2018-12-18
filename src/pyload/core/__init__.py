@@ -116,7 +116,7 @@ class Core(object):
             "pyload"
         )  # NOTE: forced debug mode from console not working
 
-        self.log.info(f"*** Welcome to pyLoad {self.version} ***")
+        self.log.warning(f"*** Welcome to pyLoad {self.version} ***")
 
     def _init_network(self):
         from .network.request_factory import RequestFactory
@@ -352,7 +352,7 @@ class Core(object):
     def terminate(self):
         self.stop()
         self.log.info(self._("Exiting core..."))
-        self.log.info(self._("Bye Bye!"))
+        self.log.warning(self._("Bye Bye!"))
         # self.tsm.exit()
         # self.db.exit()  # NOTE: Why here?
         self.logfactory.shutdown()

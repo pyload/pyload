@@ -309,7 +309,7 @@ class Downloader(Hoster):
 
         self.pyfile.setStatus("downloading")
 
-        dl_folder = self.pyload.config.get("general", "download_folder")
+        dl_folder = self.pyload.config.get("general", "storage_folder")
         dl_dirname = safejoin(dl_folder, self.pyfile.package().folder)
         dl_filename = safejoin(dl_dirname, dl_basename)
 
@@ -525,7 +525,7 @@ class Downloader(Hoster):
                 ):  #: finished / downloading / waiting / starting
                     self.skip(pyfile.pluginname)
 
-        dl_folder = self.pyload.config.get("general", "download_folder")
+        dl_folder = self.pyload.config.get("general", "storage_folder")
         dl_file = os.path.join(dl_folder, pack_folder, self.pyfile.name)
 
         if not exists(dl_file):

@@ -158,7 +158,7 @@ class YoutubeComFolder(Decrypter):
             p_name = p["title"]
             p_videos = self.get_videos_id(p["id"])
             p_folder = os.path.join(
-                self.pyload.config.get("general", "download_folder"),
+                self.pyload.config.get("general", "storage_folder"),
                 p["channelTitle"],
                 p_name,
             )

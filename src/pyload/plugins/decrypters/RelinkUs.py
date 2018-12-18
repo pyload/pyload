@@ -279,7 +279,7 @@ class RelinkUs(Decrypter):
                 dlc = self.load(container_url)
                 dlc_filename = self.file_id + ".dlc"
                 dlc_filepath = os.path.join(
-                    self.pyload.config.get("general", "download_folder"), dlc_filename
+                    self.pyload.config.get("general", "storage_folder"), dlc_filename
                 )
                 with open(dlc_filepath, mode="wb") as file:
                     file.write(dlc)

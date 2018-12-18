@@ -168,7 +168,7 @@ class AntiStandby(Addon):
         ):
             return
 
-        dl_folder = self.pyload.config.get("general", "download_folder")
+        dl_folder = self.pyload.config.get("general", "storage_folder")
         if (self.max_mtime(dl_folder) - self.mtime) < self.periodical.interval:
             return
 

@@ -9,7 +9,7 @@ Release History
 - [Webui] Webserver switched to CherryPy's Cheroot
 - [Webui] Code migrated to Flask framework (from Bottle.py)
 - [Webui] Theme management
-- [Webui] Restyled default theme
+- [Webui] Updated default theme
 - [Webui] Interactive captcha support
 - [All] Better project structure
 - [All] Removed all the old crap in the codebase (dependecies, modules, etc.)

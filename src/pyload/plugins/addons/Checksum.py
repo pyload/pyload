@@ -160,7 +160,7 @@ class Checksum(Addon):
             self.check_failed(pyfile, None, "No file downloaded")
 
         local_file = encode(pyfile.plugin.last_download)
-        # dl_folder  = self.pyload.config.get("general", "download_folder")
+        # dl_folder  = self.pyload.config.get("general", "storage_folder")
         # local_file = encode(os.path.join(dl_folder, pyfile.package().folder, pyfile.name))
 
         if not os.path.isfile(local_file):
@@ -275,7 +275,7 @@ class Checksum(Addon):
     def verify_package(self, pypack, event_finished, thread=None):
         try:
             dl_folder = os.path.join(
-                self.pyload.config.get("general", "download_folder"), pypack.folder, ""
+                self.pyload.config.get("general", "storage_folder"), pypack.folder, ""
             )
 
             pdata = list(pypack.getChildren().items())

@@ -64,7 +64,7 @@ class Container(Decrypter):
 
             self.pyfile.name = "tmp_" + self.pyfile.name
             self.pyfile.url = os.path.join(
-                self.pyload.config.get("general", "download_folder"), self.pyfile.name
+                self.pyload.config.get("general", "storage_folder"), self.pyfile.name
             )
 
             try:

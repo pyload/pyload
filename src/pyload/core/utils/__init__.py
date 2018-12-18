@@ -53,9 +53,9 @@ def decode(value):
     Encoded string (default to own system encoding) -> unicode string.
     """
     try:
-        return str(res)
+        return str(value)
     except UnicodeEncodeError:
-        return normalize(res)
+        return normalize(value)
 
 
 def remove_chars(value, repl):
@@ -250,10 +250,10 @@ def fixurl(url, unquote=None):
         unquote = url is old
 
     url = decode(url)
-    try:
-        url = url.decode("unicode-escape")
-    except UnicodeDecodeError:
-        pass
+    # try:
+        # url = url.decode("unicode-escape")
+    # except UnicodeDecodeError:
+        # pass
 
     url = html_unescape(url)
     url = re.sub(r"(?<!:)/{2,}", "/", url).strip().lstrip(".")
