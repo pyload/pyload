@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
-from .decrypters import Decrypter
+from .decrypter import Decrypter
 
 
 class DeadDecrypter(Decrypter):

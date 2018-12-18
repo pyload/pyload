@@ -3,7 +3,7 @@ import os
 import urllib.parse
 
 from ..helpers import encode, exists
-from .decrypters import Decrypter
+from .decrypter import Decrypter
 
 
 class Container(Decrypter):

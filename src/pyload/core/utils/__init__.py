@@ -132,8 +132,8 @@ def safename(value):
 
 # TODO: Check where it's used...
 def compare_time(start, end):
-    start = (int(n) for n in start)
-    end = (int(n) for n in end)
+    start = [int(n) for n in start]
+    end = [int(n) for n in end]
 
     if start == end:
         return True

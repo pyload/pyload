@@ -197,6 +197,7 @@ class PluginManager(object):
                 # the plugin is loaded from user directory
                 plugins[name]["user"] = True if home else False
                 plugins[name]["name"] = module
+                plugins[name]["folder"] = folder
 
                 if pattern:
                     m_pat = self._PATTERN.search(content)
@@ -333,8 +334,10 @@ class PluginManager(object):
             if APPID in plugins[name]:
                 return plugins[name][APPID]
             try:
+                module_name = plugins[name]['name']
+                module_folder = plugins[name]['folder']
                 module = __import__(
-                    self.ROOT + f"{type}.{plugins[name]['name']}",
+                    self.ROOT + f"{module_folder}.{module_name}",
                     globals(),
                     locals(),
                     plugins[name]["name"],

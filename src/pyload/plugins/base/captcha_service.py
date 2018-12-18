@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
-from .anticaptchas import Captcha
+from .captcha import Captcha
 
 
 class CaptchaService(Captcha):

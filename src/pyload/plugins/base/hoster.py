@@ -10,7 +10,7 @@ from ..helpers import (
     replace_patterns,
 )
 from pyload.core.utils import decode, parse_name, fixurl, format_size, format_time
-from .anticaptchas import Captcha
+from .captcha import Captcha
 from .plugin import Abort, Fail, Plugin, Reconnect, Retry, Skip
 
 
