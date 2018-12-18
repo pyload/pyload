@@ -34,12 +34,13 @@ class PluginThread(Thread):
         """
         date = time.strftime("%Y-%m-%d_%H-%M-%S")
         dump_name = f"debug_{pyfile.pluginname}_{date}.zip"
+        dump_filename = os.path.join(self.pyload.cachedir, dump_name)
         dump = self.getDebugDump(pyfile)
 
         try:
             import zipfile
 
-            with zipfile.ZipFile(dump_name, "w") as zip:
+            with zipfile.ZipFile(dump_filename, "w") as zip:
                 for entry in os.listdir(
                     os.path.join(self.pyload.cachedir, pyfile.pluginname)
                 ):
@@ -59,17 +60,17 @@ class PluginThread(Thread):
 
                 zip.writestr(info, dump)
 
-            if not os.stat(dump_name).st_size:
+            if not os.stat(dump_filename).st_size:
                 raise Exception("Empty Zipfile")
 
         except Exception as exc:
             self.pyload.log.debug(f"Error creating zip file: {exc}")
 
-            dump_name = dump_name.replace(".zip", ".txt")
-            with open(dump_name, mode="w") as file:
+            dump_filename = dump_filename.replace(".zip", ".txt")
+            with open(dump_filename, mode="w") as file:
                 file.write(dump)
 
-        self.pyload.log.info(self._("Debug Report written to {}").format(dump_name))
+        self.pyload.log.info(self._("Debug Report written to {}").format(dump_filename))
 
     def getDebugDump(self, pyfile):
         version = self.pyload.api.getServerVersion()
