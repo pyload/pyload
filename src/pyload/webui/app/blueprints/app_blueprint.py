@@ -96,7 +96,7 @@ def dashboard():
         if link["status"] == 12:
             current_size = link["size"] - link["bleft"]
             formatted_speed = format_speed(link["speed"])
-            link["information"] = f"{current_size} KiB @ {formatted_speed}"
+            link["info"] = f"{current_size} KiB @ {formatted_speed}"
 
     return render_template("dashboard.html", res=links)
 

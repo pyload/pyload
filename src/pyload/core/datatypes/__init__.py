@@ -155,6 +155,7 @@ class DownloadInfo(BaseObject):
         "packageID",
         "packageName",
         "plugin",
+        "info",  # NOTE: needed by webui, remove in future...
     ]
 
     def __init__(
@@ -175,6 +176,7 @@ class DownloadInfo(BaseObject):
         packageID=None,
         packageName=None,
         plugin=None,
+        info=None,
     ):
         self.fid = fid
         self.name = name
@@ -192,6 +194,7 @@ class DownloadInfo(BaseObject):
         self.packageID = packageID
         self.packageName = packageName
         self.plugin = plugin
+        self.info = info
 
 
 class EventInfo(BaseObject):
