@@ -2,8 +2,8 @@
 
 import sys
 import zipfile
+import os
 
-from ..helpers import encode
 from .extractor import ArchiveError, CRCError, Extractor, PasswordError
 
 
@@ -29,7 +29,7 @@ class UnZip(Extractor):
 
     @classmethod
     def isarchive(cls, filename):
-        return zipfile.is_zipfile(encode(filename))
+        return zipfile.is_zipfile(os.fsdecode(filename))
 
     @classmethod
     def find(cls):

@@ -11,7 +11,7 @@ import time
 from pyload import PKGDIR
 
 from ..base.addon import Addon, expose, threaded
-from ..helpers import encode, exists
+from ..helpers import exists
 
 
 class UpdateManager(Addon):
@@ -389,7 +389,7 @@ class UpdateManager(Addon):
                         os.path.join(userplugins, plugin_type, plugin_name + ".py"),
                         "wb",
                     ) as file:
-                        file.write(encode(content))
+                        file.write(content.encode())
 
                     updated.append((plugin_type, plugin_name))
                 else:

@@ -7,7 +7,6 @@ import time
 
 
 from ..base.addon import Addon, expose
-from ..helpers import encode
 
 try:
     import caffeine
@@ -152,7 +151,7 @@ class AntiStandby(Addon):
             0,
             *(
                 os.path.getmtime(os.path.join(root, file))
-                for root, dirs, files in os.walk(encode(path), topdown=False)
+                for root, dirs, files in os.walk(os.fsdecode(path), topdown=False)
                 for file in files
             ),
         )

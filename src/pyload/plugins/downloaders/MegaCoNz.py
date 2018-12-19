@@ -14,7 +14,7 @@ import Cryptodome.Util.Counter
 from pyload.core.network.http.http_request import BadHeader
 
 from ..base.downloader import Downloader
-from ..helpers import encode, exists
+from ..helpers import exists
 from pyload.core.utils import decode
 
 ############################ General errors ###################################
@@ -319,7 +319,7 @@ class MegaCoNz(Downloader):
         self.pyfile.setStatus("decrypting")
         self.pyfile.setProgress(0)
 
-        file_crypted = encode(self.last_download)
+        file_crypted = os.fsdecode(self.last_download)
         file_decrypted = file_crypted.rsplit(self.FILE_SUFFIX)[0]
 
         try:

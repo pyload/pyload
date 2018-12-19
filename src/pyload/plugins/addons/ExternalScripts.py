@@ -5,7 +5,6 @@ import subprocess
 
 
 from ..base.addon import Addon, expose
-from ..helpers import encode
 
 
 class ExternalScripts(Addon):
@@ -138,7 +137,7 @@ class ExternalScripts(Addon):
             self.scripts[folder] = scripts
 
     def call_cmd(self, command, *args, **kwargs):
-        call = (encode(cmd) for cmd in [command] + list(args))
+        call = (str(cmd) for cmd in [command] + list(args))
 
         self.log_debug(
             "EXECUTE "

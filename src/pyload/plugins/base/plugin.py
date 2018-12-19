@@ -12,7 +12,6 @@ from ..plugin import SkipDownload as Skip
 from ..helpers import (
     DB,
     Config,
-    encode,
     exists,
     format_exc,
     parse_html_header,
@@ -130,7 +129,7 @@ class Plugin(object):
             return True
 
     def set_permissions(self, path):
-        path = encode(path)
+        path = os.fsdecode(path)
 
         if not exists(path):
             return
@@ -151,13 +150,13 @@ class Plugin(object):
         """
         Skip and give msg.
         """
-        raise Skip(encode(msg))  # TODO: Remove `encode` in 0.6.x
+        raise Skip(msg)
 
     def fail(self, msg):
         """
         Fail and give msg.
         """
-        raise Fail(encode(msg))  # TODO: Remove `encode` in 0.6.x
+        raise Fail(msg)
 
     def load(
         self,

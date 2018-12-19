@@ -7,7 +7,6 @@ import zlib
 from threading import Event
 
 from ..base.addon import Addon, threaded
-from ..helpers import encode
 from pyload.core.utils import format_time
 
 
@@ -159,7 +158,7 @@ class Checksum(Addon):
         if not pyfile.plugin.last_download:
             self.check_failed(pyfile, None, "No file downloaded")
 
-        local_file = encode(pyfile.plugin.last_download)
+        local_file = os.fsdecode(pyfile.plugin.last_download)
         # dl_folder  = self.pyload.config.get("general", "storage_folder")
         # local_file = encode(os.path.join(dl_folder, pyfile.package().folder, pyfile.name))
 
@@ -287,7 +286,7 @@ class Checksum(Addon):
                 if file_type not in self.formats:
                     continue
 
-                hash_file = encode(os.path.join(dl_folder, fdata["name"]))
+                hash_file = os.fsdecode(os.path.join(dl_folder, fdata["name"]))
                 if not os.path.isfile(hash_file):
                     self.log_warning(self._("File not found"), fdata["name"])
                     continue
@@ -302,7 +301,7 @@ class Checksum(Addon):
                     data = m.groupdict()
                     self.log_debug(fdata["name"], data)
 
-                    local_file = encode(os.path.join(dl_folder, data["NAME"]))
+                    local_file = os.fsdecode(os.path.join(dl_folder, data["NAME"]))
                     algorithm = self._methodmap.get(file_type, file_type)
 
                     pyfile = None

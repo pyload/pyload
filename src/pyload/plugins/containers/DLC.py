@@ -3,13 +3,13 @@
 import base64
 import re
 import xml.dom.minidom
+import os
 
 from cryptography.fernet import Fernet
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
 from ..base.container import Container
-from ..helpers import encode
 from pyload.core.utils import decode
 
 
@@ -49,7 +49,7 @@ class DLC(Container):
     API_URL = "http://service.jdownloader.org/dlcrypt/service.php?srcType=dlc&destType=pylo&data={}"
 
     def decrypt(self, pyfile):
-        fs_filename = encode(pyfile.url)
+        fs_filename = os.fsdecode(pyfile.url)
         with open(fs_filename) as dlc:
             data = dlc.read().strip()
 

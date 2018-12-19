@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 import re
+import os
 
 from pyload.core.network.http.http_request import BadHeader
 from pyload.core.network.request_factory import getURL as get_url
 
-from ..helpers import encode, replace_patterns
+, replace_patterns
 from pyload.core.utils import parse_name, parse_size, parse_time
 from .downloader import Downloader
 
@@ -342,7 +343,7 @@ class SimpleDownloader(Downloader):
             if self.CHECK_FILE:
                 self.log_info(self._("Checking file (with custom rules)..."))
 
-                with open(encode(self.last_download), mode="rb") as file:
+                with open(os.fsdecode(self.last_download), mode="rb") as file:
                     self.data = file.read(1_048_576)  # TODO: Recheck in 0.6.x
 
                 self.check_errors()

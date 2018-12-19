@@ -5,7 +5,6 @@ from pyload.core.network.browser import Browser
 from pyload.core.network.http.http_request import HTTPRequest
 
 from ..base.addon import Addon
-from ..helpers import encode
 
 
 class UserAgentSwitcher(Addon):
@@ -54,4 +53,4 @@ class UserAgentSwitcher(Addon):
 
         if useragent:
             self.log_debug(f"Use custom user-agent string `{useragent}`")
-            pyfile.plugin.req.http.c.setopt(pycurl.USERAGENT, encode(useragent))
+            pyfile.plugin.req.http.c.setopt(pycurl.USERAGENT, useragent.encode())

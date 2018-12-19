@@ -3,7 +3,7 @@
 import os
 import re
 
-from ..helpers import encode
+
 from .plugin import Plugin
 
 
@@ -144,11 +144,11 @@ class Extractor(Plugin):
 
     @property
     def target(self):
-        return encode(self.filename)
+        return os.fsdecode(self.filename)
 
     @property
     def dest(self):
-        return encode(self.out)
+        return os.fsdecode(self.out)
 
     def verify(self, password=None):
         """

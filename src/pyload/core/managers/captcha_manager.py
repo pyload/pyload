@@ -93,12 +93,7 @@ class CaptchaTask(object):
                 self.result = None
 
     def getResult(self):
-        try:
-            res = self.result.encode("utf-8", "replace")
-        except Exception:
-            res = self.result
-
-        return res
+        return self.result
 
     def getStatus(self):
         return self.status

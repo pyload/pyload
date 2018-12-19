@@ -203,7 +203,7 @@ def uniqify(seq):
 
 # TODO: Change 'trash' to False because send2trash is optional now
 def remove(path, trash=True):
-    path = encode(path)
+    path = os.fsdecode(path)
 
     if not exists(path):
         return

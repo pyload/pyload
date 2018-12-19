@@ -512,12 +512,7 @@ class Plugin(Base):
             ) as file:
                 del frame  #: delete the frame or it wont be cleaned
 
-                try:
-                    tmp = res.encode("utf-8")
-                except Exception:
-                    tmp = res
-
-                file.write(tmp)
+                file.write(res.encode())
 
         if just_header:
             # parse header

@@ -206,7 +206,7 @@ def fsbsize(path):
     """
     Get optimal file system buffer size (in bytes) for I/O calls.
     """
-    path = encode(path)
+    path = os.fsdecode(path)
 
     if os.name == "nt":
         import ctypes
@@ -256,32 +256,8 @@ def get_console_encoding(enc):
     return enc
 
 
-def transcode(value, decoding, encoding):
-    return value.decode(decoding).encode(encoding)
-
-
-def encode(value, encoding="utf-8", errors="backslashreplace"):
-    """
-    Unicode string -> encoded string (default to UTF-8)
-    """
-    if isinstance(value, str):
-        res = value.encode(encoding, errors)
-
-    elif isinstance(value, str):
-        decoding = get_console_encoding(sys.stdin.encoding)
-        if encoding == decoding:
-            res = value
-        else:
-            res = transcode(value, decoding, encoding)
-
-    else:
-        res = str(value)
-
-    return res
-
-
 def exists(path):
-    path = encode(path)
+    path = os.fsdecode(path)
 
     if os.path.exists(path):
         if os.name == "nt":
@@ -375,7 +351,7 @@ def check_prog(command):
 
 
 def isexecutable(filename):
-    file = encode(filename)
+    file = os.fsdecode(filename)
     return os.path.isfile(file) and os.access(file, os.X_OK)
 
 
@@ -442,7 +418,7 @@ def replace_patterns(value, rules):
 def set_cookie(
     cj, domain, name, value, path="/", exp=time.time() + timedelta(hours=744).seconds
 ):  #: 31 days retention
-    args = [encode(x) for x in (domain, name, value, path)] + [int(exp)]
+    args = [domain, name, value, path, int(exp)]
     return cj.setCookie(*args)
 
 
@@ -569,7 +545,7 @@ def forward(source, destination):
 
 
 def compute_checksum(filename, hashtype):
-    file = encode(filename)
+    file = os.fsdecode(filename)
 
     if not exists(file):
         return None

@@ -6,7 +6,7 @@ import subprocess
 
 from pyload import PKGDIR
 
-from ..helpers import encode, renice
+, renice
 from .extractor import ArchiveError, CRCError, Extractor, PasswordError
 
 
@@ -235,7 +235,7 @@ class SevenZip(Extractor):
         call = [self.CMD, command] + args + list(xargs)
         self.log_debug("EXECUTE " + " ".join(call))
 
-        call = (encode(cmd) for cmd in call)
+        call = [str(cmd) for cmd in call]
         p = subprocess.Popen(call, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         renice(p.pid, self.priority)

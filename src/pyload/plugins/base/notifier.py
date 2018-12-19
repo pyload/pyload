@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import time
 
-from ..helpers import encode, is_sequence
+, is_sequence
 from .addon import Addon, expose
 
 
@@ -117,9 +117,7 @@ class Notifier(Addon):
             return
 
         if is_sequence(msg):
-            msg = " | ".join(encode(a).strip() for a in msg if a)
-        else:
-            msg = encode(msg)
+            msg = " | ".join(a.strip() for a in msg if a.strip())
 
         if self.pyload.isClientConnected() and not self.config.get(
             "ignoreclient", False

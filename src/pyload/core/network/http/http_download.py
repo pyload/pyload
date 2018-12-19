@@ -87,7 +87,7 @@ class HTTPDownload(object):
         return (self.arrived * 100) // self.size
 
     def _copyChunks(self):
-        init = os.fsencode(self.info.getChunkName(0))  #: initial chunk name
+        init = os.fsdecode(self.info.getChunkName(0))  #: initial chunk name
 
         if self.info.getCount() > 1:
             with open(init, mode="rb+") as fo:  #: first chunkfile
@@ -95,7 +95,7 @@ class HTTPDownload(object):
                     # input file
                     # seek to beginning of chunk, to get rid of overlapping chunks
                     fo.seek(self.info.getChunkRange(i - 1)[1] + 1)
-                    fname = os.fsencode(f"{self.filename}.chunk{i}")
+                    fname = os.fsdecode(f"{self.filename}.chunk{i}")
                     with open(fname, mode="rb") as fi:
                         buf = 32 << 10
                         while True:  #: copy in chunks, consumes less memory
@@ -117,7 +117,7 @@ class HTTPDownload(object):
                 os.path.dirname(self.filename), self.nameDisposition
             )
 
-        shutil.move(init, os.fsencode(self.filename))
+        shutil.move(init, os.fsdecode(self.filename))
         self.info.remove()  #: os.remove info file
 
     def download(self, chunks=1, resume=False):
@@ -261,7 +261,7 @@ class HTTPDownload(object):
                         for chunk in to_clean:
                             self.closeChunk(chunk)
                             self.chunks.remove(chunk)
-                            os.remove(os.fsencode(self.info.getChunkName(chunk.id)))
+                            os.remove(os.fsdecode(self.info.getChunkName(chunk.id)))
 
                         # let first chunk load the rest and update the info file
                         init.resetRange()

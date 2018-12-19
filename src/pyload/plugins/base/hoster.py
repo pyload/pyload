@@ -5,7 +5,6 @@ import time
 import urllib.parse
 
 from ..helpers import (
-    encode,
     parse_html_form,
     replace_patterns,
 )
@@ -23,7 +22,7 @@ def getInfo(urls):
 # TODO: Remove in 0.6.x
 def parse_fileInfo(klass, url="", html=""):
     info = klass.get_info(url, html)
-    return encode(info["name"]), info["size"], info["status"], info["url"]
+    return info["name"], info["size"], info["status"], info["url"]
 
 
 class Hoster(Plugin):
@@ -396,9 +395,8 @@ class Hoster(Plugin):
         """
         Skip and give msg.
         """
-        raise Skip(
-            encode(msg or self.pyfile.error or self.pyfile.pluginname)
-        )  # TODO: Remove `encode` in 0.6.x
+        raise Skip(msg or self.pyfile.error or self.pyfile.pluginname
+        )
 
     # TODO: Remove in 0.6.x
     def fail(self, msg=""):
@@ -416,7 +414,7 @@ class Hoster(Plugin):
                 or self.pyfile.getStatusName()
             )
 
-        raise Fail(encode(msg))  # TODO: Remove `encode` in 0.6.x
+        raise Fail(msg)
 
     def error(self, msg="", type="Parse"):
         type = self._("{} error").format(
@@ -433,7 +431,7 @@ class Hoster(Plugin):
         Abort and give msg.
         """
         if msg:  # TODO: Remove in 0.6.x
-            self.pyfile.error = encode(msg)
+            self.pyfile.error = msg
 
         raise Abort
 
@@ -469,7 +467,7 @@ class Hoster(Plugin):
 
         self.req.clearCookies()
 
-        raise Retry(encode(msg))  # TODO: Remove `encode` in 0.6.x
+        raise Retry(msg)
 
     def retry(self, attemps=5, wait=1, msg="", msgfail="Max retries reached"):
         """
@@ -496,7 +494,7 @@ class Hoster(Plugin):
 
         self.wait(wait)
 
-        raise Retry(encode(msg))  # TODO: Remove `encode` in 0.6.x
+        raise Retry(msg)
 
     def retry_captcha(
         self, attemps=10, wait=1, msg="", msgfail="Max captcha retries reached"

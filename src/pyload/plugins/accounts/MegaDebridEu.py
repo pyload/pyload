@@ -6,7 +6,6 @@ import pycurl
 from pyload.core.network.http.http_request import BadHeader
 
 from ..base.multi_account import MultiAccount
-from ..helpers import encode
 
 
 def args(**kwargs):
@@ -44,7 +43,7 @@ class MegaDebridEu(MultiAccount):
 
         # Better use pyLoad User-Agent so we don't get blocked
         self.req.http.c.setopt(
-            pycurl.USERAGENT, encode("pyLoad/{}".format(self.pyload.version))
+            pycurl.USERAGENT, "pyLoad/{}".format(self.pyload.version).encode()
         )
 
         json_data = self.load(self.API_URL, get=get, post=post)

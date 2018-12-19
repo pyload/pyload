@@ -2,7 +2,7 @@
 import os
 import urllib.parse
 
-from ..helpers import encode, exists
+, exists
 from .decrypter import Decrypter
 
 
@@ -69,7 +69,7 @@ class Container(Decrypter):
 
             try:
                 with open(self.pyfile.url, mode="wb") as file:
-                    file.write(encode(content))
+                    file.write(content.encode())
 
             except IOError as exc:
                 self.fail(exc)

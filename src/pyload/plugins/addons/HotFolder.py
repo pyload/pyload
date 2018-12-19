@@ -4,7 +4,6 @@ import shutil
 import time
 
 from ..base.addon import Addon
-from ..helpers import encode
 
 
 class HotFolder(Addon):
@@ -33,8 +32,8 @@ class HotFolder(Addon):
         self.periodical.start(60, threaded=True)
 
     def periodical_task(self):
-        folder = encode(self.config.get("folder"))
-        file = encode(self.config.get("file"))
+        folder = os.fsdecode(self.config.get("folder"))
+        file = os.fsdecode(self.config.get("file"))
 
         try:
             if not os.path.isdir(os.path.join(folder, "finished")):

@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 import base64
 import re
+import os
 
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
 from ..base.container import Container
-from ..helpers import encode
 
 
 class RSDF(Container):
@@ -51,7 +51,7 @@ class RSDF(Container):
         iv = encryptor.update(IV) + encryptor.finalize()
 
         try:
-            fs_filename = encode(pyfile.url)
+            fs_filename = os.fsdecode(pyfile.url)
             with open(fs_filename, mode="rb") as rsdf:
                 data = rsdf.read()
 

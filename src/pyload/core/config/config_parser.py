@@ -256,19 +256,10 @@ class ConfigParser(object):
                         value += "\t\t]\n"
                     else:
                         value = str(data["value"]) + "\n"
-                    try:
-                        file.write(
-                            f'\t{data["type"]} {option} : "{data["desc"]}" = {value}'
-                        )
-                    except UnicodeEncodeError:
-                        file.write(
-                            '\t{} {} : "{}" = {}'.format(
-                                data["type"],
-                                option,
-                                data["desc"],
-                                value.encode("utf-8"),
-                            )
-                        )
+                        
+                    file.write(
+                        f'\t{data["type"]} {option} : "{data["desc"]}" = {value}'
+                    )
 
     def cast(self, typ, value):
         """

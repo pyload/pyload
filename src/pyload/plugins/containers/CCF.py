@@ -7,7 +7,6 @@ import re
 import requests
 
 from ..base.container import Container
-from ..helpers import encode
 
 
 class CCF(Container):
@@ -38,7 +37,7 @@ class CCF(Container):
     ]
 
     def decrypt(self, pyfile):
-        fs_filename = encode(pyfile.url)
+        fs_filename = os.fsdecode(pyfile.url)
 
         with open(fs_filename, mode="rb") as file:
             dlc_content = requests.post(

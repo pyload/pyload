@@ -2,7 +2,6 @@
 
 import os
 
-
 try:
     import send2trash
 except ImportError:
@@ -10,7 +9,7 @@ except ImportError:
 
 from ..base.addon import Addon, expose, threaded
 from ..base.extractor import ArchiveError, CRCError, PasswordError
-from ..helpers import encode, exists
+from ..helpers import exists
 from pyload.core.utils import safename, uniqify
 
 
@@ -364,7 +363,7 @@ class ExtractArchive(Addon):
                                 )
 
                             for filename in new_files:
-                                file = encode(
+                                file = os.fsdecode(
                                     os.path.join(
                                         os.path.dirname(archive.filename), filename
                                     )
@@ -527,7 +526,7 @@ class ExtractArchive(Addon):
 
                 deltotrash = self.config.get("deltotrash")
                 for f in delfiles:
-                    file = encode(f)
+                    file = os.fsdecode(f)
                     if not exists(file):
                         continue
 
@@ -603,7 +602,7 @@ class ExtractArchive(Addon):
         try:
             passwords = []
 
-            file = encode(self.config.get("passwordfile"))
+            file = os.fsdecode(self.config.get("passwordfile"))
             with open(file) as file:
                 for pw in file.read().splitlines():
                     passwords.append(pw)
@@ -635,7 +634,7 @@ class ExtractArchive(Addon):
         try:
             self.passwords = uniqify([password] + self.passwords)
 
-            file = encode(self.config.get("passwordfile"))
+            file = os.fsdecode(self.config.get("passwordfile"))
             with open(file, mode="wb") as file:
                 for pw in self.passwords:
                     file.write(pw + "\n")

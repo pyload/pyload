@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import codecs
+import os
 
 from ..base.container import Container
-from ..helpers import encode
 
 
 class TXT(Container):
@@ -38,7 +38,7 @@ class TXT(Container):
         except Exception:
             encoding = "utf-8"
 
-        fs_filename = encode(pyfile.url)
+        fs_filename = os.fsdecode(pyfile.url)
         with open(fs_filename, encoding=encoding) as txt:
             curPack = "Parsed links from {}".format(pyfile.name)
             packages = {curPack: []}

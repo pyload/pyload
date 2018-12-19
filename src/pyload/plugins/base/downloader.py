@@ -7,7 +7,7 @@ import re
 
 from pyload.core.network.http.http_request import BadHeader
 
-from ..helpers import encode, exists
+, exists
 from pyload.core.utils import parse_name, safejoin
 from .hoster import Hoster
 from .plugin import Fail
@@ -120,7 +120,7 @@ class Downloader(Hoster):
                     self.restart(premium=False)
 
                 else:
-                    raise Fail(encode(exc))
+                    raise Fail(exc)
 
         finally:
             self._finalize()
@@ -217,7 +217,7 @@ class Downloader(Hoster):
         self, url, filename, get, post, ref, cookies, disposition, resume, chunks
     ):
         # TODO: Safe-filename check in HTTPDownload in 0.6.x
-        file = encode(filename)
+        filename = os.fsdecode(filename)
         resume = self.resume_download if resume is None else bool(resume)
 
         dl_chunks = self.pyload.config.get("download", "chunks")
@@ -231,7 +231,7 @@ class Downloader(Hoster):
         try:
             newname = self.req.httpDownload(
                 url,
-                file,
+                filename,
                 get,
                 post,
                 ref,
@@ -313,11 +313,8 @@ class Downloader(Hoster):
         dl_dirname = safejoin(dl_folder, self.pyfile.package().folder)
         dl_filename = safejoin(dl_dirname, dl_basename)
 
-        dl_dir = encode(dl_dirname)
-        dl_file = encode(dl_filename)
-
         os.makedirs(dl_dir, exist_ok=True)
-        self.set_permissions(dl_dir)
+        self.set_permissions(dl_dirname)
 
         self.pyload.addonManager.dispatchEvent(
             "download_start", self.pyfile, dl_url, dl_filename
@@ -352,9 +349,8 @@ class Downloader(Hoster):
             self.pyfile.name = safename
 
             dl_filename = os.path.join(dl_dirname, safename)
-            dl_file = encode(dl_filename)
 
-        self.set_permissions(dl_file)
+        self.set_permissions(dl_filename)
 
         self.last_download = dl_filename
 
@@ -369,7 +365,7 @@ class Downloader(Hoster):
         :param delete: delete if matched
         :return: dictionary key of the first rule that matched
         """
-        dl_file = encode(self.last_download)  # TODO: Recheck in 0.6.x
+        dl_file = os.fsdecode(self.last_download)  # TODO: Recheck in 0.6.x
 
         if not self.last_download:
             self.log_warning(self._("No file to scan"))

@@ -16,21 +16,19 @@ from pyload import APPID
 
 
 def myquote(url):
-    return quote(
-        url.encode("utf_8") if isinstance(url, str) else url,
-        safe="%/:=&?~#+!$,;'@()*[]",
-    )
+    try:
+        url = url.encode()
+    except AttributeError:
+        pass
+    return quote(url, safe="%/:=&?~#+!$,;'@()*[]")
 
 
 def myurlencode(data):
     data = dict(data)
     return urlencode(
         {
-            x.encode("utf_8")
-            if isinstance(x, str)
-            else x: y.encode("utf_8")
-            if isinstance(y, str)
-            else y
+            x.encode() if isinstance(x, str) else 
+            x: y.encode() if isinstance(y, str) else y
             for x, y in data.items()
         }
     )
@@ -219,7 +217,7 @@ class HTTPRequest(object):
                 self.c.setopt(pycurl.POSTFIELDS, post)
             else:
                 post = [
-                    (x, y.encode("utf-8") if isinstance(y, str) else y)
+                    (x, y.encode() if isinstance(y, str) else y)
                     for x, y in post.items()
                 ]
                 self.c.setopt(pycurl.HTTPPOST, post)

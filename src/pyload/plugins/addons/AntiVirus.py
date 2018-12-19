@@ -11,7 +11,7 @@ except ImportError:
     send2trash = None
 
 from ..base.addon import Addon, expose, threaded
-from ..helpers import encode, exists
+from ..helpers import exists
 
 
 class AntiVirus(Addon):
@@ -47,8 +47,8 @@ class AntiVirus(Addon):
     @expose
     @threaded
     def scan(self, pyfile, thread):
-        avfile = encode(self.config.get("avfile"))
-        avargs = encode(self.config.get("avargs").strip())
+        avfile = os.fsdecode(self.config.get("avfile"))
+        avargs = os.fsdecode(self.config.get("avargs").strip())
 
         if not os.path.isfile(avfile):
             self.fail(self._("Antivirus executable not found"))
@@ -65,7 +65,7 @@ class AntiVirus(Addon):
             target = os.path.join(dl_folder, package_folder, pyfile.name)
             target_repr = "Folder: " + package_folder or dl_folder
         else:
-            target = encode(pyfile.plugin.last_download)
+            target = os.fsdecode(pyfile.plugin.last_download)
             target_repr = "File: " + os.path.basename(pyfile.plugin.last_download)
 
         if not exists(target):

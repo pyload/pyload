@@ -2,8 +2,8 @@
 
 import sys
 import tarfile
+import os
 
-from ..helpers import encode
 from .extractor import ArchiveError, CRCError, Extractor
 
 
@@ -26,7 +26,7 @@ class UnTar(Extractor):
     @classmethod
     def isarchive(cls, filename):
         try:
-            return tarfile.is_tarfile(encode(filename))
+            return tarfile.is_tarfile(os.fsdecode(filename))
         except Exception:
             return False
 

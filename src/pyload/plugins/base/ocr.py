@@ -7,7 +7,7 @@ from PIL import Image
 
 from pyload import PKGDIR
 
-from ..helpers import encode
+
 from .plugin import Plugin
 
 # import tempfile
@@ -54,10 +54,9 @@ class OCR(Plugin):
         """
         Run a command.
         """
-        call = (command,) + args
+        call = [command] + args
         self.log_debug("EXECUTE " + " ".join(call))
 
-        call = (encode(cmd) for cmd in call)
         popen = subprocess.Popen(
             call, bufsize=-1, stdout=subprocess.PIPE, stderr=subprocess.PIPE
         )

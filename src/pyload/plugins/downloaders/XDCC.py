@@ -13,7 +13,6 @@ import time
 from ..base.addon import threaded
 from ..base.downloader import Downloader
 from ..plugin import Abort
-from ..helpers import encode
 from pyload.core.utils import lock
 
 
@@ -411,7 +410,7 @@ class IRC(object):
 
             self.irc_sock.send(
                 'PRIVMSG {} :\x01DCC RESUME "{}" {} {}\x01\r\n'.format(
-                    bot, encode(file_name, "utf-8"), dcc_port, resume_position
+                    bot, os.fsdecode(file_name), dcc_port, resume_position
                 )
             )
 
