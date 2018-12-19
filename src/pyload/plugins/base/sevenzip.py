@@ -6,7 +6,7 @@ import subprocess
 
 from pyload import PKGDIR
 
-, renice
+from ..helpers import renice
 from .extractor import ArchiveError, CRCError, Extractor, PasswordError
 
 
@@ -169,7 +169,8 @@ class SevenZip(Extractor):
         #: eventually Multipart Files
         files.extend(
             os.path.join(dir, os.path.basename(entry))
-            for entry in os.listdir(dir) if self.ismultipart(entry)
+            for entry in os.listdir(dir)
+            if self.ismultipart(entry)
             and self._RE_PART.sub("", name) == self._RE_PART.sub("", entry)
         )
 

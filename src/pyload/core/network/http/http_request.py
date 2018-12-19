@@ -27,8 +27,11 @@ def myurlencode(data):
     data = dict(data)
     return urlencode(
         {
-            x.encode() if isinstance(x, str) else 
-            x: y.encode() if isinstance(y, str) else y
+            x.encode()
+            if isinstance(x, str)
+            else x: y.encode()
+            if isinstance(y, str)
+            else y
             for x, y in data.items()
         }
     )

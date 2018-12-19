@@ -50,7 +50,9 @@ class HotFolder(Addon):
 
                     name = "{}_{}.txt".format(file, time.strftime("%H-%M-%S_%d%b%Y"))
 
-                    with open(os.path.join(folder, "finished", name), mode="wb") as file:
+                    with open(
+                        os.path.join(folder, "finished", name), mode="wb"
+                    ) as file:
                         file.write(content)
 
                     self.pyload.api.addPackage(file.name, [file.name], 1)
@@ -67,7 +69,9 @@ class HotFolder(Addon):
                     continue
 
                 newpath = os.path.join(
-                    folder, "finished", "tmp_" + entry if self.config.get("delete") else entry
+                    folder,
+                    "finished",
+                    "tmp_" + entry if self.config.get("delete") else entry,
                 )
                 shutil.move(path, newpath)
 

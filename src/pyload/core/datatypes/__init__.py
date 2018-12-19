@@ -435,8 +435,8 @@ class OldUserData(BaseObject):
         self.role = role
         self.permission = permission
         self.templateName = templateName
-        
-        
+
+
 class UserData(BaseObject):
     __slots__ = ["id", "name", "email", "role", "permission", "template"]
 
@@ -449,4 +449,3 @@ class UserData(BaseObject):
         self.role = role
         self.permission = permission
         self.template = template
-        

@@ -7,7 +7,7 @@ import re
 
 from pyload.core.network.http.http_request import BadHeader
 
-, exists
+from ..helpers import exists
 from pyload.core.utils import parse_name, safejoin
 from .hoster import Hoster
 from .plugin import Fail

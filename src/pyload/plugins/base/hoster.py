@@ -4,10 +4,7 @@ import re
 import time
 import urllib.parse
 
-from ..helpers import (
-    parse_html_form,
-    replace_patterns,
-)
+from ..helpers import parse_html_form, replace_patterns
 from pyload.core.utils import decode, parse_name, fixurl, format_size, format_time
 from .captcha import Captcha
 from .plugin import Abort, Fail, Plugin, Reconnect, Retry, Skip
@@ -115,7 +112,9 @@ class Hoster(Plugin):
         else:
             hidden_user = "{:*<{}}".format(self.account.user[:3], 7)
             hidden_pw = "*" * 10
-            args = (a.replace(user, hidden_user).replace(pw, hidden_pw) for a in args if a)
+            args = (
+                a.replace(user, hidden_user).replace(pw, hidden_pw) for a in args if a
+            )
 
         log(
             "{plugintype} {pluginname}[{id}]: {msg}".format(
@@ -395,8 +394,7 @@ class Hoster(Plugin):
         """
         Skip and give msg.
         """
-        raise Skip(msg or self.pyfile.error or self.pyfile.pluginname
-        )
+        raise Skip(msg or self.pyfile.error or self.pyfile.pluginname)
 
     # TODO: Remove in 0.6.x
     def fail(self, msg=""):

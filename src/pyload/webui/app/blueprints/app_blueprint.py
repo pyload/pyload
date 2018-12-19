@@ -430,7 +430,7 @@ def admin():
 
     # NOTE: messy code... users just need "perms" data in admin template
     for data in allusers.values():
-        name = data['name']
+        name = data["name"]
         users[name] = {"perms": get_permission(data["permission"])}
         users[name]["perms"]["admin"] = data["role"] is 0
 

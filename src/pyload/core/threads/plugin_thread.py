@@ -47,7 +47,9 @@ class PluginThread(Thread):
                     try:
                         # avoid encoding errors
                         zip.write(
-                            os.path.join(self.pyload.cachedir, pyfile.pluginname, entry),
+                            os.path.join(
+                                self.pyload.cachedir, pyfile.pluginname, entry
+                            ),
                             os.path.join(pyfile.pluginname, entry),
                         )
                     except Exception:
@@ -120,9 +122,7 @@ class PluginThread(Thread):
 
         if pyfile.pluginname in self.pyload.config.plugin:
             dump += "\n\nCONFIG: \n\n"
-            dump += (
-                pprint.pformat(self.pyload.config.plugin[pyfile.pluginname]) + "\n"
-            )
+            dump += pprint.pformat(self.pyload.config.plugin[pyfile.pluginname]) + "\n"
 
         return dump
 

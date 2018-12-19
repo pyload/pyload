@@ -334,8 +334,8 @@ class PluginManager(object):
             if APPID in plugins[name]:
                 return plugins[name][APPID]
             try:
-                module_name = plugins[name]['name']
-                module_folder = plugins[name]['folder']
+                module_name = plugins[name]["name"]
+                module_folder = plugins[name]["folder"]
                 module = __import__(
                     self.ROOT + f"{module_folder}.{module_name}",
                     globals(),

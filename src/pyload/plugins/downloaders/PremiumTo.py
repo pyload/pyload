@@ -4,7 +4,6 @@ from datetime import timedelta
 from ..base.multi_downloader import MultiDownloader
 
 
-
 class PremiumTo(MultiDownloader):
     __name__ = "PremiumTo"
     __type__ = "downloader"

@@ -68,12 +68,12 @@ def remove_chars(value, repl):
 
 
 # def save_join(*args):
-    # """
-    # joins a path, encoding aware.
-    # """
-    # return fs_encode(
-        # os.path.join(*[x if isinstance(x, str) else decode(x) for x in args])
-    # )
+# """
+# joins a path, encoding aware.
+# """
+# return fs_encode(
+# os.path.join(*[x if isinstance(x, str) else decode(x) for x in args])
+# )
 
 
 def truncate(name, length):
@@ -251,9 +251,9 @@ def fixurl(url, unquote=None):
 
     url = decode(url)
     # try:
-        # url = url.decode("unicode-escape")
+    # url = url.decode("unicode-escape")
     # except UnicodeDecodeError:
-        # pass
+    # pass
 
     url = html_unescape(url)
     url = re.sub(r"(?<!:)/{2,}", "/", url).strip().lstrip(".")

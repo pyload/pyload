@@ -1178,12 +1178,11 @@ class Api(object):
                 user["email"],
                 user["role"],
                 user["permission"],
-                user["template"]
+                user["template"],
             )
         else:
             return OldUserData()
-            
-            
+
     @permission(Perms.ALL)
     def get_userdata(self, username, password):
         """
@@ -1202,7 +1201,6 @@ class Api(object):
         else:
             return UserData()
 
-
     #: Old API
     def getAllUserData(self):
         """
@@ -1210,12 +1208,15 @@ class Api(object):
         """
         res = {}
         for id, data in self.pyload.db.getAllUserData().items():
-            res[data['name']] = OldUserData(
-                data['name'], data["email"], data["role"], data["permission"], data["template"]
+            res[data["name"]] = OldUserData(
+                data["name"],
+                data["email"],
+                data["role"],
+                data["permission"],
+                data["template"],
             )
 
         return res
-
 
     def get_all_userdata(self):
         """
@@ -1224,11 +1225,15 @@ class Api(object):
         res = {}
         for id, data in self.pyload.db.getAllUserData().items():
             res[id] = UserData(
-                id, data["name"], data["email"], data["role"], data["permission"], data["template"]
+                id,
+                data["name"],
+                data["email"],
+                data["role"],
+                data["permission"],
+                data["template"],
             )
         return res
-        
-        
+
     @permission(Perms.STATUS)
     def getServices(self):
         """

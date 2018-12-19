@@ -19,7 +19,7 @@ class UserDatabaseMethods(object):
     @style.queue
     def checkAuth(self, user, password):
         self.c.execute(
-            'SELECT id, name, password, role, permission, template, email FROM users WHERE name=?',
+            "SELECT id, name, password, role, permission, template, email FROM users WHERE name=?",
             (user,),
         )
         r = self.c.fetchone()

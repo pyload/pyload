@@ -9,14 +9,7 @@ from pyload.core.network.request_factory import getRequest as get_request
 # TODO: Remove in 0.6.x
 from ..plugin import Abort, Fail, Reconnect, Retry
 from ..plugin import SkipDownload as Skip
-from ..helpers import (
-    DB,
-    Config,
-    exists,
-    format_exc,
-    parse_html_header,
-    set_cookies,
-)
+from ..helpers import DB, Config, exists, format_exc, parse_html_header, set_cookies
 from pyload.core.utils import fixurl, decode, html_unescape, remove
 
 if os.name != "nt":

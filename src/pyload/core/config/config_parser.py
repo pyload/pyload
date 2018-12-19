@@ -256,7 +256,7 @@ class ConfigParser(object):
                         value += "\t\t]\n"
                     else:
                         value = str(data["value"]) + "\n"
-                        
+
                     file.write(
                         f'\t{data["type"]} {option} : "{data["desc"]}" = {value}'
                     )
