@@ -244,10 +244,7 @@ class Core(object):
         self.log.debug("Setup storage...")
 
         storage_folder = self.config.get("general", "storage_folder")
-
-        # NOTE: Remove in 0.6
-        storage_folder = os.path.abspath(storage_folder)
-
+        
         self.log.info(self._("Storage directory: {}".format(storage_folder)))
         os.makedirs(storage_folder, exist_ok=True)
 
