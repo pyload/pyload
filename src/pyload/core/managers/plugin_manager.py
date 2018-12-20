@@ -286,7 +286,7 @@ class PluginManager(object):
                     break
 
             if not found:
-                res.append((url, "BasePlugin"))
+                res.append((url, "DefaultPlugin"))
 
         return res
 
@@ -304,7 +304,7 @@ class PluginManager(object):
 
         if not plugin:
             self.pyload.log.warning(self._("Plugin {} not found").format(name))
-            plugin = self.hosterPlugins["BasePlugin"]
+            plugin = self.hosterPlugins["DefaultPlugin"]
 
         if "new_module" in plugin and not original:
             return plugin["new_module"]
