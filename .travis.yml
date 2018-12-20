@@ -9,9 +9,8 @@ branches:
     - develop
     - /^v\d+\.\d+\.\d+$/
 python:
-  - 3.4
-  - 3.5
   - 3.6
+  - 3.7
   - 3.6-dev
   - 3.7-dev
   - 3.8-dev
@@ -21,14 +20,12 @@ virtualenv:
   system_site_packages: true
 matrix:
   include:
-    - python: 3.4
-      env: DISTRIB="ubuntu" TOX_PYTHON_VERSION="py34" COVERAGE="true"
     - env: DISTRIB="conda" PYTHON_VERSION="3.6" COVERAGE="false"
     - os: osx
       language: generic
-      env: TRAVIS_PYTHON_VERSION=3.5
-      python: 3.5
-      before_install: pyenv install 3.5.0
+      env: TRAVIS_PYTHON_VERSION=3.6
+      python: 3.6
+      before_install: pyenv install 3.6.0
   allow_failures:
     - os: osx
     - python: 3.6-dev

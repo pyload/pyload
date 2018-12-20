@@ -28,21 +28,16 @@ before_script:
   - git config --global user.name "Your Name"
 
 # Run in different environments
-py34:
-  image: "python:3.4"
-  script:
-  - python setup.py test
-
-py35:
-  image: "python:3.5"
-  script:
-  - python setup.py test
-
 py36:
   image: "python:3.6"
   script:
   - python setup.py test
 
+py37:
+  image: "python:3.7"
+  script:
+  - python setup.py test
+  
 docs:
   before_script:
   - pip install Sphinx
