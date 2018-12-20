@@ -10,7 +10,7 @@ from pyload.core.network.http.http_request import BadHeader
 from ..helpers import exists
 from pyload.core.utils import parse_name, safejoin
 from .hoster import Hoster
-from .plugin import Fail
+from pyload.core.network.exceptions import Fail
 
 
 class Downloader(Hoster):
@@ -242,6 +242,10 @@ class Downloader(Hoster):
                 disposition,
             )
             
+        #TEST
+        except Exception as exc:
+            self.pyload.log.critical(exc, exc_info=True)
+
         except IOError as exc:
             self.log_error(exc)
             self.fail(self._("IOError {}").format(exc.errno))

@@ -12,7 +12,7 @@ import time
 
 from ..base.addon import threaded
 from ..base.downloader import Downloader
-from ..plugin import Abort
+from pyload.core.network.exceptions import Abort
 from pyload.core.utils import lock
 
 

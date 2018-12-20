@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import re
 
-from .plugin import Fail
+from pyload.core.network.exceptions import Fail
 from .simple_downloader import SimpleDownloader
 
 

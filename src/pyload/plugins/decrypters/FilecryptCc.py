@@ -17,7 +17,7 @@ from ..anticaptchas.CoinHive import CoinHive
 from ..anticaptchas.ReCaptcha import ReCaptcha
 from ..anticaptchas.SolveMedia import SolveMedia
 from ..base.decrypter import Decrypter
-from ..base.plugin import Abort
+from pyload.core.network.exceptions import Abort
 
 
 class BIGHTTPRequest(HTTPRequest):

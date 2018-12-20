@@ -5,7 +5,7 @@ import re
 from pyload.core.network.cookie_jar import CookieJar
 from pyload.core.network.http.http_request import HTTPRequest
 
-from ..base.plugin import Abort
+from pyload.core.network.exceptions import Abort
 from ..base.simple_downloader import SimpleDownloader
 
 

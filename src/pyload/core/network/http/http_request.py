@@ -10,7 +10,7 @@ from logging import getLogger
 from urllib.parse import quote, urlencode
 
 import pycurl
-from pyload.plugins.plugin import Abort
+from ..exceptions import Abort
 
 from pyload import APPID
 
@@ -196,7 +196,7 @@ class HTTPRequest(object):
         """
         sets everything needed for the request.
         """
-        self.rep = io.StringIO()
+        self.rep = io.BytesIO()
 
         url = myquote(url)
 
@@ -307,9 +307,8 @@ class HTTPRequest(object):
         """
         if self.rep is None:
             return ""
-
         else:
-            return self.rep.getvalue()
+            return self.rep.getvalue().decode()
 
     def decodeResponse(self, rep):
         """

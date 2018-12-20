@@ -7,7 +7,8 @@ import time
 
 from ..helpers import Periodical, is_sequence
 from pyload.core.utils import compare_time, lock, parse_size
-from ..plugin import Plugin, Skip
+from ..plugin import Plugin
+from pyload.core.network.exceptions import Skip
 
 
 class Account(Plugin):

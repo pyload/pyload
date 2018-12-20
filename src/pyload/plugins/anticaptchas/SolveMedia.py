@@ -4,7 +4,7 @@ import re
 
 
 from ..base.captcha_service import CaptchaService
-from ..base.plugin import Fail
+from pyload.core.network.exceptions import Fail
 
 
 class SolveMedia(CaptchaService):

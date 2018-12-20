@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
+# AUTHOR: vuolter
 
 import inspect
 import os
 
 import pycurl
 from pyload.core.network.request_factory import getRequest as get_request
+from pyload.core.network.exceptions import Fail, Skip
 
-from ..helpers import DB, Config, exists, format_exc, parse_html_header, set_cookies
+from .helpers import DB, Config, exists, format_exc, parse_html_header, set_cookies
 from pyload.core.utils import fixurl, decode, html_unescape, remove
 
 if os.name != "nt":
@@ -16,36 +18,6 @@ if os.name != "nt":
 
 # NOTE: save decode() as _decode() for use with load(url, decode='decode-str')
 _decode = decode
-
-
-class Abort(Exception):
-    """
-    raised when aborted.
-    """
-
-
-class Fail(Exception):
-    """
-    raised when failed.
-    """
-
-
-class Reconnect(Exception):
-    """
-    raised when reconnected.
-    """
-
-
-class Retry(Exception):
-    """
-    raised when start again from beginning.
-    """
-
-
-class Skip(Exception):
-    """
-    raised when download should be skipped.
-    """
     
 
 class Plugin(object):

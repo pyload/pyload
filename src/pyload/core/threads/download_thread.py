@@ -6,7 +6,7 @@ import time
 from queue import Queue
 
 import pycurl
-from pyload.plugins.plugin import Abort, Fail, Reconnect, Retry, SkipDownload
+from ..network.exceptions import Abort, Fail, Reconnect, Retry, Skip
 
 from .plugin_thread import PluginThread
 
@@ -172,7 +172,7 @@ class DownloadThread(PluginThread):
                 self.clean(pyfile)
                 continue
 
-            except SkipDownload as exc:
+            except Skip as exc:
                 pyfile.setStatus("skipped")
 
                 self.pyload.log.info(

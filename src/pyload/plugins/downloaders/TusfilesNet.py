@@ -2,7 +2,7 @@
 
 from pyload.core.network.http.http_request import BadHeader
 
-from ..base.plugin import Retry
+from pyload.core.network.exceptions import Retry
 from ..base.xfs_downloader import XFSDownloader
 
 

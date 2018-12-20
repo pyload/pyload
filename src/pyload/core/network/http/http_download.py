@@ -8,7 +8,7 @@ import time
 from logging import getLogger
 
 import pycurl
-from pyload.plugins.plugin import Abort
+from ..exceptions import Abort
 
 from .http_chunk import ChunkInfo, HTTPChunk
 from .http_request import BadHeader

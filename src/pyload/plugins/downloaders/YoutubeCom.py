@@ -16,7 +16,7 @@ from pyload.core.network.cookie_jar import CookieJar
 from pyload.core.network.http.http_request import HTTPRequest
 
 from ..base.downloader import Downloader
-from ..base.plugin import Abort, Skip
+from pyload.core.network.exceptions import Abort, Skip
 from ..helpers import exists, isexecutable, renice, replace_patterns, which
 
 
