@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-# AUTHOR: RaNaN
-
+# AUTHOR: RaNaN, vuolter
 
 from functools import partial, wraps
 from urllib.parse import urljoin, urlparse
@@ -48,16 +47,16 @@ def clear_session(session=flask.session, permanent=True):
     # session.modified = True
 
 
-def get_current_theme_name():
+def current_theme_id():
     api = flask.current_app.config["PYLOAD_API"]
-    return api.getConfigValue("webui", "theme")
+    return api.getConfigValue("webui", "theme").lower()
 
 
 #: tries to serve the file from the static directory of the current theme otherwise fallback to builtin one
 def static_file_url(filename):
-    theme = get_current_theme_name()
+    themeid = current_theme_id()
     try:
-        url = flask_themes2.static_file_url(theme, filename)
+        url = flask_themes2.static_file_url(themeid, filename)
     except KeyError:
         url = flask.url_for("static", filename=filename)
     return url
@@ -65,8 +64,8 @@ def static_file_url(filename):
 
 #: tries to render the template of the current theme otherwise fallback to builtin template
 def render_template(template, **context):
-    theme = get_current_theme_name()
-    return flask_themes2.render_theme_template(theme, template, **context)
+    themeid = current_theme_id()
+    return flask_themes2.render_theme_template(themeid, template, **context)
 
 
 def parse_permissions(session=flask.session):
