@@ -7,8 +7,7 @@ from PIL import Image
 
 from pyload import PKGDIR
 
-
-from .plugin import Plugin
+from ..plugin import Plugin
 
 # import tempfile
 

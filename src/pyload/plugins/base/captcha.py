@@ -3,7 +3,7 @@ import base64
 import os
 import time
 
-from .plugin import Plugin
+from ..plugin import Plugin
 
 
 class Captcha(Plugin):

@@ -64,7 +64,7 @@ class Downloader(Hoster):
         self.no_fallback = False
 
     def setup_base(self):
-        self.last_download = None
+        self._last_download = ""
         self.last_check = None
         self.restart_free = False
         self.no_fallback = False
@@ -241,7 +241,7 @@ class Downloader(Hoster):
                 self.pyfile.setProgress,
                 disposition,
             )
-
+            
         except IOError as exc:
             self.log_error(exc)
             self.fail(self._("IOError {}").format(exc.errno))
@@ -313,7 +313,7 @@ class Downloader(Hoster):
         dl_dirname = safejoin(dl_folder, self.pyfile.package().folder)
         dl_filename = safejoin(dl_dirname, dl_basename)
 
-        os.makedirs(dl_dir, exist_ok=True)
+        os.makedirs(dl_dirname, exist_ok=True)
         self.set_permissions(dl_dirname)
 
         self.pyload.addonManager.dispatchEvent(

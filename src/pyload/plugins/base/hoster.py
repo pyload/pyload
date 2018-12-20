@@ -7,7 +7,7 @@ import urllib.parse
 from ..helpers import parse_html_form, replace_patterns
 from pyload.core.utils import decode, parse_name, fixurl, format_size, format_time
 from .captcha import Captcha
-from .plugin import Abort, Fail, Plugin, Reconnect, Retry, Skip
+from ..plugin import Abort, Fail, Plugin, Reconnect, Retry, Skip
 
 
 # TODO: Recheck in 0.6.x

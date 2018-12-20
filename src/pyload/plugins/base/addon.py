@@ -4,7 +4,7 @@ import threading
 from functools import wraps
 
 from ..helpers import Periodical, is_sequence
-from .plugin import Plugin
+from ..plugin import Plugin
 
 
 def threaded(func):

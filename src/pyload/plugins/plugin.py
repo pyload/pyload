@@ -1,25 +1,21 @@
 # -*- coding: utf-8 -*-
-# AUTHOR: RaNaN, spoob, mkaay
 
+import inspect
 import os
-import time
 
-from itertools import islice
-from random import randint
+import pycurl
+from pyload.core.network.request_factory import getRequest as get_request
 
-from pyload.core.utils import safepath
+from ..helpers import DB, Config, exists, format_exc, parse_html_header, set_cookies
+from pyload.core.utils import fixurl, decode, html_unescape, remove
 
 if os.name != "nt":
-    from pwd import getpwnam
-    from grp import getgrnam
+    import grp
+    import pwd
 
 
-def chunks(iterable, size):
-    it = iter(iterable)
-    item = list(islice(it, size))
-    while item:
-        yield item
-        item = list(islice(it, size))
+# NOTE: save decode() as _decode() for use with load(url, decode='decode-str')
+_decode = decode
 
 
 class Abort(Exception):
@@ -46,421 +42,141 @@ class Retry(Exception):
     """
 
 
-class SkipDownload(Exception):
+class Skip(Exception):
     """
     raised when download should be skipped.
     """
+    
 
+class Plugin(object):
+    __name__ = "Plugin"
+    __type__ = "plugin"
+    __version__ = "0.74"
+    __status__ = "stable"
 
-class Base(object):
-    """
-    A Base class with log/config/db methods *all* plugin types can use.
-    """
+    __pyload_version__ = "0.5"
 
-    __name__ = "Base"
+    __config__ = []  #: [("name", "type", "desc", "default")]
+
+    __description__ = """Base plugin"""
+    __license__ = "GPLv3"
+    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
     def __init__(self, core):
-        #: Core instance
-        self.pyload = core
-        self._ = core._
-        #: logging instance
-        self.log = core.log
-        #: core config
-        self.config = core.config
-
-    # log functions
-    def logInfo(self, *args):
-        self.log.info(
-            "{}: {}".format(
-                self.__name__,
-                " | ".join(a if isinstance(a, str) else str(a) for a in args),
-            )
-        )
-
-    def logWarning(self, *args):
-        self.log.warning(
-            "{}: {}".format(
-                self.__name__,
-                " | ".join(a if isinstance(a, str) else str(a) for a in args),
-            )
-        )
-
-    def logError(self, *args):
-        self.log.error(
-            "{}: {}".format(
-                self.__name__,
-                " | ".join(a if isinstance(a, str) else str(a) for a in args),
-            )
-        )
-
-    def logDebug(self, *args):
-        self.log.debug(
-            "{}: {}".format(
-                self.__name__,
-                " | ".join(a if isinstance(a, str) else str(a) for a in args),
-            )
-        )
-
-    def setConfig(self, option, value):
-        """
-        Set config value for current plugin.
-
-        :param option:
-        :param value:
-        :return:
-        """
-        self.pyload.config.setPlugin(self.__name__, option, value)
-
-    def getConfig(self, option):
-        """
-        Returns config value for current plugin.
-
-        :param option:
-        :return:
-        """
-        return self.pyload.config.getPlugin(self.__name__, option)
-
-    def setStorage(self, key, value):
-        """
-        Saves a value persistently to the database.
-        """
-        self.pyload.db.setStorage(self.__name__, key, value)
-
-    def store(self, key, value):
-        """
-        same as `setStorage`
-        """
-        self.pyload.db.setStorage(self.__name__, key, value)
-
-    def getStorage(self, key=None, default=None):
-        """
-        Retrieves saved value or dict of all saved entries if key is None.
-        """
-        if key is not None:
-            return self.pyload.db.getStorage(self.__name__, key) or default
-        return self.pyload.db.getStorage(self.__name__, key)
-
-    def retrieve(self, *args, **kwargs):
-        """
-        same as `getStorage`
-        """
-        return self.getStorage(*args, **kwargs)
-
-    def delStorage(self, key):
-        """
-        Delete entry in db.
-        """
-        self.pyload.db.delStorage(self.__name__, key)
-
-
-class Plugin(Base):
-    """
-    Base plugin for downloader/decrypter.
-
-    Overwrite `process` / `decrypt` in your subclassed plugin.
-    """
-
-    __name__ = "Plugin"
-    __version__ = "0.4"
-    __pattern__ = None
-    __type__ = "downloader"
-    __config__ = [("name", "type", "desc", "default")]
-    __description__ = """Base Plugin"""
-    __author_name__ = ("RaNaN", "spoob", "mkaay")
-    __author_mail__ = ("RaNaN@pyload.net", "spoob@pyload.net", "mkaay@mkaay.de")
-
-    def __init__(self, pyfile):
-        super().__init__(pyfile.m.pyload)
-
-        self.wantReconnect = False
-        #: enables simultaneous processing of multiple downloads
-        self.multiDL = True
-        self.limitDL = 0
-        #: chunk limit
-        self.chunkLimit = 1
-        self.resumeDownload = False
-
-        #: time.time() + wait in seconds
-        self.waitUntil = 0
-        self.waiting = False
-
-        self.ocr = None  #: captcha reader instance
-        #: account handler instance, see :py:class:`Account`
-        self.account = pyfile.m.pyload.accountManager.getAccountPlugin(self.__name__)
-
-        #: premium status
-        self.premium = False
-        #: username/login
-        self.user = None
-
-        if self.account and not self.account.canUse():
-            self.account = None
-        if self.account:
-            self.user, data = self.account.selectAccount()
-            #: Browser instance, see `network.Browser`
-            self.req = self.account.getAccountRequest(self.user)
-            self.chunkLimit = -1  #: chunk limit, -1 for unlimited
-            #: enables resume (will be ignored if server dont accept chunks)
-            self.resumeDownload = True
-            self.multiDL = (
-                True
-            )  #: every downloader with account should provide multiple downloads
-            #: premium status
-            self.premium = self.account.isPremium(self.user)
-        else:
-            self.req = pyfile.m.pyload.requestFactory.getRequest(self.__name__)
-
-        #: associated pyfile instance, see `PyFile`
-        self.pyfile = pyfile
-        self.thread = None  #: holds thread in future
-
-        #: location where the last call to download was saved
-        self.lastDownload = ""
-        #: re match of the last call to `checkDownload`
-        self.lastCheck = None
-
-        self.cTask = None  #: captcha task
-
-        self.retries = 0  #: amount of retries already made
-        self.html = None  #: some plugins store html code here
-
+        self._init(core)
         self.init()
 
-    def getChunkCount(self):
-        if self.chunkLimit <= 0:
-            return self.config.get("download", "chunks")
-        return min(self.config.get("download", "chunks"), self.chunkLimit)
+    def __repr__(self):
+        return "<{type} {name}>".format(
+            type=self.__type__.capitalize(), name=self.classname
+        )
 
-    def __call__(self):
-        return self.__name__
+    @property
+    def classname(self):
+        return self.__class__.__name__
+
+    def _init(self, core):
+        #: Internal modules
+        self.pyload = core
+        self._ = core._
+        self.db = DB(self)
+        self.config = Config(self)
+
+        #: Provide information in dict here
+        self.info = {}
+
+        #: Browser instance, see `network.Browser`
+        self.req = self.pyload.requestFactory.getRequest(self.classname)
+        self.req.setOption("timeout", 60)  # TODO: Remove in 0.6.x
+
+        #: Last loaded html
+        self.last_html = ""
+        self.last_header = {}
 
     def init(self):
         """
-        initialize the plugin (in addition to `__init__`)
+        Initialize the plugin (in addition to `__init__`)
         """
         pass
 
-    def setup(self):
-        """
-        setup for enviroment and other things, called before downloading (possibly more
-        than one time)
-        """
-        pass
-
-    def preprocessing(self, thread):
-        """
-        handles important things to do before starting.
-        """
-        self.thread = thread
-
-        if self.account:
-            self.account.checkLogin(self.user)
-        else:
-            self.req.clearCookies()
-
-        self.setup()
-
-        self.pyfile.setStatus("starting")
-
-        return self.process(self.pyfile)
-
-    def process(self, pyfile):
-        """
-        the 'main' method of every plugin, you **have to** overwrite it.
-        """
-        raise NotImplementedError
-
-    def resetAccount(self):
-        """
-        dont use account and retry download.
-        """
-        self.account = None
-        self.req = self.pyload.requestFactory.getRequest(self.__name__)
-        self.retry()
-
-    def checksum(self, local_file=None):
-        """
-        return codes:
-
-        0  - checksum ok
-        1  - checksum wrong
-        5  - can't get checksum
-        10 - not implemented
-        20 - unknown error
-        """
-        # TODO: checksum check addon
-
-        return True, 10
-
-    def setWait(self, seconds, reconnect=False):
-        """
-        Set a specific wait time later used with `wait`
-
-        :param seconds: wait time in seconds
-        :param reconnect: True if a reconnect would avoid wait time
-        """
-        if reconnect:
-            self.wantReconnect = True
-        self.pyfile.waitUntil = time.time() + int(seconds)
-
-    def wait(self):
-        """
-        waits the time previously set.
-        """
-        self.waiting = True
-        self.pyfile.setStatus("waiting")
-
-        while self.pyfile.waitUntil > time.time():
-            self.thread.m.reconnecting.wait(2)
-
-            if self.pyfile.abort:
-                raise Abort
-            if self.thread.m.reconnecting.isSet():
-                self.waiting = False
-                self.wantReconnect = False
-                raise Reconnect
-
-        self.waiting = False
-        self.pyfile.setStatus("starting")
-
-    def fail(self, reason):
-        """
-        fail and give reason.
-        """
-        raise Fail(reason)
-
-    def offline(self):
-        """
-        fail and indicate file is offline.
-        """
-        raise Fail("offline")
-
-    def tempOffline(self):
-        """
-        fail and indicates file ist temporary offline, the core may take consequences.
-        """
-        raise Fail("temp. offline")
-
-    def retry(self, max_tries=3, wait_time=1, reason=""):
-        """
-        Retries and begin again from the beginning.
-
-        :param max_tries: number of maximum retries
-        :param wait_time: time to wait in seconds
-        :param reason: reason for retrying, will be passed to fail if max_tries reached
-        """
-        if 0 < max_tries <= self.retries:
-            if not reason:
-                reason = "Max retries reached"
-            raise Fail(reason)
-
-        self.wantReconnect = False
-        self.setWait(wait_time)
-        self.wait()
-
-        self.retries += 1
-        raise Retry(reason)
-
-    def invalidCaptcha(self):
-        if self.cTask:
-            self.cTask.invalid()
-
-    def correctCaptcha(self):
-        if self.cTask:
-            self.cTask.correct()
-
-    def decryptCaptcha(
-        self,
-        url,
-        get={},
-        post={},
-        cookies=False,
-        forceUser=False,
-        imgtype="jpg",
-        result_type="textual",
-    ):
-        """
-        Loads a captcha and decrypts it with ocr, plugin, user input.
-
-        :param url: url of captcha image
-        :param get: get part for request
-        :param post: post part for request
-        :param cookies: True if cookies should be enabled
-        :param forceUser: if True, ocr is not used
-        :param imgtype: Type of the Image
-        :param result_type: 'textual' if text is written on the captcha\
-        or 'positional' for captcha where the user have to click\
-        on a specific region on the captcha
-
-        :return: result of decrypting
-        """
-        img = self.load(url, get=get, post=post, cookies=cookies)
-
-        id = "{:.2f}".format(time.time())[-6:].replace(".", "")
-        with open(
-            os.path.join(
-                self.pyload.cachedir,
-                "tmpCaptcha_{}_{}.{}".format(self.__name__, id, imgtype),
+    # TODO: Rewrite to use unique logger from logfactory
+    def _log(self, level, plugintype, pluginname, args, kwargs):
+        log = getattr(self.pyload.log, level)
+        log(
+            "{plugintype} {pluginname}: {msg}".format(
+                plugintype=plugintype.upper(),
+                pluginname=pluginname,
+                msg="%s" * len(args),
             ),
-            "wb",
-        ) as temp_file:
-            temp_file.write(img)
+            *args,
+            **kwargs,
+        )
 
-        has_plugin = self.__name__ in self.pyload.pluginManager.captchaPlugins
+    def log_debug(self, *args, **kwargs):
+        self._log("debug", self.__type__, self.__name__, args, kwargs)
 
-        if self.pyload.captcha:
-            Ocr = self.pyload.pluginManager.loadClass("anticaptcha", self.__name__)
+    def log_info(self, *args, **kwargs):
+        self._log("info", self.__type__, self.__name__, args, kwargs)
+
+    def log_warning(self, *args, **kwargs):
+        self._log("warning", self.__type__, self.__name__, args, kwargs)
+
+    def log_error(self, *args, **kwargs):
+        self._log("error", self.__type__, self.__name__, args, kwargs)
+
+    def log_critical(self, *args, **kwargs):
+        self._log("critical", self.__type__, self.__name__, args, kwargs)
+
+    # def _print_exc(self):
+    # frame = inspect.currentframe()
+    # try:
+    # print(format_exc(frame.f_back))
+    # finally:
+    # del frame
+
+    def remove(self, path, trash=False):  # TODO: Change to `trash=True` in 0.6.x
+        try:
+            remove(path, trash)
+
+        except (NameError, OSError) as exc:
+            self.log_warning(
+                self._("Error removing `{}`").format(os.path.abspath(path)), exc
+            )
+            return False
+
         else:
-            Ocr = None
+            self.log_info(self._("Path deleted: ") + os.path.abspath(path))
+            return True
 
-        if Ocr and not forceUser:
-            time.sleep(randint(3000, 5000) / 1000)
-            if self.pyfile.abort:
-                raise Abort
+    def set_permissions(self, path):
+        path = os.fsdecode(path)
 
-            ocr = Ocr()
-            result = ocr.get_captcha(temp_file.name)
-        else:
-            captchaManager = self.pyload.captchaManager
-            task = captchaManager.newTask(img, imgtype, temp_file.name, result_type)
-            self.cTask = task
-            captchaManager.handleCaptcha(task)
+        if not exists(path):
+            return
 
-            while task.isWaiting():
-                if self.pyfile.abort:
-                    captchaManager.removeTask(task)
-                    raise Abort
-                time.sleep(1)
+        if self.pyload.config.get("permission", "change_file"):
+            permission = self.pyload.config.get(
+                "permission", "folder" if os.path.isdir(path) else "file"
+            )
+            mode = int(permission, 8)
+            os.chmod(path, mode)
 
-            captchaManager.removeTask(task)
+        if os.name != "nt" and self.pyload.config.get("permission", "change_dl"):
+            uid = pwd.getpwnam(self.pyload.config.get("permission", "user"))[2]
+            gid = grp.getgrnam(self.pyload.config.get("permission", "group"))[2]
+            os.chown(path, uid, gid)
 
-            if (
-                task.error and has_plugin
-            ):  #: ignore default error message since the user could use OCR
-                self.fail(
-                    self._(
-                        "Pil and tesseract not installed and no Client connected for captcha decrypting"
-                    )
-                )
-            elif task.error:
-                self.fail(task.error)
-            elif not task.result:
-                self.fail(
-                    self._(
-                        "No captcha result obtained in appropiate time by any of the plugins."
-                    )
-                )
+    def skip(self, msg):
+        """
+        Skip and give msg.
+        """
+        raise Skip(msg)
 
-            result = task.result
-            self.log.debug(f"Received captcha result: {result}")
-
-        if not self.pyload.debug:
-            try:
-                os.remove(temp_file.name)
-            except Exception:
-                pass
-
-        return result
+    def fail(self, msg):
+        """
+        Fail and give msg.
+        """
+        raise Fail(msg)
 
     def load(
         self,
@@ -470,7 +186,10 @@ class Plugin(Base):
         ref=True,
         cookies=True,
         just_header=False,
-        decode=False,
+        decode=True,
+        multipart=False,
+        redirect=True,
+        req=None,
     ):
         """
         Load content at url and returns it.
@@ -480,261 +199,272 @@ class Plugin(Base):
         :param post:
         :param ref:
         :param cookies:
-        :param just_header: if True only the header will be retrieved and returned as dict
+        :param just_header: If True only the header will be retrieved and returned as dict
         :param decode: Wether to decode the output according to http header, should be True in most cases
         :return: Loaded content
         """
-        if self.pyfile.abort:
-            raise Abort
-        # utf-8 vs decode -> please use decode attribute in all future plugins
-        if isinstance(url, str):
-            url = str(url)
-
-        res = self.req.load(url, get, post, ref, cookies, just_header, decode=decode)
-
         if self.pyload.debug:
-            from inspect import currentframe
-
-            frame = currentframe()
-            os.makedirs(
-                os.path.join(self.pyload.cachedir, self.__name__), exist_ok=True
+            self.log_debug(
+                "LOAD URL " + url,
+                *[
+                    "{}={}".format(key, value)
+                    for key, value in locals().items()
+                    if key not in ("self", "url", "_[1]")
+                ],
             )
 
-            with open(
-                os.path.join(
-                    self.pyload.cachedir,
-                    self.__name__,
-                    "{}_line{}.dump.html".format(
-                        frame.f_back.f_code.co_name, frame.f_back.f_lineno
-                    ),
-                ),
-                "wb",
-            ) as file:
-                del frame  #: delete the frame or it wont be cleaned
+        url = fixurl(url, unquote=True)  #: Recheck in 0.6.x
 
-                file.write(res.encode())
+        if req is False:
+            req = get_request()
+            req.setOption("timeout", 60)  # TODO: Remove in 0.6.x
+
+        elif not req:
+            req = self.req
+
+        # TODO: Move to network in 0.6.x
+        if isinstance(cookies, list):
+            set_cookies(req.cj, cookies)
+
+        http_req = self.req.http if hasattr(self.req, "http") else self.req
+
+        # TODO: Move to network in 0.6.x
+        if not redirect:
+            # NOTE: req can be a HTTPRequest or a Browser object
+            http_req.c.setopt(pycurl.FOLLOWLOCATION, 0)
+
+        elif isinstance(redirect, int):
+            # NOTE: req can be a HTTPRequest or a Browser object
+            http_req.c.setopt(pycurl.MAXREDIRS, redirect)
+
+        # TODO: Move to network in 0.6.x
+        if isinstance(ref, str):
+            req.lastURL = ref
+
+        html = req.load(
+            url,
+            get,
+            post,
+            bool(ref),
+            bool(cookies),
+            just_header,
+            multipart,
+            decode is True,
+        )  # TODO: Fix network multipart in 0.6.x
+
+        # TODO: Move to network in 0.6.x
+        if not redirect:
+            # NOTE: req can be a HTTPRequest or a Browser object
+            http_req.c.setopt(pycurl.FOLLOWLOCATION, 1)
+
+        elif isinstance(redirect, int):
+            maxredirs = (
+                int(
+                    self.pyload.api.getConfigValue(
+                        "UserAgentSwitcher", "maxredirs", "plugin"
+                    )
+                )
+                or 5
+            )  # TODO: Remove `int` in 0.6.x
+            # NOTE: req can be a HTTPRequest or a Browser object
+            http_req.c.setopt(pycurl.MAXREDIRS, maxredirs)
+
+        # TODO: Move to network in 0.6.x
+        if decode:
+            html = html_unescape(html)
+
+        # TODO: Move to network in 0.6.x
+        if isinstance(decode, str):
+            html = _decode(html, decode)
+
+        self.last_html = html
+
+        if self.pyload.debug:
+            self.dump_html()
+
+        # TODO: Move to network in 0.6.x
+        header = {"code": req.code, "url": req.lastEffectiveURL}
+        # NOTE: req can be a HTTPRequest or a Browser object
+        header.update(parse_html_header(http_req.header))
+
+        self.last_header = header
 
         if just_header:
-            # parse header
-            header = {"code": self.req.code}
-            for line in res.splitlines():
-                line = line.strip()
-                if not line or ":" not in line:
-                    continue
+            return header
+        else:
+            return html
 
-                key, none, value = line.partition(":")
-                key = key.lower().strip()
-                value = value.strip()
-
-                if key in header:
-                    if isinstance(header[key], list):
-                        header[key].append(value)
-                    else:
-                        header[key] = [header[key], value]
-                else:
-                    header[key] = value
-            res = header
-
-        return res
-
-    def download(self, url, get={}, post={}, ref=True, cookies=True, disposition=False):
+    def upload(
+        self,
+        path,
+        url,
+        get={},
+        ref=True,
+        cookies=True,
+        just_header=False,
+        decode=True,
+        redirect=True,
+        req=None,
+    ):
+        # TODO: This should really go to HTTPRequest.py
         """
-        Downloads the content at url to download folder.
+        Uploads a file at url and returns response content.
 
         :param url:
         :param get:
-        :param post:
         :param ref:
         :param cookies:
-        :param disposition: if True and server provides content-disposition header\
-        the filename will be changed if needed
-        :return: The location where the file was saved
+        :param just_header: If True only the header will be retrieved and returned as dict
+        :param decode: Wether to decode the output according to http header, should be True in most cases
+        :return: Response content
         """
-        self.checkForSameFiles()
+        if self.pyload.debug:
+            self.log_debug(
+                "UPLOAD URL " + url,
+                *[
+                    "{}={}".format(key, value)
+                    for key, value in locals().items()
+                    if key not in ("self", "url", "_[1]")
+                ],
+            )
 
-        self.pyfile.setStatus("downloading")
+        with open(path, mode="rb") as file:
+            url = fixurl(url, unquote=True)  #: Recheck in 0.6.x
 
-        storage_folder = self.config.get("general", "storage_folder")
+            if req is False:
+                req = get_request()
+                req.setOption("timeout", 60)  # TODO: Remove in 0.6.x
 
-        location = os.path.join(storage_folder, self.pyfile.package().folder)
+            elif not req:
+                req = self.req
 
-        os.makedirs(
-            location,
-            int(self.pyload.config.get("permission", "folder"), 8),
-            exist_ok=True,
-        )
+            if isinstance(cookies, list):
+                set_cookies(req.cj, cookies)
 
-        if self.pyload.config.get("permission", "change_dl") and os.name != "nt":
+            http_req = self.req.http if hasattr(self.req, "http") else self.req
+
+            if not redirect:
+                # NOTE: req can be a HTTPRequest or a Browser object
+                http_req.c.setopt(pycurl.FOLLOWLOCATION, 0)
+
+            elif isinstance(redirect, int):
+                # NOTE: req can be a HTTPRequest or a Browser object
+                http_req.c.setopt(pycurl.MAXREDIRS, redirect)
+
+            if isinstance(ref, str):
+                http_req.lastURL = ref
+
+            http_req.setRequestContext(url, get, {}, bool(ref), bool(cookies), False)
+            http_req.header = ""
+            http_req.c.setopt(pycurl.HTTPHEADER, http_req.headers)
+
+            http_req.c.setopt(pycurl.UPLOAD, 1)
+            http_req.c.setopt(pycurl.READFUNCTION, file.read)
+            http_req.c.setopt(pycurl.INFILESIZE, os.path.getsize(path))
+
+            if just_header:
+                http_req.c.setopt(pycurl.FOLLOWLOCATION, 0)
+                http_req.c.setopt(pycurl.NOBODY, 1)
+                http_req.c.perform()
+                html = http_req.header
+
+                http_req.c.setopt(pycurl.FOLLOWLOCATION, 1)
+                http_req.c.setopt(pycurl.NOBODY, 0)
+
+            else:
+                http_req.c.perform()
+                html = http_req.getResponse()
+
+            http_req.c.setopt(pycurl.UPLOAD, 0)
+            http_req.c.setopt(pycurl.INFILESIZE, 0)
+
+            http_req.c.setopt(pycurl.POSTFIELDS, "")
+            http_req.lastEffectiveURL = http_req.c.getinfo(pycurl.EFFECTIVE_URL)
+
+            http_req.addCookies()
+
             try:
-                uid = getpwnam(self.config.get("permission", "user"))[2]
-                gid = getgrnam(self.config.get("permission", "group"))[2]
+                http_req.code = http_req.verifyHeader()
 
-                os.chown(location, uid, gid)
-            except Exception as exc:
-                self.log.warning(
-                    self._("Setting User and Group failed: {}").format(exc)
-                )
+            finally:
+                http_req.rep.close()
+                http_req.rep = None
 
-        # convert back to unicode
-        # location = fs_decode(location)
-        name = safepath(self.pyfile.name)
+            if decode is True:
+                html = http_req.decodeResponse(html)
 
-        filename = os.path.join(location, name)
+            if not redirect:
+                http_req.c.setopt(pycurl.FOLLOWLOCATION, 1)
 
-        self.pyload.addonManager.dispatchEvent(
-            "downloadStarts", self.pyfile, url, filename
-        )
+            elif isinstance(redirect, int):
+                maxredirs = (
+                    int(
+                        self.pyload.api.getConfigValue(
+                            "UserAgentSwitcher", "maxredirs", "plugin"
+                        )
+                    )
+                    or 5
+                )  # TODO: Remove `int` in 0.6.x
+                # NOTE: req can be a HTTPRequest or a Browser object
+                http_req.c.setopt(pycurl.MAXREDIRS, maxredirs)
+
+            if decode:
+                html = html_unescape(html)
+
+            # TODO: Move to network in 0.6.x
+            if isinstance(decode, str):
+                html = _decode(html, decode)
+
+            self.last_html = html
+
+            if self.pyload.debug:
+                self.dump_html()
+
+            # TODO: Move to network in 0.6.x
+            header = {"code": req.code, "url": req.lastEffectiveURL}
+            # NOTE: req can be a HTTPRequest or a Browser object
+            header.update(parse_html_header(http_req.header))
+
+            self.last_header = header
+
+            if just_header:
+                return header
+            else:
+                return html
+
+    def dump_html(self):
+        frame = inspect.currentframe()
 
         try:
-            newname = self.req.httpDownload(
-                url,
-                filename,
-                get=get,
-                post=post,
-                ref=ref,
-                cookies=cookies,
-                chunks=self.getChunkCount(),
-                resume=self.resumeDownload,
-                progressNotify=self.pyfile.setProgress,
-                disposition=disposition,
+            framefile = os.path.join(
+                self.pyload.cachedir,
+                self.classname,
+                "{}_line{}.dump.html".format(
+                    frame.f_back.f_code.co_name, frame.f_back.f_lineno
+                ),
             )
+
+            os.makedirs(os.path.dirname(framefile), exist_ok=True)
+
+            with open(framefile, mode="w") as file:
+                file.write(self.last_html)
+
+        except IOError as exc:
+            self.log_error(exc)
+
         finally:
-            self.pyfile.size = self.req.size
-
-        if (
-            disposition and newname and newname != name
-        ):  #: triple check, just to be sure
-            self.log.info(
-                "{name} saved as {newname}".format(name=name, newname=newname)
-            )
-            self.pyfile.name = newname
-            filename = os.path.join(location, newname)
-
-        if self.pyload.config.get("permission", "change_file"):
-            os.chmod(filename, int(self.pyload.config.get("permission", "file"), 8))
-
-        if self.pyload.config.get("permission", "change_dl") and os.name != "nt":
-            try:
-                uid = getpwnam(self.config.get("permission", "user"))[2]
-                gid = getgrnam(self.config.get("permission", "group"))[2]
-
-                os.chown(filename, uid, gid)
-            except Exception as exc:
-                self.log.warning(
-                    self._("Setting User and Group failed: {}").format(exc)
-                )
-
-        self.lastDownload = filename
-        return self.lastDownload
-
-    def checkDownload(
-        self, rules, api_size=0, max_size=50000, delete=True, read_size=0
-    ):
-        """
-        checks the content of the last downloaded file, re match is saved to `lastCheck`
-
-        :param rules: dict with names and rules to match (compiled regexp or strings)
-        :param api_size: expected file size
-        :param max_size: if the file is larger then it wont be checked
-        :param delete: delete if matched
-        :param read_size: amount of bytes to read from files larger then max_size
-        :return: dictionary key of the first rule that matched
-        """
-        if not os.path.exists(self.lastDownload):
-            return None
-
-        size = os.stat(self.lastDownload)
-        size = size.st_size
-
-        if api_size and api_size <= size:
-            return None
-        elif size > max_size and not read_size:
-            return None
-        self.log.debug(f"Download Check triggered")
-        with open(self.lastDownload, mode="rb") as file:
-            content = file.read(read_size if read_size else -1)
-        # produces encoding errors, better log to other file in the future?
-        # self.log.debug(f"Content: {content}")
-        for name, rule in rules.items():
-            if type(rule) in (str, bytes):
-                if rule in content:
-                    if delete:
-                        os.remove(self.lastDownload)
-                    return name
-            elif hasattr(rule, "search"):
-                m = rule.search(content)
-                if m:
-                    if delete:
-                        os.remove(self.lastDownload)
-                    self.lastCheck = m
-                    return name
-
-    def getPassword(self):
-        """
-        get the password the user provided in the package.
-        """
-        password = self.pyfile.package().password
-        if not password:
-            return ""
-        return password
-
-    def checkForSameFiles(self, starting=False):
-        """
-        checks if same file was/is downloaded within same package.
-
-        :param starting: indicates that the current download is going to start
-        :raises SkipDownload:
-        """
-        pack = self.pyfile.package()
-
-        for pyfile in self.pyload.files.cache.values():
-            if (
-                pyfile != self.pyfile
-                and pyfile.name == self.pyfile.name
-                and pyfile.package().folder == pack.folder
-            ):
-                if pyfile.status in (0, 12):  #: finished or downloading
-                    raise SkipDownload(pyfile.pluginname)
-                elif (
-                    pyfile.status in (5, 7) and starting
-                ):  #: a download is waiting/starting and was appenrently started before
-                    raise SkipDownload(pyfile.pluginname)
-
-        storage_folder = self.config.get("general", "storage_folder")
-        location = os.path.join(storage_folder, pack.folder, self.pyfile.name)
-
-        if (
-            starting
-            and self.pyload.config.get("download", "skip_existing")
-            and os.path.exists(location)
-        ):
-            size = os.stat(location).st_size
-            if size >= self.pyfile.size:
-                raise SkipDownload("File exists.")
-
-        pyfile = self.pyload.db.findDuplicates(
-            self.pyfile.id, self.pyfile.package().folder, self.pyfile.name
-        )
-        if pyfile:
-            if os.path.exists(location):
-                raise SkipDownload(pyfile[0])
-
-            self.log.debug(
-                "File {} not skipped, because it does not exists.".format(
-                    self.pyfile.name
-                )
-            )
+            del frame  #: Delete the frame or it wont be cleaned
 
     def clean(self):
         """
-        clean everything and os.remove references.
+        Remove references.
         """
-        if hasattr(self, "pyfile"):
-            del self.pyfile
-        if hasattr(self, "req"):
+        try:
+            self.req.clearCookies()
             self.req.close()
-            del self.req
-        if hasattr(self, "thread"):
-            del self.thread
-        if hasattr(self, "html"):
-            del self.html
+
+        except Exception:
+            pass
+
+        else:
+            self.req = None

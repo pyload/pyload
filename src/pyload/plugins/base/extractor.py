@@ -3,8 +3,7 @@
 import os
 import re
 
-
-from .plugin import Plugin
+from ..plugin import Plugin
 
 
 class ArchiveError(Exception):
