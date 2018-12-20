@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# AUTHOR: vuolter
 
 from pyload.core.utils import random_string
 

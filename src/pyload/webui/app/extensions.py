@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# AUTHOR: vuolter
 
 from flask_babel import Babel
 from flask_debugtoolbar import DebugToolbarExtension
