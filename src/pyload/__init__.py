@@ -25,24 +25,8 @@ import traceback
 ### Info ##############################################################################
 
 APPID = "pyload"
-
-try:
-    dist_name = __name__
-    pkgdir = pkg_resources.resource_filename(dist_name, "")
-    __version__ = pkg_resources.get_distribution(dist_name).version
-
-except pkg_resources.DistributionNotFound:
-    pkgdir = os.path.dirname(__file__)
-    ver_path = os.path.join(pkgdir, "..", "..", "VERSION")
-    with open(ver_path) as file:
-        __version__ = file.read().strip()
-
-finally:
-    __version_info__ = semver.parse_version_info(__version__)
-    del pkg_resources
-    del semver
-
-PKGDIR = pkgdir
+PKGNAME = "pyload-dev"
+PKGDIR = pkg_resources.resource_filename(__name__, None)
 USERHOMEDIR = os.path.expanduser("~")
 DATADIR = os.path.join(
     os.getenv("APPDATA") if os.name == "nt" else USERHOMEDIR, "pyLoad"
@@ -56,6 +40,9 @@ os.chdir(USERHOMEDIR)
 
 # TODO: remove
 builtins.REQUESTS = None
+
+__version__ = pkg_resources.get_distribution(PKGNAME).parsed_version.base_version
+__version_info__ = semver.parse_version_info(__version__)
 
 
 ### Locale ############################################################################
@@ -86,9 +73,10 @@ del excepthook
 ### Cleanup ###########################################################################
 
 del _locale
-del pkgdir
 del locale
 del logging
 del os
+del pkg_resources
+del semver
 del sys
 del tempfile
