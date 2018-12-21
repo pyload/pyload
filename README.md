@@ -1,15 +1,32 @@
-<p align="center"><a href="https://pyload.net"><img src="/media/logo.png" alt="pyLoad" width="100" height="100" /></a></p>
-<h2 align="center"></h2>
+<p align="center">
+  <a href="https://pyload.net" target="_blank">
+    <img src="https://raw.githubusercontent.com/pyload/pyload/develop/media/banner.png" alt="pyLoad" height="100" />
+  </a>
+</p>
+<p align="center">
+  <h3>The Free and Open Source download manager written in Pure Python</h3>
+</p>
+<p align="center">
+  <img src="https://img.shields.io/pypi/status/pyload-dev.svg" alt="PyPI Status" />
+  <a href="https://pypi.python.org/pypi/pyload-dev" target="_blank">
+    <img src="https://img.shields.io/pypi/v/pyload-dev.svg" alt="PyPI Version" />
+  </a>
+  <img src="https://img.shields.io/pypi/pyversions/pyload-dev.svg" alt="PyPI Python Versions" />
+  <a href="https://github.com/pyload/pyload/blob/develop/LICENSE.md" target="_blank">
+    <img src="https://img.shields.io/pypi/l/pyload-dev.svg" alt="PyPI License" />
+  </a>
+</p>
+<br />
+<br />
 
-
-pyLoad-ng dev package.
+pyLoad-ng development releases.
 
 Includes `pyload-core`, `pyload-plugins`, `pyload-webui`, `pyload-cli`.
 
-### Warnings
+#### Warnings
 
-- This package is intended for internal development only, **do not use in production!**
-- This package is automatically deployed from latest source code of pyLoad's development branch.
+- This package is intended for developer audience only, **do not use in production!**
+- This package is automatically deployed from latest source code of pyLoad's `develop` branch.
 
 
 Installation
@@ -20,14 +37,14 @@ Installation
 To install pyLoad and all its optional dependencies,
 type in a terminal/command prompt window (as root/administrator):
 
-    pip install pyload-dev[all]
+    pip install --pre pyload-dev[all]
 
 ### Minimum Installation
 
 To install pyLoad (and its essential dependencies),
 type in a terminal/command prompt window (as root/administrator):
 
-    pip install pyload-dev
+    pip install --pre pyload-dev
 
 ### Troubleshooting
 
@@ -91,11 +108,14 @@ To show the available options, type:
 
     pyload-cli -h
 
-### Login
+### Login Credentials
 
 Default username and password are `pyload`.
 It's highly recommended to change them on the first start.
 
+
+<br />
+<br />
 
 -------------------------
 ###### © 2018 pyLoad team

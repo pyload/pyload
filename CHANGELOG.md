@@ -1,5 +1,9 @@
-Release History
----------------
+<p align="center">
+  <a href="https://pyload.net">
+    <img src="https://raw.githubusercontent.com/pyload/pyload/develop/media/logo.png" alt="pyLoad" height="100" />
+  </a>
+</p>
+<h2 />
 
 ### 0.5.0 (N/D)
 
@@ -163,6 +167,9 @@ Release History
 
 - Initial release
 
+
+<br />
+<br />
 
 -------------------------
 ###### © 2018 pyLoad team

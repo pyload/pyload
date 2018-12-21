@@ -1,5 +1,9 @@
-pyLoad Individual Contributor License Agreement
-===============================================
+<p align="center">
+  <a href="https://pyload.net">
+    <img src="https://raw.githubusercontent.com/pyload/pyload/develop/media/logo.png" alt="pyLoad" height="100" />
+  </a>
+</p>
+<h2 />
 
 Thank you for your interest in contributing to **pyLoad** (*"We"* or *"Us"*).
 
@@ -175,3 +179,10 @@ closest to the meaning of the original provision and which is enforceable. The
 terms and conditions set forth in this Agreement shall apply notwithstanding any
 failure of essential purpose of this Agreement or any limited remedy to the
 maximum extent possible under law.
+
+
+<br />
+<br />
+
+-------------------------
+###### © 2018 pyLoad team
