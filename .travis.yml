@@ -7,7 +7,7 @@ git:
 branches:
   only:
     - develop
-    - /^v\d+\.\d+\.\d+$/
+    # - /^v\d+\.\d+\.\d+$/
 python:
   - 3.6
   - 3.7
@@ -35,7 +35,7 @@ matrix:
     - python: pypy3.5
   fast_finish: true
 install:
-  - source tests/travis_install.sh
+  - source scripts/travis_install.sh
 # script:
   # - python setup.py test
 # after_success:
