@@ -32,10 +32,11 @@ matrix:
     - python: 3.7-dev
     - python: 3.8-dev
     - python: nightly
-    - python: pypy3.5
+    # - python: pypy3.6
   fast_finish: true
 install:
   - source scripts/travis_install.sh
+  - pip install .[deploy]
 # script:
   # - python setup.py test
 # after_success:
