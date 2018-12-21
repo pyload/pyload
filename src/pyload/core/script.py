@@ -69,19 +69,19 @@ def _parse_args(cmd_args):
     group.add_argument("--version", action="version", version=f"pyLoad {__version__}")
 
     parser.add_argument(
-        "-d", "--debug", action="store_true", help="Enable debug mode", default=None
+        "-d", "--debug", action="store_true", help="enable debug mode", default=None
     )
     parser.add_argument(
-        "--userdir", help="Run with custom user folder", default=DATADIR
+        "--userdir", help="run with custom user folder", default=DATADIR
     )
     parser.add_argument(
-        "--cachedir", help="Run with custom cache folder", default=TMPDIR
+        "--cachedir", help="run with custom cache folder", default=TMPDIR
     )
-    parser.add_argument("--daemon", action="store_true", help="Daemonmize after start")
+    parser.add_argument("--daemon", action="store_true", help="daemonmize after start")
     parser.add_argument(
         "--restore",
         action="store_true",
-        help="Restore default admin user",
+        help="restore default admin user",
         default=None,
     )
 

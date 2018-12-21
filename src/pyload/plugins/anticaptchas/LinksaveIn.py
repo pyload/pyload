@@ -23,7 +23,7 @@ class LinksaveIn(BaseOCR):
 
     def init(self):
         self.data_dir = (
-            os.path.dirname(os.path.abspath(__file__)) + os.sep + "LinksaveIn" + os.sep
+            os.path.dirname(__file__) + os.sep + "LinksaveIn" + os.sep
         )
 
     def load_image(self, image):

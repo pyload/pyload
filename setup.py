@@ -10,6 +10,7 @@
 #           \/
 
 import sys
+import os
 
 from pkg_resources import VersionConflict, require
 from setuptools import Command, setup
@@ -19,7 +20,6 @@ try:
 except VersionConflict:
     print("Error: version of setuptools is too old (<38.3)!")
     sys.exit(1)
-
 
 # TODO: Check if works!
 class BuildLocale(Command):
@@ -37,4 +37,7 @@ class BuildLocale(Command):
 
 
 if __name__ == "__main__":
-    setup(use_pyscaffold=False)
+    filename = os.path.join(__file__, "..", "VERSION") 
+    with open(filename) as file:
+        version = file.read().strip()
+    setup(version=version)

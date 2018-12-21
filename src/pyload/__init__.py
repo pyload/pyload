@@ -32,8 +32,8 @@ try:
     __version__ = pkg_resources.get_distribution(dist_name).version
 
 except pkg_resources.DistributionNotFound:
-    pkgdir = os.path.realpath(os.path.join(__file__, ".."))
-    ver_path = os.path.join(pkgdir, "..", "..", "VERSION.md")
+    pkgdir = os.path.dirname(__file__)
+    ver_path = os.path.join(pkgdir, "..", "..", "VERSION")
     with open(ver_path) as file:
         __version__ = file.read().strip()
 

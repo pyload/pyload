@@ -9,6 +9,7 @@ from urllib.parse import unquote
 
 import flask
 import js2py
+from flask.json import jsonify
 from cryptography.fernet import Fernet
 from .app_blueprint import bp as app_bp
 

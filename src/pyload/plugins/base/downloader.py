@@ -242,10 +242,6 @@ class BaseDownloader(BaseHoster):
                 disposition,
             )
             
-        #TEST
-        except Exception as exc:
-            self.pyload.log.critical(exc, exc_info=True)
-
         except IOError as exc:
             self.log_error(exc)
             self.fail(self._("IOError {}").format(exc.errno))

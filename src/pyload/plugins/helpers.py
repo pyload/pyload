@@ -389,12 +389,10 @@ def format_exc(frame=None):
         if callstack[-1][0] == exception_callstack[0][0]:
             callstack = callstack[:-1]
             callstack.extend(exception_callstack)
-            exc_desc = decode(
-                "".join(traceback.format_exception_only(exc_info[0], exc_info[1]))
-            )
+            exc_desc = "".join(traceback.format_exception_only(exc_info[0], exc_info[1]))
 
     msg = "Traceback (most recent call last):\n"
-    msg += decode("".join(traceback.format_list(callstack)))
+    msg += "".join(traceback.format_list(callstack))
     msg += exc_desc
 
     return msg
