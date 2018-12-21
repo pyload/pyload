@@ -1158,12 +1158,12 @@ class Api(object):
     # TODO: add security permission check
     # remove?
     def get_userdir(self):
-        return os.path.abspath(self.pyload.userdir)
+        return os.path.realpath(self.pyload.userdir)
 
     # TODO: add security permission check
     # remove?
     def get_cachedir(self):
-        return os.path.abspath(self.pyload.cachedir)
+        return os.path.realpath(self.pyload.cachedir)
 
     #: Old API
     @permission(Perms.ALL)

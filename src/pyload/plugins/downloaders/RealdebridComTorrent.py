@@ -88,8 +88,8 @@ class RealdebridComTorrent(BaseDownloader):
                     self.fail(self._("File does not exists"))
 
             #: Check if the torrent file path is inside pyLoad's config directory
-            if os.path.abspath(torrent_filename).startswith(
-                os.path.abspath(os.getcwd()) + os.sep
+            if os.path.realpath(torrent_filename).startswith(
+                os.path.realpath(os.getcwd()) + os.sep
             ):
                 try:
                     #: send the torrent content to the server

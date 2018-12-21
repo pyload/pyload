@@ -112,12 +112,12 @@ class BasePlugin(object):
 
         except (NameError, OSError) as exc:
             self.log_warning(
-                self._("Error removing `{}`").format(os.path.abspath(path)), exc
+                self._("Error removing `{}`").format(os.path.realpath(path)), exc
             )
             return False
 
         else:
-            self.log_info(self._("Path deleted: ") + os.path.abspath(path))
+            self.log_info(self._("Path deleted: ") + os.path.realpath(path))
             return True
 
     def set_permissions(self, path):

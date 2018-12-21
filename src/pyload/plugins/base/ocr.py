@@ -104,8 +104,8 @@ class BaseOCR(BasePlugin):
             command = "tesseract"
 
         args = [
-            os.path.abspath(tmpTif.name),
-            os.path.abspath(tmpTxt.name).replace(".txt", ""),
+            os.path.realpath(tmpTif.name),
+            os.path.realpath(tmpTxt.name).replace(".txt", ""),
         ]
 
         if pagesegmode:
@@ -130,7 +130,7 @@ class BaseOCR(BasePlugin):
 
                 tmpSub.write("\n")
                 args.append("nobatch")
-                args.append(os.path.abspath(tmpSub.name))
+                args.append(os.path.realpath(tmpSub.name))
 
         self.log_debug("Running tesseract...")
         self.call_cmd(command, *args)

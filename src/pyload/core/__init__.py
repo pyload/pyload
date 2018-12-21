@@ -94,8 +94,8 @@ class Core(object):
     def _init_config(self, userdir, cachedir, debug):
         from .config.config_parser import ConfigParser
 
-        self.userdir = os.path.abspath(userdir)
-        self.cachedir = os.path.abspath(cachedir)
+        self.userdir = os.path.realpath(userdir)
+        self.cachedir = os.path.realpath(cachedir)
         os.makedirs(self.userdir, exist_ok=True)
         os.makedirs(self.cachedir, exist_ok=True)
 

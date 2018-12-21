@@ -248,23 +248,23 @@ def pathchooser(path):
 
     if os.path.isdir(path):
         if os.path.isabs(path):
-            cwd = os.path.abspath(path)
+            cwd = os.path.realpath(path)
             abs = True
         else:
             cwd = os.path.relpath(path)
     else:
         cwd = os.getcwd()
 
-    cwd = os.path.normpath(os.path.abspath(cwd))
+    cwd = os.path.normpath(os.path.realpath(cwd))
     parentdir = os.path.dirname(cwd)
     if not abs:
-        if os.path.abspath(cwd) == os.path.abspath("/"):
+        if os.path.realpath(cwd) == os.path.realpath("/"):
             cwd = os.path.relpath(cwd)
         else:
             cwd = os.path.relpath(cwd) + os.path.os.sep
         parentdir = os.path.relpath(parentdir) + os.path.os.sep
 
-    if os.path.abspath(cwd) == os.path.abspath("/"):
+    if os.path.realpath(cwd) == os.path.realpath("/"):
         parentdir = ""
 
     try:
@@ -475,9 +475,9 @@ def info():
         "python": sys.version,
         "os": " ".join((os.name, sys.platform) + extra),
         "version": api.getServerVersion(),
-        "folder": os.path.abspath(PKGDIR),
-        "config": os.path.abspath(api.get_userdir()),
-        "download": os.path.abspath(conf["general"]["storage_folder"]["value"]),
+        "folder": PKGDIR,
+        "config": api.get_userdir(),
+        "download": conf["general"]["storage_folder"]["value"],
         "freespace": format_size(api.freeSpace()),
         "webif": conf["webui"]["port"]["value"],
         "language": conf["general"]["language"]["value"],
