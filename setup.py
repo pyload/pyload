@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+# AUTHOR: vuolter
 #      ____________
 #   _ /       |    \ ___________ _ _______________ _ ___ _______________
 #  /  |    ___/    |   _ __ _  _| |   ___  __ _ __| |   \\    ___  ___ _\
@@ -21,7 +22,7 @@ except VersionConflict:
     print("Error: version of setuptools is too old (<38.3)!")
     sys.exit(1)
 
-# TODO: Check if works!
+
 class BuildLocale(Command):
     """
     Build translations
@@ -36,8 +37,13 @@ class BuildLocale(Command):
         self.run_command("compile_catalog")
 
 
-if __name__ == "__main__":
+def get_version():
     filename = os.path.join(__file__, "..", "VERSION") 
     with open(filename) as file:
-        version = file.read().strip()
-    setup(version=version)
+        version = file.read().strip() 
+    build = os.environ.get('TRAVIS_BUILD_NUMBER', 0)
+    return f"{version}.dev{build}"
+    
+    
+if __name__ == "__main__":
+    setup(version=get_version())
