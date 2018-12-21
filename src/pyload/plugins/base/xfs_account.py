@@ -5,10 +5,10 @@ import urllib.parse
 
 from ..helpers import parse_html_form, set_cookie
 from pyload.core.utils import parse_time
-from .account import Account
+from .account import BaseAccount
 
 
-class XFSAccount(Account):
+class XFSAccount(BaseAccount):
     __name__ = "XFSAccount"
     __type__ = "account"
     __version__ = "0.59"

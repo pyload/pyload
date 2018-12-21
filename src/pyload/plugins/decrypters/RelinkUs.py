@@ -9,12 +9,12 @@ import js2py
 from cryptography.fernet import Fernet
 
 from ..anticaptchas.SolveMedia import SolveMedia
-from ..base.captcha import Captcha
-from ..base.decrypter import Decrypter
+from ..base.captcha import BaseCaptcha
+from ..base.decrypter import BaseDecrypter
 from ..helpers import replace_patterns
 
 
-class RelinkUs(Decrypter):
+class RelinkUs(BaseDecrypter):
     __name__ = "RelinkUs"
     __type__ = "decrypter"
     __version__ = "3.22"
@@ -77,7 +77,7 @@ class RelinkUs(Decrypter):
     def setup(self):
         self.file_id = None
         self.package = None
-        self.captcha = Captcha(self.pyfile)
+        self.captcha = BaseCaptcha(self.pyfile)
 
     def decrypt(self, pyfile):
         #: Init

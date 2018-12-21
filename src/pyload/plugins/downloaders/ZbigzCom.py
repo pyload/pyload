@@ -7,10 +7,10 @@ import time
 import urllib.parse
 
 
-from ..base.downloader import Downloader
+from ..base.downloader import BaseDownloader
 
 
-class ZbigzCom(Downloader):
+class ZbigzCom(BaseDownloader):
     __name__ = "ZbigzCom"
     __type__ = "downloader"
     __version__ = "0.03"

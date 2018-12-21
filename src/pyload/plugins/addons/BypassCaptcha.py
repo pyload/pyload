@@ -5,7 +5,7 @@ import pycurl
 from pyload.core.network.http.http_request import BadHeader
 from pyload.core.network.request_factory import getRequest as get_request
 
-from ..base.addon import Addon, threaded
+from ..base.addon import BaseAddon, threaded
 
 
 class BypassCaptchaException(Exception):
@@ -22,7 +22,7 @@ class BypassCaptchaException(Exception):
         return "<BypassCaptchaException {}>".format(self.err)
 
 
-class BypassCaptcha(Addon):
+class BypassCaptcha(BaseAddon):
     __name__ = "BypassCaptcha"
     __type__ = "addon"
     __version__ = "0.14"

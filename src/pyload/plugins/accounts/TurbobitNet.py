@@ -2,11 +2,11 @@
 import re
 import time
 
-from ..base.account import Account
+from ..base.account import BaseAccount
 from ..helpers import parse_html_form, set_cookie
 
 
-class TurbobitNet(Account):
+class TurbobitNet(BaseAccount):
     __name__ = "TurbobitNet"
     __type__ = "account"
     __version__ = "0.12"

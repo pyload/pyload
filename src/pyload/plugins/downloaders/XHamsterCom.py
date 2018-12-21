@@ -2,7 +2,7 @@
 import json
 import re
 
-from ..base.downloader import Downloader
+from ..base.downloader import BaseDownloader
 
 
 def quality_fallback(desired, available):
@@ -21,7 +21,7 @@ def quality_fallback(desired, available):
     return result
 
 
-class XHamsterCom(Downloader):
+class XHamsterCom(BaseDownloader):
     __name__ = "XHamsterCom"
     __type__ = "downloader"
     __version__ = "0.19"

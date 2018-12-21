@@ -2,10 +2,10 @@
 
 import re
 
-from ..base.decrypter import Decrypter
+from ..base.decrypter import BaseDecrypter
 
 
-class DatafileComFolder(Decrypter):
+class DatafileComFolder(BaseDecrypter):
     __name__ = "DatafileComFolder"
     __type__ = "decrypter"
     __version__ = "0.02"

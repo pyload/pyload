@@ -9,7 +9,7 @@ from PIL import Image
 import pycurl
 from pyload.core.network.request_factory import getRequest as get_request
 
-from ..base.addon import Addon, threaded
+from ..base.addon import BaseAddon, threaded
 
 
 class CaptchaBrotherhoodException(Exception):
@@ -26,7 +26,7 @@ class CaptchaBrotherhoodException(Exception):
         return "<CaptchaBrotherhoodException {}>".format(self.err)
 
 
-class CaptchaBrotherhood(Addon):
+class CaptchaBrotherhood(BaseAddon):
     __name__ = "CaptchaBrotherhood"
     __type__ = "addon"
     __version__ = "0.16"

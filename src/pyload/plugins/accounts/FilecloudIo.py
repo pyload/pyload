@@ -3,11 +3,11 @@
 import json
 
 
-from ..base.account import Account
+from ..base.account import BaseAccount
 from ..helpers import set_cookie
 
 
-class FilecloudIo(Account):
+class FilecloudIo(BaseAccount):
     __name__ = "FilecloudIo"
     __type__ = "account"
     __version__ = "0.13"

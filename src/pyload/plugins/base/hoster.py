@@ -6,8 +6,8 @@ import urllib.parse
 
 from ..helpers import parse_html_form, replace_patterns
 from pyload.core.utils import decode, parse_name, fixurl, format_size, format_time
-from .captcha import Captcha
-from ..plugin import Plugin
+from .captcha import BaseCaptcha
+from .plugin import BasePlugin
 from pyload.core.network.exceptions import Abort, Fail, Reconnect, Retry, Skip
 
 
@@ -23,8 +23,8 @@ def parse_fileInfo(klass, url="", html=""):
     return info["name"], info["size"], info["status"], info["url"]
 
 
-class Hoster(Plugin):
-    __name__ = "Hoster"
+class BaseHoster(BasePlugin):
+    __name__ = "BaseHoster"
     __type__ = "base"
     __version__ = "0.34"
     __status__ = "stable"
@@ -88,9 +88,9 @@ class Hoster(Plugin):
 
         #: Captcha stuff
         # TODO: Replace in 0.6.x:
-        # _Captcha = self.pyload.pluginManager.loadClass("anticaptcha", self.classname) or Captcha
+        # _Captcha = self.pyload.pluginManager.loadClass("anticaptcha", self.classname) or BaseCaptcha
         # self.captcha = _Captcha(pyfile)
-        self.captcha = Captcha(pyfile)
+        self.captcha = BaseCaptcha(pyfile)
 
         #: Some plugins store html code here
         self.data = ""
@@ -514,7 +514,7 @@ class Hoster(Plugin):
 
     def load(self, *args, **kwargs):
         self.check_status()
-        return Plugin.load(self, *args, **kwargs)
+        return super().load(*args, **kwargs)
 
     def parse_html_form(self, attr_str="", input_names={}):
         return parse_html_form(attr_str, self.data, input_names)
@@ -529,7 +529,7 @@ class Hoster(Plugin):
         """
         Clean everything and remove references.
         """
-        Plugin.clean(self)
+        super().clean()
         for attr in ("account", "html", "pyfile", "thread"):
             if hasattr(self, attr):
                 setattr(self, attr, None)

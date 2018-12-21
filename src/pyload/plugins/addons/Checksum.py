@@ -6,7 +6,7 @@ import time
 import zlib
 from threading import Event
 
-from ..base.addon import Addon, threaded
+from ..base.addon import BaseAddon, threaded
 from pyload.core.utils import format_time
 
 
@@ -63,7 +63,7 @@ def compute_checksum(local_file, algorithm, progress_notify=None, abort=None):
             progress_notify(100)
 
 
-class Checksum(Addon):
+class Checksum(BaseAddon):
     __name__ = "Checksum"
     __type__ = "addon"
     __version__ = "0.34"

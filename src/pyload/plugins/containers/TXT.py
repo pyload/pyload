@@ -2,10 +2,10 @@
 import codecs
 import os
 
-from ..base.container import Container
+from ..base.container import BaseContainer
 
 
-class TXT(Container):
+class TXT(BaseContainer):
     __name__ = "TXT"
     __type__ = "container"
     __version__ = "0.21"

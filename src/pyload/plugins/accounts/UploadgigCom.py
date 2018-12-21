@@ -3,10 +3,10 @@
 import re
 import time
 
-from ..base.account import Account
+from ..base.account import BaseAccount
 
 
-class UploadgigCom(Account):
+class UploadgigCom(BaseAccount):
     __name__ = "UploadgigCom"
     __type__ = "account"
     __version__ = "0.03"

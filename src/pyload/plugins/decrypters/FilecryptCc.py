@@ -16,7 +16,7 @@ from pyload.core.network.http.http_request import BadHeader, HTTPRequest
 from ..anticaptchas.CoinHive import CoinHive
 from ..anticaptchas.ReCaptcha import ReCaptcha
 from ..anticaptchas.SolveMedia import SolveMedia
-from ..base.decrypter import Decrypter
+from ..base.decrypter import BaseDecrypter
 from pyload.core.network.exceptions import Abort
 
 
@@ -46,7 +46,7 @@ class BIGHTTPRequest(HTTPRequest):
         self.rep.write(buf)
 
 
-class FilecryptCc(Decrypter):
+class FilecryptCc(BaseDecrypter):
     __name__ = "FilecryptCc"
     __type__ = "decrypter"
     __version__ = "0.37"

@@ -7,14 +7,14 @@ from PIL import Image
 
 from pyload import PKGDIR
 
-from ..plugin import Plugin
+from .plugin import BasePlugin
 
 # import tempfile
 
 
-class OCR(Plugin):
-    __name__ = "OCR"
-    __type__ = "ocr"
+class BaseOCR(BasePlugin):
+    __name__ = "BaseOCR"
+    __type__ = "base"
     __version__ = "0.26"
     __status__ = "stable"
 

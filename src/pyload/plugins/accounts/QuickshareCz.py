@@ -2,10 +2,10 @@
 
 import re
 
-from ..base.account import Account
+from ..base.account import BaseAccount
 
 
-class QuickshareCz(Account):
+class QuickshareCz(BaseAccount):
     __name__ = "QuickshareCz"
     __type__ = "account"
     __version__ = "0.11"

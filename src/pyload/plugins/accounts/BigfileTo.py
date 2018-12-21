@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from ..base.account import Account
+from ..base.account import BaseAccount
 
 
-class BigfileTo(Account):
+class BigfileTo(BaseAccount):
     __name__ = "BigfileTo"
     __type__ = "account"
     __version__ = "0.11"

@@ -7,11 +7,11 @@ import urllib.parse
 
 import pycurl
 
-from ..base.account import Account
+from ..base.account import BaseAccount
 from ..helpers import parse_html_form, timestamp
 
 
-class UlozTo(Account):
+class UlozTo(BaseAccount):
     __name__ = "UlozTo"
     __type__ = "account"
     __version__ = "0.32"

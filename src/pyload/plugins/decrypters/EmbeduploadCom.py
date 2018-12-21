@@ -4,10 +4,10 @@ import re
 
 from pyload.core.network.http.http_request import BadHeader
 
-from ..base.decrypter import Decrypter
+from ..base.decrypter import BaseDecrypter
 
 
-class EmbeduploadCom(Decrypter):
+class EmbeduploadCom(BaseDecrypter):
     __name__ = "EmbeduploadCom"
     __type__ = "decrypter"
     __version__ = "0.08"

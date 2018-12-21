@@ -2,10 +2,10 @@
 import time
 
 from ..helpers import is_sequence
-from .addon import Addon, expose
+from .addon import BaseAddon, expose
 
 
-class Notifier(Addon):
+class Notifier(BaseAddon):
     __name__ = "Notifier"
     __type__ = "addon"
     __version__ = "0.11"

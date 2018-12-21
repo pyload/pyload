@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from ..base.account import Account
+from ..base.account import BaseAccount
 
 
-class Ftp(Account):
+class Ftp(BaseAccount):
     __name__ = "Ftp"
     __type__ = "account"
     __version__ = "0.07"

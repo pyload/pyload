@@ -3,24 +3,30 @@
 import os
 import re
 
-from ..plugin import Plugin
+from .plugin import BasePlugin
 
 
 class ArchiveError(Exception):
-    pass
+    """
+    raised when Archive error.
+    """
 
 
 class CRCError(Exception):
-    pass
+    """
+    raised when CRC error.
+    """
 
 
 class PasswordError(Exception):
-    pass
+    """
+    raised when password error.
+    """
 
 
-class Extractor(Plugin):
-    __name__ = "Extractor"
-    __type__ = "extractor"
+class BaseExtractor(BasePlugin):
+    __name__ = "BaseExtractor"
+    __type__ = "base"
     __version__ = "0.48"
     __status__ = "stable"
 

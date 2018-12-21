@@ -11,7 +11,7 @@ import time
 
 
 from ..base.addon import threaded
-from ..base.downloader import Downloader
+from ..base.downloader import BaseDownloader
 from pyload.core.network.exceptions import Abort
 from pyload.core.utils import lock
 
@@ -531,7 +531,7 @@ class IRC(object):
         return info
 
 
-class XDCC(Downloader):
+class XDCC(BaseDownloader):
     __name__ = "XDCC"
     __type__ = "downloader"
     __version__ = "0.48"

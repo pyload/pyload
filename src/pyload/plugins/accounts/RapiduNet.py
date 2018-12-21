@@ -4,10 +4,10 @@ import json
 import re
 import time
 
-from ..base.account import Account
+from ..base.account import BaseAccount
 
 
-class RapiduNet(Account):
+class RapiduNet(BaseAccount):
     __name__ = "RapiduNet"
     __type__ = "account"
     __version__ = "0.12"

@@ -10,11 +10,11 @@ try:
 except ImportError:
     send2trash = None
 
-from ..base.addon import Addon, expose, threaded
+from ..base.addon import BaseAddon, expose, threaded
 from ..helpers import exists
 
 
-class AntiVirus(Addon):
+class AntiVirus(BaseAddon):
     __name__ = "AntiVirus"
     __type__ = "addon"
     __version__ = "0.21"

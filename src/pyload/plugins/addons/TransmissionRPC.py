@@ -9,10 +9,10 @@ import pycurl
 from pyload.core.network.http.http_request import BadHeader
 from pyload.core.network.request_factory import getRequest as get_request
 
-from ..base.addon import Addon
+from ..base.addon import BaseAddon
 
 
-class TransmissionRPC(Addon):
+class TransmissionRPC(BaseAddon):
     __name__ = "TransmissionRPC"
     __type__ = "addon"
     __version__ = "0.19"

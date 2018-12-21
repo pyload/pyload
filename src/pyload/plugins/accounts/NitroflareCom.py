@@ -2,10 +2,10 @@
 import json
 import time
 
-from ..base.account import Account
+from ..base.account import BaseAccount
 
 
-class NitroflareCom(Account):
+class NitroflareCom(BaseAccount):
     __name__ = "NitroflareCom"
     __type__ = "account"
     __version__ = "0.20"

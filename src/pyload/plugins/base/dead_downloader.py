@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 
-from .downloader import Downloader
+from .downloader import BaseDownloader
 
 
-class DeadDownloader(Downloader):
+class DeadDownloader(BaseDownloader):
     __name__ = "DeadDownloader"
     __type__ = "downloader"
     __version__ = "0.24"

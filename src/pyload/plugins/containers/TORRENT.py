@@ -5,11 +5,11 @@ import re
 import time
 import urllib.request
 
-from ..base.container import Container
+from ..base.container import BaseContainer
 from pyload.core.utils import safename
 
 
-class TORRENT(Container):
+class TORRENT(BaseContainer):
     __name__ = "TORRENT"
     __type__ = "container"
     __version__ = "0.01"

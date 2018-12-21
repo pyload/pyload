@@ -2,10 +2,10 @@
 
 import re
 
-from ..base.account import Account
+from ..base.account import BaseAccount
 
 
-class DatoidCz(Account):
+class DatoidCz(BaseAccount):
     __name__ = "DatoidCz"
     __type__ = "account"
     __version__ = "0.39"

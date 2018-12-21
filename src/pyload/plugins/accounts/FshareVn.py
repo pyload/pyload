@@ -2,11 +2,11 @@
 import re
 import time
 
-from ..base.account import Account
+from ..base.account import BaseAccount
 from ..helpers import parse_html_form
 
 
-class FshareVn(Account):
+class FshareVn(BaseAccount):
     __name__ = "FshareVn"
     __type__ = "account"
     __version__ = "0.22"

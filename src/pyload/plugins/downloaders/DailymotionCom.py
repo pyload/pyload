@@ -5,7 +5,7 @@ import re
 from pyload.core.datatypes.pyfile import statusMap
 from pyload.core.network.request_factory import getURL as get_url
 
-from ..base.downloader import Downloader
+from ..base.downloader import BaseDownloader
 
 
 def get_info(urls):
@@ -41,7 +41,7 @@ def get_info(urls):
     return result
 
 
-class DailymotionCom(Downloader):
+class DailymotionCom(BaseDownloader):
     __name__ = "DailymotionCom"
     __type__ = "downloader"
     __version__ = "0.30"

@@ -2,10 +2,10 @@
 import os
 import re
 
-from ..base.addon import Addon, threaded
+from ..base.addon import BaseAddon, threaded
 
 
-class MergeFiles(Addon):
+class MergeFiles(BaseAddon):
     __name__ = "MergeFiles"
     __type__ = "addon"
     __version__ = "0.22"

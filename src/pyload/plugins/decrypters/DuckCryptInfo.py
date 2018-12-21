@@ -5,10 +5,10 @@ import re
 
 from bs4 import BeautifulSoup
 
-from ..base.decrypter import Decrypter
+from ..base.decrypter import BaseDecrypter
 
 
-class DuckCryptInfo(Decrypter):
+class DuckCryptInfo(BaseDecrypter):
     __name__ = "DuckCryptInfo"
     __type__ = "decrypter"
     __version__ = "0.08"

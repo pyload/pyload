@@ -3,10 +3,10 @@
 import re
 import urllib.parse
 
-from ..base.downloader import Downloader
+from ..base.downloader import BaseDownloader
 
 
-class XVideosCom(Downloader):
+class XVideosCom(BaseDownloader):
     __name__ = "XVideos.com"
     __type__ = "downloader"
     __version__ = "0.17"

@@ -6,7 +6,7 @@ import sys
 import time
 
 
-from ..base.addon import Addon, expose
+from ..base.addon import BaseAddon, expose
 
 try:
     import caffeine
@@ -22,7 +22,7 @@ class Kernel32(object):
     ES_USER_PRESENT = 0x00000004
 
 
-class AntiStandby(Addon):
+class AntiStandby(BaseAddon):
     __name__ = "AntiStandby"
     __type__ = "addon"
     __version__ = "0.18"

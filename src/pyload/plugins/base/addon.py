@@ -4,7 +4,7 @@ import threading
 from functools import wraps
 
 from ..helpers import Periodical, is_sequence
-from ..plugin import Plugin
+from .plugin import BasePlugin
 
 
 def threaded(func):
@@ -32,8 +32,8 @@ def expose(func):
     return wrapper
 
 
-class Addon(Plugin):
-    __name__ = "Addon"
+class BaseAddon(BasePlugin):
+    __name__ = "BaseAddon"
     __type__ = "addon"  # TODO: Change to `addon` in 0.6.x
     __version__ = "0.55"
     __status__ = "stable"
@@ -76,7 +76,7 @@ class Addon(Plugin):
     # TODO: Remove in 0.6.x
     def _log(self, level, plugintype, pluginname, args, kwargs):
         plugintype = "addon" if plugintype == "addon" else plugintype
-        return Plugin._log(self, level, plugintype, pluginname, args, kwargs)
+        return super()._log(level, plugintype, pluginname, args, kwargs)
 
     # TODO: Remove in 0.6.x
     def _init_events(self):

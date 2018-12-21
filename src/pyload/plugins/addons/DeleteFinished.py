@@ -3,10 +3,10 @@
 from datetime import timedelta
 from pyload.core.database.database_thread import style
 
-from ..base.addon import Addon
+from ..base.addon import BaseAddon
 
 
-class DeleteFinished(Addon):
+class DeleteFinished(BaseAddon):
     __name__ = "DeleteFinished"
     __type__ = "addon"
     __version__ = "1.19"

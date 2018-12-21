@@ -2,10 +2,10 @@
 import re
 import time
 
-from ..base.account import Account
+from ..base.account import BaseAccount
 
 
-class HellshareCz(Account):
+class HellshareCz(BaseAccount):
     __name__ = "HellshareCz"
     __type__ = "account"
     __version__ = "0.26"

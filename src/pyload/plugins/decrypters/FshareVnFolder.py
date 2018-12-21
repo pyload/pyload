@@ -5,11 +5,11 @@ import re
 
 import pycurl
 
-from ..base.decrypter import Decrypter
+from ..base.decrypter import BaseDecrypter
 from ..helpers import replace_patterns
 
 
-class FshareVnFolder(Decrypter):
+class FshareVnFolder(BaseDecrypter):
     __name__ = "FshareVnFolder"
     __type__ = "decrypter"
     __version__ = "0.11"

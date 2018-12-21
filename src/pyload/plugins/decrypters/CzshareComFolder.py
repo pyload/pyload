@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 import re
 
-from ..base.decrypter import Decrypter
+from ..base.decrypter import BaseDecrypter
 
 
-class CzshareComFolder(Decrypter):
+class CzshareComFolder(BaseDecrypter):
     __name__ = "CzshareComFolder"
     __type__ = "decrypter"
     __version__ = "0.27"

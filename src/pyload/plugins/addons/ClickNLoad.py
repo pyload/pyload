@@ -3,7 +3,7 @@ import socket
 import threading
 import time
 
-from ..base.addon import Addon, threaded
+from ..base.addon import BaseAddon, threaded
 from ..helpers import forward
 from pyload.core.utils import lock
 
@@ -14,7 +14,7 @@ except ImportError:
 
 
 # TODO: IPv6 support
-class ClickNLoad(Addon):
+class ClickNLoad(BaseAddon):
     __name__ = "ClickNLoad"
     __type__ = "addon"
     __version__ = "0.61"

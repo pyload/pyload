@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 import re
 
-from ..base.downloader import Downloader
+from ..base.downloader import BaseDownloader
 
 
-class PornovkaCz(Downloader):
+class PornovkaCz(BaseDownloader):
     __name__ = "PornovkaCz"
     __type__ = "downloader"
     __version__ = "0.02"

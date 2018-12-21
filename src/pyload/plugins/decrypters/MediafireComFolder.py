@@ -2,10 +2,10 @@
 
 import json
 
-from ..base.decrypter import Decrypter
+from ..base.decrypter import BaseDecrypter
 
 
-class MediafireComFolder(Decrypter):
+class MediafireComFolder(BaseDecrypter):
     __name__ = "MediafireComFolder"
     __type__ = "decrypter"
     __version__ = "0.25"

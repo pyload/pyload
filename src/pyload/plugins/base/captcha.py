@@ -3,11 +3,11 @@ import base64
 import os
 import time
 
-from ..plugin import Plugin
+from .plugin import BasePlugin
 
 
-class Captcha(Plugin):
-    __name__ = "Captcha"
+class BaseCaptcha(BasePlugin):
+    __name__ = "BaseCaptcha"
     __type__ = "anticaptcha"
     __version__ = "0.56"
     __status__ = "stable"
@@ -36,7 +36,7 @@ class Captcha(Plugin):
         """
         Extend to build your custom anti-captcha ocr.
         """
-        pass
+        raise NotImplementedError
 
     def decrypt(
         self,

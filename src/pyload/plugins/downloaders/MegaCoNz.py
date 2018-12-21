@@ -13,7 +13,7 @@ import Cryptodome.Util.Counter
 
 from pyload.core.network.http.http_request import BadHeader
 
-from ..base.downloader import Downloader
+from ..base.downloader import BaseDownloader
 from ..helpers import exists
 from pyload.core.utils import decode
 
@@ -283,7 +283,7 @@ class MegaClient(object):
             self.plugin.fail(self._("Error code: [{}]").format(-ecode))
 
 
-class MegaCoNz(Downloader):
+class MegaCoNz(BaseDownloader):
     __name__ = "MegaCoNz"
     __type__ = "downloader"
     __version__ = "0.52"

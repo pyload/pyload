@@ -8,10 +8,10 @@ from pyload.core.network.request_factory import getURL as get_url
 
 from ..helpers import replace_patterns
 from pyload.core.utils import parse_name, parse_time
-from .decrypter import Decrypter
+from .decrypter import BaseDecrypter
 
 
-class SimpleDecrypter(Decrypter):
+class SimpleDecrypter(BaseDecrypter):
     __name__ = "SimpleDecrypter"
     __type__ = "decrypter"
     __version__ = "0.93"
@@ -154,13 +154,13 @@ class SimpleDecrypter(Decrypter):
             self.req = self.pyload.requestFactory.getRequest(account_name)
             self.premium = False
 
-        Decrypter.setup_base(self)
+        super().setup_base()
 
     # TODO: Remove in 0.6.x
     def load_account(self):
         class_name = self.classname
         self.__class__.__name__ = class_name.rsplit("Folder", 1)[0]
-        Decrypter.load_account(self)
+        super().load_account()
         self.__class__.__name__ = class_name
 
     def handle_direct(self, pyfile):

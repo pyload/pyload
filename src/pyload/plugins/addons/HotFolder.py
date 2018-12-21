@@ -3,10 +3,10 @@ import os
 import shutil
 import time
 
-from ..base.addon import Addon
+from ..base.addon import BaseAddon
 
 
-class HotFolder(Addon):
+class HotFolder(BaseAddon):
     __name__ = "HotFolder"
     __type__ = "addon"
     __version__ = "0.24"

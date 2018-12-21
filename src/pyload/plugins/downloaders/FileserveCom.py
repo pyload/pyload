@@ -7,11 +7,11 @@ import re
 from pyload.core.network.request_factory import getURL as get_url
 
 from ..anticaptchas.ReCaptcha import ReCaptcha
-from ..base.downloader import Downloader
+from ..base.downloader import BaseDownloader
 from pyload.core.utils import parse_size, seconds_to_midnight
 
 
-class FileserveCom(Downloader):
+class FileserveCom(BaseDownloader):
     __name__ = "FileserveCom"
     __type__ = "downloader"
     __version__ = "0.71"

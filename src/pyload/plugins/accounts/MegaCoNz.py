@@ -3,10 +3,10 @@
 import Cryptodome.PublicKey.RSA
 
 from ..downloaders.MegaCoNz import MegaClient, MegaCrypto
-from ..base.account import Account
+from ..base.account import BaseAccount
 
 
-class MegaCoNz(Account):
+class MegaCoNz(BaseAccount):
     __name__ = "MegaCoNz"
     __type__ = "account"
     __version__ = "0.06"

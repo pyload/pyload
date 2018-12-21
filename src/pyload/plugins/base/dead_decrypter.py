@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 
-from .decrypter import Decrypter
+from .decrypter import BaseDecrypter
 
 
-class DeadDecrypter(Decrypter):
+class DeadDecrypter(BaseDecrypter):
     __name__ = "DeadDecrypter"
     __type__ = "decrypter"
     __version__ = "0.14"

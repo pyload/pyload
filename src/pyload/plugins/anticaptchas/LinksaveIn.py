@@ -6,10 +6,10 @@ import os
 
 from PIL import Image
 
-from ..base.ocr import OCR
+from ..base.ocr import BaseOCR
 
 
-class LinksaveIn(OCR):
+class LinksaveIn(BaseOCR):
     __name__ = "LinksaveIn"
     __type__ = "ocr"
     __version__ = "0.19"

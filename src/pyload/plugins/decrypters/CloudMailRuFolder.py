@@ -4,10 +4,10 @@ import json
 import re
 import urllib.parse
 
-from ..base.decrypter import Decrypter
+from ..base.decrypter import BaseDecrypter
 
 
-class CloudMailRuFolder(Decrypter):
+class CloudMailRuFolder(BaseDecrypter):
     __name__ = "CloudMailRuFolder"
     __type__ = "decrypter"
     __version__ = "0.01"

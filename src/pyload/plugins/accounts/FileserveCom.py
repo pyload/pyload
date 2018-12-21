@@ -3,10 +3,10 @@
 import json
 import time
 
-from ..base.account import Account
+from ..base.account import BaseAccount
 
 
-class FileserveCom(Account):
+class FileserveCom(BaseAccount):
     __name__ = "FileserveCom"
     __type__ = "account"
     __version__ = "0.27"

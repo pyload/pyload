@@ -5,10 +5,10 @@ import time
 
 from pyload.core.network.http.http_request import BadHeader
 
-from ..base.account import Account
+from ..base.account import BaseAccount
 
 
-class OneFichierCom(Account):
+class OneFichierCom(BaseAccount):
     __name__ = "OneFichierCom"
     __type__ = "account"
     __version__ = "0.24"

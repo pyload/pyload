@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 import re
 
-from ..base.decrypter import Decrypter
+from ..base.decrypter import BaseDecrypter
 
 
-class FileserveComFolder(Decrypter):
+class FileserveComFolder(BaseDecrypter):
     __name__ = "FileserveComFolder"
     __type__ = "decrypter"
     __version__ = "0.18"

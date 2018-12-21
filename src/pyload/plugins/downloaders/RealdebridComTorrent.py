@@ -8,11 +8,11 @@ import urllib.request
 import pycurl
 from pyload.core.network.http.http_request import BadHeader
 
-from ..base.downloader import Downloader
+from ..base.downloader import BaseDownloader
 from ..helpers import exists
 
 
-class RealdebridComTorrent(Downloader):
+class RealdebridComTorrent(BaseDownloader):
     __name__ = "RealdebridComTorrent"
     __type__ = "downloader"
     __version__ = "0.03"

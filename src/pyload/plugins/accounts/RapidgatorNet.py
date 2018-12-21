@@ -3,10 +3,10 @@
 import json
 
 
-from ..base.account import Account
+from ..base.account import BaseAccount
 
 
-class RapidgatorNet(Account):
+class RapidgatorNet(BaseAccount):
     __name__ = "RapidgatorNet"
     __type__ = "account"
     __version__ = "0.24"

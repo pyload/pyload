@@ -4,10 +4,10 @@ import sys
 import tarfile
 import os
 
-from .extractor import ArchiveError, CRCError, Extractor
+from .extractor import ArchiveError, CRCError, BaseExtractor
 
 
-class UnTar(Extractor):
+class UnTar(BaseExtractor):
     __name__ = "UnTar"
     __type__ = "extractor"
     __version__ = "0.04"

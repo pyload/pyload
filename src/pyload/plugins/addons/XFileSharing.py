@@ -2,10 +2,10 @@
 import inspect
 import re
 
-from ..base.addon import Addon
+from ..base.addon import BaseAddon
 
 
-class XFileSharing(Addon):
+class XFileSharing(BaseAddon):
     __name__ = "XFileSharing"
     __type__ = "addon"
     __version__ = "0.56"

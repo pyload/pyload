@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 import re
 
-from ..base.decrypter import Decrypter
+from ..base.decrypter import BaseDecrypter
 
 
-class SexuriaCom(Decrypter):
+class SexuriaCom(BaseDecrypter):
     __name__ = "SexuriaCom"
     __type__ = "decrypter"
     __version__ = "0.15"

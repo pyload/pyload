@@ -3,10 +3,10 @@
 import re
 import time
 
-from ..base.account import Account
+from ..base.account import BaseAccount
 
 
-class FilefactoryCom(Account):
+class FilefactoryCom(BaseAccount):
     __name__ = "FilefactoryCom"
     __type__ = "account"
     __version__ = "0.23"

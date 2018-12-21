@@ -5,10 +5,10 @@ import time
 from pyload.core.network.http.http_request import BadHeader
 from pyload.core.network.request_factory import getURL as get_url
 
-from ..base.account import Account
+from ..base.account import BaseAccount
 
 
-class TenluaVn(Account):
+class TenluaVn(BaseAccount):
     __name__ = "TenluaVn"
     __type__ = "account"
     __version__ = "0.01"

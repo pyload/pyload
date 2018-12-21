@@ -2,10 +2,10 @@
 
 import re
 
-from ..base.decrypter import Decrypter
+from ..base.decrypter import BaseDecrypter
 
 
-class MultiloadCz(Decrypter):
+class MultiloadCz(BaseDecrypter):
     __name__ = "MultiloadCz"
     __type__ = "decrypter"
     __version__ = "0.46"

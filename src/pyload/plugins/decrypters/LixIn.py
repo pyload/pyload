@@ -2,10 +2,10 @@
 import re
 import urllib.parse
 
-from ..base.decrypter import Decrypter
+from ..base.decrypter import BaseDecrypter
 
 
-class LixIn(Decrypter):
+class LixIn(BaseDecrypter):
     __name__ = "LixIn"
     __type__ = "decrypter"
     __version__ = "0.28"

@@ -2,10 +2,10 @@
 
 
 from ..downloaders.MegaCoNz import MegaClient, MegaCrypto
-from ..base.decrypter import Decrypter
+from ..base.decrypter import BaseDecrypter
 
 
-class MegaCoNzFolder(Decrypter):
+class MegaCoNzFolder(BaseDecrypter):
     __name__ = "MegaCoNzFolder"
     __type__ = "decrypter"
     __version__ = "0.21"

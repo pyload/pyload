@@ -2,10 +2,10 @@
 import json
 import re
 
-from ..base.downloader import Downloader
+from ..base.downloader import BaseDownloader
 
 
-class HearthisAt(Downloader):
+class HearthisAt(BaseDownloader):
     __name__ = "HearthisAt"
     __type__ = "downloader"
     __version__ = "0.03"

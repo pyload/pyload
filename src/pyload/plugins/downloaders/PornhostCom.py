@@ -2,10 +2,10 @@
 
 import re
 
-from ..base.downloader import Downloader
+from ..base.downloader import BaseDownloader
 
 
-class PornhostCom(Downloader):
+class PornhostCom(BaseDownloader):
     __name__ = "PornhostCom"
     __type__ = "downloader"
     __version__ = "0.26"

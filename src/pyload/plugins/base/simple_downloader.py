@@ -7,10 +7,10 @@ from pyload.core.network.request_factory import getURL as get_url
 
 from ..helpers import replace_patterns
 from pyload.core.utils import parse_name, parse_size, parse_time
-from .downloader import Downloader
+from .downloader import BaseDownloader
 
 
-class SimpleDownloader(Downloader):
+class SimpleDownloader(BaseDownloader):
     __name__ = "SimpleDownloader"
     __type__ = "downloader"
     __version__ = "2.27"
@@ -317,7 +317,7 @@ class SimpleDownloader(Downloader):
             self.download(self.link, disposition=self.DISPOSITION)
 
     def _check_download(self):
-        Downloader._check_download(self)
+        super()._check_download()
         self.check_download()
 
     def check_download(self):

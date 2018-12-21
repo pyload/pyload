@@ -5,10 +5,10 @@ import re
 import time
 
 from pyload.core.utils import decode, remove_chars, uniqify
-from .account import Account
+from .account import BaseAccount
 
 
-class MultiAccount(Account):
+class MultiAccount(BaseAccount):
     __name__ = "MultiAccount"
     __type__ = "account"
     __version__ = "0.22"
@@ -457,7 +457,7 @@ class MultiAccount(Account):
         hdict["re"] = re.compile(hdict["pattern"])
 
     def updateAccounts(self, user, password=None, options={}):
-        Account.updateAccounts(self, user, password, options)
+        super().updateAccounts(user, password, options)
         if self.need_reactivate:
             interval = timedelta(hours=self.config.get("mh_interval", 12)).seconds
             self.periodical.restart(interval, threaded=True, delay=2)
@@ -466,4 +466,4 @@ class MultiAccount(Account):
 
     def removeAccount(self, user):
         self.deactivate()
-        Account.removeAccount(self, user)
+        super().removeAccount(user)

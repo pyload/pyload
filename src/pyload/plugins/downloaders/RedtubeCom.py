@@ -6,10 +6,10 @@ import re
 import urllib.parse
 
 
-from ..base.downloader import Downloader
+from ..base.downloader import BaseDownloader
 
 
-class RedtubeCom(Downloader):
+class RedtubeCom(BaseDownloader):
     __name__ = "RedtubeCom"
     __type__ = "downloader"
     __version__ = "0.27"

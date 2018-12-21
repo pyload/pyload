@@ -3,10 +3,10 @@ import re
 
 from bs4 import BeautifulSoup
 
-from ..base.decrypter import Decrypter
+from ..base.decrypter import BaseDecrypter
 
 
-class HoerbuchIn(Decrypter):
+class HoerbuchIn(BaseDecrypter):
     __name__ = "HoerbuchIn"
     __type__ = "decrypter"
     __version__ = "0.67"

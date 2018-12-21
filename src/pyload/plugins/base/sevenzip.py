@@ -7,10 +7,10 @@ import subprocess
 from pyload import PKGDIR
 
 from ..helpers import renice
-from .extractor import ArchiveError, CRCError, Extractor, PasswordError
+from .extractor import ArchiveError, CRCError, BaseExtractor, PasswordError
 
 
-class SevenZip(Extractor):
+class SevenZip(BaseExtractor):
     __name__ = "SevenZip"
     __type__ = "extractor"
     __version__ = "0.27"

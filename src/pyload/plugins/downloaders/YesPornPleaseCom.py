@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 import re
 
-from ..base.downloader import Downloader
+from ..base.downloader import BaseDownloader
 
 
-class YesPornPleaseCom(Downloader):
+class YesPornPleaseCom(BaseDownloader):
     __name__ = "YesPornPleaseCom"
     __type__ = "downloader"
     __version__ = "0.02"

@@ -8,7 +8,7 @@ import pycurl
 from pyload.core.network.request_factory import getRequest as get_request
 from pyload.core.network.exceptions import Fail, Skip
 
-from .helpers import DB, Config, exists, format_exc, parse_html_header, set_cookies
+from ..helpers import DB, Config, exists, format_exc, parse_html_header, set_cookies
 from pyload.core.utils import fixurl, decode, html_unescape, remove
 
 if os.name != "nt":
@@ -20,9 +20,9 @@ if os.name != "nt":
 _decode = decode
     
 
-class Plugin(object):
-    __name__ = "Plugin"
-    __type__ = "plugin"
+class BasePlugin(object):
+    __name__ = "BasePlugin"
+    __type__ = "base"
     __version__ = "0.74"
     __status__ = "stable"
 

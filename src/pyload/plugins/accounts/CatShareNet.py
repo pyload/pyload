@@ -4,10 +4,10 @@ from datetime import timedelta
 import re
 import time
 
-from ..base.account import Account
+from ..base.account import BaseAccount
 
 
-class CatShareNet(Account):
+class CatShareNet(BaseAccount):
     __name__ = "CatShareNet"
     __type__ = "account"
     __version__ = "0.16"

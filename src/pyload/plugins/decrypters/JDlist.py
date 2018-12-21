@@ -2,10 +2,10 @@
 
 import base64
 
-from ..base.decrypter import Decrypter
+from ..base.decrypter import BaseDecrypter
 
 
-class JDlist(Decrypter):
+class JDlist(BaseDecrypter):
     __name__ = "JDlist"
     __type__ = "decrypter"
     __version__ = "0.05"

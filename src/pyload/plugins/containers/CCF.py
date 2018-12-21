@@ -6,10 +6,10 @@ import re
 
 import requests
 
-from ..base.container import Container
+from ..base.container import BaseContainer
 
 
-class CCF(Container):
+class CCF(BaseContainer):
     __name__ = "CCF"
     __type__ = "container"
     __version__ = "0.29"
@@ -43,7 +43,7 @@ class CCF(Container):
             dlc_content = requests.post(
                 "http://service.jdownloader.net/dlcrypt/getDLC.php",
                 data={"src": "ccf", "filename": "test.ccf"},
-                files={"upload": f},
+                files={"upload": file},
             ).read()
 
         dl_folder = self.pyload.config.get("general", "storage_folder")

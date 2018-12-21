@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from ..base.account import Account
+from ..base.account import BaseAccount
 from ..helpers import set_cookie
 
 
-class ShareonlineBiz(Account):
+class ShareonlineBiz(BaseAccount):
     __name__ = "ShareonlineBiz"
     __type__ = "account"
     __version__ = "0.46"

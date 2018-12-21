@@ -4,11 +4,11 @@ from datetime import timedelta
 import re
 
 from ..anticaptchas.ReCaptcha import ReCaptcha
-from ..base.downloader import Downloader
+from ..base.downloader import BaseDownloader
 from pyload.core.utils import seconds_to_midnight
 
 
-class FreakshareCom(Downloader):
+class FreakshareCom(BaseDownloader):
     __name__ = "FreakshareCom"
     __type__ = "downloader"
     __version__ = "0.49"

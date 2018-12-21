@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from ..base.addon import Addon
+from ..base.addon import BaseAddon
 
 
-class EventMapper(Addon):
+class EventMapper(BaseAddon):
     __name__ = "EventMapper"
     __type__ = "addon"
     __version__ = "0.02"

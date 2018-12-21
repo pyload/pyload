@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 import re
 
-from ..base.downloader import Downloader
+from ..base.downloader import BaseDownloader
 
 
-class FilesMailRu(Downloader):
+class FilesMailRu(BaseDownloader):
     __name__ = "FilesMailRu"
     __type__ = "downloader"
     __version__ = "0.41"

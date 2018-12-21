@@ -2,10 +2,10 @@
 
 import pycurl
 
-from ..base.decrypter import Decrypter
+from ..base.decrypter import BaseDecrypter
 
 
-class ShSt(Decrypter):
+class ShSt(BaseDecrypter):
     __name__ = "ShSt"
     __type__ = "decrypter"
     __version__ = "0.09"

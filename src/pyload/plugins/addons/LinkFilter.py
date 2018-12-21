@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 
-from ..base.addon import Addon
+from ..base.addon import BaseAddon
 
 
-class LinkFilter(Addon):
+class LinkFilter(BaseAddon):
     __name__ = "LinkFilter"
     __type__ = "addon"
     __version__ = "0.16"
@@ -52,7 +52,7 @@ class LinkFilter(Addon):
             for link in links
             if any(link.find(fltr) != -1 for fltr in filters)
             or not self.is_hoster_link(link)
-            and plugindict[link] != "BasePlugin"
+            and plugindict[link] != "DefaultPlugin"
         ]
         linkcount -= len(links)
 

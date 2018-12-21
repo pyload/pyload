@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from ..base.account import Account
+from ..base.account import BaseAccount
 
 
-class FilesMailRu(Account):
+class FilesMailRu(BaseAccount):
     __name__ = "FilesMailRu"
     __type__ = "account"
     __version__ = "0.18"

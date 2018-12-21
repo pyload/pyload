@@ -4,10 +4,10 @@ import re
 import time
 import urllib.parse
 
-from ..base.account import Account
+from ..base.account import BaseAccount
 
 
-class FilejungleCom(Account):
+class FilejungleCom(BaseAccount):
     __name__ = "FilejungleCom"
     __type__ = "account"
     __version__ = "0.19"

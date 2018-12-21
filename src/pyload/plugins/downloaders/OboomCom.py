@@ -5,14 +5,14 @@ import json
 import re
 
 from ..anticaptchas.ReCaptcha import ReCaptcha
-from ..base.downloader import Downloader
+from ..base.downloader import BaseDownloader
 
 #
 # Test links:
 # https://www.oboom.com/B7CYZIEB/10Mio.dat
 
 
-class OboomCom(Downloader):
+class OboomCom(BaseDownloader):
     __name__ = "OboomCom"
     __type__ = "downloader"
     __version__ = "0.46"

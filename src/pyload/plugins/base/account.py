@@ -7,12 +7,12 @@ import time
 
 from ..helpers import Periodical, is_sequence
 from pyload.core.utils import compare_time, lock, parse_size
-from ..plugin import Plugin
+from .plugin import BasePlugin
 from pyload.core.network.exceptions import Skip
 
 
-class Account(Plugin):
-    __name__ = "Account"
+class BaseAccount(BasePlugin):
+    __name__ = "BaseAccount"
     __type__ = "account"
     __version__ = "0.84"
     __status__ = "stable"
@@ -102,7 +102,7 @@ class Account(Plugin):
         """
         Login into account, the cookies will be saved so user can be recognized.
         """
-        pass
+        raise NotImplementedError
 
     def login(self):
         if not self.req:
@@ -255,7 +255,7 @@ class Account(Plugin):
         :param req: `Request` instance
         :return:
         """
-        pass
+        raise NotImplementedError
 
     ###########################################################################
     # TODO: Recheck and move to `AccountManager` in 0.6.x ####################

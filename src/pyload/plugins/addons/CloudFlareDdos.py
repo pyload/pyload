@@ -9,7 +9,7 @@ import js2py
 from pyload.core.network.http.http_request import BadHeader
 
 from ..anticaptchas.ReCaptcha import ReCaptcha
-from ..base.addon import Addon
+from ..base.addon import BaseAddon
 from ..helpers import parse_html_header
 
 
@@ -185,7 +185,7 @@ class PreloadStub(object):
         return "<PreloadStub object at {}>".format(hex(id(self)))
 
 
-class CloudFlareDdos(Addon):
+class CloudFlareDdos(BaseAddon):
     __name__ = "CloudFlareDdos"
     __type__ = "addon"
     __version__ = "0.13"

@@ -4,10 +4,10 @@ import pycurl
 from pyload.core.network.browser import Browser
 from pyload.core.network.http.http_request import HTTPRequest
 
-from ..base.addon import Addon
+from ..base.addon import BaseAddon
 
 
-class UserAgentSwitcher(Addon):
+class UserAgentSwitcher(BaseAddon):
     __name__ = "UserAgentSwitcher"
     __type__ = "addon"
     __version__ = "0.16"

@@ -3,10 +3,10 @@
 import json
 import hashlib
 
-from ..base.account import Account
+from ..base.account import BaseAccount
 
 
-class OboomCom(Account):
+class OboomCom(BaseAccount):
     __name__ = "OboomCom"
     __type__ = "account"
     __version__ = "0.32"

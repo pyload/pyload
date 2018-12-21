@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 
-from .captcha import Captcha
+from .captcha import BaseCaptcha
 
 
-class CaptchaService(Captcha):
+class CaptchaService(BaseCaptcha):
     __name__ = "CaptchaService"
     __type__ = "anticaptcha"
     __version__ = "0.36"
@@ -12,7 +12,7 @@ class CaptchaService(Captcha):
 
     __pyload_version__ = "0.5"
 
-    __description__ = """Base anti-captcha service plugin"""
+    __description__ = """Anti-captcha service plugin"""
     __license__ = "GPLv3"
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 

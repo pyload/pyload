@@ -5,10 +5,10 @@ import pycurl
 from pyload.core.network.http.http_request import BadHeader
 
 from ..anticaptchas.SolveMedia import SolveMedia
-from ..base.decrypter import Decrypter
+from ..base.decrypter import BaseDecrypter
 
 
-class SafelinkingNet(Decrypter):
+class SafelinkingNet(BaseDecrypter):
     __name__ = "SafelinkingNet"
     __type__ = "decrypter"
     __version__ = "0.22"

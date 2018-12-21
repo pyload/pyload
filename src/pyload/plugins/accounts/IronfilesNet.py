@@ -3,10 +3,10 @@
 import json
 import time
 
-from ..base.account import Account
+from ..base.account import BaseAccount
 
 
-class IronfilesNet(Account):
+class IronfilesNet(BaseAccount):
     __name__ = "IronfilesNet"
     __type__ = "account"
     __version__ = "0.01"

@@ -6,10 +6,10 @@ import os
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
-from ..base.container import Container
+from ..base.container import BaseContainer
 
 
-class RSDF(Container):
+class RSDF(BaseContainer):
     __name__ = "RSDF"
     __type__ = "container"
     __version__ = "0.37"

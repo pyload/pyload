@@ -15,7 +15,7 @@ from pyload import PKGDIR
 from pyload.core.network.cookie_jar import CookieJar
 from pyload.core.network.http.http_request import HTTPRequest
 
-from ..base.downloader import Downloader
+from ..base.downloader import BaseDownloader
 from pyload.core.network.exceptions import Abort, Skip
 from ..helpers import exists, isexecutable, renice, replace_patterns, which
 
@@ -235,7 +235,7 @@ class Ffmpeg(object):
         return last_line  #: Last line may contain error message
 
 
-class YoutubeCom(Downloader):
+class YoutubeCom(BaseDownloader):
     __name__ = "YoutubeCom"
     __type__ = "downloader"
     __version__ = "0.69"

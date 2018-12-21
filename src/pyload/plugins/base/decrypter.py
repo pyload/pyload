@@ -2,11 +2,11 @@
 
 
 from pyload.core.utils import parse_name, safename
-from .hoster import Hoster
+from .hoster import BaseHoster
 
 
-class Decrypter(Hoster):
-    __name__ = "Decrypter"
+class BaseDecrypter(BaseHoster):
+    __name__ = "BaseDecrypter"
     __type__ = "decrypter"
     __version__ = "0.20"
     __status__ = "stable"

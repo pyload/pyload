@@ -6,10 +6,10 @@ import pycurl
 from pyload.core.network.http.http_request import BadHeader
 from pyload.core.network.request_factory import getRequest as get_request
 
-from ..base.addon import Addon, threaded
+from ..base.addon import BaseAddon, threaded
 
 
-class ExpertDecoders(Addon):
+class ExpertDecoders(BaseAddon):
     __name__ = "ExpertDecoders"
     __type__ = "addon"
     __version__ = "0.12"

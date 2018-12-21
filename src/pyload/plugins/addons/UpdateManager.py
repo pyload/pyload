@@ -10,11 +10,11 @@ import time
 
 from pyload import PKGDIR
 
-from ..base.addon import Addon, expose, threaded
+from ..base.addon import BaseAddon, expose, threaded
 from ..helpers import exists
 
 
-class UpdateManager(Addon):
+class UpdateManager(BaseAddon):
     __name__ = "UpdateManager"
     __type__ = "addon"
     __version__ = "1.21"

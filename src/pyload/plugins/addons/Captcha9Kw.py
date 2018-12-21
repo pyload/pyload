@@ -8,10 +8,10 @@ import urllib.parse
 
 from pyload.core.network.http.http_request import BadHeader
 
-from ..base.addon import Addon, threaded
+from ..base.addon import BaseAddon, threaded
 
 
-class Captcha9Kw(Addon):
+class Captcha9Kw(BaseAddon):
     __name__ = "Captcha9Kw"
     __type__ = "addon"
     __version__ = "0.38"

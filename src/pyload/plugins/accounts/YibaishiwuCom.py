@@ -2,10 +2,10 @@
 
 import re
 
-from ..base.account import Account
+from ..base.account import BaseAccount
 
 
-class YibaishiwuCom(Account):
+class YibaishiwuCom(BaseAccount):
     __name__ = "YibaishiwuCom"
     __type__ = "account"
     __version__ = "0.09"

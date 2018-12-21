@@ -6,10 +6,10 @@ import re
 import js2py
 from cryptography.fernet import Fernet
 
-from ..base.decrypter import Decrypter
+from ..base.decrypter import BaseDecrypter
 
 
-class ShareLinksBiz(Decrypter):
+class ShareLinksBiz(BaseDecrypter):
     __name__ = "ShareLinksBiz"
     __type__ = "decrypter"
     __version__ = "1.29"

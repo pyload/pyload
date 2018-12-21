@@ -4,10 +4,10 @@ import json
 import os
 import urllib.parse
 
-from ..base.decrypter import Decrypter
+from ..base.decrypter import BaseDecrypter
 
 
-class DailymotionComFolder(Decrypter):
+class DailymotionComFolder(BaseDecrypter):
     __name__ = "DailymotionComFolder"
     __type__ = "decrypter"
     __version__ = "0.08"

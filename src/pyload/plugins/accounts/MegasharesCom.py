@@ -3,10 +3,10 @@
 import re
 import time
 
-from ..base.account import Account
+from ..base.account import BaseAccount
 
 
-class MegasharesCom(Account):
+class MegasharesCom(BaseAccount):
     __name__ = "MegasharesCom"
     __type__ = "account"
     __version__ = "0.11"

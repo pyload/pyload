@@ -3,11 +3,11 @@
 import datetime
 from datetime import timedelta
 
-from ..base.addon import Addon
+from ..base.addon import BaseAddon
 from pyload.core.utils import seconds_to_nexthour
 
 
-class LogMarker(Addon):
+class LogMarker(BaseAddon):
     __name__ = "LogMarker"
     __type__ = "addon"
     __version__ = "0.08"
@@ -31,7 +31,7 @@ class LogMarker(Addon):
         )
 
     def periodical_task(self):
-        if self.config.get("mark_day") and datetime.today().hour == 0:
+        if self.config.get("mark_day") and datetime.datetime.today().hour == 0:
             self.log_info("------------------------------------------------")
             self.log_info(self._("------------------- DAY MARK -------------------"))
             self.log_info("------------------------------------------------")

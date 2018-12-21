@@ -3,11 +3,11 @@
 import re
 
 
-from ..base.downloader import Downloader
+from ..base.downloader import BaseDownloader
 from pyload.core.utils import html_unescape
 
 
-class MyvideoDe(Downloader):
+class MyvideoDe(BaseDownloader):
     __name__ = "MyvideoDe"
     __type__ = "downloader"
     __version__ = "0.96"

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import os.path
 
-from ..base.ocr import OCR
+from ..base.ocr import BaseOCR
 
 try:
     import adecaptcha.clslib as clslib
@@ -9,7 +9,7 @@ except ImportError:
     pass
 
 
-class UlozTo(OCR):
+class UlozTo(BaseOCR):
     __name__ = "UlozTo"
     __type__ = "anticaptcha"
     __version__ = "0.05"

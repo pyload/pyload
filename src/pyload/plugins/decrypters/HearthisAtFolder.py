@@ -2,10 +2,10 @@
 import re
 import urllib.parse
 
-from ..base.decrypter import Decrypter
+from ..base.decrypter import BaseDecrypter
 
 
-class HearthisAtFolder(Decrypter):
+class HearthisAtFolder(BaseDecrypter):
     __name__ = "HearthisAtFolder"
     __type__ = "decrypter"
     __version__ = "0.01"

@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from ..base.ocr import OCR
+from ..base.ocr import BaseOCR
 
 
-class ShareonlineBiz(OCR):
+class ShareonlineBiz(BaseOCR):
     __name__ = "ShareonlineBiz"
     __type__ = "ocr"
     __version__ = "0.17"

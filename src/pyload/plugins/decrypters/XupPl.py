@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 
-from ..base.decrypter import Decrypter
+from ..base.decrypter import BaseDecrypter
 
 
-class XupPl(Decrypter):
+class XupPl(BaseDecrypter):
     __name__ = "XupPl"
     __type__ = "decrypter"
     __version__ = "0.16"

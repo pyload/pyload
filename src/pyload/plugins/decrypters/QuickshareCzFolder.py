@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 import re
 
-from ..base.decrypter import Decrypter
+from ..base.decrypter import BaseDecrypter
 
 
-class QuickshareCzFolder(Decrypter):
+class QuickshareCzFolder(BaseDecrypter):
     __name__ = "QuickshareCzFolder"
     __type__ = "decrypter"
     __version__ = "0.17"

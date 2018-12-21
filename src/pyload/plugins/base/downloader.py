@@ -9,12 +9,12 @@ from pyload.core.network.http.http_request import BadHeader
 
 from ..helpers import exists
 from pyload.core.utils import parse_name, safejoin
-from .hoster import Hoster
+from .hoster import BaseHoster
 from pyload.core.network.exceptions import Fail
 
 
-class Downloader(Hoster):
-    __name__ = "Downloader"
+class BaseDownloader(BaseHoster):
+    __name__ = "BaseDownloader"
     __type__ = "downloader"
     __version__ = "0.74"
     __status__ = "stable"
@@ -81,7 +81,7 @@ class Downloader(Hoster):
             self.account = False
             self.user = None  # TODO: Remove in 0.6.x
         else:
-            Hoster.load_account(self)
+            super().load_account()
             # self.restart_free = False
 
     def _process(self, thread):

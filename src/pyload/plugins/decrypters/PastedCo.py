@@ -2,10 +2,10 @@
 
 import re
 
-from ..base.decrypter import Decrypter
+from ..base.decrypter import BaseDecrypter
 
 
-class PastedCo(Decrypter):
+class PastedCo(BaseDecrypter):
     __name__ = "PastedCo"
     __type__ = "decrypter"
     __version__ = "0.06"

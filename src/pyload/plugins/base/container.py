@@ -3,10 +3,10 @@ import os
 import urllib.parse
 
 from ..helpers import exists
-from .decrypter import Decrypter
+from .decrypter import BaseDecrypter
 
 
-class Container(Decrypter):
+class BaseContainer(BaseDecrypter):
     __name__ = "Container"
     __type__ = "container"
     __version__ = "0.14"

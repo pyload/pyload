@@ -2,10 +2,10 @@
 
 import re
 
-from ..base.addon import Addon
+from ..base.addon import BaseAddon
 
 
-class LinkdecrypterComHook(Addon):
+class LinkdecrypterComHook(BaseAddon):
     __name__ = "LinkdecrypterComHook"
     __type__ = "addon"
     __version__ = "1.11"

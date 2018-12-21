@@ -3,10 +3,10 @@
 
 from pyload.core.datatypes.pyfile import PyFile
 
-from ..base.addon import Addon
+from ..base.addon import BaseAddon
 
 
-class UnSkipOnFail(Addon):
+class UnSkipOnFail(BaseAddon):
     __name__ = "UnSkipOnFail"
     __type__ = "addon"
     __version__ = "0.14"

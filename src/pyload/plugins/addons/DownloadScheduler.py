@@ -2,10 +2,10 @@
 import re
 import time
 
-from ..base.addon import Addon
+from ..base.addon import BaseAddon
 
 
-class DownloadScheduler(Addon):
+class DownloadScheduler(BaseAddon):
     __name__ = "DownloadScheduler"
     __type__ = "addon"
     __version__ = "0.30"

@@ -8,10 +8,10 @@ from pyload import PKGDIR
 
 from ..helpers import renice
 from pyload.core.utils import decode
-from .extractor import ArchiveError, CRCError, Extractor, PasswordError
+from .extractor import ArchiveError, CRCError, BaseExtractor, PasswordError
 
 
-class UnRar(Extractor):
+class UnRar(BaseExtractor):
     __name__ = "UnRar"
     __type__ = "extractor"
     __version__ = "1.38"

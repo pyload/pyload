@@ -4,10 +4,10 @@ from datetime import timedelta
 import re
 import time
 
-from ..base.account import Account
+from ..base.account import BaseAccount
 
 
-class UploadedTo(Account):
+class UploadedTo(BaseAccount):
     __name__ = "UploadedTo"
     __type__ = "account"
     __version__ = "0.46"

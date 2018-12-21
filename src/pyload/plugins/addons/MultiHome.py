@@ -3,7 +3,7 @@
 import time
 
 
-from ..base.addon import Addon
+from ..base.addon import BaseAddon
 
 
 class Interface(object):
@@ -24,7 +24,7 @@ class Interface(object):
         return "<Interface - {}>".format(self.address)
 
 
-class MultiHome(Addon):
+class MultiHome(BaseAddon):
     __name__ = "MultiHome"
     __type__ = "addon"
     __version__ = "0.21"

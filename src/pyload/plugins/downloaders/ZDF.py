@@ -2,11 +2,11 @@
 import re
 import xml.etree.ElementTree as etree
 
-from ..base.downloader import Downloader
+from ..base.downloader import BaseDownloader
 
 
 # Based on zdfm by Roland Beermann (http://github.com/enkore/zdfm/)
-class ZDF(Downloader):
+class ZDF(BaseDownloader):
     __name__ = "ZDF Mediathek"
     __type__ = "downloader"
     __version__ = "0.89"

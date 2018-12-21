@@ -9,12 +9,12 @@ from cryptography.fernet import Fernet
 
 import pycurl
 
-from ..base.decrypter import Decrypter
+from ..base.decrypter import BaseDecrypter
 from ..helpers import set_cookie
 from pyload.core.utils import html_unescape
 
 
-class LinkCryptWs(Decrypter):
+class LinkCryptWs(BaseDecrypter):
     __name__ = "LinkCryptWs"
     __type__ = "decrypter"
     __version__ = "0.21"
@@ -57,9 +57,6 @@ class LinkCryptWs(Decrypter):
         self.data = self.load(self.pyfile.url)
 
     def decrypt(self, pyfile):
-        if not self.js:
-            self.fail(self._("Missing JS Engine"))
-
         self.prepare()
 
         if not self.is_online():

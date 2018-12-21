@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from ..base.account import Account
+from ..base.account import BaseAccount
 
 
-class NitrobitNet(Account):
+class NitrobitNet(BaseAccount):
     __name__ = "NitrobitNet"
     __type__ = "account"
     __version__ = "0.01"

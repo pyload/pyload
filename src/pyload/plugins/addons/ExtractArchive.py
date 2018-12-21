@@ -7,7 +7,7 @@ try:
 except ImportError:
     send2trash = None
 
-from ..base.addon import Addon, expose, threaded
+from ..base.addon import BaseAddon, expose, threaded
 from ..base.extractor import ArchiveError, CRCError, PasswordError
 from ..helpers import exists
 from pyload.core.utils import safename, uniqify
@@ -48,7 +48,7 @@ class ArchiveQueue(object):
         return self.set(queue)
 
 
-class ExtractArchive(Addon):
+class ExtractArchive(BaseAddon):
     __name__ = "ExtractArchive"
     __type__ = "addon"
     __version__ = "1.67"

@@ -2,10 +2,10 @@
 import re
 import time
 
-from ..base.account import Account
+from ..base.account import BaseAccount
 
 
-class FilerNet(Account):
+class FilerNet(BaseAccount):
     __name__ = "FilerNet"
     __type__ = "account"
     __version__ = "0.13"

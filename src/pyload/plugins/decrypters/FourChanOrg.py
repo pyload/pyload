@@ -7,10 +7,10 @@
 import re
 import urllib.parse
 
-from ..base.decrypter import Decrypter
+from ..base.decrypter import BaseDecrypter
 
 
-class FourChanOrg(Decrypter):
+class FourChanOrg(BaseDecrypter):
     __name__ = "FourChanOrg"
     __type__ = "decrypter"
     __version__ = "0.38"

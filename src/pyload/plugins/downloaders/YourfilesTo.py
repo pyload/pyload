@@ -2,10 +2,10 @@
 import re
 import urllib.parse
 
-from ..base.downloader import Downloader
+from ..base.downloader import BaseDownloader
 
 
-class YourfilesTo(Downloader):
+class YourfilesTo(BaseDownloader):
     __name__ = "YourfilesTo"
     __type__ = "downloader"
     __version__ = "0.28"

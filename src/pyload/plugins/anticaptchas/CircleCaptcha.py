@@ -12,7 +12,7 @@ import urllib.request
 
 from PIL import Image, ImageDraw
 
-from ..base.ocr import OCR
+from ..base.ocr import BaseOCR
 
 
 class ImageSequence(object):
@@ -28,7 +28,7 @@ class ImageSequence(object):
             raise IndexError  #: end of sequence
 
 
-class CircleCaptcha(OCR):
+class CircleCaptcha(BaseOCR):
     __name__ = "CircleCaptcha"
     __type__ = "ocr"
     __version__ = "1.11"

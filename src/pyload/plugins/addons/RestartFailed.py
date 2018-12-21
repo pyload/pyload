@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 
-from ..base.addon import Addon
+from ..base.addon import BaseAddon
 
 
-class RestartFailed(Addon):
+class RestartFailed(BaseAddon):
     __name__ = "RestartFailed"
     __type__ = "addon"
     __version__ = "1.65"

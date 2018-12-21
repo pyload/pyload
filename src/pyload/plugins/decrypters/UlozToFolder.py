@@ -3,10 +3,10 @@
 import re
 
 
-from ..base.decrypter import Decrypter
+from ..base.decrypter import BaseDecrypter
 
 
-class UlozToFolder(Decrypter):
+class UlozToFolder(BaseDecrypter):
     __name__ = "UlozToFolder"
     __type__ = "decrypter"
     __version__ = "0.27"

@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from ..base.ocr import OCR
+from ..base.ocr import BaseOCR
 
 
-class GigasizeCom(OCR):
+class GigasizeCom(BaseOCR):
     __name__ = "GigasizeCom"
     __type__ = "ocr"
     __version__ = "0.17"

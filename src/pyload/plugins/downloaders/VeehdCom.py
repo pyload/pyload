@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 import re
 
-from ..base.downloader import Downloader
+from ..base.downloader import BaseDownloader
 
 
-class VeehdCom(Downloader):
+class VeehdCom(BaseDownloader):
     __name__ = "VeehdCom"
     __type__ = "downloader"
     __version__ = "0.29"

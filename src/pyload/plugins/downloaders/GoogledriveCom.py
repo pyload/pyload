@@ -9,10 +9,10 @@ import json
 
 from pyload.core.network.http.http_request import BadHeader
 
-from ..base.downloader import Downloader
+from ..base.downloader import BaseDownloader
 
 
-class GoogledriveCom(Downloader):
+class GoogledriveCom(BaseDownloader):
     __name__ = "GoogledriveCom"
     __type__ = "downloader"
     __version__ = "0.27"

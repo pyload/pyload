@@ -4,10 +4,10 @@ import json
 
 from pyload.core.network.http.http_request import BadHeader
 
-from ..base.decrypter import Decrypter
+from ..base.decrypter import BaseDecrypter
 
 
-class GoogledriveComDereferer(Decrypter):
+class GoogledriveComDereferer(BaseDecrypter):
     __name__ = "GoogledriveComDereferer"
     __type__ = "decrypter"
     __version__ = "0.01"

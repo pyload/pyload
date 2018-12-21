@@ -4,10 +4,10 @@ import sys
 import zipfile
 import os
 
-from .extractor import ArchiveError, CRCError, Extractor, PasswordError
+from .extractor import ArchiveError, CRCError, BaseExtractor, PasswordError
 
 
-class UnZip(Extractor):
+class UnZip(BaseExtractor):
     __name__ = "UnZip"
     __type__ = "extractor"
     __version__ = "1.25"

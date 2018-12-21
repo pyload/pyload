@@ -5,10 +5,10 @@ import time
 
 from pyload.core.network.request_factory import getURL as get_url
 
-from ..base.account import Account
+from ..base.account import BaseAccount
 
 
-class WebshareCz(Account):
+class WebshareCz(BaseAccount):
     __name__ = "WebshareCz"
     __type__ = "account"
     __version__ = "0.16"

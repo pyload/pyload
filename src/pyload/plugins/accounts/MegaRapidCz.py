@@ -3,10 +3,10 @@
 import re
 import time
 
-from ..base.account import Account
+from ..base.account import BaseAccount
 
 
-class MegaRapidCz(Account):
+class MegaRapidCz(BaseAccount):
     __name__ = "MegaRapidCz"
     __type__ = "account"
     __version__ = "0.42"

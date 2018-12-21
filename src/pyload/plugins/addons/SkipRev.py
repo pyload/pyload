@@ -3,10 +3,10 @@ import re
 
 from pyload.core.datatypes.pyfile import PyFile
 
-from ..base.addon import Addon
+from ..base.addon import BaseAddon
 
 
-class SkipRev(Addon):
+class SkipRev(BaseAddon):
     __name__ = "SkipRev"
     __type__ = "addon"
     __version__ = "0.38"

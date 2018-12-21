@@ -9,11 +9,11 @@ from cryptography.fernet import Fernet
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
-from ..base.container import Container
+from ..base.container import BaseContainer
 from pyload.core.utils import decode
 
 
-class DLC(Container):
+class DLC(BaseContainer):
     __name__ = "DLC"
     __type__ = "container"
     __version__ = "0.32"

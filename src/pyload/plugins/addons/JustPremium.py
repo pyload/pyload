@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 import re
 
-from ..base.addon import Addon
+from ..base.addon import BaseAddon
 
 
-class JustPremium(Addon):
+class JustPremium(BaseAddon):
     __name__ = "JustPremium"
     __type__ = "addon"
     __version__ = "0.27"

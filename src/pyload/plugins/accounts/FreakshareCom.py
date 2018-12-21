@@ -3,10 +3,10 @@
 import re
 import time
 
-from ..base.account import Account
+from ..base.account import BaseAccount
 
 
-class FreakshareCom(Account):
+class FreakshareCom(BaseAccount):
     __name__ = "FreakshareCom"
     __type__ = "account"
     __version__ = "0.21"

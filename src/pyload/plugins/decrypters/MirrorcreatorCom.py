@@ -3,11 +3,11 @@
 import os
 import re
 
-from ..base.decrypter import Decrypter
+from ..base.decrypter import BaseDecrypter
 from ..helpers import replace_patterns
 
 
-class MirrorcreatorCom(Decrypter):
+class MirrorcreatorCom(BaseDecrypter):
     __name__ = "MirrorcreatorCom"
     __type__ = "decrypter"
     __version__ = "0.03"

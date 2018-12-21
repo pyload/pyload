@@ -4,11 +4,11 @@ import urllib.parse
 
 import pycurl
 
-from ..base.downloader import Downloader
+from ..base.downloader import BaseDownloader
 from pyload.core.utils import parse_name
 
 
-class Ftp(Downloader):
+class Ftp(BaseDownloader):
     __name__ = "Ftp"
     __type__ = "downloader"
     __version__ = "0.61"

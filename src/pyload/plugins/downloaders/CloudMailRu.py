@@ -3,10 +3,10 @@
 import base64
 import json
 
-from ..base.downloader import Downloader
+from ..base.downloader import BaseDownloader
 
 
-class CloudMailRu(Downloader):
+class CloudMailRu(BaseDownloader):
     __name__ = "CloudMailRu"
     __type__ = "downloader"
     __version__ = "0.02"

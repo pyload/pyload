@@ -4,10 +4,10 @@ import os
 import subprocess
 
 
-from ..base.addon import Addon, expose
+from ..base.addon import BaseAddon, expose
 
 
-class ExternalScripts(Addon):
+class ExternalScripts(BaseAddon):
     __name__ = "ExternalScripts"
     __type__ = "addon"
     __version__ = "0.73"

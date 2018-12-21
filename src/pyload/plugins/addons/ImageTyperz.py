@@ -5,7 +5,7 @@ import re
 import pycurl
 from pyload.core.network.request_factory import getRequest as get_request
 
-from ..base.addon import Addon, threaded
+from ..base.addon import BaseAddon, threaded
 
 
 class ImageTyperzException(Exception):
@@ -22,7 +22,7 @@ class ImageTyperzException(Exception):
         return "<ImageTyperzException {}>".format(self.err)
 
 
-class ImageTyperz(Addon):
+class ImageTyperz(BaseAddon):
     __name__ = "ImageTyperz"
     __type__ = "addon"
     __version__ = "0.15"

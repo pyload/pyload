@@ -2,10 +2,10 @@
 
 import re
 
-from ..base.account import Account
+from ..base.account import BaseAccount
 
 
-class CloudzillaTo(Account):
+class CloudzillaTo(BaseAccount):
     __name__ = "CloudzillaTo"
     __type__ = "account"
     __version__ = "0.09"

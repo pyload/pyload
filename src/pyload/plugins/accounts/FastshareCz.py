@@ -2,11 +2,11 @@
 
 import re
 
-from ..base.account import Account
+from ..base.account import BaseAccount
 from ..helpers import set_cookie
 
 
-class FastshareCz(Account):
+class FastshareCz(BaseAccount):
     __name__ = "FastshareCz"
     __type__ = "account"
     __version__ = "0.17"
