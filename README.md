@@ -1,31 +1,100 @@
 <p align="center"><a href="https://pyload.net"><img src="/media/logo.png" alt="pyLoad" width="100" height="100" /></a></p>
 <h2 align="center"></h2>
-<h6 align="right">Development branch 0.5.x</h6>
 
-Requires **Python 3.6** (or later) and good luck.
 
-Install (develop mode):
+pyLoad-ng dev package.
 
-    pip install -e .[all]
+Includes `pyload-core`, `pyload-plugins`, `pyload-webui`, `pyload-cli`.
 
-> **Note:**
-> Remove the `[all]` keyword to install just the mandatory dependencies of pyLoad.
+### Warnings
 
-If the installation fails due `pycurl` (the unlucky part), you have to install it separately before.
+- This package is intended for internal development only, **do not use in production!**
+- This package is automatically deployed from latest source code of pyLoad's development branch.
 
-Visit http://pycurl.io/docs/latest/install.html to learn how to install the appropriate PycURL package for your system.
-You can found [HERE](https://www.lfd.uci.edu/~gohlke/pythonlibs/#pycurl) the latest unofficial binary packages for Windows.
 
-Run (from terminal/command prompt):
+Installation
+------------
+
+### Complete Installation [recommended]
+
+To install pyLoad and all its optional dependencies,
+type in a terminal/command prompt window (as root/administrator):
+
+    pip install pyload-dev[all]
+
+### Minimum Installation
+
+To install pyLoad (and its essential dependencies),
+type in a terminal/command prompt window (as root/administrator):
+
+    pip install pyload-dev
+
+### Troubleshooting
+
+If the installation fails due to an error related to the `pycurl` package,
+you may have to install it apart, before installing pyLoad.
+
+Currently, PycURL does not support Python releases later than version 3.6,
+but un-official Windows binary packages for latest Python versions are available
+on https://www.lfd.uci.edu/~gohlke/pythonlibs/#pycurl .
+
+**As an example**,
+to install *PycURL 7.43.1* for Python 3.7 on Windows 64-bit, you have to
+download the file named `pycurl-7.43.1-cp37-cp37m-win_amd64.whl`
+and type in a terminal/command prompt window (as root/administrator):
+
+    pip install pycurl-7.43.1-cp37-cp37m-win_amd64.whl
+
+When the installation succesfully finishes you can safely delete the downloaded file.
+
+Visit http://pycurl.io/docs/latest/install.html to learn how to get and install
+the appropriate PycURL package for your system.
+
+
+Usage
+-----
+
+### Web Interface
+
+To start pyLoad in *WebUI mode*,
+type in a terminal/command prompt window:
 
     pyload
 
-Help:
+To show the available options, type `pyload -h`:
 
-    pyload -h
+    usage: pyload [-h] [--version] [-d] [--userdir USERDIR] [--cachedir CACHEDIR]
+                  [--daemon] [--restore]
 
-The pyLoad web interface will be reachable pointing your browser to the url `http://localhost:8001`.
-Default username (and password) is `pyload`.
+    Free and open-source Download Manager written in pure Python
+
+    optional arguments:
+      -h, --help           show this help message and exit
+      --version            show program's version number and exit
+      -d, --debug          enable debug mode
+      --userdir USERDIR    run with custom user folder
+      --cachedir CACHEDIR  run with custom cache folder
+      --daemon             daemonmize after start
+      --restore            restore default admin user
+
+To access the web interface open your web browser and visit the url http://localhost:8001 .
+You can change it afterward.
+
+### Command Line Interface
+
+To start pyLoad in *CLI mode*,
+type terminal/command prompt window:
+
+    pyload-cli
+
+To show the available options, type:
+
+    pyload-cli -h
+
+### Login
+
+Default username and password are `pyload`.
+It's highly recommended to change them on the first start.
 
 
 -------------------------
