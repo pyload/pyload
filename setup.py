@@ -38,12 +38,12 @@ class BuildLocale(Command):
 
 
 def get_version():
-    filename = os.path.join(__file__, "..", "VERSION") 
+    filename = os.path.join(__file__, "..", "VERSION")
     with open(filename) as file:
-        version = file.read().strip() 
+        version = file.read().strip()
     build = os.environ.get('TRAVIS_BUILD_NUMBER', 0)
     return f"{version}.dev{build}"
-    
-    
+
+
 if __name__ == "__main__":
     setup(version=get_version())

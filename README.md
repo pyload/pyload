@@ -1,11 +1,9 @@
 <p align="center">
   <a href="https://pyload.net" target="_blank">
-    <img src="https://raw.githubusercontent.com/pyload/pyload/develop/media/banner.png" alt="pyLoad" height="100" />
+    <img src="https://raw.githubusercontent.com/pyload/pyload/develop/media/banner.png" alt="pyLoad" height="110" />
   </a>
 </p>
-<p align="center">
-  <h3>The Free and Open Source download manager written in Pure Python</h3>
-</p>
+<h2 align="center">The Free and open-source Download Manager written in pure Python</h2>
 <p align="center">
   <img src="https://img.shields.io/pypi/status/pyload-dev.svg" alt="PyPI Status" />
   <a href="https://pypi.python.org/pypi/pyload-dev" target="_blank">
@@ -111,6 +109,7 @@ To show the available options, type:
 ### Login Credentials
 
 Default username and password are `pyload`.
+
 It's highly recommended to change them on the first start.
 
 

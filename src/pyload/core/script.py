@@ -62,7 +62,7 @@ def _parse_args(cmd_args):
       :obj:`argparse.Namespace`: command line parameters namespace
     """
     parser = argparse.ArgumentParser(
-        description="Free and open-source Download Manager written in pure Python"
+        description="The Free and open-source Download Manager written in pure Python"
     )
     group = parser.add_mutually_exclusive_group()
 
