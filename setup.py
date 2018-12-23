@@ -29,8 +29,17 @@ class BuildLocale(Command):
     """
     description = "build locales"
     user_options = []
+    
+    def initialize_options(self):
+        pass
+        
+    def finalize_options(self):
+        pass
 
     def run(self):
+        dirname = os.path.join(__file__, "..", "src", "pyload", "locale")
+        os.makedirs(dirname, exist_ok=True)
+        
         self.run_command("extract_messages")
         self.run_command("init_catalog")
         # self.run_command('download_catalog')
@@ -46,4 +55,4 @@ def get_version():
 
 
 if __name__ == "__main__":
-    setup(version=get_version())
+    setup(version=get_version(), cmdclass={'build_locale': BuildLocale})

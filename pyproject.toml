@@ -8,4 +8,4 @@
 #           \/
 
 [build-system]
-requires = ["setuptools", "setuptools_scm", "wheel"]
+requires = ["setuptools", "wheel"]
