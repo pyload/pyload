@@ -1,13 +1,19 @@
 sudo: false
 language: python
+group: travis_latest
 git:
   depth: 3
-  lfs_skip_smudge: true
+  quiet: true
   submodules: false
+  lfs_skip_smudge: true
 branches:
   only:
     - develop
     # - /^v\d+\.\d+\.\d+$/
+stages:
+  - tox-test
+  - github-deploy
+  - pypi-deploy
 python:
   - 3.6
   - 3.7
@@ -16,44 +22,69 @@ python:
   - 3.8-dev
   - nightly
   # - pypy3.6
-virtualenv:
-  system_site_packages: true
 matrix:
   include:
-    - env: DISTRIB="conda" PYTHON_VERSION="3.6" COVERAGE="false"
+    # - env: DISTRIB="conda" PYTHON_VERSION="3.6" COVERAGE="false"
     - os: osx
-      language: generic
-      env: TRAVIS_PYTHON_VERSION=3.6
-      python: 3.6
-      before_install: pyenv install 3.6.0
+      python:
+        - 3.6
+        - 3.7
+    - os: windows
+      language: shell
+      before_install:
+        - choco install python3
+        - export PATH="/c/Python37:/c/Python37/Scripts:$PATH"
   allow_failures:
-    - os: osx
+    - os: 
+      - osx
+      - windows
     - python: 3.6-dev
     - python: 3.7-dev
     - python: 3.8-dev
     - python: nightly
     # - python: pypy3.6
   fast_finish: true
-install:
-  - source scripts/travis_install.sh
-  - pip install .[deploy]
-# script:
-  # - python setup.py test
-# after_success:
-  # - if [[ "$COVERAGE" == "true" ]]; then coveralls || echo "failed"; fi
-after_script:
-  - travis-cleanup
 cache:
   pip: true
-  directories:
-    - $HOME/miniconda
-deploy:
-  provider: pypi
-  user:
-    secure: "IDWPXbVVMr9/sZOb5/p9bXTvq//EGuzQWM4CnQOm2G4mfaX0ssr7+4w+wweJgI9UJFIcoHmvYC0cjljCleSW1j+1G3GO7whInLUuD63Vt1iA8H4UIvg4JYcTwGZQ9R/PWoW0k5MHems0picgA3cMw/9VBfl3IUraGb6+2QdxpHY="
-  password:
-    secure: "eoe3SLOEa0Z7UxJI905InCzHatdDigIBt/fl7b6kOHy76IYU3e5lZ/c6urGJBOsy+1LN6vPHvWmVVw/vhevfTd8MM6i0cGXo23zIefYAU2zkjKejWyF2/tke6spngikC1vzEyANs9fNFLXU4USCfgr1lCvuuy9Znwl/sI6jqVTg="
-  distributions: "sdist bdist_wheel"
-  on:
-    python: 3.6
-    branch: develop
+  # directories:
+    # - $HOME/miniconda
+jobs:
+  include:
+    - stage: tox-test
+      name: "Tox Test"
+      install: pip install tox-travis
+      script: tox
+      # after_success:
+        # - if [[ "$COVERAGE" == "true" ]]; then coveralls || echo "failed"; fi
+    - stage: github-deploy
+      name: "GitHub Release"
+      install: pip install -e .[deploy]
+      script: skip
+      deploy:
+        provider: releases
+        api-key:
+          secure: "LDbvOV6EIV2itKUOSQE24RctMJTj7trF8eRQIMQJFa50W/fT03HpHiRVzhddUo4UadzAy5XNm5fRZY5AMNOomQk023mHwTUuPIhQDLVl1Esati7OZpekhKE1v4+sbLfVvvv+rRuDfcn+qjiZ358UU6D4SuZ4zClu6hUxnt0Qc70="
+        file_glob: true
+        file: dist/*
+        skip_cleanup: true
+        # prerelease: true
+        on:
+          python: 3.6
+          branch: develop
+          tags: true
+    - stage: pypi-deploy
+      name: "PyPI Release"
+      install: pip install -e .[deploy]
+      script: skip
+      deploy:
+        provider: pypi
+        user:
+          secure: "IDWPXbVVMr9/sZOb5/p9bXTvq//EGuzQWM4CnQOm2G4mfaX0ssr7+4w+wweJgI9UJFIcoHmvYC0cjljCleSW1j+1G3GO7whInLUuD63Vt1iA8H4UIvg4JYcTwGZQ9R/PWoW0k5MHems0picgA3cMw/9VBfl3IUraGb6+2QdxpHY="
+        password:
+          secure: "eoe3SLOEa0Z7UxJI905InCzHatdDigIBt/fl7b6kOHy76IYU3e5lZ/c6urGJBOsy+1LN6vPHvWmVVw/vhevfTd8MM6i0cGXo23zIefYAU2zkjKejWyF2/tke6spngikC1vzEyANs9fNFLXU4USCfgr1lCvuuy9Znwl/sI6jqVTg="
+        distributions: release
+        skip_cleanup: true
+        skip_existing: true
+        on:
+          python: 3.6
+          branch: develop
