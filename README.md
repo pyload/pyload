@@ -6,9 +6,7 @@
 </p>
 <h2 align="center">The Free and open-source Download Manager written in pure Python</h2>
 <br />
-<br />
 <h3 align="center"><a href="#installation">Installation</a> | <a href="#usage">Usage</a> | <a href="#login-credentials">Login Credentials</a></h3>
-<br />
 <br />
 <br />
 <p align="center">
@@ -92,15 +90,6 @@ the appropriate PycURL package for your system.
 Usage
 -----
 
-### Web Interface
-
-To start pyLoad in *WebUI mode*,
-type in a terminal/command prompt window:
-
-    pyload
-
-To show the available options, type `pyload -h`:
-
     usage: pyload [-h] [--version] [-d] [--userdir USERDIR] [--cachedir CACHEDIR]
                   [--daemon] [--restore]
 
@@ -114,7 +103,18 @@ To show the available options, type `pyload -h`:
       --cachedir CACHEDIR  run with custom cache folder
       --daemon             daemonmize after start
       --restore            restore default admin user
+      
+### Web Interface
 
+To start pyLoad in *WebUI mode*,
+type in a terminal/command prompt window:
+
+    pyload
+
+To show the available options, type:
+    
+    pyload -h
+    
 To access the web interface open your web browser and visit the url http://localhost:8001 .
 You can change it afterward.
 
