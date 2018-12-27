@@ -8,4 +8,5 @@
 #           \/
 
 [build-system]
-requires = ["setuptools", "wheel"]
+# Minimum requirements for the build system to execute.
+requires = ["setuptools>=38.3", "wheel"]  # PEP 508 specifications.

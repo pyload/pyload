@@ -36,15 +36,26 @@ class BuildLocale(Command):
     def finalize_options(self):
         pass
 
-    def run(self):
-        dirname = os.path.join(__file__, "..", "src", "pyload", "locale")
-        os.makedirs(dirname, exist_ok=True)
+    def _execute(self, func_name, cmd_list):
+        execute = getattr(self, func_name)        
+        for cmd_name in cmd_list:
+            execute(cmd_name)        
         
-        self.run_command("extract_messages")
-        self.run_command("init_catalog")
-        # self.run_command('download_catalog')
-        self.run_command("compile_catalog")
+    def run(self):
+        # TODO: add "download_catalog"
+        commands = ["extract_messages", "init_catalog", "compile_catalog"]
+        
+        if self.dry_run:
+            self._execute("get_command_name", commands)
+            return
+            
+        dirname = os.path.join(__file__, "..", "src", "pyload", "locale")
+        self.mkpath(dirname)  # NOTE: do we have to pass dry_run value explicitly here?
+        self._execute("run_command", commands)
 
+
+def get_name():
+    return "pyload-dev"
 
 def get_version():
     filename = os.path.join(__file__, "..", "VERSION")
@@ -52,7 +63,9 @@ def get_version():
         version = file.read().strip()
     build = os.environ.get('TRAVIS_BUILD_NUMBER', 0)
     return f"{version}.dev{build}"
-
+        
+def get_commands():
+    return {'build_locale': BuildLocale}
 
 if __name__ == "__main__":
-    setup(version=get_version(), cmdclass={'build_locale': BuildLocale})
+    setup(name=get_name(), version=get_version(), cmdclass=get_commands())
