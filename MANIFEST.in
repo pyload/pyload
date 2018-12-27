@@ -2,7 +2,6 @@ include *.cfg *.md *.toml VERSION
 exclude .* tox.ini
 
 prune media
-prune scripts
 
 graft docs
 graft src
