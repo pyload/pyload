@@ -1,8 +1,11 @@
-<!--- Annotations starting with tag `<!---` (like this one) will be removed automatically, so don't worry about them. ;) -->
+<!--- Hey, annotations like this one will not be shown in your pull request ticket, so you don't have to delete them, just ignore all -->
+
+<!--- Thank you for your contribution! -->
 
 
 ### Type of request:
-<!--- Please fill with an `x` one the checkboxes below (eg. `[x] New plugin`) -->
+<!--- Please fill with an `x` one of the checkboxes below (eg. `[x] New plugin`) -->
+<!--- Make sure there are no spaces between the brackets you fill -->
 
 - [ ] New plugin
 - [ ] Plugin changes
@@ -12,7 +15,8 @@
 
 
 ### Types of changes:
-<!--- Please fill with an `x` the checkboxes below (eg. `[x] Bugfix`) -->
+<!--- Please fill with an `x` one or more checkboxes below (eg. `[x] Bugfix`) -->
+<!--- Make sure there are no spaces between the brackets you fill -->
 
 - [ ] Bugfix (non-breaking change which fixes an issue)
 - [ ] New feature (non-breaking change which adds functionality)
@@ -34,8 +38,3 @@
 ### Screenshots:
 
 <!--- WRITE HERE - OPTIONAL -->
-
-
-
-
-<!--- Thank you for your contribution! -->

@@ -1,8 +1,11 @@
-<!--- Annotations starting with tag `<!---` (like this one) will be removed automatically, so don't worry about them. ;) -->
+<!--- Hey, annotations like this one will not be shown in your issue ticket, so you don't have to delete them, just ignore all -->
+
+<!--- Thank you for your support! -->
 
 
 ### Type of ticket:
-<!--- Please fill with an `x` one the checkboxes below (eg. `[x] Plugin request`) -->
+<!--- Please fill with an `x` one of the checkboxes below (eg. `[x] Plugin request`) -->
+<!--- Make sure there are no spaces between the brackets you fill -->
 
 - [ ] Plugin request
 - [ ] Feature request
@@ -45,8 +48,3 @@
 <!--- Please enable `Debug Mode` in webui `General` settings before publish here -->
 
 <!--- WRITE HERE - REQUIRED IF BUG REPORT -->
-
-
-
-
-<!--- Thank you for your support! -->
