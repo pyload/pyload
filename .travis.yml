@@ -1,65 +1,81 @@
 sudo: false
 language: python
 group: travis_latest
+
 git:
   depth: 3
   quiet: true
   submodules: false
   lfs_skip_smudge: true
+
 branches:
   only:
     - develop
     # - /^v\d+\.\d+\.\d+$/
 stages:
-  - tox-test
-  - github-deploy
-  - pypi-deploy
-python:
-  - 3.6
-  - 3.7
-  - 3.6-dev
-  - 3.7-dev
-  - 3.8-dev
-  - nightly
-  # - pypy3.6
-matrix:
-  include:
-    # - env: DISTRIB="conda" PYTHON_VERSION="3.6" COVERAGE="false"
-    - os: osx
-      python:
-        - 3.6
-        - 3.7
-    - os: windows
-      language: shell
-      before_install:
-        - choco install python3
-        - export PATH="/c/Python37:/c/Python37/Scripts:$PATH"
+  - check
+  - test
+  - deploy
+
+# NOTE: always set to latest stable python version
+python: 3.7
+
+cache: pip
+install: pip install --upgrade pip setuptools tox tox-travis
+script: tox --sitepackages
+
+addons:
+  apt:
+    update: true
+    packages:
+      - python-pycurl
+      - libgnutls-dev
+  homebrew:
+    update: true
+    packages: python3
+  # chocolatey:
+    # update: true
+    # packages: python3
+
+jobs:
   allow_failures:
-    - os: 
+    - os:
       - osx
       - windows
-    - python: 3.6-dev
-    - python: 3.7-dev
-    - python: 3.8-dev
     - python: nightly
-    # - python: pypy3.6
-  fast_finish: true
-cache:
-  pip: true
-  # directories:
-    # - $HOME/miniconda
-jobs:
+
   include:
-    - stage: tox-test
-      name: "Tox Test"
-      install: pip install tox-travis
-      script: tox
-      # after_success:
-        # - if [[ "$COVERAGE" == "true" ]]; then coveralls || echo "failed"; fi
-    - stage: github-deploy
-      name: "GitHub Release"
-      install: pip install -e .[deploy]
-      script: skip
+    - os: linux
+      dist: xenial
+    - os: linux
+      python: 3.6
+    - os: linux
+      python: nightly
+
+    - os: osx
+      language: generic
+      env: TOXENV=py37
+      # before_install:
+        # - brew install python3
+        # - alias python=python3
+
+    - os: windows
+      language: sh
+      env: TOXENV=py37
+      before_install:
+        - cinst -y python3
+        - export PATH="/c/Python37:/c/Python37/Scripts:$PATH"
+
+    - stage: check
+      name: Pylint errors
+      script: tox -e pylint --sitepackages
+
+    - stage: deploy
+      name: Github release
+      install:
+        - pip install --upgrade pip setuptools wheel
+        - pip install -e .[deploy]
+      script: false
       deploy:
         provider: releases
         api-key:
@@ -69,13 +85,14 @@ jobs:
         skip_cleanup: true
         # prerelease: true
         on:
-          python: 3.6
+          repo: pyload/pyload
           branch: develop
           tags: true
-    - stage: pypi-deploy
-      name: "PyPI Release"
-      install: pip install -e .[deploy]
-      script: skip
+    - name: PyPI release
+      install:
+        - pip install --upgrade pip setuptools wheel
+        - pip install -e .[deploy]
+      script: false
       deploy:
         provider: pypi
         user:
@@ -86,5 +103,11 @@ jobs:
         skip_cleanup: true
         skip_existing: true
         on:
-          python: 3.6
+          repo: pyload/pyload
           branch: develop
+
+matrix:
+  fast_finish: true
+
+# after_success:
+  # - if [[ "$COVERAGE" == "true" ]]; then coveralls || echo "failed"; fi
