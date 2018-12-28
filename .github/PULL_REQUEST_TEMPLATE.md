@@ -1,4 +1,6 @@
-<!--- Hey, annotations like this one will not be shown in your pull request ticket, so you don't have to delete them, just ignore all -->
+<!--- Hey, annotations like this one will not be shown in your pull request ticket, so you don't have to delete them, just ignore them all -->
+
+<!--- Don't share your account credentials or other sensitive data here, anyone could read them on GitHub -->
 
 <!--- Thank you for your contribution! -->
 
@@ -36,5 +38,6 @@
 
 
 ### Screenshots:
+<!--- Related images -->
 
 <!--- WRITE HERE - OPTIONAL -->
