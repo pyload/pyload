@@ -2,7 +2,7 @@
 
 <!--- Don't share your account credentials or other sensitive data here, anyone could read them on GitHub -->
 
-<!--- Thank you for your contribution! -->
+<!--- Thanks for your contributions! -->
 
 
 ### Type of request:
@@ -32,12 +32,6 @@
 
 
 ### References:
-<!--- Related pull requests, issues, external links, etc. -->
-
-<!--- WRITE HERE - OPTIONAL -->
-
-
-### Screenshots:
-<!--- Related images -->
+<!--- Related pull requests, issues, external links, screenshots, etc. -->
 
 <!--- WRITE HERE - OPTIONAL -->

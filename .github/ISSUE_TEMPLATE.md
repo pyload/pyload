@@ -2,7 +2,7 @@
 
 <!--- Don't share your account credentials or other sensitive data here, anyone could read them on GitHub -->
 
-<!--- Thank you for your support! -->
+<!--- Thanks for your contributions! -->
 
 
 ### Type of ticket:
@@ -16,7 +16,7 @@
 - [ ] Other
 
 
-### Description:
+### Summary:
 <!--- Please explain what's the issue -->
 
 <!--- WRITE HERE - REQUIRED -->
@@ -46,7 +46,7 @@
 <!--- WRITE HERE - REQUIRED IF BUG REPORT -->
 
 
-### Samples:
-<!--- Related resources: download links, screenshots, etc. -->
+### References:
+<!--- Sample download links, screenshots, related issues, etc. -->
 
 <!--- WRITE HERE - REQUIRED IF PLUGIN REQUEST -->

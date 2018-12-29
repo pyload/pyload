@@ -28,23 +28,27 @@ staleLabel: inactive
 # Comment to post when marking as stale. Set to `false` to disable
 markComment: >
   This ticket has been automatically marked as `inactive`
-  because 90 days have passed since the last activity.
+  because 90 days have passed since the last comment.
   
-  It will be closed in one week if no further activity occurs.
+  It will be closed in 7 days if no further activity occurs.
   
-  This is often because the request was already solved in some way 
-  and it just wasn't updated or it's no longer applicable.
-  Feel free to reopen this issue if you deem it appropriate.
-  
-  Thanks for your contributions.
+  If this issue still requires attention, please leave a comment.
 
 # Comment to post when removing the stale label.
 # unmarkComment: >
 #   Your comment here.
 
 # Comment to post when closing a stale Issue or Pull Request.
-# closeComment: >
-#   Your comment here.
+closeComment: >
+  This ticket has been automatically closed.
+  
+  This is often because the request was already solved in some way 
+  and it just wasn't updated or it's no longer applicable.
+  
+  Feel free to open a new issue if you deem it appropriate.
+  Don't forget to reference this to the new one.
+  
+  Thanks for your contributions.
 
 # Limit the number of actions per hour, from 1-30. Default is 30
 limitPerRun: 30

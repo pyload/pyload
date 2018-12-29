@@ -28,8 +28,8 @@ addons:
   apt:
     update: true
     packages:
-      - python-pycurl
       - libgnutls-dev
+      - python-pycurl
   homebrew:
     update: true
     packages: python3
