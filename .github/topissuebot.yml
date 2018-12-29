@@ -1,0 +1,5 @@
+# Configuration for top-issue-bot
+
+labelName: "top rated"
+labelColor: f442c2
+numberOfIssuesToLabel: 10

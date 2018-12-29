@@ -1,0 +1,17 @@
+# Configuration for probot-no-response - https://github.com/probot/no-response
+
+# Number of days of inactivity before an Issue is closed for lack of response
+daysUntilClose: 30
+# Label requiring a response
+responseRequiredLabel: "feedback wanted"
+# Comment to post when closing an Issue for lack of response. Set to `false` to disable
+closeComment: >
+  This ticket has been automatically closed.
+  
+  This is because additional information has been requested, 
+  but no response has been given in the last 30 days.
+  
+  Feel free to open a new issue if you deem it appropriate.
+  Don't forget to reference this to the new one.
+  
+  Thanks for your contributions.
