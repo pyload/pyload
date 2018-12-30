@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import with_statement
+
 import os
 import re
 import urllib
@@ -27,7 +29,7 @@ except ImportError:
 class ReCaptcha(CaptchaService):
     __name__ = 'ReCaptcha'
     __type__ = 'captcha'
-    __version__ = '0.38'
+    __version__ = '0.39'
     __status__ = 'testing'
 
     __description__ = 'ReCaptcha captcha service plugin'
