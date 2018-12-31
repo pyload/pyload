@@ -12,7 +12,7 @@ from .misc import parse_name, parse_time, replace_patterns
 class SimpleCrypter(Crypter):
     __name__ = "SimpleCrypter"
     __type__ = "crypter"
-    __version__ = "0.93"
+    __version__ = "0.94"
     __status__ = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -72,8 +72,8 @@ class SimpleCrypter(Crypter):
     PAGES_PATTERN = None
 
     NAME_PATTERN = None
-    OFFLINE_PATTERN = r'[^\w](404\s|[Ii]nvalid|[Oo]ffline|[Dd]elet|[Rr]emov|([Nn]o(t|thing)?|sn\'t) (found|(longer )?(available|exist)))'
-    TEMP_OFFLINE_PATTERN = r'[^\w](503\s|[Mm]aint(e|ai)nance|[Tt]emp([.-]|orarily)|[Mm]irror)'
+    OFFLINE_PATTERN = r'[^\w](?:404\s|[Nn]ot [Ff]ound|[Ff]ile (?:was|has been)?\s*(?:removed|deleted)|[Ff]ile (?:does not exist|could not be found|no longer available))'
+    TEMP_OFFLINE_PATTERN = r'[^\w](?:503\s|[Ss]erver (?:is (?:in|under) )?[Mm]aint(?:e|ai)nance|[Tt]emp(?:[.-]|orarily )(?:[Oo]ffline|[Uu]available)|[Uu]se (?:[Aa] )?[Mm]irror)'
 
     WAIT_PATTERN = None
     PREMIUM_ONLY_PATTERN = None

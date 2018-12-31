@@ -14,7 +14,7 @@ from .misc import encode, parse_name, parse_size, parse_time, replace_patterns
 class SimpleHoster(Hoster):
     __name__ = "SimpleHoster"
     __type__ = "hoster"
-    __version__ = "2.27"
+    __version__ = "2.28"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -114,8 +114,8 @@ class SimpleHoster(Hoster):
     NAME_PATTERN = None
     SIZE_PATTERN = None
     HASHSUM_PATTERN = r'[^\w](?P<H>(CRC|crc)(-?32)?|(MD|md)-?5|(SHA|sha)-?(1|224|256|384|512)).*(:|=|>)[ ]*(?P<D>(?:[a-z0-9]|[A-Z0-9]){8,})'
-    OFFLINE_PATTERN = r'[^\w](404\s|[Ii]nvalid|[Oo]ffline|[Dd]elet|[Rr]emov|([Nn]o(t|thing)?|sn\'t) (found|(longer )?(available|exist)))'
-    TEMP_OFFLINE_PATTERN = r'[^\w](503\s|[Mm]aint(e|ai)nance|[Tt]emp([.-]|orarily)|[Mm]irror)'
+    OFFLINE_PATTERN = r'[^\w](?:404\s|[Nn]ot [Ff]ound|[Ff]ile (?:was|has been)?\s*(?:removed|deleted)|[Ff]ile (?:does not exist|could not be found|no longer available))'
+    TEMP_OFFLINE_PATTERN = r'[^\w](?:503\s|[Ss]erver (?:is (?:in|under) )?[Mm]aint(?:e|ai)nance|[Tt]emp(?:[.-]|orarily )(?:[Oo]ffline|[Uu]available)|[Uu]se (?:[Aa] )?[Mm]irror)'
 
     WAIT_PATTERN = None
     PREMIUM_ONLY_PATTERN = None
