@@ -26,7 +26,7 @@ from .printer import *
 
 def print_help(config):
     print()
-    print("pyLoad CLI Copyright (c) 2018 pyLoad team")
+    print("pyLoad CLI Copyright (c) 2019 pyLoad team")
     print()
     print("Usage: pyLoadCLI [options] [command]")
     print()
