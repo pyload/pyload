@@ -48,6 +48,10 @@ jobs:
 
   include:
     - os: linux
+      python: 3.6
+    - os: linux
+    # - os: linux
+      # python: nightly
 
     # NOTE: work-around to test Python on OSX (officially not supported)
     - os: osx
@@ -65,11 +69,6 @@ jobs:
       before_install:
         - cinst -y python3
         - export PATH="/c/Python37:/c/Python37/Scripts:$PATH"
-
-    - os: linux
-      python: 3.6
-    - os: linux
-      python: nightly
 
     - stage: check
       name: Pylint errors
