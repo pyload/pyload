@@ -281,5 +281,6 @@ fieldset[disabled] .btn {
   width: 100%;
   left: 0;
   right: 0;
-  text-align: center
+  text-align: center;
+  z-index: 1040;
 }

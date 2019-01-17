@@ -4,11 +4,11 @@ var interactiveCaptchaHandlerInstance = null;
 //root = this;
 
 function indicateLoad() {
-    $("#load-indicator").css('opacity',1);
+    $(".load-indicator").css('opacity',1);
 }
 
 function indicateFinish() {
-    $("#load-indicator").css('opacity',0);
+    $(".load-indicator").css('opacity',0);
 }
 
 function indicateSuccess(message) {
@@ -135,16 +135,34 @@ function getScrollBarHeight() {
 
 $(function() {
     var $goto_top = $('#goto_top');
+    var $stickyNav = $("#sticky-nav");
     var topbuttonVisible = $(window).scrollTop() > 100;
 
     $goto_top.toggleClass('hidden', !topbuttonVisible).affix({offset: {top:100}});
 
+    $stickyNav.css(stickynavlCss($(window).scrollTop()));
+    function stickynavlCss(scrollTop) {
+        var $headPanel = $('#head-panel');
+        var headpanelHeight = $headPanel.height();
+
+        if (scrollTop <= headpanelHeight) {
+            return {"display": "none"};
+        } else if (scrollTop > headpanelHeight && scrollTop < headpanelHeight*2) {
+            return {"display": "block", "top": (scrollTop - headpanelHeight*2) + "px"};
+        } else {
+            return {"display": "block", "top": "0"};
+        }
+    }
+
     $(window).scroll(function() {
-        var visible = Boolean($(this).scrollTop() > 100);
+        var scrollTop = $(this).scrollTop();
+        var visible = Boolean(scrollTop > 100);
+
         if (topbuttonVisible !== visible) {
             $goto_top.toggleClass('hidden', !visible);
             topbuttonVisible = visible;
         }
+        $stickyNav.css(stickynavlCss(scrollTop));
     });
 
     $goto_top.click(function () {
@@ -267,7 +285,7 @@ $(function() {
         });
     });
 
-    $("#cap_info").click(function() {
+    $(".cap_info").click(function() {
         load_captcha("get", "");
     });
 
@@ -303,7 +321,7 @@ function LoadJsonToContent(a) {
     $("#aktiv").text(a.active);
     $("#aktiv_from").text(a.queue);
     $("#aktiv_total").text(a.total);
-    var $cap_info = $("#cap_info");
+    var $cap_info = $(".cap_info");
     if (a.captcha) {
         var notificationVisible = ($cap_info.css("display") !== "none");
         if (!notificationVisible) {
