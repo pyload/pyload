@@ -83,7 +83,7 @@ td.loglevel
 {% block content %}
 <div class="clear"></div>
 
-<div class="logpaginator"><a href="{{'/logs/1'|url}}"><span class="glyphicon glyphicon-fast-backward"></span></a> <a href="{{'/logs/'|url + iprev|string}}"><span class="glyphicon glyphicon-step-backward"></span></a>  <a href="{{'/logs/' + inext|string}}"><span class="glyphicon glyphicon-step-forward"></span></a> <a href="/logs/"><span class="glyphicon glyphicon-fast-forward"></span></a></div>
+<div class="logpaginator"><a href="{{'/logs/1'|url}}"><span class="glyphicon glyphicon-fast-backward"></span></a> <a href="{{'/logs/'|url + iprev|string}}"><span class="glyphicon glyphicon-step-backward"></span></a>  <a href="{{'/logs/'|url + inext|string}}"><span class="glyphicon glyphicon-step-forward"></span></a> <a href="{{'/logs/'|url}}"><span class="glyphicon glyphicon-fast-forward"></span></a></div>
 <div class="logperpage" style="float: right;">
   <form id="logform1" action="" method="POST">
     <label for="reversed">{{_('Reversed')}}:</label>
