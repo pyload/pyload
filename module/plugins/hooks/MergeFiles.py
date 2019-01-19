@@ -12,7 +12,7 @@ from ..internal.misc import fsjoin, threaded
 class MergeFiles(Addon):
     __name__ = "MergeFiles"
     __type__ = "hook"
-    __version__ = "0.22"
+    __version__ = "0.23"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", False)]
@@ -28,7 +28,7 @@ class MergeFiles(Addon):
         files = {}
         fid_dict = {}
         for fid, data in pack.getChildren().items():
-            if re.search("\.\d{3}$", data['name']):
+            if re.search(r'(?<!\.rar)\.\d{3}$', data['name']):
                 if data['name'][:-4] not in files:
                     files[data['name'][:-4]] = []
                 files[data['name'][:-4]].append(data['name'])
@@ -54,18 +54,13 @@ class MergeFiles(Addon):
                     try:
                         with open(fsjoin(dl_folder, splitted_file), "rb") as s_file:
                             size_written = 0
-                            s_file_size = int(
-                                os.path.getsize(
-                                    os.path.join(
-                                        dl_folder,
-                                        splitted_file)))
+                            s_file_size = int(os.path.getsize(os.path.join(dl_folder, splitted_file)))
                             while True:
                                 f_buffer = s_file.read(self.BUFFER_SIZE)
                                 if f_buffer:
                                     final_file.write(f_buffer)
                                     size_written += self.BUFFER_SIZE
-                                    pyfile.setProgress(
-                                        (size_written * 100) / s_file_size)
+                                    pyfile.setProgress((size_written * 100) / s_file_size)
                                 else:
                                     break
                         self.log_debug("Finished merging part", splitted_file)
