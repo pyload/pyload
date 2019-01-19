@@ -15,36 +15,36 @@ function PackageUI (url, type){
     };
 
     this.parsePackages = function () {
-       $("#package-list")
-           .children("li").each(function(ele) {
-               var id = this.id.match(/[0-9]+/);
-               packages.push(new Package(thisObject, id, this));
-           })
-           .sortable({
-               handle: ".progress",
-               axis: "y",
-               cursor: "grabbing",
-               start: function(e, ui) {
-                   $(this).attr('data-previndex', ui.item.index());
-               },
-               stop: function(event, ui) {
-                   var newIndex = ui.item.index();
-                   var oldIndex = $(this).attr('data-previndex');
-                   $(this).removeAttr('data-previndex');
-                   if (newIndex === oldIndex) {
-                       return false;
-                   }
-                   var order = ui.item.data('pid') + '|' + newIndex;
-                   indicateLoad();
-                   $.get("{{'/json/package_order/'|url}}" + order, function () {
-                       indicateFinish();
-                       return true;
-                   }).fail(function () {
-                       indicateFail();
-                       return false;
-                   });
-               }
-           });
+       var $packageList = $("#package-list");
+       $packageList.children("li").each(function(ele) {
+            var id = this.id.match(/[0-9]+/);
+            packages.push(new Package(thisObject, id, this));
+        });
+        $packageList.sortable({
+            handle: ".progress",
+            axis: "y",
+            cursor: "grabbing",
+            start: function(event, ui) {
+                $(this).attr('data-previndex', ui.item.index());
+            },
+            stop: function(event, ui) {
+                var newIndex = ui.item.index();
+                var oldIndex = $(this).attr('data-previndex');
+                $(this).removeAttr('data-previndex');
+                if (newIndex === oldIndex) {
+                    return false;
+                }
+                var order = ui.item.data('pid') + '|' + newIndex;
+                indicateLoad();
+                $.get("{{'/json/package_order/'|url}}" + order, function () {
+                    indicateFinish();
+                    return true;
+                }).fail(function () {
+                    indicateFail();
+                    return false;
+                });
+          }
+        });
     };
 
     this.deleteFinished = function () {

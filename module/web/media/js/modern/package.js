@@ -15,36 +15,36 @@ function PackageUI (url, type){
     };
 
     this.parsePackages = function () {
-       $("#package-list")
-           .children("li").each(function(ele) {
-               var id = this.id.match(/[0-9]+/);
-               packages.push(new Package(thisObject, id, this));
-           })
-           .sortable({
-               handle: ".progress",
-               axis: "y",
-               cursor: "grabbing",
-               start: function(e, ui) {
-                   $(this).attr('data-previndex', ui.item.index());
-               },
-               stop: function(event, ui) {
-                   var newIndex = ui.item.index();
-                   var oldIndex = $(this).attr('data-previndex');
-                   $(this).removeAttr('data-previndex');
-                   if (newIndex === oldIndex) {
-                       return false;
-                   }
-                   var order = ui.item.data('pid') + '|' + newIndex;
-                   indicateLoad();
-                   $.get("{{'/json/package_order/'|url}}" + order, function () {
-                       indicateFinish();
-                       return true;
-                   }).fail(function () {
-                       indicateFail();
-                       return false;
-                   });
-               }
-           });
+       var $packageList = $("#package-list");
+       $packageList.children("li").each(function(ele) {
+            var id = this.id.match(/[0-9]+/);
+            packages.push(new Package(thisObject, id, this));
+        });
+        $packageList.sortable({
+            handle: ".progress",
+            axis: "y",
+            cursor: "grabbing",
+            start: function(event, ui) {
+                $(this).attr('data-previndex', ui.item.index());
+            },
+            stop: function(event, ui) {
+                var newIndex = ui.item.index();
+                var oldIndex = $(this).attr('data-previndex');
+                $(this).removeAttr('data-previndex');
+                if (newIndex === oldIndex) {
+                    return false;
+                }
+                var order = ui.item.data('pid') + '|' + newIndex;
+                indicateLoad();
+                $.get("{{'/json/package_order/'|url}}" + order, function () {
+                    indicateFinish();
+                    return true;
+                }).fail(function () {
+                    indicateFail();
+                    return false;
+                });
+          }
+        });
     };
 
     this.deleteFinished = function () {
@@ -134,13 +134,8 @@ function Package (ui, id, ele){
 
     this.loadLinks = function () {
         indicateLoad();
-        $.get("{{'/json/package/'|url}}" + id, thisObject.createLinks)
-        .fail(function () {
+        $.get("{{'/json/package/'|url}}" + id, thisObject.createLinks).fail(function () {
             indicateFail();
-            return false;
-        })
-        .done(function() {
-            return true;
         });
     };
 
@@ -235,7 +230,7 @@ function Package (ui, id, ele){
                 var newIndex = ui.item.index();
                 var oldIndex = $(this).attr('data-previndex');
                 $(this).removeAttr('data-previndex');
-                if (newIndex === oldIndex) {
+                if (newIndex == oldIndex) {
                     return false;
                 }
                 var order = ui.item.data('lid') + '|' + newIndex;
@@ -254,15 +249,13 @@ function Package (ui, id, ele){
     this.toggle = function () {
         var icon = $(ele).find('.packageicon');
         var child = $(ele).find('.children');
-        if (child.css('display') === "block") {
+        if (child.css('display') == "block") {
             $(child).fadeOut();
             icon.removeClass('glyphicon-folder-open');
             icon.addClass('glyphicon-folder-close');
         } else {
             if (!linksLoaded) {
-                if (!thisObject.loadLinks()) {
-                    return;
-                }
+                thisObject.loadLinks();
             } else {
                 $(child).fadeIn();
             }
@@ -298,7 +291,7 @@ function Package (ui, id, ele){
 
     this.close = function () {
         var child = $(ele).find('.children');
-        if (child.css('display') === "block") {
+        if (child.css('display') == "block") {
             $(child).fadeOut();
             var icon = $(ele).find('.packageicon');
             icon.removeClass('glyphicon-folder-open');
@@ -342,7 +335,8 @@ function Package (ui, id, ele){
     this.editPackage = function(event) {
         event.stopPropagation();
         event.preventDefault();
-        $("#pack_form").off("submit").submit(thisObject.savePackage);
+        $("#pack_form").off("submit");
+        $("#pack_form").submit(thisObject.savePackage);
 
         $("#pack_id").val(id[0]);
         $("#pack_name").val(name.text());
