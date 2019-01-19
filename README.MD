@@ -14,7 +14,7 @@ Targeted for headless NASs it is designed to be extremely lightweight, fully cus
 
 # Dependencies
 
-You need at least Python 2.5 to run pyLoad and all of these required libraries, unless shipped with pyLoad.
+You need at least Python 2.7 to run pyLoad and all of these required libraries, unless shipped with pyLoad.
 They should be automatically installed when using pip install.
 The prebuilt pyLoad packages also install these dependencies or have them included, so manual install
 is only needed when installing pyLoad from source.
