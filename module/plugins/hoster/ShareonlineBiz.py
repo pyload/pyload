@@ -12,7 +12,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class ShareonlineBiz(SimpleHoster):
     __name__ = "ShareonlineBiz"
     __type__ = "hoster"
-    __version__ = "0.68"
+    __version__ = "0.69"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(share-online\.biz|egoshare\.com)/(download\.php\?id=|dl/)(?P<ID>\w+)'
@@ -99,14 +99,10 @@ class ShareonlineBiz(SimpleHoster):
         self.wait()
 
     def check_download(self):
-        check = self.scan_download({'cookie': re.compile(r'<div id="dl_failure"'),
-                                    'fail': re.compile(r'<title>Share-Online')})
+        with open(self.last_download, "rb") as f:
+            self.data = f.read(1048576)
 
-        if check == "cookie":
-            self.retry_captcha(5, 60, _("Cookie failure"))
-
-        elif check == "fail":
-            self.retry_captcha(5, 5 * 60, _("Download failed"))
+        self.check_errors()
 
         return SimpleHoster.check_download(self)
 
@@ -136,7 +132,7 @@ class ShareonlineBiz(SimpleHoster):
         elif errmsg == "full":
             self.fail(_("Server is full"))
 
-        elif 'slot' in errmsg:
+        elif errmsg in ('slot', 'ip'):
             self.wait(3600, reconnect=True)
             self.restart(errmsg)
 
