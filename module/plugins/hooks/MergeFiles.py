@@ -12,7 +12,7 @@ from ..internal.misc import fsjoin, threaded
 class MergeFiles(Addon):
     __name__ = "MergeFiles"
     __type__ = "hook"
-    __version__ = "0.23"
+    __version__ = "0.24"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", False)]
@@ -28,7 +28,7 @@ class MergeFiles(Addon):
         files = {}
         fid_dict = {}
         for fid, data in pack.getChildren().items():
-            if re.search(r'(?<!\.rar)\.\d{3}$', data['name']):
+            if re.search("\.\d{3}$", data['name']):
                 if data['name'][:-4] not in files:
                     files[data['name'][:-4]] = []
                 files[data['name'][:-4]].append(data['name'])
