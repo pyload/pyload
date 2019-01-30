@@ -41,7 +41,7 @@ except ImportError:
 class misc(object):
     __name__ = "misc"
     __type__ = "plugin"
-    __version__ = "0.52"
+    __version__ = "0.53"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -123,6 +123,7 @@ class DB(object):
         Delete entry in db
         """
         self.plugin.pyload.db.delStorage(self.plugin.classname, key)
+        self.plugin.pyload.db.commit()
 
 
 class Expose(object):
