@@ -84,7 +84,7 @@ class ArchiveQueue(object):
         except ValueError:
             pass
 
-        if queue is []:
+        if not queue:
             return self.delete()
 
         return self.set(queue)
@@ -93,7 +93,7 @@ class ArchiveQueue(object):
 class ExtractArchive(Addon):
     __name__ = "ExtractArchive"
     __type__ = "hook"
-    __version__ = "1.67"
+    __version__ = "1.68"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", False),
@@ -107,7 +107,7 @@ class ExtractArchive(Addon):
                   ("deltotrash", "bool", "Move to trash instead delete", True),
                   ("subfolder", "bool", "Create subfolder for each package", False),
                   ("destination", "folder", "Extract files to folder", ""),
-                  ("extensions", "str", "Extract archives ending with extension", "7z,bz2,bzip2,gz,gzip,lha,lzh,lzma,rar,tar,taz,tbz,tbz2,tgz,xar,xz,z,zip"),
+                  ("extensions", "str", "Extract archives ending with extension", "001,7z,bz2,bzip2,gz,gzip,lha,lzh,lzma,rar,tar,taz,tbz,tbz2,tgz,xar,xz,z,zip"),
                   ("excludefiles", "str", "Don't extract the following files", "*.nfo,*.DS_Store,index.dat,thumb.db"),
                   ("recursive", "bool", "Extract archives in archives", True),
                   ("waitall", "bool", "Run after all downloads was processed", False),
@@ -124,7 +124,6 @@ class ExtractArchive(Addon):
                           'packageDeleted': "package_deleted"}
 
         self.queue = ArchiveQueue(self, "Queue")
-        self.failed = ArchiveQueue(self, "Failed")
 
         self.extracting = False
         self.last_package = False
@@ -133,7 +132,7 @@ class ExtractArchive(Addon):
         self.repair = False
 
     def activate(self):
-        for p in ("UnRar", "SevenZip", "UnZip", "UnTar"):
+        for p in ("HjSplit", "UnRar", "SevenZip", "UnZip", "UnTar"):
             try:
                 module = self.pyload.pluginManager.loadModule("internal", p)
                 klass = getattr(module, p)
@@ -152,8 +151,8 @@ class ExtractArchive(Addon):
                 self.log_warning(_("Could not activate: %s") % p, e)
 
         if self.extractors:
-            self.log_debug(*["Found %s %s" % (Extractor.__name__,
-                                              Extractor.VERSION) for Extractor in self.extractors])
+            self.log_debug(*["Found %s %s" % (Extractor.__name__, Extractor.VERSION)
+                             for Extractor in self.extractors])
             self.extract_queued()  #: Resume unfinished extractions
         else:
             self.log_info(_("No Extract plugins activated"))
@@ -168,7 +167,7 @@ class ExtractArchive(Addon):
 
         packages = self.queue.get()
         while packages:
-            if self.last_package:  #: Called from allDownloadsProcessed
+            if self.last_package:  #: Set by self.all_downloads_processed()
                 self.last_package = False
                 if self.extract(packages, thread):  # @NOTE: check only if all gone fine, no failed reporting for now
                     self.manager.dispatchEvent("all_archives_extracted")
@@ -276,8 +275,8 @@ class ExtractArchive(Addon):
 
             matched = False
             success = True
-            files_ids = dict((fdata['name'], (fdata['id'], (fsjoin(pack_dl_folder, fdata['name'])), extract_folder)) for fdata
-                             in pypack.getChildren().values()).values()  #: Remove duplicates
+            files_ids = dict((fdata['name'], (fdata['id'], (fsjoin(pack_dl_folder, fdata['name'])), extract_folder))
+                             for fdata in pypack.getChildren().values()).values()  #: Remove duplicates
 
             #: Check as long there are unseen files
             while files_ids:
@@ -336,24 +335,31 @@ class ExtractArchive(Addon):
                                 continue
 
                             #: Remove processed file and related multiparts from list
-                            files_ids = [(fid, fname, fout) for fid, fname, fout in files_ids
-                                         if fname not in chunks]
+                            files_ids = [(_fid, _fname, _fout) for _fid, _fname, _fout in files_ids
+                                         if _fname not in chunks]
+
                             self.log_debug("Extracted files: %s" % new_files)
 
-                            new_folders = uniqify([os.path.dirname(_f) for _f in new_files])
+                            new_folders = []
+                            for _f in new_files:
+                                _d = os.path.dirname(_f)
+                                while extract_folder in _d:
+                                    if _d not in new_folders:
+                                        new_folders.append(_d)
+                                    _d = os.path.dirname(_d)
+
                             for foldername in new_folders:
-                                self.set_permissions(fsjoin(extract_folder, foldername))
+                                self.set_permissions(foldername)
 
                             for filename in new_files:
-                                self.set_permissions(fsjoin(extract_folder, filename))
+                                self.set_permissions(filename)
 
                             for filename in new_files:
-                                file = encode(fsjoin(os.path.dirname(archive.filename), filename))
-                                if not exists(file):
+                                if not exists(filename):
                                     self.log_debug("New file %s does not exists" % filename)
                                     continue
 
-                                if recursive and os.path.isfile(file):
+                                if recursive and os.path.isfile(filename):
                                     new_files_ids.append((fid, filename, os.path.dirname(filename)))  #: Append as new target
 
                             self.manager.dispatchEvent("archive_extracted", pyfile, archive)
@@ -383,7 +389,6 @@ class ExtractArchive(Addon):
                     failed.append(pid)
                     self.manager.dispatchEvent("package_extract_failed", pypack)
 
-                    self.failed.add(pid)
             else:
                 self.log_info(_("No files found to extract"))
 
