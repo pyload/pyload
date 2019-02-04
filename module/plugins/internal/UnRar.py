@@ -12,7 +12,7 @@ from .misc import decode, encode, fsjoin, renice
 class UnRar(Extractor):
     __name__ = "UnRar"
     __type__ = "extractor"
-    __version__ = "1.39"
+    __version__ = "1.40"
     __status__ = "testing"
 
     __config__ = [("ignore_warnings", "bool", "Ignore unrar warnings", False)]
@@ -125,7 +125,7 @@ class UnRar(Extractor):
             if not c:
                 break
             #: Reading a percentage sign -> set progress and restart
-            if c == "%":
+            if c == "%" and s:
                 self.pyfile.setProgress(int(s))
                 s = ""
             #: Not reading a digit -> therefore restart
