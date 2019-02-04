@@ -12,7 +12,7 @@ from .Extractor import ArchiveError, CRCError, Extractor, PasswordError
 class SevenZip(Extractor):
     __name__ = "SevenZip"
     __type__ = "extractor"
-    __version__ = "0.29"
+    __version__ = "0.30"
     __status__ = "testing"
 
     __description__ = """7-Zip extractor plugin"""
@@ -86,7 +86,6 @@ class SevenZip(Extractor):
             #: Reading a percentage sign -> set progress and restart
             if c == "%" and s:
                 self.pyfile.setProgress(int(s))
-                print(s)
                 s = ""
             #: Not reading a digit -> therefore restart
             elif c not in string.digits:
