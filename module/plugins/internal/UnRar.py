@@ -12,7 +12,7 @@ from .misc import decode, encode, fsjoin, renice
 class UnRar(Extractor):
     __name__ = "UnRar"
     __type__ = "extractor"
-    __version__ = "1.40"
+    __version__ = "1.41"
     __status__ = "testing"
 
     __config__ = [("ignore_warnings", "bool", "Ignore unrar warnings", False)]
@@ -30,8 +30,8 @@ class UnRar(Extractor):
 
     _RE_PART = re.compile(r'\.(part|r)\d+(\.rar|\.rev)?(\.bad)?', re.I)
     _RE_FIXNAME = re.compile(r'Building (.+)')
-    _RE_FILES_V4 = re.compile(r'([*\s])(.+?)\s+(\d+)\s+(\d+)\s+(\d+%)\s+([\d-]+)\s+([\d:]+)\s*([ACHIRS.]+)\s+([0-9A-F]{8})\s+(\w+)\s+([\d.]+)')
-    _RE_FILES_V5 = re.compile(r'([*\s])\s+([ACHIRS.]+)\s+(\d+)\s+([\d-]+)\s+([\d:]+)\s+(.+)')
+    _RE_FILES_V4 = re.compile(r'([* ])(.+?)\s+(\d+)\s+(\d+)\s+(\d+%|-->|<--)\s+([\d-]+)\s+([\d:]+)\s*([ACHIRS.rw\-]+)\s+([0-9A-F]{8})\s+(\w+)\s+([\d.]+)')
+    _RE_FILES_V5 = re.compile(r'([* ])([ACHIRS.rw\-]+)\s+(\d+)(?:\s+\d+)?(?:\s+(?:\d+%|-->|<--))?\s+([\d-]+)\s+([\d:]+)(?:\s+[0-9A-F]{8})?\s+(.+)')
     _RE_BADPWD = re.compile(r'password', re.I)
     _RE_BADCRC = re.compile(r'encrypted|damaged|CRC failed|checksum error|corrupt', re.I)
     _RE_VERSION = re.compile(r'(?:UN)?RAR\s(\d+\.\d+)', re.I)
@@ -189,8 +189,9 @@ class UnRar(Extractor):
             self.log_error(err)
 
         files = set()
+        f_grp = 5 if float(self.VERSION) >= 5 else 1
         for groups in self._RE_FILES.findall(decode(out)):
-            f = groups[5 if float(self.VERSION) >= 5 else 1].strip()
+            f = groups[f_grp].strip()
             if not self.fullpath:
                 f = os.path.basename(f)
             files.add(fsjoin(self.dest, f))
