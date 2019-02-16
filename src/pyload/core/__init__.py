@@ -10,7 +10,6 @@
 #           \/
 
 import atexit
-import builtins
 import gettext
 import locale
 import os
@@ -119,10 +118,10 @@ class Core(object):
         self.log.warning(f"*** Welcome to pyLoad {self.version} ***")
 
     def _init_network(self):
+        from .network import request_factory
         from .network.request_factory import RequestFactory
 
         self.req = self.requestFactory = RequestFactory(self)
-        builtins.REQUESTS = self.requestFactory  # TODO: Remove...
 
     def _init_api(self):
         from .api import Api
@@ -244,7 +243,7 @@ class Core(object):
         self.log.debug("Setup storage...")
 
         storage_folder = self.config.get("general", "storage_folder")
-        
+
         self.log.info(self._("Storage directory: {}".format(storage_folder)))
         os.makedirs(storage_folder, exist_ok=True)
 
@@ -349,7 +348,6 @@ class Core(object):
     def terminate(self):
         self.stop()
         self.log.info(self._("Exiting core..."))
-        self.log.warning(self._("Bye Bye!"))
         # self.tsm.exit()
         # self.db.exit()  # NOTE: Why here?
         self.logfactory.shutdown()

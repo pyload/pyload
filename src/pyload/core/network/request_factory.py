@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # AUTHOR: mkaay, RaNaN
 
-from builtins import REQUESTS
 from threading import Lock
 
 from ..utils import lock
@@ -13,6 +12,9 @@ from .http.http_request import HTTPRequest
 from .xdcc.xdcc_request import XDCCRequest
 
 
+DEFAULT_REQUEST = None
+
+
 class RequestFactory(object):
     def __init__(self, core):
         self.lock = Lock()
@@ -21,6 +23,12 @@ class RequestFactory(object):
         self.bucket = Bucket()
         self.updateBucket()
         self.cookiejars = {}
+
+        # TODO: Rewrite...
+        global DEFAULT_REQUEST
+        if not DEFAULT_REQUEST:
+            DEFAULT_REQUEST = self
+
 
     def iface(self):
         return self.pyload.config.get("download", "interface")
@@ -124,10 +132,9 @@ class RequestFactory(object):
             self.bucket.set_rate(self.pyload.config.get("download", "max_speed") << 10)
 
 
-# needs REQUESTS in global namespace
 def getURL(*args, **kwargs):
-    return REQUESTS.getURL(*args, **kwargs)
+    return DEFAULT_REQUEST.getURL(*args, **kwargs)
 
 
 def getRequest(*args, **kwargs):
-    return REQUESTS.getHTTPRequest()
+    return DEFAULT_REQUEST.getHTTPRequest()
