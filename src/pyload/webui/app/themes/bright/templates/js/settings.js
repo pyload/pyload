@@ -78,12 +78,12 @@ SettingsUI = (function() {
             method: "post",
             url: "/json/save_config/" + c,
             onSuccess: function() {
-                return root.notify.alert('{{ self._("Settings saved.")}}', {
+                return root.notify.alert('{{ _("Settings saved.")}}', {
                     className: "success"
                 })
             },
             onFailure: function() {
-                return root.notify.alert('{{ self._("Error occured.")}}', {
+                return root.notify.alert('{{ _("Error occured.")}}', {
                     className: "error"
                 })
             }
@@ -117,7 +117,7 @@ SettingsUI = (function() {
                 return window.location.reload()
             },
             onFailure: function() {
-                return root.notify.alert('{{ self._("Error occured.") }}', {
+                return root.notify.alert('{{ _("Error occured.") }}', {
                     className: "error"
                 })
             }
