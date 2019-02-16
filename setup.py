@@ -53,10 +53,6 @@ class BuildLocale(Command):
         self.mkpath(dirname)  # NOTE: do we have to pass dry_run value explicitly here?
         self._execute("run_command", commands)
 
-
-def get_name():
-    return "pyload-dev"
-
 def get_version():
     filename = os.path.join(os.path.dirname(__file__), "VERSION")
     with open(filename) as file:
@@ -68,4 +64,4 @@ def get_commands():
     return {'build_locale': BuildLocale}
 
 if __name__ == "__main__":
-    setup(name=get_name(), version=get_version(), cmdclass=get_commands())
+    setup(version=get_version(), cmdclass=get_commands())

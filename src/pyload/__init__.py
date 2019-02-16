@@ -9,8 +9,6 @@
 #          \  /
 #           \/
 
-import builtins
-
 import _locale
 import logging
 import locale
@@ -25,7 +23,7 @@ import traceback
 ### Info ##############################################################################
 
 APPID = "pyload"
-PKGNAME = "pyload-dev"
+PKGNAME = "pyload-ng"
 PKGDIR = pkg_resources.resource_filename(__name__, None)
 USERHOMEDIR = os.path.expanduser("~")
 DATADIR = os.path.join(
@@ -37,9 +35,6 @@ os.makedirs(DATADIR, exist_ok=True)
 os.makedirs(TMPDIR, exist_ok=True)
 
 os.chdir(USERHOMEDIR)
-
-# TODO: remove
-builtins.REQUESTS = None
 
 __version__ = pkg_resources.get_distribution(PKGNAME).parsed_version.base_version
 __version_info__ = semver.parse_version_info(__version__)
