@@ -205,7 +205,7 @@ def uniqify(seq):
 def remove(path, trash=True):
     path = os.fsdecode(path)
 
-    if not exists(path):
+    if not os.path.exists(path):
         return
 
     if trash:
