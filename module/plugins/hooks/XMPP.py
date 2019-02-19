@@ -12,7 +12,7 @@ from module.plugins.internal.Addon import Addon
 class XMPP(IRC):
     __name__ = "XMPP"
     __type__ = "hook"
-    __version__ = "0.19"
+    __version__ = "0.20"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", False),
@@ -20,24 +20,28 @@ class XMPP(IRC):
                   ("pw", "str", "Password", ""),
                   ("tls", "bool", "Use TLS", True),
                   ("use_ssl", "bool", "Use old SSL", False),
-                  ("owners", "str", "List of JIDs accepting commands from",
-                   "me@icq-gateway.org;some@msn-gateway.org"),
+                  ("owners", "str", "List of JIDs accepting commands from", "me@icq-gateway.org;some@msn-gateway.org"),
                   ("captcha", "bool", "Send captcha requests", True),
-                  ("info_file", "bool",
-                   "Inform about every file finished", False),
-                  ("info_pack", "bool",
-                   "Inform about every package finished", True),
-                  ("all_download", "bool",
-                   "Inform about all download finished", False),
+                  ("info_file", "bool", "Inform about every file finished", False),
+                  ("info_pack", "bool", "Inform about every package finished", True),
+                  ("all_download", "bool", "Inform about all download finished", False),
                   ("package_failed", "bool", "Notify package failed", False),
                   ("download_failed", "bool", "Notify download failed", True),
-                  ("download_start", "bool", "Notify download start", True),
-    ]
+                  ("download_start", "bool", "Notify download start", True)]
 
     __description__ = """Connect to jabber and let owner perform different tasks"""
     __license__ = "GPLv3"
     __authors__ = [("RaNaN", "RaNaN@pyload.org")]
 
+    SHORTCUT_COMMANDS = {
+        'h': 'help',
+        'a': 'add',
+        'q': 'queue',
+        'c': 'collector',
+        'i': 'info',
+        'm': 'more',
+        's': 'status',
+    }
 
     def __init__(self, *args, **kwargs):
         IRC.__init__(self, *args, **kwargs)
@@ -76,10 +80,9 @@ class XMPP(IRC):
         xmpp.add_event_handler("presence_unavailable",
                                self.presence_unavailable)
 
-        xmpp.register_handler(
-            Callback('Stream Error',
-                     MatchXPath("{%s}error" % xmpp.stream_ns),
-                     self.stream_error))
+        xmpp.register_handler(Callback('Stream Error',
+                                       MatchXPath("{%s}error" % xmpp.stream_ns),
+                                       self.stream_error))
 
         self.xmpp = xmpp
         self.start()
@@ -91,6 +94,7 @@ class XMPP(IRC):
                 self.xmpp.process(block=False)
                 self.log_info('Done')
                 # self.periodical.start(30)
+
             else:
                 self.log_error("Unable to connect.")
 
@@ -98,7 +102,7 @@ class XMPP(IRC):
             self.log_error(e, trace=True)
 
     ############################################################################
-    ## handler xmpp
+    ## xmpp handler
 
     def changed_status(self, stanza=None):
         self.log_debug('changed_status', stanza, stanza.get_type())
@@ -140,6 +144,7 @@ class XMPP(IRC):
         if t == "headline":
             #: 'headline' messages should never be replied to
             return True
+
         if subject:
             subject = u"Re: " + subject
 
@@ -165,6 +170,7 @@ class XMPP(IRC):
             command = temp[0]
             if len(temp) > 1:
                 args = temp[1:]
+
         except Exception:
             pass
 
@@ -181,49 +187,34 @@ class XMPP(IRC):
             self.log_debug('res', res)
 
             if res:
-                msgreply = '\n'.join(res)
+                msg_reply = '\n'.join(res)
                 # add shortcut in help
                 if command == 'help':
-                    msgreply += '\nShortcut:\n'
-                    for cmd_short,cmd_long in self.SHORTCUT_COMMAND.items():
-                        msgreply += cmd_short+': '+cmd_long+', '
-            else:
-                msgreply = "ERROR: command invalide, enter: help"
+                    msg_reply += '\nShortcut:\n'
+                    for cmd_short,cmd_long in self.SHORTCUT_COMMANDS.items():
+                        msg_reply += cmd_short+': '+cmd_long+', '
 
-            self.log_debug('Reponse:',msgreply)
-            self.log_debug('Send reponse')
-            ret = stanza.reply(msgreply).send()
+            else:
+                msg_reply = "ERROR: command invalide, enter: help"
+
+            self.log_debug('Send reponse', msg_reply)
+            ret = stanza.reply(msg_reply).send()
+
         except Exception as e:
             self.log_error(e, trace=True)
             stanza.reply('ERROR: '+str(e)).send()
+
         return ret
 
-    ## end handler xmpp
+    ## end xmpp handler
     ############################################################################
 
-    SHORTCUT_COMMAND = {
-        'h': 'help',
-        'a': 'add',
-        'q': 'queue',
-        'c': 'collector',
-        'i': 'info',
-        'm': 'more',
-        's': 'status',
-    }
     def shortcut_command(self, shortcommand):
         command = shortcommand
-        if shortcommand and shortcommand in self.SHORTCUT_COMMAND:
-            command = self.SHORTCUT_COMMAND[shortcommand]
-        return command
+        if shortcommand and shortcommand in self.SHORTCUT_COMMANDS:
+            command = self.SHORTCUT_COMMANDS[shortcommand]
 
-    # def periodical_task(self):
-    #     self.log_debug('Send presence')
-    #     self.xmpp.send_presence()
-    #     try:
-    #         self.xmpp.get_roster(timeout=30)
-    #     except Exception as e:
-    #         self.log_error(e, trace=True)
-    #         self.log_error('Timeout ?')
+        return command
 
     def response(self, msg, origin=""):
         self.log_debug('def response', msg, origin)
@@ -237,12 +228,7 @@ class XMPP(IRC):
         for user in self.config.get('owners').split(";"):
             self.log_debug("Send message to", user)
             to_jid = sleekxmpp.jid.JID(user)
-            self.xmpp.sendMessage(
-                mfrom=self.jid,
-                mto=to_jid,
-                mtype='chat',
-                mbody=str(message)
-            )
+            self.xmpp.sendMessage(mfrom=self.jid, mto=to_jid, mtype='chat', mbody=str(message))
 
     def before_reconnect(self, ip):
         self.log_debug('after_reconnect')
@@ -258,15 +244,11 @@ class XMPP(IRC):
         self.log_debug('download_failed', pyfile, pyfile.error)
         try:
             if self.config.get('download_failed'):
-                self.announce(
-                    _("Download failed: %s (#%d) in #%d @ %s: %s") % (
-                        pyfile.name,
-                        pyfile.id,
-                        pyfile.packageid,
-                        pyfile.pluginname,
-                        pyfile.error
-                    )
-                )
+                self.announce(_("Download failed: %s (#%d) in #%d @ %s: %s") % (pyfile.name,
+                                                                                pyfile.id,
+                                                                                pyfile.packageid,
+                                                                                pyfile.pluginname,
+                                                                                pyfile.error))
 
         except Exception as e:
             self.log_error(e, trace=True)
@@ -275,11 +257,7 @@ class XMPP(IRC):
         self.log_debug('package_failed', pypack)
         try:
             if self.config.get('package_failed'):
-                self.announce(
-                    _("Package failed: %s (%d).") % (
-                        pypack.name,
-                        pypack.id
-                    ))
+                self.announce(_("Package failed: %s (%d).") % (pypack.name, pypack.id))
 
         except Exception as e:
             self.log_error(e, trace=True)
@@ -288,10 +266,7 @@ class XMPP(IRC):
         self.log_debug('package_finished')
         try:
             if self.config.get('info_pack'):
-                self.announce(_("Package finished: %s (%d).") % (
-                    pypack.name,
-                    pypack.id
-                ))
+                self.announce(_("Package finished: %s (%d).") % (pypack.name, pypack.id))
 
         except Exception as e:
             self.log_error(e, trace=True)
@@ -300,14 +275,10 @@ class XMPP(IRC):
         self.log_debug('download_finished')
         try:
             if self.config.get('info_file'):
-
-                self.announce(
-                    _("Download finished: %s (#%d) in #%d @ %s") % (
-                        pyfile.name,
-                        pyfile.id,
-                        pyfile.packageid,
-                        pyfile.pluginname
-                    ))
+                self.announce(_("Download finished: %s (#%d) in #%d @ %s") % (pyfile.name,
+                                                                              pyfile.id,
+                                                                              pyfile.packageid,
+                                                                              pyfile.pluginname))
 
         except Exception as e:
             self.log_error(e, trace=True)
@@ -316,8 +287,7 @@ class XMPP(IRC):
         self.log_debug('all_downloads_processed', arg)
         try:
             if self.config.get('all_download'):
-                self.announce(
-                    _("All download finished."))
+                self.announce(_("All download finished."))
 
         except Exception:
             pass
@@ -326,13 +296,10 @@ class XMPP(IRC):
         self.log_debug('download_start', pyfile, url, filename)
         try:
             if self.config.get('download_start'):
-                self.announce(
-                    _("Download start: %s (#%d) in (#%d) @ %s.") % (
-                        pyfile.name,
-                        pyfile.id,
-                        pyfile.packageid,
-                        pyfile.pluginname,
-                    ))
+                self.announce(_("Download start: %s (#%d) in (#%d) @ %s.") % (pyfile.name,
+                                                                              pyfile.id,
+                                                                              pyfile.packageid,
+                                                                              pyfile.pluginname))
         except Exception:
             pass
 
@@ -346,12 +313,7 @@ class NotifyBot(sleekxmpp.ClientXMPP):
         self.log_debug = log_debug
         self.log_info = log_info
 
-        sleekxmpp.ClientXMPP.__init__(
-            self,
-            jid, password,
-            use_tls=use_tls,
-            use_ssl=use_ssl
-        )
+        sleekxmpp.ClientXMPP.__init__(self, jid, password, use_tls=use_tls, use_ssl=use_ssl)
         self.add_event_handler("session_start", self.start)
 
     def start(self, event):
