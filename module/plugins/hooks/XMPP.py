@@ -122,9 +122,6 @@ class XMPP(IRC):
     def failed_auth(self, event=None):
         self.log_info('Failed to authenticate')
 
-    def stream_closed(self, stream=None):
-        self.log_debug("Stream was closed", stream)
-
     def stream_error(self, err=None):
         self.log_debug("Stream Error", err)
         # self.periodical.stop()
