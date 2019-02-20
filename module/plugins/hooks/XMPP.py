@@ -12,7 +12,7 @@ from module.plugins.internal.Addon import Addon
 class XMPP(IRC):
     __name__ = "XMPP"
     __type__ = "hook"
-    __version__ = "0.20"
+    __version__ = "0.21"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", False),
@@ -40,6 +40,7 @@ class XMPP(IRC):
         'c': 'collector',
         'i': 'info',
         'm': 'more',
+        'p': 'packinfo',
         's': 'status',
     }
 
@@ -121,9 +122,6 @@ class XMPP(IRC):
 
     def failed_auth(self, event=None):
         self.log_info('Failed to authenticate')
-
-    def stream_closed(self, stream=None):
-        self.log_debug("Stream was closed", stream)
 
     def stream_error(self, err=None):
         self.log_debug("Stream Error", err)
