@@ -40,6 +40,7 @@ class XMPP(IRC):
         'c': 'collector',
         'i': 'info',
         'm': 'more',
+        'p': 'packinfo',
         's': 'status',
     }
 
