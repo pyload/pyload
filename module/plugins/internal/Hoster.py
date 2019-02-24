@@ -33,7 +33,7 @@ if not hasattr(__builtin__.property, "setter"):
 class Hoster(Base):
     __name__ = "Hoster"
     __type__ = "hoster"
-    __version__ = "0.74"
+    __version__ = "0.75"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -225,9 +225,13 @@ class Hoster(Base):
             chunks = min(dl_chunks, chunk_limit)
 
         try:
-            newname = self.req.httpDownload(url, file, get, post,
-                                            ref, cookies, chunks, resume,
-                                            self.pyfile.setProgress, disposition)
+            try:
+                newname = self.req.httpDownload(url, file, size=self.pyfile.size, get=get, post=post,
+                                                ref=ref, cookies=cookies, chunks=chunks, resume=resume,
+                                                progressNotify=self.pyfile.setProgress, disposition=disposition)
+            except TypeError:
+                newname = self.req.httpDownload(url, file, get, post, ref, cookies, chunks, resume,
+                                                self.pyfile.setProgress, disposition)
 
         except IOError, e:
             self.log_error(e.message)
