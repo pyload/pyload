@@ -3,6 +3,8 @@
 # Test links:
 #   https://drive.google.com/file/d/0B6RNTe4ygItBQm15RnJiTmMyckU/view?pli=1
 
+import re
+import urlparse
 
 from module.network.HTTPRequest import BadHeader
 
@@ -13,7 +15,7 @@ from ..internal.misc import json
 class GoogledriveCom(Hoster):
     __name__ = "GoogledriveCom"
     __type__ = "hoster"
-    __version__ = "0.27"
+    __version__ = "0.28"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(?:drive|docs)\.google\.com/(?:file/d/|uc\?.*id=)(?P<ID>[-\w]+)'
@@ -89,8 +91,24 @@ class GoogledriveCom(Hoster):
             else:
                 self.fail(json_data['error']['message'])
 
-        pyfile.size = long(json_data['size'])
+        pyfile.size = int(json_data['size'])
         pyfile.name = json_data['name']
         self.info['md5'] = json_data['md5Checksum']
 
-        self.api_download()
+        # Somehow, API downloads are sacrificially slow compared to "normal" download :(
+        # self.api_download()
+
+        self.data = self.load(pyfile.url)
+        for _i in range(2):
+            m = re.search(r'"([^"]+uc\?.*?)"', self.data)
+            if m is None:
+                self.fail(_("link pattern not found"))
+
+            link = urlparse.urljoin(pyfile.url, m.group(1))
+
+            if re.search(r'/uc\?.*&confirm=', link):
+                self.download(link)
+                return
+
+            else:
+                self.data = self.load(link)
