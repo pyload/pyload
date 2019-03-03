@@ -12,7 +12,7 @@ from .misc import decode, encode, fsjoin, renice
 class UnRar(Extractor):
     __name__ = "UnRar"
     __type__ = "extractor"
-    __version__ = "1.41"
+    __version__ = "1.42"
     __status__ = "testing"
 
     __config__ = [("ignore_warnings", "bool", "Ignore unrar warnings", False)]
@@ -30,8 +30,8 @@ class UnRar(Extractor):
 
     _RE_PART = re.compile(r'\.(part|r)\d+(\.rar|\.rev)?(\.bad)?', re.I)
     _RE_FIXNAME = re.compile(r'Building (.+)')
-    _RE_FILES_V4 = re.compile(r'([* ])(.+?)\s+(\d+)\s+(\d+)\s+(\d+%|-->|<--)\s+([\d-]+)\s+([\d:]+)\s*([ACHIRS.rw\-]+)\s+([0-9A-F]{8})\s+(\w+)\s+([\d.]+)')
-    _RE_FILES_V5 = re.compile(r'([* ])([ACHIRS.rw\-]+)\s+(\d+)(?:\s+\d+)?(?:\s+(?:\d+%|-->|<--))?\s+([\d-]+)\s+([\d:]+)(?:\s+[0-9A-F]{8})?\s+(.+)')
+    _RE_FILES_V4 = re.compile(r'^([* ])(.+?)\s+(\d+)\s+(\d+)\s+(\d+%|-->|<--)\s+([\d-]+)\s+([\d:]+)\s*([ACHIRS.rw\-]+)\s+([0-9A-F]{8})\s+(\w+)\s+([\d.]+)', re.M)
+    _RE_FILES_V5 = re.compile(r'^([* ])\s*([ACHIRS.rw\-]+)\s+(\d+)(?:\s+\d+)?(?:\s+(?:\d+%|-->|<--))?\s+([\d-]+)\s+([\d:]+)(?:\s+[0-9A-F]{8})?\s+(.+)', re.M)
     _RE_BADPWD = re.compile(r'password', re.I)
     _RE_BADCRC = re.compile(r'encrypted|damaged|CRC failed|checksum error|corrupt', re.I)
     _RE_VERSION = re.compile(r'(?:UN)?RAR\s(\d+\.\d+)', re.I)
@@ -89,7 +89,7 @@ class UnRar(Extractor):
 
         #: Output only used to check if passworded files are present
         for groups in self._RE_FILES.findall(out):
-            if groups[0].startswith("*"):
+            if groups[0] == "*":
                 raise PasswordError
 
     def repair(self):
@@ -213,6 +213,9 @@ class UnRar(Extractor):
 
         #: Assume yes on all queries
         args.append("-y")
+
+        #: Disable comments show
+        args.append("-c-")
 
         #: Set a password
         password = kwargs.get('password')
