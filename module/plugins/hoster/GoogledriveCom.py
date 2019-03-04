@@ -15,7 +15,7 @@ from ..internal.misc import json
 class GoogledriveCom(Hoster):
     __name__ = "GoogledriveCom"
     __type__ = "hoster"
-    __version__ = "0.28"
+    __version__ = "0.29"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(?:drive|docs)\.google\.com/(?:file/d/|uc\?.*id=)(?P<ID>[-\w]+)'
@@ -107,7 +107,7 @@ class GoogledriveCom(Hoster):
             link = urlparse.urljoin(pyfile.url, m.group(1))
 
             if re.search(r'/uc\?.*&confirm=', link):
-                self.download(link)
+                self.download(link, disposition=False)
                 return
 
             else:
