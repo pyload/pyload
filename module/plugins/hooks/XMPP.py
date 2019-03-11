@@ -12,7 +12,7 @@ from module.plugins.internal.Addon import Addon
 class XMPP(IRC):
     __name__ = "XMPP"
     __type__ = "hook"
-    __version__ = "0.21"
+    __version__ = "0.22"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", False),
