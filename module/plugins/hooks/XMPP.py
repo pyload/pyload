@@ -44,6 +44,7 @@ class XMPP(IRC):
         'm': 'more',
         'p': 'packinfo',
         'r': 'restart',
+        'rf': 'restartFile',
         's': 'status',
     }
 

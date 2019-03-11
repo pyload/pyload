@@ -393,6 +393,15 @@ class IRC(Thread, Notifier):
         self.pyload.api.restart()
         return ["INFO: Done."]
 
+    def event_restartFile(self, args):
+        if not args:
+            return ['ERROR: missing argument']
+        id = int(args[0])
+        if not self.pyload.api.getFileData(id):
+            return ["ERROR: File #%d does not exist." % id]
+        self.pyload.api.restartFile(id)
+        return ["INFO: Restart file #%d." % id]
+
     def event_deleteFinished(self, args):
         return ["INFO: Deleted package ids: %s." % self.pyload.api.deleteFinished()]
 
@@ -413,6 +422,7 @@ class IRC(Thread, Notifier):
                  "freeSpace                          Available free space at download directory in bytes",
                  "pause                              Stops the download (but not abort active downloads)",
                  "restart                            Restart pyload core",
+                 "restartFile <id>                   Resets file status, so it will be downloaded again",
                  "togglepause                        Toggle pause state",
                  "unpause                            Starts all downloads"]
         return lines
