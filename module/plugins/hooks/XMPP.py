@@ -35,15 +35,15 @@ class XMPP(IRC):
     __authors__ = [("RaNaN", "RaNaN@pyload.org")]
 
     SHORTCUT_COMMANDS = {
-        'h': 'help',
         'a': 'add',
-        'q': 'queue',
         'c': 'collector',
         'f': 'freeSpace',
+        'h': 'help',
         'i': 'info',
         'l': 'getLog',
         'm': 'more',
         'p': 'packinfo',
+        'q': 'queue',
         'r': 'restart',
         'rf': 'restartFile',
         'rp': 'restartPackage',

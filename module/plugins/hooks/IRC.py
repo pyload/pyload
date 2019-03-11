@@ -256,31 +256,28 @@ class IRC(Thread, Notifier):
 
     def event_packinfo(self, args):
         if not args:
-            return ["ERROR: Use packinfo like this: packinfo <id>"]
+            return ["ERROR: Use packinfo like this: packinfo <name|id>"]
 
         lines = []
-        pack = None
-        try:
-            pack = self.pyload.api.getPackageData(int(args[0]))
+        idorname = args[0]
 
-        except PackageDoesNotExists:
+        pack = self._getPackageByNameOrId(idorname)
+        if not pack:
             return ["ERROR: Package doesn't exists."]
 
-        id = args[0]
-
         self.more = []
-
-        lines.append('PACKAGE #%s: "%s" with %d links' % (id, pack.name, len(pack.links)))
+        lines.append('PACKAGE #%s: "%s" with %d links' % (pack.pid, pack.name, len(pack.links)))
         for pyfile in pack.links:
             self.more.append('LINK #%s: %s (%s) [%s][%s]' % (pyfile.fid, pyfile.name, pyfile.format_size,
                                                              pyfile.statusmsg, pyfile.plugin))
 
-        if len(self.more) < 6:
+        maxline = self.config.get('maxline')
+        if len(self.more) < maxline:
             lines.extend(self.more)
             self.more = []
         else:
-            lines.extend(self.more[:6])
-            self.more = self.more[6:]
+            lines.extend(self.more[:maxline])
+            self.more = self.more[maxline:]
             lines.append("%d more links do display." % len(self.more))
 
         return lines
@@ -441,23 +438,24 @@ class IRC(Thread, Notifier):
     def event_help(self, args):
         lines = ["The following commands are available:",
                  "add <package|packid> <links> [...] Adds link to package. (creates new package if it does not exist)",
-                 "queue                       Shows all packages in the queue",
-                 "collector                   Shows all packages in collector",
-                 "del -p|-l <id> [...]        Deletes all packages|links with the ids specified",
-                 "info <id>                   Shows info of the link with id <id>",
-                 "packinfo <id>               Shows info of the package with id <id>",
-                 "more                        Shows more info when the result was truncated",
-                 "push <id>                   Push package to queue",
-                 "pull <id>                   Pull package from queue",
-                 "status                      Show general download status",
-                 "help                        Shows this help message"]
+                 "collector                          Shows all packages in collector",
+                 "del -p|-l <id> [...]               Deletes all packages|links with the ids specified",
                  "deleteFinished                     Deletes all finished files and completly finished packages",
                  "freeSpace                          Available free space at download directory in bytes",
                  "getLog [last [nb]]                 Returns most recent log entries",
+                 "help                               Shows this help message",
+                 "info <id>                          Shows info of the link with id <id>",
+                 "more                               Shows more info when the result was truncated",
+                 "packinfo <package|packid>          Shows info of the package with id <id>",
                  "pause                              Stops the download (but not abort active downloads)",
+                 "pull <id>                          Pull package from queue",
+                 "push <id>                          Push package to queue",
+                 "queue                              Shows all packages in the queue",
                  "restart                            Restart pyload core",
+                 "restartFailed                      Restarts all failed failes",
                  "restartFile <id>                   Resets file status, so it will be downloaded again",
                  "restartPackage <package|packid>    Restarts a package, resets every containing files",
+                 "status                             Show general download status",
                  "togglepause                        Toggle pause state",
                  "unpause                            Starts all downloads"]
         return lines
