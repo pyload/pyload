@@ -402,6 +402,16 @@ class IRC(Thread, Notifier):
         self.pyload.api.restartFile(id)
         return ["INFO: Restart file #%d." % id]
 
+    def event_restartPackage(self, args):
+        if not args:
+            return ['ERROR: missing argument']
+        idorname = args[0]
+        pack = self._getPackageByNameOrId(idorname)
+        if not pack:
+            return ["ERROR: Package #%s does not exist." % idorname]
+        self.pyload.api.restartPackage(pack.pid)
+        return ["INFO: Restart package %s (#%d)." % (pack.name, pack.pid)]
+
     def event_deleteFinished(self, args):
         return ["INFO: Deleted package ids: %s." % self.pyload.api.deleteFinished()]
 
@@ -423,10 +433,41 @@ class IRC(Thread, Notifier):
                  "pause                              Stops the download (but not abort active downloads)",
                  "restart                            Restart pyload core",
                  "restartFile <id>                   Resets file status, so it will be downloaded again",
+                 "restartPackage <package|packid>    Restarts a package, resets every containing files",
                  "togglepause                        Toggle pause state",
                  "unpause                            Starts all downloads"]
         return lines
 
+    # End events
+
+    def _getPackageByNameOrId(self, idorname):
+        """Return the first packageData found or None."""
+        pack = None
+        if idorname.isdigit():
+            try:
+                id = int(idorname)
+                pack = self.pyload.api.getPackageData(id)
+            except PackageDoesNotExists:
+                pack = self._getPackageByName(idorname)
+        else:
+            pack = self._getPackageByName(idorname)
+        return pack
+
+    def _getPackageByName(self, name):
+        """Return the first packageData found or None."""
+
+        pq = self.pyload.api.getQueueData()
+        for pack in pq:
+            if pack.name == name:
+                self.log_debug('pack.name', pack.name, 'pack.pid', pack.pid)
+                return pack
+
+        pc = self.pyload.api.getCollector()
+        for pack in pc:
+            if pack.name == name:
+                self.log_debug('pack.name', pack.name, 'pack.pid', pack.pid)
+                return pack
+        return None
 
 class IRCError(Exception):
 
