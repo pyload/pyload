@@ -304,6 +304,12 @@ class IRC(Thread, Notifier):
         self.pyload.api.pauseServer()
         return ["INFO: No new downloads will be started."]
 
+    def event_togglepause(self, args):
+        if self.pyload.api.togglePause():
+            return ["INFO: Starting downloads."]
+        else:
+            return ["INFO: No new downloads will be started."]
+
     def event_add(self, args):
         if len(args) < 2:
             return ['ERROR: Add links like this: "add <packagename|id> links". ',
@@ -394,6 +400,7 @@ class IRC(Thread, Notifier):
                  "status                      Show general download status",
                  "help                        Shows this help message"]
                  "pause                              Stops the download (but not abort active downloads)",
+                 "togglepause                        Toggle pause state",
                  "unpause                            Starts all downloads"]
         return lines
 
