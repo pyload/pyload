@@ -39,6 +39,7 @@ class XMPP(IRC):
         'a': 'add',
         'q': 'queue',
         'c': 'collector',
+        'f': 'freeSpace',
         'i': 'info',
         'm': 'more',
         'p': 'packinfo',

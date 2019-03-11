@@ -386,6 +386,9 @@ class IRC(Thread, Notifier):
         task.setResult(" ".join(args[1:]))
         return ["INFO: Result %s saved." % " ".join(args[1:])]
 
+    def event_freeSpace(self, args):
+        return ["INFO: Free space is %.3f G." % (int(self.pyload.api.freeSpace())/1024/1024/1024)]
+
     def event_help(self, args):
         lines = ["The following commands are available:",
                  "add <package|packid> <links> [...] Adds link to package. (creates new package if it does not exist)",
@@ -399,6 +402,7 @@ class IRC(Thread, Notifier):
                  "pull <id>                   Pull package from queue",
                  "status                      Show general download status",
                  "help                        Shows this help message"]
+                 "freeSpace                          Available free space at download directory in bytes",
                  "pause                              Stops the download (but not abort active downloads)",
                  "togglepause                        Toggle pause state",
                  "unpause                            Starts all downloads"]
