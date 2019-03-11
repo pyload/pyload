@@ -41,6 +41,7 @@ class XMPP(IRC):
         'c': 'collector',
         'f': 'freeSpace',
         'i': 'info',
+        'l': 'getLog',
         'm': 'more',
         'p': 'packinfo',
         'r': 'restart',

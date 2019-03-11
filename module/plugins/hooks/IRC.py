@@ -415,6 +415,35 @@ class IRC(Thread, Notifier):
     def event_deleteFinished(self, args):
         return ["INFO: Deleted package ids: %s." % self.pyload.api.deleteFinished()]
 
+    def event_getLog(self, args):
+        """Returns most recent log entries."""
+        self.more = []
+        lines = []
+        log = self.pyload.api.getLog()
+
+        for line in log:
+            if line:
+                if line[-1] == '\n':
+                    line = line[:-1]
+                self.more.append("LOG: %s" % line)
+
+        maxline = self.config.get('maxline')
+        if args and args[0] == 'last':
+            if len(args) < 2:
+                self.more = self.more[-maxline:]
+            else:
+                self.more = self.more[-(int(args[1])):]
+
+        if len(self.more) < maxline:
+            lines.extend(self.more)
+            self.more = []
+        else:
+            lines.extend(self.more[:maxline])
+            self.more = self.more[maxline:]
+            lines.append("%d more logs do display." % len(self.more))
+
+        return lines
+
     def event_help(self, args):
         lines = ["The following commands are available:",
                  "add <package|packid> <links> [...] Adds link to package. (creates new package if it does not exist)",
@@ -430,6 +459,7 @@ class IRC(Thread, Notifier):
                  "help                        Shows this help message"]
                  "deleteFinished                     Deletes all finished files and completly finished packages",
                  "freeSpace                          Available free space at download directory in bytes",
+                 "getLog [last [nb]]                 Returns most recent log entries",
                  "pause                              Stops the download (but not abort active downloads)",
                  "restart                            Restart pyload core",
                  "restartFile <id>                   Resets file status, so it will be downloaded again",
