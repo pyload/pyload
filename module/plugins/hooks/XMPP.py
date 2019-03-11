@@ -228,6 +228,9 @@ class XMPP(IRC):
             to_jid = sleekxmpp.jid.JID(user)
             self.xmpp.sendMessage(mfrom=self.jid, mto=to_jid, mtype='chat', mbody=str(message))
 
+    def exit(self):
+        self.xmpp.disconnect()
+
     def before_reconnect(self, ip):
         self.log_debug('after_reconnect')
         self.xmpp.disconnect()
