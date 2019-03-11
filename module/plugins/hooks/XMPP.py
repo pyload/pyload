@@ -27,7 +27,8 @@ class XMPP(IRC):
                   ("all_download", "bool", "Inform about all download finished", False),
                   ("package_failed", "bool", "Notify package failed", False),
                   ("download_failed", "bool", "Notify download failed", True),
-                  ("download_start", "bool", "Notify download start", True)]
+                  ("download_start", "bool", "Notify download start", True),
+                  ("maxline", "int", "Maximum line per message", 6)]
 
     __description__ = """Connect to jabber and let owner perform different tasks"""
     __license__ = "GPLv3"

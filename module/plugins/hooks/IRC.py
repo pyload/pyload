@@ -31,7 +31,8 @@ class IRC(Thread, Notifier):
                   ("owner", "str", "Nickname the Client will accept commands from", "Enter your nick here!"),
                   ("info_file", "bool", "Inform about every file finished", False),
                   ("info_pack", "bool", "Inform about every package finished", True),
-                  ("captcha", "bool", "Send captcha requests", True)]
+                  ("captcha", "bool", "Send captcha requests", True),
+                  ("maxline", "int", "Maximum line per message", 6)]
 
     __description__ = """Connect to irc and let owner perform different tasks"""
     __license__ = "GPLv3"
@@ -288,9 +289,10 @@ class IRC(Thread, Notifier):
         if not self.more:
             return ["No more information to display."]
 
-        lines = self.more[:6]
-        self.more = self.more[6:]
-        lines.append("%d more links do display." % len(self.more))
+        maxline = self.config.get('maxline')
+        lines = self.more[:maxline]
+        self.more = self.more[maxline:]
+        lines.append("%d more lines do display." % len(self.more))
 
         return lines
 
