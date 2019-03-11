@@ -315,23 +315,17 @@ class IRC(Thread, Notifier):
             return ['ERROR: Add links like this: "add <packagename|id> links". ',
                     "This will add the link <link> to to the package <package> / the package with id <id>!"]
 
-        pack = args[0].strip()
+        idorname = args[0].strip()
         links = [x.strip() for x in args[1:]]
 
-        try:
-            id = int(pack)
-            pack = self.pyload.api.getPackageData(id)
-            if not pack:
-                return ["ERROR: Package doesn't exists."]
-
-            #@TODO: add links
-
-            return ["INFO: Added %d links to Package %s [#%d]" % (len(links), pack['name'], id)]
-
-        except Exception:
+        pack = self._getPackageByNameOrId(idorname)
+        if not pack:
             #: Create new package
-            id = self.pyload.api.addPackage(pack, links, 1)
-            return ["INFO: Created new Package %s [#%d] with %d links." % (pack, id, len(links))]
+            id = self.pyload.api.addPackage(idorname, links, 1)
+            return ["INFO: Created new Package %s [#%d] with %d links." % (idorname, id, len(links))]
+
+        self.pyload.api.addFiles(pack.pid, links)
+        return ["INFO: Added %d links to Package %s [#%d]" % (len(links), pack.name, pack.pid)]
 
     def event_del(self, args):
         if len(args) < 2:
