@@ -294,11 +294,11 @@ class IRC(Thread, Notifier):
 
         return lines
 
-    def event_start(self, args):
+    def event_unpause(self, args):
         self.pyload.api.unpauseServer()
         return ["INFO: Starting downloads."]
 
-    def event_stop(self, args):
+    def event_pause(self, args):
         self.pyload.api.pauseServer()
         return ["INFO: No new downloads will be started."]
 
@@ -387,12 +387,12 @@ class IRC(Thread, Notifier):
                  "info <id>                   Shows info of the link with id <id>",
                  "packinfo <id>               Shows info of the package with id <id>",
                  "more                        Shows more info when the result was truncated",
-                 "start                       Starts all downloads",
-                 "stop                        Stops the download (but not abort active downloads)",
                  "push <id>                   Push package to queue",
                  "pull <id>                   Pull package from queue",
                  "status                      Show general download status",
                  "help                        Shows this help message"]
+                 "pause                              Stops the download (but not abort active downloads)",
+                 "unpause                            Starts all downloads"]
         return lines
 
 
