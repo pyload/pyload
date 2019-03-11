@@ -393,6 +393,9 @@ class IRC(Thread, Notifier):
         self.pyload.api.restart()
         return ["INFO: Done."]
 
+    def event_deleteFinished(self, args):
+        return ["INFO: Deleted package ids: %s." % self.pyload.api.deleteFinished()]
+
     def event_help(self, args):
         lines = ["The following commands are available:",
                  "add <package|packid> <links> [...] Adds link to package. (creates new package if it does not exist)",
@@ -406,6 +409,7 @@ class IRC(Thread, Notifier):
                  "pull <id>                   Pull package from queue",
                  "status                      Show general download status",
                  "help                        Shows this help message"]
+                 "deleteFinished                     Deletes all finished files and completly finished packages",
                  "freeSpace                          Available free space at download directory in bytes",
                  "pause                              Stops the download (but not abort active downloads)",
                  "restart                            Restart pyload core",
