@@ -12,7 +12,7 @@ from module.plugins.internal.Addon import Addon
 class XMPP(IRC):
     __name__ = "XMPP"
     __type__ = "hook"
-    __version__ = "0.21"
+    __version__ = "0.22"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", False),
@@ -27,20 +27,26 @@ class XMPP(IRC):
                   ("all_download", "bool", "Inform about all download finished", False),
                   ("package_failed", "bool", "Notify package failed", False),
                   ("download_failed", "bool", "Notify download failed", True),
-                  ("download_start", "bool", "Notify download start", True)]
+                  ("download_start", "bool", "Notify download start", True),
+                  ("maxline", "int", "Maximum line per message", 6)]
 
     __description__ = """Connect to jabber and let owner perform different tasks"""
     __license__ = "GPLv3"
     __authors__ = [("RaNaN", "RaNaN@pyload.org")]
 
     SHORTCUT_COMMANDS = {
-        'h': 'help',
         'a': 'add',
-        'q': 'queue',
         'c': 'collector',
+        'f': 'freeSpace',
+        'h': 'help',
         'i': 'info',
+        'l': 'getLog',
         'm': 'more',
         'p': 'packinfo',
+        'q': 'queue',
+        'r': 'restart',
+        'rf': 'restartFile',
+        'rp': 'restartPackage',
         's': 'status',
     }
 
@@ -227,6 +233,9 @@ class XMPP(IRC):
             self.log_debug("Send message to", user)
             to_jid = sleekxmpp.jid.JID(user)
             self.xmpp.sendMessage(mfrom=self.jid, mto=to_jid, mtype='chat', mbody=str(message))
+
+    def exit(self):
+        self.xmpp.disconnect()
 
     def before_reconnect(self, ip):
         self.log_debug('after_reconnect')
