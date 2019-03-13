@@ -378,7 +378,8 @@ class IRC(Thread, Notifier):
         return ["INFO: Result %s saved." % " ".join(args[1:])]
 
     def event_freeSpace(self, args):
-        return ["INFO: Free space is %.3f G." % (int(self.pyload.api.freeSpace())/1024/1024/1024)]
+        b = format_size(int(self.pyload.api.freeSpace()))
+        return ["INFO: Free space is %s." % (b)]
 
     def event_restart(self, args):
         self.pyload.api.restart()
