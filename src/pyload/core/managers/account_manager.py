@@ -13,7 +13,7 @@ from .event_manager import AccountUpdateEvent
 __version__ = 1
 
 
-class AccountManager(object):
+class AccountManager:
     """
     manages all accounts.
     """

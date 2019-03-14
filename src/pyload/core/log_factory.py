@@ -14,7 +14,7 @@ except ImportError:
     colorlog = None
 
 
-class LogFactory(object):
+class LogFactory:
 
     FILE_EXTENSION = ".log"
 

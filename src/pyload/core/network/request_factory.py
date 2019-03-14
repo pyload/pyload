@@ -15,7 +15,7 @@ from .xdcc.xdcc_request import XDCCRequest
 DEFAULT_REQUEST = None
 
 
-class RequestFactory(object):
+class RequestFactory:
     def __init__(self, core):
         self.lock = Lock()
         self.pyload = core

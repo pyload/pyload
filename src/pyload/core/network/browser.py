@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 from logging import getLogger
 
 from .http.http_download import HTTPDownload
@@ -9,7 +8,7 @@ from .http.http_request import HTTPRequest
 from pyload import APPID
 
 
-class Browser(object):
+class Browser:
     def __init__(self, bucket=None, options={}):
         self.log = getLogger(APPID)
 

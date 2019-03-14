@@ -8,7 +8,7 @@ def get_default_config(develop):
     return DevelopmentConfig if develop else ProductionConfig
 
 
-class BaseConfig(object):
+class BaseConfig:
     DEBUG = False
     TESTING = False
     SESSION_COOKIE_SAMESITE = "Lax"

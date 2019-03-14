@@ -49,4 +49,4 @@ class SolidfilesCom(SimpleDownloader):
 
         self.data = self.load(self.fixurl(action), post=inputs)
 
-        SimpleDownloader.handle_free(self, pyfile)
+        super().handle_free(pyfile)

@@ -8,7 +8,7 @@ from threading import Lock
 from ..utils import lock
 
 
-class Bucket(object):
+class Bucket:
 
     MIN_RATE = 10 << 10  # 10kb minimum rate
 

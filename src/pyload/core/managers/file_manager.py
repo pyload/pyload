@@ -7,7 +7,7 @@ from ..utils import lock
 from ..datatypes import Destination
 
 
-class FileManager(object):
+class FileManager:
     """
     Handles all request made to obtain information, modify status or other request for
     links or packages.

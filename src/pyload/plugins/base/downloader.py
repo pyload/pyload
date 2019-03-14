@@ -241,7 +241,7 @@ class BaseDownloader(BaseHoster):
                 self.pyfile.setProgress,
                 disposition,
             )
-            
+
         except IOError as exc:
             self.log_error(exc)
             self.fail(self._("IOError {}").format(exc.errno))

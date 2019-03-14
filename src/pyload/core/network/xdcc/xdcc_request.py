@@ -12,7 +12,7 @@ import time
 from ..exceptions import Abort
 
 
-class XDCCRequest(object):
+class XDCCRequest:
     def __init__(self, bucket=None, options={}):
         self.proxies = options.get("proxies", {})
         self.bucket = bucket

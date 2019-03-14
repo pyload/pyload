@@ -24,7 +24,7 @@ from .helpers import JSONEncoder
 
 
 #: flask app singleton
-class App(object):
+class App:
 
     JINJA_TEMPLATE_GLOBALS = TEMPLATE_GLOBALS
     JINJA_TEMPLATE_FILTERS = TEMPLATE_FILTERS

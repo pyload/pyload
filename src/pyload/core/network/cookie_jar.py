@@ -6,7 +6,7 @@ import time
 from datetime import timedelta
 
 
-class CookieJar(object):
+class CookieJar:
     def __init__(self, pluginname, account=None):
         self.cookies = {}
         self.plugin = pluginname

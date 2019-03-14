@@ -50,7 +50,7 @@ def print_status(download):
 
 
 # TODO: use client.api instead client
-class Cli(object):
+class Cli:
     def __init__(self, client, command):
         self.client = client
         self.command = command

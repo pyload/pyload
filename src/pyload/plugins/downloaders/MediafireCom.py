@@ -93,4 +93,4 @@ class MediafireCom(SimpleDownloader):
                 if self.PASSWORD_PATTERN in self.data:
                     self.fail(self._("Wrong password"))
 
-        return SimpleDownloader.handle_free(self, pyfile)
+        return super().handle_free(pyfile)

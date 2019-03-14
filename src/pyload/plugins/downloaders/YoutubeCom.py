@@ -46,7 +46,7 @@ class BIGHTTPRequest(HTTPRequest):
         self.rep.write(buf)
 
 
-class Ffmpeg(object):
+class Ffmpeg:
     _RE_DURATION = re.compile(r"Duration: (\d{2}):(\d{2}):(\d{2})\.(\d{2}),")
     _RE_TIME = re.compile(r"time=(\d{2}):(\d{2}):(\d{2})\.(\d{2})")
     _RE_VERSION = re.compile((r"ffmpeg version (.+?) "))
@@ -1260,7 +1260,7 @@ class JSInterpreterError(Exception):
     pass
 
 
-class JSInterpreter(object):
+class JSInterpreter:
     def __init__(self, code, objects=None):
         self._OPERATORS = [
             ("|", operator.or_),

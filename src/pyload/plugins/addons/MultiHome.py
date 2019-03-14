@@ -6,7 +6,7 @@ import time
 from ..base.addon import BaseAddon
 
 
-class Interface(object):
+class Interface:
     def __init__(self, address):
         self.address = address
         self.history = {}

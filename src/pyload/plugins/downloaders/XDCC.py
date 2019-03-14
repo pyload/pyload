@@ -16,7 +16,7 @@ from pyload.core.network.exceptions import Abort
 from pyload.core.utils import lock
 
 
-class IRC(object):
+class IRC:
     def __init__(self, plugin, nick, ident, realname):
         self.plugin = plugin
         self._ = plugin._

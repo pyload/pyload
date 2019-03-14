@@ -15,7 +15,7 @@ def _salted_password(password, salt):
     return sha1(salt_pw.encode()).hexdigest()
 
 
-class UserDatabaseMethods(object):
+class UserDatabaseMethods:
     @style.queue
     def checkAuth(self, user, password):
         self.c.execute(

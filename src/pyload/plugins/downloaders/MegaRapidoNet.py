@@ -66,4 +66,4 @@ class MegaRapidoNet(MultiDownloader):
         if "desloga e loga novamente para gerar seus links" in self.data.lower():
             self.error(self._("You have logged in at another place"))
 
-        return MultiDownloader.handle_premium(self, pyfile)
+        return super().handle_premium(pyfile)

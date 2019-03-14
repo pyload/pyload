@@ -33,7 +33,7 @@ def get_plugin_last_header(plugin):
     return plugin.req.http.header if hasattr(plugin.req, "http") else plugin.req.header
 
 
-class CloudFlare(object):
+class CloudFlare:
     @staticmethod
     def handle_function(addon_plugin, owner_plugin, func_name, orig_func, args):
         addon_plugin.log_debug(
@@ -164,7 +164,7 @@ class CloudFlare(object):
             return None  #: Tell the exception handler to re-throw the exception
 
 
-class PreloadStub(object):
+class PreloadStub:
     def __init__(self, addon_plugin, owner_plugin):
         self.addon_plugin = addon_plugin
         self.owner_plugin = owner_plugin

@@ -5,7 +5,7 @@
 from .database_thread import DatabaseThread, style
 
 
-class StorageDatabaseMethods(object):
+class StorageDatabaseMethods:
     @style.queue
     def setStorage(self, identifier, key, value):
         self.c.execute(

@@ -26,7 +26,7 @@ def try_catch(func):
     return wrapper
 
 
-class AddonManager(object):
+class AddonManager:
     """
     Manages addons, delegates and handles Events.
 

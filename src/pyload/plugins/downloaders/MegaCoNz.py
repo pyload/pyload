@@ -47,7 +47,7 @@ from pyload.core.utils import decode
 # ESSL                (-23): SSL verification failed
 
 
-class MegaCrypto(object):
+class MegaCrypto:
     @staticmethod
     def base64_decode(data):
         #: Add padding, we need a string with a length multiple of 4
@@ -163,7 +163,7 @@ class MegaCrypto(object):
         if chunk_start < size:
             yield (chunk_start, size - chunk_start)
 
-    class Checksum(object):
+    class Checksum:
         """
         interface for checking CBC-MAC checksum.
         """
@@ -209,7 +209,7 @@ class MegaCrypto(object):
             return MegaCrypto.Checksum(key)
 
 
-class MegaClient(object):
+class MegaClient:
     API_URL = "https://eu.api.mega.co.nz/cs"
 
     def __init__(self, plugin, node_id):

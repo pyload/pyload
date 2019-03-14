@@ -9,7 +9,7 @@ from sys import argv, exit
 import _thread
 
 
-class Forwarder(object):
+class Forwarder:
     def __init__(self, extip, extport=9666):
         print(f"Start portforwarding to {extip}:{extport}")
         proxy(extip, extport, 9666)

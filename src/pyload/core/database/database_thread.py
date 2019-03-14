@@ -16,7 +16,7 @@ from ... import exc_logger
 __version__ = 4
 
 
-class style(object):
+class style:
     db = None
 
     @classmethod
@@ -48,7 +48,7 @@ class style(object):
         return x
 
 
-class DatabaseJob(object):
+class DatabaseJob:
     def __init__(self, f, *args, **kwargs):
         self.done = Event()
 

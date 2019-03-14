@@ -15,7 +15,7 @@ from PIL import Image, ImageDraw
 from ..base.ocr import BaseOCR
 
 
-class ImageSequence(object):
+class ImageSequence:
     def __init__(self, im):
         self.im = im
 

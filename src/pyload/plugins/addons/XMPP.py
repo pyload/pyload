@@ -233,7 +233,7 @@ class XMPP(IRC, pyxmpp2.client.Client):
         self.connect()
 
 
-class VersionHandler(object):
+class VersionHandler:
     """
     Provides handler for a version query.
 

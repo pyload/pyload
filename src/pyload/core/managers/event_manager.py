@@ -7,7 +7,7 @@ import time
 from ..utils import uniqify
 
 
-class EventManager(object):
+class EventManager:
     def __init__(self, core):
         self.pyload = core
         self._ = core._
@@ -44,7 +44,7 @@ class EventManager(object):
             client.addEvent(event)
 
 
-class Client(object):
+class Client:
     def __init__(self, uuid):
         self.uuid = uuid
         self.lastActive = time.time()
@@ -62,7 +62,7 @@ class Client(object):
         self.events.append(event)
 
 
-class UpdateEvent(object):
+class UpdateEvent:
     def __init__(self, itype, iid, destination):
         assert itype == "pack" or itype == "file"
         assert destination == "queue" or destination == "collector"
@@ -74,7 +74,7 @@ class UpdateEvent(object):
         return ["update", self.destination, self.type, self.id]
 
 
-class RemoveEvent(object):
+class RemoveEvent:
     def __init__(self, itype, iid, destination):
         assert itype == "pack" or itype == "file"
         assert destination == "queue" or destination == "collector"
@@ -86,7 +86,7 @@ class RemoveEvent(object):
         return ["remove", self.destination, self.type, self.id]
 
 
-class InsertEvent(object):
+class InsertEvent:
     def __init__(self, itype, iid, after, destination):
         assert itype == "pack" or itype == "file"
         assert destination == "queue" or destination == "collector"
@@ -99,7 +99,7 @@ class InsertEvent(object):
         return ["insert", self.destination, self.type, self.id, self.after]
 
 
-class ReloadAllEvent(object):
+class ReloadAllEvent:
     def __init__(self, destination):
         assert destination == "queue" or destination == "collector"
         self.destination = destination
@@ -108,11 +108,11 @@ class ReloadAllEvent(object):
         return ["reload", self.destination]
 
 
-class AccountUpdateEvent(object):
+class AccountUpdateEvent:
     def toList(self):
         return ["account"]
 
 
-class ConfigUpdateEvent(object):
+class ConfigUpdateEvent:
     def toList(self):
         return ["config"]

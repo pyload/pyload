@@ -7,7 +7,7 @@ from ..utils import format_size
 from .database_thread import DatabaseThread, style
 
 
-class FileDatabaseMethods(object):
+class FileDatabaseMethods:
     @style.queue
     def filecount(self, queue):
         """

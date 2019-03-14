@@ -32,6 +32,3 @@ class ExashareCom(XFSDownloader):
         self.multiDL = True
         self.chunk_limit = 1
         self.resume_download = self.premium
-
-    def handle_free(self, pyfile):
-        return XFSDownloader.handle_free(self, pyfile)

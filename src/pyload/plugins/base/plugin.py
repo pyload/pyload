@@ -18,9 +18,9 @@ if os.name != "nt":
 
 # NOTE: save decode() as _decode() for use with load(url, decode='decode-str')
 _decode = decode
-    
 
-class BasePlugin(object):
+
+class BasePlugin:
     __name__ = "BasePlugin"
     __type__ = "base"
     __version__ = "0.74"

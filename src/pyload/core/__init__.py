@@ -39,7 +39,7 @@ class Exit(Exception):
 #  sync between pyload cores
 #  new attributes (date|sync status)
 #  improve external scripts
-class Core(object):
+class Core:
 
     _LOCALE_DOMAIN = APPID
     _DEFAULT_USERNAME = APPID

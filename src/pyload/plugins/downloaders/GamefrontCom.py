@@ -39,4 +39,4 @@ class GamefrontCom(SimpleDownloader):
             "http://www.gamefront.com/files/service/thankyou",
             get={"id": self.info["pattern"]["ID"]},
         )
-        return SimpleDownloader.handle_free(self, pyfile)
+        return super().handle_free(pyfile)

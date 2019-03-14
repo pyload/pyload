@@ -13,7 +13,7 @@ from ..helpers import exists
 from pyload.core.utils import safename, uniqify
 
 
-class ArchiveQueue(object):
+class ArchiveQueue:
     def __init__(self, plugin, storage):
         self.plugin = plugin
         self.storage = storage

@@ -42,7 +42,7 @@ class TusfilesNet(XFSDownloader):
 
     def download(self, url, *args, **kwargs):
         try:
-            return XFSDownloader.download(self, url, *args, **kwargs)
+            return super().download(url, *args, **kwargs)
 
         except BadHeader as exc:
             if exc.code == 503:

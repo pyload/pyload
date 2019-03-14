@@ -12,7 +12,7 @@ from pyload.core.api import __version__ as API_VERSION
 url = "http://localhost:8001/api/v{}/{{}}".format(API_VERSION)
 
 
-class TestJson(object):
+class TestJson:
     def call(self, name, post=None):
         if not post:
             post = {}

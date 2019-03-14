@@ -43,7 +43,7 @@ branch_prefix: pyup-
 
 # set a global prefix for PRs
 # default: empty
-pr_prefix: 
+pr_prefix:
 
 # allow to close stale PRs
 # default: True

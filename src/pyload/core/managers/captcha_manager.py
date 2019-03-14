@@ -8,7 +8,7 @@ from threading import Lock
 from ..utils import lock
 
 
-class CaptchaManager(object):
+class CaptchaManager:
     def __init__(self, core):
         self.lock = Lock()
         self.pyload = core
@@ -64,7 +64,7 @@ class CaptchaManager(object):
         return False
 
 
-class CaptchaTask(object):
+class CaptchaTask:
     def __init__(self, id, format, params={}, result_type="textual"):
         self.id = str(id)
         self.captchaParams = params

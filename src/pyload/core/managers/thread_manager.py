@@ -20,7 +20,7 @@ from ..threads.info_thread import InfoThread
 from ..utils import free_space, lock
 
 
-class ThreadManager(object):
+class ThreadManager:
     """
     manages the download threads, assign jobs, reconnect etc.
     """

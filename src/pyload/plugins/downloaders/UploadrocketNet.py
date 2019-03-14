@@ -36,7 +36,7 @@ class UploadrocketNet(XFSDownloader):
         self.multiDL = True
 
     def _post_parameters(self):
-        inputs = XFSDownloader._post_parameters(self)
+        inputs = super()._post_parameters()
 
         # Remove parameters added by XFSDownloader (method_free/method_premium) and
         # remove the inappropriate inputs
@@ -57,7 +57,7 @@ class UploadrocketNet(XFSDownloader):
         if m is not None and m.group(1):
             self.pyfile.url = m.group(1)
 
-        XFSDownloader.process(self, pyfile)
+        super().process(pyfile)
 
     def download(
         self,
@@ -76,6 +76,6 @@ class UploadrocketNet(XFSDownloader):
         if m is not None and m.group(1):
             self.pyfile.name = m.group(1)
 
-        XFSDownloader.download(
-            self, url, get, post, ref, cookies, disposition, resume, chunks
+        super().download(
+            url, get, post, ref, cookies, disposition, resume, chunks
         )

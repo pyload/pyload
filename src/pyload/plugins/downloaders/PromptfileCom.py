@@ -48,4 +48,4 @@ class PromptfileCom(SimpleDownloader):
         self.data = self.load(pyfile.url, post=payload)
 
         #: STAGE 2: get the direct link
-        return SimpleDownloader.handle_free(self, pyfile)
+        return super().handle_free(pyfile)

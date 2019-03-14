@@ -19,7 +19,7 @@ from base64 import b85decode, b85encode
 from collections.abc import Sequence
 
 
-class Config(object):
+class Config:
     def __init__(self, plugin):
         self.plugin = plugin
 
@@ -54,7 +54,7 @@ class Config(object):
             return default
 
 
-class DB(object):
+class DB:
     def __init__(self, plugin):
         self.plugin = plugin
 
@@ -92,7 +92,7 @@ class DB(object):
         self.plugin.pyload.db.delStorage(self.plugin.classname, key)
 
 
-class Periodical(object):
+class Periodical:
     def __init__(self, plugin, task=lambda x: x, interval=None):
         self.plugin = plugin
         self.task = task
@@ -147,7 +147,7 @@ class Periodical(object):
             self.restart(threaded=threaded, delay=self.interval)
 
 
-class SimpleQueue(object):
+class SimpleQueue:
     def __init__(self, plugin, storage="queue"):
         self.plugin = plugin
         self.storage = storage

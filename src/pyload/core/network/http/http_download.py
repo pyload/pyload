@@ -16,7 +16,7 @@ from .http_request import BadHeader
 from pyload import APPID
 
 
-class HTTPDownload(object):
+class HTTPDownload:
     """
     loads a url http + ftp.
     """

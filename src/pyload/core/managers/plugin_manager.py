@@ -14,7 +14,7 @@ import semver
 from pyload import PKGDIR, APPID
 
 
-class PluginManager(object):
+class PluginManager:
     ROOT = "pyload.plugins."
     USERROOT = "plugins."
     TYPES = (

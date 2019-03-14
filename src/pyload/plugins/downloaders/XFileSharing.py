@@ -31,7 +31,7 @@ class XFileSharing(XFSDownloader):
 
     def _log(self, level, plugintype, pluginname, args, kwargs):
         args = (self.PLUGIN_NAME,) + args
-        return XFSDownloader._log(self, level, plugintype, pluginname, args, kwargs)
+        return super()._log(level, plugintype, pluginname, args, kwargs)
 
     def init(self):
         self.__pattern__ = self.pyload.pluginManager.hosterPlugins[self.classname][
@@ -54,7 +54,7 @@ class XFileSharing(XFSDownloader):
 
     # TODO: Recheck in 0.6.x
     def setup_base(self):
-        XFSDownloader.setup_base(self)
+        super().setup_base()
 
         if self.account:
             self.req = self.pyload.requestFactory.getRequest(
@@ -70,5 +70,5 @@ class XFileSharing(XFSDownloader):
     def load_account(self):
         class_name = self.classname
         self.__class__.__name__ = str(self.PLUGIN_NAME)
-        XFSDownloader.load_account(self)
+        super().load_account()
         self.__class__.__name__ = class_name

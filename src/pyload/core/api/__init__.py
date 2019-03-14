@@ -28,7 +28,7 @@ permMap = {}
 
 # decorator only called on init, never initialized, so has no effect on runtime
 def permission(bits):
-    class Wrapper(object):
+    class Wrapper:
         def __new__(cls, func, *args, **kwargs):
             permMap[func.__name__] = bits
             return func
@@ -69,7 +69,7 @@ def has_permission(userperms, perms):
 __version__ = 1
 
 
-class Api(object):
+class Api:
     """
     **pyLoads API**
 

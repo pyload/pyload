@@ -42,7 +42,7 @@ class MultiDownloader(SimpleDownloader):
 
     def _log(self, level, plugintype, pluginname, args, kwargs):
         args = (self.PLUGIN_NAME,) + args
-        return SimpleDownloader._log(self, level, plugintype, pluginname, args, kwargs)
+        return super()._log(level, plugintype, pluginname, args, kwargs)
 
     def setup(self):
         self.no_fallback = True
@@ -55,10 +55,10 @@ class MultiDownloader(SimpleDownloader):
         klass = self.pyload.pluginManager.loadClass("downloader", self.classname)
         self.get_info = klass.get_info
 
-        SimpleDownloader.setup_base(self)
+        super().setup_base()
 
     def _prepare(self):
-        SimpleDownloader._prepare(self)
+        super()._prepare()
 
         if self.DIRECT_LINK is None:
             self.direct_dl = self.__pattern__ != r"^unmatchable$" and re.match(
@@ -70,7 +70,7 @@ class MultiDownloader(SimpleDownloader):
 
     def _process(self, thread):
         try:
-            SimpleDownloader._process(self, thread)
+            super()._process(thread)
 
         except Fail as exc:
             hdict = self.pyload.pluginManager.hosterPlugins.get(

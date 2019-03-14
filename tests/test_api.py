@@ -7,7 +7,7 @@ from nose.tools import nottest
 # from pyload.core.api import APIExerciser
 
 
-class TestApi(object):
+class TestApi:
     def __init__(self):
         self.apiex = APIExerciser.APIExerciser(None, True, "TestUser", "pwhere")
 

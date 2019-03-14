@@ -13,7 +13,7 @@ from ... import exc_logger
 __version__ = 2
 
 
-class ConfigParser(object):
+class ConfigParser:
     """
     holds and manage the configuration.
 
@@ -266,20 +266,20 @@ class ConfigParser(object):
         """
         if typ == "int":
             return int(value)
-            
+
         elif typ == "float":
-            return float(value)  
-            
+            return float(value)
+
         elif typ == "str":
             return "" if value is None else str(value)
-            
+
         elif typ == "bytes":
             return b"" if value is None else bytes(value)
-            
+
         elif typ == "bool":
             value = "" if value is None else str(value)
             return value.lower() in ("1", "true", "on", "yes", "y")
-            
+
         elif typ == "time":
             value = "" if value is None else str(value)
             if not value:
@@ -287,10 +287,10 @@ class ConfigParser(object):
             if ":" not in value:
                 value += ":00"
             return value
-            
+
         elif typ in ("file", "folder"):
             return os.path.realpath("" if value is None else os.fsdecode(value))
-                       
+
         else:
             return value
 
@@ -385,7 +385,7 @@ class ConfigParser(object):
             del self.plugin[name]
 
 
-class Section(object):
+class Section:
     """
     provides dictionary like access for configparser.
     """

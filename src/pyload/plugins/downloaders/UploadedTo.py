@@ -106,7 +106,7 @@ class UploadedTo(SimpleDownloader):
         )
         self.check_errors()
 
-        SimpleDownloader.handle_free(self, pyfile)
+        super().handle_free(pyfile)
         self.check_errors()
 
     def check_download(self):
@@ -117,4 +117,4 @@ class UploadedTo(SimpleDownloader):
             os.remove(self.last_download)
             self.retry(wait=10800, msg=self._("Free download limit reached"))
 
-        return SimpleDownloader.check_download(self)
+        return super().check_download()

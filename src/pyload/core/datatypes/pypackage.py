@@ -6,7 +6,7 @@ from ..managers.event_manager import UpdateEvent
 from ..utils import safepath
 
 
-class PyPackage(object):
+class PyPackage:
     """
     Represents a package object at runtime.
     """

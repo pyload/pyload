@@ -34,4 +34,4 @@ class MultiDecrypter(SimpleDecrypter):
 
     def _log(self, level, plugintype, pluginname, args, kwargs):
         args = (self.PLUGIN_NAME,) + args
-        return SimpleDecrypter._log(self, level, plugintype, pluginname, args, kwargs)
+        return super()._log(level, plugintype, pluginname, args, kwargs)
