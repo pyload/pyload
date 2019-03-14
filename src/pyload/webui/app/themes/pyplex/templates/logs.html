@@ -83,14 +83,14 @@ td.loglevel
 {% block content %}
 <div class="clear"></div>
 
-<div class="logpaginator"><a href="/logs/1"><span class="glyphicon glyphicon-fast-backward"></span></a> <a href="/logs"><span class="glyphicon glyphicon-step-backward"></span></a>  <a href="/logs"><span class="glyphicon glyphicon-step-forward"></span></a> <a href="/logs"><span class="glyphicon glyphicon-fast-forward"></span></a></div>
+<div class="logpaginator"><a href="/logs/1"><span class="glyphicon glyphicon-fast-backward"></span></a> <a href="/logs/{{iprev}}"><span class="glyphicon glyphicon-step-backward"></span></a>  <a href="/logs/{{inext}}"><span class="glyphicon glyphicon-step-forward"></span></a> <a href="/logs"><span class="glyphicon glyphicon-fast-forward"></span></a></div>
 <div class="logperpage" style="float: right;">
   <form id="logform1" action="" method="POST">
     <label for="reversed">{{_('Reversed')}}:</label>
     <input type="checkbox" name="reversed" id="reversed" onchange="this.form.submit();" {% if reversed %} checked="checked" {% endif %} />&nbsp;
     <label for="perpage">{{_('Lines per page')}}:</label>&nbsp;
     <select name="perpage" id ="perpage" style="width: auto; height: auto; padding: 0; border: 0; display:inline;" onchange="this.form.submit();">
-      {% for value in perpage_p %}
+      {% for value in  perpage_p %}
         <option value="{{value.0}}"{% if value.0 == perpage %} selected="selected" {% endif %}>{{value.1}}</option>
       {% endfor %}
     </select>

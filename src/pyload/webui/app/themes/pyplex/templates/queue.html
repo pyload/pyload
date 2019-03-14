@@ -1,15 +1,25 @@
 {% extends theme('base.html') %}
+{% block head %}
+{% endblock %}
 
 {% block footer %}
+
 {% autoescape false %}
-<script type="text/javascript">{{render_template('js/queue.js')}}</script>
+<script type="text/javascript" src="{{render_template('js/queue.js')}}"></script>
 {% endautoescape %}
+
+<script type="text/javascript">
+$(function() {
+    var pUI = new PackageUI("url", {{target}});
+});
+</script>
+
 {% endblock %}
 
 {% if target %}
-    {% set name = _("Running Packages") %}
+    {% set name = _("Queue") %}
 {% else %}
-    {% set name = _("Saved Packages") %}
+    {% set name = _("Packages") %}
 {% endif %}
 
 {% block pageactions %}
@@ -35,8 +45,8 @@
           <span class="packageicon glyphicon glyphicon-folder-close" style="margin-right: 5px;"></span>
           <span class="name" style="font-size: 16px; font-weight: bold;">{{package.name}}</span>
           <span class="buttons" style="opacity:0">
-            <span class="glyphicon glyphicon-trash" title="{{_('Delete Package')}}" style="margin-left: 10px; color:#D9534F; cursor: pointer; width:12px; height:12px;" ></span>
-            <span class="glyphicon glyphicon-repeat" title="{{_('Restart Package')}}" style=" cursor: pointer; color:#5CB85C; height:12px;" ></span>
+            <span class="glyphicon glyphicon-trash" title="{{_('Delete Package')}}" style="margin-left: 10px; color:#d9534f; cursor: pointer; width:12px; height:12px;" ></span>
+            <span class="glyphicon glyphicon-repeat" title="{{_('Restart Package')}}" style=" cursor: pointer; color:#5cb85c; height:12px;" ></span>
             <span class="glyphicon glyphicon-pencil" title="{{_('Edit Package')}}" style="cursor: pointer; color:#EDCA2F; height:12px;" ></span>
             <span class="glyphicon glyphicon-transfer" title="{{_('Move Package To')}} {% if target %}{{_('Packages')}}{% else %}{{_('Queue')}}{% endif %}" style="cursor: pointer; color:#4885DB; height:12px;" ></span>
             <span class="glyphicon glyphicon-sort" title="{{_('Reverse Entries')}}" style="cursor: pointer; color:#D740E5; height:12px;" ></span>

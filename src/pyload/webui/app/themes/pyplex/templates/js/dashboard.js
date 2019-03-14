@@ -28,7 +28,7 @@ function EntryManager(){
         thisObject=this;
         $.ajax({
             method:"post",
-            url: '/json/links',
+            url: "/json/links",
             async: true,
             timeout: 30000,
             success: thisObject.update
@@ -36,7 +36,7 @@ function EntryManager(){
         setInterval(function() {
         $.ajax({
             method:"post",
-            url: '/json/links',
+            url: "/json/links",
             async: true,
             timeout: 30000,
             success: thisObject.update
@@ -123,18 +123,16 @@ function LinkEntry(id){
 
     this.parse = function(){
         this.elements = {
-            // I'm sure there are more sophisticated ways than use "replace",
-            // but I really do not have time to browse all the JQuery docs on this topic.
-            tr: $("#link_{id}".replace('{id}', this.id)),
-            name: $("#link_{id}_name".replace('{id}', this.id)),
-            hoster:$("#link_{id}_hoster".replace('{id}', this.id)),
-            status: $("#link_{id}_status".replace('{id}', this.id)),
-            info: $("#link_{id}_info".replace('{id}', this.id)),
-            bleft: $("#link_{id}_bleft".replace('{id}', this.id)),
-            percent: $("#link_{id}_percent".replace('{id}', this.id)),
-            remove: $("#link_{id}_remove".replace('{id}', this.id)),
-            pgbTr: $("#link_{id}_pgb_tr".replace('{id}', this.id)),
-            pgb: $("#link_{id}_pgb".replace('{id}', this.id)),
+            tr: $("#link_"+this.id),
+            name: $("#link_"+this.id+"_name"),
+            hoster:$("#link_"+this.id+"_hoster"),
+            status: $("#link_"+this.id+"_status"),
+            info: $("#link_"+this.id+"_info"),
+            bleft: $("#link_"+this.id+"_bleft"),
+            percent: $("#link_"+this.id+"_percent"),
+            remove: $("#link_"+this.id+"_remove"),
+            pgbTr: $("#link_"+this.id+"_pgb_tr"),
+            pgb: $("#link_"+this.id+"_pgb"),
         };
         this.initEffects();
     };
@@ -206,6 +204,7 @@ function LinkEntry(id){
             pgb:pgb
         };
 
+
         this.elements.status.appendChild(this.elements.statusspan);
         this.elements.progress.appendChild(this.elements.pgb);
         this.elements.tr.appendChild(this.elements.status);
@@ -243,8 +242,7 @@ function LinkEntry(id){
         this.fadeBar = this.elements.pgbTr;
 
         $(this.elements.remove).click(function(){
-            $.get('/json/abort_link/' + this.id)
-            )});
+            $.get("/json/abort_link/"+id)});
     };
     this.update = function(item){
             $(this.elements.name).text(item.name);

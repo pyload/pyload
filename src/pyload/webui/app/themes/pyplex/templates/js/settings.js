@@ -100,7 +100,7 @@ SettingsUI = (function() {
         d = $(this).attr('id').split('|'), c = d[0], g = d[1];
         b = $(this).text();
         f = c === 'general' ? generalPanel : pluginPanel;
-        $.get( '/json/load_config/' + c + '/' + g, function(e) {
+        $.get( "/json/load_config/" + c + '/' + g, function(e) {
                 f.html(e);
             });
     };
@@ -109,7 +109,7 @@ SettingsUI = (function() {
         c = $(this).attr('id').split("_")[0];
         $.ajax({
             method: "post",
-            url: '/json/save_config/' + c,
+            url: "/json/save_config/" + c,
             data: $("#" + c + "_form").serialize(),
             async: true,
             success: function () {
@@ -126,7 +126,7 @@ SettingsUI = (function() {
         $(this).addClass("disabled");
         $.ajax({
             method: "post",
-            url: '/json/add_account',
+            url: "/json/add_account",
             async: true,
             data: $("#add_account_form").serialize(),
             success: function () {
@@ -143,7 +143,7 @@ SettingsUI = (function() {
         indicateLoad();
         $.ajax({
             method: "post",
-            url: '/json/update_accounts',
+            url: "/json/update_accounts",
             data: $("#account_form").serialize(),
             async: true,
             success: function () {
@@ -176,11 +176,11 @@ SettingsUI = (function() {
                 $(this).data('targetinput', targetInput);
                 if (browseFor === "file") {
                     $(this).find("#chooser_title").text("{{_('Select File')}}");
-                    chooserIfrm.attr("src", '/pathchooser/' + val);
+                    chooserIfrm.attr("src", "/filechooser/" + val);
                 }
                 else if (browseFor === "folder") {
                     $(this).find("#chooser_title").text("{{_('Select Folder')}}");
-                    chooserIfrm.attr("src", '/pathchooser/' + val);
+                    chooserIfrm.attr("src", "/pathchooser/" + val);
                 }
             }
         });

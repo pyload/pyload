@@ -1,5 +1,4 @@
 {% extends theme('base.html') %}
-
 {% block title %}{{_('Login')}} - {{super()}} {% endblock %}
 
 {% block head %}
@@ -41,7 +40,7 @@ img {
     <input type="hidden" name="do" value="login"/>
 
     <div class="login-logo">
-      <img alt="pyLoad" src="{{theme_static('img/pyload-logo.png')}}">
+      <img alt="Pyload" src="{{theme_static('img/pyload.png')}}">
     </div>
 
     {% if errors %}

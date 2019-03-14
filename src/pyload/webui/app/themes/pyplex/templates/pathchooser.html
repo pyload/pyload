@@ -16,14 +16,14 @@
       var abspath = "/pathchooser/{{cwd|abspath|quotepath|replace('\\', '\\\\')}}";
       var relpath = "/pathchooser/{{cwd|relpath|quotepath|replace('\\', '\\\\')}}";
     {% else %} {# browsing for file #}
-      var abspath = "/pathchooser/{{cwd}}";
-      var relpath = "/pathchooser/{{cwd}}";
+      var abspath = "/filechooser/{{oldfile|default(cwd, True)|abspath|quotepath|replace('\\', '\\\\')}}";
+      var relpath = "/filechooser/{{oldfile|default(cwd, True)|relpath|quotepath|replace('\\', '\\\\')}}";
     {% endif %}
     document.addEventListener("readystatechange", function(event) {
       if (this.readyState === "complete") {
-        document.getElementById("tbody").style.height = (window.innerHeight - 35) + "px";
+        document.getElementById("tbody").style.height = (window.innerHeight - 25) + "px";
         window.onresize = function (event) {
-          document.getElementById("tbody").style.height = (window.innerHeight - 35) + "px";
+          document.getElementById("tbody").style.height = (window.innerHeight - 25) + "px";
         };
         var clickables = document.getElementsByClassName("tr-clickable");
         for (var i = 0; i < clickables.length; i++) {
@@ -63,9 +63,8 @@
     {
         cwd = fullpath;
         {% if type == "file" %} {# browsing for file #}
-          <!-- TODO: Recheck -->
-          abspath = "/pathchooser/{{cwd|abspath|quotepath|replace('\\', '\\\\')}}/" + name;
-          relpath = "/pathchooser/{{cwd|relpath|quotepath|replace('\\', '\\\\')}}/" + name;
+          abspath = "/filechooser/{{cwd|abspath|quotepath|replace('\\', '\\\\')}}" + name;
+          relpath = "/filechooser/{{cwd|relpath|quotepath|replace('\\', '\\\\')}}" + name;
         {% endif %}
         setValid();
     }
@@ -84,7 +83,7 @@
     </thead>
     <tbody id="tbody">
     {% if parentdir %}
-        <tr class='tr-clickable' data-href="/pathchooser/{{ parentdir|quotepath }}">
+        <tr class='tr-clickable' data-href="{% if type == 'folder' %}/pathchooser/{{parentdir|quotepath}}{% else %}/filechooser/{{parentdir|quotepath}}{% endif %}">
           <td title="{{_('Parent Directory')}}"><span class="parentdir">..</span></td>
           <td></td>
           <td colspan="2">&lt;DIR&gt;</td>
@@ -93,7 +92,7 @@
     {% for file in files %}
             {% if type == 'folder' %} {# browsing for folder #}
                   {% if file.type == 'dir' %}
-                    <tr class="tr-clickable" data-href="{{theme_static('pathchooser/')}}" title="{{file.name}}">
+                    <tr class="tr-clickable" data-href="/pathchooser/{{file.fullpath|quotepath}}" title="{{file.name}}">
                       <td class="name path_directory text-ellipsis">{{file.name}}</td>
                   {% else %}
                     <tr class="tr-nonclickable" title="{{file.fullpath}}">
@@ -101,7 +100,7 @@
                   {% endif %}
             {% else %} {# browsing for file #}
                   {% if file.type == 'dir' %}
-                   <tr class="tr-clickable" data-href="{{theme_static('pathchooser/')}}" title="{{file.fullpath}}">
+                   <tr class="tr-clickable" data-href="/filechooser/{{file.fullpath|quotepath}}" title="{{file.fullpath}}">
                     <td class="name file_directory text-ellipsis">{{file.name}}</td>
                   {% else %}
                    <tr class="tr-clickable" title="{{file.fullpath}}" onclick="setFile('{{file.fullpath|replace("\\", "\\\\")}}', '{{file.name}}');">
@@ -110,10 +109,10 @@
             {% endif %}
 
             <td class="size">{% if file.type == 'file' %}
-              {% if file.unit == 'Byte' %}1 KiB{% else %}{{(file.size|round(precision=0, method='common'))|int}} {{file.unit|replace('Byte', 'B')}}{% endif %}
+              {% if file.unit == 'Byte' %}1 KB{% else %}{{(file.size|round(precision=0, method='common'))|int}} {{file.unit|replace('Byte', 'B')}}{% endif %}
               {% endif %}</td>
             <td class="type">{% if file.type == 'dir' %}&lt;DIR&gt;{% else %}{{file.ext|default('file', True)}}{% endif %}</td>
-            <td class="mtime">{{file.modified|date("%Y/%m/%d %H:%M:%S")}}</td>
+            <td class="mtime">{{file.modified|date('d.m.Y - H:i:s')}}</td>
         </tr>
     {% endfor %}
     </tbody>

@@ -1,10 +1,10 @@
 {% extends theme('base.html') %}
 
-{% block title %}{{_('Settings')}} - {{super()}} {% endblock %}
+{% block title %}{{_('Settings') - super()}} {% endblock %}
 {% block subtitle %}{{_('Settings')}}{% endblock %}
 
 {% block head %}
-<meta id="plugins-list" data-plugin='{{conf.plugin|replace('(', '[')|replace(')', ']')|replace('\'', '"')}}'/>
+<meta id="plugins-list" data-plugin='{{conf.plugin|tojson}}'/>
 
 <style type="text/css">
 #plugin_form_content h3,
@@ -20,7 +20,7 @@
   background-color: #282828;
 }
 .nav-settings >  li {
-  margin-bottom: -2px;
+	margin-bottom: -2px;
 }
 .tab-content > .tab-pane > .panel {
   border-color: #2f2f2f;
@@ -35,7 +35,7 @@
 
 {% block footer %}
 {% autoescape false %}
-<script type="text/javascript">{{render_template('js/settings.js')}}</script>
+<script type="text/javascript" src="{{render_template('js/settings.js')}}"></script>
 {% endautoescape %}
 {% endblock %}
 
@@ -216,7 +216,7 @@
           </div>
         </div>
         <iframe id="chooser_ifrm" src="#" width="650" height="420" frameborder="0" allowtransparency="true" scrolling="no"></iframe><br>
-        <p id="path_p" class="text-ellipsis noselect" style="height: 15px; padding-right: 6px; padding-left: 6px; font-size: 12px;" title=""></p>
+        <p id="path_p" class="text-ellipsis noselect" style="height: 18px; padding-right: 6px; padding-left: 6px; font-size: 12px;" title=""></p>
         <div class="modal-footer">
           <button class="btn btn-success" id="chooser_confirm_button" style="float: right; margin-left: 5px;" type="submit">{{_('Select')}}</button>
           <button class="btn btn-warning" data-dismiss="modal" style="float: right;" type="reset">{{_('Cancel')}}</button>

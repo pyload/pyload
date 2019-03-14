@@ -1,13 +1,13 @@
 // ==UserScript==
 // @name         pyLoad Script for Interactive Captcha
-// @namespace    https://pyload.net
-// @version      0.17
+// @namespace    https://pyload.net/
+// @version      0.19
 // @author       Michi-F, GammaC0de
 // @description  pyLoad Script for Interactive Captcha
 // @homepage     https://github.com/pyload/pyload
-// @icon         https://raw.githubusercontent.com/pyload/pyload/stable/pyload/webui/media/img/favicon.ico
-// @updateURL    https://raw.githubusercontent.com/pyload/pyload/stable/pyload/webui/media/js/captcha-interactive.user.js
-// @downloadURL  https://raw.githubusercontent.com/pyload/pyload/stable/pyload/webui/media/js/captcha-interactive.user.js
+// @icon         https://raw.githubusercontent.com/pyload/pyload/stable/module/web/media/img/favicon.ico
+// @updateURL    https://raw.githubusercontent.com/pyload/pyload/stable/module/web/media/js/captcha-interactive.user.js
+// @downloadURL  https://raw.githubusercontent.com/pyload/pyload/stable/module/web/media/js/captcha-interactive.user.js
 // @supportURL   https://github.com/pyload/pyload/issues
 // @grant        none
 // @run-at       document-start
@@ -39,8 +39,11 @@
 
     // this function listens to messages from the pyload main page
     window.addEventListener('message', function(e) {
-        var request = JSON.parse(e.data);
-
+        try {
+            var request = JSON.parse(e.data);
+        } catch(e) {
+            return
+        }
         if(request.constructor === {}.constructor && request.actionCode === "pyloadActivateInteractive") {
             if (request.params.script) {
                 var sig = new KJUR.crypto.Signature({"alg": "SHA384withRSA", "prov": 'cryptojs/jsrsa'});
