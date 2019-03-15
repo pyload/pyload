@@ -2,36 +2,7 @@
 {% block title %}{{_('Login')}} - {{super()}} {% endblock %}
 
 {% block head %}
-<style type="text/css">
-body{
-    overflow-x:hidden;
-}
-p {
-  text-align: center;
-}
-.btn-bright {
-    float: right;
-}
-.form-group > label {
-    font-weight: 400;
-    color: #999;
-}
-.h3, h3 {
-    display:none;
-}
-.login-logo {
-    text-align: center;
-    margin: 50px auto 85px auto;
-    width: 340px;
-    height: 100px;
-}
-img {
-    vertical-align: middle;
-}
-.navbar {
-    display: none;
-}
-</style>
+<link rel="stylesheet" type="text/css" href="{{theme_static('css/login.css')}}" />
 {% endblock %}
 
 {% block content %}
@@ -40,7 +11,7 @@ img {
     <input type="hidden" name="do" value="login"/>
 
     <div class="login-logo">
-      <img alt="Pyload" src="{{theme_static('img/pyload.png')}}">
+      <img alt="Pyload" src="{{theme_static('img/pyload-logo.png')}}">
     </div>
 
     {% if errors %}

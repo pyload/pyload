@@ -1,0 +1,16 @@
+option:checked,
+option:focus {
+  background: #72716f linear-gradient(0deg, #72716f 0%, #72716f 100%);
+}
+optgroup,
+select,
+textarea {
+    font-size: 11px;
+}
+select:focus {
+  border: none !important;
+  outline: none;
+}
+.modal-dialog {
+  padding-top: 10%;
+}

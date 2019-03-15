@@ -72,8 +72,7 @@ class App:
         # NOTE: enable autoescape for all file extensions (included .js)
         #       maybe this will break .txt rendering, but we don't render this kind of files actually
         #       that does not change 'default_for_string=False' (by default)
-        # NOTE: Seems not working at all...
-        # app.jinja_env.autoescape = jinja2.select_autoescape(default=True)
+        app.jinja_env.autoescape = jinja2.select_autoescape(default=True)
         app.jinja_env.bytecode_cache = jinja2.FileSystemBytecodeCache(cache_path)
 
         for fn in cls.JINJA_TEMPLATE_FILTERS:

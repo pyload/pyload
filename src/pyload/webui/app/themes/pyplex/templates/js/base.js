@@ -1,4 +1,5 @@
 {% autoescape true %}
+
 var desktopNotifications;
 var interactiveCaptchaHandlerInstance = null;
 //root = this;

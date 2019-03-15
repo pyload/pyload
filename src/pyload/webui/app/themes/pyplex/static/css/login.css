@@ -1,0 +1,28 @@
+body{
+    overflow-x:hidden;
+}
+p {
+  text-align: center;
+}
+.btn-bright {
+    float: right;
+}
+.form-group > label {
+    font-weight: 400;
+    color: #999;
+}
+.h3, h3 {
+    display:none;
+}
+.login-logo {
+    text-align: center;
+    margin: 50px auto 85px auto;
+    width: 340px;
+    height: 100px;
+}
+img {
+    vertical-align: middle;
+}
+.navbar {
+    display: none;
+}

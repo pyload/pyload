@@ -1,0 +1,23 @@
+#plugin_form_content h3,
+#general_form_content h3 {
+  font-weight: bold;
+  font-size: 14px;
+}
+.nav-settings > .active > a,
+.nav-settings > .active > a:hover,
+.nav-settings > .active > a:focus {
+  outline: 0;
+  color: #f9be03;
+  background-color: #282828;
+}
+.nav-settings >  li {
+	margin-bottom: -2px;
+}
+.tab-content > .tab-pane > .panel {
+  border-color: #2f2f2f;
+  background-color: #2f2f2f;
+  border-top-left-radius: 0;
+  border-top-right-radius: 4px;
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+}

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# AUTHOR: RaNaN, vuolter
+# AUTHOR: vuolter
 
 import datetime
 import logging  # test
@@ -37,8 +37,13 @@ bp = flask.Blueprint("app", __name__)
 def favicon():
     location = static_file_url("img/favicon.ico")
     return flask.redirect(location)
-
-
+    
+    
+@bp.route("/render/<path:filename>", endpoint="render")
+def render(filename):
+    return render_template(f"{filename}")
+    
+    
 @bp.route("/robots.txt", endpoint="robots")
 def robots():
     return "User-agent: *\nDisallow: /"
@@ -86,6 +91,7 @@ def logout():
 
 
 @bp.route("/", endpoint="index")
+@bp.route("/home", endpoint="home")
 @bp.route("/dashboard", endpoint="dashboard")
 @login_required("ALL")
 def dashboard():

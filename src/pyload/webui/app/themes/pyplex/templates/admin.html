@@ -1,42 +1,16 @@
 {% extends theme('base.html') %}
 
 {% block head %}
-<style type="text/css">
-option:checked,
-option:focus {
-  background: #72716f linear-gradient(0deg, #72716f 0%, #72716f 100%);
-}
-optgroup,
-select,
-textarea {
-    font-size: 11px;
-}
-select:focus {
-  border: none !important;
-  outline: none;
-}
-.modal-dialog {
-  padding-top: 10%;
-}
-</style>
+<link rel="stylesheet" type="text/css" href="{{theme_static('css/admin.css')}}" />
 {% endblock %}
 
 {% block footer %}
-{% autoescape false %}
-<script type="text/javascript" src="{{render_template('js/admin.js')}}"></script>
-{% endautoescape %}
+<script type="text/javascript" src="{{theme_template('js/admin.js')}}"></script>
 {% endblock %}
 
-{% block subtitle %}{{_('Users')}}{% endblock %}
+<!-- {% block subtitle %}{{_('Users')}}{% endblock %} -->
 
 {% block content %}
-<div class="btn-group">
-  <button id="quit-pyload" class="btn btn-danger" data-toggle="modal" data-target="#quit_box"><span class="glyphicon glyphicon-off"></span> {{_('Quit pyLoad')}}</button>
-  <button id="restart-pyload" class="btn btn-success" data-toggle="modal" data-target="#restart_box"><span class="glyphicon glyphicon-repeat"></span> {{_('Restart pyLoad')}}</button>
-</div>
-<br>
-<br>
-
 <div class="row">
   <div class="col-sm-5 col-sm-offset-0">
     <div class="alert alert-danger" style="padding:8px;">

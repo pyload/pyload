@@ -1,4 +1,5 @@
 {% autoescape true %}
+
 var SettingsUI, root;
 root = this;
 
@@ -100,7 +101,7 @@ SettingsUI = (function() {
         d = $(this).attr('id').split('|'), c = d[0], g = d[1];
         b = $(this).text();
         f = c === 'general' ? generalPanel : pluginPanel;
-        $.get( "/json/load_config/" + c + '/' + g, function(e) {
+        $.get( "/json/load_config?=" + c + ',' + g, function(e) {
                 f.html(e);
             });
     };
@@ -109,7 +110,7 @@ SettingsUI = (function() {
         c = $(this).attr('id').split("_")[0];
         $.ajax({
             method: "post",
-            url: "/json/save_config/" + c,
+            url: "/json/save_config?=" + c,
             data: $("#" + c + "_form").serialize(),
             async: true,
             success: function () {
@@ -204,4 +205,5 @@ SettingsUI = (function() {
     };
     return a;
 })();
+
 {% endautoescape %}

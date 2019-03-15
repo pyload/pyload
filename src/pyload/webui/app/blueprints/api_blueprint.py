@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# AUTHOR: vuolter
 
 import traceback
 from ast import literal_eval
@@ -21,7 +22,7 @@ bp = flask.Blueprint("api", __name__, url_prefix="/api")
 # r"/api/<func><args:re:[a-zA-Z0-9\-_/\"\'\[\]%{},]*>")
 @login_required("ALL")
 @bp.route("/<func>", methods=["GET", "POST"], endpoint="rpc")
-@bp.route("/<func>/<path:args>", methods=["GET", "POST"], endpoint="rpc")
+@bp.route("/<func>?=<args>", methods=["GET", "POST"], endpoint="rpc")
 # @apiver_check
 def rpc(func, args=""):
 
@@ -30,7 +31,7 @@ def rpc(func, args=""):
     if not api.isAuthorized(func, {"role": s["role"], "permission": s["perms"]}):
         return "Unauthorized", 401
 
-    args = args.split("/")
+    args = args.split(",")
     kwargs = {}
 
     for x, y in chain(flask.request.args.items(), flask.request.form.items()):

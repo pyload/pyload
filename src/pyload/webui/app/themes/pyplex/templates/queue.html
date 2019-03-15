@@ -3,17 +3,7 @@
 {% endblock %}
 
 {% block footer %}
-
-{% autoescape false %}
-<script type="text/javascript" src="{{render_template('js/queue.js')}}"></script>
-{% endautoescape %}
-
-<script type="text/javascript">
-$(function() {
-    var pUI = new PackageUI("url", {{target}});
-});
-</script>
-
+<script type="text/javascript" src="{{theme_template('js/queue.js')}}"></script>
 {% endblock %}
 
 {% if target %}
@@ -29,12 +19,10 @@ $(function() {
   </div>
 {% endblock %}
 
-{% block title %}{{name}} - {{super()}} {% endblock %}
-{% block subtitle %}{{name}}{% endblock %}
+<!-- {% block title %}{{name}} - {{super()}} {% endblock %} -->
+<!-- {% block subtitle %}{{name}}{% endblock %} -->
 
 {% block content %}
-{% autoescape true %}
-
 <ul id="package-list" style="list-style: none; padding-left: 0; margin-top: -10px;">
 {% for package in content %}
     <li id="package_{{package.pid}}" class="left width100">
@@ -71,7 +59,6 @@ $(function() {
     </li>
 {% endfor %}
 </ul>
-{% endautoescape %}
 {% endblock %}
 
 {% block dialog %}

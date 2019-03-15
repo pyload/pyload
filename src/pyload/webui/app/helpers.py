@@ -62,6 +62,10 @@ def static_file_url(filename):
     return url
 
 
+def theme_template(filename):
+    return f"render/{filename}"
+
+
 #: tries to render the template of the current theme otherwise fallback to builtin template
 def render_template(template, **context):
     themeid = current_theme_id()

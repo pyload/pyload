@@ -1,4 +1,5 @@
 {% autoescape true %}
+
 var root;
 root = this;
 $(function() {
@@ -53,4 +54,5 @@ $(function() {
         });
     });
 });
+
 {% endautoescape %}

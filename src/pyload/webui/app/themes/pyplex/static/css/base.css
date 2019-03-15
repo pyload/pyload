@@ -464,3 +464,5 @@ fieldset[disabled] .btn {
   text-align: center;
   z-index: 1040;
 }
+
+{% endautoescape %}

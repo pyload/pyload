@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# AUTHOR: vuolter
 
 import os
 
@@ -82,7 +83,7 @@ def packages():
     return jsonify(False)
 
 
-@bp.route("/package/<int:id>", endpoint="package")
+@bp.route("/package?=<int:id>", endpoint="package")
 # @apiver_check
 @login_required("LIST")
 def package(id):
@@ -119,13 +120,13 @@ def package(id):
 
 
 # NOTE: 'ids' is a string
-@bp.route("/package_order/<ids>", endpoint="package_order")
+@bp.route("/package_order?=<ids>", endpoint="package_order")
 # @apiver_check
 @login_required("ADD")
 def package_order(ids):
     api = flask.current_app.config["PYLOAD_API"]
     try:
-        pid, pos = ids.split("|")
+        pid, pos = ids.split(",")
         api.orderPackage(int(pid), int(pos))
         return jsonify(response="success")
     except Exception:
@@ -134,7 +135,7 @@ def package_order(ids):
     return jsonify(False)
 
 
-@bp.route("/abort_link/<int:id>", endpoint="abort_link")
+@bp.route("/abort_link?=<int:id>", endpoint="abort_link")
 # @apiver_check
 @login_required("DELETE")
 def abort_link(id):
@@ -149,13 +150,13 @@ def abort_link(id):
 
 
 # NOTE: 'ids' is a string
-@bp.route("/link_order/<ids>", endpoint="link_order")
+@bp.route("/link_order?=<ids>", endpoint="link_order")
 # @apiver_check
 @login_required("ADD")
 def link_order(ids):
     api = flask.current_app.config["PYLOAD_API"]
     try:
-        pid, pos = ids.split("|")
+        pid, pos = ids.split(",")
         api.orderFile(int(pid), int(pos))
         return jsonify(response="success")
     except Exception:
@@ -199,7 +200,7 @@ def add_package():
     return jsonify(True)
 
 
-@bp.route("/move_package/<int:dest>/<int:id>", endpoint="move_package")
+@bp.route("/move_package?=<int:dest>,<int:id>", endpoint="move_package")
 # @apiver_check
 @login_required("MODIFY")
 def move_package(dest, id):
@@ -260,7 +261,7 @@ def set_captcha():
     return jsonify(data)
 
 
-@bp.route("/load_config/<category>/<section>", endpoint="load_config")
+@bp.route("/load_config?=<category>,<section>", endpoint="load_config")
 # @apiver_check
 @login_required("SETTINGS")
 def load_config(category, section):
@@ -281,7 +282,7 @@ def load_config(category, section):
     return render_template("settings_item.html", skey=section, section=conf[section])
 
 
-@bp.route("/save_config/<category>", methods=["POST"], endpoint="save_config")
+@bp.route("/save_config?=<category>", methods=["POST"], endpoint="save_config")
 # @apiver_check
 @login_required("SETTINGS")
 def save_config(category):

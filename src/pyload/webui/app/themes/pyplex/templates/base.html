@@ -2,16 +2,22 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" type="text/css" href="{{theme_static('css/bootstrap.min.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{theme_static('css/jquery-ui-1.12.1.min.css')}}"/>
+    <link rel="stylesheet" type="text/css" href="{{theme_static('css/base.css')}}" />
 
-<link rel="stylesheet" type="text/css" href="{{theme_static('css/bootstrap.min.css')}}">
-<link rel="stylesheet" type="text/css" href="{{theme_static('css/jquery-ui-1.12.1.min.css')}}"/>
-<link rel="stylesheet" type="text/css" href="{{theme_static('css/styles.css')}}">
+    <!-- <link rel="icon" href="{{theme_static('img/favicon.ico')}}"/> -->
 
-<link rel="icon" href="{{theme_static('img/favicon.ico')}}"/>
+    <script type="text/javascript" src="{{theme_static('js/jquery-3.2.1.min.js')}}"></script>
+    <script type="text/javascript" src="{{theme_static('js/jquery-ui-1.12.1.min.js')}}"></script>
+    <script type="text/javascript" src="{{theme_static('js/jquery.peekabar.min.js')}}"></script>
+    <script type="text/javascript" src="{{theme_static('js/bootstrap.min.js')}}"></script>
+    <script type="text/javascript" src="{{theme_template('js/base.js')}}"></script>
 
 <style type="text/css">
 .ui-icon,
@@ -36,7 +42,9 @@
 
 {% block head %}
 {% endblock %}
+
 </head>
+
 <body>
 
 {% macro selected(name, right=False) -%}
@@ -56,17 +64,17 @@
       <a href="/collector" title="{{_('Packages')}}"><span class="glyphicon glyphicon-magnet"></span></a>
     </li>
     <li ondragstart="return false;" {{selected('files')}}>
-      <a href="/files" title="{{_('Files')}}"><span class="glyphicon glyphicon-download"></span></a>
+      <a href="/files" title="{{_('Files')}}"><span class="glyphicon glyphicon-file"></span></a>
     </li>
     <li ondragstart="return false;" {{selected('logs')}}>
-      <a href="/logs" title="{{_('Logs')}}"><span class="glyphicon glyphicon-list"></span></a>
+      <a href="/logs" title="{{_('Logs')}}"><span class="glyphicon glyphicon-list-alt"></span></a>
     </li>
     <li ondragstart="return false;" {{selected('settings', True)}}>
-      <a href="/settings"  title="{{_('Settings')}}"><span class="glyphicon glyphicon-wrench"></span></a>
+      <a href="/settings"  title="{{_('Settings')}}"><span class="glyphicon glyphicon-cog"></span></a>
     </li>
     {% if user.is_admin %}
     <li ondragstart="return false;" {{selected('admin')}}>
-      <a href="/admin" title="{{_('Users')}}"><span class="glyphicon glyphicon-cog"></span></a>
+      <a href="/admin" title="{{_('Users')}}"><span class="glyphicon glyphicon-flag"></span></a>
     </li>
     {% endif %}
   </ul>
@@ -76,7 +84,6 @@
   <ul class="nav navbar-nav navbar-right">
     <li id="load-indicator1" class="load-indicator" style="opacity: 0; display: block; margin-top: 11px; margin-right: 35px;">
        <img src="{{theme_static('img/ajax-loader.gif')}}" alt="" style="padding-right: 5px"/>
-       {{_('loading')}}
     </li>
   </ul>
 </nav>
@@ -108,7 +115,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-        <a class="navbar-brand" href="#"><img id="head-logo" src="{{theme_static('img/pyload-logo.png')}}" alt="pyLoad" style="height:30px;"/></a>
+        <a class="navbar-brand" href="#"><img id="head-logo" src="{{theme_static('img/pyload-banner.png')}}" alt="pyLoad" style="height:30px;"/></a>
       </div>
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
         <ul class="nav navbar-nav">
@@ -124,20 +131,20 @@
               <a href="/collector" title=""><span class="glyphicon glyphicon-magnet"></span><span class="hidden-sm"> {{_('Packages')}}</span></a>
           </li>
           <li ondragstart="return false;" {{selected('files')}}>
-              <a href="/files" title=""> <span class="glyphicon glyphicon-download"></span><span class="hidden-sm"> {{_('Files')}}</span></a>
+              <a href="/files" title=""> <span class="glyphicon glyphicon-file"></span><span class="hidden-sm"> {{_('Files')}}</span></a>
           </li>
     {#  <li ondragstart="return false;" {{selected('filemanager')}}>#}
     {#      <a href="/filemanager" title=""><span class="glyphicon glyphicon-magnet"></span><span class="hidden-sm"> {{_('FileManager')}}</span></a>#}
     {#  </li>#}
           <li ondragstart="return false;" {{selected('logs')}}>
-              <a href="/logs" title=""><span class="glyphicon glyphicon-list"></span><span class="hidden-sm"> {{_('Logs')}}</span></a>
+              <a href="/logs" title=""><span class="glyphicon glyphicon-list-alt"></span><span class="hidden-sm"> {{_('Logs')}}</span></a>
           </li>
           <li ondragstart="return false;" {{selected('settings', True)}}>
-              <a href="/settings"  title=""><span class="glyphicon glyphicon-wrench"></span><span class="hidden-sm"> {{_('Settings')}}</span></a>
+              <a href="/settings"  title=""><span class="glyphicon glyphicon-cog"></span><span class="hidden-sm"> {{_('Settings')}}</span></a>
           </li>
           {% if user.is_admin %}
-          <li ondragstart="return false;" {{selected('Users')}}>
-              <a href="/admin" title=""><span class="glyphicon glyphicon-cog"></span><span class="hidden-sm">  {{_('Users')}}</span></a>
+          <li ondragstart="return false;" {{selected('admin')}}>
+              <a href="/admin" title=""><span class="glyphicon glyphicon-flag"></span><span class="hidden-sm"> {{_('Users')}}</span></a>
           </li>
           {% endif %}
          {% endif %}
@@ -159,6 +166,15 @@
 </div>
 
 <div class="btn-toolbar" role="toolbar" aria-label="...">
+{% if perms.LIST %}
+    <div class="btn-group btn-group-sm col-xs-12 col-sm-auto" role="group" aria-label="..." style="float:right;">
+        <button class="btn btn-dark col-xs-3 col-sm-auto"><span class="hidden-sm">{{_('Running:')}}</span><span class="glyphicon glyphicon-download hidden-xs hidden-md hidden-lg"></span> <span id="time"  class="label label-{% if status.download %}success{% else %}danger{% endif %}">{% if status.download %}{{_('on')}}{% else %}{{_('off')}}{% endif %}</span></button>
+        <button type="button" class="btn btn-dark col-xs-3 col-sm-auto"><span class="hidden-sm">{{_('Reconnect:')}}</span><span class="glyphicon glyphicon-refresh hidden-xs hidden-md hidden-lg"></span> <span id="reconnect" class="label label-{% if status.reconnect %}success{% else %}danger{% endif %}">{% if status.reconnect %}{{_('on')}}{% else %}{{_('off')}}{% endif %}</span></button>
+        <button type="button" class="btn btn-dark col-xs-3 col-sm-auto"><span class="action backlink"><span class="hidden-xs hidden-sm">{{_('Speed:')}} </span><b id="speed">{{status.speed}}</b></span></button>
+        <span class="btn btn-dark col-xs-3 col-sm-auto"><span class="action cog">{{_('Active:')}} <b id="aktiv" title="{{_('Active')}}">{{status.active}}</b> / <b id="aktiv_from" title="{{_('Queued')}}">{{status.queue}}</b> | <b id="aktiv_total" title="{{_('Total')}}">{{status.total}}</b></span></span>
+    </div>
+{% endif %}
+
 {% if perms.STATUS %}
     <!--<div class="btn-group btn-group-sm col-xs-12 col-sm-3 col-md-3 col-lg-3" role="group" aria-label="...">-->
     <div class="btn-group btn-group-sm" style="margin-left: 20px; margin-right: 20px;" role="group" aria-label="...">
@@ -172,27 +188,18 @@
 {% block pageactions %}
 {% endblock %}
 
-    <span id="cap_info2" class="cap_info col-xs-12 col-sm-auto" style="display: {% if captcha %}inline{%else%}none{% endif %};margin-top:-2px;">
-        <button id="action_cap2" class="btn btn-default col-xs-12 col-sm-auto" data-toggle="modal" data-target="#cap_box" data-backdrop="static"><span  class="glyphicon glyphicon-barcode"></span> {{_('Captcha waiting')}}</button>
-    </span>
-
-
-{% if perms.LIST %}
-    <div class="btn-group btn-group-sm col-xs-12 col-sm-auto" role="group" aria-label="..." style="float:right;">
-        <button class="btn btn-dark col-xs-3 col-sm-auto"><span class="hidden-sm">{{_('Download:')}}</span><span class="glyphicon glyphicon-download hidden-xs hidden-md hidden-lg"></span> <span id="time"  class="label label-{% if status.download %}success{% else %}danger{% endif %}">{% if status.download %}{{_('on')}}{% else %}{{_('off')}}{% endif %}</span></button>
-        <button type="button" class="btn btn-dark col-xs-3 col-sm-auto"><span class="hidden-sm">{{_('Reconnect:')}}</span><span class="glyphicon glyphicon-refresh hidden-xs hidden-md hidden-lg"></span> <span id="reconnect" class="label label-{% if status.reconnect %}success{% else %}danger{% endif %}">{% if status.reconnect %}{{_('on')}}{% else %}{{_('off')}}{% endif %}</span></button>
-        <button type="button" class="btn btn-dark col-xs-3 col-sm-auto"><span class="action backlink"><span class="hidden-xs hidden-sm">{{_('Speed:')}} </span><b id="speed">{{status.speed}}</b></span></button>
-        <span class="btn btn-dark col-xs-3 col-sm-auto"><span class="action cog">{{_('Active:')}} <b id="aktiv" title="{{_('Active')}}">{{status.active}}</b> / <b id="aktiv_from" title="{{_('Queued')}}">{{status.queue}}</b> / <b id="aktiv_total" title="{{_('Total')}}">{{status.total}}</b></span></span>
-    </div>
-{% endif %}
+<span id="cap_info2" class="cap_info col-xs-12 col-sm-auto" style="display: {% if captcha %}inline{%else%}none{% endif %};margin-top:-2px;">
+    <button id="action_cap2" class="btn btn-default col-xs-12 col-sm-auto" data-toggle="modal" data-target="#cap_box" data-backdrop="static"><span  class="glyphicon glyphicon-barcode"></span> {{_('Captcha waiting')}}</button>
+</span>
 </div>
 
 <div id="body-wrapper" class="dokuwiki">
     <div id="content" style="width: 99%; padding-left: 10px; padding-right: 10px;" lang="en" dir="ltr">
       <div style="display: flex;justify-content: space-between;">
-        <div style="margin-bottom: 20px;">
-          <h3>{% block subtitle %}{{_(' ')}}{% endblock %}</h3>
-        </div>
+        <!-- <div style="margin-bottom: 20px;"> -->
+          <!-- <h3>{% block subtitle %}{{_(' ')}}{% endblock %}</h3> -->
+        <!-- </div> -->
+        <hr>
         <div>
           {% block statusbar %}
           {% endblock %}
@@ -202,7 +209,6 @@
         </div>
         <div id="load-indicator2" class="load-indicator" style="opacity: 0; margin-top: 5px;">
              <img src="{{theme_static('img/ajax-loader.gif')}}" alt="" style="padding-right: 5px"/>
-             {{_('loading')}}
         </div>
       </div>
 
@@ -227,16 +233,7 @@
 
 {% include theme('window.html') %}
 {% include theme('captcha.html') %}
-<noscript><h1>Enable JavaScript to use the webinterface.</h1></noscript>
-
-<script type="text/javascript" src="{{theme_static('js/jquery-3.2.1.min.js')}}"></script>
-<script type="text/javascript" src="{{theme_static('js/jquery-ui-1.12.1.min.js')}}"></script>
-<script type="text/javascript" src="{{theme_static('js/jquery.peekabar.min.js')}}"></script>
-<script type="text/javascript" src="{{theme_static('js/bootstrap.min.js')}}"></script>
-
-{% autoescape false %}
-<script type="text/javascript" src="{{render_template('js/base.js')}}"></script>
-{% endautoescape %}
+<noscript><h1>Enable JavaScript to use the WebUI.</h1></noscript>
 
 {% block footer %}
 {% endblock %}
