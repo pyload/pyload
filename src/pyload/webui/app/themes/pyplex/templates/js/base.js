@@ -319,9 +319,9 @@ $(function() {
 function LoadJsonToContent(a) {
     var notification;
     $("#speed").text(humanFileSize(a.speed) + "/s");
-    $("#aktiv").text(a.active);
-    $("#aktiv_from").text(a.queue);
-    $("#aktiv_total").text(a.total);
+    $("#actives").text(a.active);
+    $("#actives_from").text(a.queue);
+    $("#actives_total").text(a.total);
     var $cap_info = $(".cap_info");
     if (a.captcha) {
         var notificationVisible = ($cap_info.css("display") !== "none");

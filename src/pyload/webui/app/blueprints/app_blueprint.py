@@ -114,7 +114,7 @@ def queue():
     queue = api.getQueue()
     queue.sort(key=operator.attrgetter("order"))
 
-    return render_template("queue.html", content=queue, target=1)
+    return render_template("packages.html", content=queue, target=1)
 
 
 @bp.route("/collector", endpoint="collector")
@@ -125,7 +125,7 @@ def collector():
 
     queue.sort(key=operator.attrgetter("order"))
 
-    return render_template("queue.html", content=queue, target=0)
+    return render_template("packages.html", content=queue, target=0)
 
 
 @bp.route("/files", endpoint="files")

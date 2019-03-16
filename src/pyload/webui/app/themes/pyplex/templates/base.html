@@ -7,16 +7,16 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-    <link rel="stylesheet" type="text/css" href="{{theme_static('css/bootstrap.min.css')}}">
-    <link rel="stylesheet" type="text/css" href="{{theme_static('css/jquery-ui-1.12.1.min.css')}}"/>
+    <link rel="stylesheet" type="text/css" href="{{theme_static('vendor/Bootstrap/css/bootstrap.min.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{theme_static('vendor/jQuery/jQuery UI/jquery-ui.min.css')}}"/>
     <link rel="stylesheet" type="text/css" href="{{theme_static('css/base.css')}}" />
 
     <!-- <link rel="icon" href="{{theme_static('img/favicon.ico')}}"/> -->
 
-    <script type="text/javascript" src="{{theme_static('js/jquery-3.2.1.min.js')}}"></script>
-    <script type="text/javascript" src="{{theme_static('js/jquery-ui-1.12.1.min.js')}}"></script>
-    <script type="text/javascript" src="{{theme_static('js/jquery.peekabar.min.js')}}"></script>
-    <script type="text/javascript" src="{{theme_static('js/bootstrap.min.js')}}"></script>
+    <script type="text/javascript" src="{{theme_static('vendor/jQuery/jquery.min.js')}}"></script>
+    <script type="text/javascript" src="{{theme_static('vendor/jQuery/jQuery UI/jquery-ui.min.js')}}"></script>
+    <script type="text/javascript" src="{{theme_static('vendor/jQuery/jQuery.peekABar/js/jquery.peekabar.min.js')}}"></script>
+    <script type="text/javascript" src="{{theme_static('vendor/Bootstrap/js/bootstrap.min.js')}}"></script>
     <script type="text/javascript" src="{{theme_template('js/base.js')}}"></script>
 
 <style type="text/css">
@@ -171,7 +171,7 @@
         <button class="btn btn-dark col-xs-3 col-sm-auto"><span class="hidden-sm">{{_('Running:')}}</span><span class="glyphicon glyphicon-download hidden-xs hidden-md hidden-lg"></span> <span id="time"  class="label label-{% if status.download %}success{% else %}danger{% endif %}">{% if status.download %}{{_('on')}}{% else %}{{_('off')}}{% endif %}</span></button>
         <button type="button" class="btn btn-dark col-xs-3 col-sm-auto"><span class="hidden-sm">{{_('Reconnect:')}}</span><span class="glyphicon glyphicon-refresh hidden-xs hidden-md hidden-lg"></span> <span id="reconnect" class="label label-{% if status.reconnect %}success{% else %}danger{% endif %}">{% if status.reconnect %}{{_('on')}}{% else %}{{_('off')}}{% endif %}</span></button>
         <button type="button" class="btn btn-dark col-xs-3 col-sm-auto"><span class="action backlink"><span class="hidden-xs hidden-sm">{{_('Speed:')}} </span><b id="speed">{{status.speed}}</b></span></button>
-        <span class="btn btn-dark col-xs-3 col-sm-auto"><span class="action cog">{{_('Active:')}} <b id="aktiv" title="{{_('Active')}}">{{status.active}}</b> / <b id="aktiv_from" title="{{_('Queued')}}">{{status.queue}}</b> | <b id="aktiv_total" title="{{_('Total')}}">{{status.total}}</b></span></span>
+        <span class="btn btn-dark col-xs-3 col-sm-auto"><span class="action cog">{{_('Active:')}} <b id="actives" title="{{_('Active')}}">{{status.active}}</b> / <b id="actives_from" title="{{_('Queued')}}">{{status.queue}}</b> | <b id="actives_total" title="{{_('Total')}}">{{status.total}}</b></span></span>
     </div>
 {% endif %}
 
@@ -240,4 +240,3 @@
 
 </body>
 </html>
-
