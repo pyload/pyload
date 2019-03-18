@@ -275,8 +275,7 @@ class AddonManager:
             if plugin.info:
                 # copy and convert so str
                 info[name] = {
-                    x: str(y) if not isinstance(y, str) else y
-                    for x, y in plugin.info.items()
+                    x: str(y) for x, y in plugin.info.items()
                 }
         return info
 
@@ -284,7 +283,7 @@ class AddonManager:
         info = {}
         if plugin in self.pluginMap and self.pluginMap[plugin].info:
             info = {
-                x: str(y) if not isinstance(y, str) else y
+                x: str(y)
                 for x, y in self.pluginMap[plugin].info.items()
             }
 

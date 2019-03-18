@@ -13,11 +13,14 @@ from collections.abc import Mapping
 from enum import IntEnum
 
 
-class BaseObject(Mapping):
+class AbstractData(Mapping):
     __slots__ = []
 
-    def __getitem__(self, key):
-        return getattr(self, key)
+    def __getitem__(self, name):
+        return getattr(self, name)
+        
+    def __setitem__(self, name, value):
+        return setattr(self, name, value)
 
     def __iter__(self):
         for attr in self.__slots__:
@@ -74,7 +77,7 @@ class Output(IntEnum):
     QUESTION = 2
 
 
-class AccountInfo(BaseObject):
+class AccountInfo(AbstractData):
     __slots__ = [
         "validuntil",
         "login",
@@ -107,7 +110,7 @@ class AccountInfo(BaseObject):
         self.type = type
 
 
-class CaptchaTask(BaseObject):
+class CaptchaTask(AbstractData):
     __slots__ = ["tid", "data", "type", "resultType"]
 
     def __init__(self, tid=None, data=None, type=None, resultType=None):
@@ -117,7 +120,7 @@ class CaptchaTask(BaseObject):
         self.resultType = resultType
 
 
-class ConfigItem(BaseObject):
+class ConfigItem(AbstractData):
     __slots__ = ["name", "description", "value", "type"]
 
     def __init__(self, name=None, description=None, value=None, type=None):
@@ -127,7 +130,7 @@ class ConfigItem(BaseObject):
         self.type = type
 
 
-class ConfigSection(BaseObject):
+class ConfigSection(AbstractData):
     __slots__ = ["name", "description", "items", "outline"]
 
     def __init__(self, name=None, description=None, items=None, outline=None):
@@ -137,7 +140,7 @@ class ConfigSection(BaseObject):
         self.outline = outline
 
 
-class DownloadInfo(BaseObject):
+class DownloadInfo(AbstractData):
     __slots__ = [
         "fid",
         "name",
@@ -197,7 +200,7 @@ class DownloadInfo(BaseObject):
         self.info = info
 
 
-class EventInfo(BaseObject):
+class EventInfo(AbstractData):
     __slots__ = ["eventname", "id", "type", "destination"]
 
     def __init__(self, eventname=None, id=None, type=None, destination=None):
@@ -207,7 +210,7 @@ class EventInfo(BaseObject):
         self.destination = destination
 
 
-class FileData(BaseObject):
+class FileData(AbstractData):
     __slots__ = [
         "fid",
         "url",
@@ -256,7 +259,7 @@ class FileDoesNotExists(Exception):
         self.fid = fid
 
 
-class InteractionTask(BaseObject):
+class InteractionTask(AbstractData):
     __slots__ = [
         "iid",
         "input",
@@ -292,7 +295,7 @@ class InteractionTask(BaseObject):
         self.plugin = plugin
 
 
-class OnlineCheck(BaseObject):
+class OnlineCheck(AbstractData):
     __slots__ = ["rid", "data"]
 
     def __init__(self, rid=None, data=None):
@@ -300,7 +303,7 @@ class OnlineCheck(BaseObject):
         self.data = data
 
 
-class OnlineStatus(BaseObject):
+class OnlineStatus(AbstractData):
     __slots__ = ["name", "plugin", "packagename", "status", "size"]
 
     def __init__(
@@ -313,7 +316,7 @@ class OnlineStatus(BaseObject):
         self.size = size
 
 
-class PackageData(BaseObject):
+class PackageData(AbstractData):
     __slots__ = [
         "pid",
         "name",
@@ -368,7 +371,7 @@ class PackageDoesNotExists(Exception):
         self.pid = pid
 
 
-class ServerStatus(BaseObject):
+class ServerStatus(AbstractData):
     __slots__ = [
         "pause",
         "active",
@@ -401,7 +404,7 @@ class ServerStatus(BaseObject):
         self.captcha = captcha
 
 
-class ServiceCall(BaseObject):
+class ServiceCall(AbstractData):
     __slots__ = ["plugin", "func", "arguments", "parseArguments"]
 
     def __init__(self, plugin=None, func=None, arguments=None, parseArguments=None):
@@ -427,7 +430,7 @@ class ServiceException(Exception):
 
 
 #: Needed by legacy API
-class OldUserData(BaseObject):
+class OldUserData(AbstractData):
     __slots__ = ["name", "email", "role", "permission", "templateName"]
 
     def __init__(
@@ -440,7 +443,7 @@ class OldUserData(BaseObject):
         self.templateName = templateName
 
 
-class UserData(BaseObject):
+class UserData(AbstractData):
     __slots__ = ["id", "name", "email", "role", "permission", "template"]
 
     def __init__(

@@ -246,8 +246,7 @@ class BasePlugin:
             html = html_unescape(html)
 
         # TODO: Move to network in 0.6.x
-        if isinstance(decode, str):
-            html = _decode(html, decode)
+        html = _decode(html, decode)
 
         self.last_html = html
 
@@ -384,8 +383,7 @@ class BasePlugin:
                 html = html_unescape(html)
 
             # TODO: Move to network in 0.6.x
-            if isinstance(decode, str):
-                html = _decode(html, decode)
+            html = _decode(html, decode)
 
             self.last_html = html
 

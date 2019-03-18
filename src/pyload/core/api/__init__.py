@@ -114,11 +114,7 @@ class Api:
                 item = ConfigItem()
                 item.name = key
                 item.description = data["desc"]
-                item.value = (
-                    str(data["value"])
-                    if not isinstance(data["value"], str)
-                    else data["value"]
-                )
+                item.value = str(data["value"])
                 item.type = data["type"]
                 items.append(item)
             section.items = items
@@ -141,8 +137,7 @@ class Api:
             value = self.pyload.config[category][option]
         else:
             value = self.pyload.config.getPlugin(category, option)
-
-        return str(value) if not isinstance(value, str) else value
+        return str(value)
 
     @permission(Perms.SETTINGS)
     def setConfigValue(self, category, option, value, section="core"):

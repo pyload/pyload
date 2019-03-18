@@ -2,9 +2,8 @@
 # AUTHOR: RaNaN
 
 import os
+import re
 import time
-
-from re import search
 
 import pycurl
 
@@ -17,7 +16,7 @@ class WrongFormat(Exception):
 
 class ChunkInfo:
     def __init__(self, name):
-        self.name = str(name)
+        self.name = os.fsdecode(name)
         self.size = 0
         self.resume = False
         self.chunks = []
@@ -49,7 +48,7 @@ class ChunkInfo:
             current += chunk_size + 1
 
     def save(self):
-        fs_name = os.fsdecode(f"{self.name}.chunks")
+        fs_name = f"{self.name}.chunks"
         with open(fs_name, mode="w", encoding="utf-8") as fh:
             fh.write(f"name:{self.name}\n")
             fh.write(f"size:{self.size}\n")
@@ -60,7 +59,7 @@ class ChunkInfo:
 
     @staticmethod
     def load(name):
-        fs_name = os.fsdecode(f"{name}.chunks")
+        fs_name = f"{name}.chunks"
         if not os.path.exists(fs_name):
             raise IOError
         with open(fs_name, encoding="utf-8") as fh:
@@ -91,7 +90,7 @@ class ChunkInfo:
         return ci
 
     def remove(self):
-        fs_name = os.fsdecode(f"{self.name}.chunks")
+        fs_name = f"{self.name}.chunks"
         if os.path.exists(fs_name):
             os.remove(fs_name)
 
@@ -119,7 +118,7 @@ class HTTPChunk(HTTPRequest):
 
         self.c = pycurl.Curl()
 
-        self.header = ""
+        self.header = bytes()
         self.headerParsed = False  #: indicates if the header has been processed
 
         self.fp = None  #: file handle
@@ -127,7 +126,7 @@ class HTTPChunk(HTTPRequest):
         self.initHandle()
         self.setInterface(self.p.options)
 
-        self.BOMChecked = False  #: check and os.remove byte order mark
+        self.BOMChecked = False  #: check and remove byte order mark
 
         self.rep = None
 
@@ -154,7 +153,7 @@ class HTTPChunk(HTTPRequest):
         # request all bytes, since some servers in russia seems to have a defect
         # arihmetic unit
 
-        fs_name = os.fsdecode(self.p.info.getChunkName(self.id))
+        fs_name = self.p.info.getChunkName(self.id)
         if self.resume:
             self.fp = open(fs_name, mode="ab")
             self.arrived = self.fp.tell()
@@ -174,7 +173,7 @@ class HTTPChunk(HTTPRequest):
                 else:
                     end = min(self.range[1] + 1, self.p.size - 1)
 
-                range = f"{start}-{end}"
+                range = f"{start}-{end}".encode()
 
                 self.log.debug(f"Chunked resume with range {range}")
                 self.c.setopt(pycurl.RANGE, range)
@@ -203,11 +202,11 @@ class HTTPChunk(HTTPRequest):
         self.header += buf
         # TODO: forward headers?, this is possibly unneeeded, when we just parse valid 200 headers
         # as first chunk, we will parse the headers
-        if not self.range and self.header.endswith("\r\n\r\n"):
+        if not self.range and self.header.endswith(b"\r\n\r\n"):
             self.parseHeader()
         # ftp file size parsing
-        elif not self.range and buf.startswith("150") and "data connection" in buf:
-            size = search(r"(\d+) bytes", buf)
+        elif not self.range and buf.startswith(b"150") and b"data connection" in buf:
+            size = re.search(rb"(\d+) bytes", buf)
             if size:
                 self.p.size = int(size.group(1))
                 self.p.chunkSupport = True
