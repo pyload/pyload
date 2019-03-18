@@ -1006,7 +1006,7 @@ class YoutubeCom(BaseDownloader):
                         srt = timedtext_to_srt(timed_text)
 
                         with open(srt_filename, mode="w") as file:
-                            file.write(srt.encode("utf-8"))
+                            file.write(srt.encode())
                         self.set_permissions(srt_filename)
                         self.log_debug(
                             "Saved subtitle: {}".format(os.path.basename(srt_filename))
@@ -1044,7 +1044,7 @@ class YoutubeCom(BaseDownloader):
                     srt = timedtext_to_srt(timed_text)
 
                     with open(srt_filename, mode="w") as file:
-                        file.write(srt.encode("utf-8"))
+                        file.write(srt.encode())
                     self.set_permissions(srt_filename)
 
                     self.log_debug(

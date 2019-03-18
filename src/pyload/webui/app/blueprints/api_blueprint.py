@@ -9,8 +9,6 @@ from urllib.parse import unquote
 import flask
 from flask.json import jsonify
 
-from pyload.core.api import BaseObject
-
 from ..helpers import clear_session, set_session, login_required
 
 
