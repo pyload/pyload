@@ -28,7 +28,7 @@ class MultiDecrypter(SimpleDecrypter):
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
     def init(self):
-        self.PLUGIN_NAME = self.pyload.pluginManager.crypterPlugins.get(self.classname)[
+        self.PLUGIN_NAME = self.pyload.plugin_manager.crypter_plugins.get(self.classname)[
             "name"
         ]
 

@@ -36,7 +36,7 @@ class BIGHTTPRequest(HTTPRequest):
         writes response.
         """
         if self.limit and self.rep.tell() > self.limit or self.abort:
-            rep = self.getResponse()
+            rep = self.get_response()
             if self.abort:
                 raise Abort
             with open("response.dump", mode="wb") as file:
@@ -73,7 +73,7 @@ class FilecryptCc(BaseDecrypter):
     COOKIES = [("filecrypt.cc", "lang", "en")]
 
     DLC_LINK_PATTERN = r'onclick="DownloadDLC\(\'(.+)\'\);">'
-    WEBLINK_PATTERN = r"openLink.?'([\w\-]*)',"
+    WEBLINK_PATTERN = r"open_link.?'([\w\-]*)',"
     MIRROR_PAGE_PATTERN = r'"[\w]*" href="(https?://(?:www\.)?filecrypt.cc/Container/\w+\.html\?mirror=\d+)">'
 
     CAPTCHA_PATTERN = r"<h2>Security prompt</h2>"
@@ -92,7 +92,7 @@ class FilecryptCc(BaseDecrypter):
 
         self.req.http = BIGHTTPRequest(
             cookies=CookieJar(None),
-            options=self.pyload.requestFactory.getOptions(),
+            options=self.pyload.request_factory.get_options(),
             limit=2_000_000,
         )
 

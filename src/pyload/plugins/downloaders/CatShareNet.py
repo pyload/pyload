@@ -27,7 +27,7 @@ class CatShareNet(SimpleDownloader):
     __license__ = "GPLv3"
     __authors__ = [
         ("z00nx", "z00nx0@gmail.com"),
-        ("prOq", None),
+        ("pr_oq", None),
         ("Walter Purcaro", "vuolter@gmail.com"),
         ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com"),
     ]
@@ -44,7 +44,7 @@ class CatShareNet(SimpleDownloader):
     LINK_PREMIUM_PATTERN = r'<form action="(.+?)" method="GET">'
 
     def setup(self):
-        self.multiDL = self.premium
+        self.multi_dl = self.premium
         self.resume_download = True
 
     def handle_free(self, pyfile):

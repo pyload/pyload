@@ -60,7 +60,7 @@ class WebshareCz(SimpleDownloader):
         return info
 
     def setup(self):
-        self.multiDL = self.premium
+        self.multi_dl = self.premium
         self.resume_download = True
         self.chunk_limit = 2
 

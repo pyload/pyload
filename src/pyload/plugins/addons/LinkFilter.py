@@ -29,10 +29,10 @@ class LinkFilter(BaseAddon):
     __authors__ = [("segelkma", None)]
 
     def activate(self):
-        self.m.addEvent("linksAdded", self.filter_links)
+        self.m.add_event("links_added", self.filter_links)
 
     def deactivate(self):
-        self.m.removeEvent("linksAdded", self.filter_links)
+        self.m.remove_event("links_added", self.filter_links)
 
     def filter_links(self, links, pid):
         filters = self.config.get("filter").replace(" ", "")
@@ -45,7 +45,7 @@ class LinkFilter(BaseAddon):
             self.blacklist(links, filters)
 
     def whitelist(self, links, filters):
-        plugindict = dict(self.pyload.pluginManager.parseUrls(links))
+        plugindict = dict(self.pyload.plugin_manager.parse_urls(links))
         linkcount = len(links)
         links[:] = [
             link
@@ -88,7 +88,7 @@ class LinkFilter(BaseAddon):
         # declare all links as hoster links so the filter will work on all links
         if self.config.get("filter_all"):
             return True
-        for item in self.pyload.pluginManager.hosterPlugins.items():
+        for item in self.pyload.plugin_manager.hoster_plugins.items():
             if item[1]["re"].match(link):
                 return True
         return False

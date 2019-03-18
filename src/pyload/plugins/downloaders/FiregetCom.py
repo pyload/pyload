@@ -42,7 +42,7 @@ class FiregetCom(SimpleDownloader):
     COOKIES = [("fireget.com", "lang", "english")]
 
     def setup(self):
-        self.multiDL = True
+        self.multi_dl = True
         self.chunk_limit = 1
         self.resume_download = True
 

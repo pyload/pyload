@@ -33,28 +33,28 @@ class CoinHive(CaptchaService):
     )
 
     COINHIVE_INTERACTIVE_JS = """
-            while(document.children[0].childElementCount > 0) {
-                document.children[0].removeChild(document.children[0].children[0]);
+            while(document.children[0].child_element_count > 0) {
+                document.children[0].remove_child(document.children[0].children[0]);
             }
-            document.children[0].innerHTML = '<html><body><div class="coinhive-captcha"' + (request.params.hashes ? 'data-hashes="' + request.params.hashes +'"' : '') + ' data-key="' + request.params.key +'" data-callback="pyloadCaptchaFinishCallback"><em>Loading Coinhive Captcha...</em></div></body></html>';
+            document.children[0].inner_html = '<html><body><div class="coinhive-captcha"' + (request.params.hashes ? 'data-hashes="' + request.params.hashes +'"' : '') + ' data-key="' + request.params.key +'" data-callback="pyload_captcha_finish_callback"><em>Loading Coinhive Captcha...</em></div></body></html>';
 
-            gpyload.getFrameSize = function() {
-                var divCoinHive = document.body.querySelector("iframe[src*='authedmine.com/captcha/']");
-                if (divCoinHive !== null) {
-                    var rect = divCoinHive.getBoundingClientRect();
+            gpyload.get_frame_size = function() {
+                var div_coin_hive = document.body.query_selector("iframe[src*='authedmine.com/captcha/']");
+                if (div_coin_hive !== null) {
+                    var rect = div_coin_hive.get_bounding_client_rect();
                     return {top: Math.round(rect.top), right: Math.round(rect.right), bottom: Math.round(rect.bottom), left: Math.round(rect.left)};
                 } else {
                     return {top: 0, right: 0, bottom: 0, left: 0};
                 };
             };
-            window.pyloadCaptchaFinishCallback = function(token){
-                gpyload.submitResponse(token);
+            window.pyload_captcha_finish_callback = function(token){
+                gpyload.submit_response(token);
             }
-            var js_script = document.createElement('script');
+            var js_script = document.create_element('script');
             js_script.type = "text/javascript";
             js_script.src = "https://authedmine.com/lib/captcha.min.js";
             js_script.async = true;
-            document.getElementsByTagName('head')[0].appendChild(js_script);
+            document.get_elements_by_tag_name('head')[0].append_child(js_script);
 
             gpyload.activated();"""
 

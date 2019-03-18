@@ -13,7 +13,7 @@ class PyPackage:
 
     def __init__(self, manager, id, name, folder, site, password, queue, order):
         self.m = self.manager = manager
-        self.m.packageCache[int(id)] = self
+        self.m.package_cache[int(id)] = self
 
         self.id = int(id)
         self.name = name
@@ -22,13 +22,13 @@ class PyPackage:
         self.password = password
         self.queue = queue
         self.order = order
-        self.setFinished = False
+        self.set_finished = False
 
     @property
     def folder(self):
         return safepath(self._folder)
 
-    def toDict(self):
+    def to_dict(self):
         """
         Returns a dictionary representation of the data.
 
@@ -47,28 +47,28 @@ class PyPackage:
             }
         }
 
-    def getChildren(self):
+    def get_children(self):
         """
         get information about contained links.
         """
-        return self.m.getPackageData(self.id)["links"]
+        return self.m.get_package_data(self.id)["links"]
 
     def sync(self):
         """
         sync with db.
         """
-        self.m.updatePackage(self)
+        self.m.update_package(self)
 
     def release(self):
         """
         sync and delete from cache.
         """
         self.sync()
-        self.m.releasePackage(self.id)
+        self.m.release_package(self.id)
 
     def delete(self):
-        self.m.deletePackage(self.id)
+        self.m.delete_package(self.id)
 
-    def notifyChange(self):
+    def notify_change(self):
         e = UpdateEvent("pack", self.id, "collector" if not self.queue else "queue")
-        self.m.pyload.eventManager.addEvent(e)
+        self.m.pyload.event_manager.add_event(e)

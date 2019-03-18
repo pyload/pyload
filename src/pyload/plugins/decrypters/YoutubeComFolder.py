@@ -36,7 +36,7 @@ class YoutubeComFolder(BaseDecrypter):
     __license__ = "GPLv3"
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
-    API_KEY = "AIzaSyCKnWLNlkX-L4oD1aEzqqhRw1zczeD6_k0"
+    API_KEY = "AIzaSyCKnWLNlkX-L4oD1a_ezqqh_rw1zczeD6_k0"
 
     def api_response(self, ref, req):
         req.update({"key": self.API_KEY})
@@ -48,9 +48,9 @@ class YoutubeComFolder(BaseDecrypter):
         channels = self.api_response(
             "channels",
             {
-                "part": "id,snippet,contentDetails",
-                "forUsername": user,
-                "maxResults": "50",
+                "part": "id,snippet,content_details",
+                "for_username": user,
+                "max_results": "50",
             },
         )
         if channels["items"]:
@@ -58,7 +58,7 @@ class YoutubeComFolder(BaseDecrypter):
             return {
                 "id": channel["id"],
                 "title": channel["snippet"]["title"],
-                "relatedPlaylists": channel["contentDetails"]["relatedPlaylists"],
+                "related_playlists": channel["content_details"]["related_playlists"],
                 "user": user,
             }  #: One lone channel for user?
 
@@ -69,39 +69,39 @@ class YoutubeComFolder(BaseDecrypter):
             return {
                 "id": p_id,
                 "title": playlist["snippet"]["title"],
-                "channelId": playlist["snippet"]["channelId"],
-                "channelTitle": playlist["snippet"]["channelTitle"],
+                "channel_id": playlist["snippet"]["channel_id"],
+                "channel_title": playlist["snippet"]["channel_title"],
             }
 
     def _get_playlists(self, id, token=None):
-        req = {"part": "id", "maxResults": "50", "channelId": id}
+        req = {"part": "id", "max_results": "50", "channel_id": id}
         if token:
-            req.update({"pageToken": token})
+            req.update({"page_token": token})
 
         playlists = self.api_response("playlists", req)
 
         for playlist in playlists["items"]:
             yield playlist["id"]
 
-        if "nextPageToken" in playlists:
-            for item in self._get_playlists(id, playlists["nextPageToken"]):
+        if "next_page_token" in playlists:
+            for item in self._get_playlists(id, playlists["next_page_token"]):
                 yield item
 
     def get_playlists(self, ch_id):
         return [self.get_playlist(p_id) for p_id in self._get_playlists(ch_id)]
 
     def _get_videos_id(self, id, token=None):
-        req = {"part": "contentDetails", "maxResults": "50", "playlistId": id}
+        req = {"part": "content_details", "max_results": "50", "playlist_id": id}
         if token:
-            req.update({"pageToken": token})
+            req.update({"page_token": token})
 
-        playlist = self.api_response("playlistItems", req)
+        playlist = self.api_response("playlist_items", req)
 
         for item in playlist["items"]:
-            yield item["contentDetails"]["videoId"]
+            yield item["content_details"]["video_id"]
 
-        if "nextPageToken" in playlist:
-            for item in self._get_videos_id(id, playlist["nextPageToken"]):
+        if "next_page_token" in playlist:
+            for item in self._get_videos_id(id, playlist["next_page_token"]):
                 yield item
 
     def get_videos_id(self, p_id):
@@ -127,7 +127,7 @@ class YoutubeComFolder(BaseDecrypter):
 
                 relatedplaylist = {
                     p_name: self.get_playlist(p_id)
-                    for p_name, p_id in channel["relatedPlaylists"].items()
+                    for p_name, p_id in channel["related_playlists"].items()
                 }
 
                 self.log_debug(
@@ -137,7 +137,7 @@ class YoutubeComFolder(BaseDecrypter):
                 )
 
                 relatedplaylist["uploads"]["title"] = "Unplaylisted videos"
-                relatedplaylist["uploads"]["checkDups"] = True  #: checkDups flag
+                relatedplaylist["uploads"]["check_dups"] = True  #: check_dups flag
 
                 for p_name, p_data in relatedplaylist.items():
                     if self.config.get(p_name):
@@ -159,7 +159,7 @@ class YoutubeComFolder(BaseDecrypter):
             p_videos = self.get_videos_id(p["id"])
             p_folder = os.path.join(
                 self.pyload.config.get("general", "storage_folder"),
-                p["channelTitle"],
+                p["channel_title"],
                 p_name,
             )
             self.log_debug(
@@ -168,7 +168,7 @@ class YoutubeComFolder(BaseDecrypter):
 
             if not p_videos:
                 continue
-            elif "checkDups" in p:
+            elif "check_dups" in p:
                 p_urls = [urlize(v_id) for v_id in p_videos if v_id not in addedvideos]
                 self.log_debug(
                     '{} video\s available on playlist "{}" after duplicates cleanup'.format(

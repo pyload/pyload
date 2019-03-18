@@ -25,7 +25,7 @@ class MergeFiles(BaseAddon):
     def package_finished(self, pack):
         files = {}
         fid_dict = {}
-        for fid, data in pack.getChildren().items():
+        for fid, data in pack.get_children().items():
             if re.search(r"\.\d{3}$", data["name"]):
                 if data["name"][:-4] not in files:
                     files[data["name"][:-4]] = []
@@ -45,9 +45,9 @@ class MergeFiles(BaseAddon):
                 for splitted_file in file_list:
                     self.log_debug("Merging part", splitted_file)
 
-                    pyfile = self.pyload.files.getFile(fid_dict[splitted_file])
+                    pyfile = self.pyload.files.get_file(fid_dict[splitted_file])
 
-                    pyfile.setStatus("processing")
+                    pyfile.set_status("processing")
 
                     try:
                         with open(
@@ -62,7 +62,7 @@ class MergeFiles(BaseAddon):
                                 if f_buffer:
                                     final_file.write(f_buffer)
                                     size_written += self.BUFFER_SIZE
-                                    pyfile.setProgress(
+                                    pyfile.set_progress(
                                         (size_written * 100) // s_file_size
                                     )
                                 else:
@@ -77,8 +77,8 @@ class MergeFiles(BaseAddon):
                         )
 
                     finally:
-                        pyfile.setProgress(100)
-                        pyfile.setStatus("finished")
+                        pyfile.set_progress(100)
+                        pyfile.set_status("finished")
                         pyfile.release()
 
             self.log_info(self._("Finished merging of"), name)

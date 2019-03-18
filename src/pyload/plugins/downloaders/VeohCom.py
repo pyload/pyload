@@ -34,7 +34,7 @@ class VeohCom(SimpleDownloader):
 
     def setup(self):
         self.resume_download = True
-        self.multiDL = True
+        self.multi_dl = True
         self.chunk_limit = -1
 
     def handle_free(self, pyfile):
@@ -43,7 +43,7 @@ class VeohCom(SimpleDownloader):
             quality = ("High", "Low")
 
         for q in quality:
-            pattern = rf'"fullPreviewHash{q}Path":"(.+?)"'
+            pattern = rf'"full_preview_hash{q}Path":"(.+?)"'
             m = re.search(pattern, self.data)
             if m is not None:
                 pyfile.name += ".mp4"

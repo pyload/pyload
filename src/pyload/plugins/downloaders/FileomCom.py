@@ -36,6 +36,6 @@ class FileomCom(XFSDownloader):
     LINK_PATTERN = r"var url2 = \'(.+?)\';"
 
     def setup(self):
-        self.multiDL = True
+        self.multi_dl = True
         self.chunk_limit = 1
         self.resume_download = self.premium

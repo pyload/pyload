@@ -54,7 +54,7 @@ class MegaDebridEu(MultiDownloader):
     def handle_premium(self, pyfile):
         try:
             res = self.api_response(
-                "getLink",
+                "get_link",
                 get=args(
                     token=self.account.info["data"]["cache_info"][self.account.user][
                         "token"
@@ -71,7 +71,7 @@ class MegaDebridEu(MultiDownloader):
                 raise
 
         if res["response_code"] == "ok":
-            self.link = res["debridLink"]
+            self.link = res["debrid_link"]
 
         elif res["response_code"] == "TOKEN_ERROR":
             self.account.relogin()

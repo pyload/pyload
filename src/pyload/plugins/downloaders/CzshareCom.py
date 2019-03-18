@@ -149,9 +149,9 @@ class CzshareCom(SimpleDownloader):
         self.set_wait(int(m.group(1)) if m else 50)
 
         #: Download the file, destination is determined by pyLoad
-        self.log_debug("WAIT URL", self.req.lastEffectiveURL)
+        self.log_debug("WAIT URL", self.req.last_effective_url)
 
-        m = re.search("free_wait.php\?server=(.*?)&(.*)", self.req.lastEffectiveURL)
+        m = re.search("free_wait.php\?server=(.*?)&(.*)", self.req.last_effective_url)
         if m is None:
             self.error(self._("Download URL not found"))
 

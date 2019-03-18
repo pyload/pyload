@@ -99,7 +99,7 @@ def print_commands():
         print(f"%-35s {c}")
 
 
-def writeConfig(opts):
+def write_config(opts):
     try:
         with open(os.path.join(DATADIR, "pyload-cli.conf"), mode="w") as cfgfile:
             cfgfile.write("[cli]")
@@ -121,11 +121,11 @@ def run():
     ) or config["language"] == "":
         config["language"] = "en"
 
-    configFile = configparser.ConfigParser()
-    configFile.read(os.path.join(DATADIR, "pyload-cli.conf"))
+    config_file = configparser.ConfigParser()
+    config_file.read(os.path.join(DATADIR, "pyload-cli.conf"))
 
-    if configFile.has_section("cli"):
-        for opt in configFile.items("cli"):
+    if config_file.has_section("cli"):
+        for opt in config_file.items("cli"):
             config[opt[0]] = opt[1]
 
     gettext.setpaths([os.path.join(os.sep, "usr", "share", "pyload", "locale"), None])
@@ -142,8 +142,8 @@ def run():
     username = ""
     password = ""
 
-    shortOptions = "iu:p:a:hcl:"
-    longOptions = [
+    short_options = "iu:p:a:hcl:"
+    long_options = [
         "interactive",
         "username=",
         "pw=",
@@ -155,7 +155,7 @@ def run():
     ]
 
     try:
-        opts, extraparams = getopt(sys.argv[1:], shortOptions, longOptions)
+        opts, extraparams = getopt(sys.argv[1:], short_options, long_options)
         for option, params in opts:
             if option in ("-i", "--interactive"):
                 interactive = True
@@ -255,7 +255,7 @@ def run():
         print(self._("Interactive mode ignored since you passed some commands."))
 
     if client:
-        writeConfig(config)
+        write_config(config)
         Cli(client, command)
 
 

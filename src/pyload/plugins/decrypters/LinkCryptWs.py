@@ -203,7 +203,7 @@ class LinkCryptWs(BaseDecrypter):
                     "http://linkcrypt.ws/out.html", post={"file": weblink_id}
                 )
 
-                indexs = res.find("href=doNotTrack('") + 17
+                indexs = res.find("href=do_not_track('") + 17
                 indexe = res.find("'", indexs)
 
                 link2 = res[indexs:indexe]
@@ -268,7 +268,7 @@ class LinkCryptWs(BaseDecrypter):
                         pack_name, container_type, clink.group(1)
                     )
                 )
-                self.pyload.api.uploadContainer(
+                self.pyload.api.upload_container(
                     ".".join([pack_name, container_type]), self.load(clink.group(1))
                 )
                 return "Found it"

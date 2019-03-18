@@ -53,7 +53,7 @@ class MegaDebridEu(MultiAccount):
     def grab_hosters(self, user, password, data):
         hosters = []
         try:
-            res = self.api_response("getHostersList")
+            res = self.api_response("get_hosters_list")
 
         except BadHeader as exc:
             if exc.code == 405:
@@ -108,7 +108,7 @@ class MegaDebridEu(MultiAccount):
             self.skip_login()
 
         try:
-            res = self.api_response("connectUser", args(login=user, password=password))
+            res = self.api_response("connect_user", args(login=user, password=password))
 
         except BadHeader as exc:
             if exc.code == 401:

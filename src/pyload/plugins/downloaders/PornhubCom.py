@@ -28,7 +28,7 @@ class BIGHTTPRequest(HTTPRequest):
         writes response.
         """
         if self.limit and self.rep.tell() > self.limit or self.abort:
-            rep = self.getResponse()
+            rep = self.get_response()
             if self.abort:
                 raise Abort
             with open("response.dump", mode="wb") as file:
@@ -79,7 +79,7 @@ class PornhubCom(SimpleDownloader):
 
     def setup(self):
         self.resume_download = True
-        self.multiDL = True
+        self.multi_dl = True
 
         try:
             self.req.http.close()
@@ -88,7 +88,7 @@ class PornhubCom(SimpleDownloader):
 
         self.req.http = BIGHTTPRequest(
             cookies=CookieJar(None),
-            options=self.pyload.requestFactory.getOptions(),
+            options=self.pyload.request_factory.get_options(),
             limit=2_000_000,
         )
 
@@ -103,11 +103,11 @@ class PornhubCom(SimpleDownloader):
 
         script = m.group(1)
 
-        m = re.search(r"qualityItems_\d+", script)
+        m = re.search(r"quality_items_\d+", script)
         if m is None:
-            self.error(self._("`qualityItems` variable no found"))
+            self.error(self._("`quality_items` variable no found"))
 
-        result_var = re.search(r"qualityItems_\d+", script).group(0)
+        result_var = re.search(r"quality_items_\d+", script).group(0)
 
         script = "".join(re.findall(r"^\s*var .+", script, re.M))
         script = re.sub(r"[\n\t]|/\*.+?\*/", "", script)

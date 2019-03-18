@@ -23,7 +23,7 @@ class RestartFailed(BaseAddon):
 
     def periodical_task(self):
         self.log_info(self._("Restarting all failed downloads..."))
-        self.pyload.api.restartFailed()
+        self.pyload.api.restart_failed()
 
     def activate(self):
         self.periodical.start(self.config.get("interval") * 60)

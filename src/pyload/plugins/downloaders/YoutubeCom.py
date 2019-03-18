@@ -36,7 +36,7 @@ class BIGHTTPRequest(HTTPRequest):
         writes response.
         """
         if self.limit and self.rep.tell() > self.limit or self.abort:
-            rep = self.getResponse()
+            rep = self.get_response()
             if self.abort:
                 raise Abort
             with open("response.dump", mode="wb") as file:
@@ -226,7 +226,7 @@ class Ffmpeg:
                     )
                     if self.plugin:
                         progress = current_time * 100 // duration
-                        self.plugin.pyfile.setProgress(progress)
+                        self.plugin.pyfile.set_progress(progress)
 
             else:
                 line += c
@@ -928,8 +928,8 @@ class YoutubeCom(BaseDownloader):
             i = 1
             srt = ""
             dom = parse_xml(timedtext)
-            body = dom.getElementsByTagName("body")[0]
-            paras = body.getElementsByTagName("p")
+            body = dom.get_elements_by_tag_name("body")[0]
+            paras = body.get_elements_by_tag_name("p")
             for para in paras:
                 srt += str(i) + "\n"
                 srt += (
@@ -941,10 +941,10 @@ class YoutubeCom(BaseDownloader):
                     )
                     + "\n"
                 )
-                for child in para.childNodes:
-                    if child.nodeName == "br":
+                for child in para.child_nodes:
+                    if child.node_name == "br":
                         srt += "\n"
-                    elif child.nodeName == "#text":
+                    elif child.node_name == "#text":
                         srt += str(child.data)
                     srt += "\n\n"
                 i += 1
@@ -955,10 +955,10 @@ class YoutubeCom(BaseDownloader):
         try:
             subs = json.loads(self.player_config["args"]["player_response"])[
                 "captions"
-            ]["playerCaptionsTracklistRenderer"]["captionTracks"]
+            ]["player_captions_tracklist_renderer"]["caption_tracks"]
             subtitles_urls = {
-                subtitle["languageCode"]: urllib.parse.unquote(
-                    subtitle["baseUrl"]
+                subtitle["language_code"]: urllib.parse.unquote(
+                    subtitle["base_url"]
                 ).decode("unicode-escape")
                 + "&fmt=3"
                 for subtitle in subs
@@ -1060,8 +1060,8 @@ class YoutubeCom(BaseDownloader):
         final_filename = video_filename
         subs_embed = self.config.get("subs_embed")
 
-        self.pyfile.setCustomStatus("postprocessing")
-        self.pyfile.setProgress(0)
+        self.pyfile.set_custom_status("postprocessing")
+        self.pyfile.set_progress(0)
 
         if self.ffmpeg.found:
             if audio_filename is not None:
@@ -1142,7 +1142,7 @@ class YoutubeCom(BaseDownloader):
                     "ffmpeg is not installed, subtitles files will not be embedded"
                 )
 
-        self.pyfile.setProgress(100)
+        self.pyfile.set_progress(100)
 
         self.set_permissions(final_filename)
 
@@ -1150,7 +1150,7 @@ class YoutubeCom(BaseDownloader):
 
     def setup(self):
         self.resume_download = True
-        self.multiDL = True
+        self.multi_dl = True
 
         try:
             self.req.http.close()
@@ -1159,7 +1159,7 @@ class YoutubeCom(BaseDownloader):
 
         self.req.http = BIGHTTPRequest(
             cookies=CookieJar(None),
-            options=self.pyload.requestFactory.getOptions(),
+            options=self.pyload.request_factory.get_options(),
             limit=5_000_000,
         )
 
@@ -1172,7 +1172,7 @@ class YoutubeCom(BaseDownloader):
                 r'<div id="player-unavailable" class="\s*player-width player-height\s*(?:player-unavailable\s*)?">',
                 self.data,
             )
-            or '"playabilityStatus":{"status":"ERROR"' in self.data
+            or '"playability_status":{"status":"ERROR"' in self.data
         ):
             self.offline()
 
@@ -1429,9 +1429,9 @@ class JSInterpreter:
 
             if member == "splice":
                 assert isinstance(obj, list)
-                index, howMany = argvals
+                index, how_many = argvals
                 res = []
-                for i in range(index, min(index + howMany, len(obj))):
+                for i in range(index, min(index + how_many, len(obj))):
                     res.append(obj.pop(index))
                 return res
 

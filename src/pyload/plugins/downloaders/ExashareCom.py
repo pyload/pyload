@@ -29,6 +29,6 @@ class ExashareCom(XFSDownloader):
     INFO_PATTERN = r">(?P<NAME>.+?)<small>\( (?P<S>[\d.,]+) (?P<U>[\w^_]+)"
 
     def setup(self):
-        self.multiDL = True
+        self.multi_dl = True
         self.chunk_limit = 1
         self.resume_download = self.premium

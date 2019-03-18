@@ -38,7 +38,7 @@ class AndroidfilehostCom(SimpleDownloader):
     WAIT_PATTERN = r"users must wait <strong>(\d+) secs"
 
     def setup(self):
-        self.multiDL = True
+        self.multi_dl = True
         self.resume_download = True
         self.chunk_limit = 1
 

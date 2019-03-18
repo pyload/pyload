@@ -35,11 +35,11 @@ class GoogledriveComDereferer(BaseDecrypter):
         ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com"),
     ]
 
-    NAME_PATTERN = r"folderName: '(?P<N>.+?)'"
+    NAME_PATTERN = r"folder_name: '(?P<N>.+?)'"
     OFFLINE_PATTERN = r"<TITLE>"
 
     API_URL = "https://www.googleapis.com/drive/v3/"
-    API_KEY = "AIzaSyAcA9c4evtwSY1ifuvzo6HKBkeot5Bk_U4"
+    API_KEY = "AIzaSyAcA9c4evtw_s_y1ifuvzo6HKBkeot5Bk_U4"
 
     def api_response(self, cmd, **kwargs):
         kwargs["key"] = self.API_KEY
@@ -84,7 +84,7 @@ class GoogledriveComDereferer(BaseDecrypter):
         link = "https://drive.google.com/{}/{}".format(
             (
                 "file/d"
-                if json_data["mimeType"] != "application/vnd.google-apps.folder"
+                if json_data["mime_type"] != "application/vnd.google-apps.folder"
                 else "drive/folders"
             ),
             self.info["pattern"]["ID"],

@@ -48,7 +48,7 @@ class ZippyshareCom(SimpleDownloader):
 
     def setup(self):
         self.chunk_limit = -1
-        self.multiDL = True
+        self.multi_dl = True
         self.resume_download = True
 
     def handle_free(self, pyfile):
@@ -76,18 +76,18 @@ class ZippyshareCom(SimpleDownloader):
         #: Get all the scripts inside the html body
         soup = BeautifulSoup(self.data)
         scripts = [
-            s.getText()
-            for s in soup.body.findAll("script", type="text/javascript")
-            if "('dlbutton').href =" in s.getText()
+            s.get_text()
+            for s in soup.body.find_all("script", type="text/javascript")
+            if "('dlbutton').href =" in s.get_text()
         ]
 
         #: Emulate a document in JS
         inits = [
             """
                 var document = {}
-                document.getElementById = function(x) {
-                    if (!this.hasOwnProperty(x)) {
-                        this[x] = {getAttribute : function(x) { return this[x] } }
+                document.get_element_by_id = function(x) {
+                    if (!this.has_own_property(x)) {
+                        this[x] = {get_attribute : function(x) { return this[x] } }
                     }
                     return this[x]
                 }
@@ -95,15 +95,15 @@ class ZippyshareCom(SimpleDownloader):
         ]
 
         #: inits is meant to be populated with the initialization of all the DOM elements found in the scripts
-        eltRE = r'getElementById\([\'"](.+?)[\'"]\)(\.)?(getAttribute\([\'"])?(\w+)?([\'"]\))?'
-        for m in re.findall(eltRE, " ".join(scripts)):
+        elt_re = r'get_element_by_id\([\'"](.+?)[\'"]\)(\.)?(get_attribute\([\'"])?(\w+)?([\'"]\))?'
+        for m in re.findall(elt_re, " ".join(scripts)):
             JSid, JSattr = m[0], m[3]
             values = [
-                f for f in (elt.get(JSattr, None) for elt in soup.findAll(id=JSid)) if f
+                f for f in (elt.get(JSattr, None) for elt in soup.find_all(id=JSid)) if f
             ]
             if values:
                 inits.append(
-                    'document.getElementById("{}")["{}"] = "{}"'.format(
+                    'document.get_element_by_id("{}")["{}"] = "{}"'.format(
                         JSid, JSattr, values[-1]
                     )
                 )

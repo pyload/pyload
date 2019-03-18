@@ -71,7 +71,7 @@ class XFSDownloader(SimpleDownloader):
 
     def setup(self):
         self.chunk_limit = -1 if self.premium else 1
-        self.multiDL = self.premium
+        self.multi_dl = self.premium
         self.resume_download = self.premium
 
     def _set_xfs_cookie(self):
@@ -147,7 +147,7 @@ class XFSDownloader(SimpleDownloader):
         self.log_debug(action, inputs)
 
         #: Wait for file to upload to easybytez.com
-        self.req.setOption("timeout", 600)
+        self.req.set_option("timeout", 600)
 
         self.data = self.load(action, post=inputs)
 
@@ -225,7 +225,7 @@ class XFSDownloader(SimpleDownloader):
                         wait_time
                         < timedelta(minutes=self.config.get("max_wait", 10)).seconds
                         or not self.pyload.config.get("reconnect", "enabled")
-                        or not self.pyload.api.isTimeReconnect()
+                        or not self.pyload.api.is_time_reconnect()
                     ):
                         self.handle_captcha(inputs)
 

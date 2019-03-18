@@ -36,7 +36,7 @@ class DatoidCz(SimpleDownloader):
     URL_REPLACEMENTS = [(r"datoid.sk", r"datoid.cz"), (r"datoid.pl", r"datoid.cz")]
 
     def handle_free(self, pyfile):
-        url = self.req.lastEffectiveURL
+        url = self.req.last_effective_url
         urlp = urllib.parse.urlparse(url)
 
         json_data = json.loads(
@@ -54,7 +54,7 @@ class DatoidCz(SimpleDownloader):
         self.link = json_data["redirect"]
 
     def handle_premium(self, pyfile):
-        url = self.req.lastEffectiveURL
+        url = self.req.last_effective_url
         urlp = urllib.parse.urlparse(url)
 
         self.link = urllib.parse.urljoin(

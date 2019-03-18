@@ -33,7 +33,7 @@ class ThreadManager:
         self._ = core._
 
         self.threads = []  #: thread list
-        self.localThreads = []  #: addon+decrypter threads
+        self.local_threads = []  #: addon+decrypter threads
 
         self.pause = True
 
@@ -45,29 +45,29 @@ class ThreadManager:
 
         # some operations require to fetch url info from hoster, so we caching them so it wont be done twice
         # contains a timestamp and will be purged after timeout
-        self.infoCache = {}
+        self.info_cache = {}
 
         # pool of ids for online check
-        self.resultIDs = 0
+        self.result_ids = 0
 
         # threads which are fetching hoster results
-        self.infoResults = {}
+        self.info_results = {}
         # timeout for cache purge
         self.timestamp = 0
 
         pycurl.global_init(pycurl.GLOBAL_DEFAULT)
 
         for i in range(self.pyload.config.get("download", "max_downloads")):
-            self.createThread()
+            self.create_thread()
 
-    def createThread(self):
+    def create_thread(self):
         """
         create a download thread.
         """
         thread = DownloadThread(self)
         self.threads.append(thread)
 
-    def createInfoThread(self, data, pid):
+    def create_info_thread(self, data, pid):
         """
         start a thread whichs fetches online status and other infos
         data = [ .. () .. ]
@@ -77,59 +77,59 @@ class ThreadManager:
         InfoThread(self, data, pid)
 
     @lock
-    def createResultThread(self, data, add=False):
+    def create_result_thread(self, data, add=False):
         """
         creates a thread to fetch online status, returns result id.
         """
         self.timestamp = time.time() + timedelta(minutes=5).seconds
 
-        rid = self.resultIDs
-        self.resultIDs += 1
+        rid = self.result_ids
+        self.result_ids += 1
 
         InfoThread(self, data, rid=rid, add=add)
 
         return rid
 
     @lock
-    def getInfoResult(self, rid):
+    def get_info_result(self, rid):
         """
         returns result and clears it.
         """
         self.timestamp = time.time() + timedelta(minutes=5).seconds
 
-        if rid in self.infoResults:
-            data = self.infoResults[rid]
-            self.infoResults[rid] = {}
+        if rid in self.info_results:
+            data = self.info_results[rid]
+            self.info_results[rid] = {}
             return data
         else:
             return {}
 
     @lock
-    def setInfoResults(self, rid, result):
-        self.infoResults[rid].update(result)
+    def set_info_results(self, rid, result):
+        self.info_results[rid].update(result)
 
-    def getActiveFiles(self):
+    def get_active_files(self):
         active = [
             x.active for x in self.threads if x.active and isinstance(x.active, PyFile)
         ]
 
-        for t in self.localThreads:
-            active.extend(t.getActiveFiles())
+        for t in self.local_threads:
+            active.extend(t.get_active_files())
 
         return active
 
-    def processingIds(self):
+    def processing_ids(self):
         """
         get a id list of all pyfiles processed.
         """
-        return [x.id for x in self.getActiveFiles()]
+        return [x.id for x in self.get_active_files()]
 
     def run(self):
         """
         run all task which have to be done (this is for repetivive call by core)
         """
         try:
-            self.tryReconnect()
+            self.try_reconnect()
         except Exception as exc:
             self.pyload.log.error(
                 self._("Reconnect Failed: {}").format(exc),
@@ -137,10 +137,10 @@ class ThreadManager:
                 stack_info=self.pyload.debug > 2,
             )
             self.reconnecting.clear()
-        self.checkThreadCount()
+        self.check_thread_count()
 
         try:
-            self.assignJob()
+            self.assign_job()
         except Exception as exc:
             self.pyload.log.warning(
                 "Assign job error",
@@ -150,27 +150,27 @@ class ThreadManager:
             )
 
             time.sleep(0.5)
-            self.assignJob()
+            self.assign_job()
             # it may be failed non critical so we try it again
 
-        if (self.infoCache or self.infoResults) and self.timestamp < time.time():
-            self.infoCache.clear()
-            self.infoResults.clear()
+        if (self.info_cache or self.info_results) and self.timestamp < time.time():
+            self.info_cache.clear()
+            self.info_results.clear()
             self.pyload.log.debug("Cleared Result cache")
 
     # ----------------------------------------------------------------------
-    def tryReconnect(self):
+    def try_reconnect(self):
         """
         checks if reconnect needed.
         """
         if not (
             self.pyload.config.get("reconnect", "enabled")
-            and self.pyload.api.isTimeReconnect()
+            and self.pyload.api.is_time_reconnect()
         ):
             return False
 
         active = [
-            x.active.plugin.wantReconnect and x.active.plugin.waiting
+            x.active.plugin.want_reconnect and x.active.plugin.waiting
             for x in self.threads
             if x.active
         ]
@@ -194,9 +194,9 @@ class ThreadManager:
         ) != 0:
             time.sleep(0.25)
 
-        ip = self.getIP()
+        ip = self.get_i_p()
 
-        self.pyload.addonManager.beforeReconnecting(ip)
+        self.pyload.addon_manager.before_reconnecting(ip)
 
         self.pyload.log.debug(f"Old IP: {ip}")
 
@@ -212,14 +212,14 @@ class ThreadManager:
 
         reconn.wait()
         time.sleep(1)
-        ip = self.getIP()
-        self.pyload.addonManager.afterReconnecting(ip)
+        ip = self.get_i_p()
+        self.pyload.addon_manager.after_reconnecting(ip)
 
         self.pyload.log.info(self._("Reconnected, new IP: {}").format(ip))
 
         self.reconnecting.clear()
 
-    def getIP(self):
+    def get_i_p(self):
         """
         retrieve current ip.
         """
@@ -242,24 +242,24 @@ class ThreadManager:
         return ip
 
     # ----------------------------------------------------------------------
-    def checkThreadCount(self):
+    def check_thread_count(self):
         """
         checks if there are need for increasing or reducing thread count.
         """
         if len(self.threads) == self.pyload.config.get("download", "max_downloads"):
             return True
         elif len(self.threads) < self.pyload.config.get("download", "max_downloads"):
-            self.createThread()
+            self.create_thread()
         else:
             free = [x for x in self.threads if not x.active]
             if free:
                 free[0].put("quit")
 
-    def cleanPycurl(self):
+    def clean_pycurl(self):
         """
         make a global curl cleanup (currently ununused)
         """
-        if self.processingIds():
+        if self.processing_ids():
             return False
         pycurl.global_cleanup()
         pycurl.global_init(pycurl.GLOBAL_DEFAULT)
@@ -268,23 +268,23 @@ class ThreadManager:
         return True
 
     # ----------------------------------------------------------------------
-    def assignJob(self):
+    def assign_job(self):
         """
         assing a job to a thread if possible.
         """
-        if self.pause or not self.pyload.api.isTimeDownload():
+        if self.pause or not self.pyload.api.is_time_download():
             return
 
         # if self.downloaded > 20:
-        #    if not self.cleanPyCurl(): return
+        #    if not self.clean_py_curl(): return
 
         free = [x for x in self.threads if not x.active]
 
         inuse = set(
             [
-                (x.active.pluginname, self.getLimit(x))
+                (x.active.pluginname, self.get_limit(x))
                 for x in self.threads
-                if x.active and x.active.hasPlugin() and x.active.plugin.account
+                if x.active and x.active.has_plugin() and x.active.plugin.account
             ]
         )
         inuse = [
@@ -307,31 +307,31 @@ class ThreadManager:
             [
                 x.active.pluginname
                 for x in self.threads
-                if x.active and x.active.hasPlugin() and not x.active.plugin.multiDL
+                if x.active and x.active.has_plugin() and not x.active.plugin.multi_dl
             ]
             + onlimit
         )
 
         occ = tuple(set(occ))
-        job = self.pyload.files.getJob(occ)
+        job = self.pyload.files.get_job(occ)
         if job:
             try:
-                job.initPlugin()
+                job.init_plugin()
             except Exception as exc:
                 self.pyload.log.critical(
                     exc, exc_info=True, stack_info=self.pyload.debug > 2
                 )
-                job.setStatus("failed")
+                job.set_status("failed")
                 job.error = str(exc)
                 job.release()
                 return
 
             if job.plugin.__type__ == "downloader":
-                spaceLeft = (
+                space_left = (
                     free_space(self.pyload.config.get("general", "storage_folder"))
                     >> 20
                 )
-                if spaceLeft < self.pyload.config.get("general", "min_free_space"):
+                if space_left < self.pyload.config.get("general", "min_free_space"):
                     self.pyload.log.warning(self._("Not enough space left on device"))
                     self.pause = True
 
@@ -342,23 +342,23 @@ class ThreadManager:
                     thread.put(job)
                 else:
                     # put job back
-                    if occ not in self.pyload.files.jobCache:
-                        self.pyload.files.jobCache[occ] = []
-                    self.pyload.files.jobCache[occ].append(job.id)
+                    if occ not in self.pyload.files.job_cache:
+                        self.pyload.files.job_cache[occ] = []
+                    self.pyload.files.job_cache[occ].append(job.id)
 
                     # check for decrypt jobs
-                    job = self.pyload.files.getDecryptJob()
+                    job = self.pyload.files.get_decrypt_job()
                     if job:
-                        job.initPlugin()
+                        job.init_plugin()
                         thread = DecrypterThread(self, job)
 
             else:
                 thread = DecrypterThread(self, job)
 
-    def getLimit(self, thread):
-        limit = thread.active.plugin.account.getAccountData(thread.active.plugin.user)[
+    def get_limit(self, thread):
+        limit = thread.active.plugin.account.get_account_data(thread.active.plugin.user)[
             "options"
-        ].get("limitDL", ["0"])[0]
+        ].get("limit_dl", ["0"])[0]
         return int(limit)
 
     def cleanup(self):

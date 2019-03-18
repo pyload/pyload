@@ -51,13 +51,13 @@ class ConfigParser:
         self.configpath = os.path.join(configdir, "pyload.conf")
         self.pluginpath = os.path.join(configdir, "plugins.conf")
 
-        self.pluginCB = None  #: callback when plugin config value is changed
+        self.plugin_cb = None  #: callback when plugin config value is changed
 
-        self.checkVersion()
+        self.check_version()
 
-        self.readDefaultConfig()
+        self.read_default_config()
 
-    def checkVersion(self, n=0):
+    def check_version(self, n=0):
         """
         determines if config need to be copied.
         """
@@ -100,27 +100,27 @@ class ConfigParser:
         except Exception:
             if n < 3:
                 time.sleep(1)
-                self.checkVersion(n + 1)
+                self.check_version(n + 1)
             else:
                 raise
 
-    def readDefaultConfig(self):
+    def read_default_config(self):
         """
         reads the config file.
         """
-        self.config = self.parseConfig(
+        self.config = self.parse_config(
             os.path.join(PKGDIR, "core", "config", "default.conf")
         )
-        self.plugin = self.parseConfig(self.pluginpath)
+        self.plugin = self.parse_config(self.pluginpath)
 
         try:
-            homeconf = self.parseConfig(self.configpath)
-            self.updateValues(homeconf, self.config)
+            homeconf = self.parse_config(self.configpath)
+            self.update_values(homeconf, self.config)
 
         except Exception as exc:
             exc_logger.exception(exc)
 
-    def parseConfig(self, config):
+    def parse_config(self, config):
         """
         parses a given configfile.
         """
@@ -211,7 +211,7 @@ class ConfigParser:
 
         return conf
 
-    def updateValues(self, config, dest):
+    def update_values(self, config, dest):
         """
         sets the config values from a parsed config file to values in destination.
         """
@@ -232,7 +232,7 @@ class ConfigParser:
                         # else:
                         #    dest[section] = config[section]
 
-    def saveConfig(self, config, filename):
+    def save_config(self, config, filename):
         """
         saves config to filename.
         """
@@ -298,8 +298,8 @@ class ConfigParser:
         """
         saves the configs to disk.
         """
-        self.saveConfig(self.config, self.configpath)
-        self.saveConfig(self.plugin, self.pluginpath)
+        self.save_config(self.config, self.configpath)
+        self.save_config(self.plugin, self.pluginpath)
 
     def __getitem__(self, section):
         """
@@ -325,32 +325,32 @@ class ConfigParser:
     def toggle(self, section, option):
         self.set(section, option, self.get(section, option) ^ True)
 
-    def getPlugin(self, plugin, option):
+    def get_plugin(self, plugin, option):
         """
         gets a value for a plugin.
         """
         return self.plugin[plugin][option]["value"]
 
-    def setPlugin(self, plugin, option, value):
+    def set_plugin(self, plugin, option, value):
         """
         sets a value for a plugin.
         """
         value = self.cast(self.plugin[plugin][option]["type"], value)
 
         # TODO: check if callable
-        if self.pluginCB:
-            self.pluginCB(plugin, option, value)
+        if self.plugin_cb:
+            self.plugin_cb(plugin, option, value)
 
         self.plugin[plugin][option]["value"] = value
         self.save()
 
-    def getMetaData(self, section, option):
+    def get_meta_data(self, section, option):
         """
         get all config data for an option.
         """
         return self.config[section][option]
 
-    def addPluginConfig(self, name, config, outline=""):
+    def add_plugin_config(self, name, config, outline=""):
         """
         adds config options with tuples (name, type, desc, default)
         """
@@ -377,7 +377,7 @@ class ConfigParser:
             if item not in values:
                 del conf[item]
 
-    def deleteConfig(self, name):
+    def delete_config(self, name):
         """
         Removes a plugin config.
         """

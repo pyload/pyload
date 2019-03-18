@@ -50,7 +50,7 @@ class FilepostCom(SimpleDownloader):
 
         #: Get wait time
         get_dict = {
-            "SID": self.req.cj.getCookie("SID"),
+            "SID": self.req.cj.get_cookie("SID"),
             "JsHttpRequest": str(int(time.time() * 10000)) + "-xml",
         }
         post_dict = {

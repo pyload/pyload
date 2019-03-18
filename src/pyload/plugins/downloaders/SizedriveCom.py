@@ -32,7 +32,7 @@ class SizedriveCom(SimpleDownloader):
 
     def setup(self):
         self.resume_download = False
-        self.multiDL = False
+        self.multi_dl = False
         self.chunk_limit = 1
 
     def handle_free(self, pyfile):

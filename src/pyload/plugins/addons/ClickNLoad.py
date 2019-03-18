@@ -60,7 +60,7 @@ class ClickNLoad(BaseAddon):
             )
             return
 
-        self.pyload.scheduler.addJob(5, self.proxy, threaded=False)
+        self.pyload.scheduler.add_job(5, self.proxy, threaded=False)
 
     def deactivate(self):
         if self.server_running:
@@ -83,7 +83,7 @@ class ClickNLoad(BaseAddon):
                 pass
 
             self.exit_done.wait(10)
-            if self.exit_done.isSet():
+            if self.exit_done.is_set():
                 self.log_debug("Server exited successfully")
             else:
                 self.log_warning(
@@ -94,14 +94,14 @@ class ClickNLoad(BaseAddon):
     @threaded
     def forward(self, source, destination, queue=False):
         if queue:
-            old_ids = set(pack.pid for pack in self.pyload.api.getCollector())
+            old_ids = set(pack.pid for pack in self.pyload.api.get_collector())
 
         forward(source, destination)
 
         if queue:
-            new_ids = set(pack.pid for pack in self.pyload.api.getCollector())
+            new_ids = set(pack.pid for pack in self.pyload.api.get_collector())
             for id in new_ids - old_ids:
-                self.pyload.api.pushToQueue(id)
+                self.pyload.api.push_to_queue(id)
 
     @threaded
     def proxy(self):

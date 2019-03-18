@@ -47,7 +47,7 @@ class ExpertDecoders(BaseAddon):
         task.data["ticket"] = ticket = uuid.uuid4()
         result = None
 
-        with open(task.captchaParams["file"], mode="rb") as file:
+        with open(task.captcha_params["file"], mode="rb") as file:
             data = file.read()
 
         with get_request() as req:
@@ -66,21 +66,21 @@ class ExpertDecoders(BaseAddon):
             )
 
         self.log_debug(f"Result {ticket}: {result}")
-        task.setResult(result)
+        task.set_result(result)
 
     def captcha_task(self, task):
-        if not task.isTextual():
+        if not task.is_textual():
             return False
 
         if not self.config.get("passkey"):
             return False
 
-        if self.pyload.isClientConnected() and self.config.get("check_client"):
+        if self.pyload.is_client_connected() and self.config.get("check_client"):
             return False
 
         if self.get_credits() > 0:
             task.handler.append(self)
-            task.setWaiting(100)
+            task.set_waiting(100)
             self._process_captcha(task)
 
         else:

@@ -37,7 +37,7 @@ class BaseServerThread(threading.Thread):
     def setup(self, host, port):
         pass
 
-    def checkDeps(self):
+    def check_deps(self):
         return True
 
     def serve(self):
@@ -96,7 +96,7 @@ class CNLHandler(BaseHTTPRequestHandler):
             (r"addcrypted2$", self.addcrypted2),
             (r"flashgot", self.flashgot),
             (r"crossdomain\.xml", self.crossdomain),
-            (r"checkSupportForUrl", self.checksupport),
+            (r"check_support_for_url", self.checksupport),
             (r"jdcheck.js", self.jdcheck),
             (r"", self.flash),
         ]

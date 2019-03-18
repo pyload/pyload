@@ -18,11 +18,11 @@ def pre_processor():
     api = flask.current_app.config["PYLOAD_API"]
 
     if user["is_authenticated"]:
-        status = api.statusServer()
-        captcha = api.isCaptchaWaiting()
+        status = api.status_server()
+        captcha = api.is_captcha_waiting()
 
         # check if update check is available
-        info = api.getInfoByPlugin("UpdateManager")
+        info = api.get_info_by_plugin("UpdateManager")
         if info:
             update = info["pyload"] == "True"
             plugins = info["plugins"] == "True"

@@ -32,7 +32,7 @@ class FiledropperCom(SimpleDownloader):
     OFFLINE_PATTERN = r'value="a\.swf"'
 
     def setup(self):
-        self.multiDL = False
+        self.multi_dl = False
         self.chunk_limit = 1
 
     def handle_free(self, pyfile):

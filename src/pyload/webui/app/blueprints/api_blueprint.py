@@ -26,7 +26,7 @@ def rpc(func, args=""):
 
     api = flask.current_app.config["PYLOAD_API"]
     s = flask.session
-    if not api.isAuthorized(func, {"role": s["role"], "permission": s["perms"]}):
+    if not api.is_authorized(func, {"role": s["role"], "permission": s["perms"]}):
         return "Unauthorized", 401
 
     args = args.split(",")
@@ -66,7 +66,7 @@ def login():
     password = flask.request.form["password"]
 
     api = flask.current_app.config["PYLOAD_API"]
-    user_info = api.checkAuth(user, password)
+    user_info = api.check_auth(user, password)
 
     if not user_info:
         return jsonify(False)

@@ -70,14 +70,14 @@ class StreamCz(SimpleDownloader):
 
     def setup(self):
         self.resume_download = True
-        self.multiDL = True
+        self.multi_dl = True
 
     def process(self, pyfile):
         episode = self.info["pattern"]["EP"]
         api_password = get_api_password(episode)
 
         api_url = urllib.parse.urljoin("https://www.stream.cz/API/episode/", episode)
-        self.req.putHeader("Api-Password", api_password)
+        self.req.put_header("Api-Password", api_password)
         resp = self.load(api_url)
 
         data = json.loads(resp)

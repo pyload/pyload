@@ -85,8 +85,8 @@ class DownloadScheduler(BaseAddon):
                     + next[2]
                     - now[2]
                 ) % 86400
-                self.pyload.scheduler.removeJob(self.cb)
-                self.cb = self.pyload.scheduler.addJob(
+                self.pyload.scheduler.remove_job(self.cb)
+                self.cb = self.pyload.scheduler.add_job(
                     next_time, self.update_schedule, threaded=False
                 )
 
@@ -101,12 +101,12 @@ class DownloadScheduler(BaseAddon):
                 )
             )
 
-            self.pyload.api.pauseServer()
+            self.pyload.api.pause_server()
             if abort:
-                self.pyload.api.stopAllDownloads()
+                self.pyload.api.stop_all_downloads()
 
         else:
-            self.pyload.api.unpauseServer()
+            self.pyload.api.unpause_server()
 
             if speed > 0:
                 self.log_info(self._("Setting download speed to {} kB/s").format(speed))
@@ -119,4 +119,4 @@ class DownloadScheduler(BaseAddon):
                 self.pyload.config.set("download", "max_speed", -1)
 
             # Make new speed values take effect
-            self.pyload.requestFactory.updateBucket()
+            self.pyload.request_factory.update_bucket()

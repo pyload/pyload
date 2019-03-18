@@ -13,52 +13,52 @@ class EventManager:
         self._ = core._
         self.clients = []
 
-    def newClient(self, uuid):
+    def new_client(self, uuid):
         self.clients.append(Client(uuid))
 
     def clean(self):
         for n, client in enumerate(self.clients):
-            if client.lastActive + 30 < time.time():
+            if client.last_active + 30 < time.time():
                 del self.clients[n]
 
-    def getEvents(self, uuid):
+    def get_events(self, uuid):
         events = []
-        validUuid = False
+        valid_uuid = False
         for client in self.clients:
             if client.uuid == uuid:
-                client.lastActive = time.time()
-                validUuid = True
-                while client.newEvents():
-                    events.append(client.popEvent().toList())
+                client.last_active = time.time()
+                valid_uuid = True
+                while client.new_events():
+                    events.append(client.pop_event().to_list())
                 break
-        if not validUuid:
-            self.newClient(uuid)
+        if not valid_uuid:
+            self.new_client(uuid)
             events = [
-                ReloadAllEvent("queue").toList(),
-                ReloadAllEvent("collector").toList(),
+                ReloadAllEvent("queue").to_list(),
+                ReloadAllEvent("collector").to_list(),
             ]
         return uniqify(events)  # return uniqify(events, repr)
 
-    def addEvent(self, event):
+    def add_event(self, event):
         for client in self.clients:
-            client.addEvent(event)
+            client.add_event(event)
 
 
 class Client:
     def __init__(self, uuid):
         self.uuid = uuid
-        self.lastActive = time.time()
+        self.last_active = time.time()
         self.events = []
 
-    def newEvents(self):
+    def new_events(self):
         return len(self.events) > 0
 
-    def popEvent(self):
+    def pop_event(self):
         if not len(self.events):
             return None
         return self.events.pop(0)
 
-    def addEvent(self, event):
+    def add_event(self, event):
         self.events.append(event)
 
 
@@ -70,7 +70,7 @@ class UpdateEvent:
         self.id = iid
         self.destination = destination
 
-    def toList(self):
+    def to_list(self):
         return ["update", self.destination, self.type, self.id]
 
 
@@ -82,7 +82,7 @@ class RemoveEvent:
         self.id = iid
         self.destination = destination
 
-    def toList(self):
+    def to_list(self):
         return ["remove", self.destination, self.type, self.id]
 
 
@@ -95,7 +95,7 @@ class InsertEvent:
         self.after = after
         self.destination = destination
 
-    def toList(self):
+    def to_list(self):
         return ["insert", self.destination, self.type, self.id, self.after]
 
 
@@ -104,15 +104,15 @@ class ReloadAllEvent:
         assert destination == "queue" or destination == "collector"
         self.destination = destination
 
-    def toList(self):
+    def to_list(self):
         return ["reload", self.destination]
 
 
 class AccountUpdateEvent:
-    def toList(self):
+    def to_list(self):
         return ["account"]
 
 
 class ConfigUpdateEvent:
-    def toList(self):
+    def to_list(self):
         return ["config"]

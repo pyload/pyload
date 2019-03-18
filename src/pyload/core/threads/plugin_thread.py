@@ -26,7 +26,7 @@ class PluginThread(Thread):
         self._ = manager._
         self.m = self.manager = manager  #: thread manager
 
-    def writeDebugReport(self, pyfile):
+    def write_debug_report(self, pyfile):
         """
         writes a.
 
@@ -35,7 +35,7 @@ class PluginThread(Thread):
         date = time.strftime("%Y-%m-%d_%H-%M-%S")
         dump_name = f"debug_{pyfile.pluginname}_{date}.zip"
         dump_filename = os.path.join(self.pyload.cachedir, dump_name)
-        dump = self.getDebugDump(pyfile)
+        dump = self.get_debug_dump(pyfile)
 
         try:
             import zipfile
@@ -74,9 +74,9 @@ class PluginThread(Thread):
 
         self.pyload.log.info(self._("Debug Report written to {}").format(dump_filename))
 
-    def getDebugDump(self, pyfile):
-        version = self.pyload.api.getServerVersion()
-        dump = f"pyLoad {version} Debug Report of {pyfile.pluginname} {pyfile.plugin.__version__} \n\nTRACEBACK:\n {traceback.format_exc()} \n\nFRAMESTACK:\n"
+    def get_debug_dump(self, pyfile):
+        version = self.pyload.api.get_server_version()
+        dump = f"pyLoad {version} Debug Report of {pyfile.pluginname} {pyfile.plugin.__version__} \n\n_t_r_a_c_e_b_a_c_k:\n {traceback.format_exc()} \n\n_f_r_a_m_e_s_t_a_c_k:\n"
 
         tb = exc_info()[2]
         stack = []
@@ -85,7 +85,7 @@ class PluginThread(Thread):
             tb = tb.tb_next
 
         for frame in stack[1:]:
-            dump += f"\nFrame {frame.f_code.co_name} in {frame.f_code.co_filename} at line {frame.f_lineno}\n"
+            dump += f"\n_frame {frame.f_code.co_name} in {frame.f_code.co_filename} at line {frame.f_lineno}\n"
 
             for key, value in frame.f_locals.items():
                 dump += "\t{:20} = ".format(key)
@@ -98,7 +98,7 @@ class PluginThread(Thread):
 
         del stack  #: delete it just to be sure...
 
-        dump += "\n\nPLUGIN OBJECT DUMP: \n\n"
+        dump += "\n\n_PLUGIN OBJECT DUMP: \n\n"
 
         for name in dir(pyfile.plugin):
             attr = getattr(pyfile.plugin, name)
@@ -109,7 +109,7 @@ class PluginThread(Thread):
                 except Exception as exc:
                     dump += f"<ERROR WHILE PRINTING VALUE> {exc}\n"
 
-        dump += "\nPYFILE OBJECT DUMP: \n\n"
+        dump += "\n_PYFILE OBJECT DUMP: \n\n"
 
         for name in dir(pyfile):
             attr = getattr(pyfile, name)
@@ -121,7 +121,7 @@ class PluginThread(Thread):
                     dump += f"<ERROR WHILE PRINTING VALUE> {exc}\n"
 
         if pyfile.pluginname in self.pyload.config.plugin:
-            dump += "\n\nCONFIG: \n\n"
+            dump += "\n\n_c_o_n_f_i_g: \n\n"
             dump += pprint.pformat(self.pyload.config.plugin[pyfile.pluginname]) + "\n"
 
         return dump

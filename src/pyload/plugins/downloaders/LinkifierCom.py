@@ -38,7 +38,7 @@ class LinkifierCom(MultiDownloader):
         post = {
             "login": user,
             "md5Pass": hashlib.md5(password.encode()).hexdigest(),
-            "apiKey": self.API_KEY,
+            "api_key": self.API_KEY,
         }
         post.update(kwargs)
         self.req.http.c.setopt(
@@ -51,7 +51,7 @@ class LinkifierCom(MultiDownloader):
         return res
 
     def setup(self):
-        self.multiDL = True
+        self.multi_dl = True
 
     def handle_premium(self, pyfile):
         json_data = self.api_response(
@@ -61,7 +61,7 @@ class LinkifierCom(MultiDownloader):
             url=pyfile.url,
         )
 
-        if json_data["hasErrors"]:
+        if json_data["has_errors"]:
             error_msg = json_data["ErrorMSG"] or "Unknown error"
             if error_msg in (
                 "Customer reached daily limit for current hoster",

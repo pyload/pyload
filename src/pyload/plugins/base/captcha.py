@@ -22,7 +22,7 @@ class BaseCaptcha(BasePlugin):
         self._init(pyfile.m.pyload)
 
         self.pyfile = pyfile
-        self.task = None  #: captchaManager task
+        self.task = None  #: captcha_manager task
 
         self.init()
 
@@ -98,7 +98,7 @@ class BaseCaptcha(BasePlugin):
             self.log_info(self._("Using OCR to decrypt captcha..."))
 
             if isinstance(ocr, str):
-                _OCR = self.pyload.pluginManager.loadClass(
+                _OCR = self.pyload.plugin_manager.load_class(
                     "anticaptcha", ocr
                 )  #: Rename `captcha` to `ocr` in 0.6.x
                 result = _OCR(self.pyfile).recognize(img_f.name)
@@ -109,7 +109,7 @@ class BaseCaptcha(BasePlugin):
                     self.log_warning(self._("No OCR result"))
 
         if not result:
-            captchaManager = self.pyload.captchaManager
+            captcha_manager = self.pyload.captcha_manager
             timeout = max(timeout, 50)
 
             try:
@@ -121,21 +121,21 @@ class BaseCaptcha(BasePlugin):
                     "captcha_plugin": self.__name__,
                     "plugin": self.pyfile.plugin.__name__,
                 }
-                self.task = captchaManager.newTask(input_type, params, output_type)
+                self.task = captcha_manager.new_task(input_type, params, output_type)
 
-                captchaManager.handleCaptcha(self.task, timeout)
+                captcha_manager.handle_captcha(self.task, timeout)
 
-                while self.task.isWaiting():
+                while self.task.is_waiting():
                     self.pyfile.plugin.check_status()
                     time.sleep(1)
 
             finally:
-                captchaManager.removeTask(self.task)
+                captcha_manager.remove_task(self.task)
 
             result = self.task.result
 
             if self.task.error:
-                if not self.task.handler and not self.pyload.isClientConnected():
+                if not self.task.handler and not self.pyload.is_client_connected():
                     self.log_warning(
                         self._("No Client connected for captcha decrypting")
                     )
@@ -159,28 +159,28 @@ class BaseCaptcha(BasePlugin):
         return result
 
     def decrypt_interactive(self, params={}, timeout=120):
-        captchaManager = self.pyload.captchaManager
+        captcha_manager = self.pyload.captcha_manager
         timeout = max(timeout, 50)
 
         try:
             params.update(
                 {"captcha_plugin": self.__name__, "plugin": self.pyfile.plugin.__name__}
             )
-            self.task = captchaManager.newTask("interactive", params, "interactive")
+            self.task = captcha_manager.new_task("interactive", params, "interactive")
 
-            captchaManager.handleCaptcha(self.task, timeout)
+            captcha_manager.handle_captcha(self.task, timeout)
 
-            while self.task.isWaiting():
+            while self.task.is_waiting():
                 self.pyfile.plugin.check_status()
                 time.sleep(1)
 
         finally:
-            captchaManager.removeTask(self.task)
+            captcha_manager.remove_task(self.task)
 
         result = self.task.result
 
         if self.task.error:
-            if not self.task.handler and not self.pyload.isClientConnected():
+            if not self.task.handler and not self.pyload.is_client_connected():
                 self.log_warning(self._("No Client connected for captcha decrypting"))
                 self.fail(self._("No Client connected for captcha decrypting"))
             else:

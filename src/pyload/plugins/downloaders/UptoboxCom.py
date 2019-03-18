@@ -45,17 +45,17 @@ class UptoboxCom(SimpleDownloader):
     URL_REPLACEMENTS = [("http://", "https://")]
 
     def setup(self):
-        self.multiDL = True
+        self.multi_dl = True
         self.chunk_limit = 1
         self.resume_download = True
 
     def handle_free(self, pyfile):
         m = re.search(
-            r"""<input name=["']waitingToken["'] value=["'](.+?)["']""", self.data
+            r"""<input name=["']waiting_token["'] value=["'](.+?)["']""", self.data
         )
         if m is not None:
             self.data = self.load(
-                pyfile.url, post={"waitingToken": m.group(1), "submit": "Free Download"}
+                pyfile.url, post={"waiting_token": m.group(1), "submit": "Free Download"}
             )
 
         m = re.search(self.LINK_PATTERN, self.data)

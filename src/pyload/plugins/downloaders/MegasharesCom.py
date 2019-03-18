@@ -55,7 +55,7 @@ class MegasharesCom(SimpleDownloader):
 
     def setup(self):
         self.resume_download = True
-        self.multiDL = self.premium
+        self.multi_dl = self.premium
 
     def handle_premium(self, pyfile):
         self.handle_download(True)

@@ -76,27 +76,27 @@ class BaseOCR(BasePlugin):
         uppercase=True,
         pagesegmode=None,
     ):
-        # tmpTif = tempfile.NamedTemporaryFile(suffix=".tif")
+        # tmp_tif = tempfile.NamedTemporaryFile(suffix=".tif")
         try:
-            tmpTif = open(
-                os.path.join(self.pyload.cachedir, f"tmpTif_{self.classname}.tif"),
+            tmp_tif = open(
+                os.path.join(self.pyload.cachedir, f"tmp_tif_{self.classname}.tif"),
                 mode="wb",
             )
-            tmpTif.close()
+            tmp_tif.close()
 
-            # tmpTxt = tempfile.NamedTemporaryFile(suffix=".txt")
-            tmpTxt = open(
-                os.path.join(self.pyload.cachedir, f"tmpTxt_{self.classname}.txt"),
+            # tmp_txt = tempfile.NamedTemporaryFile(suffix=".txt")
+            tmp_txt = open(
+                os.path.join(self.pyload.cachedir, f"tmp_txt_{self.classname}.txt"),
                 mode="wb",
             )
-            tmpTxt.close()
+            tmp_txt.close()
 
         except IOError as exc:
             self.log_error(exc)
             return
 
         self.log_debug("Saving tiff...")
-        self.img.save(tmpTif.name, "TIFF")
+        self.img.save(tmp_tif.name, "TIFF")
 
         if os.name == "nt":
             command = os.path.join(PKGDIR, "lib", "tesseract", "tesseract.exe")
@@ -104,40 +104,40 @@ class BaseOCR(BasePlugin):
             command = "tesseract"
 
         args = [
-            os.path.realpath(tmpTif.name),
-            os.path.realpath(tmpTxt.name).replace(".txt", ""),
+            os.path.realpath(tmp_tif.name),
+            os.path.realpath(tmp_txt.name).replace(".txt", ""),
         ]
 
         if pagesegmode:
             args.extend(["-psm", str(pagesegmode)])
 
         if subset and (digits or lowercase or uppercase):
-            # tmpSub = tempfile.NamedTemporaryFile(suffix=".subset")
+            # tmp_sub = tempfile.NamedTemporaryFile(suffix=".subset")
             with open(
                 os.path.join(
-                    self.pyload.cachedir, "tmpSub_{}.subset".format(self.classname)
+                    self.pyload.cachedir, "tmp_sub_{}.subset".format(self.classname)
                 ),
                 "wb",
-            ) as tmpSub:
-                tmpSub.write("tessedit_char_whitelist ")
+            ) as tmp_sub:
+                tmp_sub.write("tessedit_char_whitelist ")
 
                 if digits:
-                    tmpSub.write("0123456789")
+                    tmp_sub.write("0123456789")
                 if lowercase:
-                    tmpSub.write("abcdefghijklmnopqrstuvwxyz")
+                    tmp_sub.write("abcdefghijklmnopqrstuvwxyz")
                 if uppercase:
-                    tmpSub.write("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+                    tmp_sub.write("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
-                tmpSub.write("\n")
+                tmp_sub.write("\n")
                 args.append("nobatch")
-                args.append(os.path.realpath(tmpSub.name))
+                args.append(os.path.realpath(tmp_sub.name))
 
         self.log_debug("Running tesseract...")
         self.call_cmd(command, *args)
         self.log_debug("Reading txt...")
 
         try:
-            with open(tmpTxt.name) as file:
+            with open(tmp_txt.name) as file:
                 self.result_captcha = file.read().replace("\n", "")
 
         except Exception:
@@ -145,11 +145,11 @@ class BaseOCR(BasePlugin):
 
         self.log_info(self._("OCR result: ") + self.result_captcha)
 
-        self.remove(tmpTif.name, trash=False)
-        self.remove(tmpTxt.name, trash=False)
+        self.remove(tmp_tif.name, trash=False)
+        self.remove(tmp_txt.name, trash=False)
 
         if subset and (digits or lowercase or uppercase):
-            self.remove(tmpSub.name, trash=False)
+            self.remove(tmp_sub.name, trash=False)
 
     def recognize(self, image):
         raise NotImplementedError

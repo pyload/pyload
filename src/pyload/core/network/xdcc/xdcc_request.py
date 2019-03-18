@@ -30,9 +30,9 @@ class XDCCRequest:
 
         self.abort = False
 
-        self.progressNotify = None
+        self.progress_notify = None
 
-    def createSocket(self):
+    def create_socket(self):
         # proxytype = None
         # proxy = None
         # if self.proxies.has_key("socks5"):
@@ -88,8 +88,8 @@ class XDCCRequest:
         except socket.error:
             pass
 
-    def download(self, ip, port, filename, progressNotify=None, resume=None):
-        self.progressNotify = progressNotify
+    def download(self, ip, port, filename, progress_notify=None, resume=None):
+        self.progress_notify = progress_notify
         self.send_64bits_ack = not self.filesize < 1 << 32
 
         chunk_name = filename + ".chunk0"
@@ -107,10 +107,10 @@ class XDCCRequest:
         else:
             self.fh = open(chunk_name, mode="wb")
 
-        lastUpdate = time.time()
-        cumRecvLen = 0
+        last_update = time.time()
+        cum_recv_len = 0
 
-        self.dccsock = self.createSocket()
+        self.dccsock = self.create_socket()
 
         recv_list = [self.dccsock]
         self.dccsock.connect((ip, port))
@@ -143,23 +143,23 @@ class XDCCRequest:
                 ):
                     break
 
-                cumRecvLen += data_len
+                cum_recv_len += data_len
 
                 self._write_func(data)
                 self._send_ack()
 
             now = time.time()
-            timespan = now - lastUpdate
+            timespan = now - last_update
             if timespan > 1:
                 # calc speed once per second, averaging over 3 seconds
                 self.speeds[2] = self.speeds[1]
                 self.speeds[1] = self.speeds[0]
-                self.speeds[0] = float(cumRecvLen) // timespan
+                self.speeds[0] = float(cum_recv_len) // timespan
 
-                cumRecvLen = 0
-                lastUpdate = now
+                cum_recv_len = 0
+                last_update = now
 
-                self.updateProgress()
+                self.update_progress()
 
         self.dccsock.close()
         self.fh.close()
@@ -168,12 +168,12 @@ class XDCCRequest:
 
         return filename
 
-    def abortDownloads(self):
+    def abort_downloads(self):
         self.abort = True
 
-    def updateProgress(self):
-        if self.progressNotify:
-            self.progressNotify(self.percent)
+    def update_progress(self):
+        if self.progress_notify:
+            self.progress_notify(self.percent)
 
     @property
     def size(self):

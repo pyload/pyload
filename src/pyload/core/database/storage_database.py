@@ -7,7 +7,7 @@ from .database_thread import DatabaseThread, style
 
 class StorageDatabaseMethods:
     @style.queue
-    def setStorage(self, identifier, key, value):
+    def set_storage(self, identifier, key, value):
         self.c.execute(
             "SELECT id FROM storage WHERE identifier=? AND key=?", (identifier, key)
         )
@@ -23,7 +23,7 @@ class StorageDatabaseMethods:
             )
 
     @style.queue
-    def getStorage(self, identifier, key=None):
+    def get_storage(self, identifier, key=None):
         if key is not None:
             self.c.execute(
                 "SELECT value FROM storage WHERE identifier=? AND key=?",
@@ -42,10 +42,10 @@ class StorageDatabaseMethods:
             return d
 
     @style.queue
-    def delStorage(self, identifier, key):
+    def del_storage(self, identifier, key):
         self.c.execute(
             "DELETE FROM storage WHERE identifier=? AND key=?", (identifier, key)
         )
 
 
-DatabaseThread.registerSub(StorageDatabaseMethods)
+DatabaseThread.register_sub(StorageDatabaseMethods)

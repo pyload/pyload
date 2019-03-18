@@ -13,22 +13,22 @@ class Handler:
     def init(self):
         pass
 
-    def onChar(self, char):
+    def on_char(self, char):
         pass
 
-    def onBackSpace(self):
+    def on_back_space(self):
         pass
 
-    def onEnter(self, inp):
+    def on_enter(self, inp):
         pass
 
-    def setInput(self, inp=""):
-        self.cli.setInput(inp)
+    def set_input(self, inp=""):
+        self.cli.set_input(inp)
 
     def backspace(self):
-        self.cli.setInput(self.input[:-1])
+        self.cli.set_input(self.input[:-1])
 
-    def renderBody(self, line):
+    def render_body(self, line):
         """
         gets the line where to render output and should return the line number below its
         content.

@@ -43,7 +43,7 @@ class BaseDownloader(BaseHoster):
 
     def init_base(self):
         #: Enable simultaneous processing of multiple downloads
-        self.limitDL = 0  # TODO: Change to `limit_dl` in 0.6.x
+        self.limit_dl = 0  # TODO: Change to `limit_dl` in 0.6.x
 
         #:
         self.chunk_limit = None
@@ -54,7 +54,7 @@ class BaseDownloader(BaseHoster):
         #: Location where the last call to download was saved
         self._last_download = ""
 
-        #: Re match of the last call to `checkDownload`
+        #: Re match of the last call to `check_download`
         self.last_check = None
 
         #: Restart flag
@@ -92,11 +92,11 @@ class BaseDownloader(BaseHoster):
             self._setup()
 
             # TODO: Enable in 0.6.x
-            # self.pyload.addonManager.downloadPreparing(self.pyfile)
+            # self.pyload.addon_manager.download_preparing(self.pyfile)
             # self.check_status()
             self.check_duplicates()
 
-            self.pyfile.setStatus("starting")
+            self.pyfile.set_status("starting")
 
             try:
                 self.log_info(self._("Processing url: ") + self.pyfile.url)
@@ -129,28 +129,28 @@ class BaseDownloader(BaseHoster):
     def _finalize(self):
         pypack = self.pyfile.package()
 
-        self.pyload.addonManager.dispatchEvent("download_processed", self.pyfile)
+        self.pyload.addon_manager.dispatch_event("download_processed", self.pyfile)
 
         try:
             unfinished = any(
                 fdata.get("status") in (3, 7)
-                for fid, fdata in pypack.getChildren().items()
+                for fid, fdata in pypack.get_children().items()
                 if fid != self.pyfile.id
             )
             if unfinished:
                 return
 
-            self.pyload.addonManager.dispatchEvent("package_processed", pypack)
+            self.pyload.addon_manager.dispatch_event("package_processed", pypack)
 
             failed = any(
                 fdata.get("status") in (1, 6, 8, 9, 14)
-                for fid, fdata in pypack.getChildren().items()
+                for fid, fdata in pypack.get_children().items()
             )
 
             if not failed:
                 return
 
-            self.pyload.addonManager.dispatchEvent("package_failed", pypack)
+            self.pyload.addon_manager.dispatch_event("package_failed", pypack)
 
         finally:
             self.check_status()
@@ -229,7 +229,7 @@ class BaseDownloader(BaseHoster):
             chunks = min(dl_chunks, chunk_limit)
 
         try:
-            newname = self.req.httpDownload(
+            newname = self.req.http_download(
                 url,
                 filename,
                 get,
@@ -238,7 +238,7 @@ class BaseDownloader(BaseHoster):
                 cookies,
                 chunks,
                 resume,
-                self.pyfile.setProgress,
+                self.pyfile.set_progress,
                 disposition,
             )
 
@@ -307,7 +307,7 @@ class BaseDownloader(BaseHoster):
 
         self.check_duplicates()
 
-        self.pyfile.setStatus("downloading")
+        self.pyfile.set_status("downloading")
 
         dl_folder = self.pyload.config.get("general", "storage_folder")
         dl_dirname = safejoin(dl_folder, self.pyfile.package().folder)
@@ -316,7 +316,7 @@ class BaseDownloader(BaseHoster):
         os.makedirs(dl_dirname, exist_ok=True)
         self.set_permissions(dl_dirname)
 
-        self.pyload.addonManager.dispatchEvent(
+        self.pyload.addon_manager.dispatch_event(
             "download_start", self.pyfile, dl_url, dl_filename
         )
         self.check_status()
@@ -389,7 +389,7 @@ class BaseDownloader(BaseHoster):
 
     def _check_download(self):
         self.log_info(self._("Checking download..."))
-        self.pyfile.setCustomStatus(self._("checking"))
+        self.pyfile.set_custom_status(self._("checking"))
 
         if not self.last_download:
             if self.captcha.task:
@@ -403,7 +403,7 @@ class BaseDownloader(BaseHoster):
             self.error(self._("Empty file"))
 
         else:
-            self.pyload.addonManager.dispatchEvent("download_check", self.pyfile)
+            self.pyload.addon_manager.dispatch_event("download_check", self.pyfile)
             self.check_status()
 
         self.log_info(self._("File is OK"))
@@ -533,7 +533,7 @@ class BaseDownloader(BaseHoster):
             return
 
         if self.pyload.config.get("download", "skip_existing"):
-            plugin = self.pyload.db.findDuplicates(
+            plugin = self.pyload.db.find_duplicates(
                 self.pyfile.id, pack_folder, self.pyfile.name
             )
             msg = plugin[0] if plugin else self._("File exists")
@@ -557,5 +557,5 @@ class BaseDownloader(BaseHoster):
             self.pyfile.name = name
 
     #: Deprecated method (Recheck in 0.6.x)
-    def checkForSameFiles(self, *args, **kwargs):
+    def check_for_same_files(self, *args, **kwargs):
         pass

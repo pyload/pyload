@@ -67,7 +67,7 @@ class RealdebridCom(MultiDownloader):
             pyfile.size = data["filesize"]
             self.link = data["download"]
 
-        # if self.getConfig('ssl'):
+        # if self.get_config('ssl'):
         #    self.link = self.link.replace("http://", "https://")
         # else:
         #    self.link = self.link.replace("https://", "http://")

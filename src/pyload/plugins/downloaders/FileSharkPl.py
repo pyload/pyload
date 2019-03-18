@@ -27,7 +27,7 @@ class FileSharkPl(SimpleDownloader):
 
     __description__ = """FileShark.pl downloader plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("prOq", None), ("Walter Purcaro", "vuolter@gmail.com")]
+    __authors__ = [("pr_oq", None), ("Walter Purcaro", "vuolter@gmail.com")]
 
     NAME_PATTERN = r'<h2 class="name-file">(?P<N>.+?)</h2>'
     SIZE_PATTERN = (
@@ -38,7 +38,7 @@ class FileSharkPl(SimpleDownloader):
     LINK_FREE_PATTERN = r'<a rel="nofollow" href="(.*?)" class="btn-upload-free">'
     LINK_PREMIUM_PATTERN = r'<a rel="nofollow" href="(.*?)" class="btn-upload-premium">'
 
-    WAIT_PATTERN = r"var timeToDownload = (\d+);"
+    WAIT_PATTERN = r"var time_to_download = (\d+);"
     ERROR_PATTERN = r'<p class="lead text-center alert alert-warning">(.*?)</p>'
     IP_ERROR_PATTERN = r"Strona jest dost.pna wy..cznie dla u.ytkownik.w znajduj.cych si. na terenie Polski"
     SLOT_ERROR_PATTERN = (
@@ -52,10 +52,10 @@ class FileSharkPl(SimpleDownloader):
         self.resume_download = True
 
         if self.premium:
-            self.multiDL = True
-            self.limitDL = 20
+            self.multi_dl = True
+            self.limit_dl = 20
         else:
-            self.multiDL = False
+            self.multi_dl = False
 
     def check_errors(self):
         #: Check if file is now available for download (-> file name can be found in html body)

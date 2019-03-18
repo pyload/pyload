@@ -34,10 +34,10 @@ class BigfileTo(BaseAccount):
         html = self.load(
             "https://www.bigfile.to/login.php",
             post={
-                "userName": user,
-                "userPassword": password,
-                "autoLogin": "1",
-                "action__login": "normalLogin",
+                "user_name": user,
+                "user_password": password,
+                "auto_login": "1",
+                "action__login": "normal_login",
             },
         )
 

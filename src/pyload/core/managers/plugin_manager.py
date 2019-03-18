@@ -38,12 +38,12 @@ class PluginManager:
         self._ = core._
 
         self.plugins = {}
-        self.createIndex()
+        self.create_index()
 
         # register for import addon
         sys.meta_path.append(self)
 
-    def createIndex(self):
+    def create_index(self):
         """
         create information for all plugins available.
         """
@@ -75,39 +75,39 @@ class PluginManager:
         except Exception:
             pass
 
-        self.crypterPlugins, config = self.parse("decrypters", pattern=True)
-        self.plugins["decrypter"] = self.crypterPlugins
+        self.crypter_plugins, config = self.parse("decrypters", pattern=True)
+        self.plugins["decrypter"] = self.crypter_plugins
         default_config = config
 
-        self.containerPlugins, config = self.parse("containers", pattern=True)
-        self.plugins["container"] = self.containerPlugins
+        self.container_plugins, config = self.parse("containers", pattern=True)
+        self.plugins["container"] = self.container_plugins
         merge(default_config, config)
 
-        self.hosterPlugins, config = self.parse("downloaders", pattern=True)
-        self.plugins["downloader"] = self.hosterPlugins
+        self.hoster_plugins, config = self.parse("downloaders", pattern=True)
+        self.plugins["downloader"] = self.hoster_plugins
         merge(default_config, config)
 
-        self.addonPlugins, config = self.parse("addons")
-        self.plugins["addon"] = self.addonPlugins
+        self.addon_plugins, config = self.parse("addons")
+        self.plugins["addon"] = self.addon_plugins
         merge(default_config, config)
 
-        self.captchaPlugins, config = self.parse("anticaptchas")
-        self.plugins["anticaptcha"] = self.captchaPlugins
+        self.captcha_plugins, config = self.parse("anticaptchas")
+        self.plugins["anticaptcha"] = self.captcha_plugins
         merge(default_config, config)
 
-        self.accountPlugins, config = self.parse("accounts")
-        self.plugins["account"] = self.accountPlugins
+        self.account_plugins, config = self.parse("accounts")
+        self.plugins["account"] = self.account_plugins
         merge(default_config, config)
 
-        self.internalPlugins, config = self.parse("base")
-        self.plugins["base"] = self.internalPlugins
+        self.internal_plugins, config = self.parse("base")
+        self.plugins["base"] = self.internal_plugins
         merge(default_config, config)
 
         for name, config in default_config.items():
             desc = config.pop("desc", "")
             config = [[k] + list(v) for k, v in config.items()]
             try:
-                self.pyload.config.addPluginConfig(name, config, desc)
+                self.pyload.config.add_plugin_config(name, config, desc)
             except Exception as exc:
                 self.pyload.log.error(
                     self._("Invalid config in {}: {}").format(name, config),
@@ -214,7 +214,7 @@ class PluginManager:
 
                 # internals have no config
                 if folder == "base":
-                    self.pyload.config.deleteConfig(name)
+                    self.pyload.config.delete_config(name)
                     continue
 
                 m_desc = self._DESC.search(content)
@@ -253,7 +253,7 @@ class PluginManager:
 
         return plugins, configs
 
-    def parseUrls(self, urls):
+    def parse_urls(self, urls):
         """
         parse plugins for given list of urls.
         """
@@ -275,9 +275,9 @@ class PluginManager:
                 continue
 
             for name, value in chain(
-                self.crypterPlugins.items(),
-                self.hosterPlugins.items(),
-                self.containerPlugins.items(),
+                self.crypter_plugins.items(),
+                self.hoster_plugins.items(),
+                self.container_plugins.items(),
             ):
                 if value["re"].match(url):
                     res.append((url, name))
@@ -290,39 +290,39 @@ class PluginManager:
 
         return res
 
-    def findPlugin(self, name, pluginlist=("decrypter", "downloader", "container")):
+    def find_plugin(self, name, pluginlist=("decrypter", "downloader", "container")):
         for ptype in pluginlist:
             if name in self.plugins[ptype]:
                 return self.plugins[ptype][name], ptype
         return None, None
 
-    def getPlugin(self, name, original=False):
+    def get_plugin(self, name, original=False):
         """
         return plugin module from downloader|decrypter|container.
         """
-        plugin, type = self.findPlugin(name)
+        plugin, type = self.find_plugin(name)
 
         if not plugin:
             self.pyload.log.warning(self._("Plugin {} not found").format(name))
-            plugin = self.hosterPlugins["DefaultPlugin"]
+            plugin = self.hoster_plugins["DefaultPlugin"]
 
         if "new_module" in plugin and not original:
             return plugin["new_module"]
 
-        return self.loadModule(type, name)
+        return self.load_module(type, name)
 
-    def getPluginName(self, name):
+    def get_plugin_name(self, name):
         """
         used to obtain new name if other plugin was injected.
         """
-        plugin, type = self.findPlugin(name)
+        plugin, type = self.find_plugin(name)
 
         if "new_name" in plugin:
             return plugin["new_name"]
 
         return name
 
-    def loadModule(self, type, name):
+    def load_module(self, type, name):
         """
         Returns loaded module for plugin.
 
@@ -354,19 +354,19 @@ class PluginManager:
             self.pyload.log.debug(f"Plugin {name} not found")
             self.pyload.log.debug(f"Available plugins : {plugins}")
 
-    def loadClass(self, type, name):
+    def load_class(self, type, name):
         """
         Returns the class of a plugin with the same name.
         """
-        module = self.loadModule(type, name)
+        module = self.load_module(type, name)
         if module:
             return getattr(module, name)
 
-    def getAccountPlugins(self):
+    def get_account_plugins(self):
         """
         return list of account plugin names.
         """
-        return list(self.accountPlugins.keys())
+        return list(self.account_plugins.keys())
 
     def find_module(self, fullname, path=None):
         # redirecting imports if necesarry
@@ -412,7 +412,7 @@ class PluginManager:
 
         return sys.modules[name]
 
-    def reloadPlugins(self, type_plugins):
+    def reload_plugins(self, type_plugins):
         """
         reloads and reindexes plugins.
         """
@@ -455,31 +455,31 @@ class PluginManager:
                         importlib.reload(self.plugins[type][plugin][APPID])
 
         # index creation
-        self.crypterPlugins, config = self.parse("decrypters", pattern=True)
-        self.plugins["decrypter"] = self.crypterPlugins
+        self.crypter_plugins, config = self.parse("decrypters", pattern=True)
+        self.plugins["decrypter"] = self.crypter_plugins
         default_config = config
 
-        self.containerPlugins, config = self.parse("containers", pattern=True)
-        self.plugins["container"] = self.containerPlugins
+        self.container_plugins, config = self.parse("containers", pattern=True)
+        self.plugins["container"] = self.container_plugins
         merge(default_config, config)
 
-        self.hosterPlugins, config = self.parse("downloaders", pattern=True)
-        self.plugins["downloader"] = self.hosterPlugins
+        self.hoster_plugins, config = self.parse("downloaders", pattern=True)
+        self.plugins["downloader"] = self.hoster_plugins
         merge(default_config, config)
 
-        self.captchaPlugins, config = self.parse("anticaptchas")
-        self.plugins["anticaptcha"] = self.captchaPlugins
+        self.captcha_plugins, config = self.parse("anticaptchas")
+        self.plugins["anticaptcha"] = self.captcha_plugins
         merge(default_config, config)
 
-        self.accountPlugins, config = self.parse("accounts")
-        self.plugins["account"] = self.accountPlugins
+        self.account_plugins, config = self.parse("accounts")
+        self.plugins["account"] = self.account_plugins
         merge(default_config, config)
 
         for name, config in default_config.items():
             desc = config.pop("desc", "")
             config = [[k] + list(v) for k, v in config.items()]
             try:
-                self.pyload.config.addPluginConfig(name, config, desc)
+                self.pyload.config.add_plugin_config(name, config, desc)
             except Exception:
                 self.pyload.log.error(
                     self._("Invalid config in {}: {}").format(name, config),
@@ -488,7 +488,7 @@ class PluginManager:
                 )
 
         if "account" in as_dict:  #: accounts needs to be reloaded
-            self.pyload.accountManager.initPlugins()
-            self.pyload.scheduler.addJob(0, self.pyload.accountManager.getAccountInfos)
+            self.pyload.account_manager.init_plugins()
+            self.pyload.scheduler.add_job(0, self.pyload.account_manager.get_account_infos)
 
         return True

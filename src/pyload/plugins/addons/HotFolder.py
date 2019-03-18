@@ -55,7 +55,7 @@ class HotFolder(BaseAddon):
                     ) as file:
                         file.write(content)
 
-                    self.pyload.api.addPackage(file.name, [file.name], 1)
+                    self.pyload.api.add_package(file.name, [file.name], 1)
 
             for entry in os.listdir(folder):
                 path = os.path.join(folder, entry)
@@ -76,7 +76,7 @@ class HotFolder(BaseAddon):
                 shutil.move(path, newpath)
 
                 self.log_info(self._("Added {} from HotFolder").format(entry))
-                self.pyload.api.addPackage(entry, [newpath], 1)
+                self.pyload.api.add_package(entry, [newpath], 1)
 
         except (IOError, OSError) as exc:
             self.log_error(

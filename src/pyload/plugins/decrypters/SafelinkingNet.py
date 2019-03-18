@@ -37,7 +37,7 @@ class SafelinkingNet(BaseDecrypter):
     ]
 
     # Safelinking seems to use a static SolveMedia key
-    SOLVEMEDIA_KEY = "OZ987i6xTzNs9lw5.MA-2Vxbc-UxFrLu"
+    SOLVEMEDIA_KEY = "OZ987i6x_tz_ns9lw5.MA-2Vxbc-UxFrLu"
 
     def api_response(self, url, post_data):
         self.req.http.c.setopt(
@@ -100,7 +100,7 @@ class SafelinkingNet(BaseDecrypter):
                     self.links.append(link["url"])
                     return
 
-            if link_info["security"].get("usePassword", False):
+            if link_info["security"].get("use_password", False):
                 if self.package_password:
                     self.log_debug("Using package password")
                     post_data["password"] = self.package_password
@@ -108,12 +108,12 @@ class SafelinkingNet(BaseDecrypter):
                 else:
                     self.fail(self._("Password required"))
 
-            if link_info["security"].get("useCaptcha", False):
+            if link_info["security"].get("use_captcha", False):
                 self.captcha = SolveMedia(pyfile)
                 response, challenge = self.captcha.challenge(self.SOLVEMEDIA_KEY)
 
                 post_data["answer"] = response
-                post_data["challengeId"] = challenge
+                post_data["challenge_id"] = challenge
                 post_data["type"] = "0"
 
             json_res = self.api_response(
@@ -125,13 +125,13 @@ class SafelinkingNet(BaseDecrypter):
                 self.fail(self._("Invalid JSON response"))
 
             # Response: Wrong password
-            elif "passwordFail" in json_res:
+            elif "password_fail" in json_res:
                 self.log_error(
                     self._('Wrong password: "{}"').format(self.package_password)
                 )
                 self.fail(self._("Wrong password"))
 
-            elif "captchaFail" in json_res:
+            elif "captcha_fail" in json_res:
                 self.retry_captcha()
 
             # Response: Error message

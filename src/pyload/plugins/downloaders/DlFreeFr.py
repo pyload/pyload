@@ -36,8 +36,8 @@ class DlFreeFr(SimpleDownloader):
 
     def setup(self):
         self.resume_download = True
-        self.multiDL = True
-        self.limitDL = 5
+        self.multi_dl = True
+        self.limit_dl = 5
         self.chunk_limit = 1
 
     def handle_free(self, pyfile):

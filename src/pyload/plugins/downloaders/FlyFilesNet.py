@@ -40,7 +40,7 @@ class FlyFilesNet(SimpleDownloader):
         url = "http://flyfiles.net"
 
         #: Get download URL
-        parsed_url = self.load(url, post={"getDownLink": session})
+        parsed_url = self.load(url, post={"get_down_link": session})
         self.log_debug(f"Parsed URL: {parsed_url}")
 
         if parsed_url == "#downlink|" or parsed_url == "#downlink|#":

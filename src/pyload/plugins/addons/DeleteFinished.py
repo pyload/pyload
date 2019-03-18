@@ -39,7 +39,7 @@ class DeleteFinished(BaseAddon):
             self.add_event("package_finished", self.wakeup)
 
     def deactivate(self):
-        self.m.removeEvent("package_finished", self.wakeup)
+        self.m.remove_event("package_finished", self.wakeup)
 
     def activate(self):
         self.info["sleep"] = True
@@ -57,7 +57,7 @@ class DeleteFinished(BaseAddon):
         )
 
     def wakeup(self, pypack):
-        self.m.removeEvent("package_finished", self.wakeup)
+        self.m.remove_event("package_finished", self.wakeup)
         self.info["sleep"] = False
 
     ## event managing ##

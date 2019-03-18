@@ -36,11 +36,11 @@ class TurbobitNetFolder(SimpleDecrypter):
     NAME_PATTERN = r"src=\'/js/lib/grid/icon/folder.png\'> <span>(?P<N>.+?)</span>"
 
     def _get_links(self, id, page=1):
-        gridFile = self.load(
-            "http://turbobit.net/downloadfolder/gridFile",
-            get={"rootId": id, "rows": 200, "page": page},
+        grid_file = self.load(
+            "http://turbobit.net/downloadfolder/grid_file",
+            get={"root_id": id, "rows": 200, "page": page},
         )
-        grid = json.loads(gridFile)
+        grid = json.loads(grid_file)
 
         if grid["rows"]:
             for i in grid["rows"]:

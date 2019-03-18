@@ -33,23 +33,23 @@ class AccountManager:
 
         self.configpath = os.path.join(configdir, "accounts.conf")
 
-        self.initPlugins()
-        self.saveAccounts()  #: save to add categories to conf
+        self.init_plugins()
+        self.save_accounts()  #: save to add categories to conf
 
-    def initPlugins(self):
+    def init_plugins(self):
         self.accounts = {}  #: key = ( plugin )
         self.plugins = {}
 
-        self.initAccountPlugins()
-        self.loadAccounts()
+        self.init_account_plugins()
+        self.load_accounts()
 
-    def getAccountPlugin(self, plugin):
+    def get_account_plugin(self, plugin):
         """
         get account instance for plugin or None if anonymous.
         """
         if plugin in self.accounts:
             if plugin not in self.plugins:
-                self.plugins[plugin] = self.pyload.pluginManager.loadClass(
+                self.plugins[plugin] = self.pyload.plugin_manager.load_class(
                     "account", plugin
                 )(self, self.accounts[plugin])
 
@@ -57,19 +57,19 @@ class AccountManager:
         else:
             return None
 
-    def getAccountPlugins(self):
+    def get_account_plugins(self):
         """
         get all account instances.
         """
         plugins = []
         for plugin in self.accounts.keys():
-            plugins.append(self.getAccountPlugin(plugin))
+            plugins.append(self.get_account_plugin(plugin))
 
         return plugins
 
     # ----------------------------------------------------------------------
 
-    def loadAccounts(self):
+    def load_accounts(self):
         """
         loads all accounts available.
         """
@@ -128,7 +128,7 @@ class AccountManager:
 
     # ----------------------------------------------------------------------
 
-    def saveAccounts(self):
+    def save_accounts(self):
         """
         save all account information.
         """
@@ -150,57 +150,57 @@ class AccountManager:
 
     # ----------------------------------------------------------------------
 
-    def initAccountPlugins(self):
+    def init_account_plugins(self):
         """
         init names.
         """
-        for name in self.pyload.pluginManager.getAccountPlugins():
+        for name in self.pyload.plugin_manager.get_account_plugins():
             self.accounts[name] = {}
 
     @lock
-    def updateAccount(self, plugin, user, password=None, options={}):
+    def update_account(self, plugin, user, password=None, options={}):
         """
         add or update account.
         """
         if plugin in self.accounts:
-            p = self.getAccountPlugin(plugin)
-            updated = p.updateAccounts(user, password, options)
+            p = self.get_account_plugin(plugin)
+            updated = p.update_accounts(user, password, options)
             # since accounts is a ref in plugin self.accounts doesnt need to be
             # updated here
 
-            self.saveAccounts()
+            self.save_accounts()
             if updated:
-                p.scheduleRefresh(user, force=False)
+                p.schedule_refresh(user, force=False)
 
     @lock
-    def removeAccount(self, plugin, user):
+    def remove_account(self, plugin, user):
         """
         remove account.
         """
         if plugin in self.accounts:
-            p = self.getAccountPlugin(plugin)
-            p.removeAccount(user)
+            p = self.get_account_plugin(plugin)
+            p.remove_account(user)
 
-            self.saveAccounts()
+            self.save_accounts()
 
     @lock
-    def getAccountInfos(self, force=True, refresh=False):
+    def get_account_infos(self, force=True, refresh=False):
         data = {}
 
         if refresh:
-            self.pyload.scheduler.addJob(0, self.pyload.accountManager.getAccountInfos)
+            self.pyload.scheduler.add_job(0, self.pyload.account_manager.get_account_infos)
             force = False
 
         for p in self.accounts.keys():
             if self.accounts[p]:
-                p = self.getAccountPlugin(p)
-                data[p.__name__] = p.getAllAccounts(force)
+                p = self.get_account_plugin(p)
+                data[p.__name__] = p.get_all_accounts(force)
             else:
                 data[p] = []
         e = AccountUpdateEvent()
-        self.pyload.eventManager.addEvent(e)
+        self.pyload.event_manager.add_event(e)
         return data
 
-    def sendChange(self):
+    def send_change(self):
         e = AccountUpdateEvent()
-        self.pyload.eventManager.addEvent(e)
+        self.pyload.event_manager.add_event(e)

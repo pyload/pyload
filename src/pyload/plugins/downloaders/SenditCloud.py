@@ -32,7 +32,7 @@ class SenditCloud(SimpleDownloader):
     OFFLINE_PATTERN = r"The file you are trying to download is no longer available"
 
     def setup(self):
-        self.multiDL = True
+        self.multi_dl = True
         self.resume_download = False
 
     def handle_free(self, pyfile):

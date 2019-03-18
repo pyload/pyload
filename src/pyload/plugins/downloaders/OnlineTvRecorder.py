@@ -28,7 +28,7 @@ class OnlineTvRecorder(Http):
 
     def setup(self):
         # OnlineTvRecorder policy
-        self.multiDL = False
+        self.multi_dl = False
         self.chunk_limit = 1
         self.resume_download = True
 

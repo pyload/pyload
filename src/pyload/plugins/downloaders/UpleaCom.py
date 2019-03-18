@@ -59,7 +59,7 @@ class UpleaCom(SimpleDownloader):
     PREMIUM_ONLY_PATTERN = (
         r"You need to have a Premium subscription to download this file"
     )
-    WAIT_PATTERN = r"timeText: ?(\d+),"
+    WAIT_PATTERN = r"time_text: ?(\d+),"
     STEP_PATTERN = r'<a href="(/step/.+)">'
 
     NAME_REPLACEMENTS = [
@@ -70,7 +70,7 @@ class UpleaCom(SimpleDownloader):
     ]
 
     def setup(self):
-        self.multiDL = False
+        self.multi_dl = False
         self.chunk_limit = 1
         self.resume_download = True
 
@@ -92,6 +92,6 @@ class UpleaCom(SimpleDownloader):
 
         self.link = m.group(1)
 
-        m = re.search(r".ulCounter\({'timer':(\d+)}\)", self.data)
+        m = re.search(r".ul_counter\({'timer':(\d+)}\)", self.data)
         if m is not None:
             self.wait(m.group(1))

@@ -111,7 +111,7 @@ class BaseAccount(BasePlugin):
             self.log_info(self._("Relogin user `{}`...").format(self.user))
             self.clean()
 
-        self.req = self.pyload.requestFactory.getRequest(self.classname, self.user)
+        self.req = self.pyload.request_factory.get_request(self.classname, self.user)
 
         self.sync()
         self.setup()
@@ -187,7 +187,7 @@ class BaseAccount(BasePlugin):
             return {} if isinstance(x, dict) else [] if is_sequence(x) else None
 
         self.info["data"] = {k: clear(v) for k, v in self.info["data"].items()}
-        self.info["data"]["options"] = {"limitDL": ["0"]}
+        self.info["data"]["options"] = {"limit_dl": ["0"]}
 
         self.syncback()
 
@@ -270,24 +270,24 @@ class BaseAccount(BasePlugin):
             self.add(user, info["password"], info["options"])
 
     @lock
-    def getAccountData(self, user, force=False):
+    def get_account_data(self, user, force=False):
         if force:
             self.accounts[user]["plugin"].get_info()
 
         return self.accounts[user]
 
     @lock
-    def getAllAccounts(self, force=False):
+    def get_all_accounts(self, force=False):
         if force:
             self.init_accounts()  # TODO: Recheck in 0.6.x
 
-        # NOTE: `init_accounts()` already calls getAccountData(user, True), avoid calling `get_info()` twice
+        # NOTE: `init_accounts()` already calls get_account_data(user, True), avoid calling `get_info()` twice
         # NOTE: So force=False always here
-        return [self.getAccountData(user, False) for user in self.accounts]
+        return [self.get_account_data(user, False) for user in self.accounts]
 
     # TODO: Remove in 0.6.x
     @lock
-    def scheduleRefresh(self, user, force=False):
+    def schedule_refresh(self, user, force=False):
         pass
 
     @lock
@@ -304,9 +304,9 @@ class BaseAccount(BasePlugin):
         d = {
             "login": user,
             "maxtraffic": None,
-            "options": options or {"limitDL": ["0"]},
+            "options": options or {"limit_dl": ["0"]},
             "password": password or "",
-            "plugin": self.pyload.accountManager.getAccountPlugin(self.classname),
+            "plugin": self.pyload.account_manager.get_account_plugin(self.classname),
             "premium": None,
             "timestamp": 0,
             "trafficleft": None,
@@ -322,7 +322,7 @@ class BaseAccount(BasePlugin):
         return result
 
     @lock
-    def updateAccounts(self, user, password=None, options={}):
+    def update_accounts(self, user, password=None, options={}):
         """
         Updates account and return true if anything changed.
         """
@@ -342,7 +342,7 @@ class BaseAccount(BasePlugin):
             self.add(user, password, options)
 
     @lock
-    def removeAccount(self, user):
+    def remove_account(self, user):
         self.log_info(self._("Removing user `{}`...").format(user))
         self.accounts.pop(user, None)
         if user is self.user:
@@ -444,7 +444,7 @@ class BaseAccount(BasePlugin):
             if not self.logged:
                 self.relogin()
             else:
-                self.req = self.pyload.requestFactory.getRequest(
+                self.req = self.pyload.request_factory.get_request(
                     self.classname, self.user
                 )
 

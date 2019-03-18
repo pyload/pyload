@@ -218,7 +218,7 @@ class SimpleDownloader(BaseDownloader):
         return info
 
     def setup(self):
-        self.multiDL = self.premium
+        self.multi_dl = self.premium
         self.resume_download = self.premium
 
     def _prepare(self):
@@ -234,7 +234,7 @@ class SimpleDownloader(BaseDownloader):
         if self.LOGIN_ACCOUNT and not self.account:
             self.fail(self._("Required account not found"))
 
-        self.req.setOption("timeout", 120)
+        self.req.set_option("timeout", 120)
 
         if self.LINK_PATTERN:
             if self.LINK_FREE_PATTERN is None:
@@ -244,7 +244,7 @@ class SimpleDownloader(BaseDownloader):
                 self.LINK_PREMIUM_PATTERN = self.LINK_PATTERN
 
         if self.LEECH_HOSTER:
-            pattern = self.pyload.pluginManager.hosterPlugins.get(self.classname)[
+            pattern = self.pyload.plugin_manager.hoster_plugins.get(self.classname)[
                 "pattern"
             ]
             if (
@@ -393,7 +393,7 @@ class SimpleDownloader(BaseDownloader):
                 self.restart(self._("Download limit exceeded"))
 
         if self.HAPPY_HOUR_PATTERN and re.search(self.HAPPY_HOUR_PATTERN, self.data):
-            self.multiDL = True
+            self.multi_dl = True
 
         if self.ERROR_PATTERN:
             m = re.search(self.ERROR_PATTERN, self.data)
@@ -477,7 +477,7 @@ class SimpleDownloader(BaseDownloader):
         self.info.pop("error", None)
 
     #: Deprecated method (Remove in 0.6.x)
-    def get_fileInfo(self):
+    def get_file_info(self):
         self.info.clear()
         self.grab_info()
         return self.info

@@ -37,5 +37,5 @@ class DevhostSt(SimpleDownloader):
     LINK_FREE_PATTERN = r"var product_download_url= \'(.+?)\'"
 
     def setup(self):
-        self.multiDL = True
+        self.multi_dl = True
         self.chunk_limit = 1

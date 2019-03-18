@@ -5,7 +5,7 @@ from ..base.simple_downloader import SimpleDownloader
 
 #
 # Test link:
-#   http://mystore.to/dl/mxcA50jKfP
+#   http://mystore.to/dl/mxcA50j_kf_p
 
 
 class MystoreTo(SimpleDownloader):
@@ -36,7 +36,7 @@ class MystoreTo(SimpleDownloader):
     def setup(self):
         self.chunk_limit = 1
         self.resume_download = True
-        self.multiDL = True
+        self.multi_dl = True
 
     def handle_free(self, pyfile):
         try:

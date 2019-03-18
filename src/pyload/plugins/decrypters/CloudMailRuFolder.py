@@ -35,7 +35,7 @@ class CloudMailRuFolder(BaseDecrypter):
     def decrypt(self, pyfile):
         self.data = self.load(pyfile.url)
 
-        m = re.search(r"window\.cloudSettings\s*=\s*({{.+?}});", self.data, re.S)
+        m = re.search(r"window\.cloud_settings\s*=\s*({{.+?}});", self.data, re.S)
         if m is None:
             self.fail(self._("Json pattern not found"))
 

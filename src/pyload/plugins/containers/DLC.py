@@ -46,7 +46,7 @@ class DLC(BaseContainer):
 
     KEY = "cb99b5cbc24db398"
     IV = "9bc24cb995cb8db3"
-    API_URL = "http://service.jdownloader.org/dlcrypt/service.php?srcType=dlc&destType=pylo&data={}"
+    API_URL = "http://service.jdownloader.org/dlcrypt/service.php?src_type=dlc&dest_type=pylo&data={}"
 
     def decrypt(self, pyfile):
         fs_filename = os.fsdecode(pyfile.url)
@@ -81,21 +81,21 @@ class DLC(BaseContainer):
         ]
 
     def get_packages(self):
-        root = xml.dom.minidom.parseString(self.data).documentElement
-        content = root.getElementsByTagName("content")[0]
+        root = xml.dom.minidom.parse_string(self.data).document_element
+        content = root.get_elements_by_tag_name("content")[0]
         return self.parse_packages(content)
 
-    def parse_packages(self, startNode):
+    def parse_packages(self, start_node):
         return [
             (
-                base64.b64decode(decode(node.getAttribute("name"))),
+                base64.b64decode(decode(node.get_attribute("name"))),
                 self.parse_links(node),
             )
-            for node in startNode.getElementsByTagName("package")
+            for node in start_node.get_elements_by_tag_name("package")
         ]
 
-    def parse_links(self, startNode):
+    def parse_links(self, start_node):
         return [
-            base64.b64decode(node.getElementsByTagName("url")[0].firstChild.data)
-            for node in startNode.getElementsByTagName("file")
+            base64.b64decode(node.get_elements_by_tag_name("url")[0].first_child.data)
+            for node in start_node.get_elements_by_tag_name("file")
         ]

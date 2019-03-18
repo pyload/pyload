@@ -64,7 +64,7 @@ class OneFichierCom(SimpleDownloader):
     WAIT_PATTERN = r">You must wait \d+ minutes"
 
     def setup(self):
-        self.multiDL = self.premium
+        self.multi_dl = self.premium
         self.chunk_limit = -1 if self.premium else 1
         self.resume_download = True
 

@@ -97,9 +97,9 @@ class IRC:
 
         self.plugin.log_info(self._("Connecting to: {}:{}").format(host, port))
 
-        self.irc_sock.setTimeout(30)
+        self.irc_sock.set_timeout(30)
         self.irc_sock.connect((host, port))
-        self.irc_sock.setTimeout(None)
+        self.irc_sock.set_timeout(None)
 
         self.irc_sock.send("NICK {}\r\n".format(self.nick))
         self.irc_sock.send(
@@ -576,7 +576,7 @@ class XDCC(BaseDownloader):
         self.dcc_sender_bot = None
         self.bot_host = None
 
-        self.multiDL = False
+        self.multi_dl = False
 
     def xdcc_send_resume(self, resume_position):
         if not self.config.get("try_resume") or not self.dcc_sender_bot:
@@ -621,9 +621,9 @@ class XDCC(BaseDownloader):
 
         #: Change request type
         self.req.close()
-        self.req = self.pyload.requestFactory.getRequest(self.classname, type="XDCC")
+        self.req = self.pyload.request_factory.get_request(self.classname, type="XDCC")
 
-        self.pyfile.setCustomStatus("connect irc")
+        self.pyfile.set_custom_status("connect irc")
 
         self.irc_client = IRC(self, nick, ident, realname)
         for _ in range(3):
@@ -649,7 +649,7 @@ class XDCC(BaseDownloader):
                         if not self.irc_client.is_bot_online(bot):
                             self.fail(self._("Bot is offline"))
 
-                        self.pyfile.setStatus("waiting")
+                        self.pyfile.set_status("waiting")
 
                         self.irc_client.xdcc_request_pack(bot, pack)
 
@@ -793,7 +793,7 @@ class XDCC(BaseDownloader):
             self.pyfile.name = file_name
             self.req.filesize = file_size
 
-            self.pyfile.setStatus("downloading")
+            self.pyfile.set_status("downloading")
 
             dl_folder = os.path.join(
                 self.pyload.config.get("general", "storage_folder"),
@@ -812,7 +812,7 @@ class XDCC(BaseDownloader):
                 self._("DOWNLOAD XDCC '{}' from {}:{}").format(file_name, ip, port)
             )
 
-            self.pyload.addonManager.dispatchEvent(
+            self.pyload.addon_manager.dispatch_event(
                 "download_start", self.pyfile, "{}:{}".format(ip, port), dl_file
             )
 
@@ -820,7 +820,7 @@ class XDCC(BaseDownloader):
                 ip,
                 port,
                 dl_file,
-                progressNotify=self.pyfile.setProgress,
+                progress_notify=self.pyfile.set_progress,
                 resume=self.xdcc_send_resume,
             )
             if newname and newname != dl_file:

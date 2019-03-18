@@ -33,7 +33,7 @@ class ClicknuploadCom(XFSDownloader):
 
     NAME_PATTERN = r'name="fname" value="(?P<N>.+?)">'
     SIZE_PATTERN = r"<b>Size: (?P<S>[\d.,]+) (?P<U>[\w^_]+)"
-    LINK_PATTERN = r'onClick="window.open\(\'(.+?)\'\);"'
+    LINK_PATTERN = r'on_click="window.open\(\'(.+?)\'\);"'
 
     OFFLINE_PATTERN = r"<b>File Not Found</b>"
 

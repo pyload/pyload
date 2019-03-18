@@ -36,7 +36,7 @@ class XFileSharingFolder(XFSDecrypter):
         return super()._log(level, plugintype, pluginname, args, kwargs)
 
     def init(self):
-        self.__pattern__ = self.pyload.pluginManager.crypterPlugins[self.classname][
+        self.__pattern__ = self.pyload.plugin_manager.crypter_plugins[self.classname][
             "pattern"
         ]
 
@@ -54,13 +54,13 @@ class XFileSharingFolder(XFSDecrypter):
         super().setup_base()
 
         if self.account:
-            self.req = self.pyload.requestFactory.getRequest(
+            self.req = self.pyload.request_factory.get_request(
                 self.PLUGIN_NAME, self.account.user
             )
             # NOTE: Don't call get_info here to reduce overhead
             self.premium = self.account.info["data"]["premium"]
         else:
-            self.req = self.pyload.requestFactory.getRequest(self.classname)
+            self.req = self.pyload.request_factory.get_request(self.classname)
             self.premium = False
 
     # TODO: Recheck in 0.6.x

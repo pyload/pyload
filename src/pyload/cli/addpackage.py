@@ -15,23 +15,23 @@ class AddPackage(Handler):
         self.name = ""
         self.urls = []
 
-    def onEnter(self, inp):
+    def on_enter(self, inp):
         if inp == "0":
             self.cli.reset()
 
         if not self.name:
             self.name = inp
-            self.setInput()
+            self.set_input()
         elif inp == "END":
             # add package
-            self.client.addPackage(self.name, self.urls, 1)
+            self.client.add_package(self.name, self.urls, 1)
             self.cli.reset()
         else:
             if inp.strip():
                 self.urls.append(inp)
-            self.setInput()
+            self.set_input()
 
-    def renderBody(self, line):
+    def render_body(self, line):
         println(line, white("Add Package:"))
         println(line + 1, "")
         line += 2

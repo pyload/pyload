@@ -10,7 +10,7 @@ from .plugin import BasePlugin
 def threaded(func):
     @wraps(func)
     def wrapper(self, *args, **kwargs):
-        return self.pyload.adm.startThread(func, self, *args, **kwargs)
+        return self.pyload.adm.start_thread(func, self, *args, **kwargs)
 
     return wrapper
 
@@ -24,7 +24,7 @@ def expose(func):
     @wraps(func)
     def wrapper(self, *args, **kwargs):
         if not wrapper._exposed:
-            self.pyload.adm.addRPC(func.__module__, func.__name__, func.__doc__)
+            self.pyload.adm.add_rpc(func.__module__, func.__name__, func.__doc__)
             wrapper._exposed = True
         return func(self, *args, **kwargs)
 
@@ -81,18 +81,18 @@ class BaseAddon(BasePlugin):
     # TODO: Remove in 0.6.x
     def _init_events(self):
         event_map = {
-            "allDownloadsFinished": "all_downloads_finished",
-            "allDownloadsProcessed": "all_downloads_processed",
-            "configChanged": "config_changed",
+            "all_downloads_finished": "all_downloads_finished",
+            "all_downloads_processed": "all_downloads_processed",
+            "config_changed": "config_changed",
             "download_processed": "download_processed",
             "download_start": "download_start",
-            "linksAdded": "links_added",
-            "packageDeleted": "package_deleted",
+            "links_added": "links_added",
+            "package_deleted": "package_deleted",
             "package_failed": "package_failed",
             "package_processed": "package_processed",
         }
         for event, funcs in event_map.items():
-            self.m.addEvent(event, getattr(self, funcs))
+            self.m.add_event(event, getattr(self, funcs))
 
     def init_events(self):
         if self.event_map:
@@ -100,7 +100,7 @@ class BaseAddon(BasePlugin):
                 if not is_sequence(funcs):
                     funcs = [funcs]
                 for fn in funcs:
-                    self.m.addEvent(event, getattr(self, fn))
+                    self.m.add_event(event, getattr(self, fn))
 
             #: Delete for various reasons
             self.event_map = None
@@ -109,7 +109,7 @@ class BaseAddon(BasePlugin):
         raise NotImplementedError
 
     #: Deprecated method, use `enabled` property instead (Remove in 0.6.x)
-    def isActivated(self):
+    def is_activated(self):
         return self.activated
 
     def deactivate(self):
@@ -130,7 +130,7 @@ class BaseAddon(BasePlugin):
         pass
 
     #: Deprecated method, use `activate` instead (Remove in 0.6.x)
-    def coreReady(self):
+    def core_ready(self):
         self.db.retrieve("info", self.info)
         return self.activate()
 
@@ -141,7 +141,7 @@ class BaseAddon(BasePlugin):
         pass
 
     #: Deprecated method, use `exit` instead (Remove in 0.6.x)
-    def coreExiting(self):
+    def core_exiting(self):
         self.unload()  # TODO: Fix in 0.6.x
         return self.exit()
 
@@ -161,7 +161,7 @@ class BaseAddon(BasePlugin):
         pass
 
     #: Deprecated method, use `download_preparing` instead (Remove in 0.6.x)
-    def downloadPreparing(self, pyfile):
+    def download_preparing(self, pyfile):
         if pyfile.plugin.req is not None:  # TODO: Remove in 0.6.x
             return self.download_preparing(pyfile)
 
@@ -175,15 +175,15 @@ class BaseAddon(BasePlugin):
         pass
 
     #: Deprecated method, use `download_finished` instead (Remove in 0.6.x)
-    def downloadFinished(self, pyfile):
+    def download_finished(self, pyfile):
         return self.download_finished(pyfile)
 
     def download_failed(self, pyfile):
         pass
 
     #: Deprecated method, use `download_failed` instead (Remove in 0.6.x)
-    def downloadFailed(self, pyfile):
-        if pyfile.hasStatus(
+    def download_failed(self, pyfile):
+        if pyfile.has_status(
             "failed"
         ):  # NOTE: Check if "still" set as failed (Fix in 0.6.x)
             return self.download_failed(pyfile)
@@ -201,21 +201,21 @@ class BaseAddon(BasePlugin):
         pass
 
     #: Deprecated method, use `package_finished` instead (Remove in 0.6.x)
-    def packageFinished(self, pypack):
+    def package_finished(self, pypack):
         return self.package_finished(pypack)
 
     def before_reconnect(self, ip):
         pass
 
     #: Deprecated method, use `before_reconnect` instead (Remove in 0.6.x)
-    def beforeReconnecting(self, ip):
+    def before_reconnecting(self, ip):
         return self.before_reconnect(ip)
 
     def after_reconnect(self, ip, oldip):
         pass
 
     #: Deprecated method, use `after_reconnect` instead (Remove in 0.6.x)
-    def afterReconnecting(self, ip):
+    def after_reconnecting(self, ip):
         self.after_reconnect(ip, self.info["ip"])
         self.info["ip"] = ip
 
@@ -227,19 +227,19 @@ class BaseAddon(BasePlugin):
         pass
 
     #: Deprecated method, use `captcha_task` instead (Remove in 0.6.x)
-    def newCaptchaTask(self, task):
+    def new_captcha_task(self, task):
         return self.captcha_task(task)
 
     def captcha_correct(self, task):
         pass
 
     #: Deprecated method, use `captcha_correct` instead (Remove in 0.6.x)
-    def captchaCorrect(self, task):
+    def captcha_correct(self, task):
         return self.captcha_correct(task)
 
     def captcha_invalid(self, task):
         pass
 
     #: Deprecated method, use `captcha_invalid` instead (Remove in 0.6.x)
-    def captchaInvalid(self, task):
+    def captcha_invalid(self, task):
         return self.captcha_invalid(task)

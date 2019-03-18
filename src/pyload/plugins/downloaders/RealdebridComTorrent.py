@@ -52,8 +52,8 @@ class RealdebridComTorrent(BaseDownloader):
 
     def setup(self):
         self.resume_download = True
-        self.multiDL = True
-        self.limitDL = 25
+        self.multi_dl = True
+        self.limit_dl = 25
 
         self.premium = True
         self.no_fallback = True
@@ -96,7 +96,7 @@ class RealdebridComTorrent(BaseDownloader):
                     api_data = json.loads(
                         self.upload(
                             torrent_filename,
-                            self.API_URL + "/torrents/addTorrent",
+                            self.API_URL + "/torrents/add_torrent",
                             get={"auth_token": self.api_token},
                         )
                     )
@@ -120,7 +120,7 @@ class RealdebridComTorrent(BaseDownloader):
         else:
             #: magnet URL, send to the server
             api_data = self.api_response(
-                "/torrents/addMagnet",
+                "/torrents/add_magnet",
                 get={"auth_token": self.api_token},
                 post={"magnet": self.pyfile.url},
             )
@@ -128,7 +128,7 @@ class RealdebridComTorrent(BaseDownloader):
         #: Select all the files for downloading
         torrent_id = api_data["id"]
         self.api_response(
-            "/torrents/selectFiles/" + torrent_id,
+            "/torrents/select_files/" + torrent_id,
             get={"auth_token": self.api_token},
             post={"files": "all"},
         )
@@ -146,12 +146,12 @@ class RealdebridComTorrent(BaseDownloader):
         self.pyfile.name = torrent_info["original_filename"]
         self.pyfile.size = torrent_info["original_bytes"]
 
-        self.pyfile.setCustomStatus("torrent")
-        self.pyfile.setProgress(0)
+        self.pyfile.set_custom_status("torrent")
+        self.pyfile.set_progress(0)
 
         while torrent_info["status"] != "downloaded" or torrent_info["progress"] != 100:
             progress = int(torrent_info["progress"])
-            self.pyfile.setProgress(progress)
+            self.pyfile.set_progress(progress)
 
             self.sleep(5)
 
@@ -159,7 +159,7 @@ class RealdebridComTorrent(BaseDownloader):
                 "/torrents/info/" + torrent_id, get={"auth_token": self.api_token}
             )
 
-        self.pyfile.setProgress(100)
+        self.pyfile.set_progress(100)
 
         return torrent_info["links"][0]
 
@@ -216,10 +216,10 @@ class RealdebridComTorrent(BaseDownloader):
         return code
 
     def process(self, pyfile):
-        if "RealdebridCom" not in self.pyload.accountManager.plugins:
+        if "RealdebridCom" not in self.pyload.account_manager.plugins:
             self.fail(self._("This plugin requires an active Realdebrid.com account"))
 
-        account_plugin = self.pyload.accountManager.getAccountPlugin("RealdebridCom")
+        account_plugin = self.pyload.account_manager.get_account_plugin("RealdebridCom")
         if len(account_plugin.accounts) == 0:
             self.fail(self._("This plugin requires an active Realdebrid.com account"))
 

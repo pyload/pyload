@@ -90,7 +90,7 @@ class MegadyskPl(SimpleDownloader):
         return info
 
     def setup(self):
-        self.multiDL = True
+        self.multi_dl = True
         self.resume_download = False
         self.chunk_limit = 1
 

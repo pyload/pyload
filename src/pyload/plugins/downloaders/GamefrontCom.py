@@ -28,11 +28,11 @@ class GamefrontCom(SimpleDownloader):
     SIZE_PATTERN = r">File Size:</dt>\s*<dd>(?P<S>[\d.,]+) (?P<U>[\w^_]+)"
     OFFLINE_PATTERN = r"<p>File not found"
 
-    LINK_FREE_PATTERN = r"downloadUrl = '(.+?)'"
+    LINK_FREE_PATTERN = r"download_url = '(.+?)'"
 
     def setup(self):
         self.resume_download = True
-        self.multiDL = True
+        self.multi_dl = True
 
     def handle_free(self, pyfile):
         self.data = self.load(

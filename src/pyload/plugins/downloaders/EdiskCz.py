@@ -36,7 +36,7 @@ class EdiskCz(SimpleDownloader):
     LINK_FREE_PATTERN = r"http://.*edisk\.cz.*\.html"
 
     def setup(self):
-        self.multiDL = False
+        self.multi_dl = False
 
     def process(self, pyfile):
         url = re.sub("/(stahni|sk/stahni)/", "/en/download/", pyfile.url)
@@ -49,7 +49,7 @@ class EdiskCz(SimpleDownloader):
         action = m.group(1)
 
         self.data = self.load(url)
-        self.get_fileInfo()
+        self.get_file_info()
 
         self.data = self.load(re.sub("/en/download/", "/en/download-slow/", url))
 

@@ -25,7 +25,7 @@ class IronfilesNet(BaseAccount):
         return json.loads(json_data)
 
     def grab_info(self, user, password, data):
-        json_data = self.api_response("accountStatus")
+        json_data = self.api_response("account_status")
 
         expires = json_data["expires"].split("T", 1)
         validuntil = time.mktime(

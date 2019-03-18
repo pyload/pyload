@@ -28,7 +28,7 @@ class UnSkipOnFail(BaseAddon):
         if link:
             self.log_info(
                 self._("Queue found duplicate: {} (pid:{})").format(
-                    link.name, link.packageID
+                    link.name, link.package_id
                 )
             )
 
@@ -41,7 +41,7 @@ class UnSkipOnFail(BaseAddon):
             #: The pyload.files-manager to save its data.
             pyfile_new = self._create_pyfile(link)
 
-            pyfile_new.setCustomStatus(self._("unskipped"), "queued")
+            pyfile_new.set_custom_status(self._("unskipped"), "queued")
 
             self.pyload.files.save()
             pyfile_new.release()
@@ -59,13 +59,13 @@ class UnSkipOnFail(BaseAddon):
         filenames as "pyfile", but except the data for "pyfile" iotselöf. It does
         MOT check the link's status.
         """
-        for pinfo in self.pyload.api.getQueue():
+        for pinfo in self.pyload.api.get_queue():
             #: Check if package-folder equals pyfile's package folder
             if pinfo.folder != pyfile.package().folder:
                 continue
 
             #: Now get packaged data w/ files/links
-            pdata = self.pyload.api.getPackageData(pinfo.pid)
+            pdata = self.pyload.api.get_package_data(pinfo.pid)
             for link in pdata.links:
                 #: Check if link == "skipped"
                 if link.status != 4:
@@ -86,6 +86,6 @@ class UnSkipOnFail(BaseAddon):
             pylink.status,
             pylink.error,
             pylink.plugin,
-            pylink.packageID,
+            pylink.package_id,
             pylink.order,
         )

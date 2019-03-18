@@ -20,13 +20,13 @@ class SmuleCom(SimpleDownloader):
     __license__ = "GPLv3"
     __authors__ = [("igel", None), ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
-    MEDIA_URL_PATTERN = r'initPlayer\(.+?["\']video_media_url["\']:["\'](.+?)["\']'
+    MEDIA_URL_PATTERN = r'init_player\(.+?["\']video_media_url["\']:["\'](.+?)["\']'
     JS_HEADER_PATTERN = r"(?P<decoder>function \w+\(\w+\){.+?ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789\+.+?}).+?;(?P<initvars>var r=.+?;)"
-    JS_PROCESS_PATTERN = r"processRecording\s*=\s*function.+?}"
+    JS_PROCESS_PATTERN = r"process_recording\s*=\s*function.+?}"
     # all interesting parts of the javascript function occur before the first
     # occurance of this word
     JS_SPLIT_WORD = r"EXIF"
-    NAME_PATTERN = r'initPlayer\(.+?["\']title["\']:["\'](?P<N>.+?)["\']'
+    NAME_PATTERN = r'init_player\(.+?["\']title["\']:["\'](?P<N>.+?)["\']'
     COMMUNITY_JS_PATTERN = r'<script.+?src=["\']/*(\w[^"\']*community.+?js)["\']'
     OFFLINE_PATTERN = r"Page Not Found"
 
@@ -84,7 +84,7 @@ class SmuleCom(SimpleDownloader):
             + initialization
             + "; var "
             + process_function
-            + '; processRecording("'
+            + '; process_recording("'
             + encoded_media_url
             + '");'
         )

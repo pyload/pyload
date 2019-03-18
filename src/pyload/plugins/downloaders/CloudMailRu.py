@@ -32,7 +32,7 @@ class CloudMailRu(BaseDownloader):
     def setup(self):
         self.chunk_limit = -1
         self.resume_download = True
-        self.multiDL = True
+        self.multi_dl = True
 
     def process(self, pyfile):
         json_data = json.loads(base64.b64decode(self.info["pattern"]["QS"]))

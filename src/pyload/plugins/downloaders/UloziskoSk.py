@@ -41,7 +41,7 @@ class UloziskoSk(SimpleDownloader):
 
     def process(self, pyfile):
         self.data = self.load(pyfile.url)
-        self.get_fileInfo()
+        self.get_file_info()
 
         m = re.search(self.IMG_PATTERN, self.data)
         if m is not None:

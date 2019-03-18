@@ -35,7 +35,7 @@ class QuickshareCz(SimpleDownloader):
 
     def process(self, pyfile):
         self.data = self.load(pyfile.url)
-        self.get_fileInfo()
+        self.get_file_info()
 
         #: Parse js variables
         self.jsvars = {

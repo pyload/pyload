@@ -37,16 +37,16 @@ bp = flask.Blueprint("app", __name__)
 def favicon():
     location = static_file_url("img/favicon.ico")
     return flask.redirect(location)
-    
-    
+
+
 @bp.route("/render/<path:filename>", endpoint="render")
 def render(filename):
     return render_template(f"{filename}")
-    
-    
+
+
 @bp.route("/robots.txt", endpoint="robots")
 def robots():
-    return "User-agent: *\nDisallow: /"
+    return "User-agent: *\n_disallow: /"
 
 
 # TODO: Rewrite login route using flask-login
@@ -59,7 +59,7 @@ def login():
     if flask.request.method == "POST":
         user = flask.request.form["username"]
         password = flask.request.form["password"]
-        user_info = api.checkAuth(user, password)
+        user_info = api.check_auth(user, password)
 
         if not user_info:
             return render_template("login.html", next=next, errors=True)
@@ -70,7 +70,7 @@ def login():
     if is_authenticated():
         return flask.redirect(next)
 
-    if api.getConfigValue("webui", "autologin"):
+    if api.get_config_value("webui", "autologin"):
         allusers = api.get_all_userdata()
         if len(allusers) == 1:  # TODO: check if localhost
             user_info = list(allusers.values())[0]
@@ -96,7 +96,7 @@ def logout():
 @login_required("ALL")
 def dashboard():
     api = flask.current_app.config["PYLOAD_API"]
-    links = api.statusDownloads()
+    links = api.status_downloads()
 
     for link in links:
         if link["status"] == 12:
@@ -111,7 +111,7 @@ def dashboard():
 @login_required("LIST")
 def queue():
     api = flask.current_app.config["PYLOAD_API"]
-    queue = api.getQueue()
+    queue = api.get_queue()
     queue.sort(key=operator.attrgetter("order"))
 
     return render_template("packages.html", content=queue, target=1)
@@ -121,7 +121,7 @@ def queue():
 @login_required("LIST")
 def collector():
     api = flask.current_app.config["PYLOAD_API"]
-    queue = api.getCollector()
+    queue = api.get_collector()
 
     queue.sort(key=operator.attrgetter("order"))
 
@@ -132,7 +132,7 @@ def collector():
 @login_required("DOWNLOAD")
 def files():
     api = flask.current_app.config["PYLOAD_API"]
-    root = api.getConfigValue("general", "storage_folder")
+    root = api.get_config_value("general", "storage_folder")
 
     if not os.path.isdir(root):
         messages = ["Download directory not found."]
@@ -163,7 +163,7 @@ def files():
 def get_file(filename):
     api = flask.current_app.config["PYLOAD_API"]
     filename = unquote(filename).replace("..", "")
-    directory = api.getConfigValue("general", "storage_folder")
+    directory = api.get_config_value("general", "storage_folder")
     return flask.send_from_directory(directory, filename, as_attachment=True)
 
 
@@ -171,8 +171,8 @@ def get_file(filename):
 @login_required("SETTINGS")
 def settings():
     api = flask.current_app.config["PYLOAD_API"]
-    conf = api.getConfig()
-    plugin = api.getPluginConfig()
+    conf = api.get_config()
+    plugin = api.get_plugin_config()
 
     conf_menu = []
     plugin_menu = []
@@ -185,7 +185,7 @@ def settings():
 
     accs = []
 
-    for data in api.getAccounts(False):
+    for data in api.get_accounts(False):
         if data.trafficleft == -1:
             trafficleft = "unlimited"
         elif not data.trafficleft:
@@ -209,9 +209,9 @@ def settings():
         else:
             _time = ""
 
-        if "limitDL" in data.options:
+        if "limit_dl" in data.options:
             try:
-                limitdl = data.options["limitDL"][0]
+                limitdl = data.options["limit_dl"][0]
             except Exception:
                 limitdl = "0"
         else:
@@ -232,7 +232,7 @@ def settings():
 
     context = {
         "conf": {"plugin": plugin_menu, "general": conf_menu, "accs": accs},
-        "types": api.getAccountTypes(),
+        "types": api.get_account_types(),
     }
     return render_template("settings.html", **context)
 
@@ -334,7 +334,7 @@ def logs(page=-1):
     reversed = s.get("reversed", False)
 
     warning = ""
-    conf = api.getConfigValue("log", "filelog")
+    conf = api.get_config_value("log", "filelog")
     if not conf:
         warning = "Warning: File log is disabled, see settings page."
 
@@ -356,7 +356,7 @@ def logs(page=-1):
 
         # s.modified = True
 
-    log = api.getLog()
+    log = api.get_log()
     if not perpage:
         page = 0
 
@@ -459,7 +459,7 @@ def admin():
 
             data["permission"] = set_permission(data["perms"])
 
-            api.setUserPermission(name, data["permission"], data["role"])
+            api.set_user_permission(name, data["permission"], data["role"])
 
     return render_template("admin.html", users=users, permlist=perms)
 
@@ -474,17 +474,17 @@ def filemanager(path):
 @login_required("STATUS")
 def info():
     api = flask.current_app.config["PYLOAD_API"]
-    conf = api.getConfigDict()
+    conf = api.get_config_dict()
     extra = os.uname() if hasattr(os, "uname") else tuple()
 
     context = {
         "python": sys.version,
         "os": " ".join((os.name, sys.platform) + extra),
-        "version": api.getServerVersion(),
+        "version": api.get_server_version(),
         "folder": PKGDIR,
         "config": api.get_userdir(),
         "download": conf["general"]["storage_folder"]["value"],
-        "freespace": format_size(api.freeSpace()),
+        "freespace": format_size(api.free_space()),
         "webif": conf["webui"]["port"]["value"],
         "language": conf["general"]["language"]["value"],
     }

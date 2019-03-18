@@ -37,7 +37,7 @@ class TenluaVn(BaseAccount):
     def grab_info(self, user, password, data):
         user_info = self.api_response("user_info", sid=data["sid"])[0]
 
-        validuntil = time.mktime(time.strptime(user_info["endGold"], "%d-%m-%Y"))
+        validuntil = time.mktime(time.strptime(user_info["end_gold"], "%d-%m-%Y"))
         premium = user_info["free_used"] != "null"
 
         return {"premium": premium, "trafficleft": -1, "validuntil": validuntil}

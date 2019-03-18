@@ -24,7 +24,7 @@ class RedtubeCom(BaseDownloader):
     __license__ = "GPLv3"
     __authors__ = [("jeix", "jeix@hasnomail.de")]
 
-    NAME_PATTERN = r'videoTitle: "(?P<N>.+?)",'
+    NAME_PATTERN = r'video_title: "(?P<N>.+?)",'
 
     def process(self, pyfile):
         html = self.load(pyfile.url)

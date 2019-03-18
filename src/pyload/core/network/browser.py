@@ -19,26 +19,26 @@ class Browser:
         self.http = None
         self._size = 0
 
-        self.renewHTTPRequest()
+        self.renew_h_t_t_p_request()
         self.dl = None
 
-    def renewHTTPRequest(self):
+    def renew_h_t_t_p_request(self):
         try:
             self.http.close()
         except Exception:
             pass
         self.http = HTTPRequest(self.cj, self.options)
 
-    def setLastURL(self, val):
-        self.http.lastURL = val
+    def set_last_url(self, val):
+        self.http.last_url = val
 
     # tunnel some attributes from HTTP Request to Browser
-    lastEffectiveURL = property(lambda self: self.http.lastEffectiveURL)
-    lastURL = property(lambda self: self.http.lastURL, setLastURL)
+    last_effective_url = property(lambda self: self.http.last_effective_url)
+    last_url = property(lambda self: self.http.last_url, set_last_url)
     code = property(lambda self: self.http.code)
-    cookieJar = property(lambda self: self.cj)
+    cookie_jar = property(lambda self: self.cj)
 
-    def setCookieJar(self, cj):
+    def set_cookie_jar(self, cj):
         self.cj = cj
         self.http.cj = cj
 
@@ -68,21 +68,21 @@ class Browser:
             return 0
         return (self.arrived * 100) // self.size
 
-    def clearCookies(self):
+    def clear_cookies(self):
         if self.cj:
             self.cj.clear()
-        self.http.clearCookies()
+        self.http.clear_cookies()
 
-    def clearReferer(self):
-        self.http.lastURL = None
+    def clear_referer(self):
+        self.http.last_url = None
 
-    def abortDownloads(self):
+    def abort_downloads(self):
         self.http.abort = True
         if self.dl:
             self._size = self.dl.size
             self.dl.abort = True
 
-    def httpDownload(
+    def http_download(
         self,
         url,
         filename,
@@ -92,7 +92,7 @@ class Browser:
         cookies=True,
         chunks=1,
         resume=False,
-        progressNotify=None,
+        progress_notify=None,
         disposition=False,
     ):
         """
@@ -104,11 +104,11 @@ class Browser:
             filename,
             get,
             post,
-            self.lastEffectiveURL if ref else None,
+            self.last_effective_url if ref else None,
             self.cj if cookies else None,
             self.bucket,
             self.options,
-            progressNotify,
+            progress_notify,
             disposition,
         )
         name = self.dl.download(chunks, resume)
@@ -124,38 +124,38 @@ class Browser:
         """
         return self.http.load(*args, **kwargs)
 
-    def putHeader(self, name, value):
+    def put_header(self, name, value):
         """
         add a header to the request.
         """
-        self.http.putHeader(name, value)
+        self.http.put_header(name, value)
 
-    def addAuth(self, pwd):
+    def add_auth(self, pwd):
         """
         Adds user and pw for http auth.
 
         :param pwd: string, user:password
         """
         self.options["auth"] = pwd
-        self.renewHTTPRequest()  #: we need a new request
+        self.renew_h_t_t_p_request()  #: we need a new request
 
-    def removeAuth(self):
+    def remove_auth(self):
         if "auth" in self.options:
             del self.options["auth"]
-        self.renewHTTPRequest()
+        self.renew_h_t_t_p_request()
 
-    def setOption(self, name, value):
+    def set_option(self, name, value):
         """
         Adds an option to the request, see HTTPRequest for existing ones.
         """
         self.options[name] = value
 
-    def deleteOption(self, name):
+    def delete_option(self, name):
         if name in self.options:
             del self.options[name]
 
-    def clearHeaders(self):
-        self.http.clearHeaders()
+    def clear_headers(self):
+        self.http.clear_headers()
 
     def close(self):
         """

@@ -40,19 +40,19 @@ class Ftp(BaseDownloader):
         if "@" not in netloc:
             # TODO: Recheck in 0.6.x
             if self.account:
-                servers = [x["login"] for x in self.account.getAllAccounts()]
+                servers = [x["login"] for x in self.account.get_all_accounts()]
             else:
                 servers = []
 
             if netloc in servers:
                 self.log_debug(f"Logging on to {netloc}")
-                self.req.addAuth(self.account.get_login("password"))
+                self.req.add_auth(self.account.get_login("password"))
 
             else:
                 pwd = self.get_password()
                 if ":" in pwd:
                     self.log_debug(f"Logging on to {netloc}")
-                    self.req.addAuth(pwd)
+                    self.req.add_auth(pwd)
                 else:
                     self.log_debug("Using anonymous logon")
 
@@ -91,7 +91,7 @@ class Ftp(BaseDownloader):
                 links = [pyfile.url + x for x in res.splitlines()]
                 self.log_debug("LINKS", links)
 
-                self.pyload.api.addPackage(pkgname, links)
+                self.pyload.api.add_package(pkgname, links)
 
             else:
                 self.fail(self._("Unexpected server response"))

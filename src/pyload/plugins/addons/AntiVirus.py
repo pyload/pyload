@@ -71,9 +71,9 @@ class AntiVirus(BaseAddon):
         if not exists(target):
             return
 
-        thread.addActive(pyfile)
-        pyfile.setCustomStatus(self._("virus scanning"))
-        pyfile.setProgress(0)
+        thread.add_active(pyfile)
+        pyfile.set_custom_status(self._("virus scanning"))
+        pyfile.set_progress(0)
 
         try:
             p = subprocess.Popen(
@@ -121,7 +121,7 @@ class AntiVirus(BaseAddon):
                                         "Send2Trash lib not found, moving to quarantine instead"
                                     )
                                 )
-                                pyfile.setCustomStatus(self._("file moving"))
+                                pyfile.set_custom_status(self._("file moving"))
                                 shutil.move(target, self.config.get("quardir"))
 
                             except Exception as exc:
@@ -130,14 +130,14 @@ class AntiVirus(BaseAddon):
                                         "Unable to move file to trash: {}, moving to quarantine instead"
                                     ).format(exc)
                                 )
-                                pyfile.setCustomStatus(self._("file moving"))
+                                pyfile.set_custom_status(self._("file moving"))
                                 shutil.move(target, self.config.get("quardir"))
 
                             else:
                                 self.log_debug("Successfully moved file to trash")
 
                     elif action == "Quarantine":
-                        pyfile.setCustomStatus(self._("file moving"))
+                        pyfile.set_custom_status(self._("file moving"))
                         shutil.move(target, self.config.get("quardir"))
 
                 except (IOError, shutil.Error) as exc:
@@ -147,8 +147,8 @@ class AntiVirus(BaseAddon):
                 self.log_debug(target_repr, "No infected file found")
 
         finally:
-            pyfile.setProgress(100)
-            thread.finishFile(pyfile)
+            pyfile.set_progress(100)
+            thread.finish_file(pyfile)
 
     def download_finished(self, pyfile):
         return self.scan(pyfile)

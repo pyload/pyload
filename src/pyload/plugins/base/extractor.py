@@ -187,4 +187,4 @@ class BaseExtractor(BasePlugin):
         """
         Set extraction progress.
         """
-        return self.pyfile.setProgress(int(x))
+        return self.pyfile.set_progress(int(x))

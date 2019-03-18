@@ -26,7 +26,7 @@ def format_time(seconds):
 @login_required("LIST")
 def status():
     api = flask.current_app.config["PYLOAD_API"]
-    data = api.statusServer()
+    data = api.status_server()
     return jsonify(data)
 
 
@@ -36,7 +36,7 @@ def status():
 def links():
     api = flask.current_app.config["PYLOAD_API"]
     try:
-        links = api.statusDownloads()
+        links = api.status_downloads()
         ids = []
         for link in links:
             ids.append(link["fid"])
@@ -68,7 +68,7 @@ def links():
 def packages():
     api = flask.current_app.config["PYLOAD_API"]
     try:
-        data = api.getQueue()
+        data = api.get_queue()
 
         for package in data:
             package["links"] = []
@@ -89,7 +89,7 @@ def packages():
 def package(id):
     api = flask.current_app.config["PYLOAD_API"]
     try:
-        data = api.getPackageData(id)
+        data = api.get_package_data(id)
         for pyfile in data["links"]:
             if pyfile["status"] == 0:
                 pyfile["icon"] = "status_finished.png"
@@ -127,7 +127,7 @@ def package_order(ids):
     api = flask.current_app.config["PYLOAD_API"]
     try:
         pid, pos = ids.split(",")
-        api.orderPackage(int(pid), int(pos))
+        api.order_package(int(pid), int(pos))
         return jsonify(response="success")
     except Exception:
         flask.abort(500)
@@ -141,7 +141,7 @@ def package_order(ids):
 def abort_link(id):
     api = flask.current_app.config["PYLOAD_API"]
     try:
-        api.stopDownloads([id])
+        api.stop_downloads([id])
         return jsonify(response="success")
     except Exception:
         flask.abort(500)
@@ -157,7 +157,7 @@ def link_order(ids):
     api = flask.current_app.config["PYLOAD_API"]
     try:
         pid, pos = ids.split(",")
-        api.orderFile(int(pid), int(pos))
+        api.order_file(int(pid), int(pos))
         return jsonify(response="success")
     except Exception:
         flask.abort(500)
@@ -183,7 +183,7 @@ def add_package():
             name = f.name
 
         fpath = os.path.join(
-            api.getConfigValue("general", "storage_folder"), "tmp_" + f.filename
+            api.get_config_value("general", "storage_folder"), "tmp_" + f.filename
         )
         f.save(fpath)
         links.insert(0, fpath)
@@ -192,10 +192,10 @@ def add_package():
         pass
 
     urls = [url for url in links if url.strip()]
-    pack = api.addPackage(name, urls, queue)
+    pack = api.add_package(name, urls, queue)
     if pw:
         data = {"password": pw}
-        api.setPackageData(pack, data)
+        api.set_package_data(pack, data)
 
     return jsonify(True)
 
@@ -206,7 +206,7 @@ def add_package():
 def move_package(dest, id):
     api = flask.current_app.config["PYLOAD_API"]
     try:
-        api.movePackage(dest, id)
+        api.move_package(dest, id)
         return jsonify(response="success")
     except Exception:
         flask.abort(500)
@@ -227,7 +227,7 @@ def edit_package():
             "password": flask.request.form["pack_pws"],
         }
 
-        api.setPackageData(id, data)
+        api.set_package_data(id, data)
         return jsonify(response="success")
 
     except Exception:
@@ -245,15 +245,15 @@ def set_captcha():
     if flask.request.method == "POST":
         tid = int(flask.request.form["cap_id"])
         result = flask.request.form["cap_result"]
-        api.setCaptchaResult(tid, result)
+        api.set_captcha_result(tid, result)
 
-    task = api.getCaptchaTask()
+    task = api.get_captcha_task()
     if task.tid >= 0:
         data = {
             "captcha": True,
             "id": task.tid,
             "params": task.data,
-            "result_type": task.resultType,
+            "result_type": task.result_type,
         }
     else:
         data = {"captcha": False}
@@ -268,9 +268,9 @@ def load_config(category, section):
     conf = None
     api = flask.current_app.config["PYLOAD_API"]
     if category == "general":
-        conf = api.getConfigDict()
+        conf = api.get_config_dict()
     elif category == "plugin":
-        conf = api.getPluginConfigDict()
+        conf = api.get_plugin_config_dict()
 
     for key, option in conf[section].items():
         if key in ("desc", "outline"):
@@ -296,7 +296,7 @@ def save_config(category):
         if category == "general":
             category = "core"
 
-        api.setConfigValue(section, option, value, category)
+        api.set_config_value(section, option, value, category)
 
     return jsonify(True)
 
@@ -312,7 +312,7 @@ def add_account():
     password = flask.request.form["account_password"]
     type = flask.request.form["account_type"]
 
-    api.updateAccount(type, login, password)
+    api.update_account(type, login, password)
     return jsonify(True)
 
 
@@ -336,14 +336,14 @@ def update_accounts():
             continue
 
         if action == "password":
-            api.updateAccount(plugin, user, value)
+            api.update_account(plugin, user, value)
         elif action == "time" and "-" in value:
-            api.updateAccount(plugin, user, options={"time": [value]})
+            api.update_account(plugin, user, options={"time": [value]})
         elif action == "limitdl" and value.isdigit():
-            api.updateAccount(plugin, user, options={"limitDL": [value]})
+            api.update_account(plugin, user, options={"limit_dl": [value]})
         elif action == "delete":
             deleted.append((plugin, user))
-            api.removeAccount(plugin, user)
+            api.remove_account(plugin, user)
 
     return jsonify(True)
 
@@ -359,7 +359,7 @@ def change_password():
     oldpw = flask.request.form["login_current_password"]
     newpw = flask.request.form["login_new_password"]
 
-    done = api.changePassword(user, oldpw, newpw)
+    done = api.change_password(user, oldpw, newpw)
     if not done:
         return "Wrong password", 500
 

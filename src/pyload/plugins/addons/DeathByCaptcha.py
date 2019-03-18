@@ -136,7 +136,7 @@ class DeathByCaptcha(BaseAddon):
         if "is_service_overloaded" in res and res["is_service_overloaded"]:
             raise DeathByCaptchaException("service-overload")
 
-    def submit(self, captcha, captchaType="file", match=None):
+    def submit(self, captcha, captcha_type="file", match=None):
         # NOTE: Workaround multipart-post bug in HTTPRequest.py
         if re.match(r"^\w*$", self.config.get("password")):
             multipart = True
@@ -170,13 +170,13 @@ class DeathByCaptcha(BaseAddon):
         if "service" in task.data:
             return False
 
-        if not task.isTextual():
+        if not task.is_textual():
             return False
 
         if not self.config.get("username") or not self.config.get("password"):
             return False
 
-        if self.pyload.isClientConnected() and self.config.get("check_client"):
+        if self.pyload.is_client_connected() and self.config.get("check_client"):
             return False
 
         try:
@@ -197,7 +197,7 @@ class DeathByCaptcha(BaseAddon):
         if balance > rate:
             task.handler.append(self)
             task.data["service"] = self.classname
-            task.setWaiting(180)
+            task.set_waiting(180)
             self._process_captcha(task)
 
     def captcha_invalid(self, task):
@@ -219,7 +219,7 @@ class DeathByCaptcha(BaseAddon):
 
     @threaded
     def _process_captcha(self, task):
-        c = task.captchaParams["file"]
+        c = task.captcha_params["file"]
         try:
             ticket, result = self.submit(c)
         except DeathByCaptchaException as exc:
@@ -228,4 +228,4 @@ class DeathByCaptcha(BaseAddon):
             return
 
         task.data["ticket"] = ticket
-        task.setResult(result)
+        task.set_result(result)

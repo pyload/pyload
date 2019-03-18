@@ -32,17 +32,17 @@ class MyvideoDe(BaseDownloader):
         self.data = self.load(self.pyfile.url)
 
     def get_file_url(self):
-        videoId = re.search(
-            r"addVariable\('_videoid','(.*)'\);p.addParam\('quality'", self.data
+        video_id = re.search(
+            r"add_variable\('_videoid','(.*)'\);p.add_param\('quality'", self.data
         ).group(1)
-        videoServer = re.search(
+        video_server = re.search(
             "rel='image_src' href='(.*)thumbs/.*' />", self.data
         ).group(1)
-        file_url = videoServer + videoId + ".flv"
+        file_url = video_server + video_id + ".flv"
         return file_url
 
     def get_file_name(self):
-        file_name_pattern = r"<h1 class=\'globalHd\'>(.*)</h1>"
+        file_name_pattern = r"<h1 class=\'global_hd\'>(.*)</h1>"
         return html_unescape(
             re.search(file_name_pattern, self.data).group(1).replace("/", "") + ".flv"
         )
@@ -50,6 +50,6 @@ class MyvideoDe(BaseDownloader):
     def file_exists(self):
         self.download_html()
         self.load(str(self.pyfile.url), cookies=False, just_header=True)
-        if self.req.lastEffectiveURL == "http://www.myvideo.de/":
+        if self.req.last_effective_url == "http://www.myvideo.de/":
             return False
         return True

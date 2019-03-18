@@ -20,7 +20,7 @@ class style:
     db = None
 
     @classmethod
-    def setDB(cls, db):
+    def set_d_b(cls, db):
         cls.db = db
 
     @classmethod
@@ -78,7 +78,7 @@ class DatabaseJob:
 
         return f"DataBase Job {self.f.__name__}:{self.args[1:]}\n{output} Result: {self.result}"
 
-    def processJob(self):
+    def process_job(self):
         try:
             self.result = self.f(*self.args, **self.kwargs)
         except Exception as exc:
@@ -115,7 +115,7 @@ class DatabaseThread(Thread):
 
         self.setuplock = Event()
 
-        style.setDB(self)
+        style.set_d_b(self)
 
     def setup(self):
         self.start()
@@ -125,7 +125,7 @@ class DatabaseThread(Thread):
         """
         main loop, which executes commands.
         """
-        convert = self._checkVersion()  #: returns None or current version
+        convert = self._check_version()  #: returns None or current version
 
         self.conn = sqlite3.connect(self.db_path, isolation_level=None)
         os.chmod(self.db_path, 0o600)
@@ -133,10 +133,10 @@ class DatabaseThread(Thread):
         self.c = self.conn.cursor()  #: compatibility
 
         if convert is not None:
-            self._convertDB(convert)
+            self._convert_d_b(convert)
 
-        self._createTables()
-        self._migrateUser()
+        self._create_tables()
+        self._migrate_user()
 
         self.conn.commit()
 
@@ -148,14 +148,14 @@ class DatabaseThread(Thread):
                 self.c.close()
                 self.conn.close()
                 break
-            j.processJob()
+            j.process_job()
 
     @style.queue
     def shutdown(self):
         self.conn.commit()
         self.jobs.put("quit")
 
-    def _checkVersion(self):
+    def _check_version(self):
         """
         check db version and delete it if needed.
         """
@@ -178,7 +178,7 @@ class DatabaseThread(Thread):
                 file.write(str(__version__))
             return v
 
-    def _convertDB(self, v):
+    def _convert_d_b(self, v):
         try:
             getattr(self, f"_convertV{v}")()
         except Exception:
@@ -201,7 +201,7 @@ class DatabaseThread(Thread):
 
     # --convert scripts end
 
-    def _createTables(self):
+    def _create_tables(self):
         """
         create tables for database.
         """
@@ -211,7 +211,7 @@ class DatabaseThread(Thread):
         self.c.execute(
             'CREATE TABLE IF NOT EXISTS "links" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "url" TEXT NOT NULL, "name" TEXT, "size" INTEGER DEFAULT 0 NOT NULL, "status" INTEGER DEFAULT 3 NOT NULL, "plugin" TEXT DEFAULT "DefaultPlugin" NOT NULL, "error" TEXT DEFAULT "", "linkorder" INTEGER DEFAULT 0 NOT NULL, "package" INTEGER DEFAULT 0 NOT NULL, FOREIGN KEY(package) REFERENCES packages(id))'
         )
-        self.c.execute('CREATE INDEX IF NOT EXISTS "pIdIndex" ON links(package)')
+        self.c.execute('CREATE INDEX IF NOT EXISTS "p_id_index" ON links(package)')
         self.c.execute(
             'CREATE TABLE IF NOT EXISTS "storage" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "identifier" TEXT NOT NULL, "key" TEXT NOT NULL, "value" TEXT DEFAULT "")'
         )
@@ -249,7 +249,7 @@ class DatabaseThread(Thread):
 
         self.c.execute("VACUUM")
 
-    def _migrateUser(self):
+    def _migrate_user(self):
         if os.path.exists("pyload.db"):
             self.pyload.log.info(self._("Converting old Django DB"))
 
@@ -268,7 +268,7 @@ class DatabaseThread(Thread):
             )
             shutil.move("pyload.db", "pyload.old.db")
 
-    def createCursor(self):
+    def create_cursor(self):
         return self.conn.cursor()
 
     @style.async_
@@ -276,7 +276,7 @@ class DatabaseThread(Thread):
         self.conn.commit()
 
     @style.queue
-    def syncSave(self):
+    def sync_save(self):
         self.conn.commit()
 
     @style.async_
@@ -296,11 +296,11 @@ class DatabaseThread(Thread):
         return job.result
 
     @classmethod
-    def registerSub(cls, klass):
+    def register_sub(cls, klass):
         cls.subs.append(klass)
 
     @classmethod
-    def unregisterSub(cls, klass):
+    def unregister_sub(cls, klass):
         cls.subs.remove(klass)
 
     def __getattr__(self, attr):

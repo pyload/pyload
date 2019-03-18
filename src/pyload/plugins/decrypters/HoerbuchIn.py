@@ -43,11 +43,11 @@ class HoerbuchIn(BaseDecrypter):
         if self.article.match(pyfile.url):
             html = self.load(pyfile.url)
             soup = BeautifulSoup(
-                html, convertEntities=BeautifulSoup.BeautifulStoneSoup.HTML_ENTITIES
+                html, convert_entities=BeautifulSoup.BeautifulStoneSoup.HTML_ENTITIES
             )
 
             links = []
-            for a in soup.findAll("a", attrs={"href": self.hoster_links}):
+            for a in soup.find_all("a", attrs={"href": self.hoster_links}):
                 for decrypted_link in self.decrypt_folder(a.get("href")):
                     links.append(decrypted_link)
 
@@ -65,7 +65,7 @@ class HoerbuchIn(BaseDecrypter):
 
         if self.hoster_links.match(url):
             self.load(url)
-            url = self.req.lastEffectiveURL
+            url = self.req.last_effective_url
 
         html = self.load(url, post={"viewed": "adpg"})
 
@@ -74,10 +74,10 @@ class HoerbuchIn(BaseDecrypter):
         links = []
 
         soup = BeautifulSoup(
-            html, convertEntities=BeautifulSoup.BeautifulStoneSoup.HTML_ENTITIES
+            html, convert_entities=BeautifulSoup.BeautifulStoneSoup.HTML_ENTITIES
         )
 
-        for container in soup.findAll("div", attrs={"class": "container"}):
+        for container in soup.find_all("div", attrs={"class": "container"}):
             href = container.a.get("href")
 
             uploaded = self.uploaded.search(href)

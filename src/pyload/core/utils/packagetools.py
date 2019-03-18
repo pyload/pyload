@@ -5,7 +5,7 @@ import re
 from urllib.parse import urlparse
 
 
-def matchFirst(string, *args):
+def match_first(string, *args):
     """
     matches against list of regexp and returns first match.
     """
@@ -19,7 +19,7 @@ def matchFirst(string, *args):
     return string
 
 
-def parseNames(files):
+def parse_names(files):
     """
     Generates packages names from name, data lists.
 
@@ -30,7 +30,7 @@ def parseNames(files):
 
     endings = "\\.(3gp|7zip|7z|abr|ac3|aiff|aifc|aif|ai|au|avi|bin|bz2|cbr|cbz|ccf|cue|cvd|chm|dta|deb|divx|djvu|dlc|dmg|doc|docx|dot|eps|exe|ff|flv|f4v|gsd|gif|gz|iwd|iso|ipsw|java|jar|jpg|jpeg|jdeatme|load|mws|mw|m4v|m4a|mkv|mp2|mp3|mp4|mov|movie|mpeg|mpe|mpg|msi|msu|msp|nfo|npk|oga|ogg|ogv|otrkey|pkg|png|pdf|pptx|ppt|pps|ppz|pot|psd|qt|rmvb|rm|rar|ram|ra|rev|rnd|r\\d+|rpm|run|rsdf|rtf|sh(!?tml)|srt|snd|sfv|swf|tar|tif|tiff|ts|txt|viv|vivo|vob|wav|wmv|xla|xls|xpi|zeno|zip|z\\d+|_[_a-z]{2}|\\d+$)"
 
-    rarPats = [
+    rar_pats = [
         re.compile("(.*)(\\.|_|-)pa?r?t?\\.?[0-9]+.(rar|exe)$", re.I),
         re.compile("(.*)(\\.|_|-)part\\.?[0]*[1].(rar|exe)$", re.I),
         re.compile("(.*)\\.rar$", re.I),
@@ -38,19 +38,19 @@ def parseNames(files):
         re.compile("(.*)(\\.|_|-)\\d+$", re.I),
     ]
 
-    zipPats = [
+    zip_pats = [
         re.compile("(.*)\\.zip$", re.I),
         re.compile("(.*)\\.z\\d+$", re.I),
         re.compile("(?is).*\\.7z\\.[\\d]+$", re.I),
         re.compile("(.*)\\.a.$", re.I),
     ]
 
-    ffsjPats = [
+    ffsj_pats = [
         re.compile("(.*)\\._((_[a-z])|([a-z]{2}))(\\.|$)"),
         re.compile("(.*)(\\.|_|-)[\\d]+(" + endings + "$)", re.I),
     ]
 
-    iszPats = [re.compile("(.*)\\.isz$", re.I), re.compile("(.*)\\.i\\d{2}$", re.I)]
+    isz_pats = [re.compile("(.*)\\.isz$", re.I), re.compile("(.*)\\.i\\d{2}$", re.I)]
 
     pat1 = re.compile("(\\.?CD\\d+)", re.I)
     pat2 = re.compile("(\\.?part\\d+)", re.I)
@@ -59,7 +59,7 @@ def parseNames(files):
     pat4 = re.compile("(.+)\\.\\d+\\.xtm$")
 
     for file, url in files:
-        patternMatch = False
+        pattern_match = False
 
         if file is None:
             continue
@@ -84,9 +84,9 @@ def parseNames(files):
 
         # unrar pattern, 7zip/zip and hjmerge pattern, isz pattern, FFSJ pattern
         before = name
-        name = matchFirst(name, rarPats, zipPats, iszPats, ffsjPats)
+        name = match_first(name, rar_pats, zip_pats, isz_pats, ffsj_pats)
         if before != name:
-            patternMatch = True
+            pattern_match = True
 
         # xtremsplit pattern
         r = pat4.search(name)
@@ -97,15 +97,15 @@ def parseNames(files):
         r = pat1.search(name)
         if r is not None:
             name = name.replace(r.group(0), "")
-            patternMatch = True
+            pattern_match = True
 
         r = pat2.search(name)
         if r is not None:
             name = name.replace(r.group(0), "")
-            patternMatch = True
+            pattern_match = True
 
         # additional checks if extension pattern matched
-        if patternMatch:
+        if pattern_match:
             # remove extension
             index = name.rfind(".")
             if index <= 0:

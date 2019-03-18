@@ -42,17 +42,17 @@ class BigfileTo(SimpleDownloader):
 
     WAIT_PATTERN = r">Please wait[^<]+"
 
-    RECAPTCHA_KEY = "6LfZ0RETAAAAAOjhYT7V9ukeCT3wWccw98uc50vu"
+    RECAPTCHA_KEY = "6LfZ0RETAAAAAOjhYT7V9uke_c_t3w_wccw98uc50vu"
 
     def handle_free(self, pyfile):
         #: Click the "free user" button and wait
-        json_data = json.loads(self.load(pyfile.url, post={"downloadLink": "wait"}))
+        json_data = json.loads(self.load(pyfile.url, post={"download_link": "wait"}))
 
-        self.wait(json_data["waitTime"])
+        self.wait(json_data["wait_time"])
 
         #: Make the ReCaptcha appear and show it the pyload interface
-        json_data = json.loads(self.load(pyfile.url, post={"checkDownload": "check"}))
-        if json_data["success"] == "showCaptcha":
+        json_data = json.loads(self.load(pyfile.url, post={"check_download": "check"}))
+        if json_data["success"] == "show_captcha":
             self.captcha = ReCaptcha(pyfile)
 
             response, challenge = self.captcha.challenge(self.RECAPTCHA_KEY)
@@ -60,7 +60,7 @@ class BigfileTo(SimpleDownloader):
             #: Submit the captcha solution
             json_data = json.loads(
                 self.load(
-                    "https://www.bigfile.to/checkReCaptcha.php",
+                    "https://www.bigfile.to/check_re_captcha.php",
                     post={
                         "recaptcha_challenge_field": challenge,
                         "recaptcha_response_field": response,
@@ -73,7 +73,7 @@ class BigfileTo(SimpleDownloader):
                 self.retry_captcha()
 
         #: Get ready for downloading
-        self.load(pyfile.url, post={"downloadLink": "show"})
+        self.load(pyfile.url, post={"download_link": "show"})
 
         #: Download the file
         self.download(pyfile.url, post={"download": "normal"}, disposition=True)

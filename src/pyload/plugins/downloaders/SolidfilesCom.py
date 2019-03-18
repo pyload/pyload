@@ -33,13 +33,13 @@ class SolidfilesCom(SimpleDownloader):
     ]
 
     NAME_PATTERN = r'<i class="icon filetype-icon.+?</i>\s*<h1>\s*(?P<N>.+?)\s*</h1>'
-    SIZE_PATTERN = r'copy-text="viewer\.node\.viewUrl"></copy-button>\s*(?P<S>[\d.,]+) (?P<U>[\w_^]+)'
+    SIZE_PATTERN = r'copy-text="viewer\.node\.view_url"></copy-button>\s*(?P<S>[\d.,]+) (?P<U>[\w_^]+)'
     OFFLINE_PATTERN = r"<h1>404"
 
     LINK_FREE_PATTERN = r'<a href="(https?://.*\.solidfilesusercontent\.com/.+?)"'
 
     def setup(self):
-        self.multiDL = True
+        self.multi_dl = True
         self.chunk_limit = 1
 
     def handle_free(self, pyfile):

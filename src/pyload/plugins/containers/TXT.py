@@ -40,8 +40,8 @@ class TXT(BaseContainer):
 
         fs_filename = os.fsdecode(pyfile.url)
         with open(fs_filename, encoding=encoding) as txt:
-            curPack = "Parsed links from {}".format(pyfile.name)
-            packages = {curPack: []}
+            cur_pack = "Parsed links from {}".format(pyfile.name)
+            packages = {cur_pack: []}
 
             for link in txt.readlines():
                 link = link.strip()
@@ -54,11 +54,11 @@ class TXT(BaseContainer):
 
                 if link.startswith("[") and link.endswith("]"):
                     #: New package
-                    curPack = link[1:-1]
-                    packages[curPack] = []
+                    cur_pack = link[1:-1]
+                    packages[cur_pack] = []
                     continue
 
-                packages[curPack].append(link)
+                packages[cur_pack].append(link)
 
         #: Empty packages fix
         for key, value in packages.items():

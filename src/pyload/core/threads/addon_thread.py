@@ -24,25 +24,25 @@ class AddonThread(PluginThread):
 
         self.active = []
 
-        manager.localThreads.append(self)
+        manager.local_threads.append(self)
 
         self.start()
 
-    def getActiveFiles(self):
+    def get_active_files(self):
         return self.active
 
-    def addActive(self, pyfile):
+    def add_active(self, pyfile):
         """
         Adds a pyfile to active list and thus will be displayed on overview.
         """
         if pyfile not in self.active:
             self.active.append(pyfile)
 
-    def finishFile(self, pyfile):
+    def finish_file(self, pyfile):
         if pyfile in self.active:
             self.active.remove(pyfile)
 
-        pyfile.finishIfDone()
+        pyfile.finish_if_done()
 
     def run(self):
         try:
@@ -59,6 +59,6 @@ class AddonThread(PluginThread):
         finally:
             local = copy(self.active)
             for x in local:
-                self.finishFile(x)
+                self.finish_file(x)
 
-            self.m.localThreads.remove(self)
+            self.m.local_threads.remove(self)

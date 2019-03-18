@@ -12,24 +12,24 @@ class CookieJar:
         self.plugin = pluginname
         self.account = account
 
-    def addCookies(self, clist):
+    def add_cookies(self, clist):
         for c in clist:
             name = c.split("\t")[5]
             self.cookies[name] = c
 
-    def getCookies(self):
+    def get_cookies(self):
         return list(self.cookies.values())
 
-    def parseCookie(self, name):
+    def parse_cookie(self, name):
         if name in self.cookies:
             return self.cookies[name].split("\t")[6]
         else:
             return None
 
-    def getCookie(self, name):
-        return self.parseCookie(name)
+    def get_cookie(self, name):
+        return self.parse_cookie(name)
 
-    def setCookie(
+    def set_cookie(
         self,
         domain,
         name,

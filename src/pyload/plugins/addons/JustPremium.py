@@ -27,20 +27,20 @@ class JustPremium(BaseAddon):
     ]
 
     def init(self):
-        self.event_map = {"linksAdded": "links_added"}
+        self.event_map = {"links_added": "links_added"}
 
     def links_added(self, links, pid):
-        hosterdict = self.pyload.pluginManager.hosterPlugins
-        linkdict = self.pyload.api.checkURLs(links)
+        hosterdict = self.pyload.plugin_manager.hoster_plugins
+        linkdict = self.pyload.api.check_urls(links)
 
         premiumplugins = set(
             account.type
-            for account in self.pyload.api.getAccounts(False)
+            for account in self.pyload.api.get_accounts(False)
             if account.valid and account.premium
         )
         multihosters = set(
             hoster
-            for hoster in self.pyload.pluginManager.hosterPlugins
+            for hoster in self.pyload.plugin_manager.hoster_plugins
             if "new_name" in hosterdict[hoster]
             and hosterdict[hoster]["new_name"] in premiumplugins
         )

@@ -12,13 +12,13 @@ from pyload.core.network.exceptions import Abort, Fail, Reconnect, Retry, Skip
 
 
 # TODO: Recheck in 0.6.x
-def getInfo(urls):
+def get_info(urls):
     #: result = [ .. (name, size, status, url) .. ]
     pass
 
 
 # TODO: Remove in 0.6.x
-def parse_fileInfo(klass, url="", html=""):
+def parse_file_info(klass, url="", html=""):
     info = klass.get_info(url, html)
     return info["name"], info["size"], info["status"], info["url"]
 
@@ -67,10 +67,10 @@ class BaseHoster(BasePlugin):
         self._init(pyfile.m.pyload)
 
         #: Engage wan reconnection
-        self.wantReconnect = False  # TODO: Change to `want_reconnect` in 0.6.x
+        self.want_reconnect = False  # TODO: Change to `want_reconnect` in 0.6.x
 
         #: Enable simultaneous processing of multiple downloads
-        self.multiDL = True  # TODO: Change to `multi_dl` in 0.6.x
+        self.multi_dl = True  # TODO: Change to `multi_dl` in 0.6.x
 
         #: time.time() + wait in seconds
         self.waiting = False
@@ -88,7 +88,7 @@ class BaseHoster(BasePlugin):
 
         #: Captcha stuff
         # TODO: Replace in 0.6.x:
-        # _Captcha = self.pyload.pluginManager.loadClass("anticaptcha", self.classname) or BaseCaptcha
+        # _Captcha = self.pyload.plugin_manager.load_class("anticaptcha", self.classname) or BaseCaptcha
         # self.captcha = _Captcha(pyfile)
         self.captcha = BaseCaptcha(pyfile)
 
@@ -160,16 +160,16 @@ class BaseHoster(BasePlugin):
             pass
 
         if self.account:
-            self.req = self.pyload.requestFactory.getRequest(
+            self.req = self.pyload.request_factory.get_request(
                 self.classname, self.account.user
             )
             # NOTE: Avoid one unnecessary get_info call by `self.account.premium` here
             self.premium = self.account.info["data"]["premium"]
         else:
-            self.req = self.pyload.requestFactory.getRequest(self.classname)
+            self.req = self.pyload.request_factory.get_request(self.classname)
             self.premium = False
 
-        self.req.setOption("timeout", 60)  # TODO: Remove in 0.6.x
+        self.req.set_option("timeout", 60)  # TODO: Remove in 0.6.x
 
         self.setup_base()
         self.grab_info()
@@ -178,7 +178,7 @@ class BaseHoster(BasePlugin):
 
     def load_account(self):
         if not self.account:
-            self.account = self.pyload.accountManager.getAccountPlugin(self.classname)
+            self.account = self.pyload.account_manager.get_account_plugin(self.classname)
 
         if not self.account:
             self.account = False
@@ -220,7 +220,7 @@ class BaseHoster(BasePlugin):
         self.pyfile.status = self.info.get("status", 14)
         self.pyfile.sync()
 
-        self.log_info(self._("Link status: ") + self.pyfile.getStatusName())
+        self.log_info(self._("Link status: ") + self.pyfile.get_status_name())
 
     def sync_info(self):
         self._update_name()
@@ -278,15 +278,15 @@ class BaseHoster(BasePlugin):
         self._setup()
 
         # TODO: Enable in 0.6.x
-        # self.pyload.addonManager.downloadPreparing(self.pyfile)
+        # self.pyload.addon_manager.download_preparing(self.pyfile)
         # self.check_status()
 
         # TODO: Remove in 0.6.x
         if self.__type__ == "decrypter":
-            self.pyload.addonManager.downloadPreparing(self.pyfile)
+            self.pyload.addon_manager.download_preparing(self.pyfile)
             self.check_status()
 
-        self.pyfile.setStatus("starting")
+        self.pyfile.set_status("starting")
 
         self.log_info(self._("Processing url: ") + self.pyfile.url)
         self.process(self.pyfile)
@@ -294,9 +294,9 @@ class BaseHoster(BasePlugin):
 
     #: Deprecated method, use `_process` instead (Remove in 0.6.x)
     def preprocessing(self, *args, **kwargs):
-        # NOTE: Set pyfile status from `queued` to `starting` as soon as possible to avoid race condition in ThreadManager's assignJob function
+        # NOTE: Set pyfile status from `queued` to `starting` as soon as possible to avoid race condition in ThreadManager's assign_job function
         # NOTE: Move to ThreadManager in 0.6.x
-        self.pyfile.setStatus("starting")
+        self.pyfile.set_status("starting")
 
         # NOTE: Recheck info thread synchronization in 0.6.x
         return self._process(*args, **kwargs)
@@ -309,12 +309,12 @@ class BaseHoster(BasePlugin):
 
     def set_reconnect(self, reconnect):
         if self.pyload.config.get("reconnect", "enabled"):
-            reconnect = reconnect and self.pyload.api.isTimeReconnect()
+            reconnect = reconnect and self.pyload.api.is_time_reconnect()
             self.log_debug(
                 "RECONNECT{} required".format("" if reconnect else " not"),
-                "Previous wantReconnect: {}".format(self.wantReconnect),
+                "Previous want_reconnect: {}".format(self.want_reconnect),
             )
-            self.wantReconnect = bool(reconnect)
+            self.want_reconnect = bool(reconnect)
 
     def set_wait(self, seconds, strict=False):
         """
@@ -328,15 +328,15 @@ class BaseHoster(BasePlugin):
         if wait_time < 0:
             return False
 
-        old_wait_until = self.pyfile.waitUntil
+        old_wait_until = self.pyfile.wait_until
         new_wait_until = time.time() + wait_time + float(not strict)
 
         self.log_debug(
             "WAIT set to timestamp {}".format(new_wait_until),
-            "Previous waitUntil: {}".format(old_wait_until),
+            "Previous wait_until: {}".format(old_wait_until),
         )
 
-        self.pyfile.waitUntil = new_wait_until
+        self.pyfile.wait_until = new_wait_until
         return True
 
     def wait(self, seconds=None, reconnect=None):
@@ -351,7 +351,7 @@ class BaseHoster(BasePlugin):
 
         self.set_reconnect(reconnect)
 
-        wait_time = self.pyfile.waitUntil - time.time()
+        wait_time = self.pyfile.wait_until - time.time()
 
         if wait_time < 1:
             self.log_warning(self._("Invalid wait time interval"))
@@ -360,30 +360,30 @@ class BaseHoster(BasePlugin):
         self.waiting = True
 
         status = self.pyfile.status  # NOTE: Recheck in 0.6.x
-        self.pyfile.setStatus("waiting")
+        self.pyfile.set_status("waiting")
 
         self.log_info(self._("Waiting {}...").format(format_time(wait_time)))
 
-        if self.wantReconnect:
+        if self.want_reconnect:
             self.log_info(self._("Requiring reconnection..."))
             if self.account:
                 self.log_warning(self._("Reconnection ignored due logged account"))
 
-        if not self.wantReconnect or self.account:
-            while self.pyfile.waitUntil > time.time():
+        if not self.want_reconnect or self.account:
+            while self.pyfile.wait_until > time.time():
                 self.check_status()
                 time.sleep(2)
 
         else:
-            while self.pyfile.waitUntil > time.time():
+            while self.pyfile.wait_until > time.time():
                 self.check_status()
                 self.thread.m.reconnecting.wait(1)
 
-                if self.thread.m.reconnecting.isSet():
+                if self.thread.m.reconnecting.is_set():
                     self.waiting = False
-                    self.wantReconnect = False
+                    self.want_reconnect = False
 
-                    self.req.clearCookies()
+                    self.req.clear_cookies()
                     raise Reconnect
 
                 time.sleep(2)
@@ -410,7 +410,7 @@ class BaseHoster(BasePlugin):
             msg = (
                 self.pyfile.error
                 or self.info.get("error")
-                or self.pyfile.getStatusName()
+                or self.pyfile.get_status_name()
             )
 
         raise Fail(msg)
@@ -464,7 +464,7 @@ class BaseHoster(BasePlugin):
                     "{} | {}".format(msg, self._("Url was already processed as free"))
                 )
 
-        self.req.clearCookies()
+        self.req.clear_cookies()
 
         raise Retry(msg)
 

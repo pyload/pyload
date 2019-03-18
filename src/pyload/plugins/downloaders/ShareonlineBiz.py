@@ -68,7 +68,7 @@ class ShareonlineBiz(SimpleDownloader):
 
     def setup(self):
         self.resume_download = self.premium
-        self.multiDL = False
+        self.multi_dl = False
 
     def handle_captcha(self):
         self.captcha = ReCaptcha(self.pyfile)
@@ -161,10 +161,10 @@ class ShareonlineBiz(SimpleDownloader):
             if self.link == "server_under_maintenance":
                 self.temp_offline()
             else:
-                self.multiDL = True
+                self.multi_dl = True
 
     def check_errors(self):
-        m = re.search(r"/failure/(.*?)/", self.req.lastEffectiveURL)
+        m = re.search(r"/failure/(.*?)/", self.req.last_effective_url)
         if m is None:
             self.info.pop("error", None)
             return

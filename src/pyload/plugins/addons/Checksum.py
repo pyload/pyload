@@ -53,7 +53,7 @@ def compute_checksum(local_file, algorithm, progress_notify=None, abort=None):
                         progress_notify(processed * 100 // file_size)
 
             #: zlib sometimes return negative value
-            return "{:x}".format((2 ** 32 + last) & 0xFFFFFFFF)
+            return "{:x}".format((2 ** 32 + last) & 0x_f_f_f_f_f_f_f_f)
 
         else:
             return None
@@ -153,7 +153,7 @@ class Checksum(BaseAddon):
         else:
             return
 
-        pyfile.setStatus("processing")
+        pyfile.set_status("processing")
 
         if not pyfile.plugin.last_download:
             self.check_failed(pyfile, None, "No file downloaded")
@@ -193,16 +193,16 @@ class Checksum(BaseAddon):
             if len(data["hash"]) > 0:
                 for key in self.algorithms:
                     if key in data["hash"]:
-                        pyfile.setCustomStatus(self._("checksum verifying"))
+                        pyfile.set_custom_status(self._("checksum verifying"))
                         try:
                             checksum = compute_checksum(
                                 local_file,
                                 key.replace("-", "").lower(),
-                                progress_notify=pyfile.setProgress,
+                                progress_notify=pyfile.set_progress,
                                 abort=lambda: pyfile.abort,
                             )
                         finally:
-                            pyfile.setStatus("processing")
+                            pyfile.set_status("processing")
 
                         if checksum is False:
                             continue
@@ -277,7 +277,7 @@ class Checksum(BaseAddon):
                 self.pyload.config.get("general", "storage_folder"), pypack.folder, ""
             )
 
-            pdata = list(pypack.getChildren().items())
+            pdata = list(pypack.get_children().items())
             files_ids = {fdata["name"]: fdata["id"] for fid, fdata in pdata}
             failed_queue = []
             for fid, fdata in pdata:
@@ -307,18 +307,18 @@ class Checksum(BaseAddon):
                     pyfile = None
                     fid = files_ids.get(data["NAME"], None)
                     if fid is not None:
-                        pyfile = self.pyload.files.getFile(fid)
-                        pyfile.setCustomStatus(self._("checksum verifying"))
-                        thread.addActive(pyfile)
+                        pyfile = self.pyload.files.get_file(fid)
+                        pyfile.set_custom_status(self._("checksum verifying"))
+                        thread.add_active(pyfile)
                         try:
                             checksum = compute_checksum(
                                 local_file,
                                 algorithm,
-                                progress_notify=pyfile.setProgress,
+                                progress_notify=pyfile.set_progress,
                                 abort=lambda: pyfile.abort,
                             )
                         finally:
-                            thread.finishFile(pyfile)
+                            thread.finish_file(pyfile)
 
                     else:
                         checksum = compute_checksum(local_file, algorithm)
@@ -337,7 +337,7 @@ class Checksum(BaseAddon):
 
                             if pyfile is not None:
                                 pyfile.error = self._("checksum verified")
-                                pyfile.setStatus("finished")
+                                pyfile.set_status("finished")
                                 pyfile.release()
 
                         else:
@@ -386,7 +386,7 @@ class Checksum(BaseAddon):
         retry_action = self.config.get("retry_action")
 
         for fid, local_file in failed_queue:
-            pyfile = self.pyload.files.getFile(fid)
+            pyfile = self.pyload.files.get_file(fid)
             try:
                 if check_action == "retry":
                     retry_count = self.retries.get(fid, 0)
@@ -403,10 +403,10 @@ class Checksum(BaseAddon):
                         )
                         time.sleep(wait_time)
 
-                        pyfile.package().setFinished = (
+                        pyfile.package().set_finished = (
                             False
                         )  #: Force `package_finished` event again
-                        self.pyload.files.restartFile(fid)
+                        self.pyload.files.restart_file(fid)
                         continue
 
                     else:
@@ -422,7 +422,7 @@ class Checksum(BaseAddon):
                 os.remove(local_file)
 
                 pyfile.error = msg
-                pyfile.setStatus("failed")
+                pyfile.set_status("failed")
 
             finally:
                 pyfile.release()

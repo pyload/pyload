@@ -42,7 +42,7 @@ class FileDatabaseMethods:
         return self.c.fetchone()[0]
 
     @style.inner
-    def _nextPackageOrder(self, queue=0):
+    def _next_package_order(self, queue=0):
         self.c.execute("SELECT MAX(packageorder) FROM packages WHERE queue=?", (queue,))
         max = self.c.fetchone()[0]
         if max is not None:
@@ -51,7 +51,7 @@ class FileDatabaseMethods:
             return 0
 
     @style.inner
-    def _nextFileOrder(self, package):
+    def _next_file_order(self, package):
         self.c.execute("SELECT MAX(linkorder) FROM links WHERE package=?", (package,))
         max = self.c.fetchone()[0]
         if max is not None:
@@ -60,8 +60,8 @@ class FileDatabaseMethods:
             return 0
 
     @style.queue
-    def addLink(self, url, name, plugin, package):
-        order = self._nextFileOrder(package)
+    def add_link(self, url, name, plugin, package):
+        order = self._next_file_order(package)
         self.c.execute(
             "INSERT INTO links(url, name, plugin, package, linkorder) VALUES(?,?,?,?,?)",
             (url, name, plugin, package, order),
@@ -69,11 +69,11 @@ class FileDatabaseMethods:
         return self.c.lastrowid
 
     @style.queue
-    def addLinks(self, links, package):
+    def add_links(self, links, package):
         """
         links is a list of tupels (url,plugin)
         """
-        order = self._nextFileOrder(package)
+        order = self._next_file_order(package)
         orders = [order + x for x in range(len(links))]
         links = [(x[0], x[0], x[1], package, o) for x, o in zip(links, orders)]
         self.c.executemany(
@@ -82,8 +82,8 @@ class FileDatabaseMethods:
         )
 
     @style.queue
-    def addPackage(self, name, folder, queue):
-        order = self._nextPackageOrder(queue)
+    def add_package(self, name, folder, queue):
+        order = self._next_package_order(queue)
         self.c.execute(
             "INSERT INTO packages(name, folder, queue, packageorder) VALUES(?,?,?,?)",
             (name, folder, queue, order),
@@ -91,7 +91,7 @@ class FileDatabaseMethods:
         return self.c.lastrowid
 
     @style.queue
-    def deletePackage(self, p):
+    def delete_package(self, p):
         self.c.execute("DELETE FROM links WHERE package=?", (str(p.id),))
         self.c.execute("DELETE FROM packages WHERE id=?", (str(p.id),))
         self.c.execute(
@@ -100,7 +100,7 @@ class FileDatabaseMethods:
         )
 
     @style.queue
-    def deleteLink(self, f):
+    def delete_link(self, f):
         self.c.execute("DELETE FROM links WHERE id=?", (str(f.id),))
         self.c.execute(
             "UPDATE links SET linkorder=linkorder-1 WHERE linkorder > ? AND package=?",
@@ -108,7 +108,7 @@ class FileDatabaseMethods:
         )
 
     @style.queue
-    def getAllLinks(self, q):
+    def get_all_links(self, q):
         """
         return information about all links in queue q.
 
@@ -134,7 +134,7 @@ class FileDatabaseMethods:
                 "size": r[3],
                 "format_size": format_size(r[3]),
                 "status": r[4],
-                "statusmsg": self.pyload.files.statusMsg[r[4]],
+                "statusmsg": self.pyload.files.status_msg[r[4]],
                 "error": r[5],
                 "plugin": r[6],
                 "package": r[7],
@@ -144,7 +144,7 @@ class FileDatabaseMethods:
         return data
 
     @style.queue
-    def getAllPackages(self, q):
+    def get_all_packages(self, q):
         """
         return information about packages in queue q (only useful in get all data)
 
@@ -184,7 +184,7 @@ class FileDatabaseMethods:
         return data
 
     @style.queue
-    def getLinkData(self, id):
+    def get_link_data(self, id):
         """
         get link information as dict.
         """
@@ -203,7 +203,7 @@ class FileDatabaseMethods:
             "size": r[3],
             "format_size": format_size(r[3]),
             "status": r[4],
-            "statusmsg": self.pyload.files.statusMsg[r[4]],
+            "statusmsg": self.pyload.files.status_msg[r[4]],
             "error": r[5],
             "plugin": r[6],
             "package": r[7],
@@ -213,7 +213,7 @@ class FileDatabaseMethods:
         return data
 
     @style.queue
-    def getPackageData(self, id):
+    def get_package_data(self, id):
         """
         get data about links for a package.
         """
@@ -231,7 +231,7 @@ class FileDatabaseMethods:
                 "size": r[3],
                 "format_size": format_size(r[3]),
                 "status": r[4],
-                "statusmsg": self.pyload.files.statusMsg[r[4]],
+                "statusmsg": self.pyload.files.status_msg[r[4]],
                 "error": r[5],
                 "plugin": r[6],
                 "package": r[7],
@@ -241,21 +241,21 @@ class FileDatabaseMethods:
         return data
 
     @style.async_
-    def updateLink(self, f):
+    def update_link(self, f):
         self.c.execute(
             "UPDATE links SET url=?,name=?,size=?,status=?,error=?,package=? WHERE id=?",
             (f.url, f.name, f.size, f.status, f.error, str(f.packageid), str(f.id)),
         )
 
     @style.queue
-    def updatePackage(self, p):
+    def update_package(self, p):
         self.c.execute(
             "UPDATE packages SET name=?,folder=?,site=?,password=?,queue=? WHERE id=?",
             (p.name, p.folder, p.site, p.password, p.queue, str(p.id)),
         )
 
     @style.queue
-    def updateLinkInfo(self, data):
+    def update_link_info(self, data):
         """
         data is list of tupels (name, size, status, url)
         """
@@ -271,10 +271,10 @@ class FileDatabaseMethods:
         return ids
 
     @style.queue
-    def reorderPackage(self, p, position, noMove=False):
+    def reorder_package(self, p, position, no_move=False):
         if position == -1:
-            position = self._nextPackageOrder(p.queue)
-        if not noMove:
+            position = self._next_package_order(p.queue)
+        if not no_move:
             if p.order > position:
                 self.c.execute(
                     "UPDATE packages SET packageorder=packageorder+1 WHERE packageorder >= ? AND packageorder < ? AND queue=? AND packageorder >= 0",
@@ -291,7 +291,7 @@ class FileDatabaseMethods:
         )
 
     @style.queue
-    def reorderLink(self, f, position):
+    def reorder_link(self, f, position):
         """
         reorder link with f as dict for pyfile.
         """
@@ -309,7 +309,7 @@ class FileDatabaseMethods:
         self.c.execute("UPDATE links SET linkorder=? WHERE id=?", (position, f["id"]))
 
     @style.queue
-    def clearPackageOrder(self, p):
+    def clear_package_order(self, p):
         self.c.execute("UPDATE packages SET packageorder=? WHERE id=?", (-1, str(p.id)))
         self.c.execute(
             "UPDATE packages SET packageorder=packageorder-1 WHERE packageorder > ? AND queue=? AND id != ?",
@@ -317,15 +317,15 @@ class FileDatabaseMethods:
         )
 
     @style.async_
-    def restartFile(self, id):
+    def restart_file(self, id):
         self.c.execute('UPDATE links SET status=3,error="" WHERE id=?', (str(id),))
 
     @style.async_
-    def restartPackage(self, id):
+    def restart_package(self, id):
         self.c.execute("UPDATE links SET status=3 WHERE package=?", (str(id),))
 
     @style.queue
-    def getPackage(self, id):
+    def get_package(self, id):
         """
         return package instance from id.
         """
@@ -340,7 +340,7 @@ class FileDatabaseMethods:
 
     # ----------------------------------------------------------------------
     @style.queue
-    def getFile(self, id):
+    def get_file(self, id):
         """
         return link instance from id.
         """
@@ -354,7 +354,7 @@ class FileDatabaseMethods:
         return PyFile(self.pyload.files, id, *r)
 
     @style.queue
-    def getJob(self, occ):
+    def get_job(self, occ):
         """
         return pyfile ids, which are suitable for download and dont use a occupied
         plugin.
@@ -377,7 +377,7 @@ class FileDatabaseMethods:
         return [x[0] for x in self.c]
 
     @style.queue
-    def getPluginJob(self, plugins):
+    def get_plugin_job(self, plugins):
         """
         returns pyfile ids with suited plugins.
         """
@@ -388,7 +388,7 @@ class FileDatabaseMethods:
         return [x[0] for x in self.c]
 
     @style.queue
-    def getUnfinished(self, pid):
+    def get_unfinished(self, pid):
         """
         return list of max length 3 ids with pyfiles in package not finished or
         processed.
@@ -400,18 +400,18 @@ class FileDatabaseMethods:
         return [r[0] for r in self.c]
 
     @style.queue
-    def deleteFinished(self):
+    def delete_finished(self):
         self.c.execute("DELETE FROM links WHERE status IN (0,4)")
         self.c.execute(
             "DELETE FROM packages WHERE NOT EXISTS(SELECT 1 FROM links WHERE packages.id=links.package)"
         )
 
     @style.queue
-    def restartFailed(self):
+    def restart_failed(self):
         self.c.execute("UPDATE links SET status=3,error='' WHERE status IN (6, 8, 9)")
 
     @style.queue
-    def findDuplicates(self, id, folder, filename):
+    def find_duplicates(self, id, folder, filename):
         """
         checks if filename exists with different id and same package.
         """
@@ -422,9 +422,9 @@ class FileDatabaseMethods:
         return self.c.fetchone()
 
     @style.queue
-    def purgeLinks(self):
+    def purge_links(self):
         self.c.execute("DELETE FROM links;")
         self.c.execute("DELETE FROM packages;")
 
 
-DatabaseThread.registerSub(FileDatabaseMethods)
+DatabaseThread.register_sub(FileDatabaseMethods)

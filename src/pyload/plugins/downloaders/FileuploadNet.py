@@ -31,5 +31,5 @@ class FileuploadNet(SimpleDownloader):
     LINK_FREE_PATTERN = r"<a href='(.+?)' title='download' onclick"
 
     def setup(self):
-        self.multiDL = True
+        self.multi_dl = True
         self.chunk_limit = 1

@@ -24,8 +24,8 @@ class VeehdCom(BaseDownloader):
     __authors__ = [("cat", "cat@pyload")]
 
     def setup(self):
-        self.multiDL = True
-        self.req.canContinue = True
+        self.multi_dl = True
+        self.req.can_continue = True
 
     def process(self, pyfile):
         self.download_html()

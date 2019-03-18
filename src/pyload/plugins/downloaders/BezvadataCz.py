@@ -34,11 +34,11 @@ class BezvadataCz(SimpleDownloader):
 
     def setup(self):
         self.resume_download = True
-        self.multiDL = True
+        self.multi_dl = True
 
     def handle_free(self, pyfile):
         #: Download button
-        m = re.search(r'<a class="stahnoutSoubor".*?href="(.*?)"', self.data)
+        m = re.search(r'<a class="stahnout_soubor".*?href="(.*?)"', self.data)
         if m is None:
             self.error(self._("Page 1 URL not found"))
         url = "http://bezvadata.cz{}".format(m.group(1))
@@ -47,7 +47,7 @@ class BezvadataCz(SimpleDownloader):
         self.data = self.load(url)
         self.check_errors()
 
-        action, inputs = self.parse_html_form("frm-stahnoutFreeForm")
+        action, inputs = self.parse_html_form("frm-stahnout_free_form")
         if not inputs:
             self.error(self._("FreeForm"))
 
@@ -62,7 +62,7 @@ class BezvadataCz(SimpleDownloader):
         #: Download url
         self.data = self.load("http://bezvadata.cz{}".format(action, post=inputs))
         self.check_errors()
-        m = re.search(r'<a class="stahnoutSoubor2" href="(.*?)">', self.data)
+        m = re.search(r'<a class="stahnout_soubor2" href="(.*?)">', self.data)
         if m is None:
             self.error(self._("Page 2 URL not found"))
         url = "http://bezvadata.cz{}".format(m.group(1))

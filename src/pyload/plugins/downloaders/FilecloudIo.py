@@ -41,13 +41,13 @@ class FilecloudIo(SimpleDownloader):
 
     def setup(self):
         self.resume_download = True
-        self.multiDL = True
+        self.multi_dl = True
         self.chunk_limit = 1
 
     def handle_free(self, pyfile):
-        m = re.search(r"__requestUrl\s*=\s*\'(.+)\';", self.data)
+        m = re.search(r"__request_url\s*=\s*\'(.+)\';", self.data)
         if m is None:
-            self.error(self._("requestUrl not found"))
+            self.error(self._("request_url not found"))
 
         post_url = m.group(1)
 
@@ -69,7 +69,7 @@ class FilecloudIo(SimpleDownloader):
         json_data = json.loads(self.data)
 
         if json_data["status"] == "ok":
-            self.link = json_data["downloadUrl"]
+            self.link = json_data["download_url"]
 
         else:
             self.log_error("Error: {}".format(json_data["message"]))

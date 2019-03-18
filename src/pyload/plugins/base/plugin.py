@@ -58,8 +58,8 @@ class BasePlugin:
         self.info = {}
 
         #: Browser instance, see `network.Browser`
-        self.req = self.pyload.requestFactory.getRequest(self.classname)
-        self.req.setOption("timeout", 60)  # TODO: Remove in 0.6.x
+        self.req = self.pyload.request_factory.getRequest(self.classname)
+        self.req.set_option("timeout", 60)  # TODO: Remove in 0.6.x
 
         #: Last loaded html
         self.last_html = ""
@@ -189,7 +189,7 @@ class BasePlugin:
 
         if req is False:
             req = get_request()
-            req.setOption("timeout", 60)  # TODO: Remove in 0.6.x
+            req.set_option("timeout", 60)  # TODO: Remove in 0.6.x
 
         elif not req:
             req = self.req
@@ -211,7 +211,7 @@ class BasePlugin:
 
         # TODO: Move to network in 0.6.x
         if isinstance(ref, str):
-            req.lastURL = ref
+            req.last_url = ref
 
         html = req.load(
             url,
@@ -232,7 +232,7 @@ class BasePlugin:
         elif isinstance(redirect, int):
             maxredirs = (
                 int(
-                    self.pyload.api.getConfigValue(
+                    self.pyload.api.get_config_value(
                         "UserAgentSwitcher", "maxredirs", "plugin"
                     )
                 )
@@ -254,7 +254,7 @@ class BasePlugin:
             self.dump_html()
 
         # TODO: Move to network in 0.6.x
-        header = {"code": req.code, "url": req.lastEffectiveURL}
+        header = {"code": req.code, "url": req.last_effective_url}
         # NOTE: req can be a HTTPRequest or a Browser object
         header.update(parse_html_header(http_req.header))
 
@@ -304,7 +304,7 @@ class BasePlugin:
 
             if req is False:
                 req = get_request()
-                req.setOption("timeout", 60)  # TODO: Remove in 0.6.x
+                req.set_option("timeout", 60)  # TODO: Remove in 0.6.x
 
             elif not req:
                 req = self.req
@@ -323,9 +323,9 @@ class BasePlugin:
                 http_req.c.setopt(pycurl.MAXREDIRS, redirect)
 
             if isinstance(ref, str):
-                http_req.lastURL = ref
+                http_req.last_url = ref
 
-            http_req.setRequestContext(url, get, {}, bool(ref), bool(cookies), False)
+            http_req.set_request_context(url, get, {}, bool(ref), bool(cookies), False)
             http_req.header = ""
             http_req.c.setopt(pycurl.HTTPHEADER, http_req.headers)
 
@@ -344,25 +344,25 @@ class BasePlugin:
 
             else:
                 http_req.c.perform()
-                html = http_req.getResponse()
+                html = http_req.get_response()
 
             http_req.c.setopt(pycurl.UPLOAD, 0)
             http_req.c.setopt(pycurl.INFILESIZE, 0)
 
             http_req.c.setopt(pycurl.POSTFIELDS, "")
-            http_req.lastEffectiveURL = http_req.c.getinfo(pycurl.EFFECTIVE_URL)
+            http_req.last_effective_url = http_req.c.getinfo(pycurl.EFFECTIVE_URL)
 
-            http_req.addCookies()
+            http_req.add_cookies()
 
             try:
-                http_req.code = http_req.verifyHeader()
+                http_req.code = http_req.verify_header()
 
             finally:
                 http_req.rep.close()
                 http_req.rep = None
 
             if decode is True:
-                html = http_req.decodeResponse(html)
+                html = http_req.decode_response(html)
 
             if not redirect:
                 http_req.c.setopt(pycurl.FOLLOWLOCATION, 1)
@@ -370,7 +370,7 @@ class BasePlugin:
             elif isinstance(redirect, int):
                 maxredirs = (
                     int(
-                        self.pyload.api.getConfigValue(
+                        self.pyload.api.get_config_value(
                             "UserAgentSwitcher", "maxredirs", "plugin"
                         )
                     )
@@ -391,7 +391,7 @@ class BasePlugin:
                 self.dump_html()
 
             # TODO: Move to network in 0.6.x
-            header = {"code": req.code, "url": req.lastEffectiveURL}
+            header = {"code": req.code, "url": req.last_effective_url}
             # NOTE: req can be a HTTPRequest or a Browser object
             header.update(parse_html_header(http_req.header))
 
@@ -430,7 +430,7 @@ class BasePlugin:
         Remove references.
         """
         try:
-            self.req.clearCookies()
+            self.req.clear_cookies()
             self.req.close()
 
         except Exception:

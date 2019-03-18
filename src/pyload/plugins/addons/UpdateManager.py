@@ -45,21 +45,21 @@ class UpdateManager(BaseAddon):
 
     def activate(self):
         if self.checkonstart:
-            self.pyload.api.pauseServer()
+            self.pyload.api.pause_server()
             self.update()
 
             if not self.do_restart:
-                self.pyload.api.unpauseServer()
+                self.pyload.api.unpause_server()
 
         self.periodical.start(10)
 
     def init(self):
         self.info.update({"pyload": False, "plugins": False, "last_check": time.time()})
         self.mtimes = {}  #: Store modification time for each plugin
-        self.event_map = {"allDownloadsProcessed": "all_downloads_processed"}
+        self.event_map = {"all_downloads_processed": "all_downloads_processed"}
 
         if self.config.get("checkonstart"):
-            self.pyload.api.pauseServer()
+            self.pyload.api.pause_server()
             self.checkonstart = True
         else:
             self.checkonstart = False
@@ -91,14 +91,14 @@ class UpdateManager(BaseAddon):
 
         if self.do_restart:
             if (
-                self.pyload.threadManager.pause
-                and not self.pyload.api.statusDownloads()
+                self.pyload.thread_manager.pause
+                and not self.pyload.api.status_downloads()
             ):
                 self.pyload.api.restart()
 
     #: Deprecated method, use `autoreload_plugins` instead
     @expose
-    def autoreloadPlugins(self, *args, **kwargs):
+    def autoreload_plugins(self, *args, **kwargs):
         """
         See `autoreload_plugins`
         """
@@ -123,7 +123,7 @@ class UpdateManager(BaseAddon):
         for m in modules:
             root, plugin_type, plugin_name = m.__name__.rsplit(".", 2)
             plugin_id = (plugin_type, plugin_name)
-            if plugin_type in self.pyload.pluginManager.plugins:
+            if plugin_type in self.pyload.plugin_manager.plugins:
                 f = m.__file__.replace(".pyc", ".py")
                 if not os.path.isfile(f):
                     continue
@@ -137,12 +137,12 @@ class UpdateManager(BaseAddon):
                     reloads.append(plugin_id)
                     self.mtimes[plugin_id] = mtime
 
-        return True if self.pyload.pluginManager.reloadPlugins(reloads) else False
+        return True if self.pyload.plugin_manager.reload_plugins(reloads) else False
 
     def server_response(self, line=None):
         try:
             html = self.load(
-                self.SERVER_URL, get={"v": self.pyload.api.getServerVersion()}
+                self.SERVER_URL, get={"v": self.pyload.api.get_server_version()}
             )
 
         except Exception:
@@ -170,7 +170,7 @@ class UpdateManager(BaseAddon):
         if self._update() != 2 or not self.config.get("autorestart"):
             return
 
-        if not self.pyload.api.statusDownloads():
+        if not self.pyload.api.status_downloads():
             self.pyload.api.restart()
         else:
             self.log_warning(
@@ -179,7 +179,7 @@ class UpdateManager(BaseAddon):
                     "Downloads are active, pyLoad restart postponed once the download is done"
                 ),
             )
-            self.pyload.api.pauseServer()
+            self.pyload.api.pause_server()
             self.do_restart = True
 
     def _update(self):
@@ -191,7 +191,7 @@ class UpdateManager(BaseAddon):
         if not newversion:
             exitcode = 0
 
-        elif newversion == self.pyload.api.getServerVersion():
+        elif newversion == self.pyload.api.get_server_version():
             self.log_info(self._("pyLoad is up to date!"))
             exitcode = self.update_plugins()
 
@@ -221,7 +221,7 @@ class UpdateManager(BaseAddon):
     def update_plugins(self):
         server_data = self.server_response()
 
-        if not server_data or server_data[0] != self.pyload.api.getServerVersion():
+        if not server_data or server_data[0] != self.pyload.api.get_server_version():
             return 0
 
         updated = self._update_plugins(server_data)
@@ -229,7 +229,7 @@ class UpdateManager(BaseAddon):
         if updated:
             self.log_info(self._("*** Plugins updated ***"))
 
-            if self.pyload.pluginManager.reloadPlugins(updated):
+            if self.pyload.plugin_manager.reload_plugins(updated):
                 exitcode = 1
             else:
                 self.log_warning(
@@ -238,11 +238,11 @@ class UpdateManager(BaseAddon):
                 self.info["plugins"] = True
                 exitcode = 2
 
-            paused = self.pyload.threadManager.pause
-            self.pyload.api.pauseServer()
-            self.m.dispatchEvent("plugin_updated", updated)
+            paused = self.pyload.thread_manager.pause
+            self.pyload.api.pause_server()
+            self.m.dispatch_event("plugin_updated", updated)
             if not paused:
-                self.pyload.api.unpauseServer()
+                self.pyload.api.unpause_server()
         else:
             self.log_info(self._("All plugins are up to date!"))
             exitcode = 0
@@ -285,7 +285,7 @@ class UpdateManager(BaseAddon):
         updatelist, blacklist = self.parse_updates(server_data)
 
         url = server_data[1]
-        req = self.pyload.requestFactory.getRequest(self.classname)
+        req = self.pyload.request_factory.get_request(self.classname)
 
         if blacklist:
             # NOTE: Protect UpdateManager from self-removing
@@ -343,7 +343,7 @@ class UpdateManager(BaseAddon):
             plugin_version = plugin["version"]
 
             plugins = getattr(
-                self.pyload.pluginManager, "{}Plugins".format(plugin_type.rstrip("s"))
+                self.pyload.plugin_manager, "{}Plugins".format(plugin_type.rstrip("s"))
             )  # TODO: Remove rstrip in 0.6.x)
 
             oldver = (
@@ -407,7 +407,7 @@ class UpdateManager(BaseAddon):
 
     #: Deprecated method, use `remove_plugins` instead
     @expose
-    def removePlugins(self, *args, **kwargs):
+    def remove_plugins(self, *args, **kwargs):
         """
         See `remove_plugins`
         """
@@ -435,7 +435,7 @@ class UpdateManager(BaseAddon):
 
                 if plugin_type == "addon":
                     try:
-                        self.m.deactivateAddon(plugin_name)
+                        self.m.deactivate_addon(plugin_name)
 
                     except Exception as exc:
                         self.log_debug(

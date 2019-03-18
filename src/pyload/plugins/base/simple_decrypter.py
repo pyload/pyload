@@ -145,13 +145,13 @@ class SimpleDecrypter(BaseDecrypter):
         account_name = self.classname.rsplit("Folder", 1)[0]
 
         if self.account:
-            self.req = self.pyload.requestFactory.getRequest(
+            self.req = self.pyload.request_factory.get_request(
                 account_name, self.account.user
             )
             # NOTE: Don't call get_info here to reduce overhead
             self.premium = self.account.info["data"]["premium"]
         else:
-            self.req = self.pyload.requestFactory.getRequest(account_name)
+            self.req = self.pyload.request_factory.get_request(account_name)
             self.premium = False
 
         super().setup_base()
@@ -189,7 +189,7 @@ class SimpleDecrypter(BaseDecrypter):
         if self.LOGIN_ACCOUNT and not self.account:
             self.fail(self._("Required account not found"))
 
-        self.req.setOption("timeout", 120)
+        self.req.set_option("timeout", 120)
 
         if self.LINK_PATTERN:
             if self.LINK_FREE_PATTERN is None:

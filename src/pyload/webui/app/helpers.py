@@ -49,7 +49,7 @@ def clear_session(session=flask.session, permanent=True):
 
 def current_theme_id():
     api = flask.current_app.config["PYLOAD_API"]
-    return api.getConfigValue("webui", "theme").lower()
+    return api.get_config_value("webui", "theme").lower()
 
 
 #: tries to serve the file from the static directory of the current theme otherwise fallback to builtin one

@@ -45,7 +45,7 @@ class IfolderRu(SimpleDownloader):
     )
 
     def setup(self):
-        self.resume_download = self.multiDL = bool(self.account)
+        self.resume_download = self.multi_dl = bool(self.account)
         self.chunk_limit = 1
 
     def handle_free(self, pyfile):
@@ -53,7 +53,7 @@ class IfolderRu(SimpleDownloader):
         url = f"http://rusfolder.com/{id}"
 
         self.data = self.load(url)
-        self.get_fileInfo()
+        self.get_file_info()
 
         session_id = re.search(self.SESSION_ID_PATTERN, self.data).groups()
         captcha_url = "http://ints.rusfolder.com/random/images/?session={}".format(

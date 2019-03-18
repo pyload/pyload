@@ -28,7 +28,7 @@ class SkipRev(BaseAddon):
         return pyfile.pluginclass.get_info(pyfile.url)["name"]
 
     def _create_pyfile(self, data):
-        pylink = self.pyload.api._convertPyFile(data)
+        pylink = self.pyload.api._convert_py_file(data)
         return PyFile(
             self.pyload.files,
             pylink.fid,
@@ -38,7 +38,7 @@ class SkipRev(BaseAddon):
             pylink.status,
             pylink.error,
             pylink.plugin,
-            pylink.packageID,
+            pylink.package_id,
             pylink.order,
         )
 
@@ -63,14 +63,14 @@ class SkipRev(BaseAddon):
 
             queued = [
                 True
-                for fid, fdata in pyfile.package().getChildren().items()
+                for fid, fdata in pyfile.package().get_children().items()
                 if fdata["status"] not in status_list and pyname.match(fdata["name"])
             ].count(True)
 
             if not queued or queued < revtokeep:  #: Keep one rev at least in auto mode
                 return
 
-        pyfile.setCustomStatus("SkipRev", "skipped")
+        pyfile.set_custom_status("SkipRev", "skipped")
 
     def download_failed(self, pyfile):
         if pyfile.name.rsplit(".", 1)[-1].strip() not in ("rar", "rev"):
@@ -86,14 +86,14 @@ class SkipRev(BaseAddon):
         basename = pyfile.name.rsplit(".", 2)[0].replace(".", "\.")
         pyname = re.compile(rf"{basename}\.part\d+\.rev$")
 
-        for fid, fdata in pyfile.package().getChildren().items():
+        for fid, fdata in pyfile.package().get_children().items():
             if fdata["status"] == 4 and pyname.match(fdata["name"]):
                 pyfile_new = self._create_pyfile(fdata)
 
                 if revtokeep > -1 or pyfile.name.endswith(".rev"):
-                    pyfile_new.setStatus("queued")
+                    pyfile_new.set_status("queued")
                 else:
-                    pyfile_new.setCustomStatus(self._("unskipped"), "queued")
+                    pyfile_new.set_custom_status(self._("unskipped"), "queued")
 
                 self.pyload.files.save()
                 pyfile_new.release()

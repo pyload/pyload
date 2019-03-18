@@ -95,7 +95,7 @@ class DepositfilesCom(SimpleDownloader):
             self.log_warning(self._("Download limit reached"))
             self.retry(25, timedelta(hours=1).seconds, "Download limit reached")
 
-        elif 'onClick="show_gold_offer' in self.data:
+        elif 'on_click="show_gold_offer' in self.data:
             self.account.relogin()
             self.retry()
 

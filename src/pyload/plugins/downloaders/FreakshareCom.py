@@ -29,7 +29,7 @@ class FreakshareCom(BaseDownloader):
     ]
 
     def setup(self):
-        self.multiDL = False
+        self.multi_dl = False
         self.req_opts = []
 
     def process(self, pyfile):
@@ -104,7 +104,7 @@ class FreakshareCom(BaseDownloader):
         """
         if not self.data:
             self.download_html()
-        if not self.wantReconnect:
+        if not self.want_reconnect:
             #: Get the Post options for the Request
             self.req_opts = self.get_download_options()
             # file_url = self.pyfile.url
@@ -116,7 +116,7 @@ class FreakshareCom(BaseDownloader):
         if not self.data:
             self.download_html()
 
-        if not self.wantReconnect:
+        if not self.want_reconnect:
             m = re.search(
                 r"<h1\sclass=\"box_heading\"\sstyle=\"text-align:center;\">([^ ]+)",
                 self.data,
@@ -135,7 +135,7 @@ class FreakshareCom(BaseDownloader):
         if not self.data:
             self.download_html()
 
-        if not self.wantReconnect:
+        if not self.want_reconnect:
             m = re.search(
                 r"<h1\sclass=\"box_heading\"\sstyle=\"text-align:center;\">[^ ]+ - ([^ ]+) (\w\w)yte",
                 self.data,
@@ -152,11 +152,11 @@ class FreakshareCom(BaseDownloader):
             self.download_html()
 
         if "Your Traffic is used up for today" in self.data:
-            self.wantReconnect = True
+            self.want_reconnect = True
             return seconds_to_midnight()
 
         timestring = re.search(
-            "\s*var\s(?:downloadWait|time)\s=\s(\d*)[\d.]*;", self.data
+            "\s*var\s(?:download_wait|time)\s=\s(\d*)[\d.]*;", self.data
         )
         if timestring:
             return int(timestring.group(1))
@@ -176,7 +176,7 @@ class FreakshareCom(BaseDownloader):
 
     def get_download_options(self):
         re_envelope = re.search(
-            r".*?value=\"Free\sDownload\".*?\n*?(.*?<.*?>\n*)*?\n*\s*?</form>",
+            r".*?value=\"Free\s_download\".*?\n*?(.*?<.*?>\n*)*?\n*\s*?</form>",
             self.data,
         ).group(
             0

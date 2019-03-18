@@ -52,7 +52,7 @@ class NitroflareCom(SimpleDownloader):
 
         data = json.loads(
             get_url(
-                "https://nitroflare.com/api/v2/getFileInfo",
+                "https://nitroflare.com/api/v2/get_file_info",
                 get={"files": file_id},
                 decode=True,
             )
@@ -69,21 +69,21 @@ class NitroflareCom(SimpleDownloader):
     def handle_free(self, pyfile):
         #: Used here to load the cookies which will be required later
         self.load(
-            "http://nitroflare.com/ajax/setCookie.php",
-            post={"fileId": self.info["pattern"]["ID"]},
+            "http://nitroflare.com/ajax/set_cookie.php",
+            post={"file_id": self.info["pattern"]["ID"]},
         )
 
-        self.data = self.load(pyfile.url, post={"goToFreePage": ""})
+        self.data = self.load(pyfile.url, post={"go_to_free_page": ""})
 
         try:
-            wait_time = int(re.search(r"var timerSeconds = (\d+);", self.data).group(1))
+            wait_time = int(re.search(r"var timer_seconds = (\d+);", self.data).group(1))
 
         except Exception:
             wait_time = 120
 
         self.data = self.load(
-            "http://nitroflare.com/ajax/freeDownload.php",
-            post={"method": "startTimer", "fileId": self.info["pattern"]["ID"]},
+            "http://nitroflare.com/ajax/free_download.php",
+            post={"method": "start_timer", "file_id": self.info["pattern"]["ID"]},
         )
 
         self.check_errors()
@@ -97,8 +97,8 @@ class NitroflareCom(SimpleDownloader):
         self.wait()
 
         self.data = self.load(
-            "http://nitroflare.com/ajax/freeDownload.php",
-            post={"method": "fetchDownload", "captcha": response},
+            "http://nitroflare.com/ajax/free_download.php",
+            post={"method": "fetch_download", "captcha": response},
         )
 
         if "The captcha wasn't entered correctly" in self.data:
@@ -109,11 +109,11 @@ class NitroflareCom(SimpleDownloader):
     def handle_premium(self, pyfile):
         data = json.loads(
             self.load(
-                "https://nitroflare.com/api/v2/getDownloadLink",
+                "https://nitroflare.com/api/v2/get_download_link",
                 get={
                     "file": self.info["pattern"]["ID"],
                     "user": self.account.user,
-                    "premiumKey": self.account.get_login("password"),
+                    "premium_key": self.account.get_login("password"),
                 },
             )
         )

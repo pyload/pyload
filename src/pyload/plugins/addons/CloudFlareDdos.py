@@ -89,7 +89,7 @@ class CloudFlare:
             # Cloudflare requires a delay before solving the challenge
             owner_plugin.set_wait(5)
 
-            last_url = owner_plugin.req.lastEffectiveURL
+            last_url = owner_plugin.req.last_effective_url
             urlp = urllib.parse.urlparse(last_url)
             domain = urlp.netloc
             submit_url = "{}://{}/cdn-cgi/l/chk_jschl".format(urlp.scheme, domain)
@@ -106,10 +106,10 @@ class CloudFlare:
 
                 # Extract the arithmetic operation
                 js = re.search(
-                    r"setTimeout\(function\(\){\s+(var s,t,o,p,b,r,e,a,k,i,n,g,f.+?\r?\n[\s\S]+?a\.value =.+?)\r?\n",
+                    r"set_timeout\(function\(\){\s+(var s,t,o,p,b,r,e,a,k,i,n,g,f.+?\r?\n[\s\S]+?a\.value =.+?)\r?\n",
                     data,
                 ).group(1)
-                js = re.sub(r"a\.value = (parseInt\(.+?\)).+", r"\1", js)
+                js = re.sub(r"a\.value = (parse_int\(.+?\)).+", r"\1", js)
                 js = re.sub(r"\s{3,}[a-z](?: = |\.).+", "", js)
                 js = re.sub(r"[\n\\']", "", js)
 
@@ -136,7 +136,7 @@ class CloudFlare:
     @staticmethod
     def _solve_cf_security_check(addon_plugin, owner_plugin, data):
         try:
-            last_url = owner_plugin.req.lastEffectiveURL
+            last_url = owner_plugin.req.last_effective_url
 
             captcha = ReCaptcha(owner_plugin.pyfile)
 
@@ -240,13 +240,13 @@ class CloudFlareDdos(BaseAddon):
     def _override_get_url(self):
         self.log_debug("Overriding get_url()")
 
-        self.old_get_url = self.pyload.requestFactory.getURL
-        self.pyload.requestFactory.getURL = self.my_get_url
+        self.old_get_url = self.pyload.request_factory.get_url
+        self.pyload.request_factory.get_url = self.my_get_url
 
     def _unoverride_get_url(self):
         self.log_debug("Unoverriding get_url()")
 
-        self.pyload.requestFactory.getURL = self.old_get_url
+        self.pyload.request_factory.get_url = self.old_get_url
 
     def _find_owner_plugin(self):
         """

@@ -38,7 +38,7 @@ class FileboomMe(SimpleDownloader):
 
     def setup(self):
         self.resume_download = True
-        self.multiDL = False
+        self.multi_dl = False
         self.chunk_limit = 1
 
     def handle_free(self, pyfile):
@@ -56,7 +56,7 @@ class FileboomMe(SimpleDownloader):
 
             else:
                 m = re.search(
-                    r'<input type="hidden" name="uniqueId" value="(\w+)">', self.data
+                    r'<input type="hidden" name="unique_id" value="(\w+)">', self.data
                 )
                 if m is None:
                     m = re.search(r">\s*Please wait ([\d:]+)", self.data)
@@ -68,7 +68,7 @@ class FileboomMe(SimpleDownloader):
                         self.retry()
 
                 else:
-                    uniqueId = m.group(1)
+                    unique_id = m.group(1)
 
                     m = re.search(self.CAPTCHA_PATTERN, self.data)
                     if m is not None:
@@ -78,10 +78,10 @@ class FileboomMe(SimpleDownloader):
                         self.data = self.load(
                             post_url,
                             post={
-                                "CaptchaForm[verifyCode]": captcha,
+                                "CaptchaForm[verify_code]": captcha,
                                 "free": 1,
-                                "freeDownloadRequest": 1,
-                                "uniqueId": uniqueId,
+                                "free_download_request": 1,
+                                "unique_id": unique_id,
                             },
                         )
 
@@ -92,7 +92,7 @@ class FileboomMe(SimpleDownloader):
                             self.check_errors()
 
                             self.data = self.load(
-                                post_url, post={"free": 1, "uniqueId": uniqueId}
+                                post_url, post={"free": 1, "unique_id": unique_id}
                             )
 
                             m = re.search(self.LINK_PATTERN, self.data)

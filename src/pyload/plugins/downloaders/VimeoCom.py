@@ -51,7 +51,7 @@ class VimeoCom(SimpleDownloader):
 
     def setup(self):
         self.resume_download = True
-        self.multiDL = True
+        self.multi_dl = True
         self.chunk_limit = -1
 
     def handle_free(self, pyfile):

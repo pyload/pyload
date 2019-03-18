@@ -21,12 +21,12 @@ class ZDF(BaseDownloader):
     __license__ = "GPLv3"
     __authors__ = []
 
-    XML_API = "http://www.zdf.de/ZDFmediathek/xmlservice/web/beitragsDetails?id={}"
+    XML_API = "http://www.zdf.de/ZDFmediathek/xmlservice/web/beitrags_details?id={}"
 
     @staticmethod
     def video_key(video):
         return (
-            int(video.findtext("videoBitrate", "0")),
+            int(video.findtext("video_bitrate", "0")),
             any(f.text == "progressive" for f in video.iter("facet")),
         )
 

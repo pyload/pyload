@@ -42,7 +42,7 @@ class FilepupNet(SimpleDownloader):
     LINK_FREE_PATTERN = r"(http://www\.filepup\.net/get/.+?)\'"
 
     def setup(self):
-        self.multiDL = False
+        self.multi_dl = False
         self.chunk_limit = 1
 
     def handle_free(self, pyfile):

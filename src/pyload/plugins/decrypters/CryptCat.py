@@ -34,7 +34,7 @@ class CryptCat(SimpleDecrypter):
     LINK_PATTERN = r'<input .+?readonly="" value="\s*(.+?)" type="text">'
 
     def get_links(self):
-        baseurl = self.req.http.lastEffectiveURL
+        baseurl = self.req.http.last_effective_url
         url, inputs = self.parse_html_form()
 
         if ">Enter your password.<" in self.data:

@@ -52,7 +52,7 @@ class MultiHome(BaseAddon):
 
         if not self.interfaces:
             self.parse_interfaces([self.pyload.config.get("download", "interface")])
-            self.pyload.config.setPlugin(
+            self.pyload.config.set_plugin(
                 self.__name__, "interfaces", self.to_config()
             )  # TODO: rewrite
 
@@ -66,10 +66,10 @@ class MultiHome(BaseAddon):
             self.interfaces.append(Interface(interface))
 
     def activate(self):
-        self.old_get_request = self.pyload.requestFactory.getRequest
+        self.old_get_request = self.pyload.request_factory.get_request
 
         new_get_request = self.build_get_request()
-        self.pyload.requestFactory.getRequest = lambda *args: new_get_request(*args)
+        self.pyload.request_factory.get_request = lambda *args: new_get_request(*args)
 
     def best_interface(self, plugin_name, account):
         best = None
@@ -89,7 +89,7 @@ class MultiHome(BaseAddon):
             return self.old_get_request(plugin_name, account)
 
         iface.use_for(plugin_name, account)
-        self.pyload.requestFactory.iface = lambda: iface.address
+        self.pyload.request_factory.iface = lambda: iface.address
         self.log_debug("Using address", iface.address)
 
         return self.old_get_request(plugin_name, account)

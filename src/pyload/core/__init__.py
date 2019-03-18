@@ -88,7 +88,7 @@ class Core:
         atexit.register(self.terminate)
 
         # TODO: Remove...
-        self.lastClientConnected = 0
+        self.last_client_connected = 0
 
     def _init_config(self, userdir, cachedir, debug):
         from .config.config_parser import ConfigParser
@@ -121,7 +121,7 @@ class Core:
         from .network import request_factory
         from .network.request_factory import RequestFactory
 
-        self.req = self.requestFactory = RequestFactory(self)
+        self.req = self.request_factory = RequestFactory(self)
 
     def _init_api(self):
         from .api import Api
@@ -143,9 +143,9 @@ class Core:
         self.db.setup()
 
         userpw = (self._DEFAULT_USERNAME, self._DEFAULT_PASSWORD)
-        # nousers = bool(self.db.listUsers())
+        # nousers = bool(self.db.list_users())
         if restore or newdb:
-            self.db.addUser(*userpw)
+            self.db.add_user(*userpw)
         if restore:
             self.log.warning(
                 self._(
@@ -164,15 +164,15 @@ class Core:
 
         from .scheduler import Scheduler
 
-        self.files = self.fileManager = FileManager(self)
+        self.files = self.file_manager = FileManager(self)
         self.scheduler = Scheduler(self)
 
-        self.pgm = self.pluginManager = PluginManager(self)
-        self.evm = self.eventManager = EventManager(self)
-        self.acm = self.accountManager = AccountManager(self)
-        self.thm = self.threadManager = ThreadManager(self)
-        self.cpm = self.captchaManager = CaptchaManager(self)
-        self.adm = self.addonManager = AddonManager(self)
+        self.pgm = self.plugin_manager = PluginManager(self)
+        self.evm = self.event_manager = EventManager(self)
+        self.acm = self.account_manager = AccountManager(self)
+        self.thm = self.thread_manager = ThreadManager(self)
+        self.cpm = self.captcha_manager = CaptchaManager(self)
+        self.adm = self.addon_manager = AddonManager(self)
 
     def _setup_permissions(self):
         self.log.debug("Setup permissions...")
@@ -257,11 +257,11 @@ class Core:
 
         # TODO: Move to accountmanager
         self.log.info(self._("Activating accounts..."))
-        self.acm.getAccountInfos()
-        # self.scheduler.addJob(0, self.acm.getAccountInfos)
+        self.acm.get_account_infos()
+        # self.scheduler.add_job(0, self.acm.get_account_infos)
 
         self.log.info(self._("Activating Plugins..."))
-        self.adm.coreReady()
+        self.adm.core_ready()
 
     def _start_webserver(self):
         if not self.config.get("webui", "enabled"):
@@ -273,7 +273,7 @@ class Core:
         try:
             with open(link_file) as file:
                 if file.read().strip():
-                    self.api.addPackage("links.txt", [link_file], 1)
+                    self.api.add_package("links.txt", [link_file], 1)
         except Exception as exc:
             self.log.debug(exc, exc_info=self.debug > 1, stack_info=self.debug > 2)
 
@@ -317,7 +317,7 @@ class Core:
             self.thm.pause = False  # NOTE: Recheck...
             while True:
                 self._running.wait()
-                self.threadManager.run()
+                self.thread_manager.run()
                 if self._do_restart:
                     raise Restart
                 if self._do_exit:
@@ -336,8 +336,8 @@ class Core:
             self.terminate()
 
     # TODO: Remove
-    def isClientConnected(self):
-        return (self.lastClientConnected + 30) > time.time()
+    def is_client_connected(self):
+        return (self.last_client_connected + 30) > time.time()
 
     def restart(self):
         self.stop()
@@ -360,15 +360,15 @@ class Core:
             self.log.debug("Stopping core...")
             # self.evm.fire('pyload:stopping')
 
-            for thread in self.threadManager.threads:
+            for thread in self.thread_manager.threads:
                 thread.put("quit")
 
             for pyfile in self.files.cache.values():
-                pyfile.abortDownload()
+                pyfile.abort_download()
 
-            self.addonManager.coreExiting()
+            self.addon_manager.core_exiting()
 
         finally:
-            self.files.syncSave()
+            self.files.sync_save()
             self._running.clear()
             # self.evm.fire('pyload:stopped')

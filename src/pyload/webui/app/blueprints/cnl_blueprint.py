@@ -55,9 +55,9 @@ def add():
 
     api = flask.current_app.config["PYLOAD_API"]
     if package:
-        api.addPackage(package, urls, 0)
+        api.add_package(package, urls, 0)
     else:
-        api.generateAndAddPackages(urls, 0)
+        api.generate_and_add_packages(urls, 0)
 
 
 @bp.route("/addcrypted", methods=["POST"], endpoint="addcrypted")
@@ -68,7 +68,7 @@ def addcrypted():
     package = flask.request.form.get(
         "package", flask.request.form.get("source", flask.request.form.get("referer"))
     )
-    dl_path = api.getConfigValue("general", "storage_folder")
+    dl_path = api.get_config_value("general", "storage_folder")
     dlc_path = os.path.join(
         dl_path, package.replace("/", "").replace("\\", "").replace(":", "") + ".dlc"
     )
@@ -77,7 +77,7 @@ def addcrypted():
         dlc_file.write(dlc)
 
     try:
-        api.addPackage(package, [dlc_path], 0)
+        api.add_package(package, [dlc_path], 0)
     except Exception:
         flask.abort(500)
     else:
@@ -108,9 +108,9 @@ def addcrypted2():
     api = flask.current_app.config["PYLOAD_API"]
     try:
         if package:
-            api.addPackage(package, urls, 0)
+            api.add_package(package, urls, 0)
         else:
-            api.generateAndAddPackages(urls, 0)
+            api.generate_and_add_packages(urls, 0)
     except Exception:
         return "failed can't add", 500
     else:
@@ -134,9 +134,9 @@ def flashgot():
 
     api = flask.current_app.config["PYLOAD_API"]
     if package:
-        api.addPackage(package, urls, autostart)
+        api.add_package(package, urls, autostart)
     else:
-        api.generateAndAddPackages(urls, autostart)
+        api.generate_and_add_packages(urls, autostart)
 
 
 @app_bp.route("/crossdomain.xml", endpoint="crossdomain")
@@ -150,13 +150,13 @@ def crossdomain():
     return rep
 
 
-@bp.route("/checkSupportForUrl", methods=["POST"], endpoint="checksupport")
+@bp.route("/check_support_for_url", methods=["POST"], endpoint="checksupport")
 @local_check
 def checksupport():
     api = flask.current_app.config["PYLOAD_API"]
 
     url = flask.request.form["url"]
-    res = api.checkURLs([url])
+    res = api.check_urls([url])
 
     supported = not res[0][1] is None
     return str(supported).lower()

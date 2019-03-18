@@ -316,8 +316,8 @@ class MegaCoNz(BaseDownloader):
             MegaCrypto.a32_to_str(k), Cryptodome.Cipher.AES.MODE_CTR, counter=ctr
         )
 
-        self.pyfile.setStatus("decrypting")
-        self.pyfile.setProgress(0)
+        self.pyfile.set_status("decrypting")
+        self.pyfile.set_progress(0)
 
         file_crypted = os.fsdecode(self.last_download)
         file_decrypted = file_crypted.rsplit(self.FILE_SUFFIX)[0]
@@ -352,12 +352,12 @@ class MegaCoNz(BaseDownloader):
             df.write(chunk)
 
             progress += chunk_size
-            self.pyfile.setProgress((100 // encrypted_size) * progress)
+            self.pyfile.set_progress((100 // encrypted_size) * progress)
 
             if checksum_activated and check_checksum:
                 cbc_mac.update(chunk)
 
-        self.pyfile.setProgress(100)
+        self.pyfile.set_progress(100)
 
         f.close()
         df.close()

@@ -32,7 +32,7 @@ class JumbofilesCom(SimpleDownloader):
 
     def setup(self):
         self.resume_download = True
-        self.multiDL = True
+        self.multi_dl = True
 
     def handle_free(self, pyfile):
         post_data = {"id": self.info["pattern"]["ID"], "op": "download3", "rand": ""}

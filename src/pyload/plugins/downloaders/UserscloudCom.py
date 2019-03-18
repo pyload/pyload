@@ -25,7 +25,7 @@ class BIGHTTPRequest(HTTPRequest):
         writes response.
         """
         if self.limit and self.rep.tell() > self.limit or self.abort:
-            rep = self.getResponse()
+            rep = self.get_response()
             if self.abort:
                 raise Abort
             with open("response.dump", mode="wb") as file:
@@ -63,7 +63,7 @@ class UserscloudCom(SimpleDownloader):
     URL_REPLACEMENTS = [(__pattern__ + ".*", r"https://userscloud.com/\g<ID>")]
 
     def setup(self):
-        self.multiDL = True
+        self.multi_dl = True
         self.resume_download = False
         self.chunk_limit = 1
 
@@ -74,7 +74,7 @@ class UserscloudCom(SimpleDownloader):
 
         self.req.http = BIGHTTPRequest(
             cookies=CookieJar(None),
-            options=self.pyload.requestFactory.getOptions(),
+            options=self.pyload.request_factory.get_options(),
             limit=300_000,
         )
 

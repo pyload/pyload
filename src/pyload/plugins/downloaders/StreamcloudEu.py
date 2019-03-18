@@ -29,6 +29,6 @@ class StreamcloudEu(XFSDownloader):
     WAIT_PATTERN = r"var count = (\d+)"
 
     def setup(self):
-        self.multiDL = True
+        self.multi_dl = True
         self.chunk_limit = 1
         self.resume_download = self.premium

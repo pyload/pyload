@@ -95,8 +95,8 @@ class ExtractArchive(BaseAddon):
 
     def init(self):
         self.event_map = {
-            "allDownloadsProcessed": "all_downloads_processed",
-            "packageDeleted": "package_deleted",
+            "all_downloads_processed": "all_downloads_processed",
+            "package_deleted": "package_deleted",
         }
 
         self.queue = ArchiveQueue(self, "Queue")
@@ -111,7 +111,7 @@ class ExtractArchive(BaseAddon):
     def activate(self):
         for p in ("UnRar", "SevenZip", "UnZip", "UnTar"):
             try:
-                module = self.pyload.pluginManager.loadModule("base", p)
+                module = self.pyload.plugin_manager.load_module("base", p)
                 klass = getattr(module, p)
                 if klass.find():
                     self.extractors.append(klass)
@@ -140,7 +140,7 @@ class ExtractArchive(BaseAddon):
 
     @threaded
     def extract_queued(self, thread):
-        # NOTE: doing the check here for safety (called by coreReady)
+        # NOTE: doing the check here for safety (called by core_ready)
         if self.extracting:
             return
 
@@ -148,13 +148,13 @@ class ExtractArchive(BaseAddon):
 
         packages = self.queue.get()
         while packages:
-            if self.last_package:  #: Called from allDownloadsProcessed
+            if self.last_package:  #: Called from all_downloads_processed
                 self.last_package = False
                 if self.extract(
                     packages, thread
                 ):  # NOTE: check only if all gone fine, no failed reporting for now
-                    self.m.dispatchEvent("all_archives_extracted")
-                self.m.dispatchEvent("all_archives_processed")
+                    self.m.dispatch_event("all_archives_extracted")
+                self.m.dispatch_event("all_archives_processed")
 
             else:
                 if self.extract(
@@ -168,7 +168,7 @@ class ExtractArchive(BaseAddon):
 
     #: Deprecated method, use `extract_package` instead
     @expose
-    def extractPackage(self, *args, **kwargs):
+    def extract_package(self, *args, **kwargs):
         """
         See `extract_package`
         """
@@ -207,7 +207,7 @@ class ExtractArchive(BaseAddon):
         extracted = []
         failed = []
 
-        def toList(value):
+        def to_list(value):
             return value.replace(" ", "").replace(",", "|").replace(";", "|").split("|")
 
         destination = self.config.get("destination")
@@ -219,9 +219,9 @@ class ExtractArchive(BaseAddon):
         keepbroken = self.config.get("keepbroken")
 
         extensions = [
-            x.lstrip(".").lower() for x in toList(self.config.get("extensions"))
+            x.lstrip(".").lower() for x in to_list(self.config.get("extensions"))
         ]
-        excludefiles = toList(self.config.get("excludefiles"))
+        excludefiles = to_list(self.config.get("excludefiles"))
 
         if extensions:
             self.log_debug(f"Use for extensions: .{'|.'.join(extensions)}")
@@ -233,7 +233,7 @@ class ExtractArchive(BaseAddon):
 
         #: Iterate packages -> extractors -> targets
         for pid in ids:
-            pypack = self.pyload.files.getPackage(pid)
+            pypack = self.pyload.files.get_package(pid)
 
             if not pypack:
                 self.queue.remove(pid)
@@ -269,7 +269,7 @@ class ExtractArchive(BaseAddon):
                         (os.path.join(pack_dl_folder, fdata["name"])),
                         extract_folder,
                     )
-                    for fdata in pypack.getChildren().values()
+                    for fdata in pypack.get_children().values()
                 }.values()
             )  #: : Remove duplicates
 
@@ -310,7 +310,7 @@ class ExtractArchive(BaseAddon):
 
                             self.log_info(name, self._("Extract to: {}").format(fout))
                             try:
-                                pyfile = self.pyload.files.getFile(fid)
+                                pyfile = self.pyload.files.get_file(fid)
                                 archive = Extractor(
                                     pyfile,
                                     fname,
@@ -322,7 +322,7 @@ class ExtractArchive(BaseAddon):
                                     keepbroken,
                                 )
 
-                                thread.addActive(pyfile)
+                                thread.add_active(pyfile)
                                 archive.init()
 
                                 #: Save for removal from file processing list, which happens after deletion.
@@ -335,8 +335,8 @@ class ExtractArchive(BaseAddon):
                                     )
 
                                 finally:
-                                    pyfile.setProgress(100)
-                                    thread.finishFile(pyfile)
+                                    pyfile.set_progress(100)
+                                    thread.finish_file(pyfile)
 
                             except Exception as exc:
                                 self.log_error(name, exc)
@@ -379,7 +379,7 @@ class ExtractArchive(BaseAddon):
                                         (fid, filename, os.path.dirname(filename))
                                     )  #: Append as new target
 
-                            self.m.dispatchEvent("archive_extracted", pyfile, archive)
+                            self.m.dispatch_event("archive_extracted", pyfile, archive)
 
                 files_ids = new_files_ids  #: Also check extracted files
 
@@ -414,11 +414,11 @@ class ExtractArchive(BaseAddon):
                                 )
 
                     extracted.append(pid)
-                    self.m.dispatchEvent("package_extracted", pypack)
+                    self.m.dispatch_event("package_extracted", pypack)
 
                 else:
                     failed.append(pid)
-                    self.m.dispatchEvent("package_extract_failed", pypack)
+                    self.m.dispatch_event("package_extract_failed", pypack)
 
                     self.failed.add(pid)
             else:
@@ -438,7 +438,7 @@ class ExtractArchive(BaseAddon):
     def _extract(self, pyfile, archive, password):
         name = os.path.basename(archive.filename)
 
-        pyfile.setStatus("processing")
+        pyfile.set_status("processing")
 
         encrypted = False
         try:
@@ -451,10 +451,10 @@ class ExtractArchive(BaseAddon):
 
             for pw in passwords:
                 try:
-                    pyfile.setCustomStatus(self._("archive testing"))
-                    pyfile.setProgress(0)
+                    pyfile.set_custom_status(self._("archive testing"))
+                    pyfile.set_progress(0)
                     archive.verify(pw)
-                    pyfile.setProgress(100)
+                    pyfile.set_progress(100)
 
                 except PasswordError:
                     if not encrypted:
@@ -470,10 +470,10 @@ class ExtractArchive(BaseAddon):
 
                     else:
                         self.log_warning(name, self._("Repairing..."))
-                        pyfile.setCustomStatus(self._("archive repairing"))
-                        pyfile.setProgress(0)
+                        pyfile.set_custom_status(self._("archive repairing"))
+                        pyfile.set_progress(0)
                         repaired = archive.repair()
-                        pyfile.setProgress(100)
+                        pyfile.set_progress(100)
 
                         if not repaired and not self.config.get("keepbroken"):
                             raise CRCError("Archive damaged")
@@ -489,8 +489,8 @@ class ExtractArchive(BaseAddon):
                     self.add_password(pw)
                     break
 
-            pyfile.setCustomStatus(self._("archive extracting"))
-            pyfile.setProgress(0)
+            pyfile.set_custom_status(self._("archive extracting"))
+            pyfile.set_progress(0)
 
             if not encrypted or not self.config.get("usepasswordfile"):
                 self.log_debug(
@@ -513,8 +513,8 @@ class ExtractArchive(BaseAddon):
                 else:
                     raise PasswordError
 
-            pyfile.setProgress(100)
-            pyfile.setStatus("processing")
+            pyfile.set_progress(100)
+            pyfile.set_status("processing")
 
             extracted_files = archive.files or archive.list()
 
@@ -576,13 +576,13 @@ class ExtractArchive(BaseAddon):
         except Exception as exc:
             self.log_error(name, self._("Unknown error"), exc)
 
-        self.m.dispatchEvent("archive_extract_failed", pyfile, archive)
+        self.m.dispatch_event("archive_extract_failed", pyfile, archive)
 
         raise Exception(self._("Extract failed"))
 
     #: Deprecated method, use `get_passwords` instead
     @expose
-    def getPasswords(self, *args, **kwargs):
+    def get_passwords(self, *args, **kwargs):
         """
         See `get_passwords`
         """
@@ -620,7 +620,7 @@ class ExtractArchive(BaseAddon):
 
     #: Deprecated method, use `add_password` instead
     @expose
-    def addPassword(self, *args, **kwargs):
+    def add_password(self, *args, **kwargs):
         """
         See `add_password`
         """

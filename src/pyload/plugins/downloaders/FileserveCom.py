@@ -34,20 +34,20 @@ class FileserveCom(BaseDownloader):
     URLS = [
         "http://www.fileserve.com/file/",
         "http://www.fileserve.com/link-checker.php",
-        "http://www.fileserve.com/checkReCaptcha.php",
+        "http://www.fileserve.com/check_re_captcha.php",
     ]
 
     CAPTCHA_KEY_PATTERN = r"var reCAPTCHA_publickey=\'(.+?)\'"
     LONG_WAIT_PATTERN = r'<li class="title">You need to wait (\d+) (\w+) to start another download\.</li>'
     LINK_EXPIRED_PATTERN = r"Your download link has expired"
     DL_LIMIT_PATTERN = r"Your daily download limit has been reached"
-    NOT_LOGGED_IN_PATTERN = r'<form (name="loginDialogBoxForm"|id="login_form")|<li><a href="/login\.php">Login</a></li>'
+    NOT_LOGGED_IN_PATTERN = r'<form (name="login_dialog_box_form"|id="login_form")|<li><a href="/login\.php">Login</a></li>'
 
     LINKCHECK_TR = r"<tr>\s*(<td>http://www\.fileserve\.com/file/.*?)</tr>"
     LINKCHECK_TD = r"<td>(?:<.*?>|&nbsp;)*([^<]*)"
 
     def setup(self):
-        self.resume_download = self.multiDL = self.premium
+        self.resume_download = self.multi_dl = self.premium
         self.file_id = re.match(self.__pattern__, self.pyfile.url).group("ID")
         self.url = "{}{}".format(self.URLS[0], self.file_id)
 
@@ -85,45 +85,45 @@ class FileserveCom(BaseDownloader):
 
     def handle_free(self):
         self.data = self.load(self.url)
-        action = self.load(self.url, post={"checkDownload": "check"})
+        action = self.load(self.url, post={"check_download": "check"})
         action = json.loads(action)
         self.log_debug(action)
 
         if "fail" in action:
-            if action["fail"] == "timeLimit":
+            if action["fail"] == "time_limit":
                 self.data = self.load(
                     self.url,
-                    post={"checkDownload": "showError", "errorType": "timeLimit"},
+                    post={"check_download": "show_error", "error_type": "time_limit"},
                 )
 
                 self.do_long_wait(re.search(self.LONG_WAIT_PATTERN, self.data))
 
-            elif action["fail"] == "parallelDownload":
+            elif action["fail"] == "parallel_download":
                 self.log_warning(self._("Parallel download error, now waiting 60s"))
-                self.retry(wait=60, msg=self._("parallelDownload"))
+                self.retry(wait=60, msg=self._("parallel_download"))
 
             else:
                 self.fail(self._("Download check returned: {}").format(action["fail"]))
 
         elif "success" in action:
-            if action["success"] == "showCaptcha":
+            if action["success"] == "show_captcha":
                 self.do_captcha()
                 self.do_timmer()
-            elif action["success"] == "showTimmer":
+            elif action["success"] == "show_timmer":
                 self.do_timmer()
 
         else:
             self.error(self._("Unknown server response"))
 
         #: Show download link
-        res = self.load(self.url, post={"downloadLink": "show"})
-        self.log_debug(f"Show downloadLink response: {res}")
+        res = self.load(self.url, post={"download_link": "show"})
+        self.log_debug(f"Show download_link response: {res}")
         if "fail" in res:
             self.error(self._("Couldn't retrieve download url"))
 
         #: This may either download our file or forward us to an error page
         self.download(self.url, post={"download": "normal"})
-        self.log_debug(self.req.http.lastEffectiveURL)
+        self.log_debug(self.req.http.last_effective_url)
 
         check = self.scan_download(
             {
@@ -149,14 +149,14 @@ class FileserveCom(BaseDownloader):
         self.thread.m.reconnecting.wait(3)
 
     def do_timmer(self):
-        res = self.load(self.url, post={"downloadLink": "wait"})
+        res = self.load(self.url, post={"download_link": "wait"})
         self.log_debug(f"Wait response: {res[:80]}")
 
         if "fail" in res:
             self.fail(self._("Failed getting wait time"))
 
         if self.__name__ == "FilejungleCom":
-            m = re.search(r'"waitTime":(\d+)', res)
+            m = re.search(r'"wait_time":(\d+)', res)
             if m is None:
                 self.fail(self._("Cannot get wait time"))
             wait_time = int(m.group(1))

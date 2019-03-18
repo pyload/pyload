@@ -40,7 +40,7 @@ class LinksnappyCom(MultiDownloader):
         )
 
         r = self.load(
-            "https://linksnappy.com/api/linkgen", post={"genLinks": json_params}
+            "https://linksnappy.com/api/linkgen", post={"gen_links": json_params}
         )
 
         self.log_debug("JSON data: " + r)

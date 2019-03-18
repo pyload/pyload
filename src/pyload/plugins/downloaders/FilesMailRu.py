@@ -17,17 +17,17 @@ class FilesMailRu(BaseDownloader):
 
     __description__ = """Files.mail.ru downloader plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("oZiRiz", "ich@oziriz.de")]
+    __authors__ = [("o_zi_riz", "ich@oziriz.de")]
 
     def setup(self):
-        self.multiDL = bool(self.account)
+        self.multi_dl = bool(self.account)
 
     def process(self, pyfile):
         self.data = self.load(pyfile.url)
         self.url_pattern = r'<a href="(.+?)" onclick="return Act\(this\, \'dlink\'\, event\)">(.+?)</a>'
 
         #: Marks the file as "offline" when the pattern was found on the html-page'''
-        if r'<div class="errorMessage mb10">' in self.data:
+        if r'<div class="error_message mb10">' in self.data:
             self.offline()
 
         elif r"Page cannot be displayed" in self.data:

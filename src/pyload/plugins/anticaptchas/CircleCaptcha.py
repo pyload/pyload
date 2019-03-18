@@ -540,7 +540,7 @@ class CircleCaptcha(BaseOCR):
         return result
 
     def decrypt(self, img):
-        iDebugSaveFile = 0
+        i_debug_save_file = 0
         mypalette = None
         for im in ImageSequence(img):
             im.save("orig.png", "png")
@@ -550,20 +550,20 @@ class CircleCaptcha(BaseOCR):
             im = im.convert("L")
 
             if self.pyload.debug:
-                iDebugSaveFile = iDebugSaveFile + 1
-                # if iDebugSaveFile < 7:
+                i_debug_save_file = i_debug_save_file + 1
+                # if i_debug_save_file < 7:
                 # continue
-                im.save("output{}.png".format(iDebugSaveFile), "png")
+                im.save("output{}.png".format(i_debug_save_file), "png")
                 input("frame: {}".format(im))
 
             pix = im.load()
 
             stepheight = list(range(1, im.size[1], 2))
             #: stepheight = range(45, 47)
-            lstPoints = []  #: Declares an empty list for the points
+            lst_points = []  #: Declares an empty list for the points
             lstX = []  #: CoordinateX
             lstY = []  #: CoordinateY
-            lstColors = []  #: Declares an empty list named lst
+            lst_colors = []  #: Declares an empty list named lst
             min_distance = 10
             max_diameter = 70
 
@@ -574,7 +574,7 @@ class CircleCaptcha(BaseOCR):
 
             #: Clean image for powerfull search
             self.clean_image(im, pix)
-            im.save("cleaned{}.png".format(iDebugSaveFile), "png")
+            im.save("cleaned{}.png".format(i_debug_save_file), "png")
 
             found = set()
             findnewcircle = True

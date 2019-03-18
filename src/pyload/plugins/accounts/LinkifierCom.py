@@ -33,7 +33,7 @@ class LinkifierCom(MultiAccount):
         post = {
             "login": user,
             "md5Pass": hashlib.md5(password.encode()).hexdigest(),
-            "apiKey": self.API_KEY,
+            "api_key": self.API_KEY,
         }
         post.update(kwargs)
         self.req.http.c.setopt(
@@ -47,19 +47,19 @@ class LinkifierCom(MultiAccount):
 
     def grab_hosters(self, user, password, data):
         json_data = self.api_response("hosters", user, password)
-        if json_data["hasErrors"]:
+        if json_data["has_errors"]:
             self.log_warning(json_data["ErrorMSG"] or "Unknown error")
             return []
 
         return [
             x["hostername"]
             for x in json_data["hosters"]
-            if x["hostername"] and x["isActive"]
+            if x["hostername"] and x["is_active"]
         ]
 
     def grab_info(self, user, password, data):
         json_data = self.api_response("user", user, password)
-        trafficleft = json_data["extraTraffic"]
+        trafficleft = json_data["extra_traffic"]
         validuntil = float(json_data["expirydate"]) // 1000
 
         return {
@@ -72,6 +72,6 @@ class LinkifierCom(MultiAccount):
 
     def signin(self, user, password, data):
         json_data = self.api_response("user", user, password)
-        if json_data.get("hasErrors", True) or not json_data.get("isActive", True):
+        if json_data.get("has_errors", True) or not json_data.get("is_active", True):
             self.log_warning(json_data["ErrorMSG"] or "Unknown error")
             self.fail_login()

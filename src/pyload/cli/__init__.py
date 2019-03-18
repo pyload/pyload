@@ -57,19 +57,19 @@ class Cli:
         self._ = client._
 
         if not self.command:
-            # renameProcess('pyLoadCLI')
+            # rename_process('pyLoadCLI')
             self.input = ""
             self.inputline = 0
-            self.lastLowestLine = 0
+            self.last_lowest_line = 0
             self.menuline = 0
 
             self.lock = Lock()
 
             # processor funcions, these will be changed dynamically depending on
             # control flow
-            self.headerHandler = self  #: the download status
-            self.bodyHandler = self  #: the menu section
-            self.inputHandler = self
+            self.header_handler = self  #: the download status
+            self.body_handler = self  #: the menu section
+            self.input_handler = self
 
             os.system("clear")
             println(
@@ -83,14 +83,14 @@ class Cli:
 
             self.start()
         else:
-            self.processCommand()
+            self.process_command()
 
     def reset(self):
         """
         reset to initial main menu.
         """
         self.input = ""
-        self.headerHandler = self.bodyHandler = self.inputHandler = self
+        self.header_handler = self.body_handler = self.input_handler = self
 
     def start(self):
         """
@@ -106,24 +106,24 @@ class Cli:
             elif ord(inp) == 13:  #: enter
                 with self.lock:
                     try:
-                        self.inputHandler.onEnter(self.input)
+                        self.input_handler.on_enter(self.input)
                     except Exception as exc:
                         println(2, red(exc))
 
             elif ord(inp) == 127:
                 self.input = self.input[:-1]  #: backspace
                 with self.lock:
-                    self.inputHandler.onBackSpace()
+                    self.input_handler.on_back_space()
 
             elif ord(inp) == 27:  #: ugly symbol
                 pass
             else:
                 self.input += inp
                 with self.lock:
-                    self.inputHandler.onChar(inp)
+                    self.input_handler.on_char(inp)
 
-            self.inputline = self.bodyHandler.renderBody(self.menuline)
-            self.renderFooter(self.inputline)
+            self.inputline = self.body_handler.render_body(self.menuline)
+            self.render_footer(self.inputline)
 
     @lock
     def refresh(self):
@@ -135,20 +135,20 @@ class Cli:
         )
         println(2, "")
 
-        self.menuline = self.headerHandler.renderHeader(3) + 1
+        self.menuline = self.header_handler.render_header(3) + 1
         println(self.menuline - 1, "")
-        self.inputline = self.bodyHandler.renderBody(self.menuline)
-        self.renderFooter(self.inputline)
+        self.inputline = self.body_handler.render_body(self.menuline)
+        self.render_footer(self.inputline)
 
-    def setInput(self, string=""):
+    def set_input(self, string=""):
         self.input = string
 
-    def setHandler(self, klass):
+    def set_handler(self, klass):
         # create new handler with reference to cli
-        self.bodyHandler = self.inputHandler = klass(self)
+        self.body_handler = self.input_handler = klass(self)
         self.input = ""
 
-    def renderHeader(self, line):
+    def render_header(self, line):
         """
         prints download status.
         """
@@ -158,7 +158,7 @@ class Cli:
         #        self.println(2, "")
         #        self.println(3, white(self._("{} Downloads:").format(len(data))))
 
-        data = self.client.statusDownloads()
+        data = self.client.status_downloads()
         speed = 0
 
         println(line, white(self._("{} Downloads:").format(len(data))))
@@ -195,7 +195,7 @@ class Cli:
 
         println(line, "")
         line += 1
-        status = self.client.statusServer()
+        status = self.client.status_server()
         if status.pause:
             paused = self._("Status:") + " " + red(self._("paused"))
         else:
@@ -208,7 +208,7 @@ class Cli:
 
         return line + 1
 
-    def renderBody(self, line):
+    def render_body(self, line):
         """
         prints initial menu.
         """
@@ -223,7 +223,7 @@ class Cli:
 
         return line + 8
 
-    def renderFooter(self, line):
+    def render_footer(self, line):
         """
         prints out the input line with input.
         """
@@ -233,29 +233,29 @@ class Cli:
         println(line, white(" Input: ") + decode(self.input))
 
         # clear old output
-        if line < self.lastLowestLine:
-            for i in range(line + 1, self.lastLowestLine + 1):
+        if line < self.last_lowest_line:
+            for i in range(line + 1, self.last_lowest_line + 1):
                 println(i, "")
 
-        self.lastLowestLine = line
+        self.last_lowest_line = line
 
         # set cursor to position
         print(f"\033[{self.inputline};0H")
 
-    def onChar(self, char):
+    def on_char(self, char):
         """
         default no special handling for single chars.
         """
         if char == "1":
-            self.setHandler(AddPackage)
+            self.set_handler(AddPackage)
         elif char == "2":
-            self.setHandler(ManageFiles)
+            self.set_handler(ManageFiles)
         elif char == "3":
-            self.setHandler(ManageFiles)
-            self.bodyHandler.target = Destination.COLLECTOR
+            self.set_handler(ManageFiles)
+            self.body_handler.target = Destination.COLLECTOR
         elif char == "4":
-            self.client.api.togglePause()
-            self.setInput()
+            self.client.api.toggle_pause()
+            self.set_input()
         elif char == "5":
             self.client.kill()
             self.client.close()
@@ -264,20 +264,20 @@ class Cli:
             os.system("clear")
             sys.exit()
 
-    def onEnter(self, inp):
+    def on_enter(self, inp):
         pass
 
-    def onBackSpace(self):
+    def on_back_space(self):
         pass
 
-    def processCommand(self):
+    def process_command(self):
         command = self.command[0]
         args = []
         if len(self.command) > 1:
             args = self.command[1:]
 
         if command == "status":
-            files = self.client.statusDownloads()
+            files = self.client.status_downloads()
 
             if not files:
                 print("No downloads running.")
@@ -288,19 +288,19 @@ class Cli:
                     downloaded_size = format_size(download.size - download.bleft)
                     print(print_status(download))
                     print(
-                        f"\tDownloading: {download.format_eta} @ {formatted_speed}\t {downloaded_size} ({download.percent}%%)"
+                        f"\t_downloading: {download.format_eta} @ {formatted_speed}\t {downloaded_size} ({download.percent}%%)"
                     )
                 elif download.status == 5:
                     print(print_status(download))
-                    print(f"\tWaiting: {download.format_wait}")
+                    print(f"\t_waiting: {download.format_wait}")
                 else:
                     print(print_status(download))
 
         elif command == "queue":
-            print_packages(self.client.getQueueData())
+            print_packages(self.client.get_queue_data())
 
         elif command == "collector":
-            print_packages(self.client.getCollectorData())
+            print_packages(self.client.get_collector_data())
 
         elif command == "add":
             if len(args) < 2:
@@ -311,7 +311,7 @@ class Cli:
                 )
                 return
 
-            self.client.addPackage(args[0], args[1:], Destination.QUEUE)
+            self.client.add_package(args[0], args[1:], Destination.QUEUE)
 
         elif command == "add_coll":
             if len(args) < 2:
@@ -322,26 +322,26 @@ class Cli:
                 )
                 return
 
-            self.client.addPackage(args[0], args[1:], Destination.COLLECTOR)
+            self.client.add_package(args[0], args[1:], Destination.COLLECTOR)
 
         elif command == "del_file":
-            self.client.deleteFiles(int(x) for x in args)
+            self.client.delete_files(int(x) for x in args)
             print("Files deleted.")
 
         elif command == "del_package":
-            self.client.deletePackages(int(x) for x in args)
+            self.client.delete_packages(int(x) for x in args)
             print("Packages deleted.")
 
         elif command == "move":
             for pid in args:
-                pack = self.client.getPackageInfo(int(pid))
-                self.client.movePackage((pack.dest + 1) % 2, pack.pid)
+                pack = self.client.get_package_info(int(pid))
+                self.client.move_package((pack.dest + 1) % 2, pack.pid)
 
         elif command == "check":
             print(self._("Checking {} links:").format(len(args)))
             print()
-            rid = self.client.checkOnlineStatus(args).rid
-            self.printOnlineCheck(self.client, rid)
+            rid = self.client.check_online_status(args).rid
+            self.print_online_check(self.client, rid)
 
         elif command == "check_container":
             path = args[0]
@@ -352,10 +352,10 @@ class Cli:
             with open(path, mode="rb") as file:
                 content = file.read()
 
-            rid = self.client.checkOnlineStatusContainer(
+            rid = self.client.check_online_status_container(
                 [], os.path.basename(file.name), content
             ).rid
-            self.printOnlineCheck(self.client, rid)
+            self.print_online_check(self.client, rid)
 
         elif command == "pause":
             self.client.pause()
@@ -364,26 +364,26 @@ class Cli:
             self.client.unpause()
 
         elif command == "toggle":
-            self.client.api.togglePause()
+            self.client.api.toggle_pause()
 
         elif command == "kill":
             self.client.kill()
         elif command == "restart_file":
             for x in args:
-                self.client.restartFile(int(x))
+                self.client.restart_file(int(x))
             print("Files restarted.")
         elif command == "restart_package":
             for pid in args:
-                self.client.restartPackage(int(pid))
+                self.client.restart_package(int(pid))
             print("Packages restarted.")
 
         else:
             print_commands()
 
-    def printOnlineCheck(self, client, rid):
+    def print_online_check(self, client, rid):
         while True:
             time.sleep(1)
-            result = client.pollResults(rid)
+            result = client.poll_results(rid)
             for url, status in result.data.items():
                 if status.status == 2:
                     check = "Online"

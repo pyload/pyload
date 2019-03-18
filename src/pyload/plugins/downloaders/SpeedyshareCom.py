@@ -31,14 +31,14 @@ class SpeedyshareCom(SimpleDownloader):
     __authors__ = [("zapp-brannigan", "fuerst.reinje@web.de")]
 
     NAME_PATTERN = r"class=downloadfilename>(?P<N>.*)</span></td>"
-    SIZE_PATTERN = r"class=sizetagtext>(?P<S>.*) (?P<U>[kKmM]?[iI]?[bB]?)</div>"
+    SIZE_PATTERN = r"class=sizetagtext>(?P<S>.*) (?P<U>[k_km_m]?[iI]?[bB]?)</div>"
 
     OFFLINE_PATTERN = r"class=downloadfilenamenotfound>.*</span>"
 
     LINK_FREE_PATTERN = r"<a href=\'(.*)\'><img src=/gf/slowdownload\.png alt=\'Slow Download\' border=0"
 
     def setup(self):
-        self.multiDL = False
+        self.multi_dl = False
         self.chunk_limit = 1
 
     def handle_free(self, pyfile):

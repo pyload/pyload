@@ -25,10 +25,10 @@ class ManageFiles(Handler):
         self.links = None
         self.time = 0
 
-    def onChar(self, char):
+    def on_char(self, char):
         if char in ("m", "d", "r"):
             self.mode = char
-            self.setInput()
+            self.set_input()
         elif char == "p":
             self.pos = max(0, self.pos - 5)
             self.backspace()
@@ -36,34 +36,34 @@ class ManageFiles(Handler):
             self.pos += 5
             self.backspace()
 
-    def onBackSpace(self):
+    def on_back_space(self):
         if not self.input and self.mode:
             self.mode = ""
         if not self.input and self.package > -1:
             self.package = -1
 
-    def onEnter(self, input):
+    def on_enter(self, input):
         if input == "0":
             self.cli.reset()
         elif self.package < 0 and self.mode:
             # mode select
-            packs = self.parseInput(input)
+            packs = self.parse_input(input)
             if self.mode == "m":
-                [self.client.movePackage((self.target + 1) % 2, x) for x in packs]
+                [self.client.move_package((self.target + 1) % 2, x) for x in packs]
             elif self.mode == "d":
-                self.client.deletePackages(packs)
+                self.client.delete_packages(packs)
             elif self.mode == "r":
-                [self.client.restartPackage(x) for x in packs]
+                [self.client.restart_package(x) for x in packs]
 
         elif self.mode:
             # edit links
-            links = self.parseInput(input, False)
+            links = self.parse_input(input, False)
 
             if self.mode == "d":
-                self.client.deleteFiles(links)
+                self.client.delete_files(links)
             elif self.mode == "r":
                 for link in links:
-                    self.client.restartFile(link)
+                    self.client.restart_file(link)
 
         else:
             # look into package
@@ -76,9 +76,9 @@ class ManageFiles(Handler):
         self.links = None
         self.pos = 0
         self.mode = ""
-        self.setInput()
+        self.set_input()
 
-    def renderBody(self, line):
+    def render_body(self, line):
         if self.package < 0:
             println(line, white("Manage Packages:"))
         else:
@@ -107,7 +107,7 @@ class ManageFiles(Handler):
 
         if self.package < 0:
             # print(package info)
-            pack = self.getPackages()
+            pack = self.get_packages()
             i = 0
             for value in islice(pack, self.pos, self.pos + 5):
                 try:
@@ -121,7 +121,7 @@ class ManageFiles(Handler):
                 line += 1
         else:
             # print(links info)
-            pack = self.getLinks()
+            pack = self.get_links()
             i = 0
             for value in islice(pack.links, self.pos, self.pos + 5):
                 try:
@@ -143,26 +143,26 @@ class ManageFiles(Handler):
 
         return line + 2
 
-    def getPackages(self):
+    def get_packages(self):
         if self.cache and self.time + 2 < time.time():
             return self.cache
 
         if self.target == Destination.QUEUE:
-            data = self.client.getQueue()
+            data = self.client.get_queue()
         else:
-            data = self.client.getCollector()
+            data = self.client.get_collector()
 
         self.cache = data
         self.time = time.time()
 
         return data
 
-    def getLinks(self):
+    def get_links(self):
         if self.links and self.time + 1 < time.time():
             return self.links
 
         try:
-            data = self.client.getPackageData(self.package)
+            data = self.client.get_package_data(self.package)
         except Exception:
             data = PackageData(links=[])
 
@@ -171,7 +171,7 @@ class ManageFiles(Handler):
 
         return data
 
-    def parseInput(self, inp, package=True):
+    def parse_input(self, inp, package=True):
         inp = inp.strip()
         if "-" in inp:
             l, n, h = inp.partition("-")

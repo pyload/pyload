@@ -55,7 +55,7 @@ class DatafileCom(SimpleDownloader):
             response, challenge = self.captcha.challenge(captcha_key)
 
             post_data = {
-                "doaction": "validateCaptcha",
+                "doaction": "validate_captcha",
                 "recaptcha_challenge_field": challenge,
                 "recaptcha_response_field": response,
                 "fileid": self.info["pattern"]["ID"],
@@ -72,7 +72,7 @@ class DatafileCom(SimpleDownloader):
 
             self.wait(wait_time)
 
-            post_data["doaction"] = "getFileDownloadLink"
+            post_data["doaction"] = "get_file_download_link"
             post_data["token"] = catcha_result["token"]
 
             file_info = json.loads(
@@ -83,7 +83,7 @@ class DatafileCom(SimpleDownloader):
                 self.log_debug(f"URL:{self.link}")
 
         else:
-            m = re.search(r"error\.html\?code=(\d+)", self.req.lastEffectiveURL)
+            m = re.search(r"error\.html\?code=(\d+)", self.req.last_effective_url)
             if m is not None:
                 error_code = int(m.group(1))
                 if error_code in (2, 3):

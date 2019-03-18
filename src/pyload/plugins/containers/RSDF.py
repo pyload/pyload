@@ -59,7 +59,7 @@ class RSDF(BaseContainer):
             self.fail(exc)
 
         if re.search(r"<title>404 - Not Found</title>", data):
-            pyfile.setStatus("offline")
+            pyfile.set_status("offline")
 
         else:
             try:

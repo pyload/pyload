@@ -40,7 +40,7 @@ class Dereferer(SimpleDecrypter):
         return super()._log(level, plugintype, pluginname, args, kwargs)
 
     def init(self):
-        self.__pattern__ = self.pyload.pluginManager.crypterPlugins[self.classname][
+        self.__pattern__ = self.pyload.plugin_manager.crypter_plugins[self.classname][
             "pattern"
         ]  # TODO: Recheck in 0.6.x
 

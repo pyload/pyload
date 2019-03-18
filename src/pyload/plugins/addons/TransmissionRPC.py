@@ -38,7 +38,7 @@ class TransmissionRPC(BaseAddon):
     __authors__ = [("GammaC0de", None)]
 
     def init(self):
-        self.event_map = {"linksAdded": "links_added"}
+        self.event_map = {"links_added": "links_added"}
 
     def links_added(self, links, pid):
         _re_link = re.compile(self.__pattern__)

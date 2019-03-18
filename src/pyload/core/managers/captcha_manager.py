@@ -17,41 +17,41 @@ class CaptchaManager:
 
         self.ids = 0  #: Only for internal purpose
 
-    def newTask(self, format, params, result_type):
+    def new_task(self, format, params, result_type):
         task = CaptchaTask(self.ids, format, params, result_type)
         self.ids += 1
         return task
 
     @lock
-    def removeTask(self, task):
+    def remove_task(self, task):
         if task in self.tasks:
             self.tasks.remove(task)
 
     @lock
-    def getTask(self):
+    def get_task(self):
         for task in self.tasks:
             if task.status in ("waiting", "shared-user"):
                 return task
         return None
 
     @lock
-    def getTaskByID(self, tid):
+    def get_task_by_id(self, tid):
         for task in self.tasks:
             if task.id == str(tid):  #: Task ids are strings
                 return task
         return None
 
-    def handleCaptcha(self, task, timeout):
-        cli = self.pyload.isClientConnected()
+    def handle_captcha(self, task, timeout):
+        cli = self.pyload.is_client_connected()
 
-        task.setWaiting(timeout)
+        task.set_waiting(timeout)
 
         # if cli:  #: Client connected -> should solve the captcha
-        #     task.setWaiting(50)  #: Wait minimum 50 sec for response
+        #     task.set_waiting(50)  #: Wait minimum 50 sec for response
 
-        for plugin in self.pyload.addonManager.activePlugins():
+        for plugin in self.pyload.addon_manager.active_plugins():
             try:
-                plugin.newCaptchaTask(task)
+                plugin.new_captcha_task(task)
             except Exception:
                 pass
 
@@ -67,85 +67,85 @@ class CaptchaManager:
 class CaptchaTask:
     def __init__(self, id, format, params={}, result_type="textual"):
         self.id = str(id)
-        self.captchaParams = params
-        self.captchaFormat = format
-        self.captchaResultType = result_type
+        self.captcha_params = params
+        self.captcha_format = format
+        self.captcha_result_type = result_type
         self.handler = []  #: the addon plugins that will take care of the solution
         self.result = None
-        self.waitUntil = None
+        self.wait_until = None
         self.error = None  #: error message
 
         self.status = "init"
         self.data = {}  #: handler can store data here
 
-    def getCaptcha(self):
-        return self.captchaParams, self.captchaFormat, self.captchaResultType
+    def get_captcha(self):
+        return self.captcha_params, self.captcha_format, self.captcha_result_type
 
-    def setResult(self, result):
-        if self.isTextual() or self.isInteractive():
+    def set_result(self, result):
+        if self.is_textual() or self.is_interactive():
             self.result = result
 
-        elif self.isPositional():
+        elif self.is_positional():
             try:
                 parts = result.split(",")
                 self.result = (int(parts[0]), int(parts[1]))
             except Exception:
                 self.result = None
 
-    def getResult(self):
+    def get_result(self):
         return self.result
 
-    def getStatus(self):
+    def get_status(self):
         return self.status
 
-    def setWaiting(self, sec):
+    def set_waiting(self, sec):
         """
         let the captcha wait secs for the solution.
         """
-        self.waitUntil = max(time.time() + sec, self.waitUntil)
+        self.wait_until = max(time.time() + sec, self.wait_until)
         self.status = "waiting"
 
-    def isWaiting(self):
-        if self.result or self.error or time.time() > self.waitUntil:
+    def is_waiting(self):
+        if self.result or self.error or time.time() > self.wait_until:
             return False
 
         return True
 
-    def isTextual(self):
+    def is_textual(self):
         """
         returns if text is written on the captcha.
         """
-        return self.captchaResultType == "textual"
+        return self.captcha_result_type == "textual"
 
-    def isPositional(self):
+    def is_positional(self):
         """
         returns if user have to click a specific region on the captcha.
         """
-        return self.captchaResultType == "positional"
+        return self.captcha_result_type == "positional"
 
-    def isInteractive(self):
+    def is_interactive(self):
         """
         returns if user has to solve the captcha in an interactive iframe.
         """
-        return self.captchaResultType == "interactive"
+        return self.captcha_result_type == "interactive"
 
-    def setWatingForUser(self, exclusive):
+    def set_wating_for_user(self, exclusive):
         if exclusive:
             self.status = "user"
         else:
             self.status = "shared-user"
 
-    def timedOut(self):
-        return time.time() > self.waitUntil
+    def timed_out(self):
+        return time.time() > self.wait_until
 
     def invalid(self):
         """
         indicates the captcha was not correct.
         """
-        [x.captchaInvalid(self) for x in self.handler]
+        [x.captcha_invalid(self) for x in self.handler]
 
     def correct(self):
-        [x.captchaCorrect(self) for x in self.handler]
+        [x.captcha_correct(self) for x in self.handler]
 
     def __str__(self):
         return f"<CaptchaTask '{self.id}'>"

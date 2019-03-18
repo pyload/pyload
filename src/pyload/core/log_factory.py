@@ -59,7 +59,7 @@ class LogFactory:
         filelog = self.pyload.config.get("log", "filelog")
 
         level = logging.DEBUG if self.pyload.debug else logging.INFO
-        logger.setLevel(level)
+        logger.set_level(level)
 
         if console:
             self._init_console_handler(logger)
@@ -86,7 +86,7 @@ class LogFactory:
     def _remove_handlers(self, logger):
         for handler in logger.handlers:
             with closing(handler) as hdlr:
-                logger.removeHandler(hdlr)
+                logger.remove_handler(hdlr)
 
     def shutdown(self):
         for logger in self.loggers.values():
@@ -111,8 +111,8 @@ class LogFactory:
             )
 
         consolehdlr = logging.StreamHandler(sys.stdout)
-        consolehdlr.setFormatter(consoleform)
-        logger.addHandler(consolehdlr)
+        consolehdlr.set_formatter(consoleform)
+        logger.add_handler(consolehdlr)
 
     def _init_syslog_handler(self, logger):
         # try to mimic to normal syslog messages
@@ -142,8 +142,8 @@ class LogFactory:
             os.makedirs(syslog_addr, exist_ok=True)
 
         sysloghdlr = logging.handlers.SysLogHandler(syslog_addr)
-        sysloghdlr.setFormatter(syslog_form)
-        logger.addHandler(sysloghdlr)
+        sysloghdlr.set_formatter(syslog_form)
+        logger.add_handler(sysloghdlr)
 
     def _init_filelog_handler(self, logger):
         filename = logger.name + self.FILE_EXTENSION
@@ -169,13 +169,13 @@ class LogFactory:
 
             filehdlr = logging.handlers.RotatingFileHandler(
                 filelog_path,
-                maxBytes=max_size,
-                backupCount=max_entries,
+                max_bytes=max_size,
+                backup_count=max_entries,
                 encoding=encoding,
             )
 
         else:
             filehdlr = logging.FileHandler(filelog_path, encoding=encoding)
 
-        filehdlr.setFormatter(filelog_form)
-        logger.addHandler(filehdlr)
+        filehdlr.set_formatter(filelog_form)
+        logger.add_handler(filehdlr)

@@ -36,9 +36,9 @@ class UlozTo(BaseAccount):
             html = json.loads(
                 self.load(
                     "https://ulozto.net/statistiky",
-                    get={"do": "overviewPaymentsView-ajaxLoad", "_": timestamp()},
+                    get={"do": "overview_payments_view-ajax_load", "_": timestamp()},
                 )
-            )["snippets"]["snippet-overviewPaymentsView-"]
+            )["snippets"]["snippet-overview_payments_view-"]
 
         except (ValueError, KeyError):
             self.log_error(
@@ -79,7 +79,7 @@ class UlozTo(BaseAccount):
         if ">Log out<" in html:
             self.skip_login()
 
-        url, inputs = parse_html_form('id="frm-loginForm-form"', html)
+        url, inputs = parse_html_form('id="frm-login_form-form"', html)
         if inputs is None:
             self.fail_login("Login form not found")
 

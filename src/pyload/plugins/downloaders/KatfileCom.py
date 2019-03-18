@@ -38,7 +38,7 @@ class KatfileCom(SimpleDownloader):
     COOKIES = [("katfile.com", "lang", "english")]
 
     def setup(self):
-        self.multiDL = False
+        self.multi_dl = False
         self.chunk_limit = 1
 
     def check_errors(self):

@@ -61,7 +61,7 @@ class RPNetBiz(MultiDownloader):
                     get={
                         "username": user,
                         "password": info["login"]["password"],
-                        "action": "downloadInformation",
+                        "action": "download_information",
                         "id": link_status["id"],
                     },
                 )

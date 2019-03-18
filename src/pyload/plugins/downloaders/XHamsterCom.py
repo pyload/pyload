@@ -70,7 +70,7 @@ class XHamsterCom(BaseDownloader):
 
         video_data = json.loads(video_data_search.group(1))
 
-        video_model = video_data.get("videoModel", None)
+        video_model = video_data.get("video_model", None)
         if video_model is None:
             self.error(self._("Could not find video model!"))
 

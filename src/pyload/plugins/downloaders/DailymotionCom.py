@@ -73,7 +73,7 @@ class DailymotionCom(BaseDownloader):
 
     def setup(self):
         self.resume_download = True
-        self.multiDL = True
+        self.multi_dl = True
 
     def get_streams(self):
         streams = []

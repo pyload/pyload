@@ -77,8 +77,8 @@ class HTTPRequest:
 
         self.cj = cookies  #: cookiejar
 
-        self.lastURL = None
-        self.lastEffectiveURL = None
+        self.last_url = None
+        self.last_effective_url = None
         self.abort = False
         self.code = 0  #: last http code
 
@@ -86,11 +86,11 @@ class HTTPRequest:
 
         self.headers = []  #: temporary request header
 
-        self.initHandle()
-        self.setInterface(options)
+        self.init_handle()
+        self.set_interface(options)
 
         self.c.setopt(pycurl.WRITEFUNCTION, self.write)
-        self.c.setopt(pycurl.HEADERFUNCTION, self.writeHeader)
+        self.c.setopt(pycurl.HEADERFUNCTION, self.write_header)
 
         self.log = getLogger(APPID)
 
@@ -100,7 +100,7 @@ class HTTPRequest:
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.close()
 
-    def initHandle(self):
+    def init_handle(self):
         """
         sets common options to curl handle.
         """
@@ -137,9 +137,9 @@ class HTTPRequest:
             ],
         )
 
-    def setInterface(self, options):
+    def set_interface(self, options):
         options = {k: v.encode() if hasattr(v, "encode") else v for k, v in options.items()}
-        
+
         interface, proxy, ipv6 = (
             options["interface"],
             options["proxies"],
@@ -176,26 +176,26 @@ class HTTPRequest:
         if "timeout" in options:
             self.c.setopt(pycurl.LOW_SPEED_TIME, int(options["timeout"]))
 
-    def addCookies(self):
+    def add_cookies(self):
         """
         put cookies from curl handle to cj.
         """
         if self.cj:
-            self.cj.addCookies(self.c.getinfo(pycurl.INFO_COOKIELIST))
+            self.cj.add_cookies(self.c.getinfo(pycurl.INFO_COOKIELIST))
 
-    def getCookies(self):
+    def get_cookies(self):
         """
         add cookies from cj to curl handle.
         """
         if self.cj:
-            for c in self.cj.getCookies():
+            for c in self.cj.get_cookies():
                 self.c.setopt(pycurl.COOKIELIST, c)
         return
 
-    def clearCookies(self):
+    def clear_cookies(self):
         self.c.setopt(pycurl.COOKIELIST, "")
 
-    def setRequestContext(self, url, get, post, referer, cookies, multipart=False):
+    def set_request_context(self, url, get, post, referer, cookies, multipart=False):
         """
         sets everything needed for the request.
         """
@@ -208,7 +208,7 @@ class HTTPRequest:
             url = f"{url}?{get}"
 
         self.c.setopt(pycurl.URL, url)
-        self.c.lastUrl = url
+        self.c.last_url = url
 
         if post:
             self.c.setopt(pycurl.POST, 1)
@@ -228,13 +228,13 @@ class HTTPRequest:
         else:
             self.c.setopt(pycurl.POST, 0)
 
-        if referer and self.lastURL:
-            self.c.setopt(pycurl.REFERER, self.lastURL)
+        if referer and self.last_url:
+            self.c.setopt(pycurl.REFERER, self.last_url)
 
         if cookies:
             self.c.setopt(pycurl.COOKIEFILE, b"")
             self.c.setopt(pycurl.COOKIEJAR, b"")
-            self.getCookies()
+            self.get_cookies()
 
     def load(
         self,
@@ -246,13 +246,13 @@ class HTTPRequest:
         just_header=False,
         multipart=False,
         decode=False,
-        follow_location=True, 
+        follow_location=True,
         save_cookies=True
     ):
         """
         load and returns a given page.
         """
-        self.setRequestContext(url, get, post, referer, cookies, multipart)
+        self.set_request_context(url, get, post, referer, cookies, multipart)
 
         self.header = bytes()
 
@@ -268,9 +268,9 @@ class HTTPRequest:
 
         if just_header:
             self.c.setopt(pycurl.NOBODY, 1)
-            
+
         self.c.perform()
-        rep = self.header if just_header else self.getResponse()
+        rep = self.header if just_header else self.get_response()
 
         if not follow_location:
             self.c.setopt(pycurl.FOLLOWLOCATION, 1)
@@ -279,40 +279,40 @@ class HTTPRequest:
             self.c.setopt(pycurl.NOBODY, 0)
 
         self.c.setopt(pycurl.POSTFIELDS, b"")
-        self.lastEffectiveURL = self.c.getinfo(pycurl.EFFECTIVE_URL)
+        self.last_effective_url = self.c.getinfo(pycurl.EFFECTIVE_URL)
 
         if save_cookies:
-            self.addCookies()
-            
+            self.add_cookies()
+
         try:
-            self.code = self.verifyHeader()
+            self.code = self.verify_header()
 
         finally:
             self.rep.close()
             self.rep = None
-                        
+
         if decode:
-            rep = self.decodeResponse(rep)
+            rep = self.decode_response(rep)
 
         return rep
 
-    def verifyHeader(self):
+    def verify_header(self):
         """
         raise an exceptions on bad headers.
         """
         code = int(self.c.getinfo(pycurl.RESPONSE_CODE))
         if code in BAD_STATUS_CODES:
             # 404 will NOT raise an exception
-            raise BadHeader(code, self.header, self.getResponse())
+            raise BadHeader(code, self.header, self.get_response())
         return code
 
-    def checkHeader(self):
+    def check_header(self):
         """
         check if header indicates failure.
         """
         return int(self.c.getinfo(pycurl.RESPONSE_CODE)) not in BAD_STATUS_CODES
 
-    def getResponse(self):
+    def get_response(self):
         """
         retrieve response from bytes io.
         """
@@ -324,7 +324,7 @@ class HTTPRequest:
             self.rep = io.BytesIO()
             return value
 
-    def decodeResponse(self, rep):
+    def decode_response(self, rep):
         """
         decode with correct encoding, relies on header.
         """
@@ -369,7 +369,7 @@ class HTTPRequest:
         writes response.
         """
         if self.rep.tell() > 1_000_000 or self.abort:
-            rep = self.getResponse()
+            rep = self.get_response()
             if self.abort:
                 raise Abort
             with open("response.dump", mode="wb") as file:
@@ -378,16 +378,16 @@ class HTTPRequest:
 
         self.rep.write(buf)
 
-    def writeHeader(self, buf):
+    def write_header(self, buf):
         """
         writes header.
         """
         self.header += buf
 
-    def putHeader(self, name, value):
+    def put_header(self, name, value):
         self.headers.append(f"{name}: {value}")
 
-    def clearHeaders(self):
+    def clear_headers(self):
         self.headers = []
 
     def close(self):

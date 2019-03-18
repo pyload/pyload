@@ -132,13 +132,13 @@ class XFileSharing(BaseAddon):
             )
         else:
             plugin_list = []
-            isXFS = lambda klass: any(
+            is_xfs = lambda klass: any(
                 k.__name__.startswith("XFS") for k in inspect.getmro(klass)
             )
 
-            for p in self.pyload.pluginManager.plugins[type].values():
+            for p in self.pyload.plugin_manager.plugins[type].values():
                 try:
-                    klass = self.pyload.pluginManager.loadClass(type, p["name"])
+                    klass = self.pyload.plugin_manager.load_class(type, p["name"])
 
                 except AttributeError as exc:
                     self.log_debug(
@@ -151,7 +151,7 @@ class XFileSharing(BaseAddon):
                 if (
                     hasattr(klass, "PLUGIN_DOMAIN")
                     and klass.PLUGIN_DOMAIN
-                    and isXFS(klass)
+                    and is_xfs(klass)
                 ):
                     plugin_list.append(klass.PLUGIN_DOMAIN)
 
@@ -163,7 +163,7 @@ class XFileSharing(BaseAddon):
         return pattern
 
     def _load(self, type, plugin):
-        dict = self.pyload.pluginManager.plugins[type][plugin]
+        dict = self.pyload.plugin_manager.plugins[type][plugin]
         pattern = self.get_pattern(type, plugin)
 
         if not pattern:
@@ -175,6 +175,6 @@ class XFileSharing(BaseAddon):
         self.log_debug(f"Pattern for {type}: {pattern}")
 
     def _unload(self, type, plugin):
-        dict = self.pyload.pluginManager.plugins[type][plugin]
+        dict = self.pyload.plugin_manager.plugins[type][plugin]
         dict["pattern"] = r"^unmatchable$"
         dict["re"] = re.compile(dict["pattern"])

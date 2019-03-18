@@ -34,7 +34,7 @@ class MegaRapidCz(BaseAccount):
 
         m = re.search(self.LIMITDL_PATTERN, htmll)
         if m is not None:
-            data["options"]["limitDL"] = [int(m.group(1))]
+            data["options"]["limit_dl"] = [int(m.group(1))]
 
         m = re.search(self.VALID_UNTIL_PATTERN, htmll)
         if m is not None:

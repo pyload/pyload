@@ -24,13 +24,13 @@ from ..datatypes import *
 
 # contains function names mapped to their permissions
 # unlisted functions are for admins only
-permMap = {}
+perm_map = {}
 
 # decorator only called on init, never initialized, so has no effect on runtime
 def permission(bits):
     class Wrapper:
         def __new__(cls, func, *args, **kwargs):
-            permMap[func.__name__] = bits
+            perm_map[func.__name__] = bits
             return func
 
     return Wrapper
@@ -87,7 +87,7 @@ class Api:
         self.pyload = core
         self._ = core._
 
-    def _convertPyFile(self, p):
+    def _convert_py_file(self, p):
         f = FileData(
             p["id"],
             p["url"],
@@ -103,10 +103,10 @@ class Api:
         )
         return f
 
-    def _convertConfigFormat(self, c):
+    def _convert_config_format(self, c):
         sections = {}
-        for sectionName, sub in c.items():
-            section = ConfigSection(sectionName, sub["desc"])
+        for section_name, sub in c.items():
+            section = ConfigSection(section_name, sub["desc"])
             items = []
             for key, data in sub.items():
                 if key in ("desc", "outline"):
@@ -118,13 +118,13 @@ class Api:
                 item.type = data["type"]
                 items.append(item)
             section.items = items
-            sections[sectionName] = section
+            sections[section_name] = section
             if "outline" in sub:
                 section.outline = sub["outline"]
         return sections
 
     @permission(Perms.SETTINGS)
-    def getConfigValue(self, category, option, section="core"):
+    def get_config_value(self, category, option, section="core"):
         """
         Retrieve config value.
 
@@ -136,11 +136,11 @@ class Api:
         if section == "core":
             value = self.pyload.config[category][option]
         else:
-            value = self.pyload.config.getPlugin(category, option)
+            value = self.pyload.config.get_plugin(category, option)
         return str(value)
 
     @permission(Perms.SETTINGS)
-    def setConfigValue(self, category, option, value, section="core"):
+    def set_config_value(self, category, option, value, section="core"):
         """
         Set new config value.
 
@@ -149,8 +149,8 @@ class Api:
         :param value: new config value
         :param section: 'plugin' or 'core
         """
-        self.pyload.addonManager.dispatchEvent(
-            "configChanged", category, option, value, section
+        self.pyload.addon_manager.dispatch_event(
+            "config_changed", category, option, value, section
         )
 
         if section == "core":
@@ -160,21 +160,21 @@ class Api:
                 "limit_speed",
                 "max_speed",
             ):  #: not so nice to update the limit
-                self.pyload.requestFactory.updateBucket()
+                self.pyload.request_factory.update_bucket()
 
         elif section == "plugin":
-            self.pyload.config.setPlugin(category, option, value)
+            self.pyload.config.set_plugin(category, option, value)
 
     @permission(Perms.SETTINGS)
-    def getConfig(self):
+    def get_config(self):
         """
         Retrieves complete config of core.
 
         :return: list of `ConfigSection`
         """
-        return self._convertConfigFormat(self.pyload.config.config)
+        return self._convert_config_format(self.pyload.config.config)
 
-    def getConfigDict(self):
+    def get_config_dict(self):
         """
         Retrieves complete config in dict format, not for RPC.
 
@@ -183,15 +183,15 @@ class Api:
         return self.pyload.config.config
 
     @permission(Perms.SETTINGS)
-    def getPluginConfig(self):
+    def get_plugin_config(self):
         """
         Retrieves complete config for all plugins.
 
         :return: list of `ConfigSection`
         """
-        return self._convertConfigFormat(self.pyload.config.plugin)
+        return self._convert_config_format(self.pyload.config.plugin)
 
-    def getPluginConfigDict(self):
+    def get_plugin_config_dict(self):
         """
         Plugin config as dict, not for RPC.
 
@@ -200,31 +200,31 @@ class Api:
         return self.pyload.config.plugin
 
     @permission(Perms.STATUS)
-    def pauseServer(self):
+    def pause_server(self):
         """
         Pause server: Tt wont start any new downloads, but nothing gets aborted.
         """
-        self.pyload.threadManager.pause = True
+        self.pyload.thread_manager.pause = True
 
     @permission(Perms.STATUS)
-    def unpauseServer(self):
+    def unpause_server(self):
         """
         Unpause server: New Downloads will be started.
         """
-        self.pyload.threadManager.pause = False
+        self.pyload.thread_manager.pause = False
 
     @permission(Perms.STATUS)
-    def togglePause(self):
+    def toggle_pause(self):
         """
         Toggle pause state.
 
         :return: new pause state
         """
-        self.pyload.threadManager.pause ^= True
-        return self.pyload.threadManager.pause
+        self.pyload.thread_manager.pause ^= True
+        return self.pyload.thread_manager.pause
 
     @permission(Perms.STATUS)
-    def toggleReconnect(self):
+    def toggle_reconnect(self):
         """
         Toggle reconnect activation.
 
@@ -234,41 +234,41 @@ class Api:
         return self.pyload.config.get("reconnect", "enabled")
 
     @permission(Perms.LIST)
-    def statusServer(self):
+    def status_server(self):
         """
         Some general information about the current status of pyLoad.
 
         :return: `ServerStatus`
         """
-        serverStatus = ServerStatus(
-            self.pyload.threadManager.pause,
-            len(self.pyload.threadManager.processingIds()),
-            self.pyload.files.getQueueCount(),
-            self.pyload.files.getFileCount(),
+        server_status = ServerStatus(
+            self.pyload.thread_manager.pause,
+            len(self.pyload.thread_manager.processing_ids()),
+            self.pyload.files.get_queue_count(),
+            self.pyload.files.get_file_count(),
             0,
-            not self.pyload.threadManager.pause and self.isTimeDownload(),
-            self.pyload.config.get("reconnect", "enabled") and self.isTimeReconnect(),
-            self.isCaptchaWaiting(),
+            not self.pyload.thread_manager.pause and self.is_time_download(),
+            self.pyload.config.get("reconnect", "enabled") and self.is_time_reconnect(),
+            self.is_captcha_waiting(),
         )
 
         for pyfile in [
             x.active
-            for x in self.pyload.threadManager.threads
+            for x in self.pyload.thread_manager.threads
             if x.active and isinstance(x.active, PyFile)
         ]:
-            serverStatus.speed += pyfile.getSpeed()  #: bytes/s
+            server_status.speed += pyfile.get_speed()  #: bytes/s
 
-        return serverStatus
+        return server_status
 
     @permission(Perms.STATUS)
-    def freeSpace(self):
+    def free_space(self):
         """
         Available free space at download directory in bytes.
         """
         return free_space(self.pyload.config.get("general", "storage_folder"))
 
     @permission(Perms.ALL)
-    def getServerVersion(self):
+    def get_server_version(self):
         """
         pyLoad Core version.
         """
@@ -287,7 +287,7 @@ class Api:
         self.pyload._do_restart = True
 
     @permission(Perms.LOGS)
-    def getLog(self, offset=0):
+    def get_log(self, offset=0):
         """
         Returns most recent log entries.
 
@@ -307,7 +307,7 @@ class Api:
             return ["No log available"]
 
     @permission(Perms.STATUS)
-    def isTimeDownload(self):
+    def is_time_download(self):
         """
         Checks if pyload will start new downloads according to time in config.
 
@@ -318,7 +318,7 @@ class Api:
         return compare_time(start, end)
 
     @permission(Perms.STATUS)
-    def isTimeReconnect(self):
+    def is_time_reconnect(self):
         """
         Checks if pyload will try to make a reconnect.
 
@@ -331,14 +331,14 @@ class Api:
         )
 
     @permission(Perms.LIST)
-    def statusDownloads(self):
+    def status_downloads(self):
         """
         Status off all currently running downloads.
 
         :return: list of `DownloadStatus`
         """
         data = []
-        for pyfile in self.pyload.threadManager.getActiveFiles():
+        for pyfile in self.pyload.thread_manager.get_active_files():
             if not isinstance(pyfile, PyFile):
                 continue
 
@@ -346,17 +346,17 @@ class Api:
                 DownloadInfo(
                     pyfile.id,
                     pyfile.name,
-                    pyfile.getSpeed(),
-                    pyfile.getETA(),
-                    pyfile.formatETA(),
-                    pyfile.getBytesLeft(),
-                    pyfile.getSize(),
-                    pyfile.formatSize(),
-                    pyfile.getPercent(),
+                    pyfile.get_speed(),
+                    pyfile.get_e_t_a(),
+                    pyfile.format_e_t_a(),
+                    pyfile.get_bytes_left(),
+                    pyfile.get_size(),
+                    pyfile.format_size(),
+                    pyfile.get_percent(),
                     pyfile.status,
-                    pyfile.getStatusName(),
-                    pyfile.formatWait(),
-                    pyfile.waitUntil,
+                    pyfile.get_status_name(),
+                    pyfile.format_wait(),
+                    pyfile.wait_until,
                     pyfile.packageid,
                     pyfile.package().name,
                     pyfile.pluginname,
@@ -366,7 +366,7 @@ class Api:
         return data
 
     @permission(Perms.ADD)
-    def addPackage(self, name, links, dest=Destination.QUEUE.value):
+    def add_package(self, name, links, dest=Destination.QUEUE.value):
         """
         Adds a package, with links to desired destination.
 
@@ -387,9 +387,9 @@ class Api:
             .replace("\\", "_")
         )
 
-        pid = self.pyload.files.addPackage(name, folder, Destination(dest))
+        pid = self.pyload.files.add_package(name, folder, Destination(dest))
 
-        self.pyload.files.addLinks(links, pid)
+        self.pyload.files.add_links(links, pid)
 
         self.pyload.log.info(
             self._("Added package {name} containing {count:d} links").format(
@@ -402,10 +402,10 @@ class Api:
         return pid
 
     @permission(Perms.ADD)
-    def parseURLs(self, html=None, url=None):
+    def parse_urls(self, html=None, url=None):
         """
         Parses html content or any arbitaty text for links and returns result of
-        `checkURLs`
+        `check_urls`
 
         :param html: html source
         :return:
@@ -420,17 +420,17 @@ class Api:
             urls += [x[0] for x in urlmatcher.findall(page)]
 
         # remove duplicates
-        return self.checkURLs(set(urls))
+        return self.check_urls(set(urls))
 
     @permission(Perms.ADD)
-    def checkURLs(self, urls):
+    def check_urls(self, urls):
         """
         Gets urls and returns pluginname mapped to list of matches urls.
 
         :param urls:
         :return: {plugin: urls}
         """
-        data = self.pyload.pluginManager.parseUrls(urls)
+        data = self.pyload.plugin_manager.parse_urls(urls)
         plugins = {}
 
         for url, plugin in data:
@@ -442,16 +442,16 @@ class Api:
         return plugins
 
     @permission(Perms.ADD)
-    def checkOnlineStatus(self, urls):
+    def check_online_status(self, urls):
         """
         initiates online status check.
 
         :param urls:
         :return: initial set of data as `OnlineCheck` instance containing the result id
         """
-        data = self.pyload.pluginManager.parseUrls(urls)
+        data = self.pyload.plugin_manager.parse_urls(urls)
 
-        rid = self.pyload.threadManager.createResultThread(data, False)
+        rid = self.pyload.thread_manager.create_result_thread(data, False)
 
         tmp = [
             (url, (url, OnlineStatus(url, pluginname, "unknown", 3, 0)))
@@ -468,7 +468,7 @@ class Api:
         return OnlineCheck(rid, result)
 
     @permission(Perms.ADD)
-    def checkOnlineStatusContainer(self, urls, container, data):
+    def check_online_status_container(self, urls, container, data):
         """
         checks online status of urls and a submited container file.
 
@@ -485,17 +485,17 @@ class Api:
         ) as th:
             th.write(data)
 
-        return self.checkOnlineStatus(urls + [th.name])
+        return self.check_online_status(urls + [th.name])
 
     @permission(Perms.ADD)
-    def pollResults(self, rid):
+    def poll_results(self, rid):
         """
         Polls the result available for ResultID.
 
         :param rid: `ResultID`
         :return: `OnlineCheck`, if rid is -1 then no more data available
         """
-        result = self.pyload.threadManager.getInfoResult(rid)
+        result = self.pyload.thread_manager.get_info_result(rid)
 
         if "ALL_INFO_FETCHED" in result:
             del result["ALL_INFO_FETCHED"]
@@ -504,7 +504,7 @@ class Api:
             return OnlineCheck(rid, result)
 
     @permission(Perms.ADD)
-    def generatePackages(self, links):
+    def generate_packages(self, links):
         """
         Parses links, generates packages names from urls.
 
@@ -515,7 +515,7 @@ class Api:
         return result
 
     @permission(Perms.ADD)
-    def generateAndAddPackages(self, links, dest=Destination.QUEUE.value):
+    def generate_and_add_packages(self, links, dest=Destination.QUEUE.value):
         """
         Generates and add packages.
 
@@ -524,12 +524,12 @@ class Api:
         :return: list of package ids
         """
         return [
-            self.addPackage(name, urls, dest)
-            for name, urls in self.generatePackages(links).items()
+            self.add_package(name, urls, dest)
+            for name, urls in self.generate_packages(links).items()
         ]
 
     @permission(Perms.ADD)
-    def checkAndAddPackages(self, links, dest=Destination.QUEUE.value):
+    def check_and_add_packages(self, links, dest=Destination.QUEUE.value):
         """
         Checks online status, retrieves names, and will add packages.\ Because of this
         packages are not added immediatly, only for internal use.
@@ -538,18 +538,18 @@ class Api:
         :param dest: `Destination`
         :return: None
         """
-        data = self.pyload.pluginManager.parseUrls(links)
-        self.pyload.threadManager.createResultThread(data, True)
+        data = self.pyload.plugin_manager.parse_urls(links)
+        self.pyload.thread_manager.create_result_thread(data, True)
 
     @permission(Perms.LIST)
-    def getPackageData(self, pid):
+    def get_package_data(self, pid):
         """
         Returns complete information about package, and included files.
 
         :param pid: package id
         :return: `PackageData` with .links attribute
         """
-        data = self.pyload.files.getPackageData(int(pid))
+        data = self.pyload.files.get_package_data(int(pid))
 
         if not data:
             raise PackageDoesNotExists(pid)
@@ -562,13 +562,13 @@ class Api:
             data["password"],
             data["queue"],
             data["order"],
-            links=[self._convertPyFile(x) for x in data["links"].values()],
+            links=[self._convert_py_file(x) for x in data["links"].values()],
         )
 
         return pdata
 
     @permission(Perms.LIST)
-    def getPackageInfo(self, pid):
+    def get_package_info(self, pid):
         """
         Returns information about package, without detailed information about containing
         files.
@@ -576,7 +576,7 @@ class Api:
         :param pid: package id
         :return: `PackageData` with .fid attribute
         """
-        data = self.pyload.files.getPackageData(int(pid))
+        data = self.pyload.files.get_package_data(int(pid))
 
         if not data:
             raise PackageDoesNotExists(pid)
@@ -595,50 +595,50 @@ class Api:
         return pdata
 
     @permission(Perms.LIST)
-    def getFileData(self, fid):
+    def get_file_data(self, fid):
         """
         Get complete information about a specific file.
 
         :param fid: file id
         :return: `FileData`
         """
-        info = self.pyload.files.getFileData(int(fid))
+        info = self.pyload.files.get_file_data(int(fid))
         if not info:
             raise FileDoesNotExists(fid)
 
         fileinfo = list(info.values())[0]
-        fdata = self._convertPyFile(fileinfo)
+        fdata = self._convert_py_file(fileinfo)
         return fdata
 
     @permission(Perms.DELETE)
-    def deleteFiles(self, fids):
+    def delete_files(self, fids):
         """
         Deletes several file entries from pyload.
 
         :param fids: list of file ids
         """
         for id in fids:
-            self.pyload.files.deleteLink(int(id))
+            self.pyload.files.delete_link(int(id))
 
         self.pyload.files.save()
 
     @permission(Perms.DELETE)
-    def deletePackages(self, pids):
+    def delete_packages(self, pids):
         """
         Deletes packages and containing links.
 
         :param pids: list of package ids
         """
         for id in pids:
-            self.pyload.files.deletePackage(int(id))
+            self.pyload.files.delete_package(int(id))
 
         self.pyload.files.save()
 
     @permission(Perms.LIST)
-    def getQueue(self):
+    def get_queue(self):
         """
-        Returns info about queue and packages, **not** about files, see `getQueueData` \
-        or `getPackageData` instead.
+        Returns info about queue and packages, **not** about files, see `get_queue_data` \
+        or `get_package_data` instead.
 
         :return: list of `PackageInfo`
         """
@@ -656,14 +656,14 @@ class Api:
                 pack["sizetotal"],
                 pack["linkstotal"],
             )
-            for pack in self.pyload.files.getInfoData(Destination.QUEUE).values()
+            for pack in self.pyload.files.get_info_data(Destination.QUEUE).values()
         ]
 
     @permission(Perms.LIST)
-    def getQueueData(self):
+    def get_queue_data(self):
         """
         Return complete data about everything in queue, this is very expensive use it
-        sparely.\ See `getQueue` for alternative.
+        sparely.\ See `get_queue` for alternative.
 
         :return: list of `PackageData`
         """
@@ -679,15 +679,15 @@ class Api:
                 pack["linksdone"],
                 pack["sizedone"],
                 pack["sizetotal"],
-                links=[self._convertPyFile(x) for x in pack["links"].values()],
+                links=[self._convert_py_file(x) for x in pack["links"].values()],
             )
-            for pack in self.pyload.files.getCompleteData(Destination.QUEUE).values()
+            for pack in self.pyload.files.get_complete_data(Destination.QUEUE).values()
         ]
 
     @permission(Perms.LIST)
-    def getCollector(self):
+    def get_collector(self):
         """
-        same as `getQueue` for collector.
+        same as `get_queue` for collector.
 
         :return: list of `PackageInfo`
         """
@@ -705,13 +705,13 @@ class Api:
                 pack["sizetotal"],
                 pack["linkstotal"],
             )
-            for pack in self.pyload.files.getInfoData(Destination.COLLECTOR).values()
+            for pack in self.pyload.files.get_info_data(Destination.COLLECTOR).values()
         ]
 
     @permission(Perms.LIST)
-    def getCollectorData(self):
+    def get_collector_data(self):
         """
-        same as `getQueueData` for collector.
+        same as `get_queue_data` for collector.
 
         :return: list of `PackageInfo`
         """
@@ -727,22 +727,22 @@ class Api:
                 pack["linksdone"],
                 pack["sizedone"],
                 pack["sizetotal"],
-                links=[self._convertPyFile(x) for x in pack["links"].values()],
+                links=[self._convert_py_file(x) for x in pack["links"].values()],
             )
-            for pack in self.pyload.files.getCompleteData(
+            for pack in self.pyload.files.get_complete_data(
                 Destination.COLLECTOR.value
             ).values()
         ]
 
     @permission(Perms.ADD)
-    def addFiles(self, pid, links):
+    def add_files(self, pid, links):
         """
         Adds files to specific package.
 
         :param pid: package id
         :param links: list of urls
         """
-        self.pyload.files.addLinks(links, int(pid))
+        self.pyload.files.add_links(links, int(pid))
 
         self.pyload.log.info(
             self._("Added {count:d} links to package #{package:d} ").format(
@@ -752,43 +752,43 @@ class Api:
         self.pyload.files.save()
 
     @permission(Perms.MODIFY)
-    def pushToQueue(self, pid):
+    def push_to_queue(self, pid):
         """
         Moves package from Collector to Queue.
 
         :param pid: package id
         """
-        self.pyload.files.setPackageLocation(pid, Destination.QUEUE)
+        self.pyload.files.set_package_location(pid, Destination.QUEUE)
 
     @permission(Perms.MODIFY)
-    def pullFromQueue(self, pid):
+    def pull_from_queue(self, pid):
         """
         Moves package from Queue to Collector.
 
         :param pid: package id
         """
-        self.pyload.files.setPackageLocation(pid, Destination.COLLECTOR)
+        self.pyload.files.set_package_location(pid, Destination.COLLECTOR)
 
     @permission(Perms.MODIFY)
-    def restartPackage(self, pid):
+    def restart_package(self, pid):
         """
         Restarts a package, resets every containing files.
 
         :param pid: package id
         """
-        self.pyload.files.restartPackage(int(pid))
+        self.pyload.files.restart_package(int(pid))
 
     @permission(Perms.MODIFY)
-    def restartFile(self, fid):
+    def restart_file(self, fid):
         """
         Resets file status, so it will be downloaded again.
 
         :param fid:  file id
         """
-        self.pyload.files.restartFile(int(fid))
+        self.pyload.files.restart_file(int(fid))
 
     @permission(Perms.MODIFY)
-    def recheckPackage(self, pid):
+    def recheck_package(self, pid):
         """
         Proofes online status of all files in a package, also a default action when
         package is added.
@@ -796,19 +796,19 @@ class Api:
         :param pid:
         :return:
         """
-        self.pyload.files.reCheckPackage(int(pid))
+        self.pyload.files.re_check_package(int(pid))
 
     @permission(Perms.MODIFY)
-    def stopAllDownloads(self):
+    def stop_all_downloads(self):
         """
         Aborts all running downloads.
         """
         pyfiles = self.pyload.files.cache.values()
         for pyfile in pyfiles:
-            pyfile.abortDownload()
+            pyfile.abort_download()
 
     @permission(Perms.MODIFY)
-    def stopDownloads(self, fids):
+    def stop_downloads(self, fids):
         """
         Aborts specific downloads.
 
@@ -818,22 +818,22 @@ class Api:
         pyfiles = self.pyload.files.cache.values()
         for pyfile in pyfiles:
             if pyfile.id in fids:
-                pyfile.abortDownload()
+                pyfile.abort_download()
 
     @permission(Perms.MODIFY)
-    def setPackageName(self, pid, name):
+    def set_package_name(self, pid, name):
         """
         Renames a package.
 
         :param pid: package id
         :param name: new package name
         """
-        pack = self.pyload.files.getPackage(pid)
+        pack = self.pyload.files.get_package(pid)
         pack.name = name
         pack.sync()
 
     @permission(Perms.MODIFY)
-    def movePackage(self, destination, pid):
+    def move_package(self, destination, pid):
         """
         Set a new package location.
 
@@ -845,10 +845,10 @@ class Api:
         except ValueError:
             pass
         else:
-            self.pyload.files.setPackageLocation(pid, dest)
+            self.pyload.files.set_package_location(pid, dest)
 
     @permission(Perms.MODIFY)
-    def moveFiles(self, fids, pid):
+    def move_files(self, fids, pid):
         """
         Move multiple files to another package.
 
@@ -860,7 +860,7 @@ class Api:
         pass
 
     @permission(Perms.ADD)
-    def uploadContainer(self, filename, data):
+    def upload_container(self, filename, data):
         """
         Uploads and adds a container file to pyLoad.
 
@@ -875,37 +875,37 @@ class Api:
         ) as th:
             th.write(data)
 
-        self.addPackage(th.name, [th.name], Destination.QUEUE.value)
+        self.add_package(th.name, [th.name], Destination.QUEUE.value)
 
     @permission(Perms.MODIFY)
-    def orderPackage(self, pid, position):
+    def order_package(self, pid, position):
         """
         Gives a package a new position.
 
         :param pid: package id
         :param position:
         """
-        self.pyload.files.reorderPackage(pid, position)
+        self.pyload.files.reorder_package(pid, position)
 
     @permission(Perms.MODIFY)
-    def orderFile(self, fid, position):
+    def order_file(self, fid, position):
         """
         Gives a new position to a file within its package.
 
         :param fid: file id
         :param position:
         """
-        self.pyload.files.reorderFile(fid, position)
+        self.pyload.files.reorder_file(fid, position)
 
     @permission(Perms.MODIFY)
-    def setPackageData(self, pid, data):
+    def set_package_data(self, pid, data):
         """
         Allows to modify several package attributes.
 
         :param pid: package id
         :param data: dict that maps attribute to desired value
         """
-        p = self.pyload.files.getPackage(pid)
+        p = self.pyload.files.get_package(pid)
         if not p:
             raise PackageDoesNotExists(pid)
 
@@ -918,122 +918,122 @@ class Api:
         self.pyload.files.save()
 
     @permission(Perms.DELETE)
-    def deleteFinished(self):
+    def delete_finished(self):
         """
         Deletes all finished files and completly finished packages.
 
         :return: list of deleted package ids
         """
-        return self.pyload.files.deleteFinishedLinks()
+        return self.pyload.files.delete_finished_links()
 
     @permission(Perms.MODIFY)
-    def restartFailed(self):
+    def restart_failed(self):
         """
         Restarts all failed failes.
         """
-        self.pyload.files.restartFailed()
+        self.pyload.files.restart_failed()
 
     @permission(Perms.LIST)
-    def getPackageOrder(self, destination):
+    def get_package_order(self, destination):
         """
         Returns information about package order.
 
         :param destination: `Destination`
         :return: dict mapping order to package id
         """
-        packs = self.pyload.files.getInfoData(Destination(destination))
+        packs = self.pyload.files.get_info_data(Destination(destination))
         order = {}
 
         for pid in packs:
-            pack = self.pyload.files.getPackageData(int(pid))
+            pack = self.pyload.files.get_package_data(int(pid))
             while pack["order"] in order.keys():  #: just in case
                 pack["order"] += 1
             order[pack["order"]] = pack["id"]
         return order
 
     @permission(Perms.LIST)
-    def getFileOrder(self, pid):
+    def get_file_order(self, pid):
         """
         Information about file order within package.
 
         :param pid:
         :return: dict mapping order to file id
         """
-        rawData = self.pyload.files.getPackageData(int(pid))
+        raw_data = self.pyload.files.get_package_data(int(pid))
         order = {}
-        for id, pyfile in rawData["links"].items():
+        for id, pyfile in raw_data["links"].items():
             while pyfile["order"] in order.keys():  #: just in case
                 pyfile["order"] += 1
             order[pyfile["order"]] = pyfile["id"]
         return order
 
     @permission(Perms.STATUS)
-    def isCaptchaWaiting(self):
+    def is_captcha_waiting(self):
         """
         Indicates wether a captcha task is available.
 
         :return: bool
         """
-        self.pyload.lastClientConnected = time.time()
-        task = self.pyload.captchaManager.getTask()
+        self.pyload.last_client_connected = time.time()
+        task = self.pyload.captcha_manager.get_task()
         return task is not None
 
     @permission(Perms.STATUS)
-    def getCaptchaTask(self, exclusive=False):
+    def get_captcha_task(self, exclusive=False):
         """
         Returns a captcha task.
 
         :param exclusive: unused
         :return: `CaptchaTask`
         """
-        self.pyload.lastClientConnected = time.time()
-        task = self.pyload.captchaManager.getTask()
+        self.pyload.last_client_connected = time.time()
+        task = self.pyload.captcha_manager.get_task()
         if task:
-            task.setWatingForUser(exclusive=exclusive)
-            data, type, result = task.getCaptcha()
+            task.set_wating_for_user(exclusive=exclusive)
+            data, type, result = task.get_captcha()
             t = CaptchaTask(int(task.id), json.dumps(data), type, result)
             return t
         else:
             return CaptchaTask(-1)
 
     @permission(Perms.STATUS)
-    def getCaptchaTaskStatus(self, tid):
+    def get_captcha_task_status(self, tid):
         """
         Get information about captcha task.
 
         :param tid: task id
         :return: string
         """
-        self.pyload.lastClientConnected = time.time()
-        t = self.pyload.captchaManager.getTaskByID(tid)
-        return t.getStatus() if t else ""
+        self.pyload.last_client_connected = time.time()
+        t = self.pyload.captcha_manager.get_task_by_id(tid)
+        return t.get_status() if t else ""
 
     @permission(Perms.STATUS)
-    def setCaptchaResult(self, tid, result):
+    def set_captcha_result(self, tid, result):
         """
         Set result for a captcha task.
 
         :param tid: task id
         :param result: captcha result
         """
-        self.pyload.lastClientConnected = time.time()
-        task = self.pyload.captchaManager.getTaskByID(tid)
+        self.pyload.last_client_connected = time.time()
+        task = self.pyload.captcha_manager.get_task_by_id(tid)
         if task:
-            task.setResult(result)
-            self.pyload.captchaManager.removeTask(task)
+            task.set_result(result)
+            self.pyload.captcha_manager.remove_task(task)
 
     @permission(Perms.STATUS)
-    def getEvents(self, uuid):
+    def get_events(self, uuid):
         """
         Lists occured events, may be affected to changes in future.
 
         :param uuid:
         :return: list of `Events`
         """
-        events = self.pyload.eventManager.getEvents(uuid)
-        newEvents = []
+        events = self.pyload.event_manager.get_events(uuid)
+        new_events = []
 
-        def convDest(d):
+        def conv_dest(d):
             return (Destination.QUEUE if d == "queue" else Destination.COLLECTOR).value
 
         for e in events:
@@ -1044,28 +1044,28 @@ class Api:
                 event.type = (
                     ElementType.PACKAGE if e[2] == "pack" else ElementType.FILE
                 ).value
-                event.destination = convDest(e[1])
+                event.destination = conv_dest(e[1])
             elif e[0] == "order":
                 if e[1]:
                     event.id = e[1]
                     event.type = (
                         ElementType.PACKAGE if e[2] == "pack" else ElementType.FILE
                     )
-                    event.destination = convDest(e[3])
+                    event.destination = conv_dest(e[3])
             elif e[0] == "reload":
-                event.destination = convDest(e[1])
-            newEvents.append(event)
-        return newEvents
+                event.destination = conv_dest(e[1])
+            new_events.append(event)
+        return new_events
 
     @permission(Perms.ACCOUNTS)
-    def getAccounts(self, refresh):
+    def get_accounts(self, refresh):
         """
         Get information about all entered accounts.
 
         :param refresh: reload account info
         :return: list of `AccountInfo`
         """
-        accs = self.pyload.accountManager.getAccountInfos(False, refresh)
+        accs = self.pyload.account_manager.get_account_infos(False, refresh)
         accounts = []
         for group in accs.values():
             accounts.extend(
@@ -1086,30 +1086,30 @@ class Api:
         return accounts
 
     @permission(Perms.ALL)
-    def getAccountTypes(self):
+    def get_account_types(self):
         """
         All available account types.
 
         :return: list
         """
-        return list(self.pyload.accountManager.accounts.keys())
+        return list(self.pyload.account_manager.accounts.keys())
 
     @permission(Perms.ACCOUNTS)
-    def updateAccount(self, plugin, account, password=None, options={}):
+    def update_account(self, plugin, account, password=None, options={}):
         """
         Changes pw/options for specific account.
         """
-        self.pyload.accountManager.updateAccount(plugin, account, password, options)
+        self.pyload.account_manager.update_account(plugin, account, password, options)
 
     @permission(Perms.ACCOUNTS)
-    def removeAccount(self, plugin, account):
+    def remove_account(self, plugin, account):
         """
         Remove account from pyload.
 
         :param plugin: pluginname
         :param account: accountname
         """
-        self.pyload.accountManager.removeAccount(plugin, account)
+        self.pyload.account_manager.remove_account(plugin, account)
 
     @permission(Perms.ALL)
     def login(self, username, password):
@@ -1122,9 +1122,9 @@ class Api:
         :param remoteip: Omit this argument, its only used internal
         :return: bool indicating login was successful
         """
-        return True if self.checkAuth(username, password) else False
+        return True if self.check_auth(username, password) else False
 
-    def checkAuth(self, username, password):
+    def check_auth(self, username, password):
         """
         Check authentication and returns details.
 
@@ -1133,9 +1133,9 @@ class Api:
         :param remoteip:
         :return: dict with info, empty when login is incorrect
         """
-        return self.pyload.db.checkAuth(username, password)
+        return self.pyload.db.check_auth(username, password)
 
-    def isAuthorized(self, func, userdata):
+    def is_authorized(self, func, userdata):
         """
         checks if the user is authorized for specific method.
 
@@ -1145,7 +1145,7 @@ class Api:
         """
         if userdata["role"] == Role.ADMIN:
             return True
-        elif func in permMap and has_permission(userdata["permission"], permMap[func]):
+        elif func in perm_map and has_permission(userdata["permission"], perm_map[func]):
             return True
         else:
             return False
@@ -1162,11 +1162,11 @@ class Api:
 
     #: Old API
     @permission(Perms.ALL)
-    def getUserData(self, username, password):
+    def get_user_data(self, username, password):
         """
-        similar to `checkAuth` but returns UserData thrift type.
+        similar to `check_auth` but returns UserData thrift type.
         """
-        user = self.checkAuth(username, password)
+        user = self.check_auth(username, password)
         if user:
             return OldUserData(
                 user["name"],
@@ -1181,9 +1181,9 @@ class Api:
     @permission(Perms.ALL)
     def get_userdata(self, username, password):
         """
-        similar to `checkAuth` but returns UserData thrift type.
+        similar to `check_auth` but returns UserData thrift type.
         """
-        user = self.checkAuth(username, password)
+        user = self.check_auth(username, password)
         if user:
             return UserData(
                 user["id"],
@@ -1197,12 +1197,12 @@ class Api:
             return UserData()
 
     #: Old API
-    def getAllUserData(self):
+    def get_all_user_data(self):
         """
         returns all known user and info.
         """
         res = {}
-        for id, data in self.pyload.db.getAllUserData().items():
+        for id, data in self.pyload.db.get_all_user_data().items():
             res[data["name"]] = OldUserData(
                 data["name"],
                 data["email"],
@@ -1218,7 +1218,7 @@ class Api:
         returns all known user and info.
         """
         res = {}
-        for id, data in self.pyload.db.getAllUserData().items():
+        for id, data in self.pyload.db.get_all_user_data().items():
             res[id] = UserData(
                 id,
                 data["name"],
@@ -1230,20 +1230,20 @@ class Api:
         return res
 
     @permission(Perms.STATUS)
-    def getServices(self):
+    def get_services(self):
         """
         A dict of available services, these can be defined by addon plugins.
 
         :return: dict with this style: {"plugin": {"method": "description"}}
         """
         data = {}
-        for plugin, funcs in self.pyload.addonManager.methods.items():
+        for plugin, funcs in self.pyload.addon_manager.methods.items():
             data[plugin] = funcs
 
         return data
 
     @permission(Perms.STATUS)
-    def hasService(self, plugin, func):
+    def has_service(self, plugin, func):
         """
         Checks wether a service is available.
 
@@ -1251,7 +1251,7 @@ class Api:
         :param func:
         :return: bool
         """
-        cont = self.pyload.addonManager.methods
+        cont = self.pyload.addon_manager.methods
         return plugin in cont and func in cont[plugin]
 
     @permission(Perms.STATUS)
@@ -1267,42 +1267,42 @@ class Api:
         plugin = info.plugin
         func = info.func
         args = info.arguments
-        parse = info.parseArguments
+        parse = info.parse_arguments
 
-        if not self.hasService(plugin, func):
+        if not self.has_service(plugin, func):
             raise ServiceDoesNotExists(plugin, func)
 
         try:
-            ret = self.pyload.addonManager.callRPC(plugin, func, args, parse)
+            ret = self.pyload.addon_manager.call_rpc(plugin, func, args, parse)
             return str(ret)
         except Exception as exc:
             raise ServiceException(exc)
 
     @permission(Perms.STATUS)
-    def getAllInfo(self):
+    def get_all_info(self):
         """
         Returns all information stored by addon plugins. Values are always strings.
 
         :return: {"plugin": {"name": value } }
         """
-        return self.pyload.addonManager.getAllInfo()
+        return self.pyload.addon_manager.get_all_info()
 
     @permission(Perms.STATUS)
-    def getInfoByPlugin(self, plugin):
+    def get_info_by_plugin(self, plugin):
         """
         Returns information stored by a specific plugin.
 
         :param plugin: pluginname
         :return: dict of attr names mapped to value {"name": value}
         """
-        return self.pyload.addonManager.getInfo(plugin)
+        return self.pyload.addon_manager.get_info(plugin)
 
-    def changePassword(self, user, oldpw, newpw):
+    def change_password(self, user, oldpw, newpw):
         """
         changes password for specific user.
         """
-        return self.pyload.db.changePassword(user, oldpw, newpw)
+        return self.pyload.db.change_password(user, oldpw, newpw)
 
-    def setUserPermission(self, user, permission, role):
-        self.pyload.db.setPermission(user, permission)
-        self.pyload.db.setRole(user, role)
+    def set_user_permission(self, user, permission, role):
+        self.pyload.db.set_permission(user, permission)
+        self.pyload.db.set_role(user, role)

@@ -161,9 +161,9 @@ class AntiStandby(BaseAddon):
             return
 
         if (
-            self.pyload.threadManager.pause
-            or not self.pyload.api.isTimeDownload()
-            or not self.pyload.threadManager.getActiveFiles()
+            self.pyload.thread_manager.pause
+            or not self.pyload.api.is_time_download()
+            or not self.pyload.thread_manager.get_active_files()
         ):
             return
 

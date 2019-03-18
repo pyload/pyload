@@ -33,7 +33,7 @@ class FourSharedCom(BaseAccount):
                 "password": password,
                 "remember": "on",
                 "_remember": "on",
-                "returnTo": "http://www.4shared.com/account/home.jsp",
+                "return_to": "http://www.4shared.com/account/home.jsp",
             },
         )
 

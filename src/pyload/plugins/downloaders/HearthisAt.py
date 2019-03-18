@@ -21,12 +21,12 @@ class HearthisAt(BaseDownloader):
     __authors__ = [("GammaC0de", "nitzo2001{AT]yahoo{DOT]com")]
 
     def setup(self):
-        self.multiDL = True
+        self.multi_dl = True
 
     def process(self, pyfile):
         self.data = self.load(pyfile.url)
 
-        m = re.search(r"intTrackId = (\d+);", self.data)
+        m = re.search(r"int_track_id = (\d+);", self.data)
         if m is None:
             self.fail(self._("Track ID not found"))
 

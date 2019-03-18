@@ -17,7 +17,7 @@ class RapiduNet(BaseAccount):
 
     __description__ = """Rapidu.net account plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("prOq", None), ("Walter Purcaro", "vuolter@gmail.com")]
+    __authors__ = [("pr_oq", None), ("Walter Purcaro", "vuolter@gmail.com")]
 
     PREMIUM_PATTERN = r">Account: <b>Premium"
 
@@ -52,13 +52,13 @@ class RapiduNet(BaseAccount):
     def signin(self, user, password, data):
         self.load(
             "https://rapidu.net/ajax.php",
-            get={"a": "getChangeLang"},
+            get={"a": "get_change_lang"},
             post={"_go": "", "lang": "en"},
         )
 
         html = self.load(
             "https://rapidu.net/ajax.php",
-            get={"a": "getUserLogin"},
+            get={"a": "get_user_login"},
             post={"_go": "", "login": user, "pass": password, "remember": "1"},
         )
         json_data = json.loads(html)

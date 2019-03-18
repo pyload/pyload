@@ -36,10 +36,10 @@ class NitroflareComFolder(SimpleDecrypter):
         html = self.load(
             "http://nitroflare.com/ajax/folder.php",
             post={
-                "userId": self.info["pattern"]["USER"],
+                "user_id": self.info["pattern"]["USER"],
                 "folder": self.info["pattern"]["ID"],
                 "page": 1,
-                "perPage": 10000,
+                "per_page": 10000,
             },
         )
         res = json.loads(html)

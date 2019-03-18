@@ -64,8 +64,8 @@ class ZbigzCom(BaseDownloader):
         file_id = m.group(1)
         call_id = "".join(random.choice("0123456789") for _ in range(20))
 
-        self.pyfile.setCustomStatus("torrent")
-        self.pyfile.setProgress(0)
+        self.pyfile.set_custom_status("torrent")
+        self.pyfile.set_progress(0)
 
         json_data = self.jquery_call(
             "http://m.zbigz.com/core/info.php", file_id, call_id
@@ -73,8 +73,8 @@ class ZbigzCom(BaseDownloader):
         if json_data is None:
             self.fail("Unexpected jQuery response")
 
-        if "faultString" in json_data:
-            self.fail(json_data["faultString"])
+        if "fault_string" in json_data:
+            self.fail(json_data["fault_string"])
 
         pyfile.name = json_data["info"]["name"] + (
             ".zip" if len(json_data["files"]) > 1 else ""
@@ -88,18 +88,18 @@ class ZbigzCom(BaseDownloader):
             if json_data is None:
                 self.fail("Unexpected jQuery response")
 
-            if "faultString" in json_data:
-                self.fail(json_data["faultString"])
+            if "fault_string" in json_data:
+                self.fail(json_data["fault_string"])
 
             progress = int(json_data["info"]["progress"])
-            pyfile.setProgress(progress)
+            pyfile.set_progress(progress)
 
             if json_data["info"]["state"] != "downloading" or progress == 100:
                 break
 
             self.sleep(5)
 
-        pyfile.setProgress(100)
+        pyfile.set_progress(100)
 
         if len(json_data["files"]) == 1:
             download_url = "http://m.zbigz.com/file/{}/0".format(file_id)
@@ -127,20 +127,20 @@ class ZbigzCom(BaseDownloader):
 
             download_url = m.group(1)
 
-            self.pyfile.setCustomStatus("zip")
-            self.pyfile.setProgress(0)
+            self.pyfile.set_custom_status("zip")
+            self.pyfile.set_progress(0)
 
             while True:
                 json_data = self.jquery_call(zip_status_url, file_id, call_id)
                 if json_data is None:
                     self.fail("Unexpected jQuery response")
 
-                if "faultString" in json_data:
-                    self.fail(json_data["faultString"])
+                if "fault_string" in json_data:
+                    self.fail(json_data["fault_string"])
 
                 progress = int(json_data["proc"])
 
-                self.pyfile.setProgress(progress)
+                self.pyfile.set_progress(progress)
 
                 if progress == 100:
                     break

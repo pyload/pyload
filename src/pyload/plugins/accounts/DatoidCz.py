@@ -33,7 +33,7 @@ class DatoidCz(BaseAccount):
             self.skip_login()
 
         html = self.load(
-            "https://datoid.cz/prihlaseni?do=signInForm-submit",
+            "https://datoid.cz/prihlaseni?do=sign_in_form-submit",
             post={"username": user, "password": password},
         )
 

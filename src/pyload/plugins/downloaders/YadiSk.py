@@ -71,7 +71,7 @@ class YadiSk(SimpleDownloader):
 
     def setup(self):
         self.resume_download = False
-        self.multiDL = False
+        self.multi_dl = False
         self.chunk_limit = 1
 
     def handle_free(self, pyfile):
@@ -83,7 +83,7 @@ class YadiSk(SimpleDownloader):
                 "https://yadi.sk/models/",
                 get={"_m": "do-get-resource-url"},
                 post={
-                    "idClient": self.info["idclient"],
+                    "id_client": self.info["idclient"],
                     "version": self.info["version"],
                     "_model.0": "do-get-resource-url",
                     "sk": self.info["sk"],

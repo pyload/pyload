@@ -33,7 +33,7 @@ class UploadrocketNet(XFSDownloader):
 
     def setup(self):
         self.resume_download = True
-        self.multiDL = True
+        self.multi_dl = True
 
     def _post_parameters(self):
         inputs = super()._post_parameters()

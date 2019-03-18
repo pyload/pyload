@@ -30,7 +30,7 @@ class HostujeNet(SimpleDownloader):
     OFFLINE_PATTERN = r"Podany plik nie został odnaleziony\.\.\."
 
     def setup(self):
-        self.multiDL = True
+        self.multi_dl = True
         self.chunk_limit = 1
 
     def handle_free(self, pyfile):

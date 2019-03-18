@@ -240,7 +240,7 @@ class ExternalScripts(BaseAddon):
 
     def package_deleted(self, pid):
         dl_folder = self.pyload.config.get("general", "storage_folder")
-        pdata = self.pyload.api.getPackageInfo(pid)
+        pdata = self.pyload.api.get_package_info(pid)
 
         if self.pyload.config.get("general", "folder_per_package"):
             dl_folder = os.path.join(dl_folder, pdata.folder)

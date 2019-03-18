@@ -17,7 +17,7 @@ def _salted_password(password, salt):
 
 class UserDatabaseMethods:
     @style.queue
-    def checkAuth(self, user, password):
+    def check_auth(self, user, password):
         self.c.execute(
             "SELECT id, name, password, role, permission, template, email FROM users WHERE name=?",
             (user,),
@@ -43,7 +43,7 @@ class UserDatabaseMethods:
         }
 
     @style.queue
-    def addUser(self, user, password):
+    def add_user(self, user, password):
         salt = reduce(lambda x, y: x + y, [str(random.randint(0, 9)) for i in range(5)])
         salt_pw = salt + _salted_password(password, salt)
 
@@ -56,7 +56,7 @@ class UserDatabaseMethods:
             )
 
     @style.queue
-    def changePassword(self, user, old_password, new_password):
+    def change_password(self, user, old_password, new_password):
         self.c.execute("SELECT id, name, password FROM users WHERE name=?", (user,))
         r = self.c.fetchone()
         if not r:
@@ -78,15 +78,15 @@ class UserDatabaseMethods:
         return True
 
     @style.async_
-    def setPermission(self, user, perms):
+    def set_permission(self, user, perms):
         self.c.execute("UPDATE users SET permission=? WHERE name=?", (perms, user))
 
     @style.async_
-    def setRole(self, user, role):
+    def set_role(self, user, role):
         self.c.execute("UPDATE users SET role=? WHERE name=?", (role, user))
 
     @style.queue
-    def listUsers(self):
+    def list_users(self):
         self.c.execute("SELECT name FROM users")
         users = []
         for row in self.c:
@@ -94,7 +94,7 @@ class UserDatabaseMethods:
         return users
 
     @style.queue
-    def getAllUserData(self):
+    def get_all_user_data(self):
         self.c.execute("SELECT id, name, permission, role, template, email FROM users")
         user = {}
         for r in self.c:
@@ -109,8 +109,8 @@ class UserDatabaseMethods:
         return user
 
     @style.queue
-    def removeUser(self, user):
+    def remove_user(self, user):
         self.c.execute("DELETE FROM users WHERE name=?", (user,))
 
 
-DatabaseThread.registerSub(UserDatabaseMethods)
+DatabaseThread.register_sub(UserDatabaseMethods)

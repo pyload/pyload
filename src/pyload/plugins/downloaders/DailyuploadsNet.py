@@ -36,7 +36,7 @@ class DailyuploadsNet(SimpleDownloader):
     LINK_FREE_PATTERN = r'<a href="(https?://down\d+.dailyuploads.net(?::\d+)?/.+?)">'
 
     def setup(self):
-        self.multiDL = True
+        self.multi_dl = True
         self.resume_download = True
         self.chunk_limit = 1
 

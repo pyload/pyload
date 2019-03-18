@@ -9,7 +9,7 @@ from ..managers.event_manager import UpdateEvent
 from ..utils import format_size, lock
 
 
-statusMap = {
+status_map = {
     "finished": 0,
     "offline": 1,
     "online": 2,
@@ -28,7 +28,7 @@ statusMap = {
 }
 
 
-def setSize(self, value):
+def set_size(self, value):
     self._size = int(value)
 
 
@@ -62,7 +62,7 @@ class PyFile:
         self.plugin = None
         # self.download = None
 
-        self.waitUntil = 0  #: time.time() + time to wait
+        self.wait_until = 0  #: time.time() + time to wait
 
         # status attributes
         self.active = False  #: obsolete?
@@ -75,26 +75,26 @@ class PyFile:
         self.maxprogress = 100
 
     # will convert all sizes to ints
-    size = property(lambda self: self._size, setSize)
+    size = property(lambda self: self._size, set_size)
 
     def __repr__(self):
         return f"PyFile {self.id}: {self.name}@{self.pluginname}"
 
     @lock
-    def initPlugin(self):
+    def init_plugin(self):
         """
         inits plugin instance.
         """
         if not self.plugin:
-            self.pluginmodule = self.m.pyload.pluginManager.getPlugin(self.pluginname)
+            self.pluginmodule = self.m.pyload.plugin_manager.get_plugin(self.pluginname)
             self.pluginclass = getattr(
                 self.pluginmodule,
-                self.m.pyload.pluginManager.getPluginName(self.pluginname),
+                self.m.pyload.plugin_manager.get_plugin_name(self.pluginname),
             )
             self.plugin = self.pluginclass(self)
 
     @lock
-    def hasPlugin(self):
+    def has_plugin(self):
         """
         Thread safe way to determine this file has initialized plugin attribute.
 
@@ -106,30 +106,30 @@ class PyFile:
         """
         return package instance.
         """
-        return self.m.getPackage(self.packageid)
+        return self.m.get_package(self.packageid)
 
-    def setStatus(self, status):
-        self.status = statusMap[status]
+    def set_status(self, status):
+        self.status = status_map[status]
         self.sync()  # TODO: needed aslong no better job approving exists
 
-    def setCustomStatus(self, msg, status="processing"):
+    def set_custom_status(self, msg, status="processing"):
         self.statusname = msg
-        self.setStatus(status)
+        self.set_status(status)
 
-    def getStatusName(self):
+    def get_status_name(self):
         if self.status not in (13, 14) or not self.statusname:
-            return self.m.statusMsg[self.status]
+            return self.m.status_msg[self.status]
         else:
             return self.statusname
 
-    def hasStatus(self, status):
-        return statusMap[status] == self.status
+    def has_status(self, status):
+        return status_map[status] == self.status
 
     def sync(self):
         """
         sync PyFile instance with database.
         """
-        self.m.updateLink(self)
+        self.m.update_link(self)
 
     @lock
     def release(self):
@@ -144,21 +144,21 @@ class PyFile:
             self.plugin.clean()
             del self.plugin
 
-        self.m.releaseLink(self.id)
+        self.m.release_link(self.id)
 
     def delete(self):
         """
         delete pyfile from database.
         """
-        self.m.deleteLink(self.id)
+        self.m.delete_link(self.id)
 
-    def toDict(self):
+    def to_dict(self):
         """
         return dict with all information for interface.
         """
-        return self.toDbDict()
+        return self.to_db_dict()
 
-    def toDbDict(self):
+    def to_db_dict(self):
         """
         return data as dict for databse.
 
@@ -174,52 +174,52 @@ class PyFile:
                 "url": self.url,
                 "name": self.name,
                 "plugin": self.pluginname,
-                "size": self.getSize(),
-                "format_size": self.formatSize(),
+                "size": self.get_size(),
+                "format_size": self.format_size(),
                 "status": self.status,
-                "statusmsg": self.getStatusName(),
+                "statusmsg": self.get_status_name(),
                 "package": self.packageid,
                 "error": self.error,
                 "order": self.order,
             }
         }
 
-    def abortDownload(self):
+    def abort_download(self):
         """
         abort pyfile if possible.
         """
-        while self.id in self.m.pyload.threadManager.processingIds():
+        while self.id in self.m.pyload.thread_manager.processing_ids():
             self.abort = True
             if self.plugin and self.plugin.req:
-                self.plugin.req.abortDownloads()
+                self.plugin.req.abort_downloads()
             time.sleep(0.1)
 
         self.abort = False
-        if self.hasPlugin() and self.plugin.req:
-            self.plugin.req.abortDownloads()
+        if self.has_plugin() and self.plugin.req:
+            self.plugin.req.abort_downloads()
 
         self.release()
 
-    def finishIfDone(self):
+    def finish_if_done(self):
         """
         set status to finish and release file if every thread is finished with it.
         """
-        if self.id in self.m.pyload.threadManager.processingIds():
+        if self.id in self.m.pyload.thread_manager.processing_ids():
             return False
 
-        self.setStatus("finished")
+        self.set_status("finished")
         self.release()
-        self.m.checkAllLinksFinished()
+        self.m.check_all_links_finished()
         return True
 
-    def checkIfProcessed(self):
-        self.m.checkAllLinksProcessed(self.id)
+    def check_if_processed(self):
+        self.m.check_all_links_processed(self.id)
 
-    def formatWait(self):
+    def format_wait(self):
         """
         formats and return wait time in humanreadable format.
         """
-        seconds = self.waitUntil - time.time()
+        seconds = self.wait_until - time.time()
 
         if seconds < 0:
             return "00:00:00"
@@ -228,17 +228,17 @@ class PyFile:
         minutes, seconds = divmod(seconds, 60)
         return "{:02}:{:02}:{:02}".format(hours, minutes, seconds)
 
-    def formatSize(self):
+    def format_size(self):
         """
         formats size to readable format.
         """
-        return format_size(self.getSize())
+        return format_size(self.get_size())
 
-    def formatETA(self):
+    def format_e_t_a(self):
         """
         formats eta to readable format.
         """
-        seconds = self.getETA()
+        seconds = self.get_e_t_a()
 
         if seconds < 0:
             return "00:00:00"
@@ -247,7 +247,7 @@ class PyFile:
         minutes, seconds = divmod(seconds, 60)
         return "{:02}:{:02}:{:02}".format(hours, minutes, seconds)
 
-    def getSpeed(self):
+    def get_speed(self):
         """
         calculates speed.
         """
@@ -256,16 +256,16 @@ class PyFile:
         except Exception:
             return 0
 
-    def getETA(self):
+    def get_e_t_a(self):
         """
         gets established time of arrival.
         """
         try:
-            return self.getBytesLeft() // self.getSpeed()
+            return self.get_bytes_left() // self.get_speed()
         except Exception:
             return 0
 
-    def getBytesLeft(self):
+    def get_bytes_left(self):
         """
         gets bytes left.
         """
@@ -274,7 +274,7 @@ class PyFile:
         except Exception:
             return 0
 
-    def getPercent(self):
+    def get_percent(self):
         """
         get % of download.
         """
@@ -286,7 +286,7 @@ class PyFile:
         else:
             return self.progress
 
-    def getSize(self):
+    def get_size(self):
         """
         get size of download.
         """
@@ -298,13 +298,13 @@ class PyFile:
         except Exception:
             return self.size
 
-    def notifyChange(self):
+    def notify_change(self):
         e = UpdateEvent(
             "file", self.id, "collector" if not self.package().queue else "queue"
         )
-        self.m.pyload.eventManager.addEvent(e)
+        self.m.pyload.event_manager.add_event(e)
 
-    def setProgress(self, value):
+    def set_progress(self, value):
         if not value == self.progress:
             self.progress = value
-            self.notifyChange()
+            self.notify_change()

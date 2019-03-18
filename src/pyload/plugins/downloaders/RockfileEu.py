@@ -31,7 +31,7 @@ class RockfileEu(SimpleDownloader):
     __authors__ = [("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
     NAME_PATTERN = r'name="fname" value="(?P<N>.+?)"'
-    SIZE_PATTERN = r"var iniFileSize = (\d+)"
+    SIZE_PATTERN = r"var ini_file_size = (\d+)"
 
     WAIT_PATTERN = r'<span id="countdown_str".+?><span .+?>(\d+)</span>'
     DL_LIMIT_PATTERN = (
@@ -48,7 +48,7 @@ class RockfileEu(SimpleDownloader):
     COOKIES = [("rockfile.eu", "lang", "english")]
 
     def setup(self):
-        self.multiDL = True
+        self.multi_dl = True
         self.chunk_limit = 1
         self.resume_download = True
 

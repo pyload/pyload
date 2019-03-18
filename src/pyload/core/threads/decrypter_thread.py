@@ -19,13 +19,13 @@ class DecrypterThread(PluginThread):
         super().__init__(manager)
 
         self.active = pyfile
-        manager.localThreads.append(self)
+        manager.local_threads.append(self)
 
-        pyfile.setStatus("decrypting")
+        pyfile.set_status("decrypting")
 
         self.start()
 
-    def getActiveFiles(self):
+    def get_active_files(self):
         return [self.active]
 
     def run(self):
@@ -51,12 +51,12 @@ class DecrypterThread(PluginThread):
             msg = exc.args[0]
 
             if msg == "offline":
-                self.active.setStatus("offline")
+                self.active.set_status("offline")
                 self.pyload.log.warning(
                     self._("Download is offline: {}").format(self.active.name)
                 )
             else:
-                self.active.setStatus("failed")
+                self.active.set_status("failed")
                 self.pyload.log.error(
                     self._("Decrypting failed: {name} | {msg}").format(
                         name=self.active.name, msg=msg
@@ -68,7 +68,7 @@ class DecrypterThread(PluginThread):
 
         except Abort:
             self.pyload.log.info(self._("Download aborted: {}").format(pyfile.name))
-            pyfile.setStatus("aborted")
+            pyfile.set_status("aborted")
 
             return
 
@@ -78,7 +78,7 @@ class DecrypterThread(PluginThread):
             return self.run()
 
         except Exception as exc:
-            self.active.setStatus("failed")
+            self.active.set_status("failed")
             self.pyload.log.warning(
                 self._("Decrypting failed: {name} | {msg}").format(
                     name=self.active.name, msg=exc
@@ -89,7 +89,7 @@ class DecrypterThread(PluginThread):
             self.active.error = str(exc)
 
             if self.pyload.debug:
-                self.writeDebugReport(pyfile)
+                self.write_debug_report(pyfile)
 
             return
 
@@ -98,12 +98,12 @@ class DecrypterThread(PluginThread):
                 self.active.release()
                 self.active = False
                 self.pyload.files.save()
-                self.m.localThreads.remove(self)
+                self.m.local_threads.remove(self)
                 # exc_clear()
 
-        # self.pyload.addonManager.downloadFinished(pyfile)
+        # self.pyload.addon_manager.download_finished(pyfile)
 
-        # self.m.localThreads.remove(self)
-        # self.active.finishIfDone()
+        # self.m.local_threads.remove(self)
+        # self.active.finish_if_done()
         if not retry:
             pyfile.delete()

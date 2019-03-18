@@ -75,11 +75,11 @@ class MegadyskPlFolder(SimpleDecrypter):
             info["status"] = 6
             return info
 
-        if json_data["app"]["folderView"]["notFound"]:
+        if json_data["app"]["folder_view"]["not_found"]:
             info["status"] = 1
             return info
 
-        info["entities"] = json_data["app"]["folderView"]["entities"]
+        info["entities"] = json_data["app"]["folder_view"]["entities"]
 
         return info
 
@@ -88,9 +88,9 @@ class MegadyskPlFolder(SimpleDecrypter):
             self.error(self._("Missing JSON data"))
 
         pack_links = [
-            self.fixurl(l["downloadUrl"])
+            self.fixurl(l["download_url"])
             for l in self.info["entities"]
-            if l["downloadUrl"].startswith("/dl/")
+            if l["download_url"].startswith("/dl/")
         ]
 
         if pack_links:

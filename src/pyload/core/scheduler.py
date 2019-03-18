@@ -19,7 +19,7 @@ class Deferred:
         self.call = []
         self.result = ()
 
-    def addCallback(self, f, *cargs, **ckwargs):
+    def add_callback(self, f, *cargs, **ckwargs):
         self.call.append((f, cargs, ckwargs))
 
     def callback(self, *args, **kwargs):
@@ -38,14 +38,14 @@ class Scheduler:
         self._ = core._
         self.queue = PriorityQueue()
 
-    def addJob(self, t, call, args=[], kwargs={}, threaded=True):
+    def add_job(self, t, call, args=[], kwargs={}, threaded=True):
         d = Deferred()
         t += time.time()
         j = Job(t, call, args, kwargs, d, threaded)
         self.queue.put((t, j))
         return d
 
-    def removeJob(self, d):
+    def remove_job(self, d):
         """
         :param d: defered object
         :return: if job was deleted

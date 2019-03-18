@@ -48,7 +48,7 @@ class RemixshareCom(SimpleDownloader):
     WAIT_PATTERN = r'var XYZ = "(\d+)"'
 
     def setup(self):
-        self.multiDL = True
+        self.multi_dl = True
         self.chunk_limit = 1
 
     def handle_free(self, pyfile):

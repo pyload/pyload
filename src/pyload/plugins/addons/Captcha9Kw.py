@@ -80,21 +80,21 @@ class Captcha9Kw(BaseAddon):
 
     @threaded
     def _process_captcha(self, task):
-        if task.isInteractive():
-            url_p = urllib.parse.urlparse(task.captchaParams["url"])
+        if task.is_interactive():
+            url_p = urllib.parse.urlparse(task.captcha_params["url"])
             if url_p.scheme not in ("http", "https"):
                 self.log_error(self._("Invalid url"))
                 return
 
             post_data = {
                 "pageurl": "{}://{}/".format(url_p.scheme, url_p.netloc),
-                "data-sitekey": task.captchaParams["sitekey"],
-                "securetoken": task.captchaParams["securetoken"] or "",
+                "data-sitekey": task.captcha_params["sitekey"],
+                "securetoken": task.captcha_params["securetoken"] or "",
             }
 
         else:
             try:
-                with open(task.captchaParams["file"], mode="rb") as file:
+                with open(task.captcha_params["file"], mode="rb") as file:
                     data = file.read()
 
             except IOError as exc:
@@ -103,7 +103,7 @@ class Captcha9Kw(BaseAddon):
 
             post_data = {"file-upload-01": base64.b64encode(data)}
 
-        pluginname = task.captchaParams["plugin"]
+        pluginname = task.captcha_params["plugin"]
         option = {
             "min": 2,
             "max": 50,
@@ -158,9 +158,9 @@ class Captcha9Kw(BaseAddon):
                 "oldsource": pluginname,
                 "pyload": 1,
                 "source": "pyload",
-                "base64": 0 if task.isInteractive() else 1,
-                "mouse": 1 if task.isPositional() else 0,
-                "interactive": 1 if task.isInteractive() else 0,
+                "base64": 0 if task.is_interactive() else 1,
+                "mouse": 1 if task.is_positional() else 0,
+                "interactive": 1 if task.is_interactive() else 0,
                 "action": "usercaptchaupload",
             }
         )
@@ -182,7 +182,7 @@ class Captcha9Kw(BaseAddon):
             return
 
         self.log_debug(
-            "NewCaptchaID ticket: {}".format(res), task.captchaParams.get("file", "")
+            "NewCaptchaID ticket: {}".format(res), task.captcha_params.get("file", "")
         )
 
         task.data["ticket"] = res
@@ -211,22 +211,22 @@ class Captcha9Kw(BaseAddon):
 
         self.log_info(self._("Captcha result for ticket {}: {}").format(res, result))
 
-        task.setResult(result)
+        task.set_result(result)
 
     def captcha_task(self, task):
-        if task.isInteractive():
-            if task.captchaParams[
+        if task.is_interactive():
+            if task.captcha_params[
                 "captcha_plugin"
             ] != "ReCaptcha" or not self.config.get("solve_interactive"):
                 return
         else:
-            if not task.isTextual() and not task.isPositional():
+            if not task.is_textual() and not task.is_positional():
                 return
 
         if not self.config.get("passkey"):
             return
 
-        if self.pyload.isClientConnected() and self.config.get("check_client"):
+        if self.pyload.is_client_connected() and self.config.get("check_client"):
             return
 
         credits = self.get_credits()
@@ -237,7 +237,7 @@ class Captcha9Kw(BaseAddon):
 
         max_queue = min(self.config.get("queue"), 999)
         timeout = min(max(self.config.get("timeout"), 300), 3999)
-        pluginname = task.captchaParams["plugin"]
+        pluginname = task.captcha_params["plugin"]
 
         for _ in range(5):
             servercheck = self.load("http://www.9kw.eu/grafik/servercheck.txt")
@@ -273,7 +273,7 @@ class Captcha9Kw(BaseAddon):
 
         task.handler.append(self)
 
-        task.setWaiting(timeout)
+        task.set_waiting(timeout)
 
         self._process_captcha(task)
 

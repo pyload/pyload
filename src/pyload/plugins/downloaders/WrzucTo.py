@@ -33,7 +33,7 @@ class WrzucTo(SimpleDownloader):
     COOKIES = [("wrzuc.to", "language", "en")]
 
     def setup(self):
-        self.multiDL = True
+        self.multi_dl = True
 
     def handle_free(self, pyfile):
         data = dict(re.findall(r'(md5|file): "(.*?)"', self.data))
@@ -41,10 +41,10 @@ class WrzucTo(SimpleDownloader):
             self.error(self._("No file ID"))
 
         self.req.http.c.setopt(pycurl.HTTPHEADER, ["X-Requested-With: XMLHttpRequest"])
-        self.req.http.lastURL = pyfile.url
+        self.req.http.last_url = pyfile.url
         self.load("http://www.wrzuc.to/ajax/server/prepair", post={"md5": data["md5"]})
 
-        self.req.http.lastURL = pyfile.url
+        self.req.http.last_url = pyfile.url
         self.data = self.load(
             "http://www.wrzuc.to/ajax/server/download_link", post={"file": data["file"]}
         )

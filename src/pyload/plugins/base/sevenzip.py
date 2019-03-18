@@ -131,7 +131,7 @@ class SevenZip(BaseExtractor):
                 break
             #: Reading a percentage sign -> set progress and restart
             if c == "%":
-                self.pyfile.setProgress(int(s))
+                self.pyfile.set_progress(int(s))
                 s = ""
             #: Not reading a digit -> therefore restart
             elif not c.isdigit():

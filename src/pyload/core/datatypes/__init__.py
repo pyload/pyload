@@ -18,7 +18,7 @@ class AbstractData(Mapping):
 
     def __getitem__(self, name):
         return getattr(self, name)
-        
+
     def __setitem__(self, name, value):
         return setattr(self, name, value)
 
@@ -111,13 +111,13 @@ class AccountInfo(AbstractData):
 
 
 class CaptchaTask(AbstractData):
-    __slots__ = ["tid", "data", "type", "resultType"]
+    __slots__ = ["tid", "data", "type", "result_type"]
 
-    def __init__(self, tid=None, data=None, type=None, resultType=None):
+    def __init__(self, tid=None, data=None, type=None, result_type=None):
         self.tid = tid
         self.data = data
         self.type = type
-        self.resultType = resultType
+        self.result_type = result_type
 
 
 class ConfigItem(AbstractData):
@@ -155,8 +155,8 @@ class DownloadInfo(AbstractData):
         "statusmsg",
         "format_wait",
         "wait_until",
-        "packageID",
-        "packageName",
+        "package_id",
+        "package_name",
         "plugin",
         "info",  # NOTE: needed by webui, remove in future...
     ]
@@ -176,8 +176,8 @@ class DownloadInfo(AbstractData):
         statusmsg=None,
         format_wait=None,
         wait_until=None,
-        packageID=None,
-        packageName=None,
+        package_id=None,
+        package_name=None,
         plugin=None,
         info=None,
     ):
@@ -194,8 +194,8 @@ class DownloadInfo(AbstractData):
         self.statusmsg = statusmsg
         self.format_wait = format_wait
         self.wait_until = wait_until
-        self.packageID = packageID
-        self.packageName = packageName
+        self.package_id = package_id
+        self.package_name = package_name
         self.plugin = plugin
         self.info = info
 
@@ -220,7 +220,7 @@ class FileData(AbstractData):
         "format_size",
         "status",
         "statusmsg",
-        "packageID",
+        "package_id",
         "error",
         "order",
     ]
@@ -235,7 +235,7 @@ class FileData(AbstractData):
         format_size=None,
         status=None,
         statusmsg=None,
-        packageID=None,
+        package_id=None,
         error=None,
         order=None,
     ):
@@ -247,7 +247,7 @@ class FileData(AbstractData):
         self.format_size = format_size
         self.status = status
         self.statusmsg = statusmsg
-        self.packageID = packageID
+        self.package_id = package_id
         self.error = error
         self.order = order
 
@@ -405,13 +405,13 @@ class ServerStatus(AbstractData):
 
 
 class ServiceCall(AbstractData):
-    __slots__ = ["plugin", "func", "arguments", "parseArguments"]
+    __slots__ = ["plugin", "func", "arguments", "parse_arguments"]
 
-    def __init__(self, plugin=None, func=None, arguments=None, parseArguments=None):
+    def __init__(self, plugin=None, func=None, arguments=None, parse_arguments=None):
         self.plugin = plugin
         self.func = func
         self.arguments = arguments
-        self.parseArguments = parseArguments
+        self.parse_arguments = parse_arguments
 
 
 class ServiceDoesNotExists(Exception):
@@ -431,16 +431,16 @@ class ServiceException(Exception):
 
 #: Needed by legacy API
 class OldUserData(AbstractData):
-    __slots__ = ["name", "email", "role", "permission", "templateName"]
+    __slots__ = ["name", "email", "role", "permission", "template_name"]
 
     def __init__(
-        self, name=None, email=None, role=None, permission=None, templateName=None
+        self, name=None, email=None, role=None, permission=None, template_name=None
     ):
         self.name = name
         self.email = email
         self.role = role
         self.permission = permission
-        self.templateName = templateName
+        self.template_name = template_name
 
 
 class UserData(AbstractData):

@@ -49,7 +49,7 @@ class AlldebridCom(MultiDownloader):
         )
 
         if json_data.get("error", False):
-            if json_data.get("errorCode", 0) in (12, 31):
+            if json_data.get("error_code", 0) in (12, 31):
                 self.offline()
 
             else:

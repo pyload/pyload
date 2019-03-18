@@ -5,7 +5,7 @@ import re
 
 from pyload.core.network.request_factory import getURL as get_url
 
-from ..base.hoster import parse_fileInfo
+from ..base.hoster import parse_file_info
 from ..base.simple_downloader import SimpleDownloader
 
 
@@ -20,7 +20,7 @@ def get_info(urls):
             yield (url, 0, 7, url)
         else:
             #: It's a standard html page
-            yield parse_fileInfo(FilefactoryCom, url, get_url(url))
+            yield parse_file_info(FilefactoryCom, url, get_url(url))
 
 
 class FilefactoryCom(SimpleDownloader):
@@ -81,7 +81,7 @@ class FilefactoryCom(SimpleDownloader):
         check = self.scan_download(
             {
                 "multiple": "You are currently downloading too many files at once.",
-                "error": '<div id="errorMessage">',
+                "error": '<div id="error_message">',
             }
         )
 

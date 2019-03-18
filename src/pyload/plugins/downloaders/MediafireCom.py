@@ -33,7 +33,7 @@ class MediafireCom(SimpleDownloader):
     ]
 
     NAME_PATTERN = r'<META NAME="description" CONTENT="(?P<N>.+?)"/>'
-    SIZE_PATTERN = r'<div class="fileName">(?P<N>.+?)</div>'
+    SIZE_PATTERN = r'<div class="file_name">(?P<N>.+?)</div>'
 
     TEMP_OFFLINE_PATTERN = r"^unmatchable$"
     OFFLINE_PATTERN = r'class="error_msg_title"'
@@ -44,7 +44,7 @@ class MediafireCom(SimpleDownloader):
 
     def setup(self):
         self.resume_download = True
-        self.multiDL = True
+        self.multi_dl = True
 
     def handle_captcha(self):
         solvemedia = SolveMedia(self.pyfile)

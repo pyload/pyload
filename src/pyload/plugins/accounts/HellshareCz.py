@@ -64,11 +64,11 @@ class HellshareCz(BaseAccount):
 
     def signin(self, user, password, data):
         html = self.load("http://www.hellshare.com/")
-        if self.req.lastEffectiveURL != "http://www.hellshare.com/":
+        if self.req.last_effective_url != "http://www.hellshare.com/":
             #: Switch to English
-            self.log_debug(f"Switch lang - URL: {self.req.lastEffectiveURL}")
+            self.log_debug(f"Switch lang - URL: {self.req.last_effective_url}")
 
-            json = self.load(f"{self.req.lastEffectiveURL}?do=locRouter-show")
+            json = self.load(f"{self.req.last_effective_url}?do=loc_router-show")
             hash = re.search(r"(--[0-9a-f]+\-)", json).group(1)
 
             self.log_debug(f"Switch lang - HASH: {hash}")
@@ -81,7 +81,7 @@ class HellshareCz(BaseAccount):
 
         html = self.load(
             "https://www.hellshare.com/login",
-            get={"do": "loginForm-submit"},
+            get={"do": "login_form-submit"},
             post={
                 "login": "Log in",
                 "password": password,

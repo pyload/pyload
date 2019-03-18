@@ -90,8 +90,8 @@ def _parse_args(cmd_args):
 
 def run(core_args, daemon=False):
     # change name to 'pyLoad'
-    # from .lib.rename_process import renameProcess
-    # renameProcess('pyLoad')
+    # from .lib.rename_process import rename_process
+    # rename_process('pyLoad')
     if daemon:
         return _daemon(core_args)
 

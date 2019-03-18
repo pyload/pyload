@@ -8,7 +8,7 @@ from ..base.simple_downloader import SimpleDownloader
 
 #
 # Test links:
-# http://uploadhero.co/dl/wQBRAVSM
+# http://uploadhero.co/dl/w_q_b_r_a_v_s_m
 
 
 class UploadheroCom(SimpleDownloader):

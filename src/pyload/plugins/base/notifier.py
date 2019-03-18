@@ -34,7 +34,7 @@ class Notifier(BaseAddon):
 
     def init(self):
         self.event_map = {
-            "allDownloadsProcessed": "all_downloads_processed",
+            "all_downloads_processed": "all_downloads_processed",
             "pyload_updated": "pyload_updated",
         }
 
@@ -119,7 +119,7 @@ class Notifier(BaseAddon):
         if is_sequence(msg):
             msg = " | ".join(a.strip() for a in msg if a.strip())
 
-        if self.pyload.isClientConnected() and not self.config.get(
+        if self.pyload.is_client_connected() and not self.config.get(
             "ignoreclient", False
         ):
             return

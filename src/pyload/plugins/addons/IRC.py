@@ -79,13 +79,13 @@ class IRC(Thread, Notifier):
             pass
 
     def captcha_task(self, task):
-        if self.config.get("captcha") and task.isTextual():
+        if self.config.get("captcha") and task.is_textual():
             task.handler.append(self)
-            task.setWaiting(60)
+            task.set_waiting(60)
 
             html = self.load(
                 "http://www.freeimagehosting.net/upl.php",
-                post={"file": (pycurl.FORM_FILE, task.captchaParams["file"])},
+                post={"file": (pycurl.FORM_FILE, task.captcha_params["file"])},
             )
 
             url = re.search(r"src='([^']+)'", html).group(1)
@@ -219,7 +219,7 @@ class IRC(Thread, Notifier):
         return []
 
     def event_status(self, args):
-        downloads = self.pyload.api.statusDownloads()
+        downloads = self.pyload.api.status_downloads()
         if not downloads:
             return ["INFO: There are no active downloads currently."]
 
@@ -245,7 +245,7 @@ class IRC(Thread, Notifier):
         return lines
 
     def event_queue(self, args):
-        pdata = self.pyload.api.getQueueData()
+        pdata = self.pyload.api.get_queue_data()
 
         if not pdata:
             return ["INFO: There are no packages in queue."]
@@ -261,7 +261,7 @@ class IRC(Thread, Notifier):
         return lines
 
     def event_collector(self, args):
-        pdata = self.pyload.api.getCollectorData()
+        pdata = self.pyload.api.get_collector_data()
         if not pdata:
             return ["INFO: No packages in collector!"]
 
@@ -281,7 +281,7 @@ class IRC(Thread, Notifier):
 
         info = None
         try:
-            info = self.pyload.api.getFileData(int(args[0]))
+            info = self.pyload.api.get_file_data(int(args[0]))
 
         except FileDoesNotExists:
             return ["ERROR: Link doesn't exists."]
@@ -299,7 +299,7 @@ class IRC(Thread, Notifier):
         lines = []
         pack = None
         try:
-            pack = self.pyload.api.getPackageData(int(args[0]))
+            pack = self.pyload.api.get_package_data(int(args[0]))
 
         except PackageDoesNotExists:
             return ["ERROR: Package doesn't exists."]
@@ -343,11 +343,11 @@ class IRC(Thread, Notifier):
         return lines
 
     def event_start(self, args):
-        self.pyload.api.unpauseServer()
+        self.pyload.api.unpause_server()
         return ["INFO: Starting downloads."]
 
     def event_stop(self, args):
-        self.pyload.api.pauseServer()
+        self.pyload.api.pause_server()
         return ["INFO: No new downloads will be started."]
 
     def event_add(self, args):
@@ -362,7 +362,7 @@ class IRC(Thread, Notifier):
 
         try:
             id = int(pack)
-            pack = self.pyload.api.getPackageData(id)
+            pack = self.pyload.api.get_package_data(id)
             if not pack:
                 return ["ERROR: Package doesn't exists."]
 
@@ -376,7 +376,7 @@ class IRC(Thread, Notifier):
 
         except Exception:
             #: Create new package
-            id = self.pyload.api.addPackage(pack, links, 1)
+            id = self.pyload.api.add_package(pack, links, 1)
             return [
                 "INFO: Created new Package {} [#{}] with {#{}} links.".format(
                     pack, id, len(links)
@@ -390,11 +390,11 @@ class IRC(Thread, Notifier):
             ]
 
         if args[0] == "-p":
-            ret = self.pyload.api.deletePackages(int(arg) for arg in args[1:])
+            ret = self.pyload.api.delete_packages(int(arg) for arg in args[1:])
             return ["INFO: Deleted {} packages!".format(len(args[1:]))]
 
         elif args[0] == "-l":
-            ret = self.pyload.api.delLinks(int(arg) for arg in args[1:])
+            ret = self.pyload.api.del_links(int(arg) for arg in args[1:])
             return ["INFO: Deleted {} links!".format(len(args[1:]))]
 
         else:
@@ -408,11 +408,11 @@ class IRC(Thread, Notifier):
 
         id = int(args[0])
         try:
-            self.pyload.api.getPackageInfo(id)
+            self.pyload.api.get_package_info(id)
         except PackageDoesNotExists:
             return ["ERROR: Package #{} does not exist.".format(id)]
 
-        self.pyload.api.pushToQueue(id)
+        self.pyload.api.push_to_queue(id)
         return ["INFO: Pushed package #{} to queue.".format(id)]
 
     def event_pull(self, args):
@@ -420,10 +420,10 @@ class IRC(Thread, Notifier):
             return ["ERROR: Pull package from queue like this: pull <package id>."]
 
         id = int(args[0])
-        if not self.pyload.api.getPackageData(id):
+        if not self.pyload.api.get_package_data(id):
             return ["ERROR: Package #{} does not exist.".format(id)]
 
-        self.pyload.api.pullFromQueue(id)
+        self.pyload.api.pull_from_queue(id)
         return ["INFO: Pulled package #{} from queue to collector.".format(id)]
 
     def event_c(self, args):
@@ -433,11 +433,11 @@ class IRC(Thread, Notifier):
         if not args:
             return ["ERROR: Captcha ID missing."]
 
-        task = self.pyload.captchaManager.getTaskByID(args[0])
+        task = self.pyload.captcha_manager.get_task_by_id(args[0])
         if not task:
             return ["ERROR: Captcha Task with ID {} does not exists.".format(args[0])]
 
-        task.setResult(" ".join(args[1:]))
+        task.set_result(" ".join(args[1:]))
         return ["INFO: Result {} saved.".format(" ".join(args[1:]))]
 
     def event_help(self, args):

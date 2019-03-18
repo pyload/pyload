@@ -21,7 +21,7 @@ class RequestFactory:
         self.pyload = core
         self._ = core._
         self.bucket = Bucket()
-        self.updateBucket()
+        self.update_bucket()
         self.cookiejars = {}
 
         # TODO: Rewrite...
@@ -34,8 +34,8 @@ class RequestFactory:
         return self.pyload.config.get("download", "interface")
 
     @lock
-    def getRequest(self, pluginName, account=None, type="HTTP", **kwargs):
-        options = self.getOptions()
+    def get_request(self, plugin_name, account=None, type="HTTP", **kwargs):
+        options = self.get_options()
         options.update(kwargs)  #: submit kwargs as additional options
 
         if type == "XDCC":
@@ -45,38 +45,38 @@ class RequestFactory:
             req = Browser(self.bucket, options)
 
             if account:
-                cj = self.getCookieJar(pluginName, account)
-                req.setCookieJar(cj)
+                cj = self.get_cookie_jar(plugin_name, account)
+                req.set_cookie_jar(cj)
             else:
-                req.setCookieJar(CookieJar(pluginName))
+                req.set_cookie_jar(CookieJar(plugin_name))
 
         return req
 
-    def getHTTPRequest(self, **kwargs):
+    def get_h_t_t_p_request(self, **kwargs):
         """
         returns a http request, dont forget to close it !
         """
-        options = self.getOptions()
+        options = self.get_options()
         options.update(kwargs)  #: submit kwargs as additional options
         return HTTPRequest(CookieJar(None), options)
 
-    def getURL(self, *args, **kwargs):
+    def get_url(self, *args, **kwargs):
         """
         see HTTPRequest for argument list.
         """
-        with HTTPRequest(None, self.getOptions()) as h:
+        with HTTPRequest(None, self.get_options()) as h:
             rep = h.load(*args, **kwargs)
         return rep
 
-    def getCookieJar(self, pluginName, account=None):
-        if (pluginName, account) in self.cookiejars:
-            return self.cookiejars[(pluginName, account)]
+    def get_cookie_jar(self, plugin_name, account=None):
+        if (plugin_name, account) in self.cookiejars:
+            return self.cookiejars[(plugin_name, account)]
 
-        cj = CookieJar(pluginName, account)
-        self.cookiejars[(pluginName, account)] = cj
+        cj = CookieJar(plugin_name, account)
+        self.cookiejars[(plugin_name, account)] = cj
         return cj
 
-    def getProxies(self):
+    def get_proxies(self):
         """
         returns a proxy list for the request classes.
         """
@@ -112,17 +112,17 @@ class RequestFactory:
                 "password": pw,
             }
 
-    def getOptions(self):
+    def get_options(self):
         """
         returns options needed for pycurl.
         """
         return {
             "interface": self.iface(),
-            "proxies": self.getProxies(),
+            "proxies": self.get_proxies(),
             "ipv6": self.pyload.config.get("download", "ipv6"),
         }
 
-    def updateBucket(self):
+    def update_bucket(self):
         """
         set values in the bucket according to settings.
         """
@@ -132,9 +132,9 @@ class RequestFactory:
             self.bucket.set_rate(self.pyload.config.get("download", "max_speed") << 10)
 
 
-def getURL(*args, **kwargs):
-    return DEFAULT_REQUEST.getURL(*args, **kwargs)
+def get_url(*args, **kwargs):
+    return DEFAULT_REQUEST.get_url(*args, **kwargs)
 
 
-def getRequest(*args, **kwargs):
-    return DEFAULT_REQUEST.getHTTPRequest()
+def get_request(*args, **kwargs):
+    return DEFAULT_REQUEST.get_h_t_t_p_request()

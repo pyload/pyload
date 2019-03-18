@@ -36,7 +36,7 @@ class MultiDownloader(SimpleDownloader):
     LEECH_HOSTER = False
 
     def init(self):
-        self.PLUGIN_NAME = self.pyload.pluginManager.hosterPlugins.get(self.classname)[
+        self.PLUGIN_NAME = self.pyload.plugin_manager.hoster_plugins.get(self.classname)[
             "name"
         ]
 
@@ -47,12 +47,12 @@ class MultiDownloader(SimpleDownloader):
     def setup(self):
         self.no_fallback = True
         self.chunk_limit = 1
-        self.multiDL = bool(self.account)
+        self.multi_dl = bool(self.account)
         self.resume_download = self.premium
 
     # TODO: Recheck in 0.6.x
     def setup_base(self):
-        klass = self.pyload.pluginManager.loadClass("downloader", self.classname)
+        klass = self.pyload.plugin_manager.load_class("downloader", self.classname)
         self.get_info = klass.get_info
 
         super().setup_base()
@@ -73,7 +73,7 @@ class MultiDownloader(SimpleDownloader):
             super()._process(thread)
 
         except Fail as exc:
-            hdict = self.pyload.pluginManager.hosterPlugins.get(
+            hdict = self.pyload.plugin_manager.hoster_plugins.get(
                 self.pyfile.pluginname, {}
             )
             if self.config.get("revert_failed", True) and hdict.get("new_module"):
@@ -81,7 +81,7 @@ class MultiDownloader(SimpleDownloader):
                 tmp_name = hdict.pop("new_name", None)
 
                 self.pyfile.plugin = None
-                self.pyfile.initPlugin()
+                self.pyfile.init_plugin()
 
                 hdict["new_module"] = tmp_module
                 hdict["new_name"] = tmp_name

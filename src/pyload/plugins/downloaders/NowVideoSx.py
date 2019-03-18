@@ -36,7 +36,7 @@ class NowVideoSx(SimpleDownloader):
 
     def setup(self):
         self.resume_download = True
-        self.multiDL = True
+        self.multi_dl = True
 
     def handle_free(self, pyfile):
         self.data = self.load(

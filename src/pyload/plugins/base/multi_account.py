@@ -74,17 +74,17 @@ class MultiAccount(BaseAccount):
         self.init_plugin()
 
     def init_plugin(self):
-        plugin, self.plugintype = self.pyload.pluginManager.findPlugin(self.classname)
+        plugin, self.plugintype = self.pyload.plugin_manager.find_plugin(self.classname)
 
         if plugin:
-            self.pluginmodule = self.pyload.pluginManager.loadModule(
+            self.pluginmodule = self.pyload.plugin_manager.load_module(
                 self.plugintype, self.classname
             )
-            self.pluginclass = self.pyload.pluginManager.loadClass(
+            self.pluginclass = self.pyload.plugin_manager.load_class(
                 self.plugintype, self.classname
             )
 
-            self.pyload.addonManager.addEvent("plugin_updated", self.plugins_updated)
+            self.pyload.addon_manager.add_event("plugin_updated", self.plugins_updated)
 
             interval = timedelta(hours=self.config.get("mh_interval", 12)).seconds
             self.periodical.start(interval, threaded=True, delay=2)
@@ -175,12 +175,12 @@ class MultiAccount(BaseAccount):
         if self.plugintype == "hoster":
             plugin_map = {
                 name.lower(): name
-                for name in self.pyload.pluginManager.hosterPlugins.keys()
+                for name in self.pyload.plugin_manager.hoster_plugins.keys()
             }
 
             account_list = [
                 account.type.lower()
-                for account in self.pyload.api.getAccounts(False)
+                for account in self.pyload.api.get_accounts(False)
                 if account.valid and account.premium
             ]
 
@@ -188,7 +188,7 @@ class MultiAccount(BaseAccount):
             plugin_map = {}
             account_list = [
                 name[::-1].replace("Folder"[::-1], "", 1).lower()[::-1]
-                for name in self.pyload.pluginManager.crypterPlugins.keys()
+                for name in self.pyload.plugin_manager.crypter_plugins.keys()
             ]
 
         for plugin in self.get_plugins():
@@ -222,7 +222,7 @@ class MultiAccount(BaseAccount):
         )
 
         for plugin in self.supported:
-            hdict = self.pyload.pluginManager.plugins[self.plugintype][plugin]
+            hdict = self.pyload.plugin_manager.plugins[self.plugintype][plugin]
             hdict["new_module"] = self.pluginmodule
             hdict["new_name"] = self.classname
 
@@ -251,7 +251,7 @@ class MultiAccount(BaseAccount):
 
             self.log_debug(f"Pattern: {pattern}")
 
-            hdict = self.pyload.pluginManager.plugins[self.plugintype][self.classname]
+            hdict = self.pyload.plugin_manager.plugins[self.plugintype][self.classname]
             hdict["pattern"] = pattern
             hdict["re"] = re.compile(pattern)
 
@@ -303,7 +303,7 @@ class MultiAccount(BaseAccount):
 
     def unload_plugin(self, plugin):
         #: Reset module
-        hdict = self.pyload.pluginManager.plugins[self.plugintype][plugin]
+        hdict = self.pyload.plugin_manager.plugins[self.plugintype][plugin]
         if "pyload" in hdict:
             hdict.pop("pyload", None)
 
@@ -393,12 +393,12 @@ class MultiAccount(BaseAccount):
 
         #: Make sure we have one active addon
         try:
-            self.pyload.addonManager.removeEvent("plugin_updated", self.plugins_updated)
+            self.pyload.addon_manager.remove_event("plugin_updated", self.plugins_updated)
 
         except ValueError:
             pass
 
-        self.pyload.addonManager.addEvent("plugin_updated", self.plugins_updated)
+        self.pyload.addon_manager.add_event("plugin_updated", self.plugins_updated)
 
         if refresh or not reloading:
             if not self.get_plugins(cached=False):
@@ -436,7 +436,7 @@ class MultiAccount(BaseAccount):
         self.log_info(self._("Reverting back to default hosters"))
 
         try:
-            self.pyload.addonManager.removeEvent("plugin_updated", self.plugins_updated)
+            self.pyload.addon_manager.remove_event("plugin_updated", self.plugins_updated)
 
         except ValueError:
             pass
@@ -451,19 +451,19 @@ class MultiAccount(BaseAccount):
                 self.unload_plugin(plugin)
 
         #: Reset pattern
-        hdict = self.pyload.pluginManager.plugins[self.plugintype][self.classname]
+        hdict = self.pyload.plugin_manager.plugins[self.plugintype][self.classname]
 
         hdict["pattern"] = getattr(self.pluginclass, "__pattern__", r"^unmatchable$")
         hdict["re"] = re.compile(hdict["pattern"])
 
-    def updateAccounts(self, user, password=None, options={}):
-        super().updateAccounts(user, password, options)
+    def update_accounts(self, user, password=None, options={}):
+        super().update_accounts(user, password, options)
         if self.need_reactivate:
             interval = timedelta(hours=self.config.get("mh_interval", 12)).seconds
             self.periodical.restart(interval, threaded=True, delay=2)
 
         self.need_reactivate = True
 
-    def removeAccount(self, user):
+    def remove_account(self, user):
         self.deactivate()
-        super().removeAccount(user)
+        super().remove_account(user)

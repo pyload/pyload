@@ -62,7 +62,7 @@ class BaseDecrypter(BaseHoster):
         name = self.info["pattern"].get("N")
         if name is None:
             links = [self.fixurl(url) for url in self.links]
-            pdict = self.pyload.api.generatePackages(links)
+            pdict = self.pyload.api.generate_packages(links)
             packages = [
                 (name, links, parse_name(name)) for name, links in pdict.items()
             ]
@@ -96,14 +96,14 @@ class BaseDecrypter(BaseHoster):
             links = [self.fixurl(url) for url in links]
             self.log_debug("LINKS for package " + name, links)
 
-            pid = self.pyload.api.addPackage(name, links, pack_queue)
+            pid = self.pyload.api.add_package(name, links, pack_queue)
 
             if pack_password:
-                self.pyload.api.setPackageData(pid, {"password": pack_password})
+                self.pyload.api.set_package_data(pid, {"password": pack_password})
 
-            #: Workaround to do not break API addPackage method
+            #: Workaround to do not break API add_package method
             def set_folder(x):
-                return self.pyload.api.setPackageData(
+                return self.pyload.api.set_package_data(
                     pid, {"folder": safename(x or "")}
                 )
 

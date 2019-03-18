@@ -36,8 +36,8 @@ class TusfilesNet(XFSDownloader):
 
     def setup(self):
         self.chunk_limit = -1
-        self.multiDL = True
-        self.limitDL = 2
+        self.multi_dl = True
+        self.limit_dl = 2
         self.resume_download = True
 
     def download(self, url, *args, **kwargs):
@@ -46,5 +46,5 @@ class TusfilesNet(XFSDownloader):
 
         except BadHeader as exc:
             if exc.code == 503:
-                self.multiDL = False
+                self.multi_dl = False
                 raise Retry("503")

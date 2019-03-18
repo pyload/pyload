@@ -67,7 +67,7 @@ class ImageTyperz(BaseAddon):
         self.log_info(self._("Account balance: ${} left").format(res))
         return balance
 
-    def submit(self, captcha, captchaType="file", match=None):
+    def submit(self, captcha, captcha_type="file", match=None):
         with get_request() as req:
             #: Raise timeout threshold
             req.c.setopt(pycurl.LOW_SPEED_TIME, 80)
@@ -109,19 +109,19 @@ class ImageTyperz(BaseAddon):
         if "service" in task.data:
             return False
 
-        if not task.isTextual():
+        if not task.is_textual():
             return False
 
         if not self.config.get("username") or not self.config.get("password"):
             return False
 
-        if self.pyload.isClientConnected() and self.config.get("check_client"):
+        if self.pyload.is_client_connected() and self.config.get("check_client"):
             return False
 
         if self.get_credits() > 0:
             task.handler.append(self)
             task.data["service"] = self.classname
-            task.setWaiting(100)
+            task.set_waiting(100)
             self._process_captcha(task)
 
         else:
@@ -148,7 +148,7 @@ class ImageTyperz(BaseAddon):
 
     @threaded
     def _process_captcha(self, task):
-        c = task.captchaParams["file"]
+        c = task.captcha_params["file"]
         try:
             ticket, result = self.submit(c)
         except ImageTyperzException as exc:
@@ -156,4 +156,4 @@ class ImageTyperz(BaseAddon):
             return
 
         task.data["ticket"] = ticket
-        task.setResult(result)
+        task.set_result(result)

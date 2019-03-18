@@ -31,7 +31,7 @@ class Config:
         :param value:
         :return:
         """
-        self.plugin.pyload.api.setConfigValue(
+        self.plugin.pyload.api.set_config_value(
             plugin or self.plugin.classname, option, value, section="plugin"
         )
 
@@ -43,7 +43,7 @@ class Config:
         :return:
         """
         try:
-            return self.plugin.pyload.config.getPlugin(
+            return self.plugin.pyload.config.get_plugin(
                 plugin or self.plugin.classname, option
             )
 
@@ -64,13 +64,13 @@ class DB:
         """
         # NOTE: value must not be <bytes> otherwise BOOM! and moreover our sqlite db always return strings as <str>
         entry = b85encode(json.dumps(value, ensure_ascii=False).encode()).decode()
-        self.plugin.pyload.db.setStorage(self.plugin.classname, key, entry)
+        self.plugin.pyload.db.set_storage(self.plugin.classname, key, entry)
 
     def retrieve(self, key=None, default=None):
         """
         Retrieves saved value or dict of all saved entries if key is None.
         """
-        entry = self.plugin.pyload.db.getStorage(self.plugin.classname, key)
+        entry = self.plugin.pyload.db.get_storage(self.plugin.classname, key)
 
         if key:
             if entry is None:
@@ -89,7 +89,7 @@ class DB:
         """
         Delete entry in db.
         """
-        self.plugin.pyload.db.delStorage(self.plugin.classname, key)
+        self.plugin.pyload.db.del_storage(self.plugin.classname, key)
 
 
 class Periodical:
@@ -115,7 +115,7 @@ class Periodical:
         if interval is not None and self.set_interval(interval) is False:
             return False
         else:
-            self.cb = self.plugin.pyload.scheduler.addJob(
+            self.cb = self.plugin.pyload.scheduler.add_job(
                 max(1, delay), self._task, [threaded], threaded=threaded
             )
             return True
@@ -126,7 +126,7 @@ class Periodical:
 
     def stop(self):
         try:
-            return self.plugin.pyload.scheduler.removeJob(self.cb)
+            return self.plugin.pyload.scheduler.remove_job(self.cb)
 
         except Exception:
             return False
@@ -193,7 +193,7 @@ def sign_string(message, pem_private, pem_passphrase="", sign_algo="SHA384"):
     if sign_algo not in ("MD5", "SHA1", "SHA256", "SHA384", "SHA512"):
         raise ValueError("Unsupported Signing algorithm")
 
-    priv_key = RSA.importKey(pem_private, passphrase=pem_passphrase)
+    priv_key = RSA.import_key(pem_private, passphrase=pem_passphrase)
     signer = PKCS1_v1_5.new(priv_key)
     digest = getattr(
         __import__("Cryptodome.Hash", fromlist=[sign_algo]), sign_algo
@@ -412,12 +412,12 @@ def replace_patterns(value, rules):
     return value
 
 
-# TODO: Remove in 0.6.x and fix exp in CookieJar.setCookie
+# TODO: Remove in 0.6.x and fix exp in CookieJar.set_cookie
 def set_cookie(
     cj, domain, name, value, path="/", exp=time.time() + timedelta(hours=744).seconds
 ):  #: 31 days retention
     args = [domain, name, value, path, int(exp)]
-    return cj.setCookie(*args)
+    return cj.set_cookie(*args)
 
 
 def set_cookies(cj, cookies):
