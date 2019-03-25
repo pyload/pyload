@@ -7,26 +7,26 @@
 
 ### 0.5.0 (N/D)
 
-- [All] Code rewritten to run under Python 3 (natively)
+- [All] Code rewritten to natively run under Python 3
 - [All] Several Python 3.6+ optimizations
 - [All] Dropped Python 2 support
-- [Webui] Webserver switched to CherryPy's Cheroot
-- [Webui] Code migrated to Flask framework (from Bottle.py)
+- [Webui] Switched web server to CherryPy's Cheroot
+- [Webui] Migrated to Flask framework (from Bottle.py)
 - [Webui] Theme management
-- [Webui] Updated default theme
+- [Webui] Fixed default theme
 - [Webui] Interactive captcha support
-- [All] Better project structure
+- [All] Renewed project file-tree structure
 - [All] Removed all the old crap in the codebase (dependecies, modules, etc.)
-- [Core] New core...
+- [Core] Fully rewritten
 - [Core] PyPI and easy install support
-- [Plugins] Plugins updated to work within the new core
-- [Core] Previous API not changed
-- [All] Code style cleanup and pep8 compliant
-- [Webui] New built-in themes: Bright, Darken, Flat, PyPlex
+- [Plugins] Partially updated (to work within the new core)
+- [Core] Previous API not changed (legacy)
+- [All] Code style cleanup (pep8 compliant)
+- [Webui] New built-in themes: PyPlex
 - [Core] More debug logging features (verbose, traceback, framestack)
 - [Webui] Develop mode
 - [Webui] Auto-login feature
-- [All] A lot of un-tracked fixes... :(
+- [All] A lot of un-tracked fixes... :P
 - ...
 
 ### 0.4.9 (2011-12-14)
