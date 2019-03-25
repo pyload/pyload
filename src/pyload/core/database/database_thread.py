@@ -20,7 +20,7 @@ class style:
     db = None
 
     @classmethod
-    def set_d_b(cls, db):
+    def set_db(cls, db):
         cls.db = db
 
     @classmethod
@@ -115,7 +115,7 @@ class DatabaseThread(Thread):
 
         self.setuplock = Event()
 
-        style.set_d_b(self)
+        style.set_db(self)
 
     def setup(self):
         self.start()
@@ -133,7 +133,7 @@ class DatabaseThread(Thread):
         self.c = self.conn.cursor()  #: compatibility
 
         if convert is not None:
-            self._convert_d_b(convert)
+            self._convert_db(convert)
 
         self._create_tables()
         self._migrate_user()
@@ -178,7 +178,7 @@ class DatabaseThread(Thread):
                 file.write(str(__version__))
             return v
 
-    def _convert_d_b(self, v):
+    def _convert_db(self, v):
         try:
             getattr(self, f"_convertV{v}")()
         except Exception:

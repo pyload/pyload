@@ -111,7 +111,7 @@ class LogFactory:
             )
 
         consolehdlr = logging.StreamHandler(sys.stdout)
-        consolehdlr.set_formatter(consoleform)
+        consolehdlr.setFormatter(consoleform)
         logger.add_handler(consolehdlr)
 
     def _init_syslog_handler(self, logger):
@@ -142,7 +142,7 @@ class LogFactory:
             os.makedirs(syslog_addr, exist_ok=True)
 
         sysloghdlr = logging.handlers.SysLogHandler(syslog_addr)
-        sysloghdlr.set_formatter(syslog_form)
+        sysloghdlr.setFormatter(syslog_form)
         logger.add_handler(sysloghdlr)
 
     def _init_filelog_handler(self, logger):
@@ -169,13 +169,13 @@ class LogFactory:
 
             filehdlr = logging.handlers.RotatingFileHandler(
                 filelog_path,
-                max_bytes=max_size,
-                backup_count=max_entries,
+                maxBytes=max_size,
+                backupCount=max_entries,
                 encoding=encoding,
             )
 
         else:
             filehdlr = logging.FileHandler(filelog_path, encoding=encoding)
 
-        filehdlr.set_formatter(filelog_form)
+        filehdlr.setFormatter(filelog_form)
         logger.add_handler(filehdlr)

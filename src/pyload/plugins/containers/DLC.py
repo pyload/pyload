@@ -81,7 +81,7 @@ class DLC(BaseContainer):
         ]
 
     def get_packages(self):
-        root = xml.dom.minidom.parse_string(self.data).document_element
+        root = xml.dom.minidom.parseString(self.data).document_element
         content = root.get_elements_by_tag_name("content")[0]
         return self.parse_packages(content)
 

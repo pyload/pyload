@@ -13,7 +13,7 @@ from threading import Event, Lock
 import pycurl
 
 from ..datatypes.pyfile import PyFile
-from ..network.request_factory import getURL
+from ..network.request_factory import get_url
 from ..threads.decrypter_thread import DecrypterThread
 from ..threads.download_thread import DownloadThread
 from ..threads.info_thread import InfoThread
@@ -194,7 +194,7 @@ class ThreadManager:
         ) != 0:
             time.sleep(0.25)
 
-        ip = self.get_i_p()
+        ip = self.get_ip()
 
         self.pyload.addon_manager.before_reconnecting(ip)
 
@@ -212,14 +212,14 @@ class ThreadManager:
 
         reconn.wait()
         time.sleep(1)
-        ip = self.get_i_p()
+        ip = self.get_ip()
         self.pyload.addon_manager.after_reconnecting(ip)
 
         self.pyload.log.info(self._("Reconnected, new IP: {}").format(ip))
 
         self.reconnecting.clear()
 
-    def get_i_p(self):
+    def get_ip(self):
         """
         retrieve current ip.
         """
@@ -232,7 +232,7 @@ class ThreadManager:
         for i in range(10):
             try:
                 sv = choice(services)
-                ip = getURL(sv[0])
+                ip = get_url(sv[0])
                 ip = re.match(sv[1], ip).group(1)
                 break
             except Exception:

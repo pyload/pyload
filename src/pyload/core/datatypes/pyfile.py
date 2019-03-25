@@ -234,11 +234,11 @@ class PyFile:
         """
         return format_size(self.get_size())
 
-    def format_e_t_a(self):
+    def format_eta(self):
         """
         formats eta to readable format.
         """
-        seconds = self.get_e_t_a()
+        seconds = self.get_eta()
 
         if seconds < 0:
             return "00:00:00"
@@ -256,7 +256,7 @@ class PyFile:
         except Exception:
             return 0
 
-    def get_e_t_a(self):
+    def get_eta(self):
         """
         gets established time of arrival.
         """

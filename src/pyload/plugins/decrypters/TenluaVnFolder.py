@@ -2,7 +2,7 @@
 
 import json
 
-from pyload.core.network.request_factory import getURL as get_url
+from pyload.core.network.request_factory import get_url
 
 from ..base.simple_decrypter import SimpleDecrypter
 

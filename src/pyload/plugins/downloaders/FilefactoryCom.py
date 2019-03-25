@@ -3,7 +3,7 @@
 from datetime import timedelta
 import re
 
-from pyload.core.network.request_factory import getURL as get_url
+from pyload.core.network.request_factory import get_url
 
 from ..base.hoster import parse_file_info
 from ..base.simple_downloader import SimpleDownloader

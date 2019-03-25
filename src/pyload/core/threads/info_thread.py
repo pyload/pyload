@@ -6,7 +6,7 @@ import time
 
 from ..api import OnlineStatus
 from ..datatypes.pyfile import PyFile
-from ..utils.packagetools import parseNames
+from ..utils.packagetools import parse_names
 from .plugin_thread import PluginThread
 
 
@@ -53,7 +53,7 @@ class InfoThread(PluginThread):
             for pluginname, urls in plugins.items():
                 plugin = self.pyload.plugin_manager.get_plugin(pluginname, True)
                 if hasattr(plugin, "get_info"):
-                    self.fetch_for_plugin(pluginname, plugin, urls, self.update_d_b)
+                    self.fetch_for_plugin(pluginname, plugin, urls, self.update_db)
                     self.pyload.files.save()
 
         elif self.add:
@@ -70,7 +70,7 @@ class InfoThread(PluginThread):
 
                     self.update_cache(pluginname, result)
 
-            packs = parseNames((name, url) for name, x, y, url in self.cache)
+            packs = parse_names((name, url) for name, x, y, url in self.cache)
 
             self.pyload.log.debug(f"Fetched and generated {len(packs)} packages")
 
@@ -123,7 +123,7 @@ class InfoThread(PluginThread):
 
         self.m.timestamp = time.time() + timedelta(minutes=5).seconds
 
-    def update_d_b(self, plugin, result):
+    def update_db(self, plugin, result):
         self.pyload.files.update_file_info(result, self.pid)
 
     def update_result(self, plugin, result, force=False):
@@ -139,7 +139,7 @@ class InfoThread(PluginThread):
                 for name, size, status, url in self.cache
             ]
 
-            data = parseNames(tmp)
+            data = parse_names(tmp)
             result = {}
             for k, v in data.items():
                 for url, status in v:

@@ -76,7 +76,7 @@ class PluginThread(Thread):
 
     def get_debug_dump(self, pyfile):
         version = self.pyload.api.get_server_version()
-        dump = f"pyLoad {version} Debug Report of {pyfile.pluginname} {pyfile.plugin.__version__} \n\n_t_r_a_c_e_b_a_c_k:\n {traceback.format_exc()} \n\n_f_r_a_m_e_s_t_a_c_k:\n"
+        dump = f"pyLoad {version} Debug Report of {pyfile.pluginname} {pyfile.plugin.__version__} \n\nTRACEBACK:\n {traceback.format_exc()} \n\nFRAMESTACK:\n"
 
         tb = exc_info()[2]
         stack = []
@@ -121,7 +121,7 @@ class PluginThread(Thread):
                     dump += f"<ERROR WHILE PRINTING VALUE> {exc}\n"
 
         if pyfile.pluginname in self.pyload.config.plugin:
-            dump += "\n\n_c_o_n_f_i_g: \n\n"
+            dump += "\n\nCONFIG: \n\n"
             dump += pprint.pformat(self.pyload.config.plugin[pyfile.pluginname]) + "\n"
 
         return dump

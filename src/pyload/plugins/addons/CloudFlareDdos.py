@@ -106,7 +106,7 @@ class CloudFlare:
 
                 # Extract the arithmetic operation
                 js = re.search(
-                    r"set_timeout\(function\(\){\s+(var s,t,o,p,b,r,e,a,k,i,n,g,f.+?\r?\n[\s\S]+?a\.value =.+?)\r?\n",
+                    r"setTimeout\(function\(\){\s+(var s,t,o,p,b,r,e,a,k,i,n,g,f.+?\r?\n[\s\S]+?a\.value =.+?)\r?\n",
                     data,
                 ).group(1)
                 js = re.sub(r"a\.value = (parse_int\(.+?\)).+", r"\1", js)

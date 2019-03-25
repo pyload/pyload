@@ -7,7 +7,7 @@ import re
 
 import pycurl
 from pyload.core.network.http.http_request import BadHeader
-from pyload.core.network.request_factory import getRequest as get_request
+from pyload.core.network.request_factory import get_request
 
 from ..base.addon import BaseAddon
 

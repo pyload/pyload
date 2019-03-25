@@ -52,7 +52,7 @@ class RequestFactory:
 
         return req
 
-    def get_h_t_t_p_request(self, **kwargs):
+    def get_http_request(self, **kwargs):
         """
         returns a http request, dont forget to close it !
         """
@@ -137,4 +137,4 @@ def get_url(*args, **kwargs):
 
 
 def get_request(*args, **kwargs):
-    return DEFAULT_REQUEST.get_h_t_t_p_request()
+    return DEFAULT_REQUEST.get_http_request()

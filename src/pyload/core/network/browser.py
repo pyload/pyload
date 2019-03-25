@@ -19,10 +19,10 @@ class Browser:
         self.http = None
         self._size = 0
 
-        self.renew_h_t_t_p_request()
+        self.renew_http_request()
         self.dl = None
 
-    def renew_h_t_t_p_request(self):
+    def renew_http_request(self):
         try:
             self.http.close()
         except Exception:
@@ -137,12 +137,12 @@ class Browser:
         :param pwd: string, user:password
         """
         self.options["auth"] = pwd
-        self.renew_h_t_t_p_request()  #: we need a new request
+        self.renew_http_request()  #: we need a new request
 
     def remove_auth(self):
         if "auth" in self.options:
             del self.options["auth"]
-        self.renew_h_t_t_p_request()
+        self.renew_http_request()
 
     def set_option(self, name, value):
         """

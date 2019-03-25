@@ -5,7 +5,7 @@ import base64
 import re
 import time
 
-from pyload.core.network.request_factory import getURL as get_url
+from pyload.core.network.request_factory import get_url
 
 from ..anticaptchas.ReCaptcha import ReCaptcha
 from ..base.simple_downloader import SimpleDownloader

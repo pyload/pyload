@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import re
 
-from pyload.core.network.request_factory import getURL as get_url
+from pyload.core.network.request_factory import get_url
 
 from ..base.simple_downloader import SimpleDownloader
 

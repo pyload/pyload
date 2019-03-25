@@ -3,7 +3,7 @@ import hashlib
 import re
 import time
 
-from pyload.core.network.request_factory import getURL as get_url
+from pyload.core.network.request_factory import get_url
 
 from ..base.account import BaseAccount
 

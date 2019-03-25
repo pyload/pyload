@@ -219,10 +219,10 @@ class XMPP(IRC, pyxmpp2.client.Client):
                 from_jid=self.jid, to_jid=to_jid, stanza_type="chat", body=message
             )
 
-            stream = self.get_stream()
+            stream = self.getStream()
             if not stream:
                 self.connect()
-                stream = self.get_stream()
+                stream = self.getStream()
 
             stream.send(m)
 

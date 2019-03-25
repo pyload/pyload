@@ -2,8 +2,8 @@
 import json
 import re
 
-from pyload.core.datatypes.pyfile import statusMap
-from pyload.core.network.request_factory import getURL as get_url
+from pyload.core.datatypes.pyfile import status_map
+from pyload.core.network.request_factory import get_url
 
 from ..base.downloader import BaseDownloader
 
@@ -36,7 +36,7 @@ def get_info(urls):
             else:
                 status = "offline"
 
-        result.append((name, 0, statusMap[status], url))
+        result.append((name, 0, status_map[status], url))
 
     return result
 
