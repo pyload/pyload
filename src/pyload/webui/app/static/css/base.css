@@ -261,7 +261,11 @@ ul#page-actions-more a:hover, ul#page-actions-more a:focus{
 	margin:5px 0 -15px 5px;
 	padding:0;
 	overflow:visible;
+    height: 5rem;
 }
+/* #head-panel { */
+	/* height: 4rem; */
+/* } */
 #head-menu {
 	width:100%;
 	float:left;
