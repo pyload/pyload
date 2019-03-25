@@ -6,6 +6,8 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
  */
 
+{% autoescape true %}
+
 const root = this;
 
 document.addEvent("domready", function() {
@@ -74,3 +76,5 @@ document.addEvent("domready", function() {
         return e.stop();
     });
 });
+
+{% endautoescape %}

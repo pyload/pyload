@@ -1,3 +1,5 @@
+{% autoescape true %}
+
 var load, rename_box, confirm_box;
 
 document.addEvent("domready", function() {
@@ -288,3 +290,5 @@ var Item = new Class({
         }
     }
 });
+
+{% endautoescape %}

@@ -1,9 +1,7 @@
 {% extends 'base.html' %}
 
 {% block head %}
-{% autoescape false %}
-<script type="text/javascript">{{render_template('js/admin.js')}}</script>
-{% endautoescape %}
+<script type="text/javascript" src="{{theme_template('js/admin.js')}}"></script>
 {% endblock %}
 
 

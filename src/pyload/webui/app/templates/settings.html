@@ -6,13 +6,10 @@
 {% block head %}
 <script type="text/javascript" src="{{url_for('static', filename='vendor/MooTools/TinyTab/tinytab.js')}}"></script>
 <script type="text/javascript" src="{{url_for('static', filename='vendor/MooTools/MooDropMenu/MooDropMenu.js')}}"></script>
-{% autoescape false %}
-<script type="text/javascript">{{render_template('js/settings.js')}}</script>
-{% endautoescape %}
+<script type="text/javascript" src="{{theme_template('js/settings.js')}}"></script>
 {% endblock %}
 
 {% block content %}
-
     <ul id="toptabs" class="tabs">
             <li><a class="selected" href="#">{{ _("General") }}</a></li>
             <li><a href="#">{{ _("Plugins") }}</a></li>

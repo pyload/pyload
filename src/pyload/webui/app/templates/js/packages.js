@@ -1,3 +1,5 @@
+{% autoescape true %}
+
 var root = this;
 
 document.addEvent("domready", function() {
@@ -346,3 +348,5 @@ var Package = new Class({
         }
     }
 });
+
+{% endautoescape %}

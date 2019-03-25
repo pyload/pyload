@@ -8,6 +8,8 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
  */
 
+{% autoescape true %}
+
 // External scope
 const root = this;
 
@@ -206,3 +208,5 @@ var on_captcha_click = function(e) {
     $('cap_result').value = x + "," + y;
     return submit_captcha();
 };
+
+{% endautoescape %}

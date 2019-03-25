@@ -1,3 +1,4 @@
+{% autoescape true %}
 
 var em;
 var operafix = (navigator.userAgent.toLowerCase().search("opera") >= 0);
@@ -196,3 +197,5 @@ var LinkEntry = new Class({
 
     }
 });
+
+{% endautoescape %}

@@ -1,13 +1,10 @@
 {% extends 'base.html' %}
 
 {% block head %}
-{% autoescape false %}
-<script type="text/javascript">{{render_template('js/filemanager.js')}}</script>
-{% endautoescape %}
+<script type="text/javascript" src="{{theme_template('js/filemanager.js')}}"></script>
 {% endblock %}
 
 {% block title %}{{_("File Manager")}} - {{super()}} {% endblock %}
-
 
 {% block subtitle %}
 {{_("File Manager")}}

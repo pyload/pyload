@@ -7,135 +7,16 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/base.css')}}"/>
 <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/window.css')}}"/>
-<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/MooDialog.css')}}"/>
+<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='vendor/MooTools/MooDialog/css/MooDialog.css')}}"/>
 
 <script type="text/javascript" src="{{url_for('static', filename='vendor/MooTools/MooTools-Core.min.js')}}"></script>
 <script type="text/javascript" src="{{url_for('static', filename='vendor/MooTools/MooTools-More.min.js')}}"></script>
 <script type="text/javascript" src="{{url_for('static', filename='vendor/MooTools/MooDialog/MooDialog.js')}}"></script>
 <script type="text/javascript" src="{{url_for('static', filename='vendor/MooTools/Purr/purr.js')}}"></script>
-
-{% autoescape false %}
-<script type="text/javascript">{{render_template('js/base.js')}}</script>
-{% endautoescape %}
+<script type="text/javascript" src="{{theme_template('js/base.js')}}"></script>
 
 <link rel="icon" type="image/ico" href="{{url_for('static', filename='img/favicon.ico')}}" />
 
-<style type="text/css">
-#head-menu {
-    background:transparent url("{{ url_for('static', filename='img/tabs-border-bottom.png') }}") 0 100% repeat-x;
-}
-a.action.index {
-    background:transparent url("{{ url_for('static', filename='img/wiki-tools-index.png') }}") 0px 1px no-repeat;
-}
-a.action.recent {
-    background:transparent url("{{ url_for('static', filename='img/wiki-tools-recent.png') }}") 0px 1px no-repeat;
-}
-a.logout {
-    background:transparent url("{{ url_for('static', filename='img/user-actions-logout.png') }}") 0px 1px no-repeat;
-}
-
-a.info {
-    background:transparent url("{{ url_for('static', filename='img/user-info.png') }}") 0px 1px no-repeat;
-}
-
-a.admin {
-    background:transparent url("{{ url_for('static', filename='img/user-actions-admin.png') }}") 0px 1px no-repeat;
-}
-a.profile {
-    background:transparent url("{{ url_for('static', filename='img/user-actions-profile.png') }}") 0px 1px no-repeat;
-}
-a.create, a.edit {
-    background:transparent url("{{ url_for('static', filename='img/page-tools-edit.png') }}") 0px 1px no-repeat;
-}
-a.source, a.show {
-    background:transparent url("{{ url_for('static', filename='img/page-tools-source.png') }}") 0px 1px no-repeat;
-}
-a.revisions {
-    background:transparent url("{{ url_for('static', filename='img/page-tools-revisions.png') }}") 0px 1px no-repeat;
-}
-a.subscribe, a.unsubscribe {
-    background:transparent url("{{ url_for('static', filename='img/page-tools-subscribe.png') }}") 0px 1px no-repeat;
-}
-a.backlink {
-    background:transparent url("{{ url_for('static', filename='img/page-tools-backlinks.png') }}") 0px 1px no-repeat;
-}
-a.play {
-    background:transparent url("{{ url_for('static', filename='img/control_play.png') }}") 0px 1px no-repeat;
-}
-.time {
-    background:transparent url("{{ url_for('static', filename='img/status_None.png') }}") 0px 1px no-repeat;
-}
-a.play:hover {
-    background:transparent url("{{ url_for('static', filename='img/control_play_blue.png') }}") 0px 1px no-repeat;
-}
-a.cancel {
-    background:transparent url("{{ url_for('static', filename='img/control_cancel.png') }}") 0px 1px no-repeat;
-}
-a.cancel:hover {
-    background:transparent url("{{ url_for('static', filename='img/control_cancel_blue.png') }}") 0px 1px no-repeat;
-}
-a.pause {
-    background:transparent url("{{ url_for('static', filename='img/control_pause.png') }}") 0px 1px no-repeat;
-}
-a.pause:hover {
-    background:transparent url("{{ url_for('static', filename='img/control_pause_blue.png') }}") 0px 1px no-repeat;
-    font-weight: bold;
-}
-a.stop {
-    background:transparent url("{{ url_for('static', filename='img/control_stop.png') }}") 0px 1px no-repeat;
-}
-a.stop:hover {
-    background:transparent url("{{ url_for('static', filename='img/control_stop_blue.png') }}") 0px 1px no-repeat;
-}
-a.add {
-    background:transparent url("{{ url_for('static', filename='img/control_add.png') }}") 0px 1px no-repeat;
-}
-a.add:hover {
-    background:transparent url("{{ url_for('static', filename='img/control_add_blue.png') }}") 0px 1px no-repeat;
-}
-a.cog {
-    background:transparent url("{{ url_for('static', filename='img/cog.png') }}") 0px 1px no-repeat;
-}
-#head-panel {
-    background:#525252 url("{{ url_for('static', filename='img/head_bg1.png') }}") bottom left repeat-x;
-}
-.reconnect {
-    background:transparent url("{{ url_for('static', filename='img/reconnect.png') }}") 0px 1px no-repeat;
-}
-#head-menu ul li a, #head-menu ul li a:link {
-    background:#eaeaea url("{{ url_for('static', filename='img/tab-background.png') }}") 0 100% repeat-x;
-}
-.purr-alert.error{
-    background:url("{{ url_for('static', filename='img/error.png') }}") no-repeat #000 7px 10px;
-}
-.purr-alert.success{
-}
-    background:url("{{ url_for('static', filename='img/success.png') }}") no-repeat #000 7px 10px;
-}
-.purr-alert.notice{
-    background:url("{{ url_for('static', filename='img/notice.png') }}") no-repeat #000 7px 10px;
-}
-.MooDialog .close {
-    background: url("{{ url_for('static', filename='img/dialog-close.png') }}") no-repeat;
-}
-.MooDialog .MooDialogAlert,
-.MooDialog .MooDialogConfirm,
-.MooDialog .MooDialogPrompt,
-.MooDialog .MooDialogError {
-    background: url("{{ url_for('static', filename='img/dialog-warning.png') }}") no-repeat;
-    padding-left: 40px;
-    min-height: 40px;
-}
-
-.MooDialog .MooDialogConfirm,
-.MooDialog .MooDialogPromt {
-    background: url("{{ url_for('static', filename='img/dialog-question.png') }}") no-repeat;
-}
-
-.MooDialog .MooDialogError {
-    background: url("{{ url_for('static', filename='img/dialog-error.png') }}") no-repeat;
-}
-</style>
 <title>pyLoad</title>
 
 {% block head %}
@@ -198,22 +79,22 @@ a.cog {
         <li>
             <a href="{{'dashboard'}}" title=""><img src="{{url_for('static', filename='img/head-menu-home.png')}}" alt="" /> {{_("Dashboard")}}</a>
         </li>
-        <li {{ selected('app.queue') }}>
+        <li {{ selected('queue') }}>
             <a href="/queue" title=""><img src="{{url_for('static', filename='img/head-menu-queue.png')}}" alt="" /> {{_("Queue")}}</a>
         </li>
-        <li {{ selected('app.collector') }}>
+        <li {{ selected('collector') }}>
             <a href="/collector" title=""><img src="{{url_for('static', filename='img/head-menu-collector.png')}}" alt="" /> {{_("Packages")}}</a>
         </li>
-        <li {{ selected('app.files') }}>
+        <li {{ selected('files') }}>
             <a href="/files" title=""><img src="{{url_for('static', filename='img/head-menu-development.png')}}" alt="" /> {{_("Files")}}</a>
         </li>
-        <!-- <li {{ selected('app.filemanager') }}> -->
+        <!-- <li {{ selected('filemanager') }}> -->
             <!-- <a href="/filemanager" title=""><img src="{{url_for('static', filename='img/head-menu-download.png')}}" alt="" /> {{_("File Manager")}}</a> -->
         <!-- </li> -->
-        <li {{ selected('app.logs', True) }}>
+        <li {{ selected('logs', True) }}>
             <a href="/logs"  class="action index" accesskey="x" rel="nofollow"><img src="{{url_for('static', filename='img/head-menu-index.png')}}" alt="" />{{_("Logs")}}</a>
         </li>
-        <li {{ selected('app.settings', True) }}>
+        <li {{ selected('settings', True) }}>
             <a href="/settings"  class="action index" accesskey="x" rel="nofollow"><img src="{{url_for('static', filename='img/head-menu-config.png')}}" alt="" />{{_("Settings")}}</a>
         </li>
         {% endblock %}

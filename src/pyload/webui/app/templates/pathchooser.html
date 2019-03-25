@@ -1,30 +1,6 @@
 <html>
 <head>
-    <script class="javascript">
-        function chosen()
-        {
-            opener.ifield.value = document.forms[0].p.value;
-            close();
-        }
-        function exit()
-        {
-            close();
-        }
-        function setInvalid() {
-            document.forms[0].send.disabled = 'disabled';
-            document.forms[0].p.style.color = '#FF0000';
-        }
-        function setValid() {
-            document.forms[0].send.disabled = '';
-            document.forms[0].p.style.color = '#000000';
-        }
-        function setFile(file)
-        {
-            document.forms[0].p.value = file;
-            setValid();
-
-        }
-    </script>
+    <script type="text/javascript" src="{{theme_template('js/pathchooser.js')}}"></script>
     <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/pathchooser.css')}}"/>
 </head>
 <body{% if type == 'file' %}{% if not oldfile %} onload="setInvalid();"{% endif %}{% endif %}>
