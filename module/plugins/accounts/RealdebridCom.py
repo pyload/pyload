@@ -15,7 +15,7 @@ def args(**kwargs):
 class RealdebridCom(MultiAccount):
     __name__ = "RealdebridCom"
     __type__ = "account"
-    __version__ = "0.58"
+    __version__ = "0.59"
     __status__ = "testing"
 
     __config__ = [("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),
@@ -35,7 +35,8 @@ class RealdebridCom(MultiAccount):
         return json.loads(json_data)
 
     def grab_hosters(self, user, password, data):
-        hosters = self.api_response("/hosts/domains")
+        api_data = self.api_response("/hosts/status", args(auth_token=password))
+        hosters = [x[0] for x in api_data.items() if x[1]['supported'] == 1]
         return hosters
 
     def grab_info(self, user, password, data):
