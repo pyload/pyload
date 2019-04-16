@@ -44,7 +44,7 @@ class CloudFlare(object):
 
             header = parse_html_header(e.header)
 
-            if header.get('server') == "cloudflare":
+            if "cloudflare" in header.get('server', ""):
                 if e.code == 403:
                     data = CloudFlare._solve_cf_security_check(addon_plugin, owner_plugin, e.content)
 
@@ -59,7 +59,7 @@ class CloudFlare(object):
 
                             header = parse_html_header(e.header)
 
-                            if e.code == 503 and header.get('server') == "cloudflare":
+                            if e.code == 503 and "cloudflare" in header.get('server', ""):
                                 continue  #: Yes, it's a ddos challenge again..
 
                             else:
@@ -67,7 +67,7 @@ class CloudFlare(object):
                                 break
 
                     else:
-                        addon_plugin.log_debug("%s(): Max solve retries reached" % func_name)
+                        addon_plugin.log_error("%s(): Max solve retries reached" % func_name)
                         data = None  # Tell the exception handler to re-throw the exception
 
                 else:
@@ -88,7 +88,8 @@ class CloudFlare(object):
         try:
             addon_plugin.log_info(_("Detected CloudFlare's DDoS protection page"))
             # Cloudflare requires a delay before solving the challenge
-            owner_plugin.set_wait(5)
+            wait_time = (int(re.search('submit\(\);\r?\n\s*},\s*([0-9]+)', data).group(1)) + 999) / 1000
+            owner_plugin.set_wait(wait_time)
 
             last_url = owner_plugin.req.lastEffectiveURL
             urlp = urlparse.urlparse(last_url)
@@ -100,12 +101,16 @@ class CloudFlare(object):
             try:
                 get_params['jschl_vc'] = re.search(r'name="jschl_vc" value="(\w+)"', data).group(1)
                 get_params['pass'] = re.search(r'name="pass" value="(.+?)"', data).group(1)
+                get_params['s'] = re.search(r'name="s" value="(.+?)"', data).group(1)
 
                 # Extract the arithmetic operation
                 js = re.search(r'setTimeout\(function\(\){\s+(var s,t,o,p,b,r,e,a,k,i,n,g,f.+?\r?\n[\s\S]+?a\.value =.+?)\r?\n',
                                data).group(1)
-                js = re.sub(r'a\.value = (.+ \+ t\.length).+', r'\1', js)
-                js = re.sub(r'\s{3,}[a-z](?: = |\.).+', "", js).replace("t.length", str(len(domain)))
+                js = re.sub(r'a\.value = (.+\.toFixed\(10\);).+', r'\1', js)
+
+                solution_name = re.search(r's,t,o,p,b,r,e,a,k,i,n,g,f,\s*(.+)\s*=', js).group(1)
+                g = re.search(r'(.*};)\n\s*(t\s*=(.+))\n\s*(;%s.*)' % (solution_name), js, re.M | re.I | re.S).groups()
+                js = g[0] + g[-1]
                 js = re.sub(r"[\n\\']", "", js)
 
             except Exception:
@@ -119,10 +124,24 @@ class CloudFlare(object):
                 owner_plugin.log_error(_("Unable to parse CloudFlare's DDoS protection page"))
                 return None  # Tell the exception handler to re-throw the exception
 
+            atob = 'var atob = function(str) {return Buffer.from(str, "base64").toString("binary");}'
+            try:
+                k = re.search(r'k\s*=\s*\'(.+?)\';', data).group(1)
+                v = re.search(r'<div(?:.*)id="%s"(?:.*)>(.*)</div>' % k, data).group(1)
+                doc = 'var document= {getElementById: function(x) { return {innerHTML:"%s"};}}' % v
+            except (AttributeError, IndexError):
+                doc = ''
+            js = '%s;%s;var t="%s";%s' % (doc, atob, domain, js)
+
             # Safely evaluate the Javascript expression
             res = owner_plugin.js.eval(js)
 
-            get_params['jschl_answer'] = str(float(res))
+            try:
+                get_params['jschl_answer'] = str(float(res))
+
+            except ValueError:
+                owner_plugin.log_error(_("Unable to parse CloudFlare's DDoS protection page"))
+                return None  # Tell the exception handler to re-throw the exception
 
             owner_plugin.wait()  # Do the actual wait
 
@@ -181,7 +200,7 @@ class PreloadStub(object):
 class CloudFlareDdos(Addon):
     __name__ = "CloudFlareDdos"
     __type__ = "hook"
-    __version__ = "0.15"
+    __version__ = "0.16"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", False)]
