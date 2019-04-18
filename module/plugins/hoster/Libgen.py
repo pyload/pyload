@@ -10,11 +10,11 @@ from ..internal.Hoster import Hoster
 class LibGen(Hoster):
     __name__ = "LibGen"
     __type__ = "hoster"
-    __version__ = "0.1"
+    __version__ = "0.2"
     __status__ = "testing"
 
     # Only for libgen hosts and URLs that have an MD5
-    __pattern__ = r'https?://([^/]+\.)?(libgen.io|booksdescr.org|booksdescr.com|lib1.org|library1.org|libgen.pw)/.*\b[a-f0-9]{32}\b'
+    __pattern__ = r'(?i)https?://([^/]+\.)?(libgen.io|booksdescr.org|booksdl.org|booksdescr.com|lib1.org|library1.org|libgen.pw)/.*\b[a-f0-9]{32}\b'
     __config__ = [("activated", "bool", "Activated", True)]
 
     __description__ = """Plugin for libgen.io, mostly to rewrite the downloaded file names"""
@@ -51,7 +51,7 @@ class LibGen(Hoster):
       ]
       
       # Get MD5
-      match = re.search(r"(?:/|md5=)(?P<md5>[a-f0-9]{32})$", pyfile.url)
+      match = re.search(r"(?i)(?:/|md5=)(?P<md5>[a-f0-9]{32})\b", pyfile.url)
       if not match:
         self.log_error("Could not extract MD5 from URL "+pyfile.url)
         self.fail("Wrong URL")
@@ -61,7 +61,7 @@ class LibGen(Hoster):
         self.log_debug("Parsed MD5 hash for this download: "+md5)
 
         # Loop through mirrors
-        Found = False
+        found = False
         for mirror in mirrors:
           url = mirror.format(md5)
           self.log_debug("Trying mirror: "+url)
