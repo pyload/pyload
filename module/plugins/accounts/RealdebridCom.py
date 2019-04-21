@@ -15,7 +15,7 @@ def args(**kwargs):
 class RealdebridCom(MultiAccount):
     __name__ = "RealdebridCom"
     __type__ = "account"
-    __version__ = "0.59"
+    __version__ = "0.60"
     __status__ = "testing"
 
     __config__ = [("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),
@@ -27,6 +27,7 @@ class RealdebridCom(MultiAccount):
     __authors__ = [("Devirex Hazzard", "naibaf_11@yahoo.de"),
                    ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
+    # See https://api.real-debrid.com/
     API_URL = "https://api.real-debrid.com/rest/1.0"
 
     def api_response(self, namespace, get={}, post={}):

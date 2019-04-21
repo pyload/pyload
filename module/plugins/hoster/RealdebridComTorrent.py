@@ -14,7 +14,7 @@ from ..internal.misc import exists, json
 class RealdebridComTorrent(Hoster):
     __name__ = "RealdebridComTorrent"
     __type__ = "hoster"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __status__ = "testing"
 
     __pattern__ = r'(?:file|https?)://.+\.torrent|magnet:\?.+'
@@ -26,6 +26,7 @@ class RealdebridComTorrent(Hoster):
     __license__ = "GPLv3"
     __authors__ = [("GammaC0de", "nitzo2001[AT}yahoo[DOT]com")]
 
+    # See https://api.real-debrid.com/
     API_URL = "https://api.real-debrid.com/rest/1.0"
 
     def api_response(self, namespace, get={}, post={}):
@@ -106,10 +107,14 @@ class RealdebridComTorrent(Hoster):
 
         torrent_id = api_data['id']
 
+        torrent_info = self.api_response("/torrents/info/" + torrent_id,
+                                         get={'auth_token': self.api_token})
+
         #: Select all the files for downloading
+        file_ids = ",".join([str(_f['id']) for _f in torrent_info['files']])
         self.api_response("/torrents/selectFiles/" + torrent_id,
                           get={'auth_token': self.api_token},
-                          post={'files': "all"})
+                          post={'files': file_ids})
 
         return torrent_id
 
