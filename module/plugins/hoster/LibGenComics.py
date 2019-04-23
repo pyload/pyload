@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from .Http import Http
+import re
+from module.network.HTTPRequest import BadHeader
 
+from .Http import Http
 
 class LibGenComics(Http):
     __name__ = "LibGenComics"
@@ -23,4 +25,21 @@ class LibGenComics(Http):
         self.multi_dl = False
         self.limitDL = 1
         self.limit_dl = 1
+
+    def process(self, pyfile):
+        url = re.sub(r'^(jd|py)', "http", pyfile.url)
+
+        for _i in range(2):
+            try:
+                self.download(url, ref=False, disposition=True, fixurl=False)
+            except BadHeader, e:
+                if e.code not in (401, 403, 404, 410):
+                    raise
+
+            if self.req.code in (404, 410):
+                self.offline()
+            else:
+                break
+
+        self.check_download()
 
