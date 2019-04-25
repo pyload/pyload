@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import hashlib
+
 import Crypto.PublicKey.RSA
 
 from ..hoster.MegaCoNz import MegaClient, MegaCrypto
@@ -9,7 +11,7 @@ from ..internal.Account import Account
 class MegaCoNz(Account):
     __name__ = "MegaCoNz"
     __type__ = "account"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __status__ = "testing"
 
     __description__ = """Mega.co.nz account plugin"""
@@ -38,6 +40,7 @@ class MegaCoNz(Account):
                 'premium': premium}
 
     def signin(self, user, password, data):
+        user = user.lower()
         mega = MegaClient(self, None)
 
         mega_session_cache = self.db.retrieve("mega_session_cache") or {}
@@ -55,21 +58,31 @@ class MegaCoNz(Account):
         sid = None
         data['mega_session_id'] = sid
 
-        password_key = self.get_password_key(password)
-        user_hash = self.get_user_hash(user, password_key)
+        res = mega.api_response(a="us0", user=user)  #: us0 is `prelogin` command
+        if res['v'] == 1:  #: v1 account
+            password_key = self.get_password_key(password)
+            user_hash = self.get_user_hash_v1(user, password_key)
+
+        elif res['v'] == 2:  #: v2 account
+            salt = MegaCrypto.base64_decode(res['s'])
+            pbkdf = hashlib.pbkdf2_hmac("SHA512", password, salt, 100000, 32)
+
+            password_key = MegaCrypto.str_to_a32(pbkdf[:16])
+            user_hash = MegaCrypto.base64_encode(pbkdf[16:]).replace('=', '')
+
+        else:
+            self.log_error(_("Unsupported user account version (%s)") % res['v'])
+            self.fail_login()
 
         res = mega.api_response(a="us", user=user, uh=user_hash)
-        if isinstance(res, int):
-            self.fail_login()
-        elif isinstance(res, dict) and 'e' in res:
+        if isinstance(res, int) or isinstance(res, dict) and 'e' in res:
             self.fail_login()
 
         master_key = MegaCrypto.decrypt_key(res['k'], password_key)
 
         if 'tsid' in res:
             tsid = MegaCrypto.base64_decode(res['tsid'])
-            if MegaCrypto.a32_to_str(MegaCrypto.encrypt_key(
-                    MegaCrypto.str_to_a32(tsid[:16]), master_key)) == tsid[-16:]:
+            if MegaCrypto.a32_to_str(MegaCrypto.encrypt_key(MegaCrypto.str_to_a32(tsid[:16]), master_key)) == tsid[-16:]:
                 sid = res['tsid']
 
             else:
@@ -77,22 +90,20 @@ class MegaCoNz(Account):
 
         elif 'csid' in res:
             privk = MegaCrypto.a32_to_str(MegaCrypto.decrypt_key(res['privk'], master_key))
-            rsa_private_key = [long(0), long(0), long(0), long(0)]
+            rsa_private_key = [0L, 0L, 0L, 0L]
 
             for i in range(4):
                 l = ((ord(privk[0]) * 256 + ord(privk[1]) + 7) / 8) + 2
+                if l > len(privk):
+                    self.fail_login()
                 rsa_private_key[i] = self.mpi_to_int(privk[:l])
                 privk = privk[l:]
 
+            if len(privk) >= 16:
+                self.fail_login()
+
             encrypted_sid = self.mpi_to_int(MegaCrypto.base64_decode(res['csid']))
-            rsa = Crypto.PublicKey.RSA.construct(
-                (rsa_private_key[0] *
-                 rsa_private_key[1],
-                 long(0),
-                 rsa_private_key[2],
-                 rsa_private_key[0],
-                 rsa_private_key[1]))
-            sid = "%x" % rsa.key._decrypt(encrypted_sid)
+            sid = "%x" % pow(encrypted_sid, rsa_private_key[2], rsa_private_key[0] * rsa_private_key[1])
             sid = '0' * (-len(sid) % 2) + sid
             sid = "".join(chr(int(sid[i: i + 2], 16))
                           for i in range(0, len(sid), 2))
@@ -118,7 +129,7 @@ class MegaCoNz(Account):
 
         return MegaCrypto.str_to_a32(password_key)
 
-    def get_user_hash(self, user, password_key):
+    def get_user_hash_v1(self, user, password_key):
         user_a32 = MegaCrypto.str_to_a32(user)
         user_hash = [0, 0, 0, 0]
         for i in range(len(user_a32)):
