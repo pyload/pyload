@@ -14,7 +14,7 @@ from ..internal.misc import exists, json
 class RealdebridComTorrent(Hoster):
     __name__ = "RealdebridComTorrent"
     __type__ = "hoster"
-    __version__ = "0.04"
+    __version__ = "0.05"
     __status__ = "testing"
 
     __pattern__ = r'(?:file|https?)://.+\.torrent|magnet:\?.+'
@@ -110,6 +110,9 @@ class RealdebridComTorrent(Hoster):
         torrent_info = self.api_response("/torrents/info/" + torrent_id,
                                          get={'auth_token': self.api_token})
 
+        if 'error' in torrent_info:
+            self.fail("%s (code: %s)" % (torrent_info["error"], torrent_info.get("error_code", -1)))
+
         #: Select all the files for downloading
         file_ids = ",".join([str(_f['id']) for _f in torrent_info['files']])
         self.api_response("/torrents/selectFiles/" + torrent_id,
@@ -123,6 +126,9 @@ class RealdebridComTorrent(Hoster):
 
         torrent_info = self.api_response("/torrents/info/" + torrent_id,
                                          get={'auth_token': self.api_token})
+
+        if 'error' in torrent_info:
+            self.fail("%s (code: %s)" % (torrent_info["error"], torrent_info.get("error_code", -1)))
 
         self.pyfile.name = torrent_info['original_filename']
         self.pyfile.size = torrent_info['original_bytes']
@@ -138,6 +144,8 @@ class RealdebridComTorrent(Hoster):
 
             torrent_info = self.api_response("/torrents/info/" + torrent_id,
                                              get={'auth_token': self.api_token})
+            if 'error' in torrent_info:
+                self.fail("%s (code: %s)" % (torrent_info["error"], torrent_info.get("error_code", -1)))
 
         self.pyfile.setProgress(100)
 
@@ -150,7 +158,7 @@ class RealdebridComTorrent(Hoster):
                                      get= {'auth_token': self.api_token},
                                      post={'link': torrent_url})
         if "error" in api_data:
-            self.fail("%s (code: %s)" % (api_data["error"], api_data["error_code"]))
+            self.fail("%s (code: %s)" % (api_data["error"], api_data.get("error_code", -1)))
 
         else:
             self.pyfile.name = api_data['filename']
