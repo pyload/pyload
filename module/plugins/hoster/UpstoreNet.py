@@ -9,7 +9,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class UpstoreNet(SimpleHoster):
     __name__ = "UpstoreNet"
     __type__ = "hoster"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(?:upstore\.net|upsto\.re)/(?P<ID>\w+)'
@@ -39,6 +39,21 @@ class UpstoreNet(SimpleHoster):
 
     COOKIES = [("upstore.net", "lang", "en")]
 
+    def handle_captcha(self):
+        recaptcha = ReCaptcha(self.pyfile)
+        try:
+            captcha_key = re.search(self.RECAPTCHA_PATTERN, self.data).group(1)
+        except Exception:
+            captcha_key = recaptcha.detect_key()
+        else:
+            self.log_debug("ReCaptcha key: %s" % captcha_key)
+        if captcha_key:
+            self.captcha = recaptcha
+            return recaptcha.challenge(captcha_key)
+        else:
+            self.fail(_("captcha key not found"))
+
+
     def handle_free(self, pyfile):
         #: STAGE 1: get link to continue
         m = re.search(self.CHASH_PATTERN, self.data)
@@ -67,9 +82,8 @@ class UpstoreNet(SimpleHoster):
             self.wait(wait_time)
 
             #: then, handle the captcha
-            response, challenge = self.captcha.challenge()
-            post_data.update({'recaptcha_challenge_field': challenge,
-                              'recaptcha_response_field': response})
+            response, challenge = self.handle_captcha()
+            post_data['g-recaptcha-response'] = response
 
             self.data = self.load(pyfile.url, post=post_data)
 
