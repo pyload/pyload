@@ -5,6 +5,7 @@ import re
 import urlparse
 
 from ..captcha.ReCaptcha import ReCaptcha
+from ..internal.misc import json
 from ..internal.XFSHoster import XFSHoster
 
 
@@ -14,7 +15,7 @@ class FilejokerNet(XFSHoster):
     __version__ = "0.06"
     __status__ = "testing"
 
-    __pattern__ = r'https?://(?:www\.)?filejoker\.net/\w{12}'
+    __pattern__ = r'https?://(?:www\.)?filejoker\.net/(?P<ID>\w{12})'
     __config__ = [("activated", "bool", "Activated", True),
                   ("use_premium", "bool", "Use premium account if available", True),
                   ("fallback", "bool", "Fallback to free download if premium fails", True),
@@ -37,6 +38,13 @@ class FilejokerNet(XFSHoster):
 
     LINK_PATTERN = r'<div class="premium-download">\s+<a href="(.+?)"'
 
+    API_URL = "https://filejoker.net/zapi"
+
+
+    def api_response(self, op, **kwargs):
+        args = {'op': op}
+        args.update(kwargs)
+        return json.loads(self.load(self.API_URL, get=args))
 
     def handle_captcha(self, inputs):
         m = re.search(r'\$\.post\( "/ddl",\s*\{(.+?) \} \);', self.data)
@@ -68,3 +76,29 @@ class FilejokerNet(XFSHoster):
 
                 else:
                     self.retry_captcha()
+
+    def handle_premium(self, pyfile):
+        res = self.api_response("download1",
+                                file_code=self.info['pattern']['ID'],
+                                session=self.account.info['data']['session'])
+
+        if 'error' in res:
+            if res['error'] == "no file":
+                self.offline()
+
+            else:
+                self.fail(res['error'])
+
+        pyfile.name = res['file_name']
+        pyfile.size = res['file_size']
+
+        res = self.api_response("download2",
+                                file_code=self.info['pattern']['ID'],
+                                download_id=res['download_id'],
+                                session=self.account.info['data']['session'])
+
+        if 'error' in res:
+            self.fail(res['error'])
+
+        self.link = res['direct_link']
+
