@@ -27,13 +27,13 @@
   </a>
 </p>
 <p align="center">
-  <img src="https://img.shields.io/pypi/status/pyload-dev.svg" alt="PyPI Status" />
-  <a href="https://pypi.python.org/pypi/pyload-dev">
-    <img src="https://img.shields.io/pypi/v/pyload-dev.svg" alt="PyPI Version" />
+  <img src="https://img.shields.io/pypi/status/pyload-ng.svg" alt="PyPI Status" />
+  <a href="https://pypi.python.org/pypi/pyload-ng">
+    <img src="https://img.shields.io/pypi/v/pyload-ng.svg" alt="PyPI Version" />
   </a>
-  <img src="https://img.shields.io/pypi/pyversions/pyload-dev.svg" alt="PyPI Python Versions" />
+  <img src="https://img.shields.io/pypi/pyversions/pyload-ng.svg" alt="PyPI Python Versions" />
   <a href="https://github.com/pyload/pyload/blob/develop/LICENSE.md">
-    <img src="https://img.shields.io/pypi/l/pyload-dev.svg" alt="PyPI License" />
+    <img src="https://img.shields.io/pypi/l/pyload-ng.svg" alt="PyPI License" />
   </a>
 </p>
 <br />
@@ -56,14 +56,14 @@ Installation
 To install pyLoad and all its optional dependencies,
 type in a terminal/command prompt window (as root/administrator):
 
-    pip install --pre pyload-dev[all]
+    pip install --pre pyload-ng[all]
 
 ### Minimum Installation
 
 To install pyLoad (and its essential dependencies),
 type in a terminal/command prompt window (as root/administrator):
 
-    pip install --pre pyload-dev
+    pip install --pre pyload-ng
 
 ### Troubleshooting
 
@@ -139,4 +139,4 @@ It's highly recommended to change them on the first start.
 <br />
 
 -------------------------
-###### © 2018 pyLoad team
+###### © 2019 pyLoad team
