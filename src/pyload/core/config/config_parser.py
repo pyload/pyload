@@ -354,13 +354,9 @@ class ConfigParser:
         """
         adds config options with tuples (name, type, desc, default)
         """
-        if name not in self.plugin:
-            conf = {"desc": name, "outline": outline}
-            self.plugin[name] = conf
-        else:
-            conf = self.plugin[name]
-            conf["outline"] = outline
-
+        conf = self.plugin.get(name, {"desc": name})
+        conf["outline"] = outline
+        
         for item in config:
             if item[0] in conf and item[1] == conf[item[0]]["type"]:
                 conf[item[0]]["desc"] = item[2]
@@ -373,9 +369,8 @@ class ConfigParser:
 
         values = [x[0] for x in config] + ["desc", "outline"]
         # delete old values
-        for item in conf.keys():
-            if item not in values:
-                del conf[item]
+        self.plugin[name] = {k:v for k,v in conf.items() if k in values}
+
 
     def delete_config(self, name):
         """
