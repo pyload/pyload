@@ -4,7 +4,8 @@
 import time
 from itertools import islice
 
-from pyload.core.datatypes import Destination, PackageData
+from pyload.core.datatypes.data import PackageData
+from pyload.core.datatypes.enums import Destination
 
 from .handler import Handler
 from .printer import *

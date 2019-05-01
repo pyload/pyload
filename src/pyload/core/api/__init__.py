@@ -23,7 +23,9 @@ from ..utils import compare_time, free_space
 import json
 from enum import IntFlag
 
-from ..datatypes import *
+from ..datatypes.exceptions import *
+from ..datatypes.enums import *
+from ..datatypes.data import *
 
 # contains function names mapped to their permissions
 # unlisted functions are for admins only

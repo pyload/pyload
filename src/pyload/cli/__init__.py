@@ -18,7 +18,7 @@ from threading import Lock, Thread
 
 from easy_getch import getch
 
-from pyload.core.datatypes import Destination
+from pyload.core.datatypes.enums import Destination
 
 # from pyload.core.remote.thriftbackend.thrift_client import (
 # ConnectionClosed,

@@ -4,7 +4,7 @@
 from threading import RLock
 from .event_manager import InsertEvent, ReloadAllEvent, RemoveEvent, UpdateEvent
 from ..utils import lock
-from ..datatypes import Destination
+from ..datatypes.enums import Destination
 
 
 class FileManager:
