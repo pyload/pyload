@@ -41,7 +41,7 @@ except ImportError:
 class misc(object):
     __name__ = "misc"
     __type__ = "plugin"
-    __version__ = "0.53"
+    __version__ = "0.54"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -65,8 +65,7 @@ class Config(object):
         :param value:
         :return:
         """
-        self.plugin.pyload.api.setConfigValue(
-            plugin or self.plugin.classname, option, value, section="plugin")
+        self.plugin.pyload.api.setConfigValue(plugin or self.plugin.classname, option, value, section="plugin")
 
     def get(self, option, default=None, plugin=None):
         """
@@ -76,13 +75,10 @@ class Config(object):
         :return:
         """
         try:
-            return self.plugin.pyload.config.getPlugin(
-                plugin or self.plugin.classname, option)
+            return self.plugin.pyload.config.getPlugin(plugin or self.plugin.classname, option)
 
         except KeyError:
-            self.plugin.log_debug(
-                "Config option `%s` not found, use default `%s`" %
-                (option, default))  # @TODO: Restore to `log_warning` in 0.4.10
+            self.plugin.log_debug("Config option `%s` not found, use default `%s`" % (option, default))  # @TODO: Restore to `log_warning` in 0.4.10
             return default
 
 
@@ -158,8 +154,7 @@ class Periodical(object):
         if interval is not None and self.set_interval(interval) is False:
             return False
         else:
-            self.cb = self.plugin.pyload.scheduler.addJob(
-                max(1, delay), self._task, [threaded], threaded=threaded)
+            self.cb = self.plugin.pyload.scheduler.addJob(max(1, delay), self._task, [threaded], threaded=threaded)
             return True
 
     def restart(self, *args, **kwargs):
@@ -328,8 +323,7 @@ def fsbsize(path):
         cluster_sectors, sector_size = ctypes.c_longlong(0)
 
         ctypes.windll.kernel32.GetDiskFreeSpaceW(ctypes.c_wchar_p(drive),
-                                                 ctypes.pointer(
-                                                     cluster_sectors),
+                                                 ctypes.pointer(cluster_sectors),
                                                  ctypes.pointer(sector_size),
                                                  None,
                                                  None)
@@ -401,9 +395,7 @@ def decode(value, encoding=None, errors='strict'):
     Encoded string (default to own system encoding) -> unicode string
     """
     if isinstance(value, str):
-        res = unicode(
-            value, encoding or get_console_encoding(
-                sys.stdout.encoding), errors)
+        res = unicode(value, encoding or get_console_encoding(sys.stdout.encoding), errors)
 
     elif isinstance(value, unicode):
         res = value
@@ -538,8 +530,7 @@ def safepath(value):
     else:
         unt = ""
     drive, filename = os.path.splitdrive(value)
-    filename = os.path.join(os.sep if os.path.isabs(
-        filename) else "", *map(safename, filename.split(os.sep)))
+    filename = os.path.join(os.sep if os.path.isabs(filename) else "", *map(safename, filename.split(os.sep)))
     path = unt + drive + filename
 
     try:
@@ -628,8 +619,7 @@ def str2int(value):
     ones = ("zero", "one", "two", "three", "four", "five", "six", "seven", "eight",
             "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen",
             "sixteen", "seventeen", "eighteen", "nineteen")
-    tens = ("", "", "twenty", "thirty", "forty", "fifty", "sixty", "seventy",
-            "eighty", "ninety")
+    tens = ("", "", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety")
 
     o_tuple = [(w, i) for i, w in enumerate(ones)]
     t_tuple = [(w, i * 10) for i, w in enumerate(tens)]
@@ -650,8 +640,7 @@ def parse_time(value):
     else:
         _re = re.compile(r'(\d+| (?:this|an?) )\s*(hr|hour|min|sec|)', re.I)
         seconds = sum((int(v) if v.strip() not in ("this", "a", "an") else 1) *
-                      {'hr': 3600, 'hour': 3600, 'min': 60,
-                          'sec': 1, '': 1}[u.lower()]
+                      {'hr': 3600, 'hour': 3600, 'min': 60, 'sec': 1, '': 1}[u.lower()]
                       for v, u in _re.findall(value))
     return seconds
 
@@ -722,11 +711,7 @@ def format_exc(frame=None):
         if callstack[-1][0] == exception_callstack[0][0]:
             callstack = callstack[:-1]
             callstack.extend(exception_callstack)
-            exc_desc = decode(
-                "".join(
-                    traceback.format_exception_only(
-                        exc_info[0],
-                        exc_info[1])))
+            exc_desc = decode("".join(traceback.format_exception_only(exc_info[0], exc_info[1])))
 
     msg = u"Traceback (most recent call last):\n"
     msg += decode("".join(traceback.format_list(callstack)))
@@ -737,8 +722,7 @@ def format_exc(frame=None):
 
 def seconds_to_nexthour(strict=False):
     now = datetime.datetime.today()
-    nexthour = now.replace(minute=0 if strict else 1,
-                           second=0, microsecond=0) + datetime.timedelta(hours=1)
+    nexthour = now.replace(minute=0 if strict else 1, second=0, microsecond=0) + datetime.timedelta(hours=1)
     return (nexthour - now).seconds
 
 
@@ -748,13 +732,19 @@ def seconds_to_midnight(utc=None, strict=False):
     else:
         now = datetime.datetime.today()
 
-    midnight = now.replace(hour=0,
-                           minute=0 if strict else 1,
-                           second=0,
-                           microsecond=0) + datetime.timedelta(days=1)
+    midnight = now.replace(hour=0, minute=0 if strict else 1, second=0, microsecond=0) + datetime.timedelta(days=1)
 
     return (midnight - now).seconds
 
+
+def search_pattern(pattern, value, flags=0):
+    try:
+        pattern, reflags = pattern
+
+    except ValueError:
+        reflags = 0
+
+    return re.search(pattern, value, reflags | flags)
 
 def replace_patterns(value, rules):
     for r in rules:
@@ -771,8 +761,7 @@ def replace_patterns(value, rules):
 
 
 #@TODO: Remove in 0.4.10 and fix exp in CookieJar.setCookie
-def set_cookie(cj, domain, name, value, path='/',
-               exp=time.time() + 180 * 24 * 3600):
+def set_cookie(cj, domain, name, value, path='/', exp=time.time() + 180 * 24 * 3600):
     args = map(encode, [domain, name, value, path]) + [int(exp)]
     return cj.setCookie(*args)
 
@@ -807,25 +796,17 @@ def parse_html_header(header):
 
 
 def parse_html_tag_attr_value(attr_name, tag):
-    m = re.search(
-        r'%s\s*=\s*(["\']?)((?<=")[^"]+|(?<=\')[^\']+|[^>\s"\'][^>\s]*)\1' %
-        attr_name, tag, re.I)
+    m = re.search(r'%s\s*=\s*(["\']?)((?<=")[^"]+|(?<=\')[^\']+|[^>\s"\'][^>\s]*)\1' % attr_name, tag, re.I)
     return m.group(2) if m else None
 
 
 def parse_html_form(attr_str, html, input_names={}):
-    for form in re.finditer(r'(?P<TAG><form[^>]*%s.*?>)(?P<CONTENT>.*?)</?(form|body|html).*?>' % attr_str,
-                            html, re.I | re.S):
+    for form in re.finditer(r'(?P<TAG><form[^>]*%s.*?>)(?P<CONTENT>.*?)</?(form|body|html).*?>' % attr_str, html, re.I | re.S):
         inputs = {}
         action = parse_html_tag_attr_value("action", form.group('TAG'))
 
         for inputtag in re.finditer(r'(<(input|textarea).*?>)([^<]*(?=</\2)|)',
-                                    re.sub(
-                                        re.compile(
-                                            r'<!--.+?-->',
-                                            re.I | re.S),
-                                        "",
-                                        form.group('CONTENT')),
+                                    re.sub(re.compile(r'<!--.+?-->', re.I | re.S), "", form.group('CONTENT')),
                                     re.I | re.S):
 
             name = parse_html_tag_attr_value("name", inputtag.group(1))
@@ -939,8 +920,7 @@ def copy_tree(src, dst, overwrite=False, preserve_metadata=False):
                 shutil.copystat(src_dir, dst_dir)
 
         elif pmode:
-            if overwrite or overwrite is None and mtime(
-                    src_dir) > mtime(dst_dir):
+            if overwrite or overwrite is None and mtime(src_dir) > mtime(dst_dir):
                 shutil.copystat(src_dir, dst_dir)
 
         for filename in files:
@@ -948,8 +928,7 @@ def copy_tree(src, dst, overwrite=False, preserve_metadata=False):
             dst_file = fsjoin(dst_dir, filename)
 
             if exists(dst_file):
-                if overwrite or overwrite is None and mtime(
-                        src_file) > mtime(dst_file):
+                if overwrite or overwrite is None and mtime(src_file) > mtime(dst_file):
                     os.remove(dst_file)
                 else:
                     continue
@@ -979,8 +958,7 @@ def move_tree(src, dst, overwrite=False):
             dst_file = fsjoin(dst_dir, filename)
 
             if exists(dst_file):
-                if overwrite or overwrite is None and mtime(
-                        src_file) > mtime(dst_file):
+                if overwrite or overwrite is None and mtime(src_file) > mtime(dst_file):
                     os.remove(dst_file)
                 else:
                     continue
