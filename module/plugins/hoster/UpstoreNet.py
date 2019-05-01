@@ -9,7 +9,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class UpstoreNet(SimpleHoster):
     __name__ = "UpstoreNet"
     __type__ = "hoster"
-    __version__ = "0.15"
+    __version__ = "0.16"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(?:upstore\.net|upsto\.re)/(?P<ID>\w+)'
@@ -34,7 +34,6 @@ class UpstoreNet(SimpleHoster):
 
     DL_LIMIT_PATTERN = r'Please wait .+? before downloading next'
     WAIT_PATTERN = r'var sec = (\d+)'
-    CHASH_PATTERN = r'<input type="hidden" name="hash" value="(.+?)">'
 
     COOKIES = [("upstore.net", "lang", "en")]
 
