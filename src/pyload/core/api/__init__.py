@@ -71,15 +71,15 @@ def has_permission(userperms, perms):
 
 
 def legacy(func_name):
-
+    
     def decorator(func):
-
+    
         @wraps(func)
         def wrapper(self, *args, **kwargs):
             if not hasattr(self, func_name):
                 setattr(self, func_name, func)
                 getattr(self, func_name).__new_func = func
-            return func(*args, **kwargs)
+            return func(self, *args, **kwargs)
 
         return wrapper
 
