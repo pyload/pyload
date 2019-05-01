@@ -98,7 +98,7 @@ class App:
     @classmethod
     def _configure_logging(cls, app, pycore):
         # Inject our custom logger
-        app.logger = pycore.log.get_child("webui")
+        app.logger = pycore.log.getChild("webui")
 
     def __new__(cls, pycore, develop=False):
         app = flask.Flask(__name__)

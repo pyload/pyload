@@ -59,7 +59,7 @@ class LogFactory:
         filelog = self.pyload.config.get("log", "filelog")
 
         level = logging.DEBUG if self.pyload.debug else logging.INFO
-        logger.set_level(level)
+        logger.setLevel(level)
 
         if console:
             self._init_console_handler(logger)
@@ -75,7 +75,7 @@ class LogFactory:
         logger = self.loggers.pop(name)
         if not logger:
             return
-        self._remove_handlers(logger)
+        self._removeHandlers(logger)
 
     def reset_logger(self, name):
         logger = self.loggers.get(name)
@@ -83,14 +83,14 @@ class LogFactory:
             return
         self._init_logger(logger)
 
-    def _remove_handlers(self, logger):
+    def _removeHandlers(self, logger):
         for handler in logger.handlers:
             with closing(handler) as hdlr:
-                logger.remove_handler(hdlr)
+                logger.removeHandler(hdlr)
 
     def shutdown(self):
         for logger in self.loggers.values():
-            self._remove_handlers(logger)
+            self._removeHandlers(logger)
         self.loggers.clear()
 
     def _init_console_handler(self, logger):
@@ -112,7 +112,7 @@ class LogFactory:
 
         consolehdlr = logging.StreamHandler(sys.stdout)
         consolehdlr.setFormatter(consoleform)
-        logger.add_handler(consolehdlr)
+        logger.addHandler(consolehdlr)
 
     def _init_syslog_handler(self, logger):
         # try to mimic to normal syslog messages
@@ -143,7 +143,7 @@ class LogFactory:
 
         sysloghdlr = logging.handlers.SysLogHandler(syslog_addr)
         sysloghdlr.setFormatter(syslog_form)
-        logger.add_handler(sysloghdlr)
+        logger.addHandler(sysloghdlr)
 
     def _init_filelog_handler(self, logger):
         filename = logger.name + self.FILE_EXTENSION
@@ -178,4 +178,4 @@ class LogFactory:
             filehdlr = logging.FileHandler(filelog_path, encoding=encoding)
 
         filehdlr.setFormatter(filelog_form)
-        logger.add_handler(filehdlr)
+        logger.addHandler(filehdlr)
