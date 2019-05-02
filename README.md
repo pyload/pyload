@@ -46,6 +46,7 @@ Includes `pyload-core`, `pyload-plugins`, `pyload-webui`, `pyload-cli`.
 
 - This package is intended for developer audience only, **do not use in production!**
 - This package is automatically deployed from latest source code of pyLoad's `develop` branch.
+- [Stable Branch](https://github.com/pyload/pyload/tree/stable) is production ready.
 
 
 Installation
