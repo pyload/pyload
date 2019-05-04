@@ -29,7 +29,7 @@ except ImportError:
 class ReCaptcha(CaptchaService):
     __name__ = 'ReCaptcha'
     __type__ = 'captcha'
-    __version__ = '0.40'
+    __version__ = '0.41'
     __status__ = 'testing'
 
     __description__ = 'ReCaptcha captcha service plugin'
@@ -152,47 +152,6 @@ class ReCaptcha(CaptchaService):
                                   data,
                                   version=self.detect_version(data=data),
                                   secure_token=secure_token)
-
-    def result(self, server, challenge, key):
-        self.pyfile.plugin.load("http://www.google.com/recaptcha/api/js/recaptcha.js")
-        html = self.pyfile.plugin.load("http://www.google.com/recaptcha/api/reload",
-                                       get={'c': challenge,
-                                            'k': key,
-                                            'reason': "i",
-                                            'type': "image"})
-
-        try:
-            challenge = re.search('\(\'(.+?)\',', html).group(1)
-
-        except (AttributeError, IndexError):
-            self.fail(_("reCAPTCHA second challenge pattern not found"))
-
-        self.log_debug("Second challenge: %s" % challenge)
-        result = self.decrypt(urlparse.urljoin(server, "image"),
-                              get={'c': challenge},
-                              cookies=True,
-                              input_type="jpg")
-
-        return result, challenge
-
-    def _collect_api_info(self):
-        html = self.pyfile.plugin.load("http://www.google.com/recaptcha/api.js")
-        a = re.search(r'po.src = \'(.*?)\';', html).group(1)
-        vers = a.split("/")[5]
-
-        self.log_debug("API version: %s" % vers)
-
-        language = a.split("__")[1].split(".")[0]
-
-        self.log_debug("API language: %s" % language)
-
-        html = self.pyfile.plugin.load("https://apis.google.com/js/api.js")
-        b = re.search(r'"h":"(.*?)","', html).group(1)
-        jsh = b.decode('unicode-escape')
-
-        self.log_debug("API jsh-string: %s" % jsh)
-
-        return vers, language, jsh
 
     def _prepare_image(self, image, challenge_msg):
         if no_pil:
