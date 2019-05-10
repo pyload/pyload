@@ -1,17 +1,21 @@
 # Configuration for probot-stale - https://github.com/probot/stale
 
 # Number of days of inactivity before an Issue or Pull Request becomes stale
-daysUntilStale: 90
+daysUntilStale: 180
 
 # Number of days of inactivity before an Issue or Pull Request with the stale label is closed.
 # Set to false to disable. If disabled, issues still need to be closed manually, but will remain marked as stale.
-daysUntilClose: 7
+daysUntilClose: 30
 
 # Issues or Pull Requests with these labels will never be considered stale. Set to `[]` to disable
 exemptLabels:
   - pinned
   - security
   - important
+  - checking
+  - "feature request"
+  - "plugin request"
+  - "top rated"
 
 # Set to true to ignore issues in a project (defaults to false)
 exemptProjects: false
@@ -28,9 +32,9 @@ staleLabel: inactive
 # Comment to post when marking as stale. Set to `false` to disable
 markComment: >
   This ticket has been automatically marked as `inactive`
-  because 90 days have passed since the last comment.
+  because **180 days** have passed since the last comment.
   
-  It will be closed in 7 days if no further activity occurs.
+  **It will be closed in 30 days if no further activity occurs.**
   
   If this issue still requires attention, please leave a comment.
 
@@ -40,7 +44,7 @@ markComment: >
 
 # Comment to post when closing a stale Issue or Pull Request.
 closeComment: >
-  This ticket has been automatically closed.
+  **This ticket has been automatically closed.**
   
   This is often because the request was already solved in some way 
   and it just wasn't updated or it's no longer applicable.
