@@ -9,11 +9,12 @@ daysUntilClose: 30
 
 # Issues or Pull Requests with these labels will never be considered stale. Set to `[]` to disable
 exemptLabels:
+  - checking
+  - important
   - pinned
   - security
-  - important
-  - checking
   - "feature request"
+  - "feedback wanted"
   - "plugin request"
   - "top rated"
 
@@ -33,9 +34,9 @@ staleLabel: inactive
 markComment: >
   This ticket has been automatically marked as `inactive`
   because **180 days** have passed since the last comment.
-  
+
   **It will be closed in 30 days if no further activity occurs.**
-  
+
   If this issue still requires attention, please leave a comment.
 
 # Comment to post when removing the stale label.
@@ -45,13 +46,13 @@ markComment: >
 # Comment to post when closing a stale Issue or Pull Request.
 closeComment: >
   **This ticket has been automatically closed.**
-  
-  This is often because the request was already solved in some way 
+
+  This is often because the request was already solved in some way
   and it just wasn't updated or it's no longer applicable.
-  
+
   Feel free to open a new issue if you deem it appropriate.
   Don't forget to reference this to the new one.
-  
+
   Thanks for your contributions.
 
 # Limit the number of actions per hour, from 1-30. Default is 30
