@@ -28,11 +28,11 @@ exemptMilestones: false
 exemptAssignees: false
 
 # Label to use when marking as stale
-staleLabel: inactive
+staleLabel: expired
 
 # Comment to post when marking as stale. Set to `false` to disable
 markComment: >
-  This ticket has been automatically marked as `inactive`
+  This ticket has been automatically marked as `expired`
   because **180 days** have passed since the last comment.
 
   **It will be closed in 30 days if no further activity occurs.**
