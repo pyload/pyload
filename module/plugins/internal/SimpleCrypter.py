@@ -107,10 +107,10 @@ class SimpleCrypter(Crypter):
                     pass
 
         if html:
-            if cls.OFFLINE_PATTERN and search_pattern(cls.OFFLINE_PATTERN, html) is not None:
+            if search_pattern(cls.OFFLINE_PATTERN, html) is not None:
                 info['status'] = 1
 
-            elif cls.TEMP_OFFLINE_PATTERN and search_pattern(cls.TEMP_OFFLINE_PATTERN, html) is not None:
+            elif search_pattern(cls.TEMP_OFFLINE_PATTERN, html) is not None:
                 info['status'] = 6
 
             elif cls.NAME_PATTERN:
@@ -274,14 +274,14 @@ class SimpleCrypter(Crypter):
             self.log_warning(_("No data to check"))
             return
 
-        if self.IP_BLOCKED_PATTERN and search_pattern(self.IP_BLOCKED_PATTERN, self.data):
+        if search_pattern(self.IP_BLOCKED_PATTERN, self.data):
             self.fail(_("Connection from your current IP address is not allowed"))
 
         elif not self.premium:
-            if self.PREMIUM_ONLY_PATTERN and search_pattern(self.PREMIUM_ONLY_PATTERN, self.data):
+            if search_pattern(self.PREMIUM_ONLY_PATTERN, self.data):
                 self.fail(_("Link can be decrypted by premium users only"))
 
-            elif self.SIZE_LIMIT_PATTERN and search_pattern(self.SIZE_LIMIT_PATTERN, self.data):
+            elif search_pattern(self.SIZE_LIMIT_PATTERN, self.data):
                 self.fail(_("Link list too large for free decrypt"))
 
         if self.ERROR_PATTERN:
@@ -338,7 +338,7 @@ class SimpleCrypter(Crypter):
                     self.wait(60, reconnect=True)
                     self.restart(errmsg)
 
-        elif self.WAIT_PATTERN:
+        else:
             m = search_pattern(self.WAIT_PATTERN, self.data)
             if m is not None:
                 try:
