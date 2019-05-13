@@ -738,15 +738,15 @@ def seconds_to_midnight(utc=None, strict=False):
 
 
 def search_pattern(pattern, value, flags=0):
-    if pattern is not None:
-        try:
-            pattern, reflags = pattern
-
-        except ValueError:
-            reflags = 0
-
+    try:
+        pattern, reflags = pattern
+    except ValueError:
+        reflags = 0
+    
+    try:
         return re.search(pattern, value, reflags | flags)
-    else return None
+    except TypeError:
+        return None
 
 
 def replace_patterns(value, rules):
