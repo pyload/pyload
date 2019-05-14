@@ -41,7 +41,7 @@ except ImportError:
 class misc(object):
     __name__ = "misc"
     __type__ = "plugin"
-    __version__ = "0.54"
+    __version__ = "0.55"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -740,11 +740,14 @@ def seconds_to_midnight(utc=None, strict=False):
 def search_pattern(pattern, value, flags=0):
     try:
         pattern, reflags = pattern
-
     except ValueError:
         reflags = 0
+    
+    try:
+        return re.search(pattern, value, reflags | flags)
+    except TypeError:
+        return None
 
-    return re.search(pattern, value, reflags | flags)
 
 def replace_patterns(value, rules):
     for r in rules:

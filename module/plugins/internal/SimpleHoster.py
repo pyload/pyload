@@ -14,7 +14,7 @@ from .misc import encode, parse_name, parse_size, parse_time, replace_patterns, 
 class SimpleHoster(Hoster):
     __name__ = "SimpleHoster"
     __type__ = "hoster"
-    __version__ = "2.29"
+    __version__ = "2.30"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -154,10 +154,10 @@ class SimpleHoster(Hoster):
                     pass
 
         if html:
-            if cls.OFFLINE_PATTERN and search_pattern(cls.OFFLINE_PATTERN, html) is not None:
+            if search_pattern(cls.OFFLINE_PATTERN, html) is not None:
                 info['status'] = 1
 
-            elif cls.TEMP_OFFLINE_PATTERN and search_pattern(cls.TEMP_OFFLINE_PATTERN, html) is not None:
+            elif search_pattern(cls.TEMP_OFFLINE_PATTERN, html) is not None:
                 info['status'] = 6
 
             else:
@@ -323,14 +323,14 @@ class SimpleHoster(Hoster):
             self.log_warning(_("No data to check"))
             return
 
-        if self.IP_BLOCKED_PATTERN and search_pattern(self.IP_BLOCKED_PATTERN, self.data):
+        if search_pattern(self.IP_BLOCKED_PATTERN, self.data):
             self.fail(_("Connection from your current IP address is not allowed"))
 
         elif not self.premium:
-            if self.PREMIUM_ONLY_PATTERN and search_pattern(self.PREMIUM_ONLY_PATTERN, self.data):
+            if search_pattern(self.PREMIUM_ONLY_PATTERN, self.data):
                 self.fail(_("File can be downloaded by premium users only"))
 
-            elif self.SIZE_LIMIT_PATTERN and search_pattern(self.SIZE_LIMIT_PATTERN, self.data):
+            elif search_pattern(self.SIZE_LIMIT_PATTERN, self.data):
                 self.fail(_("File too large for free download"))
 
             elif self.DL_LIMIT_PATTERN:
@@ -352,7 +352,7 @@ class SimpleHoster(Hoster):
                     self.wait(wait_time, reconnect=wait_time > self.config.get('max_wait', 10) * 60)
                     self.restart(_("Download limit exceeded"))
 
-        if self.HAPPY_HOUR_PATTERN and search_pattern(self.HAPPY_HOUR_PATTERN, self.data):
+        if search_pattern(self.HAPPY_HOUR_PATTERN, self.data):
             self.multiDL = True
 
         if self.ERROR_PATTERN:
