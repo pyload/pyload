@@ -14,7 +14,7 @@ from .misc import encode, parse_name, parse_size, parse_time, replace_patterns, 
 class SimpleHoster(Hoster):
     __name__ = "SimpleHoster"
     __type__ = "hoster"
-    __version__ = "2.31"
+    __version__ = "2.32"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
