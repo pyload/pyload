@@ -9,7 +9,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class AndroidfilehostCom(SimpleHoster):
     __name__ = "AndroidfilehostCom"
     __type__ = "hoster"
-    __version__ = "0.07"
+    __version__ = "0.08"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?androidfilehost\.com/\?fid=\d+'
@@ -28,7 +28,7 @@ class AndroidfilehostCom(SimpleHoster):
     HASHSUM_PATTERN = r'<span class="file-attr-value">(?P<D>.*?)<br><span class="file-attr-label">(?P<H>MD5)</span></span>'
 
     OFFLINE_PATTERN = r'404 not found'
-    TEMP_OFFLINE_PATTERN = r'[^\w](503\s|[Mm]aint(e|ai)nance|[Tt]emp([.-]|orarily))'
+    TEMP_OFFLINE_PATTERN = r'[^\w](503\s|maint(e|ai)nance|temp([.-]|orarily))', re.IGNORECASE
 
     WAIT_PATTERN = r'users must wait <strong>(\d+) secs'
 

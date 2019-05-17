@@ -11,7 +11,7 @@ from .Account import Account
 class XFSAccount(Account):
     __name__ = "XFSAccount"
     __type__ = "account"
-    __version__ = "0.60"
+    __version__ = "0.61"
     __status__ = "stable"
 
     __config__ = [("activated", "bool", "Activated", True),
@@ -33,12 +33,12 @@ class XFSAccount(Account):
 
     PREMIUM_PATTERN = r'\(Premium only\)'
 
-    VALID_UNTIL_PATTERN = r'Premium.[Aa]ccount expire:.*?(\d{1,2} [\w^_]+ \d{4})'
+    VALID_UNTIL_PATTERN = r'Premium.?account expire:.*?(\d{1,2} [\w^_]+ \d{4})', re.IGNORECASE
 
-    TRAFFIC_LEFT_PATTERN = r'Traffic available today:.*?<b>\s*(?P<S>[\d.,]+|[Uu]nlimited)\s*(?:(?P<U>[\w^_]+)\s*)?</b>'
+    TRAFFIC_LEFT_PATTERN = r'Traffic available today:.*?<b>\s*(?P<S>[\d.,]+|unlimited)\s*(?:(?P<U>[\w^_]+)\s*)?</b>', re.IGNORECASE
     TRAFFIC_LEFT_UNIT = "MB"  #: Used only if no group <U> was found
 
-    LEECH_TRAFFIC_PATTERN = r'Leech Traffic left:<b>.*?(?P<S>[\d.,]+|[Uu]nlimited)\s*(?:(?P<U>[\w^_]+)\s*)?</b>'
+    LEECH_TRAFFIC_PATTERN = r'Leech Traffic left:<b>.*?(?P<S>[\d.,]+|unlimited)\s*(?:(?P<U>[\w^_]+)\s*)?</b>', re.IGNORECASE
     LEECH_TRAFFIC_UNIT = "MB"  #: Used only if no group <U> was found
 
     LOGIN_FAIL_PATTERN = r'Incorrect Login or Password|account was banned|Error<'

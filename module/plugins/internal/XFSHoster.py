@@ -14,7 +14,7 @@ from .SimpleHoster import SimpleHoster
 class XFSHoster(SimpleHoster):
     __name__ = "XFSHoster"
     __type__ = "hoster"
-    __version__ = "0.83"
+    __version__ = "0.84"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -44,8 +44,8 @@ class XFSHoster(SimpleHoster):
 
     WAIT_PATTERN = r'<span id="countdown_str".*>(\d+)</span>|id="countdown" value=".*?(\d+).*?"'
     PREMIUM_ONLY_PATTERN = r'>This file is available for Premium Users only'
-    HAPPY_HOUR_PATTERN = r'>[Hh]appy hour'
-    ERROR_PATTERN = r'(?:class=["\']err["\'].*?>|<[Cc]enter><b>|>Error</td>|>\(ERROR:)(?:\s*<.+?>\s*)*(.+?)(?:["\']|<|\))'
+    HAPPY_HOUR_PATTERN = r'>happy hour', re.IGNORECASE
+    ERROR_PATTERN = r'(?:class=["\']err["\'].*?>|<center><b>|>Error</td>|>\(ERROR:)(?:\s*<.+?>\s*)*(.+?)(?:["\']|<|\))', re.IGNORECASE
 
     LINK_LEECH_PATTERN = r'<h2>Download Link</h2>\s*<textarea.*?>(.+?)'
 

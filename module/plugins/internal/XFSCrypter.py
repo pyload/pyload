@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import re
+
 from .misc import set_cookie
 from .SimpleCrypter import SimpleCrypter
 
@@ -7,7 +9,7 @@ from .SimpleCrypter import SimpleCrypter
 class XFSCrypter(SimpleCrypter):
     __name__ = "XFSCrypter"
     __type__ = "crypter"
-    __version__ = "0.26"
+    __version__ = "0.27"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -26,7 +28,7 @@ class XFSCrypter(SimpleCrypter):
     URL_REPLACEMENTS = [(r'&?per_page=\d+', ""), (r'[?/&]+$', ""),
                         (r'(.+/[^?]+)$', r'\1?'), (r'$', r'&per_page=10000')]
 
-    NAME_PATTERN = r'<[Tt]itle>.*?\: (?P<N>.+) folder</[Tt]itle>'
+    NAME_PATTERN = r'<title>.*?\: (?P<N>.+) folder</title>', re.IGNORECASE
     LINK_PATTERN = r'<(?:td|TD).*?>\s*(?:<.+>\s*)?<a href="(.+?)".*?>.+?(?:</a>)?\s*(?:<.+>\s*)?</(?:td|TD)>'
 
     OFFLINE_PATTERN = r'>\s*(No such user|\w+ (Not Found|file (was|has been) removed|no longer available))'

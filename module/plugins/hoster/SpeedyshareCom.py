@@ -11,7 +11,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class SpeedyshareCom(SimpleHoster):
     __name__ = "SpeedyshareCom"
     __type__ = "hoster"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(speedyshare\.com|speedy\.sh)/\w+'
@@ -27,7 +27,7 @@ class SpeedyshareCom(SimpleHoster):
     __authors__ = [("zapp-brannigan", "fuerst.reinje@web.de")]
 
     NAME_PATTERN = r'class=downloadfilename>(?P<N>.*)</span></td>'
-    SIZE_PATTERN = r'class=sizetagtext>(?P<S>.*) (?P<U>[kKmM]?[iI]?[bB]?)</div>'
+    SIZE_PATTERN = r'class=sizetagtext>(?P<S>.*) (?P<U>[km]?[i]?[b]?)</div>', re.IGNORECASE
 
     OFFLINE_PATTERN = r'class=downloadfilenamenotfound>.*</span>'
 

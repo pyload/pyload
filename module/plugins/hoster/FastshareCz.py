@@ -9,7 +9,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class FastshareCz(SimpleHoster):
     __name__ = "FastshareCz"
     __type__ = "hoster"
-    __version__ = "0.44"
+    __version__ = "0.45"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?fastshare\.cz/\d+/.+'
@@ -31,7 +31,7 @@ class FastshareCz(SimpleHoster):
 
     NAME_PATTERN = r'<h2 title="(.+?)" class="section_title'
     SIZE_PATTERN = r'<i class="fa fa-bars"></i> (?P<S>\d+)&nbsp;(?P<U>[\w^_]+)'
-    TEMP_OFFLINE_PATTERN = r'[^\w](503\s|[Mm]aint(e|ai)nance|[Tt]emp([.-]|orarily))'
+    TEMP_OFFLINE_PATTERN = r'[^\w](503\s|maint(e|ai)nance|temp([.-]|orarily))', re.IGNORECAS
     OFFLINE_PATTERN = r'>(The file has been deleted|Requested page not found|This file is no longer available)'
 
     LINK_FREE_PATTERN = r'href="(.+?)" id=free-trigger>'
