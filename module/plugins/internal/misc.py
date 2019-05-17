@@ -748,7 +748,7 @@ def search_pattern(pattern, value, flags=0):
     except TypeError:
         return None
 
-
+      
 def replace_patterns(value, rules):
     for r in rules:
         try:
