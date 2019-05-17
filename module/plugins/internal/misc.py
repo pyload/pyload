@@ -740,7 +740,7 @@ def seconds_to_midnight(utc=None, strict=False):
 def search_pattern(pattern, value, flags=0):
     try:
         pattern, reflags = pattern
-    except ValueError:
+    except ValueError, TypeError:
         reflags = 0
     
     try:
