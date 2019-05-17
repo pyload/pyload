@@ -31,7 +31,7 @@ class FastshareCz(SimpleHoster):
 
     NAME_PATTERN = r'<h2 title="(.+?)" class="section_title'
     SIZE_PATTERN = r'<i class="fa fa-bars"></i> (?P<S>\d+)&nbsp;(?P<U>[\w^_]+)'
-    TEMP_OFFLINE_PATTERN = r'[^\w](503\s|maint(e|ai)nance|temp([.-]|orarily))', re.IGNORECAS
+    TEMP_OFFLINE_PATTERN = r'[^\w](503\s|maint(e|ai)nance|temp([.-]|orarily))', re.IGNORECASE
     OFFLINE_PATTERN = r'>(The file has been deleted|Requested page not found|This file is no longer available)'
 
     LINK_FREE_PATTERN = r'href="(.+?)" id=free-trigger>'
