@@ -17,7 +17,7 @@ class LibGen(Hoster):
   __status__ = "testing"
 
   # Only for libgen hosts and URLs that have an MD5
-  __pattern__ = r'(?i)https?://([^/]+\.)?(libgen.io|libgen.me|booksdescr.org|booksdl.org|booksdescr.com|lib1.org|library1.org|libgen.pw|gen.lib.rus.ec)/.*'
+  __pattern__ = r'(?i)https?://([^/]+\.)?(libgen\.io|libgen\.me|booksdescr\.org|booksdl\.org|booksdescr\.com|lib1\.org|library1\.org|libgen\.pw|gen\.lib\.rus\.ec)/.*'
   __config__ = [
     ("activated", "bool", "Activated", True),
     ("mirrors", "string", "Libgen mirror URL patterns (space-separated)", "http://booksdl.org/{topiclong}/get.php?md5={md5} http://booksdl.org/get.php?md5={md5}"),
