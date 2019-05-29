@@ -1,17 +1,14 @@
 # -*- coding: utf-8 -*-
 
-import time
 import re
-import urlparse
 
-from ..internal.misc import json
 from ..internal.XFSAccount import XFSAccount
 
 
 class UptoboxCom(XFSAccount):
     __name__ = "UptoboxCom"
     __type__ = "account"
-    __version__ = "0.23"
+    __version__ = "0.24"
     __status__ = "testing"
 
     __description__ = """Uptobox.com account plugin"""
@@ -20,7 +17,9 @@ class UptoboxCom(XFSAccount):
                    ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
     PLUGIN_DOMAIN = "uptobox.com"
-    PLUGIN_URL = "https://uptobox.com/"
+
+    LOGIN_URL = "https://uptobox.com/login"
+    LOGIN_SKIP_PATTERN = r"https://uptobox\.com/logout"
 
     PREMIUM_PATTERN = r'Premium member'
     VALID_UNTIL_PATTERN = r"class='expiration-date .+?'>(\d{1,2} [\w^_]+ \d{4})"
@@ -32,9 +31,8 @@ class UptoboxCom(XFSAccount):
         if re.search(self.LOGIN_SKIP_PATTERN, html):
             self.skip_login()
 
-        html = self.load(self.PLUGIN_URL,
-                         get={'op': "login",
-                               'referer': "homepage"},
+        html = self.load(self.LOGIN_URL,
+                         get={'referer': "homepage"},
                          post={'login': user,
                                'password': password},
                          cookies=self.COOKIES)
