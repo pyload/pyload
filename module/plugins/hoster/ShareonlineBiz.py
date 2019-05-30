@@ -14,7 +14,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class ShareonlineBiz(SimpleHoster):
     __name__ = "ShareonlineBiz"
     __type__ = "hoster"
-    __version__ = "0.70"
+    __version__ = "0.71"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(share-online\.biz|egoshare\.com)/(download\.php\?id=|dl/)(?P<ID>\w+)'
@@ -109,7 +109,7 @@ class ShareonlineBiz(SimpleHoster):
         return SimpleHoster.check_download(self)
 
     def check_errors(self):
-        m = re.search(r'/failure/(.*?)/', self.req.lastEffectiveURL)
+        m = re.search(r'/failure/([a-z]+)', self.req.lastEffectiveURL) or re.search(r'/failure/([a-z]+)', self.data)
         if m is None:
             self.info.pop('error', None)
             return
