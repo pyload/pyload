@@ -3,29 +3,29 @@
 
 class Abort(Exception):
     """
-    raised when aborted.
+    Raised when aborted.
     """
 
 
 class Fail(Exception):
     """
-    raised when failed.
+    Raised when failed.
     """
 
 
 class Reconnect(Exception):
     """
-    raised when reconnected.
+    Raised when reconnected.
     """
 
 
 class Retry(Exception):
     """
-    raised when start again from beginning.
+    Raised when start again from beginning.
     """
 
 
 class Skip(Exception):
     """
-    raised when download should be skipped.
+    Raised when download should be skipped.
     """

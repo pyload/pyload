@@ -11,7 +11,7 @@ import struct
 import Cryptodome.Cipher.AES
 import Cryptodome.Util.Counter
 
-from pyload.core.network.http.http_request import BadHeader
+from pyload.core.network.http.http_exceptions import BadHeader
 
 from ..base.downloader import BaseDownloader
 from ..helpers import exists

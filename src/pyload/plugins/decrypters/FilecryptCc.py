@@ -11,7 +11,7 @@ import urllib.parse
 from cryptography.fernet import Fernet
 
 from pyload.core.network.cookie_jar import CookieJar
-from pyload.core.network.http.http_request import BadHeader, HTTPRequest
+from pyload.core.network.http.http_exceptions import BadHeader, HTTPRequest
 
 from ..anticaptchas.CoinHive import CoinHive
 from ..anticaptchas.ReCaptcha import ReCaptcha

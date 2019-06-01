@@ -3,7 +3,7 @@ import json
 import re
 
 import pycurl
-from pyload.core.network.http.http_request import BadHeader
+from pyload.core.network.http.http_exceptions import BadHeader
 from datetime import timedelta
 
 from ..anticaptchas.ReCaptcha import ReCaptcha

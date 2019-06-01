@@ -3,7 +3,7 @@ import json
 from functools import reduce
 
 import pycurl
-from pyload.core.network.http.http_request import BadHeader
+from pyload.core.network.http.http_exceptions import BadHeader
 
 from ..base.multi_account import MultiAccount
 

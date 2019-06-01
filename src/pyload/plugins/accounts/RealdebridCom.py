@@ -2,7 +2,7 @@
 import json
 import time
 
-from pyload.core.network.http.http_request import BadHeader
+from pyload.core.network.http.http_exceptions import BadHeader
 
 from ..base.multi_account import MultiAccount
 

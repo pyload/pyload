@@ -3,7 +3,7 @@ import base64
 import uuid
 
 import pycurl
-from pyload.core.network.http.http_request import BadHeader
+from pyload.core.network.http.http_exceptions import BadHeader
 from pyload.core.network.request_factory import get_request
 
 from ..base.addon import BaseAddon, threaded

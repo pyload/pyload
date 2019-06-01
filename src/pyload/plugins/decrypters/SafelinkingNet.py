@@ -2,7 +2,7 @@
 import json
 
 import pycurl
-from pyload.core.network.http.http_request import BadHeader
+from pyload.core.network.http.http_exceptions import BadHeader
 
 from ..anticaptchas.SolveMedia import SolveMedia
 from ..base.decrypter import BaseDecrypter

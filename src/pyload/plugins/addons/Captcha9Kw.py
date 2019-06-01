@@ -6,7 +6,7 @@ import time
 import urllib.parse
 
 
-from pyload.core.network.http.http_request import BadHeader
+from pyload.core.network.http.http_exceptions import BadHeader
 
 from ..base.addon import BaseAddon, threaded
 
