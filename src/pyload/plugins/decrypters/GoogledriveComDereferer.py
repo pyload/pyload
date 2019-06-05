@@ -2,7 +2,7 @@
 
 import json
 
-from pyload.core.network.http.http_exceptions import BadHeader
+from pyload.core.network.http.exceptions import BadHeader
 
 from ..base.decrypter import BaseDecrypter
 

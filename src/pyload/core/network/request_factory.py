@@ -9,7 +9,7 @@ from .browser import Browser
 from .bucket import Bucket
 from .cookie_jar import CookieJar
 from .http.http_request import HTTPRequest
-from .xdcc.xdcc_request import XDCCRequest
+from .xdcc.request import XDCCRequest
 
 
 DEFAULT_REQUEST = None

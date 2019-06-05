@@ -4,7 +4,7 @@ import re
 import urllib.parse
 
 
-from pyload.core.network.http.http_exceptions import BadHeader
+from pyload.core.network.http.exceptions import BadHeader
 
 from ..base.downloader import BaseDownloader
 

@@ -6,7 +6,7 @@ import urllib.parse
 
 from pyload.core.utils import eval_js
 
-from pyload.core.network.http.http_exceptions import BadHeader
+from pyload.core.network.http.exceptions import BadHeader
 
 from ..anticaptchas.ReCaptcha import ReCaptcha
 from ..base.addon import BaseAddon

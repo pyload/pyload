@@ -3,7 +3,7 @@
 import re
 import urllib.parse
 
-from pyload.core.network.http.http_exceptions import BadHeader
+from pyload.core.network.http.exceptions import BadHeader
 
 from ..anticaptchas.ReCaptcha import ReCaptcha
 from ..base.simple_downloader import SimpleDownloader

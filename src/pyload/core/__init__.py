@@ -91,7 +91,7 @@ class Core:
         self.last_client_connected = 0
 
     def _init_config(self, userdir, cachedir, debug):
-        from .config.config_parser import ConfigParser
+        from .config.parser import ConfigParser
 
         self.userdir = os.path.realpath(userdir)
         self.cachedir = os.path.realpath(cachedir)

@@ -11,7 +11,7 @@ from urllib.parse import quote, urlencode
 
 import pycurl
 from ..exceptions import Abort
-from .http_exceptions import BadHeader
+from .exceptions import BadHeader
 
 from pyload import APPID
 

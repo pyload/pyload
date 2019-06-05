@@ -4,7 +4,7 @@ import json
 import re
 
 
-from pyload.core.network.http.http_exceptions import BadHeader
+from pyload.core.network.http.exceptions import BadHeader
 from pyload.core.network.request_factory import get_url
 
 from ..base.simple_downloader import SimpleDownloader
