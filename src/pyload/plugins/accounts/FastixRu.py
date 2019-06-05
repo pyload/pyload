@@ -27,7 +27,7 @@ class FastixRu(MultiAccount):
         html = self.load(
             "http://fastix.ru/api_v2",
             get={
-                "apikey": "5182964c3f8f9a7f0b00000a_kelm_f_b4n1IrnCDYuIFn2y",
+                "apikey": "5182964c3f8f9a7f0b00000a_kelmFB4n1IrnCDYuIFn2y",
                 "sub": "allowed_sources",
             },
         )

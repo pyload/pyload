@@ -30,7 +30,7 @@ class RapiduNet(SimpleDownloader):
 
     __description__ = """Rapidu.net downloader plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("pr_oq", None)]
+    __authors__ = [("prOq", None)]
 
     COOKIES = [("rapidu.net", "rapidu_lang", "en")]
 
@@ -41,7 +41,7 @@ class RapiduNet(SimpleDownloader):
 
     ERROR_PATTERN = r'<div class="error">'
 
-    RECAPTCHA_KEY = r"6Ld12ew_s_a_a_a_a_a_ho_e6WVP_p_sf_cd_jc_b_q_sc_vwe_qh8Io"
+    RECAPTCHA_KEY = r"6Ld12ewSAAAAAHoE6WVP_pSfCdJcBQScVweQh8Io"
 
     def setup(self):
         self.resume_download = True
@@ -53,11 +53,11 @@ class RapiduNet(SimpleDownloader):
 
         jsvars = self.get_json_response(
             "https://rapidu.net/ajax.php",
-            get={"a": "get_load_time_to_download"},
+            get={"a": "getLoadTimeToDownload"},
             post={"_go": ""},
         )
 
-        if str(jsvars["time_to_download"]) == "stop":
+        if str(jsvars["timeToDownload"]) == "stop":
             t = (
                 (timedelta(hours=24).seconds)
                 - (int(time.time()) % timedelta(hours=24).seconds)
@@ -70,19 +70,19 @@ class RapiduNet(SimpleDownloader):
             self.retry(10, 10 if t < 1 else None, self._("Try tomorrow again"))
 
         else:
-            self.wait(int(jsvars["time_to_download"]) - int(time.time()))
+            self.wait(int(jsvars["timeToDownload"]) - int(time.time()))
 
         self.captcha = ReCaptcha(pyfile)
         response, challenge = self.captcha.challenge(self.RECAPTCHA_KEY)
 
         jsvars = self.get_json_response(
             "https://rapidu.net/ajax.php",
-            get={"a": "get_check_captcha"},
+            get={"a": "getCheckCaptcha"},
             post={
                 "_go": "",
                 "captcha1": challenge,
                 "captcha2": response,
-                "file_id": self.info["pattern"]["ID"],
+                "fileId": self.info["pattern"]["ID"],
             },
         )
 

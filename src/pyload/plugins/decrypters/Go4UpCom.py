@@ -51,7 +51,7 @@ class Go4UpCom(SimpleDecrypter):
                 urllib.parse.urljoin("http://go4up.com/", hosterslink_re.group(1))
             )
             for hoster in json.loads(hosters):
-                if preference not in (0, int(hoster["host_id"])):
+                if preference not in (0, int(hoster["hostId"])):
                     continue
                 pagelink_re = re.search(self.LINK_PATTERN, hoster["link"])
                 if pagelink_re:

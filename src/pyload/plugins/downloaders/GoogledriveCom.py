@@ -2,7 +2,7 @@
 
 #
 # Test links:
-#   https://drive.google.com/file/d/0B6RNTe4yg_it_b_qm15RnJiTmMyckU/view?pli=1
+#   https://drive.google.com/file/d/0B6RNTe4ygItBQm15RnJiTmMyckU/view?pli=1
 
 
 import json
@@ -37,7 +37,7 @@ class GoogledriveCom(BaseDownloader):
     ]
 
     API_URL = "https://www.googleapis.com/drive/v3/"
-    API_KEY = "AIzaSyAcA9c4evtw_s_y1ifuvzo6HKBkeot5Bk_U4"
+    API_KEY = "AIzaSyAcA9c4evtwSY1ifuvzo6HKBkeot5Bk_U4"
 
     def setup(self):
         self.multi_dl = True
@@ -78,7 +78,7 @@ class GoogledriveCom(BaseDownloader):
                 "{}{}/{}".format(self.API_URL, "files", self.info["pattern"]["ID"]),
                 get={
                     "alt": "media",
-                    # 'acknowledge_abuse': "true",
+                    # 'acknowledgeAbuse': "true",
                     "key": self.API_KEY,
                 },
             )

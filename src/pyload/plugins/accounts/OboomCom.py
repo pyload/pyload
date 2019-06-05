@@ -37,28 +37,28 @@ class OboomCom(BaseAccount):
     def grab_info(self, user, password, data):
         account_data = self.load_account_data(user, password)
 
-        user_data = account_data["user"]
+        userData = account_data["user"]
 
-        premium = user_data["premium"] != "null"
+        premium = userData["premium"] != "null"
 
-        if user_data["premium_unix"] == "null":
-            valid_until = -1
+        if userData["premium_unix"] == "null":
+            validUntil = -1
         else:
-            valid_until = float(user_data["premium_unix"])
+            validUntil = float(userData["premium_unix"])
 
-        traffic = user_data["traffic"]
+        traffic = userData["traffic"]
 
         # TODO: Remove `>> 10` in 0.6.x
-        traffic_left = traffic["current"] >> 10
-        max_traffic = traffic["max"] >> 10  # TODO: Remove `>> 10` in 0.6.x
+        trafficLeft = traffic["current"] >> 10
+        maxTraffic = traffic["max"] >> 10  # TODO: Remove `>> 10` in 0.6.x
 
         session = account_data["session"]
 
         return {
             "premium": premium,
-            "validuntil": valid_until,
-            "trafficleft": traffic_left,
-            "maxtraffic": max_traffic,
+            "validuntil": validUntil,
+            "trafficleft": trafficLeft,
+            "maxtraffic": maxTraffic,
             "session": session,
         }
 

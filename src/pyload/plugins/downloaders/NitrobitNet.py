@@ -54,7 +54,7 @@ class NitrobitNet(SimpleDownloader):
             },
         )
 
-        m = re.search(r'id="unlocked_tick".+?alt="(\d+)"', self.data)
+        m = re.search(r'id="unlockedTick".+?alt="(\d+)"', self.data)
         if m is not None:
             validuntil = time.time() + float(m.group(1))
             self.log_info(
@@ -63,7 +63,7 @@ class NitrobitNet(SimpleDownloader):
                 )
             )
 
-        m = re.search(r'id="daily_volume" value="(\d+)?/(\d+)"', self.data)
+        m = re.search(r'id="dailyVolume" value="(\d+)?/(\d+)"', self.data)
         if m is not None:
             trafficleft = int(m.group(2)) - int((m.group(1) or "0"))
             self.log_info(

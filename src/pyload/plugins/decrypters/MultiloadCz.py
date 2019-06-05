@@ -19,8 +19,8 @@ class MultiloadCz(BaseDecrypter):
         ("use_premium", "bool", "Use premium account if available", True),
         ("use_subfolder", "bool", "Save package to subfolder", True),
         ("subfolder_per_package", "bool", "Create a subfolder for each package", True),
-        ("used_hoster", "str", "Prefered hoster list (bar-separated)", ""),
-        ("ignored_hoster", "str", "Ignored hoster list (bar-separated)", ""),
+        ("usedHoster", "str", "Prefered hoster list (bar-separated)", ""),
+        ("ignoredHoster", "str", "Ignored hoster list (bar-separated)", ""),
     ]
 
     __description__ = """Multiload.cz decrypter plugin"""
@@ -42,9 +42,9 @@ class MultiloadCz(BaseDecrypter):
         else:
             m = re.findall(self.LINK_PATTERN, self.data)
             if m is not None:
-                prefered_set = set(self.config.get("used_hoster").split("|"))
+                prefered_set = set(self.config.get("usedHoster").split("|"))
                 self.links.extend(x[1] for x in m if x[0] in prefered_set)
 
                 if not self.links:
-                    ignored_set = set(self.config.get("ignored_hoster").split("|"))
+                    ignored_set = set(self.config.get("ignoredHoster").split("|"))
                     self.links.extend(x[1] for x in m if x[0] not in ignored_set)

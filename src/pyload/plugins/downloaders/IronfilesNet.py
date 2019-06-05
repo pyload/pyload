@@ -42,7 +42,7 @@ class IronfilesNet(SimpleDownloader):
 
         file_info = json.loads(
             self.load(
-                "https://ironfiles.net/api/file_info/file/" + _id + ("/key/" + _key)
+                "https://ironfiles.net/api/fileInfo/file/" + _id + ("/key/" + _key)
                 if _key
                 else ""
             )

@@ -35,15 +35,15 @@ class DataportCz(SimpleDownloader):
     )
 
     def handle_free(self, pyfile):
-        captchas = {"1": "jkeG", "2": "h_m_j_q", "3": "vm_e_k", "4": "e_p_q_m", "5": "bl_bd"}
+        captchas = {"1": "jkeG", "2": "hMJQ", "3": "vmEK", "4": "ePQM", "5": "blBd"}
 
         action, inputs = self.parse_html_form("free_download_form")
         self.log_debug(action, inputs)
         if not action or not inputs:
             self.error(self._("free_download_form"))
 
-        if "captcha_id" in inputs and inputs["captcha_id"] in captchas:
-            inputs["captcha_code"] = captchas[inputs["captcha_id"]]
+        if "captchaId" in inputs and inputs["captchaId"] in captchas:
+            inputs["captchaCode"] = captchas[inputs["captchaId"]]
         else:
             self.error(self._("Captcha not found"))
 

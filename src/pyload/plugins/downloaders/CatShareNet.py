@@ -27,7 +27,7 @@ class CatShareNet(SimpleDownloader):
     __license__ = "GPLv3"
     __authors__ = [
         ("z00nx", "z00nx0@gmail.com"),
-        ("pr_oq", None),
+        ("prOq", None),
         ("Walter Purcaro", "vuolter@gmail.com"),
         ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com"),
     ]

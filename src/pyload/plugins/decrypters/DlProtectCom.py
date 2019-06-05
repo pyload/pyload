@@ -43,7 +43,7 @@ class DlProtectCom(SimpleDecrypter):
                 urllib.parse.urljoin(self.pyfile.url, "/captcha.php"), input_type="jpeg"
             )
             self.data = self.load(
-                self.pyfile.url, post={"captcha_code": captcha_code, "submit": ""}
+                self.pyfile.url, post={"captchaCode": captcha_code, "submit": ""}
             )
 
             if "Le code de sécurité est incorrect" in self.data:

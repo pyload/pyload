@@ -83,7 +83,7 @@ class YadiSk(SimpleDownloader):
                 "https://yadi.sk/models/",
                 get={"_m": "do-get-resource-url"},
                 post={
-                    "id_client": self.info["idclient"],
+                    "idClient": self.info["idclient"],
                     "version": self.info["version"],
                     "_model.0": "do-get-resource-url",
                     "sk": self.info["sk"],

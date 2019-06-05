@@ -33,7 +33,7 @@ class UgouploadNet(SimpleDownloader):
     WAIT_PATTERN = r"var seconds = (\d+);"
     LINK_FREE_PATTERN = r"<a class='btn btn-free' href='(.+?)'"
 
-    RECAPTCHA_KEY = "6LeuAc4SAAAAAOSry8eo2xW64K1sj_h_e_ks_q5CaS10"
+    RECAPTCHA_KEY = "6LeuAc4SAAAAAOSry8eo2xW64K1sjHEKsQ5CaS10"
 
     def setup(self):
         self.resume_download = False

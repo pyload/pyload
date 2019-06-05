@@ -156,7 +156,7 @@ class FreakshareCom(BaseDownloader):
             return seconds_to_midnight()
 
         timestring = re.search(
-            "\s*var\s(?:download_wait|time)\s=\s(\d*)[\d.]*;", self.data
+            "\s*var\s(?:downloadWait|time)\s=\s(\d*)[\d.]*;", self.data
         )
         if timestring:
             return int(timestring.group(1))
@@ -176,7 +176,7 @@ class FreakshareCom(BaseDownloader):
 
     def get_download_options(self):
         re_envelope = re.search(
-            r".*?value=\"Free\s_download\".*?\n*?(.*?<.*?>\n*)*?\n*\s*?</form>",
+            r".*?value=\"Free\sDownload\".*?\n*?(.*?<.*?>\n*)*?\n*\s*?</form>",
             self.data,
         ).group(
             0

@@ -37,11 +37,11 @@ class GoogledriveComFolder(BaseDecrypter):
         ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com"),
     ]
 
-    NAME_PATTERN = r"folder_name: '(?P<N>.+?)'"
+    NAME_PATTERN = r"folderName: '(?P<N>.+?)'"
     OFFLINE_PATTERN = r"<TITLE>"
 
     API_URL = "https://www.googleapis.com/drive/v3/"
-    API_KEY = "AIzaSyAcA9c4evtw_s_y1ifuvzo6HKBkeot5Bk_U4"
+    API_KEY = "AIzaSyAcA9c4evtwSY1ifuvzo6HKBkeot5Bk_U4"
 
     def api_response(self, cmd, **kwargs):
         kwargs["key"] = self.API_KEY
@@ -76,8 +76,8 @@ class GoogledriveComFolder(BaseDecrypter):
         json_data = self.api_response(
             "files",
             q="'{}' in parents".format(folder_id),
-            page_size=100,
-            fields="files/id,files/mime_type,next_page_token",
+            pageSize=100,
+            fields="files/id,files/mimeType,nextPageToken",
         )
 
         if json_data is None:
@@ -87,7 +87,7 @@ class GoogledriveComFolder(BaseDecrypter):
             self.fail(json_data["error"]["message"])
 
         for f in json_data.get("files", []):
-            if f["mime_type"] != "application/vnd.google-apps.folder":
+            if f["mimeType"] != "application/vnd.google-apps.folder":
                 links.append("https://drive.google.com/file/d/" + f["id"])
 
             elif self.config.get("dl_subfolders"):
@@ -97,14 +97,14 @@ class GoogledriveComFolder(BaseDecrypter):
                 else:
                     links.extend(self.enum_folder(f["id"]))
 
-        next_page = json_data.get("next_page_token", None)
+        next_page = json_data.get("nextPageToken", None)
         while next_page:
             json_data = self.api_response(
                 "files",
                 q="'{}' in parents".format(folder_id),
-                page_token=next_page,
-                page_size=100,
-                fields="files/id,files/mime_type,next_page_token",
+                pageToken=next_page,
+                pageSize=100,
+                fields="files/id,files/mimeType,nextPageToken",
             )
 
             if json_data is None:
@@ -114,7 +114,7 @@ class GoogledriveComFolder(BaseDecrypter):
                 self.fail(json_data["error"]["message"])
 
             for f in json_data.get("files", []):
-                if f["mime_type"] != "application/vnd.google-apps.folder":
+                if f["mimeType"] != "application/vnd.google-apps.folder":
                     links.append("https://drive.google.com/file/d/" + f["id"])
 
                 elif self.config.get("dl_subfolders"):
@@ -126,7 +126,7 @@ class GoogledriveComFolder(BaseDecrypter):
                     else:
                         links.extend(self.enum_folder(f["id"]))
 
-            next_page = json_data.get("next_page_token", None)
+            next_page = json_data.get("nextPageToken", None)
 
         return links
 

@@ -24,7 +24,7 @@ class FilejungleCom(BaseAccount):
     URL = "http://filejungle.com/"
     TRAFFIC_LEFT_PATTERN = r'"/extend_premium\.php">Until (\d+ \w+ \d+)<br'
     LOGIN_FAILED_PATTERN = (
-        r'<span htmlfor="login_user(Name|Password)" generated="true" class="fail_info">'
+        r'<span htmlfor="loginUser(Name|Password)" generated="true" class="fail_info">'
     )
 
     def grab_info(self, user, password, data):
@@ -43,9 +43,9 @@ class FilejungleCom(BaseAccount):
         html = self.load(
             urllib.parse.urljoin(self.URL, "login.php"),
             post={
-                "login_user_name": user,
-                "login_user_password": password,
-                "login_form_submit": "Login",
+                "loginUserName": user,
+                "loginUserPassword": password,
+                "loginFormSubmit": "Login",
                 "recaptcha_challenge_field": "",
                 "recaptcha_response_field": "",
                 "recaptcha_shortencode_field": "",

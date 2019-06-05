@@ -38,7 +38,7 @@ class GooGl(SimpleDecrypter):
     OFFLINE_PATTERN = r"has been disabled|does not exist"
 
     def get_links(self):
-        rep = self.load(self.API_URL, get={"short_url": self.pyfile.url})
+        rep = self.load(self.API_URL, get={"shortUrl": self.pyfile.url})
         self.log_debug("JSON data: " + rep)
         rep = json.loads(rep)
-        return [rep["long_url"]] if "long_url" in rep else None
+        return [rep["longUrl"]] if "longUrl" in rep else None

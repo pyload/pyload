@@ -40,7 +40,7 @@ class FourSharedCom(SimpleDownloader):
     LOGIN_ACCOUNT = True
 
     LINK_FREE_PATTERN = r'name="d3link" value="(.*?)"'
-    LINK_BTN_PATTERN = r'id="btn_link" href="(.*?)"'
+    LINK_BTN_PATTERN = r'id="btnLink" href="(.*?)"'
 
     ID_PATTERN = r'name="d3fid" value="(.*?)"'
 
@@ -67,7 +67,7 @@ class FourSharedCom(SimpleDownloader):
             m = re.search(self.ID_PATTERN, self.data)
             id = m.group(1)
             res = self.load(
-                f"http://www.4shared.com/web/d2/get_free_download_limit_info?file_id={id}"
+                f"http://www.4shared.com/web/d2/getFreeDownloadLimitInfo?fileId={id}"
             )
             self.log_debug(res)
 

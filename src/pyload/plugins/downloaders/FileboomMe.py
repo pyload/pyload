@@ -56,7 +56,7 @@ class FileboomMe(SimpleDownloader):
 
             else:
                 m = re.search(
-                    r'<input type="hidden" name="unique_id" value="(\w+)">', self.data
+                    r'<input type="hidden" name="uniqueId" value="(\w+)">', self.data
                 )
                 if m is None:
                     m = re.search(r">\s*Please wait ([\d:]+)", self.data)
@@ -68,7 +68,7 @@ class FileboomMe(SimpleDownloader):
                         self.retry()
 
                 else:
-                    unique_id = m.group(1)
+                    uniqueId = m.group(1)
 
                     m = re.search(self.CAPTCHA_PATTERN, self.data)
                     if m is not None:
@@ -78,10 +78,10 @@ class FileboomMe(SimpleDownloader):
                         self.data = self.load(
                             post_url,
                             post={
-                                "CaptchaForm[verify_code]": captcha,
+                                "CaptchaForm[verifyCode]": captcha,
                                 "free": 1,
-                                "free_download_request": 1,
-                                "unique_id": unique_id,
+                                "freeDownloadRequest": 1,
+                                "uniqueId": uniqueId,
                             },
                         )
 
@@ -92,7 +92,7 @@ class FileboomMe(SimpleDownloader):
                             self.check_errors()
 
                             self.data = self.load(
-                                post_url, post={"free": 1, "unique_id": unique_id}
+                                post_url, post={"free": 1, "uniqueId": uniqueId}
                             )
 
                             m = re.search(self.LINK_PATTERN, self.data)

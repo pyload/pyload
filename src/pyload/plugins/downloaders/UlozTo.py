@@ -48,7 +48,7 @@ class UlozTo(SimpleDownloader):
     ]
 
     NAME_PATTERN = r"(<p>File <strong>|<title>)(?P<N>.+?)(<| \|)"
-    SIZE_PATTERN = r'<span id="file_size">.*?(?P<S>[\d.,]+\s[k_m_g]?B)</span>'
+    SIZE_PATTERN = r'<span id="fileSize">.*?(?P<S>[\d.,]+\s[kMG]?B)</span>'
     OFFLINE_PATTERN = r'<title>404 - Page not found</title>|<h1 class="h1">File (has been deleted|was banned)</h1>'
 
     URL_REPLACEMENTS = [
@@ -59,13 +59,13 @@ class UlozTo(SimpleDownloader):
         ),
     ]
 
-    SIZE_REPLACEMENTS = [(r"([\d.]+)\s([k_m_g])B", convert_decimal_prefix)]
+    SIZE_REPLACEMENTS = [(r"([\d.]+)\s([kMG])B", convert_decimal_prefix)]
 
     CHECK_TRAFFIC = True
 
     ADULT_PATTERN = r"PORNfile.cz"
-    PASSWD_PATTERN = r'<div class="password_protected_file">'
-    VIPLINK_PATTERN = r'<a href=".+?\?disclaimer=1" class="link_vip">'
+    PASSWD_PATTERN = r'<div class="passwordProtectedFile">'
+    VIPLINK_PATTERN = r'<a href=".+?\?disclaimer=1" class="linkVip">'
     TOKEN_PATTERN = r'<input type="hidden" name="_token_" .*?value="(.+?)"'
 
     def setup(self):
@@ -81,7 +81,7 @@ class UlozTo(SimpleDownloader):
             url = pyfile.url.replace("ulozto.net", "pornfile.cz")
             self.load(
                 "https://pornfile.cz/porn-disclaimer",
-                post={"agree": "Confirm", "_do": "porn_disclaimer-submit"},
+                post={"agree": "Confirm", "_do": "pornDisclaimer-submit"},
             )
 
             html = self.load(url)
@@ -99,7 +99,7 @@ class UlozTo(SimpleDownloader):
         is_adult = self.adult_confirmation(pyfile)
 
         action, inputs = self.parse_html_form(
-            'id="frm-download-free_download_tab-free_download_form"'
+            'id="frm-download-freeDownloadTab-freeDownloadForm"'
         )
         if not action or not inputs:
             self.error(self._("Free download form not found"))
@@ -132,7 +132,7 @@ class UlozTo(SimpleDownloader):
             self.log_debug('Using "new" version')
 
             xapca = self.load(
-                "https://ulozto.net/reload_xapca.php", get={"rnd": timestamp()}
+                "https://ulozto.net/reloadXapca.php", get={"rnd": timestamp()}
             )
 
             xapca = xapca.replace('sound":"', 'sound":"https:').replace(
@@ -192,7 +192,7 @@ class UlozTo(SimpleDownloader):
 
     def handle_premium(self, pyfile):
         self.adult_confirmation(pyfile)
-        self.download(pyfile.url, get={"do": "direct_download"})
+        self.download(pyfile.url, get={"do": "directDownload"})
 
     def check_errors(self):
         if self.PASSWD_PATTERN in self.data:
@@ -202,7 +202,7 @@ class UlozTo(SimpleDownloader):
                 self.log_info(self._("Password protected link, trying ") + password)
                 self.data = self.load(
                     self.pyfile.url,
-                    get={"do": "password_protected_form-submit"},
+                    get={"do": "passwordProtectedForm-submit"},
                     post={"password": password, "password_send": "Send"},
                 )
 

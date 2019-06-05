@@ -29,7 +29,7 @@ class TurbobitNet(SimpleDownloader):
     __license__ = "GPLv3"
     __authors__ = [
         ("zoidberg", "zoidberg@mujmail.cz"),
-        ("pr_oq", None),
+        ("prOq", None),
         ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com"),
     ]
 
@@ -60,16 +60,16 @@ class TurbobitNet(SimpleDownloader):
 
         self.solve_captcha()
 
-        m = re.search(r"min_limit : (.+?),", self.data)
+        m = re.search(r"minLimit : (.+?),", self.data)
         if m is None:
-            self.fail(self._("min_limit pattern not found"))
+            self.fail(self._("minLimit pattern not found"))
 
         wait_time = eval_js(m.group(1))
         self.wait(wait_time)
 
         self.req.http.c.setopt(pycurl.HTTPHEADER, ["X-Requested-With: XMLHttpRequest"])
         self.data = self.load(
-            "http://turbobit.net/download/get_link_timeout/{}".format(
+            "http://turbobit.net/download/getLinkTimeout/{}".format(
                 self.info["pattern"]["ID"]
             ),
             ref=self.free_url,

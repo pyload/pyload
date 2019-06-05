@@ -35,7 +35,7 @@ class HellshareCz(SimpleDownloader):
 
     LINK_FREE_PATTERN = (
         LINK_PREMIUM_PATTERN
-    ) = r'<a href="([^?]+/(\d+)/\?do=(file_download_button|related_file_download_button-\2)-show_download_window)"'
+    ) = r'<a href="([^?]+/(\d+)/\?do=(fileDownloadButton|relatedFileDownloadButton-\2)-showDownloadWindow)"'
 
     def setup(self):
         self.resume_download = self.multi_dl = bool(self.account)

@@ -16,4 +16,4 @@ class OronComFolder(DeadDecrypter):
 
     __description__ = """Oron.com folder decrypter plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("DHMH", "webmaster@pc_profil.de")]
+    __authors__ = [("DHMH", "webmaster@pcProfil.de")]

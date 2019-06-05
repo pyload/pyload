@@ -28,7 +28,7 @@ class GamefrontCom(SimpleDownloader):
     SIZE_PATTERN = r">File Size:</dt>\s*<dd>(?P<S>[\d.,]+) (?P<U>[\w^_]+)"
     OFFLINE_PATTERN = r"<p>File not found"
 
-    LINK_FREE_PATTERN = r"download_url = '(.+?)'"
+    LINK_FREE_PATTERN = r"downloadUrl = '(.+?)'"
 
     def setup(self):
         self.resume_download = True

@@ -54,7 +54,7 @@ class LinkdecrypterCom(MultiDecrypter):
             m = re.search(self.CAPTCHA_PATTERN, self.data)
             if m is not None:
                 captcha_url = "http://linkdecrypter.com/" + m.group(1)
-                result_type = "positional" if "get_pos" in m.group(2) else "textual"
+                result_type = "positional" if "getPos" in m.group(2) else "textual"
 
                 m = re.search(r"<p><i><b>(.+?)</b></i></p>", self.data)
                 msg = m.group(1) if m else ""

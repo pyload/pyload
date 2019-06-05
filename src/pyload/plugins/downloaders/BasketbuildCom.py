@@ -60,7 +60,7 @@ class BasketbuildCom(SimpleDownloader):
             self.log_debug("No wait time found")
 
         try:
-            self.link = re.search(r'id="dl_link">\s*<a href="(.+?)"', self.data).group(1)
+            self.link = re.search(r'id="dlLink">\s*<a href="(.+?)"', self.data).group(1)
 
         except AttributeError:
             self.error(self._("DL-Link not found"))

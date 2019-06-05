@@ -55,7 +55,7 @@ class ExtabitCom(SimpleDownloader):
 
         self.log_debug("URL: " + self.req.http.last_effective_url)
         m = re.match(self.__pattern__, self.req.http.last_effective_url)
-        file_id = m.group("ID") if m else self.info["pattern"]["ID"]
+        fileID = m.group("ID") if m else self.info["pattern"]["ID"]
 
         m = re.search(r"recaptcha/api/challenge\?k=(\w+)", self.data)
         if m is not None:
@@ -67,7 +67,7 @@ class ExtabitCom(SimpleDownloader):
                 captcha_key
             )
 
-            html = self.load("http://extabit.com/file/{}/".format(file_id), get=get_data)
+            html = self.load("http://extabit.com/file/{}/".format(fileID), get=get_data)
             res = json.loads(html)
 
             if "ok" in res:
@@ -81,7 +81,7 @@ class ExtabitCom(SimpleDownloader):
             self.error(self._("Bad JSON response"))
 
         self.data = self.load(
-            "http://extabit.com/file/{}{}".format(file_id, res["href"])
+            "http://extabit.com/file/{}{}".format(fileID, res["href"])
         )
 
         m = re.search(self.LINK_FREE_PATTERN, self.data)

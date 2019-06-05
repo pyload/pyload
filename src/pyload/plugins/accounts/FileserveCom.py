@@ -27,7 +27,7 @@ class FileserveCom(BaseAccount):
 
         if res["type"] == "premium":
             validuntil = time.mktime(
-                time.strptime(res["expire_time"], "%Y-%m-%d %H:%M:%S")
+                time.strptime(res["expireTime"], "%Y-%m-%d %H:%M:%S")
             )
             return {"trafficleft": res["traffic"], "validuntil": validuntil}
         else:
@@ -47,9 +47,9 @@ class FileserveCom(BaseAccount):
         self.load(
             "http://www.fileserve.com/login.php",
             post={
-                "login_user_name": user,
-                "login_user_password": password,
-                "auto_login": "checked",
-                "login_form_submit": "Login",
+                "loginUserName": user,
+                "loginUserPassword": password,
+                "autoLogin": "checked",
+                "loginFormSubmit": "Login",
             },
         )

@@ -31,7 +31,7 @@ class RockfileEu(SimpleDownloader):
     __authors__ = [("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
     NAME_PATTERN = r'name="fname" value="(?P<N>.+?)"'
-    SIZE_PATTERN = r"var ini_file_size = (\d+)"
+    SIZE_PATTERN = r"var iniFileSize = (\d+)"
 
     WAIT_PATTERN = r'<span id="countdown_str".+?><span .+?>(\d+)</span>'
     DL_LIMIT_PATTERN = (

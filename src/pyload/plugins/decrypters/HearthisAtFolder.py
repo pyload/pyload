@@ -35,7 +35,7 @@ class HearthisAtFolder(BaseDecrypter):
     def decrypt(self, pyfile):
         self.data = self.load(pyfile.url)
 
-        m = re.search(r"int_track_id = (\d+);", self.data)
+        m = re.search(r"intTrackId = (\d+);", self.data)
         if m is not None:
             #: Single track
             self.packages = [
@@ -44,7 +44,7 @@ class HearthisAtFolder(BaseDecrypter):
 
         else:
             #: Playlist
-            m = re.search(r"int_internal_id = (\d+);", self.data)
+            m = re.search(r"intInternalId = (\d+);", self.data)
             if m is None:
                 self.fail(self._("Internal Id not found"))
 

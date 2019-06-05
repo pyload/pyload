@@ -70,7 +70,7 @@ class RelinkUs(BaseDecrypter):
     DLC_LINK_PATTERN = r'<a href=".*?" class="dlc_button" target="_blank">'
     DLC_DOWNLOAD_URL = r"http://relink.to/download.php"
 
-    WEB_FORWARD_PATTERN = r"get_file\(\'(.+)\'\)"
+    WEB_FORWARD_PATTERN = r"getFile\(\'(.+)\'\)"
     WEB_FORWARD_URL = r"http://relink.to/frame.php"
     WEB_LINK_PATTERN = r'<iframe name="Container" height="100%" frameborder="no" width="100%" src="(.+)"></iframe>'
 

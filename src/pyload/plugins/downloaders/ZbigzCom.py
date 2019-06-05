@@ -73,8 +73,8 @@ class ZbigzCom(BaseDownloader):
         if json_data is None:
             self.fail("Unexpected jQuery response")
 
-        if "fault_string" in json_data:
-            self.fail(json_data["fault_string"])
+        if "faultString" in json_data:
+            self.fail(json_data["faultString"])
 
         pyfile.name = json_data["info"]["name"] + (
             ".zip" if len(json_data["files"]) > 1 else ""
@@ -88,8 +88,8 @@ class ZbigzCom(BaseDownloader):
             if json_data is None:
                 self.fail("Unexpected jQuery response")
 
-            if "fault_string" in json_data:
-                self.fail(json_data["fault_string"])
+            if "faultString" in json_data:
+                self.fail(json_data["faultString"])
 
             progress = int(json_data["info"]["progress"])
             pyfile.set_progress(progress)
@@ -135,8 +135,8 @@ class ZbigzCom(BaseDownloader):
                 if json_data is None:
                     self.fail("Unexpected jQuery response")
 
-                if "fault_string" in json_data:
-                    self.fail(json_data["fault_string"])
+                if "faultString" in json_data:
+                    self.fail(json_data["faultString"])
 
                 progress = int(json_data["proc"])
 

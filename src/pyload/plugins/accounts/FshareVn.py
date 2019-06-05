@@ -80,7 +80,7 @@ class FshareVn(BaseAccount):
             {
                 "LoginForm[email]": user,
                 "LoginForm[password]": password,
-                "LoginForm[remember_me]": 1,
+                "LoginForm[rememberMe]": 1,
             }
         )
 

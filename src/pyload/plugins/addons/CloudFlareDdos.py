@@ -109,7 +109,7 @@ class CloudFlare:
                     r"setTimeout\(function\(\){\s+(var s,t,o,p,b,r,e,a,k,i,n,g,f.+?\r?\n[\s\S]+?a\.value =.+?)\r?\n",
                     data,
                 ).group(1)
-                js = re.sub(r"a\.value = (parse_int\(.+?\)).+", r"\1", js)
+                js = re.sub(r"a\.value = (parseInt\(.+?\)).+", r"\1", js)
                 js = re.sub(r"\s{3,}[a-z](?: = |\.).+", "", js)
                 js = re.sub(r"[\n\\']", "", js)
 

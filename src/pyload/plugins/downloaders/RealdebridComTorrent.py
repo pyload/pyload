@@ -96,7 +96,7 @@ class RealdebridComTorrent(BaseDownloader):
                     api_data = json.loads(
                         self.upload(
                             torrent_filename,
-                            self.API_URL + "/torrents/add_torrent",
+                            self.API_URL + "/torrents/addTorrent",
                             get={"auth_token": self.api_token},
                         )
                     )
@@ -120,7 +120,7 @@ class RealdebridComTorrent(BaseDownloader):
         else:
             #: magnet URL, send to the server
             api_data = self.api_response(
-                "/torrents/add_magnet",
+                "/torrents/addMagnet",
                 get={"auth_token": self.api_token},
                 post={"magnet": self.pyfile.url},
             )
@@ -128,7 +128,7 @@ class RealdebridComTorrent(BaseDownloader):
         #: Select all the files for downloading
         torrent_id = api_data["id"]
         self.api_response(
-            "/torrents/select_files/" + torrent_id,
+            "/torrents/selectFiles/" + torrent_id,
             get={"auth_token": self.api_token},
             post={"files": "all"},
         )
@@ -216,10 +216,10 @@ class RealdebridComTorrent(BaseDownloader):
         return code
 
     def process(self, pyfile):
-        if "RealdebridCom" not in self.pyload.account_manager.plugins:
+        if "RealdebridCom" not in self.pyload.accountManager.plugins:
             self.fail(self._("This plugin requires an active Realdebrid.com account"))
 
-        account_plugin = self.pyload.account_manager.get_account_plugin("RealdebridCom")
+        account_plugin = self.pyload.accountManager.getAccountPlugin("RealdebridCom")
         if len(account_plugin.accounts) == 0:
             self.fail(self._("This plugin requires an active Realdebrid.com account"))
 

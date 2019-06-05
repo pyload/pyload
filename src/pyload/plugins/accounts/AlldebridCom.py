@@ -45,7 +45,7 @@ class AlldebridCom(MultiAccount):
             return reduce(
                 lambda x, y: x + y,
                 [
-                    [h["domain"]] + h.get("alt_domains", [])
+                    [h["domain"]] + h.get("altDomains", [])
                     for h in json_data["hosts"].values()
                     if h["status"] is True
                 ],
@@ -59,8 +59,8 @@ class AlldebridCom(MultiAccount):
             validuntil = -1
 
         else:
-            premium = json_data["user"]["is_premium"]
-            validuntil = json_data["user"]["premium_until"] or -1
+            premium = json_data["user"]["isPremium"]
+            validuntil = json_data["user"]["premiumUntil"] or -1
 
         return {"validuntil": validuntil, "trafficleft": -1, "premium": premium}
 

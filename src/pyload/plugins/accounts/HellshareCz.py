@@ -68,7 +68,7 @@ class HellshareCz(BaseAccount):
             #: Switch to English
             self.log_debug(f"Switch lang - URL: {self.req.last_effective_url}")
 
-            json = self.load(f"{self.req.last_effective_url}?do=loc_router-show")
+            json = self.load(f"{self.req.last_effective_url}?do=locRouter-show")
             hash = re.search(r"(--[0-9a-f]+\-)", json).group(1)
 
             self.log_debug(f"Switch lang - HASH: {hash}")
@@ -81,7 +81,7 @@ class HellshareCz(BaseAccount):
 
         html = self.load(
             "https://www.hellshare.com/login",
-            get={"do": "login_form-submit"},
+            get={"do": "loginForm-submit"},
             post={
                 "login": "Log in",
                 "password": password,

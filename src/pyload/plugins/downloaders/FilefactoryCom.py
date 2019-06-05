@@ -81,7 +81,7 @@ class FilefactoryCom(SimpleDownloader):
         check = self.scan_download(
             {
                 "multiple": "You are currently downloading too many files at once.",
-                "error": '<div id="error_message">',
+                "error": '<div id="errorMessage">',
             }
         )
 

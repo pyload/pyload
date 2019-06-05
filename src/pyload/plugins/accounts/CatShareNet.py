@@ -17,11 +17,11 @@ class CatShareNet(BaseAccount):
 
     __description__ = """Catshare.net account plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("pr_oq", None), ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
+    __authors__ = [("prOq", None), ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
     PREMIUM_PATTERN = r'<span class="hidden-xs">Premium</span>'
     VALID_UNTIL_PATTERN = r'<span class="hidden-xs">Premium</span> <b>(.*?)</b>'
-    TRAFFIC_LEFT_PATTERN = r'<span class="hidden-xs">Premium</span>.*?\( (-?)(?P<S>[\d.,]+) (?P<U>[k_m_g]B) \)'
+    TRAFFIC_LEFT_PATTERN = r'<span class="hidden-xs">Premium</span>.*?\( (-?)(?P<S>[\d.,]+) (?P<U>[kMG]B) \)'
 
     def grab_info(self, user, password, data):
         premium = False

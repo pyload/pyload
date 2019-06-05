@@ -16,4 +16,4 @@ class LetitbitNetFolder(DeadDecrypter):
 
     __description__ = """Letitbit.net folder decrypter plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("DHMH", "webmaster@pc_profil.de"), ("z00nx", "z00nx0@gmail.com")]
+    __authors__ = [("DHMH", "webmaster@pcProfil.de"), ("z00nx", "z00nx0@gmail.com")]

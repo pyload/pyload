@@ -28,6 +28,6 @@ class XVideosCom(BaseDownloader):
         pyfile.name = "{} ({}).mp4".format(title_search.group(1), id_search.group(1))
         self.download(
             urllib.parse.unquote(
-                re.search(r"html5player\.set_video_url_high\(\'(.+?)\'\)", site).group(1)
+                re.search(r"html5player\.setVideoUrlHigh\(\'(.+?)\'\)", site).group(1)
             )
         )

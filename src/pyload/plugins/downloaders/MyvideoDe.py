@@ -32,17 +32,17 @@ class MyvideoDe(BaseDownloader):
         self.data = self.load(self.pyfile.url)
 
     def get_file_url(self):
-        video_id = re.search(
-            r"add_variable\('_videoid','(.*)'\);p.add_param\('quality'", self.data
+        videoId = re.search(
+            r"addVariable\('_videoid','(.*)'\);p.addParam\('quality'", self.data
         ).group(1)
-        video_server = re.search(
+        videoServer = re.search(
             "rel='image_src' href='(.*)thumbs/.*' />", self.data
         ).group(1)
-        file_url = video_server + video_id + ".flv"
+        file_url = videoServer + videoId + ".flv"
         return file_url
 
     def get_file_name(self):
-        file_name_pattern = r"<h1 class=\'global_hd\'>(.*)</h1>"
+        file_name_pattern = r"<h1 class=\'globalHd\'>(.*)</h1>"
         return html_unescape(
             re.search(file_name_pattern, self.data).group(1).replace("/", "") + ".flv"
         )

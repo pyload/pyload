@@ -109,15 +109,15 @@ class Keep2ShareCc(SimpleDownloader):
                     except BadHeader as exc:
                         if exc.code == 406:
                             json_data = json.loads(exc.content)
-                            if json_data["error_code"] == 31:  #: ERROR_CAPTCHA_INVALID
+                            if json_data["errorCode"] == 31:  #: ERROR_CAPTCHA_INVALID
                                 self.captcha.invalid()
                                 continue
 
                             elif (
-                                json_data["error_code"] == 42
+                                json_data["errorCode"] == 42
                             ):  #: ERROR_DOWNLOAD_NOT_AVAILABLE
                                 self.captcha.correct()
-                                self.retry(wait=json_data["errors"][0]["time_remaining"])
+                                self.retry(wait=json_data["errors"][0]["timeRemaining"])
 
                             else:
                                 self.fail(json_data["message"])

@@ -97,9 +97,9 @@ class IRC:
 
         self.plugin.log_info(self._("Connecting to: {}:{}").format(host, port))
 
-        self.irc_sock.settimeout(30)
+        self.irc_sock.setTimeout(30)
         self.irc_sock.connect((host, port))
-        self.irc_sock.settimeout(None)
+        self.irc_sock.setTimeout(None)
 
         self.irc_sock.send("NICK {}\r\n".format(self.nick))
         self.irc_sock.send(
@@ -812,7 +812,7 @@ class XDCC(BaseDownloader):
                 self._("DOWNLOAD XDCC '{}' from {}:{}").format(file_name, ip, port)
             )
 
-            self.pyload.addon_manager.dispatch_event(
+            self.pyload.addonManager.dispatchEvent(
                 "download_start", self.pyfile, "{}:{}".format(ip, port), dl_file
             )
 
@@ -820,7 +820,7 @@ class XDCC(BaseDownloader):
                 ip,
                 port,
                 dl_file,
-                progress_notify=self.pyfile.set_progress,
+                progressNotify=self.pyfile.set_progress,
                 resume=self.xdcc_send_resume,
             )
             if newname and newname != dl_file:

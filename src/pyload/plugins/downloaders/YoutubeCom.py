@@ -36,7 +36,7 @@ class BIGHTTPRequest(HTTPRequest):
         writes response.
         """
         if self.limit and self.rep.tell() > self.limit or self.abort:
-            rep = self.get_response()
+            rep = self.getResponse()
             if self.abort:
                 raise Abort
             with open("response.dump", mode="wb") as file:
@@ -928,8 +928,8 @@ class YoutubeCom(BaseDownloader):
             i = 1
             srt = ""
             dom = parse_xml(timedtext)
-            body = dom.get_elements_by_tag_name("body")[0]
-            paras = body.get_elements_by_tag_name("p")
+            body = dom.getElementsByTagName("body")[0]
+            paras = body.getElementsByTagName("p")
             for para in paras:
                 srt += str(i) + "\n"
                 srt += (
@@ -941,10 +941,10 @@ class YoutubeCom(BaseDownloader):
                     )
                     + "\n"
                 )
-                for child in para.child_nodes:
-                    if child.node_name == "br":
+                for child in para.childNodes:
+                    if child.nodeName == "br":
                         srt += "\n"
-                    elif child.node_name == "#text":
+                    elif child.nodeName == "#text":
                         srt += str(child.data)
                     srt += "\n\n"
                 i += 1
@@ -955,10 +955,10 @@ class YoutubeCom(BaseDownloader):
         try:
             subs = json.loads(self.player_config["args"]["player_response"])[
                 "captions"
-            ]["player_captions_tracklist_renderer"]["caption_tracks"]
+            ]["playerCaptionsTracklistRenderer"]["captionTracks"]
             subtitles_urls = {
-                subtitle["language_code"]: urllib.parse.unquote(
-                    subtitle["base_url"]
+                subtitle["languageCode"]: urllib.parse.unquote(
+                    subtitle["baseUrl"]
                 ).decode("unicode-escape")
                 + "&fmt=3"
                 for subtitle in subs
@@ -1172,7 +1172,7 @@ class YoutubeCom(BaseDownloader):
                 r'<div id="player-unavailable" class="\s*player-width player-height\s*(?:player-unavailable\s*)?">',
                 self.data,
             )
-            or '"playability_status":{"status":"ERROR"' in self.data
+            or '"playabilityStatus":{"status":"ERROR"' in self.data
         ):
             self.offline()
 
@@ -1429,9 +1429,9 @@ class JSInterpreter:
 
             if member == "splice":
                 assert isinstance(obj, list)
-                index, how_many = argvals
+                index, howMany = argvals
                 res = []
-                for i in range(index, min(index + how_many, len(obj))):
+                for i in range(index, min(index + howMany, len(obj))):
                     res.append(obj.pop(index))
                 return res
 

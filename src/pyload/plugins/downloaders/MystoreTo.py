@@ -5,7 +5,7 @@ from ..base.simple_downloader import SimpleDownloader
 
 #
 # Test link:
-#   http://mystore.to/dl/mxcA50j_kf_p
+#   http://mystore.to/dl/mxcA50jKfP
 
 
 class MystoreTo(SimpleDownloader):

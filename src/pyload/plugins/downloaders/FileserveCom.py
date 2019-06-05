@@ -34,14 +34,14 @@ class FileserveCom(BaseDownloader):
     URLS = [
         "http://www.fileserve.com/file/",
         "http://www.fileserve.com/link-checker.php",
-        "http://www.fileserve.com/check_re_captcha.php",
+        "http://www.fileserve.com/checkReCaptcha.php",
     ]
 
     CAPTCHA_KEY_PATTERN = r"var reCAPTCHA_publickey=\'(.+?)\'"
     LONG_WAIT_PATTERN = r'<li class="title">You need to wait (\d+) (\w+) to start another download\.</li>'
     LINK_EXPIRED_PATTERN = r"Your download link has expired"
     DL_LIMIT_PATTERN = r"Your daily download limit has been reached"
-    NOT_LOGGED_IN_PATTERN = r'<form (name="login_dialog_box_form"|id="login_form")|<li><a href="/login\.php">Login</a></li>'
+    NOT_LOGGED_IN_PATTERN = r'<form (name="loginDialogBoxForm"|id="login_form")|<li><a href="/login\.php">Login</a></li>'
 
     LINKCHECK_TR = r"<tr>\s*(<td>http://www\.fileserve\.com/file/.*?)</tr>"
     LINKCHECK_TD = r"<td>(?:<.*?>|&nbsp;)*([^<]*)"
@@ -85,39 +85,39 @@ class FileserveCom(BaseDownloader):
 
     def handle_free(self):
         self.data = self.load(self.url)
-        action = self.load(self.url, post={"check_download": "check"})
+        action = self.load(self.url, post={"checkDownload": "check"})
         action = json.loads(action)
         self.log_debug(action)
 
         if "fail" in action:
-            if action["fail"] == "time_limit":
+            if action["fail"] == "timeLimit":
                 self.data = self.load(
                     self.url,
-                    post={"check_download": "show_error", "error_type": "time_limit"},
+                    post={"checkDownload": "showError", "errorType": "timeLimit"},
                 )
 
                 self.do_long_wait(re.search(self.LONG_WAIT_PATTERN, self.data))
 
-            elif action["fail"] == "parallel_download":
+            elif action["fail"] == "parallelDownload":
                 self.log_warning(self._("Parallel download error, now waiting 60s"))
-                self.retry(wait=60, msg=self._("parallel_download"))
+                self.retry(wait=60, msg=self._("parallelDownload"))
 
             else:
                 self.fail(self._("Download check returned: {}").format(action["fail"]))
 
         elif "success" in action:
-            if action["success"] == "show_captcha":
+            if action["success"] == "showCaptcha":
                 self.do_captcha()
                 self.do_timmer()
-            elif action["success"] == "show_timmer":
+            elif action["success"] == "showTimmer":
                 self.do_timmer()
 
         else:
             self.error(self._("Unknown server response"))
 
         #: Show download link
-        res = self.load(self.url, post={"download_link": "show"})
-        self.log_debug(f"Show download_link response: {res}")
+        res = self.load(self.url, post={"downloadLink": "show"})
+        self.log_debug(f"Show downloadLink response: {res}")
         if "fail" in res:
             self.error(self._("Couldn't retrieve download url"))
 
@@ -149,14 +149,14 @@ class FileserveCom(BaseDownloader):
         self.thread.m.reconnecting.wait(3)
 
     def do_timmer(self):
-        res = self.load(self.url, post={"download_link": "wait"})
+        res = self.load(self.url, post={"downloadLink": "wait"})
         self.log_debug(f"Wait response: {res[:80]}")
 
         if "fail" in res:
             self.fail(self._("Failed getting wait time"))
 
         if self.__name__ == "FilejungleCom":
-            m = re.search(r'"wait_time":(\d+)', res)
+            m = re.search(r'"waitTime":(\d+)', res)
             if m is None:
                 self.fail(self._("Cannot get wait time"))
             wait_time = int(m.group(1))

@@ -44,56 +44,56 @@ class ReCaptcha(CaptchaService):
     )
 
     RECAPTCHA_INTERACTIVE_JS = """
-            while(document.children[0].child_element_count > 0) {
-                document.children[0].remove_child(document.children[0].children[0]);
+            while(document.children[0].childElementCount > 0) {
+                document.children[0].removeChild(document.children[0].children[0]);
             }
-            document.children[0].inner_html = '<html><head></head><body style="display:inline-block;"><div id="captchadiv" style="display: inline-block;"></div></body></html>';
+            document.children[0].innerHTML = '<html><head></head><body style="display:inline-block;"><div id="captchadiv" style="display: inline-block;"></div></body></html>';
 
             gpyload.data.sitekey = request.params.sitekey;
 
-            gpyload.get_frame_size = function() {
-                var rect_anchor =  {top: 0, right: 0, bottom: 0, left: 0},
-                    rect_popup =  {top: 0, right: 0, bottom: 0, left: 0},
+            gpyload.getFrameSize = function() {
+                var rectAnchor =  {top: 0, right: 0, bottom: 0, left: 0},
+                    rectPopup =  {top: 0, right: 0, bottom: 0, left: 0},
                     rect;
-                var anchor = document.body.query_selector("iframe[src*='/anchor']");
-                if (anchor !== null && gpyload.is_visible(anchor)) {
-                    rect = anchor.get_bounding_client_rect();
-                    rect_anchor = {top: rect.top, right: rect.right, bottom: rect.bottom, left: rect.left};
+                var anchor = document.body.querySelector("iframe[src*='/anchor']");
+                if (anchor !== null && gpyload.isVisible(anchor)) {
+                    rect = anchor.getBoundingClientRect();
+                    rectAnchor = {top: rect.top, right: rect.right, bottom: rect.bottom, left: rect.left};
                 }
-                var popup = document.body.query_selector("iframe[src*='/bframe']");
-                if (popup !== null && gpyload.is_visible(popup)) {
-                    rect = popup.get_bounding_client_rect();
-                    rect_popup = {top: rect.top, right: rect.right, bottom: rect.bottom, left: rect.left};
+                var popup = document.body.querySelector("iframe[src*='/bframe']");
+                if (popup !== null && gpyload.isVisible(popup)) {
+                    rect = popup.getBoundingClientRect();
+                    rectPopup = {top: rect.top, right: rect.right, bottom: rect.bottom, left: rect.left};
                 }
-                var left = Math.round(Math.min(rect_anchor.left, rect_anchor.right, rect_popup.left, rect_popup.right));
-                var right = Math.round(Math.max(rect_anchor.left, rect_anchor.right, rect_popup.left, rect_popup.right));
-                var top = Math.round(Math.min(rect_anchor.top, rect_anchor.bottom, rect_popup.top, rect_popup.bottom));
-                var bottom = Math.round(Math.max(rect_anchor.top, rect_anchor.bottom, rect_popup.top, rect_popup.bottom));
+                var left = Math.round(Math.min(rectAnchor.left, rectAnchor.right, rectPopup.left, rectPopup.right));
+                var right = Math.round(Math.max(rectAnchor.left, rectAnchor.right, rectPopup.left, rectPopup.right));
+                var top = Math.round(Math.min(rectAnchor.top, rectAnchor.bottom, rectPopup.top, rectPopup.bottom));
+                var bottom = Math.round(Math.max(rectAnchor.top, rectAnchor.bottom, rectPopup.top, rectPopup.bottom));
                 return {top: top, left: left, bottom: bottom, right: right};
             };
 
             // function that is called when the captcha finished loading and is ready to interact
-            window.pyload_captcha_on_load_callback = function() {
+            window.pyloadCaptchaOnLoadCallback = function() {
                 grecaptcha.render (
                     "captchadiv",
                     {size: "compact",
                      'sitekey': gpyload.data.sitekey,
                      'callback': function() {
-                        var recaptcha_response = grecaptcha.get_response(); // get captcha response
-                        gpyload.submit_response(recaptcha_response);
+                        var recaptchaResponse = grecaptcha.getResponse(); // get captcha response
+                        gpyload.submitResponse(recaptchaResponse);
                      }}
                 );
                 gpyload.activated();
             };
 
             if(typeof grecaptcha !== 'undefined' && grecaptcha) {
-                window.pyload_captcha_on_load_callback();
+                window.pyloadCaptchaOnLoadCallback();
             } else {
-                var js_script = document.create_element('script');
+                var js_script = document.createElement('script');
                 js_script.type = "text/javascript";
-                js_script.src = "//www.google.com/recaptcha/api.js?onload=pyload_captcha_on_load_callback&render=explicit";
+                js_script.src = "//www.google.com/recaptcha/api.js?onload=pyloadCaptchaOnLoadCallback&render=explicit";
                 js_script.async = true;
-                document.get_elements_by_tag_name('head')[0].append_child(js_script);
+                document.getElementsByTagName('head')[0].appendChild(js_script);
             }"""
 
     def detect_key(self, data=None):

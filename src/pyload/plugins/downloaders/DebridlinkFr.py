@@ -66,27 +66,27 @@ class DebridlinkFr(MultiDownloader):
         res = self.api_request("/downloader/add", post=args(link=pyfile.url))
 
         if res["result"] == "OK":
-            self.link = res["value"]["download_link"]
+            self.link = res["value"]["downloadLink"]
             pyfile.name = res["value"].get("filename", None) or pyfile.name
             self.resume_download = res["value"].get("resume") or self.resume_download
             self.chunk_limit = res["value"].get("chunk") or self.chunk_limit
 
         else:
             err_code = res["ERR"]
-            if err_code == "file_not_found":
+            if err_code == "fileNotFound":
                 self.offline()
 
             else:
                 err_message = {
-                    "not_link": "Check the 'link' parameter (Empty or bad)",
-                    "not_debrid": "Maybe the filehoster is down or the link is not online",
-                    "bad_file_url": "The link format is not valid",
-                    "host_not_valid": "The filehoster is not supported",
-                    "not_free_host": "This filehoster is not available for the free member",
-                    "disabled_host": "The filehoster are disabled",
-                    "no_get_filename": "Unable to retrieve the file name",
-                    "max_link": "Limitation of number links per day reached",
-                    "max_link_host": "Limitation of number links per day for this host reached",
+                    "notLink": "Check the 'link' parameter (Empty or bad)",
+                    "notDebrid": "Maybe the filehoster is down or the link is not online",
+                    "badFileUrl": "The link format is not valid",
+                    "hostNotValid": "The filehoster is not supported",
+                    "notFreeHost": "This filehoster is not available for the free member",
+                    "disabledHost": "The filehoster are disabled",
+                    "noGetFilename": "Unable to retrieve the file name",
+                    "maxLink": "Limitation of number links per day reached",
+                    "maxLinkHost": "Limitation of number links per day for this host reached",
                 }.get(err_code)
 
                 self.fail(err_message or "Unknown error: `{}`".format(err_code))

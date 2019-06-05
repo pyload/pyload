@@ -42,7 +42,7 @@ class DevhostStFolder(SimpleDecrypter):
     ]
 
     LINK_PATTERN = r'(?:/> |;">)<a href="(.+?)"(?!>Back to \w+<)'
-    OFFLINE_PATTERN = r'"/c_h_p">test\.png<'
+    OFFLINE_PATTERN = r'"/cHP">test\.png<'
 
     # TODO: Rewrite
     def check_name_size(self, getinfo=True):

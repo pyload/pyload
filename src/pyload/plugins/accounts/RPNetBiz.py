@@ -26,7 +26,7 @@ class RPNetBiz(MultiAccount):
     def grab_hosters(self, user, password, data):
         res = self.load(
             "https://premium.rpnet.biz/client_api.php",
-            get={"username": user, "password": password, "action": "show_hoster_list"},
+            get={"username": user, "password": password, "action": "showHosterList"},
         )
         hoster_list = json.loads(res)
 
@@ -41,10 +41,10 @@ class RPNetBiz(MultiAccount):
         #: Get account information from rpnet.biz
         res = self.get_account_status(user, password)
         try:
-            if res["account_info"]["is_premium"]:
+            if res["accountInfo"]["isPremium"]:
                 #: Parse account info. Change the trafficleft later to support per host info.
                 account_info = {
-                    "validuntil": float(res["account_info"]["premium_expiry"]),
+                    "validuntil": float(res["accountInfo"]["premiumExpiry"]),
                     "trafficleft": -1,
                     "premium": True,
                 }
@@ -76,7 +76,7 @@ class RPNetBiz(MultiAccount):
             get={
                 "username": user,
                 "password": password,
-                "action": "show_account_information",
+                "action": "showAccountInformation",
             },
         )
         self.log_debug(f"JSON data: {res}")

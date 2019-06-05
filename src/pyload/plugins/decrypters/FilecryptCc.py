@@ -11,7 +11,7 @@ import urllib.parse
 from cryptography.fernet import Fernet
 
 from pyload.core.network.cookie_jar import CookieJar
-from pyload.core.network.http.exceptions import BadHeader, 
+from pyload.core.network.http.exceptions import BadHeader
 from pyload.core.network.http.http_request import HTTPRequest
 
 from ..anticaptchas.CoinHive import CoinHive
@@ -37,7 +37,7 @@ class BIGHTTPRequest(HTTPRequest):
         writes response.
         """
         if self.limit and self.rep.tell() > self.limit or self.abort:
-            rep = self.get_response()
+            rep = self.getResponse()
             if self.abort:
                 raise Abort
             with open("response.dump", mode="wb") as file:
@@ -74,7 +74,7 @@ class FilecryptCc(BaseDecrypter):
     COOKIES = [("filecrypt.cc", "lang", "en")]
 
     DLC_LINK_PATTERN = r'onclick="DownloadDLC\(\'(.+)\'\);">'
-    WEBLINK_PATTERN = r"open_link.?'([\w\-]*)',"
+    WEBLINK_PATTERN = r"openLink.?'([\w\-]*)',"
     MIRROR_PAGE_PATTERN = r'"[\w]*" href="(https?://(?:www\.)?filecrypt.cc/Container/\w+\.html\?mirror=\d+)">'
 
     CAPTCHA_PATTERN = r"<h2>Security prompt</h2>"

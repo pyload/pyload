@@ -110,7 +110,7 @@ class ShareLinksBiz(BaseDecrypter):
             return True
 
     def is_password_protected(self):
-        if re.search(r'<form.*?id="password_form".*?>', self.data):
+        if re.search(r'<form.*?id="passwordForm".*?>', self.data):
             self.log_debug("Links are protected")
             return True
         return False

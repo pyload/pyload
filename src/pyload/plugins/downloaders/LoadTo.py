@@ -7,7 +7,7 @@ from ..base.simple_downloader import SimpleDownloader
 #
 # Test links:
 # http://www.load.to/JWydcofUY6/random.bin
-# http://www.load.to/oe_smrfk_x_e/random100.bin
+# http://www.load.to/oeSmrfkXE/random100.bin
 
 
 class LoadTo(SimpleDownloader):
@@ -71,6 +71,6 @@ class LoadTo(SimpleDownloader):
                 post={
                     "adcopy_challenge": challenge,
                     "adcopy_response": response,
-                    "return_url": pyfile.url,
+                    "returnUrl": pyfile.url,
                 },
             )

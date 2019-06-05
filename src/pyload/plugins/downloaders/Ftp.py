@@ -91,7 +91,7 @@ class Ftp(BaseDownloader):
                 links = [pyfile.url + x for x in res.splitlines()]
                 self.log_debug("LINKS", links)
 
-                self.pyload.api.add_package(pkgname, links)
+                self.pyload.api.addPackage(pkgname, links)
 
             else:
                 self.fail(self._("Unexpected server response"))

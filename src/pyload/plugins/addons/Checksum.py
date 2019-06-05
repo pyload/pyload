@@ -53,7 +53,7 @@ def compute_checksum(local_file, algorithm, progress_notify=None, abort=None):
                         progress_notify(processed * 100 // file_size)
 
             #: zlib sometimes return negative value
-            return "{:x}".format((2 ** 32 + last) & 0x_f_f_f_f_f_f_f_f)
+            return "{:x}".format((2 ** 32 + last) & 0xFFFFFFFF)
 
         else:
             return None

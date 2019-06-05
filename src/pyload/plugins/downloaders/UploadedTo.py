@@ -36,7 +36,7 @@ class UploadedTo(SimpleDownloader):
 
     URL_REPLACEMENTS = [(__pattern__ + ".*", r"http://uploaded.net/file/\g<ID>")]
 
-    API_KEY = "lhF2IeeprweDfu9cc_wlx_x_v_vyp_a5nA3EL"
+    API_KEY = "lhF2IeeprweDfu9ccWlxXVVypA5nA3EL"
 
     OFFLINE_PATTERN = r">Page not found"
     TEMP_OFFLINE_PATTERN = (

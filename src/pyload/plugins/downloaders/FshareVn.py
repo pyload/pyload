@@ -62,7 +62,7 @@ class FshareVn(SimpleDownloader):
                 self.fail(self._("Wrong password"))
 
         action, inputs = self.parse_html_form(
-            'id="form-download"', input_names={"with_fcode5": "0"}
+            'id="form-download"', input_names={"withFcode5": "0"}
         )
         url = urllib.parse.urljoin(pyfile.url, action)
 

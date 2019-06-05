@@ -98,7 +98,7 @@ class MultiUpOrg(SimpleDecrypter):
         ):
             validity = re.search(r"validity=(\w+)", a).group(1)
             if validity in ("valid", "unknown"):
-                host = re.search(r'name_host="(.+?)"', a).group(1)
+                host = re.search(r'nameHost="(.+?)"', a).group(1)
                 url = re.search(r'href="(.+?)"', a).group(1)
                 hosts_data[host] = url
 

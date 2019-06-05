@@ -71,8 +71,8 @@ class DebridlinkFr(MultiAccount):
         res = self.api_request("/account/infos")
 
         if res["result"] == "OK":
-            premium = res["value"]["premium_left"] > 0
-            validuntil = res["value"]["premium_left"] + time.time()
+            premium = res["value"]["premiumLeft"] > 0
+            validuntil = res["value"]["premiumLeft"] + time.time()
 
         else:
             self.log_error(self._("Unable to retrieve account information"), res["ERR"])

@@ -53,7 +53,7 @@ class DuckCryptInfo(BaseDecrypter):
         self.log_debug("Redirect to " + m.group(0))
         html = self.load(str(m.group(0)))
         soup = BeautifulSoup(html)
-        cryptlinks = soup.find_all("div", attrs={"class": "folderbox"})
+        cryptlinks = soup.findAll("div", attrs={"class": "folderbox"})
         self.log_debug("Redirect to " + cryptlinks)
         if not cryptlinks:
             self.error(self._("No link found"))

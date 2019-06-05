@@ -281,6 +281,6 @@ class VersionHandler:
         """
         iq = iq.make_result_response()
         q = iq.new_query("jabber:iq:version")
-        q.new_text_child(q.ns(), "name", "Echo component")
-        q.new_text_child(q.ns(), "version", "1.0")
+        q.newTextChild(q.ns(), "name", "Echo component")
+        q.newTextChild(q.ns(), "version", "1.0")
         return iq

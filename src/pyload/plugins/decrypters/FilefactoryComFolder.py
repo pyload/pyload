@@ -32,7 +32,7 @@ class FilefactoryComFolder(SimpleDecrypter):
 
     LINK_PATTERN = r'<td>\s*<a href="(.+?)"'
     NAME_PATTERN = r"<h1>Files in <span>(?P<N>.+?)<"
-    PAGES_PATTERN = r'data-paginator-total_pages="(\d+)'
+    PAGES_PATTERN = r'data-paginator-totalPages="(\d+)'
 
     def load_page(self, page_n):
         return self.load(self.pyfile.url, get={"page": page_n, "show": 100})

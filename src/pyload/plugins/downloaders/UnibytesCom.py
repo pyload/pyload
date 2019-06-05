@@ -31,14 +31,14 @@ class UnibytesCom(SimpleDownloader):
 
     PLUGIN_DOMAIN = "unibytes.com"
 
-    INFO_PATTERN = r'<span[^>]*?id="file_name".*?>(?P<N>.+?)</span>\s*\((?P<S>\d.*?)\)'
+    INFO_PATTERN = r'<span[^>]*?id="fileName".*?>(?P<N>.+?)</span>\s*\((?P<S>\d.*?)\)'
 
-    WAIT_PATTERN = r'Wait for <span id="slow_rest">(\d+)</span> sec'
+    WAIT_PATTERN = r'Wait for <span id="slowRest">(\d+)</span> sec'
     LINK_FREE_PATTERN = r'<a href="(.+?)">Download</a>'
 
     def handle_free(self, pyfile):
         domain = "http://www.{}/".format(self.PLUGIN_DOMAIN)
-        action, post_data = self.parse_html_form('id="start_form"')
+        action, post_data = self.parse_html_form('id="startForm"')
 
         for _ in range(3):
             self.log_debug(action, post_data)
@@ -68,7 +68,7 @@ class UnibytesCom(SimpleDownloader):
                     self.retry_captcha()
 
             last_step = post_data["step"]
-            action, post_data = self.parse_html_form('id="step_form"')
+            action, post_data = self.parse_html_form('id="stepForm"')
 
             if last_step == "timer":
                 m = re.search(self.WAIT_PATTERN, self.data)

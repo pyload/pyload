@@ -29,5 +29,5 @@ class DepositfilesComFolder(SimpleDecrypter):
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
     LINK_PATTERN = (
-        r'<div class="progress_name".*?>\s*<a href="(.+?)" title=".+?" target="_blank">'
+        r'<div class="progressName".*?>\s*<a href="(.+?)" title=".+?" target="_blank">'
     )

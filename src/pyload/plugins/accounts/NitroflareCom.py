@@ -27,18 +27,18 @@ class NitroflareCom(BaseAccount):
 
         data = json.loads(
             self.load(
-                "https://nitroflare.com/api/v2/get_key_info",
-                get={"user": user, "premium_key": password},
+                "https://nitroflare.com/api/v2/getKeyInfo",
+                get={"user": user, "premiumKey": password},
             )
         )
 
         if data["type"] == "success":
-            trafficleft = self.parse_traffic(data["result"]["traffic_left"], "byte")
+            trafficleft = self.parse_traffic(data["result"]["trafficLeft"], "byte")
             premium = data["result"]["status"] == "active"
 
             if premium:
                 validuntil = time.mktime(
-                    time.strptime(data["result"]["expiry_date"], "%Y-%m-%d %H:%M:%S")
+                    time.strptime(data["result"]["expiryDate"], "%Y-%m-%d %H:%M:%S")
                 )
 
         return {
@@ -50,8 +50,8 @@ class NitroflareCom(BaseAccount):
     def signin(self, user, password, data):
         data = json.loads(
             self.load(
-                "https://nitroflare.com/api/v2/get_key_info",
-                get={"user": user, "premium_key": password},
+                "https://nitroflare.com/api/v2/getKeyInfo",
+                get={"user": user, "premiumKey": password},
             )
         )
 
@@ -61,5 +61,5 @@ class NitroflareCom(BaseAccount):
         elif data["result"].get("status") == "banned":
             self.fail_login(self._("Banned"))
 
-        elif "recaptcha_public" in data["result"]:
+        elif "recaptchaPublic" in data["result"]:
             self.fail_login(self._("Account Login Requires Recaptcha"))

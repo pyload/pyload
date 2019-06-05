@@ -27,7 +27,7 @@ class OboomCom(BaseDownloader):
     __license__ = "GPLv3"
     __authors__ = [("stanley", "stanley.foerster@gmail.com")]
 
-    RECAPTCHA_KEY = "6LdqpO0SAAAAAJGHXo63HyalP7H4ql_rs_vff0k_j_x"
+    RECAPTCHA_KEY = "6LdqpO0SAAAAAJGHXo63HyalP7H4qlRs_vff0kJX"
 
     def setup(self):
         self.chunk_limit = 1
@@ -58,14 +58,14 @@ class OboomCom(BaseDownloader):
 
     def get_session_token(self):
         if self.premium:
-            account_info = self.account.get_data()
-            if "session" in account_info:
-                self.session_token = account_info["session"]
+            accountInfo = self.account.get_data()
+            if "session" in accountInfo:
+                self.session_token = accountInfo["session"]
             else:
                 self.fail(self._("Could not retrieve premium session"))
         else:
-            api_url = "http://www.oboom.com/1.0/guestsession"
-            result = self.load_url(api_url)
+            apiUrl = "http://www.oboom.com/1.0/guestsession"
+            result = self.load_url(apiUrl)
             if result[0] == 200:
                 self.session_token = result[1]
             else:
@@ -79,7 +79,7 @@ class OboomCom(BaseDownloader):
         self.captcha = ReCaptcha(self.pyfile)
         response, challenge = self.captcha.challenge(self.RECAPTCHA_KEY)
 
-        api_url = "http://www.oboom.com/1.0/download/ticket"
+        apiUrl = "http://www.oboom.com/1.0/download/ticket"
         params = {
             "recaptcha_challenge_field": challenge,
             "recaptcha_response_field": response,
@@ -87,7 +87,7 @@ class OboomCom(BaseDownloader):
             "token": self.session_token,
         }
 
-        result = self.load_url(api_url, params)
+        result = self.load_url(apiUrl, params)
 
         if result[0] == 200:
             self.download_token = result[1]
@@ -113,11 +113,11 @@ class OboomCom(BaseDownloader):
         else:
             self.retry_captcha()
 
-    def get_file_info(self, token, file_id):
-        api_url = "http://api.oboom.com/1.0/info"
-        params = {"token": token, "items": file_id, "http_errors": 0}
+    def get_file_info(self, token, fileId):
+        apiUrl = "http://api.oboom.com/1.0/info"
+        params = {"token": token, "items": fileId, "http_errors": 0}
 
-        result = self.load_url(api_url, params)
+        result = self.load_url(apiUrl, params)
         if result[0] == 200:
             item = result[1][0]
             if item["state"] == "online":
@@ -133,7 +133,7 @@ class OboomCom(BaseDownloader):
             )
 
     def get_download_ticket(self):
-        api_url = "http://api.oboom.com/1/dl"
+        apiUrl = "http://api.oboom.com/1/dl"
         params = {"item": self.file_id, "http_errors": 0}
         if self.premium:
             params["token"] = self.session_token
@@ -141,7 +141,7 @@ class OboomCom(BaseDownloader):
             params["token"] = self.download_token
             params["auth"] = self.download_auth
 
-        result = self.load_url(api_url, params)
+        result = self.load_url(apiUrl, params)
         if result[0] == 200:
             self.download_domain = result[1]
             self.download_ticket = result[2]

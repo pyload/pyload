@@ -45,7 +45,7 @@ class RapidgatorNet(SimpleDownloader):
     SIZE_PATTERN = r"File size:\s*<strong>(?P<S>[\d.,]+) (?P<U>[\w^_]+)</strong>"
     OFFLINE_PATTERN = r">(File not found|Error 404)"
 
-    JSVARS_PATTERN = r"\s+var\s*(start_timer_url|get_download_url|captcha_url|fid|secs)\s*=\s*\'?(.*?)\'?;"
+    JSVARS_PATTERN = r"\s+var\s*(startTimerUrl|getDownloadUrl|captchaUrl|fid|secs)\s*=\s*\'?(.*?)\'?;"
 
     PREMIUM_ONLY_PATTERN = (
         r"You can download files up to|This file can be downloaded by premium only<"
@@ -138,19 +138,19 @@ class RapidgatorNet(SimpleDownloader):
         self.log_debug(jsvars)
 
         url = "https://rapidgator.net{}?fid={}".format(
-            jsvars.get("start_timer_url", "/download/AjaxStartTimer"), jsvars["fid"]
+            jsvars.get("startTimerUrl", "/download/AjaxStartTimer"), jsvars["fid"]
         )
         jsvars.update(self.get_json_response(url))
 
         self.wait(jsvars.get("secs", 180), False)
 
         url = "https://rapidgator.net{}?sid={}".format(
-            jsvars.get("get_download_url", "/download/AjaxGetDownloadLink"), jsvars["sid"]
+            jsvars.get("getDownloadUrl", "/download/AjaxGetDownloadLink"), jsvars["sid"]
         )
         jsvars.update(self.get_json_response(url))
 
         url = "https://rapidgator.net{}".format(
-            jsvars.get("captcha_url", "/download/captcha")
+            jsvars.get("captchaUrl", "/download/captcha")
         )
         self.data = self.load(url, ref=pyfile.url)
 
@@ -176,7 +176,7 @@ class RapidgatorNet(SimpleDownloader):
                     "adcopy_response": response,
                 }
 
-            post_params["DownloadCaptchaForm[verify_code]"] = response
+            post_params["DownloadCaptchaForm[verifyCode]"] = response
             self.data = self.load(url, post=post_params, ref=url)
 
             if "The verification code is incorrect" in self.data:

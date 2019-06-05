@@ -26,12 +26,12 @@ class EmbeduploadCom(BaseDecrypter):
             "Default",
         ),
         (
-            "prefered_hoster",
+            "preferedHoster",
             "str",
             "Prefered hoster list (bar-separated)",
             "embedupload",
         ),
-        ("ignored_hoster", "str", "Ignored hoster list (bar-separated)", ""),
+        ("ignoredHoster", "str", "Ignored hoster list (bar-separated)", ""),
     ]
 
     __description__ = """EmbedUpload.com decrypter plugin"""
@@ -46,7 +46,7 @@ class EmbeduploadCom(BaseDecrypter):
 
         m = re.findall(self.LINK_PATTERN, self.data)
         if m is not None:
-            prefered_set = set(self.config.get("prefered_hoster").split("|"))
+            prefered_set = set(self.config.get("preferedHoster").split("|"))
             prefered_set = [s.lower().split(".")[0] for s in prefered_set]
 
             self.log_debug(f"PF: {prefered_set}")
@@ -55,7 +55,7 @@ class EmbeduploadCom(BaseDecrypter):
             self.links = self.get_location(tmp_links)
 
             if not self.links:
-                ignored_set = set(self.config.get("ignored_hoster").split("|"))
+                ignored_set = set(self.config.get("ignoredHoster").split("|"))
                 ignored_set = [s.lower().split(".")[0] for s in ignored_set]
 
                 self.log_debug(f"IG: {ignored_set}")

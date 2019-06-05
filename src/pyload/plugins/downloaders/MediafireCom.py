@@ -33,7 +33,7 @@ class MediafireCom(SimpleDownloader):
     ]
 
     NAME_PATTERN = r'<META NAME="description" CONTENT="(?P<N>.+?)"/>'
-    SIZE_PATTERN = r'<div class="file_name">(?P<N>.+?)</div>'
+    SIZE_PATTERN = r'<div class="fileName">(?P<N>.+?)</div>'
 
     TEMP_OFFLINE_PATTERN = r"^unmatchable$"
     OFFLINE_PATTERN = r'class="error_msg_title"'

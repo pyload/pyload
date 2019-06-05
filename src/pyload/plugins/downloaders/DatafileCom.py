@@ -55,7 +55,7 @@ class DatafileCom(SimpleDownloader):
             response, challenge = self.captcha.challenge(captcha_key)
 
             post_data = {
-                "doaction": "validate_captcha",
+                "doaction": "validateCaptcha",
                 "recaptcha_challenge_field": challenge,
                 "recaptcha_response_field": response,
                 "fileid": self.info["pattern"]["ID"],
@@ -72,7 +72,7 @@ class DatafileCom(SimpleDownloader):
 
             self.wait(wait_time)
 
-            post_data["doaction"] = "get_file_download_link"
+            post_data["doaction"] = "getFileDownloadLink"
             post_data["token"] = catcha_result["token"]
 
             file_info = json.loads(

@@ -48,7 +48,7 @@ class FilefactoryCom(BaseAccount):
 
         html = self.load(
             "https://www.filefactory.com/member/signin.php",
-            post={"login_email": user, "login_password": password, "Submit": "Sign In"},
+            post={"loginEmail": user, "loginPassword": password, "Submit": "Sign In"},
         )
 
         if "/member/signout.php" not in html:
