@@ -3,7 +3,7 @@
 import json
 import re
 
-import js2py
+from pyload.core.utils import eval_js
 
 from pyload.core.network.cookie_jar import CookieJar
 from pyload.core.network.http.http_request import HTTPRequest
@@ -113,7 +113,7 @@ class PornhubCom(SimpleDownloader):
         script = re.sub(r"[\n\t]|/\*.+?\*/", "", script)
         script += "JSON.stringify({});".format(result_var)
 
-        res = js2py.eval_js(script)
+        res = eval_js(script)
         json_data = json.loads(res)
 
         urls = {

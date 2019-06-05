@@ -3,7 +3,7 @@
 import base64
 import re
 
-import js2py
+from pyload.core.utils import eval_js
 from cryptography.fernet import Fernet
 
 from ..base.decrypter import BaseDecrypter
@@ -245,10 +245,10 @@ class ShareLinksBiz(BaseDecrypter):
                     res,
                     re.S,
                 ).group(1)
-                jscode = js2py.eval_js(self._("f = {}").format(jscode))
+                jscode = eval_js(self._("f = {}").format(jscode))
                 jslauncher = "window=''; parent={frames:{Main:{location:{href:''}}},location:''}; {}; parent.frames.Main.location.href"
 
-                dl_link = js2py.eval_js(jslauncher.format(jscode))
+                dl_link = eval_js(jslauncher.format(jscode))
 
                 self.log_debug(
                     "JsEngine returns value [{}] for redirection link".format(dl_link)
@@ -319,7 +319,7 @@ class ShareLinksBiz(BaseDecrypter):
 
     def _get_links(self, crypted, jk):
         #: Get key
-        jreturn = js2py.eval_js(self._("{} f()").format(jk))
+        jreturn = eval_js(self._("{} f()").format(jk))
         self.log_debug(f"JsEngine returns value [{jreturn}]")
         key = bytes.fromhex(jreturn)
 

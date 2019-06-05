@@ -23,7 +23,7 @@ from .config import get_default_config
 from .helpers import JSONEncoder
 
 
-#: flask app singleton
+#: flask app singleton?
 class App:
 
     JINJA_TEMPLATE_GLOBALS = TEMPLATE_GLOBALS

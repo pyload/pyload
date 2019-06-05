@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import js2py
+from pyload.core.utils import eval_js
 import pycurl
 import re
 
@@ -64,7 +64,7 @@ class TurbobitNet(SimpleDownloader):
         if m is None:
             self.fail(self._("min_limit pattern not found"))
 
-        wait_time = js2py.eval_js(m.group(1))
+        wait_time = eval_js(m.group(1))
         self.wait(wait_time)
 
         self.req.http.c.setopt(pycurl.HTTPHEADER, ["X-Requested-With: XMLHttpRequest"])

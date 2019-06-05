@@ -5,7 +5,7 @@ import os
 import re
 
 
-import js2py
+from pyload.core.utils import eval_js
 from cryptography.fernet import Fernet
 
 from ..anticaptchas.SolveMedia import SolveMedia
@@ -331,7 +331,7 @@ class RelinkUs(BaseDecrypter):
 
     def _get_links(self, crypted, jk):
         #: Get key
-        jreturn = js2py.eval_js("{} f()".format(jk))
+        jreturn = eval_js("{} f()".format(jk))
         self.log_debug(f"JsEngine returns value [{jreturn}]")
         key = bytes.fromhex(jreturn)
 

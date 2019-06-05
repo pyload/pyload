@@ -14,6 +14,7 @@ import re
 import string
 import sys
 import time
+import requests_html
 from html.entities import name2codepoint
 import html.parser
 import unicodedata
@@ -28,6 +29,10 @@ try:
     import send2trash
 except ImportError:
     send2trash = None
+
+
+def eval_js(script):
+    return requests_html.HTML().render(script=script, reload=False)
 
 
 def invertmap(obj):

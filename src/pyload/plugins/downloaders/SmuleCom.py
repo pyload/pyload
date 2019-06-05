@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import re
 
-import js2py
+from pyload.core.utils import eval_js
 
 from ..base.simple_downloader import SimpleDownloader
 
@@ -90,7 +90,7 @@ class SmuleCom(SimpleDownloader):
         )
 
         self.log_debug(f"Running js script: {new_js_code}")
-        js_result = js2py.eval_js(new_js_code)
+        js_result = eval_js(new_js_code)
         self.log_debug(f"Result is: {js_result}")
 
         self.link = js_result

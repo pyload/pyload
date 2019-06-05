@@ -8,7 +8,7 @@ from functools import wraps
 from urllib.parse import unquote
 
 import flask
-import js2py
+from pyload.core.utils import eval_js
 from flask.json import jsonify
 from cryptography.fernet import Fernet
 from .app_blueprint import bp as app_bp
@@ -94,7 +94,7 @@ def addcrypted2():
     jk = flask.request.form["jk"]
 
     crypted = standard_b64decode(unquote(crypted.replace(" ", "+")))
-    jk = js2py.eval_js(f"{jk} f()")
+    jk = eval_js(f"{jk} f()")
 
     try:
         key = bytes.fromhex(jk)

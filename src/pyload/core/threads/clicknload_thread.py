@@ -8,7 +8,7 @@ from cgi import FieldStorage
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from urllib.parse import unquote
 
-import js2py
+from ..utils import eval_js
 from cryptography.fernet import Fernet
 
 
@@ -157,7 +157,7 @@ class CNLHandler(BaseHTTPRequestHandler):
         jk = self.get_post("jk")
 
         crypted = standard_b64decode(unquote(crypted.replace(" ", "+")))
-        jk = js2py.eval_js(f"{jk} f()")
+        jk = eval_js(f"{jk} f()")
         key = bytes.fromhex(jk)
 
         obj = Fernet(key)

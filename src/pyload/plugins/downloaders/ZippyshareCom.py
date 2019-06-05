@@ -3,7 +3,7 @@
 import re
 import urllib.parse
 
-import js2py
+from pyload.core.utils import eval_js
 from bs4 import BeautifulSoup
 
 from ..anticaptchas.ReCaptcha import ReCaptcha
@@ -114,4 +114,4 @@ class ZippyshareCom(SimpleDownloader):
         #: Get the file's url by evaluating all the scripts
         scripts = inits + scripts + ["document.dlbutton.href"]
 
-        return js2py.eval_js("\n".join(scripts))
+        return eval_js("\n".join(scripts))

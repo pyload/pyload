@@ -4,7 +4,7 @@ import inspect
 import re
 import urllib.parse
 
-import js2py
+from pyload.core.utils import eval_js
 
 from pyload.core.network.http.http_exceptions import BadHeader
 
@@ -123,7 +123,7 @@ class CloudFlare:
                 return None  #: Tell the exception handler to re-throw the exception
 
             # Safely evaluate the Javascript expression
-            get_params["jschl_answer"] = str(int(js2py.eval_js(js)) + len(domain))
+            get_params["jschl_answer"] = str(int(eval_js(js)) + len(domain))
 
             owner_plugin.wait()  #: Do the actual wait
 

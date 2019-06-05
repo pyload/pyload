@@ -4,7 +4,7 @@ import base64
 import re
 
 
-import js2py
+from pyload.core.utils import eval_js
 from cryptography.fernet import Fernet
 
 import pycurl
@@ -233,7 +233,7 @@ class LinkCryptWs(BaseDecrypter):
             self.container_html = container_html_text.splitlines()
 
     def handle_javascript(self, line):
-        return js2py.eval_js(
+        return eval_js(
             line.replace(
                 "{}))",
                 "{}).replace('document.open();document.write','').replace(';document.close();',''))",
