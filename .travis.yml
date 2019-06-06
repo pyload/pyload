@@ -19,7 +19,7 @@ stages:
   - deploy
 
 env:
-  global: [ -z "$TRAVIS_TAG" ] && PYLOAD_DEVBUILD="$TRAVIS_BUILD_NUMBER"
+  global: if [ -z "$TRAVIS_TAG" ]; then PYLOAD_DEVBUILD="$TRAVIS_BUILD_NUMBER"; fi
 
 # NOTE: this must be set to latest stable python version
 python: 3.7
@@ -144,7 +144,7 @@ jobs:
       deploy:
         provider: script
         script:
-          - [ -z "$TRAVIS_TAG" ] || dcd --tag "$TRAVIS_TAG" pyload/pyload
+          - if [ ! -z "$TRAVIS_TAG" ]; then dcd --tag "$TRAVIS_TAG" pyload/pyload; fi
           - dcd --version-latest pyload/pyload
         on:
           branch: master
