@@ -15,7 +15,7 @@ from pyload.core.network.http.exceptions import BadHeader
 
 from ..base.downloader import BaseDownloader
 from ..helpers import exists
-from pyload.core.utils import decode
+from pyload.core.utils.old import decode
 
 ############################ General errors ###################################
 # EINTERNAL            (-1): An internal error has occurred. Please submit a bug report, detailing the exact circumstances in which this error occurred

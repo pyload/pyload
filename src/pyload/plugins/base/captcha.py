@@ -154,7 +154,7 @@ class BaseCaptcha(BasePlugin):
                 )
 
         if not self.pyload.debug:
-            self.remove(img_f.name, trash=False)
+            self.remove(img_f.name, try_trash=False)
 
         return result
 

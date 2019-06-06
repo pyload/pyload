@@ -9,7 +9,8 @@ import re
 from ..anticaptchas.ReCaptcha import ReCaptcha
 from ..anticaptchas.SolveMedia import SolveMedia
 from ..helpers import set_cookie
-from pyload.core.utils import seconds_to_midnight, html_unescape, parse_time
+from pyload.core.utils import seconds, parse
+from pyload.core.utils.old import html_unescape
 from .simple_downloader import SimpleDownloader
 
 
@@ -169,7 +170,7 @@ class XFSDownloader(SimpleDownloader):
 
         elif "today" in stmsg:
             self.retry(
-                wait=seconds_to_midnight(),
+                wait=seconds.to_midnight(),
                 msg=self._("You've used all Leech traffic today"),
             )
 
@@ -219,7 +220,7 @@ class XFSDownloader(SimpleDownloader):
                     except (AttributeError, IndexError):
                         waitmsg = m.group(0).strip()
 
-                    wait_time = parse_time(waitmsg)
+                    wait_time = parse.seconds(waitmsg)
                     self.set_wait(wait_time)
                     if (
                         wait_time

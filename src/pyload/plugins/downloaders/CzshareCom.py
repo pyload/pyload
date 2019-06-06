@@ -4,7 +4,7 @@ from datetime import timedelta
 import re
 
 from ..base.simple_downloader import SimpleDownloader
-from pyload.core.utils import parse_size
+from pyload.core.utils import parse
 
 
 class CzshareCom(SimpleDownloader):
@@ -60,7 +60,7 @@ class CzshareCom(SimpleDownloader):
 
         #: Check user credit
         try:
-            credit = parse_size(m.group(1).replace(" ", ""), m.group(2))
+            credit = parse.bytesize(m.group(1).replace(" ", ""), m.group(2))
             self.log_info(
                 self._("Premium download for {} KiB of Credit").format(
                     self.pyfile.size >> 10

@@ -5,7 +5,7 @@ import time
 
 from threading import Lock
 
-from ..utils import lock
+from ..utils.old import lock
 
 
 class Bucket:

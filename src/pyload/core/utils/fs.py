@@ -1,21 +1,16 @@
 # -*- coding: utf-8 -*-
 # AUTHOR: vuolter
 
-from __future__ import absolute_import, unicode_literals
-
 import io
 import os
 import shutil
 
 import portalocker
 import psutil
-from future import standard_library
-from future.builtins import dict, int, next
 
 from pyload.utils.convert import to_bytes, to_str
-from pyload.utils.layer.legacy import hashlib
+import hashlib
 
-standard_library.install_aliases()
 
 try:
     import send2trash
@@ -32,7 +27,7 @@ except ImportError:
     zlib = None
 
 
-def availspace(path):
+def free_space(path):
     availspace = None
     
     if os.name == "nt":
@@ -140,7 +135,7 @@ def blksize(path):
         size = os.statvfs(path).f_bsize
     else:
         import ctypes
-        drive = '{0}\\'.format(os.path.splitdrive(os.path.abspath(path))[0])
+        drive = os.path.splitdrive(os.path.abspath(path))[0] + "\\"
         cluster_sectors = ctypes.c_longlong(0)
         sector_size = ctypes.c_longlong(0)
         ctypes.windll.kernel32.GetDiskFreeSpaceW(
@@ -162,7 +157,7 @@ def _crcsum(filename, chkname, buffering):
     with io.open(filename, mode='rb') as fp:
         for chunk in bufread(fp, buffering):
             last = call(chunk, last)
-    return '{0:x}'.format(last & 0xffffffff)
+    return f'{last & 0xffffffff:x}'
 
 
 def _hashsum(filename, chkname, buffering):
@@ -184,7 +179,7 @@ def checksum(filename, chkname, buffering=None):
     return res
 
 
-def isexec(filename):
+def is_exec(filename):
     return os.path.isfile(filename) and os.access(filename, os.X_OK)
 
 
@@ -329,7 +324,7 @@ def cleanpy(dirname, recursive=True):
         _cleanpy3(dirpath, dirnames)
 
 
-def remove(path, trash=False, ignore_errors=False):
+def remove(path, try_trash=True):
     # path = os.fsdecode(path)
 
     if not os.path.exists(path):
@@ -348,21 +343,23 @@ def remove(path, trash=False, ignore_errors=False):
         os.remove(path)
 
 
-def empty(path, trash=False, exist_ok=True):
+def empty(path, try_trash=False, exist_ok=True):
     if not exist_ok and not os.path.exists(path):
         raise OSError('Path not exists')
+        
     if os.path.isfile(path):
-        if trash:
+        if try_trash:
             origfile = path + '.orig'
             os.rename(path, origfile)
             shutil.copy2(origfile, path)
-            remove(path, trash)
+            remove(path, try_trash)
             os.rename(origfile, path)
         fp = io.open(path, mode='wb')
         fp.close()
+        
     elif os.path.isdir(path):
         for name in os.listdir(path):
-            remove(name, trash)
+            remove(name, try_trash)
     else:
         raise TypeError
 
@@ -375,9 +372,9 @@ def which(filename):
 
     dirname = os.path.dirname(filename)
     if dirname:
-        return filename if isexec(filename) else None
+        return filename if is_exec(filename) else None
 
     for envpath in os.environ['PATH'].split(os.pathsep):
         filename = os.path.join(envpath.strip('"'), filename)
-        if isexec(filename):
+        if is_exec(filename):
             return filename

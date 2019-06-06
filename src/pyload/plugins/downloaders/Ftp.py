@@ -5,7 +5,7 @@ import urllib.parse
 import pycurl
 
 from ..base.downloader import BaseDownloader
-from pyload.core.utils import parse_name
+from pyload.core.utils import parse
 
 
 class Ftp(BaseDownloader):
@@ -35,7 +35,7 @@ class Ftp(BaseDownloader):
         p_url = urllib.parse.urlparse(pyfile.url)
         netloc = p_url.netloc
 
-        pyfile.name = parse_name(p_url.path.rpartition("/")[2])
+        pyfile.name = parse.name(p_url.path.rpartition("/")[2])
 
         if "@" not in netloc:
             # TODO: Recheck in 0.6.x

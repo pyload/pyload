@@ -9,7 +9,8 @@ from pyload.core.network.request_factory import get_request
 from pyload.core.network.exceptions import Fail, Skip
 
 from ..helpers import DB, Config, exists, format_exc, parse_html_header, set_cookies
-from pyload.core.utils import fixurl, decode, html_unescape, remove
+from pyload.core.utils.old import fixurl, decode, html_unescape
+from pyload.core.utils import fs
 
 if os.name != "nt":
     import grp
@@ -106,9 +107,9 @@ class BasePlugin:
     # finally:
     # del frame
 
-    def remove(self, path, trash=False):  # TODO: Change to `trash=True` in 0.6.x
+    def remove(self, path, trash=True):  # TODO: Change to `trash=True` in 0.6.x
         try:
-            remove(path, trash)
+            fs.remove(path, trash)
 
         except (NameError, OSError) as exc:
             self.log_warning(
@@ -299,7 +300,7 @@ class BasePlugin:
                 ],
             )
 
-        with open(path, mode="rb") as file:
+        with open(path, mode="rb")  as fp:
             url = fixurl(url, unquote=True)  #: Recheck in 0.6.x
 
             if req is False:
@@ -330,7 +331,7 @@ class BasePlugin:
             http_req.c.setopt(pycurl.HTTPHEADER, http_req.headers)
 
             http_req.c.setopt(pycurl.UPLOAD, 1)
-            http_req.c.setopt(pycurl.READFUNCTION, file.read)
+            http_req.c.setopt(pycurl.READFUNCTION, fp.read)
             http_req.c.setopt(pycurl.INFILESIZE, os.path.getsize(path))
 
             if just_header:
@@ -416,8 +417,8 @@ class BasePlugin:
 
             os.makedirs(os.path.dirname(framefile), exist_ok=True)
 
-            with open(framefile, mode="w") as file:
-                file.write(self.last_html)
+            with open(framefile, mode="w") as fp:
+                fp.write(self.last_html)
 
         except IOError as exc:
             self.log_error(exc)

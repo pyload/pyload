@@ -72,12 +72,12 @@ class ConfigParser:
 
             if not os.path.exists(self.pluginpath):
                 os.makedirs(os.path.dirname(self.pluginpath), exist_ok=True)
-                with open(self.pluginpath, mode="w") as file:
-                    file.write(f"version: {__version__}")
+                with open(self.pluginpath, mode="w")  as fp:
+                    fp.write(f"version: {__version__}")
                 os.chmod(self.pluginpath, 0o600)
 
-            with open(self.configpath) as file:
-                content = file.read()
+            with open(self.configpath)  as fp:
+                content = fp.read()
 
             m_ver = self._VERSION.search(content)
             if m_ver is None or int(m_ver.group(1)) < __version__:
@@ -87,13 +87,13 @@ class ConfigParser:
                 )
                 print("Old version of config was replaced")
 
-            with open(self.pluginpath) as file:
-                content = file.read()
+            with open(self.pluginpath)  as fp:
+                content = fp.read()
 
             m_ver = self._VERSION.search(content)
             if m_ver is None or int(m_ver.group(1)) < __version__:
-                with open(self.pluginpath, mode="w") as file:
-                    file.write(f"version: {__version__}")
+                with open(self.pluginpath, mode="w")  as fp:
+                    fp.write(f"version: {__version__}")
 
                 print("Old version of plugin-config replaced")
 
@@ -124,9 +124,9 @@ class ConfigParser:
         """
         parses a given configfile.
         """
-        with open(config) as file:
+        with open(config)  as fp:
 
-            config = file.read()
+            config = fp.read()
 
             config = config.splitlines()[1:]
 
@@ -236,11 +236,11 @@ class ConfigParser:
         """
         saves config to filename.
         """
-        with open(filename, mode="w") as file:
+        with open(filename, mode="w")  as fp:
             os.chmod(filename, 0o600)
-            file.write(f"version: {__version__} \n")
+            fp.write(f"version: {__version__} \n")
             for section in sorted(config.keys()):
-                file.write(f'\n{section} - "{config[section]["desc"]}":\n')
+                fp.write(f'\n{section} - "{config[section]["desc"]}":\n')
 
                 for option, data in sorted(
                     config[section].items(), key=lambda _x: _x[0]
@@ -256,7 +256,7 @@ class ConfigParser:
                     else:
                         value = str(data["value"]) + "\n"
 
-                    file.write(
+                    fp.write(
                         f'\t{data["type"]} {option} : "{data["desc"]}" = {value}'
                     )
 

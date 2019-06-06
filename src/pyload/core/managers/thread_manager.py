@@ -17,8 +17,8 @@ from ..network.request_factory import get_url
 from ..threads.decrypter_thread import DecrypterThread
 from ..threads.download_thread import DownloadThread
 from ..threads.info_thread import InfoThread
-from ..utils import free_space, lock
-
+from ..utils.old import lock
+from ..utils.fs import free_space
 
 class ThreadManager:
     """

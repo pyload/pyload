@@ -6,7 +6,7 @@ import os
 import flask
 from flask.json import jsonify
 
-from pyload.core.utils import format_speed
+from pyload.core.utils import format
 
 from ..helpers import render_template, login_required
 
@@ -18,7 +18,7 @@ def format_time(seconds):
     seconds = int(seconds)
     hours, seconds = divmod(seconds, 3600)
     minutes, seconds = divmod(seconds, 60)
-    return "{:02}:{:02}:{:02}".format(hours, minutes, seconds)
+    return f"{hours:02}:{minutes:02}:{seconds:02}"
 
 
 @bp.route("/status", methods=["GET", "POST"], endpoint="status")
@@ -43,7 +43,7 @@ def links():
 
             if link["status"] == 12:
                 formatted_eta = link["format_eta"]
-                formatted_speed = format_speed(link["speed"])
+                formatted_speed = format.speed(link["speed"])
                 link["info"] = f"{formatted_eta} @ {formatted_speed}"
 
             elif link["status"] == 5:

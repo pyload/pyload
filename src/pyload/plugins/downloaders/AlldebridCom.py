@@ -3,7 +3,7 @@
 import json
 
 from ..base.multi_downloader import MultiDownloader
-from pyload.core.utils import parse_size
+from pyload.core.utils import parse
 
 
 class AlldebridCom(MultiDownloader):
@@ -58,5 +58,5 @@ class AlldebridCom(MultiDownloader):
 
         else:
             pyfile.name = json_data["infos"]["filename"]
-            pyfile.size = parse_size(json_data["infos"]["filesize"])
+            pyfile.size = parse.bytesize(json_data["infos"]["filesize"])
             self.link = json_data["infos"]["link"]

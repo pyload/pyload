@@ -1,14 +1,8 @@
 # -*- coding: utf-8 -*-
-# @author: vuolter
+# AUTHOR: vuolter
 
-from __future__ import absolute_import, unicode_literals
+from collections.abc import Mapping, MutableMapping
 
-from future import standard_library
-from future.builtins import super
-
-from pyload.utils.layer.legacy.collections import Mapping, MutableMapping
-
-standard_library.install_aliases()
 
 
 class Singleton(type):
@@ -46,7 +40,7 @@ class InscDict(MutableMapping):
         return iter(key for key, val in self.__dict__.values())
 
     def __str__(self):
-        return """<InscDict {0}>""".format(self.__dict__)
+        return f"<InscDict {self.__dict__}>"
 
     def __eq__(self, other):
         if not isinstance(other, Mapping):
@@ -75,7 +69,7 @@ class HeaderDict(InscDict):
         InscDict.__setitem__(self, key, value.split(','))
 
     def __str__(self):
-        return """<Header {0}>""".format(self.__dict__)
+        return f"<Header {self.__dict__}>"
 
     def list(self):
         """Converts all entries to header list usable by curl."""
@@ -83,8 +77,8 @@ class HeaderDict(InscDict):
         for key, val in self.__dict__.values():
             fields = ','.join(val)
             if fields:
-                header.append('{0}: {1}'.format(key, fields))
+                header.append(f"{key}: {fields}")
             else:
                 # NOTE: curl will remove this header
-                header.append('{0}:'.format(key))
+                header.append(f"{key}:")
         return header

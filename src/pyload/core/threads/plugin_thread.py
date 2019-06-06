@@ -69,8 +69,8 @@ class PluginThread(Thread):
             self.pyload.log.debug(f"Error creating zip file: {exc}")
 
             dump_filename = dump_filename.replace(".zip", ".txt")
-            with open(dump_filename, mode="w") as file:
-                file.write(dump)
+            with open(dump_filename, mode="w")  as fp:
+                fp.write(dump)
 
         self.pyload.log.info(self._("Debug Report written to {}").format(dump_filename))
 
@@ -88,7 +88,7 @@ class PluginThread(Thread):
             dump += f"\n_frame {frame.f_code.co_name} in {frame.f_code.co_filename} at line {frame.f_lineno}\n"
 
             for key, value in frame.f_locals.items():
-                dump += "\t{:20} = ".format(key)
+                dump += f"\t{key:20} = "
                 try:
                     dump += pprint.pformat(value) + "\n"
                 except Exception as exc:
@@ -103,7 +103,7 @@ class PluginThread(Thread):
         for name in dir(pyfile.plugin):
             attr = getattr(pyfile.plugin, name)
             if not name.endswith("__") and not isinstance(attr, MethodType):
-                dump += "\t{:20} = ".format(name)
+                dump += f"\t{name:20} = "
                 try:
                     dump += pprint.pformat(attr) + "\n"
                 except Exception as exc:
@@ -114,7 +114,7 @@ class PluginThread(Thread):
         for name in dir(pyfile):
             attr = getattr(pyfile, name)
             if not name.endswith("__") and not isinstance(attr, MethodType):
-                dump += "\t{:20} = ".format(name)
+                dump += f"\t{name:20} = "
                 try:
                     dump += pprint.pformat(attr) + "\n"
                 except Exception as exc:

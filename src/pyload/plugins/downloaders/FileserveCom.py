@@ -8,7 +8,7 @@ from pyload.core.network.request_factory import get_url
 
 from ..anticaptchas.ReCaptcha import ReCaptcha
 from ..base.downloader import BaseDownloader
-from pyload.core.utils import parse_size, seconds_to_midnight
+from pyload.core.utils import parse, seconds
 
 
 class FileserveCom(BaseDownloader):
@@ -63,7 +63,7 @@ class FileserveCom(BaseDownloader):
                     file_info.append(
                         (
                             cols[1] if cols[1] != "--" else cols[0],
-                            parse_size(cols[2]) if cols[2] != "--" else 0,
+                            parse.bytesize(cols[2]) if cols[2] != "--" else 0,
                             2 if cols[3].startswith("Available") else 1,
                             cols[0],
                         )
@@ -142,7 +142,7 @@ class FileserveCom(BaseDownloader):
 
         elif check == "limit":
             self.log_warning(self._("Download limited reached for today"))
-            self.wait(seconds_to_midnight(), True)
+            self.wait(seconds.to_midnight(), True)
             self.retry()
 
         #: Ease issue with later downloads appearing to be in parallel

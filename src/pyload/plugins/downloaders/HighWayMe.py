@@ -4,7 +4,7 @@ import re
 
 
 from ..base.multi_downloader import MultiDownloader
-from pyload.core.utils import seconds_to_midnight
+from pyload.core.utils import seconds
 
 
 class HighWayMe(MultiDownloader):
@@ -47,7 +47,7 @@ class HighWayMe(MultiDownloader):
         elif "trafficlimit" in self.data:
             self.log_warning(self._("Reached daily limit"))
             self.retry(
-                wait=seconds_to_midnight(), msg="Daily limit for this host reached"
+                wait=seconds.to_midnight(), msg="Daily limit for this host reached"
             )
 
         elif "<code>8</code>" in self.data:

@@ -6,7 +6,7 @@ import time
 
 from ..api import OnlineStatus
 from ..datatypes.pyfile import PyFile
-from ..utils.packagetools import parse_names
+from ..utils.old.packagetools import parse_names
 from .plugin_thread import PluginThread
 
 

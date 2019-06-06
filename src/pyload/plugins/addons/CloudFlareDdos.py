@@ -4,7 +4,7 @@ import inspect
 import re
 import urllib.parse
 
-from pyload.core.utils import eval_js
+from pyload.core.utils.misc import eval_js
 
 from pyload.core.network.http.exceptions import BadHeader
 

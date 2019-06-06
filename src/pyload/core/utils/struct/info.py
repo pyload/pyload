@@ -1,15 +1,9 @@
 # -*- coding: utf-8 -*-
-# @author: vuolter
+# AUTHOR: vuolter
 
-from __future__ import absolute_import, unicode_literals
-
-from future import standard_library
-from future.builtins import dict
-
-from pyload.utils.layer.legacy.collections import MutableMapping
+from collections.abc import MutableMapping
 from pyload.utils.struct.base import InscDict
 
-standard_library.install_aliases()
 
 
 class ReadError(KeyError):
@@ -72,8 +66,8 @@ class Info(MutableMapping):
         return iter(self.__dict__)
 
     def __str__(self):
-        return """<Info {0}>""".format(self.__dict__)
-
+        return f"<Info {self.__dict__}>"
+        
     @property
     def readable(self):
         return bool(self.__readable__)
@@ -125,7 +119,7 @@ class InscInfo(InscDict, Info):
         InscDict.__delitem__(self, key)
 
     def __str__(self):
-        return """<InscInfo {0}>""".format(self.__dict__)
+        return f"<InscInfo {self.__dict__}>"
 
 
 class SyncInfo(Info):

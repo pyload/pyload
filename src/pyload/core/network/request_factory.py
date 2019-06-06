@@ -3,7 +3,7 @@
 
 from threading import Lock
 
-from ..utils import lock
+from ..utils.old import lock
 
 from .browser import Browser
 from .bucket import Bucket

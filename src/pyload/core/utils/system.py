@@ -1,22 +1,17 @@
 # -*- coding: utf-8 -*-
 # AUTHOR: vuolter
 
-from __future__ import absolute_import, unicode_literals
-
 import os
 import shlex
 import sys
 
 import psutil
-from future import standard_library
-from future.builtins import map, str
 
 from pyload.utils import convert
 from pyload.utils.check import isiterable
 from pyload.utils.convert import to_str
-from pyload.utils.layer.legacy.subprocess import PIPE, Popen
+from subprocess import PIPE, Popen
 
-standard_library.install_aliases()
 
 
 try:
@@ -184,7 +179,7 @@ def set_console_title(value):
         import ctypes
         ctypes.windll.kernel32.SetConsoleTitleA(title)
     else:
-        sys.stdout.write('\x1b]2;{0}\x07'.format(title))
+        sys.stdout.write(f'\x1b]2;{title}\x07')
 
 
 def set_process_group(value):

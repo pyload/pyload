@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 
-from pyload.core.utils import parse_name, safename
+from pyload.core.utils import parse
+from pyload.core.utils.old import safename
 from .hoster import BaseHoster
 
 
@@ -64,11 +65,11 @@ class BaseDecrypter(BaseHoster):
             links = [self.fixurl(url) for url in self.links]
             pdict = self.pyload.api.generate_packages(links)
             packages = [
-                (name, links, parse_name(name)) for name, links in pdict.items()
+                (name, links, parse.name(name)) for name, links in pdict.items()
             ]
 
         else:
-            packages = [(name, self.links, parse_name(name))]
+            packages = [(name, self.links, parse.name(name))]
 
         self.packages.extend(packages)
 
@@ -111,7 +112,7 @@ class BaseDecrypter(BaseHoster):
                 folder = pack_folder
 
             elif not folder or folder == name:
-                folder = parse_name(name)
+                folder = parse.name(name)
 
             self.log_info(
                 self._("Save package `{name}` to folder: {folder}").format(

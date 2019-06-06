@@ -18,7 +18,8 @@ import time
 from pyload import PKGDIR, APPID
 from .. import __version__ as PYLOAD_VERSION
 from .. import __version_info__ as PYLOAD_VERSION_INFO
-from .utils import format_size, free_space, invertmap
+from .utils import format, fs
+from .utils.misc import reversemap
 from threading import Event
 
 
@@ -247,7 +248,7 @@ class Core:
         self.log.info(self._("Storage directory: {}".format(storage_folder)))
         os.makedirs(storage_folder, exist_ok=True)
 
-        avail_space = format_size(free_space(storage_folder))
+        avail_space = format.size(fs.free_space(storage_folder))
         self.log.info(self._("Storage free space: {}").format(avail_space))
 
         self.config.save()  #: save so config files gets filled
@@ -271,8 +272,8 @@ class Core:
     def _parse_linkstxt(self):
         link_file = os.path.join(self.userdir, "links.txt")
         try:
-            with open(link_file) as file:
-                if file.read().strip():
+            with open(link_file)  as fp:
+                if fp.read().strip():
                     self.api.add_package("links.txt", [link_file], 1)
         except Exception as exc:
             self.log.debug(exc, exc_info=self.debug > 1, stack_info=self.debug > 2)
@@ -281,7 +282,7 @@ class Core:
         try:
             self.log.debug("Starting core...")
 
-            debug_level = invertmap(self._DEBUG_LEVEL_MAP)[self.debug].upper()
+            debug_level = reversemap(self._DEBUG_LEVEL_MAP)[self.debug].upper()
             self.log.debug(f"Debug level: {debug_level}")
 
             # self.evm.fire('pyload:starting')
@@ -353,7 +354,7 @@ class Core:
         self.logfactory.shutdown()
         # if cleanup:
         # self.log.info(self._("Deleting temp files..."))
-        # remove(self.tmpdir, ignore_errors=True)
+        # remove(self.tmpdir)
 
     def stop(self):
         try:

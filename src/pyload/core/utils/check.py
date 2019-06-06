@@ -1,17 +1,10 @@
 # -*- coding: utf-8 -*-
 # AUTHOR: vuolter
 
-from __future__ import absolute_import, unicode_literals
-
 import imp
 
-from future import standard_library
-from future.builtins import map, range
-from past.builtins import basestring
+from collections.abc import Iterable, Mapping
 
-from pyload.utils.layer.legacy.collections import Iterable, Mapping
-
-standard_library.install_aliases()
 
 
 def bitset(bits, bset):
@@ -46,19 +39,19 @@ def proprieties(obj):
     return [name for name in dir(obj) if haspropriety(obj, name)]
 
 
-def isiterable(obj, strict=False):
+def is_iterable(obj, strict=False):
     """Check if object is iterable (`<type 'str'>` excluded if
     strict=False)."""
     return (isinstance(obj, Iterable) and (
         strict or not isinstance(obj, basestring)))
 
 
-def ismapping(obj):
+def is_mapping(obj):
     """Check if object is mapping."""
     return isinstance(obj, Mapping)
 
 
-def ismodule(name, path=None):
+def is_module(name, path=None):
     """Check if exists a module with given name."""
     try:
         fp, _, _ = imp.find_module(name, path)

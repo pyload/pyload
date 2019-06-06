@@ -4,7 +4,7 @@ import re
 
 from ..anticaptchas.ReCaptcha import ReCaptcha
 from ..base.simple_downloader import SimpleDownloader
-from pyload.core.utils import seconds_to_midnight
+from pyload.core.utils import seconds
 
 
 class DatafileCom(SimpleDownloader):
@@ -90,7 +90,7 @@ class DatafileCom(SimpleDownloader):
                     self.offline()
 
                 elif error_code == 7:
-                    wait_time = seconds_to_midnight()
+                    wait_time = seconds.to_midnight()
                     self.retry(wait=wait_time, msg=self._("Download limit exceeded"))
 
                 elif error_code == 9:

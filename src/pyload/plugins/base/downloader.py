@@ -8,7 +8,8 @@ import re
 from pyload.core.network.http.exceptions import BadHeader
 
 from ..helpers import exists
-from pyload.core.utils import parse_name, safejoin
+from pyload.core.utils import parse
+from pyload.core.utils.old import safejoin
 from .hoster import BaseHoster
 from pyload.core.network.exceptions import Fail
 
@@ -192,7 +193,7 @@ class BaseDownloader(BaseHoster):
 
             else:
                 contenttype = header.get("content-type")
-                extension = os.path.splitext(parse_name(url))[-1]
+                extension = os.path.splitext(parse.name(url))[-1]
 
                 if contenttype:
                     mimetype = contenttype.split(";")[0].strip()
@@ -301,7 +302,7 @@ class BaseDownloader(BaseHoster):
             )
 
         dl_url = self.fixurl(url) if fixurl else url
-        dl_basename = parse_name(self.pyfile.name)
+        dl_basename = parse.name(self.pyfile.name)
 
         self.pyfile.name = dl_basename
 
@@ -327,7 +328,7 @@ class BaseDownloader(BaseHoster):
 
         # TODO: Recheck in 0.6.x
         if disposition and newname:
-            safename = parse_name(newname.split(" filename*=")[0])
+            safename = parse.name(newname.split(" filename*=")[0])
 
             if safename != newname:
                 try:
@@ -371,8 +372,8 @@ class BaseDownloader(BaseHoster):
             self.log_warning(self._("No file to scan"))
             return
 
-        with open(dl_file, mode="rb") as file:
-            content = file.read(read_size)
+        with open(dl_file, mode="rb")  as fp:
+            content = fp.read(read_size)
 
         #: Produces encoding errors, better log to other file in the future?
         # self.log_debug(f"Content: {content}")
@@ -469,7 +470,7 @@ class BaseDownloader(BaseHoster):
 
     # finally:
     # if delete:
-    # self.remove(dl_file, trash=False)
+    # self.remove(dl_file, try_trash=False)
 
     # def check_hash(self, type, digest, delete=False):
     # hashtype = type.strip('-').upper()
@@ -497,7 +498,7 @@ class BaseDownloader(BaseHoster):
     # self.fail(self._("File hashsum {} mismatch | Expected file hashsum: {} | Downloaded file hashsum: {}").format(hashtype, dl_hash, file_hash))
     # finally:
     # if delete:
-    # self.remove(dl_file, trash=False)
+    # self.remove(dl_file, try_trash=False)
 
     def check_duplicates(self):
         """

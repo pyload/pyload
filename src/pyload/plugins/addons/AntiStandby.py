@@ -67,7 +67,7 @@ class AntiStandby(BaseAddon):
             self.linux_standby(system, display)
 
     def deactivate(self):
-        self.remove(self.TMP_FILE, trash=False)
+        self.remove(self.TMP_FILE, try_trash=False)
 
         if os.name == "nt":
             self.win_standby(True)

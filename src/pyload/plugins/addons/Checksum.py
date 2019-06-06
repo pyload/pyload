@@ -7,7 +7,7 @@ import zlib
 from threading import Event
 
 from ..base.addon import BaseAddon, threaded
-from pyload.core.utils import format_time
+from pyload.core.utils import format
 
 
 def compute_checksum(local_file, algorithm, progress_notify=None, abort=None):
@@ -24,8 +24,8 @@ def compute_checksum(local_file, algorithm, progress_notify=None, abort=None):
         ):
             h = getattr(hashlib, algorithm)()
 
-            with open(local_file, mode="rb") as file:
-                for chunk in iter(lambda: file.read(128 * h.block_size), ""):
+            with open(local_file, mode="rb") as fp:
+                for chunk in iter(lambda: fp.read(128 * h.block_size), ""):
                     if abort and abort():
                         return False
 
@@ -41,8 +41,8 @@ def compute_checksum(local_file, algorithm, progress_notify=None, abort=None):
             hf = getattr(zlib, algorithm)
             last = 0
 
-            with open(local_file, mode="rb") as file:
-                for chunk in iter(lambda: file.read(8192), ""):
+            with open(local_file, mode="rb") as fp:
+                for chunk in iter(lambda: fp.read(8192), ""):
                     if abort and abort():
                         return False
 
@@ -291,8 +291,8 @@ class Checksum(BaseAddon):
                     self.log_warning(self._("File not found"), fdata["name"])
                     continue
 
-                with open(hash_file) as file:
-                    text = file.read()
+                with open(hash_file) as fp:
+                    text = fp.read()
 
                 failed = []
                 for m in re.finditer(
@@ -399,7 +399,7 @@ class Checksum(BaseAddon):
 
                         wait_time = self.config.get("wait_time")
                         self.log_info(
-                            self._("Waiting {}...").format(format_time(wait_time))
+                            self._("Waiting {}...").format(format.time(wait_time))
                         )
                         time.sleep(wait_time)
 

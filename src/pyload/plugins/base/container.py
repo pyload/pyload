@@ -50,7 +50,7 @@ class BaseContainer(BaseDecrypter):
 
     def _delete_tmpfile(self):
         if os.path.basename(self.pyfile.name).startswith("tmp_"):
-            self.remove(self.pyfile.url, trash=False)
+            self.remove(self.pyfile.url, try_trash=False)
 
     def _make_tmpfile(self):
         """
@@ -68,8 +68,8 @@ class BaseContainer(BaseDecrypter):
             )
 
             try:
-                with open(self.pyfile.url, mode="wb") as file:
-                    file.write(content.encode())
+                with open(self.pyfile.url, mode="wb")  as fp:
+                    fp.write(content.encode())
 
             except IOError as exc:
                 self.fail(exc)

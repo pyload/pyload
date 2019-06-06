@@ -8,7 +8,7 @@ from cgi import FieldStorage
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from urllib.parse import unquote
 
-from ..utils import eval_js
+from ..utils.misc import eval_js
 from cryptography.fernet import Fernet
 
 

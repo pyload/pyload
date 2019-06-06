@@ -10,7 +10,8 @@ except ImportError:
 from ..base.addon import BaseAddon, expose, threaded
 from ..base.extractor import ArchiveError, CRCError, PasswordError
 from ..helpers import exists
-from pyload.core.utils import safename, uniqify
+from pyload.core.utils.old import safename
+from pyload.core.utils.purge import uniquify
 
 
 class ArchiveQueue:
@@ -351,7 +352,7 @@ class ExtractArchive(BaseAddon):
                             ]
                             self.log_debug(f"Extracted files: {new_files}")
 
-                            new_folders = uniqify(os.path.dirname(f) for f in new_files)
+                            new_folders = uniquify(os.path.dirname(f) for f in new_files)
                             for foldername in new_folders:
                                 self.set_permissions(
                                     os.path.join(extract_folder, foldername)
@@ -444,7 +445,7 @@ class ExtractArchive(BaseAddon):
         try:
             self.log_debug(f"Password: {password or None}")
             passwords = (
-                uniqify([password] + self.get_passwords(False))
+                uniquify([password] + self.get_passwords(False))
                 if self.config.get("usepasswordfile")
                 else [password]
             )
@@ -499,7 +500,7 @@ class ExtractArchive(BaseAddon):
                 archive.extract(password)
             else:
                 for pw in [
-                    f for f in uniqify([password] + self.get_passwords(False)) if f
+                    f for f in uniquify([password] + self.get_passwords(False)) if f
                 ]:
                     try:
                         self.log_debug(f"Extracting using password: {pw}")
@@ -603,14 +604,14 @@ class ExtractArchive(BaseAddon):
             passwords = []
 
             file = os.fsdecode(self.config.get("passwordfile"))
-            with open(file) as file:
-                for pw in file.read().splitlines():
+            with open(file) as fp:
+                for pw in fp.read().splitlines():
                     passwords.append(pw)
 
         except IOError as exc:
             if exc.errno == 2:
-                file = open(file, mode="w")
-                file.close()
+                fp = open(file, mode="w")
+                fp.close()
 
             else:
                 self.log_error(exc)
@@ -632,12 +633,12 @@ class ExtractArchive(BaseAddon):
         Adds a password to saved list.
         """
         try:
-            self.passwords = uniqify([password] + self.passwords)
+            self.passwords = uniquify([password] + self.passwords)
 
             file = os.fsdecode(self.config.get("passwordfile"))
-            with open(file, mode="wb") as file:
+            with open(file, mode="wb") as fp:
                 for pw in self.passwords:
-                    file.write(pw + "\n")
+                    fp.write(pw + "\n")
 
         except IOError as exc:
             self.log_error(exc)

@@ -1,22 +1,17 @@
 # -*- coding: utf-8 -*-
 # AUTHOR: vuolter
 
-from __future__ import absolute_import, unicode_literals
-
 import os
 import re
 import sys
 
-from future import standard_library
-
-standard_library.install_aliases()
 
 
-def chars(text, chars, repl=''):
+def chars(text, chars, repl=""):
     """
     Removes all chars in repl from text.
     """
-    return re.sub(r'[{0}]+'.format(chars), repl, text)
+    return re.sub(rf'[{chars}]+', repl, text)
 
 
 _UNIXBADCHARS = ('\0', '/', '\\')
@@ -61,7 +56,7 @@ def truncate(text, to_length):
     if to_length <= min_length:
         return        
     offset = to_length // 3
-    return '{}~{}'.format(text[:offset * 2], text[-offset + to_length % 3:])
+    return f"{text[:offset * 2]}~{text[-offset + to_length % 3:]}"
 
 
 def uniquify(seq):

@@ -350,7 +350,7 @@ def check_prog(command):
         return True
 
 
-def isexecutable(filename):
+def is_executable(filename):
     file = os.fsdecode(filename)
     return os.path.isfile(file) and os.access(file, os.X_OK)
 
@@ -363,12 +363,12 @@ def which(filename):
     dirname, basename = os.path.split(filename)
 
     if dirname:
-        return filename if isexecutable(filename) else None
+        return filename if is_executable(filename) else None
 
     else:
         for path in os.environ["PATH"].split(os.pathsep):
             filename = os.path.join(path.strip('"'), filename)
-            if isexecutable(filename):
+            if is_executable(filename):
                 return filename
 
 
@@ -554,8 +554,8 @@ def compute_checksum(filename, hashtype):
         hf = getattr(zlib, hashtype)
         last = 0
 
-        with open(file, mode="rb") as file:
-            for chunk in iter(lambda: file.read(buf), ""):
+        with open(file, mode="rb")  as fp:
+            for chunk in iter(lambda: fp.read(buf), ""):
                 last = hf(chunk, last)
 
         return "{:x}".format(last)
@@ -563,8 +563,8 @@ def compute_checksum(filename, hashtype):
     elif hashtype in hashlib.algorithms_available:
         h = hashlib.new(hashtype)
 
-        with open(file, mode="rb") as file:
-            for chunk in iter(lambda: file.read(buf * h.block_size), ""):
+        with open(file, mode="rb")  as fp:
+            for chunk in iter(lambda: fp.read(buf * h.block_size), ""):
                 h.update(chunk)
 
         return h.hexdigest()

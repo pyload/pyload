@@ -4,7 +4,7 @@ import re
 
 
 from ..base.downloader import BaseDownloader
-from pyload.core.utils import html_unescape
+from pyload.core.utils.old import html_unescape
 
 
 class MyvideoDe(BaseDownloader):

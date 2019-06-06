@@ -27,7 +27,8 @@ from pyload.core.datatypes.enums import Destination
 # ThriftClient,
 # WrongLogin,
 # )
-from pyload.core.utils import decode, format_size, format_speed, lock
+from pyload.core.utils import format
+from pyload.core.utils.old import decode, lock
 
 from .addpackage import AddPackage
 from .managefiles import ManageFiles
@@ -178,7 +179,7 @@ class Cli:
                     + blue("] ")
                     + green(str(percent) + "%")
                     + self._(" Speed: ")
-                    + green(format_speed(download.speed))
+                    + green(format.speed(download.speed))
                     + self._(" Size: ")
                     + green(download.format_size)
                     + self._(" Finished in: ")
@@ -203,7 +204,7 @@ class Cli:
 
         println(
             line,
-            f'{paused} {self._("total Speed")}: {red(format_speed(speed))} {self._("Files in queue")}: {red(status.queue)} {self._("Total")}: {red(status.total)}',
+            f'{paused} {self._("total Speed")}: {red(format.speed(speed))} {self._("Files in queue")}: {red(status.queue)} {self._("Total")}: {red(status.total)}',
         )
 
         return line + 1
@@ -284,8 +285,8 @@ class Cli:
 
             for download in files:
                 if download.status == 12:  #: downloading
-                    formatted_speed = format_speed(download.speed)
-                    downloaded_size = format_size(download.size - download.bleft)
+                    formatted_speed = format.speed(download.speed)
+                    downloaded_size = format.size(download.size - download.bleft)
                     print(print_status(download))
                     print(
                         f"\t_downloading: {download.format_eta} @ {formatted_speed}\t {downloaded_size} ({download.percent}%%)"
@@ -349,13 +350,13 @@ class Cli:
                 print(self._("File does not exists."))
                 return
 
-            with open(path, mode="rb") as file:
-                content = file.read()
+            with open(path, mode="rb")  as fp:
+                content = fp.read()
 
-            rid = self.client.check_online_status_container(
-                [], os.path.basename(file.name), content
-            ).rid
-            self.print_online_check(self.client, rid)
+                rid = self.client.check_online_status_container(
+                    [], os.path.basename(fp.name), content
+                ).rid
+                self.print_online_check(self.client, rid)
 
         elif command == "pause":
             self.client.pause()
@@ -394,7 +395,7 @@ class Cli:
 
                 print(
                     "{:-45} {:-12}\t {:-15}\t {}".format(
-                        status.name, format_size(status.size), status.plugin, check
+                        status.name, format.size(status.size), status.plugin, check
                     )
                 )
 

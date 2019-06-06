@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 # AUTHOR: vuolter
 
-from __future__ import absolute_import, unicode_literals
-
 import inspect
 import io
 import os
@@ -10,19 +8,15 @@ import pprint
 import sys
 import traceback
 
-from future import standard_library
-
 from pyload.utils.check import proprieties
 from pyload.utils.fs import makefile
 
-standard_library.install_aliases()
 
 
 def report(value, dirname):
     frame = inspect.currentframe()
     try:
-        filename = '{0}_line{1}.report'.format(
-            frame.f_back.f_code.co_name, frame.f_back.f_lineno)
+        filename = f'{frame.f_back.f_code.co_name}_line{frame.f_back.f_lineno}.report'
         filepath = os.path.join(dirname, filename)
         makefile(filepath, exist_ok=True)
         with io.open(filepath, mode='wb') as fp:
@@ -40,16 +34,16 @@ def _format_dump(obj):
             attr_dump = pprint.pformat(getattr(obj, attr_name))
 
         except Exception as exc:
-            attr_dump = '<ERROR WHILE PRINTING VALUE> {0}'.format(exc)
+            attr_dump = f'<ERROR WHILE PRINTING VALUE> {exc}'
 
         dump.append((attr_name, attr_dump))
     return dump
 
 
 def format_dump(obj):
-    title = 'DUMP {0!r}:'.format(obj)
+    title = f'DUMP {obj!r}:'
     body = os.linesep.join(
-        '\t{0:20} = {1}'.format(attr_name, attr_dump)
+        f'\t{attr_name:20} = {attr_dump}'
         for attr_name, attr_dump in _format_dump(obj))
     return os.linesep.join((title, body))
 
@@ -71,17 +65,13 @@ def _format_framestack(limit=None):
             tb = tb.tb_next
         dump = []
         for _frame in stack[1:limit]:
-            msg = 'Frame {0} in {1} at line {2}'
-            frame_name = msg.format(
-                _frame.f_code.co_name,
-                _frame.f_code.co_filename,
-                _frame.f_lineno)
+            frame_name = f'Frame {_frame.f_code.co_name} in {_frame.f_code.co_filename} at line {_frame.f_lineno}'
             frame_dump = []
             for attr_name, value in _frame.f_locals.items():
                 try:
                     attr_dump = pprint.pformat(value)
                 except Exception as exc:
-                    attr_dump = '<ERROR WHILE PRINTING VALUE> {0}'.format(exc)
+                    attr_dump = f'<ERROR WHILE PRINTING VALUE> {exc}'
                 frame_dump.append((attr_name, attr_dump))
             dump.append((frame_name, frame_dump))
             del _frame
@@ -95,11 +85,11 @@ def format_framestack(frame=None, limit=None):
     stack_desc = []
     for frame_name, frame_dump in framestack:
         dump = os.linesep.join(
-            '\t{0:20} = {1}'.format(attr_name, attr_dump)
+            f'\t{attr_name:20} = {attr_dump}'
             for attr_name, attr_dump in frame_dump)
-        stack_desc.append('{0}{1}{2}'.format(frame_name, os.linesep, dump))
+        stack_desc.append(f'{frame_name}{os.linesep}{dump}')
 
-    title = 'FRAMESTACK {0!r}:'.format(frame)
+    title = f'FRAMESTACK {frame!r}:'
     body = (os.linesep * 2).join(stack_desc)
     return os.linesep.format((title, body))
 

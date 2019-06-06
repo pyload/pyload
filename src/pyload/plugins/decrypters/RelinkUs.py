@@ -5,7 +5,7 @@ import os
 import re
 
 
-from pyload.core.utils import eval_js
+from pyload.core.utils.misc import eval_js
 from cryptography.fernet import Fernet
 
 from ..anticaptchas.SolveMedia import SolveMedia
@@ -281,8 +281,8 @@ class RelinkUs(BaseDecrypter):
                 dlc_filepath = os.path.join(
                     self.pyload.config.get("general", "storage_folder"), dlc_filename
                 )
-                with open(dlc_filepath, mode="wb") as file:
-                    file.write(dlc)
+                with open(dlc_filepath, mode="wb")  as fp:
+                    fp.write(dlc)
                 pack_links.append(dlc_filepath)
 
             except Exception:

@@ -6,7 +6,8 @@ import threading
 import time
 
 from ..helpers import Periodical, is_sequence
-from pyload.core.utils import compare_time, lock, parse_size
+from pyload.core.utils import seconds, parse
+from pyload.core.utils.old import lock
 from .plugin import BasePlugin
 from pyload.core.network.exceptions import Skip
 
@@ -366,7 +367,7 @@ class BaseAccount(BasePlugin):
                     time_data = data["options"]["time"][0]
                     start, end = time_data.split("-")
 
-                    if not compare_time(start.split(":"), end.split(":")):
+                    if not seconds.compare(start.split(":"), end.split(":")):
                         continue
 
                 except Exception:
@@ -455,7 +456,7 @@ class BaseAccount(BasePlugin):
     def parse_traffic(self, size, unit=None):  # NOTE: Returns kilobytes only in 0.5.0
         self.log_debug(f"Size: {size}", "Unit: {unit or 'N/D'}")
         # TODO: Remove `>> 10` in 0.6.x
-        return parse_size(size, unit or "byte") >> 10
+        return parse.bytesize(size, unit or "byte") >> 10
 
     def fail_login(self, msg="Login handshake has failed"):
         return self.fail(msg)

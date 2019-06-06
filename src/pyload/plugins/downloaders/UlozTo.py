@@ -10,7 +10,7 @@ import pycurl
 
 from ..base.simple_downloader import SimpleDownloader
 from ..helpers import timestamp
-from pyload.core.utils import parse_name
+from pyload.core.utils import parse
 
 
 def convert_decimal_prefix(m):
@@ -87,7 +87,7 @@ class UlozTo(SimpleDownloader):
             html = self.load(url)
             name = re.search(self.NAME_PATTERN, html).group(2)
 
-            self.pyfile.name = parse_name(name)
+            self.pyfile.name = parse.name(name)
             self.data = html
 
         else:

@@ -1,14 +1,8 @@
 # -*- coding: utf-8 -*-
 # AUTHOR: vuolter
 
-from __future__ import absolute_import, unicode_literals
+from pyload.utils.check import isiterable, is_mapping
 
-from future import standard_library
-from future.builtins import bytes, dict, int, str
-
-from pyload.utils.check import isiterable, ismapping
-
-standard_library.install_aliases()
 
 
 try:
@@ -25,7 +19,7 @@ def convert(obj, rule, func, args=(), kwargs=None, fallback=None):
     try:
         if rule(obj):
             res = func(obj, *args, **kwargs)
-        elif ismapping(obj):
+        elif is_mapping(obj):
             res = dict((convert(k, *cvargs), convert(v, *cvargs))
                        for k, v in obj.items())
         elif isiterable(obj):
@@ -103,7 +97,7 @@ def to_list(obj):
     """Convert value to a list with value inside."""
     if isinstance(obj, list):
         pass
-    elif ismapping(obj):
+    elif is_mapping(obj):
         return list(obj.items())
     elif isiterable(obj, strict=False):
         return list(obj)

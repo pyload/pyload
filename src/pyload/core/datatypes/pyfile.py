@@ -6,7 +6,8 @@ import time
 from threading import RLock
 
 from ..managers.event_manager import UpdateEvent
-from ..utils import format_size, lock
+from ..utils import format
+from ..utils.old import lock
 
 
 status_map = {
@@ -226,13 +227,13 @@ class PyFile:
 
         hours, seconds = divmod(seconds, 3600)
         minutes, seconds = divmod(seconds, 60)
-        return "{:02}:{:02}:{:02}".format(hours, minutes, seconds)
+        return f"{hours:02}:{minutes:02}:{seconds:02}"
 
     def format_size(self):
         """
         formats size to readable format.
         """
-        return format_size(self.get_size())
+        return format.size(self.get_size())
 
     def format_eta(self):
         """

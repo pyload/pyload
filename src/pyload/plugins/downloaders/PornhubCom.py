@@ -3,7 +3,7 @@
 import json
 import re
 
-from pyload.core.utils import eval_js
+from pyload.core.utils.misc import eval_js
 
 from pyload.core.network.cookie_jar import CookieJar
 from pyload.core.network.http.http_request import HTTPRequest
@@ -31,8 +31,8 @@ class BIGHTTPRequest(HTTPRequest):
             rep = self.getResponse()
             if self.abort:
                 raise Abort
-            with open("response.dump", mode="wb") as file:
-                file.write(rep)
+            with open("response.dump", mode="wb")  as fp:
+                fp.write(rep)
             raise Exception("Loaded Url exceeded limit")
 
         self.rep.write(buf)

@@ -47,8 +47,8 @@ class ExpertDecoders(BaseAddon):
         task.data["ticket"] = ticket = uuid.uuid4()
         result = None
 
-        with open(task.captcha_params["file"], mode="rb") as file:
-            data = file.read()
+        with open(task.captcha_params["file"], mode="rb") as fp:
+            data = fp.read()
 
         with get_request() as req:
             #: Raise timeout threshold

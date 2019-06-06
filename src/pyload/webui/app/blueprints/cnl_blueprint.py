@@ -8,7 +8,7 @@ from functools import wraps
 from urllib.parse import unquote
 
 import flask
-from pyload.core.utils import eval_js
+from pyload.core.utils.misc import eval_js
 from flask.json import jsonify
 from cryptography.fernet import Fernet
 from .app_blueprint import bp as app_bp
@@ -73,8 +73,8 @@ def addcrypted():
         dl_path, package.replace("/", "").replace("\\", "").replace(":", "") + ".dlc"
     )
     dlc = flask.request.form["crypted"].replace(" ", "+")
-    with open(dlc_path, mode="wb") as dlc_file:
-        dlc_file.write(dlc)
+    with open(dlc_path, mode="wb") as fp:
+        fp.write(dlc)
 
     try:
         api.add_package(package, [dlc_path], 0)

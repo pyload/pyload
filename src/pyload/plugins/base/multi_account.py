@@ -4,7 +4,8 @@ from datetime import timedelta
 import re
 import time
 
-from pyload.core.utils import decode, remove_chars, uniqify
+from pyload.core.utils.old import decode
+from pyload.core.utils.purge import uniquify, chars as remove_chars
 from .account import BaseAccount
 
 
@@ -128,7 +129,7 @@ class MultiAccount(BaseAccount):
             for domain in _re.findall(url)
         ]
 
-        return self.replace_domains(uniqify(domains))
+        return self.replace_domains(uniquify(domains))
 
     def _grab_hosters(self):
         self.info["data"]["hosters"] = []

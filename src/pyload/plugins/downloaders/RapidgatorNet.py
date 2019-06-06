@@ -9,7 +9,7 @@ from datetime import timedelta
 from ..anticaptchas.ReCaptcha import ReCaptcha
 from ..anticaptchas.SolveMedia import SolveMedia
 from ..base.simple_downloader import SimpleDownloader
-from pyload.core.utils import seconds_to_midnight
+from pyload.core.utils import seconds
 
 
 class RapidgatorNet(SimpleDownloader):
@@ -119,7 +119,7 @@ class RapidgatorNet(SimpleDownloader):
         if m is not None:
             self.log_warning(m.group(0))
             if m.group(1) == "daily":
-                wait_time = seconds_to_midnight()
+                wait_time = seconds.to_midnight()
             else:
                 wait_time = timedelta(hours=1).seconds
 

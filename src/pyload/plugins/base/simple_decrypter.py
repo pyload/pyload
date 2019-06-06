@@ -7,7 +7,7 @@ from pyload.core.network.http.exceptions import BadHeader
 from pyload.core.network.request_factory import get_url
 
 from ..helpers import replace_patterns
-from pyload.core.utils import parse_name, parse_time
+from pyload.core.utils import parse
 from .decrypter import BaseDecrypter
 
 
@@ -326,7 +326,7 @@ class SimpleDecrypter(BaseDecrypter):
                     self.offline()
 
                 elif re.search(r"limit|wait|slot", errmsg, re.I):
-                    wait_time = parse_time(errmsg)
+                    wait_time = parse.seconds(errmsg)
                     self.wait(
                         wait_time,
                         reconnect=wait_time > self.config.get("max_wait", 10) * 60,
@@ -376,7 +376,7 @@ class SimpleDecrypter(BaseDecrypter):
                 except (AttributeError, IndexError):
                     waitmsg = m.group(0).strip()
 
-                wait_time = parse_time(waitmsg)
+                wait_time = parse.seconds(waitmsg)
                 self.wait(
                     wait_time,
                     reconnect=wait_time > self.config.get("max_wait", 10) * 60,

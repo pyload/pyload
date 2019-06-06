@@ -4,7 +4,7 @@ import re
 
 from ..anticaptchas.ReCaptcha import ReCaptcha
 from ..base.simple_downloader import SimpleDownloader
-from pyload.core.utils import seconds_to_midnight
+from pyload.core.utils import seconds
 
 
 class ExtabitCom(SimpleDownloader):
@@ -51,7 +51,7 @@ class ExtabitCom(SimpleDownloader):
             self.log_warning(
                 self._("You have reached your daily downloads limit for today")
             )
-            self.wait(seconds_to_midnight(), True)
+            self.wait(seconds.to_midnight(), True)
 
         self.log_debug("URL: " + self.req.http.last_effective_url)
         m = re.match(self.__pattern__, self.req.http.last_effective_url)

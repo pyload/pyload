@@ -3,7 +3,7 @@
 import re
 import urllib.parse
 
-from pyload.core.utils import eval_js
+from pyload.core.utils.misc import eval_js
 from bs4 import BeautifulSoup
 
 from ..anticaptchas.ReCaptcha import ReCaptcha

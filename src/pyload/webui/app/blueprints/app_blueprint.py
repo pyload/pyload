@@ -12,7 +12,7 @@ from urllib.parse import unquote
 import flask
 
 from pyload import PKGDIR
-from pyload.core.utils import format_size, format_speed
+from pyload.core.utils import format
 
 from ..filters import unquotepath
 from ..helpers import (
@@ -101,7 +101,7 @@ def dashboard():
     for link in links:
         if link["status"] == 12:
             current_size = link["size"] - link["bleft"]
-            formatted_speed = format_speed(link["speed"])
+            formatted_speed = format.speed(link["speed"])
             link["info"] = f"{current_size} KiB @ {formatted_speed}"
 
     return render_template("dashboard.html", res=links)
@@ -191,7 +191,7 @@ def settings():
         elif not data.trafficleft:
             trafficleft = "not available"
         else:
-            trafficleft = format_size(data.trafficleft << 10)
+            trafficleft = format.size(data.trafficleft << 10)
 
         if data.validuntil == -1:
             validuntil = "unlimited"
@@ -484,7 +484,7 @@ def info():
         "folder": PKGDIR,
         "config": api.get_userdir(),
         "download": conf["general"]["storage_folder"]["value"],
-        "freespace": format_size(api.free_space()),
+        "freespace": format.size(api.free_space()),
         "webif": conf["webui"]["port"]["value"],
         "language": conf["general"]["language"]["value"],
     }

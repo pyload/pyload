@@ -137,19 +137,19 @@ class BaseOCR(BasePlugin):
         self.log_debug("Reading txt...")
 
         try:
-            with open(tmp_txt.name) as file:
-                self.result_captcha = file.read().replace("\n", "")
+            with open(tmp_txt.name)  as fp:
+                self.result_captcha = fp.read().replace("\n", "")
 
         except Exception:
             self.result_captcha = ""
 
         self.log_info(self._("OCR result: ") + self.result_captcha)
 
-        self.remove(tmp_tif.name, trash=False)
-        self.remove(tmp_txt.name, trash=False)
+        self.remove(tmp_tif.name, try_trash=False)
+        self.remove(tmp_txt.name, try_trash=False)
 
         if subset and (digits or lowercase or uppercase):
-            self.remove(tmp_sub.name, trash=False)
+            self.remove(tmp_sub.name, try_trash=False)
 
     def recognize(self, image):
         raise NotImplementedError

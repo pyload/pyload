@@ -9,7 +9,7 @@ import sys
 from getopt import GetoptError, getopt
 from sys import exit
 
-import pyload.core.utils.pylgettext as gettext
+import pyload.core.utils.old.pylgettext as gettext
 from pyload import DATADIR, PKGDIR
 
 # from pyload.core.remote.thriftbackend.thrift_client import (
@@ -101,10 +101,10 @@ def print_commands():
 
 def write_config(opts):
     try:
-        with open(os.path.join(DATADIR, "pyload-cli.conf"), mode="w") as cfgfile:
-            cfgfile.write("[cli]")
+        with open(os.path.join(DATADIR, "pyload-cli.conf"), mode="w") as fp:
+            fp.write("[cli]")
             for opt in opts:
-                cfgfile.write(f"{opt}={opts[opt]}\n")
+                fp.write(f"{opt}={opts[opt]}\n")
     except Exception:
         print(self._("Couldn't write user config file"))
 

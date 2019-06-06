@@ -4,7 +4,7 @@ import re
 
 
 from ..base.multi_downloader import MultiDownloader
-from pyload.core.utils import seconds_to_midnight
+from pyload.core.utils import seconds
 
 
 class SimplyPremiumCom(MultiDownloader):
@@ -50,7 +50,7 @@ class SimplyPremiumCom(MultiDownloader):
         elif "trafficlimit" in self.data:
             self.log_warning(self._("Reached daily limit for this host"))
             self.retry(
-                wait=seconds_to_midnight(), msg="Daily limit for this host reached"
+                wait=seconds.to_midnight(), msg="Daily limit for this host reached"
             )
 
         elif "hostererror" in self.data:

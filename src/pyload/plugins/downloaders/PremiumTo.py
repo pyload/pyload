@@ -53,8 +53,8 @@ class PremiumTo(MultiDownloader):
             #: Custom error code sent - fail
             file = encode(self.last_download)
 
-            with open(file, mode="rb") as file:
-                err = file.read(256).strip()
+            with open(file, mode="rb")  as fp:
+                err = fp.read(256).strip()
 
             self.remove(file)
 

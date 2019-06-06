@@ -4,14 +4,14 @@ import base64
 import re
 
 
-from pyload.core.utils import eval_js
+from pyload.core.utils.misc import eval_js
 from cryptography.fernet import Fernet
 
 import pycurl
 
 from ..base.decrypter import BaseDecrypter
 from ..helpers import set_cookie
-from pyload.core.utils import html_unescape
+from pyload.core.utils.old import html_unescape
 
 
 class LinkCryptWs(BaseDecrypter):

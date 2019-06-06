@@ -3,7 +3,7 @@
 import json
 
 from ..base.multi_downloader import MultiDownloader
-from pyload.core.utils import parse_size
+from pyload.core.utils import parse
 
 
 class LeechThreeHundreedSixtyCom(MultiDownloader):
@@ -39,5 +39,5 @@ class LeechThreeHundreedSixtyCom(MultiDownloader):
             self.fail(api_data["error_message"])
 
         pyfile.name = api_data.get("filename", "") or pyfile.name
-        pyfile.size = parse_size(api_data.get("message", "0"))
+        pyfile.size = parse.bytesize(api_data.get("message", "0"))
         self.link = api_data["download_url"]

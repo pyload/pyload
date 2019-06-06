@@ -3,7 +3,7 @@
 
 
 from ..managers.event_manager import UpdateEvent
-from ..utils import safepath
+from ..utils.old import safepath
 
 
 class PyPackage:

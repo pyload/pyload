@@ -6,7 +6,7 @@ import json
 import pycurl
 
 from ..base.multi_downloader import MultiDownloader
-from pyload.core.utils import seconds_to_midnight
+from pyload.core.utils import seconds
 
 
 class LinkifierCom(MultiDownloader):
@@ -67,7 +67,7 @@ class LinkifierCom(MultiDownloader):
                 "Customer reached daily limit for current hoster",
                 "Accounts are maxed out for current hoster",
             ):
-                self.retry(wait=seconds_to_midnight())
+                self.retry(wait=seconds.to_midnight())
 
             self.fail(error_msg)
 

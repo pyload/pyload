@@ -4,7 +4,7 @@ import time
 import urllib.parse
 
 from ..helpers import parse_html_form, set_cookie
-from pyload.core.utils import parse_time
+from pyload.core.utils import parse
 from .account import BaseAccount
 
 
@@ -216,7 +216,7 @@ class XFSAccount(BaseAccount):
             finally:
                 errmsg = re.sub(r"<.*?>", " ", errmsg.strip())
 
-            new_timeout = parse_time(errmsg)
+            new_timeout = parse.seconds(errmsg)
             if new_timeout > self.timeout:
                 self.timeout = new_timeout
 

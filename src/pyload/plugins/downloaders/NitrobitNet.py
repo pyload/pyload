@@ -5,7 +5,7 @@ import time
 import pycurl
 
 from ..base.simple_downloader import SimpleDownloader
-from pyload.core.utils import format_size
+from pyload.core.utils import format
 
 
 class NitrobitNet(SimpleDownloader):
@@ -67,7 +67,7 @@ class NitrobitNet(SimpleDownloader):
         if m is not None:
             trafficleft = int(m.group(2)) - int((m.group(1) or "0"))
             self.log_info(
-                self._("Daily traffic left {}").format(format_size(trafficleft))
+                self._("Daily traffic left {}").format(format.size(trafficleft))
             )
 
         m = re.search(self.LINK_PREMIUM_PATTERN, self.data)

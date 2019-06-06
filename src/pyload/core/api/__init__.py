@@ -17,8 +17,8 @@ from functools import wraps
 
 from ..datatypes.pyfile import PyFile
 from ..network.request_factory import get_url
-from ..utils.packagetools import parse_names
-from ..utils import compare_time, free_space
+from ..utils.old.packagetools import parse_names
+from ..utils import seconds, fs
 
 import json
 from enum import IntFlag
@@ -298,7 +298,7 @@ class Api:
         """
         Available free space at download directory in bytes.
         """
-        return free_space(self.pyload.config.get("general", "storage_folder"))
+        return fs.free_space(self.pyload.config.get("general", "storage_folder"))
 
     @legacy("getServerVersion")
     @permission(Perms.ALL)
@@ -351,7 +351,7 @@ class Api:
         """
         start = self.pyload.config.get("download", "start_time").split(":")
         end = self.pyload.config.get("download", "end_time").split(":")
-        return compare_time(start, end)
+        return seconds.compare(start, end)
 
     @legacy("isTimeReconnect")
     @permission(Perms.STATUS)
@@ -363,7 +363,7 @@ class Api:
         """
         start = self.pyload.config.get("reconnect", "start_time").split(":")
         end = self.pyload.config.get("reconnect", "end_time").split(":")
-        return compare_time(start, end) and self.pyload.config.get(
+        return seconds.compare(start, end) and self.pyload.config.get(
             "reconnect", "enabled"
         )
 

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from pyload.core.utils import eval_js
+from pyload.core.utils.misc import eval_js
 import pycurl
 import re
 

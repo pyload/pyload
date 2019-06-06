@@ -1,20 +1,14 @@
 # -*- coding: utf-8 -*-
 # AUTHOR: vuolter
 
-from __future__ import absolute_import, unicode_literals
-
 import datetime
 import os
-
-from future import standard_library
-from future.builtins import int
 
 from pyload.utils.check import isiterable
 from pyload.utils.convert import to_str, BYTE_PREFIXES
 from pyload.utils.fs import fullpath
 from pyload.utils.misc import is_plural
 
-standard_library.install_aliases()
 
 
 try:
@@ -34,10 +28,10 @@ def attributes(obj, ignore=None):
 
 def items(obj, ignore=None):
     if ignore is None:
-        res = ('{0}={1}'.format(k, v) for k, v in obj.items())
+        res = (f'{k}={v}' for k, v in obj.items())
     else:
         ignored = ignore if isiterable(ignore) else (ignore,)
-        res = ('{0}={1}'.format(k, v) for k, v in obj.items()
+        res = (f'{k}={v}' for k, v in obj.items()
                if k not in ignored)
     return res
 
@@ -58,14 +52,14 @@ def size(obj):
     except AttributeError:
         for prefix in BYTE_PREFIXES[:-1]:
             if abs(value) < 1 << 10:
-                return '{:3.2f} {}'.format(value, prefix)
+                return f'{value:3.2f} {prefix}'
             else:
                 value >>= 10
-        return '{:.2f} {}'.format(value, BYTE_PREFIXES[-1])
+        return f'{value:.2f} {BYTE_PREFIXES[-1]}'
     
     
 def speed(obj):
-    return '{0}/s'.format(size(obj))
+    return f'{size(obj)}/s'
 
 
 def time(obj):
@@ -76,13 +70,13 @@ def time(obj):
     timelist = []
     
     if days:
-        timelist.append('{} day{}'.format(days, "s" if is_plural(days) else ""))
+        timelist.append(f'{days} day{}'.format("s" if is_plural(days) else ""))
         
     timenames = ('hour', 'minute', 'second')
     for name in timenames:
         value = getattr(dt, name)
         if not value:
             continue
-        timelist.append("{} {}{}".format(value, name, "s" if is_plural(value) else "")
+        timelist.append(f"{value} {name}{}".format("s" if is_plural(value) else "")
         
     return ", ".join(timelist)

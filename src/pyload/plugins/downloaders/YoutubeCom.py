@@ -17,7 +17,7 @@ from pyload.core.network.http.http_request import HTTPRequest
 
 from ..base.downloader import BaseDownloader
 from pyload.core.network.exceptions import Abort, Skip
-from ..helpers import exists, isexecutable, renice, replace_patterns, which
+from ..helpers import exists, is_executable, renice, replace_patterns, which
 
 
 class BIGHTTPRequest(HTTPRequest):
@@ -39,8 +39,8 @@ class BIGHTTPRequest(HTTPRequest):
             rep = self.getResponse()
             if self.abort:
                 raise Abort
-            with open("response.dump", mode="wb") as file:
-                file.write(rep)
+            with open("response.dump", mode="wb")  as fp:
+                fp.write(rep)
             raise Exception("Loaded Url exceeded limit")
 
         self.rep.write(buf)
@@ -81,7 +81,7 @@ class Ffmpeg:
             if os.name == "nt":
                 ffmpeg = (
                     os.path.join(PKGDIR, "lib", "ffmpeg.exe")
-                    if isexecutable(os.path.join(PKGDIR, "lib", "ffmpeg.exe"))
+                    if is_executable(os.path.join(PKGDIR, "lib", "ffmpeg.exe"))
                     else "ffmpeg.exe"
                 )
 
@@ -1005,8 +1005,8 @@ class YoutubeCom(BaseDownloader):
                         timed_text = self.load(subtitles_urls[lang], decode=False)
                         srt = timedtext_to_srt(timed_text)
 
-                        with open(srt_filename, mode="w") as file:
-                            file.write(srt.encode())
+                        with open(srt_filename, mode="w")  as fp:
+                            fp.write(srt.encode())
                         self.set_permissions(srt_filename)
                         self.log_debug(
                             "Saved subtitle: {}".format(os.path.basename(srt_filename))
@@ -1043,8 +1043,8 @@ class YoutubeCom(BaseDownloader):
                     timed_text = self.load(subtitle[1], decode=False)
                     srt = timedtext_to_srt(timed_text)
 
-                    with open(srt_filename, mode="w") as file:
-                        file.write(srt.encode())
+                    with open(srt_filename, mode="w")  as fp:
+                        fp.write(srt.encode())
                     self.set_permissions(srt_filename)
 
                     self.log_debug(
@@ -1092,8 +1092,8 @@ class YoutubeCom(BaseDownloader):
                 )  #: Just an estimate
 
                 if self.ffmpeg.run():
-                    self.remove(video_filename, trash=False)
-                    self.remove(audio_filename, trash=False)
+                    self.remove(video_filename, try_trash=False)
+                    self.remove(audio_filename, try_trash=False)
                     if subtitles_files and subs_embed:
                         for subtitle in subtitles_files:
                             self.remove(subtitle[0])
@@ -1123,7 +1123,7 @@ class YoutubeCom(BaseDownloader):
                 self.pyfile.size = os.path.getsize(inputfile)  #: : Just an estimate
 
                 if self.ffmpeg.run():
-                    self.remove(inputfile, trash=False)
+                    self.remove(inputfile, try_trash=False)
                     if subtitles_files and subs_embed:
                         for subtitle in subtitles_files:
                             self.remove(subtitle[0])

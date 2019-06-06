@@ -5,7 +5,7 @@ import time
 
 from ..base.addon import BaseAddon, threaded
 from ..helpers import forward
-from pyload.core.utils import lock
+from pyload.core.utils.old import lock
 
 try:
     import ssl

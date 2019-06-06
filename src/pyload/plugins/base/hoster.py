@@ -5,7 +5,8 @@ import time
 import urllib.parse
 
 from ..helpers import parse_html_form, replace_patterns
-from pyload.core.utils import decode, parse_name, fixurl, format_size, format_time
+from pyload.core.utils import parse, format
+from pyload.core.utils.old import decode, fixurl
 from .captcha import BaseCaptcha
 from .plugin import BasePlugin
 from pyload.core.network.exceptions import Abort, Fail, Reconnect, Retry, Skip
@@ -47,7 +48,7 @@ class BaseHoster(BasePlugin):
     def get_info(cls, url="", html=""):
         url = fixurl(url, unquote=True)
         info = {
-            "name": parse_name(url),
+            "name": parse.name(url),
             "hash": {},
             "pattern": {},
             "size": 0,
@@ -211,7 +212,7 @@ class BaseHoster(BasePlugin):
 
         if size:
             self.log_info(
-                self._("Link size: {} ({} bytes)").format(format_size(size), size)
+                self._("Link size: {} ({} bytes)").format(format.size(size), size)
             )
         else:
             self.log_info(self._("Link size: N/D"))
@@ -362,7 +363,7 @@ class BaseHoster(BasePlugin):
         status = self.pyfile.status  # NOTE: Recheck in 0.6.x
         self.pyfile.set_status("waiting")
 
-        self.log_info(self._("Waiting {}...").format(format_time(wait_time)))
+        self.log_info(self._("Waiting {}...").format(format.time(wait_time)))
 
         if self.want_reconnect:
             self.log_info(self._("Requiring reconnection..."))

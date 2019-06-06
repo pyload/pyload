@@ -1,18 +1,11 @@
 # -*- coding: utf-8 -*-
-# @author: vuolter
-
-from __future__ import absolute_import, unicode_literals
+# AUTHOR: vuolter
 
 import time
 from functools import partial, wraps
 
-from future import standard_library
-from future.builtins import object
+from threading import Condition, Lock, RLock, current_thread
 
-from pyload.utils.layer.safethreading import (Condition, Lock, RLock,
-                                              current_thread)
-
-standard_library.install_aliases()
 
 
 # NOTE: decorator

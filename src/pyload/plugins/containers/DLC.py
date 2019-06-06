@@ -10,7 +10,7 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
 from ..base.container import BaseContainer
-from pyload.core.utils import decode
+from pyload.core.utils.old import decode
 
 
 class DLC(BaseContainer):

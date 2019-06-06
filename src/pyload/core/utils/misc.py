@@ -1,17 +1,11 @@
 # -*- coding: utf-8 -*-
 # AUTHOR: vuolter
 
-from __future__ import absolute_import, unicode_literals
-
 import socket
 import random
 
-from future import standard_library
-from future.builtins import map
+from pyload.utils.check import is_mapping
 
-from pyload.utils.check import ismapping
-
-standard_library.install_aliases()
 
 
 def random_string(length):
@@ -42,16 +36,11 @@ def accumulate(iterable, to_map=None):
     return to_map
 
 
-def invertmap(obj):
+def reversemap(obj):
     """
     Invert mapping object preserving type and ordering.
     """
     return obj.__class__(reversed(item) for item in obj.items())
-
-
-# def reverse(obj):
-    # return type(obj)(
-        # map(reversed, obj.items())) if ismapping(obj) else reversed(obj)
 
 
 def forward(source, destination, buffering=1024):

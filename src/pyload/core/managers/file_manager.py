@@ -3,7 +3,7 @@
 
 from threading import RLock
 from .event_manager import InsertEvent, ReloadAllEvent, RemoveEvent, UpdateEvent
-from ..utils import lock
+from ..utils.old import lock
 from ..datatypes.enums import Destination
 
 

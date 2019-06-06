@@ -4,7 +4,7 @@
 import time
 
 
-from ..utils import uniqify
+from ..utils.purge import uniquify
 
 
 class EventManager:
@@ -37,7 +37,7 @@ class EventManager:
                 ReloadAllEvent("queue").to_list(),
                 ReloadAllEvent("collector").to_list(),
             ]
-        return uniqify(events)  # return uniqify(events, repr)
+        return uniquify(events)  # return uniquify(events, repr)
 
     def add_event(self, event):
         for client in self.clients:

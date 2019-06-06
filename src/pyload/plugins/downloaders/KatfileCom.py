@@ -3,7 +3,7 @@ import re
 
 from ..anticaptchas.SolveMedia import SolveMedia
 from ..base.simple_downloader import SimpleDownloader
-from pyload.core.utils import parse_time
+from pyload.core.utils import parse
 
 
 class KatfileCom(SimpleDownloader):
@@ -44,7 +44,7 @@ class KatfileCom(SimpleDownloader):
     def check_errors(self):
         m = re.search(r">Please wait (.+?) till next download<", self.data)
         if m is not None:
-            self.retry(wait=parse_time(m.group(1)))
+            self.retry(wait=parse.seconds(m.group(1)))
 
         SimpleDownloader.check_errors(self)
 

@@ -5,7 +5,7 @@ import re
 
 from ..anticaptchas.ReCaptcha import ReCaptcha
 from ..base.downloader import BaseDownloader
-from pyload.core.utils import seconds_to_midnight
+from pyload.core.utils import seconds
 
 
 class FreakshareCom(BaseDownloader):
@@ -153,7 +153,7 @@ class FreakshareCom(BaseDownloader):
 
         if "Your Traffic is used up for today" in self.data:
             self.want_reconnect = True
-            return seconds_to_midnight()
+            return seconds.to_midnight()
 
         timestring = re.search(
             "\s*var\s(?:downloadWait|time)\s=\s(\d*)[\d.]*;", self.data

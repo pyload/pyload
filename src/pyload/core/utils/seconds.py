@@ -1,14 +1,9 @@
 # -*- coding: utf-8 -*-
 # AUTHOR: vuolter
 
-from __future__ import absolute_import, unicode_literals
-
 import datetime
 import time
 
-from future import standard_library
-
-standard_library.install_aliases()
 
 
 def compare(start, end):
@@ -28,7 +23,7 @@ def compare(start, end):
     return False
 
 
-def seconds_to_midnight(utc=None, strict=False):
+def to_midnight(utc=None, strict=False):
     if utc is None:
         now = datetime.datetime.today()
     else:
@@ -41,7 +36,7 @@ def seconds_to_midnight(utc=None, strict=False):
     return (midnight - now).seconds
 
 
-def seconds_to_nexthour(strict=False):
+def to_nexthour(strict=False):
     now = datetime.datetime.today()
     nexthour = now.replace(
         minute=0 if strict else 1, second=0, microsecond=0

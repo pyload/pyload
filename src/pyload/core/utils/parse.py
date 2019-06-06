@@ -1,19 +1,14 @@
 # -*- coding: utf-8 -*-
 # AUTHOR: vuolter
 
-from __future__ import absolute_import, unicode_literals
-
 import os
 import re
 
-from future import standard_library
-
 from pyload.utils import convert, purge, web
 from pyload.utils.convert import to_str
-from pyload.utils.layer.legacy import hashlib
-from pyload.utils.time import seconds_to_midnight
+import hashlib
+from pyload.utils.seconds import to_midnight as seconds_to_midnight
 
-standard_library.install_aliases()
 
 
 _RE_ALIAS = re.compile(r'[\d.-_]+')
@@ -34,18 +29,17 @@ def boolean(text):
 
 
 def entries(text, allow_whitespaces=False):
-    chars = ';,|'
+    chars = ";,|"
     if not allow_whitespaces:
-        chars += r'\s'
-    pattr = r'[{0}]+'.format(chars)
+        chars += "\s"
+    pattr = rf'[{chars}]+'
     return [entry for entry in re.split(pattr, text) if entry]
 
 
 def hash(text):
     text = text.replace('-', '').lower()
     algop = '|'.join(hashlib.algorithms + ('adler32', 'crc(32)?'))
-    pattr = r'(?P<D1>{}|)\s*[:=]?\s*(?P<H>[\w^_]{8,}?)\s*[:=]?\s*(?P<D2>{}|)'
-    pattr = pattr.format(algop, algop)
+    pattr = rf'(?P<D1>{algop}|)\s*[:=]?\s*(?P<H>[\w^_]{8,}?)\s*[:=]?\s*(?P<D2>{algop}|)'
     m = re.search(pattr, text)
     if m is None:
         return None, None
@@ -161,7 +155,8 @@ def seconds(text):
     except Exception:
         text = text.lower()
 
-    pattr = r'({0})\s+day|today|daily'.format('|'.join(_TIMEWORDS))
+    w = '|'.join(_TIMEWORDS)
+    pattr = rf'({w})\s+day|today|daily'
     m = re.search(pattr, text)
     if m is not None:
         return seconds_to_midnight()

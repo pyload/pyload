@@ -6,7 +6,7 @@ from pyload.core.network.http.exceptions import BadHeader
 from pyload.core.network.request_factory import get_url
 
 from ..helpers import replace_patterns
-from pyload.core.utils import parse_name, parse_size, parse_time
+from pyload.core.utils import parse
 from .downloader import BaseDownloader
 
 
@@ -205,11 +205,11 @@ class SimpleDownloader(BaseDownloader):
                 else info["pattern"]["S"],
                 cls.SIZE_REPLACEMENTS,
             )
-            info["size"] = parse_size(size)
+            info["size"] = parse.bytesize(size)
 
         elif isinstance(info["size"], str):
             unit = info["units"] if "units" in info else ""
-            info["size"] = parse_size(info["size"], unit)
+            info["size"] = parse.bytesize(info["size"], unit)
 
         if "H" in info["pattern"]:
             hash_type = info["pattern"]["H"].strip("-").upper()
@@ -343,8 +343,8 @@ class SimpleDownloader(BaseDownloader):
             if self.CHECK_FILE:
                 self.log_info(self._("Checking file (with custom rules)..."))
 
-                with open(os.fsdecode(self.last_download), mode="rb") as file:
-                    self.data = file.read(1_048_576)  # TODO: Recheck in 0.6.x
+                with open(os.fsdecode(self.last_download), mode="rb") as fp:
+                    self.data = fp.read(1_048_576)  # TODO: Recheck in 0.6.x
 
                 self.check_errors()
 
@@ -385,7 +385,7 @@ class SimpleDownloader(BaseDownloader):
                 self.info["error"] = errmsg
                 self.log_warning(errmsg)
 
-                wait_time = parse_time(errmsg)
+                wait_time = parse.seconds(errmsg)
                 self.wait(
                     wait_time,
                     reconnect=wait_time > self.config.get("max_wait", 10) * 60,
@@ -417,7 +417,7 @@ class SimpleDownloader(BaseDownloader):
                     self.offline()
 
                 elif re.search(r"limit|wait|slot", errmsg, re.I):
-                    wait_time = parse_time(errmsg)
+                    wait_time = parse.seconds(errmsg)
                     self.wait(
                         wait_time,
                         reconnect=wait_time > self.config.get("max_wait", 10) * 60,
@@ -467,7 +467,7 @@ class SimpleDownloader(BaseDownloader):
                 except (AttributeError, IndexError):
                     waitmsg = m.group(0).strip()
 
-                wait_time = parse_time(waitmsg)
+                wait_time = parse.seconds(waitmsg)
                 self.wait(
                     wait_time,
                     reconnect=wait_time > self.config.get("max_wait", 10) * 60,

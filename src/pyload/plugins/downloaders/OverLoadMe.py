@@ -3,7 +3,7 @@
 import json
 
 from ..base.multi_downloader import MultiDownloader
-from pyload.core.utils import parse_size
+from pyload.core.utils import parse
 
 
 class OverLoadMe(MultiDownloader):
@@ -49,4 +49,4 @@ class OverLoadMe(MultiDownloader):
             self.link = data["downloadlink"]
             if pyfile.name and pyfile.name.endswith(".tmp") and data["filename"]:
                 pyfile.name = data["filename"]
-                pyfile.size = parse_size(data["filesize"])
+                pyfile.size = parse.bytesize(data["filesize"])

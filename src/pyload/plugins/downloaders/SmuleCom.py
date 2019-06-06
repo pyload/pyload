@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import re
 
-from pyload.core.utils import eval_js
+from pyload.core.utils.misc import eval_js
 
 from ..base.simple_downloader import SimpleDownloader
 
