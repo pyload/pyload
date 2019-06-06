@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 # AUTHOR: vuolter
 
-import socket
 import random
+import socket
 
 from pyload.utils.check import is_mapping
-
 
 
 def random_string(length):
@@ -18,8 +17,8 @@ def is_plural(value):
         n = abs(float(value))
         return n == 0 or n > 1
     except ValueError:
-        return value.endswith('s')  # TODO: detect uncommon plurals
-    
+        return value.endswith("s")  # TODO: detect uncommon plurals
+
 
 def eval_js(script):
     return requests_html.HTML().render(script=script, reload=False)
@@ -54,23 +53,23 @@ def forward(source, destination, buffering=1024):
 
 
 # def get_translation(domain, localedir=None, languages=None, class_=None,
-        # fallback=False, codeset=None):
-    # try:
-        # trans = gettext.translation(
-        # domain, localedir, languages, class_, False, codeset)
-    # except (IOError, OSError):
-        # if not fallback:
-        # raise
-        # trans = gettext.translation(
-        # domain, localedir, None, class_, fallback, codeset)
-    # return trans
+# fallback=False, codeset=None):
+# try:
+# trans = gettext.translation(
+# domain, localedir, languages, class_, False, codeset)
+# except (IOError, OSError):
+# if not fallback:
+# raise
+# trans = gettext.translation(
+# domain, localedir, None, class_, fallback, codeset)
+# return trans
 
 
 # def install_translation(domain, localedir=None, languages=None,
-        # class_=None, fallback=False, codeset=None):
-    # trans = get_translation(
-        # domain, localedir, languages, class_, fallback, codeset)
-    # try:
-        # trans.install(str=True)
-    # except TypeError:
-        # trans.install()
+# class_=None, fallback=False, codeset=None):
+# trans = get_translation(
+# domain, localedir, languages, class_, fallback, codeset)
+# try:
+# trans.install(str=True)
+# except TypeError:
+# trans.install()

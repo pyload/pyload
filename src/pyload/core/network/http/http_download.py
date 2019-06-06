@@ -4,16 +4,14 @@
 import os
 import shutil
 import time
-
 from logging import getLogger
 
 import pycurl
-from ..exceptions import Abort
+from pyload import APPID
 
+from ..exceptions import Abort
 from .http_chunk import ChunkInfo, HTTPChunk
 from .http_request import BadHeader
-
-from pyload import APPID
 
 
 class HTTPDownload:

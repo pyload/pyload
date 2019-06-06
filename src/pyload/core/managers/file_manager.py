@@ -2,9 +2,10 @@
 # AUTHOR: RaNaN, mkaay
 
 from threading import RLock
-from .event_manager import InsertEvent, ReloadAllEvent, RemoveEvent, UpdateEvent
-from ..utils.old import lock
+
 from ..datatypes.enums import Destination
+from ..utils.old import lock
+from .event_manager import InsertEvent, ReloadAllEvent, RemoveEvent, UpdateEvent
 
 
 class FileManager:
@@ -468,7 +469,9 @@ class FileManager:
         self.pyload.db.restart_file(id)
 
         e = UpdateEvent(
-            "file", id, "collector" if not self.get_file(id).package().queue else "queue"
+            "file",
+            id,
+            "collector" if not self.get_file(id).package().queue else "queue",
         )
         self.pyload.event_manager.add_event(e)
 

@@ -2,10 +2,10 @@
 # AUTHOR: vuolter
 
 import socket
+
 import idna
 
 from pyload.utils.convert import to_str
-
 
 
 def splitaddress(address):
@@ -13,7 +13,7 @@ def splitaddress(address):
         address = to_str(idna.encode(address))
     except (AttributeError, idna.IDNAError):
         pass
-    sep = ']:' if address.split(':', 2)[2:] else ':'
+    sep = "]:" if address.split(":", 2)[2:] else ":"
     parts = address.rsplit(sep, 1)
     try:
         addr, port = parts
@@ -38,7 +38,7 @@ def socket_to_endpoint(socket):
     ip, port = splitaddress(socket)
     host = ip_to_host(ip)
     port = int(port)
-    return f'{host}:{port}'
+    return f"{host}:{port}"
 
 
 def endpoint_to_socket(endpoint):
@@ -48,13 +48,13 @@ def endpoint_to_socket(endpoint):
 
 
 # def code_to_status(code):
-    # code = int(code)
-    # if code < 400:
-    # status = 'online'
-    # elif code < 500:
-    # status = 'offline'
-    # elif code < 600:
-    # status = 'tempoffline'
-    # else:
-    # status = 'unknown'
-    # return status
+# code = int(code)
+# if code < 400:
+# status = 'online'
+# elif code < 500:
+# status = 'offline'
+# elif code < 600:
+# status = 'tempoffline'
+# else:
+# status = 'unknown'
+# return status

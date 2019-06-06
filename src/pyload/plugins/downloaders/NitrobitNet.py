@@ -3,9 +3,9 @@ import re
 import time
 
 import pycurl
+from pyload.core.utils import format
 
 from ..base.simple_downloader import SimpleDownloader
-from pyload.core.utils import format
 
 
 class NitrobitNet(SimpleDownloader):

@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from pyload.core.utils.misc import eval_js
-import pycurl
 import re
+
+import pycurl
+from pyload.core.utils.misc import eval_js
 
 from ..anticaptchas.ReCaptcha import ReCaptcha
 from ..base.simple_downloader import SimpleDownloader

@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
+import os
 import sys
 import tarfile
-import os
 
-from .extractor import ArchiveError, CRCError, BaseExtractor
+from .extractor import ArchiveError, BaseExtractor, CRCError
 
 
 class UnTar(BaseExtractor):

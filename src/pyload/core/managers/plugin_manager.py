@@ -6,12 +6,11 @@ import os
 import re
 import sys
 from ast import literal_eval
-
 from itertools import chain
 
 import semver
 
-from pyload import PKGDIR, APPID
+from pyload import APPID, PKGDIR
 
 
 class PluginManager:
@@ -489,6 +488,8 @@ class PluginManager:
 
         if "account" in as_dict:  #: accounts needs to be reloaded
             self.pyload.account_manager.init_plugins()
-            self.pyload.scheduler.add_job(0, self.pyload.account_manager.get_account_infos)
+            self.pyload.scheduler.add_job(
+                0, self.pyload.account_manager.get_account_infos
+            )
 
         return True

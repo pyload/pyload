@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from datetime import timedelta
 import re
+from datetime import timedelta
+
+from pyload.core.utils import parse
 
 from ..base.simple_downloader import SimpleDownloader
-from pyload.core.utils import parse
 
 
 class CzshareCom(SimpleDownloader):

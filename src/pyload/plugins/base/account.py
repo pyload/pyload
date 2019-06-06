@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
 
-from datetime import timedelta
 import random
 import threading
 import time
+from datetime import timedelta
+
+from pyload.core.network.exceptions import Skip
+from pyload.core.utils import parse, seconds
+from pyload.core.utils.old import lock
 
 from ..helpers import Periodical, is_sequence
-from pyload.core.utils import seconds, parse
-from pyload.core.utils.old import lock
 from .plugin import BasePlugin
-from pyload.core.network.exceptions import Skip
 
 
 class BaseAccount(BasePlugin):

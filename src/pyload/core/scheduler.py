@@ -2,11 +2,11 @@
 # AUTHOR: mkaay
 
 import time
-
 from heapq import heappop, heappush
 from threading import Lock
 
 from _thread import start_new_thread
+
 from .utils.old import lock
 
 

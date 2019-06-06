@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 
-from datetime import timedelta
 import json
 import re
+from datetime import timedelta
 
 from pyload.core.network.request_factory import get_url
+from pyload.core.utils import parse, seconds
 
 from ..anticaptchas.ReCaptcha import ReCaptcha
 from ..base.downloader import BaseDownloader
-from pyload.core.utils import parse, seconds
 
 
 class FileserveCom(BaseDownloader):

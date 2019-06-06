@@ -2,13 +2,11 @@
 # AUTHOR: RaNaN, mkaay
 
 import time
-
 from threading import RLock
 
 from ..managers.event_manager import UpdateEvent
 from ..utils import format
 from ..utils.old import lock
-
 
 status_map = {
     "finished": 0,

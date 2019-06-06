@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from datetime import timedelta
+
 from pyload.core.database.database_thread import style
 
 from ..base.addon import BaseAddon

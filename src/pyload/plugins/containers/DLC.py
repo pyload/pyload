@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
 
 import base64
+import os
 import re
 import xml.dom.minidom
-import os
 
 from cryptography.fernet import Fernet
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
-from ..base.container import BaseContainer
 from pyload.core.utils.old import decode
+
+from ..base.container import BaseContainer
 
 
 class DLC(BaseContainer):

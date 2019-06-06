@@ -2,7 +2,6 @@
 
 import re
 
-
 from ..base.xfs_decrypter import XFSDecrypter
 
 

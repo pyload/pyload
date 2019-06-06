@@ -2,7 +2,6 @@
 # AUTHOR: mkaay
 
 import random
-
 from functools import reduce
 from hashlib import sha1
 

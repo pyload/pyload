@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from datetime import timedelta
 import re
+from datetime import timedelta
+
+from pyload.core.utils import seconds
 
 from ..anticaptchas.ReCaptcha import ReCaptcha
 from ..base.downloader import BaseDownloader
-from pyload.core.utils import seconds
 
 
 class FreakshareCom(BaseDownloader):

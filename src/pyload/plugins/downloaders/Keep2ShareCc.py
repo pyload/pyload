@@ -3,7 +3,6 @@
 import json
 import re
 
-
 from pyload.core.network.http.exceptions import BadHeader
 from pyload.core.network.request_factory import get_url
 

@@ -71,9 +71,7 @@ def has_permission(userperms, perms):
 
 
 def legacy(func_name):
-    
     def decorator(func):
-    
         @wraps(func)
         def wrapper(self, *args, **kwargs):
             if not hasattr(self, func_name):
@@ -1231,7 +1229,9 @@ class Api:
         """
         if userdata["role"] == Role.ADMIN:
             return True
-        elif func in perm_map and has_permission(userdata["permission"], perm_map[func]):
+        elif func in perm_map and has_permission(
+            userdata["permission"], perm_map[func]
+        ):
             return True
         else:
             return False

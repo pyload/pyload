@@ -2,7 +2,6 @@
 
 import re
 
-
 from ..anticaptchas.ReCaptcha import ReCaptcha
 from ..base.simple_downloader import SimpleDownloader
 

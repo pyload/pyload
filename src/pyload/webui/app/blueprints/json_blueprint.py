@@ -8,8 +8,7 @@ from flask.json import jsonify
 
 from pyload.core.utils import format
 
-from ..helpers import render_template, login_required
-
+from ..helpers import login_required, render_template
 
 bp = flask.Blueprint("json", __name__, url_prefix="/json")
 

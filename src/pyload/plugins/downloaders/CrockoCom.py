@@ -3,7 +3,6 @@
 import re
 import urllib.parse
 
-
 from ..anticaptchas.ReCaptcha import ReCaptcha
 from ..base.simple_downloader import SimpleDownloader
 

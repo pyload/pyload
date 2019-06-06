@@ -137,7 +137,7 @@ class BaseOCR(BasePlugin):
         self.log_debug("Reading txt...")
 
         try:
-            with open(tmp_txt.name)  as fp:
+            with open(tmp_txt.name) as fp:
                 self.result_captcha = fp.read().replace("\n", "")
 
         except Exception:

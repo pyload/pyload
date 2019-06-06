@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import base64
-import re
 import os
+import re
 
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes

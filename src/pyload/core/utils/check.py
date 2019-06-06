@@ -2,9 +2,7 @@
 # AUTHOR: vuolter
 
 import imp
-
 from collections.abc import Iterable, Mapping
-
 
 
 def bitset(bits, bset):
@@ -42,8 +40,7 @@ def proprieties(obj):
 def is_iterable(obj, strict=False):
     """Check if object is iterable (`<type 'str'>` excluded if
     strict=False)."""
-    return (isinstance(obj, Iterable) and (
-        strict or not isinstance(obj, basestring)))
+    return isinstance(obj, Iterable) and (strict or not isinstance(obj, basestring))
 
 
 def is_mapping(obj):

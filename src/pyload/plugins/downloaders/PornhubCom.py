@@ -3,12 +3,11 @@
 import json
 import re
 
+from pyload.core.network.cookie_jar import CookieJar
+from pyload.core.network.exceptions import Abort
+from pyload.core.network.http.http_request import HTTPRequest
 from pyload.core.utils.misc import eval_js
 
-from pyload.core.network.cookie_jar import CookieJar
-from pyload.core.network.http.http_request import HTTPRequest
-
-from pyload.core.network.exceptions import Abort
 from ..base.simple_downloader import SimpleDownloader
 
 
@@ -31,7 +30,7 @@ class BIGHTTPRequest(HTTPRequest):
             rep = self.getResponse()
             if self.abort:
                 raise Abort
-            with open("response.dump", mode="wb")  as fp:
+            with open("response.dump", mode="wb") as fp:
                 fp.write(rep)
             raise Exception("Loaded Url exceeded limit")
 

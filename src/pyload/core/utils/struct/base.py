@@ -4,9 +4,9 @@
 from collections.abc import Mapping, MutableMapping
 
 
-
 class Singleton(type):
     """A metaclass that creates a Singleton base class when called."""
+
     _inst = {}
 
     def __call__(cls, *args, **kwargs):
@@ -54,8 +54,7 @@ class InscDict(MutableMapping):
 
     def loweritems(self):
         """Like `items`, but with all lowercase keys."""
-        return ((lowerkey, val)
-                for lowerkey, (key, val) in self.__dict__.items())
+        return ((lowerkey, val) for lowerkey, (key, val) in self.__dict__.items())
 
     def copy(self):
         return InscDict(self.__dict__.values())
@@ -66,7 +65,7 @@ class HeaderDict(InscDict):
     __slots__ = []
 
     def __setitem__(self, key, value):
-        InscDict.__setitem__(self, key, value.split(','))
+        InscDict.__setitem__(self, key, value.split(","))
 
     def __str__(self):
         return f"<Header {self.__dict__}>"
@@ -75,7 +74,7 @@ class HeaderDict(InscDict):
         """Converts all entries to header list usable by curl."""
         header = []
         for key, val in self.__dict__.values():
-            fields = ','.join(val)
+            fields = ",".join(val)
             if fields:
                 header.append(f"{key}: {fields}")
             else:

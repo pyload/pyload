@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from datetime import timedelta
 import operator
 import os
 import re
 import sys
 import time
-
+from datetime import timedelta
 
 from pyload import PKGDIR
 

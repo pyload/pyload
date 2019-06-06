@@ -274,18 +274,13 @@ class AddonManager:
         for name, plugin in self.plugin_map.items():
             if plugin.info:
                 # copy and convert so str
-                info[name] = {
-                    x: str(y) for x, y in plugin.info.items()
-                }
+                info[name] = {x: str(y) for x, y in plugin.info.items()}
         return info
 
     def get_info(self, plugin):
         info = {}
         if plugin in self.plugin_map and self.plugin_map[plugin].info:
-            info = {
-                x: str(y)
-                for x, y in self.plugin_map[plugin].info.items()
-            }
+            info = {x: str(y) for x, y in self.plugin_map[plugin].info.items()}
 
         return info
 

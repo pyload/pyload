@@ -5,7 +5,6 @@ import inspect
 import os
 import shutil
 import sqlite3
-
 from contextlib import closing
 from queue import Queue
 from threading import Event, Thread
@@ -160,11 +159,11 @@ class DatabaseThread(Thread):
         check db version and delete it if needed.
         """
         if not os.path.exists(self.version_path):
-            with open(self.version_path, mode="w")  as fp:
+            with open(self.version_path, mode="w") as fp:
                 fp.write(str(__version__))
             return
 
-        with open(self.version_path)  as fp:
+        with open(self.version_path) as fp:
             v = int(fp.read().strip())
 
         if v < __version__:
@@ -174,7 +173,7 @@ class DatabaseThread(Thread):
                 )
                 os.remove(self.version_path)
                 shutil.move(self.db_path, "files.backup.db")
-            with open(self.version_path, mode="w")  as fp:
+            with open(self.version_path, mode="w") as fp:
                 fp.write(str(__version__))
             return v
 

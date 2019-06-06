@@ -3,9 +3,10 @@ import socket
 import threading
 import time
 
+from pyload.core.utils.old import lock
+
 from ..base.addon import BaseAddon, threaded
 from ..helpers import forward
-from pyload.core.utils.old import lock
 
 try:
     import ssl

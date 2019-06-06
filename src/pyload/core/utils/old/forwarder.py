@@ -3,7 +3,6 @@
 # AUTHOR: RaNaN
 
 import socket
-
 from sys import argv, exit
 
 import _thread

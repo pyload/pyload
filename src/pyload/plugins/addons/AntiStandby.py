@@ -5,7 +5,6 @@ import subprocess
 import sys
 import time
 
-
 from ..base.addon import BaseAddon, expose
 
 try:

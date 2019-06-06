@@ -16,19 +16,18 @@ from pyload.core.utils import format
 
 from ..filters import unquotepath
 from ..helpers import (
-    static_file_url,
     clear_session,
     get_permission,
+    get_redirect_url,
+    is_authenticated,
     login_required,
     permlist,
     render_base,
     render_template,
     set_permission,
     set_session,
-    is_authenticated,
-    get_redirect_url,
+    static_file_url,
 )
-
 
 bp = flask.Blueprint("app", __name__)
 

@@ -2,7 +2,6 @@
 
 import re
 
-
 from bs4 import BeautifulSoup
 
 from ..base.decrypter import BaseDecrypter

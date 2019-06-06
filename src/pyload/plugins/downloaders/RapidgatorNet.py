@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 import json
 import re
+from datetime import timedelta
 
 import pycurl
 from pyload.core.network.http.exceptions import BadHeader
-from datetime import timedelta
+from pyload.core.utils import seconds
 
 from ..anticaptchas.ReCaptcha import ReCaptcha
 from ..anticaptchas.SolveMedia import SolveMedia
 from ..base.simple_downloader import SimpleDownloader
-from pyload.core.utils import seconds
 
 
 class RapidgatorNet(SimpleDownloader):

@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 
-from datetime import timedelta
 import operator
 import random
 import re
+from datetime import timedelta
 
+from pyload.core.utils import parse, seconds
+from pyload.core.utils.old import html_unescape
 
 from ..anticaptchas.ReCaptcha import ReCaptcha
 from ..anticaptchas.SolveMedia import SolveMedia
 from ..helpers import set_cookie
-from pyload.core.utils import seconds, parse
-from pyload.core.utils.old import html_unescape
 from .simple_downloader import SimpleDownloader
 
 

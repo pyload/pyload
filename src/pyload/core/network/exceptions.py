@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # AUTHOR: vuolter
 
+
 class Abort(Exception):
     """
     Raised when aborted.

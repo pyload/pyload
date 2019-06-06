@@ -2,7 +2,6 @@
 
 import re
 
-
 from ..base.xfs_downloader import XFSDownloader
 
 

@@ -2,9 +2,10 @@
 import json
 import re
 
+from pyload.core.utils import seconds
+
 from ..anticaptchas.ReCaptcha import ReCaptcha
 from ..base.simple_downloader import SimpleDownloader
-from pyload.core.utils import seconds
 
 
 class ExtabitCom(SimpleDownloader):

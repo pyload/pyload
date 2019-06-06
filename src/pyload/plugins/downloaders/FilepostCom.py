@@ -4,7 +4,6 @@ import json
 import re
 import time
 
-
 from ..anticaptchas.ReCaptcha import ReCaptcha
 from ..base.simple_downloader import SimpleDownloader
 

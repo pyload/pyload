@@ -3,8 +3,9 @@
 import re
 import urllib.parse
 
-from pyload.core.utils.misc import eval_js
 from bs4 import BeautifulSoup
+
+from pyload.core.utils.misc import eval_js
 
 from ..anticaptchas.ReCaptcha import ReCaptcha
 from ..base.simple_downloader import SimpleDownloader

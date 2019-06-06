@@ -2,7 +2,6 @@
 
 import time
 
-
 from ..base.addon import BaseAddon
 
 

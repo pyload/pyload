@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
+from pyload.core.network.exceptions import Retry
 from pyload.core.network.http.exceptions import BadHeader
 
-from pyload.core.network.exceptions import Retry
 from ..base.xfs_downloader import XFSDownloader
 
 

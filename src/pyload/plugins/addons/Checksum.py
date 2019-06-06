@@ -6,8 +6,9 @@ import time
 import zlib
 from threading import Event
 
-from ..base.addon import BaseAddon, threaded
 from pyload.core.utils import format
+
+from ..base.addon import BaseAddon, threaded
 
 
 def compute_checksum(local_file, algorithm, progress_notify=None, abort=None):

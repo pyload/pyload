@@ -3,9 +3,9 @@ import re
 import urllib.parse
 
 import pycurl
+from pyload.core.utils import parse
 
 from ..base.downloader import BaseDownloader
-from pyload.core.utils import parse
 
 
 class Ftp(BaseDownloader):

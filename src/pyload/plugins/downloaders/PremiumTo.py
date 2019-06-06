@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from datetime import timedelta
+
 from ..base.multi_downloader import MultiDownloader
 
 
@@ -53,7 +54,7 @@ class PremiumTo(MultiDownloader):
             #: Custom error code sent - fail
             file = encode(self.last_download)
 
-            with open(file, mode="rb")  as fp:
+            with open(file, mode="rb") as fp:
                 err = fp.read(256).strip()
 
             self.remove(file)

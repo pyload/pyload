@@ -3,7 +3,7 @@
 
 import flask
 
-from .helpers import parse_userdata, parse_permissions
+from .helpers import parse_permissions, parse_userdata
 
 
 #: do we really need this?!

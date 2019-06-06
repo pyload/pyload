@@ -2,12 +2,11 @@
 # AUTHOR: RaNaN, vuolter
 
 import time
-
 from queue import Queue
 
 import pycurl
-from ..network.exceptions import Abort, Fail, Reconnect, Retry, Skip
 
+from ..network.exceptions import Abort, Fail, Reconnect, Retry, Skip
 from .plugin_thread import PluginThread
 
 

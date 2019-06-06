@@ -3,8 +3,9 @@ import re
 import time
 import urllib.parse
 
-from ..helpers import parse_html_form, set_cookie
 from pyload.core.utils import parse
+
+from ..helpers import parse_html_form, set_cookie
 from .account import BaseAccount
 
 

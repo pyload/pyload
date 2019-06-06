@@ -68,7 +68,7 @@ class BaseContainer(BaseDecrypter):
             )
 
             try:
-                with open(self.pyfile.url, mode="wb")  as fp:
+                with open(self.pyfile.url, mode="wb") as fp:
                     fp.write(content.encode())
 
             except IOError as exc:

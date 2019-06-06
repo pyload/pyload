@@ -4,14 +4,13 @@ import mimetypes
 import os
 import re
 
-
+from pyload.core.network.exceptions import Fail
 from pyload.core.network.http.exceptions import BadHeader
-
-from ..helpers import exists
 from pyload.core.utils import parse
 from pyload.core.utils.old import safejoin
+
+from ..helpers import exists
 from .hoster import BaseHoster
-from pyload.core.network.exceptions import Fail
 
 
 class BaseDownloader(BaseHoster):
@@ -372,7 +371,7 @@ class BaseDownloader(BaseHoster):
             self.log_warning(self._("No file to scan"))
             return
 
-        with open(dl_file, mode="rb")  as fp:
+        with open(dl_file, mode="rb") as fp:
             content = fp.read(read_size)
 
         #: Produces encoding errors, better log to other file in the future?

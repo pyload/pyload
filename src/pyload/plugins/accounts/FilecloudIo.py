@@ -2,7 +2,6 @@
 
 import json
 
-
 from ..base.account import BaseAccount
 from ..helpers import set_cookie
 

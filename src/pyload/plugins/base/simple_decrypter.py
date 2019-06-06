@@ -2,12 +2,11 @@
 
 import re
 
-
 from pyload.core.network.http.exceptions import BadHeader
 from pyload.core.network.request_factory import get_url
+from pyload.core.utils import parse
 
 from ..helpers import replace_patterns
-from pyload.core.utils import parse
 from .decrypter import BaseDecrypter
 
 

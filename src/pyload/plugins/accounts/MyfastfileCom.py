@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import json
 import time
-
 from datetime import timedelta
 
 from ..base.multi_account import MultiAccount

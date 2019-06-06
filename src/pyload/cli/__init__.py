@@ -350,7 +350,7 @@ class Cli:
                 print(self._("File does not exists."))
                 return
 
-            with open(path, mode="rb")  as fp:
+            with open(path, mode="rb") as fp:
                 content = fp.read()
 
                 rid = self.client.check_online_status_container(

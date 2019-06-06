@@ -5,8 +5,9 @@ import re
 import time
 import urllib.request
 
-from ..base.container import BaseContainer
 from pyload.core.utils.old import safename
+
+from ..base.container import BaseContainer
 
 
 class TORRENT(BaseContainer):
@@ -34,7 +35,7 @@ class TORRENT(BaseContainer):
     __authors__ = [("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
     def decrypt(self, pyfile):
-        with open(pyfile.url, mode="rb")  as fp:
+        with open(pyfile.url, mode="rb") as fp:
             torrent_content = fp.read()
 
         time_ref = "{:.2f}".format(time.time())[-6:].replace(".", "")
@@ -51,7 +52,7 @@ class TORRENT(BaseContainer):
         torrent_filename = os.path.join(
             self.pyload.cachedir, "tmp_{}.torrent".format(pack_name)
         )
-        with open(torrent_filename, mode="wb")  as fp:
+        with open(torrent_filename, mode="wb") as fp:
             fp.write(torrent_content)
 
         self.packages.append(

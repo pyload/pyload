@@ -4,7 +4,6 @@ import os
 import re
 import time
 
-
 from pyload.core.network.request_factory import get_url
 
 from ..anticaptchas.ReCaptcha import ReCaptcha

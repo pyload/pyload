@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from datetime import timedelta
 import re
+from datetime import timedelta
 
 from pyload.core.network.request_factory import get_url
 

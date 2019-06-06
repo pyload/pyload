@@ -272,7 +272,7 @@ class Core:
     def _parse_linkstxt(self):
         link_file = os.path.join(self.userdir, "links.txt")
         try:
-            with open(link_file)  as fp:
+            with open(link_file) as fp:
                 if fp.read().strip():
                     self.api.add_package("links.txt", [link_file], 1)
         except Exception as exc:

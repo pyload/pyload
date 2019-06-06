@@ -2,16 +2,17 @@
 
 import os
 
-try:
-    import send2trash
-except ImportError:
-    send2trash = None
+from pyload.core.utils.old import safename
+from pyload.core.utils.purge import uniquify
 
 from ..base.addon import BaseAddon, expose, threaded
 from ..base.extractor import ArchiveError, CRCError, PasswordError
 from ..helpers import exists
-from pyload.core.utils.old import safename
-from pyload.core.utils.purge import uniquify
+
+try:
+    import send2trash
+except ImportError:
+    send2trash = None
 
 
 class ArchiveQueue:
@@ -352,7 +353,9 @@ class ExtractArchive(BaseAddon):
                             ]
                             self.log_debug(f"Extracted files: {new_files}")
 
-                            new_folders = uniquify(os.path.dirname(f) for f in new_files)
+                            new_folders = uniquify(
+                                os.path.dirname(f) for f in new_files
+                            )
                             for foldername in new_folders:
                                 self.set_permissions(
                                     os.path.join(extract_folder, foldername)

@@ -3,14 +3,13 @@
 import json
 import os
 import re
-
 from datetime import timedelta
 
 import pycurl
+from pyload.core.utils import parse
 
 from ..base.simple_downloader import SimpleDownloader
 from ..helpers import timestamp
-from pyload.core.utils import parse
 
 
 def convert_decimal_prefix(m):

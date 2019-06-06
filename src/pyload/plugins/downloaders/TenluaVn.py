@@ -4,7 +4,6 @@ import json
 import random
 import re
 
-
 from pyload.core.network.request_factory import get_url
 
 from ..base.simple_downloader import SimpleDownloader

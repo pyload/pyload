@@ -2,7 +2,6 @@
 
 # TODO: Move to utils directory in 0.6.x
 
-from datetime import timedelta
 import hashlib
 import itertools
 import json
@@ -17,6 +16,7 @@ import traceback
 import zlib
 from base64 import b85decode, b85encode
 from collections.abc import Sequence
+from datetime import timedelta
 
 
 class Config:
@@ -389,7 +389,9 @@ def format_exc(frame=None):
         if callstack[-1][0] == exception_callstack[0][0]:
             callstack = callstack[:-1]
             callstack.extend(exception_callstack)
-            exc_desc = "".join(traceback.format_exception_only(exc_info[0], exc_info[1]))
+            exc_desc = "".join(
+                traceback.format_exception_only(exc_info[0], exc_info[1])
+            )
 
     msg = "Traceback (most recent call last):\n"
     msg += "".join(traceback.format_list(callstack))
@@ -554,7 +556,7 @@ def compute_checksum(filename, hashtype):
         hf = getattr(zlib, hashtype)
         last = 0
 
-        with open(file, mode="rb")  as fp:
+        with open(file, mode="rb") as fp:
             for chunk in iter(lambda: fp.read(buf), ""):
                 last = hf(chunk, last)
 
@@ -563,7 +565,7 @@ def compute_checksum(filename, hashtype):
     elif hashtype in hashlib.algorithms_available:
         h = hashlib.new(hashtype)
 
-        with open(file, mode="rb")  as fp:
+        with open(file, mode="rb") as fp:
             for chunk in iter(lambda: fp.read(buf * h.block_size), ""):
                 h.update(chunk)
 

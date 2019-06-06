@@ -3,9 +3,9 @@
 import json
 import re
 
+from pyload.core.utils.purge import uniquify
 
 from ..base.simple_decrypter import SimpleDecrypter
-from pyload.core.utils.purge import uniquify
 
 
 class ImgurCom(SimpleDecrypter):

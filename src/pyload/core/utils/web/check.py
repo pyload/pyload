@@ -6,12 +6,11 @@ import re
 
 import idna
 import requests
-import validators
 
+import validators
 from pyload.utils.convert import to_str
 from pyload.utils.web import format
 from pyload.utils.web.convert import splitaddress
-
 
 
 def is_ipv4(value):
@@ -38,7 +37,7 @@ def is_port(value):
     return 0 <= value <= 65535
 
 
-_RE_ISH = re.compile(r'(?!-)[\w^_]{1,63}(?<!-)$', flags=re.I)
+_RE_ISH = re.compile(r"(?!-)[\w^_]{1,63}(?<!-)$", flags=re.I)
 
 
 def is_host(value):
@@ -48,11 +47,11 @@ def is_host(value):
         value = to_str(idna.encode(value))
     except AttributeError:
         pass
-    if value.endswith('.'):
+    if value.endswith("."):
         value = value[:-1]
     if not value or len(value) > MAX_HOSTNAME_LEN:
         return False
-    return all(map(_RE_ISH.match, value.split('.')))
+    return all(map(_RE_ISH.match, value.split(".")))
 
 
 def is_socket(value):
@@ -69,8 +68,8 @@ def is_online(url, *args, **kwargs):
     online = True
     url = format.url(url)
 
-    kwargs.setdefault('allow_redirects', True)
-    kwargs.setdefault('verify', False)
+    kwargs.setdefault("allow_redirects", True)
+    kwargs.setdefault("verify", False)
     try:
         requests.head(url, *args, **kwargs).raise_for_status()
     except requests.TooManyRedirects:
@@ -86,17 +85,17 @@ def is_online(url, *args, **kwargs):
 def is_resource(url, *args, **kwargs):
     url = format.url(url)
 
-    kwargs.setdefault('allow_redirects', True)
-    kwargs.setdefault('verify', False)
+    kwargs.setdefault("allow_redirects", True)
+    kwargs.setdefault("verify", False)
     r = requests.head(url, *args, **kwargs)
 
-    if 'content-disposition' in r.headers:
+    if "content-disposition" in r.headers:
         return True
 
-    mime = ''
-    content = r.headers.get('content-type')
+    mime = ""
+    content = r.headers.get("content-type")
     if content:
-        mime, _, _ = content.rpartition('charset=')
+        mime, _, _ = content.rpartition("charset=")
     else:
         from pyload.utils.web import parse
 
@@ -105,7 +104,7 @@ def is_resource(url, *args, **kwargs):
         if ext:
             mime = parse.mime(name)
 
-    if 'html' not in mime:
+    if "html" not in mime:
         return True
 
     return False

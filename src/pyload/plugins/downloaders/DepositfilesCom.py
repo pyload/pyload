@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from datetime import timedelta
 import re
 import urllib.parse
+from datetime import timedelta
 
 from ..anticaptchas.SolveMedia import SolveMedia
 from ..base.simple_downloader import SimpleDownloader

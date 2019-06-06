@@ -4,14 +4,13 @@ import os
 import shutil
 import subprocess
 
+from ..base.addon import BaseAddon, expose, threaded
+from ..helpers import exists
 
 try:
     import send2trash
 except ImportError:
     send2trash = None
-
-from ..base.addon import BaseAddon, expose, threaded
-from ..helpers import exists
 
 
 class AntiVirus(BaseAddon):

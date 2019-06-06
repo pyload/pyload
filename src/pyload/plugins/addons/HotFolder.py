@@ -50,9 +50,7 @@ class HotFolder(BaseAddon):
 
                     name = "{}_{}.txt".format(file, time.strftime("%H-%M-%S_%d%b%Y"))
 
-                    with open(
-                        os.path.join(folder, "finished", name), mode="wb"
-                    )  as fp:
+                    with open(os.path.join(folder, "finished", name), mode="wb") as fp:
                         fp.write(content)
 
                     self.pyload.api.add_package(fp.name, [fp.name], 1)

@@ -3,6 +3,7 @@
 
 from pyload.core.utils import parse
 from pyload.core.utils.old import safename
+
 from .hoster import BaseHoster
 
 

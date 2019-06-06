@@ -4,7 +4,6 @@ import hashlib
 import json
 import time
 
-
 import pycurl
 
 from ..base.multi_downloader import MultiDownloader

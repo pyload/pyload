@@ -3,7 +3,6 @@
 import os
 import subprocess
 
-
 from ..base.addon import BaseAddon, expose
 
 

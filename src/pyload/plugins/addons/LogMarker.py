@@ -3,8 +3,9 @@
 import datetime
 from datetime import timedelta
 
-from ..base.addon import BaseAddon
 from pyload.core.utils import seconds
+
+from ..base.addon import BaseAddon
 
 
 class LogMarker(BaseAddon):

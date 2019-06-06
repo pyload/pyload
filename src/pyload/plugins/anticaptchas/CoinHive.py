@@ -106,7 +106,7 @@ if __name__ == "__main__":
     from ..helpers import sign_string
 
     if len(sys.argv) > 2:
-        with open(sys.argv[1])  as fp:
+        with open(sys.argv[1]) as fp:
             pem_private = fp.read()
 
         print(

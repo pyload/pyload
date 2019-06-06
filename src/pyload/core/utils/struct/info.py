@@ -2,8 +2,8 @@
 # AUTHOR: vuolter
 
 from collections.abc import MutableMapping
-from pyload.utils.struct.base import InscDict
 
+from pyload.utils.struct.base import InscDict
 
 
 class ReadError(KeyError):
@@ -67,7 +67,7 @@ class Info(MutableMapping):
 
     def __str__(self):
         return f"<Info {self.__dict__}>"
-        
+
     @property
     def readable(self):
         return bool(self.__readable__)
@@ -124,7 +124,7 @@ class InscInfo(InscDict, Info):
 
 class SyncInfo(Info):
 
-    __slots__ = ['__local__', '__remote__']
+    __slots__ = ["__local__", "__remote__"]
 
     def __init__(self, remotedict, *args, **kwargs):
         super(SyncInfo, self).__init__(*args, **kwargs)

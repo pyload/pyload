@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
+import os
 import sys
 import zipfile
-import os
 
-from .extractor import ArchiveError, CRCError, BaseExtractor, PasswordError
+from .extractor import ArchiveError, BaseExtractor, CRCError, PasswordError
 
 
 class UnZip(BaseExtractor):

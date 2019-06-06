@@ -39,7 +39,7 @@ class CCF(BaseContainer):
     def decrypt(self, pyfile):
         fs_filename = os.fsdecode(pyfile.url)
 
-        with open(fs_filename, mode="rb")  as fp:
+        with open(fs_filename, mode="rb") as fp:
             dlc_content = requests.post(
                 "http://service.jdownloader.net/dlcrypt/getDLC.php",
                 data={"src": "ccf", "filename": "test.ccf"},

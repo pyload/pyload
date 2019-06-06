@@ -2,8 +2,8 @@
 
 import Cryptodome.PublicKey.RSA
 
-from ..downloaders.MegaCoNz import MegaClient, MegaCrypto
 from ..base.account import BaseAccount
+from ..downloaders.MegaCoNz import MegaClient, MegaCrypto
 
 
 class MegaCoNz(BaseAccount):

@@ -3,9 +3,7 @@
 
 import time
 from functools import partial, wraps
-
 from threading import Condition, Lock, RLock, current_thread
-
 
 
 # NOTE: decorator
@@ -63,9 +61,16 @@ class RWLock(object):
     acquirewrite() has been match by a corresponding release().
 
     """
-    __slots__ = ['__condition', '__pendingwriters', '__readers',
-                 '__upgradewritercount', '__upgradewritercount', '__writer',
-                 '__writercount']
+
+    __slots__ = [
+        "__condition",
+        "__pendingwriters",
+        "__readers",
+        "__upgradewritercount",
+        "__upgradewritercount",
+        "__writer",
+        "__writercount",
+    ]
 
     def __init__(self):
         """Initialize this read-write lock."""
@@ -133,7 +138,7 @@ class RWLock(object):
                     remaining = endtime - time.time()
                     if remaining <= 0:
                         # Timeout has expired, signal caller of this.
-                        raise RuntimeError('Acquiring read lock timed out')
+                        raise RuntimeError("Acquiring read lock timed out")
                     self.__condition.wait(remaining)
                 else:
                     self.__condition.wait()
@@ -173,10 +178,10 @@ class RWLock(object):
                     # Signal this to user.
                     if timeout is not None:
                         raise RuntimeError(
-                            'Write lock upgrade would deadlock until timeout')
+                            "Write lock upgrade would deadlock until timeout"
+                        )
                     else:
-                        raise ValueError(
-                            'Inevitable dead lock, denying write lock')
+                        raise ValueError("Inevitable dead lock, denying write lock")
                 upgradewriter = True
                 self.__upgradewritercount = self.__readers.pop(me)
             else:
@@ -224,7 +229,7 @@ class RWLock(object):
                             # We were a simple pending writer, just remove us
                             # from the FIFO list.
                             self.__pendingwriters.remove(me)
-                        raise RuntimeError('Acquiring write lock timed out')
+                        raise RuntimeError("Acquiring write lock timed out")
                     self.__condition.wait(remaining)
                 else:
                     self.__condition.wait()
@@ -260,7 +265,7 @@ class RWLock(object):
                         # circumstances.
                         self.__condition.notifyAll()
             else:
-                raise ValueError('Trying to release unheld lock')
+                raise ValueError("Trying to release unheld lock")
         finally:
             self.__condition.release()
 
@@ -270,7 +275,7 @@ class RWLock(object):
 
 class LockedObject(object):
 
-    __slots__ = ['lock']
+    __slots__ = ["lock"]
 
     def __init__(self, *args, **kwargs):
         self._init_lock()
@@ -284,7 +289,7 @@ class LockedObject(object):
 
     def __getattribute__(self, name):
         attr = object.__getattribute__(self, name)
-        if name.startswith('_') or not callable(attr):
+        if name.startswith("_") or not callable(attr):
             return attr
 
         @lock
@@ -296,7 +301,7 @@ class LockedObject(object):
 
 class RLockedObject(LockedObject):
 
-    __slots__ = ['lock']
+    __slots__ = ["lock"]
 
     def _init_lock(self):
         self.lock = RLock()
@@ -304,7 +309,7 @@ class RLockedObject(LockedObject):
 
 class RWLockedObject(LockedObject):
 
-    __slots__ = ['lock']
+    __slots__ = ["lock"]
 
     def _init_lock(self):
         self.lock = RWLock()

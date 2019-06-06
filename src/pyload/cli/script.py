@@ -5,12 +5,14 @@
 import configparser
 import os
 import sys
-
 from getopt import GetoptError, getopt
 from sys import exit
 
 import pyload.core.utils.old.pylgettext as gettext
 from pyload import DATADIR, PKGDIR
+
+from . import Cli
+from .printer import *
 
 # from pyload.core.remote.thriftbackend.thrift_client import (
 # ConnectionClosed,
@@ -19,9 +21,6 @@ from pyload import DATADIR, PKGDIR
 # ThriftClient,
 # WrongLogin,
 # )
-
-from . import Cli
-from .printer import *
 
 
 def print_help(config):

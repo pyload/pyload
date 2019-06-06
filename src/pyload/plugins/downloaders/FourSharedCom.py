@@ -2,7 +2,6 @@
 
 import re
 
-
 from ..base.simple_downloader import SimpleDownloader
 
 

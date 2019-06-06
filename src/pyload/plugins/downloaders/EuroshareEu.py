@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from datetime import timedelta
 import re
+from datetime import timedelta
 
 from ..base.simple_downloader import SimpleDownloader
 

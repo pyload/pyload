@@ -3,8 +3,9 @@
 import base64
 import re
 
-from pyload.core.utils.misc import eval_js
 from cryptography.fernet import Fernet
+
+from pyload.core.utils.misc import eval_js
 
 from ..base.decrypter import BaseDecrypter
 

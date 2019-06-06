@@ -4,9 +4,9 @@ import hashlib
 import json
 
 import pycurl
+from pyload.core.utils import seconds
 
 from ..base.multi_downloader import MultiDownloader
-from pyload.core.utils import seconds
 
 
 class LinkifierCom(MultiDownloader):

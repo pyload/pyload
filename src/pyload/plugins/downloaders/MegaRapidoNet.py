@@ -2,7 +2,6 @@
 
 import random
 
-
 from ..base.multi_downloader import MultiDownloader
 
 

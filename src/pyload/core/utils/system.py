@@ -4,15 +4,12 @@
 import os
 import shlex
 import sys
+from subprocess import PIPE, Popen
 
 import psutil
-
 from pyload.utils import convert
 from pyload.utils.check import isiterable
 from pyload.utils.convert import to_str
-from subprocess import PIPE, Popen
-
-
 
 try:
     import dbus
@@ -32,16 +29,14 @@ except ImportError:
 def exec_cmd(command, *args, **kwargs):
     cmd = shlex.split(command)
     cmd.extend(map(convert.to_bytes, args))
-    xargs = {'bufsize': -1,
-             'stdout': PIPE,
-             'stderr': PIPE}
+    xargs = {"bufsize": -1, "stdout": PIPE, "stderr": PIPE}
     xargs.update(kwargs)
     return Popen(cmd, **xargs)
 
 
 # TODO: Recheck...
 def call_cmd(command, *args, **kwargs):
-    ignore_errors = kwargs.pop('ignore_errors', False)
+    ignore_errors = kwargs.pop("ignore_errors", False)
     try:
         sp = exec_cmd(command, *args, **kwargs)
 
@@ -49,7 +44,7 @@ def call_cmd(command, *args, **kwargs):
         if not ignore_errors:
             raise
         returncode = 1
-        stdoutdata = ''
+        stdoutdata = ""
         stderrdata = to_str(exc).strip()
     else:
         returncode = sp.returncode
@@ -59,9 +54,9 @@ def call_cmd(command, *args, **kwargs):
 
 
 def console_encoding(enc):
-    if os.name != 'nt':
-        return 'utf-8'
-    return 'cp850' if enc == 'cp65001' else enc  # aka UTF-8 under Windows
+    if os.name != "nt":
+        return "utf-8"
+    return "cp850" if enc == "cp65001" else enc  # aka UTF-8 under Windows
 
 
 def _get_psutil_process(pid, ctime):
@@ -71,8 +66,10 @@ def _get_psutil_process(pid, ctime):
         return psutil.Process(pid)
     try:
         psps = (
-            psp for psp in psutil.process_iter()
-            if psp.pid() == pid and psp.create_time() == ctime)
+            psp
+            for psp in psutil.process_iter()
+            if psp.pid() == pid and psp.create_time() == ctime
+        )
         return psps[0]
     except IndexError:
         raise psutil.NoSuchProcess(pid)
@@ -118,20 +115,26 @@ def renice(pid=None, niceness=None):
     ctime = None
     value = None
 
-    if os.name == 'nt':
+    if os.name == "nt":
         MIN_NICENESS = -20
         MAX_NICENESS = 19
 
-        normval = min(MAX_NICENESS, niceness) if niceness else max(
-            MIN_NICENESS, niceness)
-        priocls = [psutil.IDLE_PRIORITY_CLASS,
-                   psutil.BELOW_NORMAL_PRIORITY_CLASS,
-                   psutil.NORMAL_PRIORITY_CLASS,
-                   psutil.ABOVE_NORMAL_PRIORITY_CLASS,
-                   psutil.HIGH_PRIORITY_CLASS,
-                   psutil.REALTIME_PRIORITY_CLASS]
-        prioval = (normval - MAX_NICENESS) * \
-            (len(priocls) - 1) // (MIN_NICENESS - MAX_NICENESS)
+        normval = (
+            min(MAX_NICENESS, niceness) if niceness else max(MIN_NICENESS, niceness)
+        )
+        priocls = [
+            psutil.IDLE_PRIORITY_CLASS,
+            psutil.BELOW_NORMAL_PRIORITY_CLASS,
+            psutil.NORMAL_PRIORITY_CLASS,
+            psutil.ABOVE_NORMAL_PRIORITY_CLASS,
+            psutil.HIGH_PRIORITY_CLASS,
+            psutil.REALTIME_PRIORITY_CLASS,
+        ]
+        prioval = (
+            (normval - MAX_NICENESS)
+            * (len(priocls) - 1)
+            // (MIN_NICENESS - MAX_NICENESS)
+        )
         value = priocls[prioval]
 
     if isiterable(pid):
@@ -143,7 +146,7 @@ def renice(pid=None, niceness=None):
 
 def ionice(pid=None, ioclass=None, niceness=None):
     """Unix notation process I/O nicener."""
-    if os.name == 'nt':
+    if os.name == "nt":
         ioclass = {0: 2, 1: 2, 2: 2, 3: 0}[ioclass]
 
     ctime = None
@@ -155,7 +158,7 @@ def ionice(pid=None, ioclass=None, niceness=None):
 
 
 def set_console_icon(iconpath):
-    if os.name != 'nt':
+    if os.name != "nt":
         raise NotImplementedError
     if not os.path.isfile(iconpath):
         raise TypeError
@@ -167,19 +170,19 @@ def set_console_icon(iconpath):
     LR_DEFAULTSIZE = 0x00000040
 
     flags = LR_LOADFROMFILE | LR_DEFAULTSIZE
-    hicon = ctypes.windll.kernel32.LoadImageW(
-        None, iconpath, IMAGE_ICON, 0, 0, flags)
+    hicon = ctypes.windll.kernel32.LoadImageW(None, iconpath, IMAGE_ICON, 0, 0, flags)
 
     ctypes.windll.kernel32.SetConsoleIcon(hicon)
 
 
 def set_console_title(value):
     title = convert.to_bytes(value)
-    if os.name == 'nt':
+    if os.name == "nt":
         import ctypes
+
         ctypes.windll.kernel32.SetConsoleTitleA(title)
     else:
-        sys.stdout.write(f'\x1b]2;{title}\x07')
+        sys.stdout.write(f"\x1b]2;{title}\x07")
 
 
 def set_process_group(value):
@@ -193,10 +196,10 @@ def set_process_user(value):
 
 
 def shutdown_os():
-    if os.name == 'nt':
-        call_cmd('rundll32.exe user.exe,ExitWindows')
+    if os.name == "nt":
+        call_cmd("rundll32.exe user.exe,ExitWindows")
 
-    elif sys.platform == 'darwin':
+    elif sys.platform == "darwin":
         call_cmd('osascript -e tell app "System Events" to shut down')
 
     else:
@@ -205,11 +208,10 @@ def shutdown_os():
         try:
             sys_bus = dbus.SystemBus()
             ck_srv = sys_bus.get_object(
-                'org.freedesktop.ConsoleKit',
-                '/org/freedesktop/ConsoleKit/Manager')
-            ck_iface = dbus.Interface(
-                ck_srv, 'org.freedesktop.ConsoleKit.Manager')
-            stop_method = ck_iface.get_dbus_method('Stop')
+                "org.freedesktop.ConsoleKit", "/org/freedesktop/ConsoleKit/Manager"
+            )
+            ck_iface = dbus.Interface(ck_srv, "org.freedesktop.ConsoleKit.Manager")
+            stop_method = ck_iface.get_dbus_method("Stop")
             stop_method()
         except AttributeError:
-            call_cmd('shutdown -h now')  # NOTE: Root privileges needed
+            call_cmd("shutdown -h now")  # NOTE: Root privileges needed

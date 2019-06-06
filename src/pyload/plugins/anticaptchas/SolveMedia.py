@@ -2,9 +2,9 @@
 
 import re
 
+from pyload.core.network.exceptions import Fail
 
 from ..base.captcha_service import CaptchaService
-from pyload.core.network.exceptions import Fail
 
 
 class SolveMedia(CaptchaService):

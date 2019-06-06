@@ -10,8 +10,8 @@
 #          \  /
 #           \/
 
-import sys
 import os
+import sys
 
 from pkg_resources import VersionConflict, require
 from setuptools import Command, setup
@@ -27,6 +27,7 @@ class _BuildLocale(Command):
     """
     Build translations
     """
+
     description = "build locales"
     user_options = []
 
@@ -56,17 +57,17 @@ class _BuildLocale(Command):
 
 def retrieve_version():
     version = None
-    build = int(os.environ.get('PYLOAD_DEVBUILD', 0))
+    build = int(os.environ.get("PYLOAD_DEVBUILD", 0))
 
     filename = os.path.join(os.path.dirname(__file__), "VERSION")
     with open(filename) as fp:
-        version = os.environ.get('PYLOAD_VERSION', fp.read()).strip()
-        
+        version = os.environ.get("PYLOAD_VERSION", fp.read()).strip()
+
     return f"{version}.dev{build}" if build else version
-        
+
 
 def _create_commands():
-    return {'build_locale': _BuildLocale}
+    return {"build_locale": _BuildLocale}
 
 
 if __name__ == "__main__":

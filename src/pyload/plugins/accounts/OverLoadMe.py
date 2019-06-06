@@ -2,7 +2,6 @@
 
 import json
 
-
 from ..base.multi_account import MultiAccount
 
 

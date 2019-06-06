@@ -2,6 +2,7 @@
 import re
 
 from pyload.core.network.exceptions import Fail
+
 from .simple_downloader import SimpleDownloader
 
 
@@ -36,9 +37,9 @@ class MultiDownloader(SimpleDownloader):
     LEECH_HOSTER = False
 
     def init(self):
-        self.PLUGIN_NAME = self.pyload.plugin_manager.hoster_plugins.get(self.classname)[
-            "name"
-        ]
+        self.PLUGIN_NAME = self.pyload.plugin_manager.hoster_plugins.get(
+            self.classname
+        )["name"]
 
     def _log(self, level, plugintype, pluginname, args, kwargs):
         args = (self.PLUGIN_NAME,) + args

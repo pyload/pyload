@@ -4,12 +4,13 @@ import re
 import time
 import urllib.parse
 
-from ..helpers import parse_html_form, replace_patterns
-from pyload.core.utils import parse, format
+from pyload.core.network.exceptions import Abort, Fail, Reconnect, Retry, Skip
+from pyload.core.utils import format, parse
 from pyload.core.utils.old import decode, fixurl
+
+from ..helpers import parse_html_form, replace_patterns
 from .captcha import BaseCaptcha
 from .plugin import BasePlugin
-from pyload.core.network.exceptions import Abort, Fail, Reconnect, Retry, Skip
 
 
 # TODO: Recheck in 0.6.x
@@ -179,7 +180,9 @@ class BaseHoster(BasePlugin):
 
     def load_account(self):
         if not self.account:
-            self.account = self.pyload.account_manager.get_account_plugin(self.classname)
+            self.account = self.pyload.account_manager.get_account_plugin(
+                self.classname
+            )
 
         if not self.account:
             self.account = False

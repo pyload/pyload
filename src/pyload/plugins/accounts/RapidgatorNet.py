@@ -2,7 +2,6 @@
 
 import json
 
-
 from ..base.account import BaseAccount
 
 

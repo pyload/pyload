@@ -3,7 +3,6 @@
 
 import os
 import shutil
-
 from threading import Lock
 
 from ..utils.old import lock
@@ -74,16 +73,16 @@ class AccountManager:
         loads all accounts available.
         """
         if not os.path.exists(self.configpath):
-            with open(self.configpath, mode="w")  as fp:
+            with open(self.configpath, mode="w") as fp:
                 fp.write(f"version: {__version__}")
 
-        with open(self.configpath)  as fp:
+        with open(self.configpath) as fp:
             content = fp.readlines()
             version = content[0].split(":")[1].strip() if content else ""
 
         if not version or int(version) < __version__:
             shutil.copy(self.configpath, "accounts.backup")
-            with open(self.configpath, mode="w")  as fp:
+            with open(self.configpath, mode="w") as fp:
                 fp.write(f"version: {__version__}")
             self.pyload.log.warning(
                 self._("Account settings deleted, due to new config format.")
@@ -132,7 +131,7 @@ class AccountManager:
         """
         save all account information.
         """
-        with open(self.configpath, mode="w")  as fp:
+        with open(self.configpath, mode="w") as fp:
             fp.write(f"version: {__version__}\n")
 
             for plugin, accounts in self.accounts.items():
@@ -188,7 +187,9 @@ class AccountManager:
         data = {}
 
         if refresh:
-            self.pyload.scheduler.add_job(0, self.pyload.account_manager.get_account_infos)
+            self.pyload.scheduler.add_job(
+                0, self.pyload.account_manager.get_account_infos
+            )
             force = False
 
         for p in self.accounts.keys():

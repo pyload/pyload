@@ -4,9 +4,9 @@ import base64
 import os
 import re
 
+from cryptography.fernet import Fernet
 
 from pyload.core.utils.misc import eval_js
-from cryptography.fernet import Fernet
 
 from ..anticaptchas.SolveMedia import SolveMedia
 from ..base.captcha import BaseCaptcha
@@ -281,7 +281,7 @@ class RelinkUs(BaseDecrypter):
                 dlc_filepath = os.path.join(
                     self.pyload.config.get("general", "storage_folder"), dlc_filename
                 )
-                with open(dlc_filepath, mode="wb")  as fp:
+                with open(dlc_filepath, mode="wb") as fp:
                     fp.write(dlc)
                 pack_links.append(dlc_filepath)
 

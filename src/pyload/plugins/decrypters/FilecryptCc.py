@@ -11,6 +11,7 @@ import urllib.parse
 from cryptography.fernet import Fernet
 
 from pyload.core.network.cookie_jar import CookieJar
+from pyload.core.network.exceptions import Abort
 from pyload.core.network.http.exceptions import BadHeader
 from pyload.core.network.http.http_request import HTTPRequest
 
@@ -18,7 +19,6 @@ from ..anticaptchas.CoinHive import CoinHive
 from ..anticaptchas.ReCaptcha import ReCaptcha
 from ..anticaptchas.SolveMedia import SolveMedia
 from ..base.decrypter import BaseDecrypter
-from pyload.core.network.exceptions import Abort
 
 
 class BIGHTTPRequest(HTTPRequest):
@@ -40,7 +40,7 @@ class BIGHTTPRequest(HTTPRequest):
             rep = self.getResponse()
             if self.abort:
                 raise Abort
-            with open("response.dump", mode="wb")  as fp:
+            with open("response.dump", mode="wb") as fp:
                 fp.write(rep)
             raise Exception("Loaded Url exceeded limit")
 

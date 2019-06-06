@@ -2,8 +2,9 @@
 
 import json
 
-from ..base.multi_downloader import MultiDownloader
 from pyload.core.utils import parse
+
+from ..base.multi_downloader import MultiDownloader
 
 
 class AlldebridCom(MultiDownloader):

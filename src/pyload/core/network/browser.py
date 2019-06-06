@@ -2,10 +2,10 @@
 
 from logging import getLogger
 
+from pyload import APPID
+
 from .http.http_download import HTTPDownload
 from .http.http_request import HTTPRequest
-
-from pyload import APPID
 
 
 class Browser:

@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from datetime import timedelta
 import re
 import time
+from datetime import timedelta
 
 from pyload.core.utils.old import decode
-from pyload.core.utils.purge import uniquify, chars as remove_chars
+from pyload.core.utils.purge import chars as remove_chars
+from pyload.core.utils.purge import uniquify
+
 from .account import BaseAccount
 
 
@@ -394,7 +396,9 @@ class MultiAccount(BaseAccount):
 
         #: Make sure we have one active addon
         try:
-            self.pyload.addon_manager.remove_event("plugin_updated", self.plugins_updated)
+            self.pyload.addon_manager.remove_event(
+                "plugin_updated", self.plugins_updated
+            )
 
         except ValueError:
             pass
@@ -437,7 +441,9 @@ class MultiAccount(BaseAccount):
         self.log_info(self._("Reverting back to default hosters"))
 
         try:
-            self.pyload.addon_manager.remove_event("plugin_updated", self.plugins_updated)
+            self.pyload.addon_manager.remove_event(
+                "plugin_updated", self.plugins_updated
+            )
 
         except ValueError:
             pass

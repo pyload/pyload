@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from datetime import timedelta
 import base64
 import re
 import urllib.parse
+from datetime import timedelta
 
 from ..base.simple_downloader import SimpleDownloader
 

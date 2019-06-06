@@ -2,9 +2,9 @@
 
 import re
 
+from pyload.core.utils.old import html_unescape
 
 from ..base.downloader import BaseDownloader
-from pyload.core.utils.old import html_unescape
 
 
 class MyvideoDe(BaseDownloader):

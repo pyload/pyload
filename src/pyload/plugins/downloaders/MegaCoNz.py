@@ -7,15 +7,14 @@ import random
 import re
 import struct
 
-
 import Cryptodome.Cipher.AES
 import Cryptodome.Util.Counter
 
 from pyload.core.network.http.exceptions import BadHeader
+from pyload.core.utils.old import decode
 
 from ..base.downloader import BaseDownloader
 from ..helpers import exists
-from pyload.core.utils.old import decode
 
 ############################ General errors ###################################
 # EINTERNAL            (-1): An internal error has occurred. Please submit a bug report, detailing the exact circumstances in which this error occurred

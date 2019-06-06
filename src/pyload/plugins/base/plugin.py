@@ -5,12 +5,12 @@ import inspect
 import os
 
 import pycurl
-from pyload.core.network.request_factory import get_request
 from pyload.core.network.exceptions import Fail, Skip
+from pyload.core.network.request_factory import get_request
+from pyload.core.utils import fs
+from pyload.core.utils.old import decode, fixurl, html_unescape
 
 from ..helpers import DB, Config, exists, format_exc, parse_html_header, set_cookies
-from pyload.core.utils.old import fixurl, decode, html_unescape
-from pyload.core.utils import fs
 
 if os.name != "nt":
     import grp
@@ -300,7 +300,7 @@ class BasePlugin:
                 ],
             )
 
-        with open(path, mode="rb")  as fp:
+        with open(path, mode="rb") as fp:
             url = fixurl(url, unquote=True)  #: Recheck in 0.6.x
 
             if req is False:

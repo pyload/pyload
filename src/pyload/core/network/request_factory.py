@@ -4,13 +4,11 @@
 from threading import Lock
 
 from ..utils.old import lock
-
 from .browser import Browser
 from .bucket import Bucket
 from .cookie_jar import CookieJar
 from .http.http_request import HTTPRequest
 from .xdcc.request import XDCCRequest
-
 
 DEFAULT_REQUEST = None
 
@@ -28,7 +26,6 @@ class RequestFactory:
         global DEFAULT_REQUEST
         if not DEFAULT_REQUEST:
             DEFAULT_REQUEST = self
-
 
     def iface(self):
         return self.pyload.config.get("download", "interface")

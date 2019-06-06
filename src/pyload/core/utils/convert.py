@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 # AUTHOR: vuolter
 
-from pyload.utils.check import isiterable, is_mapping
-
-
+from pyload.utils.check import is_mapping, isiterable
 
 try:
     import bitmath
@@ -20,8 +18,9 @@ def convert(obj, rule, func, args=(), kwargs=None, fallback=None):
         if rule(obj):
             res = func(obj, *args, **kwargs)
         elif is_mapping(obj):
-            res = dict((convert(k, *cvargs), convert(v, *cvargs))
-                       for k, v in obj.items())
+            res = dict(
+                (convert(k, *cvargs), convert(v, *cvargs)) for k, v in obj.items()
+            )
         elif isiterable(obj):
             res = type(obj)(convert(i, *cvargs) for i in obj)
         else:
@@ -34,7 +33,8 @@ def convert(obj, rule, func, args=(), kwargs=None, fallback=None):
     return res
 
 
-BYTE_PREFIXES = ('B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB')
+BYTE_PREFIXES = ("B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB")
+
 
 def size(value, in_unit, out_unit):
     """Convert file size."""
@@ -43,16 +43,16 @@ def size(value, in_unit, out_unit):
 
     if in_unit == out_unit:
         return value
-        
-    in_unit += 'yte' if in_unit == 'B' else 'iB'
-    out_unit += 'yte' if out_unit == 'B' else 'iB'
- 
+
+    in_unit += "yte" if in_unit == "B" else "iB"
+    out_unit += "yte" if out_unit == "B" else "iB"
+
     try:
         # Create a bitmath instance representing the input value with its
         # corresponding unit
         in_size = getattr(bitmath, in_unit)(value)
         # Call the instance method to convert it to the output unit
-        out_size = getattr(in_size, 'to_' + out_unit)()
+        out_size = getattr(in_size, "to_" + out_unit)()
         return out_size.value
 
     except AttributeError:
@@ -74,14 +74,14 @@ def size(value, in_unit, out_unit):
         return integer + decimal
 
 
-def to_bytes(obj, encoding='utf-8', errors='strict'):
+def to_bytes(obj, encoding="utf-8", errors="strict"):
     try:
         return obj.encode(encoding, errors)
     except AttributeError:
         return bytes(obj, encoding)
 
 
-def to_str(obj, encoding='utf-8', errors='strict'):
+def to_str(obj, encoding="utf-8", errors="strict"):
     try:
         return obj.decode(encoding, errors)
     except AttributeError:
@@ -89,8 +89,8 @@ def to_str(obj, encoding='utf-8', errors='strict'):
 
 
 # def to_dict(obj):
-    # """Convert object to dictionary."""
-    # return dict((attr, getattr(obj, attr)) for attr in obj.__slots__)
+# """Convert object to dictionary."""
+# return dict((attr, getattr(obj, attr)) for attr in obj.__slots__)
 
 
 def to_list(obj):

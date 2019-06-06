@@ -4,7 +4,6 @@ import json
 import random
 import re
 
-
 import pycurl
 from pyload.core.network.http.exceptions import BadHeader
 from pyload.core.network.request_factory import get_request

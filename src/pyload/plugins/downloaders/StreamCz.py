@@ -6,7 +6,6 @@ import os
 import time
 import urllib.parse
 
-
 from ..base.simple_downloader import SimpleDownloader
 
 

@@ -9,7 +9,7 @@ import tld
 from pyload.utils.check import isiterable
 from pyload.utils.struct import HeaderDict
 from pyload.utils.web import format, purge
-from pyload.utils.web.check import is_host, isip, is_port
+from pyload.utils.web.check import is_host, is_port, isip
 from pyload.utils.web.convert import host_to_ip, ip_to_host, splitaddress
 
 
@@ -32,7 +32,7 @@ def endpoint(text):
 # TODO: Recheck result format
 def attr(text, name=None):
     pattr = r'{}\s*=\s*(["\']?)((?<=")[^"]+|(?<=\')[^\']+|[^>\s"\'][^>\s]*)\1'
-    pattr = pattr.format(name or r'\w+')
+    pattr = pattr.format(name or r"\w+")
     m = re.search(pattr, text, flags=re.I)
     return m.group(2) if m is not None else None
 
@@ -41,19 +41,17 @@ def domain(url):
     return tld.get_tld(format.url(url), fail_silently=True)
 
 
-_RE_FORM = re.compile(
-    r'(<(input|textarea).*?>)([^<]*(?=</\2)|)', flags=re.I | re.S)
+_RE_FORM = re.compile(r"(<(input|textarea).*?>)([^<]*(?=</\2)|)", flags=re.I | re.S)
 
 
 def _extract_inputs(form):
     taginputs = {}
-    for inputtag in _RE_FORM.finditer(
-            purge.comments(form.group('CONTENT'))):
-        tagname = attr(inputtag.group(1), 'name')
+    for inputtag in _RE_FORM.finditer(purge.comments(form.group("CONTENT"))):
+        tagname = attr(inputtag.group(1), "name")
         if not tagname:
             continue
-        tagvalue = attr(inputtag.group(1), 'value')
-        taginputs[tagname] = tagvalue or inputtag.group(3) or ''
+        tagvalue = attr(inputtag.group(1), "value")
+        taginputs[tagname] = tagvalue or inputtag.group(3) or ""
     return taginputs
 
 
@@ -62,7 +60,7 @@ def _same_inputs(taginputs, inputs):
         if key not in taginputs:
             return False
         tagvalue = taginputs[key]
-        if hasattr(value, 'search') and re.match(value, tagvalue):
+        if hasattr(value, "search") and re.match(value, tagvalue):
             continue
         elif isiterable(value) and tagvalue in value:
             continue
@@ -73,18 +71,18 @@ def _same_inputs(taginputs, inputs):
 
 
 def form(text, name=None, inputs=None):
-    pattr = r'(?P<TAG><form[^>]*{}.*?>)(?P<CONTENT>.*?)</?(form|body|html).*?>'
-    pattr = pattr.format(name or '')
+    pattr = r"(?P<TAG><form[^>]*{}.*?>)(?P<CONTENT>.*?)</?(form|body|html).*?>"
+    pattr = pattr.format(name or "")
     for form in re.finditer(pattr, text, flags=re.I | re.S):
         taginputs = _extract_inputs(form)
-        formaction = attr(form.group('TAG'), 'action')
+        formaction = attr(form.group("TAG"), "action")
         # Check input attributes
         if not inputs or _same_inputs(taginputs, inputs):
             return formaction, taginputs  # Passed attribute check
     return None, {}  # No matching form found
 
 
-_RE_HEADER = re.compile(r' *(?P<key>.+?) *: *(?P<value>.+?) *\r?\n')
+_RE_HEADER = re.compile(r" *(?P<key>.+?) *: *(?P<value>.+?) *\r?\n")
 
 # TODO: Rewrite...
 
@@ -105,7 +103,7 @@ def header(text):
 
 
 def mime(text, strict=False):
-    DEFAULT_MIMETYPE = 'application/octet-stream'
+    DEFAULT_MIMETYPE = "application/octet-stream"
     mimetype = mimetypes.guess_type(text.strip(), strict)[0]
     return mimetype or DEFAULT_MIMETYPE
 
@@ -113,18 +111,18 @@ def mime(text, strict=False):
 def name(url):
     url = format.url(url)
     up = urllib.parse.urlparse(url)
-    name = up.path.split('/')[-1]
+    name = up.path.split("/")[-1]
     if not name:
-        name = up.query.split('=', 1)[::-1][0].split('&', 1)[0]
+        name = up.query.split("=", 1)[::-1][0].split("&", 1)[0]
     if not name:
-        name = up.netloc.split('.', 1)[0]
+        name = up.netloc.split(".", 1)[0]
     return name.strip()
 
 
 # TODO: Recheck in 0.5.x
 # def grab_name(url, *args, **kwargs):
-    # kwargs.setdefault('allow_redirects', True)
-    # kwargs.setdefault('verify', False)
-    # r = requests.head(url, *args, **kwargs)
-    # cd = r.headers.get('content-disposition')
-    # return url_to_name(cd or url)
+# kwargs.setdefault('allow_redirects', True)
+# kwargs.setdefault('verify', False)
+# r = requests.head(url, *args, **kwargs)
+# cd = r.headers.get('content-disposition')
+# return url_to_name(cd or url)

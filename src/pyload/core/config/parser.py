@@ -72,11 +72,11 @@ class ConfigParser:
 
             if not os.path.exists(self.pluginpath):
                 os.makedirs(os.path.dirname(self.pluginpath), exist_ok=True)
-                with open(self.pluginpath, mode="w")  as fp:
+                with open(self.pluginpath, mode="w") as fp:
                     fp.write(f"version: {__version__}")
                 os.chmod(self.pluginpath, 0o600)
 
-            with open(self.configpath)  as fp:
+            with open(self.configpath) as fp:
                 content = fp.read()
 
             m_ver = self._VERSION.search(content)
@@ -87,12 +87,12 @@ class ConfigParser:
                 )
                 print("Old version of config was replaced")
 
-            with open(self.pluginpath)  as fp:
+            with open(self.pluginpath) as fp:
                 content = fp.read()
 
             m_ver = self._VERSION.search(content)
             if m_ver is None or int(m_ver.group(1)) < __version__:
-                with open(self.pluginpath, mode="w")  as fp:
+                with open(self.pluginpath, mode="w") as fp:
                     fp.write(f"version: {__version__}")
 
                 print("Old version of plugin-config replaced")
@@ -124,7 +124,7 @@ class ConfigParser:
         """
         parses a given configfile.
         """
-        with open(config)  as fp:
+        with open(config) as fp:
 
             config = fp.read()
 
@@ -236,7 +236,7 @@ class ConfigParser:
         """
         saves config to filename.
         """
-        with open(filename, mode="w")  as fp:
+        with open(filename, mode="w") as fp:
             os.chmod(filename, 0o600)
             fp.write(f"version: {__version__} \n")
             for section in sorted(config.keys()):
@@ -256,9 +256,7 @@ class ConfigParser:
                     else:
                         value = str(data["value"]) + "\n"
 
-                    fp.write(
-                        f'\t{data["type"]} {option} : "{data["desc"]}" = {value}'
-                    )
+                    fp.write(f'\t{data["type"]} {option} : "{data["desc"]}" = {value}')
 
     def cast(self, typ, value):
         """
@@ -356,7 +354,7 @@ class ConfigParser:
         """
         conf = self.plugin.get(name, {"desc": name})
         conf["outline"] = outline
-        
+
         for item in config:
             if item[0] in conf and item[1] == conf[item[0]]["type"]:
                 conf[item[0]]["desc"] = item[2]
@@ -369,8 +367,7 @@ class ConfigParser:
 
         values = [x[0] for x in config] + ["desc", "outline"]
         # delete old values
-        self.plugin[name] = {k:v for k,v in conf.items() if k in values}
-
+        self.plugin[name] = {k: v for k, v in conf.items() if k in values}
 
     def delete_config(self, name):
         """

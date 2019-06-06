@@ -2,7 +2,6 @@
 # AUTHOR: RaNaN
 
 import time
-
 from threading import Lock
 
 from ..utils.old import lock

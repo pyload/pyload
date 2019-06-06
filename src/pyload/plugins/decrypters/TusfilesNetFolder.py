@@ -4,7 +4,6 @@ import math
 import re
 import urllib.parse
 
-
 from ..base.xfs_decrypter import XFSDecrypter
 
 

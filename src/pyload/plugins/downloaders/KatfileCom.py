@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 import re
 
+from pyload.core.utils import parse
+
 from ..anticaptchas.SolveMedia import SolveMedia
 from ..base.simple_downloader import SimpleDownloader
-from pyload.core.utils import parse
 
 
 class KatfileCom(SimpleDownloader):

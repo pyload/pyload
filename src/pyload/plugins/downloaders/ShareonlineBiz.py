@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from datetime import timedelta
 import base64
 import re
 import time
+from datetime import timedelta
 
 from pyload.core.network.request_factory import get_url
 

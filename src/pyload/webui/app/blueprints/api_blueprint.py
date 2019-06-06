@@ -9,8 +9,7 @@ from urllib.parse import unquote
 import flask
 from flask.json import jsonify
 
-from ..helpers import clear_session, set_session, login_required
-
+from ..helpers import clear_session, login_required, set_session
 
 bp = flask.Blueprint("api", __name__, url_prefix="/api")
 

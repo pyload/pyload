@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 # AUTHOR: vuolter
 
-import os
 import datetime
+import os
 
 from pyload.core.utils import format
-
 
 _QUOTECHAR = "::%2F"
 

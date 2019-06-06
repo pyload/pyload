@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 # AUTHOR: RaNaN
 
-from datetime import timedelta
 import os
 import re
 import subprocess
 import time
-
+from datetime import timedelta
 from random import choice
 from threading import Event, Lock
 
@@ -17,8 +16,9 @@ from ..network.request_factory import get_url
 from ..threads.decrypter_thread import DecrypterThread
 from ..threads.download_thread import DownloadThread
 from ..threads.info_thread import InfoThread
-from ..utils.old import lock
 from ..utils.fs import free_space
+from ..utils.old import lock
+
 
 class ThreadManager:
     """
@@ -356,9 +356,9 @@ class ThreadManager:
                 thread = DecrypterThread(self, job)
 
     def get_limit(self, thread):
-        limit = thread.active.plugin.account.get_account_data(thread.active.plugin.user)[
-            "options"
-        ].get("limit_dl", ["0"])[0]
+        limit = thread.active.plugin.account.get_account_data(
+            thread.active.plugin.user
+        )["options"].get("limit_dl", ["0"])[0]
         return int(limit)
 
     def cleanup(self):

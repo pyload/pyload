@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 
-from ..downloaders.MegaCoNz import MegaClient, MegaCrypto
 from ..base.decrypter import BaseDecrypter
+from ..downloaders.MegaCoNz import MegaClient, MegaCrypto
 
 
 class MegaCoNzFolder(BaseDecrypter):

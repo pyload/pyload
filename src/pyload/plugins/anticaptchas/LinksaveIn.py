@@ -3,7 +3,6 @@
 import glob
 import os
 
-
 from PIL import Image
 
 from ..base.ocr import BaseOCR
@@ -22,9 +21,7 @@ class LinksaveIn(BaseOCR):
     __authors__ = [("pyLoad team", "admin@pyload.net")]
 
     def init(self):
-        self.data_dir = (
-            os.path.dirname(__file__) + os.sep + "LinksaveIn" + os.sep
-        )
+        self.data_dir = os.path.dirname(__file__) + os.sep + "LinksaveIn" + os.sep
 
     def load_image(self, image):
         im = Image.open(image)

@@ -2,7 +2,6 @@
 
 import re
 
-
 from ..base.decrypter import BaseDecrypter
 
 

@@ -5,14 +5,13 @@ import select
 import socket
 import ssl
 import time
-
 from threading import Thread
 
 import pycurl
 from pyload.core.api import FileDoesNotExists, PackageDoesNotExists
+from pyload.core.utils import format
 
 from ..base.notifier import Notifier
-from pyload.core.utils import format
 
 
 class IRC(Thread, Notifier):

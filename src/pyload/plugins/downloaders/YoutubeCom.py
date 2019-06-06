@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from datetime import timedelta
 import json
 import operator
 import os
@@ -8,15 +7,16 @@ import re
 import subprocess
 import time
 import urllib.parse
+from datetime import timedelta
 from functools import reduce
 from xml.dom.minidom import parseString as parse_xml
 
 from pyload import PKGDIR
 from pyload.core.network.cookie_jar import CookieJar
+from pyload.core.network.exceptions import Abort, Skip
 from pyload.core.network.http.http_request import HTTPRequest
 
 from ..base.downloader import BaseDownloader
-from pyload.core.network.exceptions import Abort, Skip
 from ..helpers import exists, is_executable, renice, replace_patterns, which
 
 
@@ -39,7 +39,7 @@ class BIGHTTPRequest(HTTPRequest):
             rep = self.getResponse()
             if self.abort:
                 raise Abort
-            with open("response.dump", mode="wb")  as fp:
+            with open("response.dump", mode="wb") as fp:
                 fp.write(rep)
             raise Exception("Loaded Url exceeded limit")
 
@@ -1005,7 +1005,7 @@ class YoutubeCom(BaseDownloader):
                         timed_text = self.load(subtitles_urls[lang], decode=False)
                         srt = timedtext_to_srt(timed_text)
 
-                        with open(srt_filename, mode="w")  as fp:
+                        with open(srt_filename, mode="w") as fp:
                             fp.write(srt.encode())
                         self.set_permissions(srt_filename)
                         self.log_debug(
@@ -1043,7 +1043,7 @@ class YoutubeCom(BaseDownloader):
                     timed_text = self.load(subtitle[1], decode=False)
                     srt = timedtext_to_srt(timed_text)
 
-                    with open(srt_filename, mode="w")  as fp:
+                    with open(srt_filename, mode="w") as fp:
                         fp.write(srt.encode())
                     self.set_permissions(srt_filename)
 

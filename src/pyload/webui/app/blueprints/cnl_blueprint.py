@@ -3,16 +3,16 @@
 
 import os
 from base64 import standard_b64decode
-
 from functools import wraps
 from urllib.parse import unquote
 
 import flask
-from pyload.core.utils.misc import eval_js
-from flask.json import jsonify
 from cryptography.fernet import Fernet
-from .app_blueprint import bp as app_bp
+from flask.json import jsonify
 
+from pyload.core.utils.misc import eval_js
+
+from .app_blueprint import bp as app_bp
 
 bp = flask.Blueprint("flash", __name__, url_prefix="/flash")
 

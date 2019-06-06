@@ -12,14 +12,13 @@ from pyload.utils.check import proprieties
 from pyload.utils.fs import makefile
 
 
-
 def report(value, dirname):
     frame = inspect.currentframe()
     try:
-        filename = f'{frame.f_back.f_code.co_name}_line{frame.f_back.f_lineno}.report'
+        filename = f"{frame.f_back.f_code.co_name}_line{frame.f_back.f_lineno}.report"
         filepath = os.path.join(dirname, filename)
         makefile(filepath, exist_ok=True)
-        with io.open(filepath, mode='wb') as fp:
+        with io.open(filepath, mode="wb") as fp:
             fp.write(value)
     finally:
         del frame  # delete it just now or wont be cleaned by gc
@@ -28,23 +27,23 @@ def report(value, dirname):
 def _format_dump(obj):
     dump = []
     for attr_name in proprieties(obj):
-        if attr_name.endswith('__'):
+        if attr_name.endswith("__"):
             continue
         try:
             attr_dump = pprint.pformat(getattr(obj, attr_name))
 
         except Exception as exc:
-            attr_dump = f'<ERROR WHILE PRINTING VALUE> {exc}'
+            attr_dump = f"<ERROR WHILE PRINTING VALUE> {exc}"
 
         dump.append((attr_name, attr_dump))
     return dump
 
 
 def format_dump(obj):
-    title = f'DUMP {obj!r}:'
+    title = f"DUMP {obj!r}:"
     body = os.linesep.join(
-        f'\t{attr_name:20} = {attr_dump}'
-        for attr_name, attr_dump in _format_dump(obj))
+        f"\t{attr_name:20} = {attr_dump}" for attr_name, attr_dump in _format_dump(obj)
+    )
     return os.linesep.join((title, body))
 
 
@@ -65,13 +64,13 @@ def _format_framestack(limit=None):
             tb = tb.tb_next
         dump = []
         for _frame in stack[1:limit]:
-            frame_name = f'Frame {_frame.f_code.co_name} in {_frame.f_code.co_filename} at line {_frame.f_lineno}'
+            frame_name = f"Frame {_frame.f_code.co_name} in {_frame.f_code.co_filename} at line {_frame.f_lineno}"
             frame_dump = []
             for attr_name, value in _frame.f_locals.items():
                 try:
                     attr_dump = pprint.pformat(value)
                 except Exception as exc:
-                    attr_dump = f'<ERROR WHILE PRINTING VALUE> {exc}'
+                    attr_dump = f"<ERROR WHILE PRINTING VALUE> {exc}"
                 frame_dump.append((attr_name, attr_dump))
             dump.append((frame_name, frame_dump))
             del _frame
@@ -85,11 +84,11 @@ def format_framestack(frame=None, limit=None):
     stack_desc = []
     for frame_name, frame_dump in framestack:
         dump = os.linesep.join(
-            f'\t{attr_name:20} = {attr_dump}'
-            for attr_name, attr_dump in frame_dump)
-        stack_desc.append(f'{frame_name}{os.linesep}{dump}')
+            f"\t{attr_name:20} = {attr_dump}" for attr_name, attr_dump in frame_dump
+        )
+        stack_desc.append(f"{frame_name}{os.linesep}{dump}")
 
-    title = f'FRAMESTACK {frame!r}:'
+    title = f"FRAMESTACK {frame!r}:"
     body = (os.linesep * 2).join(stack_desc)
     return os.linesep.format((title, body))
 
@@ -131,8 +130,8 @@ def _format_traceback(frame=None, limit=None, offset=None):
 def format_traceback(frame=None, limit=None, offset=None):
     offset = 1 if not offset else abs(offset) + 1
     stack, exception = _format_traceback(frame, limit, offset)
-    title = 'Traceback (most recent call last):'
-    body = ''.join(stack + exception)
+    title = "Traceback (most recent call last):"
+    body = "".join(stack + exception)
     return os.linesep.format((title, body))
 
 

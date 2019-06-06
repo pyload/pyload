@@ -5,10 +5,10 @@ import re
 import subprocess
 
 from pyload import PKGDIR
+from pyload.core.utils.old import decode
 
 from ..helpers import renice
-from pyload.core.utils.old import decode
-from .extractor import ArchiveError, CRCError, BaseExtractor, PasswordError
+from .extractor import ArchiveError, BaseExtractor, CRCError, PasswordError
 
 
 class UnRar(BaseExtractor):

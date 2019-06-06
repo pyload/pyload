@@ -5,7 +5,6 @@ import os
 import re
 import urllib.parse
 
-
 from ..base.decrypter import BaseDecrypter
 
 

@@ -3,17 +3,16 @@
 
 import codecs
 import io
-
 from http.client import responses
 from itertools import chain
 from logging import getLogger
 from urllib.parse import quote, urlencode
 
 import pycurl
+from pyload import APPID
+
 from ..exceptions import Abort
 from .exceptions import BadHeader
-
-from pyload import APPID
 
 
 def myquote(url):
@@ -111,7 +110,9 @@ class HTTPRequest:
         )
 
     def set_interface(self, options):
-        options = {k: v.encode() if hasattr(v, "encode") else v for k, v in options.items()}
+        options = {
+            k: v.encode() if hasattr(v, "encode") else v for k, v in options.items()
+        }
 
         interface, proxy, ipv6 = (
             options["interface"],
@@ -220,7 +221,7 @@ class HTTPRequest:
         multipart=False,
         decode=False,
         follow_location=True,
-        save_cookies=True
+        save_cookies=True,
     ):
         """
         load and returns a given page.
@@ -345,7 +346,7 @@ class HTTPRequest:
             rep = self.get_response()
             if self.abort:
                 raise Abort
-            with open("response.dump", mode="wb")  as fp:
+            with open("response.dump", mode="wb") as fp:
                 fp.write(rep)
             raise Exception("Loaded Url exceeded limit")
 

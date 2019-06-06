@@ -9,11 +9,11 @@ import sys
 import threading
 import time
 
+from pyload.core.network.exceptions import Abort
+from pyload.core.utils.old import lock
 
 from ..base.addon import threaded
 from ..base.downloader import BaseDownloader
-from pyload.core.network.exceptions import Abort
-from pyload.core.utils.old import lock
 
 
 class IRC:
