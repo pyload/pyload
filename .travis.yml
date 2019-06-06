@@ -10,34 +10,30 @@ git:
 
 branches:
   only:
-    - develop
-    # - /^v\d+\.\d+\.\d+$/
+    - master
+    # - /^v[\d.]+/
+
 stages:
-  - check
+  # - check
   - test
   - deploy
 
-# NOTE: always set to latest stable python version
+env:
+  global: [ -z "$TRAVIS_TAG" ] && PYLOAD_DEVBUILD="$TRAVIS_BUILD_NUMBER"
+
+# NOTE: this must be set to latest stable python version
 python: 3.7
-# NOTE: always set to latest supported ubuntu version
+# NOTE: this must be set to latest supported ubuntu version
 dist: xenial
+
+# addons:
+  # apt:
+    # update: true
+    # packages: libgnutls-dev
 
 cache: pip
 install: pip install --upgrade pip setuptools tox tox-travis
 script: tox --sitepackages
-
-addons:
-  apt:
-    update: true
-    packages:
-      - libgnutls-dev
-      - python-pycurl
-  homebrew:
-    update: true
-    packages: python3
-  # chocolatey:
-    # update: true
-    # packages: python3
 
 jobs:
   allow_failures:
@@ -47,32 +43,48 @@ jobs:
     - python: nightly
 
   include:
-    - os: linux
+    # - stage: check
+      # name: Pylint errors
+      # script: tox -e pylint --sitepackages
+
+    - stage: test
+      os: linux
       python: 3.6
-    - os: linux
-    # - os: linux
+
+    - stage: test
+      os: linux
+      python: 3.7
+
+    # - stage: test
+      # os: linux
       # python: nightly
 
-    # NOTE: work-around to test Python on OSX (officially not supported)
-    - os: osx
+    # NOTE: work-around to test Python on OSX (not supported officially)
+    - stage: test
+      os: osx
       language: generic
       env: TOXENV=py37
+      addons:
+        homebrew:
+          update: true
+          packages: python3
       before_script:
-        pip install virtualenv
-        virtualenv -p python3 ~/venv
-        source ~/venv/bin/activate
+        - pip install virtualenv
+        - virtualenv -p python3 ~/venv
+        - source ~/venv/bin/activate
 
-    # NOTE: work-around to test Python on Windows (officially not supported)
-    - os: windows
+    # NOTE: work-around to test Python on Windows (not supported officially)
+    - stage: test
+      os: windows
       language: sh
       env: TOXENV=py37
+      addons:
+        chocolatey:
+          update: true
+          packages: python3
       before_install:
-        - cinst -y python3
+        - choco install -y python3
         - export PATH="/c/Python37:/c/Python37/Scripts:$PATH"
-
-    - stage: check
-      name: Pylint errors
-      script: tox -e pylint --sitepackages
 
     - stage: deploy
       name: Github release
@@ -90,9 +102,11 @@ jobs:
         # prerelease: true
         on:
           repo: pyload/pyload
-          branch: develop
+          branch: master
           tags: true
-    - name: PyPI release
+
+    - stage: deploy
+      name: PyPI release
       install:
         - pip install --upgrade pip setuptools wheel
         - pip install -e .[deploy]
@@ -108,7 +122,32 @@ jobs:
         skip_existing: true
         on:
           repo: pyload/pyload
-          branch: develop
+          branch: master
+
+    - stage: deploy
+      name: Docker release
+      env:
+        - secure: "dtCGQHfYizfV/u3nZ9lQZcNsb2eJrvCarJaZAuerOllqlsPzfpFFVJVmDpkwaCjs8qEEvflQOPO0o/uonUKQOSmWdcQaqmtMlRZ3JZEENWXAnLJDy/lfBflrR+An47vS5oNQ9bNcLMM7GBFbOxcXFGK6zScXnS2g8erXqymN46M="
+        - secure: "TrWBa99CnrnJ/FYKhq20EYAhbjlLXVExQu5ScZczDYzVZYV1rLzENInyc8L7JVU1A6vSJ4lIKZ+BYMk03hSMSU8wIQPrKaKHLBfjgX6hww9gBHIdfhnM9yVhBS8NM+jwmGQBotFjiRsQVCg1Jhtd9YwpjCO6Gj4UBmNfxXt52tw="
+      addons:
+        apt:
+          update: true
+          packages: docker-ce
+      services: docker
+      install: pip install docker-ci-deploy
+      before_script: docker pull pyload/pyload || true
+      script:
+        - docker build --pull --cache-from pyload/pyload --tag pyload/pyload .
+        # - docker run pyload/pyload
+      after_script: docker images
+      before_deploy: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
+      deploy:
+        provider: script
+        script:
+          - [ -z "$TRAVIS_TAG" ] || dcd --tag "$TRAVIS_TAG" pyload/pyload
+          - dcd --version-latest pyload/pyload
+        on:
+          branch: master
 
 matrix:
   fast_finish: true

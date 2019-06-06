@@ -23,7 +23,7 @@ except VersionConflict:
     sys.exit(1)
 
 
-class BuildLocale(Command):
+class _BuildLocale(Command):
     """
     Build translations
     """
@@ -53,15 +53,21 @@ class BuildLocale(Command):
         self.mkpath(dirname)  # NOTE: do we have to pass dry_run value explicitly here?
         self._execute("run_command", commands)
 
-def get_version():
-    filename = os.path.join(os.path.dirname(__file__), "VERSION")
-    with open(filename) as file:
-        version = file.read().strip()
-    build = os.environ.get('TRAVIS_BUILD_NUMBER', 0)
-    return f"{version}.dev{build}"
 
-def get_commands():
-    return {'build_locale': BuildLocale}
+def retrieve_version():
+    version = None
+    build = int(os.environ.get('PYLOAD_DEVBUILD', 0))
+
+    filename = os.path.join(os.path.dirname(__file__), "VERSION")
+    with open(filename) as fp:
+        version = os.environ.get('PYLOAD_VERSION', fp.read()).strip()
+        
+    return f"{version}.dev{build}" if build else version
+        
+
+def _create_commands():
+    return {'build_locale': _BuildLocale}
+
 
 if __name__ == "__main__":
-    setup(version=get_version(), cmdclass=get_commands())
+    setup(version=retrieve_version(), cmdclass=_create_commands())
