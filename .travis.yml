@@ -154,6 +154,7 @@ jobs:
       install: pip install docker-ci-deploy
       before_script: docker pull pyload/pyload || true
       script:
+        # NOTE: enable build cache after the first successful deploy
         # - docker build --pull --cache-from pyload/pyload --tag pyload/pyload .
         - docker build --tag pyload/pyload .
         # - docker run pyload/pyload
@@ -161,9 +162,7 @@ jobs:
       before_deploy: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
       deploy:
         provider: script
-        script:
-          - if [ ! -z "$TRAVIS_TAG" ]; then dcd --tag "$TRAVIS_TAG" pyload/pyload; fi
-          - dcd --version-latest pyload/pyload
+        script: dcd $(if [ -z "$TRAVIS_TAG" ]; then echo "--version-latest"; else echo "--tag $TRAVIS_TAG"; fi) pyload/pyload
         on:
           branch: master
 
