@@ -11,11 +11,13 @@ git:
 branches:
   only:
     - master
-    # - /^v[\d.]+/
+    - develop
+    - /^v[\d.]+/
 
 stages:
   # - check
   - test
+  - test (optional)
   - deploy
 
 env:
@@ -36,6 +38,8 @@ install: pip install --upgrade setuptools tox tox-travis
 script: tox --sitepackages
 
 jobs:
+  # fast_finish: true
+
   allow_failures:
     - os:
       - osx
@@ -57,16 +61,16 @@ jobs:
       os: linux
       python: 3.7
 
-    - stage: test
+    - stage: test (optional)
       os: linux
       python: nightly
 
-    - stage: test
+    - stage: test (optional)
       os: linux
       python: pypy3
 
     # NOTE: work-around to test Python on OSX (not supported officially)
-    - stage: test
+    - stage: test (optional)
       os: osx
       language: sh
       env: TOXENV=py3
@@ -74,17 +78,20 @@ jobs:
         homebrew:
           update: true
           packages: python3
-      before_install: alias pip=pip3
+      before_install:
+        - pip3 install virtualenv
+        - virtualenv -p python3 ~/venv
+        - source ~/venv/bin/activate
 
     # NOTE: work-around to test Python on Windows (not supported officially)
-    - stage: test
+    - stage: test (optional)
       os: windows
       language: sh
       env: TOXENV=py3
-      addons:
-        chocolatey:
-          update: true
-          packages: python3
+      # addons:
+        # chocolatey:
+          # update: true
+          # packages: python3
       before_install:
         - choco install -y python3
         - export PATH="/c/Python37:/c/Python37/Scripts:$PATH"
@@ -151,9 +158,6 @@ jobs:
           - dcd --version-latest pyload/pyload
         on:
           branch: master
-
-matrix:
-  fast_finish: true
 
 # after_success:
   # - if [[ "$COVERAGE" == "true" ]]; then coveralls || echo "failed"; fi
