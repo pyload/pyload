@@ -32,7 +32,7 @@ dist: xenial
     # packages: libgnutls-dev
 
 cache: pip
-install: pip install --upgrade pip setuptools tox tox-travis
+install: pip install --upgrade setuptools tox tox-travis
 script: tox --sitepackages
 
 jobs:
@@ -40,7 +40,9 @@ jobs:
     - os:
       - osx
       - windows
-    - python: nightly
+    - python:
+      - nightly
+      - pypy3
 
   include:
     # - stage: check
@@ -55,29 +57,30 @@ jobs:
       os: linux
       python: 3.7
 
-    # - stage: test
-      # os: linux
-      # python: nightly
+    - stage: test
+      os: linux
+      python: nightly
+
+    - stage: test
+      os: linux
+      python: pypy3
 
     # NOTE: work-around to test Python on OSX (not supported officially)
     - stage: test
       os: osx
-      language: generic
-      env: TOXENV=py37
+      language: sh
+      env: TOXENV=py3
       addons:
         homebrew:
           update: true
           packages: python3
-      before_script:
-        - pip install virtualenv
-        - virtualenv -p python3 ~/venv
-        - source ~/venv/bin/activate
+      before_install: alias pip=pip3
 
     # NOTE: work-around to test Python on Windows (not supported officially)
     - stage: test
       os: windows
       language: sh
-      env: TOXENV=py37
+      env: TOXENV=py3
       addons:
         chocolatey:
           update: true
@@ -87,9 +90,9 @@ jobs:
         - export PATH="/c/Python37:/c/Python37/Scripts:$PATH"
 
     - stage: deploy
-      name: Github release
+      name: Github Release
       install:
-        - pip install --upgrade pip setuptools wheel
+        - pip install --upgrade setuptools wheel
         - pip install -e .[deploy]
       script: false
       deploy:
@@ -106,9 +109,9 @@ jobs:
           tags: true
 
     - stage: deploy
-      name: PyPI release
+      name: PyPI Release
       install:
-        - pip install --upgrade pip setuptools wheel
+        - pip install --upgrade setuptools wheel
         - pip install -e .[deploy]
       script: false
       deploy:
@@ -125,7 +128,7 @@ jobs:
           branch: master
 
     - stage: deploy
-      name: Docker release
+      name: Docker Release
       env:
         - secure: "dtCGQHfYizfV/u3nZ9lQZcNsb2eJrvCarJaZAuerOllqlsPzfpFFVJVmDpkwaCjs8qEEvflQOPO0o/uonUKQOSmWdcQaqmtMlRZ3JZEENWXAnLJDy/lfBflrR+An47vS5oNQ9bNcLMM7GBFbOxcXFGK6zScXnS2g8erXqymN46M="
         - secure: "TrWBa99CnrnJ/FYKhq20EYAhbjlLXVExQu5ScZczDYzVZYV1rLzENInyc8L7JVU1A6vSJ4lIKZ+BYMk03hSMSU8wIQPrKaKHLBfjgX6hww9gBHIdfhnM9yVhBS8NM+jwmGQBotFjiRsQVCg1Jhtd9YwpjCO6Gj4UBmNfxXt52tw="
