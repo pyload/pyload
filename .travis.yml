@@ -15,9 +15,8 @@ branches:
     - /^v[\d.]+/
 
 stages:
-  # - check
+  - check
   - test
-  - test (optional)
   - deploy
 
 env:
@@ -41,17 +40,25 @@ jobs:
   # fast_finish: true
 
   allow_failures:
-    - os:
-      - osx
-      - windows
-    - python:
-      - nightly
-      - pypy3
+    - name: Pylint Errors
+    - name: Bandit Errors
+    - python: nightly
+    - python: pypy3
+    - os: osx
+    - os: windows
 
   include:
-    # - stage: check
-      # name: Pylint errors
-      # script: tox -e pylint --sitepackages
+    - stage: check
+      name: Compile Errors
+      script: tox -e compileall
+
+    - stage: check
+      name: Pylint Errors
+      script: tox -e pylint --sitepackages
+
+    - stage: check
+      name: Bandit Errors
+      script: tox -e bandit
 
     - stage: test
       os: linux
@@ -61,16 +68,16 @@ jobs:
       os: linux
       python: 3.7
 
-    - stage: test (optional)
+    - stage: test
       os: linux
       python: nightly
 
-    - stage: test (optional)
+    - stage: test
       os: linux
       python: pypy3
 
     # NOTE: work-around to test Python on OSX (not supported officially)
-    - stage: test (optional)
+    - stage: test
       os: osx
       language: sh
       env: TOXENV=py3
@@ -84,7 +91,7 @@ jobs:
         - source ~/venv/bin/activate
 
     # NOTE: work-around to test Python on Windows (not supported officially)
-    - stage: test (optional)
+    - stage: test
       os: windows
       language: sh
       env: TOXENV=py3
@@ -147,7 +154,8 @@ jobs:
       install: pip install docker-ci-deploy
       before_script: docker pull pyload/pyload || true
       script:
-        - docker build --pull --cache-from pyload/pyload --tag pyload/pyload .
+        # - docker build --pull --cache-from pyload/pyload --tag pyload/pyload .
+        - docker build --tag pyload/pyload .
         # - docker run pyload/pyload
       after_script: docker images
       before_deploy: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
