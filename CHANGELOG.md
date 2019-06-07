@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://pyload.net">
-    <img src="https://raw.githubusercontent.com/pyload/pyload/develop/media/logo.png" alt="pyLoad" height="100" />
+    <img src="https://raw.githubusercontent.com/pyload/pyload/master/media/logo.png" alt="pyLoad" height="100" />
   </a>
 </p>
 <h2 />

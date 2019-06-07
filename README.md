@@ -1,7 +1,7 @@
 <br />
 <p align="center">
   <a href="https://pyload.net">
-    <img src="https://raw.githubusercontent.com/pyload/pyload/develop/media/banner.png" alt="pyLoad" height="110" />
+    <img src="https://raw.githubusercontent.com/pyload/pyload/master/media/banner.png" alt="pyLoad" height="110" />
   </a>
 </p>
 <h2 align="center">The Free and open-source Download Manager written in pure Python</h2>
@@ -11,7 +11,7 @@
 <br />
 <p align="center">
   <a href="https://travis-ci.org/pyload/pyload">
-    <img src="https://travis-ci.org/yload/pyload.svg?branch=develop" alt="Build Status" />
+    <img src="https://travis-ci.org/pyload/pyload.svg" alt="Build Status" />
   </a>
   <a href="https://pyup.io/repos/github/pyload/pyload/">
     <img src="https://pyup.io/repos/github/pyload/pyload/shield.svg" alt="Updates" />
@@ -44,9 +44,8 @@ Includes `pyload-core`, `pyload-plugins`, `pyload-webui`, `pyload-cli`.
 
 #### Warnings
 
-- This package is intended for developer audience only, **do not use in production!**
-- This package is automatically deployed from latest source code of pyLoad's `develop` branch.
-- [Stable Branch](https://github.com/pyload/pyload/tree/stable) is production ready.
+- This package is automatically deployed from the [master codebase](https://github.com/pyload/pyload/tree/master) of the pyLoad repository.
+- We recommend to use the [stable codebase](https://github.com/pyload/pyload/tree/stable) in production.
 
 
 Installation
@@ -104,7 +103,7 @@ Usage
       --cachedir CACHEDIR  run with custom cache folder
       --daemon             daemonmize after start
       --restore            restore default admin user
-      
+
 ### Web Interface
 
 To start pyLoad in *WebUI mode*,
@@ -113,9 +112,9 @@ type in a terminal/command prompt window:
     pyload
 
 To show the available options, type:
-    
+
     pyload -h
-    
+
 To access the web interface open your web browser and visit the url http://localhost:8001 .
 You can change it afterward.
 
