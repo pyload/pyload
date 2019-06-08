@@ -33,7 +33,9 @@ dist: xenial
     # packages: libgnutls-dev
 
 cache: pip
-install: pip install --upgrade setuptools tox tox-travis
+before_cache: rm -f "$HOME/.cache/pip/log/debug.log"
+
+install: pip install --upgrade tox tox-travis
 script: tox --sitepackages
 
 jobs:
@@ -105,10 +107,9 @@ jobs:
 
     - stage: deploy
       name: Github Release
-      install:
-        - pip install --upgrade setuptools wheel
-        - pip install -e .[deploy]
-      script: false
+      install: pip install --upgrade Babel readme_renderer[md] Sphinx>1.4 wheel
+      script: true
+      before_deploy: python setup.py sdist build_locale bdist_wheel bdist_msi bdist_rpm
       deploy:
         provider: releases
         api-key:
@@ -124,18 +125,16 @@ jobs:
 
     - stage: deploy
       name: PyPI Release
-      install:
-        - pip install --upgrade setuptools wheel
-        - pip install -e .[deploy]
-      script: false
+      install: pip install --upgrade Babel readme_renderer[md] Sphinx>1.4
+      script: true
       deploy:
         provider: pypi
         user:
           secure: "IDWPXbVVMr9/sZOb5/p9bXTvq//EGuzQWM4CnQOm2G4mfaX0ssr7+4w+wweJgI9UJFIcoHmvYC0cjljCleSW1j+1G3GO7whInLUuD63Vt1iA8H4UIvg4JYcTwGZQ9R/PWoW0k5MHems0picgA3cMw/9VBfl3IUraGb6+2QdxpHY="
         password:
           secure: "eoe3SLOEa0Z7UxJI905InCzHatdDigIBt/fl7b6kOHy76IYU3e5lZ/c6urGJBOsy+1LN6vPHvWmVVw/vhevfTd8MM6i0cGXo23zIefYAU2zkjKejWyF2/tke6spngikC1vzEyANs9fNFLXU4USCfgr1lCvuuy9Znwl/sI6jqVTg="
-        distributions: release
-        skip_cleanup: true
+        distributions: "sdist build_locale bdist_wheel"
+        # skip_cleanup: true
         skip_existing: true
         on:
           repo: pyload/pyload
@@ -151,18 +150,19 @@ jobs:
           update: true
           packages: docker-ce
       services: docker
-      install: pip install docker-ci-deploy
-      before_script: docker pull pyload/pyload || true
-      script:
+      install: pip install --upgrade docker-ci-deploy
+      script: docker build --pull --tag pyload/pyload .
         # NOTE: enable build cache after the first successful deploy
         # - docker build --pull --cache-from pyload/pyload --tag pyload/pyload .
-        - docker build --tag pyload/pyload .
-        # - docker run pyload/pyload
+        -
       after_script: docker images
-      before_deploy: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
+      before_deploy:
+        - docker run pyload/pyload
+        - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
       deploy:
         provider: script
         script: dcd $(if [ -z "$TRAVIS_TAG" ]; then echo "--version-latest"; else echo "--tag $TRAVIS_TAG"; fi) pyload/pyload
+        skip_cleanup: true
         on:
           branch: master
 
