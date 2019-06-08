@@ -1,9 +1,10 @@
 include *.cfg *.md *.toml VERSION
-exclude .* tox.ini
+exclude *.ini .* docs/conf.py Dockerfile
 
-prune media
+prune .*
 
 graft docs
+graft media
 graft src
 graft tests
 
