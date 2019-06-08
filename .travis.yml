@@ -151,10 +151,8 @@ jobs:
           packages: docker-ce
       services: docker
       install: pip install --upgrade docker-ci-deploy
-      script: docker build --pull --tag pyload/pyload .
-        # NOTE: enable build cache after the first successful deploy
-        # - docker build --pull --cache-from pyload/pyload --tag pyload/pyload .
-        -
+      before_script: docker pull pyload/pyload || true
+      script: docker build --pull --cache-from pyload/pyload --tag pyload/pyload .
       after_script: docker images
       before_deploy:
         - docker run pyload/pyload
