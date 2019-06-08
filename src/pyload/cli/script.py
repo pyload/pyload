@@ -9,7 +9,7 @@ from getopt import GetoptError, getopt
 from sys import exit
 
 import pyload.core.utils.old.pylgettext as gettext
-from pyload import DATADIR, PKGDIR
+from pyload import PKGDIR
 
 from . import Cli
 from .printer import *
@@ -100,7 +100,7 @@ def print_commands():
 
 def write_config(opts):
     try:
-        with open(os.path.join(DATADIR, "pyload-cli.conf"), mode="w") as fp:
+        with open(os.path.join("pyload-cli.conf"), mode="w") as fp:
             fp.write("[cli]")
             for opt in opts:
                 fp.write(f"{opt}={opts[opt]}\n")
@@ -121,7 +121,7 @@ def run():
         config["language"] = "en"
 
     config_file = configparser.ConfigParser()
-    config_file.read(os.path.join(DATADIR, "pyload-cli.conf"))
+    config_file.read(os.path.join("pyload-cli.conf"))
 
     if config_file.has_section("cli"):
         for opt in config_file.items("cli"):

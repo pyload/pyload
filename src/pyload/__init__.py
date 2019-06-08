@@ -16,38 +16,31 @@ import os
 import pkg_resources
 import semver
 import sys
-import tempfile
 import traceback
 
 
-### Info ##############################################################################
+# Info
 
 APPID = "pyload"
+
 PKGNAME = "pyload-ng"
 PKGDIR = pkg_resources.resource_filename(__name__, None)
+
 USERHOMEDIR = os.path.expanduser("~")
-DATADIR = os.path.join(
-    os.getenv("APPDATA") if os.name == "nt" else USERHOMEDIR, "pyLoad"
-)
-TMPDIR = os.path.join(tempfile.gettempdir(), "pyLoad")
-
-os.makedirs(DATADIR, exist_ok=True)
-os.makedirs(TMPDIR, exist_ok=True)
-
 os.chdir(USERHOMEDIR)
 
 __version__ = pkg_resources.get_distribution(PKGNAME).parsed_version.base_version
 __version_info__ = semver.parse_version_info(__version__)
 
 
-### Locale ############################################################################
+# Locale
 
 locale.setlocale(locale.LC_ALL, "")
 if os.name == "nt":
     _locale._getdefaultlocale = lambda *args: ["en_US", "utf_8_sig"]
 
 
-### Exception logger ##################################################################
+# Exception logger
 
 exc_logger = logging.getLogger("exception")
 
@@ -65,7 +58,7 @@ sys.excepthook = excepthook
 del excepthook
 
 
-### Cleanup ###########################################################################
+# Cleanup
 
 del _locale
 del locale
@@ -74,4 +67,3 @@ del os
 del pkg_resources
 del semver
 del sys
-del tempfile

@@ -6,8 +6,6 @@ import argparse
 import os
 import sys
 
-from pyload import DATADIR, TMPDIR
-
 from . import Core
 from .. import __version__
 
@@ -72,10 +70,13 @@ def _parse_args(cmd_args):
         "-d", "--debug", action="store_true", help="enable debug mode", default=None
     )
     parser.add_argument(
-        "--userdir", help="run with custom user folder", default=DATADIR
+        "--userdir", help="run with custom user folder", default=Core.DEFAULT_DATADIR
     )
     parser.add_argument(
-        "--cachedir", help="run with custom cache folder", default=TMPDIR
+        "--cachedir", help="run with custom cache folder", default=Core.DEFAULT_TMPDIR
+    )
+    parser.add_argument(
+        "--storagedir", help="run with custom storage folder", default=Core.DEFAULT_STORAGEDIR
     )
     parser.add_argument("--daemon", action="store_true", help="daemonmize after start")
     parser.add_argument(
@@ -109,7 +110,7 @@ def main(cmd_args=sys.argv[1:]):
     Entry point for console_scripts.
     """
     args = _parse_args(cmd_args)
-    core_args = (args.userdir, args.cachedir, args.debug, args.restore)
+    core_args = (args.userdir, args.cachedir, args.storagedir, args.debug, args.restore)
 
     run(core_args, args.daemon)
 
