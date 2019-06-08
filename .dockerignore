@@ -1,0 +1,6 @@
+*
+!src/*
+!*.py
+!*.cfg
+!*.in
+!VERSION
