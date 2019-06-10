@@ -12,7 +12,7 @@
     class LibGen(Hoster):
       __name__ = "LibGen"
       __type__ = "hoster"
-      __version__ = "0.5"
+      __version__ = "0.6"
       __status__ = "testing"
 
       # Only for libgen hosts and URLs that have an MD5
