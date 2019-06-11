@@ -34,6 +34,7 @@ jobs:
   # fast_finish: true
 
   allow_failures:
+    - stage: deploy
     - name: Pylint Errors
     - name: Bandit Errors
     - python: nightly
@@ -75,7 +76,7 @@ jobs:
       os: osx
       language: sh
       env:
-        - TOXENV="py${TRAVIS_PYTHON_VERSION//./}"
+        - TOXENV=py3
         - HOMEBREW_NO_INSTALL_CLEANUP=1
         - HOMEBREW_NO_ANALYTICS=1
       before_cache:
@@ -99,9 +100,8 @@ jobs:
       os: windows
       language: sh
       env:
-        - TOXENV="py${TRAVIS_PYTHON_VERSION//./}"
-        - LOCALAPPDATA="/c/Users/travis/AppData/Local"
-        - PATH="/c/Python${TRAVIS_PYTHON_VERSION//./}:/c/Python${TRAVIS_PYTHON_VERSION//./}/Scripts:$PATH"
+        - TOXENV=py3
+        - PATH="/c/Python37:/c/Python37/Scripts:$PATH"
       before_cache: rm -f "$LOCALAPPDATA/pip/Cache/log/debug.log"
       cache:
         directories: "$LOCALAPPDATA/pip/Cache"
@@ -113,8 +113,9 @@ jobs:
 
     - stage: deploy
       name: Github Release
+      if: branch = master AND tag IS present
       install: pip install --upgrade Babel Jinja2 wheel
-      script: python setup.py sdist build_locale bdist_wheel bdist_msi bdist_rpm
+      script: python setup.py sdist build_locale bdist_wheel
       deploy:
         provider: releases
         api-key:
@@ -125,11 +126,12 @@ jobs:
         # prerelease: true
         on:
           repo: pyload/pyload
-          branch: master
-          tags: true
+          # branch: master
+          # tags: true
 
     - stage: deploy
       name: PyPI Release
+      if: branch = master
       env: PYLOAD_DEVBUILD="$TRAVIS_BUILD_NUMBER"
       install: pip install --upgrade Babel Jinja2 readme_renderer[md]
       script: true
@@ -144,10 +146,11 @@ jobs:
         skip_existing: true
         on:
           repo: pyload/pyload
-          branch: master
+          # branch: master
 
     - stage: deploy
       name: Docker Release
+      if: branch = master
       env:
         - PYLOAD_DEVBUILD="$TRAVIS_BUILD_NUMBER"
         - secure: "dtCGQHfYizfV/u3nZ9lQZcNsb2eJrvCarJaZAuerOllqlsPzfpFFVJVmDpkwaCjs8qEEvflQOPO0o/uonUKQOSmWdcQaqmtMlRZ3JZEENWXAnLJDy/lfBflrR+An47vS5oNQ9bNcLMM7GBFbOxcXFGK6zScXnS2g8erXqymN46M="
@@ -173,15 +176,15 @@ jobs:
             - dcd --tag alpine --version "${TRAVIS_TAG#v}" pyload/pyload:alpine
           skip_cleanup: true
           on:
-            branch: master
+            # branch: master
             tags: true
         - provider: script
           script:
             - dcd --tag latest-slim -tag latest pyload/pyload:slim
             - dcd --tag latest-alpine pyload/pyload:alpine
           skip_cleanup: true
-          on:
-            branch: master
+          # on:
+            # branch: master
 
 # after_success:
   # - if [[ "$COVERAGE" == "true" ]]; then coveralls || echo "failed"; fi
