@@ -4,3 +4,4 @@ update: insecure
 branch: master
 schedule: "every day"
 label_prs: enhancement
+assignees: vuolter
