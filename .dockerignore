@@ -3,4 +3,5 @@
 !*.py
 !*.cfg
 !*.in
+!*.md
 !VERSION

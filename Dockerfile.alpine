@@ -1,13 +1,10 @@
-# Highly-Optimized Docker Image of pyLoad (debian-slim variant)
+# Highly-Optimized Docker Image of pyLoad (alpine variant)
 # AUTHOR: vuolter
 
 
 ARG PYTHON_VERSION=3.7
 
-FROM python:${PYTHON_VERSION}-slim as base
-
-RUN echo "deb http://deb.debian.org/debian stable main contrib non-free" | tee -a /etc/apt/sources.list.d/docker.list && \
-    echo "deb-src http://deb.debian.org/debian stable main contrib non-free" | tee -a /etc/apt/sources.list.d/docker.list
+FROM python:${PYTHON_VERSION}-alpine as base
 
 
 
@@ -17,7 +14,8 @@ FROM base as wheels_builder
 COPY setup.cfg /source/setup.cfg
 WORKDIR /wheels
 
-RUN python -c "import configparser as cp; c = cp.ConfigParser(); c.read('/source/setup.cfg'); print(c['options']['install_requires'] + c['options.extras_require']['extra'])" | xargs pip wheel --wheel-dir=.
+RUN apk add --no-cache --upgrade gcc musl-dev python3-dev libffi-dev openssl-dev jpeg-dev zlib-dev libxml2-dev libxslt-dev && \
+    python -c "import configparser as cp; c = cp.ConfigParser(); c.read('/source/setup.cfg'); print(c['options']['install_requires'] + c['options.extras_require']['extra'])" | xargs pip wheel --wheel-dir=.
 
 
 
@@ -59,9 +57,7 @@ RUN pip install --find-links=/wheels --no-cache-dir --no-compile --no-index --pr
 # WORKDIR /opt/pyload
 
 # RUN mkdir profile tmp downloads && \
-#     apt-get update && \
-#     apt-get install --no-install-recommends -y tesseract-ocr unrar && \
-#     rm -rf /var/lib/apt/lists/* && \
+#     apk add --no-cache --upgrade tesseract-ocr unrar && \
 #     pip install --no-cache-dir --no-compile --no-index --find-links=/pyload/dist/wheels -e /pyload[extra]
 
 # VOLUME ["/opt/pyload"]
@@ -87,9 +83,7 @@ COPY --from=package_installer /package /usr/local
 WORKDIR /opt/pyload
 
 RUN mkdir profile tmp downloads && \
-    apt-get update && \
-    apt-get install --no-install-recommends -y tesseract-ocr unrar && \
-    rm -rf /var/lib/apt/lists/*
+    apk add --no-cache --upgrade tesseract-ocr unrar
 
 VOLUME ["/opt/pyload"]
 EXPOSE 8000 9666
