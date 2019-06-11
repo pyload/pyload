@@ -70,19 +70,19 @@ def _parse_args(cmd_args):
         "-d", "--debug", action="store_true", help="enable debug mode", default=None
     )
     parser.add_argument(
-        "--userdir", help="run with custom user folder", default=Core.DEFAULT_DATADIR
+        "--userdir", help="use custom profile folder", default=Core.DEFAULT_DATADIR
     )
     parser.add_argument(
-        "--cachedir", help="run with custom cache folder", default=Core.DEFAULT_TMPDIR
+        "--cachedir", help="use custom temp folder", default=Core.DEFAULT_TMPDIR
     )
     parser.add_argument(
-        "--storagedir", help="run with custom storage folder", default=Core.DEFAULT_STORAGEDIR
+        "--storagedir", help="use custom download folder", default=Core.DEFAULT_STORAGEDIR
     )
-    parser.add_argument("--daemon", action="store_true", help="daemonmize after start")
+    parser.add_argument("--daemon", action="store_true", help="run as daemon")
     parser.add_argument(
         "--restore",
         action="store_true",
-        help="restore default admin user",
+        help="restore default username/password",
         default=None,
     )
 
