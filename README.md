@@ -6,85 +6,91 @@
 </p>
 <h2 align="center">The Free and open-source Download Manager written in pure Python</h2>
 <br />
-<h3 align="center"><a href="#installation">Installation</a> | <a href="#usage">Usage</a> | <a href="#login-credentials">Login Credentials</a></h3>
-<br />
-<br />
 <p align="center">
-  <a href="https://travis-ci.org/pyload/pyload">
-    <img src="https://travis-ci.org/pyload/pyload.svg" alt="Build Status" />
-  </a>
-  <a href="https://pyup.io/repos/github/pyload/pyload/">
-    <img src="https://pyup.io/repos/github/pyload/pyload/shield.svg" alt="Updates" />
-  </a>
-  <a class="badge-align" href="https://www.codacy.com/app/pyLoad/pyload?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=pyload/pyload&amp;utm_campaign=Badge_Grade">
-    <img src="https://api.codacy.com/project/badge/Grade/240a2201eee54680b1c34bf86a32abd0" alt="Codacy Badge" />
-  </a>
-  <a href="https://github.com/ambv/black">
-    <img src="https://img.shields.io/badge/code%20style-black-000000.svg" alt="Code style: black" />
-  </a>
-  <a href="https://cla-assistant.io/pyload/pyload">
-    <img src="https://cla-assistant.io/readme/badge/pyload/pyload" alt="CLA assistant" />
-  </a>
-</p>
-<p align="center">
-  <img src="https://img.shields.io/pypi/status/pyload-ng.svg" alt="PyPI Status" />
-  <a href="https://pypi.python.org/pypi/pyload-ng">
-    <img src="https://img.shields.io/pypi/v/pyload-ng.svg" alt="PyPI Version" />
-  </a>
-  <img src="https://img.shields.io/pypi/pyversions/pyload-ng.svg" alt="PyPI Python Versions" />
-  <a href="https://github.com/pyload/pyload/blob/develop/LICENSE.md">
-    <img src="https://img.shields.io/pypi/l/pyload-ng.svg" alt="PyPI License" />
-  </a>
+  <h4 align="center">
+    <a href="#status">Status</a> |
+    <a href="#installation">Installation</a> |
+    <a href="#usage">Usage</a> |
+    <a href="#troubleshooting">Troubleshooting</a> |
+    <a href="#licensing">Licensing</a> |
+    <a href="#credits">Credits</a> |
+    <a href="#release-history">Release History</a>
+  </h4>
 </p>
 <br />
+<br />
 
-pyLoad-ng development releases.
+Status
+------------
 
-Includes `pyload-core`, `pyload-plugins`, `pyload-webui`, `pyload-cli`.
+[![Build Status](https://travis-ci.org/pyload/pyload.svg)](https://travis-ci.org/pyload/pyload)
+[![Updates](https://pyup.io/repos/github/pyload/pyload/shield.svg)](https://pyup.io/repos/github/pyload/pyload)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/240a2201eee54680b1c34bf86a32abd0)](https://www.codacy.com/app/pyLoad/pyload)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
+[![CLA assistant](https://cla-assistant.io/readme/badge/pyload/pyload)](https://cla-assistant.io/pyload/pyload)
 
-#### Warnings
+The package `pyload-ng` is automatically deployed from the [master branch](https://github.com/pyload/pyload/tree/master) of the pyLoad sources.
 
-- This package is automatically deployed from the [master codebase](https://github.com/pyload/pyload/tree/master) of the pyLoad repository.
-- We recommend to use the [stable codebase](https://github.com/pyload/pyload/tree/stable) in production.
+**No stable release is currently available!**
 
 
 Installation
 ------------
 
-### Complete Installation [recommended]
+[![PyPI Status](https://img.shields.io/pypi/status/pyload-ng.svg)](https://pypi.python.org/pypi/pyload-ng)
+[![PyPI Version](https://img.shields.io/pypi/v/pyload-ng.svg)](https://pypi.python.org/pypi/pyload-ng)
+[![PyPI Python Versions](https://img.shields.io/pypi/pyversions/pyload-ng.svg)](https://pypi.python.org/pypi/pyload-ng)
+[![PyPI License](https://img.shields.io/pypi/l/pyload-ng.svg)](https://github.com/pyload/pyload/blob/master/LICENSE.md)
 
-To install pyLoad and all its optional dependencies,
-type in a terminal/command prompt window (as root/administrator):
+To install pyLoad, type the command:
 
-    pip install --pre pyload-ng[all]
+    pip install pyload-ng
 
-### Minimum Installation
+This will install the latest stable release of pyLoad in your system.
 
-To install pyLoad (and its essential dependencies),
-type in a terminal/command prompt window (as root/administrator):
+#### Available modules
+
+- `pyload.webui`: official web interface for pyLoad
+- `pyload.plugins`: collection of officially supported plugins for pyLoad
+- `pyload.core`: just pyLoad :)
+
+### Extra Dependencies
+
+You can install all the recommended packages for pyLoad at once.
+
+Append the tag `extra` to the installation command:
+
+    pip install pyload-ng[extra]
+
+#### Available tags
+
+- `extra`: recommended extra packages
+- `build`: packages required to run the setup.py command `build_locale`
+- `test`: packages required to run tests
+- `all`: all the previous packages
+
+You can also use more tags together, like:
+
+    pip install pyload-ng[extra][build]
+
+### Development Releases
+
+You can force the installation of the latest development release of pyLoad.
+
+Append the option `--pre` to the installation command:
 
     pip install --pre pyload-ng
 
-### Troubleshooting
+### Build Translations
 
-If the installation fails due to an error related to the `pycurl` package,
-you may have to install it apart, before installing pyLoad.
+> **Note**:
+> - You do not need to build the locale files if you have installed pyLoad through `pip`, because are already included.
 
-Currently, PycURL does not support Python releases later than version 3.6,
-but un-official Windows binary packages for latest Python versions are available
-on https://www.lfd.uci.edu/~gohlke/pythonlibs/#pycurl .
+Use the command `build_locale` to retrieve and build the latest locale files (translations) for your installation:
 
-**As an example**,
-to install *PycURL 7.43.1* for Python 3.7 on Windows 64-bit, you have to
-download the file named `pycurl-7.43.1-cp37-cp37m-win_amd64.whl`
-and type in a terminal/command prompt window (as root/administrator):
+    python setup.py build_locale
 
-    pip install pycurl-7.43.1-cp37-cp37m-win_amd64.whl
-
-When the installation succesfully finishes you can safely delete the downloaded file.
-
-Visit http://pycurl.io/docs/latest/install.html to learn how to get and install
-the appropriate PycURL package for your system.
+Ideally you would use it **before** launching any other build or installation command (eg. `bdist_wheel`).
 
 
 Usage
@@ -96,44 +102,137 @@ Usage
     The Free and open-source Download Manager written in pure Python
 
     optional arguments:
-      -h, --help           show this help message and exit
-      --version            show program's version number and exit
-      -d, --debug          enable debug mode
-      --userdir USERDIR    run with custom user folder
-      --cachedir CACHEDIR  run with custom cache folder
-      --daemon             daemonmize after start
-      --restore            restore default admin user
+      -h, --help               show this help message and exit
+      --version                show program's version number and exit
+      -d, --debug              enable debug mode
+      --userdir USERDIR        use custom profile folder
+      --cachedir CACHEDIR      use custom temp folder
+      --storagedir STORAGEDIR  use custom download folder
+      --daemon                 run as daemon
+      --restore                restore default username/password
 
-### Web Interface
-
-To start pyLoad in *WebUI mode*,
-type in a terminal/command prompt window:
+To start pyLoad, type the command:
 
     pyload
 
-To show the available options, type:
+### Command Options
+
+To show an overview of the available options, type:
 
     pyload -h
 
-To access the web interface open your web browser and visit the url http://localhost:8001 .
-You can change it afterward.
+### Web Interface
 
-### Command Line Interface
+Open your web browser and visit the url http://localhost:8001 to have access to the pyLoad's web interface.
 
-To start pyLoad in *CLI mode*,
-type terminal/command prompt window:
+- Default username: `pyload`.
+- Default password: `pyload`.
 
-    pyload-cli
+**It's highly recommended to change the default access credentials after the first start**.
 
-To show the available options, type:
 
-    pyload-cli -h
+Troubleshooting
+---------------
 
-### Login Credentials
+### Installation
 
-Default username and password are `pyload`.
+If the installation fails due any of the listed errors,
+retry applying the given solution:
 
-It's highly recommended to change them on the first start.
+#### PIP not found
+
+You may not have the Python interpreter or the PIP package manager already installed on your system.
+Or maybe something else got corrupted somehow...
+
+The easiest way to fix this error is to (re)install Python.
+
+Visit https://www.python.org/downloads
+to get the most appropriate **Python 3** release for your system.
+
+#### pyload-ng not found
+
+Check the version of the Python releases installed on your system.
+
+**Python releases below version 3.6 are not supported!**
+
+To show the version of your **default** Python interpreter release, type the command:
+
+    python -V
+
+If the version is too old, try to upgrage the release or change it with another if available,
+then you can retry to install the `pyload-ng` package.
+
+Visit https://www.python.org/downloads
+to get the appropriate Python 3 release for your system.
+
+#### Setuptools is too old
+
+To upgrade the `setuptools` package, type the command:
+
+    pip install --upgrade setuptools
+
+#### Permission denied
+
+Under Unix-based systems, try to install the `pyload-ng` package with root privileges.
+
+Prefix the installation command with `sudo`, like:
+
+    sudo pip install pyload-ng
+
+Under Windows systems, open a _Command Prompt as administrator_ to install the `pyload-ng` package with root privileges.
+
+You can also try to install the `pyload-ng` package **without** root privileges.
+
+Append the option `--user` to the installation command, like:
+
+    pip install --user pyload-ng
+
+
+Licensing
+---------
+
+### Open Source License
+
+You are allowed to use this software under the terms of the **GNU Affero
+General Public License** as published by the Free Software Foundation;
+either **version 3** of the License, or (at your option) any later version.
+
+Please refer to the included [LICENSE](/LICENSE) for the full license.
+
+### Alternative License
+
+With an explicit permission of the authors you may use or distribute
+this software under a different license according to the agreement.
+
+### Contributor License Agreement
+
+Please refer to the included [CLA](/CLA.md) for the full agreement conditions.
+
+This is essentially what you will be agreeing to:
+
+- You affirm that you have the right to provide the contribution
+(i.e. it's your own work).
+- You grant the project a perpetual, non-exclusive license to use the
+contribution.
+- You grant the project rights to change the outbound license that we use to
+distribute the code.
+- You retain full ownership (copyright) of your submission and are free to do
+with it as you please.
+
+Contact us at licensing@pyload.net for any question about our code licensing policy.
+
+
+Credits
+-------
+
+Please refer to the included [CREDITS](/CREDITS.md) for the full credits.
+
+
+Release History
+---------------
+
+Please refer to the included [CHANGELOG](/CHANGELOG.md) for the full release
+history.
 
 
 <br />

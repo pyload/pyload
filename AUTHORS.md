@@ -1,8 +1,7 @@
-<p align="center">
-  <a href="https://pyload.net">
+<h2>
+  <p align="center">
     <img src="media/logo.png" alt="pyLoad" height="100" />
-  </a>
-</p>
+  </p>
 <h2 />
 
 ### Team members (current and former)

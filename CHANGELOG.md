@@ -1,8 +1,7 @@
-<p align="center">
-  <a href="https://pyload.net">
+<h2>
+  <p align="center">
     <img src="media/logo.png" alt="pyLoad" height="100" />
-  </a>
-</p>
+  </p>
 <h2 />
 
 ### 0.5.0 (N/D)
@@ -157,7 +156,7 @@
 ### 0.2.1 (2009-09-04)
 
 - Bugfixes
-- Web User Interface
+- Web Interface
 
 ### 0.1.1 (2009-08-12)
 
