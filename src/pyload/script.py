@@ -6,8 +6,8 @@ import argparse
 import os
 import sys
 
-from . import Core
-from .. import __version__
+from .core import Core
+from . import __version__
 
 
 def _daemon(core_args):

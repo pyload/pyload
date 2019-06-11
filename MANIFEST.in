@@ -1,11 +1,10 @@
-include *.cfg *.md *.toml VERSION
-exclude *.ini .* docs/conf.py Dockerfile
-
 prune .*
+prune docs
 
-graft docs
 graft media
-graft src
 graft tests
+
+exclude *.ini .* Dockerfile
+include *.cfg *.md *.toml VERSION docs/*.rst
 
 global-exclude __pycache__/* build/* locale/*

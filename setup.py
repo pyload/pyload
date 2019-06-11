@@ -13,17 +13,17 @@
 import os
 import sys
 
-from pkg_resources import VersionConflict, require
+# from pkg_resources import VersionConflict, require
 from setuptools import Command, setup
 
-try:
-    require("setuptools>=38.3")
-except VersionConflict:
-    print("Error: version of setuptools is too old (<38.3)!")
-    sys.exit(1)
+# try:
+    # require("setuptools>=38.3")
+# except VersionConflict:
+    # print("Error: version of setuptools is too old (<38.3)!")
+    # sys.exit(1)
 
 
-class _BuildLocale(Command):
+class BuildLocale(Command):
     """
     Build translations
     """
@@ -57,7 +57,7 @@ class _BuildLocale(Command):
 
 def retrieve_version():
     version = None
-    build = int(os.environ.get("PYLOAD_DEVBUILD", 0))
+    build = int(os.environ["PYLOAD_DEVBUILD"].strip()) if "PYLOAD_DEVBUILD" in os.environ else 0
 
     filename = os.path.join(os.path.dirname(__file__), "VERSION")
     with open(filename) as fp:
@@ -66,9 +66,5 @@ def retrieve_version():
     return f"{version}.dev{build}" if build else version
 
 
-def _create_commands():
-    return {"build_locale": _BuildLocale}
-
-
 if __name__ == "__main__":
-    setup(version=retrieve_version(), cmdclass=_create_commands())
+    setup(version=retrieve_version(), cmdclass={"build_locale": BuildLocale})

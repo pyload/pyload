@@ -8,5 +8,5 @@
 #           \/
 
 [build-system]
-# Minimum requirements for the build system to execute.
 requires = ["setuptools>=38.3", "wheel"]  # PEP 508 specifications.
+build-backend = "setuptools.build_meta"
