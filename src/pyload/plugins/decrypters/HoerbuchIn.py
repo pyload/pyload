@@ -30,12 +30,12 @@ class HoerbuchIn(BaseDecrypter):
     __license__ = "GPLv3"
     __authors__ = [("spoob", "spoob@pyload.net"), ("mkaay", "mkaay@mkaay.de")]
 
-    article = re.compile("http://(?:www\.)?hoerbuch\.us/wp/horbucher/\d+/.+/")
-    protection = re.compile("http://(?:www\.)?hoerbuch\.us/protection/folder_\d+.html")
+    article = re.compile(r"http://(?:www\.)?hoerbuch\.us/wp/horbucher/\d+/.+/")
+    protection = re.compile(r"http://(?:www\.)?hoerbuch\.us/protection/folder_\d+.html")
     uploaded = re.compile(
-        "http://(?:www\.)?hoerbuch\.us/protection/uploaded/(\w+)\.html"
+        r"http://(?:www\.)?hoerbuch\.us/protection/uploaded/(\w+)\.html"
     )
-    hoster_links = re.compile("http://(?:www\.)?hoerbuch\.us/wp/goto/Download/\d+/")
+    hoster_links = re.compile(r"http://(?:www\.)?hoerbuch\.us/wp/goto/Download/\d+/")
 
     def decrypt(self, pyfile):
         self.pyfile = pyfile

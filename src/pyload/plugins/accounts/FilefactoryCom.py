@@ -31,7 +31,7 @@ class FilefactoryCom(BaseAccount):
         if m is not None:
             premium = True
             validuntil = re.sub(
-                self.VALID_UNTIL_PATTERN, "\g<D> \g<M> \g<Y>", m.group(0)
+                self.VALID_UNTIL_PATTERN, r"\g<D> \g<M> \g<Y>", m.group(0)
             )
             validuntil = time.mktime(time.strptime(validuntil, "%d %b %Y"))
 

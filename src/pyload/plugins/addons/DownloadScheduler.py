@@ -58,7 +58,7 @@ class DownloadScheduler(BaseAddon):
         self.last_timetable = schedule
 
         schedule = re.findall(
-            "(\d{1,2}):(\d{2})[\s]*(-?\d+)",
+            r"(\d{1,2}):(\d{2})[\s]*(-?\d+)",
             schedule.lower().replace("full", "-1").replace("none", "0"),
         )
         if not schedule:

@@ -24,7 +24,7 @@ class SevenZip(BaseExtractor):
 
     CMD = "7z"
     EXTENSIONS = [
-        ("7z", "7z(?:\.\d{3})?"),
+        ("7z", r"7z(?:\.\d{3})?"),
         "xz",
         "gz",
         "gzip",

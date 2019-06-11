@@ -119,7 +119,7 @@ class YoutubeComFolder(BaseDecrypter):
             if channel:
                 playlists = self.get_playlists(channel["id"])
                 self.log_debug(
-                    '{} playlist\s found on channel "{}"'.format(
+                    r'{} playlist\s found on channel "{}"'.format(
                         len(playlists), channel["title"]
                     )
                 )
@@ -162,7 +162,7 @@ class YoutubeComFolder(BaseDecrypter):
                 p_name,
             )
             self.log_debug(
-                '{} video\s found on playlist "{}"'.format(len(p_videos), p_name)
+                r'{} video\s found on playlist "{}"'.format(len(p_videos), p_name)
             )
 
             if not p_videos:
@@ -170,7 +170,7 @@ class YoutubeComFolder(BaseDecrypter):
             elif "checkDups" in p:
                 p_urls = [urlize(v_id) for v_id in p_videos if v_id not in addedvideos]
                 self.log_debug(
-                    '{} video\s available on playlist "{}" after duplicates cleanup'.format(
+                    r'{} video\s available on playlist "{}" after duplicates cleanup'.format(
                         len(p_urls), p_name
                     )
                 )

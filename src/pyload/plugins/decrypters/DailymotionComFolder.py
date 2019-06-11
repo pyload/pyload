@@ -98,7 +98,7 @@ class DailymotionComFolder(BaseDecrypter):
             self.log_debug("Url recognized as Channel")
             playlists = self.get_playlists(m_id)
             self.log_debug(
-                '{} playlist\s found on channel "{}"'.format(len(playlists), m_id)
+                r'{} playlist\s found on channel "{}"'.format(len(playlists), m_id)
             )
 
         if not playlists:
@@ -110,7 +110,7 @@ class DailymotionComFolder(BaseDecrypter):
                 self.pyload.config.get("general", "storage_folder"), p_owner, p_name
             )
             self.log_debug(
-                '{} video\s found on playlist "{}"'.format(len(p_videos), p_name)
+                r'{} video\s found on playlist "{}"'.format(len(p_videos), p_name)
             )
             # NOTE: Folder is NOT recognized by pyload 0.5.0!
             self.packages.append((p_name, p_videos, p_folder))

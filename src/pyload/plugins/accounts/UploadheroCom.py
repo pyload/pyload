@@ -22,7 +22,7 @@ class UploadheroCom(BaseAccount):
 
     def grab_info(self, user, password, data):
         _re_premium = re.compile(
-            'Il vous reste <span class="bleu">(\d+)</span> jours premium'
+            r'Il vous reste <span class="bleu">(\d+)</span> jours premium'
         )
 
         html = self.load("http://uploadhero.co/my-account")
