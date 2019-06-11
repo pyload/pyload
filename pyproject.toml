@@ -10,3 +10,7 @@
 [build-system]
 requires = ["setuptools>=38.3", "wheel"]  # PEP 508 specifications.
 build-backend = "setuptools.build_meta"
+
+[tool.black]
+line-length = 88
+target-version = ['py36']

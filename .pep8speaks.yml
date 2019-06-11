@@ -1,0 +1,10 @@
+# File : .pep8speaks.yml
+
+pycodestyle:
+  max-line-length: 88
+
+message:
+  opened: 
+    footer: "We recommend to use [black](https://github.com/python/black) to automatically correct those files."
+  updated:
+    footer: "We recommend to use [black](https://github.com/python/black) to automatically correct those files."
