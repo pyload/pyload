@@ -242,7 +242,7 @@ class MultiAccount(BaseAccount):
             self.log_debug(f"New {self.plugintype}: {', '.join(plugins)}")
 
             #: Create new regexp
-            domains = "|".join(x.replace(".", "\.") for x in plugins)
+            domains = "|".join(x.replace(".", r"\.") for x in plugins)
             pattern = rf".*(?P<DOMAIN>{domains}).*"
 
             if (

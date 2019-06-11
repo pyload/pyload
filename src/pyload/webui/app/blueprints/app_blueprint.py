@@ -437,7 +437,7 @@ def admin():
     for data in allusers.values():
         name = data["name"]
         users[name] = {"perms": get_permission(data["permission"])}
-        users[name]["perms"]["admin"] = data["role"] is 0
+        users[name]["perms"]["admin"] = data["role"] == 0
 
     s = flask.session
     if flask.request.method == "POST":

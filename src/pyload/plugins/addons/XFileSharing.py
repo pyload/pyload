@@ -119,7 +119,7 @@ class XFileSharing(BaseAddon):
                 self.log_info(self._("No {} to handle").format(type))
                 return
 
-            match_list = "|".join(sorted(plugin_set)).replace(".", "\.")
+            match_list = "|".join(sorted(plugin_set)).replace(".", r"\.")
             pattern = self._regexmap[type][1].format(match_list)
 
             self.log_info(
@@ -127,7 +127,7 @@ class XFileSharing(BaseAddon):
                     len(plugin_set),
                     type,
                     "" if len(plugin_set) == 1 else "s",
-                    match_list.replace("\.", ".").replace("|", ", "),
+                    match_list.replace(r"\.", ".").replace("|", ", "),
                 )
             )
         else:
@@ -155,7 +155,7 @@ class XFileSharing(BaseAddon):
                 ):
                     plugin_list.append(klass.PLUGIN_DOMAIN)
 
-            unmatch_list = "|".join(sorted(plugin_list)).replace(".", "\.")
+            unmatch_list = "|".join(sorted(plugin_list)).replace(".", r"\.")
             pattern = self._regexmap[type][0].format(unmatch_list)
 
             self.log_info(self._("Auto-discover new {}s").format(type))

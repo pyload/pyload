@@ -46,7 +46,7 @@ class HostujeNet(SimpleDownloader):
             self.error(self._("Script not found"))
 
         action, inputs = self.parse_html_form(
-            pyfile.url.replace(".", "\.").replace("?", "\?")
+            pyfile.url.replace(".", r"\.").replace("?", r"\?")
         )
         if not action:
             self.error(self._("Form not found"))

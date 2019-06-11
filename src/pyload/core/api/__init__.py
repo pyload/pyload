@@ -576,8 +576,8 @@ class Api:
     @permission(Perms.ADD)
     def check_and_add_packages(self, links, dest=Destination.QUEUE.value):
         """
-        Checks online status, retrieves names, and will add packages.\ Because of this
-        packages are not added immediatly, only for internal use.
+        Checks online status, retrieves names, and will add packages.
+        Because of this packages are not added immediatly, only for internal use.
 
         :param links: list of urls
         :param dest: `Destination`
@@ -715,7 +715,8 @@ class Api:
     def get_queue_data(self):
         """
         Return complete data about everything in queue, this is very expensive use it
-        sparely.\ See `get_queue` for alternative.
+        sparely.
+        See `get_queue` for alternative.
 
         :return: list of `PackageData`
         """
