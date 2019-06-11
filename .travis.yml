@@ -1,4 +1,6 @@
 sudo: false
+
+os: linux
 language: python
 group: travis_latest
 
@@ -10,14 +12,15 @@ git:
 
 branches:
   only:
+    - /^v[\d.]+/
     - master
     - develop
-    - /^v[\d.]+/
 
 stages:
   - check
   - test
-  - deploy
+  - name: deploy
+    if: repo = pyload/pyload AND branch = master
 
 # NOTE: this must be set to latest stable python version
 python: 3.7
@@ -113,7 +116,7 @@ jobs:
 
     - stage: deploy
       name: Github Release
-      if: branch = master AND tag IS present
+      if: tag IS present
       install: pip install --upgrade Babel Jinja2 wheel
       script: python setup.py sdist build_locale bdist_wheel
       deploy:
@@ -124,14 +127,9 @@ jobs:
         file: dist/*
         skip_cleanup: true
         # prerelease: true
-        on:
-          repo: pyload/pyload
-          # branch: master
-          # tags: true
 
     - stage: deploy
       name: PyPI Release
-      if: branch = master
       env: PYLOAD_DEVBUILD="$TRAVIS_BUILD_NUMBER"
       install: pip install --upgrade Babel Jinja2 readme_renderer[md]
       script: true
@@ -144,13 +142,9 @@ jobs:
         distributions: "sdist build_locale bdist_wheel"
         # skip_cleanup: true
         skip_existing: true
-        on:
-          repo: pyload/pyload
-          # branch: master
 
     - stage: deploy
       name: Docker Release
-      if: branch = master
       env:
         - PYLOAD_DEVBUILD="$TRAVIS_BUILD_NUMBER"
         - secure: "dtCGQHfYizfV/u3nZ9lQZcNsb2eJrvCarJaZAuerOllqlsPzfpFFVJVmDpkwaCjs8qEEvflQOPO0o/uonUKQOSmWdcQaqmtMlRZ3JZEENWXAnLJDy/lfBflrR+An47vS5oNQ9bNcLMM7GBFbOxcXFGK6zScXnS2g8erXqymN46M="
@@ -163,28 +157,26 @@ jobs:
       install: pip install --upgrade docker-ci-deploy
       before_script: docker pull pyload/pyload || true
       script:
-        - docker build --pull --cache-from pyload/pyload:latest-slim --tag pyload/pyload:slim .
+        - docker build --pull --cache-from pyload/pyload:latest-ubuntu --tag pyload/pyload:ubuntu .
         - docker build --file Dockerfile.alpine --pull --cache-from pyload/pyload:latest-alpine --tag pyload/pyload:alpine .
       after_script: docker images
       before_deploy:
-        - docker run pyload/pyload
+        - docker run pyload/pyload:ubuntu
+        - docker run pyload/pyload:alpine
         - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
       deploy:
         - provider: script
           script:
-            - dcd --tag slim --version "${TRAVIS_TAG#v}" pyload/pyload:slim
+            - dcd --tag ubuntu --version "${TRAVIS_TAG#v}" pyload/pyload:ubuntu
             - dcd --tag alpine --version "${TRAVIS_TAG#v}" pyload/pyload:alpine
           skip_cleanup: true
           on:
-            # branch: master
             tags: true
         - provider: script
           script:
-            - dcd --tag latest-slim -tag latest pyload/pyload:slim
+            - dcd --tag latest-ubuntu -tag latest pyload/pyload:ubuntu
             - dcd --tag latest-alpine pyload/pyload:alpine
           skip_cleanup: true
-          # on:
-            # branch: master
 
 # after_success:
   # - if [[ "$COVERAGE" == "true" ]]; then coveralls || echo "failed"; fi
