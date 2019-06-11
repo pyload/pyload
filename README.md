@@ -1,7 +1,7 @@
 <br />
 <p align="center">
   <a href="https://pyload.net">
-    <img src="media/banner.png" alt="pyLoad" height="110" />
+    <img src="https://raw.githubusercontent.com/pyload/pyload/master/media/banner.png" alt="pyLoad" height="110" />
   </a>
 </p>
 <h2 align="center">The Free and open-source Download Manager written in pure Python</h2>
