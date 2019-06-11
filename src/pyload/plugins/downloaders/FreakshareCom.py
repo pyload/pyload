@@ -157,7 +157,7 @@ class FreakshareCom(BaseDownloader):
             return seconds.to_midnight()
 
         timestring = re.search(
-            "\s*var\s(?:downloadWait|time)\s=\s(\d*)[\d.]*;", self.data
+            r"\s*var\s(?:downloadWait|time)\s=\s(\d*)[\d.]*;", self.data
         )
         if timestring:
             return int(timestring.group(1))

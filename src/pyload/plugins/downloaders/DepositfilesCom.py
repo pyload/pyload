@@ -41,9 +41,9 @@ class DepositfilesCom(SimpleDownloader):
 
     NAME_REPLACEMENTS = [
         (r"\%u([0-9A-Fa-f]{4})", lambda m: chr(int(m.group(1), 16))),
-        (r'.*<b title="(?P<N>.+?)".*', "\g<N>"),
+        (r'.*<b title="(?P<N>.+?)".*', r"\g<N>"),
     ]
-    URL_REPLACEMENTS = [(__pattern__ + ".*", "https://depositfiles.com/files/\g<ID>")]
+    URL_REPLACEMENTS = [(__pattern__ + ".*", r"https://depositfiles.com/files/\g<ID>")]
 
     COOKIES = [("depositfiles.com", "lang_current", "en")]
 

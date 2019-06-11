@@ -146,13 +146,13 @@ class CzshareCom(SimpleDownloader):
         else:
             self.captcha.correct()
 
-        m = re.search("countdown_number = (\d+);", self.data)
+        m = re.search(r"countdown_number = (\d+);", self.data)
         self.set_wait(int(m.group(1)) if m else 50)
 
         #: Download the file, destination is determined by pyLoad
         self.log_debug("WAIT URL", self.req.last_effective_url)
 
-        m = re.search("free_wait.php\?server=(.*?)&(.*)", self.req.last_effective_url)
+        m = re.search(r"free_wait.php\?server=(.*?)&(.*)", self.req.last_effective_url)
         if m is None:
             self.error(self._("Download URL not found"))
 

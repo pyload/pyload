@@ -116,7 +116,7 @@ class PornhubCom(SimpleDownloader):
         json_data = json.loads(res)
 
         urls = {
-            int(re.search("^(\d+)", x["text"]).group(0)): x["url"]
+            int(re.search(r"^(\d+)", x["text"]).group(0)): x["url"]
             for x in json_data
             if x["url"]
         }
