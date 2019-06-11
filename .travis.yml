@@ -19,21 +19,13 @@ stages:
   - test
   - deploy
 
-env:
-  global: if [ -z "$TRAVIS_TAG" ]; then PYLOAD_DEVBUILD="$TRAVIS_BUILD_NUMBER"; fi
-
 # NOTE: this must be set to latest stable python version
 python: 3.7
 # NOTE: this must be set to latest supported ubuntu version
 dist: xenial
 
-# addons:
-  # apt:
-    # update: true
-    # packages: libgnutls-dev
-
-cache: pip
 before_cache: rm -f "$HOME/.cache/pip/log/debug.log"
+cache: pip
 
 install: pip install --upgrade tox tox-travis
 script: tox --sitepackages
@@ -68,7 +60,7 @@ jobs:
 
     - stage: test
       os: linux
-      python: 3.7
+      # python: $TRAVIS_PYTHON_VERSION
 
     - stage: test
       os: linux
@@ -82,34 +74,47 @@ jobs:
     - stage: test
       os: osx
       language: sh
-      env: TOXENV=py3
+      env:
+        - TOXENV="py${TRAVIS_PYTHON_VERSION//./}"
+        - HOMEBREW_NO_INSTALL_CLEANUP=1
+        - HOMEBREW_NO_ANALYTICS=1
+      before_cache:
+        # - brew cleanup
+        - rm -f "$HOME/Library/Caches/pip/log/debug.log"
+      cache:
+        directories:
+          # - "$HOME/Library/Caches/Homebrew"
+          - "$HOME/Library/Caches/pip"
       addons:
         homebrew:
-          update: true
+          # update: true
           packages: python3
       before_install:
-        - pip3 install virtualenv
-        - virtualenv -p python3 ~/venv
-        - source ~/venv/bin/activate
+        - python3 -m pip install --upgrade virtualenv
+        - virtualenv -p python3 --system-site-packages "$HOME/venv"
+        - source "$HOME/venv/bin/activate"
 
     # NOTE: work-around to test Python on Windows (not supported officially)
     - stage: test
       os: windows
       language: sh
-      env: TOXENV=py3
+      env:
+        - TOXENV="py${TRAVIS_PYTHON_VERSION//./}"
+        - LOCALAPPDATA="/c/Users/travis/AppData/Local"
+        - PATH="/c/Python${TRAVIS_PYTHON_VERSION//./}:/c/Python${TRAVIS_PYTHON_VERSION//./}/Scripts:$PATH"
+      before_cache: rm -f "$LOCALAPPDATA/pip/Cache/log/debug.log"
+      cache:
+        directories: "$LOCALAPPDATA/pip/Cache"
       # addons:
         # chocolatey:
           # update: true
           # packages: python3
-      before_install:
-        - choco install -y python3
-        - export PATH="/c/Python37:/c/Python37/Scripts:$PATH"
+      before_install: choco install -y python3
 
     - stage: deploy
       name: Github Release
-      install: pip install --upgrade Babel readme_renderer[md] Sphinx>1.4 wheel
-      script: true
-      before_deploy: python setup.py sdist build_locale bdist_wheel bdist_msi bdist_rpm
+      install: pip install --upgrade Babel Jinja2 wheel
+      script: python setup.py sdist build_locale bdist_wheel bdist_msi bdist_rpm
       deploy:
         provider: releases
         api-key:
@@ -125,7 +130,8 @@ jobs:
 
     - stage: deploy
       name: PyPI Release
-      install: pip install --upgrade Babel readme_renderer[md] Sphinx>1.4
+      env: PYLOAD_DEVBUILD="$TRAVIS_BUILD_NUMBER"
+      install: pip install --upgrade Babel Jinja2 readme_renderer[md]
       script: true
       deploy:
         provider: pypi
@@ -143,6 +149,7 @@ jobs:
     - stage: deploy
       name: Docker Release
       env:
+        - PYLOAD_DEVBUILD="$TRAVIS_BUILD_NUMBER"
         - secure: "dtCGQHfYizfV/u3nZ9lQZcNsb2eJrvCarJaZAuerOllqlsPzfpFFVJVmDpkwaCjs8qEEvflQOPO0o/uonUKQOSmWdcQaqmtMlRZ3JZEENWXAnLJDy/lfBflrR+An47vS5oNQ9bNcLMM7GBFbOxcXFGK6zScXnS2g8erXqymN46M="
         - secure: "TrWBa99CnrnJ/FYKhq20EYAhbjlLXVExQu5ScZczDYzVZYV1rLzENInyc8L7JVU1A6vSJ4lIKZ+BYMk03hSMSU8wIQPrKaKHLBfjgX6hww9gBHIdfhnM9yVhBS8NM+jwmGQBotFjiRsQVCg1Jhtd9YwpjCO6Gj4UBmNfxXt52tw="
       addons:
@@ -152,17 +159,29 @@ jobs:
       services: docker
       install: pip install --upgrade docker-ci-deploy
       before_script: docker pull pyload/pyload || true
-      script: docker build --pull --cache-from pyload/pyload --tag pyload/pyload .
+      script:
+        - docker build --pull --cache-from pyload/pyload:latest-slim --tag pyload/pyload:slim .
+        - docker build --file Dockerfile.alpine --pull --cache-from pyload/pyload:latest-alpine --tag pyload/pyload:alpine .
       after_script: docker images
       before_deploy:
         - docker run pyload/pyload
         - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
       deploy:
-        provider: script
-        script: dcd $(if [ -z "$TRAVIS_TAG" ]; then echo "--version-latest"; else echo "--tag $TRAVIS_TAG"; fi) pyload/pyload
-        skip_cleanup: true
-        on:
-          branch: master
+        - provider: script
+          script:
+            - dcd --tag slim --version "${TRAVIS_TAG#v}" pyload/pyload:slim
+            - dcd --tag alpine --version "${TRAVIS_TAG#v}" pyload/pyload:alpine
+          skip_cleanup: true
+          on:
+            branch: master
+            tags: true
+        - provider: script
+          script:
+            - dcd --tag latest-slim -tag latest pyload/pyload:slim
+            - dcd --tag latest-alpine pyload/pyload:alpine
+          skip_cleanup: true
+          on:
+            branch: master
 
 # after_success:
   # - if [[ "$COVERAGE" == "true" ]]; then coveralls || echo "failed"; fi
