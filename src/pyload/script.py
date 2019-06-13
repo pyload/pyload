@@ -60,8 +60,17 @@ def _parse_args(cmd_args):
       :obj:`argparse.Namespace`: command line parameters namespace
     """
     parser = argparse.ArgumentParser(
-        description="The Free and open-source Download Manager written in pure Python"
-    )
+        description="""
+      ____________
+   _ /       |    \ ___________ _ _______________ _ ___
+  /  |    ___/    |   _ __ _  _| |   ___  __ _ __| |   \
+ /   \___/  ______/  | '_ \ || | |__/ _ \/ _` / _` |    \
+ \       |   o|      | .__/\_, |____\___/\__,_\__,_|    /
+  \______\    /______|_|___|__/________________________/
+          \  /
+           \/
+        
+The free and open-source Download Manager written in pure Python"""[1:])
     group = parser.add_mutually_exclusive_group()
 
     group.add_argument("--version", action="version", version=f"pyLoad {__version__}")
@@ -70,19 +79,19 @@ def _parse_args(cmd_args):
         "-d", "--debug", action="store_true", help="enable debug mode", default=None
     )
     parser.add_argument(
-        "--userdir", help="use custom profile folder", default=Core.DEFAULT_DATADIR
+        "--userdir", help="change location where user data files are stored", default=Core.DEFAULT_DATADIR
     )
     parser.add_argument(
-        "--cachedir", help="use custom temp folder", default=Core.DEFAULT_TMPDIR
+        "--cachedir", help="change location where temporary files are stored", default=Core.DEFAULT_TMPDIR
     )
     parser.add_argument(
-        "--storagedir", help="use custom download folder", default=Core.DEFAULT_STORAGEDIR
+        "--storagedir", help="change location where downloads are saved", default=Core.DEFAULT_STORAGEDIR
     )
     parser.add_argument("--daemon", action="store_true", help="run as daemon")
     parser.add_argument(
         "--restore",
         action="store_true",
-        help="restore default username/password",
+        help="reset default username/password",
         default=None,
     )
 
