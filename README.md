@@ -5,12 +5,12 @@
   </a>
 </p>
 <h2 align="center">The Free and open-source Download Manager written in pure Python</h2>
-<br />
 <p align="center">
   <h4 align="center">
     <a href="#status">Status</a> |
     <a href="#installation">Installation</a> |
     <a href="#usage">Usage</a> |
+    <a href="#docker-support-experimental">Docker Support</a> |
     <a href="#troubleshooting">Troubleshooting</a> |
     <a href="#licensing">Licensing</a> |
     <a href="#credits">Credits</a> |
@@ -31,7 +31,7 @@ Status
 
 The package `pyload-ng` is automatically deployed from the [master branch](https://github.com/pyload/pyload/tree/master) of the pyLoad sources.
 
-**No stable release is currently available!**
+**No stable release is currently available!** :smiling_imp:
 
 
 Installation
@@ -50,9 +50,9 @@ This will install the latest stable release of pyLoad in your system.
 
 #### Available modules
 
-- `pyload.webui`: official web interface for pyLoad
-- `pyload.plugins`: collection of officially supported plugins for pyLoad
-- `pyload.core`: just pyLoad :)
+- `pyload.webui`: pyLoad's web interface.
+- `pyload.plugins`: collection of pyLoad plugins (officially supported).
+- `pyload.core`: just pyLoad.
 
 ### Extra Dependencies
 
@@ -64,10 +64,10 @@ Append the tag `extra` to the installation command:
 
 #### Available tags
 
-- `extra`: recommended extra packages
-- `build`: packages required to run the setup.py command `build_locale`
-- `test`: packages required to run tests
-- `all`: all the previous packages
+- `extra`: recommended extra packages.
+- `build`: packages required to build locales.
+- `test`: packages required to run tests.
+- `all`: all of them.
 
 You can also use more tags together, like:
 
@@ -81,16 +81,21 @@ Append the option `--pre` to the installation command:
 
     pip install --pre pyload-ng
 
+**Development release use is not recommended**. Unexpected crashes may occur.
+
 ### Build Translations
 
 > **Note**:
-> - You do not need to build the locale files if you have installed pyLoad through `pip`, because are already included.
+> - You do not need to build the locale files if you have installed pyLoad through `pip`,
+> because are already included.
 
-Use the command `build_locale` to retrieve and build the latest locale files (translations) for your installation:
+Use the command `build_locale` to retrieve and build the latest locale files (translations)
+for your installation:
 
     python setup.py build_locale
 
-Ideally you would use it **before** launching any other build or installation command (eg. `bdist_wheel`).
+Ideally you would use it **before** launching any other build or installation command
+(eg. `bdist_wheel`).
 
 
 Usage
@@ -99,36 +104,104 @@ Usage
     usage: pyload [-h] [--version] [-d] [--userdir USERDIR] [--cachedir CACHEDIR]
                   [--daemon] [--restore]
 
-    The Free and open-source Download Manager written in pure Python
+    The free and open-source Download Manager written in pure Python
 
     optional arguments:
       -h, --help               show this help message and exit
       --version                show program's version number and exit
       -d, --debug              enable debug mode
-      --userdir USERDIR        use custom profile folder
-      --cachedir CACHEDIR      use custom temp folder
-      --storagedir STORAGEDIR  use custom download folder
+      --userdir USERDIR        change location where user data files are stored
+      --cachedir CACHEDIR      change location where temporary files are stored
+      --storagedir STORAGEDIR  change location where downloads will be saved
       --daemon                 run as daemon
-      --restore                restore default username/password
+      --restore                reset default username/password
 
 To start pyLoad, type the command:
 
     pyload
 
+This will create the following directories (if they do not already exist):
+
+- `~/Downloads/pyLoad`: where downloads will be saved.
+- `~/pyLoad`: where user data files (configurations) are stored.
+- `<TMPDIR>/pyLoad`: where temporary files (cache) are stored.
+
+On Windows systems data files are saved in the directory `~\AppData\Roaming\pyLoad`.
+
+The location of `<TMPDIR>` is [platform-specific](https://docs.python.org/3/library/tempfile.html#tempfile.gettempdir).
+
 ### Command Options
 
 To show an overview of the available options, type:
 
-    pyload -h
+    pyload --help
 
 ### Web Interface
 
-Open your web browser and visit the url http://localhost:8001 to have access to the pyLoad's web interface.
+Open your web browser and visit the url http://localhost:8001 to have access to
+the pyLoad's web interface.
 
 - Default username: `pyload`.
 - Default password: `pyload`.
 
 **It's highly recommended to change the default access credentials after the first start**.
+
+
+Docker Support [experimental]
+-----------------------------
+
+[![Docker Build Status](https://img.shields.io/docker/build/pyload/pyload.svg)](https://hub.docker.com/r/pyload/pyload)
+[![Docker Pulls](https://img.shields.io/docker/pulls/pyload/pyload.svg)](https://hub.docker.com/r/pyload/pyload)
+[![MicroBadger Layers](https://img.shields.io/microbadger/layers/pyload/pyload/latest-ubuntu.svg?label=layers%20%28ubuntu%29)](https://microbadger.com/images/pyload/pyload:latest-ubuntu)
+[![MicroBadger Layers](https://img.shields.io/microbadger/layers/pyload/pyload/latest-alpine.svg?label=layers%20%28alpine%29)](https://microbadger.com/images/pyload/pyload:latest-alpine)
+[![MicroBadger Size](https://img.shields.io/microbadger/image-size/pyload/pyload/latest-ubuntu.svg?label=image%20size%20%28ubuntu%29)](https://microbadger.com/images/pyload/pyload:latest-ubuntu)
+[![MicroBadger Size](https://img.shields.io/microbadger/image-size/pyload/pyload/latest-alpine.svg?label=image%20size%20%28alpine%29)](https://microbadger.com/images/pyload/pyload:latest-alpine)
+
+#### Available images
+
+- `pyload/pyload:latest-ubuntu`: default docker image of pyLoad.
+- `pyload/pyload:latest-alpine`: alternative docker image of pyLoad (smaller, _maybe_ slower).
+- `pyload/pyload`: alias of `pyload/pyload:latest-ubuntu`.
+
+### Create Container
+
+    docker create --name=pyload -v <USERDIR>:/config -v <STORAGEDIR>:/downloads --restart unless-stopped pyload/pyload
+
+Replace `<STORAGEDIR>` with the location on the host machine where you want that downloads will be saved.
+Replace `<USERDIR>` with where you want that user data files (configurations) are stored.
+
+### Start container
+
+    docker start pyload
+
+### Stop Container
+
+    docker stop pyload
+
+### Show logs
+
+    docker logs -f pyload
+
+### Compose
+
+Compatible with `docker-compose` v2 schemas:
+
+    ---
+    version: 2
+    services:
+      pyload:
+        image: pyload/pyload
+        container_name: pyload
+        environment:
+          - PUID=1000
+          - PGID=1000
+          - TZ=Europe/London
+        volumes:
+          - <USERDIR>:/config
+          - <STORAGEDIR>:/downloads
+        ports:
+          - 8001:8001
+        restart: unless-stopped
 
 
 Troubleshooting
@@ -141,7 +214,8 @@ retry applying the given solution:
 
 #### PIP not found
 
-You may not have the Python interpreter or the PIP package manager already installed on your system.
+You may not have the Python interpreter or the PIP package manager already installed
+on your system.
 Or maybe something else got corrupted somehow...
 
 The easiest way to fix this error is to (re)install Python.
@@ -153,14 +227,14 @@ to get the most appropriate **Python 3** release for your system.
 
 Check the version of the Python releases installed on your system.
 
-**Python releases below version 3.6 are not supported!**
+Python releases below version 3.6 are not supported!
 
 To show the version of your **default** Python interpreter release, type the command:
 
-    python -V
+    python --version
 
-If the version is too old, try to upgrage the release or change it with another if available,
-then you can retry to install the `pyload-ng` package.
+If the version is too old, try to upgrage the release or change it with another
+if available, then you can retry to install pyLoad.
 
 Visit https://www.python.org/downloads
 to get the appropriate Python 3 release for your system.
@@ -173,19 +247,39 @@ To upgrade the `setuptools` package, type the command:
 
 #### Permission denied
 
-Under Unix-based systems, try to install the `pyload-ng` package with root privileges.
+Under Unix-based systems, try to install pyLoad with root privileges.
 
 Prefix the installation command with `sudo`, like:
 
     sudo pip install pyload-ng
 
-Under Windows systems, open a _Command Prompt as administrator_ to install the `pyload-ng` package with root privileges.
+Under Windows systems, open a _Command Prompt as administrator_ to install pyLoad
+with root privileges.
 
 You can also try to install the `pyload-ng` package **without** root privileges.
 
 Append the option `--user` to the installation command, like:
 
     pip install --user pyload-ng
+
+### Uninstallation
+
+To uninstall pyLoad, type the command:
+
+    pip uninstall --yes pyload-ng
+
+Note that this will not remove any installed dependencies.
+
+#### Permission denied
+
+Under Unix-based systems, try to uninstall pyLoad with root privileges.
+
+Prefix the installation command with `sudo`:
+
+    sudo pip uninstall --yes pyload-ng
+
+Under Windows systems, open a _Command Prompt as administrator_ to uninstall pyLoad
+with root privileges.
 
 
 Licensing
