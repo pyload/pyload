@@ -8,7 +8,7 @@ import shutil
 
 import portalocker
 import psutil
-from pyload.utils.convert import to_bytes, to_str
+from .convert import to_bytes, to_str
 
 try:
     import send2trash

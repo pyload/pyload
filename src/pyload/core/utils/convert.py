@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # AUTHOR: vuolter
 
-from pyload.utils.check import is_mapping, isiterable
+from .check import is_mapping, isiterable
 
 try:
     import bitmath

@@ -6,11 +6,11 @@ import re
 import urllib.parse
 
 import tld
-from pyload.utils.check import isiterable
-from pyload.utils.struct import HeaderDict
-from pyload.utils.web import format, purge
-from pyload.utils.web.check import is_host, is_port, isip
-from pyload.utils.web.convert import host_to_ip, ip_to_host, splitaddress
+from ..check import isiterable
+from ..struct import HeaderDict
+from . import format, purge
+from .check import is_host, is_port, isip
+from .convert import host_to_ip, ip_to_host, splitaddress
 
 
 def socket(text):

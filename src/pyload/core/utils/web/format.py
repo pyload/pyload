@@ -4,8 +4,8 @@
 import re
 import urllib.parse
 
-from pyload.utils.convert import to_str
-from pyload.utils.web import purge
+from .. import to_str
+from . import purge
 
 _RE_URL = re.compile(r"(?<!:)/{2,}")
 

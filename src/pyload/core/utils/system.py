@@ -7,9 +7,9 @@ import sys
 from subprocess import PIPE, Popen
 
 import psutil
-from pyload.utils import convert
-from pyload.utils.check import isiterable
-from pyload.utils.convert import to_str
+from . import convert
+from .check import isiterable
+from .convert import to_str
 
 try:
     import dbus

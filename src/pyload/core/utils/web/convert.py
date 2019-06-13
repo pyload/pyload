@@ -5,7 +5,7 @@ import socket
 
 import idna
 
-from pyload.utils.convert import to_str
+from ..convert import to_str
 
 
 def splitaddress(address):

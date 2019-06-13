@@ -4,10 +4,10 @@
 import datetime
 import os
 
-from pyload.utils.check import isiterable
-from pyload.utils.convert import BYTE_PREFIXES, to_str
-from pyload.utils.fs import fullpath
-from pyload.utils.misc import is_plural
+from .check import isiterable
+from .convert import BYTE_PREFIXES, to_str
+from .fs import fullpath
+from .misc import is_plural
 
 try:
     import bitmath

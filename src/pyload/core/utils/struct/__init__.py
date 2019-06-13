@@ -8,4 +8,4 @@
 #          \  /
 #           \/
 
-from pyload.utils.struct.base import *
+from .struct.base import *

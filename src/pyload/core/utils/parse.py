@@ -5,9 +5,9 @@ import hashlib
 import os
 import re
 
-from pyload.utils import convert, purge, web
-from pyload.utils.convert import to_str
-from pyload.utils.seconds import to_midnight as seconds_to_midnight
+from . import convert, purge, web
+from .convert import to_str
+from .seconds import to_midnight as seconds_to_midnight
 
 _RE_ALIAS = re.compile(r"[\d.-_]+")
 

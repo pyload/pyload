@@ -4,7 +4,7 @@
 import random
 import socket
 
-from pyload.utils.check import is_mapping
+from .check import is_mapping
 
 
 def random_string(length):

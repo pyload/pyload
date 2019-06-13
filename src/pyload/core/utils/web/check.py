@@ -8,9 +8,9 @@ import idna
 import requests
 
 import validators
-from pyload.utils.convert import to_str
-from pyload.utils.web import format
-from pyload.utils.web.convert import splitaddress
+from ..convert import to_str
+from . import format
+from .convert import splitaddress
 
 
 def is_ipv4(value):
@@ -97,7 +97,7 @@ def is_resource(url, *args, **kwargs):
     if content:
         mime, _, _ = content.rpartition("charset=")
     else:
-        from pyload.utils.web import parse
+        from . import parse
 
         name = parse.name(url)
         _, ext = os.path.splitext(name)

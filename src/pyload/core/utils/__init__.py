@@ -8,4 +8,4 @@
 #          \  /
 #           \/
 
-from pyload.utils import struct, web, old
+from . import struct, web, old

@@ -3,7 +3,7 @@
 
 from collections.abc import MutableMapping
 
-from pyload.utils.struct.base import InscDict
+from .struct.base import InscDict
 
 
 class ReadError(KeyError):

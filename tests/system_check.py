@@ -35,7 +35,7 @@ def main():
         print("OpenSSL:", "missing")
 
     try:
-        from Pillow import Image
+        from PIL import Image
 
         print("image library:", Image.VERSION)
     except Exception:
@@ -73,7 +73,7 @@ def main():
         core_err.append("Your py-curl version is to old, please upgrade!")
 
     try:
-        from Pillow import Image
+        from PIL import Image
     except Exception:
         try:
             import Image
