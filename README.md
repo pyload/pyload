@@ -1,22 +1,18 @@
 <br />
 <p align="center">
-  <a href="https://pyload.net">
-    <img src="https://raw.githubusercontent.com/pyload/pyload/master/media/banner.png" alt="pyLoad" height="110" />
-  </a>
+  <img src="https://raw.githubusercontent.com/pyload/pyload/master/media/banner.png" alt="pyLoad" height="110" />
 </p>
 <h2 align="center">The Free and open-source Download Manager written in pure Python</h2>
-<p align="center">
-  <h4 align="center">
-    <a href="#status">Status</a> |
-    <a href="#installation">Installation</a> |
-    <a href="#usage">Usage</a> |
-    <a href="#docker-support-experimental">Docker Support</a> |
-    <a href="#troubleshooting">Troubleshooting</a> |
-    <a href="#licensing">Licensing</a> |
-    <a href="#credits">Credits</a> |
-    <a href="#release-history">Release History</a>
-  </h4>
-</p>
+<h4 align="center">
+  <a href="#status">Status</a> |
+  <a href="#installation">Installation</a> |
+  <a href="#usage">Usage</a> |
+  <a href="#docker-support-experimental">Docker Support</a> |
+  <a href="#troubleshooting">Troubleshooting</a> |
+  <a href="#licensing">Licensing</a> |
+  <a href="#credits">Credits</a> |
+  <a href="#release-history">Release History</a>
+</h4>
 <br />
 <br />
 
@@ -32,7 +28,7 @@ Status
 
 The new pyLoad package `pyload-ng` is automatically deployed from the [master branch](https://github.com/pyload/pyload/tree/master) of the pyLoad sources.
 
-The old pyLoad package, compatible with Python 2 only, is still available on the [stable branch](https://github.com/pyload/pyload/tree/stable).
+The old pyLoad package, **compatible with Python 2 only**, is still available on the [stable branch](https://github.com/pyload/pyload/tree/stable).
 
 
 Installation
@@ -43,14 +39,14 @@ Installation
 [![PyPI Python Versions](https://img.shields.io/pypi/pyversions/pyload-ng.svg)](https://pypi.python.org/pypi/pyload-ng)
 [![PyPI License](https://img.shields.io/pypi/l/pyload-ng.svg)](https://github.com/pyload/pyload/blob/master/LICENSE.md)
 
-> **Note**:
-> No stable release is available yet! :smiling_imp:
-
 To install pyLoad, type the command:
 
     pip install pyload-ng
 
 This will install the latest stable release of pyLoad in your system.
+
+> **Note**:
+> No stable release is available yet! :smiling_imp:
 
 #### Available modules
 
@@ -155,7 +151,6 @@ Docker Support [experimental]
 -----------------------------
 
 [![Docker Build Status](https://img.shields.io/docker/build/pyload/pyload.svg)](https://hub.docker.com/r/pyload/pyload)
-[![Docker Pulls](https://img.shields.io/docker/pulls/pyload/pyload.svg)](https://hub.docker.com/r/pyload/pyload)
 [![MicroBadger Layers](https://img.shields.io/microbadger/layers/pyload/pyload/latest-ubuntu.svg?label=layers%20%28ubuntu%29)](https://microbadger.com/images/pyload/pyload:latest-ubuntu)
 [![MicroBadger Layers](https://img.shields.io/microbadger/layers/pyload/pyload/latest-alpine.svg?label=layers%20%28alpine%29)](https://microbadger.com/images/pyload/pyload:latest-alpine)
 [![MicroBadger Size](https://img.shields.io/microbadger/image-size/pyload/pyload/latest-ubuntu.svg?label=image%20size%20%28ubuntu%29)](https://microbadger.com/images/pyload/pyload:latest-ubuntu)
@@ -217,10 +212,14 @@ Troubleshooting
 If the installation fails due any of the listed errors,
 retry applying the given solution:
 
-#### PIP not found
+#### pip not found
 
-You may not have the Python interpreter or the PIP package manager already installed
-on your system.
+Retry replacing the command `pip` with `pip3`, like:
+
+    pip3 install pyload-ng
+
+If still fails you may not have already installed on your system the Python interpreter
+or the pip package manager.
 Or maybe something else got corrupted somehow...
 
 The easiest way to fix this error is to (re)install Python.
