@@ -9,7 +9,7 @@ from datetime import timedelta
 from random import choice
 from threading import Event, Lock
 
-import pycurl
+# import pycurl
 
 from ..datatypes.pyfile import PyFile
 from ..network.request_factory import get_url
@@ -55,7 +55,7 @@ class ThreadManager:
         # timeout for cache purge
         self.timestamp = 0
 
-        pycurl.global_init(pycurl.GLOBAL_DEFAULT)
+        # pycurl.global_init(pycurl.GLOBAL_DEFAULT)
 
         for i in range(self.pyload.config.get("download", "max_downloads")):
             self.create_thread()
@@ -255,17 +255,17 @@ class ThreadManager:
             if free:
                 free[0].put("quit")
 
-    def clean_pycurl(self):
-        """
-        make a global curl cleanup (currently ununused)
-        """
-        if self.processing_ids():
-            return False
-        pycurl.global_cleanup()
-        pycurl.global_init(pycurl.GLOBAL_DEFAULT)
-        self.downloaded = 0
-        self.pyload.log.debug("Cleaned up pycurl")
-        return True
+    # def clean_pycurl(self):
+        # """
+        # make a global curl cleanup (currently ununused)
+        # """
+        # if self.processing_ids():
+            # return False
+        # pycurl.global_cleanup()
+        # pycurl.global_init(pycurl.GLOBAL_DEFAULT)
+        # self.downloaded = 0
+        # self.pyload.log.debug("Cleaned up pycurl")
+        # return True
 
     # ----------------------------------------------------------------------
     def assign_job(self):
@@ -365,4 +365,5 @@ class ThreadManager:
         """
         do global cleanup, should be called when finished with pycurl.
         """
-        pycurl.global_cleanup()
+        # pycurl.global_cleanup()
+        pass

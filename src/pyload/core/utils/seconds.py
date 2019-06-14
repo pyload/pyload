@@ -30,7 +30,7 @@ def to_midnight(utc=None, strict=False):
 
     midnight = now.replace(
         hour=0, minute=0 if strict else 1, second=0, microsecond=0
-    ) + timedelta(days=1)
+    ) + datetime.timedelta(days=1)
 
     return (midnight - now).seconds
 
@@ -39,5 +39,5 @@ def to_nexthour(strict=False):
     now = datetime.datetime.today()
     nexthour = now.replace(
         minute=0 if strict else 1, second=0, microsecond=0
-    ) + timedelta(hours=1)
+    ) + datetime.timedelta(hours=1)
     return (nexthour - now).seconds

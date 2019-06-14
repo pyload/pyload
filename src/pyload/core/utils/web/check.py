@@ -7,30 +7,30 @@ import re
 import idna
 import requests
 
-import validators
+# import validators
 from ..convert import to_str
 from . import format
 from .convert import splitaddress
 
 
-def is_ipv4(value):
-    try:
-        validators.ipv4(value)
-    except validators.ValidationFailure:
-        return False
-    return True
+# def is_ipv4(value):
+    # try:
+        # validators.ipv4(value)
+    # except validators.ValidationFailure:
+        # return False
+    # return True
 
 
-def is_ipv6(value):
-    try:
-        validators.ipv6(value)
-    except validators.ValidationFailure:
-        return False
-    return True
+# def is_ipv6(value):
+    # try:
+        # validators.ipv6(value)
+    # except validators.ValidationFailure:
+        # return False
+    # return True
 
 
-def is_ip(value):
-    return isipv4(value) or isipv6(value)
+# def is_ip(value):
+    # return is_ipv4(value) or is_ipv6(value)
 
 
 def is_port(value):
@@ -54,9 +54,9 @@ def is_host(value):
     return all(map(_RE_ISH.match, value.split(".")))
 
 
-def is_socket(value):
-    ip, port = splitaddress(value)
-    return isip(ip) and is_port(port)
+# def is_socket(value):
+    # ip, port = splitaddress(value)
+    # return is_ip(ip) and is_port(port)
 
 
 def is_endpoint(value):
@@ -111,9 +111,9 @@ def is_resource(url, *args, **kwargs):
 
 
 # TODO: Recheck in 0.5.x
-def is_url(url):
-    url = format.url(url)
-    try:
-        return validators.url(url)
-    except validators.ValidationFailure:
-        return False
+# def is_url(url):
+    # url = format.url(url)
+    # try:
+        # return validators.url(url)
+    # except validators.ValidationFailure:
+        # return False

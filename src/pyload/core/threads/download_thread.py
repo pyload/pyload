@@ -4,8 +4,6 @@
 import time
 from queue import Queue
 
-import pycurl
-
 from ..network.exceptions import Abort, Fail, Reconnect, Retry, Skip
 from .plugin_thread import PluginThread
 
@@ -122,54 +120,54 @@ class DownloadThread(PluginThread):
                 self.clean(pyfile)
                 continue
 
-            except pycurl.error as exc:
-                if len(exc.args) == 2:
-                    code, msg = exc.args
-                else:
-                    code = 0
-                    msg = exc.args
+            # except pycurl.error as exc:
+                # if len(exc.args) == 2:
+                    # code, msg = exc.args
+                # else:
+                    # code = 0
+                    # msg = exc.args
 
-                self.pyload.log.debug(f"pycurl exception {code}: {msg}")
+                # self.pyload.log.debug(f"pycurl exception {code}: {msg}")
 
-                if code in (7, 18, 28, 52, 56):
-                    self.pyload.log.warning(
-                        self._(
-                            "Couldn't connect to host or connection reset, waiting 1 minute and retry."
-                        )
-                    )
-                    wait = time.time() + 60
+                # if code in (7, 18, 28, 52, 56):
+                    # self.pyload.log.warning(
+                        # self._(
+                            # "Couldn't connect to host or connection reset, waiting 1 minute and retry."
+                        # )
+                    # )
+                    # wait = time.time() + 60
 
-                    pyfile.wait_until = wait
-                    pyfile.set_status("waiting")
-                    while time.time() < wait:
-                        time.sleep(1)
-                        if pyfile.abort:
-                            break
+                    # pyfile.wait_until = wait
+                    # pyfile.set_status("waiting")
+                    # while time.time() < wait:
+                        # time.sleep(1)
+                        # if pyfile.abort:
+                            # break
 
-                    if pyfile.abort:
-                        self.pyload.log.info(
-                            self._("Download aborted: {}").format(pyfile.name)
-                        )
-                        pyfile.set_status("aborted")
+                    # if pyfile.abort:
+                        # self.pyload.log.info(
+                            # self._("Download aborted: {}").format(pyfile.name)
+                        # )
+                        # pyfile.set_status("aborted")
 
-                        self.clean(pyfile)
-                    else:
-                        self.queue.put(pyfile)
+                        # self.clean(pyfile)
+                    # else:
+                        # self.queue.put(pyfile)
 
-                    continue
+                    # continue
 
-                else:
-                    pyfile.set_status("failed")
-                    self.pyload.log.error(
-                        self._("pycurl error {}: {}").format(code, msg)
-                    )
-                    if self.pyload.debug:
-                        self.write_debug_report(pyfile)
+                # else:
+                    # pyfile.set_status("failed")
+                    # self.pyload.log.error(
+                        # self._("pycurl error {}: {}").format(code, msg)
+                    # )
+                    # if self.pyload.debug:
+                        # self.write_debug_report(pyfile)
 
-                    self.pyload.addon_manager.download_failed(pyfile)
+                    # self.pyload.addon_manager.download_failed(pyfile)
 
-                self.clean(pyfile)
-                continue
+                # self.clean(pyfile)
+                # continue
 
             except Skip as exc:
                 pyfile.set_status("skipped")

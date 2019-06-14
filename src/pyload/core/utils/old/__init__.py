@@ -23,7 +23,9 @@ from datetime import timedelta
 import shutil
 import urllib.parse
 from functools import partial, wraps
-from ... import exc_logger
+from .... import exc_logger
+
+from .. import purge
 
 try:
     import send2trash
@@ -73,13 +75,9 @@ def safepath(value):
         if os.name != "nt":
             return
 
-        length = len(path) - 259
-        if length < 1:
-            return
-
         dirname, basename = os.path.split(filename)
         name, ext = os.path.splitext(basename)
-        path = drive + dirname + truncate(name, length) + ext
+        path = drive + dirname + purge.truncate(name, 259) + ext
 
     finally:
         return path
@@ -97,7 +95,7 @@ def safename(value):
     Remove invalid characters.
     """
     repl = '<>:"/\\|?*' if os.name == "nt" else '\0/\\"'
-    name = remove_chars(value, repl)
+    name = purge.chars(value, repl)
     return name
 
 

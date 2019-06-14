@@ -51,7 +51,7 @@ def name(text, sep="_", allow_whitespaces=False):
     repl = r"".join(bc)
     if not allow_whitespaces:
         repl += " "
-    res = char(text, repl, sep).strip()
+    res = chars(text, repl, sep).strip()
     if os.name == "nt" and res.lower() in _WINBADWORDS:
         res = sep + res
     return res

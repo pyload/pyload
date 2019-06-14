@@ -6,8 +6,8 @@ import io
 import os
 import shutil
 
-import portalocker
-import psutil
+# import portalocker
+# import psutil
 from .convert import to_bytes, to_str
 
 try:
@@ -33,12 +33,12 @@ def free_space(path):
 
         free_bytes = ctypes.c_ulonglong(0)
         ctypes.windll.kernel32.GetDiskFreeSpaceExW(
-            ctypes.c_wchar_p(folder), None, None, ctypes.pointer(free_bytes)
+            ctypes.c_wchar_p(path), None, None, ctypes.pointer(free_bytes)
         )
         availspace = free_bytes.value
 
     else:
-        s = os.statvfs(folder)
+        s = os.statvfs(path)
         availspace = s.f_frsize * s.f_bavail
 
     return availspace
@@ -186,14 +186,14 @@ def is_exec(filename):
     return os.path.isfile(filename) and os.access(filename, os.X_OK)
 
 
-def lopen(*args, **kwargs):
-    if kwargs.get("blocking", True):
-        flags = portalocker.LOCK_EX
-    else:
-        flags = portalocker.LOCK_EX | portalocker.LOCK_NB
-    fp = io.open(*args, **kwargs)
-    portalocker.lock(fp, flags)
-    return fp
+# def lopen(*args, **kwargs):
+    # if kwargs.get("blocking", True):
+        # flags = portalocker.LOCK_EX
+    # else:
+        # flags = portalocker.LOCK_EX | portalocker.LOCK_NB
+    # fp = io.open(*args, **kwargs)
+    # portalocker.lock(fp, flags)
+    # return fp
 
 
 def flush(filename, exist_ok=False):
@@ -220,10 +220,10 @@ def mountpoint(path):
         path, rest = path.rsplit(os.sep, 1)
 
 
-def filesystem(path):
-    mp = mountpoint(path)
-    fs = dict((part.mountpoint, part.fstype) for part in psutil.disk_partitions())
-    return fs.get(mp)
+# def filesystem(path):
+    # mp = mountpoint(path)
+    # fs = dict((part.mountpoint, part.fstype) for part in psutil.disk_partitions())
+    # return fs.get(mp)
 
 
 def mkfile(filename, size=None):
@@ -334,7 +334,7 @@ def remove(path, try_trash=True):
     if not os.path.exists(path):
         return
 
-    if trash:
+    if try_trash:
         try:
             send2trash.send2trash(path)
         except AttributeError as exc:

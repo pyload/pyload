@@ -5,11 +5,11 @@ import mimetypes
 import re
 import urllib.parse
 
-import tld
+# import tld
 from ..check import isiterable
 from ..struct import HeaderDict
 from . import format, purge
-from .check import is_host, is_port, isip
+from .check import is_host, is_port, is_ip
 from .convert import host_to_ip, ip_to_host, splitaddress
 
 
@@ -37,8 +37,8 @@ def attr(text, name=None):
     return m.group(2) if m is not None else None
 
 
-def domain(url):
-    return tld.get_tld(format.url(url), fail_silently=True)
+# def domain(url):
+    # return tld.get_tld(format.url(url), fail_silently=True)
 
 
 _RE_FORM = re.compile(r"(<(input|textarea).*?>)([^<]*(?=</\2)|)", flags=re.I | re.S)

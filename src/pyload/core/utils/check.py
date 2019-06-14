@@ -40,7 +40,7 @@ def proprieties(obj):
 def is_iterable(obj, strict=False):
     """Check if object is iterable (`<type 'str'>` excluded if
     strict=False)."""
-    return isinstance(obj, Iterable) and (strict or not isinstance(obj, basestring))
+    return isinstance(obj, Iterable) and (strict or not isinstance(obj, str) or not isinstance(obj, bytes))
 
 
 def is_mapping(obj):

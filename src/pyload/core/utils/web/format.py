@@ -4,7 +4,7 @@
 import re
 import urllib.parse
 
-from .. import to_str
+from ..convert import to_str
 from . import purge
 
 _RE_URL = re.compile(r"(?<!:)/{2,}")

@@ -4,7 +4,7 @@
 import datetime
 import os
 
-from .check import isiterable
+from .check import is_iterable
 from .convert import BYTE_PREFIXES, to_str
 from .fs import fullpath
 from .misc import is_plural
@@ -19,7 +19,7 @@ def attributes(obj, ignore=None):
     if ignore is None:
         attrs = tuple(map(to_str, obj))
     else:
-        ignored = ignore if isiterable(ignore) else (ignore,)
+        ignored = ignore if is_iterable(ignore) else (ignore,)
         attrs = (to_str(x) for x in obj if x not in ignored)
     return attrs
 
@@ -28,7 +28,7 @@ def items(obj, ignore=None):
     if ignore is None:
         res = (f"{k}={v}" for k, v in obj.items())
     else:
-        ignored = ignore if isiterable(ignore) else (ignore,)
+        ignored = ignore if is_iterable(ignore) else (ignore,)
         res = (f"{k}={v}" for k, v in obj.items() if k not in ignored)
     return res
 
@@ -62,7 +62,7 @@ def speed(obj):
 
 def time(obj):
     seconds = abs(int(obj))
-    dt = datetime.datetime(1, 1, 1) + timedelta(seconds=seconds)
+    dt = datetime.datetime(1, 1, 1) + datetime.timedelta(seconds=seconds)
     days = dt.day - 1 if dt.day > 1 else 0
 
     timelist = []

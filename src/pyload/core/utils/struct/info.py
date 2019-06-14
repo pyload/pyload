@@ -3,7 +3,7 @@
 
 from collections.abc import MutableMapping
 
-from .struct.base import InscDict
+from .base import InscDict
 
 
 class ReadError(KeyError):

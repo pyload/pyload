@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # AUTHOR: vuolter
 
-from .check import is_mapping, isiterable
+from .check import is_mapping, is_iterable
 
 try:
     import bitmath
@@ -21,7 +21,7 @@ def convert(obj, rule, func, args=(), kwargs=None, fallback=None):
             res = dict(
                 (convert(k, *cvargs), convert(v, *cvargs)) for k, v in obj.items()
             )
-        elif isiterable(obj):
+        elif is_iterable(obj):
             res = type(obj)(convert(i, *cvargs) for i in obj)
         else:
             res = obj
@@ -99,7 +99,7 @@ def to_list(obj):
         pass
     elif is_mapping(obj):
         return list(obj.items())
-    elif isiterable(obj, strict=False):
+    elif is_iterable(obj, strict=False):
         return list(obj)
     elif obj is not None:
         return [obj]

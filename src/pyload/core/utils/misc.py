@@ -3,6 +3,9 @@
 
 import random
 import socket
+import string
+
+import requests_html
 
 from .check import is_mapping
 
