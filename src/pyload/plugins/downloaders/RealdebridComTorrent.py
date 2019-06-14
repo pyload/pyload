@@ -161,7 +161,7 @@ class RealdebridComTorrent(BaseDownloader):
 
         self.pyfile.set_progress(100)
 
-        return torrent_info["links"][0]
+        return torrent_info["links"]
 
     def download_torrent(self, torrent_url):
         """
@@ -228,7 +228,8 @@ class RealdebridComTorrent(BaseDownloader):
         ]["password"]
 
         torrent_id = self.send_request_to_server()
-        torrent_url = self.wait_for_server_dl(torrent_id)
-        self.download_torrent(torrent_url)
+        torrent_urls = self.wait_for_server_dl(torrent_id)
+        for torrent_url in torrent_urls:
+            self.download_torrent(torrent_url)
         if self.config.get("del_finished"):
             self.delete_torrent_from_server(torrent_id)
