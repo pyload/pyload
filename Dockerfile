@@ -9,24 +9,27 @@
 #          \  /
 #           \/
 
-FROM lsiobase/ubuntu as builder
+ARG UBUNTU_RELEASE="bionic"
 
-ARG APT_TEMPS = "/tmp/* /var/lib/apt/lists/* /var/tmp/*"
-ARG APT_INSTALL_OPTIONS = "--no-install-recommends --yes"
-ARG PIP_INSTALL_OPTIONS = "--no-cache-dir --no-compile --upgrade"
+
+
+
+FROM lsiobase/ubuntu:$UBUNTU_RELEASE as builder
+
+ARG APT_INSTALL_OPTIONS="--no-install-recommends --yes"
+ARG PIP_INSTALL_OPTIONS="--disable-pip-version-check --no-cache-dir --no-compile --upgrade"
+
+ARG APK_PACKAGES="python3 openssl python3-distutils wget"
+ARG PIP_PACKAGES="pip setuptools wheel"
 
 RUN \
-echo "**** update sources list ****" && \
-add-apt-repository {universe,restricted,multiverse} && apt-get update -y && \
-\
 echo "**** install Python ****" && \
-apt-get install $APT_INSTALL_OPTIONS python3 openssl && \
+apt-get update && apt-get install $APT_INSTALL_OPTIONS $APK_PACKAGES && \
+ln -sf python3 /usr/bin/python && \
 \
-echo "**** upgrade PIP ****" && \
-pip install $PIP_INSTALL_OPTIONS pip && \
-\
-echo "**** cleanup ****" && \
-apt-get clean && rm -rf $APT_TEMPS
+echo "**** install pip ****" && \
+wget -q -O - "https://bootstrap.pypa.io/get-pip.py" | python /dev/stdin $PIP_INSTALL_OPTIONS && \
+ln -sf pip3 /usr/bin/pip
 
 
 
@@ -49,11 +52,13 @@ FROM builder as source_builder
 COPY . /source
 WORKDIR /source
 
+ARG PIP_INSTALL_OPTIONS="--disable-pip-version-check --no-cache-dir --no-compile --upgrade"
 ARG PIP_PACKAGES="Babel Jinja2"
 
 RUN \
 echo "**** build pyLoad locales ****" && \
-pip install $PIP_INSTALL_OPTIONS $PIP_PACKAGES && python setup.py build_locale
+pip install $PIP_INSTALL_OPTIONS $PIP_PACKAGES && \
+python setup.py build_locale
 
 
 
@@ -63,6 +68,8 @@ FROM builder as package_builder
 COPY --from=wheels_builder /wheels /wheels
 COPY --from=source_builder /source /source
 WORKDIR /package
+
+ARG PIP_INSTALL_OPTIONS="--disable-pip-version-check --no-cache-dir --no-compile --upgrade"
 
 RUN \
 echo "**** build pyLoad package ****" && \
@@ -80,32 +87,36 @@ maintainer="vuolter@gmail.com"
 
 ENV PYTHONUNBUFFERED=1
 
+ARG APT_INSTALL_OPTIONS="--no-install-recommends --yes"
 ARG APT_PACKAGES="sqlite tesseract-ocr unrar"
-ARG PYLOAD_OPTIONS="--userdir /config --storagedir /downloads"
+
+ARG TEMP_PATHS="/root/.cache /tmp/* /var/lib/apt/lists/* /var/tmp/*"
 
 RUN \
-echo "**** install missing packages ****" && \
+echo "**** install binary packages ****" && \
 apt-get install $APT_INSTALL_OPTIONS $APT_PACKAGES && \
 \
 echo "**** create s6 fix-attr script ****" && \
-echo "
-/config true abc:abc 0644 0755
-/downloads false abc:abc 0644 0755
-" >> /etc/fix-attrs.d/10-run && \
+echo -e " \
+/config true abc:abc 0644 0755 \n \
+/downloads false abc:abc 0644 0755 \n \
+" > /etc/fix-attrs.d/10-run && \
 \
 echo "**** create s6 service script ****" && \
-RUN echo "
-#!/usr/bin/with-contenv bash
-umask 022
-exec s6-setuidgid abc pyload $PYLOAD_OPTIONS
-" >> /etc/services.d/pyload/run && \
+mkdir -p /etc/services.d/pyload && \
+echo -e " \
+#!/usr/bin/with-contenv bash \n \
+umask 022 \n \
+exec s6-setuidgid abc pyload --userdir /config --storagedir /downloads \
+" > /etc/services.d/pyload/run && \
 \
 echo "**** cleanup ****" && \
-apt-get clean && rm -rf $APT_TEMPS && \
+rm -rf $TEMP_PATHS && \
 \
 echo "**** finalize pyLoad ****"
 
-COPY --from=package_installer /package /usr/local
+COPY --from=package_builder /package /usr/local
 
 EXPOSE 8001 9666
+
 VOLUME /config /downloads

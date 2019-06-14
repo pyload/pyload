@@ -179,4 +179,4 @@ jobs:
           skip_cleanup: true
 
 # after_success:
-  # - if [[ "$COVERAGE" == "true" ]]; then coveralls || echo "failed"; fi
+  # - if [ "$COVERAGE" = "true" ]; then coveralls || echo "failed"; fi
