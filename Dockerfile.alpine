@@ -103,18 +103,14 @@ echo "**** install binary packages ****" && \
 apk add $APK_INSTALL_OPTIONS $APK_PACKAGES && \
 \
 echo "**** create s6 fix-attr script ****" && \
-echo -e " \
-/config true abc:abc 0644 0755 \n \
-/downloads false abc:abc 0644 0755 \n \
-" > /etc/fix-attrs.d/10-run && \
+echo -e "/config true abc 0644 0755\n \
+/downloads false abc 0644 0755" > /etc/fix-attrs.d/10-run && \
 \
 echo "**** create s6 service script ****" && \
 mkdir -p /etc/services.d/pyload && \
-echo -e " \
-#!/usr/bin/with-contenv bash \n \
-umask 022 \n \
-exec s6-setuidgid abc pyload --userdir /config --storagedir /downloads \
-" > /etc/services.d/pyload/run && \
+echo -e "#!/usr/bin/with-contenv bash\n\n \
+umask 022\n \
+exec s6-setuidgid abc pyload --userdir /config --storagedir /downloads" > /etc/services.d/pyload/run && \
 \
 echo "**** cleanup ****" && \
 rm -rf $TEMP_PATHS && \
