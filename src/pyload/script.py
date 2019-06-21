@@ -79,13 +79,13 @@ The free and open-source Download Manager written in pure Python"""[1:])
         "-d", "--debug", action="store_true", help="enable debug mode", default=None
     )
     parser.add_argument(
-        "--userdir", help="change location where user data files are stored", default=Core.DEFAULT_DATADIR
+        "--userdir", help="use this location to store user data files", default=Core.DEFAULT_DATADIR
     )
     parser.add_argument(
-        "--cachedir", help="change location where temporary files are stored", default=Core.DEFAULT_TMPDIR
+        "--cachedir", help="use this location to store temporary files", default=Core.DEFAULT_TMPDIR
     )
     parser.add_argument(
-        "--storagedir", help="change location where downloads are saved", default=Core.DEFAULT_STORAGEDIR
+        "--storagedir", help="use this location to save downloads", default=Core.DEFAULT_STORAGEDIR
     )
     parser.add_argument("--daemon", action="store_true", help="run as daemon")
     parser.add_argument(

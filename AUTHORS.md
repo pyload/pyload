@@ -36,12 +36,14 @@ You can found it here: <https://github.com/pyload/pyload/graphs/contributors>.
 
 Sadly, is really hard to list all the users who helped pyLoad team in these last years testing code, reporting issues,
 opening topic to share tips and advices, fix troubles or simply discuss about this project...
-**pyLoad team can be only forever thankful to all of you for your free efforts!**
+
+**The pyLoad team can be only forever thankful to all of you for your efforts!**
 
 
 #### A special thanks to RaNaN, sebnapi and spoob who started this project so long time ago!
 
 
+<br />
 <br />
 
 -------------------------

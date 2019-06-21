@@ -94,7 +94,7 @@ for your installation:
 
     python setup.py build_locale
 
-Ideally you would use it **before** launching any other build or installation command
+Ideally you would use it ***before*** launching any other build or installation command
 (eg. `bdist_wheel`).
 
 
@@ -110,9 +110,9 @@ Usage
       -h, --help               show this help message and exit
       --version                show program's version number and exit
       -d, --debug              enable debug mode
-      --userdir USERDIR        change location where user data files are stored
-      --cachedir CACHEDIR      change location where temporary files are stored
-      --storagedir STORAGEDIR  change location where downloads will be saved
+      --userdir USERDIR        use this location to store user data files
+      --cachedir CACHEDIR      use this location to store temporary files
+      --storagedir STORAGEDIR  use this location to save downloads
       --daemon                 run as daemon
       --restore                reset default username/password
 
@@ -202,6 +202,10 @@ Compatible with `docker-compose` v2 schemas:
         ports:
           - 8001:8001
         restart: unless-stopped
+
+Replace `<STORAGEDIR>` with the location on the host machine where you want that downloads will be saved.
+
+Replace `<USERDIR>` with where you want that user data files (configurations) are stored.
 
 
 Troubleshooting
