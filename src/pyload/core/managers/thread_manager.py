@@ -16,7 +16,7 @@ from ..network.request_factory import get_url
 from ..threads.decrypter_thread import DecrypterThread
 from ..threads.download_thread import DownloadThread
 from ..threads.info_thread import InfoThread
-from ..utils.fs import free_space
+from ..utils import fs
 from ..utils.old import lock
 
 
@@ -328,7 +328,7 @@ class ThreadManager:
 
             if job.plugin.__type__ == "downloader":
                 space_left = (
-                    free_space(self.pyload.config.get("general", "storage_folder"))
+                    fs.free_space(self.pyload.config.get("general", "storage_folder"))
                     >> 20
                 )
                 if space_left < self.pyload.config.get("general", "min_free_space"):
@@ -361,9 +361,8 @@ class ThreadManager:
         )["options"].get("limit_dl", ["0"])[0]
         return int(limit)
 
-    def cleanup(self):
-        """
-        do global cleanup, should be called when finished with pycurl.
-        """
+    # def cleanup(self):
+        # """
+        # do global cleanup, should be called when finished with pycurl.
+        # """
         # pycurl.global_cleanup()
-        pass

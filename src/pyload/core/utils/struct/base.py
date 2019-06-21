@@ -20,7 +20,7 @@ class InscDict(MutableMapping):
     `requests.structures.CaseInsensitiveDict`."""
 
     def __init__(self, *args, **kwargs):
-        super(InscDict, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def __getitem__(self, key):
         return self.__dict__[key.lower()][-1]

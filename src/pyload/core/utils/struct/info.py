@@ -127,7 +127,7 @@ class SyncInfo(Info):
     __slots__ = ["__local__", "__remote__"]
 
     def __init__(self, remotedict, *args, **kwargs):
-        super(SyncInfo, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.__local__ = self.__dict__
         self.__remote__ = remotedict
         self.sync()
