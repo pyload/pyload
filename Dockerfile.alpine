@@ -91,7 +91,14 @@ version="1.0" \
 description="The free and open-source Download Manager written in pure Python" \
 maintainer="vuolter@gmail.com"
 
+# Set Python to force stdin, stdout and stderr to be totally unbuffered.
 ENV PYTHONUNBUFFERED=1
+
+# Stop if any script (fix-attrs or cont-init) has failed.
+ENV S6_BEHAVIOUR_IF_STAGE2_FAILS=2
+
+# Set Python to use UTF-8 encoding rather than ASCII.
+ENV LANG C.UTF-8
 
 ARG APK_INSTALL_OPTIONS="--no-cache"
 ARG APK_PACKAGES="sqlite tesseract-ocr unrar"
