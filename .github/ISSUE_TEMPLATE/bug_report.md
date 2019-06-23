@@ -2,6 +2,7 @@
 name: Bug Report
 about: Create a report to help us improve
 labels: bug
+assignees: vuolter
 ---
 
 <!-- Hey, annotations like this one will not be visible in your ticket, just ignore them all. -->

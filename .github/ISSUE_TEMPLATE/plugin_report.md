@@ -1,7 +1,8 @@
 ---
-name: Plugin Bug
+name: Bug Report (Plugin)
 about: Report a plugin failure
 labels: 'plugin bug'
+assignees: gammac0de
 ---
 
 <!-- Hey, annotations like this one will not be visible in your ticket, just ignore them all. -->

@@ -2,6 +2,7 @@
 name: Plugin Request
 about: Suggest a plugin for this project
 labels: 'plugin request'
+assignees: gammac0de
 ---
 
 <!-- Hey, annotations like this one will not be visible in your ticket, just ignore them all. -->

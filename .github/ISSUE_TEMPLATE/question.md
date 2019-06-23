@@ -1,6 +1,6 @@
 ---
 name: Question
-about: Ask us for something
+about: Ask us something
 labels: question
 ---
 

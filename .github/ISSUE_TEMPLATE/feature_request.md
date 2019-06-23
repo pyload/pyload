@@ -2,6 +2,7 @@
 name: Feature Request
 about: Suggest an idea for this project
 labels: 'feature request'
+assignees: vuolter
 ---
 
 <!-- Hey, annotations like this one will not be visible in your ticket, just ignore them all. -->
