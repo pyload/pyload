@@ -2,7 +2,7 @@
 <p align="center">
   <img src="https://raw.githubusercontent.com/pyload/pyload/master/media/banner.png" alt="pyLoad" height="110" />
 </p>
-<h2 align="center">The Free and open-source Download Manager written in pure Python</h2>
+<h2 align="center">The free and open-source Download Manager written in pure Python</h2>
 <h4 align="center">
   <a href="#status">Status</a> |
   <a href="#installation">Installation</a> |
@@ -305,7 +305,7 @@ this software under a different license according to the agreement.
 
 ### Contributor License Agreement
 
-Please refer to the included [CLA](/CLA.md) for the full agreement conditions.
+Please refer to the included [CLA](https://cla-assistant.io/pyload/pyload) for the full agreement conditions.
 
 This is essentially what you will be agreeing to:
 
