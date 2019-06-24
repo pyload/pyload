@@ -1,0 +1,76 @@
+<html>
+<head>
+	<script class="javascript">
+        function chosen()
+        {
+            opener.ifield.value = document.forms[0].p.value;
+            close();
+        }
+        function exit()
+        {
+            close();
+        }
+        function setInvalid() {
+            document.forms[0].send.disabled = 'disabled';
+            document.forms[0].p.style.color = '#FF0000';
+        }
+        function setValid() {
+            document.forms[0].send.disabled = '';
+            document.forms[0].p.style.color = '#000000';
+        }
+        function setFile(file)
+        {
+            document.forms[0].p.value = file;
+            setValid();
+            
+        }
+	</script>
+	<link rel="stylesheet" type="text/css" href="{{'/media/classic/css/pathchooser.css'|url}}"/>
+</head>
+<body{% if type == 'file' %}{% if not oldfile %} onload="setInvalid();"{% endif %}{% endif %}>
+<center>
+    <div id="paths">
+	<form method="get" action="?" onSubmit="chosen();" onReset="exit();">
+	    <input type="text" name="p" value="{{ oldfile|default(cwd) }}" size="60" onfocus="setValid();">
+	    <input type="submit" value="Ok" name="send">
+	</form>
+    
+    {% if type == 'folder' %}
+	<span class="path_abs_rel">{{_("Path")}}: <a href="{{ "/pathchooser" + cwd|path_make_absolute|quotepath }}"{% if absolute %} style="text-decoration: underline;"{% endif %}>{{_("absolute")}}</a> | <a href="{{ "/pathchooser/" + cwd|path_make_relative|quotepath }}"{% if not absolute %} style="text-decoration: underline;"{% endif %}>{{_("relative")}}</a></span>
+    {% else %}
+	<span class="path_abs_rel">{{_("Path")}}: <a href="{{ "/filechooser/" + cwd|path_make_absolute|quotepath }}"{% if absolute %} style="text-decoration: underline;"{% endif %}>{{_("absolute")}}</a> | <a href="{{ "/filechooser/" + cwd|path_make_relative|quotepath }}"{% if not absolute %} style="text-decoration: underline;"{% endif %}>{{_("relative")}}</a></span>
+    {% endif %}
+    </div>
+    <table border="0" cellspacing="0" cellpadding="3">
+        <tr>
+            <th>{{_("name")}}</th>
+            <th>{{_("size")}}</th>
+            <th>{{_("type")}}</th>
+            <th>{{_("last modified")}}</th>
+        </tr>
+	{% if parentdir %}
+        <tr>
+            <td colspan="4">
+                <a href="{% if type == 'folder' %}{{ "/pathchooser/" + parentdir|quotepath }}{% else %}{{ "/filechooser/" + parentdir|quotepath }}{% endif %}"><span class="parentdir">{{_("parent directory")}}</span></a>
+            </td>
+        </tr>
+	{% endif %}
+{% for file in files %}
+        <tr>
+            {% if type == 'folder' %}
+                <td class="name">{% if file.type == 'dir' %}<a href="{{ "/pathchooser/" + file.fullpath|quotepath }}" title="{{ file.fullpath }}"><span class="path_directory">{{ file.name|truncate(25) }}</span></a>{% else %}<span class="path_file" title="{{ file.fullpath }}">{{ file.name|truncate(25) }}{% endif %}</span></td>
+            {% else %}
+                <td class="name">{% if file.type == 'dir' %}<a href="{{ "/filechooser/" + file.fullpath|quotepath }}" title="{{ file.fullpath }}"><span class="file_directory">{{ file.name|truncate(25) }}</span></a>{% else %}<a href="#" onclick="setFile('{{ file.fullpath }}');" title="{{ file.fullpath }}"><span class="file_file">{{ file.name|truncate(25) }}{% endif %}</span></a></td>
+            {% endif %}
+            <td class="size">{{ file.size|float|filesizeformat }}</td>
+            <td class="type">{% if file.type == 'dir' %}directory{% else %}{{ file.ext|default("file") }}{% endif %}</td>
+            <td class="mtime">{{ file.modified|date("d.m.Y - H:i:s") }}</td>
+        <tr>
+<!--        <tr>
+            <td colspan="4">{{_("no content")}}</td>
+        </tr> -->
+{% endfor %}
+    </table>
+    </center>
+</body>
+</html>

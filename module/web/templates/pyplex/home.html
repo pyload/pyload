@@ -1,0 +1,29 @@
+{% extends 'pyplex/base.html' %}
+{% block head %}
+<link rel="stylesheet" href="{{'/media/pyplex/css/home.css'|url}}">
+{% endblock %}
+
+{% block footer %}
+<script type="text/javascript" src="{{'/media/js/pyplex/home.js'|url}}"></script>
+{% endblock %}
+
+{% block pageactions %}
+{% endblock %}
+
+{% block subtitle %}{{_('Active Downloads')}}{% endblock %}
+{% block content %}
+<table class="table" style="width:98%;">
+    <thead>
+  <tr class="header">
+    <th class="hidden-xs">{{_('Status')}}</th>
+    <th>{{_('Name')}}</th>
+    <th class="hidden-xs">{{_("Hoster")}}</th>
+    <th>{{_('Information')}}</th>
+    <th class="hidden-xs">{{_('Size')}}</th>
+    <th class="hidden-xs">{{_('Progress')}}</th>
+  </tr>
+    </thead>
+  <tbody id="LinksAktiv">
+  </tbody>
+</table>
+{% endblock %}

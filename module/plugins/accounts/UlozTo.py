@@ -1,18 +1,19 @@
 # -*- coding: utf-8 -*-
 
-import pycurl
 import re
 import time
 import urlparse
 
+import pycurl
+
 from ..internal.Account import Account
-from ..internal.misc import json
+from ..internal.misc import json, parse_html_form, timestamp
 
 
 class UlozTo(Account):
     __name__ = "UlozTo"
     __type__ = "account"
-    __version__ = "0.28"
+    __version__ = "0.32"
     __status__ = "testing"
 
     __description__ = """Uloz.to account plugin"""
@@ -25,12 +26,11 @@ class UlozTo(Account):
     INFO_PATTERN = r'title="credit in use"><\/span>\s*([\d.,]+) ([\w^_]+)\s*<\/td>\s*<td class="right">([\d.]+)<\/td>'
 
     def grab_info(self, user, password, data):
-        current_millis = int(time.time() * 1000)
         self.req.http.c.setopt(pycurl.HTTPHEADER, ["X-Requested-With: XMLHttpRequest"])
         try:
             html = json.loads(self.load("https://ulozto.net/statistiky",
                                         get={'do': "overviewPaymentsView-ajaxLoad",
-                                             '_': current_millis}
+                                             '_': timestamp()}
                               ))['snippets']['snippet-overviewPaymentsView-']
 
         except (ValueError, KeyError):
@@ -62,19 +62,18 @@ class UlozTo(Account):
                 'premium': premium}
 
     def signin(self, user, password, data):
-        login_page = self.load('https://www.ulozto.net/?do=web-login')
-        if ">Log out<" in login_page:
+        html = self.load('https://ulozto.net/?do=web-login')
+        if ">Log out<" in html:
             self.skip_login()
 
-        action = re.findall('<form action="(.+?)"', login_page)[1].replace('&amp;', '&')
-        token = re.search('_token_" value="(.+?)"', login_page).group(1)
+        url, inputs = parse_html_form('id="frm-loginForm-form"', html)
+        if inputs is None:
+            self.fail_login("Login form not found")
 
-        html = self.load(urlparse.urljoin("https://www.ulozto.net/", action),
-                         post={'_token_': token,
-                               '_do': "loginForm-submit",
-                               'login': u"Submit",
-                               'password': password,
-                               'username': user})
+        inputs['username'] = user
+        inputs['password'] = password
 
-        if '<div class="flash error">' in html:
+        html = self.load(urlparse.urljoin("https://ulozto.net/", url),
+                         post=inputs)
+        if not '>Log out<' in html:
             self.fail_login()

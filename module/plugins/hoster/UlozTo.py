@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
-
+import pycurl
 import re
+import os
 
 from ..internal.misc import json, parse_name, timestamp
 from ..internal.SimpleHoster import SimpleHoster
@@ -15,7 +16,7 @@ def convert_decimal_prefix(m):
 class UlozTo(SimpleHoster):
     __name__ = "UlozTo"
     __type__ = "hoster"
-    __version__ = "1.39"
+    __version__ = "1.42"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl|pornfile\.cz)/(?:live/)?(?P<ID>[!\w]+/[^/?]*)'
@@ -38,8 +39,7 @@ class UlozTo(SimpleHoster):
     SIZE_PATTERN = r'<span id="fileSize">.*?(?P<S>[\d.,]+\s[kMG]?B)</span>'
     OFFLINE_PATTERN = r'<title>404 - Page not found</title>|<h1 class="h1">File (has been deleted|was banned)</h1>'
 
-    URL_REPLACEMENTS = [(r'(?<=http://)([^/]+)', "www.ulozto.net"),
-                        ("http://", "https://"),
+    URL_REPLACEMENTS = [("http://", "https://"),
                         (r'(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl|pornfile\.cz)', "ulozto.net")]
 
     SIZE_REPLACEMENTS = [(r'([\d.]+)\s([kMG])B', convert_decimal_prefix)]
@@ -111,7 +111,7 @@ class UlozTo(SimpleHoster):
             #: New version - better to get new parameters (like captcha reload) because of image url - since 6.12.2013
             self.log_debug('Using "new" version')
 
-            xapca = self.load("https://www.ulozto.net/reloadXapca.php",
+            xapca = self.load("https://ulozto.net/reloadXapca.php",
                               get={'rnd': timestamp()})
 
             xapca = xapca.replace(
@@ -124,7 +124,7 @@ class UlozTo(SimpleHoster):
             data = json.loads(xapca)
             if self.config.get("captcha") == "Sound":
                 captcha_value = self.captcha.decrypt(
-                    str(data['sound']), input_type='wav', ocr="UlozTo")
+                    str(data['sound']), input_type=os.path.splitext(data['sound'])[1], ocr="UlozTo")
             else:
                 captcha_value = self.captcha.decrypt(data['image'])
             self.log_debug(
@@ -153,8 +153,9 @@ class UlozTo(SimpleHoster):
         else:
             self.error(_("CAPTCHA form changed"))
 
-        domain = "https://www.pornfile.cz" if is_adult else "https://www.ulozto.net"
-        self.download(domain + action, post=inputs)
+        domain = "https://pornfile.cz" if is_adult else "https://ulozto.net"
+        jsvars = self.get_json_response(domain + action, inputs)
+        self.download(jsvars['url'])
 
     def handle_premium(self, pyfile):
         self.adult_confirmation(pyfile)
@@ -212,3 +213,20 @@ class UlozTo(SimpleHoster):
             self.fail(_("Server error, file not downloadable"))
 
         return SimpleHoster.check_download(self)
+
+    def get_json_response(self, url, inputs):
+        self.req.http.c.setopt(pycurl.HTTPHEADER, ["X-Requested-With: XMLHttpRequest"])
+
+        res = self.load(url, post=inputs, ref=self.pyfile.url)
+        self.req.http.c.setopt(pycurl.HTTPHEADER, ["X-Requested-With:"])
+
+        if not res.startswith('{'):
+            self.retry(msg=_("Something went wrong"))
+
+        jsonres = json.loads(res)
+        if jsonres['status'] == "error" and 'new_captcha_data' in jsonres:
+            self.captcha.invalid()
+            self.retry(msg=_("Wrong captcha code"))
+
+        self.log_debug(url, res)
+        return jsonres

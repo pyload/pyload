@@ -52,27 +52,22 @@ else:
 
 __builtin__.homedir = homedir
 
-args = " ".join(argv[1:])
-
 # dirty method to set configdir from commandline arguments
-if "--configdir=" in args:
-    pos = args.find("--configdir=")
-    end = args.find("-", pos + 12)
-
-    if end == -1:
-        configdir = args[pos + 12:].strip()
-    else:
-        configdir = args[pos + 12:end].strip()
-elif path.exists(path.join(pypath, "module", "config", "configdir")):
-    f = open(path.join(pypath, "module", "config", "configdir"), "rb")
-    c = f.read().strip()
-    f.close()
-    configdir = path.join(pypath, c)
+for arg in argv[1:]:
+    if arg.startswith("--configdir="):
+        configdir=arg[12:].strip()
+        break
 else:
-    if platform in ("posix", "linux2"):
-        configdir = path.join(homedir, ".pyload")
+    if path.exists(path.join(pypath, "module", "config", "configdir")):
+        f = open(path.join(pypath, "module", "config", "configdir"), "rb")
+        c = f.read().strip()
+        f.close()
+        configdir = path.join(pypath, c)
     else:
-        configdir = path.join(homedir, "pyload")
+        if platform in ("posix", "linux2"):
+            configdir = path.join(homedir, ".pyload")
+        else:
+            configdir = path.join(homedir, "pyload")
 
 if not path.exists(configdir):
     makedirs(configdir, 0700)

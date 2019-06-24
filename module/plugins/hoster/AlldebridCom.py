@@ -7,7 +7,7 @@ from ..internal.MultiHoster import MultiHoster
 class AlldebridCom(MultiHoster):
     __name__ = "AlldebridCom"
     __type__ = "hoster"
-    __version__ = "0.58"
+    __version__ = "0.59"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.|s\d+\.)?alldebrid\.com/dl/[\w^_]+'
@@ -27,16 +27,16 @@ class AlldebridCom(MultiHoster):
     API_URL = "https://api.alldebrid.com/"
 
     def api_response(self, method, **kwargs):
-        kwargs['agent'] = "pyLoad"
-        kwargs['version'] = self.pyload.version
-        html = self.load(self.API_URL + method, get=kwargs)
-        return json.loads(html)
+        kwargs.update({'agent': "pyLoad",
+                       'version': self.pyload.version})
+        json_data = self.load(self.API_URL + method, get=kwargs)
+        return json.loads(json_data)
 
     def setup(self):
         self.chunk_limit = 16
 
     def handle_premium(self, pyfile):
-        json_data = self.api_response("link/unlock", link=pyfile.url, token=self.account.info['data']['token'])
+        json_data = self.api_response("link/unlock", link=pyfile.url, token=self.account.info['login']['password'])
 
         if json_data.get("error", False):
             if json_data.get("errorCode", 0) in (12, 31):

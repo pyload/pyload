@@ -11,17 +11,13 @@ def args(**kwargs):
 class RealdebridCom(MultiHoster):
     __name__ = "RealdebridCom"
     __type__ = "hoster"
-    __version__ = "0.76"
+    __version__ = "0.79"
     __status__ = "testing"
 
     __pattern__ = r'https?://((?:www\.|s\d+\.)?real-debrid\.com/dl?/|[\w^_]\.rdb\.so/d/)[\w^_]+'
     __config__ = [("use_premium", "bool", "Use premium account if available", True),
-                  ("fallback",
-                   "bool",
-                   "Fallback to free download if premium fails",
-                   False),
-                  ("revert_failed", "bool",
-                   "Revert to standard download if fails", True),
+                  ("fallback", "bool", "Fallback to free download if premium fails", False),
+                  ("revert_failed", "bool", "Revert to standard download if fails", True),
                   ("chk_filesize", "bool", "Check file size", True),
                   ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10)]
 
@@ -30,6 +26,7 @@ class RealdebridCom(MultiHoster):
     __authors__ = [("Devirex Hazzard", "naibaf_11@yahoo.de"),
                    ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
+    # See https://api.real-debrid.com/
     API_URL = "https://api.real-debrid.com/rest/1.0"
 
     def api_response(self, namespace, get={}, post={}):

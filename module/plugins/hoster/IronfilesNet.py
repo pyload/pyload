@@ -6,10 +6,10 @@ from ..internal.misc import json
 class IronfilesNet(SimpleHoster):
     __name__ = "IronfilesNet"
     __type__ = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
-    __pattern__ = r'https?://ironfiles\.net/file/download/id/(?P<ID>\d+)(?:/key/(?P<KEY>65a2bfa38c2c1899))?'
+    __pattern__ = r'https?://ironfiles\.net/file/download/id/(?P<ID>\d+)(?:/key/(?P<KEY>[-\w]+))?'
     __config__ = [("activated", "bool", "Activated", True),
                   ("use_premium", "bool", "Use premium account if available", True),
                   ("fallback", "bool", "Fallback to free download if premium fails", False),
@@ -18,7 +18,8 @@ class IronfilesNet(SimpleHoster):
 
     __description__ = """Ironfiles.net hoster plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
+    __authors__ = [("GammaC0de", "nitzo2001[AT]yahoo[DOT]com"),
+                   ("djraw", None)]
 
     LOGIN_PREMIUM = True
 

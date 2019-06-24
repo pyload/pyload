@@ -1,0 +1,29 @@
+{% extends 'classic/base.html' %}
+
+{% block title %}Downloads - {{super()}} {% endblock %}
+
+{% block subtitle %}
+{{_("Downloads")}}
+{% endblock %}
+
+{% block content %}
+
+<ul>
+    {% for folder in files.folder %}
+    <li>
+        {{ folder.name }}
+        <ul>
+        {% for file in folder.files %}
+        <li><a href='get/{{ folder.path|escape }}/{{ file|escape }}'>{{file}}</a></li>
+        {% endfor %}
+        </ul>
+    </li>
+    {% endfor %}
+    
+    {% for file in files.files %}
+    <li> <a href='get/{{ file|escape }}'>{{ file }}</a></li>
+    {% endfor %}
+
+</ul>
+
+{% endblock %}

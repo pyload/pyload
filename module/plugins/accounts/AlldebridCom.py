@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
 
-from ..internal.MultiAccount import MultiAccount
+from module.network.HTTPRequest import BadHeader
+
 from ..internal.misc import json
+from ..internal.MultiAccount import MultiAccount
 
 
 class AlldebridCom(MultiAccount):
     __name__ = "AlldebridCom"
     __type__ = "account"
-    __version__ = "0.41"
+    __version__ = "0.42"
     __status__ = "testing"
 
     __config__ = [("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),
@@ -23,13 +25,13 @@ class AlldebridCom(MultiAccount):
     API_URL = "https://api.alldebrid.com/"
 
     def api_response(self, method, **kwargs):
-        kwargs['agent'] = "pyLoad"
-        kwargs['version'] = self.pyload.version
-        html = self.load(self.API_URL + method, get=kwargs)
-        return json.loads(html)
+        kwargs.update({'agent': "pyLoad",
+                       'version': self.pyload.version})
+        json_data = self.load(self.API_URL + method, get=kwargs)
+        return json.loads(json_data)
 
     def grab_hosters(self, user, password, data):
-        json_data = self.api_response("user/hosts", token=data['token'])
+        json_data = self.api_response("user/hosts", token=password)
         if json_data.get("error", False):
             return []
 
@@ -40,7 +42,7 @@ class AlldebridCom(MultiAccount):
                            if _h['status'] is True])
 
     def grab_info(self, user, password, data):
-        json_data = self.api_response("user/login", token=data['token'])
+        json_data = self.api_response("user/login", token=password)
 
         if json_data.get("error", False):
             premium = False
@@ -55,10 +57,22 @@ class AlldebridCom(MultiAccount):
                 'premium': premium}
 
     def signin(self, user, password, data):
-        json_data = self.api_response("user/login", username=user, password=password)
+        try:
+            json_data = self.api_response("user/login",token=password)
+
+        except BadHeader, e:
+            if e.code == 401:
+                self.log_error(_("Password for alldebrid.com should be the API token - use GetAlldebridToken.py to get it: https://github.com/pyload/pyload/files/3100409/GetAlldebridToken.zip"))
+                self.fail_login()
+
+            else:
+                raise
+
 
         if json_data.get("error", False):
+            self.log_error(_("Password for alldebrid.com should be the API token - use GetAlldebridToken.py to get it: https://github.com/pyload/pyload/files/3100409/GetAlldebridToken.zip"))
             self.fail_login(json_data['error'])
 
-        else:
-            data['token'] = json_data['token']
+        elif json_data['user']['username'] != user:
+            self.fail_login(_("username for alldebrid.com should be your alldebrid.com username"))
+            self.fail_login()

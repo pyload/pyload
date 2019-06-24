@@ -1,0 +1,161 @@
+{% extends 'pyplex/base.html' %}
+
+{% block head %}
+<style type="text/css">
+option:checked,
+option:focus {
+  background: #72716f linear-gradient(0deg, #72716f 0%, #72716f 100%);
+}
+optgroup,
+select,
+textarea {
+    font-size: 11px;
+}
+select:focus {
+  border: none !important;
+  outline: none;
+}
+.modal-dialog {
+  padding-top: 10%;
+}
+</style>
+{% endblock %}
+
+{% block footer %}
+<script type="text/javascript" src="{{'/media/js/pyplex/admin.js'|url}}"></script>
+{% endblock %}
+
+
+{% block title %}{{_('Administrate')}} - {{super()}} {% endblock %}
+{% block subtitle %}{{_('Administrate')}}{% endblock %}
+
+{% block content %}
+<div class="btn-group">
+  <button id="quit-pyload" class="btn btn-danger" data-toggle="modal" data-target="#quit_box"><span class="glyphicon glyphicon-off"></span> {{_('Quit pyLoad')}}</button>
+  <button id="restart-pyload" class="btn btn-success" data-toggle="modal" data-target="#restart_box"><span class="glyphicon glyphicon-repeat"></span> {{_('Restart pyLoad')}}</button>
+</div>
+<br>
+<br>
+
+<div class="row">
+  <div class="col-sm-5 col-sm-offset-0">
+    <div class="alert alert-danger" style="padding:8px;">
+    <p class="align-middle">{{_('To add user or change passwords use:')}} <b>python pyLoadCore.py -u</b><br></p>
+    <p class="align-middle"><b>{{_('Important:')}}</b> {{_('Admin user have always all permissions!')}}</p>
+    </div>
+  </div>
+</div>
+
+<br>
+    <form action="" method="POST">
+        <table class="settable table" style="width:50%;">
+            <thead>
+              <tr>
+                <th>{{_('Name')}}</th>
+                <th>{{_('Change Password')}}</th>
+                <th>{{_('Admin')}}</th>
+                <th>{{_('Permissions')}}</th>
+              </tr>
+            </thead>
+
+            {% for name, data in users.iteritems() %}
+                <tr>
+                    <td>{{name}}</td>
+                    <td><div class="change_password btn btn-success btn-xs" data-toggle="modal" data-target="#password_box" id="change_pw|{{name}}"><span class="glyphicon glyphicon-pencil"></span> {{_('change')}}</div></td>
+                    <td><input name="{{name}}|admin" type="checkbox" {% if data.perms.admin %} checked="True" {% endif %}></td>
+                    <td>
+                        <select multiple="multiple" size="{{permlist|length}}" name="{{name}}|perms">
+                            {% for perm in permlist %}
+                            {% if data.perms|getitem(perm) %}
+                                <option selected="selected">{{perm}}</option>
+                            {% else %}
+                                <option>{{perm}}</option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+                    </td>
+                </tr>
+            {% endfor %}
+
+
+        </table>
+
+        <button class="btn btn-bright" type="submit">{{_('Submit')}}</button>
+    </form>
+{% endblock %}
+
+{% block dialog %}
+<div id="restart_msg" class="hidden" style="position:fixed; z-index: 1; width: 100%;">
+  <div align="center" class="alert alert-success">
+    <p style="font-weight: bold;">{{_('pyLoad is restarting...')}}</p>
+  </div>
+</div>
+
+<div id="shutdown_msg" class="hidden" style="position:fixed; z-index: 1; width: 100%;">
+  <div align="center" class="alert alert-success">
+    <p style="font-weight: bold;">{{_('pyLoad was shut down, goodbye!')}}</p>
+  </div>
+</div>
+
+<div id="restart_box" class="modal" role="dialog">
+  <div class="modal-dialog modal-sm">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header bg-info navbar-inverse text-center" style="padding: 5px" >{{_('Are you sure you want to restart pyLoad?')}}</div>
+        <div class="modal-body" style="margin-bottom: 30px;">
+            <button class="btn btn-success" id="restart_button" type="submit" style="float: right">{{_('Ok')}}</button>
+            <button class="btn btn-warning" data-dismiss="modal" id="restart_reset" style="margin-right: 5px; float: right" type="reset">{{_('Cancel')}}</button>
+        </div>
+    </div>
+  </div>
+</div>
+
+<div id="quit_box" class="modal" role="dialog">
+  <div class="modal-dialog modal-sm">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header bg-info navbar-inverse text-center" style="padding: 5px;" >{{_('You are really sure you want to quit pyLoad?')}}</div>
+        <div class="modal-body" style="margin-bottom: 30px;">
+            <button class="btn btn-success" id="quit_button" type="submit" style="float: right">{{_('Ok')}}</button>
+            <button class="btn btn-warning" data-dismiss="modal" id="quit_reset" style="margin-right: 5px; float: right" type="reset">{{_('Cancel')}}</button>
+        </div>
+    </div>
+  </div>
+</div>
+
+<div id="password_box" class="modal" role="dialog">
+  <div class="modal-dialog modal-sm">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header bg-info navbar-inverse text-center" style="padding: 5px" >{{_('Change Password')}}</div>
+        <div class="modal-body" style="margin-bottom: 30px;">
+        <form id="password_form" class="from-group" action="{{'/json/change_password'|url}}" method="POST" enctype="multipart/form-data" style="margin-bottom: 40px;">
+          <p>{{_('Enter your current and desired Password.')}}</p>
+          <div class="form-group">
+            <label for="user_login">{{_('User')}}</label>
+            <input class="form-control" id="user_login" name="user_login" type="text"/>
+            <p class="help-block">{{_('Your username.')}}</p>
+          </div>
+          <div class="form-group">
+              <label for="login_current_password">{{_('Current password')}}</label>
+              <input class="form-control reveal-pass" id="login_current_password" name="login_current_password" type="password"/>
+              <p class="help-block">{{_('The password for this account.')}}</p>
+          </div>
+          <div class="form-group">
+                <label for="login_new_password">{{_('New password')}}</label>
+                <input class="form-control reveal-pass" id="login_new_password" name="login_new_password" type="password"/>
+                <p class="help-block">{{_('The new password.')}}</p>
+          </div>
+          <div class="form-group">
+                <label for="login_new_password2">{{_('New password (repeat)')}}</label>
+                <input class="form-control" id="login_new_password2" name="login_new_password2" type="password" />
+                <p class="help-block">{{_('Please repeat the new password.')}}</p>
+          </div>
+          <button class="btn btn-success" id="login_password_button" type="submit" style="float: right">{{_('Ok')}}</button>
+          <button class="btn btn-warning" id="login_password_reset" data-dismiss="modal" style="margin-right: 5px; float: right" type="reset">{{_('Cancel')}}</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

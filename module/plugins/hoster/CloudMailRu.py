@@ -1,18 +1,18 @@
 # -*- coding: utf-8 -*-
 
-import re
+import base64
 
+from ..internal.Hoster import Hoster
 from ..internal.misc import json
-from ..internal.SimpleHoster import SimpleHoster
 
 
-class CloudMailRu(SimpleHoster):
+class CloudMailRu(Hoster):
     __name__ = "CloudMailRu"
     __type__ = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
-    __pattern__ = r'https?://cloud\.mail\.ru/public/.+'
+    __pattern__ = r'https?://cloud\.mail\.ru/dl\?q=(?P<QS>.+)'
     __config__ = [("activated", "bool", "Activated", True),
                   ("use_premium", "bool", "Use premium account if available", True),
                   ("fallback", "bool","Fallback to free download if premium fails", True),
@@ -23,17 +23,17 @@ class CloudMailRu(SimpleHoster):
     __license__ = "GPLv3"
     __authors__ = [("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
-    INFO_PATTERN = r'"name":\s*"(?P<N>.+?)",\s*"size":\s*(?P<S>\d+?),\s*"hash":'
-
     OFFLINE_PATTERN = r'"error":\s*"not_exists"'
 
-    def handle_free(self, pyfile):
-        m = re.search(r'window\["__configObject__\w+?"\]\s*=\s*({.+});', self.data, re.M)
-        if m is None:
-            self.fail(_("Json pattern not found"))
+    def setup(self):
+        self.chunk_limit = -1
+        self.resume_download = True
+        self.multiDL = True
 
-        json_data = json.loads(m.group(1).replace("\\x3c", "<"))
+    def process(self, pyfile):
+        json_data = json.loads(base64.b64decode(self.info['pattern']['QS']))
 
-        self.link = "%s/%s?key=%s" % (json_data['dispatcher']['weblink_get'][0]['url'],
-                                      json_data['request']['weblink'],
-                                      json_data['params']['tokens']['download'])
+        pyfile.name = json_data['n']
+        pyfile.size = json_data['s']
+
+        self.download(json_data['u'], disposition=False)

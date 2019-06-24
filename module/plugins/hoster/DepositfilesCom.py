@@ -10,7 +10,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class DepositfilesCom(SimpleHoster):
     __name__ = "DepositfilesCom"
     __type__ = "hoster"
-    __version__ = "0.63"
+    __version__ = "0.64"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(depositfiles\.com|dfiles\.(eu|ru))(/\w{1,3})?/files/(?P<ID>\w+)'
@@ -47,12 +47,15 @@ class DepositfilesCom(SimpleHoster):
     LINK_MIRROR_PATTERN = r'class="repeat_mirror"><a href="(.+?)"'
 
     def handle_free(self, pyfile):
-        self.data = self.load(pyfile.url, post={'gateway_result': "1"})
+        self.data = self.load(pyfile.url,
+                              post={'gateway_result': "1",
+                                    'asm': "0"})
 
         self.check_errors()
 
-        m = re.search(r"var fid = '(\w+)';", self.data)
+        m = re.search(r"var fid = '(\w+?)'", self.data)
         if m is None:
+            self.log_error(_("fid pattern not found"))
             self.retry(wait=5)
 
         params = {'fid': m.group(1)}

@@ -1,0 +1,104 @@
+{% extends 'classic/base.html' %}
+{% block head %}
+
+<script type="text/javascript" src="{{'/media/js/classic/package_ui.js'|url}}"></script>
+
+<script type="text/javascript">
+
+document.addEvent("domready", function(){
+    var pUI = new PackageUI("url", {{ target }});
+});
+</script>
+{% endblock %}
+
+{% if target %}
+    {% set name = _("Queue") %}
+{% else %}
+    {% set name = _("Collector") %}
+{% endif %}
+
+{% block title %}{{name}} - {{super()}} {% endblock %}
+{% block subtitle %}{{name}}{% endblock %}
+
+{% block pageactions %}
+<ul id="page-actions-more">
+    <li id="del_finished"><a style="padding: 0; font-weight: bold;" href="#">{{_("Delete Finished")}}</a></li>
+    <li id="restart_failed"><a style="padding: 0; font-weight: bold;" href="#">{{_("Restart Failed")}}</a></li>
+</ul>
+{% endblock %}
+
+{% block content %}
+{% autoescape true %}
+
+<ul id="package-list" style="list-style: none; padding-left: 0; margin-top: -10px;">
+{% for package in content %}
+    <li>
+<div id="package_{{package.pid}}" class="package">
+    <div class="order" style="display: none;">{{ package.order }}</div>
+    
+    <div class="packagename" style="cursor: pointer">
+        <img class="package_drag" src="{{'/media/classic/img/folder.png'|url }}" style="cursor: move; margin-bottom: -2px">
+        <span class="name">{{package.name}}</span>
+        &nbsp;&nbsp;
+        <span class="buttons" style="opacity:0">
+        <img title="{{_("Delete Package")}}" style="cursor: pointer" width="12px" height="12px" src="{{'/media/classic/img/delete.png'|url}}" />
+        &nbsp;&nbsp;
+        <img title="{{_("Restart Package")}}" style="margin-left: -10px; cursor: pointer" height="12px" src="{{'/media/classic/img/arrow_refresh.png'|url}}" />
+        &nbsp;&nbsp;
+        <img title="{{_("Edit Package")}}" style="margin-left: -10px; cursor: pointer" height="12px" src="{{'/media/classic/img/pencil.png'|url}}" />
+        &nbsp;&nbsp;
+        <img title="{{_("Move Package")}}" style="margin-left: -10px; cursor: pointer" height="12px" src="{{'/media/classic/img/package_go.png'|url}}" />
+        </span>
+    </div>
+    {% set progress = (package.linksdone * 100) / package.linkstotal %}
+
+    <div id="progress" style="border-radius: 4px; border: 1px solid #AAAAAA; width: 50%; height: 1em">
+        <div style="width: {{ progress }}%; height: 100%; background-color: #add8e6;"></div>
+        <label style="font-size: 0.8em; font-weight: bold; padding-left: 5px; position: relative; top: -17px">
+        {{ package.sizedone|formatsize }} / {{ package.sizetotal|formatsize }}</label>
+        <label style="font-size: 0.8em; font-weight: bold; padding-right: 5px ;float: right; position: relative; top: -17px">
+        {{ package.linksdone }} / {{ package.linkstotal }}</label>
+        </div>
+    <div style="clear: both; margin-bottom: -10px"></div>
+
+    <div id="children_{{package.pid}}" style="display: none;" class="children">
+    <span class="child_secrow">{{_("Folder:")}} <span class="folder">{{package.folder}}</span> | {{_("Password:")}} <span class="password">{{package.password}}</span></span>
+    <ul id="sort_children_{{package.pid}}" style="list-style: none; padding-left: 0">
+    </ul>
+    </div>
+</div>
+    </li>
+{% endfor %}
+</ul>
+{% endautoescape %}
+{% endblock %}
+
+{% block hidden %}
+<div id="pack_box" class="window_box" style="z-index: 2">
+    <form id="pack_form" action="{{'/json/edit_package/'|url}}" method="POST" enctype="multipart/form-data">
+    <h1>{{_("Edit Package")}}</h1>
+    <p>{{_("Edit the package detais below.")}}</p>
+    <input name="pack_id" id="pack_id" type="hidden" value=""/>
+    <label for="pack_name">{{_("Name")}}
+    <span class="small">{{_("The name of the package.")}}</span>
+    </label>
+    <input id="pack_name" name="pack_name" type="text" size="20" />
+
+    <label for="pack_folder">{{_("Folder")}}
+    <span class="small">{{_("Name of subfolder for these downloads.")}}</span>
+    </label>
+    <input id="pack_folder" name="pack_folder" type="text" size="20" />
+
+    <label for="pack_pws">{{_("Password")}}
+    <span class="small">{{_("List of passwords used for unrar.")}}</span>
+    </label>
+    <textarea rows="3" name="pack_pws" id="pack_pws"></textarea>
+
+    <button type="submit">{{_("Submit")}}</button>
+    <button id="pack_reset" style="margin-left: 0" type="reset" >{{_("Reset")}}</button>
+    <div class="spacer"></div>
+
+    </form>
+
+</div>
+{% endblock %}

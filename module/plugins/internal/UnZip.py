@@ -2,17 +2,18 @@
 
 from __future__ import with_statement
 
+import os
 import sys
 import zipfile
 
 from .Extractor import ArchiveError, CRCError, Extractor, PasswordError
-from .misc import encode
+from .misc import encode, fsjoin
 
 
 class UnZip(Extractor):
     __name__ = "UnZip"
     __type__ = "extractor"
-    __version__ = "1.24"
+    __version__ = "1.26"
     __status__ = "stable"
 
     __description__ = """ZIP extractor plugin"""
@@ -24,8 +25,27 @@ class UnZip(Extractor):
                             sys.version_info[2])
 
     @classmethod
+    def archivetype(cls, filename):
+        try:
+            return "zip" if cls.isarchive(filename) else None
+
+        except IOError:
+            return None
+
+    @classmethod
     def isarchive(cls, filename):
-        return zipfile.is_zipfile(encode(filename))
+        #: zipfile only checks for 'End of archive' so we have to check ourselves for 'start of archive'
+        try:
+            with open(encode(filename), "rb") as f:
+                data = f.read(4)
+                if data != "PK\003\004":
+                    return False
+
+                else:
+                    return zipfile.is_zipfile(f)
+
+        except IOError:
+            return False
 
     @classmethod
     def find(cls):
@@ -34,7 +54,7 @@ class UnZip(Extractor):
     def list(self, password=None):
         with zipfile.ZipFile(self.filename, 'r') as z:
             z.setpassword(password)
-            self.files = z.namelist()
+            self.files = [fsjoin(self.dest, _f) for _f in z.namelist() if not _f[-1] != os.path.sep]
         return self.files
 
     def verify(self, password=None):

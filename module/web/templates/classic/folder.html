@@ -1,0 +1,15 @@
+<li class="folder">
+  <input type="hidden" name="path" class="path" value="{{ path }}" />
+  <input type="hidden" name="name" class="name" value="{{ name }}" />
+  <span>
+    <b>{{ name }}</b>
+    <span class="buttons" style="opacity:0">
+	  <img title="{{_("Rename Directory")}}" class="rename" style="cursor: pointer" height="12px" src="{{'/media/classic/img/pencil.png'|url}}" />
+	  &nbsp;&nbsp;
+	  <img title="{{_("Delete Directory")}}" class="delete" style="margin-left: -10px; cursor: pointer" width="12px" height="12px" src="{{'/media/classic/img/delete.png'|url}}" />
+	  &nbsp;&nbsp;
+	  <img title="{{_("Add subdirectory")}}" class="mkdir" style="margin-left: -10px; cursor: pointer" width="12px" height="12px" src="{{'/media/classic/img/add_folder.png'|url}}" />
+    </span>
+  </span>
+  <div style="display:none">{{ _("Folder is empty") }}</div>
+</li>

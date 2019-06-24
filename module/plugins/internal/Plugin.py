@@ -27,7 +27,7 @@ _decode = decode
 class Plugin(object):
     __name__ = "Plugin"
     __type__ = "plugin"
-    __version__ = "0.73"
+    __version__ = "0.74"
     __status__ = "stable"
 
     __config__ = []  #: [("name", "type", "desc", "default")]
@@ -189,14 +189,16 @@ class Plugin(object):
         if isinstance(cookies, list):
             set_cookies(req.cj, cookies)
 
+        http_req = self.req.http if hasattr(self.req, "http") else self.req
+
         #@TODO: Move to network in 0.4.10
         if not redirect:
             # @NOTE: req can be a HTTPRequest or a Browser object
-            (req.http if hasattr(req, "http") else req).c.setopt(pycurl.FOLLOWLOCATION, 0)
+            http_req.c.setopt(pycurl.FOLLOWLOCATION, 0)
 
         elif type(redirect) is int:
             # @NOTE: req can be a HTTPRequest or a Browser object
-            (req.http if hasattr(req, "http") else req).c.setopt(pycurl.MAXREDIRS, redirect)
+            http_req.c.setopt(pycurl.MAXREDIRS, redirect)
 
         #@TODO: Move to network in 0.4.10
         if isinstance(ref, basestring):
@@ -215,8 +217,7 @@ class Plugin(object):
         #@TODO: Move to network in 0.4.10
         if not redirect:
             # @NOTE: req can be a HTTPRequest or a Browser object
-            (req.http if hasattr(req, "http") else req).c.setopt(
-                pycurl.FOLLOWLOCATION, 1)
+            http_req.c.setopt(pycurl.FOLLOWLOCATION, 1)
 
         elif type(redirect) is int:
             maxredirs = int(
@@ -225,8 +226,7 @@ class Plugin(object):
                     "maxredirs",
                     "plugin")) or 5  # @TODO: Remove `int` in 0.4.10
             # @NOTE: req can be a HTTPRequest or a Browser object
-            (req.http if hasattr(req, "http") else req).c.setopt(
-                pycurl.MAXREDIRS, maxredirs)
+            http_req.c.setopt(pycurl.MAXREDIRS, maxredirs)
 
         #@TODO: Move to network in 0.4.10
         if decode:
@@ -244,8 +244,7 @@ class Plugin(object):
         #@TODO: Move to network in 0.4.10
         header = {'code': req.code, 'url': req.lastEffectiveURL}
         # @NOTE: req can be a HTTPRequest or a Browser object
-        header.update(parse_html_header(
-            req.http.header if hasattr(req, "http") else req.header))
+        header.update(parse_html_header(http_req.header))
 
         self.last_header = header
 
@@ -253,6 +252,126 @@ class Plugin(object):
             return header
         else:
             return html
+
+    def upload(self, path, url, get={}, ref=True, cookies=True, just_header=False, decode=True, redirect=True, req=None):
+        # @TODO: This should really go to HTTPRequest.py
+
+        """
+        Uploads a file at url and returns response content
+
+        :param url:
+        :param get:
+        :param ref:
+        :param cookies:
+        :param just_header: If True only the header will be retrieved and returned as dict
+        :param decode: Wether to decode the output according to http header, should be True in most cases
+        :return: Response content
+        """
+        if self.pyload.debug:
+            self.log_debug("UPLOAD URL " + url,
+                           *["%s=%s" % (key, value) for key, value in locals().items()
+                             if key not in ("self", "url", "_[1]")])
+
+        with open(path, 'rb') as f:
+            url = fixurl(url, unquote=True)  #: Recheck in 0.4.10
+
+            if req is False:
+                req = get_request()
+                req.setOption("timeout", 60)  # @TODO: Remove in 0.4.10
+
+            elif not req:
+                req = self.req
+
+            if isinstance(cookies, list):
+                set_cookies(req.cj, cookies)
+
+            http_req = self.req.http if hasattr(self.req, "http") else self.req
+
+            if not redirect:
+                # @NOTE: req can be a HTTPRequest or a Browser object
+                http_req.c.setopt(pycurl.FOLLOWLOCATION, 0)
+
+            elif type(redirect) is int:
+                # @NOTE: req can be a HTTPRequest or a Browser object
+                http_req.c.setopt(pycurl.MAXREDIRS, redirect)
+
+            if isinstance(ref, basestring):
+                http_req.lastURL = ref
+
+            http_req.setRequestContext(url, get, {}, bool(ref), bool(cookies), False)
+            http_req.header = ""
+            http_req.c.setopt(pycurl.HTTPHEADER, http_req.headers)
+
+            http_req.c.setopt(pycurl.UPLOAD, 1)
+            http_req.c.setopt(pycurl.READFUNCTION, f.read)
+            http_req.c.setopt(pycurl.INFILESIZE, os.path.getsize(path))
+
+            if just_header:
+                http_req.c.setopt(pycurl.FOLLOWLOCATION, 0)
+                http_req.c.setopt(pycurl.NOBODY, 1)
+                http_req.c.perform()
+                html = http_req.header
+
+                http_req.c.setopt(pycurl.FOLLOWLOCATION, 1)
+                http_req.c.setopt(pycurl.NOBODY, 0)
+
+            else:
+                http_req.c.perform()
+                html = http_req.getResponse()
+
+            http_req.c.setopt(pycurl.UPLOAD, 0)
+            http_req.c.setopt(pycurl.INFILESIZE, 0)
+
+            http_req.c.setopt(pycurl.POSTFIELDS, "")
+            http_req.lastEffectiveURL = http_req.c.getinfo(pycurl.EFFECTIVE_URL)
+
+            http_req.addCookies()
+
+            try:
+                http_req.code = http_req.verifyHeader()
+
+            finally:
+                http_req.rep.close()
+                http_req.rep = None
+
+            if decode is True:
+                html = http_req.decodeResponse(html)
+
+            if not redirect:
+                http_req.c.setopt(pycurl.FOLLOWLOCATION, 1)
+
+            elif type(redirect) is int:
+                maxredirs = int(
+                    self.pyload.api.getConfigValue(
+                        "UserAgentSwitcher",
+                        "maxredirs",
+                        "plugin")) or 5  # @TODO: Remove `int` in 0.4.10
+                # @NOTE: req can be a HTTPRequest or a Browser object
+                http_req.c.setopt(pycurl.MAXREDIRS, maxredirs)
+
+            if decode:
+                html = html_unescape(html)
+
+            #@TODO: Move to network in 0.4.10
+            if isinstance(decode, basestring):
+                html = _decode(html, decode)
+
+            self.last_html = html
+
+            if self.pyload.debug:
+                self.dump_html()
+
+            #@TODO: Move to network in 0.4.10
+            header = {'code': req.code, 'url': req.lastEffectiveURL}
+            # @NOTE: req can be a HTTPRequest or a Browser object
+            header.update(parse_html_header(http_req.header))
+
+            self.last_header = header
+
+            if just_header:
+                return header
+            else:
+                return html
 
     def dump_html(self):
         frame = inspect.currentframe()

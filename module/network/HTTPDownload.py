@@ -34,7 +34,7 @@ from module.utils import save_join, fs_encode
 class HTTPDownload():
     """ loads a url http + ftp """
 
-    def __init__(self, url, filename, get={}, post={}, referer=None, cj=None, bucket=None,
+    def __init__(self, url, filename, size=0, get={}, post={}, referer=None, cj=None, bucket=None,
                  options={}, progressNotify=None, disposition=False):
         self.url = url
         self.filename = filename  #complete file destination, not only name
@@ -48,7 +48,7 @@ class HTTPDownload():
         # all arguments
 
         self.abort = False
-        self.size = 0
+        self.size = size
         self.nameDisposition = None #will be parsed from content disposition
 
         self.chunks = []

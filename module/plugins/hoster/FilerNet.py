@@ -1,8 +1,4 @@
 # -*- coding: utf-8 -*-
-#
-# Test links:
-# http://filer.net/get/ivgf5ztw53et3ogd
-# http://filer.net/get/hgo14gzcng3scbvv
 
 import os
 import re
@@ -14,7 +10,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class FilerNet(SimpleHoster):
     __name__ = "FilerNet"
     __type__ = "hoster"
-    __version__ = "0.26"
+    __version__ = "0.28"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?filer\.net/get/\w+'
@@ -27,7 +23,8 @@ class FilerNet(SimpleHoster):
     __description__ = """Filer.net hoster plugin"""
     __license__ = "GPLv3"
     __authors__ = [("stickell", "l.stickell@yahoo.it"),
-                   ("Walter Purcaro", "vuolter@gmail.com")]
+                   ("Walter Purcaro", "vuolter@gmail.com"),
+                   ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
     INFO_PATTERN = r'<h1 class="page-header">Free Download (?P<N>\S+) <small>(?P<S>[\w.]+) (?P<U>[\w^_]+)</small></h1>'
     OFFLINE_PATTERN = r'Nicht gefunden'
@@ -37,16 +34,14 @@ class FilerNet(SimpleHoster):
     LINK_FREE_PATTERN = LINK_PREMIUM_PATTERN = r'href="([^"]+)">Get download</a>'
 
     def handle_free(self, pyfile):
-        inputs = self.parse_html_form(
-            input_names={'token': re.compile(r'.+')})[1]
-        if 'token' not in inputs:
-            self.error(_("Unable to detect token"))
+        inputs = self.parse_html_form(input_names={'token': re.compile(r'.+')})[1]
+        if inputs is None or 'token' not in inputs:
+            self.retry()
 
         self.data = self.load(pyfile.url, post={'token': inputs['token']})
 
-        inputs = self.parse_html_form(
-            input_names={'hash': re.compile(r'.+')})[1]
-        if 'hash' not in inputs:
+        inputs = self.parse_html_form(input_names={'hash': re.compile(r'.+')})[1]
+        if inputs is None or 'hash' not in inputs:
             self.error(_("Unable to detect hash"))
 
         self.captcha = ReCaptcha(pyfile)
@@ -57,15 +52,13 @@ class FilerNet(SimpleHoster):
         self.captcha.task = None
 
         self.download(pyfile.url,
-                      post={'recaptcha_challenge_field': challenge,
-                            'recaptcha_response_field': response,
+                      post={'g-recaptcha-response': response,
                             'hash': inputs['hash']})
 
         #: Restore the captcha task
         self.captcha.task = captcha_task
 
-        if self.scan_download(
-                {'html': re.compile(r'\A\s*<!DOCTYPE html')}) == "html":
+        if self.scan_download({'html': re.compile(r'\A\s*<!DOCTYPE html')}) == "html":
             self.log_warning(
                 _("There was HTML code in the downloaded file (%s)...bad captcha? The download will be restarted." %
                   self.pyfile.name))

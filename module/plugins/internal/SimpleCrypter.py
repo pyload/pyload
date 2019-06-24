@@ -6,13 +6,13 @@ from module.network.HTTPRequest import BadHeader
 from module.network.RequestFactory import getURL as get_url
 
 from .Crypter import Crypter
-from .misc import parse_name, parse_time, replace_patterns
+from .misc import parse_name, parse_time, replace_patterns, search_pattern
 
 
 class SimpleCrypter(Crypter):
     __name__ = "SimpleCrypter"
     __type__ = "crypter"
-    __version__ = "0.93"
+    __version__ = "0.96"
     __status__ = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -72,8 +72,8 @@ class SimpleCrypter(Crypter):
     PAGES_PATTERN = None
 
     NAME_PATTERN = None
-    OFFLINE_PATTERN = r'[^\w](404\s|[Ii]nvalid|[Oo]ffline|[Dd]elet|[Rr]emov|([Nn]o(t|thing)?|sn\'t) (found|(longer )?(available|exist)))'
-    TEMP_OFFLINE_PATTERN = r'[^\w](503\s|[Mm]aint(e|ai)nance|[Tt]emp([.-]|orarily)|[Mm]irror)'
+    OFFLINE_PATTERN = r'[^\w](?:404\s|[Nn]ot [Ff]ound|[Ff]ile (?:was|has been)?\s*(?:removed|deleted)|[Ff]ile (?:does not exist|could not be found|no longer available))'
+    TEMP_OFFLINE_PATTERN = r'[^\w](?:503\s|[Ss]erver (?:is (?:in|under) )?[Mm]aint(?:e|ai)nance|[Tt]emp(?:[.-]|orarily )(?:[Oo]ffline|[Uu]available)|[Uu]se (?:[Aa] )?[Mm]irror)'
 
     WAIT_PATTERN = None
     PREMIUM_ONLY_PATTERN = None
@@ -98,8 +98,7 @@ class SimpleCrypter(Crypter):
 
             elif info['status'] in (3, 7):
                 try:
-                    html = get_url(
-                        url, cookies=cls.COOKIES, decode=cls.TEXT_ENCODING)
+                    html = get_url(url, cookies=cls.COOKIES, decode=cls.TEXT_ENCODING)
 
                 except BadHeader, e:
                     info['error'] = "%d: %s" % (e.code, e.content)
@@ -108,23 +107,20 @@ class SimpleCrypter(Crypter):
                     pass
 
         if html:
-            if cls.OFFLINE_PATTERN and re.search(
-                    cls.OFFLINE_PATTERN, html) is not None:
+            if search_pattern(cls.OFFLINE_PATTERN, html) is not None:
                 info['status'] = 1
 
-            elif cls.TEMP_OFFLINE_PATTERN and re.search(cls.TEMP_OFFLINE_PATTERN, html) is not None:
+            elif search_pattern(cls.TEMP_OFFLINE_PATTERN, html) is not None:
                 info['status'] = 6
 
             elif cls.NAME_PATTERN:
-                m = re.search(cls.NAME_PATTERN, html)
+                m = search_pattern(cls.NAME_PATTERN, html)
                 if m is not None:
                     info['status'] = 2
                     info['pattern'].update(m.groupdict())
 
         if 'N' in info['pattern']:
-            name = replace_patterns(
-                info['pattern']['N'],
-                cls.NAME_REPLACEMENTS)
+            name = replace_patterns(info['pattern']['N'], cls.NAME_REPLACEMENTS)
             info['name'] = parse_name(name)
 
         return info
@@ -134,8 +130,7 @@ class SimpleCrypter(Crypter):
         account_name = self.classname.rsplit("Folder", 1)[0]
 
         if self.account:
-            self.req = self.pyload.requestFactory.getRequest(
-                account_name, self.account.user)
+            self.req = self.pyload.requestFactory.getRequest(account_name, self.account.user)
             # @NOTE: Don't call get_info here to reduce overhead
             self.premium = self.account.info['data']['premium']
         else:
@@ -192,8 +187,7 @@ class SimpleCrypter(Crypter):
         else:
             self.direct_dl = self.DIRECT_LINK
 
-        self.pyfile.url = replace_patterns(
-            self.pyfile.url, self.URL_REPLACEMENTS)
+        self.pyfile.url = replace_patterns(self.pyfile.url, self.URL_REPLACEMENTS)
 
     def decrypt(self, pyfile):
         self._prepare()
@@ -261,7 +255,7 @@ class SimpleCrypter(Crypter):
 
     def handle_pages(self, pyfile):
         try:
-            pages = int(re.search(self.PAGES_PATTERN, self.data).group(1))
+            pages = int(search_pattern(self.PAGES_PATTERN, self.data).group(1))
 
         except Exception:
             pages = 1
@@ -280,21 +274,18 @@ class SimpleCrypter(Crypter):
             self.log_warning(_("No data to check"))
             return
 
-        if self.IP_BLOCKED_PATTERN and re.search(
-                self.IP_BLOCKED_PATTERN, self.data):
-            self.fail(
-                _("Connection from your current IP address is not allowed"))
+        if search_pattern(self.IP_BLOCKED_PATTERN, self.data):
+            self.fail(_("Connection from your current IP address is not allowed"))
 
         elif not self.premium:
-            if self.PREMIUM_ONLY_PATTERN and re.search(
-                    self.PREMIUM_ONLY_PATTERN, self.data):
+            if search_pattern(self.PREMIUM_ONLY_PATTERN, self.data):
                 self.fail(_("Link can be decrypted by premium users only"))
 
-            elif self.SIZE_LIMIT_PATTERN and re.search(self.SIZE_LIMIT_PATTERN, self.data):
+            elif search_pattern(self.SIZE_LIMIT_PATTERN, self.data):
                 self.fail(_("Link list too large for free decrypt"))
 
         if self.ERROR_PATTERN:
-            m = re.search(self.ERROR_PATTERN, self.data)
+            m = search_pattern(self.ERROR_PATTERN, self.data)
             if m is not None:
                 try:
                     errmsg = m.group(1)
@@ -308,22 +299,19 @@ class SimpleCrypter(Crypter):
                 self.info['error'] = errmsg
                 self.log_warning(errmsg)
 
-                if re.search(self.TEMP_OFFLINE_PATTERN, errmsg):
+                if search_pattern(self.TEMP_OFFLINE_PATTERN, errmsg):
                     self.temp_offline()
 
-                elif re.search(self.OFFLINE_PATTERN, errmsg):
+                elif search_pattern(self.OFFLINE_PATTERN, errmsg):
                     self.offline()
 
                 elif re.search(r'limit|wait|slot', errmsg, re.I):
                     wait_time = parse_time(errmsg)
-                    self.wait(
-                        wait_time, reconnect=wait_time > self.config.get(
-                            'max_wait', 10) * 60)
+                    self.wait(wait_time, reconnect=wait_time > self.config.get('max_wait', 10) * 60)
                     self.restart(_("Download limit exceeded"))
 
                 elif re.search(r'country|ip|region|nation', errmsg, re.I):
-                    self.fail(
-                        _("Connection from your current IP address is not allowed"))
+                    self.fail(_("Connection from your current IP address is not allowed"))
 
                 elif re.search(r'captcha|code', errmsg, re.I):
                     self.retry_captcha()
@@ -337,8 +325,7 @@ class SimpleCrypter(Crypter):
                 elif re.search(r'up to|size', errmsg, re.I):
                     self.fail(_("Link list too large for free decrypt"))
 
-                elif re.search(r'404|sorry|offline|delet|remov|(no(t|thing)?|sn\'t) (found|(longer )?(available|exist))',
-                               errmsg, re.I):
+                elif re.search(r'404|sorry|offline|delet|remov|(no(t|thing)?|sn\'t) (found|(longer )?(available|exist))', errmsg, re.I):
                     self.offline()
 
                 elif re.search(r'filename', errmsg, re.I):
@@ -351,8 +338,8 @@ class SimpleCrypter(Crypter):
                     self.wait(60, reconnect=True)
                     self.restart(errmsg)
 
-        elif self.WAIT_PATTERN:
-            m = re.search(self.WAIT_PATTERN, self.data)
+        else:
+            m = search_pattern(self.WAIT_PATTERN, self.data)
             if m is not None:
                 try:
                     waitmsg = m.group(1).strip()
@@ -361,11 +348,7 @@ class SimpleCrypter(Crypter):
                     waitmsg = m.group(0).strip()
 
                 wait_time = parse_time(waitmsg)
-                self.wait(
-                    wait_time,
-                    reconnect=wait_time > self.config.get(
-                        'max_wait',
-                        10) * 60)
+                self.wait(wait_time,reconnect=wait_time > self.config.get('max_wait', 10) * 60)
 
         self.log_info(_("No errors found"))
         self.info.pop('error', None)

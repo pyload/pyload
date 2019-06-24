@@ -7,7 +7,7 @@ from ..internal.MultiHoster import MultiHoster
 class RapideoPl(MultiHoster):
     __name__ = "RapideoPl"
     __type__ = "hoster"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __status__ = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -95,7 +95,8 @@ class RapideoPl(MultiHoster):
         pyfile.size = parsed['filesize']
 
         try:
-            self.link = self.run_file_query(pyfile.url, 'filedownload')
+            link = self.run_file_query(pyfile.url, 'filedownload')
+            self.download(link, fixurl=False)
 
         except Exception:
             self.temp_offline("Query error #2")

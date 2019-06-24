@@ -1,0 +1,9 @@
+{% extends 'classic/base.html' %}
+
+{% block head %}
+<meta http-equiv="refresh" content="3; url={{'/'|url}}">
+{% endblock %}
+
+{% block content %}
+<p><b>{{_("You were successfully logged out.")}}</b></p>
+{% endblock %}

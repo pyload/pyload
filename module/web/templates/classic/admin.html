@@ -1,0 +1,98 @@
+{% extends 'classic/base.html' %}
+
+{% block head %}
+    <script type="text/javascript" src="{{'/media/js/classic/admin.js'|url}}"></script>
+{% endblock %}
+
+
+{% block title %}{{ _("Administrate") }} - {{ super() }} {% endblock %}
+{% block subtitle %}{{ _("Administrate") }}{% endblock %}
+
+{% block content %}
+    
+    <a href="#" id="quit-pyload" style="font-size: large; font-weight: bold;">{{_("Quit pyLoad")}}</a> |
+    <a href="#" id="restart-pyload" style="font-size: large; font-weight: bold;">{{_("Restart pyLoad")}}</a>
+    <br>
+    <br>
+
+    {{ _("To add user or change passwords use:") }} <b>python pyLoadCore.py -u</b><br>
+    {{ _("Important: Admin user have always all permissions!") }}
+
+    <form action="" method="POST">
+        <table class="settable wide">
+            <thead style="font-size: 11px">
+            <th>
+                {{ _("Name") }}
+            </th>
+            <th>
+                {{ _("Change Password") }}
+            </th>
+            <th>
+                {{ _("Admin") }}
+            </th>
+            <th>
+                {{ _("Permissions") }}
+            </th>
+            </thead>
+
+            {% for name, data in users.iteritems() %}
+                <tr>
+                    <td>{{ name }}</td>
+                    <td><a class="change_password" href="#" id="change_pw|{{name}}">{{ _("change") }}</a></td>
+                    <td><input name="{{ name }}|admin" type="checkbox" {% if data.perms.admin %}
+                               checked="True" {% endif %}"></td>
+                    <td>
+                        <select multiple="multiple" size="{{ permlist|length }}" name="{{ name }}|perms">
+                            {% for perm in permlist %}
+                            {% if data.perms|getitem(perm) %}
+                                <option selected="selected">{{ perm }}</option>
+                            {% else %}
+                                <option>{{ perm }}</option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+                    </td>
+                </tr>
+            {% endfor %}
+
+
+        </table>
+
+        <button class="styled_button" type="submit">{{ _("Submit") }}</button>
+    </form>
+{% endblock %}
+{% block hidden %}
+    <div id="password_box" class="window_box" style="z-index: 2">
+        <form id="password_form" action="{{'/json/change_password'|url}}" method="POST" enctype="multipart/form-data">
+            <h1>{{ _("Change Password") }}</h1>
+
+            <p>{{ _("Enter your current and desired Password.") }}</p>
+            <label for="user_login">{{ _("User") }}
+                <span class="small">{{ _("Your username.") }}</span>
+            </label>
+            <input id="user_login" name="user_login" type="text" size="20"/>
+
+            <label for="login_current_password">{{ _("Current password") }}
+                <span class="small">{{ _("The password for this account.") }}</span>
+            </label>
+            <input id="login_current_password" name="login_current_password" type="password" size="20"/>
+
+            <label for="login_new_password">{{ _("New password") }}
+                <span class="small">{{ _("The new password.") }}</span>
+            </label>
+            <input id="login_new_password" name="login_new_password" type="password" size="20"/>
+
+            <label for="login_new_password2">{{ _("New password (repeat)") }}
+                <span class="small">{{ _("Please repeat the new password.") }}</span>
+            </label>
+            <input id="login_new_password2" name="login_new_password2" type="password" size="20"/>
+
+
+            <button id="login_password_button" type="submit">{{ _("Submit") }}</button>
+            <button id="login_password_reset" style="margin-left: 0" type="reset">{{ _("Reset") }}</button>
+            <div class="spacer"></div>
+
+        </form>
+
+    </div>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends 'classic/base.html' %}
+
+{% block title %}{{_("Logs")}} - {{super()}} {% endblock %}
+{% block subtitle %}{{_("Logs")}}{% endblock %}
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{{'/media/classic/css/log.css'|url}}"/>
+{% endblock %}
+
+{% block content %}
+<div style="clear: both;"></div>
+
+<div class="logpaginator"><a href="{{ '/logs/1'|url }}">&lt;&lt; {{_("Start")}}</a>  <a href="{{ '/logs/'|url + iprev|string }}">&lt; {{_("prev")}}</a>  <a href="{{ '/logs/'|url + inext|string }}">{{_("next")}} &gt;</a> <a href="{{'/logs/'|url}}">{{_("End")}} &gt;&gt;</a></div>
+<div class="logperpage">
+    <form id="logform1" action="" method="POST">
+        <label for="reversed">Reversed:</label>
+        <input type="checkbox" name="reversed" onchange="this.form.submit();" {% if reversed %} checked="checked" {% endif %} />&nbsp;
+        <label for="perpage">Lines per page:</label>
+        <select name="perpage" onchange="this.form.submit();">
+            {% for value in  perpage_p %}
+                <option value="{{value.0}}"{% if value.0 == perpage %} selected="selected" {% endif %}>{{value.1}}</option>
+            {% endfor %}
+        </select>
+    </form>
+</div>
+<div class="logwarn">{{warning}}</div>
+<div style="clear: both;"></div>
+<div class="logdiv">
+    <table class="logtable" cellpadding="0" cellspacing="0">
+    {% for line in log %}
+        <tr><td class="logline">{{line.line}}</td><td>{{line.date}}</td><td class="loglevel">{{line.level}}</td><td>{{line.message}}</td></tr>
+    {% endfor %}
+    </table>
+</div>
+<div class="logform">
+<form id="logform2" action="" method="POST">
+    <label for="from">Jump to time:</label><input type="text" name="from" size="15" value="{{from}}"/>
+    <input type="submit" value="ok" />
+</form>
+</div>
+<div style="clear: both; height: 10px;">&nbsp; </div>
+{% endblock %}

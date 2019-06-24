@@ -1,14 +1,16 @@
 # -*- coding: utf-8 -*-
 
+import datetime
 import time
 
+from ..internal.misc import json
 from ..internal.MultiAccount import MultiAccount
 
 
 class ZeveraCom(MultiAccount):
     __name__ = "ZeveraCom"
     __type__ = "account"
-    __version__ = "0.36"
+    __version__ = "0.38"
     __status__ = "testing"
 
     __config__ = [("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),
@@ -21,52 +23,37 @@ class ZeveraCom(MultiAccount):
                    ("Walter Purcaro", "vuolter@gmail.com"),
                    ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
-    API_URL = "http://api.zevera.com/jDownloader.ashx"
+    API_URL = "https://www.zevera.com/api/"
 
-    def api_response(self, method, user, password=None, **kwargs):
-        get_data = {'cmd': method,
-                    'login': user,
-                    'pass': password}
+    def api_response(self, method, api_key, **kwargs):
+        get_data = {'client_id': "452508742",
+                    'apikey': api_key}
 
         get_data.update(kwargs)
 
-        res = self.load(self.API_URL,
+        res = self.load(self.API_URL + method,
                         get=get_data)
 
-        self.log_debug(res)
-
-        if ':' in res:
-            res = res.replace(',', '\n')
-            return dict((y.strip().lower(), z.strip()) for (y, z) in
-                        [x.split(':', 1) for x in res.splitlines() if ':' in x])
-        else:
-            return res
+        return json.loads(res)
 
     def grab_hosters(self, user, password, data):
-        res = self.api_response("gethosters", user, password)
-        return [x.strip() for x in res.split(',')]
+        res = self.api_response("services/list", password)
+        return res['directdl']
 
     def grab_info(self, user, password, data):
-        validuntil = None
         trafficleft = None
-        premium = False
 
-        res = self.api_response("accountinfo", user, password)
+        res = self.api_response("account/info", password)
 
-        if "No trafic" not in res:
-            if res['endsubscriptiondate'] == "Expired!":
-                validuntil = time.time()
-
-            else:
-                validuntil = time.mktime(time.strptime(res['endsubscriptiondate'], "%Y/%m/%d %H:%M:%S"))
-                trafficleft = float(res['availabletodaytraffic']) * 1024 if res['orondaytrafficlimit'] != '0' else -1
-                premium = True
+        premium = res['premium_until'] is not False
+        validuntil = time.mktime(datetime.datetime.fromtimestamp(res['premium_until']).timetuple()) if premium else -1
 
         return {'validuntil': validuntil,
                 'trafficleft': trafficleft,
                 'premium': premium}
 
     def signin(self, user, password, data):
-        if self.api_response("accountinfo", user, password) == "No trafic":
+        res = self.api_response("account/info", password)
+        if res['status'] != "success":
+            self.log_error( _("Password for Zevera should be the API token - get it from: https://www.zevera.com/account"))
             self.fail_login()
-

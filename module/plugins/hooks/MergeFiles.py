@@ -12,10 +12,10 @@ from ..internal.misc import fsjoin, threaded
 class MergeFiles(Addon):
     __name__ = "MergeFiles"
     __type__ = "hook"
-    __version__ = "0.21"
+    __version__ = "0.24"
     __status__ = "testing"
 
-    __config__ = [("activated", "bool", "Activated", True)]
+    __config__ = [("activated", "bool", "Activated", False)]
 
     __description__ = """Merges parts splitted with hjsplit"""
     __license__ = "GPLv3"
@@ -54,18 +54,13 @@ class MergeFiles(Addon):
                     try:
                         with open(fsjoin(dl_folder, splitted_file), "rb") as s_file:
                             size_written = 0
-                            s_file_size = int(
-                                os.path.getsize(
-                                    os.path.join(
-                                        dl_folder,
-                                        splitted_file)))
+                            s_file_size = int(os.path.getsize(os.path.join(dl_folder, splitted_file)))
                             while True:
                                 f_buffer = s_file.read(self.BUFFER_SIZE)
                                 if f_buffer:
                                     final_file.write(f_buffer)
                                     size_written += self.BUFFER_SIZE
-                                    pyfile.setProgress(
-                                        (size_written * 100) / s_file_size)
+                                    pyfile.setProgress((size_written * 100) / s_file_size)
                                 else:
                                     break
                         self.log_debug("Finished merging part", splitted_file)

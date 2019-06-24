@@ -1,0 +1,204 @@
+{% extends 'classic/base.html' %}
+
+{% block title %}{{ _("Config") }} - {{ super() }} {% endblock %}
+{% block subtitle %}{{ _("Config") }}{% endblock %}
+
+{% block head %}
+    <script type="text/javascript" src="{{'/media/js/classic/tinytab_static.js'|url}}"></script>
+    <script type="text/javascript" src="{{'/media/js/classic/MooDropMenu_static.js'|url}}"></script>
+    <script type="text/javascript" src="{{'/media/js/classic/settings.js'|url}}"></script>
+
+{% endblock %}
+
+{% block content %}
+
+    <ul id="toptabs" class="tabs">
+            <li><a class="selected" href="#">{{ _("General") }}</a></li>
+            <li><a href="#">{{ _("Plugins") }}</a></li>
+            <li><a href="#">{{ _("Accounts") }}</a></li>
+    </ul>
+
+    <div id="tabsback" style="height: 20px; padding-left: 150px; color: white; font-weight: bold;">
+
+    </div>
+
+        <span id="tabs-body">
+            <!-- General -->
+            <span id="general" class="active tabContent">
+                <ul class="nav tabs">
+                    <li class>
+                        <a>Menu</a>
+                        <ul id="general-menu">
+                            {% for entry,name in conf.general %}
+                                <nobr>
+                                    <li id="general|{{ entry }}">{{ name }}</li>
+                                </nobr>
+                                <br>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                </ul>
+
+                <form id="general_form" action="" method="POST" autocomplete="off">
+                    <span id="general_form_content">
+                    <br>
+                    <h3>&nbsp;&nbsp; {{ _("Choose a section from the menu") }}</h3>
+                    <br>
+                    </span>
+
+                  <input id="general|submit" class="styled_button" type="submit" value="{{_("Submit")}}"/>
+                </form>
+            </span>
+
+            <!-- Plugins -->
+            <span id="plugins" class="tabContent">
+                <ul class="nav tabs">
+                    <li class>
+                        <a>Menu</a>
+                        <ul id="plugin-menu">
+                            {% for entry,name in conf.plugin %}
+                                <nobr>
+                                    <li id="plugin|{{ entry }}">{{ name }}</li>
+                                </nobr>
+                                <br>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                </ul>
+
+
+                 <form id="plugin_form" action="" method="POST" autocomplete="off">
+
+                     <span id="plugin_form_content">
+                    <br>
+                    <h3>&nbsp;&nbsp; {{ _("Choose a section from the menu") }}</h3>
+                    <br>
+                         </span>
+                     <input id="plugin|submit" class="styled_button" type="submit" value="{{_("Submit")}}"/>
+                </form>
+
+            </span>
+
+            <!-- Accounts -->
+            <span id="accounts" class="tabContent">
+            <form id="account_form" action="{{'/json/update_accounts'|url}}" method="POST">
+
+                        <table class="settable wide">
+
+                        <thead>
+                        <tr>
+                            <th>{{ _("Plugin") }}</th>
+                            <th>{{ _("Name") }}</th>
+                            <th>{{ _("Password") }}</th>
+                            <th>{{ _("Status") }}</th>
+                            <th>{{ _("Premium") }}</th>
+                            <th>{{ _("Valid until") }}</th>
+                            <th>{{ _("Traffic left") }}</th>
+                            <th>{{ _("Time") }}</th>
+                            <th>{{ _("Max Parallel") }}</th>
+                            <th>{{ _("Delete?") }}</th>
+                        </tr>
+                        </thead>
+
+
+                            {% for account in conf.accs %}
+                                {% set plugin = account.type %}
+                                       <tr>
+                                            <td>
+                                                <span style="padding:5px">{{ plugin }}</span>
+                                            </td>
+                                       
+                                           <td><label for="{{plugin}}|password;{{account.login}}"
+                                                      style="color:#424242;">{{ account.login }}</label></td>
+                                           <td>
+                                               <input id="{{plugin}}|password;{{account.login}}"
+                                                      name="{{plugin}}|password;{{account.login}}"
+                                                      type="password" value="{{account.password}}" size="12"/>
+                                           </td>
+                                           <td>
+                                               {% if account.valid %}
+                                                   <span style="font-weight: bold; color: #006400;">
+                                                   {{ _("valid") }}
+                                               {% else %}
+                                                   <span style="font-weight: bold; color: #8b0000;">
+                                                   {{ _("not valid") }}
+                                               {% endif %}
+                                               </span>
+                                           </td>
+                                          <td>
+                                               {% if account.premium %}
+                                                   <span style="font-weight: bold; color: #006400;">
+                                                   {{ _("yes") }}
+                                               {% else %}
+                                                   <span style="font-weight: bold; color: #8b0000;">
+                                                   {{ _("no") }}
+                                               {% endif %}
+                                               </span>
+                                           </td>
+                                           <td>
+                                   <span style="font-weight: bold;">
+                                   {{ account.validuntil }}
+                                   </span>
+                                           </td>
+                                           <td>
+                                   <span style="font-weight: bold;">
+                                   {{ account.trafficleft }}
+                                   </span>
+                                           </td>
+                                           <td>
+                                               <input id="{{plugin}}|time;{{account.login}}"
+                                                      name="{{plugin}}|time;{{account.login}}" type="text"
+                                                      size="7" value="{{account.time}}"/>
+                                           </td>
+                                           <td>
+                                               <input id="{{plugin}}|limitdl;{{account.login}}"
+                                                      name="{{plugin}}|limitdl;{{account.login}}" type="text"
+                                                      size="2" value="{{account.limitdl}}"/>
+                                           </td>
+                                           <td>
+                                               <input id="{{plugin}}|delete;{{account.login}}"
+                                                      name="{{plugin}}|delete;{{account.login}}" type="checkbox"
+                                                      value="True"/>
+                                           </td>
+                                       </tr>
+                                {% endfor %}
+                            </table>
+
+            <button id="account_submit" type="submit" class="styled_button">{{_("Submit")}}</button>
+            <button id="account_add" style="margin-left: 0" type="submit" class="styled_button">{{_("Add")}}</button>
+            </form>
+            </span>
+        </span>
+{% endblock %}
+{% block hidden %}
+<div id="account_box" class="window_box" style="z-index: 2">
+<form id="add_account_form" action="{{'/json/add_account'|url}}" method="POST" enctype="multipart/form-data">
+<h1>{{_("Add Account")}}</h1>
+<p>{{_("Enter your account data to use premium features.")}}</p>
+<label for="account_login">{{_("Login")}}
+<span class="small">{{_("Your username.")}}</span>
+</label>
+<input id="account_login" name="account_login" type="text" size="20" />
+
+<label for="account_password">{{_("Password")}}
+<span class="small">{{_("The password for this account.")}}</span>
+</label>
+<input id="account_password" name="account_password" type="password" size="20" />
+
+<label for="account_type">{{_("Type")}}
+<span class="small">{{_("Choose the hoster for your account.")}}</span>
+</label>
+    <select name=account_type id="account_type">
+        {% for type in types|sort %}
+            <option value="{{ type }}">{{ type }}</option>
+        {% endfor %}
+    </select>
+
+<button id="account_add_button" type="submit">{{_("Add")}}</button>
+<button id="account_reset" style="margin-left: 0" type="reset">{{_("Reset")}}</button>
+<div class="spacer"></div>
+
+</form>
+
+</div>
+{% endblock %}

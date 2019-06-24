@@ -17,6 +17,8 @@
     @author: RaNaN
 """
 
+from module.common.json_layer import json
+
 import sys
 import module.common.pylgettext as gettext
 
@@ -57,7 +59,14 @@ from module.common.JsEngine import JsEngine
 
 JS = JsEngine()
 
+TEMPLATES = [t for t in os.listdir(os.path.join(pypath, "module", "web", "templates"))
+             if os.path.isdir(os.path.join(pypath, "module", "web", "templates", t))]
 TEMPLATE = config.get('webinterface', 'template')
+if TEMPLATE not in TEMPLATES:
+    TEMPLATE = TEMPLATES[0]
+config.config['webinterface']['template']['type'] = ';'.join(TEMPLATES)
+config.set('webinterface', 'template', TEMPLATE)
+
 DL_ROOT = config.get('general', 'download_folder')
 LOG_ROOT = config.get('log', 'log_folder')
 PREFIX = config.get('webinterface', 'prefix')
@@ -77,8 +86,7 @@ if not exists(cache):
 bcc = FileSystemBytecodeCache(cache, '%s.cache')
 
 mapping = {'js': FileSystemLoader(join(PROJECT_DIR, 'media', 'js'))}
-for template in os.listdir(join(PROJECT_DIR, "templates")):
-    if os.path.isdir(join(PROJECT_DIR, "templates", template)):
+for template in TEMPLATES:
         mapping[template] = FileSystemLoader(join(PROJECT_DIR, "templates", template))
 
 loader = PrefixLoader(mapping)
@@ -88,6 +96,7 @@ env = Environment(loader=loader, extensions=['jinja2.ext.i18n', 'jinja2.ext.auto
 
 from filters import quotepath, path_make_relative, path_make_absolute, truncate, date
 
+env.filters["tojson"] = json.dumps
 env.filters["quotepath"] = quotepath
 env.filters["truncate"] = truncate
 env.filters["date"] = date
@@ -97,10 +106,7 @@ env.filters["decode"] = decode
 env.filters["type"] = lambda x: str(type(x))
 env.filters["formatsize"] = formatSize
 env.filters["getitem"] = lambda x, y: x.__getitem__(y)
-if PREFIX:
-    env.filters["url"] = lambda x: x
-else:
-    env.filters["url"] = lambda x: PREFIX + x if x.startswith("/") else x
+env.filters["url"] = lambda x: PREFIX + x if x.startswith("/") else x
 
 gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
 translation = gettext.translation("django", join(PYLOAD_DIR, "locale"),

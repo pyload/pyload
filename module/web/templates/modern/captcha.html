@@ -1,0 +1,44 @@
+<!-- Captcha box -->
+
+<div id="cap_box" class="modal" role="dialog" style="z-index: 99">
+  <div class="modal-dialog modal-sm" style="display: flex; justify-content: center;">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header bg-info text-center" style="padding: 5px" >{{_('Captcha reading')}}</div>
+      <div class="modal-body text-left">
+        <div id="cap_title"></div>
+        <form id="cap_form" class="form-group" action="{{'/json/set_captcha'|url}}" method="POST" enctype="multipart/form-data" onsubmit="return false;" autocomplete="off" style="margin-bottom: 40px;">
+          <input id="cap_id" name="cap_id" type="hidden" value=""/>
+          <div id="cap_textual" style="display: none;">
+            <div class="form-group">
+              <label for="cap_textual_img">{{_('Captcha')}}</label>
+              <div><img id="cap_textual_img" class="img-responsive" style="border: 1px solid #bbb; padding: 3px 3px 3px 3px;" src=""></div>
+            </div>
+            <div class="form-group">
+              <label for="cap_result">{{_('Text')}}</label>
+              <input class="form-control" id="cap_result" name="cap_result" type="text" size="20" />
+              <div class="small">{{_('Input the text on the captcha.')}}</div>
+            </div>
+          </div>
+          <div id="cap_positional" style="display: none; text-align: center">
+            <img id="cap_positional_img" src="" style="margin: 10px; cursor: pointer;">
+            <div class="small">{{_('Please click on the right captcha position.')}}</div>
+          </div>
+          <div id="cap_interactive" style="display: none; text-align: center; padding-bottom: 15px;">
+            <div id="cap_iframe_clipping" style="overflow: hidden;">
+              <iframe src="" id="cap_interactive_iframe" sandbox="allow-scripts allow-forms allow-same-origin" frameborder="0" scrolling="no" style="position: relative; height: 100%; width: 100%; overflow: hidden;">
+                <p>{{_('Your browser does not support iframes.')}}</p>
+              </iframe>
+            </div>
+            <div id="cap_interactive_loading">
+              <p style="white-space: nowrap;">{{_("The captcha may take a few seconds to load.")}}</p>
+              <p>{{_("Note: to solve this interactive captchas")}}<br>
+              {{_("Please install the <a href='https://tampermonkey.net/' target='_blank'>Tampermonkey</a> add-on in your browser and add the ")}}<a href="{{'/media/js/captcha-interactive.user.js'|url}}">{{_("pyload userscript")}}</a>.</p></div>
+          </div>
+          <button class="btn btn-primary pull-right" id="cap_submit" type="submit" style="margin-left: 5px;">{{_('Submit')}}</button>
+          <div class="btn btn-warning pull-right" data-dismiss="modal" id="cap_reset" >{{_('Close')}}</div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

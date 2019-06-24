@@ -6,13 +6,13 @@ import sys
 import tarfile
 
 from .Extractor import ArchiveError, CRCError, Extractor
-from .misc import encode
+from .misc import encode, fsjoin
 
 
 class UnTar(Extractor):
     __name__ = "UnTar"
     __type__ = "extractor"
-    __version__ = "0.04"
+    __version__ = "0.05"
     __status__ = "stable"
 
     __description__ = """TAR extractor plugin"""
@@ -36,7 +36,7 @@ class UnTar(Extractor):
 
     def list(self, password=None):
         with tarfile.open(self.filename) as t:
-            self.files = t.getnames()
+            self.files = [fsjoin(self.dest, _f) for _f in t.getnames()]
         return self.files
 
     def verify(self, password=None):

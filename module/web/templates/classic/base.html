@@ -1,0 +1,292 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<link rel="stylesheet" type="text/css" href="{{'/media/classic/css/default.css'|url}}"/>
+<link rel="stylesheet" type="text/css" href="{{'/media/classic/css/window.css'|url}}"/>
+<link rel="stylesheet" type="text/css" href="{{'/media/classic/css/MooDialog.css'|url}}"/>
+
+<script type="text/javascript" src="{{'/media/js/classic/mootools-core-1.4.1.js'|url}}"></script>
+<script type="text/javascript" src="{{'/media/js/classic/mootools-more-1.4.0.1.js'|url}}"></script>
+<script type="text/javascript" src="{{'/media/js/classic/MooDialog_static.js'|url}}"></script>
+<script type="text/javascript" src="{{'/media/js/classic/purr_static.js'|url}}"></script>
+
+<script type="text/javascript" src="{{'/media/js/classic/base.js'|url}}"></script>
+
+<link rel="icon" href="{{'/favicon.ico'|url}}" />
+
+<style type="text/css">
+#head-menu {
+	background:transparent url("{{'/media/classic/img/tabs-border-bottom.png'|url}}") 0 100% repeat-x;
+}
+a.action.index {
+	background:transparent url("{{'/media/classic/img/wiki-tools-index.png'|url}}") 0px 1px no-repeat;
+}
+a.action.recent {
+	background:transparent url("{{'/media/classic/img/wiki-tools-recent.png'|url}}") 0px 1px no-repeat;
+}
+a.logout {
+	background:transparent url("{{'/media/classic/img/user-actions-logout.png'|url}}") 0px 1px no-repeat;
+}
+
+a.info {
+    background:transparent url("{{'/media/classic/img/user-info.png'|url}}") 0px 1px no-repeat;
+}
+
+a.admin {
+	background:transparent url("{{'/media/classic/img/user-actions-admin.png'|url}}") 0px 1px no-repeat;
+}
+a.profile {
+	background:transparent url("{{'/media/classic/img/user-actions-profile.png'|url}}") 0px 1px no-repeat;
+}
+a.create, a.edit {
+	background:transparent url("{{'/media/classic/img/page-tools-edit.png'|url}}") 0px 1px no-repeat;
+}
+a.source, a.show {
+	background:transparent url("{{'/media/classic/img/page-tools-source.png'|url}}") 0px 1px no-repeat;
+}
+a.revisions {
+	background:transparent url("{{'/media/classic/img/page-tools-revisions.png'|url}}") 0px 1px no-repeat;
+}
+a.subscribe, a.unsubscribe {
+	background:transparent url("{{'/media/classic/img/page-tools-subscribe.png'|url}}") 0px 1px no-repeat;
+}
+a.backlink {
+	background:transparent url("{{'/media/classic/img/page-tools-backlinks.png'|url}}") 0px 1px no-repeat;
+}
+a.play {
+	background:transparent url("{{'/media/classic/img/control_play.png'|url}}") 0px 1px no-repeat;
+}
+.time {
+	background:transparent url("{{'/media/classic/img/status_None.png'|url}}") 0px 1px no-repeat;
+}
+a.play:hover {
+	background:transparent url("{{'/media/classic/img/control_play_blue.png'|url}}") 0px 1px no-repeat;
+}
+a.cancel {
+	background:transparent url("{{'/media/classic/img/control_cancel.png'|url}}") 0px 1px no-repeat;
+}
+a.cancel:hover {
+	background:transparent url("{{'/media/classic/img/control_cancel_blue.png'|url}}") 0px 1px no-repeat;
+}
+a.pause {
+	background:transparent url("{{'/media/classic/img/control_pause.png'|url}}") 0px 1px no-repeat;
+}
+a.pause:hover {
+	background:transparent url("{{'/media/classic/img/control_pause_blue.png'|url}}") 0px 1px no-repeat;
+	font-weight: bold;
+}
+a.stop {
+	background:transparent url("{{'/media/classic/img/control_stop.png'|url}}") 0px 1px no-repeat;
+}
+a.stop:hover {
+	background:transparent url("{{'/media/classic/img/control_stop_blue.png'|url}}") 0px 1px no-repeat;
+}
+a.add {
+	background:transparent url("{{'/media/classic/img/control_add.png'|url}}") 0px 1px no-repeat;
+}
+a.add:hover {
+	background:transparent url("{{'/media/classic/img/control_add_blue.png'|url}}") 0px 1px no-repeat;
+}
+a.cog {
+	background:transparent url("{{'/media/classic/img/cog.png'|url}}") 0px 1px no-repeat;
+}
+#head-panel {
+	background:#525252 url("{{'/media/classic/img/head_bg1.png'|url}}") bottom left repeat-x;
+}
+.reconnect {
+	background:transparent url("{{'/media/classic/img/reconnect.png'|url}}") 0px 1px no-repeat;
+}
+#head-menu ul li a, #head-menu ul li a:link {
+	background:#eaeaea url("{{'/media/classic/img/tab-background.png'|url}}") 0 100% repeat-x;
+}
+.purr-alert.error{
+	background:url("{{'/media/classic/img/error.png'|url}}") no-repeat #000 7px 10px;
+}
+.purr-alert.success{
+}
+	background:url("{{'/media/classic/img/success.png'|url}}") no-repeat #000 7px 10px;
+}
+.purr-alert.notice{
+	background:url("{{'/media/classic/img//notice.png'|url}}") no-repeat #000 7px 10px;
+}
+.MooDialog .close {
+	background: url("{{'/media/img/dialog-close.png'|url}}") no-repeat;
+}
+.MooDialog .MooDialogAlert,
+.MooDialog .MooDialogConfirm,
+.MooDialog .MooDialogPrompt,
+.MooDialog .MooDialogError {
+	background: url("{{'/media/img/dialog-warning.png'|url}}") no-repeat;
+	padding-left: 40px;
+	min-height: 40px;
+}
+
+.MooDialog .MooDialogConfirm,
+.MooDialog .MooDialogPromt {
+	background: url("{{'/media/img/dialog-question.png'|url}}") no-repeat;
+}
+
+.MooDialog .MooDialogError {
+	background: url("{{'/media/img/dialog-error.png'|url}}") no-repeat;
+}
+</style>
+<title>{% block title %}pyLoad {{_("Webinterface")}}{% endblock %}</title>
+
+{% block head %}
+{% endblock %}
+</head>
+<body>
+<a class="anchor" name="top" id="top"></a>
+
+<div id="head-panel">
+
+    <div id="head-search-and-login">
+    {% block headpanel %}
+
+        {% if user.is_authenticated %}
+
+{% if update %}
+<span>
+<span style="font-weight: bold; margin: 0 2px 0 2px;">{{_("pyLoad Update available!")}}</span>
+</span>
+{% endif %}
+
+{% if plugins %}
+<span>
+<span style="font-weight: bold; margin: 0 2px 0 2px;">{{_("Plugins updated, please restart!")}}</span>
+</span>
+{% endif %}
+
+<span id="cap_info" style="display: {% if captcha %}inline{%else%}none{% endif %}">
+<img src="{{'/media/classic/img/images.png'|url}}" alt="Captcha:" style="vertical-align:middle; margin:2px" />
+<span style="font-weight: bold; cursor: pointer; margin-right: 2px;">{{_("Captcha waiting")}}</span>
+</span>
+
+    <img src="{{'/media/classic/img/head-login.png'|url}}" alt="User:" style="vertical-align:middle; margin:2px" /><span style="padding-right: 2px;">{{user.name}}</span>
+	<ul id="user-actions">
+		<li><a href="{{'/logout'|url}}" class="action logout" rel="nofollow">{{_("Logout")}}</a></li>
+		{% if user.is_admin %}
+		<li><a href="{{'/admin'|url}}" class="action profile" rel="nofollow">{{_("Administrate")}}</a></li>
+		{% endif %}
+        <li><a href="{{'/info'|url}}" class="action info" rel="nofollow">{{_("Info")}}</a></li>
+
+	</ul>
+{% else %}
+    <span style="padding-right: 2px;">{{_("Please Login!")}}</span>
+{% endif %}
+
+    {% endblock %}
+	</div>
+
+	<a href="{{'/'|url}}"><img id="head-logo" src="{{'/media/classic/img/pyload-logo-edited3.5-new-font-small.png'|url}}" alt="pyLoad" /></a>
+
+	<div id="head-menu">
+		<ul>
+
+        {% macro selected(name, right=False) -%}
+            {% if name in url -%}class="{% if right -%}right {% endif %}selected"{%- endif %}
+            {% if not name in url and right -%}class="right"{%- endif %}
+        {%- endmacro %}
+
+		{% block menu %}
+		<li>
+		    <a href="{{'/'|url}}" title=""><img src="{{'/media/classic/img/head-menu-home.png'|url}}" alt="" /> {{_("Home")}}</a>
+		</li>
+		<li {{ selected('queue') }}>
+		    <a href="{{'/queue/'|url}}" title=""><img src="{{'/media/classic/img/head-menu-queue.png'|url}}" alt="" /> {{_("Queue")}}</a>
+		</li>
+		<li {{ selected('collector') }}>
+		    <a href="{{'/collector/'|url}}" title=""><img src="{{'/media/classic/img/head-menu-collector.png'|url}}" alt="" /> {{_("Collector")}}</a>
+		</li>
+		<li {{ selected('downloads') }}>
+		    <a href="{{'/downloads/'|url}}" title=""><img src="{{'/media/classic/img/head-menu-development.png'|url}}" alt="" /> {{_("Downloads")}}</a>
+		</li>
+{#		<li {{ selected('filemanager') }}>#}
+{#		    <a href="{{'/filemanager/'|url}}" title=""><img src="{{'/media/classic/img/head-menu-download.png'|url}}" alt="" /> {{_("FileManager")}}</a>#}
+{#		</li>#}
+		<li {{ selected('logs', True) }}>
+		    <a href="{{'/logs/'|url}}"  class="action index" accesskey="x" rel="nofollow"><img src="{{'/media/classic/img/head-menu-index.png'|url}}" alt="" />{{_("Logs")}}</a>
+		</li>
+		<li {{ selected('settings', True) }}>
+		    <a href="{{'/settings/'|url}}"  class="action index" accesskey="x" rel="nofollow"><img src="{{'/media/classic/img/head-menu-config.png'|url}}" alt="" />{{_("Config")}}</a>
+		</li>
+		{% endblock %}
+
+		</ul>
+	</div>
+
+	<div style="clear:both;"></div>
+</div>
+
+{% if perms.STATUS %}
+<ul id="page-actions2">
+	<li id="action_play"><a href="#"  class="action play" accesskey="o" rel="nofollow">{{_("Start")}}</a></li>
+    <li id="action_stop"><a href="#"  class="action stop" accesskey="o" rel="nofollow">{{_("Stop")}}</a></li>
+    <li id="action_cancel"><a href="#"  class="action cancel" accesskey="o" rel="nofollow">{{_("Cancel")}}</a></li>
+    <li id="action_add"><a href="#"  class="action add" accesskey="o" rel="nofollow" >{{_("Add")}}</a></li>
+</ul>
+{% endif %}
+
+{% if perms.LIST %}
+<ul id="page-actions">
+    <li><span class="time">{{_("Download:")}}</span><a id="time" style=" background-color: {% if status.download %}#8ffc25{% else %} #fc6e26{% endif %}; padding-left: 0cm; padding-right: 0.1cm; "> {% if status.download %}{{_("on")}}{% else %}{{_("off")}}{% endif %}</a></li>
+    <li><span class="reconnect">{{_("Reconnect:")}}</span><a id="reconnect" style=" background-color: {% if status.reconnect %}#8ffc25{% else %} #fc6e26{% endif %}; padding-left: 0cm; padding-right: 0.1cm; "> {% if status.reconnect %}{{_("on")}}{% else %}{{_("off")}}{% endif %}</a></li>
+    <li><a class="action backlink">{{_("Speed:")}} <b id="speed">{{ status.speed }}</b></a></li>
+    <li><a class="action cog">{{_("Active:")}} <b id="aktiv" title="{{_("Active")}}">{{ status.active }}</b> / <b id="aktiv_from" title="{{_("Queued")}}">{{ status.queue }}</b> / <b id="aktiv_total" title="{{_("Total")}}">{{ status.total }}</b></a></li>
+    <li><a href=""  class="action revisions" accesskey="o" rel="nofollow">{{_("Reload page")}}</a></li>
+</ul>
+{% endif %}
+
+{% block pageactions %}
+{% endblock %}
+<br/>
+
+<div id="body-wrapper" class="dokuwiki">
+
+<div id="content" lang="en" dir="ltr">
+
+<h1>{% block subtitle %}pyLoad - {{_("Webinterface")}}{% endblock %}</h1>
+
+{% block statusbar %}
+{% endblock %}
+
+<br/>
+
+<div class="level1" style="clear:both">
+</div>
+<noscript><h1>Enable JavaScript to use the webinterface.</h1></noscript>
+
+{% for message in messages %}
+	<b><p>{{message}}</p></b>
+{% endfor %}
+
+<div id="load-indicator" style="opacity: 0; float: right; margin-top: -10px;">
+    <img src="{{'/media/classic/img/ajax-loader.gif'|url}}" alt="" style="padding-right: 5px"/>
+    {{_("loading")}}
+</div>
+
+{% block content %}
+{% endblock content %}
+
+	<hr style="clear: both;" />
+
+<div id="foot">&copy; 2008-2018 pyLoad Team
+<a href="#top" class="action top" accesskey="x"><span>{{_("Back to top")}}</span></a><br />
+<!--<div class="breadcrumbs"></div>-->
+
+</div>
+</div>
+</div>
+
+<div style="display: none;">
+    {% include "classic/window.html" %}
+    {% include "classic/captcha.html" %}
+    {% block hidden %}
+    {% endblock %}
+</div>
+</body>
+</html>

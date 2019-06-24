@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 
-from ..internal.SimpleHoster import SimpleHoster
 from ..captcha.ReCaptcha import ReCaptcha
+from ..internal.misc import json
+from ..internal.SimpleHoster import SimpleHoster
 
 
 class UploadgigCom(SimpleHoster):
     __name__ = "UploadgigCom"
     __type__ = "hoster"
-    __version__ = "0.04"
+    __version__ = "0.06"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?uploadgig.com/file/download/\w+'
@@ -29,8 +30,6 @@ class UploadgigCom(SimpleHoster):
 
     OFFLINE_PATTERN = r'File not found'
 
-    LOGIN_PREMIUM = True  #: Free download is not possible because they blocked noscript ReCaptcha
-
     def handle_free(self, pyfile):
         url, inputs = self.parse_html_form('id="dl_captcha_form"')
         if inputs is None:
@@ -49,4 +48,29 @@ class UploadgigCom(SimpleHoster):
         self.data = self.load(self.fixurl(url),
                               post=inputs)
 
+        if self.data == "m":
+            self.log_warning(_("Max downloads for this hour reached"))
+            self.retry(wait=60*60)
 
+        elif self.data in ("fl", "rfd"):
+            self.fail(_("File can be downloaded by premium users only"))
+
+        elif self.data == "e":
+            self.retry()
+
+        elif self.data == "0":
+            self.retry_captcha()
+
+        else:
+            try:
+                res = json.loads(self.data)
+
+            except:
+                self.fail(_("Illegal response from the server"))
+
+            if any([_x not in res for _x in ('cd', 'fopg', 'fghre')]):
+                self.fail(_("Illegal response from the server"))
+
+            self.wait(res['cd'])
+
+            self.link = "http://" + res['fopg'] + res['fghre'] +"/dlfile"

@@ -1,0 +1,226 @@
+{% extends 'modern/base.html' %}
+
+{% block title %}{{_('Config')}} - {{super()}} {% endblock %}
+{% block subtitle %}{{_('Config')}}{% endblock %}
+
+{% block head %}
+<meta id="plugins-list" data-plugin='{{conf.plugin|tojson}}'/>
+
+<style type="text/css">
+#plugin_form_content h3,
+#general_form_content h3 {
+  font-weight: bold;
+  font-size: 14px;
+}
+.nav-settings > .active > a,
+.nav-settings > .active > a:hover,
+.nav-settings > .active > a:focus {
+  outline: 0;
+  color: #333;
+  background-color: #e0e0e0;
+}
+.nav-settings >  li {
+	margin-bottom: -2px;
+}
+.tab-content > .tab-pane > .panel {
+  border-color: #e0e0e0;
+  background-color: #e0e0e0;
+  border-top-left-radius: 0;
+  border-top-right-radius: 4px;
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+}
+</style>
+{% endblock %}
+
+{% block footer %}
+<script type="text/javascript" src="{{'/media/js/modern/settings.js'|url}}"></script>
+{% endblock %}
+
+{% block content %}
+<ul id="toptabs" class="nav nav-tabs left col-xs-12 nav-settings">
+  <li class="active" ondragstart="return false;"><a class="noselect" data-toggle="tab" href="#general">{{_('General')}}</a></li>
+  <li ondragstart="return false;"><a class="noselect" data-toggle="tab" href="#plugins">{{_('Plugins')}}</a></li>
+  <li ondragstart="return false;"><a class="noselect" data-toggle="tab" href="#accounts">{{_('Accounts')}}</a></li>
+</ul>
+
+<div class="tab-content">
+  <div id="general" class="tab-pane fade in active">
+    <div class="panel panel-default col-xs-6 col-sm-4 col-md-3" style="float:left;">
+      <div class="panel-body">
+        <ul id="general-menu" style="float: left; height: 300px; overflow: auto; overflow-x: hidden; width: 100%; padding-left: 0;">
+          {% for entry,name in conf.general %}
+          <nobr>
+            <li style="list-style-type: none; cursor: pointer; margin-top: 10px;" id="general|{{entry}}">{{_(name)}}</li>
+          </nobr>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+    <form style="overflow: auto;" class="col-lg-8 col-xs-6 col-md-5" id="general_form" action="" method="POST" autocomplete="off">
+      <span id="general_form_content">
+        <br>
+        <h3>{{_('Choose a section from the menu')}}</h3>
+        <br>
+      </span>
+      <input class="btn btn-primary" style="float:right; margin-right: 10px;" id="general_submit" type="submit" value="{{_('Submit')}}"/>
+    </form>
+  </div>
+  <div id="plugins" class="tab-pane fade">
+    <div class="panel panel-default col-xs-6 col-sm-4 col-md-3" style="float:left;">
+      <div class="panel-body">
+        <div class="form-group has-feedback has-clear">
+          <span style="left: 0;" class="glyphicon glyphicon-search form-control-feedback"></span>
+          <input type="text" id="query-text" disabled style="padding-left: 30px" class="form-control" autocomplete="off" placeholder="{{_(' Loading data...')}}">
+          <button type="button" class="close form-control-feedback hidden" style="pointer-events: auto; z-index: 10;">&times;</button>
+        </div>
+        <ul id="plugin-menu" style="float: left; height: 600px; overflow: auto; overflow-x: hidden; width: 100%; padding-left: 0;">
+          <div id="result-template" style="display: none;">
+            <nobr>
+              <li class="plugin-row" style="list-style-type: none; cursor: pointer; margin-top: 10px;"></li>
+            </nobr>
+          </div>
+          <div id="noresult-template" style="display: none;">
+            <nobr>
+              <span id="no-result" class="noselect" style="white-space: nowrap;">No results found</span>
+            </nobr>
+          </div>
+        </ul>
+      </div>
+    </div>
+    <form class="col-lg-8 col-xs-6 col-md-5" id="plugin_form" action="" method="POST" autocomplete="off">
+       <span id="plugin_form_content" style="position: static;">
+            <br>
+            <h3>{{_('Choose a section from the menu')}}</h3>
+            <br>
+       </span>
+      <input class="btn btn-primary" style="float:right; margin-right: 10px;" id="plugin_submit" type="submit" value="{{_('Submit')}}"/>
+    </form>
+  </div>
+  <div id="accounts" class="tab-pane fade">
+    <form id="account_form" action="{{'/json/update_accounts'|url}}" method="POST">
+      <table class="settable wide table">
+        <thead>
+        <tr>
+          <th>{{_('Plugin')}}</th>
+          <th>{{_('Name')}}</th>
+          <th>{{_('Password')}}</th>
+          <th>{{_('Status')}}</th>
+          <th>{{_('Premium')}}</th>
+          <th>{{_('Valid until')}}</th>
+          <th>{{_('Traffic left')}}</th>
+          <th>{{_('Time')}}</th>
+          <th>{{_('Max Parallel')}}</th>
+          <th>{{_('Delete?')}}</th>
+        </tr>
+        </thead>
+
+        {% for account in conf.accs %}
+        {% set plugin = account.type %}
+        <tr>
+          <td>
+            <span style="padding:5px">{{plugin}}</span>
+          </td>
+
+          <td>
+            <label for="{{plugin}}|password;{{account.login}}" style="font-size: 14px; font-weight: 400;">{{account.login}}</label>
+          </td>
+          <td>
+            <input id="{{plugin}}|password;{{account.login}}" name="{{plugin}}|password;{{account.login}}" type="password" value="{{account.password}}" size="12"/>
+          </td>
+          <td>
+            {% if account.valid %}<span style="font-weight: bold; color: #333;">{{_('valid')}}{% else %}<span style="font-weight: bold; color: #D9534F;">{{_('not valid')}}{% endif %}</span>
+          </td>
+          <td>
+            {% if account.premium %}
+            <span style="font-weight: bold; color: #333;">{{_('yes')}}{% else %}<span style="font-weight: bold; color: #D9534F;">{{_('no')}}{% endif %}</span>
+          </td>
+          <td>
+               <span style="font-weight: bold;">{{account.validuntil}}</span>
+          </td>
+          <td>
+               <span style="font-weight: bold;">{{account.trafficleft}}</span>
+          </td>
+          <td>
+            <input id="{{plugin}}|time;{{account.login}}" name="{{plugin}}|time;{{account.login}}" type="text" size="7" value="{{account.time}}"/>
+          </td>
+          <td>
+            <input id="{{plugin}}|limitdl;{{account.login}}" name="{{plugin}}|limitdl;{{account.login}}" type="text" size="2" value="{{account.limitdl}}"/>
+          </td>
+          <td>
+            <input id="{{plugin}}|delete;{{account.login}}" name="{{plugin}}|delete;{{account.login}}" type="checkbox" value="True"/>
+          </td>
+        </tr>
+        {% endfor %}
+      </table>
+      <button id="account_add" data-toggle="modal" data-target="#account_box" style="margin-left: 5px;" class="btn btn-default">&nbsp;<span class="glyphicon glyphicon-plus"></span></button>
+      <button id="account_submit" type="submit" class="btn btn-primary">{{_('Submit')}}</button>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block dialog %}
+<div id="account_box" class="modal" role="dialog">
+  <div class="modal-dialog modal-sm">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header bg-info text-center" style="padding: 5px"> {{_('Add Account')}}</div>
+      <div class="modal-body" style="margin-bottom: 30px;">
+        <form id="add_account_form" action="{{'/json/add_account'|url}}" method="POST" enctype="multipart/form-data" style="margin-bottom: 40px;">
+          <p>{{_('Enter your account data to use premium features')}}</p>
+          <div class="form-group">
+            <label for="account_login">{{_('Login')}}</label>
+            <input class="form-control" id="account_login" name="account_login" type="text"/>
+            <p>{{_('Your username')}}</p>
+          </div>
+          <div class="form-group has-feedback">
+            <label for="account_password">{{_('Password')}}</label>
+            <input class="form-control reveal-pass" id="account_password" name="account_password" type="password" size="20"/>
+            <p>{{_('The password for this account')}}</p>
+          </div>
+          <div class="form-group">
+            <label for="account_type">{{_('Type')}}</label>
+            <p>{{_('Choose the hoster for your account')}}</p>
+          </div>
+          <div class="form-group">
+            <select name=account_type id="account_type">
+              {% for type in types|sort %}<option value="{{type}}">{{type}}</option>{% endfor %}
+            </select>
+          </div>
+            <button class="btn btn-primary" style="float: right; margin-left: 5px;" id="account_add_button" type="submit">{{_('Add')}}</button>
+            <button class="btn btn-warning" style="float: right;" data-dismiss="modal" id="account_reset" type="reset">{{_('Cancel')}}</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<div id="path_chooser" class="modal" role="dialog">
+  <div class="modal-dialog" style="width: 680px">
+    <div class="modal-content">
+      <div class="modal-header bg-info text-center" id="chooser_title" style="padding: 5px">{{_('Select')}}</div>
+      <div class="modal-body text-left" style="padding-top: 3px; padding-bottom: 3px;">
+        <div class="form-group" style="margin-bottom: 0; margin-left: 6px;">
+          <label for="path_type1">{{_('Path')}}: </label>
+          <div class="radio noselect" style="display: inline-block; margin-bottom: 0;">
+            <label><input type="radio" name="path_type" id="path_type1" value="1" checked="checked" style="padding: 10px 10px;"/>{{_('absolute')}}</label>
+          </div>
+          <div class="radio" style="display: inline-block;  margin-bottom: 0;">
+            <label><input type="radio" name="path_type" id="path_type0" value="0" checked="" style="padding: 10px 10px;"/>{{_('relative')}}</label>
+          </div>
+        </div>
+        <iframe id="chooser_ifrm" src="#" width="650" height="420" frameborder="0" allowtransparency="true" scrolling="no"></iframe><br>
+        <p id="path_p" class="text-ellipsis noselect" style="height: 18px; padding-right: 6px; padding-left: 6px; font-size: 12px;" title=""></p>
+        <div class="modal-footer">
+          <button class="btn btn-primary" id="chooser_confirm_button" style="float: right; margin-left: 5px;" type="submit">{{_('Select')}}</button>
+          <button class="btn btn-warning" data-dismiss="modal" style="float: right;" type="reset">{{_('Cancel')}}</button>
+        </div>
+    </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

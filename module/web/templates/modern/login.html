@@ -1,0 +1,72 @@
+{% extends 'modern/base.html' %}
+{% block title %}{{_('Login')}} - {{super()}} {% endblock %}
+
+{% block head %}
+<style type="text/css">
+body{
+    overflow-x:hidden;
+}
+p {
+  text-align: center;
+}
+.btn-primary {
+    float: right;
+}
+.form-group > label {
+    font-weight: 400;
+    color: #999;
+}
+.h3, h3 {
+    display:none;
+}
+.login-logo {
+    text-align: center;
+    margin: 50px auto 85px auto;
+    width: 340px;
+    height: 100px;
+}
+img {
+    vertical-align: middle;
+}
+.navbar {
+    display: none;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+  <form action="" method="post" accept-charset="utf-8" id="login">
+    <input type="hidden" name="do" value="login"/>
+
+    <div class="login-logo">
+      <img alt="Pyload" src="{{'/media/modern/img/pyload.png'|url}}">
+    </div>
+
+    {% if errors %}
+      <div class="col-sm-4 col-sm-offset-4">
+        <div class="alert alert-danger" style="padding:8px;">
+          <p class="align-middle">{{_('Incorrect username/email or password.')}}</p>
+        </div>
+      </div>
+    {% endif %}
+
+    <div class="col-sm-4 col-sm-offset-4">
+      <div class="form-group">
+        <label for="username">{{_('Username')}}</label>
+        <input type="text" class="form-control" id="username" size="20" name="username" autocomplete="off">
+      </div>
+      <div class="form-group">
+        <label for="password">{{_('Password')}}</label>
+        <input type="password" class="form-control reveal-pass" id="password" size="20" name="password" autocomplete="off">
+      </div>
+      <button type="submit" name="submit" value="Login" class="btn btn-primary">
+        <span class="glyphicon glyphicon-log-in"></span> {{_('SIGN IN')}}
+      </button>
+
+    </div>
+  </form>
+</div>
+<br>
+
+{% endblock %}

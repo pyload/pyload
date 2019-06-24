@@ -1,0 +1,46 @@
+<iframe id="upload_target" name="upload_target" src="" style="display: none; width:0;height:0"></iframe>
+
+<div id="add_box" class="window_box">
+<form id="add_form" action="{{'/json/add_package'|url}}" method="POST" enctype="multipart/form-data">
+<h1>{{_("Add Package")}}</h1>
+<p>{{_("Paste your links or upload a container.")}}</p>
+<label for="add_name">{{_("Name")}}
+<span class="small">{{_("The name of the new package.")}}</span>
+</label>
+<input id="add_name" name="add_name" type="text" size="20" />
+
+<label for="add_links">{{_("Links")}}
+<span class="small">{{_("Paste your links here or any text and press the filter button.")}}</span>
+<span class="small"> {{ _("Filter urls") }}
+<img alt="URIParsing" Title="Parse Uri" src="{{'/media/classic/img/parseUri.png'|url}}" style="cursor:pointer; vertical-align: text-bottom;" onclick="parseUri()"/>
+</span>
+
+</label>
+<textarea rows="5" name="add_links" id="add_links"></textarea>
+
+<label for="add_password">{{_("Password")}}
+    <span class="small">{{_("Password for RAR-Archive")}}</span>
+</label>
+<input id="add_password" name="add_password" type="text" size="20">
+
+<label>{{_("File")}}
+<span class="small">{{_("Upload a container.")}}</span>
+</label>
+<input type="file" name="add_file" id="add_file"/>
+
+<label for="add_dest">{{_("Destination")}}
+</label>
+<span class="cont">
+    {{_("Queue")}}
+    <input type="radio" name="add_dest" id="add_dest" value="1" checked="checked"/>
+    {{_("Collector")}}
+    <input type="radio" name="add_dest" id="add_dest2" value="0"/>
+</span>
+
+<button type="submit">{{_("Add Package")}}</button>
+<button id="add_reset" style="margin-left:0;" type="reset">{{_("Reset")}}</button>
+<div class="spacer"></div>
+
+</form>
+
+</div>

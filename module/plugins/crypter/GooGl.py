@@ -1,33 +1,42 @@
 # -*- coding: utf-8 -*-
 
+from ..internal.Crypter import Crypter
 from ..internal.misc import json
-from ..internal.SimpleCrypter import SimpleCrypter
 
 
-class GooGl(SimpleCrypter):
+class GooGl(Crypter):
     __name__ = "GooGl"
     __type__ = "crypter"
-    __version__ = "0.08"
+    __version__ = "0.09"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?goo\.gl/([a-zA-Z]+/)?\w+'
     __config__ = [("activated", "bool", "Activated", True),
                   ("use_premium", "bool", "Use premium account if available", True),
-                  ("folder_per_package", "Default;Yes;No",
-                   "Create folder for each package", "Default"),
+                  ("folder_per_package", "Default;Yes;No", "Create folder for each package", "Default"),
                   ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10)]
 
     __description__ = """Goo.gl decrypter plugin"""
     __license__ = "GPLv3"
     __authors__ = [("stickell", "l.stickell@yahoo.it"),
-                   ("Walter Purcaro", "vuolter@gmail.com")]
+                   ("Walter Purcaro", "vuolter@gmail.com"),
+                   ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
-    API_URL = "https://www.googleapis.com/urlshortener/v1/url"
+    API_URL = "https://www.googleapis.com/urlshortener/v1/"
+    API_KEY = "AIzaSyAcA9c4evtwSY1ifuvzo6HKBkeot5Bk_U4"
 
-    OFFLINE_PATTERN = r'has been disabled|does not exist'
+    def api_response(self, cmd, **kwargs):
+        kwargs['key'] = self.API_KEY
 
-    def get_links(self):
-        rep = self.load(self.API_URL, get={'shortUrl': self.pyfile.url})
-        self.log_debug("JSON data: " + rep)
-        rep = json.loads(rep)
-        return [rep['longUrl']] if "longUrl" in rep else None
+        json_data = json.loads(self.load("%s%s" % (self.API_URL, cmd),
+                                         get=kwargs))
+        self.log_debug("API response: %s" % json_data)
+        return json_data
+
+    def decrypt(self, pyfile):
+        res = self.api_response("url", shortUrl=self.pyfile.url)
+
+        if  res['status'] != "OK":
+            self.offline()
+
+        self.packages.append((pyfile.package().name, [res['longUrl']], pyfile.package().folder))

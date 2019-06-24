@@ -3,7 +3,7 @@
 import os
 from os.path import abspath, commonprefix, join
 
-quotechar = "::/"
+quotechar = "::%2F"
 
 try:
     from os.path import relpath
@@ -22,10 +22,9 @@ except:
             return curdir
         return join(*rel_list)
 
-
 def quotepath(path):
     try:
-        return path.replace("../", quotechar)
+        return path.replace(".." + os.path.sep, quotechar)
     except AttributeError:
         return path
     except:
@@ -33,7 +32,7 @@ def quotepath(path):
 
 def unquotepath(path):
     try:
-        return path.replace(quotechar, "../")
+        return path.replace(quotechar, ".." + os.path.sep)
     except AttributeError:
         return path
     except:
@@ -41,14 +40,18 @@ def unquotepath(path):
 
 def path_make_absolute(path):
     p = os.path.abspath(path)
-    if p[-1] == os.path.sep:
+    if os.path.isfile(p):
+        return p
+    elif p[-1] == os.path.sep:
         return p
     else:
         return p + os.path.sep
 
 def path_make_relative(path):
     p = relpath(path)
-    if p[-1] == os.path.sep:
+    if os.path.isfile(p):
+        return p
+    elif p[-1] == os.path.sep:
         return p
     else:
         return p + os.path.sep

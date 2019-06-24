@@ -14,7 +14,7 @@ def args(**kwargs):
 class MegaDebridEu(MultiHoster):
     __name__ = "MegaDebridEu"
     __type__ = "hoster"
-    __version__ = "0.58"
+    __version__ = "0.59"
     __status__ = "testing"
 
     __pattern__ = r'http://((?:www\d+\.|s\d+\.)?mega-debrid\.eu|\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/download/file/[\w^_]+'
@@ -57,7 +57,7 @@ class MegaDebridEu(MultiHoster):
                 raise
 
         if res['response_code'] == "ok":
-            self.link = res['debridLink'][1:-1]
+            self.link = res['debridLink']
 
         elif res['response_code'] == "TOKEN_ERROR":
             self.account.relogin()

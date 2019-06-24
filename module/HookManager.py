@@ -300,7 +300,8 @@ class HookManager:
     def removeEvent(self, event, func):
         """removes previously added event listener"""
         if event in self.events:
-            self.events[event].remove(func)
+            if func in self.events[event]:
+                self.events[event].remove(func)
 
     def dispatchEvent(self, event, *args):
         """dispatches event with args"""

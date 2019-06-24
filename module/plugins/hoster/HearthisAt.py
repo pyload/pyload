@@ -9,10 +9,10 @@ from ..internal.misc import json
 class HearthisAt(Hoster):
     __name__ = "HearthisAt"
     __type__ = "hoster"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __status__ = "testing"
 
-    __pattern__ = r'https?://(?:www\.)?hearthis\.at/'
+    __pattern__ = r'https?://(?:www\.)?hearthis\.at/.*#pyload$'
     __config__ = [("activated", "bool", "Activated", True)]
 
     __description__ = """Hearthis.at hoster plugin"""
@@ -23,9 +23,9 @@ class HearthisAt(Hoster):
         self.multiDL = True
 
     def process(self, pyfile):
-        html = self.load(pyfile.url)
+        self.data = self.load(pyfile.url)
 
-        m = re.search(r'intTrackId = (\d+);', html)
+        m = re.search(r'intTrackId = (\d+);', self.data)
         if m is None:
             self.fail(_("Track ID not found"))
 

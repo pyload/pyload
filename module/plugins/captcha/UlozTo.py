@@ -13,7 +13,7 @@ except ImportError:
 class UlozTo(OCR):
     __name__ = "UlozTo"
     __type__ = "captcha"
-    __version__ = "0.04"
+    __version__ = "0.05"
     __status__ = "testing"
 
     __description__ = """UlozTo audio captcha service plugin"""
@@ -29,7 +29,8 @@ class UlozTo(OCR):
                 os.path.split(
                     clslib.__file__)[0],
                 'ulozto.cfg')
-            text = clslib.classify_audio_file(audio, cfg_file)
+            ext_file = os.path.splitext(audio)[1]
+            text = clslib.classify_audio_file(audio, cfg_file, ext_file)
             return text
 
         except NameError:

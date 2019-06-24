@@ -12,13 +12,14 @@ from .Extractor import ArchiveError, CRCError, Extractor, PasswordError
 class SevenZip(Extractor):
     __name__ = "SevenZip"
     __type__ = "extractor"
-    __version__ = "0.27"
+    __version__ = "0.30"
     __status__ = "testing"
 
     __description__ = """7-Zip extractor plugin"""
     __license__ = "GPLv3"
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com"),
-                   ("Michael Nowak", None)]
+                   ("Michael Nowak", None),
+                   ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
     CMD = "7z"
     EXTENSIONS = [('7z', "7z(?:\.\d{3})?"), "xz", "gz", "gzip", "tgz", "bz2", "bzip2", "tbz2",
@@ -28,7 +29,7 @@ class SevenZip(Extractor):
                   "ntfs", "fat", "vhd", "mbr", "squashfs", "cramfs", "scap"]
 
     _RE_PART = re.compile(r'\.7z\.\d{3}|\.(part|r)\d+(\.rar|\.rev)?(\.bad)?', re.I)
-    _RE_FILES = re.compile(r'([\d\-]+)\s+([\d\:]+)\s+([RHSA\.]+)\s+(\d+)\s+(\d+)\s+(.+)')
+    _RE_FILES = re.compile(r'([\d\-]+)\s+([\d:]+)\s+([RHSA.]+)\s+(\d+)\s+(?:(\d+)\s+)?(.+)')
     _RE_BADPWD = re.compile(r'(Can not open encrypted archive|Wrong password|Encrypted\s+\=\s+\+)', re.I)
     _RE_BADCRC = re.compile(r'CRC Failed|Can not open file', re.I)
     _RE_VERSION = re.compile(r'7-Zip\s(?:\(\w+\)\s)?(?:\[(?:32|64)\]\s)?(\d+\.\d+)', re.I)
@@ -83,7 +84,7 @@ class SevenZip(Extractor):
             if not c:
                 break
             #: Reading a percentage sign -> set progress and restart
-            if c == "%":
+            if c == "%" and s:
                 self.pyfile.setProgress(int(s))
                 s = ""
             #: Not reading a digit -> therefore restart
@@ -135,9 +136,7 @@ class SevenZip(Extractor):
         return files
 
     def list(self, password=None):
-        command = "l" if self.fullpath else "l"
-
-        p = self.call_cmd(command, self.filename, password=password)
+        p = self.call_cmd("l", self.filename, password=password)
         out, err = (_r.strip() if _r else "" for _r in p.communicate())
 
         if any([_e in err for _e in ("Can not open", "cannot find the file")]):
@@ -149,6 +148,8 @@ class SevenZip(Extractor):
         files = set()
         for groups in self._RE_FILES.findall(out):
             f = groups[-1].strip()
+            if not self.fullpath:
+                f = os.path.basename(f)
             files.add(fsjoin(self.dest, f))
 
         self.files = list(files)
@@ -158,9 +159,10 @@ class SevenZip(Extractor):
     def call_cmd(self, command, *xargs, **kwargs):
         args = []
 
-        #: Progress output
         if self.VERSION and float(self.VERSION) >= 15.08:
-                args.append("-bsp1")
+            #: Disable all output except progress and errors
+            args.append("-bso0")
+            args.append("-bsp1")
 
         #: Overwrite flag
         if self.overwrite:

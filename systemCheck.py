@@ -47,8 +47,9 @@ def main():
         print("pyqt:", "missing")
 
     from module.common import JsEngine
-    js = "available" if JsEngine.ENGINE else "missing"
-    print("JS engine", js)
+    js = JsEngine.ENGINE if JsEngine.ENGINE else "missing"
+    print("JS engine:", js)
+
 
     print("\n\n#####   System Status   #####")
     print("\n##  pyLoadCore  ##")

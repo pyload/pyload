@@ -29,7 +29,7 @@ from urllib import unquote
 
 from bottle import route, static_file, request, response, redirect, HTTPError, error
 
-from webinterface import PYLOAD, PYLOAD_DIR, PROJECT_DIR, SETUP, env
+from webinterface import PYLOAD, PYLOAD_DIR, PROJECT_DIR, SETUP, PREFIX, env
 
 from utils import render_to_response, parse_permissions, parse_userdata, \
     login_required, get_permission, set_permission, permlist, toDict, set_session
@@ -70,6 +70,91 @@ def pre_processor():
 
 def base(messages):
     return render_to_response('base.html', {'messages': messages}, [pre_processor])
+
+def choose_path(browse_for, path=""):
+    path = os.path.normpath(unquotepath(path))
+
+    try:
+        path = path.decode("utf8")
+    except:
+        pass
+
+    if os.path.isfile(path):
+        oldfile = path
+        path = os.path.dirname(path)
+    else:
+        oldfile = ''
+
+    abs = False
+
+    if os.path.isdir(path):
+        if os.path.isabs(path):
+            cwd = os.path.abspath(path)
+            abs = True
+        else:
+            cwd = relpath(path)
+    else:
+        cwd = os.getcwd()
+
+    cwd = os.path.normpath(os.path.abspath(cwd))
+    parentdir = os.path.dirname(cwd)
+    if not abs:
+        if os.path.abspath(cwd) == os.path.abspath("/"):
+            cwd = relpath(cwd)
+        else:
+            cwd = relpath(cwd) + os.path.sep
+        parentdir = relpath(parentdir) + os.path.sep
+
+    if os.path.abspath(cwd) == os.path.abspath("/"):
+        parentdir = ""
+
+
+    # try:
+    #     cwd = cwd.encode("utf8")
+    # except:
+    #     pass
+    #
+    try:
+        folders = os.listdir(cwd)
+    except:
+        folders = []
+
+    files = []
+
+    for f in folders:
+        try:
+            # f = f.decode(getfilesystemencoding())
+            data = {'name': f, 'fullpath': join(cwd, f)}
+            data['sort'] = data['fullpath'].lower()
+            data['modified'] = datetime.fromtimestamp(int(os.path.getmtime(join(cwd, f))))
+            data['ext'] = os.path.splitext(f)[1]
+        except:
+            continue
+
+        if os.path.isdir(join(cwd, f)):
+            data['type'] = 'dir'
+        else:
+            data['type'] = 'file'
+
+        if os.path.isfile(join(cwd, f)):
+            data['size'] = os.path.getsize(join(cwd, f))
+
+            power = 0
+            while (data['size'] / 1024) > 0.3:
+                power += 1
+                data['size'] /= 1024.
+            units = ('', 'K', 'M', 'G', 'T')
+            data['unit'] = units[power] + 'Byte'
+        else:
+            data['size'] = ''
+
+        files.append(data)
+
+    files = sorted(files, key=itemgetter('type', 'sort'))
+
+    return render_to_response('pathchooser.html',
+            {'cwd'     : cwd, 'files': files, 'parentdir': parentdir, 'type': browse_for, 'oldfile': oldfile,
+             'absolute': abs}, [])
 
 
 ## Views
@@ -120,7 +205,7 @@ def robots():
 @route('/login', method="GET")
 def login():
     if not PYLOAD and SETUP:
-        redirect("/setup")
+        redirect(PREFIX + "/setup")
     else:
         return render_to_response("login.html", proc=[pre_processor])
 
@@ -141,7 +226,7 @@ def login_post():
         return render_to_response("login.html", {"errors": True}, [pre_processor])
 
     set_session(request, info)
-    return redirect("/")
+    return redirect(PREFIX + "/")
 
 
 @route("/logout")
@@ -160,7 +245,7 @@ def home():
     except:
         s = request.environ.get('beaker.session')
         s.delete()
-        return redirect("/login")
+        return redirect(PREFIX + "/login")
 
     for link in res:
         if link["status"] == 12:
@@ -235,7 +320,7 @@ def get_download(path):
 
     path = path.replace("..", "")
     try:
-        return static_file(fs_encode(path), fs_encode(root))
+        return static_file(fs_encode(path), fs_encode(root), download=True)
 
     except Exception, e:
         print e
@@ -258,34 +343,48 @@ def config():
     for entry in sorted(plugin.keys()):
         plugin_menu.append((entry, plugin[entry].description))
 
-    accs = PYLOAD.getAccounts(False)
+    accs = []
 
-    for data in accs:
+    for data in PYLOAD.getAccounts(False):
         if data.trafficleft == -1:
-            data.trafficleft = _("unlimited")
+            trafficleft = _("unlimited")
         elif not data.trafficleft:
-            data.trafficleft = _("not available")
+            trafficleft = _("not available")
         else:
-            data.trafficleft = formatSize(data.trafficleft * 1024)
+            trafficleft = formatSize(data.trafficleft * 1024)
 
         if data.validuntil == -1:
-            data.validuntil  = _("unlimited")
+            validuntil  = _("unlimited")
         elif not data.validuntil :
-            data.validuntil  = _("not available")
+            validuntil  = _("not available")
         else:
             t = time.localtime(data.validuntil)
-            data.validuntil  = time.strftime("%d.%m.%Y", t)
+            validuntil  = time.strftime("%d.%m.%Y", t)
 
         if "time" in data.options:
             try:
-                data.options["time"] = data.options["time"][0]
+                _time = data.options["time"][0]
             except:
-                data.options["time"] = "0:00-0:00"
+                _time = ""
+        else:
+            _time = ""
 
         if "limitDL" in data.options:
-            data.options["limitdl"] = data.options["limitDL"][0]
+            try:
+                limitdl = data.options["limitDL"][0]
+            except:
+                limitdl = "0"
         else:
-            data.options["limitdl"] = "0"
+            limitdl = "0"
+
+        accs.append({'type': data.type,
+                     'login': data.login,
+                     'valid': data.valid,
+                     'premium': data.premium,
+                     'trafficleft': trafficleft,
+                     'validuntil': validuntil,
+                     'limitdl': limitdl,
+                     'time': _time})
 
     return render_to_response('settings.html',
             {'conf': {'plugin': plugin_menu, 'general': conf_menu, 'accs': accs}, 'types': PYLOAD.getAccountTypes()},
@@ -293,93 +392,16 @@ def config():
 
 
 @route("/filechooser")
-@route("/pathchooser")
 @route("/filechooser/:file#.+#")
+@login_required('STATUS')
+def file(file=""):
+    return choose_path("file", file)
+
+@route("/pathchooser")
 @route("/pathchooser/:path#.+#")
 @login_required('STATUS')
-def path(file="", path=""):
-    if file:
-        type = "file"
-    else:
-        type = "folder"
-
-    path = os.path.normpath(unquotepath(path))
-
-    if os.path.isfile(path):
-        oldfile = path
-        path = os.path.dirname(path)
-    else:
-        oldfile = ''
-
-    abs = False
-
-    if os.path.isdir(path):
-        if os.path.isabs(path):
-            cwd = os.path.abspath(path)
-            abs = True
-        else:
-            cwd = relpath(path)
-    else:
-        cwd = os.getcwd()
-
-    try:
-        cwd = cwd.encode("utf8")
-    except:
-        pass
-
-    cwd = os.path.normpath(os.path.abspath(cwd))
-    parentdir = os.path.dirname(cwd)
-    if not abs:
-        if os.path.abspath(cwd) == "/":
-            cwd = relpath(cwd)
-        else:
-            cwd = relpath(cwd) + os.path.sep
-        parentdir = relpath(parentdir) + os.path.sep
-
-    if os.path.abspath(cwd) == "/":
-        parentdir = ""
-
-    try:
-        folders = os.listdir(cwd)
-    except:
-        folders = []
-
-    files = []
-
-    for f in folders:
-        try:
-            f = f.decode(getfilesystemencoding())
-            data = {'name': f, 'fullpath': join(cwd, f)}
-            data['sort'] = data['fullpath'].lower()
-            data['modified'] = datetime.fromtimestamp(int(os.path.getmtime(join(cwd, f))))
-            data['ext'] = os.path.splitext(f)[1]
-        except:
-            continue
-
-        if os.path.isdir(join(cwd, f)):
-            data['type'] = 'dir'
-        else:
-            data['type'] = 'file'
-
-        if os.path.isfile(join(cwd, f)):
-            data['size'] = os.path.getsize(join(cwd, f))
-
-            power = 0
-            while (data['size'] / 1024) > 0.3:
-                power += 1
-                data['size'] /= 1024.
-            units = ('', 'K', 'M', 'G', 'T')
-            data['unit'] = units[power] + 'Byte'
-        else:
-            data['size'] = ''
-
-        files.append(data)
-
-    files = sorted(files, key=itemgetter('type', 'sort'))
-
-    return render_to_response('pathchooser.html',
-            {'cwd': cwd, 'files': files, 'parentdir': parentdir, 'type': type, 'oldfile': oldfile,
-             'absolute': abs}, [])
+def path(path=""):
+    return choose_path("folder", path)
 
 
 @route("/logs")
@@ -427,7 +449,7 @@ def logs(item=-1):
         item = 0
 
     if item < 1 or type(item) is not int:
-        item = 1 if len(log) - perpage + 1 < 1 else len(log) - perpage + 1
+        item = 1 if len(log) - perpage + 1 < 1 or perpage == 0 else len(log) - perpage + 1
 
     if type(fro) is datetime: # we will search for datetime
         item = -1
@@ -517,6 +539,7 @@ def setup():
 
 
 @route("/info")
+@login_required('STATUS')
 def info():
     conf = PYLOAD.getConfigDict()
 

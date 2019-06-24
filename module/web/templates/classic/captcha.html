@@ -1,0 +1,48 @@
+<!-- Captcha box -->
+<div id="cap_box" class="window_box">
+	<form id="cap_form" action="{{'/json/set_captcha'|url}}" method="POST" enctype="multipart/form-data" onsubmit="return false;">
+		<h1>{{_("Captcha reading")}}</h1>
+		<p id="cap_title">{{_("Please read the text on the captcha.")}}</p>
+		
+		<input id="cap_id" name="cap_id" type="hidden" value="" />
+		<div id="cap_textual">
+			<label>{{_("Captcha")}}
+			<span class="small">{{_("The captcha.")}}</span>
+			</label>
+			<span class="cont">
+			    <img id="cap_textual_img" src="">
+			</span>
+			<label>{{_("Text")}}
+			<span class="small">{{_("Input the text on the captcha.")}}</span>
+			</label>
+			<input id="cap_result" name="cap_result" type="text" size="20" />
+		</div>
+		
+		<div id="cap_positional" style="display: none; text-align: center">
+		    <img id="cap_positional_img" src="" style="margin: 10px; cursor:pointer">
+		</div>
+
+		<div id="cap_interactive" style="display: none; text-align: center; padding-bottom: 15px;">
+			<div id="cap_iframe_clipping" style="overflow: hidden;">
+				<iframe src="" id="cap_interactive_iframe" sandbox="allow-scripts allow-forms allow-same-origin" frameborder="0" scrolling="no" style="position: relative; height: 100%; width: 100%; overflow: hidden;">
+					<p>{{_('Your browser does not support iframes.')}}</p>
+				</iframe>
+			</div>
+			<div id="cap_interactive_loading">
+				<p style="white-space: nowrap;">{{_("The captcha may take a few seconds to load.")}}</p>
+				<p>{{_("Note: to solve this interactive captchas")}}<br>
+				{{_("Please install the <a href='https://tampermonkey.net/' target='_blank'>Tampermonkey</a> add-on in your browser and add the ")}}<a href="{{'/media/js/captcha-interactive.user.js'|url}}">{{_("pyload userscript")}}</a>.</p></div>
+		</div>
+
+		<div id="button_bar" style="text-align: center">
+			<span>
+				<button id="cap_submit" type="submit" style="margin-left: 0">{{_("Submit")}}</button>
+				<button id="cap_reset" type="reset" style="margin-left: 0">{{_("Close")}}</button>
+			</span>
+		</div>
+		
+		<div class="spacer"></div>
+	
+	</form>
+
+</div>

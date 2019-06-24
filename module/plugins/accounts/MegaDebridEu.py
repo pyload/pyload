@@ -14,7 +14,7 @@ def args(**kwargs):
 class MegaDebridEu(MultiAccount):
     __name__ = "MegaDebridEu"
     __type__ = "account"
-    __version__ = "0.36"
+    __version__ = "0.37"
     __status__ = "testing"
 
     __config__ = [("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),
@@ -55,7 +55,8 @@ class MegaDebridEu(MultiAccount):
 
         else:
             if res['response_code'] == "ok":
-                hosters = reduce((lambda x, y: x + y), [_h['domains'] for _h in res['hosters']])
+                hosters = reduce((lambda x, y: x + y), [_h['domains'] for _h in res['hosters']
+                                                        if 'domains' in _h and isinstance(_h['domains'], list)])
 
             else:
                 self.log_error(_("Unable to retrieve hoster list: %s") % res['response_text'])

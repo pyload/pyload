@@ -1,0 +1,116 @@
+{% extends 'pyplex/base.html' %}
+
+{% block title %}{{_('Support')}} - {{super()}} {% endblock %}
+{% block subtitle %}{{_('Support')}}{% endblock %}
+
+{% block head %}
+<style type="text/css">
+body {
+  overflow-x: hidden;
+}
+
+#twitter a,
+#twitter a:active,
+#twitter a:focus,
+#twitter a:visited,
+#twitter a:hover {
+  text-decoration: none;
+  outline: none;
+}
+#twitter a {
+  color: #f9be03;
+  display:block;
+  background-color: #555555;
+  padding:10px;
+  margin-bottom:10px;
+  border-radius: 3px;
+}
+#twitter a:hover {
+  background-color: #696969;
+}
+</style>
+{% endblock %}
+
+{% block footer %}
+<script type="application/javascript">
+$(function () {
+  $.ajax({
+      type: 'GET',
+      url: "https://script.google.com/macros/s/AKfycbwXJoDipzpsyYPx58-s33WA4nYJLwD3VouY2zwKcCZNsxCTvUQ/exec",
+      dataType: "jsonp",
+      context: {},
+      success: function (data) {
+        if (data.proxy.error === undefined && data.responseCode === 200) {
+          var el = $('<div></div>');
+          el.html(data.result);
+          var result = ["", ""];
+          var tweets = $('div.tweet', el).slice(0,10);
+          tweets.each(function (i, s) {
+              var $node = $(s);
+              var link = "https://mobile.twitter.com" + $node.data("permalinkPath") +"&p=v";
+              var text = $node.find("p.tweet-text") .clone().children().remove().end().text();
+              var $timestamp = $node.find(".js-short-timestamp");
+              var timestamp = $timestamp.length ? $timestamp.text() : 'N/A';
+              result[i % 2] += '<span class="noselect" style="font-size: 10px;">' + timestamp + '</span><a href="' + link +'" target="_blank" ondragstart="return false;">' + text + '</a>';
+          });
+          $("#twitter").html('<div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">\n' +
+                             '<div id="col0"></div>\n' +
+                             '</div>\n' +
+                             '<div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">\n' +
+                             '<div id="col1"></div>\n' +
+                             '</div>\n');
+          $('#col0').html(result[0]);
+          $('#col1').html(result[1]);
+        }
+      }
+  });
+});
+</script>
+{% endblock %}
+
+{% block content %}
+<ul>
+  <li style="font-weight:bold;">
+    <a href="https://github.com/pyload/pyload/wiki" target="_blank">{{_('Wiki')}}</a>
+    &nbsp;&nbsp;|&nbsp;&nbsp;
+    <a href="https://github.com/pyload/pyload/issues" target="_blank">{{_('Forum')}}</a>
+    &nbsp;&nbsp;|&nbsp;&nbsp;
+    <a href="https://gitter.im/pyload" target="_blank">{{_('Chat')}}</a>
+  </li>
+  <li style="font-weight:bold;"><a href="https://pyload.net" target="_blank">{{_('Homepage')}}</a></li>
+  <li style="font-weight:bold;"><a href="https://github.com/pyload/pyload" target="_blank">{{_('Development')}}</a></li>
+  <li style="font-weight:bold;"><a href="https://github.com/pyload/pyload/issues/new" target="_blank">{{_('Issue Tracker')}}</a></li>
+</ul>
+
+<h3>{{_('System')}}</h3>
+<dl class="row">
+  <dt class="col-xs-12 col-sm-3"><b>{{_('Python:')}}</b></dt>
+  <dd class="col-xs-12 col-sm-9 breakWords">{{python}}</dd>
+  <dt class="col-xs-12 col-sm-3"><b>{{_('OS:')}}</b></dt>
+  <dd class="col-xs-12 col-sm-9 breakWords">{{os}}</dd>
+  <dt class="col-xs-12 col-sm-3"><b>{{_('pyLoad version:')}}</b></dt>
+  <dd class="col-xs-12 col-sm-9">{{version}}</dd>
+  <dt class="col-xs-12 col-sm-3"><b>{{_('Installation Folder:')}}</b></dt>
+  <dd class="col-xs-12 col-sm-9">{{folder}}</dd>
+  <dt class="col-xs-12 col-sm-3"><b>{{_('Config Folder:')}}</b></dt>
+  <dd class="col-xs-12 col-sm-9">{{config}}</dd>
+  <dt class="col-xs-12 col-sm-3"><b>{{_('Download Folder:')}}</b></dt>
+  <dd class="col-xs-12 col-sm-9">{{download}}</dd>
+  <dt class="col-xs-12 col-sm-3"><b>{{_('Free Space:')}}</b></dt>
+  <dd class="col-xs-12 col-sm-9">{{freespace}}</dd>
+  <dt class="col-xs-12 col-sm-3"><b>{{_('Language:')}}</b></dt>
+  <dd class="col-xs-12 col-sm-9">{{language}}</dd>
+  <dt class="col-xs-12 col-sm-3"><b>{{_('Webinterface Theme:')}}</b></dt>
+  <dd class="col-xs-12 col-sm-9"><b>pyplex</b> by <a href="https://github.com/GammaC0de" target="_blank">GammaC0de</a> based on work of <a href="https://github.com/xunil75" target="_blank">Marco Fernandes</a> and Dogan Bagci</dd>
+  <dt class="col-xs-12 col-sm-3"><b>{{_('Webinterface Port:')}}</b></dt>
+  <dd class="col-xs-12 col-sm-9">{{webif}}</dd>
+  <dt class="col-xs-12 col-sm-3"><b>{{_('Remote Interface Port:')}}</b></dt>
+  <dd class="col-xs-12 col-sm-9">{{remote}}</dd>
+</dl>
+<h3>{{_('News')}}</h3>
+    <div id="twitter" class="row" style="padding-left: 25px;">{{_('Loading...')}}</div>
+{% endblock %}
+
+{% block pageactions %}
+  <button type="button" class="btn btn-danger btn-sm text-uppercase" onclick="window.open('https://PayPal.Me/nitzo2001/0usd')">{{_('Donate')}}&nbsp;&nbsp;<span class="glyphicon glyphicon-heart" style="top: 1.5px;" aria-hidden="true"></span></button>
+{% endblock %}

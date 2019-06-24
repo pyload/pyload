@@ -17,20 +17,35 @@
     @author: RaNaN
 """
 
-from imp import find_module
-from os.path import join, exists
-from urllib import quote
+from __future__ import with_statement
 
+import os
+import tempfile
+import urllib
+from imp import find_module
 
 ENGINE = ""
 
 DEBUG = False
 JS = False
 PYV8 = False
+NODE = False
 RHINO = False
-
+JS2PY = False
 
 if not ENGINE:
+    try:
+        import js2py
+        out = js2py.eval_js("(23+19).toString()")
+
+        #integrity check
+        if out.strip() == "42":
+            ENGINE = "js2py"
+        JS2PY = True
+    except:
+        pass
+
+if not ENGINE or DEBUG:
     try:
         import subprocess
 
@@ -54,14 +69,27 @@ if not ENGINE or DEBUG:
 
 if not ENGINE or DEBUG:
     try:
+        import subprocess
+        subprocess.Popen(["node", "-v"], bufsize=-1, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
+        p = subprocess.Popen(["node", "-e", "console.log(23+19)"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        out, err = p.communicate()
+        #integrity check
+        if out.strip() == "42":
+            ENGINE = "node"
+        NODE = True
+    except:
+        pass
+
+if not ENGINE or DEBUG:
+    try:
         path = "" #path where to find rhino
 
-        if exists("/usr/share/java/js.jar"):
+        if os.path.exists("/usr/share/java/js.jar"):
             path = "/usr/share/java/js.jar"
-        elif exists("js.jar"):
+        elif os.path.exists("js.jar"):
             path = "js.jar"
-        elif exists(join(pypath, "js.jar")): #may raises an exception, but js.jar wasnt found anyway
-            path = join(pypath, "js.jar")
+        elif os.path.exists(os.path.join(pypath, "js.jar")): #may raises an exception, but js.jar wasnt found anyway
+            path = os.path.join(pypath, "js.jar")
 
         if not path:
             raise Exception
@@ -103,8 +131,12 @@ class JsEngine():
         if not DEBUG:
             if ENGINE == "pyv8":
                 return self.eval_pyv8(script)
+            elif ENGINE == "js2py":
+                return self.eval_js2py(script)
             elif ENGINE == "js":
                 return self.eval_js(script)
+            elif ENGINE == "node":
+                return self.eval_node(script)
             elif ENGINE == "rhino":
                 return self.eval_rhino(script)
         else:
@@ -113,9 +145,17 @@ class JsEngine():
                 res = self.eval_pyv8(script)
                 print "PyV8:", res
                 results.append(res)
+            if JS2PY:
+                res = self.eval_js2py(script)
+                print "js2py:", res
+                results.append(res)
             if JS:
                 res = self.eval_js(script)
                 print "JS:", res
+                results.append(res)
+            if NODE:
+                res = self.eval_node(script)
+                print "NODE:", res
                 results.append(res)
             if RHINO:
                 res = self.eval_rhino(script)
@@ -133,27 +173,67 @@ class JsEngine():
             return results[0]
 
     def eval_pyv8(self, script):
-        rt = PyV8.JSContext()
-        rt.enter()
-        return rt.eval(script)
+        with PyV8.JSLocker():
+            with PyV8.JSContext() as rt:
+                return rt.eval(script)
 
     def eval_js(self, script):
-        script = "print(eval(unescape('%s')))" % quote(script)
-        p = subprocess.Popen(["js", "-e", script], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=-1)
+        script = "print(eval(unescape('%s')))" % urllib.quote(script)
+        if len(script) <= 2000:
+            script_file = None
+            p = subprocess.Popen(["js", "-e", script], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=-1)
+        else:
+            fd, script_file = tempfile.mkstemp(prefix='script_file_', suffix='.js', dir="tmp")
+            os.write(fd, script)
+            os.close(fd)
+            p = subprocess.Popen(["js", "-f", script_file], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=-1)
         out, err = p.communicate()
+        if script_file and os.path.exists(script_file):
+            os.unlink(script_file)
+        res = out.strip()
+        return res
+
+    def eval_js2py(self, script):
+        script = "(eval(unescape('%s'))).toString()" % urllib.quote(script)
+        res = js2py.eval_js(script).strip()
+        return res
+
+    def eval_node(self, script):
+        script = "console.log(eval(unescape('%s')))" % urllib.quote(script)
+        if len(script) <= 2000:
+            script_file = None
+            p = subprocess.Popen(["node", "-e", script], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=-1)
+        else:
+            fd, script_file = tempfile.mkstemp(prefix='script_file_', suffix='.js', dir="tmp")
+            os.write(fd, script)
+            os.close(fd)
+            p = subprocess.Popen(["node",script_file], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=-1)
+        out, err = p.communicate()
+        if script_file and os.path.exists(script_file):
+            os.unlink(script_file)
         res = out.strip()
         return res
 
     def eval_rhino(self, script):
-        script = "print(eval(unescape('%s')))" % quote(script)
-        p = subprocess.Popen(["java", "-cp", path, "org.mozilla.javascript.tools.shell.Main", "-e", script],
-            stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=-1)
+        script = "print(eval(unescape('%s')))" % urllib.quote(script)
+        if len(script) <= 1800:
+            script_file = None
+            p = subprocess.Popen(["java", "-cp", path, "org.mozilla.javascript.tools.shell.Main", "-e", script],
+                                 stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=-1)
+        else:
+            fd, script_file = tempfile.mkstemp(prefix='script_file_', suffix='.js', dir="tmp")
+            os.write(fd, script)
+            os.close(fd)
+            p = subprocess.Popen(["java", "-cp", path, "org.mozilla.javascript.tools.shell.Main", "-f", script_file],
+                                 stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=-1)
         out, err = p.communicate()
+        if script_file and os.path.exists(script_file):
+            os.unlink(script_file)
         res = out.strip()
         return res.decode("utf8").encode("ISO-8859-1")
 
     def error(self):
-        return _("No js engine detected, please install either Spidermonkey, ossp-js, pyv8 or rhino")
+        return _("No js engine detected, please install either js2py, Spidermonkey, ossp-js, pyv8, nodejs or rhino")
 
 if __name__ == "__main__":
     js = JsEngine()

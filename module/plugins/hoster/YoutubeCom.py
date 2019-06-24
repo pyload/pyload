@@ -12,8 +12,8 @@ from module.network.CookieJar import CookieJar
 from module.network.HTTPRequest import HTTPRequest
 
 from ..internal.Hoster import Hoster
-from ..internal.misc import exists, json, reduce, replace_patterns, which
-from ..internal.Plugin import Abort
+from ..internal.misc import exists, isexecutable, json, reduce, renice, replace_patterns, which
+from ..internal.Plugin import Abort, Skip
 
 
 class BIGHTTPRequest(HTTPRequest):
@@ -23,7 +23,7 @@ class BIGHTTPRequest(HTTPRequest):
     """
 
     # @TODO: Add 'limit' parameter to HTTPRequest in v0.4.10
-    def __init__(self, cookies=None, options=None, limit=1000000):
+    def __init__(self, cookies=None, options=None, limit=2000000):
         self.limit = limit
         HTTPRequest.__init__(self, cookies=cookies, options=options)
 
@@ -41,50 +41,194 @@ class BIGHTTPRequest(HTTPRequest):
         self.rep.write(buf)
 
 
-def timedtext_to_srt(timedtext):
-    def _format_srt_time(millisec):
-        sec, milli = divmod(millisec, 1000)
-        m, s = divmod(int(sec), 60)
-        h, m = divmod(m, 60)
-        return "%02d:%02d:%02d,%s" % (h, m, s, milli)
-    
-    i = 1
-    srt = ""
-    dom = parse_xml(timedtext)
-    body = dom.getElementsByTagName("body")[0]
-    paras = body.getElementsByTagName("p")
-    for para in paras:
-        srt += str(i) + "\n"
-        srt += _format_srt_time(int(para.attributes['t'].value)) + ' --> ' + \
-               _format_srt_time(int(para.attributes['t'].value) + int(para.attributes['d'].value)) + "\n"
-        for child in para.childNodes:
-            if child.nodeName == 'br':
-                srt += "\n"
-            elif child.nodeName == '#text':
-                srt += unicode(child.data)
-            srt += "\n\n"
-        i += 1
+class Ffmpeg(object):
+    _RE_DURATION = re.compile(r'Duration: (\d{2}):(\d{2}):(\d{2})\.(\d{2}),')
+    _RE_TIME = re.compile(r'time=(\d{2}):(\d{2}):(\d{2})\.(\d{2})')
+    _RE_VERSION = re.compile((r'ffmpeg version (.+?) '))
 
-    return srt
+    CMD = None
+    priority = 0
+    streams = []
+    start_time = (0, 0)
+    output_filename = None
+    error_message = ""
+
+    def __init__(self, priority, plugin=None):
+        self.plugin = plugin
+        self.priority = priority
+
+        self.streams = []
+        self.start_time = (0, 0)
+        self.output_filename = None
+        self.error_message = ""
+
+        self.find()
+
+    @classmethod
+    def find(cls):
+        """
+        Check for ffmpeg
+        """
+        if cls.CMD is not None:
+            return True
+
+        try:
+            if os.name == "nt":
+                ffmpeg = os.path.join(pypath, "ffmpeg.exe") if isexecutable(os.path.join(pypath, "ffmpeg.exe")) \
+                    else "ffmpeg.exe"
+
+            else:
+                ffmpeg = "ffmpeg"
+
+            cmd = which(ffmpeg) or ffmpeg
+
+            p = subprocess.Popen([cmd, "-version"],
+                                 stdout=subprocess.PIPE,
+                                 stderr=subprocess.PIPE)
+            out, err = (_r.strip() if _r else "" for _r in p.communicate())
+        except OSError:
+            return False
+
+        m = cls._RE_VERSION.search(out)
+        if m is not None:
+            cls.VERSION = m.group(1)
+
+        cls.CMD = cmd
+
+        return True
+
+    @property
+    def found(self):
+        return self.CMD is not None
+    
+    def add_stream(self, streams):
+        if isinstance(streams, list):
+            self.streams.extend(streams)
+        else:
+            self.streams.append(streams)
+
+    def set_start_time(self, start_time):
+        self.start_time = start_time
+
+    def set_output_filename(self, output_filename):
+        self.output_filename = output_filename
+
+    def run(self):
+        if self.CMD  is None or self.output_filename is None:
+            return False
+
+        maps = []
+        args = []
+        meta = []
+        for i, stream in enumerate(self.streams):
+            args.extend(["-i", stream[1]])
+            maps.extend(["-map", "%s:%s:0" % (i, stream[0])])
+            if stream[0] == 's':
+                meta.extend(["-metadata:s:s:0:%s" % i, "language=%s" % stream[2]])
+
+        args.extend(maps)
+        args.extend(meta)
+        args.extend(["-y",
+                     "-vcodec", "copy",
+                     "-acodec", "copy",
+                     "-scodec", "copy",
+                     "-ss", "00:%s:%s.00" % (self.start_time[0], self.start_time[1]),
+                     "-sub_charenc", "utf8"])
+
+        call = [self.CMD] + args + [self.output_filename]
+        p = subprocess.Popen(
+            call,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE)
+
+        renice(p.pid, self.priority)
+
+        duration = self._find_duration(p)
+        if duration:
+            last_line = self._progress(p, duration)
+        else:
+            last_line = ""
+
+        out, err = (_r.strip() if _r else "" for _r in p.communicate())
+        if err or p.returncode:
+            self.error_message = last_line
+            return False
+
+        else:
+            self.error_message = ""
+            return True
+
+    def _find_duration(self, process):
+        duration = 0
+        while True:
+            line = process.stderr.readline()  #: ffmpeg writes to stderr
+
+            #: Quit loop on eof
+            if not line:
+                break
+
+            m = self._RE_DURATION.search(line)
+            if m is not None:
+                duration = sum(int(v) * [60 * 60 * 100, 60 * 100, 100, 1][i]
+                               for i, v in enumerate(m.groups()))
+                break
+
+        return duration
+
+    def _progress(self, process, duration):
+        line = ""
+        last_line = ""
+        while True:
+            c = process.stderr.read(1)  #: ffmpeg writes to stderr
+
+            #: Quit loop on eof
+            if not c:
+                break
+
+            elif c == "\r":
+                last_line = line.strip('\r\n')
+                line = ""
+                m = self._RE_TIME.search(last_line)
+                if m is not None:
+                    current_time = sum(int(v) * [60 * 60 * 100, 60 * 100, 100, 1][i]
+                                       for i, v in enumerate(m.groups()))
+                    if self.plugin:
+                        progress = current_time * 100 / duration
+                        self.plugin.pyfile.setProgress(progress)
+
+            else:
+                line += c
+            continue
+
+        return last_line  #: Last line may contain error message
 
 
 class YoutubeCom(Hoster):
     __name__ = "YoutubeCom"
     __type__ = "hoster"
-    __version__ = "0.64"
+    __version__ = "0.69"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:[^/]*\.)?(?:youtu\.be/|youtube\.com/watch\?(?:.*&)?v=)[\w\-]+'
     __config__ = [("activated", "bool", "Activated", True),
-                  ("quality", "sd;hd;fullhd;240p;360p;480p;720p;1080p;3072p", "Quality Setting", "hd"),
-                  ("fmt", "int", "FMT/ITAG Number (0 for auto)", 0),
+                  ("quality", "sd;hd;fullhd;240p;360p;480p;720p;1080p;1440p;2160p;3072p;4320p", "Quality Setting", "hd"),
+                  ("vfmt", "int", "Video FMT/ITAG Number (0 for auto)", 0),
+                  ("afmt", "int", "Audio FMT/ITAG Number (0 for auto)", 0),
                   (".mp4", "bool", "Allow .mp4", True),
                   (".flv", "bool", "Allow .flv", True),
-                  (".webm", "bool", "Allow .webm", False),
+                  (".webm", "bool", "Allow .webm", True),
+                  (".mkv", "bool", "Allow .mkv", True),
                   (".3gp", "bool", "Allow .3gp", False),
+                  ("aac", "bool", "Allow aac audio (DASH video only)", True),
+                  ("vorbis", "bool", "Allow vorbis audio (DASH video only)", True),
+                  ("opus", "bool", "Allow opus audio (DASH video only)", True),
+                  ("ac3", "bool", "Allow ac3 audio (DASH video only)", True),
+                  ("dts", "bool", "Allow dts audio (DASH video only)", True),
                   ("3d", "bool", "Prefer 3D", False),
                   ("subs_dl", "off;all_specified;first_available", "Download subtitles", "off"),
-                  ("subs_dl_langs", "str", "Subtitle language codes (ISO639-1) to download (comma separated)", "")]
+                  ("subs_dl_langs", "str", "Subtitle language codes (ISO639-1) to download (comma separated)", ""),
+                  ("subs_embed", "bool", "Embed subtitles inside the output file (.mp4 and .mkv only)", False),
+                  ("priority", "int", "ffmpeg process priority", 0)]
 
     __description__ = """Youtube.com hoster plugin"""
     __license__ = "GPLv3"
@@ -97,35 +241,64 @@ class YoutubeCom(Hoster):
     #: Invalid characters that must be removed from the file name
     invalid_chars = u'\u2605:?><"|\\'
 
-    #: name, width, height, quality ranking, 3D
-    formats = {5: (".flv", 400, 240, 1, False),
-               6: (".flv", 640, 400, 4, False),
-               17: (".3gp", 176, 144, 0, False),
-               18: (".mp4", 480, 360, 2, False),
-               22: (".mp4", 1280, 720, 8, False),
-               43: (".webm", 640, 360, 3, False),
-               34: (".flv", 640, 360, 4, False),
-               35: (".flv", 854, 480, 6, False),
-               36: (".3gp", 400, 240, 1, False),
-               37: (".mp4", 1920, 1080, 9, False),
-               38: (".mp4", 4096, 3072, 10, False),
-               44: (".webm", 854, 480, 5, False),
-               45: (".webm", 1280, 720, 7, False),
-               46: (".webm", 1920, 1080, 9, False),
-               82: (".mp4", 640, 360, 3, True),
-               83: (".mp4", 400, 240, 1, True),
-               84: (".mp4", 1280, 720, 8, True),
-               85: (".mp4", 1920, 1080, 9, True),
-               100: (".webm", 640, 360, 3, True),
-               101: (".webm", 640, 360, 4, True),
-               102: (".webm", 1280, 720, 8, True)}
+    #: name, width, height, quality ranking, 3D, type
+    formats = {
+        # 3gp
+        17: {'ext': ".3gp", 'width': 176, 'height': 144, 'qi': 0, '3d': False, 'type': "av"},
+        36: {'ext': ".3gp", 'width': 400, 'height': 240, 'qi': 1, '3d': False, 'type': "av"},
+        # flv
+        5: {'ext': ".flv", 'width': 400, 'height': 240, 'qi': 1, '3d': False, 'type': "av"},
+        6: {'ext': ".flv", 'width': 640, 'height': 400, 'qi': 4, '3d': False, 'type': "av"},
+        34: {'ext': ".flv", 'width': 640, 'height': 360, 'qi': 4, '3d': False, 'type': "av"},
+        35: {'ext': ".flv", 'width': 854, 'height': 480, 'qi': 6, '3d': False, 'type': "av"},
+        # mp4
+        83: {'ext': ".mp4", 'width': 400, 'height': 240, 'qi': 1, '3d': True, 'type': "av"},
+        18: {'ext': ".mp4", 'width': 480, 'height': 360, 'qi': 2, '3d': False, 'type': "av"},
+        82: {'ext': ".mp4", 'width': 640, 'height': 360, 'qi': 3, '3d': True, 'type': "av"},
+        22: {'ext': ".mp4", 'width': 1280, 'height': 720, 'qi': 8, '3d': False, 'type': "av"},
+        136: {'ext': ".mp4", 'width': 1280, 'height': 720, 'qi': 8, '3d': False, 'type': "v"},
+        84: {'ext': ".mp4", 'width': 1280, 'height': 720, 'qi': 8, '3d': True, 'type': "av"},
+        37: {'ext': ".mp4", 'width': 1920, 'height': 1080, 'qi': 9, '3d': False, 'type': "av"},
+        137: {'ext': ".mp4", 'width': 1920, 'height': 1080, 'qi': 9, '3d': False, 'type': "v"},
+        85: {'ext': ".mp4", 'width': 1920, 'height': 1080, 'qi': 9, '3d': True, 'type': "av"},
+        264: {'ext': ".mp4", 'width': 2560, 'height': 1440, 'qi': 10, '3d': False, 'type': "v"},
+        266: {'ext': ".mp4", 'width': 3840, 'height': 2160, 'qi': 11, '3d': False, 'type': "v"},
+        38: {'ext': ".mp4", 'width': 4096, 'height': 3072, 'qi': 12 , '3d': False, 'type': "av"},
+        # webm
+        43: {'ext': ".webm", 'width': 640, 'height': 360, 'qi': 3, '3d': False, 'type': "av"},
+        100: {'ext': ".webm", 'width': 640, 'height': 360, 'qi': 3, '3d': True, 'type': "av"},
+        101: {'ext': ".webm", 'width': 640, 'height': 360, 'qi': 4, '3d': True, 'type': "av"},
+        44: {'ext': ".webm", 'width': 854, 'height': 480, 'qi': 5, '3d': False, 'type': "av"},
+        45: {'ext': ".webm", 'width': 1280, 'height': 720, 'qi': 7, '3d': False, 'type': "av"},
+        247: {'ext': ".webm", 'width': 1280, 'height': 720, 'qi': 7, '3d': False, 'type': "v"},
+        102: {'ext': ".webm", 'width': 1280, 'height': 720, 'qi': 8, '3d': True, 'type': "av"},
+        46: {'ext': ".webm", 'width': 1920, 'height': 1080, 'qi': 9, '3d': False, 'type': "av"},
+        248: {'ext': ".webm", 'width': 1920, 'height': 1080, 'qi': 9, '3d': False, 'type': "v"},
+        271: {'ext': ".webm", 'width': 2560, 'height': 1440, 'qi': 10, '3d': False, 'type': "v"},
+        313: {'ext': ".webm", 'width': 3840, 'height': 2160, 'qi': 11, '3d': False, 'type': "v"},
+        272: {'ext': ".webm", 'width': 7680, 'height': 4320, 'qi': 13, '3d': False, 'type': "v"},
+        # audio
+        139: {'ext': ".mp4", 'qi': 1, 'acodec': "aac", 'type': "a"},
+        140: {'ext': ".mp4", 'qi': 2, 'acodec': "aac", 'type': "a"},
+        141: {'ext': ".mp4", 'qi': 3, 'acodec': "aac", 'type': "a"},
+        256: {'ext': ".mp4", 'qi': 4, 'acodec': "aac", 'type': "a"},
+        258: {'ext': ".mp4", 'qi': 5, 'acodec': "aac", 'type': "a"},
+        325: {'ext': ".mp4", 'qi': 6, 'acodec': "dts", 'type': "a"},
+        328: {'ext': ".mp4", 'qi': 7, 'acodec': "ac3", 'type': "a"},
+        171: {'ext': ".webm", 'qi': 1, 'acodec': "vorbis", 'type': 'a'},
+        172: {'ext': ".webm", 'qi': 2, 'acodec': "vorbis", 'type': 'a'},
+        249: {'ext': ".webm", 'qi': 3, 'acodec': "opus", 'type': 'a'},
+        250: {'ext': ".webm", 'qi': 4, 'acodec': "opus", 'type': 'a'},
+        251: {'ext': ".webm", 'qi': 5, 'acodec': "opus", 'type': 'a'}
+    }
 
     def _decrypt_signature(self, encrypted_sig):
         """Turn the encrypted 's' field into a working signature"""
-        try:
-            player_url = json.loads(re.search(r'"assets":.+?"js":\s*("[^"]+")',self.data).group(1))
-        except (AttributeError, IndexError):
-            self.fail(_("Player URL not found"))
+        # try:
+        #     player_url = json.loads(re.search(r'"assets":.+?"js":\s*("[^"]+")',self.data).group(1))
+        # except (AttributeError, IndexError):
+        #     self.fail(_("Player URL not found"))
+        player_url = self.player_config['assets']['js']
 
         if player_url.startswith("//"):
             player_url = 'https:' + player_url
@@ -151,6 +324,7 @@ class YoutubeCom(Hoster):
             player_data = self.load(self.fixurl(player_url))
 
             m = re.search(r'\.sig\|\|(?P<sig>[a-zA-Z0-9$]+)\(', player_data) or \
+                re.search(r'\bc\s*&&\s*d\.set\([^,]+\s*,\s*\([^)]*\)\s*\(\s*(?P<sig>[a-zA-Z0-9$]+)\(', player_data) or \
                 re.search(r'(["\'])signature\1\s*,\s*(?P<sig>[a-zA-Z0-9$]+)\(', player_data)
 
             try:
@@ -187,6 +361,323 @@ class YoutubeCom(Hoster):
 
         return decrypted_sig
 
+    def _handle_video(self):
+        use3d = self.config.get('3d')
+
+        if use3d:
+            quality = {'sd': 82, 'hd': 84, 'fullhd': 85, '240p': 83, '360p': 82, '480p': 82, '720p': 84,
+                       '1080p': 85, '1440p': 85, '2160p': 85, '3072p': 85, '4320p': 85}
+        else:
+            quality = {'sd': 18, 'hd': 22, 'fullhd': 37, '240p': 5, '360p': 18, '480p': 35, '720p': 22,
+                       '1080p': 37, '1440p': 264, '2160p': 266, '3072p': 38, '4320p': 272}
+
+        desired_fmt = self.config.get('vfmt') or quality.get(self.config.get('quality'), 0)
+
+        is_video = lambda  x: 'v' in self.formats[x]['type']
+        if desired_fmt not in self.formats or not is_video(desired_fmt):
+            self.log_warning(_("VIDEO ITAG %d unknown, using default") % desired_fmt)
+            desired_fmt = 22
+
+        #: Build dictionary of supported itags (3D/2D)
+        allowed_suffix = lambda x: self.config.get(self.formats[x]['ext'])
+        video_streams = dict([(_s[0], _s[1:]) for _s in self.streams
+                         if _s[0] in self.formats and allowed_suffix(_s[0]) and
+                         is_video(_s[0]) and self.formats[_s[0]]['3d'] == use3d])
+
+        if not video_streams:
+            self.fail(_("No available video stream meets your preferences"))
+
+        self.log_debug("DESIRED VIDEO STREAM: ITAG:%d (%s %dx%d Q:%d 3D:%s) %sfound, %sallowed" %
+                       (desired_fmt, self.formats[desired_fmt]['ext'], self.formats[desired_fmt]['width'],
+                        self.formats[desired_fmt]['height'], self.formats[desired_fmt]['qi'],
+                        self.formats[desired_fmt]['3d'], "" if desired_fmt in video_streams else "NOT ",
+                        "" if allowed_suffix(desired_fmt) else "NOT "))
+
+        #: Return fmt nearest to quality index
+        if desired_fmt in video_streams and allowed_suffix(desired_fmt):
+            chosen_fmt = desired_fmt
+        else:
+            quality_index = lambda x: self.formats[x]['qi']  #: Select quality index
+            quality_distance = lambda x, y: abs(quality_index(x) - quality_index(y))
+
+            self.log_debug("Choosing nearest stream: %s" % [(_s, allowed_suffix(_s), quality_distance(_s, desired_fmt))
+                                                         for _s in video_streams.keys()])
+
+            chosen_fmt = reduce(lambda x, y: x if quality_distance(x, desired_fmt) <= quality_distance(y, desired_fmt)
+                                                  and quality_index(x) > quality_index(y) else y, video_streams.keys())
+
+        self.log_debug("CHOSEN VIDEO STREAM: ITAG:%d (%s %dx%d Q:%d 3D:%s)" %
+                       (chosen_fmt, self.formats[chosen_fmt]['ext'], self.formats[chosen_fmt]['width'],
+                        self.formats[chosen_fmt]['height'], self.formats[chosen_fmt]['qi'],
+                        self.formats[chosen_fmt]['3d']))
+
+        url = video_streams[chosen_fmt][0]
+
+        if video_streams[chosen_fmt][1]:
+            if video_streams[chosen_fmt][2]:
+                signature = self._decrypt_signature(video_streams[chosen_fmt][1])
+
+            else:
+                signature = video_streams[chosen_fmt][1]
+
+            url += "&signature=" + signature
+
+        if "&ratebypass=" not in url:
+            url += "&ratebypass=yes"
+
+        file_suffix = self.formats[chosen_fmt]['ext'] if chosen_fmt in self.formats else ".flv"
+
+        if 'a' not in self.formats[chosen_fmt]['type']:
+            file_suffix = ".video" + file_suffix
+
+        self.pyfile.name = self.file_name + file_suffix
+
+        try:
+            filename = self.download(url, disposition=False)
+        except Skip, e:
+            filename = os.path.join(self.pyload.config.get("general", "download_folder"),
+                                    self.pyfile.package().folder,
+                                    self.pyfile.name)
+            self.log_info(_("Download skipped: %s due to %s") % (self.pyfile.name, e.message))
+
+        return filename, chosen_fmt
+
+    def _handle_audio(self, video_fmt):
+        desired_fmt = self.config.get('afmt') or 141
+
+        is_audio = lambda  x: self.formats[x]['type'] == "a"
+        if desired_fmt not in self.formats or not is_audio(desired_fmt):
+            self.log_warning(_("AUDIO ITAG %d unknown, using default") % desired_fmt)
+            desired_fmt = 141
+
+        #: Build dictionary of supported audio itags
+        allowed_codec = lambda x: self.config.get(self.formats[x]['acodec'])
+        allowed_suffix = lambda x: self.config.get(".mkv")  or \
+                                   self.config.get(self.formats[x]['ext']) and \
+                                   self.formats[x]['ext'] == self.formats[video_fmt]['ext']
+
+        audio_streams = dict([(_s[0], _s[1:]) for _s in self.streams
+                              if _s[0] in self.formats and is_audio(_s[0]) and
+                              allowed_codec(_s[0]) and allowed_suffix(_s[0])])
+
+        if not audio_streams:
+            self.fail(_("No available audio stream meets your preferences"))
+
+        if desired_fmt in audio_streams and allowed_suffix(desired_fmt):
+            chosen_fmt = desired_fmt
+        else:
+            quality_index = lambda x: self.formats[x]['qi']  #: Select quality index
+            quality_distance = lambda x, y: abs(quality_index(x) - quality_index(y))
+
+            self.log_debug("Choosing nearest stream: %s" % [(_s, allowed_suffix(_s), quality_distance(_s, desired_fmt))
+                                                         for _s in audio_streams.keys()])
+
+            chosen_fmt = reduce(lambda x, y: x if quality_distance(x, desired_fmt) <= quality_distance(y, desired_fmt)
+                                                  and quality_index(x) > quality_index(y) else y, audio_streams.keys())
+
+        self.log_debug("CHOSEN AUDIO STREAM: ITAG:%d (%s %s Q:%d)" %
+                       (chosen_fmt, self.formats[chosen_fmt]['ext'], self.formats[chosen_fmt]['acodec'],
+                        self.formats[chosen_fmt]['qi']))
+
+        url = audio_streams[chosen_fmt][0]
+
+        if audio_streams[chosen_fmt][1]:
+            if audio_streams[chosen_fmt][2]:
+                signature = self._decrypt_signature(audio_streams[chosen_fmt][1])
+
+            else:
+                signature = audio_streams[chosen_fmt][1]
+
+            url += "&signature=" + signature
+
+        if "&ratebypass=" not in url:
+            url += "&ratebypass=yes"
+
+        file_suffix = ".audio" + self.formats[chosen_fmt]['ext'] if chosen_fmt in self.formats else ".m4a"
+
+        self.pyfile.name = self.file_name + file_suffix
+
+        try:
+            filename = self.download(url, disposition=False)
+        except Skip, e:
+            filename = os.path.join(self.pyload.config.get("general", "download_folder"),
+                                    self.pyfile.package().folder,
+                                    self.pyfile.name)
+            self.log_info(_("Download skipped: %s due to %s") % (self.pyfile.name, e.message))
+
+        return filename, chosen_fmt
+
+    def _handle_subtitles(self):
+        def timedtext_to_srt(timedtext):
+            def _format_srt_time(millisec):
+                sec, milli = divmod(millisec, 1000)
+                m, s = divmod(int(sec), 60)
+                h, m = divmod(m, 60)
+                return "%02d:%02d:%02d,%s" % (h, m, s, milli)
+
+            i = 1
+            srt = ""
+            dom = parse_xml(timedtext)
+            body = dom.getElementsByTagName("body")[0]
+            paras = body.getElementsByTagName("p")
+            for para in paras:
+                srt += str(i) + "\n"
+                srt += _format_srt_time(int(para.attributes['t'].value)) + ' --> ' + \
+                       _format_srt_time(int(para.attributes['t'].value) + int(para.attributes['d'].value)) + "\n"
+                for child in para.childNodes:
+                    if child.nodeName == 'br':
+                        srt += "\n"
+                    elif child.nodeName == '#text':
+                        srt += unicode(child.data)
+                    srt += "\n\n"
+                i += 1
+
+            return srt
+
+        srt_files =[]
+        try:
+            subs = json.loads(self.player_config['args']['player_response'])['captions']['playerCaptionsTracklistRenderer']['captionTracks']
+            subtitles_urls = dict([(_subtitle['languageCode'],
+                                    urllib.unquote(_subtitle['baseUrl']).decode('unicode-escape') + "&fmt=3")
+                                   for _subtitle in subs])
+            self.log_debug("AVAILABLE SUBTITLES: %s" % subtitles_urls.keys() or "None")
+
+        except KeyError:
+            self.log_debug("AVAILABLE SUBTITLES: None")
+            return srt_files
+
+        subs_dl = self.config.get('subs_dl')
+        if subs_dl != "off":
+            subs_dl_langs = [_x.strip() for _x in self.config.get('subs_dl_langs', "").split(',') if _x.strip()]
+            if subs_dl_langs:
+                # Download only listed subtitles (`subs_dl_langs` config gives the priority)
+                for _lang in subs_dl_langs:
+                    if _lang in subtitles_urls:
+                        srt_filename =  os.path.join(self.pyload.config.get("general", "download_folder"),
+                                                     self.pyfile.package().folder,
+                                                     os.path.splitext(self.file_name)[0] + "." + _lang + ".srt")
+
+                        if self.pyload.config.get('download', 'skip_existing') and \
+                                exists(srt_filename) and os.stat(srt_filename).st_size != 0:
+                            self.log_info("Download skipped: %s due to File exists" % os.path.basename(srt_filename))
+                            srt_files.append((srt_filename, _lang))
+                            continue
+
+                        timed_text = self.load(subtitles_urls[_lang], decode=False)
+                        srt = timedtext_to_srt(timed_text)
+
+                        with open(srt_filename, "w") as f:
+                            f.write(srt.encode('utf-8'))
+                        self.set_permissions(srt_filename)
+                        self.log_debug("Saved subtitle: %s" % os.path.basename(srt_filename))
+                        srt_files.append((srt_filename, _lang))
+                        if subs_dl == "first_available":
+                            break
+
+            else:
+                # Download any available subtitle
+                for _subtitle in subtitles_urls.items():
+                    srt_filename = os.path.join(self.pyload.config.get("general", "download_folder"),
+                                                self.pyfile.package().folder,
+                                                os.path.splitext(self.file_name)[0] + "." + _subtitle[0] + ".srt")
+
+                    if self.pyload.config.get('download', 'skip_existing') and \
+                        exists(srt_filename) and os.stat(srt_filename).st_size != 0:
+                            self.log_info("Download skipped: %s due to File exists" % os.path.basename(srt_filename))
+                            srt_files.append((srt_filename, _subtitle[0]))
+                            continue
+
+                    timed_text = self.load(_subtitle[1], decode=False)
+                    srt = timedtext_to_srt(timed_text)
+
+                    with open(srt_filename, "w") as f:
+                        f.write(srt.encode('utf-8'))
+                    self.set_permissions(srt_filename)
+
+                    self.log_debug("Saved subtitle: %s" % os.path.basename(srt_filename))
+                    srt_files.append((srt_filename, _lang))
+                    if subs_dl == "first_available":
+                            break
+
+        return srt_files
+
+    def _postprocess(self, video_filename, audio_filename, subtitles_files):
+        final_filename = video_filename
+        subs_embed = self.config.get("subs_embed")
+
+        self.pyfile.setCustomStatus("postprocessing")
+        self.pyfile.setProgress(0)
+
+        if self.ffmpeg.found:
+            if audio_filename is not None:
+                video_suffix = os.path.splitext(video_filename)[1]
+                final_filename = os.path.join(os.path.dirname(video_filename),
+                                              self.file_name +
+                                              (video_suffix if video_suffix == os.path.splitext(audio_filename)[1]
+                                               else ".mkv"))
+
+                self.ffmpeg.add_stream(('v', video_filename))
+                self.ffmpeg.add_stream(('a', audio_filename))
+
+                if subtitles_files and subs_embed:
+                    for subtitle in subtitles_files:
+                        self.ffmpeg.add_stream(('s',) + subtitle)
+
+                self.ffmpeg.set_start_time(self.start_time)
+                self.ffmpeg.set_output_filename(final_filename)
+
+                self.pyfile.name = os.path.basename(final_filename)
+                self.pyfile.size = os.path.getsize(video_filename) + \
+                                   os.path.getsize(audio_filename)  #: Just an estimate
+
+                if self.ffmpeg.run():
+                    self.remove(video_filename, trash=False)
+                    self.remove(audio_filename, trash=False)
+                    if subtitles_files and subs_embed:
+                        for subtitle in subtitles_files:
+                            self.remove(subtitle[0])
+
+                else:
+                    self.log_warning(_("ffmpeg error"), self.ffmpeg.error_message)
+                    final_filename = video_filename
+
+            elif self.start_time[0] != 0 or self.start_time[1] != 0 or subtitles_files and subs_embed:
+                inputfile = video_filename + "_"
+                final_filename = video_filename
+                os.rename(video_filename, inputfile)
+
+                self.ffmpeg.add_stream(('v', video_filename))
+                self.ffmpeg.set_start_time(self.start_time)
+
+                if subtitles_files and subs_embed:
+                    for subtitle in subtitles_files:
+                        self.ffmpeg.add_stream(('s', subtitle))
+
+                self.pyfile.name = os.path.basename(final_filename)
+                self.pyfile.size = os.path.getsize(inputfile) #: Just an estimate
+
+                if self.ffmpeg.run():
+                    self.remove(inputfile, trash=False)
+                    if subtitles_files and subs_embed:
+                        for subtitle in subtitles_files:
+                            self.remove(subtitle[0])
+
+                else:
+                    self.log_warning(_("ffmpeg error"), self.ffmpeg.error_message)
+
+        else:
+            if audio_filename is not None:
+                self.log_warning("ffmpeg is not installed, video and audio files will not be merged")
+
+            if subtitles_files and self.config.get("subs_embed"):
+                self.log_warning("ffmpeg is not installed, subtitles files will not be embedded")
+
+        self.pyfile.setProgress(100)
+
+        self.set_permissions(final_filename)
+
+        return final_filename
+
     def setup(self):
         self.resume_download = True
         self.multiDL = True
@@ -199,203 +690,84 @@ class YoutubeCom(Hoster):
         self.req.http = BIGHTTPRequest(
             cookies=CookieJar(None),
             options=self.pyload.requestFactory.getOptions(),
-            limit=2000000)
+            limit=5000000)
 
     def process(self, pyfile):
         pyfile.url = replace_patterns(pyfile.url, self.URL_REPLACEMENTS)
         self.data = self.load(pyfile.url)
 
         if re.search(r'<div id="player-unavailable" class="\s*player-width player-height\s*(?:player-unavailable\s*)?">',
-                     self.data):
+                     self.data) or '"playabilityStatus":{"status":"ERROR"' in self.data:
             self.offline()
 
         if "We have been receiving a large volume of requests from your network." in self.data:
             self.temp_offline()
 
-        #: Get config
-        use3d = self.config.get('3d')
-
-        if use3d:
-            quality = {'sd': 82, 'hd': 84, 'fullhd': 85, '240p': 83, '360p': 82,
-                       '480p': 82, '720p': 84, '1080p': 85, '3072p': 85}
-        else:
-            quality = {'sd': 18, 'hd': 22, 'fullhd': 37, '240p': 5, '360p': 18,
-                       '480p': 35, '720p': 22, '1080p': 37, '3072p': 38}
-
-        desired_fmt = self.config.get('fmt')
-
-        if not desired_fmt:
-            desired_fmt = quality.get(self.config.get('quality'), 18)
-
-        elif desired_fmt not in self.formats:
-            self.log_warning(_("FMT %d unknown, using default") % desired_fmt)
-            desired_fmt = 0
-
         m = re.search(r'ytplayer.config = ({.+?});', self.data)
         if m is None:
             self.fail(_("Player config pattern not found"))
 
-        player_config = json.loads(m.group(1))
+        self.player_config = json.loads(m.group(1))
 
-        #: Parse available streams
-        streams = player_config['args']['url_encoded_fmt_stream_map']
-        streams = [_s.split('&') for _s in streams.split(',')]
-        streams = [dict((_x.split('=', 1)) for _x in _s) for _s in streams]
-        streams = [(int(_s['itag']),
-                    urllib.unquote(_s['url']),
-                    _s.get('s', _s.get('sig', None)),
-                    True if 's' in _s else False)
-                   for _s in streams]
-
-        # self.log_debug("Found links: %s" % streams)
-
-        self.log_debug("AVAILABLE STREAMS: %s" % [_s[0] for _s in streams])
-
-        #: Build dictionary of supported itags (3D/2D)
-        allowed = lambda x: self.config.get(self.formats[x][0])
-        streams = [_s for _s in streams if _s[0]
-                   in self.formats and allowed(_s[0])]
-
-        if not streams:
-            self.fail(_("No available stream meets your preferences"))
-
-        fmt_dict = dict([(_s[0], _s[1:])
-                         for _s in streams if self.formats[_s[0]][4] == use3d]
-                        or streams)
-
-        self.log_debug("DESIRED STREAM: ITAG:%d (%s) %sfound, %sallowed" %
-                       (desired_fmt, "%s %dx%d Q:%d 3D:%s" % self.formats[desired_fmt],
-                        "" if desired_fmt in fmt_dict else "NOT ", "" if allowed(desired_fmt) else "NOT "))
-
-        #: Return fmt nearest to quality index
-        if desired_fmt in fmt_dict and allowed(desired_fmt):
-            choosen_fmt = desired_fmt
-        else:
-            sel = lambda x: self.formats[x][3]  #: Select quality index
-            comp = lambda x, y: abs(sel(x) - sel(y))
-
-            self.log_debug("Choosing nearest fmt: %s" % [(_s, allowed(_s), comp(_s, desired_fmt))
-                                                         for _s in fmt_dict.keys()])
-
-            choosen_fmt = reduce(lambda x, y: x if comp(x, desired_fmt) <= comp(y, desired_fmt) and
-                                 sel(x) > sel(y) else y, fmt_dict.keys())
-
-        self.log_debug("Chosen fmt: %s" % choosen_fmt)
-
-        url = fmt_dict[choosen_fmt][0]
-
-        if fmt_dict[choosen_fmt][1]:
-            if fmt_dict[choosen_fmt][2]:
-                signature = self._decrypt_signature(fmt_dict[choosen_fmt][1])
-
-            else:
-                signature = fmt_dict[choosen_fmt][1]
-
-            url += "&signature=" + signature
-
-        if "&ratebypass=" not in url:
-            url += "&ratebypass=yes"
-
-
-        subtitles_urls = {};
-        try:
-            subs = json.loads(player_config['args']['player_response'])['captions']['playerCaptionsTracklistRenderer']['captionTracks']
-            subtitles_urls = dict([(_subtitle['languageCode'],
-                                    urllib.unquote(_subtitle['baseUrl']).decode('unicode-escape') + "&fmt=3")
-                                   for _subtitle in subs])
-            self.log_debug("AVAILABLE SUBTITLES: %s" % subtitles_urls.keys() or "None")
-
-        except KeyError:
-            self.log_debug("AVAILABLE SUBTITLES: None") 
-
+        self.ffmpeg = Ffmpeg(self.config.get('priority') ,self)
 
         #: Set file name
-        file_suffix = self.formats[choosen_fmt][0] if choosen_fmt in self.formats else ".flv"
-        m = re.search(r'<meta name="title" content="(.+?)">', self.data)
+        self.file_name = self.player_config['args']['title']
 
-        name = player_config['args']['title']
+        #: Check for start time
+        self.start_time = (0, 0)
+        m = re.search(r't=(?:(\d+)m)?(\d+)s', pyfile.url)
+        if self.ffmpeg and m:
+            self.start_time = tuple(map(lambda _x: 0 if _x is None else int(_x), m.groups()))
+            self.file_name += " (starting at %sm%ss)" % (self.start_time[0], self.start_time[1])
 
         #: Cleaning invalid characters from the file name
-        name = name.encode('ascii', 'replace')
+        self.file_name = self.file_name.encode('ascii', 'replace')
         for c in self.invalid_chars:
-            name = name.replace(c, '_')
+            self.file_name = self.file_name.replace(c, '_')
 
-        pyfile.name = name
+        #: Parse available streams
+        streams_keys = ['url_encoded_fmt_stream_map']
+        if 'adaptive_fmts' in self.player_config['args']:
+            streams_keys.append('adaptive_fmts')
 
-        time = re.search(r't=((\d+)m)?(\d+)s', pyfile.url)
-        ffmpeg = which("ffmpeg")
-        if ffmpeg and time:
-            m, s = time.groups()[1:]
-            if m is None:
-                m = "0"
+        self.streams = []
+        for streams_key in streams_keys:
+            streams = self.player_config['args'][streams_key]
+            streams = [_s.split('&') for _s in streams.split(',')]
+            streams = [dict((_x.split('=', 1)) for _x in _s) for _s in streams]
+            streams = [(int(_s['itag']),
+                        urllib.unquote(_s['url']),
+                        _s.get('s', _s.get('sig', None)),
+                        True if 's' in _s else False)
+                       for _s in streams]
 
-            pyfile.name += " (starting at %s:%s)" % (m, s)
+            self.streams += streams
 
-        pyfile.name += file_suffix
+        self.log_debug("AVAILABLE STREAMS: %s" % [_s[0] for _s in self.streams])
 
-        filename = self.download(url)
+        video_filename, video_itag = self._handle_video()
 
-        subs_dl = self.config.get('subs_dl')
-        if subs_dl != "off":
-            subs_dl_langs = [_x.strip() for _x in self.config.get('subs_dl_langs', "").split(',') if _x.strip()]
-            if subs_dl_langs:
-                for _lang in subs_dl_langs:
-                    if _lang in subtitles_urls:
-                        srt_filename = os.path.splitext(filename)[0] + "." + _lang + ".srt"
+        has_audio = 'a' in self.formats[video_itag]['type']
+        if not has_audio:
+            audio_filename, audio_itag = self._handle_audio(video_itag)
 
-                        if self.pyload.config.get('download', 'skip_existing') and \
-                                exists(srt_filename) and os.stat(srt_filename).st_size != 0:
-                            self.log_info("Download skipped: %s due to File exists", os.path.basename(srt_filename))
-                            continue
+        else:
+            audio_filename = None
 
-                        timed_text = self.load(subtitles_urls[_lang], decode=False)
-                        srt = timedtext_to_srt(timed_text)
+        subtitles_files = self._handle_subtitles()
 
-                        with open(srt_filename, "w") as f:
-                            f.write(srt.encode('utf-8'))
-                        self.set_permissions(srt_filename)
-                        self.log_debug("Saved subtitle: %s" % os.path.basename(srt_filename))
-                        if subs_dl == "first_available":
-                            break
+        final_filename = self._postprocess(video_filename,
+                                           audio_filename,
+                                           subtitles_files)
 
-            else:
-                # Download any available subtitle
-                for _subtitle in subtitles_urls.items():
-                    srt_filename = os.path.splitext(filename)[0] + "." + _subtitle[0] + ".srt"
-
-                    if self.pyload.config.get('download', 'skip_existing') and \
-                        exists(srt_filename) and os.stat(srt_filename).st_size != 0:
-                            self.log_info("Download skipped: %s due to File exists" % os.path.basename(srt_filename))
-                            continue
-
-                    timed_text = self.load(_subtitle[1], decode=False)
-                    srt = timedtext_to_srt(timed_text)
-
-                    with open(srt_filename, "w") as f:
-                        f.write(srt.encode('utf-8'))
-                    self.set_permissions(srt_filename)
-
-                    self.log_debug("Saved subtitle: %s" % os.path.basename(srt_filename))
-                    if subs_dl == "first_available":
-                            break
-
-        if ffmpeg and time:
-            inputfile = filename + "_"
-            os.rename(filename, inputfile)
-
-            subprocess.call([
-                ffmpeg,
-                "-ss", "00:%s:%s" % (m, s),
-                "-i", inputfile,
-                "-vcodec", "copy",
-                "-acodec", "copy",
-                filename])
-
-            self.remove(inputfile, trash=False)
+        #: Everything is finished and final name can be set
+        pyfile.name = os.path.basename(final_filename)
+        pyfile.size = os.path.getsize(final_filename)
+        self.last_download = final_filename
 
 
 """Credit to this awesome piece of code below goes to the 'youtube_dl' project, kudos!"""
-
 
 class JSInterpreterError(Exception):
     pass

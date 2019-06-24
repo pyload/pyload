@@ -11,7 +11,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class OneFichierCom(SimpleHoster):
     __name__ = "OneFichierCom"
     __type__ = "hoster"
-    __version__ = "1.10"
+    __version__ = "1.14"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(?:(?P<ID1>\w+)\.)?(?P<HOST>1fichier\.com|alterupload\.com|cjoint\.net|d(?:es)?fichiers\.com|dl4free\.com|megadl\.fr|mesfichiers\.org|piecejointe\.net|pjointe\.com|tenvoi\.com)(?:/\?(?P<ID2>\w+))?'
@@ -39,9 +39,9 @@ class OneFichierCom(SimpleHoster):
 
     COOKIES = [("1fichier.com", "LG", "en")]
 
-    NAME_PATTERN = r'>File\s*Name :</td>\s*<td.*>(?P<N>.+?)<'
+    NAME_PATTERN = r'>Filename :</td>\s*<td.*>(?P<N>.+?)<'
     SIZE_PATTERN = r'>Size :</td>\s*<td.*>(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
-    OFFLINE_PATTERN = r'(?:File not found !\s*<)|(?:>The requested file has been deleted following an abuse request\.<)'
+    OFFLINE_PATTERN = r'(?:File not found !\s*<|>\s*The requested file (?:has been deleted|do not exist))'
     LINK_PATTERN = r'<a href="(.+?)".*>Click here to download the file</a>'
     TEMP_OFFLINE_PATTERN = r'Without subscription, you can only download one file at|Our services are in maintenance'
     PREMIUM_ONLY_PATTERN = r'is not possible to unregistered users|need a subscription'
@@ -50,6 +50,7 @@ class OneFichierCom(SimpleHoster):
 
     def setup(self):
         self.multiDL = self.premium
+        self.chunk_limit = -1 if self.premium else 1
         self.resume_download = True
 
     @classmethod
@@ -110,6 +111,7 @@ class OneFichierCom(SimpleHoster):
             else:
                 self.fail(_("Download is password protected"))
 
+        inputs.pop('save', None)
         inputs['dl_no_ssl'] = "on"
 
         self.data = self.load(url, post=inputs)

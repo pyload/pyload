@@ -1,0 +1,80 @@
+{% extends 'classic/base.html' %}
+
+{% block head %}
+
+<script type="text/javascript" src="{{'/filemanager_ui.js'|url}}"></script>
+
+<script type="text/javascript">
+
+document.addEvent("domready", function(){
+    var fmUI = new FilemanagerUI("url",1);
+});
+</script>
+{% endblock %}
+
+{% block title %}Downloads - {{super()}} {% endblock %}
+
+
+{% block subtitle %}
+{{_("FileManager")}}
+{% endblock %}
+
+{% macro display_file(file) %}
+  <li class="file">
+    <input type="hidden" name="path" class="path" value="{{ file.path }}" />
+    <input type="hidden" name="name" class="name" value="{{ file.name }}" />
+    <span>
+      <b>{{ file.name }}</b>
+      <span class="buttons" style="opacity:0">
+	    <img title="{{_("Rename Directory")}}" class="rename" style="cursor: pointer" height="12px" src="{{'/media/classic/img/pencil.png'|url}}" />
+	    &nbsp;&nbsp;
+	    <img title="{{_("Delete Directory")}}" class="delete" style="margin-left: -10px; cursor: pointer" width="12px" height="12px" src="{{'/media/classic/img/delete.png'|url}}" />
+      </span>
+    </span>
+  </li>
+{%- endmacro %}
+
+{% macro display_folder(fld, open = false) -%}
+    <li class="folder">
+      <input type="hidden" name="path" class="path" value="{{ fld.path }}" />
+      <input type="hidden" name="name" class="name" value="{{ fld.name }}" />
+      <span>
+	<b>{{ fld.name }}</b>
+	<span class="buttons" style="opacity:0">
+	      <img title="{{_("Rename Directory")}}" class="rename" style="cursor: pointer" height="12px" src="{{'/media/classic/img/pencil.png'|url}}" />
+	      &nbsp;&nbsp;
+	      <img title="{{_("Delete Directory")}}" class="delete" style="margin-left: -10px; cursor: pointer" width="12px" height="12px" src="{{'/media/classic/img/delete.png'|url}}" />
+	      &nbsp;&nbsp;
+	      <img title="{{_("Add subdirectory")}}" class="mkdir" style="margin-left: -10px; cursor: pointer" width="12px" height="12px" src="{{'/media/classic/img/add_folder.png'|url}}" />
+	</span>
+      </span>
+      {% if (fld.folders|length + fld.files|length) > 0 %}
+	{% if open %}
+	  <ul>
+	{% else %}
+	  <ul style="display:none">
+	{% endif %}
+	  {% for child in fld.folders %}
+	      {{ display_folder(child) }}
+	  {% endfor %}
+	  {% for child in fld.files %}
+	      {{ display_file(child) }}
+	  {% endfor %}
+	</ul>
+      {% else %}
+	<div style="display:none">{{ _("Folder is empty") }}</div>
+      {% endif %}
+    </li>
+{%- endmacro %}
+
+{% block content %}
+
+<div style="clear:both"><!-- --></div>
+
+<ul id="directories-list">
+{{ display_folder(root, true) }}
+</ul>
+
+{% include "classic/rename_directory.html" %}
+
+{% endblock %}

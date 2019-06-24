@@ -62,13 +62,17 @@ else:
     fs_encode = fs_decode = lambda x: x  # do nothing
 
 def get_console_encoding(enc):
-    if os.name == "nt": 
-        if enc == "cp65001": # aka UTF-8
+    if os.name == "nt":
+        if enc == "cp65001":  # aka UTF-8
             print "WARNING: Windows codepage 65001 is not supported."
             enc = "cp850"
+
+        elif enc is None:  #: piped
+            enc = "cp850"
+
     else:
         enc = "utf8"
-    
+
     return enc
 
 def compare_time(start, end):
@@ -88,7 +92,7 @@ def formatSize(size):
     """formats size of bytes"""
     size = int(size)
     steps = 0
-    sizes = ["B", "KiB", "MiB", "GiB", "TiB"]
+    sizes = ["B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB"]
     while size > 1000:
         size /= 1024.0
         steps += 1

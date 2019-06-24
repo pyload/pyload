@@ -31,21 +31,31 @@ def call_api(func, args=""):
     response.headers.replace("Content-type", "application/json")
     response.headers.append("Cache-Control", "no-cache, must-revalidate")
 
-    s = request.environ.get('beaker.session')
-    if 'session' in request.POST:
-        s = s.get_by_id(request.POST['session'])
+    if 'u' in request.POST and 'p' in request.POST:
+        info = PYLOAD.checkAuth(request.POST['u'], request.POST['p'])
+        if info:
+            if not PYLOAD.isAuthorized(func, {"role": info["role"], "permission": info["permission"]}):
+                return HTTPError(401, json.dumps("Unauthorized"))
 
-    if not s or not s.get("authenticated", False):
-        return HTTPError(403, json.dumps("Forbidden"))
+        else:
+            return HTTPError(403, json.dumps("Forbidden"))
 
-    if not PYLOAD.isAuthorized(func, {"role": s["role"], "permission": s["perms"]}):
-        return HTTPError(401, json.dumps("Unauthorized"))
+    else:
+        s = request.environ.get('beaker.session')
+        if 'session' in request.POST:
+            s = s.get_by_id(request.POST['session'])
+
+        if not s or not s.get("authenticated", False):
+            return HTTPError(403, json.dumps("Forbidden"))
+
+        if not PYLOAD.isAuthorized(func, {"role": s["role"], "permission": s["perms"]}):
+            return HTTPError(401, json.dumps("Unauthorized"))
 
     args = args.split("/")[1:]
     kwargs = {}
 
     for x, y in chain(request.GET.iteritems(), request.POST.iteritems()):
-        if x == "session": continue
+        if x in ("u", "p", "session"): continue
         kwargs[x] = unquote(y)
 
     try:
