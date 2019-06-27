@@ -8,11 +8,12 @@ import json
 
 from module.network.HTTPRequest import BadHeader
 from ..internal.Hoster import Hoster
+from ..internal.misc import normalize
 
 class LibgenIo(Hoster):
     __name__ = "LibgenIo"
     __type__ = "hoster"
-    __version__ = "0.6"
+    __version__ = "0.7"
     __status__ = "testing"
 
     # Only for libgen hosts and URLs that have an MD5
@@ -94,6 +95,11 @@ class LibgenIo(Hoster):
     def process(self, pyfile):
         url = re.sub(r'^(jd|py)', "http", pyfile.url)
         self.log_debug("Start LibGen process for URL {}".format(url))
+        # Normalize folder name
+        if isinstance(pyfile.package().folder, unicode):
+            pyfile.package().folder = unicode(normalize(pyfile.package().folder))
+        self.log_debug("Using download folder {}".format(pyfile.package().folder))
+
 
         # Check if it's an md5 link (single download from the structured archive) or an unsorted comic
         if re.search(r'/comics0/',url):
