@@ -12,7 +12,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class NitroflareCom(SimpleHoster):
     __name__ = "NitroflareCom"
     __type__ = "hoster"
-    __version__ = "0.28"
+    __version__ = "0.29"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?nitroflare\.com/view/(?P<ID>[\w^_]+)'
@@ -37,8 +37,7 @@ class NitroflareCom(SimpleHoster):
     DIRECT_LINK = False
 
     PREMIUM_ONLY_PATTERN = r'This file is available with Premium only'
-    WAIT_PATTERN = r'You have to wait (\d+ minutes)'
-    # ERROR_PATTERN        = r'downloading is not possible'
+    DL_LIMIT_PATTERN = r'You have to wait \d+ minutes to download your next file.'
 
     @classmethod
     def api_info(cls, url):
@@ -71,20 +70,22 @@ class NitroflareCom(SimpleHoster):
         except Exception:
             wait_time = 120
 
-        self.load("http://nitroflare.com/ajax/freeDownload.php",
-                  post={'method': "startTimer",
-                        'fileId': self.info['pattern']['ID']})
+        recaptcha = ReCaptcha(pyfile)
+        recaptcha_key = recaptcha.detect_key()
+
+        self.data = self.load("http://nitroflare.com/ajax/freeDownload.php",
+                              post={'method': "startTimer",
+                                    'fileId': self.info['pattern']['ID']})
+
+        self.check_errors()
 
         self.set_wait(wait_time)
 
         inputs = {'method': "fetchDownload"}
 
-        recaptcha = ReCaptcha(pyfile)
-        captcha_key = recaptcha.detect_key()
-
-        if captcha_key:
+        if recaptcha_key:
             self.captcha = recaptcha
-            response, _ = self.captcha.challenge(captcha_key)
+            response, _ = self.captcha.challenge(recaptcha_key)
             inputs['g-recaptcha-response'] = response
 
         else:
