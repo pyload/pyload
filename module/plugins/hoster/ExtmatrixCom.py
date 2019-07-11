@@ -8,7 +8,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class ExtmatrixCom(SimpleHoster):
     __name__ = "ExtmatrixCom"
     __type__ = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
     __pattern__ = r'https?://www\.extmatrix\.com/(?:get|files)/\w+'
@@ -28,8 +28,6 @@ class ExtmatrixCom(SimpleHoster):
     LINK_PATTERN = r'a href="(https://s\d+\.extmatrix\.com/.+?)"'
 
     def setup(self):
-        self.resume_download = True
-        self.multiDL = False
         self.chunk_limit = -1
 
     def handle_premium(self, pyfile):
