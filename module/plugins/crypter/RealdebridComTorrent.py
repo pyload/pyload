@@ -14,17 +14,16 @@ from ..internal.misc import exists, json
 class RealdebridComTorrent(Crypter):
     __name__ = "RealdebridComTorrent"
     __type__ = "crypter"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __status__ = "testing"
 
     __pattern__ = r'(?:file|https?)://.+\.torrent|magnet:\?.+'
     __config__ = [("activated", "bool", "Activated", True),
                   ("folder_per_package", "Default;Yes;No", "Create folder for each package", "Default"),
                   ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10),
-
                   ("del_finished", "bool", "Delete downloaded torrents from the server", True)]
 
-    __description__ = """Realdebrid.com torrents hoster plugin"""
+    __description__ = """Realdebrid.com torrents crypter plugin"""
     __license__ = "GPLv3"
     __authors__ = [("GammaC0de", "nitzo2001[AT}yahoo[DOT]com")]
 
