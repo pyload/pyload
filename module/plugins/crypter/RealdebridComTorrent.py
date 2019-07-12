@@ -7,19 +7,21 @@ import urllib
 
 from module.network.HTTPRequest import BadHeader
 
-from ..internal.Hoster import Hoster
+from ..internal.Crypter import Crypter
 from ..internal.misc import exists, json
 
 
-class RealdebridComTorrent(Hoster):
+class RealdebridComTorrent(Crypter):
     __name__ = "RealdebridComTorrent"
-    __type__ = "hoster"
-    __version__ = "0.05"
+    __type__ = "crypter"
+    __version__ = "0.06"
     __status__ = "testing"
 
     __pattern__ = r'(?:file|https?)://.+\.torrent|magnet:\?.+'
-    __config__ = [("activated", "bool", "Activated", False),
-                  ("chk_filesize", "bool", "Check file size", True),
+    __config__ = [("activated", "bool", "Activated", True),
+                  ("folder_per_package", "Default;Yes;No", "Create folder for each package", "Default"),
+                  ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10),
+
                   ("del_finished", "bool", "Delete downloaded torrents from the server", True)]
 
     __description__ = """Realdebrid.com torrents hoster plugin"""
@@ -46,14 +48,6 @@ class RealdebridComTorrent(Hoster):
             elif e.code == 503:
                 self.fail(_("Service unavailable - %s") % error_msg)
 
-    def setup(self):
-        self.resume_download = True
-        self.multiDL = True
-        self.limitDL = 25
-
-        self.premium = True
-        self.no_fallback = True
-
     def sleep(self, sec):
         for _i in range(sec):
             if self.pyfile.abort:
@@ -76,7 +70,7 @@ class RealdebridComTorrent(Hoster):
                 #: URL is local torrent file (uploaded container)
                 torrent_filename = urllib.url2pathname(self.pyfile.url[7:]) #: trim the starting `file://`
                 if not exists(torrent_filename):
-                    self.fail(_("File does not exists"))
+                    self.fail(_("Torrent file does not exist"))
 
             #: Check if the torrent file path is inside pyLoad's config directory
             if os.path.abspath(torrent_filename).startswith(os.path.abspath(os.getcwd()) + os.sep):
@@ -149,22 +143,7 @@ class RealdebridComTorrent(Hoster):
 
         self.pyfile.setProgress(100)
 
-        return torrent_info['links'][0]
-
-    def download_torrent(self, torrent_url):
-        """ Download the file after the server finished downloading the torrent """
-
-        api_data = self.api_response("/unrestrict/link",
-                                     get= {'auth_token': self.api_token},
-                                     post={'link': torrent_url})
-        if "error" in api_data:
-            self.fail("%s (code: %s)" % (api_data["error"], api_data.get("error_code", -1)))
-
-        else:
-            self.pyfile.name = api_data['filename']
-            self.pyfile.size = api_data['filesize']
-            self.chunk_limit = api_data['chunks'] if api_data['filesize'] < 2 * 1024**3 else 1
-            self.download(api_data['download'])
+        return torrent_info['links']
 
     def delete_torrent_from_server(self, torrent_id):
         """ Remove the torrent from the server """
@@ -185,7 +164,7 @@ class RealdebridComTorrent(Hoster):
 
         return code
 
-    def process(self, pyfile):
+    def decrypt(self, pyfile):
         if 'RealdebridCom' not in self.pyload.accountManager.plugins:
             self.fail(_("This plugin requires an active Realdebrid.com account"))
 
@@ -196,8 +175,10 @@ class RealdebridComTorrent(Hoster):
         self.api_token = account_plugin.accounts[account_plugin.accounts.keys()[0]]["password"]
 
         torrent_id = self.send_request_to_server()
-        torrent_url = self.wait_for_server_dl(torrent_id)
-        self.download_torrent(torrent_url)
+        torrent_urls = self.wait_for_server_dl(torrent_id)
+
+        self.packages = [(pyfile.package().name, torrent_urls, pyfile.package().name)]
+
         if self.config.get("del_finished"):
             self.delete_torrent_from_server(torrent_id)
 
