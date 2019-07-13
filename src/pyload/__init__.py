@@ -24,7 +24,7 @@ import traceback
 APPID = "pyload"
 
 PKGNAME = "pyload-ng"
-PKGDIR = pkg_resources.resource_filename(__name__, None)
+PKGDIR = pkg_resources.resource_filename(__name__, "")
 
 USERHOMEDIR = os.path.expanduser("~")
 os.chdir(USERHOMEDIR)
@@ -46,7 +46,7 @@ exc_logger = logging.getLogger("exception")
 
 
 def excepthook(exc_type, exc_value, exc_traceback):
-    if is_subclass(exc_type, KeyboardInterrupt):
+    if issubclass(exc_type, KeyboardInterrupt):
         sys.__excepthook__(exc_type, exc_value, exc_traceback)
         return
     msg_list = traceback.format_exception_only(exc_type, exc_value)
