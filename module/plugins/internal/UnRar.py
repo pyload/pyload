@@ -12,7 +12,7 @@ from .misc import decode, encode, fsjoin, renice
 class UnRar(Extractor):
     __name__ = "UnRar"
     __type__ = "extractor"
-    __version__ = "1.42"
+    __version__ = "1.43"
     __status__ = "testing"
 
     __config__ = [("ignore_warnings", "bool", "Ignore unrar warnings", False)]
@@ -28,7 +28,7 @@ class UnRar(Extractor):
     EXTENSIONS = ["rar", "cab", "arj", "lzh", "tar", "gz", "ace", "uue",
                   "bz2", "jar", "iso", "xz", "z"]
 
-    _RE_PART = re.compile(r'\.(part|r)\d+(\.rar|\.rev)?(\.bad)?', re.I)
+    _RE_PART = re.compile(r'\.(part|r)\d+(\.rar|\.rev)?(\.bad)?|\.rar$', re.I)
     _RE_FIXNAME = re.compile(r'Building (.+)')
     _RE_FILES_V4 = re.compile(r'^([* ])(.+?)\s+(\d+)\s+(\d+)\s+(\d+%|-->|<--)\s+([\d-]+)\s+([\d:]+)\s*([ACHIRS.rw\-]+)\s+([0-9A-F]{8})\s+(\w+)\s+([\d.]+)', re.M)
     _RE_FILES_V5 = re.compile(r'^([* ])\s*([ACHIRS.rw\-]+)\s+(\d+)(?:\s+\d+)?(?:\s+(?:\d+%|-->|<--))?\s+([\d-]+)\s+([\d:]+)(?:\s+[0-9A-F]{8})?\s+(.+)', re.M)
@@ -167,7 +167,8 @@ class UnRar(Extractor):
         dir, name = os.path.split(self.filename)
 
         #: eventually Multipart Files
-        files.extend(fsjoin(dir, os.path.basename(_f)) for _f in filter(self.ismultipart, os.listdir(dir))
+        files.extend(fsjoin(dir, os.path.basename(_f))
+                     for _f in filter(self.ismultipart, os.listdir(dir))
                      if self._RE_PART.sub("", name) == self._RE_PART.sub("", _f))
 
         #: Actually extracted file
