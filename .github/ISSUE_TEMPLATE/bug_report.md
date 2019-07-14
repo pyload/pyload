@@ -13,29 +13,13 @@ assignees: vuolter
 <!-- WRITE HERE -->
 
 
-### Expected behavior
-<!-- A clear and concise description of what you expected to happen. -->
-
-<!-- WRITE HERE -->
-
-
-### Actual behavior
-<!-- A clear and concise description of what actually happens. -->
-
-<!-- WRITE HERE -->
-
-
-### To reproduce
-<!-- Steps to reproduce the behavior. -->
-
-<!-- WRITE HERE - OPTIONAL -->
-
-
 ### Debug log
-<!-- Enable `Debug Mode` in pyload's `General` settings and put it here. -->
+<!-- Enable `Debug Mode` in pyload's general settings. -->
 
-<!-- WRITE HERE - OPTIONAL -->
+<!-- WRITE HERE BELOW -->
+```
 
+```
 
 ### Screenshots
 <!-- If applicable, add screenshots to help explain your problem. -->

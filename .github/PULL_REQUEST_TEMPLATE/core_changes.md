@@ -1,6 +1,6 @@
 ---
 name: pyLoad
-about: Propose a change for this project
+about: Propose a change for pyLoad
 labels: enhancement
 ---
 

@@ -1,6 +1,6 @@
 ---
 name: Plugin Request
-about: Suggest a plugin for this project
+about: Suggest a plugin for pyLoad
 labels: 'plugin request'
 assignees: gammac0de
 ---

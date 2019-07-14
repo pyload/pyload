@@ -1,6 +1,6 @@
 ---
 name: Feature Request
-about: Suggest an idea for this project
+about: Suggest an idea for pyLoad
 labels: 'feature request'
 assignees: vuolter
 ---
