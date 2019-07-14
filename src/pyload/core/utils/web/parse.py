@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 # AUTHOR: vuolter
 
+import hashlib
 import mimetypes
 import re
 import urllib.parse
 
 # import tld
 from ..check import isiterable
-from ..struct import HeaderDict
 from . import format, purge
 from .check import is_host, is_port, is_ip
 from .convert import host_to_ip, ip_to_host, splitaddress
@@ -84,22 +84,21 @@ def form(text, name=None, inputs=None):
 
 _RE_HEADER = re.compile(r" *(?P<key>.+?) *: *(?P<value>.+?) *\r?\n")
 
-# TODO: Rewrite...
 
+def hash(text):
+    text = text.replace("-", "").lower()
+    algop = "|".join(hashlib.algorithms + ("adler32", "crc(32)?"))
+    pattr = rf"(?P<D1>{algop}|)\s*[:=]?\s*(?P<H>[\w^_]{8,}?)\s*[:=]?\s*(?P<D2>{algop}|)"
+    m = re.search(pattr, text)
+    if m is None:
+        return None, None
 
-def header(text):
-    hdict = HeaderDict()
-    for key, value in _RE_HEADER.findall(text):
-        key = key.lower()
-        if key not in hdict:
-            hdict[key] = value
-        else:
-            header_key = hdict.get(key)
-            if isinstance(header_key, list):
-                header_key.append(value)
-            else:
-                hdict[key] = [header_key, value]
-    return hdict
+    checksum = m.group("H")
+    algorithm = m.group("D1") or m.group("D2")
+    if algorithm == "crc":
+        algorithm = "crc32"
+
+    return checksum, algorithm
 
 
 def mime(text, strict=False):

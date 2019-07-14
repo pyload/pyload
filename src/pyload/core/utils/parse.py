@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # AUTHOR: vuolter
 
-import hashlib
 import os
 import re
 
@@ -9,12 +8,12 @@ from . import convert, purge, web
 from .convert import to_str
 from .seconds import to_midnight as seconds_to_midnight
 
-_RE_ALIAS = re.compile(r"[\d.-_]+")
+# _RE_ALIAS = re.compile(r"[\d.-_]+")
 
 
-def alias(text):
-    chunks = _RE_ALIAS.split(purge.name(text))
-    return "".join(word.capitalize() for word in chunks if word)
+# def alias(text):
+    # chunks = _RE_ALIAS.split(purge.name(text))
+    # return "".join(word.capitalize() for word in chunks if word)
 
 
 _BOOLMAP = {
@@ -41,28 +40,12 @@ def entries(text, allow_whitespaces=False):
     return [entry for entry in re.split(pattr, text) if entry]
 
 
-def hash(text):
-    text = text.replace("-", "").lower()
-    algop = "|".join(hashlib.algorithms + ("adler32", "crc(32)?"))
-    pattr = rf"(?P<D1>{algop}|)\s*[:=]?\s*(?P<H>[\w^_]{8,}?)\s*[:=]?\s*(?P<D2>{algop}|)"
-    m = re.search(pattr, text)
-    if m is None:
-        return None, None
-
-    checksum = m.group("H")
-    algorithm = m.group("D1") or m.group("D2")
-    if algorithm == "crc":
-        algorithm = "crc32"
-
-    return checksum, algorithm
-
-
-def name(text, strict=True):
+def name(text, purge=False):
     try:
         name = web.parse.name(text)
     except Exception:
         name = os.path.basename(text).strip()
-    return name if strict else purge.name(name)
+    return purge.name(name) if purge else name
 
 
 _ONEWORDS = (

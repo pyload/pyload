@@ -58,26 +58,4 @@ class InscDict(MutableMapping):
 
     def copy(self):
         return InscDict(self.__dict__.values())
-
-
-class HeaderDict(InscDict):
-
-    __slots__ = []
-
-    def __setitem__(self, key, value):
-        InscDict.__setitem__(self, key, value.split(","))
-
-    def __str__(self):
-        return f"<Header {self.__dict__}>"
-
-    def list(self):
-        """Converts all entries to header list usable by curl."""
-        header = []
-        for key, val in self.__dict__.values():
-            fields = ",".join(val)
-            if fields:
-                header.append(f"{key}: {fields}")
-            else:
-                # NOTE: curl will remove this header
-                header.append(f"{key}:")
-        return header
+        
