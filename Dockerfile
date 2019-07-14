@@ -86,10 +86,10 @@ description="The free and open-source Download Manager written in pure Python" \
 maintainer="vuolter@gmail.com"
 
 # Set Python to force stdin, stdout and stderr to be totally unbuffered.
-ENV PYTHONUNBUFFERED=1
-
 # Stop if any script (fix-attrs or cont-init) has failed.
-ENV S6_BEHAVIOUR_IF_STAGE2_FAILS=2
+ENV \
+PYTHONUNBUFFERED=1 \
+S6_BEHAVIOUR_IF_STAGE2_FAILS=2
 
 ARG APT_INSTALL_OPTIONS="--no-install-recommends --yes"
 ARG APT_PACKAGES="sqlite tesseract-ocr unrar"
