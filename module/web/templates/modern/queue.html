@@ -45,6 +45,7 @@ $(function() {
             <span class="glyphicon glyphicon-pencil" title="{{_('Edit Package')}}" style="cursor: pointer; color:#555; height:12px;" ></span>
             <span class="glyphicon glyphicon-transfer" title="{{_('Move Package To')}} {% if target %}{{_('Collector')}}{% else %}{{_('Queue')}}{% endif %}" style="cursor: pointer; color:#555; height:12px;" ></span>
             <span class="glyphicon glyphicon-sort" title="{{_('Reverse Entries')}}" style="cursor: pointer; color:#555; height:12px;" ></span>
+            <span class="glyphicon glyphicon-plus" title="{{_('Add To Package')}}" style="cursor: pointer; color:#555; height:12px;" ></span>
           </span>
          </div>
         {% set progress = (package.linksdone * 100) / package.linkstotal %}
@@ -96,6 +97,36 @@ $(function() {
             </div>
           <button class="btn btn-primary" type="submit" style="float: right">{{_('Submit')}}</button>
           <button class="btn btn-warning" id="pack_reset" data-dismiss="modal" style="margin-right: 5px; float: right" type="reset">{{_('Cancel')}}</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="addto_box" class="modal" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content" id="modal-content">
+      <div class="modal-header bg-info text-center" style="cursor: move; padding: 5px">{{_('Add To Package')}}</div>
+      <div class="modal-body text-left" style="cursor: move;">
+        <div id="cap_title">{{_('Paste your links or upload a container.')}}</div>
+        <form id="addto_form" class="form-group" action="{{'/json/add_to_package'|url}}" method="POST" enctype="multipart/form-data" style="margin-bottom: 40px;">
+          <input name="addto_id" id="addto_id" type="hidden" value=""/>
+          <div class="form-group">
+            <label for="addto_name">{{_('Name')}}</label>
+            <input id="addto_name" class="form-control" name="addto_name" type="text" disabled/>
+            <p class="help-block">{{_('The name of the package')}}</p>
+          </div>
+          <div class="form-group">
+            <label for="addto_links">{{_('Links')}}</label>
+            <a onclick="parseUri()">
+              <span class="glyphicon glyphicon-filter" title="{{_('Filter urls')}}" style="color: #333 !important;float: right; font-size: 10px; line-height: 20px; cursor: pointer;"></span>
+            </a>
+            <textarea class="form-control" rows="4" wrap="off" style="resize: none; width: 100%" name="addto_links" id="addto_links"></textarea>
+            <p class="help-block">{{_('Add a list of links')}}</p>
+          </div>
+          <button class="btn btn-primary pull-right" id="addto_submit" type="submit" style="margin-left: 5px;">{{_('Add Package')}}</button>
+          <button class="btn btn-warning pull-right" data-dismiss="modal" id="addto_reset" type="reset">{{_('Cancel')}}</button>
         </form>
       </div>
     </div>

@@ -212,6 +212,25 @@ def edit_package():
         return HTTPError()
 
 
+@route("/json/add_to_package", method="POST")
+@login_required('ADD')
+def add_to_package():
+    try:
+        id = int(request.forms.get("addto_id"))
+        links = decode(request.forms['addto_links'])
+        links = links.split("\n")
+
+        links = map(lambda x: x.strip(), links)
+        links = filter(lambda x: x != "", links)
+
+        PYLOAD.addFiles(id, links)
+
+        return {"response": "success"}
+
+    except:
+        return HTTPError()
+
+
 @route("/json/set_captcha")
 @route("/json/set_captcha", method="POST")
 @login_required('ADD')

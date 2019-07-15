@@ -128,6 +128,7 @@ function Package (ui, id, ele){
         $(imgs[5]).click(this.editPackage);
         $(imgs[6]).click(this.movePackage);
         $(imgs[7]).click(this.editOrder);
+        $(imgs[8]).click(this.addToPackage);
 
         $(ele).find('.packagename').click(this.toggle);
     };
@@ -329,6 +330,42 @@ function Package (ui, id, ele){
         thisObject.close();
         event.stopPropagation();
         event.preventDefault();
+    };
+
+    this.addToPackage = function(event) {
+        event.stopPropagation();
+        event.preventDefault();
+        $("#addto_form").off("submit");
+        $("#addto_form").submit(thisObject.addToPackageSubmit);
+
+        $('#addto_links').val('');
+
+        $("#addto_id").val(id[0]);
+        $("#addto_name").val(name.text());
+
+        $('#addto_box').modal('show');
+    }
+
+    this.addToPackageSubmit = function(event) {
+        indicateLoad();
+        $.ajax({
+            url: "{{'/json/add_to_package'|url}}",
+            type: 'post',
+            dataType: 'json',
+            data: $('#addto_form').serialize()
+        })
+        .fail(function() {
+            indicateFail();
+            return false;
+        })
+        .done(function() {
+            indicateSuccess();
+
+            thisObject.loadLinks();
+        });
+
+        event.preventDefault();
+        $('#addto_box').modal('hide');
     };
 
 
