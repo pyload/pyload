@@ -206,7 +206,7 @@ class Ffmpeg(object):
 class YoutubeCom(Hoster):
     __name__ = "YoutubeCom"
     __type__ = "hoster"
-    __version__ = "0.69"
+    __version__ = "0.70"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:[^/]*\.)?(?:youtu\.be/|youtube\.com/watch\?(?:.*&)?v=)[\w\-]+'
@@ -712,7 +712,7 @@ class YoutubeCom(Hoster):
         self.ffmpeg = Ffmpeg(self.config.get('priority') ,self)
 
         #: Set file name
-        self.file_name = self.player_config['args']['title']
+        self.file_name = json.loads(self.player_config['args']['player_response'])['videoDetails']['title']
 
         #: Check for start time
         self.start_time = (0, 0)
