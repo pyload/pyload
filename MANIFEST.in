@@ -7,4 +7,8 @@ graft tests
 exclude *.ini .* Dockerfile
 include *.cfg *.md *.toml VERSION docs/*.rst
 
+include src/pyload/core/config/default.conf
+
+recursive-include src/pyload/webui/app *.css *.js *.png *.gif *.html *.ico *.eot *.svg *.ttf *.woff *.woff2 *.json
+
 global-exclude __pycache__/* build/* locale/*
