@@ -52,6 +52,7 @@ def size(obj):
             if abs(value) < 1 << 10:
                 return f"{value:3.2f} {prefix}"
             else:
+                value = int(value)
                 value >>= 10
         return f"{value:.2f} {BYTE_PREFIXES[-1]}"
 
