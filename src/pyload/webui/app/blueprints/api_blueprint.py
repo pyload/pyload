@@ -27,8 +27,11 @@ def rpc(func, args=""):
     s = flask.session
     if not api.is_authorized(func, {"role": s["role"], "permission": s["perms"]}):
         return "Unauthorized", 401
-
+    print("args")
+    print(args)
     args = args.split(",")
+    if len(args) == 1 and args[0] == "":
+        args = []
     kwargs = {}
 
     for x, y in chain(flask.request.args.items(), flask.request.form.items()):
@@ -48,7 +51,11 @@ def call_api(func, *args, **kwargs):
     if func.startswith("_"):
         flask.flash(f"Invalid API call '{func}'")
         return "Forbidden", 403
-
+    print(func)
+    print("toto")
+    print(args)
+    print(*[literal_eval(x) for x in args])
+    print("toto")
     result = getattr(api, func)(
         *[literal_eval(x) for x in args],
         **{x: literal_eval(y) for x, y in kwargs.items()},

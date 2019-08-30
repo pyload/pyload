@@ -85,6 +85,8 @@ class PyFile:
         inits plugin instance.
         """
         if not self.plugin:
+            print("puginname", end="")
+            print(self.pluginname)
             self.pluginmodule = self.m.pyload.plugin_manager.get_plugin(self.pluginname)
             self.pluginclass = getattr(
                 self.pluginmodule,

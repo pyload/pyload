@@ -130,7 +130,7 @@ class RequestFactory:
 
 
 def get_url(*args, **kwargs):
-    return DEFAULT_REQUEST.get_url(*args, **kwargs)
+    return str(DEFAULT_REQUEST.get_url(*args, **kwargs))
 
 
 def get_request(*args, **kwargs):

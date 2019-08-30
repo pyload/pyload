@@ -17,7 +17,7 @@ class EventMapper(BaseAddon):
     __license__ = "GPLv3"
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
-    def activate(self, *args):
+    """def activate(self, *args):
         self.m.dispatch_event("activate", *args)
 
     def exit(self, *args):
@@ -63,4 +63,4 @@ class EventMapper(BaseAddon):
         self.m.dispatch_event("captcha_correct", *args)
 
     def captcha_invalid(self, *args):
-        self.m.dispatch_event("captcha_invalid", *args)
+        self.m.dispatch_event("captcha_invalid", *args)"""

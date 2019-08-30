@@ -54,7 +54,7 @@ class HTTPRequest:
         self.abort = False
         self.code = 0  #: last http code
 
-        self.header = bytes()
+        self.header = b""
 
         self.headers = []  #: temporary request header
 
@@ -306,15 +306,15 @@ class HTTPRequest:
         encoding = "utf-8"  #: default encoding
 
         for line in header:
-            line = line.lower().replace(" ", "")
-            if not line.startswith("content-type:") or (
-                "text" not in line and "application" not in line
+            line = line.lower().replace(b" ", b"")
+            if not line.startswith(b"content-type:") or (
+                b"text" not in line and b"application" not in line
             ):
                 continue
 
-            none, delemiter, charset = line.rpartition("charset=")
+            none, delemiter, charset = line.rpartition(b"charset=")
             if delemiter:
-                charset = charset.split(";")
+                charset = charset.split(b";")
                 if charset:
                     encoding = charset[0]
 

@@ -89,9 +89,9 @@ document.addEvent("domready", function() {
     $('add_reset').addEvent('click', () => root.addBox.close());
 
     $('action_add').addEvent('click', function() { $("add_form").reset(); return root.addBox.open(); });
-    $('action_play').addEvent('click', () => new Request({method: 'get', url: '/api/unpauseServer'}).send());
-    $('action_cancel').addEvent('click', () => new Request({method: 'get', url: '/api/stopAllDownloads'}).send());
-    $('action_stop').addEvent('click', () => new Request({method: 'get', url: '/api/pauseServer'}).send());
+    $('action_play').addEvent('click', () => new Request({method: 'get', url: '/api/unpause_server'}).send());
+    $('action_cancel').addEvent('click', () => new Request({method: 'get', url: '/api/stop_all_downloads'}).send());
+    $('action_stop').addEvent('click', () => new Request({method: 'get', url: '/api/pause_server'}).send());
 
 
     // captcha events

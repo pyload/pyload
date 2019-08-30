@@ -160,11 +160,6 @@ class BaseAddon(BasePlugin):
     def download_preparing(self, pyfile):
         pass
 
-    #: Deprecated method, use `download_preparing` instead (Remove in 0.6.x)
-    def download_preparing(self, pyfile):
-        if pyfile.plugin.req is not None:  # TODO: Remove in 0.6.x
-            return self.download_preparing(pyfile)
-
     def download_start(self, pyfile, url, filename):
         pass
 
@@ -174,19 +169,8 @@ class BaseAddon(BasePlugin):
     def download_finished(self, pyfile):
         pass
 
-    #: Deprecated method, use `download_finished` instead (Remove in 0.6.x)
-    def download_finished(self, pyfile):
-        return self.download_finished(pyfile)
-
     def download_failed(self, pyfile):
         pass
-
-    #: Deprecated method, use `download_failed` instead (Remove in 0.6.x)
-    def download_failed(self, pyfile):
-        if pyfile.has_status(
-            "failed"
-        ):  # NOTE: Check if "still" set as failed (Fix in 0.6.x)
-            return self.download_failed(pyfile)
 
     def package_processed(self, pypack):
         pass

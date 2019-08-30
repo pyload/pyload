@@ -1,0 +1,3688 @@
+# Translations template for pyload-ng.
+# Copyright (C) 2019 ORGANIZATION
+# This file is distributed under the same license as the pyload-ng project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2019.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: pyload-ng 0.5.0a5\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2019-08-26 13:14+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.7.0\n"
+
+#: src/pyload/script.py:112
+msgid "Killed from terminal"
+msgstr ""
+
+#: src/pyload/core/__init__.py:174
+msgid "Successfully restored default login credentials `{}|{}`"
+msgstr ""
+
+#: src/pyload/core/__init__.py:217
+msgid "Unable to change gid"
+msgstr ""
+
+#: src/pyload/core/__init__.py:229
+msgid "Unable to change uid"
+msgstr ""
+
+#: src/pyload/core/__init__.py:276
+msgid "Activating accounts..."
+msgstr ""
+
+#: src/pyload/core/__init__.py:280
+msgid "Activating Plugins..."
+msgstr ""
+
+#: src/pyload/core/__init__.py:313
+msgid "User directory: {}"
+msgstr ""
+
+#: src/pyload/core/__init__.py:314
+msgid "Cache directory: {}"
+msgstr ""
+
+#: src/pyload/core/__init__.py:317
+msgid "Storage directory: {}"
+msgstr ""
+
+#: src/pyload/core/__init__.py:320
+msgid "Storage free space: {}"
+msgstr ""
+
+#: src/pyload/core/__init__.py:371
+msgid "Restarting core..."
+msgstr ""
+
+#: src/pyload/core/__init__.py:378
+msgid "Exiting core..."
+msgstr ""
+
+#: src/pyload/core/api/__init__.py:432
+msgid "Added package {name} containing {count:d} links"
+msgstr ""
+
+#: src/pyload/core/api/__init__.py:804
+msgid "Added {count:d} links to package #{package:d} "
+msgstr ""
+
+#: src/pyload/core/database/database_thread.py:172
+msgid "Filedatabase was deleted due to incompatible version."
+msgstr ""
+
+#: src/pyload/core/database/database_thread.py:184
+msgid "Filedatabase could NOT be converted."
+msgstr ""
+
+#: src/pyload/core/database/database_thread.py:192
+msgid "Database was converted from v2 to v3."
+msgstr ""
+
+#: src/pyload/core/database/database_thread.py:199
+msgid "Database was converted from v3 to v4."
+msgstr ""
+
+#: src/pyload/core/database/database_thread.py:253
+msgid "Converting old Django DB"
+msgstr ""
+
+#: src/pyload/core/managers/account_manager.py:88
+msgid "Account settings deleted, due to new config format."
+msgstr ""
+
+#: src/pyload/core/managers/addon_manager.py:126
+msgid "Failed activating {}"
+msgstr ""
+
+#: src/pyload/core/managers/addon_manager.py:132
+msgid "Activated plugins: {}"
+msgstr ""
+
+#: src/pyload/core/managers/addon_manager.py:135
+msgid "Deactivate plugins: {}"
+msgstr ""
+
+#: src/pyload/core/managers/addon_manager.py:315
+msgid "Error calling event handler {}: {}, {}, {}"
+msgstr ""
+
+#: src/pyload/core/managers/captcha_manager.py:61
+#: src/pyload/plugins/base/captcha.py:140
+#: src/pyload/plugins/base/captcha.py:142
+#: src/pyload/plugins/base/captcha.py:184
+#: src/pyload/plugins/base/captcha.py:185
+msgid "No Client connected for captcha decrypting"
+msgstr ""
+
+#: src/pyload/core/managers/file_manager.py:26
+msgid "finished"
+msgstr ""
+
+#: src/pyload/core/managers/file_manager.py:27
+msgid "offline"
+msgstr ""
+
+#: src/pyload/core/managers/file_manager.py:28
+msgid "online"
+msgstr ""
+
+#: src/pyload/core/managers/file_manager.py:29
+msgid "queued"
+msgstr ""
+
+#: src/pyload/core/managers/file_manager.py:30
+msgid "skipped"
+msgstr ""
+
+#: src/pyload/core/managers/file_manager.py:31
+msgid "waiting"
+msgstr ""
+
+#: src/pyload/core/managers/file_manager.py:32
+msgid "temp. offline"
+msgstr ""
+
+#: src/pyload/core/managers/file_manager.py:33
+msgid "starting"
+msgstr ""
+
+#: src/pyload/core/managers/file_manager.py:34
+msgid "failed"
+msgstr ""
+
+#: src/pyload/core/managers/file_manager.py:35
+msgid "aborted"
+msgstr ""
+
+#: src/pyload/core/managers/file_manager.py:36
+msgid "decrypting"
+msgstr ""
+
+#: src/pyload/core/managers/file_manager.py:37
+msgid "custom"
+msgstr ""
+
+#: src/pyload/core/managers/file_manager.py:38
+msgid "downloading"
+msgstr ""
+
+#: src/pyload/core/managers/file_manager.py:39
+msgid "processing"
+msgstr ""
+
+#: src/pyload/core/managers/file_manager.py:40
+msgid "unknown"
+msgstr ""
+
+#: src/pyload/core/managers/file_manager.py:601
+#: src/pyload/plugins/addons/IRC.py:63 src/pyload/plugins/addons/XMPP.py:86
+msgid "Package finished: {}"
+msgstr ""
+
+#: src/pyload/core/managers/plugin_manager.py:112
+#: src/pyload/core/managers/plugin_manager.py:238
+#: src/pyload/core/managers/plugin_manager.py:484
+msgid "Invalid config in {}: {}"
+msgstr ""
+
+#: src/pyload/core/managers/plugin_manager.py:173
+msgid "Plugin {} not compatible with current pyLoad version"
+msgstr ""
+
+#: src/pyload/core/managers/plugin_manager.py:211
+msgid "{} has a invalid pattern"
+msgstr ""
+
+#: src/pyload/core/managers/plugin_manager.py:305
+msgid "Plugin {} not found"
+msgstr ""
+
+#: src/pyload/core/managers/plugin_manager.py:348
+msgid "Error importing {name}: {msg}"
+msgstr ""
+
+#: src/pyload/core/managers/thread_manager.py:135
+msgid "Reconnect Failed: {}"
+msgstr ""
+
+#: src/pyload/core/managers/thread_manager.py:184
+msgid "Reconnect script not found!"
+msgstr ""
+
+#: src/pyload/core/managers/thread_manager.py:190
+msgid "Starting reconnect"
+msgstr ""
+
+#: src/pyload/core/managers/thread_manager.py:208
+msgid "Failed executing reconnect script!"
+msgstr ""
+
+#: src/pyload/core/managers/thread_manager.py:218
+msgid "Reconnected, new IP: {}"
+msgstr ""
+
+#: src/pyload/core/managers/thread_manager.py:335
+msgid "Not enough space left on device"
+msgstr ""
+
+#: src/pyload/core/threads/clicknload_thread.py:32
+msgid "Remote backend error: {}"
+msgstr ""
+
+#: src/pyload/core/threads/decrypter_thread.py:39
+msgid "Decrypting starts: {}"
+msgstr ""
+
+#: src/pyload/core/threads/decrypter_thread.py:45
+#: src/pyload/core/threads/download_thread.py:65
+msgid "Plugin {} is missing a function"
+msgstr ""
+
+#: src/pyload/core/threads/decrypter_thread.py:55
+#: src/pyload/core/threads/download_thread.py:103
+msgid "Download is offline: {}"
+msgstr ""
+
+#: src/pyload/core/threads/decrypter_thread.py:60
+#: src/pyload/core/threads/decrypter_thread.py:82
+msgid "Decrypting failed: {name} | {msg}"
+msgstr ""
+
+#: src/pyload/core/threads/decrypter_thread.py:69
+#: src/pyload/core/threads/download_thread.py:74
+msgid "Download aborted: {}"
+msgstr ""
+
+#: src/pyload/core/threads/decrypter_thread.py:75
+msgid "Retrying {}"
+msgstr ""
+
+#: src/pyload/core/threads/download_thread.py:51
+msgid "Download starts: {}"
+msgstr ""
+
+#: src/pyload/core/threads/download_thread.py:58
+msgid "Download finished: {}"
+msgstr ""
+
+#: src/pyload/core/threads/download_thread.py:90
+msgid "Download restarted: {name} | {msg}"
+msgstr ""
+
+#: src/pyload/core/threads/download_thread.py:108
+msgid "Download is temporary offline: {}"
+msgstr ""
+
+#: src/pyload/core/threads/download_thread.py:113
+#: src/pyload/core/threads/download_thread.py:193
+msgid "Download failed: {name} | {msg}"
+msgstr ""
+
+#: src/pyload/core/threads/download_thread.py:176
+msgid "Download skipped: {name} due to {plugin}"
+msgstr ""
+
+#: src/pyload/core/threads/info_thread.py:187
+msgid "Info Fetching for {name} failed | {err}"
+msgstr ""
+
+#: src/pyload/core/threads/plugin_thread.py:75
+msgid "Debug Report written to {}"
+msgstr ""
+
+#: src/pyload/plugins/helpers.py:144
+msgid "Error performing periodical task"
+msgstr ""
+
+#: src/pyload/plugins/accounts/DebridItaliaCom.py:48
+#: src/pyload/plugins/accounts/DebridlinkFr.py:77
+#: src/pyload/plugins/accounts/FilerNet.py:50
+msgid "Unable to retrieve account information"
+msgstr ""
+
+#: src/pyload/plugins/accounts/FilecloudIo.py:38
+msgid "Wrong username or password"
+msgstr ""
+
+#: src/pyload/plugins/accounts/FshareVn.py:46
+msgid "TRAFFIC_LEFT_PATTERN not found"
+msgstr ""
+
+#: src/pyload/plugins/accounts/HellshareCz.py:55
+msgid "Unable to parse credit info"
+msgstr ""
+
+#: src/pyload/plugins/accounts/MegaDebridEu.py:60
+msgid "Unable to retrieve hosters list: Banned IP"
+msgstr ""
+
+#: src/pyload/plugins/accounts/MegaDebridEu.py:64
+msgid "Unable to retrieve hosters list: error {}"
+msgstr ""
+
+#: src/pyload/plugins/accounts/MegaDebridEu.py:80
+msgid "Unable to retrieve hoster list: {}"
+msgstr ""
+
+#: src/pyload/plugins/accounts/MegaDebridEu.py:118
+#: src/pyload/plugins/accounts/MegaDebridEu.py:132
+#: src/pyload/plugins/downloaders/MegaDebridEu.py:68
+#: src/pyload/plugins/downloaders/MegaDebridEu.py:81
+msgid "Banned IP"
+msgstr ""
+
+#: src/pyload/plugins/accounts/MyfastfileCom.py:41
+msgid "Unable to get account information"
+msgstr ""
+
+#: src/pyload/plugins/accounts/MyfastfileCom.py:53
+msgid "Invalid username or password"
+msgstr ""
+
+#: src/pyload/plugins/accounts/NitroflareCom.py:62
+msgid "Banned"
+msgstr ""
+
+#: src/pyload/plugins/accounts/NitroflareCom.py:65
+msgid "Account Login Requires Recaptcha"
+msgstr ""
+
+#: src/pyload/plugins/accounts/OboomCom.py:32
+msgid "Failed to log in: {}"
+msgstr ""
+
+#: src/pyload/plugins/accounts/RealdebridCom.py:60
+msgid ""
+"Password for Real-debrid should be the API token - get it from: https"
+"://real-debrid.com/apitoken"
+msgstr ""
+
+#: src/pyload/plugins/accounts/TenluaVn.py:56
+msgid "BadHeader {}"
+msgstr ""
+
+#: src/pyload/plugins/accounts/TurbobitNet.py:51
+msgid "Login form not found"
+msgstr ""
+
+#: src/pyload/plugins/accounts/TurbobitNet.py:59
+#: src/pyload/plugins/accounts/TurbobitNet.py:74
+msgid ""
+"Logging in with captcha is not supported, please disable catcha in "
+"turbobit's account settings"
+msgstr ""
+
+#: src/pyload/plugins/accounts/TurbobitNet.py:80
+msgid "Unknown response"
+msgstr ""
+
+#: src/pyload/plugins/accounts/UlozTo.py:45
+msgid "Unable to retrieve account information, unexpected response"
+msgstr ""
+
+#: src/pyload/plugins/accounts/UlozTo.py:65
+msgid "Unable to retrieve account information, pattern not found"
+msgstr ""
+
+#: src/pyload/plugins/accounts/ZeveraCom.py:73
+msgid ""
+"Password for Zevera should be the API token - get it from: "
+"https://www.zevera.com/account"
+msgstr ""
+
+#: src/pyload/plugins/addons/AntiStandby.py:111
+#: src/pyload/plugins/addons/AntiStandby.py:115
+msgid "Unable to change power state"
+msgstr ""
+
+#: src/pyload/plugins/addons/AntiStandby.py:111
+msgid "caffeine lib not found"
+msgstr ""
+
+#: src/pyload/plugins/addons/AntiStandby.py:128
+msgid "Unable to change system power state"
+msgstr ""
+
+#: src/pyload/plugins/addons/AntiStandby.py:137
+msgid "Unable to change display power state"
+msgstr ""
+
+#: src/pyload/plugins/addons/AntiVirus.py:53
+msgid "Antivirus executable not found"
+msgstr ""
+
+#: src/pyload/plugins/addons/AntiVirus.py:74
+msgid "virus scanning"
+msgstr ""
+
+#: src/pyload/plugins/addons/AntiVirus.py:102
+msgid "Delete/Quarantine task skipped in folder scan mode"
+msgstr ""
+
+#: src/pyload/plugins/addons/AntiVirus.py:106
+msgid "Infected file"
+msgstr ""
+
+#: src/pyload/plugins/addons/AntiVirus.py:119
+msgid "Send2Trash lib not found, moving to quarantine instead"
+msgstr ""
+
+#: src/pyload/plugins/addons/AntiVirus.py:123
+#: src/pyload/plugins/addons/AntiVirus.py:132
+#: src/pyload/plugins/addons/AntiVirus.py:139
+msgid "file moving"
+msgstr ""
+
+#: src/pyload/plugins/addons/AntiVirus.py:128
+msgid "Unable to move file to trash: {}, moving to quarantine instead"
+msgstr ""
+
+#: src/pyload/plugins/addons/BypassCaptcha.py:97
+msgid "Could not send response"
+msgstr ""
+
+#: src/pyload/plugins/addons/BypassCaptcha.py:119
+#: src/pyload/plugins/addons/ImageTyperz.py:128
+msgid "Your account has not enough credits"
+msgstr ""
+
+#: src/pyload/plugins/addons/Captcha9Kw.py:73
+#: src/pyload/plugins/addons/ExpertDecoders.py:38
+msgid "{} credits left"
+msgstr ""
+
+#: src/pyload/plugins/addons/Captcha9Kw.py:85
+#: src/pyload/plugins/base/simple_decrypter.py:360
+#: src/pyload/plugins/base/simple_downloader.py:452
+#: src/pyload/plugins/downloaders/PremiumizeMe.py:68
+#: src/pyload/plugins/downloaders/ShareonlineBiz.py:107
+msgid "Invalid url"
+msgstr ""
+
+#: src/pyload/plugins/addons/Captcha9Kw.py:180
+msgid "Bad request: {}"
+msgstr ""
+
+#: src/pyload/plugins/addons/Captcha9Kw.py:211
+msgid "Captcha result for ticket {}: {}"
+msgstr ""
+
+#: src/pyload/plugins/addons/Captcha9Kw.py:234
+msgid "Your captcha 9kw.eu account has not enough credits"
+msgstr ""
+
+#: src/pyload/plugins/addons/Captcha9Kw.py:249
+msgid "Too many captchas in queue"
+msgstr ""
+
+#: src/pyload/plugins/addons/Checksum.py:110
+msgid "Checksum validation is disabled in plugin configuration"
+msgstr ""
+
+#: src/pyload/plugins/addons/Checksum.py:176
+msgid "File {} has incorrect size: {} B ({} expected)"
+msgstr ""
+
+#: src/pyload/plugins/addons/Checksum.py:197
+#: src/pyload/plugins/addons/Checksum.py:312
+msgid "checksum verifying"
+msgstr ""
+
+#: src/pyload/plugins/addons/Checksum.py:214
+#: src/pyload/plugins/addons/Checksum.py:334
+msgid "File integrity of \"{}\" verified by {} checksum ({})"
+msgstr ""
+
+#: src/pyload/plugins/addons/Checksum.py:218
+#: src/pyload/plugins/addons/Checksum.py:340
+msgid "checksum verified"
+msgstr ""
+
+#: src/pyload/plugins/addons/Checksum.py:223
+#: src/pyload/plugins/addons/Checksum.py:346
+msgid "{} checksum for file {} does not match ({} != {})"
+msgstr ""
+
+#: src/pyload/plugins/addons/Checksum.py:239
+#: src/pyload/plugins/addons/Checksum.py:360
+msgid "Unsupported hashing algorithm"
+msgstr ""
+
+#: src/pyload/plugins/addons/Checksum.py:244
+msgid "Unable to validate checksum for file: \"{}\""
+msgstr ""
+
+#: src/pyload/plugins/addons/Checksum.py:292
+#: src/pyload/plugins/base/container.py:78
+#: src/pyload/plugins/downloaders/QuickshareCz.py:80
+msgid "File not found"
+msgstr ""
+
+#: src/pyload/plugins/addons/Checksum.py:368
+msgid "All files specified by \"{}\" verified successfully"
+msgstr ""
+
+#: src/pyload/plugins/addons/Checksum.py:403
+#: src/pyload/plugins/base/hoster.py:369
+msgid "Waiting {}..."
+msgstr ""
+
+#: src/pyload/plugins/addons/ClickNLoad.py:60
+msgid "pyLoad's Web interface is not active, ClickNLoad cannot start"
+msgstr ""
+
+#: src/pyload/plugins/addons/ClickNLoad.py:68
+msgid "Shutting down proxy..."
+msgstr ""
+
+#: src/pyload/plugins/addons/ClickNLoad.py:91
+msgid "Server was not exited gracefully, shutdown forced"
+msgstr ""
+
+#: src/pyload/plugins/addons/ClickNLoad.py:110
+msgid "Proxy listening on {}:{}"
+msgstr ""
+
+#: src/pyload/plugins/addons/ClickNLoad.py:144
+msgid "Missing SSL lib"
+msgstr ""
+
+#: src/pyload/plugins/addons/ClickNLoad.py:145
+msgid "Please disable HTTPS in pyLoad settings"
+msgstr ""
+
+#: src/pyload/plugins/addons/ClickNLoad.py:151
+msgid "SSL error: {}"
+msgstr ""
+
+#: src/pyload/plugins/addons/CloudFlareDdos.py:67
+msgid "Unknown CloudFlare response code {}"
+msgstr ""
+
+#: src/pyload/plugins/addons/CloudFlareDdos.py:86
+msgid "Detected CloudFlare's DDoS protection page"
+msgstr ""
+
+#: src/pyload/plugins/addons/CloudFlareDdos.py:120
+msgid "Unable to parse CloudFlare's DDoS protection page"
+msgstr ""
+
+#: src/pyload/plugins/addons/CloudFlareDdos.py:145
+msgid "Detected CloudFlare's security check page"
+msgstr ""
+
+#: src/pyload/plugins/addons/CloudFlareDdos.py:157
+msgid "Got unexpected CloudFlare html page"
+msgstr ""
+
+#: src/pyload/plugins/addons/CloudFlareDdos.py:221
+msgid "No _preload() override found for {}, cannot un-override>"
+msgstr ""
+
+#: src/pyload/plugins/addons/CloudFlareDdos.py:236
+msgid "Already overrided _preload() for {}"
+msgstr ""
+
+#: src/pyload/plugins/addons/CloudFlareDdos.py:279
+msgid "{} is missing _preload() function, cannot override!"
+msgstr ""
+
+#: src/pyload/plugins/addons/CloudFlareDdos.py:294
+msgid "Owner plugin not found, cannot process"
+msgstr ""
+
+#: src/pyload/plugins/addons/DeathByCaptcha.py:190
+msgid "Account balance"
+msgstr ""
+
+#: src/pyload/plugins/addons/DeathByCaptcha.py:191
+msgid "US${:.3f} ({} captchas left at {:.2f} cents each)"
+msgstr ""
+
+#: src/pyload/plugins/addons/DeleteFinished.py:32
+msgid "including"
+msgstr ""
+
+#: src/pyload/plugins/addons/DeleteFinished.py:32
+msgid "excluding"
+msgstr ""
+
+#: src/pyload/plugins/addons/DeleteFinished.py:34
+msgid ""
+"delete all finished packages in queue list ({} packages with offline "
+"links)"
+msgstr ""
+
+#: src/pyload/plugins/addons/DownloadScheduler.py:65
+msgid "Invalid schedule"
+msgstr ""
+
+#: src/pyload/plugins/addons/DownloadScheduler.py:97
+msgid "Stopping download server. (Running downloads will be aborted.)"
+msgstr ""
+
+#: src/pyload/plugins/addons/DownloadScheduler.py:99
+msgid "Stopping download server. (Running downloads will not be aborted.)"
+msgstr ""
+
+#: src/pyload/plugins/addons/DownloadScheduler.py:112
+msgid "Setting download speed to {} kB/s"
+msgstr ""
+
+#: src/pyload/plugins/addons/DownloadScheduler.py:117
+msgid "Setting download speed to FULL"
+msgstr ""
+
+#: src/pyload/plugins/addons/ExpertDecoders.py:87
+msgid "Your ExpertDecoders Account has not enough credits"
+msgstr ""
+
+#: src/pyload/plugins/addons/ExpertDecoders.py:101
+msgid "Request refund"
+msgstr ""
+
+#: src/pyload/plugins/addons/ExpertDecoders.py:104
+msgid "Could not send refund request"
+msgstr ""
+
+#: src/pyload/plugins/addons/ExternalScripts.py:113
+msgid "Script `{}` is not executable"
+msgstr ""
+
+#: src/pyload/plugins/addons/ExternalScripts.py:122
+msgid "Activated scripts in folder `{}`: {}"
+msgstr ""
+
+#: src/pyload/plugins/addons/ExternalScripts.py:131
+msgid "Deactivated scripts in folder `{}`: {}"
+msgstr ""
+
+#: src/pyload/plugins/addons/ExternalScripts.py:162
+msgid "Executing scripts in folder `{}`..."
+msgstr ""
+
+#: src/pyload/plugins/addons/ExternalScripts.py:170
+msgid "Runtime error: {}"
+msgstr ""
+
+#: src/pyload/plugins/addons/ExternalScripts.py:171
+#: src/pyload/plugins/addons/ExtractArchive.py:581
+#: src/pyload/plugins/downloaders/FilefactoryCom.py:95
+msgid "Unknown error"
+msgstr ""
+
+#: src/pyload/plugins/addons/ExtractArchive.py:125
+msgid "No {} installed"
+msgstr ""
+
+#: src/pyload/plugins/addons/ExtractArchive.py:127
+#: src/pyload/plugins/addons/ExtractArchive.py:130
+msgid "Could not activate: {}"
+msgstr ""
+
+#: src/pyload/plugins/addons/ExtractArchive.py:141
+msgid "No Extract plugins activated"
+msgstr ""
+
+#: src/pyload/plugins/addons/ExtractArchive.py:244
+msgid "Check package: {}"
+msgstr ""
+
+#: src/pyload/plugins/addons/ExtractArchive.py:313
+msgid "Extract to: {}"
+msgstr ""
+
+#: src/pyload/plugins/addons/ExtractArchive.py:429
+msgid "No files found to extract"
+msgstr ""
+
+#: src/pyload/plugins/addons/ExtractArchive.py:458
+msgid "archive testing"
+msgstr ""
+
+#: src/pyload/plugins/addons/ExtractArchive.py:465
+msgid "Password protected"
+msgstr ""
+
+#: src/pyload/plugins/addons/ExtractArchive.py:470
+msgid "CRC Error"
+msgstr ""
+
+#: src/pyload/plugins/addons/ExtractArchive.py:476
+msgid "Repairing..."
+msgstr ""
+
+#: src/pyload/plugins/addons/ExtractArchive.py:477
+msgid "archive repairing"
+msgstr ""
+
+#: src/pyload/plugins/addons/ExtractArchive.py:496
+msgid "archive extracting"
+msgstr ""
+
+#: src/pyload/plugins/addons/ExtractArchive.py:529
+msgid "Deleting {} files"
+msgstr ""
+
+#: src/pyload/plugins/addons/ExtractArchive.py:546
+#: src/pyload/plugins/addons/ExtractArchive.py:554
+msgid "Unable to move {} to trash"
+msgstr ""
+
+#: src/pyload/plugins/addons/ExtractArchive.py:549
+msgid "Send2Trash lib not found"
+msgstr ""
+
+#: src/pyload/plugins/addons/ExtractArchive.py:562
+msgid "Moved {} to trash"
+msgstr ""
+
+#: src/pyload/plugins/addons/ExtractArchive.py:565
+msgid "Extracting finished"
+msgstr ""
+
+#: src/pyload/plugins/addons/ExtractArchive.py:571
+msgid "Wrong passwordNo password found"
+msgstr ""
+
+#: src/pyload/plugins/addons/ExtractArchive.py:575
+msgid "CRC mismatch"
+msgstr ""
+
+#: src/pyload/plugins/addons/ExtractArchive.py:578
+msgid "Archive error"
+msgstr ""
+
+#: src/pyload/plugins/addons/ExtractArchive.py:585
+msgid "Extract failed"
+msgstr ""
+
+#: src/pyload/plugins/addons/HotFolder.py:76
+msgid "Added {} from HotFolder"
+msgstr ""
+
+#: src/pyload/plugins/addons/IRC.py:72
+msgid "Download finished: {name} @ {plugin} "
+msgstr ""
+
+#: src/pyload/plugins/addons/IRC.py:91
+msgid "New Captcha Request: {}"
+msgstr ""
+
+#: src/pyload/plugins/addons/IRC.py:93
+msgid "Answer with 'c {} text on the captcha'"
+msgstr ""
+
+#: src/pyload/plugins/addons/IRC.py:114
+msgid "Connected to"
+msgstr ""
+
+#: src/pyload/plugins/addons/IRC.py:115
+msgid "Switching to listening mode!"
+msgstr ""
+
+#: src/pyload/plugins/addons/ImageTyperz.py:67
+msgid "Account balance: ${} left"
+msgstr ""
+
+#: src/pyload/plugins/addons/ImageTyperz.py:143
+msgid "Bad captcha solution received, requested refund"
+msgstr ""
+
+#: src/pyload/plugins/addons/ImageTyperz.py:146
+msgid "Bad captcha solution received, refund request failed"
+msgstr ""
+
+#: src/pyload/plugins/addons/JustPremium.py:82
+msgid "Remove links of plugin: {}"
+msgstr ""
+
+#: src/pyload/plugins/addons/LinkFilter.py:63
+msgid "Whitelist filter removed {} {} not containing ({})"
+msgstr ""
+
+#: src/pyload/plugins/addons/LogMarker.py:37
+msgid "------------------- DAY MARK -------------------"
+msgstr ""
+
+#: src/pyload/plugins/addons/LogMarker.py:42
+msgid "------------------- HOUR MARK ------------------"
+msgstr ""
+
+#: src/pyload/plugins/addons/MergeFiles.py:42
+msgid "Starting merging of"
+msgstr ""
+
+#: src/pyload/plugins/addons/MergeFiles.py:84
+msgid "Finished merging of"
+msgstr ""
+
+#: src/pyload/plugins/addons/MultiHome.py:87
+msgid "Best interface not found"
+msgstr ""
+
+#: src/pyload/plugins/addons/RestartFailed.py:25
+msgid "Restarting all failed downloads..."
+msgstr ""
+
+#: src/pyload/plugins/addons/SkipRev.py:96
+#: src/pyload/plugins/addons/UnSkipOnFail.py:44
+msgid "unskipped"
+msgstr ""
+
+#: src/pyload/plugins/addons/UnSkipOnFail.py:24
+msgid "Looking for skipped duplicates of: {} (pid:{})"
+msgstr ""
+
+#: src/pyload/plugins/addons/UnSkipOnFail.py:30
+msgid "Queue found duplicate: {} (pid:{})"
+msgstr ""
+
+#: src/pyload/plugins/addons/UnSkipOnFail.py:50
+msgid "No duplicates found"
+msgstr ""
+
+#: src/pyload/plugins/addons/UpdateManager.py:149
+msgid "Unable to connect to the server to retrieve updates"
+msgstr ""
+
+#: src/pyload/plugins/addons/UpdateManager.py:176
+msgid "pyLoad restart scheduled"
+msgstr ""
+
+#: src/pyload/plugins/addons/UpdateManager.py:177
+msgid "Downloads are active, pyLoad restart postponed once the download is done"
+msgstr ""
+
+#: src/pyload/plugins/addons/UpdateManager.py:194
+msgid "pyLoad is up to date!"
+msgstr ""
+
+#: src/pyload/plugins/addons/UpdateManager.py:199
+msgid "***  New pyLoad {} available  ***"
+msgstr ""
+
+#: src/pyload/plugins/addons/UpdateManager.py:202
+msgid "***  Get it here: https://github.com/pyload/pyload/releases  ***"
+msgstr ""
+
+#: src/pyload/plugins/addons/UpdateManager.py:229
+msgid "*** Plugins updated ***"
+msgstr ""
+
+#: src/pyload/plugins/addons/UpdateManager.py:235
+msgid "You have to restart pyLoad to use the updated plugins"
+msgstr ""
+
+#: src/pyload/plugins/addons/UpdateManager.py:246
+msgid "All plugins are up to date!"
+msgstr ""
+
+#: src/pyload/plugins/addons/UpdateManager.py:333
+msgid "Removed blacklisted plugin: {type} {name}"
+msgstr ""
+
+#: src/pyload/plugins/addons/UpdateManager.py:355
+#: src/pyload/plugins/addons/UpdateManager.py:399
+msgid "Error updating plugin: {} {}"
+msgstr ""
+
+#: src/pyload/plugins/addons/UpdateManager.py:358
+msgid "Bad version number on the server"
+msgstr ""
+
+#: src/pyload/plugins/addons/UpdateManager.py:383
+msgid "URL not found"
+msgstr ""
+
+#: src/pyload/plugins/addons/UpdateManager.py:395
+msgid "Version mismatch"
+msgstr ""
+
+#: src/pyload/plugins/addons/UpdateManager.py:455
+#: src/pyload/plugins/base/plugin.py:116
+msgid "Error removing `{}`"
+msgstr ""
+
+#: src/pyload/plugins/addons/XFileSharing.py:119
+msgid "No {} to handle"
+msgstr ""
+
+#: src/pyload/plugins/addons/XFileSharing.py:126
+msgid "Handle {} {}{}: {}"
+msgstr ""
+
+#: src/pyload/plugins/addons/XFileSharing.py:161
+msgid "Auto-discover new {}s"
+msgstr ""
+
+#: src/pyload/plugins/addons/XMPP.py:95
+msgid "Download finished: {name} @ {plugin}"
+msgstr ""
+
+#: src/pyload/plugins/anticaptchas/AdYouLike.py:57
+msgid "AdYouLike challenge pattern not found"
+msgstr ""
+
+#: src/pyload/plugins/anticaptchas/AdYouLike.py:87
+msgid "AdYouLike result not found"
+msgstr ""
+
+#: src/pyload/plugins/anticaptchas/AdsCaptcha.py:51
+msgid "AdsCaptcha challenge pattern not found"
+msgstr ""
+
+#: src/pyload/plugins/anticaptchas/CircleCaptcha.py:806
+#: src/pyload/plugins/anticaptchas/CircleCaptcha.py:812
+msgid "Coords: {}"
+msgstr ""
+
+#: src/pyload/plugins/anticaptchas/CoinHive.py:70
+#: src/pyload/plugins/anticaptchas/ReCaptcha.py:108
+msgid "Key pattern not found"
+msgstr ""
+
+#: src/pyload/plugins/anticaptchas/CoinHive.py:81
+msgid "Hashes pattern not found"
+msgstr ""
+
+#: src/pyload/plugins/anticaptchas/ReCaptcha.py:120
+msgid "Secure Token pattern not found"
+msgstr ""
+
+#: src/pyload/plugins/anticaptchas/ReCaptcha.py:139
+msgid "Could not properly detect reCAPTCHA version, defaulting to v2"
+msgstr ""
+
+#: src/pyload/plugins/anticaptchas/ReCaptcha.py:172
+#: src/pyload/plugins/anticaptchas/ReCaptcha.py:370
+msgid "reCAPTCHA challenge pattern not found"
+msgstr ""
+
+#: src/pyload/plugins/anticaptchas/ReCaptcha.py:189
+msgid "reCAPTCHA second challenge pattern not found"
+msgstr ""
+
+#: src/pyload/plugins/anticaptchas/ReCaptcha.py:361
+msgid "reCAPTCHA noscript is blocked, trying reCAPTCHA interactive"
+msgstr ""
+
+#: src/pyload/plugins/anticaptchas/ReCaptcha.py:386
+msgid "reCAPTCHA challenge message not found"
+msgstr ""
+
+#: src/pyload/plugins/anticaptchas/ReCaptcha.py:426
+msgid "reCAPTCHA max retries exceeded"
+msgstr ""
+
+#: src/pyload/plugins/anticaptchas/SolveMedia.py:50
+msgid "Magic pattern not found"
+msgstr ""
+
+#: src/pyload/plugins/anticaptchas/SolveMedia.py:60
+msgid "SolveMedia challenge pattern not found"
+msgstr ""
+
+#: src/pyload/plugins/anticaptchas/SolveMedia.py:94
+msgid "SolveMedia verify pattern not found"
+msgstr ""
+
+#: src/pyload/plugins/anticaptchas/SolveMedia.py:98
+msgid "Captcha code was invalid"
+msgstr ""
+
+#: src/pyload/plugins/anticaptchas/SolveMedia.py:105
+msgid "SolveMedia max retries exceeded"
+msgstr ""
+
+#: src/pyload/plugins/anticaptchas/UlozTo.py:35
+msgid "Unable to decode audio captcha"
+msgstr ""
+
+#: src/pyload/plugins/anticaptchas/UlozTo.py:36
+msgid ""
+"Please install adecaptcha library from "
+"https://github.com/izderadicka/adecaptcha"
+msgstr ""
+
+#: src/pyload/plugins/base/account.py:111
+msgid "Login user `{}`..."
+msgstr ""
+
+#: src/pyload/plugins/base/account.py:113
+msgid "Relogin user `{}`..."
+msgstr ""
+
+#: src/pyload/plugins/base/account.py:127
+msgid "Skipped login user `{}`"
+msgstr ""
+
+#: src/pyload/plugins/base/account.py:135
+msgid "Could not login user `{}`"
+msgstr ""
+
+#: src/pyload/plugins/base/account.py:214
+msgid "Grabbing account info for user `{}`..."
+msgstr ""
+
+#: src/pyload/plugins/base/account.py:245
+msgid "Error loading info for user `{}`"
+msgstr ""
+
+#: src/pyload/plugins/base/account.py:297
+msgid "Adding user `{}`..."
+msgstr ""
+
+#: src/pyload/plugins/base/account.py:301
+msgid "Error adding user `{}`"
+msgstr ""
+
+#: src/pyload/plugins/base/account.py:302
+msgid "User already exists"
+msgstr ""
+
+#: src/pyload/plugins/base/account.py:332
+msgid "Updating account info for user `{}`..."
+msgstr ""
+
+#: src/pyload/plugins/base/account.py:348
+msgid "Removing user `{}`..."
+msgstr ""
+
+#: src/pyload/plugins/base/account.py:376
+msgid "Invalid time format `{}` for account `{}`, use 1:22-3:44"
+msgstr ""
+
+#: src/pyload/plugins/base/account.py:383
+msgid "Not using account `{}` because the account has no traffic left"
+msgstr ""
+
+#: src/pyload/plugins/base/account.py:391
+msgid "Not using account `{}` because the account has expired"
+msgstr ""
+
+#: src/pyload/plugins/base/account.py:430
+msgid "Error choosing user `{}`"
+msgstr ""
+
+#: src/pyload/plugins/base/account.py:431
+msgid "User does not exists"
+msgstr ""
+
+#: src/pyload/plugins/base/captcha.py:98
+msgid "Using OCR to decrypt captcha..."
+msgstr ""
+
+#: src/pyload/plugins/base/captcha.py:109
+msgid "No OCR result"
+msgstr ""
+
+#: src/pyload/plugins/base/captcha.py:147
+#: src/pyload/plugins/base/captcha.py:190
+msgid "Captcha result: `{}`"
+msgstr ""
+
+#: src/pyload/plugins/base/captcha.py:151
+#: src/pyload/plugins/base/captcha.py:194
+msgid "No captcha result obtained in appropriate timing ({}s)"
+msgstr ""
+
+#: src/pyload/plugins/base/captcha.py:205
+msgid "Invalid captcha"
+msgstr ""
+
+#: src/pyload/plugins/base/captcha.py:213
+msgid "Correct captcha"
+msgstr ""
+
+#: src/pyload/plugins/base/captcha_service.py:27
+msgid "{} key not found"
+msgstr ""
+
+#: src/pyload/plugins/base/container.py:45
+#: src/pyload/plugins/base/decrypter.py:50
+msgid "No link grabbed"
+msgstr ""
+
+#: src/pyload/plugins/base/dead_decrypter.py:29
+msgid "Crypter is no longer available"
+msgstr ""
+
+#: src/pyload/plugins/base/dead_downloader.py:29
+msgid "Hoster is no longer available"
+msgstr ""
+
+#: src/pyload/plugins/base/decrypter.py:94
+msgid "Create package: {}"
+msgstr ""
+
+#: src/pyload/plugins/base/decrypter.py:95
+msgid "{} links"
+msgstr ""
+
+#: src/pyload/plugins/base/decrypter.py:119
+msgid "Save package `{name}` to folder: {folder}"
+msgstr ""
+
+#: src/pyload/plugins/base/downloader.py:102
+#: src/pyload/plugins/base/hoster.py:295
+msgid "Processing url: "
+msgstr ""
+
+#: src/pyload/plugins/base/downloader.py:110
+msgid "Premium download failed"
+msgstr ""
+
+#: src/pyload/plugins/base/downloader.py:112
+msgid "Free download failed"
+msgstr ""
+
+#: src/pyload/plugins/base/downloader.py:247
+msgid "IOError {}"
+msgstr ""
+
+#: src/pyload/plugins/base/downloader.py:259
+msgid "File saved"
+msgstr ""
+
+#: src/pyload/plugins/base/downloader.py:340
+msgid "Error renaming `{}` to `{}`"
+msgstr ""
+
+#: src/pyload/plugins/base/downloader.py:346
+msgid "`{}` saved as `{}`"
+msgstr ""
+
+#: src/pyload/plugins/base/downloader.py:371
+msgid "No file to scan"
+msgstr ""
+
+#: src/pyload/plugins/base/downloader.py:391
+msgid "Checking download..."
+msgstr ""
+
+#: src/pyload/plugins/base/downloader.py:392
+msgid "checking"
+msgstr ""
+
+#: src/pyload/plugins/base/downloader.py:398
+msgid "No file downloaded"
+msgstr ""
+
+#: src/pyload/plugins/base/downloader.py:403
+msgid "Empty file"
+msgstr ""
+
+#: src/pyload/plugins/base/downloader.py:409
+msgid "File is OK"
+msgstr ""
+
+#: src/pyload/plugins/base/downloader.py:427
+msgid "Filesize: {} KiB"
+msgstr ""
+
+#: src/pyload/plugins/base/downloader.py:428
+msgid "Traffic left for user `{}`: {} KiB"
+msgstr ""
+
+#: src/pyload/plugins/base/downloader.py:539
+msgid "File exists"
+msgstr ""
+
+#: src/pyload/plugins/base/hoster.py:205
+msgid "Link name: {}"
+msgstr ""
+
+#: src/pyload/plugins/base/hoster.py:218
+msgid "Link size: {} ({} bytes)"
+msgstr ""
+
+#: src/pyload/plugins/base/hoster.py:221
+msgid "Link size: N/D"
+msgstr ""
+
+#: src/pyload/plugins/base/hoster.py:227
+msgid "Link status: "
+msgstr ""
+
+#: src/pyload/plugins/base/hoster.py:235
+msgid "Grabbing link info..."
+msgstr ""
+
+#: src/pyload/plugins/base/hoster.py:270
+msgid "Plugin is temporarily unavailable"
+msgstr ""
+
+#: src/pyload/plugins/base/hoster.py:273
+msgid "Plugin may be unstable"
+msgstr ""
+
+#: src/pyload/plugins/base/hoster.py:361
+msgid "Invalid wait time interval"
+msgstr ""
+
+#: src/pyload/plugins/base/hoster.py:372
+msgid "Requiring reconnection..."
+msgstr ""
+
+#: src/pyload/plugins/base/hoster.py:374
+msgid "Reconnection ignored due logged account"
+msgstr ""
+
+#: src/pyload/plugins/base/hoster.py:423
+msgid "{} error"
+msgstr ""
+
+#: src/pyload/plugins/base/hoster.py:424
+msgid "Unknown"
+msgstr ""
+
+#: src/pyload/plugins/base/hoster.py:426
+msgid "{type}: {msg} | Plugin may be out of date"
+msgstr ""
+
+#: src/pyload/plugins/base/hoster.py:458
+msgid "Restart plugin"
+msgstr ""
+
+#: src/pyload/plugins/base/hoster.py:460
+msgid "Fallback to free processing"
+msgstr ""
+
+#: src/pyload/plugins/base/hoster.py:468
+msgid "Url was already processed as free"
+msgstr ""
+
+#: src/pyload/plugins/base/hoster.py:506
+msgid "Retry Captcha"
+msgstr ""
+
+#: src/pyload/plugins/base/multi_account.py:97
+msgid "Multi-hoster feature will be deactivated due missing plugin reference"
+msgstr ""
+
+#: src/pyload/plugins/base/multi_account.py:150
+msgid "Error loading hoster list for user `{}`"
+msgstr ""
+
+#: src/pyload/plugins/base/multi_account.py:217
+msgid "No {} loaded"
+msgstr ""
+
+#: src/pyload/plugins/base/multi_account.py:234
+msgid "{}s not overwritten: {}"
+msgstr ""
+
+#: src/pyload/plugins/base/multi_account.py:273
+#: src/pyload/plugins/base/simple_downloader.py:338
+#: src/pyload/plugins/downloaders/Http.py:94
+msgid "Waiting 1 minute and retry"
+msgstr ""
+
+#: src/pyload/plugins/base/multi_account.py:280
+msgid "No hoster list retrieved"
+msgstr ""
+
+#: src/pyload/plugins/base/multi_account.py:325
+msgid "Could not reload hoster list - invalid account, retry in 5 minutes"
+msgstr ""
+
+#: src/pyload/plugins/base/multi_account.py:332
+msgid "Could not load hoster list - invalid account, retry in 5 minutes"
+msgstr ""
+
+#: src/pyload/plugins/base/multi_account.py:342
+msgid "Could not reload hoster list - invalid account, deactivating"
+msgstr ""
+
+#: src/pyload/plugins/base/multi_account.py:349
+msgid "Could not load hoster list - invalid account, deactivating"
+msgstr ""
+
+#: src/pyload/plugins/base/multi_account.py:364
+msgid "Could not reload hoster list - login failed, retry in 5 minutes"
+msgstr ""
+
+#: src/pyload/plugins/base/multi_account.py:371
+msgid "Could not load hoster list - login failed, retry in 5 minutes"
+msgstr ""
+
+#: src/pyload/plugins/base/multi_account.py:381
+msgid "Could not reload hoster list - login failed, deactivating"
+msgstr ""
+
+#: src/pyload/plugins/base/multi_account.py:388
+msgid "Could not load hoster list - login failed, deactivating"
+msgstr ""
+
+#: src/pyload/plugins/base/multi_account.py:413
+msgid "Failed to load hoster list for user `{}`, retry in 5 minutes"
+msgstr ""
+
+#: src/pyload/plugins/base/multi_account.py:421
+msgid "Failed to load hoster list for user `{}`, deactivating"
+msgstr ""
+
+#: src/pyload/plugins/base/multi_account.py:441
+msgid "Reverting back to default hosters"
+msgstr ""
+
+#: src/pyload/plugins/base/multi_downloader.py:90
+msgid "Revert to original hoster plugin"
+msgstr ""
+
+#: src/pyload/plugins/base/multi_downloader.py:103
+msgid "MultiDownloader download failed"
+msgstr ""
+
+#: src/pyload/plugins/base/notifier.py:54
+msgid "pyLoad updated"
+msgstr ""
+
+#: src/pyload/plugins/base/notifier.py:61
+msgid "Restarting pyLoad"
+msgstr ""
+
+#: src/pyload/plugins/base/notifier.py:63
+msgid "Exiting pyLoad"
+msgstr ""
+
+#: src/pyload/plugins/base/notifier.py:69
+#: src/pyload/plugins/downloaders/ExtabitCom.py:79
+#: src/pyload/plugins/downloaders/NarodRu.py:54
+#: src/pyload/webui/app/templates/captcha.html:9
+msgid "Captcha"
+msgstr ""
+
+#: src/pyload/plugins/base/notifier.py:69
+msgid "New request waiting user input"
+msgstr ""
+
+#: src/pyload/plugins/base/notifier.py:75
+msgid "Waiting reconnection"
+msgstr ""
+
+#: src/pyload/plugins/base/notifier.py:75
+#: src/pyload/plugins/base/notifier.py:81
+msgid "Current IP: {}"
+msgstr ""
+
+#: src/pyload/plugins/base/notifier.py:81
+msgid "Reconnection failed"
+msgstr ""
+
+#: src/pyload/plugins/base/notifier.py:87
+msgid "Package finished"
+msgstr ""
+
+#: src/pyload/plugins/base/notifier.py:93
+msgid "Package failed"
+msgstr ""
+
+#: src/pyload/plugins/base/notifier.py:99
+msgid "Download finished"
+msgstr ""
+
+#: src/pyload/plugins/base/notifier.py:105
+#: src/pyload/plugins/downloaders/ShareonlineBiz.py:124
+msgid "Download failed"
+msgstr ""
+
+#: src/pyload/plugins/base/notifier.py:108
+msgid "All downloads processed"
+msgstr ""
+
+#: src/pyload/plugins/base/notifier.py:111
+msgid "All downloads finished"
+msgstr ""
+
+#: src/pyload/plugins/base/notifier.py:144
+msgid "Error sending notification"
+msgstr ""
+
+#: src/pyload/plugins/base/ocr.py:146
+msgid "OCR result: "
+msgstr ""
+
+#: src/pyload/plugins/base/plugin.py:121
+msgid "Path deleted: "
+msgstr ""
+
+#: src/pyload/plugins/base/sevenzip.py:120
+msgid "Header protected"
+msgstr ""
+
+#: src/pyload/plugins/base/sevenzip.py:163
+#: src/pyload/plugins/base/sevenzip.py:193 src/pyload/plugins/base/unrar.py:184
+msgid "Process return code: {}"
+msgstr ""
+
+#: src/pyload/plugins/base/sevenzip.py:190 src/pyload/plugins/base/unrar.py:213
+msgid "Cannot open file"
+msgstr ""
+
+#: src/pyload/plugins/base/simple_decrypter.py:186
+#: src/pyload/plugins/base/simple_downloader.py:232
+msgid "Required premium account not found"
+msgstr ""
+
+#: src/pyload/plugins/base/simple_decrypter.py:189
+#: src/pyload/plugins/base/simple_downloader.py:235
+msgid "Required account not found"
+msgstr ""
+
+#: src/pyload/plugins/base/simple_decrypter.py:211
+msgid "Looking for direct link..."
+msgstr ""
+
+#: src/pyload/plugins/base/simple_decrypter.py:215
+msgid "Direct link detected"
+msgstr ""
+
+#: src/pyload/plugins/base/simple_decrypter.py:217
+msgid "Direct link not found"
+msgstr ""
+
+#: src/pyload/plugins/base/simple_decrypter.py:231
+msgid "Free decrypting not implemented"
+msgstr ""
+
+#: src/pyload/plugins/base/simple_decrypter.py:235
+msgid "Free decrypted link not found"
+msgstr ""
+
+#: src/pyload/plugins/base/simple_decrypter.py:241
+msgid "Premium decrypting not implemented"
+msgstr ""
+
+#: src/pyload/plugins/base/simple_decrypter.py:246
+msgid "Premium decrypted link found"
+msgstr ""
+
+#: src/pyload/plugins/base/simple_decrypter.py:256
+msgid "Decrypting as premium link..."
+msgstr ""
+
+#: src/pyload/plugins/base/simple_decrypter.py:260
+msgid "Decrypting as free link..."
+msgstr ""
+
+#: src/pyload/plugins/base/simple_decrypter.py:286
+#: src/pyload/plugins/base/simple_downloader.py:354
+#: src/pyload/plugins/base/xfs_account.py:203
+msgid "Checking for link errors..."
+msgstr ""
+
+#: src/pyload/plugins/base/simple_decrypter.py:289
+#: src/pyload/plugins/base/simple_downloader.py:357
+#: src/pyload/plugins/base/xfs_account.py:206
+msgid "No data to check"
+msgstr ""
+
+#: src/pyload/plugins/base/simple_decrypter.py:293
+#: src/pyload/plugins/base/simple_decrypter.py:337
+#: src/pyload/plugins/base/simple_downloader.py:361
+#: src/pyload/plugins/base/simple_downloader.py:429
+msgid "Connection from your current IP address is not allowed"
+msgstr ""
+
+#: src/pyload/plugins/base/simple_decrypter.py:299
+#: src/pyload/plugins/base/simple_decrypter.py:363
+msgid "Link can be decrypted by premium users only"
+msgstr ""
+
+#: src/pyload/plugins/base/simple_decrypter.py:304
+#: src/pyload/plugins/base/simple_decrypter.py:350
+msgid "Link list too large for free decrypt"
+msgstr ""
+
+#: src/pyload/plugins/base/simple_decrypter.py:333
+#: src/pyload/plugins/base/simple_downloader.py:393
+#: src/pyload/plugins/base/simple_downloader.py:425
+#: src/pyload/plugins/downloaders/DatafileCom.py:95
+msgid "Download limit exceeded"
+msgstr ""
+
+#: src/pyload/plugins/base/simple_decrypter.py:344
+#: src/pyload/plugins/base/simple_downloader.py:436
+msgid "Link expired"
+msgstr ""
+
+#: src/pyload/plugins/base/simple_decrypter.py:384
+#: src/pyload/plugins/base/simple_downloader.py:351
+#: src/pyload/plugins/base/simple_downloader.py:476
+#: src/pyload/plugins/base/xfs_account.py:240
+msgid "No errors found"
+msgstr ""
+
+#: src/pyload/plugins/base/simple_downloader.py:281
+msgid "Processing as debrid download..."
+msgstr ""
+
+#: src/pyload/plugins/base/simple_downloader.py:286
+msgid "Looking for direct download link..."
+msgstr ""
+
+#: src/pyload/plugins/base/simple_downloader.py:290
+msgid "Direct download link detected"
+msgstr ""
+
+#: src/pyload/plugins/base/simple_downloader.py:292
+msgid "Direct download link not found"
+msgstr ""
+
+#: src/pyload/plugins/base/simple_downloader.py:306
+msgid "Processing as premium download..."
+msgstr ""
+
+#: src/pyload/plugins/base/simple_downloader.py:312
+msgid "Processing as free download..."
+msgstr ""
+
+#: src/pyload/plugins/base/simple_downloader.py:316
+#: src/pyload/plugins/downloaders/PornovkaCz.py:43
+#: src/pyload/plugins/downloaders/StreamCz.py:94
+#: src/pyload/plugins/downloaders/YesPornPleaseCom.py:45
+msgid "Downloading file..."
+msgstr ""
+
+#: src/pyload/plugins/base/simple_downloader.py:324
+msgid "Checking file (with built-in rules)..."
+msgstr ""
+
+#: src/pyload/plugins/base/simple_downloader.py:337
+#: src/pyload/plugins/downloaders/Http.py:94
+msgid "Check result: "
+msgstr ""
+
+#: src/pyload/plugins/base/simple_downloader.py:344
+msgid "Checking file (with custom rules)..."
+msgstr ""
+
+#: src/pyload/plugins/base/simple_downloader.py:367
+#: src/pyload/plugins/base/simple_downloader.py:455
+#: src/pyload/plugins/downloaders/Keep2ShareCc.py:78
+#: src/pyload/plugins/downloaders/ZbigzCom.py:57
+msgid "File can be downloaded by premium users only"
+msgstr ""
+
+#: src/pyload/plugins/base/simple_downloader.py:372
+#: src/pyload/plugins/base/simple_downloader.py:442
+#: src/pyload/plugins/downloaders/FilefactoryCom.py:64
+msgid "File too large for free download"
+msgstr ""
+
+#: src/pyload/plugins/base/simple_downloader.py:493
+msgid "Free download not implemented"
+msgstr ""
+
+#: src/pyload/plugins/base/simple_downloader.py:497
+msgid "Free download link not found"
+msgstr ""
+
+#: src/pyload/plugins/base/simple_downloader.py:503
+msgid "Premium download not implemented"
+msgstr ""
+
+#: src/pyload/plugins/base/simple_downloader.py:508
+msgid "Premium download link not found"
+msgstr ""
+
+#: src/pyload/plugins/base/xfs_account.py:64
+#: src/pyload/plugins/base/xfs_decrypter.py:57
+#: src/pyload/plugins/base/xfs_downloader.py:87
+msgid "Missing PLUGIN DOMAIN"
+msgstr ""
+
+#: src/pyload/plugins/base/xfs_downloader.py:125
+msgid "Too many OPs"
+msgstr ""
+
+#: src/pyload/plugins/base/xfs_downloader.py:133
+msgid "Only registered or premium users can use url leech feature"
+msgstr ""
+
+#: src/pyload/plugins/base/xfs_downloader.py:159
+#: src/pyload/plugins/base/xfs_downloader.py:201
+msgid "TEXTAREA F1 not found"
+msgstr ""
+
+#: src/pyload/plugins/base/xfs_downloader.py:169
+msgid "Can not leech file"
+msgstr ""
+
+#: src/pyload/plugins/base/xfs_downloader.py:174
+msgid "You've used all Leech traffic today"
+msgstr ""
+
+#: src/pyload/plugins/base/xfs_downloader.py:183
+msgid "LINK_LEECH_PATTERN not found"
+msgstr ""
+
+#: src/pyload/plugins/base/xfs_downloader.py:212
+#: src/pyload/plugins/decrypters/LinkdecrypterCom.py:79
+#: src/pyload/plugins/downloaders/CloudzillaTo.py:39
+msgid "Missing password"
+msgstr ""
+
+#: src/pyload/plugins/containers/CCF.py:58
+#: src/pyload/plugins/containers/DLC.py:69
+#: src/pyload/plugins/containers/RSDF.py:69
+msgid "Container is corrupted"
+msgstr ""
+
+#: src/pyload/plugins/containers/TXT.py:74
+msgid "Failed to flush list"
+msgstr ""
+
+#: src/pyload/plugins/decrypters/ChipDe.py:37
+msgid "Failed to find the URL"
+msgstr ""
+
+#: src/pyload/plugins/decrypters/CloudMailRuFolder.py:40
+msgid "Json pattern not found"
+msgstr ""
+
+#: src/pyload/plugins/decrypters/CryptCat.py:43
+#: src/pyload/plugins/decrypters/DataHuFolder.py:41
+#: src/pyload/plugins/decrypters/SafelinkingNet.py:109
+msgid "Password required"
+msgstr ""
+
+#: src/pyload/plugins/decrypters/CryptCat.py:62
+#: src/pyload/plugins/decrypters/DataHuFolder.py:50
+#: src/pyload/plugins/decrypters/LinkCryptWs.py:168
+#: src/pyload/plugins/decrypters/RelinkUs.py:233
+#: src/pyload/plugins/decrypters/SafelinkingNet.py:132
+#: src/pyload/plugins/decrypters/ShareLinksBiz.py:188
+#: src/pyload/plugins/downloaders/FilepostCom.py:83
+#: src/pyload/plugins/downloaders/FshareVn.py:62
+#: src/pyload/plugins/downloaders/MediafireCom.py:94
+#: src/pyload/plugins/downloaders/TenluaVn.py:92
+#: src/pyload/plugins/downloaders/UlozTo.py:209
+#: src/pyload/plugins/downloaders/UlozTo.py:238
+#: src/pyload/plugins/downloaders/VimeoCom.py:72
+msgid "Wrong password"
+msgstr ""
+
+#: src/pyload/plugins/decrypters/CzshareComFolder.py:39
+#: src/pyload/plugins/decrypters/FileserveComFolder.py:41
+#: src/pyload/plugins/decrypters/QuickshareCzFolder.py:39
+#: src/pyload/plugins/decrypters/UlozToFolder.py:44
+msgid "FOLDER_PATTERN not found"
+msgstr ""
+
+#: src/pyload/plugins/decrypters/DailymotionComFolder.py:105
+#: src/pyload/plugins/decrypters/YoutubeComFolder.py:152
+msgid "No playlist available"
+msgstr ""
+
+#: src/pyload/plugins/decrypters/DuckCryptInfo.py:41
+msgid "Weird error in link"
+msgstr ""
+
+#: src/pyload/plugins/decrypters/DuckCryptInfo.py:58
+#: src/pyload/plugins/decrypters/DuckCryptInfo.py:68
+msgid "No link found"
+msgstr ""
+
+#: src/pyload/plugins/decrypters/FilecryptCc.py:136
+msgid "Found {} mirrors"
+msgstr ""
+
+#: src/pyload/plugins/decrypters/FilecryptCc.py:151
+#: src/pyload/plugins/decrypters/LinkCryptWs.py:136
+msgid "Folder is password protected"
+msgstr ""
+
+#: src/pyload/plugins/decrypters/FilecryptCc.py:157
+msgid "Please enter the password in package section and try again"
+msgstr ""
+
+#: src/pyload/plugins/decrypters/FilecryptCc.py:189
+msgid "Unknown captcha found, retrying"
+msgstr ""
+
+#: src/pyload/plugins/decrypters/FilecryptCc.py:193
+msgid "No captcha found"
+msgstr ""
+
+#: src/pyload/plugins/decrypters/FilecryptCc.py:323
+#: src/pyload/plugins/downloaders/Keep2ShareCc.py:133
+#: src/pyload/plugins/downloaders/UpstoreNet.py:94
+msgid "Max captcha retries reached"
+msgstr ""
+
+#: src/pyload/plugins/decrypters/FreetexthostCom.py:37
+msgid "Unable to extract links"
+msgstr ""
+
+#: src/pyload/plugins/decrypters/HearthisAtFolder.py:49
+msgid "Internal Id not found"
+msgstr ""
+
+#: src/pyload/plugins/decrypters/HoerbuchIn.py:63
+msgid "Bad URL"
+msgstr ""
+
+#: src/pyload/plugins/decrypters/ImgurCom.py:70
+msgid "{}_{}"
+msgstr ""
+
+#: src/pyload/plugins/decrypters/ImgurCom.py:160
+msgid "Processing of additional links unsuccessful - {}: {}"
+msgstr ""
+
+#: src/pyload/plugins/decrypters/ImgurCom.py:170
+msgid "Could not save all images of this gallery: {}/{}"
+msgstr ""
+
+#: src/pyload/plugins/decrypters/LinkCryptWs.py:65
+msgid "Can't handle Key-Captcha"
+msgstr ""
+
+#: src/pyload/plugins/decrypters/LinkCryptWs.py:188
+msgid "Unknown source type: {}"
+msgstr ""
+
+#: src/pyload/plugins/decrypters/LinkCryptWs.py:252
+msgid "Unknown container type: {}"
+msgstr ""
+
+#: src/pyload/plugins/decrypters/LinkCryptWs.py:299
+msgid "Unable to decrypt CNL links (JS Error) try to get over links"
+msgstr ""
+
+#: src/pyload/plugins/decrypters/LinkdecrypterCom.py:61
+msgid "Captcha protected link"
+msgstr ""
+
+#: src/pyload/plugins/decrypters/LinkdecrypterCom.py:74
+msgid "Password protected link"
+msgstr ""
+
+#: src/pyload/plugins/decrypters/LixIn.py:41
+msgid "Unable to identify file ID"
+msgstr ""
+
+#: src/pyload/plugins/decrypters/LixIn.py:50
+msgid "Link doesn't seem valid"
+msgstr ""
+
+#: src/pyload/plugins/decrypters/LixIn.py:62
+msgid "No captcha solved"
+msgstr ""
+
+#: src/pyload/plugins/decrypters/LixIn.py:69
+msgid "Unable to find destination url"
+msgstr ""
+
+#: src/pyload/plugins/decrypters/MegaCoNzFolder.py:61
+msgid "https://mega.co.nz/#N!{}!{}###n={}"
+msgstr ""
+
+#: src/pyload/plugins/decrypters/MegadyskPlFolder.py:88
+#: src/pyload/plugins/downloaders/MegadyskPl.py:99
+#: src/pyload/plugins/downloaders/YadiSk.py:78
+msgid "Missing JSON data"
+msgstr ""
+
+#: src/pyload/plugins/decrypters/MultiUpOrg.py:76
+msgid "Unsupported reCAPTCHA, retrying"
+msgstr ""
+
+#: src/pyload/plugins/decrypters/RelinkUs.py:192
+msgid "Unknown captcha type detected"
+msgstr ""
+
+#: src/pyload/plugins/decrypters/RelinkUs.py:193
+#: src/pyload/plugins/downloaders/TurbobitNet.py:101
+msgid "Unknown captcha type"
+msgstr ""
+
+#: src/pyload/plugins/decrypters/RelinkUs.py:249
+msgid "Unknown source type \"{}\""
+msgstr ""
+
+#: src/pyload/plugins/decrypters/RelinkUs.py:289
+msgid "Unable to download DLC container"
+msgstr ""
+
+#: src/pyload/plugins/decrypters/SafelinkingNet.py:82
+msgid "Couldn't find forwarded Link"
+msgstr ""
+
+#: src/pyload/plugins/decrypters/SafelinkingNet.py:125
+msgid "Invalid JSON response"
+msgstr ""
+
+#: src/pyload/plugins/decrypters/SafelinkingNet.py:130
+msgid "Wrong password: \"{}\""
+msgstr ""
+
+#: src/pyload/plugins/decrypters/SafelinkingNet.py:139
+msgid "Site error: {}"
+msgstr ""
+
+#: src/pyload/plugins/decrypters/SafelinkingNet.py:148
+msgid "Unexpected JSON response"
+msgstr ""
+
+#: src/pyload/plugins/decrypters/SexuriaCom.py:116
+#: src/pyload/plugins/decrypters/SexuriaCom.py:124
+msgid "Broken for link: {}"
+msgstr ""
+
+#: src/pyload/plugins/decrypters/SexuriaCom.py:130
+msgid "Unable to extract links (maybe plugin out of date?)"
+msgstr ""
+
+#: src/pyload/plugins/decrypters/ShareLinksBiz.py:88
+#: src/pyload/plugins/downloaders/SmoozedCom.py:79
+msgid "Unable to initialize download"
+msgstr ""
+
+#: src/pyload/plugins/decrypters/ShareLinksBiz.py:102
+msgid "Unsupported download link"
+msgstr ""
+
+#: src/pyload/plugins/decrypters/ShareLinksBiz.py:150
+msgid "Captcha url data not found"
+msgstr ""
+
+#: src/pyload/plugins/decrypters/ShareLinksBiz.py:249
+msgid "f = {}"
+msgstr ""
+
+#: src/pyload/plugins/decrypters/ShareLinksBiz.py:297
+msgid "Unable to decrypt CNL2 links"
+msgstr ""
+
+#: src/pyload/plugins/decrypters/ShareLinksBiz.py:323
+msgid "{} f()"
+msgstr ""
+
+#: src/pyload/plugins/decrypters/UlozToFolder.py:41
+msgid "Fetching links from page {}"
+msgstr ""
+
+#: src/pyload/plugins/decrypters/UlozToFolder.py:53
+msgid "Limit of 99 pages reached, aborting"
+msgstr ""
+
+#: src/pyload/plugins/decrypters/XupPl.py:36
+msgid "Unable to find link"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/BasketbuildCom.py:49
+msgid "Hop #1 not found"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/BasketbuildCom.py:66
+msgid "DL-Link not found"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/BezvadataCz.py:43
+msgid "Page 1 URL not found"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/BezvadataCz.py:52
+msgid "FreeForm"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/BezvadataCz.py:67
+msgid "Page 2 URL not found"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/BezvadataCz.py:84
+#: src/pyload/plugins/downloaders/CzshareCom.py:119
+#: src/pyload/plugins/downloaders/CzshareCom.py:143
+#: src/pyload/plugins/downloaders/CzshareCom.py:182
+#: src/pyload/plugins/downloaders/DepositfilesCom.py:95
+#: src/pyload/plugins/downloaders/EuroshareEu.py:53
+msgid "Download limit reached"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/BigfileTo.py:83
+msgid "Downloadlimit reached, please wait or reconnect"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/CrockoCom.py:44
+msgid "You need Premium membership to download this file"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/CrockoCom.py:57
+msgid "FORM_PATTERN not found"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/CzshareCom.py:66
+msgid "Premium download for {} KiB of Credit"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/CzshareCom.py:71
+msgid "User {} has {} KiB left"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/CzshareCom.py:77
+msgid "Not enough credit to download file: {}"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/CzshareCom.py:109
+msgid "FREE_URL_PATTERN not found"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/CzshareCom.py:131
+msgid "Form"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/CzshareCom.py:157
+msgid "Download URL not found"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/CzshareCom.py:175
+msgid "File not available - try later"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/DailymotionCom.py:119
+msgid "Download video quality {}x{}"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/DailymotionCom.py:142
+msgid "Failed to get any streams."
+msgstr ""
+
+#: src/pyload/plugins/downloaders/DataportCz.py:43
+msgid "free_download_form"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/DataportCz.py:48
+#: src/pyload/plugins/downloaders/FiledropperCom.py:41
+#: src/pyload/plugins/downloaders/KatfileCom.py:77
+#: src/pyload/plugins/downloaders/UploadheroCom.py:56
+msgid "Captcha not found"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/DateiTo.py:58
+msgid "Data pattern not found"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/DefaultPlugin.py:27
+msgid "No plugin matched"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/DepositfilesCom.py:84
+#: src/pyload/plugins/downloaders/DepositfilesCom.py:85
+#: src/pyload/plugins/downloaders/RapidgatorNet.py:166
+msgid "Captcha pattern not found"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/EdiskCz.py:48
+msgid "ACTION_PATTERN not found"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/EdiskCz.py:61
+#: src/pyload/plugins/downloaders/Ftp.py:97
+msgid "Unexpected server response"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/EuroshareEu.py:61
+#: src/pyload/plugins/downloaders/UpleaCom.py:91
+msgid "LINK_PATTERN not found"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/ExtabitCom.py:43
+msgid "Only premium users can download this file"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/ExtabitCom.py:53
+msgid "You have reached your daily downloads limit for today"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/ExtabitCom.py:82
+msgid "Bad JSON response"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/ExtabitCom.py:90
+#: src/pyload/plugins/downloaders/FastshareCz.py:65
+#: src/pyload/plugins/downloaders/LoadTo.py:54
+#: src/pyload/plugins/downloaders/UloziskoSk.py:55
+#: src/pyload/plugins/downloaders/YibaishiwuCom.py:39
+msgid "LINK_FREE_PATTERN not found"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/FastshareCz.py:52
+msgid "No free slots"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/FastshareCz.py:56
+msgid "Not enough traffic left"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/FastshareCz.py:82
+msgid "Paralell download"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/FileSharkPl.py:64
+msgid "Another download already run"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/FileSharkPl.py:72
+msgid "Only connections from Polish IP are allowed"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/FileSharkPl.py:75
+msgid "No free download slots available"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/FileSharkPl.py:80
+msgid "Still no free download slots available"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/FileSharkPl.py:85
+msgid "Try again later"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/FileSharkPl.py:92
+#: src/pyload/plugins/downloaders/KingfilesNet.py:85
+msgid "Download url not found"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/FileSharkPl.py:108
+#: src/pyload/plugins/downloaders/TurbobitNet.py:94
+msgid "Captcha form not found"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/FileSharkPl.py:114
+msgid "Captcha image not found"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/FileStoreTo.py:51
+msgid "DID pattern not found"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/FilecloudIo.py:50
+msgid "requestUrl not found"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/FilecloudIo.py:58
+msgid "post parameters pattern not found"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/FilefactoryCom.py:67
+msgid "All free slots are busy"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/FilefactoryCom.py:91
+msgid "Parallel downloads"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/FilepostCom.py:42
+msgid "Token"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/FilepostCom.py:47
+msgid "Captcha key"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/FilepostCom.py:75
+#: src/pyload/plugins/downloaders/UlozTo.py:201
+msgid "Password protected link, trying "
+msgstr ""
+
+#: src/pyload/plugins/downloaders/FilepostCom.py:85
+#: src/pyload/plugins/downloaders/MediafireCom.py:86
+#: src/pyload/plugins/downloaders/UlozTo.py:211
+msgid "No password found"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/FilepostCom.py:108
+msgid "JSON {} 1"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/FilepostCom.py:135
+msgid "JSON {} 2"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/FilerNet.py:50
+msgid "Unable to detect hash"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/FilerNet.py:68
+msgid ""
+"There was HTML code in the downloaded file ({})...bad captcha? The "
+"download will be restarted"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/FilesMailRu.py:97
+msgid ""
+"There was HTML Code in the Downloaded File ({})...redirect error? The "
+"Download will be restarted"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/FileserveCom.py:102
+msgid "Parallel download error, now waiting 60s"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/FileserveCom.py:103
+msgid "parallelDownload"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/FileserveCom.py:106
+msgid "Download check returned: {}"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/FileserveCom.py:116
+msgid "Unknown server response"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/FileserveCom.py:122
+msgid "Couldn't retrieve download url"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/FileserveCom.py:144
+msgid "Download limited reached for today"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/FileserveCom.py:156
+msgid "Failed getting wait time"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/FileserveCom.py:161
+msgid "Cannot get wait time"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/FileserveCom.py:231
+msgid "Not logged in"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/FiregetCom.py:93
+#: src/pyload/plugins/downloaders/UlozTo.py:232
+#: src/pyload/plugins/downloaders/UlozTo.py:263
+msgid "Wrong captcha code"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/FlyFilesNet.py:48
+msgid "Could not get the download URL. Please wait 10 minutes"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/FreakshareCom.py:63
+msgid "Bad Try"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/FreakshareCom.py:70
+msgid "File not downloadable"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/FreakshareCom.py:77
+msgid "No Download server"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/FshareVn.py:56
+#: src/pyload/plugins/downloaders/OneFichierCom.py:132
+#: src/pyload/plugins/downloaders/TenluaVn.py:98
+msgid "Download is password protected"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/FshareVn.py:70
+msgid "Free Download form not found"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/FshareVn.py:78
+msgid "Expected JSON data"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/FshareVn.py:85
+msgid "Unexpected response"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/Ftp.py:64
+#: src/pyload/plugins/downloaders/Http.py:65
+msgid "Authorization required"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/Ftp.py:66
+msgid "Error {}: {}"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/HearthisAt.py:31
+msgid "Track ID not found"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/HighWayMe.py:44
+#: src/pyload/plugins/downloaders/HighWayMe.py:45
+#: src/pyload/plugins/downloaders/SimplyPremiumCom.py:47
+#: src/pyload/plugins/downloaders/SimplyPremiumCom.py:48
+msgid "Reached maximum connctions"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/HighWayMe.py:48
+msgid "Reached daily limit"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/HighWayMe.py:55
+#: src/pyload/plugins/downloaders/SimplyPremiumCom.py:58
+msgid "Hoster temporarily unavailable, waiting 1 minute and retry"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/HighWayMe.py:57
+#: src/pyload/plugins/downloaders/SimplyPremiumCom.py:60
+msgid "Hoster is temporarily unavailable"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/HighWayMe.py:69
+#: src/pyload/plugins/downloaders/SimplyPremiumCom.py:73
+msgid "Unable to get API data, waiting 1 minute and retry"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/HighWayMe.py:70
+#: src/pyload/plugins/downloaders/SimplyPremiumCom.py:74
+msgid "Unable to get API data"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/HostujeNet.py:44
+msgid "Unexpected javascript format"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/HostujeNet.py:46
+msgid "Script not found"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/HostujeNet.py:52
+msgid "Form not found"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/KatfileCom.py:55
+msgid "Form 1 not found"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/KatfileCom.py:63
+msgid "Form 2 not found"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/Keep2ShareCc.py:81
+#: src/pyload/plugins/downloaders/Keep2ShareCc.py:158
+msgid "This is a private file"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/Keep2ShareCc.py:96
+msgid "Request captcha API failed"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/KingfilesNet.py:64
+msgid "Random key not found"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/LinksnappyCom.py:51
+msgid "Error converting the link"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/LuckyShareNet.py:44
+msgid "Unable to detect wait time between free downloads"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/LuckyShareNet.py:46
+msgid "Hash expired"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/MediafireCom.py:89
+msgid "Password protected link, trying: {}"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/MegaCoNz.py:253
+msgid "Server busy"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/MegaCoNz.py:278
+#: src/pyload/plugins/downloaders/MegaCoNz.py:282
+msgid "Error code: [{}]"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/MegaCoNz.py:364
+msgid "File decrypted"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/MegaCoNz.py:371
+msgid "File integrity of \"{}\" verified by CBC-MAC checksum ({})"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/MegaCoNz.py:377
+msgid "CBC-MAC checksum for file \"{}\" does not match ({} != {})"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/MegaCoNz.py:383
+msgid "Checksums do not match"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/MegaCoNz.py:432
+msgid "File exists."
+msgstr ""
+
+#: src/pyload/plugins/downloaders/MegaCoNz.py:441
+#: src/pyload/plugins/downloaders/MegaCoNz.py:442
+msgid "Missing owner in URL"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/MegaCoNz.py:446
+msgid "Key: {}"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/MegaCoNz.py:447
+msgid "Type: {}"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/MegaCoNz.py:448
+msgid "Owner: {}"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/MegaCoNz.py:453
+#: src/pyload/plugins/downloaders/MegaCoNz.py:454
+msgid "Invalid key length"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/MegaCoNz.py:474
+msgid "Decryption failed"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/MegaCoNz.py:487
+#: src/pyload/plugins/downloaders/MegaCoNz.py:488
+#: src/pyload/plugins/downloaders/UploadedTo.py:115
+#: src/pyload/plugins/downloaders/UploadedTo.py:117
+msgid "Free download limit reached"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/MegaCoNz.py:497
+msgid "Bandwidth Limit Exceeded"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/MegaRapidCz.py:56
+msgid "User login failed"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/MegaRapidCz.py:59
+#: src/pyload/plugins/downloaders/QuickshareCz.py:58
+msgid "Not enough credit left"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/MegaRapidoNet.py:66
+msgid "You have logged in at another place"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/MegasharesCom.py:79
+msgid "Reactivating passport {}: {} {}"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/MegasharesCom.py:100
+msgid "Failed to reactivate passport"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/MegasharesCom.py:111
+#: src/pyload/plugins/downloaders/MegasharesCom.py:129
+msgid "Passport renewal"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/MegasharesCom.py:116
+msgid "Passport not found"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/MegasharesCom.py:118
+msgid "Download passport: {}"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/MegasharesCom.py:123
+msgid "Data left: {} {} ({} MiB needed)"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/MegasharesCom.py:135
+msgid "{} download URL"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/MultishareCz.py:58
+msgid "Not enough credit left to download file"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/MyfastfileCom.py:45
+#: src/pyload/plugins/downloaders/SimplydebridCom.py:52
+msgid "Unable to unrestrict link"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/MystoreTo.py:46
+msgid "File-ID not found"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/NitrobitNet.py:61
+msgid "Account valid until {}"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/NitrobitNet.py:70
+msgid "Daily traffic left {}"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/NoPremiumPl.py:87
+#: src/pyload/plugins/downloaders/RapideoPl.py:95
+#: src/pyload/plugins/downloaders/TwojlimitPl.py:77
+msgid "Unknown error (code: {})"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/NoPremiumPl.py:93
+msgid "Download from {} is possible only using NoPremium.pl website  directly"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/OboomCom.py:65
+msgid "Could not retrieve premium session"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/OboomCom.py:73
+msgid "Could not retrieve token for guest session. Error code: {}"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/OboomCom.py:111
+msgid "Service unavailable"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/OboomCom.py:130
+msgid "Could not retrieve file info. Error code {}: {}"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/OboomCom.py:149
+msgid "Connection limit exceeded"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/OboomCom.py:152
+msgid "Could not retrieve download ticket. Error code: {}"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/OneFichierCom.py:122
+#: src/pyload/plugins/downloaders/SolidfilesCom.py:48
+#: src/pyload/plugins/downloaders/UlozTo.py:104
+#: src/pyload/plugins/downloaders/UploadgigCom.py:43
+msgid "Free download form not found"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/OnlineTvRecorder.py:43
+msgid "Waiting in download queue"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/PornhubCom.py:101
+msgid "Player Javascript data not found"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/PornhubCom.py:107
+msgid "`qualityItems` variable no found"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/PornovkaCz.py:32
+msgid "Data url not found"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/PornovkaCz.py:37
+#: src/pyload/plugins/downloaders/YesPornPleaseCom.py:40
+msgid "Video url not found"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/PromptfileCom.py:40
+#: src/pyload/plugins/downloaders/UpstoreNet.py:51
+msgid "CHASH_PATTERN not found"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/QuickshareCz.py:52
+msgid "User not logged in"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/QuickshareCz.py:67
+msgid "File not found or plugin defect"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/QuickshareCz.py:94
+msgid "Error {}"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/RPNetBiz.py:84
+msgid "Waited for about 15 minutes for download to finish but failed"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/RPNetBiz.py:95
+msgid "Something went wrong, not supposed to enter here"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/RapideoPl.py:101
+msgid ""
+"Download from {} is possible only using Rapideo.pl website"
+"                     directly"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/RapidgatorNet.py:130
+msgid ""
+"You can't download more than one file within a certain time period in "
+"free mode"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/RapiduNet.py:66
+msgid "You've reach your daily download transfer"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/RapiduNet.py:69
+msgid "Try tomorrow again"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/RealdebridComTorrent.py:47
+#: src/pyload/plugins/downloaders/RealdebridComTorrent.py:108
+msgid "Bad token (expired, invalid)"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/RealdebridComTorrent.py:49
+#: src/pyload/plugins/downloaders/RealdebridComTorrent.py:111
+msgid "Permission denied (account locked, not premium)"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/RealdebridComTorrent.py:51
+#: src/pyload/plugins/downloaders/RealdebridComTorrent.py:114
+msgid "Service unavailable - {}"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/RealdebridComTorrent.py:88
+msgid "File does not exists"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/RealdebridComTorrent.py:118
+msgid "Illegal URL"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/RealdebridComTorrent.py:220
+#: src/pyload/plugins/downloaders/RealdebridComTorrent.py:224
+msgid "This plugin requires an active Realdebrid.com account"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/RedtubeCom.py:33
+msgid "sources pattern not found"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/RedtubeCom.py:42
+msgid "name pattern not found"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/RemixshareCom.py:57
+msgid "File url"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/RemixshareCom.py:61
+msgid "File token"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/ShareonlineBiz.py:120
+msgid "Cookie failure"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/ShareonlineBiz.py:178
+msgid "Unknown error occurred"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/ShareonlineBiz.py:181
+msgid "File not available"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/ShareonlineBiz.py:184
+msgid "Premium account needed"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/ShareonlineBiz.py:190
+msgid "Server is full"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/SimplyPremiumCom.py:51
+msgid "Reached daily limit for this host"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/SimplydebridCom.py:60
+msgid "Bad file downloaded"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/SmuleCom.py:48
+msgid "Could not find any media URLs"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/SmuleCom.py:55
+msgid "Could not find necessary javascript script to load"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/SmuleCom.py:68
+msgid "Could not parse the necessary parts off the javascript"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/SmuleCom.py:76
+msgid "Could not parse the processing function off the javascript"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/SoundcloudCom.py:40
+msgid "Could not find song id"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/TurbobitNet.py:66
+msgid "minLimit pattern not found"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/TwojlimitPl.py:83
+msgid "Download from {} is possible only using TwojLimit.pl website directly"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/UlozTo.py:78
+msgid "Adult content confirmation needed"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/UlozTo.py:186
+msgid "CAPTCHA form changed"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/UlozTo.py:241
+msgid "Server error, try downloading later"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/UlozTo.py:247
+msgid "Server error, file not downloadable"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/UlozTo.py:258
+msgid "Something went wrong"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/UloziskoSk.py:60
+msgid "ID_PATTERN not found"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/UloziskoSk.py:67
+msgid "CAPTCHA_PATTERN not found"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/UpleaCom.py:80
+msgid "STEP_PATTERN not found"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/UploadgigCom.py:49
+msgid "ReCaptcha key not found"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/UpstoreNet.py:68
+msgid "Wait pattern not found"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/VeehdCom.py:57
+msgid "Video title not found"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/VeehdCom.py:81
+msgid "Embedded video url not found"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/VeohCom.py:53
+#: src/pyload/plugins/downloaders/VimeoCom.py:107
+msgid "No {} quality video found"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/VeohCom.py:55
+#: src/pyload/plugins/downloaders/VimeoCom.py:109
+msgid "No video found!"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/VimeoCom.py:63
+msgid "Video is password protected"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/VimeoCom.py:83
+msgid "Unexpected response, expected JSON data"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/WrzucTo.py:41
+msgid "No file ID"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/WrzucTo.py:54
+msgid "No download URL"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/XDCC.py:94
+msgid "Already connected to server, not connecting"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/XDCC.py:98
+msgid "Connecting to: {}:{}"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/XDCC.py:124
+msgid "Successfully connected to {}:{}"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/XDCC.py:129
+msgid "Connection to {}:{} failed"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/XDCC.py:137
+msgid "Diconnecting from {}:{}"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/XDCC.py:145
+msgid "Not connected to server, cannot disconnect"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/XDCC.py:174
+msgid "[{}] CTCP VERSION"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/XDCC.py:184
+msgid "[{}] CTCP TIME"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/XDCC.py:194
+msgid "[{}] Ping? Pong!"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/XDCC.py:217
+msgid "Joining channel {}"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/XDCC.py:230
+msgid "Cannot join channel {} (error {}: '{}')"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/XDCC.py:244
+msgid "Authenticating nickname"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/XDCC.py:251
+msgid "Server does not seems to support nickserv commands"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/XDCC.py:279
+#: src/pyload/plugins/downloaders/XDCC.py:328
+#: src/pyload/plugins/downloaders/XDCC.py:443
+#: src/pyload/plugins/downloaders/XDCC.py:515
+msgid "PrivMsg: <{}> {}"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/XDCC.py:284
+#: src/pyload/plugins/downloaders/XDCC.py:335
+msgid "'{}' did not respond to the request"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/XDCC.py:292
+msgid "Sending invite request for #{} to '{}'"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/XDCC.py:295
+msgid "Cannot send invite request"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/XDCC.py:324
+msgid "Got invite to #{}"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/XDCC.py:340
+msgid "Checking if bot '{}' is online"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/XDCC.py:368
+msgid "Server did not respond in a reasonable time"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/XDCC.py:386
+msgid "Requesting pack #{}"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/XDCC.py:393
+msgid "Requesting XDCC cancellation"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/XDCC.py:398
+msgid "No XDCC request pending, cannot cancel"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/XDCC.py:406
+msgid "Requesting XDCC resume of '{}' at position {}"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/XDCC.py:454
+msgid "Bot '{}' acknowledged resume at position {}"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/XDCC.py:464
+msgid "Timeout while waiting for resume acknowledge, not resuming"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/XDCC.py:468
+msgid "No XDCC request pending, cannot resume"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/XDCC.py:476
+msgid "Requesting pack #{} info"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/XDCC.py:527
+msgid "XDCC Bot '{}' did not answer"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/XDCC.py:605
+msgid "Invalid hostname for IRC Server: {}"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/XDCC.py:647
+msgid "Cannot join channel"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/XDCC.py:650
+msgid "Bot is offline"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/XDCC.py:678
+#: src/pyload/plugins/downloaders/XDCC.py:681
+msgid "XDCC Bot did not answer"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/XDCC.py:706
+#: src/pyload/plugins/downloaders/XDCC.py:711
+msgid "Failed due to socket errors. Code: {}"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/XDCC.py:719
+#: src/pyload/plugins/downloaders/XDCC.py:722
+msgid "Failed due to socket errors: '{}'"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/XDCC.py:725
+#: src/pyload/plugins/downloaders/XDCC.py:726
+msgid "Server blocked our ip, retry again later manually"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/XDCC.py:765
+#: src/pyload/plugins/downloaders/XDCC.py:766
+msgid "Invalid channel"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/XDCC.py:769
+#: src/pyload/plugins/downloaders/XDCC.py:770
+msgid "Invalid Pack Number"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/XDCC.py:812
+msgid "DOWNLOAD XDCC '{}' from {}:{}"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/XDCC.py:828
+msgid "{name} saved as {newname}"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/XHamsterCom.py:69
+msgid "video data not found"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/XHamsterCom.py:75
+msgid "Could not find video model!"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/XHamsterCom.py:79
+msgid "Could not find sources!"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/XHamsterCom.py:83
+msgid "Could not find mp4 sources!"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/YesPornPleaseCom.py:35
+msgid "Iframe url not found"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/YibaishiwuCom.py:67
+msgid "No working link found"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/YourfilesTo.py:68
+msgid "Absolute filepath not found"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/YoutubeCom.py:574
+msgid "Unsupported player type {}"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/YoutubeCom.py:619
+msgid "Signature decode function name not found"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/YoutubeCom.py:644
+msgid "Signature decode failed"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/YoutubeCom.py:704
+msgid "VIDEO ITAG {} unknown, using default"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/YoutubeCom.py:722
+msgid "No available video stream meets your preferences"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/YoutubeCom.py:808
+#: src/pyload/plugins/downloaders/YoutubeCom.py:915
+msgid "Download skipped: {} due to {}"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/YoutubeCom.py:821
+msgid "AUDIO ITAG {} unknown, using default"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/YoutubeCom.py:846
+msgid "No available audio stream meets your preferences"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/YoutubeCom.py:1102
+#: src/pyload/plugins/downloaders/YoutubeCom.py:1132
+msgid "ffmpeg error"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/YoutubeCom.py:1187
+msgid "Player config pattern not found"
+msgstr ""
+
+#: src/pyload/plugins/downloaders/ZDF.py:52
+msgid "Error retrieving manifest"
+msgstr ""
+
+#: src/pyload/webui/webserver_thread.py:61
+msgid "Starting webserver: {host}:{port}"
+msgstr ""
+
+#: src/pyload/webui/app/blueprints/json_blueprint.py:52
+msgid "waiting {}"
+msgstr ""
+
+#: src/pyload/webui/app/templates/admin.html:8
+#: src/pyload/webui/app/templates/admin.html:9
+msgid "Profile Permissions"
+msgstr ""
+
+#: src/pyload/webui/app/templates/admin.html:13
+msgid "Quit pyLoad"
+msgstr ""
+
+#: src/pyload/webui/app/templates/admin.html:14
+msgid "Restart pyLoad"
+msgstr ""
+
+#: src/pyload/webui/app/templates/admin.html:18
+#: src/pyload/webui/app/templates/login.html:30
+msgid "To restore default admin login run:"
+msgstr ""
+
+#: src/pyload/webui/app/templates/admin.html:19
+msgid "Important: Admin user have always all permissions!"
+msgstr ""
+
+#: src/pyload/webui/app/templates/admin.html:25
+#: src/pyload/webui/app/templates/dashboard.html:39
+#: src/pyload/webui/app/templates/packages.html:72
+#: src/pyload/webui/app/templates/settings.html:89
+#: src/pyload/webui/app/templates/window.html:7
+msgid "Name"
+msgstr ""
+
+#: src/pyload/webui/app/templates/admin.html:28
+#: src/pyload/webui/app/templates/admin.html:67
+msgid "Change Password"
+msgstr ""
+
+#: src/pyload/webui/app/templates/admin.html:31
+msgid "Admin"
+msgstr ""
+
+#: src/pyload/webui/app/templates/admin.html:34
+msgid "Permissions"
+msgstr ""
+
+#: src/pyload/webui/app/templates/admin.html:41
+msgid "change"
+msgstr ""
+
+#: src/pyload/webui/app/templates/admin.html:61
+#: src/pyload/webui/app/templates/admin.html:91
+#: src/pyload/webui/app/templates/captcha.html:39
+#: src/pyload/webui/app/templates/packages.html:87
+#: src/pyload/webui/app/templates/settings.html:47
+#: src/pyload/webui/app/templates/settings.html:75
+#: src/pyload/webui/app/templates/settings.html:165
+msgid "Submit"
+msgstr ""
+
+#: src/pyload/webui/app/templates/admin.html:69
+msgid "Enter your current and desired Password."
+msgstr ""
+
+#: src/pyload/webui/app/templates/admin.html:70
+msgid "User"
+msgstr ""
+
+#: src/pyload/webui/app/templates/admin.html:71
+#: src/pyload/webui/app/templates/settings.html:177
+msgid "Your username."
+msgstr ""
+
+#: src/pyload/webui/app/templates/admin.html:75
+msgid "Current password"
+msgstr ""
+
+#: src/pyload/webui/app/templates/admin.html:76
+#: src/pyload/webui/app/templates/settings.html:182
+msgid "The password for this account."
+msgstr ""
+
+#: src/pyload/webui/app/templates/admin.html:80
+msgid "New password"
+msgstr ""
+
+#: src/pyload/webui/app/templates/admin.html:81
+msgid "The new password."
+msgstr ""
+
+#: src/pyload/webui/app/templates/admin.html:85
+msgid "New password (repeat)"
+msgstr ""
+
+#: src/pyload/webui/app/templates/admin.html:86
+msgid "Please repeat the new password."
+msgstr ""
+
+#: src/pyload/webui/app/templates/admin.html:92
+#: src/pyload/webui/app/templates/packages.html:88
+#: src/pyload/webui/app/templates/settings.html:196
+#: src/pyload/webui/app/templates/window.html:41
+msgid "Reset"
+msgstr ""
+
+#: src/pyload/webui/app/templates/base.html:37
+msgid "pyLoad Update available!"
+msgstr ""
+
+#: src/pyload/webui/app/templates/base.html:43
+msgid "Plugins updated, please restart!"
+msgstr ""
+
+#: src/pyload/webui/app/templates/base.html:49
+msgid "Captcha waiting"
+msgstr ""
+
+#: src/pyload/webui/app/templates/base.html:54
+msgid "Logout"
+msgstr ""
+
+#: src/pyload/webui/app/templates/base.html:56
+msgid "Profile"
+msgstr ""
+
+#: src/pyload/webui/app/templates/base.html:58
+#: src/pyload/webui/app/templates/dashboard.html:40
+#: src/pyload/webui/app/templates/settings.html:91
+msgid "Status"
+msgstr ""
+
+#: src/pyload/webui/app/templates/base.html:62
+msgid "Please Login!"
+msgstr ""
+
+#: src/pyload/webui/app/templates/base.html:80
+#: src/pyload/webui/app/templates/dashboard.html:13
+msgid "Dashboard"
+msgstr ""
+
+#: src/pyload/webui/app/templates/base.html:83
+#: src/pyload/webui/app/templates/dashboard.html:16
+#: src/pyload/webui/app/templates/window.html:34
+msgid "Queue"
+msgstr ""
+
+#: src/pyload/webui/app/templates/base.html:86
+#: src/pyload/webui/app/templates/dashboard.html:19
+#: src/pyload/webui/app/templates/window.html:36
+msgid "Packages"
+msgstr ""
+
+#: src/pyload/webui/app/templates/base.html:89
+#: src/pyload/webui/app/templates/dashboard.html:22
+msgid "Files"
+msgstr ""
+
+#: src/pyload/webui/app/templates/base.html:92
+#: src/pyload/webui/app/templates/dashboard.html:25
+#: src/pyload/webui/app/templates/filemanager.html:7
+#: src/pyload/webui/app/templates/filemanager.html:10
+msgid "File Manager"
+msgstr ""
+
+#: src/pyload/webui/app/templates/base.html:95
+#: src/pyload/webui/app/templates/dashboard.html:28
+#: src/pyload/webui/app/templates/logs.html:3
+#: src/pyload/webui/app/templates/logs.html:4
+msgid "Logs"
+msgstr ""
+
+#: src/pyload/webui/app/templates/base.html:98
+#: src/pyload/webui/app/templates/dashboard.html:31
+#: src/pyload/webui/app/templates/settings.html:3
+#: src/pyload/webui/app/templates/settings.html:4
+msgid "Settings"
+msgstr ""
+
+#: src/pyload/webui/app/templates/base.html:110
+#: src/pyload/webui/app/templates/logs.html:12
+msgid "Start"
+msgstr ""
+
+#: src/pyload/webui/app/templates/base.html:111
+msgid "Stop"
+msgstr ""
+
+#: src/pyload/webui/app/templates/base.html:112
+msgid "Cancel"
+msgstr ""
+
+#: src/pyload/webui/app/templates/base.html:113
+#: src/pyload/webui/app/templates/settings.html:166
+#: src/pyload/webui/app/templates/settings.html:195
+msgid "Add"
+msgstr ""
+
+#: src/pyload/webui/app/templates/base.html:119
+msgid "Running:"
+msgstr ""
+
+#: src/pyload/webui/app/templates/base.html:119
+#: src/pyload/webui/app/templates/base.html:120
+#: src/pyload/webui/app/templates/js/base.js:142
+#: src/pyload/webui/app/templates/js/base.js:150
+#: src/pyload/webui/app/templates/settings_item.html:14
+msgid "on"
+msgstr ""
+
+#: src/pyload/webui/app/templates/base.html:119
+#: src/pyload/webui/app/templates/base.html:120
+#: src/pyload/webui/app/templates/js/base.js:145
+#: src/pyload/webui/app/templates/js/base.js:153
+#: src/pyload/webui/app/templates/settings_item.html:16
+msgid "off"
+msgstr ""
+
+#: src/pyload/webui/app/templates/base.html:120
+msgid "Reconnect:"
+msgstr ""
+
+#: src/pyload/webui/app/templates/base.html:121
+msgid "Speed:"
+msgstr ""
+
+#: src/pyload/webui/app/templates/base.html:122
+msgid "Active:"
+msgstr ""
+
+#: src/pyload/webui/app/templates/base.html:122
+msgid "Active"
+msgstr ""
+
+#: src/pyload/webui/app/templates/base.html:122
+msgid "Queued"
+msgstr ""
+
+#: src/pyload/webui/app/templates/base.html:122
+msgid "Total"
+msgstr ""
+
+#: src/pyload/webui/app/templates/base.html:123
+msgid "Reload page"
+msgstr ""
+
+#: src/pyload/webui/app/templates/base.html:152
+msgid "loading"
+msgstr ""
+
+#: src/pyload/webui/app/templates/base.html:161
+msgid "Back to top"
+msgstr ""
+
+#: src/pyload/webui/app/templates/captcha.html:4
+msgid "Captcha reading"
+msgstr ""
+
+#: src/pyload/webui/app/templates/captcha.html:5
+msgid "Please read the text on the captcha."
+msgstr ""
+
+#: src/pyload/webui/app/templates/captcha.html:10
+msgid "The captcha."
+msgstr ""
+
+#: src/pyload/webui/app/templates/captcha.html:15
+msgid "Text"
+msgstr ""
+
+#: src/pyload/webui/app/templates/captcha.html:16
+msgid "Input the text on the captcha."
+msgstr ""
+
+#: src/pyload/webui/app/templates/captcha.html:28
+msgid "Your browser does not support iframes."
+msgstr ""
+
+#: src/pyload/webui/app/templates/captcha.html:32
+msgid "The captcha may take a few seconds to load."
+msgstr ""
+
+#: src/pyload/webui/app/templates/captcha.html:33
+msgid "Note: to solve this interactive captchas"
+msgstr ""
+
+#: src/pyload/webui/app/templates/captcha.html:34
+msgid ""
+"Please install the <a href='https://tampermonkey.net/' "
+"target='_blank'>Tampermonkey</a> add-on in your browser and add the "
+msgstr ""
+
+#: src/pyload/webui/app/templates/captcha.html:34
+msgid "pyload userscript"
+msgstr ""
+
+#: src/pyload/webui/app/templates/captcha.html:40
+msgid "Close"
+msgstr ""
+
+#: src/pyload/webui/app/templates/dashboard.html:8
+msgid "Active Connections"
+msgstr ""
+
+#: src/pyload/webui/app/templates/dashboard.html:41
+msgid "Info"
+msgstr ""
+
+#: src/pyload/webui/app/templates/dashboard.html:42
+msgid "Size"
+msgstr ""
+
+#: src/pyload/webui/app/templates/dashboard.html:43
+msgid "Progress"
+msgstr ""
+
+#: src/pyload/webui/app/templates/error.html:2
+msgid "Sorry, something went wrong... :("
+msgstr ""
+
+#: src/pyload/webui/app/templates/filemanager.html:20
+#: src/pyload/webui/app/templates/filemanager.html:35
+#: src/pyload/webui/app/templates/folder.html:7
+msgid "Rename Directory"
+msgstr ""
+
+#: src/pyload/webui/app/templates/filemanager.html:22
+#: src/pyload/webui/app/templates/filemanager.html:37
+#: src/pyload/webui/app/templates/folder.html:9
+msgid "Delete Directory"
+msgstr ""
+
+#: src/pyload/webui/app/templates/filemanager.html:39
+#: src/pyload/webui/app/templates/folder.html:11
+msgid "Add subdirectory"
+msgstr ""
+
+#: src/pyload/webui/app/templates/filemanager.html:56
+#: src/pyload/webui/app/templates/folder.html:14
+#: src/pyload/webui/app/templates/js/filemanager.js:184
+msgid "Folder is empty"
+msgstr ""
+
+#: src/pyload/webui/app/templates/files.html:3
+#: src/pyload/webui/app/templates/files.html:6
+msgid "Saved Files"
+msgstr ""
+
+#: src/pyload/webui/app/templates/info.html:7
+#: src/pyload/webui/app/templates/info.html:8
+msgid "Information"
+msgstr ""
+
+#: src/pyload/webui/app/templates/info.html:11
+msgid "Support"
+msgstr ""
+
+#: src/pyload/webui/app/templates/info.html:30
+msgid "System"
+msgstr ""
+
+#: src/pyload/webui/app/templates/info.html:33
+msgid "Python version:"
+msgstr ""
+
+#: src/pyload/webui/app/templates/info.html:37
+msgid "OS platform:"
+msgstr ""
+
+#: src/pyload/webui/app/templates/info.html:42
+msgid "Storage"
+msgstr ""
+
+#: src/pyload/webui/app/templates/info.html:45
+msgid "Download folder:"
+msgstr ""
+
+#: src/pyload/webui/app/templates/info.html:49
+msgid "Available space:"
+msgstr ""
+
+#: src/pyload/webui/app/templates/info.html:54
+msgid "pyLoad"
+msgstr ""
+
+#: src/pyload/webui/app/templates/info.html:57
+msgid "Version:"
+msgstr ""
+
+#: src/pyload/webui/app/templates/info.html:61
+msgid "Installation folder:"
+msgstr ""
+
+#: src/pyload/webui/app/templates/info.html:65
+msgid "Config folder:"
+msgstr ""
+
+#: src/pyload/webui/app/templates/info.html:69
+msgid "Language:"
+msgstr ""
+
+#: src/pyload/webui/app/templates/info.html:73
+msgid "WebUI port:"
+msgstr ""
+
+#: src/pyload/webui/app/templates/login.html:3
+#: src/pyload/webui/app/templates/settings.html:176
+msgid "Login"
+msgstr ""
+
+#: src/pyload/webui/app/templates/login.html:14
+msgid "Username"
+msgstr ""
+
+#: src/pyload/webui/app/templates/login.html:19
+#: src/pyload/webui/app/templates/packages.html:82
+#: src/pyload/webui/app/templates/settings.html:90
+#: src/pyload/webui/app/templates/settings.html:181
+#: src/pyload/webui/app/templates/window.html:21
+msgid "Password"
+msgstr ""
+
+#: src/pyload/webui/app/templates/login.html:29
+msgid "Your username and password didn't match. Please try again."
+msgstr ""
+
+#: src/pyload/webui/app/templates/logout.html:8
+msgid "You were successfully logged out."
+msgstr ""
+
+#: src/pyload/webui/app/templates/logs.html:12
+msgid "prev"
+msgstr ""
+
+#: src/pyload/webui/app/templates/logs.html:12
+msgid "next"
+msgstr ""
+
+#: src/pyload/webui/app/templates/logs.html:12
+msgid "End"
+msgstr ""
+
+#: src/pyload/webui/app/templates/packages.html:8
+msgid "Running Packages"
+msgstr ""
+
+#: src/pyload/webui/app/templates/packages.html:10
+msgid "Saved Packages"
+msgstr ""
+
+#: src/pyload/webui/app/templates/packages.html:18
+msgid "Delete Finished"
+msgstr ""
+
+#: src/pyload/webui/app/templates/packages.html:19
+msgid "Restart Failed"
+msgstr ""
+
+#: src/pyload/webui/app/templates/packages.html:35
+msgid "Delete Package"
+msgstr ""
+
+#: src/pyload/webui/app/templates/packages.html:37
+msgid "Restart Package"
+msgstr ""
+
+#: src/pyload/webui/app/templates/packages.html:39
+#: src/pyload/webui/app/templates/packages.html:69
+msgid "Edit Package"
+msgstr ""
+
+#: src/pyload/webui/app/templates/packages.html:41
+msgid "Move Package"
+msgstr ""
+
+#: src/pyload/webui/app/templates/packages.html:56
+msgid "Folder:"
+msgstr ""
+
+#: src/pyload/webui/app/templates/packages.html:56
+msgid "Password:"
+msgstr ""
+
+#: src/pyload/webui/app/templates/packages.html:70
+msgid "Edit the package detais below."
+msgstr ""
+
+#: src/pyload/webui/app/templates/packages.html:73
+msgid "The name of the package."
+msgstr ""
+
+#: src/pyload/webui/app/templates/packages.html:77
+msgid "Folder"
+msgstr ""
+
+#: src/pyload/webui/app/templates/packages.html:78
+msgid "Name of subfolder for these downloads."
+msgstr ""
+
+#: src/pyload/webui/app/templates/packages.html:83
+msgid "List of passwords used for unrar."
+msgstr ""
+
+#: src/pyload/webui/app/templates/pathchooser.html:14
+msgid "Path"
+msgstr ""
+
+#: src/pyload/webui/app/templates/pathchooser.html:14
+msgid "absolute"
+msgstr ""
+
+#: src/pyload/webui/app/templates/pathchooser.html:14
+msgid "relative"
+msgstr ""
+
+#: src/pyload/webui/app/templates/pathchooser.html:19
+msgid "name"
+msgstr ""
+
+#: src/pyload/webui/app/templates/pathchooser.html:20
+msgid "size"
+msgstr ""
+
+#: src/pyload/webui/app/templates/pathchooser.html:21
+msgid "type"
+msgstr ""
+
+#: src/pyload/webui/app/templates/pathchooser.html:22
+msgid "last modified"
+msgstr ""
+
+#: src/pyload/webui/app/templates/pathchooser.html:27
+msgid "parent directory"
+msgstr ""
+
+#: src/pyload/webui/app/templates/pathchooser.html:43
+msgid "no content"
+msgstr ""
+
+#: src/pyload/webui/app/templates/settings.html:14
+msgid "General"
+msgstr ""
+
+#: src/pyload/webui/app/templates/settings.html:15
+msgid "Plugins"
+msgstr ""
+
+#: src/pyload/webui/app/templates/settings.html:16
+msgid "Accounts"
+msgstr ""
+
+#: src/pyload/webui/app/templates/settings.html:43
+#: src/pyload/webui/app/templates/settings.html:72
+msgid "Choose a section from the menu"
+msgstr ""
+
+#: src/pyload/webui/app/templates/settings.html:88
+msgid "Plugin"
+msgstr ""
+
+#: src/pyload/webui/app/templates/settings.html:92
+msgid "Premium"
+msgstr ""
+
+#: src/pyload/webui/app/templates/settings.html:93
+msgid "Valid until"
+msgstr ""
+
+#: src/pyload/webui/app/templates/settings.html:94
+msgid "Traffic left"
+msgstr ""
+
+#: src/pyload/webui/app/templates/settings.html:95
+msgid "Time"
+msgstr ""
+
+#: src/pyload/webui/app/templates/settings.html:96
+msgid "Max Parallel"
+msgstr ""
+
+#: src/pyload/webui/app/templates/settings.html:97
+msgid "Delete?"
+msgstr ""
+
+#: src/pyload/webui/app/templates/settings.html:119
+msgid "valid"
+msgstr ""
+
+#: src/pyload/webui/app/templates/settings.html:122
+msgid "not valid"
+msgstr ""
+
+#: src/pyload/webui/app/templates/settings.html:129
+msgid "yes"
+msgstr ""
+
+#: src/pyload/webui/app/templates/settings.html:132
+msgid "no"
+msgstr ""
+
+#: src/pyload/webui/app/templates/settings.html:174
+msgid "Add Account"
+msgstr ""
+
+#: src/pyload/webui/app/templates/settings.html:175
+msgid "Enter your account data to use premium features."
+msgstr ""
+
+#: src/pyload/webui/app/templates/settings.html:186
+msgid "Type"
+msgstr ""
+
+#: src/pyload/webui/app/templates/settings.html:187
+msgid "Choose the hoster for your account."
+msgstr ""
+
+#: src/pyload/webui/app/templates/settings_item.html:30
+msgid "Browse"
+msgstr ""
+
+#: src/pyload/webui/app/templates/window.html:5
+#: src/pyload/webui/app/templates/window.html:40
+msgid "Add Package"
+msgstr ""
+
+#: src/pyload/webui/app/templates/window.html:6
+msgid "Paste your links or upload a container."
+msgstr ""
+
+#: src/pyload/webui/app/templates/window.html:8
+msgid "The name of the new package."
+msgstr ""
+
+#: src/pyload/webui/app/templates/window.html:12
+msgid "Links"
+msgstr ""
+
+#: src/pyload/webui/app/templates/window.html:13
+msgid "Paste your links here or any text and press the filter button."
+msgstr ""
+
+#: src/pyload/webui/app/templates/window.html:14
+msgid "Filter urls"
+msgstr ""
+
+#: src/pyload/webui/app/templates/window.html:22
+msgid "Password for RAR-Archive"
+msgstr ""
+
+#: src/pyload/webui/app/templates/window.html:26
+msgid "File"
+msgstr ""
+
+#: src/pyload/webui/app/templates/window.html:27
+msgid "Upload a container."
+msgstr ""
+
+#: src/pyload/webui/app/templates/window.html:31
+msgid "Destination"
+msgstr ""
+
+#: src/pyload/webui/app/templates/js/admin.js:43
+msgid "Passwords did not match"
+msgstr ""
+
+#: src/pyload/webui/app/templates/js/admin.js:57
+msgid "You are really sure you want to quit pyLoad?"
+msgstr ""
+
+#: src/pyload/webui/app/templates/js/admin.js:68
+msgid "Are you sure you want to restart pyLoad?"
+msgstr ""
+
+#: src/pyload/webui/app/templates/js/admin.js:72
+msgid "pyLoad restarted"
+msgstr ""
+
+#: src/pyload/webui/app/templates/js/base.js:81
+msgid "Please Enter a packagename"
+msgstr ""
+
+#: src/pyload/webui/app/templates/js/base.js:132
+msgid "New Captcha Request"
+msgstr ""
+
+#: src/pyload/webui/app/templates/js/base.js:165
+msgid "Please read the text on the captcha"
+msgstr ""
+
+#: src/pyload/webui/app/templates/js/base.js:172
+msgid "Please click on the right captcha position"
+msgstr ""
+
+#: src/pyload/webui/app/templates/js/base.js:194
+msgid "No Captchas to read"
+msgstr ""
+
+#: src/pyload/webui/app/templates/js/filemanager.js:40
+#: src/pyload/webui/app/templates/js/packages.js:32
+msgid "Success"
+msgstr ""
+
+#: src/pyload/webui/app/templates/js/filemanager.js:47
+#: src/pyload/webui/app/templates/js/packages.js:39
+msgid "Failed"
+msgstr ""
+
+#: src/pyload/webui/app/templates/js/filemanager.js:163
+msgid "Are you sure you want to delete the selected item?"
+msgstr ""
+
+#: src/pyload/webui/app/templates/js/filemanager.js:239
+msgid "New folder"
+msgstr ""
+
+#: src/pyload/webui/app/templates/js/packages.js:196
+msgid "Delete Link"
+msgstr ""
+
+#: src/pyload/webui/app/templates/js/packages.js:197
+msgid "Restart Link"
+msgstr ""
+
+#: src/pyload/webui/app/templates/js/settings.js:84
+msgid "Settings saved"
+msgstr ""
+
+#: src/pyload/webui/app/templates/js/settings.js:89
+#: src/pyload/webui/app/templates/js/settings.js:104
+#: src/pyload/webui/app/templates/js/settings.js:120
+msgid "Error occured"
+msgstr ""
+

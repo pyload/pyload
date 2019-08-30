@@ -2,6 +2,7 @@
 # AUTHOR: RaNaN, vuolter
 
 import time
+import traceback
 from queue import Queue
 
 from ..network.exceptions import Abort, Fail, Reconnect, Retry, Skip
@@ -108,6 +109,7 @@ class DownloadThread(PluginThread):
                         self._("Download is temporary offline: {}").format(pyfile.name)
                     )
                 else:
+                    print(exc)
                     pyfile.set_status("failed")
                     self.pyload.log.warning(
                         self._("Download failed: {name} | {msg}").format(
@@ -188,6 +190,8 @@ class DownloadThread(PluginThread):
                 continue
 
             except Exception as exc:
+                print(exc)
+                traceback.print_exc()
                 pyfile.set_status("failed")
                 self.pyload.log.warning(
                     self._("Download failed: {name} | {msg}").format(

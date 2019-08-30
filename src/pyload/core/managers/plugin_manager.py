@@ -390,7 +390,13 @@ class PluginManager:
                 if user and not self.plugins[type][name]["user"]:
                     return self
 
-    def load_module(self, name, replace=True):
+    def load_module(self, type, name, replace=False):
+        type = {"addon":"addons",
+                "downloader":"downloaders",
+                "decrypter":"decrypters",
+                "account":"accounts"}.get(type, type)
+        if "." not in name:
+            name = "pyload.plugins."+type+"."+name
         if name not in sys.modules:  #: could be already in modules
             if replace:
                 if self.ROOT in name:
@@ -399,7 +405,8 @@ class PluginManager:
                     newname = name.replace(self.USERROOT, self.ROOT)
             else:
                 newname = name
-
+            if newname == "downloader":
+                newname = 'pyload.plugins.base.downloader'
             base, plugin = newname.rsplit(".", 1)
 
             self.pyload.log.debug(f"Redirected import {name} -> {newname}")

@@ -260,9 +260,9 @@ def set_captcha():
     return jsonify(data)
 
 
-@bp.route("/load_config?=<category>,<section>", endpoint="load_config")
+@bp.route("/load_config/<category>/<section>", endpoint="load_config")
 # @apiver_check
-@login_required("SETTINGS")
+#@login_required("SETTINGS")
 def load_config(category, section):
     conf = None
     api = flask.current_app.config["PYLOAD_API"]
@@ -281,7 +281,7 @@ def load_config(category, section):
     return render_template("settings_item.html", skey=section, section=conf[section])
 
 
-@bp.route("/save_config?=<category>", methods=["POST"], endpoint="save_config")
+@bp.route("/save_config/<category>", methods=["POST"], endpoint="save_config")
 # @apiver_check
 @login_required("SETTINGS")
 def save_config(category):
