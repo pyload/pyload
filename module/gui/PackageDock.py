@@ -21,6 +21,7 @@ from PyQt4.QtGui import *
 
 import logging
 from os.path import join
+from module.gui.Tools import whatsThisFormat
 
 class NewPackageDock(QDockWidget):
     def __init__(self):
@@ -34,7 +35,7 @@ class NewPackageDock(QDockWidget):
         self.setObjectName("New Package Dock")
         self.setWindowIcon(QIcon(join(pypath, "icons", "logo.png")))
         self.widget = NewPackageWindow(self)
-        self.setDefaultDestSettings()
+        self.defaultSettings()
         self.setWidget(self.widget)
         self.setAllowedAreas(Qt.RightDockWidgetArea)
         self.hide()
@@ -66,16 +67,24 @@ class NewPackageDock(QDockWidget):
     def parseUriResult(self, result):
         self.widget.box.setPlainText(result)
     
-    def getDestSettings(self):
-        return { "queue": self.widget.destQueue.isChecked(), "autoSelect": self.widget.destAutoSelect.isChecked() }
+    def defaultSettings(self):
+        self.widget.append.setChecked(True)
+        self.widget.destQueue.setChecked(False)
+        self.widget.destCollector.setChecked(True)
+        self.widget.destAutoSelect.setChecked(True)
     
-    def setDestSettings(self, s):
-        self.widget.destQueue.setChecked(s["queue"])
-        self.widget.destCollector.setChecked(not s["queue"])
-        self.widget.destAutoSelect.setChecked(s["autoSelect"])
+    def getSettings(self):
+        settings = {}
+        #settings["append"]     = self.widget.append.isChecked()
+        settings["queue"]      = self.widget.destQueue.isChecked()
+        settings["autoSelect"] = self.widget.destAutoSelect.isChecked()
+        return settings
     
-    def setDefaultDestSettings(self):
-        self.setDestSettings({ "queue": False, "autoSelect": True })
+    def setSettings(self, settings):
+        #self.widget.append.setChecked         (settings["append"])
+        self.widget.destQueue.setChecked      (settings["queue"])
+        self.widget.destCollector.setChecked  (not settings["queue"])
+        self.widget.destAutoSelect.setChecked (settings["autoSelect"])
     
     def closeEvent(self, event):
         if self.isFloating():
@@ -117,6 +126,9 @@ class NewPackageWindow(QWidget):
         self.passwordLabel = passwordLabel
         self.passwordInput = passwordInput
         
+        self.append = QCheckBox(_("Append URLs"))
+        whatsThis = (self.append.text(), _("Append pasted/dropped text instead of inserting it at the cursor postion."))
+        self.append.setWhatsThis(whatsThisFormat(*whatsThis))
         self.destQueue     = QRadioButton(_("Queue"))
         self.destCollector = QRadioButton(_("Collector"))
         destBtnLayout = QHBoxLayout()
@@ -146,8 +158,9 @@ class NewPackageWindow(QWidget):
         layout.addLayout(grid)
         layout.addWidget(linksLabel)
         layout.addWidget(self.box)
-        layout.addWidget(self.clear)
+        layout.addWidget(self.append)
         layout.addWidget(self.filter)
+        layout.addWidget(self.clear)
         layout.addLayout(destBtnLayout)
         layout.addWidget(self.destAutoSelect)
         layout.addLayout(hbox)
@@ -159,6 +172,8 @@ class NewPackageWindow(QWidget):
         self.connect(self.save, SIGNAL("clicked()"), self.dock.slotDone)
         self.connect(self.clear, SIGNAL("clicked()"), self.box.clear)
         self.connect(self.filter, SIGNAL("clicked()"), self.dock.parseUri)
+        self.connect(self.append, SIGNAL("toggled(bool)"), self.box.slotAppendToggled)
+        self.box.slotAppendToggled(self.append.isChecked())
     
     def slotMsgShow(self, msg):
         self.msg.setText(msg)
@@ -175,8 +190,19 @@ class PlainTextEdit(QPlainTextEdit):
     def __init__(self):
         QPlainTextEdit.__init__(self)
         self.setMinimumHeight(30)
+        self.append = True
     
-    def dropEvent(self, event):
-        if not self.toPlainText().isEmpty():
-            self.appendPlainText("")    # appends a line feed
-        QPlainTextEdit.dropEvent(self, event)
+    def slotAppendToggled(self, status):
+        self.append = status
+    
+    def insertFromMimeData(self, source):
+        cursor = self.textCursor()
+        if self.append:
+            cursor.movePosition(QTextCursor.End, QTextCursor.MoveAnchor)
+            self.setTextCursor(cursor)
+            lineLength = cursor.block().length() - 1
+            if lineLength > 0:
+                self.insertPlainText("\n")
+        QPlainTextEdit.insertFromMimeData(self, source)
+        if self.append:
+            self.insertPlainText("\n")

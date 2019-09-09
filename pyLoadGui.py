@@ -2040,8 +2040,8 @@ class main(QObject):
         stateQueue = str(self.mainWindow.tabs["queue"]["view"].header().saveState().toBase64())
         stateCollector = str(self.mainWindow.tabs["collector"]["view"].header().saveState().toBase64())
         stateAccounts = str(self.mainWindow.tabs["accounts"]["view"].header().saveState().toBase64())
-        statePackageDock = str(QByteArray(str(self.mainWindow.newPackDock.getDestSettings())).toBase64())
-        stateLinkDock = str(QByteArray(str(self.mainWindow.newLinkDock.getDestSettings())).toBase64())
+        statePackageDock = str(QByteArray(str(self.mainWindow.newPackDock.getSettings())).toBase64())
+        stateLinkDock = str(QByteArray(str(self.mainWindow.newLinkDock.getSettings())).toBase64())
         visibilitySpeedLimit = str(QByteArray(str(self.mainWindow.actions["speedlimit_enabled"].isVisible())).toBase64())
         language = str(self.lang)
         stateNode = mainWindowNode.toElement().elementsByTagName("state").item(0)
@@ -2341,12 +2341,24 @@ class main(QObject):
         self.mainWindow.tabs["accounts"]["view"].header().restoreState(QByteArray.fromBase64(stateAccounts))
 
         # docks, buttons and checkboxes for selecting queue/collector
+        def base64ToDict(b64):
+            try:
+                d = literal_eval(str(QByteArray.fromBase64(b64)))
+            except Exception:
+                d = None
+            if d and not isinstance(d, dict):
+                d = None
+            return d
         if statePackageDockBase64:
-            s = literal_eval(str(QByteArray.fromBase64(statePackageDockBase64)))
-            self.mainWindow.newPackDock.setDestSettings(s)
+            d = base64ToDict(statePackageDockBase64)
+            if d is not None:
+                try:              self.mainWindow.newPackDock.setSettings(d)
+                except Exception: self.mainWindow.newPackDock.defaultSettings()
         if stateLinkDockBase64:
-            s = literal_eval(str(QByteArray.fromBase64(stateLinkDockBase64)))
-            self.mainWindow.newLinkDock.setDestSettings(s)
+            d = base64ToDict(stateLinkDockBase64)
+            if d is not None:
+                try:              self.mainWindow.newLinkDock.setSettings(d)
+                except Exception: self.mainWindow.newLinkDock.defaultSettings()
 
         if visibilitySpeedLimit:
             visSpeed = literal_eval(str(QByteArray.fromBase64(visibilitySpeedLimit)))
