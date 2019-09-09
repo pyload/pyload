@@ -180,7 +180,7 @@ class MainWindow(QMainWindow):
                          "logging": QAction(_("Client Log"), self.menus["options"]),
                          "cnlfwding": QAction(_("ClickNLoad Forwarding"), self.menus["options"]),
                          "autoreloading": QAction(_("Automatic Reloading"), self.menus["options"]),
-                         "captcha": QAction(_("Captcha Solving"), self.menus["options"]),
+                         "captcha": QAction(_("Captchas"), self.menus["options"]),
                          "fonts": QAction(_("Fonts"), self.menus["options"]),
                          "tray": QAction(_("Tray Icon"), self.menus["options"]),
                          "whatsthis": QAction(_("What's This"), self.menus["options"]),
@@ -424,6 +424,18 @@ class MainWindow(QMainWindow):
         stretch2 = QWidget()
         stretch2.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.toolbar.addWidget(stretch2)
+        whatsThis = (_("Captcha Button"), _("Indicates that a captcha is waiting to be solved. Click on the button to show the input dialog (if supported)."))
+        self.toolbar_captcha = QPushButton()
+        self.toolbar_captcha.setWhatsThis(whatsThisFormat(*whatsThis))
+        f = self.font()
+        f.setBold(True)
+        self.toolbar_captcha.setFont(f)
+        self.toolbar_captcha.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.actions["captcha"] = self.toolbar.addWidget(self.toolbar_captcha)
+        self.actions["captcha"].setVisible(False)
+        stretch3 = QWidget()
+        stretch3.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.toolbar.addWidget(stretch3)
         self.actions["restart_failed"] = self.toolbar.addAction(QIcon(join(pypath, "icons", "toolbar_refresh.png")), "")
         self.actions["restart_failed"].setWhatsThis(whatsThisFormat(_("Restart Failed"), _("Restarts (resumes if supported) all failed, aborted and temporary offline downloads.")))
         self.actions["remove_finished"] = self.toolbar.addAction(QIcon(join(pypath, "icons", "toolbar_remove.png")), "")
@@ -432,6 +444,7 @@ class MainWindow(QMainWindow):
         self.connect(self.actions["clipboard"], SIGNAL("toggled(bool)"), self.slotToggleClipboard)
         self.connect(self.toolbar_speedLimit_enabled, SIGNAL("toggled(bool)"), self.slotSpeedLimitStatus)
         self.connect(self.toolbar_speedLimit_rate, SIGNAL("editingFinished()"), self.slotSpeedLimitRate)
+        self.connect(self.toolbar_captcha, SIGNAL("clicked()"), self.slotCaptchaStatusButton)
         self.connect(self.actions["status_stop"], SIGNAL("triggered()"), self.slotStatusStop)
         self.connect(self.actions["restart_failed"], SIGNAL("triggered()"), self.slotRestartFailed)
         self.connect(self.actions["remove_finished"], SIGNAL("triggered()"), self.slotRemoveFinished)
@@ -1053,6 +1066,12 @@ class MainWindow(QMainWindow):
         """
         self.toolbar_speedLimit_rate.lineEdit().deselect() # deselect any selected text
         self.emit(SIGNAL("toolbarSpeedLimitEdited"))
+    
+    def slotCaptchaStatusButton(self):
+        """
+            captcha status button (toolbar)
+        """
+        self.emit(SIGNAL("captchaStatusButton"))
     
     def slotEditPackages(self):
         """

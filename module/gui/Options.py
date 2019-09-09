@@ -24,14 +24,15 @@ class NotificationOptions(QDialog):
         self.setWindowTitle(_("Options"))
         self.setWindowIcon(QIcon(join(pypath, "icons", "logo.png")))
 
-        self.cbPackageFinished = QCheckBox(_("Package Download Finished"))
-        self.cbFinished        = QCheckBox(_("Download Finished"))
-        self.cbOffline         = QCheckBox(_("Download Offline"))
-        self.cbSkipped         = QCheckBox(_("Download Skipped"))
-        self.cbTempOffline     = QCheckBox(_("Download Temporarily Offline"))
-        self.cbFailed          = QCheckBox(_("Download Failed"))
-        self.cbAborted         = QCheckBox(_("Download Aborted"))
-        self.cbCaptcha         = QCheckBox(_("Captcha Arrived"))
+        self.cbPackageFinished    = QCheckBox(_("Package Download Finished"))
+        self.cbFinished           = QCheckBox(_("Download Finished"))
+        self.cbOffline            = QCheckBox(_("Download Offline"))
+        self.cbSkipped            = QCheckBox(_("Download Skipped"))
+        self.cbTempOffline        = QCheckBox(_("Download Temporarily Offline"))
+        self.cbFailed             = QCheckBox(_("Download Failed"))
+        self.cbAborted            = QCheckBox(_("Download Aborted"))
+        self.cbCaptcha            = QCheckBox(_("New Captcha Request"))
+        self.cbCaptchaInteractive = QCheckBox(_("New Interactive Captcha Request"))
 
         vboxCb = QVBoxLayout()
         vboxCb.addWidget(self.cbPackageFinished)
@@ -42,6 +43,7 @@ class NotificationOptions(QDialog):
         vboxCb.addWidget(self.cbFailed)
         vboxCb.addWidget(self.cbAborted)
         vboxCb.addWidget(self.cbCaptcha)
+        vboxCb.addWidget(self.cbCaptchaInteractive)
 
         self.cbEnableNotify = QGroupBox(_("Enable Desktop Notifications") + "     ")
         self.cbEnableNotify.setCheckable(True)
@@ -77,29 +79,32 @@ class NotificationOptions(QDialog):
         self.cbFailed.setChecked(True)
         self.cbAborted.setChecked(False)
         self.cbCaptcha.setChecked(False)
+        self.cbCaptchaInteractive.setChecked(False)
         self.checkBoxStates2dict()
 
     def checkBoxStates2dict(self):
-        self.settings["EnableNotify"]    = self.cbEnableNotify.isChecked()
-        self.settings["PackageFinished"] = self.cbPackageFinished.isChecked()
-        self.settings["Finished"]        = self.cbFinished.isChecked()
-        self.settings["Offline"]         = self.cbOffline.isChecked()
-        self.settings["Skipped"]         = self.cbSkipped.isChecked()
-        self.settings["TempOffline"]     = self.cbTempOffline.isChecked()
-        self.settings["Failed"]          = self.cbFailed.isChecked()
-        self.settings["Aborted"]         = self.cbAborted.isChecked()
-        self.settings["Captcha"]         = self.cbCaptcha.isChecked()
+        self.settings["EnableNotify"]       = self.cbEnableNotify.isChecked()
+        self.settings["PackageFinished"]    = self.cbPackageFinished.isChecked()
+        self.settings["Finished"]           = self.cbFinished.isChecked()
+        self.settings["Offline"]            = self.cbOffline.isChecked()
+        self.settings["Skipped"]            = self.cbSkipped.isChecked()
+        self.settings["TempOffline"]        = self.cbTempOffline.isChecked()
+        self.settings["Failed"]             = self.cbFailed.isChecked()
+        self.settings["Aborted"]            = self.cbAborted.isChecked()
+        self.settings["Captcha"]            = self.cbCaptcha.isChecked()
+        self.settings["CaptchaInteractive"] = self.cbCaptchaInteractive.isChecked()
 
     def dict2checkBoxStates(self):
-        self.cbEnableNotify.setChecked    (self.settings["EnableNotify"])
-        self.cbPackageFinished.setChecked (self.settings["PackageFinished"])
-        self.cbFinished.setChecked        (self.settings["Finished"])
-        self.cbOffline.setChecked         (self.settings["Offline"])
-        self.cbSkipped.setChecked         (self.settings["Skipped"])
-        self.cbTempOffline.setChecked     (self.settings["TempOffline"])
-        self.cbFailed.setChecked          (self.settings["Failed"])
-        self.cbAborted.setChecked         (self.settings["Aborted"])
-        self.cbCaptcha.setChecked         (self.settings["Captcha"])
+        self.cbEnableNotify.setChecked       (self.settings["EnableNotify"])
+        self.cbPackageFinished.setChecked    (self.settings["PackageFinished"])
+        self.cbFinished.setChecked           (self.settings["Finished"])
+        self.cbOffline.setChecked            (self.settings["Offline"])
+        self.cbSkipped.setChecked            (self.settings["Skipped"])
+        self.cbTempOffline.setChecked        (self.settings["TempOffline"])
+        self.cbFailed.setChecked             (self.settings["Failed"])
+        self.cbAborted.setChecked            (self.settings["Aborted"])
+        self.cbCaptcha.setChecked            (self.settings["Captcha"])
+        self.cbCaptchaInteractive.setChecked (self.settings["CaptchaInteractive"])
 
     def appFontChanged(self):
         self.buttons.updateWhatsThisButton()
@@ -424,14 +429,18 @@ class CaptchaOptions(QDialog):
         self.setWindowTitle(_("Options"))
         self.setWindowIcon(QIcon(join(pypath, "icons", "logo.png")))
 
-        self.cbAdjSize = QCheckBox(_("Adjust dialog box size to its content"))
+        self.cbAdjSize                 = QCheckBox(_("Adjust pop-up window size to its content"))
+        self.cbPopUpCaptcha            = QCheckBox(_("Pop up input dialog for non-interactive captchas"))
+        self.cbPopUpCaptchaInteractive = QCheckBox(_("Pop up info about interactive captchas"))
 
         vboxCb = QVBoxLayout()
         vboxCb.addWidget(self.cbAdjSize)
+        vboxCb.addWidget(self.cbPopUpCaptcha)
+        vboxCb.addWidget(self.cbPopUpCaptchaInteractive)
 
-        self.cbEnableDialog = QGroupBox(_("Enable Captcha Solving") + "     ")
-        self.cbEnableDialog.setCheckable(True)
-        self.cbEnableDialog.setLayout(vboxCb)
+        self.cbAccept = QGroupBox(_("Accept Captcha Requests"))
+        self.cbAccept.setCheckable(True)
+        self.cbAccept.setLayout(vboxCb)
 
         self.buttons = WtDialogButtonBox(Qt.Horizontal, self)
         self.buttons.hideWhatsThisButton()
@@ -441,7 +450,7 @@ class CaptchaOptions(QDialog):
         self.buttons.button(QDialogButtonBox.Cancel).setText(_("Cancel"))
 
         vbox = QVBoxLayout()
-        vbox.addWidget(self.cbEnableDialog)
+        vbox.addWidget(self.cbAccept)
         vbox.addLayout(self.buttons.layout())
         self.setLayout(vbox)
 
@@ -454,17 +463,23 @@ class CaptchaOptions(QDialog):
 
     def defaultSettings(self):
         self.settings.clear()
-        self.settings["Enabled"] = True
-        self.settings["AdjSize"] = True
+        self.settings["Accept"]                  = True
+        self.settings["AdjSize"]                 = True
+        self.settings["PopUpCaptcha"]            = True
+        self.settings["PopUpCaptchaInteractive"] = True
         self.dict2dialogState()
 
     def dialogState2dict(self):
-        self.settings["Enabled"] = self.cbEnableDialog.isChecked()
-        self.settings["AdjSize"] = self.cbAdjSize.isChecked()
+        self.settings["Accept"]                  = self.cbAccept.isChecked()
+        self.settings["AdjSize"]                 = self.cbAdjSize.isChecked()
+        self.settings["PopUpCaptcha"]            = self.cbPopUpCaptcha.isChecked()
+        self.settings["PopUpCaptchaInteractive"] = self.cbPopUpCaptchaInteractive.isChecked()
 
     def dict2dialogState(self):
-        self.cbEnableDialog.setChecked (self.settings["Enabled"])
-        self.cbAdjSize.setChecked      (self.settings["AdjSize"])
+        self.cbAccept.setChecked                  (self.settings["Accept"])
+        self.cbAdjSize.setChecked                 (self.settings["AdjSize"])
+        self.cbPopUpCaptcha.setChecked            (self.settings["PopUpCaptcha"])
+        self.cbPopUpCaptchaInteractive.setChecked (self.settings["PopUpCaptchaInteractive"])
 
     def appFontChanged(self):
         self.buttons.updateWhatsThisButton()

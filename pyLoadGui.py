@@ -40,7 +40,7 @@ from os import makedirs, sep
 
 from uuid import uuid4 as uuid      # import before PyQt
 from time import sleep, time
-from base64 import b64decode
+from module.common.json_layer import json
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -263,6 +263,7 @@ class main(QObject):
         self.mainWindowMaximizedSize = None
         self.geoOther = { "packDock": None, "linkDock": None, "packDockTray": None, "linkDockTray": None, "packDockIsFloating": None, "linkDockIsFloating": None, "captchaDialog": None }
         self.guiLogMutex = QMutex()
+        self.lastCaptchaId = None
 
         self.parser = XMLParser(join(self.homedir, "gui.xml"), join(self.path, "module", "config", "gui_default.xml"))
         self.lang = self.parser.xml.elementsByTagName("language").item(0).toElement().text()
@@ -619,6 +620,7 @@ class main(QObject):
         self.connect(self.mainWindow,          SIGNAL("addContainer"), self.slotAddContainer)
         self.connect(self.mainWindow,          SIGNAL("stopAllDownloads"), self.slotStopAllDownloads)
         self.connect(self.mainWindow,          SIGNAL("setClipboardStatus"), self.slotSetClipboardStatus)
+        self.connect(self.mainWindow,          SIGNAL("captchaStatusButton"), self.slotCaptchaStatusButton)
         self.connect(self.mainWindow,          SIGNAL("restartFailed"), self.slotRestartFailed)
         self.connect(self.mainWindow,          SIGNAL("deleteFinished"), self.slotDeleteFinished)
         self.connect(self.mainWindow,          SIGNAL("pullOutPackages"), self.slotPullOutPackages)
@@ -1132,10 +1134,11 @@ class main(QObject):
     def slotShowCaptcha(self):
         """
             from main window (menu)
+            from main window (toolbar)
             from tray icon (context menu)
             show captcha
         """
-        self.mainWindow.captchaDialog.emit(SIGNAL("show"))
+        self.mainWindow.captchaDialog.emit(SIGNAL("show"), self.lastCaptchaId is None)
 
     def slotShowAbout(self):
         """
@@ -1336,7 +1339,10 @@ class main(QObject):
                     self.emit(SIGNAL("showMessage"), _("Download aborted") + ": %s" % name)
             elif status == 101:
                 if s["Captcha"]:
-                    self.emit(SIGNAL("showMessage"), _("Captcha arrived"))
+                    self.emit(SIGNAL("showMessage"), _("New Captcha Request"))
+            elif status == 102:
+                if s["CaptchaInteractive"]:
+                    self.emit(SIGNAL("showMessage"), _("New Interactive Captcha Request"))
 
     def initCollector(self):
         """
@@ -2163,12 +2169,12 @@ class main(QObject):
             try:              self.automaticReloadingOptions.settings = d; self.automaticReloadingOptions.dict2dialogState()
             except Exception: self.automaticReloadingOptions.defaultSettings(); d = None
         if d is None: self.messageBox_21(_("Automatic Reloading")); reset = True
-        # Captcha Solving
+        # Captchas
         d = base64ToDict(optionsCaptcha)
         if d is not None:
             try:              self.captchaOptions.settings = d; self.captchaOptions.dict2dialogState()
             except Exception: self.captchaOptions.defaultSettings(); d = None
-        if d is None: self.messageBox_21(_("Captcha Solving")); reset = True
+        if d is None: self.messageBox_21(_("Captchas")); reset = True
         self.mainWindow.captchaDialog.adjSize = self.captchaOptions.settings["AdjSize"]
         # Fonts
         d = base64ToDict(optionsFonts)
@@ -2661,18 +2667,40 @@ class main(QObject):
                 self.connector.proxy.pullFromQueue(pid)
 
     def checkCaptcha(self):
-        if not (self.corePermissions["STATUS"] and self.captchaOptions.settings["Enabled"]):
+        """
+            called from main loop
+            poll for captcha requests
+        """
+        if not (self.corePermissions["STATUS"] and self.captchaOptions.settings["Accept"]):
             return
-        if self.connector.proxy.isCaptchaWaiting() and self.mainWindow.captchaDialog.isFree():
+        if self.connector.proxy.isCaptchaWaiting():
             t = self.connector.proxy.getCaptchaTask(False)
-            self.mainWindow.captchaDialog.emit(SIGNAL("setTask"), t.tid, b64decode(t.data), t.type, t.resultType)
-            self.tray.captchaAction.setEnabled(True)
-            self.slotNotificationMessage(101, None)
-        elif not self.mainWindow.captchaDialog.isFree():
-            status = self.connector.proxy.getCaptchaTaskStatus(self.mainWindow.captchaDialog.currentID)
-            if not (status == "user" or status == "shared-user"):
+            if t.tid != self.lastCaptchaId:
+                self.lastCaptchaId = t.tid
+                if not self.mainWindow.captchaDialog.isFree():
+                    self.mainWindow.captchaDialog.emit(SIGNAL("setFree"))
+                if t.resultType == "interactive":
+                    self.slotNotificationMessage(102, None)
+                    if self.captchaOptions.settings["PopUpCaptchaInteractive"]:
+                        self.mainWindow.captchaDialog.emit(SIGNAL("show"), False)
+                    self.tray.captchaAction.setEnabled(False)
+                    self.mainWindow.toolbar_captcha.setText(_("Interactive Captcha"))
+                    self.mainWindow.actions["captcha"].setVisible(True)
+                else:
+                    self.slotNotificationMessage(101, None)
+                    self.mainWindow.captchaDialog.emit(SIGNAL("setTask"), t.tid, json.loads(t.data), t.type, t.resultType)
+                    if self.captchaOptions.settings["PopUpCaptcha"]:
+                        self.mainWindow.captchaDialog.emit(SIGNAL("show"), False)
+                    self.tray.captchaAction.setEnabled(True)
+                    self.mainWindow.toolbar_captcha.setText(_("Captcha"))
+                    self.mainWindow.actions["captcha"].setVisible(True)
+        else:
+            if self.lastCaptchaId is not None:
                 self.mainWindow.captchaDialog.emit(SIGNAL("setFree"))
-                self.tray.captchaAction.setEnabled(False)
+            self.lastCaptchaId = None
+            self.tray.captchaAction.setEnabled(False)
+            self.mainWindow.toolbar_captcha.setText("NO CAPTCHA")
+            self.mainWindow.actions["captcha"].setVisible(False)
 
     def slotCaptchaDone(self, cid, result):
         if not self.corePermissions["STATUS"]:
@@ -3060,7 +3088,9 @@ class main(QObject):
         retval = self.captchaOptions.exec_()
         if retval == QDialog.Accepted:
             self.captchaOptions.dialogState2dict()
-            if not self.captchaOptions.settings["Enabled"]:
+            if not self.captchaOptions.settings["Accept"]:
+                self.mainWindow.toolbar_captcha.setText("DISABLED")
+                self.mainWindow.actions["captcha"].setVisible(False)
                 self.mainWindow.captchaDialog.emit(SIGNAL("setFree"))
                 self.tray.captchaAction.setEnabled(False)
             self.mainWindow.captchaDialog.adjSize = self.captchaOptions.settings["AdjSize"]
@@ -3222,6 +3252,12 @@ class main(QObject):
                 self.log.debug1("slotToolbarSpeedLimitEdited: setting the values in the server settings tab accordingly")
                 self.mainWindow.tabs["settings"]["w"].setSpeedLimitFromToolbar(new_enab_str, new_rate_str)
         self.inSlotToolbarSpeedLimitEdited = False
+
+    def slotCaptchaStatusButton(self):
+        """
+            the captcha status button in the toolbar was clicked
+        """
+        self.mainWindow.captchaDialog.emit(SIGNAL("show"), self.lastCaptchaId is None)
 
 class AboutBox(QDialog):
     """
@@ -3659,7 +3695,7 @@ class TrayIcon(QSystemTrayIcon):
         self.showAction.setIcon(QIcon(join(pypath, "icons", "logo.png")))
         self.setShowActionText(False)
         self.menu.addAction(self.showAction)
-        self.captchaAction = QAction(_("Waiting Captcha"), self.menu)
+        self.captchaAction = QAction(_("Captcha"), self.menu)
         self.menu.addAction(self.captchaAction)
         self.menuAdd = self.menu.addMenu(QIcon(join(pypath, "icons", "add_small.png")), _("Add"))
         self.addPackageAction = self.menuAdd.addAction(_("Package"))

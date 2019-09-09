@@ -59,8 +59,10 @@ class CaptchaDialog(QDialog):
         self.buttons.hideWhatsThisButton()
         self.submitBtn = self.buttons.addButton(QDialogButtonBox.Ok)
         self.ignoreBtn = self.buttons.addButton(QDialogButtonBox.Ignore)
+        self.closeBtn  = self.buttons.addButton(QDialogButtonBox.Close)
         self.buttons.button(QDialogButtonBox.Ok).setText(_("Submit"))
         self.buttons.button(QDialogButtonBox.Ignore).setText(_("Ignore"))
+        self.buttons.button(QDialogButtonBox.Close).setText(_("Close"))
 
         hbox = QHBoxLayout()
         hbox.addStretch()
@@ -77,7 +79,8 @@ class CaptchaDialog(QDialog):
 
         self.connect(self.submitBtn, SIGNAL("clicked()"),       self.slotSubmitText)
         self.connect(self.lineEdit,  SIGNAL("returnPressed()"), self.slotSubmitText)
-        self.connect(self.ignoreBtn, SIGNAL("clicked()"), self.ignore)
+        self.connect(self.ignoreBtn, SIGNAL("clicked()"),       self.slotIgnore)
+        self.connect(self.closeBtn,  SIGNAL("clicked()"),       self.slotClose)
         self.imgLabel.mousePressEvent = self.slotSubmitPos
 
         self.connect(self, SIGNAL("setTask"), self.setTask)
@@ -105,7 +108,8 @@ class CaptchaDialog(QDialog):
         if self.imgDataBuffer != None and self.imgDataBuffer.isOpen():
             self.imgDataBuffer.close()
 
-        self.imgData = QByteArray(data)
+        (dummy, encoded) = data['src'].split(",", 1)   # separate the metadata from the image data
+        self.imgData = QByteArray.fromBase64(encoded)
         self.imgDataBuffer = QBuffer(self.imgData)
         if self.imgDataBuffer.open(QIODevice.ReadOnly):
             self.imgAnimation = QMovie()
@@ -114,6 +118,8 @@ class CaptchaDialog(QDialog):
             if self.imgAnimation.isValid():
                 self.emit(SIGNAL("setMovie(QMovie *)"), self.imgAnimation)
                 self.imgAnimation.start()
+                self.ignoreBtn.show()
+                self.closeBtn.hide()
                 if self.currentResultType == "textual":
                     self.infoLabel.hide()
                     self.lineEdit.show()
@@ -143,8 +149,8 @@ class CaptchaDialog(QDialog):
             self.infoLabel.show()
             self.lineEdit.hide()
             self.submitBtn.hide()
-
-        self.slotShow()
+            self.ignoreBtn.hide()
+            self.closeBtn.show()
 
     def setFree(self):
         self.currentID = None
@@ -160,11 +166,34 @@ class CaptchaDialog(QDialog):
         self.infoLabel.show()
         self.lineEdit.hide()
         self.submitBtn.hide()
+        self.ignoreBtn.hide()
+        self.closeBtn.show()
         self.imgLabel.unsetCursor()
 
-    def slotShow(self):
+    def setupInteractiveCaptcha(self):
+        pix = QApplication.style().standardIcon(QStyle.SP_MessageBoxInformation).pixmap(64, 64)
+        self.imgLabel.setPixmap(pix)
+        self.imgLabel.show()
+        text =  "<b>"      + _("This captcha must be solved with the pyLoad server's webinterface!") + "</b>"
+        text += "<br><br>" + _("Interactive captchas (e.g. ReCaptcha / I'm not a robot) can't be solved")
+        text += "<br>"     + _("with the pyLoad Client. Only captchas which require text input")
+        text += "<br>"     + _("or a single click on a picture are supported.")
+        text += "<br><br>" + _("The default URL of the pyLoad server's webinterface is:")
+        text += "<br>"     + "http://127.0.0.1:8000"
+        self.infoLabel.setText(text)
+        self.infoLabel.show()
+        self.lineEdit.hide()
+        self.submitBtn.hide()
+        self.ignoreBtn.hide()
+        self.closeBtn.show()
+        self.imgLabel.unsetCursor()
+
+    def slotShow(self, nocaptcha):
         if self.isFree():
-            self.setupNoCaptcha()
+            if nocaptcha:
+                self.setupNoCaptcha()
+            else:
+                self.setupInteractiveCaptcha()
         self.paintEventSignal = True
         self.show()
         self.update()
@@ -201,7 +230,10 @@ class CaptchaDialog(QDialog):
             self.hide()
             self.processing = False
 
-    def ignore(self):
+    def slotIgnore(self):
+        self.hide()
+
+    def slotClose(self):
         self.hide()
 
     def paintEvent(self, event):
