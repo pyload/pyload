@@ -21,6 +21,7 @@ from PyQt4.QtGui import *
 
 import logging
 from sip import delete
+from collections import OrderedDict
 
 
 class SettingsWidget(QWidget):
@@ -118,31 +119,21 @@ class SettingsWidget(QWidget):
         self.data = self.connector.proxy.getConfig()
         self.pdata = self.connector.proxy.getPluginConfig()
 
-        # add config tabs in alphabetical order
-        order = []
-        for k, section in self.data.iteritems():
-            order.append(section.description)
-        order = sorted(order, key=lambda d: d)
-        for o in order:
-            for k, section in self.data.iteritems():
-                QApplication.processEvents()
-                if section.description == o:
-                    s = Section(section, self.general)
-                    self.sections[k] = s
+        self.data = OrderedDict(sorted(self.data.items(), key=lambda t: t[0]))      # add config tabs in alphabetical order
+        self.pdata = OrderedDict(sorted(self.pdata.items(), key=lambda t: t[0]))    # add plugin tabs in alphabetical order
 
-        # add plugin tabs in alphabetical order
-        order = []
-        for k, section in self.pdata.iteritems():
-            order.append(section.description)
-        order = sorted(order, key=lambda d: d)
+        for k, section in self.data.iteritems():
+            s = Section(section, self.general)
+            self.sections[k] = s
+            QApplication.processEvents()
+
         sl = QStringList()
-        for o in order:
-            for k, section in self.pdata.iteritems():
-                QApplication.processEvents()
-                if section.description == o:
-                    s = Section(section, self.plugins, "plugin")
-                    self.psections[k] = s
-                    sl.append(section.description)
+        for k, section in self.pdata.iteritems():
+            s = Section(section, self.plugins, "plugin")
+            self.psections[k] = s
+            sl.append(section.description)
+            QApplication.processEvents()
+
         self.pluginsSearchCompleter.setStringList(sl)
 
         self.reload = QPushButton(_("Reload"))
