@@ -59,7 +59,7 @@ class NewPackageDock(QDockWidget):
                 continue
             lines.append(line)
         if not lines:
-            self.widget.slotMsgShow("<b>" + _("Error, no URLs given.") + "</b>")
+            self.widget.slotMsgShow("<b>" + "&nbsp;" + "&nbsp;" + _("Error, no URLs given.") + "</b>")
             return
         queue = self.widget.destQueue.isChecked()
         self.emit(SIGNAL("done"), unicode(self.widget.nameInput.text()), lines, queue, pw)
@@ -194,6 +194,8 @@ class NewPackageWindow(QWidget):
         self.save = QPushButton(_("Create"))
         self.save.setIcon(QIcon(join(pypath, "icons", "add_small.png")))
         self.msg = QLabel("ERROR")
+        s = "QWidget { color: crimson; background-color: %s }" % QColor(Qt.gray).name()     # red text color on gray background
+        self.msg.setStyleSheet(s)
         lsp = self.msg.sizePolicy()
         lsp.setHorizontalPolicy(QSizePolicy.Ignored)
         self.msg.setSizePolicy(lsp)

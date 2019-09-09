@@ -51,7 +51,7 @@ class NewLinkDock(QDockWidget):
         text = unicode(self.widget.box.toPlainText())
         lines = text.splitlines()
         if not lines:
-            self.widget.slotMsgShow("<b>" + _("Error, no URLs given.") + "</b>")
+            self.widget.slotMsgShow("<b>" + "&nbsp;" + "&nbsp;" + _("Error, no URLs given.") + "</b>")
             return
         queue = self.widget.destQueue.isChecked()
         self.emit(SIGNAL("done"), lines, queue)
@@ -165,6 +165,8 @@ class NewLinkWindow(QWidget):
         self.save = QPushButton(_("Add"))
         self.save.setIcon(QIcon(join(pypath, "icons", "add_small.png")))
         self.msg = QLabel("ERROR")
+        s = "QWidget { color: crimson; background-color: %s }" % QColor(Qt.gray).name()     # red text color on gray background
+        self.msg.setStyleSheet(s)
         lsp = self.msg.sizePolicy()
         lsp.setHorizontalPolicy(QSizePolicy.Ignored)
         self.msg.setSizePolicy(lsp)

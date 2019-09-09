@@ -1866,9 +1866,9 @@ class main(QObject):
             self.connector.proxy.addFiles(packs[0], links)
             self.mainWindow.newLinkDock.widget.box.clear()
         elif len(packs) == 0:
-            self.mainWindow.newLinkDock.widget.slotMsgShow("<b>" + (_("Error, no package selected in %s.") % txt) + "</b>")
+            self.mainWindow.newLinkDock.widget.slotMsgShow("<b>" + "&nbsp;" + "&nbsp;" + (_("Error, no package selected in %s.") % txt) + "</b>")
         else:
-            self.mainWindow.newLinkDock.widget.slotMsgShow("<b>" + (_("Error, multiple packages selected in %s.") % txt) + "</b>")
+            self.mainWindow.newLinkDock.widget.slotMsgShow("<b>" + "&nbsp;" + "&nbsp;" + (_("Error, multiple packages selected in %s.") % txt) + "</b>")
 
     def slotShowAddPackage(self):
         """
