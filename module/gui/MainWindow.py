@@ -612,6 +612,10 @@ class MainWindow(QMainWindow):
         self.queueContext.addAction(self.queueContext.buttons["deselectall"])
         self.queueContext.addAction(self.queueContext.buttons["advancedselect"])
         self.queueContext.addSeparator()
+        self.queueContext.buttons["sort"] = self.queueContext.addMenu(QIcon(), _("Sort"))
+        self.queueContext.buttons["sort_packages"] = self.queueContext.buttons["sort"].addAction(_("Packages"))
+        self.queueContext.buttons["sort_links"] = self.queueContext.buttons["sort"].addAction(_("Links"))
+        self.queueContext.addSeparator()
         self.queueContext.addAction(self.queueContext.buttons["expand"])
         self.queueContext.addAction(self.queueContext.buttons["collapse"])
         self.connect(self.queueContext.buttons["pull"], SIGNAL("triggered()"), self.slotPullOutPackages)
@@ -627,6 +631,8 @@ class MainWindow(QMainWindow):
         self.connect(self.queueContext.buttons["selectall"], SIGNAL("triggered()"), self.slotSelectAll)
         self.connect(self.queueContext.buttons["deselectall"], SIGNAL("triggered()"), self.slotDeselectAll)
         self.connect(self.queueContext.buttons["advancedselect"], SIGNAL("triggered()"), self.slotAdvSelectShow)
+        self.connect(self.queueContext.buttons["sort_packages"], SIGNAL("triggered()"), self.slotSortPackages)
+        self.connect(self.queueContext.buttons["sort_links"], SIGNAL("triggered()"), self.slotSortLinks)
         self.connect(self.queueContext.buttons["expand"], SIGNAL("triggered()"), self.slotExpandAll)
         self.connect(self.queueContext.buttons["collapse"], SIGNAL("triggered()"), self.slotCollapseAll)
         
@@ -663,6 +669,10 @@ class MainWindow(QMainWindow):
         self.collectorContext.addAction(self.collectorContext.buttons["deselectall"])
         self.collectorContext.addAction(self.collectorContext.buttons["advancedselect"])
         self.collectorContext.addSeparator()
+        self.collectorContext.buttons["sort"] = self.collectorContext.addMenu(QIcon(), _("Sort"))
+        self.collectorContext.buttons["sort_packages"] = self.collectorContext.buttons["sort"].addAction(_("Packages"))
+        self.collectorContext.buttons["sort_links"] = self.collectorContext.buttons["sort"].addAction(_("Links"))
+        self.collectorContext.addSeparator()
         self.collectorContext.addAction(self.collectorContext.buttons["expand"])
         self.collectorContext.addAction(self.collectorContext.buttons["collapse"])
         self.connect(self.collectorContext.buttons["push"], SIGNAL("triggered()"), self.slotPushPackagesToQueue)
@@ -677,6 +687,8 @@ class MainWindow(QMainWindow):
         self.connect(self.collectorContext.buttons["selectall"], SIGNAL("triggered()"), self.slotSelectAll)
         self.connect(self.collectorContext.buttons["deselectall"], SIGNAL("triggered()"), self.slotDeselectAll)
         self.connect(self.collectorContext.buttons["advancedselect"], SIGNAL("triggered()"), self.slotAdvSelectShow)
+        self.connect(self.collectorContext.buttons["sort_packages"], SIGNAL("triggered()"), self.slotSortPackages)
+        self.connect(self.collectorContext.buttons["sort_links"], SIGNAL("triggered()"), self.slotSortLinks)
         self.connect(self.collectorContext.buttons["expand"], SIGNAL("triggered()"), self.slotExpandAll)
         self.connect(self.collectorContext.buttons["collapse"], SIGNAL("triggered()"), self.slotCollapseAll)
         
@@ -1257,6 +1269,20 @@ class MainWindow(QMainWindow):
             let main to the stuff
         """
         self.emit(SIGNAL("deselectAll"))
+    
+    def slotSortPackages(self):
+        """
+            sort packages
+            let main to the stuff
+        """
+        self.emit(SIGNAL("sortPackages"))
+    
+    def slotSortLinks(self):
+        """
+            sort links
+            let main to the stuff
+        """
+        self.emit(SIGNAL("sortLinks"))
     
     def slotExpandAll(self):
         """

@@ -19,7 +19,7 @@
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
-import logging
+import logging, re
 from time import time
 from module.PyFile import statusMap
 from module.utils import formatSize, formatSpeed
@@ -926,6 +926,93 @@ class CollectorModel(QAbstractItemModel):
                         raise ValueError("%s: Invalid index" % self.cname)
                     smodel.select(index, sCmd | QItemSelectionModel.Rows)
                     self.log.debug9("%s.advancedSelect:selectedPackage:   deselect:%s   name:'%s'   pid:%d" % (self.cname, deselect,name, package.id))
+    
+    def sortPackages(self):
+        """
+            called from main
+        """
+        QMutexLocker(self.mutex)
+        sortingPerformed = False
+        if len(self._data) > 0:
+            if len(self._data) > 1:
+                packs = []
+                for package in self._data:
+                    name = package.data["name"]
+                    pid  = package.id
+                    packs.append([name, pid])
+                (packs_sorted, alreadySorted) = self.sortItems(packs)
+                if alreadySorted:
+                    self.view.buttonMsgShow(_("Nothing to do, packages are already sorted"), False)
+                else:
+                    for p in reversed(packs_sorted):
+                        self.connector.proxy.orderPackage(p[1], 0)
+                    sortingPerformed = True
+                    self.view.buttonMsgShow(_("Packages sorted"), False)
+            else:
+                self.view.buttonMsgShow(_("Nothing to do, there is only one package"), False)
+        else:
+            self.view.buttonMsgShow(_("No packages"), True)
+        if sortingPerformed:
+            self.view.clearSelection()
+            self.view.setCurrentIndex(QModelIndex())
+        QTimer.singleShot(2000, self.view.buttonMsgHideAndEnableView)
+    
+    def sortLinks(self):
+        """
+            called from main
+        """
+        QMutexLocker(self.mutex)
+        sortingPerformed = False
+        if len(self._data) > 0:
+            smodel = self.view.selectionModel()
+            rows = smodel.selectedRows(0)
+            if len(rows) == 1:
+                item = rows[0].internalPointer()
+                if isinstance(item, Package):
+                    package = item
+                    if len(package.children) > 1:
+                        links = []
+                        for link in package.children:
+                            name = link.data["name"]
+                            id   = link.id
+                            links.append([name, id])
+                            (links_sorted, alreadySorted) = self.sortItems(links)
+                            if alreadySorted:
+                                self.view.buttonMsgShow(_("Nothing to do, Links are already sorted"), False)
+                            else:
+                                for l in reversed(links_sorted):
+                                    self.connector.proxy.orderFile(l[1], 0)
+                                sortingPerformed = True
+                                self.view.buttonMsgShow(_("Links sorted"), False)
+                    else:
+                        self.view.buttonMsgShow(_("Nothing to do, there is only one link"), False)
+                elif isinstance(item, Link):
+                    self.view.buttonMsgShow(_("Select a single package only!"), True)
+                else:
+                    raise TypeError("%s: Unknown item instance" % self.cname)
+            elif len(rows) == 0:
+                if len(self._data) > 1:
+                    self.view.buttonMsgShow(_("Select a package!"), True)
+                else:
+                    self.view.buttonMsgShow(_("Select the package!"), True)
+            else:
+                self.view.buttonMsgShow(_("Select a single package only!"), True)
+        else:
+            self.view.buttonMsgShow(_("No packages"), True)
+        if sortingPerformed:
+            self.view.setExpanded(rows[0], True)
+            smodel.select(rows[0], QItemSelectionModel.Select | QItemSelectionModel.Rows)
+        QTimer.singleShot(2000, self.view.buttonMsgHideAndEnableView)
+    
+    def sortItems(self, items):
+        # http://stackoverflow.com/a/16090640
+        items_sorted = sorted(items, key = lambda il: [int(t) if t.isdigit() else t.lower() for t in re.split('(\d+)', il[0])])
+        alreadySorted = True
+        for i in xrange(len(items)):
+            if items[i][1] != items_sorted[i][1]:   # id
+                alreadySorted = False
+                break
+        return (items_sorted, alreadySorted)
 
 class Package(object):
     """
@@ -1187,6 +1274,11 @@ class CollectorView(QTreeView):
     
     def buttonMsgHide(self):
         self.emit(SIGNAL("collectorMsgHide"))
+    
+    def buttonMsgHideAndEnableView(self):
+        self.buttonMsgHide()
+        self.setEnabled(True)
+        self.setFocus(Qt.OtherFocusReason)
 
 class DragAndDrop(QObject):
     """

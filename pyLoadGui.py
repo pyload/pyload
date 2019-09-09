@@ -615,6 +615,8 @@ class main(QObject):
         self.connect(self.mainWindow,          SIGNAL("selectAllPackages"), self.slotSelectAllPackages)
         self.connect(self.mainWindow,          SIGNAL("deselectAllPackages"), self.slotDeselectAllPackages)
         self.connect(self.mainWindow,          SIGNAL("advancedSelect"), self.slotAdvancedSelect)
+        self.connect(self.mainWindow,          SIGNAL("sortPackages"), self.slotSortPackages)
+        self.connect(self.mainWindow,          SIGNAL("sortLinks"), self.slotSortLinks)
         self.connect(self.mainWindow,          SIGNAL("expandAll"), self.slotExpandAll)
         self.connect(self.mainWindow,          SIGNAL("collapseAll"), self.slotCollapseAll)
         self.connect(self.mainWindow,          SIGNAL("showAddPackage"), self.slotShowAddPackage)
@@ -2641,6 +2643,30 @@ class main(QObject):
             else:
                 self.collector.advancedSelect(pattern, syntax, cs, deselect, selectLinks)
             QTimer.singleShot(300, self.mainWindow.advselect.slotEnable)
+
+    def slotSortPackages(self):
+        """
+            emitted from main window
+            sort packages
+        """
+        if self.mainWindow.tabw.currentIndex() == 1:
+            self.mainWindow.tabs["queue"]["view"].setEnabled(False)
+            QTimer.singleShot(300, self.queue.sortPackages)
+        else:
+            self.mainWindow.tabs["collector"]["view"].setEnabled(False)
+            QTimer.singleShot(300, self.collector.sortPackages)
+
+    def slotSortLinks(self):
+        """
+            emitted from main window
+            sort packages
+        """
+        if self.mainWindow.tabw.currentIndex() == 1:
+            self.mainWindow.tabs["queue"]["view"].setEnabled(False)
+            QTimer.singleShot(300, self.queue.sortLinks)
+        else:
+            self.mainWindow.tabs["collector"]["view"].setEnabled(False)
+            QTimer.singleShot(300, self.collector.sortLinks)
 
     def slotExpandAll(self):
         """
