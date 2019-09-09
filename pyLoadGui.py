@@ -2643,12 +2643,8 @@ class main(QObject):
             called if clipboard changes
         """
         if self.checkClipboard:
-            text = self.clipboard.text()
-            pattern = re.compile(r"(http|https|ftp)://[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(([0-9]{1,5})?/.*)?")
-            matches = pattern.finditer(text)
-            
-            # thanks to: jmansour //#139
-            links = [str(match.group(0)) for match in matches]
+            text = unicode(self.clipboard.text())
+            links = self.mainWindow.urlFilter(text)
             if len(links) == 0:
                 return
                 

@@ -728,6 +728,20 @@ class MainWindow(QMainWindow):
         event.ignore()
         self.emit(SIGNAL("mainWindowClose"))
     
+    def urlFilter(self, text):
+        pattern = re.compile(ur'(?i)\b(((?:ht|f)tps?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:\'".,<>?\xab\xbb\u201c\u201d\u2018\u2019]))')
+        text += " "
+        lines = text.split()
+        urlList = []
+        for line in lines:
+            urls = [ match[0] for match in pattern.findall(line) ]
+            if urls:
+                for u in urls:
+                    s = u.strip(" ")
+                    if not s in urlList:
+                        urlList.append(s)
+        return urlList
+    
     def slotShowAbout(self):
         """
             show the about-box
@@ -888,13 +902,10 @@ class MainWindow(QMainWindow):
             URI parser
             filters URIs out of text
         """
-        text += " "
-        result = ""
-        f = re.findall(r"(?:ht|f)tps?:\/\/[a-zA-Z0-9\-\.\/\?=_&%#]+[<| |\"|\'|\r|\n|\t]{1}", text)
-        for url in f:
-            if "\n" or "\t" or "\r" or "\"" or "<" or "'" in url:
-                url = url[:-1]
-            result += url + "\n"
+        urls = self.urlFilter(text)
+        result = unicode("")
+        for u in urls:
+            result += u + "\n"
         if caller == "packagedock":
             self.newPackDock.parseUriResult(result)
         elif caller == "linkdock":

@@ -40,7 +40,7 @@ class NewPackageDock(QDockWidget):
         self.setWindowIcon(QIcon(join(pypath, "icons", "logo.png")))
         self.widget = NewPackageWindow(self)
         self.setFilterBtnText()
-        whatsThis = (self.widget.filter.text(), _("Attempts to extract the URLs from the pasted/dropped text."))
+        whatsThis = (self.widget.filter.text(), _("Extracts the URLs from the pasted/dropped text and removes duplicates."))
         self.widget.filter.setWhatsThis(whatsThisFormat(*whatsThis))
         self.defaultSettings()
         self.setWidget(self.widget)
