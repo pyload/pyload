@@ -995,86 +995,104 @@ class MainWindow(QMainWindow):
         """
             custom context menu in queue view requested
         """
-        i = self.tabs["queue"]["view"].indexAt(pos)
-        if not i:
-            return
-        item = i.internalPointer()
         menuPos = QCursor.pos()
-        menuPos.setX(menuPos.x()+2)
-        self.activeMenu = self.queueContext
-        showAbort = False
-        if isinstance(item, Link) and item.data["downloading"]:
-            showAbort = self.corePermissions["MODIFY"]
-        elif isinstance(item, Package):
-            for child in item.children:
-                if child.data["downloading"]:
-                    showAbort = self.corePermissions["MODIFY"]
-                    break
-        if isinstance(item, Package):
-            self.queueContext.index = i
-            self.queueContext.buttons["pull"].setEnabled(self.corePermissions["MODIFY"])
-            self.queueContext.buttons["add_links"].setEnabled(self.corePermissions["ADD"])
-            self.queueContext.buttons["edit"].setEnabled(self.corePermissions["MODIFY"])
-            self.queueContext.buttons["restart"].setEnabled(self.corePermissions["MODIFY"])
-            self.queueContext.buttons["remove"].setEnabled(self.corePermissions["DELETE"])
-        elif isinstance(item, Link):
-            self.queueContext.index = i
-            self.queueContext.buttons["pull"].setEnabled(False)
-            self.queueContext.buttons["add_links"].setEnabled(False)
-            self.queueContext.buttons["edit"].setEnabled(False)
-            self.queueContext.buttons["restart"].setEnabled(self.corePermissions["MODIFY"])
-            self.queueContext.buttons["remove"].setEnabled(self.corePermissions["DELETE"])
+        menuPos.setX(menuPos.x() + 2)
+        view = self.tabs["queue"]["view"]
+        index = view.indexAt(pos)
+        if index.isValid():
+            vr = view.visualRect(index)
+            indent = vr.x() - view.visualRect(view.rootIndex()).x()
+            if pos.x() < indent:
+                clickOnItem = False     # expand/collapse arrow clicked
+            else:
+                clickOnItem = True
         else:
-            self.queueContext.index = None
+            clickOnItem = False         # empty bottom area clicked
+        if clickOnItem:
+            item = index.internalPointer()
+            showAbort = False
+            if isinstance(item, Link) and item.data["downloading"]:
+                showAbort = self.corePermissions["MODIFY"]
+            elif isinstance(item, Package):
+                for child in item.children:
+                    if child.data["downloading"]:
+                        showAbort = self.corePermissions["MODIFY"]
+                        break
+            if isinstance(item, Package):
+                self.queueContext.buttons["pull"].setEnabled(self.corePermissions["MODIFY"])
+                self.queueContext.buttons["add_links"].setEnabled(self.corePermissions["ADD"])
+                self.queueContext.buttons["edit"].setEnabled(self.corePermissions["MODIFY"])
+                self.queueContext.buttons["restart"].setEnabled(self.corePermissions["MODIFY"])
+                self.queueContext.buttons["remove"].setEnabled(self.corePermissions["DELETE"])
+            elif isinstance(item, Link):
+                self.queueContext.buttons["pull"].setEnabled(False)
+                self.queueContext.buttons["add_links"].setEnabled(False)
+                self.queueContext.buttons["edit"].setEnabled(False)
+                self.queueContext.buttons["restart"].setEnabled(self.corePermissions["MODIFY"])
+                self.queueContext.buttons["remove"].setEnabled(self.corePermissions["DELETE"])
+            else:
+                raise TypeError("Unknown item instance")
+            self.queueContext.buttons["abort"].setEnabled(showAbort)
+        else:
             self.queueContext.buttons["pull"].setEnabled(False)
             self.queueContext.buttons["add_links"].setEnabled(False)
             self.queueContext.buttons["edit"].setEnabled(False)
             self.queueContext.buttons["restart"].setEnabled(False)
             self.queueContext.buttons["remove"].setEnabled(False)
-        self.queueContext.buttons["abort"].setEnabled(showAbort)
+            self.queueContext.buttons["abort"].setEnabled(False)
+        self.activeMenu = self.queueContext
         self.queueContext.exec_(menuPos)
     
     def slotCollectorContextMenu(self, pos):
         """
             custom context menu in package collector view requested
         """
-        i = self.tabs["collector"]["view"].indexAt(pos)
-        if not i:
-            return
-        item = i.internalPointer()
         menuPos = QCursor.pos()
-        menuPos.setX(menuPos.x()+2)
-        self.activeMenu = self.collectorContext
-        showAbort = False
-        if isinstance(item, Link) and (item.data["status"] == DownloadStatus.Downloading):
-            showAbort = self.corePermissions["MODIFY"]
-        elif isinstance(item, Package):
-            for child in item.children:
-                if child.data["status"] == DownloadStatus.Downloading:
-                    showAbort = self.corePermissions["MODIFY"]
-                    break
-        if isinstance(item, Package):
-            self.collectorContext.index = i
-            self.collectorContext.buttons["push"].setEnabled(self.corePermissions["MODIFY"])
-            self.collectorContext.buttons["add_links"].setEnabled(self.corePermissions["ADD"])
-            self.collectorContext.buttons["edit"].setEnabled(self.corePermissions["MODIFY"])
-            self.collectorContext.buttons["restart"].setEnabled(self.corePermissions["MODIFY"])
-            self.collectorContext.buttons["remove"].setEnabled(self.corePermissions["DELETE"])
-        elif isinstance(item, Link):
-            self.collectorContext.index = i
-            self.collectorContext.buttons["push"].setEnabled(False)
-            self.collectorContext.buttons["add_links"].setEnabled(False)
-            self.collectorContext.buttons["edit"].setEnabled(False)
-            self.collectorContext.buttons["restart"].setEnabled(self.corePermissions["MODIFY"])
-            self.collectorContext.buttons["remove"].setEnabled(self.corePermissions["DELETE"])
+        menuPos.setX(menuPos.x() + 2)
+        view = self.tabs["collector"]["view"]
+        index = view.indexAt(pos)
+        if index.isValid():
+            vr = view.visualRect(index)
+            indent = vr.x() - view.visualRect(view.rootIndex()).x()
+            if pos.x() < indent:
+                clickOnItem = False     # expand/collapse arrow clicked
+            else:
+                clickOnItem = True
         else:
-            self.collectorContext.index = None
+            clickOnItem = False         # empty bottom area clicked
+        if clickOnItem:
+            item = index.internalPointer()
+            showAbort = False
+            if isinstance(item, Link) and (item.data["status"] == DownloadStatus.Downloading):
+                showAbort = self.corePermissions["MODIFY"]
+            elif isinstance(item, Package):
+                for child in item.children:
+                    if child.data["status"] == DownloadStatus.Downloading:
+                        showAbort = self.corePermissions["MODIFY"]
+                        break
+            if isinstance(item, Package):
+                self.collectorContext.buttons["push"].setEnabled(self.corePermissions["MODIFY"])
+                self.collectorContext.buttons["add_links"].setEnabled(self.corePermissions["ADD"])
+                self.collectorContext.buttons["edit"].setEnabled(self.corePermissions["MODIFY"])
+                self.collectorContext.buttons["restart"].setEnabled(self.corePermissions["MODIFY"])
+                self.collectorContext.buttons["remove"].setEnabled(self.corePermissions["DELETE"])
+            elif isinstance(item, Link):
+                self.collectorContext.buttons["push"].setEnabled(False)
+                self.collectorContext.buttons["add_links"].setEnabled(False)
+                self.collectorContext.buttons["edit"].setEnabled(False)
+                self.collectorContext.buttons["restart"].setEnabled(self.corePermissions["MODIFY"])
+                self.collectorContext.buttons["remove"].setEnabled(self.corePermissions["DELETE"])
+            else:
+                raise TypeError("Unknown item instance")
+            self.collectorContext.buttons["abort"].setEnabled(showAbort)
+        else:
             self.collectorContext.buttons["push"].setEnabled(False)
             self.collectorContext.buttons["add_links"].setEnabled(False)
             self.collectorContext.buttons["edit"].setEnabled(False)
             self.collectorContext.buttons["restart"].setEnabled(False)
             self.collectorContext.buttons["remove"].setEnabled(False)
-        self.collectorContext.buttons["abort"].setEnabled(showAbort)
+            self.collectorContext.buttons["abort"].setEnabled(False)
+        self.activeMenu = self.collectorContext
         self.collectorContext.exec_(menuPos)
     
     def slotLinkCollectorContextMenu(self, pos):
@@ -1248,21 +1266,25 @@ class MainWindow(QMainWindow):
         self.connector.proxy.removeAccount(data.type, data.login)
     
     def slotAccountContextMenu(self, pos):
-        i = self.tabs["accounts"]["view"].indexAt(pos)
-        if not i:
-            return
-            
-        data = i.internalPointer()
-        
-        if data is None:
-            self.accountContext.buttons["edit"].setEnabled(False)
-            self.accountContext.buttons["remove"].setEnabled(False)
+        menuPos = QCursor.pos()
+        menuPos.setX(menuPos.x() + 2)
+        view = self.tabs["accounts"]["view"]
+        index = view.indexAt(pos)
+        if index.isValid():
+            vr = view.visualRect(index)
+            indent = vr.x() - view.visualRect(view.rootIndex()).x()
+            if pos.x() < indent:
+                clickOnItem = False     # indent area clicked
+            else:
+                clickOnItem = True
         else:
+            clickOnItem = False         # empty bottom area clicked
+        if clickOnItem:
             self.accountContext.buttons["edit"].setEnabled(True)
             self.accountContext.buttons["remove"].setEnabled(True)
-        
-        menuPos = QCursor.pos()
-        menuPos.setX(menuPos.x()+2)
+        else:
+            self.accountContext.buttons["edit"].setEnabled(False)
+            self.accountContext.buttons["remove"].setEnabled(False)
         self.accountContext.exec_(menuPos)
     
     def slotShowLoggingOptions(self):

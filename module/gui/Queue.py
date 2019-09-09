@@ -407,7 +407,7 @@ class QueueView(CollectorView):
         wt = _(
         "- Column visibility can be toggled by right-clicking on the header row<br>"
         "- Column order can be changed by Drag'n'Drop<br>"
-        "- Context menu by right-clicking on selected items<br>"
+        "- Context menu by right-clicking on selected items, on the expand/collapse arrows or on the empty bottom area of the view<br>"
         "- Package order can be changed by Drag'n'Drop<br>"
         "- Link order within a package can be changed by Drag'n'Drop"
         )
