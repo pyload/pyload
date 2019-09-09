@@ -32,9 +32,16 @@ class NewLinkDock(QDockWidget):
         self.geo = None
         self.paintEventCounter = int(0)
         
+        self.textChangeCount = 0
+        self.undo = False
+        self.undoText = None
+        
         self.setObjectName("New Links Dock")
         self.setWindowIcon(QIcon(join(pypath, "icons", "logo.png")))
         self.widget = NewLinkWindow(self)
+        self.setFilterBtnText()
+        whatsThis = (self.widget.filter.text(), _("Attempts to extract the URLs from the pasted/dropped text."))
+        self.widget.filter.setWhatsThis(whatsThisFormat(*whatsThis))
         self.defaultSettings()
         self.setWidget(self.widget)
         self.setAllowedAreas(Qt.RightDockWidgetArea)
@@ -49,12 +56,40 @@ class NewLinkDock(QDockWidget):
         queue = self.widget.destQueue.isChecked()
         self.emit(SIGNAL("done"), lines, queue)
     
-    def parseUri(self):
-        text = unicode(self.widget.box.toPlainText())
-        self.emit(SIGNAL("parseUri"), "linkdock", text)
+    def setFilterBtnText(self):
+        if not self.undo:
+            self.widget.filter.setText(_("Filter URLs"))
+        else:
+            self.widget.filter.setText(_("Undo Filter URLs"))
+    
+    def slotFilterBtnClicked(self):
+        if not self.undo:
+            text = self.widget.box.toPlainText()
+            if text.trimmed().isEmpty():
+                return
+            self.widget.box.setEnabled(False)
+            self.widget.filter.setEnabled(False)
+            self.undoText = text
+            self.emit(SIGNAL("parseUri"), "linkdock", unicode(text))
+        else:
+            self.widget.box.setPlainText(self.undoText)
+            self.undo = False
+            self.setFilterBtnText()
+    
+    def slotBoxTextChanged(self):
+        if self.undo and self.textChangeCount > 0:
+            self.undo = False
+            self.setFilterBtnText()
+        else:
+            self.textChangeCount += 1
     
     def parseUriResult(self, result):
+        self.textChangeCount = 0
         self.widget.box.setPlainText(result)
+        self.undo = True
+        self.setFilterBtnText()
+        self.widget.box.setEnabled(True)
+        self.widget.filter.setEnabled(True)
     
     def defaultSettings(self):
         self.widget.append.setChecked(True)
@@ -118,7 +153,7 @@ class NewLinkWindow(QWidget):
         self.destAutoSelect = QCheckBox(_("Select with tab"))
         
         self.clear = QPushButton(_("Clear"))
-        self.filter = QPushButton(_("Filter URLs"))
+        self.filter = QPushButton()
         
         self.save = QPushButton(_("Add"))
         self.save.setIcon(QIcon(join(pypath, "icons", "add_small.png")))
@@ -145,7 +180,8 @@ class NewLinkWindow(QWidget):
         
         self.connect(self.save, SIGNAL("clicked()"), self.dock.slotDone)
         self.connect(self.clear, SIGNAL("clicked()"), self.box.clear)
-        self.connect(self.filter, SIGNAL("clicked()"), self.dock.parseUri)
+        self.connect(self.filter, SIGNAL("clicked()"), self.dock.slotFilterBtnClicked)
+        self.connect(self.box, SIGNAL("textChanged()"), self.dock.slotBoxTextChanged)
         self.connect(self.append, SIGNAL("toggled(bool)"), self.box.slotAppendToggled)
         self.box.slotAppendToggled(self.append.isChecked())
     
