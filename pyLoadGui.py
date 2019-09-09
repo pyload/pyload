@@ -1402,12 +1402,13 @@ class main(QObject):
             return
         s = self.connector.proxy.statusServer()
         if s.pause:
+            self.mainWindow.actions["status_pause"].setChecked(True)
             self.mainWindow.status.setText(_("Paused"))
         else:
+            self.mainWindow.actions["status_start"].setChecked(True)
             self.mainWindow.status.setText(_("Running"))
         self.mainWindow.speed.setText(formatSpeed(s.speed))
         self.mainWindow.space.setText(formatSize(self.serverStatus["freespace"]))
-        self.mainWindow.actions["toggle_status"].setChecked(not s.pause)
 
     def getGuiLog(self, offset=0):
         """
@@ -3511,7 +3512,7 @@ class InfoCorePermissions(QDialog):
                 wt1  = _("View and change server status")
                 wt2  = _("Needed for:<br>"
                          "- Updating Overview, Queue and Collector<br>"
-                         "- Toolbar: Toggle Pause and Abort All for setting pause mode<br>"
+                         "- Toolbar: Run, Pause and Stop feature to set server status 'Paused'<br>"
                          "- Captcha solving<br>"
                          "- Status bar: Free space in the download folder")
             else:

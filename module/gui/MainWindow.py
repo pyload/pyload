@@ -135,7 +135,7 @@ class MainWindow(QMainWindow):
         
         statusBl = BoldLabel(_("Status") + ":")
         self.status = QLabel()
-        sitem = StwItem(statusBl, self.status, whatsThisFormat(_("Status"), _("It shows 'Running' or 'Paused'.")))
+        sitem = StwItem(statusBl, self.status, whatsThisFormat(_("Status"), _("The server status, 'Running' or 'Paused'.")))
         l.addWidget(sitem, 0, 2, 1, 1)
         
         spaceBl = BoldLabel(_("Space") + ":")
@@ -328,7 +328,10 @@ class MainWindow(QMainWindow):
         self.actions["remove_finished"].setEnabled(corePermissions["DELETE"])
         
         # Api.pauseServer and Api.unpauseServer
-        self.actions["toggle_status"].setEnabled(corePermissions["STATUS"])
+        self.actions["status_start"].setEnabled(corePermissions["STATUS"])
+        self.actions["status_pause"].setEnabled(corePermissions["STATUS"])
+        self.actions["status_start"].setCheckable(corePermissions["LIST"])
+        self.actions["status_pause"].setCheckable(corePermissions["LIST"])
         
         # Api.getCaptchaTask, Api.getCaptchaTaskStatus, Api.isCaptchaWaiting and Api.setCaptchaResult
         self.mactions["captcha"].setEnabled(corePermissions["STATUS"])  # main menu entry: Options -> Captcha
@@ -339,7 +342,7 @@ class MainWindow(QMainWindow):
             self.actions["status_stop"].setEnabled(False)
         elif not corePermissions["STATUS"]:
             self.actions["status_stop"].setIcon(self.statusStopIconNoPause)
-            self.actions["status_stop"].setToolTip(_("Cannot set pause mode!"))
+            self.actions["status_stop"].setToolTip(_("Cannot set server status to 'Paused'"))
         
         # Speed Limit in toolbar
         if not corePermissions["SETTINGS"]:
@@ -391,18 +394,18 @@ class MainWindow(QMainWindow):
         self.toolbar.setObjectName("Main Toolbar")
         self.toolbar.setIconSize(QSize(30,30))
         self.toolbar.setMovable(False)
-        self.actions["toggle_status"] = self.toolbar.addAction("")
-        self.actions["toggle_status"].setWhatsThis(whatsThisFormat(_("Toggle Pause"), _("When the server is in pause mode, no further downloads will be started. Ongoing downloads continue.")))
-        self.toggleStatusIconPause = QIcon(join(pypath, "icons", "toolbar_pause.png"))
-        self.toggleStatusIconStart = QIcon(join(pypath, "icons", "toolbar_start.png"))
-        self.actions["toggle_status"].setIcon(self.toggleStatusIconStart)
-        self.actions["toggle_status"].setCheckable(True)
-        self.actions["toggle_status"].setChecked(False)
+        self.actions["status_start"] = self.toolbar.addAction(QIcon(join(pypath, "icons", "toolbar_start.png")), "")
+        self.actions["status_start"].setWhatsThis(whatsThisFormat(_("Run"), _("Sets the server status to 'Running'.")))
         self.actions["status_stop"] = self.toolbar.addAction("")
-        self.actions["status_stop"].setWhatsThis(whatsThisFormat(_("Abort All"), _("Aborts all ongoing downloads and sets the server to pause mode.")))
+        self.actions["status_stop"].setWhatsThis(whatsThisFormat(_("Stop"), _("Aborts all ongoing downloads and sets the server status to 'Paused'.")))
         self.statusStopIcon = QIcon(join(pypath, "icons", "toolbar_stop.png"))
         self.statusStopIconNoPause = QIcon(join(pypath, "icons", "toolbar_stop_nopause.png"))
         self.actions["status_stop"].setIcon(self.statusStopIcon)
+        self.actions["status_pause"] = self.toolbar.addAction(QIcon(join(pypath, "icons", "toolbar_pause.png")), "")
+        self.actions["status_pause"].setWhatsThis(whatsThisFormat(_("Pause"), _("Sets the server status to 'Paused'.<br>When the server is paused, no further downloads will be started. Ongoing downloads continue.")))
+        self.startPauseActGrp = QActionGroup(self.toolbar)
+        self.startPauseActGrp.addAction(self.actions["status_start"])
+        self.startPauseActGrp.addAction(self.actions["status_pause"])
         self.toolbar.addSeparator()
         self.actions["add"] = self.toolbar.addAction(QIcon(join(pypath, "icons", "toolbar_add.png")), "")
         self.actions["add"].setWhatsThis(whatsThisFormat(_("Add"), _("- Create a new package<br>- Add links to an existing package<br>- Add a container file to the Queue<br>- Add an account")))
@@ -443,11 +446,12 @@ class MainWindow(QMainWindow):
         self.actions["restart_failed"].setWhatsThis(whatsThisFormat(_("Restart Failed"), _("Restarts (resumes if supported) all failed, aborted and temporary offline downloads.")))
         self.actions["remove_finished"] = self.toolbar.addAction(QIcon(join(pypath, "icons", "toolbar_remove.png")), "")
         self.actions["remove_finished"].setWhatsThis(whatsThisFormat(_("Remove Finished"), _("Removes all finished downloads from the Queue and the Collector.")))
-        self.connect(self.actions["toggle_status"], SIGNAL("toggled(bool)"), self.slotToggleStatus)
         self.connect(self.toolbar_speedLimit_enabled, SIGNAL("toggled(bool)"), self.slotSpeedLimitStatus)
         self.connect(self.toolbar_speedLimit_rate, SIGNAL("editingFinished()"), self.slotSpeedLimitRate)
         self.connect(self.toolbar_captcha, SIGNAL("clicked()"), self.slotCaptchaStatusButton)
+        self.connect(self.actions["status_start"], SIGNAL("triggered(bool)"), self.slotStatusStart)
         self.connect(self.actions["status_stop"], SIGNAL("triggered()"), self.slotStatusStop)
+        self.connect(self.actions["status_pause"], SIGNAL("triggered(bool)"), self.slotStatusPause)
         self.connect(self.actions["restart_failed"], SIGNAL("triggered()"), self.slotRestartFailed)
         self.connect(self.actions["remove_finished"], SIGNAL("triggered()"), self.slotRemoveFinished)
         
@@ -848,15 +852,17 @@ class MainWindow(QMainWindow):
         """
         self.emit(SIGNAL("showCaptcha"))
     
-    def slotToggleStatus(self, status):
+    def slotStatusStart(self):
         """
-            pause/start toggle (toolbar)
+            run button (toolbar)
         """
-        if status:
-            self.actions["toggle_status"].setIcon(self.toggleStatusIconPause)
-        else:
-            self.actions["toggle_status"].setIcon(self.toggleStatusIconStart)
-        self.emit(SIGNAL("setDownloadStatus"), status)
+        self.emit(SIGNAL("setDownloadStatus"), True)
+    
+    def slotStatusPause(self):
+        """
+            pause button (toolbar)
+        """
+        self.emit(SIGNAL("setDownloadStatus"), False)
     
     def slotStatusStop(self):
         """
