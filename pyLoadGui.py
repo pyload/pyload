@@ -3191,15 +3191,6 @@ class main(QObject):
                 self.stop()
                 return
 
-            self.parent.refreshServerStatus()
-            if self.lastSpaceCheck + 5 < time():
-                self.lastSpaceCheck = time()
-                if self.parent.corePermissions["STATUS"]:
-                    self.parent.serverStatus["freespace"] = self.parent.connector.proxy.freeSpace()
-            self.parent.refreshGuiLog()
-            self.parent.refreshCoreLog(first)
-            self.parent.checkCaptcha()
-
             # check dirty data model flags at regular intervals
             self.parent.queue.fullReloadOnDirty()
             self.parent.collector.fullReloadOnDirty()
@@ -3209,6 +3200,15 @@ class main(QObject):
                 interval = float(self.parent.automaticReloadingOptions.settings["interval"]) - 0.5
                 self.parent.queue.automaticReloading(interval)
                 self.parent.collector.automaticReloading(interval)
+
+            self.parent.refreshServerStatus()
+            if self.lastSpaceCheck + 5 < time():
+                self.lastSpaceCheck = time()
+                if self.parent.corePermissions["STATUS"]:
+                    self.parent.serverStatus["freespace"] = self.parent.connector.proxy.freeSpace()
+            self.parent.refreshGuiLog()
+            self.parent.refreshCoreLog(first)
+            self.parent.checkCaptcha()
             self.parent.updateToolbarSpeedLimitFromCore(first)
 
         def stop(self):
