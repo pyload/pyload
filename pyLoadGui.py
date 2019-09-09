@@ -57,6 +57,7 @@ from os.path import join
 from os.path import basename
 from os.path import commonprefix
 from os.path import exists
+from datetime import datetime
 from threading import Timer
 
 from module import InitHomeDir
@@ -87,6 +88,9 @@ class main(QObject):
             sys.excepthook = self.pyLoadGuiExcepthook
         else:
             sys.excepthook = sys.__excepthook__
+
+    def time_msec(self):
+        return int((datetime.utcnow() - datetime(1970, 1, 1)).total_seconds() * 1000)
 
     def __init__(self):
         """
@@ -150,6 +154,7 @@ class main(QObject):
                 self.print_help()
                 exit()
 
+        self.pullEventsCount = 0
         self.fileLogIsEnabled = None
         self.connManagerDisableConnect = False
         if not self.checkConfigFiles():
@@ -2888,9 +2893,12 @@ class main(QObject):
         """
         if not self.corePermissions["STATUS"]:
             return
+        self.pullEventsCount += 1
+        func_start_time = self.time_msec()
         events = self.connector.proxy.getEvents(self.connector.connectionID)
         if not events:
             return
+        self.log.debug8("main.pullEvents(%d): %d events received after %dms" % (self.pullEventsCount, len(events), self.time_msec() - func_start_time))
         for event in events:
             if self.log.isEnabledFor(logging.DEBUG1):
                 self.debug_pullEvents(event)
@@ -2906,6 +2914,7 @@ class main(QObject):
                     self.queue.addEvent(event)      # workaround for Api.addFiles() sending reload for collector even when the package is in the queue
             else:
                 self.log.warning("main.pullEvents: Unhandled event: '%s'" % event.eventname)
+        self.log.debug8("main.pullEvents(%d) took %dms" % (self.pullEventsCount, self.time_msec() - func_start_time))
 
     def debug_pullEvents(self, event):
         if not self.corePermissions["LIST"]:
