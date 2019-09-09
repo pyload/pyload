@@ -270,12 +270,22 @@ class CollectorModel(QAbstractItemModel):
     def selectAllPackages(self, deselect):
         QMutexLocker(self.mutex)
         smodel = self.view.selectionModel()
+        oldSelection = smodel.selection()
+        selection = QItemSelection()
         for p in xrange(len(self._data)):
-            index = self.index(p, 0)
+            leftIndex = self.index(p, 0)
+            if not leftIndex.isValid(): raise ValueError("%s: Invalid index" % self.cname)
             if not deselect:
-                if not smodel.isSelected(index): smodel.select(index, QItemSelectionModel.Select | QItemSelectionModel.Rows)
-            else:
-                if smodel.isSelected(index): smodel.select(index, QItemSelectionModel.Deselect | QItemSelectionModel.Rows)
+                if not oldSelection.contains(leftIndex):
+                    rightIndex = self.index(p, self.cols - 1)
+                    if not rightIndex.isValid(): raise ValueError("%s: Invalid index" % self.cname)
+                    selection.select(leftIndex, rightIndex)
+            elif oldSelection.contains(leftIndex):
+                rightIndex = self.index(p, self.cols - 1)
+                if not rightIndex.isValid(): raise ValueError("%s: Invalid index" % self.cname)
+                selection.select(leftIndex, rightIndex)
+        if not selection.isEmpty():
+            self.mergeSelection(smodel, selection, deselect)
     
     def selectAll(self, deselect):
         QMutexLocker(self.mutex)
@@ -1335,13 +1345,23 @@ class CollectorView(QTreeView):
         if not isinstance(package, Package):
             raise TypeError("%s: Bad item instance" % self.cname)
         smodel = self.selectionModel()
+        oldSelection = smodel.selection()
+        selection = QItemSelection()
         for l, link in enumerate(package.children):
-            lindex = self.model.index(l, 0, index)
-            if not lindex.isValid():
+            leftIndex  = self.model.index(l, 0, index)
+            if not leftIndex.isValid():
                 raise ValueError("%s: Invalid index" % self.cname)
-            if smodel.isSelected(lindex): smodel.select(lindex, QItemSelectionModel.Deselect | QItemSelectionModel.Rows)
-            if lindex == smodel.currentIndex():
-                smodel.setCurrentIndex(QModelIndex(), QItemSelectionModel.NoUpdate)
+            if oldSelection.contains(leftIndex):
+                rightIndex = self.model.index(l, self.model.cols - 1, index)
+                if not rightIndex.isValid():
+                    raise ValueError("%s: Invalid index" % self.cname)
+                selection.select(leftIndex, rightIndex)
+        ci = smodel.currentIndex()
+        if self.model.parent(ci) == index:
+            ci = index
+        if not selection.isEmpty():
+            self.model.mergeSelection(smodel, selection, True)
+        smodel.setCurrentIndex(ci, QItemSelectionModel.NoUpdate)
     
     def mousePressEvent(self, event):
         index = self.indexAt(event.pos())
