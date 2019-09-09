@@ -1693,6 +1693,8 @@ class main(QObject):
                         self.threadManager.pause = True
                         self.signal.emit(SIGNAL("coreRestart()"))
 
+                self.connManagerDisableConnect = True
+
                 del sys.argv[1:] # do not pass our command-line arguments to the core
                 #sys.argv[1:2] = ["--foo=bar", "--debug"] # pass these instead
 
@@ -1725,7 +1727,6 @@ class main(QObject):
                 self.translation.install(unicode=True) # restore the gui language
                 self.connector.proxy = self.core.api
                 self.connector.internal = True
-                self.connManagerDisableConnect = True
 
             self.mainWindow.mactions["quitcore"].setEnabled(False)
             self.mainWindow.mactions["restartcore"].setEnabled(False)

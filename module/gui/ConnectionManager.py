@@ -58,7 +58,7 @@ class ConnectionManager(QDialog):
         self.btnConnect.setDefault(True)
         if disable_connect:
             self.btnConnect.setEnabled(False)
-            self.btnConnect.setToolTip(_("Cannot connect when the internal server was running.\nPlease close this window and restart the application."))
+            self.btnConnect.setToolTip(_("It is not possible to connect when the internal server was running or has failed to start.\nPlease close this window and restart the application."))
         
         buttonLayout.addWidget(self.btnNew)
         buttonLayout.addWidget(self.btnEdit)
