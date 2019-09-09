@@ -63,6 +63,8 @@ class CaptchaDialog(QDialog):
         self.buttons.button(QDialogButtonBox.Ok).setText(_("Submit"))
         self.buttons.button(QDialogButtonBox.Ignore).setText(_("Ignore"))
         self.buttons.button(QDialogButtonBox.Close).setText(_("Close"))
+        self.ignoreBtn.setFocusPolicy(Qt.NoFocus)   # do not close the dialog on return keypress
+        self.closeBtn.setFocusPolicy(Qt.NoFocus)    # do not close the dialog on return keypress
 
         hbox = QHBoxLayout()
         hbox.addStretch()

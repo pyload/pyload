@@ -422,6 +422,13 @@ class CaptchaOptions(QDialog):
         QDialog.__init__(self, parent)
         self.log = logging.getLogger("guilog")
 
+        wt = _(
+        "Enables Captcha handling for this pyLoad Client.<br>"
+        "- Captcha Button in the toolbar<br>"
+        "- Required for Captcha Desktop Notifications<br><br>"
+        )
+        self.setWhatsThis(whatsThisFormat(_("Captchas"), wt))
+
         self.settings = {}
 
         self.setAttribute(Qt.WA_DeleteOnClose, False)
@@ -429,7 +436,7 @@ class CaptchaOptions(QDialog):
         self.setWindowTitle(_("Options"))
         self.setWindowIcon(QIcon(join(pypath, "icons", "logo.png")))
 
-        self.cbAdjSize                 = QCheckBox(_("Adjust pop-up window size to its content"))
+        self.cbAdjSize                 = QCheckBox(_("Adjust window size to its content"))
         self.cbPopUpCaptcha            = QCheckBox(_("Pop up input dialog for non-interactive captchas"))
         self.cbPopUpCaptchaInteractive = QCheckBox(_("Pop up info about interactive captchas"))
 
@@ -438,19 +445,18 @@ class CaptchaOptions(QDialog):
         vboxCb.addWidget(self.cbPopUpCaptcha)
         vboxCb.addWidget(self.cbPopUpCaptchaInteractive)
 
-        self.cbAccept = QGroupBox(_("Accept Captcha Requests"))
-        self.cbAccept.setCheckable(True)
-        self.cbAccept.setLayout(vboxCb)
+        self.cbEnabled = QGroupBox(_("Enable Captchas"))
+        self.cbEnabled.setCheckable(True)
+        self.cbEnabled.setLayout(vboxCb)
 
         self.buttons = WtDialogButtonBox(Qt.Horizontal, self)
-        self.buttons.hideWhatsThisButton()
         self.okBtn     = self.buttons.addButton(QDialogButtonBox.Ok)
         self.cancelBtn = self.buttons.addButton(QDialogButtonBox.Cancel)
         self.buttons.button(QDialogButtonBox.Ok).setText(_("OK"))
         self.buttons.button(QDialogButtonBox.Cancel).setText(_("Cancel"))
 
         vbox = QVBoxLayout()
-        vbox.addWidget(self.cbAccept)
+        vbox.addWidget(self.cbEnabled)
         vbox.addLayout(self.buttons.layout())
         self.setLayout(vbox)
 
@@ -463,20 +469,20 @@ class CaptchaOptions(QDialog):
 
     def defaultSettings(self):
         self.settings.clear()
-        self.settings["Accept"]                  = True
+        self.settings["Enabled"]                 = True
         self.settings["AdjSize"]                 = True
-        self.settings["PopUpCaptcha"]            = True
-        self.settings["PopUpCaptchaInteractive"] = True
+        self.settings["PopUpCaptcha"]            = False
+        self.settings["PopUpCaptchaInteractive"] = False
         self.dict2dialogState()
 
     def dialogState2dict(self):
-        self.settings["Accept"]                  = self.cbAccept.isChecked()
+        self.settings["Enabled"]                 = self.cbEnabled.isChecked()
         self.settings["AdjSize"]                 = self.cbAdjSize.isChecked()
         self.settings["PopUpCaptcha"]            = self.cbPopUpCaptcha.isChecked()
         self.settings["PopUpCaptchaInteractive"] = self.cbPopUpCaptchaInteractive.isChecked()
 
     def dict2dialogState(self):
-        self.cbAccept.setChecked                  (self.settings["Accept"])
+        self.cbEnabled.setChecked                 (self.settings["Enabled"])
         self.cbAdjSize.setChecked                 (self.settings["AdjSize"])
         self.cbPopUpCaptcha.setChecked            (self.settings["PopUpCaptcha"])
         self.cbPopUpCaptchaInteractive.setChecked (self.settings["PopUpCaptchaInteractive"])

@@ -2229,6 +2229,7 @@ class main(QObject):
             except Exception: self.captchaOptions.defaultSettings(); d = None
         if d is None: self.messageBox_21(_("Captchas")); reset = True
         self.mainWindow.captchaDialog.adjSize = self.captchaOptions.settings["AdjSize"]
+        self.mainWindow.actions["captcha"].setVisible(self.captchaOptions.settings["Enabled"])
         # Fonts
         d = base64ToDict(optionsFonts)
         if d is not None:
@@ -2832,7 +2833,7 @@ class main(QObject):
             called from main loop
             poll for captcha requests
         """
-        if not (self.corePermissions["STATUS"] and self.captchaOptions.settings["Accept"]):
+        if not (self.corePermissions["STATUS"] and self.captchaOptions.settings["Enabled"]):
             return
         if self.connector.proxy.isCaptchaWaiting():
             t = self.connector.proxy.getCaptchaTask(False)
@@ -2846,7 +2847,7 @@ class main(QObject):
                         self.mainWindow.captchaDialog.emit(SIGNAL("show"), False)
                     self.tray.captchaAction.setEnabled(False)
                     self.mainWindow.toolbar_captcha.setText(_("Interactive Captcha"))
-                    self.mainWindow.actions["captcha"].setVisible(True)
+                    self.mainWindow.actions["captcha"].setEnabled(True)
                 else:
                     self.slotNotificationMessage(101, None)
                     self.mainWindow.captchaDialog.emit(SIGNAL("setTask"), t.tid, json.loads(t.data), t.type, t.resultType)
@@ -2854,14 +2855,14 @@ class main(QObject):
                         self.mainWindow.captchaDialog.emit(SIGNAL("show"), False)
                     self.tray.captchaAction.setEnabled(True)
                     self.mainWindow.toolbar_captcha.setText(_("Captcha"))
-                    self.mainWindow.actions["captcha"].setVisible(True)
+                    self.mainWindow.actions["captcha"].setEnabled(True)
         else:
             if self.lastCaptchaId is not None:
                 self.mainWindow.captchaDialog.emit(SIGNAL("setFree"))
             self.lastCaptchaId = None
             self.tray.captchaAction.setEnabled(False)
-            self.mainWindow.toolbar_captcha.setText("NO CAPTCHA")
-            self.mainWindow.actions["captcha"].setVisible(False)
+            self.mainWindow.toolbar_captcha.setText(_("No Captchas"))
+            self.mainWindow.actions["captcha"].setEnabled(False)
 
     def slotCaptchaDone(self, cid, result):
         if not self.corePermissions["STATUS"]:
@@ -3197,6 +3198,8 @@ class main(QObject):
             popup the notification options dialog
         """
         self.notificationOptions.dict2checkBoxStates()
+        self.notificationOptions.cbCaptcha.setEnabled(self.corePermissions["STATUS"] and self.captchaOptions.settings["Enabled"])
+        self.notificationOptions.cbCaptchaInteractive.setEnabled(self.corePermissions["STATUS"] and self.captchaOptions.settings["Enabled"])
         retval = self.notificationOptions.exec_()
         if retval == QDialog.Accepted:
             self.notificationOptions.checkBoxStates2dict()
@@ -3262,13 +3265,19 @@ class main(QObject):
         self.captchaOptions.dict2dialogState()
         retval = self.captchaOptions.exec_()
         if retval == QDialog.Accepted:
+            oldEnabled = self.captchaOptions.settings["Enabled"]
             self.captchaOptions.dialogState2dict()
-            if not self.captchaOptions.settings["Accept"]:
-                self.mainWindow.toolbar_captcha.setText("DISABLED")
+            self.mainWindow.captchaDialog.adjSize = self.captchaOptions.settings["AdjSize"]
+            if self.captchaOptions.settings["Enabled"] == oldEnabled:
+                return
+            if self.captchaOptions.settings["Enabled"]:
+                self.mainWindow.actions["captcha"].setVisible(True)
+            else:
                 self.mainWindow.actions["captcha"].setVisible(False)
+                self.mainWindow.actions["captcha"].setEnabled(False)
+                self.mainWindow.toolbar_captcha.setText(_("No Captchas"))
                 self.mainWindow.captchaDialog.emit(SIGNAL("setFree"))
                 self.tray.captchaAction.setEnabled(False)
-            self.mainWindow.captchaDialog.adjSize = self.captchaOptions.settings["AdjSize"]
 
     def slotShowFontOptions(self):
         """
@@ -3694,7 +3703,7 @@ class InfoCorePermissions(QDialog):
                 wt2  = _("Needed for:<br>"
                          "- Updating Overview, Queue and Collector<br>"
                          "- Toolbar: Run, Pause and Stop feature to set server status 'Paused'<br>"
-                         "- Captcha solving<br>"
+                         "- Captchas<br>"
                          "- Status bar: Free space in the download folder")
             else:
                 name = k
