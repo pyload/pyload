@@ -87,6 +87,29 @@ class CollectorModel(QAbstractItemModel):
         """
         return translatedStatusMap[string]
     
+    def getSelectionInfo(self):
+        """
+            called from MainWindow
+        """
+        QMutexLocker(self.mutex)
+        packsCnt = linksCnt = 0
+        downloading = False
+        smodel = self.view.selectionModel()
+        for si in smodel.selectedRows(0):
+            item = si.internalPointer()
+            if isinstance(item, Package):
+                packsCnt += 1
+                for child in item.children:
+                    if child.data["downloading"]:
+                        downloading = True
+            elif isinstance(item, Link):
+                linksCnt += 1
+                if item.data["downloading"]:
+                    downloading = True
+            else:
+                raise TypeError("Unknown item instance")
+        return (packsCnt, linksCnt, downloading)
+    
     def getSelection(self, deselect, linksOfPacks):
         """
             called from main
