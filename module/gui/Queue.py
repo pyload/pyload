@@ -120,7 +120,7 @@ class QueueModel(CollectorModel):
         self.emit(SIGNAL("layoutChanged()"))
         self.dirty = False
         self.fullReloadCheck()
-        self.view.setEnabled(True)
+        self.view.setEnabled(self.view.corePermissions["LIST"])
         self.updateCount()
         self.applyViewItemStates()
         self.log.debug8("%s.fullReload took %dms" % (self.cname, self.time_msec() - func_start_time))

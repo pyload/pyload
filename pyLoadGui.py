@@ -3009,9 +3009,9 @@ class main(QObject):
                     self.log.warning("main.pullEvents: Unhandled event: '%s'" % event.eventname)
             self.log.debug8("main.pullEvents(%d) took %dms" % (self.pullEventsCount, self.time_msec() - func_start_time))
         self.collector.view.buttonMsgHide(3000)
-        self.collector.view.setEnabled(True)
+        self.collector.view.setEnabled(self.corePermissions["LIST"])
         self.queue.view.buttonMsgHide(3000)
-        self.queue.view.setEnabled(True)
+        self.queue.view.setEnabled(self.corePermissions["LIST"])
 
     def debug_pullEvents(self, event):
         if not self.corePermissions["LIST"]:
