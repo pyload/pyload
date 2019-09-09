@@ -12,7 +12,7 @@ except ImportError:
 
 from thrift.transport import TTransport
 #from thrift.transport.TZlibTransport import TZlibTransport
-from Socket import Socket
+from CoreSocket import Socket
 from Protocol import Protocol
 
 # modules should import ttypes from here, when want to avoid importing API
