@@ -1063,7 +1063,11 @@ class CollectorModel(QAbstractItemModel):
                     if len(dupeIds) == 0:
                         self.view.buttonMsgShow(_("No duplicate links found"), False)
                     else:
+                        self.view.buttonMsgShow(_("Removing duplicate links ..."), False)
+                        self.view.setEnabled(False)
+                        self.view.update()
                         self.view.setExpanded(pindex, True)
+                        QApplication.processEvents()
                         self.connector.proxy.deleteFiles(dupeIds)
                         self.view.buttonMsgShow(_("Duplicate links removed"), False)
                 else:
@@ -1078,7 +1082,7 @@ class CollectorModel(QAbstractItemModel):
             self.view.clearSelection()
             self.view.setCurrentIndex(QModelIndex())
             smodel.select(pindex, QItemSelectionModel.Select | QItemSelectionModel.Rows)
-        self.view.buttonMsgHide(2000)
+        self.view.buttonMsgHide(3000)
         self.log.debug8("%s.removeLinkDupes took %dms" % (self.cname, self.time_msec() - func_start_time))
     
     def sortPackages(self):
