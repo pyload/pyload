@@ -307,6 +307,11 @@ class CollectorModel(QAbstractItemModel):
         QMutexLocker(self.mutex)
         self.fullReload()
     
+    def fullReloadFromPullEvents(self):
+        self.log.debug9("%s.fullReloadFromPullEvents: function entered" % self.cname)
+        QMutexLocker(self.mutex)
+        self.fullReload()
+    
     def automaticReloading(self, interval):
         if not self.view.corePermissions["LIST"]:
             return
@@ -1116,6 +1121,9 @@ class CollectorModel(QAbstractItemModel):
                 if alreadySorted:
                     self.view.buttonMsgShow(_("Nothing to do, packages are already sorted"), False)
                 else:
+                    self.view.setEnabled(False)
+                    self.view.update()
+                    QApplication.processEvents()
                     packMoves = self.smallestListOfItemMoves(packs, sortedPacks)
                     self.log.debug8("%s.sortPackages: %d packMoves build after %dms" % (self.cname, len(packMoves), self.time_msec() - func_start_time))
                     for move in packMoves:
@@ -1161,7 +1169,10 @@ class CollectorModel(QAbstractItemModel):
                     if alreadySorted:
                         self.view.buttonMsgShow(_("Nothing to do, Links are already sorted"), False)
                     else:
-                        self.view.setExpanded(pindex, True)
+                        self.view.setEnabled(False)
+                        self.view.update()
+                        QApplication.processEvents()
+                        #self.view.setExpanded(pindex, True)
                         linkMoves = self.smallestListOfItemMoves(links, sortedLinks)
                         self.log.debug8("%s.sortLinks: %d linkMoves build after %dms" % (self.cname, len(linkMoves), self.time_msec() - func_start_time))
                         for move in linkMoves:

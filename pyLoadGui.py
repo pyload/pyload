@@ -2899,22 +2899,30 @@ class main(QObject):
         if not events:
             return
         self.log.debug8("main.pullEvents(%d): %d events received after %dms" % (self.pullEventsCount, len(events), self.time_msec() - func_start_time))
-        for event in events:
-            if self.log.isEnabledFor(logging.DEBUG1):
-                self.debug_pullEvents(event)
-            if event.eventname == "account":
-                pass
-            elif event.eventname == "config":
-                pass
-            elif event.destination == Destination.Queue:
-                self.queue.addEvent(event)
-            elif event.destination == Destination.Collector:
-                self.collector.addEvent(event)
-                if event.eventname == "reload":
-                    self.queue.addEvent(event)      # workaround for Api.addFiles() sending reload for collector even when the package is in the queue
-            else:
-                self.log.warning("main.pullEvents: Unhandled event: '%s'" % event.eventname)
-        self.log.debug8("main.pullEvents(%d) took %dms" % (self.pullEventsCount, self.time_msec() - func_start_time))
+        if len(events) > 100 and self.corePermissions["LIST"]:
+            # do a fullReload instead since it's most likely faster
+            self.collector.fullReloadFromPullEvents()
+            self.queue.fullReloadFromPullEvents()
+            self.log.debug8("main.pullEvents(%d) forced fullReload took %dms" % (self.pullEventsCount, self.time_msec() - func_start_time))
+        else:
+            for event in events:
+                if self.log.isEnabledFor(logging.DEBUG1):
+                    self.debug_pullEvents(event)
+                if event.eventname == "account":
+                    pass
+                elif event.eventname == "config":
+                    pass
+                elif event.destination == Destination.Queue:
+                    self.queue.addEvent(event)
+                elif event.destination == Destination.Collector:
+                    self.collector.addEvent(event)
+                    if event.eventname == "reload":
+                        self.queue.addEvent(event)      # workaround for Api.addFiles() sending reload for collector even when the package is in the queue
+                else:
+                    self.log.warning("main.pullEvents: Unhandled event: '%s'" % event.eventname)
+            self.log.debug8("main.pullEvents(%d) took %dms" % (self.pullEventsCount, self.time_msec() - func_start_time))
+        self.collector.view.setEnabled(True)
+        self.queue.view.setEnabled(True)
 
     def debug_pullEvents(self, event):
         if not self.corePermissions["LIST"]:
