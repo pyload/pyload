@@ -289,22 +289,12 @@ class CollectorModel(QAbstractItemModel):
         func_start_time = self.time_msec()
         QMutexLocker(self.mutex)
         smodel = self.view.selectionModel()
-        oldSelection = smodel.selection()
-        selection = QItemSelection()
         for p in xrange(len(self._data)):
-            leftIndex = self.index(p, 0)
-            if not leftIndex.isValid(): raise ValueError("%s: Invalid index" % self.cname)
+            index = self.index(p, 0)
             if not deselect:
-                if not oldSelection.contains(leftIndex):
-                    rightIndex = self.index(p, self.cols - 1)
-                    if not rightIndex.isValid(): raise ValueError("%s: Invalid index" % self.cname)
-                    selection.select(leftIndex, rightIndex)
-            elif oldSelection.contains(leftIndex):
-                rightIndex = self.index(p, self.cols - 1)
-                if not rightIndex.isValid(): raise ValueError("%s: Invalid index" % self.cname)
-                selection.select(leftIndex, rightIndex)
-        if not selection.isEmpty():
-            self.mergeSelection(smodel, selection, deselect)
+                if not smodel.isSelected(index): smodel.select(index, QItemSelectionModel.Select | QItemSelectionModel.Rows)
+            else:
+                if smodel.isSelected(index): smodel.select(index, QItemSelectionModel.Deselect | QItemSelectionModel.Rows)
         self.log.debug8("%s.selectAllPackages took %dms" % (self.cname, self.time_msec() - func_start_time))
     
     def selectAll(self, deselect):
@@ -1490,23 +1480,13 @@ class CollectorView(QTreeView):
         if not isinstance(package, Package):
             raise TypeError("%s: Bad item instance" % self.cname)
         smodel = self.selectionModel()
-        oldSelection = smodel.selection()
-        selection = QItemSelection()
         for l, link in enumerate(package.children):
-            leftIndex  = self.model.index(l, 0, index)
-            if not leftIndex.isValid():
+            lindex = self.model.index(l, 0, index)
+            if not lindex.isValid():
                 raise ValueError("%s: Invalid index" % self.cname)
-            if oldSelection.contains(leftIndex):
-                rightIndex = self.model.index(l, self.model.cols - 1, index)
-                if not rightIndex.isValid():
-                    raise ValueError("%s: Invalid index" % self.cname)
-                selection.select(leftIndex, rightIndex)
-        ci = smodel.currentIndex()
-        if self.model.parent(ci) == index:
-            ci = index
-        if not selection.isEmpty():
-            self.model.mergeSelection(smodel, selection, True)
-        smodel.setCurrentIndex(ci, QItemSelectionModel.NoUpdate)
+            if smodel.isSelected(lindex): smodel.select(lindex, QItemSelectionModel.Deselect | QItemSelectionModel.Rows)
+            if lindex == smodel.currentIndex():
+                smodel.setCurrentIndex(QModelIndex(), QItemSelectionModel.NoUpdate)
         self.log.debug8("%s.packageCollapsed took %dms" % (self.cname, self.model.time_msec() - func_start_time))
     
     def mousePressEvent(self, event):
