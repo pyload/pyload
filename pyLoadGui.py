@@ -3921,7 +3921,7 @@ class PackageEdit(QDialog):
         self.cancelAllBtn = self.buttons.addButton(QDialogButtonBox.No)
         self.cancelAllBtn.setDefault(False)
         self.cancelAllBtn.setAutoDefault(False)
-        self.cancelAllBtn.setText(_("Cancel All"))
+        self.cancelAllBtn.setText(_("Cancel Remaining"))
         vbox.addLayout(self.buttons.layout())
 
         self.setLayout(vbox)
