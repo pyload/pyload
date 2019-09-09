@@ -1000,6 +1000,7 @@ class CollectorView(QTreeView):
         self.header().customContextMenuRequested.connect(self.headerContextMenu)
         
         self.connect(self, SIGNAL("dropEvent"), self.model.slotDropEvent)
+        self.connect(self, SIGNAL("collapsed(const QModelIndex &)"), self.packageCollapsed)
     
     def setCorePermissions(self, corePermissions):
         self.corePermissions = corePermissions
@@ -1050,6 +1051,19 @@ class CollectorView(QTreeView):
     def treeCollapseAll(self):
         for i in range(0, self.model.rowCount()):
             self.collapse(self.model.index(i, 0))
+    
+    def packageCollapsed(self, index):
+        package = index.internalPointer()
+        if not isinstance(package, Package):
+            raise TypeError("%s: Bad item instance" % self.cname)
+        smodel = self.selectionModel()
+        for l, link in enumerate(package.children):
+            lindex = self.model.index(l, 0, index)
+            if not lindex.isValid():
+                raise ValueError("%s: Invalid index" % self.cname)
+            smodel.select(lindex, QItemSelectionModel.Deselect | QItemSelectionModel.Rows)
+            if lindex == smodel.currentIndex():
+                smodel.setCurrentIndex(QModelIndex(), QItemSelectionModel.NoUpdate)
     
     def dragEnterEvent(self, event):
         if event.source() != self:

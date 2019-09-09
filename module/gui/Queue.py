@@ -440,6 +440,7 @@ class QueueView(CollectorView):
         self.header().customContextMenuRequested.connect(self.headerContextMenu)
         
         self.connect(self, SIGNAL("dropEvent"), self.model.slotDropEvent)
+        self.connect(self, SIGNAL("collapsed(const QModelIndex &)"), self.packageCollapsed)
         
         self.delegate = QueueProgressBarDelegate(self, self.model)
         self.setItemDelegateForColumn(5, self.delegate)
