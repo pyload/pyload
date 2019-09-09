@@ -95,23 +95,29 @@ class CollectorModel(QAbstractItemModel):
         """
             called from MainWindow
         """
+        func_start_time = self.time_msec()
         QMutexLocker(self.mutex)
         packsCnt = linksCnt = 0
         downloading = False
-        smodel = self.view.selectionModel()
-        for si in smodel.selectedRows(0):
+        for si in self.view.selectionModel().selectedIndexes():
+            if si.column() != 0:
+                continue
             item = si.internalPointer()
             if isinstance(item, Package):
                 packsCnt += 1
-                for child in item.children:
-                    if child.data["downloading"]:
-                        downloading = True
+                if not downloading:
+                    for child in item.children:
+                        if child.data["downloading"]:
+                            downloading = True
+                            break
             elif isinstance(item, Link):
                 linksCnt += 1
-                if item.data["downloading"]:
-                    downloading = True
+                if not downloading:
+                    if item.data["downloading"]:
+                        downloading = True
             else:
                 raise TypeError("Unknown item instance")
+        self.log.debug8("%s.getSelectionInfo took %dms, packsCnt:%d linksCnt:%d downloading:%s" % (self.cname, self.time_msec() - func_start_time, packsCnt, linksCnt, downloading))
         return (packsCnt, linksCnt, downloading)
     
     def getSelection(self, deselect, linksOfPacks):
@@ -292,6 +298,7 @@ class CollectorModel(QAbstractItemModel):
             self.mergeSelection(smodel, selection, deselect)
     
     def selectAll(self, deselect):
+        func_start_time = self.time_msec()
         QMutexLocker(self.mutex)
         if not deselect:
             self.view.setCurrentIndex(QModelIndex())
@@ -299,6 +306,7 @@ class CollectorModel(QAbstractItemModel):
         else:
             self.view.clearSelection()
             self.view.setCurrentIndex(QModelIndex())
+        self.log.debug8("%s.selectAll took %dms, deselect:%s" % (self.cname, self.time_msec() - func_start_time, deselect))
     
     def fullReloadFromMenu(self):
         if not self.view.corePermissions["LIST"]:
@@ -1042,6 +1050,7 @@ class CollectorModel(QAbstractItemModel):
         """
             special method to speed up performance of QItemSelectionModel
         """
+        func_start_time = self.time_msec()
         selNew = smodel.selection()
         if not deselect:
             selNew.merge(selection, QItemSelectionModel.Select)
@@ -1057,6 +1066,7 @@ class CollectorModel(QAbstractItemModel):
         self.view.clearSelection()
         self.view.setCurrentIndex(QModelIndex())
         smodel.select(selNew2, QItemSelectionModel.Select | QItemSelectionModel.Rows)
+        self.log.debug8("%s.mergeSelection took %dms, deselect:%s" % (self.cname, self.time_msec() - func_start_time, deselect))
     
     def removeLinkDupes(self):
         """
@@ -1450,6 +1460,7 @@ class CollectorView(QTreeView):
             self.collapse(self.model.index(i, 0))
     
     def packageCollapsed(self, index):
+        func_start_time = self.model.time_msec()
         package = index.internalPointer()
         if not isinstance(package, Package):
             raise TypeError("%s: Bad item instance" % self.cname)
@@ -1471,6 +1482,7 @@ class CollectorView(QTreeView):
         if not selection.isEmpty():
             self.model.mergeSelection(smodel, selection, True)
         smodel.setCurrentIndex(ci, QItemSelectionModel.NoUpdate)
+        self.log.debug8("%s.packageCollapsed took %dms" % (self.cname, self.model.time_msec() - func_start_time))
     
     def mousePressEvent(self, event):
         index = self.indexAt(event.pos())
