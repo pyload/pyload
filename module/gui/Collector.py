@@ -188,14 +188,15 @@ class CollectorModel(QAbstractItemModel):
         if ci.isValid():
             item = ci.internalPointer()
             if isinstance(item, Package):
-                pid = fid = item.id
+                pid = item.id
+                fid = None
             elif isinstance(item, Link):
                 pid = item.data["package"]
                 fid = item.id
             else:
                 raise TypeError("%s: Unknown item instance" % self.cname)
             self.currentItem = (pid, fid)
-            self.log.debug0("%s.saveViewItemStates:currentItem:   name:'%s'   pid:%d   fid:%d" % (self.cname, item.data["name"], pid, fid))
+            self.log.debug0("%s.saveViewItemStates:currentItem:   name:'%s'   pid:%d   fid:%s" % (self.cname, item.data["name"], pid, str(fid)))
         else:
             self.log.debug0("%s.saveViewItemStates:currentItem: <none>" % self.cname)
         # selection
@@ -203,14 +204,15 @@ class CollectorModel(QAbstractItemModel):
         for si in smodel.selectedRows(0):
             item = si.internalPointer()
             if isinstance(item, Package):
-                pid = fid = item.id
+                pid = item.id
+                fid = None
             elif isinstance(item, Link):
                 pid = item.data["package"]
                 fid = item.id
             else:
                 raise TypeError("%s: Unknown item instance" % self.cname)
             self.selectedItems.append([pid, fid])
-            self.log.debug0("%s.saveViewItemStates:selectedItem:   name:'%s'   pid:%d   fid:%d" % (self.cname, item.data["name"], pid, fid))
+            self.log.debug0("%s.saveViewItemStates:selectedItem:   name:'%s'   pid:%d   fid:%s" % (self.cname, item.data["name"], pid, str(fid)))
         self.log.debug8("%s.saveViewItemStates took %dms" % (self.cname, self.time_msec() - func_start_time))
     
     def applyViewItemStates(self):
@@ -232,7 +234,7 @@ class CollectorModel(QAbstractItemModel):
         smodel = self.view.selectionModel()
         if self.currentItem:
             (pid, fid) = self.currentItem
-            itemIsPackage = (pid == fid)
+            itemIsPackage = (fid == None)
             index = None
             for p, package in enumerate(self._data):
                 if package.id == pid:
@@ -251,18 +253,21 @@ class CollectorModel(QAbstractItemModel):
                     break
             if index:
                 smodel.setCurrentIndex(index, QItemSelectionModel.NoUpdate)
-                self.log.debug0("%s.applyViewItemStates:currentItem:   pid:%d   fid:%d" % (self.cname, pid, fid))
+                self.log.debug0("%s.applyViewItemStates:currentItem:   pid:%d   fid:%s" % (self.cname, pid, str(fid)))
             else:
-                self.log.debug0("%s.applyViewItemStates:currentItem: *Not found*   pid:%d   fid:%d" % (self.cname, pid, fid))
+                self.log.debug0("%s.applyViewItemStates:currentItem: *Not found*   pid:%d   fid:%s" % (self.cname, pid, str(fid)))
         else:
             self.log.debug0("%s.applyViewItemStates:currentItem: <none>" % self.cname)
         # selection
         self.view.clearSelection()
+        itemSel = QItemSelection()
         for ids in self.selectedItems:
-            itemIsPackage = (ids[0] == ids[1])
+            pid = ids[0]
+            fid = ids[1]
+            itemIsPackage = (fid == None)
             index = None
             for p, package in enumerate(self._data):
-                if package.id == ids[0]:
+                if package.id == pid:
                     pindex = self.index(p, 0)
                     if not pindex.isValid():
                         raise ValueError("%s: Invalid index" % self.cname)
@@ -270,19 +275,22 @@ class CollectorModel(QAbstractItemModel):
                         index = pindex
                     else:
                         for l, link in enumerate(package.children):
-                            if link.id == ids[1]:
+                            if link.id == fid:
                                 index = self.index(l, 0, pindex)
                                 if not index.isValid():
                                     raise ValueError("%s: Invalid index" % self.cname)
                                 break
                     break
             if index:
-                smodel.select(index, QItemSelectionModel.Select | QItemSelectionModel.Rows)
-                self.log.debug0("%s.applyViewItemStates:selectedItem:   pid:%d   fid:%d" % (self.cname, ids[0], ids[1]))
+                its = QItemSelection()
+                its.append(QItemSelectionRange(index, self.index(index.row(), self.cols - 1, index.parent())))
+                itemSel.merge(its, QItemSelectionModel.Select)
+                self.log.debug0("%s.applyViewItemStates:selectedItem:   pid:%d   fid:%s" % (self.cname, pid, str(fid)))
             elif itemIsPackage:
-                self.log.warning("%s.applyViewItemStates:selectedItem: Prevoiusly selected package not found, id:%d" % (self.cname, ids[0]))
+                self.log.warning("%s.applyViewItemStates:selectedItem: Prevoiusly selected package not found, pid:%d" % (self.cname, pid))
             else:
-                self.log.warning("%s.applyViewItemStates:selectedItem: Prevoiusly selected link not found, id:%d (in package id:%d)" % (self.cname, ids[1], ids[0]))
+                self.log.warning("%s.applyViewItemStates:selectedItem: Prevoiusly selected link not found, fid:%s (in package pid:%d)" % (self.cname, str(fid), pid))
+        smodel.select(itemSel, QItemSelectionModel.Select)
         self.log.debug8("%s.applyViewItemStates took %dms" % (self.cname, self.time_msec() - func_start_time))
     
     def selectAllPackages(self, deselect):
@@ -365,14 +373,14 @@ class CollectorModel(QAbstractItemModel):
             self.fullReload()
             self.log.debug2("%s.fullReload: done" % self.cname)
             return
-#       self.saveViewItemStates() # FIXME: broken or too slow?
+#       self.saveViewItemStates()
         if event.eventname == "remove":
             self.removeEvent(event)
         elif event.eventname == "insert":
             self.insertEvent(event)
         elif event.eventname == "update":
             self.updateEvent(event)
-#       self.applyViewItemStates() # FIXME: broken or too slow?
+#       self.applyViewItemStates()
         self.fullReloadOnDirty(False)
     
     def fullReload(self):
@@ -381,7 +389,7 @@ class CollectorModel(QAbstractItemModel):
         """
         func_start_time = self.time_msec()
         self.lastFullReload = time()
-#       self.saveViewItemStates() # FIXME: broken or too slow?
+        self.saveViewItemStates()
         self.beginResetModel()
         self._data = []
         self.endResetModel()
@@ -405,7 +413,7 @@ class CollectorModel(QAbstractItemModel):
         self.dirty = False
         self.fullReloadCheck()
         self.view.setEnabled(True)
-#       self.applyViewItemStates() # FIXME: broken or too slow?
+        self.applyViewItemStates()
         self.log.debug8("%s.fullReload took %dms" % (self.cname, self.time_msec() - func_start_time))
     
     def fullReloadCheck(self):

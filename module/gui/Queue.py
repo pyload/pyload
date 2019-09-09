@@ -76,7 +76,7 @@ class QueueModel(CollectorModel):
         """
         func_start_time = self.time_msec()
         self.lastFullReload = time()
-#       self.saveViewItemStates() # FIXME: broken or too slow?
+        self.saveViewItemStates()
         self.beginResetModel()
         self._data = []
         self.endResetModel()
@@ -122,7 +122,7 @@ class QueueModel(CollectorModel):
         self.fullReloadCheck()
         self.view.setEnabled(True)
         self.updateCount()
-#       self.applyViewItemStates() # FIXME: broken or too slow?
+        self.applyViewItemStates()
         self.log.debug8("%s.fullReload took %dms" % (self.cname, self.time_msec() - func_start_time))
     
     def insertEvent(self, event):
