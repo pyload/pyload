@@ -440,6 +440,7 @@ class main(QObject):
             start all refresh threads and show main window
         """
         self.loadOptionsFromConfig()
+        self.mainWindow.slotSetupPluginsMenu()
         connected = self.connector.connectProxy()
         self.connectTimeout(False)
         if not connected:
@@ -641,6 +642,7 @@ class main(QObject):
         self.connect(self.mainWindow,          SIGNAL("deleteFinished"), self.slotDeleteFinished)
         self.connect(self.mainWindow,          SIGNAL("pullOutPackages"), self.slotPullOutPackages)
         self.connect(self.mainWindow,          SIGNAL("reloadAccounts"), self.slotReloadAccounts)
+        self.connect(self.mainWindow,          SIGNAL("menuPluginNotFound"), self.slotMenuPluginNotFound)
         self.connect(self.mainWindow,          SIGNAL("showAbout"), self.slotShowAbout)
         self.connect(self.mainWindow,          SIGNAL("mainWindowClose"), self.slotMainWindowClose)
 
@@ -1318,6 +1320,8 @@ class main(QObject):
         dm("22"); self.messageBox_22()
         dm("23"); self.messageBox_23(pidfile, pid)
         dm("24"); self.messageBox_24()
+        dm("25"); self.messageBox_25()
+        dm("26"); self.messageBox_26()
         # ClickNLoadForwarder
         dm("19"); self.clickNLoadForwarder.messageBox_19()
         dm("20"); self.clickNLoadForwarder.messageBox_20()
@@ -1954,10 +1958,12 @@ class main(QObject):
             self.log.debug4("main.prepareForSaveOptionsAndWindow: contFunc()")
             QTimer.singleShot(0, contFunc)
 
-    def saveOptionsToConfig(self):
+    def saveOptionsToConfig(self, backup=False):
         """
             save options to the config file
         """
+        if backup:
+            with open(join(self.homedir, "gui.xml"), 'r') as src, open(join(self.homedir, "gui.xml.backup.reset"), 'w') as dst: dst.write(src.read())
         mainWindowNode = self.parser.xml.elementsByTagName("mainWindow").item(0)
         if mainWindowNode.isNull():
             mainWindowNode = self.parser.xml.createElement("mainWindow")
@@ -1972,6 +1978,7 @@ class main(QObject):
         optionsTray = str(QByteArray(str(self.trayOptions.settings)).toBase64())
         optionsWhatsThis = str(QByteArray(str(self.whatsThisOptions.settings)).toBase64())
         optionsOther = str(QByteArray(str(self.otherOptions.settings)).toBase64())
+        menuPlugins = str(self.mainWindow.tabs["settings"]["w"].menuPlugins)
         lastAddContainerDir = self.mainWindow.lastAddContainerDir
         optionsNotificationsNode = mainWindowNode.toElement().elementsByTagName("optionsNotifications").item(0)
         optionsLoggingNode = mainWindowNode.toElement().elementsByTagName("optionsLogging").item(0)
@@ -1983,6 +1990,7 @@ class main(QObject):
         optionsTrayNode = mainWindowNode.toElement().elementsByTagName("optionsTray").item(0)
         optionsWhatsThisNode = mainWindowNode.toElement().elementsByTagName("optionsWhatsThis").item(0)
         optionsOtherNode = mainWindowNode.toElement().elementsByTagName("optionsOther").item(0)
+        menuPluginsNode = mainWindowNode.toElement().elementsByTagName("menuPlugins").item(0)
         lastAddContainerDirNode = mainWindowNode.toElement().elementsByTagName("lastAddContainerDir").item(0)
         newOptionsNotificationsNode = self.parser.xml.createTextNode(optionsNotifications)
         newOptionsLoggingNode = self.parser.xml.createTextNode(optionsLogging)
@@ -1994,6 +2002,7 @@ class main(QObject):
         newOptionsTrayNode = self.parser.xml.createTextNode(optionsTray)
         newOptionsWhatsThisNode = self.parser.xml.createTextNode(optionsWhatsThis)
         newOptionsOtherNode = self.parser.xml.createTextNode(optionsOther)
+        newMenuPluginsNode = self.parser.xml.createTextNode(menuPlugins)
         newLastAddContainerDirNode = self.parser.xml.createTextNode(lastAddContainerDir)
         optionsNotificationsNode.removeChild(optionsNotificationsNode.firstChild())
         optionsNotificationsNode.appendChild(newOptionsNotificationsNode)
@@ -2015,6 +2024,8 @@ class main(QObject):
         optionsWhatsThisNode.appendChild(newOptionsWhatsThisNode)
         optionsOtherNode.removeChild(optionsOtherNode.firstChild())
         optionsOtherNode.appendChild(newOptionsOtherNode)
+        menuPluginsNode.removeChild(menuPluginsNode.firstChild())
+        menuPluginsNode.appendChild(newMenuPluginsNode)
         lastAddContainerDirNode.removeChild(lastAddContainerDirNode.firstChild())
         lastAddContainerDirNode.appendChild(newLastAddContainerDirNode)
         self.parser.saveData()
@@ -2168,6 +2179,8 @@ class main(QObject):
             mainWindowNode.appendChild(self.parser.xml.createElement("optionsWhatsThis"))
         if not nodes.get("optionsOther"):
             mainWindowNode.appendChild(self.parser.xml.createElement("optionsOther"))
+        if not nodes.get("menuPlugins"):
+            mainWindowNode.appendChild(self.parser.xml.createElement("menuPlugins"))
         if not nodes.get("lastAddContainerDir"):
             mainWindowNode.appendChild(self.parser.xml.createElement("lastAddContainerDir"))
         nodes = self.parser.parseNode(mainWindowNode, "dict")   # reparse with the new nodes (if any)
@@ -2187,6 +2200,7 @@ class main(QObject):
         optionsTray = str(nodes["optionsTray"].text())
         optionsWhatsThis = str(nodes["optionsWhatsThis"].text())
         optionsOther = str(nodes["optionsOther"].text())
+        menuPlugins = str(nodes["menuPlugins"].text())
         lastAddContainerDir = unicode(nodes["lastAddContainerDir"].text())
         reset = False
 
@@ -2198,6 +2212,15 @@ class main(QObject):
             if d and not isinstance(d, dict):
                 d = None
             return d
+
+        def strToList(s):
+            try:
+                l = literal_eval(s)
+            except Exception:
+                l = None
+            if l and not isinstance(l, list):
+                l = None
+            return l
 
         # Desktop Notifications
         d = base64ToDict(optionsNotifications)
@@ -2265,14 +2288,27 @@ class main(QObject):
             try:              self.otherOptions.settings = d; self.otherOptions.dict2checkBoxStates()
             except Exception: self.otherOptions.defaultSettings(); d = None
         if d is None: self.messageBox_21(_("Other")); reset = True
-        # Last folder from where a container file has been loaded
+        # Menu->Plugins entries
+        l = strToList(menuPlugins)
+        if l is None: self.messageBox_25(); reset = True
+        else: self.mainWindow.tabs["settings"]["w"].menuPlugins = l
+        # Last folder from where a container file was loaded
         self.mainWindow.lastAddContainerDir = lastAddContainerDir
         if reset:
-            self.saveOptionsToConfig()
+            self.messageBox_26()
+            self.saveOptionsToConfig(True)
 
     def messageBox_21(self, optCat):
         text = _("The following options have been reset:") + "\n" + optCat
         self.msgBoxOk(text, "W")
+
+    def messageBox_25(self):
+        text = _("The Menu->Plugins entries have been reset/deleted.")
+        self.msgBoxOk(text, "W")
+
+    def messageBox_26(self):
+        text = _("Your previous confguration file will be saved as:") + "\n" + "gui.xml.backup.reset"
+        self.msgBoxOk(text, "I")
 
     def loadWindowFromConfig(self):
         """
@@ -3027,6 +3063,14 @@ class main(QObject):
 
     def slotReloadAccounts(self, force=False):
         self.mainWindow.tabs["accounts"]["view"].model.reloadData(force)
+
+    def slotMenuPluginNotFound(self, name):
+        text  = _("Cannot find the plugin: ")
+        text += "\n" + str(name)
+        text += "\n\n" + _("Do you want to remove it from the menu?")
+        if self.msgBoxYesNo(text, "W"):
+            self.mainWindow.tabs["settings"]["w"].menuPlugins.remove(str(name))
+            self.mainWindow.slotSetupPluginsMenu()
 
     def slotMainWindowClose(self):
         """

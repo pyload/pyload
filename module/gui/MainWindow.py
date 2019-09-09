@@ -170,6 +170,7 @@ class MainWindow(QMainWindow):
         self.menus = {"file": self.menubar.addMenu(_("File")),
                       "options": self.menubar.addMenu(_("Options")),
                       "view": self.menubar.addMenu(_("View")),
+                      "plugins": self.menubar.addMenu(_("Plugins")),
                       "help": self.menubar.addMenu(_("Help"))}
 
         #menu actions
@@ -195,10 +196,12 @@ class MainWindow(QMainWindow):
                          "showspeedlimit": QAction(_("Show Speed Limit"), self.menus["view"]),
                          "whatsthismode": QAction("What's This?", self.menus["help"]),
                          "about": QAction(_("About pyLoad Client"), self.menus["help"])}
-        
         self.mactions["showtoolbar"].setCheckable(True)
         self.mactions["showspeedlimit"].setCheckable(True)
         self.mactions["showspeedlimit"].setChecked(True)
+
+        #plugins menu actions
+        self.pmactions = {}
 
         #add menu actions
         self.menus["file"].addAction(self.mactions["manager"])
@@ -288,9 +291,10 @@ class MainWindow(QMainWindow):
         self.connect(self.mactions["whatsthismode"], SIGNAL("triggered()"), QWhatsThis.enterWhatsThisMode)
         self.connect(self.mactions["about"], SIGNAL("triggered()"), self.slotShowAbout)
         
-        self.connect(self.tabs["queue"]["view"], SIGNAL('customContextMenuRequested(const QPoint &)'), self.slotQueueContextMenu)
-        self.connect(self.tabs["collector"]["view"], SIGNAL('customContextMenuRequested(const QPoint &)'), self.slotCollectorContextMenu)
-        self.connect(self.tabs["accounts"]["view"], SIGNAL('customContextMenuRequested(const QPoint &)'), self.slotAccountContextMenu)
+        self.connect(self.tabs["queue"]["view"], SIGNAL("customContextMenuRequested(const QPoint &)"), self.slotQueueContextMenu)
+        self.connect(self.tabs["collector"]["view"], SIGNAL("customContextMenuRequested(const QPoint &)"), self.slotCollectorContextMenu)
+        self.connect(self.tabs["accounts"]["view"], SIGNAL("customContextMenuRequested(const QPoint &)"), self.slotAccountContextMenu)
+        self.connect(self.tabs["settings"]["w"], SIGNAL("setupPluginsMenu"), self.slotSetupPluginsMenu)
         
         self.connect(self.tabw, SIGNAL("currentChanged(int)"), self.slotTabChanged)
     
@@ -355,9 +359,10 @@ class MainWindow(QMainWindow):
             self.actions["speedlimit_enabled"].setEnabled(False)
             self.actions["speedlimit_rate"].setEnabled(False)
         
-        # Server Settings Tab
+        # Server Settings
         self.tabs["settings"]["w"].setCorePermissions(corePermissions)
         self.tabs["settings"]["w"].setEnabled(corePermissions["SETTINGS"])
+        self.menus["plugins"].setEnabled(corePermissions["SETTINGS"])
         
         # Status bar
         self.statuswItems["packages"].setEnabled(corePermissions["LIST"])
@@ -1359,6 +1364,37 @@ class MainWindow(QMainWindow):
             self.accountContext.buttons["edit"].setEnabled(False)
             self.accountContext.buttons["remove"].setEnabled(False)
         self.accountContext.exec_(menuPos)
+    
+    def slotSetupPluginsMenu(self):
+        """
+            create the plugins menu entries
+        """
+        for name in self.pmactions:
+            self.pmactions[name].triggered.disconnect()
+        self.pmactions = {}
+        self.menus["plugins"].clear()
+        
+        for name in self.tabs["settings"]["w"].menuPlugins:
+            self.pmactions[name] = QAction(name, self.menus["plugins"])
+            self.menus["plugins"].addAction(self.pmactions[name])
+            self.pmactions[name].triggered.connect(lambda checked, name=name: self.slotPluginsMenu(name))
+        if not self.pmactions:
+            self.menus["plugins"].addAction(_("no plugins added")).setEnabled(False)
+    
+    def slotPluginsMenu(self, name):
+        """
+            a plugins menu entry was clicked
+            show the config page for the plugin
+        """
+        self.tabw.setCurrentIndex(5)                                            # Server Settings Tab
+        self.tabs["settings"]["w"].tab.setCurrentIndex(1)                       # Plugins Tab
+        
+        index = self.tabs["settings"]["w"].pluginsComboBox.findText(name)
+        if index != -1:
+            self.tabs["settings"]["w"].pluginsComboBox.setCurrentIndex(index)   # ComboBox
+            self.tabs["settings"]["w"].slotPluginsComboBoxActivated(index)      # Page
+        else:
+            self.emit(SIGNAL("menuPluginNotFound"), name)
     
     def slotShowLoggingOptions(self):
         self.emit(SIGNAL("showLoggingOptions"))

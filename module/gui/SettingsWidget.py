@@ -38,6 +38,7 @@ class SettingsWidget(QWidget):
         self.mutex = QMutex()
         self.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
         self.pluginsSearchName = ""
+        self.menuPlugins = []
 
     def setCorePermissions(self, corePermissions):
         self.corePermissions = corePermissions
@@ -78,7 +79,14 @@ class SettingsWidget(QWidget):
         self.plugins = QWidget()
         self.plugins.setLayout(QVBoxLayout())
         self.pluginsComboBox = QComboBox()
-        self.plugins.layout().addWidget(self.pluginsComboBox)
+        self.pluginsMenuCheckBox = QCheckBox(_("Add To Menu"))
+        cbsp = self.pluginsMenuCheckBox.sizePolicy()
+        cbsp.setHorizontalPolicy(QSizePolicy.Maximum)
+        self.pluginsMenuCheckBox.setSizePolicy(cbsp)
+        hbox = QHBoxLayout()
+        hbox.addWidget(self.pluginsComboBox)
+        hbox.addWidget(self.pluginsMenuCheckBox)
+        self.plugins.layout().addLayout(hbox)
         self.pluginsStacked = QStackedLayout()
         self.plugins.layout().addLayout(self.pluginsStacked)
         
@@ -141,6 +149,7 @@ class SettingsWidget(QWidget):
             self.pluginsStacked.addWidget(s.sa)
             sl.append(section.description)
             QApplication.processEvents()
+        self.pluginsMenuCheckBox.setChecked(str(self.pluginsComboBox.currentText()) in self.menuPlugins)
 
         self.pluginsSearchCompleter.setStringList(sl)
 
@@ -160,7 +169,8 @@ class SettingsWidget(QWidget):
         self.connect(self.pluginsSearchClear, SIGNAL("clicked()"), self.slotPluginsSearchClear)
         self.connect(self.save, SIGNAL("clicked()"), self.saveConfig)
         self.connect(self.reload, SIGNAL("clicked()"), self.loadConfig)
-        self.connect(self.pluginsComboBox, SIGNAL("activated(int)"), self.pluginsStacked.setCurrentIndex)
+        self.connect(self.pluginsComboBox, SIGNAL("activated(int)"), self.slotPluginsComboBoxActivated)
+        self.connect(self.pluginsMenuCheckBox, SIGNAL("clicked(bool)"), self.slotPluginsMenuCheckBoxClicked)
 
         self.setEnabled(True)
 
@@ -174,7 +184,6 @@ class SettingsWidget(QWidget):
                 for item in section.items:
                     if item.name in widget.inputs:
                         i = widget.inputs[item.name]
-
                         if item.type == "int":
                             i.setValue(int(item.value))
                         elif not item.type.find(";") == -1:
@@ -340,6 +349,21 @@ class SettingsWidget(QWidget):
         self.pluginsSearchEditBox.show()
         self.pluginsSearchFind.show()
         self.pluginsSearchClear.show()
+
+    def slotPluginsComboBoxActivated(self, index):
+        self.pluginsMenuCheckBox.setChecked(str(self.pluginsComboBox.currentText()) in self.menuPlugins)
+        self.pluginsStacked.setCurrentIndex(index)  # Page
+
+    def slotPluginsMenuCheckBoxClicked(self, checked):
+        name = str(self.pluginsComboBox.currentText())
+        if checked:
+            if name not in self.menuPlugins:
+                self.menuPlugins.append(name)
+        else:
+            if name in self.menuPlugins:
+                self.menuPlugins.remove(name)
+        self.menuPlugins = sorted(self.menuPlugins)
+        self.emit(SIGNAL("setupPluginsMenu"))
 
 class Section(QGroupBox):
     def __init__(self, data, parent, ctype="core"):

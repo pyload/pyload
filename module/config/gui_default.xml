@@ -29,6 +29,7 @@
         <optionsTray></optionsTray>
         <optionsWhatsThis></optionsWhatsThis>
         <optionsOther></optionsOther>
+        <menuPlugins></menuPlugins>
         <lastAddContainerDir></lastAddContainerDir>
     </mainWindow>
     <language>en</language>
