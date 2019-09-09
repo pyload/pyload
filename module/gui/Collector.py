@@ -752,30 +752,19 @@ class CollectorModel(QAbstractItemModel):
             index = QModelIndex()
         return index
     
-#    def parent(self, index):
-#        """
-#            return index of parent element
-#            only valid for links
-#        """
-#        if index == QModelIndex():
-#            return QModelIndex()
-#        if index.isValid():
-#            link = index.internalPointer()
-#            if isinstance(link, Link):
-#                for k, pack in enumerate(self._data):
-#                    if pack == link.package:
-#                        return self.createIndex(k, 0, link.package)
-#        return QModelIndex()
-    
     def parent(self, index):
         """
             return index of parent element
             only valid for links
         """
+        if index == QModelIndex():
+            return QModelIndex()
         if index.isValid():
             link = index.internalPointer()
             if isinstance(link, Link):
-                return self.createIndex(link.package.data["order"] - self._data[0].data["order"], 0, link.package)
+                for k, pack in enumerate(self._data):
+                    if pack == link.package:
+                        return self.createIndex(k, 0, link.package)
         return QModelIndex()
     
     def rowCount(self, parent=QModelIndex()):
