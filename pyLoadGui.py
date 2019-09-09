@@ -2270,7 +2270,7 @@ class main(QObject):
             self.saveOptionsToConfig()
 
     def messageBox_21(self, optCat):
-        text = _("The following options had to be reset:") + "\n" + optCat
+        text = _("The following options have been reset:") + "\n" + optCat
         self.msgBoxOk(text, "W")
 
     def loadWindowFromConfig(self):
