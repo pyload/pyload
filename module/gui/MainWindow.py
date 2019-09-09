@@ -1115,10 +1115,10 @@ class MainWindow(QMainWindow):
         self.queueContext.buttons["abort"]          .setEnabled(self.corePermissions["MODIFY"] and downloading                     )
         self.queueContext.buttons["restart"]        .setEnabled(self.corePermissions["MODIFY"] and (packsCnt > 0 or linksCnt > 0)  )
         self.queueContext.buttons["remove"]         .setEnabled(self.corePermissions["DELETE"] and (packsCnt > 0 or linksCnt > 0)  )
-        self.queueContext.buttons["removelinkdupes"].setEnabled(self.corePermissions["DELETE"] and packsCnt == 1 and linksCnt == 0 )
+        self.queueContext.buttons["removelinkdupes"].setEnabled(self.corePermissions["DELETE"] and packsCnt == 1                   )
         self.queueContext.buttons["sort"]           .setEnabled(self.corePermissions["MODIFY"]                                     )
         self.queueContext.buttons["sort_packages"]  .setEnabled(self.corePermissions["MODIFY"]                                     )
-        self.queueContext.buttons["sort_links"]     .setEnabled(self.corePermissions["MODIFY"] and packsCnt == 1 and linksCnt == 0 )
+        self.queueContext.buttons["sort_links"]     .setEnabled(self.corePermissions["MODIFY"] and packsCnt == 1                   )
         self.activeMenu = self.queueContext
         self.queueContext.exec_(menuPos)
     
@@ -1135,10 +1135,10 @@ class MainWindow(QMainWindow):
         self.collectorContext.buttons["abort"]          .setEnabled(self.corePermissions["MODIFY"] and downloading                     )
         self.collectorContext.buttons["restart"]        .setEnabled(self.corePermissions["MODIFY"] and (packsCnt > 0 or linksCnt > 0)  )
         self.collectorContext.buttons["remove"]         .setEnabled(self.corePermissions["DELETE"] and (packsCnt > 0 or linksCnt > 0)  )
-        self.collectorContext.buttons["removelinkdupes"].setEnabled(self.corePermissions["DELETE"] and packsCnt == 1 and linksCnt == 0 )
+        self.collectorContext.buttons["removelinkdupes"].setEnabled(self.corePermissions["DELETE"] and packsCnt == 1                   )
         self.collectorContext.buttons["sort"]           .setEnabled(self.corePermissions["MODIFY"]                                     )
         self.collectorContext.buttons["sort_packages"]  .setEnabled(self.corePermissions["MODIFY"]                                     )
-        self.collectorContext.buttons["sort_links"]     .setEnabled(self.corePermissions["MODIFY"] and packsCnt == 1 and linksCnt == 0 )
+        self.collectorContext.buttons["sort_links"]     .setEnabled(self.corePermissions["MODIFY"] and packsCnt == 1                   )
         self.activeMenu = self.collectorContext
         self.collectorContext.exec_(menuPos)
     
