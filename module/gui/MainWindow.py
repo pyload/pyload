@@ -592,6 +592,7 @@ class MainWindow(QMainWindow):
         self.queueContext.buttons["selectallpacks"] = QAction(_("Select All Packages"), self.queueContext)
         self.queueContext.buttons["deselectallpacks"] = QAction(_("Deselect All Packages"), self.queueContext)
         self.queueContext.buttons["advancedselect"] = QAction(_("Advanced Select/Deselect"), self.queueContext)
+        self.queueContext.buttons["removelinkdupes"] = QAction(QIcon(join(pypath, "icons", "remove_small.png")), _("Remove duplicate links"), self.queueContext)
         self.queueContext.buttons["expand"] = QAction(self.style().standardIcon(QStyle.SP_ToolBarHorizontalExtensionButton), _("Expand All"), self.queueContext)
         self.queueContext.buttons["collapse"] = QAction(self.style().standardIcon(QStyle.SP_ToolBarVerticalExtensionButton), _("Collapse All"), self.queueContext)
         self.queueContext.addAction(self.queueContext.buttons["pull"])
@@ -612,6 +613,8 @@ class MainWindow(QMainWindow):
         self.queueContext.addAction(self.queueContext.buttons["deselectallpacks"])
         self.queueContext.addAction(self.queueContext.buttons["advancedselect"])
         self.queueContext.addSeparator()
+        self.queueContext.addAction(self.queueContext.buttons["removelinkdupes"])
+        self.queueContext.addSeparator()
         self.queueContext.buttons["sort"] = self.queueContext.addMenu(QIcon(), _("Sort"))
         self.queueContext.buttons["sort_packages"] = self.queueContext.buttons["sort"].addAction(_("Packages"))
         self.queueContext.buttons["sort_links"] = self.queueContext.buttons["sort"].addAction(_("Links"))
@@ -631,6 +634,7 @@ class MainWindow(QMainWindow):
         self.connect(self.queueContext.buttons["selectallpacks"], SIGNAL("triggered()"), self.slotSelectAllPackages)
         self.connect(self.queueContext.buttons["deselectallpacks"], SIGNAL("triggered()"), self.slotDeselectAllPackages)
         self.connect(self.queueContext.buttons["advancedselect"], SIGNAL("triggered()"), self.slotAdvSelectShow)
+        self.connect(self.queueContext.buttons["removelinkdupes"], SIGNAL("triggered()"), self.slotRemoveLinkDupes)
         self.connect(self.queueContext.buttons["sort_packages"], SIGNAL("triggered()"), self.slotSortPackages)
         self.connect(self.queueContext.buttons["sort_links"], SIGNAL("triggered()"), self.slotSortLinks)
         self.connect(self.queueContext.buttons["expand"], SIGNAL("triggered()"), self.slotExpandAll)
@@ -650,6 +654,7 @@ class MainWindow(QMainWindow):
         self.collectorContext.buttons["selectallpacks"] = QAction(_("Select All Packages"), self.collectorContext)
         self.collectorContext.buttons["deselectallpacks"] = QAction(_("Deselect All Packages"), self.collectorContext)
         self.collectorContext.buttons["advancedselect"] = QAction(_("Advanced Select/Deselect"), self.collectorContext)
+        self.collectorContext.buttons["removelinkdupes"] = QAction(QIcon(join(pypath, "icons", "remove_small.png")), _("Remove duplicate links"), self.collectorContext)
         self.collectorContext.buttons["expand"] = QAction(self.style().standardIcon(QStyle.SP_ToolBarHorizontalExtensionButton), _("Expand All"), self.collectorContext)
         self.collectorContext.buttons["collapse"] = QAction(self.style().standardIcon(QStyle.SP_ToolBarVerticalExtensionButton), _("Collapse All"), self.collectorContext)
         self.collectorContext.addAction(self.collectorContext.buttons["push"])
@@ -669,6 +674,8 @@ class MainWindow(QMainWindow):
         self.collectorContext.addAction(self.collectorContext.buttons["deselectallpacks"])
         self.collectorContext.addAction(self.collectorContext.buttons["advancedselect"])
         self.collectorContext.addSeparator()
+        self.collectorContext.addAction(self.collectorContext.buttons["removelinkdupes"])
+        self.collectorContext.addSeparator()
         self.collectorContext.buttons["sort"] = self.collectorContext.addMenu(QIcon(), _("Sort"))
         self.collectorContext.buttons["sort_packages"] = self.collectorContext.buttons["sort"].addAction(_("Packages"))
         self.collectorContext.buttons["sort_links"] = self.collectorContext.buttons["sort"].addAction(_("Links"))
@@ -687,6 +694,7 @@ class MainWindow(QMainWindow):
         self.connect(self.collectorContext.buttons["selectall"], SIGNAL("triggered()"), self.slotSelectAll)
         self.connect(self.collectorContext.buttons["deselectall"], SIGNAL("triggered()"), self.slotDeselectAll)
         self.connect(self.collectorContext.buttons["advancedselect"], SIGNAL("triggered()"), self.slotAdvSelectShow)
+        self.connect(self.collectorContext.buttons["removelinkdupes"], SIGNAL("triggered()"), self.slotRemoveLinkDupes)
         self.connect(self.collectorContext.buttons["sort_packages"], SIGNAL("triggered()"), self.slotSortPackages)
         self.connect(self.collectorContext.buttons["sort_links"], SIGNAL("triggered()"), self.slotSortLinks)
         self.connect(self.collectorContext.buttons["expand"], SIGNAL("triggered()"), self.slotExpandAll)
@@ -885,6 +893,13 @@ class MainWindow(QMainWindow):
             triggered from advanced link/package select box
         """
         self.emit(SIGNAL("advancedSelect"), True)
+    
+    def slotRemoveLinkDupes(self):
+        """
+            remove duplicate links
+            let main to the stuff
+        """
+        self.emit(SIGNAL("removeLinkDupes"))
     
     def slotToolbarVisibilityChanged(self, visible):
         """

@@ -927,6 +927,51 @@ class CollectorModel(QAbstractItemModel):
                     smodel.select(index, sCmd | QItemSelectionModel.Rows)
                     self.log.debug9("%s.advancedSelect:selectedPackage:   deselect:%s   name:'%s'   pid:%d" % (self.cname, deselect,name, package.id))
     
+    def removeLinkDupes(self):
+        """
+            called from main
+        """
+        QMutexLocker(self.mutex)
+        dupeIds = []
+        if len(self._data) > 0:
+            smodel = self.view.selectionModel()
+            rows = smodel.selectedRows(0)
+            if len(rows) == 1:
+                item = rows[0].internalPointer()
+                if isinstance(item, Package):
+                    package = item
+                    if len(package.children) > 1:
+                        for idx, link in enumerate(package.children):
+                            if link.id in dupeIds:
+                                continue
+                            for link2 in package.children[(idx + 1):]:
+                                if link2.data["name"] == link.data["name"]:
+                                    dupeIds.append(link2.id)
+                        if len(dupeIds) == 0:
+                            self.view.buttonMsgShow(_("No duplicate links found"), False)
+                        else:
+                            self.connector.proxy.deleteFiles(dupeIds)
+                            self.view.buttonMsgShow(_("Duplicate links removed"), False)
+                    else:
+                        self.view.buttonMsgShow(_("Nothing to do, there is only one link"), False)
+                elif isinstance(item, Link):
+                    self.view.buttonMsgShow(_("Select a single package only!"), True)
+                else:
+                    raise TypeError("%s: Unknown item instance" % self.cname)
+            elif len(rows) == 0:
+                if len(self._data) > 1:
+                    self.view.buttonMsgShow(_("Select a package!"), True)
+                else:
+                    self.view.buttonMsgShow(_("Select the package!"), True)
+            else:
+                self.view.buttonMsgShow(_("Select a single package only!"), True)
+        else:
+            self.view.buttonMsgShow(_("No packages"), True)
+        if len(dupeIds) > 0:
+            self.view.setExpanded(rows[0], True)
+            smodel.select(rows[0], QItemSelectionModel.Select | QItemSelectionModel.Rows)
+        QTimer.singleShot(2000, self.view.buttonMsgHideAndEnableView)
+    
     def sortPackages(self):
         """
             called from main
