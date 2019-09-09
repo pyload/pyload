@@ -1393,26 +1393,26 @@ class main(QObject):
         self.connect(self.queue, SIGNAL("updateCount"), self.mainWindow.tabs["overview"]["view"].model.queueChanged)
         self.connect(self.queue, SIGNAL("notificationMessage"), self.slotNotificationMessage)
         self.queue.start()
-    
+
     def slotUpdateCount(self, pc, fc):
-        self.mainWindow.packageCount.setText("%i" % pc)
-        self.mainWindow.fileCount.setText("%i" % fc)
-    
+        self.mainWindow.statuswItems["packages"].lbl2.setText("%i" % pc)
+        self.mainWindow.statuswItems["links"].lbl2.setText("%i" % fc)
+
     def refreshServerStatus(self):
         """
             refresh server status and overall speed in the status bar
         """
-        if not self.corePermissions["LIST"]:
-            return
-        s = self.connector.proxy.statusServer()
-        if s.pause:
-            self.mainWindow.actions["status_pause"].setChecked(True)
-            self.mainWindow.status.setText(_("Paused"))
-        else:
-            self.mainWindow.actions["status_start"].setChecked(True)
-            self.mainWindow.status.setText(_("Running"))
-        self.mainWindow.speed.setText(formatSpeed(s.speed))
-        self.mainWindow.space.setText(formatSize(self.serverStatus["freespace"]))
+        if self.corePermissions["LIST"]:
+            s = self.connector.proxy.statusServer()
+            if s.pause:
+                self.mainWindow.actions["status_pause"].setChecked(True)
+                self.mainWindow.statuswItems["status"].lbl2.setText(_("Paused"))
+            else:
+                self.mainWindow.actions["status_start"].setChecked(True)
+                self.mainWindow.statuswItems["status"].lbl2.setText(_("Running"))
+            self.mainWindow.statuswItems["speed"].lbl2.setText(formatSpeed(s.speed))
+        if self.corePermissions["STATUS"]:
+            self.mainWindow.statuswItems["space"].lbl2.setText(formatSize(self.serverStatus["freespace"]))
 
     def getGuiLog(self, offset=0):
         """

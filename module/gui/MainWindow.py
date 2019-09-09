@@ -125,41 +125,30 @@ class MainWindow(QMainWindow):
         #        self.setFrameShadow(QFrame.Sunken)
         
         class StwItem(QWidget):
-            def __init__(self, lbl1, lbl2, wthis):
+            def __init__(self, lbl1text, wthis):
                 QWidget.__init__(self)
+                self.lbl1 = BoldLabel(lbl1text)
+                self.lbl2 = QLabel("----")
                 hbox = QHBoxLayout()
                 hbox.setContentsMargins(0, 0, 0, 0)
                 hbox.addStretch(1)
-                hbox.addWidget(lbl1)
-                hbox.addWidget(lbl2)
+                hbox.addWidget(self.lbl1)
+                hbox.addWidget(self.lbl2)
                 hbox.addStretch(1)
                 self.setLayout(hbox)
                 self.setWhatsThis(wthis)
         
-        packageCountBl = BoldLabel(_("Packages") + ":")
-        self.packageCount = QLabel()
-        sitem = StwItem(packageCountBl, self.packageCount, whatsThisFormat(_("Packages"), _("The number of packages in the Queue.")))
-        l.addWidget(sitem, 0, 0, 1, 1)
-        
-        fileCountBl = BoldLabel(_("Links") + ":")
-        self.fileCount = QLabel()
-        sitem = StwItem(fileCountBl, self.fileCount, whatsThisFormat(_("Links"), _("The number of links in the Queue.")))
-        l.addWidget(sitem, 0, 1, 1, 1)
-        
-        statusBl = BoldLabel(_("Status") + ":")
-        self.status = QLabel()
-        sitem = StwItem(statusBl, self.status, whatsThisFormat(_("Status"), _("The server status, 'Running' or 'Paused'.")))
-        l.addWidget(sitem, 0, 2, 1, 1)
-        
-        spaceBl = BoldLabel(_("Space") + ":")
-        self.space = QLabel()
-        sitem = StwItem(spaceBl, self.space, whatsThisFormat(_("Space"), _("The free space in the download folder.")))
-        l.addWidget(sitem, 0, 3, 1, 1)
-        
-        speedBl = BoldLabel(_("Speed") + ":")
-        self.speed = QLabel()
-        sitem = StwItem(speedBl, self.speed, whatsThisFormat(_("Speed"), _("The actual download speed.")))
-        l.addWidget(sitem, 0, 4, 1, 1)
+        self.statuswItems = {}
+        self.statuswItems["packages"] = StwItem(_("Packages") + ":", whatsThisFormat(_("Packages"), _("The number of packages in the Queue.")))
+        l.addWidget(self.statuswItems["packages"], 0, 0, 1, 1)
+        self.statuswItems["links"] = StwItem(_("Links") + ":", whatsThisFormat(_("Links"), _("The number of links in the Queue.")))
+        l.addWidget(self.statuswItems["links"], 0, 1, 1, 1)
+        self.statuswItems["status"] = StwItem(_("Status") + ":", whatsThisFormat(_("Status"), _("The server status, 'Running' or 'Paused'.")))
+        l.addWidget(self.statuswItems["status"], 0, 2, 1, 1)
+        self.statuswItems["space"] = StwItem(_("Space") + ":", whatsThisFormat(_("Space"), _("The free space in the download folder.")))
+        l.addWidget(self.statuswItems["space"], 0, 3, 1, 1)
+        self.statuswItems["speed"] = StwItem(_("Speed") + ":", whatsThisFormat(_("Speed"), _("The actual download speed.")))
+        l.addWidget(self.statuswItems["speed"], 0, 4, 1, 1)
         
         #l.addWidget(BoldLabel(_("Max. downloads:")), 0, 9)
         #l.addWidget(BoldLabel(_("Max. chunks:")), 1, 9)
@@ -366,6 +355,13 @@ class MainWindow(QMainWindow):
         # Server Settings Tab
         self.tabs["settings"]["w"].setCorePermissions(corePermissions)
         self.tabs["settings"]["w"].setEnabled(corePermissions["SETTINGS"])
+        
+        # Status bar
+        self.statuswItems["packages"].setEnabled(corePermissions["LIST"])
+        self.statuswItems["links"].setEnabled(corePermissions["LIST"])
+        self.statuswItems["status"].setEnabled(corePermissions["LIST"])
+        self.statuswItems["space"].setEnabled(corePermissions["STATUS"])
+        self.statuswItems["speed"].setEnabled(corePermissions["LIST"])
         
         # Server Log
         if corePermissions["LOGS"]:
