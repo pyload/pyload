@@ -1065,6 +1065,16 @@ class CollectorView(QTreeView):
             if lindex == smodel.currentIndex():
                 smodel.setCurrentIndex(QModelIndex(), QItemSelectionModel.NoUpdate)
     
+    def mousePressEvent(self, event):
+        index = self.indexAt(event.pos())
+        if index.isValid():
+            vr = self.visualRect(index)
+            indent = vr.x() - self.visualRect(self.rootIndex()).x()
+            if event.pos().x() < indent: # expand/collapse arrow clicked
+                if event.buttons() == Qt.RightButton:
+                    return
+        QTreeView.mousePressEvent(self, event)
+    
     def dragEnterEvent(self, event):
         if event.source() != self:
             return
