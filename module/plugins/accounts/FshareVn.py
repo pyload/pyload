@@ -10,7 +10,7 @@ from ..internal.misc import parse_html_form
 class FshareVn(Account):
     __name__ = "FshareVn"
     __type__ = "account"
-    __version__ = "0.22"
+    __version__ = "0.23"
     __status__ = "testing"
 
     __description__ = """Fshare.vn account plugin"""
@@ -68,4 +68,9 @@ class FshareVn(Account):
 
         html = self.load("https://www.fshare.vn/site/login", post=inputs)
         if not 'href="/site/logout"' in html:
+            m = re.search(r'<div class="mdc-dialog__content" .*?>\s*(.+?)<', html)
+            if m is not None:
+                err_msg = m.group(1).strip()
+                self.log_error(err_msg)
+
             self.fail_login()

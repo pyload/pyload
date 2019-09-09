@@ -14,7 +14,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class ShareonlineBiz(SimpleHoster):
     __name__ = "ShareonlineBiz"
     __type__ = "hoster"
-    __version__ = "0.71"
+    __version__ = "0.72"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(share-online\.biz|egoshare\.com)/(download\.php\?id=|dl/)(?P<ID>\w+)'
@@ -47,7 +47,6 @@ class ShareonlineBiz(SimpleHoster):
                              'links': re.match(cls.__pattern__, url).group("ID")}).split(";")
         try:
             if field[1] == "OK":
-                info['fileid'] = field[0]
                 info['status'] = 2
                 info['name'] = field[2]
                 info['size'] = field[3]  #: In bytes
@@ -62,8 +61,7 @@ class ShareonlineBiz(SimpleHoster):
         return info
 
     def setup(self):
-        self.resume_download = self.premium
-        self.multiDL = False
+        self.resume_download = self.multiDL = self.premium
 
     def handle_captcha(self):
         self.captcha = ReCaptcha(self.pyfile)
@@ -125,6 +123,9 @@ class ShareonlineBiz(SimpleHoster):
         if errmsg == "invalid":
             self.fail(_("File not available"))
 
+        elif errmsg == "precheck":
+            self.temp_offline()
+
         elif errmsg in ("freelimit", "size", "proxy"):
             self.fail(_("Premium account needed"))
 
@@ -147,7 +148,7 @@ class ShareonlineBiz(SimpleHoster):
                          get={'username': self.account.user,
                               'password': self.account.info['login']['password'],
                               'act': "download",
-                              'lid': self.info['fileid']})
+                              'lid': self.info['pattern']['ID']})
 
         self.log_debug(html)
 
@@ -171,5 +172,4 @@ class ShareonlineBiz(SimpleHoster):
                 self.temp_offline()
 
             else:
-                self.multiDL = True
                 self.link = dlinfo['url']

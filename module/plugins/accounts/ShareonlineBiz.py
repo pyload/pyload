@@ -8,13 +8,15 @@ from ..internal.misc import set_cookie
 class ShareonlineBiz(Account):
     __name__ = "ShareonlineBiz"
     __type__ = "account"
-    __version__ = "0.47"
+    __version__ = "0.48"
     __status__ = "testing"
 
     __description__ = """Share-online.biz account plugin"""
     __license__ = "GPLv3"
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com"),
                    ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
+
+    LOGIN_TIMEOUT = 15 * 60
 
     def api_response(self, user, password):
         res = self.load("https://api.share-online.biz/cgi-bin",

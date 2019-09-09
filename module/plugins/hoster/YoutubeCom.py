@@ -206,7 +206,7 @@ class Ffmpeg(object):
 class YoutubeCom(Hoster):
     __name__ = "YoutubeCom"
     __type__ = "hoster"
-    __version__ = "0.69"
+    __version__ = "0.71"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:[^/]*\.)?(?:youtu\.be/|youtube\.com/watch\?(?:.*&)?v=)[\w\-]+'
@@ -521,15 +521,32 @@ class YoutubeCom(Hoster):
             body = dom.getElementsByTagName("body")[0]
             paras = body.getElementsByTagName("p")
             for para in paras:
-                srt += str(i) + "\n"
-                srt += _format_srt_time(int(para.attributes['t'].value)) + ' --> ' + \
-                       _format_srt_time(int(para.attributes['t'].value) + int(para.attributes['d'].value)) + "\n"
-                for child in para.childNodes:
-                    if child.nodeName == 'br':
-                        srt += "\n"
-                    elif child.nodeName == '#text':
-                        srt += unicode(child.data)
-                    srt += "\n\n"
+                subtitle_element = str(i) + "\n"
+                try:
+                    subtitle_element += _format_srt_time(int(para.attributes['t'].value)) + ' --> ' + \
+                                _format_srt_time(int(para.attributes['t'].value) + int(para.attributes['d'].value)) + "\n"
+                except KeyError:
+                    continue
+
+                subtitle_text = ""
+                words = para.getElementsByTagName("s")
+                if words:
+                    subtitle_text = "".join([unicode(word.firstChild.data) for word in words])
+
+                else:
+                    for child in para.childNodes:
+                        if child.nodeName == 'br':
+                            subtitle_text += "\n"
+                        elif child.nodeName == '#text':
+                            subtitle_text += unicode(child.data)
+
+                if subtitle_text.strip():
+                    subtitle_element += subtitle_text
+
+                else:
+                    continue
+
+                srt += subtitle_element + "\n\n"
                 i += 1
 
             return srt
@@ -712,7 +729,7 @@ class YoutubeCom(Hoster):
         self.ffmpeg = Ffmpeg(self.config.get('priority') ,self)
 
         #: Set file name
-        self.file_name = self.player_config['args']['title']
+        self.file_name = json.loads(self.player_config['args']['player_response'])['videoDetails']['title']
 
         #: Check for start time
         self.start_time = (0, 0)

@@ -41,7 +41,7 @@ except ImportError:
 class misc(object):
     __name__ = "misc"
     __type__ = "plugin"
-    __version__ = "0.56"
+    __version__ = "0.57"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -439,14 +439,13 @@ def encode(value, encoding='utf-8', errors='backslashreplace'):
 def exists(path):
     path = encode(path)
 
-    if os.path.exists(path):
-        if os.name == "nt":
-            dir, name = os.path.split(path.rstrip(os.sep))
-            return name.upper() in map(str.upper, os.listdir(dir))
+    if os.name == "nt":
+        if path.startswith("\\\\"):
+            return os.path.exists('\\\\?\\UNC\\' + path[2:])
         else:
-            return True
+            return os.path.exists('\\\\?\\' + os.path.normpath(os.path.join(os.getcwd(), path)))
     else:
-        return False
+        return os.path.exists(path)
 
 
 def remove(path, trash=True):
