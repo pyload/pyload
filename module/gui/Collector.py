@@ -270,10 +270,12 @@ class CollectorModel(QAbstractItemModel):
     def selectAllPackages(self, deselect):
         QMutexLocker(self.mutex)
         smodel = self.view.selectionModel()
-        sCmd = QItemSelectionModel.Deselect if deselect else QItemSelectionModel.Select
         for p in xrange(len(self._data)):
             index = self.index(p, 0)
-            smodel.select(index, sCmd | QItemSelectionModel.Rows)
+            if not deselect:
+                if not smodel.isSelected(index): smodel.select(index, QItemSelectionModel.Select | QItemSelectionModel.Rows)
+            else:
+                if smodel.isSelected(index): smodel.select(index, QItemSelectionModel.Deselect | QItemSelectionModel.Rows)
     
     def selectAll(self, deselect):
         QMutexLocker(self.mutex)
@@ -897,7 +899,6 @@ class CollectorModel(QAbstractItemModel):
         """
         QMutexLocker(self.mutex)
         smodel = self.view.selectionModel()
-        sCmd = QItemSelectionModel.Deselect if deselect else QItemSelectionModel.Select
         rx = QRegExp(pattern, cs, syntax)
         
         # select links
@@ -913,9 +914,11 @@ class CollectorModel(QAbstractItemModel):
                             index = self.index(l, 0, pindex)
                             if not index.isValid():
                                 raise ValueError("%s: Invalid index" % self.cname)
-                            smodel.select(index, sCmd | QItemSelectionModel.Rows)
                             if not deselect:
+                                if not smodel.isSelected(index): smodel.select(index, QItemSelectionModel.Select | QItemSelectionModel.Rows)
                                 self.view.expand(pindex)
+                            else:
+                                if smodel.isSelected(index): smodel.select(index, QItemSelectionModel.Deselect | QItemSelectionModel.Rows)
                             self.log.debug9("%s.advancedSelect:selectedLink:   deselect:%s   name:'%s'   pid:%d   fid:%d" % (self.cname, deselect, name, package.id, link.id))
                     noPackagesSelected = False
                 elif not isinstance(package, Link):
@@ -933,9 +936,11 @@ class CollectorModel(QAbstractItemModel):
                             index = self.index(l, 0, pindex)
                             if not index.isValid():
                                 raise ValueError("%s: Invalid index" % self.cname)
-                            smodel.select(index, sCmd | QItemSelectionModel.Rows)
                             if not deselect:
+                                if not smodel.isSelected(index): smodel.select(index, QItemSelectionModel.Select | QItemSelectionModel.Rows)
                                 self.view.expand(pindex)
+                            else:
+                                if smodel.isSelected(index): smodel.select(index, QItemSelectionModel.Deselect | QItemSelectionModel.Rows)
                             self.log.debug9("%s.advancedSelect:selectedLink:   deselect:%s   name:'%s'   pid:%d   fid:%d" % (self.cname, deselect, name, package.id, link.id))
         
         # select packages
@@ -947,8 +952,14 @@ class CollectorModel(QAbstractItemModel):
                     index = self.index(p, 0)
                     if not index.isValid():
                         raise ValueError("%s: Invalid index" % self.cname)
-                    smodel.select(index, sCmd | QItemSelectionModel.Rows)
+                    if not deselect:
+                        if not smodel.isSelected(index): smodel.select(index, QItemSelectionModel.Select | QItemSelectionModel.Rows)
+                    else:
+                        if smodel.isSelected(index): smodel.select(index, QItemSelectionModel.Deselect | QItemSelectionModel.Rows)
                     self.log.debug9("%s.advancedSelect:selectedPackage:   deselect:%s   name:'%s'   pid:%d" % (self.cname, deselect,name, package.id))
+        
+        self.view.buttonMsgShow(_("Done"), False)
+        self.view.buttonMsgHide(2000)
     
     def removeLinkDupes(self):
         """
@@ -993,7 +1004,7 @@ class CollectorModel(QAbstractItemModel):
             self.view.clearSelection()
             self.view.setCurrentIndex(QModelIndex())
             smodel.select(pindex, QItemSelectionModel.Select | QItemSelectionModel.Rows)
-        QTimer.singleShot(2000, self.view.buttonMsgHideAndEnableView)
+        self.view.buttonMsgHide(2000)
     
     def sortPackages(self):
         """
@@ -1023,7 +1034,7 @@ class CollectorModel(QAbstractItemModel):
         if sortingPerformed:
             self.view.clearSelection()
             self.view.setCurrentIndex(QModelIndex())
-        QTimer.singleShot(2000, self.view.buttonMsgHideAndEnableView)
+        self.view.buttonMsgHide(2000)
     
     def sortLinks(self):
         """
@@ -1070,7 +1081,7 @@ class CollectorModel(QAbstractItemModel):
             self.view.clearSelection()
             self.view.setCurrentIndex(QModelIndex())
             smodel.select(pindex, QItemSelectionModel.Select | QItemSelectionModel.Rows)
-        QTimer.singleShot(2000, self.view.buttonMsgHideAndEnableView)
+        self.view.buttonMsgHide(2000)
     
     def sortItems(self, items):
         # http://stackoverflow.com/a/16090640
@@ -1189,6 +1200,8 @@ class CollectorView(QTreeView):
         self.model = CollectorModel(self, connector)
         self.setModel(self.model)
         
+        self.buttonMsgHideTimer = QTimer()
+        
         wt = _(
         "- Column visibility can be toggled by right-clicking on the header row<br>"
         "- Column order can be changed by Drag'n'Drop<br>"
@@ -1221,6 +1234,7 @@ class CollectorView(QTreeView):
         self.header().setContextMenuPolicy(Qt.CustomContextMenu)
         self.header().customContextMenuRequested.connect(self.headerContextMenu)
         
+        self.connect(self.buttonMsgHideTimer, SIGNAL("timeout()"), self.buttonMsgHideTimerTimeout)
         self.connect(self, SIGNAL("dropEvent"), self.model.slotDropEvent)
         self.connect(self, SIGNAL("collapsed(const QModelIndex &)"), self.packageCollapsed)
     
@@ -1283,7 +1297,7 @@ class CollectorView(QTreeView):
             lindex = self.model.index(l, 0, index)
             if not lindex.isValid():
                 raise ValueError("%s: Invalid index" % self.cname)
-            smodel.select(lindex, QItemSelectionModel.Deselect | QItemSelectionModel.Rows)
+            if smodel.isSelected(lindex): smodel.select(lindex, QItemSelectionModel.Deselect | QItemSelectionModel.Rows)
             if lindex == smodel.currentIndex():
                 smodel.setCurrentIndex(QModelIndex(), QItemSelectionModel.NoUpdate)
     
@@ -1325,7 +1339,7 @@ class CollectorView(QTreeView):
     
     def dragLeaveEvent(self, event):
         event.ignore()
-        self.buttonMsgHide()
+        self.buttonMsgHide(0)
     
     def dropEvent(self, event):
         if event.source() != self:
@@ -1333,20 +1347,21 @@ class CollectorView(QTreeView):
         event.ignore()
         if self.model.dnd.actionOnDrop == self.model.dnd.ACT.NONE:
             return
-        self.buttonMsgHide()
+        self.buttonMsgHide(0)
         self.setEnabled(False)
         self.emit(SIGNAL("dropEvent"), not bool(event.keyboardModifiers() & Qt.AltModifier))
     
     def buttonMsgShow(self, msg, error):
+        self.buttonMsgHideTimer.stop()
         self.emit(SIGNAL("collectorMsgShow"), msg, error)
     
-    def buttonMsgHide(self):
-        self.emit(SIGNAL("collectorMsgHide"))
+    def buttonMsgHide(self, delay):
+        self.buttonMsgHideTimer.setInterval(delay)
+        self.buttonMsgHideTimer.setSingleShot(True)
+        self.buttonMsgHideTimer.start()
     
-    def buttonMsgHideAndEnableView(self):
-        self.buttonMsgHide()
-        self.setEnabled(True)
-        self.setFocus(Qt.OtherFocusReason)
+    def buttonMsgHideTimerTimeout(self):
+        self.emit(SIGNAL("collectorMsgHide"))
 
 class DragAndDrop(QObject):
     """
@@ -1518,7 +1533,7 @@ class DragAndDrop(QObject):
         ACT = self.ACT
         self.actionOnDrop = ACT.NONE
         if not self.getDestInfo(pos):
-            self.view.buttonMsgHide()
+            self.view.buttonMsgHide(0)
             self.log.debug4("%s.canDrop: Invalid drop location" % self.cname)
             return
         self.getSrcInfo()

@@ -2618,7 +2618,7 @@ class main(QObject):
         else:
             self.collector.selectAllPackages(True)
 
-    def slotAdvancedSelect(self, deselect):
+    def slotAdvancedSelect(self, queue, deselect):
         """
             emitted from main window
             advanced link/package select
@@ -2626,6 +2626,12 @@ class main(QObject):
         pattern = self.mainWindow.advselect.patternEdit.currentText()
         if not pattern.isEmpty():
             self.mainWindow.advselect.setEnabled(False)
+            if queue:
+                self.mainWindow.slotQueueMsgHide()
+                self.mainWindow.tabs["queue"]["b"].repaint()
+            else:
+                self.mainWindow.slotCollectorMsgHide()
+                self.mainWindow.tabs["collector"]["b"].repaint()
             mode = self.mainWindow.advselect.modeCmb.currentIndex()
             matchCase = self.mainWindow.advselect.caseCb.isChecked()
             selectLinks = self.mainWindow.advselect.linksCb.isChecked()
@@ -2639,11 +2645,11 @@ class main(QObject):
                 self.log.error("main.slotAdvancedSelect: Invalid mode")
                 return
             cs = Qt.CaseSensitive if matchCase == True else Qt.CaseInsensitive
-            if self.mainWindow.tabw.currentIndex() == 1:
-                self.queue.advancedSelect(pattern, syntax, cs, deselect, selectLinks)
+            if queue:
+                QTimer.singleShot(0, lambda: self.queue.advancedSelect(pattern, syntax, cs, deselect, selectLinks))
             else:
-                self.collector.advancedSelect(pattern, syntax, cs, deselect, selectLinks)
-            QTimer.singleShot(300, self.mainWindow.advselect.slotEnable)
+                QTimer.singleShot(0, lambda: self.collector.advancedSelect(pattern, syntax, cs, deselect, selectLinks))
+            QTimer.singleShot(300, lambda: self.mainWindow.advselect.setEnabled(True))
 
     def slotRemoveLinkDupes(self):
         """
@@ -2651,11 +2657,9 @@ class main(QObject):
             remove duplicate links
         """
         if self.mainWindow.tabw.currentIndex() == 1:
-            self.mainWindow.tabs["queue"]["view"].setEnabled(False)
-            QTimer.singleShot(300, self.queue.removeLinkDupes)
+            self.queue.removeLinkDupes()
         else:
-            self.mainWindow.tabs["collector"]["view"].setEnabled(False)
-            QTimer.singleShot(300, self.collector.removeLinkDupes)
+            self.collector.removeLinkDupes()
 
     def slotSortPackages(self):
         """
@@ -2663,11 +2667,9 @@ class main(QObject):
             sort packages
         """
         if self.mainWindow.tabw.currentIndex() == 1:
-            self.mainWindow.tabs["queue"]["view"].setEnabled(False)
-            QTimer.singleShot(300, self.queue.sortPackages)
+            self.queue.sortPackages()
         else:
-            self.mainWindow.tabs["collector"]["view"].setEnabled(False)
-            QTimer.singleShot(300, self.collector.sortPackages)
+            self.collector.sortPackages()
 
     def slotSortLinks(self):
         """
@@ -2675,11 +2677,9 @@ class main(QObject):
             sort packages
         """
         if self.mainWindow.tabw.currentIndex() == 1:
-            self.mainWindow.tabs["queue"]["view"].setEnabled(False)
-            QTimer.singleShot(300, self.queue.sortLinks)
+            self.queue.sortLinks()
         else:
-            self.mainWindow.tabs["collector"]["view"].setEnabled(False)
-            QTimer.singleShot(300, self.collector.sortLinks)
+            self.collector.sortLinks()
 
     def slotExpandAll(self):
         """

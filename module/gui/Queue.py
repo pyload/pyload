@@ -404,6 +404,8 @@ class QueueView(CollectorView):
         self.model = QueueModel(self, connector)
         self.setModel(self.model)
         
+        self.buttonMsgHideTimer = QTimer()
+        
         wt = _(
         "- Column visibility can be toggled by right-clicking on the header row<br>"
         "- Column order can be changed by Drag'n'Drop<br>"
@@ -439,6 +441,7 @@ class QueueView(CollectorView):
         self.header().setContextMenuPolicy(Qt.CustomContextMenu)
         self.header().customContextMenuRequested.connect(self.headerContextMenu)
         
+        self.connect(self.buttonMsgHideTimer, SIGNAL("timeout()"), self.buttonMsgHideTimerTimeout)
         self.connect(self, SIGNAL("dropEvent"), self.model.slotDropEvent)
         self.connect(self, SIGNAL("collapsed(const QModelIndex &)"), self.packageCollapsed)
         
@@ -446,9 +449,10 @@ class QueueView(CollectorView):
         self.setItemDelegateForColumn(5, self.delegate)
     
     def buttonMsgShow(self, msg, error):
+        self.buttonMsgHideTimer.stop()
         self.emit(SIGNAL("queueMsgShow"), msg, error)
     
-    def buttonMsgHide(self):
+    def buttonMsgHideTimerTimeout(self):
         self.emit(SIGNAL("queueMsgHide"))
 
 class QueueProgressBarDelegate(QItemDelegate):

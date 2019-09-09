@@ -886,13 +886,15 @@ class MainWindow(QMainWindow):
         """
             triggered from advanced link/package select box
         """
-        self.emit(SIGNAL("advancedSelect"), False)
+        queue = True if self.tabw.currentIndex() == 1 else False
+        self.emit(SIGNAL("advancedSelect"), queue, False)
     
     def slotAdvSelectDeselectButtonClicked(self):
         """
             triggered from advanced link/package select box
         """
-        self.emit(SIGNAL("advancedSelect"), True)
+        queue = True if self.tabw.currentIndex() == 1 else False
+        self.emit(SIGNAL("advancedSelect"), queue, True)
     
     def slotRemoveLinkDupes(self):
         """
@@ -1465,9 +1467,6 @@ class AdvancedSelect(QWidget):
         self.connect(self.clearBtn, SIGNAL("clicked()"), self.patternEdit.clearEditText)
         self.connect(self.selectBtn, SIGNAL("clicked()"), self.addToHistory)
         self.connect(self.deselectBtn, SIGNAL("clicked()"), self.addToHistory)
-    
-    def slotEnable(self):
-        self.setEnabled(True)
     
     def addToHistory(self):
         text = self.patternEdit.currentText()
