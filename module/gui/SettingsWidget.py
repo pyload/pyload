@@ -75,7 +75,12 @@ class SettingsWidget(QWidget):
 
         self.tab     = QTabWidget()
         self.general = QTabWidget()
-        self.plugins = QTabWidget()
+        self.plugins = QWidget()
+        self.plugins.setLayout(QVBoxLayout())
+        self.pluginsComboBox = QComboBox()
+        self.plugins.layout().addWidget(self.pluginsComboBox)
+        self.pluginsStacked = QStackedLayout()
+        self.plugins.layout().addLayout(self.pluginsStacked)
         
         gw = QWidget()
         gw.setLayout(QVBoxLayout())
@@ -124,6 +129,7 @@ class SettingsWidget(QWidget):
 
         for k, section in self.data.iteritems():
             s = Section(section, self.general)
+            self.general.addTab(s.sa, section.description)
             self.sections[k] = s
             QApplication.processEvents()
 
@@ -131,6 +137,8 @@ class SettingsWidget(QWidget):
         for k, section in self.pdata.iteritems():
             s = Section(section, self.plugins, "plugin")
             self.psections[k] = s
+            self.pluginsComboBox.addItem(section.description)
+            self.pluginsStacked.addWidget(s.sa)
             sl.append(section.description)
             QApplication.processEvents()
 
@@ -152,6 +160,7 @@ class SettingsWidget(QWidget):
         self.connect(self.pluginsSearchClear, SIGNAL("clicked()"), self.slotPluginsSearchClear)
         self.connect(self.save, SIGNAL("clicked()"), self.saveConfig)
         self.connect(self.reload, SIGNAL("clicked()"), self.loadConfig)
+        self.connect(self.pluginsComboBox, SIGNAL("activated(int)"), self.pluginsStacked.setCurrentIndex)
 
         self.setEnabled(True)
 
@@ -260,20 +269,20 @@ class SettingsWidget(QWidget):
             self.pluginsSearchHitCount = 0
             self.pluginsSearchIndex = -1
 
-        # start search from current tab
-        ci = self.plugins.currentIndex()
+        # start search from current plugin
+        ci = self.pluginsComboBox.currentIndex()
         mc = self.pluginsSearchHitCount
-        for i in range(self.plugins.currentIndex(), self.plugins.count()):
-            if self.plugins.tabText(i).indexOf(name, 0, Qt.CaseInsensitive) != -1:
-                if i == self.plugins.currentIndex():
+        for i in range(self.pluginsComboBox.currentIndex(), self.pluginsComboBox.count()):
+            if self.pluginsComboBox.itemText(i).indexOf(name, 0, Qt.CaseInsensitive) != -1:
+                if i == self.pluginsComboBox.currentIndex():
                     if mc == 0:
                         self.pluginsSearchHitCount += 1
                         self.pluginsSearchIndex = i
                         break
                     else:
                         continue
-                self.plugins.setCurrentIndex(i)
-                self.plugins.widget(i).setFocus()
+                self.pluginsComboBox.setCurrentIndex(i)
+                self.pluginsStacked.setCurrentIndex(i)
                 if mc == 0:
                     self.pluginsSearchHitCount += 1
                     self.pluginsSearchIndex = i
@@ -285,14 +294,14 @@ class SettingsWidget(QWidget):
                     self.pluginsSearchHitCount += 1
                 break
 
-        # wrap, continue search from first tab
+        # wrap, continue search from first plugin
         if self.pluginsSearchHitCount == mc:
-            for i in range(0, self.plugins.currentIndex()):
-                if self.plugins.tabText(i).indexOf(name, 0, Qt.CaseInsensitive) != -1:
-                    if i == self.plugins.currentIndex():
+            for i in range(0, self.pluginsComboBox.currentIndex()):
+                if self.pluginsComboBox.itemText(i).indexOf(name, 0, Qt.CaseInsensitive) != -1:
+                    if i == self.pluginsComboBox.currentIndex():
                         break
-                    self.plugins.setCurrentIndex(i)
-                    self.plugins.widget(i).setFocus()
+                    self.pluginsComboBox.setCurrentIndex(i)
+                    self.pluginsStacked.setCurrentIndex(i)
                     if mc == 0:
                         self.pluginsSearchHitCount += 1
                         self.pluginsSearchIndex = i
@@ -310,12 +319,9 @@ class SettingsWidget(QWidget):
                 self.pluginsSearchName = ""
                 self.pluginsSearchMessageLabel.setText("<b>" + _("Not found") + "</b>")
                 self.pluginsSearchMessage()
-            elif self.plugins.currentIndex() == ci:
+            elif self.pluginsComboBox.currentIndex() == ci:
                 self.pluginsSearchMessageLabel.setText("<b>" + _("No more matches") + "</b>")
                 self.pluginsSearchMessage()
-        elif mc == 0 and self.plugins.currentIndex() == ci:
-            self.pluginsSearchMessageLabel.setText("<b>" + _("Match") + "</b>")
-            self.pluginsSearchMessage()
 
         self.pluginsSearchEditBox.setFocus()
 
@@ -338,8 +344,8 @@ class SettingsWidget(QWidget):
 class Section(QGroupBox):
     def __init__(self, data, parent, ctype="core"):
         title = data.description
-        if data.outline:
-            title += "   -   " + data.outline
+        if ctype == "plugin" and data.outline:
+            title = data.outline
         QGroupBox.__init__(self, title, parent)
         self.log = logging.getLogger("guilog")
         self.data = data
@@ -361,12 +367,10 @@ class Section(QGroupBox):
         #sw.layout().addWidget(self)
         sw.layout().addWidget(hb)
         
-        sa = QScrollArea()
-        sa.setWidgetResizable(True)
-        sa.setWidget(sw)
-        sa.setFrameShape(sa.NoFrame)
-        
-        parent.addTab(sa, data.description)
+        self.sa = QScrollArea()
+        self.sa.setWidgetResizable(True)
+        self.sa.setWidget(sw)
+        self.sa.setFrameShape(self.sa.NoFrame)
         
         for option in self.data.items:
             if option.type == "int":
