@@ -126,6 +126,7 @@ class CollectorModel(QAbstractItemModel):
             deselect:     deselect the returned items
             linksOfPacks: if deselect, for the links, only deselect those which belong to a selected package
         """
+        func_start_time = self.time_msec()
         QMutexLocker(self.mutex)
         selection = []          # (pid, fid, isPack)
         smodel = self.view.selectionModel()
@@ -148,12 +149,14 @@ class CollectorModel(QAbstractItemModel):
                         link = linkindex.internalPointer()
                         if isinstance(link, Link) and link.data["package"] == pack.id:
                             smodel.select(linkindex, QItemSelectionModel.Deselect | QItemSelectionModel.Rows)
+        self.log.debug8("%s.getSelection took %dms" % (self.cname, self.time_msec() - func_start_time))
         return selection
     
     def getSelectedPackagesForEdit(self):
         """
             called from main
         """
+        func_start_time = self.time_msec()
         QMutexLocker(self.mutex)
         selection = []          # (pid, name, folder, password)
         smodel = self.view.selectionModel()
@@ -163,9 +166,11 @@ class CollectorModel(QAbstractItemModel):
                 selection.append((item.id, item.data["name"], item.data["folder"], item.data["password"]))
             elif not isinstance(item, Link):
                 raise TypeError("%s: Unknown item instance" % self.cname)
+        self.log.debug8("%s.getSelectedPackagesForEdit took %dms" % (self.cname, self.time_msec() - func_start_time))
         return selection
     
     def saveViewItemStates(self):
+        func_start_time = self.time_msec()
         # expanded/collapsed
         for p, package in enumerate(self._data):
             pid = package.id
@@ -206,8 +211,10 @@ class CollectorModel(QAbstractItemModel):
                 raise TypeError("%s: Unknown item instance" % self.cname)
             self.selectedItems.append([pid, fid])
             self.log.debug0("%s.saveViewItemStates:selectedItem:   name:'%s'   pid:%d   fid:%d" % (self.cname, item.data["name"], pid, fid))
+        self.log.debug8("%s.saveViewItemStates took %dms" % (self.cname, self.time_msec() - func_start_time))
     
     def applyViewItemStates(self):
+        func_start_time = self.time_msec()
         # expanded/collapsed
         for p, package in enumerate(self._data):
             pid = package.id
@@ -276,8 +283,10 @@ class CollectorModel(QAbstractItemModel):
                 self.log.warning("%s.applyViewItemStates:selectedItem: Prevoiusly selected package not found, id:%d" % (self.cname, ids[0]))
             else:
                 self.log.warning("%s.applyViewItemStates:selectedItem: Prevoiusly selected link not found, id:%d (in package id:%d)" % (self.cname, ids[1], ids[0]))
+        self.log.debug8("%s.applyViewItemStates took %dms" % (self.cname, self.time_msec() - func_start_time))
     
     def selectAllPackages(self, deselect):
+        func_start_time = self.time_msec()
         QMutexLocker(self.mutex)
         smodel = self.view.selectionModel()
         oldSelection = smodel.selection()
@@ -296,6 +305,7 @@ class CollectorModel(QAbstractItemModel):
                 selection.select(leftIndex, rightIndex)
         if not selection.isEmpty():
             self.mergeSelection(smodel, selection, deselect)
+        self.log.debug8("%s.selectAllPackages took %dms" % (self.cname, self.time_msec() - func_start_time))
     
     def selectAll(self, deselect):
         func_start_time = self.time_msec()
@@ -971,6 +981,7 @@ class CollectorModel(QAbstractItemModel):
         """
             called from main
         """
+        func_start_time = self.time_msec()
         QMutexLocker(self.mutex)
         rx = QRegExp(pattern, cs, syntax)
         smodel = self.view.selectionModel()
@@ -1056,6 +1067,7 @@ class CollectorModel(QAbstractItemModel):
             self.view.buttonMsgShow(_("No change"), False)
         self.view.setFocus(Qt.OtherFocusReason)
         self.view.buttonMsgHide(2000)
+        self.log.debug8("%s.advancedSelect took %dms" % (self.cname, self.time_msec() - func_start_time))
     
     def mergeSelection(self, smodel, selection, deselect):
         """
@@ -1083,6 +1095,7 @@ class CollectorModel(QAbstractItemModel):
         """
             called from main
         """
+        func_start_time = self.time_msec()
         QMutexLocker(self.mutex)
         dupeIds = []
         if len(self._data) > 0:
@@ -1123,6 +1136,7 @@ class CollectorModel(QAbstractItemModel):
             self.view.setCurrentIndex(QModelIndex())
             smodel.select(pindex, QItemSelectionModel.Select | QItemSelectionModel.Rows)
         self.view.buttonMsgHide(2000)
+        self.log.debug8("%s.removeLinkDupes took %dms" % (self.cname, self.time_msec() - func_start_time))
     
     def sortPackages(self):
         """
@@ -1565,6 +1579,7 @@ class DragAndDrop(QObject):
         QObject.__init__(self)
         self.log = logging.getLogger("guilog")
         self.view = view
+        self.model = model
         self.cname = model.__class__.__name__ + "." + self.__class__.__name__
         
         self.buttonMsgCanDrop = _("To drop the items in the order they were selected, hold the ALT key when releasing the mouse button!")
@@ -1634,6 +1649,8 @@ class DragAndDrop(QObject):
                   srcLinksSamePack
                   srcLinksSamePackId
         """
+        func_start_time = self.model.time_msec()
+        
         self.srcPacksCnt = 0
         self.srcLinksCnt = 0
         
@@ -1668,11 +1685,14 @@ class DragAndDrop(QObject):
                         self.srcLinksSamePack = False
                         break
 
+        self.log.debug8("%s.getSrcInfo took %dms" % (self.cname, self.model.time_msec() - func_start_time))               
+
     def getSrcPackages(self):
         """
             Get the selected packages
             Sets: srcPackages[[pid, order, row]]
         """
+        func_start_time = self.model.time_msec()
         self.srcPackages = []
         
         smodel = self.view.selectionModel()
@@ -1684,12 +1704,14 @@ class DragAndDrop(QObject):
                 row = si.row()
                 self.log.debug4("%s.getSrcPackages:   pid:%d   order:%d   row:%d" % (self.cname, pid, order, row))
                 self.srcPackages.append([pid, order, row])
+        self.log.debug8("%s.getSrcPackages took %dms" % (self.cname, self.model.time_msec() - func_start_time))
 
     def getSrcLinks(self):
         """
             Get the selected links
             Sets: srcLinks[[id, url, pid, order, row]]
         """
+        func_start_time = self.model.time_msec()
         self.srcLinks = []
         
         smodel = self.view.selectionModel()
@@ -1703,6 +1725,7 @@ class DragAndDrop(QObject):
                 row = si.row()
                 self.log.debug4("%s.getSrcLinks:   id:%d   url:'%s'   pid:%d   order:%d   row:%d" % (self.cname, id, url, pid, order, row))
                 self.srcLinks.append([id, url, pid, order, row])
+        self.log.debug8("%s.getSrcLinks took %dms" % (self.cname, self.model.time_msec() - func_start_time))
 
     def canDrop(self, pos):
         """
