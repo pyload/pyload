@@ -503,10 +503,10 @@ class CollectorModel(QAbstractItemModel):
                                 self.emit(SIGNAL("notificationMessage"), info.status, child.data["name"])
                         if child.data["status"] > packageStatus:
                             packageStatus = child.data["status"]
-            if linkFound:
-                if packageStatus == DownloadStatus.Finished:
-                    self.emit(SIGNAL("notificationMessage"), 100, package.data["name"])
-            else:
+                    if linkFound:
+                        if packageStatus == DownloadStatus.Finished:
+                            self.emit(SIGNAL("notificationMessage"), 100, package.data["name"])
+            if not linkFound:
                 self.log.debug2("%s.updateEvent: Link not found, fid:%d" % (self.cname, event.id))
                 self.setDirty(False)
         
