@@ -846,9 +846,6 @@ class MainWindow(QMainWindow):
             action from add-menu
             show new-package dock
         """
-        self.newPackDock.widget.nameInput.setText("")
-        self.newPackDock.widget.passwordInput.setText("")
-        self.newPackDock.widget.box.clear()
         self.emit(SIGNAL("showAddPackage"))
     
     def slotShowAddLinks(self):
@@ -856,7 +853,6 @@ class MainWindow(QMainWindow):
             action from add-menu
             show new-links dock
         """
-        self.newLinkDock.widget.box.clear()
         self.emit(SIGNAL("showAddLinks"))
     
     def slotShowConnector(self):
