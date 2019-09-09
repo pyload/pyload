@@ -317,7 +317,6 @@ class main(QObject):
         self.mainloop = self.Loop(self)
         self.connectSignals()
 
-        self.checkClipboard = False
         conn = self.refreshConnections(self.cmdLineConnection)
         self.connData = None
         self.serverStatus = {"freespace":0}
@@ -451,7 +450,6 @@ class main(QObject):
         self.initCollector()
         self.clipboard = self.app.clipboard()
         self.connect(self.clipboard, SIGNAL('dataChanged()'), self.slotClipboardChange)
-        self.mainWindow.actions["clipboard"].setChecked(self.checkClipboard)
         self.mainWindow.tabs["settings"]["w"].setConnector(self.connector)
         self.createTrayIcon()
         if self.trayOptions.settings["EnableTray"]:
@@ -619,7 +617,6 @@ class main(QObject):
         self.connect(self.mainWindow,          SIGNAL("showAddLinks"), self.slotShowAddLinks)
         self.connect(self.mainWindow,          SIGNAL("addContainer"), self.slotAddContainer)
         self.connect(self.mainWindow,          SIGNAL("stopAllDownloads"), self.slotStopAllDownloads)
-        self.connect(self.mainWindow,          SIGNAL("setClipboardStatus"), self.slotSetClipboardStatus)
         self.connect(self.mainWindow,          SIGNAL("captchaStatusButton"), self.slotCaptchaStatusButton)
         self.connect(self.mainWindow,          SIGNAL("restartFailed"), self.slotRestartFailed)
         self.connect(self.mainWindow,          SIGNAL("deleteFinished"), self.slotDeleteFinished)
@@ -2642,25 +2639,24 @@ class main(QObject):
         """
             called if clipboard changes
         """
-        if self.checkClipboard:
+        mode_queue     = self.mainWindow.actions["clipboard_queue"].isChecked()
+        mode_collector = self.mainWindow.actions["clipboard_collector"].isChecked()
+        mode_packDock  = self.mainWindow.actions["clipboard_packDock"].isChecked()
+        if mode_queue or mode_collector or mode_packDock:
             text = unicode(self.clipboard.text())
             links = self.mainWindow.urlFilter(text)
             if len(links) == 0:
                 return
-                
             filenames = [link.rpartition("/")[2] for link in links]
-            
             packagename = commonprefix(filenames)
             if len(packagename) == 0:
                 packagename = filenames[0]
-
-            self.slotAddPackage(packagename, links, False)
-
-    def slotSetClipboardStatus(self, status):
-        """
-            set clipboard checking
-        """
-        self.checkClipboard = status
+            if mode_queue:
+                self.slotAddPackage(packagename, links, True)
+            elif mode_collector:
+                self.slotAddPackage(packagename, links, False)
+            else:
+                self.mainWindow.newPackDock.appendClipboardLinks(links)
 
     def slotPullOutPackages(self):
         """
@@ -3471,7 +3467,7 @@ class InfoCorePermissions(QDialog):
                 wt2  = _("Also needed for:<br>"
                          "- Queue: Add Container<br>"
                          "- Collector: Moving links to another package<br>"
-                         "- Toolbar: Check Clipboard")
+                         "- Toolbar: Clipboard Watcher")
             elif k == "DELETE":
                 name = _("Delete")
                 wt1  = _("Remove packages and links from Collector and Queue")

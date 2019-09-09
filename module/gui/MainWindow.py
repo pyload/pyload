@@ -313,6 +313,9 @@ class MainWindow(QMainWindow):
         self.newPackDock.widget.setEnabled(corePermissions["ADD"])
         self.actions["add_package"].setEnabled(corePermissions["ADD"])
         if not corePermissions["ADD"]:
+            self.actions["clipboard_queue"].setChecked(False)
+            self.actions["clipboard_collector"].setChecked(False)
+            self.actions["clipboard_packDock"].setChecked(False)
             self.actions["clipboard"].setChecked(False)
             self.actions["clipboard"].setEnabled(False)
         # Api.uploadContainer
@@ -405,7 +408,7 @@ class MainWindow(QMainWindow):
         self.actions["add"].setWhatsThis(whatsThisFormat(_("Add"), _("- Create a new package<br>- Add links to an existing package<br>- Add a container file to the Queue<br>- Add an account")))
         self.toolbar.addSeparator()
         self.actions["clipboard"] = self.toolbar.addAction(QIcon(join(pypath, "icons", "clipboard.png")), "")
-        self.actions["clipboard"].setWhatsThis(whatsThisFormat(_("Check Clipboard"), _("Watches the clipboard, extracts URLs from copied text and creates a package with the URLs in the Collector.")))
+        self.actions["clipboard"].setWhatsThis(whatsThisFormat(_("Clipboard Watcher"), _("Watches the clipboard, extracts URLs from copied text and creates a package with the URLs or adds the URLs to the New Package Window.")))
         self.actions["clipboard"].setCheckable(True)
         stretch1 = QWidget()
         stretch1.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
@@ -441,7 +444,6 @@ class MainWindow(QMainWindow):
         self.actions["remove_finished"] = self.toolbar.addAction(QIcon(join(pypath, "icons", "toolbar_remove.png")), "")
         self.actions["remove_finished"].setWhatsThis(whatsThisFormat(_("Remove Finished"), _("Removes all finished downloads from the Queue and the Collector.")))
         self.connect(self.actions["toggle_status"], SIGNAL("toggled(bool)"), self.slotToggleStatus)
-        self.connect(self.actions["clipboard"], SIGNAL("toggled(bool)"), self.slotToggleClipboard)
         self.connect(self.toolbar_speedLimit_enabled, SIGNAL("toggled(bool)"), self.slotSpeedLimitStatus)
         self.connect(self.toolbar_speedLimit_rate, SIGNAL("editingFinished()"), self.slotSpeedLimitRate)
         self.connect(self.toolbar_captcha, SIGNAL("clicked()"), self.slotCaptchaStatusButton)
@@ -460,6 +462,18 @@ class MainWindow(QMainWindow):
         self.connect(self.actions["add_links"], SIGNAL("triggered()"), self.slotShowAddLinks)
         self.connect(self.actions["add_container"], SIGNAL("triggered()"), self.slotShowAddContainer)
         self.connect(self.actions["add_account"], SIGNAL("triggered()"), self.slotNewAccount)
+        
+        self.clipboardMenu = QMenu()
+        self.actions["clipboard_queue"] = self.clipboardMenu.addAction(_("Create New Packages In Queue"))
+        self.actions["clipboard_queue"].setCheckable(True)
+        self.actions["clipboard_collector"] = self.clipboardMenu.addAction(_("Create New Packages In Collector"))
+        self.actions["clipboard_collector"].setCheckable(True)
+        self.actions["clipboard_packDock"] = self.clipboardMenu.addAction(_("Add To New Package Window"))
+        self.actions["clipboard_packDock"].setCheckable(True)
+        self.connect(self.actions["clipboard"], SIGNAL("triggered()"), self.slotClipboard)
+        self.connect(self.actions["clipboard_queue"], SIGNAL("toggled(bool)"), self.slotClipboardQueueToggled)
+        self.connect(self.actions["clipboard_collector"], SIGNAL("toggled(bool)"), self.slotClipboardCollectorToggled)
+        self.connect(self.actions["clipboard_packDock"], SIGNAL("toggled(bool)"), self.slotClipboardPackDockToggled)
     
     def init_tabs(self, connector):
         """
@@ -851,7 +865,7 @@ class MainWindow(QMainWindow):
     def slotAdd(self):
         """
             add button (toolbar)
-            show context menu (choice: links/package)
+            show context menu
         """
         self.addMenu.exec_(QCursor.pos())
     
@@ -868,6 +882,32 @@ class MainWindow(QMainWindow):
             show new-links dock
         """
         self.emit(SIGNAL("showAddLinks"))
+    
+    def slotClipboard(self):
+        """
+            clipboard watcher button (toolbar)
+            show context menu
+        """
+        self.actions["clipboard"].setChecked(not self.actions["clipboard"].isChecked())
+        self.clipboardMenu.exec_(QCursor.pos())
+    
+    def slotClipboardQueueToggled(self, status):
+        if status:
+            self.actions["clipboard_collector"].setChecked(False)
+            self.actions["clipboard_packDock"].setChecked(False)
+        self.actions["clipboard"].setChecked(status)
+    
+    def slotClipboardCollectorToggled(self, status):
+        if status:
+            self.actions["clipboard_queue"].setChecked(False)
+            self.actions["clipboard_packDock"].setChecked(False)
+        self.actions["clipboard"].setChecked(status)
+    
+    def slotClipboardPackDockToggled(self, status):
+        if status:
+            self.actions["clipboard_queue"].setChecked(False)
+            self.actions["clipboard_collector"].setChecked(False)
+        self.actions["clipboard"].setChecked(status)
     
     def slotShowConnector(self):
         """
@@ -1055,12 +1095,6 @@ class MainWindow(QMainWindow):
         """
         self.emit(SIGNAL("removeDownloads"), self.activeMenu == self.queueContext)
     
-    def slotToggleClipboard(self, status):
-        """
-            check clipboard (toolbar)
-        """
-        self.emit(SIGNAL("setClipboardStatus"), status)
-   
     def slotSpeedLimitStatus(self, status):
         """
             speed limit enable/disable checkbox (toolbar)

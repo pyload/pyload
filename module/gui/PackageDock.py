@@ -102,6 +102,12 @@ class NewPackageDock(QDockWidget):
         self.widget.box.setEnabled(True)
         self.widget.filter.setEnabled(True)
     
+    def appendClipboardLinks(self, links):
+        text = unicode("")
+        for l in links:
+            text += l + "\n"
+        self.widget.box.addText(text)
+    
     def slotClearBtnClicked(self):
         if self.widget.box.toPlainText().isEmpty():
             self.widget.nameInput.setText("")
@@ -240,6 +246,15 @@ class PlainTextEdit(QPlainTextEdit):
     
     def slotAppendToggled(self, status):
         self.append = status
+    
+    def addText(self, text):
+        cursor = self.textCursor()
+        cursor.movePosition(QTextCursor.End, QTextCursor.MoveAnchor)
+        self.setTextCursor(cursor)
+        lineLength = cursor.block().length() - 1
+        if lineLength > 0:
+            self.insertPlainText("\n")
+        self.insertPlainText(text)
     
     def insertFromMimeData(self, source):
         cursor = self.textCursor()
