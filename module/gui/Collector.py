@@ -21,11 +21,12 @@ from PyQt4.QtGui import *
 
 import logging, re
 from time import time
-from module.PyFile import statusMap
-from module.utils import formatSize, formatSpeed
-from module.gui.Tools import whatsThisFormat
+from datetime import datetime
 
 from module.remote.thriftbackend.ThriftClient import Destination, FileDoesNotExists, PackageDoesNotExists, ElementType, DownloadStatus
+from module.PyFile import statusMap
+from module.utils import formatSize, formatSpeed
+from module.gui.Tools import whatsThisFormat, longestSubsequence
 
 statusMapReverse = dict((v,k) for k, v in statusMap.iteritems())
 
@@ -35,6 +36,9 @@ class CollectorModel(QAbstractItemModel):
     """
         model for the collector view
     """
+    
+    def time_msec(self):
+        return int((datetime.utcnow() - datetime(1970, 1, 1)).total_seconds() * 1000)
     
     def __init__(self, view, connector):
         QAbstractItemModel.__init__(self)
@@ -348,20 +352,21 @@ class CollectorModel(QAbstractItemModel):
             self.fullReload()
             self.log.debug2("%s.fullReload: done" % self.cname)
             return
-        self.saveViewItemStates()
+#       self.saveViewItemStates() # FIXME: broken or too slow?
         if event.eventname == "remove":
             self.removeEvent(event)
         elif event.eventname == "insert":
             self.insertEvent(event)
         elif event.eventname == "update":
             self.updateEvent(event)
-        self.applyViewItemStates()
+#       self.applyViewItemStates() # FIXME: broken or too slow?
         self.fullReloadOnDirty(False)
     
     def fullReload(self):
         """
             reload whole model, used at startup to load initial data
         """
+        func_start_time = self.time_msec()
         self.lastFullReload = time()
         self.saveViewItemStates()
         self.beginResetModel()
@@ -387,6 +392,7 @@ class CollectorModel(QAbstractItemModel):
         self.dirty = False
         self.view.setEnabled(True)
         self.applyViewItemStates()
+        self.log.debug8("%s.fullReload took %dms" % (self.cname, self.time_msec() - func_start_time))
     
     def removeEvent(self, event):
         """
@@ -437,8 +443,8 @@ class CollectorModel(QAbstractItemModel):
                     self.log.debug1("%s.removeEvent: Package removed, pid:%d" % (self.cname, event.id))
                     break
             if not packageFound:
-               self.log.debug2("%s.removeEvent: Package not found, pid:%d" % (self.cname, event.id))
-               self.setDirty(False)
+                self.log.debug2("%s.removeEvent: Package not found, pid:%d" % (self.cname, event.id))
+                self.setDirty(False)
     
     def insertEvent(self, event):
         """
@@ -1063,6 +1069,7 @@ class CollectorModel(QAbstractItemModel):
             called from main
         """
         QMutexLocker(self.mutex)
+        func_start_time = self.time_msec()
         sortingPerformed = False
         if len(self._data) > 0:
             if len(self._data) > 1:
@@ -1071,12 +1078,15 @@ class CollectorModel(QAbstractItemModel):
                     name = package.data["name"]
                     pid  = package.id
                     packs.append([name, pid])
-                (packs_sorted, alreadySorted) = self.sortItems(packs)
+                (sortedPacks, alreadySorted) = self.sortItems(packs)
                 if alreadySorted:
                     self.view.buttonMsgShow(_("Nothing to do, packages are already sorted"), False)
                 else:
-                    for p in reversed(packs_sorted):
-                        self.connector.proxy.orderPackage(p[1], 0)
+                    packMoves = self.smallestListOfItemMoves(packs, sortedPacks)
+                    self.log.debug8("%s.sortPackages: %d packMoves build after %dms" % (self.cname, len(packMoves), self.time_msec() - func_start_time))
+                    for move in packMoves:
+                        self.connector.proxy.orderPackage(move[0], move[1])
+                    self.log.debug8("%s.sortPackages: packages sorted after %dms" % (self.cname, self.time_msec() - func_start_time))
                     sortingPerformed = True
                     self.view.buttonMsgShow(_("Packages sorted"), False)
             else:
@@ -1093,37 +1103,41 @@ class CollectorModel(QAbstractItemModel):
             called from main
         """
         QMutexLocker(self.mutex)
+        func_start_time = self.time_msec()
         sortingPerformed = False
         if len(self._data) > 0:
-            packsCnt = 0
+            numOfSelectedPacks = 0
             smodel = self.view.selectionModel()
             for si in smodel.selectedRows(0):
                 item = si.internalPointer()
                 if isinstance(item, Package):
                     pindex = si
-                    packsCnt += 1
+                    numOfSelectedPacks += 1
                 elif not isinstance(item, Link):
                     raise TypeError("%s: Unknown item instance" % self.cname)
-            if packsCnt == 1:
+            if numOfSelectedPacks == 1:
                 package = pindex.internalPointer()
                 if len(package.children) > 1:
                     links = []
                     for link in package.children:
                         name = link.data["name"]
-                        id   = link.id
-                        links.append([name, id])
-                        (links_sorted, alreadySorted) = self.sortItems(links)
-                        if alreadySorted:
-                            self.view.buttonMsgShow(_("Nothing to do, Links are already sorted"), False)
-                        else:
-                            self.view.setExpanded(pindex, True)
-                            for l in reversed(links_sorted):
-                                self.connector.proxy.orderFile(l[1], 0)
-                            sortingPerformed = True
-                            self.view.buttonMsgShow(_("Links sorted"), False)
+                        fid   = link.id
+                        links.append([name, fid])
+                    (sortedLinks, alreadySorted) = self.sortItems(links)
+                    if alreadySorted:
+                        self.view.buttonMsgShow(_("Nothing to do, Links are already sorted"), False)
+                    else:
+                        self.view.setExpanded(pindex, True)
+                        linkMoves = self.smallestListOfItemMoves(links, sortedLinks)
+                        self.log.debug8("%s.sortLinks: %d linkMoves build after %dms" % (self.cname, len(linkMoves), self.time_msec() - func_start_time))
+                        for move in linkMoves:
+                            self.connector.proxy.orderFile(move[0], move[1])
+                        self.log.debug8("%s.sortLinks: links sorted after %dms" % (self.cname, self.time_msec() - func_start_time))
+                        sortingPerformed = True
+                        self.view.buttonMsgShow(_("Links sorted"), False)
                 else:
                     self.view.buttonMsgShow(_("Nothing to do, package has only one link"), False)
-            elif packsCnt == 0:
+            elif numOfSelectedPacks == 0:
                 self.view.buttonMsgShow(_("Select a package!"), True)
             else:
                 self.view.buttonMsgShow(_("Select a single package only!"), True)
@@ -1136,14 +1150,60 @@ class CollectorModel(QAbstractItemModel):
         self.view.buttonMsgHide(2000)
     
     def sortItems(self, items):
-        # http://stackoverflow.com/a/16090640
-        items_sorted = sorted(items, key = lambda il: [int(t) if t.isdigit() else t.lower() for t in re.split('(\d+)', il[0])])
+        """
+            Natural sorting of package/link names
+                items: [[name, id], ..., ....]
+        """
+        sortedItems = sorted(items, key = lambda il: [int(t) if t.isdigit() else t.lower() for t in re.split('(\d+)', il[0])])   # http://stackoverflow.com/a/16090640
         alreadySorted = True
         for i in xrange(len(items)):
-            if items[i][1] != items_sorted[i][1]:   # id
+            if items[i][1] != sortedItems[i][1]:   # id
                 alreadySorted = False
                 break
-        return (items_sorted, alreadySorted)
+        return (sortedItems, alreadySorted)
+    
+    def smallestListOfItemMoves(self, unsortedItems, sortedItems):
+        """
+            Calculates the smallest possible amount of item moves
+            for sorting a list of links or packages.
+                unsortedItems: [[name, id], ..., ....]
+                sortedItems:   [[name, id], ..., ....]
+            Returns a list of (id, position) tuples for feeding to api.orderFile or api.orderPackage.
+        """
+        items = list(unsortedItems)
+        id2SortedItemPos = {id: pos for pos, (dummy, id) in enumerate(sortedItems)}
+        seq = []
+        for i in xrange(len(items)):
+            seq.append(id2SortedItemPos[items[i][1]])
+        lis = longestSubsequence(seq)
+        itemMoves = []
+        for i in xrange(len(items)):
+            if i >= len(lis) or lis[i] != i:
+                id = sortedItems[i][1]
+                # update the 'items' array
+                for j in xrange(len(items)):
+                    if items[j][1] == id: break
+                item = items.pop(j)
+                j = id2SortedItemPos[id]
+                if j > 0:
+                    previousId = sortedItems[j - 1][1]
+                    for k in xrange(len(items)):
+                        if items[k][1] == previousId: break
+                    j = k + 1
+                    if j > len(items): raise RuntimeError("%s: j > len(items)" % self.cname)
+                items.insert(j, item)
+                # update 'lis'
+                lis.insert(i, i)
+                # add to list
+                itemMoves.append((id, j)) # (id, pos)
+        # sanity checks
+        if len(lis) != len(items): raise RuntimeError("%s: len(lis) != len(items)" % self.cname)
+        for i in xrange(len(lis)):
+            if lis[i] != i: raise RuntimeError("%s: lis[i] != i" % self.cname)
+        if len(items) != len(sortedItems): raise RuntimeError("%s: len(items) != len(sortedItems)" % self.cname)
+        for i in xrange(len(items)):
+            if items[i][1] != sortedItems[i][1]: raise RuntimeError("%s: items != sortedItems" % self.cname)
+        return itemMoves
 
 class Package(object):
     """

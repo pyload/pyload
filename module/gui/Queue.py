@@ -21,9 +21,10 @@ from PyQt4.QtGui import *
 
 import logging
 from time import time
+from datetime import datetime
 
-from module.remote.thriftbackend.ThriftClient import Destination, DownloadStatus
 from module.gui.Collector import CollectorModel, Package, Link, CollectorView, statusMapReverse
+from module.remote.thriftbackend.ThriftClient import Destination, DownloadStatus
 from module.utils import formatSize, formatSpeed
 from module.gui.Tools import whatsThisFormat
 
@@ -73,6 +74,7 @@ class QueueModel(CollectorModel):
         """
             reimplements CollectorModel.fullReload, because we want the Queue data
         """
+        func_start_time = self.time_msec()
         self.lastFullReload = time()
         self.saveViewItemStates()
         self.beginResetModel()
@@ -120,6 +122,7 @@ class QueueModel(CollectorModel):
         self.view.setEnabled(True)
         self.updateCount()
         self.applyViewItemStates()
+        self.log.debug8("%s.fullReload took %dms" % (self.cname, self.time_msec() - func_start_time))
     
     def insertEvent(self, event):
         """
