@@ -973,10 +973,8 @@ class CollectorModel(QAbstractItemModel):
         """
         func_start_time = self.time_msec()
         QMutexLocker(self.mutex)
-        rx = QRegExp(pattern, cs, syntax)
         smodel = self.view.selectionModel()
-        oldSelection = smodel.selection()
-        selection = QItemSelection()
+        rx = QRegExp(pattern, cs, syntax)
         
         # select links
         if selectLinks:
@@ -988,18 +986,14 @@ class CollectorModel(QAbstractItemModel):
                         name = QString(link.data["name"])
                         match = name.contains(rx)
                         if match:
-                            leftIndex  = self.index(l, 0, pindex)
-                            if not leftIndex.isValid():
-                                raise ValueError("%s: Invalid index" % self.cname)
-                            rightIndex = self.index(l, self.cols - 1, pindex)
-                            if not rightIndex.isValid():
+                            index = self.index(l, 0, pindex)
+                            if not index.isValid():
                                 raise ValueError("%s: Invalid index" % self.cname)
                             if not deselect:
-                                if not oldSelection.contains(leftIndex):
-                                    selection.select(leftIndex, rightIndex)
-                                    self.view.expand(pindex)
-                            elif oldSelection.contains(leftIndex):
-                                selection.select(leftIndex, rightIndex)
+                                if not smodel.isSelected(index): smodel.select(index, QItemSelectionModel.Select | QItemSelectionModel.Rows)
+                                self.view.expand(pindex)
+                            else:
+                                if smodel.isSelected(index): smodel.select(index, QItemSelectionModel.Deselect | QItemSelectionModel.Rows)
                             self.log.debug9("%s.advancedSelect:selectedLink:   deselect:%s   name:'%s'   pid:%d   fid:%d" % (self.cname, deselect, name, package.id, link.id))
                     noPackagesSelected = False
                 elif not isinstance(package, Link):
@@ -1014,18 +1008,14 @@ class CollectorModel(QAbstractItemModel):
                         name = QString(link.data["name"])
                         match = name.contains(rx)
                         if match:
-                            leftIndex  = self.index(l, 0, pindex)
-                            if not leftIndex.isValid():
-                                raise ValueError("%s: Invalid index" % self.cname)
-                            rightIndex = self.index(l, self.cols - 1, pindex)
-                            if not rightIndex.isValid():
+                            index = self.index(l, 0, pindex)
+                            if not index.isValid():
                                 raise ValueError("%s: Invalid index" % self.cname)
                             if not deselect:
-                                if not oldSelection.contains(leftIndex):
-                                    selection.select(leftIndex, rightIndex)
-                                    self.view.expand(pindex)
-                            elif oldSelection.contains(leftIndex):
-                                selection.select(leftIndex, rightIndex)
+                                if not smodel.isSelected(index): smodel.select(index, QItemSelectionModel.Select | QItemSelectionModel.Rows)
+                                self.view.expand(pindex)
+                            else:
+                                if smodel.isSelected(index): smodel.select(index, QItemSelectionModel.Deselect | QItemSelectionModel.Rows)
                             self.log.debug9("%s.advancedSelect:selectedLink:   deselect:%s   name:'%s'   pid:%d   fid:%d" % (self.cname, deselect, name, package.id, link.id))
         
         # select packages
@@ -1034,52 +1024,18 @@ class CollectorModel(QAbstractItemModel):
                 name = QString(package.data["name"])
                 match = name.contains(rx)
                 if match:
-                    leftIndex = self.index(p, 0)
-                    if not leftIndex.isValid():
-                        raise ValueError("%s: Invalid index" % self.cname)
-                    rightIndex = self.index(p, self.cols - 1)
-                    if not rightIndex.isValid():
+                    index = self.index(p, 0)
+                    if not index.isValid():
                         raise ValueError("%s: Invalid index" % self.cname)
                     if not deselect:
-                        if not oldSelection.contains(leftIndex):
-                            selection.select(leftIndex, rightIndex)
-                    elif oldSelection.contains(leftIndex):
-                        selection.select(leftIndex, rightIndex)
+                        if not smodel.isSelected(index): smodel.select(index, QItemSelectionModel.Select | QItemSelectionModel.Rows)
+                    else:
+                        if smodel.isSelected(index): smodel.select(index, QItemSelectionModel.Deselect | QItemSelectionModel.Rows)
                     self.log.debug9("%s.advancedSelect:selectedPackage:   deselect:%s   name:'%s'   pid:%d" % (self.cname, deselect,name, package.id))
-                    
-        if not selection.isEmpty():
-            self.mergeSelection(smodel, selection, deselect)
-            if not deselect:
-                self.view.buttonMsgShow(_("Selected"), False)
-            else:
-                self.view.buttonMsgShow(_("Deselected"), False)
-        else:
-            self.view.buttonMsgShow(_("No change"), False)
-        self.view.setFocus(Qt.OtherFocusReason)
+        
+        self.view.buttonMsgShow(_("Done"), False)
         self.view.buttonMsgHide(2000)
         self.log.debug8("%s.advancedSelect took %dms" % (self.cname, self.time_msec() - func_start_time))
-    
-    def mergeSelection(self, smodel, selection, deselect):
-        """
-            special method to speed up performance of QItemSelectionModel
-        """
-        func_start_time = self.time_msec()
-        selNew = smodel.selection()
-        if not deselect:
-            selNew.merge(selection, QItemSelectionModel.Select)
-        else:
-            selNew.merge(selection, QItemSelectionModel.Deselect)
-        self.view.clearSelection()
-        self.view.setCurrentIndex(QModelIndex())
-        self.view.selectAll()
-        invSelNew = smodel.selection()
-        selNew2 = smodel.selection()
-        invSelNew.merge(selNew, QItemSelectionModel.Deselect)
-        selNew2.merge(invSelNew, QItemSelectionModel.Deselect)
-        self.view.clearSelection()
-        self.view.setCurrentIndex(QModelIndex())
-        smodel.select(selNew2, QItemSelectionModel.Select | QItemSelectionModel.Rows)
-        self.log.debug8("%s.mergeSelection took %dms, deselect:%s" % (self.cname, self.time_msec() - func_start_time, deselect))
     
     def removeLinkDupes(self):
         """
