@@ -769,6 +769,171 @@ class FontOptions(QDialog):
     def appFontChanged(self):
         self.buttons.updateWhatsThisButton()
 
+class ColorFixOptions(QDialog):
+    """
+        color fix options dialog
+    """
+    def __init__(self, parent):
+        QDialog.__init__(self, parent)
+        self.log = logging.getLogger("guilog")
+
+        wt = _(
+        "This is a workaround for an issue with displaying disabled window elements on some systems.<br>"
+        "If you can distinguish the buttons 'common button' and 'disabled button' by their coloring, then your system is probably not affected and you can turn of this option.<br><br>"
+        "The default alpha channel value is 128"
+        )
+        self.setWhatsThis(whatsThisFormat(_("Color Fix"), wt))
+
+        self.settings = {}
+        self.lastFont = None
+        self.defaultColors = {}
+        self.getDefaultColors()
+
+        self.setAttribute(Qt.WA_DeleteOnClose, False)
+        self.setWindowFlags(self.windowFlags() &~ Qt.WindowContextHelpButtonHint)
+        self.setWindowTitle(_("Options"))
+        self.setWindowIcon(QIcon(join(pypath, "icons", "logo.png")))
+
+        btnEnabled = QPushButton(_("common button"))
+        btnEnabled.setFocusPolicy(Qt.NoFocus)
+        btnDisabled = QPushButton(_("disabled button"))
+        btnDisabled.setPalette(QPalette(QApplication.palette()))
+        btnDisabled.setEnabled(False)
+
+        lblPv = QLabel(_("Preview"))
+        lblPv.setAlignment(Qt.AlignCenter)
+
+        self.btnPvDisabled = QPushButton(_("disabled button fixed"))    # Note: This is actually an enabled button
+        self.btnPvDisabled.setFocusPolicy(Qt.NoFocus)
+
+        lbl1 = QLabel(_("Alpha channel value"))
+        self.sbAlpha = QSpinBox()
+        self.sbAlpha.setMinimum(30)
+        self.sbAlpha.setMaximum(255)
+
+        hboxSb = QHBoxLayout()
+        hboxSb.addWidget(lbl1)
+        hboxSb.addWidget(self.sbAlpha)
+        hboxSb.addStretch(1)
+
+        vboxSbPv = QVBoxLayout()
+        vboxSbPv.addWidget(lblPv)
+        vboxSbPv.addWidget(self.btnPvDisabled)
+        vboxSbPv.addLayout(hboxSb)
+
+        self.cbEnabled = QGroupBox(_("Fix disabled window elements") + "     ")
+        self.cbEnabled.setCheckable(True)
+        self.cbEnabled.setLayout(vboxSbPv)
+
+        self.buttons = WtDialogButtonBox(Qt.Horizontal, self)
+        self.okBtn     = self.buttons.addButton(QDialogButtonBox.Ok)
+        self.cancelBtn = self.buttons.addButton(QDialogButtonBox.Cancel)
+        self.buttons.button(QDialogButtonBox.Ok).setText(_("OK"))
+        self.buttons.button(QDialogButtonBox.Cancel).setText(_("Cancel"))
+
+        vbox = QVBoxLayout()
+        vbox.addWidget(btnEnabled)
+        vbox.addWidget(btnDisabled)
+        vbox.addWidget(self.cbEnabled)
+        vbox.addStretch(1)
+        vbox.addLayout(self.buttons.layout())
+        self.setLayout(vbox)
+
+        self.setMinimumWidth(250)
+        self.adjustSize()
+
+        self.connect(self.sbAlpha,   SIGNAL("valueChanged(int)"), self.slotSetPreviewButtonAlpha)
+        self.connect(self.okBtn,     SIGNAL("clicked()"), self.accept)
+        self.connect(self.cancelBtn, SIGNAL("clicked()"), self.reject)
+        self.defaultSettings()
+
+    def getDefaultColors(self):
+        p = QApplication.palette()
+        self.defaultColors["window"]          = int(p.color(QPalette.Disabled, QPalette.Window          ).rgba())
+        self.defaultColors["windowText"]      = int(p.color(QPalette.Disabled, QPalette.WindowText      ).rgba())
+        self.defaultColors["base"]            = int(p.color(QPalette.Disabled, QPalette.Base            ).rgba())
+        self.defaultColors["alternateBase"]   = int(p.color(QPalette.Disabled, QPalette.AlternateBase   ).rgba())
+        self.defaultColors["text"]            = int(p.color(QPalette.Disabled, QPalette.Text            ).rgba())
+        self.defaultColors["button"]          = int(p.color(QPalette.Disabled, QPalette.Button          ).rgba())
+        self.defaultColors["buttonText"]      = int(p.color(QPalette.Disabled, QPalette.ButtonText      ).rgba())
+        self.defaultColors["brightText"]      = int(p.color(QPalette.Disabled, QPalette.BrightText      ).rgba())
+        self.defaultColors["link"]            = int(p.color(QPalette.Disabled, QPalette.Link            ).rgba())
+        self.defaultColors["highlight"]       = int(p.color(QPalette.Disabled, QPalette.Highlight       ).rgba())
+        self.defaultColors["highlightedText"] = int(p.color(QPalette.Disabled, QPalette.HighlightedText ).rgba())
+
+    def setDefaultColors(self):
+        p = QApplication.palette()
+        c = QColor(); c.setRgba(self.defaultColors["window"]);          p.setColor(QPalette.Disabled, QPalette.Window          , c)
+        c = QColor(); c.setRgba(self.defaultColors["windowText"]);      p.setColor(QPalette.Disabled, QPalette.WindowText      , c)
+        c = QColor(); c.setRgba(self.defaultColors["base"]);            p.setColor(QPalette.Disabled, QPalette.Base            , c)
+        c = QColor(); c.setRgba(self.defaultColors["alternateBase"]);   p.setColor(QPalette.Disabled, QPalette.AlternateBase   , c)
+        c = QColor(); c.setRgba(self.defaultColors["text"]);            p.setColor(QPalette.Disabled, QPalette.Text            , c)
+        c = QColor(); c.setRgba(self.defaultColors["button"]);          p.setColor(QPalette.Disabled, QPalette.Button          , c)
+        c = QColor(); c.setRgba(self.defaultColors["buttonText"]);      p.setColor(QPalette.Disabled, QPalette.ButtonText      , c)
+        c = QColor(); c.setRgba(self.defaultColors["brightText"]);      p.setColor(QPalette.Disabled, QPalette.BrightText      , c)
+        c = QColor(); c.setRgba(self.defaultColors["link"]);            p.setColor(QPalette.Disabled, QPalette.Link            , c)
+        c = QColor(); c.setRgba(self.defaultColors["highlight"]);       p.setColor(QPalette.Disabled, QPalette.Highlight       , c)
+        c = QColor(); c.setRgba(self.defaultColors["highlightedText"]); p.setColor(QPalette.Disabled, QPalette.HighlightedText , c)
+        QApplication.setPalette(p)
+
+    def slotSetPreviewButtonAlpha(self, alpha):
+        p = self.btnPvDisabled.palette()
+        c = p.button().color()
+        c.setAlpha(alpha)
+        p.setColor(QPalette.Active,   QPalette.Button, c)
+        p.setColor(QPalette.Disabled, QPalette.Button, c)
+        c = p.buttonText().color()
+        c.setAlpha(alpha)
+        p.setColor(QPalette.Active,   QPalette.ButtonText, c)
+        p.setColor(QPalette.Disabled, QPalette.ButtonText, c)
+        self.btnPvDisabled.setPalette(p)
+
+    def exec_(self):
+        # It does not resize very well when the font size has changed
+        if self.font() != self.lastFont:
+            self.lastFont = self.font()
+            self.adjustSize()
+        return QDialog.exec_(self)
+
+    def defaultSettings(self):
+        self.settings.clear()
+        self.settings["enabled"] = True # must be enabled by default!
+        self.settings["alpha"] = 128
+        self.dict2dialogState()
+
+    def dialogState2dict(self):
+        self.settings["enabled"] = self.cbEnabled.isChecked()
+        self.settings["alpha"] = self.sbAlpha.value()
+
+    def dict2dialogState(self):
+        self.cbEnabled.setChecked(self.settings["enabled"])
+        self.sbAlpha.setValue(self.settings["alpha"])
+
+    def applySettings(self):
+        def modified_color(color):
+            #return QColor(255, 0 ,0)
+            color.setAlpha(self.settings["alpha"])
+            return color
+        if self.settings["enabled"]:
+            p = QApplication.palette()
+            p.setColor(QPalette.Disabled, QPalette.  Window            , modified_color(p.window          ().color()))
+            p.setColor(QPalette.Disabled, QPalette.  WindowText        , modified_color(p.windowText      ().color()))
+            p.setColor(QPalette.Disabled, QPalette.  Base              , modified_color(p.base            ().color()))
+            p.setColor(QPalette.Disabled, QPalette.  AlternateBase     , modified_color(p.alternateBase   ().color()))
+            p.setColor(QPalette.Disabled, QPalette.  Text              , modified_color(p.text            ().color()))
+            p.setColor(QPalette.Disabled, QPalette.  Button            , modified_color(p.button          ().color()))
+            p.setColor(QPalette.Disabled, QPalette.  ButtonText        , modified_color(p.buttonText      ().color()))
+            p.setColor(QPalette.Disabled, QPalette.  BrightText        , modified_color(p.brightText      ().color()))
+            p.setColor(QPalette.Disabled, QPalette.  Link              , modified_color(p.link            ().color()))
+            p.setColor(QPalette.Disabled, QPalette.  Highlight         , modified_color(p.highlight       ().color()))
+            p.setColor(QPalette.Disabled, QPalette.  HighlightedText   , modified_color(p.highlightedText ().color()))
+            QApplication.setPalette(p)
+        else:
+            self.setDefaultColors()
+
+    def appFontChanged(self):
+        self.buttons.updateWhatsThisButton()
+
 class TrayOptions(QDialog):
     """
         tray options dialog

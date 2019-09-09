@@ -184,6 +184,7 @@ class MainWindow(QMainWindow):
                          "autoreloading": QAction(_("Automatic Reloading"), self.menus["options"]),
                          "captcha": QAction(_("Captchas"), self.menus["options"]),
                          "fonts": QAction(_("Fonts"), self.menus["options"]),
+                         "colorfix": QAction(_("Color Fix"), self.menus["options"]),
                          "tray": QAction(_("Tray Icon"), self.menus["options"]),
                          "whatsthis": QAction(_("What's This"), self.menus["options"]),
                          "other": QAction(_("Other"), self.menus["options"]),
@@ -213,6 +214,7 @@ class MainWindow(QMainWindow):
         self.menus["options"].addAction(self.mactions["autoreloading"])
         self.menus["options"].addAction(self.mactions["captcha"])
         self.menus["options"].addAction(self.mactions["fonts"])
+        self.menus["options"].addAction(self.mactions["colorfix"])
         self.menus["options"].addAction(self.mactions["tray"])
         self.menus["options"].addAction(self.mactions["whatsthis"])
         self.menus["options"].addAction(self.mactions["other"])
@@ -270,6 +272,7 @@ class MainWindow(QMainWindow):
         self.connect(self.mactions["autoreloading"], SIGNAL("triggered()"), self.slotShowAutomaticReloadingOptions)
         self.connect(self.mactions["captcha"], SIGNAL("triggered()"), self.slotShowCaptchaOptions)
         self.connect(self.mactions["fonts"], SIGNAL("triggered()"), self.slotShowFontOptions)
+        self.connect(self.mactions["colorfix"], SIGNAL("triggered()"), self.slotShowColorFixOptions)
         self.connect(self.mactions["tray"], SIGNAL("triggered()"), self.slotShowTrayOptions)
         self.connect(self.mactions["whatsthis"], SIGNAL("triggered()"), self.slotShowWhatsThisOptions)
         self.connect(self.mactions["other"], SIGNAL("triggered()"), self.slotShowOtherOptions)
@@ -1370,6 +1373,9 @@ class MainWindow(QMainWindow):
     
     def slotShowFontOptions(self):
         self.emit(SIGNAL("showFontOptions"))
+    
+    def slotShowColorFixOptions(self):
+        self.emit(SIGNAL("showColorFixOptions"))
     
     def slotShowNotificationOptions(self):
         self.emit(SIGNAL("showNotificationOptions"))

@@ -101,6 +101,7 @@ class main(QObject):
         self.app.setQuitOnLastWindowClosed(False)
         self.app.setAttribute(Qt.AA_DontShowIconsInMenus, False)
         self.defAppFont = QApplication.font()
+        self.defAppPalette = QApplication.palette()
         self.path = pypath
         self.homedir = abspath("")
 
@@ -270,6 +271,9 @@ class main(QObject):
         self.guiLogMutex = QMutex()
         self.lastCaptchaId = None
 
+        if not first:
+            QApplication.setPalette(self.defAppPalette) # restore the default application palette
+
         self.parser = XMLParser(join(self.homedir, "gui.xml"), join(self.path, "module", "config", "gui_default.xml"))
         self.lang = self.parser.xml.elementsByTagName("language").item(0).toElement().text()
         if not self.lang:
@@ -312,6 +316,8 @@ class main(QObject):
         self.packageEdit = PackageEdit(self.mainWindow)
         self.setupGuiLogTab(self.loggingOptions.settings["file_log"])
         self.fontOptions = FontOptions(self.defAppFont, self.mainWindow)
+        self.colorFixOptions = ColorFixOptions(self.mainWindow)
+        self.applyColorFix() # for the connection manager
         self.whatsThisOptions = WhatsThisOptions(self.mainWindow)
         self.clickNLoadForwarderOptions = ClickNLoadForwarderOptions(self.mainWindow)
         self.automaticReloadingOptions = AutomaticReloadingOptions(self.mainWindow)
@@ -603,6 +609,7 @@ class main(QObject):
         self.connect(self.mainWindow,          SIGNAL("showCaptchaOptions"), self.slotShowCaptchaOptions)
         self.connect(self.mainWindow,          SIGNAL("showCaptcha"), self.slotShowCaptcha)
         self.connect(self.mainWindow,          SIGNAL("showFontOptions"), self.slotShowFontOptions)
+        self.connect(self.mainWindow,          SIGNAL("showColorFixOptions"), self.slotShowColorFixOptions)
         self.connect(self.mainWindow,          SIGNAL("showWhatsThisOptions"), self.slotShowWhatsThisOptions)
         self.connect(self.mainWindow,          SIGNAL("showLanguageOptions"), self.slotShowLanguageOptions)
         self.connect(self.mainWindow,          SIGNAL("reloadQueue"), self.slotReloadQueue)
@@ -1961,6 +1968,7 @@ class main(QObject):
         optionsAutomaticReloading = str(QByteArray(str(self.automaticReloadingOptions.settings)).toBase64())
         optionsCaptcha = str(QByteArray(str(self.captchaOptions.settings)).toBase64())
         optionsFonts = str(QByteArray(str(self.fontOptions.settings)).toBase64())
+        optionsColorFix = str(QByteArray(str(self.colorFixOptions.settings)).toBase64())
         optionsTray = str(QByteArray(str(self.trayOptions.settings)).toBase64())
         optionsWhatsThis = str(QByteArray(str(self.whatsThisOptions.settings)).toBase64())
         optionsOther = str(QByteArray(str(self.otherOptions.settings)).toBase64())
@@ -1971,6 +1979,7 @@ class main(QObject):
         optionsAutomaticReloadingNode = mainWindowNode.toElement().elementsByTagName("optionsAutomaticReloading").item(0)
         optionsCaptchaNode = mainWindowNode.toElement().elementsByTagName("optionsCaptcha").item(0)
         optionsFontsNode = mainWindowNode.toElement().elementsByTagName("optionsFonts").item(0)
+        optionsColorFixNode = mainWindowNode.toElement().elementsByTagName("optionsColorFix").item(0)
         optionsTrayNode = mainWindowNode.toElement().elementsByTagName("optionsTray").item(0)
         optionsWhatsThisNode = mainWindowNode.toElement().elementsByTagName("optionsWhatsThis").item(0)
         optionsOtherNode = mainWindowNode.toElement().elementsByTagName("optionsOther").item(0)
@@ -1981,6 +1990,7 @@ class main(QObject):
         newOptionsAutomaticReloadingNode = self.parser.xml.createTextNode(optionsAutomaticReloading)
         newOptionsCaptchaNode = self.parser.xml.createTextNode(optionsCaptcha)
         newOptionsFontsNode = self.parser.xml.createTextNode(optionsFonts)
+        newOptionsColorFixNode = self.parser.xml.createTextNode(optionsColorFix)
         newOptionsTrayNode = self.parser.xml.createTextNode(optionsTray)
         newOptionsWhatsThisNode = self.parser.xml.createTextNode(optionsWhatsThis)
         newOptionsOtherNode = self.parser.xml.createTextNode(optionsOther)
@@ -1997,6 +2007,8 @@ class main(QObject):
         optionsCaptchaNode.appendChild(newOptionsCaptchaNode)
         optionsFontsNode.removeChild(optionsFontsNode.firstChild())
         optionsFontsNode.appendChild(newOptionsFontsNode)
+        optionsColorFixNode.removeChild(optionsColorFixNode.firstChild())
+        optionsColorFixNode.appendChild(newOptionsColorFixNode)
         optionsTrayNode.removeChild(optionsTrayNode.firstChild())
         optionsTrayNode.appendChild(newOptionsTrayNode)
         optionsWhatsThisNode.removeChild(optionsWhatsThisNode.firstChild())
@@ -2101,6 +2113,33 @@ class main(QObject):
         self.parser.saveData()
         self.log.debug4("main.saveWindowToConfig: done")
 
+    def applyColorFix(self):
+        """
+            try load color fix options early from the config file
+            this is for the connection manager
+        """
+        if not self.newConfigFile:
+            mainWindowNode = self.parser.xml.elementsByTagName("mainWindow").item(0)
+            if not mainWindowNode.isNull():
+                nodes = self.parser.parseNode(mainWindowNode, "dict")
+                if nodes.get("optionsColorFix"):
+                    optionsColorFix = str(nodes["optionsColorFix"].text())
+
+                    def base64ToDict(b64):
+                        try:
+                            d = literal_eval(str(QByteArray.fromBase64(b64)))
+                        except Exception:
+                            d = None
+                        if d and not isinstance(d, dict):
+                            d = None
+                        return d
+
+                    d = base64ToDict(optionsColorFix)
+                    if d is not None:
+                        try:              self.colorFixOptions.settings = d; self.colorFixOptions.dict2dialogState()
+                        except Exception: self.colorFixOptions.defaultSettings(); d = None
+        self.colorFixOptions.applySettings()
+
     def loadOptionsFromConfig(self):
         """
             load options from the config file
@@ -2121,6 +2160,8 @@ class main(QObject):
             mainWindowNode.appendChild(self.parser.xml.createElement("optionsCaptcha"))
         if not nodes.get("optionsFonts"):
             mainWindowNode.appendChild(self.parser.xml.createElement("optionsFonts"))
+        if not nodes.get("optionsColorFix"):
+            mainWindowNode.appendChild(self.parser.xml.createElement("optionsColorFix"))
         if not nodes.get("optionsTray"):
             mainWindowNode.appendChild(self.parser.xml.createElement("optionsTray"))
         if not nodes.get("optionsWhatsThis"):
@@ -2142,6 +2183,7 @@ class main(QObject):
         optionsAutomaticReloading = str(nodes["optionsAutomaticReloading"].text())
         optionsCaptcha = str(nodes["optionsCaptcha"].text())
         optionsFonts = str(nodes["optionsFonts"].text())
+        optionsColorFix = str(nodes["optionsColorFix"].text())
         optionsTray = str(nodes["optionsTray"].text())
         optionsWhatsThis = str(nodes["optionsWhatsThis"].text())
         optionsOther = str(nodes["optionsOther"].text())
@@ -2194,6 +2236,14 @@ class main(QObject):
             except Exception: self.fontOptions.defaultSettings(); d = None
         if d is None: self.messageBox_21(_("Fonts")); reset = True
         self.fontOptions.applySettings()
+        # Color Fix
+        d = base64ToDict(optionsColorFix)
+        if d is not None:
+            try:              self.colorFixOptions.settings = d; self.colorFixOptions.dict2dialogState()
+            except Exception: self.colorFixOptions.defaultSettings(); d = None
+        if d is None: self.messageBox_21(_("Color Fix")); reset = True
+        self.colorFixOptions.applySettings()
+        self.colorFixOptions.slotSetPreviewButtonAlpha(self.colorFixOptions.settings["alpha"])
         # Tray Icon
         d = base64ToDict(optionsTray)
         if d is not None:
@@ -3242,6 +3292,7 @@ class main(QObject):
         self.captchaOptions.appFontChanged()
         self.loggingOptions.appFontChanged()
         self.fontOptions.appFontChanged()
+        self.colorFixOptions.appFontChanged()
         self.whatsThisOptions.appFontChanged()
         self.automaticReloadingOptions.appFontChanged()
         self.clickNLoadForwarderOptions.appFontChanged()
@@ -3253,6 +3304,16 @@ class main(QObject):
         self.mainWindow.captchaDialog.appFontChanged()
         self.connWindow.appFontChanged()
         self.connector.pwBox.appFontChanged()
+
+    def slotShowColorFixOptions(self):
+        """
+            popup the color fix options dialog
+        """
+        self.colorFixOptions.dict2dialogState()
+        retval = self.colorFixOptions.exec_()
+        if retval == QDialog.Accepted:
+            self.colorFixOptions.dialogState2dict()
+            self.colorFixOptions.applySettings()
 
     def slotShowWhatsThisOptions(self):
         """

@@ -25,6 +25,7 @@
         <optionsAutomaticReloading></optionsAutomaticReloading>
         <optionsCaptcha></optionsCaptcha>
         <optionsFonts></optionsFonts>
+        <optionsColorFix></optionsColorFix>
         <optionsTray></optionsTray>
         <optionsWhatsThis></optionsWhatsThis>
         <optionsOther></optionsOther>
