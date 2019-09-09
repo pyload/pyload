@@ -170,6 +170,8 @@ class NewPackageWindow(QWidget):
         self.append = QCheckBox(_("Append URLs"))
         whatsThis = (self.append.text(), _("Append pasted/dropped text instead of inserting it at the cursor postion."))
         self.append.setWhatsThis(whatsThisFormat(*whatsThis))
+        whatsThis = (linksLabel.text(), _("One URL (Link) per line.<br>For manual text editing you may want to deactivate") + " '" + self.append.text() + "'.")
+        self.box.setWhatsThis(whatsThisFormat(*whatsThis))
         self.destQueue     = QRadioButton(_("Queue"))
         self.destCollector = QRadioButton(_("Collector"))
         destBtnLayout = QHBoxLayout()
