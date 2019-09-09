@@ -244,14 +244,22 @@ class CollectorModel(QAbstractItemModel):
             else:
                 self.log.warning("%s.applyViewItemStates:selectedItem: Prevoiusly selected link not found, id:%d (in package id:%d)" % (self.cname, ids[1], ids[0]))
     
-    def selectAllPackages(self):
+    def selectAllPackages(self, deselect):
         QMutexLocker(self.mutex)
-        self.view.clearSelection()
-        self.view.setCurrentIndex(QModelIndex())
         smodel = self.view.selectionModel()
+        sCmd = QItemSelectionModel.Deselect if deselect else QItemSelectionModel.Select
         for p in xrange(len(self._data)):
             index = self.index(p, 0)
-            smodel.select(index, QItemSelectionModel.Select | QItemSelectionModel.Rows)
+            smodel.select(index, sCmd | QItemSelectionModel.Rows)
+    
+    def selectAll(self, deselect):
+        QMutexLocker(self.mutex)
+        if not deselect:
+            self.view.setCurrentIndex(QModelIndex())
+            self.view.selectAll()
+        else:
+            self.view.clearSelection()
+            self.view.setCurrentIndex(QModelIndex())
     
     def fullReloadFromMenu(self):
         if not self.view.corePermissions["LIST"]:
@@ -859,6 +867,65 @@ class CollectorModel(QAbstractItemModel):
         self.view.setCurrentIndex(QModelIndex())
         self.view.setEnabled(True)
         self.view.setFocus(Qt.OtherFocusReason)
+    
+    def advancedSelect(self, pattern, syntax, cs, deselect, selectLinks):
+        """
+            called from main
+        """
+        QMutexLocker(self.mutex)
+        smodel = self.view.selectionModel()
+        sCmd = QItemSelectionModel.Deselect if deselect else QItemSelectionModel.Select
+        rx = QRegExp(pattern, cs, syntax)
+        
+        # select links
+        if selectLinks:
+            noPackagesSelected = True
+            for pindex in smodel.selectedRows(0):  # search in selected packages
+                package = pindex.internalPointer()
+                if isinstance(package, Package):
+                    for l, link in enumerate(package.children):
+                        name = QString(link.data["name"])
+                        match = name.contains(rx)
+                        if match:
+                            index = self.index(l, 0, pindex)
+                            if not index.isValid():
+                                raise ValueError("%s: Invalid index" % self.cname)
+                            smodel.select(index, sCmd | QItemSelectionModel.Rows)
+                            if not deselect:
+                                self.view.expand(pindex)
+                            self.log.debug9("%s.advancedSelect:selectedLink:   deselect:%s   name:'%s'   pid:%d   fid:%d" % (self.cname, deselect, name, package.id, link.id))
+                    noPackagesSelected = False
+                elif not isinstance(package, Link):
+                    raise TypeError("%s: Unknown item instance" % self.cname)
+            
+            if noPackagesSelected:  # search in all packages
+                for p, package in enumerate(self._data):
+                    pindex = self.index(p, 0)
+                    if not pindex.isValid():
+                        raise ValueError("%s: Invalid index" % self.cname)
+                    for l, link in enumerate(package.children):
+                        name = QString(link.data["name"])
+                        match = name.contains(rx)
+                        if match:
+                            index = self.index(l, 0, pindex)
+                            if not index.isValid():
+                                raise ValueError("%s: Invalid index" % self.cname)
+                            smodel.select(index, sCmd | QItemSelectionModel.Rows)
+                            if not deselect:
+                                self.view.expand(pindex)
+                            self.log.debug9("%s.advancedSelect:selectedLink:   deselect:%s   name:'%s'   pid:%d   fid:%d" % (self.cname, deselect, name, package.id, link.id))
+        
+        # select packages
+        else:
+            for p, package in enumerate(self._data):
+                name = QString(package.data["name"])
+                match = name.contains(rx)
+                if match:
+                    index = self.index(p, 0)
+                    if not index.isValid():
+                        raise ValueError("%s: Invalid index" % self.cname)
+                    smodel.select(index, sCmd | QItemSelectionModel.Rows)
+                    self.log.debug9("%s.advancedSelect:selectedPackage:   deselect:%s   name:'%s'   pid:%d" % (self.cname, deselect,name, package.id))
 
 class Package(object):
     """

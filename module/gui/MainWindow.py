@@ -86,6 +86,19 @@ class MainWindow(QMainWindow):
         lw.setLayout(self.masterlayout)
         self.setCentralWidget(lw)
         
+        #treeview advanced select
+        self.advselectframe = QFrame()
+        self.advselectframe.hide()
+        self.advselectframeQueueIsVisible = self.advselectframeCollectorIsVisible = False
+        self.advselectframe.setFrameStyle(QFrame.StyledPanel | QFrame.Raised)
+        l = QVBoxLayout()
+        self.advselect = AdvancedSelect()
+        l.addWidget(self.advselect)
+        self.advselectframe.setLayout(l)
+        self.connect(self.advselect.selectBtn, SIGNAL("clicked()"), self.slotAdvSelectSelectButtonClicked)
+        self.connect(self.advselect.deselectBtn, SIGNAL("clicked()"), self.slotAdvSelectDeselectButtonClicked)
+        self.connect(self.advselect.closeBtn, SIGNAL("clicked()"), self.slotAdvSelectHide)
+        
         #status
         self.statusw = QFrame()
         self.statusw.setFrameStyle(QFrame.StyledPanel | QFrame.Raised)
@@ -258,6 +271,7 @@ class MainWindow(QMainWindow):
         
         #layout
         self.masterlayout.addWidget(self.tabw)
+        self.masterlayout.addWidget(self.advselectframe)
         self.masterlayout.addWidget(self.statusw)
         
         #signals..
@@ -578,7 +592,10 @@ class MainWindow(QMainWindow):
         self.queueContext.buttons["restart"] = QAction(QIcon(join(pypath, "icons", "refresh_small.png")), _("Restart"), self.queueContext)
         self.queueContext.buttons["remove"] = QAction(QIcon(join(pypath, "icons", "remove_small.png")), _("Remove"), self.queueContext)
         self.queueContext.buttons["selectallpacks"] = QAction(_("Select All Packages"), self.queueContext)
+        self.queueContext.buttons["deselectallpacks"] = QAction(_("Deselect All Packages"), self.queueContext)
+        self.queueContext.buttons["selectall"] = QAction(_("Select All"), self.queueContext)
         self.queueContext.buttons["deselectall"] = QAction(_("Deselect All"), self.queueContext)
+        self.queueContext.buttons["advancedselect"] = QAction(_("Advanced Select/Deselect"), self.queueContext)
         self.queueContext.buttons["expand"] = QAction(self.style().standardIcon(QStyle.SP_ToolBarHorizontalExtensionButton), _("Expand All"), self.queueContext)
         self.queueContext.buttons["collapse"] = QAction(self.style().standardIcon(QStyle.SP_ToolBarVerticalExtensionButton), _("Collapse All"), self.queueContext)
         self.queueContext.addAction(self.queueContext.buttons["pull"])
@@ -594,7 +611,10 @@ class MainWindow(QMainWindow):
         self.queueContext.addAction(self.queueContext.buttons["remove"])
         self.queueContext.addSeparator()
         self.queueContext.addAction(self.queueContext.buttons["selectallpacks"])
+        self.queueContext.addAction(self.queueContext.buttons["deselectallpacks"])
+        self.queueContext.addAction(self.queueContext.buttons["selectall"])
         self.queueContext.addAction(self.queueContext.buttons["deselectall"])
+        self.queueContext.addAction(self.queueContext.buttons["advancedselect"])
         self.queueContext.addSeparator()
         self.queueContext.addAction(self.queueContext.buttons["expand"])
         self.queueContext.addAction(self.queueContext.buttons["collapse"])
@@ -607,7 +627,10 @@ class MainWindow(QMainWindow):
         self.connect(self.queueContext.buttons["restart"], SIGNAL("triggered()"), self.slotRestartDownloads)
         self.connect(self.queueContext.buttons["remove"], SIGNAL("triggered()"), self.slotRemoveDownloads)
         self.connect(self.queueContext.buttons["selectallpacks"], SIGNAL("triggered()"), self.slotSelectAllPackages)
+        self.connect(self.queueContext.buttons["deselectallpacks"], SIGNAL("triggered()"), self.slotDeselectAllPackages)
+        self.connect(self.queueContext.buttons["selectall"], SIGNAL("triggered()"), self.slotSelectAll)
         self.connect(self.queueContext.buttons["deselectall"], SIGNAL("triggered()"), self.slotDeselectAll)
+        self.connect(self.queueContext.buttons["advancedselect"], SIGNAL("triggered()"), self.slotAdvSelectShow)
         self.connect(self.queueContext.buttons["expand"], SIGNAL("triggered()"), self.slotExpandAll)
         self.connect(self.queueContext.buttons["collapse"], SIGNAL("triggered()"), self.slotCollapseAll)
         
@@ -621,7 +644,10 @@ class MainWindow(QMainWindow):
         self.collectorContext.buttons["restart"] = QAction(QIcon(join(pypath, "icons", "refresh_small.png")), _("Restart"), self.collectorContext)
         self.collectorContext.buttons["remove"] = QAction(QIcon(join(pypath, "icons", "remove_small.png")), _("Remove"), self.collectorContext)
         self.collectorContext.buttons["selectallpacks"] = QAction(_("Select All Packages"), self.collectorContext)
+        self.collectorContext.buttons["deselectallpacks"] = QAction(_("Deselect All Packages"), self.collectorContext)
+        self.collectorContext.buttons["selectall"] = QAction(_("Select All"), self.collectorContext)
         self.collectorContext.buttons["deselectall"] = QAction(_("Deselect All"), self.collectorContext)
+        self.collectorContext.buttons["advancedselect"] = QAction(_("Advanced Select/Deselect"), self.collectorContext)
         self.collectorContext.buttons["expand"] = QAction(self.style().standardIcon(QStyle.SP_ToolBarHorizontalExtensionButton), _("Expand All"), self.collectorContext)
         self.collectorContext.buttons["collapse"] = QAction(self.style().standardIcon(QStyle.SP_ToolBarVerticalExtensionButton), _("Collapse All"), self.collectorContext)
         self.collectorContext.addAction(self.collectorContext.buttons["push"])
@@ -636,7 +662,10 @@ class MainWindow(QMainWindow):
         self.collectorContext.addAction(self.collectorContext.buttons["remove"])
         self.collectorContext.addSeparator()
         self.collectorContext.addAction(self.collectorContext.buttons["selectallpacks"])
+        self.collectorContext.addAction(self.collectorContext.buttons["deselectallpacks"])
+        self.collectorContext.addAction(self.collectorContext.buttons["selectall"])
         self.collectorContext.addAction(self.collectorContext.buttons["deselectall"])
+        self.collectorContext.addAction(self.collectorContext.buttons["advancedselect"])
         self.collectorContext.addSeparator()
         self.collectorContext.addAction(self.collectorContext.buttons["expand"])
         self.collectorContext.addAction(self.collectorContext.buttons["collapse"])
@@ -648,7 +677,10 @@ class MainWindow(QMainWindow):
         self.connect(self.collectorContext.buttons["restart"], SIGNAL("triggered()"), self.slotRestartDownloads)
         self.connect(self.collectorContext.buttons["remove"], SIGNAL("triggered()"), self.slotRemoveDownloads)
         self.connect(self.collectorContext.buttons["selectallpacks"], SIGNAL("triggered()"), self.slotSelectAllPackages)
+        self.connect(self.collectorContext.buttons["deselectallpacks"], SIGNAL("triggered()"), self.slotDeselectAllPackages)
+        self.connect(self.collectorContext.buttons["selectall"], SIGNAL("triggered()"), self.slotSelectAll)
         self.connect(self.collectorContext.buttons["deselectall"], SIGNAL("triggered()"), self.slotDeselectAll)
+        self.connect(self.collectorContext.buttons["advancedselect"], SIGNAL("triggered()"), self.slotAdvSelectShow)
         self.connect(self.collectorContext.buttons["expand"], SIGNAL("triggered()"), self.slotExpandAll)
         self.connect(self.collectorContext.buttons["collapse"], SIGNAL("triggered()"), self.slotCollapseAll)
         
@@ -811,6 +843,40 @@ class MainWindow(QMainWindow):
         """
         self.tabs["collector"]["m"].hide()
         self.tabs["collector"]["b"].show()
+    
+    def slotAdvSelectShow(self):
+        """
+            triggered from collector and queue context menues
+            show advanced link/package select box
+        """
+        self.advselectframe.show()
+        if self.tabw.currentIndex() == 1:
+            self.advselectframeQueueIsVisible = True
+        else:
+            self.advselectframeCollectorIsVisible = True
+    
+    def slotAdvSelectHide(self):
+        """
+            triggered from collector and queue context menues
+            hide advanced link/package select box
+        """
+        self.advselectframe.hide()
+        if self.tabw.currentIndex() == 1:
+            self.advselectframeQueueIsVisible = False
+        else:
+            self.advselectframeCollectorIsVisible = False
+    
+    def slotAdvSelectSelectButtonClicked(self):
+        """
+            triggered from advanced link/package select box
+        """
+        self.emit(SIGNAL("advancedSelect"), False)
+    
+    def slotAdvSelectDeselectButtonClicked(self):
+        """
+            triggered from advanced link/package select box
+        """
+        self.emit(SIGNAL("advancedSelect"), True)
     
     def slotToolbarVisibilityChanged(self, visible):
         """
@@ -1175,16 +1241,26 @@ class MainWindow(QMainWindow):
         """
         self.emit(SIGNAL("selectAllPackages"))
     
+    def slotDeselectAllPackages(self):
+        """
+            deselect all packages
+            let main to the stuff
+        """
+        self.emit(SIGNAL("deselectAllPackages"))
+    
+    def slotSelectAll(self):
+        """
+            select all items
+            let main to the stuff
+        """
+        self.emit(SIGNAL("selectAll"))
+    
     def slotDeselectAll(self):
         """
-            clear the selection
+            deselect all items
+            let main to the stuff
         """
-        if self.activeMenu == self.queueContext:
-            view = self.tabs["queue"]["view"]
-        else:
-            view = self.tabs["collector"]["view"]
-        view.clearSelection()
-        view.setCurrentIndex(QModelIndex())
+        self.emit(SIGNAL("deselectAll"))
     
     def slotExpandAll(self):
         """
@@ -1209,16 +1285,20 @@ class MainWindow(QMainWindow):
             self.tabs["accounts"]["view"].model.timer.stop()
         if index == 5:
             self.tabs["settings"]["w"].loadConfig()
-        elif index == 1:
+        if index == 1:
             if self.newPackDock.widget.destAutoSelect.isChecked():
                 self.newPackDock.widget.destQueue.setChecked(True)
             if self.newLinkDock.widget.destAutoSelect.isChecked():
                 self.newLinkDock.widget.destQueue.setChecked(True)
+            self.advselectframe.setVisible(self.advselectframeQueueIsVisible)
         elif index == 2:
             if self.newPackDock.widget.destAutoSelect.isChecked():
                 self.newPackDock.widget.destCollector.setChecked(True)
             if self.newLinkDock.widget.destAutoSelect.isChecked():
                 self.newLinkDock.widget.destCollector.setChecked(True)
+            self.advselectframe.setVisible(self.advselectframeCollectorIsVisible)
+        else:
+            self.advselectframe.hide()
     
     def slotNewAccount(self):
         if not self.corePermissions["ACCOUNTS"]:
@@ -1353,5 +1433,83 @@ class SpinBox(QSpinBox):
         elif event.key() == Qt.Key_Return or event.key() == Qt.Key_Enter:
                 self.clearFocus()
         QAbstractSpinBox.keyPressEvent(self, event)
+
+class AdvancedSelect(QWidget):
+    class MODE_IDX:     # enum for RegExp pattern syntax combobox
+        STRING   = -1
+        WILDCARD = -1
+        REGEXP   = -1
+    
+    def __init__(self, parent=None, flags=Qt.Widget):
+        QWidget.__init__(self, parent, flags)
+        self.log = logging.getLogger("guilog")
+        
+        self.modeIdx = self.MODE_IDX()
+        
+        self.patternEditLbl = QLabel()
+        self.patternEditLbl.setText(_("Search for name:"))
+        self.patternEdit = QComboBox()
+        self.patternEdit.setEditable(True)
+        self.patternEdit.completer().setCaseSensitivity(Qt.CaseSensitive)
+        self.patternEdit.setInsertPolicy(QComboBox.NoInsert)
+        self.patternEdit.lineEdit().setPlaceholderText(_("Enter a search pattern"))
+        lsp = self.patternEdit.sizePolicy()
+        lsp.setHorizontalPolicy(QSizePolicy.Expanding)
+        self.patternEdit.setSizePolicy(lsp)
+        self.clearBtn = QPushButton(_("Clear Pattern"))
+        self.selectBtn = QPushButton(_("Select"))
+        self.deselectBtn = QPushButton(_("Deselect"))
+        self.linksCb = QCheckBox(_("Links"))
+        self.linksCb.setWhatsThis(whatsThisFormat(self.linksCb.text(), _("Search for links instead of packages.<br>Links are searched in preselected packages or in all packages when there are no packages selected.")))
+        self.caseCb = QCheckBox(_("Match case"))
+        self.modeCmb = QComboBox()
+        self.modeCmb.addItem(_("String"))       ;self.modeIdx.STRING   = 0  # combobox indexes in the order the items are added
+        self.modeCmb.addItem(_("Wildcard"))     ;self.modeIdx.WILDCARD = 1
+        self.modeCmb.addItem(_("RegExp"))       ;self.modeIdx.REGEXP   = 2
+        self.closeBtn = QPushButton()
+        self.closeBtn.setIcon(self.style().standardIcon(QStyle.SP_TitleBarCloseButton))
+        
+        hbox1 = QHBoxLayout()
+        hbox1.addWidget(self.patternEditLbl)
+        hbox1.addWidget(self.patternEdit)
+        hbox1.addWidget(self.clearBtn)
+        hbox1.addWidget(self.closeBtn)
+        
+        hbox2 = QHBoxLayout()
+        hbox2.addWidget(self.modeCmb)
+        hbox2.addWidget(self.caseCb)
+        hbox2.addStretch(1)
+        hbox2.addWidget(self.selectBtn)
+        hbox2.addWidget(self.deselectBtn)
+        hbox2.addWidget(self.linksCb)
+        hbox2.addStretch(1)
+        
+        vbox = QVBoxLayout()
+        vbox.addLayout(hbox1)
+        vbox.addLayout(hbox2)
+        self.setLayout(vbox)
+        
+        self.connect(self.clearBtn, SIGNAL("clicked()"), self.patternEdit.clearEditText)
+        self.connect(self.selectBtn, SIGNAL("clicked()"), self.addToHistory)
+        self.connect(self.deselectBtn, SIGNAL("clicked()"), self.addToHistory)
+    
+    def slotEnable(self):
+        self.setEnabled(True)
+    
+    def addToHistory(self):
+        text = self.patternEdit.currentText()
+        if not text.isEmpty():
+            if self.patternEdit.findText(text, Qt.MatchFixedString | Qt.MatchCaseSensitive) == -1:
+                self.patternEdit.insertItem(0, text)
+                self.patternEdit.setCurrentIndex(0)
+    
+    def appFontChanged(self):
+        self.closeBtn.setMaximumSize(100, 100)
+        self.closeBtn.setMinimumSize(0, 0)
+        self.closeBtn.setText("XOgp")
+        self.closeBtn.adjustSize()
+        height = self.closeBtn.height()
+        self.closeBtn.setFixedSize(height, height)
+        self.closeBtn.setText("")
 
 

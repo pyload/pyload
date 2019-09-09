@@ -610,7 +610,11 @@ class main(QObject):
         self.connect(self.mainWindow,          SIGNAL("removeDownloads"), self.slotRemoveDownloads)
         self.connect(self.mainWindow,          SIGNAL("editPackages"), self.slotEditPackages)
         self.connect(self.mainWindow,          SIGNAL("abortDownloads"), self.slotAbortDownloads)
+        self.connect(self.mainWindow,          SIGNAL("selectAll"), self.slotSelectAll)
+        self.connect(self.mainWindow,          SIGNAL("deselectAll"), self.slotDeselectAll)
         self.connect(self.mainWindow,          SIGNAL("selectAllPackages"), self.slotSelectAllPackages)
+        self.connect(self.mainWindow,          SIGNAL("deselectAllPackages"), self.slotDeselectAllPackages)
+        self.connect(self.mainWindow,          SIGNAL("advancedSelect"), self.slotAdvancedSelect)
         self.connect(self.mainWindow,          SIGNAL("expandAll"), self.slotExpandAll)
         self.connect(self.mainWindow,          SIGNAL("collapseAll"), self.slotCollapseAll)
         self.connect(self.mainWindow,          SIGNAL("showAddPackage"), self.slotShowAddPackage)
@@ -2571,15 +2575,72 @@ class main(QObject):
                     self.connector.proxy.stopDownloads(data.values())
         self.connector.proxy.stopDownloads(links)
 
+    def slotSelectAll(self):
+        """
+            emitted from main window
+            select all items
+        """
+        if self.mainWindow.activeMenu == self.mainWindow.queueContext:
+            self.queue.selectAll(False)
+        else:
+            self.collector.selectAll(False)
+
+    def slotDeselectAll(self):
+        """
+            emitted from main window
+            deselect all item
+        """
+        if self.mainWindow.activeMenu == self.mainWindow.queueContext:
+            self.queue.selectAll(True)
+        else:
+            self.collector.selectAll(True)
+
     def slotSelectAllPackages(self):
         """
             emitted from main window
             select all packages
         """
         if self.mainWindow.activeMenu == self.mainWindow.queueContext:
-            self.queue.selectAllPackages()
+            self.queue.selectAllPackages(False)
         else:
-            self.collector.selectAllPackages()
+            self.collector.selectAllPackages(False)
+
+    def slotDeselectAllPackages(self):
+        """
+            emitted from main window
+            deselect all packages
+        """
+        if self.mainWindow.activeMenu == self.mainWindow.queueContext:
+            self.queue.selectAllPackages(True)
+        else:
+            self.collector.selectAllPackages(True)
+
+    def slotAdvancedSelect(self, deselect):
+        """
+            emitted from main window
+            advanced link/package select
+        """
+        pattern = self.mainWindow.advselect.patternEdit.currentText()
+        if not pattern.isEmpty():
+            self.mainWindow.advselect.setEnabled(False)
+            mode = self.mainWindow.advselect.modeCmb.currentIndex()
+            matchCase = self.mainWindow.advselect.caseCb.isChecked()
+            selectLinks = self.mainWindow.advselect.linksCb.isChecked()
+            if mode == self.mainWindow.advselect.modeIdx.STRING:
+                syntax = QRegExp.FixedString
+            elif mode == self.mainWindow.advselect.modeIdx.WILDCARD:
+                syntax = QRegExp.Wildcard
+            elif mode == self.mainWindow.advselect.modeIdx.REGEXP:
+                syntax = QRegExp.RegExp2
+            else:
+                self.log.error("main.slotAdvancedSelect: Invalid mode")
+                return
+            cs = Qt.CaseSensitive if matchCase == True else Qt.CaseInsensitive
+            if self.mainWindow.tabw.currentIndex() == 1:
+                self.queue.advancedSelect(pattern, syntax, cs, deselect, selectLinks)
+            else:
+                self.collector.advancedSelect(pattern, syntax, cs, deselect, selectLinks)
+            QTimer.singleShot(300, self.mainWindow.advselect.slotEnable)
 
     def slotExpandAll(self):
         """
@@ -3119,6 +3180,7 @@ class main(QObject):
         """
             the application font changed
         """
+        self.mainWindow.advselect.appFontChanged()
         self.captchaOptions.appFontChanged()
         self.loggingOptions.appFontChanged()
         self.fontOptions.appFontChanged()
