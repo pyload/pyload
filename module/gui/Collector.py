@@ -1079,7 +1079,6 @@ class CollectorView(QTreeView):
         if event.source() != self:
             return
         event.accept()
-        self.buttonMsgShow()
     
     def dragMoveEvent(self, event):
         if event.source() != self:
@@ -1116,8 +1115,8 @@ class CollectorView(QTreeView):
         self.setEnabled(False)
         self.emit(SIGNAL("dropEvent"), not bool(event.keyboardModifiers() & Qt.AltModifier))
     
-    def buttonMsgShow(self):
-        self.emit(SIGNAL("collectorMsgShow"))
+    def buttonMsgShow(self, msg, error):
+        self.emit(SIGNAL("collectorMsgShow"), msg, error)
     
     def buttonMsgHide(self):
         self.emit(SIGNAL("collectorMsgHide"))
@@ -1131,7 +1130,9 @@ class DragAndDrop(QObject):
         self.log = logging.getLogger("guilog")
         self.view = view
         self.cname = model.__class__.__name__ + "." + self.__class__.__name__
-        self.log.debug0("%s.__init__: function entered" % self.cname)
+        
+        self.buttonMsgCanDrop = _("To drop the items in the order they were selected, hold the ALT key when releasing the mouse button!")
+        self.viewDesc = _("Collector View") if self.view.__class__.__name__ == "CollectorView" else _("Queue View")
         
         self.allowLinkMove = False
         
@@ -1178,13 +1179,13 @@ class DragAndDrop(QObject):
             self.destIsPack = True
             self.destPackId = dest.id
             self.destPackOrder = dest.data["order"]
-            self.log.debug0("%s.getDestInfo: PACK:   row: %d   pid: %d" % (self.cname, self.destRow, self.destPackId))
+            self.log.debug4("%s.getDestInfo: PACK:   row: %d   pid: %d" % (self.cname, self.destRow, self.destPackId))
         elif isinstance(dest, Link):
             self.destIsPack = False
             self.destPackId = dest.data["package"]
             self.destLinkId = dest.id
             self.destLinkOrder = dest.data["order"]
-            self.log.debug0("%s.getDestInfo: LINK:   row: %d   id:%d   pid: %d" % (self.cname, self.destRow, self.destLinkId, self.destPackId))
+            self.log.debug4("%s.getDestInfo: LINK:   row: %d   id:%d   pid: %d" % (self.cname, self.destRow, self.destLinkId, self.destPackId))
         else:
             raise TypeError("%s: Unknown item instance" % self.cname)
         return True
@@ -1205,13 +1206,13 @@ class DragAndDrop(QObject):
             src = si.internalPointer()
             if isinstance(src, Package):
                 self.srcPacksCnt += 1
-                self.log.debug0("%s.getSrcInfo: PACK:   name:'%s'   order:'%s'   pid:%s" % (self.cname, src.data["name"], src.data["order"], src.id))
+                self.log.debug4("%s.getSrcInfo: PACK:   name:'%s'   order:'%s'   pid:%s" % (self.cname, src.data["name"], src.data["order"], src.id))
             elif isinstance(src, Link):
                 self.srcLinksCnt += 1
-                self.log.debug0("%s.getSrcInfo: LINK:   name:'%s'   order:'%s'   id:%d   pid:%s" % (self.cname, src.data["name"], src.data["order"], src.id, src.data["package"]))
+                self.log.debug4("%s.getSrcInfo: LINK:   name:'%s'   order:'%s'   id:%d   pid:%s" % (self.cname, src.data["name"], src.data["order"], src.id, src.data["package"]))
             else:
                 raise TypeError("%s: Unknown item instance" % self.cname)
-        self.log.debug0("%s.getSrcInfo: Selection count:   PACKS:%d   LINKS:%d" % (self.cname, self.srcPacksCnt, self.srcLinksCnt))
+        self.log.debug4("%s.getSrcInfo: Selection count:   PACKS:%d   LINKS:%d" % (self.cname, self.srcPacksCnt, self.srcLinksCnt))
         
         # check links
         self.srcLinksSamePack = True
@@ -1223,7 +1224,7 @@ class DragAndDrop(QObject):
                 if not isinstance(src, Link):
                     continue
                 self.srcLinksSamePackId = src.data["package"]   # PackageID (int)
-                self.log.debug0("%s.getSrcInfo: check links:   name:'%s'   order:'%s'   id:%d   pid:%s" % (self.cname, src.data["name"], src.data["order"], src.id, self.srcLinksSamePackId))
+                self.log.debug4("%s.getSrcInfo: check links:   name:'%s'   order:'%s'   id:%d   pid:%s" % (self.cname, src.data["name"], src.data["order"], src.id, self.srcLinksSamePackId))
                 if self.srcLinksSamePackId != lastpid:
                     lastpid = self.srcLinksSamePackId
                     pidcnt += 1
@@ -1245,7 +1246,7 @@ class DragAndDrop(QObject):
                 pid   = src.id
                 order = src.data["order"]
                 row = si.row()
-                self.log.debug0("%s.getSrcPackages:   pid:%d   order:%d   row:%d" % (self.cname, pid, order, row))
+                self.log.debug4("%s.getSrcPackages:   pid:%d   order:%d   row:%d" % (self.cname, pid, order, row))
                 self.srcPackages.append([pid, order, row])
 
     def getSrcLinks(self):
@@ -1264,7 +1265,7 @@ class DragAndDrop(QObject):
                 pid   = src.data["package"]
                 order = src.data["order"]
                 row = si.row()
-                self.log.debug0("%s.getSrcLinks:   id:%d   url:'%s'   pid:%d   order:%d   row:%d" % (self.cname, id, url, pid, order, row))
+                self.log.debug4("%s.getSrcLinks:   id:%d   url:'%s'   pid:%d   order:%d   row:%d" % (self.cname, id, url, pid, order, row))
                 self.srcLinks.append([id, url, pid, order, row])
 
     def canDrop(self, pos):
@@ -1290,44 +1291,56 @@ class DragAndDrop(QObject):
         ACT = self.ACT
         self.actionOnDrop = ACT.NONE
         if not self.getDestInfo(pos):
-            self.log.debug0("%s.canDrop: Invalid drop location" % self.cname)
+            self.view.buttonMsgHide()
+            self.log.debug4("%s.canDrop: Invalid drop location" % self.cname)
             return
         self.getSrcInfo()
+        srcLinkStr = _("link") if self.srcLinksCnt == 1 else _("links")
         if self.srcPacksCnt > 0 and self.srcLinksCnt > 0:
-            self.log.debug0("%s.canDrop: Invalid selection, packages and links" % self.cname)
+            self.view.buttonMsgShow(_("Operation not supported: mixed selection of packages and links"), True)
+            self.log.debug4("%s.canDrop: Invalid selection, packages and links" % self.cname)
             return
         if self.srcPacksCnt > 0:
             # packages selected
             if self.destIsPack:
+                self.view.buttonMsgShow(self.buttonMsgCanDrop, False)
                 self.actionOnDrop = ACT.PACKORDER
             else:
-                self.log.debug0("%s.canDrop: Can't drop packages on a link" % self.cname)
+                self.view.buttonMsgShow(_("Operation not supported: dropping packages on links"), True)
+                self.log.debug4("%s.canDrop: Can't drop packages on a link" % self.cname)
             return
         else:
             # links selected
             if self.srcLinksSamePack and not self.destIsPack:
                 # drop links from the same package on a link
                 if self.destPackId == self.srcLinksSamePackId:
+                    self.view.buttonMsgShow(self.buttonMsgCanDrop, False)
                     self.actionOnDrop = ACT.LINKORDER
                 else:
-                    self.log.debug0("%s.canDrop: Can't drop links from the same package on a link from a different package" % self.cname)
+                    self.view.buttonMsgShow(_("Operation not supported, drop the %s on the corresponding package instead!") % srcLinkStr, True)
+                    self.log.debug4("%s.canDrop: Can't drop links from the same package on a link from a different package" % self.cname)
                 return
             if self.destIsPack:
-                if not self.allowLinkMove:
-                    self.log.debug0("%s.canDrop: Moving links from package to package is disabled (self.allowLinkMove)" % self.cname)
-                    return
                 # drop links on a package
                 self.getSrcLinks()
                 if not self.srcLinks:
-                    self.log.debug0("%s.canDrop: Selection lost" % self.cname)
+                    self.view.buttonMsgShow(_("Error: selection lost"), True)
+                    self.log.warning("%s.canDrop: Selection lost" % self.cname)
                     return
                 # check selected links' package ids against target package id
                 for l in self.srcLinks:
                     if l[2] == self.destPackId:
-                        self.log.debug0("%s.canDrop: Can't move links from their own package to their own package" % self.cname)
+                        self.view.buttonMsgShow(_("Operation not supported: dropping links on their own package"), True)
+                        self.log.debug4("%s.canDrop: Can't move links from their own package to their own package" % self.cname)
                         return
+                if not self.allowLinkMove:
+                    self.view.buttonMsgShow(_("Operation not allowed in the %s: moving links between packages") % self.viewDesc, True)
+                    self.log.debug4("%s.canDrop: Moving links from package to package is disabled (self.allowLinkMove)" % self.cname)
+                    return
+                self.view.buttonMsgShow(self.buttonMsgCanDrop, False)
                 self.actionOnDrop = ACT.LINKMOVE
                 return
-            self.log.debug0("%s.canDrop: Can't drop links not from the same package on a link" % self.cname)
+            self.view.buttonMsgShow(_("Operation not supported, drop the %s on the corresponding package instead!") % srcLinkStr, True)
+            self.log.debug4("%s.canDrop: Can't drop links not from the same package on a link" % self.cname)
             return
 

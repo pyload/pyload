@@ -445,8 +445,8 @@ class QueueView(CollectorView):
         self.delegate = QueueProgressBarDelegate(self, self.model)
         self.setItemDelegateForColumn(5, self.delegate)
     
-    def buttonMsgShow(self):
-        self.emit(SIGNAL("queueMsgShow"))
+    def buttonMsgShow(self, msg, error):
+        self.emit(SIGNAL("queueMsgShow"), msg, error)
     
     def buttonMsgHide(self):
         self.emit(SIGNAL("queueMsgHide"))

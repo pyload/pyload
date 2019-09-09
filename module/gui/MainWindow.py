@@ -482,7 +482,8 @@ class MainWindow(QMainWindow):
         #queue
         self.tabs["queue"]["b"] = QPushButton(_("Pull Out Selected Packages"))
         self.tabs["queue"]["b"].setIcon(QIcon(join(pypath, "icons", "pull_small.png")))
-        self.tabs["queue"]["m"] = QLabel("<b>" + _("To drop the items in the order they were selected, hold the ALT key when releasing the mouse button!") + "</b>")
+        self.tabs["queue"]["m"] = QLabel()
+        self.tabs["queue"]["m_defaultStyleSheet"] = self.tabs["queue"]["m"].styleSheet()
         lsp = self.tabs["queue"]["m"].sizePolicy()
         lsp.setHorizontalPolicy(QSizePolicy.Ignored)
         self.tabs["queue"]["m"].setSizePolicy(lsp)
@@ -509,7 +510,8 @@ class MainWindow(QMainWindow):
         #collector
         self.tabs["collector"]["b"] = QPushButton(_("Push Selected Packages to Queue"))
         self.tabs["collector"]["b"].setIcon(QIcon(join(pypath, "icons", "push_small.png")))
-        self.tabs["collector"]["m"] = QLabel("<b>" + _("To drop the items in the order they were selected, hold the ALT key when releasing the mouse button!") + "</b>")
+        self.tabs["collector"]["m"] = QLabel()
+        self.tabs["collector"]["m_defaultStyleSheet"] = self.tabs["collector"]["m"].styleSheet()
         lsp = self.tabs["collector"]["m"].sizePolicy()
         lsp.setHorizontalPolicy(QSizePolicy.Ignored)
         self.tabs["collector"]["m"].setSizePolicy(lsp)
@@ -762,10 +764,17 @@ class MainWindow(QMainWindow):
         """
         self.emit(SIGNAL("showAbout"))
     
-    def slotQueueMsgShow(self):
+    def slotQueueMsgShow(self, msg, error):
         """
             emitted from queue view, show message label instead of pull button
         """
+        if error:
+            s = "QWidget { color: crimson; background-color: %s }" % QColor(Qt.gray).name()     # red text color on gray background
+            self.tabs["queue"]["m"].setStyleSheet(s)
+            self.tabs["queue"]["m"].setText("<b>" + "&nbsp;" + "&nbsp;" + msg + "</b>")         # bold text with leading whitespace
+        else:
+            self.tabs["queue"]["m"].setStyleSheet(self.tabs["queue"]["m_defaultStyleSheet"])    # default text and background colors
+            self.tabs["queue"]["m"].setText("<b>" + msg + "</b>")                               # bold text
         self.tabs["queue"]["m"].setFixedHeight(self.tabs["queue"]["b"].height())
         self.tabs["queue"]["m"].show()
         self.tabs["queue"]["b"].hide()
@@ -777,10 +786,17 @@ class MainWindow(QMainWindow):
         self.tabs["queue"]["m"].hide()
         self.tabs["queue"]["b"].show()
     
-    def slotCollectorMsgShow(self):
+    def slotCollectorMsgShow(self, msg, error):
         """
             emitted from collector view, show message label instead of push button
         """
+        if error:
+            s = "QWidget { color: crimson; background-color: %s }" % QColor(Qt.gray).name()         # red text color on gray background
+            self.tabs["collector"]["m"].setStyleSheet(s)
+            self.tabs["collector"]["m"].setText("<b>" + "&nbsp;" + "&nbsp;" + msg + "</b>")         # bold text with leading whitespace
+        else:
+            self.tabs["collector"]["m"].setStyleSheet(self.tabs["queue"]["m_defaultStyleSheet"])    # default text and background colors
+            self.tabs["collector"]["m"].setText("<b>" + msg + "</b>")                               # bold text
         self.tabs["collector"]["m"].setFixedHeight(self.tabs["collector"]["b"].height())
         self.tabs["collector"]["m"].show()
         self.tabs["collector"]["b"].hide()
