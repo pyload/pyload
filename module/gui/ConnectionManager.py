@@ -29,6 +29,7 @@ class ConnectionManager(QDialog):
     def __init__(self, disable_connect):
         QDialog.__init__(self)
         self.log = logging.getLogger("guilog")
+        self.disable_connect = disable_connect
         
         self.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
         self.setWindowTitle(_("Connection Manager"))
@@ -52,13 +53,13 @@ class ConnectionManager(QDialog):
         self.btnNew     = QPushButton(_("New"))
         self.btnEdit    = QPushButton(_("Edit"))
         self.btnDefault = QPushButton(_("Default"))
-        self.btnDefault.setWhatsThis(whatsThisFormat(self.btnDefault.text(), _("Toggles the default connection.")))
+        self.btnDefault.setWhatsThis(whatsThisFormat(self.btnDefault.text(), _("Toggles the default connection (automatic connect).")))
         self.btnRemove  = QPushButton(_("Remove"))
         self.btnConnect = QPushButton(_("Connect"))
         self.btnConnect.setDefault(True)
-        if disable_connect:
+        if self.disable_connect:
             self.btnConnect.setEnabled(False)
-            self.btnConnect.setToolTip(_("It is not possible to connect when the internal server was running or has failed to start.\nPlease close this window and restart the application."))
+            self.btnConnect.setToolTip(_("Cannot connect when the internal server was running or has failed to start.\nPlease close this window and restart the application."))
         
         buttonLayout.addWidget(self.btnNew)
         buttonLayout.addWidget(self.btnEdit)
@@ -84,7 +85,8 @@ class ConnectionManager(QDialog):
         self.connect(self.btnConnect, SIGNAL("clicked()"), self.slotConnect)
         self.connect(self.edit,       SIGNAL("save"),      self.slotSave)
         self.connect(self.connList,   SIGNAL("saveAll"),   self.slotSaveAll)
-        self.connect(self.connList,   SIGNAL("itemDoubleClicked(QListWidgetItem *)"), self.slotItemDoubleClicked)
+        if not self.disable_connect:
+            self.connect(self.connList,   SIGNAL("itemDoubleClicked(QListWidgetItem *)"), self.slotItemDoubleClicked)
     
     def setConnections(self, connections):
         self.connList.clear()
