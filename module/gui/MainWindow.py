@@ -1095,12 +1095,6 @@ class MainWindow(QMainWindow):
         self.activeMenu = self.collectorContext
         self.collectorContext.exec_(menuPos)
     
-    def slotLinkCollectorContextMenu(self, pos):
-        """
-            custom context menu in link collector view requested
-        """
-        pass
-    
     def slotRestartDownloads(self):
         """
             restart download action is triggered
