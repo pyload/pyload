@@ -1121,6 +1121,7 @@ class CollectorModel(QAbstractItemModel):
                 if alreadySorted:
                     self.view.buttonMsgShow(_("Nothing to do, packages are already sorted"), False)
                 else:
+                    self.view.buttonMsgShow(_("Sorting ..."), False)
                     self.view.setEnabled(False)
                     self.view.update()
                     QApplication.processEvents()
@@ -1138,7 +1139,8 @@ class CollectorModel(QAbstractItemModel):
         if sortingPerformed:
             self.view.clearSelection()
             self.view.setCurrentIndex(QModelIndex())
-        self.view.buttonMsgHide(2000)
+        else:
+            self.view.buttonMsgHide(3000)
     
     def sortLinks(self):
         """
@@ -1169,6 +1171,7 @@ class CollectorModel(QAbstractItemModel):
                     if alreadySorted:
                         self.view.buttonMsgShow(_("Nothing to do, Links are already sorted"), False)
                     else:
+                        self.view.buttonMsgShow(_("Sorting ..."), False)
                         self.view.setEnabled(False)
                         self.view.update()
                         QApplication.processEvents()
@@ -1192,7 +1195,8 @@ class CollectorModel(QAbstractItemModel):
             self.view.clearSelection()
             self.view.setCurrentIndex(QModelIndex())
             smodel.select(pindex, QItemSelectionModel.Select | QItemSelectionModel.Rows)
-        self.view.buttonMsgHide(2000)
+        else:
+            self.view.buttonMsgHide(3000)
     
     def sortItems(self, items):
         """
