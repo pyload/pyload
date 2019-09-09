@@ -91,6 +91,9 @@ class NewLinkDock(QDockWidget):
         self.widget.box.setEnabled(True)
         self.widget.filter.setEnabled(True)
     
+    def slotClearBtnClicked(self):
+        self.widget.box.clear()
+    
     def defaultSettings(self):
         self.widget.append.setChecked(True)
         self.widget.destQueue.setChecked(False)
@@ -153,6 +156,8 @@ class NewLinkWindow(QWidget):
         self.destAutoSelect = QCheckBox(_("Select with tab"))
         
         self.clear = QPushButton(_("Clear"))
+        whatsThis = (self.clear.text(), _("Clears the URL box."))
+        self.clear.setWhatsThis(whatsThisFormat(*whatsThis))
         self.filter = QPushButton()
         
         self.save = QPushButton(_("Add"))
@@ -179,11 +184,11 @@ class NewLinkWindow(QWidget):
         self.slotMsgHide()
         
         self.connect(self.save, SIGNAL("clicked()"), self.dock.slotDone)
-        self.connect(self.clear, SIGNAL("clicked()"), self.box.clear)
         self.connect(self.filter, SIGNAL("clicked()"), self.dock.slotFilterBtnClicked)
         self.connect(self.box, SIGNAL("textChanged()"), self.dock.slotBoxTextChanged)
         self.connect(self.append, SIGNAL("toggled(bool)"), self.box.slotAppendToggled)
         self.box.slotAppendToggled(self.append.isChecked())
+        self.connect(self.clear, SIGNAL("clicked()"), self.dock.slotClearBtnClicked)
     
     def slotMsgShow(self, msg):
         self.msg.setText(msg)
