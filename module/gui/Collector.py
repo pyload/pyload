@@ -368,7 +368,7 @@ class CollectorModel(QAbstractItemModel):
         """
         func_start_time = self.time_msec()
         self.lastFullReload = time()
-        self.saveViewItemStates()
+#       self.saveViewItemStates() # FIXME: broken or too slow?
         self.beginResetModel()
         self._data = []
         self.endResetModel()
@@ -390,9 +390,43 @@ class CollectorModel(QAbstractItemModel):
         self._data = sorted(self._data, key=lambda p: p.data["order"])
         self.emit(SIGNAL("layoutChanged()"))
         self.dirty = False
+        self.fullReloadCheck()
         self.view.setEnabled(True)
-        self.applyViewItemStates()
+#       self.applyViewItemStates() # FIXME: broken or too slow?
         self.log.debug8("%s.fullReload took %dms" % (self.cname, self.time_msec() - func_start_time))
+    
+    def fullReloadCheck(self):
+        if len(self._data) == 0:
+            return 0
+        maxErrors = 10
+        numErrors = 0
+        indent = " " * len("%s.fullReloadCheck: " % self.cname)
+        fpo = self._data[0].data["order"]
+        # can we skip testing data[0] here ???
+        for p, package in enumerate(self._data):
+            if package.data["order"] != p + fpo:
+                self.log.error("%s.fullReloadCheck: Non-sequential package order found," % self.cname)
+                self.log.error(indent +            "order number %d expected for package '%s' with id:%d." % (p + fpo, package.data["name"], package.id))
+                numErrors += 1
+                if numErrors == maxErrors: self.log.error("%s.fullReloadCheck: Aborted, too many errors." % self.cname); return numErrors
+            if package.children[0].data["order"] != 0:
+                self.log.error("%s.fullReloadCheck: Non-zero link order found in package '%s' with id:%d," % (self.cname, package.data["name"], package.id))
+                self.log.error(indent +            "order number 0 expected for first link '%s' with id:%d," % (package.children[0].data["name"], package.children[0].id))
+                self.log.error(indent +            "skip checking remaining links of this package.")
+                numErrors += 1
+                if numErrors == maxErrors: self.log.error("%s.fullReloadCheck: Aborted, too many errors." % self.cname); return numErrors
+                continue
+            # can we skip testing children[0] here ???
+            for l, link in enumerate(package.children):
+                if link.data["order"] != l:
+                    self.log.error("%s.fullReloadCheck: Non-sequential link order found in package '%s' with id:%d," % (self.cname, package.data["name"], package.id))
+                    self.log.error(indent +            "order number %d expected for link '%s' with id:%d," % (l, link.data["name"], link.id))
+                    self.log.error(indent +            "skip checking remaining links of this package.")
+                    numErrors += 1
+                    if numErrors == maxErrors: self.log.error("%s.fullReloadCheck: Aborted, too many errors." % self.cname); return numErrors
+                    break
+        self.log.debug8("%s.fullReloadCheck: Done, %d errors" % (self.cname, numErrors))
+        return numErrors
     
     def removeEvent(self, event):
         """

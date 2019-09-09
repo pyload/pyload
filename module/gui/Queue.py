@@ -76,7 +76,7 @@ class QueueModel(CollectorModel):
         """
         func_start_time = self.time_msec()
         self.lastFullReload = time()
-        self.saveViewItemStates()
+#       self.saveViewItemStates() # FIXME: broken or too slow?
         self.beginResetModel()
         self._data = []
         self.endResetModel()
@@ -119,9 +119,10 @@ class QueueModel(CollectorModel):
         self._data = sorted(self._data, key=lambda p: p.data["order"])
         self.emit(SIGNAL("layoutChanged()"))
         self.dirty = False
+        self.fullReloadCheck()
         self.view.setEnabled(True)
         self.updateCount()
-        self.applyViewItemStates()
+#       self.applyViewItemStates() # FIXME: broken or too slow?
         self.log.debug8("%s.fullReload took %dms" % (self.cname, self.time_msec() - func_start_time))
     
     def insertEvent(self, event):
