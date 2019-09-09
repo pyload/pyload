@@ -847,50 +847,34 @@ class CollectorModel(QAbstractItemModel):
     
     def slotDropEvent(self, sortByOrderAttribute):
         QMutexLocker(self.mutex)
+        nothingDone = True
+        
         if self.dnd.actionOnDrop == self.dnd.ACT.PACKORDER:
             self.dnd.getSrcPackages()
             if self.dnd.srcPackages:
                 if sortByOrderAttribute:
                     self.dnd.srcPackages = sorted(self.dnd.srcPackages, key=lambda p: p[1])
-                # count the selected packages that are above the drop position, and those below the drop position
-                abovedest = belowdest = 0
-                for idx, p in enumerate(self.dnd.srcPackages):
-                    if p[2] < self.dnd.destRow:
-                        abovedest += 1
-                    elif p[2] > self.dnd.destRow:
-                        belowdest += 1
-                self.log.debug0("%s.slotDropEvent: PACKORDER:   destRow:%d   abovedest:%d   belowdest:%d" % (self.cname, self.dnd.destRow, abovedest, belowdest))
-                # first case, the drop position is above the selected packages
-                if abovedest == 0:
-                    self.log.debug0("%s.slotDropEvent: PACKORDER: first case, drop above")
-                    destorder = self.dnd.destPackOrder
-                    for idx, p in reversed(list(enumerate(self.dnd.srcPackages))):
-                        self.connector.proxy.orderPackage(p[0], destorder)
-                # second case, the drop position is below the selected packages
-                elif belowdest == 0:
-                    self.log.debug0("%s.slotDropEvent: PACKORDER: second case, drop below")
-                    destorder = self.dnd.destPackOrder
-                    for idx, p in enumerate(self.dnd.srcPackages):
-                        self.connector.proxy.orderPackage(p[0], destorder)
-                # third case, the drop position is between the selected packages
-                else:
-                    highestorder = self._data[len(self._data) - 1].data["order"]
-                    self.log.debug0("%s.slotDropEvent: PACKORDER: third case, drop between, highestorder:%d" % (self.cname, highestorder))
-                    # move/append the selected packages to the end
-                    for idx, p in reversed(list(enumerate(self.dnd.srcPackages))):
-                        self.connector.proxy.orderPackage(p[0], highestorder + 1 + idx)
-                    # get the new order attribute of the package at the drop position
-                    try:
-                        data = self.connector.proxy.getPackageData(self.dnd.destPackId)
-                    except PackageDoesNotExistss:
-                        self.log.error("%s.slotDropEvent: PACKORDER: No package data received from the server, pid:%d" % (self.cname, self.dnd.destPackId))
-                        self.setDirty(False)
-                    else:
-                        destorder = data.order
-                        self.log.debug0("%s.slotDropEvent: PACKORDER: third case, drop position's new order:%d" % (self.cname, destorder))
-                    # move the selected packages to the drop position
-                        for idx, p in reversed(list(enumerate(self.dnd.srcPackages))):
-                            self.connector.proxy.orderPackage(p[0], destorder + 1)
+                # get the current package order
+                unsortedItems = []
+                for package in self._data:
+                    unsortedItems.append([None, package.id])
+                # remove the selected packages
+                sortedItems = list(unsortedItems)
+                for sl in self.dnd.srcPackages:
+                    sortedItems.remove([None, sl[0]])
+                # reinsert the selected packages at the drop position
+                i = 0
+                while i < len(unsortedItems):
+                    if sortedItems[i][1] == self.dnd.destPackId:
+                        for j in xrange(len(self.dnd.srcPackages)):
+                            sortedItems.insert(i + j, [None, self.dnd.srcPackages[j][0]])
+                        i += len(self.dnd.srcPackages)
+                    i += 1
+                # build a list package move commands and send them to the server
+                packageMoves = self.smallestListOfItemMoves(unsortedItems, sortedItems)
+                for move in packageMoves:
+                    self.connector.proxy.orderPackage(move[0], move[1])
+                nothingDone = not packageMoves
             else:
                 self.log.debug0("%s.slotDropEvent: PACKORDER: selection lost" % self.cname)
         
@@ -899,47 +883,29 @@ class CollectorModel(QAbstractItemModel):
             if self.dnd.srcLinks:
                 if sortByOrderAttribute:
                     self.dnd.srcLinks = sorted(self.dnd.srcLinks, key=lambda p: p[3])
-                # count the selected links that are above the drop position, and those below the drop position
-                abovedest = belowdest = 0
-                for idx, l in enumerate(self.dnd.srcLinks):
-                    if l[4] < self.dnd.destRow:
-                        abovedest += 1
-                    elif l[4] > self.dnd.destRow:
-                        belowdest += 1
-                self.log.debug0("%s.slotDropEvent: LINKORDER:   destRow:%d   abovedest:%d   belowdest:%d" % (self.cname, self.dnd.destRow, abovedest, belowdest))
-                # first case, the drop position is above the selected links
-                if abovedest == 0:
-                    self.log.debug0("%s.slotDropEvent: LINKORDER: first case, drop above")
-                    destorder = self.dnd.destLinkOrder
-                    for idx, l in reversed(list(enumerate(self.dnd.srcLinks))):
-                        self.connector.proxy.orderFile(l[0], destorder)
-                # second case, the drop position is below the selected links
-                elif belowdest == 0:
-                    self.log.debug0("%s.slotDropEvent: LINKORDER: second case, drop below")
-                    destorder = self.dnd.destLinkOrder
-                    for idx, l in enumerate(self.dnd.srcLinks):
-                        self.connector.proxy.orderFile(l[0], destorder)
-                # third case, the drop position is between the selected links
-                else:
-                    for p, package in enumerate(self._data):
-                        if package.id == self.dnd.srcLinksSamePackId:
-                            highestorder = package.children[len(package.children) - 1].data["order"]
-                    self.log.debug0("%s.slotDropEvent: LINKORDER: third case, drop between, highestorder:%d" % (self.cname, highestorder))
-                    # move/append the selected links to the end
-                    for idx, l in reversed(list(enumerate(self.dnd.srcLinks))):
-                        self.connector.proxy.orderFile(l[0], highestorder + 1 + idx)
-                    # get the new order attribute of the link at the drop position
-                    try:
-                        info = self.connector.proxy.getFileData(self.dnd.destLinkId)
-                    except FileDoesNotExists:
-                        self.log.error("%s.slotDropEvent: LINKORDER: No file data received from the server, fid:%d" % (self.cname, self.dnd.destLinkId))
-                        self.setDirty(False)
-                    else:
-                        destorder = info.order
-                        self.log.debug0("%s.slotDropEvent: LINKORDER: third case, drop position's new order:%d" % (self.cname, destorder))
-                    # move the selected links to the drop position
-                        for idx, l in reversed(list(enumerate(self.dnd.srcLinks))):
-                            self.connector.proxy.orderFile(l[0], destorder + 1)
+                # get the current link order
+                unsortedItems = []
+                for package in self._data:
+                    if package.id == self.dnd.srcLinksSamePackId:
+                        for child in package.children:
+                            unsortedItems.append([None, child.id])
+                # remove the selected links
+                sortedItems = list(unsortedItems)
+                for sl in self.dnd.srcLinks:
+                    sortedItems.remove([None, sl[0]])
+                # reinsert the selected links at the drop position
+                i = 0
+                while i < len(unsortedItems):
+                    if sortedItems[i][1] == self.dnd.destLinkId:
+                        for j in xrange(len(self.dnd.srcLinks)):
+                            sortedItems.insert(i + j, [None, self.dnd.srcLinks[j][0]])
+                        i += len(self.dnd.srcLinks)
+                    i += 1
+                # build a list link move commands and send them to the server
+                linkMoves = self.smallestListOfItemMoves(unsortedItems, sortedItems)
+                for move in linkMoves:
+                    self.connector.proxy.orderFile(move[0], move[1])
+                nothingDone = not linkMoves
             else:
                 self.log.debug0("%s.slotDropEvent: LINKORDER: selection lost" % self.cname)
         
@@ -950,19 +916,26 @@ class CollectorModel(QAbstractItemModel):
                     self.dnd.srcLinks = sorted(self.dnd.srcLinks, key=lambda p: p[3])
                 fids = []
                 links = []
-                for idx, l in enumerate(self.dnd.srcLinks):
+                for l in self.dnd.srcLinks:
                     fids.append(l[0])
                     links.append(l[1])
+                # delete the links from the source package
                 self.connector.proxy.deleteFiles(fids)
+                # append (recreated) links to the destination package
                 self.connector.proxy.addFiles(self.dnd.destPackId, links)
+                nothingDone = not fids
             else:
                 self.log.debug0("%s.slotDropEvent: LINKMOVE: selection lost" % self.cname)
+        
         else:
             raise ValueError("%s: Unknown drop action" % self.cname)
-        self.view.clearSelection()
-        self.view.setCurrentIndex(QModelIndex())
-        self.view.setEnabled(True)
-        self.view.setFocus(Qt.OtherFocusReason)
+        
+        if nothingDone:
+            self.view.setEnabled(True)
+            self.view.setFocus(Qt.OtherFocusReason)
+        else:
+            self.view.clearSelection()
+            self.view.setCurrentIndex(QModelIndex())
     
     def advancedSelect(self, pattern, syntax, cs, deselect, selectLinks):
         """
@@ -1197,8 +1170,9 @@ class CollectorModel(QAbstractItemModel):
         """
             Calculates the smallest possible amount of item moves
             for sorting a list of links or packages.
-                unsortedItems: [[name, id], ..., ....]
-                sortedItems:   [[name, id], ..., ....]
+                unsortedItems: [[name, id], ...]
+                sortedItems:   [[name, id], ...]
+                Note: The value of 'name' does not matter here
             Returns a list of (id, position) tuples for feeding to api.orderFile or api.orderPackage.
         """
         items = list(unsortedItems)
@@ -1466,7 +1440,6 @@ class CollectorView(QTreeView):
             return
         event.ignore()
         self.model.dnd.canDrop(event.pos())
-        # PACKORDER + LINKORDER need "MODIFY ; LINKMOVE needs "DELETE" and "ADD"
         if self.model.dnd.actionOnDrop == self.model.dnd.ACT.PACKORDER and not self.corePermissions["MODIFY"]:
             self.log.debug3("%s.dragMoveEvent: PACKORDER: insufficient corePermissions" % self.cname)
             self.model.dnd.actionOnDrop = self.model.dnd.ACT.NONE
