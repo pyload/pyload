@@ -343,7 +343,8 @@ class Core(object):
         else:
             self.init_logger(logging.INFO) # logging level
 
-        sys.excepthook = exceptHook
+        if not self.startedInGui:
+            sys.excepthook = exceptHook
 
         self.do_kill = False
         self.do_restart = False
