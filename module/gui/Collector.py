@@ -37,6 +37,7 @@ class CollectorModel(QAbstractItemModel):
         model for the collector view
     """
     
+    @classmethod
     def time_msec(self):
         return int((datetime.utcnow() - datetime(1970, 1, 1)).total_seconds() * 1000)
     
@@ -1153,6 +1154,7 @@ class CollectorModel(QAbstractItemModel):
         else:
             self.view.buttonMsgHide(3000)
     
+    @classmethod
     def sortItems(self, items):
         """
             Natural sorting of package/link names
@@ -1411,7 +1413,7 @@ class CollectorView(QTreeView):
         if not isinstance(package, Package):
             raise TypeError("%s: Bad item instance" % self.cname)
         smodel = self.selectionModel()
-        for l, link in enumerate(package.children):
+        for l in xrange(len(package.children)):
             lindex = self.model.index(l, 0, index)
             if not lindex.isValid():
                 raise ValueError("%s: Invalid index" % self.cname)
@@ -1595,7 +1597,7 @@ class DragAndDrop(QObject):
                         self.srcLinksSamePack = False
                         break
 
-        self.log.debug8("%s.getSrcInfo took %dms" % (self.cname, self.model.time_msec() - func_start_time))               
+        self.log.debug8("%s.getSrcInfo took %dms" % (self.cname, self.model.time_msec() - func_start_time))
 
     def getSrcPackages(self):
         """

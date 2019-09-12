@@ -21,11 +21,10 @@ from PyQt4.QtGui import *
 
 import logging
 from time import time
-from datetime import datetime
 
-from module.gui.Collector import CollectorModel, Package, Link, CollectorView, statusMapReverse
+from module.gui.Collector import CollectorModel, Package, Link, CollectorView
 from module.remote.thriftbackend.ThriftClient import Destination, DownloadStatus
-from module.utils import formatSize, formatSpeed
+from module.utils import formatSize
 from module.gui.Tools import whatsThisFormat
 
 class QueueModel(CollectorModel):

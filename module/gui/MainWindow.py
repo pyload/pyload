@@ -29,14 +29,12 @@ from module.gui.PackageDock import *
 from module.gui.LinkDock import *
 from module.gui.CaptchaDialog import CaptchaDialog
 from module.gui.SettingsWidget import SettingsWidget
-from module.gui.Collector import CollectorView, Package, Link
+from module.gui.Collector import CollectorView
 from module.gui.Queue import QueueView
 from module.gui.Overview import OverviewView
 from module.gui.Accounts import AccountView
 from module.gui.AccountEdit import AccountEdit
 from module.gui.Tools import whatsThisFormat
-
-from module.remote.thriftbackend.ThriftClient import DownloadStatus
 
 class MainWindow(QMainWindow):
     
@@ -803,6 +801,7 @@ class MainWindow(QMainWindow):
         event.ignore()
         self.emit(SIGNAL("mainWindowClose"))
     
+    @classmethod
     def urlFilter(self, text):
         pattern = re.compile(ur'(?i)\b(((?:ht|f)tps?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:\'".,<>?\xab\xbb\u201c\u201d\u2018\u2019]))')
         text += " "
@@ -1451,7 +1450,8 @@ class SpinBox(QSpinBox):
         QAbstractSpinBox.keyPressEvent(self, event)
 
 class AdvancedSelect(QWidget):
-    class MODE_IDX:     # enum for RegExp pattern syntax combobox
+    # enum for QRegExp pattern syntax
+    class MODE_IDX(object):
         STRING   = -1
         WILDCARD = -1
         REGEXP   = -1

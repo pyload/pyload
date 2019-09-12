@@ -299,7 +299,7 @@ def longestSubsequence(seq, mode='strictly', order='increasing', key=None, index
         j = bisect([rank[k] for k in lastoflength], rank[i])
         # update existing subsequence of length j or extend the longest
         try: lastoflength[j] = i
-        except: lastoflength.append(i)
+        except Exception: lastoflength.append(i)
         # remember element before seq[i] in the subsequence
         predecessor.append(lastoflength[j-1] if j > 0 else None)
 
