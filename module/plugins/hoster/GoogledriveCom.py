@@ -15,7 +15,7 @@ from ..internal.misc import json
 class GoogledriveCom(Hoster):
     __name__ = "GoogledriveCom"
     __type__ = "hoster"
-    __version__ = "0.29"
+    __version__ = "0.30"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(?:drive|docs)\.google\.com/(?:file/d/|uc\?.*id=)(?P<ID>[-\w]+)'
@@ -102,7 +102,10 @@ class GoogledriveCom(Hoster):
         for _i in range(2):
             m = re.search(r'"([^"]+uc\?.*?)"', self.data)
             if m is None:
-                self.fail(_("link pattern not found"))
+                if "Quota exceeded" in self.data:
+                    self.temp_offline()
+                else:
+                    self.fail(_("link pattern not found"))
 
             link = urlparse.urljoin(pyfile.url, m.group(1))
 
