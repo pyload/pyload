@@ -8,7 +8,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class MegaupNet(SimpleHoster):
     __name__ = "MegaupNet"
     __type__ = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
     __pattern__ = r'https?://megaup.net/.+'
@@ -31,4 +31,4 @@ class MegaupNet(SimpleHoster):
     def handle_free(self, pyfile):
         m = re.search(r'\'(https://megaup\.net/\w+\?pt=.+?)\'', self.data)
         if m is not None:
-            self.download(m.group(1), ref=pyfile.url, fixurl=False)
+            self.download(m.group(1), ref=pyfile.url)

@@ -7,7 +7,7 @@ from ..internal.MultiHoster import MultiHoster
 class TwojlimitPl(MultiHoster):
     __name__ = "TwojlimitPl"
     __type__ = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -76,7 +76,7 @@ class TwojlimitPl(MultiHoster):
         pyfile.size = json_data['filesize']
 
         try:
-            self.download(self.run_file_query(pyfile.url, 'filedownload'), fixurl=False)
+            self.download(self.run_file_query(pyfile.url, 'filedownload'))
 
         except Exception, e:
             self.log_error(e)

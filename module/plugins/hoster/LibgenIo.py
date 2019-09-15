@@ -13,7 +13,7 @@ from ..internal.misc import normalize
 class LibgenIo(Hoster):
     __name__ = "LibgenIo"
     __type__ = "hoster"
-    __version__ = "0.7"
+    __version__ = "0.71"
     __status__ = "testing"
 
     # Only for libgen hosts and URLs that have an MD5
@@ -124,8 +124,8 @@ class LibgenIo(Hoster):
             self.log_debug("Trying mirror: "+url)
             for _i in range(2):
                 try:
-                    self.log_debug("Download attempt "+str(_i))
-                    self.download(url, disposition=True, fixurl=False)
+                    self.log_debug("Download attempt " + str(_i))
+                    self.download(url, disposition=True)
                     self.log_debug("Response: {:d}".format(self.req.code))
 
                 except BadHeader as e:
@@ -185,7 +185,7 @@ class LibgenIo(Hoster):
             self.log_debug("Link is a single file")
             for _i in range(2):
                 try:
-                    self.download(url, ref=False, disposition=True, fixurl=False)
+                    self.download(url, ref=False, disposition=True)
                 except BadHeader as e:
                     if e.code not in (401, 403, 404, 410):
                         raise

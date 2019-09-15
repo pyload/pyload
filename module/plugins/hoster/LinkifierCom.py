@@ -10,7 +10,7 @@ from ..internal.misc import json, seconds_to_midnight
 class LinkifierCom(MultiHoster):
     __name__ = "AlldebridCom"
     __type__ = "hoster"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __status__ = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -58,5 +58,5 @@ class LinkifierCom(MultiHoster):
 
         self.resume_download = json_data['con_resume']
         self.chunk_limit = json_data.get('con_max', 1) or 1
-        self.download(json_data['url'], fixurl=False)
+        self.download(json_data['url'])
 
