@@ -13,7 +13,7 @@ from ..internal.misc import json, parse_html_form, timestamp
 class UlozTo(Account):
     __name__ = "UlozTo"
     __type__ = "account"
-    __version__ = "0.32"
+    __version__ = "0.33"
     __status__ = "testing"
 
     __description__ = """Uloz.to account plugin"""
@@ -66,7 +66,7 @@ class UlozTo(Account):
         if ">Log out<" in html:
             self.skip_login()
 
-        url, inputs = parse_html_form('id="frm-loginForm-form"', html)
+        url, inputs = parse_html_form('action="/login"', html)
         if inputs is None:
             self.fail_login("Login form not found")
 
