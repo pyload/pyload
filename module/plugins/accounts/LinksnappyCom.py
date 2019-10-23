@@ -7,7 +7,7 @@ from ..internal.MultiAccount import MultiAccount
 class LinksnappyCom(MultiAccount):
     __name__ = "LinksnappyCom"
     __type__ = "account"
-    __version__ = "0.17"
+`    __version__ = "0.18"
     __status__ = "testing"
 
     __config__ = [("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),
@@ -40,18 +40,18 @@ class LinksnappyCom(MultiAccount):
             self.log_error(json_data['error'])
 
         else:
-            validuntil = json_data['return']['expire']
+            expire = json_data['return']['expire']
 
-            if validuntil == "lifetime":
+            if expire == "lifetime":
                 validuntil = -1
 
-            elif validuntil == "expired":
+            elif expire == "expired":
                 premium = False
 
             else:
-                validuntil = float(validuntil)
+                validuntil = float(expire)
 
-            if 'trafficleft' not in json_data['return'] or isinstance(json_data['return']['trafficleft'], basestring):
+            if isinstance(json_data['return'].get("trafficleft", ""), basestring):
                 trafficleft = -1
 
             else:
