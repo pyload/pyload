@@ -16,7 +16,7 @@ def convert_decimal_prefix(m):
 class UlozTo(SimpleHoster):
     __name__ = "UlozTo"
     __type__ = "hoster"
-    __version__ = "1.42"
+    __version__ = "1.43"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl|pornfile\.cz)/(?:live/)?(?P<ID>[!\w]+/[^/?]*)'
@@ -38,6 +38,7 @@ class UlozTo(SimpleHoster):
     NAME_PATTERN = r'(<p>File <strong>|<title>)(?P<N>.+?)(<| \|)'
     SIZE_PATTERN = r'<span id="fileSize">.*?(?P<S>[\d.,]+\s[kMG]?B)</span>'
     OFFLINE_PATTERN = r'<title>404 - Page not found</title>|<h1 class="h1">File (has been deleted|was banned)</h1>'
+    TEMP_OFFLINE_PATTERN = r"<title>500 - Internal Server Error</title>"
 
     URL_REPLACEMENTS = [("http://", "https://"),
                         (r'(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl|pornfile\.cz)', "ulozto.net")]
