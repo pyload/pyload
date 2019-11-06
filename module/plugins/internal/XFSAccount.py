@@ -11,7 +11,7 @@ from .Account import Account
 class XFSAccount(Account):
     __name__ = "XFSAccount"
     __type__ = "account"
-    __version__ = "0.60"
+    __version__ = "0.61"
     __status__ = "stable"
 
     __config__ = [("activated", "bool", "Activated", True),
@@ -57,7 +57,7 @@ class XFSAccount(Account):
             self.fail_login(_("Missing PLUGIN DOMAIN"))
 
         if not self.PLUGIN_URL:
-            self.PLUGIN_URL = "http://www.%s/" % self.PLUGIN_DOMAIN
+            self.PLUGIN_URL = "https://www.%s/" % self.PLUGIN_DOMAIN
 
         if not self.LOGIN_URL:
             self.LOGIN_URL = urlparse.urljoin(self.PLUGIN_URL, "login.html")
@@ -126,19 +126,17 @@ class XFSAccount(Account):
                         unit = self.TRAFFIC_LEFT_UNIT
 
                     else:
-                        unit = ""
+                        unit = None
 
-                    trafficleft = self.parse_traffic(size + unit)
+                    trafficleft = self.parse_traffic(size, unit)
 
             except Exception, e:
                 self.log_error(e)
         else:
             self.log_debug("TRAFFIC LEFT PATTERN not found")
 
-        leech = [
-            m.groupdict() for m in re.finditer(
-                self.LEECH_TRAFFIC_PATTERN,
-                self.data)]
+        leech = [m.groupdict()
+                 for m in re.finditer(self.LEECH_TRAFFIC_PATTERN, self.data)]
         if leech:
             leechtraffic = 0
             try:
@@ -185,7 +183,7 @@ class XFSAccount(Account):
                        'password': password})
 
         if action:
-            url = urlparse.urljoin("http://", action)
+            url = urlparse.urljoin("https://", action)
         else:
             url = self.LOGIN_URL
 

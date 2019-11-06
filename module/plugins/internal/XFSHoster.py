@@ -14,7 +14,7 @@ from .SimpleHoster import SimpleHoster
 class XFSHoster(SimpleHoster):
     __name__ = "XFSHoster"
     __type__ = "hoster"
-    __version__ = "0.83"
+    __version__ = "0.84"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -120,7 +120,7 @@ class XFSHoster(SimpleHoster):
             self.fail(_("Only registered or premium users can use url leech feature"))
 
         #: Only tested with easybytez.com
-        self.data = self.load("http://www.%s/" % self.PLUGIN_DOMAIN)
+        self.data = self.load("https://www.%s/" % self.PLUGIN_DOMAIN)
 
         action, inputs = self.parse_html_form()
 
