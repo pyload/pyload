@@ -6,7 +6,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class LetsuploadCc(SimpleHoster):
     __name__ = "LetsuploadCc"
     __type__ = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?letsupload\.cc/(?P<ID>\w{10})'
@@ -25,4 +25,4 @@ class LetsuploadCc(SimpleHoster):
     NAME_PATTERN = r'<h1 class="text-center text-wordwrap">(?P<N>.+?)</h1>'
     SIZE_PATTERN = r'>Download\s*\((?P<S>[\d.,]+) (?P<U>[\w^_]+)\)</a>'
 
-    LINK_FREE_PATTERN = r'href="(https://cdn-\d+.letsupload.cc/.+?)"'
+    LINK_FREE_PATTERN = r'href="(https://cdn-\d+\.letsupload\.cc/.+?)"'
