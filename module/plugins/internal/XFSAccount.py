@@ -11,7 +11,7 @@ from .Account import Account
 class XFSAccount(Account):
     __name__ = "XFSAccount"
     __type__ = "account"
-    __version__ = "0.61"
+    __version__ = "0.62"
     __status__ = "stable"
 
     __config__ = [("activated", "bool", "Activated", True),
@@ -57,7 +57,7 @@ class XFSAccount(Account):
             self.fail_login(_("Missing PLUGIN DOMAIN"))
 
         if not self.PLUGIN_URL:
-            self.PLUGIN_URL = "https://www.%s/" % self.PLUGIN_DOMAIN
+            self.PLUGIN_URL = "http://www.%s/" % self.PLUGIN_DOMAIN
 
         if not self.LOGIN_URL:
             self.LOGIN_URL = urlparse.urljoin(self.PLUGIN_URL, "login.html")
@@ -183,7 +183,7 @@ class XFSAccount(Account):
                        'password': password})
 
         if action:
-            url = urlparse.urljoin("https://", action)
+            url = urlparse.urljoin("http://", action)
         else:
             url = self.LOGIN_URL
 
