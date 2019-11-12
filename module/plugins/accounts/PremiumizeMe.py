@@ -7,7 +7,7 @@ from ..internal.MultiAccount import MultiAccount
 class PremiumizeMe(MultiAccount):
     __name__ = "PremiumizeMe"
     __type__ = "account"
-    __version__ = "0.31"
+    __version__ = "0.32"
     __status__ = "testing"
 
     __config__ = [("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),
@@ -29,7 +29,8 @@ class PremiumizeMe(MultiAccount):
 
     def grab_hosters(self, user, password, data):
         res = self.api_respond("services/list", apikey=password)
-        return reduce(lambda x, y: x + y, [res['aliases'][_h] for _h in res['directdl']])
+        return res['directdl'] + reduce(lambda x, y: x + y, [res['aliases'][_h] if _h in res['aliases'] else []
+                                                             for _h in res['directdl']])
 
     def grab_info(self, user, password, data):
         validuntil = None
