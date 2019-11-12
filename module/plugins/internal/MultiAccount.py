@@ -10,7 +10,7 @@ from .misc import decode, remove_chars, uniqify
 class MultiAccount(Account):
     __name__ = "MultiAccount"
     __type__ = "account"
-    __version__ = "0.22"
+    __version__ = "0.23"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", True),
@@ -73,8 +73,7 @@ class MultiAccount(Account):
 
             self.pyload.hookManager.addEvent("plugin_updated", self.plugins_updated)
 
-            interval = self.config.get('mh_interval', 12) * 60 * 60
-            self.periodical.start(interval, threaded=True, delay=2)
+            self.periodical.start(3, threaded=True)
 
         else:
             self.log_warning(_("Multi-hoster feature will be deactivated due missing plugin reference"))
@@ -253,7 +252,14 @@ class MultiAccount(Account):
     def reactivate(self, refresh=False):
         reloading = self.info['data'].get('hosters') is not None
 
-        if not self.info['login']['valid']:
+        if self.info['login']['valid'] is None:
+            return
+
+        else:
+            interval = self.config.get('mh_interval', 12) * 60 * 60
+            self.periodical.set_interval(interval)
+
+        if self.info['login']['valid'] is False:
             self.fail_count += 1
             if self.fail_count < 3:
                 if reloading:
