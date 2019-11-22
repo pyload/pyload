@@ -8,7 +8,7 @@ from ..internal.XFSHoster import XFSHoster
 class DdlTo(XFSHoster):
     __name__ = "DdlTo"
     __type__ = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?ddl.to/(?P<ID>\w{12})'
@@ -26,7 +26,7 @@ class DdlTo(XFSHoster):
 
     URL_REPLACEMENTS = [(__pattern__ + '.*', "https://ddl.to/\g<ID>")]
 
-    NAME_PATTERN = r'<div class="name">\s*<h4>(?P<N>.+?)</h4>'
+    NAME_PATTERN = r'<title>Download (?P<N>.+?)</title>'
     SIZE_PATTERN = r'<div class="name">.+?<span>(?P<S>[\d.,]+) (?P<U>[\w^_]+)</span>', re.S
 
     OFFLINE_PATTERN = r'<h4>File Not Found</h4>'
