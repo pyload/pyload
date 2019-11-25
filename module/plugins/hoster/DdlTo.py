@@ -25,7 +25,6 @@ class DdlTo(XFSHoster):
     PLUGIN_DOMAIN = "ddl.to"
 
     URL_REPLACEMENTS = [(__pattern__ + '.*', "https://ddl.to/\g<ID>")]
-
     NAME_REPLACEMENTS = [(" ", ".")]
 
     NAME_PATTERN = r'<title>Download (?P<N>.+?)</title>'
