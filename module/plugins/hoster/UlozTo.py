@@ -16,7 +16,7 @@ def convert_decimal_prefix(m):
 class UlozTo(SimpleHoster):
     __name__ = "UlozTo"
     __type__ = "hoster"
-    __version__ = "1.43"
+    __version__ = "1.44"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl|pornfile\.cz)/(?:live/)?(?P<ID>[!\w]+/[^/?]*)'
@@ -84,7 +84,14 @@ class UlozTo(SimpleHoster):
         action, inputs = self.parse_html_form(
             'id="frm-download-freeDownloadTab-freeDownloadForm"')
         if not action or not inputs:
-            self.error(_("Free download form not found"))
+            #Let's try to find direct download
+            m = re.search(r'<a id="limitedDownloadButton".*?href="(.*?)"', self.data)
+            if m:
+                domain = "https://pornfile.cz" if is_adult else "https://ulozto.net"
+                self.download(domain + m.group(1))
+                return
+            else:
+                self.error(_("Free download form not found"))
 
         self.log_debug("inputs.keys = %s" % inputs.keys())
         #: Get and decrypt captcha
