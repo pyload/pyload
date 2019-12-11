@@ -12,7 +12,7 @@ from ..internal.XFSHoster import XFSHoster
 class FilejokerNet(XFSHoster):
     __name__ = "FilejokerNet"
     __type__ = "hoster"
-    __version__ = "0.07"
+    __version__ = "0.08"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?filejoker\.net/(?P<ID>\w{12})'
@@ -60,8 +60,8 @@ class FilejokerNet(XFSHoster):
                 for _i in m.group(1).split(','):
                     _k, _v = _i.split(':', 1)
                     _k = _k.strip('" ')
-                    if _k == "g-recaptcha-response":
-                        _v = response
+                    if "g-recaptcha-response" in _v:
+                        _v = response + "1111"
 
                     captcha_inputs[_k] = _v.strip('" ')
 
