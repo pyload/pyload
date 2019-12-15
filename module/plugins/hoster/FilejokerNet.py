@@ -5,14 +5,14 @@ import re
 import urlparse
 
 from ..captcha.ReCaptcha import ReCaptcha
-from ..internal.misc import json
+from ..internal.misc import json, parse_html_tag_attr_value
 from ..internal.XFSHoster import XFSHoster
 
 
 class FilejokerNet(XFSHoster):
     __name__ = "FilejokerNet"
     __type__ = "hoster"
-    __version__ = "0.08"
+    __version__ = "0.09"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?filejoker\.net/(?P<ID>\w{12})'
@@ -39,8 +39,15 @@ class FilejokerNet(XFSHoster):
 
     LINK_PATTERN = r'<div class="premium-download">\s+<a href="(.+?)"'
 
-    API_URL = "https://filejoker.net/zapi"
+    @staticmethod
+    def filter_form(tag):
+        action = parse_html_tag_attr_value("action", tag)
+        return ".js" not in action if action else False
 
+    FORM_PATTERN = filter_form
+    FORM_INPUTS_MAP = {'op': re.compile(r'^download')}
+
+    API_URL = "https://filejoker.net/zapi"
 
     def api_response(self, op, **kwargs):
         args = {'op': op}
