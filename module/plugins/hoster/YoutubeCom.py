@@ -6,14 +6,41 @@ import re
 import subprocess
 import time
 import urllib
+import urlparse
 from xml.dom.minidom import parseString as parse_xml
 
 from module.network.CookieJar import CookieJar
 from module.network.HTTPRequest import HTTPRequest
 
 from ..internal.Hoster import Hoster
-from ..internal.misc import exists, isexecutable, json, reduce, renice, replace_patterns, which
+from ..internal.misc import exists, isexecutable, json, reduce, renice, replace_patterns, uniqify, which
 from ..internal.Plugin import Abort, Skip
+
+
+def try_get(data, *path):
+    def get_one(src, what):
+        if isinstance(src, dict) and isinstance(what, basestring):
+            return src.get(what, None)
+        elif isinstance(src, list) and type(what) is int:
+            try:
+                return src[what]
+            except IndexError:
+                return None
+        elif callable(what):
+            try:
+                return what(src)
+            except Exception:
+                return None
+        else:
+            return None
+
+    res = get_one(data, path[0])
+    for item in path[1:]:
+        if res is None:
+            break
+        res = get_one(res, item)
+
+    return res
 
 
 class BIGHTTPRequest(HTTPRequest):
@@ -206,7 +233,7 @@ class Ffmpeg(object):
 class YoutubeCom(Hoster):
     __name__ = "YoutubeCom"
     __type__ = "hoster"
-    __version__ = "0.72"
+    __version__ = "0.73"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:[^/]*\.)?(?:youtu\.be/|youtube\.com/watch\?(?:.*&)?v=)[\w\-]+'
@@ -731,7 +758,7 @@ class YoutubeCom(Hoster):
 
         self.player_config = json.loads(m.group(1))
 
-        self.ffmpeg = Ffmpeg(self.config.get('priority') ,self)
+        self.ffmpeg = Ffmpeg(self.config.get('priority'), self)
 
         #: Set file name
         self.file_name = json.loads(self.player_config['args']['player_response'])['videoDetails']['title']
@@ -749,25 +776,44 @@ class YoutubeCom(Hoster):
             self.file_name = self.file_name.replace(c, '_')
 
         #: Parse available streams
-        streams_keys = ['url_encoded_fmt_stream_map']
-        if 'adaptive_fmts' in self.player_config['args']:
-            streams_keys.append('adaptive_fmts')
-
         self.streams = []
-        for streams_key in streams_keys:
-            streams = self.player_config['args'][streams_key]
-            streams = [_s.split('&') for _s in streams.split(',')]
-            streams = [dict((_x.split('=', 1)) for _x in _s) for _s in streams]
-            streams = [(int(_s['itag']),
-                        urllib.unquote(_s['url']),
-                        _s.get('s', _s.get('sig', None)),
-                        True if 's' in _s else False,
-                        _s.get('sp', "signature"))
-                       for _s in streams]
-            streams = [(_s[0], _s[1], _s[2] and urllib.unquote(_s[2]), _s[3], _s[4])
-                       for _s in streams]
 
-            self.streams += streams
+        for path in [('args', 'url_encoded_fmt_stream_map'),
+                     ('args', 'adaptive_fmts')]:
+            item = try_get(self.player_config, *path)
+            if item is not None:
+                streams = [urlparse.parse_qs(_s) for _s in item.split(',')]
+                streams = [dict((k, v[0]) for k,v in _d.items()) for _d in streams]
+                self.streams.extend(streams)
+
+        player_response = json.loads(self.player_config['args']['player_response'])
+        self.streams.extend(try_get(player_response, 'streamingData', 'formats') or [])
+        self.streams.extend(try_get(player_response, 'streamingData', 'adaptiveFormats') or [])
+
+        streams = self.streams
+        self.streams = []
+        for _s in streams:
+            itag = int(_s['itag'])
+            url_data = _s
+            url = _s.get('url', None)
+            if url is None:
+                cipher = _s.get('cipher', None)
+                if cipher is None:
+                    continue
+
+                url_data = urlparse.parse_qs(cipher)
+                url_data = dict((k, v[0]) for k,v in url_data.items())
+                url = url_data.get('url', None)
+                if url is None:
+                    continue
+
+            self.streams.append((itag,
+                                 url,
+                                 url_data.get('s', url_data.get('sig', None)),
+                                 's' in url_data,
+                                 url_data.get('sp', "signature")))
+
+        self.streams = uniqify(self.streams)
 
         self.log_debug("AVAILABLE STREAMS: %s" % [_s[0] for _s in self.streams])
 
