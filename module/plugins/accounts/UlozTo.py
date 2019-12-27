@@ -13,7 +13,7 @@ from ..internal.misc import json, parse_html_form, timestamp
 class UlozTo(Account):
     __name__ = "UlozTo"
     __type__ = "account"
-    __version__ = "0.33"
+    __version__ = "0.34"
     __status__ = "testing"
 
     __description__ = """Uloz.to account plugin"""
@@ -26,12 +26,8 @@ class UlozTo(Account):
     INFO_PATTERN = r'title="credit in use"><\/span>\s*([\d.,]+) ([\w^_]+)\s*<\/td>\s*<td class="right">([\d.]+)<\/td>'
 
     def grab_info(self, user, password, data):
-        self.req.http.c.setopt(pycurl.HTTPHEADER, ["X-Requested-With: XMLHttpRequest"])
         try:
-            html = json.loads(self.load("https://ulozto.net/statistiky",
-                                        get={'do': "overviewPaymentsView-ajaxLoad",
-                                             '_': timestamp()}
-                              ))['snippets']['snippet-overviewPaymentsView-']
+            html = self.load("https://ulozto.net/platby")
 
         except (ValueError, KeyError):
             self.log_error(_("Unable to retrieve account information, unexpected response"))
