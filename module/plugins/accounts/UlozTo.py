@@ -26,14 +26,7 @@ class UlozTo(Account):
     INFO_PATTERN = r'title="credit in use"><\/span>\s*([\d.,]+) ([\w^_]+)\s*<\/td>\s*<td class="right">([\d.]+)<\/td>'
 
     def grab_info(self, user, password, data):
-        try:
-            html = self.load("https://ulozto.net/platby")
-
-        except (ValueError, KeyError):
-            self.log_error(_("Unable to retrieve account information, unexpected response"))
-            return {'validuntil': None,
-                    'trafficleft': None,
-                    'premium': False}
+        html = self.load("https://ulozto.net/platby")
 
         if ">You don't have any credit at the moment.<" in html:  #: Free account
             validuntil = -1
