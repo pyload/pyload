@@ -15,7 +15,7 @@ from ..internal.misc import json
 class GoogledriveCom(Hoster):
     __name__ = "GoogledriveCom"
     __type__ = "hoster"
-    __version__ = "0.30"
+    __version__ = "0.31"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(?:drive|docs)\.google\.com/(?:file/d/|uc\?.*id=)(?P<ID>[-\w]+)'
@@ -107,11 +107,18 @@ class GoogledriveCom(Hoster):
                 else:
                     self.fail(_("link pattern not found"))
 
-            link = urlparse.urljoin(pyfile.url, m.group(1))
+            link = urlparse.urljoin(pyfile.url, m.group(1).decode('unicode-escape'))
 
-            if re.search(r'/uc\?.*&confirm=', link):
-                self.download(link, disposition=False)
-                return
+            #: "Only files smaller than 100 MB can be scanned for viruses"
+            #: https://support.google.com/a/answer/172541?hl=en
+            if pyfile.size > 104857600:
+                if re.search(r'/uc\?.*&confirm=', link):
+                    self.download(link, disposition=False)
+                    return
+
+                else:
+                    self.data = self.load(link)
 
             else:
-                self.data = self.load(link)
+                self.download(link, disposition=False)
+                return

@@ -41,7 +41,7 @@ except ImportError:
 class misc(object):
     __name__ = "misc"
     __type__ = "plugin"
-    __version__ = "0.57"
+    __version__ = "0.58"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -806,8 +806,12 @@ def parse_html_tag_attr_value(attr_name, tag):
     return m.group(2) if m else None
 
 
-def parse_html_form(attr_str, html, input_names={}):
+def parse_html_form(attr_filter, html, input_names={}):
+    attr_str = "" if callable(attr_filter) else attr_filter
     for form in re.finditer(r'(?P<TAG><form[^>]*%s.*?>)(?P<CONTENT>.*?)</?(form|body|html).*?>' % attr_str, html, re.I | re.S):
+        if callable(attr_filter) and not attr_filter(form.group('TAG')):
+            continue
+
         inputs = {}
         action = parse_html_tag_attr_value("action", form.group('TAG'))
 

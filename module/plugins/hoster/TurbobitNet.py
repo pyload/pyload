@@ -10,14 +10,13 @@ from ..internal.SimpleHoster import SimpleHoster
 class TurbobitNet(SimpleHoster):
     __name__ = "TurbobitNet"
     __type__ = "hoster"
-    __version__ = "0.33"
+    __version__ = "0.35"
     __status__ = "testing"
 
-    __pattern__ = r'https?://(?:www\.)?turbobit\.net/(?:download/free/)?(?P<ID>\w+)'
+    __pattern__ = r'https?://(?:(?:www|m)\.)?(?:turbobit\.net|turbo\.to)/(?:download/free/)?(?P<ID>\w+)'
     __config__ = [("activated", "bool", "Activated", True),
                   ("use_premium", "bool", "Use premium account if available", True),
-                  ("fallback", "bool",
-                   "Fallback to free download if premium fails", True),
+                  ("fallback", "bool","Fallback to free download if premium fails", True),
                   ("chk_filesize", "bool", "Check file size", True),
                   ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10)]
 
@@ -28,12 +27,13 @@ class TurbobitNet(SimpleHoster):
                    ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
     URL_REPLACEMENTS = [(__pattern__ + ".*", "https://turbobit.net/\g<ID>.html")]
+    SIZE_REPLACEMENTS = [(r' ', "")]
 
     COOKIES = [("turbobit.net", "user_lang", "en")]
 
-    INFO_PATTERN = r'<title>\s*Download file (?P<N>.+?) \((?P<S>[\d.,]+) (?P<U>[\w^_]+)\)'
+    INFO_PATTERN = r'<title>\s*Download file (?P<N>.+?) \((?P<S>[\d., ]+) (?P<U>[\w^_]+)\)'
     OFFLINE_PATTERN = r'<h2>File Not Found</h2>|html\(\'File (?:was )?not found'
-    TEMP_OFFLINE_PATTERN = r''
+    TEMP_OFFLINE_PATTERN = r'^unmatchable$'
 
     LINK_FREE_PATTERN = r'(/download/redirect/[^"\']+)'
     LINK_PREMIUM_PATTERN = r'<a href=[\'"](.+?/download/redirect/[^"\']+)'
@@ -42,7 +42,7 @@ class TurbobitNet(SimpleHoster):
 
 
     def handle_free(self, pyfile):
-        self.free_url = "http://turbobit.net/download/free/%s" % self.info['pattern']['ID']
+        self.free_url = "https://turbobit.net/download/free/%s" % self.info['pattern']['ID']
         self.data = self.load(self.free_url)
 
         m = re.search(self.LIMIT_WAIT_PATTERN, self.data)
@@ -59,16 +59,16 @@ class TurbobitNet(SimpleHoster):
         self.wait(wait_time)
 
         self.req.http.c.setopt(pycurl.HTTPHEADER, ["X-Requested-With: XMLHttpRequest"])
-        self.data = self.load("http://turbobit.net/download/getLinkTimeout/%s" % self.info['pattern']['ID'],
+        self.data = self.load("https://turbobit.net/download/getLinkTimeout/%s" % self.info['pattern']['ID'],
                               ref=self.free_url)
         self.req.http.c.setopt(pycurl.HTTPHEADER, ["X-Requested-With:"])
 
         if "/download/started/" in self.data:
-            self.data = self.load("http://turbobit.net/download/started/%s" % self.info['pattern']['ID'])
+            self.data = self.load("https://turbobit.net/download/started/%s" % self.info['pattern']['ID'])
 
             m = re.search(self.LINK_FREE_PATTERN, self.data)
             if m is not None:
-                self.link = "http://turbobit.net%s" % m.group(1)
+                self.link = "https://turbobit.net%s" % m.group(1)
 
     def solve_captcha(self):
         action, inputs = self.parse_html_form("action='#'")
