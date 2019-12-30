@@ -16,7 +16,7 @@ from ..internal.SimpleCrypter import SimpleCrypter
 class CriptTo(SimpleCrypter):
     __name__ = "CriptTo"
     __type__ = "crypter"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?cript\.to/folder/(?P<ID>\w+)'
@@ -185,7 +185,7 @@ class CriptTo(SimpleCrypter):
         weblinks = re.findall(self.WEB_LINK_PATTERN, self.data)
         for weblink in weblinks:
             html = self.load(weblink)
-            link = self.last_header.get('location', "")
+            link = self.last_header['url']
             if link == "https://cript.to/bot":
                 for _i in range(3):
                     url, inputs = parse_html_form("/bot", html)
@@ -197,7 +197,7 @@ class CriptTo(SimpleCrypter):
                     inputs['button.x'] = captcha_code[0]
                     inputs['button.y'] = captcha_code[1]
                     html = self.load(url, post=inputs)
-                    link = self.last_header.get('location', "")
+                    link = self.last_header['url']
                     if not link.startswith("https://cript.to"):
                         self.captcha.correct()
                         break
