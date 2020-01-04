@@ -14,6 +14,7 @@
         <geometryUnmaximized></geometryUnmaximized>
         <geometryOther></geometryOther>
         <visibilitySpeedLimit></visibilitySpeedLimit>
+        <visibilityMaxParallelDownloads></visibilityMaxParallelDownloads>
         <stateQueue></stateQueue>
         <stateCollector></stateCollector>
         <stateAccounts></stateAccounts>

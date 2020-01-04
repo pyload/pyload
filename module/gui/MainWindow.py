@@ -194,11 +194,14 @@ class MainWindow(QMainWindow):
                          "showcaptcha": QAction(_("Show Captcha"), self.menus["view"]),
                          "showtoolbar": QAction(_("Show Toolbar"), self.menus["view"]),
                          "showspeedlimit": QAction(_("Show Speed Limit"), self.menus["view"]),
+                         "showmaxpadls": QAction(_("Show Max Parallel Downloads"), self.menus["view"]),
                          "whatsthismode": QAction("What's This?", self.menus["help"]),
                          "about": QAction(_("About pyLoad Client"), self.menus["help"])}
         self.mactions["showtoolbar"].setCheckable(True)
         self.mactions["showspeedlimit"].setCheckable(True)
         self.mactions["showspeedlimit"].setChecked(True)
+        self.mactions["showmaxpadls"].setCheckable(True)
+        self.mactions["showmaxpadls"].setChecked(True)
 
         #plugins menu actions
         self.pmactions = {}
@@ -229,6 +232,7 @@ class MainWindow(QMainWindow):
         self.menus["view"].addSeparator()
         self.menus["view"].addAction(self.mactions["showtoolbar"])
         self.menus["view"].addAction(self.mactions["showspeedlimit"])
+        self.menus["view"].addAction(self.mactions["showmaxpadls"])
         self.menus["help"].addAction(self.mactions["whatsthismode"])
         self.menus["help"].addSeparator()
         self.menus["help"].addAction(self.mactions["about"])
@@ -290,6 +294,7 @@ class MainWindow(QMainWindow):
         self.connect(self.mactions["showcaptcha"], SIGNAL("triggered()"), self.slotShowCaptcha)
         self.connect(self.mactions["showtoolbar"], SIGNAL("toggled(bool)"), self.slotToggleToolbar)
         self.connect(self.mactions["showspeedlimit"], SIGNAL("toggled(bool)"), self.slotToggleSpeedLimitVisibility)
+        self.connect(self.mactions["showmaxpadls"], SIGNAL("toggled(bool)"), self.slotToggleMaxPaDlsVisibility)
         self.connect(self.mactions["whatsthismode"], SIGNAL("triggered()"), QWhatsThis.enterWhatsThisMode)
         self.connect(self.mactions["about"], SIGNAL("triggered()"), self.slotShowAbout)
         
@@ -356,10 +361,12 @@ class MainWindow(QMainWindow):
             self.actions["status_stop"].setIcon(self.statusStopIconNoPause)
             self.actions["status_stop"].setToolTip(_("Cannot set server status to 'Paused'"))
         
-        # Speed Limit in toolbar
+        # Speed Limit and Max Files in toolbar
         if not corePermissions["SETTINGS"]:
             self.actions["speedlimit_enabled"].setEnabled(False)
             self.actions["speedlimit_rate"].setEnabled(False)
+            self.actions["maxparalleldownloads_label"].setEnabled(False)
+            self.actions["maxparalleldownloads_value"].setEnabled(False)
         
         # Server Settings
         self.tabs["settings"]["w"].setCorePermissions(corePermissions)
@@ -436,7 +443,7 @@ class MainWindow(QMainWindow):
         stretch1 = QWidget()
         stretch1.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.toolbar.addWidget(stretch1)
-        whatsThis = (_("Download Speed Limit in kb/s"), _("This is just a shortcut to:") + "<br>" + _("Server Settings") + " -> General -> Download")
+        whatsThis = (_("Limit Download Speed") + "<br>" + _("Max Download Speed in kb/s"), _("This is just a shortcut to:") + "<br>" + _("Server Settings") + " -> General -> Download")
         self.toolbar_speedLimit_enabled = QCheckBox(_("Speed"))
         self.toolbar_speedLimit_enabled.setWhatsThis(whatsThisFormat(*whatsThis))
         self.toolbar_speedLimit_rate = SpinBox()
@@ -447,6 +454,21 @@ class MainWindow(QMainWindow):
         self.actions["speedlimit_rate"] = self.toolbar.addWidget(self.toolbar_speedLimit_rate)
         self.actions["speedlimit_rate"].setEnabled(False)
         self.actions["speedlimit_enabled"].setEnabled(False)
+        stretch1b = QWidget()
+        stretch1b.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.toolbar.addWidget(stretch1b)
+        whatsThis = (_("Max Parallel Downloads"), _("This is just a shortcut to:") + "<br>" + _("Server Settings") + " -> General -> Download")
+        self.toolbar_maxParallelDownloads_label = QLabel(_("MaxPaDls"))
+        self.toolbar_maxParallelDownloads_label.setFocusPolicy(Qt.ClickFocus)
+        self.toolbar_maxParallelDownloads_label.setWhatsThis(whatsThisFormat(*whatsThis))
+        self.toolbar_maxParallelDownloads_value = SpinBox()
+        self.toolbar_maxParallelDownloads_value.setWhatsThis(whatsThisFormat(*whatsThis))
+        self.toolbar_maxParallelDownloads_value.setMinimum(0)
+        self.toolbar_maxParallelDownloads_value.setMaximum(999999)
+        self.actions["maxparalleldownloads_label"] = self.toolbar.addWidget(self.toolbar_maxParallelDownloads_label)
+        self.actions["maxparalleldownloads_value"] = self.toolbar.addWidget(self.toolbar_maxParallelDownloads_value)
+        self.actions["maxparalleldownloads_label"].setEnabled(False)
+        self.actions["maxparalleldownloads_value"].setEnabled(False)
         stretch2 = QWidget()
         stretch2.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.toolbar.addWidget(stretch2)
@@ -469,6 +491,7 @@ class MainWindow(QMainWindow):
         self.actions["remove_finished"].setWhatsThis(whatsThisFormat(_("Remove Finished"), _("Removes all finished downloads from the Queue and the Collector.")))
         self.connect(self.toolbar_speedLimit_enabled, SIGNAL("toggled(bool)"), self.slotSpeedLimitStatus)
         self.connect(self.toolbar_speedLimit_rate, SIGNAL("editingFinished()"), self.slotSpeedLimitRate)
+        self.connect(self.toolbar_maxParallelDownloads_value, SIGNAL("editingFinished()"), self.slotMaxParallelDownloadsValue)
         self.connect(self.toolbar_captcha, SIGNAL("clicked()"), self.slotCaptchaStatusButton)
         self.connect(self.actions["status_start"], SIGNAL("triggered(bool)"), self.slotStatusStart)
         self.connect(self.actions["status_stop"], SIGNAL("triggered()"), self.slotStatusStop)
@@ -932,6 +955,7 @@ class MainWindow(QMainWindow):
         """
         self.mactions["showtoolbar"].setChecked(visible)
         self.mactions["showspeedlimit"].setEnabled(visible) # disable/greyout menu entry
+        self.mactions["showmaxpadls"].setEnabled(visible)   # disable/greyout menu entry
     
     def slotToggleToolbar(self, checked):
         """
@@ -945,11 +969,22 @@ class MainWindow(QMainWindow):
             toggle from view-menu (mainmenu)
             show/hide download speed limit
         """
-        self.log.debug9("slotToggleSpeedLimitVisibility: toggled: %s" % str(checked))
+        self.log.debug8("slotToggleSpeedLimitVisibility: toggled: %s" % str(checked))
         self.actions["speedlimit_enabled"].setEnabled(False)
         self.actions["speedlimit_enabled"].setVisible(checked)
         self.actions["speedlimit_rate"].setEnabled(False)
         self.actions["speedlimit_rate"].setVisible(checked)
+    
+    def slotToggleMaxPaDlsVisibility(self, checked):
+        """
+            toggle from view-menu (mainmenu)
+            show/hide max parallel downloads
+        """
+        self.log.debug8("slotToggleMaxPaDlsVisibility: toggled: %s" % str(checked))
+        self.actions["maxparalleldownloads_label"].setEnabled(False)
+        self.actions["maxparalleldownloads_label"].setVisible(checked)
+        self.actions["maxparalleldownloads_value"].setEnabled(False)
+        self.actions["maxparalleldownloads_value"].setVisible(checked)
     
     def slotReload(self):
         """
@@ -1193,6 +1228,13 @@ class MainWindow(QMainWindow):
         """
         self.toolbar_speedLimit_rate.lineEdit().deselect() # deselect any selected text
         self.emit(SIGNAL("toolbarSpeedLimitEdited"))
+    
+    def slotMaxParallelDownloadsValue(self):
+        """
+            max parallel downloads spinbox (toolbar)
+        """
+        self.toolbar_maxParallelDownloads_value.lineEdit().deselect() # deselect any selected text
+        self.emit(SIGNAL("toolbarMaxParallelDownloadsEdited"))
     
     def slotCaptchaStatusButton(self):
         """

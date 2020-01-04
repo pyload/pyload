@@ -245,23 +245,44 @@ class SettingsWidget(QWidget):
                 if section.name == "download":
                     widget = self.sections[k]
                     for item in section.items:
-                            if item.name == "limit_speed":
-                                item.value = enab
-                                if item.name in widget.inputs:
-                                    err1 = False
-                                    i = widget.inputs[item.name]
-                                    if True if enab.lower() in ("1", "true", "on", "an", "yes") else False:
-                                        i.setCurrentIndex(0)
-                                    else:
-                                        i.setCurrentIndex(1)
-                            elif item.name == "max_speed":
-                                item.value = rate
-                                if item.name in widget.inputs:
-                                    err2 = False
-                                    i = widget.inputs[item.name]
-                                    i.setValue(int(rate))
+                        if item.name == "limit_speed":
+                            item.value = enab
+                            if item.name in widget.inputs:
+                                err1 = False
+                                i = widget.inputs[item.name]
+                                if True if enab.lower() in ("1", "true", "on", "an", "yes") else False:
+                                    i.setCurrentIndex(0)
+                                else:
+                                    i.setCurrentIndex(1)
+                        elif item.name == "max_speed":
+                            item.value = rate
+                            if item.name in widget.inputs:
+                                err2 = False
+                                i = widget.inputs[item.name]
+                                i.setValue(int(rate))
         if err1 or err2:
             self.log.error("SettingsWidget.setSpeedLimitFromToolbar: Failed to update Server Settings tab, err1:%s err2:%s" % (err1, err2))
+
+    def setMaxParallelDownloadsFromToolbar(self, value):
+        if not self.corePermissions["SETTINGS"]:
+            return
+        QMutexLocker(self.mutex)
+        if not (self.data and self.sections):
+            return
+        err = True
+        for k, section in self.data.iteritems():
+            if k in self.sections:
+                if section.name == "download":
+                    widget = self.sections[k]
+                    for item in section.items:
+                        if item.name == "max_downloads":
+                            item.value = value
+                            if item.name in widget.inputs:
+                                err = False
+                                i = widget.inputs[item.name]
+                                i.setValue(int(value))
+        if err:
+            self.log.error("SettingsWidget.setMaxParallelDownloadsFromToolbar: Failed to update Server Settings tab.")
 
     def slotPluginsSearchClear(self):
         self.pluginsSearchName = ""

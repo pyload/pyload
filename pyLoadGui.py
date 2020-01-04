@@ -308,6 +308,7 @@ class main(QObject):
         self.initCorePermissions()
         self.connector = Connector(first)
         self.inSlotToolbarSpeedLimitEdited = False
+        self.inSlotToolbarMaxParallelDownloadsEdited = False
         self.mainWindow = MainWindow(self.corePermissions, self.appIconSet, self.connector)
         self.notificationOptions = NotificationOptions(self.mainWindow)
         self.otherOptions = OtherOptions(self.mainWindow)
@@ -2113,6 +2114,7 @@ class main(QObject):
         statePackageDock = str(QByteArray(str(self.mainWindow.newPackDock.getSettings())).toBase64())
         stateLinkDock = str(QByteArray(str(self.mainWindow.newLinkDock.getSettings())).toBase64())
         visibilitySpeedLimit = str(QByteArray(str(self.mainWindow.actions["speedlimit_enabled"].isVisible())).toBase64())
+        visibilityMaxParallelDownloads = str(QByteArray(str(self.mainWindow.actions["maxparalleldownloads_label"].isVisible())).toBase64())
         language = str(self.lang)
         stateNode = mainWindowNode.toElement().elementsByTagName("state").item(0)
         geoNode = mainWindowNode.toElement().elementsByTagName("geometry").item(0)
@@ -2124,6 +2126,7 @@ class main(QObject):
         statePackageDockNode = mainWindowNode.toElement().elementsByTagName("statePackageDock").item(0)
         stateLinkDockNode = mainWindowNode.toElement().elementsByTagName("stateLinkDock").item(0)
         visibilitySpeedLimitNode = mainWindowNode.toElement().elementsByTagName("visibilitySpeedLimit").item(0)
+        visibilityMaxParallelDownloadsNode = mainWindowNode.toElement().elementsByTagName("visibilityMaxParallelDownloads").item(0)
         languageNode = self.parser.xml.elementsByTagName("language").item(0)
         newStateNode = self.parser.xml.createTextNode(state)
         newGeoNode = self.parser.xml.createTextNode(geo)
@@ -2135,6 +2138,7 @@ class main(QObject):
         newStatePackageDockNode = self.parser.xml.createTextNode(statePackageDock)
         newStateLinkDockNode = self.parser.xml.createTextNode(stateLinkDock)
         newVisibilitySpeedLimitNode = self.parser.xml.createTextNode(visibilitySpeedLimit)
+        newVisibilityMaxParallelDownloadsNode = self.parser.xml.createTextNode(visibilityMaxParallelDownloads)
         newLanguageNode = self.parser.xml.createTextNode(language)
         stateNode.removeChild(stateNode.firstChild())
         stateNode.appendChild(newStateNode)
@@ -2156,6 +2160,8 @@ class main(QObject):
         stateLinkDockNode.appendChild(newStateLinkDockNode)
         visibilitySpeedLimitNode.removeChild(visibilitySpeedLimitNode.firstChild())
         visibilitySpeedLimitNode.appendChild(newVisibilitySpeedLimitNode)
+        visibilityMaxParallelDownloadsNode.removeChild(visibilityMaxParallelDownloadsNode.firstChild())
+        visibilityMaxParallelDownloadsNode.appendChild(newVisibilityMaxParallelDownloadsNode)
         languageNode.removeChild(languageNode.firstChild())
         languageNode.appendChild(newLanguageNode)
         self.parser.saveData()
@@ -2379,6 +2385,8 @@ class main(QObject):
             mainWindowNode.appendChild(self.parser.xml.createElement("stateLinkDock"))
         if not nodes.get("visibilitySpeedLimit"):
             mainWindowNode.appendChild(self.parser.xml.createElement("visibilitySpeedLimit"))
+        if not nodes.get("visibilityMaxParallelDownloads"):
+            mainWindowNode.appendChild(self.parser.xml.createElement("visibilityMaxParallelDownloads"))
         if not nodes.get("geometryOther"):
             mainWindowNode.appendChild(self.parser.xml.createElement("geometryOther"))
         nodes = self.parser.parseNode(mainWindowNode, "dict")   # reparse with the new nodes (if any)
@@ -2393,6 +2401,7 @@ class main(QObject):
         statePackageDockBase64 = str(nodes["statePackageDock"].text())
         stateLinkDockBase64 = str(nodes["stateLinkDock"].text())
         visibilitySpeedLimit = str(nodes["visibilitySpeedLimit"].text())
+        visibilityMaxParallelDownloads = str(nodes["visibilityMaxParallelDownloads"].text())
 
         # mainWindow restoreState
         self.mainWindow.eD["pCount"] = 0
@@ -2509,6 +2518,12 @@ class main(QObject):
             visSpeed = True
         self.mainWindow.mactions["showspeedlimit"].setChecked(not visSpeed)
         self.mainWindow.mactions["showspeedlimit"].setChecked(visSpeed)
+        if visibilityMaxParallelDownloads:
+            visMaxPaDls = literal_eval(str(QByteArray.fromBase64(visibilityMaxParallelDownloads)))
+        else:
+            visMaxPaDls = True
+        self.mainWindow.mactions["showmaxpadls"].setChecked(not visMaxPaDls)
+        self.mainWindow.mactions["showmaxpadls"].setChecked(visMaxPaDls)
         self.mainWindow.captchaDialog.geo = self.geoOther["captchaDialog"]
         self.fixFirstShowFromTrayWhenLoadedMaximized = self.geoUnmaximized["maximized"]
 
@@ -3267,6 +3282,7 @@ class main(QObject):
             self.parent.checkPackageAdded()
             self.parent.checkCaptcha()
             self.parent.updateToolbarSpeedLimitFromCore(first)
+            self.parent.updateToolbarMaxParallelDownloadsFromCore(first)
 
         def stop(self):
             self.timer.stop()
@@ -3492,9 +3508,6 @@ class main(QObject):
         if self.inSlotToolbarSpeedLimitEdited:
             self.log.debug0("updateToolbarSpeedLimitFromCore: skipped - in function edited")
             return
-        if self.mainWindow.toolbar_speedLimit_enabled.hasFocus():
-            self.log.debug0("updateToolbarSpeedLimitFromCore: skipped - checkbox has focus")
-            return
         if self.mainWindow.toolbar_speedLimit_rate.hasFocus():
             self.log.debug0("updateToolbarSpeedLimitFromCore: skipped - spinbox has focus")
             return
@@ -3512,7 +3525,7 @@ class main(QObject):
             enab = enab_str.lower() in ("1", "true", "on", "an", "yes")
         if rate_str:
             rate = int(rate_str)
-        if enab != None and rate != None:
+        if enab is not None and rate is not None:
             if not first:
                 self.disconnect(self.mainWindow, SIGNAL("toolbarSpeedLimitEdited"), self.slotToolbarSpeedLimitEdited)
             self.mainWindow.toolbar_speedLimit_enabled.setChecked(enab)
@@ -3542,7 +3555,6 @@ class main(QObject):
             new_enab_str = str(self.mainWindow.toolbar_speedLimit_enabled.isChecked())
             new_rate_str = str(self.mainWindow.toolbar_speedLimit_rate.value())
             if enab_str != new_enab_str or rate_str != new_rate_str:
-                self.mainWindow.actions["speedlimit_enabled"].setEnabled(False)
                 self.mainWindow.actions["speedlimit_rate"].setEnabled(False)
                 self.log.debug1("slotToolbarSpeedLimitEdited: sending values to server")
                 try:
@@ -3558,6 +3570,73 @@ class main(QObject):
                 self.log.debug1("slotToolbarSpeedLimitEdited: setting the values in the server settings tab accordingly")
                 self.mainWindow.tabs["settings"]["w"].setSpeedLimitFromToolbar(new_enab_str, new_rate_str)
         self.inSlotToolbarSpeedLimitEdited = False
+
+    def updateToolbarMaxParallelDownloadsFromCore(self, first):
+        """
+            called from main loop
+        """
+        if not self.corePermissions["SETTINGS"]:
+            return
+        if not self.mainWindow.actions["maxparalleldownloads_label"].isVisible():
+            #self.log.debug0("updateToolbarMaxParallelDownloadsFromCore: skipped - hidden")
+            return
+        if self.inSlotToolbarMaxParallelDownloadsEdited:
+            self.log.debug0("updateToolbarMaxParallelDownloadsFromCore: skipped - in function edited")
+            return
+        if self.mainWindow.toolbar_maxParallelDownloads_value.hasFocus():
+            self.log.debug0("updateToolbarMaxParallelDownloadsFromCore: skipped - spinbox has focus")
+            return
+        #self.log.debug0("updateToolbarMaxParallelDownloadsFromCore: receiving values from server")
+        try:
+            value_str = self.connector.proxy.getConfigValue("download", "max_downloads", "core")
+        except Exception:
+            self.mainWindow.actions["maxparalleldownloads_label"].setEnabled(False)
+            self.mainWindow.actions["maxparalleldownloads_value"].setEnabled(False)
+            self.log.error("main.updateToolbarMaxParallelDownloadsFromCore: Failed to get the Max Parallel Downloads value from the server.")
+            return
+        value = None
+        if value_str:
+            value = int(value_str)
+        if value is not None:
+            if not first:
+                self.disconnect(self.mainWindow, SIGNAL("toolbarMaxParallelDownloadsEdited"), self.slotToolbarMaxParallelDownloadsEdited)
+            self.mainWindow.toolbar_maxParallelDownloads_value.setValue(value)
+            self.mainWindow.actions["maxparalleldownloads_label"].setEnabled(True)
+            self.mainWindow.actions["maxparalleldownloads_value"].setEnabled(True)
+            self.connect(self.mainWindow, SIGNAL("toolbarMaxParallelDownloadsEdited"), self.slotToolbarMaxParallelDownloadsEdited)
+
+    def slotToolbarMaxParallelDownloadsEdited(self):
+        """
+            max parallel downloads in the toolbar has been altered
+        """
+        if not self.corePermissions["SETTINGS"]:
+            return
+        if self.inSlotToolbarMaxParallelDownloadsEdited:
+            self.log.debug1("slotToolbarMaxParallelDownloadsEdited: ignored, already called")
+            return
+        self.inSlotToolbarMaxParallelDownloadsEdited = True
+        err = False
+        try:
+            value_str = self.connector.proxy.getConfigValue("download", "max_downloads", "core")
+        except Exception:
+            self.log.error("main.slotToolbarMaxParallelDownloadsEdited: Failed to get the Max Parallel Downloads value from the server.")
+            err = True
+        if not err:
+            new_value_str = str(self.mainWindow.toolbar_maxParallelDownloads_value.value())
+            if value_str != new_value_str:
+                self.mainWindow.actions["maxparalleldownloads_label"].setEnabled(False)
+                self.mainWindow.actions["maxparalleldownloads_value"].setEnabled(False)
+                self.log.debug1("slotToolbarMaxParallelDownloadsEdited: sending value to server")
+                try:
+                    self.connector.proxy.setConfigValue("download", "max_downloads", new_value_str, "core")
+                except Exception:
+                    self.log.error("main.slotToolbarMaxParallelDownloadsEdited: Failed to apply the Max Parallel Downloads value to the server.")
+                    err = True
+        if not err:
+            if value_str != new_value_str:
+                self.log.debug1("slotToolbarMaxParallelDownloadsEdited: setting the value in the server settings tab accordingly")
+                self.mainWindow.tabs["settings"]["w"].setMaxParallelDownloadsFromToolbar(new_value_str)
+        self.inSlotToolbarMaxParallelDownloadsEdited = False
 
     def slotCaptchaStatusButton(self):
         """
