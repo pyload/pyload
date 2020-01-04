@@ -1049,27 +1049,24 @@ class WhatsThisOptions(QDialog):
         self.choosenColors = None
 
         self.settings = {}
+        self.lastFont = None
 
         self.setAttribute(Qt.WA_DeleteOnClose, False)
         self.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
         self.setWindowTitle(_("Options"))
         self.setWindowIcon(QIcon(join(pypath, "icons", "logo.png")))
 
-        self.lblText = QLabel(_("Text color"))
-        self.btnText = QPushButton(_("Choose"))
-        self.lblBack = QLabel(_("Background color"))
-        self.btnBack = QPushButton(_("Choose"))
+        self.btnText = QPushButton(_("Text color"))
+        self.btnBack = QPushButton(_("Background color"))
         self.lvExample = LineView(_("What's This Preview"))
-
-        grid = QGridLayout()
-        grid.addWidget(self.lblText, 0, 0)
-        grid.addWidget(self.btnText, 0, 1)
-        grid.addWidget(self.lblBack, 1, 0)
-        grid.addWidget(self.btnBack, 1, 1)
+        self.lvExample.setAlignment(Qt.AlignCenter)
+        vbox = QVBoxLayout()
+        vbox.addWidget(self.btnText)
+        vbox.addWidget(self.btnBack)
 
         self.cbEnable = QGroupBox(_("Enable Custom Colors") + "     ")
         self.cbEnable.setCheckable(True)
-        self.cbEnable.setLayout(grid)
+        self.cbEnable.setLayout(vbox)
 
         self.buttons = WtDialogButtonBox(Qt.Horizontal, self)
         self.buttons.hideWhatsThisButton()
@@ -1083,11 +1080,11 @@ class WhatsThisOptions(QDialog):
         vbox = QVBoxLayout()
         vbox.addWidget(self.cbEnable)
         vbox.addWidget(self.lvExample)
+        vbox.addSpacing(10)
         vbox.addLayout(self.buttons.layout())
         self.setLayout(vbox)
 
         self.adjustSize()
-        self.setFixedSize(self.width() + 20, self.height())
 
         self.connect(self.okBtn,     SIGNAL("clicked()"), self.accept)
         self.connect(self.cancelBtn, SIGNAL("clicked()"), self.reject)
@@ -1111,9 +1108,8 @@ class WhatsThisOptions(QDialog):
     def chooseTextColor(self):
         initCol = QColor()
         initCol.setRgba(self.choosenColors[0])
-        col = QColorDialog.getColor(initCol, self, self.lblText.text(), QColorDialog.ShowAlphaChannel | QColorDialog.DontUseNativeDialog)
+        col = QColorDialog.getColor(initCol, self, self.btnText.text(), QColorDialog.ShowAlphaChannel | QColorDialog.DontUseNativeDialog)
         if not col.isValid():
-            self.log.error("WhatsThisOptions.chooseTextColor: Invalid color")
             return
         self.choosenColors = (int(col.rgba()), self.choosenColors[1])
         self.setExampleColors(int(col.rgba()), None)
@@ -1121,9 +1117,8 @@ class WhatsThisOptions(QDialog):
     def chooseBackgroundColor(self):
         initCol = QColor()
         initCol.setRgba(self.choosenColors[1])
-        col = QColorDialog.getColor(initCol, self, self.lblBack.text(), QColorDialog.ShowAlphaChannel | QColorDialog.DontUseNativeDialog)
+        col = QColorDialog.getColor(initCol, self, self.btnBack.text(), QColorDialog.ShowAlphaChannel | QColorDialog.DontUseNativeDialog)
         if not col.isValid():
-            self.log.error("WhatsThisOptions.chooseBackgroundColor: Invalid color")
             return
         self.choosenColors = (self.choosenColors[0], int(col.rgba()))
         self.setExampleColors(None, int(col.rgba()))
@@ -1141,6 +1136,13 @@ class WhatsThisOptions(QDialog):
             p.setColor(QPalette.Active,   self.lvExample.backgroundRole(), qCol)
             p.setColor(QPalette.Inactive, self.lvExample.backgroundRole(), qCol)
         self.lvExample.setPalette(p)
+
+    def exec_(self):
+        # It does not resize very well when the font size has changed
+        if self.font() != self.lastFont:
+            self.lastFont = self.font()
+            self.adjustSize()
+        return QDialog.exec_(self)
 
     def defaultSettings(self):
         self.settings.clear()
