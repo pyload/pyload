@@ -267,6 +267,7 @@ class main(QObject):
         self.mainWindowMaximizedSize = None
         self.geoOther = { "packDock": None, "linkDock": None, "packDockTray": None, "linkDockTray": None, "packDockIsFloating": None, "linkDockIsFloating": None, "captchaDialog": None }
         self.guiLogMutex = QMutex()
+        self.lastPackageId = None
         self.lastCaptchaId = None
 
         if not first:
@@ -1332,13 +1333,42 @@ class main(QObject):
         self.log.debug9("main.debugKill: terminate process")
         self.quitConnTimeout()
 
+    def checkPackageAdded(self):
+        """
+            send a notification when a package was added to collector or queue
+        """
+        q = self.queue.getLastAddedPackage()            # (id, name)
+        c = self.collector.getLastAddedPackage()        # (id, name)
+        if q is None or c is None:
+            return
+        
+        if q[0] == 0 and c[0] == 0:
+            # no packages, queue and collector are empty
+            if self.lastPackageId is None:  # initial poll
+                self.lastPackageId = 0      # valid package ids are > 0
+            return
+        
+        if q[0] > c[0]:
+            (id, name) = (q[0], q[1])
+        else:
+            (id, name) = (c[0], c[1])
+        if self.lastPackageId is None:  # initial poll
+            self.lastPackageId = id
+        else:
+            if id > self.lastPackageId:
+                self.lastPackageId = id
+                QTimer.singleShot(0, lambda: self.slotNotificationMessage(103, name))
+
     def slotNotificationMessage(self, status, name):
         """
             notifications
         """
         s = self.notificationOptions.settings
         if s["EnableNotify"]:
-            if status == 100:
+            if status == 103:
+                if s["PackageAdded"]:
+                    self.emit(SIGNAL("showMessage"), _("Package Added") + ": %s" % name)
+            elif status == 100:
                 if s["PackageFinished"]:
                     self.emit(SIGNAL("showMessage"), _("Package download finished") + ": %s" % name)
             elif status == DownloadStatus.Finished:
@@ -3234,6 +3264,7 @@ class main(QObject):
                     self.parent.serverStatus["freespace"] = self.parent.connector.proxy.freeSpace()
             self.parent.refreshGuiLog()
             self.parent.refreshCoreLog(first)
+            self.parent.checkPackageAdded()
             self.parent.checkCaptcha()
             self.parent.updateToolbarSpeedLimitFromCore(first)
 

@@ -24,6 +24,7 @@ class NotificationOptions(QDialog):
         self.setWindowTitle(_("Options"))
         self.setWindowIcon(QIcon(join(pypath, "icons", "logo.png")))
 
+        self.cbPackageAdded       = QCheckBox(_("Package Added"))
         self.cbPackageFinished    = QCheckBox(_("Package Download Finished"))
         self.cbFinished           = QCheckBox(_("Download Finished"))
         self.cbOffline            = QCheckBox(_("Download Offline"))
@@ -35,6 +36,7 @@ class NotificationOptions(QDialog):
         self.cbCaptchaInteractive = QCheckBox(_("New Interactive Captcha Request"))
 
         vboxCb = QVBoxLayout()
+        vboxCb.addWidget(self.cbPackageAdded)
         vboxCb.addWidget(self.cbPackageFinished)
         vboxCb.addWidget(self.cbFinished)
         vboxCb.addWidget(self.cbOffline)
@@ -71,6 +73,7 @@ class NotificationOptions(QDialog):
     def defaultSettings(self):
         self.settings.clear()
         self.cbEnableNotify.setChecked(False)
+        self.cbPackageAdded.setChecked(False)
         self.cbPackageFinished.setChecked(False)
         self.cbFinished.setChecked(False)
         self.cbOffline.setChecked(True)
@@ -84,6 +87,7 @@ class NotificationOptions(QDialog):
 
     def checkBoxStates2dict(self):
         self.settings["EnableNotify"]       = self.cbEnableNotify.isChecked()
+        self.settings["PackageAdded"]       = self.cbPackageAdded.isChecked()
         self.settings["PackageFinished"]    = self.cbPackageFinished.isChecked()
         self.settings["Finished"]           = self.cbFinished.isChecked()
         self.settings["Offline"]            = self.cbOffline.isChecked()
@@ -96,6 +100,7 @@ class NotificationOptions(QDialog):
 
     def dict2checkBoxStates(self):
         self.cbEnableNotify.setChecked       (self.settings["EnableNotify"])
+        self.cbPackageAdded.setChecked       (self.settings["PackageAdded"])
         self.cbPackageFinished.setChecked    (self.settings["PackageFinished"])
         self.cbFinished.setChecked           (self.settings["Finished"])
         self.cbOffline.setChecked            (self.settings["Offline"])

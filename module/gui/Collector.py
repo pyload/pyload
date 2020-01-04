@@ -154,6 +154,27 @@ class CollectorModel(QAbstractItemModel):
         self.log.debug8("%s.getSelection took %dms" % (self.cname, self.time_msec() - func_start_time))
         return selection
     
+    def getLastAddedPackage(self):
+        """
+            called from main
+            used for package added desktop notification
+            returns info about the package with the highest id
+        """
+        func_start_time = self.time_msec()
+        QMutexLocker(self.mutex)
+        if self.lastFullReload == 0:
+            return None
+        if self.dirty:
+            return None
+        lpa = (0, "")   # valid package ids are > 0
+        for package in self._data:
+            if package.id > lpa[0]:
+                lpa = (package.id, package.data["name"])
+        t = self.time_msec() - func_start_time
+        if t > 10:
+            self.log.info("%s.getLastAddedPackage took %dms" % (self.cname, t))
+        return lpa
+    
     def getSelectedPackagesForEdit(self):
         """
             called from main
