@@ -405,23 +405,24 @@ class IconThemes(QObject):
         iconImg = Image.new("RGBA", (size, size), (0,0,0,0))
         iconImg.paste(img, (borderWidth, borderHeight))
         pix = QPixmap.fromImage(ImageQt.ImageQt(iconImg))
-        return QIcon(IconEngine(pix))
+#       return QIcon(IconEngine(pix))
+        return QIcon(pix)
 
-class IconEngine(QIconEngine):
-    def __init__(self, pix):
-        QIconEngine.__init__(self)
-        self.pix = pix
-
-    def paint(self, painter, rect, mode, state):
-        self.pix = self.pix.scaled(rect.size(), Qt.IgnoreAspectRatio, Qt.SmoothTransformation)
-        painter.drawPixmap(rect, self.pix)
-
-    def pixmap(self, size, mode, state):
-        pixmap = QPixmap(size)
-        pixmap.fill(Qt.transparent)
-        p = QPainter(pixmap)
-        self.paint(p, pixmap.rect(), mode, state)
-        return pixmap
+#class IconEngine(QIconEngine):
+#    def __init__(self, pix):
+#        QIconEngine.__init__(self)
+#        self.pix = pix
+#
+#    def paint(self, painter, rect, mode, state):
+#        self.pix = self.pix.scaled(rect.size(), Qt.IgnoreAspectRatio, Qt.SmoothTransformation)
+#        painter.drawPixmap(rect, self.pix)
+#
+#    def pixmap(self, size, mode, state):
+#        pixmap = QPixmap(size)
+#        pixmap.fill(Qt.transparent)
+#        p = QPainter(pixmap)
+#        self.paint(p, pixmap.rect(), mode, state)
+#        return pixmap
 
 def longestSubsequence(seq, mode='strictly', order='increasing', key=None, index=False):
     """
