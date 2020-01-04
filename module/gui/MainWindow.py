@@ -190,7 +190,7 @@ class MainWindow(QMainWindow):
                          "whatsthis": QAction(_("What's This"), self.menus["options"]),
                          "other": QAction(_("Other"), self.menus["options"]),
                          "language": QAction(_("Language"), self.menus["options"]),
-                         "reload": QAction(_("Reload"), self.menus["view"]),
+                         "reload": QAction(_("Reload Queue And Collector Data From Server"), self.menus["view"]),
                          "showcaptcha": QAction(_("Show Captcha"), self.menus["view"]),
                          "showtoolbar": QAction(_("Show Toolbar"), self.menus["view"]),
                          "showspeedlimit": QAction(_("Show Speed Limit"), self.menus["view"]),

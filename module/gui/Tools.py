@@ -5,6 +5,7 @@ from PyQt4.QtGui import *
 from os.path import join
 from bisect import bisect_left, bisect_right
 from functools import cmp_to_key
+from datetime import datetime
 import logging
 
 def whatsThisFormat(title, text):
@@ -423,6 +424,29 @@ class IconThemes(QObject):
 #        p = QPainter(pixmap)
 #        self.paint(p, pixmap.rect(), mode, state)
 #        return pixmap
+
+class WidgetDisable(QObject):
+    def __init__(self, widget, msec=300):
+        QObject.__init__(self, None)
+        self.cname = self.__class__.__name__
+        self.log = logging.getLogger("guilog")
+        self.widget = widget
+        self.widget.setEnabled(False)
+        self.enableTime = self.time_msec() + msec
+
+    @classmethod
+    def time_msec(self):
+        return int((datetime.utcnow() - datetime(1970, 1, 1)).total_seconds() * 1000)
+
+    def Enable(self):
+        t = self.time_msec()
+        if t > self.enableTime:
+            delay = 0
+        else:
+            delay = self.enableTime - t
+        self.log.debug8("%s.Enable:   enableTime:%d   time:%d   delay:%d" % (self.cname, self.enableTime, t, delay))
+        QTimer.singleShot(delay, lambda: self.widget.setEnabled(True))
+        self.deleteLater()
 
 def longestSubsequence(seq, mode='strictly', order='increasing', key=None, index=False):
     """

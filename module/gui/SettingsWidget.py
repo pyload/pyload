@@ -22,6 +22,7 @@ from PyQt4.QtGui import *
 import logging
 from sip import delete
 from collections import OrderedDict
+from module.gui.Tools import WidgetDisable
 
 
 class SettingsWidget(QWidget):
@@ -50,16 +51,14 @@ class SettingsWidget(QWidget):
         if not self.corePermissions["SETTINGS"]:
             return
         QMutexLocker(self.mutex)
-        self.setEnabled(False)
+        wdgd = WidgetDisable(self)
 
         if self.sections and self.psections:
             self.data = self.connector.proxy.getConfig()
             self.pdata = self.connector.proxy.getPluginConfig()
-
             self.reloadSection(self.sections, self.data)
             self.reloadSection(self.psections, self.pdata)
-
-            self.setEnabled(True)
+            wdgd.Enable()
             return
 
         if self.layout():
@@ -170,7 +169,7 @@ class SettingsWidget(QWidget):
         self.connect(self.pluginsComboBox, SIGNAL("activated(int)"), self.slotPluginsComboBoxActivated)
         self.connect(self.pluginsMenuCheckBox, SIGNAL("clicked(bool)"), self.slotPluginsMenuCheckBoxClicked)
 
-        self.setEnabled(True)
+        wdgd.Enable()
 
     def clearConfig(self):
         self.sections = {}
@@ -197,7 +196,7 @@ class SettingsWidget(QWidget):
     def saveConfig(self):
         if not self.corePermissions["SETTINGS"]:
             return
-        self.setEnabled(False)
+        wdgd = WidgetDisable(self)
         self.data = self.connector.proxy.getConfig()
         self.pdata = self.connector.proxy.getPluginConfig()
         self.saveSection(self.sections, self.data)
@@ -206,7 +205,7 @@ class SettingsWidget(QWidget):
         self.pdata = self.connector.proxy.getPluginConfig()
         self.reloadSection(self.sections, self.data)
         self.reloadSection(self.psections, self.pdata)
-        self.setEnabled(True)
+        wdgd.Enable()
 
     def saveSection(self, sections, pdata, sec="core"):
         if not self.corePermissions["SETTINGS"]:

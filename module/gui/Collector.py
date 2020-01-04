@@ -26,7 +26,7 @@ from datetime import datetime
 from module.remote.thriftbackend.ThriftClient import Destination, FileDoesNotExists, PackageDoesNotExists, ElementType, DownloadStatus
 from module.PyFile import statusMap
 from module.utils import formatSize, formatSpeed
-from module.gui.Tools import whatsThisFormat, longestSubsequence
+from module.gui.Tools import whatsThisFormat, longestSubsequence, WidgetDisable
 
 statusMapReverse = dict((v,k) for k, v in statusMap.iteritems())
 
@@ -344,7 +344,9 @@ class CollectorModel(QAbstractItemModel):
             return
         self.log.debug9("%s.fullReloadFromMenu: function entered" % self.cname)
         QMutexLocker(self.mutex)
-        self.fullReload()
+        wdgd = WidgetDisable(self.view)
+        self.fullReload(False)
+        wdgd.Enable()
     
     def fullReloadFromPullEvents(self):
         self.log.debug9("%s.fullReloadFromPullEvents: function entered" % self.cname)
@@ -406,7 +408,7 @@ class CollectorModel(QAbstractItemModel):
 #       self.applyViewItemStates()
         self.fullReloadOnDirty(False)
     
-    def fullReload(self):
+    def fullReload(self, enableView=True):
         """
             reload whole model, used at startup to load initial data
         """
@@ -435,7 +437,8 @@ class CollectorModel(QAbstractItemModel):
         self.emit(SIGNAL("layoutChanged()"))
         self.dirty = False
         self.fullReloadCheck()
-        self.view.setEnabled(self.view.corePermissions["LIST"])
+        if enableView:
+            self.view.setEnabled(self.view.corePermissions["LIST"])
         self.applyViewItemStates()
         self.log.debug8("%s.fullReload took %dms" % (self.cname, self.time_msec() - func_start_time))
     
