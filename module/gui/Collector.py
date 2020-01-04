@@ -946,6 +946,7 @@ class CollectorModel(QAbstractItemModel):
         QMutexLocker(self.mutex)
         smodel = self.view.selectionModel()
         rx = QRegExp(pattern, cs, syntax)
+        numOfmatches = 0
         
         # select links
         if selectLinks:
@@ -965,6 +966,7 @@ class CollectorModel(QAbstractItemModel):
                                 self.view.expand(pindex)
                             else:
                                 if smodel.isSelected(index): smodel.select(index, QItemSelectionModel.Deselect | QItemSelectionModel.Rows)
+                            numOfmatches += 1
                             self.log.debug9("%s.advancedSelect:selectedLink:   deselect:%s   name:'%s'   pid:%d   fid:%d" % (self.cname, deselect, name, package.id, link.id))
                     noPackagesSelected = False
                 elif not isinstance(package, Link):
@@ -987,6 +989,7 @@ class CollectorModel(QAbstractItemModel):
                                 self.view.expand(pindex)
                             else:
                                 if smodel.isSelected(index): smodel.select(index, QItemSelectionModel.Deselect | QItemSelectionModel.Rows)
+                            numOfmatches += 1
                             self.log.debug9("%s.advancedSelect:selectedLink:   deselect:%s   name:'%s'   pid:%d   fid:%d" % (self.cname, deselect, name, package.id, link.id))
         
         # select packages
@@ -1002,9 +1005,23 @@ class CollectorModel(QAbstractItemModel):
                         if not smodel.isSelected(index): smodel.select(index, QItemSelectionModel.Select | QItemSelectionModel.Rows)
                     else:
                         if smodel.isSelected(index): smodel.select(index, QItemSelectionModel.Deselect | QItemSelectionModel.Rows)
+                    numOfmatches += 1
                     self.log.debug9("%s.advancedSelect:selectedPackage:   deselect:%s   name:'%s'   pid:%d" % (self.cname, deselect,name, package.id))
         
-        self.view.buttonMsgShow(_("Done"), False)
+        # info text
+        if selectLinks:
+            if numOfmatches == 0:
+                txt = _("No link matches found")
+            elif not noPackagesSelected:
+                txt = _("Done (%d link matches found in selected packages)") % numOfmatches
+            else:
+                txt = _("Done (%d link matches found in all packages)") % numOfmatches
+        else:
+            if numOfmatches == 0:
+                txt = _("No package matches found")
+            else:
+                txt = _("Done (%d package matches found)") % numOfmatches
+        self.view.buttonMsgShow(txt, False)
         self.view.buttonMsgHide(2000)
         self.log.debug8("%s.advancedSelect took %dms" % (self.cname, self.time_msec() - func_start_time))
     
