@@ -153,8 +153,8 @@ class SettingsWidget(QWidget):
 
         self.pluginsSearchCompleter.setStringList(sl)
 
-        self.reload = QPushButton(_("Reload"))
-        self.save = QPushButton(_("Save"))
+        self.reload = QPushButton(_("Reload All 'Server Settings' Forms"))
+        self.save = QPushButton(_("Apply All 'Server Settings' Forms"))
 
         cont = QHBoxLayout()
         cont.addWidget(self.reload)

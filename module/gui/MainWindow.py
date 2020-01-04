@@ -556,7 +556,7 @@ class MainWindow(QMainWindow):
         self.tabs["overview"]["l"].addWidget(self.tabs["overview"]["view"])
         
         #collector
-        self.tabs["collector"]["b"] = QPushButton(_("Push Selected Packages to Queue"))
+        self.tabs["collector"]["b"] = QPushButton(_("Push Selected Packages To Queue"))
         self.tabs["collector"]["b"].setIcon(self.appIconSet["push_small"])
         self.tabs["collector"]["m"] = QLabel()
         self.tabs["collector"]["m_defaultStyleSheet"] = self.tabs["collector"]["m"].styleSheet()
@@ -680,7 +680,7 @@ class MainWindow(QMainWindow):
         self.collectorContext = QMenu()
         self.collectorContext.buttons = {}
         self.collectorContext.item = (None, None)
-        self.collectorContext.buttons["push"] = QAction(self.appIconSet["push_small"], _("Push to Queue"), self.collectorContext)
+        self.collectorContext.buttons["push"] = QAction(self.appIconSet["push_small"], _("Push To Queue"), self.collectorContext)
         self.collectorContext.buttons["edit"] = QAction(self.appIconSet["edit_small"], _("Edit Packages"), self.collectorContext)
         self.collectorContext.buttons["abort"] = QAction(self.appIconSet["abort_small"], _("Abort"), self.collectorContext)
         self.collectorContext.buttons["restart"] = QAction(self.appIconSet["restart_small"], _("Restart"), self.collectorContext)

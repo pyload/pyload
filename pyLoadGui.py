@@ -3876,7 +3876,7 @@ class InfoCorePermissions(QDialog):
                 wt1  = _("Modify some attributes of downloads")
                 wt2  = _("Needed for:<br>"
                          "- Toolbar: Abort All and Restart Failed<br>"
-                         "- Queue and Collector: Push to Queue, Pull Out, Restart, Edit and Abort<br>"
+                         "- Queue and Collector: Push To Queue, Pull Out, Restart, Edit and Abort<br>"
                          "- Add Package: Password<br>"
                          "- Sorting packages and sorting links within packages")
             elif k == "SETTINGS":
