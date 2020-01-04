@@ -629,6 +629,7 @@ class main(QObject):
         self.connect(self.mainWindow,          SIGNAL("selectAllPackages"), self.slotSelectAllPackages)
         self.connect(self.mainWindow,          SIGNAL("deselectAllPackages"), self.slotDeselectAllPackages)
         self.connect(self.mainWindow,          SIGNAL("advancedSelect"), self.slotAdvancedSelect)
+        self.connect(self.mainWindow,          SIGNAL("removePackageDupes"), self.slotRemovePackageDupes)
         self.connect(self.mainWindow,          SIGNAL("removeLinkDupes"), self.slotRemoveLinkDupes)
         self.connect(self.mainWindow,          SIGNAL("sortPackages"), self.slotSortPackages)
         self.connect(self.mainWindow,          SIGNAL("sortLinks"), self.slotSortLinks)
@@ -2757,6 +2758,16 @@ class main(QObject):
             else:
                 QTimer.singleShot(0, lambda: self.collector.advancedSelect(pattern, syntax, cs, deselect, selectLinks))
             QTimer.singleShot(300, lambda: self.mainWindow.advselect.setEnabled(True))
+
+    def slotRemovePackageDupes(self):
+        """
+            emitted from main window
+            remove duplicate packages
+        """
+        if self.mainWindow.tabw.currentIndex() == 1:
+            self.queue.removePackageDupes()
+        else:
+            self.collector.removePackageDupes()
 
     def slotRemoveLinkDupes(self):
         """

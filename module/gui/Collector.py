@@ -118,8 +118,9 @@ class CollectorModel(QAbstractItemModel):
                         downloading = True
             else:
                 raise TypeError("Unknown item instance")
-        self.log.debug8("%s.getSelectionInfo took %dms, packsCnt:%d linksCnt:%d downloading:%s" % (self.cname, self.time_msec() - func_start_time, packsCnt, linksCnt, downloading))
-        return (packsCnt, linksCnt, downloading)
+        allPacksCnt = len(self._data)
+        self.log.debug8("%s.getSelectionInfo took %dms, packsCnt:%d linksCnt:%d downloading:%s allPacksCnt:%d" % (self.cname, self.time_msec() - func_start_time, packsCnt, linksCnt, downloading, allPacksCnt))
+        return (packsCnt, linksCnt, downloading, allPacksCnt)
     
     def getSelection(self, deselect, linksOfPacks):
         """
@@ -1024,6 +1025,39 @@ class CollectorModel(QAbstractItemModel):
         self.view.buttonMsgShow(txt, False)
         self.view.buttonMsgHide(2000)
         self.log.debug8("%s.advancedSelect took %dms" % (self.cname, self.time_msec() - func_start_time))
+    
+    def removePackageDupes(self):
+        """
+            called from main
+        """
+        func_start_time = self.time_msec()
+        QMutexLocker(self.mutex)
+        dupeIds = []
+        if len(self._data) > 1:
+            for idx, package in enumerate(self._data):
+                if package.id in dupeIds:
+                    continue
+                for package2 in self._data[(idx + 1):]:
+                    if package2.data["name"] == package.data["name"]:
+                        dupeIds.append(package2.id)
+            if len(dupeIds) == 0:
+                self.view.buttonMsgShow(_("No duplicate packages found"), False)
+            else:
+                self.view.buttonMsgShow(_("Removing duplicate packages ..."), False)
+                self.view.setEnabled(False)
+                self.view.update()
+                QApplication.processEvents()
+                self.connector.proxy.deletePackages(dupeIds)
+                self.view.buttonMsgShow(_("Duplicate packages removed"), False)
+        elif len(self._data) == 1:
+            self.view.buttonMsgShow(_("Nothing to do, there is only one package"), True)
+        else:
+            self.view.buttonMsgShow(_("No packages"), True)
+        if len(dupeIds) > 0:
+            self.view.clearSelection()
+            self.view.setCurrentIndex(QModelIndex())
+        self.view.buttonMsgHide(3000)
+        self.log.debug8("%s.removePackageDupes took %dms" % (self.cname, self.time_msec() - func_start_time))
     
     def removeLinkDupes(self):
         """

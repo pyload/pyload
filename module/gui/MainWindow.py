@@ -600,6 +600,7 @@ class MainWindow(QMainWindow):
         self.queueContext.buttons["remove"] = QAction(self.appIconSet["remove_small"], _("Remove"), self.queueContext)
         self.queueContext.buttons["selectall"] = QAction(_("Select All"), self.queueContext)
         self.queueContext.buttons["deselectall"] = QAction(_("Deselect All"), self.queueContext)
+        self.queueContext.buttons["removepackagedupes"] = QAction(self.appIconSet["remove_small"], _("Remove Duplicate Packages"), self.queueContext)
         self.queueContext.buttons["removelinkdupes"] = QAction(self.appIconSet["remove_small"], _("Remove Duplicate Links"), self.queueContext)
         self.queueContext.buttons["expand"] = QAction(self.style().standardIcon(QStyle.SP_ToolBarHorizontalExtensionButton), _("Expand All"), self.queueContext)
         self.queueContext.buttons["collapse"] = QAction(self.style().standardIcon(QStyle.SP_ToolBarVerticalExtensionButton), _("Collapse All"), self.queueContext)
@@ -623,6 +624,7 @@ class MainWindow(QMainWindow):
         self.queueContext.buttons["selectallpacks"] = self.queueContext.buttons["select"].addAction(_("Select All Packages"))
         self.queueContext.buttons["deselectallpacks"] = self.queueContext.buttons["select"].addAction(_("Deselect All Packages"))
         self.queueContext.addSeparator()
+        self.queueContext.addAction(self.queueContext.buttons["removepackagedupes"])
         self.queueContext.addAction(self.queueContext.buttons["removelinkdupes"])
         self.queueContext.addSeparator()
         self.queueContext.buttons["sort"] = self.queueContext.addMenu(QIcon(), _("Sort"))
@@ -644,6 +646,7 @@ class MainWindow(QMainWindow):
         self.connect(self.queueContext.buttons["selectallpacks"], SIGNAL("triggered()"), self.slotSelectAllPackages)
         self.connect(self.queueContext.buttons["deselectallpacks"], SIGNAL("triggered()"), self.slotDeselectAllPackages)
         self.connect(self.queueContext.buttons["advancedselect"], SIGNAL("triggered()"), self.slotAdvSelectShow)
+        self.connect(self.queueContext.buttons["removepackagedupes"], SIGNAL("triggered()"), self.slotRemovePackageDupes)
         self.connect(self.queueContext.buttons["removelinkdupes"], SIGNAL("triggered()"), self.slotRemoveLinkDupes)
         self.connect(self.queueContext.buttons["sort_packages"], SIGNAL("triggered()"), self.slotSortPackages)
         self.connect(self.queueContext.buttons["sort_links"], SIGNAL("triggered()"), self.slotSortLinks)
@@ -661,6 +664,7 @@ class MainWindow(QMainWindow):
         self.collectorContext.buttons["remove"] = QAction(self.appIconSet["remove_small"], _("Remove"), self.collectorContext)
         self.collectorContext.buttons["selectall"] = QAction(_("Select All"), self.collectorContext)
         self.collectorContext.buttons["deselectall"] = QAction(_("Deselect All"), self.collectorContext)
+        self.collectorContext.buttons["removepackagedupes"] = QAction(self.appIconSet["remove_small"], _("Remove Duplicate Packages"), self.collectorContext)
         self.collectorContext.buttons["removelinkdupes"] = QAction(self.appIconSet["remove_small"], _("Remove Duplicate Links"), self.collectorContext)
         self.collectorContext.buttons["expand"] = QAction(self.style().standardIcon(QStyle.SP_ToolBarHorizontalExtensionButton), _("Expand All"), self.collectorContext)
         self.collectorContext.buttons["collapse"] = QAction(self.style().standardIcon(QStyle.SP_ToolBarVerticalExtensionButton), _("Collapse All"), self.collectorContext)
@@ -683,6 +687,7 @@ class MainWindow(QMainWindow):
         self.collectorContext.buttons["selectallpacks"] = self.collectorContext.buttons["select"].addAction(_("Select All Packages"))
         self.collectorContext.buttons["deselectallpacks"] = self.collectorContext.buttons["select"].addAction(_("Deselect All Packages"))
         self.collectorContext.addSeparator()
+        self.collectorContext.addAction(self.collectorContext.buttons["removepackagedupes"])
         self.collectorContext.addAction(self.collectorContext.buttons["removelinkdupes"])
         self.collectorContext.addSeparator()
         self.collectorContext.buttons["sort"] = self.collectorContext.addMenu(QIcon(), _("Sort"))
@@ -703,6 +708,7 @@ class MainWindow(QMainWindow):
         self.connect(self.collectorContext.buttons["selectall"], SIGNAL("triggered()"), self.slotSelectAll)
         self.connect(self.collectorContext.buttons["deselectall"], SIGNAL("triggered()"), self.slotDeselectAll)
         self.connect(self.collectorContext.buttons["advancedselect"], SIGNAL("triggered()"), self.slotAdvSelectShow)
+        self.connect(self.collectorContext.buttons["removepackagedupes"], SIGNAL("triggered()"), self.slotRemovePackageDupes)
         self.connect(self.collectorContext.buttons["removelinkdupes"], SIGNAL("triggered()"), self.slotRemoveLinkDupes)
         self.connect(self.collectorContext.buttons["sort_packages"], SIGNAL("triggered()"), self.slotSortPackages)
         self.connect(self.collectorContext.buttons["sort_links"], SIGNAL("triggered()"), self.slotSortLinks)
@@ -905,6 +911,13 @@ class MainWindow(QMainWindow):
         """
         queue = True if self.tabw.currentIndex() == 1 else False
         self.emit(SIGNAL("advancedSelect"), queue, True)
+    
+    def slotRemovePackageDupes(self):
+        """
+            remove duplicate packages
+            let main to the stuff
+        """
+        self.emit(SIGNAL("removePackageDupes"))
     
     def slotRemoveLinkDupes(self):
         """
@@ -1120,17 +1133,18 @@ class MainWindow(QMainWindow):
         """
         menuPos = QCursor.pos()
         menuPos.setX(menuPos.x() + 2)
-        (packsCnt, linksCnt, downloading) = self.tabs["queue"]["view"].model.getSelectionInfo()
-        self.queueContext.buttons["pull"]           .setEnabled(self.corePermissions["MODIFY"] and packsCnt > 0                    )
-        self.queueContext.buttons["add_links"]      .setEnabled(self.corePermissions["ADD"   ] and packsCnt == 1                   )
-        self.queueContext.buttons["edit"]           .setEnabled(self.corePermissions["MODIFY"] and packsCnt > 0                    )
-        self.queueContext.buttons["abort"]          .setEnabled(self.corePermissions["MODIFY"] and downloading                     )
-        self.queueContext.buttons["restart"]        .setEnabled(self.corePermissions["MODIFY"] and (packsCnt > 0 or linksCnt > 0)  )
-        self.queueContext.buttons["remove"]         .setEnabled(self.corePermissions["DELETE"] and (packsCnt > 0 or linksCnt > 0)  )
-        self.queueContext.buttons["removelinkdupes"].setEnabled(self.corePermissions["DELETE"] and packsCnt == 1                   )
-        self.queueContext.buttons["sort"]           .setEnabled(self.corePermissions["MODIFY"]                                     )
-        self.queueContext.buttons["sort_packages"]  .setEnabled(self.corePermissions["MODIFY"]                                     )
-        self.queueContext.buttons["sort_links"]     .setEnabled(self.corePermissions["MODIFY"] and packsCnt == 1                   )
+        (packsCnt, linksCnt, downloading, allPacksCnt) = self.tabs["queue"]["view"].model.getSelectionInfo()
+        self.queueContext.buttons["pull"]              .setEnabled(self.corePermissions["MODIFY"] and packsCnt > 0                    )
+        self.queueContext.buttons["add_links"]         .setEnabled(self.corePermissions["ADD"   ] and packsCnt == 1                   )
+        self.queueContext.buttons["edit"]              .setEnabled(self.corePermissions["MODIFY"] and packsCnt > 0                    )
+        self.queueContext.buttons["abort"]             .setEnabled(self.corePermissions["MODIFY"] and downloading                     )
+        self.queueContext.buttons["restart"]           .setEnabled(self.corePermissions["MODIFY"] and (packsCnt > 0 or linksCnt > 0)  )
+        self.queueContext.buttons["remove"]            .setEnabled(self.corePermissions["DELETE"] and (packsCnt > 0 or linksCnt > 0)  )
+        self.queueContext.buttons["removepackagedupes"].setEnabled(self.corePermissions["DELETE"] and allPacksCnt > 1                 )
+        self.queueContext.buttons["removelinkdupes"]   .setEnabled(self.corePermissions["DELETE"] and packsCnt == 1                   )
+        self.queueContext.buttons["sort"]              .setEnabled(self.corePermissions["MODIFY"]                                     )
+        self.queueContext.buttons["sort_packages"]     .setEnabled(self.corePermissions["MODIFY"]                                     )
+        self.queueContext.buttons["sort_links"]        .setEnabled(self.corePermissions["MODIFY"] and packsCnt == 1                   )
         self.activeMenu = self.queueContext
         self.queueContext.exec_(menuPos)
     
@@ -1140,17 +1154,18 @@ class MainWindow(QMainWindow):
         """
         menuPos = QCursor.pos()
         menuPos.setX(menuPos.x() + 2)
-        (packsCnt, linksCnt, downloading) = self.tabs["collector"]["view"].model.getSelectionInfo()
-        self.collectorContext.buttons["push"]           .setEnabled(self.corePermissions["MODIFY"] and packsCnt > 0                    )
-        self.collectorContext.buttons["add_links"]      .setEnabled(self.corePermissions["ADD"   ] and packsCnt == 1                   )
-        self.collectorContext.buttons["edit"]           .setEnabled(self.corePermissions["MODIFY"] and packsCnt > 0                    )
-        self.collectorContext.buttons["abort"]          .setEnabled(self.corePermissions["MODIFY"] and downloading                     )
-        self.collectorContext.buttons["restart"]        .setEnabled(self.corePermissions["MODIFY"] and (packsCnt > 0 or linksCnt > 0)  )
-        self.collectorContext.buttons["remove"]         .setEnabled(self.corePermissions["DELETE"] and (packsCnt > 0 or linksCnt > 0)  )
-        self.collectorContext.buttons["removelinkdupes"].setEnabled(self.corePermissions["DELETE"] and packsCnt == 1                   )
-        self.collectorContext.buttons["sort"]           .setEnabled(self.corePermissions["MODIFY"]                                     )
-        self.collectorContext.buttons["sort_packages"]  .setEnabled(self.corePermissions["MODIFY"]                                     )
-        self.collectorContext.buttons["sort_links"]     .setEnabled(self.corePermissions["MODIFY"] and packsCnt == 1                   )
+        (packsCnt, linksCnt, downloading, allPacksCnt) = self.tabs["collector"]["view"].model.getSelectionInfo()
+        self.collectorContext.buttons["push"]              .setEnabled(self.corePermissions["MODIFY"] and packsCnt > 0                    )
+        self.collectorContext.buttons["add_links"]         .setEnabled(self.corePermissions["ADD"   ] and packsCnt == 1                   )
+        self.collectorContext.buttons["edit"]              .setEnabled(self.corePermissions["MODIFY"] and packsCnt > 0                    )
+        self.collectorContext.buttons["abort"]             .setEnabled(self.corePermissions["MODIFY"] and downloading                     )
+        self.collectorContext.buttons["restart"]           .setEnabled(self.corePermissions["MODIFY"] and (packsCnt > 0 or linksCnt > 0)  )
+        self.collectorContext.buttons["remove"]            .setEnabled(self.corePermissions["DELETE"] and (packsCnt > 0 or linksCnt > 0)  )
+        self.collectorContext.buttons["removepackagedupes"].setEnabled(self.corePermissions["DELETE"] and allPacksCnt > 1                 )
+        self.collectorContext.buttons["removelinkdupes"]   .setEnabled(self.corePermissions["DELETE"] and packsCnt == 1                   )
+        self.collectorContext.buttons["sort"]              .setEnabled(self.corePermissions["MODIFY"]                                     )
+        self.collectorContext.buttons["sort_packages"]     .setEnabled(self.corePermissions["MODIFY"]                                     )
+        self.collectorContext.buttons["sort_links"]        .setEnabled(self.corePermissions["MODIFY"] and packsCnt == 1                   )
         self.activeMenu = self.collectorContext
         self.collectorContext.exec_(menuPos)
     
