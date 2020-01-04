@@ -490,6 +490,122 @@ class CaptchaOptions(QDialog):
     def appFontChanged(self):
         self.buttons.updateWhatsThisButton()
 
+class IconThemeOptions(QDialog):
+    """
+        icon theme options dialog
+    """
+    def __init__(self, parent):
+        QDialog.__init__(self, parent)
+        self.log = logging.getLogger("guilog")
+
+        self.settings = {}
+        self.fontAwesomeColor = None
+        self.lineAwesomeColor = None
+        self.lastFont = None
+
+        self.setAttribute(Qt.WA_DeleteOnClose, False)
+        self.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
+        self.setWindowTitle(_("Options"))
+        self.setWindowIcon(QIcon(join(pypath, "icons", "logo.png")))
+
+        self.rbClassic = QRadioButton("Classic")
+        self.rbFontAwesome = QRadioButton("Font Awesome")
+        self.rbLineAwesome = QRadioButton("Line Awesome")
+        self.btnFontAwesome = QPushButton(_("Color"))
+        self.btnLineAwesome = QPushButton(_("Color"))
+
+        grid = QGridLayout()
+        grid.addWidget(self.rbClassic,     0, 0)
+        grid.addWidget(self.rbFontAwesome, 1, 0)
+        grid.addWidget(self.rbLineAwesome, 2, 0)
+        grid.setColumnMinimumWidth(1, 20)
+        grid.addWidget(self.btnFontAwesome, 1, 2)
+        grid.addWidget(self.btnLineAwesome, 2, 2)
+
+        self.cbEnable = QGroupBox(_("Icon Theme"))
+        self.cbEnable.setLayout(grid)
+
+        self.noteLbl = QLabel()
+        note = "<i>" + _("Takes effect on next login.") + "</i>"
+        self.noteLbl.setText(note)
+
+        self.buttons = WtDialogButtonBox(Qt.Horizontal, self)
+        self.buttons.hideWhatsThisButton()
+
+        self.okBtn     = self.buttons.addButton(QDialogButtonBox.Ok)
+        self.cancelBtn = self.buttons.addButton(QDialogButtonBox.Cancel)
+        self.buttons.button(QDialogButtonBox.Ok).setText(_("OK"))
+        self.buttons.button(QDialogButtonBox.Cancel).setText(_("Cancel"))
+
+        vbox = QVBoxLayout()
+        vbox.addWidget(self.cbEnable)
+        vbox.addWidget(self.noteLbl)
+        vbox.addLayout(self.buttons.layout())
+        self.setLayout(vbox)
+
+        self.adjustSize()
+
+        self.connect(self.okBtn,     SIGNAL("clicked()"), self.accept)
+        self.connect(self.cancelBtn, SIGNAL("clicked()"), self.reject)
+        self.connect(self.btnFontAwesome, SIGNAL("clicked()"), self.chooseFontAwesomeColor)
+        self.connect(self.btnLineAwesome, SIGNAL("clicked()"), self.chooseLineAwesomeColor)
+
+        self.defaultSettings()
+
+    def chooseFontAwesomeColor(self):
+        initCol = QColor()
+        initCol.setRgba(self.fontAwesomeColor)
+        col = QColorDialog.getColor(initCol, self, self.rbFontAwesome.text(), QColorDialog.DontUseNativeDialog)
+        if not col.isValid():
+            return
+        self.fontAwesomeColor = col.rgba()
+
+    def chooseLineAwesomeColor(self):
+        initCol = QColor()
+        initCol.setRgba(self.lineAwesomeColor)
+        col = QColorDialog.getColor(initCol, self, self.rbLineAwesome.text(), QColorDialog.DontUseNativeDialog)
+        if not col.isValid():
+            return
+        self.lineAwesomeColor = col.rgba()
+
+    def exec_(self):
+        # It does not resize very well when the font size has changed
+        if self.font() != self.lastFont:
+            self.lastFont = self.font()
+            self.adjustSize()
+        return QDialog.exec_(self)
+
+    def defaultSettings(self):
+        self.settings.clear()
+        self.settings["Theme"] = "classic"
+        defCol = QColor(128, 128, 128, 255).rgba() # integer
+        self.settings["FontAwesomeColor"] = defCol
+        self.settings["LineAwesomeColor"] = defCol
+        self.dict2dialogState()
+
+    def dialogState2dict(self):
+        if self.rbClassic.isChecked():
+            self.settings["Theme"] = "classic"
+        elif self.rbFontAwesome.isChecked():
+            self.settings["Theme"] = "fontAwesome"
+        elif self.rbLineAwesome.isChecked():
+            self.settings["Theme"] = "lineAwesome"
+        self.settings["FontAwesomeColor"] = self.fontAwesomeColor
+        self.settings["LineAwesomeColor"] = self.lineAwesomeColor
+
+    def dict2dialogState(self):
+        if self.settings["Theme"] == "classic":
+            self.rbClassic.setChecked(True)
+        elif self.settings["Theme"] == "fontAwesome":
+            self.rbFontAwesome.setChecked(True)
+        elif self.settings["Theme"] == "lineAwesome":
+            self.rbLineAwesome.setChecked(True)
+        self.fontAwesomeColor = self.settings["FontAwesomeColor"]
+        self.lineAwesomeColor = self.settings["LineAwesomeColor"]
+
+    def appFontChanged(self):
+        self.buttons.updateWhatsThisButton()
+
 class FontOptions(QDialog):
     """
         font options dialog

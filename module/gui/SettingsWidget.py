@@ -154,9 +154,7 @@ class SettingsWidget(QWidget):
         self.pluginsSearchCompleter.setStringList(sl)
 
         self.reload = QPushButton(_("Reload"))
-        self.reload.setIcon(self.style().standardIcon(QStyle.SP_BrowserReload))
         self.save = QPushButton(_("Save"))
-        self.save.setIcon(self.style().standardIcon(QStyle.SP_DialogSaveButton))
 
         cont = QHBoxLayout()
         cont.addWidget(self.reload)

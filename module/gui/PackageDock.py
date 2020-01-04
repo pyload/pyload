@@ -24,10 +24,11 @@ from os.path import join
 from module.gui.Tools import whatsThisFormat
 
 class NewPackageDock(QDockWidget):
-    def __init__(self):
+    def __init__(self, appIconSet):
         self.paintEventSignal = False
         QDockWidget.__init__(self, _("New Package"))
         self.log = logging.getLogger("guilog")
+        self.appIconSet = appIconSet
         
         self.geo = None
         self.paintEventCounter = int(0)
@@ -192,7 +193,7 @@ class NewPackageWindow(QWidget):
         self.filter = QPushButton()
         
         self.save = QPushButton(_("Create"))
-        self.save.setIcon(QIcon(join(pypath, "icons", "add_small.png")))
+        self.save.setIcon(self.dock.appIconSet["add_small"])
         self.msg = QLabel("ERROR")
         s = "QWidget { color: crimson; background-color: %s }" % QColor(Qt.gray).name()     # red text color on gray background
         self.msg.setStyleSheet(s)

@@ -24,6 +24,7 @@
         <optionsClickNLoadForwarder></optionsClickNLoadForwarder>
         <optionsAutomaticReloading></optionsAutomaticReloading>
         <optionsCaptcha></optionsCaptcha>
+        <optionsIconTheme></optionsIconTheme>
         <optionsFonts></optionsFonts>
         <optionsColorFix></optionsColorFix>
         <optionsTray></optionsTray>

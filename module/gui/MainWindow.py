@@ -41,7 +41,7 @@ class MainWindow(QMainWindow):
     def time_msec(self):
         return int((datetime.utcnow() - datetime(1970, 1, 1)).total_seconds() * 1000 - self.time_msec_init)
     
-    def __init__(self, corePermissions, connector):
+    def __init__(self, corePermissions, appIconSet, connector):
         """
             set up main window
         """
@@ -50,6 +50,7 @@ class MainWindow(QMainWindow):
         self.setEnabled(False)
         self.log = logging.getLogger("guilog")
         self.corePermissions = corePermissions
+        self.appIconSet = appIconSet
         self.connector = connector
         self.lastAddContainerDir = unicode("")
         
@@ -67,11 +68,11 @@ class MainWindow(QMainWindow):
         #init docks
         self.setDockOptions(QMainWindow.AnimatedDocks | QMainWindow.AllowTabbedDocks | QMainWindow.ForceTabbedDocks)
         self.setTabPosition(Qt.RightDockWidgetArea, QTabWidget.North)
-        self.newPackDock = NewPackageDock()
+        self.newPackDock = NewPackageDock(self.appIconSet)
         self.addDockWidget(Qt.RightDockWidgetArea, self.newPackDock)
         self.connect(self.newPackDock, SIGNAL("done"), self.slotAddPackage)
         self.connect(self.newPackDock, SIGNAL("parseUri"), self.slotParseUri)
-        self.newLinkDock = NewLinkDock()
+        self.newLinkDock = NewLinkDock(self.appIconSet)
         self.addDockWidget(Qt.RightDockWidgetArea, self.newLinkDock)
         self.connect(self.newLinkDock, SIGNAL("done"), self.slotAddLinksToPackage)
         self.connect(self.newLinkDock, SIGNAL("parseUri"), self.slotParseUri)
@@ -95,7 +96,7 @@ class MainWindow(QMainWindow):
         self.advselectframe.setLayout(l)
         self.connect(self.advselect.selectBtn, SIGNAL("clicked()"), self.slotAdvSelectSelectButtonClicked)
         self.connect(self.advselect.deselectBtn, SIGNAL("clicked()"), self.slotAdvSelectDeselectButtonClicked)
-        self.connect(self.advselect.closeBtn, SIGNAL("clicked()"), self.slotAdvSelectHide)
+        self.connect(self.advselect.hideBtn, SIGNAL("clicked()"), self.slotAdvSelectHide)
         
         #status
         self.statusw = QFrame()
@@ -182,6 +183,7 @@ class MainWindow(QMainWindow):
                          "cnlfwding": QAction(_("ClickNLoad Forwarding"), self.menus["options"]),
                          "autoreloading": QAction(_("Automatic Reloading"), self.menus["options"]),
                          "captcha": QAction(_("Captchas"), self.menus["options"]),
+                         "icontheme": QAction(_("Icon Theme"), self.menus["options"]),
                          "fonts": QAction(_("Fonts"), self.menus["options"]),
                          "colorfix": QAction(_("Color Fix"), self.menus["options"]),
                          "tray": QAction(_("Tray Icon"), self.menus["options"]),
@@ -214,6 +216,7 @@ class MainWindow(QMainWindow):
         self.menus["options"].addAction(self.mactions["cnlfwding"])
         self.menus["options"].addAction(self.mactions["autoreloading"])
         self.menus["options"].addAction(self.mactions["captcha"])
+        self.menus["options"].addAction(self.mactions["icontheme"])
         self.menus["options"].addAction(self.mactions["fonts"])
         self.menus["options"].addAction(self.mactions["colorfix"])
         self.menus["options"].addAction(self.mactions["tray"])
@@ -272,6 +275,7 @@ class MainWindow(QMainWindow):
         self.connect(self.mactions["cnlfwding"], SIGNAL("triggered()"), self.slotShowClickNLoadForwarderOptions)
         self.connect(self.mactions["autoreloading"], SIGNAL("triggered()"), self.slotShowAutomaticReloadingOptions)
         self.connect(self.mactions["captcha"], SIGNAL("triggered()"), self.slotShowCaptchaOptions)
+        self.connect(self.mactions["icontheme"], SIGNAL("triggered()"), self.slotShowIconThemeOptions)
         self.connect(self.mactions["fonts"], SIGNAL("triggered()"), self.slotShowFontOptions)
         self.connect(self.mactions["colorfix"], SIGNAL("triggered()"), self.slotShowColorFixOptions)
         self.connect(self.mactions["tray"], SIGNAL("triggered()"), self.slotShowTrayOptions)
@@ -410,23 +414,23 @@ class MainWindow(QMainWindow):
         self.toolbar.setObjectName("Main Toolbar")
         self.toolbar.setIconSize(QSize(30,30))
         self.toolbar.setMovable(False)
-        self.actions["status_start"] = self.toolbar.addAction(QIcon(join(pypath, "icons", "toolbar_start.png")), "")
+        self.actions["status_start"] = self.toolbar.addAction(self.appIconSet["start"], "")
         self.actions["status_start"].setWhatsThis(whatsThisFormat(_("Run"), _("Sets the server status to 'Running'.")))
         self.actions["status_stop"] = self.toolbar.addAction("")
         self.actions["status_stop"].setWhatsThis(whatsThisFormat(_("Stop"), _("Aborts all ongoing downloads and sets the server status to 'Paused'.")))
-        self.statusStopIcon = QIcon(join(pypath, "icons", "toolbar_stop.png"))
-        self.statusStopIconNoPause = QIcon(join(pypath, "icons", "toolbar_stop_nopause.png"))
+        self.statusStopIcon = self.appIconSet["stop"]
+        self.statusStopIconNoPause = self.appIconSet["stop_nopause"]
         self.actions["status_stop"].setIcon(self.statusStopIcon)
-        self.actions["status_pause"] = self.toolbar.addAction(QIcon(join(pypath, "icons", "toolbar_pause.png")), "")
+        self.actions["status_pause"] = self.toolbar.addAction(self.appIconSet["pause"], "")
         self.actions["status_pause"].setWhatsThis(whatsThisFormat(_("Pause"), _("Sets the server status to 'Paused'.<br>When the server is paused, no further downloads will be started. Ongoing downloads continue.")))
         self.startPauseActGrp = QActionGroup(self.toolbar)
         self.startPauseActGrp.addAction(self.actions["status_start"])
         self.startPauseActGrp.addAction(self.actions["status_pause"])
         self.toolbar.addSeparator()
-        self.actions["add"] = self.toolbar.addAction(QIcon(join(pypath, "icons", "toolbar_add.png")), "")
+        self.actions["add"] = self.toolbar.addAction(self.appIconSet["add"], "")
         self.actions["add"].setWhatsThis(whatsThisFormat(_("Add"), _("- Create a new package<br>- Add links to an existing package<br>- Add a container file to the Queue<br>- Add an account")))
         self.toolbar.addSeparator()
-        self.actions["clipboard"] = self.toolbar.addAction(QIcon(join(pypath, "icons", "clipboard.png")), "")
+        self.actions["clipboard"] = self.toolbar.addAction(self.appIconSet["clipboard"], "")
         self.actions["clipboard"].setWhatsThis(whatsThisFormat(_("Clipboard Watcher"), _("Watches the clipboard, extracts URLs from copied text and creates a package with the URLs or adds the URLs to the New Package Window.")))
         self.actions["clipboard"].setCheckable(True)
         stretch1 = QWidget()
@@ -459,9 +463,9 @@ class MainWindow(QMainWindow):
         stretch3 = QWidget()
         stretch3.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.toolbar.addWidget(stretch3)
-        self.actions["restart_failed"] = self.toolbar.addAction(QIcon(join(pypath, "icons", "toolbar_refresh.png")), "")
+        self.actions["restart_failed"] = self.toolbar.addAction(self.appIconSet["restart"], "")
         self.actions["restart_failed"].setWhatsThis(whatsThisFormat(_("Restart Failed"), _("Restarts (resumes if supported) all failed, aborted and temporary offline downloads.")))
-        self.actions["remove_finished"] = self.toolbar.addAction(QIcon(join(pypath, "icons", "toolbar_remove.png")), "")
+        self.actions["remove_finished"] = self.toolbar.addAction(self.appIconSet["remove"], "")
         self.actions["remove_finished"].setWhatsThis(whatsThisFormat(_("Remove Finished"), _("Removes all finished downloads from the Queue and the Collector.")))
         self.connect(self.toolbar_speedLimit_enabled, SIGNAL("toggled(bool)"), self.slotSpeedLimitStatus)
         self.connect(self.toolbar_speedLimit_rate, SIGNAL("editingFinished()"), self.slotSpeedLimitRate)
@@ -502,7 +506,7 @@ class MainWindow(QMainWindow):
         """
         #queue
         self.tabs["queue"]["b"] = QPushButton(_("Pull Out Selected Packages"))
-        self.tabs["queue"]["b"].setIcon(QIcon(join(pypath, "icons", "pull_small.png")))
+        self.tabs["queue"]["b"].setIcon(self.appIconSet["pull_small"])
         self.tabs["queue"]["m"] = QLabel()
         self.tabs["queue"]["m_defaultStyleSheet"] = self.tabs["queue"]["m"].styleSheet()
         lsp = self.tabs["queue"]["m"].sizePolicy()
@@ -530,7 +534,7 @@ class MainWindow(QMainWindow):
         
         #collector
         self.tabs["collector"]["b"] = QPushButton(_("Push Selected Packages to Queue"))
-        self.tabs["collector"]["b"].setIcon(QIcon(join(pypath, "icons", "push_small.png")))
+        self.tabs["collector"]["b"].setIcon(self.appIconSet["push_small"])
         self.tabs["collector"]["m"] = QLabel()
         self.tabs["collector"]["m_defaultStyleSheet"] = self.tabs["collector"]["m"].styleSheet()
         lsp = self.tabs["collector"]["m"].sizePolicy()
@@ -589,19 +593,19 @@ class MainWindow(QMainWindow):
         self.queueContext = QMenu()
         self.queueContext.buttons = {}
         self.queueContext.item = (None, None)
-        self.queueContext.buttons["pull"] = QAction(QIcon(join(pypath, "icons", "pull_small.png")), _("Pull Out"), self.queueContext)
-        self.queueContext.buttons["edit"] = QAction(QIcon(join(pypath, "icons", "edit_small.png")), _("Edit Packages"), self.queueContext)
-        self.queueContext.buttons["abort"] = QAction(QIcon(join(pypath, "icons", "abort_small.png")), _("Abort"), self.queueContext)
-        self.queueContext.buttons["restart"] = QAction(QIcon(join(pypath, "icons", "refresh_small.png")), _("Restart"), self.queueContext)
-        self.queueContext.buttons["remove"] = QAction(QIcon(join(pypath, "icons", "remove_small.png")), _("Remove"), self.queueContext)
+        self.queueContext.buttons["pull"] = QAction(self.appIconSet["pull_small"], _("Pull Out"), self.queueContext)
+        self.queueContext.buttons["edit"] = QAction(self.appIconSet["edit_small"], _("Edit Packages"), self.queueContext)
+        self.queueContext.buttons["abort"] = QAction(self.appIconSet["abort_small"], _("Abort"), self.queueContext)
+        self.queueContext.buttons["restart"] = QAction(self.appIconSet["restart_small"], _("Restart"), self.queueContext)
+        self.queueContext.buttons["remove"] = QAction(self.appIconSet["remove_small"], _("Remove"), self.queueContext)
         self.queueContext.buttons["selectall"] = QAction(_("Select All"), self.queueContext)
         self.queueContext.buttons["deselectall"] = QAction(_("Deselect All"), self.queueContext)
-        self.queueContext.buttons["removelinkdupes"] = QAction(QIcon(join(pypath, "icons", "remove_small.png")), _("Remove Duplicate Links"), self.queueContext)
+        self.queueContext.buttons["removelinkdupes"] = QAction(self.appIconSet["remove_small"], _("Remove Duplicate Links"), self.queueContext)
         self.queueContext.buttons["expand"] = QAction(self.style().standardIcon(QStyle.SP_ToolBarHorizontalExtensionButton), _("Expand All"), self.queueContext)
         self.queueContext.buttons["collapse"] = QAction(self.style().standardIcon(QStyle.SP_ToolBarVerticalExtensionButton), _("Collapse All"), self.queueContext)
         self.queueContext.addAction(self.queueContext.buttons["pull"])
         self.queueContext.addSeparator()
-        self.queueContext.buttons["add"] = self.queueContext.addMenu(QIcon(join(pypath, "icons", "add_small.png")), _("Add"))
+        self.queueContext.buttons["add"] = self.queueContext.addMenu(self.appIconSet["add_small"], _("Add"))
         self.queueContext.buttons["add_package"] = self.queueContext.buttons["add"].addAction(_("Package"))
         self.queueContext.buttons["add_links"] = self.queueContext.buttons["add"].addAction(_("Links"))
         self.queueContext.buttons["add_container"] = self.queueContext.buttons["add"].addAction(_("Container"))
@@ -650,19 +654,19 @@ class MainWindow(QMainWindow):
         self.collectorContext = QMenu()
         self.collectorContext.buttons = {}
         self.collectorContext.item = (None, None)
-        self.collectorContext.buttons["push"] = QAction(QIcon(join(pypath, "icons", "push_small.png")), _("Push to Queue"), self.collectorContext)
-        self.collectorContext.buttons["edit"] = QAction(QIcon(join(pypath, "icons", "edit_small.png")), _("Edit Packages"), self.collectorContext)
-        self.collectorContext.buttons["abort"] = QAction(QIcon(join(pypath, "icons", "abort_small.png")), _("Abort"), self.collectorContext)
-        self.collectorContext.buttons["restart"] = QAction(QIcon(join(pypath, "icons", "refresh_small.png")), _("Restart"), self.collectorContext)
-        self.collectorContext.buttons["remove"] = QAction(QIcon(join(pypath, "icons", "remove_small.png")), _("Remove"), self.collectorContext)
+        self.collectorContext.buttons["push"] = QAction(self.appIconSet["push_small"], _("Push to Queue"), self.collectorContext)
+        self.collectorContext.buttons["edit"] = QAction(self.appIconSet["edit_small"], _("Edit Packages"), self.collectorContext)
+        self.collectorContext.buttons["abort"] = QAction(self.appIconSet["abort_small"], _("Abort"), self.collectorContext)
+        self.collectorContext.buttons["restart"] = QAction(self.appIconSet["restart_small"], _("Restart"), self.collectorContext)
+        self.collectorContext.buttons["remove"] = QAction(self.appIconSet["remove_small"], _("Remove"), self.collectorContext)
         self.collectorContext.buttons["selectall"] = QAction(_("Select All"), self.collectorContext)
         self.collectorContext.buttons["deselectall"] = QAction(_("Deselect All"), self.collectorContext)
-        self.collectorContext.buttons["removelinkdupes"] = QAction(QIcon(join(pypath, "icons", "remove_small.png")), _("Remove Duplicate Links"), self.collectorContext)
+        self.collectorContext.buttons["removelinkdupes"] = QAction(self.appIconSet["remove_small"], _("Remove Duplicate Links"), self.collectorContext)
         self.collectorContext.buttons["expand"] = QAction(self.style().standardIcon(QStyle.SP_ToolBarHorizontalExtensionButton), _("Expand All"), self.collectorContext)
         self.collectorContext.buttons["collapse"] = QAction(self.style().standardIcon(QStyle.SP_ToolBarVerticalExtensionButton), _("Collapse All"), self.collectorContext)
         self.collectorContext.addAction(self.collectorContext.buttons["push"])
         self.collectorContext.addSeparator()
-        self.collectorContext.buttons["add"] = self.collectorContext.addMenu(QIcon(join(pypath, "icons", "add_small.png")), _("Add"))
+        self.collectorContext.buttons["add"] = self.collectorContext.addMenu(self.appIconSet["add_small"], _("Add"))
         self.collectorContext.buttons["add_package"] = self.collectorContext.buttons["add"].addAction(_("Package"))
         self.collectorContext.buttons["add_links"] = self.collectorContext.buttons["add"].addAction(_("Links"))
         self.collectorContext.addAction(self.collectorContext.buttons["edit"])
@@ -708,9 +712,9 @@ class MainWindow(QMainWindow):
         #accounts
         self.accountContext = QMenu()
         self.accountContext.buttons = {}
-        self.accountContext.buttons["add"] = QAction(QIcon(join(pypath, "icons", "add_small.png")), _("Add"), self.accountContext)
-        self.accountContext.buttons["edit"] = QAction(QIcon(join(pypath, "icons", "edit_small.png")), _("Edit"), self.accountContext)
-        self.accountContext.buttons["remove"] = QAction(QIcon(join(pypath, "icons", "remove_small.png")), _("Remove"), self.accountContext)
+        self.accountContext.buttons["add"] = QAction(self.appIconSet["add_small"], _("Add"), self.accountContext)
+        self.accountContext.buttons["edit"] = QAction(self.appIconSet["edit_small"], _("Edit"), self.accountContext)
+        self.accountContext.buttons["remove"] = QAction(self.appIconSet["remove_small"], _("Remove"), self.accountContext)
         self.accountContext.addAction(self.accountContext.buttons["add"])
         self.accountContext.addAction(self.accountContext.buttons["edit"])
         self.accountContext.addAction(self.accountContext.buttons["remove"])
@@ -1407,6 +1411,9 @@ class MainWindow(QMainWindow):
     def slotShowCaptchaOptions(self):
         self.emit(SIGNAL("showCaptchaOptions"))
     
+    def slotShowIconThemeOptions(self):
+        self.emit(SIGNAL("showIconThemeOptions"))
+    
     def slotShowFontOptions(self):
         self.emit(SIGNAL("showFontOptions"))
     
@@ -1463,7 +1470,7 @@ class AdvancedSelect(QWidget):
         self.modeIdx = self.MODE_IDX()
         
         self.patternEditLbl = QLabel()
-        self.patternEditLbl.setText(_("Search for name:"))
+        self.patternEditLbl.setText(_("Name:"))
         self.patternEdit = QComboBox()
         self.patternEdit.setEditable(True)
         self.patternEdit.completer().setCaseSensitivity(Qt.CaseSensitive)
@@ -1482,14 +1489,12 @@ class AdvancedSelect(QWidget):
         self.modeCmb.addItem(_("String"))       ;self.modeIdx.STRING   = 0  # combobox indexes in the order the items are added
         self.modeCmb.addItem(_("Wildcard"))     ;self.modeIdx.WILDCARD = 1
         self.modeCmb.addItem(_("RegExp"))       ;self.modeIdx.REGEXP   = 2
-        self.closeBtn = QPushButton()
-        self.closeBtn.setIcon(self.style().standardIcon(QStyle.SP_TitleBarCloseButton))
+        self.hideBtn = QPushButton(_("Hide"))
         
         hbox1 = QHBoxLayout()
         hbox1.addWidget(self.patternEditLbl)
         hbox1.addWidget(self.patternEdit)
         hbox1.addWidget(self.clearBtn)
-        hbox1.addWidget(self.closeBtn)
         
         hbox2 = QHBoxLayout()
         hbox2.addWidget(self.modeCmb)
@@ -1499,6 +1504,7 @@ class AdvancedSelect(QWidget):
         hbox2.addWidget(self.deselectBtn)
         hbox2.addWidget(self.linksCb)
         hbox2.addStretch(1)
+        hbox2.addWidget(self.hideBtn)
         
         vbox = QVBoxLayout()
         vbox.addLayout(hbox1)
@@ -1515,14 +1521,5 @@ class AdvancedSelect(QWidget):
             if self.patternEdit.findText(text, Qt.MatchFixedString | Qt.MatchCaseSensitive) == -1:
                 self.patternEdit.insertItem(0, text)
                 self.patternEdit.setCurrentIndex(0)
-    
-    def appFontChanged(self):
-        self.closeBtn.setMaximumSize(100, 100)
-        self.closeBtn.setMinimumSize(0, 0)
-        self.closeBtn.setText("XOgp")
-        self.closeBtn.adjustSize()
-        height = self.closeBtn.height()
-        self.closeBtn.setFixedSize(height, height)
-        self.closeBtn.setText("")
 
 

@@ -70,7 +70,7 @@ from module.gui.Collector import *
 from module.gui.XMLParser import *
 from module.gui.CoreConfigParser import ConfigParser
 from module.gui.Options import *
-from module.gui.Tools import MessageBox
+from module.gui.Tools import MessageBox, IconThemes
 
 from module.lib.rename_process import renameProcess
 from module.lib.SafeEval import const_eval as literal_eval
@@ -192,8 +192,6 @@ class main(QObject):
         icons.append(( QStyle.SP_ToolBarVerticalExtensionButton,   "QStyle.SP_ToolBarVerticalExtensionButton   "))
         icons.append(( QStyle.SP_ToolBarHorizontalExtensionButton, "QStyle.SP_ToolBarHorizontalExtensionButton "))
         icons.append(( QStyle.SP_ToolBarVerticalExtensionButton,   "QStyle.SP_ToolBarVerticalExtensionButton   "))
-        icons.append(( QStyle.SP_BrowserReload,                    "QStyle.SP_BrowserReload                    "))
-        icons.append(( QStyle.SP_DialogSaveButton,                 "QStyle.SP_DialogSaveButton                 "))
         style = QApplication.style()
         for i in icons:
             print i[1],; sys.stdout.flush()
@@ -305,16 +303,18 @@ class main(QObject):
         if self.debugLogLevel != None:
             self.log.info("Debug messages at level %d and higher" % self.debugLogLevel)
 
+        self.appIconSet = IconThemes(self.newConfigFile, self.parser).loadTheme()
         self.initCorePermissions()
         self.connector = Connector(first)
         self.inSlotToolbarSpeedLimitEdited = False
-        self.mainWindow = MainWindow(self.corePermissions, self.connector)
+        self.mainWindow = MainWindow(self.corePermissions, self.appIconSet, self.connector)
         self.notificationOptions = NotificationOptions(self.mainWindow)
         self.otherOptions = OtherOptions(self.mainWindow)
         self.trayOptions = TrayOptions(self.mainWindow)
         self.loggingOptions.setParent(self.mainWindow, self.loggingOptions.windowFlags())
         self.packageEdit = PackageEdit(self.mainWindow)
         self.setupGuiLogTab(self.loggingOptions.settings["file_log"])
+        self.iconThemeOptions = IconThemeOptions(self.mainWindow)
         self.fontOptions = FontOptions(self.defAppFont, self.mainWindow)
         self.colorFixOptions = ColorFixOptions(self.mainWindow)
         self.applyColorFix() # for the connection manager
@@ -609,6 +609,7 @@ class main(QObject):
         self.connect(self.mainWindow,          SIGNAL("showAutomaticReloadingOptions"), self.slotShowAutomaticReloadingOptions)
         self.connect(self.mainWindow,          SIGNAL("showCaptchaOptions"), self.slotShowCaptchaOptions)
         self.connect(self.mainWindow,          SIGNAL("showCaptcha"), self.slotShowCaptcha)
+        self.connect(self.mainWindow,          SIGNAL("showIconThemeOptions"), self.slotShowIconThemeOptions)
         self.connect(self.mainWindow,          SIGNAL("showFontOptions"), self.slotShowFontOptions)
         self.connect(self.mainWindow,          SIGNAL("showColorFixOptions"), self.slotShowColorFixOptions)
         self.connect(self.mainWindow,          SIGNAL("showWhatsThisOptions"), self.slotShowWhatsThisOptions)
@@ -746,7 +747,7 @@ class main(QObject):
         self.trayState["unmaxed_pos"]  = self.geoUnmaximized["unmaxed_pos"]
         self.trayState["unmaxed_size"] = self.geoUnmaximized["unmaxed_size"]
         self.trayState["restore_unmaxed_geo"] = True if (self.trayState["maximized"]) and (self.trayState["unmaxed_pos"] is not None) and (self.trayState["unmaxed_size"] is not None) else False
-        self.tray = TrayIcon()
+        self.tray = TrayIcon(self.appIconSet)
         self.tray.setupIcon(self.trayOptions.settings["IconFile"])
         self.notification = Notification(self.tray)
         self.connect(self, SIGNAL("showTrayIcon"),          self.tray.show)
@@ -1973,6 +1974,7 @@ class main(QObject):
         optionsClickNLoadForwarder = str(self.clickNLoadForwarderOptions.settings["fromPort"])
         optionsAutomaticReloading = str(QByteArray(str(self.automaticReloadingOptions.settings)).toBase64())
         optionsCaptcha = str(QByteArray(str(self.captchaOptions.settings)).toBase64())
+        optionsIconTheme = str(QByteArray(str(self.iconThemeOptions.settings)).toBase64())
         optionsFonts = str(QByteArray(str(self.fontOptions.settings)).toBase64())
         optionsColorFix = str(QByteArray(str(self.colorFixOptions.settings)).toBase64())
         optionsTray = str(QByteArray(str(self.trayOptions.settings)).toBase64())
@@ -1985,6 +1987,7 @@ class main(QObject):
         optionsClickNLoadForwarderNode = mainWindowNode.toElement().elementsByTagName("optionsClickNLoadForwarder").item(0)
         optionsAutomaticReloadingNode = mainWindowNode.toElement().elementsByTagName("optionsAutomaticReloading").item(0)
         optionsCaptchaNode = mainWindowNode.toElement().elementsByTagName("optionsCaptcha").item(0)
+        optionsIconThemeNode = mainWindowNode.toElement().elementsByTagName("optionsIconTheme").item(0)
         optionsFontsNode = mainWindowNode.toElement().elementsByTagName("optionsFonts").item(0)
         optionsColorFixNode = mainWindowNode.toElement().elementsByTagName("optionsColorFix").item(0)
         optionsTrayNode = mainWindowNode.toElement().elementsByTagName("optionsTray").item(0)
@@ -1997,6 +2000,7 @@ class main(QObject):
         newOptionsClickNLoadForwarderNode = self.parser.xml.createTextNode(optionsClickNLoadForwarder)
         newOptionsAutomaticReloadingNode = self.parser.xml.createTextNode(optionsAutomaticReloading)
         newOptionsCaptchaNode = self.parser.xml.createTextNode(optionsCaptcha)
+        newOptionsIconThemeNode = self.parser.xml.createTextNode(optionsIconTheme)
         newOptionsFontsNode = self.parser.xml.createTextNode(optionsFonts)
         newOptionsColorFixNode = self.parser.xml.createTextNode(optionsColorFix)
         newOptionsTrayNode = self.parser.xml.createTextNode(optionsTray)
@@ -2014,6 +2018,8 @@ class main(QObject):
         optionsAutomaticReloadingNode.appendChild(newOptionsAutomaticReloadingNode)
         optionsCaptchaNode.removeChild(optionsCaptchaNode.firstChild())
         optionsCaptchaNode.appendChild(newOptionsCaptchaNode)
+        optionsIconThemeNode.removeChild(optionsIconThemeNode.firstChild())
+        optionsIconThemeNode.appendChild(newOptionsIconThemeNode)
         optionsFontsNode.removeChild(optionsFontsNode.firstChild())
         optionsFontsNode.appendChild(newOptionsFontsNode)
         optionsColorFixNode.removeChild(optionsColorFixNode.firstChild())
@@ -2169,6 +2175,8 @@ class main(QObject):
             mainWindowNode.appendChild(self.parser.xml.createElement("optionsAutomaticReloading"))
         if not nodes.get("optionsCaptcha"):
             mainWindowNode.appendChild(self.parser.xml.createElement("optionsCaptcha"))
+        if not nodes.get("optionsIconTheme"):
+            mainWindowNode.appendChild(self.parser.xml.createElement("optionsIconTheme"))
         if not nodes.get("optionsFonts"):
             mainWindowNode.appendChild(self.parser.xml.createElement("optionsFonts"))
         if not nodes.get("optionsColorFix"):
@@ -2195,6 +2203,7 @@ class main(QObject):
         optionsClickNLoadForwarder = str(nodes["optionsClickNLoadForwarder"].text())
         optionsAutomaticReloading = str(nodes["optionsAutomaticReloading"].text())
         optionsCaptcha = str(nodes["optionsCaptcha"].text())
+        optionsIconTheme = str(nodes["optionsIconTheme"].text())
         optionsFonts = str(nodes["optionsFonts"].text())
         optionsColorFix = str(nodes["optionsColorFix"].text())
         optionsTray = str(nodes["optionsTray"].text())
@@ -2253,6 +2262,12 @@ class main(QObject):
         if d is None: self.messageBox_21(_("Captchas")); reset = True
         self.mainWindow.captchaDialog.adjSize = self.captchaOptions.settings["AdjSize"]
         self.mainWindow.actions["captcha"].setVisible(self.captchaOptions.settings["Enabled"])
+        # Icon Theme
+        d = base64ToDict(optionsIconTheme)
+        if d is not None:
+            try:              self.iconThemeOptions.settings = d; self.iconThemeOptions.dict2dialogState()
+            except Exception: self.iconThemeOptions.defaultSettings(); d = None
+        if d is None: self.messageBox_21(_("Icon Theme")); reset = True
         # Fonts
         d = base64ToDict(optionsFonts)
         if d is not None:
@@ -3323,6 +3338,15 @@ class main(QObject):
                 self.mainWindow.captchaDialog.emit(SIGNAL("setFree"))
                 self.tray.captchaAction.setEnabled(False)
 
+    def slotShowIconThemeOptions(self):
+        """
+            popup the icon theme options dialog
+        """
+        self.iconThemeOptions.dict2dialogState()
+        retval = self.iconThemeOptions.exec_()
+        if retval == QDialog.Accepted:
+            self.iconThemeOptions.dialogState2dict()
+
     def slotShowFontOptions(self):
         """
             popup the font options dialog
@@ -3341,9 +3365,9 @@ class main(QObject):
         """
             the application font changed
         """
-        self.mainWindow.advselect.appFontChanged()
         self.captchaOptions.appFontChanged()
         self.loggingOptions.appFontChanged()
+        self.iconThemeOptions.appFontChanged()
         self.fontOptions.appFontChanged()
         self.colorFixOptions.appFontChanged()
         self.whatsThisOptions.appFontChanged()
@@ -3926,9 +3950,10 @@ class ClickNLoadForwarder(QObject):
         self.emit(SIGNAL("msgBoxError"), _("ClickNLoad port forwarding stopped due to an error."))
 
 class TrayIcon(QSystemTrayIcon):
-    def __init__(self):
+    def __init__(self, appIconSet):
         QSystemTrayIcon.__init__(self)
         self.log = logging.getLogger("guilog")
+        self.appIconSet = appIconSet
 
         self.menu = QMenu()
         self.showAction = QAction("show/hide", self.menu)
@@ -3937,12 +3962,12 @@ class TrayIcon(QSystemTrayIcon):
         self.menu.addAction(self.showAction)
         self.captchaAction = QAction(_("Captcha"), self.menu)
         self.menu.addAction(self.captchaAction)
-        self.menuAdd = self.menu.addMenu(QIcon(join(pypath, "icons", "add_small.png")), _("Add"))
+        self.menuAdd = self.menu.addMenu(self.appIconSet["add_small"], _("Add"))
         self.addPackageAction = self.menuAdd.addAction(_("Package"))
         self.addLinksAction = self.menuAdd.addAction(_("Links"))
         self.addContainerAction = self.menuAdd.addAction(_("Container"))
         self.menu.addSeparator()
-        self.exitAction = QAction(QIcon(join(pypath, "icons", "abort_small.png")), _("Exit"), self.menu)
+        self.exitAction = QAction(self.appIconSet["abort_small"], _("Exit"), self.menu)
         self.menu.addAction(self.exitAction)
         self.setContextMenu(self.menu)
         if self.log.isEnabledFor(logging.DEBUG9):
