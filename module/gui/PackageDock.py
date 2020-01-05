@@ -16,8 +16,9 @@
     @author: mkaay
 """
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4.QtCore import Qt, QTimer, SIGNAL
+from PyQt4.QtGui import (QCheckBox, QColor, QDockWidget, QGridLayout, QHBoxLayout, QIcon, QLabel, QLineEdit, QPlainTextEdit, QPushButton,
+                         QRadioButton, QSizePolicy, QTextCursor, QVBoxLayout, QWidget)
 
 import logging
 from os.path import join

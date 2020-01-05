@@ -17,8 +17,8 @@
     @author: mkaay
 """
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4.QtCore import QBuffer, QByteArray, QIODevice, Qt, SIGNAL, SLOT
+from PyQt4.QtGui import QApplication, QDialog, QDialogButtonBox, QHBoxLayout, QIcon, QLabel, QLineEdit, QMovie, QStyle, QVBoxLayout
 
 import logging
 from os.path import join

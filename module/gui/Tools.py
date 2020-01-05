@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4.QtCore import QByteArray, QObject, Qt, QTimer, SIGNAL
+from PyQt4.QtGui import (QApplication, QColor, QDialog, QDialogButtonBox, QFrame, QGridLayout, QHBoxLayout, QIcon, QIconEngine, QLabel, QLineEdit,
+                         QPainter, QPalette, QPixmap, QPushButton, QSpacerItem, QStyle, QTextEdit, QVBoxLayout, QWhatsThis)
+
 from os.path import join
 from bisect import bisect_left, bisect_right
 from functools import cmp_to_key

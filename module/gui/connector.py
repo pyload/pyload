@@ -21,8 +21,8 @@ SERVER_VERSION = "0.4.9"
 from time import sleep
 from uuid import uuid4 as uuid
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4.QtCore import QMutex, QObject, Qt, SIGNAL
+from PyQt4.QtGui import QDialog, QDialogButtonBox, QGridLayout, QIcon, QLabel, QLineEdit
 
 import logging
 import socket

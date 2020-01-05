@@ -16,8 +16,8 @@
     @author: mkaay
 """
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4.QtCore import QAbstractListModel, QModelIndex, QSize, QString, Qt, QVariant
+from PyQt4.QtGui import QApplication, QItemDelegate, QListView, QPalette, QStyle, QStyleOptionProgressBarV2
 
 import logging
 from module.remote.thriftbackend.ThriftClient import DownloadStatus

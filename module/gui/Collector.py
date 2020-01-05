@@ -16,8 +16,8 @@
     @author: mkaay
 """
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4.QtCore import QAbstractItemModel, QModelIndex, QMutex, QMutexLocker, QObject, QRegExp, QString, Qt, QTimer, QVariant, SIGNAL
+from PyQt4.QtGui import QAbstractItemView, QApplication, QItemSelection, QItemSelectionModel, QItemSelectionRange, QMenu, QTreeView
 
 import logging, re
 from time import time

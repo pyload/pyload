@@ -34,7 +34,6 @@ except ImportError:
     havePynotify = False
 
 from module.gui import LoggingLevels
-from module.gui.Tools import WtDialogButtonBox, LineView
 import logging.handlers
 from os import makedirs, sep
 
@@ -42,8 +41,11 @@ from uuid import uuid4 as uuid      # import before PyQt
 from time import sleep, time
 from module.common.json_layer import json
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4.QtCore import (pyqtSignal, QByteArray, QMutex, QMutexLocker, QObject, QPoint, QRect, QRegExp, QSize, QString,
+                          Qt, QTextCodec, QTimer, SIGNAL)
+from PyQt4.QtGui import (QAbstractItemView, QAction, QApplication, QDialog, QDialogButtonBox, QFont, QGridLayout, QGroupBox,
+                         QHBoxLayout, QIcon, QLabel, QLineEdit, QMenu, QMessageBox, QPixmap, QPlainTextEdit, QProgressDialog,
+                         QPushButton, QStyle, QSystemTrayIcon, QTextCursor, QVBoxLayout, QWhatsThis)
 
 import re
 import copy
@@ -61,22 +63,24 @@ from datetime import datetime
 from threading import Timer
 
 from module import InitHomeDir
-from module.gui.ConnectionManager import *
+from module.gui.ConnectionManager import ConnectionManager
 from module.gui.connector import Connector
-from module.gui.MainWindow import *
-from module.gui.Queue import *
-from module.gui.Overview import *
-from module.gui.Collector import *
-from module.gui.XMLParser import *
+from module.gui.MainWindow import MainWindow
+from module.gui.Queue import QueueView
+from module.gui.Overview import OverviewView
+from module.gui.Collector import CollectorView
+from module.gui.XMLParser import XMLParser
 from module.gui.CoreConfigParser import ConfigParser
-from module.gui.Options import *
-from module.gui.Tools import MessageBox, IconThemes
+from module.gui.Options import (AutomaticReloadingOptions, CaptchaOptions, ClickNLoadForwarderOptions, ColorFixOptions,
+                                FontOptions, IconThemeOptions, LanguageOptions, LoggingOptions, NotificationOptions,
+                                OtherOptions, TrayOptions, WhatsThisOptions)
+from module.gui.Tools import IconThemes, LineView, MessageBox, WtDialogButtonBox
 
 from module.lib.rename_process import renameProcess
 from module.lib.SafeEval import const_eval as literal_eval
 from module.utils import formatSize, formatSpeed
 
-from module.remote.thriftbackend.ThriftClient import DownloadStatus
+from module.remote.thriftbackend.ThriftClient import Destination, DownloadStatus
 from module.Api import has_permission, PERMS, ROLE
 
 class main(QObject):

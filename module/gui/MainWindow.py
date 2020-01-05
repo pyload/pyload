@@ -19,14 +19,16 @@
 import logging
 import re
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4.QtCore import QEvent, QPoint, QRect, QRegExp, QSize, QString, Qt, SIGNAL
+from PyQt4.QtGui import (QAbstractSpinBox, QAction, QActionGroup, QCheckBox, QColor, QComboBox, QCursor, QFileDialog, QFrame, QGridLayout,
+                         QHBoxLayout, QIcon, QLabel, QMainWindow, QMenu, QPalette, QPushButton, QScrollArea, QSizePolicy, QSpinBox, QStyle,
+                         QTabWidget, QTextEdit, QVBoxLayout, QWhatsThis, QWidget)
 
 from os.path import join, dirname
 from datetime import datetime
 
-from module.gui.PackageDock import *
-from module.gui.LinkDock import *
+from module.gui.PackageDock import NewPackageDock
+from module.gui.LinkDock import NewLinkDock
 from module.gui.CaptchaDialog import CaptchaDialog
 from module.gui.SettingsWidget import SettingsWidget
 from module.gui.Collector import CollectorView

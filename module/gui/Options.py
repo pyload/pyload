@@ -2,8 +2,10 @@
 
 import logging
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4.QtCore import Qt, SIGNAL
+from PyQt4.QtGui import (QApplication, QCheckBox, QColor, QColorDialog, QComboBox, QDialog, QDialogButtonBox, QFont, QFontDialog,
+                         QGridLayout, QGroupBox, QHBoxLayout, QIcon, QLabel, QLayout, QLineEdit, QPalette, QPushButton, QRadioButton,
+                         QSpinBox, QVBoxLayout)
 
 from os.path import join
 

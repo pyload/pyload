@@ -16,8 +16,10 @@
     @author: mkaay
 """
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4.QtCore import QMutex, QMutexLocker, QStringList, Qt, QTimer, QVariant, SIGNAL
+from PyQt4.QtGui import (QApplication, QCheckBox, QComboBox, QCompleter, QFormLayout, QGroupBox, QHBoxLayout, QLabel,
+                         QLayout, QLineEdit, QPushButton, QScrollArea, QSizePolicy, QSpinBox, QStackedLayout,
+                         QStringListModel, QTabWidget, QVBoxLayout, QWidget)
 
 import logging
 from sip import delete
