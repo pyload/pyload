@@ -441,15 +441,18 @@ class MainWindow(QMainWindow):
         self.startPauseActGrp.addAction(self.actions["status_pause"])
         self.toolbar.addSeparator()
         self.actions["add"] = self.toolbar.addAction(self.appIconSet["add"], "")
-        self.actions["add"].setWhatsThis(whatsThisFormat(_("Add"), _("- Create a new package<br>- Add links to an existing package<br>- Add a container file to the Queue<br>- Add an account")))
+        wt = _("- Create a new package<br>- Add links to an existing package<br>- Add a container file to the Queue<br>- Add an account")
+        self.actions["add"].setWhatsThis(whatsThisFormat(_("Add"), wt))
         self.toolbar.addSeparator()
         self.actions["clipboard"] = self.toolbar.addAction(self.appIconSet["clipboard"], "")
-        self.actions["clipboard"].setWhatsThis(whatsThisFormat(_("Clipboard Watcher"), _("Watches the clipboard, extracts URLs from copied text and creates a package with the URLs or adds the URLs to the New Package Window.")))
+        wt = _("Watches the clipboard, extracts URLs from copied text and creates a package with the URLs or adds the URLs to the New Package Window.")
+        self.actions["clipboard"].setWhatsThis(whatsThisFormat(_("Clipboard Watcher"), wt))
         self.actions["clipboard"].setCheckable(True)
         stretch1 = QWidget()
         stretch1.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.toolbar.addWidget(stretch1)
-        whatsThis = (_("Limit Download Speed") + "<br>" + _("Max Download Speed in kb/s"), _("This is just a shortcut to:") + "<br>" + _("Server Settings") + " -> General -> Download")
+        whatsThis = (_("Limit Download Speed") + "<br>" + _("Max Download Speed in kb/s"),
+                     _("This is just a shortcut to:") + "<br>" + _("Server Settings") + " -> General -> Download")
         self.toolbar_speedLimit_enabled = QCheckBox(_("Speed"))
         self.toolbar_speedLimit_enabled.setWhatsThis(whatsThisFormat(*whatsThis))
         self.toolbar_speedLimit_rate = SpinBox()
@@ -492,9 +495,11 @@ class MainWindow(QMainWindow):
         stretch3.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.toolbar.addWidget(stretch3)
         self.actions["restart_failed"] = self.toolbar.addAction(self.appIconSet["restart"], "")
-        self.actions["restart_failed"].setWhatsThis(whatsThisFormat(_("Restart Failed"), _("Restarts (resumes if supported) all failed, aborted and temporary offline downloads.")))
+        wt = _("Restarts (resumes if supported) all failed, aborted and temporary offline downloads.")
+        self.actions["restart_failed"].setWhatsThis(whatsThisFormat(_("Restart Failed"), wt))
         self.actions["remove_finished"] = self.toolbar.addAction(self.appIconSet["remove"], "")
-        self.actions["remove_finished"].setWhatsThis(whatsThisFormat(_("Remove Finished"), _("Removes all finished downloads from the Queue and the Collector.")))
+        wt = _("Removes all finished downloads from the Queue and the Collector.")
+        self.actions["remove_finished"].setWhatsThis(whatsThisFormat(_("Remove Finished"), wt))
         self.connect(self.toolbar_speedLimit_enabled, SIGNAL("toggled(bool)"), self.slotSpeedLimitStatus)
         self.connect(self.toolbar_speedLimit_rate, SIGNAL("editingFinished()"), self.slotSpeedLimitRate)
         self.connect(self.toolbar_maxParallelDownloads_value, SIGNAL("editingFinished()"), self.slotMaxParallelDownloadsValue)
@@ -631,8 +636,10 @@ class MainWindow(QMainWindow):
         self.queueContext.buttons["deselectall"] = QAction(_("Deselect All"), self.queueContext)
         self.queueContext.buttons["removepackagedupes"] = QAction(self.appIconSet["remove_small"], _("Remove Duplicate Packages"), self.queueContext)
         self.queueContext.buttons["removelinkdupes"] = QAction(self.appIconSet["remove_small"], _("Remove Duplicate Links"), self.queueContext)
-        self.queueContext.buttons["expand"] = QAction(self.style().standardIcon(QStyle.SP_ToolBarHorizontalExtensionButton), _("Expand All"), self.queueContext)
-        self.queueContext.buttons["collapse"] = QAction(self.style().standardIcon(QStyle.SP_ToolBarVerticalExtensionButton), _("Collapse All"), self.queueContext)
+        self.queueContext.buttons["expand"] = QAction(self.style().standardIcon(QStyle.SP_ToolBarHorizontalExtensionButton),
+                                                      _("Expand All"), self.queueContext)
+        self.queueContext.buttons["collapse"] = QAction(self.style().standardIcon(QStyle.SP_ToolBarVerticalExtensionButton),
+                                                        _("Collapse All"), self.queueContext)
         self.queueContext.addAction(self.queueContext.buttons["pull"])
         self.queueContext.addSeparator()
         self.queueContext.buttons["add"] = self.queueContext.addMenu(self.appIconSet["add_small"], _("Add"))
@@ -695,8 +702,10 @@ class MainWindow(QMainWindow):
         self.collectorContext.buttons["deselectall"] = QAction(_("Deselect All"), self.collectorContext)
         self.collectorContext.buttons["removepackagedupes"] = QAction(self.appIconSet["remove_small"], _("Remove Duplicate Packages"), self.collectorContext)
         self.collectorContext.buttons["removelinkdupes"] = QAction(self.appIconSet["remove_small"], _("Remove Duplicate Links"), self.collectorContext)
-        self.collectorContext.buttons["expand"] = QAction(self.style().standardIcon(QStyle.SP_ToolBarHorizontalExtensionButton), _("Expand All"), self.collectorContext)
-        self.collectorContext.buttons["collapse"] = QAction(self.style().standardIcon(QStyle.SP_ToolBarVerticalExtensionButton), _("Collapse All"), self.collectorContext)
+        self.collectorContext.buttons["expand"] = QAction(self.style().standardIcon(QStyle.SP_ToolBarHorizontalExtensionButton),
+                                                          _("Expand All"), self.collectorContext)
+        self.collectorContext.buttons["collapse"] = QAction(self.style().standardIcon(QStyle.SP_ToolBarVerticalExtensionButton),
+                                                            _("Collapse All"), self.collectorContext)
         self.collectorContext.addAction(self.collectorContext.buttons["push"])
         self.collectorContext.addSeparator()
         self.collectorContext.buttons["add"] = self.collectorContext.addMenu(self.appIconSet["add_small"], _("Add"))
@@ -768,7 +777,8 @@ class MainWindow(QMainWindow):
         if self.eD["pStateSig"]:
             self.emit(SIGNAL("mainWindowState"))
         self.eD["pCount"] += 1
-        self.log.debug3("MainWindow.paintEvent:  at %08d msec   cnt: %04d   rect: x:%04d y:%04d w:%04d h:%04d" % (self.time_msec(), self.eD["pCount"], event.rect().x(), event.rect().y(), event.rect().width(), event.rect().height()))
+        self.log.debug3("MainWindow.paintEvent:  at %08d msec   cnt: %04d   rect: x:%04d y:%04d w:%04d h:%04d" %
+                        (self.time_msec(), self.eD["pCount"], event.rect().x(), event.rect().y(), event.rect().width(), event.rect().height()))
         maximized = bool(self.windowState() & Qt.WindowMaximized)
         minimized = bool(self.windowState() & Qt.WindowMinimized)
         if not (maximized or minimized):
@@ -795,18 +805,22 @@ class MainWindow(QMainWindow):
         # got maximize flag toggled
         if maximized:
             if self.log.isEnabledFor(logging.DEBUG3):
-                self.log.debug3("MainWindow.paintEvent: maximized\t\t(%04d, %04d)\t\t\t(%04d, %04d)\t\t[geo]" % (geo.topLeft().x(), geo.topLeft().y(), geo.size().width(), geo.size().height()))
+                self.log.debug3("MainWindow.paintEvent: maximized\t\t(%04d, %04d)\t\t\t(%04d, %04d)\t\t[geo]" %
+                                (geo.topLeft().x(), geo.topLeft().y(), geo.size().width(), geo.size().height()))
                 mrogeo = QRect(self.moveEventOldPos, self.resizeEventOldSize)
-                self.log.debug3("MainWindow.paintEvent:          \t\t(%04d, %04d)\t\t\t(%04d, %04d)\t\t[mrogeo]" % (mrogeo.topLeft().x(), mrogeo.topLeft().y(), mrogeo.size().width(), mrogeo.size().height()))
+                self.log.debug3("MainWindow.paintEvent:          \t\t(%04d, %04d)\t\t\t(%04d, %04d)\t\t[mrogeo]" %
+                                (mrogeo.topLeft().x(), mrogeo.topLeft().y(), mrogeo.size().width(), mrogeo.size().height()))
         else:
-            self.log.debug3("MainWindow.paintEvent: unmaximized\t(%04d, %04d)\t\t\t(%04d, %04d)\t\t[geo]" % (geo.topLeft().x(), geo.topLeft().y(), geo.size().width(), geo.size().height()))
+            self.log.debug3("MainWindow.paintEvent: unmaximized\t(%04d, %04d)\t\t\t(%04d, %04d)\t\t[geo]" %
+                            (geo.topLeft().x(), geo.topLeft().y(), geo.size().width(), geo.size().height()))
         self.eD["lastGeo"] = geo
         self.eD["pLastMax"] = maximized
     
     def moveEvent(self, event):
         self.moveEventOldPos = event.oldPos()
         self.moveEventPos = event.pos()
-        self.log.debug3("MainWindow.moveEvent:   at %08d msec \t\t(%04d, %04d) -> (%04d, %04d)\t----------------------------" % (self.time_msec(), event.oldPos().x(), event.oldPos().y(), event.pos().x(), event.pos().y()))
+        self.log.debug3("MainWindow.moveEvent:   at %08d msec \t\t(%04d, %04d) -> (%04d, %04d)\t----------------------------" %
+                        (self.time_msec(), event.oldPos().x(), event.oldPos().y(), event.pos().x(), event.pos().y()))
         maximized = bool(self.windowState() & Qt.WindowMaximized)
         minimized = bool(self.windowState() & Qt.WindowMinimized)
         if not (maximized or minimized):
@@ -818,7 +832,8 @@ class MainWindow(QMainWindow):
     def resizeEvent(self, event):
         self.resizeEventOldSize = event.oldSize()
         self.resizeEventSize = event.size()
-        self.log.debug3("MainWindow.resizeEvent: at %08d msec \t\t----------------------------\t(%04d, %04d) -> (%04d, %04d)\t" % (self.time_msec(), event.oldSize().width(), event.oldSize().height(), event.size().width(), event.size().height()))
+        self.log.debug3("MainWindow.resizeEvent: at %08d msec \t\t----------------------------\t(%04d, %04d) -> (%04d, %04d)\t" %
+                        (self.time_msec(), event.oldSize().width(), event.oldSize().height(), event.size().width(), event.size().height()))
     
     def changeEvent(self, event):
         if (event.type() == QEvent.WindowStateChange):
@@ -1546,7 +1561,8 @@ class AdvancedSelect(QWidget):
         self.selectBtn = QPushButton(_("Select"))
         self.deselectBtn = QPushButton(_("Deselect"))
         self.linksCb = QCheckBox(_("Links"))
-        self.linksCb.setWhatsThis(whatsThisFormat(self.linksCb.text(), _("Search for links instead of packages.<br>Links are searched in preselected packages or in all packages when there are no packages selected.")))
+        wt = _("Search for links instead of packages.<br>Links are searched in preselected packages or in all packages when there are no packages selected.")
+        self.linksCb.setWhatsThis(whatsThisFormat(self.linksCb.text(), wt))
         self.caseCb = QCheckBox(_("Match case"))
         self.modeCmb = QComboBox()
         self.modeCmb.addItem(_("String"))       ;self.modeIdx.STRING   = 0  # combobox indexes in the order the items are added

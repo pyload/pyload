@@ -162,8 +162,10 @@ class MessageBox(QDialog):
         self.textEdit.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)           # no horizontal scrollbar
         self.textEdit.setLineWrapMode(QTextEdit.NoWrap)
         self.textEdit.setText(text)
-        self.textEdit.setFixedWidth(self.textEdit.document().size().width() + self.textEdit.contentsMargins().left() + self.textEdit.contentsMargins().right())
-        self.textEdit.setFixedHeight(self.textEdit.document().size().height() + self.textEdit.contentsMargins().top() + self.textEdit.contentsMargins().bottom())
+        self.textEdit.setFixedWidth(self.textEdit.document().size().width() + self.textEdit.contentsMargins().left() +
+                                    self.textEdit.contentsMargins().right())
+        self.textEdit.setFixedHeight(self.textEdit.document().size().height() + self.textEdit.contentsMargins().top() +
+                                     self.textEdit.contentsMargins().bottom())
 
         # buttons
         self.buttonBox = QDialogButtonBox()

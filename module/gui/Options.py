@@ -911,7 +911,8 @@ class ColorFixOptions(QDialog):
 
         wt = _(
         "This is a workaround for an issue with displaying disabled window elements on some systems.<br>"
-        "If you can distinguish the buttons 'common button' and 'disabled button' by their coloring, then your system is probably not affected and you can turn of this option.<br><br>"
+        "If you can distinguish the buttons 'common button' and 'disabled button' by their coloring, "
+        "then your system is probably not affected and you can turn of this option.<br><br>"
         "The default alpha channel value is 128"
         )
         self.setWhatsThis(whatsThisFormat(_("Color Fix"), wt))
@@ -1089,7 +1090,8 @@ class TrayOptions(QDialog):
         self.lblIconFileNote = QLabel("<i>" + _("Takes effect on next login.") + "</i>")
         self.lblUrl          = QLabel()
 
-        whatsThis = (self.cbRestoreGeo.text(), _("Additional tweak.<br><br>Can be required on some Ubuntu/Unity desktop environments (Compiz window manager)."))
+        whatsThis = (self.cbRestoreGeo.text(),
+                     _("Additional tweak.<br><br>Can be required on some Ubuntu/Unity desktop environments (Compiz window manager)."))
         self.cbRestoreGeo.setWhatsThis(whatsThisFormat(*whatsThis))
         self.cobIconFile.addItem("24x24")
         self.cobIconFile.addItem("64x64")
@@ -1171,7 +1173,8 @@ class WhatsThisOptions(QDialog):
         QDialog.__init__(self, parent)
         self.log = logging.getLogger("guilog")
 
-        self.defaultColors = (int(QApplication.palette().color(QPalette.Inactive, QPalette.ToolTipText).rgba()), int(QApplication.palette().color(QPalette.Inactive, QPalette.ToolTipBase).rgba()))
+        self.defaultColors = (int(QApplication.palette().color(QPalette.Inactive, QPalette.ToolTipText).rgba()),
+                              int(QApplication.palette().color(QPalette.Inactive, QPalette.ToolTipBase).rgba()))
         self.choosenColors = None
 
         self.settings = {}
@@ -1331,8 +1334,9 @@ class OtherOptions(QDialog):
 
         self.cbRestoreUnmaximizedGeo = QGroupBox(_("Workaround for broken window geometry after unmaximize") + "     ")
         self.cbRestoreUnmaximizedGeo.setCheckable(True)
-        whatsThis = (self.cbRestoreUnmaximizedGeo.title(), _("Due to a bug in the GUI framework (QTBUG-21371) on some platforms, the main window position and/or size does not get correctly restored when unmaximizing a maximized window that was hidden or loaded from previously saved settings."))
-        self.cbRestoreUnmaximizedGeo.setWhatsThis(whatsThisFormat(*whatsThis))
+        wt = _("Due to a bug in the GUI framework (QTBUG-21371) on some platforms, the main window position and/or size does not "
+               "get correctly restored when unmaximizing a maximized window that was hidden or loaded from previously saved settings.")
+        self.cbRestoreUnmaximizedGeo.setWhatsThis(whatsThisFormat(self.cbRestoreUnmaximizedGeo.title(), wt))
 
         self.cbHideShowOnUnmax     = QCheckBox(_("Extra fix for show from tray"))
         self.cbSecondLastNormalGeo = QCheckBox(_("Apply second last known geometry"))
@@ -1340,14 +1344,21 @@ class OtherOptions(QDialog):
         self.cbAlwaysRestore       = QCheckBox(_("Always restore geometry"))
         self.lblUrl                = QLabel()
 
-        whatsThis = (self.cbHideShowOnUnmax.text(), _("Additional tweak, try enable this if<br>the size is correct but the position is slightly shifted<br>after showing the (previously maximized and hidden) application from tray and unmaximizing it again.<br><br>Can be required on some GNOME, Budgie, Cinnamon, MATE or LXDE desktop environments."))
-        self.cbHideShowOnUnmax.setWhatsThis(whatsThisFormat(*whatsThis))
-        whatsThis = (self.cbSecondLastNormalGeo.text(), _("Additional tweak, try enable this if<br>- unmaximize has no effect<br>or<br>- position and/or size is totally wrong<br>after showing the (previously maximized and hidden) application from tray and unmaximizing it again.<br><br>Can be required on some Xfce desktop environments."))
-        self.cbSecondLastNormalGeo.setWhatsThis(whatsThisFormat(*whatsThis))
-        whatsThis = (self.cbHideShowOnStart.text(), _("Additional tweak, try enable this if<br>- unmaximize has no effect<br>or<br>- position and/or size is totally wrong<br>after starting the application maximized (previously exited when maximized) and unmaximizing it.<br><br>Can be required on some Xfce desktop environments."))
-        self.cbHideShowOnStart.setWhatsThis(whatsThisFormat(*whatsThis))
-        whatsThis = (self.cbAlwaysRestore.text(), _("Additional tweak, try enable this if<br>the size is correct but the position is slightly shifted<br>after maximizing and then unmaximizing the application (without been hidden in between).<br><br>Usually not required."))
-        self.cbAlwaysRestore.setWhatsThis(whatsThisFormat(*whatsThis))
+        wt = _("Additional tweak, try enable this if<br>the size is correct but the position is slightly shifted<br>"
+               "after showing the (previously maximized and hidden) application from tray and unmaximizing it again.<br><br>"
+               "Can be required on some GNOME, Budgie, Cinnamon, MATE or LXDE desktop environments.")
+        self.cbHideShowOnUnmax.setWhatsThis(whatsThisFormat(self.cbHideShowOnUnmax.text(), wt))
+        wt = _("Additional tweak, try enable this if<br>- unmaximize has no effect<br>or<br>- position and/or size is totally wrong<br>"
+               "after showing the (previously maximized and hidden) application from tray and unmaximizing it again.<br><br>"
+               "Can be required on some Xfce desktop environments.")
+        self.cbSecondLastNormalGeo.setWhatsThis(whatsThisFormat(self.cbSecondLastNormalGeo.text(), wt))
+        wt = _("Additional tweak, try enable this if<br>- unmaximize has no effect<br>or<br>- position and/or size is totally wrong<br>"
+               "after starting the application maximized (previously exited when maximized) and unmaximizing it.<br><br>"
+               "Can be required on some Xfce desktop environments.")
+        self.cbHideShowOnStart.setWhatsThis(whatsThisFormat(self.cbHideShowOnStart.text(), wt))
+        wt = _("Additional tweak, try enable this if<br>the size is correct but the position is slightly shifted<br>"
+               "after maximizing and then unmaximizing the application (without been hidden in between).<br><br>Usually not required.")
+        self.cbAlwaysRestore.setWhatsThis(whatsThisFormat(self.cbAlwaysRestore.text(), wt))
 
         vboxCb1 = QVBoxLayout()
         vboxCb1.addWidget(self.cbHideShowOnUnmax)
@@ -1357,8 +1368,10 @@ class OtherOptions(QDialog):
         self.cbRestoreUnmaximizedGeo.setLayout(vboxCb1)
 
         self.cbRefreshGeo = QCheckBox(_("Fix for resize"))
-        whatsThis = (self.cbRefreshGeo.text(), _("Try enable this if the mainwindow gets slightly shifted when resizing it the first time after starting the application or when resizing it after showing the application from tray.<br><br>Can be required on some LXDE desktop environments."))
-        self.cbRefreshGeo.setWhatsThis(whatsThisFormat(*whatsThis))
+        wt = _("Try enable this if the mainwindow gets slightly shifted when resizing it the first time after starting the "
+               "application or when resizing it after showing the application from tray.<br><br>"
+               "Can be required on some LXDE desktop environments.")
+        self.cbRefreshGeo.setWhatsThis(whatsThisFormat(self.cbRefreshGeo.text(), wt))
 
         desctext = "<i>" + _("Hints for some desktop environments: ") + "</i>"
         urltext  = "Options.txt"

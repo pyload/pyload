@@ -553,7 +553,8 @@ class CollectorModel(QAbstractItemModel):
                             child.update(info)
                             if not info.status == DownloadStatus.Downloading:
                                 child.data["downloading"] = None
-                            self.emit(SIGNAL("dataChanged(const QModelIndex &, const QModelIndex &)"), self.index(k, 0, self.index(p, 0)), self.index(k, self.cols, self.index(p, self.cols)))
+                            self.emit(SIGNAL("dataChanged(const QModelIndex &, const QModelIndex &)"),
+                                      self.index(k, 0, self.index(p, 0)), self.index(k, self.cols, self.index(p, self.cols)))
                             self.log.debug1("%s.insertEvent: Existing link updated, fid:%d in pid:%d" % (self.cname, child.id, package.id))
                             if orderChanged:
                                 self.log.warning("%s.insertEvent: Existing link order attribute value differs, fid:%d in pid:%d" %
@@ -627,7 +628,8 @@ class CollectorModel(QAbstractItemModel):
                             child.update(info)
                             if not info.status == DownloadStatus.Downloading:
                                 child.data["downloading"] = None
-                            self.emit(SIGNAL("dataChanged(const QModelIndex &, const QModelIndex &)"), self.index(k, 0, self.index(p, 0)), self.index(k, self.cols, self.index(p, self.cols)))
+                            self.emit(SIGNAL("dataChanged(const QModelIndex &, const QModelIndex &)"),
+                                      self.index(k, 0, self.index(p, 0)), self.index(k, self.cols, self.index(p, self.cols)))
                             self.log.debug1("%s.updateEvent: Link updated, fid:%d in pid:%d" % (self.cname, child.id, package.id))
                             if orderChanged:
                                 self.log.warning("%s.updateEvent: Link order attribute changed, fid:%d in pid:%d" % (self.cname, child.id, package.id))
@@ -671,7 +673,8 @@ class CollectorModel(QAbstractItemModel):
                                 child.update(filedata)
                                 if not filedata.status == DownloadStatus.Downloading:
                                     child.data["downloading"] = None
-                                self.emit(SIGNAL("dataChanged(const QModelIndex &, const QModelIndex &)"), self.index(k, 0, self.index(p, 0)), self.index(k, self.cols, self.index(p, self.cols)))
+                                self.emit(SIGNAL("dataChanged(const QModelIndex &, const QModelIndex &)"),
+                                          self.index(k, 0, self.index(p, 0)), self.index(k, self.cols, self.index(p, self.cols)))
                                 self.log.debug0("%s.updateEvent: Link manually updated, fid:%d in pid:%d" % (self.cname, child.id, package.id))
                                 break
                         if not linkFound:
@@ -1000,7 +1003,8 @@ class CollectorModel(QAbstractItemModel):
                             else:
                                 if smodel.isSelected(index): smodel.select(index, QItemSelectionModel.Deselect | QItemSelectionModel.Rows)
                             numOfmatches += 1
-                            self.log.debug9("%s.advancedSelect:selectedLink:   deselect:%s   name:'%s'   pid:%d   fid:%d" % (self.cname, deselect, name, package.id, link.id))
+                            self.log.debug9("%s.advancedSelect:selectedLink:   deselect:%s   name:'%s'   pid:%d   fid:%d" %
+                                            (self.cname, deselect, name, package.id, link.id))
                     noPackagesSelected = False
                 elif not isinstance(package, Link):
                     raise TypeError("%s: Unknown item instance" % self.cname)
@@ -1244,7 +1248,8 @@ class CollectorModel(QAbstractItemModel):
             Natural sorting of package/link names
                 items: [[name, id], ..., ....]
         """
-        sortedItems = sorted(items, key = lambda il: [int(t) if t.isdigit() else t.lower() for t in re.split('(\d+)', il[0])])   # http://stackoverflow.com/a/16090640
+        # natutral sort function with lambda: http://stackoverflow.com/a/16090640
+        sortedItems = sorted(items, key = lambda il: [int(t) if t.isdigit() else t.lower() for t in re.split('(\d+)', il[0])])
         alreadySorted = True
         for i in xrange(len(items)):
             if items[i][1] != sortedItems[i][1]:   # id
@@ -1658,7 +1663,8 @@ class DragAndDrop(QObject):
                 self.log.debug4("%s.getSrcInfo: PACK:   name:'%s'   order:'%s'   pid:%s" % (self.cname, src.data["name"], src.data["order"], src.id))
             elif isinstance(src, Link):
                 self.srcLinksCnt += 1
-                self.log.debug4("%s.getSrcInfo: LINK:   name:'%s'   order:'%s'   id:%d   pid:%s" % (self.cname, src.data["name"], src.data["order"], src.id, src.data["package"]))
+                self.log.debug4("%s.getSrcInfo: LINK:   name:'%s'   order:'%s'   id:%d   pid:%s" %
+                                (self.cname, src.data["name"], src.data["order"], src.id, src.data["package"]))
             else:
                 raise TypeError("%s: Unknown item instance" % self.cname)
         self.log.debug4("%s.getSrcInfo: Selection count:   PACKS:%d   LINKS:%d" % (self.cname, self.srcPacksCnt, self.srcLinksCnt))
@@ -1673,7 +1679,8 @@ class DragAndDrop(QObject):
                 if not isinstance(src, Link):
                     continue
                 self.srcLinksSamePackId = src.data["package"]   # PackageID (int)
-                self.log.debug4("%s.getSrcInfo: check links:   name:'%s'   order:'%s'   id:%d   pid:%s" % (self.cname, src.data["name"], src.data["order"], src.id, self.srcLinksSamePackId))
+                self.log.debug4("%s.getSrcInfo: check links:   name:'%s'   order:'%s'   id:%d   pid:%s" %
+                                (self.cname, src.data["name"], src.data["order"], src.id, self.srcLinksSamePackId))
                 if self.srcLinksSamePackId != lastpid:
                     lastpid = self.srcLinksSamePackId
                     pidcnt += 1
