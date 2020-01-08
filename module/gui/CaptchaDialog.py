@@ -105,9 +105,9 @@ class CaptchaDialog(QDialog):
         self.infoLabel.setText("")
         errMsg = None
 
-        if self.imgAnimation != None and self.imgAnimation.isValid():
+        if self.imgAnimation is not None and self.imgAnimation.isValid():
             self.imgAnimation.stop()
-        if self.imgDataBuffer != None and self.imgDataBuffer.isOpen():
+        if self.imgDataBuffer is not None and self.imgDataBuffer.isOpen():
             self.imgDataBuffer.close()
 
         (dummy, encoded) = data['src'].split(",", 1)   # separate the metadata from the image data
@@ -144,7 +144,7 @@ class CaptchaDialog(QDialog):
             self.imgDataBuffer.close()
             errMsg = "setupCaptcha: Could not load the captcha image (1)"
 
-        if errMsg != None:
+        if errMsg is not None:
             self.log.error(errMsg)
             self.emit(SIGNAL("setMovie(QMovie *)"), QMovie())
             self.infoLabel.setText("*** ERROR ***")

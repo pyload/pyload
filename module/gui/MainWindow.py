@@ -19,9 +19,9 @@
 import logging
 import re
 
-from PyQt4.QtCore import QEvent, QPoint, QRect, QRegExp, QSize, QString, Qt, SIGNAL
+from PyQt4.QtCore import QEvent, QRect, QSize, QString, Qt, SIGNAL
 from PyQt4.QtGui import (QAbstractSpinBox, QAction, QActionGroup, QCheckBox, QColor, QComboBox, QCursor, QFileDialog, QFrame, QGridLayout,
-                         QHBoxLayout, QIcon, QLabel, QMainWindow, QMenu, QPalette, QPushButton, QScrollArea, QSizePolicy, QSpinBox, QStyle,
+                         QHBoxLayout, QIcon, QLabel, QMainWindow, QMenu, QPushButton, QScrollArea, QSizePolicy, QSpinBox, QStyle,
                          QTabWidget, QTextEdit, QVBoxLayout, QWhatsThis, QWidget)
 
 from os.path import join, dirname
@@ -431,7 +431,11 @@ class MainWindow(QMainWindow):
         self.statusStopIconNoPause = self.appIconSet["stop_nopause"]
         self.actions["status_stop"].setIcon(self.statusStopIcon)
         self.actions["status_pause"] = self.toolbar.addAction(self.appIconSet["pause"], "")
-        self.actions["status_pause"].setWhatsThis(whatsThisFormat(_("Pause"), _("Sets the server status to 'Paused'.<br>When the server is paused, no further downloads will be started. Ongoing downloads continue.")))
+        wt = _(
+        "Sets the server status to 'Paused'.<br>When the server is paused, "
+        "no further downloads will be started. Ongoing downloads continue."
+        )
+        self.actions["status_pause"].setWhatsThis(whatsThisFormat(_("Pause"), wt))
         self.startPauseActGrp = QActionGroup(self.toolbar)
         self.startPauseActGrp.addAction(self.actions["status_start"])
         self.startPauseActGrp.addAction(self.actions["status_pause"])

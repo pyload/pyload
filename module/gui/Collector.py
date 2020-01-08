@@ -119,7 +119,8 @@ class CollectorModel(QAbstractItemModel):
             else:
                 raise TypeError("Unknown item instance")
         allPacksCnt = len(self._data)
-        self.log.debug8("%s.getSelectionInfo took %dms, packsCnt:%d linksCnt:%d downloading:%s allPacksCnt:%d" % (self.cname, self.time_msec() - func_start_time, packsCnt, linksCnt, downloading, allPacksCnt))
+        self.log.debug8("%s.getSelectionInfo took %dms, packsCnt:%d linksCnt:%d downloading:%s allPacksCnt:%d" %
+                        (self.cname, self.time_msec() - func_start_time, packsCnt, linksCnt, downloading, allPacksCnt))
         return (packsCnt, linksCnt, downloading, allPacksCnt)
     
     def getSelection(self, deselect, linksOfPacks):
@@ -287,7 +288,7 @@ class CollectorModel(QAbstractItemModel):
         for ids in self.selectedItems:
             pid = ids[0]
             fid = ids[1]
-            itemIsPackage = (fid == None)
+            itemIsPackage = fid is None
             index = None
             for p, package in enumerate(self._data):
                 if package.id == pid:
@@ -312,7 +313,8 @@ class CollectorModel(QAbstractItemModel):
             elif itemIsPackage:
                 self.log.warning("%s.applyViewItemStates:selectedItem: Prevoiusly selected package not found, pid:%d" % (self.cname, pid))
             else:
-                self.log.warning("%s.applyViewItemStates:selectedItem: Prevoiusly selected link not found, fid:%s (in package pid:%d)" % (self.cname, str(fid), pid))
+                self.log.warning("%s.applyViewItemStates:selectedItem: Prevoiusly selected link not found, fid:%s (in package pid:%d)" %
+                                 (self.cname, str(fid), pid))
         smodel.select(itemSel, QItemSelectionModel.Select)
         self.log.debug8("%s.applyViewItemStates took %dms" % (self.cname, self.time_msec() - func_start_time))
     
@@ -458,7 +460,8 @@ class CollectorModel(QAbstractItemModel):
                 if numErrors == maxErrors: self.log.error("%s.fullReloadCheck: Aborted, too many errors." % self.cname); return numErrors
             if package.children[0].data["order"] != 0:
                 self.log.error("%s.fullReloadCheck: Non-zero link order found in package '%s' with id:%d," % (self.cname, package.data["name"], package.id))
-                self.log.error(indent +            "order number 0 expected for first link '%s' with id:%d," % (package.children[0].data["name"], package.children[0].id))
+                self.log.error(indent +            "order number 0 expected for first link '%s' with id:%d," %
+                               (package.children[0].data["name"], package.children[0].id))
                 self.log.error(indent +            "skip checking remaining links of this package.")
                 numErrors += 1
                 if numErrors == maxErrors: self.log.error("%s.fullReloadCheck: Aborted, too many errors." % self.cname); return numErrors
@@ -466,7 +469,8 @@ class CollectorModel(QAbstractItemModel):
             # can we skip testing children[0] here ???
             for l, link in enumerate(package.children):
                 if link.data["order"] != l:
-                    self.log.error("%s.fullReloadCheck: Non-sequential link order found in package '%s' with id:%d," % (self.cname, package.data["name"], package.id))
+                    self.log.error("%s.fullReloadCheck: Non-sequential link order found in package '%s' with id:%d," %
+                                   (self.cname, package.data["name"], package.id))
                     self.log.error(indent +            "order number %d expected for link '%s' with id:%d," % (l, link.data["name"], link.id))
                     self.log.error(indent +            "skip checking remaining links of this package.")
                     numErrors += 1
@@ -500,7 +504,8 @@ class CollectorModel(QAbstractItemModel):
                             child.update(info)  # child full update, updating just the order attribute causes crashes?
                             if not info.status == DownloadStatus.Downloading:
                                 child.data["downloading"] = None
-                            self.emit(SIGNAL("dataChanged(const QModelIndex &, const QModelIndex &)"), self.index(k, 0, self.index(p, 0)), self.index(k, self.cols, self.index(p, self.cols)))
+                            self.emit(SIGNAL("dataChanged(const QModelIndex &, const QModelIndex &)"),
+                                      self.index(k, 0, self.index(p, 0)), self.index(k, self.cols, self.index(p, self.cols)))
                             self.log.debug0("%s.removeEvent: Link manually updated, fid:%d in pid:%d" % (self.cname, child.id, package.id))
                         self.emit(SIGNAL("layoutAboutToBeChanged()"))
                         package.sortChildren()
@@ -551,7 +556,8 @@ class CollectorModel(QAbstractItemModel):
                             self.emit(SIGNAL("dataChanged(const QModelIndex &, const QModelIndex &)"), self.index(k, 0, self.index(p, 0)), self.index(k, self.cols, self.index(p, self.cols)))
                             self.log.debug1("%s.insertEvent: Existing link updated, fid:%d in pid:%d" % (self.cname, child.id, package.id))
                             if orderChanged:
-                                self.log.warning("%s.insertEvent: Existing link order attribute value differs, fid:%d in pid:%d" % (self.cname, child.id, package.id))
+                                self.log.warning("%s.insertEvent: Existing link order attribute value differs, fid:%d in pid:%d" %
+                                                 (self.cname, child.id, package.id))
                                 self.emit(SIGNAL("layoutAboutToBeChanged()"))
                                 package.sortChildren()
                                 self.emit(SIGNAL("layoutChanged()"))
@@ -660,7 +666,8 @@ class CollectorModel(QAbstractItemModel):
                                 linkFound = True
                                 if filedata.order != child.data["order"]:
                                     orderChanged = True
-                                    self.log.warning("%s.updateEvent: Manual link update: Order attribute value differs, fid:%d in pid:%d" % (self.cname, child.id, package.id))
+                                    self.log.warning("%s.updateEvent: Manual link update: Order attribute value differs, fid:%d in pid:%d" %
+                                                     (self.cname, child.id, package.id))
                                 child.update(filedata)
                                 if not filedata.status == DownloadStatus.Downloading:
                                     child.data["downloading"] = None
@@ -668,7 +675,8 @@ class CollectorModel(QAbstractItemModel):
                                 self.log.debug0("%s.updateEvent: Link manually updated, fid:%d in pid:%d" % (self.cname, child.id, package.id))
                                 break
                         if not linkFound:
-                            self.log.debug2("%s.updateEvent: Manual link update: Link not found in package data received from the server, fid:%d in pid:%d" % (self.cname, child.id, package.id))
+                            self.log.debug2("%s.updateEvent: Manual link update: Link not found in package data received from the server, fid:%d in pid:%d" %
+                                            (self.cname, child.id, package.id))
                             self.setDirty(False)
                             return
                     if orderChanged:
@@ -1015,7 +1023,8 @@ class CollectorModel(QAbstractItemModel):
                             else:
                                 if smodel.isSelected(index): smodel.select(index, QItemSelectionModel.Deselect | QItemSelectionModel.Rows)
                             numOfmatches += 1
-                            self.log.debug9("%s.advancedSelect:selectedLink:   deselect:%s   name:'%s'   pid:%d   fid:%d" % (self.cname, deselect, name, package.id, link.id))
+                            self.log.debug9("%s.advancedSelect:selectedLink:   deselect:%s   name:'%s'   pid:%d   fid:%d" %
+                                            (self.cname, deselect, name, package.id, link.id))
         
         # select packages
         else:

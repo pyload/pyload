@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from PyQt4.QtCore import QByteArray, QObject, Qt, QTimer, SIGNAL
-from PyQt4.QtGui import (QApplication, QColor, QDialog, QDialogButtonBox, QFrame, QGridLayout, QHBoxLayout, QIcon, QIconEngine, QLabel, QLineEdit,
-                         QPainter, QPalette, QPixmap, QPushButton, QSpacerItem, QStyle, QTextEdit, QVBoxLayout, QWhatsThis)
+from PyQt4.QtGui import (QApplication, QColor, QDialog, QDialogButtonBox, QFrame, QGridLayout, QHBoxLayout, QIcon, QLabel, QLineEdit,
+                         QPalette, QPixmap, QPushButton, QSpacerItem, QStyle, QTextEdit, QVBoxLayout, QWhatsThis)
 
 from os.path import join
 from bisect import bisect_left, bisect_right
@@ -237,7 +237,8 @@ class MessageBox(QDialog):
             self.textEdit.setLineWrapMode(QTextEdit.WidgetWidth)
             self.textEdit.clear()
             self.textEdit.setText(text) # setText again to update the document geometry
-            self.textEdit.setFixedHeight(self.textEdit.document().size().height() + self.textEdit.contentsMargins().top() + self.textEdit.contentsMargins().bottom())
+            self.textEdit.setFixedHeight(self.textEdit.document().size().height() + self.textEdit.contentsMargins().top() +
+                                         self.textEdit.contentsMargins().bottom())
             self.log.debug8("MessageBox.__init__: maxWidth exceeded, using line wrap mode")
 
         self.adjustSize()
@@ -290,6 +291,7 @@ class IconThemes(QObject):
             self.loadLineAwesome(appIconSet, lineAwesomeColor)
         return appIconSet
 
+    @classmethod
     def loadClassic(self, appIconSet):
         p = join(pypath, "icons")
         appIconSet["start"]         = QIcon(join(p, "toolbar_start.png"))
@@ -384,6 +386,7 @@ class IconThemes(QObject):
         appIconSet["restart_small"] = t(ic,f, 64,  "refresh",        6,   0,  -7, color)
         appIconSet["remove_small"]  = t(ic,f, 64,  "minus",         12,   0,  -7, color)
 
+    @classmethod
     def ttfGlyph2QIcon(self, iconcodes, fontfile, size, name, scale, offsetX, offsetY, color):
         # convert ttf glyph to QIcon
         from PIL import Image, ImageFont, ImageDraw, ImageQt

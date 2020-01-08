@@ -248,8 +248,11 @@ class ClickNLoadForwarderOptions(QDialog):
         lblSta = QLabel(_("Status"))
         self.lblStatus = LineView("Unknown")
         self.lblStatus.setAlignment(Qt.AlignHCenter)
-
-        whatsThis = whatsThisFormat(self.lblFrom.text(), _("This should usually stay on port 9666. At least Firefox with FlashGot only works reliable with its default address setting:<br>http://127.0.0.1:9666/flashgot"))
+        wt = _(
+        "This should usually stay on port 9666. At least Firefox with FlashGot only works reliable with its default address setting:<br>"
+        "http://127.0.0.1:9666/flashgot"
+        )
+        whatsThis = whatsThisFormat(self.lblFrom.text(), wt)
         self.lblFrom.setWhatsThis(whatsThis)
         self.sbFromPort.setWhatsThis(whatsThis)
         whatsThis = whatsThisFormat(self.cbGetPort.text(), _("Needs") + " '" + _("Settings") + "'" + " (SETTINGS) " + _("permission on the server."))

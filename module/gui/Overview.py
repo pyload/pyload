@@ -17,7 +17,7 @@
 """
 
 from PyQt4.QtCore import QAbstractListModel, QModelIndex, QSize, QString, Qt, QVariant
-from PyQt4.QtGui import QApplication, QItemDelegate, QListView, QPalette, QStyle, QStyleOptionProgressBarV2
+from PyQt4.QtGui import QApplication, QItemDelegate, QListView, QStyle, QStyleOptionProgressBarV2
 
 import logging
 from module.remote.thriftbackend.ThriftClient import DownloadStatus
@@ -106,7 +106,9 @@ class OverviewModel(QAbstractListModel):
         return len(self.packages)
     
     def data(self, index, role=Qt.DisplayRole):
-        if role in [OverviewModel.PackageName, OverviewModel.Progress, OverviewModel.PartsFinished, OverviewModel.Parts, OverviewModel.ETA, OverviewModel.Speed, OverviewModel.CurrentSize, OverviewModel.MaxSize, OverviewModel.Status]:
+        if role in [OverviewModel.PackageName, OverviewModel.Progress, OverviewModel.PartsFinished,
+                    OverviewModel.Parts, OverviewModel.ETA, OverviewModel.Speed, OverviewModel.CurrentSize,
+                    OverviewModel.MaxSize, OverviewModel.Status]:
             return QVariant(self.packages[index.row()][role])
         return QVariant()
     

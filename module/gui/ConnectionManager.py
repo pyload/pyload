@@ -60,7 +60,11 @@ class ConnectionManager(QDialog):
         self.btnConnect.setDefault(True)
         if self.disable_connect:
             self.btnConnect.setEnabled(False)
-            self.btnConnect.setToolTip(_("Cannot connect when the internal server was running or has failed to start.\nPlease close this window and restart the application."))
+            tt = _(
+            "Cannot connect when the internal server was running or has failed to start.\n"
+            "Please close this window and restart the application."
+            )
+            self.btnConnect.setToolTip(tt)
         
         buttonLayout.addWidget(self.btnNew)
         buttonLayout.addWidget(self.btnEdit)
@@ -114,7 +118,8 @@ class ConnectionManager(QDialog):
     
     def slotNew(self):
         self.edit.setWindowTitle(_("New"))
-        data = {"id":uuid().hex, "type":"remote", "default":False, "name":"", "host":"", "port":7227, "user":"", "password":"", "cnlpf":False, "cnlpfPort":9666, "cnlpfGetPort":False}
+        data = {"id":uuid().hex, "type":"remote", "default":False, "name":"", "host":"", "port":7227,
+                "user":"", "password":"", "cnlpf":False, "cnlpfPort":9666, "cnlpfGetPort":False}
         self.edit.setData(data)
         self.edit.controls["name"].setFocus(Qt.OtherFocusReason)
         self.edit.exec_()
@@ -256,7 +261,11 @@ class ConnectionManager(QDialog):
             
             name = QLineEdit()
             typeLocal    = QRadioButton(_("Local"))
-            typeLocal.setWhatsThis(whatsThisFormat(_("Local"), _("Use this for administrator permissions on a local server that requires no authentication ('No authentication on local connections').")))
+            wt = _(
+            "Use this for administrator permissions on a local server that requires no authentication "
+            "('No authentication on local connections')."
+            )
+            typeLocal.setWhatsThis(whatsThisFormat(_("Local"), wt))
             typeInternal = QRadioButton(_("Internal"))
             typeInternal.setWhatsThis(whatsThisFormat(_("Internal"), _("Starts and connects to the internal server.")))
             typeRemote   = QRadioButton(_("Remote"))
@@ -300,7 +309,8 @@ class ConnectionManager(QDialog):
             cnlpfPort = QSpinBox()
             cnlpfPort.setRange(1, 65535)
             cnlpfGetPort = QCheckBox(_("Get Remote Port from Server Settings"))
-            cnlpfGetPort.setWhatsThis(whatsThisFormat(_("Get Remote Port from Server Settings"), _("Needs") + " '" + _("Settings") + "'" + " (SETTINGS) " + _("permission on the server.")))
+            cnlpfGetPort.setWhatsThis(whatsThisFormat(_("Get Remote Port from Server Settings"), _("Needs") + " '" + _("Settings") + "'" +
+                                                        " (SETTINGS) " + _("permission on the server.")))
             
             grid2.addWidget(cnlpfPortLabel, 0, 0, 1, 1)
             grid2.addWidget(cnlpfPort,      0, 1, 1, 1)

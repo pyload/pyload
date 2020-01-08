@@ -23,7 +23,7 @@ import logging
 from time import time
 
 from module.gui.Collector import CollectorModel, Package, Link, CollectorView
-from module.remote.thriftbackend.ThriftClient import Destination, DownloadStatus
+from module.remote.thriftbackend.ThriftClient import Destination, PackageDoesNotExists, DownloadStatus
 from module.utils import formatSize
 from module.gui.Tools import whatsThisFormat
 
@@ -190,7 +190,8 @@ class QueueModel(CollectorModel):
                     }
                     child.data["downloading"] = dd
                     k = pack.getChildKey(d.fid)
-                    self.emit(SIGNAL("dataChanged(const QModelIndex &, const QModelIndex &)"), self.index(k, 0, self.index(p, 0)), self.index(k, self.cols, self.index(p, self.cols)))
+                    self.emit(SIGNAL("dataChanged(const QModelIndex &, const QModelIndex &)"),
+                              self.index(k, 0, self.index(p, 0)), self.index(k, self.cols, self.index(p, self.cols)))
                     del downloading[idx] #might speed up things when there are many files in the queue
         packageCount = len(self._data)
         fileCount = 0
@@ -230,7 +231,7 @@ class QueueModel(CollectorModel):
         """
             returns time to wait, caches startingtime to provide progress
         """
-        locker = QMutexLocker(self.mutex)
+        QMutexLocker(self.mutex)
         if isinstance(item, Link):
             if item.data["status"] == DownloadStatus.Waiting and item.data["downloading"]:
                 until = float(item.data["downloading"]["wait_until"])
@@ -258,7 +259,7 @@ class QueueModel(CollectorModel):
             it provides an option to not lock
         """
         if locked:
-            locker = QMutexLocker(self.mutex)
+            QMutexLocker(self.mutex)
         if isinstance(item, Link):
             try:
                 if item.data["status"] == DownloadStatus.Finished:
@@ -493,7 +494,7 @@ class QueueProgressBarDelegate(QItemDelegate):
             opts.rect.setHeight(option.rect.height()-1)
             opts.textVisible = True
             opts.textAlignment = Qt.AlignCenter
-            if not wait is None:
+            if wait is not None:
                 opts.text = QString(_("waiting %d seconds") % wait)
             else:
                 opts.text = QString.number(opts.progress) + "%"
