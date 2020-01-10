@@ -26,7 +26,7 @@ def parse_fileInfo(klass, url="", html=""):
 class Base(Plugin):
     __name__ = "Base"
     __type__ = "base"
-    __version__ = "0.34"
+    __version__ = "0.35"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -478,16 +478,15 @@ class Base(Plugin):
         self.captcha.invalid(msg)
         self.retry(attemps, wait, msg=_("Retry Captcha"), msgfail=msgfail)
 
-    def fixurl(self, url, baseurl=None, unquote=True):
-        url = fixurl(url, unquote=True)
-        baseurl = fixurl(baseurl or self.pyfile.url, unquote=True)
+    def fixurl(self, url, baseurl=None):
+        baseurl = baseurl or self.pyfile.url
 
         if not urlparse.urlparse(url).scheme:
             url_p = urlparse.urlparse(baseurl)
             baseurl = "%s://%s" % (url_p.scheme, url_p.netloc)
             url = urlparse.urljoin(baseurl, url)
 
-        return fixurl(url, unquote)
+        return url
 
     def load(self, *args, **kwargs):
         self.check_status()

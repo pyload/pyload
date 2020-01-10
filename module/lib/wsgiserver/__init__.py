@@ -1139,7 +1139,7 @@ class HTTPConnection(object):
         self.environ = self.environ.copy()
         self.environ.update(environ)
         
-        if SSL and isinstance(sock, SSL.ConnectionType):
+        if SSL and isinstance(sock, SSL.Connection):
             timeout = sock.gettimeout()
             self.rfile = SSL_fileobject(sock, "rb", self.rbufsize)
             self.rfile.ssl_timeout = timeout
@@ -1360,7 +1360,7 @@ class ThreadPool(object):
                             # Forcibly shut down the socket.
                             c = worker.conn
                             if c and not c.rfile.closed:
-                                if SSL and isinstance(c.socket, SSL.ConnectionType):
+                                if SSL and isinstance(c.socket, SSL.Connection):
                                     # pyOpenSSL.socket.shutdown takes no args
                                     c.socket.shutdown()
                                 else:

@@ -9,12 +9,13 @@ from ..internal.MultiAccount import MultiAccount
 class AlldebridCom(MultiAccount):
     __name__ = "AlldebridCom"
     __type__ = "account"
-    __version__ = "0.42"
+    __version__ = "0.43"
     __status__ = "testing"
 
     __config__ = [("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),
                   ("mh_list", "str", "Hoster list (comma separated)", ""),
-                  ("mh_interval", "int", "Reload interval in hours", 12)]
+                  ("mh_interval", "int", "Reload interval in hours", 12),
+                  ("ignore_status", "bool", "Treat all hosters as available (ignore status field)", False)]
 
     __description__ = """AllDebrid.com account plugin"""
     __license__ = "GPLv3"
@@ -36,10 +37,11 @@ class AlldebridCom(MultiAccount):
             return []
 
         else:
+            valid_statuses = (True, False) if self.config.get("ignore_status") is True else (True,)
             return reduce(lambda x, y: x + y,
                           [[_h['domain']] + _h.get('altDomains', [])
                            for _h in json_data['hosts'].values()
-                           if _h['status'] is True])
+                           if _h['status'] in valid_statuses])
 
     def grab_info(self, user, password, data):
         json_data = self.api_response("user/login", token=password)

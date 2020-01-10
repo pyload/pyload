@@ -6,14 +6,41 @@ import re
 import subprocess
 import time
 import urllib
+import urlparse
 from xml.dom.minidom import parseString as parse_xml
 
 from module.network.CookieJar import CookieJar
 from module.network.HTTPRequest import HTTPRequest
 
 from ..internal.Hoster import Hoster
-from ..internal.misc import exists, isexecutable, json, reduce, renice, replace_patterns, which
+from ..internal.misc import exists, isexecutable, json, reduce, renice, replace_patterns, uniqify, which
 from ..internal.Plugin import Abort, Skip
+
+
+def try_get(data, *path):
+    def get_one(src, what):
+        if isinstance(src, dict) and isinstance(what, basestring):
+            return src.get(what, None)
+        elif isinstance(src, list) and type(what) is int:
+            try:
+                return src[what]
+            except IndexError:
+                return None
+        elif callable(what):
+            try:
+                return what(src)
+            except Exception:
+                return None
+        else:
+            return None
+
+    res = get_one(data, path[0])
+    for item in path[1:]:
+        if res is None:
+            break
+        res = get_one(res, item)
+
+    return res
 
 
 class BIGHTTPRequest(HTTPRequest):
@@ -206,7 +233,7 @@ class Ffmpeg(object):
 class YoutubeCom(Hoster):
     __name__ = "YoutubeCom"
     __type__ = "hoster"
-    __version__ = "0.71"
+    __version__ = "0.73"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:[^/]*\.)?(?:youtu\.be/|youtube\.com/watch\?(?:.*&)?v=)[\w\-]+'
@@ -298,32 +325,37 @@ class YoutubeCom(Hoster):
         #     player_url = json.loads(re.search(r'"assets":.+?"js":\s*("[^"]+")',self.data).group(1))
         # except (AttributeError, IndexError):
         #     self.fail(_("Player URL not found"))
-        player_url = self.player_config['assets']['js']
-
-        if player_url.startswith("//"):
-            player_url = 'https:' + player_url
+        player_url = self.fixurl(self.player_config['assets']['js'])
 
         if not player_url.endswith(".js"):
             self.fail(_("Unsupported player type %s") % player_url)
 
+        m = re.match(r'.*?-([a-zA-Z0-9_-]+)(?:/watch_as3|/html5player(?:-new)?|(?:/[a-z]{2,3}_[A-Z]{2})?/base)?\.[a-z]+$', player_url)
+        if m is None:
+            self.fail(_("Cannot identify player ID %s") % player_url)
+
+        sig_cache_id = m.group(1) + "_" + ".".join(str(len(part)) for part in encrypted_sig.split('.'))
+
         cache_info = self.db.retrieve("cache")
         cache_dirty = False
 
-        if cache_info is None or 'version' not in cache_info or cache_info[
-                'version'] != self.__version__:
+        if cache_info is None or cache_info.get('version') != self.__version__:
             cache_info = {'version': self.__version__,
                           'cache': {}}
             cache_dirty = True
 
-        if player_url in cache_info['cache'] and time.time() < cache_info['cache'][player_url]['time'] + 24 * 60 * 60:
+        if sig_cache_id in cache_info['cache'] and time.time() < cache_info['cache'][sig_cache_id]['time'] + 24 * 60 * 60:
             self.log_debug("Using cached decode function to decrypt the URL")
-            decrypt_func = lambda s: ''.join(s[_i] for _i in cache_info['cache'][player_url]['decrypt_map'])
+            decrypt_func = lambda s: ''.join(s[_i] for _i in cache_info['cache'][sig_cache_id]['decrypt_map'])
             decrypted_sig = decrypt_func(encrypted_sig)
 
         else:
             player_data = self.load(self.fixurl(player_url))
 
-            m = re.search(r'\.sig\|\|(?P<sig>[a-zA-Z0-9$]+)\(', player_data) or \
+            m = re.search(r'\b[cs]\s*&&\s*[adf]\.set\([^,]+\s*,\s*encodeURIComponent\s*\(\s*(?P<sig>[a-zA-Z0-9$]+)\(', player_data) or \
+                re.search(r'\b[a-zA-Z0-9]+\s*&&\s*[a-zA-Z0-9]+\.set\([^,]+\s*,\s*encodeURIComponent\s*\(\s*(?P<sig>[a-zA-Z0-9$]+)\(', player_data) or \
+                re.search(r'(?P<sig>[a-zA-Z0-9$]+)\s*=\s*function\(\s*a\s*\)\s*{\s*a\s*=\s*a\.split\(\s*""\s*\)', player_data) or \
+                re.search(r'\.sig\|\|(?P<sig>[a-zA-Z0-9$]+)\(', player_data) or \
                 re.search(r'\bc\s*&&\s*d\.set\([^,]+\s*,\s*\([^)]*\)\s*\(\s*(?P<sig>[a-zA-Z0-9$]+)\(', player_data) or \
                 re.search(r'(["\'])signature\1\s*,\s*(?P<sig>[a-zA-Z0-9$]+)\(', player_data)
 
@@ -340,8 +372,8 @@ class YoutubeCom(Hoster):
                 #: Since Youtube just scrambles the order of the characters in the signature
                 #: and does not change any byte value, we can store just a transformation map as a cached function
                 decrypt_map = [ord(c) for c in decrypt_func(''.join(map(unichr, range(len(encrypted_sig)))))]
-                cache_info['cache'][player_url] = {'decrypt_map': decrypt_map,
-                                                   'time': time.time()}
+                cache_info['cache'][sig_cache_id] = {'decrypt_map': decrypt_map,
+                                                     'time': time.time()}
                 cache_dirty = True
 
                 decrypted_sig = decrypt_func(encrypted_sig)
@@ -420,7 +452,7 @@ class YoutubeCom(Hoster):
             else:
                 signature = video_streams[chosen_fmt][1]
 
-            url += "&signature=" + signature
+            url += "&%s=%s" % (video_streams[chosen_fmt][3], signature)
 
         if "&ratebypass=" not in url:
             url += "&ratebypass=yes"
@@ -488,7 +520,7 @@ class YoutubeCom(Hoster):
             else:
                 signature = audio_streams[chosen_fmt][1]
 
-            url += "&signature=" + signature
+            url += "&%s=%s" % (audio_streams[chosen_fmt][3], signature)
 
         if "&ratebypass=" not in url:
             url += "&ratebypass=yes"
@@ -726,7 +758,7 @@ class YoutubeCom(Hoster):
 
         self.player_config = json.loads(m.group(1))
 
-        self.ffmpeg = Ffmpeg(self.config.get('priority') ,self)
+        self.ffmpeg = Ffmpeg(self.config.get('priority'), self)
 
         #: Set file name
         self.file_name = json.loads(self.player_config['args']['player_response'])['videoDetails']['title']
@@ -744,22 +776,44 @@ class YoutubeCom(Hoster):
             self.file_name = self.file_name.replace(c, '_')
 
         #: Parse available streams
-        streams_keys = ['url_encoded_fmt_stream_map']
-        if 'adaptive_fmts' in self.player_config['args']:
-            streams_keys.append('adaptive_fmts')
-
         self.streams = []
-        for streams_key in streams_keys:
-            streams = self.player_config['args'][streams_key]
-            streams = [_s.split('&') for _s in streams.split(',')]
-            streams = [dict((_x.split('=', 1)) for _x in _s) for _s in streams]
-            streams = [(int(_s['itag']),
-                        urllib.unquote(_s['url']),
-                        _s.get('s', _s.get('sig', None)),
-                        True if 's' in _s else False)
-                       for _s in streams]
 
-            self.streams += streams
+        for path in [('args', 'url_encoded_fmt_stream_map'),
+                     ('args', 'adaptive_fmts')]:
+            item = try_get(self.player_config, *path)
+            if item is not None:
+                streams = [urlparse.parse_qs(_s) for _s in item.split(',')]
+                streams = [dict((k, v[0]) for k,v in _d.items()) for _d in streams]
+                self.streams.extend(streams)
+
+        player_response = json.loads(self.player_config['args']['player_response'])
+        self.streams.extend(try_get(player_response, 'streamingData', 'formats') or [])
+        self.streams.extend(try_get(player_response, 'streamingData', 'adaptiveFormats') or [])
+
+        streams = self.streams
+        self.streams = []
+        for _s in streams:
+            itag = int(_s['itag'])
+            url_data = _s
+            url = _s.get('url', None)
+            if url is None:
+                cipher = _s.get('cipher', None)
+                if cipher is None:
+                    continue
+
+                url_data = urlparse.parse_qs(cipher)
+                url_data = dict((k, v[0]) for k,v in url_data.items())
+                url = url_data.get('url', None)
+                if url is None:
+                    continue
+
+            self.streams.append((itag,
+                                 url,
+                                 url_data.get('s', url_data.get('sig', None)),
+                                 's' in url_data,
+                                 url_data.get('sp', "signature")))
+
+        self.streams = uniqify(self.streams)
 
         self.log_debug("AVAILABLE STREAMS: %s" % [_s[0] for _s in self.streams])
 

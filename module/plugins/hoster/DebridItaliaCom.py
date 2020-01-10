@@ -8,19 +8,15 @@ from ..internal.MultiHoster import MultiHoster
 class DebridItaliaCom(MultiHoster):
     __name__ = "DebridItaliaCom"
     __type__ = "hoster"
-    __version__ = "0.25"
+    __version__ = "0.26"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.|s\d+\.)?debriditalia\.com/dl/\d+'
     __config__ = [("activated", "bool", "Activated", True),
                   ("use_premium", "bool", "Use premium account if available", True),
-                  ("fallback",
-                   "bool",
-                   "Fallback to free download if premium fails",
-                   False),
+                  ("fallback", "bool", "Fallback to free download if premium fails", False),
                   ("chk_filesize", "bool", "Check file size", True),
-                  ("max_wait", "int",
-                   "Reconnect if waiting time is greater than minutes", 10),
+                  ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10),
                   ("revert_failed", "bool", "Revert to standard download if fails", True)]
 
     __description__ = """Debriditalia.com multi-hoster plugin"""
@@ -36,11 +32,10 @@ class DebridItaliaCom(MultiHoster):
         return self.load(self.API_URL, get=kwargs)
 
     def handle_premium(self, pyfile):
-        self.data = self.api_response(
-            "generate",
-            link=pyfile.url,
-            u=self.account.user,
-            p=self.account.info['login']['password'])
+        self.data = self.api_response("generate",
+                                      link=pyfile.url.replace("https://", "http://"),
+                                      u=self.account.user,
+                                      p=self.account.info['login']['password'])
 
         m = re.search(r'ERROR:(.*)', self.data)
         if m is None:

@@ -7,7 +7,7 @@ from ..internal.MultiHoster import MultiHoster
 class PremiumizeMe(MultiHoster):
     __name__ = "PremiumizeMe"
     __type__ = "hoster"
-    __version__ = "0.32"
+    __version__ = "0.33"
     __status__ = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -39,7 +39,7 @@ class PremiumizeMe(MultiHoster):
         if res['status'] == "success":
             self.pyfile.name = res['content'][0]['path']
             self.pyfile.size = res['content'][0]['size']
-            self.download(res['content'][0]['link'], fixurl=False)
+            self.download(res['content'][0]['link'])
 
         else:
             self.fail(res['message'])
