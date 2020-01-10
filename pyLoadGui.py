@@ -18,7 +18,7 @@
     @author: mkaay
 """
 CURRENT_VERSION = '0.4.9'
-CURRENT_INTERNAL_VERSION = 'Development version'         # YYYY-MM-DD, append a lowercase letter for a new version on the same day
+CURRENT_INTERNAL_VERSION = '2020-01-10'         # YYYY-MM-DD, append a lowercase letter for a new version on the same day
 
 import os
 import sys
