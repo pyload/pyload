@@ -42,18 +42,15 @@ from uuid import uuid4 as uuid      # import before PyQt
 from time import sleep, time
 from module.common.json_layer import json
 
-from PyQt4.QtCore import (pyqtSignal, QByteArray, QMutex, QMutexLocker, QObject, QPoint, QRect, QRegExp, QSize, QString,
+from PyQt4.QtCore import (pyqtSignal, QByteArray, QMutex, QMutexLocker, QObject, QRegExp, QString,
                           Qt, QTextCodec, QTimer, SIGNAL)
-from PyQt4.QtGui import (QAbstractItemView, QAction, QApplication, QDialog, QDialogButtonBox, QFont, QGridLayout, QGroupBox,
-                         QHBoxLayout, QIcon, QLabel, QLineEdit, QMenu, QMessageBox, QPixmap, QPlainTextEdit, QProgressDialog,
-                         QPushButton, QStyle, QSystemTrayIcon, QTextCursor, QVBoxLayout, QWhatsThis)
+from PyQt4.QtGui import (QAbstractItemView, QApplication, QDialog, QIcon, QMessageBox, QProgressDialog,
+                         QStyle, QSystemTrayIcon, QTextCursor)
 
 import re
 import copy
 import traceback
 import module.common.pylgettext as gettext
-import socket
-import errno
 import thread
 from os.path import abspath
 from os.path import join
@@ -76,7 +73,7 @@ from module.gui.CoreConfigParser import ConfigParser
 from module.gui.Options import (AutomaticReloadingOptions, CaptchaOptions, ClickNLoadForwarderOptions, ColorFixOptions,
                                 FontOptions, IconThemeOptions, LanguageOptions, LoggingOptions, NotificationOptions,
                                 OtherOptions, TrayOptions, WhatsThisOptions)
-from module.gui.Tools import IconThemes, LineView, MessageBox, WtDialogButtonBox
+from module.gui.Tools import IconThemes, MessageBox
 from module.gui.AboutBox import AboutBox
 from module.gui.InfoCorePermissions import InfoCorePermissions
 from module.gui.ClickNLoadForwarder import ClickNLoadForwarder
