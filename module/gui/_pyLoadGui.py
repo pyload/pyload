@@ -204,16 +204,30 @@ def saveWindowToConfig(self):
     state = str(state_raw.toBase64())
     geo = str(geo_raw.toBase64())
     gUnmax = {} # convert Qt variable types to integer, literal_eval does not accept Qt variables
-    gUnmax["unmaxed_pos"] = 0 if (self.geoUnmaximized["unmaxed_pos"] is None) else [self.geoUnmaximized["unmaxed_pos"].x(),self.geoUnmaximized["unmaxed_pos"].y()]
-    gUnmax["unmaxed_size"] = 0 if (self.geoUnmaximized["unmaxed_size"] is None) else [self.geoUnmaximized["unmaxed_size"].width(),self.geoUnmaximized["unmaxed_size"].height()]
+    gUnmax["unmaxed_pos"] = gUnmax["unmaxed_size"] = 0
+    if self.geoUnmaximized["unmaxed_pos"] is not None:
+        gUnmax["unmaxed_pos"] = [self.geoUnmaximized["unmaxed_pos"].x(), self.geoUnmaximized["unmaxed_pos"].y()]
+    if self.geoUnmaximized["unmaxed_size"] is not None:
+        gUnmax["unmaxed_size"] = [self.geoUnmaximized["unmaxed_size"].width(), self.geoUnmaximized["unmaxed_size"].height()]
     gUnmax["maximized"] = self.geoUnmaximized["maximized"]
     geoUnmaximized = str(QByteArray(str(gUnmax)).toBase64())
     # convert Qt variable types to integer, literal_eval does not accept Qt variables
-    gOther["packDock"] = 0 if (self.geoOther["packDock"] is None) else [self.geoOther["packDock"].x(),self.geoOther["packDock"].y(),self.geoOther["packDock"].width(),self.geoOther["packDock"].height()]
-    gOther["linkDock"] = 0 if (self.geoOther["linkDock"] is None) else [self.geoOther["linkDock"].x(),self.geoOther["linkDock"].y(),self.geoOther["linkDock"].width(),self.geoOther["linkDock"].height()]
-    gOther["packDockTray"] = 0 if (self.geoOther["packDockTray"] is None) else [self.geoOther["packDockTray"].x(),self.geoOther["packDockTray"].y(),self.geoOther["packDockTray"].width(),self.geoOther["packDockTray"].height()]
-    gOther["linkDockTray"] = 0 if (self.geoOther["linkDockTray"] is None) else [self.geoOther["linkDockTray"].x(),self.geoOther["linkDockTray"].y(),self.geoOther["linkDockTray"].width(),self.geoOther["linkDockTray"].height()]
-    gOther["captchaDialog"] = 0 if (self.geoOther["captchaDialog"] is None) else [self.geoOther["captchaDialog"].x(),self.geoOther["captchaDialog"].y(),self.geoOther["captchaDialog"].width(),self.geoOther["captchaDialog"].height()]
+    gOther["packDock"] = gOther["linkDock"] = gOther["packDockTray"] = gOther["linkDockTray"] = gOther["captchaDialog"] = 0
+    if self.geoOther["packDock"] is not None:
+        gOther["packDock"] = [self.geoOther["packDock"].x(), self.geoOther["packDock"].y(),
+                              self.geoOther["packDock"].width(), self.geoOther["packDock"].height()]
+    if self.geoOther["linkDock"] is not None:
+        gOther["linkDock"] = [self.geoOther["linkDock"].x(), self.geoOther["linkDock"].y(),
+                              self.geoOther["linkDock"].width(), self.geoOther["linkDock"].height()]
+    if self.geoOther["packDockTray"] is not None:
+        gOther["packDockTray"] = [self.geoOther["packDockTray"].x(), self.geoOther["packDockTray"].y(),
+                                  self.geoOther["packDockTray"].width(), self.geoOther["packDockTray"].height()]
+    if self.geoOther["linkDockTray"] is not None:
+        gOther["linkDockTray"] = [self.geoOther["linkDockTray"].x(), self.geoOther["linkDockTray"].y(),
+                                  self.geoOther["linkDockTray"].width(), self.geoOther["linkDockTray"].height()]
+    if self.geoOther["captchaDialog"] is not None:
+        gOther["captchaDialog"] = [self.geoOther["captchaDialog"].x(), self.geoOther["captchaDialog"].y(),
+                                   self.geoOther["captchaDialog"].width(), self.geoOther["captchaDialog"].height()]
     geoOther = str(QByteArray(str(gOther)).toBase64())
     stateQueue = str(self.mainWindow.tabs["queue"]["view"].header().saveState().toBase64())
     stateCollector = str(self.mainWindow.tabs["collector"]["view"].header().saveState().toBase64())
@@ -362,7 +376,7 @@ def loadOptionsFromConfig(self):
     if d is None: self.messageBox_21(_("Client Log")); reset = True
     # ClickNLoad Forwarding -> Local Port
     err = False
-    try:              self.clickNLoadForwarderOptions.settings["fromPort"] = int(optionsClickNLoadForwarder); self.clickNLoadForwarderOptions.dict2dialogState(True)
+    try:     self.clickNLoadForwarderOptions.settings["fromPort"] = int(optionsClickNLoadForwarder); self.clickNLoadForwarderOptions.dict2dialogState(True)
     except Exception: self.clickNLoadForwarderOptions.defaultFromPort(); err = True
     if err: self.messageBox_21(_("ClickNLoad Forwarding") + " -> " + _("Local Port")); reset = True
     # Automatic Reloading
@@ -509,11 +523,19 @@ def loadWindowFromConfig(self):
     if gOtherError:
         gOther = {}; gOther["packDockIsFloating"] = gOther["linkDockIsFloating"] = False
         gOther["packDock"] = gOther["linkDock"] = gOther["packDockTray"] = gOther["linkDockTray"] = gOther["captchaDialog"] = 0
-    self.geoOther["packDock"] = None if (gOther["packDock"] == 0) else QRect(gOther["packDock"][0], gOther["packDock"][1], gOther["packDock"][2], gOther["packDock"][3])
-    self.geoOther["linkDock"] = None if (gOther["linkDock"] == 0) else QRect(gOther["linkDock"][0], gOther["linkDock"][1], gOther["linkDock"][2], gOther["linkDock"][3])
-    self.geoOther["packDockTray"] = None if (gOther["packDockTray"] == 0) else QRect(gOther["packDockTray"][0], gOther["packDockTray"][1], gOther["packDockTray"][2], gOther["packDockTray"][3])
-    self.geoOther["linkDockTray"] = None if (gOther["linkDockTray"] == 0) else QRect(gOther["linkDockTray"][0], gOther["linkDockTray"][1], gOther["linkDockTray"][2], gOther["linkDockTray"][3])
-    self.geoOther["captchaDialog"] = None if (gOther["captchaDialog"] == 0) else QRect(gOther["captchaDialog"][0], gOther["captchaDialog"][1], gOther["captchaDialog"][2], gOther["captchaDialog"][3])
+    self.geoOther["packDock"] = self.geoOther["linkDock"] = None
+    self.geoOther["packDockTray"] = self.geoOther["linkDockTray"] = None
+    self.geoOther["captchaDialog"] = None
+    if gOther["packDock"] != 0:
+        self.geoOther["packDock"] = QRect(gOther["packDock"][0], gOther["packDock"][1], gOther["packDock"][2], gOther["packDock"][3])
+    if gOther["linkDock"] != 0:
+        self.geoOther["linkDock"] = QRect(gOther["linkDock"][0], gOther["linkDock"][1], gOther["linkDock"][2], gOther["linkDock"][3])
+    if gOther["packDockTray"] != 0:
+        self.geoOther["packDockTray"] = QRect(gOther["packDockTray"][0], gOther["packDockTray"][1], gOther["packDockTray"][2], gOther["packDockTray"][3])
+    if gOther["linkDockTray"] != 0:
+        self.geoOther["linkDockTray"] = QRect(gOther["linkDockTray"][0], gOther["linkDockTray"][1], gOther["linkDockTray"][2], gOther["linkDockTray"][3])
+    if gOther["captchaDialog"] != 0:
+        self.geoOther["captchaDialog"] = QRect(gOther["captchaDialog"][0], gOther["captchaDialog"][1], gOther["captchaDialog"][2], gOther["captchaDialog"][3])
 
     if not self.geoUnmaximized["maximized"]:
         self.mainWindow.restoreGeometry(QByteArray.fromBase64(geo))
@@ -527,7 +549,8 @@ def loadWindowFromConfig(self):
         plGeo = self.geoOther["linkDock"]
         if not self.mainWindow.newLinkDock.isFloating() or self.mainWindow.newLinkDock.isHidden():
             plGeo = None
-        self.scheduleMainWindowPaintEventAction(pos=self.mainWindow.pos(), size=self.mainWindow.size(), refreshGeo=self.otherOptions.settings["RefreshGeo"], pdGeo=pdGeo, plGeo=plGeo)
+        self.scheduleMainWindowPaintEventAction(pos=self.mainWindow.pos(), size=self.mainWindow.size(),
+                                                refreshGeo=self.otherOptions.settings["RefreshGeo"], pdGeo=pdGeo, plGeo=plGeo)
     else:
         self.mainWindow.eD["pCount"] = 0
         self.mainWindow.showMaximized()
@@ -546,7 +569,8 @@ def loadWindowFromConfig(self):
         self.mainWindow.eD["pCount"] = 0
         self.mainWindow.newPackDock.setFloating(gOther["packDockIsFloating"])
         self.mainWindow.newLinkDock.setFloating(gOther["linkDockIsFloating"])
-        if (self.mainWindow.newPackDock.isFloating() and not self.mainWindow.newPackDock.isHidden()) or (self.mainWindow.newLinkDock.isFloating() and not self.mainWindow.newLinkDock.isHidden()):
+        if ((self.mainWindow.newPackDock.isFloating() and not self.mainWindow.newPackDock.isHidden()) or
+            (self.mainWindow.newLinkDock.isFloating() and not self.mainWindow.newLinkDock.isHidden())):
             self.waitForPaintEvents(1)
         self.scheduleMainWindowPaintEventAction()
 

@@ -19,7 +19,7 @@
 import logging
 import re
 
-from PyQt4.QtCore import QEvent, QRect, QSize, QString, Qt, SIGNAL
+from PyQt4.QtCore import QEvent, QRect, QSize, Qt, SIGNAL
 from PyQt4.QtGui import (QAbstractSpinBox, QAction, QActionGroup, QCheckBox, QColor, QComboBox, QCursor, QFileDialog, QFrame, QGridLayout,
                          QHBoxLayout, QIcon, QLabel, QMainWindow, QMenu, QPushButton, QScrollArea, QSizePolicy, QSpinBox, QStyle,
                          QTabWidget, QTextEdit, QVBoxLayout, QWhatsThis, QWidget)

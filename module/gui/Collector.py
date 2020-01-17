@@ -258,7 +258,7 @@ class CollectorModel(QAbstractItemModel):
         smodel = self.view.selectionModel()
         if self.currentItem:
             (pid, fid) = self.currentItem
-            itemIsPackage = (fid == None)
+            itemIsPackage = fid is None
             index = None
             for p, package in enumerate(self._data):
                 if package.id == pid:

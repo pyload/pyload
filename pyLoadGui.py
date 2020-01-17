@@ -47,7 +47,6 @@ from PyQt4.QtCore import (pyqtSignal, QByteArray, QMutex, QMutexLocker, QObject,
 from PyQt4.QtGui import (QAbstractItemView, QApplication, QDialog, QIcon, QMessageBox, QProgressDialog,
                          QStyle, QSystemTrayIcon, QTextCursor)
 
-import re
 import copy
 import traceback
 import module.common.pylgettext as gettext
@@ -65,9 +64,6 @@ import module.gui._pyLoadGui as _pyLoadGui
 from module.gui.ConnectionManager import ConnectionManager
 from module.gui.connector import Connector
 from module.gui.MainWindow import MainWindow
-from module.gui.Queue import QueueView
-from module.gui.Overview import OverviewView
-from module.gui.Collector import CollectorView
 from module.gui.XMLParser import XMLParser
 from module.gui.CoreConfigParser import ConfigParser
 from module.gui.Options import (AutomaticReloadingOptions, CaptchaOptions, ClickNLoadForwarderOptions, ColorFixOptions,
@@ -98,6 +94,7 @@ class main(QObject):
         else:
             sys.excepthook = sys.__excepthook__
 
+    @classmethod
     def time_msec(self):
         return int((datetime.utcnow() - datetime(1970, 1, 1)).total_seconds() * 1000)
 
@@ -274,7 +271,8 @@ class main(QObject):
         self.tray = None
         self.mainWindowPaintEventAction = {}
         self.mainWindowMaximizedSize = None
-        self.geoOther = { "packDock": None, "linkDock": None, "packDockTray": None, "linkDockTray": None, "packDockIsFloating": None, "linkDockIsFloating": None, "captchaDialog": None }
+        self.geoOther = { "packDock": None, "linkDock": None, "packDockTray": None, "linkDockTray": None,
+                          "packDockIsFloating": None, "linkDockIsFloating": None, "captchaDialog": None }
         self.guiLogMutex = QMutex()
         self.lastPackageId = None
         self.lastCaptchaId = None
@@ -368,7 +366,7 @@ class main(QObject):
         if not first:
             self.setExcepthook(False)
             self.removeLogger()
-        if self.debugLogLevel != None:
+        if self.debugLogLevel is not None:
             if self.debugLogLevel == 0: lvl = logging.DEBUG0
             elif self.debugLogLevel == 1: lvl = LoggingLevels.logging.DEBUG1
             elif self.debugLogLevel == 2: lvl = LoggingLevels.logging.DEBUG2
@@ -393,7 +391,8 @@ class main(QObject):
         lo = self.loggingOptions
         if lo.settings["file_log"]:
             if lo.settings["log_rotate"]:
-                file_handler = logging.handlers.RotatingFileHandler(join(lo.settings["log_folder"], "guilog.txt"), maxBytes=lo.settings["log_size"]*1024, backupCount=lo.settings["log_count"], encoding="utf8")
+                file_handler = logging.handlers.RotatingFileHandler(join(lo.settings["log_folder"], "guilog.txt"), maxBytes=lo.settings["log_size"]*1024,
+                                                                    backupCount=lo.settings["log_count"], encoding="utf8")
             else:
                 file_handler = logging.FileHandler(join(lo.settings["log_folder"], "guilog.txt"), encoding="utf8")
             file_handler.setFormatter(frm)
@@ -550,7 +549,7 @@ class main(QObject):
         userdata = None
         if self.lastConnection["type"] not in ("local", "internal"):
             userdata = self.connector.getOurUserData()
-            if userdata.permission != None:
+            if userdata.permission is not None:
                 perms["admin"] = (userdata.role == ROLE.ADMIN)
             else:
                 if warn:
@@ -684,7 +683,10 @@ class main(QObject):
         self.trayState["maximized"] = self.mainWindow.isMaximized()
         self.trayState["unmaxed_pos"]  = self.geoUnmaximized["unmaxed_pos"]
         self.trayState["unmaxed_size"] = self.geoUnmaximized["unmaxed_size"]
-        self.trayState["restore_unmaxed_geo"] = True if (self.trayState["maximized"]) and (self.trayState["unmaxed_pos"] is not None) and (self.trayState["unmaxed_size"] is not None) else False
+        if (self.trayState["maximized"]) and (self.trayState["unmaxed_pos"] is not None) and (self.trayState["unmaxed_size"] is not None):
+            self.trayState["restore_unmaxed_geo"] = True
+        else:
+            self.trayState["restore_unmaxed_geo"] = False
         self.tray = TrayIcon(self.appIconSet)
         self.tray.setupIcon(self.trayOptions.settings["IconFile"])
         self.notification = Notification(self.tray)
@@ -875,7 +877,8 @@ class main(QObject):
         s = self.trayState
         self.log.debug4("main.showFromTray_continue: entered")
         if s["maximized"]:
-            self.log.debug4("main.showFromTray_continue: mainWindow is maximized, delay: %d msec", self.mainWindow.time_msec() - self.trayState["showFromTrayShowTime"])
+            self.log.debug4("main.showFromTray_continue: mainWindow is maximized, delay: %d msec",
+                            self.mainWindow.time_msec() - self.trayState["showFromTrayShowTime"])
         self.emit(SIGNAL("traySetShowActionText"), False)
         s["hiddenInTray"] = False  # must be updated before allowUserActions(True)
         self.allowUserActions(True)
@@ -960,7 +963,9 @@ class main(QObject):
             if not s["maximized"]:
                 self.log.debug4("main.slotMaximizeToggled: repeated unmaximize")
                 return
-            if self.otherOptions.settings["RestoreUnmaximizedGeo"] and (s["restore_unmaxed_geo"] or self.otherOptions.settings["AlwaysRestore"]) and not QApplication.activeModalWidget():
+            if (self.otherOptions.settings["RestoreUnmaximizedGeo"] and
+                (s["restore_unmaxed_geo"] or self.otherOptions.settings["AlwaysRestore"]) and
+                not QApplication.activeModalWidget()):
                 if self.otherOptions.settings["HideShowOnUnmax"]:
                     pdShownFloating = self.mainWindow.newPackDock.isFloating() and not self.mainWindow.newPackDock.isHidden()
                     ldShownFloating = self.mainWindow.newLinkDock.isFloating() and not self.mainWindow.newLinkDock.isHidden()
@@ -977,10 +982,12 @@ class main(QObject):
                         self.mainWindow.newPackDock.show()
                     if ldShownFloating:
                         self.mainWindow.newLinkDock.show()
-                restoreDocks = self.mainWindow.eD["pStateSig"]    # restore docked widgets width (divider position) at first unmaximize when the app was lauched maximized
+                # restoreDocks: restore docked widgets width (divider position) on first unmaximize when the app was lauched maximized
+                restoreDocks = self.mainWindow.eD["pStateSig"]
                 if self.mainWindow.eD["pStateSig"]:
                     self.mainWindow.eD["pStateSig"] = False
-                self.scheduleMainWindowPaintEventAction(pos=s["unmaxed_pos"], size=s["unmaxed_size"], refreshGeo=self.otherOptions.settings["RefreshGeo"], restoreDocks=restoreDocks)
+                self.scheduleMainWindowPaintEventAction(pos=s["unmaxed_pos"], size=s["unmaxed_size"],
+                                                        refreshGeo=self.otherOptions.settings["RefreshGeo"], restoreDocks=restoreDocks)
                 self.mainWindow.update()
                 self.log.debug4("main.slotMaximizeToggled: geometry restored,   pos: %s   size: %s" % (s["unmaxed_pos"], s["unmaxed_size"]))
             else:
@@ -1004,10 +1011,14 @@ class main(QObject):
         self.log.debug4("main.slotRestoreDocks: docked widgets width (divider position) restored at first unmaximize")
 
     def debugTray(self):
-        self.log.debug9("mainWindow pos() + size():                     pos: %s   size: %s" % (self.mainWindow.pos(), self.mainWindow.size()))
-        self.log.debug9("mainWindow geometry():                         pos: %s   size: %s" % (self.mainWindow.geometry().topLeft(), self.mainWindow.geometry().size()))
-        self.log.debug9("newPackDock pos() + size():                    pos: %s   size: %s" % (self.mainWindow.newPackDock.pos(), self.mainWindow.newPackDock.size()))
-        self.log.debug9("newPackDock geometry():                        pos: %s   size: %s" % (self.mainWindow.newPackDock.geometry().topLeft(), self.mainWindow.newPackDock.geometry().size()))
+        self.log.debug9("mainWindow pos() + size():                     pos: %s   size: %s"
+                        % (self.mainWindow.pos(), self.mainWindow.size()))
+        self.log.debug9("mainWindow geometry():                         pos: %s   size: %s"
+                        % (self.mainWindow.geometry().topLeft(), self.mainWindow.geometry().size()))
+        self.log.debug9("newPackDock pos() + size():                    pos: %s   size: %s"
+                        % (self.mainWindow.newPackDock.pos(), self.mainWindow.newPackDock.size()))
+        self.log.debug9("newPackDock geometry():                        pos: %s   size: %s"
+                        % (self.mainWindow.newPackDock.geometry().topLeft(), self.mainWindow.newPackDock.geometry().size()))
         self.log.debug9("mainWindow:")
         self.log.debug9("  hidden    %s" % self.mainWindow.isHidden())
         self.log.debug9("  visible   %s" % self.mainWindow.isVisible())
@@ -1212,9 +1223,14 @@ class main(QObject):
             msgboxes(line)
             line = "LongXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXLine"
             msgboxes(line)
-            line = "WrappedXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXLine"
+            line = "WrappedXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+            line += "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXLine"
             msgboxes(line)
-            line = "3xWrappedXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXLine"
+            line = "3xWrappedXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+            line += "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+            line += "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+            line += "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+            line += "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXLine"
             msgboxes(line)
         self.msgBox("!", "Q", "OK")
         self.msgBox("!", "I", "OK")
@@ -1506,12 +1522,12 @@ class main(QObject):
             else:
                 data["default"] = False
             subs = self.parser.parseNode(conn, "dict")
-            if not subs.has_key("name"):
+            if not "name" in subs:
                 data["name"] = unicode("- unnamed -")
             else:
                 data["name"] = unicode(subs["name"].text())
             if data["type"] == "remote":
-                if not subs.has_key("server"):
+                if not "server" in subs:
                     continue
                 else:
                     data["host"] = unicode(subs["server"].text())

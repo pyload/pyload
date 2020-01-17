@@ -18,6 +18,7 @@
 from PyQt4.QtCore import QObject, SIGNAL
 
 import logging, socket, errno, thread
+from time import sleep
 
 class ClickNLoadForwarder(QObject):
     """
@@ -71,7 +72,9 @@ class ClickNLoadForwarder(QObject):
         except socket.error, x:
             if x.args[0] == errno.EADDRINUSE:
                 self.log.error("ClickNLoadForwarder.server: Cannot bind to port %d, the port is occupied." % self.localPort)
-                self.log.info("ClickNLoadForwarder.server: If you are pretty sure that the port should be free, try waiting 2-3 minutes for the operating system to close the port.")
+                txt =  "ClickNLoadForwarder.server: If you are pretty sure that the port should be free, "
+                txt += "try waiting 2-3 minutes for the operating system to close the port."
+                self.log.info(txt)
             self.onRaise()
             raise
         except Exception:
