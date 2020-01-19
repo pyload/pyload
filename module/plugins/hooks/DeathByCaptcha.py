@@ -197,7 +197,7 @@ class DeathByCaptcha(Addon):
             except DeathByCaptchaException, e:
                 self.log_error(e.message)
 
-            except Exception, e:
+            except Exception as e:
                 self.log_error(e, trace=True)
 
     @threaded

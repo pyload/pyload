@@ -9,7 +9,7 @@ from os.path import exists, join
 from shutil import copy
 
 from traceback import print_exc
-from utils import chmod
+from .utils import chmod
 
 # ignore these plugin configs, mainly because plugins were wiped out
 IGNORE = (
@@ -22,22 +22,22 @@ CONF_VERSION = 1
 class ConfigParser:
     """
     holds and manage the configuration
-    
+
     current dict layout:
-    
+
     {
-    
-     section : { 
-      option : { 
+
+     section : {
+      option : {
             value:
             type:
             desc:
       }
-      desc: 
-    
+      desc:
+
     }
-    
-    
+
+
     """
 
     CONFLINE = re.compile(r'^\s*(?P<T>.+?)\s+(?P<N>[^ ]+?)\s*:\s*"(?P<D>.+?)"\s*=\s?(?P<V>.*)')
@@ -62,33 +62,33 @@ class ConfigParser:
         try:
             if not exists("pyload.conf"):
                 copy(join(pypath, "module", "config", "default.conf"), "pyload.conf")
-                chmod("pyload.conf", 0600)
+                chmod("pyload.conf", 0o600)
 
             if not exists("plugin.conf"):
                 f = open("plugin.conf", "wb")
                 f.write("version: " + str(CONF_VERSION))
                 f.close()
-                chmod("plugin.conf", 0600)
+                chmod("plugin.conf", 0o600)
 
-            f = open("pyload.conf", "rb")
-            v = f.readline()
+            f = open("pyload.conf", "r")
+            v = f.readline() #.decode('utf-8')
             f.close()
             v = v[v.find(":") + 1:].strip()
 
             if not v or int(v) < CONF_VERSION:
                 copy(join(pypath, "module", "config", "default.conf"), "pyload.conf")
-                print "Old version of config was replaced"
+                print ("Old version of config was replaced")
 
-            f = open("plugin.conf", "rb")
+            f = open("plugin.conf", "r")
             v = f.readline()
             f.close()
             v = v[v.find(":") + 1:].strip()
 
             if not v or int(v) < CONF_VERSION:
-                f = open("plugin.conf", "wb")
+                f = open("plugin.conf", "w")
                 f.write("version: " + str(CONF_VERSION))
                 f.close()
-                print "Old version of plugin-config replaced"
+                print ("Old version of plugin-config replaced")
         except:
             if n < 3:
                 sleep(0.3)
@@ -112,8 +112,8 @@ class ConfigParser:
                 del homeconf["remote"]["username"]
             self.updateValues(homeconf, self.config)
 
-        except Exception, e:
-            print "Config Warning"
+        except Exception as e:
+            print ("Config Warning")
             print_exc()
 
 
@@ -135,7 +135,7 @@ class ConfigParser:
         for line in config:
             comment = line.rfind("#")
             if line.find(":", comment) < 0 > line.find("=", comment) and comment > 0 and line[comment - 1].isspace():
-                line = line.rpartition("#") # removes comments            
+                line = line.rpartition("#") # removes comments
                 if line[1]:
                     line = line[0]
                 else:
@@ -189,9 +189,9 @@ class ConfigParser:
                                                      "type": typ,
                                                      "value": value}
 
-            except Exception, e:
-                print "Config Warning:"
-                print line
+            except Exception as e:
+                print ("Config Warning:")
+                print (line)
                 print_exc()
 
         f.close()
@@ -201,9 +201,9 @@ class ConfigParser:
     def updateValues(self, config, dest):
         """sets the config values from a parsed config file to values in destination"""
 
-        for section in config.iterkeys():
+        for section in config:
             if section in dest:
-                for option in config[section].iterkeys():
+                for option in config[section]:
                     if option in ("desc", "outline"): continue
 
                     if option in dest[section]:
@@ -218,10 +218,10 @@ class ConfigParser:
 
     def saveConfig(self, config, filename):
         """saves config to filename"""
-        with open(filename, "wb") as f:
-            chmod(filename, 0600)
+        with open(filename, "w") as f:
+            chmod(filename, 0o600)
             f.write("version: %i \n" % CONF_VERSION)
-            for section in sorted(config.iterkeys()):
+            for section in sorted(iter(config.keys())):
                 f.write('\n%s - "%s":\n' % (section, config[section]["desc"]))
 
                 for option, data in sorted(config[section].items(), key=lambda _x: _x[0]):
@@ -234,7 +234,7 @@ class ConfigParser:
                             value += "\t\t" + str(x) + ",\n"
                         value += "\t\t]\n"
                     else:
-                        if type(data["value"]) in (str, unicode):
+                        if isinstance(data["value"],str):
                             value = data["value"] + "\n"
                         else:
                             value = str(data["value"]) + "\n"
@@ -245,9 +245,8 @@ class ConfigParser:
 
     def cast(self, typ, value):
         """cast value to given format"""
-        if type(value) not in (str, unicode):
+        if not isinstance(value, str):
             return value
-
         elif typ == "int":
             return int(value)
         elif typ == "bool":
@@ -258,7 +257,7 @@ class ConfigParser:
             return value
         elif typ in ("str", "file", "folder"):
             try:
-                return value.encode("utf8")
+                return value # .encode("utf8")
             except:
                 return value
         else:
@@ -280,13 +279,14 @@ class ConfigParser:
     def get(self, section, option):
         """get value"""
         val = self.config[section][option]["value"]
-        try:
-            if type(val) in (str, unicode):
-                return val.decode("utf8")
-            else:
-                return val
-        except:
-            return val
+        return val
+        #try:
+            #if isinstance(val, str):
+            #    return val.decode("utf8")
+            #else:
+        #    return val
+        #except:
+        #    return val
 
     def set(self, section, option, value):
         """set value"""
@@ -299,13 +299,15 @@ class ConfigParser:
     def getPlugin(self, plugin, option):
         """gets a value for a plugin"""
         val = self.plugin[plugin][option]["value"]
-        try:
+        return val
+        '''try:
+            if isinstance(val, str):
             if type(val) in (str, unicode):
                 return val.decode("utf8")
             else:
                 return val
         except:
-            return val
+            return val'''
 
     def setPlugin(self, plugin, option, value):
         """sets a value for a plugin"""
@@ -390,8 +392,8 @@ if __name__ == "__main__":
 
     b = time()
 
-    print "sec", b - a
+    print ("sec", b - a)
 
-    print c.config
+    print (c.config)
 
     c.saveConfig(c.config, "user.conf")

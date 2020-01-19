@@ -38,7 +38,7 @@ class OneFichierCom(Account):
             try:
                 validuntil = time.mktime(time.strptime(expiredate, "%Y-%m-%d"))
 
-            except Exception, e:
+            except Exception as e:
                 self.log_error(e, trace=True)
 
             else:

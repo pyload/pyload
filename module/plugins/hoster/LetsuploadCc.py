@@ -20,7 +20,7 @@ class LetsuploadCc(SimpleHoster):
     __license__ = "GPLv3"
     __authors__ = [("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
-    URL_REPLACEMENTS = [(__pattern__ + ".*", "https://letsupload.cc/\g<ID>")]
+    URL_REPLACEMENTS = [(__pattern__ + ".*", r"https://letsupload.cc/\g<ID>")]
 
     NAME_PATTERN = r'<h1 class="text-center text-wordwrap">(?P<N>.+?)</h1>'
     SIZE_PATTERN = r'>Download\s*\((?P<S>[\d.,]+) (?P<U>[\w^_]+)\)</a>'

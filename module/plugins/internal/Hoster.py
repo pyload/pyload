@@ -2,7 +2,10 @@
 
 from __future__ import with_statement
 
-import __builtin__
+try:
+    import __builtin__
+except ImportError:
+    import builtins
 import os
 import re
 
@@ -14,7 +17,8 @@ from .misc import compute_checksum, encode, exists, fixurl, fsjoin, parse_name, 
 from .Plugin import Fail
 
 # Python 2.5 compatibility hack for property.setter, property.deleter
-if not hasattr(__builtin__.property, "setter"):
+# if not hasattr(__builtin__.property, "setter"):
+if not hasattr(builtins.property, "setter"):
     class property(__builtin__.property):
         __metaclass__ = type
 
@@ -118,7 +122,7 @@ class Hoster(Base):
 
                 self._check_download()
 
-            except Fail, e:  # @TODO: Move to PluginThread in 0.4.10
+            except Fail as e:  # @TODO: Move to PluginThread in 0.4.10
                 self.log_warning(_("Premium download failed") if self.premium else
                                  _("Free download failed"),
                                  e)
@@ -213,7 +217,7 @@ class Hoster(Base):
     def _download(self, url, filename, get, post, ref,
                   cookies, disposition, resume, chunks):
         # @TODO: Safe-filename check in HTTPDownload in 0.4.10
-        file = encode(filename)
+        file = filename
         resume = self.resume_download if resume is None else bool(resume)
 
         dl_chunks = self.pyload.config.get('download', 'chunks')
@@ -233,11 +237,11 @@ class Hoster(Base):
                 newname = self.req.httpDownload(url, file, get, post, ref, cookies, chunks, resume,
                                                 self.pyfile.setProgress, disposition)
 
-        except IOError, e:
+        except IOError as e:
             self.log_error(e.message)
             self.fail(_("IOError %s") % e.errno)
 
-        except BadHeader, e:
+        except BadHeader as e:
             self.req.http.code = e.code
             raise
 
@@ -296,7 +300,7 @@ class Hoster(Base):
             try:
                 os.makedirs(dl_dir)
 
-            except Exception, e:
+            except Exception as e:
                 self.fail(e.message)
 
         self.set_permissions(dl_dir)
@@ -318,7 +322,7 @@ class Hoster(Base):
                     new_file = fsjoin(dl_dirname, safename)
                     os.rename(old_file, new_file)
 
-                except OSError, e:
+                except OSError as e:
                     self.log_warning(_("Error renaming `%s` to `%s`")
                                      % (newname, safename), e)
                     safename = newname
@@ -352,13 +356,13 @@ class Hoster(Base):
             self.log_warning(_("No file to scan"))
             return
 
-        with open(dl_file, "rb") as f:
+        with open(dl_file, "r") as f:
             content = f.read(read_size)
 
         #: Produces encoding errors, better log to other file in the future?
         # self.log_debug("Content: %s" % content)
         for name, rule in rules.items():
-            if isinstance(rule, basestring):
+            if isinstance(rule, str):
                 if rule in content:
                     return name
 

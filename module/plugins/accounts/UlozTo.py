@@ -2,7 +2,10 @@
 
 import re
 import time
-import urlparse
+try:
+    import urlparse
+except:
+    from urllib.parse import urlparse
 
 import pycurl
 

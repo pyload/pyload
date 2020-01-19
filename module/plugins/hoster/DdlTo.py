@@ -27,7 +27,7 @@ class DdlTo(XFSHoster):
 
     PLUGIN_DOMAIN = "ddl.to"
 
-    URL_REPLACEMENTS = [(__pattern__ + '.*', "https://ddl.to/\g<ID>")]
+    URL_REPLACEMENTS = [(__pattern__ + '.*', r"https://ddl.to/\g<ID>")]
 
     NAME_PATTERN = r'<div class="name">\s*<h4>(?P<N>.+?)</h4>'
     SIZE_PATTERN = r'<div class="name">.+?<span>(?P<S>[\d.,]+) (?P<U>[\w^_]+)</span>', re.S

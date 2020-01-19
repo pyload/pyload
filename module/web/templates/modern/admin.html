@@ -54,7 +54,7 @@ textarea {
               </tr>
             </thead>
 
-            {% for name, data in users.iteritems() %}
+            {% for name, data in users.items() %}
                 <tr>
                     <td>{{name}}</td>
                     <td><div class="change_password btn btn-light btn-xs" data-toggle="modal" data-target="#password_box" id="change_pw|{{name}}"><span class="glyphicon glyphicon-pencil"></span> {{_('change')}}</div></td>

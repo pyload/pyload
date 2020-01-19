@@ -147,7 +147,7 @@ class SimpleHoster(Hoster):
                 try:
                     html = get_url(url, cookies=cls.COOKIES, decode=cls.TEXT_ENCODING)
 
-                except BadHeader, e:
+                except BadHeader as e:
                     info['error'] = "%d: %s" % (e.code, e.content)
 
                 except Exception:
@@ -184,7 +184,7 @@ class SimpleHoster(Hoster):
                                     cls.SIZE_REPLACEMENTS)
             info['size'] = parse_size(size)
 
-        elif isinstance(info['size'], basestring):
+        elif isinstance(info['size'], str):
             unit = info['units'] if 'units' in info else ""
             info['size'] = parse_size(info['size'], unit)
 

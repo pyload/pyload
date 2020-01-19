@@ -2,7 +2,10 @@
 
 import os
 import re
-import urlparse
+try:
+    import urlparse
+except:
+    from urllib.parse import urlparse
 
 from ..internal.Hoster import Hoster
 from ..internal.misc import json

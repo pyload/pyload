@@ -13,29 +13,43 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
+
     @author: RaNaN
 """
-
-import cStringIO
+try:
+    import cStringIO
+except ImportError:
+    import io as cStringIO
+    from itertools import chain
 import pycurl
 
 from codecs import getincrementaldecoder, lookup, BOM_UTF8
-from urllib import quote, urlencode
-from httplib import responses
+try:
+    from urllib import quote, urlencode
+except ImportError:
+    from urllib.parse import quote, urlencode
+
+try:
+    from httplib import responses
+except ImportError:
+    from http.client import responses
 from logging import getLogger
 
 from module.plugins.Plugin import Abort
 
 def myquote(url):
-    return quote(url.encode('utf_8') if isinstance(url, unicode) else url, safe="%/:=&?~#+!$,;'@()*[]")
-    
+    return quote(url.encode('utf_8') if isinstance(url, str) else url, safe="%/:=&?~#+!$,;'@()*[]")
+
 def myurlencode(data):
     data = dict(data)
-    return urlencode(dict((x.encode('utf_8') if isinstance(x, unicode) else x, \
-        y.encode('utf_8') if isinstance(y, unicode) else y ) for x, y in data.iteritems()))
+    return urlencode(dict((x.encode('utf_8') if isinstance(x, str) else x, \
+        y.encode('utf_8') if isinstance(y, str) else y ) for x, y in data.items()))
 
-bad_headers = range(400, 404) + range(405, 418) + range(500, 506)
+try:
+    bad_headers = range(400, 404) + range(405, 418) + range(500, 506)
+except TypeError:
+    bad_headers = chain(range(400, 404),range(405, 418),range(500, 506))
+
 
 unofficial_responses = {
     440: "Login Timeout - The client's session has expired and must log in again.",
@@ -178,16 +192,16 @@ class HTTPRequest():
         if post:
             self.c.setopt(pycurl.POST, 1)
             if not multipart:
-                if type(post) == unicode:
-                    post = str(post) #unicode not allowed
-                elif type(post) == str:
+                #if type(post) == unicode:
+                #    post = str(post) #unicode not allowed
+                if type(post) == str:
                     pass
                 else:
                     post = myurlencode(post)
 
                 self.c.setopt(pycurl.POSTFIELDS, post)
             else:
-                post = [(x, y.encode('utf8') if type(y) == unicode else y ) for x, y in post.iteritems()]
+                post = [(x, y.encode('utf8') if type(y) == str else y ) for x, y in post.items()]
                 self.c.setopt(pycurl.HTTPPOST, post)
         else:
             self.c.setopt(pycurl.POST, 0)
@@ -243,14 +257,14 @@ class HTTPRequest():
     def verifyHeader(self):
         """ raise an exceptions on bad headers """
         code = int(self.c.getinfo(pycurl.RESPONSE_CODE))
-        if code in bad_headers:
+        if code in bad_headers:                     # ToDo Check
             #404 will NOT raise an exception
             raise BadHeader(code, self.header, self.getResponse())
         return code
 
     def checkHeader(self):
         """ check if header indicates failure"""
-        return int(self.c.getinfo(pycurl.RESPONSE_CODE)) not in bad_headers
+        return int(self.c.getinfo(pycurl.RESPONSE_CODE)) not in bad_headers # ToDo Check
 
     def getResponse(self):
         """ retrieve response from string io """
@@ -279,17 +293,17 @@ class HTTPRequest():
 
         try:
             #self.log.debug("Decoded %s" % encoding )
-            if lookup(encoding).name == 'utf-8' and rep.startswith(BOM_UTF8):
+            if lookup(encoding).name == 'utf-8' and rep.encode('utf-8').startswith(BOM_UTF8):
                 encoding = 'utf-8-sig'
-            
+
             decoder = getincrementaldecoder(encoding)("replace")
-            rep = decoder.decode(rep, True)
+            rep = decoder.decode(rep.encode('utf-8'), True)
 
             #TODO: html_unescape as default
 
         except LookupError:
             self.log.debug("No Decoder foung for %s" % encoding)
-        except Exception:
+        except Exception as e:
             self.log.debug("Error when decoding string from %s." % encoding)
 
         return rep
@@ -305,11 +319,18 @@ class HTTPRequest():
             f.close()
             raise Exception("Loaded Url exceeded limit")
 
-        self.rep.write(buf)
+        if isinstance(buf, bytes):
+            self.rep.write(buf.decode('utf-8'))
+        else:
+            self.rep.write(buf)
+
 
     def writeHeader(self, buf):
         """ writes header """
-        self.header += buf
+        if isinstance(buf, bytes):
+            self.header += buf.decode('utf-8')
+        else:
+            self.header += buf
 
     def putHeader(self, name, value):
         self.headers.append("%s: %s" % (name, value))
@@ -333,5 +354,5 @@ class HTTPRequest():
 if __name__ == "__main__":
     url = "http://pyload.org"
     c = HTTPRequest()
-    print c.load(url)
-    
+    print (c.load(url))
+

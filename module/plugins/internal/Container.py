@@ -3,7 +3,10 @@
 from __future__ import with_statement
 
 import os
-import urlparse
+try:
+    import urlparse
+except:
+    from urllib.parse import urlparse
 
 from .Crypter import Crypter
 from .misc import encode, exists

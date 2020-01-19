@@ -19,8 +19,9 @@
 from hashlib import sha1
 import random
 
-from DatabaseBackend import DatabaseBackend
-from DatabaseBackend import style
+from .DatabaseBackend import DatabaseBackend
+from .DatabaseBackend import style
+import functools
 
 class UserMethods():
     @style.queue
@@ -33,7 +34,7 @@ class UserMethods():
 
         salt = r[2][:5]
         pw = r[2][5:]
-        h = sha1(salt + password)
+        h = sha1(salt.encode('utf-8') + password.encode('utf-8'))
         if h.hexdigest() == pw:
             return {"id": r[0], "name": r[1], "role": r[3],
                     "permission": r[4], "template": r[5], "email": r[6]}
@@ -42,8 +43,8 @@ class UserMethods():
 
     @style.queue
     def addUser(db, user, password):
-        salt = reduce(lambda x, y: x + y, [str(random.randint(0, 9)) for i in range(0, 5)])
-        h = sha1(salt + password)
+        salt = functools.reduce(lambda x, y: x + y, [str(random.randint(0, 9)) for i in range(0, 5)])
+        h = sha1(salt.encode('utf-8') + password.encode('utf-8'))
         password = salt + h.hexdigest()
 
         c = db.c
@@ -65,7 +66,7 @@ class UserMethods():
         pw = r[2][5:]
         h = sha1(salt + oldpw)
         if h.hexdigest() == pw:
-            salt = reduce(lambda x, y: x + y, [str(random.randint(0, 9)) for i in range(0, 5)])
+            salt = functools.reduce(lambda x, y: x + y, [str(random.randint(0, 9)) for i in range(0, 5)])
             h = sha1(salt + newpw)
             password = salt + h.hexdigest()
 

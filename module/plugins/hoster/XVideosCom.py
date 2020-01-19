@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-import urllib
+import urllib.parse as urllib
 
 from ..internal.Hoster import Hoster
 

@@ -13,7 +13,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
+
     @author: mkaay, RaNaN
 """
 
@@ -116,13 +116,13 @@ class PluginManager:
 
     def parse(self, folder, pattern=False, home={}):
         """
-        returns dict with information 
+        returns dict with information
         home contains parsed plugins from module.
-        
+
         {
         name : {path, version, config, (pattern, re), (plugin, class)}
         }
-        
+
         """
         plugins = {}
         if home:
@@ -239,15 +239,15 @@ class PluginManager:
         res = [] # tupels of (url, plugin)
 
         for url in urls:
-            if type(url) not in (str, unicode, buffer): continue
+            if type(url) not in (str, memoryview): continue
             found = False
 
             if last and last[1]["re"].match(url):
                 res.append((url, last[0]))
                 continue
 
-            for name, value in chain(self.crypterPlugins.iteritems(), self.hosterPlugins.iteritems(),
-                self.containerPlugins.iteritems()):
+            for name, value in chain(self.crypterPlugins.items(), self.hosterPlugins.items(),
+                self.containerPlugins.items()):
                 if value["re"].match(url):
                     res.append((url, name))
                     last = (name, value)
@@ -301,7 +301,7 @@ class PluginManager:
                     plugins[name]["name"])
                 plugins[name]["module"] = module  #cache import, maybe unneeded
                 return module
-            except Exception, e:
+            except Exception as e:
                 self.log.error(_("Error importing %(name)s: %(msg)s") % {"name": name, "msg": str(e)})
                 if self.core.debug:
                     print_exc()
@@ -444,9 +444,9 @@ if __name__ == "__main__":
     a = time()
 
     test = ["http://www.youtube.com/watch?v=%s" % x for x in range(0, 100)]
-    print p.parseUrls(test)
+    print (p.parseUrls(test))
 
     b = time()
 
-    print b - a, "s"
-    
+    print (b - a, "s")
+

@@ -13,7 +13,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
+
     @author: RaNaN
 """
 from os import remove, stat, fsync
@@ -24,7 +24,7 @@ from module.utils import fs_encode
 import codecs
 import pycurl
 
-from HTTPRequest import HTTPRequest
+from .HTTPRequest import HTTPRequest
 
 class WrongFormat(Exception):
     pass
@@ -32,7 +32,7 @@ class WrongFormat(Exception):
 
 class ChunkInfo():
     def __init__(self, name):
-        self.name = unicode(name)
+        self.name = (name)
         self.size = 0
         self.resume = False
         self.chunks = []
@@ -103,7 +103,7 @@ class ChunkInfo():
             else:
                 raise WrongFormat()
 
-            ci.addChunk(name, (long(range[0]), long(range[1])))
+            ci.addChunk(name, (int(range[0]), int(range[1])))
         fh.close()
         return ci
 
@@ -168,7 +168,7 @@ class HTTPChunk(HTTPRequest):
 
         fs_name = fs_encode(self.p.info.getChunkName(self.id))
         if self.resume:
-            self.fp = open(fs_name, "ab")
+            self.fp = open(fs_name, "a")
             self.arrived = self.fp.tell()
             if not self.arrived:
                 self.arrived = stat(fs_name).st_size
@@ -203,6 +203,8 @@ class HTTPChunk(HTTPRequest):
         return self.c
 
     def writeHeader(self, buf):
+        if isinstance(buf, bytes):
+            buf = buf.decode('utf-8')
         self.header += buf
         #@TODO forward headers?, this is possibly unneeeded, when we just parse valid 200 headers
         # as first chunk, we will parse the headers
@@ -219,7 +221,7 @@ class HTTPChunk(HTTPRequest):
     def writeBody(self, buf):
         #ignore BOM, it confuses unrar
         if not self.BOMChecked:
-            if [ord(b) for b in buf[:3]] == [239, 187, 191]:
+            if [(b) for b in buf[:3]] == [239, 187, 191]:
                 buf = buf[3:]
             self.BOMChecked = True
 

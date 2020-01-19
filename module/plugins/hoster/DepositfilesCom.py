@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-import urllib
+import urllib.parse as urllib
 
 from ..captcha.SolveMedia import SolveMedia
 from ..internal.SimpleHoster import SimpleHoster
@@ -34,8 +34,8 @@ class DepositfilesCom(SimpleHoster):
     TEMP_OFFLINE_PATTERN = r'^unmatchable$'
 
     NAME_REPLACEMENTS = [(r'\%u([0-9A-Fa-f]{4})', lambda m: unichr(int(m.group(1), 16))),
-                         (r'.*<b title="(?P<N>.+?)".*', "\g<N>")]
-    URL_REPLACEMENTS = [(__pattern__ + ".*", "https://depositfiles.com/files/\g<ID>")]
+                         (r'.*<b title="(?P<N>.+?)".*', r"\g<N>")]
+    URL_REPLACEMENTS = [(__pattern__ + ".*", r"https://depositfiles.com/files/\g<ID>")]
 
     COOKIES = [("depositfiles.com", "lang_current", "en")]
 

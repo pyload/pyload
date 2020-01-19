@@ -28,7 +28,7 @@ from random import choice
 
 import pycurl
 
-import PluginThread
+from . import PluginThread
 from module.PyFile import PyFile
 from module.network.RequestFactory import getURL
 from module.utils import freeSpace, lock
@@ -133,7 +133,7 @@ class ThreadManager:
         """run all task which have to be done (this is for repetivive call by core)"""
         try:
             self.tryReconnect()
-        except Exception, e:
+        except Exception as e:
             self.log.error(_("Reconnect Failed: %s") % str(e) )
             self.reconnecting.clear()
             if self.core.debug:
@@ -142,11 +142,11 @@ class ThreadManager:
 
         try:
             self.assignJob()
-        except Exception, e:
+        except Exception as e:
             self.log.warning("Assign job error", e)
             if self.core.debug:
                 print_exc()
-            
+
             sleep(0.5)
             self.assignJob()
             #it may be failed non critical so we try it again
@@ -267,14 +267,14 @@ class ThreadManager:
         onlimit = [x[0] for x in inuse if x[1] > 0 and x[2] >= x[1]]
 
         occ = [x.active.pluginname for x in self.threads if x.active and x.active.hasPlugin() and not x.active.plugin.multiDL] + onlimit
-        
+
         occ.sort()
         occ = tuple(set(occ))
         job = self.core.files.getJob(occ)
         if job:
             try:
                 job.initPlugin()
-            except Exception, e:
+            except Exception as e:
                 self.log.critical(str(e))
                 print_exc()
                 job.setStatus("failed")

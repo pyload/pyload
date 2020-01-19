@@ -69,7 +69,7 @@ class NoPremiumPl(MultiAccount):
         try:
             response = json.loads(self.run_auth_query())
 
-        except Exception, e:
+        except Exception as e:
             self.fail_login(e.message)
 
         if "errno" in response.keys():

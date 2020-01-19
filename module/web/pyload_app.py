@@ -25,16 +25,19 @@ import sys
 from os import listdir
 from os.path import isdir, isfile, join, abspath
 from sys import getfilesystemencoding
-from urllib import unquote
+try:
+    from urllib import unquote
+except ImportError:
+    from urllib.parse import unquote
 
 from bottle import route, static_file, request, response, redirect, HTTPError, error
 
-from webinterface import PYLOAD, PYLOAD_DIR, PROJECT_DIR, SETUP, PREFIX, env
+from .webinterface import PYLOAD, PYLOAD_DIR, PROJECT_DIR, SETUP, PREFIX, env
 
-from utils import render_to_response, parse_permissions, parse_userdata, \
+from .utils import render_to_response, parse_permissions, parse_userdata, \
     login_required, get_permission, set_permission, permlist, toDict, set_session
 
-from filters import relpath, unquotepath
+from .filters import relpath, unquotepath
 
 from module.utils import formatSize, save_join, fs_encode, fs_decode
 
@@ -160,15 +163,15 @@ def choose_path(browse_for, path=""):
 ## Views
 @error(500)
 def error500(error):
-    print "An error occured while processing the request."
+    print ("An error occured while processing the request.")
     if error.traceback:
-        print error.traceback
+        print (error.traceback)
 
     return base(["An Error occured, please enable debug mode to get more details.", error,
                  error.traceback.replace("\n", "<br>") if error.traceback else "No Traceback"])
 
 # render js
-@route("/media/js/<path:re:.+\.js>")
+@route(r"/media/js/<path:re:.+\.js>")
 def js_dynamic(path):
     response.headers['Expires'] = time.strftime("%a, %d %b %Y %H:%M:%S GMT",
                                                 time.gmtime(time.time() + 60 * 60 * 24 * 2))
@@ -322,8 +325,8 @@ def get_download(path):
     try:
         return static_file(fs_encode(path), fs_encode(root), download=True)
 
-    except Exception, e:
-        print e
+    except Exception as e:
+        print (e)
         return HTTPError(404, "File not Found.")
 
 
@@ -496,10 +499,10 @@ def logs(item=-1):
 @login_required("ADMIN")
 def admin():
     # convert to dict
-    user = dict([(name, toDict(y)) for name, y in PYLOAD.getAllUserData().iteritems()])
+    user = dict([(name, toDict(y)) for name, y in PYLOAD.getAllUserData().items()])
     perms = permlist()
 
-    for data in user.itervalues():
+    for data in user.values():
         data["perms"] = {}
         get_permission(data["perms"], data["permission"])
         data["perms"]["admin"] = True if data["role"] is 0 else False
@@ -519,7 +522,7 @@ def admin():
             for perm in perms:
                 user[name]["perms"][perm] = False
 
-            
+
             for perm in request.POST.getall("%s|perms" % name):
                 user[name]["perms"][perm] = True
 

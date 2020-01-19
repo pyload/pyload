@@ -96,4 +96,4 @@ if __name__ == "__main__":
         with open(sys.argv[1], 'r') as f:
             pem_private = f.read()
 
-        print sign_string(CoinHive.COINHIVE_INTERACTIVE_JS, pem_private, pem_passphrase=sys.argv[2], sign_algo="SHA384")
+        print (sign_string(CoinHive.COINHIVE_INTERACTIVE_JS, pem_private, pem_passphrase=sys.argv[2], sign_algo="SHA384"))

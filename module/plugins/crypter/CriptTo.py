@@ -29,7 +29,7 @@ class CriptTo(SimpleCrypter):
     __license__ = "GPLv3"
     __authors__ = [("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
-    URL_REPLACEMENTS = [(__pattern__ + ".*", "https://cript.to/folder/\g<ID>")]
+    URL_REPLACEMENTS = [(__pattern__ + ".*", r"https://cript.to/folder/\g<ID>")]
 
     CNL_LINK_PATTERN = r'data-cnl="(.+?)"'
     WEB_LINK_PATTERN = r'href="javascript:void\(0\);" onclick="popup\(\'(.+?)\''

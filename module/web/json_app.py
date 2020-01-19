@@ -7,9 +7,9 @@ from shutil import copyfileobj
 
 from bottle import route, request, HTTPError
 
-from webinterface import PYLOAD
+from .webinterface import PYLOAD
 
-from utils import login_required, render_to_response, toDict
+from .utils import login_required, render_to_response, toDict
 
 from module.utils import decode, formatSize
 
@@ -60,7 +60,7 @@ def links():
 
         data = {'links': links, 'ids': ids}
         return data
-    except Exception, e:
+    except Exception as e:
         print_exc()
         return HTTPError()
 
@@ -68,7 +68,7 @@ def links():
 @route("/json/packages")
 @login_required('LIST')
 def packages():
-    print "/json/packages"
+    print ("/json/packages")
     try:
         data = PYLOAD.getQueue()
 
@@ -174,10 +174,10 @@ def add_package():
     except:
         pass
 
-    name = name.decode("utf8", "ignore")
+    # name = name.decode("utf8", "ignore")
 
-    links = map(lambda x: x.strip(), links)
-    links = filter(lambda x: x != "", links)
+    links = list(map(lambda x: x.strip(), links))
+    links = list(filter(lambda x: x != "", links))
 
     pack = PYLOAD.addPackage(name, links, queue)
     if pw:
@@ -242,7 +242,7 @@ def load_config(category, section):
     elif category == "plugin":
         conf = PYLOAD.getPluginConfigDict()
 
-    for key, option in conf[section].iteritems():
+    for key, option in conf[section].items():
         if key in ("desc","outline"): continue
 
         if ";" in option["type"]:
@@ -256,7 +256,7 @@ def load_config(category, section):
 @route("/json/save_config/:category", method="POST")
 @login_required("SETTINGS")
 def save_config(category):
-    for key, value in request.POST.iteritems():
+    for key, value in request.POST.items():
         try:
             section, option = key.split("|")
         except:
@@ -282,10 +282,10 @@ def add_account():
 def update_accounts():
     deleted = [] #dont update deleted accs or they will be created again
 
-    for name, value in request.POST.iteritems():
+    for name, value in request.POST.items():
         value = value.strip()
         if not value: continue
-        
+
         tmp, user = name.split(";")
         plugin, action = tmp.split("|")
 
@@ -309,5 +309,5 @@ def change_password():
     newpw = request.POST["login_new_password"]
 
     if not PYLOAD.changePassword(user, oldpw, newpw):
-        print "Wrong password"
+        print ("Wrong password")
         return HTTPError()

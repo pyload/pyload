@@ -2,7 +2,7 @@
 
 import re
 
-import BeautifulSoup
+from bs4 import BeautifulSoup # import BeautifulSoup
 
 from ..internal.Crypter import Crypter
 

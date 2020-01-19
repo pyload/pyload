@@ -27,7 +27,7 @@ class EuroshareEu(SimpleHoster):
     NAME_PATTERN = r'<div class="main-panel__title">(?P<N>.+?)</div>'
     SIZE_PATTERN = r'File size: (?P<S>[\d.,]+) (?P<U>[\w^_]+)'
 
-    OFFLINE_PATTERN = ur'<h2>S.bor sa nena.iel</h2>|<div class="container">FILE NOT FOUND</div>|>&nbsp;File has been removed due to inactivity\.<'
+    OFFLINE_PATTERN = r'<h2>S.bor sa nena.iel</h2>|<div class="container">FILE NOT FOUND</div>|>&nbsp;File has been removed due to inactivity\.<'
     # @TODO: find out the real TEMP_OFFLINE_PATTERN
     TEMP_OFFLINE_PATTERN = r'^unmatchable$'
 

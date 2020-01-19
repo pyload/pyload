@@ -563,14 +563,14 @@ class XDCC(Hoster):
                             self.proccess_irc_command(origin, command, args)
 
                             if self.exc_info:
-                                raise self.exc_info[1], None, self.exc_info[2]
+                                raise (self.exc_info[1], None, self.exc_info[2])
 
                     finally:
                         self.irc_client.disconnect_server()
 
                 return
 
-            except socket.error, e:
+            except socket.error as e:
                 if hasattr(e, "errno") and e.errno is not None:
                     err_no = e.errno
 
@@ -628,7 +628,7 @@ class XDCC(Hoster):
             self.log_error(_("Invalid Pack Number"))
             self.fail(_("Invalid Pack Number"))
 
-        m = re.match('\x01DCC SEND "?(?P<NAME>.*?)"? (?P<IP>\d+) (?P<PORT>\d+)(?: (?P<SIZE>\d+))?\x01', text)  #: XDCC?
+        m = re.match(r'\x01DCC SEND "?(?P<NAME>.*?)"? (?P<IP>\d+) (?P<PORT>\d+)(?: (?P<SIZE>\d+))?\x01', text)  #: XDCC?
         if m:
             ip = socket.inet_ntoa(struct.pack('!I', int(m.group('IP'))))
             self.dcc_port = int(m.group('PORT'))
@@ -659,7 +659,7 @@ class XDCC(Hoster):
                 try:
                     os.makedirs(dl_folder)
 
-                except Exception, e:
+                except Exception as e:
                     self.fail(e.message)
 
             self.set_permissions(dl_folder)
@@ -682,7 +682,7 @@ class XDCC(Hoster):
         except Abort:
             pass
 
-        except Exception, e:
+        except Exception as e:
             bot  = self.info['pattern']['BOT']
             self.irc_client.xdcc_cancel_pack(bot)
 

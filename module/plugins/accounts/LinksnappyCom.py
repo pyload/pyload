@@ -51,7 +51,7 @@ class LinksnappyCom(MultiAccount):
             else:
                 validuntil = float(expire)
 
-            if isinstance(json_data['return'].get("trafficleft", ""), basestring):
+            if isinstance(json_data['return'].get("trafficleft", ""), str):
                 trafficleft = -1
 
             else:

@@ -17,17 +17,23 @@
     @author: RaNaN, mkaay
     @interface-version: 0.1
 """
-import __builtin__
+try:
+    import __builtin__
+except ImportError:
+    import builtins
 
 import traceback
-from thread import start_new_thread
+try:
+    from thread import start_new_thread
+except ImportError:
+    from _thread import start_new_thread
 from threading import RLock
 
 from types import MethodType
 
 from module.PluginThread import HookThread
 from module.plugins.PluginManager import literal_eval
-from utils import lock
+from .utils import lock
 
 class HookManager:
     """Manages hooks, delegates and handles Events.
@@ -65,7 +71,10 @@ class HookManager:
         self.core = core
         self.config = self.core.config
 
-        __builtin__.hookManager = self #needed to let hooks register themself
+        try:
+            __builtin__.hookManager = self #needed to let hooks register themself
+        except:
+            builtins.hookManager = self #needed to let hooks register themself
 
         self.log = self.core.log
         self.plugins = []
@@ -75,7 +84,7 @@ class HookManager:
         self.events = {} # contains events
 
         #registering callback for config event
-        self.config.pluginCB = MethodType(self.dispatchEvent, "pluginConfigChanged", basestring)
+        self.config.pluginCB = MethodType(self.dispatchEvent, "pluginConfigChanged")
 
         self.addEvent("pluginConfigChanged", self.manageHooks)
 
@@ -86,7 +95,7 @@ class HookManager:
         def new(*args):
             try:
                 return func(*args)
-            except Exception, e:
+            except Exception as e:
                 args[0].log.error(_("Error executing hooks: %s") % str(e))
                 if args[0].core.debug:
                     traceback.print_exc()
@@ -126,7 +135,7 @@ class HookManager:
                 if self.core.config.getPlugin(pluginname, "activated"):
                     pluginClass = self.core.pluginManager.loadClass("hooks", pluginname)
                     if not pluginClass: continue
-                    
+
                     plugin = pluginClass(self.core, self)
                     plugins.append(plugin)
                     self.pluginMap[pluginClass.__name__] = plugin
@@ -274,18 +283,18 @@ class HookManager:
     def getAllInfo(self):
         """returns info stored by hook plugins"""
         info = {}
-        for name, plugin in self.pluginMap.iteritems():
+        for name, plugin in self.pluginMap.items():
             if plugin.info:
                 #copy and convert so str
-                info[name] = dict([(x, str(y) if not isinstance(y, basestring) else y) for x, y in plugin.info.iteritems()])
+                info[name] = dict([(x, str(y) if not isinstance(y, str) else y) for x, y in plugin.info.items()])
         return info
 
 
     def getInfo(self, plugin):
         info = {}
         if plugin in self.pluginMap and self.pluginMap[plugin].info:
-            info = dict([(x, str(y) if not isinstance(y, basestring) else y)
-                for x, y in self.pluginMap[plugin].info.iteritems()])
+            info = dict([(x, str(y) if not isinstance(y, str) else y)
+                for x, y in self.pluginMap[plugin].info.items()])
 
         return info
 
@@ -309,9 +318,9 @@ class HookManager:
             for f in self.events[event]:
                 try:
                     f(*args)
-                except Exception, e:
+                except Exception as e:
                     self.log.warning("Error calling event handler %s: %s, %s, %s"
                     % (event, f, args, str(e)))
                     if self.core.debug:
                         traceback.print_exc()
-    
+

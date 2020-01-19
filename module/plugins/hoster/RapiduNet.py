@@ -29,7 +29,7 @@ class RapiduNet(SimpleHoster):
 
     COOKIES = [("rapidu.net", "rapidu_lang", "en")]
 
-    URL_REPLACEMENTS = [(__pattern__ + ".*", "https://rapidu.net/\g<ID>")]
+    URL_REPLACEMENTS = [(__pattern__ + ".*", r"https://rapidu.net/\g<ID>")]
 
     INFO_PATTERN = r'<h1 title="(?P<N>.*)">.*</h1>\s*<small>(?P<S>\d+(\.\d+)?)\s(?P<U>\w+)</small>'
     OFFLINE_PATTERN = r'<h1>404'

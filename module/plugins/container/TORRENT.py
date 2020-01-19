@@ -3,7 +3,7 @@
 import os
 import re
 import time
-import urllib
+import urllib.parse as urllib
 
 from ..internal.Container import Container
 from ..internal.misc import encode, safename

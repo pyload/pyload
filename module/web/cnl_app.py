@@ -2,12 +2,15 @@
 # -*- coding: utf-8 -*-
 from os.path import join
 import re
-from urllib import unquote
+try:
+    from urllib import unquote
+except ImportError:
+    from urllib.parse import unquote
 from base64 import standard_b64decode
 from binascii import unhexlify
 
 from bottle import route, request, HTTPError
-from webinterface import PYLOAD, DL_ROOT, JS
+from .webinterface import PYLOAD, DL_ROOT, JS
 
 try:
     from Crypto.Cipher import AES
@@ -87,12 +90,12 @@ def addcrypted2():
                 jk.reverse()
                 jk = "".join(jk)
             else:
-                print "Could not decrypt key, please install py-spidermonkey or ossp-js"
+                print ("Could not decrypt key, please install py-spidermonkey or ossp-js")
 
     try:
         Key = unhexlify(jk)
     except:
-        print "Could not decrypt key, please install py-spidermonkey or ossp-js"
+        print ("Could not decrypt key, please install py-spidermonkey or ossp-js")
         return "failed"
 
     IV = Key

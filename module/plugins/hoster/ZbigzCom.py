@@ -3,7 +3,10 @@
 import random
 import re
 import time
-import urlparse
+try:
+    import urlparse
+except:
+    from urllib.parse import urlparse
 
 from ..internal.Hoster import Hoster
 from ..internal.misc import json
@@ -41,7 +44,7 @@ class ZbigzCom(Hoster):
             urlp.path,
             get=get_params)
 
-        m = re.search("%s\((.+?)\);" % json_callback, jquery_data)
+        m = re.search(r"%s\((.+?)\);" % json_callback, jquery_data)
 
         return json.loads(m.group(1)) if m else None
 

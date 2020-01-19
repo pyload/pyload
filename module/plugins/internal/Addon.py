@@ -67,7 +67,7 @@ class Addon(Plugin):
     def init_events(self):
         if self.event_map:
             for event, funcs in self.event_map.items():
-                if isiterable(funcs):
+                if not isinstance(funcs, str): #if isiterable(funcs):
                     for f in funcs:
                         self.manager.addEvent(event, getattr(self, f))
                 else:

@@ -49,7 +49,7 @@ class MegaDebridEu(MultiHoster):
                                     get=args(token=self.account.info['data']['cache_info'][self.account.user]['token']),
                                     post=args(link=pyfile.url))
 
-        except BadHeader, e:
+        except BadHeader as e:
             if e.code == 405:
                 self.fail(_("Banned IP"))
 

@@ -25,7 +25,7 @@ class SimpleCrypter(Crypter):
     __license__ = "GPLv3"
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
-    """
+    r"""
     Following patterns should be defined by each crypter:
 
       LINK_PATTERN: Download link or regex to catch links in group(1)
@@ -100,7 +100,7 @@ class SimpleCrypter(Crypter):
                 try:
                     html = get_url(url, cookies=cls.COOKIES, decode=cls.TEXT_ENCODING)
 
-                except BadHeader, e:
+                except BadHeader as e:
                     info['error'] = "%d: %s" % (e.code, e.content)
 
                 except Exception:

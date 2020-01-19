@@ -8,7 +8,7 @@ import cStringIO
 import math
 import operator
 import sys
-import urllib
+import urllib.parse as urllib
 
 import Image
 import ImageDraw

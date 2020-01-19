@@ -6,7 +6,7 @@ import gzip
 try:
     from cStringIO import StringIO
 except ImportError:
-    from StringIO import StringIO
+    from io import BytesIO as StringIO
 
 class StripPathMiddleware(object):
     def __init__(self, app):

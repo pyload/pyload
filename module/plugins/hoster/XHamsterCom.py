@@ -15,7 +15,7 @@ def quality_fallback(desired, available):
             return quality_fallback("240p", available)
         else:
             # Return the entry starting with the lowest digit (shoud be 240p)
-            (quality, result) = sorted(available.iteritems(), key=lambda x: x[0], reverse=True)[0]
+            (quality, result) = sorted(available.items(), key=lambda x: x[0], reverse=True)[0]
 
     return result
 

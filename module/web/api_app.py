@@ -1,14 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from urllib import unquote
+try:
+    from urllib import unquote
+except ImportError:
+    from urllib.parse import unquote
 from itertools import chain
 from traceback import format_exc, print_exc
 
 from bottle import route, request, response, HTTPError
 
-from utils import toDict, set_session
-from webinterface import PYLOAD
+from .utils import toDict, set_session
+from .webinterface import PYLOAD
 
 from module.common.json_layer import json
 from module.lib.SafeEval import const_eval as literal_eval
@@ -25,8 +28,8 @@ class TBaseEncoder(json.JSONEncoder):
 
 # accepting positional arguments, as well as kwargs via post and get
 
-@route("/api/:func:args#[a-zA-Z0-9\-_/\"'\[\]%{}]*#")
-@route("/api/:func:args#[a-zA-Z0-9\-_/\"'\[\]%{}]*#", method="POST")
+@route(r"/api/:func:args#[a-zA-Z0-9\-_/\"'\[\]%{}]*#")
+@route(r"/api/:func:args#[a-zA-Z0-9\-_/\"'\[\]%{}]*#", method="POST")
 def call_api(func, args=""):
     response.headers.replace("Content-type", "application/json")
     response.headers.append("Cache-Control", "no-cache, must-revalidate")
@@ -54,24 +57,24 @@ def call_api(func, args=""):
     args = args.split("/")[1:]
     kwargs = {}
 
-    for x, y in chain(request.GET.iteritems(), request.POST.iteritems()):
+    for x, y in chain(request.GET.items(), request.POST.items()):
         if x in ("u", "p", "session"): continue
         kwargs[x] = unquote(y)
 
     try:
         return callApi(func, *args, **kwargs)
-    except Exception, e:
+    except Exception as e:
         print_exc()
         return HTTPError(500, json.dumps({"error": e.message, "traceback": format_exc()}))
 
 
 def callApi(func, *args, **kwargs):
     if not hasattr(PYLOAD.EXTERNAL, func) or func.startswith("_"):
-        print "Invalid API call", func
+        print ("Invalid API call", func)
         return HTTPError(404, json.dumps("Not Found"))
 
     result = getattr(PYLOAD, func)(*[literal_eval(x) for x in args],
-                                   **dict([(x, literal_eval(y)) for x, y in kwargs.iteritems()]))
+                                   **dict([(x, literal_eval(y)) for x, y in kwargs.items()]))
 
     # null is invalid json  response
     if result is None: result = True

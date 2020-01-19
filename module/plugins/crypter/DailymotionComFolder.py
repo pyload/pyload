@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 
-import urlparse
+try:
+    import urlparse
+except:
+    from urllib.parse import urlparse
 
 from ..internal.Crypter import Crypter
 from ..internal.misc import fsjoin, json
@@ -87,7 +90,7 @@ class DailymotionComFolder(Crypter):
             self.log_debug("Url recognized as Channel")
             playlists = self.get_playlists(m_id)
             self.log_debug(
-                "%s playlist\s found on channel \"%s\"" %
+                r"%s playlist\s found on channel \"%s\"" %
                 (len(playlists), m_id))
 
         if not playlists:
@@ -102,7 +105,7 @@ class DailymotionComFolder(Crypter):
                 p_owner,
                 p_name)
             self.log_debug(
-                "%s video\s found on playlist \"%s\"" %
+                r"%s video\s found on playlist \"%s\"" %
                 (len(p_videos), p_name))
             # @NOTE: Folder is NOT recognized by pyload 0.4.9!
             self.packages.append((p_name, p_videos, p_folder))

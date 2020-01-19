@@ -26,7 +26,7 @@ class DataportCz(SimpleHoster):
     OFFLINE_PATTERN = r'<h2>Soubor nebyl nalezen</h2>'
 
     CAPTCHA_PATTERN = r'<section id="captcha_bg">\s*<img src="(.*?)"'
-    FREE_SLOTS_PATTERN = ur'Počet volných slotů: <span class="darkblue">(\d+)</span><br />'
+    FREE_SLOTS_PATTERN = r'Počet volných slotů: <span class="darkblue">(\d+)</span><br />'
 
     def handle_free(self, pyfile):
         captchas = {

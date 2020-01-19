@@ -61,7 +61,7 @@ class ExternalScripts(Addon):
             try:
                 os.makedirs(dir)
 
-            except OSError, e:
+            except OSError as e:
                 self.log_debug(e, trace=True)
 
     def periodical_task(self):
@@ -137,7 +137,7 @@ class ExternalScripts(Addon):
             try:
                 p = self.call_cmd(file, *args)
 
-            except Exception, e:
+            except Exception as e:
                 self.log_error(_("Runtime error: %s") % file,
                                e or _("Unknown error"))
 

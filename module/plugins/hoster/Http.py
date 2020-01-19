@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import re
-import urlparse
+try:
+    import urlparse
+except:
+    from urllib.parse import urlparse
 
 from ..internal.Hoster import Hoster
 from module.network.HTTPRequest import BadHeader
@@ -32,7 +35,7 @@ class Http(Hoster):
             try:
                 self.download(url, ref=False, disposition=True)
 
-            except BadHeader, e:
+            except BadHeader as e:
                 if e.code not in (401, 403, 404, 410):
                     raise
 

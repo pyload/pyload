@@ -100,7 +100,7 @@ class Cli:
                     self.lock.acquire()
                     self.inputHandler.onEnter(self.input)
 
-                except Exception, e:
+                except Exception as e:
                     println(2, red(e))
                 finally:
                     self.lock.release()
@@ -359,7 +359,7 @@ class Cli:
         while True:
             sleep(1)
             result = client.pollResults(rid)
-            for url, status in result.data.iteritems():
+            for url, status in result.data.items():
                 if status.status == 2: check = "Online"
                 elif status.status == 1: check = "Offline"
                 else: check = "Unknown"
@@ -384,7 +384,7 @@ class RefreshThread(Thread):
                 os.system("clear")
                 print _("pyLoad was terminated")
                 _exit(0)
-            except Exception, e:
+            except Exception as e:
                 println(2, red(str(e)))
                 self.cli.reset()
                 print_exc()

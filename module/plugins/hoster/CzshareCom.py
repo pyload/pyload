@@ -68,7 +68,7 @@ class CzshareCom(SimpleHoster):
                     self.pyfile.name)
                 return True
 
-        except Exception, e:
+        except Exception as e:
             #: let's continue and see what happens...
             self.log_error(e, trace=True)
 
@@ -82,7 +82,7 @@ class CzshareCom(SimpleHoster):
                 re.S).group(1)
             inputs = dict(re.findall(self.FORM_INPUT_PATTERN, form))
 
-        except Exception, e:
+        except Exception as e:
             self.log_error(e, trace=True)
             self.restart(premium=False)
 
@@ -112,7 +112,7 @@ class CzshareCom(SimpleHoster):
             inputs = dict(re.findall(self.FORM_INPUT_PATTERN, form))
             pyfile.size = int(inputs['size'])
 
-        except Exception, e:
+        except Exception as e:
             self.log_error(e, trace=True)
             self.error(_("Form"))
 
@@ -130,14 +130,14 @@ class CzshareCom(SimpleHoster):
         else:
             self.captcha.correct()
 
-        m = re.search("countdown_number = (\d+);", self.data)
+        m = re.search(r"countdown_number = (\d+);", self.data)
         self.set_wait(int(m.group(1)) if m else 50)
 
         #: Download the file, destination is determined by pyLoad
         self.log_debug("WAIT URL", self.req.lastEffectiveURL)
 
         m = re.search(
-            "free_wait.php\?server=(.*?)&(.*)",
+            r"free_wait.php\?server=(.*?)&(.*)",
             self.req.lastEffectiveURL)
         if m is None:
             self.error(_("Download URL not found"))

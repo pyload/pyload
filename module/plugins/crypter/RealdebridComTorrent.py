@@ -3,7 +3,7 @@
 import os
 import pycurl
 import time
-import urllib
+import urllib.parse as urllib
 
 from module.network.HTTPRequest import BadHeader
 
@@ -36,7 +36,7 @@ class RealdebridComTorrent(Crypter):
 
             return json.loads(json_data) if len(json_data) > 0 else {}
 
-        except BadHeader, e:
+        except BadHeader as e:
             error_msg = json.loads(e.content)['error']
             if e.code == 400:
                 self.fail(error_msg)
@@ -78,7 +78,7 @@ class RealdebridComTorrent(Crypter):
                     api_data = json.loads(self.upload(torrent_filename,
                                                       self.API_URL + "/torrents/addTorrent",
                                                       get={'auth_token': self.api_token}))
-                except BadHeader, e:
+                except BadHeader as e:
                     error_msg = json.loads(e.content)['error']
                     if e.code == 400:
                         self.fail(error_msg)

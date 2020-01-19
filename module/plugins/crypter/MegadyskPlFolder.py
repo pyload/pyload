@@ -2,7 +2,7 @@
 
 import base64
 import re
-import urllib
+import urllib.parse as urllib
 
 from module.network.RequestFactory import getURL as get_url
 

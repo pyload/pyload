@@ -32,7 +32,7 @@ class CatShareNet(SimpleHoster):
 
     OFFLINE_PATTERN = r'<div class="alert alert-error"'
 
-    IP_BLOCKED_PATTERN = ur'>Nasz serwis wykrył że Twój adres IP nie pochodzi z Polski.<'
+    IP_BLOCKED_PATTERN = r'>Nasz serwis wykrył że Twój adres IP nie pochodzi z Polski.<'
     WAIT_PATTERN = r'var\scount\s=\s(\d+);'
 
     LINK_FREE_PATTERN = r'<form action="(.+?)" method="GET">'

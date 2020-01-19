@@ -12,7 +12,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
+
     @author: mkaay
 """
 
@@ -29,40 +29,40 @@ class QueueModel(CollectorModel):
     """
         model for the queue view, inherits from CollectorModel
     """
-    
+
     def __init__(self, view, connector):
         CollectorModel.__init__(self, view, connector)
         self.cols = 6
         self.wait_dict = {}
-        
+
         self.updater = self.QueueUpdater(self.interval)
         self.connect(self.updater, SIGNAL("update()"), self.update)
-    
+
     class QueueUpdater(QObject):
         """
             timer which emits signal for a download status reload
             @TODO: make intervall configurable
         """
-        
+
         def __init__(self, interval):
             QObject.__init__(self)
-            
+
             self.interval = interval
             self.timer = QTimer()
             self.timer.connect(self.timer, SIGNAL("timeout()"), self, SIGNAL("update()"))
-        
+
         def start(self):
             self.timer.start(1000)
-        
+
         def stop(self):
             self.timer.stop()
-    
+
     def start(self):
         self.updater.start()
-    
+
     def stop(self):
         self.updater.stop()
-    
+
     def fullReload(self):
         """
             reimplements CollectorModel.fullReload, because we want the Queue data
@@ -70,35 +70,35 @@ class QueueModel(CollectorModel):
         self._data = []
         order = self.connector.getPackageOrder(Destination.Queue)
         self.beginInsertRows(QModelIndex(), 0, len(order.values()))
-        for position, pid in order.iteritems():
+        for position, pid in order.items():
             pack = self.connector.getPackageData(pid)
             package = Package(pack)
             self._data.append(package)
         self._data = sorted(self._data, key=lambda p: p.data["order"])
         self.endInsertRows()
         self.updateCount()
-    
+
     def insertEvent(self, event):
         """
             wrap CollectorModel.insertEvent to update the element count
         """
         CollectorModel.insertEvent(self, event)
         self.updateCount()
-    
+
     def removeEvent(self, event):
         """
             wrap CollectorModel.removeEvent to update the element count
         """
         CollectorModel.removeEvent(self, event)
         self.updateCount()
-    
+
     def updateEvent(self, event):
         """
             wrap CollectorModel.updateEvent to update the element count
         """
         CollectorModel.updateEvent(self, event)
         self.updateCount()
-    
+
     def updateCount(self):
         """
             calculate package- and filecount for statusbar,
@@ -111,7 +111,7 @@ class QueueModel(CollectorModel):
         self.mutex.unlock()
         self.emit(SIGNAL("updateCount"), packageCount, fileCount)
         self.mutex.lock()
-    
+
     def update(self):
         """
             update slot for download status updating
@@ -142,7 +142,7 @@ class QueueModel(CollectorModel):
                     k = pack.getChildKey(d.fid)
                     self.emit(SIGNAL("dataChanged(const QModelIndex &, const QModelIndex &)"), self.index(k, 0, self.index(p, 0)), self.index(k, self.cols, self.index(p, self.cols)))
         self.updateCount()
-                    
+
     def headerData(self, section, orientation, role=Qt.DisplayRole):
         """
             returns column heading
@@ -161,7 +161,7 @@ class QueueModel(CollectorModel):
             elif section == 5:
                 return QVariant(_("Progress"))
         return QVariant()
-    
+
     def getWaitingProgress(self, item):
         """
             returns time to wait, caches startingtime to provide progress
@@ -186,7 +186,7 @@ class QueueModel(CollectorModel):
                 perc = rest*res
                 return perc, rest
         return None
-    
+
     def getProgress(self, item, locked=True):
         """
             return download progress, locks by default
@@ -216,7 +216,7 @@ class QueueModel(CollectorModel):
                 return 0
             return perc_sum/count
         return 0
-    
+
     def getSpeed(self, item):
         """
             calculate download speed
@@ -241,7 +241,7 @@ class QueueModel(CollectorModel):
                 return None
             return speed_sum
         return None
-    
+
     def data(self, index, role=Qt.DisplayRole):
         """
             return cell data
@@ -271,7 +271,7 @@ class QueueModel(CollectorModel):
                             status = child.data["status"]
                 else:
                     status = item.data["status"]
-                
+
                 if speed is None or status == 7 or status == 10 or status == 5:
                     return QVariant(self.translateStatus(statusMapReverse[status]))
                 else:
@@ -318,7 +318,7 @@ class QueueModel(CollectorModel):
             if index.column() == 0:
                 return QVariant(index.internalPointer().data["name"])
         return QVariant()
-    
+
     def flags(self, index):
         """
             cell flags
@@ -326,12 +326,12 @@ class QueueModel(CollectorModel):
         if index.column() == 0 and self.parent(index) == QModelIndex():
             return Qt.ItemIsSelectable | Qt.ItemIsEditable | Qt.ItemIsEnabled
         return Qt.ItemIsSelectable | Qt.ItemIsEnabled
-    
+
 class QueueView(CollectorView):
     """
         view component for queue
     """
-    
+
     def __init__(self, connector):
         CollectorView.__init__(self, connector)
         self.setModel(QueueModel(self, connector))
@@ -341,9 +341,9 @@ class QueueView(CollectorView):
         self.setColumnWidth(2, 140)
         self.setColumnWidth(3, 180)
         self.setColumnWidth(4, 70)
-        
+
         self.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        
+
         self.delegate = QueueProgressBarDelegate(self, self.model())
         self.setItemDelegateForColumn(5, self.delegate)
 
@@ -351,11 +351,11 @@ class QueueProgressBarDelegate(QItemDelegate):
     """
         used to display a progressbar in the progress cell
     """
-    
+
     def __init__(self, parent, queue):
         QItemDelegate.__init__(self, parent)
         self.queue = queue
-    
+
     def paint(self, painter, option, index):
         """
             paint the progressbar

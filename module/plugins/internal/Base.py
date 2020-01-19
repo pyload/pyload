@@ -3,7 +3,10 @@
 import inspect
 import re
 import time
-import urlparse
+try:
+    import urlparse
+except:
+    import urllib.parse as urlparse
 
 from .Captcha import Captcha
 from .misc import (decode, encode, fixurl, format_size, format_time,

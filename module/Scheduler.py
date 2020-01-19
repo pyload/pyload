@@ -13,13 +13,16 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
+
     @author: mkaay
 """
 
 from time import time
 from heapq import heappop, heappush
-from thread import start_new_thread
+try:
+    from thread import start_new_thread
+except ImportError:
+    from _thread import start_new_thread
 from threading import Lock
 
 class AlreadyCalled(Exception):

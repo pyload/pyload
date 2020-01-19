@@ -20,7 +20,10 @@ from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 from threading import Thread
 from cgi import FieldStorage
 from os.path import abspath, dirname, join
-from urllib import unquote
+try:
+    from urllib import unquote
+except:
+    from urllib.parse import unquote
 from base64 import standard_b64decode
 from binascii import unhexlify
 
@@ -43,7 +46,7 @@ class CNLServer(Thread):
     def __init__(self):
         Thread.__init__(self)
         self.setDaemon(True)
-        
+
         self.stop = False
         self.stopped = False
 
@@ -54,7 +57,7 @@ class CNLServer(Thread):
         except:
             self.stopped = True
             return
-        
+
         self.stopped = False
         while self.keep_running():
             httpd.handle_request()
@@ -117,7 +120,7 @@ class CNLHandler(BaseHTTPRequestHandler):
                 resp += "\r\n"
                 self.start_response(resp)
                 self.wfile.write(resp)
-            except Exception,e :
+            except Exception as e:
                 self.send_error(500, str(e))
         else:
             self.send_error(404, "Not Found")

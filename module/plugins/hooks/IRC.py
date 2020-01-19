@@ -185,7 +185,7 @@ class IRC(Thread, Notifier):
             for line in res:
                 self.response(line, msg['origin'])
 
-        except Exception, e:
+        except Exception as e:
             self.log_error(e, trace=True)
 
     def response(self, msg, origin=""):

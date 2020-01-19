@@ -21,8 +21,12 @@ from threading import Event
 from os import remove
 from os.path import exists
 from shutil import move
+import os
 
-from Queue import Queue
+try:
+    from Queue import Queue
+except ImportError:
+    from queue import Queue
 from traceback import print_exc
 
 from module.utils import chmod
@@ -36,11 +40,11 @@ DB_VERSION = 4
 
 class style():
     db = None
-    
+
     @classmethod
     def setDB(cls, db):
         cls.db = db
-    
+
     @classmethod
     def inner(cls, f):
         @staticmethod
@@ -48,7 +52,7 @@ class style():
             if cls.db:
                 return f(cls.db, *args, **kwargs)
         return x
-    
+
     @classmethod
     def queue(cls, f):
         @staticmethod
@@ -56,7 +60,7 @@ class style():
             if cls.db:
                 return cls.db.queue(f, *args, **kwargs)
         return x
-    
+
     @classmethod
     def async(cls, f):
         @staticmethod
@@ -68,11 +72,11 @@ class style():
 class DatabaseJob():
     def __init__(self, f, *args, **kwargs):
         self.done = Event()
-        
+
         self.f = f
         self.args = args
         self.kwargs = kwargs
-        
+
         self.result = None
         self.exception = False
 
@@ -94,17 +98,17 @@ class DatabaseJob():
     def processJob(self):
         try:
             self.result = self.f(*self.args, **self.kwargs)
-        except Exception, e:
+        except Exception as e:
             print_exc()
             try:
-                print "Database Error @", self.f.__name__, self.args[1:], self.kwargs, e
+                print ("Database Error @", self.f.__name__, self.args[1:], self.kwargs, e)
             except:
                 pass
 
             self.exception = e
         finally:
             self.done.set()
-    
+
     def wait(self):
         self.done.wait()
 
@@ -116,34 +120,34 @@ class DatabaseBackend(Thread):
         self.core = core
 
         self.jobs = Queue()
-        
+
         self.setuplock = Event()
-        
+
         style.setDB(self)
-    
+
     def setup(self):
         self.start()
         self.setuplock.wait()
-    
+
     def run(self):
         """main loop, which executes commands"""
         convert = self._checkVersion() #returns None or current version
-        
-        self.conn = sqlite3.connect("files.db")
-        chmod("files.db", 0600)
+
+        self.conn = sqlite3.connect("files.db", isolation_level = None)
+        chmod("files.db", 0o600)
 
         self.c = self.conn.cursor() #compatibility
-        
+
         if convert is not None:
             self._convertDB(convert)
-        
+
         self._createTables()
         self._migrateUser()
 
         self.conn.commit()
-        
+
         self.setuplock.set()
-        
+
         while True:
             j = self.jobs.get()
             if j == "quit":
@@ -160,12 +164,12 @@ class DatabaseBackend(Thread):
     def _checkVersion(self):
         """ check db version and delete it if needed"""
         if not exists("files.version"):
-            f = open("files.version", "wb")
+            f = open("files.version", "w")
             f.write(str(DB_VERSION))
             f.close()
             return
-        
-        f = open("files.version", "rb")
+
+        f = open("files.version", "r")
         v = int(f.read().strip())
         f.close()
         if v < DB_VERSION:
@@ -173,14 +177,14 @@ class DatabaseBackend(Thread):
                 try:
                     self.manager.core.log.warning(_("Filedatabase was deleted due to incompatible version."))
                 except:
-                    print "Filedatabase was deleted due to incompatible version."
+                    print ("Filedatabase was deleted due to incompatible version.")
                 remove("files.version")
                 move("files.db", "files.backup.db")
             f = open("files.version", "wb")
             f.write(str(DB_VERSION))
             f.close()
             return v
-    
+
     def _convertDB(self, v):
         try:
             getattr(self, "_convertV%i" % v)()
@@ -188,27 +192,27 @@ class DatabaseBackend(Thread):
             try:
                 self.core.log.error(_("Filedatabase could NOT be converted."))
             except:
-                print "Filedatabase could NOT be converted."
-    
+                print ("Filedatabase could NOT be converted.")
+
     #--convert scripts start
-    
+
     def _convertV2(self):
         self.c.execute('CREATE TABLE IF NOT EXISTS "storage" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "identifier" TEXT NOT NULL, "key" TEXT NOT NULL, "value" TEXT DEFAULT "")')
         try:
             self.manager.core.log.info(_("Database was converted from v2 to v3."))
         except:
-            print "Database was converted from v2 to v3."
+            print ("Database was converted from v2 to v3.")
         self._convertV3()
-    
+
     def _convertV3(self):
         self.c.execute('CREATE TABLE IF NOT EXISTS "users" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "name" TEXT NOT NULL, "email" TEXT DEFAULT "" NOT NULL, "password" TEXT NOT NULL, "role" INTEGER DEFAULT 0 NOT NULL, "permission" INTEGER DEFAULT 0 NOT NULL, "template" TEXT DEFAULT "default" NOT NULL)')
         try:
             self.manager.core.log.info(_("Database was converted from v3 to v4."))
         except:
-            print "Database was converted from v3 to v4."
-    
+            print ("Database was converted from v3 to v4.")
+
     #--convert scripts end
-    
+
     def _createTables(self):
         """create tables for database"""
 
@@ -251,7 +255,7 @@ class DatabaseBackend(Thread):
             try:
                 self.core.log.info(_("Converting old Django DB"))
             except:
-                print "Converting old Django DB"
+                print ("Converting old Django DB")
             conn = sqlite3.connect('pyload.db')
             c = conn.cursor()
             c.execute("SELECT username, password, email from auth_user WHERE is_superuser")
@@ -264,10 +268,10 @@ class DatabaseBackend(Thread):
 
             self.c.executemany("INSERT INTO users(name, password, email) VALUES (?, ?, ?)", users)
             move("pyload.db", "pyload.old.db")
-    
+
     def createCursor(self):
         return self.conn.cursor()
-    
+
     @style.async
     def commit(self):
         self.conn.commit()
@@ -275,31 +279,31 @@ class DatabaseBackend(Thread):
     @style.queue
     def syncSave(self):
         self.conn.commit()
-    
+
     @style.async
     def rollback(self):
         self.conn.rollback()
-    
+
     def async(self, f, *args, **kwargs):
         args = (self, ) + args
         job = DatabaseJob(f, *args, **kwargs)
         self.jobs.put(job)
-    
+
     def queue(self, f, *args, **kwargs):
         args = (self, ) + args
         job = DatabaseJob(f, *args, **kwargs)
         self.jobs.put(job)
         job.wait()
         return job.result
-    
+
     @classmethod
     def registerSub(cls, klass):
         cls.subs.append(klass)
-    
+
     @classmethod
     def unregisterSub(cls, klass):
         cls.subs.remove(klass)
-    
+
     def __getattr__(self, attr):
         for sub in DatabaseBackend.subs:
             if hasattr(sub, attr):
@@ -308,7 +312,7 @@ class DatabaseBackend(Thread):
 if __name__ == "__main__":
     db = DatabaseBackend()
     db.setup()
-    
+
     class Test():
         @style.queue
         def insert(db):
@@ -320,33 +324,33 @@ if __name__ == "__main__":
             c = db.createCursor()
             for i in range(1000*1000):
                 c.execute("INSERT INTO storage (identifier, key, value) VALUES (?, ?, ?)", ("foo", i, "bar"))
-        
+
         @style.queue
         def select(db):
             c = db.createCursor()
             for i in range(10):
                 res = c.execute("SELECT value FROM storage WHERE identifier=? AND key=?", ("foo", i))
-                print res.fetchone()
-        
+                print (res.fetchone())
+
         @style.queue
         def error(db):
             c = db.createCursor()
-            print "a"
+            print ("a")
             c.execute("SELECT myerror FROM storage WHERE identifier=? AND key=?", ("foo", i))
-            print "e"
-    
+            print ("e")
+
     db.registerSub(Test)
     from time import time
     start = time()
     for i in range(100):
         db.insert()
     end = time()
-    print end-start
-    
+    print (end-start)
+
     start = time()
     db.insert2()
     end = time()
-    print end-start
-    
+    print (end-start)
+
     db.error()
 

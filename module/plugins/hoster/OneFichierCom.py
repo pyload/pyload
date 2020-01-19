@@ -83,7 +83,7 @@ class OneFichierCom(SimpleHoster):
 
                     break
 
-            except Exception, e:
+            except Exception as e:
                 print(format_exc())
                 info = {'status': 8,
                         'error': e.message}
@@ -96,7 +96,7 @@ class OneFichierCom(SimpleHoster):
         return info
 
     def handle_free(self, pyfile):
-        url, inputs = self.parse_html_form('action="https://1fichier.com/\?[\w^_]+')
+        url, inputs = self.parse_html_form(r'action="https://1fichier.com/\?[\w^_]+')
 
         if not url:
             self.log_error(_("Free download form not found"))

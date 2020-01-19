@@ -3,7 +3,10 @@
 import hashlib
 import os
 import time
-import urlparse
+try:
+    import urlparse
+except:
+    from urllib.parse import urlparse
 
 from ..internal.misc import json
 from ..internal.SimpleHoster import SimpleHoster

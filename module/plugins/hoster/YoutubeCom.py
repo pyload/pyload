@@ -5,8 +5,12 @@ import os
 import re
 import subprocess
 import time
-import urllib
-import urlparse
+import urllib.parse as urllib
+try:
+    import urlparse
+except:
+    from urllib.parse import urlparse
+
 from xml.dom.minidom import parseString as parse_xml
 
 from module.network.CookieJar import CookieJar
@@ -19,7 +23,7 @@ from ..internal.Plugin import Abort, Skip
 
 def try_get(data, *path):
     def get_one(src, what):
-        if isinstance(src, dict) and isinstance(what, basestring):
+        if isinstance(src, dict) and isinstance(what, str):
             return src.get(what, None)
         elif isinstance(src, list) and type(what) is int:
             try:
@@ -127,7 +131,7 @@ class Ffmpeg(object):
     @property
     def found(self):
         return self.CMD is not None
-    
+
     def add_stream(self, streams):
         if isinstance(streams, list):
             self.streams.extend(streams)
@@ -378,7 +382,7 @@ class YoutubeCom(Hoster):
 
                 decrypted_sig = decrypt_func(encrypted_sig)
 
-            except (JSInterpreterError, AssertionError), e:
+            except (JSInterpreterError, AssertionError) as e:
                 self.log_error(_("Signature decode failed"), e)
                 self.fail(e.message)
 
@@ -466,7 +470,7 @@ class YoutubeCom(Hoster):
 
         try:
             filename = self.download(url, disposition=False)
-        except Skip, e:
+        except Skip as e:
             filename = os.path.join(self.pyload.config.get("general", "download_folder"),
                                     self.pyfile.package().folder,
                                     self.pyfile.name)
@@ -531,7 +535,7 @@ class YoutubeCom(Hoster):
 
         try:
             filename = self.download(url, disposition=False)
-        except Skip, e:
+        except Skip as e:
             filename = os.path.join(self.pyload.config.get("general", "download_folder"),
                                     self.pyfile.package().folder,
                                     self.pyfile.name)

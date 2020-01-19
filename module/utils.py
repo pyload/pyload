@@ -7,8 +7,14 @@ import sys
 import time
 import re
 from os.path import join
-from string import maketrans
-from htmlentitydefs import name2codepoint
+try:
+    from string import maketrans
+except ImportError:
+    pass
+try:
+    from htmlentitydefs import name2codepoint
+except ImportError:
+    from html.entities import name2codepoint
 
 def chmod(*args):
     try:
@@ -19,17 +25,17 @@ def chmod(*args):
 
 def decode(string):
     """ decode string with utf if possible """
-    try:
-        return string.decode("utf8", "replace")
-    except:
-        return string
+    #try:
+    #    return string.decode("utf8", "replace")
+    #except:
+    return string
 
 
 def remove_chars(string, repl):
     """ removes all chars in repl from string"""
+    #if type(string) == str:
+    #    return string.translate(str.maketrans("", ""), repl)
     if type(string) == str:
-        return string.translate(maketrans("", ""), repl)
-    elif type(string) == unicode:
         return string.translate(dict([(ord(s), None) for s in repl]))
 
 
@@ -43,7 +49,7 @@ def save_path(name):
 
 def save_join(*args):
     """ joins a path, encoding aware """
-    return fs_encode(join(*[x if type(x) == unicode else decode(x) for x in args]))
+    return fs_encode(join(*[x if type(x) == str else decode(x) for x in args]))
 
 
 # File System Encoding functions:
@@ -51,10 +57,11 @@ def save_join(*args):
 
 if sys.getfilesystemencoding().startswith('ANSI'):
     def fs_encode(string):
-        try:
+        return string
+        '''try:
             string = string.encode('utf-8')
         finally:
-            return string
+            return string'''
 
     fs_decode = decode #decode utf8
 
@@ -64,7 +71,7 @@ else:
 def get_console_encoding(enc):
     if os.name == "nt":
         if enc == "cp65001":  # aka UTF-8
-            print "WARNING: Windows codepage 65001 is not supported."
+            print ("WARNING: Windows codepage 65001 is not supported.")
             enc = "cp850"
 
         elif enc is None:  #: piped
@@ -76,8 +83,8 @@ def get_console_encoding(enc):
     return enc
 
 def compare_time(start, end):
-    start = map(int, start)
-    end = map(int, end)
+    start = list(map(int, start))
+    end = list(map(int, end))
 
     if start == end: return True
 
@@ -143,7 +150,7 @@ def parseFileSize(string, unit=None): #returns bytes
         else:
             return 0
     else:
-        if isinstance(string, basestring):
+        if isinstance(string, str):
             traffic = float(string.replace(",", "."))
         else:
             traffic = string
@@ -200,6 +207,6 @@ def html_unescape(text):
     return re.sub("&#?\w+;", fixup, text)
 
 if __name__ == "__main__":
-    print freeSpace(".")
+    print (freeSpace("."))
 
-    print remove_chars("ab'cdgdsf''ds'", "'ghd")
+    print (remove_chars("ab'cdgdsf''ds'", "'ghd"))

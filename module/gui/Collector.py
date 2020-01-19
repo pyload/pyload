@@ -12,7 +12,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
+
     @author: mkaay
 """
 
@@ -24,7 +24,7 @@ from module.utils import formatSize
 
 from module.remote.thriftbackend.ThriftClient import Destination, FileDoesNotExists, ElementType
 
-statusMapReverse = dict((v,k) for k, v in statusMap.iteritems())
+statusMapReverse = dict((v,k) for k, v in statusMap.items())
 
 translatedStatusMap = {} # -> CollectorModel.__init__
 
@@ -32,7 +32,7 @@ class CollectorModel(QAbstractItemModel):
     """
         model for the collector view
     """
-    
+
     def __init__(self, view, connector):
         QAbstractItemModel.__init__(self)
         self.connector = connector
@@ -41,7 +41,7 @@ class CollectorModel(QAbstractItemModel):
         self.cols = 4
         self.interval = 1
         self.mutex = QMutex()
-        
+
         global translatedStatusMap # workaround because i18n is not running at import time
         translatedStatusMap = {
             "finished":    _("finished"),
@@ -59,13 +59,13 @@ class CollectorModel(QAbstractItemModel):
             "downloading": _("downloading"),
             "processing":  _("processing")
         }
-    
+
     def translateStatus(self, string):
         """
             used to convert to locale specific status
         """
         return translatedStatusMap[string]
-    
+
     def addEvent(self, event):
         """
             called from main loop, pass events to the correct methods
@@ -79,7 +79,7 @@ class CollectorModel(QAbstractItemModel):
             self.insertEvent(event)
         elif event.eventname == "update":
             self.updateEvent(event)
-    
+
     def fullReload(self):
         """
             reload whole model, used at startup to load initial data
@@ -87,13 +87,13 @@ class CollectorModel(QAbstractItemModel):
         self._data = []
         order = self.connector.getPackageOrder(Destination.Collector)
         self.beginInsertRows(QModelIndex(), 0, len(order.values()))
-        for position, pid in order.iteritems():
+        for position, pid in order.items():
             pack = self.connector.getPackageData(pid)
             package = Package(pack)
             self._data.append(package)
         self._data = sorted(self._data, key=lambda p: p.data["order"])
         self.endInsertRows()
-    
+
     def removeEvent(self, event):
         """
             remove an element from model
@@ -113,7 +113,7 @@ class CollectorModel(QAbstractItemModel):
                     del self._data[k]
                     self.endRemoveRows()
                     break
-    
+
     def insertEvent(self, event):
         """
             inserts a new element in the model
@@ -123,7 +123,7 @@ class CollectorModel(QAbstractItemModel):
                 info = self.connector.getFileData(event.id)
             except FileDoesNotExists:
                 return
-            
+
             for k, package in enumerate(self._data):
                 if package.id == info.package:
                     if package.getChild(info.fid):
@@ -139,7 +139,7 @@ class CollectorModel(QAbstractItemModel):
             self.beginInsertRows(QModelIndex(), data.order, data.order)
             self._data.insert(data.order, package)
             self.endInsertRows()
-    
+
     def updateEvent(self, event):
         """
             update an element in the model
@@ -167,7 +167,7 @@ class CollectorModel(QAbstractItemModel):
                     package.update(data)
                     self.emit(SIGNAL("dataChanged(const QModelIndex &, const QModelIndex &)"), self.index(p, 0), self.index(p, self.cols))
                     break
-    
+
     def data(self, index, role=Qt.DisplayRole):
         """
             return cell data
@@ -210,7 +210,7 @@ class CollectorModel(QAbstractItemModel):
             if index.column() == 0:
                 return QVariant(index.internalPointer().data["name"])
         return QVariant()
-        
+
     def index(self, row, column, parent=QModelIndex()):
         """
             creates a cell index with pointer to the data
@@ -227,7 +227,7 @@ class CollectorModel(QAbstractItemModel):
         else:
             index = QModelIndex()
         return index
-    
+
     def parent(self, index):
         """
             return index of parent element
@@ -242,7 +242,7 @@ class CollectorModel(QAbstractItemModel):
                     if pack == link.package:
                         return self.createIndex(k, 0, link.package)
         return QModelIndex()
-    
+
     def rowCount(self, parent=QModelIndex()):
         """
             returns row count for the element
@@ -263,18 +263,18 @@ class CollectorModel(QAbstractItemModel):
                 return False
         #files have no children
         return 0
-    
+
     def columnCount(self, parent=QModelIndex()):
         return self.cols
-    
+
     def hasChildren(self, parent=QModelIndex()):
         if not parent.isValid():
             return True
         return self.rowCount(parent) > 0
-    
+
     def canFetchMore(self, parent):
         return False
-    
+
     def headerData(self, section, orientation, role=Qt.DisplayRole):
         """
             returns column heading
@@ -289,7 +289,7 @@ class CollectorModel(QAbstractItemModel):
             elif section == 3:
                 return QVariant(_("Size"))
         return QVariant()
-    
+
     def flags(self, index):
         """
             cell flags
@@ -297,7 +297,7 @@ class CollectorModel(QAbstractItemModel):
         if index.column() == 0 and self.parent(index) == QModelIndex():
             return Qt.ItemIsSelectable | Qt.ItemIsEditable | Qt.ItemIsEnabled
         return Qt.ItemIsSelectable | Qt.ItemIsEnabled
-   
+
     def setData(self, index, value, role=Qt.EditRole):
         """
             called if package name editing is finished, sets new name
@@ -310,7 +310,7 @@ class Package(object):
     """
         package object in the model
     """
-    
+
     def __init__(self, pack):
         self.id = pack.pid
         self.children = []
@@ -318,7 +318,7 @@ class Package(object):
             self.addChild(f)
         self.data = {}
         self.update(pack)
-    
+
     def update(self, pack):
         """
             update data dict from thift object
@@ -331,14 +331,14 @@ class Package(object):
             "order": pack.order,
         }
         self.data.update(data)
-    
+
     def addChild(self, f):
         """
             add child (Link) to package
         """
         self.children.insert(f.order, Link(f, self))
         self.children = sorted(self.children, key=lambda l: l.data["order"])
-    
+
     def getChild(self, fid):
         """
             get child from package
@@ -347,7 +347,7 @@ class Package(object):
             if child.id == int(fid):
                 return child
         return None
-    
+
     def getChildKey(self, fid):
         """
             get child index
@@ -356,7 +356,7 @@ class Package(object):
             if child.id == int(fid):
                 return k
         return None
-    
+
     def removeChild(self, fid):
         """
             remove child
@@ -371,7 +371,7 @@ class Link(object):
         self.update(f)
         self.id = f.fid
         self.package = pack
-    
+
     def update(self, f):
         """
             update data dict from thift object
@@ -394,7 +394,7 @@ class CollectorView(QTreeView):
     """
         view component for collector
     """
-    
+
     def __init__(self, connector):
         QTreeView.__init__(self)
         self.setModel(CollectorModel(self, connector))
@@ -402,6 +402,6 @@ class CollectorView(QTreeView):
         self.setColumnWidth(1, 100)
         self.setColumnWidth(2, 200)
         self.setColumnWidth(3, 100)
-        
+
         self.setEditTriggers(QAbstractItemView.DoubleClicked | QAbstractItemView.EditKeyPressed)
 

@@ -2,8 +2,11 @@
 import random
 import time
 import re
-import BeautifulSoup
-import urlparse
+from bs4 import BeautifulSoup
+try:
+    import urlparse
+except:
+    from urllib.parse import urlparse
 import json
 
 from module.network.HTTPRequest import BadHeader
@@ -96,8 +99,8 @@ class LibgenIo(Hoster):
         url = re.sub(r'^(jd|py)', "http", pyfile.url)
         self.log_debug("Start LibGen process for URL {}".format(url))
         # Normalize folder name
-        if isinstance(pyfile.package().folder, unicode):
-            pyfile.package().folder = unicode(normalize(pyfile.package().folder))
+        if isinstance(pyfile.package().folder, str):
+            pyfile.package().folder = (normalize(pyfile.package().folder))
         self.log_debug("Using download folder {}".format(pyfile.package().folder))
 
 
@@ -144,7 +147,7 @@ class LibgenIo(Hoster):
                     self.log_debug("Download successful")
                     found = True
                     break
-    
+
             # Stop mirror iteration if success
             if found:
                 break
@@ -153,7 +156,7 @@ class LibgenIo(Hoster):
         if not found:
             self.log_error("Could not find a working mirror")
             self.fail("No working mirror")
-        
+
         else:
             self.log_debug("End of download loop, checking download")
             self.check_download()

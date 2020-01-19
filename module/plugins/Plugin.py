@@ -76,16 +76,16 @@ class Base(object):
 
     #log functions
     def logInfo(self, *args):
-        self.log.info("%s: %s" % (self.__name__, " | ".join([a if isinstance(a, basestring) else str(a) for a in args])))
+        self.log.info("%s: %s" % (self.__name__, " | ".join([a if isinstance(a, str) else str(a) for a in args])))
 
     def logWarning(self, *args):
-        self.log.warning("%s: %s" % (self.__name__, " | ".join([a if isinstance(a, basestring) else str(a) for a in args])))
+        self.log.warning("%s: %s" % (self.__name__, " | ".join([a if isinstance(a, str) else str(a) for a in args])))
 
     def logError(self, *args):
-        self.log.error("%s: %s" % (self.__name__, " | ".join([a if isinstance(a, basestring) else str(a) for a in args])))
+        self.log.error("%s: %s" % (self.__name__, " | ".join([a if isinstance(a, str) else str(a) for a in args])))
 
     def logDebug(self, *args):
-        self.log.debug("%s: %s" % (self.__name__, " | ".join([a if isinstance(a, basestring) else str(a) for a in args])))
+        self.log.debug("%s: %s" % (self.__name__, " | ".join([a if isinstance(a, str) else str(a) for a in args])))
 
 
     def setConf(self, option, value):
@@ -263,7 +263,7 @@ class Plugin(Base):
 
     def setWait(self, seconds, reconnect=False):
         """Set a specific wait time later used with `wait`
-        
+
         :param seconds: wait time in seconds
         :param reconnect: True if a reconnect would avoid wait time
         """
@@ -339,7 +339,7 @@ class Plugin(Base):
         :param result_type: 'textual' if text is written on the captcha\
         or 'positional' for captcha where the user have to click\
         on a specific region on the captcha
-        
+
         :return: result of decrypting
         """
 
@@ -410,7 +410,7 @@ class Plugin(Base):
         """
         if self.pyfile.abort: raise Abort
         #utf8 vs decode -> please use decode attribute in all future plugins
-        if type(url) == unicode: url = str(url)
+        # if type(url) == unicode: url = str(url)
 
         res = self.req.load(url, get, post, ref, cookies, just_header, decode=decode)
 
@@ -486,7 +486,7 @@ class Plugin(Base):
                     gid = getgrnam(self.config["permission"]["group"])[2]
 
                     chown(location, uid, gid)
-                except Exception, e:
+                except Exception as e:
                     self.log.warning(_("Setting User and Group failed: %s") % str(e))
 
         # convert back to unicode
@@ -520,7 +520,7 @@ class Plugin(Base):
                 gid = getgrnam(self.config["permission"]["group"])[2]
 
                 chown(fs_filename, uid, gid)
-            except Exception, e:
+            except Exception as e:
                 self.log.warning(_("Setting User and Group failed: %s") % str(e))
 
         self.lastDownload = filename
@@ -528,7 +528,7 @@ class Plugin(Base):
 
     def checkDownload(self, rules, api_size=0, max_size=50000, delete=True, read_size=0):
         """ checks the content of the last downloaded file, re match is saved to `lastCheck`
-        
+
         :param rules: dict with names and rules to match (compiled regexp or strings)
         :param api_size: expected file size
         :param max_size: if the file is larger then it wont be checked
@@ -550,8 +550,8 @@ class Plugin(Base):
         f.close()
         #produces encoding errors, better log to other file in the future?
         #self.log.debug("Content: %s" % content)
-        for name, rule in rules.iteritems():
-            if type(rule) in (str, unicode):
+        for name, rule in rules.items():
+            if isinstance(rule, str):
                 if rule in content:
                     if delete:
                         remove(lastDownload)

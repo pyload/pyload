@@ -31,7 +31,7 @@ class PastedCo(Crypter):
         html = self.load(pyfile.url, decode=True).splitlines()
         fs_url = None
         FS_URL_RE = re.compile(
-            '%s/fullscreen\.php\?hash=[0-9a-f]*' %
+            r'%s/fullscreen\.php\?hash=[0-9a-f]*' %
             pyfile.url)
         for line in html:
             match = FS_URL_RE.search(line)

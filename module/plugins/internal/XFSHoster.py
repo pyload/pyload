@@ -3,7 +3,10 @@
 import operator
 import random
 import re
-import urlparse
+try:
+    import urlparse
+except:
+    from urllib.parse import urlparse
 
 from ..captcha.ReCaptcha import ReCaptcha
 from ..captcha.SolveMedia import SolveMedia
@@ -78,7 +81,7 @@ class XFSHoster(SimpleHoster):
 
         if not self.LINK_PATTERN:
             pattern = r'(?:file: "(.+?)"|(https?://(?:www\.)?([^/]*?%s|\d+\.\d+\.\d+\.\d+)(\:\d+)?(/d/|(/files)?/\d+/\w+/).+?)["\'<])'
-            self.LINK_PATTERN = pattern % self.PLUGIN_DOMAIN.replace('.', '\.')
+            self.LINK_PATTERN = pattern % self.PLUGIN_DOMAIN.replace(r'.', r'\.')
 
         SimpleHoster._prepare(self)
 

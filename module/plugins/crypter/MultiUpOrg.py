@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import re
-import urlparse
+try:
+    import urlparse
+except:
+    from urllib.parse import urlparse
 
 from module.network.HTTPRequest import BadHeader
 from ..internal.SimpleCrypter import SimpleCrypter

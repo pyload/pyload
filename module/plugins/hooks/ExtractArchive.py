@@ -147,7 +147,7 @@ class ExtractArchive(Addon):
                 else:
                     self.log_warning(_("Could not activate: %s") % p, e)
 
-            except Exception, e:
+            except Exception as e:
                 self.log_warning(_("Could not activate: %s") % p, e)
 
         if self.extractors:
@@ -329,7 +329,7 @@ class ExtractArchive(Addon):
                                     pyfile.setProgress(100)
                                     thread.finishFile(pyfile)
 
-                            except Exception, e:
+                            except Exception as e:
                                 self.log_error(name, e)
                                 success = False
                                 continue
@@ -502,7 +502,7 @@ class ExtractArchive(Addon):
                             self.log_warning(_("Unable to move %s to trash") % os.path.basename(f),
                                              _("Send2Trash lib not found"))
 
-                        except Exception, e:
+                        except Exception as e:
                             self.log_warning(_("Unable to move %s to trash") % os.path.basename(f),
                                              e.message)
 
@@ -522,7 +522,7 @@ class ExtractArchive(Addon):
         except ArchiveError, e:
             self.log_error(name, _("Archive error"), e)
 
-        except Exception, e:
+        except Exception as e:
             self.log_error(name, _("Unknown error"), e)
 
         self.manager.dispatchEvent("archive_extract_failed", pyfile, archive)

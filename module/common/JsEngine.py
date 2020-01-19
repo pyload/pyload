@@ -21,7 +21,7 @@ from __future__ import with_statement
 
 import os
 import tempfile
-import urllib
+import urllib.parse as urllib
 from imp import find_module
 
 ENGINE = ""
@@ -122,8 +122,8 @@ class JsEngine():
 
             self.init = True
 
-        if type(script) == unicode:
-            script = script.encode("utf8")
+        #if type(script) == unicode:
+        #    script = script.encode("utf8")
 
         if not ENGINE:
             raise Exception("No JS Engine")
@@ -143,23 +143,23 @@ class JsEngine():
             results = []
             if PYV8:
                 res = self.eval_pyv8(script)
-                print "PyV8:", res
+                print ("PyV8:", res)
                 results.append(res)
             if JS2PY:
                 res = self.eval_js2py(script)
-                print "js2py:", res
+                print ("js2py:", res)
                 results.append(res)
             if JS:
                 res = self.eval_js(script)
-                print "JS:", res
+                print ("JS:", res)
                 results.append(res)
             if NODE:
                 res = self.eval_node(script)
-                print "NODE:", res
+                print ("NODE:", res)
                 results.append(res)
             if RHINO:
                 res = self.eval_rhino(script)
-                print "Rhino:", res
+                print ("Rhino:", res)
                 results.append(res)
 
             warning = False
@@ -168,7 +168,7 @@ class JsEngine():
                     if x != y:
                         warning = True
 
-            if warning: print "### WARNING ###: Different results"
+            if warning: print ("### WARNING ###: Different results")
 
             return results[0]
 

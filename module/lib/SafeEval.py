@@ -2,7 +2,7 @@
 import dis
 
 _const_codes = map(dis.opmap.__getitem__, [
-    'POP_TOP','ROT_TWO','ROT_THREE','ROT_FOUR','DUP_TOP',
+    'POP_TOP','ROT_TWO','ROT_THREE','DUP_TOP', #'ROT_FOUR', removed
     'BUILD_LIST','BUILD_MAP','BUILD_TUPLE',
     'LOAD_CONST','RETURN_VALUE','STORE_SUBSCR'
     ])
@@ -18,7 +18,10 @@ def _get_opcodes(codeobj):
     s = codeobj.co_code
     names = codeobj.co_names
     while i < len(s):
-        code = ord(s[i])
+        try:
+            code = ord(s[i])
+        except TypeError:
+            code = s[i]
         opcodes.append(code)
         if code >= dis.HAVE_ARGUMENT:
             i += 3
@@ -30,13 +33,13 @@ def test_expr(expr, allowed_codes):
     try:
         c = compile(expr, "", "eval")
     except:
-        raise ValueError, "%s is not a valid expression" % expr
+        raise ValueError("%s is not a valid expression" % expr)
     codes, names = _get_opcodes(c)
     for code in codes:
         if code not in allowed_codes:
             for n in names:
                 if n not in _load_names:
-                    raise ValueError, "opcode %s not allowed" % dis.opname[code]
+                    raise ValueError( "opcode %s not allowed" % dis.opname[code])
     return c
 
 

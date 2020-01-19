@@ -23,7 +23,7 @@ class FilesMailRu(Hoster):
 
     def process(self, pyfile):
         self.data = self.load(pyfile.url)
-        self.url_pattern = '<a href="(.+?)" onclick="return Act\(this\, \'dlink\'\, event\)">(.+?)</a>'
+        self.url_pattern = r'<a href="(.+?)" onclick="return Act\(this\, \'dlink\'\, event\)">(.+?)</a>'
 
         #: Marks the file as "offline" when the pattern was found on the html-page'''
         if r'<div class="errorMessage mb10">' in self.data:

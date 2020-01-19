@@ -38,7 +38,7 @@ class CzshareCom(Account):
                     v.group(1),
                     '%d.%m.%y %H:%M'))
 
-        except Exception, e:
+        except Exception as e:
             self.log_error(e, trace=True)
 
         else:

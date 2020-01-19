@@ -24,9 +24,15 @@ from os.path import join
 import sys
 from sys import argv, platform
 
-import __builtin__
-__builtin__.owd = path.abspath("") #original working directory
-__builtin__.pypath = path.abspath(path.join(__file__, "..", ".."))
+try:
+    import __builtin__
+    __builtin__.owd = path.abspath("") #original working directory
+    __builtin__.pypath = path.abspath(path.join(__file__, "..", ".."))
+except ImportError:
+    import builtins
+    builtins.owd = path.abspath("")  # original working directory
+    builtins.pypath = path.abspath(path.join(__file__, "..", ".."))
+
 
 sys.path.append(join(pypath, "module", "lib"))
 
@@ -50,7 +56,11 @@ if platform == 'nt':
 else:
     homedir = path.expanduser("~")
 
-__builtin__.homedir = homedir
+try:
+    __builtin__.homedir = homedir
+except NameError:
+    builtins.homedir = homedir
+
 
 # dirty method to set configdir from commandline arguments
 for arg in argv[1:]:
@@ -70,9 +80,13 @@ else:
             configdir = path.join(homedir, "pyload")
 
 if not path.exists(configdir):
-    makedirs(configdir, 0700)
+    makedirs(configdir, 0o700)
 
-__builtin__.configdir = configdir
+try:
+    __builtin__.configdir = configdir
+except NameError:
+    builtins.configdir = configdir
+
 chdir(configdir)
 
 #print "Using %s as working directory." % configdir

@@ -2,7 +2,7 @@
 
 import re
 
-import BeautifulSoup
+from bs4 import BeautifulSoup
 
 from ..internal.Crypter import Crypter
 
@@ -23,13 +23,13 @@ class HoerbuchIn(Crypter):
     __authors__ = [("spoob", "spoob@pyload.org"),
                    ("mkaay", "mkaay@mkaay.de")]
 
-    article = re.compile("http://(?:www\.)?hoerbuch\.us/wp/horbucher/\d+/.+/")
+    article = re.compile(r"http://(?:www\.)?hoerbuch\.us/wp/horbucher/\d+/.+/")
     protection = re.compile(
-        "http://(?:www\.)?hoerbuch\.us/protection/folder_\d+.html")
+        r"http://(?:www\.)?hoerbuch\.us/protection/folder_\d+.html")
     uploaded = re.compile(
-        "http://(?:www\.)?hoerbuch\.us/protection/uploaded/(\w+)\.html")
+        r"http://(?:www\.)?hoerbuch\.us/protection/uploaded/(\w+)\.html")
     hoster_links = re.compile(
-        "http://(?:www\.)?hoerbuch\.us/wp/goto/Download/\d+/")
+        r"http://(?:www\.)?hoerbuch\.us/wp/goto/Download/\d+/")
 
     def decrypt(self, pyfile):
         self.pyfile = pyfile

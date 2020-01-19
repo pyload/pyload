@@ -4,9 +4,15 @@ from __future__ import with_statement
 
 import os
 import re
-import urllib
-import urlparse
-from StringIO import StringIO
+try:
+    import urllib
+    import urlparse
+    from StringIO import StringIO
+except ImportError:
+    import urllib.parse as urllib
+    import urllib.parse as urlparse
+    from io import StringIO
+
 
 from ..internal.CaptchaService import CaptchaService
 
@@ -331,7 +337,7 @@ class ReCaptcha(CaptchaService):
             self.fail(_("reCAPTCHA max retries exceeded"))
 
         return result, challenge
-    
+
     # solve interactive captcha (javascript required), use when non-JS captcha fallback for v2 is not allowed
     def _challenge_v2js(self, key, secure_token=None):
         self.log_debug("Challenge reCAPTCHA v2 interactive")
@@ -355,4 +361,4 @@ if __name__ == "__main__":
         with open(sys.argv[1], 'r') as f:
             pem_private = f.read()
 
-        print sign_string(ReCaptcha.RECAPTCHA_INTERACTIVE_JS, pem_private, pem_passphrase=sys.argv[2], sign_algo="SHA384")
+        print (sign_string(ReCaptcha.RECAPTCHA_INTERACTIVE_JS, pem_private, pem_passphrase=sys.argv[2], sign_algo="SHA384"))

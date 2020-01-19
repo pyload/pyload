@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import re
-import urllib
+import urllib.parse as urllib
 
-import BeautifulSoup
+from bs4 import BeautifulSoup
 
 from ..captcha.ReCaptcha import ReCaptcha
 from ..internal.SimpleHoster import SimpleHoster
@@ -53,7 +53,7 @@ class ZippyshareCom(SimpleHoster):
                 self.link = re.search(self.LINK_PATTERN, self.data)
                 self.captcha.challenge()
 
-            except Exception, e:
+            except Exception as e:
                 self.error(e)
 
         else:

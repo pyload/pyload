@@ -26,7 +26,7 @@ class TurbobitNet(SimpleHoster):
                    ("prOq", None),
                    ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
-    URL_REPLACEMENTS = [(__pattern__ + ".*", "https://turbobit.net/\g<ID>.html")]
+    URL_REPLACEMENTS = [(__pattern__ + ".*", r"https://turbobit.net/\g<ID>.html")]
     SIZE_REPLACEMENTS = [(r' ', "")]
 
     COOKIES = [("turbobit.net", "user_lang", "en")]

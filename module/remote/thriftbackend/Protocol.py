@@ -6,7 +6,7 @@ class Protocol(TBinaryProtocol.TBinaryProtocol):
     def writeString(self, str):
         try:
             str = str.encode("utf8", "ignore")
-        except Exception, e:
+        except Exception as e:
             pass
 
         self.writeI32(len(str))

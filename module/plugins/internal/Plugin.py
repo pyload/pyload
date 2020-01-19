@@ -115,7 +115,7 @@ class Plugin(object):
         try:
             remove(path, trash)
 
-        except (NameError, OSError), e:
+        except (NameError, OSError) as e:
             self.log_warning(
                 _("Error removing `%s`") %
                 os.path.abspath(path), e)
@@ -201,7 +201,7 @@ class Plugin(object):
             http_req.c.setopt(pycurl.MAXREDIRS, redirect)
 
         #@TODO: Move to network in 0.4.10
-        if isinstance(ref, basestring):
+        if isinstance(ref, str):
             req.lastURL = ref
 
         html = req.load(
@@ -233,7 +233,7 @@ class Plugin(object):
             html = html_unescape(html)
 
         #@TODO: Move to network in 0.4.10
-        if isinstance(decode, basestring):
+        if isinstance(decode, str):
             html = _decode(html, decode)
 
         self.last_html = html
@@ -295,7 +295,7 @@ class Plugin(object):
                 # @NOTE: req can be a HTTPRequest or a Browser object
                 http_req.c.setopt(pycurl.MAXREDIRS, redirect)
 
-            if isinstance(ref, basestring):
+            if isinstance(ref, str):
                 http_req.lastURL = ref
 
             http_req.setRequestContext(url, get, {}, bool(ref), bool(cookies), False)
@@ -353,7 +353,7 @@ class Plugin(object):
                 html = html_unescape(html)
 
             #@TODO: Move to network in 0.4.10
-            if isinstance(decode, basestring):
+            if isinstance(decode, str):
                 html = _decode(html, decode)
 
             self.last_html = html
@@ -383,15 +383,15 @@ class Plugin(object):
             if not exists(os.path.join("tmp", self.classname)):
                 os.makedirs(os.path.join("tmp", self.classname))
 
-            with open(framefile, "wb") as f:
-                try:
-                    html = encode(self.last_html)
-                except Exception:
-                    html = self.last_html
+            with open(framefile, "w") as f:
+                #try:
+                html = self.last_html
+                #except Exception:
+                #   html = self.last_html
 
                 f.write(html)
 
-        except IOError, e:
+        except IOError as e:
             self.log_error(e)
 
         finally:

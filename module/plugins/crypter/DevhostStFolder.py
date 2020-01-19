@@ -4,7 +4,10 @@
 # http://d-h.st/users/shine/?fld_id=37263#files
 
 import re
-import urlparse
+try:
+    import urlparse
+except:
+    from urllib.parse import urlparse
 
 from ..internal.SimpleCrypter import SimpleCrypter
 
@@ -46,11 +49,11 @@ class DevhostStFolder(SimpleCrypter):
             html = self.load(urlparse.urljoin("http://d-h.st/", m.group(1)),
                              cookies=False)
 
-            p = '\?fld_id=%s.*?">(.+?)<' % self.info['pattern']['ID']
+            p = r'\?fld_id=%s.*?">(.+?)<' % self.info['pattern']['ID']
             m = re.search(p, html)
             self.pyfile.name = m.group(1)
 
-        except Exception, e:
+        except Exception as e:
             self.log_debug(e, trace=True)
             self.pyfile.name = self.info['pattern']['USER']
 

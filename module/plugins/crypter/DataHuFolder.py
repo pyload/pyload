@@ -23,7 +23,7 @@ class DataHuFolder(SimpleCrypter):
                    ("stickell", "l.stickell@yahoo.it")]
 
     LINK_PATTERN = r'<a href=\'(http://data\.hu/get/.+)\' target=\'_blank\'>\1</a>'
-    NAME_PATTERN = ur'<title>(?P<N>.+?) Let\xf6lt\xe9se</title>'
+    NAME_PATTERN = r'<title>(?P<N>.+?) Let\xf6lt\xe9se</title>'
 
     def _prepare(self):
         SimpleCrypter._prepare(self)

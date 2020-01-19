@@ -37,7 +37,7 @@ class GoogledriveComDereferer(Crypter):
             self.log_debug("API response: %s" % json_data)
             return json_data
 
-        except BadHeader, e:
+        except BadHeader as e:
             try:
                 json_data = json.loads(e.content)
                 self.log_error("API Error: %s" % cmd,

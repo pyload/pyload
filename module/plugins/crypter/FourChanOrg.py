@@ -3,7 +3,10 @@
 # Based on 4chandl by Roland Beermann (https://gist.github.com/enkore/3492599)
 
 import re
-import urlparse
+try:
+    import urlparse
+except:
+    from urllib.parse import urlparse
 
 from ..internal.Crypter import Crypter
 

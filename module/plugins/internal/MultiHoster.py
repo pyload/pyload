@@ -63,7 +63,7 @@ class MultiHoster(SimpleHoster):
         try:
             SimpleHoster._process(self, thread)
 
-        except Fail, e:
+        except Fail as e:
             hdict = self.pyload.pluginManager.hosterPlugins.get(self.pyfile.pluginname, {})
             if self.config.get('revert_failed', True) and hdict.get('new_module'):
                 tmp_module = hdict.pop('new_module', None)

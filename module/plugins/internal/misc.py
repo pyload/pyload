@@ -17,8 +17,12 @@ import subprocess
 import sys
 import time
 import traceback
-import urllib
-import urlparse
+try:
+    import urlparse
+    import urllib
+except:
+    import urllib.parse as urlparse
+    import urllib.parse as urllib
 import xml.sax.saxutils  # @TODO: Remove in 0.4.10
 import zlib
 
@@ -177,7 +181,7 @@ class Periodical(object):
         try:
             self.task()
 
-        except Exception, e:
+        except Exception as e:
             self.plugin.log_error(_("Error performing periodical task"), e)
 
         if not self.stopped:
@@ -394,14 +398,13 @@ def decode(value, encoding=None, errors='strict'):
     """
     Encoded string (default to own system encoding) -> unicode string
     """
-    if isinstance(value, str):
-        res = unicode(value, encoding or get_console_encoding(sys.stdout.encoding), errors)
+    #if isinstance(value, str):
+    #    res = str(value, encoding or get_console_encoding(sys.stdout.encoding), errors)
 
-    elif isinstance(value, unicode):
-        res = value
-
-    else:
-        res = unicode(value)
+    # if isinstance(value, str):
+    res = value
+    #else:
+    #    res = unicode(value)
 
     # Hotfix UnicodeDecodeError
     try:
@@ -420,10 +423,12 @@ def encode(value, encoding='utf-8', errors='backslashreplace'):
     """
     Unicode string -> encoded string (default to UTF-8)
     """
-    if isinstance(value, unicode):
+    if isinstance(value, str):
         res = value.encode(encoding, errors)
+    else:
+        res = str(value)
 
-    elif isinstance(value, str):
+    '''if isinstance(value, str):
         decoding = get_console_encoding(sys.stdin.encoding)
         if encoding == decoding:
             res = value
@@ -431,13 +436,15 @@ def encode(value, encoding='utf-8', errors='backslashreplace'):
             res = transcode(value, decoding, encoding)
 
     else:
-        res = str(value)
+        res = str(value)'''
 
     return res
 
 
 def exists(path):
-    path = encode(path)
+    # path = encode(path)
+    if path == None:
+        path = 'None'
 
     if os.name == "nt":
         if path.startswith("\\\\"):
@@ -449,7 +456,7 @@ def exists(path):
 
 
 def remove(path, trash=True):
-    path = encode(path)
+    # path = encode(path)
 
     if not exists(path):
         return
@@ -469,19 +476,19 @@ def fsjoin(*args):
     Like os.path.join, but encoding aware
     (for safe-joining see `safejoin`)
     """
-    return encode(os.path.join(*args))
+    return (os.path.join(*args))
 
 
 def remove_chars(value, repl):
     """
     Remove all chars in repl from string
     """
-    if isinstance(repl, unicode):
+    if isinstance(repl, str):
         for badc in list(repl):
             value = value.replace(badc, "")
         return value
 
-    elif isinstance(value, unicode):
+    elif isinstance(value, str):
         return value.translate(dict((ord(s), None) for s in repl))
 
     elif isinstance(value, str):
@@ -496,10 +503,10 @@ def fixurl(url, unquote=None):
         unquote = url is old
 
     url = decode(url)
-    try:
-        url = url.decode('unicode-escape')
-    except UnicodeDecodeError:
-        pass
+    #try:
+    #    url = url.decode('unicode-escape')
+    #except UnicodeDecodeError:
+    #    pass
 
     url = html_unescape(url)
     url = re.sub(r'(?<!:)/{2,}', '/', url).strip().lstrip('.')
@@ -834,7 +841,7 @@ def parse_html_form(attr_filter, html, input_names={}):
             #: Check input attributes
             for key, value in input_names.items():
                 if key in inputs:
-                    if isinstance(value, basestring) and inputs[key] == value:
+                    if isinstance(value, str) and inputs[key] == value:
                         continue
                     elif isinstance(value, tuple) and inputs[key] in value:
                         continue

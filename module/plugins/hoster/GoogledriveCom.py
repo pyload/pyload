@@ -4,7 +4,10 @@
 #   https://drive.google.com/file/d/0B6RNTe4ygItBQm15RnJiTmMyckU/view?pli=1
 
 import re
-import urlparse
+try:
+    import urlparse
+except:
+    from urllib.parse import urlparse
 
 from module.network.HTTPRequest import BadHeader
 
@@ -46,7 +49,7 @@ class GoogledriveCom(Hoster):
             self.log_debug("API response: %s" % json_data)
             return json_data
 
-        except BadHeader, e:
+        except BadHeader as e:
             try:
                 json_data = json.loads(e.content)
                 self.log_error("API Error: %s" % cmd,
@@ -68,7 +71,7 @@ class GoogledriveCom(Hoster):
                                # 'acknowledgeAbuse': "true",
                                'key': self.API_KEY})
 
-        except BadHeader, e:
+        except BadHeader as e:
             if e.code == 404:
                 self.offline()
 

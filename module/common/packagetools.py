@@ -3,7 +3,10 @@
 # JDownloader/src/jd/controlling/LinkGrabberPackager.java
 
 import re
-from urlparse import urlparse
+try:
+    from urlparse import urlparse
+except ImportError:
+    from urllib.parse import urlparse
 
 def matchFirst(string, *args):
     """ matches against list of regexp and returns first match"""
@@ -146,10 +149,10 @@ if __name__ == "__main__":
     urls = [(x.strip(), x.strip()) for x in f.readlines() if x.strip()]
     f.close()
 
-    print "Having %d urls." % len(urls)
+    print ("Having %d urls." % len(urls))
 
     packs = parseNames(urls)
 
     pprint(packs)
 
-    print "Got %d urls." % sum([len(x) for x in packs.itervalues()])
+    print ("Got %d urls." % sum([len(x) for x in packs.itervalues()]))

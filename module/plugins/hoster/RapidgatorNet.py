@@ -42,7 +42,7 @@ class RapidgatorNet(SimpleHoster):
 
     PREMIUM_ONLY_PATTERN = r'You can download files up to|This file can be downloaded by premium only<'
     DOWNLOAD_LIMIT_ERROR_PATTERN = r'You have reached your (daily|hourly) downloads limit'
-    IP_BLOCKED_ERROR_PATTERN = 'You can`t download more than 1 file at a time in free mode\.' \
+    IP_BLOCKED_ERROR_PATTERN = r'You can`t download more than 1 file at a time in free mode\.' \
                                ''
     WAIT_PATTERN = r'(?:Delay between downloads must be not less than|Try again in).+'
 
@@ -65,7 +65,7 @@ class RapidgatorNet(SimpleHoster):
             status = json_data['response_status']
             message = json_data['response_details']
 
-        except BadHeader, e:
+        except BadHeader as e:
             status = e.code
             message = e.message
 

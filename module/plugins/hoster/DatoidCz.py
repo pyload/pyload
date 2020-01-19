@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import time
-import urlparse
+try:
+    import urlparse
+except:
+    from urllib.parse import urlparse
 
 from ..internal.misc import json
 from ..internal.SimpleHoster import SimpleHoster
@@ -25,7 +28,7 @@ class DatoidCz(SimpleHoster):
     __license__ = "GPLv3"
     __authors__ = [("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
-    NAME_PATTERN = ur'Název souboru: (?P<N>.+)'
+    NAME_PATTERN = r'Název souboru: (?P<N>.+)'
     SIZE_PATTERN = r'Velikost: (?P<S>[\d.,]+) (?P<U>[\w^_]+)'
     OFFLINE_PATTERN = r'Tento soubor neexistuje'
 

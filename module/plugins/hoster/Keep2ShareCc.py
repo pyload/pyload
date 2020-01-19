@@ -30,7 +30,7 @@ class Keep2ShareCc(SimpleHoster):
 
     DISPOSITION = False  # @TODO: Recheck in v0.4.10
 
-    URL_REPLACEMENTS = [(__pattern__ + ".*", "https://k2s.cc/file/\g<ID>")]
+    URL_REPLACEMENTS = [(__pattern__ + ".*", r"https://k2s.cc/file/\g<ID>")]
 
     API_URL = "https://keep2share.cc/api/v2/"
     #: See https://github.com/keep2share/api
@@ -77,7 +77,7 @@ class Keep2ShareCc(SimpleHoster):
                                           free_download_key=None,
                                           captcha_challenge=None,
                                           captcha_response=None)
-        except BadHeader, e:
+        except BadHeader as e:
             if e.code == 406:
                 for i in range(10):
                     json_data = self.api_response("RequestCaptcha")
@@ -92,7 +92,7 @@ class Keep2ShareCc(SimpleHoster):
                                                       captcha_challenge=json_data['challenge'],
                                                       captcha_response=captcha_response)
 
-                    except BadHeader, e:
+                    except BadHeader as e:
                         if e.code == 406:
                             json_data = json.loads(e.content)
                             if json_data['errorCode'] == 31:  #: ERROR_CAPTCHA_INVALID

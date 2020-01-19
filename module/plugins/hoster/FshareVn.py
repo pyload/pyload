@@ -2,7 +2,10 @@
 
 import re
 import time
-import urlparse
+try:
+    import urlparse
+except:
+    from urllib.parse import urlparse
 
 from ..internal.SimpleHoster import SimpleHoster
 from ..internal.misc import json
@@ -32,7 +35,7 @@ class FshareVn(SimpleHoster):
 
     NAME_PATTERN = r'<i class="material-icons">insert_drive_file</i>\s*(?P<N>.+?)\s*</div>'
     SIZE_PATTERN = r'<i class="material-icons">save</i>\s*(?P<S>[\d.,]+) (?P<U>[\w^_]+)\s*</div>'
-    OFFLINE_PATTERN = ur'Tập tin của bạn yêu cầu không tồn tại'
+    OFFLINE_PATTERN = r'Tập tin của bạn yêu cầu không tồn tại'
 
     NAME_REPLACEMENTS = [("(.*)", double_decode)]
 
@@ -51,7 +54,7 @@ class FshareVn(SimpleHoster):
             url = urlparse.urljoin(pyfile.url, action)
 
             self.data = self.load(url, post=inputs)
-            if ur'Sai mật khẩu' in self.data:
+            if r'Sai mật khẩu' in self.data:
                 self.fail(_("Wrong password"))
 
         action, inputs = self.parse_html_form('id="form-download"', input_names={'withFcode5': "0"})

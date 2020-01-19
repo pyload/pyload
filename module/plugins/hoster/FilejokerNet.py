@@ -2,7 +2,10 @@
 
 import pycurl
 import re
-import urlparse
+try:
+    import urlparse
+except:
+    from urllib.parse import urlparse
 
 from ..captcha.ReCaptcha import ReCaptcha
 from ..internal.misc import json, parse_html_tag_attr_value

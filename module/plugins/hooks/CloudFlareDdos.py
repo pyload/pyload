@@ -2,7 +2,10 @@
 
 import inspect
 import re
-import urlparse
+try:
+    import urlparse
+except:
+    from urllib.parse import urlparse
 
 from module.network.HTTPRequest import BadHeader
 
@@ -152,7 +155,7 @@ class CloudFlare(object):
         except BadHeader, e:
             raise e  #: Huston, we have a BadHeader!
 
-        except Exception, e:
+        except Exception as e:
             addon_plugin.log_error(e)
             return None  # Tell the exception handler to re-throw the exception
 
@@ -176,7 +179,7 @@ class CloudFlare(object):
                 addon_plugin.log_warning(_("Got unexpected CloudFlare html page"))
                 return None  # Tell the exception handler to re-throw the exception
 
-        except Exception, e:
+        except Exception as e:
             addon_plugin.log_error(e)
             return None  # Tell the exception handler to re-throw the exception
 

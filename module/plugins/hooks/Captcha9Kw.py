@@ -5,7 +5,10 @@ from __future__ import with_statement
 import base64
 import re
 import time
-import urlparse
+try:
+    import urlparse
+except:
+    from urllib.parse import urlparse
 
 from module.network.HTTPRequest import BadHeader
 

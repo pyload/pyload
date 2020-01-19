@@ -13,7 +13,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
+
     @author: mkaay, RaNaN
 """
 
@@ -21,7 +21,7 @@ from time import time
 from traceback import print_exc
 from threading import Lock
 
-from common.json_layer import json
+# from .common.json_layer import json
 
 class CaptchaManager():
     def __init__(self, core):
@@ -74,7 +74,7 @@ class CaptchaManager():
             except:
                 if self.core.debug:
                     print_exc()
-            
+
         if task.handler or cli:  # The captcha was handled
             self.tasks.append(task)
             return True
@@ -92,7 +92,7 @@ class CaptchaTask():
         self.captchaResultType = result_type
         self.handler = [] #the hook plugins that will take care of the solution
         self.result = None
-        self.waitUntil = None
+        self.waitUntil = 0
         self.error = None #error message
 
         self.status = "init"
@@ -141,11 +141,11 @@ class CaptchaTask():
     def isPositional(self):
         """ returns if user have to click a specific region on the captcha """
         return self.captchaResultType == 'positional'
-    
+
     def isInteractive(self):
         """ returns if user has to solve the captcha in an interactive iframe """
         return self.captchaResultType == 'interactive'
-        
+
     def setWatingForUser(self, exclusive):
         if exclusive:
             self.status = "user"

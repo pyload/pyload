@@ -18,7 +18,7 @@
 """
 from bottle import request, HTTPError, redirect, ServerAdapter
 
-from webinterface import env, TEMPLATE, PREFIX
+from .webinterface import env, TEMPLATE, PREFIX
 
 from module.Api import has_permission, PERMS, ROLE
 
@@ -39,7 +39,7 @@ def parse_permissions(session):
         return perms
 
     if session.get("role") == ROLE.ADMIN:
-        for k in perms.iterkeys():
+        for k in perms.keys():
             perms[k] = True
 
     elif session.get("perms"):

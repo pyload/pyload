@@ -5,7 +5,10 @@
 
 import binascii
 import re
-import urlparse
+try:
+    import urlparse
+except:
+    from urllib.parse import urlparse
 
 import Crypto.Cipher.AES
 
@@ -284,16 +287,16 @@ class FilecryptCc(Crypter):
                     res2 = self._filecrypt_load_url(link2.group(1), just_header=True)
                     self.urls.append(res2['location'])
 
-        except Exception, e:
+        except Exception as e:
             self.log_debug("Error decrypting weblinks: %s" % e)
 
     def handle_CNL(self):
         try:
-            CNLdata = re.findall('onsubmit="CNLPOP\(\'(.*)\', \'(.*)\', \'(.*)\', \'(.*)\'\);',self.site_with_links)
+            CNLdata = re.findall(r'onsubmit="CNLPOP\(\'(.*)\', \'(.*)\', \'(.*)\', \'(.*)\'\);',self.site_with_links)
             for index in CNLdata:
                 self.urls.extend(self._get_links(index[2], index[1]))
 
-        except Exception, e:
+        except Exception as e:
             self.log_debug("Error decrypting CNL: %s" % e)
 
     def _get_links(self, crypted, jk):
@@ -315,7 +318,7 @@ class FilecryptCc(Crypter):
     def _filecrypt_load_url(self, *args, **kwargs):
         try:
             return self.load(*args, **kwargs)
-        except BadHeader, e:
+        except BadHeader as e:
             if e.code == 500:
                 return e.content
             else:

@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 
-import urlparse
+try:
+    import urlparse
+except:
+    from urllib.parse import urlparse
 
 from ..internal.Account import Account
 from ..internal.misc import json
@@ -43,7 +46,7 @@ class RapidgatorNet(Account):
             else:
                 self.log_error(json_data['response_details'])
 
-        except Exception, e:
+        except Exception as e:
             self.log_error(e, trace=True)
 
         return {'validuntil': validuntil,
@@ -69,7 +72,7 @@ class RapidgatorNet(Account):
             else:
                 self.log_error(json_data['response_details'])
 
-        except Exception, e:
+        except Exception as e:
             self.log_error(e, trace=True)
 
         self.fail_login()

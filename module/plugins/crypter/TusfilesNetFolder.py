@@ -2,7 +2,10 @@
 
 import math
 import re
-import urlparse
+try:
+    import urlparse
+except:
+    from urllib.parse import urlparse
 
 from ..internal.XFSCrypter import XFSCrypter
 

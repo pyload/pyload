@@ -53,7 +53,7 @@ class YadiSk(SimpleHoster):
                                 info['size'] = sect['data']['meta']['size']
                                 info['name'] = sect['data']['name']
 
-                except Exception, e:
+                except Exception as e:
                     info['status'] = 8
                     info['error'] = _(
                         "Unexpected server response: %s") % e.message

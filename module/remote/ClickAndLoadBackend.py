@@ -27,7 +27,10 @@ try:
 except:
     pass
 
-from RemoteManager import BackendBase
+try:
+    from RemoteManager import BackendBase
+except ImportError:
+    from .RemoteManager import BackendBase
 
 core = None
 js = None
@@ -46,9 +49,9 @@ class ClickAndLoadBackend(BackendBase):
 class CNLHandler(BaseHTTPRequestHandler):
 
     def add_package(self, name, urls, queue=0):
-        print "name", name
-        print "urls", urls
-        print "queue", queue
+        print ("name", name)
+        print ("urls", urls)
+        print ("queue", queue)
 
     def get_post(self, name, default=""):
         if name in self.post:

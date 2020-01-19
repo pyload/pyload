@@ -160,7 +160,7 @@ def sdist():
 def thrift(options):
     """ Generate Thrift stubs """
 
-    print "add import for TApplicationException manually as long it is not fixed"
+    print ("add import for TApplicationException manually as long it is not fixed")
 
     outdir = path("module") / "remote" / "thriftbackend"
     (outdir / "gen-py").rmtree()
@@ -171,7 +171,7 @@ def thrift(options):
         cmd.insert(len(cmd) - 1, "--gen")
         cmd.insert(len(cmd) - 1, options.gen)
 
-    print "running", cmd
+    print ("running", cmd)
 
     p = Popen(cmd)
     p.communicate()
@@ -189,7 +189,7 @@ def compile_js():
 
     root = path("module") / "web" / "media" / "js"
     for f in root.glob("*.coffee"):
-        print "generate", f
+        print ("generate", f)
         coffee = Popen(["coffee", "-cbs"], stdin=open(f, "rb"), stdout=PIPE)
         yui = Popen(["yuicompressor", "--type", "js"], stdin=coffee.stdout, stdout=PIPE)
         coffee.stdout.close()
@@ -237,7 +237,7 @@ def generate_locale():
 
     path("includes.txt").remove()
 
-    print "Locale generated"
+    print ("Locale generated")
 
 
 @task
@@ -251,7 +251,7 @@ def virtualenv(options):
         return
 
     call([options.virtual, "--no-site-packages", "--python", options.python, options.dir])
-    print "$ source %s/bin/activate" % options.dir
+    print ("$ source %s/bin/activate" % options.dir)
 
 
 @task
@@ -295,7 +295,7 @@ def walk_trans(path, EXCLUDE, endings=[".py"]):
 
 
 def makepot(domain, p, excludes=[], includes="", endings=[".py"], xxargs=[]):
-    print "Generate %s.pot" % domain
+    print ("Generate %s.pot" % domain)
 
     f = open("includes.txt", "wb")
     if includes:
