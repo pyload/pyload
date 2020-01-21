@@ -68,6 +68,10 @@
     <li ondragstart="return false;" {{selected('settings', True)}}>
       <a href="{{'/settings/'|url}}"  title="{{_('Config')}}"><span class="glyphicon glyphicon-wrench"></span></a>
     </li>
+    <li class="divider-vertical"></li>
+    <li ondragstart="return false;">
+      <a role="button" id="action_add1" data-toggle="modal" data-target="#add_box" title="{{_('Add Package')}}"><span class="glyphicon glyphicon-plus"></span></a>
+    </li>
   </ul>
   <span id="cap_info1" class="cap_info col-xs-12 col-sm-auto" style="display: {% if captcha %}inline{%else%}none{% endif %};margin-top:-2px; height: 15px;">
       <button id="action_cap1" class="btn btn-light navbar-btn col-xs-12 col-sm-auto" data-toggle="modal" data-target="#cap_box" data-backdrop="static"><span  class="glyphicon glyphicon-barcode"></span> {{_('Captcha waiting')}}</button>
@@ -164,7 +168,7 @@
         <button id="action_play" class="btn btn-default" href="#" title="{{_('Resume Queue')}}"><span class="glyphicon glyphicon-play"></span>&nbsp;</button>
         <button id="action_stop" type="button" class="btn btn-default" title="{{_('Pause Queue')}}"><span class="glyphicon glyphicon-pause"></span>&nbsp;</button>
         <button id="action_cancel" type="button" class="btn btn-default" title="{{_('Abort Downloads')}}"><span class="glyphicon glyphicon-stop"></span>&nbsp;</button>
-        <button id="action_add" data-toggle="modal" data-target="#add_box" type="button" class="btn btn-default" title="{{_('Add Package')}}"><span class="glyphicon glyphicon-plus"></span>&nbsp;</button>
+        <button id="action_add2" data-toggle="modal" data-target="#add_box" type="button" class="action_add btn btn-default" title="{{_('Add Package')}}"><span class="glyphicon glyphicon-plus"></span>&nbsp;</button>
     </div>
 {% endif %}
 
@@ -211,7 +215,7 @@
 </div>
 
 <hr style="clear: both;" />
-<div id="foot" class="navbar navbar-static-bottom" style="width: 100%; text-align:center;">&copy; 2008-2018 pyLoad Team</div>
+<div id="foot" class="navbar navbar-static-bottom" style="width: 100%; text-align:center;">&copy; 2008-2020 pyLoad Team</div>
 
 <div id="goto_top" class="btn-primary hidden" style="position: fixed; width: 25px; height: 25px;background-color: #007bff; color: #0b0b0b; opacity: 0.5; cursor: pointer; z-index: 10; border-radius: 5px; display: block;" title="{{_('Back to top')}}">
     <div class="glyphicon glyphicon-chevron-up" style="padding-top: 5px; padding-left: 6px; opacity: 0.5;"></div>
