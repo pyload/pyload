@@ -86,6 +86,7 @@ class CollectorModel(QAbstractItemModel):
             "processing":    _("processing")
         }
     
+    @classmethod
     def translateStatus(self, string):
         """
             used to convert to locale specific status
@@ -422,7 +423,7 @@ class CollectorModel(QAbstractItemModel):
         self.endResetModel()
         order = self.connector.proxy.getPackageOrder(Destination.Collector)
         self.beginInsertRows(QModelIndex(), 0, len(order.values()))
-        for position, pid in order.iteritems():
+        for dummy, pid in order.iteritems():
             try:
                 pack = self.connector.proxy.getPackageData(pid)
             except PackageDoesNotExists:
@@ -841,9 +842,11 @@ class CollectorModel(QAbstractItemModel):
             return True
         return self.rowCount(parent) > 0
     
+    @classmethod
     def canFetchMore(self, parent):
         return False
     
+    @classmethod
     def headerData(self, section, orientation, role=Qt.DisplayRole):
         """
             returns column heading
@@ -1275,12 +1278,12 @@ class CollectorModel(QAbstractItemModel):
         itemMoves = []
         for i in xrange(len(items)):
             if i >= len(lis) or lis[i] != i:
-                id = sortedItems[i][1]
+                id_ = sortedItems[i][1]
                 # update the 'items' array
                 for j in xrange(len(items)):
-                    if items[j][1] == id: break
+                    if items[j][1] == id_: break
                 item = items.pop(j)
-                j = id2SortedItemPos[id]
+                j = id2SortedItemPos[id_]
                 if j > 0:
                     previousId = sortedItems[j - 1][1]
                     for k in xrange(len(items)):
@@ -1291,7 +1294,7 @@ class CollectorModel(QAbstractItemModel):
                 # update 'lis'
                 lis.insert(i, i)
                 # add to list
-                itemMoves.append((id, j)) # (id, pos)
+                itemMoves.append((id_, j)) # (id, pos)
         # sanity checks
         if len(lis) != len(items): raise RuntimeError("%s: len(lis) != len(items)" % self.cname)
         for i in xrange(len(lis)):
@@ -1721,13 +1724,13 @@ class DragAndDrop(QObject):
         for si in smodel.selectedRows(0):
             src = si.internalPointer()
             if isinstance(src, Link):
-                id    = src.id
+                id_   = src.id
                 url   = src.data["url"]
                 pid   = src.data["package"]
                 order = src.data["order"]
                 row = si.row()
-                self.log.debug4("%s.getSrcLinks:   id:%d   url:'%s'   pid:%d   order:%d   row:%d" % (self.cname, id, url, pid, order, row))
-                self.srcLinks.append([id, url, pid, order, row])
+                self.log.debug4("%s.getSrcLinks:   id:%d   url:'%s'   pid:%d   order:%d   row:%d" % (self.cname, id_, url, pid, order, row))
+                self.srcLinks.append([id_, url, pid, order, row])
         self.log.debug8("%s.getSrcLinks took %dms" % (self.cname, self.model.time_msec() - func_start_time))
 
     def canDrop(self, pos):
@@ -1736,7 +1739,7 @@ class DragAndDrop(QObject):
             Sets: actionOnDrop
             On LINKMOVE it calls getSrcLinks() and therefore also
                 Sets: srcLinks[[id, url, pid, order]]
-            
+
             Actions on drop:
                 selection: packages
                     target: other package

@@ -58,7 +58,7 @@ class OverviewModel(QAbstractListModel):
             for c in p.children:
                 try:
                     s = c.data["downloading"]["size"]
-                except:
+                except Exception:
                     s = c.data["size"]
                 if c.data["downloading"]:
                     cs += s - c.data["downloading"]["bleft"]
@@ -99,6 +99,7 @@ class OverviewModel(QAbstractListModel):
         
         self.endResetModel()
         
+    @classmethod
     def headerData(self, section, orientation, role=Qt.DisplayRole):
         return QVariant(_("Package"))
     

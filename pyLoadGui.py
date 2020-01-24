@@ -85,8 +85,8 @@ from module.remote.thriftbackend.ThriftClient import Destination, DownloadStatus
 from module.Api import has_permission, PERMS, ROLE
 
 class main(QObject):
-    def pyLoadGuiExcepthook(self, type, value, tback):
-        self.log.error("***Exception***\n" + "".join(traceback.format_exception(type, value, tback)))
+    def pyLoadGuiExcepthook(self, exc_type, exc_value, exc_traceback):
+        self.log.error("***Exception***\n" + "".join(traceback.format_exception(exc_type, exc_value, exc_traceback)))
 
     def setExcepthook(self, logging):
         if logging:
@@ -308,7 +308,7 @@ class main(QObject):
         self.log.debug9("User's home directory: %s" % InitHomeDir.homedir)
         self.log.info("Configuration directory: %s" % self.homedir)
         #self.log.info("Using pid file: %s" % self.pidfile)
-        if self.debugLogLevel != None:
+        if self.debugLogLevel is not None:
             self.log.info("Debug messages at level %d and higher" % self.debugLogLevel)
 
         self.appIconSet = IconThemes(self.newConfigFile, self.parser).loadTheme()
@@ -964,8 +964,8 @@ class main(QObject):
                 self.log.debug4("main.slotMaximizeToggled: repeated unmaximize")
                 return
             if (self.otherOptions.settings["RestoreUnmaximizedGeo"] and
-                (s["restore_unmaxed_geo"] or self.otherOptions.settings["AlwaysRestore"]) and
-                not QApplication.activeModalWidget()):
+                    (s["restore_unmaxed_geo"] or self.otherOptions.settings["AlwaysRestore"]) and
+                    not QApplication.activeModalWidget()):
                 if self.otherOptions.settings["HideShowOnUnmax"]:
                     pdShownFloating = self.mainWindow.newPackDock.isFloating() and not self.mainWindow.newPackDock.isHidden()
                     ldShownFloating = self.mainWindow.newLinkDock.isFloating() and not self.mainWindow.newLinkDock.isHidden()
@@ -1289,26 +1289,26 @@ class main(QObject):
         """
             send a notification when a package was added to collector or queue
         """
-        q = self.queue.getLastAddedPackage()            # (id, name)
-        c = self.collector.getLastAddedPackage()        # (id, name)
+        q = self.queue.getLastAddedPackage()            # (pid, name)
+        c = self.collector.getLastAddedPackage()        # (pid, name)
         if q is None or c is None:
             return
         
         if q[0] == 0 and c[0] == 0:
             # no packages, queue and collector are empty
             if self.lastPackageId is None:  # initial poll
-                self.lastPackageId = 0      # valid package ids are > 0
+                self.lastPackageId = 0      # valid package pids are > 0
             return
         
         if q[0] > c[0]:
-            (id, name) = (q[0], q[1])
+            (pid, name) = (q[0], q[1])
         else:
-            (id, name) = (c[0], c[1])
+            (pid, name) = (c[0], c[1])
         if self.lastPackageId is None:  # initial poll
-            self.lastPackageId = id
+            self.lastPackageId = pid
         else:
-            if id > self.lastPackageId:
-                self.lastPackageId = id
+            if pid > self.lastPackageId:
+                self.lastPackageId = pid
                 QTimer.singleShot(0, lambda: self.slotNotificationMessage(103, name))
 
     def slotNotificationMessage(self, status, name):
@@ -1522,12 +1522,12 @@ class main(QObject):
             else:
                 data["default"] = False
             subs = self.parser.parseNode(conn, "dict")
-            if not "name" in subs:
+            if "name" not in subs:
                 data["name"] = unicode("- unnamed -")
             else:
                 data["name"] = unicode(subs["name"].text())
             if data["type"] == "remote":
-                if not "server" in subs:
+                if "server" not in subs:
                     continue
                 else:
                     data["host"] = unicode(subs["server"].text())
@@ -1686,7 +1686,8 @@ class main(QObject):
                         Core.__init__(self)
                         self.signal = CoreSignal()
                         self.internal_core_restart = False
-                    # Workaround os._exit() called when the Core quits. This is possible because the present Core code calls os._exit() right after calling removeLogger()
+                    # Workaround os._exit() called when the Core quits.
+                    # This is possible because the present Core code calls os._exit() right after calling removeLogger()
                     def removeLogger(self):
                          Core.removeLogger(self)
                          thread.exit()
@@ -2419,7 +2420,7 @@ class main(QObject):
                     self.mainWindow.actions["captcha"].setEnabled(True)
                 else:
                     self.slotNotificationMessage(101, None)
-                    self.mainWindow.captchaDialog.emit(SIGNAL("setTask"), t.tid, json.loads(t.data), t.type, t.resultType)
+                    self.mainWindow.captchaDialog.emit(SIGNAL("setTask"), t.tid, json.loads(t.data), t.resultType)
                     if self.captchaOptions.settings["PopUpCaptcha"]:
                         self.mainWindow.captchaDialog.emit(SIGNAL("show"), False)
                     self.tray.captchaAction.setEnabled(True)

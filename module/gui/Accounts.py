@@ -68,6 +68,7 @@ class AccountModel(QAbstractItemModel):
             self._data = accounts
             self.endInsertRows()
     
+    @classmethod
     def toData(self, index):
         """
             return index pointer
@@ -117,6 +118,7 @@ class AccountModel(QAbstractItemModel):
             index = QModelIndex()
         return index
     
+    @classmethod
     def parent(self, index):
         """
             no parents, everything on top level
@@ -134,6 +136,7 @@ class AccountModel(QAbstractItemModel):
     def columnCount(self, parent=QModelIndex()):
         return self.cols
     
+    @classmethod
     def hasChildren(self, parent=QModelIndex()):
         """
             everything on top level
@@ -143,9 +146,11 @@ class AccountModel(QAbstractItemModel):
         else:
             return False
     
+    @classmethod
     def canFetchMore(self, parent):
         return False
     
+    @classmethod
     def headerData(self, section, orientation, role=Qt.DisplayRole):
         """
             returns column heading
@@ -161,6 +166,7 @@ class AccountModel(QAbstractItemModel):
                 return QVariant(_("Traffic left"))
         return QVariant()
     
+    @classmethod
     def flags(self, index):
         """
             cell flags

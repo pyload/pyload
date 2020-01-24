@@ -82,7 +82,7 @@ class QueueModel(CollectorModel):
         downloading = self.connector.proxy.statusDownloads()
         order = self.connector.proxy.getPackageOrder(Destination.Queue)
         self.beginInsertRows(QModelIndex(), 0, len(order.values()))
-        for position, pid in order.iteritems():
+        for dummy, pid in order.iteritems():
             try:
                 pack = self.connector.proxy.getPackageData(pid)
             except PackageDoesNotExists:
@@ -239,7 +239,7 @@ class QueueModel(CollectorModel):
                     since, until_old = self.wait_dict[item.id]
                     if not until == until_old:
                         raise Exception
-                except:
+                except Exception:
                     since = time()
                     self.wait_dict[item.id] = since, until
                 since = float(since)
@@ -265,7 +265,7 @@ class QueueModel(CollectorModel):
                 if item.data["status"] == DownloadStatus.Finished:
 					return 100
                 return int(item.data["downloading"]["percent"])
-            except:
+            except Exception:
                 return 0
         elif isinstance(item, Package):
             count = len(item.children)
@@ -275,13 +275,14 @@ class QueueModel(CollectorModel):
                     if child.data["status"] == DownloadStatus.Finished:
                         perc_sum += 100
                     perc_sum += int(child.data["downloading"]["percent"])
-                except:
+                except Exception:
                     pass
             if count == 0:
                 return 0
             return perc_sum/count
         return 0
     
+    @classmethod
     def getSpeed(self, item):
         """
             calculate download speed
@@ -339,12 +340,12 @@ class QueueModel(CollectorModel):
                     elif self.getProgress(item, False) == 0:
                         try:
                             return QVariant("%s / %s" % (formatSize(item.data["size"]-item.data["downloading"]["bleft"]), formatSize(item.data["size"])))
-                        except:
+                        except Exception:
                             return QVariant("0 B / %s" % formatSize(item.data["size"]))
                     else:
                         try:
                             return QVariant("%s / %s" % (formatSize(item.data["size"]-item.data["downloading"]["bleft"]), formatSize(item.data["size"])))
-                        except:
+                        except Exception:
                             return QVariant("? / %s" % formatSize(item.data["size"]))
                 else:
                     ms = 0
@@ -352,7 +353,7 @@ class QueueModel(CollectorModel):
                     for c in item.children:
                         try:
                             s = c.data["downloading"]["size"]
-                        except:
+                        except Exception:
                             s = c.data["size"]
                         if c.data["downloading"]:
                             cs += s - c.data["downloading"]["bleft"]

@@ -176,6 +176,7 @@ class SettingsWidget(QWidget):
     def clearConfig(self):
         self.sections = {}
 
+    @classmethod
     def reloadSection(self, sections, pdata):
         for k, section in pdata.iteritems():
             if k in sections:

@@ -107,12 +107,12 @@ class ConnectionManager(QDialog):
                 self.connList.setCurrentRow(0)
     
     def slotSetCurrentItem(self, l):
-        id = l["id"]
+        id_ = l["id"]
         count = self.connList.count()
         for i in range(count):
             item = self.connList.item(i)
             d = item.data(Qt.UserRole).toPyObject()
-            if self.cleanDict(d)["id"] == id:
+            if self.cleanDict(d)["id"] == id_:
                 self.connList.setCurrentItem(item)
                 break
     
@@ -149,6 +149,7 @@ class ConnectionManager(QDialog):
         data = self.cleanDict(data)
         self.emit(SIGNAL("connect"), data)
     
+    @classmethod
     def cleanDict(self, data):
         tmp = {}
         for k, d in data.items():
@@ -159,20 +160,20 @@ class ConnectionManager(QDialog):
         return tmp
     
     def slotSave(self, data):
-        id = self.cleanDict(data)["id"]
+        id_ = self.cleanDict(data)["id"]
         self.emit(SIGNAL("saveConnection"), data)
         count = self.connList.count()
         for i in range(count):
             item = self.connList.item(i)
             d = item.data(Qt.UserRole).toPyObject()
-            if self.cleanDict(d)["id"] == id:
+            if self.cleanDict(d)["id"] == id_:
                 self.connList.setCurrentItem(item)
                 break
     
     def slotSaveAll(self):
         item = self.connList.currentItem()
         data = item.data(Qt.UserRole).toPyObject()
-        id = self.cleanDict(data)["id"]
+        id_ = self.cleanDict(data)["id"]
         connections = []
         count = self.connList.count()
         for i in range(count):
@@ -187,7 +188,7 @@ class ConnectionManager(QDialog):
         for i in range(count):
             item = self.connList.item(i)
             d = item.data(Qt.UserRole).toPyObject()
-            if self.cleanDict(d)["id"] == id:
+            if self.cleanDict(d)["id"] == id_:
                 self.connList.setCurrentItem(item)
                 break
     

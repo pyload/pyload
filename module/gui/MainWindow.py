@@ -21,7 +21,7 @@ import re
 
 from PyQt4.QtCore import QEvent, QRect, QSize, Qt, SIGNAL
 from PyQt4.QtGui import (QAbstractSpinBox, QAction, QActionGroup, QCheckBox, QColor, QComboBox, QCursor, QFileDialog, QFrame, QGridLayout,
-                         QHBoxLayout, QIcon, QLabel, QMainWindow, QMenu, QPushButton, QScrollArea, QSizePolicy, QSpinBox, QStyle,
+                         QHBoxLayout, QIcon, QLabel, QMainWindow, QMenu, QPushButton, QSizePolicy, QSpinBox, QStyle,
                          QTabWidget, QTextEdit, QVBoxLayout, QWhatsThis, QWidget)
 
 from os.path import join, dirname
@@ -1371,7 +1371,7 @@ class MainWindow(QMainWindow):
         types = sorted(types, key=lambda p: p)
         self.accountEdit = AccountEdit.newAccount(self, types)
         
-        #TODO make more easy n1, n2, n3 
+        #TODO make more easy n1, n2, n3
         def save(data):
             if data["password"]:
                 self.accountEdit.close()

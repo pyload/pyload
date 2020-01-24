@@ -570,7 +570,7 @@ def loadWindowFromConfig(self):
         self.mainWindow.newPackDock.setFloating(gOther["packDockIsFloating"])
         self.mainWindow.newLinkDock.setFloating(gOther["linkDockIsFloating"])
         if ((self.mainWindow.newPackDock.isFloating() and not self.mainWindow.newPackDock.isHidden()) or
-            (self.mainWindow.newLinkDock.isFloating() and not self.mainWindow.newLinkDock.isHidden())):
+                (self.mainWindow.newLinkDock.isFloating() and not self.mainWindow.newLinkDock.isHidden())):
             self.waitForPaintEvents(1)
         self.scheduleMainWindowPaintEventAction()
 

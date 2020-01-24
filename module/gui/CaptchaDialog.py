@@ -96,7 +96,7 @@ class CaptchaDialog(QDialog):
     def isFree(self):
         return not self.processing
 
-    def setTask(self, tid, data, type, resultType):
+    def setTask(self, tid, data, resultType):
         self.processing = True
         self.currentID = tid
         self.currentResultType = resultType
