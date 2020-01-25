@@ -12,7 +12,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
+
     @author: mkaay
 """
 
@@ -26,55 +26,55 @@ class AccountModel(QAbstractItemModel):
     """
         model for account view
     """
-    
+
     def __init__(self, view, connector):
         QAbstractItemModel.__init__(self)
         self.log = logging.getLogger("guilog")
         self.view = view
         self.connector = connector
-        
+
         self._data = []
         self.cols = 4
         self.mutex = QMutex()
         self.timer = QTimer()
         self.timer.connect(self.timer, SIGNAL("timeout()"), self.reloadData)
-    
+
     def getSelectedIndexes(self):
         """
             called from main
         """
         QMutexLocker(self.mutex)
         return self.view.selectedIndexes()
-    
+
     def reloadData(self, force=False):
         """
             reload account list
         """
         if not self.view.corePermissions["ACCOUNTS"]:
             return
-        
+
         accounts = self.connector.proxy.getAccounts(False)
-        
+
         if self._data == accounts:
             return
-        
+
         QMutexLocker(self.mutex)
         self.beginResetModel()
         self._data = []
         self.endResetModel()
-            
+
         if len(accounts) > 0:
             self.beginInsertRows(QModelIndex(), 0, len(accounts)-1)
             self._data = accounts
             self.endInsertRows()
-    
+
     @classmethod
     def toData(self, index):
         """
             return index pointer
         """
         return index.internalPointer()
-    
+
     def data(self, index, role=Qt.DisplayRole):
         """
             return cell data
@@ -101,7 +101,7 @@ class AccountModel(QAbstractItemModel):
         #    if index.column() == 0:
         #        return QVariant(index.internalPointer().data["name"])
         return QVariant()
-        
+
     def index(self, row, column, parent=QModelIndex()):
         """
             create index with data pointer
@@ -117,14 +117,14 @@ class AccountModel(QAbstractItemModel):
         else:
             index = QModelIndex()
         return index
-    
+
     @classmethod
     def parent(self, index):
         """
             no parents, everything on top level
         """
         return QModelIndex()
-    
+
     def rowCount(self, parent=QModelIndex()):
         """
             account count
@@ -132,10 +132,10 @@ class AccountModel(QAbstractItemModel):
         if parent == QModelIndex():
             return len(self._data)
         return 0
-    
+
     def columnCount(self, parent=QModelIndex()):
         return self.cols
-    
+
     @classmethod
     def hasChildren(self, parent=QModelIndex()):
         """
@@ -145,11 +145,11 @@ class AccountModel(QAbstractItemModel):
             return True
         else:
             return False
-    
+
     @classmethod
     def canFetchMore(self, parent):
         return False
-    
+
     @classmethod
     def headerData(self, section, orientation, role=Qt.DisplayRole):
         """
@@ -165,37 +165,37 @@ class AccountModel(QAbstractItemModel):
             elif section == 3:
                 return QVariant(_("Traffic left"))
         return QVariant()
-    
+
     @classmethod
     def flags(self, index):
         """
             cell flags
         """
         return Qt.ItemIsSelectable | Qt.ItemIsEnabled
-    
+
 class AccountView(QTreeView):
     """
         view component for accounts
     """
-    
+
     def __init__(self, corePermissions, connector):
         QTreeView.__init__(self)
         self.log = logging.getLogger("guilog")
         self.corePermissions = corePermissions
         self.model = AccountModel(self, connector)
         self.setModel(self.model)
-        
+
         self.setColumnWidth(0, 150)
         self.setColumnWidth(1, 150)
         self.setColumnWidth(2, 150)
         self.setColumnWidth(3, 150)
-        
+
         self.setAlternatingRowColors(True)
         self.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        
+
         self.delegate = AccountDelegate(self, self.model)
         self.setItemDelegateForColumn(3, self.delegate)
-    
+
     def setCorePermissions(self, corePermissions):
         self.corePermissions = corePermissions
 
@@ -203,12 +203,12 @@ class AccountDelegate(QItemDelegate):
     """
         used to display a progressbar for the traffic in the traffic cell
     """
-    
+
     def __init__(self, parent, model):
         QItemDelegate.__init__(self, parent)
         self.log = logging.getLogger("guilog")
         self.model = model
-    
+
     def paint(self, painter, option, index):
         """
             paint the progressbar
@@ -226,7 +226,7 @@ class AccountDelegate(QItemDelegate):
                     opts.maximum = opts.progress = data.trafficleft
             if data.maxtraffic:
                 opts.maximum = data.maxtraffic
-            
+
             opts.rect = option.rect
             opts.rect.setRight(option.rect.right()-1)
             opts.rect.setHeight(option.rect.height()-1)

@@ -12,7 +12,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
+
     @author: mkaay
 """
 
@@ -90,7 +90,7 @@ class SettingsWidget(QWidget):
         self.plugins.layout().addLayout(hbox)
         self.pluginsStacked = QStackedLayout()
         self.plugins.layout().addLayout(self.pluginsStacked)
-        
+
         gw = QWidget()
         gw.setLayout(QVBoxLayout())
         gw.layout().addWidget(self.general)
@@ -395,28 +395,28 @@ class Section(QGroupBox):
         self.log = logging.getLogger("guilog")
         self.data = data
         self.ctype = ctype
-        
+
         #self.labels = {}
         self.inputs = {}
-        
+
         layout = QFormLayout(self)
         self.setLayout(layout)
-        
+
         hb = QWidget()
         hb.setLayout(QHBoxLayout())
         hb.layout().addWidget(self)
         hb.layout().addSpacing(20)  # extra space left of the scrollbar
-        
+
         sw = QWidget()
         sw.setLayout(QVBoxLayout())
         #sw.layout().addWidget(self)
         sw.layout().addWidget(hb)
-        
+
         self.sa = QScrollArea()
         self.sa.setWidgetResizable(True)
         self.sa.setWidget(sw)
         self.sa.setFrameShape(self.sa.NoFrame)
-        
+
         for option in self.data.items:
             if option.type == "int":
                 i = QSpinBox(self)

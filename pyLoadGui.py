@@ -1293,13 +1293,13 @@ class main(QObject):
         c = self.collector.getLastAddedPackage()        # (pid, name)
         if q is None or c is None:
             return
-        
+
         if q[0] == 0 and c[0] == 0:
             # no packages, queue and collector are empty
             if self.lastPackageId is None:  # initial poll
                 self.lastPackageId = 0      # valid package pids are > 0
             return
-        
+
         if q[0] > c[0]:
             (pid, name) = (q[0], q[1])
         else:
@@ -1357,7 +1357,7 @@ class main(QObject):
             * drag'n'drop
         """
         view = self.mainWindow.tabs["collector"]["view"]
-        
+
         view.setAlternatingRowColors(True)
         view.setAutoScrollMargin(24) # default is 16
         view.setDragDropMode(QAbstractItemView.InternalMove)
@@ -1368,7 +1368,7 @@ class main(QObject):
         view.setDropIndicatorShown(False)
         view.setAllColumnsShowFocus(True)
         view.setUniformRowHeights(True)
-        
+
         self.collector = view.model
         self.connect(self.collector, SIGNAL("notificationMessage"), self.slotNotificationMessage)
 
@@ -1379,7 +1379,7 @@ class main(QObject):
             * progressbar
         """
         view = self.mainWindow.tabs["queue"]["view"]
-        
+
         view.setAlternatingRowColors(True)
         view.setAutoScrollMargin(24) # default is 16
         view.setDragDropMode(QAbstractItemView.InternalMove)
@@ -1390,7 +1390,7 @@ class main(QObject):
         view.setDropIndicatorShown(False)
         view.setAllColumnsShowFocus(True)
         view.setUniformRowHeights(True)
-        
+
         self.queue = view.model
         self.connect(self.queue, SIGNAL("updateCount"), self.slotUpdateCount)
         self.connect(self.queue, SIGNAL("updateCount"), self.mainWindow.tabs["overview"]["view"].model.queueChanged)

@@ -12,7 +12,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
+
     @author: mkaay
 """
 
@@ -33,25 +33,25 @@ class OverviewModel(QAbstractListModel):
     CurrentSize = 16
     MaxSize = 17
     Status = 18
-    
+
     def __init__(self, view, queue):
         QAbstractListModel.__init__(self)
         self.log = logging.getLogger("guilog")
         self.queue = queue
         self.packages = []
-    
+
     def queueChanged(self): #dirty..
         self.beginResetModel()
-        
+
         self.packages = []
-        
+
         def partsFinished(p):
             f = 0
             for c in p.children:
                 if c.data["status"] == DownloadStatus.Finished:
                     f += 1
             return f
-        
+
         def maxSize(p):
             ms = 0
             cs = 0
@@ -66,13 +66,13 @@ class OverviewModel(QAbstractListModel):
                     cs += s
                 ms += s
             return ms, cs
-        
+
         #def getProgress(p):
         #    for c in p.children:
         #        if c.data["status"] == DownloadStatus.Processing:
         #            pass # TODO return _("Unpacking"), int(c.data["progress"])
         #   return _("Downloading"), self.queue.getProgress(p)
-        
+
         d = self.queue._data
         for p in d:
             progress = self.queue.getProgress(p)
@@ -94,32 +94,32 @@ class OverviewModel(QAbstractListModel):
                 OverviewModel.MaxSize: maxsize,
                 OverviewModel.Status: status,
             }
-            
+
             self.packages.append(info)
-        
+
         self.endResetModel()
-        
+
     @classmethod
     def headerData(self, section, orientation, role=Qt.DisplayRole):
         return QVariant(_("Package"))
-    
+
     def rowCount(self, parent=QModelIndex()):
         return len(self.packages)
-    
+
     def data(self, index, role=Qt.DisplayRole):
         if role in [OverviewModel.PackageName, OverviewModel.Progress, OverviewModel.PartsFinished,
                     OverviewModel.Parts, OverviewModel.ETA, OverviewModel.Speed, OverviewModel.CurrentSize,
                     OverviewModel.MaxSize, OverviewModel.Status]:
             return QVariant(self.packages[index.row()][role])
         return QVariant()
-    
+
 class OverviewView(QListView):
     def __init__(self, queue):
         QListView.__init__(self)
         self.log = logging.getLogger("guilog")
         self.model = OverviewModel(self, queue)
         self.setModel(self.model)
-        
+
         self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
         self.setAlternatingRowColors(True)
         self.delegate = OverviewDelegate(self)
@@ -131,14 +131,14 @@ class OverviewDelegate(QItemDelegate):
         self.log = logging.getLogger("guilog")
         self.parent = parent
         self.model = parent.model
-    
+
     def paint(self, painter, option, index):
         option.rect.setHeight(59+16)
         option.rect.setWidth(self.parent.width()-20)
-        
+
         #if option.state & QStyle.State_Selected:
         #    painter.fillRect(option.rect, option.palette.color(QPalette.Highlight))
-        
+
         packagename = index.data(OverviewModel.PackageName).toString()
         partsf = index.data(OverviewModel.PartsFinished).toString()
         parts = index.data(OverviewModel.Parts).toString()
@@ -148,38 +148,38 @@ class OverviewDelegate(QItemDelegate):
         currentSize = int(index.data(OverviewModel.CurrentSize).toString())
         maxSize = int(index.data(OverviewModel.MaxSize).toString())
         status = index.data(OverviewModel.Status).toString()
-        
+
         def formatEta(seconds): #TODO add to utils
             if seconds <= 0: return unicode("")
             hours, seconds = divmod(seconds, 3600)
             minutes, seconds = divmod(seconds, 60)
             return _("ETA") + ": %.2i:%.2i:%.2i" % (hours, minutes, seconds)
-        
+
         statusline = QString(_("Parts") + ": %s/%s" % (partsf, parts))
         if status == _("downloading"):
             speedline = QString(formatEta(eta) + "     " + _("Speed") + ": " + formatSpeed(speed))
         else:
             speedline = QString(status)
             speedline.replace(0, 1, speedline.at(0).toTitleCase()) # first letter uppercase
-        
+
         if progress in (0,100):
             sizeline = QString(_("Size") + ": %s" % formatSize(maxSize))
         else:
             sizeline = QString(_("Size") + ": %s / %s" % (formatSize(currentSize), formatSize(maxSize)))
-        
+
         f = painter.font()
         f.setPointSize(12)
         f.setBold(True)
         painter.setFont(f)
-        
+
         r = option.rect.adjusted(4, 4, -6, -4)
         painter.drawText(r.left(), r.top(), r.width(), r.height(), Qt.AlignTop | Qt.AlignLeft, packagename)
         newr = painter.boundingRect(r.left(), r.top(), r.width(), r.height(), Qt.AlignTop | Qt.AlignLeft, packagename)
-        
+
         f.setPointSize(10)
         f.setBold(False)
         painter.setFont(f)
-        
+
         painter.drawText(r.left(), newr.bottom()+5, r.width(), r.height(), Qt.AlignTop | Qt.AlignLeft, statusline)
         painter.drawText(r.left(), newr.bottom()+5, r.width(), r.height(), Qt.AlignTop | Qt.AlignHCenter, sizeline)
         painter.drawText(r.left(), newr.bottom()+5, r.width(), r.height(), Qt.AlignTop | Qt.AlignRight, speedline)
@@ -187,10 +187,10 @@ class OverviewDelegate(QItemDelegate):
         newr.setTop(newr.bottom()+8)
         newr.setBottom(newr.top()+20)
         newr.setRight(self.parent.width()-27)
-        
+
         f.setPointSize(10)
         painter.setFont(f)
-        
+
         opts = QStyleOptionProgressBarV2()
         opts.maximum = 100
         opts.minimum = 0
@@ -200,6 +200,6 @@ class OverviewDelegate(QItemDelegate):
         opts.textAlignment = Qt.AlignCenter
         opts.text = QString.number(opts.progress) + "%"
         QApplication.style().drawControl(QStyle.CE_ProgressBar, opts, painter)
-    
+
     def sizeHint(self, option, index):
         return QSize(self.parent.width()-22, 59+16)

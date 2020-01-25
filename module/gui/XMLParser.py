@@ -12,7 +12,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
+
     @author: mkaay
 """
 from __future__ import with_statement
@@ -32,7 +32,7 @@ class XMLParser():
         self.mutex.unlock()
         self.loadData()
         self.root = self.xml.documentElement()
-    
+
     def loadData(self):
         self.mutex.lock()
         f = self.file
@@ -42,7 +42,7 @@ class XMLParser():
             content = fh.read()
         self.xml.setContent(content)
         self.mutex.unlock()
-    
+
     def saveData(self):
         self.mutex.lock()
         content = self.xml.toString()
@@ -50,7 +50,7 @@ class XMLParser():
             fh.write(content)
         self.mutex.unlock()
         return content
-    
+
     @classmethod
     def parseNode(self, node, ret_type="list"):
         if ret_type == "dict":

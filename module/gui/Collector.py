@@ -12,7 +12,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
+
     @author: mkaay
 """
 
@@ -36,18 +36,18 @@ class CollectorModel(QAbstractItemModel):
     """
         model for the collector view
     """
-    
+
     @classmethod
     def time_msec(self):
         return int((datetime.utcnow() - datetime(1970, 1, 1)).total_seconds() * 1000)
-    
+
     def __init__(self, view, connector):
         QAbstractItemModel.__init__(self)
         self.cname = self.__class__.__name__
         self.log = logging.getLogger("guilog")
         self.view = view
         self.connector = connector
-        
+
         self._data = []
         self.expandedState = {}
         self.currentItem = None
@@ -59,15 +59,15 @@ class CollectorModel(QAbstractItemModel):
         self.dnd.havePermissions = False
         self.dnd.allowLinkMove = True
         self.lastFullReload = float(0.0)
-        
+
         self.dirty = False
         self.firstSetDirty = None
         self.lastSetDirty  = None
         self.dirtyReloadDelayMin = float(4.5)   # const seconds
         self.dirtyReloadDelayMax = float(9.5)   # const seconds
-        
+
         self.showToolTips = True
-        
+
         global translatedStatusMap # workaround because i18n is not running at import time
         translatedStatusMap = {
             "finished":      _("finished"),
@@ -85,14 +85,14 @@ class CollectorModel(QAbstractItemModel):
             "downloading":   _("downloading"),
             "processing":    _("processing")
         }
-    
+
     @classmethod
     def translateStatus(self, string):
         """
             used to convert to locale specific status
         """
         return translatedStatusMap[string]
-    
+
     def getSelectionInfo(self):
         """
             called from MainWindow
@@ -123,7 +123,7 @@ class CollectorModel(QAbstractItemModel):
         self.log.debug8("%s.getSelectionInfo took %dms, packsCnt:%d linksCnt:%d downloading:%s allPacksCnt:%d" %
                         (self.cname, self.time_msec() - func_start_time, packsCnt, linksCnt, downloading, allPacksCnt))
         return (packsCnt, linksCnt, downloading, allPacksCnt)
-    
+
     def getSelection(self, deselect, linksOfPacks):
         """
             called from main
@@ -155,7 +155,7 @@ class CollectorModel(QAbstractItemModel):
                             smodel.select(linkindex, QItemSelectionModel.Deselect | QItemSelectionModel.Rows)
         self.log.debug8("%s.getSelection took %dms" % (self.cname, self.time_msec() - func_start_time))
         return selection
-    
+
     def getLastAddedPackage(self):
         """
             called from main
@@ -176,7 +176,7 @@ class CollectorModel(QAbstractItemModel):
         if t > 10:
             self.log.info("%s.getLastAddedPackage took %dms" % (self.cname, t))
         return lpa
-    
+
     def getSelectedPackagesForEdit(self):
         """
             called from main
@@ -193,7 +193,7 @@ class CollectorModel(QAbstractItemModel):
                 raise TypeError("%s: Unknown item instance" % self.cname)
         self.log.debug8("%s.getSelectedPackagesForEdit took %dms" % (self.cname, self.time_msec() - func_start_time))
         return selection
-    
+
     def saveViewItemStates(self):
         func_start_time = self.time_msec()
         # expanded/collapsed
@@ -239,7 +239,7 @@ class CollectorModel(QAbstractItemModel):
             self.selectedItems.append([pid, fid])
             self.log.debug0("%s.saveViewItemStates:selectedItem:   name:'%s'   pid:%d   fid:%s" % (self.cname, item.data["name"], pid, str(fid)))
         self.log.debug8("%s.saveViewItemStates took %dms" % (self.cname, self.time_msec() - func_start_time))
-    
+
     def applyViewItemStates(self):
         func_start_time = self.time_msec()
         # expanded/collapsed
@@ -318,7 +318,7 @@ class CollectorModel(QAbstractItemModel):
                                  (self.cname, str(fid), pid))
         smodel.select(itemSel, QItemSelectionModel.Select)
         self.log.debug8("%s.applyViewItemStates took %dms" % (self.cname, self.time_msec() - func_start_time))
-    
+
     def selectAllPackages(self, deselect):
         func_start_time = self.time_msec()
         QMutexLocker(self.mutex)
@@ -330,7 +330,7 @@ class CollectorModel(QAbstractItemModel):
             else:
                 if smodel.isSelected(index): smodel.select(index, QItemSelectionModel.Deselect | QItemSelectionModel.Rows)
         self.log.debug8("%s.selectAllPackages took %dms" % (self.cname, self.time_msec() - func_start_time))
-    
+
     def selectAll(self, deselect):
         func_start_time = self.time_msec()
         QMutexLocker(self.mutex)
@@ -341,7 +341,7 @@ class CollectorModel(QAbstractItemModel):
             self.view.clearSelection()
             self.view.setCurrentIndex(QModelIndex())
         self.log.debug8("%s.selectAll took %dms, deselect:%s" % (self.cname, self.time_msec() - func_start_time, deselect))
-    
+
     def fullReloadFromMenu(self):
         if not self.view.corePermissions["LIST"]:
             return
@@ -350,12 +350,12 @@ class CollectorModel(QAbstractItemModel):
         wdgd = WidgetDisable(self.view)
         self.fullReload(False)
         wdgd.Enable()
-    
+
     def fullReloadFromPullEvents(self):
         self.log.debug9("%s.fullReloadFromPullEvents: function entered" % self.cname)
         QMutexLocker(self.mutex)
         self.fullReload()
-    
+
     def automaticReloading(self, interval):
         if not self.view.corePermissions["LIST"]:
             return
@@ -363,7 +363,7 @@ class CollectorModel(QAbstractItemModel):
             QMutexLocker(self.mutex)
             self.fullReload()
             self.log.debug2("%s.automaticReloading: done" % self.cname)
-    
+
     def fullReloadOnDirty(self, lock=True):
         if not self.view.corePermissions["LIST"]:
             return
@@ -374,7 +374,7 @@ class CollectorModel(QAbstractItemModel):
                     QMutexLocker(self.mutex)
                 self.fullReload()
                 self.log.debug2("%s.fullReloadOnDirty: done" % self.cname)
-    
+
     def setDirty(self, lock=True):
         t = time()
         if lock:
@@ -389,7 +389,7 @@ class CollectorModel(QAbstractItemModel):
                 self.firstSetDirty = t
             self.lastSetDirty = t
             self.log.debug2("%s.setDirty: last" % self.cname)
-    
+
     def addEvent(self, event):
         """
             called from main loop, pass events to the correct methods
@@ -410,7 +410,7 @@ class CollectorModel(QAbstractItemModel):
             self.updateEvent(event)
 #       self.applyViewItemStates()
         self.fullReloadOnDirty(False)
-    
+
     def fullReload(self, enableView=True):
         """
             reload whole model, used at startup to load initial data
@@ -444,7 +444,7 @@ class CollectorModel(QAbstractItemModel):
             self.view.setEnabled(self.view.corePermissions["LIST"])
         self.applyViewItemStates()
         self.log.debug8("%s.fullReload took %dms" % (self.cname, self.time_msec() - func_start_time))
-    
+
     def fullReloadCheck(self):
         if len(self._data) == 0:
             return 0
@@ -479,7 +479,7 @@ class CollectorModel(QAbstractItemModel):
                     break
         self.log.debug8("%s.fullReloadCheck: Done, %d errors" % (self.cname, numErrors))
         return numErrors
-    
+
     def removeEvent(self, event):
         """
             remove an element from model
@@ -518,7 +518,7 @@ class CollectorModel(QAbstractItemModel):
             if not linkFound:
                 self.log.debug2("%s.removeEvent: Link not found, fid:%d" % (self.cname, event.id))
                 self.setDirty(False)
-        
+
         else: # ElementType.Package
             packageFound = False
             for p, package in enumerate(self._data):
@@ -532,7 +532,7 @@ class CollectorModel(QAbstractItemModel):
             if not packageFound:
                 self.log.debug2("%s.removeEvent: Package not found, pid:%d" % (self.cname, event.id))
                 self.setDirty(False)
-    
+
     def insertEvent(self, event):
         """
             inserts a new element in the model
@@ -574,7 +574,7 @@ class CollectorModel(QAbstractItemModel):
                     package.sortChildren()
                     self.emit(SIGNAL("layoutChanged()"))
                     self.log.debug0("%s.insertEvent: Links re-sorted, pid:%d" % (self.cname, package.id))
-        
+
         else: # ElementType.Package
             try:
                 data = self.connector.proxy.getPackageData(event.id)
@@ -606,7 +606,7 @@ class CollectorModel(QAbstractItemModel):
             self._data = sorted(self._data, key=lambda d: d.data["order"])
             self.emit(SIGNAL("layoutChanged()"))
             self.log.debug0("%s.insertEvent: Packages re-sorted" % self.cname)
-    
+
     def updateEvent(self, event):
         """
             update an element in the model
@@ -648,7 +648,7 @@ class CollectorModel(QAbstractItemModel):
             if not linkFound:
                 self.log.debug2("%s.updateEvent: Link not found, fid:%d" % (self.cname, event.id))
                 self.setDirty(False)
-        
+
         else: # ElementType.Package
             try:
                 data = self.connector.proxy.getPackageData(event.id)
@@ -703,7 +703,7 @@ class CollectorModel(QAbstractItemModel):
             if not packageFound:
                 self.log.debug2("%s.updateEvent: Package not found, pid:%d" % (self.cname, event.id))
                 self.setDirty(False)
-    
+
     def getStatus(self, item, speed):
         """
             return status str
@@ -719,7 +719,7 @@ class CollectorModel(QAbstractItemModel):
             return self.translateStatus(statusMapReverse[status])
         else:
             return "%s (%s)" % (self.translateStatus(statusMapReverse[status]), formatSpeed(speed))
-    
+
     def data(self, index, role=Qt.DisplayRole):
         """
             return cell data
@@ -778,7 +778,7 @@ class CollectorModel(QAbstractItemModel):
                 if textWidth > rect.width():
                     return QVariant(txt)
         return QVariant()
-    
+
     def index(self, row, column, parent=QModelIndex()):
         """
             creates a cell index with pointer to the data
@@ -797,7 +797,7 @@ class CollectorModel(QAbstractItemModel):
         else:
             index = QModelIndex()
         return index
-    
+
     def parent(self, index):
         """
             return index of parent element
@@ -812,7 +812,7 @@ class CollectorModel(QAbstractItemModel):
                     if pack == link.package:
                         return self.createIndex(k, 0, link.package)
         return QModelIndex()
-    
+
     def rowCount(self, parent=QModelIndex()):
         """
             returns row count for the element
@@ -833,19 +833,19 @@ class CollectorModel(QAbstractItemModel):
                 return False
         #files have no children
         return 0
-    
+
     def columnCount(self, parent=QModelIndex()):
         return self.cols
-    
+
     def hasChildren(self, parent=QModelIndex()):
         if not parent.isValid():
             return True
         return self.rowCount(parent) > 0
-    
+
     @classmethod
     def canFetchMore(self, parent):
         return False
-    
+
     @classmethod
     def headerData(self, section, orientation, role=Qt.DisplayRole):
         """
@@ -869,7 +869,7 @@ class CollectorModel(QAbstractItemModel):
             elif section == 7:
                 return QVariant(_("Order"))
         return QVariant()
-    
+
     def flags(self, index):
         """
             cell flags
@@ -880,15 +880,15 @@ class CollectorModel(QAbstractItemModel):
         else:
             defaultFlags &= ~(Qt.ItemIsDragEnabled | Qt.ItemIsDropEnabled)
         return defaultFlags
-    
+
     @classmethod
     def supportedDropActions(self):
         return Qt.MoveAction | Qt.IgnoreAction
-    
+
     def slotDropEvent(self, sortByOrderAttribute):
         QMutexLocker(self.mutex)
         nothingDone = True
-        
+
         if self.dnd.actionOnDrop == self.dnd.ACT.PACKORDER:
             self.dnd.getSrcPackages()
             if self.dnd.srcPackages:
@@ -917,7 +917,7 @@ class CollectorModel(QAbstractItemModel):
                 nothingDone = not packageMoves
             else:
                 self.log.debug0("%s.slotDropEvent: PACKORDER: selection lost" % self.cname)
-        
+
         elif self.dnd.actionOnDrop == self.dnd.ACT.LINKORDER:
             self.dnd.getSrcLinks()
             if self.dnd.srcLinks:
@@ -948,7 +948,7 @@ class CollectorModel(QAbstractItemModel):
                 nothingDone = not linkMoves
             else:
                 self.log.debug0("%s.slotDropEvent: LINKORDER: selection lost" % self.cname)
-        
+
         elif self.dnd.actionOnDrop == self.dnd.ACT.LINKMOVE:
             self.dnd.getSrcLinks()
             if self.dnd.srcLinks:
@@ -966,17 +966,17 @@ class CollectorModel(QAbstractItemModel):
                 nothingDone = not fids
             else:
                 self.log.debug0("%s.slotDropEvent: LINKMOVE: selection lost" % self.cname)
-        
+
         else:
             raise ValueError("%s: Unknown drop action" % self.cname)
-        
+
         if nothingDone:
             self.view.setEnabled(self.view.corePermissions["LIST"])
             self.view.setFocus(Qt.OtherFocusReason)
         else:
             self.view.clearSelection()
             self.view.setCurrentIndex(QModelIndex())
-    
+
     def advancedSelect(self, pattern, syntax, cs, deselect, selectLinks):
         """
             called from main
@@ -986,7 +986,7 @@ class CollectorModel(QAbstractItemModel):
         smodel = self.view.selectionModel()
         rx = QRegExp(pattern, cs, syntax)
         numOfmatches = 0
-        
+
         # select links
         if selectLinks:
             noPackagesSelected = True
@@ -1011,7 +1011,7 @@ class CollectorModel(QAbstractItemModel):
                     noPackagesSelected = False
                 elif not isinstance(package, Link):
                     raise TypeError("%s: Unknown item instance" % self.cname)
-            
+
             if noPackagesSelected:  # search in all packages
                 for p, package in enumerate(self._data):
                     pindex = self.index(p, 0)
@@ -1032,7 +1032,7 @@ class CollectorModel(QAbstractItemModel):
                             numOfmatches += 1
                             self.log.debug9("%s.advancedSelect:selectedLink:   deselect:%s   name:'%s'   pid:%d   fid:%d" %
                                             (self.cname, deselect, name, package.id, link.id))
-        
+
         # select packages
         else:
             for p, package in enumerate(self._data):
@@ -1048,7 +1048,7 @@ class CollectorModel(QAbstractItemModel):
                         if smodel.isSelected(index): smodel.select(index, QItemSelectionModel.Deselect | QItemSelectionModel.Rows)
                     numOfmatches += 1
                     self.log.debug9("%s.advancedSelect:selectedPackage:   deselect:%s   name:'%s'   pid:%d" % (self.cname, deselect,name, package.id))
-        
+
         # info text
         if selectLinks:
             if numOfmatches == 0:
@@ -1065,7 +1065,7 @@ class CollectorModel(QAbstractItemModel):
         self.view.buttonMsgShow(txt, False)
         self.view.buttonMsgHide(2000)
         self.log.debug8("%s.advancedSelect took %dms" % (self.cname, self.time_msec() - func_start_time))
-    
+
     def removePackageDupes(self):
         """
             called from main
@@ -1098,7 +1098,7 @@ class CollectorModel(QAbstractItemModel):
             self.view.setCurrentIndex(QModelIndex())
         self.view.buttonMsgHide(3000)
         self.log.debug8("%s.removePackageDupes took %dms" % (self.cname, self.time_msec() - func_start_time))
-    
+
     def removeLinkDupes(self):
         """
             called from main
@@ -1149,7 +1149,7 @@ class CollectorModel(QAbstractItemModel):
             smodel.select(pindex, QItemSelectionModel.Select | QItemSelectionModel.Rows)
         self.view.buttonMsgHide(3000)
         self.log.debug8("%s.removeLinkDupes took %dms" % (self.cname, self.time_msec() - func_start_time))
-    
+
     def sortPackages(self):
         """
             called from main
@@ -1188,7 +1188,7 @@ class CollectorModel(QAbstractItemModel):
             self.view.setCurrentIndex(QModelIndex())
         else:
             self.view.buttonMsgHide(3000)
-    
+
     def sortLinks(self):
         """
             called from main
@@ -1244,7 +1244,7 @@ class CollectorModel(QAbstractItemModel):
             smodel.select(pindex, QItemSelectionModel.Select | QItemSelectionModel.Rows)
         else:
             self.view.buttonMsgHide(3000)
-    
+
     @classmethod
     def sortItems(self, items):
         """
@@ -1259,7 +1259,7 @@ class CollectorModel(QAbstractItemModel):
                 alreadySorted = False
                 break
         return (sortedItems, alreadySorted)
-    
+
     def smallestListOfItemMoves(self, unsortedItems, sortedItems):
         """
             Calculates the smallest possible amount of item moves
@@ -1308,10 +1308,10 @@ class Package(object):
     """
         package object in the model
     """
-    
+
     def __init__(self, pack):
         self.log = logging.getLogger("guilog")
-        
+
         self.id = pack.pid
         self.children = []
         for f in pack.links:
@@ -1319,7 +1319,7 @@ class Package(object):
         self.sortChildren()
         self.data = {}
         self.update(pack)
-    
+
     def update(self, pack):
         """
             update data dict from thrift object
@@ -1332,19 +1332,19 @@ class Package(object):
             "order": pack.order,
         }
         self.data.update(data)
-    
+
     def addChild(self, f):
         """
             add child (Link) to package
         """
         self.children.append(Link(f, self))
-    
+
     def sortChildren(self):
         """
             sort children (Links) of package
         """
         self.children = sorted(self.children, key=lambda l: l.data["order"])
-    
+
     def getChild(self, fid):
         """
             get child from package
@@ -1353,7 +1353,7 @@ class Package(object):
             if child.id == int(fid):
                 return child
         return None
-    
+
     def getChildKey(self, fid):
         """
             get child index
@@ -1362,7 +1362,7 @@ class Package(object):
             if child.id == int(fid):
                 return k
         return None
-    
+
     def removeChild(self, fid):
         """
             remove child
@@ -1374,12 +1374,12 @@ class Package(object):
 class Link(object):
     def __init__(self, f, pack):
         self.log = logging.getLogger("guilog")
-        
+
         self.data = {"downloading": None}
         self.update(f)
         self.id = f.fid
         self.package = pack
-    
+
     def update(self, f):
         """
             update data dict from thrift object
@@ -1402,7 +1402,7 @@ class CollectorView(QTreeView):
     """
         view component for collector
     """
-    
+
     def __init__(self, corePermissions, connector):
         QTreeView.__init__(self)
         self.cname = self.__class__.__name__
@@ -1410,9 +1410,9 @@ class CollectorView(QTreeView):
         self.corePermissions = corePermissions
         self.model = CollectorModel(self, connector)
         self.setModel(self.model)
-        
+
         self.buttonMsgHideTimer = QTimer()
-        
+
         wt = _(
         "- Column visibility can be toggled by right-clicking on the header row<br>"
         "- Column order can be changed by Drag'n'Drop<br>"
@@ -1422,7 +1422,7 @@ class CollectorView(QTreeView):
         )
         wt += _("<br>- Links can be moved to another package by Drag'n'Drop")
         self.setWhatsThis(whatsThisFormat(_("Collector View"), wt))
-        
+
         self.setColumnHidden(0, False) # Name
         self.setColumnHidden(1, False) # Plugin
         self.setColumnHidden(2, False) # Status
@@ -1431,7 +1431,7 @@ class CollectorView(QTreeView):
         self.setColumnHidden(5, False) # Password
         self.setColumnHidden(6, True)  # ID
         self.setColumnHidden(7, True)  # Order
-        
+
         self.setColumnWidth(0, 350)
         self.setColumnWidth(1, 110)
         self.setColumnWidth(2, 70)
@@ -1439,16 +1439,16 @@ class CollectorView(QTreeView):
         self.setColumnWidth(4, 150)
         self.setColumnWidth(5, 100)
         self.setColumnWidth(6, 60)
-        
+
         self.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        
+
         self.header().setContextMenuPolicy(Qt.CustomContextMenu)
         self.header().customContextMenuRequested.connect(self.headerContextMenu)
-        
+
         self.connect(self.buttonMsgHideTimer, SIGNAL("timeout()"), self.buttonMsgHideTimerTimeout)
         self.connect(self, SIGNAL("dropEvent"), self.model.slotDropEvent)
         self.connect(self, SIGNAL("collapsed(const QModelIndex &)"), self.packageCollapsed)
-    
+
     def setCorePermissions(self, corePermissions):
         self.corePermissions = corePermissions
         # PACKORDER + LINKORDER need "MODIFY ; LINKMOVE needs "DELETE" and "ADD"
@@ -1457,7 +1457,7 @@ class CollectorView(QTreeView):
         else:
             self.model.dnd.havePermissions = False
         self.log.debug9("%s.setCorePermissions: dnd.havePermissions set to: %s" % (self.cname, str(self.model.dnd.havePermissions)))
-    
+
     def headerContextMenu(self, pos):
         """
             header row popup menu for hiding/showing columns
@@ -1491,14 +1491,14 @@ class CollectorView(QTreeView):
                 self.showColumn(columnToToggle)
             else:
                 self.hideColumn(columnToToggle)
-    
+
     def treeExpandAll(self):
         self.expandToDepth(1)
-    
+
     def treeCollapseAll(self):
         for i in range(0, self.model.rowCount()):
             self.collapse(self.model.index(i, 0))
-    
+
     def packageCollapsed(self, index):
         func_start_time = self.model.time_msec()
         package = index.internalPointer()
@@ -1513,7 +1513,7 @@ class CollectorView(QTreeView):
             if lindex == smodel.currentIndex():
                 smodel.setCurrentIndex(QModelIndex(), QItemSelectionModel.NoUpdate)
         self.log.debug8("%s.packageCollapsed took %dms" % (self.cname, self.model.time_msec() - func_start_time))
-    
+
     def mousePressEvent(self, event):
         index = self.indexAt(event.pos())
         if index.isValid():
@@ -1523,12 +1523,12 @@ class CollectorView(QTreeView):
                 if event.buttons() == Qt.RightButton:
                     return
         QTreeView.mousePressEvent(self, event)
-    
+
     def dragEnterEvent(self, event):
         if event.source() != self:
             return
         event.accept()
-    
+
     def dragMoveEvent(self, event):
         if event.source() != self:
             return
@@ -1548,11 +1548,11 @@ class CollectorView(QTreeView):
         else:
             event.setDropAction(Qt.MoveAction)
         QTreeView.dragMoveEvent(self, event)
-    
+
     def dragLeaveEvent(self, event):
         event.ignore()
         self.buttonMsgHide(0)
-    
+
     def dropEvent(self, event):
         if event.source() != self:
             return
@@ -1562,16 +1562,16 @@ class CollectorView(QTreeView):
         self.buttonMsgHide(0)
         self.setEnabled(False)
         self.emit(SIGNAL("dropEvent"), not bool(event.keyboardModifiers() & Qt.AltModifier))
-    
+
     def buttonMsgShow(self, msg, error):
         self.buttonMsgHideTimer.stop()
         self.emit(SIGNAL("collectorMsgShow"), msg, error)
-    
+
     def buttonMsgHide(self, delay):
         self.buttonMsgHideTimer.setInterval(delay)
         self.buttonMsgHideTimer.setSingleShot(True)
         self.buttonMsgHideTimer.start()
-    
+
     def buttonMsgHideTimerTimeout(self):
         self.emit(SIGNAL("collectorMsgHide"))
 
@@ -1585,12 +1585,12 @@ class DragAndDrop(QObject):
         self.view = view
         self.model = model
         self.cname = model.__class__.__name__ + "." + self.__class__.__name__
-        
+
         self.buttonMsgCanDrop = _("To drop the items in the order they were selected, hold the ALT key when releasing the mouse button!")
         self.viewDesc = _("Collector View") if self.view.__class__.__name__ == "CollectorView" else _("Queue View")
-        
+
         self.allowLinkMove = False
-        
+
         self.destRow            = None
         self.destIsPack         = None
         self.destPackId         = None
@@ -1654,10 +1654,10 @@ class DragAndDrop(QObject):
                   srcLinksSamePackId
         """
         func_start_time = self.model.time_msec()
-        
+
         self.srcPacksCnt = 0
         self.srcLinksCnt = 0
-        
+
         smodel = self.view.selectionModel()
         for si in smodel.selectedRows(0):
             src = si.internalPointer()
@@ -1671,7 +1671,7 @@ class DragAndDrop(QObject):
             else:
                 raise TypeError("%s: Unknown item instance" % self.cname)
         self.log.debug4("%s.getSrcInfo: Selection count:   PACKS:%d   LINKS:%d" % (self.cname, self.srcPacksCnt, self.srcLinksCnt))
-        
+
         # check links
         self.srcLinksSamePack = True
         if self.srcLinksCnt > 0:
@@ -1700,7 +1700,7 @@ class DragAndDrop(QObject):
         """
         func_start_time = self.model.time_msec()
         self.srcPackages = []
-        
+
         smodel = self.view.selectionModel()
         for si in smodel.selectedRows(0):
             src = si.internalPointer()
@@ -1719,7 +1719,7 @@ class DragAndDrop(QObject):
         """
         func_start_time = self.model.time_msec()
         self.srcLinks = []
-        
+
         smodel = self.view.selectionModel()
         for si in smodel.selectedRows(0):
             src = si.internalPointer()

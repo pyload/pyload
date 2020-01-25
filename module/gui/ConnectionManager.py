@@ -12,7 +12,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
+
     @author: mkaay
 """
 
@@ -31,16 +31,16 @@ class ConnectionManager(QDialog):
         QDialog.__init__(self)
         self.log = logging.getLogger("guilog")
         self.disable_connect = disable_connect
-        
+
         self.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
         self.setWindowTitle(_("Connection Manager"))
         self.setWindowIcon(QIcon(join(pypath, "icons", "logo.png")))
-        
+
         mainLayout   = QHBoxLayout()
         labelLayout  = QHBoxLayout()
         boxLayout    = QVBoxLayout()
         buttonLayout = QVBoxLayout()
-        
+
         self.connList = self.ListWidget()
         self.connList.setDragDropMode(QAbstractItemView.InternalMove)
         self.wtBtn = WhatsThisButton()
@@ -50,7 +50,7 @@ class ConnectionManager(QDialog):
         labelLayout.addWidget(self.wtBtn)
         boxLayout.addLayout(labelLayout)
         boxLayout.addWidget(self.connList)
-        
+
         self.btnNew     = QPushButton(_("New"))
         self.btnEdit    = QPushButton(_("Edit"))
         self.btnDefault = QPushButton(_("Default"))
@@ -65,21 +65,21 @@ class ConnectionManager(QDialog):
             "Please close this window and restart the application."
             )
             self.btnConnect.setToolTip(tt)
-        
+
         buttonLayout.addWidget(self.btnNew)
         buttonLayout.addWidget(self.btnEdit)
         buttonLayout.addWidget(self.btnDefault)
         buttonLayout.addWidget(self.btnRemove)
         buttonLayout.addStretch()
         buttonLayout.addWidget(self.btnConnect)
-        
+
         mainLayout.addLayout(boxLayout)
         mainLayout.addLayout(buttonLayout)
         self.setLayout(mainLayout)
-        
+
         self.edit = self.EditWindow()
         self.connectSignals()
-    
+
     def connectSignals(self):
         self.connect(self,            SIGNAL("setConnections"), self.setConnections)
         self.connect(self,            SIGNAL("setCurrentItem"), self.slotSetCurrentItem)
@@ -92,7 +92,7 @@ class ConnectionManager(QDialog):
         self.connect(self.connList,   SIGNAL("saveAll"),   self.slotSaveAll)
         if not self.disable_connect:
             self.connect(self.connList,   SIGNAL("itemDoubleClicked(QListWidgetItem *)"), self.slotItemDoubleClicked)
-    
+
     def setConnections(self, connections):
         self.connList.clear()
         for conn in connections:
@@ -105,7 +105,7 @@ class ConnectionManager(QDialog):
                 self.connList.setCurrentItem(item)
             else:
                 self.connList.setCurrentRow(0)
-    
+
     def slotSetCurrentItem(self, l):
         id_ = l["id"]
         count = self.connList.count()
@@ -115,7 +115,7 @@ class ConnectionManager(QDialog):
             if self.cleanDict(d)["id"] == id_:
                 self.connList.setCurrentItem(item)
                 break
-    
+
     def slotNew(self):
         self.edit.setWindowTitle(_("New"))
         data = {"id":uuid().hex, "type":"remote", "default":False, "name":"", "host":"", "port":7227,
@@ -123,7 +123,7 @@ class ConnectionManager(QDialog):
         self.edit.setData(data)
         self.edit.controls["name"].setFocus(Qt.OtherFocusReason)
         self.edit.exec_()
-    
+
     def slotEdit(self):
         self.edit.setWindowTitle(_("Edit"))
         item = self.connList.currentItem()
@@ -132,7 +132,7 @@ class ConnectionManager(QDialog):
         self.edit.setData(data)
         self.edit.controls["cancel"].setFocus(Qt.OtherFocusReason)
         self.edit.exec_()
-    
+
     def slotRemove(self):
         item = self.connList.currentItem()
         data = item.data(Qt.UserRole).toPyObject()
@@ -142,13 +142,13 @@ class ConnectionManager(QDialog):
         if row >= self.connList.count():
             row = self.connList.count() - 1
         self.connList.setCurrentRow(row)
-    
+
     def slotConnect(self):
         item = self.connList.currentItem()
         data = item.data(Qt.UserRole).toPyObject()
         data = self.cleanDict(data)
         self.emit(SIGNAL("connect"), data)
-    
+
     @classmethod
     def cleanDict(self, data):
         tmp = {}
@@ -158,7 +158,7 @@ class ConnectionManager(QDialog):
             else:
                 tmp[str(k)] = d
         return tmp
-    
+
     def slotSave(self, data):
         id_ = self.cleanDict(data)["id"]
         self.emit(SIGNAL("saveConnection"), data)
@@ -169,7 +169,7 @@ class ConnectionManager(QDialog):
             if self.cleanDict(d)["id"] == id_:
                 self.connList.setCurrentItem(item)
                 break
-    
+
     def slotSaveAll(self):
         item = self.connList.currentItem()
         data = item.data(Qt.UserRole).toPyObject()
@@ -191,11 +191,11 @@ class ConnectionManager(QDialog):
             if self.cleanDict(d)["id"] == id_:
                 self.connList.setCurrentItem(item)
                 break
-    
+
     def slotItemDoubleClicked(self, item):
         # this fixes a segfault that happens when emitting "connect" directly from here
         QTimer.singleShot(0, self.slotConnect)
-    
+
     def slotDefault(self):
         currentRow = self.connList.currentRow()
         item = self.connList.currentItem()
@@ -211,22 +211,22 @@ class ConnectionManager(QDialog):
                 continue
             self.setDefault(data, False)
         self.connList.setCurrentRow(currentRow)
-    
+
     def setDefault(self, data, state):
         data = self.cleanDict(data)
         self.edit.setData(data)
         data = self.edit.getData()
         data["default"] = state
         self.emit(SIGNAL("saveConnection"), data)
-    
+
     def keyPressEvent(self, event):
         if event.key() != Qt.Key_Escape:
             QDialog.keyPressEvent(self, event)
-    
+
     def closeEvent(self, event):
         event.ignore()
         self.emit(SIGNAL("quitConnWindow"))
-    
+
     def appFontChanged(self):
         self.wtBtn.updateSize()
         self.edit.buttons.updateWhatsThisButton()
@@ -236,7 +236,7 @@ class ConnectionManager(QDialog):
         def __init__(self):
             QListWidget.__init__(self)
             self.log = logging.getLogger("guilog")
-        
+
         def dropEvent(self, event):
             QListWidget.dropEvent(self, event)
             self.emit(SIGNAL("saveAll"))
@@ -246,20 +246,20 @@ class ConnectionManager(QDialog):
         def __init__(self):
             QDialog.__init__(self)
             self.log = logging.getLogger("guilog")
-            
+
             self.setAttribute(Qt.WA_DeleteOnClose, False)
             self.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
             self.setWindowIcon(QIcon(join(pypath, "icons", "logo.png")))
-            
+
             grid1 = QGridLayout()
-            
+
             nameLabel  = QLabel(_("Name"))
             typeLabel  = QLabel(_("Type"))
             hostLabel  = QLabel(_("Host"))
             portLabel  = QLabel(_("Port"))
             userLabel  = QLabel(_("User"))
             pwLabel    = QLabel(_("Password"))
-            
+
             name = QLineEdit()
             typeLocal    = QRadioButton(_("Local"))
             wt = _(
@@ -284,11 +284,11 @@ class ConnectionManager(QDialog):
             user = QLineEdit()
             password = QLineEdit()
             password.setEchoMode(QLineEdit.Password)
-            
+
             nameHbox = QHBoxLayout()
             nameHbox.addWidget(nameLabel)
             nameHbox.addWidget(name)
-            
+
             grid1.addWidget(typeLabel,    0, 0)
             grid1.addLayout(typeBtnHbox,  0, 1)
             grid1.addWidget(hostLabel,    1, 0)
@@ -300,50 +300,50 @@ class ConnectionManager(QDialog):
             grid1.addWidget(pwLabel,      4, 0)
             grid1.addWidget(password,     4, 1)
             #grid1.setRowMinimumHeight(    5, 7)
-            
+
             gb1 = QGroupBox(_("Login") + "     ")
             gb1.setLayout(grid1)
-            
+
             grid2 = QGridLayout()
-            
+
             cnlpfPortLabel  = QLabel(_("Remote Port"))
             cnlpfPort = QSpinBox()
             cnlpfPort.setRange(1, 65535)
             cnlpfGetPort = QCheckBox(_("Get Remote Port from Server Settings"))
             cnlpfGetPort.setWhatsThis(whatsThisFormat(_("Get Remote Port from Server Settings"), _("Needs") + " '" + _("Settings") + "'" +
                                                         " (SETTINGS) " + _("permission on the server.")))
-            
+
             grid2.addWidget(cnlpfPortLabel, 0, 0, 1, 1)
             grid2.addWidget(cnlpfPort,      0, 1, 1, 1)
             grid2.addWidget(cnlpfGetPort,   1, 0, 1, 2)
             grid2.setColumnStretch(1, 1)
             #grid2.setRowMinimumHeight(2, 7)
-            
+
             cnlpf = QGroupBox(_("Enable ClickNLoad Port Forwarding") + "     ")
             cnlpf.setCheckable(True)
             cnlpf.setLayout(grid2)
-            
+
             self.buttons = WtDialogButtonBox(Qt.Horizontal)
             save = self.buttons.addButton(QDialogButtonBox.Save)
             cancel = self.buttons.addButton(QDialogButtonBox.Cancel)
             self.buttons.button(QDialogButtonBox.Save).setText(_("Save"))
             self.buttons.button(QDialogButtonBox.Cancel).setText(_("Cancel"))
-            
+
             vbox = QVBoxLayout()
             vbox.addLayout(nameHbox)
             vbox.addSpacing(3)
             vbox.addWidget(gb1)
             vbox.addWidget(cnlpf)
             vbox.addLayout(self.buttons.layout())
-            
+
             self.setLayout(vbox)
             #self.setMinimumWidth(300)
             self.adjustSize()
             self.setFixedHeight(self.height())
-            
+
             self.id      = None
             self.default = None
-            
+
             # keep references of the QDialog elements
             self.controls = { "name":         name,
                               "typeLocal":    typeLocal,
@@ -358,14 +358,14 @@ class ConnectionManager(QDialog):
                               "cnlpfGetPort": cnlpfGetPort,
                               "save":         save,
                               "cancel":       cancel }
-            
+
             self.connect(cancel, SIGNAL("clicked()"), self.hide)
             self.connect(save,   SIGNAL("clicked()"), self.slotDone)
             self.connect(typeLocal,    SIGNAL("clicked()"), self.slotTypeChanged)
             self.connect(typeInternal, SIGNAL("clicked()"), self.slotTypeChanged)
             self.connect(typeRemote,   SIGNAL("clicked()"), self.slotTypeChanged)
             self.connect(cnlpfGetPort, SIGNAL("toggled(bool)"), cnlpfPort.setDisabled)
-        
+
         def setData(self, data):
             if not data:
                 return
@@ -405,7 +405,7 @@ class ConnectionManager(QDialog):
                 self.controls["user"].setDisabled(False)
                 self.controls["password"].setDisabled(False)
                 self.controls["cnlpf"].setDisabled(False)
-        
+
         def slotTypeChanged(self):
             if self.controls["typeLocal"].isChecked() or self.controls["typeInternal"].isChecked():
                 self.controls["host"].setDisabled(True)
@@ -421,7 +421,7 @@ class ConnectionManager(QDialog):
                 self.controls["password"].setDisabled(False)
                 self.controls["cnlpf"].setDisabled(False)
                 self.controls["cnlpf"].setChecked(False)
-        
+
         def getData(self):
             d = {}
             d["id"]           = str(self.id)
@@ -441,7 +441,7 @@ class ConnectionManager(QDialog):
             d["cnlpfPort"]    = int(self.controls["cnlpfPort"].value())
             d["cnlpfGetPort"] = bool(self.controls["cnlpfGetPort"].isChecked())
             return d
-        
+
         def slotDone(self):
             data = self.getData()
             self.hide()

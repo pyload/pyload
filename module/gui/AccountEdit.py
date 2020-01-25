@@ -12,7 +12,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
+
     @author: mkaay
 """
 
@@ -28,17 +28,17 @@ class AccountEdit(QDialog):
     """
         account editor widget
     """
-    
+
     def __init__(self, parent):
         QDialog.__init__(self, parent)
         self.log = logging.getLogger("guilog")
-        
+
         self.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
         self.setWindowIcon(QIcon(join(pypath, "icons", "logo.png")))
-        
+
         self.setLayout(QGridLayout())
         l = self.layout()
-        
+
         typeLabel = QLabel(_("Type"))
         loginLabel = QLabel(_("Login"))
         self.passwordLabel = QLabel()
@@ -49,7 +49,7 @@ class AccountEdit(QDialog):
         self.password.setEchoMode(QLineEdit.Password)
         self.login = QLineEdit()
         self.acctype = QComboBox()
-        
+
         self.buttons = WtDialogButtonBox(Qt.Horizontal)
         self.buttons.hideWhatsThisButton()
         self.save = self.buttons.addButton(QDialogButtonBox.Save)
@@ -60,9 +60,9 @@ class AccountEdit(QDialog):
         self.cancel.setAutoDefault(True)
         self.buttons.button(QDialogButtonBox.Save).setText(_("Save"))
         self.buttons.button(QDialogButtonBox.Cancel).setText(_("Cancel"))
-        
+
         self.connect(self.changePw, SIGNAL("toggled(bool)"), self.password, SLOT("setEnabled(bool)"))
-        
+
         l.setRowMinimumHeight(3, 7)
         l.addLayout(self.buttons.layout(), 4, 0, 1, 3)
         l.addWidget(self.acctype, 0, 1, 1, 2)
@@ -72,14 +72,14 @@ class AccountEdit(QDialog):
         l.addWidget(self.passwordLabel, 2, 0)
         l.addWidget(loginLabel, 1, 0)
         l.addWidget(typeLabel, 0, 0)
-        
+
         self.setMinimumWidth(280)
         self.adjustSize()
         self.setFixedHeight(self.height())
-        
+
         self.connect(self.save, SIGNAL("clicked()"), self.slotSave)
         self.connect(self.cancel, SIGNAL("clicked()"), self.reject)
-    
+
     def slotSave(self):
         """
             save entered data
@@ -88,7 +88,7 @@ class AccountEdit(QDialog):
         if self.changePw.isChecked():
             data["password"] = unicode(self.password.text())
         self.emit(SIGNAL("done"), data)
-    
+
     @staticmethod
     def newAccount(parent, types):
         """
@@ -97,14 +97,14 @@ class AccountEdit(QDialog):
         w = AccountEdit(parent)
         w.setWindowTitle(_("Create Account"))
         w.passwordLabel.setText(_("Password"))
-        
+
         w.changePw.setChecked(True)
         w.password.setEnabled(True)
         w.acctype.addItems(types)
         w.acctype.setFocus(Qt.OtherFocusReason)
         w.adjustSize()
         return w
-    
+
     @staticmethod
     def editAccount(parent, types, base):
         """
@@ -113,13 +113,13 @@ class AccountEdit(QDialog):
         w = AccountEdit(parent)
         w.setWindowTitle(_("Edit Account"))
         w.passwordLabel.setText(_("New Password"))
-        
+
         w.changePw.setChecked(True)
         w.acctype.addItems(types)
         i = w.acctype.findText(base.type)
         w.acctype.setCurrentIndex(i)
         w.acctype.setEnabled(False)
-        
+
         w.login.setText(base.login)
         w.login.setEnabled(False)
         w.password.setFocus(Qt.OtherFocusReason)

@@ -12,7 +12,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
+
     @author: mkaay
 """
 
@@ -31,44 +31,44 @@ class QueueModel(CollectorModel):
     """
         model for the queue view, inherits from CollectorModel
     """
-    
+
     def __init__(self, view, connector):
         CollectorModel.__init__(self, view, connector)
         self.log = logging.getLogger("guilog")
-        
+
         self.cols = 10
         self.dnd.allowLinkMove = False
-        
+
         self.wait_dict = {}
-        
+
         self.updater = self.QueueUpdater(self.interval)
         self.connect(self.updater, SIGNAL("update()"), self.update)
-    
+
     class QueueUpdater(QObject):
         """
             timer which emits signal for a download status reload
             @TODO: make intervall configurable
         """
-        
+
         def __init__(self, interval):
             QObject.__init__(self)
-            
+
             self.interval = interval
             self.timer = QTimer()
             self.timer.connect(self.timer, SIGNAL("timeout()"), self, SIGNAL("update()"))
-        
+
         def start(self):
             self.timer.start(1000)
-        
+
         def stop(self):
             self.timer.stop()
-    
+
     def start(self):
         self.updater.start()
-    
+
     def stop(self):
         self.updater.stop()
-    
+
     def fullReload(self, enableView=True):
         """
             reimplements CollectorModel.fullReload, because we want the Queue data
@@ -124,7 +124,7 @@ class QueueModel(CollectorModel):
         self.updateCount()
         self.applyViewItemStates()
         self.log.debug8("%s.fullReload took %dms" % (self.cname, self.time_msec() - func_start_time))
-    
+
     def insertEvent(self, event):
         """
             wrap CollectorModel.insertEvent to update the element count
@@ -132,7 +132,7 @@ class QueueModel(CollectorModel):
         CollectorModel.insertEvent(self, event)
         if not self.dirty:
             self.updateCount()
-    
+
     def removeEvent(self, event):
         """
             wrap CollectorModel.removeEvent to update the element count
@@ -140,7 +140,7 @@ class QueueModel(CollectorModel):
         CollectorModel.removeEvent(self, event)
         if not self.dirty:
             self.updateCount()
-    
+
     def updateEvent(self, event):
         """
             wrap CollectorModel.updateEvent to update the element count
@@ -148,7 +148,7 @@ class QueueModel(CollectorModel):
         CollectorModel.updateEvent(self, event)
         if not self.dirty:
             self.updateCount()
-    
+
     def updateCount(self):
         """
             calculate package- and filecount for statusbar,
@@ -159,7 +159,7 @@ class QueueModel(CollectorModel):
         for p in self._data:
             fileCount += len(p.children)
         self.emit(SIGNAL("updateCount"), packageCount, fileCount)
-    
+
     def update(self):
         """
             update slot for download status updating
@@ -199,7 +199,7 @@ class QueueModel(CollectorModel):
             fileCount += len(p.children)
         locker.unlock()
         self.emit(SIGNAL("updateCount"), packageCount, fileCount)
-                    
+
     def headerData(self, section, orientation, role=Qt.DisplayRole):
         """
             returns column heading
@@ -226,7 +226,7 @@ class QueueModel(CollectorModel):
             elif section == 9:
                 return QVariant(_("Order"))
         return QVariant()
-    
+
     def getWaitingProgress(self, item):
         """
             returns time to wait, caches startingtime to provide progress
@@ -251,7 +251,7 @@ class QueueModel(CollectorModel):
                 perc = rest*res
                 return perc, rest
         return None
-    
+
     def getProgress(self, item, locked=True):
         """
             return download progress, locks by default
@@ -281,7 +281,7 @@ class QueueModel(CollectorModel):
                 return 0
             return perc_sum/count
         return 0
-    
+
     @classmethod
     def getSpeed(self, item):
         """
@@ -307,7 +307,7 @@ class QueueModel(CollectorModel):
                 return None
             return speed_sum
         return None
-    
+
     def data(self, index, role=Qt.DisplayRole):
         """
             return cell data
@@ -396,12 +396,12 @@ class QueueModel(CollectorModel):
                 if textWidth > rect.width():
                     return QVariant(txt)
         return QVariant()
-    
+
 class QueueView(CollectorView):
     """
         view component for queue
     """
-    
+
     def __init__(self, corePermissions, connector):
         QTreeView.__init__(self)
         self.cname = self.__class__.__name__
@@ -409,9 +409,9 @@ class QueueView(CollectorView):
         self.corePermissions = corePermissions
         self.model = QueueModel(self, connector)
         self.setModel(self.model)
-        
+
         self.buttonMsgHideTimer = QTimer()
-        
+
         wt = _(
         "- Column visibility can be toggled by right-clicking on the header row<br>"
         "- Column order can be changed by Drag'n'Drop<br>"
@@ -420,7 +420,7 @@ class QueueView(CollectorView):
         "- Link order within a package can be changed by Drag'n'Drop"
         )
         self.setWhatsThis(whatsThisFormat(_("Queue View"), wt))
-        
+
         self.setColumnHidden(0, False) # Name
         self.setColumnHidden(1, False) # Status
         self.setColumnHidden(2, False) # Plugin
@@ -431,7 +431,7 @@ class QueueView(CollectorView):
         self.setColumnHidden(7, False) # Password
         self.setColumnHidden(8, True)  # ID
         self.setColumnHidden(9, True)  # Order
-        
+
         self.setColumnWidth(0, 180)
         self.setColumnWidth(1, 110)
         self.setColumnWidth(2, 70)
@@ -441,23 +441,23 @@ class QueueView(CollectorView):
         self.setColumnWidth(6, 150)
         self.setColumnWidth(7, 100)
         self.setColumnWidth(8, 60)
-        
+
         self.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        
+
         self.header().setContextMenuPolicy(Qt.CustomContextMenu)
         self.header().customContextMenuRequested.connect(self.headerContextMenu)
-        
+
         self.connect(self.buttonMsgHideTimer, SIGNAL("timeout()"), self.buttonMsgHideTimerTimeout)
         self.connect(self, SIGNAL("dropEvent"), self.model.slotDropEvent)
         self.connect(self, SIGNAL("collapsed(const QModelIndex &)"), self.packageCollapsed)
-        
+
         self.delegate = QueueProgressBarDelegate(self, self.model)
         self.setItemDelegateForColumn(5, self.delegate)
-    
+
     def buttonMsgShow(self, msg, error):
         self.buttonMsgHideTimer.stop()
         self.emit(SIGNAL("queueMsgShow"), msg, error)
-    
+
     def buttonMsgHideTimerTimeout(self):
         self.emit(SIGNAL("queueMsgHide"))
 
@@ -465,12 +465,12 @@ class QueueProgressBarDelegate(QItemDelegate):
     """
         used to display a progressbar in the progress cell
     """
-    
+
     def __init__(self, parent, queue):
         QItemDelegate.__init__(self, parent)
         self.log = logging.getLogger("guilog")
         self.queue = queue
-    
+
     def paint(self, painter, option, index):
         """
             paint the progressbar

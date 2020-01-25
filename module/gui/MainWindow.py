@@ -12,7 +12,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
+
     @author: mkaay
 """
 
@@ -39,10 +39,10 @@ from module.gui.AccountEdit import AccountEdit
 from module.gui.Tools import whatsThisFormat
 
 class MainWindow(QMainWindow):
-    
+
     def time_msec(self):
         return int((datetime.utcnow() - datetime(1970, 1, 1)).total_seconds() * 1000 - self.time_msec_init)
-    
+
     def __init__(self, corePermissions, appIconSet, connector):
         """
             set up main window
@@ -55,7 +55,7 @@ class MainWindow(QMainWindow):
         self.appIconSet = appIconSet
         self.connector = connector
         self.lastAddContainerDir = unicode("")
-        
+
         #window stuff
         self.setWindowFlags(self.windowFlags() | Qt.WindowContextHelpButtonHint)
         self.setWindowTitle(_("pyLoad Client"))
@@ -63,10 +63,10 @@ class MainWindow(QMainWindow):
         self.resize(100 ,100)
         self.move(200 ,200)
         self.initEventHooks()
-        
+
         #layout version
         self.version = 3
-        
+
         #init docks
         self.setDockOptions(QMainWindow.AnimatedDocks | QMainWindow.AllowTabbedDocks | QMainWindow.ForceTabbedDocks)
         self.setTabPosition(Qt.RightDockWidgetArea, QTabWidget.North)
@@ -80,13 +80,13 @@ class MainWindow(QMainWindow):
         self.connect(self.newLinkDock, SIGNAL("parseUri"), self.slotParseUri)
         self.tabifyDockWidget(self.newPackDock, self.newLinkDock)
         self.captchaDialog = CaptchaDialog()
-        
+
         #central widget, layout
         self.masterlayout = QVBoxLayout()
         lw = QWidget()
         lw.setLayout(self.masterlayout)
         self.setCentralWidget(lw)
-        
+
         #treeview advanced select
         self.advselectframe = QFrame()
         self.advselectframe.hide()
@@ -99,7 +99,7 @@ class MainWindow(QMainWindow):
         self.connect(self.advselect.selectBtn, SIGNAL("clicked()"), self.slotAdvSelectSelectButtonClicked)
         self.connect(self.advselect.deselectBtn, SIGNAL("clicked()"), self.slotAdvSelectDeselectButtonClicked)
         self.connect(self.advselect.hideBtn, SIGNAL("clicked()"), self.slotAdvSelectHide)
-        
+
         #status
         self.statusw = QFrame()
         self.statusw.setFrameStyle(QFrame.StyledPanel | QFrame.Raised)
@@ -110,7 +110,7 @@ class MainWindow(QMainWindow):
         #self.statusw.setPalette(palette)
         #self.statusw.setAutoFillBackground(True)
         l = self.statusw.layout()
-        
+
         class BoldLabel(QLabel):
             def __init__(self, text):
                 QLabel.__init__(self, text)
@@ -118,13 +118,13 @@ class MainWindow(QMainWindow):
                 f.setBold(True)
                 self.setFont(f)
                 self.setAlignment(Qt.AlignRight)
-        
+
         #class Seperator(QFrame):
         #    def __init__(self):
         #        QFrame.__init__(self)
         #        self.setFrameShape(QFrame.VLine)
         #        self.setFrameShadow(QFrame.Sunken)
-        
+
         class StwItem(QWidget):
             def __init__(self, lbl1text, wthis):
                 QWidget.__init__(self)
@@ -138,7 +138,7 @@ class MainWindow(QMainWindow):
                 hbox.addStretch(1)
                 self.setLayout(hbox)
                 self.setWhatsThis(wthis)
-        
+
         self.statuswItems = {}
         self.statuswItems["packages"] = StwItem(_("Packages") + ":", whatsThisFormat(_("Packages"), _("The number of packages in the Queue.")))
         l.addWidget(self.statuswItems["packages"], 0, 0, 1, 1)
@@ -150,7 +150,7 @@ class MainWindow(QMainWindow):
         l.addWidget(self.statuswItems["space"], 0, 3, 1, 1)
         self.statuswItems["speed"] = StwItem(_("Speed") + ":", whatsThisFormat(_("Speed"), _("The actual download speed.")))
         l.addWidget(self.statuswItems["speed"], 0, 4, 1, 1)
-        
+
         #l.addWidget(BoldLabel(_("Max. downloads:")), 0, 9)
         #l.addWidget(BoldLabel(_("Max. chunks:")), 1, 9)
         #self.maxDownloads = QSpinBox()
@@ -166,7 +166,7 @@ class MainWindow(QMainWindow):
         #self.connect(self.statusbar, SIGNAL("showMsg"), self.statusbar.showMessage)
         #self.serverStatus = QLabel(_("Status: Not Connected"))
         #self.statusbar.addPermanentWidget(self.serverStatus)
-        
+
         #menu
         self.menus = {"file": self.menubar.addMenu(_("File")),
                       "options": self.menubar.addMenu(_("Options")),
@@ -238,11 +238,11 @@ class MainWindow(QMainWindow):
         self.menus["help"].addAction(self.mactions["whatsthismode"])
         self.menus["help"].addSeparator()
         self.menus["help"].addAction(self.mactions["about"])
-        
+
         #toolbar
         self.actions = {}
         self.init_toolbar()
-        
+
         #tabs
         self.tabw = QTabWidget()
         self.tabs = {"overview": {"w": QWidget()},
@@ -263,18 +263,18 @@ class MainWindow(QMainWindow):
         self.tabw.addTab(self.tabs["guilog"]["w"], _("Log"))
         self.tabw.addTab(self.tabs["settings"]["w"], _("Server Settings"))
         self.tabw.addTab(self.tabs["corelog"]["w"], _("Server Log"))
-        
+
         #init tabs
         self.init_tabs(self.connector)
-        
+
         #context menus
         self.init_context()
-        
+
         #layout
         self.masterlayout.addWidget(self.tabw)
         self.masterlayout.addWidget(self.advselectframe)
         self.masterlayout.addWidget(self.statusw)
-        
+
         #signals..
         self.connect(self.mactions["notifications"], SIGNAL("triggered()"), self.slotShowNotificationOptions)
         self.connect(self.mactions["logging"], SIGNAL("triggered()"), self.slotShowLoggingOptions)
@@ -299,17 +299,17 @@ class MainWindow(QMainWindow):
         self.connect(self.mactions["showmaxpadls"], SIGNAL("toggled(bool)"), self.slotToggleMaxPaDlsVisibility)
         self.connect(self.mactions["whatsthismode"], SIGNAL("triggered()"), QWhatsThis.enterWhatsThisMode)
         self.connect(self.mactions["about"], SIGNAL("triggered()"), self.slotShowAbout)
-        
+
         self.connect(self.tabs["queue"]["view"], SIGNAL("customContextMenuRequested(const QPoint &)"), self.slotQueueContextMenu)
         self.connect(self.tabs["collector"]["view"], SIGNAL("customContextMenuRequested(const QPoint &)"), self.slotCollectorContextMenu)
         self.connect(self.tabs["accounts"]["view"], SIGNAL("customContextMenuRequested(const QPoint &)"), self.slotAccountContextMenu)
         self.connect(self.tabs["settings"]["w"], SIGNAL("setupPluginsMenu"), self.slotSetupPluginsMenu)
-        
+
         self.connect(self.tabw, SIGNAL("currentChanged(int)"), self.slotTabChanged)
-    
+
     def setCorePermissions(self, corePermissions):
         self.corePermissions = corePermissions
-        
+
         self.tabs["queue"]["view"].setCorePermissions(corePermissions)
         self.tabs["queue"]["w"].setEnabled(corePermissions["LIST"])
         self.tabs["overview"]["w"].setEnabled(corePermissions["LIST"])
@@ -317,14 +317,14 @@ class MainWindow(QMainWindow):
         self.tabs["collector"]["w"].setEnabled(corePermissions["LIST"])
         self.mactions["reload"].setEnabled(corePermissions["LIST"])         # main menu entry: View -> Reload
         self.mactions["autoreloading"].setEnabled(corePermissions["LIST"])  # main menu entry: Options -> Automatic Reloading
-        
+
         self.tabs["queue"]["b"].setEnabled(corePermissions["MODIFY"])
         self.tabs["collector"]["b"].setEnabled(corePermissions["MODIFY"])
         self.actions["restart_failed"].setEnabled(corePermissions["MODIFY"])
         # Api.setPackageData
         self.newPackDock.widget.passwordLabel.setEnabled(corePermissions["MODIFY"])
         self.newPackDock.widget.passwordInput.setEnabled(corePermissions["MODIFY"])
-        
+
         # Api.addFiles
         self.newLinkDock.widget.setEnabled(corePermissions["ADD"])
         self.actions["add_links"].setEnabled(corePermissions["ADD"])
@@ -342,58 +342,58 @@ class MainWindow(QMainWindow):
         # Context menu 'Add' entry
         self.queueContext.buttons["add"].setEnabled(corePermissions["ADD"])
         self.collectorContext.buttons["add"].setEnabled(corePermissions["ADD"])
-        
+
         # Api.deleteFinished
         self.actions["remove_finished"].setEnabled(corePermissions["DELETE"])
-        
+
         # Api.pauseServer and Api.unpauseServer
         self.actions["status_start"].setEnabled(corePermissions["STATUS"])
         self.actions["status_pause"].setEnabled(corePermissions["STATUS"])
         self.actions["status_start"].setCheckable(corePermissions["LIST"])
         self.actions["status_pause"].setCheckable(corePermissions["LIST"])
-        
+
         # Api.getCaptchaTask, Api.getCaptchaTaskStatus, Api.isCaptchaWaiting and Api.setCaptchaResult
         self.mactions["captcha"].setEnabled(corePermissions["STATUS"])  # main menu entry: Options -> Captcha
         self.captchaDialog.setEnabled(corePermissions["STATUS"])
-        
+
         # 'Abort All' toolbar button
         if not corePermissions["MODIFY"]:
             self.actions["status_stop"].setEnabled(False)
         elif not corePermissions["STATUS"]:
             self.actions["status_stop"].setIcon(self.statusStopIconNoPause)
             self.actions["status_stop"].setToolTip(_("Cannot set server status to 'Paused'"))
-        
+
         # Speed Limit and Max Files in toolbar
         if not corePermissions["SETTINGS"]:
             self.actions["speedlimit_enabled"].setEnabled(False)
             self.actions["speedlimit_rate"].setEnabled(False)
             self.actions["maxparalleldownloads_label"].setEnabled(False)
             self.actions["maxparalleldownloads_value"].setEnabled(False)
-        
+
         # Server Settings
         self.tabs["settings"]["w"].setCorePermissions(corePermissions)
         self.tabs["settings"]["w"].setEnabled(corePermissions["SETTINGS"])
         self.menus["plugins"].setEnabled(corePermissions["SETTINGS"])
-        
+
         # Status bar
         self.statuswItems["packages"].setEnabled(corePermissions["LIST"])
         self.statuswItems["links"].setEnabled(corePermissions["LIST"])
         self.statuswItems["status"].setEnabled(corePermissions["LIST"])
         self.statuswItems["space"].setEnabled(corePermissions["STATUS"])
         self.statuswItems["speed"].setEnabled(corePermissions["LIST"])
-        
+
         # Server Log
         if corePermissions["LOGS"]:
             self.tabs["corelog"]["text"].setText("")
         else:
             self.tabs["corelog"]["text"].setText(_("Insufficient server permissions."))
         self.tabs["corelog"]["text"].setEnabled(corePermissions["LOGS"])
-        
+
         # Accounts Tab
         self.tabs["accounts"]["view"].setCorePermissions(corePermissions)
         self.tabs["accounts"]["w"].setEnabled(corePermissions["ACCOUNTS"])
         self.actions["add_account"].setEnabled(corePermissions["ACCOUNTS"])
-        
+
         # Disable toolbar 'Add' button when all popup-menu entries are disabled
         disableAdd = True
         for act in self.addMenu.actions():
@@ -401,19 +401,19 @@ class MainWindow(QMainWindow):
                 continue
             disableAdd = disableAdd and not act.isEnabled()
         self.actions["add"].setDisabled(disableAdd)
-        
+
         # admin permissions
         if not corePermissions["admin"]:
             self.mactions["quitcore"].setEnabled(False)      # main menu entry: File -> Quit pyLoad Server
             self.mactions["restartcore"].setEnabled(False)   # main menu entry: File -> Restart pyLoad Server
-    
+
     @classmethod
     def createPopupMenu(self):
         """
             disables default popup menu
         """
         return
-    
+
     def init_toolbar(self):
         """
             create toolbar
@@ -509,7 +509,7 @@ class MainWindow(QMainWindow):
         self.connect(self.actions["status_pause"], SIGNAL("triggered(bool)"), self.slotStatusPause)
         self.connect(self.actions["restart_failed"], SIGNAL("triggered()"), self.slotRestartFailed)
         self.connect(self.actions["remove_finished"], SIGNAL("triggered()"), self.slotRemoveFinished)
-        
+
         self.addMenu = QMenu()
         self.actions["add_package"] = self.addMenu.addAction(_("Package"))
         self.actions["add_links"] = self.addMenu.addAction(_("Links"))
@@ -521,7 +521,7 @@ class MainWindow(QMainWindow):
         self.connect(self.actions["add_links"], SIGNAL("triggered()"), self.slotShowAddLinks)
         self.connect(self.actions["add_container"], SIGNAL("triggered()"), self.slotShowAddContainer)
         self.connect(self.actions["add_account"], SIGNAL("triggered()"), self.slotNewAccount)
-        
+
         self.clipboardMenu = QMenu()
         self.actions["clipboard_queue"] = self.clipboardMenu.addAction(_("Create New Packages In Queue"))
         self.actions["clipboard_queue"].setCheckable(True)
@@ -533,7 +533,7 @@ class MainWindow(QMainWindow):
         self.connect(self.actions["clipboard_queue"], SIGNAL("toggled(bool)"), self.slotClipboardQueueToggled)
         self.connect(self.actions["clipboard_collector"], SIGNAL("toggled(bool)"), self.slotClipboardCollectorToggled)
         self.connect(self.actions["clipboard_packDock"], SIGNAL("toggled(bool)"), self.slotClipboardPackDockToggled)
-    
+
     def init_tabs(self, connector):
         """
             create tabs
@@ -559,13 +559,13 @@ class MainWindow(QMainWindow):
         self.connect(self.tabs["queue"]["view"], SIGNAL("queueMsgShow"), self.slotQueueMsgShow)
         self.connect(self.tabs["queue"]["view"], SIGNAL("queueMsgHide"), self.slotQueueMsgHide)
         self.tabs["queue"]["view"].setContextMenuPolicy(Qt.CustomContextMenu)
-        
+
         #overview
         self.tabs["overview"]["l"] = QGridLayout()
         self.tabs["overview"]["w"].setLayout(self.tabs["overview"]["l"])
         self.tabs["overview"]["view"] = OverviewView(self.tabs["queue"]["view"].model)
         self.tabs["overview"]["l"].addWidget(self.tabs["overview"]["view"])
-        
+
         #collector
         self.tabs["collector"]["b"] = QPushButton(_("Push Selected Packages To Queue"))
         self.tabs["collector"]["b"].setIcon(self.appIconSet["push_small"])
@@ -587,7 +587,7 @@ class MainWindow(QMainWindow):
         self.connect(self.tabs["collector"]["view"], SIGNAL("collectorMsgShow"), self.slotCollectorMsgShow)
         self.connect(self.tabs["collector"]["view"], SIGNAL("collectorMsgHide"), self.slotCollectorMsgHide)
         self.tabs["collector"]["view"].setContextMenuPolicy(Qt.CustomContextMenu)
-        
+
         #gui log
         self.tabs["guilog"]["l"] = QGridLayout()
         self.tabs["guilog"]["w"].setLayout(self.tabs["guilog"]["l"])
@@ -597,7 +597,7 @@ class MainWindow(QMainWindow):
         self.tabs["guilog"]["text"].setReadOnly(True)
         self.connect(self.tabs["guilog"]["text"], SIGNAL("append(QString)"), self.tabs["guilog"]["text"].append)
         self.tabs["guilog"]["l"].addWidget(self.tabs["guilog"]["text"])
-        
+
         #core log
         self.tabs["corelog"]["l"] = QGridLayout()
         self.tabs["corelog"]["w"].setLayout(self.tabs["corelog"]["l"])
@@ -607,7 +607,7 @@ class MainWindow(QMainWindow):
         self.tabs["corelog"]["text"].setReadOnly(True)
         self.connect(self.tabs["corelog"]["text"], SIGNAL("append(QString)"), self.tabs["corelog"]["text"].append)
         self.tabs["corelog"]["l"].addWidget(self.tabs["corelog"]["text"])
-        
+
         #accounts
         self.tabs["accounts"]["view"] = AccountView(self.corePermissions, connector)
         self.tabs["accounts"]["w"].setLayout(QVBoxLayout())
@@ -616,13 +616,13 @@ class MainWindow(QMainWindow):
         self.tabs["accounts"]["w"].layout().addWidget(self.tabs["accounts"]["b"])
         self.connect(self.tabs["accounts"]["b"], SIGNAL("clicked()"), self.slotNewAccount)
         self.tabs["accounts"]["view"].setContextMenuPolicy(Qt.CustomContextMenu)
-    
+
     def init_context(self):
         """
             create context menus
         """
         self.activeMenu = None
-        
+
         #queue
         self.queueContext = QMenu()
         self.queueContext.buttons = {}
@@ -688,7 +688,7 @@ class MainWindow(QMainWindow):
         self.connect(self.queueContext.buttons["sort_links"], SIGNAL("triggered()"), self.slotSortLinks)
         self.connect(self.queueContext.buttons["expand"], SIGNAL("triggered()"), self.slotExpandAll)
         self.connect(self.queueContext.buttons["collapse"], SIGNAL("triggered()"), self.slotCollapseAll)
-        
+
         #collector
         self.collectorContext = QMenu()
         self.collectorContext.buttons = {}
@@ -752,7 +752,7 @@ class MainWindow(QMainWindow):
         self.connect(self.collectorContext.buttons["sort_links"], SIGNAL("triggered()"), self.slotSortLinks)
         self.connect(self.collectorContext.buttons["expand"], SIGNAL("triggered()"), self.slotExpandAll)
         self.connect(self.collectorContext.buttons["collapse"], SIGNAL("triggered()"), self.slotCollapseAll)
-        
+
         #accounts
         self.accountContext = QMenu()
         self.accountContext.buttons = {}
@@ -765,14 +765,14 @@ class MainWindow(QMainWindow):
         self.connect(self.accountContext.buttons["add"], SIGNAL("triggered()"), self.slotNewAccount)
         self.connect(self.accountContext.buttons["edit"], SIGNAL("triggered()"), self.slotEditAccount)
         self.connect(self.accountContext.buttons["remove"], SIGNAL("triggered()"), self.slotRemoveAccount)
-    
+
     def initEventHooks(self):
         self.eD = {}
         self.eD["pCount"] = int(0)
         self.eD["lastGeo"] = QRect(10000000, 10000000, 10000000, 10000000)
         self.eD["lastNormPos"] = self.eD["lastNormSize"] = self.eD["2ndLastNormPos"] = self.eD["2ndLastNormSize"] = None
         self.eD["pLastMax"] = self.eD["pSignal"] = self.eD["pStateSig"] = False
-    
+
     def paintEvent(self, event):
         if self.eD["pStateSig"]:
             self.emit(SIGNAL("mainWindowState"))
@@ -815,7 +815,7 @@ class MainWindow(QMainWindow):
                             (geo.topLeft().x(), geo.topLeft().y(), geo.size().width(), geo.size().height()))
         self.eD["lastGeo"] = geo
         self.eD["pLastMax"] = maximized
-    
+
     def moveEvent(self, event):
         self.moveEventOldPos = event.oldPos()
         self.moveEventPos = event.pos()
@@ -828,13 +828,13 @@ class MainWindow(QMainWindow):
             if pos != self.eD["lastNormPos"]:
                 self.eD["2ndLastNormPos"] = self.eD["lastNormPos"]
                 self.eD["lastNormPos"] = pos
-    
+
     def resizeEvent(self, event):
         self.resizeEventOldSize = event.oldSize()
         self.resizeEventSize = event.size()
         self.log.debug3("MainWindow.resizeEvent: at %08d msec \t\t----------------------------\t(%04d, %04d) -> (%04d, %04d)\t" %
                         (self.time_msec(), event.oldSize().width(), event.oldSize().height(), event.size().width(), event.size().height()))
-    
+
     def changeEvent(self, event):
         if (event.type() == QEvent.WindowStateChange):
             if (self.windowState() & Qt.WindowMinimized):
@@ -847,14 +847,14 @@ class MainWindow(QMainWindow):
                     self.emit(SIGNAL("maximizeToggled"), True)
             elif (event.oldState() & Qt.WindowMaximized):
                 self.emit(SIGNAL("maximizeToggled"), False)
-    
+
     def closeEvent(self, event):
         """
             somebody wants to close me!
         """
         event.ignore()
         self.emit(SIGNAL("mainWindowClose"))
-    
+
     @classmethod
     def urlFilter(self, text):
         pattern = re.compile(ur'(?i)\b(((?:ht|f)tps?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:\'".,<>?\xab\xbb\u201c\u201d\u2018\u2019]))')
@@ -869,13 +869,13 @@ class MainWindow(QMainWindow):
                     if not s in urlList:
                         urlList.append(s)
         return urlList
-    
+
     def slotShowAbout(self):
         """
             show the about-box
         """
         self.emit(SIGNAL("showAbout"))
-    
+
     def slotQueueMsgShow(self, msg, error):
         """
             emitted from queue view, show message label instead of pull button
@@ -890,14 +890,14 @@ class MainWindow(QMainWindow):
         self.tabs["queue"]["m"].setFixedHeight(self.tabs["queue"]["b"].height())
         self.tabs["queue"]["m"].show()
         self.tabs["queue"]["b"].hide()
-    
+
     def slotQueueMsgHide(self):
         """
             emitted from queue view, show pull button
         """
         self.tabs["queue"]["m"].hide()
         self.tabs["queue"]["b"].show()
-    
+
     def slotCollectorMsgShow(self, msg, error):
         """
             emitted from collector view, show message label instead of push button
@@ -912,14 +912,14 @@ class MainWindow(QMainWindow):
         self.tabs["collector"]["m"].setFixedHeight(self.tabs["collector"]["b"].height())
         self.tabs["collector"]["m"].show()
         self.tabs["collector"]["b"].hide()
-    
+
     def slotCollectorMsgHide(self):
         """
             emitted from collector view, show push button
         """
         self.tabs["collector"]["m"].hide()
         self.tabs["collector"]["b"].show()
-    
+
     def slotAdvSelectShow(self):
         """
             triggered from collector and queue context menues
@@ -930,7 +930,7 @@ class MainWindow(QMainWindow):
             self.advselectframeQueueIsVisible = True
         else:
             self.advselectframeCollectorIsVisible = True
-    
+
     def slotAdvSelectHide(self):
         """
             triggered from collector and queue context menues
@@ -941,35 +941,35 @@ class MainWindow(QMainWindow):
             self.advselectframeQueueIsVisible = False
         else:
             self.advselectframeCollectorIsVisible = False
-    
+
     def slotAdvSelectSelectButtonClicked(self):
         """
             triggered from advanced link/package select box
         """
         queue = True if self.tabw.currentIndex() == 1 else False
         self.emit(SIGNAL("advancedSelect"), queue, False)
-    
+
     def slotAdvSelectDeselectButtonClicked(self):
         """
             triggered from advanced link/package select box
         """
         queue = True if self.tabw.currentIndex() == 1 else False
         self.emit(SIGNAL("advancedSelect"), queue, True)
-    
+
     def slotRemovePackageDupes(self):
         """
             remove duplicate packages
             let main to the stuff
         """
         self.emit(SIGNAL("removePackageDupes"))
-    
+
     def slotRemoveLinkDupes(self):
         """
             remove duplicate links
             let main to the stuff
         """
         self.emit(SIGNAL("removeLinkDupes"))
-    
+
     def slotToolbarVisibilityChanged(self, visible):
         """
             set the toolbar checkbox in view-menu (mainmenu)
@@ -977,14 +977,14 @@ class MainWindow(QMainWindow):
         self.mactions["showtoolbar"].setChecked(visible)
         self.mactions["showspeedlimit"].setEnabled(visible) # disable/greyout menu entry
         self.mactions["showmaxpadls"].setEnabled(visible)   # disable/greyout menu entry
-    
+
     def slotToggleToolbar(self, checked):
         """
             toggle from view-menu (mainmenu)
             show/hide toolbar
         """
         self.toolbar.setVisible(checked)
-    
+
     def slotToggleSpeedLimitVisibility(self, checked):
         """
             toggle from view-menu (mainmenu)
@@ -995,7 +995,7 @@ class MainWindow(QMainWindow):
         self.actions["speedlimit_enabled"].setVisible(checked)
         self.actions["speedlimit_rate"].setEnabled(False)
         self.actions["speedlimit_rate"].setVisible(checked)
-    
+
     def slotToggleMaxPaDlsVisibility(self, checked):
         """
             toggle from view-menu (mainmenu)
@@ -1006,7 +1006,7 @@ class MainWindow(QMainWindow):
         self.actions["maxparalleldownloads_label"].setVisible(checked)
         self.actions["maxparalleldownloads_value"].setEnabled(False)
         self.actions["maxparalleldownloads_value"].setVisible(checked)
-    
+
     def slotReload(self):
         """
             from view-menu (mainmenu)
@@ -1014,67 +1014,67 @@ class MainWindow(QMainWindow):
         """
         self.emit(SIGNAL("reloadQueue"))
         self.emit(SIGNAL("reloadCollector"))
-    
+
     def slotShowCaptcha(self):
         """
             from view-menu (mainmenu)
             show captcha
         """
         self.emit(SIGNAL("showCaptcha"))
-    
+
     def slotStatusStart(self):
         """
             run button (toolbar)
         """
         self.emit(SIGNAL("setDownloadStatus"), True)
-    
+
     def slotStatusPause(self):
         """
             pause button (toolbar)
         """
         self.emit(SIGNAL("setDownloadStatus"), False)
-    
+
     def slotStatusStop(self):
         """
             stop button (toolbar)
         """
         self.emit(SIGNAL("stopAllDownloads"))
-    
+
     def slotRestartFailed(self):
         """
             restart failed button (toolbar)
             let main to the stuff
         """
         self.emit(SIGNAL("restartFailed"))
-    
+
     def slotRemoveFinished(self):
         """
             remove finished button (toolbar)
             let main to the stuff
         """
         self.emit(SIGNAL("deleteFinished"))
-    
+
     def slotAdd(self):
         """
             add button (toolbar)
             show context menu
         """
         self.addMenu.exec_(QCursor.pos())
-    
+
     def slotShowAddPackage(self):
         """
             action from add-menu
             show new-package dock
         """
         self.emit(SIGNAL("showAddPackage"))
-    
+
     def slotShowAddLinks(self):
         """
             action from add-menu
             show new-links dock
         """
         self.emit(SIGNAL("showAddLinks"))
-    
+
     def slotClipboard(self):
         """
             clipboard watcher button (toolbar)
@@ -1082,53 +1082,53 @@ class MainWindow(QMainWindow):
         """
         self.actions["clipboard"].setChecked(not self.actions["clipboard"].isChecked())
         self.clipboardMenu.exec_(QCursor.pos())
-    
+
     def slotClipboardQueueToggled(self, status):
         if status:
             self.actions["clipboard_collector"].setChecked(False)
             self.actions["clipboard_packDock"].setChecked(False)
         self.actions["clipboard"].setChecked(status)
-    
+
     def slotClipboardCollectorToggled(self, status):
         if status:
             self.actions["clipboard_queue"].setChecked(False)
             self.actions["clipboard_packDock"].setChecked(False)
         self.actions["clipboard"].setChecked(status)
-    
+
     def slotClipboardPackDockToggled(self, status):
         if status:
             self.actions["clipboard_queue"].setChecked(False)
             self.actions["clipboard_collector"].setChecked(False)
         self.actions["clipboard"].setChecked(status)
-    
+
     def slotShowConnector(self):
         """
             connection manager action triggered
             let main to the stuff
         """
         self.emit(SIGNAL("connector"))
-    
+
     def slotShowCorePermissions(self):
         """
             core permissions action triggered
             let main to the stuff
         """
         self.emit(SIGNAL("showCorePermissions"))
-    
+
     def slotQuitCore(self):
         """
             quit core action triggered
             let main to the stuff
         """
         self.emit(SIGNAL("quitCore"))
-    
+
     def slotRestartCore(self):
         """
             restart core action triggered
             let main to the stuff
         """
         self.emit(SIGNAL("restartCore"))
-    
+
     def slotParseUri(self, caller, text):
         """
             URI parser
@@ -1142,21 +1142,21 @@ class MainWindow(QMainWindow):
             self.newPackDock.parseUriResult(result)
         elif caller == "linkdock":
             self.newLinkDock.parseUriResult(result)
-    
+
     def slotAddPackage(self, name, links, queue, password=None):
         """
             new package
             let main to the stuff
         """
         self.emit(SIGNAL("addPackage"), name, links, queue, password)
-        
+
     def slotAddLinksToPackage(self, links, queue):
         """
             adds links to currently selected package
             let main to the stuff
         """
         self.emit(SIGNAL("addLinksToPackage"), links, queue)
-    
+
     def slotShowAddContainer(self):
         """
             action from add-menu
@@ -1175,14 +1175,14 @@ class MainWindow(QMainWindow):
             self.emit(SIGNAL("addContainer"), unicode(name))
         if not fileNames.isEmpty():
             self.lastAddContainerDir = unicode(dirname(unicode(name)))
-    
+
     def slotPushPackagesToQueue(self):
         """
             push selected collector packages to queue
             let main do it
         """
         self.emit(SIGNAL("pushPackagesToQueue"))
-    
+
     def slotQueueContextMenu(self, pos):
         """
             custom context menu in queue view requested
@@ -1203,7 +1203,7 @@ class MainWindow(QMainWindow):
         self.queueContext.buttons["sort_links"]        .setEnabled(self.corePermissions["MODIFY"] and packsCnt == 1                   )
         self.activeMenu = self.queueContext
         self.queueContext.exec_(menuPos)
-    
+
     def slotCollectorContextMenu(self, pos):
         """
             custom context menu in package collector view requested
@@ -1224,121 +1224,121 @@ class MainWindow(QMainWindow):
         self.collectorContext.buttons["sort_links"]        .setEnabled(self.corePermissions["MODIFY"] and packsCnt == 1                   )
         self.activeMenu = self.collectorContext
         self.collectorContext.exec_(menuPos)
-    
+
     def slotRestartDownloads(self):
         """
             restart download action is triggered
         """
         self.emit(SIGNAL("restartDownloads"), self.activeMenu == self.queueContext)
-    
+
     def slotRemoveDownloads(self):
         """
             remove download action is triggered
         """
         self.emit(SIGNAL("removeDownloads"), self.activeMenu == self.queueContext)
-    
+
     def slotSpeedLimitStatus(self, status):
         """
             speed limit enable/disable checkbox (toolbar)
         """
         self.emit(SIGNAL("toolbarSpeedLimitEdited"))
-    
+
     def slotSpeedLimitRate(self):
         """
             speed limit rate spinbox (toolbar)
         """
         self.toolbar_speedLimit_rate.lineEdit().deselect() # deselect any selected text
         self.emit(SIGNAL("toolbarSpeedLimitEdited"))
-    
+
     def slotMaxParallelDownloadsValue(self):
         """
             max parallel downloads spinbox (toolbar)
         """
         self.toolbar_maxParallelDownloads_value.lineEdit().deselect() # deselect any selected text
         self.emit(SIGNAL("toolbarMaxParallelDownloadsEdited"))
-    
+
     def slotCaptchaStatusButton(self):
         """
             captcha status button (toolbar)
         """
         self.emit(SIGNAL("captchaStatusButton"))
-    
+
     def slotEditPackages(self):
         """
             popup the package edit dialog
         """
         self.emit(SIGNAL("editPackages"), self.activeMenu == self.queueContext)
-    
+
     def slotPullOutPackages(self):
         """
             pull selected packages out of the queue
             let main do it
         """
         self.emit(SIGNAL("pullOutPackages"))
-    
+
     def slotAbortDownloads(self):
         """
             abort selected downloads
             let main do it
         """
         self.emit(SIGNAL("abortDownloads"), self.activeMenu == self.queueContext)
-    
+
     def slotSelectAllPackages(self):
         """
             select all packages
             let main to the stuff
         """
         self.emit(SIGNAL("selectAllPackages"))
-    
+
     def slotDeselectAllPackages(self):
         """
             deselect all packages
             let main to the stuff
         """
         self.emit(SIGNAL("deselectAllPackages"))
-    
+
     def slotSelectAll(self):
         """
             select all items
             let main to the stuff
         """
         self.emit(SIGNAL("selectAll"))
-    
+
     def slotDeselectAll(self):
         """
             deselect all items
             let main to the stuff
         """
         self.emit(SIGNAL("deselectAll"))
-    
+
     def slotSortPackages(self):
         """
             sort packages
             let main to the stuff
         """
         self.emit(SIGNAL("sortPackages"))
-    
+
     def slotSortLinks(self):
         """
             sort links
             let main to the stuff
         """
         self.emit(SIGNAL("sortLinks"))
-    
+
     def slotExpandAll(self):
         """
             expand all tree view items
             let main to the stuff
         """
         self.emit(SIGNAL("expandAll"))
-    
+
     def slotCollapseAll(self):
         """
             collapse all tree view items
             let main to the stuff
         """
         self.emit(SIGNAL("collapseAll"))
-    
+
     def slotTabChanged(self, index):
         # currentIndex
         if index == 3:
@@ -1362,15 +1362,15 @@ class MainWindow(QMainWindow):
             self.advselectframe.setVisible(self.advselectframeCollectorIsVisible)
         else:
             self.advselectframe.hide()
-    
+
     def slotNewAccount(self):
         if not self.corePermissions["ACCOUNTS"]:
             return
-        
+
         types = self.connector.proxy.getAccountTypes()
         types = sorted(types, key=lambda p: p)
         self.accountEdit = AccountEdit.newAccount(self, types)
-        
+
         #TODO make more easy n1, n2, n3
         def save(data):
             if data["password"]:
@@ -1379,7 +1379,7 @@ class MainWindow(QMainWindow):
                 n2 = data["login"]
                 n3 = data["password"]
                 self.connector.proxy.updateAccount(n1, n2, n3, None)
-        
+
         self.accountEdit.connect(self.accountEdit, SIGNAL("done"), save)
         self.tabw.setCurrentIndex(3)
         self.accountEdit.exec_()
@@ -1387,18 +1387,18 @@ class MainWindow(QMainWindow):
     def slotEditAccount(self):
         if not self.corePermissions["ACCOUNTS"]:
             return
-        
+
         types = self.connector.proxy.getAccountTypes()
         types = sorted(types, key=lambda p: p)
-        
+
         data = self.tabs["accounts"]["view"].model.getSelectedIndexes()
         if len(data) < 1:
             return
-        
+
         data = data[0].internalPointer()
-        
+
         self.accountEdit = AccountEdit.editAccount(self, types, data)
-        
+
         #TODO make more easy n1, n2, n3
         #TODO reload accounts tab after insert of edit account
         #TODO if account does not exist give error
@@ -1408,22 +1408,22 @@ class MainWindow(QMainWindow):
             n2 = data["login"]
             n3 = data["password"]
             self.connector.proxy.updateAccount(n1, n2, n3, None)
-        
+
         self.accountEdit.connect(self.accountEdit, SIGNAL("done"), save)
         self.accountEdit.exec_()
-    
+
     def slotRemoveAccount(self):
         if not self.corePermissions["ACCOUNTS"]:
             return
-        
+
         data = self.tabs["accounts"]["view"].model.getSelectedIndexes()
         if len(data) < 1:
             return
-            
+
         data = data[0].internalPointer()
-        
+
         self.connector.proxy.removeAccount(data.type, data.login)
-    
+
     def slotAccountContextMenu(self, pos):
         menuPos = QCursor.pos()
         menuPos.setX(menuPos.x() + 2)
@@ -1445,7 +1445,7 @@ class MainWindow(QMainWindow):
             self.accountContext.buttons["edit"].setEnabled(False)
             self.accountContext.buttons["remove"].setEnabled(False)
         self.accountContext.exec_(menuPos)
-    
+
     def slotSetupPluginsMenu(self):
         """
             create the plugins menu entries
@@ -1454,14 +1454,14 @@ class MainWindow(QMainWindow):
             self.pmactions[name].triggered.disconnect()
         self.pmactions = {}
         self.menus["plugins"].clear()
-        
+
         for name in self.tabs["settings"]["w"].menuPlugins:
             self.pmactions[name] = QAction(name, self.menus["plugins"])
             self.menus["plugins"].addAction(self.pmactions[name])
             self.pmactions[name].triggered.connect(lambda checked, name=name: self.slotPluginsMenu(name))
         if not self.pmactions:
             self.menus["plugins"].addAction(_("no plugins added")).setEnabled(False)
-    
+
     def slotPluginsMenu(self, name):
         """
             a plugins menu entry was clicked
@@ -1469,47 +1469,47 @@ class MainWindow(QMainWindow):
         """
         self.tabw.setCurrentIndex(5)                                            # Server Settings Tab
         self.tabs["settings"]["w"].tab.setCurrentIndex(1)                       # Plugins Tab
-        
+
         index = self.tabs["settings"]["w"].pluginsComboBox.findText(name)
         if index != -1:
             self.tabs["settings"]["w"].pluginsComboBox.setCurrentIndex(index)   # ComboBox
             self.tabs["settings"]["w"].slotPluginsComboBoxActivated(index)      # Page
         else:
             self.emit(SIGNAL("menuPluginNotFound"), name)
-    
+
     def slotShowLoggingOptions(self):
         self.emit(SIGNAL("showLoggingOptions"))
-    
+
     def slotShowClickNLoadForwarderOptions(self):
         self.emit(SIGNAL("showClickNLoadForwarderOptions"))
-    
+
     def slotShowAutomaticReloadingOptions(self):
         self.emit(SIGNAL("showAutomaticReloadingOptions"))
-    
+
     def slotShowCaptchaOptions(self):
         self.emit(SIGNAL("showCaptchaOptions"))
-    
+
     def slotShowIconThemeOptions(self):
         self.emit(SIGNAL("showIconThemeOptions"))
-    
+
     def slotShowFontOptions(self):
         self.emit(SIGNAL("showFontOptions"))
-    
+
     def slotShowColorFixOptions(self):
         self.emit(SIGNAL("showColorFixOptions"))
-    
+
     def slotShowNotificationOptions(self):
         self.emit(SIGNAL("showNotificationOptions"))
-    
+
     def slotShowTrayOptions(self):
         self.emit(SIGNAL("showTrayOptions"))
-    
+
     def slotShowWhatsThisOptions(self):
         self.emit(SIGNAL("showWhatsThisOptions"))
-    
+
     def slotShowOtherOptions(self):
         self.emit(SIGNAL("showOtherOptions"))
-    
+
     def slotShowLanguageOptions(self):
         self.emit(SIGNAL("showLanguageOptions"))
 
@@ -1521,11 +1521,11 @@ class SpinBox(QSpinBox):
     def __init__(self):
         QSpinBox.__init__(self)
         self.log = logging.getLogger("guilog")
-    
+
     def focusInEvent(self, event):
         self.lastValue = self.value()
         QAbstractSpinBox.focusInEvent(self, event)
-    
+
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Escape:
             self.setValue(self.lastValue)
@@ -1540,13 +1540,13 @@ class AdvancedSelect(QWidget):
         STRING   = -1
         WILDCARD = -1
         REGEXP   = -1
-    
+
     def __init__(self, parent=None, flags=Qt.Widget):
         QWidget.__init__(self, parent, flags)
         self.log = logging.getLogger("guilog")
-        
+
         self.modeIdx = self.MODE_IDX()
-        
+
         self.patternEditLbl = QLabel()
         self.patternEditLbl.setText(_("Name:"))
         self.patternEdit = QComboBox()
@@ -1569,12 +1569,12 @@ class AdvancedSelect(QWidget):
         self.modeCmb.addItem(_("Wildcard"))     ;self.modeIdx.WILDCARD = 1
         self.modeCmb.addItem(_("RegExp"))       ;self.modeIdx.REGEXP   = 2
         self.hideBtn = QPushButton(_("Hide"))
-        
+
         hbox1 = QHBoxLayout()
         hbox1.addWidget(self.patternEditLbl)
         hbox1.addWidget(self.patternEdit)
         hbox1.addWidget(self.clearBtn)
-        
+
         hbox2 = QHBoxLayout()
         hbox2.addWidget(self.modeCmb)
         hbox2.addWidget(self.caseCb)
@@ -1584,16 +1584,16 @@ class AdvancedSelect(QWidget):
         hbox2.addWidget(self.linksCb)
         hbox2.addStretch(1)
         hbox2.addWidget(self.hideBtn)
-        
+
         vbox = QVBoxLayout()
         vbox.addLayout(hbox1)
         vbox.addLayout(hbox2)
         self.setLayout(vbox)
-        
+
         self.connect(self.clearBtn, SIGNAL("clicked()"), self.patternEdit.clearEditText)
         self.connect(self.selectBtn, SIGNAL("clicked()"), self.addToHistory)
         self.connect(self.deselectBtn, SIGNAL("clicked()"), self.addToHistory)
-    
+
     def addToHistory(self):
         text = self.patternEdit.currentText()
         if not text.isEmpty():
