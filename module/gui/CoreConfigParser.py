@@ -17,7 +17,6 @@ class ConfigParser:
         """Constructor"""
         self.log = logging.getLogger("guilog")
         self.configdir = configdir
-        
         self.config = {}
         
         if self.checkVersion():
@@ -36,7 +35,7 @@ class ConfigParser:
         if int(v) < CONF_VERSION:
             return False
         
-        return True    
+        return True
         
     #----------------------------------------------------------------------
     def readConfig(self):
@@ -52,7 +51,7 @@ class ConfigParser:
         f = open(config)
         
         config = f.read()
-
+        
         config = config.split("\n")[1:]
         
         conf = {}
@@ -70,14 +69,14 @@ class ConfigParser:
             else:
                 line = line[2]
             
-            line = line.strip()            
+            line = line.strip()
             
             try:
             
                 if line == "":
                     continue
                 elif line.endswith(":"):
-                    section, none, desc = line[:-1].partition('-')
+                    section, dummy, desc = line[:-1].partition('-')
                     section = section.strip()
                     desc = desc.replace('"', "").strip()
                     conf[section] = { "desc" : desc }
@@ -93,27 +92,27 @@ class ConfigParser:
                         if not listmode:
                             conf[section][option] = { "desc" : desc,
                                                       "type" : typ,
-                                                      "value" : value} 
+                                                      "value" : value}
                         
                         
                     else:
-                        content, none, value = line.partition("=")
+                        content, dummy, value = line.partition("=")
                         
-                        content, none, desc = content.partition(":")
+                        content, dummy, desc = content.partition(":")
                         
                         desc = desc.replace('"', "").strip()
-    
+                        
                         typ, option = content.split()
-                                                
+                        
                         value = value.strip()
                         
                         if value.startswith("["):
-                            if value.endswith("]"):                            
+                            if value.endswith("]"):
                                 listmode = False
                                 value = value[:-1]
                             else:
                                 listmode = True
-                          
+                        
                             value = [self.cast(typ, x.strip()) for x in value[1:].split(",") if x]
                         else:
                             value = self.cast(typ, value)
@@ -123,17 +122,18 @@ class ConfigParser:
                                                       "type" : typ,
                                                       "value" : value}
                 
-            except:
+            except Exception:
                 pass
                     
-                        
+                    
         f.close()
         return conf
         
     #----------------------------------------------------------------------
+    @classmethod
     def cast(self, typ, value):
         """cast value to given format"""
-        if type(value) not in (str, unicode):
+        if not isinstance(value, (str, unicode)):
             return value
         
         if typ == "int":

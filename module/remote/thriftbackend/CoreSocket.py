@@ -30,7 +30,7 @@ class SecureSocketConnection:
     def accept(self):
         connection, address = self.__dict__["connection"].accept()
         return SecureSocketConnection(connection), address
-
+    
     def send(self, buff):
         start = time.time()
         while True:
@@ -41,7 +41,7 @@ class SecureSocketConnection:
             if time.time() - start > self.ssl_timeout:
                 #print "SSL connection timed out for peer: %s:%d (send)" % self.__dict__["connection"].getpeername()
                 return ''
-
+    
     def recv(self, buff):
         start = time.time()
         while True:

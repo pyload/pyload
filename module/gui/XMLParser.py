@@ -51,6 +51,7 @@ class XMLParser():
         self.mutex.unlock()
         return content
     
+    @classmethod
     def parseNode(self, node, ret_type="list"):
         if ret_type == "dict":
             childNodes = {}

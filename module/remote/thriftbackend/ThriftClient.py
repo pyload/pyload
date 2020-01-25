@@ -58,9 +58,9 @@ class ThriftClient:
                 print_exc()
                 raise NoConnection
 
-        if ((errorException and e.args and e.args[0] == 104) or     # linux client, linux server
-            eofException or                                         # mixed linux/windows client/server
-            (errorException and e.args and e.args[0] == 10054)):    # windows client, windows server
+        if ((errorException and e.args and e.args[0] == 104) or         # linux client, linux server
+                eofException or                                         # mixed linux/windows client/server
+                (errorException and e.args and e.args[0] == 10054)):    # windows client, windows server
             # probably wants ssl
             try:
                 self.ssl = True
