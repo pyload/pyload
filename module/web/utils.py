@@ -16,11 +16,10 @@
 
     @author: RaNaN
 """
-from bottle import request, HTTPError, redirect, ServerAdapter
+from bottle import HTTPError, ServerAdapter, redirect, request, response
+from module.Api import PERMS, ROLE, has_permission
+from webinterface import PREFIX, PYLOAD, TEMPLATE, env
 
-from webinterface import env, TEMPLATE, PREFIX
-
-from module.Api import has_permission, PERMS, ROLE
 
 def render_to_response(name, args={}, proc=[]):
     for p in proc:
@@ -112,10 +111,23 @@ def login_required(perm=None):
 
                 return func(*args, **kwargs)
             else:
-                if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                    return HTTPError(403, "Forbidden")
+                if PYLOAD.getConfigValue("webinterface", "basicauth") == "True":
+                    user, password = request.auth or (None, None)
+                    if user is None:
+                        response.headers['WWW-Authenticate'] = 'Basic realm="pyLoad"'
+                        return HTTPError(401, "Access denied")
+                    else:
+                        info = PYLOAD.checkAuth(user, password)
+                        if not info:
+                            pass
+                        else:
+                            set_session(request, info)
+                            return func(*args, **kwargs)
                 else:
-                    return redirect(PREFIX + "/login")
+                    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                        return HTTPError(403, "Forbidden")
+                    else:
+                        return redirect(PREFIX + "/login")
 
         return _view
 
