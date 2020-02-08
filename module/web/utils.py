@@ -119,7 +119,7 @@ def login_required(perm=None):
                     else:
                         info = PYLOAD.checkAuth(user, password)
                         if not info:
-                            pass
+                            return HTTPError(403, "Forbidden")
                         else:
                             set_session(request, info)
                             return func(*args, **kwargs)
