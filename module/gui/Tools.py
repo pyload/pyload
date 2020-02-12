@@ -2,7 +2,7 @@
 
 from PyQt4.QtCore import QByteArray, QObject, Qt, QTimer, SIGNAL
 from PyQt4.QtGui import (QApplication, QColor, QDialog, QDialogButtonBox, QFrame, QGridLayout, QHBoxLayout, QIcon, QLabel, QLineEdit,
-                         QPalette, QPixmap, QPushButton, QSpacerItem, QStyle, QTextEdit, QVBoxLayout, QWhatsThis)
+                         QPalette, QPixmap, QPlainTextEdit, QPushButton, QSpacerItem, QStyle, QTextCursor, QTextEdit, QVBoxLayout, QWhatsThis)
 
 from os.path import join
 from bisect import bisect_left, bisect_right
@@ -78,6 +78,36 @@ class LineView(QLineEdit):
         self.connect(self, SIGNAL("selectionChanged()"), self.deselect)
         # disable context menu
         self.setContextMenuPolicy(Qt.NoContextMenu)
+
+class PlainTextEdit(QPlainTextEdit):
+    def __init__(self):
+        QPlainTextEdit.__init__(self)
+        self.setMinimumHeight(30)
+        self.append = True
+
+    def slotAppendToggled(self, status):
+        self.append = status
+
+    def addText(self, text):
+        cursor = self.textCursor()
+        cursor.movePosition(QTextCursor.End, QTextCursor.MoveAnchor)
+        self.setTextCursor(cursor)
+        lineLength = cursor.block().length() - 1
+        if lineLength > 0:
+            self.insertPlainText("\n")
+        self.insertPlainText(text)
+
+    def insertFromMimeData(self, source):
+        cursor = self.textCursor()
+        if self.append:
+            cursor.movePosition(QTextCursor.End, QTextCursor.MoveAnchor)
+            self.setTextCursor(cursor)
+            lineLength = cursor.block().length() - 1
+            if lineLength > 0:
+                self.insertPlainText("\n")
+        QPlainTextEdit.insertFromMimeData(self, source)
+        if self.append:
+            self.insertPlainText("\n")
 
 class MessageBox(QDialog):
     """

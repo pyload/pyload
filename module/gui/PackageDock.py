@@ -17,12 +17,12 @@
 """
 
 from PyQt4.QtCore import Qt, QTimer, SIGNAL
-from PyQt4.QtGui import (QCheckBox, QColor, QDockWidget, QGridLayout, QHBoxLayout, QIcon, QLabel, QLineEdit, QPlainTextEdit, QPushButton,
-                         QRadioButton, QSizePolicy, QTextCursor, QVBoxLayout, QWidget)
+from PyQt4.QtGui import (QCheckBox, QColor, QDockWidget, QGridLayout, QHBoxLayout, QIcon, QLabel, QLineEdit, QPushButton,
+                         QRadioButton, QSizePolicy, QVBoxLayout, QWidget)
 
 import logging
 from os.path import join
-from module.gui.Tools import whatsThisFormat
+from module.gui.Tools import whatsThisFormat, PlainTextEdit
 
 class NewPackageDock(QDockWidget):
     def __init__(self, appIconSet):
@@ -241,33 +241,3 @@ class NewPackageWindow(QWidget):
     def slotMsgHide(self):
         self.msg.hide()
         self.save.show()
-
-class PlainTextEdit(QPlainTextEdit):
-    def __init__(self):
-        QPlainTextEdit.__init__(self)
-        self.setMinimumHeight(30)
-        self.append = True
-
-    def slotAppendToggled(self, status):
-        self.append = status
-
-    def addText(self, text):
-        cursor = self.textCursor()
-        cursor.movePosition(QTextCursor.End, QTextCursor.MoveAnchor)
-        self.setTextCursor(cursor)
-        lineLength = cursor.block().length() - 1
-        if lineLength > 0:
-            self.insertPlainText("\n")
-        self.insertPlainText(text)
-
-    def insertFromMimeData(self, source):
-        cursor = self.textCursor()
-        if self.append:
-            cursor.movePosition(QTextCursor.End, QTextCursor.MoveAnchor)
-            self.setTextCursor(cursor)
-            lineLength = cursor.block().length() - 1
-            if lineLength > 0:
-                self.insertPlainText("\n")
-        QPlainTextEdit.insertFromMimeData(self, source)
-        if self.append:
-            self.insertPlainText("\n")
