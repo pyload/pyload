@@ -20,7 +20,7 @@ import logging
 import re
 
 from PyQt4.QtCore import QEvent, QRect, QSize, Qt, SIGNAL
-from PyQt4.QtGui import (QAction, QActionGroup, QCheckBox, QColor, QComboBox, QCursor, QFileDialog, QFrame, QGridLayout,
+from PyQt4.QtGui import (QAction, QActionGroup, QCheckBox, QColor, QCursor, QFileDialog, QFrame, QGridLayout,
                          QHBoxLayout, QIcon, QLabel, QMainWindow, QMenu, QPushButton, QSizePolicy, QStyle,
                          QTabWidget, QTextEdit, QVBoxLayout, QWhatsThis, QWidget)
 
@@ -33,6 +33,7 @@ from module.gui.CaptchaDialog import CaptchaDialog
 from module.gui.SettingsWidget import SettingsWidget
 from module.gui.Collector import CollectorView
 from module.gui.Queue import QueueView
+from module.gui.AdvancedSelect import AdvancedSelect
 from module.gui.Overview import OverviewView
 from module.gui.Accounts import AccountView
 from module.gui.AccountEdit import AccountEdit
@@ -1512,72 +1513,5 @@ class MainWindow(QMainWindow):
 
     def slotShowLanguageOptions(self):
         self.emit(SIGNAL("showLanguageOptions"))
-
-class AdvancedSelect(QWidget):
-    # enum for QRegExp pattern syntax
-    class MODE_IDX(object):
-        STRING   = -1
-        WILDCARD = -1
-        REGEXP   = -1
-
-    def __init__(self, parent=None, flags=Qt.Widget):
-        QWidget.__init__(self, parent, flags)
-        self.log = logging.getLogger("guilog")
-
-        self.modeIdx = self.MODE_IDX()
-
-        self.patternEditLbl = QLabel()
-        self.patternEditLbl.setText(_("Name:"))
-        self.patternEdit = QComboBox()
-        self.patternEdit.setEditable(True)
-        self.patternEdit.completer().setCaseSensitivity(Qt.CaseSensitive)
-        self.patternEdit.setInsertPolicy(QComboBox.NoInsert)
-        self.patternEdit.lineEdit().setPlaceholderText(_("Enter a search pattern"))
-        lsp = self.patternEdit.sizePolicy()
-        lsp.setHorizontalPolicy(QSizePolicy.Expanding)
-        self.patternEdit.setSizePolicy(lsp)
-        self.clearBtn = QPushButton(_("Clear Pattern"))
-        self.selectBtn = QPushButton(_("Select"))
-        self.deselectBtn = QPushButton(_("Deselect"))
-        self.linksCb = QCheckBox(_("Links"))
-        wt = _("Search for links instead of packages.<br>Links are searched in preselected packages or in all packages when there are no packages selected.")
-        self.linksCb.setWhatsThis(whatsThisFormat(self.linksCb.text(), wt))
-        self.caseCb = QCheckBox(_("Match case"))
-        self.modeCmb = QComboBox()
-        self.modeCmb.addItem(_("String"))       ;self.modeIdx.STRING   = 0  # combobox indexes in the order the items are added
-        self.modeCmb.addItem(_("Wildcard"))     ;self.modeIdx.WILDCARD = 1
-        self.modeCmb.addItem(_("RegExp"))       ;self.modeIdx.REGEXP   = 2
-        self.hideBtn = QPushButton(_("Hide"))
-
-        hbox1 = QHBoxLayout()
-        hbox1.addWidget(self.patternEditLbl)
-        hbox1.addWidget(self.patternEdit)
-        hbox1.addWidget(self.clearBtn)
-
-        hbox2 = QHBoxLayout()
-        hbox2.addWidget(self.modeCmb)
-        hbox2.addWidget(self.caseCb)
-        hbox2.addStretch(1)
-        hbox2.addWidget(self.selectBtn)
-        hbox2.addWidget(self.deselectBtn)
-        hbox2.addWidget(self.linksCb)
-        hbox2.addStretch(1)
-        hbox2.addWidget(self.hideBtn)
-
-        vbox = QVBoxLayout()
-        vbox.addLayout(hbox1)
-        vbox.addLayout(hbox2)
-        self.setLayout(vbox)
-
-        self.connect(self.clearBtn, SIGNAL("clicked()"), self.patternEdit.clearEditText)
-        self.connect(self.selectBtn, SIGNAL("clicked()"), self.addToHistory)
-        self.connect(self.deselectBtn, SIGNAL("clicked()"), self.addToHistory)
-
-    def addToHistory(self):
-        text = self.patternEdit.currentText()
-        if not text.isEmpty():
-            if self.patternEdit.findText(text, Qt.MatchFixedString | Qt.MatchCaseSensitive) == -1:
-                self.patternEdit.insertItem(0, text)
-                self.patternEdit.setCurrentIndex(0)
 
 
