@@ -81,7 +81,7 @@ from module.lib.rename_process import renameProcess
 from module.lib.SafeEval import const_eval as literal_eval
 from module.utils import formatSize, formatSpeed
 
-from module.remote.thriftbackend.ThriftClient import Destination, DownloadStatus
+from module.remote.thriftbackend.ThriftClient import Destination, PackageDoesNotExists, ElementType, DownloadStatus
 from module.Api import has_permission, PERMS, ROLE
 
 class main(QObject):
@@ -1212,26 +1212,26 @@ class main(QObject):
         self.msgBoxOk(text, "C")
 
     def debugMsgBoxTest1(self):
-        def msgboxes(line):
+        def msgboxes(line, icon, btnSet):
             l = line + "1"
             self.msgBox(l, icon, btnSet)
             for n in range(1, 5):
                 l += "\n" + line + str(n + 1)
                 self.msgBox(l, icon, btnSet)
-        def tests():
+        def tests(icon, btnSet):
             line = "Line"
-            msgboxes(line)
+            msgboxes(line, icon, btnSet)
             line = "LongXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXLine"
-            msgboxes(line)
+            msgboxes(line, icon, btnSet)
             line = "WrappedXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
             line += "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXLine"
-            msgboxes(line)
+            msgboxes(line, icon, btnSet)
             line = "3xWrappedXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
             line += "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
             line += "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
             line += "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
             line += "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXLine"
-            msgboxes(line)
+            msgboxes(line, icon, btnSet)
         self.msgBox("!", "Q", "OK")
         self.msgBox("!", "I", "OK")
         self.msgBox("!", "W", "OK")
@@ -1239,10 +1239,10 @@ class main(QObject):
         self.msgBox("!", "N", "YES_NO")
         icon = "C"
         btnSet = "OK"
-        tests()
+        tests(icon, btnSet)
         icon = "N"
         btnSet = "YES_NO"
-        tests()
+        tests(icon, btnSet)
 
     def debugMsgBoxTest2(self):
         def dm(n):
@@ -1689,8 +1689,8 @@ class main(QObject):
                     # Workaround os._exit() called when the Core quits.
                     # This is possible because the present Core code calls os._exit() right after calling removeLogger()
                     def removeLogger(self):
-                         Core.removeLogger(self)
-                         thread.exit()
+                        Core.removeLogger(self)
+                        thread.exit()
                     # Workaround Core restart invoked by the UpdateManager plugin
                     def restart(self):
                         if self.internal_core_restart:
@@ -1926,7 +1926,8 @@ class main(QObject):
         self.geoUnmaximized["unmaxed_pos"]  = self.trayState["unmaxed_pos"]
         self.geoUnmaximized["unmaxed_size"] = self.trayState["unmaxed_size"]
         self.geoUnmaximized["maximized"]    = self.trayState["maximized"]
-        self.log.debug4("main.prepareForSaveOptionsAndWindow: save geoUnmaximized to xml:  pos: %s                     size: %s" % (self.geoUnmaximized["unmaxed_pos"], self.geoUnmaximized["unmaxed_size"]))
+        self.log.debug4("main.prepareForSaveOptionsAndWindow: save geoUnmaximized to xml:  pos: %s                     size: %s"
+                        % (self.geoUnmaximized["unmaxed_pos"], self.geoUnmaximized["unmaxed_size"]))
         if not self.mainWindow.captchaDialog.isHidden():
             self.geoOther["captchaDialog"] = self.mainWindow.captchaDialog.geometry()
         else:
@@ -2013,7 +2014,8 @@ class main(QObject):
                 self.mainWindowStateFirstUnmax = state
                 self.mainWindowMaximizedSize = size
 
-    def scheduleMainWindowPaintEventAction(self, pos=None, size=None, raise_=True, activate=True, focus=True, showFromTrayContinue=0, refreshGeo=False, pdGeo=None, plGeo=None, restoreDocks=False):
+    def scheduleMainWindowPaintEventAction(self, pos=None, size=None, raise_=True, activate=True, focus=True,
+                                           showFromTrayContinue=0, refreshGeo=False, pdGeo=None, plGeo=None, restoreDocks=False):
         """
             schedule an action on a main window paintEvent
             pos is of type QPoint and size of type QSize
@@ -2032,7 +2034,9 @@ class main(QObject):
             s = size
             if s is not None:
                 s = "(%s, %s)" % (s.width(), s.height())
-            self.log.debug4("main.scheduleMainWindowPaintEventAction: pos:%s  size:%s  raise:%s  act:%s  foc:%s  cont:%s  refreshGeo:%s  pdGeo:%s  plGeo:%s  restoreDocks:%s" % (p, s, raise_, activate, focus, showFromTrayContinue, refreshGeo, pdGeo, plGeo, restoreDocks))
+            self.log.debug4("main.scheduleMainWindowPaintEventAction: pos:%s  size:%s  raise:%s  act:%s  foc:%s  "
+                            "cont:%s  refreshGeo:%s  pdGeo:%s  plGeo:%s  restoreDocks:%s"
+                            % (p, s, raise_, activate, focus, showFromTrayContinue, refreshGeo, pdGeo, plGeo, restoreDocks))
         a = self.mainWindowPaintEventAction
         a["pos"]                  = pos
         a["size"]                 = size
@@ -2558,38 +2562,41 @@ class main(QObject):
         if event.type == ElementType.File:
             et = "File"
         elif event.type == ElementType.Package:
-           data = None
-           try:
-               data = self.connector.proxy.getPackageData(event.id)   # links, full link infos
-           #   data = self.connector.proxy.getPackageInfo(event.id)   # fids only
-               et = "Package"
-           except PackageDoesNotExists:
-               et = "Package(ne)"
-           if data != None:
-               if data.links != None:
-                   lf += "[links]"
-                   if 0:
-                       for i, link in enumerate(data.links):
-                           if i > 0:
-                               linkstxt += "\n                              "
-                           linkstxt += "                 " + str("{:<9}".format(str("links[" + str(i) + "]"))) + "   fid: " + str("{:<4}".format(str(link.fid))) + "   name: " + str(link.name)
-               if data.fids != None:
-                   lf += "[fids]"
-                   if 0:
-                       for i, fid in enumerate(data.fids):
-                           if i > 0:
-                               fidstxt += "\n                              "
-                           fidstxt += "                 " + str("{:<8}".format(str("fids[" + str(i) + "]"))) + "   fid: " + str("{:<4}".format(str(fid)))
+            data = None
+            try:
+                data = self.connector.proxy.getPackageData(event.id)   # links, full link infos
+            #   data = self.connector.proxy.getPackageInfo(event.id)   # fids only
+                et = "Package"
+            except PackageDoesNotExists:
+                et = "Package(ne)"
+            if data != None:
+                if data.links != None:
+                    lf += "[links]"
+                    if 0:
+                        for i, link in enumerate(data.links):
+                            if i > 0:
+                                linkstxt += "\n                              "
+                            linkstxt += ("                 " + str("{:<9}".format(str("links[" + str(i) + "]"))) + "   fid: " +
+                                         str("{:<4}".format(str(link.fid))) + "   name: " + str(link.name))
+                if data.fids != None:
+                    lf += "[fids]"
+                    if 0:
+                        for i, fid in enumerate(data.fids):
+                            if i > 0:
+                                fidstxt += "\n                              "
+                            fidstxt += "                 " + str("{:<8}".format(str("fids[" + str(i) + "]"))) + "   fid: " + str("{:<4}".format(str(fid)))
         else:
-           et = "<unknown>"
+            et = "<unknown>"
         if event.destination == Destination.Collector:
-            edest = "Destination.Collector+Queue"   # +Queue as reminder for pullEvents: workaround for Api.addFiles() sending reload for collector even when the package is in the queue
+            # +Queue as reminder for pullEvents: workaround for Api.addFiles() sending reload for collector even when the package is in the queue
+            edest = "Destination.Collector+Queue"
         elif event.destination == Destination.Queue:
             edest = "Destination.Queue"
         else:
-           edest = "<unknown>"
-        self.log.debug1(str("main.pullEvents: eventname: " + str("'%s'" % str(event.eventname)) + "   event.id: " + str("{:<6}".format(str("%s" % str(eid)))) + "   event.type: " +
-                       str("{:<11}".format(str(et))) + "   event.destination: " + str("{:<21}".format(str(edest))) + "   " + str("{:<13}".format(str(lf)))))
+            edest = "<unknown>"
+        self.log.debug1(str("main.pullEvents: eventname: " + str("'%s'" % str(event.eventname)) + "   event.id: " +
+                        str("{:<6}".format(str("%s" % str(eid)))) + "   event.type: " + str("{:<11}".format(str(et))) + "   event.destination: " +
+                        str("{:<21}".format(str(edest))) + "   " + str("{:<13}".format(str(lf)))))
         if linkstxt:
             self.log.debug1(str(linkstxt))
         if fidstxt:

@@ -1270,7 +1270,7 @@ class CollectorModel(QAbstractItemModel):
             Returns a list of (id, position) tuples for feeding to api.orderFile or api.orderPackage.
         """
         items = list(unsortedItems)
-        id2SortedItemPos = {id: pos for pos, (dummy, id) in enumerate(sortedItems)}
+        id2SortedItemPos = {id_: pos for pos, (dummy, id_) in enumerate(sortedItems)}
         seq = []
         for i in xrange(len(items)):
             seq.append(id2SortedItemPos[items[i][1]])

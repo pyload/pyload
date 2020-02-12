@@ -263,7 +263,7 @@ class QueueModel(CollectorModel):
         if isinstance(item, Link):
             try:
                 if item.data["status"] == DownloadStatus.Finished:
-					return 100
+                    return 100
                 return int(item.data["downloading"]["percent"])
             except Exception:
                 return 0
@@ -335,7 +335,7 @@ class QueueModel(CollectorModel):
                 item = index.internalPointer()
                 if isinstance(item, Link):
                     if item.data["status"] == DownloadStatus.Finished: #TODO needs change??
-		            #self.getProgress(item, False) == 100:
+                    #self.getProgress(item, False) == 100:
                         return QVariant(formatSize(item.data["size"]))
                     elif self.getProgress(item, False) == 0:
                         try:
