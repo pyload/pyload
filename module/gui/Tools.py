@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from PyQt4.QtCore import QByteArray, QObject, Qt, QTimer, SIGNAL
-from PyQt4.QtGui import (QApplication, QColor, QDialog, QDialogButtonBox, QFrame, QGridLayout, QHBoxLayout, QIcon, QLabel, QLineEdit,
-                         QPalette, QPixmap, QPlainTextEdit, QPushButton, QSpacerItem, QStyle, QTextCursor, QTextEdit, QVBoxLayout, QWhatsThis)
+from PyQt4.QtGui import (QAbstractSpinBox, QApplication, QColor, QDialog, QDialogButtonBox, QFrame, QGridLayout, QHBoxLayout, QIcon,
+                         QLabel, QLineEdit, QPalette, QPixmap, QPlainTextEdit, QPushButton, QSpacerItem, QSpinBox, QStyle,
+                         QTextCursor, QTextEdit, QVBoxLayout, QWhatsThis)
 
 from os.path import join
 from bisect import bisect_left, bisect_right
@@ -108,6 +109,27 @@ class PlainTextEdit(QPlainTextEdit):
         QPlainTextEdit.insertFromMimeData(self, source)
         if self.append:
             self.insertPlainText("\n")
+
+class SpinBox(QSpinBox):
+    """
+        - Cancel edit and lose focus when the ESC key is pressed
+        - Lose focus when the RETURN or the ENTER key is pressed
+    """
+    def __init__(self):
+        QSpinBox.__init__(self)
+        self.log = logging.getLogger("guilog")
+
+    def focusInEvent(self, event):
+        self.lastValue = self.value()
+        QAbstractSpinBox.focusInEvent(self, event)
+
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key_Escape:
+            self.setValue(self.lastValue)
+            self.clearFocus()
+        elif event.key() == Qt.Key_Return or event.key() == Qt.Key_Enter:
+                self.clearFocus()
+        QAbstractSpinBox.keyPressEvent(self, event)
 
 class MessageBox(QDialog):
     """

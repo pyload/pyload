@@ -20,8 +20,8 @@ import logging
 import re
 
 from PyQt4.QtCore import QEvent, QRect, QSize, Qt, SIGNAL
-from PyQt4.QtGui import (QAbstractSpinBox, QAction, QActionGroup, QCheckBox, QColor, QComboBox, QCursor, QFileDialog, QFrame, QGridLayout,
-                         QHBoxLayout, QIcon, QLabel, QMainWindow, QMenu, QPushButton, QSizePolicy, QSpinBox, QStyle,
+from PyQt4.QtGui import (QAction, QActionGroup, QCheckBox, QColor, QComboBox, QCursor, QFileDialog, QFrame, QGridLayout,
+                         QHBoxLayout, QIcon, QLabel, QMainWindow, QMenu, QPushButton, QSizePolicy, QStyle,
                          QTabWidget, QTextEdit, QVBoxLayout, QWhatsThis, QWidget)
 
 from os.path import join, dirname
@@ -36,7 +36,7 @@ from module.gui.Queue import QueueView
 from module.gui.Overview import OverviewView
 from module.gui.Accounts import AccountView
 from module.gui.AccountEdit import AccountEdit
-from module.gui.Tools import whatsThisFormat
+from module.gui.Tools import whatsThisFormat, SpinBox
 
 class MainWindow(QMainWindow):
 
@@ -1512,27 +1512,6 @@ class MainWindow(QMainWindow):
 
     def slotShowLanguageOptions(self):
         self.emit(SIGNAL("showLanguageOptions"))
-
-class SpinBox(QSpinBox):
-    """
-        a spinbox that supports 'escape' key and loses focus when the 'enter' key is pressed
-        for the toolbar speed limit setting
-    """
-    def __init__(self):
-        QSpinBox.__init__(self)
-        self.log = logging.getLogger("guilog")
-
-    def focusInEvent(self, event):
-        self.lastValue = self.value()
-        QAbstractSpinBox.focusInEvent(self, event)
-
-    def keyPressEvent(self, event):
-        if event.key() == Qt.Key_Escape:
-            self.setValue(self.lastValue)
-            self.clearFocus()
-        elif event.key() == Qt.Key_Return or event.key() == Qt.Key_Enter:
-                self.clearFocus()
-        QAbstractSpinBox.keyPressEvent(self, event)
 
 class AdvancedSelect(QWidget):
     # enum for QRegExp pattern syntax
