@@ -9,6 +9,7 @@ from pyload import APPID
 
 class Themes(_Themes):
     def init_app(self, app):
+        Babel(app)
         return super().init_themes(app, app_identifier=APPID)
 
 
