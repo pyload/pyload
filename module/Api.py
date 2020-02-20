@@ -321,7 +321,8 @@ class Api(Iface):
         else:
             folder = ""
 
-        folder = folder.replace("http://", "").replace(":", "").replace("/", "_").replace("\\", "_")
+        folder = folder.replace("http://", "").replace("https://", "").rstrip("/") \
+            .replace(":", "").replace("/", "_").replace("\\", "_")
 
         pid = self.core.files.addPackage(name, folder, dest)
 

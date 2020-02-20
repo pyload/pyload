@@ -10,7 +10,7 @@ from ..internal.misc import json
 class LinkifierCom(MultiAccount):
     __name__ = "LinkifierCom"
     __type__ = "account"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
     __description__ = """Linkifier.com account plugin"""
@@ -45,7 +45,7 @@ class LinkifierCom(MultiAccount):
 
     def grab_info(self, user, password, data):
         json_data = self.api_response("user", user, password)
-        trafficleft = json_data['extraTraffic']
+        trafficleft = json_data['extraTraffic'] * 1024
         validuntil = float(json_data['expirydate']) / 1000
 
         return {'validuntil': validuntil ,

@@ -11,7 +11,7 @@ from module.network.HTTPRequest import BadHeader
 from module.network.RequestFactory import getRequest as get_request
 
 from ..internal.Addon import Addon
-from ..internal.misc import json, threaded
+from ..internal.misc import fs_encode, json, threaded
 
 
 class DeathByCaptchaException(Exception):
@@ -46,7 +46,7 @@ class DeathByCaptchaException(Exception):
 class DeathByCaptcha(Addon):
     __name__ = "DeathByCaptcha"
     __type__ = "hook"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", False),
@@ -133,7 +133,7 @@ class DeathByCaptcha(Addon):
             data = (pycurl.FORM_FILE, captcha)
         else:
             multipart = False
-            with open(captcha, 'rb') as f:
+            with open(fs_encode(captcha), 'rb') as f:
                 data = f.read()
             data = "base64:" + base64.b64encode(data)
 

@@ -7,7 +7,7 @@ from ..internal.MultiAccount import MultiAccount
 class HighWayMe(MultiAccount):
     __name__ = "HighWayMe"
     __type__ = "account"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __status__ = "testing"
 
     __config__ = [("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),
@@ -47,8 +47,7 @@ class HighWayMe(MultiAccount):
             validuntil = float(json_data['user']['premium_bis'])
 
         if 'premium_traffic' in json_data['user'] and json_data['user']['premium_traffic']:
-            # @TODO: Remove `/ 1024` in 0.4.10
-            trafficleft = float(json_data['user']['premium_traffic']) / 1024
+            trafficleft = float(json_data['user']['premium_traffic'])
 
         return {'premium': premium,
                 'validuntil': validuntil,

@@ -8,10 +8,11 @@ import struct
 
 import Crypto.Cipher.AES
 import Crypto.Util.Counter
+
 from module.network.HTTPRequest import BadHeader
 
 from ..internal.Hoster import Hoster
-from ..internal.misc import decode, encode, exists, fsjoin, json
+from ..internal.misc import decode, exists, fs_encode, fsjoin, json
 
 
 ############################ General errors ###################################
@@ -264,7 +265,7 @@ class MegaClient(object):
 class MegaCoNz(Hoster):
     __name__ = "MegaCoNz"
     __type__ = "hoster"
-    __version__ = "0.53"
+    __version__ = "0.54"
     __status__ = "testing"
 
     __pattern__ = r'(https?://(?:www\.)?mega(\.co)?\.nz/|mega:|chrome:.+?)#(?P<TYPE>N|)!(?P<ID>[\w^_]+)!(?P<KEY>[\w\-,=]+)(?:###n=(?P<OWNER>[\w^_]+))?'
@@ -289,12 +290,12 @@ class MegaCoNz(Hoster):
         self.pyfile.setStatus("decrypting")
         self.pyfile.setProgress(0)
 
-        file_crypted = encode(self.last_download)
+        file_crypted = self.last_download
         file_decrypted = file_crypted.rsplit(self.FILE_SUFFIX)[0]
 
         try:
-            f = open(file_crypted, "rb")
-            df = open(file_decrypted, "wb")
+            f = open(fs_encode(file_crypted), "rb")
+            df = open(fs_encode(file_decrypted), "wb")
 
         except IOError, e:
             self.fail(e.message)

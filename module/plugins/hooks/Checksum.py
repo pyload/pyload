@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import with_statement
-from threading import Event
 
 import hashlib
 import os
 import re
 import time
 import zlib
+from threading import Event
 
 from ..internal.Addon import Addon
-from ..internal.misc import encode, format_time, fsjoin, threaded
+from ..internal.misc import format_time, fs_encode, fsjoin, threaded
+
 
 def compute_checksum(local_file, algorithm, progress_notify=None, abort=None):
     file_size = os.stat(local_file).st_size
@@ -22,7 +23,7 @@ def compute_checksum(local_file, algorithm, progress_notify=None, abort=None):
         if algorithm in getattr(hashlib, "algorithms", ("md5", "sha1", "sha224", "sha256", "sha384", "sha512")):
             h = getattr(hashlib, algorithm)()
 
-            with open(local_file, 'rb') as f:
+            with open(fs_encode(local_file), 'rb') as f:
                 for chunk in iter(lambda: f.read(128 * h.block_size), ''):
                     if abort and abort():
                         return False
@@ -39,7 +40,7 @@ def compute_checksum(local_file, algorithm, progress_notify=None, abort=None):
             hf = getattr(zlib, algorithm)
             last = 0
 
-            with open(local_file, 'rb') as f:
+            with open(fs_encode(local_file), 'rb') as f:
                 for chunk in iter(lambda: f.read(8192), ''):
                     if abort and abort():
                         return False
@@ -63,7 +64,7 @@ def compute_checksum(local_file, algorithm, progress_notify=None, abort=None):
 class Checksum(Addon):
     __name__ = "Checksum"
     __type__ = "hook"
-    __version__ = "0.34"
+    __version__ = "0.35"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", False),
@@ -129,9 +130,9 @@ class Checksum(Addon):
         if not pyfile.plugin.last_download:
             self.check_failed(pyfile, None, "No file downloaded")
 
-        local_file = encode(pyfile.plugin.last_download)
+        local_file = fs_encode(pyfile.plugin.last_download)
         # dl_folder  = self.pyload.config.get("general", "download_folder")
-        # local_file = encode(fsjoin(dl_folder, pyfile.package().folder, pyfile.name))
+        # local_file = fsjoin(dl_folder, pyfile.package().folder, pyfile.name)
 
         if not os.path.isfile(local_file):
             self.check_failed(pyfile, None, "File does not exist")
@@ -236,7 +237,7 @@ class Checksum(Addon):
                 if file_type not in self.formats:
                     continue
 
-                hash_file = encode(fsjoin(dl_folder, fdata['name']))
+                hash_file = fsjoin(dl_folder, fdata['name'])
                 if not os.path.isfile(hash_file):
                     self.log_warning(_("File not found"), fdata['name'])
                     continue
@@ -249,7 +250,7 @@ class Checksum(Addon):
                     data = m.groupdict()
                     self.log_debug(fdata['name'], data)
 
-                    local_file = encode(fsjoin(dl_folder, data['NAME']))
+                    local_file = fsjoin(dl_folder, data['NAME'])
                     algorithm = self._methodmap.get(file_type, file_type)
 
                     pyfile = None

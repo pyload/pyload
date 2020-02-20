@@ -10,13 +10,13 @@ import urlparse
 from module.network.HTTPRequest import BadHeader
 
 from ..internal.Addon import Addon
-from ..internal.misc import threaded
+from ..internal.misc import threaded, fs_encode
 
 
 class Captcha9Kw(Addon):
     __name__ = "Captcha9Kw"
     __type__ = "hook"
-    __version__ = "0.39"
+    __version__ = "0.40"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", False),
@@ -69,7 +69,7 @@ class Captcha9Kw(Addon):
 
         else:
             try:
-                with open(task.captchaParams['file'], 'rb') as f:
+                with open(fs_encode(task.captchaParams['file']), 'rb') as f:
                     data = f.read()
 
             except IOError, e:

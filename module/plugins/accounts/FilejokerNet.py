@@ -9,7 +9,7 @@ from ..internal.misc import json
 class FilejokerNet(Account):
     __name__ = "FilejokerNet"
     __type__ = "account"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __status__ = "testing"
 
     __description__ = """Filejoker.net account plugin"""
@@ -29,7 +29,7 @@ class FilejokerNet(Account):
         premium_expire = res.get('usr_premium_expire')
 
         validuntil = time.mktime(time.strptime(premium_expire, "%Y-%m-%d %H:%M:%S")) if premium_expire else -1
-        trafficleft = int(res['traffic_left']) * 1024 if 'traffic_left' in res else None
+        trafficleft = int(res['traffic_left']) * 1024 ** 2 if 'traffic_left' in res else None
         premium = bool(premium_expire)
 
         return {'validuntil': validuntil,

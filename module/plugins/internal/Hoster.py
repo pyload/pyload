@@ -3,14 +3,14 @@
 from __future__ import with_statement
 
 import __builtin__
+import mimetypes
 import os
 import re
 
-import mimetypes
 from module.network.HTTPRequest import BadHeader
 
 from .Base import Base
-from .misc import compute_checksum, encode, exists, fixurl, fsjoin, parse_name, safejoin
+from .misc import compute_checksum, decode, exists, format_size, fs_encode, fsjoin, parse_name, safejoin
 from .Plugin import Fail
 
 # Python 2.5 compatibility hack for property.setter, property.deleter
@@ -33,7 +33,7 @@ if not hasattr(__builtin__.property, "setter"):
 class Hoster(Base):
     __name__ = "Hoster"
     __type__ = "hoster"
-    __version__ = "0.76"
+    __version__ = "0.77"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -51,8 +51,10 @@ class Hoster(Base):
 
     @last_download.setter
     def last_download(self, value):
-        if exists(value):
-            self._last_download = value or ""
+        if isinstance(value, basestring) and exists(value):
+            self._last_download = value
+        else:
+            self._last_download = ""
 
     def init_base(self):
         #: Enable simultaneous processing of multiple downloads
@@ -126,7 +128,7 @@ class Hoster(Base):
                     self.restart(premium=False)
 
                 else:
-                    raise Fail(encode(e))
+                    raise Fail(decode(e))
 
         finally:
             self._finalize()
@@ -135,8 +137,7 @@ class Hoster(Base):
     def _finalize(self):
         pypack = self.pyfile.package()
 
-        self.pyload.hookManager.dispatchEvent(
-            "download_processed", self.pyfile)
+        self.pyload.hookManager.dispatchEvent("download_processed", self.pyfile)
 
         try:
             unfinished = any(fdata.get('status') in (3, 7) for fid, fdata in pypack.getChildren().items()
@@ -210,10 +211,16 @@ class Hoster(Base):
 
             return resource
 
-    def _download(self, url, filename, get, post, ref,
-                  cookies, disposition, resume, chunks):
+    def _on_notification(self, notification):
+        if 'progress' in notification:
+            self.pyfile.setProgress(notification['progress'])
+
+        if 'disposition' in notification:
+            self.pyfile.setName(notification['disposition'])
+
+    def _download(self, url, filename, get, post, ref, cookies, disposition, resume, chunks):
         # @TODO: Safe-filename check in HTTPDownload in 0.4.10
-        file = encode(filename)
+        file = fs_encode(filename)
         resume = self.resume_download if resume is None else bool(resume)
 
         dl_chunks = self.pyload.config.get('download', 'chunks')
@@ -225,13 +232,19 @@ class Hoster(Base):
             chunks = min(dl_chunks, chunk_limit)
 
         try:
-            try:
+            #@TODO: Cleanup in v0.4.10
+            if hasattr(self.pyfile, 'setName'):
                 newname = self.req.httpDownload(url, file, size=self.pyfile.size, get=get, post=post,
                                                 ref=ref, cookies=cookies, chunks=chunks, resume=resume,
-                                                progressNotify=self.pyfile.setProgress, disposition=disposition)
-            except TypeError:
-                newname = self.req.httpDownload(url, file, get, post, ref, cookies, chunks, resume,
-                                                self.pyfile.setProgress, disposition)
+                                                status_notify=self._on_notification, disposition=disposition)
+            else:
+                try:
+                    newname = self.req.httpDownload(url, file, size=self.pyfile.size, get=get, post=post,
+                                                    ref=ref, cookies=cookies, chunks=chunks, resume=resume,
+                                                    progressNotify=self.pyfile.setProgress, disposition=disposition)
+                except TypeError:
+                    newname = self.req.httpDownload(url, file, get, post, ref, cookies, chunks, resume,
+                                                    self.pyfile.setProgress, disposition)
 
         except IOError, e:
             self.log_error(e.message)
@@ -276,21 +289,18 @@ class Hoster(Base):
                            *["%s=%s" % (key, value) for key, value in locals().items()
                              if key not in ("self", "url", "_[1]")])
 
-        dl_url = self.fixurl(url)
-        dl_basename = parse_name(self.pyfile.name)
-
-        self.pyfile.name = dl_basename
-
         self.check_duplicates()
 
         self.pyfile.setStatus("downloading")
 
+        dl_url = self.fixurl(url)
+
         dl_folder = self.pyload.config.get('general', 'download_folder')
         dl_dirname = safejoin(dl_folder, self.pyfile.package().folder)
-        dl_filename = safejoin(dl_dirname, dl_basename)
+        dl_filename = safejoin(dl_dirname, self.pyfile.name)
 
-        dl_dir = encode(dl_dirname)
-        dl_file = encode(dl_filename)
+        dl_dir = fs_encode(dl_dirname)
+        dl_file = fs_encode(dl_filename)
 
         if not exists(dl_dir):
             try:
@@ -301,36 +311,16 @@ class Hoster(Base):
 
         self.set_permissions(dl_dir)
 
-        self.pyload.hookManager.dispatchEvent(
-            "download_start", self.pyfile, dl_url, dl_filename)
+        self.pyload.hookManager.dispatchEvent("download_start", self.pyfile, dl_url, dl_filename)
         self.check_status()
 
         newname = self._download(dl_url, dl_filename, get, post, ref, cookies,
                                  disposition, resume, chunks)
 
-        #@TODO: Recheck in 0.4.10
         if disposition and newname:
-            safename = parse_name(newname.split(' filename*=')[0])
-
-            if safename != newname:
-                try:
-                    old_file = fsjoin(dl_dirname, newname)
-                    new_file = fsjoin(dl_dirname, safename)
-                    os.rename(old_file, new_file)
-
-                except OSError, e:
-                    self.log_warning(_("Error renaming `%s` to `%s`")
-                                     % (newname, safename), e)
-                    safename = newname
-
-                self.log_info(
-                    _("`%s` saved as `%s`") %
-                    (self.pyfile.name, safename))
-
-            self.pyfile.name = safename
-
-            dl_filename = os.path.join(dl_dirname, safename)
-            dl_file = encode(dl_filename)
+            self.pyfile.name = newname
+            dl_filename = os.path.join(dl_dirname, newname)
+            dl_file = fs_encode(dl_filename)
 
         self.set_permissions(dl_file)
 
@@ -346,11 +336,11 @@ class Hoster(Base):
         :param delete: delete if matched
         :return: dictionary key of the first rule that matched
         """
-        dl_file = encode(self.last_download)  # @TODO: Recheck in 0.4.10
-
         if not self.last_download:
             self.log_warning(_("No file to scan"))
             return
+
+        dl_file = fs_encode(self.last_download)  # @TODO: Recheck in 0.4.10
 
         with open(dl_file, "rb") as f:
             content = f.read(read_size)
@@ -384,8 +374,7 @@ class Hoster(Base):
             self.error(_("Empty file"))
 
         else:
-            self.pyload.hookManager.dispatchEvent(
-                "download_check", self.pyfile)
+            self.pyload.hookManager.dispatchEvent("download_check", self.pyfile)
             self.check_status()
 
         self.log_info(_("File is OK"))
@@ -403,10 +392,9 @@ class Hoster(Base):
             return False
 
         else:
-            #@TODO: Rewrite in 0.4.10
-            size = self.pyfile.size / 1024
-            self.log_info(_("Filesize: %s KiB") % size,
-                          _("Traffic left for user `%s`: %d KiB") % (self.account.user, traffic))
+            size = self.pyfile.size
+            self.log_info(_("Filesize: %s") % format_size(size),
+                          _("Traffic left for user `%s`: %d") % (self.account.user, format_size(traffic)))
             return size > traffic
 
     # def check_size(self, file_size, size_tolerance=1024, delete=False):

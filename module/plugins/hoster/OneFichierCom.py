@@ -11,7 +11,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class OneFichierCom(SimpleHoster):
     __name__ = "OneFichierCom"
     __type__ = "hoster"
-    __version__ = "1.14"
+    __version__ = "1.15"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(?:(?P<ID1>\w+)\.)?(?P<HOST>1fichier\.com|alterupload\.com|cjoint\.net|d(?:es)?fichiers\.com|dl4free\.com|megadl\.fr|mesfichiers\.org|piecejointe\.net|pjointe\.com|tenvoi\.com)(?:/\?(?P<ID2>\w+))?'
@@ -33,7 +33,7 @@ class OneFichierCom(SimpleHoster):
                    ("Ludovic Lehmann", "ludo.lehmann@gmail.com"),
                    ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
-    DISPOSITION = False  # @TODO: Remove disposition in 0.4.10
+    # DISPOSITION = False  # @TODO: Remove disposition in 0.4.10
 
     URL_REPLACEMENTS = [(__pattern__ + '.*', lambda m:"https://1fichier.com/?" + (m.group('ID1') if m.group('ID1') else m.group('ID2')))]
 

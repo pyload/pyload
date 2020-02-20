@@ -5,20 +5,20 @@ from module.network.HTTPRequest import HTTPRequest
 from module.network.Browser import Browser
 
 from ..internal.Addon import Addon
-from ..internal.misc import encode
+from ..internal.misc import decode
 
 
 class UserAgentSwitcher(Addon):
     __name__ = "UserAgentSwitcher"
     __type__ = "hook"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", True),
                   ("connecttimeout", "int",
                    "Max timeout for link connection in seconds", 60),
                   ("maxredirs", "int", "Maximum number of redirects to follow", 10),
-                  ("useragent", "str", "Custom user-agent string", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:38.0) Gecko/20100101 Firefox/38.0")]
+                  ("useragent", "str", "Custom user-agent string", "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:71.0) Gecko/20100101 Firefox/71.0")]
 
     __description__ = """Custom user-agent"""
     __license__ = "GPLv3"
@@ -42,4 +42,4 @@ class UserAgentSwitcher(Addon):
 
         if useragent:
             self.log_debug("Use custom user-agent string `%s`" % useragent)
-            pyfile.plugin.req.http.c.setopt(pycurl.USERAGENT, encode(useragent))
+            pyfile.plugin.req.http.c.setopt(pycurl.USERAGENT, decode(useragent))

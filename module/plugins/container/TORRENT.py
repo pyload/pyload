@@ -1,18 +1,17 @@
 # -*- coding: utf-8 -*-
 
-import os
 import re
 import time
 import urllib
 
 from ..internal.Container import Container
-from ..internal.misc import encode, safename
+from ..internal.misc import decode, fs_encode, fsjoin, safename
 
 
 class TORRENT(Container):
     __name__ = "TORRENT"
     __type__ = "container"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
     __pattern__ = r'^(?!file://).+\.torrent$'
@@ -25,7 +24,7 @@ class TORRENT(Container):
     __authors__ = [("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
     def decrypt(self, pyfile):
-        fs_filename = encode(pyfile.url)
+        fs_filename = fs_encode(pyfile.url)
         with open(fs_filename, "rb") as f:
             torrent_content = f.read()
 
@@ -36,10 +35,10 @@ class TORRENT(Container):
         if m:
             m = re.search(r'name%s:(.{%s})' % (m.group(1), m.group(1)), torrent_content)
             if m:
-                pack_name = safename(m.group(1))
+                pack_name = safename(decode(m.group(1)))
 
-        torrent_filename = os.path.join("tmp", "tmp_%s.torrent" % pack_name)
+        torrent_filename = fsjoin("tmp", "tmp_%s.torrent" % pack_name)
         with open(torrent_filename, "wb") as f:
             f.write(torrent_content)
 
-        self.packages.append((pack_name, ["file://%s" % urllib.pathname2url(torrent_filename)], pack_name))
+        self.packages.append((pack_name, ["file://%s" % urllib.pathname2url(torrent_filename.encode('utf8'))], pack_name))

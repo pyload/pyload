@@ -52,7 +52,11 @@ class AccountManager():
         """get account instance for plugin or None if anonymous"""
         if plugin in self.accounts:
             if plugin not in self.plugins:
-                self.plugins[plugin] = self.core.pluginManager.loadClass("accounts", plugin)(self, self.accounts[plugin])
+                klass = self.core.pluginManager.loadClass("accounts", plugin)
+                if klass:
+                    self.plugins[plugin] = klass(self, self.accounts[plugin])
+                else:
+                    return None
 
             return self.plugins[plugin]
         else:
@@ -170,12 +174,16 @@ class AccountManager():
             self.core.scheduler.addJob(0, self.core.accountManager.getAccountInfos)
             force = False
         
-        for p in self.accounts.keys():
-            if self.accounts[p]:
-                p = self.getAccountPlugin(p)
-                data[p.__name__] = p.getAllAccounts(force)
+        for k in self.accounts.keys():
+            if self.accounts[k]:
+                p = self.getAccountPlugin(k)
+                if p:
+                    data[p.__name__] = p.getAllAccounts(force)
+                else:
+                    self.core.log.error(_("Bad or missing plugin: ACCOUNT %s") % k)
+                    data[k] = []
             else:
-                data[p] = []
+                data[k] = []
         e = AccountUpdateEvent()
         self.core.pullManager.addEvent(e)
         return data

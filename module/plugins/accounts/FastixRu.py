@@ -7,7 +7,7 @@ from ..internal.MultiAccount import MultiAccount
 class FastixRu(MultiAccount):
     __name__ = "FastixRu"
     __type__ = "account"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __status__ = "testing"
 
     __config__ = [("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),
@@ -33,10 +33,11 @@ class FastixRu(MultiAccount):
         json_data = json.loads(html)
 
         points = json_data['points']
-        kb = float(points) * 1024 ** 2 / 1000
+        trafficleft = float(points) * 1024 ** 2
 
         if points > 0:
-            account_info = {'validuntil': -1, 'trafficleft': kb}
+            account_info = {'validuntil': -1,
+                            'trafficleft': trafficleft}
         else:
             account_info = {
                 'validuntil': None,

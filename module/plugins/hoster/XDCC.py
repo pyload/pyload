@@ -445,7 +445,7 @@ class IRC(object):
 class XDCC(Hoster):
     __name__    = "XDCC"
     __type__    = "hoster"
-    __version__ = "0.48"
+    __version__ = "0.49"
     __status__  = "testing"
 
     __pattern__ = r'xdcc://(?P<SERVER>.*?)/#?(?P<CHAN>.*?)/(?P<BOT>.*?)/#?(?P<PACK>\d+)/?'
@@ -560,7 +560,7 @@ class XDCC(Hoster):
                                         self.retry(3, 60, _("XDCC Bot did not answer"))
 
                             origin, command, args = self.irc_client.get_irc_command()
-                            self.proccess_irc_command(origin, command, args)
+                            self.process_irc_command(origin, command, args)
 
                             if self.exc_info:
                                 raise self.exc_info[1], None, self.exc_info[2]
@@ -592,7 +592,7 @@ class XDCC(Hoster):
         self.fail(_("Server blocked our ip, retry again later manually"))
 
 
-    def proccess_irc_command(self, origin, command, args):
+    def process_irc_command(self, origin, command, args):
         bot    = self.info['pattern']['BOT']
         nick   = self.config.get('nick')
 
@@ -638,6 +638,10 @@ class XDCC(Hoster):
 
             self.do_download(ip, self.dcc_port, self.dcc_file_name, file_size)
 
+    def _on_notification(self, notification):
+        if 'progress' in notification:
+            self.pyfile.setProgress(notification['progress'])
+
 
     @threaded
     def do_download(self, ip, port, file_name, file_size):
@@ -672,7 +676,12 @@ class XDCC(Hoster):
 
             self.pyload.hookManager.dispatchEvent("download_start", self.pyfile, "%s:%s" % (ip, port), dl_file)
 
-            newname = self.req.download(ip, port, dl_file, progressNotify=self.pyfile.setProgress, resume=self.xdcc_send_resume)
+            #@TODO: Cleanup in v0.4.10
+            if hasattr(self.pyfile, 'setName'):
+                newname = self.req.download(ip, port, dl_file, status_notify=self._on_notification, resume=self.xdcc_send_resume)
+            else:
+                newname = self.req.download(ip, port, dl_file, progressNotify=self.pyfile.setProgress, resume=self.xdcc_send_resume)
+
             if newname and newname != dl_file:
                 self.log_info(_("%(name)s saved as %(newname)s") % {'name': self.pyfile.name, 'newname': newname})
                 dl_file = newname

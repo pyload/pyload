@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from os.path import join
 from traceback import print_exc
 from shutil import copyfileobj
 
@@ -11,7 +10,7 @@ from webinterface import PYLOAD
 
 from utils import login_required, render_to_response, toDict
 
-from module.utils import decode, formatSize
+from module.utils import decode, formatSize, save_join
 
 
 def format_time(seconds):
@@ -166,7 +165,7 @@ def add_package():
         if not name or name == "New Package":
             name = f.name
 
-        fpath = join(PYLOAD.getConfigValue("general", "download_folder"), "tmp_" + f.filename)
+        fpath = save_join(PYLOAD.getConfigValue("general", "download_folder"), "tmp_" + f.filename)
         destination = open(fpath, 'wb')
         copyfileobj(f.file, destination)
         destination.close()

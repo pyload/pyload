@@ -21,14 +21,13 @@ except ImportError:
             self.iterations = iterations
 
         def hexread(self, octets):
-            return b2a_hex(
-                pbkdf2(self.passphrase, self.salt, self.iterations, octets))
+            return b2a_hex(pbkdf2(self.passphrase, self.salt, self.iterations, octets))
 
 
 class SmoozedCom(MultiAccount):
     __name__ = "SmoozedCom"
     __type__ = "account"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __status__ = "testing"
 
     __config__ = [("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),
@@ -54,13 +53,12 @@ class SmoozedCom(MultiAccount):
         else:
             #: Parse account info
             info = {'validuntil': float(status['data']['user']['user_premium']),
-                    'trafficleft': max(0, status['data']['traffic'][1] - status['data']['traffic'][0]),
+                    'trafficleft': max(0, status['data']['traffic'][1] - status['data']['traffic'][0]) * 1024,
                     'session': status['data']['session_key'],
                     'hosters': [hoster['name'] for hoster in status['data']['hoster']]}
 
             if info['validuntil'] < time.time():
-                if float(status['data']['user'].get(
-                        'user_trial', 0)) > time.time():
+                if float(status['data']['user'].get('user_trial', 0)) > time.time():
                     info['premium'] = True
                 else:
                     info['premium'] = False

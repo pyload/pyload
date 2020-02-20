@@ -9,7 +9,7 @@ from ..internal.misc import fsjoin, json
 class DailymotionComFolder(Crypter):
     __name__ = "DailymotionComFolder"
     __type__ = "crypter"
-    __version__ = "0.08"
+    __version__ = "0.09"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?dailymotion\.com/((playlists/)?(?P<TYPE>playlist|user)/)?(?P<ID>[\w^_]+)(?(TYPE)|#)'
@@ -104,5 +104,4 @@ class DailymotionComFolder(Crypter):
             self.log_debug(
                 "%s video\s found on playlist \"%s\"" %
                 (len(p_videos), p_name))
-            # @NOTE: Folder is NOT recognized by pyload 0.4.9!
             self.packages.append((p_name, p_videos, p_folder))

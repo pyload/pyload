@@ -26,7 +26,7 @@ def parse_fileInfo(klass, url="", html=""):
 class Base(Plugin):
     __name__ = "Base"
     __type__ = "base"
-    __version__ = "0.35"
+    __version__ = "0.36"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -399,7 +399,7 @@ class Base(Plugin):
             msg = self.pyfile.error or self.info.get(
                 'error') or self.pyfile.getStatusName()
 
-        raise Fail(encode(msg))  # @TODO: Remove `encode` in 0.4.10
+        raise Fail(decode(msg))  # @TODO: Remove `encode` in 0.4.10
 
     def error(self, msg="", type=_("Parse")):
         type = _("%s error") % type.strip(
