@@ -33,7 +33,7 @@ if not hasattr(__builtin__.property, "setter"):
 class Hoster(Base):
     __name__ = "Hoster"
     __type__ = "hoster"
-    __version__ = "0.77"
+    __version__ = "0.78"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -394,7 +394,7 @@ class Hoster(Base):
         else:
             size = self.pyfile.size
             self.log_info(_("Filesize: %s") % format_size(size),
-                          _("Traffic left for user `%s`: %d") % (self.account.user, format_size(traffic)))
+                          _("Traffic left for user `%s`: %s") % (self.account.user, format_size(traffic)))
             return size > traffic
 
     # def check_size(self, file_size, size_tolerance=1024, delete=False):
