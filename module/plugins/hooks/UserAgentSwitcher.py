@@ -5,13 +5,13 @@ from module.network.HTTPRequest import HTTPRequest
 from module.network.Browser import Browser
 
 from ..internal.Addon import Addon
-from ..internal.misc import decode
+from ..internal.misc import transcode
 
 
 class UserAgentSwitcher(Addon):
     __name__ = "UserAgentSwitcher"
     __type__ = "hook"
-    __version__ = "0.17"
+    __version__ = "0.18"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", True),
@@ -42,4 +42,4 @@ class UserAgentSwitcher(Addon):
 
         if useragent:
             self.log_debug("Use custom user-agent string `%s`" % useragent)
-            pyfile.plugin.req.http.c.setopt(pycurl.USERAGENT, decode(useragent))
+            pyfile.plugin.req.http.c.setopt(pycurl.USERAGENT, transcode(useragent, 'utf-8', 'latin1'))
