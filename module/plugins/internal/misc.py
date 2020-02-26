@@ -42,7 +42,7 @@ except ImportError:
 class misc(object):
     __name__ = "misc"
     __type__ = "plugin"
-    __version__ = "0.58"
+    __version__ = "0.59"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -524,7 +524,7 @@ def fixurl(url, unquote=None):
     url = decode(url)
 
     #: 'unicode-escape' that work with unicode strings too
-    url = re.sub(r'\\u(\d{4})', lambda x: unichr(int(x.group(1))), url, flags=re.I)
+    url = re.sub(r'\\[uU](\d{4})', lambda x: unichr(int(x.group(1))), url)
 
     url = html_unescape(url)
 
