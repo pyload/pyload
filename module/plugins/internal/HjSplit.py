@@ -12,7 +12,7 @@ from .misc import exists, fsjoin
 class HjSplit(Extractor):
     __name__ = "HjSplit"
     __type__ = "extractor"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
     __description__ = """HJSPLIT extractor plugin"""
@@ -87,7 +87,7 @@ class HjSplit(Extractor):
                     size_total += os.path.getsize(chunks[i])
 
         #: Now do the actual merge
-        with open(os.path.join(self.dest, name), "wb") as output_file:
+        with open(fsjoin(self.dest, name), "wb") as output_file:
             size_written = 0
             for part_filename in chunks:
                 self.log_debug("Merging part", part_filename)

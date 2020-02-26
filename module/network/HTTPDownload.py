@@ -31,17 +31,18 @@ from HTTPRequest import BadHeader
 from module.plugins.Plugin import Abort
 from module.utils import save_join, fs_encode
 
+
 class HTTPDownload():
     """ loads a url http + ftp """
 
     def __init__(self, url, filename, size=0, get={}, post={}, referer=None, cj=None, bucket=None,
-                 options={}, progressNotify=None, disposition=False):
+                 options={}, status_notify=None, disposition=False):
         self.url = url
-        self.filename = filename  #complete file destination, not only name
+        self.filename = filename  # complete file destination, not only name
         self.get = get
         self.post = post
         self.referer = referer
-        self.cj = cj  #cookiejar if cookies are needed
+        self.cj = cj  # cookiejar if cookies are needed
         self.bucket = bucket
         self.options = options
         self.disposition = disposition
@@ -49,7 +50,7 @@ class HTTPDownload():
 
         self.abort = False
         self.size = size
-        self.nameDisposition = None #will be parsed from content disposition
+        self.nameDisposition = None # will be parsed from content disposition
 
         self.chunks = []
 
@@ -57,7 +58,7 @@ class HTTPDownload():
 
         try:
             self.info = ChunkInfo.load(filename)
-            self.info.resume = True #resume is only possible with valid info file
+            self.info.resume = True # resume is only possible with valid info file
             self.size = self.info.size
             self.infoSaved = True
         except IOError:
@@ -66,12 +67,13 @@ class HTTPDownload():
         self.chunkSupport = None
         self.m = pycurl.CurlMulti()
 
-        #needed for speed calculation
+        # needed for speed calculation
         self.lastArrived = []
         self.speeds = []
         self.lastSpeeds = [0, 0]
 
-        self.progressNotify = progressNotify
+        # notifications callback
+        self.status_notify = status_notify if callable(status_notify) else None
 
     @property
     def speed(self):
@@ -88,18 +90,17 @@ class HTTPDownload():
         return (self.arrived * 100) / self.size
 
     def _copyChunks(self):
-        init = fs_encode(self.info.getChunkName(0)) #initial chunk name
+        init = fs_encode(self.info.getChunkName(0)) # initial chunk name
 
         if self.info.getCount() > 1:
-            fo = open(init, "rb+") #first chunkfile
+            fo = open(init, "rb+") # first chunkfile
             for i in range(1, self.info.getCount()):
-                #input file
-                fo.seek(
-                    self.info.getChunkRange(i - 1)[1] + 1) #seek to beginning of chunk, to get rid of overlapping chunks
+                # input file
+                fo.seek(self.info.getChunkRange(i - 1)[1] + 1) # seek to beginning of chunk, to get rid of overlapping chunks
                 fname = fs_encode("%s.chunk%d" % (self.filename, i))
                 fi = open(fname, "rb")
                 buf = 32 * 1024
-                while True: #copy in chunks, consumes less memory
+                while True: # copy in chunks, consumes less memory
                     data = fi.read(buf)
                     if not data:
                         break
@@ -108,16 +109,16 @@ class HTTPDownload():
                 if fo.tell() < self.info.getChunkRange(i)[1]:
                     fo.close()
                     remove(init)
-                    self.info.remove() #there are probably invalid chunks
+                    self.info.remove() # there are probably invalid chunks
                     raise Exception("Downloaded content was smaller than expected. Try to reduce download connections.")
-                remove(fname) #remove chunk
+                remove(fname) # remove chunk
             fo.close()
 
         if self.nameDisposition and self.disposition:
             self.filename = save_join(dirname(self.filename), self.nameDisposition)
 
         move(init, fs_encode(self.filename))
-        self.info.remove() #remove info file
+        self.info.remove() # remove info file
 
     def download(self, chunks=1, resume=False):
         """ returns new filename or None """
@@ -128,13 +129,13 @@ class HTTPDownload():
         try:
             self._download(chunks, resume)
         except pycurl.error, e:
-            #code 33 - no resume
+            # code 33 - no resume
             code = e.args[0]
             if code == 33:
                 # try again without resume
                 self.log.debug("Errno 33 -> Restart without resume")
 
-                #remove old handles
+                # remove old handles
                 for chunk in self.chunks:
                     self.closeChunk(chunk)
 
@@ -144,17 +145,19 @@ class HTTPDownload():
         finally:
             self.close()
 
-        if self.nameDisposition and self.disposition: return self.nameDisposition
-        return None
+        if self.nameDisposition and self.disposition:
+            return self.nameDisposition
+        else:
+            return None
 
     def _download(self, chunks, resume):
         if not resume:
             self.info.clear()
-            self.info.addChunk("%s.chunk0" % self.filename, (0, 0)) #create an initial entry
+            self.info.addChunk("%s.chunk0" % self.filename, (0, 0)) # create an initial entry
 
         self.chunks = []
 
-        init = HTTPChunk(0, self, None, resume) #initial chunk that will load complete file (if needed)
+        init = HTTPChunk(0, self, None, resume) # initial chunk that will load complete file (if needed)
 
         self.chunks.append(init)
         self.m.add_handle(init.getHandle())
@@ -168,8 +171,8 @@ class HTTPDownload():
             self.chunkSupport = True
 
         while 1:
-            #need to create chunks
-            if not chunksCreated and self.chunkSupport and self.size: #will be setted later by first chunk
+            # need to create chunks
+            if not chunksCreated and self.chunkSupport and self.size: # will be setted later by first chunk
 
                 if not resume:
                     self.info.setSize(self.size)
@@ -188,7 +191,7 @@ class HTTPDownload():
                         self.chunks.append(c)
                         self.m.add_handle(handle)
                     else:
-                        #close immediatly
+                        # close immediatly
                         self.log.debug("Invalid curl handle -> closed")
                         c.close()
 
@@ -222,7 +225,7 @@ class HTTPDownload():
                 for c in err_list:
                     curl, errno, msg = c
                     chunk = self.findChunk(curl)
-                    #test if chunk was finished
+                    # test if chunk was finished
                     if errno != 23 or "0 !=" not in msg:
                         failed.append(chunk)
                         ex = pycurl.error(errno, msg)
@@ -244,14 +247,14 @@ class HTTPDownload():
                     if failed and init not in failed and init.c not in chunksDone:
                         self.log.error(_("Download chunks failed, fallback to single connection | %s" % (str(ex))))
 
-                        #list of chunks to clean and remove
+                        # list of chunks to clean and remove
                         to_clean = filter(lambda x: x is not init, self.chunks)
                         for chunk in to_clean:
                             self.closeChunk(chunk)
                             self.chunks.remove(chunk)
                             remove(fs_encode(self.info.getChunkName(chunk.id)))
 
-                        #let first chunk load the rest and update the info file
+                        # let first chunk load the rest and update the info file
                         init.resetRange()
                         self.info.clear()
                         self.info.addChunk("%s.chunk0" % self.filename, (0, self.size))
@@ -264,12 +267,12 @@ class HTTPDownload():
                     if len(chunksDone) >= len(self.chunks):
                         if len(chunksDone) > len(self.chunks):
                             self.log.warning("Finished download chunks size incorrect, please report bug.")
-                        done = True  #all chunks loaded
+                        done = True  # all chunks loaded
 
                     break
 
             if done:
-                break #all chunks loaded
+                break # all chunks loaded
 
             # calc speed once per second, averaging over 3 seconds
             if lastTimeCheck + 1 < t:
@@ -286,17 +289,22 @@ class HTTPDownload():
             if self.abort:
                 raise Abort()
 
-            #sleep(0.003) #supress busy waiting - limits dl speed to  (1 / x) * buffersize
+            #sleep(0.003) # supress busy waiting - limits dl speed to  (1 / x) * buffersize
             self.m.select(1)
 
         for chunk in self.chunks:
-            chunk.flushFile() #make sure downloads are written to disk
+            chunk.flushFile() # make sure downloads are written to disk
 
         self._copyChunks()
 
     def updateProgress(self):
-        if self.progressNotify:
-            self.progressNotify(self.percent)
+        if self.status_notify:
+            self.status_notify({'progress': self.percent})
+
+    def updateDisposition(self, disposition):
+        self.nameDisposition = disposition
+        if self.status_notify:
+            self.status_notify({'disposition': disposition})
 
     def findChunk(self, handle):
         """ linear search to find a chunk (should be ok since chunk size is usually low) """

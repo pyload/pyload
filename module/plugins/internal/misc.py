@@ -19,8 +19,9 @@ import time
 import traceback
 import urllib
 import urlparse
-import xml.sax.saxutils  # @TODO: Remove in 0.4.10
 import zlib
+from htmlentitydefs import name2codepoint
+from email.header import decode_header as decode_rfc2047_header
 
 try:
     import simplejson as json
@@ -314,7 +315,7 @@ def fsbsize(path):
     """
     Get optimal file system buffer size (in bytes) for I/O calls
     """
-    path = encode(path)
+    path = fs_encode(path)
 
     if os.name == "nt":
         import ctypes
@@ -352,9 +353,30 @@ def has_method(obj, name):
 
 def html_unescape(text):
     """
-    Removes HTML or XML character references and entities from a text string
+    Decode HTML or XML escape character references and entities from a text string
     """
-    return xml.sax.saxutils.unescape(text)
+    def fixup(m):
+        text = m.group(0)
+        if text[:2] == "&#":
+            # character reference
+            try:
+                if text[:3] == "&#x":
+                    return unichr(int(text[3:-1], 16))
+                else:
+                    return unichr(int(text[2:-1]))
+            except ValueError:
+                pass
+        else:
+            # named entity
+            try:
+                name = text[1:-1]
+                text = unichr(name2codepoint[name])
+            except KeyError:
+                pass
+
+        return text # leave as is
+
+    return re.sub("&#?\w+;", fixup, text)
     #@TODO: Replace in 0.4.10 with:
     # h = HTMLParser.HTMLParser()
     # return h.unescape(text)
@@ -366,16 +388,13 @@ def isiterable(obj):
     """
     return hasattr(obj, "__iter__")
 
-
 def get_console_encoding(enc):
     if os.name == "nt":
         if enc == "cp65001":  #: aka UTF-8
-            enc = "cp850"
-            # print("WARNING: Windows codepage 65001 (UTF-8) is not supported,
-            # used `%s` instead") % enc
+            enc = "utf8"
 
         elif enc is None:  #: piped
-            enc = "cp850"
+            enc = "iso-8859-1"
 
     else:
         enc = "utf8"
@@ -402,12 +421,6 @@ def decode(value, encoding=None, errors='strict'):
 
     else:
         res = unicode(value)
-
-    # Hotfix UnicodeDecodeError
-    try:
-        str(res)
-    except UnicodeEncodeError:
-        return normalize(res)
 
     return res
 
@@ -436,8 +449,21 @@ def encode(value, encoding='utf-8', errors='backslashreplace'):
     return res
 
 
+def rfc2047_dec(value):
+    def decode_chunk(m):
+        data, enc = decode_rfc2047_header(m.group(0))[0]
+        try:
+            res = data.decode(enc)
+        except (LookupError, UnicodeEncodeError):
+            res = m.group(0)
+
+        return res
+
+    return re.sub(r'=\?([^?]+)\?([QB])\?([^?]*)\?=', decode_chunk, value, re.I)
+
+
 def exists(path):
-    path = encode(path)
+    path = fs_encode(path)
 
     if os.name == "nt":
         if path.startswith("\\\\"):
@@ -449,7 +475,7 @@ def exists(path):
 
 
 def remove(path, trash=True):
-    path = encode(path)
+    path = fs_encode(path)
 
     if not exists(path):
         return
@@ -469,7 +495,7 @@ def fsjoin(*args):
     Like os.path.join, but encoding aware
     (for safe-joining see `safejoin`)
     """
-    return encode(os.path.join(*args))
+    return fs_encode(os.path.join(*args))
 
 
 def remove_chars(value, repl):
@@ -493,15 +519,16 @@ def fixurl(url, unquote=None):
     url = urllib.unquote(url)
 
     if unquote is None:
-        unquote = url is old
+        unquote = url == old
 
     url = decode(url)
-    try:
-        url = url.decode('unicode-escape')
-    except UnicodeDecodeError:
-        pass
+
+    #: 'unicode-escape' that work with unicode strings too
+    url = re.sub(r'\\u(\d{4})', lambda x: unichr(int(x.group(1))), url, flags=re.I)
 
     url = html_unescape(url)
+
+    #: '//' becomes '/'
     url = re.sub(r'(?<!:)/{2,}', '/', url).strip().lstrip('.')
 
     if not unquote:
@@ -517,6 +544,21 @@ def truncate(name, length):
 
     trunc = int((len(name) - length) / 3)
     return "%s~%s" % (name[:trunc * 2], name[-trunc:])
+
+
+if sys.getfilesystemencoding().startswith('ANSI'):
+    """
+     Use fs_encode before accesing files on disk,
+     it will encode the string properly
+    """
+    def fs_encode(string):
+        try:
+            string = string.encode('utf-8')
+        finally:
+            return string
+
+else:
+    fs_encode = decode
 
 
 #@TODO: Recheck in 0.4.10
@@ -565,13 +607,32 @@ def safename(value):
 
 
 def parse_name(value, safechar=True):
-    path = fixurl(decode(value), unquote=False)
+    path = urllib.unquote(decode(value))
+
+    try:
+        path = path.encode('latin1').decode('utf8')
+    except (UnicodeEncodeError, UnicodeDecodeError):
+        pass
+
+    #: 'unicode-escape' that work with unicode strings too
+    path = re.sub(r'\\u(\d{4})', lambda x: unichr(int(x.group(1))), path, flags=re.I)
+
+    #: Decode HTML escape
+    path = html_unescape(path)
+
+    #: Decode rfc2047
+    path = rfc2047_dec(path)
+
+    #: Remove redundant '/'
+    path = re.sub(r'(?<!:)/{2,}', '/', path).strip().lstrip('.')
+
     url_p = urlparse.urlparse(path.rstrip('/'))
     name = (url_p.path.split('/')[-1] or
             url_p.query.split('=', 1)[::-1][0].split('&', 1)[0] or
             url_p.netloc.split('.', 1)[0])
 
-    name = urllib.unquote(name)
+    name = os.path.basename(name)
+
     return safename(name) if safechar else name
 
 
@@ -672,7 +733,7 @@ def check_prog(command):
 
 
 def isexecutable(filename):
-    file = encode(filename)
+    file = fs_encode(filename)
     return os.path.isfile(file) and os.access(file, os.X_OK)
 
 
@@ -863,10 +924,10 @@ def renice(pid, value):
         return
 
     try:
-        subprocess.Popen(["renice", str(value), str(pid)],
-                         stdout=subprocess.PIPE,
-                         stderr=subprocess.PIPE,
-                         bufsize=-1)
+        Popen(["renice", str(value), str(pid)],
+              stdout=subprocess.PIPE,
+              stderr=subprocess.PIPE,
+              bufsize=-1)
     except Exception:
         pass
 
@@ -883,7 +944,7 @@ def forward(source, destination):
 
 
 def compute_checksum(filename, hashtype):
-    file = encode(filename)
+    file = fs_encode(filename)
 
     if not exists(file):
         return None
@@ -982,3 +1043,146 @@ def move_tree(src, dst, overwrite=False):
             os.rmdir(src_dir)
         except OSError:
             pass
+
+
+"""
+subprocess.Popen doesn't support unicode on Windows
+## https://bugs.python.org/issue19264
+"""
+if os.name != "nt":
+    from subprocess import Popen
+
+else:
+    import ctypes
+    import subprocess
+    import _subprocess
+    from ctypes import byref, windll, c_char_p, c_wchar_p, c_void_p, Structure, sizeof, c_wchar, WinError
+    from ctypes.wintypes import BYTE, WORD, LPWSTR, BOOL, DWORD, LPVOID, HANDLE
+
+    ##
+    ## Types
+    ##
+    CREATE_UNICODE_ENVIRONMENT = 0x00000400
+    LPCTSTR = c_char_p
+    LPTSTR = c_wchar_p
+    LPSECURITY_ATTRIBUTES = c_void_p
+    LPBYTE  = ctypes.POINTER(BYTE)
+
+    class STARTUPINFOW(Structure):
+        _fields_ = [
+            ("cb",              DWORD),
+            ("lpReserved",      LPWSTR),
+            ("lpDesktop",       LPWSTR),
+            ("lpTitle",         LPWSTR),
+            ("dwX",             DWORD),
+            ("dwY",             DWORD),
+            ("dwXSize",         DWORD),
+            ("dwYSize",         DWORD),
+            ("dwXCountChars",   DWORD),
+            ("dwYCountChars",   DWORD),
+            ("dwFillAtrribute", DWORD),
+            ("dwFlags",         DWORD),
+            ("wShowWindow",     WORD),
+            ("cbReserved2",     WORD),
+            ("lpReserved2",     LPBYTE),
+            ("hStdInput",       HANDLE),
+            ("hStdOutput",      HANDLE),
+            ("hStdError",       HANDLE),
+        ]
+
+    LPSTARTUPINFOW = ctypes.POINTER(STARTUPINFOW)
+
+    class PROCESS_INFORMATION(Structure):
+        _fields_ = [
+            ("hProcess",         HANDLE),
+            ("hThread",          HANDLE),
+            ("dwProcessId",      DWORD),
+            ("dwThreadId",       DWORD),
+        ]
+
+    LPPROCESS_INFORMATION = ctypes.POINTER(PROCESS_INFORMATION)
+
+    class DUMMY_HANDLE(ctypes.c_void_p):
+        def __init__(self, *args, **kwargs):
+            super(DUMMY_HANDLE, self).__init__(*args, **kwargs)
+            self.closed = False
+        def Close(self):
+            if not self.closed:
+                windll.kernel32.CloseHandle(self)
+                self.closed = True
+        def __int__(self):
+            return self.value
+
+
+    CreateProcessW = windll.kernel32.CreateProcessW
+    CreateProcessW.argtypes = [LPCTSTR, LPTSTR, LPSECURITY_ATTRIBUTES,
+                               LPSECURITY_ATTRIBUTES, BOOL, DWORD, LPVOID, LPCTSTR,
+                               LPSTARTUPINFOW, LPPROCESS_INFORMATION,]
+    CreateProcessW.restype = BOOL
+
+    def CreateProcess(executable, args, _p_attr, _t_attr, inherit_handles, creation_flags, env, cwd, startup_info):
+        """
+        Create a process supporting unicode executable and args for win32
+        Python implementation of CreateProcess using CreateProcessW for Win32
+        """
+        si = STARTUPINFOW(
+            dwFlags=startup_info.dwFlags,
+            wShowWindow=startup_info.wShowWindow,
+            cb=sizeof(STARTUPINFOW),
+            ## XXXvlab: not sure of the casting here to ints.
+            hStdInput=int(startup_info.hStdInput),
+            hStdOutput=int(startup_info.hStdOutput),
+            hStdError=int(startup_info.hStdError),
+        )
+
+        wenv = None
+        if env is not None:
+            ## LPCWSTR seems to be c_wchar_p, so let's say CWSTR is c_wchar
+            env = (u"".join([u"%s=%s\0" % (k, v)
+                             for k, v in env.items()])) + u"\0"
+            wenv = (c_wchar * len(env))()
+            wenv.value = env
+
+        pi = PROCESS_INFORMATION()
+        creation_flags |= CREATE_UNICODE_ENVIRONMENT
+
+        if CreateProcessW(executable, args, None, None, inherit_handles, creation_flags,
+                          wenv, cwd, byref(si), byref(pi)):
+            return (DUMMY_HANDLE(pi.hProcess), DUMMY_HANDLE(pi.hThread), pi.dwProcessId, pi.dwThreadId)
+        raise WinError()
+
+
+    class Popen(subprocess.Popen):
+        """
+        This supersedes Popen and corrects a bug in cPython implementation
+        """
+        def _execute_child(self, args, executable, preexec_fn, close_fds,
+                           cwd, env, universal_newlines,
+                           startupinfo, creationflags, shell, to_close,
+                           p2cread, p2cwrite,
+                           c2pread, c2pwrite,
+                           errread, errwrite):
+
+            if not isinstance(args, subprocess.types.StringTypes):
+                args = subprocess.list2cmdline(args)
+
+            if startupinfo is None:
+                startupinfo = subprocess.STARTUPINFO()
+            if shell:
+                startupinfo.dwFlags |= _subprocess.STARTF_USESHOWWINDOW
+                startupinfo.wShowWindow = _subprocess.SW_HIDE
+                comspec = os.environ.get("COMSPEC", u"cmd.exe")
+                args = u'%s /c "%s"' % (comspec, args)
+                if _subprocess.GetVersion() >= 0x80000000 or os.path.basename(comspec).lower() == "command.com":
+                    w9xpopen = self._find_w9xpopen()
+                    args = u'"%s" %s' % (w9xpopen, args)
+                    creationflags |= _subprocess.CREATE_NEW_CONSOLE
+
+            super(Popen, self)._execute_child(args, executable, preexec_fn, close_fds,
+                                              cwd, env, universal_newlines,
+                                              startupinfo, creationflags, False, to_close,
+                                              p2cread, p2cwrite,
+                                              c2pread, c2pwrite,
+                                              errread, errwrite)
+
+    _subprocess.CreateProcess = CreateProcess

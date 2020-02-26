@@ -15,8 +15,7 @@ except ImportError:
             self.iterations = iterations
 
         def hexread(self, octets):
-            return b2a_hex(
-                pbkdf2(self.passphrase, self.salt, self.iterations, octets))
+            return b2a_hex(pbkdf2(self.passphrase, self.salt, self.iterations, octets))
 
 from module.network.RequestFactory import getURL as get_url
 
@@ -27,7 +26,7 @@ from ..internal.misc import json
 class OboomCom(Account):
     __name__ = "OboomCom"
     __type__ = "account"
-    __version__ = "0.33"
+    __version__ = "0.34"
     __status__ = "testing"
 
     __description__ = """Oboom.com account plugin"""
@@ -60,8 +59,7 @@ class OboomCom(Account):
         else:
             validuntil = float(user_data['premium_unix'])
 
-        # @TODO: Remove `/ 1024` in 0.4.10
-        trafficleft = user_data['traffic']['current'] / 1024
+        trafficleft = user_data['traffic']['current']
 
         data['session'] = res[1]['session']
 

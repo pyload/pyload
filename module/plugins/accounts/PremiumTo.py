@@ -7,7 +7,7 @@ from ..internal.misc import json
 class PremiumTo(MultiAccount):
     __name__ = "PremiumTo"
     __type__ = "account"
-    __version__ = "0.20"
+    __version__ = "0.21"
     __status__ = "testing"
 
     __config__ = [("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),
@@ -37,8 +37,7 @@ class PremiumTo(MultiAccount):
         json_data = self.api_response("traffic", userid=user, apikey=password)
 
         if json_data.get('code') == 200:
-            # @TODO: Remove `/ 1024` in 0.4.10
-            trafficleft = float(json_data['traffic'] + json_data['specialtraffic']) / 1024
+            trafficleft = float(json_data['traffic'] + json_data['specialtraffic'])
             return {'premium': True,
                     'trafficleft': trafficleft,
                     'validuntil': -1}

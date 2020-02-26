@@ -18,9 +18,10 @@
     @author: sebnapi
     @author: RaNaN
     @author: mkaay
-    @version: v0.4.9
+    @author: GammaC0de
+    @version: v0.4.20
 """
-CURRENT_VERSION = '0.4.9'
+CURRENT_VERSION = '0.4.20'
 
 import __builtin__
 

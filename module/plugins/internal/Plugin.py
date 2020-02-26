@@ -7,13 +7,13 @@ import os
 
 import pycurl
 from module.network.RequestFactory import getRequest as get_request
-
 from module.plugins.Plugin import SkipDownload as Skip
 # @TODO: Remove in 0.4.10
 from module.plugins.Plugin import Abort, Fail, Reconnect, Retry
-from .misc import (DB, Config, decode, encode, exists, fixurl, format_exc,
-                   fsjoin, html_unescape, parse_html_header, remove,
-                   set_cookies)
+
+from .misc import (
+    DB, Config, decode, encode, exists, fixurl, format_exc, fs_encode, fsjoin, html_unescape, parse_html_header, remove,
+    set_cookies)
 
 if os.name != "nt":
     import grp
@@ -27,7 +27,7 @@ _decode = decode
 class Plugin(object):
     __name__ = "Plugin"
     __type__ = "plugin"
-    __version__ = "0.74"
+    __version__ = "0.75"
     __status__ = "stable"
 
     __config__ = []  #: [("name", "type", "desc", "default")]
@@ -126,7 +126,7 @@ class Plugin(object):
             return True
 
     def set_permissions(self, path):
-        path = encode(path)
+        path = fs_encode(path)
 
         if not exists(path):
             return
@@ -155,7 +155,7 @@ class Plugin(object):
         """
         Fail and give msg
         """
-        raise Fail(encode(msg))  # @TODO: Remove `encode` in 0.4.10
+        raise Fail(decode(msg))  # @TODO: Remove `decode` in 0.4.10
 
     def load(self, url, get={}, post={}, ref=True, cookies=True, just_header=False, decode=True,
              multipart=False, redirect=True, req=None):
@@ -272,7 +272,7 @@ class Plugin(object):
                            *["%s=%s" % (key, value) for key, value in locals().items()
                              if key not in ("self", "url", "_[1]")])
 
-        with open(path, 'rb') as f:
+        with open(fs_encode(path), 'rb') as f:
             url = fixurl(url, unquote=True)  #: Recheck in 0.4.10
 
             if req is False:

@@ -13,7 +13,8 @@ from module.network.CookieJar import CookieJar
 from module.network.HTTPRequest import HTTPRequest
 
 from ..internal.Hoster import Hoster
-from ..internal.misc import exists, isexecutable, json, reduce, renice, replace_patterns, uniqify, which
+from ..internal.misc import (
+    Popen, decode, exists, fsjoin, isexecutable, json, reduce, renice, replace_patterns, safename, uniqify, which)
 from ..internal.Plugin import Abort, Skip
 
 
@@ -109,9 +110,9 @@ class Ffmpeg(object):
 
             cmd = which(ffmpeg) or ffmpeg
 
-            p = subprocess.Popen([cmd, "-version"],
-                                 stdout=subprocess.PIPE,
-                                 stderr=subprocess.PIPE)
+            p = Popen([cmd, "-version"],
+                      stdout=subprocess.PIPE,
+                      stderr=subprocess.PIPE)
             out, err = (_r.strip() if _r else "" for _r in p.communicate())
         except OSError:
             return False
@@ -163,7 +164,7 @@ class Ffmpeg(object):
                      "-sub_charenc", "utf8"])
 
         call = [self.CMD] + args + [self.output_filename]
-        p = subprocess.Popen(
+        p = Popen(
             call,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE)
@@ -233,7 +234,7 @@ class Ffmpeg(object):
 class YoutubeCom(Hoster):
     __name__ = "YoutubeCom"
     __type__ = "hoster"
-    __version__ = "0.73"
+    __version__ = "0.75"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:[^/]*\.)?(?:youtu\.be/|youtube\.com/watch\?(?:.*&)?v=)[\w\-]+'
@@ -264,9 +265,6 @@ class YoutubeCom(Hoster):
                    ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
     URL_REPLACEMENTS = [(r'youtu\.be/', 'youtube.com/watch?v=')]
-
-    #: Invalid characters that must be removed from the file name
-    invalid_chars = u'\u2605:?><"|\\'
 
     #: name, width, height, quality ranking, 3D, type
     formats = {
@@ -354,6 +352,7 @@ class YoutubeCom(Hoster):
 
             m = re.search(r'\b[cs]\s*&&\s*[adf]\.set\([^,]+\s*,\s*encodeURIComponent\s*\(\s*(?P<sig>[a-zA-Z0-9$]+)\(', player_data) or \
                 re.search(r'\b[a-zA-Z0-9]+\s*&&\s*[a-zA-Z0-9]+\.set\([^,]+\s*,\s*encodeURIComponent\s*\(\s*(?P<sig>[a-zA-Z0-9$]+)\(', player_data) or \
+                re.search(r'\b(?P<sig>[a-zA-Z0-9$]{2})\s*=\s*function\(\s*a\s*\)\s*{\s*a\s*=\s*a\.split\(\s*""\s*\)', player_data) or \
                 re.search(r'(?P<sig>[a-zA-Z0-9$]+)\s*=\s*function\(\s*a\s*\)\s*{\s*a\s*=\s*a\.split\(\s*""\s*\)', player_data) or \
                 re.search(r'\.sig\|\|(?P<sig>[a-zA-Z0-9$]+)\(', player_data) or \
                 re.search(r'\bc\s*&&\s*d\.set\([^,]+\s*,\s*\([^)]*\)\s*\(\s*(?P<sig>[a-zA-Z0-9$]+)\(', player_data) or \
@@ -465,7 +464,7 @@ class YoutubeCom(Hoster):
         self.pyfile.name = self.file_name + file_suffix
 
         try:
-            filename = self.download(url, disposition=False)
+            filename = self.download(url, disposition=False, resume=False)
         except Skip, e:
             filename = os.path.join(self.pyload.config.get("general", "download_folder"),
                                     self.pyfile.package().folder,
@@ -602,9 +601,9 @@ class YoutubeCom(Hoster):
                 # Download only listed subtitles (`subs_dl_langs` config gives the priority)
                 for _lang in subs_dl_langs:
                     if _lang in subtitles_urls:
-                        srt_filename =  os.path.join(self.pyload.config.get("general", "download_folder"),
-                                                     self.pyfile.package().folder,
-                                                     os.path.splitext(self.file_name)[0] + "." + _lang + ".srt")
+                        srt_filename = fsjoin(self.pyload.config.get("general", "download_folder"),
+                                              self.pyfile.package().folder,
+                                              os.path.splitext(self.file_name)[0] + "." + _lang + ".srt")
 
                         if self.pyload.config.get('download', 'skip_existing') and \
                                 exists(srt_filename) and os.stat(srt_filename).st_size != 0:
@@ -626,9 +625,9 @@ class YoutubeCom(Hoster):
             else:
                 # Download any available subtitle
                 for _subtitle in subtitles_urls.items():
-                    srt_filename = os.path.join(self.pyload.config.get("general", "download_folder"),
-                                                self.pyfile.package().folder,
-                                                os.path.splitext(self.file_name)[0] + "." + _subtitle[0] + ".srt")
+                    srt_filename = fsjoin(self.pyload.config.get("general", "download_folder"),
+                                          self.pyfile.package().folder,
+                                          os.path.splitext(self.file_name)[0] + "." + _subtitle[0] + ".srt")
 
                     if self.pyload.config.get('download', 'skip_existing') and \
                         exists(srt_filename) and os.stat(srt_filename).st_size != 0:
@@ -761,7 +760,7 @@ class YoutubeCom(Hoster):
         self.ffmpeg = Ffmpeg(self.config.get('priority'), self)
 
         #: Set file name
-        self.file_name = json.loads(self.player_config['args']['player_response'])['videoDetails']['title']
+        self.file_name = decode(json.loads(self.player_config['args']['player_response'])['videoDetails']['title'])
 
         #: Check for start time
         self.start_time = (0, 0)
@@ -771,9 +770,7 @@ class YoutubeCom(Hoster):
             self.file_name += " (starting at %sm%ss)" % (self.start_time[0], self.start_time[1])
 
         #: Cleaning invalid characters from the file name
-        self.file_name = self.file_name.encode('ascii', 'replace')
-        for c in self.invalid_chars:
-            self.file_name = self.file_name.replace(c, '_')
+        self.file_name = safename(self.file_name)
 
         #: Parse available streams
         self.streams = []

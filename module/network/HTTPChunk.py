@@ -16,15 +16,19 @@
     
     @author: RaNaN
 """
-from os import remove, stat, fsync
-from os.path import exists
-from time import sleep
-from re import search
-from module.utils import fs_encode
 import codecs
-import pycurl
+import os
+import posixpath
+import re
+import time
+import urllib
+from cgi import parse_header
+from email.header import decode_header
 
+import pycurl
 from HTTPRequest import HTTPRequest
+from module.utils import decode, fs_encode
+
 
 class WrongFormat(Exception):
     pass
@@ -32,7 +36,7 @@ class WrongFormat(Exception):
 
 class ChunkInfo():
     def __init__(self, name):
-        self.name = unicode(name)
+        self.name = decode(name)
         self.size = 0
         self.resume = False
         self.chunks = []
@@ -63,7 +67,6 @@ class ChunkInfo():
             self.addChunk("%s.chunk%s" % (self.name, i), (current, end))
             current += chunk_size + 1
 
-
     def save(self):
         fs_name = fs_encode("%s.chunks" % self.name)
         fh = codecs.open(fs_name, "w", "utf_8")
@@ -78,7 +81,7 @@ class ChunkInfo():
     @staticmethod
     def load(name):
         fs_name = fs_encode("%s.chunks" % name)
-        if not exists(fs_name):
+        if not os.path.exists(fs_name):
             raise IOError()
         fh = codecs.open(fs_name, "r", "utf_8")
         name = fh.readline()[:-1]
@@ -93,7 +96,7 @@ class ChunkInfo():
         ci.loaded = True
         ci.setSize(size)
         while True:
-            if not fh.readline(): #skip line
+            if not fh.readline():  # skip line
                 break
             name = fh.readline()[1:-1]
             range = fh.readline()[1:-1]
@@ -103,13 +106,14 @@ class ChunkInfo():
             else:
                 raise WrongFormat()
 
-            ci.addChunk(name, (long(range[0]), long(range[1])))
+            ci.addChunk(name, (int(range[0]), int(range[1])))
         fh.close()
         return ci
 
     def remove(self):
         fs_name = fs_encode("%s.chunks" % self.name)
-        if exists(fs_name): remove(fs_name)
+        if os.path.exists(fs_name):
+            os.remove(fs_name)
 
     def getCount(self):
         return len(self.chunks)
@@ -124,8 +128,8 @@ class ChunkInfo():
 class HTTPChunk(HTTPRequest):
     def __init__(self, id, parent, range=None, resume=False):
         self.id = id
-        self.p = parent # HTTPDownload instance
-        self.range = range # tuple (start, end)
+        self.p = parent  # HTTPDownload instance
+        self.range = range  # tuple (start, end)
         self.resume = resume
         self.log = parent.log
 
@@ -136,18 +140,18 @@ class HTTPChunk(HTTPRequest):
         self.c = pycurl.Curl()
 
         self.header = ""
-        self.headerParsed = False #indicates if the header has been processed
+        self.headerParsed = False  # indicates if the header has been processed
 
-        self.fp = None #file handle
+        self.fp = None  # file handle
 
         self.initHandle()
         self.setInterface(self.p.options)
 
-        self.BOMChecked = False # check and remove byte order mark
+        self.BOMChecked = False  # check and remove byte order mark
 
         self.rep = None
 
-        self.sleep = 0.000
+        self.sleep = 0.0
         self.lastSize = 0
 
     def __repr__(self):
@@ -171,13 +175,13 @@ class HTTPChunk(HTTPRequest):
             self.fp = open(fs_name, "ab")
             self.arrived = self.fp.tell()
             if not self.arrived:
-                self.arrived = stat(fs_name).st_size
+                self.arrived = os.stat(fs_name).st_size
 
             if self.range:
-                #do nothing if chunk already finished
+                # do nothing if chunk already finished
                 if self.arrived + self.range[0] >= self.range[1]: return None
 
-                if self.id == len(self.p.info.chunks) - 1: #as last chunk dont set end range, so we get everything
+                if self.id == len(self.p.info.chunks) - 1:  # as last chunk dont set end range, so we get everything
                     range = "%i-" % (self.arrived + self.range[0])
                 else:
                     range = "%i-%i" % (self.arrived + self.range[0], min(self.range[1] + 1, self.p.size - 1))
@@ -190,7 +194,7 @@ class HTTPChunk(HTTPRequest):
 
         else:
             if self.range:
-                if self.id == len(self.p.info.chunks) - 1: # see above
+                if self.id == len(self.p.info.chunks) - 1:  # see above
                     range = "%i-" % self.range[0]
                 else:
                     range = "%i-%i" % (self.range[0], min(self.range[1] + 1, self.p.size - 1))
@@ -204,22 +208,24 @@ class HTTPChunk(HTTPRequest):
 
     def writeHeader(self, buf):
         self.header += buf
-        #@TODO forward headers?, this is possibly unneeeded, when we just parse valid 200 headers
+        # @TODO forward headers?, this is possibly unneeeded, when we just parse valid 200 headers
         # as first chunk, we will parse the headers
         if not self.range and self.header.endswith("\r\n\r\n"):
             self.parseHeader()
-        elif not self.range and buf.startswith("150") and "data connection" in buf: #ftp file size parsing
-            size = search(r"(\d+) bytes", buf)
+        elif not self.range and buf.startswith("150") and "data connection" in buf:  # ftp file size parsing
+            size = re.search(r'(\d+) bytes', buf)
             if size:
                 self.p.size = int(size.group(1))
                 self.p.chunkSupport = True
 
         self.headerParsed = True
 
+        return None  #:All is fine
+
     def writeBody(self, buf):
-        #ignore BOM, it confuses unrar
+        #:Ignore BOM, it confuses unrar
         if not self.BOMChecked:
-            if [ord(b) for b in buf[:3]] == [239, 187, 191]:
+            if buf[:3] == codecs.BOM_UTF8:
                 buf = buf[3:]
             self.BOMChecked = True
 
@@ -230,7 +236,8 @@ class HTTPChunk(HTTPRequest):
         self.fp.write(buf)
 
         if self.p.bucket:
-            sleep(self.p.bucket.consumed(size))
+            time.sleep(self.p.bucket.consumed(size))
+
         else:
             # Avoid small buffers, increasing sleep time slowly if buffer size gets smaller
             # otherwise reduce sleep time percentual (values are based on tests)
@@ -243,24 +250,92 @@ class HTTPChunk(HTTPRequest):
 
             self.lastSize = size
 
-            sleep(self.sleep)
+            time.sleep(self.sleep)
 
         if self.range and self.arrived > self.size:
-            return 0 #close if we have enough data
+            return 0  #:Close if we have enough data
 
+        return None  #:All is fine
 
     def parseHeader(self):
         """parse data from recieved header"""
-        for orgline in self.decodeResponse(self.header).splitlines():
+        for orgline in self.header.splitlines():
             line = orgline.strip().lower()
             if line.startswith("accept-ranges") and "bytes" in line:
                 self.p.chunkSupport = True
 
-            if line.startswith("content-disposition") and "filename=" in line:
-                name = orgline.partition("filename=")[2]
-                name = name.replace('"', "").replace("'", "").replace(";", "").strip()
-                self.p.nameDisposition = name
-                self.log.debug("Content-Disposition: %s" % name)
+            elif line.startswith("content-disposition"):
+                try:
+                    orgline.encode('iso-8859-1')
+                except UnicodeDecodeError:
+                    self.log.debug("Content-Disposition: | error: header contains nonstandard characters")
+                else:
+                    disposition_value = orgline.split(":", 1)[1].strip()
+                    disposition_type, disposition_params = parse_header(disposition_value)
+
+                    fname = None
+                    if 'filename*' in disposition_params:
+                        fname = disposition_params['filename*']
+                        m = re.search(r'=\?([^?]+)\?([QB])\?([^?]*)\?=', fname, re.I)  #: rfc2047
+                        if m is not None:
+                            fname, enc = decode_header(fname)[0]
+                            try:
+                                fname = fname.decode(enc)
+                            except LookupError:
+                                self.log.warning("Content-Disposition: | error: No decoder found for %s" % enc)
+                                fname = None
+                            except UnicodeEncodeError:
+                                self.log.warning("Content-Disposition: | error: Error when decoding string from %s." % enc)
+                                fname = None
+
+                        else:
+                            m = re.search(r'(.+?)\'(.*)\'(.+)', fname)
+                            if m is not None:
+                                enc, lang, data = m.groups()
+                                try:
+                                    fname = urllib.unquote(data).decode(enc)
+                                except LookupError:
+                                    self.log.warning("Content-Disposition: | error: No decoder found for %s" % enc)
+                                    fname = None
+                                except UnicodeEncodeError:
+                                    self.log.warning("Content-Disposition: | error: Error when decoding string from %s." % enc)
+                                    fname = None
+
+                            else:
+                                fname = None
+
+                    if fname is None:
+                        if 'filename' in disposition_params:
+                            fname = disposition_params['filename']
+                            m = re.search(r'=\?([^?]+)\?([QB])\?([^?]*)\?=', fname, re.I)  #: rfc2047
+                            if m is not None:
+                                fname, enc = decode_header(m.group(0))[0]
+                                try:
+                                    fname = fname.decode(enc)
+                                except LookupError:
+                                    self.log.warning("Content-Disposition: | error: No decoder found for %s" % enc)
+                                    continue
+                                except UnicodeEncodeError:
+                                    self.log.warning("Content-Disposition: | error: Error when decoding string from %s." % enc)
+                                    continue
+                            else:
+                                try:
+                                    fname = urllib.unquote(fname).decode('iso-8859-1')
+                                except UnicodeEncodeError:
+                                    self.log.warning("Content-Disposition: | error: Error when decoding string from iso-8859-1.")
+                                    continue
+                        else:
+                            continue
+
+                    #:Drop unsafe chararacters
+                    fname = posixpath.basename(fname)
+                    fname = os.path.basename(fname)
+                    for badc in '<>:"/\\|?*' if os.name == "nt" else '\0/\\"':
+                        fname = fname.replace(badc, "")
+                    fname = fname.lstrip('.')
+
+                    self.log.debug("Content-Disposition: %s" % fname)
+                    self.p.updateDisposition(fname)
 
             if not self.resume and line.startswith("content-length"):
                 self.p.size = int(line.split(":")[1])
@@ -269,7 +344,7 @@ class HTTPChunk(HTTPRequest):
 
     def stop(self):
         """The download will not proceed after next call of writeBody"""
-        self.range = [0,0]
+        self.range = [0, 0]
         self.size = 0
 
     def resetRange(self):
@@ -283,8 +358,8 @@ class HTTPChunk(HTTPRequest):
     def flushFile(self):
         """  flush and close file """
         self.fp.flush()
-        fsync(self.fp.fileno()) #make sure everything was written to disk
-        self.fp.close() #needs to be closed, or merging chunks will fail
+        os.fsync(self.fp.fileno())  # make sure everything was written to disk
+        self.fp.close()  # needs to be closed, or merging chunks will fail
 
     def close(self):
         """ closes everything, unusable after this """

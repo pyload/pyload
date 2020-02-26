@@ -12,7 +12,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class ZippyshareCom(SimpleHoster):
     __name__ = "ZippyshareCom"
     __type__ = "hoster"
-    __version__ = "0.98"
+    __version__ = "0.99"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?P<HOST>www\d{0,3}\.zippyshare\.com)/(?:[vd]/|view\.jsp.*key=)(?P<KEY>[\w^_]+)'
@@ -32,7 +32,7 @@ class ZippyshareCom(SimpleHoster):
 
     URL_REPLACEMENTS = [(__pattern__ + ".*", r'http://\g<HOST>/v/\g<KEY>/file.html')]
 
-    NAME_PATTERN = r'(?:<title>Zippyshare.com - |"/)(?P<N>[^/]+)(?:</title>|";)'
+    NAME_PATTERN = r'"/d/[\w^_]+/".*".*/(?P<N>[^/]+?)";'
     SIZE_PATTERN = r'>Size:.+?">(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
     OFFLINE_PATTERN = r'does not exist (anymore )?on this server<'
     TEMP_OFFLINE_PATTERN = r'^unmatchable$'

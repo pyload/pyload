@@ -12,7 +12,7 @@ from .Plugin import Plugin, Skip
 class Account(Plugin):
     __name__ = "Account"
     __type__ = "account"
-    __version__ = "0.84"
+    __version__ = "0.85"
     __status__ = "stable"
 
     __description__ = """Base account plugin"""
@@ -436,11 +436,10 @@ class Account(Plugin):
 
     ###########################################################################
 
-    def parse_traffic(self, size, unit=None):  # @NOTE: Returns kilobytes only in 0.4.9
+    def parse_traffic(self, size, unit=None):  #: returns bytes
         self.log_debug("Size: %s" % size,
                        "Unit: %s" % (unit or "N/D"))
-        # @TODO: Remove `/ 1024` in 0.4.10
-        return parse_size(size, unit or "byte") / 1024
+        return parse_size(size, unit or "byte")
 
     def fail_login(self, msg=_("Login handshake has failed")):
         return self.fail(msg)

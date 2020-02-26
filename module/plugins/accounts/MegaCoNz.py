@@ -11,7 +11,7 @@ from ..internal.Account import Account
 class MegaCoNz(Account):
     __name__ = "MegaCoNz"
     __type__ = "account"
-    __version__ = "0.07"
+    __version__ = "0.08"
     __status__ = "testing"
 
     __description__ = """Mega.co.nz account plugin"""
@@ -30,7 +30,7 @@ class MegaCoNz(Account):
             premium = res.get('utype', 0) > 0
             if premium:
                 validuntil = res.get('suntil', None)
-                trafficleft = (res.get('mxfer', 0) - res.get('caxfer', 0) - res.get('csxfer', 0)) / 1024
+                trafficleft = (res.get('mxfer', 0) - res.get('caxfer', 0) - res.get('csxfer', 0))
 
             # if res['rtt']:
             #     self.log_debug("Tranfare history:%s" % res['tah'])

@@ -8,13 +8,13 @@ import urllib
 from module.network.HTTPRequest import BadHeader
 
 from ..internal.Crypter import Crypter
-from ..internal.misc import exists, json
+from ..internal.misc import exists, json, safejoin
 
 
 class RealdebridComTorrent(Crypter):
     __name__ = "RealdebridComTorrent"
     __type__ = "crypter"
-    __version__ = "0.07"
+    __version__ = "0.09"
     __status__ = "testing"
 
     __pattern__ = r'(?:file|https?)://.+\.torrent|magnet:\?.+'
@@ -61,13 +61,13 @@ class RealdebridComTorrent(Crypter):
             if self.pyfile.url.startswith("http"):
                 #: remote URL, download the torrent to tmp directory
                 torrent_content = self.load(self.pyfile.url, decode=False)
-                torrent_filename = os.path.join("tmp", "tmp_%s.torrent" % self.pyfile.package().name) #: `tmp_` files are deleted automatically
+                torrent_filename = safejoin("tmp", "tmp_%s.torrent" % self.pyfile.package().name) #: `tmp_` files are deleted automatically
                 with open(torrent_filename, "wb") as f:
                     f.write(torrent_content)
 
             else:
                 #: URL is local torrent file (uploaded container)
-                torrent_filename = urllib.url2pathname(self.pyfile.url[7:]) #: trim the starting `file://`
+                torrent_filename = urllib.url2pathname(self.pyfile.url[7:]).encode('latin1').decode('utf8') #: trim the starting `file://`
                 if not exists(torrent_filename):
                     self.fail(_("Torrent file does not exist"))
 

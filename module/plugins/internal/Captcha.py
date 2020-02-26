@@ -7,12 +7,13 @@ import os
 import time
 
 from .Plugin import Plugin
+from .misc import fsjoin
 
 
 class Captcha(Plugin):
     __name__ = "Captcha"
     __type__ = "captcha"
-    __version__ = "0.56"
+    __version__ = "0.57"
     __status__ = "stable"
 
     __description__ = """Base anti-captcha plugin"""
@@ -69,7 +70,7 @@ class Captcha(Plugin):
         result = None
         time_ref = ("%.2f" % time.time())[-6:].replace(".", "")
 
-        with open(os.path.join("tmp", "captcha_image_%s_%s.%s" % (self.pyfile.plugin.__name__, time_ref, input_type)), "wb") as img_f:
+        with open(fsjoin("tmp", "captcha_image_%s_%s.%s" % (self.pyfile.plugin.__name__, time_ref, input_type)), "wb") as img_f:
             img_f.write(img)
 
         if ocr:

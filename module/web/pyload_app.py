@@ -351,7 +351,7 @@ def config():
         elif not data.trafficleft:
             trafficleft = _("not available")
         else:
-            trafficleft = formatSize(data.trafficleft * 1024)
+            trafficleft = formatSize(data.trafficleft)
 
         if data.validuntil == -1:
             validuntil  = _("unlimited")

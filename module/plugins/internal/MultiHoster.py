@@ -2,6 +2,7 @@
 
 import re
 
+from .Base import Base
 from .Plugin import Fail
 from .SimpleHoster import SimpleHoster
 
@@ -9,7 +10,7 @@ from .SimpleHoster import SimpleHoster
 class MultiHoster(SimpleHoster):
     __name__ = "MultiHoster"
     __type__ = "hoster"
-    __version__ = "0.67"
+    __version__ = "0.68"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -29,6 +30,11 @@ class MultiHoster(SimpleHoster):
     TEMP_OFFLINE_PATTERN = r'^unmatchable$'
 
     LEECH_HOSTER = False
+    DIRECT_LINK = None
+
+    @classmethod
+    def get_info(cls, url="", html=""):
+        return Base.get_info(url, html)
 
     def init(self):
         self.PLUGIN_NAME = self.pyload.pluginManager.hosterPlugins.get(self.classname)['name']
@@ -50,11 +56,14 @@ class MultiHoster(SimpleHoster):
 
         SimpleHoster.setup_base(self)
 
+    def _preload(self):
+        pass
+
     def _prepare(self):
         SimpleHoster._prepare(self)
 
         if self.DIRECT_LINK is None:
-            self.direct_dl = self.__pattern__ != r'^unmatchable$' and re.match(self.__pattern__, self.pyfile.url)
+            self.direct_dl = self.__pattern__ != r'^unmatchable$' and re.match(self.__pattern__, self.pyfile.url) is not None
 
         else:
             self.direct_dl = self.DIRECT_LINK

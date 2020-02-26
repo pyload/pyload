@@ -8,13 +8,13 @@ import re
 import Crypto.Cipher.AES
 
 from ..internal.Container import Container
-from ..internal.misc import encode
+from ..internal.misc import fs_encode
 
 
 class RSDF(Container):
     __name__ = "RSDF"
     __type__ = "container"
-    __version__ = "0.37"
+    __version__ = "0.38"
     __status__ = "testing"
 
     __pattern__ = r'.+\.rsdf$'
@@ -39,7 +39,7 @@ class RSDF(Container):
         cipher = Crypto.Cipher.AES.new(KEY, Crypto.Cipher.AES.MODE_CFB, iv)
 
         try:
-            fs_filename = encode(pyfile.url)
+            fs_filename = fs_encode(pyfile.url)
             with open(fs_filename, 'r') as rsdf:
                 data = rsdf.read()
 
@@ -51,8 +51,7 @@ class RSDF(Container):
 
         else:
             try:
-                raw_links = binascii.unhexlify(
-                    ''.join(data.split())).splitlines()
+                raw_links = binascii.unhexlify(''.join(data.split())).splitlines()
 
             except TypeError:
                 self.fail(_("Container is corrupted"))
@@ -60,7 +59,5 @@ class RSDF(Container):
             for link in raw_links:
                 if not link:
                     continue
-                link = cipher.decrypt(
-                    link.decode('base64')).replace(
-                    'CCF: ', '')
+                link = cipher.decrypt(link.decode('base64')).replace('CCF: ', '')
                 self.links.append(link)

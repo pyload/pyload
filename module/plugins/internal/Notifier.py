@@ -3,13 +3,13 @@
 import time
 
 from .Addon import Addon
-from .misc import Expose, encode, isiterable
+from .misc import Expose, decode, isiterable
 
 
 class Notifier(Addon):
     __name__ = "Notifier"
     __type__ = "hook"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", False),
@@ -113,9 +113,9 @@ class Notifier(Addon):
             return
 
         if isiterable(msg):
-            msg = " | ".join(encode(a).strip() for a in msg if a)
+            msg = " | ".join(decode(a).strip() for a in msg if a)
         else:
-            msg = encode(msg)
+            msg = decode(msg)
 
         if self.pyload.isClientConnected() and not self.config.get('ignoreclient', False):
             return

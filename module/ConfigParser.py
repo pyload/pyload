@@ -258,7 +258,7 @@ class ConfigParser:
             return value
         elif typ in ("str", "file", "folder"):
             try:
-                return value.encode("utf8")
+                return value.decode("utf8")
             except:
                 return value
         else:

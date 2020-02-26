@@ -9,7 +9,7 @@ from ..internal.misc import json
 class RapidgatorNet(Account):
     __name__ = "RapidgatorNet"
     __type__ = "account"
-    __version__ = "0.24"
+    __version__ = "0.25"
     __status__ = "testing"
 
     __description__ = """Rapidgator.net account plugin"""
@@ -36,8 +36,7 @@ class RapidgatorNet(Account):
 
             if json_data['response_status'] == 200:
                 validuntil = json_data['response']['expire_date']
-                # @TODO: Remove `/ 1024` in 0.4.10
-                trafficleft = float(json_data['response']['traffic_left']) / 1024
+                trafficleft = float(json_data['response']['traffic_left'])
                 premium = True
 
             else:

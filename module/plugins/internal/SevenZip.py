@@ -5,14 +5,14 @@ import re
 import string
 import subprocess
 
-from .misc import encode, fsjoin, renice
 from .Extractor import ArchiveError, CRCError, Extractor, PasswordError
+from .misc import Popen, fs_encode, fsjoin, renice
 
 
 class SevenZip(Extractor):
     __name__ = "SevenZip"
     __type__ = "extractor"
-    __version__ = "0.31"
+    __version__ = "0.32"
     __status__ = "testing"
 
     __description__ = """7-Zip extractor plugin"""
@@ -40,9 +40,9 @@ class SevenZip(Extractor):
             if os.name == "nt":
                 cls.CMD = os.path.join(pypath, "7z.exe")
 
-            p = subprocess.Popen([cls.CMD],
-                                 stdout=subprocess.PIPE,
-                                 stderr=subprocess.PIPE)
+            p = Popen([cls.CMD],
+                      stdout=subprocess.PIPE,
+                      stderr=subprocess.PIPE)
             out, err = (_r.strip() if _r else "" for _r in p.communicate())
 
         except OSError:
@@ -193,8 +193,8 @@ class SevenZip(Extractor):
         call = [self.CMD, command] + args + list(xargs)
         self.log_debug("EXECUTE " + " ".join(call))
 
-        call = map(encode, call)
-        p = subprocess.Popen(
+        call = map(fs_encode, call)
+        p = Popen(
             call,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE)

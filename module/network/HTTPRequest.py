@@ -331,7 +331,7 @@ class HTTPRequest():
             del self.c
 
 if __name__ == "__main__":
-    url = "http://pyload.org"
+    url = "http://pyload.net"
     c = HTTPRequest()
     print c.load(url)
     

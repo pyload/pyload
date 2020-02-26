@@ -6,13 +6,13 @@ import string
 import subprocess
 
 from .Extractor import ArchiveError, CRCError, Extractor, PasswordError
-from .misc import decode, encode, fsjoin, renice
+from .misc import Popen, decode, fs_encode, fsjoin, renice
 
 
 class UnRar(Extractor):
     __name__ = "UnRar"
     __type__ = "extractor"
-    __version__ = "1.43"
+    __version__ = "1.44"
     __status__ = "testing"
 
     __config__ = [("ignore_warnings", "bool", "Ignore unrar warnings", False)]
@@ -44,9 +44,9 @@ class UnRar(Extractor):
             else:
                 cls.CMD = "rar"
 
-            p = subprocess.Popen([cls.CMD],
-                                 stdout=subprocess.PIPE,
-                                 stderr=subprocess.PIPE)
+            p = Popen([cls.CMD],
+                      stdout=subprocess.PIPE,
+                      stderr=subprocess.PIPE)
             out, err = (_r.strip() if _r else "" for _r in p.communicate())
             # cls.__name__ = "RAR"
             cls.REPAIR = True
@@ -58,9 +58,9 @@ class UnRar(Extractor):
                 else:
                     cls.CMD = "unrar"
 
-                p = subprocess.Popen([cls.CMD],
-                                     stdout=subprocess.PIPE,
-                                     stderr=subprocess.PIPE)
+                p = Popen([cls.CMD],
+                          stdout=subprocess.PIPE,
+                          stderr=subprocess.PIPE)
                 out, err = (_r.strip() if _r else "" for _r in p.communicate())
 
             except OSError:
@@ -233,8 +233,8 @@ class UnRar(Extractor):
         call = [self.CMD, command] + args + list(xargs)
         self.log_debug("EXECUTE " + " ".join(call))
 
-        call = map(encode, call)
-        p = subprocess.Popen(
+        call = map(fs_encode, call)
+        p = Popen(
             call,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE)
