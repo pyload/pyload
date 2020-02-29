@@ -192,6 +192,7 @@ class PluginManager:
                         plugins[name]["re"] = re.compile(pattern)
                     except:
                         self.log.error(_("%s has a invalid pattern.") % name)
+                        plugins[name]["re"] = re.compile(r'(?!.*)')
 
                 # internals have no config
                 if folder == "internal":
