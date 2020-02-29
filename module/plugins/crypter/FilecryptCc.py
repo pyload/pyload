@@ -47,7 +47,7 @@ class BIGHTTPRequest(HTTPRequest):
 class FilecryptCc(Crypter):
     __name__ = "FilecryptCc"
     __type__ = "crypter"
-    __version__ = "0.39"
+    __version__ = "0.40"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?filecrypt\.cc/Container/\w+'
@@ -91,7 +91,8 @@ class FilecryptCc(Crypter):
     def decrypt(self, pyfile):
         self.data = self._filecrypt_load_url(pyfile.url)
 
-        if "content notfound" in self.data:  # @NOTE: "content notfound" is NOT a typo
+        # @NOTE: "content notfound" is NOT a typo
+        if "content notfound" in self.data or ">File <strong>not</strong> found<" in self.data:
             self.offline()
 
         self.handle_password_protection()
