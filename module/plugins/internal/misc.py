@@ -42,7 +42,7 @@ except ImportError:
 class misc(object):
     __name__ = "misc"
     __type__ = "plugin"
-    __version__ = "0.59"
+    __version__ = "0.60"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -615,7 +615,7 @@ def parse_name(value, safechar=True):
         pass
 
     #: 'unicode-escape' that work with unicode strings too
-    path = re.sub(r'\\u(\d{4})', lambda x: unichr(int(x.group(1))), path, flags=re.I)
+    path = re.sub(r'\\[uU](\d{4})', lambda x: unichr(int(x.group(1))), path)
 
     #: Decode HTML escape
     path = html_unescape(path)
