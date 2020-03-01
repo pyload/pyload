@@ -10,7 +10,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class AlfafileNet(SimpleHoster):
     __name__ = "AlfafileNet"
     __type__ = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(alfafile\.net)/file/(?P<ID>\w+)'
@@ -27,13 +27,11 @@ class AlfafileNet(SimpleHoster):
     URL_REPLACEMENTS = [(__pattern__ + ".*", r'https://alfafile.net/file/\g<ID>')]
 
     NAME_PATTERN = r'<strong id="st_file_name" title="(?P<N>.+?)"'
-    SIZE_PATTERN = r'<span class="size">((?P<S>[\d.,]+) (?P<U>[\w^_]+)<'
+    SIZE_PATTERN = r'<span class="size">(?P<S>[\d.,]+) (?P<U>[\w^_]+)<'
+
+    LINK_PATTERN = r'<a href="(.+?)" class="big_button"><span>Download</span></a>'
 
     DL_LIMIT_PATTERN = r'Try again in (.+?)<'
-
-    def setup(self):
-        self.multiDL = self.resume_download = self.premium
-        self.chunk_limit = 1  #: Critical problems with more chunks
 
     def handle_free(self, pyfile):
         json_data = self.load(self.fixurl("/download/start_timer/" + self.info['pattern']['ID']))
@@ -55,7 +53,17 @@ class AlfafileNet(SimpleHoster):
                                       post={'adcopy_response': response,
                                             'adcopy_challenge': challenge})
 
-                self.log_debug(self.data)
+                if "Invalid captcha" in self.data:
+                    self.retry_captcha()
+                else:
+                    self.captcha.correct()
+
+                m = re.search(self.LINK_PATTERN, self.data)
+                if m is not None:
+                    self.link = m.group(1)
+
+            else:
+                self.error(_("Captcha pattern not found"))
 
         else:
             self.data = json_data['html']
