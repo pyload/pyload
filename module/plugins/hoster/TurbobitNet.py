@@ -10,10 +10,10 @@ from ..internal.SimpleHoster import SimpleHoster
 class TurbobitNet(SimpleHoster):
     __name__ = "TurbobitNet"
     __type__ = "hoster"
-    __version__ = "0.35"
+    __version__ = "0.36"
     __status__ = "testing"
 
-    __pattern__ = r'https?://(?:(?:www|m)\.)?(?:turbobit\.net|turbo\.to)/(?:download/free/)?(?P<ID>\w+)'
+    __pattern__ = r'https?://(?:(?:www|m)\.)?(?:turbobit\.net|turbo?\.to)/(?:download/free/)?(?P<ID>\w+)'
     __config__ = [("activated", "bool", "Activated", True),
                   ("use_premium", "bool", "Use premium account if available", True),
                   ("fallback", "bool","Fallback to free download if premium fails", True),
