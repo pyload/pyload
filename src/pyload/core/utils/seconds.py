@@ -6,8 +6,8 @@ import time
 
 
 def compare(start, end):
-    start = (int(n) for n in start)
-    end = (int(n) for n in end)
+    start = tuple(int(n) for n in start)
+    end = tuple(int(n) for n in end)
 
     if start == end:
         return True

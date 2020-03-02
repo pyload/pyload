@@ -159,6 +159,7 @@ coverage.xml
 
 # Translations
 *.mo
+src/pyload/locale
 #*.pot
 
 # Django stuff:
@@ -218,3 +219,6 @@ venv.bak/
 .mypy_cache/
 .dmypy.json
 dmypy.json
+
+# IDE
+.vscode

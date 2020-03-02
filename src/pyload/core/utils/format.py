@@ -44,7 +44,7 @@ def size(obj):
     """
     formats size of bytes
     """
-    value = float(obj)
+    value = int(obj)
     try:
         return bitmath.Byte(value).best_prefix()
     except AttributeError:

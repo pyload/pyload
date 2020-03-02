@@ -13,6 +13,8 @@ import os
 import jinja2
 import flask
 
+from flask_babel import Babel
+
 from .blueprints import BLUEPRINTS
 from .filters import TEMPLATE_FILTERS
 from .globals import TEMPLATE_GLOBALS
@@ -102,7 +104,7 @@ class App:
 
     def __new__(cls, pycore, develop=False):
         app = flask.Flask(__name__)
-
+        Babel(app)
         cls._configure_logging(app, pycore)
         cls._configure_api(app, pycore)
         cls._configure_config(app, develop)

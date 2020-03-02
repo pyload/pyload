@@ -17,10 +17,10 @@ import tempfile
 import time
 
 from pyload import PKGDIR, APPID, USERHOMEDIR
-from .. import __version__ as PYLOAD_VERSION
-from .. import __version_info__ as PYLOAD_VERSION_INFO
-from .utils import format, fs
-from .utils.misc import reversemap
+from pyload import __version__ as PYLOAD_VERSION
+from pyload import __version_info__ as PYLOAD_VERSION_INFO
+from pyload.core.utils import format, fs
+from pyload.core.utils.misc import reversemap
 from threading import Event
 
 
@@ -104,7 +104,7 @@ class Core:
 
 
     def _init_config(self, userdir, cachedir, storagedir, debug):
-        from .config.parser import ConfigParser
+        from pyload.core.config.parser import ConfigParser
 
         self.userdir = os.path.realpath(userdir)
         self.cachedir = os.path.realpath(cachedir)
@@ -127,7 +127,7 @@ class Core:
 
 
     def _init_log(self):
-        from .log_factory import LogFactory
+        from pyload.core.log_factory import LogFactory
 
         self.logfactory = LogFactory(self)
         self.log = self.logfactory.get_logger(
@@ -138,14 +138,14 @@ class Core:
 
 
     def _init_network(self):
-        from .network import request_factory
-        from .network.request_factory import RequestFactory
+        from pyload.core.network import request_factory
+        from pyload.core.network.request_factory import RequestFactory
 
         self.req = self.request_factory = RequestFactory(self)
 
 
     def _init_api(self):
-        from .api import Api
+        from pyload.core.api import Api
 
         self.api = Api(self)
 
@@ -157,7 +157,7 @@ class Core:
 
 
     def _init_database(self, restore):
-        from .database import DatabaseThread
+        from pyload.core.database import DatabaseThread
 
         db_path = os.path.join(self.userdir, DatabaseThread.DB_FILENAME)
         newdb = not os.path.isfile(db_path)
@@ -178,15 +178,15 @@ class Core:
 
 
     def _init_managers(self):
-        from .managers.account_manager import AccountManager
-        from .managers.addon_manager import AddonManager
-        from .managers.captcha_manager import CaptchaManager
-        from .managers.event_manager import EventManager
-        from .managers.plugin_manager import PluginManager
-        from .managers.thread_manager import ThreadManager
-        from .managers.file_manager import FileManager
+        from pyload.core.managers.account_manager import AccountManager
+        from pyload.core.managers.addon_manager import AddonManager
+        from pyload.core.managers.captcha_manager import CaptchaManager
+        from pyload.core.managers.event_manager import EventManager
+        from pyload.core.managers.plugin_manager import PluginManager
+        from pyload.core.managers.thread_manager import ThreadManager
+        from pyload.core.managers.file_manager import FileManager
 
-        from .scheduler import Scheduler
+        from pyload.core.scheduler import Scheduler
 
         self.files = self.file_manager = FileManager(self)
         self.scheduler = Scheduler(self)

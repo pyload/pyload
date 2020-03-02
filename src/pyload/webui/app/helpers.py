@@ -5,7 +5,7 @@ from functools import wraps
 from urllib.parse import urljoin, urlparse
 
 import flask
-import flask_themes2
+# import flask_themes2
 
 from pyload.core.api import Perms, Role, has_permission
 
@@ -54,12 +54,13 @@ def current_theme_id():
 
 #: tries to serve the file from the static directory of the current theme otherwise fallback to builtin one
 def static_file_url(filename):
-    themeid = current_theme_id()
-    try:
-        url = flask_themes2.static_file_url(themeid, filename)
-    except KeyError:
-        url = flask.url_for("static", filename=filename)
-    return url
+    # themeid = current_theme_id()
+    # try:
+    #     url = flask_themes2.static_file_url(themeid, filename)
+    # except KeyError:
+    #     url = flask.url_for("static", filename=filename)
+    # return url
+    return flask.url_for("static", filename=filename)
 
 
 def theme_template(filename):
@@ -68,8 +69,9 @@ def theme_template(filename):
 
 #: tries to render the template of the current theme otherwise fallback to builtin template
 def render_template(template, **context):
-    themeid = current_theme_id()
-    return flask_themes2.render_theme_template(themeid, template, **context)
+    # themeid = current_theme_id()
+    # return flask_themes2.render_theme_template(themeid, template, **context)
+    return flask.render_template(template, **context)
 
 
 def parse_permissions(session=flask.session):
