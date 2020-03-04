@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import pycurl
-from hashlib import sha256
 
-from ..internal.misc import json
 from ..internal.MultiHoster import MultiHoster
 
 
