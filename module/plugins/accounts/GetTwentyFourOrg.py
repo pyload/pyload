@@ -11,7 +11,7 @@ from ..internal.MultiAccount import MultiAccount
 class GetTwentyFourOrg(MultiAccount):
     __name__ = 'GetTwentyFourOrg'
     __type__ = 'account'
-    __version__ = '0.02'
+    __version__ = '0.03'
     __status__ = 'testing'
 
     __description__ = 'GeT24.org account plugin'
