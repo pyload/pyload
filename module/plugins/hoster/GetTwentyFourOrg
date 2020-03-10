@@ -8,7 +8,7 @@ from ..internal.MultiHoster import MultiHoster
 class GetTwentyFourOrg(MultiHoster):
     __name__ = 'GetTwentyFourOrg'
     __type__ = 'hoster'
-    __version__ = '0.01'
+    __version__ = '0.02'
     __status__ = 'testing'
 
     __pattern__ = r'^unmatchable$'
