@@ -8,10 +8,10 @@ from ..internal.misc import json
 from ..internal.MultiAccount import MultiAccount
 
 
-class GeT24Org(MultiAccount):
-    __name__ = 'GeT24Org'
+class GetTwentyFourOrg(MultiAccount):
+    __name__ = 'GetTwentyFourOrg'
     __type__ = 'account'
-    __version__ = '0.1'
+    __version__ = '0.01'
     __status__ = 'testing'
 
     __description__ = 'GeT24.org account plugin'

@@ -5,10 +5,10 @@ import pycurl
 from ..internal.MultiHoster import MultiHoster
 
 
-class GeT24Org(MultiHoster):
-    __name__ = 'GeT24Org'
+class GetTwentyFourOrg(MultiHoster):
+    __name__ = 'GetTwentyFourOrg'
     __type__ = 'hoster'
-    __version__ = '0.1'
+    __version__ = '0.01'
     __status__ = 'testing'
 
     __pattern__ = r'^unmatchable$'
