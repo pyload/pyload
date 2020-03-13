@@ -18,7 +18,7 @@ except ImportError:
 class OCR(Plugin):
     __name__ = "OCR"
     __type__ = "ocr"
-    __version__ = "0.27"
+    __version__ = "0.28"
     __status__ = "stable"
 
     __description__ = """OCR base plugin"""
@@ -30,9 +30,9 @@ class OCR(Plugin):
         self.pyfile = pyfile
         self.init()
 
-    def _log(self, level, plugintype, pluginname, messages):
+    def _log(self, level, plugintype, pluginname, messages, tbframe=None):
         messages = (self.__name__,) + messages
-        return self.pyfile.plugin._log(level, plugintype, self.pyfile.plugin.__name__, messages)
+        return self.pyfile.plugin._log(level, plugintype, self.pyfile.plugin.__name__, messages, tbframe=tbframe)
 
     def load_image(self, image):
         self.img = Image.open(image)

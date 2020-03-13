@@ -27,7 +27,7 @@ _decode = decode
 class Plugin(object):
     __name__ = "Plugin"
     __type__ = "plugin"
-    __version__ = "0.75"
+    __version__ = "0.76"
     __status__ = "stable"
 
     __config__ = []  #: [("name", "type", "desc", "default")]
@@ -71,38 +71,71 @@ class Plugin(object):
         """
         pass
 
-    def _log(self, level, plugintype, pluginname, messages):
+    def _log(self, level, plugintype, pluginname, messages, tbframe=None):
         log = getattr(self.pyload.log, level)
         msg = u" | ".join(decode(a).strip() for a in messages if a)
+        if tbframe:
+            msg += "\n" + format_exc(tbframe)
+
         log("%(plugintype)s %(pluginname)s: %(msg)s" %
             {'plugintype': plugintype.upper(),
              'pluginname': pluginname,
              'msg': msg})
 
     def log_debug(self, *args, **kwargs):
-        self._log("debug", self.__type__, self.__name__, args)
-        if self.pyload.debug and kwargs.get('trace'):
-            self._print_exc()
+        trace = self.pyload.debug and kwargs.get('trace', False)
+        if trace:
+            try:
+                frame = inspect.currentframe()
+                self._log("debug", self.__type__, self.__name__, args, tbframe=frame)
+            finally:
+                del frame
+        else:
+            self._log("debug", self.__type__, self.__name__, args, tbframe=None)
 
     def log_info(self, *args, **kwargs):
-        self._log("info", self.__type__, self.__name__, args)
-        if self.pyload.debug and kwargs.get('trace'):
-            self._print_exc()
+        trace = self.pyload.debug and kwargs.get('trace', False)
+        if trace:
+            try:
+                frame = inspect.currentframe()
+                self._log("info", self.__type__, self.__name__, args, tbframe=frame)
+            finally:
+                del frame
+        else:
+            self._log("info", self.__type__, self.__name__, args, tbframe=False)
 
     def log_warning(self, *args, **kwargs):
-        self._log("warning", self.__type__, self.__name__, args)
-        if self.pyload.debug and kwargs.get('trace'):
-            self._print_exc()
+        trace = self.pyload.debug and kwargs.get('trace', False)
+        if trace:
+            try:
+                frame = inspect.currentframe()
+                self._log("warning", self.__type__, self.__name__, args, tbframe=frame)
+            finally:
+                del frame
+        else:
+            self._log("warning", self.__type__, self.__name__, args, tbframe=False)
 
     def log_error(self, *args, **kwargs):
-        self._log("error", self.__type__, self.__name__, args)
-        if self.pyload.debug and kwargs.get('trace', True):
-            self._print_exc()
+        trace = self.pyload.debug and kwargs.get('trace', True)
+        if trace:
+            try:
+                frame = inspect.currentframe()
+                self._log("error", self.__type__, self.__name__, args, tbframe=frame)
+            finally:
+                del frame
+        else:
+            self._log("error", self.__type__, self.__name__, args, tbframe=False)
 
     def log_critical(self, *args, **kwargs):
-        self._log("critical", self.__type__, self.__name__, args)
-        if kwargs.get('trace', True):
-            self._print_exc()
+        trace = kwargs.get('trace', True)
+        if trace:
+            try:
+                frame = inspect.currentframe()
+                self._log("critical", self.__type__, self.__name__, args, tbframe=frame)
+            finally:
+                del frame
+        else:
+            self._log("critical", self.__type__, self.__name__, args, tbframe=False)
 
     def _print_exc(self):
         frame = inspect.currentframe()

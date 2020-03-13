@@ -24,7 +24,6 @@ from os import listdir, makedirs
 from os.path import isfile, join, exists, abspath
 from sys import version_info
 from itertools import chain
-from traceback import print_exc
 
 from module.lib.SafeEval import const_eval as literal_eval
 from module.ConfigParser import IGNORE
@@ -303,9 +302,8 @@ class PluginManager:
                 plugins[name]["module"] = module  #cache import, maybe unneeded
                 return module
             except Exception, e:
-                self.log.error(_("Error importing %(name)s: %(msg)s") % {"name": name, "msg": str(e)})
-                if self.core.debug:
-                    print_exc()
+                self.log.error(_("Error importing %(name)s: %(msg)s") % {"name": name, "msg": str(e)}, exc_info=self.core.debug)
+
         else:
             self.log.debug("Plugin %s not found" % name)
             self.log.debug("Available plugins : %s" % str(plugins))

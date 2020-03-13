@@ -18,7 +18,6 @@
 """
 
 from time import time
-from traceback import print_exc
 from threading import Lock
 
 from common.json_layer import json
@@ -72,9 +71,8 @@ class CaptchaManager():
             try:
                 plugin.newCaptchaTask(task)
             except:
-                if self.core.debug:
-                    print_exc()
-            
+                self.core.log.debug(_("Exception in captcha task has occurred" ), exc_info=True)
+
         if task.handler or cli:  # The captcha was handled
             self.tasks.append(task)
             return True

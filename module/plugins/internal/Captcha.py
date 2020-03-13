@@ -13,7 +13,7 @@ from .misc import fsjoin
 class Captcha(Plugin):
     __name__ = "Captcha"
     __type__ = "captcha"
-    __version__ = "0.57"
+    __version__ = "0.58"
     __status__ = "stable"
 
     __description__ = """Base anti-captcha plugin"""
@@ -28,9 +28,9 @@ class Captcha(Plugin):
 
         self.init()
 
-    def _log(self, level, plugintype, pluginname, messages):
+    def _log(self, level, plugintype, pluginname, messages, tbframe=None):
         messages = (self.__name__,) + messages
-        return self.pyfile.plugin._log(level, plugintype, self.pyfile.plugin.__name__, messages)
+        return self.pyfile.plugin._log(level, plugintype, self.pyfile.plugin.__name__, messages, tbframe=tbframe)
 
     def recognize(self, image):
         """

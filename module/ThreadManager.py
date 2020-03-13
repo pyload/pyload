@@ -23,7 +23,6 @@ import re
 from subprocess import Popen
 from threading import Event, Lock
 from time import sleep, time
-from traceback import print_exc
 from random import choice
 
 import pycurl
@@ -134,19 +133,15 @@ class ThreadManager:
         try:
             self.tryReconnect()
         except Exception, e:
-            self.log.error(_("Reconnect Failed: %s") % str(e) )
+            self.log.error(_("Reconnect Failed: %s") % str(e), exc_info=self.core.debug)
             self.reconnecting.clear()
-            if self.core.debug:
-                print_exc()
         self.checkThreadCount()
 
         try:
             self.assignJob()
         except Exception, e:
-            self.log.warning("Assign job error", e)
-            if self.core.debug:
-                print_exc()
-            
+            self.log.warning("Assign job error: " % str(e), exc_info=self.core.debug)
+
             sleep(0.5)
             self.assignJob()
             #it may be failed non critical so we try it again
@@ -193,11 +188,9 @@ class ThreadManager:
         try:
             reconn = Popen(self.core.config['reconnect']['method'], bufsize=-1, shell=True)#, stdout=subprocess.PIPE)
         except:
-            self.log.warning(_("Failed executing reconnect script!"))
+            self.log.warning(_("Failed executing reconnect script!"), exc_info=self.core.debug)
             self.core.config["reconnect"]["activated"] = False
             self.reconnecting.clear()
-            if self.core.debug:
-                print_exc()
             return
 
         reconn.wait()
@@ -275,8 +268,7 @@ class ThreadManager:
             try:
                 job.initPlugin()
             except Exception, e:
-                self.log.critical(str(e))
-                print_exc()
+                self.log.critical(str(e), exc_info=True)
                 job.setStatus("failed")
                 job.error = str(e)
                 job.release()

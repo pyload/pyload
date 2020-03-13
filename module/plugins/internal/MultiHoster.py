@@ -10,7 +10,7 @@ from .SimpleHoster import SimpleHoster
 class MultiHoster(SimpleHoster):
     __name__ = "MultiHoster"
     __type__ = "hoster"
-    __version__ = "0.68"
+    __version__ = "0.69"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -39,9 +39,9 @@ class MultiHoster(SimpleHoster):
     def init(self):
         self.PLUGIN_NAME = self.pyload.pluginManager.hosterPlugins.get(self.classname)['name']
 
-    def _log(self, level, plugintype, pluginname, messages):
+    def _log(self, level, plugintype, pluginname, messages, tbframe=None):
         messages = (self.PLUGIN_NAME,) + messages
-        return SimpleHoster._log(self, level, plugintype, pluginname, messages)
+        return SimpleHoster._log(self, level, plugintype, pluginname, messages, tbframe=tbframe)
 
     def setup(self):
         self.no_fallback = True

@@ -756,7 +756,7 @@ def which(filename):
 
 def format_exc(frame=None):
     """
-    Format call-stack and display exception information (if availible)
+    Format call-stack and display exception information (if available)
     """
     exc_info = sys.exc_info()
     exc_desc = u""

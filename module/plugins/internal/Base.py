@@ -6,8 +6,8 @@ import time
 import urlparse
 
 from .Captcha import Captcha
-from .misc import (decode, encode, fixurl, format_size, format_time,
-                   parse_html_form, parse_name, replace_patterns)
+from .misc import (
+    decode, encode, fixurl, format_exc, format_size, format_time, parse_html_form, parse_name, replace_patterns)
 from .Plugin import Abort, Fail, Plugin, Reconnect, Retry, Skip
 
 
@@ -26,7 +26,7 @@ def parse_fileInfo(klass, url="", html=""):
 class Base(Plugin):
     __name__ = "Base"
     __type__ = "base"
-    __version__ = "0.36"
+    __version__ = "0.37"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -98,7 +98,7 @@ class Base(Plugin):
         self.init_base()
         self.init()
 
-    def _log(self, level, plugintype, pluginname, messages):
+    def _log(self, level, plugintype, pluginname, messages, tbframe=None):
         log = getattr(self.pyload.log, level)
         msg = u" | ".join(decode(a).strip() for a in messages if a)
 
@@ -114,6 +114,9 @@ class Base(Plugin):
                 self.account.info['login']['password'], "**********")
         except Exception:
             pass
+
+        if tbframe:
+            msg += "\n" + format_exc(tbframe)
 
         log("%(plugintype)s %(pluginname)s[%(id)s]: %(msg)s" %
             {'plugintype': plugintype.upper(),
