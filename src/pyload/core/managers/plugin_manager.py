@@ -390,7 +390,7 @@ class PluginManager:
                 if user and not self.plugins[type][name]["user"]:
                     return self
 
-    def load_module(self, name, replace=True):
+    def load_module_with_name(self, name, replace=True):
         if name not in sys.modules:  #: could be already in modules
             if replace:
                 if self.ROOT in name:

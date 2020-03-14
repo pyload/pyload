@@ -151,10 +151,6 @@ class ExternalScripts(BaseAddon):
     def call_script(self, folder, *args, **kwargs):
         scripts = self.scripts.get(folder)
 
-        if folder not in self.scripts:
-            self.log_debug(f"Folder `{folder}` not found")
-            return
-
         if not scripts:
             self.log_debug(f"No script found under folder `{folder}`")
             return

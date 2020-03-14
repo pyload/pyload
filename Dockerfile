@@ -19,7 +19,7 @@ FROM lsiobase/ubuntu:$UBUNTU_RELEASE as builder
 ARG APT_INSTALL_OPTIONS="--no-install-recommends --yes"
 ARG PIP_INSTALL_OPTIONS="--disable-pip-version-check --no-cache-dir --no-compile --upgrade"
 
-ARG APK_PACKAGES="python3 openssl python3-distutils wget"
+ARG APK_PACKAGES="python3 python3-dev openssl python3-distutils wget curl libcurl4-openssl-dev build-essential libssl-dev libffi-dev libgnutls30"
 ARG PIP_PACKAGES="pip setuptools wheel"
 
 RUN \

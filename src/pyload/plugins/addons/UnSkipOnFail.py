@@ -14,7 +14,7 @@ class UnSkipOnFail(BaseAddon):
 
     __pyload_version__ = "0.5"
 
-    __config__ = [("enabled", "bool", "Activated", True)]
+    __config__ = [("enabled", "bool", "Activated", False)]
 
     __description__ = """Restart skipped duplicates when download fails"""
     __license__ = "GPLv3"

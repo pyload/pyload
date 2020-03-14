@@ -14,23 +14,23 @@ from .convert import splitaddress
 
 
 # def is_ipv4(value):
-    # try:
-        # validators.ipv4(value)
-    # except validators.ValidationFailure:
-        # return False
-    # return True
+# try:
+# validators.ipv4(value)
+# except validators.ValidationFailure:
+# return False
+# return True
 
 
 # def is_ipv6(value):
-    # try:
-        # validators.ipv6(value)
-    # except validators.ValidationFailure:
-        # return False
-    # return True
+# try:
+# validators.ipv6(value)
+# except validators.ValidationFailure:
+# return False
+# return True
 
 
 # def is_ip(value):
-    # return is_ipv4(value) or is_ipv6(value)
+# return is_ipv4(value) or is_ipv6(value)
 
 
 def is_port(value):
@@ -55,8 +55,8 @@ def is_host(value):
 
 
 # def is_socket(value):
-    # ip, port = splitaddress(value)
-    # return is_ip(ip) and is_port(port)
+# ip, port = splitaddress(value)
+# return is_ip(ip) and is_port(port)
 
 
 def is_endpoint(value):
@@ -112,8 +112,8 @@ def is_resource(url, *args, **kwargs):
 
 # TODO: Recheck in 0.5.x
 # def is_url(url):
-    # url = format.url(url)
-    # try:
-        # return validators.url(url)
-    # except validators.ValidationFailure:
-        # return False
+# url = format.url(url)
+# try:
+# return validators.url(url)
+# except validators.ValidationFailure:
+# return False

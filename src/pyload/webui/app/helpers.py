@@ -5,6 +5,7 @@ from functools import wraps
 from urllib.parse import urljoin, urlparse
 
 import flask
+
 # import flask_themes2
 
 from pyload.core.api import Perms, Role, has_permission

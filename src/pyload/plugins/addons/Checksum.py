@@ -405,8 +405,8 @@ class Checksum(BaseAddon):
                         time.sleep(wait_time)
 
                         pyfile.package().set_finished = (
-                            False
-                        )  #: Force `package_finished` event again
+                            False  #: Force `package_finished` event again
+                        )
                         self.pyload.files.restart_file(fid)
                         continue
 

@@ -42,6 +42,13 @@ class LogFactory:
         "exc": {"ERROR": "bold,black,bg_white", "CRITICAL": "bold,black,bg_white"},
     }
 
+    LOG_LEVEL = {
+        0: logging.NOTSET,
+        1: logging.DEBUG,
+        2: logging.INFO,
+        3: logging.CRITICAL,
+    }
+
     def __init__(self, core):
         self.pyload = core
         self._ = core._
@@ -58,7 +65,8 @@ class LogFactory:
         syslog = self.pyload.config.get("log", "syslog")
         filelog = self.pyload.config.get("log", "filelog")
 
-        level = logging.DEBUG if self.pyload.debug else logging.INFO
+        level = self.LOG_LEVEL.get(self.pyload.debug, logging.INFO)
+        print(logging.getLevelName(level))
         logger.setLevel(level)
 
         if console:

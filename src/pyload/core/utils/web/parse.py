@@ -38,7 +38,7 @@ def attr(text, name=None):
 
 
 # def domain(url):
-    # return tld.get_tld(format.url(url), fail_silently=True)
+# return tld.get_tld(format.url(url), fail_silently=True)
 
 
 _RE_FORM = re.compile(r"(<(input|textarea).*?>)([^<]*(?=</\2)|)", flags=re.I | re.S)

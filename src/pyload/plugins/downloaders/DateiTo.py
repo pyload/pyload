@@ -61,9 +61,10 @@ class DateiTo(SimpleDownloader):
             data = dict(x.split("=") for x in m.group(2).split("&"))
 
             if url.endswith("self.captcha.php"):
-                data["recaptcha_response_field"], data[
-                    "recaptcha_challenge_field"
-                ] = self.captcha.challenge()
+                (
+                    data["recaptcha_response_field"],
+                    data["recaptcha_challenge_field"],
+                ) = self.captcha.challenge()
         else:
             return
 

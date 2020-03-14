@@ -58,4 +58,3 @@ class InscDict(MutableMapping):
 
     def copy(self):
         return InscDict(self.__dict__.values())
-        

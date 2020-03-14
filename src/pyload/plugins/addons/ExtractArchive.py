@@ -113,7 +113,7 @@ class ExtractArchive(BaseAddon):
     def activate(self):
         for p in ("UnRar", "SevenZip", "UnZip", "UnTar"):
             try:
-                module = self.pyload.plugin_manager.load_module("base", p)
+                module = self.pyload.plugin_manager.load_module_with_name("base", p)
                 klass = getattr(module, p)
                 if klass.find():
                     self.extractors.append(klass)

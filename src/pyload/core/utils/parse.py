@@ -12,8 +12,8 @@ from .seconds import to_midnight as seconds_to_midnight
 
 
 # def alias(text):
-    # chunks = _RE_ALIAS.split(purge.name(text))
-    # return "".join(word.capitalize() for word in chunks if word)
+# chunks = _RE_ALIAS.split(purge.name(text))
+# return "".join(word.capitalize() for word in chunks if word)
 
 
 _BOOLMAP = {

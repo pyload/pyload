@@ -1,5 +1,3 @@
-sudo: false
-
 os: linux
 language: python
 group: travis_latest
@@ -29,7 +27,7 @@ dist: xenial
 
 before_cache: rm -f "$HOME/.cache/pip/log/debug.log"
 cache: pip
-
+before_install: sudo apt-get install -y libgnutls-dev libssl-dev
 install: pip install --upgrade tox tox-travis
 script: tox --sitepackages
 

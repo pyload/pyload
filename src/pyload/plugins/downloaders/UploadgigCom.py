@@ -34,8 +34,8 @@ class UploadgigCom(SimpleDownloader):
     OFFLINE_PATTERN = r"File not found"
 
     LOGIN_PREMIUM = (
-        True
-    )  #: Free download is not possible because they blocked noscript ReCaptcha
+        True  #: Free download is not possible because they blocked noscript ReCaptcha
+    )
 
     def handle_free(self, pyfile):
         url, inputs = self.parse_html_form('id="dl_captcha_form"')

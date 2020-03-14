@@ -29,7 +29,15 @@ PKGDIR = pkg_resources.resource_filename(__name__, "")
 USERHOMEDIR = os.path.expanduser("~")
 os.chdir(USERHOMEDIR)
 
-__version__ = pkg_resources.get_distribution(PKGNAME).parsed_version.base_version
+try:
+    __version__ = pkg_resources.get_distribution(PKGNAME).parsed_version.base_version
+except pkg_resources.DistributionNotFound as e:
+    version_path = os.path.join(PKGDIR, "../../VERSION")
+    if not os.path.exists(version_path):
+        raise e
+    with open(version_path, "r", encoding="utf-8") as version:
+        __version__ = version.read().rstrip()
+
 __version_info__ = semver.parse_version_info(__version__)
 
 

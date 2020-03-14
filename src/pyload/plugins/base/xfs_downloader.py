@@ -301,6 +301,7 @@ class XFSDownloader(SimpleDownloader):
 
         if captcha_key:
             self.captcha = solvemedia
-            inputs["adcopy_response"], inputs[
-                "adcopy_challenge"
-            ] = solvemedia.challenge(captcha_key)
+            (
+                inputs["adcopy_response"],
+                inputs["adcopy_challenge"],
+            ) = solvemedia.challenge(captcha_key)

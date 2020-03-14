@@ -91,9 +91,10 @@ class FilepostCom(SimpleDownloader):
             if not self.link:
                 #: Solve ReCaptcha
                 self.captcha = ReCaptcha(pyfile)
-                post_dict["recaptcha_response_field"], post_dict[
-                    "recaptcha_challenge_field"
-                ] = self.captcha.challenge(captcha_key)
+                (
+                    post_dict["recaptcha_response_field"],
+                    post_dict["recaptcha_challenge_field"],
+                ) = self.captcha.challenge(captcha_key)
                 self.link = self.get_json_response(get_dict, post_dict, "link")
 
     def get_json_response(self, get_dict, post_dict, field):

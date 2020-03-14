@@ -53,26 +53,21 @@ class Core:
     DEFAULT_STORAGEDIR = os.path.join(USERHOMEDIR, "Downloads", "pyLoad")
     DEBUG_LEVEL_MAP = {"debug": 1, "trace": 2, "stack": 3}
 
-
     @property
     def version(self):
         return PYLOAD_VERSION
-
 
     @property
     def version_info(self):
         return PYLOAD_VERSION_INFO
 
-
     @property
     def running(self):
         return self._running.is_set()
 
-
     @property
     def debug(self):
         return self._debug
-
 
     # NOTE: should `restore` reset config as well?
     def __init__(self, userdir, cachedir, storagedir, debug=None, restore=False):
@@ -102,7 +97,6 @@ class Core:
         # TODO: Remove...
         self.last_client_connected = 0
 
-
     def _init_config(self, userdir, cachedir, storagedir, debug):
         from pyload.core.config.parser import ConfigParser
 
@@ -125,7 +119,6 @@ class Core:
 
         self.config.save()  #: save so config files gets filled
 
-
     def _init_log(self):
         from pyload.core.log_factory import LogFactory
 
@@ -136,25 +129,20 @@ class Core:
 
         self.log.warning(f"*** Welcome to pyLoad {self.version} ***")
 
-
     def _init_network(self):
-        from pyload.core.network import request_factory
         from pyload.core.network.request_factory import RequestFactory
 
         self.req = self.request_factory = RequestFactory(self)
-
 
     def _init_api(self):
         from pyload.core.api import Api
 
         self.api = Api(self)
 
-
     def _init_webserver(self):
         from pyload.webui.webserver_thread import WebServerThread
 
         self.webserver = WebServerThread(self)
-
 
     def _init_database(self, restore):
         from pyload.core.database import DatabaseThread
@@ -176,7 +164,6 @@ class Core:
                 ).format(*userpw)
             )
 
-
     def _init_managers(self):
         from pyload.core.managers.account_manager import AccountManager
         from pyload.core.managers.addon_manager import AddonManager
@@ -197,7 +184,6 @@ class Core:
         self.thm = self.thread_manager = ThreadManager(self)
         self.cpm = self.captcha_manager = CaptchaManager(self)
         self.adm = self.addon_manager = AddonManager(self)
-
 
     def _setup_permissions(self):
         self.log.debug("Setup permissions...")
@@ -232,12 +218,10 @@ class Core:
                     stack_info=self.debug > 2,
                 )
 
-
     def set_language(self, lang):
         localedir = os.path.join(PKGDIR, "locale")
         languages = (locale.locale_alias[lang.lower()].split("_", 1)[0],)
         self._set_language(self.LOCALE_DOMAIN, localedir, languages)
-
 
     def _set_language(self, *args, **kwargs):
         trans = gettext.translation(*args, **kwargs)
@@ -245,7 +229,6 @@ class Core:
             self._ = trans.ugettext
         except AttributeError:
             self._ = trans.gettext
-
 
     def _setup_language(self):
         self.log.debug("Setup language...")
@@ -261,13 +244,11 @@ class Core:
             self.log.warning(exc, exc_info=self.debug > 1, stack_info=self.debug > 2)
             self._set_language(self.LOCALE_DOMAIN, fallback=True)
 
-
     # def _setup_niceness(self):
     # niceness = self.config.get('general', 'niceness')
     # renice(niceness=niceness)
     # ioniceness = int(self.config.get('general', 'ioniceness'))
     # ionice(niceness=ioniceness)
-
 
     def _setup_network(self):
         self.log.debug("Setup network...")
@@ -280,12 +261,10 @@ class Core:
         self.log.info(self._("Activating Plugins..."))
         self.adm.core_ready()
 
-
     def _start_webserver(self):
         if not self.config.get("webui", "enabled"):
             return
         self.webserver.start()
-
 
     def _parse_linkstxt(self):
         link_file = os.path.join(self.userdir, "links.txt")
@@ -295,7 +274,6 @@ class Core:
                     self.api.add_package("links.txt", [link_file], 1)
         except Exception as exc:
             self.log.debug(exc, exc_info=self.debug > 1, stack_info=self.debug > 2)
-
 
     def start(self):
         try:
@@ -360,18 +338,15 @@ class Core:
             self.log.critical(exc, exc_info=True, stack_info=self.debug > 2)
             self.terminate()
 
-
     # TODO: Remove
     def is_client_connected(self):
         return (self.last_client_connected + 30) > time.time()
-
 
     def restart(self):
         self.stop()
         self.log.info(self._("Restarting core..."))
         # self.evm.fire('pyload:restarting')
         self.start()
-
 
     def terminate(self):
         self.stop()
@@ -382,7 +357,6 @@ class Core:
         # if cleanup:
         # self.log.info(self._("Deleting temp files..."))
         # remove(self.tmpdir)
-
 
     def stop(self):
         try:

@@ -19,7 +19,7 @@ FROM lsiobase/alpine:$ALPINE_RELEASE as builder
 ARG APK_INSTALL_OPTIONS="--no-cache"
 ARG PIP_INSTALL_OPTIONS="--disable-pip-version-check --no-cache-dir --no-compile --upgrade"
 
-ARG APK_PACKAGES="python3 openssl"
+ARG APK_PACKAGES="python3 openssl curl"
 ARG PIP_PACKAGES="pip setuptools wheel"
 
 RUN \
@@ -41,7 +41,7 @@ COPY setup.cfg /source/setup.cfg
 WORKDIR /wheels
 
 ARG APK_INSTALL_OPTIONS="--no-cache"
-ARG APK_PACKAGES="gcc musl-dev python3-dev libffi-dev openssl-dev jpeg-dev zlib-dev libxml2-dev libxslt-dev"
+ARG APK_PACKAGES="gcc musl-dev python3-dev gnutls-dev curl-dev libffi-dev openssl-dev jpeg-dev zlib-dev libxml2-dev libxslt-dev"
 
 RUN \
 echo "**** install build packages ****" && \

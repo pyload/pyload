@@ -875,7 +875,7 @@ a.play {
     background:transparent url("/static/img/control_play.png") 0px 1px no-repeat;
 }
 .time {
-    background:transparent url("/static/img/status_None.png") 0px 1px no-repeat;
+    background:transparent url("/static/img/status_none.png") 0px 1px no-repeat;
 }
 a.play:hover {
     background:transparent url("/static/img/control_play_blue.png") 0px 1px no-repeat;
