@@ -42,7 +42,7 @@ except ImportError:
 class misc(object):
     __name__ = "misc"
     __type__ = "plugin"
-    __version__ = "0.60"
+    __version__ = "0.61"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -1129,10 +1129,9 @@ else:
             dwFlags=startup_info.dwFlags,
             wShowWindow=startup_info.wShowWindow,
             cb=sizeof(STARTUPINFOW),
-            ## XXXvlab: not sure of the casting here to ints.
-            hStdInput=int(startup_info.hStdInput),
-            hStdOutput=int(startup_info.hStdOutput),
-            hStdError=int(startup_info.hStdError),
+            hStdInput=startup_info.hStdInput,
+            hStdOutput=startup_info.hStdOutput,
+            hStdError=startup_info.hStdError,
         )
 
         wenv = None
