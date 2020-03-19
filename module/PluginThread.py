@@ -21,7 +21,7 @@
 from Queue import Queue
 from threading import Thread
 from os import listdir, stat
-from os.path import join
+from os.path import join, isdir
 from time import sleep, time, strftime, gmtime
 from traceback import format_exc
 from pprint import pformat
@@ -61,12 +61,14 @@ class PluginThread(Thread):
 
             zip = zipfile.ZipFile(dump_name, "w")
 
-            for f in listdir(join("tmp", pyfile.pluginname)):
-                try:
-                    # avoid encoding errors
-                    zip.write(join("tmp", pyfile.pluginname, f), save_join(pyfile.pluginname, f))
-                except:
-                    pass
+            dumps_dir = join("tmp", pyfile.pluginname)
+            if isdir(dumps_dir):
+                for f in listdir(dumps_dir):
+                    try:
+                        # avoid encoding errors
+                        zip.write(join("tmp", pyfile.pluginname, f), save_join(pyfile.pluginname, f))
+                    except:
+                        pass
 
             info = zipfile.ZipInfo(save_join(pyfile.pluginname, "debug_Report.txt"), gmtime())
             info.external_attr = 0644 << 16L # change permissions
