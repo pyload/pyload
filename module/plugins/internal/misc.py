@@ -42,7 +42,7 @@ except ImportError:
 class misc(object):
     __name__ = "misc"
     __type__ = "plugin"
-    __version__ = "0.61"
+    __version__ = "0.62"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -1129,9 +1129,9 @@ else:
             dwFlags=startup_info.dwFlags,
             wShowWindow=startup_info.wShowWindow,
             cb=sizeof(STARTUPINFOW),
-            hStdInput=startup_info.hStdInput,
-            hStdOutput=startup_info.hStdOutput,
-            hStdError=startup_info.hStdError,
+            hStdInput=0 if startup_info.hStdInput is None else int(startup_info.hStdInput),
+            hStdOutput=0 if startup_info.hStdOutput is None else int(startup_info.hStdOutput),
+            hStdError=0 if startup_info.hStdError is None else int(startup_info.hStdError),
         )
 
         wenv = None
