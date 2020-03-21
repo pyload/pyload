@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from module.network.HTTPRequest import BadHeader
+
 from ..internal.misc import json
 from ..internal.MultiHoster import MultiHoster
 
@@ -11,7 +13,7 @@ def args(**kwargs):
 class RealdebridCom(MultiHoster):
     __name__ = "RealdebridCom"
     __type__ = "hoster"
-    __version__ = "0.79"
+    __version__ = "0.80"
     __status__ = "testing"
 
     __pattern__ = r'https?://((?:www\.|s\d+\.)?real-debrid\.com/dl?/|[\w^_]\.rdb\.so/d/)[\w^_]+'
@@ -30,7 +32,14 @@ class RealdebridCom(MultiHoster):
     API_URL = "https://api.real-debrid.com/rest/1.0"
 
     def api_response(self, namespace, get={}, post={}):
-        json_data = self.load(self.API_URL + namespace, get=get, post=post)
+        try:
+            json_data = self.load(self.API_URL + namespace, get=get, post=post)
+        except BadHeader, e:
+            if e.code == 503:
+                json_data = e.content
+
+            else:
+                raise
 
         return json.loads(json_data)
 
