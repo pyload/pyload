@@ -140,7 +140,7 @@ class ThreadManager:
         try:
             self.assignJob()
         except Exception, e:
-            self.log.warning("Assign job error: " % str(e), exc_info=self.core.debug)
+            self.log.warning(_("Assign job error: %s") % str(e), exc_info=self.core.debug)
 
             sleep(0.5)
             self.assignJob()
