@@ -42,7 +42,7 @@ except ImportError:
 class misc(object):
     __name__ = "misc"
     __type__ = "plugin"
-    __version__ = "0.62"
+    __version__ = "0.63"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -551,11 +551,12 @@ if sys.getfilesystemencoding().startswith('ANSI'):
      Use fs_encode before accesing files on disk,
      it will encode the string properly
     """
-    def fs_encode(string):
+    def fs_encode(value):
         try:
-            string = string.encode('utf-8')
+            value = decode(value)
+            value = value.encode('utf-8')
         finally:
-            return string
+            return value
 
 else:
     fs_encode = decode
