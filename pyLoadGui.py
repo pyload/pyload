@@ -24,13 +24,27 @@ import os
 import sys
 
 if os.name == "nt":
+    DESKTOP_NOTIFICATIONS = "qt_tray"
     import ctypes
-
-# import pynotify before logging to avoid gtk warning on some systems
-try:
-    import pynotify
-except ImportError:
-    pass
+else:
+    # import pynotify early due to its issues
+    from module.gui.CmdLineParser import cmdLineParser
+    DESKTOP_NOTIFICATIONS = cmdLineParser(CURRENT_VERSION)[1]
+    if DESKTOP_NOTIFICATIONS is None:
+        # auto detect, prefer notify2
+        try:
+            import notify2
+            DESKTOP_NOTIFICATIONS = "notify2"
+        except ImportError:
+            try:
+                import pynotify
+                DESKTOP_NOTIFICATIONS = "pynotify"
+            except ImportError:
+                DESKTOP_NOTIFICATIONS = "qt_tray"
+    else:
+        # from command line option
+        if DESKTOP_NOTIFICATIONS == "pynotify":
+            import pynotify
 
 from module.gui import LoggingLevels
 import logging.handlers
@@ -128,7 +142,7 @@ class main(QObject):
         self.homedir = abspath("")
 
         from module.gui.CmdLineParser import cmdLineParser
-        (dummy, self.cmdLineConnection, self.configdir, self.noConsole, icontest, self.pidfile, self.debugLogLevel) = cmdLineParser(CURRENT_VERSION)
+        (dummy, dummy, self.cmdLineConnection, self.configdir, self.noConsole, icontest, self.pidfile, self.debugLogLevel) = cmdLineParser(CURRENT_VERSION)
         if icontest:
              self.icontest()
              exit()
@@ -642,7 +656,7 @@ class main(QObject):
             self.trayState["restore_unmaxed_geo"] = False
         self.tray = TrayIcon(self.appIconSet)
         self.tray.slotSetupIcon(self.trayOptions.settings["IconFile"])
-        self.notification = Notification(self.tray)
+        self.notification = Notification(DESKTOP_NOTIFICATIONS, self.tray)
         self.trayIconShowSGL.connect(self.tray.show)
         self.trayIconHideSGL.connect(self.tray.hide)
         self.trayIconSetupIconSGL.connect(self.tray.slotSetupIcon)

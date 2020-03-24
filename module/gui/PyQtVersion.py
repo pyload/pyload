@@ -20,7 +20,9 @@ def usePyQt5(pyloadgui_version):
     import os
 
     from module.gui.CmdLineParser import cmdLineParser
-    (cmdl_ver, dummy, configdir_, dummy, dummy, dummy, dummy) = cmdLineParser(pyloadgui_version)
+    data = cmdLineParser(pyloadgui_version)
+    cmdl_ver = data[0]
+    configdir_ = data[3]
 
     def importVersion4():
         try:

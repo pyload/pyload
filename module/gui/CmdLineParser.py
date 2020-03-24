@@ -29,20 +29,21 @@ def cmdLineParser(pyloadgui_version):
             print "Usage: pyLoadGui [options]"
         print ""
         print "<Options>"
-        print "  -v, --version", " " * 10, "Print version to terminal"
-        print "  -d, --debug=<level>", " " * 4, "Enable debug messages"
-        print "                               possible levels: 0 to 9"
-        print "  --configdir=<dir>", " " * 6, "Run with <dir> as config directory"
-        print "  -c, --connection=<name>", " " * 0, "Use connection <name>"
-        print "                               of the Connection Manager"
-        print "  -q, --pyqt=<num>", " " * 7, "Force use of PyQt version: 4 or 5"
-        print "  -n, --noconsole", " " * 8, "Hide Command Prompt on Windows OS"
-        #print "  -p, --pidfile=<file>", " " * 3, "Set pidfile to <file>"
-        print "  -i, --icontest", " " * 9, "Check for crash when loading icons"
-        print "  -h, --help", " " * 13, "Display this help screen"
+        print "  -v, --version            Print version to terminal"
+        print "  -d, --debug=<level>      Enable debug messages, possible levels: 0 to 9"
+        print "  --configdir=<dir>        Run with <dir> as config directory"
+        print "  -c, --connection=<name>  Use connection <name> of the Connection Manager"
+        print "  -q, --pyqt=<version>     Force use of PyQt version: 4 or 5"
+        print "  -o, --notify=<system>    Force use of Linux desktop notification system:"
+        print "                             notify2, pynotify or qt_tray"
+        print "  -n, --noconsole          Hide Command Prompt on Windows OSs"
+        #print "  -p, --pidfile=<file>     Set pidfile to <file>"
+        print "  -i, --icontest           Check for crash when loading icons"
+        print "  -h, --help               Display this help screen"
         print ""
 
     pyqt       = None
+    desknotify = None
     connection = None
     configdir_ = ""
     noconsole  = False
@@ -52,8 +53,8 @@ def cmdLineParser(pyloadgui_version):
 
     if len(argv) > 1:
         try:
-            options, dummy = getopt(argv[1:], 'vq:c:nihd:',
-                ["version", "pyqt=", "connection=", "configdir=", "noconsole", "icontest", "help", "debug="])
+            options, dummy = getopt(argv[1:], 'vq:o:c:nihd:',
+                ["version", "pyqt=", "notify=", "connection=", "configdir=", "noconsole", "icontest", "help", "debug="])
             for option, argument in options:
                 if option in ("-v", "--version"):
                     print pyloadgui_version
@@ -68,6 +69,15 @@ def cmdLineParser(pyloadgui_version):
                         print "Error: Invalid PyQt version"
                         exit()
                     pyqt = qtv
+                elif option in ("-o", "--notify"):
+                    if os.name != "nt":
+                        desknotify = str(argument)
+                        if desknotify not in ["notify2", "pynotify", "qt_tray" ]:
+                            print "Error: Invalid desktop notification system"
+                            exit()
+                    else:
+                        print "Error: The notify option works only on Linux/Unix-like OSs"
+                        exit()
                 elif option in ("-c", "--connection"):
                     connection = argument
                 elif option in ("--configdir"):
@@ -76,7 +86,7 @@ def cmdLineParser(pyloadgui_version):
                     if os.name == "nt":
                         noconsole = True
                     else:
-                        print "Error: The noconsole option works only on Windows OS"
+                        print "Error: The noconsole option works only on Windows OSs"
                         exit()
                 elif option in ("-i", "--icontest"):
                     icontest = True
@@ -103,6 +113,6 @@ def cmdLineParser(pyloadgui_version):
             print_help()
             exit()
 
-    return (pyqt, connection, configdir_, noconsole, icontest, pidfile, debug)
+    return (pyqt, desknotify, connection, configdir_, noconsole, icontest, pidfile, debug)
 
 
