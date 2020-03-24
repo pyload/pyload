@@ -125,7 +125,7 @@ class ConnectionManager(QDialog):
         count = self.connList.count()
         for i in range(count):
             item = self.connList.item(i)
-            d = item.data(Qt.UserRole).toPyObject()
+            d = self.pyObj(item.data(Qt.UserRole))
             if self.cleanDict(d)["id"] == id_:
                 self.connList.setCurrentItem(item)
                 break
@@ -141,7 +141,7 @@ class ConnectionManager(QDialog):
     def slotEdit(self):
         self.edit.setWindowTitle(_("Edit"))
         item = self.connList.currentItem()
-        data = item.data(Qt.UserRole).toPyObject()
+        data = self.pyObj(item.data(Qt.UserRole))
         data = self.cleanDict(data)
         self.edit.setData(data)
         self.edit.controls["cancel"].setFocus(Qt.OtherFocusReason)
@@ -149,7 +149,7 @@ class ConnectionManager(QDialog):
 
     def slotRemove(self):
         item = self.connList.currentItem()
-        data = item.data(Qt.UserRole).toPyObject()
+        data = self.pyObj(item.data(Qt.UserRole))
         data = self.cleanDict(data)
         row = self.connList.currentRow()
         self.removeConnectionSGL.emit(data)
@@ -159,19 +159,22 @@ class ConnectionManager(QDialog):
 
     def slotConnect(self):
         item = self.connList.currentItem()
-        data = item.data(Qt.UserRole).toPyObject()
+        data = self.pyObj(item.data(Qt.UserRole))
         data = self.cleanDict(data)
         self.connectSGL.emit(data)
 
     @classmethod
     def cleanDict(self, data):
-        tmp = {}
-        for k, d in data.items():
-            if isinstance(d, QString):
-                tmp[str(k)] = unicode(d)    # get rid of QString asap
-            else:
-                tmp[str(k)] = d
-        return tmp
+        if USE_QT5:
+            return data
+        else:
+            tmp = {}
+            for k, d in data.items():
+                if isinstance(d, QString):
+                    tmp[str(k)] = unicode(d)    # get rid of QString asap
+                else:
+                    tmp[str(k)] = d
+            return tmp
 
     def slotSave(self, data):
         id_ = self.cleanDict(data)["id"]
@@ -179,20 +182,20 @@ class ConnectionManager(QDialog):
         count = self.connList.count()
         for i in range(count):
             item = self.connList.item(i)
-            d = item.data(Qt.UserRole).toPyObject()
+            d = self.pyObj(item.data(Qt.UserRole))
             if self.cleanDict(d)["id"] == id_:
                 self.connList.setCurrentItem(item)
                 break
 
     def slotSaveAll(self):
         item = self.connList.currentItem()
-        data = item.data(Qt.UserRole).toPyObject()
+        data = self.pyObj(item.data(Qt.UserRole))
         id_ = self.cleanDict(data)["id"]
         connections = []
         count = self.connList.count()
         for i in range(count):
             item = self.connList.item(i)
-            data = item.data(Qt.UserRole).toPyObject()
+            data = self.pyObj(item.data(Qt.UserRole))
             data = self.cleanDict(data)
             self.edit.setData(data)
             data = self.edit.getData()
@@ -201,7 +204,7 @@ class ConnectionManager(QDialog):
         count = self.connList.count()
         for i in range(count):
             item = self.connList.item(i)
-            d = item.data(Qt.UserRole).toPyObject()
+            d = self.pyObj(item.data(Qt.UserRole))
             if self.cleanDict(d)["id"] == id_:
                 self.connList.setCurrentItem(item)
                 break
@@ -213,14 +216,14 @@ class ConnectionManager(QDialog):
     def slotDefault(self):
         currentRow = self.connList.currentRow()
         item = self.connList.currentItem()
-        data = item.data(Qt.UserRole).toPyObject()
+        data = self.pyObj(item.data(Qt.UserRole))
         data = self.cleanDict(data)
         did = data["id"]
         self.setDefault(data, not data["default"])
         count = self.connList.count()
         for i in range(count):
             item = self.connList.item(i)
-            data = item.data(Qt.UserRole).toPyObject()
+            data = self.pyObj(item.data(Qt.UserRole))
             if self.cleanDict(data)["id"] == did:
                 continue
             self.setDefault(data, False)
@@ -232,6 +235,13 @@ class ConnectionManager(QDialog):
         data = self.edit.getData()
         data["default"] = state
         self.saveConnectionSGL.emit(data)
+
+    @classmethod
+    def pyObj(self, obj):
+        if USE_QT5:
+            return obj
+        else:
+            return obj.toPyObject()
 
     def keyPressEvent(self, event):
         if event.key() != Qt.Key_Escape:

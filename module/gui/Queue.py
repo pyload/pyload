@@ -398,7 +398,10 @@ class QueueModel(CollectorModel):
         elif role == Qt.ToolTipRole and self.showToolTips:
             rect = self.view.visualRect(index)
             if rect.isValid():
-                txt = self.data(index, Qt.DisplayRole).toString()
+                if USE_QT5:
+                    txt = self.data(index, Qt.DisplayRole).value()
+                else:
+                    txt = self.data(index, Qt.DisplayRole).toString()
                 textWidth = self.view.fontMetrics().width(txt)
                 textWidth += 6
                 if textWidth > rect.width():

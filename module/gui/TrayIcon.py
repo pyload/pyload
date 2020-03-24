@@ -49,11 +49,10 @@ class TrayIcon(QSystemTrayIcon):
         self.setContextMenu(self.menu)
         if self.log.isEnabledFor(logging.DEBUG9):
             self.menu.addSeparator()
-            self.menuDebug = self.menu.addMenu("Debug")
-            self.debugTrayAction = self.menuDebug.addAction("Tray")
-            self.debugMsgBoxTest1Action = self.menuDebug.addAction("MessageBox Test 1")
-            self.debugMsgBoxTest2Action = self.menuDebug.addAction("MessageBox Test 2")
-            self.debugKillAction = self.menuDebug.addAction("kill")
+            self.debugTrayAction = self.menu.addAction("Debug: Tray")
+            self.debugMsgBoxTest1Action = self.menu.addAction("Debug: MessageBox Test 1")
+            self.debugMsgBoxTest2Action = self.menu.addAction("Debug: MessageBox Test 2")
+            self.debugKillAction = self.menu.addAction("Debug: kill")
 
         # disable/greyout menu entries
         self.showAction.setEnabled(False)

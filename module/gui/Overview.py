@@ -146,15 +146,26 @@ class OverviewDelegate(QItemDelegate):
         #if option.state & QStyle.State_Selected:
         #    painter.fillRect(option.rect, option.palette.color(QPalette.Highlight))
 
-        packagename = index.data(OverviewModel.PackageName).toString()
-        partsf = index.data(OverviewModel.PartsFinished).toString()
-        parts = index.data(OverviewModel.Parts).toString()
-        eta = int(index.data(OverviewModel.ETA).toString())
-        speed = index.data(OverviewModel.Speed).toString() or 0
-        progress = int(index.data(OverviewModel.Progress).toString())
-        currentSize = int(index.data(OverviewModel.CurrentSize).toString())
-        maxSize = int(index.data(OverviewModel.MaxSize).toString())
-        status = index.data(OverviewModel.Status).toString()
+        if USE_QT5:
+            packagename = unicode(index.data(OverviewModel.PackageName))
+            partsf = unicode(index.data(OverviewModel.PartsFinished))
+            parts = unicode(index.data(OverviewModel.Parts))
+            eta = int(index.data(OverviewModel.ETA))
+            speed = unicode(index.data(OverviewModel.Speed)) or unicode("0")
+            progress = int(index.data(OverviewModel.Progress))
+            currentSize = int(index.data(OverviewModel.CurrentSize))
+            maxSize = int(index.data(OverviewModel.MaxSize))
+            status = unicode(index.data(OverviewModel.Status))
+        else:
+            packagename = index.data(OverviewModel.PackageName).toString()
+            partsf = index.data(OverviewModel.PartsFinished).toString()
+            parts = index.data(OverviewModel.Parts).toString()
+            eta = int(index.data(OverviewModel.ETA).toString())
+            speed = index.data(OverviewModel.Speed).toString() or "0"
+            progress = int(index.data(OverviewModel.Progress).toString())
+            currentSize = int(index.data(OverviewModel.CurrentSize).toString())
+            maxSize = int(index.data(OverviewModel.MaxSize).toString())
+            status = index.data(OverviewModel.Status).toString()
 
         def formatEta(seconds): #TODO add to utils
             if seconds <= 0: return unicode("")

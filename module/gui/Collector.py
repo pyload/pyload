@@ -775,7 +775,10 @@ class CollectorModel(QAbstractItemModel):
         elif role == Qt.ToolTipRole and self.showToolTips:
             rect = self.view.visualRect(index)
             if rect.isValid():
-                txt = self.data(index, Qt.DisplayRole).toString()
+                if USE_QT5:
+                    txt = self.data(index, Qt.DisplayRole).value()
+                else:
+                    txt = self.data(index, Qt.DisplayRole).toString()
                 textWidth = self.view.fontMetrics().width(txt)
                 textWidth += 6
                 if textWidth > rect.width():
@@ -1470,8 +1473,11 @@ class CollectorView(QTreeView):
         """
         menu = QMenu()
         for i in range(0, self.model.columnCount()):
-            name = self.model.headerData(i, Qt.Horizontal).toString()
-            if not name.isEmpty():
+            if USE_QT5:
+                name = self.model.headerData(i, Qt.Horizontal).value()
+            else:
+                name = unicode(self.model.headerData(i, Qt.Horizontal).toString())
+            if name:
                 act = menu.addAction(name)
                 act.setCheckable(True)
                 act.setChecked(not self.isColumnHidden(i))
@@ -1480,7 +1486,11 @@ class CollectorView(QTreeView):
         act = menu.exec_(self.mapToGlobal(pos))
         if act:
             for columnToToggle in range(0, self.model.columnCount()):
-                if self.model.headerData(columnToToggle, Qt.Horizontal).toString() == act.text():
+                if USE_QT5:
+                    htext = self.model.headerData(columnToToggle, Qt.Horizontal).value()
+                else:
+                    htext = self.model.headerData(columnToToggle, Qt.Horizontal).toString()
+                if htext == act.text():
                     break
             if self.isColumnHidden(columnToToggle):
                 # get the sorted index of the most right visible column

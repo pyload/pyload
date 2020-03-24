@@ -260,12 +260,11 @@ class MessageBox(QDialog):
         # layout
         vboxIcon = QVBoxLayout()
         vboxIcon.setSpacing(0)
-        vboxIcon.setMargin(0)
+        vboxIcon.setContentsMargins(0, 0, 0, 0)
         vboxIcon.addStretch(1)
         vboxIcon.addWidget(self.iconLabel)
         self.grid = QGridLayout()
         self.grid.setSpacing(0)
-        self.grid.setMargin(0)
         self.grid.setContentsMargins(0, 0, 0, 0)
         self.grid.setColumnMinimumWidth(0, icon_x)
         self.grid.setRowMinimumHeight(0, icon_y)

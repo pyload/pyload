@@ -22,7 +22,7 @@ if USE_QT5:
     from PyQt5.QtCore import *
     from PyQt5.QtWidgets import *
 else:
-    from PyQt4.QtCore import pyqtSignal, QMutex, QMutexLocker, QStringList, Qt, QTimer, QVariant
+    from PyQt4.QtCore import pyqtSignal, QMutex, QMutexLocker, Qt, QTimer, QVariant
     from PyQt4.QtGui import (QApplication, QCheckBox, QComboBox, QCompleter, QFormLayout, QGroupBox, QHBoxLayout, QLabel,
                              QLayout, QLineEdit, QPushButton, QScrollArea, QSizePolicy, QSpinBox, QStackedLayout,
                              QStringListModel, QTabWidget, QVBoxLayout, QWidget)
@@ -48,7 +48,7 @@ class SettingsWidget(QWidget):
         self.pdata = None
         self.mutex = QMutex()
         self.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
-        self.pluginsSearchName = ""
+        self.pluginsSearchName = unicode("")
         self.menuPlugins = []
 
     def setCorePermissions(self, corePermissions):
@@ -150,7 +150,7 @@ class SettingsWidget(QWidget):
             self.sections[k] = s
             QApplication.processEvents()
 
-        sl = QStringList()
+        sl = []
         for k, section in self.pdata.iteritems():
             s = Section(section, self.plugins, "plugin")
             self.psections[k] = s
@@ -295,14 +295,14 @@ class SettingsWidget(QWidget):
             self.log.error("SettingsWidget.setMaxParallelDownloadsFromToolbar: Failed to update Server Settings tab.")
 
     def slotPluginsSearchClear(self):
-        self.pluginsSearchName = ""
-        self.pluginsSearchEditBox.setText("")
+        self.pluginsSearchName = unicode("")
+        self.pluginsSearchEditBox.setText(unicode(""))
 
     def slotPluginsSearchFind(self):
-        name = self.pluginsSearchEditBox.text()
+        name = unicode(self.pluginsSearchEditBox.text())
         if not name:
             return
-        if name.compare(self.pluginsSearchName, Qt.CaseInsensitive) != 0:
+        if name.lower() != self.pluginsSearchName.lower():
             self.pluginsSearchName = name
             self.pluginsSearchHitCount = 0
             self.pluginsSearchIndex = -1
@@ -311,7 +311,7 @@ class SettingsWidget(QWidget):
         ci = self.pluginsComboBox.currentIndex()
         mc = self.pluginsSearchHitCount
         for i in range(self.pluginsComboBox.currentIndex(), self.pluginsComboBox.count()):
-            if self.pluginsComboBox.itemText(i).indexOf(name, 0, Qt.CaseInsensitive) != -1:
+            if unicode(self.pluginsComboBox.itemText(i)).lower().find(name.lower()) != -1:
                 if i == self.pluginsComboBox.currentIndex():
                     if mc == 0:
                         self.pluginsSearchHitCount += 1
@@ -335,7 +335,7 @@ class SettingsWidget(QWidget):
         # wrap, continue search from first plugin
         if self.pluginsSearchHitCount == mc:
             for i in range(0, self.pluginsComboBox.currentIndex()):
-                if self.pluginsComboBox.itemText(i).indexOf(name, 0, Qt.CaseInsensitive) != -1:
+                if unicode(self.pluginsComboBox.itemText(i)).lower().find(name.lower()) != -1:
                     if i == self.pluginsComboBox.currentIndex():
                         break
                     self.pluginsComboBox.setCurrentIndex(i)
@@ -354,7 +354,7 @@ class SettingsWidget(QWidget):
         # status message
         if self.pluginsSearchHitCount == mc:
             if self.pluginsSearchHitCount < 1:
-                self.pluginsSearchName = ""
+                self.pluginsSearchName = unicode("")
                 self.pluginsSearchMessageLabel.setText("<b>" + _("Not found") + "</b>")
                 self.pluginsSearchMessage()
             elif self.pluginsComboBox.currentIndex() == ci:

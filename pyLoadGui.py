@@ -183,9 +183,10 @@ class main(QObject):
             exit()
         if self.noConsole:
             self.hideWindowsCommandPrompt()
-        QTextCodec.setCodecForTr(QTextCodec.codecForName("UTF-8"))
         QTextCodec.setCodecForLocale(QTextCodec.codecForName("UTF-8"))
-        QTextCodec.setCodecForCStrings(QTextCodec.codecForName("UTF-8"))
+        if not USE_QT5:
+            QTextCodec.setCodecForTr(QTextCodec.codecForName("UTF-8"))
+            QTextCodec.setCodecForCStrings(QTextCodec.codecForName("UTF-8"))
         self.init(True)
 
     @classmethod
