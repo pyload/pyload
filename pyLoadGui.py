@@ -2739,8 +2739,7 @@ class main(QObject):
             popup the notification options dialog
         """
         self.notificationOptions.dict2checkBoxStates()
-        self.notificationOptions.cbCaptcha.setEnabled(self.corePermissions["STATUS"] and self.captchaOptions.settings["Enabled"])
-        self.notificationOptions.cbCaptchaInteractive.setEnabled(self.corePermissions["STATUS"] and self.captchaOptions.settings["Enabled"])
+        self.notificationOptions.allowCaptcha(self.corePermissions["STATUS"] and self.captchaOptions.settings["Enabled"])
         retval = self.notificationOptions.exec_()
         if retval == QDialog.Accepted:
             self.notificationOptions.checkBoxStates2dict()

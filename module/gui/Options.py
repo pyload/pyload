@@ -119,6 +119,14 @@ class NotificationOptions(QDialog):
         self.cbCaptcha.setChecked            (self.settings["Captcha"])
         self.cbCaptchaInteractive.setChecked (self.settings["CaptchaInteractive"])
 
+    def allowCaptcha(self, allow):
+        self.cbCaptcha.setEnabled(allow)
+        self.cbCaptchaInteractive.setEnabled(allow)
+        # toggle the groupbox to make the change visible
+        checked = self.cbEnableNotify.isChecked()
+        self.cbEnableNotify.setChecked(not checked)
+        self.cbEnableNotify.setChecked(checked)
+
     def appFontChanged(self):
         self.buttons.updateWhatsThisButton()
 
