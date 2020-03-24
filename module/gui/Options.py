@@ -4,9 +4,11 @@ import logging
 
 from module.gui.PyQtVersion import USE_PYQT5
 if USE_PYQT5:
-    from PyQt5.QtGui import *
-    from PyQt5.QtCore import *
-    from PyQt5.QtWidgets import *
+    from PyQt5.QtCore import pyqtSignal, Qt
+    from PyQt5.QtGui import QColor, QFont, QIcon, QPalette
+    from PyQt5.QtWidgets import (QApplication, QCheckBox, QColorDialog, QComboBox, QDialog, QDialogButtonBox, QFontDialog,
+                                 QGridLayout, QGroupBox, QHBoxLayout, QLabel, QLayout, QLineEdit, QPushButton, QRadioButton,
+                                 QSpinBox, QVBoxLayout)
 else:
     from PyQt4.QtCore import pyqtSignal, Qt
     from PyQt4.QtGui import (QApplication, QCheckBox, QColor, QColorDialog, QComboBox, QDialog, QDialogButtonBox, QFont, QFontDialog,

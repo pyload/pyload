@@ -17,9 +17,9 @@
 
 from module.gui.PyQtVersion import USE_PYQT5
 if USE_PYQT5:
-    from PyQt5.QtGui import *
-    from PyQt5.QtCore import *
-    from PyQt5.QtWidgets import *
+    from PyQt5.QtCore import Qt
+    from PyQt5.QtGui import QIcon
+    from PyQt5.QtWidgets import QDialog, QDialogButtonBox, QGridLayout, QGroupBox, QLabel, QVBoxLayout
 else:
     from PyQt4.QtCore import Qt
     from PyQt4.QtGui import QDialog, QDialogButtonBox, QGridLayout, QGroupBox, QIcon, QLabel, QVBoxLayout

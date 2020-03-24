@@ -18,13 +18,12 @@
 
 from module.gui.PyQtVersion import USE_PYQT5
 if USE_PYQT5:
-    from PyQt5.QtGui import *
-    from PyQt5.QtCore import *
-    from PyQt5.QtWidgets import *
-    from PyQt5.QtWidgets import QStyleOptionProgressBar as QStyleOptionProgressBarV2
+    from PyQt5.QtCore import QAbstractListModel, QModelIndex, QSize, Qt, QVariant
+    from PyQt5.QtWidgets import QApplication, QItemDelegate, QListView, QStyle, QStyleOptionProgressBar
 else:
     from PyQt4.QtCore import QAbstractListModel, QModelIndex, QSize, Qt, QVariant
-    from PyQt4.QtGui import QApplication, QItemDelegate, QListView, QStyle, QStyleOptionProgressBarV2
+    from PyQt4.QtGui import QApplication, QItemDelegate, QListView, QStyle
+    from PyQt4.QtGui import QStyleOptionProgressBarV2 as QStyleOptionProgressBar
 
 import logging
 from module.remote.thriftbackend.ThriftClient import DownloadStatus
@@ -208,7 +207,7 @@ class OverviewDelegate(QItemDelegate):
         f.setPointSize(10)
         painter.setFont(f)
 
-        opts = QStyleOptionProgressBarV2()
+        opts = QStyleOptionProgressBar()
         opts.maximum = 100
         opts.minimum = 0
         opts.progress = progress

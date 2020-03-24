@@ -23,9 +23,9 @@ from uuid import uuid4 as uuid
 
 from module.gui.PyQtVersion import USE_PYQT5
 if USE_PYQT5:
-    from PyQt5.QtGui import *
-    from PyQt5.QtCore import *
-    from PyQt5.QtWidgets import *
+    from PyQt5.QtCore import pyqtSignal, QMutex, QObject, Qt
+    from PyQt5.QtGui import QIcon
+    from PyQt5.QtWidgets import QDialog, QDialogButtonBox, QGridLayout, QLabel, QLineEdit
 else:
     from PyQt4.QtCore import pyqtSignal, QMutex, QObject, Qt
     from PyQt4.QtGui import QDialog, QDialogButtonBox, QGridLayout, QIcon, QLabel, QLineEdit

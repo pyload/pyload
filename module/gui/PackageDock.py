@@ -18,9 +18,10 @@
 
 from module.gui.PyQtVersion import USE_PYQT5
 if USE_PYQT5:
-    from PyQt5.QtGui import *
-    from PyQt5.QtCore import *
-    from PyQt5.QtWidgets import *
+    from PyQt5.QtCore import pyqtSignal, Qt, QTimer
+    from PyQt5.QtGui import QColor, QIcon
+    from PyQt5.QtWidgets import (QCheckBox, QDockWidget, QGridLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton,
+                                 QRadioButton, QSizePolicy, QVBoxLayout, QWidget)
 else:
     from PyQt4.QtCore import pyqtSignal, Qt, QTimer
     from PyQt4.QtGui import (QCheckBox, QColor, QDockWidget, QGridLayout, QHBoxLayout, QIcon, QLabel, QLineEdit, QPushButton,

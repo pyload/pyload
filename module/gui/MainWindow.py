@@ -21,9 +21,11 @@ import re
 
 from module.gui.PyQtVersion import USE_PYQT5
 if USE_PYQT5:
-    from PyQt5.QtGui import *
-    from PyQt5.QtCore import *
-    from PyQt5.QtWidgets import *
+    from PyQt5.QtCore import pyqtSignal, QEvent, QPoint, QRect, QSize, Qt
+    from PyQt5.QtGui import QColor, QCursor, QIcon
+    from PyQt5.QtWidgets import (QAction, QActionGroup, QCheckBox, QFileDialog, QFrame, QGridLayout,
+                                 QHBoxLayout, QLabel, QMainWindow, QMenu, QPushButton, QSizePolicy, QStyle,
+                                 QTabWidget, QTextEdit, QVBoxLayout, QWhatsThis, QWidget)
 else:
     from PyQt4.QtCore import pyqtSignal, QEvent, QPoint, QRect, QSize, Qt
     from PyQt4.QtGui import (QAction, QActionGroup, QCheckBox, QColor, QCursor, QFileDialog, QFrame, QGridLayout,

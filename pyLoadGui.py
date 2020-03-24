@@ -44,9 +44,11 @@ from module import InitHomeDir
 import module.gui.PyQtVersion
 USE_PYQT5 = module.gui.PyQtVersion.USE_PYQT5 = module.gui.PyQtVersion.usePyQt5(CURRENT_VERSION)
 if USE_PYQT5:
-    from PyQt5.QtGui import *
-    from PyQt5.QtCore import *
-    from PyQt5.QtWidgets import *
+    from PyQt5.QtCore import (pyqtSignal, QByteArray, QMutex, QMutexLocker, QObject, QRegExp,
+                              Qt, QTextCodec, QTimer)
+    from PyQt5.QtGui import QIcon, QTextCursor
+    from PyQt5.QtWidgets import (QAbstractItemView, QApplication, QDialog, QMessageBox, QProgressDialog,
+                                 QStyle, QSystemTrayIcon)
 else:
     from PyQt4.QtCore import (pyqtSignal, QByteArray, QMutex, QMutexLocker, QObject, QRegExp,
                               Qt, QTextCodec, QTimer)

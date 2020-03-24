@@ -17,9 +17,7 @@
 
 from module.gui.PyQtVersion import USE_PYQT5
 if USE_PYQT5:
-    from PyQt5.QtGui import *
-    from PyQt5.QtCore import *
-    from PyQt5.QtWidgets import *
+    from PyQt5.QtCore import pyqtSignal, QObject
 else:
     from PyQt4.QtCore import pyqtSignal, QObject
 

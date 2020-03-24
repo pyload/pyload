@@ -18,9 +18,9 @@
 
 from module.gui.PyQtVersion import USE_PYQT5
 if USE_PYQT5:
-    from PyQt5.QtGui import *
-    from PyQt5.QtCore import *
-    from PyQt5.QtWidgets import *
+    from PyQt5.QtCore import (pyqtSignal, QAbstractItemModel, QItemSelection, QItemSelectionModel, QItemSelectionRange,
+                              QModelIndex, QMutex, QMutexLocker, QObject, QRegExp, Qt, QTimer, QVariant)
+    from PyQt5.QtWidgets import QAbstractItemView, QApplication, QMenu, QTreeView
 else:
     from PyQt4.QtCore import pyqtSignal, QAbstractItemModel, QModelIndex, QMutex, QMutexLocker, QObject, QRegExp, Qt, QTimer, QVariant
     from PyQt4.QtGui import QAbstractItemView, QApplication, QItemSelection, QItemSelectionModel, QItemSelectionRange, QMenu, QTreeView

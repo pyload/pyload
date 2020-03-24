@@ -18,13 +18,12 @@
 
 from module.gui.PyQtVersion import USE_PYQT5
 if USE_PYQT5:
-    from PyQt5.QtGui import *
-    from PyQt5.QtCore import *
-    from PyQt5.QtWidgets import *
-    from PyQt5.QtWidgets import QStyleOptionProgressBar as QStyleOptionProgressBarV2
+    from PyQt5.QtCore import pyqtSignal, QModelIndex, QMutexLocker, QObject, Qt, QTimer, QVariant
+    from PyQt5.QtWidgets import QAbstractItemView, QApplication, QItemDelegate, QStyle, QStyleOptionProgressBar, QTreeView
 else:
     from PyQt4.QtCore import pyqtSignal, QModelIndex, QMutexLocker, QObject, Qt, QTimer, QVariant
-    from PyQt4.QtGui import QAbstractItemView, QApplication, QItemDelegate, QStyle, QStyleOptionProgressBarV2, QTreeView
+    from PyQt4.QtGui import QAbstractItemView, QApplication, QItemDelegate, QStyle, QTreeView
+    from PyQt4.QtGui import QStyleOptionProgressBarV2 as QStyleOptionProgressBar
 
 import logging
 from time import time
@@ -499,7 +498,7 @@ class QueueProgressBarDelegate(QItemDelegate):
                 wait = w[1]
             else:
                 progress = self.queue.getProgress(item)
-            opts = QStyleOptionProgressBarV2()
+            opts = QStyleOptionProgressBar()
             opts.maximum = 100
             opts.minimum = 0
             opts.progress = progress

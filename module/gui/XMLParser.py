@@ -19,10 +19,8 @@ from __future__ import with_statement
 
 from module.gui.PyQtVersion import USE_PYQT5
 if USE_PYQT5:
-    from PyQt5.QtGui import *
-    from PyQt5.QtCore import *
-    from PyQt5.QtWidgets import *
-    from PyQt5.QtXml import *
+    from PyQt5.QtCore import QMutex
+    from PyQt5.QtXml import QDomDocument
 else:
     from PyQt4.QtCore import QMutex
     from PyQt4.QtXml import QDomDocument

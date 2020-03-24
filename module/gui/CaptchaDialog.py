@@ -19,9 +19,9 @@
 
 from module.gui.PyQtVersion import USE_PYQT5
 if USE_PYQT5:
-    from PyQt5.QtGui import *
-    from PyQt5.QtCore import *
-    from PyQt5.QtWidgets import *
+    from PyQt5.QtCore import pyqtSignal, QBuffer, QByteArray, QIODevice, Qt
+    from PyQt5.QtGui import QIcon, QMovie
+    from PyQt5.QtWidgets import QApplication, QDialog, QDialogButtonBox, QHBoxLayout, QLabel, QLineEdit, QStyle, QVBoxLayout
 else:
     from PyQt4.QtCore import pyqtSignal, QBuffer, QByteArray, QIODevice, Qt
     from PyQt4.QtGui import QApplication, QDialog, QDialogButtonBox, QHBoxLayout, QIcon, QLabel, QLineEdit, QMovie, QStyle, QVBoxLayout

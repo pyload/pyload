@@ -2,9 +2,11 @@
 
 from module.gui.PyQtVersion import USE_PYQT5
 if USE_PYQT5:
-    from PyQt5.QtGui import *
-    from PyQt5.QtCore import *
-    from PyQt5.QtWidgets import *
+    from PyQt5.QtCore import QByteArray, QObject, Qt, QTimer
+    from PyQt5.QtGui import QColor, QIcon, QPalette, QPixmap, QTextCursor
+    from PyQt5.QtWidgets import (QAbstractSpinBox, QApplication, QDialog, QDialogButtonBox, QFrame, QGridLayout, QHBoxLayout,
+                                 QLabel, QLineEdit, QPlainTextEdit, QPushButton, QSpacerItem, QSpinBox, QStyle,
+                                 QTextEdit, QVBoxLayout, QWhatsThis)
 else:
     from PyQt4.QtCore import QByteArray, QObject, Qt, QTimer
     from PyQt4.QtGui import (QAbstractSpinBox, QApplication, QColor, QDialog, QDialogButtonBox, QFrame, QGridLayout, QHBoxLayout, QIcon,
