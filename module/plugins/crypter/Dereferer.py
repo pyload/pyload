@@ -8,7 +8,7 @@ from ..internal.SimpleCrypter import SimpleCrypter
 class Dereferer(SimpleCrypter):
     __name__ = "Dereferer"
     __type__ = "crypter"
-    __version__ = "0.26"
+    __version__ = "0.27"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(?:\w+\.)*?(?P<DOMAIN>(?:[\d.]+|[\w\-]{3,63}(?:\.[a-zA-Z]{2,}){1,2})(?:\:\d+)?)/.*?(?P<LINK>[\w^_]+://.+)'
@@ -27,10 +27,9 @@ class Dereferer(SimpleCrypter):
 
     DIRECT_LINK = False
 
-    def _log(self, level, plugintype, pluginname, messages):
+    def _log(self, level, plugintype, pluginname, messages, tbframe=None):
         messages = (self.PLUGIN_NAME,) + messages
-        return SimpleCrypter._log(
-            self, level, plugintype, pluginname, messages)
+        return SimpleCrypter._log(self, level, plugintype, pluginname, messages, tbframe=tbframe)
 
     def init(self):
         self.__pattern__ = self.pyload.pluginManager.crypterPlugins[

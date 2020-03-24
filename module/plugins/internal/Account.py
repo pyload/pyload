@@ -12,7 +12,7 @@ from .Plugin import Plugin, Skip
 class Account(Plugin):
     __name__ = "Account"
     __type__ = "account"
-    __version__ = "0.85"
+    __version__ = "0.86"
     __status__ = "stable"
 
     __description__ = """Base account plugin"""
@@ -61,8 +61,7 @@ class Account(Plugin):
     def premium(self):
         return bool(self.get_data('premium'))
 
-    def _log(self, level, plugintype, pluginname, messages):
-        log = getattr(self.pyload.log, level)
+    def _log(self, level, plugintype, pluginname, messages, tbframe=None):
         msg = u" | ".join(decode(a).strip() for a in messages if a)
 
         #: Hide any user/password
@@ -76,10 +75,7 @@ class Account(Plugin):
         except Exception:
             pass
 
-        log("%(plugintype)s %(pluginname)s: %(msg)s" %
-            {'plugintype': plugintype.upper(),
-             'pluginname': pluginname,
-             'msg': msg})
+        return Plugin._log(self, level, plugintype, pluginname, (msg, ), tbframe=tbframe)
 
     def setup(self):
         """

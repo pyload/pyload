@@ -42,7 +42,7 @@ except ImportError:
 class misc(object):
     __name__ = "misc"
     __type__ = "plugin"
-    __version__ = "0.58"
+    __version__ = "0.63"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -524,7 +524,7 @@ def fixurl(url, unquote=None):
     url = decode(url)
 
     #: 'unicode-escape' that work with unicode strings too
-    url = re.sub(r'\\u(\d{4})', lambda x: unichr(int(x.group(1))), url, flags=re.I)
+    url = re.sub(r'\\[uU](\d{4})', lambda x: unichr(int(x.group(1))), url)
 
     url = html_unescape(url)
 
@@ -551,11 +551,12 @@ if sys.getfilesystemencoding().startswith('ANSI'):
      Use fs_encode before accesing files on disk,
      it will encode the string properly
     """
-    def fs_encode(string):
+    def fs_encode(value):
         try:
-            string = string.encode('utf-8')
+            value = decode(value)
+            value = value.encode('utf-8')
         finally:
-            return string
+            return value
 
 else:
     fs_encode = decode
@@ -615,7 +616,7 @@ def parse_name(value, safechar=True):
         pass
 
     #: 'unicode-escape' that work with unicode strings too
-    path = re.sub(r'\\u(\d{4})', lambda x: unichr(int(x.group(1))), path, flags=re.I)
+    path = re.sub(r'\\[uU](\d{4})', lambda x: unichr(int(x.group(1))), path)
 
     #: Decode HTML escape
     path = html_unescape(path)
@@ -756,7 +757,7 @@ def which(filename):
 
 def format_exc(frame=None):
     """
-    Format call-stack and display exception information (if availible)
+    Format call-stack and display exception information (if available)
     """
     exc_info = sys.exc_info()
     exc_desc = u""
@@ -1129,10 +1130,9 @@ else:
             dwFlags=startup_info.dwFlags,
             wShowWindow=startup_info.wShowWindow,
             cb=sizeof(STARTUPINFOW),
-            ## XXXvlab: not sure of the casting here to ints.
-            hStdInput=int(startup_info.hStdInput),
-            hStdOutput=int(startup_info.hStdOutput),
-            hStdError=int(startup_info.hStdError),
+            hStdInput=0 if startup_info.hStdInput is None else int(startup_info.hStdInput),
+            hStdOutput=0 if startup_info.hStdOutput is None else int(startup_info.hStdOutput),
+            hStdError=0 if startup_info.hStdError is None else int(startup_info.hStdError),
         )
 
         wenv = None

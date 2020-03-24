@@ -19,7 +19,6 @@
 """
 import __builtin__
 
-import traceback
 from thread import start_new_thread
 from threading import RLock
 
@@ -87,9 +86,7 @@ class HookManager:
             try:
                 return func(*args)
             except Exception, e:
-                args[0].log.error(_("Error executing hooks: %s") % str(e))
-                if args[0].core.debug:
-                    traceback.print_exc()
+                args[0].log.error(_("Error executing hooks: %s") % str(e), exc_info=args[0].core.debug)
 
         return new
 
@@ -137,9 +134,7 @@ class HookManager:
 
 
             except:
-                self.log.warning(_("Failed activating %(name)s") % {"name": pluginname})
-                if self.core.debug:
-                    traceback.print_exc()
+                self.log.warning(_("Failed activating %(name)s") % {"name": pluginname}, exc_info=self.core.debug)
 
         self.log.info(_("Activated plugins: %s") % ", ".join(sorted(active)))
         self.log.info(_("Deactivate plugins: %s") % ", ".join(sorted(deactive)))
@@ -311,7 +306,6 @@ class HookManager:
                     f(*args)
                 except Exception, e:
                     self.log.warning("Error calling event handler %s: %s, %s, %s"
-                    % (event, f, args, str(e)))
-                    if self.core.debug:
-                        traceback.print_exc()
-    
+                                     % (event, f, args, str(e)),
+                                     exc_info=self.core.debug)
+

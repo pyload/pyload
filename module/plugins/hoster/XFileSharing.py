@@ -8,7 +8,7 @@ from ..internal.XFSHoster import XFSHoster
 class XFileSharing(XFSHoster):
     __name__ = "XFileSharing"
     __type__ = "hoster"
-    __version__ = "0.65"
+    __version__ = "0.66"
     __status__ = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -25,10 +25,9 @@ class XFileSharing(XFSHoster):
 
     URL_REPLACEMENTS = [("/embed-", "/")]
 
-    def _log(self, level, plugintype, pluginname, messages):
+    def _log(self, level, plugintype, pluginname, messages, tbframe=None):
         messages = (self.PLUGIN_NAME,) + messages
-        return XFSHoster._log(
-            self, level, plugintype, pluginname, messages)
+        return XFSHoster._log(self, level, plugintype, pluginname, messages, tbframe=tbframe)
 
     def init(self):
         self.__pattern__ = self.pyload.pluginManager.hosterPlugins[

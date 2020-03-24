@@ -612,9 +612,7 @@ class Core(object):
             self.hookManager.coreExiting()
 
         except:
-            if self.debug:
-                print_exc()
-            self.log.info(_("error while shutting down"))
+            self.log.info(_("error while shutting down"), exc_info=self.debug)
 
         finally:
             self.files.syncSave()

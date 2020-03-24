@@ -21,9 +21,9 @@
 from Queue import Queue
 from threading import Thread
 from os import listdir, stat
-from os.path import join
+from os.path import join, isdir
 from time import sleep, time, strftime, gmtime
-from traceback import print_exc, format_exc
+from traceback import format_exc
 from pprint import pformat
 from sys import exc_info, exc_clear
 from copy import copy
@@ -61,12 +61,14 @@ class PluginThread(Thread):
 
             zip = zipfile.ZipFile(dump_name, "w")
 
-            for f in listdir(join("tmp", pyfile.pluginname)):
-                try:
-                    # avoid encoding errors
-                    zip.write(join("tmp", pyfile.pluginname, f), save_join(pyfile.pluginname, f))
-                except:
-                    pass
+            dumps_dir = join("tmp", pyfile.pluginname)
+            if isdir(dumps_dir):
+                for f in listdir(dumps_dir):
+                    try:
+                        # avoid encoding errors
+                        zip.write(join("tmp", pyfile.pluginname, f), save_join(pyfile.pluginname, f))
+                    except:
+                        pass
 
             info = zipfile.ZipInfo(save_join(pyfile.pluginname, "debug_Report.txt"), gmtime())
             info.external_attr = 0644 << 16L # change permissions
@@ -273,9 +275,8 @@ class DownloadThread(PluginThread):
 
                 else:
                     pyfile.setStatus("failed")
-                    self.m.log.error("pycurl error %s: %s" % (code, msg))
+                    self.m.log.error("pycurl error %s: %s" % (code, msg), exc_info=self.m.core.debug)
                     if self.m.core.debug:
-                        print_exc()
                         self.writeDebugReport(pyfile)
 
                     self.m.core.hookManager.downloadFailed(pyfile)
@@ -301,11 +302,10 @@ class DownloadThread(PluginThread):
 
             except Exception, e:
                 pyfile.setStatus("failed")
-                self.m.log.warning(_("Download failed: %(name)s | %(msg)s") % {"name": pyfile.name, "msg": str(e)})
+                self.m.log.warning(_("Download failed: %(name)s | %(msg)s") % {"name": pyfile.name, "msg": str(e)}, exc_info=self.m.core.debug)
                 pyfile.error = str(e)
 
                 if self.m.core.debug:
-                    print_exc()
                     self.writeDebugReport(pyfile)
 
                 self.m.core.hookManager.downloadFailed(pyfile)
@@ -392,11 +392,10 @@ class DecrypterThread(PluginThread):
 
         except Exception, e:
             self.active.setStatus("failed")
-            self.m.log.error(_("Decrypting failed: %(name)s | %(msg)s") % {"name": self.active.name, "msg": str(e)})
+            self.m.log.error(_("Decrypting failed: %(name)s | %(msg)s") % {"name": self.active.name, "msg": str(e)}, exc_info=self.m.core.debug)
             self.active.error = str(e)
 
             if self.m.core.debug:
-                print_exc()
                 self.writeDebugReport(pyfile)
 
             return
@@ -546,8 +545,7 @@ class InfoThread(PluginThread):
                 try:
                     data = self.decryptContainer(name, url)
                 except:
-                    print_exc()
-                    self.m.log.error("Could not decrypt container.")
+                    self.m.log.error("Could not decrypt container.", exc_info=self.m.core.debug)
                     data = []
 
                 for url, plugin in data:
@@ -634,9 +632,7 @@ class InfoThread(PluginThread):
             self.m.log.debug("Finished Info Fetching for %s" % pluginname)
         except Exception, e:
             self.m.log.warning(_("Info Fetching for %(name)s failed | %(err)s") %
-                               {"name": pluginname, "err": str(e)})
-            if self.m.core.debug:
-                print_exc()
+                               {"name": pluginname, "err": str(e)}, exc_info=self.m.core.debug)
 
             # generate default results
             if err:

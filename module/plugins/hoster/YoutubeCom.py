@@ -14,7 +14,8 @@ from module.network.HTTPRequest import HTTPRequest
 
 from ..internal.Hoster import Hoster
 from ..internal.misc import (
-    Popen, decode, exists, fsjoin, isexecutable, json, reduce, renice, replace_patterns, safename, uniqify, which)
+    Popen, decode, exists, fs_encode, fsjoin, isexecutable, json, reduce, renice, replace_patterns, safename,
+    uniqify, which)
 from ..internal.Plugin import Abort, Skip
 
 
@@ -234,7 +235,7 @@ class Ffmpeg(object):
 class YoutubeCom(Hoster):
     __name__ = "YoutubeCom"
     __type__ = "hoster"
-    __version__ = "0.75"
+    __version__ = "0.76"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:[^/]*\.)?(?:youtu\.be/|youtube\.com/watch\?(?:.*&)?v=)[\w\-]+'
@@ -830,8 +831,8 @@ class YoutubeCom(Hoster):
                                            subtitles_files)
 
         #: Everything is finished and final name can be set
-        pyfile.name = os.path.basename(final_filename)
-        pyfile.size = os.path.getsize(final_filename)
+        pyfile.name = os.path.basename(fs_encode(final_filename))
+        pyfile.size = os.path.getsize(fs_encode(final_filename))
         self.last_download = final_filename
 
 
