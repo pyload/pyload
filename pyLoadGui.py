@@ -83,7 +83,7 @@ from threading import Timer
 
 import module.gui._pyLoadGui as _pyLoadGui
 from module.gui.ConnectionManager import ConnectionManager
-from module.gui.connector import Connector
+from module.gui.Connector import Connector
 from module.gui.MainWindow import MainWindow
 from module.gui.XMLParser import XMLParser
 from module.gui.CoreConfigParser import CoreConfigParser
