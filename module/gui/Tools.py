@@ -1,9 +1,15 @@
 # -*- coding: utf-8 -*-
 
-from PyQt4.QtCore import QByteArray, QObject, Qt, QTimer
-from PyQt4.QtGui import (QAbstractSpinBox, QApplication, QColor, QDialog, QDialogButtonBox, QFrame, QGridLayout, QHBoxLayout, QIcon,
-                         QLabel, QLineEdit, QPalette, QPixmap, QPlainTextEdit, QPushButton, QSpacerItem, QSpinBox, QStyle,
-                         QTextCursor, QTextEdit, QVBoxLayout, QWhatsThis)
+from module.gui import USE_QT5
+if USE_QT5:
+    from PyQt5.QtGui import *
+    from PyQt5.QtCore import *
+    from PyQt5.QtWidgets import *
+else:
+    from PyQt4.QtCore import QByteArray, QObject, Qt, QTimer
+    from PyQt4.QtGui import (QAbstractSpinBox, QApplication, QColor, QDialog, QDialogButtonBox, QFrame, QGridLayout, QHBoxLayout, QIcon,
+                             QLabel, QLineEdit, QPalette, QPixmap, QPlainTextEdit, QPushButton, QSpacerItem, QSpinBox, QStyle,
+                             QTextCursor, QTextEdit, QVBoxLayout, QWhatsThis)
 
 from os.path import join
 from bisect import bisect_left, bisect_right

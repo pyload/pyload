@@ -42,10 +42,16 @@ from uuid import uuid4 as uuid      # import before PyQt
 from time import sleep, time
 from module.common.json_layer import json
 
-from PyQt4.QtCore import (pyqtSignal, QByteArray, QMutex, QMutexLocker, QObject, QRegExp,
-                          Qt, QTextCodec, QTimer)
-from PyQt4.QtGui import (QAbstractItemView, QApplication, QDialog, QIcon, QMessageBox, QProgressDialog,
-                         QStyle, QSystemTrayIcon, QTextCursor)
+from module.gui import USE_QT5
+if USE_QT5:
+    from PyQt5.QtGui import *
+    from PyQt5.QtCore import *
+    from PyQt5.QtWidgets import *
+else:
+    from PyQt4.QtCore import (pyqtSignal, QByteArray, QMutex, QMutexLocker, QObject, QRegExp,
+                              Qt, QTextCodec, QTimer)
+    from PyQt4.QtGui import (QAbstractItemView, QApplication, QDialog, QIcon, QMessageBox, QProgressDialog,
+                             QStyle, QSystemTrayIcon, QTextCursor)
 
 import copy
 import traceback

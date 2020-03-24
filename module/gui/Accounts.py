@@ -16,8 +16,15 @@
     @author: mkaay
 """
 
-from PyQt4.QtCore import QAbstractItemModel, QModelIndex, QMutex, QMutexLocker, Qt, QTimer, QVariant
-from PyQt4.QtGui import QAbstractItemView, QApplication, QItemDelegate, QStyle, QStyleOptionProgressBarV2, QTreeView
+from module.gui import USE_QT5
+if USE_QT5:
+    from PyQt5.QtGui import *
+    from PyQt5.QtCore import *
+    from PyQt5.QtWidgets import *
+    from PyQt5.QtWidgets import QStyleOptionProgressBar as QStyleOptionProgressBarV2
+else:
+    from PyQt4.QtCore import QAbstractItemModel, QModelIndex, QMutex, QMutexLocker, Qt, QTimer, QVariant
+    from PyQt4.QtGui import QAbstractItemView, QApplication, QItemDelegate, QStyle, QStyleOptionProgressBarV2, QTreeView
 
 import logging
 from time import strftime, gmtime

@@ -16,9 +16,15 @@
     @author: mkaay
 """
 
-from PyQt4.QtCore import pyqtSignal, Qt, QTimer
-from PyQt4.QtGui import (QCheckBox, QColor, QDockWidget, QHBoxLayout, QIcon, QLabel, QPushButton, QRadioButton,
-                         QSizePolicy, QVBoxLayout, QWidget)
+from module.gui import USE_QT5
+if USE_QT5:
+    from PyQt5.QtGui import *
+    from PyQt5.QtCore import *
+    from PyQt5.QtWidgets import *
+else:
+    from PyQt4.QtCore import pyqtSignal, Qt, QTimer
+    from PyQt4.QtGui import (QCheckBox, QColor, QDockWidget, QHBoxLayout, QIcon, QLabel, QPushButton, QRadioButton,
+                             QSizePolicy, QVBoxLayout, QWidget)
 
 import logging
 from os.path import join

@@ -15,8 +15,14 @@
     along with this program; if not, see <http://www.gnu.org/licenses/>.
 """
 
-from PyQt4.QtCore import Qt
-from PyQt4.QtGui import QApplication, QDialog, QDialogButtonBox, QFont, QHBoxLayout, QIcon, QLabel, QPixmap, QPushButton, QVBoxLayout
+from module.gui import USE_QT5
+if USE_QT5:
+    from PyQt5.QtGui import *
+    from PyQt5.QtCore import *
+    from PyQt5.QtWidgets import *
+else:
+    from PyQt4.QtCore import Qt
+    from PyQt4.QtGui import QApplication, QDialog, QDialogButtonBox, QFont, QHBoxLayout, QIcon, QLabel, QPixmap, QPushButton, QVBoxLayout
 
 import logging, os
 from os.path import join
@@ -96,7 +102,10 @@ class AboutBox(QDialog):
     def exec_(self, version, internalversion):
         import platform
         import struct
-        from PyQt4.QtCore import QT_VERSION_STR
+        if USE_QT5:
+            from PyQt5.QtCore import QT_VERSION_STR
+        else:
+            from PyQt4.QtCore import QT_VERSION_STR
         txt1 = _("pyLoad Client") + " v" + version
         self.text1.setText(txt1)
         txt2 = "2008-2016 the pyLoad Team"
@@ -112,12 +121,18 @@ class AboutBox(QDialog):
         txt3 += "\nPython version: " + platform.python_version() + " (%dbit)" % (struct.calcsize("P") * 8)
         txt3 += "\nQt version: " + QT_VERSION_STR
         try:
-            from PyQt4.pyqtconfig import Configuration
+            if USE_QT5:
+                from PyQt5.pyqtconfig import Configuration
+            else:
+                from PyQt4.pyqtconfig import Configuration
             cfg = Configuration()
             sipver = cfg.sip_version_str
             pyqtver = cfg.pyqt_version_str
         except Exception:
-            from PyQt4.Qt import PYQT_VERSION_STR
+            if USE_QT5:
+                from PyQt5.Qt import PYQT_VERSION_STR
+            else:
+                from PyQt4.Qt import PYQT_VERSION_STR
             from sip import SIP_VERSION_STR
             sipver = SIP_VERSION_STR
             pyqtver = PYQT_VERSION_STR

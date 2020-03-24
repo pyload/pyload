@@ -16,8 +16,14 @@
     @author: mkaay
 """
 
-from PyQt4.QtCore import pyqtSignal, QAbstractItemModel, QModelIndex, QMutex, QMutexLocker, QObject, QRegExp, Qt, QTimer, QVariant
-from PyQt4.QtGui import QAbstractItemView, QApplication, QItemSelection, QItemSelectionModel, QItemSelectionRange, QMenu, QTreeView
+from module.gui import USE_QT5
+if USE_QT5:
+    from PyQt5.QtGui import *
+    from PyQt5.QtCore import *
+    from PyQt5.QtWidgets import *
+else:
+    from PyQt4.QtCore import pyqtSignal, QAbstractItemModel, QModelIndex, QMutex, QMutexLocker, QObject, QRegExp, Qt, QTimer, QVariant
+    from PyQt4.QtGui import QAbstractItemView, QApplication, QItemSelection, QItemSelectionModel, QItemSelectionRange, QMenu, QTreeView
 
 import logging, re
 from time import time

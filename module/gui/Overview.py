@@ -16,8 +16,15 @@
     @author: mkaay
 """
 
-from PyQt4.QtCore import QAbstractListModel, QModelIndex, QSize, Qt, QVariant
-from PyQt4.QtGui import QApplication, QItemDelegate, QListView, QStyle, QStyleOptionProgressBarV2
+from module.gui import USE_QT5
+if USE_QT5:
+    from PyQt5.QtGui import *
+    from PyQt5.QtCore import *
+    from PyQt5.QtWidgets import *
+    from PyQt5.QtWidgets import QStyleOptionProgressBar as QStyleOptionProgressBarV2
+else:
+    from PyQt4.QtCore import QAbstractListModel, QModelIndex, QSize, Qt, QVariant
+    from PyQt4.QtGui import QApplication, QItemDelegate, QListView, QStyle, QStyleOptionProgressBarV2
 
 import logging
 from module.remote.thriftbackend.ThriftClient import DownloadStatus

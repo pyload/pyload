@@ -15,8 +15,14 @@
     along with this program; if not, see <http://www.gnu.org/licenses/>.
 """
 
-from PyQt4.QtCore import Qt
-from PyQt4.QtGui import QDialog, QDialogButtonBox, QGridLayout, QGroupBox, QIcon, QLabel, QVBoxLayout
+from module.gui import USE_QT5
+if USE_QT5:
+    from PyQt5.QtGui import *
+    from PyQt5.QtCore import *
+    from PyQt5.QtWidgets import *
+else:
+    from PyQt4.QtCore import Qt
+    from PyQt4.QtGui import QDialog, QDialogButtonBox, QGridLayout, QGroupBox, QIcon, QLabel, QVBoxLayout
 
 import logging
 from os.path import join

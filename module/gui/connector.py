@@ -21,8 +21,14 @@ SERVER_VERSION = "0.4.20"
 from time import sleep
 from uuid import uuid4 as uuid
 
-from PyQt4.QtCore import pyqtSignal, QMutex, QObject, Qt
-from PyQt4.QtGui import QDialog, QDialogButtonBox, QGridLayout, QIcon, QLabel, QLineEdit
+from module.gui import USE_QT5
+if USE_QT5:
+    from PyQt5.QtGui import *
+    from PyQt5.QtCore import *
+    from PyQt5.QtWidgets import *
+else:
+    from PyQt4.QtCore import pyqtSignal, QMutex, QObject, Qt
+    from PyQt4.QtGui import QDialog, QDialogButtonBox, QGridLayout, QIcon, QLabel, QLineEdit
 
 import logging
 import socket

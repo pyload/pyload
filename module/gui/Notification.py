@@ -22,7 +22,13 @@ try:
 except ImportError:
     havePynotify = False
 
-from PyQt4.QtCore import QObject
+from module.gui import USE_QT5
+if USE_QT5:
+    from PyQt5.QtGui import *
+    from PyQt5.QtCore import *
+    from PyQt5.QtWidgets import *
+else:
+    from PyQt4.QtCore import QObject
 
 import logging, os
 from os.path import join

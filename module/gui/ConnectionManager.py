@@ -16,9 +16,15 @@
     @author: mkaay
 """
 
-from PyQt4.QtCore import pyqtSignal, QString, Qt, QTimer, QVariant
-from PyQt4.QtGui import (QAbstractItemView, QCheckBox, QDialog, QDialogButtonBox, QGridLayout, QGroupBox, QHBoxLayout, QIcon, QLabel, QLineEdit,
-                         QListWidget, QListWidgetItem, QPushButton, QRadioButton, QSpinBox, QVBoxLayout)
+from module.gui import USE_QT5
+if USE_QT5:
+    from PyQt5.QtGui import *
+    from PyQt5.QtCore import *
+    from PyQt5.QtWidgets import *
+else:
+    from PyQt4.QtCore import pyqtSignal, QString, Qt, QTimer, QVariant
+    from PyQt4.QtGui import (QAbstractItemView, QCheckBox, QDialog, QDialogButtonBox, QGridLayout, QGroupBox, QHBoxLayout, QIcon, QLabel, QLineEdit,
+                             QListWidget, QListWidgetItem, QPushButton, QRadioButton, QSpinBox, QVBoxLayout)
 
 import logging
 from os.path import join

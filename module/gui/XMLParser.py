@@ -17,8 +17,15 @@
 """
 from __future__ import with_statement
 
-from PyQt4.QtCore import QMutex
-from PyQt4.QtXml import QDomDocument
+from module.gui import USE_QT5
+if USE_QT5:
+    from PyQt5.QtGui import *
+    from PyQt5.QtCore import *
+    from PyQt5.QtWidgets import *
+    from PyQt5.QtXml import *
+else:
+    from PyQt4.QtCore import QMutex
+    from PyQt4.QtXml import QDomDocument
 
 import os
 

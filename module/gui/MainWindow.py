@@ -19,10 +19,16 @@
 import logging
 import re
 
-from PyQt4.QtCore import pyqtSignal, QEvent, QPoint, QRect, QSize, Qt
-from PyQt4.QtGui import (QAction, QActionGroup, QCheckBox, QColor, QCursor, QFileDialog, QFrame, QGridLayout,
-                         QHBoxLayout, QIcon, QLabel, QMainWindow, QMenu, QPushButton, QSizePolicy, QStyle,
-                         QTabWidget, QTextEdit, QVBoxLayout, QWhatsThis, QWidget)
+from module.gui import USE_QT5
+if USE_QT5:
+    from PyQt5.QtGui import *
+    from PyQt5.QtCore import *
+    from PyQt5.QtWidgets import *
+else:
+    from PyQt4.QtCore import pyqtSignal, QEvent, QPoint, QRect, QSize, Qt
+    from PyQt4.QtGui import (QAction, QActionGroup, QCheckBox, QColor, QCursor, QFileDialog, QFrame, QGridLayout,
+                             QHBoxLayout, QIcon, QLabel, QMainWindow, QMenu, QPushButton, QSizePolicy, QStyle,
+                             QTabWidget, QTextEdit, QVBoxLayout, QWhatsThis, QWidget)
 
 from os.path import join, dirname
 from datetime import datetime
