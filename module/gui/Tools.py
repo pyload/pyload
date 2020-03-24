@@ -27,11 +27,15 @@ else:
                              QLabel, QLineEdit, QPalette, QPixmap, QPlainTextEdit, QPushButton, QSpacerItem, QSpinBox, QStyle,
                              QTextCursor, QTextEdit, QVBoxLayout, QWhatsThis)
 
+import logging
 from os.path import join
 from bisect import bisect_left, bisect_right
 from functools import cmp_to_key
 from datetime import datetime
-import logging
+from codecs import unicode_escape_decode
+from PIL import Image, ImageFont, ImageDraw, ImageQt
+
+from module.lib.SafeEval import const_eval as literal_eval
 
 def whatsThisFormat(title, text):
     #html = "<b>" + title + "</b><br><br>" + text
@@ -333,7 +337,6 @@ class IconThemes(QObject):
     def loadTheme(self):
         # load the theme options from the config file
         from module.gui.Options import IconThemeOptions
-        from module.lib.SafeEval import const_eval as literal_eval
         opt_dlg = IconThemeOptions(None) # for error checking
         if not self.newConfigFile:
             mainWindowNode = self.parser.xml.elementsByTagName("mainWindow").item(0)
@@ -387,7 +390,6 @@ class IconThemes(QObject):
 
     def loadFontAwesome(self, appIconSet, color):
         # glyph-name-to-char mapping, parse the css file in no time
-        from codecs import unicode_escape_decode
         iconcodes = {}
         iname = None
         with open(join(pypath, "icons", "fontawesome-free-5.11.1-web", "css", "fontawesome.css")) as css:
@@ -427,7 +429,6 @@ class IconThemes(QObject):
 
     def loadLineAwesome(self, appIconSet, color):
         # glyph-name-to-char mapping, parse the css file in no time
-        from codecs import unicode_escape_decode
         iconcodes = {}
         with open(join(pypath, "icons", "line-awesome", "css", "line-awesome.css")) as css:
             for line in css:
@@ -464,7 +465,6 @@ class IconThemes(QObject):
     @classmethod
     def ttfGlyph2QIcon(self, iconcodes, fontfile, size, name, scale, offsetX, offsetY, color):
         # convert ttf glyph to QIcon
-        from PIL import Image, ImageFont, ImageDraw, ImageQt
         iconcode = iconcodes[name]
         img = Image.new("RGBA", (size, size), color=color)
         draw = ImageDraw.Draw(img)

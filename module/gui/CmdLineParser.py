@@ -14,16 +14,17 @@
     along with this program; if not, see <http://www.gnu.org/licenses/>.
 """
 
+import os
+import sys
+from getopt import getopt, GetoptError
+
 def cmdLineParser(pyloadgui_version):
-    from sys import argv
-    from getopt import getopt, GetoptError
-    import os
 
     def print_help():
         print ""
         print "pyLoad Client v%s     2008-2016 the pyLoad Team" % pyloadgui_version
         print ""
-        if argv[0].endswith(".py"):
+        if sys.argv[0].endswith(".py"):
             print "Usage: python pyLoadGui.py [options]"
         else:
             print "Usage: pyLoadGui [options]"
@@ -51,9 +52,9 @@ def cmdLineParser(pyloadgui_version):
     pidfile    = "pyloadgui.pid"
     debug      = None
 
-    if len(argv) > 1:
+    if len(sys.argv) > 1:
         try:
-            options, dummy = getopt(argv[1:], 'vq:o:c:nihd:',
+            options, dummy = getopt(sys.argv[1:], 'vq:o:c:nihd:',
                 ["version", "pyqt=", "notify=", "connection=", "configdir=", "noconsole", "icontest", "help", "debug="])
             for option, argument in options:
                 if option in ("-v", "--version"):
@@ -109,7 +110,7 @@ def cmdLineParser(pyloadgui_version):
                     debug = lvl
 
         except GetoptError:
-            print 'Error: Unknown Argument(s) "%s"' % " ".join(argv[1:])
+            print 'Error: Unknown Argument(s) "%s"' % " ".join(sys.argv[1:])
             print_help()
             exit()
 

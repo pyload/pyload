@@ -16,13 +16,10 @@
 
 USE_PYQT5 = None
 
-def usePyQt5(pyloadgui_version):
-    import os
+import os
+from module.gui.CmdLineParser import cmdLineParser
 
-    from module.gui.CmdLineParser import cmdLineParser
-    data = cmdLineParser(pyloadgui_version)
-    cmdl_ver = data[0]
-    configdir_ = data[3]
+def usePyQt5(pyloadgui_version):
 
     def importVersion4():
         try:
@@ -38,6 +35,10 @@ def usePyQt5(pyloadgui_version):
             return True
         except ImportError:
             return False
+
+    data = cmdLineParser(pyloadgui_version)
+    cmdl_ver = data[0]
+    configdir_ = data[3]
 
     if cmdl_ver is not None:
         # use the version number from the command line option

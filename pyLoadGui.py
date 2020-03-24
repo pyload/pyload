@@ -22,13 +22,13 @@ CURRENT_INTERNAL_VERSION = 'Development version'         # YYYY-MM-DD, append a 
 
 import os
 import sys
+from module.gui.CmdLineParser import cmdLineParser
 
 if os.name == "nt":
     DESKTOP_NOTIFICATIONS = "qt_tray"
     import ctypes
 else:
     # import pynotify early due to its issues
-    from module.gui.CmdLineParser import cmdLineParser
     DESKTOP_NOTIFICATIONS = cmdLineParser(CURRENT_VERSION)[1]
     if DESKTOP_NOTIFICATIONS is None:
         # auto detect, prefer notify2
@@ -141,11 +141,10 @@ class main(QObject):
         self.path = pypath
         self.homedir = abspath("")
 
-        from module.gui.CmdLineParser import cmdLineParser
         (dummy, dummy, self.cmdLineConnection, self.configdir, self.noConsole, icontest, self.pidfile, self.debugLogLevel) = cmdLineParser(CURRENT_VERSION)
         if icontest:
-             self.icontest()
-             exit()
+            self.icontest()
+            exit()
 
         self.pullEventsCount = 0
         self.fileLogIsEnabled = None
