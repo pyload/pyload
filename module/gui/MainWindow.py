@@ -1233,12 +1233,15 @@ class MainWindow(QMainWindow):
             "RSDF (%s)" % "*.rsdf",
             "Text Files (%s)" % "*.txt"
         ])
-        fileNames = QFileDialog.getOpenFileNames(self, "Open Container", self.lastAddContainerDir, typeStr)
-        fileNames = [ str(name) for name in fileNames ]
+        if USE_QT5:
+            (fileNames, dummy) = QFileDialog.getOpenFileNames(self, "Open Container", self.lastAddContainerDir, typeStr)
+        else:
+            fileNames = QFileDialog.getOpenFileNames(self, "Open Container", self.lastAddContainerDir, typeStr)
+            fileNames = [ unicode(name) for name in fileNames ]
         for name in fileNames:
-            self.addContainerSGL.emit(unicode(name))
+            self.addContainerSGL.emit(name)
         if fileNames:
-            self.lastAddContainerDir = unicode(dirname(unicode(name)))
+            self.lastAddContainerDir =  dirname(name)
 
     def slotPushPackagesToQueue(self):
         """

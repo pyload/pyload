@@ -52,7 +52,8 @@ class XMLParser():
 
     def saveData(self):
         self.mutex.lock()
-        content = self.xml.toString()
+        content = unicode(self.xml.toString())
+        content = content.encode('utf8')
         with open(self.file, 'w') as fh:
             fh.write(content)
         self.mutex.unlock()

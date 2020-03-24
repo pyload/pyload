@@ -1931,12 +1931,9 @@ class main(QObject):
         if not self.corePermissions["ADD"]:
             return
         filename = basename(path)
-        #type = "".join(filename.split(".")[-1])
         fh = open(path, "r")
         content = fh.read()
         fh.close()
-        # the core doesn't like unicode filenames here ???
-        filename.encode("ascii", "ignore")
         self.connector.proxy.uploadContainer(filename, content)
 
     def prepareForSaveOptionsAndWindow(self, contFunc):
