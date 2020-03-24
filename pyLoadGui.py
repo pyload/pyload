@@ -86,7 +86,7 @@ from module.gui.ConnectionManager import ConnectionManager
 from module.gui.connector import Connector
 from module.gui.MainWindow import MainWindow
 from module.gui.XMLParser import XMLParser
-from module.gui.CoreConfigParser import ConfigParser
+from module.gui.CoreConfigParser import CoreConfigParser
 from module.gui.Options import (AutomaticReloadingOptions, CaptchaOptions, ClickNLoadForwarderOptions, ColorFixOptions,
                                 FontOptions, IconThemeOptions, LanguageOptions, LoggingOptions, NotificationOptions,
                                 OtherOptions, PyQtVersionOptions, TrayOptions, WhatsThisOptions)
@@ -1621,14 +1621,20 @@ class main(QObject):
         self.connWindow.hide()
         self.lastConnection = data.copy()
 
+        if self.configdir:
+            pyloadConf = self.homedir + sep + "pyload.conf"
+        else:
+            pyloadConf = abspath("pyload.conf")
+
         if data["type"] not in ("remote", "internal"):
-            coreparser = ConfigParser(self.configdir)
-            if not coreparser.config:
+            coreConfigParser = CoreConfigParser(pyloadConf)
+            if not coreConfigParser.config:
+                self.log.info("Failed to read server port number from local server config file, trying default port: 7227")
                 self.connector.setConnectionData("127.0.0.1", 7227, "anonymous", "anonymous")
                 title = _("pyLoad Client") + " - " + data["name"] + " [127.0.0.1:7227]"
             else:
-                self.connector.setConnectionData("127.0.0.1", coreparser.get("remote", "port"), "anonymous", "anonymous")
-                title = _("pyLoad Client") + " - " + data["name"] + " [127.0.0.1:" + str(coreparser.get("remote", "port")) + "]"
+                self.connector.setConnectionData("127.0.0.1", coreConfigParser.get("remote", "port"), "anonymous", "anonymous")
+                title = _("pyLoad Client") + " - " + data["name"] + " [127.0.0.1:" + str(coreConfigParser.get("remote", "port")) + "]"
             self.mainWindow.setWindowTitle(title)
             self.mainWindow.mactions["cnlfwding"].setEnabled(False)
 
@@ -1642,10 +1648,6 @@ class main(QObject):
             self.mainWindow.setWindowTitle(title)
 
         elif data["type"] == "internal":
-            if self.configdir:
-                pyloadConf = self.homedir + sep + "pyload.conf"
-            else:
-                pyloadConf = abspath("pyload.conf")
             if not (os.path.isfile(pyloadConf) and os.access(pyloadConf, os.R_OK)):
                 self.messageBox_22()
                 self.init()
