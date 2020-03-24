@@ -17,7 +17,7 @@
     @author: mkaay
 """
 
-from PyQt4.QtCore import QBuffer, QByteArray, QIODevice, Qt, SIGNAL, SLOT
+from PyQt4.QtCore import pyqtSignal, QBuffer, QByteArray, QIODevice, Qt
 from PyQt4.QtGui import QApplication, QDialog, QDialogButtonBox, QHBoxLayout, QIcon, QLabel, QLineEdit, QMovie, QStyle, QVBoxLayout
 
 import logging
@@ -29,6 +29,13 @@ class CaptchaDialog(QDialog):
     """
         captcha dialog
     """
+    setCaptchaTaskSGL = pyqtSignal(object, object, object)
+    setMovieSGL       = pyqtSignal(QMovie)
+    showCaptchaSGL    = pyqtSignal(object)
+    show_continueSGL  = pyqtSignal()
+    setCaptchaFreeSGL = pyqtSignal()
+    captchaDoneSGL    = pyqtSignal(object, object)
+
     def __init__(self):
         self.paintEventSignal = False
         QDialog.__init__(self)
@@ -79,17 +86,17 @@ class CaptchaDialog(QDialog):
         vbox.addLayout(self.buttons.layout())
         self.setLayout(vbox)
 
-        self.connect(self.submitBtn, SIGNAL("clicked()"),       self.slotSubmitText)
-        self.connect(self.lineEdit,  SIGNAL("returnPressed()"), self.slotSubmitText)
-        self.connect(self.ignoreBtn, SIGNAL("clicked()"),       self.slotIgnore)
-        self.connect(self.closeBtn,  SIGNAL("clicked()"),       self.slotClose)
+        self.submitBtn.clicked.connect(self.slotSubmitText)
+        self.lineEdit.returnPressed.connect(self.slotSubmitText)
+        self.ignoreBtn.clicked.connect(self.slotIgnore)
+        self.closeBtn.clicked.connect(self.slotClose)
         self.imgLabel.mousePressEvent = self.slotSubmitPos
 
-        self.connect(self, SIGNAL("setCaptchaTask"), self.slotSetTask)
-        self.connect(self, SIGNAL("setMovie(QMovie *)"), self.imgLabel, SLOT("setMovie(QMovie *)"))
-        self.connect(self, SIGNAL("showCaptcha"), self.slotShow)
-        self.connect(self, SIGNAL("slotShow_continue"), self.slotShow_continue, Qt.QueuedConnection)
-        self.connect(self, SIGNAL("setCaptchaFree"), self.slotSetFree)
+        self.setCaptchaTaskSGL.connect(self.slotSetTask)
+        self.setMovieSGL[QMovie].connect(self.imgLabel.setMovie)
+        self.showCaptchaSGL.connect(self.slotShow)
+        self.show_continueSGL.connect(self.slotShow_continue, Qt.QueuedConnection)
+        self.setCaptchaFreeSGL.connect(self.slotSetFree)
 
         self.setMinimumWidth(250)
 
@@ -118,7 +125,7 @@ class CaptchaDialog(QDialog):
             self.imgAnimation.setCacheMode(QMovie.CacheAll)
             self.imgAnimation.setDevice(self.imgDataBuffer)
             if self.imgAnimation.isValid():
-                self.emit(SIGNAL("setMovie(QMovie *)"), self.imgAnimation)
+                self.setMovieSGL.emit(self.imgAnimation)
                 self.imgAnimation.start()
                 self.ignoreBtn.show()
                 self.closeBtn.hide()
@@ -146,7 +153,7 @@ class CaptchaDialog(QDialog):
 
         if errMsg is not None:
             self.log.error(errMsg)
-            self.emit(SIGNAL("setMovie(QMovie *)"), QMovie())
+            self.setMovieSGL.emit(QMovie())
             self.infoLabel.setText("*** ERROR ***")
             self.infoLabel.show()
             self.lineEdit.hide()
@@ -216,7 +223,7 @@ class CaptchaDialog(QDialog):
         tid = self.currentID
         self.currentID = None
         self.currentResultType = None
-        self.emit(SIGNAL("captchaDone"), tid, text)
+        self.captchaDoneSGL.emit(tid, text)
         self.hide()
         self.processing = False
 
@@ -228,7 +235,7 @@ class CaptchaDialog(QDialog):
             tid = self.currentID
             self.currentID = None
             self.currentResultType = None
-            self.emit(SIGNAL("captchaDone"), tid, p)
+            self.captchaDoneSGL.emit(tid, p)
             self.hide()
             self.processing = False
 
@@ -242,7 +249,7 @@ class CaptchaDialog(QDialog):
         QDialog.paintEvent(self, event)
         if self.paintEventSignal:
             self.paintEventSignal = False
-            self.emit(SIGNAL("slotShow_continue"))
+            self.show_continueSGL.emit()
 
     def closeEvent(self, event):
         self.hide()

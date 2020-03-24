@@ -16,7 +16,7 @@
     @author: mkaay
 """
 
-from PyQt4.QtCore import Qt, QTimer, SIGNAL
+from PyQt4.QtCore import pyqtSignal, Qt, QTimer
 from PyQt4.QtGui import (QCheckBox, QColor, QDockWidget, QHBoxLayout, QIcon, QLabel, QPushButton, QRadioButton,
                          QSizePolicy, QVBoxLayout, QWidget)
 
@@ -25,6 +25,11 @@ from os.path import join
 from module.gui.Tools import whatsThisFormat, PlainTextEdit
 
 class NewLinkDock(QDockWidget):
+    addLinksToPackageDoneSGL = pyqtSignal(object, object)
+    parseUriSGL              = pyqtSignal(object, object)
+    newLinkDockClosedSGL     = pyqtSignal()
+    newLinkDockPaintEventSGL = pyqtSignal()
+
     def __init__(self, appIconSet):
         self.paintEventSignal = False
         QDockWidget.__init__(self, _("Add Links"))
@@ -56,7 +61,7 @@ class NewLinkDock(QDockWidget):
             self.widget.slotMsgShow("<b>" + "&nbsp;" + "&nbsp;" + _("Error, no URLs given.") + "</b>")
             return
         queue = self.widget.destQueue.isChecked()
-        self.emit(SIGNAL("addLinksToPackageDone"), lines, queue)
+        self.addLinksToPackageDoneSGL.emit(lines, queue)
 
     def setFilterBtnText(self):
         if not self.undo:
@@ -72,7 +77,7 @@ class NewLinkDock(QDockWidget):
             self.widget.box.setEnabled(False)
             self.widget.filter.setEnabled(False)
             self.undoText = text
-            self.emit(SIGNAL("parseUri"), "linkdock", unicode(text))
+            self.parseUriSGL.emit("linkdock", unicode(text))
         else:
             self.widget.box.setPlainText(self.undoText)
             self.undo = False
@@ -117,7 +122,7 @@ class NewLinkDock(QDockWidget):
 
     def closeEvent(self, event):
         if self.isFloating():
-            self.emit(SIGNAL("newLinkDockClosed"))
+            self.newLinkDockClosedSGL.emit()
         self.hide()
         event.ignore()
 
@@ -128,7 +133,7 @@ class NewLinkDock(QDockWidget):
         self.paintEventCounter += 1
         if self.paintEventSignal:
             self.paintEventSignal = False
-            self.emit(SIGNAL("newLinkDockPaintEvent"))
+            self.newLinkDockPaintEventSGL.emit()
 
     def moveEvent(self, event):
         if self.isFloating():
@@ -189,12 +194,12 @@ class NewLinkWindow(QWidget):
         self.msg.setFixedHeight(self.save.height())
         self.slotMsgHide()
 
-        self.connect(self.save, SIGNAL("clicked()"), self.dock.slotDone)
-        self.connect(self.filter, SIGNAL("clicked()"), self.dock.slotFilterBtnClicked)
-        self.connect(self.box, SIGNAL("textChanged()"), self.dock.slotBoxTextChanged)
-        self.connect(self.append, SIGNAL("toggled(bool)"), self.box.slotAppendToggled)
+        self.save.clicked.connect(self.dock.slotDone)
+        self.filter.clicked.connect(self.dock.slotFilterBtnClicked)
+        self.box.textChanged.connect(self.dock.slotBoxTextChanged)
+        self.append.toggled[bool].connect(self.box.slotAppendToggled)
         self.box.slotAppendToggled(self.append.isChecked())
-        self.connect(self.clear, SIGNAL("clicked()"), self.dock.slotClearBtnClicked)
+        self.clear.clicked.connect(self.dock.slotClearBtnClicked)
 
     def slotMsgShow(self, msg):
         self.msg.setText(msg)

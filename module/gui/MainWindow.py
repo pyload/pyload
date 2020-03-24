@@ -19,7 +19,7 @@
 import logging
 import re
 
-from PyQt4.QtCore import QEvent, QRect, QSize, Qt, SIGNAL
+from PyQt4.QtCore import pyqtSignal, QEvent, QPoint, QRect, QSize, QString, Qt
 from PyQt4.QtGui import (QAction, QActionGroup, QCheckBox, QColor, QCursor, QFileDialog, QFrame, QGridLayout,
                          QHBoxLayout, QIcon, QLabel, QMainWindow, QMenu, QPushButton, QSizePolicy, QStyle,
                          QTabWidget, QTextEdit, QVBoxLayout, QWhatsThis, QWidget)
@@ -40,6 +40,62 @@ from module.gui.AccountEdit import AccountEdit
 from module.gui.Tools import whatsThisFormat, SpinBox
 
 class MainWindow(QMainWindow):
+    mainWindowStateSGL                   = pyqtSignal()
+    mainWindowPaintEventSGL              = pyqtSignal()
+    minimizeToggledSGL                   = pyqtSignal(object)
+    maximizeToggledSGL                   = pyqtSignal(object)
+    mainWindowCloseSGL                   = pyqtSignal()
+    showAboutSGL                         = pyqtSignal()
+    advancedSelectSGL                    = pyqtSignal(object, object)
+    removePackageDupesSGL                = pyqtSignal()
+    removeLinkDupesSGL                   = pyqtSignal()
+    reloadQueueSGL                       = pyqtSignal()
+    reloadCollectorSGL                   = pyqtSignal()
+    reloadAccountsSGL                    = pyqtSignal(object)
+    showCaptchaFromMenuSGL               = pyqtSignal()
+    setDownloadStatusSGL                 = pyqtSignal(object)
+    stopAllDownloadsSGL                  = pyqtSignal()
+    restartFailedSGL                     = pyqtSignal()
+    deleteFinishedSGL                    = pyqtSignal()
+    showAddPackageSGL                    = pyqtSignal()
+    showAddLinksSGL                      = pyqtSignal()
+    showConnectorSGL                     = pyqtSignal()
+    showCorePermissionsSGL               = pyqtSignal()
+    quitCoreSGL                          = pyqtSignal()
+    restartCoreSGL                       = pyqtSignal()
+    addPackageSGL                        = pyqtSignal(object, object, object, object)
+    addLinksToPackageSGL                 = pyqtSignal(object, object)
+    addContainerSGL                      = pyqtSignal(object)
+    pushPackagesToQueueSGL               = pyqtSignal()
+    restartDownloadsSGL                  = pyqtSignal(object)
+    removeDownloadsSGL                   = pyqtSignal(object)
+    toolbarSpeedLimitEditedSGL           = pyqtSignal()
+    toolbarMaxParallelDownloadsEditedSGL = pyqtSignal()
+    captchaStatusButtonSGL               = pyqtSignal()
+    editPackagesSGL                      = pyqtSignal(object)
+    pullOutPackagesSGL                   = pyqtSignal()
+    abortDownloadsSGL                    = pyqtSignal(object)
+    selectAllSGL                         = pyqtSignal()
+    deselectAllSGL                       = pyqtSignal()
+    selectAllPackagesSGL                 = pyqtSignal()
+    deselectAllPackagesSGL               = pyqtSignal()
+    sortPackagesSGL                      = pyqtSignal()
+    sortLinksSGL                         = pyqtSignal()
+    expandAllSGL                         = pyqtSignal()
+    collapseAllSGL                       = pyqtSignal()
+    menuPluginNotFoundSGL                = pyqtSignal(object)
+    showLoggingOptionsSGL                = pyqtSignal()
+    showClickNLoadForwarderOptionsSGL    = pyqtSignal()
+    showAutomaticReloadingOptionsSGL     = pyqtSignal()
+    showCaptchaOptionsSGL                = pyqtSignal()
+    showIconThemeOptionsSGL              = pyqtSignal()
+    showFontOptionsSGL                   = pyqtSignal()
+    showColorFixOptionsSGL               = pyqtSignal()
+    showNotificationOptionsSGL           = pyqtSignal()
+    showTrayOptionsSGL                   = pyqtSignal()
+    showWhatsThisOptionsSGL              = pyqtSignal()
+    showOtherOptionsSGL                  = pyqtSignal()
+    showLanguageOptionsSGL               = pyqtSignal()
 
     def time_msec(self):
         return int((datetime.utcnow() - datetime(1970, 1, 1)).total_seconds() * 1000 - self.time_msec_init)
@@ -73,12 +129,12 @@ class MainWindow(QMainWindow):
         self.setTabPosition(Qt.RightDockWidgetArea, QTabWidget.North)
         self.newPackDock = NewPackageDock(self.appIconSet)
         self.addDockWidget(Qt.RightDockWidgetArea, self.newPackDock)
-        self.connect(self.newPackDock, SIGNAL("addPackageDone"), self.slotAddPackage)
-        self.connect(self.newPackDock, SIGNAL("parseUri"), self.slotParseUri)
+        self.newPackDock.addPackageDoneSGL.connect(self.slotAddPackageDone)
+        self.newPackDock.parseUriSGL.connect(self.slotParseUri)
         self.newLinkDock = NewLinkDock(self.appIconSet)
         self.addDockWidget(Qt.RightDockWidgetArea, self.newLinkDock)
-        self.connect(self.newLinkDock, SIGNAL("addLinksToPackageDone"), self.slotAddLinksToPackage)
-        self.connect(self.newLinkDock, SIGNAL("parseUri"), self.slotParseUri)
+        self.newLinkDock.addLinksToPackageDoneSGL.connect(self.slotAddLinksToPackageDone)
+        self.newLinkDock.parseUriSGL.connect(self.slotParseUri)
         self.tabifyDockWidget(self.newPackDock, self.newLinkDock)
         self.captchaDialog = CaptchaDialog()
 
@@ -97,9 +153,9 @@ class MainWindow(QMainWindow):
         self.advselect = AdvancedSelect()
         l.addWidget(self.advselect)
         self.advselectframe.setLayout(l)
-        self.connect(self.advselect.selectBtn, SIGNAL("clicked()"), self.slotAdvSelectSelectButtonClicked)
-        self.connect(self.advselect.deselectBtn, SIGNAL("clicked()"), self.slotAdvSelectDeselectButtonClicked)
-        self.connect(self.advselect.hideBtn, SIGNAL("clicked()"), self.slotAdvSelectHide)
+        self.advselect.selectBtn.clicked.connect(self.slotAdvSelectSelectButtonClicked)
+        self.advselect.deselectBtn.clicked.connect(self.slotAdvSelectDeselectButtonClicked)
+        self.advselect.hideBtn.clicked.connect(self.slotAdvSelectHide)
 
         #status
         self.statusw = QFrame()
@@ -277,36 +333,36 @@ class MainWindow(QMainWindow):
         self.masterlayout.addWidget(self.statusw)
 
         #signals..
-        self.connect(self.mactions["notifications"], SIGNAL("triggered()"), self.slotShowNotificationOptions)
-        self.connect(self.mactions["logging"], SIGNAL("triggered()"), self.slotShowLoggingOptions)
-        self.connect(self.mactions["cnlfwding"], SIGNAL("triggered()"), self.slotShowClickNLoadForwarderOptions)
-        self.connect(self.mactions["autoreloading"], SIGNAL("triggered()"), self.slotShowAutomaticReloadingOptions)
-        self.connect(self.mactions["captcha"], SIGNAL("triggered()"), self.slotShowCaptchaOptions)
-        self.connect(self.mactions["icontheme"], SIGNAL("triggered()"), self.slotShowIconThemeOptions)
-        self.connect(self.mactions["fonts"], SIGNAL("triggered()"), self.slotShowFontOptions)
-        self.connect(self.mactions["colorfix"], SIGNAL("triggered()"), self.slotShowColorFixOptions)
-        self.connect(self.mactions["tray"], SIGNAL("triggered()"), self.slotShowTrayOptions)
-        self.connect(self.mactions["whatsthis"], SIGNAL("triggered()"), self.slotShowWhatsThisOptions)
-        self.connect(self.mactions["other"], SIGNAL("triggered()"), self.slotShowOtherOptions)
-        self.connect(self.mactions["language"], SIGNAL("triggered()"), self.slotShowLanguageOptions)
-        self.connect(self.mactions["manager"], SIGNAL("triggered()"), self.slotShowConnector)
-        self.connect(self.mactions["coreperms"], SIGNAL("triggered()"), self.slotShowCorePermissions)
-        self.connect(self.mactions["quitcore"], SIGNAL("triggered()"), self.slotQuitCore)
-        self.connect(self.mactions["restartcore"], SIGNAL("triggered()"), self.slotRestartCore)
-        self.connect(self.mactions["reload"], SIGNAL("triggered()"), self.slotReload)
-        self.connect(self.mactions["showcaptcha"], SIGNAL("triggered()"), self.slotShowCaptcha)
-        self.connect(self.mactions["showtoolbar"], SIGNAL("toggled(bool)"), self.slotToggleToolbar)
-        self.connect(self.mactions["showspeedlimit"], SIGNAL("toggled(bool)"), self.slotToggleSpeedLimitVisibility)
-        self.connect(self.mactions["showmaxpadls"], SIGNAL("toggled(bool)"), self.slotToggleMaxPaDlsVisibility)
-        self.connect(self.mactions["whatsthismode"], SIGNAL("triggered()"), QWhatsThis.enterWhatsThisMode)
-        self.connect(self.mactions["about"], SIGNAL("triggered()"), self.slotShowAbout)
+        self.mactions["notifications"].triggered.connect(self.slotShowNotificationOptions)
+        self.mactions["logging"].triggered.connect(self.slotShowLoggingOptions)
+        self.mactions["cnlfwding"].triggered.connect(self.slotShowClickNLoadForwarderOptions)
+        self.mactions["autoreloading"].triggered.connect(self.slotShowAutomaticReloadingOptions)
+        self.mactions["captcha"].triggered.connect(self.slotShowCaptchaOptions)
+        self.mactions["icontheme"].triggered.connect(self.slotShowIconThemeOptions)
+        self.mactions["fonts"].triggered.connect(self.slotShowFontOptions)
+        self.mactions["colorfix"].triggered.connect(self.slotShowColorFixOptions)
+        self.mactions["tray"].triggered.connect(self.slotShowTrayOptions)
+        self.mactions["whatsthis"].triggered.connect(self.slotShowWhatsThisOptions)
+        self.mactions["other"].triggered.connect(self.slotShowOtherOptions)
+        self.mactions["language"].triggered.connect(self.slotShowLanguageOptions)
+        self.mactions["manager"].triggered.connect(self.slotShowConnector)
+        self.mactions["coreperms"].triggered.connect(self.slotShowCorePermissions)
+        self.mactions["quitcore"].triggered.connect(self.slotQuitCore)
+        self.mactions["restartcore"].triggered.connect(self.slotRestartCore)
+        self.mactions["reload"].triggered.connect(self.slotReload)
+        self.mactions["showcaptcha"].triggered.connect(self.slotShowCaptchaFromMenu)
+        self.mactions["showtoolbar"].toggled[bool].connect(self.slotToggleToolbar)
+        self.mactions["showspeedlimit"].toggled[bool].connect(self.slotToggleSpeedLimitVisibility)
+        self.mactions["showmaxpadls"].toggled[bool].connect(self.slotToggleMaxPaDlsVisibility)
+        self.mactions["whatsthismode"].triggered.connect(QWhatsThis.enterWhatsThisMode)
+        self.mactions["about"].triggered.connect(self.slotShowAbout)
 
-        self.connect(self.tabs["queue"]["view"], SIGNAL("customContextMenuRequested(const QPoint &)"), self.slotQueueContextMenu)
-        self.connect(self.tabs["collector"]["view"], SIGNAL("customContextMenuRequested(const QPoint &)"), self.slotCollectorContextMenu)
-        self.connect(self.tabs["accounts"]["view"], SIGNAL("customContextMenuRequested(const QPoint &)"), self.slotAccountContextMenu)
-        self.connect(self.tabs["settings"]["w"], SIGNAL("setupPluginsMenu"), self.slotSetupPluginsMenu)
+        self.tabs["queue"]["view"].customContextMenuRequested[QPoint].connect(self.slotQueueContextMenu)
+        self.tabs["collector"]["view"].customContextMenuRequested[QPoint].connect(self.slotCollectorContextMenu)
+        self.tabs["accounts"]["view"].customContextMenuRequested[QPoint].connect(self.slotAccountContextMenu)
+        self.tabs["settings"]["w"].setupPluginsMenuSGL.connect(self.slotSetupPluginsMenu)
 
-        self.connect(self.tabw, SIGNAL("currentChanged(int)"), self.slotTabChanged)
+        self.tabw.currentChanged[int].connect(self.slotTabChanged)
 
     def setCorePermissions(self, corePermissions):
         self.corePermissions = corePermissions
@@ -420,7 +476,7 @@ class MainWindow(QMainWindow):
             create toolbar
         """
         self.toolbar = self.addToolBar("toolbar")
-        self.connect(self.toolbar, SIGNAL("visibilityChanged(bool)"), self.slotToolbarVisibilityChanged)
+        self.toolbar.visibilityChanged[bool].connect(self.slotToolbarVisibilityChanged)
         self.toolbar.setObjectName("Main Toolbar")
         self.toolbar.setIconSize(QSize(30,30))
         self.toolbar.setMovable(False)
@@ -501,15 +557,15 @@ class MainWindow(QMainWindow):
         self.actions["remove_finished"] = self.toolbar.addAction(self.appIconSet["remove"], "")
         wt = _("Removes all finished downloads from the Queue and the Collector.")
         self.actions["remove_finished"].setWhatsThis(whatsThisFormat(_("Remove Finished"), wt))
-        self.connect(self.toolbar_speedLimit_enabled, SIGNAL("toggled(bool)"), self.slotSpeedLimitStatus)
-        self.connect(self.toolbar_speedLimit_rate, SIGNAL("editingFinished()"), self.slotSpeedLimitRate)
-        self.connect(self.toolbar_maxParallelDownloads_value, SIGNAL("editingFinished()"), self.slotMaxParallelDownloadsValue)
-        self.connect(self.toolbar_captcha, SIGNAL("clicked()"), self.slotCaptchaStatusButton)
-        self.connect(self.actions["status_start"], SIGNAL("triggered(bool)"), self.slotStatusStart)
-        self.connect(self.actions["status_stop"], SIGNAL("triggered()"), self.slotStatusStop)
-        self.connect(self.actions["status_pause"], SIGNAL("triggered(bool)"), self.slotStatusPause)
-        self.connect(self.actions["restart_failed"], SIGNAL("triggered()"), self.slotRestartFailed)
-        self.connect(self.actions["remove_finished"], SIGNAL("triggered()"), self.slotRemoveFinished)
+        self.toolbar_speedLimit_enabled.toggled[bool].connect(self.slotSpeedLimitStatus)
+        self.toolbar_speedLimit_rate.editingFinished.connect(self.slotSpeedLimitRate)
+        self.toolbar_maxParallelDownloads_value.editingFinished.connect(self.slotMaxParallelDownloadsValue)
+        self.toolbar_captcha.clicked.connect(self.slotCaptchaStatusButton)
+        self.actions["status_start"].triggered[bool].connect(self.slotStatusStart)
+        self.actions["status_stop"].triggered.connect(self.slotStatusStop)
+        self.actions["status_pause"].triggered[bool].connect(self.slotStatusPause)
+        self.actions["restart_failed"].triggered.connect(self.slotRestartFailed)
+        self.actions["remove_finished"].triggered.connect(self.slotRemoveFinished)
 
         self.addMenu = QMenu()
         self.actions["add_package"] = self.addMenu.addAction(_("Package"))
@@ -517,11 +573,11 @@ class MainWindow(QMainWindow):
         self.actions["add_container"] = self.addMenu.addAction(_("Container"))
         self.addMenu.addSeparator()
         self.actions["add_account"] = self.addMenu.addAction(_("Account"))
-        self.connect(self.actions["add"], SIGNAL("triggered()"), self.slotAdd)
-        self.connect(self.actions["add_package"], SIGNAL("triggered()"), self.slotShowAddPackage)
-        self.connect(self.actions["add_links"], SIGNAL("triggered()"), self.slotShowAddLinks)
-        self.connect(self.actions["add_container"], SIGNAL("triggered()"), self.slotShowAddContainer)
-        self.connect(self.actions["add_account"], SIGNAL("triggered()"), self.slotNewAccount)
+        self.actions["add"].triggered.connect(self.slotAdd)
+        self.actions["add_package"].triggered.connect(self.slotShowAddPackage)
+        self.actions["add_links"].triggered.connect(self.slotShowAddLinks)
+        self.actions["add_container"].triggered.connect(self.slotShowAddContainer)
+        self.actions["add_account"].triggered.connect(self.slotNewAccount)
 
         self.clipboardMenu = QMenu()
         self.actions["clipboard_queue"] = self.clipboardMenu.addAction(_("Create New Packages In Queue"))
@@ -530,10 +586,10 @@ class MainWindow(QMainWindow):
         self.actions["clipboard_collector"].setCheckable(True)
         self.actions["clipboard_packDock"] = self.clipboardMenu.addAction(_("Add To New Package Window"))
         self.actions["clipboard_packDock"].setCheckable(True)
-        self.connect(self.actions["clipboard"], SIGNAL("triggered()"), self.slotClipboard)
-        self.connect(self.actions["clipboard_queue"], SIGNAL("toggled(bool)"), self.slotClipboardQueueToggled)
-        self.connect(self.actions["clipboard_collector"], SIGNAL("toggled(bool)"), self.slotClipboardCollectorToggled)
-        self.connect(self.actions["clipboard_packDock"], SIGNAL("toggled(bool)"), self.slotClipboardPackDockToggled)
+        self.actions["clipboard"].triggered.connect(self.slotClipboard)
+        self.actions["clipboard_queue"].toggled[bool].connect(self.slotClipboardQueueToggled)
+        self.actions["clipboard_collector"].toggled[bool].connect(self.slotClipboardCollectorToggled)
+        self.actions["clipboard_packDock"].toggled[bool].connect(self.slotClipboardPackDockToggled)
 
     def init_tabs(self, connector):
         """
@@ -556,9 +612,9 @@ class MainWindow(QMainWindow):
         self.tabs["queue"]["w"].adjustSize()
         self.tabs["queue"]["m"].setFixedHeight(self.tabs["queue"]["b"].height())
         self.tabs["queue"]["m"].hide()
-        self.connect(self.tabs["queue"]["b"], SIGNAL("clicked()"), self.slotPullOutPackages)
-        self.connect(self.tabs["queue"]["view"], SIGNAL("queueMsgShow"), self.slotQueueMsgShow)
-        self.connect(self.tabs["queue"]["view"], SIGNAL("queueMsgHide"), self.slotQueueMsgHide)
+        self.tabs["queue"]["b"].clicked.connect(self.slotPullOutPackages)
+        self.tabs["queue"]["view"].queueMsgShowSGL.connect(self.slotQueueMsgShow)
+        self.tabs["queue"]["view"].queueMsgHideSGL.connect(self.slotQueueMsgHide)
         self.tabs["queue"]["view"].setContextMenuPolicy(Qt.CustomContextMenu)
 
         #overview
@@ -584,9 +640,9 @@ class MainWindow(QMainWindow):
         self.tabs["collector"]["w"].adjustSize()
         self.tabs["collector"]["m"].setFixedHeight(self.tabs["collector"]["b"].height())
         self.tabs["collector"]["m"].hide()
-        self.connect(self.tabs["collector"]["b"], SIGNAL("clicked()"), self.slotPushPackagesToQueue)
-        self.connect(self.tabs["collector"]["view"], SIGNAL("collectorMsgShow"), self.slotCollectorMsgShow)
-        self.connect(self.tabs["collector"]["view"], SIGNAL("collectorMsgHide"), self.slotCollectorMsgHide)
+        self.tabs["collector"]["b"].clicked.connect(self.slotPushPackagesToQueue)
+        self.tabs["collector"]["view"].collectorMsgShowSGL.connect(self.slotCollectorMsgShow)
+        self.tabs["collector"]["view"].collectorMsgHideSGL.connect(self.slotCollectorMsgHide)
         self.tabs["collector"]["view"].setContextMenuPolicy(Qt.CustomContextMenu)
 
         #gui log
@@ -596,7 +652,6 @@ class MainWindow(QMainWindow):
         self.tabs["guilog"]["text"].setLineWrapMode(QTextEdit.NoWrap)
         self.tabs["guilog"]["text"].logOffset = 0
         self.tabs["guilog"]["text"].setReadOnly(True)
-        self.connect(self.tabs["guilog"]["text"], SIGNAL("append(QString)"), self.tabs["guilog"]["text"].append)
         self.tabs["guilog"]["l"].addWidget(self.tabs["guilog"]["text"])
 
         #core log
@@ -606,7 +661,6 @@ class MainWindow(QMainWindow):
         self.tabs["corelog"]["text"].setLineWrapMode(QTextEdit.NoWrap)
         self.tabs["corelog"]["text"].logOffset = 0
         self.tabs["corelog"]["text"].setReadOnly(True)
-        self.connect(self.tabs["corelog"]["text"], SIGNAL("append(QString)"), self.tabs["corelog"]["text"].append)
         self.tabs["corelog"]["l"].addWidget(self.tabs["corelog"]["text"])
 
         #accounts
@@ -615,7 +669,7 @@ class MainWindow(QMainWindow):
         self.tabs["accounts"]["w"].layout().addWidget(self.tabs["accounts"]["view"])
         self.tabs["accounts"]["b"] = QPushButton(_("New Account"))
         self.tabs["accounts"]["w"].layout().addWidget(self.tabs["accounts"]["b"])
-        self.connect(self.tabs["accounts"]["b"], SIGNAL("clicked()"), self.slotNewAccount)
+        self.tabs["accounts"]["b"].clicked.connect(self.slotNewAccount)
         self.tabs["accounts"]["view"].setContextMenuPolicy(Qt.CustomContextMenu)
 
     def init_context(self):
@@ -670,25 +724,25 @@ class MainWindow(QMainWindow):
         self.queueContext.addSeparator()
         self.queueContext.addAction(self.queueContext.buttons["expand"])
         self.queueContext.addAction(self.queueContext.buttons["collapse"])
-        self.connect(self.queueContext.buttons["pull"], SIGNAL("triggered()"), self.slotPullOutPackages)
-        self.connect(self.queueContext.buttons["add_package"], SIGNAL("triggered()"), self.slotShowAddPackage)
-        self.connect(self.queueContext.buttons["add_links"], SIGNAL("triggered()"), self.slotShowAddLinks)
-        self.connect(self.queueContext.buttons["add_container"], SIGNAL("triggered()"), self.slotShowAddContainer)
-        self.connect(self.queueContext.buttons["edit"], SIGNAL("triggered()"), self.slotEditPackages)
-        self.connect(self.queueContext.buttons["abort"], SIGNAL("triggered()"), self.slotAbortDownloads)
-        self.connect(self.queueContext.buttons["restart"], SIGNAL("triggered()"), self.slotRestartDownloads)
-        self.connect(self.queueContext.buttons["remove"], SIGNAL("triggered()"), self.slotRemoveDownloads)
-        self.connect(self.queueContext.buttons["selectall"], SIGNAL("triggered()"), self.slotSelectAll)
-        self.connect(self.queueContext.buttons["deselectall"], SIGNAL("triggered()"), self.slotDeselectAll)
-        self.connect(self.queueContext.buttons["selectallpacks"], SIGNAL("triggered()"), self.slotSelectAllPackages)
-        self.connect(self.queueContext.buttons["deselectallpacks"], SIGNAL("triggered()"), self.slotDeselectAllPackages)
-        self.connect(self.queueContext.buttons["advancedselect"], SIGNAL("triggered()"), self.slotAdvSelectShow)
-        self.connect(self.queueContext.buttons["removepackagedupes"], SIGNAL("triggered()"), self.slotRemovePackageDupes)
-        self.connect(self.queueContext.buttons["removelinkdupes"], SIGNAL("triggered()"), self.slotRemoveLinkDupes)
-        self.connect(self.queueContext.buttons["sort_packages"], SIGNAL("triggered()"), self.slotSortPackages)
-        self.connect(self.queueContext.buttons["sort_links"], SIGNAL("triggered()"), self.slotSortLinks)
-        self.connect(self.queueContext.buttons["expand"], SIGNAL("triggered()"), self.slotExpandAll)
-        self.connect(self.queueContext.buttons["collapse"], SIGNAL("triggered()"), self.slotCollapseAll)
+        self.queueContext.buttons["pull"].triggered.connect(self.slotPullOutPackages)
+        self.queueContext.buttons["add_package"].triggered.connect(self.slotShowAddPackage)
+        self.queueContext.buttons["add_links"].triggered.connect(self.slotShowAddLinks)
+        self.queueContext.buttons["add_container"].triggered.connect(self.slotShowAddContainer)
+        self.queueContext.buttons["edit"].triggered.connect(self.slotEditPackages)
+        self.queueContext.buttons["abort"].triggered.connect(self.slotAbortDownloads)
+        self.queueContext.buttons["restart"].triggered.connect(self.slotRestartDownloads)
+        self.queueContext.buttons["remove"].triggered.connect(self.slotRemoveDownloads)
+        self.queueContext.buttons["selectall"].triggered.connect(self.slotSelectAll)
+        self.queueContext.buttons["deselectall"].triggered.connect(self.slotDeselectAll)
+        self.queueContext.buttons["selectallpacks"].triggered.connect(self.slotSelectAllPackages)
+        self.queueContext.buttons["deselectallpacks"].triggered.connect(self.slotDeselectAllPackages)
+        self.queueContext.buttons["advancedselect"].triggered.connect(self.slotAdvSelectShow)
+        self.queueContext.buttons["removepackagedupes"].triggered.connect(self.slotRemovePackageDupes)
+        self.queueContext.buttons["removelinkdupes"].triggered.connect(self.slotRemoveLinkDupes)
+        self.queueContext.buttons["sort_packages"].triggered.connect(self.slotSortPackages)
+        self.queueContext.buttons["sort_links"].triggered.connect(self.slotSortLinks)
+        self.queueContext.buttons["expand"].triggered.connect(self.slotExpandAll)
+        self.queueContext.buttons["collapse"].triggered.connect(self.slotCollapseAll)
 
         #collector
         self.collectorContext = QMenu()
@@ -735,24 +789,24 @@ class MainWindow(QMainWindow):
         self.collectorContext.addSeparator()
         self.collectorContext.addAction(self.collectorContext.buttons["expand"])
         self.collectorContext.addAction(self.collectorContext.buttons["collapse"])
-        self.connect(self.collectorContext.buttons["push"], SIGNAL("triggered()"), self.slotPushPackagesToQueue)
-        self.connect(self.collectorContext.buttons["add_package"], SIGNAL("triggered()"), self.slotShowAddPackage)
-        self.connect(self.collectorContext.buttons["add_links"], SIGNAL("triggered()"), self.slotShowAddLinks)
-        self.connect(self.collectorContext.buttons["edit"], SIGNAL("triggered()"), self.slotEditPackages)
-        self.connect(self.collectorContext.buttons["abort"], SIGNAL("triggered()"), self.slotAbortDownloads)
-        self.connect(self.collectorContext.buttons["restart"], SIGNAL("triggered()"), self.slotRestartDownloads)
-        self.connect(self.collectorContext.buttons["remove"], SIGNAL("triggered()"), self.slotRemoveDownloads)
-        self.connect(self.collectorContext.buttons["selectallpacks"], SIGNAL("triggered()"), self.slotSelectAllPackages)
-        self.connect(self.collectorContext.buttons["deselectallpacks"], SIGNAL("triggered()"), self.slotDeselectAllPackages)
-        self.connect(self.collectorContext.buttons["selectall"], SIGNAL("triggered()"), self.slotSelectAll)
-        self.connect(self.collectorContext.buttons["deselectall"], SIGNAL("triggered()"), self.slotDeselectAll)
-        self.connect(self.collectorContext.buttons["advancedselect"], SIGNAL("triggered()"), self.slotAdvSelectShow)
-        self.connect(self.collectorContext.buttons["removepackagedupes"], SIGNAL("triggered()"), self.slotRemovePackageDupes)
-        self.connect(self.collectorContext.buttons["removelinkdupes"], SIGNAL("triggered()"), self.slotRemoveLinkDupes)
-        self.connect(self.collectorContext.buttons["sort_packages"], SIGNAL("triggered()"), self.slotSortPackages)
-        self.connect(self.collectorContext.buttons["sort_links"], SIGNAL("triggered()"), self.slotSortLinks)
-        self.connect(self.collectorContext.buttons["expand"], SIGNAL("triggered()"), self.slotExpandAll)
-        self.connect(self.collectorContext.buttons["collapse"], SIGNAL("triggered()"), self.slotCollapseAll)
+        self.collectorContext.buttons["push"].triggered.connect(self.slotPushPackagesToQueue)
+        self.collectorContext.buttons["add_package"].triggered.connect(self.slotShowAddPackage)
+        self.collectorContext.buttons["add_links"].triggered.connect(self.slotShowAddLinks)
+        self.collectorContext.buttons["edit"].triggered.connect(self.slotEditPackages)
+        self.collectorContext.buttons["abort"].triggered.connect(self.slotAbortDownloads)
+        self.collectorContext.buttons["restart"].triggered.connect(self.slotRestartDownloads)
+        self.collectorContext.buttons["remove"].triggered.connect(self.slotRemoveDownloads)
+        self.collectorContext.buttons["selectallpacks"].triggered.connect(self.slotSelectAllPackages)
+        self.collectorContext.buttons["deselectallpacks"].triggered.connect(self.slotDeselectAllPackages)
+        self.collectorContext.buttons["selectall"].triggered.connect(self.slotSelectAll)
+        self.collectorContext.buttons["deselectall"].triggered.connect(self.slotDeselectAll)
+        self.collectorContext.buttons["advancedselect"].triggered.connect(self.slotAdvSelectShow)
+        self.collectorContext.buttons["removepackagedupes"].triggered.connect(self.slotRemovePackageDupes)
+        self.collectorContext.buttons["removelinkdupes"].triggered.connect(self.slotRemoveLinkDupes)
+        self.collectorContext.buttons["sort_packages"].triggered.connect(self.slotSortPackages)
+        self.collectorContext.buttons["sort_links"].triggered.connect(self.slotSortLinks)
+        self.collectorContext.buttons["expand"].triggered.connect(self.slotExpandAll)
+        self.collectorContext.buttons["collapse"].triggered.connect(self.slotCollapseAll)
 
         #accounts
         self.accountContext = QMenu()
@@ -763,9 +817,9 @@ class MainWindow(QMainWindow):
         self.accountContext.addAction(self.accountContext.buttons["add"])
         self.accountContext.addAction(self.accountContext.buttons["edit"])
         self.accountContext.addAction(self.accountContext.buttons["remove"])
-        self.connect(self.accountContext.buttons["add"], SIGNAL("triggered()"), self.slotNewAccount)
-        self.connect(self.accountContext.buttons["edit"], SIGNAL("triggered()"), self.slotEditAccount)
-        self.connect(self.accountContext.buttons["remove"], SIGNAL("triggered()"), self.slotRemoveAccount)
+        self.accountContext.buttons["add"].triggered.connect(self.slotNewAccount)
+        self.accountContext.buttons["edit"].triggered.connect(self.slotEditAccount)
+        self.accountContext.buttons["remove"].triggered.connect(self.slotRemoveAccount)
 
     def initEventHooks(self):
         self.eD = {}
@@ -776,7 +830,7 @@ class MainWindow(QMainWindow):
 
     def paintEvent(self, event):
         if self.eD["pStateSig"]:
-            self.emit(SIGNAL("mainWindowState"))
+            self.mainWindowStateSGL.emit()
         self.eD["pCount"] += 1
         self.log.debug3("MainWindow.paintEvent:  at %08d msec   cnt: %04d   rect: x:%04d y:%04d w:%04d h:%04d" %
                         (self.time_msec(), self.eD["pCount"], event.rect().x(), event.rect().y(), event.rect().width(), event.rect().height()))
@@ -793,7 +847,7 @@ class MainWindow(QMainWindow):
                 self.eD["lastNormSize"] = size
         if self.eD["pSignal"]:
             self.eD["pSignal"] = False
-            self.emit(SIGNAL("mainWindowPaintEvent"))
+            self.mainWindowPaintEventSGL.emit()
         geo = self.geometry()
         if (geo.topLeft() != self.moveEventPos) or (geo.size() != self.resizeEventSize):
             self.log.debug3("MainWindow.paintEvent: Bad geometry")
@@ -840,21 +894,21 @@ class MainWindow(QMainWindow):
         if (event.type() == QEvent.WindowStateChange):
             if (self.windowState() & Qt.WindowMinimized):
                 if not (event.oldState() & Qt.WindowMinimized):
-                    self.emit(SIGNAL("minimizeToggled"), True)
+                    self.minimizeToggledSGL.emit(True)
             elif (event.oldState() & Qt.WindowMinimized):
-                self.emit(SIGNAL("minimizeToggled"), False)
+                self.minimizeToggledSGL.emit(False)
             if (self.windowState() & Qt.WindowMaximized):
                 if not (event.oldState() & Qt.WindowMaximized):
-                    self.emit(SIGNAL("maximizeToggled"), True)
+                    self.maximizeToggledSGL.emit(True)
             elif (event.oldState() & Qt.WindowMaximized):
-                self.emit(SIGNAL("maximizeToggled"), False)
+                self.maximizeToggledSGL.emit(False)
 
     def closeEvent(self, event):
         """
             somebody wants to close me!
         """
         event.ignore()
-        self.emit(SIGNAL("mainWindowClose"))
+        self.mainWindowCloseSGL.emit()
 
     @classmethod
     def urlFilter(self, text):
@@ -877,7 +931,7 @@ class MainWindow(QMainWindow):
         """
             show the about-box
         """
-        self.emit(SIGNAL("showAbout"))
+        self.showAboutSGL.emit()
 
     def slotQueueMsgShow(self, msg, error):
         """
@@ -950,28 +1004,28 @@ class MainWindow(QMainWindow):
             triggered from advanced link/package select box
         """
         queue = True if self.tabw.currentIndex() == 1 else False
-        self.emit(SIGNAL("advancedSelect"), queue, False)
+        self.advancedSelectSGL.emit(queue, False)
 
     def slotAdvSelectDeselectButtonClicked(self):
         """
             triggered from advanced link/package select box
         """
         queue = True if self.tabw.currentIndex() == 1 else False
-        self.emit(SIGNAL("advancedSelect"), queue, True)
+        self.advancedSelectSGL.emit(queue, True)
 
     def slotRemovePackageDupes(self):
         """
             remove duplicate packages
             let main to the stuff
         """
-        self.emit(SIGNAL("removePackageDupes"))
+        self.removePackageDupesSGL.emit()
 
     def slotRemoveLinkDupes(self):
         """
             remove duplicate links
             let main to the stuff
         """
-        self.emit(SIGNAL("removeLinkDupes"))
+        self.removeLinkDupesSGL.emit()
 
     def slotToolbarVisibilityChanged(self, visible):
         """
@@ -1015,47 +1069,47 @@ class MainWindow(QMainWindow):
             from view-menu (mainmenu)
             force reload queue and collector tab
         """
-        self.emit(SIGNAL("reloadQueue"))
-        self.emit(SIGNAL("reloadCollector"))
+        self.reloadQueueSGL.emit()
+        self.reloadCollectorSGL.emit()
 
-    def slotShowCaptcha(self):
+    def slotShowCaptchaFromMenu(self):
         """
             from view-menu (mainmenu)
             show captcha
         """
-        self.emit(SIGNAL("showCaptcha"))
+        self.showCaptchaFromMenuSGL.emit()
 
     def slotStatusStart(self):
         """
             run button (toolbar)
         """
-        self.emit(SIGNAL("setDownloadStatus"), True)
+        self.setDownloadStatusSGL.emit(True)
 
     def slotStatusPause(self):
         """
             pause button (toolbar)
         """
-        self.emit(SIGNAL("setDownloadStatus"), False)
+        self.setDownloadStatusSGL.emit(False)
 
     def slotStatusStop(self):
         """
             stop button (toolbar)
         """
-        self.emit(SIGNAL("stopAllDownloads"))
+        self.stopAllDownloadsSGL.emit()
 
     def slotRestartFailed(self):
         """
             restart failed button (toolbar)
             let main to the stuff
         """
-        self.emit(SIGNAL("restartFailed"))
+        self.restartFailedSGL.emit()
 
     def slotRemoveFinished(self):
         """
             remove finished button (toolbar)
             let main to the stuff
         """
-        self.emit(SIGNAL("deleteFinished"))
+        self.deleteFinishedSGL.emit()
 
     def slotAdd(self):
         """
@@ -1069,14 +1123,14 @@ class MainWindow(QMainWindow):
             action from add-menu
             show new-package dock
         """
-        self.emit(SIGNAL("showAddPackage"))
+        self.showAddPackageSGL.emit()
 
     def slotShowAddLinks(self):
         """
             action from add-menu
             show new-links dock
         """
-        self.emit(SIGNAL("showAddLinks"))
+        self.showAddLinksSGL.emit()
 
     def slotClipboard(self):
         """
@@ -1109,28 +1163,28 @@ class MainWindow(QMainWindow):
             connection manager action triggered
             let main to the stuff
         """
-        self.emit(SIGNAL("showConnector"))
+        self.showConnectorSGL.emit()
 
     def slotShowCorePermissions(self):
         """
             core permissions action triggered
             let main to the stuff
         """
-        self.emit(SIGNAL("showCorePermissions"))
+        self.showCorePermissionsSGL.emit()
 
     def slotQuitCore(self):
         """
             quit core action triggered
             let main to the stuff
         """
-        self.emit(SIGNAL("quitCore"))
+        self.quitCoreSGL.emit()
 
     def slotRestartCore(self):
         """
             restart core action triggered
             let main to the stuff
         """
-        self.emit(SIGNAL("restartCore"))
+        self.restartCoreSGL.emit()
 
     def slotParseUri(self, caller, text):
         """
@@ -1146,19 +1200,19 @@ class MainWindow(QMainWindow):
         elif caller == "linkdock":
             self.newLinkDock.parseUriResult(result)
 
-    def slotAddPackage(self, name, links, queue, password=None):
+    def slotAddPackageDone(self, name, links, queue, password=None):
         """
             new package
             let main to the stuff
         """
-        self.emit(SIGNAL("addPackage"), name, links, queue, password)
+        self.addPackageSGL.emit(name, links, queue, password)
 
-    def slotAddLinksToPackage(self, links, queue):
+    def slotAddLinksToPackageDone(self, links, queue):
         """
             adds links to currently selected package
             let main to the stuff
         """
-        self.emit(SIGNAL("addLinksToPackage"), links, queue)
+        self.addLinksToPackageSGL.emit(links, queue)
 
     def slotShowAddContainer(self):
         """
@@ -1175,7 +1229,7 @@ class MainWindow(QMainWindow):
         ])
         fileNames = QFileDialog.getOpenFileNames(self, "Open Container", self.lastAddContainerDir, typeStr)
         for name in fileNames:
-            self.emit(SIGNAL("addContainer"), unicode(name))
+            self.addContainerSGL.emit(unicode(name))
         if not fileNames.isEmpty():
             self.lastAddContainerDir = unicode(dirname(unicode(name)))
 
@@ -1184,7 +1238,7 @@ class MainWindow(QMainWindow):
             push selected collector packages to queue
             let main do it
         """
-        self.emit(SIGNAL("pushPackagesToQueue"))
+        self.pushPackagesToQueueSGL.emit()
 
     def slotQueueContextMenu(self, pos):
         """
@@ -1232,115 +1286,115 @@ class MainWindow(QMainWindow):
         """
             restart download action is triggered
         """
-        self.emit(SIGNAL("restartDownloads"), self.activeMenu == self.queueContext)
+        self.restartDownloadsSGL.emit(self.activeMenu == self.queueContext)
 
     def slotRemoveDownloads(self):
         """
             remove download action is triggered
         """
-        self.emit(SIGNAL("removeDownloads"), self.activeMenu == self.queueContext)
+        self.removeDownloadsSGL.emit(self.activeMenu == self.queueContext)
 
     def slotSpeedLimitStatus(self, status):
         """
             speed limit enable/disable checkbox (toolbar)
         """
-        self.emit(SIGNAL("toolbarSpeedLimitEdited"))
+        self.toolbarSpeedLimitEditedSGL.emit()
 
     def slotSpeedLimitRate(self):
         """
             speed limit rate spinbox (toolbar)
         """
         self.toolbar_speedLimit_rate.lineEdit().deselect() # deselect any selected text
-        self.emit(SIGNAL("toolbarSpeedLimitEdited"))
+        self.toolbarSpeedLimitEditedSGL.emit()
 
     def slotMaxParallelDownloadsValue(self):
         """
             max parallel downloads spinbox (toolbar)
         """
         self.toolbar_maxParallelDownloads_value.lineEdit().deselect() # deselect any selected text
-        self.emit(SIGNAL("toolbarMaxParallelDownloadsEdited"))
+        self.toolbarMaxParallelDownloadsEditedSGL.emit()
 
     def slotCaptchaStatusButton(self):
         """
             captcha status button (toolbar)
         """
-        self.emit(SIGNAL("captchaStatusButton"))
+        self.captchaStatusButtonSGL.emit()
 
     def slotEditPackages(self):
         """
             popup the package edit dialog
         """
-        self.emit(SIGNAL("editPackages"), self.activeMenu == self.queueContext)
+        self.editPackagesSGL.emit(self.activeMenu == self.queueContext)
 
     def slotPullOutPackages(self):
         """
             pull selected packages out of the queue
             let main do it
         """
-        self.emit(SIGNAL("pullOutPackages"))
+        self.pullOutPackagesSGL.emit()
 
     def slotAbortDownloads(self):
         """
             abort selected downloads
             let main do it
         """
-        self.emit(SIGNAL("abortDownloads"), self.activeMenu == self.queueContext)
+        self.abortDownloadsSGL.emit(self.activeMenu == self.queueContext)
 
     def slotSelectAllPackages(self):
         """
             select all packages
             let main to the stuff
         """
-        self.emit(SIGNAL("selectAllPackages"))
+        self.selectAllPackagesSGL.emit()
 
     def slotDeselectAllPackages(self):
         """
             deselect all packages
             let main to the stuff
         """
-        self.emit(SIGNAL("deselectAllPackages"))
+        self.deselectAllPackagesSGL.emit()
 
     def slotSelectAll(self):
         """
             select all items
             let main to the stuff
         """
-        self.emit(SIGNAL("selectAll"))
+        self.selectAllSGL.emit()
 
     def slotDeselectAll(self):
         """
             deselect all items
             let main to the stuff
         """
-        self.emit(SIGNAL("deselectAll"))
+        self.deselectAllSGL.emit()
 
     def slotSortPackages(self):
         """
             sort packages
             let main to the stuff
         """
-        self.emit(SIGNAL("sortPackages"))
+        self.sortPackagesSGL.emit()
 
     def slotSortLinks(self):
         """
             sort links
             let main to the stuff
         """
-        self.emit(SIGNAL("sortLinks"))
+        self.sortLinksSGL.emit()
 
     def slotExpandAll(self):
         """
             expand all tree view items
             let main to the stuff
         """
-        self.emit(SIGNAL("expandAll"))
+        self.expandAllSGL.emit()
 
     def slotCollapseAll(self):
         """
             collapse all tree view items
             let main to the stuff
         """
-        self.emit(SIGNAL("collapseAll"))
+        self.collapseAllSGL.emit()
 
     def slotTabChanged(self, index):
         # currentIndex
@@ -1383,7 +1437,7 @@ class MainWindow(QMainWindow):
                 n3 = data["password"]
                 self.connector.proxy.updateAccount(n1, n2, n3, None)
 
-        self.accountEdit.connect(self.accountEdit, SIGNAL("accountEditSave"), slotSave)
+        self.accountEdit.accountEditSaveSGL.connect(slotSave)
         self.tabw.setCurrentIndex(3)
         self.accountEdit.exec_()
 
@@ -1412,7 +1466,7 @@ class MainWindow(QMainWindow):
             n3 = data["password"]
             self.connector.proxy.updateAccount(n1, n2, n3, None)
 
-        self.accountEdit.connect(self.accountEdit, SIGNAL("accountEditSave"), slotSave)
+        self.accountEdit.accountEditSaveSGL.connect(slotSave)
         self.accountEdit.exec_()
 
     def slotRemoveAccount(self):
@@ -1478,42 +1532,42 @@ class MainWindow(QMainWindow):
             self.tabs["settings"]["w"].pluginsComboBox.setCurrentIndex(index)   # ComboBox
             self.tabs["settings"]["w"].slotPluginsComboBoxActivated(index)      # Page
         else:
-            self.emit(SIGNAL("menuPluginNotFound"), name)
+            self.menuPluginNotFoundSGL.emit(name)
 
     def slotShowLoggingOptions(self):
-        self.emit(SIGNAL("showLoggingOptions"))
+        self.showLoggingOptionsSGL.emit()
 
     def slotShowClickNLoadForwarderOptions(self):
-        self.emit(SIGNAL("showClickNLoadForwarderOptions"))
+        self.showClickNLoadForwarderOptionsSGL.emit()
 
     def slotShowAutomaticReloadingOptions(self):
-        self.emit(SIGNAL("showAutomaticReloadingOptions"))
+        self.showAutomaticReloadingOptionsSGL.emit()
 
     def slotShowCaptchaOptions(self):
-        self.emit(SIGNAL("showCaptchaOptions"))
+        self.showCaptchaOptionsSGL.emit()
 
     def slotShowIconThemeOptions(self):
-        self.emit(SIGNAL("showIconThemeOptions"))
+        self.showIconThemeOptionsSGL.emit()
 
     def slotShowFontOptions(self):
-        self.emit(SIGNAL("showFontOptions"))
+        self.showFontOptionsSGL.emit()
 
     def slotShowColorFixOptions(self):
-        self.emit(SIGNAL("showColorFixOptions"))
+        self.showColorFixOptionsSGL.emit()
 
     def slotShowNotificationOptions(self):
-        self.emit(SIGNAL("showNotificationOptions"))
+        self.showNotificationOptionsSGL.emit()
 
     def slotShowTrayOptions(self):
-        self.emit(SIGNAL("showTrayOptions"))
+        self.showTrayOptionsSGL.emit()
 
     def slotShowWhatsThisOptions(self):
-        self.emit(SIGNAL("showWhatsThisOptions"))
+        self.showWhatsThisOptionsSGL.emit()
 
     def slotShowOtherOptions(self):
-        self.emit(SIGNAL("showOtherOptions"))
+        self.showOtherOptionsSGL.emit()
 
     def slotShowLanguageOptions(self):
-        self.emit(SIGNAL("showLanguageOptions"))
+        self.showLanguageOptionsSGL.emit()
 
 

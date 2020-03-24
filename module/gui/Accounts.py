@@ -16,7 +16,7 @@
     @author: mkaay
 """
 
-from PyQt4.QtCore import QAbstractItemModel, QModelIndex, QMutex, QMutexLocker, QString, Qt, QTimer, QVariant, SIGNAL
+from PyQt4.QtCore import QAbstractItemModel, QModelIndex, QMutex, QMutexLocker, QString, Qt, QTimer, QVariant
 from PyQt4.QtGui import QAbstractItemView, QApplication, QItemDelegate, QStyle, QStyleOptionProgressBarV2, QTreeView
 
 import logging
@@ -37,7 +37,7 @@ class AccountModel(QAbstractItemModel):
         self.cols = 4
         self.mutex = QMutex()
         self.timer = QTimer()
-        self.timer.connect(self.timer, SIGNAL("timeout()"), self.slotReloadData)
+        self.timer.timeout.connect(self.slotReloadData)
 
     def getSelectedIndexes(self):
         """

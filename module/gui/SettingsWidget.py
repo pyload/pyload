@@ -16,7 +16,7 @@
     @author: mkaay
 """
 
-from PyQt4.QtCore import QMutex, QMutexLocker, QStringList, Qt, QTimer, QVariant, SIGNAL
+from PyQt4.QtCore import pyqtSignal, QMutex, QMutexLocker, QStringList, Qt, QTimer, QVariant
 from PyQt4.QtGui import (QApplication, QCheckBox, QComboBox, QCompleter, QFormLayout, QGroupBox, QHBoxLayout, QLabel,
                          QLayout, QLineEdit, QPushButton, QScrollArea, QSizePolicy, QSpinBox, QStackedLayout,
                          QStringListModel, QTabWidget, QVBoxLayout, QWidget)
@@ -28,6 +28,8 @@ from module.gui.Tools import WidgetDisable
 
 
 class SettingsWidget(QWidget):
+    setupPluginsMenuSGL = pyqtSignal()
+
     def __init__(self, corePermissions):
         QWidget.__init__(self)
         self.log = logging.getLogger("guilog")
@@ -163,13 +165,13 @@ class SettingsWidget(QWidget):
 
         layout.addLayout(cont)
 
-        self.connect(self.pluginsSearchEditBox, SIGNAL("returnPressed()"), self.slotPluginsSearchFind)
-        self.connect(self.pluginsSearchFind, SIGNAL("clicked()"), self.slotPluginsSearchFind)
-        self.connect(self.pluginsSearchClear, SIGNAL("clicked()"), self.slotPluginsSearchClear)
-        self.connect(self.saveBtn, SIGNAL("clicked()"), self.slotSaveConfig)
-        self.connect(self.reloadBtn, SIGNAL("clicked()"), self.slotLoadConfig)
-        self.connect(self.pluginsComboBox, SIGNAL("activated(int)"), self.slotPluginsComboBoxActivated)
-        self.connect(self.pluginsMenuCheckBox, SIGNAL("clicked(bool)"), self.slotPluginsMenuCheckBoxClicked)
+        self.pluginsSearchEditBox.returnPressed.connect(self.slotPluginsSearchFind)
+        self.pluginsSearchFind.clicked.connect(self.slotPluginsSearchFind)
+        self.pluginsSearchClear.clicked.connect(self.slotPluginsSearchClear)
+        self.saveBtn.clicked.connect(self.slotSaveConfig)
+        self.reloadBtn.clicked.connect(self.slotLoadConfig)
+        self.pluginsComboBox.activated[int].connect(self.slotPluginsComboBoxActivated)
+        self.pluginsMenuCheckBox.clicked[bool].connect(self.slotPluginsMenuCheckBoxClicked)
 
         wdgd.Enable()
 
@@ -384,7 +386,7 @@ class SettingsWidget(QWidget):
             if name in self.menuPlugins:
                 self.menuPlugins.remove(name)
         self.menuPlugins = sorted(self.menuPlugins)
-        self.emit(SIGNAL("setupPluginsMenu"))
+        self.setupPluginsMenuSGL.emit()
 
 class Section(QGroupBox):
     def __init__(self, data, parent, ctype="core"):

@@ -21,7 +21,7 @@ SERVER_VERSION = "0.4.20"
 from time import sleep
 from uuid import uuid4 as uuid
 
-from PyQt4.QtCore import QMutex, QObject, Qt, SIGNAL
+from PyQt4.QtCore import pyqtSignal, QMutex, QObject, Qt
 from PyQt4.QtGui import QDialog, QDialogButtonBox, QGridLayout, QIcon, QLabel, QLineEdit
 
 import logging
@@ -36,6 +36,9 @@ class Connector(QObject):
     """
         manages the connection to the pyload core via thrift
     """
+    connectTimeoutSGL = pyqtSignal(object)
+    msgBoxErrorSGL    = pyqtSignal(object)
+    connectionLostSGL = pyqtSignal()
 
     def __init__(self, firstAttempt):
         QObject.__init__(self)
@@ -150,7 +153,7 @@ class Connector(QObject):
 
         self.ssl = client.isSSLConnection() # remember if we are connected with SSL
         self.proxy = DispatchRPC(self.mutex, client)
-        self.connect(self.proxy, SIGNAL("connectionLost"), self, SIGNAL("connectionLost"))
+        self.proxy.connectionLostSGL.connect(self.connectionLostSGL)
 
         # check server version
         server_version = self.proxy.getServerVersion()
@@ -181,16 +184,16 @@ class Connector(QObject):
         self.proxy = self.Dummy()
 
     def timeoutTimerStart(self):
-        self.emit(SIGNAL("connectTimeout"))
+        self.connectTimeoutSGL.emit(True)
 
     def timeoutTimerStop(self):
-        self.emit(SIGNAL("connectTimeout"), False)
+        self.connectTimeoutSGL.emit(False)
 
     def messageBox_01(self, host, port):
         self.timeoutTimerStop()
         err = _("Invalid hostname or address:")
         err += "\n" + host + ":" + str(port)
-        self.emit(SIGNAL("msgBoxError"), err)
+        self.msgBoxErrorSGL.emit(err)
 
     def messageBox_02(self, host, port):
         self.timeoutTimerStop()
@@ -213,20 +216,20 @@ class Connector(QObject):
         self.timeoutTimerStop()
         err = _("No SSL support to connect to host:")
         err += "\n" + host + ":" + str(port)
-        self.emit(SIGNAL("msgBoxError"), err)
+        self.msgBoxErrorSGL.emit(err)
 
     def messageBox_05(self, host, port):
         self.timeoutTimerStop()
         err = _("Cannot connect to host:")
         err += "\n" + host + ":" + str(port)
-        self.emit(SIGNAL("msgBoxError"), err)
+        self.msgBoxErrorSGL.emit(err)
 
     def messageBox_06(self, server_version, host, port):
         self.timeoutTimerStop()
         err = _("Cannot connect to server:")
         err += "\n" + host + ":" + str(port)
         err += "\n" + (_("Server version is %s") % server_version) + ", " + _("but we need version %s") % SERVER_VERSION
-        self.emit(SIGNAL("msgBoxError"), err)
+        self.msgBoxErrorSGL.emit(err)
 
     def __getattr__(self, attr):
         """
@@ -291,8 +294,8 @@ class AskForUserAndPassword(QDialog):
         self.adjustSize()
         #self.setFixedHeight(self.height())
 
-        self.connect(self.okBtn,     SIGNAL("clicked()"), self.accept)
-        self.connect(self.cancelBtn, SIGNAL("clicked()"), self.reject)
+        self.okBtn.clicked.connect(self.accept)
+        self.cancelBtn.clicked.connect(self.reject)
 
     def exec_(self):
         # It does not resize very well when the font size has changed
@@ -329,6 +332,7 @@ class DispatchRPC(QObject):
         """
             represents a rpc call
         """
+        connectionLostSGL = pyqtSignal()
 
         def __init__(self, f, mutex, dispatcher):
             self.f = f
@@ -353,4 +357,4 @@ class DispatchRPC(QObject):
             if lost:
                 from traceback import print_exc
                 print_exc()
-                self.dispatcher.emit(SIGNAL("connectionLost"))
+                self.dispatcher.connectionLostSGL.emit()

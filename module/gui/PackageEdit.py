@@ -15,7 +15,7 @@
     along with this program; if not, see <http://www.gnu.org/licenses/>.
 """
 
-from PyQt4.QtCore import Qt, SIGNAL
+from PyQt4.QtCore import Qt
 from PyQt4.QtGui import QDialog, QDialogButtonBox, QIcon, QLabel, QLineEdit, QPlainTextEdit, QVBoxLayout
 
 import logging
@@ -90,9 +90,9 @@ class PackageEdit(QDialog):
         self.adjustSize()
         self.resize(750, 0)
 
-        self.connect(self.saveBtn,      SIGNAL("clicked()"), self.slotSaveClicked)
-        self.connect(self.cancelBtn,    SIGNAL("clicked()"), self.slotCancelClicked)
-        self.connect(self.cancelAllBtn, SIGNAL("clicked()"), self.slotCancelAllClicked)
+        self.saveBtn.clicked.connect(self.slotSaveClicked)
+        self.cancelBtn.clicked.connect(self.slotCancelClicked)
+        self.cancelAllBtn.clicked.connect(self.slotCancelAllClicked)
 
     def slotSaveClicked(self):
         self.done(self.SAVE)

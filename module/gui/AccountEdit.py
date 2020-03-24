@@ -16,7 +16,7 @@
     @author: mkaay
 """
 
-from PyQt4.QtCore import Qt, SIGNAL, SLOT
+from PyQt4.QtCore import pyqtSignal, Qt
 from PyQt4.QtGui import QCheckBox, QComboBox, QDialog, QDialogButtonBox, QGridLayout, QIcon, QLabel, QLineEdit
 
 import logging
@@ -28,6 +28,7 @@ class AccountEdit(QDialog):
     """
         account editor widget
     """
+    accountEditSaveSGL = pyqtSignal(object)
 
     def __init__(self, parent):
         QDialog.__init__(self, parent)
@@ -61,7 +62,7 @@ class AccountEdit(QDialog):
         self.buttons.button(QDialogButtonBox.Save).setText(_("Save"))
         self.buttons.button(QDialogButtonBox.Cancel).setText(_("Cancel"))
 
-        self.connect(self.changePw, SIGNAL("toggled(bool)"), self.password, SLOT("setEnabled(bool)"))
+        self.changePw.toggled[bool].connect(self.password.setEnabled)
 
         l.setRowMinimumHeight(3, 7)
         l.addLayout(self.buttons.layout(), 4, 0, 1, 3)
@@ -77,8 +78,8 @@ class AccountEdit(QDialog):
         self.adjustSize()
         self.setFixedHeight(self.height())
 
-        self.connect(self.save, SIGNAL("clicked()"), self.slotSave)
-        self.connect(self.cancel, SIGNAL("clicked()"), self.reject)
+        self.save.clicked.connect(self.slotSave)
+        self.cancel.clicked.connect(self.reject)
 
     def slotSave(self):
         """
@@ -87,7 +88,7 @@ class AccountEdit(QDialog):
         data = {"login": unicode(self.login.text()), "acctype": unicode(self.acctype.currentText()), "password": None}
         if self.changePw.isChecked():
             data["password"] = unicode(self.password.text())
-        self.emit(SIGNAL("accountEditSave"), data)
+        self.accountEditSaveSGL.emit(data)
 
     @staticmethod
     def newAccount(parent, types):

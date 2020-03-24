@@ -15,7 +15,7 @@
     along with this program; if not, see <http://www.gnu.org/licenses/>.
 """
 
-from PyQt4.QtCore import Qt, SIGNAL
+from PyQt4.QtCore import Qt
 from PyQt4.QtGui import QDialog, QDialogButtonBox, QGridLayout, QGroupBox, QIcon, QLabel, QVBoxLayout
 
 import logging
@@ -93,7 +93,7 @@ class InfoCorePermissions(QDialog):
         self.adjustSize()
         self.setFixedSize(self.width(), self.height())
 
-        self.connect(self.closeBtn, SIGNAL("clicked()"), self.accept)
+        self.closeBtn.clicked.connect(self.accept)
 
     def setup(self):
         plist = []

@@ -15,7 +15,7 @@
     along with this program; if not, see <http://www.gnu.org/licenses/>.
 """
 
-from PyQt4.QtCore import Qt, SIGNAL
+from PyQt4.QtCore import Qt
 from PyQt4.QtGui import QCheckBox, QComboBox, QHBoxLayout, QLabel, QPushButton, QSizePolicy, QVBoxLayout, QWidget
 
 import logging
@@ -82,9 +82,9 @@ class AdvancedSelect(QWidget):
         vbox.addLayout(hbox2)
         self.setLayout(vbox)
 
-        self.connect(self.clearBtn, SIGNAL("clicked()"), self.patternEdit.clearEditText)
-        self.connect(self.selectBtn, SIGNAL("clicked()"), self.slotAddToHistory)
-        self.connect(self.deselectBtn, SIGNAL("clicked()"), self.slotAddToHistory)
+        self.clearBtn.clicked.connect(self.patternEdit.clearEditText)
+        self.selectBtn.clicked.connect(self.slotAddToHistory)
+        self.deselectBtn.clicked.connect(self.slotAddToHistory)
 
     def slotAddToHistory(self):
         text = self.patternEdit.currentText()

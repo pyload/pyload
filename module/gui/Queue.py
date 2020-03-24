@@ -16,7 +16,7 @@
     @author: mkaay
 """
 
-from PyQt4.QtCore import QModelIndex, QMutexLocker, QObject, QString, Qt, QTimer, QVariant, SIGNAL
+from PyQt4.QtCore import pyqtSignal, QModelIndex, QMutexLocker, QObject, QString, Qt, QTimer, QVariant
 from PyQt4.QtGui import QAbstractItemView, QApplication, QItemDelegate, QStyle, QStyleOptionProgressBarV2, QTreeView
 
 import logging
@@ -31,6 +31,7 @@ class QueueModel(CollectorModel):
     """
         model for the queue view, inherits from CollectorModel
     """
+    statusUpdateCountSGL = pyqtSignal(object, object)
 
     def __init__(self, view, connector):
         CollectorModel.__init__(self, view, connector)
@@ -42,20 +43,21 @@ class QueueModel(CollectorModel):
         self.wait_dict = {}
 
         self.updater = self.QueueUpdater(self.interval)
-        self.connect(self.updater, SIGNAL("update()"), self.slotUpdate)
+        self.updater.updateSGL.connect(self.slotUpdate)
 
     class QueueUpdater(QObject):
         """
             timer which emits signal for a download status reload
             @TODO: make intervall configurable
         """
+        updateSGL = pyqtSignal()
 
         def __init__(self, interval):
             QObject.__init__(self)
 
             self.interval = interval
             self.timer = QTimer()
-            self.timer.connect(self.timer, SIGNAL("timeout()"), self, SIGNAL("update()"))
+            self.timer.timeout.connect(self.updateSGL)
 
         def start(self):
             self.timer.start(1000)
@@ -114,9 +116,9 @@ class QueueModel(CollectorModel):
                         del downloading[idx] #might speed up things when there are many files in the queue
             self._data.append(package)
         self.endInsertRows()
-        self.emit(SIGNAL("layoutAboutToBeChanged()"))
+        self.layoutAboutToBeChanged.emit()
         self._data = sorted(self._data, key=lambda p: p.data["order"])
-        self.emit(SIGNAL("layoutChanged()"))
+        self.layoutChanged.emit()
         self.dirty = False
         self.fullReloadCheck()
         if enableView:
@@ -158,7 +160,7 @@ class QueueModel(CollectorModel):
         fileCount = 0
         for p in self._data:
             fileCount += len(p.children)
-        self.emit(SIGNAL("statusUpdateCount"), packageCount, fileCount)
+        self.statusUpdateCountSGL.emit(packageCount, fileCount)
 
     def slotUpdate(self):
         """
@@ -190,15 +192,14 @@ class QueueModel(CollectorModel):
                     }
                     child.data["downloading"] = dd
                     k = pack.getChildKey(d.fid)
-                    self.emit(SIGNAL("dataChanged(const QModelIndex &, const QModelIndex &)"),
-                              self.index(k, 0, self.index(p, 0)), self.index(k, self.cols, self.index(p, self.cols)))
+                    self.dataChanged.emit(self.index(k, 0, self.index(p, 0)), self.index(k, self.cols, self.index(p, self.cols)))
                     del downloading[idx] #might speed up things when there are many files in the queue
         packageCount = len(self._data)
         fileCount = 0
         for p in self._data:
             fileCount += len(p.children)
         locker.unlock()
-        self.emit(SIGNAL("statusUpdateCount"), packageCount, fileCount)
+        self.statusUpdateCountSGL.emit(packageCount, fileCount)
 
     def headerData(self, section, orientation, role=Qt.DisplayRole):
         """
@@ -401,6 +402,8 @@ class QueueView(CollectorView):
     """
         view component for queue
     """
+    queueMsgShowSGL = pyqtSignal(object, object)
+    queueMsgHideSGL = pyqtSignal()
 
     def __init__(self, corePermissions, connector):
         QTreeView.__init__(self)
@@ -447,19 +450,19 @@ class QueueView(CollectorView):
         self.header().setContextMenuPolicy(Qt.CustomContextMenu)
         self.header().customContextMenuRequested.connect(self.headerContextMenu)
 
-        self.connect(self.buttonMsgHideTimer, SIGNAL("timeout()"), self.slotButtonMsgHideTimerTimeout)
-        self.connect(self, SIGNAL("slot_dropEvent"), self.model.slotDropEvent)
-        self.connect(self, SIGNAL("collapsed(const QModelIndex &)"), self.slotPackageCollapsed)
+        self.buttonMsgHideTimer.timeout.connect(self.slotButtonMsgHideTimerTimeout)
+        self.dropEventSGL.connect(self.model.slotDropEvent)
+        self.collapsed[QModelIndex].connect(self.slotPackageCollapsed)
 
         self.delegate = QueueProgressBarDelegate(self, self.model)
         self.setItemDelegateForColumn(5, self.delegate)
 
     def buttonMsgShow(self, msg, error):
         self.buttonMsgHideTimer.stop()
-        self.emit(SIGNAL("queueMsgShow"), msg, error)
+        self.queueMsgShowSGL.emit(msg, error)
 
     def slotButtonMsgHideTimerTimeout(self):
-        self.emit(SIGNAL("queueMsgHide"))
+        self.queueMsgHideSGL.emit()
 
 class QueueProgressBarDelegate(QItemDelegate):
     """

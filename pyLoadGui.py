@@ -43,7 +43,7 @@ from time import sleep, time
 from module.common.json_layer import json
 
 from PyQt4.QtCore import (pyqtSignal, QByteArray, QMutex, QMutexLocker, QObject, QRegExp, QString,
-                          Qt, QTextCodec, QTimer, SIGNAL)
+                          Qt, QTextCodec, QTimer)
 from PyQt4.QtGui import (QAbstractItemView, QApplication, QDialog, QIcon, QMessageBox, QProgressDialog,
                          QStyle, QSystemTrayIcon, QTextCursor)
 
@@ -85,6 +85,15 @@ from module.remote.thriftbackend.ThriftClient import Destination, PackageDoesNot
 from module.Api import has_permission, PERMS, ROLE
 
 class main(QObject):
+    guiLogAppendSGL          = pyqtSignal(object)
+    coreLogAppendSGL         = pyqtSignal(object)
+    trayIconShowSGL          = pyqtSignal()
+    trayIconHideSGL          = pyqtSignal()
+    trayIconSetupIconSGL     = pyqtSignal(object)
+    traySetShowActionTextSGL = pyqtSignal(object)
+    minimize2TraySGL         = pyqtSignal()
+    notificationShowMsgSGL   = pyqtSignal(object)
+
     def pyLoadGuiExcepthook(self, exc_type, exc_value, exc_traceback):
         self.log.error("***Exception***\n" + "".join(traceback.format_exception(exc_type, exc_value, exc_traceback)))
 
@@ -345,7 +354,7 @@ class main(QObject):
         self.serverConnectionLost = False
 
         if not first:
-            self.connWindow.emit(SIGNAL("setCurrentConnection"), self.lastConnection)
+            self.connWindow.setCurrentConnectionSGL.emit(self.lastConnection)
             self.connWindow.show()
         else:
             if conn:
@@ -456,7 +465,7 @@ class main(QObject):
         if not connected:
             self.init()
             return
-        self.connect(self.connector, SIGNAL("connectionLost"), self.slotConnectionLost)
+        self.connector.connectionLostSGL.connect(self.slotConnectionLost)
         self.corePermissions = self.getCorePermissions(True)
         self.setCorePermissions()
         self.initClickNLoadForwarder()
@@ -471,17 +480,17 @@ class main(QObject):
         self.initQueue()
         self.initCollector()
         self.clipboard = self.app.clipboard()
-        self.connect(self.clipboard, SIGNAL('dataChanged()'), self.slotClipboardChange)
+        self.clipboard.dataChanged.connect(self.slotClipboardChange)
         self.mainWindow.tabs["settings"]["w"].setConnector(self.connector)
         self.createTrayIcon()
         if self.trayOptions.settings["EnableTray"]:
-            self.emit(SIGNAL("showTrayIcon"))
+            self.trayIconShowSGL.emit()
         else:
-            self.emit(SIGNAL("hideTrayIcon"))
+            self.trayIconHideSGL.emit()
         self.mainloop.start()
         self.allowUserActions(True)
 
-    def slotConnectTimeout(self, start=True):
+    def slotConnectTimeout(self, start):
         if start:
             timeout = 30.0 #seconds
             self.connectTimeoutTimer = Timer(timeout, self.quitConnTimeout)
@@ -494,8 +503,8 @@ class main(QObject):
             stop all refresh threads, save and hide main window
         """
         self.allowUserActions(False)
-        self.disconnect(self.clipboard, SIGNAL('dataChanged()'), self.slotClipboardChange)
-        self.disconnect(self.connector, SIGNAL("connectionLost"), self.slotConnectionLost)
+        self.clipboard.dataChanged.disconnect(self.slotClipboardChange)
+        self.connector.connectionLostSGL.disconnect(self.slotConnectionLost)
         self.mainWindow.tabs["accounts"]["view"].model.timer.stop()
         self.clickNLoadForwarder.stop()
         self.mainloop.stop()
@@ -690,48 +699,48 @@ class main(QObject):
         self.tray = TrayIcon(self.appIconSet)
         self.tray.slotSetupIcon(self.trayOptions.settings["IconFile"])
         self.notification = Notification(self.tray)
-        self.connect(self, SIGNAL("showTrayIcon"),          self.tray.show)
-        self.connect(self, SIGNAL("hideTrayIcon"),          self.tray.hide)
-        self.connect(self, SIGNAL("setupTrayIcon"),         self.tray.slotSetupIcon)
-        self.connect(self, SIGNAL("showNotificationMsg"),   self.notification.slotShowMessage)
-        self.connect(self, SIGNAL("minimize2Tray"),         self.slotMinimize2Tray, Qt.QueuedConnection)
-        self.connect(self, SIGNAL("traySetShowActionText"), self.tray.slotSetShowActionText)
-        self.connect(self.tray,                     SIGNAL("activated(QSystemTrayIcon::ActivationReason)"), self.tray.slotClicked)
-        self.connect(self.tray.showAction,          SIGNAL("triggered()"), self.slotToggleShowFromHideInTray)
-        self.connect(self.tray.captchaAction,       SIGNAL("triggered()"), self.slotShowCaptcha)
-        self.connect(self.tray.addPackageAction,    SIGNAL("triggered()"), self.slotShowAddPackageFromTray)
-        self.connect(self.tray.addContainerAction,  SIGNAL("triggered()"), self.mainWindow.slotShowAddContainer)
-        self.connect(self.tray.addLinksAction,      SIGNAL("triggered()"), self.slotShowAddLinksFromTray)
-        self.connect(self.tray.exitAction,          SIGNAL("triggered()"), self.slotQuit)
+        self.trayIconShowSGL.connect(self.tray.show)
+        self.trayIconHideSGL.connect(self.tray.hide)
+        self.trayIconSetupIconSGL.connect(self.tray.slotSetupIcon)
+        self.notificationShowMsgSGL.connect(self.notification.slotShowMessage)
+        self.minimize2TraySGL.connect(self.slotMinimize2Tray, Qt.QueuedConnection)
+        self.traySetShowActionTextSGL.connect(self.tray.slotSetShowActionText)
+        self.tray.activated[QSystemTrayIcon.ActivationReason].connect(self.tray.slotClicked)
+        self.tray.showAction.triggered.connect(self.slotToggleShowFromHideInTray)
+        self.tray.captchaAction.triggered.connect(self.slotShowCaptcha)
+        self.tray.addPackageAction.triggered.connect(self.slotShowAddPackageFromTray)
+        self.tray.addContainerAction.triggered.connect(self.mainWindow.slotShowAddContainer)
+        self.tray.addLinksAction.triggered.connect(self.slotShowAddLinksFromTray)
+        self.tray.exitAction.triggered.connect(self.slotQuit)
         if self.log.isEnabledFor(logging.DEBUG9):
-            self.connect(self.tray.debugTrayAction,        SIGNAL("triggered()"), self.slotDebugTray)
-            self.connect(self.tray.debugMsgBoxTest1Action, SIGNAL("triggered()"), self.slotDebugMsgBoxTest1)
-            self.connect(self.tray.debugMsgBoxTest2Action, SIGNAL("triggered()"), self.slotDebugMsgBoxTest2)
-            self.connect(self.tray.debugKillAction,        SIGNAL("triggered()"), self.slotDebugKill)
-        self.connect(self.mainWindow, SIGNAL("minimizeToggled"), self.slotMinimizeToggled)
-        self.connect(self.mainWindow, SIGNAL("maximizeToggled"), self.slotMaximizeToggled)
+            self.tray.debugTrayAction.triggered.connect(self.slotDebugTray)
+            self.tray.debugMsgBoxTest1Action.triggered.connect(self.slotDebugMsgBoxTest1)
+            self.tray.debugMsgBoxTest2Action.triggered.connect(self.slotDebugMsgBoxTest2)
+            self.tray.debugKillAction.triggered.connect(self.slotDebugKill)
+        self.mainWindow.minimizeToggledSGL.connect(self.slotMinimizeToggled)
+        self.mainWindow.maximizeToggledSGL.connect(self.slotMaximizeToggled)
 
     def deleteTrayIcon(self):
-        self.disconnect(self, SIGNAL("showTrayIcon"),          self.tray.show)
-        self.disconnect(self, SIGNAL("hideTrayIcon"),          self.tray.hide)
-        self.disconnect(self, SIGNAL("setupTrayIcon"),         self.tray.slotSetupIcon)
-        self.disconnect(self, SIGNAL("showNotificationMsg"),   self.notification.slotShowMessage)
-        self.disconnect(self, SIGNAL("minimize2Tray"),         self.slotMinimize2Tray)
-        self.disconnect(self, SIGNAL("traySetShowActionText"), self.tray.slotSetShowActionText)
-        self.disconnect(self.tray,                     SIGNAL("activated(QSystemTrayIcon::ActivationReason)"), self.tray.slotClicked)
-        self.disconnect(self.tray.showAction,          SIGNAL("triggered()"), self.slotToggleShowFromHideInTray)
-        self.disconnect(self.tray.captchaAction,       SIGNAL("triggered()"), self.slotShowCaptcha)
-        self.disconnect(self.tray.addPackageAction,    SIGNAL("triggered()"), self.slotShowAddPackageFromTray)
-        self.disconnect(self.tray.addContainerAction,  SIGNAL("triggered()"), self.mainWindow.slotShowAddContainer)
-        self.disconnect(self.tray.addLinksAction,      SIGNAL("triggered()"), self.slotShowAddLinksFromTray)
-        self.disconnect(self.tray.exitAction,          SIGNAL("triggered()"), self.slotQuit)
+        self.trayIconShowSGL.disconnect(self.tray.show)
+        self.trayIconHideSGL.disconnect(self.tray.hide)
+        self.trayIconSetupIconSGL.disconnect(self.tray.slotSetupIcon)
+        self.notificationShowMsgSGL.disconnect(self.notification.slotShowMessage)
+        self.minimize2TraySGL.disconnect(self.slotMinimize2Tray)
+        self.traySetShowActionTextSGL.disconnect(self.tray.slotSetShowActionText)
+        self.tray.activated[QSystemTrayIcon.ActivationReason].disconnect(self.tray.slotClicked)
+        self.tray.showAction.triggered.disconnect(self.slotToggleShowFromHideInTray)
+        self.tray.captchaAction.triggered.disconnect(self.slotShowCaptcha)
+        self.tray.addPackageAction.triggered.disconnect(self.slotShowAddPackageFromTray)
+        self.tray.addContainerAction.triggered.disconnect(self.mainWindow.slotShowAddContainer)
+        self.tray.addLinksAction.triggered.disconnect(self.slotShowAddLinksFromTray)
+        self.tray.exitAction.triggered.disconnect(self.slotQuit)
         if self.log.isEnabledFor(logging.DEBUG9):
-            self.disconnect(self.tray.debugTrayAction,        SIGNAL("triggered()"), self.slotDebugTray)
-            self.disconnect(self.tray.debugMsgBoxTest1Action, SIGNAL("triggered()"), self.slotDebugMsgBoxTest1)
-            self.disconnect(self.tray.debugMsgBoxTest2Action, SIGNAL("triggered()"), self.slotDebugMsgBoxTest2)
-            self.disconnect(self.tray.debugKillAction,        SIGNAL("triggered()"), self.slotDebugKill)
-        self.disconnect(self.mainWindow, SIGNAL("minimizeToggled"), self.slotMinimizeToggled)
-        self.disconnect(self.mainWindow, SIGNAL("maximizeToggled"), self.slotMaximizeToggled)
+            self.tray.debugTrayAction.triggered.disconnect(self.slotDebugTray)
+            self.tray.debugMsgBoxTest1Action.triggered.disconnect(self.slotDebugMsgBoxTest1)
+            self.tray.debugMsgBoxTest2Action.triggered.disconnect(self.slotDebugMsgBoxTest2)
+            self.tray.debugKillAction.triggered.disconnect(self.slotDebugKill)
+        self.mainWindow.minimizeToggledSGL.disconnect(self.slotMinimizeToggled)
+        self.mainWindow.maximizeToggledSGL.disconnect(self.slotMaximizeToggled)
         self.tray.menu.deleteLater()
         self.tray.setContextMenu(None)
         self.tray.deleteLater()
@@ -785,7 +794,7 @@ class main(QObject):
         self.unminimizeNewPackDock()    # needed on lxde and lxqt when minimized to tray
         self.mainWindow.newLinkDock.hide()
         self.unminimizeNewLinkDock()    # needed on lxde and lxqt when minimized to tray
-        self.emit(SIGNAL("traySetShowActionText"), True)
+        self.traySetShowActionTextSGL.emit(True)
         s["hiddenInTray"] = True   # must be set before allowUserActions(True)
         s["restore_unmaxed_geo"] = s["maximized"]
         s["ignoreMinimizeToggled"] = False
@@ -879,7 +888,7 @@ class main(QObject):
         if s["maximized"]:
             self.log.debug4("main.showFromTray_continue: mainWindow is maximized, delay: %d msec",
                             self.mainWindow.time_msec() - self.trayState["showFromTrayShowTime"])
-        self.emit(SIGNAL("traySetShowActionText"), False)
+        self.traySetShowActionTextSGL.emit(False)
         s["hiddenInTray"] = False  # must be updated before allowUserActions(True)
         self.allowUserActions(True)
         self.log.debug4("main.showFromTray_continue: done")
@@ -899,11 +908,11 @@ class main(QObject):
         self.log.debug4("main.slotMinimizeToggled: %s" % minimized)
         if minimized:   # minimized flag was set
             if self.trayOptions.settings["Minimize2Tray"] and (QApplication.activeModalWidget() is None):
-                self.emit(SIGNAL("minimize2Tray"))   # queued connection
+                self.minimize2TraySGL.emit()   # queued connection
             else:
-                self.emit(SIGNAL("traySetShowActionText"), True)
+                self.traySetShowActionTextSGL.emit(True)
         else:           # minimized flag was unset
-            self.emit(SIGNAL("traySetShowActionText"), False)
+            self.traySetShowActionTextSGL.emit(False)
 
     def slotMinimize2Tray(self):
         """
@@ -1106,7 +1115,7 @@ class main(QObject):
             from tray icon (context menu)
             show captcha
         """
-        self.mainWindow.captchaDialog.emit(SIGNAL("showCaptcha"), self.lastCaptchaId is None)
+        self.mainWindow.captchaDialog.showCaptchaSGL.emit(self.lastCaptchaId is None)
 
     def slotShowAbout(self):
         """
@@ -1142,7 +1151,7 @@ class main(QObject):
         if not self.corePermissions["admin"]:
             return
         if self.messageBox_12():
-            self.disconnect(self.connector, SIGNAL("connectionLost"), self.slotConnectionLost)
+            self.connector.connectionLostSGL.disconnect(self.slotConnectionLost)
             self.connector.proxy.kill()
             self.slotShowConnector()
 
@@ -1158,7 +1167,7 @@ class main(QObject):
         if not self.corePermissions["admin"]:
             return
         if self.messageBox_13():
-            self.disconnect(self.connector, SIGNAL("connectionLost"), self.slotConnectionLost)
+            self.connector.connectionLostSGL.disconnect(self.slotConnectionLost)
             self.connector.proxy.restart()
             self.slotShowConnector()
 
@@ -1319,34 +1328,34 @@ class main(QObject):
         if s["EnableNotify"]:
             if status == 103:
                 if s["PackageAdded"]:
-                    self.emit(SIGNAL("showNotificationMsg"), _("Package Added") + ": %s" % name)
+                    self.notificationShowMsgSGL.emit(_("Package Added") + ": %s" % name)
             elif status == 100:
                 if s["PackageFinished"]:
-                    self.emit(SIGNAL("showNotificationMsg"), _("Package download finished") + ": %s" % name)
+                    self.notificationShowMsgSGL.emit(_("Package download finished") + ": %s" % name)
             elif status == DownloadStatus.Finished:
                 if s["Finished"]:
-                    self.emit(SIGNAL("showNotificationMsg"), _("Download finished") + ": %s" % name)
+                    self.notificationShowMsgSGL.emit(_("Download finished") + ": %s" % name)
             elif status == DownloadStatus.Offline:
                 if s["Offline"]:
-                    self.emit(SIGNAL("showNotificationMsg"), _("Download offline") + ": %s" % name)
+                    self.notificationShowMsgSGL.emit(_("Download offline") + ": %s" % name)
             elif status == DownloadStatus.Skipped:
                 if s["Skipped"]:
-                    self.emit(SIGNAL("showNotificationMsg"), _("Download skipped") + ": %s" % name)
+                    self.notificationShowMsgSGL.emit(_("Download skipped") + ": %s" % name)
             elif status == DownloadStatus.TempOffline:
                 if s["TempOffline"]:
-                    self.emit(SIGNAL("showNotificationMsg"), _("Download temporarily offline") + ": %s" % name)
+                    self.notificationShowMsgSGL.emit(_("Download temporarily offline") + ": %s" % name)
             elif status == DownloadStatus.Failed:
                 if s["Failed"]:
-                    self.emit(SIGNAL("showNotificationMsg"), _("Download failed") + ": %s" % name)
+                    self.notificationShowMsgSGL.emit(_("Download failed") + ": %s" % name)
             elif status == DownloadStatus.Aborted:
                 if s["Aborted"]:
-                    self.emit(SIGNAL("showNotificationMsg"), _("Download aborted") + ": %s" % name)
+                    self.notificationShowMsgSGL.emit(_("Download aborted") + ": %s" % name)
             elif status == 101:
                 if s["Captcha"]:
-                    self.emit(SIGNAL("showNotificationMsg"), _("New Captcha Request"))
+                    self.notificationShowMsgSGL.emit(_("New Captcha Request"))
             elif status == 102:
                 if s["CaptchaInteractive"]:
-                    self.emit(SIGNAL("showNotificationMsg"), _("New Interactive Captcha Request"))
+                    self.notificationShowMsgSGL.emit(_("New Interactive Captcha Request"))
 
     def initCollector(self):
         """
@@ -1370,7 +1379,7 @@ class main(QObject):
         view.setUniformRowHeights(True)
 
         self.collector = view.model
-        self.connect(self.collector, SIGNAL("notificationMessage"), self.slotNotificationMessage)
+        self.collector.notificationMessageSGL.connect(self.slotNotificationMessage)
 
     def initQueue(self):
         """
@@ -1392,9 +1401,9 @@ class main(QObject):
         view.setUniformRowHeights(True)
 
         self.queue = view.model
-        self.connect(self.queue, SIGNAL("statusUpdateCount"), self.slotStatusUpdateCount)
-        self.connect(self.queue, SIGNAL("statusUpdateCount"), self.mainWindow.tabs["overview"]["view"].model.slotQueueChanged)
-        self.connect(self.queue, SIGNAL("notificationMessage"), self.slotNotificationMessage)
+        self.queue.statusUpdateCountSGL.connect(self.slotStatusUpdateCount)
+        self.queue.statusUpdateCountSGL.connect(self.mainWindow.tabs["overview"]["view"].model.slotQueueChanged)
+        self.queue.notificationMessageSGL.connect(self.slotNotificationMessage)
         self.queue.start()
 
     def slotStatusUpdateCount(self, pc, fc):
@@ -1462,11 +1471,14 @@ class main(QObject):
             lines = lines[-100:]    # load only the last lines in the widget
             self.refreshGuiLogFirst = False
         for line in lines:
-            self.mainWindow.tabs["guilog"]["text"].emit(SIGNAL("append(QString)"), line.strip("\n"))
+            self.guiLogAppendSGL.emit(line.strip("\n"))
         cursor = self.mainWindow.tabs["guilog"]["text"].textCursor()
         cursor.movePosition(QTextCursor.End, QTextCursor.MoveAnchor)
         cursor.movePosition(QTextCursor.StartOfLine, QTextCursor.MoveAnchor)
         self.mainWindow.tabs["guilog"]["text"].setTextCursor(cursor)
+
+    def slotGuiLogAppend(self, text):
+        self.mainWindow.tabs["guilog"]["text"].append(text)
 
     def refreshCoreLog(self, first):
         """
@@ -1497,11 +1509,14 @@ class main(QObject):
                 del lines[0]
                 self.mainWindow.tabs["corelog"]["text"].logOffset += len(lines)
         for line in lines:
-            self.mainWindow.tabs["corelog"]["text"].emit(SIGNAL("append(QString)"), line.strip("\n"))
+            self.coreLogAppendSGL.emit(line.strip("\n"))
         cursor = self.mainWindow.tabs["corelog"]["text"].textCursor()
         cursor.movePosition(QTextCursor.End, QTextCursor.MoveAnchor)
         cursor.movePosition(QTextCursor.StartOfLine, QTextCursor.MoveAnchor)
         self.mainWindow.tabs["corelog"]["text"].setTextCursor(cursor)
+
+    def slotCoreLogAppend(self, text):
+        self.mainWindow.tabs["corelog"]["text"].append(text)
 
     def loadAllConnections(self):
         """
@@ -1679,12 +1694,12 @@ class main(QObject):
 
             from pyLoadCore import Core
             if not self.core:
-                class CoreSignal(QObject):
-                    coreRestart = pyqtSignal()
+                class CorePyQtSignal(QObject):
+                    coreRestartSGL = pyqtSignal()
                 class Core_(Core):
                     def __init__(self):
                         Core.__init__(self)
-                        self.signal = CoreSignal()
+                        self.corePyQtSignal = CorePyQtSignal()
                         self.internal_core_restart = False
                     # Workaround os._exit() called when the Core quits.
                     # This is possible because the present Core code calls os._exit() right after calling removeLogger()
@@ -1697,7 +1712,7 @@ class main(QObject):
                             return
                         self.internal_core_restart = True
                         self.threadManager.pause = True
-                        self.signal.emit(SIGNAL("coreRestart()"))
+                        self.corePyQtSignal.coreRestartSGL.emit()
 
                 self.connManagerDisableConnect = True
 
@@ -1716,7 +1731,7 @@ class main(QObject):
                 else:
                     pid = self.core.checkPidFile()
                     if pid and not self.messageBox_23(pf, pid): self.init(); return
-                self.connect(self.core.signal, SIGNAL("coreRestart()"), self.slotCoreRestart, Qt.QueuedConnection)
+                self.core.corePyQtSignal.coreRestartSGL.connect(self.slotCoreRestart, Qt.QueuedConnection)
                 self.core.startedInGui = True
                 try:
                     thread.start_new_thread(self.core.start, (False, True))
@@ -1807,7 +1822,7 @@ class main(QObject):
         """
         self.parser.loadData()
         conns = self.loadAllConnections()
-        self.connWindow.emit(SIGNAL("setConnections"), conns)
+        self.connWindow.setConnectionsSGL.emit(conns)
         if name:
             for conn in conns:
                 if conn["name"] == name:
@@ -2414,25 +2429,25 @@ class main(QObject):
             if t.tid != self.lastCaptchaId:
                 self.lastCaptchaId = t.tid
                 if not self.mainWindow.captchaDialog.isFree():
-                    self.mainWindow.captchaDialog.emit(SIGNAL("setCaptchaFree"))
+                    self.mainWindow.captchaDialog.setCaptchaFreeSGL.emit()
                 if t.resultType == "interactive":
                     self.slotNotificationMessage(102, None)
                     if self.captchaOptions.settings["PopUpCaptchaInteractive"]:
-                        self.mainWindow.captchaDialog.emit(SIGNAL("showCaptcha"), False)
+                        self.mainWindow.captchaDialog.showCaptchaSGL.emit(False)
                     self.tray.captchaAction.setEnabled(False)
                     self.mainWindow.toolbar_captcha.setText(_("Interactive Captcha"))
                     self.mainWindow.actions["captcha"].setEnabled(True)
                 else:
                     self.slotNotificationMessage(101, None)
-                    self.mainWindow.captchaDialog.emit(SIGNAL("setCaptchaTask"), t.tid, json.loads(t.data), t.resultType)
+                    self.mainWindow.captchaDialog.setCaptchaTaskSGL.emit(t.tid, json.loads(t.data), t.resultType)
                     if self.captchaOptions.settings["PopUpCaptcha"]:
-                        self.mainWindow.captchaDialog.emit(SIGNAL("showCaptcha"), False)
+                        self.mainWindow.captchaDialog.showCaptchaSGL.emit(False)
                     self.tray.captchaAction.setEnabled(True)
                     self.mainWindow.toolbar_captcha.setText(_("Captcha"))
                     self.mainWindow.actions["captcha"].setEnabled(True)
         else:
             if self.lastCaptchaId is not None:
-                self.mainWindow.captchaDialog.emit(SIGNAL("setCaptchaFree"))
+                self.mainWindow.captchaDialog.setCaptchaFreeSGL.emit()
             self.lastCaptchaId = None
             self.tray.captchaAction.setEnabled(False)
             self.mainWindow.toolbar_captcha.setText(_("No Captchas"))
@@ -2717,7 +2732,7 @@ class main(QObject):
             self.parent = parent
 
             self.timer = QTimer()
-            self.timer.connect(self.timer, SIGNAL("timeout()"), self.slotUpdate)
+            self.timer.timeout.connect(self.slotUpdate)
             self.lastSpaceCheck = 0
 
         def start(self):
@@ -2809,10 +2824,10 @@ class main(QObject):
         if retval == QDialog.Accepted:
             self.trayOptions.checkBoxStates2dict()
             if self.trayOptions.settings["EnableTray"]:
-                self.emit(SIGNAL("showTrayIcon"))
+                self.trayIconShowSGL.emit()
             else:
-                self.emit(SIGNAL("hideTrayIcon"))
-            self.emit(SIGNAL("setupTrayIcon"), self.trayOptions.settings["IconFile"])
+                self.trayIconHideSGL.emit()
+            self.trayIconSetupIconSGL.emit(self.trayOptions.settings["IconFile"])
 
     def slotShowClickNLoadForwarderOptions(self):
         """
@@ -2863,7 +2878,7 @@ class main(QObject):
                 self.mainWindow.actions["captcha"].setVisible(False)
                 self.mainWindow.actions["captcha"].setEnabled(False)
                 self.mainWindow.toolbar_captcha.setText(_("No Captchas"))
-                self.mainWindow.captchaDialog.emit(SIGNAL("setCaptchaFree"))
+                self.mainWindow.captchaDialog.setCaptchaFreeSGL.emit()
                 self.tray.captchaAction.setEnabled(False)
 
     def slotShowIconThemeOptions(self):
@@ -2997,12 +3012,12 @@ class main(QObject):
             rate = int(rate_str)
         if enab is not None and rate is not None:
             if not first:
-                self.disconnect(self.mainWindow, SIGNAL("toolbarSpeedLimitEdited"), self.slotToolbarSpeedLimitEdited)
+                self.mainWindow.toolbarSpeedLimitEditedSGL.disconnect(self.slotToolbarSpeedLimitEdited)
             self.mainWindow.toolbar_speedLimit_enabled.setChecked(enab)
             self.mainWindow.toolbar_speedLimit_rate.setValue(rate)
             self.mainWindow.actions["speedlimit_enabled"].setEnabled(True)
             self.mainWindow.actions["speedlimit_rate"].setEnabled(True)
-            self.connect(self.mainWindow, SIGNAL("toolbarSpeedLimitEdited"), self.slotToolbarSpeedLimitEdited)
+            self.mainWindow.toolbarSpeedLimitEditedSGL.connect(self.slotToolbarSpeedLimitEdited)
 
     def slotToolbarSpeedLimitEdited(self):
         """
@@ -3069,11 +3084,11 @@ class main(QObject):
             value = int(value_str)
         if value is not None:
             if not first:
-                self.disconnect(self.mainWindow, SIGNAL("toolbarMaxParallelDownloadsEdited"), self.slotToolbarMaxParallelDownloadsEdited)
+                self.mainWindow.toolbarMaxParallelDownloadsEditedSGL.disconnect(self.slotToolbarMaxParallelDownloadsEdited)
             self.mainWindow.toolbar_maxParallelDownloads_value.setValue(value)
             self.mainWindow.actions["maxparalleldownloads_label"].setEnabled(True)
             self.mainWindow.actions["maxparalleldownloads_value"].setEnabled(True)
-            self.connect(self.mainWindow, SIGNAL("toolbarMaxParallelDownloadsEdited"), self.slotToolbarMaxParallelDownloadsEdited)
+            self.mainWindow.toolbarMaxParallelDownloadsEditedSGL.connect(self.slotToolbarMaxParallelDownloadsEdited)
 
     def slotToolbarMaxParallelDownloadsEdited(self):
         """
@@ -3112,7 +3127,7 @@ class main(QObject):
         """
             the captcha status button in the toolbar was clicked
         """
-        self.mainWindow.captchaDialog.emit(SIGNAL("showCaptcha"), self.lastCaptchaId is None)
+        self.mainWindow.captchaDialog.showCaptchaSGL.emit(self.lastCaptchaId is None)
 
 
 

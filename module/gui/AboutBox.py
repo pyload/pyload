@@ -15,7 +15,7 @@
     along with this program; if not, see <http://www.gnu.org/licenses/>.
 """
 
-from PyQt4.QtCore import Qt, SIGNAL
+from PyQt4.QtCore import Qt
 from PyQt4.QtGui import QApplication, QDialog, QDialogButtonBox, QFont, QHBoxLayout, QIcon, QLabel, QPixmap, QPushButton, QVBoxLayout
 
 import logging, os
@@ -85,8 +85,8 @@ class AboutBox(QDialog):
         vbox.addLayout(self.buttons.layout())
         self.setLayout(vbox)
 
-        self.connect(self.okBtn, SIGNAL("clicked()"), self.accept)
-        self.connect(self.copyBtn, SIGNAL("clicked()"), self.slotCopyToClipboard)
+        self.okBtn.clicked.connect(self.accept)
+        self.copyBtn.clicked.connect(self.slotCopyToClipboard)
 
     def slotCopyToClipboard(self):
         txt = self.text3.text()

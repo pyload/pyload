@@ -15,7 +15,7 @@
     along with this program; if not, see <http://www.gnu.org/licenses/>.
 """
 
-from PyQt4.QtCore import QObject, SIGNAL
+from PyQt4.QtCore import pyqtSignal, QObject
 
 import logging, socket, errno, thread
 from time import sleep
@@ -24,6 +24,9 @@ class ClickNLoadForwarder(QObject):
     """
         Port forwarder to a remote Core's ClickNLoad plugin
     """
+    msgBox_19SGL   = pyqtSignal()
+    msgBox_20SGL   = pyqtSignal()
+    msgBoxErrorSGL = pyqtSignal(object)
 
     def __init__(self):
         QObject.__init__(self)
@@ -31,8 +34,8 @@ class ClickNLoadForwarder(QObject):
         self.doStop  = False
         self.running = False
         self.error   = False
-        self.connect(self, SIGNAL("msgBox_19"), self.slotMessageBox_19)
-        self.connect(self, SIGNAL("msgBox_20"), self.slotMessageBox_20)
+        self.msgBox_19SGL.connect(self.slotMessageBox_19)
+        self.msgBox_20SGL.connect(self.slotMessageBox_20)
 
     def start(self, localIp, localPort, extIp, extPort):
         if self.running:
@@ -57,7 +60,7 @@ class ClickNLoadForwarder(QObject):
             sleep(0.1)
         if self.running:
             self.log.error("ClickNLoadForwarder.stop: Failed to stop port forwarding.")
-            self.emit(SIGNAL("msgBox_19"))
+            self.msgBox_19SGL.emit()
         else:
             self.log.info("ClickNLoadForwarder: Port forwarder stopped.")
 
@@ -153,7 +156,7 @@ class ClickNLoadForwarder(QObject):
         self.error = True
         self.running = False
         self.log.error("ClickNLoadForwarder.exitOnForwardError: Port forwarding stopped.")
-        self.emit(SIGNAL("msgBox_20"))
+        self.msgBox_20SGL.emit()
         thread.exit()
 
     def onRaise(self):
@@ -161,7 +164,7 @@ class ClickNLoadForwarder(QObject):
         self.error = True
         self.running = False
         self.log.error("ClickNLoadForwarder.onRaise: Port forwarding stopped.")
-        self.emit(SIGNAL("msgBox_20"))
+        self.msgBox_20SGL.emit()
 
     def closeSockets(self):
         try:    self.server_socket.shutdown(socket.SHUT_RD)
@@ -190,8 +193,8 @@ class ClickNLoadForwarder(QObject):
         self.messageBox_20()
 
     def messageBox_19(self):
-        self.emit(SIGNAL("msgBoxError"), _("Failed to stop ClickNLoad port forwarding."))
+        self.msgBoxErrorSGL.emit(_("Failed to stop ClickNLoad port forwarding."))
 
     def messageBox_20(self):
-        self.emit(SIGNAL("msgBoxError"), _("ClickNLoad port forwarding stopped due to an error."))
+        self.msgBoxErrorSGL.emit(_("ClickNLoad port forwarding stopped due to an error."))
 

@@ -16,7 +16,7 @@
     @author: mkaay
 """
 
-from PyQt4.QtCore import QAbstractItemModel, QModelIndex, QMutex, QMutexLocker, QObject, QRegExp, QString, Qt, QTimer, QVariant, SIGNAL
+from PyQt4.QtCore import pyqtSignal, QAbstractItemModel, QModelIndex, QMutex, QMutexLocker, QObject, QRegExp, QString, Qt, QTimer, QVariant
 from PyQt4.QtGui import QAbstractItemView, QApplication, QItemSelection, QItemSelectionModel, QItemSelectionRange, QMenu, QTreeView
 
 import logging, re
@@ -36,6 +36,7 @@ class CollectorModel(QAbstractItemModel):
     """
         model for the collector view
     """
+    notificationMessageSGL = pyqtSignal(object, object)
 
     @classmethod
     def time_msec(self):
@@ -435,9 +436,9 @@ class CollectorModel(QAbstractItemModel):
             package = Package(pack)
             self._data.append(package)
         self.endInsertRows()
-        self.emit(SIGNAL("layoutAboutToBeChanged()"))
+        self.layoutAboutToBeChanged.emit()
         self._data = sorted(self._data, key=lambda p: p.data["order"])
-        self.emit(SIGNAL("layoutChanged()"))
+        self.layoutChanged.emit()
         self.dirty = False
         self.fullReloadCheck()
         if enableView:
@@ -505,12 +506,11 @@ class CollectorModel(QAbstractItemModel):
                             child.update(info)  # child full update, updating just the order attribute causes crashes?
                             if not info.status == DownloadStatus.Downloading:
                                 child.data["downloading"] = None
-                            self.emit(SIGNAL("dataChanged(const QModelIndex &, const QModelIndex &)"),
-                                      self.index(k, 0, self.index(p, 0)), self.index(k, self.cols, self.index(p, self.cols)))
+                            self.dataChanged.emit(self.index(k, 0, self.index(p, 0)), self.index(k, self.cols, self.index(p, self.cols)))
                             self.log.debug0("%s.removeEvent: Link manually updated, fid:%d in pid:%d" % (self.cname, child.id, package.id))
-                        self.emit(SIGNAL("layoutAboutToBeChanged()"))
+                        self.layoutAboutToBeChanged.emit()
                         package.sortChildren()
-                        self.emit(SIGNAL("layoutChanged()"))
+                        self.layoutChanged.emit()
                         self.log.debug0("%s.removeEvent: Links re-sorted, pid:%d" % (self.cname, package.id))
                         break
                 if linkFound:
@@ -554,15 +554,14 @@ class CollectorModel(QAbstractItemModel):
                             child.update(info)
                             if not info.status == DownloadStatus.Downloading:
                                 child.data["downloading"] = None
-                            self.emit(SIGNAL("dataChanged(const QModelIndex &, const QModelIndex &)"),
-                                      self.index(k, 0, self.index(p, 0)), self.index(k, self.cols, self.index(p, self.cols)))
+                            self.dataChanged.emit(self.index(k, 0, self.index(p, 0)), self.index(k, self.cols, self.index(p, self.cols)))
                             self.log.debug1("%s.insertEvent: Existing link updated, fid:%d in pid:%d" % (self.cname, child.id, package.id))
                             if orderChanged:
                                 self.log.warning("%s.insertEvent: Existing link order attribute value differs, fid:%d in pid:%d" %
                                                  (self.cname, child.id, package.id))
-                                self.emit(SIGNAL("layoutAboutToBeChanged()"))
+                                self.layoutAboutToBeChanged.emit()
                                 package.sortChildren()
-                                self.emit(SIGNAL("layoutChanged()"))
+                                self.layoutChanged.emit()
                                 self.log.debug0("%s.insertEvent: Existing link updated: Links re-sorted, pid:%d" % (self.cname, package.id))
                             return
                     row = len(package.children)
@@ -570,9 +569,9 @@ class CollectorModel(QAbstractItemModel):
                     package.addChild(info)
                     self.endInsertRows()
                     self.log.debug1("%s.insertEvent: Link inserted, fid:%d in pid:%d" % (self.cname, info.fid, package.id))
-                    self.emit(SIGNAL("layoutAboutToBeChanged()"))
+                    self.layoutAboutToBeChanged.emit()
                     package.sortChildren()
-                    self.emit(SIGNAL("layoutChanged()"))
+                    self.layoutChanged.emit()
                     self.log.debug0("%s.insertEvent: Links re-sorted, pid:%d" % (self.cname, package.id))
 
         else: # ElementType.Package
@@ -588,13 +587,13 @@ class CollectorModel(QAbstractItemModel):
                     self.log.debug1("%s.insertEvent: Package is already in the tree view, pid:%d" % (self.cname, package.id))
                     orderChanged = bool(data.order != package.data["order"])
                     package.update(data)
-                    self.emit(SIGNAL("dataChanged(const QModelIndex &, const QModelIndex &)"), self.index(p, 0), self.index(p, self.cols))
+                    self.dataChanged.emit(self.index(p, 0), self.index(p, self.cols))
                     self.log.debug1("%s.insertEvent: Existing package updated, pid:%d" % (self.cname, package.id))
                     if orderChanged:
                         self.log.warning("%s.insertEvent: Existing package order attribute value differs, pid:%d" % (self.cname, package.id))
-                        self.emit(SIGNAL("layoutAboutToBeChanged()"))
+                        self.layoutAboutToBeChanged.emit()
                         self._data = sorted(self._data, key=lambda d: d.data["order"])
-                        self.emit(SIGNAL("layoutChanged()"))
+                        self.layoutChanged.emit()
                         self.log.debug0("%s.insertEvent: Existing package updated: Packages re-sorted" % self.cname)
                     return
             pack = Package(data)
@@ -602,9 +601,9 @@ class CollectorModel(QAbstractItemModel):
             self._data.insert(0, pack)
             self.endInsertRows()
             self.log.debug1("%s.insertEvent: Package inserted, pid:%d" % (self.cname, pack.id))
-            self.emit(SIGNAL("layoutAboutToBeChanged()"))
+            self.layoutAboutToBeChanged.emit()
             self._data = sorted(self._data, key=lambda d: d.data["order"])
-            self.emit(SIGNAL("layoutChanged()"))
+            self.layoutChanged.emit()
             self.log.debug0("%s.insertEvent: Packages re-sorted" % self.cname)
 
     def updateEvent(self, event):
@@ -629,22 +628,21 @@ class CollectorModel(QAbstractItemModel):
                             child.update(info)
                             if not info.status == DownloadStatus.Downloading:
                                 child.data["downloading"] = None
-                            self.emit(SIGNAL("dataChanged(const QModelIndex &, const QModelIndex &)"),
-                                      self.index(k, 0, self.index(p, 0)), self.index(k, self.cols, self.index(p, self.cols)))
+                            self.dataChanged.emit(self.index(k, 0, self.index(p, 0)), self.index(k, self.cols, self.index(p, self.cols)))
                             self.log.debug1("%s.updateEvent: Link updated, fid:%d in pid:%d" % (self.cname, child.id, package.id))
                             if orderChanged:
                                 self.log.warning("%s.updateEvent: Link order attribute changed, fid:%d in pid:%d" % (self.cname, child.id, package.id))
-                                self.emit(SIGNAL("layoutAboutToBeChanged()"))
+                                self.layoutAboutToBeChanged.emit()
                                 package.sortChildren()
-                                self.emit(SIGNAL("layoutChanged()"))
+                                self.layoutChanged.emit()
                                 self.log.debug0("%s.updateEvent: Links re-sorted, pid:%d" % (self.cname, package.id))
                             if info.status != DownloadStatus.Downloading:
-                                self.emit(SIGNAL("notificationMessage"), info.status, child.data["name"])
+                                self.notificationMessageSGL.emit(info.status, child.data["name"])
                         if child.data["status"] > packageStatus:
                             packageStatus = child.data["status"]
                     if linkFound:
                         if packageStatus == DownloadStatus.Finished:
-                            self.emit(SIGNAL("notificationMessage"), 100, package.data["name"])
+                            self.notificationMessageSGL.emit(100, package.data["name"])
             if not linkFound:
                 self.log.debug2("%s.updateEvent: Link not found, fid:%d" % (self.cname, event.id))
                 self.setDirty(False)
@@ -674,8 +672,7 @@ class CollectorModel(QAbstractItemModel):
                                 child.update(filedata)
                                 if not filedata.status == DownloadStatus.Downloading:
                                     child.data["downloading"] = None
-                                self.emit(SIGNAL("dataChanged(const QModelIndex &, const QModelIndex &)"),
-                                          self.index(k, 0, self.index(p, 0)), self.index(k, self.cols, self.index(p, self.cols)))
+                                self.dataChanged.emit(self.index(k, 0, self.index(p, 0)), self.index(k, self.cols, self.index(p, self.cols)))
                                 self.log.debug0("%s.updateEvent: Link manually updated, fid:%d in pid:%d" % (self.cname, child.id, package.id))
                                 break
                         if not linkFound:
@@ -684,20 +681,20 @@ class CollectorModel(QAbstractItemModel):
                             self.setDirty(False)
                             return
                     if orderChanged:
-                        self.emit(SIGNAL("layoutAboutToBeChanged()"))
+                        self.layoutAboutToBeChanged.emit()
                         package.sortChildren()
-                        self.emit(SIGNAL("layoutChanged()"))
+                        self.layoutChanged.emit()
                         self.log.debug0("%s.updateEvent: Manual link update: Links re-sorted, pid:%d" % (self.cname, package.id))
                     # update the package
                     orderChanged = bool(data.order != package.data["order"])
                     package.update(data)
-                    self.emit(SIGNAL("dataChanged(const QModelIndex &, const QModelIndex &)"), self.index(p, 0), self.index(p, self.cols))
+                    self.dataChanged.emit(self.index(p, 0), self.index(p, self.cols))
                     self.log.debug1("%s.updateEvent: Package updated, pid:%d" % (self.cname, package.id))
                     if orderChanged:
                         self.log.debug0("%s.updateEvent: Package order attribute changed, pid:%d" % (self.cname, package.id))
-                        self.emit(SIGNAL("layoutAboutToBeChanged()"))
+                        self.layoutAboutToBeChanged.emit()
                         self._data = sorted(self._data, key=lambda d: d.data["order"])
-                        self.emit(SIGNAL("layoutChanged()"))
+                        self.layoutChanged.emit()
                         self.log.debug0("%s.updateEvent: Packages re-sorted" % self.cname)
                     break
             if not packageFound:
@@ -1402,6 +1399,9 @@ class CollectorView(QTreeView):
     """
         view component for collector
     """
+    dropEventSGL        = pyqtSignal(object)
+    collectorMsgShowSGL = pyqtSignal(object, object)
+    collectorMsgHideSGL = pyqtSignal()
 
     def __init__(self, corePermissions, connector):
         QTreeView.__init__(self)
@@ -1445,9 +1445,9 @@ class CollectorView(QTreeView):
         self.header().setContextMenuPolicy(Qt.CustomContextMenu)
         self.header().customContextMenuRequested.connect(self.headerContextMenu)
 
-        self.connect(self.buttonMsgHideTimer, SIGNAL("timeout()"), self.slotButtonMsgHideTimerTimeout)
-        self.connect(self, SIGNAL("slot_dropEvent"), self.model.slotDropEvent)
-        self.connect(self, SIGNAL("collapsed(const QModelIndex &)"), self.slotPackageCollapsed)
+        self.buttonMsgHideTimer.timeout.connect(self.slotButtonMsgHideTimerTimeout)
+        self.dropEventSGL.connect(self.model.slotDropEvent)
+        self.collapsed[QModelIndex].connect(self.slotPackageCollapsed)
 
     def setCorePermissions(self, corePermissions):
         self.corePermissions = corePermissions
@@ -1561,11 +1561,11 @@ class CollectorView(QTreeView):
             return
         self.buttonMsgHide(0)
         self.setEnabled(False)
-        self.emit(SIGNAL("slot_dropEvent"), not bool(event.keyboardModifiers() & Qt.AltModifier))
+        self.dropEventSGL.emit(not bool(event.keyboardModifiers() & Qt.AltModifier))
 
     def buttonMsgShow(self, msg, error):
         self.buttonMsgHideTimer.stop()
-        self.emit(SIGNAL("collectorMsgShow"), msg, error)
+        self.collectorMsgShowSGL.emit(msg, error)
 
     def buttonMsgHide(self, delay):
         self.buttonMsgHideTimer.setInterval(delay)
@@ -1573,7 +1573,7 @@ class CollectorView(QTreeView):
         self.buttonMsgHideTimer.start()
 
     def slotButtonMsgHideTimerTimeout(self):
-        self.emit(SIGNAL("collectorMsgHide"))
+        self.collectorMsgHideSGL.emit()
 
 class DragAndDrop(QObject):
     """

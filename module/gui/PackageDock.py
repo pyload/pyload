@@ -16,7 +16,7 @@
     @author: mkaay
 """
 
-from PyQt4.QtCore import Qt, QTimer, SIGNAL
+from PyQt4.QtCore import pyqtSignal, Qt, QTimer
 from PyQt4.QtGui import (QCheckBox, QColor, QDockWidget, QGridLayout, QHBoxLayout, QIcon, QLabel, QLineEdit, QPushButton,
                          QRadioButton, QSizePolicy, QVBoxLayout, QWidget)
 
@@ -25,6 +25,11 @@ from os.path import join
 from module.gui.Tools import whatsThisFormat, PlainTextEdit
 
 class NewPackageDock(QDockWidget):
+    addPackageDoneSGL        = pyqtSignal(object, object, object, object)
+    parseUriSGL              = pyqtSignal(object, object)
+    newPackDockClosedSGL     = pyqtSignal()
+    newPackDockPaintEventSGL = pyqtSignal()
+
     def __init__(self, appIconSet):
         self.paintEventSignal = False
         QDockWidget.__init__(self, _("New Package"))
@@ -64,7 +69,7 @@ class NewPackageDock(QDockWidget):
             self.widget.slotMsgShow("<b>" + "&nbsp;" + "&nbsp;" + _("Error, no URLs given.") + "</b>")
             return
         queue = self.widget.destQueue.isChecked()
-        self.emit(SIGNAL("addPackageDone"), unicode(self.widget.nameInput.text()), lines, queue, pw)
+        self.addPackageDoneSGL.emit(unicode(self.widget.nameInput.text()), lines, queue, pw)
         self.widget.nameInput.setText("")
         self.widget.passwordInput.setText("")
         self.widget.box.clear()
@@ -83,7 +88,7 @@ class NewPackageDock(QDockWidget):
             self.widget.box.setEnabled(False)
             self.widget.filter.setEnabled(False)
             self.undoText = text
-            self.emit(SIGNAL("parseUri"), "packagedock", unicode(text))
+            self.parseUriSGL.emit("packagedock", unicode(text))
         else:
             self.widget.box.setPlainText(self.undoText)
             self.undo = False
@@ -137,7 +142,7 @@ class NewPackageDock(QDockWidget):
 
     def closeEvent(self, event):
         if self.isFloating():
-            self.emit(SIGNAL("newPackDockClosed"))
+            self.newPackDockClosedSGL.emit()
         self.hide()
         event.ignore()
 
@@ -148,7 +153,7 @@ class NewPackageDock(QDockWidget):
         self.paintEventCounter += 1
         if self.paintEventSignal:
             self.paintEventSignal = False
-            self.emit(SIGNAL("newPackDockPaintEvent"))
+            self.newPackDockPaintEventSGL.emit()
 
     def moveEvent(self, event):
         if self.isFloating():
@@ -224,12 +229,12 @@ class NewPackageWindow(QWidget):
         self.msg.setFixedHeight(self.save.height())
         self.slotMsgHide()
 
-        self.connect(self.save, SIGNAL("clicked()"), self.dock.slotDone)
-        self.connect(self.filter, SIGNAL("clicked()"), self.dock.slotFilterBtnClicked)
-        self.connect(self.box, SIGNAL("textChanged()"), self.dock.slotBoxTextChanged)
-        self.connect(self.append, SIGNAL("toggled(bool)"), self.box.slotAppendToggled)
+        self.save.clicked.connect(self.dock.slotDone)
+        self.filter.clicked.connect(self.dock.slotFilterBtnClicked)
+        self.box.textChanged.connect(self.dock.slotBoxTextChanged)
+        self.append.toggled[bool].connect(self.box.slotAppendToggled)
         self.box.slotAppendToggled(self.append.isChecked())
-        self.connect(self.clear, SIGNAL("clicked()"), self.dock.slotClearBtnClicked)
+        self.clear.clicked.connect(self.dock.slotClearBtnClicked)
 
     def slotMsgShow(self, msg):
         self.msg.setText(msg)

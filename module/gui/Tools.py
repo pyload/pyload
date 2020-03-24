@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from PyQt4.QtCore import QByteArray, QObject, Qt, QTimer, SIGNAL
+from PyQt4.QtCore import QByteArray, QObject, Qt, QTimer
 from PyQt4.QtGui import (QAbstractSpinBox, QApplication, QColor, QDialog, QDialogButtonBox, QFrame, QGridLayout, QHBoxLayout, QIcon,
                          QLabel, QLineEdit, QPalette, QPixmap, QPlainTextEdit, QPushButton, QSpacerItem, QSpinBox, QStyle,
                          QTextCursor, QTextEdit, QVBoxLayout, QWhatsThis)
@@ -24,7 +24,7 @@ class WhatsThisButton(QPushButton):
         self.setAutoDefault(False)
         self.setFocusPolicy(Qt.NoFocus)
         self.updateSize()
-        self.connect(self, SIGNAL("clicked()"), QWhatsThis.enterWhatsThisMode)
+        self.clicked.connect(QWhatsThis.enterWhatsThisMode)
 
     def updateSize(self):
         width  = self.fontMetrics().boundingRect(self.text).width()
@@ -76,7 +76,7 @@ class LineView(QLineEdit):
         # remove from taborder
         self.setFocusPolicy(Qt.NoFocus)
         # prohibit text selection
-        self.connect(self, SIGNAL("selectionChanged()"), self.deselect)
+        self.selectionChanged.connect(self.deselect)
         # disable context menu
         self.setContextMenuPolicy(Qt.NoContextMenu)
 
@@ -227,7 +227,7 @@ class MessageBox(QDialog):
                 self.buttonBox.button(QDialogButtonBox.Ok).setText(unicode("OK"))
             else:
                 self.buttonBox.button(QDialogButtonBox.Ok).setText(_("OK"))
-            self.connect(self.okBtn, SIGNAL("clicked()"), self.accept)
+            self.okBtn.clicked.connect(self.accept)
         elif btnSet == "OK_CANCEL":
             self.okBtn     = self.buttonBox.addButton(QDialogButtonBox.Ok)
             self.cancelBtn = self.buttonBox.addButton(QDialogButtonBox.Cancel)
@@ -237,8 +237,8 @@ class MessageBox(QDialog):
             else:
                 self.buttonBox.button(QDialogButtonBox.Ok).    setText(_("OK"))
                 self.buttonBox.button(QDialogButtonBox.Cancel).setText(_("Cancel"))
-            self.connect(self.okBtn,     SIGNAL("clicked()"), self.accept)
-            self.connect(self.cancelBtn, SIGNAL("clicked()"), self.reject)
+            self.okBtn.clicked.connect(self.accept)
+            self.cancelBtn.clicked.connect(self.reject)
         elif btnSet == "YES_NO":
             self.yesBtn = self.buttonBox.addButton(QDialogButtonBox.Yes)
             self.noBtn  = self.buttonBox.addButton(QDialogButtonBox.No)
@@ -248,8 +248,8 @@ class MessageBox(QDialog):
             else:
                 self.buttonBox.button(QDialogButtonBox.Yes).setText(_("Yes"))
                 self.buttonBox.button(QDialogButtonBox.No). setText(_("No"))
-            self.connect(self.yesBtn, SIGNAL("clicked()"), self.accept)
-            self.connect(self.noBtn,  SIGNAL("clicked()"), self.reject)
+            self.yesBtn.clicked.connect(self.accept)
+            self.noBtn.clicked.connect(self.reject)
 
         # layout
         vboxIcon = QVBoxLayout()

@@ -2,7 +2,7 @@
 
 import logging
 
-from PyQt4.QtCore import Qt, SIGNAL
+from PyQt4.QtCore import pyqtSignal, Qt
 from PyQt4.QtGui import (QApplication, QCheckBox, QColor, QColorDialog, QComboBox, QDialog, QDialogButtonBox, QFont, QFontDialog,
                          QGridLayout, QGroupBox, QHBoxLayout, QIcon, QLabel, QLayout, QLineEdit, QPalette, QPushButton, QRadioButton,
                          QSpinBox, QVBoxLayout)
@@ -68,8 +68,8 @@ class NotificationOptions(QDialog):
         self.adjustSize()
         self.setFixedSize(self.width(), self.height())
 
-        self.connect(self.okBtn,     SIGNAL("clicked()"), self.accept)
-        self.connect(self.cancelBtn, SIGNAL("clicked()"), self.reject)
+        self.okBtn.clicked.connect(self.accept)
+        self.cancelBtn.clicked.connect(self.reject)
         self.defaultSettings()
 
     def defaultSettings(self):
@@ -179,8 +179,8 @@ class LoggingOptions(QDialog):
         self.adjustSize()
         #self.setFixedSize(self.width(), self.height())
 
-        self.connect(self.okBtn,     SIGNAL("clicked()"), self.accept)
-        self.connect(self.cancelBtn, SIGNAL("clicked()"), self.reject)
+        self.okBtn.clicked.connect(self.accept)
+        self.cancelBtn.clicked.connect(self.reject)
         self.defaultSettings()
 
     def exec_(self):
@@ -291,9 +291,9 @@ class ClickNLoadForwarderOptions(QDialog):
         self.setMinimumWidth(250)
         self.adjustSize()
 
-        self.connect(self.okBtn,     SIGNAL("clicked()"), self.accept)
-        self.connect(self.cancelBtn, SIGNAL("clicked()"), self.reject)
-        self.connect(self.cbGetPort, SIGNAL("toggled(bool)"), self.sbToPort.setDisabled)
+        self.okBtn.clicked.connect(self.accept)
+        self.cancelBtn.clicked.connect(self.reject)
+        self.cbGetPort.toggled[bool].connect(self.sbToPort.setDisabled)
 
         # default settings
         self.settings["enabled"]  = False
@@ -396,8 +396,8 @@ class AutomaticReloadingOptions(QDialog):
         self.setMinimumWidth(250)
         self.adjustSize()
 
-        self.connect(self.okBtn,     SIGNAL("clicked()"), self.accept)
-        self.connect(self.cancelBtn, SIGNAL("clicked()"), self.reject)
+        self.okBtn.clicked.connect(self.accept)
+        self.cancelBtn.clicked.connect(self.reject)
         self.defaultSettings()
 
     def exec_(self):
@@ -473,8 +473,8 @@ class CaptchaOptions(QDialog):
         self.adjustSize()
         self.setFixedSize(self.width(), self.height())
 
-        self.connect(self.okBtn,     SIGNAL("clicked()"), self.accept)
-        self.connect(self.cancelBtn, SIGNAL("clicked()"), self.reject)
+        self.okBtn.clicked.connect(self.accept)
+        self.cancelBtn.clicked.connect(self.reject)
         self.defaultSettings()
 
     def defaultSettings(self):
@@ -555,10 +555,10 @@ class IconThemeOptions(QDialog):
 
         self.adjustSize()
 
-        self.connect(self.okBtn,     SIGNAL("clicked()"), self.accept)
-        self.connect(self.cancelBtn, SIGNAL("clicked()"), self.reject)
-        self.connect(self.btnFontAwesome, SIGNAL("clicked()"), self.slotChooseFontAwesomeColor)
-        self.connect(self.btnLineAwesome, SIGNAL("clicked()"), self.slotChooseLineAwesomeColor)
+        self.okBtn.clicked.connect(self.accept)
+        self.cancelBtn.clicked.connect(self.reject)
+        self.btnFontAwesome.clicked.connect(self.slotChooseFontAwesomeColor)
+        self.btnLineAwesome.clicked.connect(self.slotChooseLineAwesomeColor)
 
         self.defaultSettings()
 
@@ -620,6 +620,8 @@ class FontOptions(QDialog):
     """
         font options dialog
     """
+    appFontChangedSGL = pyqtSignal()
+
     def __init__(self, defAppFont, mainWindow):
         QDialog.__init__(self, mainWindow)
         self.defaultApplicationFont = QFont(defAppFont)
@@ -723,21 +725,21 @@ class FontOptions(QDialog):
         self.setMinimumWidth(250)
         self.adjustSize()
 
-        self.connect(self.okBtn,     SIGNAL("clicked()"), self.accept)
-        self.connect(self.cancelBtn, SIGNAL("clicked()"), self.reject)
-        self.connect(self.resetBtn,  SIGNAL("clicked()"), self.slotResetBtn)
+        self.okBtn.clicked.connect(self.accept)
+        self.cancelBtn.clicked.connect(self.reject)
+        self.resetBtn.clicked.connect(self.slotResetBtn)
 
-        self.connect(self.cbApplication, SIGNAL("toggled(bool)"), self.slotCbApplicationToggled)
-        self.connect(self.cbQueue,       SIGNAL("toggled(bool)"), self.slotCbQueueToggled)
-        self.connect(self.cbCollector,   SIGNAL("toggled(bool)"), self.slotCbCollectorToggled)
-        self.connect(self.cbAccounts,    SIGNAL("toggled(bool)"), self.slotCbAccountsToggled)
-        self.connect(self.cbLog,         SIGNAL("toggled(bool)"), self.slotCbLogToggled)
+        self.cbApplication.toggled[bool].connect(self.slotCbApplicationToggled)
+        self.cbQueue.toggled[bool].connect(self.slotCbQueueToggled)
+        self.cbCollector.toggled[bool].connect(self.slotCbCollectorToggled)
+        self.cbAccounts.toggled[bool].connect(self.slotCbAccountsToggled)
+        self.cbLog.toggled[bool].connect(self.slotCbLogToggled)
 
-        self.connect(self.btnApplication, SIGNAL("clicked()"), self.slotChooseApplication)
-        self.connect(self.btnQueue,       SIGNAL("clicked()"), self.slotChooseQueue)
-        self.connect(self.btnCollector,   SIGNAL("clicked()"), self.slotChooseCollector)
-        self.connect(self.btnAccounts,    SIGNAL("clicked()"), self.slotChooseAccounts)
-        self.connect(self.btnLog,         SIGNAL("clicked()"), self.slotChooseLog)
+        self.btnApplication.clicked.connect(self.slotChooseApplication)
+        self.btnQueue.clicked.connect(self.slotChooseQueue)
+        self.btnCollector.clicked.connect(self.slotChooseCollector)
+        self.btnAccounts.clicked.connect(self.slotChooseAccounts)
+        self.btnLog.clicked.connect(self.slotChooseLog)
 
         self.dict2dialogState()
 
@@ -896,7 +898,7 @@ class FontOptions(QDialog):
         self.mainWindow.tabs["accounts"]["view"].setFont(self.accountsFont)
         self.mainWindow.tabs["guilog"]["text"].setFont(self.logFont)
         self.mainWindow.tabs["corelog"]["text"].setFont(self.logFont)
-        self.emit(SIGNAL("slot_appFontChanged"))
+        self.appFontChangedSGL.emit()
 
     def appFontChanged(self):
         self.buttons.updateWhatsThisButton()
@@ -975,9 +977,9 @@ class ColorFixOptions(QDialog):
         self.setMinimumWidth(250)
         self.adjustSize()
 
-        self.connect(self.sbAlpha,   SIGNAL("valueChanged(int)"), self.slotSetPreviewButtonAlpha)
-        self.connect(self.okBtn,     SIGNAL("clicked()"), self.accept)
-        self.connect(self.cancelBtn, SIGNAL("clicked()"), self.reject)
+        self.sbAlpha.valueChanged[int].connect(self.slotSetPreviewButtonAlpha)
+        self.okBtn.clicked.connect(self.accept)
+        self.cancelBtn.clicked.connect(self.reject)
         self.defaultSettings()
 
     def getDefaultColors(self):
@@ -1135,8 +1137,8 @@ class TrayOptions(QDialog):
         self.adjustSize()
         self.setFixedSize(self.width(), self.height())
 
-        self.connect(self.okBtn,     SIGNAL("clicked()"), self.accept)
-        self.connect(self.cancelBtn, SIGNAL("clicked()"), self.reject)
+        self.okBtn.clicked.connect(self.accept)
+        self.cancelBtn.clicked.connect(self.reject)
         self.defaultSettings()
 
     def defaultSettings(self):
@@ -1215,12 +1217,12 @@ class WhatsThisOptions(QDialog):
 
         self.adjustSize()
 
-        self.connect(self.okBtn,     SIGNAL("clicked()"), self.accept)
-        self.connect(self.cancelBtn, SIGNAL("clicked()"), self.reject)
-        self.connect(self.resetBtn,  SIGNAL("clicked()"), self.slotResetBtn)
-        self.connect(self.cbEnable,  SIGNAL("toggled(bool)"), self.slotCbEnableToggled)
-        self.connect(self.btnText,   SIGNAL("clicked()"),     self.slotChooseTextColor)
-        self.connect(self.btnBack,   SIGNAL("clicked()"),     self.slotChooseBackgroundColor)
+        self.okBtn.clicked.connect(self.accept)
+        self.cancelBtn.clicked.connect(self.reject)
+        self.resetBtn.clicked.connect(self.slotResetBtn)
+        self.cbEnable.toggled[bool].connect(self.slotCbEnableToggled)
+        self.btnText.clicked.connect(self.slotChooseTextColor)
+        self.btnBack.clicked.connect(self.slotChooseBackgroundColor)
         self.defaultSettings()
 
     def slotResetBtn(self):
@@ -1402,8 +1404,8 @@ class OtherOptions(QDialog):
         self.adjustSize()
         #self.setFixedSize(self.width(), self.height())
 
-        self.connect(self.okBtn,     SIGNAL("clicked()"), self.accept)
-        self.connect(self.cancelBtn, SIGNAL("clicked()"), self.reject)
+        self.okBtn.clicked.connect(self.accept)
+        self.cancelBtn.clicked.connect(self.reject)
         self.defaultSettings()
 
     def exec_(self):
@@ -1488,8 +1490,8 @@ class LanguageOptions(QDialog):
         self.setMinimumWidth(250)
         self.adjustSize()
 
-        self.connect(self.okBtn,     SIGNAL("clicked()"), self.accept)
-        self.connect(self.cancelBtn, SIGNAL("clicked()"), self.reject)
+        self.okBtn.clicked.connect(self.accept)
+        self.cancelBtn.clicked.connect(self.reject)
 
         # default settings
         self.settings["languageList"] = ["en"]

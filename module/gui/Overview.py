@@ -40,7 +40,7 @@ class OverviewModel(QAbstractListModel):
         self.queue = queue
         self.packages = []
 
-    def slotQueueChanged(self): #dirty..
+    def slotQueueChanged(self, dummy1, dummy2): #dirty..
         self.beginResetModel()
 
         self.packages = []
