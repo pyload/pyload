@@ -318,6 +318,7 @@ class DispatchRPC(QObject):
         wraps the thrift client, to catch critical exceptions (connection lost)
         adds thread safety
     """
+    connectionLostSGL = pyqtSignal()
 
     def __init__(self, mutex, server):
         QObject.__init__(self)
@@ -338,7 +339,6 @@ class DispatchRPC(QObject):
         """
             represents a rpc call
         """
-        connectionLostSGL = pyqtSignal()
 
         def __init__(self, f, mutex, dispatcher):
             self.f = f
