@@ -86,9 +86,9 @@ class AboutBox(QDialog):
         self.setLayout(vbox)
 
         self.connect(self.okBtn, SIGNAL("clicked()"), self.accept)
-        self.connect(self.copyBtn, SIGNAL("clicked()"), self.copyToClipboard)
+        self.connect(self.copyBtn, SIGNAL("clicked()"), self.slotCopyToClipboard)
 
-    def copyToClipboard(self):
+    def slotCopyToClipboard(self):
         txt = self.text3.text()
         clipboard = QApplication.clipboard()
         clipboard.setText(txt)

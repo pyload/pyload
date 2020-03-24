@@ -87,7 +87,7 @@ class AccountEdit(QDialog):
         data = {"login": unicode(self.login.text()), "acctype": unicode(self.acctype.currentText()), "password": None}
         if self.changePw.isChecked():
             data["password"] = unicode(self.password.text())
-        self.emit(SIGNAL("done"), data)
+        self.emit(SIGNAL("accountEditSave"), data)
 
     @staticmethod
     def newAccount(parent, types):

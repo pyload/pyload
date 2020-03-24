@@ -45,7 +45,7 @@ class Notification(QObject):
             if not self.usePynotify:
                 self.log.error("Notification: Pynotify initialization failed")
 
-    def showMessage(self, body):
+    def slotShowMessage(self, body):
         if self.usePynotify:
             n = pynotify.Notification(_("pyLoad Client"), body, join(pypath, "icons", "logo.png"))
             try:

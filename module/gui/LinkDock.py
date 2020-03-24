@@ -56,7 +56,7 @@ class NewLinkDock(QDockWidget):
             self.widget.slotMsgShow("<b>" + "&nbsp;" + "&nbsp;" + _("Error, no URLs given.") + "</b>")
             return
         queue = self.widget.destQueue.isChecked()
-        self.emit(SIGNAL("done"), lines, queue)
+        self.emit(SIGNAL("addLinksToPackageDone"), lines, queue)
 
     def setFilterBtnText(self):
         if not self.undo:

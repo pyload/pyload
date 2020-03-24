@@ -29,7 +29,7 @@ class TrayIcon(QSystemTrayIcon):
         self.menu = QMenu()
         self.showAction = QAction("show/hide", self.menu)
         self.showAction.setIcon(QIcon(join(pypath, "icons", "logo.png")))
-        self.setShowActionText(False)
+        self.slotSetShowActionText(False)
         self.menu.addAction(self.showAction)
         self.captchaAction = QAction(_("Captcha"), self.menu)
         self.menu.addAction(self.captchaAction)
@@ -54,7 +54,7 @@ class TrayIcon(QSystemTrayIcon):
         self.captchaAction.setEnabled(False)
         self.menuAdd.setEnabled(False)
 
-    def setupIcon(self, size):
+    def slotSetupIcon(self, size):
         if size == "24x24":
             icon = QIcon(join(pypath, "icons", "logo-gui24x24.png"))
         elif size == "64x64":
@@ -63,27 +63,27 @@ class TrayIcon(QSystemTrayIcon):
             icon = QIcon()
         self.setIcon(icon)
 
-    def setShowActionText(self, show):
+    def slotSetShowActionText(self, show):
         if show:
             self.showAction.setText(_("Show pyLoad Client"))
         else:
             self.showAction.setText(_("Hide pyLoad Client"))
 
-    def clicked(self, reason):
+    def slotClicked(self, reason):
         # forbid all actions when a modal dialog is visible, this is mainly for ms windows os
         if QApplication.activeModalWidget() is not None:
             if self.contextMenu() is not None:
                 self.menu.hide()
                 self.setContextMenu(None)
-                self.log.debug4("TrayIcon.clicked: context menu deactivated")
-            self.log.debug4("TrayIcon.clicked: click ignored")
+                self.log.debug4("TrayIcon.slotClicked: context menu deactivated")
+            self.log.debug4("TrayIcon.slotClicked: click ignored")
             return
         elif self.contextMenu() is None:
             self.setContextMenu(self.menu)
-            self.log.debug4("TrayIcon.clicked: context menu reactivated")
+            self.log.debug4("TrayIcon.slotClicked: context menu reactivated")
             if reason == QSystemTrayIcon.Context:
                 self.menu.show()
-                self.log.debug4("TrayIcon.clicked: show reactivated context menu")
+                self.log.debug4("TrayIcon.slotClicked: show reactivated context menu")
                 return
 
         if self.showAction.isEnabled():

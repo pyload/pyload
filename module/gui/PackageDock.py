@@ -64,7 +64,7 @@ class NewPackageDock(QDockWidget):
             self.widget.slotMsgShow("<b>" + "&nbsp;" + "&nbsp;" + _("Error, no URLs given.") + "</b>")
             return
         queue = self.widget.destQueue.isChecked()
-        self.emit(SIGNAL("done"), unicode(self.widget.nameInput.text()), lines, queue, pw)
+        self.emit(SIGNAL("addPackageDone"), unicode(self.widget.nameInput.text()), lines, queue, pw)
         self.widget.nameInput.setText("")
         self.widget.passwordInput.setText("")
         self.widget.box.clear()

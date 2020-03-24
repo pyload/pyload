@@ -1445,9 +1445,9 @@ class CollectorView(QTreeView):
         self.header().setContextMenuPolicy(Qt.CustomContextMenu)
         self.header().customContextMenuRequested.connect(self.headerContextMenu)
 
-        self.connect(self.buttonMsgHideTimer, SIGNAL("timeout()"), self.buttonMsgHideTimerTimeout)
-        self.connect(self, SIGNAL("dropEvent"), self.model.slotDropEvent)
-        self.connect(self, SIGNAL("collapsed(const QModelIndex &)"), self.packageCollapsed)
+        self.connect(self.buttonMsgHideTimer, SIGNAL("timeout()"), self.slotButtonMsgHideTimerTimeout)
+        self.connect(self, SIGNAL("slot_dropEvent"), self.model.slotDropEvent)
+        self.connect(self, SIGNAL("collapsed(const QModelIndex &)"), self.slotPackageCollapsed)
 
     def setCorePermissions(self, corePermissions):
         self.corePermissions = corePermissions
@@ -1499,7 +1499,7 @@ class CollectorView(QTreeView):
         for i in range(0, self.model.rowCount()):
             self.collapse(self.model.index(i, 0))
 
-    def packageCollapsed(self, index):
+    def slotPackageCollapsed(self, index):
         func_start_time = self.model.time_msec()
         package = index.internalPointer()
         if not isinstance(package, Package):
@@ -1512,7 +1512,7 @@ class CollectorView(QTreeView):
             if smodel.isSelected(lindex): smodel.select(lindex, QItemSelectionModel.Deselect | QItemSelectionModel.Rows)
             if lindex == smodel.currentIndex():
                 smodel.setCurrentIndex(QModelIndex(), QItemSelectionModel.NoUpdate)
-        self.log.debug8("%s.packageCollapsed took %dms" % (self.cname, self.model.time_msec() - func_start_time))
+        self.log.debug8("%s.slotPackageCollapsed took %dms" % (self.cname, self.model.time_msec() - func_start_time))
 
     def mousePressEvent(self, event):
         index = self.indexAt(event.pos())
@@ -1561,7 +1561,7 @@ class CollectorView(QTreeView):
             return
         self.buttonMsgHide(0)
         self.setEnabled(False)
-        self.emit(SIGNAL("dropEvent"), not bool(event.keyboardModifiers() & Qt.AltModifier))
+        self.emit(SIGNAL("slot_dropEvent"), not bool(event.keyboardModifiers() & Qt.AltModifier))
 
     def buttonMsgShow(self, msg, error):
         self.buttonMsgHideTimer.stop()
@@ -1572,7 +1572,7 @@ class CollectorView(QTreeView):
         self.buttonMsgHideTimer.setSingleShot(True)
         self.buttonMsgHideTimer.start()
 
-    def buttonMsgHideTimerTimeout(self):
+    def slotButtonMsgHideTimerTimeout(self):
         self.emit(SIGNAL("collectorMsgHide"))
 
 class DragAndDrop(QObject):

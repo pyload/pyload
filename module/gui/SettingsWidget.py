@@ -49,7 +49,7 @@ class SettingsWidget(QWidget):
     def setConnector(self, connector):
         self.connector = connector
 
-    def loadConfig(self):
+    def slotLoadConfig(self):
         if not self.corePermissions["SETTINGS"]:
             return
         QMutexLocker(self.mutex)
@@ -154,20 +154,20 @@ class SettingsWidget(QWidget):
 
         self.pluginsSearchCompleter.setStringList(sl)
 
-        self.reload = QPushButton(_("Reload All 'Server Settings' Forms"))
-        self.save = QPushButton(_("Apply All 'Server Settings' Forms"))
+        self.reloadBtn = QPushButton(_("Reload All 'Server Settings' Forms"))
+        self.saveBtn = QPushButton(_("Apply All 'Server Settings' Forms"))
 
         cont = QHBoxLayout()
-        cont.addWidget(self.reload)
-        cont.addWidget(self.save)
+        cont.addWidget(self.reloadBtn)
+        cont.addWidget(self.saveBtn)
 
         layout.addLayout(cont)
 
         self.connect(self.pluginsSearchEditBox, SIGNAL("returnPressed()"), self.slotPluginsSearchFind)
         self.connect(self.pluginsSearchFind, SIGNAL("clicked()"), self.slotPluginsSearchFind)
         self.connect(self.pluginsSearchClear, SIGNAL("clicked()"), self.slotPluginsSearchClear)
-        self.connect(self.save, SIGNAL("clicked()"), self.saveConfig)
-        self.connect(self.reload, SIGNAL("clicked()"), self.loadConfig)
+        self.connect(self.saveBtn, SIGNAL("clicked()"), self.slotSaveConfig)
+        self.connect(self.reloadBtn, SIGNAL("clicked()"), self.slotLoadConfig)
         self.connect(self.pluginsComboBox, SIGNAL("activated(int)"), self.slotPluginsComboBoxActivated)
         self.connect(self.pluginsMenuCheckBox, SIGNAL("clicked(bool)"), self.slotPluginsMenuCheckBoxClicked)
 
@@ -196,7 +196,7 @@ class SettingsWidget(QWidget):
                         else:
                             i.setText(item.value)
 
-    def saveConfig(self):
+    def slotSaveConfig(self):
         if not self.corePermissions["SETTINGS"]:
             return
         wdgd = WidgetDisable(self)

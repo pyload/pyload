@@ -557,12 +557,12 @@ class IconThemeOptions(QDialog):
 
         self.connect(self.okBtn,     SIGNAL("clicked()"), self.accept)
         self.connect(self.cancelBtn, SIGNAL("clicked()"), self.reject)
-        self.connect(self.btnFontAwesome, SIGNAL("clicked()"), self.chooseFontAwesomeColor)
-        self.connect(self.btnLineAwesome, SIGNAL("clicked()"), self.chooseLineAwesomeColor)
+        self.connect(self.btnFontAwesome, SIGNAL("clicked()"), self.slotChooseFontAwesomeColor)
+        self.connect(self.btnLineAwesome, SIGNAL("clicked()"), self.slotChooseLineAwesomeColor)
 
         self.defaultSettings()
 
-    def chooseFontAwesomeColor(self):
+    def slotChooseFontAwesomeColor(self):
         initCol = QColor()
         initCol.setRgba(self.fontAwesomeColor)
         col = QColorDialog.getColor(initCol, self, self.rbFontAwesome.text(), QColorDialog.DontUseNativeDialog)
@@ -570,7 +570,7 @@ class IconThemeOptions(QDialog):
             return
         self.fontAwesomeColor = col.rgba()
 
-    def chooseLineAwesomeColor(self):
+    def slotChooseLineAwesomeColor(self):
         initCol = QColor()
         initCol.setRgba(self.lineAwesomeColor)
         col = QColorDialog.getColor(initCol, self, self.rbLineAwesome.text(), QColorDialog.DontUseNativeDialog)
@@ -727,21 +727,21 @@ class FontOptions(QDialog):
         self.connect(self.cancelBtn, SIGNAL("clicked()"), self.reject)
         self.connect(self.resetBtn,  SIGNAL("clicked()"), self.slotResetBtn)
 
-        self.connect(self.cbApplication, SIGNAL("toggled(bool)"), self.cbApplicationToggled)
-        self.connect(self.cbQueue,       SIGNAL("toggled(bool)"), self.cbQueueToggled)
-        self.connect(self.cbCollector,   SIGNAL("toggled(bool)"), self.cbCollectorToggled)
-        self.connect(self.cbAccounts,    SIGNAL("toggled(bool)"), self.cbAccountsToggled)
-        self.connect(self.cbLog,         SIGNAL("toggled(bool)"), self.cbLogToggled)
+        self.connect(self.cbApplication, SIGNAL("toggled(bool)"), self.slotCbApplicationToggled)
+        self.connect(self.cbQueue,       SIGNAL("toggled(bool)"), self.slotCbQueueToggled)
+        self.connect(self.cbCollector,   SIGNAL("toggled(bool)"), self.slotCbCollectorToggled)
+        self.connect(self.cbAccounts,    SIGNAL("toggled(bool)"), self.slotCbAccountsToggled)
+        self.connect(self.cbLog,         SIGNAL("toggled(bool)"), self.slotCbLogToggled)
 
-        self.connect(self.btnApplication, SIGNAL("clicked()"), self.chooseApplication)
-        self.connect(self.btnQueue,       SIGNAL("clicked()"), self.chooseQueue)
-        self.connect(self.btnCollector,   SIGNAL("clicked()"), self.chooseCollector)
-        self.connect(self.btnAccounts,    SIGNAL("clicked()"), self.chooseAccounts)
-        self.connect(self.btnLog,         SIGNAL("clicked()"), self.chooseLog)
+        self.connect(self.btnApplication, SIGNAL("clicked()"), self.slotChooseApplication)
+        self.connect(self.btnQueue,       SIGNAL("clicked()"), self.slotChooseQueue)
+        self.connect(self.btnCollector,   SIGNAL("clicked()"), self.slotChooseCollector)
+        self.connect(self.btnAccounts,    SIGNAL("clicked()"), self.slotChooseAccounts)
+        self.connect(self.btnLog,         SIGNAL("clicked()"), self.slotChooseLog)
 
         self.dict2dialogState()
 
-    def cbApplicationToggled(self, checked):
+    def slotCbApplicationToggled(self, checked):
         if checked:
             self.lblApplicationFont = QFont()
             self.lblApplicationFont.fromString(self.settings["Application"]["font"])
@@ -752,12 +752,12 @@ class FontOptions(QDialog):
         self.lblApplication.setEnabled(checked)
         self.btnApplication.setEnabled(checked)
         # update the other labels fonts (if not checked/enabled)
-        self.cbQueueToggled(self.cbQueue.isChecked())
-        self.cbCollectorToggled(self.cbCollector.isChecked())
-        self.cbAccountsToggled(self.cbAccounts.isChecked())
-        self.cbLogToggled(self.cbLog.isChecked())
+        self.slotCbQueueToggled(self.cbQueue.isChecked())
+        self.slotCbCollectorToggled(self.cbCollector.isChecked())
+        self.slotCbAccountsToggled(self.cbAccounts.isChecked())
+        self.slotCbLogToggled(self.cbLog.isChecked())
 
-    def cbQueueToggled(self, checked):
+    def slotCbQueueToggled(self, checked):
         if checked:
             self.lblQueueFont = QFont()
             self.lblQueueFont.fromString(self.settings["Queue"]["font"])
@@ -767,7 +767,7 @@ class FontOptions(QDialog):
         self.lblQueue.setText(self.lblQueueFont.family())
         self.lblQueue.setEnabled(checked)
         self.btnQueue.setEnabled(checked)
-    def cbCollectorToggled(self, checked):
+    def slotCbCollectorToggled(self, checked):
         if checked:
             self.lblCollectorFont = QFont()
             self.lblCollectorFont.fromString(self.settings["Collector"]["font"])
@@ -777,7 +777,7 @@ class FontOptions(QDialog):
         self.lblCollector.setText(self.lblCollectorFont.family())
         self.lblCollector.setEnabled(checked)
         self.btnCollector.setEnabled(checked)
-    def cbAccountsToggled(self, checked):
+    def slotCbAccountsToggled(self, checked):
         if checked:
             self.lblAccountsFont = QFont()
             self.lblAccountsFont.fromString(self.settings["Accounts"]["font"])
@@ -787,7 +787,7 @@ class FontOptions(QDialog):
         self.lblAccounts.setText(self.lblAccountsFont.family())
         self.lblAccounts.setEnabled(checked)
         self.btnAccounts.setEnabled(checked)
-    def cbLogToggled(self, checked):
+    def slotCbLogToggled(self, checked):
         if checked:
             self.lblLogFont = QFont()
             self.lblLogFont.fromString(self.settings["Log"]["font"])
@@ -798,31 +798,31 @@ class FontOptions(QDialog):
         self.lblLog.setEnabled(checked)
         self.btnLog.setEnabled(checked)
 
-    def chooseApplication(self):
+    def slotChooseApplication(self):
         (self.lblApplicationFont, ok) = QFontDialog.getFont(self.lblApplicationFont)
         if ok:
             self.settings["Application"]["font"] = str(self.lblApplicationFont.toString())
-            self.cbApplicationToggled(self.cbApplication.isChecked())
-    def chooseQueue(self):
+            self.slotCbApplicationToggled(self.cbApplication.isChecked())
+    def slotChooseQueue(self):
         (self.lblQueueFont, ok) = QFontDialog.getFont(self.lblQueueFont)
         if ok:
             self.settings["Queue"]["font"] = str(self.lblQueueFont.toString())
-            self.cbQueueToggled(self.cbQueue.isChecked())
-    def chooseCollector(self):
+            self.slotCbQueueToggled(self.cbQueue.isChecked())
+    def slotChooseCollector(self):
         (self.lblCollectorFont, ok) = QFontDialog.getFont(self.lblCollectorFont)
         if ok:
             self.settings["Collector"]["font"] = str(self.lblCollectorFont.toString())
-            self.cbCollectorToggled(self.cbCollector.isChecked())
-    def chooseAccounts(self):
+            self.slotCbCollectorToggled(self.cbCollector.isChecked())
+    def slotChooseAccounts(self):
         (self.lblAccountsFont, ok) = QFontDialog.getFont(self.lblAccountsFont)
         if ok:
             self.settings["Accounts"]["font"] = str(self.lblAccountsFont.toString())
-            self.cbAccountsToggled(self.cbAccounts.isChecked())
-    def chooseLog(self):
+            self.slotCbAccountsToggled(self.cbAccounts.isChecked())
+    def slotChooseLog(self):
         (self.lblLogFont, ok) = QFontDialog.getFont(self.lblLogFont)
         if ok:
             self.settings["Log"]["font"] = str(self.lblLogFont.toString())
-            self.cbLogToggled(self.cbLog.isChecked())
+            self.slotCbLogToggled(self.cbLog.isChecked())
 
     def slotResetBtn(self):
         self.settings["ECF"]["enabled"]         = False
@@ -852,15 +852,15 @@ class FontOptions(QDialog):
 
     def dict2dialogState(self):
         self.cbApplication.setChecked(self.settings["Application"]["enabled"])
-        self.cbApplicationToggled(self.cbApplication.isChecked())
+        self.slotCbApplicationToggled(self.cbApplication.isChecked())
         self.cbQueue.setChecked(self.settings["Queue"]["enabled"])
-        self.cbQueueToggled(self.cbQueue.isChecked())
+        self.slotCbQueueToggled(self.cbQueue.isChecked())
         self.cbCollector.setChecked(self.settings["Collector"]["enabled"])
-        self.cbCollectorToggled(self.cbCollector.isChecked())
+        self.slotCbCollectorToggled(self.cbCollector.isChecked())
         self.cbAccounts.setChecked(self.settings["Accounts"]["enabled"])
-        self.cbAccountsToggled(self.cbAccounts.isChecked())
+        self.slotCbAccountsToggled(self.cbAccounts.isChecked())
         self.cbLog.setChecked(self.settings["Log"]["enabled"])
-        self.cbLogToggled(self.cbLog.isChecked())
+        self.slotCbLogToggled(self.cbLog.isChecked())
         self.cbEnableCustomFonts.setChecked(not self.settings["ECF"]["enabled"]) # needs to be toggled to grey out the subwidgets accordingly
         self.cbEnableCustomFonts.setChecked(self.settings["ECF"]["enabled"])
 
@@ -896,7 +896,7 @@ class FontOptions(QDialog):
         self.mainWindow.tabs["accounts"]["view"].setFont(self.accountsFont)
         self.mainWindow.tabs["guilog"]["text"].setFont(self.logFont)
         self.mainWindow.tabs["corelog"]["text"].setFont(self.logFont)
-        self.emit(SIGNAL("appFontChanged"))
+        self.emit(SIGNAL("slot_appFontChanged"))
 
     def appFontChanged(self):
         self.buttons.updateWhatsThisButton()
@@ -1217,24 +1217,24 @@ class WhatsThisOptions(QDialog):
 
         self.connect(self.okBtn,     SIGNAL("clicked()"), self.accept)
         self.connect(self.cancelBtn, SIGNAL("clicked()"), self.reject)
-        self.connect(self.resetBtn,  SIGNAL("clicked()"), self.resetBtnClicked)
-        self.connect(self.cbEnable,  SIGNAL("toggled(bool)"), self.cbEnableToggled)
-        self.connect(self.btnText,   SIGNAL("clicked()"),     self.chooseTextColor)
-        self.connect(self.btnBack,   SIGNAL("clicked()"),     self.chooseBackgroundColor)
+        self.connect(self.resetBtn,  SIGNAL("clicked()"), self.slotResetBtn)
+        self.connect(self.cbEnable,  SIGNAL("toggled(bool)"), self.slotCbEnableToggled)
+        self.connect(self.btnText,   SIGNAL("clicked()"),     self.slotChooseTextColor)
+        self.connect(self.btnBack,   SIGNAL("clicked()"),     self.slotChooseBackgroundColor)
         self.defaultSettings()
 
-    def resetBtnClicked(self):
+    def slotResetBtn(self):
         self.choosenColors = self.defaultColors
         self.setExampleColors(self.choosenColors[0], self.choosenColors[1])
 
-    def cbEnableToggled(self, enabled):
+    def slotCbEnableToggled(self, enabled):
         if enabled:
             self.setExampleColors(self.choosenColors[0], self.choosenColors[1])
         else:
             self.setExampleColors(self.defaultColors[0], self.defaultColors[1])
         self.resetBtn.setEnabled(enabled)
 
-    def chooseTextColor(self):
+    def slotChooseTextColor(self):
         initCol = QColor()
         initCol.setRgba(self.choosenColors[0])
         col = QColorDialog.getColor(initCol, self, self.btnText.text(), QColorDialog.ShowAlphaChannel | QColorDialog.DontUseNativeDialog)
@@ -1243,7 +1243,7 @@ class WhatsThisOptions(QDialog):
         self.choosenColors = (int(col.rgba()), self.choosenColors[1])
         self.setExampleColors(int(col.rgba()), None)
 
-    def chooseBackgroundColor(self):
+    def slotChooseBackgroundColor(self):
         initCol = QColor()
         initCol.setRgba(self.choosenColors[1])
         col = QColorDialog.getColor(initCol, self, self.btnBack.text(), QColorDialog.ShowAlphaChannel | QColorDialog.DontUseNativeDialog)

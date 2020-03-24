@@ -25,16 +25,16 @@ def connectSignals(self):
     """
         signal and slot stuff, yay!
     """
-    self.connect(self.connector,           SIGNAL("connectTimeout"), self.connectTimeout)
+    self.connect(self.connector,           SIGNAL("connectTimeout"), self.slotConnectTimeout)
     self.connect(self.connector,           SIGNAL("msgBoxError"), self.slotMsgBoxError)
     self.connect(self.clickNLoadForwarder, SIGNAL("msgBoxError"), self.slotMsgBoxError)
     self.connect(self.connWindow,          SIGNAL("saveConnection"), self.slotSaveConnection)
     self.connect(self.connWindow,          SIGNAL("saveAllConnections"), self.slotSaveAllConnections)
     self.connect(self.connWindow,          SIGNAL("removeConnection"), self.slotRemoveConnection)
-    self.connect(self.connWindow,          SIGNAL("connect"), self.slotConnect, Qt.QueuedConnection)
+    self.connect(self.connWindow,          SIGNAL("slot_connect"), self.slotConnect, Qt.QueuedConnection)
     self.connect(self.connWindow,          SIGNAL("quitConnWindow"), self.slotQuitConnWindow)
-    self.connect(self.fontOptions,         SIGNAL("appFontChanged"), self.slotAppFontChanged)
-    self.connect(self.mainWindow,          SIGNAL("connector"), self.slotShowConnector)
+    self.connect(self.fontOptions,         SIGNAL("slot_appFontChanged"), self.slotAppFontChanged)
+    self.connect(self.mainWindow,          SIGNAL("showConnector"), self.slotShowConnector)
     self.connect(self.mainWindow,          SIGNAL("mainWindowState"), self.slotMainWindowState, Qt.QueuedConnection)
     self.connect(self.mainWindow,          SIGNAL("mainWindowPaintEvent"), self.slotMainWindowPaintEvent, Qt.QueuedConnection)
     self.connect(self.mainWindow,          SIGNAL("showCorePermissions"), self.slotShowCorePermissions)
@@ -88,7 +88,7 @@ def connectSignals(self):
     self.connect(self.mainWindow,          SIGNAL("mainWindowClose"), self.slotMainWindowClose)
 
     self.connect(self.mainWindow.mactions["exit"], SIGNAL("triggered()"), self.slotQuit)
-    self.connect(self.mainWindow.captchaDialog, SIGNAL("done"), self.slotCaptchaDone)
+    self.connect(self.mainWindow.captchaDialog, SIGNAL("captchaDone"), self.slotCaptchaDone)
     self.connect(self.mainWindow.newPackDock, SIGNAL("newPackDockPaintEvent"), self.slotActivateNewPackDock, Qt.QueuedConnection)
     self.connect(self.mainWindow.newPackDock, SIGNAL("newPackDockClosed"), self.slotNewPackDockClosed)
     self.connect(self.mainWindow.newPackDock, SIGNAL("topLevelChanged(bool)"), self.slotNewPackDockTopLevelChanged, Qt.QueuedConnection)

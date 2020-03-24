@@ -37,7 +37,7 @@ class AccountModel(QAbstractItemModel):
         self.cols = 4
         self.mutex = QMutex()
         self.timer = QTimer()
-        self.timer.connect(self.timer, SIGNAL("timeout()"), self.reloadData)
+        self.timer.connect(self.timer, SIGNAL("timeout()"), self.slotReloadData)
 
     def getSelectedIndexes(self):
         """
@@ -46,7 +46,7 @@ class AccountModel(QAbstractItemModel):
         QMutexLocker(self.mutex)
         return self.view.selectedIndexes()
 
-    def reloadData(self, force=False):
+    def slotReloadData(self, force=False):
         """
             reload account list
         """

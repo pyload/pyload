@@ -81,19 +81,19 @@ class ConnectionManager(QDialog):
         self.connectSignals()
 
     def connectSignals(self):
-        self.connect(self,            SIGNAL("setConnections"), self.setConnections)
-        self.connect(self,            SIGNAL("setCurrentItem"), self.slotSetCurrentItem)
+        self.connect(self,            SIGNAL("setConnections"),       self.slotSetConnections)
+        self.connect(self,            SIGNAL("setCurrentConnection"), self.slotSetCurrentConnection)
         self.connect(self.btnNew,     SIGNAL("clicked()"), self.slotNew)
         self.connect(self.btnEdit,    SIGNAL("clicked()"), self.slotEdit)
         self.connect(self.btnDefault, SIGNAL("clicked()"), self.slotDefault)
         self.connect(self.btnRemove,  SIGNAL("clicked()"), self.slotRemove)
         self.connect(self.btnConnect, SIGNAL("clicked()"), self.slotConnect)
-        self.connect(self.edit,       SIGNAL("save"),      self.slotSave)
-        self.connect(self.connList,   SIGNAL("saveAll"),   self.slotSaveAll)
+        self.connect(self.edit,       SIGNAL("slot_save"),      self.slotSave)
+        self.connect(self.connList,   SIGNAL("slot_saveAll"),   self.slotSaveAll)
         if not self.disable_connect:
             self.connect(self.connList,   SIGNAL("itemDoubleClicked(QListWidgetItem *)"), self.slotItemDoubleClicked)
 
-    def setConnections(self, connections):
+    def slotSetConnections(self, connections):
         self.connList.clear()
         for conn in connections:
             item = QListWidgetItem()
@@ -106,7 +106,7 @@ class ConnectionManager(QDialog):
             else:
                 self.connList.setCurrentRow(0)
 
-    def slotSetCurrentItem(self, l):
+    def slotSetCurrentConnection(self, l):
         id_ = l["id"]
         count = self.connList.count()
         for i in range(count):
@@ -147,7 +147,7 @@ class ConnectionManager(QDialog):
         item = self.connList.currentItem()
         data = item.data(Qt.UserRole).toPyObject()
         data = self.cleanDict(data)
-        self.emit(SIGNAL("connect"), data)
+        self.emit(SIGNAL("slot_connect"), data)
 
     @classmethod
     def cleanDict(self, data):
@@ -193,7 +193,7 @@ class ConnectionManager(QDialog):
                 break
 
     def slotItemDoubleClicked(self, item):
-        # this fixes a segfault that happens when emitting "connect" directly from here
+        # this fixes a segfault that happens when emitting "slot_connect" directly from here
         QTimer.singleShot(0, self.slotConnect)
 
     def slotDefault(self):
@@ -239,7 +239,7 @@ class ConnectionManager(QDialog):
 
         def dropEvent(self, event):
             QListWidget.dropEvent(self, event)
-            self.emit(SIGNAL("saveAll"))
+            self.emit(SIGNAL("slot_saveAll"))
 
 
     class EditWindow(QDialog):
@@ -445,5 +445,5 @@ class ConnectionManager(QDialog):
         def slotDone(self):
             data = self.getData()
             self.hide()
-            self.emit(SIGNAL("save"), data)
+            self.emit(SIGNAL("slot_save"), data)
 

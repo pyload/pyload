@@ -83,10 +83,10 @@ class AdvancedSelect(QWidget):
         self.setLayout(vbox)
 
         self.connect(self.clearBtn, SIGNAL("clicked()"), self.patternEdit.clearEditText)
-        self.connect(self.selectBtn, SIGNAL("clicked()"), self.addToHistory)
-        self.connect(self.deselectBtn, SIGNAL("clicked()"), self.addToHistory)
+        self.connect(self.selectBtn, SIGNAL("clicked()"), self.slotAddToHistory)
+        self.connect(self.deselectBtn, SIGNAL("clicked()"), self.slotAddToHistory)
 
-    def addToHistory(self):
+    def slotAddToHistory(self):
         text = self.patternEdit.currentText()
         if not text.isEmpty():
             if self.patternEdit.findText(text, Qt.MatchFixedString | Qt.MatchCaseSensitive) == -1:

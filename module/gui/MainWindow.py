@@ -73,11 +73,11 @@ class MainWindow(QMainWindow):
         self.setTabPosition(Qt.RightDockWidgetArea, QTabWidget.North)
         self.newPackDock = NewPackageDock(self.appIconSet)
         self.addDockWidget(Qt.RightDockWidgetArea, self.newPackDock)
-        self.connect(self.newPackDock, SIGNAL("done"), self.slotAddPackage)
+        self.connect(self.newPackDock, SIGNAL("addPackageDone"), self.slotAddPackage)
         self.connect(self.newPackDock, SIGNAL("parseUri"), self.slotParseUri)
         self.newLinkDock = NewLinkDock(self.appIconSet)
         self.addDockWidget(Qt.RightDockWidgetArea, self.newLinkDock)
-        self.connect(self.newLinkDock, SIGNAL("done"), self.slotAddLinksToPackage)
+        self.connect(self.newLinkDock, SIGNAL("addLinksToPackageDone"), self.slotAddLinksToPackage)
         self.connect(self.newLinkDock, SIGNAL("parseUri"), self.slotParseUri)
         self.tabifyDockWidget(self.newPackDock, self.newLinkDock)
         self.captchaDialog = CaptchaDialog()
@@ -1109,7 +1109,7 @@ class MainWindow(QMainWindow):
             connection manager action triggered
             let main to the stuff
         """
-        self.emit(SIGNAL("connector"))
+        self.emit(SIGNAL("showConnector"))
 
     def slotShowCorePermissions(self):
         """
@@ -1345,12 +1345,12 @@ class MainWindow(QMainWindow):
     def slotTabChanged(self, index):
         # currentIndex
         if index == 3:
-            self.tabs["accounts"]["view"].model.reloadData()
+            self.tabs["accounts"]["view"].model.slotReloadData()
             self.tabs["accounts"]["view"].model.timer.start(2000)
         else:
             self.tabs["accounts"]["view"].model.timer.stop()
         if index == 5:
-            self.tabs["settings"]["w"].loadConfig()
+            self.tabs["settings"]["w"].slotLoadConfig()
         if index == 1:
             if self.newPackDock.widget.destAutoSelect.isChecked():
                 self.newPackDock.widget.destQueue.setChecked(True)
@@ -1375,7 +1375,7 @@ class MainWindow(QMainWindow):
         self.accountEdit = AccountEdit.newAccount(self, types)
 
         #TODO make more easy n1, n2, n3
-        def save(data):
+        def slotSave(data):
             if data["password"]:
                 self.accountEdit.close()
                 n1 = data["acctype"]
@@ -1383,7 +1383,7 @@ class MainWindow(QMainWindow):
                 n3 = data["password"]
                 self.connector.proxy.updateAccount(n1, n2, n3, None)
 
-        self.accountEdit.connect(self.accountEdit, SIGNAL("done"), save)
+        self.accountEdit.connect(self.accountEdit, SIGNAL("accountEditSave"), slotSave)
         self.tabw.setCurrentIndex(3)
         self.accountEdit.exec_()
 
@@ -1405,14 +1405,14 @@ class MainWindow(QMainWindow):
         #TODO make more easy n1, n2, n3
         #TODO reload accounts tab after insert of edit account
         #TODO if account does not exist give error
-        def save(data):
+        def slotSave(data):
             self.accountEdit.close()
             n1 = data["acctype"]
             n2 = data["login"]
             n3 = data["password"]
             self.connector.proxy.updateAccount(n1, n2, n3, None)
 
-        self.accountEdit.connect(self.accountEdit, SIGNAL("done"), save)
+        self.accountEdit.connect(self.accountEdit, SIGNAL("accountEditSave"), slotSave)
         self.accountEdit.exec_()
 
     def slotRemoveAccount(self):

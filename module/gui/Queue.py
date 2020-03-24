@@ -42,7 +42,7 @@ class QueueModel(CollectorModel):
         self.wait_dict = {}
 
         self.updater = self.QueueUpdater(self.interval)
-        self.connect(self.updater, SIGNAL("update()"), self.update)
+        self.connect(self.updater, SIGNAL("update()"), self.slotUpdate)
 
     class QueueUpdater(QObject):
         """
@@ -158,9 +158,9 @@ class QueueModel(CollectorModel):
         fileCount = 0
         for p in self._data:
             fileCount += len(p.children)
-        self.emit(SIGNAL("updateCount"), packageCount, fileCount)
+        self.emit(SIGNAL("statusUpdateCount"), packageCount, fileCount)
 
-    def update(self):
+    def slotUpdate(self):
         """
             update slot for download status updating
         """
@@ -198,7 +198,7 @@ class QueueModel(CollectorModel):
         for p in self._data:
             fileCount += len(p.children)
         locker.unlock()
-        self.emit(SIGNAL("updateCount"), packageCount, fileCount)
+        self.emit(SIGNAL("statusUpdateCount"), packageCount, fileCount)
 
     def headerData(self, section, orientation, role=Qt.DisplayRole):
         """
@@ -447,9 +447,9 @@ class QueueView(CollectorView):
         self.header().setContextMenuPolicy(Qt.CustomContextMenu)
         self.header().customContextMenuRequested.connect(self.headerContextMenu)
 
-        self.connect(self.buttonMsgHideTimer, SIGNAL("timeout()"), self.buttonMsgHideTimerTimeout)
-        self.connect(self, SIGNAL("dropEvent"), self.model.slotDropEvent)
-        self.connect(self, SIGNAL("collapsed(const QModelIndex &)"), self.packageCollapsed)
+        self.connect(self.buttonMsgHideTimer, SIGNAL("timeout()"), self.slotButtonMsgHideTimerTimeout)
+        self.connect(self, SIGNAL("slot_dropEvent"), self.model.slotDropEvent)
+        self.connect(self, SIGNAL("collapsed(const QModelIndex &)"), self.slotPackageCollapsed)
 
         self.delegate = QueueProgressBarDelegate(self, self.model)
         self.setItemDelegateForColumn(5, self.delegate)
@@ -458,7 +458,7 @@ class QueueView(CollectorView):
         self.buttonMsgHideTimer.stop()
         self.emit(SIGNAL("queueMsgShow"), msg, error)
 
-    def buttonMsgHideTimerTimeout(self):
+    def slotButtonMsgHideTimerTimeout(self):
         self.emit(SIGNAL("queueMsgHide"))
 
 class QueueProgressBarDelegate(QItemDelegate):

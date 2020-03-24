@@ -85,18 +85,18 @@ class CaptchaDialog(QDialog):
         self.connect(self.closeBtn,  SIGNAL("clicked()"),       self.slotClose)
         self.imgLabel.mousePressEvent = self.slotSubmitPos
 
-        self.connect(self, SIGNAL("setTask"), self.setTask)
+        self.connect(self, SIGNAL("setCaptchaTask"), self.slotSetTask)
         self.connect(self, SIGNAL("setMovie(QMovie *)"), self.imgLabel, SLOT("setMovie(QMovie *)"))
-        self.connect(self, SIGNAL("show"), self.slotShow)
+        self.connect(self, SIGNAL("showCaptcha"), self.slotShow)
         self.connect(self, SIGNAL("slotShow_continue"), self.slotShow_continue, Qt.QueuedConnection)
-        self.connect(self, SIGNAL("setFree"), self.setFree)
+        self.connect(self, SIGNAL("setCaptchaFree"), self.slotSetFree)
 
         self.setMinimumWidth(250)
 
     def isFree(self):
         return not self.processing
 
-    def setTask(self, tid, data, resultType):
+    def slotSetTask(self, tid, data, resultType):
         self.processing = True
         self.currentID = tid
         self.currentResultType = resultType
@@ -154,7 +154,7 @@ class CaptchaDialog(QDialog):
             self.ignoreBtn.hide()
             self.closeBtn.show()
 
-    def setFree(self):
+    def slotSetFree(self):
         self.currentID = None
         self.currentResultType = None
         self.hide()
@@ -216,7 +216,7 @@ class CaptchaDialog(QDialog):
         tid = self.currentID
         self.currentID = None
         self.currentResultType = None
-        self.emit(SIGNAL("done"), tid, text)
+        self.emit(SIGNAL("captchaDone"), tid, text)
         self.hide()
         self.processing = False
 
@@ -228,7 +228,7 @@ class CaptchaDialog(QDialog):
             tid = self.currentID
             self.currentID = None
             self.currentResultType = None
-            self.emit(SIGNAL("done"), tid, p)
+            self.emit(SIGNAL("captchaDone"), tid, p)
             self.hide()
             self.processing = False
 
