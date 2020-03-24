@@ -656,22 +656,28 @@ class MainWindow(QMainWindow):
         self.tabs["collector"]["view"].setContextMenuPolicy(Qt.CustomContextMenu)
 
         #gui log
+        self.tabs["guilog"]["cb"] = QCheckBox(_("Auto-scroll"))
+        self.tabs["guilog"]["cb"].setChecked(True)
         self.tabs["guilog"]["l"] = QGridLayout()
         self.tabs["guilog"]["w"].setLayout(self.tabs["guilog"]["l"])
         self.tabs["guilog"]["text"] = QTextEdit()
         self.tabs["guilog"]["text"].setLineWrapMode(QTextEdit.NoWrap)
-        self.tabs["guilog"]["text"].logOffset = 0
-        self.tabs["guilog"]["text"].setReadOnly(True)
+        self.tabs["guilog"]["text"].setTextInteractionFlags(self.tabs["guilog"]["text"].textInteractionFlags() & ~Qt.TextEditable)
         self.tabs["guilog"]["l"].addWidget(self.tabs["guilog"]["text"])
+        self.tabs["guilog"]["l"].addWidget(self.tabs["guilog"]["cb"])
+        self.tabs["guilog"]["text"].logOffset = 0
 
         #core log
+        self.tabs["corelog"]["cb"] = QCheckBox(_("Auto-scroll"))
+        self.tabs["corelog"]["cb"].setChecked(True)
         self.tabs["corelog"]["l"] = QGridLayout()
         self.tabs["corelog"]["w"].setLayout(self.tabs["corelog"]["l"])
         self.tabs["corelog"]["text"] = QTextEdit()
         self.tabs["corelog"]["text"].setLineWrapMode(QTextEdit.NoWrap)
-        self.tabs["corelog"]["text"].logOffset = 0
-        self.tabs["corelog"]["text"].setReadOnly(True)
+        self.tabs["corelog"]["text"].setTextInteractionFlags(self.tabs["corelog"]["text"].textInteractionFlags() & ~Qt.TextEditable)
         self.tabs["corelog"]["l"].addWidget(self.tabs["corelog"]["text"])
+        self.tabs["corelog"]["l"].addWidget(self.tabs["corelog"]["cb"])
+        self.tabs["corelog"]["text"].logOffset = 0
 
         #accounts
         self.tabs["accounts"]["view"] = AccountView(self.corePermissions, connector)

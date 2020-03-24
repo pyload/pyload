@@ -286,7 +286,7 @@ class main(QObject):
         self.connWindow = ConnectionManager(self.connManagerDisableConnect)
         self.clickNLoadForwarder = ClickNLoadForwarder()
         self.mainloop = self.Loop(self)
-        self.connectSignals()
+        self.connectSignals(first)
 
         conn = self.refreshConnections(self.cmdLineConnection)
         self.connData = None
@@ -543,8 +543,8 @@ class main(QObject):
     def setCorePermissions(self):
         self.mainWindow.setCorePermissions(self.corePermissions)
 
-    def connectSignals(self):
-        return _pyLoadGui.connectSignals(self)
+    def connectSignals(self, first):
+        return _pyLoadGui.connectSignals(self, first)
 
     def slotNewPackDockTopLevelChanged(self, floating):
         """
@@ -1414,13 +1414,14 @@ class main(QObject):
             self.refreshGuiLogFirst = False
         for line in lines:
             self.guiLogAppendSGL.emit(line.strip("\n"))
-        cursor = self.mainWindow.tabs["guilog"]["text"].textCursor()
-        cursor.movePosition(QTextCursor.End, QTextCursor.MoveAnchor)
-        cursor.movePosition(QTextCursor.StartOfLine, QTextCursor.MoveAnchor)
-        self.mainWindow.tabs["guilog"]["text"].setTextCursor(cursor)
 
     def slotGuiLogAppend(self, text):
         self.mainWindow.tabs["guilog"]["text"].append(text)
+        if self.mainWindow.tabs["guilog"]["cb"].isChecked():
+            cursor = self.mainWindow.tabs["guilog"]["text"].textCursor()
+            cursor.movePosition(QTextCursor.End, QTextCursor.MoveAnchor)
+            cursor.movePosition(QTextCursor.StartOfLine, QTextCursor.MoveAnchor)
+            self.mainWindow.tabs["guilog"]["text"].setTextCursor(cursor)
 
     def refreshCoreLog(self, first):
         """
@@ -1452,13 +1453,14 @@ class main(QObject):
                 self.mainWindow.tabs["corelog"]["text"].logOffset += len(lines)
         for line in lines:
             self.coreLogAppendSGL.emit(line.strip("\n"))
-        cursor = self.mainWindow.tabs["corelog"]["text"].textCursor()
-        cursor.movePosition(QTextCursor.End, QTextCursor.MoveAnchor)
-        cursor.movePosition(QTextCursor.StartOfLine, QTextCursor.MoveAnchor)
-        self.mainWindow.tabs["corelog"]["text"].setTextCursor(cursor)
 
     def slotCoreLogAppend(self, text):
         self.mainWindow.tabs["corelog"]["text"].append(text)
+        if self.mainWindow.tabs["corelog"]["cb"].isChecked():
+            cursor = self.mainWindow.tabs["corelog"]["text"].textCursor()
+            cursor.movePosition(QTextCursor.End, QTextCursor.MoveAnchor)
+            cursor.movePosition(QTextCursor.StartOfLine, QTextCursor.MoveAnchor)
+            self.mainWindow.tabs["corelog"]["text"].setTextCursor(cursor)
 
     def loadAllConnections(self):
         """

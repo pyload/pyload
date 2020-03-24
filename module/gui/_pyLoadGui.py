@@ -27,12 +27,13 @@ from os.path import join
 
 from module.lib.SafeEval import const_eval as literal_eval
 
-def connectSignals(self):
+def connectSignals(self, first):
     """
         signal and slot stuff, yay!
     """
-    self.guiLogAppendSGL.connect(self.slotGuiLogAppend, Qt.QueuedConnection)
-    self.coreLogAppendSGL.connect(self.slotCoreLogAppend, Qt.QueuedConnection)
+    if first:
+        self.guiLogAppendSGL.connect(self.slotGuiLogAppend, Qt.QueuedConnection)
+        self.coreLogAppendSGL.connect(self.slotCoreLogAppend, Qt.QueuedConnection)
     self.connector.connectTimeoutSGL.connect(self.slotConnectTimeout)
     self.connector.msgBoxErrorSGL.connect(self.slotMsgBoxError)
     self.clickNLoadForwarder.msgBoxErrorSGL.connect(self.slotMsgBoxError)
