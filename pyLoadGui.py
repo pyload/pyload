@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 """
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -17,6 +16,7 @@
 
     @author: mkaay
 """
+
 CURRENT_VERSION = '0.4.20'
 CURRENT_INTERNAL_VERSION = 'Development version'         # YYYY-MM-DD, append a lowercase letter for a new version on the same day
 

@@ -15,6 +15,7 @@
 
     @author: mkaay
 """
+
 from __future__ import with_statement
 
 from module.gui.PyQtVersion import USE_PYQT5
