@@ -15,8 +15,8 @@
     along with this program; if not, see <http://www.gnu.org/licenses/>.
 """
 
-from module.gui import USE_QT5
-if USE_QT5:
+from module.gui.PyQtVersion import USE_PYQT5
+if USE_PYQT5:
     from PyQt5.QtGui import *
     from PyQt5.QtCore import *
     from PyQt5.QtWidgets import *
@@ -61,6 +61,7 @@ def connectSignals(self):
     self.mainWindow.showColorFixOptionsSGL.connect(self.slotShowColorFixOptions)
     self.mainWindow.showWhatsThisOptionsSGL.connect(self.slotShowWhatsThisOptions)
     self.mainWindow.showLanguageOptionsSGL.connect(self.slotShowLanguageOptions)
+    self.mainWindow.showPyQtVersionOptionsSGL.connect(self.slotShowPyQtVersionOptions)
     self.mainWindow.reloadQueueSGL.connect(self.slotReloadQueue)
     self.mainWindow.reloadCollectorSGL.connect(self.slotReloadCollector)
     self.mainWindow.addPackageSGL.connect(self.slotAddPackage)
@@ -245,6 +246,7 @@ def saveWindowToConfig(self):
     visibilitySpeedLimit = str(QByteArray(str(self.mainWindow.actions["speedlimit_enabled"].isVisible())).toBase64())
     visibilityMaxParallelDownloads = str(QByteArray(str(self.mainWindow.actions["maxparalleldownloads_label"].isVisible())).toBase64())
     language = str(self.lang)
+    pyqtVersion = str(self.pyqtVersionOption)
     stateNode = mainWindowNode.toElement().elementsByTagName("state").item(0)
     geoNode = mainWindowNode.toElement().elementsByTagName("geometry").item(0)
     geoUnmaximizedNode = mainWindowNode.toElement().elementsByTagName("geometryUnmaximized").item(0)
@@ -257,6 +259,7 @@ def saveWindowToConfig(self):
     visibilitySpeedLimitNode = mainWindowNode.toElement().elementsByTagName("visibilitySpeedLimit").item(0)
     visibilityMaxParallelDownloadsNode = mainWindowNode.toElement().elementsByTagName("visibilityMaxParallelDownloads").item(0)
     languageNode = self.parser.xml.elementsByTagName("language").item(0)
+    pyqtVersionNode = self.parser.xml.elementsByTagName("pyqtVersion").item(0)
     newStateNode = self.parser.xml.createTextNode(state)
     newGeoNode = self.parser.xml.createTextNode(geo)
     newGeoUnmaximizedNode = self.parser.xml.createTextNode(geoUnmaximized)
@@ -269,6 +272,7 @@ def saveWindowToConfig(self):
     newVisibilitySpeedLimitNode = self.parser.xml.createTextNode(visibilitySpeedLimit)
     newVisibilityMaxParallelDownloadsNode = self.parser.xml.createTextNode(visibilityMaxParallelDownloads)
     newLanguageNode = self.parser.xml.createTextNode(language)
+    newPyqtVersionNode = self.parser.xml.createTextNode(pyqtVersion)
     stateNode.removeChild(stateNode.firstChild())
     stateNode.appendChild(newStateNode)
     geoNode.removeChild(geoNode.firstChild())
@@ -293,6 +297,8 @@ def saveWindowToConfig(self):
     visibilityMaxParallelDownloadsNode.appendChild(newVisibilityMaxParallelDownloadsNode)
     languageNode.removeChild(languageNode.firstChild())
     languageNode.appendChild(newLanguageNode)
+    pyqtVersionNode.removeChild(pyqtVersionNode.firstChild())
+    pyqtVersionNode.appendChild(newPyqtVersionNode)
     self.parser.saveData()
     self.log.debug4("main.saveWindowToConfig: done")
 
@@ -457,6 +463,14 @@ def loadWindowFromConfig(self):
         load window geometry and state from the config file
         and show main window and docks
     """
+    rootNode = self.parser.xml.elementsByTagName("root").item(0)
+    if rootNode.isNull():
+        return
+    nodes = self.parser.parseNode(rootNode, "dict")
+    if not nodes.get("pyqtVersion"):
+        rootNode.appendChild(self.parser.xml.createElement("pyqtVersion"))
+    self.parser.parseNode(rootNode, "dict")   # reparse with the new nodes (if any)
+
     mainWindowNode = self.parser.xml.elementsByTagName("mainWindow").item(0)
     if mainWindowNode.isNull():
         return

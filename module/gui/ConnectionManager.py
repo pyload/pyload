@@ -16,8 +16,8 @@
     @author: mkaay
 """
 
-from module.gui import USE_QT5
-if USE_QT5:
+from module.gui.PyQtVersion import USE_PYQT5
+if USE_PYQT5:
     from PyQt5.QtGui import *
     from PyQt5.QtCore import *
     from PyQt5.QtWidgets import *
@@ -165,7 +165,7 @@ class ConnectionManager(QDialog):
 
     @classmethod
     def cleanDict(self, data):
-        if USE_QT5:
+        if USE_PYQT5:
             return data
         else:
             tmp = {}
@@ -238,7 +238,7 @@ class ConnectionManager(QDialog):
 
     @classmethod
     def pyObj(self, obj):
-        if USE_QT5:
+        if USE_PYQT5:
             return obj
         else:
             return obj.toPyObject()

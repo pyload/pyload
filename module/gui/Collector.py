@@ -16,8 +16,8 @@
     @author: mkaay
 """
 
-from module.gui import USE_QT5
-if USE_QT5:
+from module.gui.PyQtVersion import USE_PYQT5
+if USE_PYQT5:
     from PyQt5.QtGui import *
     from PyQt5.QtCore import *
     from PyQt5.QtWidgets import *
@@ -775,7 +775,7 @@ class CollectorModel(QAbstractItemModel):
         elif role == Qt.ToolTipRole and self.showToolTips:
             rect = self.view.visualRect(index)
             if rect.isValid():
-                if USE_QT5:
+                if USE_PYQT5:
                     txt = self.data(index, Qt.DisplayRole).value()
                 else:
                     txt = self.data(index, Qt.DisplayRole).toString()
@@ -1473,7 +1473,7 @@ class CollectorView(QTreeView):
         """
         menu = QMenu()
         for i in range(0, self.model.columnCount()):
-            if USE_QT5:
+            if USE_PYQT5:
                 name = self.model.headerData(i, Qt.Horizontal).value()
             else:
                 name = unicode(self.model.headerData(i, Qt.Horizontal).toString())
@@ -1486,7 +1486,7 @@ class CollectorView(QTreeView):
         act = menu.exec_(self.mapToGlobal(pos))
         if act:
             for columnToToggle in range(0, self.model.columnCount()):
-                if USE_QT5:
+                if USE_PYQT5:
                     htext = self.model.headerData(columnToToggle, Qt.Horizontal).value()
                 else:
                     htext = self.model.headerData(columnToToggle, Qt.Horizontal).toString()

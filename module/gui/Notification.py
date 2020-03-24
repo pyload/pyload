@@ -22,8 +22,8 @@ try:
 except ImportError:
     havePynotify = False
 
-from module.gui import USE_QT5
-if USE_QT5:
+from module.gui.PyQtVersion import USE_PYQT5
+if USE_PYQT5:
     from PyQt5.QtGui import *
     from PyQt5.QtCore import *
     from PyQt5.QtWidgets import *

@@ -2,8 +2,8 @@
 
 import logging
 
-from module.gui import USE_QT5
-if USE_QT5:
+from module.gui.PyQtVersion import USE_PYQT5
+if USE_PYQT5:
     from PyQt5.QtGui import *
     from PyQt5.QtCore import *
     from PyQt5.QtWidgets import *
@@ -1519,6 +1519,81 @@ class LanguageOptions(QDialog):
         self.combo.clear()
         self.combo.addItems(self.settings["languageList"])
         self.combo.setCurrentIndex(self.combo.findText(self.settings["language"]))
+
+    def appFontChanged(self):
+        self.buttons.updateWhatsThisButton()
+
+class PyQtVersionOptions(QDialog):
+    """
+        pyqt version options dialog
+    """
+    def __init__(self, parent):
+        QDialog.__init__(self, parent)
+        self.log = logging.getLogger("guilog")
+
+        self.version = None
+        self.lastFont = None
+
+        self.setAttribute(Qt.WA_DeleteOnClose, False)
+        self.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
+        self.setWindowTitle(_("Options"))
+        self.setWindowIcon(QIcon(join(pypath, "icons", "logo.png")))
+
+        self.version4Rb = QRadioButton(_("PyQt4"))
+        self.version5Rb = QRadioButton(_("PyQt5"))
+        self.noteLbl = QLabel()
+        note = "<i>" + _("Takes effect on next application start.") + "</i>"
+        self.noteLbl.setText(note)
+
+        vboxRb = QVBoxLayout()
+        vboxRb.addWidget(self.version4Rb)
+        vboxRb.addWidget(self.version5Rb)
+        vboxGp = QVBoxLayout()
+        vboxGp.addLayout(vboxRb)
+        vboxGp.addWidget(self.noteLbl)
+
+        self.gb = QGroupBox(_("PyQt Version") + "     ")
+        self.gb.setLayout(vboxGp)
+
+        self.buttons = WtDialogButtonBox(Qt.Horizontal, self)
+        self.buttons.hideWhatsThisButton()
+        self.okBtn     = self.buttons.addButton(QDialogButtonBox.Ok)
+        self.cancelBtn = self.buttons.addButton(QDialogButtonBox.Cancel)
+        self.buttons.button(QDialogButtonBox.Ok).setText(_("OK"))
+        self.buttons.button(QDialogButtonBox.Cancel).setText(_("Cancel"))
+
+        vbox = QVBoxLayout()
+        vbox.addWidget(self.gb)
+        vbox.addLayout(self.buttons.layout())
+        self.setLayout(vbox)
+
+        self.setMinimumWidth(250)
+        self.adjustSize()
+
+        self.okBtn.clicked.connect(self.accept)
+        self.cancelBtn.clicked.connect(self.reject)
+
+    def exec_(self):
+        # It does not resize very well when the font size has changed
+        if self.font() != self.lastFont:
+            self.lastFont = self.font()
+            self.adjustSize()
+            self.resize(self.width(), 1)
+        return QDialog.exec_(self)
+
+    def dialogState2version(self):
+        if self.version4Rb.isChecked():
+            self.version = 4
+        else:
+            self.version = 5
+
+    def version2dialogState(self):
+        if self.version == 4:
+            self.version4Rb.setChecked(True)
+            self.version5Rb.setChecked(False)
+        else:
+            self.version5Rb.setChecked(True)
+            self.version4Rb.setChecked(False)
 
     def appFontChanged(self):
         self.buttons.updateWhatsThisButton()

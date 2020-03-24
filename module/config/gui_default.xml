@@ -35,4 +35,5 @@
         <lastAddContainerDir></lastAddContainerDir>
     </mainWindow>
     <language>en</language>
+    <pyqtVersion></pyqtVersion>
 </root>

@@ -16,8 +16,8 @@
     @author: mkaay
 """
 
-from module.gui import USE_QT5
-if USE_QT5:
+from module.gui.PyQtVersion import USE_PYQT5
+if USE_PYQT5:
     from PyQt5.QtGui import *
     from PyQt5.QtCore import *
     from PyQt5.QtWidgets import *
@@ -146,7 +146,7 @@ class OverviewDelegate(QItemDelegate):
         #if option.state & QStyle.State_Selected:
         #    painter.fillRect(option.rect, option.palette.color(QPalette.Highlight))
 
-        if USE_QT5:
+        if USE_PYQT5:
             packagename = unicode(index.data(OverviewModel.PackageName))
             partsf = unicode(index.data(OverviewModel.PartsFinished))
             parts = unicode(index.data(OverviewModel.Parts))

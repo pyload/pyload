@@ -19,8 +19,8 @@
 import logging
 import re
 
-from module.gui import USE_QT5
-if USE_QT5:
+from module.gui.PyQtVersion import USE_PYQT5
+if USE_PYQT5:
     from PyQt5.QtGui import *
     from PyQt5.QtCore import *
     from PyQt5.QtWidgets import *
@@ -102,6 +102,7 @@ class MainWindow(QMainWindow):
     showWhatsThisOptionsSGL              = pyqtSignal()
     showOtherOptionsSGL                  = pyqtSignal()
     showLanguageOptionsSGL               = pyqtSignal()
+    showPyQtVersionOptionsSGL            = pyqtSignal()
 
     def time_msec(self):
         return int((datetime.utcnow() - datetime(1970, 1, 1)).total_seconds() * 1000 - self.time_msec_init)
@@ -255,6 +256,7 @@ class MainWindow(QMainWindow):
                          "whatsthis": QAction(_("What's This"), self.menus["options"]),
                          "other": QAction(_("Other"), self.menus["options"]),
                          "language": QAction(_("Language"), self.menus["options"]),
+                         "pyqtversion": QAction(_("PyQt"), self.menus["options"]),
                          "reload": QAction(_("Reload Queue And Collector Data From Server"), self.menus["view"]),
                          "showcaptcha": QAction(_("Show Captcha"), self.menus["view"]),
                          "showtoolbar": QAction(_("Show Toolbar"), self.menus["view"]),
@@ -292,6 +294,7 @@ class MainWindow(QMainWindow):
         self.menus["options"].addAction(self.mactions["other"])
         self.menus["options"].addSeparator()
         self.menus["options"].addAction(self.mactions["language"])
+        self.menus["options"].addAction(self.mactions["pyqtversion"])
         self.menus["view"].addAction(self.mactions["reload"])
         self.menus["view"].addAction(self.mactions["showcaptcha"])
         self.menus["view"].addSeparator()
@@ -351,6 +354,7 @@ class MainWindow(QMainWindow):
         self.mactions["whatsthis"].triggered.connect(self.slotShowWhatsThisOptions)
         self.mactions["other"].triggered.connect(self.slotShowOtherOptions)
         self.mactions["language"].triggered.connect(self.slotShowLanguageOptions)
+        self.mactions["pyqtversion"].triggered.connect(self.slotShowPyQtVersionOptions)
         self.mactions["manager"].triggered.connect(self.slotShowConnector)
         self.mactions["coreperms"].triggered.connect(self.slotShowCorePermissions)
         self.mactions["quitcore"].triggered.connect(self.slotQuitCore)
@@ -1233,7 +1237,7 @@ class MainWindow(QMainWindow):
             "RSDF (%s)" % "*.rsdf",
             "Text Files (%s)" % "*.txt"
         ])
-        if USE_QT5:
+        if USE_PYQT5:
             (fileNames, dummy) = QFileDialog.getOpenFileNames(self, "Open Container", self.lastAddContainerDir, typeStr)
         else:
             fileNames = QFileDialog.getOpenFileNames(self, "Open Container", self.lastAddContainerDir, typeStr)
@@ -1579,5 +1583,8 @@ class MainWindow(QMainWindow):
 
     def slotShowLanguageOptions(self):
         self.showLanguageOptionsSGL.emit()
+
+    def slotShowPyQtVersionOptions(self):
+        self.showPyQtVersionOptionsSGL.emit()
 
 

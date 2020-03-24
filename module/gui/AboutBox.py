@@ -15,8 +15,8 @@
     along with this program; if not, see <http://www.gnu.org/licenses/>.
 """
 
-from module.gui import USE_QT5
-if USE_QT5:
+from module.gui.PyQtVersion import USE_PYQT5
+if USE_PYQT5:
     from PyQt5.QtGui import *
     from PyQt5.QtCore import *
     from PyQt5.QtWidgets import *
@@ -102,7 +102,7 @@ class AboutBox(QDialog):
     def exec_(self, version, internalversion):
         import platform
         import struct
-        if USE_QT5:
+        if USE_PYQT5:
             from PyQt5.QtCore import QT_VERSION_STR
         else:
             from PyQt4.QtCore import QT_VERSION_STR
@@ -121,7 +121,7 @@ class AboutBox(QDialog):
         txt3 += "\nPython version: " + platform.python_version() + " (%dbit)" % (struct.calcsize("P") * 8)
         txt3 += "\nQt version: " + QT_VERSION_STR
         try:
-            if USE_QT5:
+            if USE_PYQT5:
                 from PyQt5.pyqtconfig import Configuration
             else:
                 from PyQt4.pyqtconfig import Configuration
@@ -129,7 +129,7 @@ class AboutBox(QDialog):
             sipver = cfg.sip_version_str
             pyqtver = cfg.pyqt_version_str
         except Exception:
-            if USE_QT5:
+            if USE_PYQT5:
                 from PyQt5.Qt import PYQT_VERSION_STR
             else:
                 from PyQt4.Qt import PYQT_VERSION_STR

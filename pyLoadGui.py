@@ -22,8 +22,6 @@ CURRENT_INTERNAL_VERSION = 'Development version'         # YYYY-MM-DD, append a 
 
 import os
 import sys
-from sys import argv
-from getopt import getopt, GetoptError
 
 if os.name == "nt":
     import ctypes
@@ -42,8 +40,10 @@ from uuid import uuid4 as uuid      # import before PyQt
 from time import sleep, time
 from module.common.json_layer import json
 
-from module.gui import USE_QT5
-if USE_QT5:
+from module import InitHomeDir
+import module.gui.PyQtVersion
+USE_PYQT5 = module.gui.PyQtVersion.USE_PYQT5 = module.gui.PyQtVersion.usePyQt5(CURRENT_VERSION)
+if USE_PYQT5:
     from PyQt5.QtGui import *
     from PyQt5.QtCore import *
     from PyQt5.QtWidgets import *
@@ -65,7 +65,6 @@ from os.path import exists
 from datetime import datetime
 from threading import Timer
 
-from module import InitHomeDir
 import module.gui._pyLoadGui as _pyLoadGui
 from module.gui.ConnectionManager import ConnectionManager
 from module.gui.connector import Connector
@@ -74,7 +73,7 @@ from module.gui.XMLParser import XMLParser
 from module.gui.CoreConfigParser import ConfigParser
 from module.gui.Options import (AutomaticReloadingOptions, CaptchaOptions, ClickNLoadForwarderOptions, ColorFixOptions,
                                 FontOptions, IconThemeOptions, LanguageOptions, LoggingOptions, NotificationOptions,
-                                OtherOptions, TrayOptions, WhatsThisOptions)
+                                OtherOptions, PyQtVersionOptions, TrayOptions, WhatsThisOptions)
 from module.gui.Tools import IconThemes, MessageBox
 from module.gui.AboutBox import AboutBox
 from module.gui.InfoCorePermissions import InfoCorePermissions
@@ -126,55 +125,11 @@ class main(QObject):
         self.path = pypath
         self.homedir = abspath("")
 
-        self.cmdLineConnection = None
-        self.configdir = ""
-        self.noConsole = False
-        self.pidfile = "pyloadgui.pid"
-        self.debugLogLevel = None
-        if len(argv) > 1:
-            try:
-                options, dummy = getopt(argv[1:], 'vc:nip:hd:',
-                    ["configdir=", "version", "connection=",
-                     "noconsole", "icontest", "pidfile=", "help", "debug="])
-                for option, argument in options:
-                    if option in ("-v", "--version"):
-                        print "pyLoad Client", CURRENT_VERSION
-                        exit()
-                    elif option in ("-c", "--connection"):
-                        self.cmdLineConnection = argument
-                    elif option in ("--configdir"):
-                        self.configdir = argument
-                    elif option in ("-n", "--noconsole"):
-                        if os.name == "nt":
-                            self.noConsole = True
-                        else:
-                            print "Error: The noconsole option works only on Windows OS"
-                            exit()
-                    elif option in ("-i", "--icontest"):
-                        self.icontest()
-                        exit()
-                    elif option in ("-p", "--pidfile"):
-                        self.pidfile = argument
-                        print "Error: The pidfile option is not implemented"
-                        exit()
-                    elif option in ("-h", "--help"):
-                        self.print_help()
-                        exit()
-                    elif option in ("-d", "--debug"):
-                        try:
-                            lvl = int(argument)
-                        except ValueError:
-                            print "Error: Invalid debug level"
-                            exit()
-                        if lvl < 0 or lvl > 9:
-                            print "Error: Invalid debug level"
-                            exit()
-                        self.debugLogLevel = lvl
-
-            except GetoptError:
-                print 'Error: Unknown Argument(s) "%s"' % " ".join(argv[1:])
-                self.print_help()
-                exit()
+        from module.gui.CmdLineParser import cmdLineParser
+        (dummy, self.cmdLineConnection, self.configdir, self.noConsole, icontest, self.pidfile, self.debugLogLevel) = cmdLineParser(CURRENT_VERSION)
+        if icontest:
+             self.icontest()
+             exit()
 
         self.pullEventsCount = 0
         self.fileLogIsEnabled = None
@@ -184,7 +139,7 @@ class main(QObject):
         if self.noConsole:
             self.hideWindowsCommandPrompt()
         QTextCodec.setCodecForLocale(QTextCodec.codecForName("UTF-8"))
-        if not USE_QT5:
+        if not USE_PYQT5:
             QTextCodec.setCodecForTr(QTextCodec.codecForName("UTF-8"))
             QTextCodec.setCodecForCStrings(QTextCodec.codecForName("UTF-8"))
         self.init(True)
@@ -220,29 +175,6 @@ class main(QObject):
             i = style.standardIcon(i[0])
             print "OK"
         print "\nNo errors."
-
-    @classmethod
-    def print_help(self):
-        print ""
-        print "pyLoad Client v%s     2008-2016 the pyLoad Team" % CURRENT_VERSION
-        print ""
-        if sys.argv[0].endswith(".py"):
-            print "Usage: python pyLoadGui.py [options]"
-        else:
-            print "Usage: pyLoadGui [options]"
-        print ""
-        print "<Options>"
-        print "  -v, --version", " " * 10, "Print version to terminal"
-        print "  -d, --debug=<level>", " " * 4, "Enable debug messages"
-        print "                               possible levels: 0 to 9"
-        print "  --configdir=<dir>", " " * 6, "Run with <dir> as config directory"
-        print "  -c, --connection=<name>", " " * 0, "Use connection <name>"
-        print "                               of the Connection Manager"
-        print "  -n, --noconsole", " " * 8, "Hide Command Prompt on Windows OS"
-        #print "  -p, --pidfile=<file>", " " * 3, "Set pidfile to <file>"
-        print "  -i, --icontest", " " * 9, "Check for crash when loading icons"
-        print "  -h, --help", " " * 13, "Display this help screen"
-        print ""
 
     def checkConfigFiles(self):
         if self.configdir:
@@ -284,6 +216,7 @@ class main(QObject):
         """
             set main things up
         """
+        self.pyqtVersionOption = 4 if USE_PYQT5 == False else 5
         self.tray = None
         self.mainWindowPaintEventAction = {}
         self.mainWindowMaximizedSize = None
@@ -324,6 +257,7 @@ class main(QObject):
         self.log.debug9("User's home directory: %s" % InitHomeDir.homedir)
         self.log.info("Configuration directory: %s" % self.homedir)
         #self.log.info("Using pid file: %s" % self.pidfile)
+        self.log.info("Running in the Qt %d framework" % (5 if USE_PYQT5 == True else 4))
         if self.debugLogLevel is not None:
             self.log.info("Debug messages at level %d and higher" % self.debugLogLevel)
 
@@ -347,6 +281,7 @@ class main(QObject):
         self.clickNLoadForwarderOptions = ClickNLoadForwarderOptions(self.mainWindow)
         self.automaticReloadingOptions = AutomaticReloadingOptions(self.mainWindow)
         self.languageOptions = LanguageOptions(self.mainWindow)
+        self.pyQtVersionOptions = PyQtVersionOptions(self.mainWindow)
         self.captchaOptions = CaptchaOptions(self.mainWindow)
         self.connWindow = ConnectionManager(self.connManagerDisableConnect)
         self.clickNLoadForwarder = ClickNLoadForwarder()
@@ -2921,6 +2856,7 @@ class main(QObject):
         self.automaticReloadingOptions.appFontChanged()
         self.clickNLoadForwarderOptions.appFontChanged()
         self.languageOptions.appFontChanged()
+        self.pyQtVersionOptions.appFontChanged()
         self.packageEdit.appFontChanged()
         self.notificationOptions.appFontChanged()
         self.trayOptions.appFontChanged()
@@ -2984,6 +2920,17 @@ class main(QObject):
             self.languageOptions.dialogState2dict()
             if self.languageOptions.settings["language"] != self.lang:
                 self.lang = self.languageOptions.settings["language"]
+
+    def slotShowPyQtVersionOptions(self):
+        """
+            popup the pyqt version options dialog
+        """
+        self.pyQtVersionOptions.version = self.pyqtVersionOption
+        self.pyQtVersionOptions.version2dialogState()
+        retval = self.pyQtVersionOptions.exec_()
+        if retval == QDialog.Accepted:
+            self.pyQtVersionOptions.dialogState2version()
+            self.pyqtVersionOption = self.pyQtVersionOptions.version
 
     def updateToolbarSpeedLimitFromCore(self, first):
         """
