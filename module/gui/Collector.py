@@ -776,7 +776,7 @@ class CollectorModel(QAbstractItemModel):
             rect = self.view.visualRect(index)
             if rect.isValid():
                 if USE_PYQT5:
-                    txt = self.data(index, Qt.DisplayRole).value()
+                    txt = unicode(self.data(index, Qt.DisplayRole).value())
                 else:
                     txt = self.data(index, Qt.DisplayRole).toString()
                 textWidth = self.view.fontMetrics().width(txt)
