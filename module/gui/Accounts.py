@@ -16,7 +16,7 @@
     @author: mkaay
 """
 
-from PyQt4.QtCore import QAbstractItemModel, QModelIndex, QMutex, QMutexLocker, QString, Qt, QTimer, QVariant
+from PyQt4.QtCore import QAbstractItemModel, QModelIndex, QMutex, QMutexLocker, Qt, QTimer, QVariant
 from PyQt4.QtGui import QAbstractItemView, QApplication, QItemDelegate, QStyle, QStyleOptionProgressBarV2, QTreeView
 
 import logging
@@ -233,11 +233,11 @@ class AccountDelegate(QItemDelegate):
             opts.textVisible = True
             opts.textAlignment = Qt.AlignCenter
             if data.trafficleft and data.trafficleft == -1:
-                opts.text = QString(_("unlimited"))
+                opts.text = _("unlimited")
             elif data.trafficleft is None:
-                opts.text = QString(_("n/a"))
+                opts.text = _("n/a")
             else:
-                opts.text = QString.number(round(float(opts.progress)/1024/1024, 2)) + " GB"
+                opts.text = unicode(round(float(opts.progress)/1024/1024, 2)) + " GB"
             QApplication.style().drawControl(QStyle.CE_ProgressBar, opts, painter)
             return
         QItemDelegate.paint(self, painter, option, index)

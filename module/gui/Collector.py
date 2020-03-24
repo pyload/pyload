@@ -16,7 +16,7 @@
     @author: mkaay
 """
 
-from PyQt4.QtCore import pyqtSignal, QAbstractItemModel, QModelIndex, QMutex, QMutexLocker, QObject, QRegExp, QString, Qt, QTimer, QVariant
+from PyQt4.QtCore import pyqtSignal, QAbstractItemModel, QModelIndex, QMutex, QMutexLocker, QObject, QRegExp, Qt, QTimer, QVariant
 from PyQt4.QtGui import QAbstractItemView, QApplication, QItemSelection, QItemSelectionModel, QItemSelectionRange, QMenu, QTreeView
 
 import logging, re
@@ -757,7 +757,7 @@ class CollectorModel(QAbstractItemModel):
             elif index.column() == 5: #Password
                 item = index.internalPointer()
                 if isinstance(item, Package):
-                    return QVariant(QString(item.data["password"]).replace('\n', ' ').trimmed())
+                    return QVariant(item.data["password"].replace('\n', ' ').strip())
                 else:
                     return QVariant()
             elif index.column() == 6: #ID
@@ -991,8 +991,8 @@ class CollectorModel(QAbstractItemModel):
                 package = pindex.internalPointer()
                 if isinstance(package, Package):
                     for l, link in enumerate(package.children):
-                        name = QString(link.data["name"])
-                        match = name.contains(rx)
+                        name = unicode(link.data["name"])
+                        match = rx.indexIn(name) != -1
                         if match:
                             index = self.index(l, 0, pindex)
                             if not index.isValid():
@@ -1015,8 +1015,8 @@ class CollectorModel(QAbstractItemModel):
                     if not pindex.isValid():
                         raise ValueError("%s: Invalid index" % self.cname)
                     for l, link in enumerate(package.children):
-                        name = QString(link.data["name"])
-                        match = name.contains(rx)
+                        name = unicode(link.data["name"])
+                        match = rx.indexIn(name) != -1
                         if match:
                             index = self.index(l, 0, pindex)
                             if not index.isValid():
@@ -1033,8 +1033,8 @@ class CollectorModel(QAbstractItemModel):
         # select packages
         else:
             for p, package in enumerate(self._data):
-                name = QString(package.data["name"])
-                match = name.contains(rx)
+                name = unicode(package.data["name"])
+                match = rx.indexIn(name) != -1
                 if match:
                     index = self.index(p, 0)
                     if not index.isValid():

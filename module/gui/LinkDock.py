@@ -71,13 +71,13 @@ class NewLinkDock(QDockWidget):
 
     def slotFilterBtnClicked(self):
         if not self.undo:
-            text = self.widget.box.toPlainText()
-            if text.trimmed().isEmpty():
+            text = unicode(self.widget.box.toPlainText())
+            if not text.strip():
                 return
             self.widget.box.setEnabled(False)
             self.widget.filter.setEnabled(False)
             self.undoText = text
-            self.parseUriSGL.emit("linkdock", unicode(text))
+            self.parseUriSGL.emit("linkdock", text)
         else:
             self.widget.box.setPlainText(self.undoText)
             self.undo = False

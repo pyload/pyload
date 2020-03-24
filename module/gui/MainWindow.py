@@ -19,7 +19,7 @@
 import logging
 import re
 
-from PyQt4.QtCore import pyqtSignal, QEvent, QPoint, QRect, QSize, QString, Qt
+from PyQt4.QtCore import pyqtSignal, QEvent, QPoint, QRect, QSize, Qt
 from PyQt4.QtGui import (QAction, QActionGroup, QCheckBox, QColor, QCursor, QFileDialog, QFrame, QGridLayout,
                          QHBoxLayout, QIcon, QLabel, QMainWindow, QMenu, QPushButton, QSizePolicy, QStyle,
                          QTabWidget, QTextEdit, QVBoxLayout, QWhatsThis, QWidget)
@@ -1228,9 +1228,10 @@ class MainWindow(QMainWindow):
             "Text Files (%s)" % "*.txt"
         ])
         fileNames = QFileDialog.getOpenFileNames(self, "Open Container", self.lastAddContainerDir, typeStr)
+        fileNames = [ str(name) for name in fileNames ]
         for name in fileNames:
             self.addContainerSGL.emit(unicode(name))
-        if not fileNames.isEmpty():
+        if fileNames:
             self.lastAddContainerDir = unicode(dirname(unicode(name)))
 
     def slotPushPackagesToQueue(self):

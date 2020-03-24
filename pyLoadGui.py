@@ -42,7 +42,7 @@ from uuid import uuid4 as uuid      # import before PyQt
 from time import sleep, time
 from module.common.json_layer import json
 
-from PyQt4.QtCore import (pyqtSignal, QByteArray, QMutex, QMutexLocker, QObject, QRegExp, QString,
+from PyQt4.QtCore import (pyqtSignal, QByteArray, QMutex, QMutexLocker, QObject, QRegExp,
                           Qt, QTextCodec, QTimer)
 from PyQt4.QtGui import (QAbstractItemView, QApplication, QDialog, QIcon, QMessageBox, QProgressDialog,
                          QStyle, QSystemTrayIcon, QTextCursor)
@@ -1928,9 +1928,9 @@ class main(QObject):
         fh = open(path, "r")
         content = fh.read()
         fh.close()
-        # the core doesn't like unicode filenames here
-        fn = QString(filename).toLatin1()
-        self.connector.proxy.uploadContainer(str(fn), content)
+        # the core doesn't like unicode filenames here ???
+        filename.encode("ascii", "ignore")
+        self.connector.proxy.uploadContainer(filename, content)
 
     def prepareForSaveOptionsAndWindow(self, contFunc):
         """
@@ -2258,8 +2258,8 @@ class main(QObject):
             emitted from main window
             advanced link/package select
         """
-        pattern = self.mainWindow.advselect.patternEdit.currentText()
-        if not pattern.isEmpty():
+        pattern = unicode(self.mainWindow.advselect.patternEdit.currentText())
+        if pattern:
             self.mainWindow.advselect.setEnabled(False)
             if queue:
                 self.mainWindow.slotQueueMsgHide()

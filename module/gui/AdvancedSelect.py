@@ -87,8 +87,8 @@ class AdvancedSelect(QWidget):
         self.deselectBtn.clicked.connect(self.slotAddToHistory)
 
     def slotAddToHistory(self):
-        text = self.patternEdit.currentText()
-        if not text.isEmpty():
+        text = unicode(self.patternEdit.currentText())
+        if text:
             if self.patternEdit.findText(text, Qt.MatchFixedString | Qt.MatchCaseSensitive) == -1:
                 self.patternEdit.insertItem(0, text)
                 self.patternEdit.setCurrentIndex(0)

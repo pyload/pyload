@@ -16,7 +16,7 @@
     @author: mkaay
 """
 
-from PyQt4.QtCore import pyqtSignal, QModelIndex, QMutexLocker, QObject, QString, Qt, QTimer, QVariant
+from PyQt4.QtCore import pyqtSignal, QModelIndex, QMutexLocker, QObject, Qt, QTimer, QVariant
 from PyQt4.QtGui import QAbstractItemView, QApplication, QItemDelegate, QStyle, QStyleOptionProgressBarV2, QTreeView
 
 import logging
@@ -379,7 +379,7 @@ class QueueModel(CollectorModel):
             elif index.column() == 7: #Password
                 item = index.internalPointer()
                 if isinstance(item, Package):
-                    return QVariant(QString(item.data["password"]).replace('\n', ' ').trimmed())
+                    return QVariant(item.data["password"].replace('\n', ' ').strip())
                 else:
                     return QVariant()
             elif index.column() == 8: #ID
@@ -499,9 +499,9 @@ class QueueProgressBarDelegate(QItemDelegate):
             opts.textVisible = True
             opts.textAlignment = Qt.AlignCenter
             if wait is not None:
-                opts.text = QString(_("waiting %d seconds") % wait)
+                opts.text = unicode(_("waiting %d seconds") % wait)
             else:
-                opts.text = QString.number(opts.progress) + "%"
+                opts.text = unicode(opts.progress) + "%"
             QApplication.style().drawControl(QStyle.CE_ProgressBar, opts, painter)
             return
         QItemDelegate.paint(self, painter, option, index)

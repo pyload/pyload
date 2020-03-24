@@ -82,13 +82,13 @@ class NewPackageDock(QDockWidget):
 
     def slotFilterBtnClicked(self):
         if not self.undo:
-            text = self.widget.box.toPlainText()
-            if text.trimmed().isEmpty():
+            text = unicode(self.widget.box.toPlainText())
+            if not text.strip():
                 return
             self.widget.box.setEnabled(False)
             self.widget.filter.setEnabled(False)
             self.undoText = text
-            self.parseUriSGL.emit("packagedock", unicode(text))
+            self.parseUriSGL.emit("packagedock", text)
         else:
             self.widget.box.setPlainText(self.undoText)
             self.undo = False
@@ -116,7 +116,7 @@ class NewPackageDock(QDockWidget):
         self.widget.box.addText(text)
 
     def slotClearBtnClicked(self):
-        if self.widget.box.toPlainText().isEmpty():
+        if not unicode(self.widget.box.toPlainText()):
             self.widget.nameInput.setText("")
             self.widget.passwordInput.setText("")
         self.widget.box.clear()     # also turns filter undo off again

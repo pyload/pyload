@@ -16,7 +16,7 @@
     @author: mkaay
 """
 
-from PyQt4.QtCore import QAbstractListModel, QModelIndex, QSize, QString, Qt, QVariant
+from PyQt4.QtCore import QAbstractListModel, QModelIndex, QSize, Qt, QVariant
 from PyQt4.QtGui import QApplication, QItemDelegate, QListView, QStyle, QStyleOptionProgressBarV2
 
 import logging
@@ -155,17 +155,16 @@ class OverviewDelegate(QItemDelegate):
             minutes, seconds = divmod(seconds, 60)
             return _("ETA") + ": %.2i:%.2i:%.2i" % (hours, minutes, seconds)
 
-        statusline = QString(_("Parts") + ": %s/%s" % (partsf, parts))
+        statusline = unicode(_("Parts") + ": %s/%s" % (partsf, parts))
         if status == _("downloading"):
-            speedline = QString(formatEta(eta) + "     " + _("Speed") + ": " + formatSpeed(speed))
+            speedline = unicode(formatEta(eta) + "     " + _("Speed") + ": " + formatSpeed(speed))
         else:
-            speedline = QString(status)
-            speedline.replace(0, 1, speedline.at(0).toTitleCase()) # first letter uppercase
+            speedline = unicode(status).capitalize()
 
         if progress in (0,100):
-            sizeline = QString(_("Size") + ": %s" % formatSize(maxSize))
+            sizeline = unicode(_("Size") + ": %s" % formatSize(maxSize))
         else:
-            sizeline = QString(_("Size") + ": %s / %s" % (formatSize(currentSize), formatSize(maxSize)))
+            sizeline = unicode(_("Size") + ": %s / %s" % (formatSize(currentSize), formatSize(maxSize)))
 
         f = painter.font()
         f.setPointSize(12)
@@ -198,7 +197,7 @@ class OverviewDelegate(QItemDelegate):
         opts.rect = newr
         opts.textVisible = True
         opts.textAlignment = Qt.AlignCenter
-        opts.text = QString.number(opts.progress) + "%"
+        opts.text = unicode(opts.progress) + "%"
         QApplication.style().drawControl(QStyle.CE_ProgressBar, opts, painter)
 
     def sizeHint(self, option, index):
