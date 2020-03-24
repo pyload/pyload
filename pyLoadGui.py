@@ -1702,7 +1702,10 @@ class main(QObject):
                 for dummy in range(0, 150):
                     if self.core.running:
                         break
-                    sleep(0.1)
+                    try:
+                        sleep(0.1)
+                    except KeyboardInterrupt:
+                        break
                 if not self.core.running:
                     return self.errorInternalCoreStartup(self.messageBox_17)
 
