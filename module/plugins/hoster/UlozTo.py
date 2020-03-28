@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import pycurl
+import urlparse
 import re
 import os
 
@@ -16,7 +17,7 @@ def convert_decimal_prefix(m):
 class UlozTo(SimpleHoster):
     __name__ = "UlozTo"
     __type__ = "hoster"
-    __version__ = "1.45"
+    __version__ = "1.46"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl|pornfile\.cz)/(?:live/)?(?P<ID>[!\w]+/[^/?]*)'
@@ -169,8 +170,12 @@ class UlozTo(SimpleHoster):
         self.download(jsvars['downloadLink'])
 
     def handle_premium(self, pyfile):
-        self.adult_confirmation(pyfile)
-        self.download(pyfile.url, get={'do': "directDownload"})
+        m = re.search("/file/(.+)/", pyfile.url)
+        if not m:
+            self.error(_("Premium link not found"))
+
+        premium_url = urlparse.urljoin("https://ulozto.net/quickDownload/", m.group(1))
+        self.download(premium_url)
 
     def check_errors(self):
         if self.PASSWD_PATTERN in self.data:
