@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import pycurl
 from module.network.HTTPRequest import BadHeader
 
 from ..internal.misc import json
@@ -13,7 +14,7 @@ def args(**kwargs):
 class RealdebridCom(MultiHoster):
     __name__ = "RealdebridCom"
     __type__ = "hoster"
-    __version__ = "0.80"
+    __version__ = "0.81"
     __status__ = "testing"
 
     __pattern__ = r'https?://((?:www\.|s\d+\.)?real-debrid\.com/dl?/|[\w^_]\.rdb\.so/d/)[\w^_]+'
@@ -32,14 +33,14 @@ class RealdebridCom(MultiHoster):
     API_URL = "https://api.real-debrid.com/rest/1.0"
 
     def api_response(self, namespace, get={}, post={}):
+
+        self.req.http.c.setopt(pycurl.USERAGENT, "pyLoad/%s" % self.pyload.version)
+
         try:
             json_data = self.load(self.API_URL + namespace, get=get, post=post)
-        except BadHeader, e:
-            if e.code == 503:
-                json_data = e.content
 
-            else:
-                raise
+        except BadHeader, e:
+                json_data = e.content
 
         return json.loads(json_data)
 
@@ -48,7 +49,7 @@ class RealdebridCom(MultiHoster):
 
     def handle_premium(self, pyfile):
         user = self.account.accounts.keys()[0]
-        api_token = self.account.accounts[user]["password"]
+        api_token = self.account.accounts[user]["api_token"]
 
         data = self.api_response("/unrestrict/link",
                                  args(auth_token=api_token),
@@ -57,7 +58,15 @@ class RealdebridCom(MultiHoster):
         self.log_debug("Returned Data: %s" % data)
 
         if "error" in data:
-            self.fail("%s (code: %s)" % (data["error"], data["error_code"]))
+            if data['error_code'] == 24:
+                self.offline()
+
+            elif data['error_code'] == 8:  #: Token expired?
+                self.account.relogin()
+                self.retry()
+
+            else:
+                self.fail("%s (code: %s)" % (data["error"], data["error_code"]))
 
         else:
             if data['filename']:

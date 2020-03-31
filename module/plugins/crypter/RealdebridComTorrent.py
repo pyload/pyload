@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import os
-import pycurl
 import time
 import urllib
 
+import pycurl
 from module.network.HTTPRequest import BadHeader
 
 from ..internal.Crypter import Crypter
@@ -14,7 +14,7 @@ from ..internal.misc import exists, json, safejoin
 class RealdebridComTorrent(Crypter):
     __name__ = "RealdebridComTorrent"
     __type__ = "crypter"
-    __version__ = "0.09"
+    __version__ = "0.10"
     __status__ = "testing"
 
     __pattern__ = r'(?:file|https?)://.+\.torrent|magnet:\?.+'
@@ -30,22 +30,35 @@ class RealdebridComTorrent(Crypter):
     # See https://api.real-debrid.com/
     API_URL = "https://api.real-debrid.com/rest/1.0"
 
-    def api_response(self, namespace, get={}, post={}):
-        try:
-            json_data = self.load(self.API_URL + namespace, get=get, post=post)
+    def api_response(self, method, get={}, post={}):
+        self.req.http.c.setopt(pycurl.USERAGENT, "pyLoad/%s" % self.pyload.version)
 
-            return json.loads(json_data) if len(json_data) > 0 else {}
+        for _i in range(2):
+            try:
+                json_data = self.load(self.API_URL + method, get=get, post=post)
 
-        except BadHeader, e:
-            error_msg = json.loads(e.content)['error']
-            if e.code == 400:
-                self.fail(error_msg)
-            elif e.code == 401:
-                self.fail(_("Bad token (expired, invalid)"))
-            elif e.code == 403:
-                self.fail(_("Permission denied (account locked, not premium)"))
-            elif e.code == 503:
-                self.fail(_("Service unavailable - %s") % error_msg)
+            except BadHeader, e:
+                json_data = e.content
+
+            res = json.loads(json_data) if len(json_data) > 0 else {}
+
+            if 'error_code' in res:
+                if res['error_code'] == 8:  #: token expired, refresh the token and retry
+                    account_plugin = self.pyload.accountManager.getAccountPlugin("RealdebridCom")
+                    account_plugin.relogin()
+                    if not account_plugin.info['login']['valid']:
+                        return res
+
+                    else:
+                        self.api_token = account_plugin.accounts[account_plugin.accounts.keys()[0]]["api_token"]
+                        get['auth_token'] = self.api_token
+                        continue
+
+                else:
+                    error_msg = res['error']
+                    self.fail(error_msg)
+
+            return res
 
     def sleep(self, sec):
         for _i in range(sec):
@@ -171,7 +184,7 @@ class RealdebridComTorrent(Crypter):
         if len(account_plugin.accounts) == 0:
             self.fail(_("This plugin requires an active Realdebrid.com account"))
 
-        self.api_token = account_plugin.accounts[account_plugin.accounts.keys()[0]]["password"]
+        self.api_token = account_plugin.accounts[account_plugin.accounts.keys()[0]]["api_token"]
 
         torrent_id = self.send_request_to_server()
         torrent_urls = self.wait_for_server_dl(torrent_id)
@@ -180,4 +193,3 @@ class RealdebridComTorrent(Crypter):
 
         if self.config.get("del_finished"):
             self.delete_torrent_from_server(torrent_id)
-
