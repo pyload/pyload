@@ -11,7 +11,7 @@ from ..internal.MultiAccount import MultiAccount
 class GetTwentyFourOrg(MultiAccount):
     __name__ = 'GetTwentyFourOrg'
     __type__ = 'account'
-    __version__ = '0.03'
+    __version__ = '0.04'
     __status__ = 'testing'
 
     __description__ = 'GeT24.org account plugin'
@@ -33,10 +33,10 @@ class GetTwentyFourOrg(MultiAccount):
         rc = json.loads(rc)
         self.log_debug(rc)
 
-        validuntil = time.mktime(time.strptime(rc['date_expire'], '%Y-%m-%d'))
+        validuntil = time.mktime(time.strptime(rc['date_expire'], '%Y-%m-%d %H:%M:%S'))
 
         return {'validuntil': validuntil,
-                'trafficleft': rc['transfer_left'],
+                'trafficleft': rc['transfer_left'] * 1024 * 1024 * 1024,  # gb -> b
                 'premium': rc['status'] == 'premium'}
 
     def signin(self, user, password, data):
