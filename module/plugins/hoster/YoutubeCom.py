@@ -255,7 +255,7 @@ class YoutubeCom(Hoster):
                   ("dts", "bool", "Allow dts audio (DASH video only)", True),
                   ("3d", "bool", "Prefer 3D", False),
                   ("subs_dl", "off;all_specified;first_available", "Download subtitles", "off"),
-                  ("subs_dl_langs", "str", "Subtitle language codes (ISO639-1) to download (comma separated)", ""),
+                  ("subs_dl_langs", "str", "Subtitle <a href='https://sites.google.com/site/tomihasa/google-language-codes'>language codes</a> to download (comma separated)", ""),
                   ("subs_embed", "bool", "Embed subtitles inside the output file (.mp4 and .mkv only)", False),
                   ("priority", "int", "ffmpeg process priority", 0)]
 
