@@ -235,7 +235,7 @@ class Ffmpeg(object):
 class YoutubeCom(Hoster):
     __name__ = "YoutubeCom"
     __type__ = "hoster"
-    __version__ = "0.76"
+    __version__ = "0.77"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:[^/]*\.)?(?:youtu\.be/|youtube\.com/watch\?(?:.*&)?v=)[\w\-]+'
@@ -255,7 +255,9 @@ class YoutubeCom(Hoster):
                   ("dts", "bool", "Allow dts audio (DASH video only)", True),
                   ("3d", "bool", "Prefer 3D", False),
                   ("subs_dl", "off;all_specified;first_available", "Download subtitles", "off"),
-                  ("subs_dl_langs", "str", "Subtitle <a href='https://sites.google.com/site/tomihasa/google-language-codes'>language codes</a> to download (comma separated)", ""),
+                  ("subs_dl_langs", "str", "Subtitle <a href='https://sites.google.com/site/tomihasa/google-language-codes#interfacelanguage'>language codes</a> to download (comma separated)", ""),
+                  ("auto_subs", "bool", "Allow machine generated subtitles", True),
+                  ("subs_translate", "str", "Translate subtitles to <a href='https://sites.google.com/site/tomihasa/google-language-codes#interfacelanguage'>language</a> (forces first_available)" , ""),
                   ("subs_embed", "bool", "Embed subtitles inside the output file (.mp4 and .mkv only)", False),
                   ("priority", "int", "ffmpeg process priority", 0)]
 
@@ -586,10 +588,12 @@ class YoutubeCom(Hoster):
         srt_files =[]
         try:
             subs = json.loads(self.player_config['args']['player_response'])['captions']['playerCaptionsTracklistRenderer']['captionTracks']
-            subtitles_urls = dict([(_subtitle['languageCode'],
-                                    urllib.unquote(_subtitle['baseUrl']).decode('unicode-escape') + "&fmt=3")
+            subtitles_info = dict([(_subtitle['languageCode'],
+                                    (urllib.unquote(_subtitle['baseUrl']).decode('unicode-escape') + "&fmt=3",
+                                     _subtitle['vssId'].startswith("a."),
+                                     _subtitle['isTranslatable']))
                                    for _subtitle in subs])
-            self.log_debug("AVAILABLE SUBTITLES: %s" % subtitles_urls.keys() or "None")
+            self.log_debug("AVAILABLE SUBTITLES: %s" % subtitles_info.keys() or "None")
 
         except KeyError:
             self.log_debug("AVAILABLE SUBTITLES: None")
@@ -597,22 +601,40 @@ class YoutubeCom(Hoster):
 
         subs_dl = self.config.get('subs_dl')
         if subs_dl != "off":
+            subs_translate = self.config.get('subs_translate').strip()
+            auto_subs = self.config.get('auto_subs')
+            subs_dl = "first_available" if subs_translate != "" else subs_dl
             subs_dl_langs = [_x.strip() for _x in self.config.get('subs_dl_langs', "").split(',') if _x.strip()]
+
             if subs_dl_langs:
                 # Download only listed subtitles (`subs_dl_langs` config gives the priority)
                 for _lang in subs_dl_langs:
-                    if _lang in subtitles_urls:
+                    if _lang in subtitles_info:
+                        subtitle_code = _lang if subs_translate == "" else subs_translate
+
+                        if auto_subs is False and subtitles_info[_lang][1] is True:
+                            self.log_warning(_("Skipped machine generated subtitle: %s") % _lang)
+                            continue
+
+                        subtitle_url = subtitles_info[_lang][0]
+                        if subs_translate:
+                            if subtitles_info[_lang][2]:  #: Translatable?
+                                subtitle_url += "&tlang=%s" % subs_translate
+                            else:
+                                self.log_warning(_("Skipped non translatable subtitle: %s") % _lang)
+                                continue  #: No, try next one
+
                         srt_filename = fsjoin(self.pyload.config.get("general", "download_folder"),
                                               self.pyfile.package().folder,
-                                              os.path.splitext(self.file_name)[0] + "." + _lang + ".srt")
+                                              os.path.splitext(self.file_name)[0] + "." + subtitle_code + ".srt")
 
                         if self.pyload.config.get('download', 'skip_existing') and \
                                 exists(srt_filename) and os.stat(srt_filename).st_size != 0:
                             self.log_info("Download skipped: %s due to File exists" % os.path.basename(srt_filename))
-                            srt_files.append((srt_filename, _lang))
+                            srt_files.append((srt_filename, subtitle_code))
                             continue
 
-                        timed_text = self.load(subtitles_urls[_lang], decode=False)
+                        timed_text = self.load(subtitle_url, decode=False)
                         srt = timedtext_to_srt(timed_text)
 
                         with open(srt_filename, "w") as f:
@@ -625,18 +647,32 @@ class YoutubeCom(Hoster):
 
             else:
                 # Download any available subtitle
-                for _subtitle in subtitles_urls.items():
+                for _subtitle in subtitles_info.items():
+                    if auto_subs is False and _subtitle[1][1] is True:
+                        self.log_warning(_("Skipped machine generated subtitle: %s") % _subtitle[0])
+                        continue
+
+                    subtitle_code = _subtitle[0] if subs_translate == "" else subs_translate
+
+                    subtitle_url = _subtitle[1][0]
+                    if subs_translate:
+                        if _subtitle[1][2]:  #: Translatable?
+                            subtitle_url += "&tlang=%s" % subs_translate
+                        else:
+                            self.log_warning(_("Skipped non translatable subtitle: %s") % _subtitle[0])
+                            continue  #: No, try next one
+
                     srt_filename = fsjoin(self.pyload.config.get("general", "download_folder"),
                                           self.pyfile.package().folder,
-                                          os.path.splitext(self.file_name)[0] + "." + _subtitle[0] + ".srt")
+                                          os.path.splitext(self.file_name)[0] + "." + subtitle_code + ".srt")
 
                     if self.pyload.config.get('download', 'skip_existing') and \
                         exists(srt_filename) and os.stat(srt_filename).st_size != 0:
                             self.log_info("Download skipped: %s due to File exists" % os.path.basename(srt_filename))
-                            srt_files.append((srt_filename, _subtitle[0]))
+                            srt_files.append((srt_filename, subtitle_code))
                             continue
 
-                    timed_text = self.load(_subtitle[1], decode=False)
+                    timed_text = self.load(subtitle_url, decode=False)
                     srt = timedtext_to_srt(timed_text)
 
                     with open(srt_filename, "w") as f:
@@ -644,7 +680,7 @@ class YoutubeCom(Hoster):
                     self.set_permissions(srt_filename)
 
                     self.log_debug("Saved subtitle: %s" % os.path.basename(srt_filename))
-                    srt_files.append((srt_filename, _lang))
+                    srt_files.append((srt_filename, subtitle_code))
                     if subs_dl == "first_available":
                             break
 
