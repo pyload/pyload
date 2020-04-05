@@ -235,7 +235,7 @@ class Ffmpeg(object):
 class YoutubeCom(Hoster):
     __name__ = "YoutubeCom"
     __type__ = "hoster"
-    __version__ = "0.78"
+    __version__ = "0.79"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:[^/]*\.)?(?:youtu\.be/|youtube\.com/watch\?(?:.*&)?v=)[\w\-]+'
@@ -781,14 +781,14 @@ class YoutubeCom(Hoster):
         pyfile.url = replace_patterns(pyfile.url, self.URL_REPLACEMENTS)
         self.data = self.load(pyfile.url)
 
-
-        m = re.search(r'"playabilityStatus":{"status":"(\w+)","(?:reason":|messages":\[)"([^"]+)"', self.data)
+        m = re.search(r'"playabilityStatus":{"status":"(\w+)",(:?"(?:reason":|messages":\[)"([^"]+))?', self.data)
         if m is None:
             self.log_warning(_("Playability status pattern not found"))
 
         else:
             if m.group(1) != "OK":
-                self.log_error(m.group(2))
+                if m.group(2):
+                    self.log_error(m.group(2))
                 self.offline()
 
         if "We have been receiving a large volume of requests from your network." in self.data:
