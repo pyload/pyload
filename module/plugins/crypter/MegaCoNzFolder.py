@@ -7,10 +7,10 @@ from ..internal.Crypter import Crypter
 class MegaCoNzFolder(Crypter):
     __name__ = "MegaCoNzFolder"
     __type__ = "crypter"
-    __version__ = "0.21"
+    __version__ = "0.22"
     __status__ = "testing"
 
-    __pattern__ = r'(https?://(?:www\.)?mega(\.co)?\.nz/|mega:|chrome:.+?)#F!(?P<ID>[\w^_]+)!(?P<KEY>[\w,\-=]+)'
+    __pattern__ = r'(?:https?://(?:www\.)?mega(?:\.co)?\.nz/|mega:|chrome:.+?)(?:folder/|#F!)(?P<ID>[\w^_]+)[!#](?P<KEY>[\w,\-=]+)'
     __config__ = [("activated", "bool", "Activated", True),
                   ("use_premium", "bool", "Use premium account if available", True),
                   ("folder_per_package", "Default;Yes;No", "Create folder for each package", "Default")]
@@ -41,12 +41,14 @@ class MegaCoNzFolder(Crypter):
         elif 'e' in res:
             mega.check_error(res['e'])
 
-        get_node_key = lambda k: MegaCrypto.base64_encode(
-            MegaCrypto.a32_to_str(MegaCrypto.decrypt_key(k, master_key)))
+        get_node_key = lambda k: MegaCrypto.base64_encode(MegaCrypto.a32_to_str(MegaCrypto.decrypt_key(k, master_key)))
 
-        self.links = [_("https://mega.co.nz/#N!%s!%s###n=%s") %
-                      (_f['h'],
-                       get_node_key(_f['k'][_f['k'].index(':') + 1:]),
-                       id)
-                      for _f in res['f']
-                      if _f['t'] == 0 and ':' in _f['k']]
+        urls = [_("https://mega.co.nz/#N!%s!%s###n=%s") %
+                (_f['h'],
+                 get_node_key(_f['k'][_f['k'].index(':') + 1:]),
+                 id)
+                for _f in res['f']
+                if _f['t'] == 0 and ':' in _f['k']]
+
+        if urls:
+            self.packages = [(pyfile.package().folder, urls, pyfile.package().name)]
