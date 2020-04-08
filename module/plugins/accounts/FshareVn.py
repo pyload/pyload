@@ -3,14 +3,17 @@
 import re
 import time
 
+from module.PyFile import PyFile
+
 from ..internal.Account import Account
+from ..internal.Captcha import Captcha
 from ..internal.misc import parse_html_form
 
 
 class FshareVn(Account):
     __name__ = "FshareVn"
     __type__ = "account"
-    __version__ = "0.23"
+    __version__ = "0.24"
     __status__ = "testing"
 
     __description__ = """Fshare.vn account plugin"""
@@ -32,6 +35,7 @@ class FshareVn(Account):
 
         else:
             self.log_error(_("TRAFFIC_LEFT_PATTERN not found"))
+            trafficleft = None
 
         if re.search(self.LIFETIME_PATTERN, html):
             self.log_debug("Lifetime membership detected")
@@ -54,23 +58,63 @@ class FshareVn(Account):
                 'premium': premium}
 
     def signin(self, user, password, data):
-        html = self.load("https://www.fshare.vn/site/login")
+        html = self.load("https://www.fshare.vn")
         if 'href="/site/logout"' in html:
             self.skip_login()
 
-        url, inputs = parse_html_form('id="form-signup"', html)
-        if inputs is None:
-            self.fail_login("Login form not found")
+        # dummy pyfile
+        pyfile = PyFile(self.pyload.files, -1, "https://fshare.vn", "https://fshare.vn", 0, 0, "", self.classname, -1, -1)
+        pyfile.plugin = self
+        self.captcha = Captcha(pyfile)
 
-        inputs.update({'LoginForm[email]': user,
-                       'LoginForm[password]': password,
-                       'LoginForm[rememberMe]': 1})
+        for i in range(3):
+            url, inputs = parse_html_form('id="form-signup"', html)
+            if inputs is None:
+                self.fail_login("Login form not found")
 
-        html = self.load("https://www.fshare.vn/site/login", post=inputs)
-        if not 'href="/site/logout"' in html:
-            m = re.search(r'<div class="mdc-dialog__content" .*?>\s*(.+?)<', html)
-            if m is not None:
-                err_msg = m.group(1).strip()
-                self.log_error(err_msg)
+            inputs.update({'LoginForm[email]': user,
+                           'LoginForm[password]': password,
+                           'LoginForm[rememberMe]': 1})
 
+            if 'LoginForm[verifyCode]' in inputs:
+                m = re.search(r'src="(/site/captchaV3\?v=[^"]+)"', html)
+                if m is None:
+                    self.fail_login(_("Captcha pattern not found"))
+                inputs['LoginForm[verifyCode]'] = self.captcha.decrypt("https://fshare.vn" + m.group(1),
+                                                                       input_type="png")
+
+            html = self.load("https://www.fshare.vn/site/login", post=inputs)
+
+            if u"Kết quả phép tính bên dưới không chính xác!" in html or \
+                    u"Bạn đã nhập sai nhiều lần" in html:
+                self.captcha.invalid()
+                continue
+
+            if u"Đã có lỗi xảy ra, vui lòng thử lại lần nữa." in html:
+                self.fail_login()
+
+            if not 'href="/site/logout"' in html:
+                if 'id="form-signup"' in html:
+                    continue
+
+                else:
+                    self.fail_login()
+
+            else:
+                if 'LoginForm[verifyCode]' in inputs:
+                    self.captcha.correct()
+                return
+
+        else:
             self.fail_login()
+
+    """
+     @NOTE: below are methods
+      necessary for captcha to work with account plugins
+    """
+    def check_status(self):
+        pass
+
+    def retry_captcha(self, attemps=10, wait=1, msg=_("Max captcha retries reached")):
+        self.captcha.invalid()
+        self.fail_login(msg=_("Invalid captcha"))
