@@ -445,7 +445,7 @@ class IRC(object):
 class XDCC(Hoster):
     __name__    = "XDCC"
     __type__    = "hoster"
-    __version__ = "0.50"
+    __version__ = "0.51"
     __status__  = "testing"
 
     __pattern__ = r'xdcc://(?P<SERVER>.*?)/#?(?P<CHAN>.*?)/(?P<BOT>.*?)/#?(?P<PACK>\d+)/?'
@@ -539,16 +539,13 @@ class XDCC(Hoster):
                         if nick_pw:
                             self.irc_client.nickserv_identify(nick_pw)
 
-                        for opt in channel_opts:
-                            if opt[0].lower() == host.lower() and opt[1].lower() == chan.lower():
-                                if not self.irc_client.join_channel(opt[2]):
-                                    self.log_error(_("Cannot join custom channel"))
-                                break
-
                         for opt in invite_opts:
                             if opt[0].lower() == host.lower() and opt[1].lower() == chan.lower():
                                 self.irc_client.send_invite_request(opt[2], opt[1], opt[3])
-                                break
+
+                        for opt in channel_opts:
+                            if opt[0].lower() == host.lower() and opt[1].lower() == chan.lower():
+                                self.irc_client.join_channel(opt[2])
 
                         if not self.irc_client.join_channel(chan):
                             self.fail(_("Cannot join channel"))
