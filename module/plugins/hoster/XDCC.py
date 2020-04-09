@@ -44,7 +44,7 @@ class IRC(object):
 
     def _get_response_line(self, timeout=5):
         start_time = time.time()
-        while time.time()-start_time < timeout:
+        while time.time() - start_time < timeout:
             if self._data_available():
                 self.receive_buffer += self.irc_sock.recv(1024)
                 self.lines += self.receive_buffer.split("\r\n")
@@ -102,7 +102,7 @@ class IRC(object):
         self.irc_sock.send("USER %s %s bla :%s\r\n" % (self.ident, host, self.realname))
 
         start_time = time.time()
-        while time.time()-start_time < 30:
+        while time.time() - start_time < 30:
             origin, command, args = self.get_irc_command()
             if command == "001":  #: RPL_WELCOME
                 self.connected = True
@@ -110,7 +110,7 @@ class IRC(object):
                 self.port      = port
 
                 start_time = time.time()
-                while self._get_response_line() and time.time()-start_time < 30:  #: Skip MOTD
+                while self._get_response_line() and time.time() - start_time < 30:  #: Skip MOTD
                     pass
 
                 self.plugin.log_debug(_("Successfully connected to %s:%s") % (host, port))
@@ -445,7 +445,7 @@ class IRC(object):
 class XDCC(Hoster):
     __name__    = "XDCC"
     __type__    = "hoster"
-    __version__ = "0.49"
+    __version__ = "0.50"
     __status__  = "testing"
 
     __pattern__ = r'xdcc://(?P<SERVER>.*?)/#?(?P<CHAN>.*?)/(?P<BOT>.*?)/#?(?P<PACK>\d+)/?'
@@ -454,11 +454,12 @@ class XDCC(Hoster):
                    ("realname", "str", "Realname", "pyloadreal"),
                    ("try_resume", "bool", "Request XDCC resume?", True),
                    ("nick_pw", "str", "Registered nickname password (optional)", ""),
-                   ("invite_opts", "str", "Invite bots options (format ircserver/channel/invitebot/password, ...)", "")]
+                   ("invite_opts", "str", "Invite bots options (format: ircserver/channel/invitebot/password, ...)", ""),
+                   ("channel_opts", "str", "Join custom channel before joining channel (format: ircserver/channel/customchannel, ...)", "")]
 
     __description__ = """Download from IRC XDCC bot"""
     __license__     = "GPLv3"
-    __authors__     = [("jeix",      "jeix@hasnomail.com"        ),
+    __authors__     = [("jeix", "jeix@hasnomail.com"),
                        ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
 
@@ -513,8 +514,16 @@ class XDCC(Hoster):
 
         #: Remove leading '#' from channel name
         for opt in invite_opts:
-            if opt[1].startswith('#'):
-                opt[1] = opt[1][1:]
+            opt[1] = opt[1][1:] if opt[1].startswith('#') else opt[1]
+
+        channel_opts = [_x.split('/')
+                        for _x in self.config.get('channel_opts').strip().split(',')
+                        if len(_x.split('/')) == 3]
+
+        #: Remove leading '#' from channel name
+        for opt in channel_opts:
+            opt[1] = opt[1][1:] if opt[1].startswith('#') else opt[1]
+            opt[2] = opt[2][1:] if opt[2].startswith('#') else opt[2]
 
         #: Change request type
         self.req.close()
@@ -523,12 +532,18 @@ class XDCC(Hoster):
         self.pyfile.setCustomStatus("connect irc")
 
         self.irc_client = IRC(self, nick, ident, realname)
-        for _i in xrange(0, 3):
+        for _i in range(3):
             try:
                 if self.irc_client.connect_server(host, port):
                     try:
                         if nick_pw:
                             self.irc_client.nickserv_identify(nick_pw)
+
+                        for opt in channel_opts:
+                            if opt[0].lower() == host.lower() and opt[1].lower() == chan.lower():
+                                if not self.irc_client.join_channel(opt[2]):
+                                    self.log_error(_("Cannot join custom channel"))
+                                break
 
                         for opt in invite_opts:
                             if opt[0].lower() == host.lower() and opt[1].lower() == chan.lower():
@@ -549,12 +564,12 @@ class XDCC(Hoster):
                         while (not self.pyfile.abort or self.dl_started) and not self.dl_finished:
                             if not self.dl_started:
                                 if self.request_again:
-                                    if time.time()-self.irc_client.xdcc_request_time > 300:
+                                    if time.time() - self.irc_client.xdcc_request_time > 300:
                                         self.irc_client.xdcc_request_pack(bot, pack)
                                         self.request_again = False
 
                                 else:
-                                    if self.irc_client.xdcc_request_time and time.time()-self.irc_client.xdcc_request_time > 90:
+                                    if self.irc_client.xdcc_request_time and time.time() - self.irc_client.xdcc_request_time > 90:
                                         self.irc_client.disconnect_server()
                                         self.log_error(_("XDCC Bot did not answer"))
                                         self.retry(3, 60, _("XDCC Bot did not answer"))
