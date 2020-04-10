@@ -1,24 +1,23 @@
 # -*- coding: utf-8 -*-
 
 import re
-import time
 import urlparse
 
-from ..internal.SimpleHoster import SimpleHoster
+import pycurl
+from module.network.HTTPRequest import BadHeader
+from module.network.RequestFactory import getRequest as get_request
+
 from ..internal.misc import json
-
-
-def double_decode(m):
-    return m.group(1).decode('raw_unicode_escape')
+from ..internal.SimpleHoster import SimpleHoster
 
 
 class FshareVn(SimpleHoster):
     __name__ = "FshareVn"
     __type__ = "hoster"
-    __version__ = "0.32"
+    __version__ = "0.33"
     __status__ = "testing"
 
-    __pattern__ = r'https?://(?:www\.)?fshare\.vn/file/.+'
+    __pattern__ = r'https?://(?:www\.)?fshare\.vn/file/(?P<ID>\w+)'
     __config__ = [("activated", "bool", "Activated", True),
                   ("use_premium", "bool", "Use premium account if available", True),
                   ("fallback", "bool", "Fallback to free download if premium fails", True),
@@ -30,13 +29,48 @@ class FshareVn(SimpleHoster):
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
                    ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
-    NAME_PATTERN = r'<i class="material-icons">insert_drive_file</i>\s*(?P<N>.+?)\s*</div>'
-    SIZE_PATTERN = r'<i class="material-icons">save</i>\s*(?P<S>[\d.,]+) (?P<U>[\w^_]+)\s*</div>'
     OFFLINE_PATTERN = ur'Tập tin của bạn yêu cầu không tồn tại'
 
-    NAME_REPLACEMENTS = [("(.*)", double_decode)]
-
     URL_REPLACEMENTS = [("http://", "https://")]
+
+    API_KEY = "L2S7R6ZMagggC5wWkQhX2+aDi467PPuftWUMRFSn"
+    API_URL = "https://api.fshare.vn/api/"
+
+    def api_response(self, method, session_id=None, **kwargs):
+        self.req.http.c.setopt(pycurl.USERAGENT, "okhttp/3.6.0")
+
+        if len(kwargs) == 0:
+            json_data = self.load(self.API_URL + method,
+                                  cookies=[("fshare.vn", 'session_id', session_id)] if session_id else True)
+
+        else:
+            json_data = self.load(self.API_URL + method,
+                                  post=json.dumps(kwargs),
+                                  cookies=[("fshare.vn", 'session_id', session_id)] if session_id else True)
+
+        return json.loads(json_data)
+
+    @classmethod
+    def api_info(cls, url):
+        info = {}
+        file_id = re.match(cls.__pattern__, url).group('ID')
+        req = get_request()
+
+        req.c.setopt(pycurl.HTTPHEADER, ["Accept: application/json, text/plain, */*"])
+        file_info = json.loads(req.load("https://www.fshare.vn/api/v3/files/folder",
+                                        get={'linkcode': file_id}))
+
+        req.close()
+
+        if file_info.get("status") == 404:
+            info['status'] = 1
+
+        else:
+            info.update({'name': file_info['current']['name'],
+                         'size': file_info['current']['size'],
+                         'status': 2})
+
+        return info
 
     def handle_free(self, pyfile):
         action, inputs = self.parse_html_form('class="password-form"')
@@ -82,4 +116,28 @@ class FshareVn(SimpleHoster):
         self.link = json_data['url']
 
     def handle_premium(self, pyfile):
-        self.handle_free(pyfile)
+        try:
+            password = self.get_password()
+            if password:
+                api_data = self.api_response("session/download",
+                                             token=self.account.info['data']['token'],
+                                             url=pyfile.url,
+                                             password=password)
+
+            else:
+                api_data = self.api_response("session/download",
+                                             token=self.account.info['data']['token'],
+                                             url=pyfile.url)
+
+        except BadHeader, e:
+                if e.code == 403:
+                    if password:
+                        self.fail(_("Wrong password"))
+
+                    else:
+                        self.fail(_("Download is password protected"))
+
+                elif e.code != 200:
+                    self.offline()
+
+        self.link = api_data['location']
