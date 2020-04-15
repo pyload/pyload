@@ -35,7 +35,7 @@ class DdlTo(XFSHoster):
     OFFLINE_PATTERN = r'<h4>File Not Found</h4>'
 
     API_KEY = "37699zuaj90n9hxado2m7"
-    API_URL = "https://ddl.to/api/"
+    API_URL = "https://api-v2.ddl.to/api/"
 
     @classmethod
     def api_response(cls, method, **kwargs):
