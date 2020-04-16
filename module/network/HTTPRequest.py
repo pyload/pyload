@@ -18,14 +18,16 @@
 """
 
 import cStringIO
-import pycurl
-
-from codecs import getincrementaldecoder, lookup, BOM_UTF8
-from urllib import quote, urlencode
+import mimetypes
+from codecs import BOM_UTF8, getincrementaldecoder, lookup
 from httplib import responses
 from logging import getLogger
+from os.path import abspath, basename, exists
+from urllib import quote, urlencode
 
+import pycurl
 from module.plugins.Plugin import Abort
+
 
 def myquote(url):
     return quote(url.encode('utf_8') if isinstance(url, unicode) else url, safe="%/:=&?~#+!$,;'@()*[]")
@@ -60,6 +62,15 @@ class BadHeader(Exception):
         self.code = int_code
         self.header = header
         self.content = content
+
+
+class FormFile():
+    def __init__(self, filename, data=None, mimetype=None):
+        self.filename = abspath(filename)
+        self.data = data
+        self.mimetype = mimetype or \
+                        mimetypes.guess_type(filename)[0] if not data and exists(filename) else None or \
+                        'application/octet-stream'
 
 
 class HTTPRequest():
@@ -97,13 +108,13 @@ class HTTPRequest():
         if hasattr(pycurl, "AUTOREFERER"):
             self.c.setopt(pycurl.AUTOREFERER, 1)
         self.c.setopt(pycurl.SSL_VERIFYPEER, 0)
-        self.c.setopt(pycurl.LOW_SPEED_TIME, 30)
+        self.c.setopt(pycurl.LOW_SPEED_TIME, 60)
         self.c.setopt(pycurl.LOW_SPEED_LIMIT, 5)
 
         #self.c.setopt(pycurl.VERBOSE, 1)
 
         self.c.setopt(pycurl.USERAGENT,
-            "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:55.0) Gecko/20100101 Firefox/55.0")
+                      "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:75.0) Gecko/20100101 Firefox/75.0")
         if pycurl.version_info()[7]:
             self.c.setopt(pycurl.ENCODING, "gzip, deflate")
         self.c.setopt(pycurl.HTTPHEADER, ["Accept: */*",
@@ -187,8 +198,24 @@ class HTTPRequest():
 
                 self.c.setopt(pycurl.POSTFIELDS, post)
             else:
-                post = [(x, y.encode('utf8') if type(y) == unicode else y ) for x, y in post.iteritems()]
-                self.c.setopt(pycurl.HTTPPOST, post)
+                _post = []
+                for k, v in post.iteritems():
+                    if isinstance(v, basestring):
+                        _post.append((k, v.encode('utf8') if type(v) == unicode else v))
+
+                    elif isinstance(v, FormFile):
+                        if v.data:
+                            _post.append((k, (pycurl.FORM_BUFFER, basename(v.filename),
+                                              pycurl.FORM_BUFFERPTR, v.data,
+                                              pycurl.FORM_CONTENTTYPE, v.mimetype)))
+
+                        elif exists(v.filename):
+                            _post.append((k, (pycurl.FORM_FILE, v.filename,  #: pycurl cannot handle foreign filenames
+                                              pycurl.FORM_FILENAME, basename(v.filename),
+                                              pycurl.FORM_CONTENTTYPE, v.mimetype)))
+
+                self.c.setopt(pycurl.HTTPPOST, _post)
+
         else:
             self.c.setopt(pycurl.POST, 0)
 
@@ -334,4 +361,3 @@ if __name__ == "__main__":
     url = "http://pyload.net"
     c = HTTPRequest()
     print c.load(url)
-    
