@@ -288,7 +288,7 @@ class DownloadThread(PluginThread):
                 pyfile.setStatus("skipped")
 
                 self.m.log.info(
-                    _("Download skipped: %(name)s due to %(plugin)s") % {"name": pyfile.name, "plugin": e.message})
+                    _("Download skipped: %(name)s due to %(plugin)s") % {"name": pyfile.name, "plugin": e.args[0]})
 
                 self.clean(pyfile)
 
