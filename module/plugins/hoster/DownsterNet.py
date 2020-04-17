@@ -14,12 +14,14 @@ class DownsterNet(MultiHoster):
     #: Since we want to allow the user to specify the list of hoster to use we let MultiHoster.activate
     # Note: Falling back to ddl leads to wrong file offline recognition for ddl.to
     __pattern__ = r'^unmatchable$'
-    __config__ = [("activated", "bool", "Activated", True),
-                  ("use_premium", "bool", "Use premium account if available", True),
-                  ("fallback", "bool", "Fallback to free download if premium fails", False),
-                  ("chk_filesize", "bool", "Check file size", True),
-                  ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10),
-                  ("revert_failed", "bool", "Revert to standard download if fails", False)]
+    __config__ = [
+        ("activated", "bool", "Activated", True),
+        ("use_premium", "bool", "Use premium account if available", True),
+        ("fallback", "bool", "Fallback to free download if premium fails", False),
+        ("chk_filesize", "bool", "Check file size", True),
+        ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10),
+        ("revert_failed", "bool", "Revert to standard download if fails", False)
+    ]
 
     __description__ = """Downster.net hoster plugin"""
     __license__ = "GPLv3"

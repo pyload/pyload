@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import hashlib
 import time
 import pycurl
 
@@ -15,9 +14,11 @@ class DownsterNet(MultiAccount):
     __version__ = "0.1"
     __status__ = "testing"
 
-    __config__ = [("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),
-                  ("mh_list", "str", "Hoster list (comma separated)", ""),
-                  ("mh_interval", "int", "Reload interval in hours", 12)]
+    __config__ = [
+        ("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),
+        ("mh_list", "str", "Hoster list (comma separated)", ""),
+        ("mh_interval", "int", "Reload interval in hours", 12)
+    ]
 
     __description__ = """Downster.net account plugin"""
     __license__ = "GPLv3"
@@ -52,8 +53,10 @@ class DownsterNet(MultiAccount):
         return info
 
     def api_response(self, url, post_data):
-        self.req.http.c.setopt(pycurl.HTTPHEADER, ["Accept: application/json, text/plain, */*",
-                                                   "Content-Type: application/json"])
+        self.req.http.c.setopt(pycurl.HTTPHEADER, [
+            "Accept: application/json, text/plain, */*",
+            "Content-Type: application/json"
+        ])
 
         try:
             res = json.loads(self.load(url, post=json.dumps(post_data)))
@@ -62,12 +65,14 @@ class DownsterNet(MultiAccount):
             self.fail(e.message)
 
         # Headers back to normal
-        self.req.http.c.setopt(pycurl.HTTPHEADER, ["Accept: */*",
-                                                   "Accept-Language: en-US,en",
-                                                   "Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7",
-                                                   "Connection: keep-alive",
-                                                   "Keep-Alive: 300",
-                                                   "Expect:"])
+        self.req.http.c.setopt(pycurl.HTTPHEADER, [
+            "Accept: */*",
+            "Accept-Language: en-US,en",
+            "Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7",
+            "Connection: keep-alive",
+            "Keep-Alive: 300",
+            "Expect:"
+        ])
 
         return res
 
@@ -77,5 +82,3 @@ class DownsterNet(MultiAccount):
         if not payload['success']:
             self.fail_login(payload['error'])
             return
-
-
