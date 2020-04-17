@@ -30,14 +30,11 @@ class DownsterNet(MultiAccount):
         user_info = json.loads(self.load("https://downster.net/api/user/info"))
         usage = json.loads(self.load("https://downster.net/api/download/usage"))
 
-        self.log_debug(user_info)
-
         if not user_info['success']:
             info = {'validuntil': None,
                     'trafficleft': None,
                     'premium': False}
 
-            self.log_debug('Could not grab info')
             self.log_error('Could not get user info: ' + user_info['error'])
         else:
             #: Parse account info
@@ -76,7 +73,6 @@ class DownsterNet(MultiAccount):
 
     def signin(self, email, password, data):
         payload = self.api_response("https://downster.net/api/user/authenticate", {'email': email, 'password': password})
-        self.log_debug("DOWNSTER Auth: %s" % payload)
 
         if not payload['success']:
             self.fail_login(payload['error'])
