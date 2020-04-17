@@ -17,6 +17,8 @@
     @author: RaNaN
 """
 
+from __future__ import with_statement
+
 import cStringIO
 import mimetypes
 from codecs import BOM_UTF8, getincrementaldecoder, lookup
@@ -204,15 +206,18 @@ class HTTPRequest():
                         _post.append((k, v.encode('utf8') if type(v) == unicode else v))
 
                     elif isinstance(v, FormFile):
-                        if v.data:
-                            _post.append((k, (pycurl.FORM_BUFFER, basename(v.filename),
-                                              pycurl.FORM_BUFFERPTR, v.data,
-                                              pycurl.FORM_CONTENTTYPE, v.mimetype)))
-
-                        elif exists(v.filename):
-                            _post.append((k, (pycurl.FORM_FILE, v.filename,  #: pycurl cannot handle foreign filenames
-                                              pycurl.FORM_FILENAME, basename(v.filename),
-                                              pycurl.FORM_CONTENTTYPE, v.mimetype)))
+                        filename = basename(v.filename)
+                        filename = filename.encode('utf8') if type(filename) == unicode else filename
+                        data = v.data
+                        if data is None:
+                            if not exists(v.filename):
+                                continue
+                            else:
+                                with open(v.filename, "rb") as f:  #: workaround for pycurl.FORM_FILE UnicodeEncodeError
+                                    data = f.read()
+                        _post.append((k, (pycurl.FORM_BUFFER, filename,
+                                          pycurl.FORM_BUFFERPTR, data,
+                                          pycurl.FORM_CONTENTTYPE, str(v.mimetype))))
 
                 self.c.setopt(pycurl.HTTPPOST, _post)
 
