@@ -11,7 +11,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class OneFichierCom(SimpleHoster):
     __name__ = "OneFichierCom"
     __type__ = "hoster"
-    __version__ = "1.16"
+    __version__ = "1.17"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(?:(?P<ID1>\w+)\.)?(?P<HOST>1fichier\.com|alterupload\.com|cjoint\.net|d(?:es)?fichiers\.com|dl4free\.com|megadl\.fr|mesfichiers\.org|piecejointe\.net|pjointe\.com|tenvoi\.com)(?:/\?(?P<ID2>\w+))?'
@@ -81,7 +81,7 @@ class OneFichierCom(SimpleHoster):
             self.link = m.group(1)
 
     def handle_premium(self, pyfile):
-        self.download(
-            pyfile.url,
-            post={'did': 0,
-                  'dl_no_ssl': "on"})  # @TODO: Remove disposition in 0.4.10
+        self.download(pyfile.url,
+                      post={'did': 0,
+                            'dl_no_ssl': "on"})
+
