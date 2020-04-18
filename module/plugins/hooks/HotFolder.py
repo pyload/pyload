@@ -13,7 +13,7 @@ from ..internal.misc import fs_encode, fsjoin
 class HotFolder(Addon):
     __name__ = "HotFolder"
     __type__ = "hook"
-    __version__ = "0.25"
+    __version__ = "0.26"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", False),
@@ -28,7 +28,7 @@ class HotFolder(Addon):
     __authors__ = [("RaNaN", "RaNaN@pyload.de")]
 
     def activate(self):
-        interval = max(self.config.get('folder'), 20)
+        interval = max(self.config.get('interval'), 20)
         self.periodical.start(interval, threaded=True)
 
     def periodical_task(self):
