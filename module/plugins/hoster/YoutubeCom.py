@@ -235,7 +235,7 @@ class Ffmpeg(object):
 class YoutubeCom(Hoster):
     __name__ = "YoutubeCom"
     __type__ = "hoster"
-    __version__ = "0.79"
+    __version__ = "0.80"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:[^/]*\.)?(?:youtu\.be/|youtube\.com/watch\?(?:.*&)?v=)[\w\-]+'
@@ -331,11 +331,7 @@ class YoutubeCom(Hoster):
         if not player_url.endswith(".js"):
             self.fail(_("Unsupported player type %s") % player_url)
 
-        m = re.match(r'.*?-([a-zA-Z0-9_-]+)(?:/watch_as3|/html5player(?:-new)?|(?:/[a-z]{2,3}_[A-Z]{2})?/base)?\.[a-z]+$', player_url)
-        if m is None:
-            self.fail(_("Cannot identify player ID %s") % player_url)
-
-        sig_cache_id = m.group(1) + "_" + ".".join(str(len(part)) for part in encrypted_sig.split('.'))
+        sig_cache_id = player_url + "_" + ".".join(str(len(part)) for part in encrypted_sig.split('.'))
 
         cache_info = self.db.retrieve("cache")
         cache_dirty = False
@@ -351,7 +347,7 @@ class YoutubeCom(Hoster):
             decrypted_sig = decrypt_func(encrypted_sig)
 
         else:
-            player_data = self.load(self.fixurl(player_url))
+            player_data = self.load(player_url)
 
             m = re.search(r'\b[cs]\s*&&\s*[adf]\.set\([^,]+\s*,\s*encodeURIComponent\s*\(\s*(?P<sig>[a-zA-Z0-9$]+)\(', player_data) or \
                 re.search(r'\b[a-zA-Z0-9]+\s*&&\s*[a-zA-Z0-9]+\.set\([^,]+\s*,\s*encodeURIComponent\s*\(\s*(?P<sig>[a-zA-Z0-9$]+)\(', player_data) or \
@@ -537,7 +533,7 @@ class YoutubeCom(Hoster):
             filename = os.path.join(self.pyload.config.get("general", "download_folder"),
                                     self.pyfile.package().folder,
                                     self.pyfile.name)
-            self.log_info(_("Download skipped: %s due to %s") % (self.pyfile.name, e.message))
+            self.log_info(_("Download skipped: %s due to %s") % (self.pyfile.name, e.args[0]))
 
         return filename, chosen_fmt
 
