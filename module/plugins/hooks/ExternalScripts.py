@@ -9,7 +9,7 @@ from ..internal.misc import Expose, Popen, fs_encode
 class ExternalScripts(Addon):
     __name__ = "ExternalScripts"
     __type__ = "hook"
-    __version__ = "0.74"
+    __version__ = "0.75"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", True),
@@ -173,7 +173,7 @@ class ExternalScripts(Addon):
 
     def download_finished(self, pyfile):
         file = pyfile.plugin.last_download
-        args = [pyfile.id, pyfile.name, file, pyfile.pluginname, pyfile.url]
+        args = [pyfile.id, pyfile.name, file, pyfile.pluginname, pyfile.url, pyfile.package().name]
         self.call_script("download_finished", *args)
 
     def download_processed(self, pyfile):
