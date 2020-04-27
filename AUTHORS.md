@@ -9,9 +9,9 @@
  - Christian Rakow (RaNaN) <Mast3rRaNaN@hotmail.de>
  - Jonas Engelhardt (Jonn3y)
  - Marius Kittelmann (mkaay) <mkaay@mkaay.de>
- - Martin (Velociraptor85) <hrspam@gmail.com>
+ - Martin Hronek (Velociraptor85) <hrspam@gmail.com>
  - Nitzo (GammaC0de) <nitzo2001@yahoo.com>
- - Stefano (stickell) <l.stickell@yahoo.it>
+ - Stefano Codari (stickell) <l.stickell@yahoo.it>
  - Walter Purcaro (vuolter) <vuolter@gmail.com>
  - himbrr <himbrr@himbrr.ws>
  - sebnapi
@@ -25,7 +25,7 @@
 ### Collaborators
 
  - Jonas Engelhardt (Jonn3y)
- - Martin (Velociraptor85) <hrspam@gmail.com>
+ - Martin Hronek (Velociraptor85) <hrspam@gmail.com>
 
 ### Contributors
 
