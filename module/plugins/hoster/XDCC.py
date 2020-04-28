@@ -10,7 +10,7 @@ import threading
 import time
 
 from module.plugins.internal.Hoster import Hoster
-from module.plugins.internal.misc import encode, exists, fsjoin, lock, threaded
+from module.plugins.internal.misc import encode, exists, format_time, fsjoin, lock, threaded
 from module.plugins.Plugin import Abort
 
 
@@ -443,7 +443,7 @@ class IRC(object):
 class XDCC(Hoster):
     __name__    = "XDCC"
     __type__    = "hoster"
-    __version__ = "0.52"
+    __version__ = "0.53"
     __status__  = "testing"
 
     __pattern__ = r'xdcc://(?P<SERVER>.*?)/#?(?P<CHAN>.*?)/(?P<BOT>.*?)/#?(?P<PACK>\d+)/?'
@@ -699,7 +699,8 @@ class XDCC(Hoster):
                 else:
                     m = self.RE_QUEUE_STAT.search(text)
                     if m:
-                        self.log_info(_("Currently queued at position %s, estimated wait time: %s") % (m.group(1), m.group(2)))
+                        self.log_info(_("Waiting in the queue for about %s, current position %s, estimated remaining wait time: %s") %
+                                      (format_time(time.time() - self.queued_time), m.group(1), m.group(2)))
 
     def _on_notification(self, notification):
         if 'progress' in notification:
