@@ -6,7 +6,7 @@ from ..base.xfs_downloader import XFSDownloader
 class FilejokerNet(XFSDownloader):
     __name__ = "FilejokerNet"
     __type__ = "downloader"
-    __version__ = "0.04"
+    __version__ = "0.05"
     __status__ = "testing"
 
     __pyload_version__ = "0.5"
@@ -31,7 +31,7 @@ class FilejokerNet(XFSDownloader):
 
     PREMIUM_ONLY_PATTERN = r"Free Members can download files no bigger"
 
-    INFO_PATTERN = r'<div class="name-size">(?P<N>.+?) <small>\((?P<S>[\d.,]+) (?P<U>[\w^_]+)\)</small></div>'
+    INFO_PATTERN = r'<div class="name-size"><span>(?P<N>.+?)</span> <p>\((?P<S>[\d.,]+) (?P<U>[\w^_]+)\)</p></div>'
     SIZE_REPLACEMENTS = [("Kb", "KiB"), ("Mb", "MiB"), ("Gb", "GiB")]
 
     LINK_PATTERN = r'<div class="premium-download">\s+<a href="(.+?)"'
