@@ -29,7 +29,7 @@ except ImportError:
 class ReCaptcha(CaptchaService):
     __name__ = 'ReCaptcha'
     __type__ = 'captcha'
-    __version__ = '0.42'
+    __version__ = '0.43'
     __status__ = 'testing'
 
     __description__ = 'ReCaptcha captcha service plugin'
@@ -275,7 +275,7 @@ class ReCaptcha(CaptchaService):
         return img
 
     def _challenge_v2(self, key, secure_token=None):
-        fallback_url = "http://www.google.com/recaptcha/api/fallback?k=" + key \
+        fallback_url = "https://www.google.com/recaptcha/api/fallback?k=" + key \
                        + ("&stoken=" + secure_token if secure_token else "")
 
         html = self.pyfile.plugin.load(fallback_url, ref=self.pyfile.url)
@@ -305,7 +305,7 @@ class ReCaptcha(CaptchaService):
 
             challenge_msg = re.sub(r'<.*?>', "", challenge_msg)
 
-            image_url = urlparse.urljoin('http://www.google.com',
+            image_url = urlparse.urljoin('https://www.google.com',
                                          re.search(r'"(/recaptcha/api2/payload[^"]+)', html).group(1))
 
             img = self.pyfile.plugin.load(image_url, ref=fallback_url, decode=False)
