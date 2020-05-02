@@ -124,7 +124,7 @@ session_opts = {
 }
 
 web = StripPathMiddleware(SessionMiddleware(app(), session_opts))
-#web = GZipMiddleWare(web)
+web = GZipMiddleWare(web)
 
 if PREFIX:
     web = PrefixMiddleware(web, prefix=PREFIX)
@@ -146,7 +146,7 @@ def run_threaded(host="0.0.0.0", port="8000", theads=3, cert="", key=""):
     try:
         from module.lib.wsgiserver.wsgi import Server as WSGIServer
         from module.lib.wsgiserver.ssl.builtin import BuiltinSSLAdapter
-    except:
+    except ImportError:
         from module.lib.wsgiserver import CherryPyWSGIServer as WSGIServer
         from module.lib.wsgiserver.ssl_builtin import BuiltinSSLAdapter
 

@@ -145,7 +145,7 @@ class WSGI(ServerAdapter):
     def run(self, handler):
         try:
             from module.lib.wsgiserver.wsgi import Server as WSGIServer
-        except:
+        except ImportError:
             from module.lib.wsgiserver import CherryPyWSGIServer as WSGIServer
 
         server = WSGIServer((self.host, self.port), handler)
