@@ -24,6 +24,7 @@ class WebServerThread(threading.Thread):
         self.use_ssl = self.pyload.config.get("webui", "use_ssl")  #: recheck
         self.certfile = self.pyload.config.get("webui", "ssl_certfile")
         self.keyfile = self.pyload.config.get("webui", "ssl_keyfile")
+        self.certchain = self.pyload.config.get("webui", "ssl_certchain") or None
 
         self.host = self.pyload.config.get("webui", "host")
         self.port = self.pyload.config.get("webui", "port")
@@ -47,7 +48,7 @@ class WebServerThread(threading.Thread):
         server = wsgi.Server(bind_addr, wsgi_app)
 
         if self.use_ssl:
-            server.ssl_adapter = BuiltinSSLAdapter(self.certfile, self.keyfile)
+            server.ssl_adapter = BuiltinSSLAdapter(self.certfile, self.keyfile, self.certchain)
 
         #: hack cheroot to use our custom logger
         server.error_log = lambda *args, **kwgs: self.log.log(
