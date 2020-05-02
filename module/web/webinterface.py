@@ -25,6 +25,7 @@ import module.common.pylgettext as gettext
 import os
 from os.path import join, abspath, dirname, exists
 from os import makedirs
+from socket import error as socket_error
 
 PROJECT_DIR = abspath(dirname(__file__))
 PYLOAD_DIR = abspath(join(PROJECT_DIR, "..", ".."))
@@ -157,7 +158,17 @@ def run_threaded(host="0.0.0.0", port="8000", threads=3, cert="", key="", cert_c
 
     from utils import WSGI
 
-    run(app=web, host=host, port=port, server=WSGI, quiet=True)
+    try:
+        run(app=web, host=host, port=port, server=WSGI, quiet=True)
+
+    except socket_error, e:
+        if '10048' in e.args[0]:  #: Unfortunately, CherryPy raises socket.error without setting errno :(
+            PYLOAD.core.log.fatal("** FATAL ERROR ** Could not start web server - Address Already in Use | Exiting pyLoad")
+            PYLOAD.core.api.kill()
+
+        else:
+            raise
+
 
 
 def run_fcgi(host="0.0.0.0", port="8000"):
