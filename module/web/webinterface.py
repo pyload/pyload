@@ -124,7 +124,7 @@ session_opts = {
 }
 
 web = StripPathMiddleware(SessionMiddleware(app(), session_opts))
-web = GZipMiddleWare(web)
+#web = GZipMiddleWare(web)
 
 if PREFIX:
     web = PrefixMiddleware(web, prefix=PREFIX)
@@ -143,17 +143,21 @@ def run_lightweight(host="0.0.0.0", port="8000"):
 
 
 def run_threaded(host="0.0.0.0", port="8000", theads=3, cert="", key=""):
-    from wsgiserver import CherryPyWSGIServer
+    try:
+        from module.lib.wsgiserver.wsgi import Server as WSGIServer
+        from module.lib.wsgiserver.ssl.builtin import BuiltinSSLAdapter
+    except:
+        from module.lib.wsgiserver import CherryPyWSGIServer as WSGIServer
+        from module.lib.wsgiserver.ssl_builtin import BuiltinSSLAdapter
 
     if cert and key:
-        CherryPyWSGIServer.ssl_certificate = cert
-        CherryPyWSGIServer.ssl_private_key = key
+        WSGIServer.ssl_adapter = BuiltinSSLAdapter(cert, key)
 
-    CherryPyWSGIServer.numthreads = theads
+    WSGIServer.numthreads = theads
 
-    from utils import CherryPyWSGI
+    from utils import WSGI
 
-    run(app=web, host=host, port=port, server=CherryPyWSGI, quiet=True)
+    run(app=web, host=host, port=port, server=WSGI, quiet=True)
 
 
 def run_fcgi(host="0.0.0.0", port="8000"):
