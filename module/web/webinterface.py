@@ -142,7 +142,7 @@ def run_lightweight(host="0.0.0.0", port="8000"):
     run(app=web, host=host, port=port, quiet=True, server="bjoern")
 
 
-def run_threaded(host="0.0.0.0", port="8000", theads=3, cert="", key=""):
+def run_threaded(host="0.0.0.0", port="8000", threads=3, cert="", key="", cert_chain=None):
     try:
         from module.lib.wsgiserver.wsgi import Server as WSGIServer
         from module.lib.wsgiserver.ssl.builtin import BuiltinSSLAdapter
@@ -151,9 +151,9 @@ def run_threaded(host="0.0.0.0", port="8000", theads=3, cert="", key=""):
         from module.lib.wsgiserver.ssl_builtin import BuiltinSSLAdapter
 
     if cert and key:
-        WSGIServer.ssl_adapter = BuiltinSSLAdapter(cert, key)
+        WSGIServer.ssl_adapter = BuiltinSSLAdapter(cert, key, cert_chain)
 
-    WSGIServer.numthreads = theads
+    WSGIServer.numthreads = threads
 
     from utils import WSGI
 
