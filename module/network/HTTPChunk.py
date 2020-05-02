@@ -18,12 +18,13 @@
 """
 import codecs
 import os
-import posixpath
 import re
 import time
 import urllib
 from cgi import parse_header
 from email.header import decode_header
+from ntpath import basename as ntpath_basename
+from posixpath import basename as posixpath_basename
 
 import pycurl
 from HTTPRequest import HTTPRequest
@@ -323,9 +324,9 @@ class HTTPChunk(HTTPRequest):
                         continue
 
                     #:Drop unsafe chararacters
-                    fname = posixpath.basename(fname)
-                    fname = os.path.basename(fname)
-                    for badc in '<>:"/\\|?*' if os.name == "nt" else '\0/\\"':
+                    fname = posixpath_basename(fname)
+                    fname = ntpath_basename(fname)
+                    for badc in '<>:"/\\|?*\0':
                         fname = fname.replace(badc, "")
                     fname = fname.lstrip('.')
 
