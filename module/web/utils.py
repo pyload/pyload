@@ -141,9 +141,12 @@ def toDict(obj):
     return ret
 
 
-class CherryPyWSGI(ServerAdapter):
+class WSGI(ServerAdapter):
     def run(self, handler):
-        from wsgiserver import CherryPyWSGIServer
+        try:
+            from module.lib.wsgiserver.wsgi import Server as WSGIServer
+        except ImportError:
+            from module.lib.wsgiserver import CherryPyWSGIServer as WSGIServer
 
-        server = CherryPyWSGIServer((self.host, self.port), handler)
+        server = WSGIServer((self.host, self.port), handler)
         server.start()

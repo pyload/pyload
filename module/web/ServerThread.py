@@ -22,6 +22,8 @@ class WebServer(threading.Thread):
         self.cert = pycore.config["ssl"]["cert"]
         self.key = pycore.config["ssl"]["key"]
         self.host = pycore.config['webinterface']['host']
+        if self.host == "0.0.0.0" and pycore.config['webinterface']['dualstack']:
+            self.host = "::"
         self.port = pycore.config['webinterface']['port']
 
         self.setDaemon(True)
