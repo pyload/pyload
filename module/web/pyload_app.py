@@ -160,7 +160,7 @@ def choose_path(browse_for, path=""):
 ## Views
 @error(500)
 def error500(error):
-    print "An error occured while processing the request."
+    print "An error occurred while processing the request."
     if error.traceback:
         print error.traceback
 
