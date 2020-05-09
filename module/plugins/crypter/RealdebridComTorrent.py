@@ -15,10 +15,10 @@ from ..internal.misc import exists, json, safejoin
 class RealdebridComTorrent(Crypter):
     __name__ = "RealdebridComTorrent"
     __type__ = "crypter"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __status__ = "testing"
 
-    __pattern__ = r'(?:file|https?)://.+\.torrent|magnet:\?.+'
+    __pattern__ = r'^unmatchable$'
     __config__ = [("activated", "bool", "Activated", True),
                   ("folder_per_package", "Default;Yes;No", "Create folder for each package", "Default"),
                   ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10),

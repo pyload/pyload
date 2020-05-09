@@ -17,10 +17,9 @@ except ImportError:
 class AlldebridComTorrent(Crypter):
     __name__ = "AlldebridComTorrent"
     __type__ = "crypter"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
-    #_pattern__ = r'(?:file|https?)://.+\.torrent|magnet:\?.+'
     __pattern__ = r'^unmatchable$'
     __config__ = [("activated", "bool", "Activated", True),
                   ("folder_per_package", "Default;Yes;No", "Create folder for each package", "Default"),

@@ -12,10 +12,10 @@ from ..internal.misc import json
 class ZbigzCom(Hoster):
     __name__ = "ZbigzCom"
     __type__ = "hoster"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __status__ = "testing"
 
-    __pattern__ = r'https?://.+\.torrent|magnet:\?.+'
+    __pattern__ = r'^unmatchable$'
     __config__ = [("activated", "bool", "Activated", False)]
 
     __description__ = """Zbigz.com hoster plugin"""
