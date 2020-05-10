@@ -11,10 +11,10 @@ from ..internal.misc import decode, fs_encode, fsjoin, safename
 class TORRENT(Container):
     __name__ = "TORRENT"
     __type__ = "container"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __status__ = "testing"
 
-    __pattern__ = r'^(?!file://).+\.(torrent|magnet)$'
+    __pattern__ = r'(?:file|https?)://.+\.torrent|magnet:\?.+|(?!file://).+\.(torrent|magnet)'
     __config__ = [("activated", "bool", "Activated", True),
                   ("use_premium", "bool", "Use premium account if available", True),
                   ("folder_per_package", "Default;Yes;No", "Create folder for each package", "Default")]
@@ -22,6 +22,19 @@ class TORRENT(Container):
     __description__ = """TORRENT container decrypter plugin"""
     __license__ = "GPLv3"
     __authors__ = [("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
+
+    CONTAINER_PATTERN = r'(?!file://).+\.(torrent|magnet)'
+    CRYPTER_PATTERN = r'(?:file|https?)://.+\.torrent|magnet:\?.+'
+
+    def process(self, pyfile):
+        if re.match(self.CRYPTER_PATTERN, pyfile.url) is not None:
+            self.log_error(_("No plugin is associated with torrents / magnets"),
+                           _("Please go to plugin settings -> TORRENT and select your preferred plugin"))
+
+            self.fail(_("No plugin is associated with torrents / magnets"))
+
+        elif re.match(self.CONTAINER_PATTERN, pyfile.url) is not None:
+            return Container.process(self, pyfile)
 
     def decrypt(self, pyfile):
         fs_filename = fs_encode(pyfile.url)
