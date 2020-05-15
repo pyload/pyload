@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 
-import re
-import time
+import pycurl
+from module.network.HTTPRequest import BadHeader
 
 from ..internal.Account import Account
-from ..internal.misc import parse_html_form
+from ..internal.misc import json
 
 
 class FshareVn(Account):
     __name__ = "FshareVn"
     __type__ = "account"
-    __version__ = "0.23"
+    __version__ = "0.25"
     __status__ = "testing"
 
     __description__ = """Fshare.vn account plugin"""
@@ -19,58 +19,80 @@ class FshareVn(Account):
                    ("stickell", "l.stickell@yahoo.it"),
                    ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
-    VALID_UNTIL_PATTERN = ur'>Hạn dùng:.+?>([\d/]+)</span>'
-    LIFETIME_PATTERN = ur'<dt>Lần đăng nhập trước:</dt>\s*<dd>.+?</dd>'
-    TRAFFIC_LEFT_PATTERN = ur'>Đã SD: </a>\s*([\d.,]+)(?:([\w^_]+))\s*/\s*([\d.,]+)(?:([\w^_]+))'
+    API_KEY = "L2S7R6ZMagggC5wWkQhX2+aDi467PPuftWUMRFSn"
+    API_URL = "https://api.fshare.vn/api/"
+
+    def api_response(self, method, session_id=None, **kwargs):
+        self.req.http.c.setopt(pycurl.USERAGENT, "okhttp/3.6.0")
+
+        if len(kwargs) == 0:
+            json_data = self.load(self.API_URL + method,
+                                  cookies=[("fshare.vn", 'session_id', session_id)] if session_id else True)
+
+        else:
+            json_data = self.load(self.API_URL + method,
+                                  post=json.dumps(kwargs),
+                                  cookies=[("fshare.vn", 'session_id', session_id)] if session_id else True)
+
+        return json.loads(json_data)
 
     def grab_info(self, user, password, data):
-        html = self.load("https://www.fshare.vn")
+        trafficleft = None
+        premium = False
 
-        m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
-        if m is not None:
-            trafficleft = (self.parse_traffic(m.group(3), m.group(4)) - self.parse_traffic(m.group(1), m.group(2))) if m else None
+        api_data = self.api_response("user/get", session_id=data['session_id'])
 
-        else:
-            self.log_error(_("TRAFFIC_LEFT_PATTERN not found"))
+        expire_vip = unicode(api_data.get("expire_vip", ""))  #: isnumeric() is only available for unicode strings
+        validuntil = float(expire_vip) if expire_vip.isnumeric() else None
 
-        if re.search(self.LIFETIME_PATTERN, html):
-            self.log_debug("Lifetime membership detected")
-            return {'validuntil': -1,
-                    'trafficleft': trafficleft,
-                    'premium': True}
-
-        m = re.search(self.VALID_UNTIL_PATTERN, html)
-        if m is not None:
+        if validuntil:
             premium = True
-            validuntil = time.mktime(time.strptime(m.group(1) + " 23:59:59", '%d/%m/%Y %H:%M:%S'))
-
-        else:
-            premium = False
-            validuntil = None
-            trafficleft = None
 
         return {'validuntil': validuntil,
                 'trafficleft': trafficleft,
                 'premium': premium}
 
     def signin(self, user, password, data):
-        html = self.load("https://www.fshare.vn/site/login")
-        if 'href="/site/logout"' in html:
-            self.skip_login()
+        user = user.lower()
 
-        url, inputs = parse_html_form('id="form-signup"', html)
-        if inputs is None:
-            self.fail_login("Login form not found")
+        fshare_session_cache = self.db.retrieve("fshare_session_cache") or {}
+        if user in fshare_session_cache:
+            data['token'] = fshare_session_cache[user]['token']
+            data['session_id'] = fshare_session_cache[user]['session_id']
 
-        inputs.update({'LoginForm[email]': user,
-                       'LoginForm[password]': password,
-                       'LoginForm[rememberMe]': 1})
+            try:
+                api_data = self.api_response("user/get", session_id=data['session_id'])
 
-        html = self.load("https://www.fshare.vn/site/login", post=inputs)
-        if not 'href="/site/logout"' in html:
-            m = re.search(r'<div class="mdc-dialog__content" .*?>\s*(.+?)<', html)
-            if m is not None:
-                err_msg = m.group(1).strip()
-                self.log_error(err_msg)
+            except BadHeader, e:
+                if e.code == 401:
+                    del fshare_session_cache[user]
+                    self.db.store("fshare_session_cache", fshare_session_cache)
 
+            if api_data.get('email', "").lower() == user:
+                self.skip_login()
+
+            else:
+                del fshare_session_cache[user]
+                self.db.store("fshare_session_cache", fshare_session_cache)
+
+        data['token'] = None
+        data['session_id'] = None
+
+        try:
+            api_data = self.api_response("user/login",
+                                         app_key=self.API_KEY,
+                                         user_email=user,
+                                         password=password)
+        except BadHeader, e:
             self.fail_login()
+
+        if api_data['code'] != 200:
+            self.log_error(api_data['msg'])
+            self.fail_login()
+
+        fshare_session_cache[user] = {'token': api_data['token'],
+                                    'session_id': api_data['session_id']}
+        self.db.store("fshare_session_cache", fshare_session_cache)
+
+        data['token'] = fshare_session_cache[user]['token']
+        data['session_id'] = fshare_session_cache[user]['session_id']

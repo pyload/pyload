@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
+import fnmatch
 import os
-import pycurl
 import time
 import urllib
 
+import pycurl
 from module.network.HTTPRequest import BadHeader
 
 from ..internal.Crypter import Crypter
@@ -14,13 +15,15 @@ from ..internal.misc import exists, json, safejoin
 class RealdebridComTorrent(Crypter):
     __name__ = "RealdebridComTorrent"
     __type__ = "crypter"
-    __version__ = "0.09"
+    __version__ = "0.12"
     __status__ = "testing"
 
-    __pattern__ = r'(?:file|https?)://.+\.torrent|magnet:\?.+'
+    __pattern__ = r'^unmatchable$'
     __config__ = [("activated", "bool", "Activated", True),
                   ("folder_per_package", "Default;Yes;No", "Create folder for each package", "Default"),
                   ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10),
+                  ("include_filter", "str", "File types to include (e.g. *.iso;*.zip, leave empty to select none)", "*.*"),
+                  ("exclude_filter", "str", "File types to exclude (e.g. *.exe;advertisement.txt, leave empty to select none)", ""),
                   ("del_finished", "bool", "Delete downloaded torrents from the server", True)]
 
     __description__ = """Realdebrid.com torrents crypter plugin"""
@@ -30,22 +33,34 @@ class RealdebridComTorrent(Crypter):
     # See https://api.real-debrid.com/
     API_URL = "https://api.real-debrid.com/rest/1.0"
 
-    def api_response(self, namespace, get={}, post={}):
-        try:
-            json_data = self.load(self.API_URL + namespace, get=get, post=post)
+    def api_response(self, method, get={}, post={}):
+        self.req.http.c.setopt(pycurl.USERAGENT, "pyLoad/%s" % self.pyload.version)
 
-            return json.loads(json_data) if len(json_data) > 0 else {}
+        for _i in range(2):
+            try:
+                json_data = self.load(self.API_URL + method, get=get, post=post)
 
-        except BadHeader, e:
-            error_msg = json.loads(e.content)['error']
-            if e.code == 400:
-                self.fail(error_msg)
-            elif e.code == 401:
-                self.fail(_("Bad token (expired, invalid)"))
-            elif e.code == 403:
-                self.fail(_("Permission denied (account locked, not premium)"))
-            elif e.code == 503:
-                self.fail(_("Service unavailable - %s") % error_msg)
+            except BadHeader, e:
+                json_data = e.content
+
+            res = json.loads(json_data) if len(json_data) > 0 else {}
+
+            if 'error_code' in res:
+                if res['error_code'] == 8:  #: token expired, refresh the token and retry
+                    self.account.relogin()
+                    if not self.account.info['login']['valid']:
+                        return res
+
+                    else:
+                        self.api_token = self.account.accounts[self.account.accounts.keys()[0]]["api_token"]
+                        get['auth_token'] = self.api_token
+                        continue
+
+                else:
+                    error_msg = res['error']
+                    self.fail(error_msg)
+
+            return res
 
     def sleep(self, sec):
         for _i in range(sec):
@@ -67,7 +82,7 @@ class RealdebridComTorrent(Crypter):
 
             else:
                 #: URL is local torrent file (uploaded container)
-                torrent_filename = urllib.url2pathname(self.pyfile.url[7:]).encode('latin1').decode('utf8') #: trim the starting `file://`
+                torrent_filename = urllib.url2pathname(self.pyfile.url[7:]).encode('latin1').decode('utf8')  #: trim the starting `file://`
                 if not exists(torrent_filename):
                     self.fail(_("Torrent file does not exist"))
 
@@ -106,11 +121,24 @@ class RealdebridComTorrent(Crypter):
         if 'error' in torrent_info:
             self.fail("%s (code: %s)" % (torrent_info["error"], torrent_info.get("error_code", -1)))
 
-        #: Select all the files for downloading
-        file_ids = ",".join([str(_f['id']) for _f in torrent_info['files']])
+        #: Filter and select files for downloading
+        exclude_filters = self.config.get('exclude_filter').split(';')
+        excluded_ids = []
+        for _filter in exclude_filters:
+            excluded_ids.extend([_file['id'] for _file in torrent_info['files']
+                                 if fnmatch.fnmatch(os.path.basename(_file['path']), _filter)])
+
+        include_filters = self.config.get('include_filter').split(';')
+        included_ids = []
+        for _filter in include_filters:
+            included_ids.extend([_file['id'] for _file in torrent_info['files']
+                                 if fnmatch.fnmatch(os.path.basename(_file['path']), _filter)])
+
+        selected_ids = ",".join([str(_id) for _id in included_ids
+                                 if _id not in excluded_ids])
         self.api_response("/torrents/selectFiles/" + torrent_id,
                           get={'auth_token': self.api_token},
-                          post={'files': file_ids})
+                          post={'files': selected_ids})
 
         return torrent_id
 
@@ -146,10 +174,12 @@ class RealdebridComTorrent(Crypter):
 
     def delete_torrent_from_server(self, torrent_id):
         """ Remove the torrent from the server """
+        url = "%s/torrents/delete/%s?auth_token=%s" % (self.API_URL, torrent_id, self.api_token)
+        self.log_debug("DELETE URL %s" % url)
         c = pycurl.Curl()
-        c.setopt(pycurl.URL, "%s/torrents/delete/%s?auth_token=%s" % (self.API_URL, torrent_id, self.api_token))
+        c.setopt(pycurl.URL, url)
         c.setopt(pycurl.SSL_VERIFYPEER, 0)
-        c.setopt(pycurl.USERAGENT, self.config.get("useragent", plugin="UserAgentSwitcher"))
+        c.setopt(pycurl.USERAGENT, "pyLoad/%s" % self.pyload.version)
         c.setopt(pycurl.HTTPHEADER, ["Accept: */*",
                                           "Accept-Language: en-US,en",
                                           "Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7",
@@ -164,20 +194,22 @@ class RealdebridComTorrent(Crypter):
         return code
 
     def decrypt(self, pyfile):
+        torrent_id = 0
         if 'RealdebridCom' not in self.pyload.accountManager.plugins:
             self.fail(_("This plugin requires an active Realdebrid.com account"))
 
-        account_plugin = self.pyload.accountManager.getAccountPlugin("RealdebridCom")
-        if len(account_plugin.accounts) == 0:
+        self.account = self.pyload.accountManager.getAccountPlugin("RealdebridCom")
+        if len(self.account.accounts) == 0:
             self.fail(_("This plugin requires an active Realdebrid.com account"))
 
-        self.api_token = account_plugin.accounts[account_plugin.accounts.keys()[0]]["password"]
+        self.api_token = self.account.accounts[self.account.accounts.keys()[0]]["api_token"]
 
-        torrent_id = self.send_request_to_server()
-        torrent_urls = self.wait_for_server_dl(torrent_id)
+        try:
+            torrent_id = self.send_request_to_server()
+            torrent_urls = self.wait_for_server_dl(torrent_id)
 
-        self.packages = [(pyfile.package().name, torrent_urls, pyfile.package().name)]
+            self.packages = [(pyfile.package().name, torrent_urls, pyfile.package().name)]
 
-        if self.config.get("del_finished"):
-            self.delete_torrent_from_server(torrent_id)
-
+        finally:
+            if torrent_id and self.config.get("del_finished"):
+                self.delete_torrent_from_server(torrent_id)

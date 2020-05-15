@@ -18,12 +18,13 @@
 """
 import codecs
 import os
-import posixpath
 import re
 import time
 import urllib
 from cgi import parse_header
 from email.header import decode_header
+from ntpath import basename as ntpath_basename
+from posixpath import basename as posixpath_basename
 
 import pycurl
 from HTTPRequest import HTTPRequest
@@ -265,22 +266,30 @@ class HTTPChunk(HTTPRequest):
                 self.p.chunkSupport = True
 
             elif line.startswith("content-disposition"):
-                try:
-                    orgline.encode('iso-8859-1')
-                except UnicodeDecodeError:
-                    self.log.debug("Content-Disposition: | error: header contains nonstandard characters")
-                else:
-                    disposition_value = orgline.split(":", 1)[1].strip()
-                    disposition_type, disposition_params = parse_header(disposition_value)
+                disposition_value = orgline.split(":", 1)[1].strip()
+                disposition_type, disposition_params = parse_header(disposition_value)
 
-                    fname = None
-                    if 'filename*' in disposition_params:
-                        fname = disposition_params['filename*']
-                        m = re.search(r'=\?([^?]+)\?([QB])\?([^?]*)\?=', fname, re.I)  #: rfc2047
+                fname = None
+                if 'filename*' in disposition_params:
+                    fname = disposition_params['filename*']
+                    m = re.search(r'=\?([^?]+)\?([QB])\?([^?]*)\?=', fname, re.I)  #: rfc2047
+                    if m is not None:
+                        fname, enc = decode_header(fname)[0]
+                        try:
+                            fname = fname.decode(enc)
+                        except LookupError:
+                            self.log.warning("Content-Disposition: | error: No decoder found for %s" % enc)
+                            fname = None
+                        except UnicodeEncodeError:
+                            self.log.warning("Content-Disposition: | error: Error when decoding string from %s." % enc)
+                            fname = None
+
+                    else:
+                        m = re.search(r'(.+?)\'(.*)\'(.+)', fname)
                         if m is not None:
-                            fname, enc = decode_header(fname)[0]
+                            enc, lang, data = m.groups()
                             try:
-                                fname = fname.decode(enc)
+                                fname = urllib.unquote(data).decode(enc)
                             except LookupError:
                                 self.log.warning("Content-Disposition: | error: No decoder found for %s" % enc)
                                 fname = None
@@ -289,55 +298,42 @@ class HTTPChunk(HTTPRequest):
                                 fname = None
 
                         else:
-                            m = re.search(r'(.+?)\'(.*)\'(.+)', fname)
-                            if m is not None:
-                                enc, lang, data = m.groups()
-                                try:
-                                    fname = urllib.unquote(data).decode(enc)
-                                except LookupError:
-                                    self.log.warning("Content-Disposition: | error: No decoder found for %s" % enc)
-                                    fname = None
-                                except UnicodeEncodeError:
-                                    self.log.warning("Content-Disposition: | error: Error when decoding string from %s." % enc)
-                                    fname = None
+                            fname = None
 
-                            else:
-                                fname = None
-
-                    if fname is None:
-                        if 'filename' in disposition_params:
-                            fname = disposition_params['filename']
-                            m = re.search(r'=\?([^?]+)\?([QB])\?([^?]*)\?=', fname, re.I)  #: rfc2047
-                            if m is not None:
-                                fname, enc = decode_header(m.group(0))[0]
-                                try:
-                                    fname = fname.decode(enc)
-                                except LookupError:
-                                    self.log.warning("Content-Disposition: | error: No decoder found for %s" % enc)
-                                    continue
-                                except UnicodeEncodeError:
-                                    self.log.warning("Content-Disposition: | error: Error when decoding string from %s." % enc)
-                                    continue
-                            else:
-                                try:
-                                    fname = urllib.unquote(fname).decode('iso-8859-1')
-                                except UnicodeEncodeError:
-                                    self.log.warning("Content-Disposition: | error: Error when decoding string from iso-8859-1.")
-                                    continue
+                if fname is None:
+                    if 'filename' in disposition_params:
+                        fname = disposition_params['filename']
+                        m = re.search(r'=\?([^?]+)\?([QB])\?([^?]*)\?=', fname, re.I)  #: rfc2047
+                        if m is not None:
+                            fname, enc = decode_header(m.group(0))[0]
+                            try:
+                                fname = fname.decode(enc)
+                            except LookupError:
+                                self.log.warning("Content-Disposition: | error: No decoder found for %s" % enc)
+                                continue
+                            except UnicodeEncodeError:
+                                self.log.warning("Content-Disposition: | error: Error when decoding string from %s." % enc)
+                                continue
                         else:
-                            continue
+                            try:
+                                fname = urllib.unquote(fname).decode('iso-8859-1')
+                            except UnicodeEncodeError:
+                                self.log.warning("Content-Disposition: | error: Error when decoding string from iso-8859-1.")
+                                continue
+                    else:
+                        continue
 
                     #:Drop unsafe chararacters
-                    fname = posixpath.basename(fname)
-                    fname = os.path.basename(fname)
-                    for badc in '<>:"/\\|?*' if os.name == "nt" else '\0/\\"':
+                    fname = posixpath_basename(fname)
+                    fname = ntpath_basename(fname)
+                    for badc in '<>:"/\\|?*\0':
                         fname = fname.replace(badc, "")
                     fname = fname.lstrip('.')
 
                     self.log.debug("Content-Disposition: %s" % fname)
                     self.p.updateDisposition(fname)
 
-            if not self.resume and line.startswith("content-length"):
+            elif not self.resume and line.startswith("content-length"):
                 self.p.size = int(line.split(":")[1])
 
         self.headerParsed = True

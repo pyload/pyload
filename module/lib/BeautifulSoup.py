@@ -79,7 +79,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE, DAMMIT.
 from __future__ import generators
 
 __author__ = "Leonard Richardson (leonardr@segfault.org)"
-__version__ = "3.0.8.1"
+__version__ = "3.2.0"
 __copyright__ = "Copyright (c) 2004-2010 Leonard Richardson"
 __license__ = "New-style BSD"
 
@@ -531,6 +531,8 @@ class Tag(PageElement):
         self.name = name
         if attrs is None:
             attrs = []
+        elif isinstance(attrs, dict):
+            attrs = attrs.items()
         self.attrs = attrs
         self.contents = []
         self.setup(parent, previous)
@@ -1295,7 +1297,7 @@ class BeautifulStoneSoup(Tag, SGMLParser):
         """
 
         nestingResetTriggers = self.NESTABLE_TAGS.get(name)
-        isNestable = nestingResetTriggers is not None
+        isNestable = nestingResetTriggers != None
         isResetNesting = self.RESET_NESTING_TAGS.has_key(name)
         popTo = None
         inclusive = True

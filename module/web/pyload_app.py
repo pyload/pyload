@@ -160,7 +160,7 @@ def choose_path(browse_for, path=""):
 ## Views
 @error(500)
 def error500(error):
-    print "An error occured while processing the request."
+    print "An error occurred while processing the request."
     if error.traceback:
         print error.traceback
 
@@ -205,9 +205,13 @@ def robots():
 @route('/login', method="GET")
 def login():
     if not PYLOAD and SETUP:
-        redirect(PREFIX + "/setup")
+        return redirect(PREFIX + "/setup")
     else:
-        return render_to_response("login.html", proc=[pre_processor])
+        s = request.environ.get('beaker.session')
+        if s.get("name", None) and s.get("authenticated", False):
+            return redirect(PREFIX + "/")
+        else:
+            return render_to_response("login.html", proc=[pre_processor])
 
 
 @route('/nopermission')
@@ -320,7 +324,7 @@ def get_download(path):
 
     path = path.replace("..", "")
     try:
-        return static_file(fs_encode(path), fs_encode(root), download=True)
+        return static_file(fs_encode(path), fs_encode(root), mimetype="application/octet-stream" ,download=True)
 
     except Exception, e:
         print e

@@ -21,7 +21,10 @@ class WebServer(threading.Thread):
         self.https = pycore.config['webinterface']['https']
         self.cert = pycore.config["ssl"]["cert"]
         self.key = pycore.config["ssl"]["key"]
+        self.cert_chain = pycore.config["ssl"]["cert_chain"] or None
         self.host = pycore.config['webinterface']['host']
+        if self.host == "0.0.0.0" and pycore.config['webinterface']['dualstack']:
+            self.host = "::"
         self.port = pycore.config['webinterface']['port']
 
         self.setDaemon(True)
@@ -75,7 +78,6 @@ class WebServer(threading.Thread):
             self.start_builtin()
 
     def start_builtin(self):
-
         if self.https:
             log.warning(_("This server offers no SSL, please consider using threaded instead"))
 
@@ -90,13 +92,11 @@ class WebServer(threading.Thread):
             self.key = ""
             self.core.log.info(_("Starting threaded webserver: %(host)s:%(port)d") % {"host": self.host, "port": self.port})
 
-        webinterface.run_threaded(host=self.host, port=self.port, cert=self.cert, key=self.key)
+        webinterface.run_threaded(host=self.host, port=self.port, cert=self.cert, key=self.key, cert_chain=self.cert_chain)
 
     def start_fcgi(self):
-
         self.core.log.info(_("Starting fastcgi server: %(host)s:%(port)d") % {"host": self.host, "port": self.port})
         webinterface.run_fcgi(host=self.host, port=self.port)
-
 
     def start_lightweight(self):
         if self.https:

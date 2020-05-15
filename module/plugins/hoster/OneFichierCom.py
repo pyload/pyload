@@ -11,7 +11,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class OneFichierCom(SimpleHoster):
     __name__ = "OneFichierCom"
     __type__ = "hoster"
-    __version__ = "1.15"
+    __version__ = "1.17"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(?:(?P<ID1>\w+)\.)?(?P<HOST>1fichier\.com|alterupload\.com|cjoint\.net|d(?:es)?fichiers\.com|dl4free\.com|megadl\.fr|mesfichiers\.org|piecejointe\.net|pjointe\.com|tenvoi\.com)(?:/\?(?P<ID2>\w+))?'
@@ -53,48 +53,6 @@ class OneFichierCom(SimpleHoster):
         self.chunk_limit = -1 if self.premium else 1
         self.resume_download = True
 
-    @classmethod
-    def get_info(cls, url="", html=""):
-        redirect = url
-        for i in range(10):
-            try:
-                headers = dict((k.lower(), v) for k, v in re.findall(
-                    r'(?P<name>.+?): (?P<value>.+?)\r?\n', get_url(redirect, just_header=True)))
-                if 'location' in headers and headers['location']:
-                    redirect = headers['location']
-
-                else:
-                    if headers.get('content-type') == "application/octet-stream":
-                        if "filename=" in headers.get('content-disposition'):
-                            _name = dict(
-                                _i.split("=") for _i in
-                                map(str.strip, headers['content-disposition'].split(";"))[1:])
-                            name = _name['filename'].strip("\"'")
-                        else:
-                            name = url
-
-                        info = {'name': name,
-                                'size': long(headers.get('content-length')),
-                                'status': 7,
-                                'url': url}
-
-                    else:
-                        info = super(OneFichierCom, cls).get_info(url, html)
-
-                    break
-
-            except Exception, e:
-                print(format_exc())
-                info = {'status': 8,
-                        'error': e.message}
-                break
-
-        else:
-            info = {'status': 8,
-                    'error': _("Too many redirects")}
-
-        return info
-
     def handle_free(self, pyfile):
         url, inputs = self.parse_html_form('action="https://1fichier.com/\?[\w^_]+')
 
@@ -123,8 +81,7 @@ class OneFichierCom(SimpleHoster):
             self.link = m.group(1)
 
     def handle_premium(self, pyfile):
-        self.download(
-            pyfile.url,
-            post={'did': 0,
-                  'dl_no_ssl': "on"},
-            disposition=False)  # @TODO: Remove disposition in 0.4.10
+        self.download(pyfile.url,
+                      post={'did': 0,
+                            'dl_no_ssl': "on"})
+

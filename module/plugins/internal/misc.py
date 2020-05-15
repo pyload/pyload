@@ -42,7 +42,7 @@ except ImportError:
 class misc(object):
     __name__ = "misc"
     __type__ = "plugin"
-    __version__ = "0.63"
+    __version__ = "0.64"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -602,7 +602,8 @@ def safename(value):
     """
     Remove invalid characters
     """
-    repl = '<>:"/\\|?*' if os.name == "nt" else '\0/\\"'
+    # repl = '<>:"/\\|?*' if os.name == "nt" else '\0/\\"'
+    repl = '<>:"/\\|?*\0'
     name = remove_chars(value, repl)
     return name
 

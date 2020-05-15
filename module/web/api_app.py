@@ -35,10 +35,14 @@ def call_api(func, args=""):
         info = PYLOAD.checkAuth(request.POST['u'], request.POST['p'])
         if info:
             if not PYLOAD.isAuthorized(func, {"role": info["role"], "permission": info["permission"]}):
-                return HTTPError(401, json.dumps("Unauthorized"))
+                response.status = 401
+                response.content_type = 'application/json'
+                return json.dumps({'error': "Unauthorized"})
 
         else:
-            return HTTPError(403, json.dumps("Forbidden"))
+            response.status = 403
+            response.content_type = 'application/json'
+            return json.dumps({'error': "Forbidden"})
 
     else:
         s = request.environ.get('beaker.session')
@@ -46,10 +50,14 @@ def call_api(func, args=""):
             s = s.get_by_id(request.POST['session'])
 
         if not s or not s.get("authenticated", False):
-            return HTTPError(403, json.dumps("Forbidden"))
+            response.status = 403
+            response.content_type = 'application/json'
+            return json.dumps({'error': "Forbidden"})
 
         if not PYLOAD.isAuthorized(func, {"role": s["role"], "permission": s["perms"]}):
-            return HTTPError(401, json.dumps("Unauthorized"))
+            response.status = 401
+            response.content_type = 'application/json'
+            return json.dumps({'error': "Unauthorized"})
 
     args = args.split("/")[1:]
     kwargs = {}
@@ -62,7 +70,9 @@ def call_api(func, args=""):
         return callApi(func, *args, **kwargs)
     except Exception, e:
         print_exc()
-        return HTTPError(500, json.dumps({"error": e.message, "traceback": format_exc()}))
+        response.status = 500
+        response.content_type = 'application/json'
+        return json.dumps({"error": e.message, "traceback": format_exc()})
 
 
 def callApi(func, *args, **kwargs):

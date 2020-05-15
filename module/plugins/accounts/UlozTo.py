@@ -13,7 +13,7 @@ from ..internal.misc import json, parse_html_form, timestamp
 class UlozTo(Account):
     __name__ = "UlozTo"
     __type__ = "account"
-    __version__ = "0.34"
+    __version__ = "0.35"
     __status__ = "testing"
 
     __description__ = """Uloz.to account plugin"""
@@ -51,8 +51,8 @@ class UlozTo(Account):
                 'premium': premium}
 
     def signin(self, user, password, data):
-        html = self.load('https://ulozto.net/?do=web-login')
-        if ">Log out<" in html:
+        html = self.load('https://ulozto.net/login')
+        if 'Log out' in html:
             self.skip_login()
 
         url, inputs = parse_html_form('action="/login"', html)
@@ -64,5 +64,5 @@ class UlozTo(Account):
 
         html = self.load(urlparse.urljoin("https://ulozto.net/", url),
                          post=inputs)
-        if not '>Log out<' in html:
+        if 'Log out' not in html:
             self.fail_login()

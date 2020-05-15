@@ -26,7 +26,7 @@ def parse_fileInfo(klass, url="", html=""):
 class Base(Plugin):
     __name__ = "Base"
     __type__ = "base"
-    __version__ = "0.37"
+    __version__ = "0.38"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -104,14 +104,12 @@ class Base(Plugin):
 
         #: Hide any user/password
         try:
-            msg = msg.replace(
-                self.account.user, self.account.user[:3] + "*******")
+            msg = msg.replace(self.account.user, self.account.user[:3] + "*******")
         except Exception:
             pass
 
         try:
-            msg = msg.replace(
-                self.account.info['login']['password'], "**********")
+            msg = msg.replace(self.account.info['login']['password'], "**********")
         except Exception:
             pass
 
@@ -155,8 +153,7 @@ class Base(Plugin):
             pass
 
         if self.account:
-            self.req = self.pyload.requestFactory.getRequest(
-                self.classname, self.account.user)
+            self.req = self.pyload.requestFactory.getRequest(self.classname, self.account.user)
             # @NOTE: Avoid one unnecessary get_info call by `self.account.premium` here
             self.premium = self.account.info['data']['premium']
         else:
@@ -172,8 +169,7 @@ class Base(Plugin):
 
     def load_account(self):
         if not self.account:
-            self.account = self.pyload.accountManager.getAccountPlugin(
-                self.classname)
+            self.account = self.pyload.accountManager.getAccountPlugin(self.classname)
 
         if not self.account:
             self.account = False
@@ -205,9 +201,7 @@ class Base(Plugin):
             size = self.pyfile.size
 
         if size:
-            self.log_info(
-                _("Link size: %s (%s bytes)") %
-                (format_size(size), size))
+            self.log_info(_("Link size: %s (%s bytes)") % (format_size(size), size))
         else:
             self.log_info(_("Link size: N/D"))
 
@@ -226,7 +220,7 @@ class Base(Plugin):
         self.log_info(_("Grabbing link info..."))
 
         old_info = dict(self.info)
-        new_info = self.get_info(self.pyfile.url, self.data)
+        new_info = self.get_info(replace_patterns(self.pyfile.url, self.URL_REPLACEMENTS), self.data)
 
         self.info.update(new_info)
 
@@ -399,14 +393,12 @@ class Base(Plugin):
         if msg:
             self.pyfile.error = msg
         else:
-            msg = self.pyfile.error or self.info.get(
-                'error') or self.pyfile.getStatusName()
+            msg = self.pyfile.error or self.info.get('error') or self.pyfile.getStatusName()
 
         raise Fail(decode(msg))  # @TODO: Remove `encode` in 0.4.10
 
     def error(self, msg="", type=_("Parse")):
-        type = _("%s error") % type.strip(
-        ).capitalize() if type else _("Unknown")
+        type = _("%s error") % type.strip().capitalize() if type else _("Unknown")
         msg = _("%(type)s: %(msg)s | Plugin may be out of date"
                 % {'type': type, 'msg': msg or self.pyfile.error})
 
@@ -437,8 +429,7 @@ class Base(Plugin):
 
     def restart(self, msg="", premium=True):
         if not msg:
-            msg = _("Restart plugin") if premium else _(
-                "Fallback to free processing")
+            msg = _("Restart plugin") if premium else _("Fallback to free processing")
 
         if not premium:
             if self.premium:

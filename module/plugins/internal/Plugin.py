@@ -245,7 +245,7 @@ class Plugin(object):
             bool(cookies),
             just_header,
             multipart,
-            decode is True)  # @TODO: Fix network multipart in 0.4.10
+            decode is True)
 
         #@TODO: Move to network in 0.4.10
         if not redirect:
