@@ -219,13 +219,48 @@ class Core(object):
 
     def isAlreadyRunning(self):
         pid = self.checkPidFile()
-        if not pid or os.name == "nt": return False
-        try:
-            os.kill(pid, 0)  # 0 - default signal (does nothing)
-        except:
+        if not pid: return 0
+
+        if os.name == "nt":
+            import ctypes
+            import ctypes.wintypes
+
+            PROCESS_QUERY_LIMITED_INFORMATION = 0x1000
+            ERROR_ACCESS_DENIED = 5
+            STILL_ACTIVE = 259
+
+            kernel32 = ctypes.windll.kernel32
+            handle = kernel32.OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, 0, pid)
+
+            if not handle:
+                # Access denied means there's a process to deny access to
+                if kernel32.GetLastError() == ERROR_ACCESS_DENIED:
+                    return pid
+            else:
+                exit_code = ctypes.wintypes.DWORD()
+                if kernel32.GetExitCodeProcess(handle, ctypes.byref(exit_code)):
+                    kernel32.CloseHandle(handle)
+                    if exit_code.value == STILL_ACTIVE:
+                        return pid
+                else:
+                    err = kernel32.GetLastError()
+                    kernel32.CloseHandle(handle)
+                    if err == ERROR_ACCESS_DENIED:
+                        # GetExitCodeProcess -> ERROR_ACCESS_DENIED (ignored)
+                        return pid
+                    else:
+                        print "Unhandled error in GetExitCodeProcess: %s" % err
+                        return pid  # should not happen, ignore this too
+
             return 0
 
-        return pid
+        else:
+            try:
+                os.kill(pid, 0)  # 0 - default signal (does nothing)
+            except:
+                return 0
+
+            return pid
 
     def quitInstance(self):
         if os.name == "nt":
