@@ -8,7 +8,7 @@ from ..internal.Addon import Addon
 class TORRENT(Addon):
     __name__ = "TORRENT"
     __type__ = "hook"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", False),
@@ -19,7 +19,6 @@ class TORRENT(Addon):
     __authors__ = [("GammaC0de", "nitzo2001@yahoo.com")]
 
     def activate(self):
-        self.log_debug("activate")
         self.pyload.hookManager.addEvent("plugin_updated", self.plugins_updated)
         self.torrent_plugin = self.config.get("torrent_plugin")
         self._associate(self.torrent_plugin)
