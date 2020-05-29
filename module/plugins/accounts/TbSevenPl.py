@@ -9,7 +9,7 @@ from ..internal.MultiAccount import MultiAccount
 class TbSevenPl(MultiAccount):
     __name__ = "TbSevenPl"
     __type__ = "account"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
     __config__ = [("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),
@@ -24,7 +24,6 @@ class TbSevenPl(MultiAccount):
     TRAFFIC_LEFT_PATTERN = ur'Pozostały Limit Premium do wykorzystania: <b>(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
 
     def grab_hosters(self, user, password, data):
-        self.log_debug('grab_hosters')
         hosts = self.load("https://tb7.pl/jdhostingi.txt")
         return hosts.splitlines()
 
