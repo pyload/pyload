@@ -9,10 +9,10 @@ from ..internal.misc import parse_size
 class TbSevenPl(MultiHoster):
     __name__ = "TbSevenPl"
     __type__ = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
-    __pattern__ = r'unmatchable$'
+    __pattern__ = r'^unmatchable$'
     __config__ = [("activated", "bool", "Activated", True),
                   ("use_premium", "bool", "Use premium account if available", True),
                   ("fallback", "bool", "Fallback to free download if premium fails", False),
