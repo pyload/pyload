@@ -17,670 +17,1062 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: module/web/translations.js:1 module/web/templates/default/base.html:123
-#: module/web/templates/default/base.html:124
-#: module/web/templates/default/settings_item.html:14
-msgid "on"
-msgstr ""
-
-#: module/web/translations.js:2 module/web/templates/default/captcha.html:7
-msgid "Please read the text on the captcha."
-msgstr ""
-
-#: module/web/translations.js:3
-msgid "Settings saved."
-msgstr ""
-
-#: module/web/translations.js:4 module/web/templates/default/base.html:123
-#: module/web/templates/default/base.html:124
-#: module/web/templates/default/settings_item.html:16
-msgid "off"
-msgstr ""
-
-#: module/web/translations.js:5
-msgid "Success"
-msgstr ""
-
-#: module/web/translations.js:6
-msgid "Passwords did not match."
-msgstr ""
-
-#: module/web/translations.js:7
-msgid "Delete Link"
-msgstr ""
-
-#: module/web/translations.js:8
-msgid "pyLoad restarted"
-msgstr ""
-
-#: module/web/translations.js:9
-msgid "You are really sure you want to quit pyLoad?"
-msgstr ""
-
-#: module/web/translations.js:10
-msgid "Please Enter a packagename."
-msgstr ""
-
-#: module/web/translations.js:11
-msgid "Please click on the right captcha position."
-msgstr ""
-
-#: module/web/translations.js:12
-msgid "Error occured."
-msgstr ""
-
-#: module/web/translations.js:13
-msgid "New Captcha Request"
-msgstr ""
-
-#: module/web/translations.js:14
-msgid "Failed"
-msgstr ""
-
-#: module/web/translations.js:15
-msgid "No Captchas to read."
-msgstr ""
-
-#: module/web/translations.js:16
-#: module/web/templates/default/filemanager.html:65
-#: module/web/templates/default/folder.html:14
-msgid "Folder is empty"
-msgstr ""
-
-#: module/web/translations.js:17
-msgid "Restart Link"
-msgstr ""
-
-#: module/web/translations.js:18
-msgid "New folder"
-msgstr ""
-
-#: module/web/translations.js:19
-msgid "Are you sure you want to restart pyLoad?"
-msgstr ""
-
-#: module/web/pyload_app.py:125
-msgid "You dont have permission to access this page."
-msgstr ""
-
-#: module/web/pyload_app.py:193
-msgid "Download directory not found."
-msgstr ""
-
-#: module/web/pyload_app.py:260 module/web/pyload_app.py:267
-msgid "unlimited"
-msgstr ""
-
-#: module/web/pyload_app.py:262 module/web/pyload_app.py:269
-msgid "not available"
-msgstr ""
-
-#: module/web/pyload_app.py:509
-msgid "Run pyLoadCore.py -s to access the setup."
-msgstr ""
-
-#: module/web/json_app.py:60
-#, python-format
-msgid "waiting %s"
-msgstr ""
-
-#: module/web/templates/default/info.html:14
-#: module/web/templates/default/info.html:15
-#: module/web/templates/default/home.html:239
-msgid "Information"
-msgstr ""
-
-#: module/web/templates/default/info.html:18
-msgid "News"
-msgstr ""
-
-#: module/web/templates/default/info.html:21
-msgid "Support"
-msgstr ""
-
-#: module/web/templates/default/info.html:37
-msgid "System"
-msgstr ""
-
-#: module/web/templates/default/info.html:40
-msgid "Python:"
-msgstr ""
-
-#: module/web/templates/default/info.html:44
-msgid "OS:"
-msgstr ""
-
-#: module/web/templates/default/info.html:48
-msgid "pyLoad version:"
-msgstr ""
-
-#: module/web/templates/default/info.html:52
-msgid "Installation Folder:"
-msgstr ""
-
-#: module/web/templates/default/info.html:56
-msgid "Config Folder:"
-msgstr ""
-
-#: module/web/templates/default/info.html:60
-msgid "Download Folder:"
-msgstr ""
-
-#: module/web/templates/default/info.html:64
-msgid "Free Space:"
-msgstr ""
-
-#: module/web/templates/default/info.html:68
-msgid "Language:"
-msgstr ""
-
-#: module/web/templates/default/info.html:72
-msgid "Webinterface Port:"
-msgstr ""
-
-#: module/web/templates/default/info.html:76
-msgid "Remote Interface Port:"
-msgstr ""
-
-#: module/web/templates/default/downloads.html:6
-#: module/web/templates/default/base.html:93
-#: module/web/templates/default/home.html:220
-msgid "Downloads"
-msgstr ""
-
-#: module/web/templates/default/filemanager.html:19
-msgid "FileManager"
-msgstr ""
-
-#: module/web/templates/default/admin.html:8
-#: module/web/templates/default/admin.html:9
-#: module/web/templates/default/base.html:59
-msgid "Administrate"
-msgstr ""
-
-#: module/web/templates/default/admin.html:13
-msgid "Quit pyLoad"
-msgstr ""
-
-#: module/web/templates/default/admin.html:14
-msgid "Restart pyLoad"
-msgstr ""
-
-#: module/web/templates/default/admin.html:18
-msgid "To add user or change passwords use:"
-msgstr ""
-
-#: module/web/templates/default/admin.html:19
-msgid "Important: Admin user have always all permissions!"
-msgstr ""
-
-#: module/web/templates/default/admin.html:25
-#: module/web/templates/default/settings.html:91
-#: module/web/templates/default/queue.html:82
-#: module/web/templates/default/window.html:7
-#: module/web/templates/default/home.html:237
-msgid "Name"
-msgstr ""
-
-#: module/web/templates/default/admin.html:28
-#: module/web/templates/default/admin.html:67
-msgid "Change Password"
-msgstr ""
-
-#: module/web/templates/default/admin.html:31
-msgid "Admin"
-msgstr ""
-
-#: module/web/templates/default/admin.html:34
-msgid "Permissions"
-msgstr ""
-
-#: module/web/templates/default/admin.html:41
-msgid "change"
-msgstr ""
-
-#: module/web/templates/default/admin.html:61
-#: module/web/templates/default/admin.html:91
-#: module/web/templates/default/settings.html:167
-#: module/web/templates/default/queue.html:97
-#: module/web/templates/default/captcha.html:33
-msgid "Submit"
-msgstr ""
-
-#: module/web/templates/default/admin.html:69
-msgid "Enter your current and desired Password."
-msgstr ""
-
-#: module/web/templates/default/admin.html:70
-msgid "User"
-msgstr ""
-
-#: module/web/templates/default/admin.html:71
-#: module/web/templates/default/settings.html:179
-msgid "Your username."
-msgstr ""
-
-#: module/web/templates/default/admin.html:75
-msgid "Current password"
-msgstr ""
-
-#: module/web/templates/default/admin.html:76
-#: module/web/templates/default/settings.html:184
-msgid "The password for this account."
-msgstr ""
-
-#: module/web/templates/default/admin.html:80
-msgid "New password"
-msgstr ""
-
-#: module/web/templates/default/admin.html:81
-msgid "The new password."
-msgstr ""
-
-#: module/web/templates/default/admin.html:85
-msgid "New password (repeat)"
-msgstr ""
-
-#: module/web/templates/default/admin.html:86
-msgid "Please repeat the new password."
-msgstr ""
-
-#: module/web/templates/default/admin.html:92
-#: module/web/templates/default/settings.html:198
-#: module/web/templates/default/queue.html:98
-#: module/web/templates/default/window.html:41
-msgid "Reset"
-msgstr ""
-
-#: module/web/templates/default/settings.html:3
-#: module/web/templates/default/settings.html:4
-#: module/web/templates/default/base.html:102
-#: module/web/templates/default/home.html:229
-msgid "Config"
-msgstr ""
-
-#: module/web/templates/default/settings.html:16
-msgid "General"
-msgstr ""
-
-#: module/web/templates/default/settings.html:17
-msgid "Plugins"
-msgstr ""
-
-#: module/web/templates/default/settings.html:18
-msgid "Accounts"
-msgstr ""
-
-#: module/web/templates/default/settings.html:45
-#: module/web/templates/default/settings.html:74
-msgid "Choose a section from the menu"
-msgstr ""
-
-#: module/web/templates/default/settings.html:90
-msgid "Plugin"
-msgstr ""
-
-#: module/web/templates/default/settings.html:92
-#: module/web/templates/default/settings.html:183
-#: module/web/templates/default/login.html:19
-#: module/web/templates/default/queue.html:92
-#: module/web/templates/default/window.html:21
-msgid "Password"
-msgstr ""
-
-#: module/web/templates/default/settings.html:93
-#: module/web/templates/default/home.html:238
-msgid "Status"
-msgstr ""
-
-#: module/web/templates/default/settings.html:94
-msgid "Premium"
-msgstr ""
-
-#: module/web/templates/default/settings.html:95
-msgid "Valid until"
-msgstr ""
-
-#: module/web/templates/default/settings.html:96
-msgid "Traffic left"
-msgstr ""
-
-#: module/web/templates/default/settings.html:97
-msgid "Time"
-msgstr ""
-
-#: module/web/templates/default/settings.html:98
-msgid "Max Parallel"
-msgstr ""
-
-#: module/web/templates/default/settings.html:99
-msgid "Delete?"
-msgstr ""
-
-#: module/web/templates/default/settings.html:121
-msgid "valid"
-msgstr ""
-
-#: module/web/templates/default/settings.html:124
-msgid "not valid"
-msgstr ""
-
-#: module/web/templates/default/settings.html:131
-msgid "yes"
-msgstr ""
-
-#: module/web/templates/default/settings.html:134
-msgid "no"
-msgstr ""
-
-#: module/web/templates/default/settings.html:168
-#: module/web/templates/default/settings.html:197
-#: module/web/templates/default/base.html:117
-msgid "Add"
-msgstr ""
-
-#: module/web/templates/default/settings.html:176
-msgid "Add Account"
-msgstr ""
-
-#: module/web/templates/default/settings.html:177
-msgid "Enter your account data to use premium features."
-msgstr ""
-
-#: module/web/templates/default/settings.html:178
-#: module/web/templates/default/login.html:3
-msgid "Login"
-msgstr ""
-
-#: module/web/templates/default/settings.html:188
-msgid "Type"
-msgstr ""
-
-#: module/web/templates/default/settings.html:189
-msgid "Choose the hoster for your account."
-msgstr ""
-
-#: module/web/templates/default/pathchooser.html:39
-#: module/web/templates/default/pathchooser.html:41
-msgid "Path"
-msgstr ""
-
-#: module/web/templates/default/pathchooser.html:39
-#: module/web/templates/default/pathchooser.html:41
-msgid "absolute"
-msgstr ""
-
-#: module/web/templates/default/pathchooser.html:39
-#: module/web/templates/default/pathchooser.html:41
-msgid "relative"
-msgstr ""
-
-#: module/web/templates/default/pathchooser.html:46
-msgid "name"
-msgstr ""
-
-#: module/web/templates/default/pathchooser.html:47
-msgid "size"
-msgstr ""
-
-#: module/web/templates/default/pathchooser.html:48
-msgid "type"
-msgstr ""
-
-#: module/web/templates/default/pathchooser.html:49
-msgid "last modified"
-msgstr ""
-
-#: module/web/templates/default/pathchooser.html:54
-msgid "parent directory"
-msgstr ""
-
-#: module/web/templates/default/pathchooser.html:70
-msgid "no content"
-msgstr ""
-
-#: module/web/templates/default/setup.html:3
-#: module/web/templates/default/setup.html:4
-msgid "Setup"
-msgstr ""
-
-#: module/web/templates/default/login.html:14
-msgid "Username"
-msgstr ""
-
-#: module/web/templates/default/login.html:29
-msgid "Your username and password didn't match. Please try again."
-msgstr ""
-
-#: module/web/templates/default/login.html:30
-msgid "To reset your login data or add an user run:"
-msgstr ""
-
-#: module/web/templates/default/base.html:20
-#: module/web/templates/default/base.html:139
-msgid "Webinterface"
-msgstr ""
-
-#: module/web/templates/default/base.html:39
-msgid "pyLoad Update available!"
-msgstr ""
-
-#: module/web/templates/default/base.html:46
-msgid "Plugins updated, please restart!"
-msgstr ""
-
-#: module/web/templates/default/base.html:52
-msgid "Captcha waiting"
-msgstr ""
-
-#: module/web/templates/default/base.html:57
-msgid "Logout"
-msgstr ""
-
-#: module/web/templates/default/base.html:61
-msgid "Info"
-msgstr ""
-
-#: module/web/templates/default/base.html:65
-msgid "Please Login!"
-msgstr ""
-
-#: module/web/templates/default/base.html:84
-#: module/web/templates/default/home.html:211
-msgid "Home"
-msgstr ""
-
-#: module/web/templates/default/base.html:87
-#: module/web/templates/default/queue.html:15
-#: module/web/templates/default/window.html:34
-#: module/web/templates/default/home.html:214
-msgid "Queue"
-msgstr ""
-
-#: module/web/templates/default/base.html:90
-#: module/web/templates/default/queue.html:17
-#: module/web/templates/default/window.html:36
-#: module/web/templates/default/home.html:217
-msgid "Collector"
-msgstr ""
-
-#: module/web/templates/default/base.html:99
-#: module/web/templates/default/logs.html:3
-#: module/web/templates/default/logs.html:4
-#: module/web/templates/default/home.html:226
-msgid "Logs"
-msgstr ""
-
-#: module/web/templates/default/base.html:114
-#: module/web/templates/default/logs.html:12
-msgid "Start"
-msgstr ""
-
-#: module/web/templates/default/base.html:115
-msgid "Stop"
-msgstr ""
-
-#: module/web/templates/default/base.html:116
-msgid "Cancel"
-msgstr ""
-
-#: module/web/templates/default/base.html:123
-msgid "Download:"
-msgstr ""
-
-#: module/web/templates/default/base.html:124
-msgid "Reconnect:"
-msgstr ""
-
-#: module/web/templates/default/base.html:125
-msgid "Speed:"
-msgstr ""
-
-#: module/web/templates/default/base.html:126
-msgid "Active:"
-msgstr ""
-
-#: module/web/templates/default/base.html:127
-msgid "Reload page"
-msgstr ""
-
-#: module/web/templates/default/base.html:157
-msgid "loading"
-msgstr ""
-
-#: module/web/templates/default/base.html:166
-msgid "Back to top"
-msgstr ""
-
-#: module/web/templates/default/logs.html:12
-msgid "prev"
-msgstr ""
-
-#: module/web/templates/default/logs.html:12
-msgid "next"
-msgstr ""
-
-#: module/web/templates/default/logs.html:12
-msgid "End"
-msgstr ""
-
-#: module/web/templates/default/logout.html:8
-msgid "You were successfully logged out."
-msgstr ""
-
-#: module/web/templates/default/queue.html:25
-msgid "Delete Finished"
-msgstr ""
-
-#: module/web/templates/default/queue.html:26
-msgid "Restart Failed"
-msgstr ""
-
-#: module/web/templates/default/queue.html:65
-msgid "Folder:"
-msgstr ""
-
-#: module/web/templates/default/queue.html:65
-msgid "Password:"
-msgstr ""
-
-#: module/web/templates/default/queue.html:79
-msgid "Edit Package"
-msgstr ""
-
-#: module/web/templates/default/queue.html:80
-msgid "Edit the package detais below."
-msgstr ""
-
-#: module/web/templates/default/queue.html:83
-msgid "The name of the package."
-msgstr ""
-
-#: module/web/templates/default/queue.html:87
-msgid "Folder"
-msgstr ""
-
-#: module/web/templates/default/queue.html:88
-msgid "Name of subfolder for these downloads."
-msgstr ""
-
-#: module/web/templates/default/queue.html:93
-msgid "List of passwords used for unrar."
-msgstr ""
-
-#: module/web/templates/default/window.html:5
-#: module/web/templates/default/window.html:40
-msgid "Add Package"
-msgstr ""
-
-#: module/web/templates/default/window.html:6
-msgid "Paste your links or upload a container."
-msgstr ""
-
-#: module/web/templates/default/window.html:8
-msgid "The name of the new package."
-msgstr ""
-
-#: module/web/templates/default/window.html:12
-msgid "Links"
-msgstr ""
-
-#: module/web/templates/default/window.html:13
-msgid "Paste your links here or any text and press the filter button."
-msgstr ""
-
-#: module/web/templates/default/window.html:14
-msgid "Filter urls"
-msgstr ""
-
-#: module/web/templates/default/window.html:22
+#: module\web\templates\classic\window.html:22
 msgid "Password for RAR-Archive"
 msgstr ""
 
-#: module/web/templates/default/window.html:26
-msgid "File"
+#: module\web\templates\modern\pathchooser.html:87 module\web\templates\pyplex\pathchooser.html:87
+msgid "Parent Directory"
 msgstr ""
 
-#: module/web/templates/default/window.html:27
-msgid "Upload a container."
+#: module\web\templates\modern\admin.html:136 module\web\templates\classic\admin.html:75
+#: module\web\templates\pyplex\admin.html:140
+msgid "Current password"
 msgstr ""
 
-#: module/web/templates/default/window.html:31
-msgid "Destination"
+#: module\web\templates\classic\pathchooser.html:39 module\web\templates\classic\pathchooser.html:41
+#: module\web\templates\pyplex\settings.html:210 module\web\templates\modern\settings.html:210
+msgid "absolute"
 msgstr ""
 
-#: module/web/templates/default/home.html:206
-msgid "Active Downloads"
+#: module\web\templates\classic\window.html:13
+msgid "Paste your links here or any text and press the filter button."
 msgstr ""
 
-#: module/web/templates/default/home.html:240
-msgid "Size"
+#: module\web\templates\pyplex\settings.html:63 module\web\templates\pyplex\settings.html:94
+#: module\web\templates\classic\settings.html:45 module\web\templates\classic\settings.html:74
+#: module\web\templates\modern\settings.html:63 module\web\templates\modern\settings.html:94
+msgid "Choose a section from the menu"
 msgstr ""
 
-#: module/web/templates/default/home.html:241
+#: module\web\templates\classic\window.html:8
+msgid "The name of the new package."
+msgstr ""
+
+#: module\web\templates\pyplex\settings.html:112 module\web\templates\classic\settings.html:97
+#: module\web\templates\modern\settings.html:112
+msgid "Time"
+msgstr ""
+
+#: module\web\templates\classic\base.html:278 module\web\templates\pyplex\base.html:220
+#: module\web\templates\modern\base.html:220
+msgid "Back to top"
+msgstr ""
+
+#: module\web\templates\pyplex\info.html:74 module\web\templates\modern\info.html:74
+msgid "Wiki"
+msgstr ""
+
+#: module\web\templates\modern\info.html:93 module\web\templates\pyplex\info.html:93
+#: module\web\templates\classic\info.html:52
+msgid "Installation Folder:"
+msgstr ""
+
+#: module\web\templates\modern\admin.html:31 module\web\templates\classic\admin.html:14
+#: module\web\templates\pyplex\admin.html:35
+msgid "Restart pyLoad"
+msgstr ""
+
+#: module\web\templates\modern\info.html:97 module\web\templates\pyplex\info.html:97
+#: module\web\templates\classic\info.html:60
+msgid "Download Folder:"
+msgstr ""
+
+#: module\web\templates\classic\base.html:238 module\web\templates\pyplex\base.html:187
+#: module\web\templates\modern\base.html:187
+msgid "Speed:"
+msgstr ""
+
+#: module\web\templates\pyplex\info.html:82 module\web\templates\modern\info.html:82
+msgid "Issue Tracker"
+msgstr ""
+
+#: module\web\templates\classic\home.html:241 module\web\templates\pyplex\home.html:23
+#: module\web\templates\modern\home.html:23
 msgid "Progress"
 msgstr ""
 
-#: module/web/templates/default/captcha.html:6
+#: module\web\templates\modern\queue.html:44 module\web\templates\classic\queue.html:46
+#: module\web\templates\pyplex\queue.html:44
+msgid "Restart Package"
+msgstr ""
+
+#: module\web\templates\modern\window.html:17 module\web\templates\classic\window.html:14
+#: module\web\templates\pyplex\window.html:17
+msgid "Filter urls"
+msgstr ""
+
+#: module\web\templates\modern\admin.html:143 module\web\templates\classic\admin.html:81
+#: module\web\templates\pyplex\admin.html:147
+msgid "The new password."
+msgstr ""
+
+#: module\web\templates\classic\base.html:269 module\web\templates\pyplex\base.html:82
+#: module\web\templates\pyplex\base.html:208 module\web\templates\modern\base.html:82
+#: module\web\templates\modern\base.html:208
+msgid "loading"
+msgstr ""
+
+#: module\web\templates\pyplex\settings.html:109 module\web\templates\classic\settings.html:94
+#: module\web\templates\modern\settings.html:109
+msgid "Premium"
+msgstr ""
+
+#: module\web\templates\pyplex\settings.html:74 module\web\templates\modern\settings.html:74
+msgid " Loading data..."
+msgstr ""
+
+#: module\web\templates\pyplex\settings.html:132 module\web\templates\classic\settings.html:121
+#: module\web\templates\modern\settings.html:132
+msgid "valid"
+msgstr ""
+
+#: module\web\templates\modern\info.html:110 module\web\templates\pyplex\info.html:110
+#: module\web\templates\classic\info.html:18
+msgid "News"
+msgstr ""
+
+#: module\web\templates\modern\info.html:91 module\web\templates\pyplex\info.html:91
+#: module\web\templates\classic\info.html:48
+msgid "pyLoad version:"
+msgstr ""
+
+#: module\web\templates\classic\base.html:166 module\web\templates\pyplex\base.html:77
+#: module\web\templates\pyplex\base.html:179 module\web\templates\modern\base.html:77
+#: module\web\templates\modern\base.html:179
+msgid "Captcha waiting"
+msgstr ""
+
+#: module\web\templates\modern\window.html:38 module\web\templates\classic\window.html:31
+#: module\web\templates\pyplex\window.html:38
+msgid "Destination"
+msgstr ""
+
+#: module\web\templates\pyplex\admin.html:106 module\web\templates\pyplex\admin.html:119
+#: module\web\templates\pyplex\admin.html:154 module\web\templates\modern\admin.html:102
+#: module\web\templates\modern\admin.html:115 module\web\templates\modern\admin.html:150
+msgid "Ok"
+msgstr ""
+
+#: module\web\templates\modern\base.html:65 module\web\templates\modern\base.html:140
+#: module\web\templates\pyplex\base.html:65 module\web\templates\pyplex\base.html:140
+msgid "Administration"
+msgstr ""
+
+#: module\web\templates\pyplex\settings.html:105 module\web\templates\classic\settings.html:90
+#: module\web\templates\modern\settings.html:105
+msgid "Plugin"
+msgstr ""
+
+#: module\web\templates\pyplex\settings.html:110 module\web\templates\classic\settings.html:95
+#: module\web\templates\modern\settings.html:110
+msgid "Valid until"
+msgstr ""
+
+#: module\web\templates\classic\queue.html:25
+msgid "Delete Finished"
+msgstr ""
+
+#: module/web/media/js/pyplex/base.js:330 module/web/media/js/pyplex/base.js:341 module/web/media/js/classic/base.js:2
+#: module/web/media/js/modern/base.js:330 module/web/media/js/modern/base.js:341
+msgid "New Captcha Request"
+msgstr ""
+
+#: module\web\templates\modern\login.html:64 module\web\templates\pyplex\login.html:64
+msgid "SIGN IN"
+msgstr ""
+
+#: module\web\templates\modern\captcha.html:7 module\web\templates\classic\captcha.html:4
+#: module\web\templates\pyplex\captcha.html:7
 msgid "Captcha reading"
 msgstr ""
 
-#: module/web/templates/default/captcha.html:13
+#: module\web\templates\classic\pathchooser.html:46 module\web\templates\pyplex\pathchooser.html:78
+#: module\web\templates\modern\pathchooser.html:78
+msgid "name"
+msgstr ""
+
+#: module\web\templates\modern\window.html:15 module\web\templates\classic\window.html:12
+#: module\web\templates\pyplex\window.html:15
+msgid "Links"
+msgstr ""
+
+#: module\web\templates\pyplex\queue.html:47 module\web\templates\modern\queue.html:47
+msgid "Reverse Entries"
+msgstr ""
+
+#: module\web\templates\classic\base.html:209 module\web\templates\classic\home.html:223
+#: module\web\templates\classic\filemanager.html:19 module\web\templates\pyplex\base.html:133
+#: module\web\templates\modern\base.html:133
+msgid "FileManager"
+msgstr ""
+
+#: module/web/templates/classic/filemanager_ui.js:180 module\web\templates\classic\filemanager.html:65
+#: module\web\templates\classic\folder.html:14
+msgid "Folder is empty"
+msgstr ""
+
+#: module\web\templates\modern\captcha.html:14 module\web\templates\classic\captcha.html:9
+#: module\web\templates\pyplex\captcha.html:14
 msgid "Captcha"
 msgstr ""
 
-#: module/web/templates/default/captcha.html:14
+#: module\web\templates\pyplex\settings.html:175 module\web\templates\modern\settings.html:175
+msgid "Your username"
+msgstr ""
+
+#: module\web\templates\classic\base.html:137 module\web\templates\classic\base.html:252
+#: module\web\templates\pyplex\base.html:34 module\web\templates\modern\base.html:34
+msgid "Webinterface"
+msgstr ""
+
+#: module\web\templates\pyplex\settings.html:44 module\web\templates\classic\settings.html:18
+#: module\web\templates\modern\settings.html:44
+msgid "Accounts"
+msgstr ""
+
+#: module\web\templates\modern\base.html:73 module\web\templates\modern\base.html:171
+#: module\web\templates\pyplex\base.html:73 module\web\templates\pyplex\base.html:171
+#: module\web\templates\modern\window.html:5 module\web\templates\modern\window.html:46
+#: module\web\templates\classic\window.html:5 module\web\templates\classic\window.html:40
+#: module\web\templates\pyplex\window.html:5 module\web\templates\pyplex\window.html:46
+msgid "Add Package"
+msgstr ""
+
+#: module\web\templates\pyplex\window.html:28 module\web\templates\modern\window.html:28
+msgid "Upload a container"
+msgstr ""
+
+#: module\web\templates\modern\logs.html:112 module\web\templates\pyplex\logs.html:112
+msgid "Go"
+msgstr ""
+
+#: module\web\templates\classic\pathchooser.html:70
+msgid "no content"
+msgstr ""
+
+#: module\web\templates\modern\queue.html:43 module\web\templates\classic\queue.html:44
+#: module\web\templates\pyplex\queue.html:43
+msgid "Delete Package"
+msgstr ""
+
+#: module\web\templates\modern\base.html:55 module\web\templates\modern\base.html:127
+#: module\web\templates\modern\window.html:43 module\web\templates\pyplex\queue.html:46
+#: module\web\templates\classic\home.html:217 module\web\templates\pyplex\base.html:55
+#: module\web\templates\pyplex\base.html:127 module\web\templates\classic\base.html:203
+#: module\web\templates\modern\queue.html:46 module\web\templates\pyplex\window.html:43
+#: module\web\templates\classic\window.html:36
+msgid "Collector"
+msgstr ""
+
+#: module/web/media/js/modern/package.js:213 module/web/media/js/pyplex/package.js:218
+msgid "queued"
+msgstr ""
+
+#: module\web\templates\modern\queue.html:23 module\web\templates\classic\queue.html:26
+#: module\web\templates\pyplex\queue.html:23
+msgid "Restart Failed"
+msgstr ""
+
+#: module\web\templates\modern\base.html:169 module\web\templates\pyplex\base.html:169
+msgid "Pause Queue"
+msgstr ""
+
+#: module/web/media/js/classic/base.js:2 module\web\templates\classic\captcha.html:5
+msgid "Please read the text on the captcha."
+msgstr ""
+
+#: module/web/media/js/classic/settings.js:2
+msgid "Settings saved."
+msgstr ""
+
+#: module\web\templates\classic\logs.html:12
+msgid "End"
+msgstr ""
+
+#: module\web\templates\modern\settings_item.html:27 module\web\templates\modern\settings_item.html:36
+#: module\web\templates\pyplex\settings_item.html:27 module\web\templates\pyplex\settings_item.html:36
+#: module\web\templates\classic\settings_item.html:30 module\web\templates\classic\settings_item.html:36
+msgid "Browse"
+msgstr ""
+
+#: module\web\templates\pyplex\queue.html:46 module\web\templates\modern\queue.html:46
+msgid "Move Package To"
+msgstr ""
+
+#: module\web\templates\modern\admin.html:30 module\web\templates\classic\admin.html:13
+#: module\web\templates\pyplex\admin.html:34
+msgid "Quit pyLoad"
+msgstr ""
+
+#: module\web\templates\classic\pathchooser.html:39 module\web\templates\classic\pathchooser.html:41
+#: module\web\templates\pyplex\settings.html:213 module\web\templates\modern\settings.html:213
+msgid "relative"
+msgstr ""
+
+#: module/web/media/js/pyplex/base.js:31 module/web/templates/classic/filemanager_ui.js:43
+#: module/web/media/js/classic/package_ui.js:2 module/web/media/js/modern/base.js:31
+msgid "Failed"
+msgstr ""
+
+#: module\web\templates\modern\info.html:89 module\web\templates\pyplex\info.html:89
+#: module\web\templates\classic\info.html:44
+msgid "OS:"
+msgstr ""
+
+#: module\web\templates\pyplex\window.html:20 module\web\templates\modern\window.html:20
+msgid "Add a list of links"
+msgstr ""
+
+#: module\web\templates\pyplex\settings.html:132 module\web\templates\classic\settings.html:124
+#: module\web\templates\modern\settings.html:132
+msgid "not valid"
+msgstr ""
+
+#: module\web\templates\pyplex\settings.html:136 module\web\templates\classic\settings.html:131
+#: module\web\templates\modern\settings.html:136
+msgid "yes"
+msgstr ""
+
+#: module\web\templates\classic\login.html:14 module\web\templates\modern\login.html:56
+#: module\web\templates\pyplex\login.html:56
+msgid "Username"
+msgstr ""
+
+#: module\web\templates\pyplex\info.html:115 module\web\templates\modern\info.html:115
+msgid "Donate"
+msgstr ""
+
+#: module\web\templates\pyplex\settings.html:171 module\web\templates\modern\settings.html:171
+msgid "Enter your account data to use premium features"
+msgstr ""
+
+#: module\web\templates\modern\base.html:58 module\web\templates\modern\base.html:130
+#: module\web\templates\classic\downloads.html:6 module\web\templates\classic\home.html:220
+#: module\web\templates\modern\downloads.html:6 module\web\templates\pyplex\base.html:58
+#: module\web\templates\pyplex\base.html:130 module\web\templates\classic\base.html:206
+#: module\web\templates\pyplex\downloads.html:6
+msgid "Downloads"
+msgstr ""
+
+#: module/web/media/js/modern/settings.js:178 module/web/media/js/pyplex/settings.js:178
+msgid "Select File"
+msgstr ""
+
+#: module\web\templates\pyplex\settings.html:168 module\web\templates\classic\settings.html:176
+#: module\web\templates\modern\settings.html:168
+msgid "Add Account"
+msgstr ""
+
+#: module\web\templates\modern\captcha.html:36 module\web\templates\classic\captcha.html:34
+#: module\web\templates\pyplex\captcha.html:36
+msgid "Please install the <a href='https://tampermonkey.net/' target='_blank'>Tampermonkey</a> add-on in your browser and add the "
+msgstr ""
+
+#: module\web\templates\modern\info.html:87 module\web\templates\pyplex\info.html:87
+#: module\web\templates\classic\info.html:40
+msgid "Python:"
+msgstr ""
+
+#: module/web/media/js/pyplex/base.js:248 module/web/media/js/modern/settings.js:120
+#: module/web/media/js/modern/settings.js:138 module/web/media/js/modern/settings.js:155
+#: module/web/media/js/modern/base.js:248 module/web/media/js/pyplex/settings.js:120
+#: module/web/media/js/pyplex/settings.js:138 module/web/media/js/pyplex/settings.js:155
+#: module/web/media/js/modern/admin.js:21 module/web/media/js/pyplex/admin.js:21
+msgid "Error occurred"
+msgstr ""
+
+#: module\web\templates\classic\base.html:175 module\web\templates\pyplex\base.html:154
+#: module\web\templates\modern\base.html:154
+msgid "Info"
+msgstr ""
+
+#: module/web/media/js/modern/admin.js:25 module/web/media/js/pyplex/admin.js:25 module/web/media/js/classic/admin.js:2
+msgid "Passwords did not match."
+msgstr ""
+
+#: module\web\templates\classic\queue.html:83
+msgid "The name of the package."
+msgstr ""
+
+#: module/web/media/js/modern/settings.js:83 module/web/media/js/pyplex/settings.js:83
+msgid "Name of plugin"
+msgstr ""
+
+#: module\web\templates\pyplex\info.html:76 module\web\templates\modern\info.html:76
+msgid "Forum"
+msgstr ""
+
+#: module\web\templates\modern\base.html:197 module\web\templates\pyplex\base.html:197
+msgid " "
+msgstr ""
+
+#: module\web\templates\modern\info.html:105 module\web\templates\pyplex\info.html:105
+#: module\web\templates\classic\info.html:72
+msgid "Webinterface Port:"
+msgstr ""
+
+#: module/web/media/js/modern/settings.js:182 module/web/media/js/pyplex/settings.js:182
+msgid "Select Folder"
+msgstr ""
+
+#: module\web\templates\pyplex\settings.html:113 module\web\templates\classic\settings.html:98
+#: module\web\templates\modern\settings.html:113
+msgid "Max Parallel"
+msgstr ""
+
+#: module/web/media/js/classic/base.js:2
+msgid "Please Enter a packagename."
+msgstr ""
+
+#: module\web\templates\modern\base.html:52 module\web\templates\modern\base.html:124
+#: module\web\templates\modern\window.html:40 module\web\templates\pyplex\queue.html:46
+#: module\web\templates\classic\home.html:214 module\web\templates\pyplex\base.html:52
+#: module\web\templates\pyplex\base.html:124 module\web\templates\classic\base.html:200
+#: module\web\templates\modern\queue.html:46 module\web\templates\pyplex\window.html:40
+#: module\web\templates\classic\window.html:34
+msgid "Queue"
+msgstr ""
+
+#: module\web\templates\modern\admin.html:141 module\web\templates\classic\admin.html:80
+#: module\web\templates\pyplex\admin.html:145
+msgid "New password"
+msgstr ""
+
+#: module\web\templates\modern\base.html:170 module\web\templates\pyplex\base.html:170
+msgid "Abort Downloads"
+msgstr ""
+
+#: module\web\templates\pyplex\settings.html:180 module\web\templates\modern\settings.html:180
+msgid "The password for this account"
+msgstr ""
+
+#: module\web\templates\pyplex\admin.html:90 module\web\templates\modern\admin.html:86
+msgid "pyLoad is restarting..."
+msgstr ""
+
+#: module\web\templates\modern\admin.html:60 module\web\templates\classic\admin.html:41
+#: module\web\templates\pyplex\admin.html:64
+msgid "change"
+msgstr ""
+
+#: module\web\templates\modern\admin.html:100 module/web/media/js/classic/admin.js:2
+#: module\web\templates\pyplex\admin.html:104
+msgid "Are you sure you want to restart pyLoad?"
+msgstr ""
+
+#: module\web\templates\modern\base.html:168 module\web\templates\pyplex\base.html:168
+msgid "Resume Queue"
+msgstr ""
+
+#: module/web/media/js/classic/base.js:2 module\web\templates\modern\base.html:185
+#: module\web\templates\modern\base.html:186 module/web/media/js/pyplex/base.js:358
+#: module/web/media/js/pyplex/base.js:363 module\web\templates\modern\settings_item.html:14
+#: module\web\templates\classic\settings_item.html:14 module/web/media/js/modern/base.js:358
+#: module/web/media/js/modern/base.js:363 module\web\templates\classic\base.html:236
+#: module\web\templates\classic\base.html:237 module\web\templates\pyplex\settings_item.html:14
+#: module\web\templates\pyplex\base.html:185 module\web\templates\pyplex\base.html:186
+msgid "on"
+msgstr ""
+
+#: module\web\templates\classic\base.html:236 module\web\templates\pyplex\base.html:185
+#: module\web\templates\modern\base.html:185
+msgid "Download:"
+msgstr ""
+
+#: module\web\templates\modern\admin.html:51 module\web\templates\modern\admin.html:126
+#: module\web\templates\classic\admin.html:28 module\web\templates\classic\admin.html:67
+#: module\web\templates\pyplex\admin.html:55 module\web\templates\pyplex\admin.html:130
+msgid "Change Password"
+msgstr ""
+
+#: module\web\templates\modern\base.html:61 module\web\templates\modern\base.html:136
+#: module\web\templates\classic\home.html:226 module\web\templates\pyplex\logs.html:3
+#: module\web\templates\pyplex\logs.html:4 module\web\templates\classic\logs.html:3
+#: module\web\templates\classic\logs.html:4 module\web\templates\pyplex\base.html:61
+#: module\web\templates\pyplex\base.html:136 module\web\templates\classic\base.html:212
+#: module\web\templates\modern\logs.html:3 module\web\templates\modern\logs.html:4
+msgid "Logs"
+msgstr ""
+
+#: module\web\templates\modern\login.html:49 module\web\templates\pyplex\login.html:49
+msgid "Incorrect username/email or password."
+msgstr ""
+
+#: module\web\templates\pyplex\info.html:111 module\web\templates\modern\info.html:111
+msgid "Loading..."
+msgstr ""
+
+#: module\web\templates\pyplex\queue.html:90 module\web\templates\modern\queue.html:90
+msgid "Name of subfolder for these downloads"
+msgstr ""
+
+#: module\web\templates\classic\captcha.html:10
 msgid "The captcha."
 msgstr ""
 
-#: module/web/templates/default/captcha.html:20
+#: module\web\templates\modern\info.html:99 module\web\templates\pyplex\info.html:99
+#: module\web\templates\classic\info.html:64
+msgid "Free Space:"
+msgstr ""
+
+#: module\web\templates\pyplex\info.html:78 module\web\templates\modern\info.html:78
+msgid "Chat"
+msgstr ""
+
+#: module\web\templates\pyplex\admin.html:44 module\web\templates\modern\admin.html:40
+msgid "Admin user have always all permissions!"
+msgstr ""
+
+#: module\web\templates\classic\base.html:197 module\web\templates\classic\home.html:211
+#: module\web\templates\pyplex\base.html:49 module\web\templates\pyplex\base.html:121
+#: module\web\templates\modern\base.html:49 module\web\templates\modern\base.html:121
+msgid "Home"
+msgstr ""
+
+#: module\web\templates\modern\admin.html:146 module\web\templates\classic\admin.html:85
+#: module\web\templates\pyplex\admin.html:150
+msgid "New password (repeat)"
+msgstr ""
+
+#: module\web\templates\pyplex\home.html:21 module\web\templates\classic\home.html:239
+#: module\web\templates\classic\info.html:14 module\web\templates\classic\info.html:15
+#: module\web\templates\modern\home.html:21
+msgid "Information"
+msgstr ""
+
+#: module\web\templates\pyplex\settings.html:205 module\web\templates\pyplex\settings.html:219
+#: module\web\templates\modern\settings.html:205 module\web\templates\modern\settings.html:219
+msgid "Select"
+msgstr ""
+
+#: module\web\templates\classic\base.html:239 module\web\templates\pyplex\base.html:188
+#: module\web\templates\modern\base.html:188
+msgid "Active:"
+msgstr ""
+
+#: module\web\templates\classic\queue.html:93
+msgid "List of passwords used for unrar."
+msgstr ""
+
+#: module\web\templates\classic\admin.html:19
+msgid "Important: Admin user have always all permissions!"
+msgstr ""
+
+#: module\web\templates\modern\info.html:3 module\web\templates\modern\info.html:4
+#: module\web\templates\pyplex\info.html:3 module\web\templates\pyplex\info.html:4
+#: module\web\templates\classic\info.html:21
+msgid "Support"
+msgstr ""
+
+#: module/web/media/js/modern/package.js:174 module/web/media/js/classic/package_ui.js:2
+#: module/web/media/js/pyplex/package.js:179
+msgid "Restart Link"
+msgstr ""
+
+#: module\web\templates\classic\window.html:27
+msgid "Upload a container."
+msgstr ""
+
+#: module\web\templates\classic\base.html:227 module\web\templates\classic\logs.html:12
+msgid "Start"
+msgstr ""
+
+#: module\web\templates\classic\base.html:230 module\web\templates\pyplex\settings.html:191
+#: module\web\templates\classic\settings.html:168 module\web\templates\classic\settings.html:197
+#: module\web\templates\modern\settings.html:191
+msgid "Add"
+msgstr ""
+
+#: module\web\templates\modern\info.html:95 module\web\templates\pyplex\info.html:95
+#: module\web\templates\classic\info.html:56
+msgid "Config Folder:"
+msgstr ""
+
+#: module\web\templates\classic\settings.html:189
+msgid "Choose the hoster for your account."
+msgstr ""
+
+#: module\web\templates\classic\logs.html:12
+msgid "next"
+msgstr ""
+
+#: module\web\templates\modern\base.html:69 module\web\templates\modern\base.html:144
+#: module\web\templates\modern\settings.html:3 module\web\templates\modern\settings.html:4
+#: module\web\templates\classic\home.html:229 module\web\templates\pyplex\base.html:69
+#: module\web\templates\pyplex\base.html:144 module\web\templates\classic\base.html:215
+#: module\web\templates\pyplex\settings.html:3 module\web\templates\pyplex\settings.html:4
+#: module\web\templates\classic\settings.html:3 module\web\templates\classic\settings.html:4
+msgid "Config"
+msgstr ""
+
+#: module\web\templates\modern\admin.html:133 module\web\templates\classic\admin.html:71
+#: module\web\templates\classic\settings.html:179 module\web\templates\pyplex\admin.html:137
+msgid "Your username."
+msgstr ""
+
+#: module\web\templates\classic\pathchooser.html:47 module\web\templates\pyplex\pathchooser.html:79
+#: module\web\templates\modern\pathchooser.html:79
+msgid "size"
+msgstr ""
+
+#: module\web\templates\pyplex\home.html:18 module\web\templates\modern\settings.html:108
+#: module\web\templates\classic\home.html:238 module\web\templates\modern\home.html:18
+#: module\web\templates\pyplex\settings.html:108 module\web\templates\classic\settings.html:93
+msgid "Status"
+msgstr ""
+
+#: module\web\templates\classic\folder.html:9 module\web\templates\classic\filemanager.html:31
+#: module\web\templates\classic\filemanager.html:46
+msgid "Delete Directory"
+msgstr ""
+
+#: module\web\templates\modern\captcha.html:30 module\web\templates\classic\captcha.html:28
+#: module\web\templates\pyplex\captcha.html:30
+msgid "Your browser does not support iframes."
+msgstr ""
+
+#: module\web\templates\classic\base.html:171 module\web\templates\pyplex\base.html:153
+#: module\web\templates\modern\base.html:153
+msgid "Logout"
+msgstr ""
+
+#: module\web\templates\modern\admin.html:131 module\web\templates\classic\admin.html:70
+#: module\web\templates\pyplex\admin.html:135
+msgid "User"
+msgstr ""
+
+#: module\web\templates\classic\base.html:239 module\web\templates\pyplex\base.html:188
+#: module\web\templates\modern\base.html:188
+msgid "Active"
+msgstr ""
+
+#: module\web\templates\classic\logs.html:12
+msgid "prev"
+msgstr ""
+
+#: module\web\templates\classic\pathchooser.html:48 module\web\templates\pyplex\pathchooser.html:80
+#: module\web\templates\modern\pathchooser.html:80
+msgid "type"
+msgstr ""
+
+#: module\web\templates\modern\captcha.html:36 module\web\templates\classic\captcha.html:34
+#: module\web\templates\pyplex\captcha.html:36
+msgid "pyload userscript"
+msgstr ""
+
+#: module\web\templates\modern\admin.html:53 module\web\templates\classic\admin.html:34
+#: module\web\templates\pyplex\admin.html:57
+msgid "Permissions"
+msgstr ""
+
+#: module\web\templates\modern\admin.html:39 module\web\templates\classic\admin.html:18
+#: module\web\templates\pyplex\admin.html:43
+msgid "To add user or change passwords use:"
+msgstr ""
+
+#: module\web\templates\pyplex\queue.html:95 module\web\templates\modern\queue.html:95
+msgid "The package password"
+msgstr ""
+
+#: module/web/media/js/pyplex/base.js:16 module/web/templates/classic/filemanager_ui.js:36
+#: module/web/media/js/classic/package_ui.js:2 module/web/media/js/modern/base.js:16
+msgid "Success"
+msgstr ""
+
+#: module\web\templates\pyplex\home.html:20 module\web\templates\modern\home.html:20
+msgid "Hoster"
+msgstr ""
+
+#: module\web\templates\modern\info.html:85 module\web\templates\pyplex\info.html:85
+#: module\web\templates\classic\info.html:37
+msgid "System"
+msgstr ""
+
+#: module\web\templates\modern\queue.html:45 module\web\templates\modern\queue.html:77
+#: module\web\templates\classic\queue.html:48 module\web\templates\classic\queue.html:79
+#: module\web\templates\pyplex\queue.html:45 module\web\templates\pyplex\queue.html:77
+msgid "Edit Package"
+msgstr ""
+
+#: module\web\templates\pyplex\window.html:34 module\web\templates\modern\window.html:34
+msgid "not available"
+msgstr ""
+
+#: module\web\templates\classic\base.html:179
+msgid "Please Login!"
+msgstr ""
+
+#: module\web\templates\classic\pathchooser.html:39 module\web\templates\classic\pathchooser.html:41
+#: module\web\templates\pyplex\settings.html:208 module\web\templates\modern\settings.html:208
+msgid "Path"
+msgstr ""
+
+#: module\web\templates\classic\base.html:173 module\web\templates\classic\admin.html:8
+#: module\web\templates\classic\admin.html:9 module\web\templates\modern\admin.html:25
+#: module\web\templates\modern\admin.html:26 module\web\templates\pyplex\admin.html:29
+#: module\web\templates\pyplex\admin.html:30
+msgid "Administrate"
+msgstr ""
+
+#: module\web\templates\pyplex\settings.html:111 module\web\templates\classic\settings.html:96
+#: module\web\templates\modern\settings.html:111
+msgid "Traffic left"
+msgstr ""
+
+#: module/web/templates/classic/filemanager_ui.js:237
+msgid "New folder"
+msgstr ""
+
+#: module\web\templates\pyplex\queue.html:22 module\web\templates\modern\queue.html:22
+msgid "Clear Finished"
+msgstr ""
+
+#: module/web/media/js/classic/admin.js:2
+msgid "pyLoad restarted"
+msgstr ""
+
+#: module\web\templates\classic\login.html:29
+msgid "Your username and password didn't match. Please try again."
+msgstr ""
+
+#: module\web\templates\classic\pathchooser.html:49 module\web\templates\pyplex\pathchooser.html:81
+#: module\web\templates\modern\pathchooser.html:81
+msgid "last modified"
+msgstr ""
+
+#: module\web\templates\modern\captcha.html:18 module\web\templates\classic\captcha.html:15
+#: module\web\templates\pyplex\captcha.html:18
 msgid "Text"
 msgstr ""
 
-#: module/web/templates/default/captcha.html:21
+#: module\web\templates\pyplex\settings.html:42 module\web\templates\classic\settings.html:16
+#: module\web\templates\modern\settings.html:42
+msgid "General"
+msgstr ""
+
+#: module\web\templates\modern\window.html:7 module\web\templates\classic\window.html:6
+#: module\web\templates\pyplex\window.html:7
+msgid "Paste your links or upload a container."
+msgstr ""
+
+#: module\web\templates\classic\queue.html:88
+msgid "Name of subfolder for these downloads."
+msgstr ""
+
+#: module\web\templates\modern\captcha.html:35 module\web\templates\classic\captcha.html:33
+#: module\web\templates\pyplex\captcha.html:35
+msgid "Note: to solve this interactive captchas"
+msgstr ""
+
+#: module\web\templates\pyplex\settings.html:43 module\web\templates\classic\settings.html:17
+#: module\web\templates\modern\settings.html:43
+msgid "Plugins"
+msgstr ""
+
+#: module\web\templates\modern\settings.html:192 module\web\templates\modern\settings.html:220
+#: module\web\templates\modern\window.html:47 module\web\templates\pyplex\admin.html:107
+#: module\web\templates\pyplex\admin.html:120 module\web\templates\pyplex\admin.html:155
+#: module\web\templates\pyplex\queue.html:98 module\web\templates\modern\admin.html:103
+#: module\web\templates\modern\admin.html:116 module\web\templates\modern\admin.html:151
+#: module\web\templates\classic\base.html:229 module\web\templates\pyplex\settings.html:192
+#: module\web\templates\pyplex\settings.html:220 module\web\templates\modern\queue.html:98
+#: module\web\templates\pyplex\window.html:47
+msgid "Cancel"
+msgstr ""
+
+#: module\web\templates\modern\captcha.html:39 module\web\templates\classic\captcha.html:40
+#: module\web\templates\pyplex\captcha.html:39
+msgid "Close"
+msgstr ""
+
+#: module\web\templates\pyplex\admin.html:96 module\web\templates\modern\admin.html:92
+msgid "pyLoad was shut down, goodbye!"
+msgstr ""
+
+#: module\web\templates\pyplex\settings.html:184 module\web\templates\modern\settings.html:184
+msgid "Choose the hoster for your account"
+msgstr ""
+
+#: module\web\templates\classic\home.html:240 module\web\templates\pyplex\home.html:22
+#: module\web\templates\modern\home.html:22
+msgid "Size"
+msgstr ""
+
+#: module\web\templates\classic\queue.html:98 module\web\templates\classic\admin.html:92
+#: module\web\templates\classic\settings.html:198 module\web\templates\classic\window.html:41
+msgid "Reset"
+msgstr ""
+
+#: module\web\templates\pyplex\queue.html:85 module\web\templates\modern\queue.html:85
+#: module\web\templates\pyplex\window.html:12 module\web\templates\modern\window.html:12
+msgid "The name of the package"
+msgstr ""
+
+#: module\web\templates\classic\settings.html:177
+msgid "Enter your account data to use premium features."
+msgstr ""
+
+#: module\web\templates\modern\logs.html:91 module\web\templates\pyplex\logs.html:91
+msgid "Lines per page"
+msgstr ""
+
+#: module\web\templates\modern\admin.html:113 module/web/media/js/classic/admin.js:2
+#: module\web\templates\pyplex\admin.html:117
+msgid "You are really sure you want to quit pyLoad?"
+msgstr ""
+
+#: module\web\templates\classic\base.html:237 module\web\templates\pyplex\base.html:186
+#: module\web\templates\modern\base.html:186
+msgid "Reconnect:"
+msgstr ""
+
+#: module\web\templates\modern\captcha.html:38 module\web\templates\modern\settings.html:66
+#: module\web\templates\modern\settings.html:97 module\web\templates\modern\settings.html:157
+#: module\web\templates\classic\admin.html:61 module\web\templates\classic\admin.html:91
+#: module\web\templates\modern\admin.html:79 module\web\templates\pyplex\admin.html:83
+#: module\web\templates\pyplex\settings.html:66 module\web\templates\pyplex\settings.html:97
+#: module\web\templates\pyplex\settings.html:157 module\web\templates\modern\queue.html:97
+#: module\web\templates\pyplex\captcha.html:38 module\web\templates\pyplex\queue.html:97
+#: module\web\templates\classic\captcha.html:39 module\web\templates\classic\queue.html:97
+#: module\web\templates\classic\settings.html:49 module\web\templates\classic\settings.html:77
+#: module\web\templates\classic\settings.html:167
+msgid "Submit"
+msgstr ""
+
+#: module\web\templates\modern\admin.html:148 module\web\templates\classic\admin.html:86
+#: module\web\templates\pyplex\admin.html:152
+msgid "Please repeat the new password."
+msgstr ""
+
+#: module\web\templates\classic\home.html:206 module\web\templates\pyplex\home.html:13
+#: module\web\templates\modern\home.html:13
+msgid "Active Downloads"
+msgstr ""
+
+#: module\web\templates\classic\base.html:240
+msgid "Reload page"
+msgstr ""
+
+#: module\web\templates\modern\queue.html:88 module\web\templates\classic\queue.html:87
+#: module\web\templates\pyplex\queue.html:88
+msgid "Folder"
+msgstr ""
+
+#: module\web\templates\classic\queue.html:80
+msgid "Edit the package detais below."
+msgstr ""
+
+#: module\web\templates\pyplex\admin.html:44 module\web\templates\modern\admin.html:40
+msgid "Important:"
+msgstr ""
+
+#: module\web\templates\classic\folder.html:7 module\web\templates\classic\filemanager.html:29
+#: module\web\templates\classic\filemanager.html:44
+msgid "Rename Directory"
+msgstr ""
+
+#: module\web\templates\pyplex\info.html:81 module\web\templates\modern\info.html:81
+msgid "Development"
+msgstr ""
+
+#: module\web\templates\pyplex\info.html:103 module\web\templates\modern\info.html:103
+msgid "Webinterface Theme:"
+msgstr ""
+
+#: module\web\templates\classic\base.html:154 module\web\templates\pyplex\base.html:92
+#: module\web\templates\modern\base.html:92
+msgid "pyLoad Update available!"
+msgstr ""
+
+#: module\web\templates\classic\base.html:160 module\web\templates\pyplex\base.html:97
+#: module\web\templates\modern\base.html:97
+msgid "Plugins updated, please restart!"
+msgstr ""
+
+#: module\web\templates\pyplex\settings.html:183 module\web\templates\classic\settings.html:188
+#: module\web\templates\modern\settings.html:183
+msgid "Type"
+msgstr ""
+
+#: module\web\templates\modern\logs.html:89 module\web\templates\pyplex\logs.html:89
+msgid "Reversed"
+msgstr ""
+
+#: module\web\templates\classic\base.html:228
+msgid "Stop"
+msgstr ""
+
+#: module/web/media/js/pyplex/base.js:382 module/web/media/js/classic/base.js:2
+#: module\web\templates\modern\captcha.html:25 module\web\templates\pyplex\captcha.html:25
+#: module/web/media/js/modern/base.js:382
+msgid "Please click on the right captcha position."
+msgstr ""
+
+#: module\web\templates\modern\settings.html:173 module\web\templates\pyplex\login.html:2
+#: module\web\templates\classic\login.html:3 module\web\templates\pyplex\settings.html:173
+#: module\web\templates\modern\login.html:2 module\web\templates\classic\settings.html:178
+msgid "Login"
+msgstr ""
+
+#: module\web\templates\pyplex\settings.html:114 module\web\templates\classic\settings.html:99
+#: module\web\templates\modern\settings.html:114
+msgid "Delete?"
+msgstr ""
+
+#: module/web/media/js/modern/admin.js:17 module/web/media/js/pyplex/admin.js:17
+#: module/web/media/js/pyplex/settings.js:116 module/web/media/js/modern/settings.js:116
+msgid "Settings saved"
+msgstr ""
+
+#: module\web\templates\modern\settings.html:107 module\web\templates\modern\settings.html:178
+#: module\web\templates\modern\window.html:23 module\web\templates\pyplex\login.html:60
+#: module\web\templates\pyplex\queue.html:93 module\web\templates\classic\login.html:19
+#: module\web\templates\pyplex\window.html:23 module\web\templates\pyplex\settings.html:107
+#: module\web\templates\pyplex\settings.html:178 module\web\templates\modern\queue.html:93
+#: module\web\templates\modern\login.html:60 module\web\templates\classic\queue.html:92
+#: module\web\templates\classic\settings.html:92 module\web\templates\classic\settings.html:183
+#: module\web\templates\classic\window.html:21
+msgid "Password"
+msgstr ""
+
+#: module\web\templates\classic\setup.html:3 module\web\templates\classic\setup.html:4
+msgid "Setup"
+msgstr ""
+
+#: module\web\templates\modern\info.html:101 module\web\templates\pyplex\info.html:101
+#: module\web\templates\classic\info.html:68
+msgid "Language:"
+msgstr ""
+
+#: module\web\templates\classic\pathchooser.html:54
+msgid "parent directory"
+msgstr ""
+
+#: module\web\templates\modern\captcha.html:20 module\web\templates\classic\captcha.html:16
+#: module\web\templates\pyplex\captcha.html:20
 msgid "Input the text on the captcha."
 msgstr ""
 
-#: module/web/templates/default/captcha.html:34
-msgid "Close"
+#: module\web\templates\classic\login.html:30
+msgid "To reset your login data or add an user run:"
 msgstr ""
+
+#: module\web\templates\pyplex\home.html:19 module\web\templates\modern\settings.html:106
+#: module\web\templates\modern\window.html:10 module\web\templates\classic\admin.html:25
+#: module\web\templates\classic\home.html:237 module\web\templates\modern\admin.html:50
+#: module\web\templates\modern\home.html:19 module\web\templates\pyplex\admin.html:54
+#: module\web\templates\pyplex\settings.html:106 module\web\templates\modern\queue.html:83
+#: module\web\templates\pyplex\window.html:10 module\web\templates\pyplex\queue.html:83
+#: module\web\templates\classic\queue.html:82 module\web\templates\classic\settings.html:91
+#: module\web\templates\classic\window.html:7
+msgid "Name"
+msgstr ""
+
+#: module\web\templates\modern\admin.html:52 module\web\templates\classic\admin.html:31
+#: module\web\templates\pyplex\admin.html:56
+msgid "Admin"
+msgstr ""
+
+#: module\web\templates\pyplex\info.html:80 module\web\templates\modern\info.html:80
+msgid "Homepage"
+msgstr ""
+
+#: module\web\templates\modern\logout.html:16 module\web\templates\classic\logout.html:8
+#: module\web\templates\pyplex\logout.html:16
+msgid "You were successfully logged out."
+msgstr ""
+
+#: module/web/media/js/pyplex/base.js:416 module/web/media/js/modern/base.js:416
+msgid "No Captchas to read."
+msgstr ""
+
+#: module\web\templates\modern\captcha.html:34 module\web\templates\classic\captcha.html:32
+#: module\web\templates\pyplex\captcha.html:34
+msgid "The captcha may take a few seconds to load."
+msgstr ""
+
+#: module\web\templates\pyplex\queue.html:80 module\web\templates\modern\queue.html:80
+msgid "Edit the package detais below"
+msgstr ""
+
+#: module\web\templates\modern\admin.html:138 module\web\templates\classic\admin.html:76
+#: module\web\templates\classic\settings.html:184 module\web\templates\pyplex\admin.html:142
+msgid "The password for this account."
+msgstr ""
+
+#: module\web\templates\classic\base.html:239 module\web\templates\pyplex\base.html:188
+#: module\web\templates\modern\base.html:188
+msgid "Queued"
+msgstr ""
+
+#: module\web\templates\modern\admin.html:129 module\web\templates\classic\admin.html:69
+#: module\web\templates\pyplex\admin.html:133
+msgid "Enter your current and desired Password."
+msgstr ""
+
+#: module/web/media/js/pyplex/base.js:231 module/web/media/js/modern/base.js:231
+msgid "Please Enter a package name."
+msgstr ""
+
+#: module/web/media/js/classic/base.js:2 module\web\templates\modern\base.html:185
+#: module\web\templates\modern\base.html:186 module/web/media/js/pyplex/base.js:360
+#: module/web/media/js/pyplex/base.js:365 module\web\templates\modern\settings_item.html:15
+#: module\web\templates\classic\settings_item.html:16 module/web/media/js/modern/base.js:360
+#: module/web/media/js/modern/base.js:365 module\web\templates\classic\base.html:236
+#: module\web\templates\classic\base.html:237 module\web\templates\pyplex\settings_item.html:15
+#: module\web\templates\pyplex\base.html:185 module\web\templates\pyplex\base.html:186
+msgid "off"
+msgstr ""
+
+#: module\web\templates\modern\info.html:107 module\web\templates\pyplex\info.html:107
+#: module\web\templates\classic\info.html:76
+msgid "Remote Interface Port:"
+msgstr ""
+
+#: module\web\templates\modern\queue.html:60 module\web\templates\classic\queue.html:65
+#: module\web\templates\pyplex\queue.html:60
+msgid "Folder:"
+msgstr ""
+
+#: module\web\templates\modern\queue.html:61 module\web\templates\classic\queue.html:65
+#: module\web\templates\pyplex\queue.html:61
+msgid "Password:"
+msgstr ""
+
+#: module\web\templates\pyplex\settings.html:136 module\web\templates\classic\settings.html:134
+#: module\web\templates\modern\settings.html:136
+msgid "no"
+msgstr ""
+
+#: module/web/media/js/modern/package.js:173 module/web/media/js/classic/package_ui.js:2
+#: module/web/media/js/pyplex/package.js:178
+msgid "Delete Link"
+msgstr ""
+
+#: module/web/media/js/classic/settings.js:2
+msgid "Error occured."
+msgstr ""
+
+#: module\web\templates\pyplex\window.html:25 module\web\templates\modern\window.html:25
+msgid "Type the package password"
+msgstr ""
+
+#: module\web\templates\classic\queue.html:50
+msgid "Move Package"
+msgstr ""
+
+#: module\web\templates\modern\window.html:32 module\web\templates\classic\window.html:26
+#: module\web\templates\pyplex\window.html:32
+msgid "File"
+msgstr ""
+
+#: module\web\templates\classic\base.html:239 module\web\templates\pyplex\base.html:188
+#: module\web\templates\modern\base.html:188
+msgid "Total"
+msgstr ""
+
+#: module\web\templates\classic\folder.html:11 module\web\templates\classic\filemanager.html:48
+msgid "Add subdirectory"
+msgstr ""
+
