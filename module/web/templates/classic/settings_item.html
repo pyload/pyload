@@ -6,14 +6,14 @@
         {% if okey not in ("desc","outline") %}
             <tr>
                 <td><label for="{{skey}}|{{okey}}"
-                           style="color:#424242;">{{ option.desc }}:</label></td>
+                           style="color:#424242;">{{_(option.desc)}}:</label></td>
                 <td>
                     {% if option.type == "bool" %}
                         <select id="{{skey}}|{{okey}}" name="{{skey}}|{{okey}}">
                             <option {% if option.value %} selected="selected"
-                                                          {% endif %}value="True">{{ _("on") }}</option>
+                                                          {% endif %}value="True">{{_("on")}}</option>
                             <option {% if not option.value %} selected="selected"
-                                                              {% endif %}value="False">{{ _("off") }}</option>
+                                                              {% endif %}value="False">{{_("off")}}</option>
                         </select>
                         {% elif ";" in option.type %}
                         <select id="{{skey}}|{{okey}}" name="{{skey}}|{{okey}}">
