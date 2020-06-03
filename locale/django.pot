@@ -54,9 +54,17 @@ msgstr ""
 msgid "Time"
 msgstr ""
 
+#: module\config\default.conf:68
+msgid "Use Proxy"
+msgstr ""
+
 #: module\web\templates\classic\base.html:278 module\web\templates\pyplex\base.html:220
 #: module\web\templates\modern\base.html:220
 msgid "Back to top"
+msgstr ""
+
+#: module\config\default.conf:10
+msgid "SSL Certificate"
 msgstr ""
 
 #: module\web\templates\pyplex\info.html:74 module\web\templates\modern\info.html:74
@@ -76,6 +84,10 @@ msgstr ""
 #: module\web\templates\modern\info.html:97 module\web\templates\pyplex\info.html:97
 #: module\web\templates\classic\info.html:60
 msgid "Download Folder:"
+msgstr ""
+
+#: module\config\default.conf:20
+msgid "Template"
 msgstr ""
 
 #: module\web\templates\classic\base.html:238 module\web\templates\pyplex\base.html:187
@@ -100,6 +112,10 @@ msgstr ""
 #: module\web\templates\modern\window.html:17 module\web\templates\classic\window.html:14
 #: module\web\templates\pyplex\window.html:17
 msgid "Filter urls"
+msgstr ""
+
+#: module\config\default.conf:11
+msgid "SSL Key"
 msgstr ""
 
 #: module\web\templates\modern\admin.html:143 module\web\templates\classic\admin.html:81
@@ -137,6 +153,10 @@ msgstr ""
 msgid "pyLoad version:"
 msgstr ""
 
+#: module\config\default.conf:52
+msgid "Groupname"
+msgstr ""
+
 #: module\web\templates\classic\base.html:166 module\web\templates\pyplex\base.html:77
 #: module\web\templates\pyplex\base.html:179 module\web\templates\modern\base.html:77
 #: module\web\templates\modern\base.html:179
@@ -152,6 +172,10 @@ msgstr ""
 #: module\web\templates\pyplex\admin.html:154 module\web\templates\modern\admin.html:102
 #: module\web\templates\modern\admin.html:115 module\web\templates\modern\admin.html:150
 msgid "Ok"
+msgstr ""
+
+#: module\config\default.conf:51
+msgid "Change group of running process"
 msgstr ""
 
 #: module\web\templates\modern\base.html:65 module\web\templates\modern\base.html:140
@@ -173,6 +197,10 @@ msgstr ""
 msgid "Delete Finished"
 msgstr ""
 
+#: module\config\default.conf:32
+msgid "Debug Mode"
+msgstr ""
+
 #: module/web/media/js/pyplex/base.js:330 module/web/media/js/pyplex/base.js:341 module/web/media/js/classic/base.js:2
 #: module/web/media/js/modern/base.js:330 module/web/media/js/modern/base.js:341
 msgid "New Captcha Request"
@@ -185,6 +213,14 @@ msgstr ""
 #: module\web\templates\modern\captcha.html:7 module\web\templates\classic\captcha.html:4
 #: module\web\templates\pyplex\captcha.html:7
 msgid "Captcha reading"
+msgstr ""
+
+#: module\config\default.conf:17
+msgid "Listen on both IPv4 and IPv6 (IP must be set to 0.0.0.0)"
+msgstr ""
+
+#: module\config\default.conf:65
+msgid "Protocol"
 msgstr ""
 
 #: module\web\templates\classic\pathchooser.html:46 module\web\templates\pyplex\pathchooser.html:78
@@ -207,6 +243,10 @@ msgstr ""
 msgid "FileManager"
 msgstr ""
 
+#: module\config\default.conf:16
+msgid "Use HTTPS"
+msgstr ""
+
 #: module/web/templates/classic/filemanager_ui.js:180 module\web\templates\classic\filemanager.html:65
 #: module\web\templates\classic\folder.html:14
 msgid "Folder is empty"
@@ -221,7 +261,7 @@ msgstr ""
 msgid "Your username"
 msgstr ""
 
-#: module\web\templates\classic\base.html:137 module\web\templates\classic\base.html:252
+#: module\web\templates\classic\base.html:137 module\web\templates\classic\base.html:252 module\config\default.conf:13
 #: module\web\templates\pyplex\base.html:34 module\web\templates\modern\base.html:34
 msgid "Webinterface"
 msgstr ""
@@ -251,6 +291,10 @@ msgstr ""
 msgid "no content"
 msgstr ""
 
+#: module\config\default.conf:5
+msgid "Adress"
+msgstr ""
+
 #: module\web\templates\modern\queue.html:43 module\web\templates\classic\queue.html:44
 #: module\web\templates\pyplex\queue.html:43
 msgid "Delete Package"
@@ -278,6 +322,10 @@ msgstr ""
 msgid "Pause Queue"
 msgstr ""
 
+#: module\config\default.conf:53
+msgid "Change Group and User of Downloads"
+msgstr ""
+
 #: module/web/media/js/classic/base.js:2 module\web\templates\classic\captcha.html:5
 msgid "Please read the text on the captcha."
 msgstr ""
@@ -286,7 +334,7 @@ msgstr ""
 msgid "Settings saved."
 msgstr ""
 
-#: module\web\templates\classic\logs.html:12
+#: module\web\templates\classic\logs.html:12 module\config\default.conf:58 module\config\default.conf:61
 msgid "End"
 msgstr ""
 
@@ -305,6 +353,10 @@ msgstr ""
 msgid "Quit pyLoad"
 msgstr ""
 
+#: module\config\default.conf:6
+msgid "No authentication on local connections"
+msgstr ""
+
 #: module\web\templates\classic\pathchooser.html:39 module\web\templates\classic\pathchooser.html:41
 #: module\web\templates\pyplex\settings.html:213 module\web\templates\modern\settings.html:213
 msgid "relative"
@@ -318,6 +370,10 @@ msgstr ""
 #: module\web\templates\modern\info.html:89 module\web\templates\pyplex\info.html:89
 #: module\web\templates\classic\info.html:44
 msgid "OS:"
+msgstr ""
+
+#: module\config\default.conf:49
+msgid "Change file mode of downloads"
 msgstr ""
 
 #: module\web\templates\pyplex\window.html:20 module\web\templates\modern\window.html:20
@@ -334,8 +390,8 @@ msgstr ""
 msgid "yes"
 msgstr ""
 
-#: module\web\templates\classic\login.html:14 module\web\templates\modern\login.html:56
-#: module\web\templates\pyplex\login.html:56
+#: module\config\default.conf:47 module\config\default.conf:66 module\web\templates\classic\login.html:14
+#: module\web\templates\modern\login.html:56 module\web\templates\pyplex\login.html:56
 msgid "Username"
 msgstr ""
 
@@ -353,6 +409,18 @@ msgstr ""
 #: module\web\templates\pyplex\base.html:130 module\web\templates\classic\base.html:206
 #: module\web\templates\pyplex\downloads.html:6
 msgid "Downloads"
+msgstr ""
+
+#: module\config\default.conf:55
+msgid "Use Reconnect"
+msgstr ""
+
+#: module\config\default.conf:39
+msgid "Max Parallel Downloads"
+msgstr ""
+
+#: module\config\default.conf:56
+msgid "Method"
 msgstr ""
 
 #: module/web/media/js/modern/settings.js:178 module/web/media/js/pyplex/settings.js:178
@@ -380,6 +448,14 @@ msgstr ""
 #: module/web/media/js/pyplex/settings.js:138 module/web/media/js/pyplex/settings.js:155
 #: module/web/media/js/modern/admin.js:21 module/web/media/js/pyplex/admin.js:21
 msgid "Error occurred"
+msgstr ""
+
+#: module\config\default.conf:36
+msgid "CPU Priority"
+msgstr ""
+
+#: module\config\default.conf:44
+msgid "Skip already existing files"
 msgstr ""
 
 #: module\web\templates\classic\base.html:175 module\web\templates\pyplex\base.html:154
@@ -425,6 +501,10 @@ msgstr ""
 msgid "Please Enter a packagename."
 msgstr ""
 
+#: module\config\default.conf:15
+msgid "Server"
+msgstr ""
+
 #: module\web\templates\modern\base.html:52 module\web\templates\modern\base.html:124
 #: module\web\templates\modern\window.html:40 module\web\templates\pyplex\queue.html:46
 #: module\web\templates\classic\home.html:214 module\web\templates\pyplex\base.html:52
@@ -447,8 +527,16 @@ msgstr ""
 msgid "The password for this account"
 msgstr ""
 
+#: module\config\default.conf:48
+msgid "Folder Permission mode"
+msgstr ""
+
 #: module\web\templates\pyplex\admin.html:90 module\web\templates\modern\admin.html:86
 msgid "pyLoad is restarting..."
+msgstr ""
+
+#: module\config\default.conf:38
+msgid "Max connections for one download"
 msgstr ""
 
 #: module\web\templates\modern\admin.html:60 module\web\templates\classic\admin.html:41
@@ -503,8 +591,20 @@ msgstr ""
 msgid "Loading..."
 msgstr ""
 
+#: module\config\default.conf:43
+msgid "Allow IPv6"
+msgstr ""
+
 #: module\web\templates\pyplex\queue.html:90 module\web\templates\modern\queue.html:90
 msgid "Name of subfolder for these downloads"
+msgstr ""
+
+#: module\config\default.conf:28
+msgid "Log Rotate"
+msgstr ""
+
+#: module\config\default.conf:8
+msgid "SSL"
 msgstr ""
 
 #: module\web\templates\classic\captcha.html:10
@@ -535,15 +635,27 @@ msgstr ""
 msgid "New password (repeat)"
 msgstr ""
 
+#: module\config\default.conf:12
+msgid "CA's intermediate certificate bundle (optional)"
+msgstr ""
+
 #: module\web\templates\pyplex\home.html:21 module\web\templates\classic\home.html:239
 #: module\web\templates\classic\info.html:14 module\web\templates\classic\info.html:15
 #: module\web\templates\modern\home.html:21
 msgid "Information"
 msgstr ""
 
+#: module\config\default.conf:24
+msgid "File Log"
+msgstr ""
+
 #: module\web\templates\pyplex\settings.html:205 module\web\templates\pyplex\settings.html:219
 #: module\web\templates\modern\settings.html:205 module\web\templates\modern\settings.html:219
 msgid "Select"
+msgstr ""
+
+#: module\config\default.conf:23
+msgid "Log"
 msgstr ""
 
 #: module\web\templates\classic\base.html:239 module\web\templates\pyplex\base.html:188
@@ -574,7 +686,8 @@ msgstr ""
 msgid "Upload a container."
 msgstr ""
 
-#: module\web\templates\classic\base.html:227 module\web\templates\classic\logs.html:12
+#: module\web\templates\classic\base.html:227 module\web\templates\classic\logs.html:12 module\config\default.conf:57
+#: module\config\default.conf:60
 msgid "Start"
 msgstr ""
 
@@ -582,6 +695,10 @@ msgstr ""
 #: module\web\templates\classic\settings.html:168 module\web\templates\classic\settings.html:197
 #: module\web\templates\modern\settings.html:191
 msgid "Add"
+msgstr ""
+
+#: module\config\default.conf:34
+msgid "Min Free Space (MB)"
 msgstr ""
 
 #: module\web\templates\modern\info.html:95 module\web\templates\pyplex\info.html:95
@@ -627,6 +744,10 @@ msgstr ""
 msgid "Delete Directory"
 msgstr ""
 
+#: module\config\default.conf:27
+msgid "Size in kb"
+msgstr ""
+
 #: module\web\templates\modern\captcha.html:30 module\web\templates\classic\captcha.html:28
 #: module\web\templates\pyplex\captcha.html:30
 msgid "Your browser does not support iframes."
@@ -647,6 +768,10 @@ msgstr ""
 msgid "Active"
 msgstr ""
 
+#: module\config\default.conf:46
+msgid "Change user of running process"
+msgstr ""
+
 #: module\web\templates\classic\logs.html:12
 msgid "prev"
 msgstr ""
@@ -661,9 +786,13 @@ msgstr ""
 msgid "pyload userscript"
 msgstr ""
 
-#: module\web\templates\modern\admin.html:53 module\web\templates\classic\admin.html:34
+#: module\web\templates\modern\admin.html:53 module\web\templates\classic\admin.html:34 module\config\default.conf:45
 #: module\web\templates\pyplex\admin.html:57
 msgid "Permissions"
+msgstr ""
+
+#: module\config\default.conf:26
+msgid "Count"
 msgstr ""
 
 #: module\web\templates\modern\admin.html:39 module\web\templates\classic\admin.html:18
@@ -682,6 +811,10 @@ msgstr ""
 
 #: module\web\templates\pyplex\home.html:20 module\web\templates\modern\home.html:20
 msgid "Hoster"
+msgstr ""
+
+#: module\config\default.conf:22
+msgid "Use basic auth"
 msgstr ""
 
 #: module\web\templates\modern\info.html:85 module\web\templates\pyplex\info.html:85
@@ -720,6 +853,10 @@ msgstr ""
 msgid "Traffic left"
 msgstr ""
 
+#: module\config\default.conf:50
+msgid "Filemode for Downloads"
+msgstr ""
+
 #: module/web/templates/classic/filemanager_ui.js:237
 msgid "New folder"
 msgstr ""
@@ -746,14 +883,30 @@ msgstr ""
 msgid "Text"
 msgstr ""
 
-#: module\web\templates\pyplex\settings.html:42 module\web\templates\classic\settings.html:16
-#: module\web\templates\modern\settings.html:42
+#: module\config\default.conf:41
+msgid "Limit Download Speed"
+msgstr ""
+
+#: module\config\default.conf:40
+msgid "Max Download Speed in kb/s"
+msgstr ""
+
+#: module\config\default.conf:59
+msgid "Download Time"
+msgstr ""
+
+#: module\config\default.conf:29 module\web\templates\pyplex\settings.html:42
+#: module\web\templates\classic\settings.html:16 module\web\templates\modern\settings.html:42
 msgid "General"
 msgstr ""
 
 #: module\web\templates\modern\window.html:7 module\web\templates\classic\window.html:6
 #: module\web\templates\pyplex\window.html:7
 msgid "Paste your links or upload a container."
+msgstr ""
+
+#: module\config\default.conf:21
+msgid "Path Prefix"
 msgstr ""
 
 #: module\web\templates\classic\queue.html:88
@@ -813,6 +966,10 @@ msgstr ""
 msgid "Enter your account data to use premium features."
 msgstr ""
 
+#: module\config\default.conf:7 module\config\default.conf:9 module\config\default.conf:14
+msgid "Activated"
+msgstr ""
+
 #: module\web\templates\modern\logs.html:91 module\web\templates\pyplex\logs.html:91
 msgid "Lines per page"
 msgstr ""
@@ -850,11 +1007,19 @@ msgstr ""
 msgid "Active Downloads"
 msgstr ""
 
+#: module\config\default.conf:35
+msgid "Create folder for each package"
+msgstr ""
+
 #: module\web\templates\classic\base.html:240
 msgid "Reload page"
 msgstr ""
 
-#: module\web\templates\modern\queue.html:88 module\web\templates\classic\queue.html:87
+#: module\config\default.conf:3
+msgid "Remote"
+msgstr ""
+
+#: module\web\templates\modern\queue.html:88 module\web\templates\classic\queue.html:87 module\config\default.conf:25
 #: module\web\templates\pyplex\queue.html:88
 msgid "Folder"
 msgstr ""
@@ -883,6 +1048,10 @@ msgstr ""
 #: module\web\templates\classic\base.html:154 module\web\templates\pyplex\base.html:92
 #: module\web\templates\modern\base.html:92
 msgid "pyLoad Update available!"
+msgstr ""
+
+#: module\config\default.conf:30
+msgid "Language"
 msgstr ""
 
 #: module\web\templates\classic\base.html:160 module\web\templates\pyplex\base.html:97
@@ -915,9 +1084,21 @@ msgstr ""
 msgid "Login"
 msgstr ""
 
+#: module\config\default.conf:31
+msgid "Download Folder"
+msgstr ""
+
 #: module\web\templates\pyplex\settings.html:114 module\web\templates\classic\settings.html:99
 #: module\web\templates\modern\settings.html:114
 msgid "Delete?"
+msgstr ""
+
+#: module\config\default.conf:62
+msgid "Proxy"
+msgstr ""
+
+#: module\config\default.conf:63
+msgid "Address"
 msgstr ""
 
 #: module/web/media/js/modern/admin.js:17 module/web/media/js/pyplex/admin.js:17
@@ -929,7 +1110,7 @@ msgstr ""
 #: module\web\templates\modern\window.html:23 module\web\templates\pyplex\login.html:60
 #: module\web\templates\pyplex\queue.html:93 module\web\templates\classic\login.html:19
 #: module\web\templates\pyplex\window.html:23 module\web\templates\pyplex\settings.html:107
-#: module\web\templates\pyplex\settings.html:178 module\web\templates\modern\queue.html:93
+#: module\web\templates\pyplex\settings.html:178 module\web\templates\modern\queue.html:93 module\config\default.conf:67
 #: module\web\templates\modern\login.html:60 module\web\templates\classic\queue.html:92
 #: module\web\templates\classic\settings.html:92 module\web\templates\classic\settings.html:183
 #: module\web\templates\classic\window.html:21
@@ -974,6 +1155,10 @@ msgstr ""
 msgid "Admin"
 msgstr ""
 
+#: module\config\default.conf:18
+msgid "IP"
+msgstr ""
+
 #: module\web\templates\pyplex\info.html:80 module\web\templates\modern\info.html:80
 msgid "Homepage"
 msgstr ""
@@ -981,6 +1166,10 @@ msgstr ""
 #: module\web\templates\modern\logout.html:16 module\web\templates\classic\logout.html:8
 #: module\web\templates\pyplex\logout.html:16
 msgid "You were successfully logged out."
+msgstr ""
+
+#: module\config\default.conf:37
+msgid "Download"
 msgstr ""
 
 #: module/web/media/js/pyplex/base.js:416 module/web/media/js/modern/base.js:416
@@ -1015,6 +1204,10 @@ msgstr ""
 msgid "Please Enter a package name."
 msgstr ""
 
+#: module\config\default.conf:42
+msgid "Download interface to bind (ip or Name)"
+msgstr ""
+
 #: module/web/media/js/classic/base.js:2 module\web\templates\modern\base.html:185
 #: module\web\templates\modern\base.html:186 module/web/media/js/pyplex/base.js:360
 #: module/web/media/js/pyplex/base.js:365 module\web\templates\modern\settings_item.html:15
@@ -1023,6 +1216,10 @@ msgstr ""
 #: module\web\templates\classic\base.html:237 module\web\templates\pyplex\settings_item.html:15
 #: module\web\templates\pyplex\base.html:185 module\web\templates\pyplex\base.html:186
 msgid "off"
+msgstr ""
+
+#: module\config\default.conf:33
+msgid "Use Checksum"
 msgstr ""
 
 #: module\web\templates\modern\info.html:107 module\web\templates\pyplex\info.html:107
@@ -1067,6 +1264,10 @@ msgstr ""
 msgid "File"
 msgstr ""
 
+#: module\config\default.conf:54
+msgid "Reconnect"
+msgstr ""
+
 #: module\web\templates\classic\base.html:239 module\web\templates\pyplex\base.html:188
 #: module\web\templates\modern\base.html:188
 msgid "Total"
@@ -1074,5 +1275,9 @@ msgstr ""
 
 #: module\web\templates\classic\folder.html:11 module\web\templates\classic\filemanager.html:48
 msgid "Add subdirectory"
+msgstr ""
+
+#: module\config\default.conf:4 module\config\default.conf:19 module\config\default.conf:64
+msgid "Port"
 msgstr ""
 
