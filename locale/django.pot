@@ -163,6 +163,11 @@ msgstr ""
 msgid "Captcha waiting"
 msgstr ""
 
+#: module\web\templates\modern\logs.html:110 module\web\templates\classic\logs.html:36
+#: module\web\templates\pyplex\logs.html:110
+msgid "Jump to time:"
+msgstr ""
+
 #: module\web\templates\modern\window.html:38 module\web\templates\classic\window.html:31
 #: module\web\templates\pyplex\window.html:38
 msgid "Destination"
