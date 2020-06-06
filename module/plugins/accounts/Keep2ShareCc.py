@@ -27,7 +27,7 @@ class Keep2ShareCc(Account):
     RECAPTCHA_KEY = "6LcYcN0SAAAAABtMlxKj7X0hRxOY8_2U86kI1vbb"
 
     API_URL = "https://keep2share.cc/api/v2/"
-    #: See https://github.com/keep2share/api
+    #: See https://keep2share.github.io/api/ https://github.com/keep2share/api
 
     @classmethod
     def api_response(cls, method, **kwargs):

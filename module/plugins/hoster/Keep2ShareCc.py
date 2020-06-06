@@ -33,7 +33,7 @@ class Keep2ShareCc(SimpleHoster):
     URL_REPLACEMENTS = [(__pattern__ + ".*", "https://k2s.cc/file/\g<ID>")]
 
     API_URL = "https://keep2share.cc/api/v2/"
-    #: See https://github.com/keep2share/api
+    #: See https://keep2share.github.io/api/ https://github.com/keep2share/api
 
     @classmethod
     def api_response(cls, method, **kwargs):
