@@ -32,10 +32,10 @@ class AlfafileNet(SimpleHoster):
     LINK_PATTERN = r'<a href="(.+?)" class="big_button"><span>Download</span></a>'
 
     DL_LIMIT_PATTERN = "You can't download not more than"
-	
+
     def init(self):
-        #Free download is limited to 1 simultaneous download,
-        #and there is currently no code to handle premium download.
+        # Free download is limited to 1 simultaneous download,
+        # and there is currently no code to handle premium download.
         self.multiDL = False
 
     def handle_free(self, pyfile):
@@ -73,8 +73,9 @@ class AlfafileNet(SimpleHoster):
         else:
             self.data = json_data['html']
             if re.search(self.DL_LIMIT_PATTERN, self.data):
-                #Dirty hack to make pyload wait for 30 minutes before retry
-                #because the server doesn't tell us how much time do we need to wait
+                # Dirty hack to make pyload wait for 30 minutes
+                # before retry because the server doesn't tell us
+		# how much time do we need to wait
                 self.data = 'Wait for 30 minutes'
                 self.DL_LIMIT_PATTERN = '(30 minutes)$'
             self.check_errors()
