@@ -10,7 +10,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class AlfafileNet(SimpleHoster):
     __name__ = "AlfafileNet"
     __type__ = "hoster"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(alfafile\.net)/file/(?P<ID>\w+)'
@@ -32,6 +32,7 @@ class AlfafileNet(SimpleHoster):
     LINK_PATTERN = r'<a href="(.+?)" class="big_button"><span>Download</span></a>'
 
     DL_LIMIT_PATTERN = r'Try again in (.+?)<'
+    PREMIUM_ONLY_PATTERN = r'In order to buy premium access'
 
     def handle_free(self, pyfile):
         json_data = self.load(self.fixurl("/download/start_timer/" + self.info['pattern']['ID']))
