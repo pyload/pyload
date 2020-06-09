@@ -75,7 +75,7 @@ class AlfafileNet(SimpleHoster):
             if re.search(self.DL_LIMIT_PATTERN, self.data):
                 # Dirty hack to make pyload wait for 30 minutes
                 # before retry because the server doesn't tell us
-		# how much time do we need to wait
+                # how much time do we need to wait
                 self.data = 'Wait for 30 minutes'
                 self.DL_LIMIT_PATTERN = '(30 minutes)$'
             self.check_errors()
