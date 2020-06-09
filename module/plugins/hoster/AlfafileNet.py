@@ -32,6 +32,11 @@ class AlfafileNet(SimpleHoster):
     LINK_PATTERN = r'<a href="(.+?)" class="big_button"><span>Download</span></a>'
 
     DL_LIMIT_PATTERN = "You can't download not more than"
+	
+    def init(self):
+        #Free download is limited to 1 simultaneous download,
+        #and there is currently no code to handle premium download.
+        self.multiDL = False
 
     def handle_free(self, pyfile):
         json_data = self.load(self.fixurl("/download/start_timer/" + self.info['pattern']['ID']))
