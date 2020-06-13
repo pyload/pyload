@@ -15,10 +15,10 @@ from ..internal.misc import json
 class FileboomMe(Account):
     __name__ = "FileboomMe"
     __type__ = "account"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
-    __description__ = """Keep2Share.cc account plugin"""
+    __description__ = """Fileboom.me account plugin"""
     __license__ = "GPLv3"
     __authors__ = [("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
@@ -37,7 +37,7 @@ class FileboomMe(Account):
         json_data = self.api_response("AccountInfo", auth_token=data['token'])
 
         return {'validuntil': json_data['account_expires'],
-                'trafficleft': json_data['available_traffic'] / 1024,  # @TODO: Remove `/ 1024` in 0.4.10
+                'trafficleft': json_data['available_traffic'],
                 'premium': True if json_data['account_expires'] else False}
 
     def signin(self, user, password, data):

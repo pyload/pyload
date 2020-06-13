@@ -23,15 +23,15 @@ if sys.version_info <= (2, 5):
 
 setup(
     name="pyload",
-    version="0.4.9",
+    version="0.4.20",
     description='Fast, lightweight and full featured download manager.',
     long_description=open(PROJECT_DIR / "README").read(),
     keywords = ('pyload', 'download-manager', 'one-click-hoster', 'download'),
-    url="http://pyload.org",
-    download_url='http://pyload.org/download',
+    url="http://pyload.net",
+    download_url='http://pyload.net/download',
     license='GPL v3',
     author="pyLoad Team",
-    author_email="support@pyload.org",
+    author_email="support@pyload.net",
     platforms = ('Any',),
     #package_dir={'pyload': 'src'},
     packages=['pyload'],
@@ -92,7 +92,7 @@ options(
 
 # xgettext args
 xargs = ["--from-code=utf-8", "--copyright-holder=pyLoad Team", "--package-name=pyLoad",
-         "--package-version=%s" % options.version, "--msgid-bugs-address='bugs@pyload.org'"]
+         "--package-version=%s" % options.version, "--msgid-bugs-address='bugs@pyload.net'"]
 
 @task
 @needs('cog')

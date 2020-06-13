@@ -1,6 +1,5 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from os.path import join
+
 import re
 try:
     from urllib import unquote
@@ -9,8 +8,9 @@ except ImportError:
 from base64 import standard_b64decode
 from binascii import unhexlify
 
-from bottle import route, request, HTTPError
-from .webinterface import PYLOAD, DL_ROOT, JS
+from bottle import HTTPError, request, route
+from module.utils import save_join
+from .webinterface import DL_ROOT, JS, PYLOAD
 
 try:
     from Crypto.Cipher import AES
@@ -55,7 +55,7 @@ def addcrypted():
     package = request.forms.get("package", request.forms.get("source", request.POST.get('referer', None)))
     dlc = request.forms['crypted'].replace(" ", "+")
 
-    dlc_path = join(DL_ROOT, package.replace("/", "").replace("\\", "").replace(":", "") + ".dlc")
+    dlc_path = save_join(DL_ROOT, package.replace("/", "").replace("\\", "").replace(":", "") + ".dlc")
     dlc_file = open(dlc_path, "wb")
     dlc_file.write(dlc)
     dlc_file.close()

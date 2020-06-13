@@ -4,14 +4,14 @@ from __future__ import with_statement
 
 import re
 
-from ..internal.misc import json
+from ..internal.misc import json, fs_encode
 from ..internal.MultiHoster import MultiHoster
 
 
 class PremiumTo(MultiHoster):
     __name__ = "PremiumTo"
     __type__ = "hoster"
-    __version__ = "0.34"
+    __version__ = "0.36"
     __status__ = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -43,10 +43,10 @@ class PremiumTo(MultiHoster):
 
     def check_download(self):
         if self.scan_download({'json': re.compile(r'\A{["\']code["\']:\d+,["\']message["\']:(["\']).+?\1}\Z')}):
-            with open(self.last_download, "rb") as f:
+            with open(fs_encode(self.last_download), "rb") as f:
                 json_data = json.loads(f.read())
 
-            self.remove(file)
+            self.remove(self.last_download)
             self.fail(_("API error %s - %s") % (json_data['code'], json_data['message']))
 
         return MultiHoster.check_download(self)

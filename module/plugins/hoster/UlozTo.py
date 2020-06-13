@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import pycurl
+import urlparse
 import re
 import os
 
@@ -16,7 +17,7 @@ def convert_decimal_prefix(m):
 class UlozTo(SimpleHoster):
     __name__ = "UlozTo"
     __type__ = "hoster"
-    __version__ = "1.44"
+    __version__ = "1.46"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl|pornfile\.cz)/(?:live/)?(?P<ID>[!\w]+/[^/?]*)'
@@ -81,17 +82,20 @@ class UlozTo(SimpleHoster):
     def handle_free(self, pyfile):
         is_adult = self.adult_confirmation(pyfile)
 
-        action, inputs = self.parse_html_form(
-            'id="frm-download-freeDownloadTab-freeDownloadForm"')
-        if not action or not inputs:
-            #Let's try to find direct download
-            m = re.search(r'<a id="limitedDownloadButton".*?href="(.*?)"', self.data)
-            if m:
-                domain = "https://pornfile.cz" if is_adult else "https://ulozto.net"
-                self.download(domain + m.group(1))
-                return
-            else:
-                self.error(_("Free download form not found"))
+        #Let's try to find direct download
+        m = re.search(r'<a id="limitedDownloadButton".*?href="(.*?)"', self.data)
+        if m:
+            domain = "https://pornfile.cz" if is_adult else "https://ulozto.net"
+            self.download(domain + m.group(1))
+            return
+
+        m = re.search(r'<a .* data-href="(.*)" class=".*js-free-download-button-dialog.*?"', self.data)
+        if not m:
+            self.error(_("Free download form not found"))
+
+        self.data = self.load(self.fixurl(m.group(1)))
+
+        action, inputs = self.parse_html_form('id="frm-freeDownloadForm-form"')
 
         self.log_debug("inputs.keys = %s" % inputs.keys())
         #: Get and decrypt captcha
@@ -163,11 +167,15 @@ class UlozTo(SimpleHoster):
 
         domain = "https://pornfile.cz" if is_adult else "https://ulozto.net"
         jsvars = self.get_json_response(domain + action, inputs)
-        self.download(jsvars['url'])
+        self.download(jsvars['downloadLink'])
 
     def handle_premium(self, pyfile):
-        self.adult_confirmation(pyfile)
-        self.download(pyfile.url, get={'do': "directDownload"})
+        m = re.search("/file/(.+)/", pyfile.url)
+        if not m:
+            self.error(_("Premium link not found"))
+
+        premium_url = urlparse.urljoin("https://ulozto.net/quickDownload/", m.group(1))
+        self.download(premium_url)
 
     def check_errors(self):
         if self.PASSWD_PATTERN in self.data:
@@ -232,9 +240,8 @@ class UlozTo(SimpleHoster):
             self.retry(msg=_("Something went wrong"))
 
         jsonres = json.loads(res)
-        if jsonres['status'] == "error" and 'new_captcha_data' in jsonres:
-            self.captcha.invalid()
-            self.retry(msg=_("Wrong captcha code"))
+        if 'formErrorContent' in jsonres:
+            self.retry_captcha()
 
         self.log_debug(url, res)
         return jsonres

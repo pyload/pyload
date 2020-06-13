@@ -239,7 +239,9 @@ class Setup():
 
             v = jinja2.__version__
             if v and "unknown" not in v:
-                if not v.startswith("2.5") and not v.startswith("2.6") and not v.startswith("2.10"):
+                v = v.split('.')
+                if int(v[0]) < 2 or int(v[1]) < 5:
+                    # if not v.startswith("2.5") and not v.startswith("2.6") and not v.startswith("2.10"):
                     print (_("Your installed jinja2 version %s seems too old.") % jinja2.__version__)
                     print (_("You can safely continue but if the webinterface is not working,"))
                     print (_("please upgrade or deinstall it, pyLoad includes a sufficient jinja2 libary."))
@@ -338,7 +340,7 @@ class Setup():
         print ("")
         print (_("Execute these commands from pyLoad config folder to make ssl certificates:"))
         print ("")
-        print ("openssl genrsa -out ssl.key 1024")
+        print ("openssl genrsa -out ssl.key 4096")
         print ("openssl req -new -key ssl.key -out ssl.csr")
         print ("openssl req -days 36500 -x509 -key ssl.key -in ssl.csr > ssl.crt ")
         print ("")
@@ -406,7 +408,11 @@ class Setup():
             translation.install(True)
 
         print (_("Setting new configpath, current configuration will not be transfered!"))
-        path = self.ask(_("Configpath"), os.path.abspath(""))
+        current_path = os.path.abspath("")
+        path = self.ask(_("Configpath"), current_path)
+        if path == current_path:
+            print(_("\nConfigpath not changed, continuing with setup."))
+            return
         try:
             path = os.path.join(pypath, path)
             if not os.path.exists(path):
@@ -417,7 +423,7 @@ class Setup():
             print (_("Configpath changed, setup will now close, please restart to go on."))
             print (_("Press Enter to exit."))
             input()
-            exit()
+            exit(1)
         except Exception as e:
             print (_("Setting config path failed: %s") % str(e))
 
@@ -486,7 +492,7 @@ class Setup():
                 inpt = input(qst + " %s: " % info)
             except KeyboardInterrupt:
                 print ("\nSetup interrupted")
-                exit()
+                exit(2)
 
             # inpt = inpt.decode(self.stdin_encoding)
 
@@ -516,4 +522,8 @@ class Setup():
 
 if __name__ == "__main__":
     test = Setup(os.path.join(os.path.abspath(os.path.dirname(__file__)), ".."), None)
-    test.start()
+    try:
+        test.start()
+    except KeyboardInterrupt:
+        print("\nSetup interrupted")
+        exit(2)

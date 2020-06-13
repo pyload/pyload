@@ -65,7 +65,7 @@ class Socket(TSocket):
     def read(self, sz):
         try:
             buff = self.handle.recv(sz)
-        except socket.error, e:
+        except socket.error as e:
             if (e.args[0] == errno.ECONNRESET and
                 (sys.platform == 'darwin' or sys.platform.startswith('freebsd'))):
                 # freebsd and Mach don't follow POSIX semantic of recv

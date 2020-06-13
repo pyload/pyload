@@ -7,7 +7,7 @@ import sys
 
 from ..internal.Addon import Addon
 from ..internal.Extractor import ArchiveError, CRCError, PasswordError
-from ..internal.misc import Expose, encode, exists, fsjoin, safename, threaded, uniqify
+from ..internal.misc import Expose, fs_encode, exists, fsjoin, safename, threaded, uniqify
 
 # monkey patch bug in python 2.6 and lower
 # http://bugs.python.org/issue6122 , http://bugs.python.org/issue1236 ,
@@ -93,7 +93,7 @@ class ArchiveQueue(object):
 class ExtractArchive(Addon):
     __name__ = "ExtractArchive"
     __type__ = "hook"
-    __version__ = "1.68"
+    __version__ = "1.69"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", False),
@@ -487,7 +487,7 @@ class ExtractArchive(Addon):
 
                 deltotrash = self.config.get('deltotrash')
                 for f in delfiles:
-                    file = encode(f)
+                    file = fs_encode(f)
                     if not exists(file):
                         continue
 
@@ -551,7 +551,7 @@ class ExtractArchive(Addon):
         try:
             passwords = []
 
-            file = encode(self.config.get('passwordfile'))
+            file = fs_encode(self.config.get('passwordfile'))
             with open(file) as f:
                 for pw in f.read().splitlines():
                     passwords.append(pw)
@@ -583,7 +583,7 @@ class ExtractArchive(Addon):
         try:
             self.passwords = uniqify([password] + self.passwords)
 
-            file = encode(self.config.get('passwordfile'))
+            file = fs_encode(self.config.get('passwordfile'))
             with open(file, "wb") as f:
                 for pw in self.passwords:
                     f.write(pw + '\n')

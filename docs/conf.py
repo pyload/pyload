@@ -66,7 +66,7 @@ cog.outl("version = '%s'" % ".".join(v[:2]))
 cog.outl("release = '%s'" % ".".join(v))
 ]]]"""
 version = '0.4'
-release = '0.4.9'
+release = '0.4.20'
 # [[[end]]]
 
 

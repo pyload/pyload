@@ -3,7 +3,7 @@
 import pycurl
 from module.network.HTTPRequest import BadHeader
 
-from ..internal.misc import encode, json
+from ..internal.misc import json
 from ..internal.MultiHoster import MultiHoster
 
 
@@ -14,7 +14,7 @@ def args(**kwargs):
 class MegaDebridEu(MultiHoster):
     __name__ = "MegaDebridEu"
     __type__ = "hoster"
-    __version__ = "0.59"
+    __version__ = "0.60"
     __status__ = "testing"
 
     __pattern__ = r'http://((?:www\d+\.|s\d+\.)?mega-debrid\.eu|\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/download/file/[\w^_]+'
@@ -37,7 +37,7 @@ class MegaDebridEu(MultiHoster):
         get['action'] = action
 
         # Better use pyLoad User-Agent so we don't get blocked
-        self.req.http.c.setopt(pycurl.USERAGENT, encode("pyLoad/%s" % self.pyload.version))
+        self.req.http.c.setopt(pycurl.USERAGENT, "pyLoad/%s" % self.pyload.version)
 
         json_data = self.load(self.API_URL, get=get, post=post)
 

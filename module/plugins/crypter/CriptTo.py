@@ -9,6 +9,7 @@ from module.network.RequestFactory import getURL as get_url
 
 from ..captcha.ReCaptcha import ReCaptcha
 from ..captcha.SolveMedia import SolveMedia
+from ..container.DLC import BadDLC, DLCDecrypter
 from ..internal.misc import json, parse_html_form
 from ..internal.SimpleCrypter import SimpleCrypter
 
@@ -16,7 +17,7 @@ from ..internal.SimpleCrypter import SimpleCrypter
 class CriptTo(SimpleCrypter):
     __name__ = "CriptTo"
     __type__ = "crypter"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?cript\.to/folder/(?P<ID>\w+)'
@@ -67,6 +68,9 @@ class CriptTo(SimpleCrypter):
                 self.packages = [(self.pyfile.name or pyfile.package().name,
                                   urls,
                                   self.pyfile.name or pyfile.package().name)]
+                return
+
+            elif self.packages:
                 return
 
     def handle_captcha(self):
@@ -122,7 +126,7 @@ class CriptTo(SimpleCrypter):
                     inputs['g-recaptcha-response'] = response
 
                 else:
-                    self.log_warning(_("Could not detect Solvemedia captcha key"))
+                    self.log_warning(_("Could not detect ReCaptcha captcha key"))
                     self.retry_captcha()
 
             else:
@@ -216,5 +220,19 @@ class CriptTo(SimpleCrypter):
         return links
 
     def handle_DLC(self):
-        return []  #: Not yet :(
-        # dlcs = re.findall(self.DLC_LINK_PATTERN, self.data)
+        decrypter = DLCDecrypter(self)
+
+        dlc_urls = re.findall(self.DLC_LINK_PATTERN, self.data)
+        for dlc_url in dlc_urls:
+            dlc_data = self.load(dlc_url)
+            try:
+                packages = decrypter.decrypt(dlc_data)
+
+            except BadDLC:
+                self.log_warning(_("Container is corrupted"))
+                continue
+
+            self.packages.extend([(name or self.pyfile.name, links, name or self.pyfile.name)
+                                  for name, links in packages])
+
+        return []

@@ -5,7 +5,7 @@ import shutil
 import subprocess
 
 from ..internal.Addon import Addon
-from ..internal.misc import Expose, encode, exists, fsjoin, threaded
+from ..internal.misc import Expose, Popen, exists, fs_encode, fsjoin, threaded
 
 try:
     import send2trash
@@ -16,7 +16,7 @@ except ImportError:
 class AntiVirus(Addon):
     __name__ = "AntiVirus"
     __type__ = "hook"
-    __version__ = "0.21"
+    __version__ = "0.22"
     __status__ = "broken"
 
     #@TODO: add trash option (use Send2Trash lib)
@@ -38,8 +38,8 @@ class AntiVirus(Addon):
     @Expose
     @threaded
     def scan(self, pyfile, thread):
-        avfile = encode(self.config.get('avfile'))
-        avargs = encode(self.config.get('avargs').strip())
+        avfile = fs_encode(self.config.get('avfile'))
+        avargs = fs_encode(self.config.get('avargs').strip())
 
         if not os.path.isfile(avfile):
             self.fail(_("Antivirus executable not found"))
@@ -48,14 +48,12 @@ class AntiVirus(Addon):
 
         if scanfolder:
             dl_folder = self.pyload.config.get("general", "download_folder")
-            package_folder = pyfile.package().folder if self.pyload.config.get(
-                "general", "folder_per_package") else ""
+            package_folder = pyfile.package().folder if self.pyload.config.get("general", "folder_per_package") else ""
             target = fsjoin(dl_folder, package_folder, pyfile.name)
             target_repr = "Folder: " + package_folder or dl_folder
         else:
-            target = encode(pyfile.plugin.last_download)
-            target_repr = "File: " + \
-                os.path.basename(pyfile.plugin.last_download)
+            target = fs_encode(pyfile.plugin.last_download)
+            target_repr = "File: " + os.path.basename(pyfile.plugin.last_download)
 
         if not exists(target):
             return
@@ -65,10 +63,10 @@ class AntiVirus(Addon):
         pyfile.setProgress(0)
 
         try:
-            p = subprocess.Popen([avfile, avargs, target],
-                                 bufsize=-1,
-                                 stdout=subprocess.PIPE,
-                                 stderr=subprocess.PIPE)
+            p = Popen([avfile, avargs, target],
+                      bufsize=-1,
+                      stdout=subprocess.PIPE,
+                      stderr=subprocess.PIPE)
 
             out, err = map(str.strip, p.communicate())
 

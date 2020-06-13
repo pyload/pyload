@@ -7,7 +7,7 @@ from ..internal.MultiAccount import MultiAccount
 class LinksnappyCom(MultiAccount):
     __name__ = "LinksnappyCom"
     __type__ = "account"
-    __version__ = "0.19"
+    __version__ = "0.20"
     __status__ = "testing"
 
     __config__ = [("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),
@@ -55,8 +55,7 @@ class LinksnappyCom(MultiAccount):
                 trafficleft = -1
 
             else:
-                # @TODO: Remove `/ 1024` in 0.4.10
-                trafficleft = float(json_data['return']['trafficleft']) / 1024
+                trafficleft = float(json_data['return']['trafficleft']) * 1024
 
         return {'premium': premium,
                 'validuntil': validuntil,

@@ -7,7 +7,7 @@ from ..internal.MultiAccount import MultiAccount
 class SimplyPremiumCom(MultiAccount):
     __name__ = "SimplyPremiumCom"
     __type__ = "account"
-    __version__ = "0.14"
+    __version__ = "0.15"
     __status__ = "testing"
 
     __config__ = [("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),
@@ -19,11 +19,9 @@ class SimplyPremiumCom(MultiAccount):
     __authors__ = [("EvolutionClip", "evolutionclip@live.de")]
 
     def grab_hosters(self, user, password, data):
-        json_data = self.load(
-            "http://www.simply-premium.com/api/hosts.php",
-            get={
-                'format': "json",
-                'online': 1})
+        json_data = self.load("http://www.simply-premium.com/api/hosts.php",
+                              get={'format': "json",
+                                   'online': 1})
         json_data = json.loads(json_data)
 
         host_list = [element['regex'] for element in json_data['result']]
@@ -35,8 +33,7 @@ class SimplyPremiumCom(MultiAccount):
         validuntil = -1
         trafficleft = None
 
-        json_data = self.load(
-            'http://www.simply-premium.com/api/user.php?format=json')
+        json_data = self.load('http://www.simply-premium.com/api/user.php?format=json')
 
         self.log_debug("JSON data: %s" % json_data)
 
@@ -48,10 +45,8 @@ class SimplyPremiumCom(MultiAccount):
         if 'timeend' in json_data['result'] and json_data['result']['timeend']:
             validuntil = float(json_data['result']['timeend'])
 
-        if 'remain_traffic' in json_data[
-                'result'] and json_data['result']['remain_traffic']:
-            # @TODO: Remove `/ 1024` in 0.4.10
-            trafficleft = float(json_data['result']['remain_traffic']) / 1024
+        if 'remain_traffic' in json_data['result'] and json_data['result']['remain_traffic']:
+            trafficleft = float(json_data['result']['remain_traffic'])
 
         return {'premium': premium, 'validuntil': validuntil,
                 'trafficleft': trafficleft}

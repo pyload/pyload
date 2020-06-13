@@ -8,7 +8,7 @@ from ..internal.XFSCrypter import XFSCrypter
 class XFileSharingFolder(XFSCrypter):
     __name__ = "XFileSharingFolder"
     __type__ = "crypter"
-    __version__ = "0.25"
+    __version__ = "0.26"
     __status__ = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -22,9 +22,9 @@ class XFileSharingFolder(XFSCrypter):
     __license__ = "GPLv3"
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
-    def _log(self, level, plugintype, pluginname, messages):
+    def _log(self, level, plugintype, pluginname, messages, tbframe=None):
         messages = (self.PLUGIN_NAME,) + messages
-        return XFSCrypter._log(self, level, plugintype, pluginname, messages)
+        return XFSCrypter._log(self, level, plugintype, pluginname, messages, tbframe=tbframe)
 
     def init(self):
         self.__pattern__ = self.pyload.pluginManager.crypterPlugins[
@@ -34,8 +34,7 @@ class XFileSharingFolder(XFSCrypter):
             self.__pattern__,
             self.pyfile.url).group("DOMAIN").lower()
         self.PLUGIN_NAME = "".join(
-            part.capitalize() for part in re.split(
-                r'\.|\d+|-', self.PLUGIN_DOMAIN) if part != '.')
+            part.capitalize() for part in re.split(r'\.|\d+|-', self.PLUGIN_DOMAIN) if part != '.')
 
     #@TODO: Recheck in 0.4.10
     def setup_base(self):

@@ -15,7 +15,7 @@ from ..internal.misc import json
 class Keep2ShareCc(Account):
     __name__ = "Keep2ShareCc"
     __type__ = "account"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __status__ = "testing"
 
     __description__ = """Keep2Share.cc account plugin"""
@@ -27,7 +27,7 @@ class Keep2ShareCc(Account):
     RECAPTCHA_KEY = "6LcYcN0SAAAAABtMlxKj7X0hRxOY8_2U86kI1vbb"
 
     API_URL = "https://keep2share.cc/api/v2/"
-    #: See https://github.com/keep2share/api
+    #: See https://keep2share.github.io/api/ https://github.com/keep2share/api
 
     @classmethod
     def api_response(cls, method, **kwargs):
@@ -39,7 +39,7 @@ class Keep2ShareCc(Account):
         json_data = self.api_response("AccountInfo", auth_token=data['token'])
 
         return {'validuntil': json_data['account_expires'],
-                'trafficleft': json_data['available_traffic'] / 1024,  # @TODO: Remove `/ 1024` in 0.4.10
+                'trafficleft': json_data['available_traffic'],
                 'premium': True if json_data['account_expires'] else False}
 
     def signin(self, user, password, data):

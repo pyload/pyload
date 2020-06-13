@@ -9,7 +9,7 @@ from .Plugin import Plugin
 class Addon(Plugin):
     __name__ = "Addon"
     __type__ = "hook"  # @TODO: Change to `addon` in 0.4.10
-    __version__ = "0.55"
+    __version__ = "0.56"
     __status__ = "stable"
 
     __threaded__ = []  # @TODO: Remove in 0.4.10
@@ -46,9 +46,9 @@ class Addon(Plugin):
         return self.config.get('activated')
 
     #@TODO: Remove in 0.4.10
-    def _log(self, level, plugintype, pluginname, messages):
+    def _log(self, level, plugintype, pluginname, messages, tbframe=None):
         plugintype = "addon" if plugintype == "hook" else plugintype
-        return Plugin._log(self, level, plugintype, pluginname, messages)
+        return Plugin._log(self, level, plugintype, pluginname, messages, tbframe=tbframe)
 
     #@TODO: Remove in 0.4.10
     def _init_events(self):

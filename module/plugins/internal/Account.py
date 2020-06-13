@@ -12,7 +12,7 @@ from .Plugin import Plugin, Skip
 class Account(Plugin):
     __name__ = "Account"
     __type__ = "account"
-    __version__ = "0.84"
+    __version__ = "0.86"
     __status__ = "stable"
 
     __description__ = """Base account plugin"""
@@ -61,8 +61,7 @@ class Account(Plugin):
     def premium(self):
         return bool(self.get_data('premium'))
 
-    def _log(self, level, plugintype, pluginname, messages):
-        log = getattr(self.pyload.log, level)
+    def _log(self, level, plugintype, pluginname, messages, tbframe=None):
         msg = u" | ".join(decode(a).strip() for a in messages if a)
 
         #: Hide any user/password
@@ -76,10 +75,7 @@ class Account(Plugin):
         except Exception:
             pass
 
-        log("%(plugintype)s %(pluginname)s: %(msg)s" %
-            {'plugintype': plugintype.upper(),
-             'pluginname': pluginname,
-             'msg': msg})
+        return Plugin._log(self, level, plugintype, pluginname, (msg, ), tbframe=tbframe)
 
     def setup(self):
         """
@@ -436,11 +432,10 @@ class Account(Plugin):
 
     ###########################################################################
 
-    def parse_traffic(self, size, unit=None):  # @NOTE: Returns kilobytes only in 0.4.9
+    def parse_traffic(self, size, unit=None):  #: returns bytes
         self.log_debug("Size: %s" % size,
                        "Unit: %s" % (unit or "N/D"))
-        # @TODO: Remove `/ 1024` in 0.4.10
-        return parse_size(size, unit or "byte") / 1024
+        return parse_size(size, unit or "byte")
 
     def fail_login(self, msg=_("Login handshake has failed")):
         return self.fail(msg)

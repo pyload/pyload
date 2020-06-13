@@ -283,3 +283,8 @@ class PyFile(object):
         if not value == self.progress:
             self.progress = value
             self.notifyChange()
+
+    def setName(self, value):
+        if not value == self.name:
+            self.name = value
+            self.notifyChange()

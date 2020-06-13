@@ -25,9 +25,10 @@ import struct
 import time
 
 from module.plugins.Plugin import Abort
+from module.utils import fs_encode
 
 
-class XDCCRequest():
+class XDCCRequest:
     def __init__(self, bucket=None, options={}):
         self.proxies = options.get('proxies', {})
         self.bucket  = bucket
@@ -45,8 +46,7 @@ class XDCCRequest():
 
         self.abort = False
 
-        self.progressNotify = None
-
+        self.status_notify = None
 
     def createSocket(self):
         # proxytype = None
@@ -69,7 +69,6 @@ class XDCCRequest():
         # sock.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, 16384)
 
         return sock
-
 
     def _write_func(self, buf):
         size = len(buf)
@@ -95,21 +94,19 @@ class XDCCRequest():
 
             time.sleep(self.sleep)
 
-
     def _send_ack(self):
-        # acknowledge data by sending number of recceived bytes
+        # acknowledge data by sending number of received bytes
         try:
             self.dccsock.send(struct.pack('!Q' if self.send_64bits_ack else '!I', self.received))
 
         except socket.error:
             pass
 
-
-    def download(self, ip, port, filename, progressNotify=None, resume=None):
-        self.progressNotify = progressNotify
+    def download(self, ip, port, filename, status_notify=None, resume=None):
+        self.status_notify = status_notify if callable(status_notify) else None
         self.send_64bits_ack = False if self.filesize < 1 << 32 else True
 
-        chunk_name = filename + ".chunk0"
+        chunk_name = fs_encode(filename + ".chunk0")
 
         if resume and os.path.exists(chunk_name):
             self.fh = open(chunk_name, "ab")
@@ -125,7 +122,7 @@ class XDCCRequest():
             self.fh = open(chunk_name, "wb")
 
         lastUpdate = time.time()
-        cumRecvLen = 0
+        numRecvLen = 0
 
         self.dccsock = self.createSocket()
 
@@ -156,7 +153,7 @@ class XDCCRequest():
                 if data_len == 0 or self.filesize and self.received + data_len > self.filesize:
                     break
 
-                cumRecvLen += data_len
+                numRecvLen += data_len
 
                 self._write_func(data)
                 self._send_ack()
@@ -167,9 +164,9 @@ class XDCCRequest():
                 # calc speed once per second, averaging over 3 seconds
                 self.speeds[2] = self.speeds[1]
                 self.speeds[1] = self.speeds[0]
-                self.speeds[0] = float(cumRecvLen) / timespan
+                self.speeds[0] = float(numRecvLen) / timespan
 
-                cumRecvLen = 0
+                numRecvLen = 0
                 lastUpdate = now
 
                 self.updateProgress()
@@ -177,41 +174,34 @@ class XDCCRequest():
         self.dccsock.close()
         self.fh.close()
 
-        os.rename(chunk_name, filename)
+        os.rename(chunk_name, fs_encode(filename))
 
         return filename
-
 
     def abortDownloads(self):
         self.abort = True
 
-
     def updateProgress(self):
-        if self.progressNotify:
-            self.progressNotify(self.percent)
-
+        if self.status_notify:
+            self.status_notify({'progress': self.percent})
 
     @property
     def size(self):
         return self.filesize
 
-
     @property
     def arrived(self):
         return self.received
-
 
     @property
     def speed(self):
         speeds = [x for x in self.speeds if x]
         return sum(speeds) / len(speeds)
 
-
     @property
     def percent(self):
         if not self.filesize: return 0
         return (self.received * 100) / self.filesize
-
 
     def close(self):
         pass

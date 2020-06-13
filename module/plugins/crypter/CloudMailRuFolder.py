@@ -11,7 +11,7 @@ from ..internal.misc import json
 class CloudMailRuFolder(Crypter):
     __name__ = "CloudMailRuFolder"
     __type__ = "crypter"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
     __pattern__ = r'https?://cloud\.mail\.ru/public/.+'
@@ -33,16 +33,18 @@ class CloudMailRuFolder(Crypter):
 
         json_data = json.loads(m.group(1).replace("\\x3c", "<"))
 
+        pack_name = json_data['folders']['folder']['name']
+
         pack_links = ["https://cloud.mail.ru/dl?q=%s" %
                       base64.b64encode(json.dumps({'u': "%s%s?etag=%s&key=%s" %
                                                         (json_data['dispatcher']['weblink_view'][0]['url'],
-                                                         urllib.quote(_link['weblink']),
+                                                         urllib.quote(_link['weblink'].encode('utf8')),
                                                          _link['hash'],
                                                          json_data['params']['tokens']['download']),
-                                                   'n': urllib.quote_plus(_link['name']),
+                                                   'n': urllib.quote_plus(_link['name'].encode('utf8')),
                                                    's': _link['size']}))
                       for _link in json_data['folders']['folder']['list']
                       if _link['kind'] == "file"]
 
         if pack_links:
-            self.packages.append((pyfile.package().name, pack_links, pyfile.package().folder))
+            self.packages.append((pack_name or pyfile.package().name, pack_links, pack_name or pyfile.package().folder))

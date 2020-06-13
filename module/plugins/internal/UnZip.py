@@ -7,13 +7,13 @@ import sys
 import zipfile
 
 from .Extractor import ArchiveError, CRCError, Extractor, PasswordError
-from .misc import encode, fsjoin
+from .misc import fs_encode, fsjoin
 
 
 class UnZip(Extractor):
     __name__ = "UnZip"
     __type__ = "extractor"
-    __version__ = "1.26"
+    __version__ = "1.27"
     __status__ = "stable"
 
     __description__ = """ZIP extractor plugin"""
@@ -36,7 +36,7 @@ class UnZip(Extractor):
     def isarchive(cls, filename):
         #: zipfile only checks for 'End of archive' so we have to check ourselves for 'start of archive'
         try:
-            with open(encode(filename), "rb") as f:
+            with open(fs_encode(filename), "rb") as f:
                 data = f.read(4)
                 if data != "PK\003\004":
                     return False
@@ -54,7 +54,7 @@ class UnZip(Extractor):
     def list(self, password=None):
         with zipfile.ZipFile(self.filename, 'r') as z:
             z.setpassword(password)
-            self.files = [fsjoin(self.dest, _f) for _f in z.namelist() if not _f[-1] != os.path.sep]
+            self.files = [fs_encode(self.dest, _f) for _f in z.namelist() if not _f[-1] != os.path.sep]
         return self.files
 
     def verify(self, password=None):

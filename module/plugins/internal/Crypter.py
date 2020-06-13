@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from .Base import Base
-from .misc import parse_name, safename
+from .misc import decode, parse_name, safepath
 
 
 class Crypter(Base):
     __name__ = "Crypter"
     __type__ = "crypter"
-    __version__ = "0.20"
+    __version__ = "0.21"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -72,12 +72,12 @@ class Crypter(Base):
         folder_per_package = self.config.get('folder_per_package', "Default")
 
         if folder_per_package == "Default":
-            folder_per_package = self.pyload.config.get(
-                'general', 'folder_per_package')
+            folder_per_package = self.pyload.config.get('general', 'folder_per_package')
         else:
             folder_per_package = folder_per_package == "Yes"
 
         for name, links, folder in self.packages:
+            name = decode(name)
             self.log_info(_("Create package: %s") % name,
                           _("%d links") % len(links))
 
@@ -87,12 +87,10 @@ class Crypter(Base):
             pid = self.pyload.api.addPackage(name, links, pack_queue)
 
             if pack_password:
-                self.pyload.api.setPackageData(
-                    pid, {'password': pack_password})
+                self.pyload.api.setPackageData(pid, {'password': pack_password})
 
             #: Workaround to do not break API addPackage method
-            set_folder = lambda x: self.pyload.api.setPackageData(
-                pid, {'folder': safename(x or "")})
+            set_folder = lambda x: self.pyload.api.setPackageData(pid, {'folder': safepath(x or "")})
 
             if not folder_per_package:
                 folder = pack_folder

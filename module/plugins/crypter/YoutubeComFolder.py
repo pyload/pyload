@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from ..internal.Crypter import Crypter
-from ..internal.misc import fsjoin, json
+from ..internal.misc import json
 
 
 class YoutubeComFolder(Crypter):
     __name__ = "YoutubeComFolder"
     __type__ = "crypter"
-    __version__ = "1.10"
+    __version__ = "1.11"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.|m\.)?youtube\.com/(?P<TYPE>user|playlist|view_play_list)(/|.*?[?&](?:list|p)=)(?P<ID>[\w\-]+)'
@@ -136,9 +136,7 @@ class YoutubeComFolder(Crypter):
         for p in playlists:
             p_name = p['title']
             p_videos = self.get_videos_id(p['id'])
-            p_folder = fsjoin(self.pyload.config.get('general', 'download_folder'),
-                              p['channelTitle'],
-                              p_name)
+
             self.log_debug('%s videos found on playlist "%s"' % (len(p_videos), p_name))
 
             if not p_videos:
@@ -153,6 +151,6 @@ class YoutubeComFolder(Crypter):
             else:
                 p_urls = map(urlize, p_videos)
 
-            self.packages.append((p_name, p_urls, p_folder))
+            self.packages.append((p_name, p_urls, p_name))
 
             addedvideos.extend(p_videos)

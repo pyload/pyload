@@ -3,7 +3,7 @@
 import os
 import re
 
-from .misc import encode
+from .misc import fs_encode
 from .Plugin import Plugin
 
 
@@ -22,7 +22,7 @@ class PasswordError(Exception):
 class Extractor(Plugin):
     __name__ = "Extractor"
     __type__ = "extractor"
-    __version__ = "0.48"
+    __version__ = "0.49"
     __status__ = "stable"
 
     __description__ = """Base extractor plugin"""
@@ -133,11 +133,11 @@ class Extractor(Plugin):
 
     @property
     def target(self):
-        return encode(self.filename)
+        return fs_encode(self.filename)
 
     @property
     def dest(self):
-        return encode(self.out)
+        return fs_encode(self.out)
 
     def verify(self, password=None):
         """

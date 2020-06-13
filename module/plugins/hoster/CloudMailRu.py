@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import base64
+import urllib
 
 from ..internal.Hoster import Hoster
 from ..internal.misc import json
@@ -9,7 +10,7 @@ from ..internal.misc import json
 class CloudMailRu(Hoster):
     __name__ = "CloudMailRu"
     __type__ = "hoster"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __status__ = "testing"
 
     __pattern__ = r'https?://cloud\.mail\.ru/dl\?q=(?P<QS>.+)'
@@ -33,7 +34,7 @@ class CloudMailRu(Hoster):
     def process(self, pyfile):
         json_data = json.loads(base64.b64decode(self.info['pattern']['QS']))
 
-        pyfile.name = json_data['n']
+        pyfile.name = urllib.unquote_plus(json_data['n']).encode('latin1').decode('utf8')
         pyfile.size = json_data['s']
 
         self.download(json_data['u'], disposition=False)

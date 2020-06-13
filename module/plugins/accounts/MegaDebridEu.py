@@ -3,7 +3,7 @@
 import pycurl
 from module.network.HTTPRequest import BadHeader
 
-from ..internal.misc import encode, json, reduce
+from ..internal.misc import decode, json, reduce
 from ..internal.MultiAccount import MultiAccount
 
 
@@ -35,7 +35,7 @@ class MegaDebridEu(MultiAccount):
         get['action'] = action
 
         # Better use pyLoad User-Agent so we don't get blocked
-        self.req.http.c.setopt(pycurl.USERAGENT, encode("pyLoad/%s" % self.pyload.version))
+        self.req.http.c.setopt(pycurl.USERAGENT, decode("pyLoad/%s" % self.pyload.version))
 
         json_data = self.load(self.API_URL, get=get, post=post)
 

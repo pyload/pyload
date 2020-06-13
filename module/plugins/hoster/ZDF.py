@@ -10,7 +10,7 @@ from ..internal.Hoster import Hoster
 class ZDF(Hoster):
     __name__ = "ZDF Mediathek"
     __type__ = "hoster"
-    __version__ = "0.89"
+    __version__ = "0.90"
     __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?zdf\.de/ZDFmediathek/\D*(\d+)\D*'
@@ -51,9 +51,8 @@ class ZDF(Hoster):
             self.fail(_("Error retrieving manifest"))
 
         video = xml.find("video")
-        title = video.findtext("information/title")
 
-        pyfile.name = title.encode('ascii', errors='replace')
+        pyfile.name = video.findtext("information/title")
 
         target_url = sorted((v for v in video.iter("formitaet") if self.video_valid(v)),
                             key=self.video_key)[-1].findtext("url")

@@ -8,13 +8,13 @@ from module.network.HTTPRequest import BadHeader
 from module.network.RequestFactory import getURL as get_url
 
 from .Hoster import Hoster
-from .misc import encode, parse_name, parse_size, parse_time, replace_patterns, search_pattern
+from .misc import fs_encode, parse_name, parse_size, parse_time, replace_patterns, search_pattern
 
 
 class SimpleHoster(Hoster):
     __name__ = "SimpleHoster"
     __type__ = "hoster"
-    __version__ = "2.30"
+    __version__ = "2.31"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -309,7 +309,7 @@ class SimpleHoster(Hoster):
             if self.CHECK_FILE:
                 self.log_info(_("Checking file (with custom rules)..."))
 
-                with open(encode(self.last_download), "rb") as f:
+                with open(fs_encode(self.last_download), "rb") as f:
                     self.data = f.read(1048576)  # @TODO: Recheck in 0.4.10
 
                 self.check_errors()

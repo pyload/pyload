@@ -4,12 +4,13 @@ import os
 import re
 
 from ..internal.SimpleHoster import SimpleHoster
+from ..internal.misc import fs_encode
 
 
 class LetsuploadCo(SimpleHoster):
     __name__ = "LetsuploadCo"
     __type__ = "hoster"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?letsupload\.co/\w+'
@@ -41,7 +42,7 @@ class LetsuploadCo(SimpleHoster):
         })
 
         if check is not None:
-            with open(self.last_download, "r") as f:
+            with open(fs_encode(self.last_download), "r") as f:
                 self.data = f.read()
 
             os.remove(self.last_download)

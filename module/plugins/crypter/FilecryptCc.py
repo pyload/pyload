@@ -14,6 +14,7 @@ import Crypto.Cipher.AES
 
 from module.network.CookieJar import CookieJar
 from module.network.HTTPRequest import BadHeader, HTTPRequest
+from module.plugins.internal.misc import json
 
 from ..captcha.CoinHive import CoinHive
 from ..captcha.ReCaptcha import ReCaptcha
@@ -49,7 +50,7 @@ class BIGHTTPRequest(HTTPRequest):
 class FilecryptCc(Crypter):
     __name__ = "FilecryptCc"
     __type__ = "crypter"
-    __version__ = "0.38"
+    __version__ = "0.40"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?filecrypt\.cc/Container/\w+'
@@ -75,6 +76,7 @@ class FilecryptCc(Crypter):
     CIRCLE_CAPTCHA_PATTERN = r'<input type="image" src="(.+?)"'
     KEY_CAPTCHA_PATTERN = r"<script language=JavaScript src='(http://backs\.keycaptcha\.com/swfs/cap\.js)'"
     SOLVEMEDIA_CAPTCHA_PATTERN = r'<script type="text/javascript" src="(https?://api(?:-secure)?\.solvemedia\.com/papi/challenge.+?)"'
+    CUTCAPTCHA_CAPTCHA_PATTERN = r'<script src=["\'](https://cutcaptcha\.com/captcha/\w+?\.js)["\']>'
 
     def setup(self):
         self.urls = []
@@ -92,7 +94,8 @@ class FilecryptCc(Crypter):
     def decrypt(self, pyfile):
         self.data = self._filecrypt_load_url(pyfile.url)
 
-        if "content notfound" in self.data:  # @NOTE: "content notfound" is NOT a typo
+        # @NOTE: "content notfound" is NOT a typo
+        if "content notfound" in self.data or ">File <strong>not</strong> found<" in self.data:
             self.offline()
 
         self.handle_password_protection()
@@ -145,6 +148,7 @@ class FilecryptCc(Crypter):
                            self._handle_circle_captcha,
                            self._handle_solvemedia_captcha,
                            self._handle_keycaptcha_captcha,
+                           self._handle_cutcaptcha_captcha,
                            self._handle_coinhive_captcha,
                            self._handle_recaptcha_captcha):
 
@@ -240,6 +244,28 @@ class FilecryptCc(Crypter):
 
             return self._filecrypt_load_url(url,
                                             post={'coinhive-captcha-token': token})
+
+        else:
+            return None
+
+    def _handle_cutcaptcha_captcha(self, url):
+        m = re.search(self.CUTCAPTCHA_CAPTCHA_PATTERN, self.data)
+        if m is not None:
+            self.log_debug("CutCaptcha Captcha URL: %s" % m.group(1))
+
+        else:
+            return None
+
+
+        cutcaptcha = CutCaptcha(self.pyfile)
+
+        cutcaptcha_key = cutcaptcha.detect_key()
+        if cutcaptcha_key:
+            self.captcha = cutcaptcha
+            token = cutcaptcha.challenge(cutcaptcha_key)
+
+            return self._filecrypt_load_url(url,
+                                            post={'cap_token': token})
 
         else:
             return None

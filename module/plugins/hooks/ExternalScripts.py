@@ -1,16 +1,15 @@
 # -*- coding: utf-8 -*-
 
 import os
-import subprocess
 
 from ..internal.Addon import Addon
-from ..internal.misc import Expose, encode
+from ..internal.misc import Expose, Popen, fs_encode
 
 
 class ExternalScripts(Addon):
     __name__ = "ExternalScripts"
     __type__ = "hook"
-    __version__ = "0.73"
+    __version__ = "0.75"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", True),
@@ -110,12 +109,12 @@ class ExternalScripts(Addon):
             self.scripts[folder] = scripts
 
     def call_cmd(self, command, *args, **kwargs):
-        call = map(encode, [command] + list(args))
+        call = map(fs_encode, [command] + list(args))
 
         self.log_debug(
             "EXECUTE " + " ".join('"' + _arg + '"' if ' ' in _arg else _arg for _arg in call))
 
-        p = subprocess.Popen(call, bufsize=-1)  # @NOTE: output goes to pyload
+        p = Popen(call, bufsize=-1)  # @NOTE: output goes to pyload
 
         return p
 
@@ -174,7 +173,7 @@ class ExternalScripts(Addon):
 
     def download_finished(self, pyfile):
         file = pyfile.plugin.last_download
-        args = [pyfile.id, pyfile.name, file, pyfile.pluginname, pyfile.url]
+        args = [pyfile.id, pyfile.name, file, pyfile.pluginname, pyfile.url, pyfile.package().name]
         self.call_script("download_finished", *args)
 
     def download_processed(self, pyfile):

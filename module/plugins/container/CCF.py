@@ -8,13 +8,13 @@ import urllib2
 import MultipartPostHandler
 
 from ..internal.Container import Container
-from ..internal.misc import encode, fsjoin
+from ..internal.misc import fs_encode, fsjoin
 
 
 class CCF(Container):
     __name__ = "CCF"
     __type__ = "container"
-    __version__ = "0.29"
+    __version__ = "0.30"
     __status__ = "testing"
 
     __pattern__ = r'.+\.ccf$'
@@ -28,9 +28,8 @@ class CCF(Container):
                    ("Walter Purcaro", "vuolter@gmail.com")]
 
     def decrypt(self, pyfile):
-        fs_filename = encode(pyfile.url)
-        opener = urllib2.build_opener(
-            MultipartPostHandler.MultipartPostHandler)
+        fs_filename = fs_encode(pyfile.url)
+        opener = urllib2.build_opener(MultipartPostHandler.MultipartPostHandler)
 
         dlc_content = opener.open('http://service.jdownloader.net/dlcrypt/getDLC.php',
                                   {'src': "ccf",
@@ -41,10 +40,7 @@ class CCF(Container):
         dlc_file = fsjoin(dl_folder, "tmp_%s.dlc" % pyfile.name)
 
         try:
-            dlc = re.search(
-                r'<dlc>(.+)</dlc>',
-                dlc_content,
-                re.S).group(1).decode('base64')
+            dlc = re.search(r'<dlc>(.+)</dlc>', dlc_content, re.S).group(1).decode('base64')
 
         except AttributeError:
             self.fail(_("Container is corrupted"))
