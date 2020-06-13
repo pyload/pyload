@@ -21,7 +21,6 @@ from threading import Event
 from os import remove
 from os.path import exists
 from shutil import move
-import os
 
 try:
     from Queue import Queue
@@ -33,7 +32,7 @@ from module.utils import chmod
 
 try:
     from pysqlite2 import dbapi2 as sqlite3
-except:
+except ImportError:
     import sqlite3
 
 DB_VERSION = 4

@@ -72,7 +72,7 @@ class HookManager:
 
         try:
             __builtin__.hookManager = self #needed to let hooks register themself
-        except:
+        except NameError:
             builtins.hookManager = self #needed to let hooks register themself
 
         self.log = self.core.log

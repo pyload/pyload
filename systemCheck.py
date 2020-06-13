@@ -15,35 +15,35 @@ def main():
     try:
         import pycurl
         print("pycurl:", pycurl.version)
-    except:
+    except ImportError:
         print("pycurl:", "missing")
 
     try:
         import Crypto
         print("py-crypto:", Crypto.__version__)
-    except:
+    except ImportError:
         print("py-crypto:", "missing")
 
     try:
         import OpenSSL
         print("OpenSSL:", OpenSSL.version.__version__)
-    except:
+    except ImportError:
         print("OpenSSL:", "missing")
 
     try:
         from PIL import Image
         print("image library:", Image.VERSION)
-    except:
+    except ImportError:
         try:
             import Image
             print("image library:", Image.VERSION)
-        except:
+        except ImportError:
             print("image library:", "missing")
 
     try:
         import PyQt4.QtCore
         print("pyqt:", PyQt4.QtCore.PYQT_VERSION_STR)
-    except:
+    except ImportError:
         print("pyqt:", "missing")
 
     from module.common import JsEngine
@@ -65,31 +65,31 @@ def main():
 
     try:
         import pycurl
-    except:
+    except ImportError:
         core_err.append("Please install py-curl to use pyLoad.")
 
     try:
         from pycurl import AUTOREFERER
-    except:
+    except ImportError:
         core_err.append("Your py-curl version is to old, please upgrade!")
 
     try:
         from PIL import Image
-    except:
+    except ImportError:
         try:
             import Image
-        except:
+        except ImportError:
             core_err.append("Please install py-imaging/pil/pillow to use Hoster, which uses captchas.")
 
     pipe = subprocess.PIPE
     try:
         p = subprocess.call(["tesseract"], stdout=pipe, stderr=pipe)
-    except:
+    except ImportError:
         core_err.append("Please install tesseract to use Hoster, which uses captchas.")
 
     try:
         import OpenSSL
-    except:
+    except ImportError:
         core_info.append("Install OpenSSL if you want to create a secure connection to the core.")
 
     if not js:
@@ -114,7 +114,7 @@ def main():
 
     try:
         import PyQt4
-    except:
+    except ImportError:
         gui_err.append("GUI won't work without pyqt4 !!")
 
     if gui_err:
@@ -131,7 +131,7 @@ def main():
 
     try:
         import flup
-    except:
+    except ImportError:
         web_info.append("Install Flup to use FastCGI or optional webservers.")
 
     if web_err:

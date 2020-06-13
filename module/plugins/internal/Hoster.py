@@ -54,7 +54,7 @@ class Hoster(Base):
 
     @last_download.setter
     def last_download(self, value):
-        if isinstance(value, basestring) and exists(value):
+        if isinstance(value, str) and exists(value):
             self._last_download = value
         else:
             self._last_download = ""

@@ -14,7 +14,7 @@ from .webinterface import DL_ROOT, JS, PYLOAD
 
 try:
     from Crypto.Cipher import AES
-except:
+except ImportError:
     pass
 
 

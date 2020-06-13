@@ -40,7 +40,7 @@ class RealdebridComTorrent(Crypter):
             try:
                 json_data = self.load(self.API_URL + method, get=get, post=post)
 
-            except BadHeader, e:
+            except BadHeader as e:
                 json_data = e.content
 
             res = json.loads(json_data) if len(json_data) > 0 else {}

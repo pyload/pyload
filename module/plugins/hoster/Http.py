@@ -3,7 +3,7 @@
 import re
 try:
     import urlparse
-except:
+except ImportError:
     from urllib.parse import urlparse
 
 from ..internal.Hoster import Hoster

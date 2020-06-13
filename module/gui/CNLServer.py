@@ -22,14 +22,14 @@ from cgi import FieldStorage
 from os.path import abspath, dirname, join
 try:
     from urllib import unquote
-except:
+except ImportError:
     from urllib.parse import unquote
 from base64 import standard_b64decode
 from binascii import unhexlify
 
 try:
     from Crypto.Cipher import AES
-except:
+except ImportError:
     pass
 
 try:

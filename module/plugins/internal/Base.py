@@ -5,7 +5,7 @@ import re
 import time
 try:
     import urlparse
-except:
+except ImportError:
     import urllib.parse as urlparse
 
 from .Captcha import Captcha
@@ -103,8 +103,7 @@ class Base(Plugin):
 
     def _log(self, level, plugintype, pluginname, messages, tbframe=None):
         log = getattr(self.pyload.log, level)
-        msg = u" | ".join(decode(a).strip() for a in messages if a)
-
+        msg = u" | ".join([decode(a).strip() for a in messages if a])
         #: Hide any user/password
         try:
             msg = msg.replace(self.account.user, self.account.user[:3] + "*******")

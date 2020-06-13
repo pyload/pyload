@@ -29,7 +29,7 @@ from module.database import style, DatabaseBackend
 
 try:
     from pysqlite2 import dbapi2 as sqlite3
-except:
+except ImportError:
     import sqlite3
 
 

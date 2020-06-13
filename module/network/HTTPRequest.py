@@ -213,12 +213,12 @@ class HTTPRequest():
             else:
                 _post = []
                 for k, v in post.iter():
-                    if isinstance(v, basestring):
-                        _post.append((k, v.encode('utf8') if type(v) == unicode else v))
+                    if isinstance(v, str):
+                        _post.append((k, v.encode('utf8') if isinstance(v, unicode) else v))
 
                     elif isinstance(v, FormFile):
                         filename = basename(v.filename)
-                        filename = filename.encode('utf8') if type(filename) == unicode else filename
+                        filename = filename.encode('utf8') if isinstance(filename, unicode) else filename
                         data = v.data
                         if data is None:
                             if not exists(v.filename):
@@ -332,7 +332,7 @@ class HTTPRequest():
 
         except LookupError:
             self.log.debug("No Decoder foung for %s" % encoding)
-        except Exception as e:
+        except Exception:
             self.log.debug("Error when decoding string from %s." % encoding)
 
         return rep

@@ -4,7 +4,7 @@ import random
 import re
 try:
     import urlparse
-except:
+except ImportError:
     from urllib.parse import urlparse
 
 from ..internal.SimpleHoster import SimpleHoster

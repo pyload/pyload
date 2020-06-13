@@ -35,7 +35,7 @@ class DownsterNet(MultiHoster):
             res = self.load(self.API_URL + method,
                             get=get,
                             post=json.dumps(kwargs))
-        except BadHeader, e:
+        except BadHeader as e:
             res = e.content
 
         res = json.loads(res)

@@ -3,7 +3,7 @@
 import time
 try:
     import urlparse
-except:
+except ImportError:
     from urllib.parse import urlparse
 
 from ..internal.misc import json

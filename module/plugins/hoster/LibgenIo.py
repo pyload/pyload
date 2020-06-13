@@ -5,7 +5,7 @@ import re
 from bs4 import BeautifulSoup
 try:
     import urlparse
-except:
+except ImportError:
     from urllib.parse import urlparse
 import json
 

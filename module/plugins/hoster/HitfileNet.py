@@ -2,7 +2,10 @@
 
 import pycurl
 import re
-import urlparse
+try:
+    import urlparse
+except ImportError:
+    from urllib.parse import urlparse
 from ..captcha.ReCaptcha import ReCaptcha
 from ..internal.SimpleHoster import SimpleHoster
 

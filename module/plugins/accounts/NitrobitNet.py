@@ -5,7 +5,7 @@ import re
 import time
 try:
     import urlparse
-except:
+except ImportError:
     from urllib.parse import urlparse
 
 from ..internal.Account import Account

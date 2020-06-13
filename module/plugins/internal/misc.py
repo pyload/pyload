@@ -20,11 +20,14 @@ import traceback
 try:
     import urlparse
     import urllib
-except:
+except ImportError:
     import urllib.parse as urlparse
     import urllib.parse as urllib
 import zlib
-from htmlentitydefs import name2codepoint
+try:
+    from htmlentitydefs import name2codepoint
+except ImportError:
+    from html.entities import name2codepoint
 from email.header import decode_header as decode_rfc2047_header
 
 try:
@@ -420,7 +423,9 @@ def decode(value, encoding=None, errors='strict'):
     #if isinstance(value, str):
     #    res = str(value, encoding or get_console_encoding(sys.stdout.encoding), errors)
 
-    # if isinstance(value, str):
+    if isinstance(value, dict):
+        value = json.dumps(value)
+
     res = value
     #else:
     #    res = unicode(value)
@@ -429,7 +434,10 @@ def decode(value, encoding=None, errors='strict'):
 
 
 def transcode(value, decoding, encoding):
-    return value.decode(decoding).encode(encoding)
+    try:
+        return value.decode(decoding).encode(encoding)
+    except AttributeError:
+        return value.encode(encoding)
 
 
 def encode(value, encoding='utf-8', errors='backslashreplace'):
@@ -839,7 +847,7 @@ def replace_patterns(value, rules):
 
 #@TODO: Remove in 0.4.10 and fix exp in CookieJar.setCookie
 def set_cookie(cj, domain, name, value, path='/', exp=time.time() + 180 * 24 * 3600):
-    args = map(encode, [domain, name, value, path]) + [int(exp)]
+    args = list(map(encode, [domain, name, value, path])) + [int(exp)]
     return cj.setCookie(*args)
 
 

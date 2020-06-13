@@ -4,7 +4,7 @@ import re
 import time
 try:
     import urlparse
-except:
+except ImportError:
     from urllib.parse import urlparse
 
 import pycurl
@@ -33,7 +33,7 @@ class FshareVn(SimpleHoster):
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
                    ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
-    OFFLINE_PATTERN = ur'Tập tin của bạn yêu cầu không tồn tại'
+    OFFLINE_PATTERN = r'Tập tin của bạn yêu cầu không tồn tại'
 
     URL_REPLACEMENTS = [("http://", "https://")]
 
@@ -133,7 +133,7 @@ class FshareVn(SimpleHoster):
                                              token=self.account.info['data']['token'],
                                              url=pyfile.url)
 
-        except BadHeader, e:
+        except BadHeader as e:
                 if e.code == 403:
                     if password:
                         self.fail(_("Wrong password"))

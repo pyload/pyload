@@ -43,7 +43,7 @@ class DebridlinkFrTorrent(Crypter):
         self.req.http.c.setopt(pycurl.USERAGENT, "pyLoad/%s" % self.pyload.version)
         try:
             json_data = self.load(self.API_URL + method, get=get, post=post)
-        except BadHeader, e:
+        except BadHeader as e:
             json_data = e.content
 
         return json.loads(json_data)

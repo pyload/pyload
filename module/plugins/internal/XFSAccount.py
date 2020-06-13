@@ -4,7 +4,7 @@ import re
 import time
 try:
     import urlparse
-except:
+except ImportError:
     from urllib.parse import urlparse
 
 from .misc import parse_html_form, parse_time, set_cookie, search_pattern

@@ -4,7 +4,7 @@ import math
 import re
 try:
     import urlparse
-except:
+except ImportError:
     from urllib.parse import urlparse
 
 from ..internal.XFSCrypter import XFSCrypter

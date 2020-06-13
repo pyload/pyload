@@ -126,7 +126,7 @@ class UpdateManager(Addon):
             html = self.load(self.SERVER_URL,
                              get={'v': self.pyload.api.getServerVersion()})
 
-        except Exception as e:
+        except Exception:
             self.log_warning(_("Unable to connect to the server to retrieve updates"))
 
         else:
