@@ -10,7 +10,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class AlfafileNet(SimpleHoster):
     __name__ = "AlfafileNet"
     __type__ = "hoster"
-    __version__ = "0.05"
+    __version__ = "0.06"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(alfafile\.net)/file/(?P<ID>\w+)'
@@ -80,8 +80,7 @@ class AlfafileNet(SimpleHoster):
                        msg=_("Too many max simultaneous downloads"),
                        msgfail=_("Too many max simultaneous downloads"))
 
-        if "You have reached your daily download limit" in self.data:
-            self.retry(attemps=5,
-                       wait=seconds_to_midnight(),
+        if "You have reached your daily downloads limit" in self.data:
+            self.retry(wait=seconds_to_midnight(),
                        msg=_("Daily download limit reached"),
                        msgfail=_("Daily download limit reached"))
