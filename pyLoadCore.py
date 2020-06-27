@@ -219,40 +219,51 @@ class Core(object):
 
     def isAlreadyRunning(self):
         pid = self.checkPidFile()
-        if not pid: return 0
+        if not pid:
+            return 0
 
         if os.name == "nt":
+            ret = 0
             import ctypes
             import ctypes.wintypes
 
-            PROCESS_QUERY_LIMITED_INFORMATION = 0x1000
-            ERROR_ACCESS_DENIED = 5
-            STILL_ACTIVE = 259
+            TH32CS_SNAPPROCESS = 2
+            INVALID_HANDLE_VALUE = -1
+
+            class PROCESSENTRY32(ctypes.Structure):
+                _fields_ = [('dwSize', ctypes.wintypes.DWORD),
+                            ('cntUsage', ctypes.wintypes.DWORD),
+                            ('th32ProcessID', ctypes.wintypes.DWORD),
+                            ('th32DefaultHeapID', ctypes.wintypes.LPVOID),
+                            ('th32ModuleID', ctypes.wintypes.DWORD),
+                            ('cntThreads', ctypes.wintypes.DWORD),
+                            ('th32ParentProcessID', ctypes.wintypes.DWORD),
+                            ('pcPriClassBase', ctypes.wintypes.LONG),
+                            ('dwFlags', ctypes.wintypes.DWORD),
+                            ('szExeFile', ctypes.c_char * 260)]
 
             kernel32 = ctypes.windll.kernel32
-            handle = kernel32.OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, 0, pid)
 
-            if not handle:
-                # Access denied means there's a process to deny access to
-                if kernel32.GetLastError() == ERROR_ACCESS_DENIED:
-                    return pid
+            processInfo = PROCESSENTRY32()
+            processInfo.dwSize = ctypes.sizeof(PROCESSENTRY32)
+            hProcessSnapshot = kernel32.CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS , 0)
+            if hProcessSnapshot != INVALID_HANDLE_VALUE:
+                found = False
+                status = kernel32.Process32First(hProcessSnapshot , ctypes.pointer(processInfo))
+                while status:
+                    if processInfo.th32ProcessID == pid:
+                        found = True
+                        break
+                    status = kernel32.Process32Next(hProcessSnapshot, ctypes.pointer(processInfo))
+
+                kernel32.CloseHandle(hProcessSnapshot)
+                if found and processInfo.szExeFile.decode().lower() == "python.exe":
+                    ret = pid
+
             else:
-                exit_code = ctypes.wintypes.DWORD()
-                if kernel32.GetExitCodeProcess(handle, ctypes.byref(exit_code)):
-                    kernel32.CloseHandle(handle)
-                    if exit_code.value == STILL_ACTIVE:
-                        return pid
-                else:
-                    err = kernel32.GetLastError()
-                    kernel32.CloseHandle(handle)
-                    if err == ERROR_ACCESS_DENIED:
-                        # GetExitCodeProcess -> ERROR_ACCESS_DENIED (ignored)
-                        return pid
-                    else:
-                        print "Unhandled error in GetExitCodeProcess: %s" % err
-                        return pid  # should not happen, ignore this too
+                print "Unhandled error in CreateToolhelp32Snapshot: %s" % kernel32.GetLastError()
 
-            return 0
+            return ret
 
         else:
             try:
