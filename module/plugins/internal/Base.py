@@ -26,7 +26,7 @@ def parse_fileInfo(klass, url="", html=""):
 class Base(Plugin):
     __name__ = "Base"
     __type__ = "base"
-    __version__ = "0.38"
+    __version__ = "0.39"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -331,16 +331,16 @@ class Base(Plugin):
         if seconds is not None:
             self.set_wait(seconds)
 
-        if reconnect is None:
-            reconnect = (seconds > self.config.get('max_wait', 10) * 60)
-
-        self.set_reconnect(reconnect)
-
         wait_time = self.pyfile.waitUntil - time.time()
 
         if wait_time < 1:
             self.log_warning(_("Invalid wait time interval"))
             return
+
+        if reconnect is None:
+            reconnect = (wait_time > self.config.get('max_wait', 10) * 60)
+
+        self.set_reconnect(reconnect)
 
         self.waiting = True
 
