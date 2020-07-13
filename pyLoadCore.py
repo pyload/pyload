@@ -257,7 +257,7 @@ class Core(object):
                     status = kernel32.Process32Next(hProcessSnapshot, ctypes.pointer(processInfo))
 
                 kernel32.CloseHandle(hProcessSnapshot)
-                if found and processInfo.szExeFile.decode().lower() == "python.exe":
+                if found and processInfo.szExeFile.decode().lower() in ("python.exe", "pythonw.exe"):
                     ret = pid
 
             else:
