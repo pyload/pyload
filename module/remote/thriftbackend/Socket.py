@@ -86,6 +86,10 @@ class Socket(TSocket):
                 self.close()
                 # Trigger the check to raise the END_OF_FILE exception below.
                 buff = ''
+            elif e.args[0] == 10054:  # WSAECONNRESET
+                self.close()
+                # Trigger the check to raise the END_OF_FILE exception below.
+                buff = ''
             else:
                 raise
         except Exception, e:
@@ -101,6 +105,25 @@ class Socket(TSocket):
         if not len(buff):
             raise TTransportException(type=TTransportException.END_OF_FILE, message='TSocket read 0 bytes')
         return buff
+
+    def write(self, buff):
+        if not self.handle:
+            raise TTransportException(type=TTransportException.NOT_OPEN, message='Transport not open')
+        sent = 0
+        have = len(buff)
+        while sent < have:
+            try:
+                plus = self.handle.send(buff)
+            except socket.error, e:
+                if (e.args[0] == 10054):  # WSAECONNRESET
+                    # Trigger the check to raise the END_OF_FILE exception below.
+                    plus = 0
+                else:
+                    raise
+            if plus == 0:
+                raise TTransportException(type=TTransportException.END_OF_FILE, message='TSocket sent 0 bytes')
+            sent += plus
+            buff = buff[plus:]
 
 
 class ServerSocket(TServerSocket, Socket):
