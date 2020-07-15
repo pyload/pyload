@@ -37,7 +37,7 @@ def flash(id="0"):
 @local_check
 def add():
     package = request.forms.get("package", request.forms.get("source", request.POST.get('referer', None)))
-    urls = [x.strip() for x in request.POST['urls'].split("\n") if x.strip()]
+    urls = [x.decode('latin1').strip() for x in request.POST['urls'].split("\n") if x.decode('latin1').strip()]
 
     if package:
         PYLOAD.addPackage(package, urls, 0)
@@ -100,7 +100,7 @@ def addcrypted2():
     obj = AES.new(Key, AES.MODE_CBC, IV)
     urls = obj.decrypt(crypted).replace("\x00", "").replace("\r","").split("\n")
 
-    urls = [x.strip() for x in urls if x.strip()]
+    urls = [x.decode('latin1').strip() for x in urls if x.decode('latin1').strip()]
 
     try:
         if package:
@@ -123,7 +123,7 @@ def flashgot():
 
     autostart = int(request.forms.get('autostart', 0))
     package = request.forms.get('package', None)
-    urls = [x.strip() for x in request.POST['urls'].split("\n") if x.strip()]
+    urls = [x.decode('latin1').strip() for x in request.POST['urls'].split("\n") if x.decode('latin1').strip()]
     folder = request.forms.get('dir', None)
 
     if package:
