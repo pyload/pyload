@@ -7,7 +7,7 @@ from ..internal.MultiHoster import MultiHoster
 class AlldebridCom(MultiHoster):
     __name__ = "AlldebridCom"
     __type__ = "hoster"
-    __version__ = "0.60"
+    __version__ = "0.61"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.|s\d+\.)?alldebrid\.com/dl/[\w^_]+'
@@ -22,6 +22,10 @@ class AlldebridCom(MultiHoster):
     __license__ = "GPLv3"
     __authors__ = [("Andy Voigt", "spamsales@online.de"),
                    ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
+
+    URL_REPLACEMENTS = [(r'https?://(?:www\.)?mega(?:\.co)?\.nz/#N!(?P<ID>[\w^_]+)!(?P<KEY>[\w\-,=]+)###n=(?P<OWNER>[\w^_]+)',
+                         lambda m:"https://mega.nz/#!%s!%s~~%s" % (m.group("ID"), m.group("KEY"), m.group("OWNER"))),
+                        (r'https?://(?:www\.)?mega(?:\.co)?\.nz/.*', lambda m:m.group(0).replace('_', '/'))]
 
     # See https://docs.alldebrid.com/
     API_URL = "https://api.alldebrid.com/v4/"

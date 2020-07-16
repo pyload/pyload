@@ -9,13 +9,13 @@ import pycurl
 from module.network.HTTPRequest import BadHeader
 
 from ..internal.Crypter import Crypter
-from ..internal.misc import exists, json, safejoin
+from ..internal.misc import exists, json, safejoin, uniqify
 
 
 class RealdebridComTorrent(Crypter):
     __name__ = "RealdebridComTorrent"
     __type__ = "crypter"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __status__ = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -128,11 +128,15 @@ class RealdebridComTorrent(Crypter):
             excluded_ids.extend([_file['id'] for _file in torrent_info['files']
                                  if fnmatch.fnmatch(os.path.basename(_file['path']), _filter)])
 
+        excluded_ids = uniqify(excluded_ids)
+
         include_filters = self.config.get('include_filter').split(';')
         included_ids = []
         for _filter in include_filters:
             included_ids.extend([_file['id'] for _file in torrent_info['files']
                                  if fnmatch.fnmatch(os.path.basename(_file['path']), _filter)])
+
+        included_ids = uniqify(included_ids)
 
         selected_ids = ",".join([str(_id) for _id in included_ids
                                  if _id not in excluded_ids])
@@ -181,11 +185,11 @@ class RealdebridComTorrent(Crypter):
         c.setopt(pycurl.SSL_VERIFYPEER, 0)
         c.setopt(pycurl.USERAGENT, "pyLoad/%s" % self.pyload.version)
         c.setopt(pycurl.HTTPHEADER, ["Accept: */*",
-                                          "Accept-Language: en-US,en",
-                                          "Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7",
-                                          "Connection: keep-alive",
-                                          "Keep-Alive: 300",
-                                          "Expect:"])
+                                     "Accept-Language: en-US,en",
+                                     "Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7",
+                                     "Connection: keep-alive",
+                                     "Keep-Alive: 300",
+                                     "Expect:"])
         c.setopt(pycurl.CUSTOMREQUEST, "DELETE")
         c.perform()
         code = c.getinfo(pycurl.RESPONSE_CODE)

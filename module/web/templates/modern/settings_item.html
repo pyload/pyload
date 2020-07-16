@@ -7,7 +7,7 @@
   {% for okey, option in section.iteritems() %}
     {% if okey not in ("desc","outline") %}
       <tr>
-        <td><label for="{{skey}}|{{okey}}" style="font-size: 14px; font-weight: 400;">{{option.desc}}:</label></td>
+        <td><label for="{{skey}}|{{okey}}" style="font-size: 14px; font-weight: 400;">{{_(option.desc)}}:</label></td>
         <td>
           {% if option.type == "bool" %}
               <select id="{{skey}}|{{okey}}" name="{{skey}}|{{okey}}">

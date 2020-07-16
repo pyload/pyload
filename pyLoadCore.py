@@ -219,13 +219,59 @@ class Core(object):
 
     def isAlreadyRunning(self):
         pid = self.checkPidFile()
-        if not pid or os.name == "nt": return False
-        try:
-            os.kill(pid, 0)  # 0 - default signal (does nothing)
-        except:
+        if not pid:
             return 0
 
-        return pid
+        if os.name == "nt":
+            ret = 0
+            import ctypes
+            import ctypes.wintypes
+
+            TH32CS_SNAPPROCESS = 2
+            INVALID_HANDLE_VALUE = -1
+
+            class PROCESSENTRY32(ctypes.Structure):
+                _fields_ = [('dwSize', ctypes.wintypes.DWORD),
+                            ('cntUsage', ctypes.wintypes.DWORD),
+                            ('th32ProcessID', ctypes.wintypes.DWORD),
+                            ('th32DefaultHeapID', ctypes.wintypes.LPVOID),
+                            ('th32ModuleID', ctypes.wintypes.DWORD),
+                            ('cntThreads', ctypes.wintypes.DWORD),
+                            ('th32ParentProcessID', ctypes.wintypes.DWORD),
+                            ('pcPriClassBase', ctypes.wintypes.LONG),
+                            ('dwFlags', ctypes.wintypes.DWORD),
+                            ('szExeFile', ctypes.c_char * 260)]
+
+            kernel32 = ctypes.windll.kernel32
+
+            processInfo = PROCESSENTRY32()
+            processInfo.dwSize = ctypes.sizeof(PROCESSENTRY32)
+            hProcessSnapshot = kernel32.CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS , 0)
+            if hProcessSnapshot != INVALID_HANDLE_VALUE:
+                found = False
+                status = kernel32.Process32First(hProcessSnapshot , ctypes.pointer(processInfo))
+                while status:
+                    if processInfo.th32ProcessID == pid:
+                        found = True
+                        break
+                    status = kernel32.Process32Next(hProcessSnapshot, ctypes.pointer(processInfo))
+
+                kernel32.CloseHandle(hProcessSnapshot)
+                if found and processInfo.szExeFile.decode().lower() in ("python.exe", "pythonw.exe"):
+                    ret = pid
+
+            else:
+                print "Unhandled error in CreateToolhelp32Snapshot: %s" % kernel32.GetLastError()
+
+            return ret
+
+        else:
+            try:
+                os.kill(pid, 0)  # 0 - default signal (does nothing)
+            except:
+                return 0
+
+            return pid
 
     def quitInstance(self):
         if os.name == "nt":

@@ -56,14 +56,14 @@ class DLCDecrypter(object):
 
     @staticmethod
     def _parse_links(start_node):
-        return [node.getElementsByTagName("url")[0].firstChild.data.decode('base64')
+        return [node.getElementsByTagName("url")[0].firstChild.data.encode('latin1').decode('base64').decode('latin1')
                 for node in start_node.getElementsByTagName("file")]
 
 
 class DLC(Container):
     __name__ = "DLC"
     __type__ = "container"
-    __version__ = "0.33"
+    __version__ = "0.34"
     __status__ = "testing"
 
     __pattern__ = r'(.+\.dlc|[\w\+^_]+==[\w\+^_/]+==)$'

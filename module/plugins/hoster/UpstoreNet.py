@@ -3,13 +3,14 @@
 import re
 
 from ..captcha.ReCaptcha import ReCaptcha
+from ..internal.misc import json
 from ..internal.SimpleHoster import SimpleHoster
 
 
 class UpstoreNet(SimpleHoster):
     __name__ = "UpstoreNet"
     __type__ = "hoster"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(?:upstore\.net|upsto\.re)/(?P<ID>\w+)'
@@ -84,3 +85,11 @@ class UpstoreNet(SimpleHoster):
         m = re.search(self.LINK_FREE_PATTERN, self.data)
         if m is not None:
             self.link = m.group(1)
+
+    def handle_premium(self, pyfile):
+        self.data = self.load("https://upstore.net/load/premium",
+                              post={'hash': self.info['pattern']['ID'],
+                                    'antispam': "spam",
+                                    'js': "1"})
+        json_data = json.loads(self.data)
+        self.link = json_data['ok']
