@@ -12,7 +12,7 @@ except ImportError:
 
 from thrift.transport import TTransport
 #from thrift.transport.TZlibTransport import TZlibTransport
-from CoreSocket import Socket
+from Socket import Socket
 from Protocol import Protocol
 
 # modules should import ttypes from here, when want to avoid importing API
@@ -34,8 +34,7 @@ class NoSSL(Exception):
 class ThriftClient:
     def __init__(self, host="localhost", port=7227, user="", password=""):
 
-        self.ssl = False
-        self.createConnection(host, port, self.ssl)
+        self.createConnection(host, port)
         try:
             self.transport.open()
         except error, e:
@@ -45,58 +44,33 @@ class ThriftClient:
                 print_exc()
                 raise NoConnection
 
-        errorException = eofException = False
-        e = None
         try:
             correct = self.client.login(user, password)
         except error, e:
-            errorException = True
-        except TTransport.TTransportException, e:
-            if e.type == TTransport.TTransportException.END_OF_FILE:
-                eofException = True
+            if e.args and e.args[0] == 104:
+                #connection reset by peer, probably wants ssl
+                try:
+                    self.createConnection(host, port, True)
+                    #set timeout or a ssl socket will block when querying none ssl server
+                    self.socket.setTimeout(10)
+
+                except ImportError:
+                    #@TODO untested
+                    raise NoSSL
+                try:
+                   self.transport.open()
+                   correct = self.client.login(user, password)
+                finally:
+                    self.socket.setTimeout(None)
+            elif e.args and e.args[0] == 32:
+                raise NoConnection
             else:
                 print_exc()
                 raise NoConnection
 
-        if ((errorException and e.args and e.args[0] == 104) or         # linux client, linux server
-                eofException or                                         # mixed linux/windows client/server
-                (errorException and e.args and e.args[0] == 10054)):    # windows client, windows server
-            # probably wants ssl
-            try:
-                self.ssl = True
-                self.createConnection(host, port, self.ssl)
-                #set timeout or a ssl socket will block when querying none ssl server
-                self.socket.setTimeout(10 *1000)   # milliseconds
-            except ImportError:
-                #@TODO untested
-                raise NoSSL
-            except:
-                print_exc()
-                raise NoConnection
-            try:
-                self.transport.open()
-            except:
-                raise NoConnection
-            try:
-                correct = self.client.login(user, password)
-            except:
-                raise NoSSL
-            finally:
-                self.socket.setTimeout(None)
-
-        elif errorException and (e.args and e.args[0] == 32):
-            raise NoConnection
-
-        elif errorException:
-            print_exc()
-            raise NoConnection
-
         if not correct:
             self.transport.close()
             raise WrongLogin
-
-    def isSSLConnection(self):
-        return self.ssl
 
     def createConnection(self, host, port, ssl=False):
         self.socket = Socket(host, port, ssl)

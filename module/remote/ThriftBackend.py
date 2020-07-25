@@ -21,7 +21,7 @@ from module.remote.RemoteManager import BackendBase
 
 from thriftbackend.Processor import Processor
 from thriftbackend.Protocol import ProtocolFactory
-from thriftbackend.CoreSocket import ServerSocket
+from thriftbackend.Socket import ServerSocket
 from thriftbackend.Transport import TransportFactory
 #from thriftbackend.Transport import TransportFactoryCompressed
 

@@ -68,7 +68,7 @@ struct DownloadInfo {
   1: FileID fid,
   2: string name,
   3: i64 speed,
-  4: i64 eta,
+  4: i32 eta,
   5: string format_eta,
   6: i64 bleft,
   7: i64 size,
