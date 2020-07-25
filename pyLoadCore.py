@@ -257,7 +257,7 @@ class Core(object):
                     status = kernel32.Process32Next(hProcessSnapshot, ctypes.pointer(processInfo))
 
                 kernel32.CloseHandle(hProcessSnapshot)
-                if found and processInfo.szExeFile.decode().lower() in ("python.exe", "pythonw.exe"):
+                if found and processInfo.szExeFile.decode().lower() in ("python.exe", "pythonw.exe", "pyloadcore.exe"):
                     ret = pid
 
             else:
@@ -639,8 +639,22 @@ class Core(object):
             except :
                 pass
 
-        execl(executable, executable, *sys.argv)
-        _exit(0)
+        if os.name == "nt":
+            if getattr(sys, "frozen", False):   # py2exe
+                args = [join(pypath, "restart_on_windows.exe")]
+            else:
+                args = [executable, join(pypath, "module", "lib", "restart_on_windows.py")]
+            args.append(str(os.getpid()))
+            args.extend(sys.argv)
+            try:
+                subprocess.Popen(args, close_fds=True)
+            except Exception:
+                print_exc()
+            _exit(0)
+
+        else:
+            execl(executable, executable, *sys.argv)
+            _exit(0)
 
     def shutdown(self):
         self.log.info(_("shutting down..."))
