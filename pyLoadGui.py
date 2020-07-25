@@ -1108,7 +1108,6 @@ class main(QObject):
         if not self.corePermissions["admin"]:
             return
         if self.messageBox_12():
-            self.connector.connectionLostSGL.disconnect(self.slotConnectionLost)
             self.connector.proxy.kill()
             self.slotShowConnector()
 
@@ -1124,7 +1123,6 @@ class main(QObject):
         if not self.corePermissions["admin"]:
             return
         if self.messageBox_13():
-            self.connector.connectionLostSGL.disconnect(self.slotConnectionLost)
             self.connector.proxy.restart()
             self.slotShowConnector()
 
