@@ -16,6 +16,7 @@
 
 import os
 import sys
+from sys import exit
 from getopt import getopt, GetoptError
 
 def cmdLineParser(pyloadgui_version):

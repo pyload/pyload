@@ -22,6 +22,7 @@ CURRENT_INTERNAL_VERSION = '2020-05-15'         # YYYY-MM-DD, append a lowercase
 
 import os
 import sys
+from sys import exit
 from module.gui.CmdLineParser import cmdLineParser
 
 if os.name == "nt":

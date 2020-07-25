@@ -17,6 +17,7 @@
 USE_PYQT5 = None
 
 import os
+from sys import exit
 from module.gui.CmdLineParser import cmdLineParser
 
 def usePyQt5(pyloadgui_version):
