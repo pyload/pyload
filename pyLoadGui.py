@@ -449,7 +449,7 @@ class main(QObject):
 
     def slotConnectTimeout(self, start):
         if start:
-            timeout = 30.0 #seconds
+            timeout = 40.0 #seconds
             self.connectTimeoutTimer = Timer(timeout, self.quitConnTimeout)
             self.connectTimeoutTimer.start()
         else:

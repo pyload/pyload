@@ -34,7 +34,7 @@ import logging
 import socket
 from os.path import join
 
-from module.remote.thriftbackend.ThriftClient import ThriftClient, WrongLogin, NoSSL, NoConnection
+from module.remote.thriftbackend.ThriftClient import ThriftClient, WrongLogin, NoSSL, NoConnection, ConnectionClosed
 from thrift.Thrift import TException
 from module.gui.Tools import MessageBox, WtDialogButtonBox
 
@@ -135,6 +135,8 @@ class Connector(QObject):
                 err = "nossl"
             except NoConnection:
                 err = "noconn"
+            except ConnectionClosed:
+                err = "noconn"
 
             if not errlogin:
                 break
@@ -157,7 +159,7 @@ class Connector(QObject):
                 self.messageBox_05(self.host, self.port)
             return False
 
-        self.ssl = client.isSSLConnection() # remember if we are connected with SSL
+        self.ssl = client.socket.ssl # remember if we are connected with SSL
         self.proxy = DispatchRPC(self.mutex, client)
         self.proxy.connectionLostSGL.connect(self.connectionLostSGL)
 
