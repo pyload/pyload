@@ -1,14 +1,16 @@
 # -*- coding: utf-8 -*-
 
-import re
+import pycurl
 
+from ..internal.misc import json
+from module.network.HTTPRequest import BadHeader
 from ..internal.MultiAccount import MultiAccount
 
 
 class MultishareCz(MultiAccount):
     __name__ = "MultishareCz"
     __type__ = "account"
-    __version__ = "0.14"
+    __version__ = "0.15"
     __status__ = "testing"
 
     __config__ = [("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),
@@ -17,35 +19,51 @@ class MultishareCz(MultiAccount):
 
     __description__ = """Multishare.cz account plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
+                   ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
-    TRAFFIC_LEFT_PATTERN = r'<span class="profil-zvyrazneni">Kredit:</span>\s*<strong>(?P<S>[\d.,]+)&nbsp;(?P<U>[\w^_]+)</strong>'
-    ACCOUNT_INFO_PATTERN = r'<input type="hidden" id="(u_ID|u_hash)" name=".+?" value="(.+?)">'
+    #: See https://multishare.cz/api/
+    API_URL = "https://www.multishare.cz/api/"
 
-    PLUGIN_PATTERN = r'<img class="logo-shareserveru"[^>]*?alt="(.+?)"></td>\s*<td class="stav">[^>]*?alt="OK"'
+    def api_response(self, method, **kwargs):
+        get = {'sub': method}
+        get.update(kwargs)
+        self.req.http.c.setopt(pycurl.USERAGENT, "JDownloader")
+        json_data = self.load(self.API_URL,
+                              get=get)
+
+        if not json_data.startswith('{'):
+            if json_data.startswith("ERR:"):
+                json_data = json_data[4:].strip()
+            return {'err': json_data}
+
+        else:
+            return json.loads(json_data)
 
     def grab_hosters(self, user, password, data):
-        html = self.load("http://www.multishare.cz/monitoring/")
-        return re.findall(self.PLUGIN_PATTERN, html)
+        api_data = self.api_response("supported-hosters")
+        return api_data['server']
 
     def grab_info(self, user, password, data):
-        html = self.load("http://www.multishare.cz/profil/")
+        api_data = self.api_response("account-details", login=user, password=password)
+        trafficleft = self.parse_traffic(api_data['credit'], "MB")
 
-        m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
-        trafficleft = self.parse_traffic(
-            m.group('S'), m.group('U')) if m else 0
-        self.premium = True if trafficleft else False
+        premium = True if trafficleft else False
 
-        html = self.load("http://www.multishare.cz/")
-        mms_info = dict(re.findall(self.ACCOUNT_INFO_PATTERN, html))
+        return {'validuntil': -1,
+                'trafficleft': trafficleft,
+                'premium': premium}
 
-        return dict(mms_info, **{'validuntil': -1, 'trafficleft': trafficleft})
 
     def signin(self, user, password, data):
-        html = self.load('https://www.multishare.cz/html/prihlaseni_process.php',
-                         post={'akce': "Přihlásit",
-                               'heslo': password,
-                               'jmeno': user})
+        try:
+            api_data = self.api_response("account-details", login=user, password=password)
 
-        if '<div class="akce-chyba akce">' in html:
-            self.fail_login()
+        except BadHeader,e:
+            if e.code == 403:
+                self.fail_login(_("IP is banned"))
+            else:
+                raise
+
+        if 'err' in api_data:
+            self.fail_login(api_data['err'])
