@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import re
-import urllib.parse as urllib
+try:
+    import urllib
+except ImportError:
+    import urllib.parse as urllib
 
 from ..internal.SimpleHoster import SimpleHoster
 

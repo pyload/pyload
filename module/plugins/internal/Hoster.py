@@ -3,7 +3,7 @@
 from __future__ import with_statement
 
 try:
-    import __builtin__
+    import __builtin__ as builtins
 except ImportError:
     import builtins
 import os

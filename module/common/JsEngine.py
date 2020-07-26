@@ -21,7 +21,10 @@ from __future__ import with_statement
 
 import os
 import tempfile
-import urllib.parse as urllib
+try:
+    import urllib
+except ImportError:
+    import urllib.parse as urllib
 from imp import find_module
 
 ENGINE = ""

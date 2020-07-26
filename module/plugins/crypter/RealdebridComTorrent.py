@@ -3,7 +3,10 @@
 import fnmatch
 import os
 import time
-import urllib.parse as urllib
+try:
+    import urllib
+except ImportError:
+    import urllib.parse as urllib
 
 import pycurl
 from module.network.HTTPRequest import BadHeader

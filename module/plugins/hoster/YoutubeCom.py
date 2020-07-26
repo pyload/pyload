@@ -5,7 +5,6 @@ import os
 import re
 import subprocess
 import time
-import urllib.parse as urllib
 try:
     import urlparse
 except:

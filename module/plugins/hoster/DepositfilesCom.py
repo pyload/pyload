@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import re
-import urllib.parse as urllib
+try:
+    import urllib
+except ImportError:
+    import urllib.parse as urllib
+
 
 from ..captcha.SolveMedia import SolveMedia
 from ..internal.SimpleHoster import SimpleHoster
