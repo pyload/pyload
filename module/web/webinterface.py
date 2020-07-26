@@ -181,4 +181,4 @@ def run_fcgi(host="0.0.0.0", port="8000"):
 
 
 if __name__ == "__main__":
-    run(app=web, port=8001)
+    run(app=web, port=8000)

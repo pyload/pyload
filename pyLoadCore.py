@@ -24,7 +24,7 @@
 CURRENT_VERSION = '0.4.20'
 
 try:
-    import __builtin__
+    import __builtin__ as builtins
 except ImportError:
     import builtins
 
@@ -439,10 +439,7 @@ class Core(object):
             self.db.purgeLinks()
 
         self.requestFactory = RequestFactory(self)
-        try:
-            __builtin__.pyreq = self.requestFactory
-        except NameError:
-            builtins.pyreq = self.requestFactory
+        builtins.pyreq = self.requestFactory
 
         self.lastClientConnected = 0
 
