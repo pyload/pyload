@@ -62,7 +62,8 @@ from module.utils import freeSpace, formatSize, get_console_encoding
 from codecs import getwriter
 
 enc = get_console_encoding(sys.stdout.encoding)
-# sys.stdout = getwriter(enc)(sys.stdout, errors="replace")  # ToDo not working in python3
+if sys.version_info < (3,0):
+    sys.stdout = getwriter(enc)(sys.stdout, errors="replace")
 
 # TODO List
 # - configurable auth system ldap/mysql
@@ -353,7 +354,10 @@ class Core(object):
         gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
         translation = gettext.translation("pyLoad", self.path("locale"),
                                           languages=[self.config['general']['language'],"en"],fallback=True)
-        translation.install(True)
+        if sys.version_info < (3, 0):
+            translation.install(True)
+        else:
+            translation.install()
 
         self.debug = self.doDebug or self.config['general']['debug_mode']
         self.remote &= self.config['remote']['activated']

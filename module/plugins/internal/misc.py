@@ -1073,7 +1073,10 @@ if os.name != "nt":
 else:
     import ctypes
     import subprocess
-    import _subprocess
+    try:
+        import _subprocess
+    except ImportError:
+        import _winapi as _subprocess
     from ctypes import byref, windll, c_char_p, c_wchar_p, c_void_p, Structure, sizeof, c_wchar, WinError
     from ctypes.wintypes import BYTE, WORD, LPWSTR, BOOL, DWORD, LPVOID, HANDLE
 

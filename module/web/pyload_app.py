@@ -509,7 +509,7 @@ def admin():
     for data in user.values():
         data["perms"] = {}
         get_permission(data["perms"], data["permission"])
-        data["perms"]["admin"] = True if data["role"] is 0 else False
+        data["perms"]["admin"] = True if data["role"] == 0 else False
 
 
     s = request.environ.get('beaker.session')

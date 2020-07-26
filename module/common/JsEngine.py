@@ -233,7 +233,8 @@ class JsEngine():
         return res.decode("utf8").encode("ISO-8859-1")
 
     def error(self):
-        return _("No js engine detected, please install either js2py, Spidermonkey, ossp-js, pyv8, nodejs or rhino")
+        # ToDo: Spidermonkey was named, but not checked and isn't reconcknized
+        return _("No js engine detected, please install either js2py, ossp-js, pyv8, nodejs or rhino")
 
 if __name__ == "__main__":
     js = JsEngine()

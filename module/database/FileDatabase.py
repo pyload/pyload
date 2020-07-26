@@ -762,7 +762,7 @@ class FileMethods():
         return data
 
 
-    @style.async
+    @style.async_
     def updateLink(self, f):
         self.c.execute('UPDATE links SET url=?,name=?,size=?,status=?,error=?,package=? WHERE id=?', (f.url, f.name, f.size, f.status, f.error, str(f.packageid), str(f.id)))
 
@@ -808,11 +808,11 @@ class FileMethods():
         self.c.execute('UPDATE packages SET packageorder=? WHERE id=?', (-1, str(p.id)))
         self.c.execute('UPDATE packages SET packageorder=packageorder-1 WHERE packageorder > ? AND queue=? AND id != ?', (p.order, p.queue, str(p.id)))
 
-    @style.async
+    @style.async_
     def restartFile(self, id):
         self.c.execute('UPDATE links SET status=3,error="" WHERE id=?', (str(id),))
 
-    @style.async
+    @style.async_
     def restartPackage(self, id):
         self.c.execute('UPDATE links SET status=3 WHERE package=?', (str(id),))
 

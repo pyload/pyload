@@ -41,7 +41,10 @@ class Setup():
         lang = self.ask("Choose your Language / Wähle deine Sprache", "en", langs)
         gettext.setpaths([os.path.join(os.sep, "usr", "share", "pyload", "locale"), None])
         translation = gettext.translation("setup", os.path.join(self.path, "locale"), languages=[lang, "en"], fallback=True)
-        translation.install(True)
+        if sys.version_info < (3, 0):
+            translation.install(True)
+        else:
+            translation.install()
 
         #Input shorthand for yes
         self.yes = _("y")
@@ -186,8 +189,8 @@ class Setup():
         """ make a systemcheck and return the results"""
         print (_("## System Check ##"))
 
-        if sys.version_info[:2] > (3, 7):
-            print (_("Your python version is too new, Please use Python 2.6/2.7/3.6"))
+        if sys.version_info[:2] > (3, 8):
+            print (_("Your python version is too new, Please use Python 2.6/2.7/3.6/3.7/3.8"))
             python = False
         if sys.version_info[:2] < (2, 5):
             print (_("Your python version is too old, Please use at least Python 2.5"))

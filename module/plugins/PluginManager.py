@@ -25,6 +25,9 @@ from os.path import isfile, join, exists, abspath
 from sys import version_info
 from itertools import chain
 
+if version_info > (3,3):
+    from importlib import reload
+
 from module.lib.SafeEval import const_eval as literal_eval
 from module.ConfigParser import IGNORE
 
@@ -140,8 +143,12 @@ class PluginManager:
             if (isfile(join(pfolder, f)) and f.endswith(".py") or f.endswith("_25.pyc") or
                     f.endswith("_26.pyc") or f.endswith("_27.pyc")) and not f.startswith("_"):
 
-                data = open(join(pfolder, f))
-                content = data.read()
+                if sys.version_info < (3,0):
+                    data = open(join(pfolder, f),'r')
+                    content = data.read()
+                else:
+                    data = open(join(pfolder, f),'rb')
+                    content = data.read().decode('utf8')
                 data.close()
 
                 if f.endswith("_25.pyc") and version_info[0:2] != (2, 5):
@@ -388,7 +395,7 @@ class PluginManager:
         if "hooks" in as_dict or "internal" in as_dict:
             return False
 
-        for type in as_dict.iterkeys():
+        for type in as_dict.keys():
             for plugin in as_dict[type]:
                 if plugin in self.plugins[type]:
                     if "module" in self.plugins[type][plugin]:
