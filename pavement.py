@@ -7,7 +7,10 @@ from paver.doctools import cog
 
 import sys
 import re
-from urllib import urlretrieve
+try:
+    from urllib import urlretrieve
+except ImportError:
+    from urllib.request import urlretrieve
 from subprocess import call, Popen, PIPE
 from zipfile import ZipFile
 
@@ -25,14 +28,14 @@ setup(
     name="pyload",
     version="0.4.20",
     description='Fast, lightweight and full featured download manager.',
-    long_description=open(PROJECT_DIR / "README").read(),
-    keywords = ('pyload', 'download-manager', 'one-click-hoster', 'download'),
+    long_description=open(PROJECT_DIR / "README.MD").read(),
+    keywords = ['pyload', 'download-manager', 'one-click-hoster', 'download'],
     url="http://pyload.net",
     download_url='http://pyload.net/download',
     license='GPL v3',
     author="pyLoad Team",
     author_email="support@pyload.net",
-    platforms = ('Any',),
+    platforms = ['Any',],
     #package_dir={'pyload': 'src'},
     packages=['pyload'],
     #package_data=find_package_data(),
@@ -72,7 +75,7 @@ options(
         sourcedir=""
     ),
     get_source=Bunch(
-        src="https://bitbucket.org/spoob/pyload/get/tip.zip",
+        src="https://github.com/pyload/pyload/archive/stable.zip",
         rev=None,
         clean=False
     ),
@@ -111,7 +114,7 @@ def html():
 ])
 def get_source(options):
     """ Downloads pyload source from bitbucket tip or given rev"""
-    if options.rev: options.url = "https://bitbucket.org/spoob/pyload/get/%s.zip" % options.rev
+    if options.rev: options.url = "https://github.com/pyload/pyload/archive/%s.zip" % options.rev
 
     pyload = path("pyload")
 
@@ -123,19 +126,20 @@ def get_source(options):
     urlretrieve(options.src, "pyload_src.zip")
     zip = ZipFile("pyload_src.zip")
     zip.extractall()
+    zip.close()
     path("pyload_src.zip").remove()
 
-    folder = [x for x in path(".").dirs() if x.name.startswith("spoob-pyload-")][0]
+    folder = [x for x in path(".").dirs() if x.name.startswith("pyload-")][0]
     folder.move(pyload)
 
-    change_mode(pyload, 0644)
-    change_mode(pyload, 0755, folder=True)
+    change_mode(pyload, 0o644)
+    change_mode(pyload, 0o755, folder=True)
 
     for file in pyload.files():
         if file.name.endswith(".py"):
-            file.chmod(0755)
+            file.chmod(0o755)
 
-    (pyload / ".hgtags").remove()
+    (pyload / ".gitattributes").remove()
     (pyload / ".gitignore").remove()
     #(pyload / "docs").rmtree()
 
@@ -160,7 +164,7 @@ def sdist():
 def thrift(options):
     """ Generate Thrift stubs """
 
-    print ("add import for TApplicationException manually as long it is not fixed")
+    print("add import for TApplicationException manually as long it is not fixed")
 
     outdir = path("module") / "remote" / "thriftbackend"
     (outdir / "gen-py").rmtree()
@@ -171,7 +175,7 @@ def thrift(options):
         cmd.insert(len(cmd) - 1, "--gen")
         cmd.insert(len(cmd) - 1, options.gen)
 
-    print ("running", cmd)
+    print("running", cmd)
 
     p = Popen(cmd)
     p.communicate()
@@ -189,7 +193,7 @@ def compile_js():
 
     root = path("module") / "web" / "media" / "js"
     for f in root.glob("*.coffee"):
-        print ("generate", f)
+        print("generate", f)
         coffee = Popen(["coffee", "-cbs"], stdin=open(f, "rb"), stdout=PIPE)
         yui = Popen(["yuicompressor", "--type", "js"], stdin=coffee.stdout, stdout=PIPE)
         coffee.stdout.close()
@@ -237,12 +241,12 @@ def generate_locale():
 
     path("includes.txt").remove()
 
-    print ("Locale generated")
+    print("Locale generated")
 
 
 @task
 def tests():
-    call(["nosetests2"])
+    call(["nosetests"])
 
 @task
 def virtualenv(options):
@@ -251,7 +255,7 @@ def virtualenv(options):
         return
 
     call([options.virtual, "--no-site-packages", "--python", options.python, options.dir])
-    print ("$ source %s/bin/activate" % options.dir)
+    print("$ source %s/bin/activate" % options.dir)
 
 
 @task
@@ -291,15 +295,15 @@ def walk_trans(path, EXCLUDE, endings=[".py"]):
                 result += "./%s\n" % f.relpath()
                 break
 
-    return result
+    return result.encode('utf-8')
 
 
-def makepot(domain, p, excludes=[], includes="", endings=[".py"], xxargs=[]):
-    print ("Generate %s.pot" % domain)
+def makepot(domain, p, excludes=[], includes="", endings=[u".py"], xxargs=[]):
+    print("Generate %s.pot" % domain)
 
     f = open("includes.txt", "wb")
     if includes:
-        f.write(includes)
+        f.write(includes.encode('utf-8'))
 
     if p:
         f.write(walk_trans(path(p), excludes, endings))
