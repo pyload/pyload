@@ -13,7 +13,7 @@ import re
 import shutil
 import socket
 import string
-import subprocess
+
 import sys
 import time
 import traceback
@@ -42,6 +42,11 @@ except ImportError:
 
 try:
     import send2trash
+except ImportError:
+    pass
+
+try:
+    import base64
 except ImportError:
     pass
 
@@ -112,14 +117,20 @@ class DB(object):
             if entry is None:
                 value = default
             else:
-                value = json.loads(entry.decode('base64'))
+                if sys.version_info < (3,0):
+                    value = json.loads(entry.decode('base64'))
+                else:
+                    value = json.loads(base64.b64decode(entry))
         else:
             if not entry:
                 value = default
             else:
-                value = dict((k, json.loads(v.decode('base64')))
-                             for k, v in value.items())
-
+                if sys.version_info < (3,0):
+                    value = dict((k, json.loads(v.decode('base64')))
+                                 for k, v in value.items())
+                else:
+                    value = dict((k, json.loads(base64.b64decode(v)))
+                                 for k, v in value.items())
         return value
 
     def delete(self, key):

@@ -18,13 +18,17 @@
 """
 from getpass import getpass
 import module.common.pylgettext as gettext
-from module.common.pylgettext import gettext as _
+# from module.common.pylgettext import gettext as _
 import os
 from subprocess import PIPE
 from subprocess import call
 import sys
 from sys import exit
 from module.utils import get_console_encoding
+try:
+    input = raw_input
+except NameError:
+    pass
 
 class Setup():
     """

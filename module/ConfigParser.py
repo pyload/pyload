@@ -3,6 +3,7 @@
 from __future__ import with_statement
 
 import re
+import sys
 
 from time import sleep
 from os.path import exists, join
@@ -11,6 +12,8 @@ from shutil import copy
 from traceback import print_exc
 from .utils import chmod
 
+if sys.version_info[0] >= 3:
+    unicode = str
 # ignore these plugin configs, mainly because plugins were wiped out
 IGNORE = (
     "FreakshareNet", "SpeedManager", "ArchiveTo", "ShareCx", ('hooks', 'UnRar'),
@@ -65,13 +68,13 @@ class ConfigParser:
                 chmod("pyload.conf", 0o600)
 
             if not exists("plugin.conf"):
-                f = open("plugin.conf", "wb")
+                f = open("plugin.conf", "w")
                 f.write("version: " + str(CONF_VERSION))
                 f.close()
                 chmod("plugin.conf", 0o600)
 
             f = open("pyload.conf", "r")
-            v = f.readline() #.decode('utf-8')
+            v = f.readline()
             f.close()
             v = v[v.find(":") + 1:].strip()
 
@@ -89,7 +92,7 @@ class ConfigParser:
                 f.write("version: " + str(CONF_VERSION))
                 f.close()
                 print ("Old version of plugin-config replaced")
-        except:
+        except Exception as e:
             if n < 3:
                 sleep(0.3)
                 self.checkVersion(n + 1)
@@ -119,8 +122,10 @@ class ConfigParser:
 
     def parseConfig(self, config):
         """parses a given configfile"""
-
-        f = open(config)
+        if sys.version_info < (3,0):
+            f = open(config)
+        else:
+            f = open(config, encoding="utf-8")
 
         config = f.read()
 
@@ -218,11 +223,17 @@ class ConfigParser:
 
     def saveConfig(self, config, filename):
         """saves config to filename"""
-        with open(filename, "w") as f:
+        with open(filename, "wb") as f:
             chmod(filename, 0o600)
-            f.write("version: %i \n" % CONF_VERSION)
+            if sys.version_info < (3,0):
+                f.write("version: %i \n" % CONF_VERSION)
+            else:
+                f.write(b"version: %i \n" % CONF_VERSION)
             for section in sorted(iter(config.keys())):
-                f.write('\n%s - "%s":\n' % (section, config[section]["desc"]))
+                if sys.version_info < (3,0):
+                    f.write('\n%s - "%s":\n' % (section, config[section]["desc"]))
+                else:
+                    f.write(('\n%s - "%s":\n' % (section, config[section]["desc"])).encode('utf-8'))
 
                 for option, data in sorted(config[section].items(), key=lambda _x: _x[0]):
                     if option in ("desc", "outline"):
@@ -234,18 +245,21 @@ class ConfigParser:
                             value += "\t\t" + str(x) + ",\n"
                         value += "\t\t]\n"
                     else:
-                        if isinstance(data["value"],str):
+                        if isinstance(data["value"], (str, unicode)):
                             value = data["value"] + "\n"
                         else:
                             value = str(data["value"]) + "\n"
-                    try:
-                        f.write('\t%s %s : "%s" = %s' % (data["type"], option, data["desc"], value))
-                    except UnicodeEncodeError:
-                        f.write('\t%s %s : "%s" = %s' % (data["type"], option, data["desc"], value.encode("utf8")))
+                    if sys.version_info < (3,0):
+                        try:
+                            f.write('\t%s %s : "%s" = %s' % (data["type"], option, data["desc"], value))
+                        except UnicodeEncodeError:
+                            f.write('\t%s %s : "%s" = %s' % (data["type"], option, data["desc"], value.encode("utf8")))
+                    else:
+                       f.write(('\t%s %s : "%s" = %s' % (data["type"], option, data["desc"], value)).encode('utf-8'))
 
     def cast(self, typ, value):
         """cast value to given format"""
-        if not isinstance(value, str):
+        if not isinstance(value, (str, unicode)):
             return value
         elif typ == "int":
             return int(value)
@@ -256,12 +270,12 @@ class ConfigParser:
             if not ":" in value: value += ":00"
             return value
         elif typ in ("str", "file", "folder"):
-            try:
-                return value # .encode("utf8")
-            except:
-                return value
-        else:
-            return value
+            if sys.version_info < (3,0):
+                try:
+                    return value.decode("utf8")
+                except:
+                    return value
+        return value
 
 
     def save(self):

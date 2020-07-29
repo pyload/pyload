@@ -98,8 +98,8 @@ def login():
     response.headers.replace("Content-type", "application/json")
     response.headers.append("Cache-Control", "no-cache, must-revalidate")
 
-    user = request.forms.get("username")
-    password = request.forms.get("password")
+    user = request.forms.username
+    password = request.forms.password
 
     info = PYLOAD.checkAuth(user, password)
 

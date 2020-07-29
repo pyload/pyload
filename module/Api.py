@@ -20,6 +20,7 @@
 from os.path import join
 from time import time
 import re
+import sys
 
 from .PyFile import PyFile
 from .utils import freeSpace, compare_time
@@ -27,6 +28,7 @@ from .common.packagetools import parseNames
 from .common.json_layer import json
 from .network.RequestFactory import getURL
 from .remote import activated
+
 
 if activated:
     try:
@@ -38,6 +40,10 @@ if activated:
         from .remote.socketbackend.ttypes import *
 else:
     from .remote.socketbackend.ttypes import *
+
+
+if sys.version_info[0] >= 3:
+    unicode = str
 
 # contains function names mapped to their permissions
 # unlisted functions are for admins only
@@ -112,7 +118,7 @@ class Api(Iface):
                 item = ConfigItem()
                 item.name = key
                 item.description = data["desc"]
-                item.value = str(data["value"]) if not isinstance(data["value"], str) else data["value"]
+                item.value = str(data["value"]) if not isinstance(data["value"], (str, unicode)) else data["value"]
                 item.type = data["type"]
                 items.append(item)
             section.items = items

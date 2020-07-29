@@ -36,7 +36,7 @@ except ImportError:
 
 import pycurl
 from module.plugins.Plugin import Abort
-
+import sys
 
 def myquote(url):
     return quote(url.encode('utf_8') if isinstance(url, str) else url, safe="%/:=&?~#+!$,;'@()*[]")
@@ -348,18 +348,18 @@ class HTTPRequest():
             f.close()
             raise Exception("Loaded Url exceeded limit")
 
-        if isinstance(buf, bytes):
-            self.rep.write(buf.decode('utf-8'))
-        else:
+        if sys.version_info < (3, 0):
             self.rep.write(buf)
+        else:
+            self.rep.write(buf.decode('utf-8'))
 
 
     def writeHeader(self, buf):
         """ writes header """
-        if isinstance(buf, bytes):
-            self.header += buf.decode('utf-8')
-        else:
+        if sys.version_info < (3, 0):
             self.header += buf
+        else:
+            self.header += buf.decode('utf-8')
 
     def putHeader(self, name, value):
         self.headers.append("%s: %s" % (name, value))
