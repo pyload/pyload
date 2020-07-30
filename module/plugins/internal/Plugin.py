@@ -27,7 +27,7 @@ _decode = decode
 class Plugin(object):
     __name__ = "Plugin"
     __type__ = "plugin"
-    __version__ = "0.76"
+    __version__ = "0.77"
     __status__ = "stable"
 
     __config__ = []  #: [("name", "type", "desc", "default")]
@@ -222,7 +222,7 @@ class Plugin(object):
         if isinstance(cookies, list):
             set_cookies(req.cj, cookies)
 
-        http_req = self.req.http if hasattr(self.req, "http") else self.req
+        http_req = req.http if hasattr(req, "http") else req
 
         #@TODO: Move to network in 0.4.10
         if not redirect:
