@@ -132,6 +132,7 @@ class DatabaseBackend(Thread):
         """main loop, which executes commands"""
         convert = self._checkVersion() #returns None or current version
 
+        # isolation_level = None prevents "cannot VACUUM from within a transaction"
         self.conn = sqlite3.connect("files.db", isolation_level = None)
         chmod("files.db", 0o600)
 
@@ -179,7 +180,7 @@ class DatabaseBackend(Thread):
                     print ("Filedatabase was deleted due to incompatible version.")
                 remove("files.version")
                 move("files.db", "files.backup.db")
-            f = open("files.version", "wb")
+            f = open("files.version", "w")
             f.write(str(DB_VERSION))
             f.close()
             return v

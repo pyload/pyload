@@ -20,6 +20,7 @@
 from __future__ import with_statement
 
 import os
+import sys
 import tempfile
 try:
     import urllib
@@ -27,6 +28,9 @@ except ImportError:
     import urllib.parse as urllib
 from imp import find_module
 
+if sys.version_info[0] >= 3:
+    unicode = str
+    
 ENGINE = ""
 
 DEBUG = False
@@ -125,8 +129,9 @@ class JsEngine():
 
             self.init = True
 
-        #if type(script) == unicode:
-        #    script = script.encode("utf8")
+        if type(script) == unicode:
+            if sys.version_info < (3,0):
+                script = script.encode("utf8")
 
         if not ENGINE:
             raise Exception("No JS Engine")
@@ -236,7 +241,7 @@ class JsEngine():
         return res.decode("utf8").encode("ISO-8859-1")
 
     def error(self):
-        # ToDo: Spidermonkey was named, but not checked and isn't reconcknized
+        # ToDo: Spidermonkey was named, but not checked and isn't recocknized
         return _("No js engine detected, please install either js2py, ossp-js, pyv8, nodejs or rhino")
 
 if __name__ == "__main__":

@@ -18,6 +18,7 @@
 
 from hashlib import sha1
 import random
+import sys
 
 from .DatabaseBackend import DatabaseBackend
 from .DatabaseBackend import style
@@ -34,7 +35,10 @@ class UserMethods():
 
         salt = r[2][:5]
         pw = r[2][5:]
-        h = sha1(salt.encode('utf-8') + password.encode('utf-8'))
+        if sys.version_info < (3,0):
+            h = sha1(salt + password)
+        else:
+            h = sha1(salt.encode('utf-8') + password.encode('utf-8'))
         if h.hexdigest() == pw:
             return {"id": r[0], "name": r[1], "role": r[3],
                     "permission": r[4], "template": r[5], "email": r[6]}
@@ -44,7 +48,11 @@ class UserMethods():
     @style.queue
     def addUser(db, user, password):
         salt = functools.reduce(lambda x, y: x + y, [str(random.randint(0, 9)) for i in range(0, 5)])
-        h = sha1(salt.encode('utf-8') + password.encode('utf-8'))
+        if sys.version_info < (3,0):
+            h = sha1(salt + password)
+            user = user.decode('utf-8')     # make user to unicodestring, password is stored hashed, no unicode chars
+        else:
+            h = sha1(salt.encode('utf-8') + password.encode('utf-8'))
         password = salt + h.hexdigest()
 
         c = db.c
@@ -64,10 +72,10 @@ class UserMethods():
 
         salt = r[2][:5]
         pw = r[2][5:]
-        h = sha1(salt + oldpw)
+        h = sha1(salt.encode('utf-8') + oldpw.encode('utf-8'))
         if h.hexdigest() == pw:
             salt = functools.reduce(lambda x, y: x + y, [str(random.randint(0, 9)) for i in range(0, 5)])
-            h = sha1(salt + newpw)
+            h = sha1(salt.encode('utf-8') + newpw.encode('utf-8'))
             password = salt + h.hexdigest()
 
             db.c.execute("UPDATE users SET password=? WHERE name=?", (password, user))
@@ -104,6 +112,8 @@ class UserMethods():
 
     @style.queue
     def removeUser(db, user):
+        if sys.version_info < (3,0):
+            user = user.decode('utf-8')
         db.c.execute('DELETE FROM users WHERE name=?', (user, ))
 
 DatabaseBackend.registerSub(UserMethods)
