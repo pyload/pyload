@@ -11,7 +11,7 @@ from ..captcha.ReCaptcha import ReCaptcha
 class MultiUpOrg(SimpleCrypter):
     __name__ = "MultiUpOrg"
     __type__ = "crypter"
-    __version__ = "0.14"
+    __version__ = "0.15"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?multiup\.(?:org|eu)/(?:en/|fr/)?(?:(?P<TYPE>project|download|mirror)/)?\w+(?:/\w+)?'
@@ -54,11 +54,11 @@ class MultiUpOrg(SimpleCrypter):
                                       post=inputs)
 
         hosts_data = {}
-        for _a in re.findall(r'<a (.+?) class="host btn btn-md btn-default btn-block btn-3d hvr-bounce-to-right">', self.data, re.M):
+        for _a in re.findall(r'<button (.+?) class="host btn btn-md btn-default btn-block btn-3d hvr-bounce-to-right">', self.data, re.M):
             validity = re.search(r'validity="(\w+)"', _a).group(1)
             if validity in ("valid", "unknown"):
                 host = re.search(r'nameHost="(.+?)"', _a).group(1)
-                url = re.search(r'href="(.+?)"', _a).group(1)
+                url = re.search(r'link="(.+?)"', _a).group(1)
                 hosts_data[host] = url
 
         chosen_hosts = []
