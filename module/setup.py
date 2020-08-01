@@ -18,7 +18,7 @@
 """
 from getpass import getpass
 import module.common.pylgettext as gettext
-# from module.common.pylgettext import gettext as _
+from module.common.pylgettext import gettext as _
 import os
 from subprocess import PIPE
 from subprocess import call
@@ -414,7 +414,10 @@ class Setup():
             gettext.setpaths([os.path.join(os.sep, "usr", "share", "pyload", "locale"), None])
             translation = gettext.translation("setup", os.path.join(self.path, "locale"),
                 languages=[self.config["general"]["language"], "en"], fallback=True)
-            translation.install(True)
+            if sys.version_info < (3,0):
+                translation.install(True)
+            else:
+                translation.install()
 
         print (_("Setting new configpath, current configuration will not be transfered!"))
         current_path = os.path.abspath("")
@@ -427,7 +430,10 @@ class Setup():
             if not os.path.exists(path):
                 os.makedirs(path)
             f = open(os.path.join(pypath, "module", "config", "configdir"), "wb")
-            f.write(path)
+            if sys.version_info < (3,0):
+                f.write(path)
+            else:
+                f.write(path.encode('utf-8'))
             f.close()
             print (_("Configpath changed, setup will now close, please restart to go on."))
             print (_("Press Enter to exit."))
@@ -498,7 +504,7 @@ class Setup():
 
         while True:
             try:
-                inpt = input(qst + " %s: " % info)
+                inpt = input(qst + " %s: " % info).strip('\r')
             except KeyboardInterrupt:
                 print ("\nSetup interrupted")
                 exit(2)

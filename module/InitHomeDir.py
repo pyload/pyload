@@ -72,6 +72,8 @@ else:
         f = open(path.join(pypath, "module", "config", "configdir"), "rb")
         c = f.read().strip()
         f.close()
+        if sys.version_info >= (3,0):
+            c = c.decode('utf-8')
         configdir = path.join(pypath, c)
     else:
         if platform in ("posix", "linux2"):
