@@ -221,8 +221,8 @@ def nopermission():
 
 @route("/login", method="POST")
 def login_post():
-    user = request.forms.get("username")
-    password = request.forms.get("password")
+    user = request.forms.username
+    password = request.forms.password
 
     info = PYLOAD.checkAuth(user, password)
 

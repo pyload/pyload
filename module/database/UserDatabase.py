@@ -33,7 +33,7 @@ class UserMethods():
 
         salt = r[2][:5]
         pw = r[2][5:]
-        h = sha1(salt + password)
+        h = sha1((salt + password).encode('utf-8'))
         if h.hexdigest() == pw:
             return {"id": r[0], "name": r[1], "role": r[3],
                     "permission": r[4], "template": r[5], "email": r[6]}
@@ -43,9 +43,11 @@ class UserMethods():
     @style.queue
     def addUser(db, user, password):
         salt = reduce(lambda x, y: x + y, [str(random.randint(0, 9)) for i in range(0, 5)])
-        h = sha1(salt + password)
+        if isinstance(password, str):
+            password = password.decode('utf-8')
+        h = sha1((salt + password).encode('Utf-8'))
         password = salt + h.hexdigest()
-
+        print('HexPassword: ' + password)
         c = db.c
         c.execute('SELECT name FROM users WHERE name=?', (user, ))
         if c.fetchone() is not None:
@@ -63,13 +65,15 @@ class UserMethods():
 
         salt = r[2][:5]
         pw = r[2][5:]
-        h = sha1(salt + oldpw)
+        h = sha1((salt + oldpw).encode('utf-8'))
         if h.hexdigest() == pw:
             salt = reduce(lambda x, y: x + y, [str(random.randint(0, 9)) for i in range(0, 5)])
-            h = sha1(salt + newpw)
+            h = sha1((salt + newpw).encode('utf-8'))
             password = salt + h.hexdigest()
 
             db.c.execute("UPDATE users SET password=? WHERE name=?", (password, user))
+            # without commit it's never saved
+            db.commit()
             return True
 
         return False

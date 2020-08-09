@@ -317,9 +317,9 @@ def update_accounts():
 @route("/json/change_password", method="POST")
 def change_password():
 
-    user = request.POST["user_login"]
-    oldpw = request.POST["login_current_password"]
-    newpw = request.POST["login_new_password"]
+    user = request.POST.user_login
+    oldpw = request.POST.login_current_password
+    newpw = request.POST.login_new_password
 
     if not PYLOAD.changePassword(user, oldpw, newpw):
         print "Wrong password"
