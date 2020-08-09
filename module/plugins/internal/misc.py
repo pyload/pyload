@@ -50,6 +50,10 @@ try:
 except ImportError:
     pass
 
+import sys
+if sys.version_info[0] >= 3:
+    unicode = str
+
 #@TODO: Remove in 0.4.10
 class misc(object):
     __name__ = "misc"
@@ -431,15 +435,18 @@ def decode(value, encoding=None, errors='strict'):
     """
     Encoded string (default to own system encoding) -> unicode string
     """
-    #if isinstance(value, str):
-    #    res = str(value, encoding or get_console_encoding(sys.stdout.encoding), errors)
+    if sys.version_info[0] < 3:
+        if isinstance(value, str):
+            res = unicode(value, encoding or get_console_encoding(sys.stdout.encoding), errors)
+    else:
+        res = value
 
     if isinstance(value, dict):
         value = json.dumps(value)
 
-    res = value
-    #else:
-    #    res = unicode(value)
+        res = value
+    else:
+        res = unicode(value)
 
     return res
 

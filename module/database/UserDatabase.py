@@ -36,6 +36,9 @@ class UserMethods():
         salt = r[2][:5]
         pw = r[2][5:]
         if sys.version_info < (3,0):
+            if isinstance(password, unicode):
+                password = password.encode('utf-8')
+                salt = salt.encode('utf-8')
             h = sha1(salt + password)
         else:
             h = sha1(salt.encode('utf-8') + password.encode('utf-8'))
@@ -79,6 +82,7 @@ class UserMethods():
             password = salt + h.hexdigest()
 
             db.c.execute("UPDATE users SET password=? WHERE name=?", (password, user))
+            db.commit()
             return True
 
         return False

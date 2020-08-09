@@ -74,6 +74,7 @@ class Plugin(object):
     def _log(self, level, plugintype, pluginname, messages, tbframe=None):
         log = getattr(self.pyload.log, level)
         msg = u" | ".join(decode(a).strip() for a in messages if a)
+
         if tbframe:
             msg += "\n" + format_exc(tbframe)
 
