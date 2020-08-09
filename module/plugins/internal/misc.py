@@ -108,7 +108,10 @@ class DB(object):
         """
         Saves a value persistently to the database
         """
-        entry = json.dumps(value, ensure_ascii=False).encode('base64')
+        if sys.version_info < (3,0):
+            entry = json.dumps(value, ensure_ascii=False).encode('base64')
+        else:
+            entry = base64.b64encode(json.dumps(value, ensure_ascii=False).encode('utf-8')).decode('utf-8')
         self.plugin.pyload.db.setStorage(self.plugin.classname, key, entry)
 
     def retrieve(self, key=None, default=None):
@@ -462,12 +465,13 @@ def encode(value, encoding='utf-8', errors='backslashreplace'):
     """
     Unicode string -> encoded string (default to UTF-8)
     """
-    if isinstance(value, str):
-        res = value.encode(encoding, errors)
-    else:
-        res = str(value)
+    if sys.version_info < (3,0):
+        if isinstance(value, unicode):
+            res = value.encode(encoding, errors)
+        else:
+            res = str(value)
 
-    '''if isinstance(value, str):
+    if isinstance(value, str):
         decoding = get_console_encoding(sys.stdin.encoding)
         if encoding == decoding:
             res = value
@@ -475,7 +479,7 @@ def encode(value, encoding='utf-8', errors='backslashreplace'):
             res = transcode(value, decoding, encoding)
 
     else:
-        res = str(value)'''
+        res = str(value)
 
     return res
 
