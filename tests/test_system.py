@@ -8,19 +8,13 @@ import requests
 import time
 from nose.tools import *
 
-if os.name =='nt':
-    from wexpect import spawn as p_spawn
+if os.name == 'nt':
+    from pexpect.popen_spawn import PopenSpawn as p_spawn
     PY_PATH = 'c:\\python27\\python.exe'
 else:
     from pexpect import spawn as p_spawn
     PY_PATH = '/usr/bin/python2.7'
-try:
-    from urllib import urlencode
-    from urllib2 import urlopen, HTTPError
-except ImportError:
-    from urllib.parse import urlencode
-    from urllib.request import urlopen
-    from urllib.error import HTTPError
+
 from nose.tools import *
 
 api_url = "http://localhost:8000/api/%s"
@@ -31,7 +25,7 @@ pyloadpath = os.path.abspath(os.path.join(base_path, '..', 'pyLoadCore.py'))
 
 
 def setup_start(pyloadpath):
-    c = p_spawn(PY_PATH + ' ' +  pyloadpath)
+    c = p_spawn(PY_PATH + ' ' + pyloadpath)
     if os.name != 'nt':
         c.logfile = sys.stdout
     else:
@@ -43,12 +37,13 @@ def setup_start(pyloadpath):
     c.sendline('j')
     c.expect('System check finished.*')
     systemresult = c.before
-    var = re.findall('py-OpenSSL:\s(OK|missing)',systemresult)
+    var = re.findall('py-OpenSSL:\s(OK|missing)', systemresult)
     c.sendline('')
     c.expect('Continue.*')
     c.sendline('')
     c.expect('Change config.*')
     return var, c
+
 
 def doInitalConfig(username, password, download_folder=None, config_folder=None):
     if not config_folder:
@@ -137,7 +132,10 @@ class TestSystem:
         r.close()
         # Login Via Web Interface
         r = requests.Session()
-        u = r.post(url % "login", data={"username": "Mäf", "password": "müfo", "submit":"login", "do":"login"})
+        u = r.post(url % "login", data={"username": "Mäf",
+                                        "password": "müfo",
+                                        "submit": "login",
+                                        "do": "login"})
         content = u.text
         assert "Incorrect username/email or password." not in content
         assert "Logout" in content
@@ -174,7 +172,10 @@ class TestSystem:
         c.expect('ADDON ClickNLoad: Proxy listening.*')
         # Login Via Web Interface
         r = requests.Session()
-        u = r.post(url % "login", data={"username": "Mäf", "password": "Külu", "submit":"login", "do":"login"})
+        u = r.post(url % "login", data={"username": "Mäf",
+                                        "password": "Külu",
+                                        "submit": "login",
+                                        "do": "login"})
         content = u.text
         assert "Logout" in content
         # Change Password in UI
@@ -219,4 +220,3 @@ class TestSystem:
         assert "Trübo" not in result
         if os.name == 'nt':
             c.logfile.close()
-
