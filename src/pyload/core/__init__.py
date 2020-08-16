@@ -47,7 +47,7 @@ class Core:
     DEFAULT_USERNAME = APPID
     DEFAULT_PASSWORD = APPID
     DEFAULT_DATADIR = os.path.join(
-        os.getenv("APPDATA") if os.name == "nt" else USERHOMEDIR, "pyLoad"
+        os.getenv("APPDATA") or USERHOMEDIR, "pyLoad" if os.name == "nt" else ".pyload"
     )
     DEFAULT_TMPDIR = os.path.join(tempfile.gettempdir(), "pyLoad")
     DEFAULT_STORAGEDIR = os.path.join(USERHOMEDIR, "Downloads", "pyLoad")
