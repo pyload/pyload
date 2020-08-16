@@ -62,8 +62,8 @@ class App:
 
     @classmethod
     def _configure_templating(cls, app):
-        cachedir = app.config["PYLOAD_API"].get_cachedir()
-        cache_path = os.path.join(cachedir, "jinja")
+        tempdir = app.config["PYLOAD_API"].get_cachedir()
+        cache_path = os.path.join(tempdir, "jinja")
 
         os.makedirs(cache_path, exist_ok=True)
 
@@ -86,8 +86,8 @@ class App:
 
     @classmethod
     def _configure_session(cls, app):
-        cachedir = app.config["PYLOAD_API"].get_cachedir()
-        cache_path = os.path.join(cachedir, "flask")
+        tempdir = app.config["PYLOAD_API"].get_cachedir()
+        cache_path = os.path.join(tempdir, "flask")
         os.makedirs(cache_path, exist_ok=True)
         app.config["SESSION_FILE_DIR"] = cache_path
 

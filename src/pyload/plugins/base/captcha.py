@@ -85,7 +85,7 @@ class BaseCaptcha(BasePlugin):
 
         with open(
             os.path.join(
-                self.pyload.cachedir,
+                self.pyload.tempdir,
                 "captcha_image_{}_{}.{}".format(
                     self.pyfile.plugin.__name__, time_ref, input_type
                 ),

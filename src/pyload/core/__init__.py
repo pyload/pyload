@@ -73,9 +73,8 @@ class Core:
     def debug(self):
         return self._debug
 
-
     # NOTE: should `restore` reset config as well?
-    def __init__(self, userdir, cachedir, storagedir, debug=None, restore=False):
+    def __init__(self, userdir, tempdir, storagedir, debug=None, restore=False):
         self._running = Event()
         self._do_restart = False
         self._do_exit = False
@@ -88,7 +87,7 @@ class Core:
         # if refresh:
         # cleanpy(PACKDIR)
 
-        self._init_config(userdir, cachedir, storagedir, debug)
+        self._init_config(userdir, tempdir, storagedir, debug)
         self._init_log()
 
         self._init_database(restore)
@@ -102,14 +101,13 @@ class Core:
         # TODO: Remove...
         self.last_client_connected = 0
 
-
-    def _init_config(self, userdir, cachedir, storagedir, debug):
+    def _init_config(self, userdir, tempdir, storagedir, debug):
         from .config.parser import ConfigParser
 
         self.userdir = os.path.realpath(userdir)
-        self.cachedir = os.path.realpath(cachedir)
+        self.tempdir = os.path.realpath(tempdir)
         os.makedirs(self.userdir, exist_ok=True)
-        os.makedirs(self.cachedir, exist_ok=True)
+        os.makedirs(self.tempdir, exist_ok=True)
 
         self.config = ConfigParser(self.userdir)
 
@@ -311,7 +309,7 @@ class Core:
             self._setup_permissions()
 
             self.log.info(self._("User directory: {}").format(self.userdir))
-            self.log.info(self._("Cache directory: {}").format(self.cachedir))
+            self.log.info(self._("Cache directory: {}").format(self.tempdir))
 
             storage_folder = self.config.get("general", "storage_folder")
             self.log.info(self._("Storage directory: {}".format(storage_folder)))

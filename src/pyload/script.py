@@ -79,13 +79,19 @@ The free and open-source Download Manager written in pure Python"""[1:])
         "-d", "--debug", action="store_true", help="enable debug mode", default=None
     )
     parser.add_argument(
-        "--userdir", help="use this location to store user data files", default=Core.DEFAULT_DATADIR
+        "--userdir",
+        help="use this location to store user data files",
+        default=Core.DEFAULT_DATADIR,
     )
     parser.add_argument(
-        "--cachedir", help="use this location to store temporary files", default=Core.DEFAULT_TMPDIR
+        "--tempdir",
+        help="use this location to store temporary files",
+        default=Core.DEFAULT_TMPDIR,
     )
     parser.add_argument(
-        "--storagedir", help="use this location to save downloads", default=Core.DEFAULT_STORAGEDIR
+        "--storagedir",
+        help="use this location to save downloads",
+        default=Core.DEFAULT_STORAGEDIR,
     )
     parser.add_argument("--daemon", action="store_true", help="run as daemon")
     parser.add_argument(
@@ -119,7 +125,7 @@ def main(cmd_args=sys.argv[1:]):
     Entry point for console_scripts.
     """
     args = _parse_args(cmd_args)
-    core_args = (args.userdir, args.cachedir, args.storagedir, args.debug, args.restore)
+    core_args = (args.userdir, args.tempdir, args.storagedir, args.debug, args.restore)
 
     run(core_args, args.daemon)
 

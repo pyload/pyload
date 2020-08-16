@@ -34,7 +34,7 @@ class PluginThread(Thread):
         """
         date = time.strftime("%Y-%m-%d_%H-%M-%S")
         dump_name = f"debug_{pyfile.pluginname}_{date}.zip"
-        dump_filename = os.path.join(self.pyload.cachedir, dump_name)
+        dump_filename = os.path.join(self.pyload.tempdir, dump_name)
         dump = self.get_debug_dump(pyfile)
 
         try:
@@ -42,14 +42,12 @@ class PluginThread(Thread):
 
             with zipfile.ZipFile(dump_filename, "w") as zip:
                 for entry in os.listdir(
-                    os.path.join(self.pyload.cachedir, pyfile.pluginname)
+                    os.path.join(self.pyload.tempdir, pyfile.pluginname)
                 ):
                     try:
                         # avoid encoding errors
                         zip.write(
-                            os.path.join(
-                                self.pyload.cachedir, pyfile.pluginname, entry
-                            ),
+                            os.path.join(self.pyload.tempdir, pyfile.pluginname, entry),
                             os.path.join(pyfile.pluginname, entry),
                         )
                     except Exception:

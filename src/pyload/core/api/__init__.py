@@ -1245,7 +1245,7 @@ class Api:
     # TODO: add security permission check
     # remove?
     def get_cachedir(self):
-        return os.path.realpath(self.pyload.cachedir)
+        return os.path.realpath(self.pyload.tempdir)
 
     #: Old API
     @permission(Perms.ALL)

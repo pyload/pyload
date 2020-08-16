@@ -408,7 +408,7 @@ class BasePlugin:
 
         try:
             framefile = os.path.join(
-                self.pyload.cachedir,
+                self.pyload.tempdir,
                 self.classname,
                 "{}_line{}.dump.html".format(
                     frame.f_back.f_code.co_name, frame.f_back.f_lineno
