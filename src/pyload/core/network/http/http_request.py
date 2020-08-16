@@ -53,7 +53,7 @@ class HTTPRequest:
         self.abort = False
         self.code = 0  #: last http code
 
-        self.header = bytes()
+        self.header = b""
 
         self.headers = []  #: temporary request header
 
@@ -227,7 +227,7 @@ class HTTPRequest:
         """
         self.set_request_context(url, get, post, referer, cookies, multipart)
 
-        self.header = bytes()
+        self.header = b""
 
         self.c.setopt(pycurl.HTTPHEADER, self.headers)
 
