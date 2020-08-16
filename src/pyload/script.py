@@ -68,7 +68,7 @@ def _parse_args(cmd_args):
   \______\    /______|_|___|__/________________________/
           \  /
            \/
-        
+
 The free and open-source Download Manager written in pure Python"""[
             1:
         ]

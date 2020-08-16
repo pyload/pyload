@@ -66,5 +66,5 @@ function setFile(fullpath, name)
     {% endif %}
     setValid();
 }
-    
+
 {% endautoescape %}
