@@ -1,11 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from .check import is_mapping, is_iterable
+import bitmath
 
-try:
-    import bitmath
-except ImportError:
-    bitmath = None
+from .check import is_mapping, is_iterable
 
 
 def convert(obj, rule, func, args=(), kwargs=None, fallback=None):
