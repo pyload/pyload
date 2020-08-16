@@ -70,7 +70,10 @@ def _parse_args(cmd_args):
           \  /
            \/
         
-The free and open-source Download Manager written in pure Python"""[1:])
+The free and open-source Download Manager written in pure Python"""[
+            1:
+        ]
+    )
     group = parser.add_mutually_exclusive_group()
 
     group.add_argument("--version", action="version", version=f"pyLoad {__version__}")
