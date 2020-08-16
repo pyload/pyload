@@ -244,7 +244,7 @@ class PluginManager:
                 config["desc"] = desc
                 configs[name] = config
 
-        if not home:
+        if not home and folder != "base":
             temp_plugins, temp_configs = self.parse(folder, pattern, plugins or True)
             plugins.update(temp_plugins)
             configs.update(temp_configs)
