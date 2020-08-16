@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# AUTHOR: vuolter
 
 PROPRIETARY_RESPONSES = {
     440: "Login Timeout - The client's session has expired and must log in again.",

@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# AUTHOR: RaNaN
 
 import os
 import pprint

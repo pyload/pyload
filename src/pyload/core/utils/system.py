@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# AUTHOR: vuolter
 
 import os
 import shlex
@@ -60,101 +59,101 @@ def console_encoding(enc):
 
 
 # def _get_psutil_process(pid, ctime):
-    # if pid is None:
-        # pid = os.getpid()
-    # if ctime is None:
-        # return psutil.Process(pid)
-    # try:
-        # psps = (
-            # psp
-            # for psp in psutil.process_iter()
-            # if psp.pid() == pid and psp.create_time() == ctime
-        # )
-        # return psps[0]
-    # except IndexError:
-        # raise psutil.NoSuchProcess(pid)
+# if pid is None:
+# pid = os.getpid()
+# if ctime is None:
+# return psutil.Process(pid)
+# try:
+# psps = (
+# psp
+# for psp in psutil.process_iter()
+# if psp.pid() == pid and psp.create_time() == ctime
+# )
+# return psps[0]
+# except IndexError:
+# raise psutil.NoSuchProcess(pid)
 
 
 # def is_running_process(pid=None):
-    # ctime = None
-    # if is_iterable(pid):
-        # pid, ctime = pid
+# ctime = None
+# if is_iterable(pid):
+# pid, ctime = pid
 
-    # psp = _get_psutil_process(pid, ctime)
-    # return psp.is_running() and psp.create_time() == ctime
+# psp = _get_psutil_process(pid, ctime)
+# return psp.is_running() and psp.create_time() == ctime
 
 
 # def is_zombie_process(pid=None):
-    # ctime = None
-    # if is_iterable(pid):
-        # pid, ctime = pid
+# ctime = None
+# if is_iterable(pid):
+# pid, ctime = pid
 
-    # try:
-        # psp = _get_psutil_process(pid, ctime)
-        # flag = psp.status() is psutil.STATUS_ZOMBIE
-    # except psutil.ZombieProcess:
-        # flag = True
-    # return flag
+# try:
+# psp = _get_psutil_process(pid, ctime)
+# flag = psp.status() is psutil.STATUS_ZOMBIE
+# except psutil.ZombieProcess:
+# flag = True
+# return flag
 
 
 # def kill_process(pid=None, timeout=None):
-    # ctime = None
-    # if is_iterable(pid):
-        # pid, ctime = pid
+# ctime = None
+# if is_iterable(pid):
+# pid, ctime = pid
 
-    # try:
-        # psp = _get_psutil_process(pid, ctime)
-        # psp.terminate()
-        # psp.wait(timeout)
-    # except (psutil.TimeoutExpired, psutil.ZombieProcess):
-        # psp.kill()
+# try:
+# psp = _get_psutil_process(pid, ctime)
+# psp.terminate()
+# psp.wait(timeout)
+# except (psutil.TimeoutExpired, psutil.ZombieProcess):
+# psp.kill()
 
 
 # def renice(pid=None, niceness=None):
-    # """Unix notation process nicener."""
-    # ctime = None
-    # value = None
+# """Unix notation process nicener."""
+# ctime = None
+# value = None
 
-    # if os.name == "nt":
-        # MIN_NICENESS = -20
-        # MAX_NICENESS = 19
+# if os.name == "nt":
+# MIN_NICENESS = -20
+# MAX_NICENESS = 19
 
-        # normval = (
-            # min(MAX_NICENESS, niceness) if niceness else max(MIN_NICENESS, niceness)
-        # )
-        # priocls = [
-            # psutil.IDLE_PRIORITY_CLASS,
-            # psutil.BELOW_NORMAL_PRIORITY_CLASS,
-            # psutil.NORMAL_PRIORITY_CLASS,
-            # psutil.ABOVE_NORMAL_PRIORITY_CLASS,
-            # psutil.HIGH_PRIORITY_CLASS,
-            # psutil.REALTIME_PRIORITY_CLASS,
-        # ]
-        # prioval = (
-            # (normval - MAX_NICENESS)
-            # * (len(priocls) - 1)
-            # // (MIN_NICENESS - MAX_NICENESS)
-        # )
-        # value = priocls[prioval]
+# normval = (
+# min(MAX_NICENESS, niceness) if niceness else max(MIN_NICENESS, niceness)
+# )
+# priocls = [
+# psutil.IDLE_PRIORITY_CLASS,
+# psutil.BELOW_NORMAL_PRIORITY_CLASS,
+# psutil.NORMAL_PRIORITY_CLASS,
+# psutil.ABOVE_NORMAL_PRIORITY_CLASS,
+# psutil.HIGH_PRIORITY_CLASS,
+# psutil.REALTIME_PRIORITY_CLASS,
+# ]
+# prioval = (
+# (normval - MAX_NICENESS)
+# * (len(priocls) - 1)
+# // (MIN_NICENESS - MAX_NICENESS)
+# )
+# value = priocls[prioval]
 
-    # if is_iterable(pid):
-        # pid, ctime = pid
+# if is_iterable(pid):
+# pid, ctime = pid
 
-    # psp = _get_psutil_process(pid, ctime)
-    # psp.nice(value)
+# psp = _get_psutil_process(pid, ctime)
+# psp.nice(value)
 
 
 # def ionice(pid=None, ioclass=None, niceness=None):
-    # """Unix notation process I/O nicener."""
-    # if os.name == "nt":
-        # ioclass = {0: 2, 1: 2, 2: 2, 3: 0}[ioclass]
+# """Unix notation process I/O nicener."""
+# if os.name == "nt":
+# ioclass = {0: 2, 1: 2, 2: 2, 3: 0}[ioclass]
 
-    # ctime = None
-    # if is_iterable(pid):
-        # pid, ctime = pid
+# ctime = None
+# if is_iterable(pid):
+# pid, ctime = pid
 
-    # psp = _get_psutil_process(pid, ctime)
-    # psp.ionice(ioclass, niceness)
+# psp = _get_psutil_process(pid, ctime)
+# psp.ionice(ioclass, niceness)
 
 
 def set_console_icon(iconpath):

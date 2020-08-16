@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# AUTHOR: vuolter
 
 import random
 import socket

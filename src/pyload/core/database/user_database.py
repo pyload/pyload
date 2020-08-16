@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# AUTHOR: mkaay
 
 import random
 from functools import reduce

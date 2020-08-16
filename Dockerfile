@@ -1,5 +1,4 @@
 # Highly-Optimized Docker Image of pyLoad (ubuntu variant)
-# AUTHOR: vuolter
 #      ____________
 #   _ /       |    \ ___________ _ _______________ _ ___ _______________
 #  /  |    ___/    |   _ __ _  _| |   ___  __ _ __| |   \\    ___  ___ _\

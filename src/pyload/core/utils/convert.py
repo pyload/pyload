@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# AUTHOR: vuolter
 
 from .check import is_mapping, is_iterable
 

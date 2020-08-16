@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# AUTHOR: RaNaN, vuolter
 
 from functools import wraps
 from urllib.parse import urljoin, urlparse

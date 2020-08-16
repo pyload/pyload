@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# AUTHOR: RaNaN
 
 import os
 import re
@@ -256,16 +255,16 @@ class ThreadManager:
                 free[0].put("quit")
 
     # def clean_pycurl(self):
-        # """
-        # make a global curl cleanup (currently ununused)
-        # """
-        # if self.processing_ids():
-            # return False
-        # pycurl.global_cleanup()
-        # pycurl.global_init(pycurl.GLOBAL_DEFAULT)
-        # self.downloaded = 0
-        # self.pyload.log.debug("Cleaned up pycurl")
-        # return True
+    # """
+    # make a global curl cleanup (currently ununused)
+    # """
+    # if self.processing_ids():
+    # return False
+    # pycurl.global_cleanup()
+    # pycurl.global_init(pycurl.GLOBAL_DEFAULT)
+    # self.downloaded = 0
+    # self.pyload.log.debug("Cleaned up pycurl")
+    # return True
 
     # ----------------------------------------------------------------------
     def assign_job(self):
@@ -362,7 +361,8 @@ class ThreadManager:
         return int(limit)
 
     # def cleanup(self):
-        # """
-        # do global cleanup, should be called when finished with pycurl.
-        # """
-        # pycurl.global_cleanup()
+    # """
+    # do global cleanup, should be called when finished with pycurl.
+    # """
+    # pycurl.global_cleanup()
+

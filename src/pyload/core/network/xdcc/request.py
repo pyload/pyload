@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# AUTHOR: jeix, GammaC0de
 
 import errno
 import os

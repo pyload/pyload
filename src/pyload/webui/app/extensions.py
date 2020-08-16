@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# AUTHOR: vuolter
 
 from flask_babel import Babel
 from flask_themes2 import Themes as _Themes

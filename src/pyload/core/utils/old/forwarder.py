@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# AUTHOR: RaNaN
 
 import socket
 from sys import argv, exit
