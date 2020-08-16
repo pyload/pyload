@@ -11,8 +11,6 @@ class MultiloadCz(BaseDecrypter):
     __version__ = "0.46"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"http://(?:[^/]*\.)?multiload\.cz/(stahnout|slozka)/.+"
     __config__ = [
         ("enabled", "bool", "Activated", True),

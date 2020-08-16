@@ -14,8 +14,6 @@ class Keep2ShareCc(BaseAccount):
     __version__ = "0.15"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __description__ = """Keep2Share.cc account plugin"""
     __license__ = "GPLv3"
     __authors__ = [

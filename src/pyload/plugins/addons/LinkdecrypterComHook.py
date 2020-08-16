@@ -11,8 +11,6 @@ class LinkdecrypterComHook(BaseAddon):
     __version__ = "1.11"
     __status__ = "broken"
 
-    __pyload_version__ = "0.5"
-
     __config__ = [
         ("enabled", "bool", "Activated", False),
         ("pluginmode", "all;listed;unlisted", "Use for plugins", "all"),

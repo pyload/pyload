@@ -11,8 +11,6 @@ class UlozToFolder(BaseDecrypter):
     __version__ = "0.27"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"http://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl)/(m|soubory)/.+"
     __config__ = [
         ("enabled", "bool", "Activated", True),

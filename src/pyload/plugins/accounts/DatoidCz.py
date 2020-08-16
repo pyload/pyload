@@ -11,8 +11,6 @@ class DatoidCz(BaseAccount):
     __version__ = "0.39"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __description__ = """Datoid.cz account plugin"""
     __license__ = "GPLv3"
     __authors__ = [("GammaC0de", None)]

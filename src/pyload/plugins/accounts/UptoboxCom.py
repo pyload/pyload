@@ -11,8 +11,6 @@ class UptoboxCom(XFSAccount):
     __version__ = "0.23"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __description__ = """Uptobox.com account plugin"""
     __license__ = "GPLv3"
     __authors__ = [

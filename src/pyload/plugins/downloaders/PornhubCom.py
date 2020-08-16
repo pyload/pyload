@@ -43,8 +43,6 @@ class PornhubCom(SimpleDownloader):
     __version__ = "0.60"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"https?://(?:www\.)?pornhub\.com/view_video\.php\?viewkey=\w+"
     __config__ = [
         ("enabled", "bool", "Activated", True),

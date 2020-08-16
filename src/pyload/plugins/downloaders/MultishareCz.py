@@ -10,8 +10,6 @@ class MultishareCz(SimpleDownloader):
     __version__ = "0.48"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"http://(?:www\.)?multishare\.cz/stahnout/(?P<ID>\d+)"
     __config__ = [
         ("enabled", "bool", "Activated", True),

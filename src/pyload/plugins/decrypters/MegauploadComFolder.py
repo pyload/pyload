@@ -9,8 +9,6 @@ class MegauploadComFolder(DeadDecrypter):
     __version__ = "0.08"
     __status__ = "stable"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = (
         r"http://(?:www\.)?megaupload\.com/(\?f|xml/folderfiles\.php\?.*&?folderid)=\w+"
     )

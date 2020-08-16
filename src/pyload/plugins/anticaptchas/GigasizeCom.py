@@ -9,8 +9,6 @@ class GigasizeCom(BaseOCR):
     __version__ = "0.17"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __description__ = """Gigasize.com ocr plugin"""
     __license__ = "GPLv3"
     __authors__ = [("pyLoad team", "admin@pyload.net")]

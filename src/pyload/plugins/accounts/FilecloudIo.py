@@ -12,8 +12,6 @@ class FilecloudIo(BaseAccount):
     __version__ = "0.13"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __description__ = """FilecloudIo account plugin"""
     __license__ = "GPLv3"
     __authors__ = [

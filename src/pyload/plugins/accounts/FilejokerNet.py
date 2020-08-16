@@ -9,8 +9,6 @@ class FilejokerNet(XFSAccount):
     __version__ = "0.02"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __description__ = """Filejoker.net account plugin"""
     __license__ = "GPLv3"
     __authors__ = [("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]

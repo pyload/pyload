@@ -11,8 +11,6 @@ class DebridItaliaCom(MultiDownloader):
     __version__ = "0.25"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"https?://(?:www\.|s\d+\.)?debriditalia\.com/dl/\d+"
     __config__ = [
         ("enabled", "bool", "Activated", True),

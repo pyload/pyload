@@ -10,8 +10,6 @@ class CaptchaService(BaseCaptcha):
     __version__ = "0.36"
     __status__ = "stable"
 
-    __pyload_version__ = "0.5"
-
     __description__ = """Anti-captcha service plugin"""
     __license__ = "GPLv3"
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]

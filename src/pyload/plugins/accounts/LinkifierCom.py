@@ -14,8 +14,6 @@ class LinkifierCom(MultiAccount):
     __version__ = "0.01"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __description__ = """Linkifier.com account plugin"""
     __license__ = "GPLv3"
     __authors__ = [("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]

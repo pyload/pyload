@@ -14,8 +14,6 @@ class LogMarker(BaseAddon):
     __version__ = "0.08"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __config__ = [
         ("enabled", "bool", "Activated", False),
         ("mark_hour", "bool", "Mark hours", True),

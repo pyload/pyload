@@ -9,8 +9,6 @@ class NosvideoCom(SimpleDecrypter):
     __version__ = "0.08"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"http://(?:www\.)?nosvideo\.com/\?v=\w+"
     __config__ = [
         ("enabled", "bool", "Activated", True),

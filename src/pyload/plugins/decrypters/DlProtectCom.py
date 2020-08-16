@@ -12,8 +12,6 @@ class DlProtectCom(SimpleDecrypter):
     __version__ = "0.13"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"https?://(?:www\.)?dl-protect1\.com/\w+"
     __config__ = [
         ("enabled", "bool", "Activated", True),

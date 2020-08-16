@@ -18,8 +18,6 @@ class RapidgatorNet(SimpleDownloader):
     __version__ = "0.54"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"https?://(?:www\.)?(?:rapidgator\.net|rg\.to)/file/\w+"
     __config__ = [
         ("enabled", "bool", "Activated", True),

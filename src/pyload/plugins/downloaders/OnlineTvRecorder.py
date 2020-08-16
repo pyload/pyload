@@ -14,8 +14,6 @@ class OnlineTvRecorder(Http):
     __version__ = "0.05"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     # RIPE Database:
     # inetnum: 81.95.11.0 - 81.95.11.63
     # route:   81.95.8.0/21

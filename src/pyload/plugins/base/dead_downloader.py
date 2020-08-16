@@ -10,8 +10,6 @@ class DeadDownloader(BaseDownloader):
     __version__ = "0.24"
     __status__ = "stable"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"^unmatchable$"
     __config__ = [("enabled", "bool", "Activated", True)]
 

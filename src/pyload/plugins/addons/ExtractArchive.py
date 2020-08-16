@@ -56,8 +56,6 @@ class ExtractArchive(BaseAddon):
     __version__ = "1.67"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __config__ = [
         ("enabled", "bool", "Activated", False),
         ("fullpath", "bool", "Extract with full paths", True),

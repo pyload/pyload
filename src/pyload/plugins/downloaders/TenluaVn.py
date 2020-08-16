@@ -19,8 +19,6 @@ class TenluaVn(SimpleDownloader):
     __version__ = "0.03"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"https?://(?:www\.)?tenlua\.vn(?!/folder)/.+?/(?P<ID>[0-9a-f]+)/"
     __config__ = [
         ("enabled", "bool", "Activated", True),

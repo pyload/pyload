@@ -16,8 +16,6 @@ class UploadedTo(SimpleDownloader):
     __version__ = "1.08"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"https?://(?:www\.)?(uploaded\.(to|net)|ul\.to)(/file/|/?\?id=|.*?&id=|/)(?P<ID>\w+)"
     __config__ = [
         ("enabled", "bool", "Activated", True),

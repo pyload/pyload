@@ -49,8 +49,6 @@ class DeathByCaptcha(BaseAddon):
     __version__ = "0.16"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __config__ = [
         ("enabled", "bool", "Activated", False),
         ("username", "str", "Username", ""),

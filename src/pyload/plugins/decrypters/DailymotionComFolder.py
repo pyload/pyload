@@ -13,8 +13,6 @@ class DailymotionComFolder(BaseDecrypter):
     __version__ = "0.08"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"https?://(?:www\.)?dailymotion\.com/((playlists/)?(?P<TYPE>playlist|user)/)?(?P<ID>[\w^_]+)(?(TYPE)|#)"
     __config__ = [
         ("enabled", "bool", "Activated", True),

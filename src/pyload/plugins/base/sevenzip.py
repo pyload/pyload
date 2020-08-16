@@ -16,8 +16,6 @@ class SevenZip(BaseExtractor):
     __version__ = "0.27"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __description__ = """7-Zip extractor plugin"""
     __license__ = "GPLv3"
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com"), ("Michael Nowak", None)]

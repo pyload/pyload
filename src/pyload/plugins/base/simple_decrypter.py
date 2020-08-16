@@ -16,8 +16,6 @@ class SimpleDecrypter(BaseDecrypter):
     __version__ = "0.93"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"^unmatchable$"
     __config__ = [
         ("enabled", "bool", "Activated", True),

@@ -18,8 +18,6 @@ class BaseOCR(BasePlugin):
     __version__ = "0.26"
     __status__ = "stable"
 
-    __pyload_version__ = "0.5"
-
     __description__ = """OCR base plugin"""
     __license__ = "GPLv3"
     __authors__ = [("pyLoad team", "admin@pyload.net")]

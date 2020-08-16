@@ -12,8 +12,6 @@ class LuckyShareNet(SimpleDownloader):
     __version__ = "0.14"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"https?://(?:www\.)?luckyshare\.net/(?P<ID>\d{10,})"
     __config__ = [
         ("enabled", "bool", "Activated", True),

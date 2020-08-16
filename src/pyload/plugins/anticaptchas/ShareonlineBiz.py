@@ -9,8 +9,6 @@ class ShareonlineBiz(BaseOCR):
     __version__ = "0.17"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __description__ = """Shareonline.biz ocr plugin"""
     __license__ = "GPLv3"
     __authors__ = [("RaNaN", "RaNaN@pyload.net")]

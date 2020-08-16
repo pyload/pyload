@@ -13,8 +13,6 @@ class DeleteFinished(BaseAddon):
     __version__ = "1.19"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __config__ = [
         ("enabled", "bool", "Activated", False),
         ("interval", "int", "Check interval in hours", 72),

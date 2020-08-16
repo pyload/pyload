@@ -10,8 +10,6 @@ class SmoozedCom(MultiDownloader):
     __version__ = "0.15"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     #: Since we want to allow the user to specify the list of hoster to use we let MultiDownloader.activate
     __pattern__ = r"^unmatchable$"
     __config__ = [

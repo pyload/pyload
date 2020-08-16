@@ -9,8 +9,6 @@ class HundredEightyUploadCom(XFSDownloader):
     __version__ = "0.11"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"http://(?:www\.)?180upload\.com/\w{12}"
     __config__ = [
         ("enabled", "bool", "Activated", True),

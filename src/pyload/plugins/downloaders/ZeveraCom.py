@@ -11,8 +11,6 @@ class ZeveraCom(MultiDownloader):
     __version__ = "0.39"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"https?://(?:www\.)zevera\.com/(getFiles\.ashx|Members/download\.ashx)\?.*ourl=.+"
     __config__ = [
         ("enabled", "bool", "Activated", True),

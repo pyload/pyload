@@ -11,8 +11,6 @@ class XFileSharing(BaseAddon):
     __version__ = "0.56"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __config__ = [
         ("enabled", "bool", "Activated", False),
         ("use_downloader_list", "bool", "Load listed hosters only", False),

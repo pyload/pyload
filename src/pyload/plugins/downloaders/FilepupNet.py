@@ -16,8 +16,6 @@ class FilepupNet(SimpleDownloader):
     __version__ = "0.08"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"http://(?:www\.)?filepup\.net/files/\w+"
     __config__ = [
         ("enabled", "bool", "Activated", True),

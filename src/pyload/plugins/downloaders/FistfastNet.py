@@ -9,8 +9,6 @@ class FistfastNet(XFSDownloader):
     __version__ = "0.01"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"https?://(?:www\.)?fistfast\.net/\w{12}"
     __config__ = [
         ("enabled", "bool", "Activated", True),

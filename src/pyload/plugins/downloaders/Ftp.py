@@ -14,8 +14,6 @@ class Ftp(BaseDownloader):
     __version__ = "0.61"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"(?:ftps?|sftp)://([\w\-.]+(:[\w\-.]+)?@)?[\w\-.]+(:\d+)?/.+"
     __config__ = [("enabled", "bool", "Activated", True)]
 

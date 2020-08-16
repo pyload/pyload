@@ -10,8 +10,6 @@ class XupPl(BaseDecrypter):
     __version__ = "0.16"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"https?://(?:[^/]*\.)?xup\.pl/.+"
     __config__ = [
         ("enabled", "bool", "Activated", True),

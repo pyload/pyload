@@ -14,8 +14,6 @@ class MultiUpOrg(SimpleDecrypter):
     __version__ = "0.12"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"https?://(?:www\.)?multiup\.(?:org|eu)/(?:en/|fr/)?(?:(?P<TYPE>project|download|mirror)/)?\w+(?:/\w+)?"
     __config__ = [
         ("enabled", "bool", "Activated", True),

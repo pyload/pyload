@@ -9,8 +9,6 @@ class ClicknuploadCom(XFSDownloader):
     __version__ = "0.06"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"https?://(?:www\.)?clicknupload\.(?:com|org|me|link)/(?P<ID>\w{12})"
     __config__ = [
         ("enabled", "bool", "Activated", True),

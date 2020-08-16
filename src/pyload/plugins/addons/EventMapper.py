@@ -9,8 +9,6 @@ class EventMapper(BaseAddon):
     __version__ = "0.02"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __config__ = [("enabled", "bool", "Activated", True)]
 
     __description__ = """Map old events to new events"""

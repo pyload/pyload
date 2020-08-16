@@ -9,8 +9,6 @@ class MovReelCom(XFSAccount):
     __version__ = "0.08"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __description__ = """Movreel.com account plugin"""
     __license__ = "GPLv3"
     __authors__ = [("t4skforce", "t4skforce1337[AT]gmail[DOT]com")]

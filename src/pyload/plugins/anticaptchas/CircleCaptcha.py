@@ -34,8 +34,6 @@ class CircleCaptcha(BaseOCR):
     __version__ = "1.11"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __description__ = """Circle captcha ocr plugin"""
     __license__ = "GPLv3"
     __authors__ = [("Sasch", "gsasch@gmail.com")]

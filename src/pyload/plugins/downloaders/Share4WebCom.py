@@ -9,8 +9,6 @@ class Share4WebCom(UnibytesCom):
     __version__ = "0.17"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"https?://(?:www\.)?share4web\.com/get/\w+"
     __config__ = [("enabled", "bool", "Activated", True)]
 

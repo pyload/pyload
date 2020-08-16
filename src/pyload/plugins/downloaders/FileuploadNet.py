@@ -9,8 +9,6 @@ class FileuploadNet(SimpleDownloader):
     __version__ = "0.07"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"https?://(?:www\.)?(en\.)?file-upload\.net/download-\d+/.+"
     __config__ = [
         ("enabled", "bool", "Activated", True),

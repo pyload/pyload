@@ -12,8 +12,6 @@ class SkipRev(BaseAddon):
     __version__ = "0.38"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __config__ = [
         ("enabled", "bool", "Activated", False),
         ("mode", "Auto;Manual", "Choose recovery archives to skip", "Auto"),

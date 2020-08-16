@@ -12,8 +12,6 @@ class DateiTo(SimpleDownloader):
     __version__ = "0.14"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"http://(?:www\.)?datei\.to/datei/(?P<ID>\w+)\.html"
     __config__ = [
         ("enabled", "bool", "Activated", True),
@@ -61,9 +59,10 @@ class DateiTo(SimpleDownloader):
             data = dict(x.split("=") for x in m.group(2).split("&"))
 
             if url.endswith("self.captcha.php"):
-                data["recaptcha_response_field"], data[
-                    "recaptcha_challenge_field"
-                ] = self.captcha.challenge()
+                (
+                    data["recaptcha_response_field"],
+                    data["recaptcha_challenge_field"],
+                ) = self.captcha.challenge()
         else:
             return
 

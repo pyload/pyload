@@ -11,8 +11,6 @@ class AdsCaptcha(CaptchaService):
     __version__ = "0.14"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __description__ = """AdsCaptcha captcha service plugin"""
     __license__ = "GPLv3"
     __authors__ = [("pyLoad team", "admin@pyload.net")]

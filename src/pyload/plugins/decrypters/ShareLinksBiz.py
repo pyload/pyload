@@ -16,8 +16,6 @@ class ShareLinksBiz(BaseDecrypter):
     __version__ = "1.29"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"http://(?:www\.)?(share-links|s2l)\.biz/(?P<ID>_?\w+)"
     __config__ = [
         ("enabled", "bool", "Activated", True),

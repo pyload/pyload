@@ -9,8 +9,6 @@ class PastebinCom(SimpleDecrypter):
     __version__ = "0.09"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"https://(?:www\.)?pastebin\.com/(.+i=)?(?P<ID>\w{8})"
     __config__ = [
         ("enabled", "bool", "Activated", True),

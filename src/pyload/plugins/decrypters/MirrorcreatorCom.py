@@ -13,8 +13,6 @@ class MirrorcreatorCom(BaseDecrypter):
     __version__ = "0.03"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"https?://(?:www\.)?(?:mirrorcreator\.com/(?:files/|download\.php\?uid=)|mir\.cr/)(?P<ID>\w{8})"
     __config__ = [
         ("enabled", "bool", "Activated", True),

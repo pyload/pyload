@@ -12,8 +12,6 @@ class UgouploadNet(SimpleDownloader):
     __version__ = "0.04"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"https?://(?:www)?\.ugoupload\.net/\w{4}"
     __config__ = [
         ("enabled", "bool", "Activated", True),

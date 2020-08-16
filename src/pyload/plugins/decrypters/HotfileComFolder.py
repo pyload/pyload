@@ -9,8 +9,6 @@ class HotfileComFolder(DeadDecrypter):
     __version__ = "0.36"
     __status__ = "stable"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"https?://(?:www\.)?hotfile\.com/list/\w+/\w+"
     __config__ = [("enabled", "bool", "Activated", True)]
 

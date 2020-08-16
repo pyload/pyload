@@ -11,8 +11,6 @@ class NowVideoSx(SimpleDownloader):
     __version__ = "0.17"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"http://(?:www\.)?nowvideo\.[a-zA-Z]{2,}/(video/|mobile/(#/videos/|.+?id=))(?P<ID>\w+)"
     __config__ = [
         ("enabled", "bool", "Activated", True),

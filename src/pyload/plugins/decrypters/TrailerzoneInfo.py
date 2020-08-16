@@ -9,8 +9,6 @@ class TrailerzoneInfo(DeadDecrypter):
     __version__ = "0.08"
     __status__ = "stable"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"http://(?:www\.)?trailerzone\.info/.+"
     __config__ = [("enabled", "bool", "Activated", True)]
 

@@ -11,8 +11,6 @@ class Dereferer(SimpleDecrypter):
     __version__ = "0.26"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"https?://(?:www\.)?(?:\w+\.)*?(?P<DOMAIN>(?:[\d.]+|[\w\-]{3,63}(?:\.[a-zA-Z]{2,}){1,2})(?:\:\d+)?)/.*?(?P<LINK>[\w^_]+://.+)"
     __config__ = [
         ("enabled", "bool", "Activated", True),

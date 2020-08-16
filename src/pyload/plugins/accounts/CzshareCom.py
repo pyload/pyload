@@ -12,8 +12,6 @@ class CzshareCom(BaseAccount):
     __version__ = "0.28"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __description__ = """Czshare.com account plugin, now Sdilej.cz"""
     __license__ = "GPLv3"
     __authors__ = [

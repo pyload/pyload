@@ -11,8 +11,6 @@ class TXT(BaseContainer):
     __version__ = "0.21"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r".+\.(txt|text)$"
     __config__ = [
         ("enabled", "bool", "Activated", True),

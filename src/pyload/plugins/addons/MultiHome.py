@@ -29,8 +29,6 @@ class MultiHome(BaseAddon):
     __version__ = "0.21"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __config__ = [
         ("enabled", "bool", "Activated", False),
         ("interfaces", "str", "Interfaces", "None"),

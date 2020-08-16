@@ -12,8 +12,6 @@ class VimeoCom(SimpleDownloader):
     __version__ = "0.12"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"https?://(?:www\.)?(player\.)?vimeo\.com/(video/)?(?P<ID>\d+)"
     __config__ = [
         ("enabled", "bool", "Activated", True),

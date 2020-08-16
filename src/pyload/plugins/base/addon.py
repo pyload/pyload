@@ -38,8 +38,6 @@ class BaseAddon(BasePlugin):
     __version__ = "0.55"
     __status__ = "stable"
 
-    __pyload_version__ = "0.5"
-
     __threaded__ = []  # TODO: Remove in 0.6.x
 
     __description__ = """Base addon plugin"""

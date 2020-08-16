@@ -9,8 +9,6 @@ class EasybytezCom(XFSAccount):
     __version__ = "0.18"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __description__ = """EasyBytez.com account plugin"""
     __license__ = "GPLv3"
     __authors__ = [

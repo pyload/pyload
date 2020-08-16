@@ -14,8 +14,6 @@ class BigfileTo(SimpleDownloader):
     __version__ = "0.19"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"https?://(?:www\.)?(?:uploadable\.ch|bigfile.to)/file/(?P<ID>\w+)"
     __config__ = [
         ("enabled", "bool", "Activated", True),

@@ -16,8 +16,6 @@ class Captcha9Kw(BaseAddon):
     __version__ = "0.38"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __config__ = [
         ("enabled", "bool", "Activated", False),
         ("check_client", "bool", "Don't use if client is connected", True),

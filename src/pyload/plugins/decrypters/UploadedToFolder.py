@@ -9,8 +9,6 @@ class UploadedToFolder(SimpleDecrypter):
     __version__ = "0.49"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"https?://(?:www\.)?(uploaded|ul)\.(to|net)/(f|folder|list)/\w+"
     __config__ = [
         ("enabled", "bool", "Activated", True),

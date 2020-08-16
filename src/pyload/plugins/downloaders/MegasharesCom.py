@@ -13,8 +13,6 @@ class MegasharesCom(SimpleDownloader):
     __version__ = "0.37"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = (
         r"http://(?:www\.)?(d\d{2}\.)?megashares\.com/((index\.php)?\?d\d{2}=|dl/)\w+"
     )

@@ -27,8 +27,6 @@ class AntiStandby(BaseAddon):
     __version__ = "0.18"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __config__ = [
         ("enabled", "bool", "Activated", False),
         ("hdd", "bool", "Prevent HDD standby", True),

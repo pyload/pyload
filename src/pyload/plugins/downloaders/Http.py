@@ -14,8 +14,6 @@ class Http(BaseDownloader):
     __version__ = "0.10"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"(?:jd|pys?)://.+"
     __config__ = [("enabled", "bool", "Activated", True)]
 

@@ -12,8 +12,6 @@ class MultiDownloader(SimpleDownloader):
     __version__ = "0.67"
     __status__ = "stable"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"^unmatchable$"
     __config__ = [
         ("enabled", "bool", "Activated", True),

@@ -9,8 +9,6 @@ class DdlstorageComFolder(DeadDecrypter):
     __version__ = "0.09"
     __status__ = "stable"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"https?://(?:www\.)?ddlstorage\.com/folder/\w+"
     __config__ = [("enabled", "bool", "Activated", True)]
 

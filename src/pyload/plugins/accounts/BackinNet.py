@@ -9,8 +9,6 @@ class BackinNet(XFSAccount):
     __version__ = "0.06"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __description__ = """Backin.net account plugin"""
     __license__ = "GPLv3"
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]

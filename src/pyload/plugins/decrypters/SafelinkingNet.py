@@ -14,8 +14,6 @@ class SafelinkingNet(BaseDecrypter):
     __version__ = "0.22"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"https?://(?:www\.)?safelinking\.net/(?P<TYPE>[pd]/)?(?P<ID>\w{7})"
     __config__ = [
         ("enabled", "bool", "Activated", True),
