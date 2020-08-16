@@ -79,5 +79,6 @@ https://www.contributor-covenant.org/faq
 <br />
 <br />
 
--------------------------
-###### © 2019 pyLoad team
+---
+
+###### © 2020 pyLoad team

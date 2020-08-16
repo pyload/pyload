@@ -112,7 +112,7 @@ master_doc = "index"
 
 # General information about the project.
 project = "pyLoad"
-copyright = "2019 pyLoad team"
+copyright = "2020 pyLoad team"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
