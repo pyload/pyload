@@ -10,8 +10,7 @@
   <a href="#docker-support-experimental">Docker Support</a> |
   <a href="#troubleshooting">Troubleshooting</a> |
   <a href="#licensing">Licensing</a> |
-  <a href="#credits">Credits</a> |
-  <a href="#release-history">Release History</a>
+  <a href="#credits">Credits</a>
 </h4>
 <br />
 <br />
@@ -66,7 +65,6 @@ Append the tag `extra` to the installation command:
 
 - `extra`: recommended extra packages.
 - `build`: packages required to build locales.
-- `test`: packages required to run tests.
 - `all`: all of them.
 
 You can also use more tags together, like:
@@ -94,14 +92,12 @@ for your installation:
 
     python setup.py build_locale
 
-Ideally you would use it ***before*** launching any other build or installation command
+Ideally you would use it **_before_** launching any other build or installation command
 (eg. `bdist_wheel`).
 
+## Usage
 
-Usage
------
-
-    usage: pyload [-h] [--version] [-d] [--userdir USERDIR] [--cachedir CACHEDIR]
+    usage: pyload [-h] [--version] [-d] [--userdir USERDIR] [--tempdir CACHEDIR]
                   [--daemon] [--restore]
 
     The free and open-source Download Manager written in pure Python
@@ -111,7 +107,7 @@ Usage
       --version                show program's version number and exit
       -d, --debug              enable debug mode
       --userdir USERDIR        use this location to store user data files
-      --cachedir CACHEDIR      use this location to store temporary files
+      --tempdir CACHEDIR      use this location to store temporary files
       --storagedir STORAGEDIR  use this location to save downloads
       --daemon                 run as daemon
       --restore                reset default username/password
@@ -325,14 +321,6 @@ Credits
 -------
 
 Please refer to the included [CREDITS](/CREDITS.md) for the full credits.
-
-
-Release History
----------------
-
-Please refer to the included [CHANGELOG](/CHANGELOG.md) for the full release
-history.
-
 
 <br />
 <br />
