@@ -8,12 +8,12 @@
 #          \  /
 #           \/
 
-ARG ALPINE_RELEASE="3.10"
+ARG IMAGE_TAG="3.11"
 
 
 
 
-FROM lsiobase/alpine:$ALPINE_RELEASE as builder
+FROM lsiobase/alpine:$IMAGE_TAG as builder
 
 ARG APK_INSTALL_OPTIONS="--no-cache"
 ARG PIP_INSTALL_OPTIONS="--disable-pip-version-check --no-cache-dir --no-compile --upgrade"
@@ -22,14 +22,14 @@ ARG APK_PACKAGES="python3 openssl"
 ARG PIP_PACKAGES="pip setuptools wheel"
 
 RUN \
-echo "**** install Python ****" && \
-apk add $APK_INSTALL_OPTIONS $APK_PACKAGES && \
-ln -sf python3 /usr/bin/python && \
-\
-echo "**** install pip ****" && \
-python3 -m ensurepip && rm -rf /usr/lib/python*/ensurepip && \
-pip3 install $PIP_INSTALL_OPTIONS $PIP_PACKAGES && \
-ln -sf pip3 /usr/bin/pip
+    echo "**** install Python ****" && \
+    apk add $APK_INSTALL_OPTIONS $APK_PACKAGES && \
+    ln -sf python3 /usr/bin/python && \
+    \
+    echo "**** install pip ****" && \
+    python3 -m ensurepip && rm -rf /usr/lib/python*/ensurepip && \
+    pip3 install $PIP_INSTALL_OPTIONS $PIP_PACKAGES && \
+    ln -sf pip3 /usr/bin/pip
 
 
 
@@ -43,12 +43,12 @@ ARG APK_INSTALL_OPTIONS="--no-cache"
 ARG APK_PACKAGES="gcc musl-dev python3-dev libffi-dev openssl-dev jpeg-dev zlib-dev libxml2-dev libxslt-dev"
 
 RUN \
-echo "**** install build packages ****" && \
-apk add $APK_INSTALL_OPTIONS $APK_PACKAGES && \
-\
-echo "**** build pyLoad dependencies ****" && \
-python -c "import configparser as cp; c = cp.ConfigParser(); c.read('/source/setup.cfg'); print(c['options']['install_requires'] + c['options.extras_require']['extra'])" | \
-xargs pip wheel --wheel-dir=.
+    echo "**** install build packages ****" && \
+    apk add $APK_INSTALL_OPTIONS $APK_PACKAGES && \
+    \
+    echo "**** build pyLoad dependencies ****" && \
+    python -c "import configparser as cp; c = cp.ConfigParser(); c.read('/source/setup.cfg'); print(c['options']['install_requires'] + c['options.extras_require']['extra'])" | \
+    xargs pip wheel --wheel-dir=.
 
 
 
@@ -62,9 +62,9 @@ ARG PIP_INSTALL_OPTIONS="--disable-pip-version-check --no-cache-dir --no-compile
 ARG PIP_PACKAGES="Babel Jinja2"
 
 RUN \
-echo "**** build pyLoad locales ****" && \
-pip install $PIP_INSTALL_OPTIONS $PIP_PACKAGES && \
-python setup.py build_locale
+    echo "**** build pyLoad locales ****" && \
+    pip install $PIP_INSTALL_OPTIONS $PIP_PACKAGES && \
+    python setup.py build_locale
 
 
 
@@ -78,8 +78,8 @@ WORKDIR /package
 ARG PIP_INSTALL_OPTIONS="--disable-pip-version-check --no-cache-dir --no-compile --upgrade"
 
 RUN \
-echo "**** build pyLoad package ****" && \
-pip install $PIP_INSTALL_OPTIONS --find-links=/wheels --no-index --prefix=. /source[extra]
+    echo "**** build pyLoad package ****" && \
+    pip install $PIP_INSTALL_OPTIONS --find-links=/wheels --no-index --prefix=. /source[extra]
 
 
 
@@ -87,17 +87,17 @@ pip install $PIP_INSTALL_OPTIONS --find-links=/wheels --no-index --prefix=. /sou
 FROM builder
 
 LABEL \
-version="1.0" \
-description="The free and open-source Download Manager written in pure Python" \
-maintainer="vuolter@gmail.com"
+    version="1.0" \
+    description="The free and open-source Download Manager written in pure Python" \
+    maintainer="vuolter@gmail.com"
 
 # Set Python to force stdin, stdout and stderr to be totally unbuffered.
 # Stop if any script (fix-attrs or cont-init) has failed.
 # Set Python to use UTF-8 encoding rather than ASCII.
 ENV \
-PYTHONUNBUFFERED=1 \
-S6_BEHAVIOUR_IF_STAGE2_FAILS=2 \
-LANG=C.UTF-8
+    PYTHONUNBUFFERED=1 \
+    S6_BEHAVIOUR_IF_STAGE2_FAILS=2 \
+    LANG=C.UTF-8
 
 ARG APK_INSTALL_OPTIONS="--no-cache"
 ARG APK_PACKAGES="sqlite tesseract-ocr unrar"
@@ -105,23 +105,23 @@ ARG APK_PACKAGES="sqlite tesseract-ocr unrar"
 ARG TEMP_PATHS="/root/.cache /tmp/* /var/tmp/*"
 
 RUN \
-echo "**** install binary packages ****" && \
-apk add $APK_INSTALL_OPTIONS $APK_PACKAGES && \
-\
-echo "**** create s6 fix-attr script ****" && \
-echo -e "/config true abc 0644 0755\n \
-/downloads false abc 0644 0755" > /etc/fix-attrs.d/10-run && \
-\
-echo "**** create s6 service script ****" && \
-mkdir -p /etc/services.d/pyload && \
-echo -e "#!/usr/bin/with-contenv bash\n\n \
-umask 022\n \
-exec s6-setuidgid abc pyload --userdir /config --storagedir /downloads" > /etc/services.d/pyload/run && \
-\
-echo "**** cleanup ****" && \
-rm -rf $TEMP_PATHS && \
-\
-echo "**** finalize pyLoad ****"
+    echo "**** install binary packages ****" && \
+    apk add $APK_INSTALL_OPTIONS $APK_PACKAGES && \
+    \
+    echo "**** create s6 fix-attr script ****" && \
+    echo -e "/config true abc 0644 0755\n \
+    /downloads false abc 0644 0755" > /etc/fix-attrs.d/10-run && \
+    \
+    echo "**** create s6 service script ****" && \
+    mkdir -p /etc/services.d/pyload && \
+    echo -e "#!/usr/bin/with-contenv bash\n\n \
+    umask 022\n \
+    exec s6-setuidgid abc pyload --userdir /config --storagedir /downloads" > /etc/services.d/pyload/run && \
+    \
+    echo "**** cleanup ****" && \
+    rm -rf $TEMP_PATHS && \
+    \
+    echo "**** finalize pyLoad ****"
 
 COPY --from=package_builder /package /usr/local
 
