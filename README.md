@@ -136,7 +136,7 @@ the pyLoad's web interface.
 - Default username: `pyload`.
 - Default password: `pyload`.
 
-**It's highly recommended to change the default access credentials after the first start**.
+**It's highly recommended to change the default access credentials on first start**.
 
 ## Docker Support [experimental]
 
@@ -148,9 +148,9 @@ the pyLoad's web interface.
 
 #### Available images
 
-- `pyload/pyload:latest-ubuntu`: default docker image of pyLoad.
-- `pyload/pyload:latest-alpine`: alternative docker image of pyLoad (smaller, _maybe_ slower).
-- `pyload/pyload`: alias of `pyload/pyload:latest-ubuntu`.
+- `pyload/pyload:ubuntu`: default docker image for pyLoad.
+- `pyload/pyload:alpine`: alternative docker image for pyLoad (smaller, [maybe slower](https://medium.com/@lih.verma/alpine-makes-python-docker-builds-way-too-50-slower-and-images-double-2-larger-61d1d43cbc79)).
+- `pyload/pyload`: alias of `pyload/pyload:ubuntu`.
 
 ### Create Container
 
@@ -172,7 +172,7 @@ Replace `<USERDIR>` with where you want that user data files (configurations) ar
 
     docker logs -f pyload
 
-### Compose
+### Docker Compose
 
 Compatible with `docker-compose` v2 schemas:
 
@@ -308,7 +308,7 @@ Contact us at licensing@pyload.net for any question about our code licensing pol
 
 ## Credits
 
-Please refer to the included [CREDITS](/CREDITS.md) for the full credits.
+Please refer to the included [AUTHORS](/AUTHORS.md) for the full credits.
 
 <br />
 <br />
