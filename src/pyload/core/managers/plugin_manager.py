@@ -389,27 +389,6 @@ class PluginManager:
                 if user and not self.plugins[type][name]["user"]:
                     return self
 
-    def load_module(self, name, replace=True):
-        if name not in sys.modules:  #: could be already in modules
-            if replace:
-                if self.ROOT in name:
-                    newname = name.replace(self.ROOT, self.USERROOT)
-                else:
-                    newname = name.replace(self.USERROOT, self.ROOT)
-            else:
-                newname = name
-
-            base, plugin = newname.rsplit(".", 1)
-
-            self.pyload.log.debug(f"Redirected import {name} -> {newname}")
-
-            module = __import__(newname, globals(), locals(), [plugin])
-            # inject under new an old name
-            sys.modules[name] = module
-            sys.modules[newname] = module
-
-        return sys.modules[name]
-
     def reload_plugins(self, type_plugins):
         """
         reloads and reindexes plugins.
