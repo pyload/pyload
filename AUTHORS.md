@@ -6,26 +6,26 @@
 
 ### Team members (current and former)
 
- - Christian Rakow (RaNaN) <Mast3rRaNaN@hotmail.de>
- - Jonas Engelhardt (Jonn3y)
- - Marius Kittelmann (mkaay) <mkaay@mkaay.de>
- - Martin Hronek (Velociraptor85) <hrspam@gmail.com>
- - Nitzo (GammaC0de) <nitzo2001@yahoo.com>
- - Stefano Codari (stickell) <l.stickell@yahoo.it>
- - Walter Purcaro (vuolter) <vuolter@gmail.com>
- - himbrr <himbrr@himbrr.ws>
- - sebnapi
- - spoob <spoob@gmx.de>
+- Christian Rakow (RaNaN) <Mast3rRaNaN@hotmail.de>
+- Jonas Engelhardt (Jonn3y)
+- Marius Kittelmann (mkaay) <mkaay@mkaay.de>
+- Martin Hronek (Velociraptor85) <hrspam@gmail.com>
+- Nitzo (GammaC0de) <nitzo2001@yahoo.com>
+- Stefano Codari (stickell) <l.stickell@yahoo.it>
+- Walter Purcaro (vuolter) <vuolter@gmail.com>
+- himbrr <himbrr@himbrr.ws>
+- sebnapi
+- spoob <spoob@gmx.de>
 
 ### Developers
 
- - Nitzo (GammaC0de) <nitzo2001@yahoo.com>
- - Walter Purcaro (vuolter) <vuolter@gmail.com>
+- Nitzo (GammaC0de) <nitzo2001@yahoo.com>
+- Walter Purcaro (vuolter) <vuolter@gmail.com>
 
 ### Collaborators
 
- - Jonas Engelhardt (Jonn3y)
- - Martin Hronek (Velociraptor85) <hrspam@gmail.com>
+- Jonas Engelhardt (Jonn3y)
+- Martin Hronek (Velociraptor85) <hrspam@gmail.com>
 
 ### Contributors
 
@@ -39,9 +39,7 @@ opening topic to share tips and advices, fix troubles or simply discuss about th
 
 **The pyLoad team can be only forever thankful to all of you for your efforts!**
 
-
 #### A special thanks to RaNaN, sebnapi and spoob who started this project so long time ago!
-
 
 <br />
 <br />

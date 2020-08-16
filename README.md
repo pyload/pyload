@@ -15,9 +15,7 @@
 <br />
 <br />
 
-
-Status
-------
+## Status
 
 [![Build Status](https://img.shields.io/travis/pyload/pyload.svg)](https://travis-ci.org/pyload/pyload)
 [![Updates](https://pyup.io/repos/github/pyload/pyload/shield.svg)](https://pyup.io/repos/github/pyload/pyload)
@@ -29,9 +27,7 @@ The new pyLoad package `pyload-ng` is automatically deployed from the [master br
 
 The old pyLoad package, **compatible with Python 2 only**, is still available on the [stable branch](https://github.com/pyload/pyload/tree/stable).
 
-
-Installation
-------------
+## Installation
 
 [![PyPI Status](https://img.shields.io/pypi/status/pyload-ng.svg)](https://pypi.python.org/pypi/pyload-ng)
 [![PyPI Version](https://img.shields.io/pypi/v/pyload-ng.svg)](https://pypi.python.org/pypi/pyload-ng)
@@ -142,9 +138,7 @@ the pyLoad's web interface.
 
 **It's highly recommended to change the default access credentials after the first start**.
 
-
-Docker Support [experimental]
------------------------------
+## Docker Support [experimental]
 
 [![Docker Build Status](https://img.shields.io/docker/build/pyload/pyload.svg)](https://hub.docker.com/r/pyload/pyload)
 [![MicroBadger Layers](https://img.shields.io/microbadger/layers/pyload/pyload/latest-ubuntu.svg?label=layers%20%28ubuntu%29)](https://microbadger.com/images/pyload/pyload:latest-ubuntu)
@@ -203,9 +197,7 @@ Replace `<STORAGEDIR>` with the location on the host machine where you want that
 
 Replace `<USERDIR>` with where you want that user data files (configurations) are stored.
 
-
-Troubleshooting
----------------
+## Troubleshooting
 
 ### Installation
 
@@ -282,9 +274,7 @@ Prefix the installation command with `sudo`:
 Under Windows systems, open a _Command Prompt as administrator_ to uninstall pyLoad
 with root privileges.
 
-
-Licensing
----------
+## Licensing
 
 ### Open Source License
 
@@ -306,19 +296,17 @@ Please refer to the included [CLA](https://cla-assistant.io/pyload/pyload) for t
 This is essentially what you will be agreeing to:
 
 - You claim to have the right to make the contribution
-(i.e. it's your own work).
+  (i.e. it's your own work).
 - You grant the project a perpetual, non-exclusive license to use the
-contribution.
+  contribution.
 - You grant the project rights to change the outbound license that we use to
-distribute the code.
+  distribute the code.
 - You retain full ownership (copyright) of your submission and are free to do
-with it as you please.
+  with it as you please.
 
 Contact us at licensing@pyload.net for any question about our code licensing policy.
 
-
-Credits
--------
+## Credits
 
 Please refer to the included [CREDITS](/CREDITS.md) for the full credits.
 
