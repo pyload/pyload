@@ -11,7 +11,7 @@ class Themes(_Themes):
         return super().init_themes(app, app_identifier=APPID)
 
 
-# babel = Babel()
+babel = Babel()
 themes = Themes()
 
-EXTENSIONS = [themes]
+EXTENSIONS = [themes, babel]
