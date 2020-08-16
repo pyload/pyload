@@ -124,7 +124,7 @@ class Core:
         self.logfactory = LogFactory(self)
         self.log = self.logfactory.get_logger(
             "pyload"
-        )  # NOTE: forced debug mode from console not working
+        )  # NOTE: forced debug mode from console is not working actually
 
         self.log.warning(f"*** Welcome to pyLoad {self.version} ***")
 
