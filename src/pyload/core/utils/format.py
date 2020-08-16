@@ -3,15 +3,12 @@
 import datetime
 import os
 
+import bitmath
+
 from .check import is_iterable
 from .convert import BYTE_PREFIXES, to_str
 from .fs import fullpath
 from .misc import is_plural
-
-try:
-    import bitmath
-except ImportError:
-    bitmath = None
 
 
 def attributes(obj, ignore=None):
@@ -39,20 +36,11 @@ def path(*paths):
 path.from_iterable = lambda it: path(*it)
 
 
-def size(obj):
+def size(value):
     """
     formats size of bytes
     """
-    value = float(obj)
-    try:
-        return bitmath.Byte(value).best_prefix()
-    except AttributeError:
-        for prefix in BYTE_PREFIXES[:-1]:
-            if abs(value) < 1 << 10:
-                return f"{value:3.2f} {prefix}"
-            else:
-                value >>= 10
-        return f"{value:.2f} {BYTE_PREFIXES[-1]}"
+    return bitmath.Byte(value).best_prefix()
 
 
 def speed(obj):
