@@ -266,14 +266,14 @@ class Core:
             return
         self.webserver.start()
 
-    def _parse_linkstxt(self):
-        link_file = os.path.join(self.userdir, "links.txt")
-        try:
-            with open(link_file) as fp:
-                if fp.read().strip():
-                    self.api.add_package("links.txt", [link_file], 1)
-        except Exception as exc:
-            self.log.debug(exc, exc_info=self.debug > 1, stack_info=self.debug > 2)
+    # def _parse_linkstxt(self):
+    #     link_file = os.path.join(self.userdir, "links.txt")
+    #     try:
+    #         with open(link_file) as fp:
+    #             if fp.read().strip():
+    #                 self.api.add_package("links.txt", [link_file], 1)
+    #     except Exception as exc:
+    #         self.log.debug(exc, exc_info=self.debug > 1, stack_info=self.debug > 2)
 
     def start(self):
         try:
@@ -312,7 +312,7 @@ class Core:
             # scanner.dump_all_objects(os.path.join(PACKDIR, 'objs.json'))
 
             self._start_webserver()
-            self._parse_linkstxt()
+            # self._parse_linkstxt()
 
             self.log.debug("*** pyLoad is up and running ***")
             # self.evm.fire('pyload:started')
