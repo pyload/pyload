@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import time
+import traceback
+
 from queue import Queue
 
 from ..network.exceptions import Abort, Fail, Reconnect, Retry, Skip
@@ -187,6 +189,8 @@ class DownloadThread(PluginThread):
                 continue
 
             except Exception as exc:
+                traceback.print_exc()
+
                 pyfile.set_status("failed")
                 self.pyload.log.warning(
                     self._("Download failed: {name} | {msg}").format(

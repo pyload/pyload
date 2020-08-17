@@ -28,6 +28,9 @@ def rpc(func, args=""):
         return "Unauthorized", 401
 
     args = args.split(",")
+    if len(args) == 1 and args[0] == "":
+        args = []
+
     kwargs = {}
 
     for x, y in chain(flask.request.args.items(), flask.request.form.items()):

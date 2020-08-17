@@ -437,7 +437,7 @@ def parse_html_header(header):
     hdict = {}
     _re = r"[ ]*(?P<key>.+?)[ ]*:[ ]*(?P<value>.+?)[ ]*\r?\n"
 
-    for key, value in re.findall(_re, header):
+    for key, value in re.findall(_re, str(header)):
         key = key.lower()
         if key in hdict:
             header_key = hdict.get(key)
