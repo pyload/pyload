@@ -7,7 +7,7 @@ import pycurl
 from pyload.core.network.exceptions import Fail, Skip
 from pyload.core.network.request_factory import get_request
 from pyload.core.utils import fs
-from pyload.core.utils.old import decode, fixurl, html_unescape
+from pyload.core.utils.old import decode as _decode, fixurl, html_unescape
 
 from ..helpers import DB, Config, exists, format_exc, parse_html_header, set_cookies
 
@@ -17,9 +17,6 @@ if os.name != "nt":
 
 
 # NOTE: save decode() as _decode() for use with load(url, decode='decode-str')
-_decode = decode
-
-
 class BasePlugin:
     __name__ = "BasePlugin"
     __type__ = "base"

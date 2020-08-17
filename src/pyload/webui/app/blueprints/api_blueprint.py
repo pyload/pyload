@@ -28,7 +28,7 @@ def rpc(func, args=""):
         return "Unauthorized", 401
 
     args = args.split(",")
-    if len(args) == 1 and args[0] == "":
+    if len(args) == 1 and not args[0]:
         args = []
 
     kwargs = {}
