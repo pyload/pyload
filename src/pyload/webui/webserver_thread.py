@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# AUTHOR: vuolter
 
 import logging
 import threading
@@ -48,7 +47,9 @@ class WebServerThread(threading.Thread):
         server = wsgi.Server(bind_addr, wsgi_app)
 
         if self.use_ssl:
-            server.ssl_adapter = BuiltinSSLAdapter(self.certfile, self.keyfile, self.certchain)
+            server.ssl_adapter = BuiltinSSLAdapter(
+                self.certfile, self.keyfile, self.certchain
+            )
 
         #: hack cheroot to use our custom logger
         server.error_log = lambda *args, **kwgs: self.log.log(

@@ -10,8 +10,6 @@ class FileStoreTo(SimpleDownloader):
     __version__ = "0.12"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"http://(?:www\.)?filestore\.to/\?d=(?P<ID>\w+)"
     __config__ = [
         ("enabled", "bool", "Activated", True),

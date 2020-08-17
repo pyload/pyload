@@ -14,8 +14,6 @@ class RapideoPl(MultiAccount):
     __version__ = "0.10"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __config__ = [
         ("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),
         ("mh_list", "str", "Hoster list (comma separated)", ""),

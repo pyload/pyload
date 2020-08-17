@@ -12,8 +12,6 @@ class NarodRu(SimpleDownloader):
     __version__ = "0.17"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"http://(?:www\.)?narod(\.yandex)?\.ru/(disk|start/\d+\.\w+\-narod\.yandex\.ru)/(?P<ID>\d+)/.+"
     __config__ = [
         ("enabled", "bool", "Activated", True),

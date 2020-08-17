@@ -15,8 +15,6 @@ class VkCom(SimpleDownloader):
     __version__ = "0.06"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"https?://(?:www\.)?vk\.com/video_ext\.php/\?.+"
     __config__ = [
         ("enabled", "bool", "Activated", True),

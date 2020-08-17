@@ -55,8 +55,6 @@ class StreamCz(SimpleDownloader):
     __version__ = "0.41"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"https?://(?:www\.)?stream\.cz/[^/]+/(?P<EP>\d+).+"
     __config__ = [
         ("enabled", "bool", "Activated", True),

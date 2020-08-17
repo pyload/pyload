@@ -11,8 +11,6 @@ class SendspaceCom(SimpleDownloader):
     __version__ = "0.23"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"https?://(?:www\.)?sendspace\.com/file/\w+"
     __config__ = [
         ("enabled", "bool", "Activated", True),

@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# AUTHOR: mkaay, RaNaN
 
 import importlib
 import os
@@ -8,7 +7,7 @@ import sys
 from ast import literal_eval
 from itertools import chain
 
-import semver
+# import semver
 
 from pyload import APPID, PKGDIR
 
@@ -28,7 +27,7 @@ class PluginManager:
 
     _PATTERN = re.compile(r'\s*__pattern__\s*=\s*r?(?:"|\')([^"\']+)')
     _VERSION = re.compile(r'\s*__version__\s*=\s*(?:"|\')([\d.]+)')
-    _PYLOAD_VERSION = re.compile(r'\s*__pyload_version__\s*=\s*(?:"|\')([\d.]+)')
+    # _PYLOAD_VERSION = re.compile(r'\s*__pyload_version__\s*=\s*(?:"|\')([\d.]+)')
     _CONFIG = re.compile(r"\s*__config__\s*=\s*(\[[^\]]+\])", re.MULTILINE)
     _DESC = re.compile(r'\s*__description__\s*=\s*(?:"|"""|\')([^"\']+)', re.MULTILINE)
 
@@ -150,31 +149,31 @@ class PluginManager:
                 if name[-1] == ".":
                     name = name[:-4]
 
-                m_pyver = self._PYLOAD_VERSION.search(content)
-                if m_pyver is None:
-                    self.pyload.log.debug(
-                        f"__pyload_version__ not found in plugin {name}"
-                    )
-                else:
-                    pyload_version = m_pyver.group(1)
+                # m_pyver = self._PYLOAD_VERSION.search(content)
+                # if m_pyver is None:
+                #     self.pyload.log.debug(
+                #         f"__pyload_version__ not found in plugin {name}"
+                #     )
+                # else:
+                #     pyload_version = m_pyver.group(1)
 
-                    requires_version = f"{pyload_version}.0"
-                    requires_version_info = semver.parse_version_info(requires_version)
+                #     requires_version = f"{pyload_version}.0"
+                #     requires_version_info = semver.parse_version_info(requires_version)
 
-                    if self.pyload.version_info.major:
-                        core_version = self.pyload.version_info.major
-                        plugin_version = requires_version_info.major
-                    else:
-                        core_version = self.pyload.version_info.minor
-                        plugin_version = requires_version_info.minor
+                #     if self.pyload.version_info.major:
+                #         core_version = self.pyload.version_info.major
+                #         plugin_version = requires_version_info.major
+                #     else:
+                #         core_version = self.pyload.version_info.minor
+                #         plugin_version = requires_version_info.minor
 
-                    if core_version > plugin_version:
-                        self.pyload.log.warning(
-                            self._(
-                                "Plugin {} not compatible with current pyLoad version"
-                            ).format(name)
-                        )
-                        continue
+                #     if core_version > plugin_version:
+                #         self.pyload.log.warning(
+                #             self._(
+                #                 "Plugin {} not compatible with current pyLoad version"
+                #             ).format(name)
+                #         )
+                #         continue
 
                 m_ver = self._VERSION.search(content)
                 if m_ver is None:
@@ -245,7 +244,7 @@ class PluginManager:
                 config["desc"] = desc
                 configs[name] = config
 
-        if not home:
+        if not home and folder != "base":
             temp_plugins, temp_configs = self.parse(folder, pattern, plugins or True)
             plugins.update(temp_plugins)
             configs.update(temp_configs)
@@ -389,27 +388,6 @@ class PluginManager:
                 # imported from userdir, but pyloads is newer
                 if user and not self.plugins[type][name]["user"]:
                     return self
-
-    def load_module(self, name, replace=True):
-        if name not in sys.modules:  #: could be already in modules
-            if replace:
-                if self.ROOT in name:
-                    newname = name.replace(self.ROOT, self.USERROOT)
-                else:
-                    newname = name.replace(self.USERROOT, self.ROOT)
-            else:
-                newname = name
-
-            base, plugin = newname.rsplit(".", 1)
-
-            self.pyload.log.debug(f"Redirected import {name} -> {newname}")
-
-            module = __import__(newname, globals(), locals(), [plugin])
-            # inject under new an old name
-            sys.modules[name] = module
-            sys.modules[newname] = module
-
-        return sys.modules[name]
 
     def reload_plugins(self, type_plugins):
         """

@@ -15,8 +15,6 @@ class Keep2ShareCc(SimpleDownloader):
     __version__ = "0.43"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"https?://(?:www\.)?(keep2share|k2s|keep2s)\.cc/file/(?P<ID>\w+)"
     __config__ = [
         ("enabled", "bool", "Activated", True),

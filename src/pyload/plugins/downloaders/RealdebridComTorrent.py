@@ -18,8 +18,6 @@ class RealdebridComTorrent(BaseDownloader):
     __version__ = "0.03"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"(?:file|https?)://.+\.torrent|magnet:\?.+"
     __config__ = [
         ("enabled", "bool", "Activated", False),
@@ -74,7 +72,7 @@ class RealdebridComTorrent(BaseDownloader):
                 #: remote URL, download the torrent to tmp directory
                 torrent_content = self.load(self.pyfile.url, decode=False)
                 torrent_filename = os.path.join(
-                    self.pyload.cachedir,
+                    self.pyload.tempdir,
                     "tmp_{}.torrent".format(self.pyfile.package().name),
                 )  #: `tmp_` files are deleted automatically
                 with open(torrent_filename, mode="wb") as fp:

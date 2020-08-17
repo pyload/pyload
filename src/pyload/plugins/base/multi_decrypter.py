@@ -9,8 +9,6 @@ class MultiDecrypter(SimpleDecrypter):
     __version__ = "0.10"
     __status__ = "stable"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"^unmatchable$"
     __config__ = [
         ("enabled", "bool", "Activated", True),

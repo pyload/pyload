@@ -10,8 +10,6 @@ class VeohCom(SimpleDownloader):
     __version__ = "0.28"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"http://(?:www\.)?veoh\.com/(tv/)?(watch|videos)/(?P<ID>v\w+)"
     __config__ = [
         ("enabled", "bool", "Activated", True),

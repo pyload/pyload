@@ -12,8 +12,6 @@ class EuroshareEu(SimpleDownloader):
     __version__ = "0.41"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"http://(?:www\.)?euroshare\.(eu|sk|cz|hu|pl)/file/.+"
     __config__ = [
         ("enabled", "bool", "Activated", True),

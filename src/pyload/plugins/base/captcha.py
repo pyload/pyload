@@ -12,8 +12,6 @@ class BaseCaptcha(BasePlugin):
     __version__ = "0.56"
     __status__ = "stable"
 
-    __pyload_version__ = "0.5"
-
     __description__ = """Base anti-captcha plugin"""
     __license__ = "GPLv3"
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
@@ -85,7 +83,7 @@ class BaseCaptcha(BasePlugin):
 
         with open(
             os.path.join(
-                self.pyload.cachedir,
+                self.pyload.tempdir,
                 "captcha_image_{}_{}.{}".format(
                     self.pyfile.plugin.__name__, time_ref, input_type
                 ),

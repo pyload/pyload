@@ -15,8 +15,6 @@ class ZbigzCom(BaseDownloader):
     __version__ = "0.03"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"https?://.+\.torrent|magnet:\?.+"
     __config__ = [("enabled", "bool", "Activated", False)]
 

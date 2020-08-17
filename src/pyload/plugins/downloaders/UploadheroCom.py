@@ -17,8 +17,6 @@ class UploadheroCom(SimpleDownloader):
     __version__ = "0.23"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"http://(?:www\.)?uploadhero\.com?/dl/\w+"
     __config__ = [
         ("enabled", "bool", "Activated", True),

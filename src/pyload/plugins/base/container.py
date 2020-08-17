@@ -12,8 +12,6 @@ class BaseContainer(BaseDecrypter):
     __version__ = "0.14"
     __status__ = "stable"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"^unmatchable$"
     __config__ = [
         ("enabled", "bool", "Activated", True),

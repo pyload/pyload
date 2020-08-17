@@ -10,8 +10,6 @@ class SexuriaCom(BaseDecrypter):
     __version__ = "0.15"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"http://(?:www\.)?sexuria\.com/(v1/)?(Pornos_Kostenlos_.+?_(\d+)\.html|dl_links_\d+_\d+\.html|id=\d+\&part=\d+\&link=\d+)"
     __config__ = [
         ("enabled", "bool", "Activated", True),

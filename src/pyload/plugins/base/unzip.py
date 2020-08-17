@@ -13,8 +13,6 @@ class UnZip(BaseExtractor):
     __version__ = "1.25"
     __status__ = "stable"
 
-    __pyload_version__ = "0.5"
-
     __description__ = """ZIP extractor plugin"""
     __license__ = "GPLv3"
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]

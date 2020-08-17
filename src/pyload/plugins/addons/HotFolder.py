@@ -12,8 +12,6 @@ class HotFolder(BaseAddon):
     __version__ = "0.24"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __config__ = [
         ("enabled", "bool", "Activated", False),
         ("folder", "str", "Folder to watch", "watchdir"),

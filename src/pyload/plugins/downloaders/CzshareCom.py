@@ -14,8 +14,6 @@ class CzshareCom(SimpleDownloader):
     __version__ = "1.11"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = (
         r"https?://(?:www\.)?(czshare|sdilej)\.(com|cz)/(\d+/|download\.php\?).+"
     )

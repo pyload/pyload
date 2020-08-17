@@ -10,8 +10,6 @@ class QuickshareCzFolder(BaseDecrypter):
     __version__ = "0.17"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"http://(?:www\.)?quickshare\.cz/slozka-\d+"
     __config__ = [
         ("enabled", "bool", "Activated", True),

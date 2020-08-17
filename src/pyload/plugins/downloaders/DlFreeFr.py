@@ -9,8 +9,6 @@ class DlFreeFr(SimpleDownloader):
     __version__ = "0.39"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = (
         r"http://(?:www\.)?dl\.free\.fr/(getfile\.pl\?file=/|[a-z])(?P<ID>\w+)"
     )

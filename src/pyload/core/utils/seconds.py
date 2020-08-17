@@ -1,19 +1,18 @@
 # -*- coding: utf-8 -*-
-# AUTHOR: vuolter
 
 import datetime
 import time
 
 
 def compare(start, end):
-    start = (int(n) for n in start)
-    end = (int(n) for n in end)
+    start = datetime.time(hour=int(start[0]), minute=int(start[1]))
+    end = datetime.time(hour=int(end[0]), minute=int(end[1]))
+    now = datetime.datetime.now().time()
 
     if start == end:
         return True
 
-    now = time.localtime()[3:5]
-    if start < now < end or start < now > end < start:
+    if start < now < end:
         return True
 
     elif start > end and (now > start or now < end):

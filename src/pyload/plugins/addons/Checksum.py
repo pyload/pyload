@@ -70,8 +70,6 @@ class Checksum(BaseAddon):
     __version__ = "0.34"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __config__ = [
         ("enabled", "bool", "Activated", False),
         (
@@ -405,8 +403,8 @@ class Checksum(BaseAddon):
                         time.sleep(wait_time)
 
                         pyfile.package().set_finished = (
-                            False
-                        )  #: Force `package_finished` event again
+                            False  #: Force `package_finished` event again
+                        )
                         self.pyload.files.restart_file(fid)
                         continue
 

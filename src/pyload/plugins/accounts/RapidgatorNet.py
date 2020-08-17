@@ -11,8 +11,6 @@ class RapidgatorNet(BaseAccount):
     __version__ = "0.24"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __description__ = """Rapidgator.net account plugin"""
     __license__ = "GPLv3"
     __authors__ = [

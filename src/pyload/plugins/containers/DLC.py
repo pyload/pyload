@@ -20,8 +20,6 @@ class DLC(BaseContainer):
     __version__ = "0.32"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"(.+\.dlc|[\w\+^_]+==[\w\+^_/]+==)$"
     __config__ = [
         ("enabled", "bool", "Activated", True),

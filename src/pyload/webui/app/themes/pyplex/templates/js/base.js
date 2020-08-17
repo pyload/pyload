@@ -259,7 +259,7 @@ $(function() {
     });
 
     $("#action_play").click(function() {
-        $.get("/api/unpauseServer", function () {
+        $.get("/api/unpause_server", function () {
             $.ajax({
                 method: "post",
                 url: "/json/status",
@@ -271,11 +271,11 @@ $(function() {
     });
 
     $("#action_cancel").click(function() {
-        $.get("/api/stopAllDownloads");
+        $.get("/api/stop_all_downloads");
     });
 
     $("#action_stop").click(function() {
-        $.get("/api/pauseServer", function () {
+        $.get("/api/pause_server", function () {
             $.ajax({
                 method: "post",
                 url: "/json/status",

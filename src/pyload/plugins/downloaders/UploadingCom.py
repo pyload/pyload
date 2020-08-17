@@ -9,8 +9,6 @@ class UploadingCom(DeadDownloader):
     __version__ = "0.51"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"http://(?:www\.)?uploading\.com/files/(?:get/)?(?P<ID>\w+)"
 
     __description__ = """Uploading.com downloader plugin"""

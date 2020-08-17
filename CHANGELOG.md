@@ -166,9 +166,9 @@
 
 - Initial release
 
-
 <br />
 <br />
 
--------------------------
-###### © 2019 pyLoad team
+---
+
+###### © 2020 pyLoad team

@@ -11,8 +11,6 @@ class DownloadScheduler(BaseAddon):
     __version__ = "0.30"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __config__ = [
         ("enabled", "bool", "Activated", False),
         (

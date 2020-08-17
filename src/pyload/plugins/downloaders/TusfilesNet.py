@@ -12,8 +12,6 @@ class TusfilesNet(XFSDownloader):
     __version__ = "0.18"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"https?://(?:www\.)?tusfiles\.net/\w{12}"
     __config__ = [
         ("enabled", "bool", "Activated", True),

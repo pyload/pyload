@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# AUTHOR: vuolter
 
 from collections.abc import Mapping, MutableMapping
 
@@ -58,4 +57,4 @@ class InscDict(MutableMapping):
 
     def copy(self):
         return InscDict(self.__dict__.values())
-        
+

@@ -19,8 +19,6 @@ class UpdateManager(BaseAddon):
     __version__ = "1.21"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __config__ = [
         ("enabled", "bool", "Activated", False),
         ("checkinterval", "int", "Check interval in hours", 6),

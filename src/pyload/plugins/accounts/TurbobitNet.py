@@ -12,8 +12,6 @@ class TurbobitNet(BaseAccount):
     __version__ = "0.12"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __description__ = """TurbobitNet account plugin"""
     __license__ = "GPLv3"
     __authors__ = [

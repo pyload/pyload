@@ -29,8 +29,6 @@ class FilefactoryCom(SimpleDownloader):
     __version__ = "0.64"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"https?://(?:www\.)?filefactory\.com/(file|trafficshare/\w+)/\w+"
     __config__ = [
         ("enabled", "bool", "Activated", True),

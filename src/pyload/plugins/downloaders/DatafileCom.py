@@ -14,8 +14,6 @@ class DatafileCom(SimpleDownloader):
     __version__ = "0.05"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"https?://(?:www\.)?datafile\.com/d/(?P<ID>\w{17})"
     __config__ = [
         ("enabled", "bool", "Activated", True),

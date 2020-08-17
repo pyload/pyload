@@ -12,8 +12,6 @@ class UpfileVn(SimpleDownloader):
     __version__ = "0.01"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"http://(?:www\.)?upfile\.vn/(?P<ID>.+?)/.+?\.html"
     __config__ = [
         ("enabled", "bool", "Activated", True),

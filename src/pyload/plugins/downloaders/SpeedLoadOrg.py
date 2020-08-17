@@ -9,8 +9,6 @@ class SpeedLoadOrg(DeadDownloader):
     __version__ = "1.07"
     __status__ = "stable"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"http://(?:www\.)?speedload\.org/(?P<ID>\w+)"
     __config__ = []  # TODO: Remove in 0.6.x
 

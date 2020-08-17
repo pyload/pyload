@@ -13,8 +13,6 @@ class OverLoadMe(MultiDownloader):
     __version__ = "0.20"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"https?://.*overload\.me/.+"
     __config__ = [
         ("enabled", "bool", "Activated", True),

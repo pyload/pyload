@@ -18,8 +18,6 @@ class BaseOCR(BasePlugin):
     __version__ = "0.26"
     __status__ = "stable"
 
-    __pyload_version__ = "0.5"
-
     __description__ = """OCR base plugin"""
     __license__ = "GPLv3"
     __authors__ = [("pyLoad team", "admin@pyload.net")]
@@ -79,14 +77,14 @@ class BaseOCR(BasePlugin):
         # tmp_tif = tempfile.NamedTemporaryFile(suffix=".tif")
         try:
             tmp_tif = open(
-                os.path.join(self.pyload.cachedir, f"tmp_tif_{self.classname}.tif"),
+                os.path.join(self.pyload.tempdir, f"tmp_tif_{self.classname}.tif"),
                 mode="wb",
             )
             tmp_tif.close()
 
             # tmp_txt = tempfile.NamedTemporaryFile(suffix=".txt")
             tmp_txt = open(
-                os.path.join(self.pyload.cachedir, f"tmp_txt_{self.classname}.txt"),
+                os.path.join(self.pyload.tempdir, f"tmp_txt_{self.classname}.txt"),
                 mode="wb",
             )
             tmp_txt.close()
@@ -115,7 +113,7 @@ class BaseOCR(BasePlugin):
             # tmp_sub = tempfile.NamedTemporaryFile(suffix=".subset")
             with open(
                 os.path.join(
-                    self.pyload.cachedir, "tmp_sub_{}.subset".format(self.classname)
+                    self.pyload.tempdir, "tmp_sub_{}.subset".format(self.classname)
                 ),
                 "wb",
             ) as tmp_sub:

@@ -15,8 +15,6 @@ class RealdebridCom(MultiDownloader):
     __version__ = "0.78"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = (
         r"https?://((?:www\.|s\d+\.)?real-debrid\.com/dl?/|[\w^_]\.rdb\.so/d/)[\w^_]+"
     )

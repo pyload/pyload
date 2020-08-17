@@ -20,8 +20,6 @@ class XFSDownloader(SimpleDownloader):
     __version__ = "0.81"
     __status__ = "stable"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"^unmatchable$"
     __config__ = [
         ("enabled", "bool", "Activated", True),
@@ -301,6 +299,8 @@ class XFSDownloader(SimpleDownloader):
 
         if captcha_key:
             self.captcha = solvemedia
-            inputs["adcopy_response"], inputs[
-                "adcopy_challenge"
-            ] = solvemedia.challenge(captcha_key)
+            (
+                inputs["adcopy_response"],
+                inputs["adcopy_challenge"],
+            ) = solvemedia.challenge(captcha_key)
+

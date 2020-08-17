@@ -11,8 +11,6 @@ class JDlist(BaseDecrypter):
     __version__ = "0.05"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"jdlist://(?P<LIST>[\w\+^_]+==)"
     __config__ = [
         ("enabled", "bool", "Activated", True),

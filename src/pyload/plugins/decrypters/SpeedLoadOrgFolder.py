@@ -9,8 +9,6 @@ class SpeedLoadOrgFolder(DeadDecrypter):
     __version__ = "0.36"
     __status__ = "stable"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"http://(?:www\.)?speedload\.org/(\d+~f$|folder/\d+/)"
     __config__ = [("enabled", "bool", "Activated", True)]
 

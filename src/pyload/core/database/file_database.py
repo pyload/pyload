@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# AUTHOR: RaNaN, mkaay
 
 from ..datatypes.pyfile import PyFile
 from ..datatypes.pypackage import PyPackage

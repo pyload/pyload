@@ -19,8 +19,6 @@ class AntiVirus(BaseAddon):
     __version__ = "0.21"
     __status__ = "broken"
 
-    __pyload_version__ = "0.5"
-
     # TODO: add trash option (use Send2Trash lib)
     __config__ = [
         ("enabled", "bool", "Activated", False),

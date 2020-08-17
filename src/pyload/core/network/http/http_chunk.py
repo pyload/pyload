@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# AUTHOR: RaNaN
 
 import os
 import re
@@ -118,7 +117,7 @@ class HTTPChunk(HTTPRequest):
 
         self.c = pycurl.Curl()
 
-        self.header = bytes()
+        self.header = b""
         self.header_parsed = False  #: indicates if the header has been processed
 
         self.fp = None  #: file handle

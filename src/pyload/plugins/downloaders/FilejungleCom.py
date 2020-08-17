@@ -9,8 +9,6 @@ class FilejungleCom(FileserveCom):
     __version__ = "0.57"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"http://(?:www\.)?filejungle\.com/f/(?P<ID>[^/]+)"
     __config__ = [("enabled", "bool", "Activated", True)]
 

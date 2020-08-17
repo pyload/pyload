@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# AUTHOR: RaNaN, mkaay
 
 import time
 from threading import RLock

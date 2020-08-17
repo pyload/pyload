@@ -16,8 +16,6 @@ class TORRENT(BaseContainer):
     __version__ = "0.01"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"^(?!file://).+\.torrent$"
     __config__ = [
         ("enabled", "bool", "Activated", True),
@@ -50,7 +48,7 @@ class TORRENT(BaseContainer):
                 pack_name = safename(m.group(1))
 
         torrent_filename = os.path.join(
-            self.pyload.cachedir, "tmp_{}.torrent".format(pack_name)
+            self.pyload.tempdir, "tmp_{}.torrent".format(pack_name)
         )
         with open(torrent_filename, mode="wb") as fp:
             fp.write(torrent_content)

@@ -13,8 +13,6 @@ class CrockoCom(SimpleDownloader):
     __version__ = "0.27"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"http://(?:www\.)?(crocko|easy-share)\.com/\w+"
     __config__ = [
         ("enabled", "bool", "Activated", True),
@@ -60,9 +58,10 @@ class CrockoCom(SimpleDownloader):
         inputs = dict(re.findall(self.FORM_INPUT_PATTERN, form))
         self.captcha = ReCaptcha(pyfile)
 
-        inputs["recaptcha_response_field"], inputs[
-            "recaptcha_challenge_field"
-        ] = self.captcha.challenge()
+        (
+            inputs["recaptcha_response_field"],
+            inputs["recaptcha_challenge_field"],
+        ) = self.captcha.challenge()
         self.download(action, post=inputs)
 
         if self.scan_download({"captcha": self.captcha.KEY_V1_PATTERN}):

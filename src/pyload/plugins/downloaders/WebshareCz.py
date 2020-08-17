@@ -12,8 +12,6 @@ class WebshareCz(SimpleDownloader):
     __version__ = "0.25"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"https?://(?:www\.)?(en\.)?webshare\.cz/(?:#/)?(file/)?(?P<ID>\w+)"
     __config__ = [
         ("enabled", "bool", "Activated", True),

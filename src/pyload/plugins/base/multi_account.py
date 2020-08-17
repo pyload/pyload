@@ -17,8 +17,6 @@ class MultiAccount(BaseAccount):
     __version__ = "0.22"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __config__ = [
         ("enabled", "bool", "Activated", True),
         ("mh_mode", "all;listed;unlisted", "Hosters to use", "all"),

@@ -288,8 +288,6 @@ class MegaCoNz(BaseDownloader):
     __version__ = "0.52"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"(https?://(?:www\.)?mega(\.co)?\.nz/|mega:|chrome:.+?)#(?P<TYPE>N|)!(?P<ID>[\w^_]+)!(?P<KEY>[\w\-,=]+)(?:###n=(?P<OWNER>[\w^_]+))?"
     __config__ = [("enabled", "bool", "Activated", True)]
 

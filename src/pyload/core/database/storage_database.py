@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# AUTHOR: mkaay
 
 
 from .database_thread import DatabaseThread, style

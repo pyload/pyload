@@ -14,8 +14,6 @@ class YoutubeComFolder(BaseDecrypter):
     __version__ = "1.09"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"https?://(?:www\.|m\.)?youtube\.com/(?P<TYPE>user|playlist|view_play_list)(/|.*?[?&](?:list|p)=)(?P<ID>[\w\-]+)"
     __config__ = [
         ("enabled", "bool", "Activated", True),

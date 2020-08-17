@@ -11,8 +11,6 @@ class GigapetaCom(SimpleDownloader):
     __version__ = "0.09"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"http://(?:www\.)?gigapeta\.com/dl/\w+"
     __config__ = [
         ("enabled", "bool", "Activated", True),

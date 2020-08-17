@@ -10,8 +10,6 @@ class JustPremium(BaseAddon):
     __version__ = "0.27"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __config__ = [
         ("enabled", "bool", "Activated", False),
         ("excluded", "str", "Exclude hosters (comma separated)", ""),

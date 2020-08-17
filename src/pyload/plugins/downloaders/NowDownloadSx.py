@@ -9,8 +9,6 @@ class NowDownloadSx(DeadDownloader):
     __version__ = "0.16"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"http://(?:www\.)?(nowdownload\.[a-zA-Z]{2,}/(dl/|download\.php.+?id=|mobile/(#/files/|.+?id=))|likeupload\.org/)\w+"
     __config__ = [("enabled", "bool", "Activated", True)]
 

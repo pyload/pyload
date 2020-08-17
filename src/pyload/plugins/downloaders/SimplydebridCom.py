@@ -12,8 +12,6 @@ class SimplydebridCom(MultiDownloader):
     __version__ = "0.27"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"http://\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/sd\.php"
     __config__ = [
         ("enabled", "bool", "Activated", True),

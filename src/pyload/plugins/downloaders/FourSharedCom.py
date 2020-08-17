@@ -11,8 +11,6 @@ class FourSharedCom(SimpleDownloader):
     __version__ = "0.37"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"https?://(?:www\.)?4shared(-china)?\.com/(account/)?(download|get|file|document|photo|video|audio|mp3|office|rar|zip|archive|music)/.+"
     __config__ = [
         ("enabled", "bool", "Activated", True),

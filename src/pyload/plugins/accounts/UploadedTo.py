@@ -13,8 +13,6 @@ class UploadedTo(BaseAccount):
     __version__ = "0.46"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __description__ = """Uploaded.to account plugin"""
     __license__ = "GPLv3"
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]

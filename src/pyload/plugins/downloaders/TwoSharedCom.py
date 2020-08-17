@@ -9,8 +9,6 @@ class TwoSharedCom(SimpleDownloader):
     __version__ = "0.19"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"http://(?:www\.)?2shared\.com/(account/)?(download|get|file|document|photo|video|audio)/.+"
     __config__ = [
         ("enabled", "bool", "Activated", True),

@@ -17,8 +17,6 @@ class UnRar(BaseExtractor):
     __version__ = "1.38"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __config__ = [("ignore_warnings", "bool", "Ignore unrar warnings", False)]
 
     __description__ = """RAR extractor plugin"""

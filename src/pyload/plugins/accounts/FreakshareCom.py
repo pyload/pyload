@@ -12,8 +12,6 @@ class FreakshareCom(BaseAccount):
     __version__ = "0.21"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __description__ = """Freakshare.com account plugin"""
     __license__ = "GPLv3"
     __authors__ = [("RaNaN", "RaNaN@pyload.net")]

@@ -16,8 +16,6 @@ class SimpleDownloader(BaseDownloader):
     __version__ = "2.27"
     __status__ = "stable"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"^unmatchable$"
     __config__ = [
         ("enabled", "bool", "Activated", True),
@@ -95,8 +93,8 @@ class SimpleDownloader(BaseDownloader):
     #: Set to False to not check the last downloaded file with declared error patterns
     CHECK_FILE = True
     CHECK_TRAFFIC = (
-        False
-    )  #: Set to True to reload checking traffic left for premium account
+        False  #: Set to True to reload checking traffic left for premium account
+    )
     COOKIES = True  #: or False or list of tuples [(domain, name, value)]
     #: Set to True to looking for direct link (as defined in handle_direct method), set to None to do it if self.account is True else False
     DIRECT_LINK = True

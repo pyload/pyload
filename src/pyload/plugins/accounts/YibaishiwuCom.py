@@ -11,8 +11,6 @@ class YibaishiwuCom(BaseAccount):
     __version__ = "0.09"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __description__ = """115.com account plugin"""
     __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]

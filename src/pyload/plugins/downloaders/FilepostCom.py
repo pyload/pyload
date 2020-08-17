@@ -14,8 +14,6 @@ class FilepostCom(SimpleDownloader):
     __version__ = "0.41"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"https?://(?:www\.)?(?:filepost\.com/files|fp\.io)/(?P<ID>[^/]+)"
     __config__ = [
         ("enabled", "bool", "Activated", True),
@@ -91,9 +89,10 @@ class FilepostCom(SimpleDownloader):
             if not self.link:
                 #: Solve ReCaptcha
                 self.captcha = ReCaptcha(pyfile)
-                post_dict["recaptcha_response_field"], post_dict[
-                    "recaptcha_challenge_field"
-                ] = self.captcha.challenge(captcha_key)
+                (
+                    post_dict["recaptcha_response_field"],
+                    post_dict["recaptcha_challenge_field"],
+                ) = self.captcha.challenge(captcha_key)
                 self.link = self.get_json_response(get_dict, post_dict, "link")
 
     def get_json_response(self, get_dict, post_dict, field):

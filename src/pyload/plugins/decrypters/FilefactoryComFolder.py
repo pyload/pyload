@@ -9,8 +9,6 @@ class FilefactoryComFolder(SimpleDecrypter):
     __version__ = "0.38"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"https?://(?:www\.)?filefactory\.com/(?:f|folder)/\w+"
     __config__ = [
         ("enabled", "bool", "Activated", True),

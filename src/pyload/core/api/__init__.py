@@ -16,6 +16,7 @@ import time
 from functools import wraps
 
 from ..datatypes.pyfile import PyFile
+from ..log_factory import LogFactory
 from ..network.request_factory import get_url
 from ..utils.old.packagetools import parse_names
 from ..utils import seconds, fs
@@ -327,11 +328,13 @@ class Api:
         :param offset: line offset
         :return: List of log entries
         """
-        filename = os.path.join(
-            self.pyload.config.get("log", "filelog_folder"), "log.txt"
-        )
+        filelog_folder = self.pyload.config.get("log", "filelog_folder")
+        if not filelog_folder:
+            filelog_folder = os.path.join(self.pyload.userdir, "logs")
+
+        path = os.path.join(filelog_folder, "pyload" + LogFactory.FILE_EXTENSION)
         try:
-            with open(filename) as fh:
+            with open(path) as fh:
                 lines = fh.readlines()
             if offset >= len(lines):
                 return []
@@ -1245,7 +1248,7 @@ class Api:
     # TODO: add security permission check
     # remove?
     def get_cachedir(self):
-        return os.path.realpath(self.pyload.cachedir)
+        return os.path.realpath(self.pyload.tempdir)
 
     #: Old API
     @permission(Perms.ALL)

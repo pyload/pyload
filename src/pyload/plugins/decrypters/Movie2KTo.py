@@ -9,8 +9,6 @@ class Movie2KTo(DeadDecrypter):
     __version__ = "0.56"
     __status__ = "stable"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"http://(?:www\.)?movie2k\.to/(.+)\.html"
     __config__ = [("enabled", "bool", "Activated", True)]
 

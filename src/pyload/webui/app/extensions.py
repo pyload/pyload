@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# AUTHOR: vuolter
 
 from flask_babel import Babel
 from flask_themes2 import Themes as _Themes
@@ -12,7 +11,7 @@ class Themes(_Themes):
         return super().init_themes(app, app_identifier=APPID)
 
 
-# babel = Babel()
+babel = Babel()
 themes = Themes()
 
-EXTENSIONS = [themes]
+EXTENSIONS = [themes, babel]

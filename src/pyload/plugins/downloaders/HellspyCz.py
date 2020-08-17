@@ -9,8 +9,6 @@ class HellspyCz(DeadDownloader):
     __version__ = "0.33"
     __status__ = "stable"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = (
         r"http://(?:www\.)?(?:hellspy\.(?:cz|com|sk|hu|pl)|sciagaj\.pl)(/\S+/\d+)"
     )

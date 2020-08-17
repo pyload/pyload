@@ -10,15 +10,12 @@
   <a href="#docker-support-experimental">Docker Support</a> |
   <a href="#troubleshooting">Troubleshooting</a> |
   <a href="#licensing">Licensing</a> |
-  <a href="#credits">Credits</a> |
-  <a href="#release-history">Release History</a>
+  <a href="#credits">Credits</a>
 </h4>
 <br />
 <br />
 
-
-Status
-------
+## Status
 
 [![Build Status](https://img.shields.io/travis/pyload/pyload.svg)](https://travis-ci.org/pyload/pyload)
 [![Updates](https://pyup.io/repos/github/pyload/pyload/shield.svg)](https://pyup.io/repos/github/pyload/pyload)
@@ -30,9 +27,7 @@ The new pyLoad package `pyload-ng` is automatically deployed from the [master br
 
 The old pyLoad package, **compatible with Python 2 only**, is still available on the [stable branch](https://github.com/pyload/pyload/tree/stable).
 
-
-Installation
-------------
+## Installation
 
 [![PyPI Status](https://img.shields.io/pypi/status/pyload-ng.svg)](https://pypi.python.org/pypi/pyload-ng)
 [![PyPI Version](https://img.shields.io/pypi/v/pyload-ng.svg)](https://pypi.python.org/pypi/pyload-ng)
@@ -66,7 +61,6 @@ Append the tag `extra` to the installation command:
 
 - `extra`: recommended extra packages.
 - `build`: packages required to build locales.
-- `test`: packages required to run tests.
 - `all`: all of them.
 
 You can also use more tags together, like:
@@ -94,14 +88,12 @@ for your installation:
 
     python setup.py build_locale
 
-Ideally you would use it ***before*** launching any other build or installation command
+Ideally you would use it **_before_** launching any other build or installation command
 (eg. `bdist_wheel`).
 
+## Usage
 
-Usage
------
-
-    usage: pyload [-h] [--version] [-d] [--userdir USERDIR] [--cachedir CACHEDIR]
+    usage: pyload [-h] [--version] [-d] [--userdir USERDIR] [--tempdir CACHEDIR]
                   [--daemon] [--restore]
 
     The free and open-source Download Manager written in pure Python
@@ -111,7 +103,7 @@ Usage
       --version                show program's version number and exit
       -d, --debug              enable debug mode
       --userdir USERDIR        use this location to store user data files
-      --cachedir CACHEDIR      use this location to store temporary files
+      --tempdir CACHEDIR      use this location to store temporary files
       --storagedir STORAGEDIR  use this location to save downloads
       --daemon                 run as daemon
       --restore                reset default username/password
@@ -144,11 +136,9 @@ the pyLoad's web interface.
 - Default username: `pyload`.
 - Default password: `pyload`.
 
-**It's highly recommended to change the default access credentials after the first start**.
+**It's highly recommended to change the default access credentials on first start**.
 
-
-Docker Support [experimental]
------------------------------
+## Docker Support [experimental]
 
 [![Docker Build Status](https://img.shields.io/docker/build/pyload/pyload.svg)](https://hub.docker.com/r/pyload/pyload)
 [![MicroBadger Layers](https://img.shields.io/microbadger/layers/pyload/pyload/latest-ubuntu.svg?label=layers%20%28ubuntu%29)](https://microbadger.com/images/pyload/pyload:latest-ubuntu)
@@ -158,9 +148,9 @@ Docker Support [experimental]
 
 #### Available images
 
-- `pyload/pyload:latest-ubuntu`: default docker image of pyLoad.
-- `pyload/pyload:latest-alpine`: alternative docker image of pyLoad (smaller, _maybe_ slower).
-- `pyload/pyload`: alias of `pyload/pyload:latest-ubuntu`.
+- `pyload/pyload:ubuntu`: default docker image for pyLoad.
+- `pyload/pyload:alpine`: alternative docker image for pyLoad (smaller, [maybe slower](https://medium.com/@lih.verma/alpine-makes-python-docker-builds-way-too-50-slower-and-images-double-2-larger-61d1d43cbc79)).
+- `pyload/pyload`: alias of `pyload/pyload:ubuntu`.
 
 ### Create Container
 
@@ -182,7 +172,7 @@ Replace `<USERDIR>` with where you want that user data files (configurations) ar
 
     docker logs -f pyload
 
-### Compose
+### Docker Compose
 
 Compatible with `docker-compose` v2 schemas:
 
@@ -207,9 +197,7 @@ Replace `<STORAGEDIR>` with the location on the host machine where you want that
 
 Replace `<USERDIR>` with where you want that user data files (configurations) are stored.
 
-
-Troubleshooting
----------------
+## Troubleshooting
 
 ### Installation
 
@@ -286,9 +274,7 @@ Prefix the installation command with `sudo`:
 Under Windows systems, open a _Command Prompt as administrator_ to uninstall pyLoad
 with root privileges.
 
-
-Licensing
----------
+## Licensing
 
 ### Open Source License
 
@@ -310,32 +296,23 @@ Please refer to the included [CLA](https://cla-assistant.io/pyload/pyload) for t
 This is essentially what you will be agreeing to:
 
 - You claim to have the right to make the contribution
-(i.e. it's your own work).
+  (i.e. it's your own work).
 - You grant the project a perpetual, non-exclusive license to use the
-contribution.
+  contribution.
 - You grant the project rights to change the outbound license that we use to
-distribute the code.
+  distribute the code.
 - You retain full ownership (copyright) of your submission and are free to do
-with it as you please.
+  with it as you please.
 
 Contact us at licensing@pyload.net for any question about our code licensing policy.
 
+## Credits
 
-Credits
--------
-
-Please refer to the included [CREDITS](/CREDITS.md) for the full credits.
-
-
-Release History
----------------
-
-Please refer to the included [CHANGELOG](/CHANGELOG.md) for the full release
-history.
-
+Please refer to the included [AUTHORS](/AUTHORS.md) for the full credits.
 
 <br />
 <br />
 
--------------------------
-###### © 2019 pyLoad team
+---
+
+###### © 2020 pyLoad team

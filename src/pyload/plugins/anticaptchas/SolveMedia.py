@@ -13,8 +13,6 @@ class SolveMedia(CaptchaService):
     __version__ = "0.22"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __description__ = """SolveMedia captcha service plugin"""
     __license__ = "GPLv3"
     __authors__ = [("pyLoad team", "admin@pyload.net")]

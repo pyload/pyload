@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# AUTHOR: vuolter
 
 import hashlib
 import io
@@ -187,13 +186,13 @@ def is_exec(filename):
 
 
 # def lopen(*args, **kwargs):
-    # if kwargs.get("blocking", True):
-        # flags = portalocker.LOCK_EX
-    # else:
-        # flags = portalocker.LOCK_EX | portalocker.LOCK_NB
-    # fp = io.open(*args, **kwargs)
-    # portalocker.lock(fp, flags)
-    # return fp
+# if kwargs.get("blocking", True):
+# flags = portalocker.LOCK_EX
+# else:
+# flags = portalocker.LOCK_EX | portalocker.LOCK_NB
+# fp = io.open(*args, **kwargs)
+# portalocker.lock(fp, flags)
+# return fp
 
 
 def flush(filename, exist_ok=False):
@@ -221,9 +220,9 @@ def mountpoint(path):
 
 
 # def filesystem(path):
-    # mp = mountpoint(path)
-    # fs = dict((part.mountpoint, part.fstype) for part in psutil.disk_partitions())
-    # return fs.get(mp)
+# mp = mountpoint(path)
+# fs = dict((part.mountpoint, part.fstype) for part in psutil.disk_partitions())
+# return fs.get(mp)
 
 
 def mkfile(filename, size=None):

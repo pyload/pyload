@@ -9,8 +9,6 @@ class MovReelCom(XFSDownloader):
     __version__ = "1.31"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"http://(?:www\.)?movreel\.com/\w{12}"
     __config__ = [
         ("enabled", "bool", "Activated", True),

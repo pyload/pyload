@@ -19,8 +19,6 @@ class LinkCryptWs(BaseDecrypter):
     __version__ = "0.21"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"http://(?:www\.)?linkcrypt\.ws/(dir|container)/(?P<ID>\w+)"
     __config__ = [("enabled", "bool", "Activated", True)]
 

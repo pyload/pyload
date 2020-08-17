@@ -11,8 +11,6 @@ class GooGl(SimpleDecrypter):
     __version__ = "0.08"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"https?://(?:www\.)?goo\.gl/([a-zA-Z]+/)?\w+"
     __config__ = [
         ("enabled", "bool", "Activated", True),

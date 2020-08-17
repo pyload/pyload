@@ -11,8 +11,6 @@ class HellshareCz(BaseAccount):
     __version__ = "0.26"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __description__ = """Hellshare.cz account plugin"""
     __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]

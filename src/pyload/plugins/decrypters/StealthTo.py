@@ -9,8 +9,6 @@ class StealthTo(DeadDecrypter):
     __version__ = "0.25"
     __status__ = "stable"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"http://(?:www\.)?stealth\.to/folder/.+"
     __config__ = [("enabled", "bool", "Activated", True)]
 

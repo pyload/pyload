@@ -11,8 +11,6 @@ class DiscordNotifier(Notifier):
     __version__ = "0.1"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __config__ = [
         ("enabled", "bool", "Activated", False),
         ("webhookurl", "string", "The URL of the webhook", ""),

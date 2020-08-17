@@ -11,8 +11,6 @@ class HflixIn(SimpleDecrypter):
     __version__ = "0.12"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"http://(www\.)?hflix\.in/\w+"
 
     __description__ = """Hflix.in decrypter plugin"""

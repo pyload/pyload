@@ -9,8 +9,6 @@ class AniStreamCom(XFSAccount):
     __version__ = "0.05"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __description__ = """Ani-Stream.com account plugin"""
     __license__ = "GPLv3"
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]

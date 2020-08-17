@@ -9,8 +9,6 @@ class OronComFolder(DeadDecrypter):
     __version__ = "0.17"
     __status__ = "stable"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"http://(?:www\.)?oron\.com/folder/\w+"
     __config__ = [("enabled", "bool", "Activated", True)]
 

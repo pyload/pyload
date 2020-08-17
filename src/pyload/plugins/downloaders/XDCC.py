@@ -537,8 +537,6 @@ class XDCC(BaseDownloader):
     __version__ = "0.48"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = (
         r"xdcc://(?P<SERVER>.*?)/#?(?P<CHAN>.*?)/(?P<BOT>.*?)/#?(?P<PACK>\d+)/?"
     )

@@ -11,8 +11,6 @@ class TurbobitNetFolder(SimpleDecrypter):
     __version__ = "0.11"
     __status__ = "broken"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"http://(?:www\.)?turbobit\.net/download/folder/(?P<ID>\w+)"
     __config__ = [
         ("enabled", "bool", "Activated", True),

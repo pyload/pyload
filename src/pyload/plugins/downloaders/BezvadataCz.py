@@ -13,8 +13,6 @@ class BezvadataCz(SimpleDownloader):
     __version__ = "0.35"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"http://(?:www\.)?bezvadata\.cz/stahnout/.+"
     __config__ = [
         ("enabled", "bool", "Activated", True),

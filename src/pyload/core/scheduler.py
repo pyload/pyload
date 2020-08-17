@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# AUTHOR: mkaay
 
 import time
 from heapq import heappop, heappush

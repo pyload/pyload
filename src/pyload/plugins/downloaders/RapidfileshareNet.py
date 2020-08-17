@@ -9,8 +9,6 @@ class RapidfileshareNet(XFSDownloader):
     __version__ = "0.09"
     __status__ = "testing"
 
-    __pyload_version__ = "0.5"
-
     __pattern__ = r"http://(?:www\.)?rapidfileshare\.net/\w{12}"
     __config__ = [
         ("enabled", "bool", "Activated", True),
