@@ -23,14 +23,12 @@
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
 [![CLA assistant](https://cla-assistant.io/readme/badge/pyload/pyload)](https://cla-assistant.io/pyload/pyload)
 
-We currently have two pyLoad versions under development:
-
 - **pyLoad Next**, the newest version of pyLoad which resides in the [master branch](https://github.com/pyload/pyload/tree/master) and is deployed as `pyload-ng` on [PyPI](https://pypi.org/project/pyload-ng/).
   It only works on Python 3.6+ and it's in pre-alpha phase right now.
 
-- **pyLoad 0.4.x**, the old production ready grade version of pyLoad, which resides in the [stable branch](https://github.com/pyload/pyload/tree/stable) and is compatible with Python 2 only.
+- **pyLoad Stable**, the old production ready grade version of pyLoad, which resides in the [stable branch](https://github.com/pyload/pyload/tree/stable) and is compatible with Python 2 only.
 
-**This README covers everything regarding the first one only**, sorry.
+**This README covers everything regarding the first one only**.
 
 ## Installation
 
