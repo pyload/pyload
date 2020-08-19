@@ -2,13 +2,13 @@ sudo: false
 
 os: linux
 language: python
+
 group: travis_latest
 
 git:
   depth: 3
   quiet: true
   submodules: false
-  lfs_skip_smudge: true
 
 branches:
   only:
@@ -17,27 +17,28 @@ branches:
     - develop
 
 stages:
-  - check
-  - test
-  - name: deploy
+  - Check
+  - Test
+  - name: Deploy
     if: repo = pyload/pyload AND branch = master
 
-# NOTE: this must be set to latest stable python version
-python: 3.7
-# NOTE: this must be set to latest supported ubuntu version
-dist: xenial
+python: 3.6
+dist: bionic
+
+env: PYCURL_SSL_LIBRARY=openssl
 
 before_cache: rm -f "$HOME/.cache/pip/log/debug.log"
 cache: pip
 
 install: pip install --upgrade tox tox-travis
+
 script: tox --sitepackages
 
 jobs:
   # fast_finish: true
 
   allow_failures:
-    - stage: deploy
+    - stage: Deploy
     - name: Pylint Errors
     - name: Bandit Errors
     - python: nightly
@@ -46,36 +47,40 @@ jobs:
     - os: windows
 
   include:
-    - stage: check
+    - stage: Check
       name: Compile Errors
       script: tox -e compileall
 
-    - stage: check
+    - stage: Check
       name: Pylint Errors
       script: tox -e pylint --sitepackages
 
-    - stage: check
+    - stage: Check
       name: Bandit Errors
       script: tox -e bandit
 
-    - stage: test
+    - stage: Test
       os: linux
       python: 3.6
 
-    - stage: test
+    - stage: Test
       os: linux
-      # python: $TRAVIS_PYTHON_VERSION
+      python: 3.7
 
-    - stage: test
+    - stage: Test
+      os: linux
+      python: 3.8
+
+    - stage: Test
       os: linux
       python: nightly
 
-    - stage: test
+    - stage: Test
       os: linux
       python: pypy3
 
     # NOTE: work-around to test Python on OSX (not supported officially)
-    - stage: test
+    - stage: Test
       os: osx
       language: sh
       env:
@@ -99,7 +104,7 @@ jobs:
         - source "$HOME/venv/bin/activate"
 
     # NOTE: work-around to test Python on Windows (not supported officially)
-    - stage: test
+    - stage: Test
       os: windows
       language: sh
       env:
@@ -108,13 +113,9 @@ jobs:
       before_cache: rm -f "$LOCALAPPDATA/pip/Cache/log/debug.log"
       cache:
         directories: "$LOCALAPPDATA/pip/Cache"
-      # addons:
-        # chocolatey:
-          # update: true
-          # packages: python3
       before_install: choco install -y python3
 
-    - stage: deploy
+    - stage: Deploy
       name: Github Release
       if: tag IS present
       install: pip install --upgrade Babel Jinja2 wheel
@@ -128,9 +129,9 @@ jobs:
         skip_cleanup: true
         # prerelease: true
 
-    - stage: deploy
+    - stage: Deploy
       name: PyPI Release
-      env: PYLOAD_DEVBUILD="$TRAVIS_BUILD_NUMBER"
+      env: PYLOAD_BUILD="$TRAVIS_BUILD_NUMBER"
       install: pip install --upgrade Babel Jinja2 readme_renderer[md]
       script: true
       deploy:
@@ -143,10 +144,10 @@ jobs:
         # skip_cleanup: true
         skip_existing: true
 
-    - stage: deploy
+    - stage: Deploy
       name: Docker Release
       env:
-        - PYLOAD_DEVBUILD="$TRAVIS_BUILD_NUMBER"
+        - PYLOAD_BUILD="$TRAVIS_BUILD_NUMBER"
         - secure: "dtCGQHfYizfV/u3nZ9lQZcNsb2eJrvCarJaZAuerOllqlsPzfpFFVJVmDpkwaCjs8qEEvflQOPO0o/uonUKQOSmWdcQaqmtMlRZ3JZEENWXAnLJDy/lfBflrR+An47vS5oNQ9bNcLMM7GBFbOxcXFGK6zScXnS2g8erXqymN46M="
         - secure: "TrWBa99CnrnJ/FYKhq20EYAhbjlLXVExQu5ScZczDYzVZYV1rLzENInyc8L7JVU1A6vSJ4lIKZ+BYMk03hSMSU8wIQPrKaKHLBfjgX6hww9gBHIdfhnM9yVhBS8NM+jwmGQBotFjiRsQVCg1Jhtd9YwpjCO6Gj4UBmNfxXt52tw="
       addons:
@@ -157,26 +158,29 @@ jobs:
       install: pip install --upgrade docker-ci-deploy
       before_script: docker pull pyload/pyload || true
       script:
-        - docker build --pull --cache-from pyload/pyload:latest-ubuntu --tag pyload/pyload:ubuntu .
-        - docker build --file Dockerfile.alpine --pull --cache-from pyload/pyload:latest-alpine --tag pyload/pyload:alpine .
+        - docker build --file Dockerfile --pull --cache-from pyload/pyload:ubuntu --tag pyload/pyload:ubuntu .
+        - docker build --file Dockerfile.armhf --pull --cache-from pyload/pyload:ubuntu-arm32v7 --tag pyload/pyload:ubuntu-arm32v7 .
+        - docker build --file Dockerfile.alpine --pull --cache-from pyload/pyload:alpine --tag pyload/pyload:alpine .
       after_script: docker images
       before_deploy:
         - docker run pyload/pyload:ubuntu
+        - docker run pyload/pyload:ubuntu-arm32v7
         - docker run pyload/pyload:alpine
         - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
       deploy:
         - provider: script
           script:
+            - dcd --tag ubuntu --tag latest pyload/pyload:ubuntu
+            - dcd --tag ubuntu-arm32v7 pyload/pyload:ubuntu-arm32v7
+            - dcd --tag alpine pyload/pyload:alpine
+          skip_cleanup: true
+        - provider: script
+          script:
             - dcd --tag ubuntu --version "${TRAVIS_TAG#v}" pyload/pyload:ubuntu
+            - dcd --tag ubuntu-arm32v7 --version "${TRAVIS_TAG#v}" pyload/pyload:ubuntu-arm32v7
             - dcd --tag alpine --version "${TRAVIS_TAG#v}" pyload/pyload:alpine
           skip_cleanup: true
           on:
             tags: true
-        - provider: script
-          script:
-            - dcd --tag latest-ubuntu -tag latest pyload/pyload:ubuntu
-            - dcd --tag latest-alpine pyload/pyload:alpine
-          skip_cleanup: true
-
 # after_success:
-  # - if [ "$COVERAGE" = "true" ]; then coveralls || echo "failed"; fi
+# - if [ "$COVERAGE" = "true" ]; then coveralls || echo "failed"; fi

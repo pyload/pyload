@@ -14,7 +14,7 @@ ARG IMAGE_AUTHORS="Walter Purcaro <vuolter@gmail.com>"
 ARG IMAGE_URL="https://github.com/pyload/pyload"
 ARG IMAGE_DOCUMENTATION="https://github.com/pyload/pyload/blob/master/README.md"
 ARG IMAGE_SOURCE="https://github.com/pyload/pyload/blob/master/Dockerfile"
-ARG IMAGE_VERSION="1.1.0"
+ARG IMAGE_VERSION="2.0.0"
 ARG IMAGE_REVISION
 ARG IMAGE_VENDOR="pyload"
 ARG IMAGE_LICENSES="ISC"
@@ -22,25 +22,20 @@ ARG IMAGE_TITLE="pyLoad"
 ARG IMAGE_DESCRIPTION="The free and open-source Download Manager written in pure Python"
 
 
+ARG APT_INSTALL_OPTIONS="--no-install-recommends --yes"
+ARG PIP_INSTALL_OPTIONS="--disable-pip-version-check --no-cache-dir --no-compile --upgrade"
 
 
 FROM lsiobase/ubuntu:$IMAGE_TAG as builder
 
-ARG APT_INSTALL_OPTIONS="--no-install-recommends --yes"
-ARG PIP_INSTALL_OPTIONS="--disable-pip-version-check --no-cache-dir --no-compile --upgrade"
-
-ARG APK_PACKAGES="python3 openssl python3-distutils wget"
+ARG APT_PACKAGES="python3 python3-distutils python3-pip python3-pycurl openssl sqlite tesseract-ocr unrar"
 ARG PIP_PACKAGES="pip setuptools wheel"
 
-RUN echo "**** install Python ****" && \
-    apt-get update && apt-get install $APT_INSTALL_OPTIONS $APK_PACKAGES && \
-    ln -sf python3 /usr/bin/python && \
+RUN echo "**** install binary packages ****" && \
+    apt-get update && apt-get install $APT_INSTALL_OPTIONS $APT_PACKAGES && \
     \
-    echo "**** install pip ****" && \
-    wget -q -O - "https://bootstrap.pypa.io/get-pip.py" | python /dev/stdin $PIP_INSTALL_OPTIONS && \
-    ln -sf pip3 /usr/bin/pip
-
-
+    echo "**** install pip package ****" && \
+    pip3 install $PIP_INSTALL_OPTIONS $PIP_PACKAGES
 
 
 FROM builder as wheels_builder
@@ -49,25 +44,20 @@ COPY setup.cfg /source/setup.cfg
 WORKDIR /wheels
 
 RUN echo "**** build pyLoad dependencies ****" && \
-    python -c "import configparser as cp; c = cp.ConfigParser(); c.read('/source/setup.cfg'); print(c['options']['install_requires'] + c['options.extras_require']['extra'])" | \
-    xargs pip wheel --wheel-dir=.
-
-
+    python3 -c "import configparser as cp; c = cp.ConfigParser(); c.read('/source/setup.cfg'); print(c['options']['install_requires'] + c['options.extras_require']['extra'])" | \
+    xargs pip3 wheel --wheel-dir=.
 
 
 FROM builder as source_builder
 
+ARG PIP_PACKAGES="Babel Jinja2"
+
 COPY . /source
 WORKDIR /source
 
-ARG PIP_INSTALL_OPTIONS="--disable-pip-version-check --no-cache-dir --no-compile --upgrade"
-ARG PIP_PACKAGES="Babel Jinja2"
-
 RUN echo "**** build pyLoad locales ****" && \
-    pip install $PIP_INSTALL_OPTIONS $PIP_PACKAGES && \
-    python setup.py build_locale
-
-
+    pip3 install $PIP_INSTALL_OPTIONS $PIP_PACKAGES && \
+    python3 setup.py build_locale
 
 
 FROM builder as package_builder
@@ -76,31 +66,21 @@ COPY --from=wheels_builder /wheels /wheels
 COPY --from=source_builder /source /source
 WORKDIR /package
 
-ARG PIP_INSTALL_OPTIONS="--disable-pip-version-check --no-cache-dir --no-compile --upgrade"
-
 RUN echo "**** build pyLoad package ****" && \
-    pip install $PIP_INSTALL_OPTIONS --find-links=/wheels --no-index --prefix=. /source[extra]
-
-
+    pip3 install $PIP_INSTALL_OPTIONS --find-links=/wheels --no-index --prefix=. /source[extra]
 
 
 FROM builder
 
 # Set Python to force stdin, stdout and stderr to be totally unbuffered.
-ENV PYTHONUNBUFFERED=1
+ENV PYTHONUNBUFFERED="1"
 
 # Stop if any script (fix-attrs or cont-init) has failed.
-ENV S6_BEHAVIOUR_IF_STAGE2_FAILS=2
+ENV S6_BEHAVIOUR_IF_STAGE2_FAILS="2"
 
-ARG APT_INSTALL_OPTIONS="--no-install-recommends --yes"
-ARG APT_PACKAGES="sqlite tesseract-ocr unrar"
+ARG TEMPDIR="/root/.cache /tmp/* /var/lib/apt/lists/* /var/tmp/*"
 
-ARG TEMP_PATHS="/root/.cache /tmp/* /var/lib/apt/lists/* /var/tmp/*"
-
-RUN echo "**** install binary packages ****" && \
-    apt-get install $APT_INSTALL_OPTIONS $APT_PACKAGES && \
-    \
-    echo "**** create s6 fix-attr script ****" && \
+RUN echo "**** create s6 fix-attr script ****" && \
     echo -e "/config true abc 0644 0755\n \
     /downloads false abc 0644 0755" > /etc/fix-attrs.d/10-run && \
     \
@@ -111,13 +91,13 @@ RUN echo "**** install binary packages ****" && \
     exec s6-setuidgid abc pyload --userdir /config --storagedir /downloads" > /etc/services.d/pyload/run && \
     \
     echo "**** cleanup ****" && \
-    rm -rf $TEMP_PATHS && \
+    rm -rf $TEMPDIR && \
     \
-    echo "**** finalize pyLoad ****"
+    echo "**** finalize ****"
 
 COPY --from=package_builder /package /usr/local
 
-EXPOSE 8001 9666
+EXPOSE 8000 9666
 
 VOLUME /config /downloads
 

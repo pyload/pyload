@@ -58,9 +58,7 @@ class BuildLocale(Command):
 def retrieve_version():
     version = None
     build = (
-        int(os.environ["PYLOAD_DEVBUILD"].strip())
-        if "PYLOAD_DEVBUILD" in os.environ
-        else 0
+        int(os.environ["PYLOAD_BUILD"].strip()) if "PYLOAD_BUILD" in os.environ else 0
     )
 
     filename = os.path.join(os.path.dirname(__file__), "VERSION")
