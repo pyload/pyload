@@ -9,7 +9,7 @@ from urllib.request import urlopen
 
 from pyload.core.api import __version__ as API_VERSION
 
-url = "http://localhost:8001/api/v{}/{{}}".format(API_VERSION)
+url = "http://localhost:8000/api/v{}/{{}}".format(API_VERSION)
 
 
 class TestJson:
