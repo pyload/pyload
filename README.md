@@ -23,9 +23,14 @@
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
 [![CLA assistant](https://cla-assistant.io/readme/badge/pyload/pyload)](https://cla-assistant.io/pyload/pyload)
 
-The new pyLoad package `pyload-ng` is automatically deployed from the [master branch](https://github.com/pyload/pyload/tree/master) of the pyLoad sources.
+We currently have two pyLoad versions under development:
 
-The old pyLoad package, **compatible with Python 2 only**, is still available on the [stable branch](https://github.com/pyload/pyload/tree/stable).
+- **pyLoad Next**, the newest version of pyLoad which resides in the [master branch](https://github.com/pyload/pyload/tree/master) and is deployed as `pyload-ng` on [PyPI](https://pypi.org/project/pyload-ng/).
+  It only works on Python 3.6+ and it's in pre-alpha phase right now.
+
+- **pyLoad 0.4.x**, the old production ready grade version of pyLoad, which resides in the [stable branch](https://github.com/pyload/pyload/tree/stable) and is compatible with Python 2 only.
+
+**This README covers everything regarding the first one only**, sorry.
 
 ## Installation
 
@@ -38,16 +43,16 @@ To install pyLoad, type the command:
 
     pip install pyload-ng
 
-This will install the latest stable release of pyLoad in your system.
+This will install in your system the latest stable release of pyLoad.
 
 > **Note**:
-> No stable release is available yet! :smiling_imp:
+> No stable releases are available at the moment.
 
 #### Available modules
 
-- `pyload.webui`: Web Interface.
-- `pyload.plugins`: collection of pyLoad plugins (officially supported).
-- `pyload.core`: just pyLoad.
+- `pyload.core`: pyLoad's heart, you can't do anything without it!
+- `pyload.plugins`: the complete collection of all supported plugins for pyLoad.
+- `pyload.webui`: just a way to interact with pyLoad, web proof of course.
 
 ### Extra Dependencies
 
@@ -63,37 +68,35 @@ Append the tag `extra` to the installation command:
 - `build`: packages required to build locales.
 - `all`: all of them.
 
-You can also use more tags together, like:
+You can also use more tags together:
 
     pip install pyload-ng[extra][build]
 
 ### Development Releases
 
-You can force the installation of the latest development release of pyLoad.
-
-Append the option `--pre` to the installation command:
+You can force the installation of the latest development release of pyLoad,
+appending the option `--pre` to the installation command:
 
     pip install --pre pyload-ng
 
-**Development release usage is not recommended**. Unexpected crashes may occur.
+**Do not use development releases in production**. Unexpected crashes may occur.
 
 ### Build Translations
 
 > **Note**:
-> You do not need to build the locale files if you have installed pyLoad through `pip`,
-> because are already included.
+> You do not have to build any locale file if you installed pyLoad through `pip`,
+> because they're all already included.
 
 Use the command `build_locale` to retrieve and build the latest locale files (translations)
 for your installation:
 
     python setup.py build_locale
 
-Ideally you would use it **_before_** launching any other build or installation command
-(eg. `bdist_wheel`).
+It should be invoked **_before_** launching any other build/installation command (eg. `bdist_wheel`).
 
 ## Usage
 
-    usage: pyload [-h] [--version] [-d] [--userdir USERDIR] [--tempdir CACHEDIR]
+    usage: pyload [-h] [--version] [-d] [--userdir USERDIR] [--tempdir TEMPDIR]
                   [--daemon] [--restore]
 
     The free and open-source Download Manager written in pure Python
@@ -103,7 +106,7 @@ Ideally you would use it **_before_** launching any other build or installation 
       --version                show program's version number and exit
       -d, --debug              enable debug mode
       --userdir USERDIR        use this location to store user data files
-      --tempdir CACHEDIR      use this location to store temporary files
+      --tempdir TEMPDIR        use this location to store temporary files
       --storagedir STORAGEDIR  use this location to save downloads
       --daemon                 run as daemon
       --restore                reset default username/password
@@ -115,8 +118,8 @@ To start pyLoad, type the command:
 This will create the following directories (if they do not already exist):
 
 - `~/Downloads/pyLoad`: where downloads will be saved.
-- `~/pyLoad`: where user data files (configurations) are stored.
-- `<TMPDIR>/pyLoad`: where temporary files (cache) are stored.
+- `~/.pyload`: where configuration files are stored.
+- `<TMPDIR>/pyLoad`: where temporary files are stored.
 
 On Windows systems data files are saved in the directory `~\AppData\Roaming\pyLoad`.
 
@@ -130,7 +133,7 @@ To show an overview of the available options, type:
 
 ### Web Interface
 
-Open your web browser and visit the url http://localhost:8001 to have access to
+Open your web browser and visit the url http://localhost:8000 to have access to
 the pyLoad's web interface.
 
 - Default username: `pyload`.
@@ -138,13 +141,11 @@ the pyLoad's web interface.
 
 **It's highly recommended to change the default access credentials on first start**.
 
-## Docker Support [experimental]
+## Docker Images [experimental]
 
 [![Docker Build Status](https://img.shields.io/docker/build/pyload/pyload.svg)](https://hub.docker.com/r/pyload/pyload)
 [![MicroBadger Layers](https://img.shields.io/microbadger/layers/pyload/pyload/latest-ubuntu.svg?label=layers%20%28ubuntu%29)](https://microbadger.com/images/pyload/pyload:latest-ubuntu)
-[![MicroBadger Layers](https://img.shields.io/microbadger/layers/pyload/pyload/latest-alpine.svg?label=layers%20%28alpine%29)](https://microbadger.com/images/pyload/pyload:latest-alpine)
 [![MicroBadger Size](https://img.shields.io/microbadger/image-size/pyload/pyload/latest-ubuntu.svg?label=image%20size%20%28ubuntu%29)](https://microbadger.com/images/pyload/pyload:latest-ubuntu)
-[![MicroBadger Size](https://img.shields.io/microbadger/image-size/pyload/pyload/latest-alpine.svg?label=image%20size%20%28alpine%29)](https://microbadger.com/images/pyload/pyload:latest-alpine)
 
 #### Available images
 
@@ -190,7 +191,7 @@ Compatible with `docker-compose` v2 schemas:
           - <USERDIR>:/config
           - <STORAGEDIR>:/downloads
         ports:
-          - 8001:8001
+          - 8000:8000
         restart: unless-stopped
 
 Replace `<STORAGEDIR>` with the location on the host machine where you want that downloads will be saved.
@@ -206,7 +207,7 @@ retry applying the given solution:
 
 #### pip not found
 
-Retry replacing the command `pip` with `pip3`, like:
+Retry replacing the command `pip` with `pip3`:
 
     pip3 install pyload-ng
 
@@ -241,7 +242,7 @@ To upgrade the `setuptools` package, type the command:
 
 Under Unix-based systems, try to install pyLoad with root privileges.
 
-Prefix the installation command with `sudo`, like:
+Prefix the installation command with `sudo`:
 
     sudo pip install pyload-ng
 
@@ -250,7 +251,7 @@ with root privileges.
 
 You can also try to install the `pyload-ng` package **without** root privileges.
 
-Append the option `--user` to the installation command, like:
+Append the option `--user` to the installation command:
 
     pip install --user pyload-ng
 
@@ -258,7 +259,7 @@ Append the option `--user` to the installation command, like:
 
 To uninstall pyLoad, type the command:
 
-    pip uninstall --yes pyload-ng
+    pip uninstall pyload-ng
 
 > **Note:**
 > This will not remove any installed dependencies.
@@ -269,7 +270,7 @@ Under Unix-based systems, try to uninstall pyLoad with root privileges.
 
 Prefix the installation command with `sudo`:
 
-    sudo pip uninstall --yes pyload-ng
+    sudo pip uninstall pyload-ng
 
 Under Windows systems, open a _Command Prompt as administrator_ to uninstall pyLoad
 with root privileges.
@@ -310,7 +311,6 @@ Contact us at licensing@pyload.net for any question about our code licensing pol
 
 Please refer to the included [AUTHORS](/AUTHORS.md) for the full credits.
 
-<br />
 <br />
 
 ---
