@@ -14,7 +14,7 @@ ARG IMAGE_AUTHORS="Walter Purcaro <vuolter@gmail.com>"
 ARG IMAGE_URL="https://github.com/pyload/pyload"
 ARG IMAGE_DOCUMENTATION="https://github.com/pyload/pyload/blob/master/README.md"
 ARG IMAGE_SOURCE="https://github.com/pyload/pyload/blob/master/Dockerfile.alpine"
-ARG IMAGE_VERSION="1.1.0"
+ARG IMAGE_VERSION="2.0.0"
 ARG IMAGE_REVISION
 ARG IMAGE_VENDOR="pyload"
 ARG IMAGE_LICENSES="ISC"
@@ -22,59 +22,57 @@ ARG IMAGE_TITLE="pyLoad"
 ARG IMAGE_DESCRIPTION="The free and open-source Download Manager written in pure Python"
 
 
+ARG APK_INSTALL_OPTIONS="--no-cache"
+ARG PIP_INSTALL_OPTIONS="--disable-pip-version-check --no-cache-dir --no-compile --upgrade"
 
 
 FROM lsiobase/alpine:$IMAGE_TAG as builder
 
-ARG APK_INSTALL_OPTIONS="--no-cache"
-ARG PIP_INSTALL_OPTIONS="--disable-pip-version-check --no-cache-dir --no-compile --upgrade"
+ARG APK_PACKAGES="python3 openssl libcurl sqlite tesseract-ocr unrar"
 
-ARG APK_PACKAGES="python3 openssl"
+ARG APK_DEV_VIRTUAL_PACKAGE=".build-deps"
+ARG APK_DEV_INSTALL_OPTIONS="--no-cache --virtual $APK_DEV_VIRTUAL_PACKAGE"
+ARG APK_DEV_PACKAGES="build-base curl-dev"
+
 ARG PIP_PACKAGES="pip setuptools wheel"
 
-RUN echo "**** install Python ****" && \
+ENV PYCURL_SSL_LIBRARY="openssl"
+
+RUN echo "**** install binary packages ****" && \
     apk add $APK_INSTALL_OPTIONS $APK_PACKAGES && \
-    ln -sf python3 /usr/bin/python && \
+    apk add $APK_DEV_INSTALL_OPTIONS $APK_DEV_PACKAGES && \
+    apk del $APK_DEV_VIRTUAL_PACKAGE && \
     \
-    echo "**** install pip ****" && \
+    echo "**** install pip packages ****" && \
     python3 -m ensurepip && rm -rf /usr/lib/python*/ensurepip && \
-    pip3 install $PIP_INSTALL_OPTIONS $PIP_PACKAGES && \
-    ln -sf pip3 /usr/bin/pip
-
-
+    pip3 install $PIP_INSTALL_OPTIONS $PIP_PACKAGES
 
 
 FROM builder as wheels_builder
 
+ARG APK_PACKAGES="gcc musl-dev python3-dev libffi-dev openssl-dev jpeg-dev zlib-dev libxml2-dev libxslt-dev"
+
 COPY setup.cfg /source/setup.cfg
 WORKDIR /wheels
-
-ARG APK_INSTALL_OPTIONS="--no-cache"
-ARG APK_PACKAGES="gcc musl-dev python3-dev libffi-dev openssl-dev jpeg-dev zlib-dev libxml2-dev libxslt-dev"
 
 RUN echo "**** install build packages ****" && \
     apk add $APK_INSTALL_OPTIONS $APK_PACKAGES && \
     \
     echo "**** build pyLoad dependencies ****" && \
-    python -c "import configparser as cp; c = cp.ConfigParser(); c.read('/source/setup.cfg'); print(c['options']['install_requires'] + c['options.extras_require']['extra'])" | \
-    xargs pip wheel --wheel-dir=.
-
-
+    python3 -c "import configparser as cp; c = cp.ConfigParser(); c.read('/source/setup.cfg'); print(c['options']['install_requires'] + c['options.extras_require']['extra'])" | \
+    xargs pip3 wheel --wheel-dir=.
 
 
 FROM builder as source_builder
 
+ARG PIP_PACKAGES="Babel Jinja2"
+
 COPY . /source
 WORKDIR /source
 
-ARG PIP_INSTALL_OPTIONS="--disable-pip-version-check --no-cache-dir --no-compile --upgrade"
-ARG PIP_PACKAGES="Babel Jinja2"
-
 RUN echo "**** build pyLoad locales ****" && \
-    pip install $PIP_INSTALL_OPTIONS $PIP_PACKAGES && \
-    python setup.py build_locale
-
-
+    pip3 install $PIP_INSTALL_OPTIONS $PIP_PACKAGES && \
+    python3 setup.py build_locale
 
 
 FROM builder as package_builder
@@ -83,34 +81,24 @@ COPY --from=wheels_builder /wheels /wheels
 COPY --from=source_builder /source /source
 WORKDIR /package
 
-ARG PIP_INSTALL_OPTIONS="--disable-pip-version-check --no-cache-dir --no-compile --upgrade"
-
 RUN echo "**** build pyLoad package ****" && \
-    pip install $PIP_INSTALL_OPTIONS --find-links=/wheels --no-index --prefix=. /source[extra]
-
-
+    pip3 install $PIP_INSTALL_OPTIONS --find-links=/wheels --no-index --prefix=. /source[extra]
 
 
 FROM builder
 
 # Set Python to force stdin, stdout and stderr to be totally unbuffered.
-ENV PYTHONUNBUFFERED=1
+ENV PYTHONUNBUFFERED="1"
 
 # Stop if any script (fix-attrs or cont-init) has failed.
-ENV S6_BEHAVIOUR_IF_STAGE2_FAILS=2
+ENV S6_BEHAVIOUR_IF_STAGE2_FAILS="2"
 
 # Set Python to use UTF-8 encoding rather than ASCII.
-ENV LANG=C.UTF-8
+ENV LANG="C.UTF-8"
 
-ARG APK_INSTALL_OPTIONS="--no-cache"
-ARG APK_PACKAGES="sqlite tesseract-ocr unrar"
+ARG TEMPDIR="/root/.cache /tmp/* /var/tmp/*"
 
-ARG TEMP_PATHS="/root/.cache /tmp/* /var/tmp/*"
-
-RUN echo "**** install binary packages ****" && \
-    apk add $APK_INSTALL_OPTIONS $APK_PACKAGES && \
-    \
-    echo "**** create s6 fix-attr script ****" && \
+RUN echo "**** create s6 fix-attr script ****" && \
     echo -e "/config true abc 0644 0755\n \
     /downloads false abc 0644 0755" > /etc/fix-attrs.d/10-run && \
     \
@@ -121,13 +109,13 @@ RUN echo "**** install binary packages ****" && \
     exec s6-setuidgid abc pyload --userdir /config --storagedir /downloads" > /etc/services.d/pyload/run && \
     \
     echo "**** cleanup ****" && \
-    rm -rf $TEMP_PATHS && \
+    rm -rf $TEMPDIR && \
     \
-    echo "**** finalize pyLoad ****"
+    echo "**** finalize ****"
 
 COPY --from=package_builder /package /usr/local
 
-EXPOSE 8001 9666
+EXPOSE 8000 9666
 
 VOLUME /config /downloads
 
