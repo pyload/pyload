@@ -46,7 +46,7 @@ Then you can start pyLoad simply typing:
 
     pyload
 
-See the [Usage section](#usage) for information on all available options.
+See the [usage section](#usage) for information on all available options.
 
 If you want to uninstall pyLoad use the command:
 
