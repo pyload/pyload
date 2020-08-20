@@ -4,7 +4,7 @@ import random
 import socket
 import string
 
-import requests_html
+import js2py
 
 from .check import is_mapping
 
@@ -22,8 +22,9 @@ def is_plural(value):
         return value.endswith("s")  # TODO: detect uncommon plurals
 
 
-def eval_js(script):
-    return requests_html.HTML().render(script=script, reload=False)
+def eval_js(script, es6=False):
+    # return requests_html.HTML().render(script=script, reload=False)
+    return (js2py.eval_js6 if es6 else js2py.eval_js)(script)
 
 
 def accumulate(iterable, to_map=None):

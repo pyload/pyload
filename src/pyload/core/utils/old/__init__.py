@@ -14,7 +14,6 @@ import re
 import string
 import sys
 import time
-import requests_html
 from html.entities import name2codepoint
 import html.parser
 import unicodedata
