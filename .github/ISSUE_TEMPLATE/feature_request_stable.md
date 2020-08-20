@@ -1,8 +1,9 @@
 ---
-name: Feature Request
+name: Feature Request (pyLoad Stable)
 about: Suggest an idea for pyLoad
 labels: "feature request"
-assignees: vuolter
+milestone: "pyLoad Stable"
+assignees: gammac0de
 ---
 
 <!-- ANNOTATIONS LIKE THIS WILL NOT BE VISIBLE IN YOUR TICKET -->
@@ -15,18 +16,12 @@ assignees: vuolter
 
 ### Is this related to a problem?
 
-<!-- A clear and concise description of what the problem is. -->
-
-<!-- WRITE HERE - OPTIONAL -->
-
-### Describe alternatives you've considered
-
-<!-- A clear and concise description of any alternative solutions or features you've considered. -->
+<!-- A description of the problem you ran into. -->
 
 <!-- WRITE HERE - OPTIONAL -->
 
 ### Additional references
 
-<!-- Any other context, related issues, pull requests or screenshots about this request. -->
+<!-- Any other reference, related issues, pull requests or screenshots about this request. -->
 
 <!-- WRITE HERE - OPTIONAL -->

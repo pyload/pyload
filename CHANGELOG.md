@@ -1,8 +1,7 @@
-<h2>
-  <p align="center">
-    <img src="media/logo.png" alt="pyLoad" height="100" />
-  </p>
-<h2 />
+<p align="center">
+  <img src="https://raw.githubusercontent.com/pyload/pyload/master/media/logo.png" alt="pyLoad" height="100" />
+</p>
+<h2></h2>
 
 ### 0.5.0 (N/D)
 
@@ -166,7 +165,6 @@
 
 - Initial release
 
-<br />
 <br />
 
 ---

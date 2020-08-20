@@ -1,3 +1,8 @@
+<p align="center">
+  <img src="https://raw.githubusercontent.com/pyload/pyload/master/media/logo.png" alt="pyLoad" height="100" />
+</p>
+<h2></h2>
+
 # Contributor Covenant Code of Conduct
 
 ## Our Pledge
@@ -75,7 +80,6 @@ available at https://www.contributor-covenant.org/version/1/4/code-of-conduct.ht
 For answers to common questions about this code of conduct, see
 https://www.contributor-covenant.org/faq
 
-<br />
 <br />
 
 ---

@@ -5,9 +5,10 @@
 <h2 align="center">The free and open-source Download Manager written in pure Python</h2>
 <h4 align="center">
   <a href="#status">Status</a> |
-  <a href="#installation">Installation</a> |
+  <a href="#quick-start">Quick Start</a> |
+  <a href="#advanced-installation">Advanced Installation</a> |
   <a href="#usage">Usage</a> |
-  <a href="#docker-support-experimental">Docker Support</a> |
+  <a href="#docker-images">Docker Images</a> |
   <a href="#troubleshooting">Troubleshooting</a> |
   <a href="#licensing">Licensing</a> |
   <a href="#credits">Credits</a>
@@ -23,25 +24,39 @@
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
 [![CLA assistant](https://cla-assistant.io/readme/badge/pyload/pyload)](https://cla-assistant.io/pyload/pyload)
 
-- **pyLoad Next**, the newest version of pyLoad which resides in the [master branch](https://github.com/pyload/pyload/tree/master) and is deployed as `pyload-ng` on [PyPI](https://pypi.org/project/pyload-ng/).
-  It only works on Python 3.6+ and it's in pre-alpha phase right now.
+**pyLoad Next** is the newest version of pyLoad.
 
-- **pyLoad Stable**, the old production ready grade version of pyLoad, which resides in the [stable branch](https://github.com/pyload/pyload/tree/stable) and is compatible with Python 2 only.
+Developed in the [master branch](https://github.com/pyload/pyload/tree/master) and deployed as `pyload-ng` on [PyPI](https://pypi.org/project/pyload-ng/), works on Python 3.6+ and is currently in alpha phase.
 
-**This README covers everything regarding the first one only**.
+The old stable version of pyLoad resides in the [stable branch](https://github.com/pyload/pyload/tree/stable)
+and is only compatible with the EOL Python 2.
 
-## Installation
+## Quick Start
 
 [![PyPI Status](https://img.shields.io/pypi/status/pyload-ng.svg)](https://pypi.python.org/pypi/pyload-ng)
 [![PyPI Version](https://img.shields.io/pypi/v/pyload-ng.svg)](https://pypi.python.org/pypi/pyload-ng)
 [![PyPI Python Versions](https://img.shields.io/pypi/pyversions/pyload-ng.svg)](https://pypi.python.org/pypi/pyload-ng)
 [![PyPI License](https://img.shields.io/pypi/l/pyload-ng.svg)](https://github.com/pyload/pyload/blob/master/LICENSE.md)
 
-To install pyLoad, type the command:
+Open a terminal window and install pyLoad with the command:
+
+    pip install --pre pyload-ng[all]
+
+Then you can start pyLoad simply typing:
+
+    pyload
+
+See the [Usage section](#usage) for information on all available options.
+
+If you want to uninstall pyLoad use the command:
+
+    pip uninstall pyload-ng
+
+## Advanced Installation
+
+Get the latest stable release of pyLoad:
 
     pip install pyload-ng
-
-This will install in your system the latest stable release of pyLoad.
 
 > **Note**:
 > No stable releases are available at the moment.
@@ -52,21 +67,23 @@ This will install in your system the latest stable release of pyLoad.
 - `pyload.plugins`: the complete collection of all supported plugins for pyLoad.
 - `pyload.webui`: just a way to interact with pyLoad, web proof of course.
 
-### Extra Dependencies
+### Optional Dependencies
 
-You can install all the recommended packages for pyLoad at once.
+Optional dependencies are non-essential packages that extend or unlock some features of pyLoad.
 
-Append the tag `extra` to the installation command:
-
-    pip install pyload-ng[extra]
+To install them you have to append a specific tag name to the installation command.
 
 #### Available tags
 
-- `extra`: recommended extra packages.
-- `build`: packages required to build locales.
-- `all`: all of them.
+- `extra`: packages required by several plugins to work.
+- `build`: packages required to [build translations](#build-translations).
+- `all`: all the available packages.
 
-You can also use more tags together:
+You can use a tag in this way:
+
+    pip install pyload-ng[extra]
+
+Or group more together:
 
     pip install pyload-ng[extra][build]
 
@@ -82,15 +99,14 @@ appending the option `--pre` to the installation command:
 ### Build Translations
 
 > **Note**:
-> You do not have to build any locale file if you installed pyLoad through `pip`,
-> because they're all already included.
+> You don't have to build the translations files if you installed pyLoad through `pip`,
+> because they're already included.
 
-Use the command `build_locale` to retrieve and build the latest locale files (translations)
-for your installation:
+Use the command `build_locale` to retrieve and build the latest locale files (translations):
 
     python setup.py build_locale
 
-It should be invoked **_before_** launching any other build/installation command (eg. `bdist_wheel`).
+**Invoke it before launching any other build/installation command** (eg. `bdist_wheel`).
 
 ## Usage
 
@@ -116,10 +132,10 @@ To start pyLoad, type the command:
 This will create the following directories (if they do not already exist):
 
 - `~/Downloads/pyLoad`: where downloads will be saved.
-- `~/.pyload`: where configuration files are stored.
+- `~/.pyload`: where configuration files are stored\*.
 - `<TMPDIR>/pyLoad`: where temporary files are stored.
 
-On Windows systems data files are saved in the directory `~\AppData\Roaming\pyLoad`.
+On Windows systems configuration files are saved in the directory `~\AppData\Roaming\pyLoad`.
 
 The location of `<TMPDIR>` is [platform-specific](https://docs.python.org/3/library/tempfile.html#tempfile.gettempdir).
 
@@ -139,7 +155,7 @@ the pyLoad's web interface.
 
 **It's highly recommended to change the default access credentials on first start**.
 
-## Docker Images [experimental]
+## Docker Images
 
 [![Docker Build Status](https://img.shields.io/docker/build/pyload/pyload.svg)](https://hub.docker.com/r/pyload/pyload)
 [![MicroBadger Layers](https://img.shields.io/microbadger/layers/pyload/pyload/latest-ubuntu.svg?label=layers%20%28ubuntu%29)](https://microbadger.com/images/pyload/pyload:latest-ubuntu)
@@ -147,8 +163,9 @@ the pyLoad's web interface.
 
 #### Available images
 
-- `pyload/pyload:ubuntu`: default docker image for pyLoad.
-- `pyload/pyload:alpine`: alternative docker image for pyLoad (smaller, [maybe slower](https://medium.com/@lih.verma/alpine-makes-python-docker-builds-way-too-50-slower-and-images-double-2-larger-61d1d43cbc79)).
+- `pyload/pyload:ubuntu`: default docker image of pyLoad (amd64, arm, arm64v8).
+- `pyload/pyload:ubuntu-arm32v7`: default docker image of pyLoad (arm32v7).
+- `pyload/pyload:alpine`: alternative docker image of pyLoad (smaller, [maybe slower](https://medium.com/@lih.verma/alpine-makes-python-docker-builds-way-too-50-slower-and-images-double-2-larger-61d1d43cbc79)).
 - `pyload/pyload`: alias of `pyload/pyload:ubuntu`.
 
 ### Create Container
@@ -253,15 +270,6 @@ Append the option `--user` to the installation command:
 
     pip install --user pyload-ng
 
-### Uninstallation
-
-To uninstall pyLoad, type the command:
-
-    pip uninstall pyload-ng
-
-> **Note:**
-> This will not remove any installed dependencies.
-
 #### Permission denied
 
 Under Unix-based systems, try to uninstall pyLoad with root privileges.
@@ -281,7 +289,7 @@ You are allowed to use this software under the terms of the **GNU Affero
 General Public License** as published by the Free Software Foundation;
 either **version 3** of the License, or (at your option) any later version.
 
-Please refer to the included [LICENSE](/LICENSE) for the full license.
+Please refer to the [LICENSE](/LICENSE) for the full license.
 
 ### Alternative License
 
@@ -290,7 +298,7 @@ this software under a different license according to the agreement.
 
 ### Contributor License Agreement
 
-Please refer to the included [CLA](https://cla-assistant.io/pyload/pyload) for the full agreement conditions.
+Please refer to the [CLA](https://cla-assistant.io/pyload/pyload) for the full agreement conditions.
 
 This is essentially what you will be agreeing to:
 
@@ -307,7 +315,7 @@ Contact us at licensing@pyload.net for any question about our code licensing pol
 
 ## Credits
 
-Please refer to the included [AUTHORS](/AUTHORS.md) for the full credits.
+Please refer to the [AUTHORS](/AUTHORS.md) for the full credits.
 
 <br />
 

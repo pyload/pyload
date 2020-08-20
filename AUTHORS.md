@@ -1,8 +1,7 @@
-<h2>
-  <p align="center">
-    <img src="media/logo.png" alt="pyLoad" height="100" />
-  </p>
-<h2 />
+<p align="center">
+  <img src="https://raw.githubusercontent.com/pyload/pyload/master/media/logo.png" alt="pyLoad" height="100" />
+</p>
+<h2></h2>
 
 ### Team members (current and former)
 
@@ -41,7 +40,6 @@ opening topic to share tips and advices, fix troubles or simply discuss about th
 
 #### A special thanks to RaNaN, sebnapi and spoob who started this project so long time ago!
 
-<br />
 <br />
 
 ---

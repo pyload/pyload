@@ -242,7 +242,7 @@ class HTTPChunk(HTTPRequest):
             time.sleep(self.sleep)
 
         if self.range and self.arrived > self.size:
-            return 0  #: close if we have enough data
+            return None  #: close if we have enough data
 
     def parse_header(self):
         """

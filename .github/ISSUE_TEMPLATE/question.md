@@ -2,6 +2,7 @@
 name: Question
 about: Ask us something
 labels: question
+assignees: gammac0de
 ---
 
 <!-- ANNOTATIONS LIKE THIS WILL NOT BE VISIBLE IN YOUR TICKET -->
@@ -12,6 +13,6 @@ labels: question
 
 ### Additional references
 
-<!-- Any other context, related issues, pull requests or screenshots about this question. -->
+<!-- Any other reference, related issues, pull requests or screenshots about this question. -->
 
 <!-- WRITE HERE - OPTIONAL -->

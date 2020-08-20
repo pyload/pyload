@@ -1,7 +1,9 @@
 ---
-name: Web Interface
-about: Propose a change for the web interface
+name: WebUI Update (pyLoad Next)
+about: Propose an update for the web interface
 labels: enhancement
+milestone: "pyLoad Next"
+assignees: vuolter
 ---
 
 <!-- ANNOTATIONS LIKE THIS WILL NOT BE VISIBLE IN YOUR TICKET -->
@@ -14,12 +16,12 @@ labels: enhancement
 
 ### Is this related to a problem?
 
-<!-- A clear and concise description of what the problem is. -->
+<!-- A description of the problem you ran into. -->
 
 <!-- WRITE HERE - OPTIONAL -->
 
 ### Additional references
 
-<!-- Any other context, related issues, pull requests or screenshots about this request. -->
+<!-- Any other reference, related issues, pull requests or screenshots about this request. -->
 
 <!-- WRITE HERE - OPTIONAL -->
