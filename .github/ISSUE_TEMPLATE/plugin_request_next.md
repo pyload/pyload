@@ -1,8 +1,9 @@
 ---
-name: Plugin Request
-about: Suggest a plugin for pyLoad
+name: Plugin Request (pyLoad Next)
+about: Suggest a new plugin for pyLoad
 labels: "plugin request"
-assignees: gammac0de
+milestone: "pyLoad Next"
+assignees: vuolter
 ---
 
 <!-- ANNOTATIONS LIKE THIS WILL NOT BE VISIBLE IN YOUR TICKET -->
@@ -15,12 +16,12 @@ assignees: gammac0de
 
 ### Sample resources
 
-<!-- If applicable, add links to the resources to use as samples for testing the plugin. -->
+<!-- Any sample link that can be used to test the plugin. -->
 
 <!-- WRITE HERE - OPTIONAL -->
 
 ### Additional references
 
-<!-- Any other context, related issues, pull requests or screenshots about this request. -->
+<!-- Any other reference, related issues, pull requests or screenshots about this request. -->
 
 <!-- WRITE HERE - OPTIONAL -->

@@ -1,7 +1,6 @@
 ---
-name: Plugin
-about: Propose a new plugin or a change an existing one
-labels: "plugin enhancement"
+labels: enhancement
+assignees: gammac0de vuolter
 ---
 
 <!-- ANNOTATIONS LIKE THIS WILL NOT BE VISIBLE IN YOUR TICKET -->
@@ -14,12 +13,12 @@ labels: "plugin enhancement"
 
 ### Is this related to a problem?
 
-<!-- A clear and concise description of what the problem is. -->
+<!-- A description of the problem you ran into. -->
 
 <!-- WRITE HERE - OPTIONAL -->
 
 ### Additional references
 
-<!-- Any other context, related issues, pull requests or screenshots about this request. -->
+<!-- Any other reference, related issues, pull requests or screenshots about this request. -->
 
 <!-- WRITE HERE - OPTIONAL -->

@@ -1,8 +1,9 @@
 ---
-name: Bug Report
+name: Bug Report (pyLoad Stable)
 about: Create a report to help us improve
 labels: bug
-assignees: vuolter
+milestone: "pyLoad Stable"
+assignees: gammac0de
 ---
 
 <!-- ANNOTATIONS LIKE THIS WILL NOT BE VISIBLE IN YOUR TICKET -->
@@ -15,22 +16,24 @@ assignees: vuolter
 
 ### Debug log
 
-<!-- Enable `Debug Mode` in pyload's general settings. -->
+<!-- Remember to enable `Debug Mode` in pyload's general settings. -->
 
-<!-- WRITE HERE BELOW -->
+<!-- WRITE IN HERE -->
+
+```
 
 ```
 
-```
+<!-- WRITE IN HERE -->
 
 ### Screenshots
 
-<!-- If applicable, add screenshots to help explain your problem. -->
+<!-- Any screenshot that can help to explain your problem. -->
 
 <!-- WRITE HERE - OPTIONAL -->
 
 ### Additional references
 
-<!-- Any other context, related issues or pull requests about the problem. -->
+<!-- Any other reference, related issues or pull requests about this report. -->
 
 <!-- WRITE HERE - OPTIONAL -->
