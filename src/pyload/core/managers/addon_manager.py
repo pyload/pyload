@@ -120,7 +120,7 @@ class AddonManager:
                 else:
                     deactive.append(pluginname)
 
-            except Exception as exc:
+            except Exception:
                 self.pyload.log.warning(
                     self._("Failed activating {}").format(pluginname),
                     exc_info=self.pyload.debug > 1,
