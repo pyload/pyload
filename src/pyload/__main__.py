@@ -9,6 +9,20 @@ from .core import Core
 from . import __version__
 
 
+DESCRIPTION = """
+      ____________
+   _ /       |    \ ___________ _ _______________ _ ___
+  /  |    ___/    |   _ __ _  _| |   ___  __ _ __| |   \\
+ /   \___/  ______/  | '_ \ || | |__/ _ \/ _` / _` |    \\
+ \       |   o|      | .__/\_, |____\___/\__,_\__,_|    /
+  \______\    /______|_|___|__/________________________/
+          \  /
+           \/
+        
+The free and open-source Download Manager written in pure Python
+"""
+
+
 def _daemon(core_args):
     try:
         pid = os.fork()
@@ -59,19 +73,7 @@ def _parse_args(cmd_args):
       :obj:`argparse.Namespace`: command line parameters namespace
     """
     parser = argparse.ArgumentParser(
-        description="""
-      ____________
-   _ /       |    \ ___________ _ _______________ _ ___
-  /  |    ___/    |   _ __ _  _| |   ___  __ _ __| |   \
- /   \___/  ______/  | '_ \ || | |__/ _ \/ _` / _` |    \
- \       |   o|      | .__/\_, |____\___/\__,_\__,_|    /
-  \______\    /______|_|___|__/________________________/
-          \  /
-           \/
-
-The free and open-source Download Manager written in pure Python"""[
-            1:
-        ]
+        description=DESCRIPTION, formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     group = parser.add_mutually_exclusive_group()
 
