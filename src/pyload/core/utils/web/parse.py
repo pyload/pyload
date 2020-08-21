@@ -8,7 +8,7 @@ import urllib.parse
 # import tld
 from ..check import isiterable
 from . import format, purge
-from .check import is_host, is_port, is_ip
+from .check import is_host, is_port
 from .convert import host_to_ip, ip_to_host, splitaddress
 
 

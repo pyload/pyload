@@ -48,8 +48,8 @@ class ConfigParser:
         configdir = os.path.join(userdir, "settings")
         os.makedirs(configdir, exist_ok=True)
 
-        self.configpath = os.path.join(configdir, "pyload.conf")
-        self.pluginpath = os.path.join(configdir, "plugins.conf")
+        self.configpath = os.path.join(configdir, "pyload.cfg")
+        self.pluginpath = os.path.join(configdir, "plugins.cfg")
 
         self.plugin_cb = None  #: callback when plugin config value is changed
 
@@ -65,7 +65,7 @@ class ConfigParser:
             if not os.path.exists(self.configpath):
                 os.makedirs(os.path.dirname(self.configpath), exist_ok=True)
                 shutil.copy(
-                    os.path.join(PKGDIR, "core", "config", "default.conf"),
+                    os.path.join(PKGDIR, "core", "config", "default.cfg"),
                     self.configpath,
                 )
                 os.chmod(self.configpath, 0o600)
@@ -82,7 +82,7 @@ class ConfigParser:
             m_ver = self._VERSION.search(content)
             if m_ver is None or int(m_ver.group(1)) < __version__:
                 shutil.copy(
-                    os.path.join(PKGDIR, "core", "config", "default.conf"),
+                    os.path.join(PKGDIR, "core", "config", "default.cfg"),
                     self.configpath,
                 )
                 print("Old version of config was replaced")
@@ -109,7 +109,7 @@ class ConfigParser:
         reads the config file.
         """
         self.config = self.parse_config(
-            os.path.join(PKGDIR, "core", "config", "default.conf")
+            os.path.join(PKGDIR, "core", "config", "default.cfg")
         )
         self.plugin = self.parse_config(self.pluginpath)
 

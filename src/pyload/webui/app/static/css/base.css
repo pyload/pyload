@@ -872,44 +872,44 @@ a.backlink {
     background:transparent url("{{ url_for('static', filename='img/page-tools-backlinks.png') }}") 0px 1px no-repeat;
 }
 a.play {
-    background:transparent url("{{ url_for('static', filename='img/control_play.png') }}") 0px 1px no-repeat;
+    background:transparent url("{{ url_for('static', filename='img/control-play.png') }}") 0px 1px no-repeat;
 }
 .time {
-    background:transparent url("{{ url_for('static', filename='img/status_None.png') }}") 0px 1px no-repeat;
+    background:transparent url("{{ url_for('static', filename='img/status-none.png') }}") 0px 1px no-repeat;
 }
 a.play:hover {
-    background:transparent url("{{ url_for('static', filename='img/control_play_blue.png') }}") 0px 1px no-repeat;
+    background:transparent url("{{ url_for('static', filename='img/control-play-blue.png') }}") 0px 1px no-repeat;
 }
 a.cancel {
-    background:transparent url("{{ url_for('static', filename='img/control_cancel.png') }}") 0px 1px no-repeat;
+    background:transparent url("{{ url_for('static', filename='img/control-cancel.png') }}") 0px 1px no-repeat;
 }
 a.cancel:hover {
-    background:transparent url("{{ url_for('static', filename='img/control_cancel_blue.png') }}") 0px 1px no-repeat;
+    background:transparent url("{{ url_for('static', filename='img/control-cancel-blue.png') }}") 0px 1px no-repeat;
 }
 a.pause {
-    background:transparent url("{{ url_for('static', filename='img/control_pause.png') }}") 0px 1px no-repeat;
+    background:transparent url("{{ url_for('static', filename='img/control-pause.png') }}") 0px 1px no-repeat;
 }
 a.pause:hover {
-    background:transparent url("{{ url_for('static', filename='img/control_pause_blue.png') }}") 0px 1px no-repeat;
+    background:transparent url("{{ url_for('static', filename='img/control-pause-blue.png') }}") 0px 1px no-repeat;
     font-weight: bold;
 }
 a.stop {
-    background:transparent url("{{ url_for('static', filename='img/control_stop.png') }}") 0px 1px no-repeat;
+    background:transparent url("{{ url_for('static', filename='img/control-stop.png') }}") 0px 1px no-repeat;
 }
 a.stop:hover {
-    background:transparent url("{{ url_for('static', filename='img/control_stop_blue.png') }}") 0px 1px no-repeat;
+    background:transparent url("{{ url_for('static', filename='img/control-stop-blue.png') }}") 0px 1px no-repeat;
 }
 a.add {
-    background:transparent url("{{ url_for('static', filename='img/control_add.png') }}") 0px 1px no-repeat;
+    background:transparent url("{{ url_for('static', filename='img/control-add.png') }}") 0px 1px no-repeat;
 }
 a.add:hover {
-    background:transparent url("{{ url_for('static', filename='img/control_add_blue.png') }}") 0px 1px no-repeat;
+    background:transparent url("{{ url_for('static', filename='img/control-add-blue.png') }}") 0px 1px no-repeat;
 }
 a.cog {
     background:transparent url("{{ url_for('static', filename='img/cog.png') }}") 0px 1px no-repeat;
 }
 #head-panel {
-    background:#525252 url("{{ url_for('static', filename='img/head_bg1.png') }}") bottom left repeat-x;
+    background:#525252 url("{{ url_for('static', filename='img/head-bg.png') }}") bottom left repeat-x;
 }
 .reconnect {
     background:transparent url("{{ url_for('static', filename='img/reconnect.png') }}") 0px 1px no-repeat;

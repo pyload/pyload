@@ -22,23 +22,24 @@ ARG IMAGE_TITLE="pyLoad"
 ARG IMAGE_DESCRIPTION="The free and open-source Download Manager written in pure Python"
 
 
-ARG APT_INSTALL_OPTIONS="--no-install-recommends --yes"
+ARG APT_INSTALL_OPTIONS="--no-install-recommends --assume-yes"
 ARG PIP_INSTALL_OPTIONS="--disable-pip-version-check --no-cache-dir --no-compile --upgrade"
 
 
-FROM lsiobase/ubuntu:$IMAGE_TAG as builder
+FROM lsiobase/ubuntu:$IMAGE_TAG AS builder
 
 ARG APT_PACKAGES="python3 python3-distutils python3-pip python3-pycurl openssl sqlite tesseract-ocr unrar"
 ARG PIP_PACKAGES="pip setuptools wheel"
 
 RUN echo "**** install binary packages ****" && \
-    apt-get update && apt-get install $APT_INSTALL_OPTIONS $APT_PACKAGES && \
+    apt-get update && \
+    apt-get install $APT_INSTALL_OPTIONS $APT_PACKAGES && \
     \
     echo "**** install pip package ****" && \
     pip3 install $PIP_INSTALL_OPTIONS $PIP_PACKAGES
 
 
-FROM builder as wheels_builder
+FROM builder AS wheels_builder
 
 COPY setup.cfg /source/setup.cfg
 WORKDIR /wheels
@@ -48,7 +49,7 @@ RUN echo "**** build pyLoad dependencies ****" && \
     xargs pip3 wheel --wheel-dir=.
 
 
-FROM builder as source_builder
+FROM builder AS source_builder
 
 ARG PIP_PACKAGES="Babel Jinja2"
 
@@ -60,7 +61,7 @@ RUN echo "**** build pyLoad locales ****" && \
     python3 setup.py build_locale
 
 
-FROM builder as package_builder
+FROM builder AS package_builder
 
 COPY --from=wheels_builder /wheels /wheels
 COPY --from=source_builder /source /source
@@ -91,6 +92,7 @@ RUN echo "**** create s6 fix-attr script ****" && \
     exec s6-setuidgid abc pyload --userdir /config --storagedir /downloads" > /etc/services.d/pyload/run && \
     \
     echo "**** cleanup ****" && \
+    apt-get clean && \
     rm -rf $TEMPDIR && \
     \
     echo "**** finalize ****"

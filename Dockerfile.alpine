@@ -26,31 +26,25 @@ ARG APK_INSTALL_OPTIONS="--no-cache"
 ARG PIP_INSTALL_OPTIONS="--disable-pip-version-check --no-cache-dir --no-compile --upgrade"
 
 
-FROM lsiobase/alpine:$IMAGE_TAG as builder
+FROM lsiobase/alpine:$IMAGE_TAG AS builder
 
-ARG APK_PACKAGES="python3 openssl libcurl sqlite tesseract-ocr unrar"
-
-ARG APK_DEV_VIRTUAL_PACKAGE=".build-deps"
-ARG APK_DEV_INSTALL_OPTIONS="--no-cache --virtual $APK_DEV_VIRTUAL_PACKAGE"
-ARG APK_DEV_PACKAGES="build-base curl-dev"
-
+ARG APK_PACKAGES="python3 openssl sqlite tesseract-ocr unrar libcurl"
 ARG PIP_PACKAGES="pip setuptools wheel"
-
-ENV PYCURL_SSL_LIBRARY="openssl"
 
 RUN echo "**** install binary packages ****" && \
     apk add $APK_INSTALL_OPTIONS $APK_PACKAGES && \
-    apk add $APK_DEV_INSTALL_OPTIONS $APK_DEV_PACKAGES && \
-    apk del $APK_DEV_VIRTUAL_PACKAGE && \
     \
     echo "**** install pip packages ****" && \
-    python3 -m ensurepip && rm -rf /usr/lib/python*/ensurepip && \
+    python3 -m ensurepip && \
+    rm -rf /usr/lib/python*/ensurepip && \
     pip3 install $PIP_INSTALL_OPTIONS $PIP_PACKAGES
 
 
-FROM builder as wheels_builder
+FROM builder AS wheels_builder
 
-ARG APK_PACKAGES="gcc musl-dev python3-dev libffi-dev openssl-dev jpeg-dev zlib-dev libxml2-dev libxslt-dev"
+ARG APK_PACKAGES="gcc musl-dev python3-dev libffi-dev openssl-dev jpeg-dev zlib-dev libxml2-dev libxslt-dev curl-dev"
+
+ENV PYCURL_SSL_LIBRARY="openssl"
 
 COPY setup.cfg /source/setup.cfg
 WORKDIR /wheels
@@ -63,7 +57,7 @@ RUN echo "**** install build packages ****" && \
     xargs pip3 wheel --wheel-dir=.
 
 
-FROM builder as source_builder
+FROM builder AS source_builder
 
 ARG PIP_PACKAGES="Babel Jinja2"
 
@@ -75,7 +69,7 @@ RUN echo "**** build pyLoad locales ****" && \
     python3 setup.py build_locale
 
 
-FROM builder as package_builder
+FROM builder AS package_builder
 
 COPY --from=wheels_builder /wheels /wheels
 COPY --from=source_builder /source /source

@@ -38,17 +38,17 @@ jobs:
   # fast_finish: true
 
   allow_failures:
-    - stage: Deploy
     - name: Pylint Errors
     - name: Bandit Errors
-    - python: nightly
+    - name: Docker Release
+    # - python: nightly
     - python: pypy3
     - os: osx
     - os: windows
 
   include:
     - stage: Check
-      name: Compile Errors
+      name: Compilation Errors
       script: tox -e compileall
 
     - stage: Check
@@ -71,9 +71,9 @@ jobs:
       os: linux
       python: 3.8
 
-    - stage: Test
-      os: linux
-      python: nightly
+    # - stage: Test
+    #   os: linux
+    #   python: nightly
 
     - stage: Test
       os: linux
@@ -127,7 +127,6 @@ jobs:
         file_glob: true
         file: dist/*
         skip_cleanup: true
-        # prerelease: true
 
     - stage: Deploy
       name: PyPI Release
@@ -155,6 +154,7 @@ jobs:
           update: true
           packages: docker-ce
       services: docker
+      before_install: docker --version
       install: pip install --upgrade docker-ci-deploy
       before_script: docker pull pyload/pyload || true
       script:

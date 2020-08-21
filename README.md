@@ -46,7 +46,7 @@ Then you can start pyLoad simply typing:
 
     pyload
 
-See the [Usage section](#usage) for information on all available options.
+See the [usage section](#usage) for information on all available options.
 
 If you want to uninstall pyLoad use the command:
 
@@ -63,29 +63,29 @@ Get the latest stable release of pyLoad:
 
 #### Available modules
 
-- `pyload.core`: pyLoad's heart, you can't do anything without it!
-- `pyload.plugins`: the complete collection of all supported plugins for pyLoad.
-- `pyload.webui`: just a way to interact with pyLoad, web proof of course.
+- `pyload.core`: pyLoad's heart.
+- `pyload.plugins`: the collection of officially supported plugins for pyLoad.
+- `pyload.webui`: a web interface to interact with pyLoad.
 
-### Optional Dependencies
+### Extra Dependencies
 
-Optional dependencies are non-essential packages that extend or unlock some features of pyLoad.
+Extra dependencies are non-essential packages that extend or unlock some features of pyLoad.
 
 To install them you have to append a specific tag name to the installation command.
 
 #### Available tags
 
-- `extra`: packages required by several plugins to work.
+- `plugins`: packages required by some plugins to work.
 - `build`: packages required to [build translations](#build-translations).
-- `all`: all the available packages.
+- `all`: alias of `build` and `plugins`.
 
 You can use a tag in this way:
 
-    pip install pyload-ng[extra]
+    pip install pyload-ng[plugins]
 
 Or group more together:
 
-    pip install pyload-ng[extra][build]
+    pip install pyload-ng[plugins][build]
 
 ### Development Releases
 
