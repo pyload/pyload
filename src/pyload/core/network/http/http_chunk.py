@@ -141,6 +141,22 @@ class HTTPChunk(HTTPRequest):
     def cj(self):
         return self.p.cj
 
+    def format_range(self):
+        if self.id == len(self.p.info.chunks) - 1:  # as last chunk don't set end range, so we get everything
+            end = ""
+            if self.resume:
+                start = self.arrived + self.range[0]
+            else:
+                start = self.range[0]
+        else:
+            end = min(self.range[1] + 1, self.p.size - 1)
+            if self.id == 0 and not self.resume:  # special case for first chunk
+                start = 0
+            else:
+                start = self.arrived + self.range[0]
+
+        return f"{start}-{end}".encode()
+
     def get_handle(self):
         """
         returns a Curl handle ready to use for perform/multiperform.
@@ -152,7 +168,7 @@ class HTTPChunk(HTTPRequest):
         self.c.setopt(pycurl.HEADERFUNCTION, self.write_header)
 
         # request all bytes, since some servers in russia seems to have a defect
-        # arihmetic unit
+        # arithmetic unit
 
         fs_name = self.p.info.get_chunk_name(self.id)
         if self.resume:
@@ -166,15 +182,7 @@ class HTTPChunk(HTTPRequest):
                 if self.arrived + self.range[0] >= self.range[1]:
                     return None
 
-                start = self.arrived + self.range[0]
-                if (
-                    self.id == len(self.p.info.chunks) - 1
-                ):  #: as last chunk dont set end range, so we get everything
-                    end = ""
-                else:
-                    end = min(self.range[1] + 1, self.p.size - 1)
-
-                range = f"{start}-{end}".encode()
+                range = self.format_range()
 
                 self.log.debug(f"Chunked resume with range {range}")
                 self.c.setopt(pycurl.RANGE, range)
@@ -184,13 +192,7 @@ class HTTPChunk(HTTPRequest):
 
         else:
             if self.range:
-                start = self.range[0]
-                if self.id == len(self.p.info.chunks) - 1:  #: see above
-                    end = ""
-                else:
-                    end = min(self.range[1] + 1, self.p.size - 1)
-
-                range = f"{start}-{end}"
+                range = self.format_range()
 
                 self.log.debug(f"Chunked with range {range}")
                 self.c.setopt(pycurl.RANGE, range)
@@ -201,11 +203,11 @@ class HTTPChunk(HTTPRequest):
 
     def write_header(self, buf):
         self.header += buf
-        # TODO: forward headers?, this is possibly unneeeded, when we just parse valid 200 headers
+        # TODO: forward headers?, this is possibly unneeded, when we just parse valid 200 headers
         # as first chunk, we will parse the headers
         if not self.range and self.header.endswith(b"\r\n\r\n"):
             self.parse_header()
-        # ftp file size parsing
+        # FTP file size parsing
         elif not self.range and buf.startswith(b"150") and b"data connection" in buf:
             size = re.search(rb"(\d+) bytes", buf)
             if size:
@@ -283,6 +285,7 @@ class HTTPChunk(HTTPRequest):
     def set_range(self, range):
         self.range = range
         self.size = range[1] - range[0]
+        self.log.debug("Chunked with range %s" % self.format_range())
 
     def flush_file(self):
         """

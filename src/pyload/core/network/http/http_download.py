@@ -87,7 +87,7 @@ class HTTPDownload:
         init = self.info.get_chunk_name(0)  #: initial chunk name
 
         if self.info.get_count() > 1:
-            with open(init, mode="rb+") as fo:  #: first chunkfile
+            with open(init, mode="rb+") as fo:  #: first chunk file
                 for i in range(1, self.info.get_count()):
                     # input file
                     # seek to beginning of chunk, to get rid of overlapping chunks
@@ -176,7 +176,7 @@ class HTTPDownload:
             # need to create chunks
             if (
                 not chunks_created and self.chunk_support and self.size
-            ):  #: will be setted later by first chunk
+            ):  #: will be set later by first chunk
 
                 if not resume:
                     self.info.set_size(self.size)
@@ -195,7 +195,7 @@ class HTTPDownload:
                         self.chunks.append(c)
                         self.m.add_handle(handle)
                     else:
-                        # close immediatly
+                        # close immediately
                         self.log.debug("Invalid curl handle -> closed")
                         c.close()
 
