@@ -115,6 +115,8 @@ class HTTPChunk(HTTPRequest):
         self.arrived = 0
         self.last_url = self.p.referer
 
+        self.aborted = False  # indicates that the chunk aborted gracefully
+
         self.c = pycurl.Curl()
 
         self.header = b""
@@ -242,6 +244,7 @@ class HTTPChunk(HTTPRequest):
             time.sleep(self.sleep)
 
         if self.range and self.arrived > self.size:
+            self.aborted = True  #: tell parent to ignore the pycurl Exception
             return 0  #: close if chunk has enough data
 
     def parse_header(self):
