@@ -25,8 +25,7 @@ stages:
 python: 3.6
 dist: bionic
 
-env:
-  jobs: PYCURL_SSL_LIBRARY=openssl
+env: PYCURL_SSL_LIBRARY=openssl
 
 before_cache: rm -f "$HOME/.cache/pip/log/debug.log"
 cache: pip
@@ -39,9 +38,9 @@ jobs:
   # fast_finish: true
 
   allow_failures:
-    - stage: Deploy
     - name: Pylint Errors
     - name: Bandit Errors
+    - name: Docker Release
     # - python: nightly
     - python: pypy3
     - os: osx
