@@ -184,7 +184,7 @@ class HTTPChunk(HTTPRequest):
 
                 range = self.format_range()
 
-                self.log.debug(f"Chunked resume with range {range}")
+                self.log.debug(f"Chunked with range {range}")
                 self.c.setopt(pycurl.RANGE, range)
             else:
                 self.log.debug(f"Resume File from {self.arrived}")
