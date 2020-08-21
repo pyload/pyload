@@ -126,7 +126,7 @@ var LinkEntry = new Class({
             'html': item.percent+ '% / '+ humanFileSize(item.size-item.bleft)
             }),
             remove: new Element('img',{
-            'src': "{{ url_for('static', filename='img/control_cancel.png') }}",
+            'src': "{{ url_for('static', filename='img/control-cancel.png') }}",
             'styles':{
                 'vertical-align': 'middle',
                 'margin-right': '-20px',

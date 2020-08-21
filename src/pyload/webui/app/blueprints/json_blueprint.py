@@ -90,21 +90,21 @@ def package(id):
         data = api.get_package_data(id)
         for pyfile in data["links"]:
             if pyfile["status"] == 0:
-                pyfile["icon"] = "status_finished.png"
+                pyfile["icon"] = "status-finished.png"
             elif pyfile["status"] in (2, 3):
-                pyfile["icon"] = "status_queue.png"
+                pyfile["icon"] = "status-queue.png"
             elif pyfile["status"] in (9, 1):
-                pyfile["icon"] = "status_offline.png"
+                pyfile["icon"] = "status-offline.png"
             elif pyfile["status"] == 5:
-                pyfile["icon"] = "status_waiting.png"
+                pyfile["icon"] = "status-waiting.png"
             elif pyfile["status"] == 8:
-                pyfile["icon"] = "status_failed.png"
+                pyfile["icon"] = "status-failed.png"
             elif pyfile["status"] == 4:
-                pyfile["icon"] = "arrow_right.png"
+                pyfile["icon"] = "arrow-right.png"
             elif pyfile["status"] in (11, 13):
-                pyfile["icon"] = "status_proc.png"
+                pyfile["icon"] = "status-proc.png"
             else:
-                pyfile["icon"] = "status_downloading.png"
+                pyfile["icon"] = "status-downloading.png"
 
         tmp = data["links"]
         tmp.sort(key=lambda entry: entry["order"])

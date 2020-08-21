@@ -194,7 +194,7 @@ var Package = new Class({
                 plugin: link.plugin
             });
             html += "<img title='{{_('Delete Link')}}' style='cursor: pointer;' width='10px' height='10px' src='{{ url_for('static', filename='img/delete.png') }}' />&nbsp;&nbsp;";
-            html += "<img title='{{_('Restart Link')}}' style='cursor: pointer;margin-left: -4px' width='10px' height='10px' src='{{ url_for('static', filename='img/arrow_refresh.png') }}' /></div>";
+            html += "<img title='{{_('Restart Link')}}' style='cursor: pointer;margin-left: -4px' width='10px' height='10px' src='{{ url_for('static', filename='img/arrow-refresh.png') }}' /></div>";
             var div = new Element("div", {
                 "id": "file_" + link.id,
                 "class": "child",
@@ -239,7 +239,7 @@ var Package = new Class({
                     onSuccess: function() {
                         var ele = $('file_' + this);
                         var imgs = ele.getElements("img");
-                        imgs[0].set("src", "{{ url_for('static', filename='img/status_queue.png') }}");
+                        imgs[0].set("src", "{{ url_for('static', filename='img/status-queue.png') }}");
                         var spans = ele.getElements(".child_status");
                         spans[1].set("html", "queued");
                         indicateSuccess();
