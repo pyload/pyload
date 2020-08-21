@@ -141,7 +141,7 @@ class ExternalScripts(BaseAddon):
             + " ".join('"' + arg + '"' if " " in arg else arg for arg in call)
         )
 
-        p = subprocess.Popen(call, bufsize=-1)  # NOTE: output goes to pyload
+        p = subprocess.Popen(call)  # NOTE: output goes to pyload
 
         return p
 

@@ -200,16 +200,13 @@ class ThreadManager:
         self.pyload.log.debug(f"Old IP: {ip}")
 
         try:
-            reconn = subprocess.Popen(
-                reconnect_script, bufsize=-1, shell=True
-            )  #: , stdout=subprocess.PIPE)
+            subprocess.run(reconnect_script)
         except Exception:
             self.pyload.log.warning(self._("Failed executing reconnect script!"))
             self.pyload.config.set("reconnect", "enabled", False)
             self.reconnecting.clear()
             return
 
-        reconn.wait()
         time.sleep(1)
         ip = self.get_ip()
         self.pyload.addon_manager.after_reconnecting(ip)

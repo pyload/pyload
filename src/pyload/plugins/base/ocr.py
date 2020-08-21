@@ -54,9 +54,7 @@ class BaseOCR(BasePlugin):
         call = [command] + args
         self.log_debug("EXECUTE " + " ".join(call))
 
-        popen = subprocess.Popen(
-            call, bufsize=-1, stdout=subprocess.PIPE, stderr=subprocess.PIPE
-        )
+        popen = subprocess.Popen(call)
         popen.wait()
 
         output = popen.stdout.read() + " | " + popen.stderr.read()

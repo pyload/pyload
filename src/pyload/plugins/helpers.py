@@ -525,12 +525,7 @@ def renice(pid, value):
         return
 
     try:
-        subprocess.Popen(
-            ["renice", str(value), str(pid)],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            bufsize=-1,
-        )
+        subprocess.run(["renice", str(value), str(pid)])
     except Exception:
         pass
 
