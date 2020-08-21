@@ -25,7 +25,8 @@ stages:
 python: 3.6
 dist: bionic
 
-env: PYCURL_SSL_LIBRARY=openssl
+env:
+  jobs: PYCURL_SSL_LIBRARY=openssl
 
 before_cache: rm -f "$HOME/.cache/pip/log/debug.log"
 cache: pip
@@ -127,7 +128,6 @@ jobs:
         file_glob: true
         file: dist/*
         skip_cleanup: true
-        # prerelease: true
 
     - stage: Deploy
       name: PyPI Release
@@ -155,6 +155,7 @@ jobs:
           update: true
           packages: docker-ce
       services: docker
+      before_install: docker --version
       install: pip install --upgrade docker-ci-deploy
       before_script: docker pull pyload/pyload || true
       script:
