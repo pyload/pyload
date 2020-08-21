@@ -138,6 +138,8 @@ class HTTPChunk(HTTPRequest):
         self.arrived = 0
         self.lastURL = self.p.referer
 
+        self.aborted = False  # indicates that the chunk aborted gracefully
+
         self.c = pycurl.Curl()
 
         self.header = ""
@@ -221,10 +223,10 @@ class HTTPChunk(HTTPRequest):
 
         self.headerParsed = True
 
-        return None  #:All is fine
+        return None  #: All is fine
 
     def writeBody(self, buf):
-        #:Ignore BOM, it confuses unrar
+        #: Ignore BOM, it confuses unrar
         if not self.BOMChecked:
             if buf[:3] == codecs.BOM_UTF8:
                 buf = buf[3:]
@@ -254,9 +256,10 @@ class HTTPChunk(HTTPRequest):
             time.sleep(self.sleep)
 
         if self.range and self.arrived > self.size:
-            return 0  #:Close if we have enough data
+            self.aborted = True  #: Tell parent to ignore the pycurl Exception
+            return 0  #: Close if we have enough data
 
-        return None  #:All is fine
+        return None  #: All is fine
 
     def parseHeader(self):
         """parse data from recieved header"""
@@ -323,7 +326,7 @@ class HTTPChunk(HTTPRequest):
                     else:
                         continue
 
-                    #:Drop unsafe chararacters
+                    #: Drop unsafe characters
                     fname = posixpath_basename(fname)
                     fname = ntpath_basename(fname)
                     for badc in '<>:"/\\|?*\0':
