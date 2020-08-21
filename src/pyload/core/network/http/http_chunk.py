@@ -230,7 +230,7 @@ class HTTPChunk(HTTPRequest):
         else:
             # Avoid small buffers, increasing sleep time slowly if buffer size gets smaller
             # otherwise reduce sleep time percentual (values are based on tests)
-            # So in general cpu time is saved without reducing bandwith too much
+            # So in general cpu time is saved without reducing bandwidth too much
 
             if size < self.last_size:
                 self.sleep += 0.002
@@ -242,7 +242,7 @@ class HTTPChunk(HTTPRequest):
             time.sleep(self.sleep)
 
         if self.range and self.arrived > self.size:
-            return None  #: close if we have enough data
+            return 0  #: close if chunk has enough data
 
     def parse_header(self):
         """
