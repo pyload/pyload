@@ -252,7 +252,13 @@ class HTTPRequest():
             self.c.setopt(pycurl.NOBODY, 0)
 
         else:
-            self.c.perform()
+            try:
+                self.c.perform()
+            except pycurl.error, e:
+                if e.args[0] == pycurl.E_WRITE_ERROR and self.abort:  #: Ignore write error on abort
+                    pass
+                else:
+                    raise
             rep = self.getResponse()
 
         self.c.setopt(pycurl.POSTFIELDS, "")
