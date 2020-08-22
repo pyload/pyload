@@ -26,10 +26,9 @@
 
 **pyLoad Next** is the newest version of pyLoad.
 
-Developed in the [master branch](https://github.com/pyload/pyload/tree/master) and deployed as `pyload-ng` on [PyPI](https://pypi.org/project/pyload-ng/), works on Python 3.6+ and is currently in alpha phase.
+Developed in the [master branch](https://github.com/pyload/pyload/tree/master) on GitHub and deployed as `pyload-ng` on [PyPI](https://pypi.org/project/pyload-ng/), works on Python 3.6+ and is currently in alpha phase.
 
-The old stable version of pyLoad resides in the [stable branch](https://github.com/pyload/pyload/tree/stable)
-and is only compatible with the EOL Python 2.
+The old stable version of pyLoad resides in the [stable branch](https://github.com/pyload/pyload/tree/stable) and is only compatible with Python 2.
 
 ## Quick Start
 
@@ -38,17 +37,17 @@ and is only compatible with the EOL Python 2.
 [![PyPI Python Versions](https://img.shields.io/pypi/pyversions/pyload-ng.svg)](https://pypi.python.org/pypi/pyload-ng)
 [![PyPI License](https://img.shields.io/pypi/l/pyload-ng.svg)](https://github.com/pyload/pyload/blob/master/LICENSE.md)
 
-Open a terminal window and install pyLoad with the command:
+Open a terminal window and install pyLoad typing:
 
     pip install --pre pyload-ng[all]
 
-Then you can start pyLoad simply typing:
+To start pyLoad use the command:
 
     pyload
 
 See the [usage section](#usage) for information on all available options.
 
-If you want to uninstall pyLoad use the command:
+If you want to uninstall pyLoad:
 
     pip uninstall pyload-ng
 
@@ -165,7 +164,7 @@ the pyLoad's web interface.
 
 - `pyload/pyload:ubuntu`: default docker image of pyLoad (amd64, arm, arm64v8).
 - `pyload/pyload:ubuntu-arm32v7`: default docker image of pyLoad (arm32v7).
-- `pyload/pyload:alpine`: alternative docker image of pyLoad (smaller, [maybe slower](https://medium.com/@lih.verma/alpine-makes-python-docker-builds-way-too-50-slower-and-images-double-2-larger-61d1d43cbc79)).
+- `pyload/pyload:alpine`: alternative docker image of pyLoad (maybe smaller).
 - `pyload/pyload`: alias of `pyload/pyload:ubuntu`.
 
 ### Create Container
@@ -215,12 +214,7 @@ Replace `<USERDIR>` with where you want that user data files (configurations) ar
 
 ## Troubleshooting
 
-### Installation
-
-If the installation fails due any of the listed errors,
-retry applying the given solution:
-
-#### pip not found
+### pip not found
 
 Retry replacing the command `pip` with `pip3`:
 
@@ -235,7 +229,7 @@ The easiest way to fix this error is to (re)install Python.
 Visit https://www.python.org/downloads
 to get the proper **Python 3** release for your system.
 
-#### pyload-ng not found
+### pyload-ng not found
 
 Check the version of the Python interpreters installed on your system.
 
@@ -247,19 +241,21 @@ If the version is too old, try to upgrage Python, then you can retry to install 
 
 Python releases below version 3.6 are not supported!
 
-#### Setuptools is too old
+### Setuptools is too old
 
 To upgrade the `setuptools` package, type the command:
 
     pip install --upgrade setuptools
 
-#### Permission denied
+### Permission denied
 
 Under Unix-based systems, try to install pyLoad with root privileges.
 
-Prefix the installation command with `sudo`:
+Prefix the installation/uninstallation command with `sudo`:
 
     sudo pip install pyload-ng
+
+    sudo pip uninstall pyload-ng
 
 Under Windows systems, open a _Command Prompt as administrator_ to install pyLoad
 with root privileges.
@@ -269,17 +265,6 @@ You can also try to install the `pyload-ng` package **without** root privileges.
 Append the option `--user` to the installation command:
 
     pip install --user pyload-ng
-
-#### Permission denied
-
-Under Unix-based systems, try to uninstall pyLoad with root privileges.
-
-Prefix the installation command with `sudo`:
-
-    sudo pip uninstall pyload-ng
-
-Under Windows systems, open a _Command Prompt as administrator_ to uninstall pyLoad
-with root privileges.
 
 ## Licensing
 
