@@ -15,7 +15,7 @@ from ..internal.misc import exists, json, safejoin, uniqify
 class RealdebridComTorrent(Crypter):
     __name__ = "RealdebridComTorrent"
     __type__ = "crypter"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __status__ = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -62,6 +62,9 @@ class RealdebridComTorrent(Crypter):
 
             return res
 
+        else:
+            self.fail(_("Refresh token has failed"))
+
     def sleep(self, sec):
         for _i in range(sec):
             if self.pyfile.abort:
@@ -88,24 +91,38 @@ class RealdebridComTorrent(Crypter):
 
             #: Check if the torrent file path is inside pyLoad's config directory
             if os.path.abspath(torrent_filename).startswith(os.path.abspath(os.getcwd()) + os.sep):
-                try:
-                    #: send the torrent content to the server
-                    api_data = json.loads(self.upload(torrent_filename,
-                                                      self.API_URL + "/torrents/addTorrent",
-                                                      get={'auth_token': self.api_token}))
-                except BadHeader, e:
-                    error_msg = json.loads(e.content)['error']
-                    if e.code == 400:
-                        self.fail(error_msg)
-                    elif e.code == 401:
-                        self.fail(_("Bad token (expired, invalid)"))
-                    elif e.code == 403:
-                        self.fail(_("Permission denied (account locked, not premium)"))
-                    elif e.code == 503:
-                        self.fail(_("Service unavailable - %s") % error_msg)
+                for _i in range(2):
+                    try:
+                        #: send the torrent content to the server
+                        json_data = self.upload(torrent_filename,
+                                                self.API_URL + "/torrents/addTorrent",
+                                                get={'auth_token': self.api_token})
+                    except BadHeader, e:
+                        json_data = e.content
+
+                    api_data = json.loads(json_data) if len(json_data) > 0 else {}
+
+                    if 'error_code' in api_data:
+                        if api_data['error_code'] == 8:  #: token expired, refresh the token and retry
+                            self.account.relogin()
+                            if not self.account.info['login']['valid']:
+                                self.fail(_("Token refresh has failed"))
+
+                            else:
+                                self.api_token = self.account.accounts[self.account.accounts.keys()[0]]["api_token"]
+
+                        else:
+                            error_msg = api_data['error']
+                            self.fail(error_msg)
+
+                    else:
+                        break
+
+                else:
+                    self.fail(_("Token refresh has failed"))
 
             else:
-                self.fail(_("Illegal URL")) #: We don't allow files outside pyLoad's config directory
+                self.fail(_("Illegal URL"))  #: We don't allow files outside pyLoad's config directory
 
         else:
             #: magnet URL, send to the server
