@@ -105,7 +105,7 @@ def packs(nameurls):
 
     packs = {}
     for urlname, url in nameurls:
-        urlname = name(urlname, strict=False)
+        urlname = name(urlname, purge=True)
         urlname = os.path.splitext(urlname)[0].strip()
         urlname = _RE_PACKS.sub("_", urlname).strip("_")
 

@@ -73,7 +73,7 @@ class InfoThread(PluginThread):
 
             self.pyload.log.debug(f"Fetched and generated {len(packs)} packages")
 
-            for k, v in packs:
+            for k, v in packs.items():
                 self.pyload.api.add_package(k, v)
 
             # empty cache
