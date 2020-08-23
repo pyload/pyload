@@ -278,7 +278,7 @@ Please refer to the [LICENSE](/LICENSE) for the full license.
 
 ### Alternative License
 
-With an explicit permission of the authors you may use or distribute
+With an explicit permission of the **pyLoad team** you may use or distribute
 this software under a different license according to the agreement.
 
 ### Contributor License Agreement
@@ -296,7 +296,7 @@ This is essentially what you will be agreeing to:
 - You retain full ownership (copyright) of your submission and are free to do
   with it as you please.
 
-Contact us at licensing@pyload.net for any question about our code licensing policy.
+Contact us at licensing@pyload.net for any question about pyLoad licensing policy.
 
 ## Credits
 
