@@ -44,7 +44,7 @@ def render(filename):
 
 @bp.route("/robots.txt", endpoint="robots")
 def robots():
-    return "User-agent: *\n_disallow: /"
+    return "User-agent: *\nDisallow: /"
 
 
 # TODO: Rewrite login route using flask-login

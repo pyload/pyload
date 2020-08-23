@@ -242,7 +242,13 @@ class HTTPRequest:
         if just_header:
             self.c.setopt(pycurl.NOBODY, 1)
 
-        self.c.perform()
+        try:
+            self.c.perform()
+        except pycurl.error as exc:
+            if exc.args[0] == pycurl.E_WRITE_ERROR and self.abort:  #: Ignore write error on abort
+                pass
+            else:
+                raise
         rep = self.header if just_header else self.get_response()
 
         if not follow_location:

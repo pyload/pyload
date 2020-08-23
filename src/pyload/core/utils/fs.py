@@ -7,6 +7,7 @@ import shutil
 
 # import portalocker
 # import psutil
+from ... import exc_logger
 from .convert import to_bytes, to_str
 
 try:

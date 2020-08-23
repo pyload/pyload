@@ -1,16 +1,18 @@
 # -*- coding: utf-8 -*-
 
+import hashlib
 import random
+
 from functools import reduce
 from hashlib import sha1
 
-from .database_thread import DatabaseThread, style
+from ..threads.database_thread import DatabaseThread, style
 
 
 # TODO: move to utils and rewrite to use argon2_cffi
 def _salted_password(password, salt):
-    salt_pw = salt + password
-    return sha1(salt_pw.encode()).hexdigest()
+    dk = hashlib.pbkdf2_hmac("blake2b", password.encode(), salt.encode(), 100000)
+    return dk.hex()
 
 
 class UserDatabaseMethods:

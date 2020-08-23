@@ -83,10 +83,12 @@ _RE_NUMBER = re.compile(r"[\s-]+")
 
 
 def number(text):
-    try:
-        text = web.misc.translate(text).lower()
-    except Exception:
-        text = text.lower()
+    # try:
+    #     text = web.misc.translate(text).lower()
+    # except Exception:
+    #     text = text.lower()
+    text = text.lower()
+
     o_tuple = [(w, i) for i, w in enumerate(_ONEWORDS)]
     t_tuple = [(w, i * 10) for i, w in enumerate(_TENWORDS, 2)]
 
@@ -105,7 +107,7 @@ def packs(nameurls):
 
     packs = {}
     for urlname, url in nameurls:
-        urlname = name(urlname, strict=False)
+        urlname = name(urlname, purge=True)
         urlname = os.path.splitext(urlname)[0].strip()
         urlname = _RE_PACKS.sub("_", urlname).strip("_")
 
@@ -162,10 +164,11 @@ def seconds(text):
         except ValueError:
             return None
 
-    try:
-        text = web.misc.translate(text).lower()
-    except Exception:
-        text = text.lower()
+    # try:
+    #     text = web.misc.translate(text).lower()
+    # except Exception:
+    #     text = text.lower()
+    text = text.lower()
 
     w = "|".join(_TIMEWORDS)
     pattr = rf"({w})\s+day|today|daily"

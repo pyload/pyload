@@ -38,8 +38,6 @@ jobs:
   # fast_finish: true
 
   allow_failures:
-    - name: Pylint Errors
-    - name: Bandit Errors
     - name: Docker Release
     # - python: nightly
     - python: pypy3

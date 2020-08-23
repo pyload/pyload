@@ -255,7 +255,7 @@ class PluginManager:
         """
         parse plugins for given list of urls.
         """
-        last = None
+        last = (None, {})
         res = []  #: tupels of (url, plugin)
 
         for url in urls:
@@ -268,7 +268,7 @@ class PluginManager:
             found = False
 
             # NOTE: E1136: Value 'last' is unsubscriptable (unsubscriptable-object)
-            if last and last[1]["re"].match(url):
+            if last != (None, {}) and last[1]["re"].match(url):
                 res.append((url, last[0]))
                 continue
 

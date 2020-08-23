@@ -145,7 +145,7 @@ class Core:
         self.webserver = WebServerThread(self)
 
     def _init_database(self, restore):
-        from .database import DatabaseThread
+        from .threads.database_thread import DatabaseThread
 
         db_path = os.path.join(self.userdir, DatabaseThread.DB_FILENAME)
         newdb = not os.path.isfile(db_path)

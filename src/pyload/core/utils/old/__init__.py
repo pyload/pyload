@@ -22,7 +22,6 @@ from datetime import timedelta
 import shutil
 import urllib.parse
 from functools import partial, wraps
-from .... import exc_logger
 
 from .. import purge
 

@@ -2,8 +2,8 @@
 
 from ..datatypes.pyfile import PyFile
 from ..datatypes.pypackage import PyPackage
+from ..threads.database_thread import DatabaseThread, style
 from ..utils import format
-from .database_thread import DatabaseThread, style
 
 
 class FileDatabaseMethods:

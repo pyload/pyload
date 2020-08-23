@@ -19,11 +19,9 @@ PROPRIETARY_RESPONSES = {
 
 class BadHeader(Exception):
     def __init__(self, code, header=b"", content=b""):
-        int_code = int(code)
-        response = responses.get(
-            int_code, PROPRIETARY_RESPONSES.get(int_code, "unknown error code")
-        )
+        code = int(code)
+        response = PROPRIETARY_RESPONSES.get(code, "unknown error code")
         super().__init__(f"Bad server response: {code} {response}")
-        self.code = int_code
+        self.code = code
         self.header = header
         self.content = content

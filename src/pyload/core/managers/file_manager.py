@@ -7,6 +7,17 @@ from ..utils.old import lock
 from .event_manager import InsertEvent, ReloadAllEvent, RemoveEvent, UpdateEvent
 
 
+def change(func):
+    def new(self, *args):
+        self.unchanged = False
+        self.filecount = -1
+        self.queuecount = -1
+        self.job_cache = {}
+        return func(self, *args)
+
+    return new
+
+
 class FileManager:
     """
     Handles all request made to obtain information, modify status or other request for
@@ -51,16 +62,6 @@ class FileManager:
         self.filecount = -1  #: if an invalid value is set get current value from db
         self.queuecount = -1  #: number of package to be loaded
         self.unchanged = False  #: determines if any changes was made since last call
-
-    def change(func):
-        def new(*args):
-            args[0].unchanged = False
-            args[0].filecount = -1
-            args[0].queuecount = -1
-            args[0].job_cache = {}
-            return func(*args)
-
-        return new
 
     # ----------------------------------------------------------------------
     def save(self):
