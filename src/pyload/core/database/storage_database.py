@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
-
-from .database_thread import DatabaseThread, style
+from ..threads.database_thread import DatabaseThread, style
 
 
 class StorageDatabaseMethods:

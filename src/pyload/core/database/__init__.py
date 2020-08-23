@@ -8,7 +8,6 @@
 #          \  /
 #           \/
 
-from .database_thread import DatabaseThread
 from .file_database import FileDatabaseMethods
 from .user_database import UserDatabaseMethods
 from .storage_database import StorageDatabaseMethods

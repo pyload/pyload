@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import random
+
 from functools import reduce
 from hashlib import sha1
 
-from .database_thread import DatabaseThread, style
+from ..threads.database_thread import DatabaseThread, style
 
 
 # TODO: move to utils and rewrite to use argon2_cffi
