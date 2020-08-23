@@ -305,3 +305,5 @@ class DatabaseThread(Thread):
         for sub in DatabaseThread.subs:
             if hasattr(sub, attr):
                 return getattr(sub, attr)
+
+        raise AttributeError(f"'{self.__class__.__name__}' object has no attribute '{attr}'")
