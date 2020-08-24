@@ -230,7 +230,7 @@ class HTTPDownload:
                     curl, errno, msg = c
                     chunk = self.find_chunk(curl)
                     # test if chunk was finished
-                    if errno != 23 or not chunk.aborted:
+                    if errno != pycurl.E_WRITE_ERROR or not chunk.aborted:
                         failed.append(chunk)
                         ex = pycurl.error(errno, msg)
                         self.log.debug(f"Chunk {chunk.id + 1} failed: {ex}")
