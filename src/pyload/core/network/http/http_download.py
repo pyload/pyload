@@ -224,6 +224,7 @@ class HTTPDownload:
                         failed.append(chunk)
                         ex = exc
                     else:
+                        self.log.debug(f"Chunk {chunk.id + 1} download finished")
                         chunks_done.add(c)
 
                 for c in err_list:
@@ -243,6 +244,7 @@ class HTTPDownload:
                         failed.append(chunk)
                         ex = exc
                     else:
+                        self.log.debug(f"Chunk {chunk.id + 1} download finished")
                         chunks_done.add(curl)
                 if not num_q:  #: no more infos to get
 

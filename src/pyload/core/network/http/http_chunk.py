@@ -156,7 +156,7 @@ class HTTPChunk(HTTPRequest):
             else:
                 start = self.arrived + self.range[0]
 
-        return f"{start}-{end}".encode()
+        return f"{start}-{end}"
 
     def get_handle(self):
         """
@@ -185,7 +185,7 @@ class HTTPChunk(HTTPRequest):
 
                 range = self.format_range()
 
-                self.log.debug(f"Chunked with range {range}")
+                self.log.debug(f"Chunk {self.id + 1} chunked with range {range}")
                 self.c.setopt(pycurl.RANGE, range)
             else:
                 self.log.debug(f"Resume File from {self.arrived}")
@@ -195,7 +195,7 @@ class HTTPChunk(HTTPRequest):
             if self.range:
                 range = self.format_range()
 
-                self.log.debug(f"Chunked with range {range}")
+                self.log.debug(f"Chunk {self.id + 1} chunked with range {range}")
                 self.c.setopt(pycurl.RANGE, range)
 
             self.fp = open(fs_name, mode="wb")
@@ -286,7 +286,7 @@ class HTTPChunk(HTTPRequest):
     def set_range(self, range):
         self.range = range
         self.size = range[1] - range[0]
-        self.log.debug("Chunked with range %s" % self.format_range())
+        self.log.debug("Chunk {id} chunked with range {range}".format(id=self.id + 1, range=self.format_range()))
 
     def flush_file(self):
         """
