@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import codecs
 import os
 import re
 import time
@@ -219,7 +220,7 @@ class HTTPChunk(HTTPRequest):
     def write_body(self, buf):
         # ignore BOM, it confuses unrar
         if not self.BOMChecked:
-            if [ord(b) for b in buf[:3]] == [239, 187, 191]:
+            if buf[:3] == codecs.BOM_UTF8:
                 buf = buf[3:]
             self.BOMChecked = True
 
