@@ -40,7 +40,7 @@ def size(value):
     """
     formats size of bytes
     """
-    return bitmath.Byte(value).best_prefix()
+    return bitmath.Byte(value).best_prefix().format("{value:.2f} {unit}")
 
 
 def speed(obj):

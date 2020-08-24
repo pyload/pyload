@@ -259,7 +259,7 @@ class PyFile:
         gets established time of arrival.
         """
         try:
-            return self.get_bytes_left() // self.get_speed()
+            return int(self.get_bytes_left() // self.get_speed())
         except Exception:
             return 0
 
