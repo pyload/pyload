@@ -60,8 +60,8 @@ class WebServerThread(threading.Thread):
 
     def run(self):
         self.log.warning(
-            self._("Starting webserver: {host}:{port}").format(
-                host=self.host, port=self.port
+            self._("Starting webserver: {scheme}://{host}:{port}").format(
+                scheme="https" if self.use_ssl else "http", host=self.host, port=self.port
             )
         )
         if self.develop:
