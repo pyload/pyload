@@ -1,8 +1,3 @@
----
-labels: enhancement
-assignees: gammac0de vuolter
----
-
 <!-- ANNOTATIONS LIKE THIS WILL NOT BE VISIBLE IN YOUR TICKET -->
 
 ### Describe the changes

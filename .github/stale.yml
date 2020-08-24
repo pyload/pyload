@@ -1,22 +1,22 @@
 # Configuration for probot-stale - https://github.com/probot/stale
 
 # Number of days of inactivity before an Issue or Pull Request becomes stale
-daysUntilStale: 180
+daysUntilStale: 90
 
 # Number of days of inactivity before an Issue or Pull Request with the stale label is closed.
 # Set to false to disable. If disabled, issues still need to be closed manually, but will remain marked as stale.
 daysUntilClose: 30
 
+# Only issues or pull requests with all of these labels are check if stale. Defaults to `[]` (disabled)
+onlyLabels: []
+
 # Issues or Pull Requests with these labels will never be considered stale. Set to `[]` to disable
 exemptLabels:
-  - checking
-  - important
   - pinned
   - security
   - "feature request"
   - "feedback wanted"
   - "plugin request"
-  - "top rated"
 
 # Set to true to ignore issues in a project (defaults to false)
 exemptProjects: false
@@ -28,14 +28,14 @@ exemptMilestones: false
 exemptAssignees: false
 
 # Label to use when marking as stale
-staleLabel: expired
+staleLabel: outdated
 
 # Comment to post when marking as stale. Set to `false` to disable
 markComment: >
-  This ticket has been automatically marked as `expired`
-  because **180 days** have passed since the last comment.
+  This ticket has been automatically marked as `outdated`
+  because **3 months** have passed since the last comment.
 
-  **It will be closed in 30 days if no further activity occurs.**
+  **It will be closed in 30 days if no further activity occurs**.
 
   If this issue still requires attention, please leave a comment.
 
@@ -45,13 +45,12 @@ markComment: >
 
 # Comment to post when closing a stale Issue or Pull Request.
 closeComment: >
-  **This ticket has been automatically closed.**
+  **This ticket has been automatically closed**.
 
   This is often because the request was already solved in some way
   and it just wasn't updated or it's no longer applicable.
 
-  Feel free to open a new issue if you deem it appropriate.
-  Don't forget to reference this to the new one.
+  Feel free to reopen this ticket if you need.
 
   Thanks for your contributions.
 
@@ -60,7 +59,6 @@ limitPerRun: 30
 
 # Limit to only `issues` or `pulls`
 only: issues
-
 # Optionally, specify configuration settings that are specific to just 'issues' or 'pulls':
 # pulls:
 #   daysUntilStale: 30

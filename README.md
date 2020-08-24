@@ -18,10 +18,10 @@
 
 ## Status
 
-[![Build Status](https://img.shields.io/travis/pyload/pyload.svg)](https://travis-ci.org/pyload/pyload)
-[![Updates](https://pyup.io/repos/github/pyload/pyload/shield.svg)](https://pyup.io/repos/github/pyload/pyload)
-[![Codacy Badge](https://img.shields.io/codacy/grade/240a2201eee54680b1c34bf86a32abd0.svg)](https://www.codacy.com/app/pyLoad/pyload)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
+[![Travis build status](https://img.shields.io/travis/pyload/pyload)](https://travis-ci.org/pyload/pyload)
+[![PyUp updates](https://pyup.io/repos/github/pyload/pyload/shield.svg)](https://pyup.io/repos/github/pyload/pyload)
+[![Codacy grade](https://img.shields.io/codacy/grade/240a2201eee54680b1c34bf86a32abd0)](https://www.codacy.com/app/pyLoad/pyload)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000)](https://github.com/ambv/black)
 [![CLA assistant](https://cla-assistant.io/readme/badge/pyload/pyload)](https://cla-assistant.io/pyload/pyload)
 
 **pyLoad Next** is the newest version of pyLoad.
@@ -32,10 +32,12 @@ The old stable version of pyLoad resides in the [stable branch](https://github.c
 
 ## Quick Start
 
-[![PyPI Status](https://img.shields.io/pypi/status/pyload-ng.svg)](https://pypi.python.org/pypi/pyload-ng)
-[![PyPI Version](https://img.shields.io/pypi/v/pyload-ng.svg)](https://pypi.python.org/pypi/pyload-ng)
-[![PyPI Python Versions](https://img.shields.io/pypi/pyversions/pyload-ng.svg)](https://pypi.python.org/pypi/pyload-ng)
-[![PyPI License](https://img.shields.io/pypi/l/pyload-ng.svg)](https://github.com/pyload/pyload/blob/master/LICENSE.md)
+[![PyPI status](https://img.shields.io/pypi/status/pyload-ng)](https://pypi.python.org/pypi/pyload-ng)
+[![PyPI format](https://img.shields.io/pypi/format/pyload-ng)](https://pypi.python.org/pypi/pyload-ng)
+[![PyPI version](https://img.shields.io/pypi/v/pyload-ng)](https://pypi.python.org/pypi/pyload-ng)
+[![PyPI python version](https://img.shields.io/pypi/pyversions/pyload-ng)](https://pypi.python.org/pypi/pyload-ng)
+[![PyPI implementation](https://img.shields.io/pypi/implementation/pyload-ng)](https://pypi.python.org/pypi/pyload-ng)
+[![PyPI license](https://img.shields.io/pypi/l/pyload-ng)](https://github.com/pyload/pyload/blob/master/LICENSE.md)
 
 Open a terminal window and install pyLoad typing:
 
@@ -156,9 +158,9 @@ the pyLoad's web interface.
 
 ## Docker Images
 
-[![Docker Build Status](https://img.shields.io/docker/build/pyload/pyload.svg)](https://hub.docker.com/r/pyload/pyload)
-[![MicroBadger Layers](https://img.shields.io/microbadger/layers/pyload/pyload/latest-ubuntu.svg?label=layers%20%28ubuntu%29)](https://microbadger.com/images/pyload/pyload:latest-ubuntu)
-[![MicroBadger Size](https://img.shields.io/microbadger/image-size/pyload/pyload/latest-ubuntu.svg?label=image%20size%20%28ubuntu%29)](https://microbadger.com/images/pyload/pyload:latest-ubuntu)
+[![Docker build status](https://img.shields.io/docker/build/pyload/pyload)](https://hub.docker.com/r/pyload/pyload)
+[![MicroBadger layers](https://img.shields.io/microbadger/layers/pyload/pyload)](https://microbadger.com/images/pyload/pyload)
+[![MicroBadger size](https://img.shields.io/microbadger/image-size/pyload/pyload)](https://microbadger.com/images/pyload/pyload)
 
 #### Available images
 
