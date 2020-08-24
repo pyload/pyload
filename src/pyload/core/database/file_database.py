@@ -2,7 +2,7 @@
 
 from ..datatypes.pyfile import PyFile
 from ..datatypes.pypackage import PyPackage
-from ..threads.database_thread import DatabaseThread, style
+from ..utils.struct.style import style
 from ..utils import format
 
 
@@ -424,6 +424,3 @@ class FileDatabaseMethods:
     def purge_links(self):
         self.c.execute("DELETE FROM links;")
         self.c.execute("DELETE FROM packages;")
-
-
-DatabaseThread.register_sub(FileDatabaseMethods)

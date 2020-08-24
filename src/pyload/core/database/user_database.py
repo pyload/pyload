@@ -6,12 +6,12 @@ import random
 from functools import reduce
 from hashlib import sha1
 
-from ..threads.database_thread import DatabaseThread, style
+from ..utils.struct.style import style
 
 
-# TODO: move to utils and rewrite to use argon2_cffi
+# TODO: rewrite using scrypt or argon2_cffi
 def _salted_password(password, salt):
-    dk = hashlib.pbkdf2_hmac("blake2b", password.encode(), salt.encode(), 100000)
+    dk = hashlib.pbkdf2_hmac("sha256", password.encode(), salt.encode(), 100000)
     return dk.hex()
 
 
@@ -111,6 +111,3 @@ class UserDatabaseMethods:
     @style.queue
     def remove_user(self, user):
         self.c.execute("DELETE FROM users WHERE name=?", (user,))
-
-
-DatabaseThread.register_sub(UserDatabaseMethods)

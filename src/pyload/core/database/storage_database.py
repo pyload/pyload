@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from ..threads.database_thread import DatabaseThread, style
+from ..utils.struct.style import style
 
 
 class StorageDatabaseMethods:
@@ -44,6 +44,3 @@ class StorageDatabaseMethods:
         self.c.execute(
             "DELETE FROM storage WHERE identifier=? AND key=?", (identifier, key)
         )
-
-
-DatabaseThread.register_sub(StorageDatabaseMethods)

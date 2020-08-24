@@ -4,48 +4,19 @@ import inspect
 import os
 import shutil
 import sqlite3
+
 from contextlib import closing
 from queue import Queue
 from threading import Event, Thread
 
 from ... import exc_logger
+from ..database import FileDatabaseMethods, StorageDatabaseMethods, UserDatabaseMethods
+from ..utils.struct.style import style
 
 # DATABASE VERSION
 __version__ = 4
 
-
-class style:
-    db = None
-
-    @classmethod
-    def set_db(cls, db):
-        cls.db = db
-
-    @classmethod
-    def inner(cls, fn):
-        @staticmethod
-        def x(*args, **kwargs):
-            return fn(cls.db, *args, **kwargs)
-
-        return x
-
-    @classmethod
-    def queue(cls, fn):
-        @staticmethod
-        def x(*args, **kwargs):
-            return cls.db.queue(fn, *args, **kwargs)
-
-        return x
-
-    @classmethod
-    def async_(cls, fn):
-        @staticmethod
-        def x(*args, **kwargs):
-            return cls.db.async_(fn, *args, **kwargs)
-
-        return x
-
-
+# TODO: rewrite using peewee
 class DatabaseJob:
     def __init__(self, f, *args, **kwargs):
         self.done = Event()
@@ -306,4 +277,11 @@ class DatabaseThread(Thread):
             if hasattr(sub, attr):
                 return getattr(sub, attr)
 
-        raise AttributeError(f"'{self.__class__.__name__}' object has no attribute '{attr}'")
+        raise AttributeError(
+            f"'{self.__class__.__name__}' object has no attribute '{attr}'"
+        )
+
+
+DatabaseThread.register_sub(FileDatabaseMethods)
+DatabaseThread.register_sub(UserDatabaseMethods)
+DatabaseThread.register_sub(StorageDatabaseMethods)
