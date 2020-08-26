@@ -224,13 +224,14 @@ class HTTPDownload:
                         failed.append(chunk)
                         ex = exc
                     else:
+                        self.log.debug(f"Chunk {chunk.id + 1} download finished")
                         chunks_done.add(c)
 
                 for c in err_list:
                     curl, errno, msg = c
                     chunk = self.find_chunk(curl)
                     # test if chunk was finished
-                    if errno != 23 or not chunk.aborted:
+                    if errno != pycurl.E_WRITE_ERROR or not chunk.aborted:
                         failed.append(chunk)
                         ex = pycurl.error(errno, msg)
                         self.log.debug(f"Chunk {chunk.id + 1} failed: {ex}")
@@ -243,6 +244,7 @@ class HTTPDownload:
                         failed.append(chunk)
                         ex = exc
                     else:
+                        self.log.debug(f"Chunk {chunk.id + 1} download finished")
                         chunks_done.add(curl)
                 if not num_q:  #: no more infos to get
 

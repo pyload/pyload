@@ -1,6 +1,6 @@
 <br />
 <p align="center">
-  <img src="https://raw.githubusercontent.com/pyload/pyload/master/media/banner.png" alt="pyLoad" height="110" />
+  <img src="https://raw.githubusercontent.com/pyload/pyload/main/media/banner.png" alt="pyLoad" height="110" />
 </p>
 <h2 align="center">The free and open-source Download Manager written in pure Python</h2>
 <h4 align="center">
@@ -18,15 +18,15 @@
 
 ## Status
 
-[![Travis build status](https://img.shields.io/travis/pyload/pyload)](https://travis-ci.org/pyload/pyload)
+[![Travis build status](https://img.shields.io/travis/com/pyload/pyload)](https://travis-ci.com/pyload/pyload)
 [![PyUp updates](https://pyup.io/repos/github/pyload/pyload/shield.svg)](https://pyup.io/repos/github/pyload/pyload)
-[![Codacy grade](https://img.shields.io/codacy/grade/240a2201eee54680b1c34bf86a32abd0)](https://www.codacy.com/app/pyLoad/pyload)
+[![Codacy grade](https://app.codacy.com/project/badge/Grade/1d047f77c0a6496eb708e1b3ca83006b)](https://www.codacy.com/gh/pyload/pyload)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000)](https://github.com/ambv/black)
 [![CLA assistant](https://cla-assistant.io/readme/badge/pyload/pyload)](https://cla-assistant.io/pyload/pyload)
 
 **pyLoad Next** is the newest version of pyLoad.
 
-Developed in the [master branch](https://github.com/pyload/pyload/tree/master) on GitHub and deployed as `pyload-ng` on [PyPI](https://pypi.org/project/pyload-ng/), works on Python 3.6+ and is currently in alpha phase.
+Developed in the [main branch](https://github.com/pyload/pyload/tree/main) on GitHub and deployed as `pyload-ng` on [PyPI](https://pypi.org/project/pyload-ng/), works on Python 3.6+ and is currently in alpha phase.
 
 The old stable version of pyLoad resides in the [stable branch](https://github.com/pyload/pyload/tree/stable) and is only compatible with Python 2.
 
@@ -37,7 +37,7 @@ The old stable version of pyLoad resides in the [stable branch](https://github.c
 [![PyPI version](https://img.shields.io/pypi/v/pyload-ng)](https://pypi.python.org/pypi/pyload-ng)
 [![PyPI python version](https://img.shields.io/pypi/pyversions/pyload-ng)](https://pypi.python.org/pypi/pyload-ng)
 [![PyPI implementation](https://img.shields.io/pypi/implementation/pyload-ng)](https://pypi.python.org/pypi/pyload-ng)
-[![PyPI license](https://img.shields.io/pypi/l/pyload-ng)](https://github.com/pyload/pyload/blob/master/LICENSE.md)
+[![PyPI license](https://img.shields.io/pypi/l/pyload-ng)](https://github.com/pyload/pyload/blob/main/LICENSE.md)
 
 Open a terminal window and install pyLoad typing:
 
