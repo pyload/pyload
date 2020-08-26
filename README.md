@@ -18,9 +18,9 @@
 
 ## Status
 
-[![Travis build status](https://img.shields.io/travis/pyload/pyload)](https://travis-ci.org/pyload/pyload)
+[![Travis build status](https://img.shields.io/travis/com/pyload/pyload)](https://travis-ci.com/pyload/pyload)
 [![PyUp updates](https://pyup.io/repos/github/pyload/pyload/shield.svg)](https://pyup.io/repos/github/pyload/pyload)
-[![Codacy grade](https://img.shields.io/codacy/grade/240a2201eee54680b1c34bf86a32abd0)](https://www.codacy.com/app/pyLoad/pyload)
+[![Codacy grade](https://app.codacy.com/project/badge/Grade/1d047f77c0a6496eb708e1b3ca83006b)](https://www.codacy.com/gh/pyload/pyload)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000)](https://github.com/ambv/black)
 [![CLA assistant](https://cla-assistant.io/readme/badge/pyload/pyload)](https://cla-assistant.io/pyload/pyload)
 
