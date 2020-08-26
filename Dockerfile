@@ -12,8 +12,8 @@ ARG IMAGE_TAG="bionic"
 ARG IMAGE_CREATED
 ARG IMAGE_AUTHORS="Walter Purcaro <vuolter@gmail.com>"
 ARG IMAGE_URL="https://github.com/pyload/pyload"
-ARG IMAGE_DOCUMENTATION="https://github.com/pyload/pyload/blob/master/README.md"
-ARG IMAGE_SOURCE="https://github.com/pyload/pyload/blob/master/Dockerfile"
+ARG IMAGE_DOCUMENTATION="https://github.com/pyload/pyload/blob/main/README.md"
+ARG IMAGE_SOURCE="https://github.com/pyload/pyload/blob/main/Dockerfile"
 ARG IMAGE_VERSION="2.0.0"
 ARG IMAGE_REVISION
 ARG IMAGE_VENDOR="pyload"

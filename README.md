@@ -1,6 +1,6 @@
 <br />
 <p align="center">
-  <img src="https://raw.githubusercontent.com/pyload/pyload/master/media/banner.png" alt="pyLoad" height="110" />
+  <img src="https://raw.githubusercontent.com/pyload/pyload/main/media/banner.png" alt="pyLoad" height="110" />
 </p>
 <h2 align="center">The free and open-source Download Manager written in pure Python</h2>
 <h4 align="center">
@@ -26,7 +26,7 @@
 
 **pyLoad Next** is the newest version of pyLoad.
 
-Developed in the [master branch](https://github.com/pyload/pyload/tree/master) on GitHub and deployed as `pyload-ng` on [PyPI](https://pypi.org/project/pyload-ng/), works on Python 3.6+ and is currently in alpha phase.
+Developed in the [main branch](https://github.com/pyload/pyload/tree/main) on GitHub and deployed as `pyload-ng` on [PyPI](https://pypi.org/project/pyload-ng/), works on Python 3.6+ and is currently in alpha phase.
 
 The old stable version of pyLoad resides in the [stable branch](https://github.com/pyload/pyload/tree/stable) and is only compatible with Python 2.
 
@@ -37,7 +37,7 @@ The old stable version of pyLoad resides in the [stable branch](https://github.c
 [![PyPI version](https://img.shields.io/pypi/v/pyload-ng)](https://pypi.python.org/pypi/pyload-ng)
 [![PyPI python version](https://img.shields.io/pypi/pyversions/pyload-ng)](https://pypi.python.org/pypi/pyload-ng)
 [![PyPI implementation](https://img.shields.io/pypi/implementation/pyload-ng)](https://pypi.python.org/pypi/pyload-ng)
-[![PyPI license](https://img.shields.io/pypi/l/pyload-ng)](https://github.com/pyload/pyload/blob/master/LICENSE.md)
+[![PyPI license](https://img.shields.io/pypi/l/pyload-ng)](https://github.com/pyload/pyload/blob/main/LICENSE.md)
 
 Open a terminal window and install pyLoad typing:
 

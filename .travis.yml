@@ -13,14 +13,14 @@ git:
 branches:
   only:
     - /^v[\d.]+/
-    - master
+    - main
     - develop
 
 stages:
   - Check
   - Test
   - name: Deploy
-    if: repo = pyload/pyload AND branch = master
+    if: repo = pyload/pyload AND branch = main
 
 python: 3.6
 dist: bionic
