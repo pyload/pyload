@@ -133,10 +133,7 @@ jobs:
       script: true
       deploy:
         provider: pypi
-        user:
-          secure: "IDWPXbVVMr9/sZOb5/p9bXTvq//EGuzQWM4CnQOm2G4mfaX0ssr7+4w+wweJgI9UJFIcoHmvYC0cjljCleSW1j+1G3GO7whInLUuD63Vt1iA8H4UIvg4JYcTwGZQ9R/PWoW0k5MHems0picgA3cMw/9VBfl3IUraGb6+2QdxpHY="
-        password:
-          secure: "eoe3SLOEa0Z7UxJI905InCzHatdDigIBt/fl7b6kOHy76IYU3e5lZ/c6urGJBOsy+1LN6vPHvWmVVw/vhevfTd8MM6i0cGXo23zIefYAU2zkjKejWyF2/tke6spngikC1vzEyANs9fNFLXU4USCfgr1lCvuuy9Znwl/sI6jqVTg="
+        username: "__token__"
         distributions: "sdist build_locale bdist_wheel"
         # skip_cleanup: true
         skip_existing: true
