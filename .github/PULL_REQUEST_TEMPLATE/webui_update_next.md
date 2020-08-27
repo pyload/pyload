@@ -1,7 +1,8 @@
 ---
 name: WebUI Update (pyLoad Next)
 about: Propose an update for the web interface
-labels: "pyLoad Next", enhancement
+title: ""
+labels: pyLoad Next, enhancement
 assignees: vuolter
 ---
 

@@ -1,7 +1,8 @@
 ---
 name: Bug Report (pyLoad Stable)
 about: Create a report to help us improve
-labels: "pyLoad Stable", bug
+title: ""
+labels: pyLoad Stable, bug
 assignees: gammac0de
 ---
 

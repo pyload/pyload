@@ -1,7 +1,8 @@
 ---
 name: Core Update (pyLoad Stable)
 about: Propose an update for pyLoad
-labels: "pyLoad Stable", enhancement
+title: ""
+labels: pyLoad Stable, enhancement
 assignees: gammac0de
 ---
 

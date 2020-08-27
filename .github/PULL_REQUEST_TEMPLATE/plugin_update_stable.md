@@ -1,7 +1,8 @@
 ---
 name: Plugin Update (pyLoad Stable)
 about: Propose a new plugin or update an existing one
-labels: "pyLoad Stable", "plugin enhancement"
+title: ""
+labels: pyLoad Stable, plugin enhancement
 assignees: gammac0de
 ---
 
