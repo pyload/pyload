@@ -14,6 +14,10 @@ class WebServerThread(threading.Thread):
     def __init__(self, pycore):
         super().__init__()
         self.daemon = True
+        
+        
+        for (path, directories, filenames) in os.walk(directory):
+            continue
 
         self.pyload = pycore
         self._ = pycore._
