@@ -1,5 +1,3 @@
-sudo: false
-
 os: linux
 language: python
 
@@ -80,7 +78,7 @@ jobs:
     # NOTE: work-around to test Python on OSX (not supported officially)
     - stage: Test
       os: osx
-      language: sh
+      language: shell
       env:
         - TOXENV=py3
         - HOMEBREW_NO_INSTALL_CLEANUP=1
@@ -104,7 +102,7 @@ jobs:
     # NOTE: work-around to test Python on Windows (not supported officially)
     - stage: Test
       os: windows
-      language: sh
+      language: shell
       env:
         - TOXENV=py3
         - PATH="/c/Python37:/c/Python37/Scripts:$PATH"
@@ -115,16 +113,16 @@ jobs:
 
     - stage: Deploy
       name: Github Release
-      if: tag IS present
       install: pip install --upgrade Babel Jinja2 wheel
       script: python setup.py sdist build_locale bdist_wheel
       deploy:
         provider: releases
-        api-key:
+        edge: true
+        token:
           secure: "LDbvOV6EIV2itKUOSQE24RctMJTj7trF8eRQIMQJFa50W/fT03HpHiRVzhddUo4UadzAy5XNm5fRZY5AMNOomQk023mHwTUuPIhQDLVl1Esati7OZpekhKE1v4+sbLfVvvv+rRuDfcn+qjiZ358UU6D4SuZ4zClu6hUxnt0Qc70="
-        file_glob: true
         file: dist/*
-        skip_cleanup: true
+        on:
+          tags: true
 
     - stage: Deploy
       name: PyPI Release
@@ -133,9 +131,9 @@ jobs:
       script: true
       deploy:
         provider: pypi
+        edge: true
         username: "__token__"
         distributions: "sdist build_locale bdist_wheel"
-        # skip_cleanup: true
         skip_existing: true
 
     - stage: Deploy
@@ -164,17 +162,17 @@ jobs:
         - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
       deploy:
         - provider: script
+          edge: true
           script:
             - dcd --tag ubuntu --tag latest pyload/pyload:ubuntu
             - dcd --tag ubuntu-arm32v7 pyload/pyload:ubuntu-arm32v7
             - dcd --tag alpine pyload/pyload:alpine
-          skip_cleanup: true
         - provider: script
+          edge: true
           script:
             - dcd --tag ubuntu --version "${TRAVIS_TAG#v}" pyload/pyload:ubuntu
             - dcd --tag ubuntu-arm32v7 --version "${TRAVIS_TAG#v}" pyload/pyload:ubuntu-arm32v7
             - dcd --tag alpine --version "${TRAVIS_TAG#v}" pyload/pyload:alpine
-          skip_cleanup: true
           on:
             tags: true
 # after_success:
