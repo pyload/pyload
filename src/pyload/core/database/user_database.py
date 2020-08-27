@@ -11,7 +11,7 @@ from ..utils.struct.style import style
 
 # TODO: rewrite using scrypt or argon2_cffi
 def _salted_password(password, salt):
-    dk = hashlib.pbkdf2_hmac("sha256", password.encode(), salt.encode(), 100000)
+    dk = hashlib.pbkdf2_hmac("md5", password.encode(), salt.encode(), 100000)
     return dk.hex()
 
 
