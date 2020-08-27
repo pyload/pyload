@@ -46,6 +46,9 @@ def reversemap(obj):
 
 
 def forward(source, destination, buffering=1024):
+    """
+    Forward data from one socket to another
+    """
     try:
         rawdata = source.recv(buffering)
         while rawdata:

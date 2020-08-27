@@ -1,6 +1,0 @@
-preferredBranch: develop
-exclude:
-  branch: stable
-switchComment: >
-  Hey @{{author}}, the base branch of your pull request has been changed
-  to {{preferredBranch}}.

@@ -1,7 +1,7 @@
 ---
 name: Plugin Report (pyLoad Stable)
 about: Report a plugin failure
-labels: "pyLoad Stable" "plugin bug"
+labels: "pyLoad Stable", "plugin bug"
 assignees: gammac0de
 ---
 
