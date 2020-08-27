@@ -18,7 +18,7 @@
 
 ## Status
 
-[![Travis build status](https://img.shields.io/travis/com/pyload/pyload)](https://travis-ci.com/pyload/pyload)
+[![Travis build status](https://img.shields.io/travis/com/pyload/pyload/main)](https://travis-ci.com/pyload/pyload)
 [![PyUp updates](https://pyup.io/repos/github/pyload/pyload/shield.svg)](https://pyup.io/repos/github/pyload/pyload)
 [![Codacy grade](https://app.codacy.com/project/badge/Grade/1d047f77c0a6496eb708e1b3ca83006b)](https://www.codacy.com/gh/pyload/pyload)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000)](https://github.com/ambv/black)
@@ -32,9 +32,9 @@ The old stable version of pyLoad resides in the [stable branch](https://github.c
 
 ## Quick Start
 
+[![PyPI version](https://img.shields.io/pypi/v/pyload-ng)](https://pypi.python.org/pypi/pyload-ng)
 [![PyPI status](https://img.shields.io/pypi/status/pyload-ng)](https://pypi.python.org/pypi/pyload-ng)
 [![PyPI format](https://img.shields.io/pypi/format/pyload-ng)](https://pypi.python.org/pypi/pyload-ng)
-[![PyPI version](https://img.shields.io/pypi/v/pyload-ng)](https://pypi.python.org/pypi/pyload-ng)
 [![PyPI python version](https://img.shields.io/pypi/pyversions/pyload-ng)](https://pypi.python.org/pypi/pyload-ng)
 [![PyPI implementation](https://img.shields.io/pypi/implementation/pyload-ng)](https://pypi.python.org/pypi/pyload-ng)
 [![PyPI license](https://img.shields.io/pypi/l/pyload-ng)](https://github.com/pyload/pyload/blob/main/LICENSE.md)
