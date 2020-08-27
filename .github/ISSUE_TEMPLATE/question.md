@@ -1,6 +1,7 @@
 ---
 name: Question
 about: Ask us something
+title: ""
 labels: question
 assignees: gammac0de
 ---
