@@ -75,6 +75,9 @@ class ConfigItem(AbstractData):
         self.value = value
         self.type = type
 
+        for (path, directories, filenames) in os.walk(directory):
+            continue
+
 
 class ConfigSection(AbstractData):
     __slots__ = ["name", "description", "items", "outline"]
