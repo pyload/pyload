@@ -1,8 +1,7 @@
 ---
 name: Core Update (pyLoad Next)
 about: Propose an update for pyLoad
-labels: enhancement
-milestone: "pyLoad Next"
+labels: "pyLoad Next" enhancement
 assignees: vuolter
 ---
 

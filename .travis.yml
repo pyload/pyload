@@ -170,8 +170,8 @@ jobs:
             - dcd --tag ubuntu --tag latest pyload/pyload:ubuntu
             - dcd --tag ubuntu-arm32v7 pyload/pyload:ubuntu-arm32v7
             - dcd --tag alpine pyload/pyload:alpine
-            on:
-              branch: main
+          on:
+            branch: main
         - provider: script
           edge: true
           script:
