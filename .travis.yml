@@ -122,6 +122,7 @@ jobs:
           secure: "LDbvOV6EIV2itKUOSQE24RctMJTj7trF8eRQIMQJFa50W/fT03HpHiRVzhddUo4UadzAy5XNm5fRZY5AMNOomQk023mHwTUuPIhQDLVl1Esati7OZpekhKE1v4+sbLfVvvv+rRuDfcn+qjiZ358UU6D4SuZ4zClu6hUxnt0Qc70="
         file: dist/*
         on:
+          branch: main
           tags: true
 
     - stage: Deploy
@@ -135,6 +136,8 @@ jobs:
         username: "__token__"
         distributions: "sdist build_locale bdist_wheel"
         skip_existing: true
+        on:
+          branch: main
 
     - stage: Deploy
       name: Docker Release
@@ -167,6 +170,8 @@ jobs:
             - dcd --tag ubuntu --tag latest pyload/pyload:ubuntu
             - dcd --tag ubuntu-arm32v7 pyload/pyload:ubuntu-arm32v7
             - dcd --tag alpine pyload/pyload:alpine
+            on:
+              branch: main
         - provider: script
           edge: true
           script:
@@ -174,6 +179,7 @@ jobs:
             - dcd --tag ubuntu-arm32v7 --version "${TRAVIS_TAG#v}" pyload/pyload:ubuntu-arm32v7
             - dcd --tag alpine --version "${TRAVIS_TAG#v}" pyload/pyload:alpine
           on:
+            branch: main
             tags: true
 # after_success:
 # - if [ "$COVERAGE" = "true" ]; then coveralls || echo "failed"; fi
