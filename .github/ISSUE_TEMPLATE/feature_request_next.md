@@ -1,8 +1,7 @@
 ---
 name: Feature Request (pyLoad Next)
 about: Suggest an idea for pyLoad
-labels: "feature request"
-milestone: "pyLoad Next"
+labels: "pyLoad Next" "feature request"
 assignees: vuolter
 ---
 

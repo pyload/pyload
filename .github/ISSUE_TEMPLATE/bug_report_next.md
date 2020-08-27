@@ -1,8 +1,7 @@
 ---
 name: Bug Report (pyLoad Next)
 about: Create a report to help us improve
-labels: bug
-milestone: "pyLoad Next"
+labels: "pyLoad Next" bug
 assignees: vuolter
 ---
 

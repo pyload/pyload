@@ -1,8 +1,7 @@
 ---
 name: Plugin Request (pyLoad Stable)
 about: Suggest a new plugin for pyLoad
-labels: "plugin request"
-milestone: "pyLoad Stable"
+labels: "pyLoad Stable" "plugin request"
 assignees: gammac0de
 ---
 
