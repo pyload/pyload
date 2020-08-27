@@ -46,6 +46,9 @@ class LogFactory:
         self._ = core._
         self.loggers = {}
 
+        u = {}
+        u.a = 7
+
     def init_logger(self, name):
         logger = logging.getLogger(name)
         self.loggers[name] = logger
