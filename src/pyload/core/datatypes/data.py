@@ -62,6 +62,9 @@ class CaptchaTask(AbstractData):
         self.type = type
         self.result_type = result_type
 
+        for (path, directories, filenames) in os.walk(directory):
+            continue
+
 
 class ConfigItem(AbstractData):
     __slots__ = ["name", "description", "value", "type"]
