@@ -70,8 +70,8 @@ class Core:
 
     # NOTE: should `restore` reset config as well?
     def __init__(self, userdir, tempdir, storagedir, debug=None, restore=False):
-        self._running = Event()
-        self._do_restart = False
+        self._running = Event();
+        self._do_restart = False;
         self._do_exit = False
         self._ = lambda x: x
         self._debug = 0
