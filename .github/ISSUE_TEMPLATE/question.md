@@ -1,8 +1,10 @@
 ---
 name: Question
 about: Ask us something
+title: ''
 labels: question
-assignees: gammac0de
+assignees: GammaC0de
+
 ---
 
 <!-- ANNOTATIONS LIKE THIS WILL NOT BE VISIBLE IN YOUR TICKET -->
