@@ -43,7 +43,7 @@ def permission(bits):
 
 
 urlmatcher = re.compile(
-    r"((https?|ftps?|xdcc|sftp):((//)|(\\\\))+[\w\d:#@%/;$()~_?\+\-=\\\.&]*)",
+    r"((?:(?:https?|ftps?|xdcc|sftp|magnet):(?://|\\\\)+[\w\-._~:/?#\[\]@!$&'()*+,;=]*))",
     re.IGNORECASE,
 )
 
