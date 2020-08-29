@@ -17,6 +17,7 @@ exemptLabels:
   - "feature request"
   - "feedback wanted"
   - "plugin request"
+  - "pyLoad Next"
 
 # Set to true to ignore issues in a project (defaults to false)
 exemptProjects: false
