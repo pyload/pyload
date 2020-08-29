@@ -13,6 +13,7 @@
   <a href="#licensing">Licensing</a> |
   <a href="#credits">Credits</a>
 </h4>
+
 <br />
 <br />
 
@@ -28,7 +29,7 @@
 
 Developed in the [main branch](https://github.com/pyload/pyload/tree/main) on GitHub and deployed as `pyload-ng` on [PyPI](https://pypi.org/project/pyload-ng/), works on Python 3.6+ and is currently in alpha phase.
 
-The old stable version of pyLoad resides in the [stable branch](https://github.com/pyload/pyload/tree/stable) and is only compatible with Python 2.
+The old stable version of pyLoad resides in the [stable branch](https://github.com/pyload/pyload/tree/stable) and is compatible with Python 2 only.
 
 ## Quick Start
 
@@ -55,18 +56,29 @@ If you want to uninstall pyLoad:
 
 ## Advanced Installation
 
+### Stable Release
+
 Get the latest stable release of pyLoad:
 
     pip install pyload-ng
 
 > **Note**:
-> No stable releases are available at the moment.
+> No stable release is available. pyLoad is still in pre-release phase.
 
 #### Available modules
 
 - `pyload.core`: pyLoad's heart.
 - `pyload.plugins`: the collection of officially supported plugins for pyLoad.
 - `pyload.webui`: a web interface to interact with pyLoad.
+
+### Development Release
+
+You can force the installation of the latest development release of pyLoad,
+appending the option `--pre` to the installation command:
+
+    pip install --pre pyload-ng
+
+**Do not use development releases in production**. Unexpected crashes may occur.
 
 ### Extra Dependencies
 
@@ -78,7 +90,7 @@ To install them you have to append a specific tag name to the installation comma
 
 - `plugins`: packages required by some plugins to work.
 - `build`: packages required to [build translations](#build-translations).
-- `all`: alias of `build` and `plugins`.
+- `all`: shortcut to apply all available tags.
 
 You can use a tag in this way:
 
@@ -87,15 +99,6 @@ You can use a tag in this way:
 Or group more together:
 
     pip install pyload-ng[plugins][build]
-
-### Development Releases
-
-You can force the installation of the latest development release of pyLoad,
-appending the option `--pre` to the installation command:
-
-    pip install --pre pyload-ng
-
-**Do not use development releases in production**. Unexpected crashes may occur.
 
 ### Build Translations
 
@@ -107,7 +110,7 @@ Use the command `build_locale` to retrieve and build the latest locale files (tr
 
     python setup.py build_locale
 
-**Invoke it before launching any other build/installation command** (eg. `bdist_wheel`).
+Invoke `build_locale` before building the package (eg. `bdist_wheel`).
 
 ## Usage
 
@@ -130,17 +133,16 @@ To start pyLoad, type the command:
 
     pyload
 
-This will create the following directories (if they do not already exist):
+This will create the following directories (if they don't exist already):
 
 - `~/Downloads/pyLoad`: where downloads will be saved.
-- `~/.pyload`: where configuration files are stored\*.
-- `<TMPDIR>/pyLoad`: where temporary files are stored.
+- `~/.pyload`: where user data (configuration files) are stored.
+- `<TMPDIR>/pyLoad`: where temporary files are stored. `<TMPDIR>` is [platform-specific](https://docs.python.org/3/library/tempfile.html#tempfile.gettempdir).
 
-On Windows systems configuration files are saved in the directory `~\AppData\Roaming\pyLoad`.
+> **Note**:
+> On Windows, user data are saved by default in the directory `~\AppData\Roaming\pyLoad`.
 
-The location of `<TMPDIR>` is [platform-specific](https://docs.python.org/3/library/tempfile.html#tempfile.gettempdir).
-
-### Command Options
+### Help
 
 To show an overview of the available options, type:
 
@@ -222,11 +224,10 @@ Retry replacing the command `pip` with `pip3`:
 
     pip3 install pyload-ng
 
-If still fails you may not have already installed on your system the Python interpreter
-or the pip package manager.
-Or maybe something else got corrupted somehow...
+If fails again, you may not have the Python interpreter
+or the pip package manager installed on your system.
 
-The easiest way to fix this error is to (re)install Python.
+Try reinstalling Python to fix this issue.
 
 Visit https://www.python.org/downloads
 to get the proper **Python 3** release for your system.
@@ -256,6 +257,8 @@ Under Unix-based systems, try to install pyLoad with root privileges.
 Prefix the installation/uninstallation command with `sudo`:
 
     sudo pip install pyload-ng
+
+
 
     sudo pip uninstall pyload-ng
 
