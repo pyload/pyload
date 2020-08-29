@@ -3,7 +3,12 @@
 </p>
 <h2></h2>
 
-### Team members (current and former)
+<br />
+<br />
+
+## Credits
+
+### Team
 
 - Christian Rakow (RaNaN) <Mast3rRaNaN@hotmail.de>
 - Jonas Engelhardt (Jonn3y)
@@ -31,14 +36,19 @@
 The list of developers who have kindly contributed to the pyLoad project is constantly updated.
 You can found it here: <https://github.com/pyload/pyload/graphs/contributors>.
 
-### Supporters
+### Followers
 
-Sadly, is really hard to list all the users who helped pyLoad team in these last years testing code, reporting issues,
-opening topic to share tips and advices, fix troubles or simply discuss about this project...
+There are so many users that helped in these last years, testing code, reporting issues,
+opening topics to share tips and advices or fixing troubles or just to discuss about the project...
 
-**The pyLoad team can be only forever thankful to all of you for your efforts!**
+**The pyLoad team can be only forever thankful to all of you for your persistence!**
 
-#### A special thanks to RaNaN, sebnapi and spoob who started this project so long time ago!
+This has kept the project alive until today and we hope it will continue in the time to come.
+
+<br />
+<br />
+
+_A special thanks to **RaNaN**, **sebnapi** and **spoob** who started this journey so long time ago!_
 
 <br />
 
