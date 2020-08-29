@@ -12,13 +12,6 @@ from ..helpers import login_required, render_template
 bp = flask.Blueprint("json", __name__, url_prefix="/json")
 
 
-def format_time(seconds):
-    seconds = int(seconds)
-    hours, seconds = divmod(seconds, 3600)
-    minutes, seconds = divmod(seconds, 60)
-    return f"{hours:02}:{minutes:02}:{seconds:02}"
-
-
 @bp.route("/status", methods=["GET", "POST"], endpoint="status")
 # @apiver_check
 @login_required("LIST")

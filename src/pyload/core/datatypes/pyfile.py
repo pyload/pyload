@@ -217,14 +217,8 @@ class PyFile:
         """
         formats and return wait time in humanreadable format.
         """
-        seconds = self.wait_until - time.time()
-
-        if seconds < 0:
-            return "00:00:00"
-
-        hours, seconds = divmod(seconds, 3600)
-        minutes, seconds = divmod(seconds, 60)
-        return f"{hours:02}:{minutes:02}:{seconds:02}"
+        seconds = int(self.wait_until - time.time())
+        return format.time(seconds, literally=False)
 
     def format_size(self):
         """
@@ -237,13 +231,7 @@ class PyFile:
         formats eta to readable format.
         """
         seconds = self.get_eta()
-
-        if seconds < 0:
-            return "00:00:00"
-
-        hours, seconds = divmod(seconds, 3600)
-        minutes, seconds = divmod(seconds, 60)
-        return "{:02}:{:02}:{:02}".format(hours, minutes, seconds)
+        return format.time(seconds, literally=False)
 
     def get_speed(self):
         """
