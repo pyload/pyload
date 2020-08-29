@@ -335,15 +335,15 @@ class HTTPChunk(HTTPRequest):
                     else:
                         continue
 
-                    #: Drop unsafe characters
-                    fname = posixpath_basename(fname)
-                    fname = ntpath_basename(fname)
-                    for badc in '<>:"/\\|?*\0':
-                        fname = fname.replace(badc, "")
-                    fname = fname.lstrip('.')
+                #: Drop unsafe characters
+                fname = posixpath_basename(fname)
+                fname = ntpath_basename(fname)
+                for badc in '<>:"/\\|?*\0':
+                    fname = fname.replace(badc, "")
+                fname = fname.lstrip('.')
 
-                    self.log.debug("Content-Disposition: %s" % fname)
-                    self.p.updateDisposition(fname)
+                self.log.debug("Content-Disposition: %s" % fname)
+                self.p.updateDisposition(fname)
 
             elif not self.resume and line.startswith("content-length"):
                 self.p.size = int(line.split(":")[1])
