@@ -18,7 +18,7 @@ bp = flask.Blueprint("api", __name__, url_prefix="/api")
 # r"/api/<func><args:re:[a-zA-Z0-9\-_/\"\'\[\]%{},]*>")
 @login_required("ALL")
 @bp.route("/<func>", methods=["GET", "POST"], endpoint="rpc")
-@bp.route("/<func>?=<args>", methods=["GET", "POST"], endpoint="rpc")
+@bp.route("/<func>/<args>", methods=["GET", "POST"], endpoint="rpc")
 # @apiver_check
 def rpc(func, args=""):
 
