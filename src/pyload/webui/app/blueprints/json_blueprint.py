@@ -121,7 +121,6 @@ def abort_link(id):
     return jsonify(False)
 
 
-# NOTE: 'ids' is a string
 @bp.route("/link_order/<int:fid>,<int:pos>", endpoint="link_order")
 # @apiver_check
 @login_required("ADD")
