@@ -17,6 +17,7 @@ exemptLabels:
   - "feature request"
   - "feedback wanted"
   - "plugin request"
+  - "pyLoad Next"
 
 # Set to true to ignore issues in a project (defaults to false)
 exemptProjects: false
@@ -35,7 +36,9 @@ markComment: >
   This ticket has been automatically marked as `outdated`
   because **3 months** have passed since the last comment.
 
+
   **It will be closed in 30 days if no further activity occurs**.
+
 
   If this issue still requires attention, please leave a comment.
 
@@ -47,10 +50,9 @@ markComment: >
 closeComment: >
   **This ticket has been automatically closed**.
 
-  This is often because the request was already solved in some way
-  and it just wasn't updated or it's no longer applicable.
 
   Feel free to reopen this ticket if you need.
+
 
   Thanks for your contributions.
 

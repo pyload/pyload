@@ -12,13 +12,6 @@ from ..helpers import login_required, render_template
 bp = flask.Blueprint("json", __name__, url_prefix="/json")
 
 
-def format_time(seconds):
-    seconds = int(seconds)
-    hours, seconds = divmod(seconds, 3600)
-    minutes, seconds = divmod(seconds, 60)
-    return f"{hours:02}:{minutes:02}:{seconds:02}"
-
-
 @bp.route("/status", methods=["GET", "POST"], endpoint="status")
 # @apiver_check
 @login_required("LIST")
@@ -81,30 +74,13 @@ def packages():
     return jsonify(False)
 
 
-@bp.route("/package?=<int:id>", endpoint="package")
+@bp.route("/package/<int:id>", endpoint="package")
 # @apiver_check
 @login_required("LIST")
 def package(id):
     api = flask.current_app.config["PYLOAD_API"]
     try:
         data = api.get_package_data(id)
-        for pyfile in data["links"]:
-            if pyfile["status"] == 0:
-                pyfile["icon"] = "status-finished.png"
-            elif pyfile["status"] in (2, 3):
-                pyfile["icon"] = "status-queue.png"
-            elif pyfile["status"] in (9, 1):
-                pyfile["icon"] = "status-offline.png"
-            elif pyfile["status"] == 5:
-                pyfile["icon"] = "status-waiting.png"
-            elif pyfile["status"] == 8:
-                pyfile["icon"] = "status-failed.png"
-            elif pyfile["status"] == 4:
-                pyfile["icon"] = "arrow-right.png"
-            elif pyfile["status"] in (11, 13):
-                pyfile["icon"] = "status-proc.png"
-            else:
-                pyfile["icon"] = "status-downloading.png"
 
         tmp = data["links"]
         tmp.sort(key=lambda entry: entry["order"])
@@ -117,15 +93,13 @@ def package(id):
     return jsonify(False)
 
 
-# NOTE: 'ids' is a string
-@bp.route("/package_order?=<ids>", endpoint="package_order")
+@bp.route("/package_order/<int:pid>,<int:pos>", endpoint="package_order")
 # @apiver_check
 @login_required("ADD")
-def package_order(ids):
+def package_order(pid, pos):
     api = flask.current_app.config["PYLOAD_API"]
     try:
-        pid, pos = ids.split(",")
-        api.order_package(int(pid), int(pos))
+        api.order_package(pid, pos)
         return jsonify(response="success")
     except Exception:
         flask.abort(500)
@@ -133,7 +107,7 @@ def package_order(ids):
     return jsonify(False)
 
 
-@bp.route("/abort_link?=<int:id>", endpoint="abort_link")
+@bp.route("/abort_link/<int:id>", endpoint="abort_link")
 # @apiver_check
 @login_required("DELETE")
 def abort_link(id):
@@ -147,15 +121,13 @@ def abort_link(id):
     return jsonify(False)
 
 
-# NOTE: 'ids' is a string
-@bp.route("/link_order?=<ids>", endpoint="link_order")
+@bp.route("/link_order/<int:fid>,<int:pos>", endpoint="link_order")
 # @apiver_check
 @login_required("ADD")
-def link_order(ids):
+def link_order(fid, pos):
     api = flask.current_app.config["PYLOAD_API"]
     try:
-        pid, pos = ids.split(",")
-        api.order_file(int(pid), int(pos))
+        api.order_file(fid, pos)
         return jsonify(response="success")
     except Exception:
         flask.abort(500)
@@ -198,7 +170,7 @@ def add_package():
     return jsonify(True)
 
 
-@bp.route("/move_package?=<int:dest>,<int:id>", endpoint="move_package")
+@bp.route("/move_package/<int:dest>,<int:id>", endpoint="move_package")
 # @apiver_check
 @login_required("MODIFY")
 def move_package(dest, id):

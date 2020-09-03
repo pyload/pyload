@@ -47,21 +47,31 @@ def speed(obj):
     return f"{size(obj)}/s"
 
 
-def time(obj):
-    seconds = abs(int(obj))
-    dt = datetime.datetime(1, 1, 1) + datetime.timedelta(seconds=seconds)
-    days = dt.day - 1 if dt.day > 1 else 0
+def time(obj, literally=True):
+    if literally:
+        seconds = abs(int(obj))
+        dt = datetime.datetime(1, 1, 1) + datetime.timedelta(seconds=seconds)
+        days = dt.day - 1 if dt.day > 1 else 0
 
-    timelist = []
+        timelist = []
 
-    if days:
-        timelist.append(f"{days} day" + ("s" if is_plural(days) else ""))
+        if days:
+            timelist.append(f"{days} day" + ("s" if is_plural(days) else ""))
 
-    timenames = ("hour", "minute", "second")
-    for name in timenames:
-        value = getattr(dt, name)
-        if not value:
-            continue
-        timelist.append(f"{value} {name}" + ("s" if is_plural(value) else ""))
+        timenames = ("hour", "minute", "second")
+        for name in timenames:
+            value = getattr(dt, name)
+            if not value:
+                continue
+            timelist.append(f"{value} {name}" + ("s" if is_plural(value) else ""))
 
-    return ", ".join(timelist)
+        return ", ".join(timelist)
+
+    else:
+        seconds = int(obj)
+        if seconds < 0:
+            return "00:00:00"
+
+        hours, seconds = divmod(seconds, 3600)
+        minutes, seconds = divmod(seconds, 60)
+        return f"{hours:02}:{minutes:02}:{seconds:02}"

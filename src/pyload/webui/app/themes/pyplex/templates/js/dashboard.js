@@ -244,7 +244,7 @@ function LinkEntry(id){
         this.fadeBar = this.elements.pgbTr;
 
         $(this.elements.remove).click(function(){
-            $.get("/json/abort_link?="+id)});
+            $.get("/json/abort_link/" + id)});
     };
     this.update = function(item){
             $(this.elements.name).text(item.name);

@@ -101,7 +101,7 @@ var PackageUI = new Class({
         var order = [];
         this.sorts.serialize(function(li, pos) {
             if (li == ele && ele.retrieve("order") != pos) {
-                order.push(ele.retrieve("pid") + "|" + pos)
+                order.push(ele.retrieve("pid") + "," + pos)
             }
             li.store("order", pos)
         });
@@ -225,7 +225,7 @@ var Package = new Class({
             imgs[0].addEvent('click', function(e) {
                 new Request({
                     method: 'get',
-                    url: '/api/deleteFiles/[' + this.id + ']',
+                    url: '/api/delete_files/[' + this.id + ']',
                     onSuccess: function() {
                         $('file_' + this).nix()
                     }.bind(this),
@@ -333,7 +333,7 @@ var Package = new Class({
         var order = [];
         this.sorts.serialize(function(li, pos) {
             if (li == ele && ele.retrieve("order") != pos) {
-                order.push(ele.retrieve("lid") + "|" + pos)
+                order.push(ele.retrieve("lid") + "," + pos)
             }
             li.store("order", pos)
         });

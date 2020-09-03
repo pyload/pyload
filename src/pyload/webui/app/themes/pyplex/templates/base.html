@@ -1,4 +1,3 @@
-<?xml version="1.0" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -12,12 +11,6 @@
     <link rel="stylesheet" type="text/css" href="{{theme_static('css/base.css')}}" />
 
     <!-- <link rel="icon" href="{{theme_static('img/favicon.ico')}}"/> -->
-
-    <script type="text/javascript" src="{{theme_static('vendor/jQuery/jquery.min.js')}}"></script>
-    <script type="text/javascript" src="{{theme_static('vendor/jQuery/jQuery UI/jquery-ui.min.js')}}"></script>
-    <script type="text/javascript" src="{{theme_static('vendor/jQuery/jQuery.peekABar/js/jquery.peekabar.min.js')}}"></script>
-    <script type="text/javascript" src="{{theme_static('vendor/Bootstrap/js/bootstrap.min.js')}}"></script>
-    <script type="text/javascript" src="{{theme_template('js/base.js')}}"></script>
 
 <style type="text/css">
 .ui-icon,
@@ -234,6 +227,12 @@
 {% include theme('window.html') %}
 {% include theme('captcha.html') %}
 <noscript><h1>Enable JavaScript to use the WebUI.</h1></noscript>
+
+<script type="text/javascript" src="{{theme_static('vendor/jQuery/jquery.min.js')}}"></script>
+<script type="text/javascript" src="{{theme_static('vendor/jQuery/jQuery UI/jquery-ui.min.js')}}"></script>
+<script type="text/javascript" src="{{theme_static('vendor/jQuery/jQuery.peekABar/js/jquery.peekabar.min.js')}}"></script>
+<script type="text/javascript" src="{{theme_static('vendor/Bootstrap/js/bootstrap.min.js')}}"></script>
+<script type="text/javascript" src="{{theme_template('js/base.js')}}"></script>
 
 {% block footer %}
 {% endblock %}
