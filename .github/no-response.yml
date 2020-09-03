@@ -10,9 +10,11 @@ responseRequiredLabel: "feedback wanted"
 closeComment: >
   **This ticket has been automatically closed**.
 
+
   This is because additional information has been requested,
   but no response has been given in the last **2 weeks**.
 
   Feel free to reopen this ticket if you need.
+
 
   Thanks for your contributions.

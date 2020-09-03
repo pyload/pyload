@@ -18,6 +18,7 @@ lockComment: >
   This ticket has been automatically locked since there has not been
   any recent activity after it was closed.
 
+
   Please open a new ticket if you need.
 
 # Assign `resolved` as the reason for locking. Set to `false` to disable
