@@ -36,7 +36,7 @@
 The list of developers who have kindly contributed to the pyLoad project is constantly updated.
 You can found it here: <https://github.com/pyload/pyload/graphs/contributors>.
 
-### Followers
+### Community
 
 There are so many users that helped in these last years, testing code, reporting issues,
 opening topics to share tips and advices or fixing troubles or just to discuss about the project...
