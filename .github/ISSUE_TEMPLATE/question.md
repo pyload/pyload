@@ -8,12 +8,11 @@ assignees: gammac0de
 
 <!-- ANNOTATIONS LIKE THIS WILL NOT BE VISIBLE IN YOUR TICKET -->
 
-### Your question
+### Question
 
 <!-- WRITE HERE -->
 
 ### Additional references
-
 <!-- Any other reference, related issues, pull requests or screenshots about this question. -->
 
 <!-- WRITE HERE - OPTIONAL -->
