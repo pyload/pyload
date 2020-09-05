@@ -1,13 +1,41 @@
 # -*- coding: utf-8 -*-
 
+from module.network.CookieJar import CookieJar
+from module.network.HTTPRequest import HTTPRequest
+
 from ..hoster.MegaCoNz import MegaClient, MegaCrypto
 from ..internal.Crypter import Crypter
+
+
+class BIGHTTPRequest(HTTPRequest):
+    """
+    Overcome HTTPRequest's load() size limit to allow
+    loading very big web pages by overrding HTTPRequest's write() function
+    """
+
+    # @TODO: Add 'limit' parameter to HTTPRequest in v0.4.10
+    def __init__(self, cookies=None, options=None, limit=2000000):
+        self.limit = limit
+        HTTPRequest.__init__(self, cookies=cookies, options=options)
+
+    def write(self, buf):
+        """ writes response """
+        if self.limit and self.rep.tell() > self.limit or self.abort:
+            rep = self.getResponse()
+            if self.abort:
+                raise Abort()
+            f = open("response.dump", "wb")
+            f.write(rep)
+            f.close()
+            raise Exception("Loaded Url exceeded limit")
+
+        self.rep.write(buf)
 
 
 class MegaCoNzFolder(Crypter):
     __name__ = "MegaCoNzFolder"
     __type__ = "crypter"
-    __version__ = "0.22"
+    __version__ = "0.23"
     __status__ = "testing"
 
     __pattern__ = r'(?:https?://(?:www\.)?mega(?:\.co)?\.nz/|mega:|chrome:.+?)(?:folder/|#F!)(?P<ID>[\w^_]+)[!#](?P<KEY>[\w,\-=]+)'
@@ -19,6 +47,17 @@ class MegaCoNzFolder(Crypter):
     __license__ = "GPLv3"
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com"),
                    ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
+
+    def setup(self):
+        try:
+            self.req.http.close()
+        except Exception:
+            pass
+
+        self.req.http = BIGHTTPRequest(
+            cookies=CookieJar(None),
+            options=self.pyload.requestFactory.getOptions(),
+            limit=10000000)
 
     def decrypt(self, pyfile):
         id = self.info['pattern']['ID']
