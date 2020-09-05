@@ -1,7 +1,5 @@
 {% autoescape true %}
 
-var root = this;
-
 $(function() {
     var pUI = new PackageUI("url", {{target}})
 });
@@ -34,13 +32,13 @@ function PackageUI (url, type){
                 $(this).attr('data-previndex', ui.item.index());
             },
             stop: function(event, ui) {
-                var newIndex = ui.item.index();
-                var oldIndex = $(this).attr('data-previndex');
+                let newIndex = ui.item.index();
+                let oldIndex = $(this).attr('data-previndex');
                 $(this).removeAttr('data-previndex');
                 if (newIndex === oldIndex) {
                     return false;
                 }
-                var order = ui.item.data('pid') + ',' + newIndex;
+                let order = ui.item.data('pid') + '|' + newIndex;
                 indicateLoad();
                 $.get("/json/package_order/" + order, function () {
                     indicateFinish();
@@ -185,7 +183,7 @@ function Package (ui, id, ele){
                        "<span class='glyphicon glyphicon-repeat' title='{{_('Restart Link')}}' style='cursor: pointer; font-size: 12px; color:#eee;' ></span></div>";
 
             var div = document.createElement("div");
-            $(div).attr("id","file_" + link.id);
+            $(div).attr("id", "file_" + link.id);
             $(div).css("padding-left", "30px");
             $(div).css("cursor", "grab");
             $(div).addClass("child");
@@ -219,7 +217,7 @@ function Package (ui, id, ele){
                 $.get("/api/restart_file/" + lid, function () {
                     var ele1 = $('#file_' + lid);
                     var imgs1 = $(ele1).find(".glyphicon");
-                    $(imgs1[0]).attr( "class","glyphicon glyphicon-time text-info");
+                    $(imgs1[0]).attr( "class", "glyphicon glyphicon-time text-info");
                     var spans = $(ele1).find(".child_status");
                     $(spans[1]).html("{{_('queued')}}");
                     indicateSuccess();
@@ -244,7 +242,7 @@ function Package (ui, id, ele){
                 if (newIndex === oldIndex) {
                     return false;
                 }
-                var order = ui.item.data('lid') + ',' + newIndex;
+                var order = ui.item.data('lid') + '|' + newIndex;
                 indicateLoad();
                 $.get("/json/link_order/" + order, function () {
                     indicateFinish();
@@ -317,7 +315,7 @@ function Package (ui, id, ele){
 
     this.movePackage = function(event) {
         indicateLoad();
-        $.get("/json/move_package/" + ((ui.type + 1) % 2) + "," + id, function () {
+        $.get("/json/move_package/" + ((ui.type + 1) % 2) + '|' + id, function () {
             $(ele).remove();
             indicateFinish();
         }).fail(function () {
@@ -332,7 +330,7 @@ function Package (ui, id, ele){
         $.get("/json/package/" + id, function(data){
             length = data.links.length;
             for (i = 1; i <= length/2; i++){
-                order = data.links[length-i].fid + ',' + (i-1);
+                order = data.links[length-i].fid + '|' + (i-1);
                 $.get("/json/link_order/" + order).fail(function () {
                     indicateFail();
                 });

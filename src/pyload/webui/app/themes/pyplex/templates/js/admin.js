@@ -1,14 +1,10 @@
 {% autoescape true %}
 
-var root;
-root = this;
 $(function() {
-    var f, c, b, e, a, d;
-    $("#password_box").on('click', '#login_password_button', function (j) {
-        var h, i, g;
-        i = $("#login_new_password").val();
-        g = $("#login_new_password2").val();
-        if (i === g) {
+    $("#password_box").on('click', '#login_password_button', function (event) {
+        let passwd = $("#login_new_password").val();
+        let passwdConfirm = $("#login_new_password2").val();
+        if (passwd === passwdConfirm) {
             $.ajax({
                 method: "post",
                 url: "/json/change_password",
@@ -25,11 +21,11 @@ $(function() {
         } else {
             alert("{{_('Passwords did not match.')}}")
         }
-        j.stopPropagation();
-        j.preventDefault();
+        event.stopPropagation();
+        event.preventDefault();
     });
     $(".change_password").each(function () {
-        userName = $(this).attr("id").split("|")[1];
+        let userName = $(this).attr("id").split("|")[1];
         $(this).bind("click",{userName:userName}, function(g) {
             $("#password_box #user_login").val(userName);
         });

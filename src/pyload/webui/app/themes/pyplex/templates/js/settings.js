@@ -1,7 +1,6 @@
 {% autoescape true %}
 
-var SettingsUI, root;
-root = this;
+var SettingsUI;
 
 $(function() {
     return new SettingsUI();
@@ -16,9 +15,9 @@ if (!String.prototype.startsWith) {
 
 SettingsUI = (function() {
     function a() {
-        var c, e, b, d;
+        let c, e, b, d;
 
-        var activeTab = sessionStorage.getItem('activeTab');
+        let activeTab = sessionStorage.getItem('activeTab');
         if (activeTab) {
             sessionStorage.removeItem('activeTab');
             $('#toptabs a[href="' + activeTab + '"]').tab('show');

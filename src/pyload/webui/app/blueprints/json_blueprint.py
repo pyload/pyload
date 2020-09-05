@@ -93,7 +93,7 @@ def package(id):
     return jsonify(False)
 
 
-@bp.route("/package_order/<int:pid>,<int:pos>", endpoint="package_order")
+@bp.route("/package_order/<int:pid>|<int:pos>", endpoint="package_order")
 # @apiver_check
 @login_required("ADD")
 def package_order(pid, pos):
@@ -121,7 +121,7 @@ def abort_link(id):
     return jsonify(False)
 
 
-@bp.route("/link_order/<int:fid>,<int:pos>", endpoint="link_order")
+@bp.route("/link_order/<int:fid>|<int:pos>", endpoint="link_order")
 # @apiver_check
 @login_required("ADD")
 def link_order(fid, pos):
@@ -170,7 +170,7 @@ def add_package():
     return jsonify(True)
 
 
-@bp.route("/move_package/<int:dest>,<int:id>", endpoint="move_package")
+@bp.route("/move_package/<int:dest>|<int:id>", endpoint="move_package")
 # @apiver_check
 @login_required("MODIFY")
 def move_package(dest, id):

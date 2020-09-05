@@ -1,8 +1,7 @@
 {% autoescape true %}
 
-var desktopNotifications;
-var interactiveCaptchaHandlerInstance = null;
-//root = this;
+let desktopNotifications;
+let interactiveCaptchaHandlerInstance = null;
 
 function indicateLoad() {
     $(".load-indicator").css('opacity',1);

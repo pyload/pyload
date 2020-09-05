@@ -16,7 +16,7 @@ document.addEvent("domready", function() {
         root.packageBox.close();
     });
 
-    var pUI = new PackageUI("url", {{ target }});
+    var pUI = new PackageUI("url", {{target}});
 });
 
 function indicateLoad() {
@@ -100,8 +100,8 @@ var PackageUI = new Class({
     saveSort: function(ele, copy) {
         var order = [];
         this.sorts.serialize(function(li, pos) {
-            if (li == ele && ele.retrieve("order") != pos) {
-                order.push(ele.retrieve("pid") + "," + pos)
+            if (li === ele && ele.retrieve("order") !== pos) {
+                order.push(ele.retrieve("pid") + '|' + pos)
             }
             li.store("order", pos)
         });
@@ -302,7 +302,7 @@ var Package = new Class({
         indicateLoad();
         new Request({
             method: 'get',
-            url: '/json/move_package/' + ((this.ui.type + 1) % 2) + "/" + this.id,
+            url: '/json/move_package/' + ((this.ui.type + 1) % 2) + '|' + this.id,
             onSuccess: function() {
                 this.ele.nix();
                 indicateFinish();
@@ -332,8 +332,8 @@ var Package = new Class({
     saveSort: function(ele, copy) {
         var order = [];
         this.sorts.serialize(function(li, pos) {
-            if (li == ele && ele.retrieve("order") != pos) {
-                order.push(ele.retrieve("lid") + "," + pos)
+            if (li === ele && ele.retrieve("order") !== pos) {
+                order.push(ele.retrieve("lid") + '|' + pos)
             }
             li.store("order", pos)
         });
