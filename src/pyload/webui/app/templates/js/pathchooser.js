@@ -1,12 +1,10 @@
 {% autoescape true %}
 
-function chosen()
-{
+function chosen() {
     opener.ifield.value = document.forms[0].p.value;
     close();
 }
-function exit()
-{
+function exit() {
     close();
 }
 function setInvalid() {
@@ -17,8 +15,7 @@ function setValid() {
     document.forms[0].send.disabled = '';
     document.forms[0].p.style.color = '#000000';
 }
-function setFile(file)
-{
+function setFile(file) {
     document.forms[0].p.value = file;
     setValid();
 }

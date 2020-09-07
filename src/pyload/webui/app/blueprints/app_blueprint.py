@@ -7,6 +7,7 @@ import os
 import sys
 import time
 from urllib.parse import unquote
+import mimetypes
 
 import flask
 
@@ -39,7 +40,9 @@ def favicon():
 
 @bp.route("/render/<path:filename>", endpoint="render")
 def render(filename):
-    return render_template(f"{filename}")
+    mimetype = mimetypes.guess_type(filename)[0] or "text/html"
+    data = render_template(filename)
+    return flask.Response(data, mimetype=mimetype)
 
 
 @bp.route("/robots.txt", endpoint="robots")
@@ -235,11 +238,13 @@ def settings():
     return render_template("settings.html", **context)
 
 
-@bp.route("/pathchooser", endpoint="pathchooser")
+@bp.route("/pathchooser/", endpoint="pathchooser")
 @bp.route("/pathchooser/<path:path>", endpoint="pathchooser")
+@bp.route("/filechooser/", endpoint="filechooser")
+@bp.route("/filechooser/<path:path>", endpoint="filechooser")
 @login_required("STATUS")
-def pathchooser(path):
-    browse_for = "folder" if os.path.isdir(path) else "file"
+def pathchooser(path=""):
+    browse_for = "folder" if flask.request.endpoint == "app.pathchooser" else "file"
     path = os.path.normpath(unquotepath(path))
 
     if os.path.isfile(path):
@@ -265,8 +270,8 @@ def pathchooser(path):
         if os.path.realpath(cwd) == os.path.realpath("/"):
             cwd = os.path.relpath(cwd)
         else:
-            cwd = os.path.relpath(cwd) + os.path.os.sep
-        parentdir = os.path.relpath(parentdir) + os.path.os.sep
+            cwd = os.path.relpath(cwd) + os.path.sep
+        parentdir = os.path.relpath(parentdir) + os.path.sep
 
     if os.path.realpath(cwd) == os.path.realpath("/"):
         parentdir = ""
@@ -289,12 +294,8 @@ def pathchooser(path):
         except Exception:
             continue
 
-        if os.path.isdir(os.path.join(cwd, f)):
-            data["type"] = "dir"
-        else:
-            data["type"] = "file"
-
         if os.path.isfile(os.path.join(cwd, f)):
+            data["type"] = "file"
             data["size"] = os.path.getsize(os.path.join(cwd, f))
 
             power = 0
@@ -304,6 +305,7 @@ def pathchooser(path):
             units = ("", "K", "M", "G", "T")
             data["unit"] = units[power] + "Byte"
         else:
+            data["type"] = "dir"
             data["size"] = ""
 
         files.append(data)
@@ -322,9 +324,9 @@ def pathchooser(path):
 
 
 @bp.route("/logs", methods=["GET", "POST"], endpoint="logs")
-@bp.route("/logs/<int:page>", methods=["GET", "POST"], endpoint="logs")
+@bp.route("/logs/<int:start_line>", methods=["GET", "POST"], endpoint="logs")
 @login_required("LOGS")
-def logs(page=-1):
+def logs(start_line=-1):
     s = flask.session
     api = flask.current_app.config["PYLOAD_API"]
 
@@ -349,32 +351,32 @@ def logs(page=-1):
         perpage = int(flask.request.form["perpage"])
         s["perpage"] = perpage
 
-        reversed = bool(flask.request.form["reversed"])
+        reversed = bool(flask.request.form.get("reversed", False))
         s["reversed"] = reversed
 
         # s.modified = True
 
     log = api.get_log()
     if not perpage:
-        page = 0
+        start_line = 0
 
-    if page < 1 or not isinstance(page, int):
-        page = (
+    if start_line < 1:
+        start_line = (
             1 if len(log) - perpage + 1 < 1 or perpage == 0 else len(log) - perpage + 1
         )
 
     if isinstance(fro, datetime.datetime):  #: we will search for datetime.datetime
-        page = -1
+        start_line = -1
 
     data = []
     counter = 0
     perpagecheck = 0
-    for l in log:
+    for logline in log:
         counter += 1
 
-        if counter >= page:
+        if counter >= start_line:
             try:
-                date, time, level, message = l.split(" ", 3)
+                date, time, level, message = logline.split(" ", 3)
                 dtime = datetime.datetime.strptime(
                     date + " " + time, "%Y-%m-%d %H:%M:%S"
                 )
@@ -383,10 +385,10 @@ def logs(page=-1):
                 date = "?"
                 time = " "
                 level = "?"
-                message = l
-            if page == -1 and dtime is not None and fro <= dtime:
-                page = counter  #: found our datetime.datetime
-            if page >= 0:
+                message = logline
+            if start_line == -1 and dtime is not None and fro <= dtime:
+                start_line = counter  #: found our datetime.datetime
+            if start_line >= 0:
                 data.append(
                     {
                         "line": counter,
@@ -416,8 +418,8 @@ def logs(page=-1):
         "reversed": reversed,
         "perpage": perpage,
         "perpage_p": sorted(perpage_p),
-        "iprev": 1 if page - perpage < 1 else page - perpage,
-        "inext": (page + perpage) if page + perpage < len(log) else page,
+        "iprev": max(start_line - perpage, 1),
+        "inext": (start_line + perpage) if start_line + perpage <= len(log) else start_line,
     }
     return render_template("logs.html", **context)
 

@@ -46,9 +46,8 @@ def relpath(path):
         return p + os.path.sep
 
 
-# NOTE: recheck
-def date(text, format):
-    return datetime.datetime.strptime(text, format).strftime(format)
+def date(date, format):
+    return datetime.datetime.strftime(date, format)
 
 
 #: Use formatsize directly in 0.6.x
