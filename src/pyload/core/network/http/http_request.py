@@ -321,7 +321,7 @@ class HTTPRequest:
             if delemiter:
                 charset = charset.split(b";")
                 if charset:
-                    encoding = charset[0]
+                    encoding = charset[0].decode("utf-8")
 
         try:
             # self.log.debug(f"Decoded {encoding}")
