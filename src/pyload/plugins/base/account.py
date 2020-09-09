@@ -72,11 +72,19 @@ class BaseAccount(BasePlugin):
         log = getattr(self.pyload.log, level)
 
         #: Hide any user/password
-        user = self.user
-        pw = self.info["login"]["password"]
-        hidden_user = "{:*<{}}".format(self.user[:3], 7)
-        hidden_pw = "*" * 10
-        args = (a.replace(user, hidden_user).replace(pw, hidden_pw) for a in args if a)
+        try:
+            user = self.user
+            hidden_user = "{:*<{}}".format(self.user[:3], 7)
+            args = tuple(arg.replace(user, hidden_user) for arg in args if arg)
+        except (KeyError, TypeError):
+            pass
+
+        try:
+            pw = self.info["login"]["password"]
+            hidden_pw = "*" * 10
+            args = tuple(arg.replace(pw, hidden_pw) for arg in args if arg)
+        except (KeyError, TypeError):
+            pass
 
         log(
             "{plugintype} {pluginname}: {msg}".format(
