@@ -73,7 +73,7 @@ class BasePlugin:
             "{plugintype} {pluginname}: {msg}".format(
                 plugintype=plugintype.upper(),
                 pluginname=pluginname,
-                msg="%s" * len(args),
+                msg=" | ".join(["%s"] * len(args)),
             ),
             *args,
             **kwargs,
