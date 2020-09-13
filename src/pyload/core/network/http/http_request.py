@@ -10,6 +10,7 @@ from urllib.parse import quote, urlencode
 import pycurl
 from pyload import APPID
 
+from ...utils.convert import to_str
 from ..exceptions import Abort
 from .exceptions import BadHeader
 
@@ -321,7 +322,7 @@ class HTTPRequest:
             if delemiter:
                 charset = charset.split(b";")
                 if charset:
-                    encoding = charset[0].decode("utf-8")
+                    encoding = to_str(charset[0])
 
         try:
             # self.log.debug(f"Decoded {encoding}")
