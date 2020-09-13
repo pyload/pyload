@@ -134,6 +134,9 @@
 
 <h1>{% block subtitle %}pyLoad{% endblock %}</h1>
 
+{% block error %}
+{% endblock error %}
+
 {% block statusbar %}
 {% endblock %}
 
@@ -142,10 +145,6 @@
 <div class="level1" style="clear:both">
 </div>
 <noscript><h1>Enable JavaScript to use the webinterface.</h1></noscript>
-
-{% for message in messages %}
-    <b><p>{{message}}</p></b>
-{% endfor %}
 
 <div id="load-indicator" style="opacity: 0; float: right; margin-top: -10px;">
     <img src="{{url_for('static', filename='img/ajax-loader.gif')}}" alt="" style="padding-right: 5px"/>

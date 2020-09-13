@@ -1,2 +1,11 @@
 {% extends 'base.html' %}
-{% block title %}{{_("Sorry, something went wrong... :(")}}{% endblock %}
+{% block subtitle %}{{_("Sorry, something went wrong... :")}}{% endblock %}
+{% block error %}
+  <div id="body-wrapper">
+{% for message in messages %}
+ <b>
+    <div style="font-size:12px;">{{message}}</div>
+  </b>
+{% endfor %}
+  </div>
+{% endblock %}

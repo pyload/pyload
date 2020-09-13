@@ -18,7 +18,8 @@ def handle_error(exc):
 
     flask.current_app.logger.debug(exc, exc_info=True)
 
-    messages = [f"Error {code}: {desc}", tb]
+    messages = [f"Error {code}: {desc}"]
+    messages.extend(tb.split('\n'))
     return render_template("error.html", messages=messages), code
 
 
