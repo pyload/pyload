@@ -156,6 +156,8 @@ class Api:
         """
         if section == "core":
             value = self.pyload.config[category][option]
+            if self.pyload.config.config[category][option]['type'] in ['bool', 'int']:
+                return value
         else:
             value = self.pyload.config.get_plugin(category, option)
         return str(value)
