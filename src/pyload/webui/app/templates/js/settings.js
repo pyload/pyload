@@ -8,7 +8,7 @@
 
 {% autoescape true %}
 
-const root = this;
+let root = this;
 
 document.addEvent('domready', function() {
   root.accountDialog = new MooDialog({destroyOnHide: false});

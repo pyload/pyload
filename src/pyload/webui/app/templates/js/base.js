@@ -11,7 +11,7 @@
 {% autoescape true %}
 
 // External scope
-const root = this;
+let root = this;
 
 // helper functions
 const humanFileSize = function(size) {

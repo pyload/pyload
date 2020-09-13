@@ -235,7 +235,7 @@ var Package = new Class({
             imgs[1].addEvent('click', function(e) {
                 new Request({
                     method: 'get',
-                    url: '/api/restartFile/' + this.id,
+                    url: '/api/restart_file/' + this.id,
                     onSuccess: function() {
                         var ele = $('file_' + this);
                         var imgs = ele.getElements("img");
@@ -265,7 +265,7 @@ var Package = new Class({
         indicateLoad();
         new Request({
             method: 'get',
-            url: '/api/deletePackages/[' + this.id + ']',
+            url: '/api/delete_packages/[' + this.id + ']',
             onSuccess: function() {
                 this.ele.nix();
                 indicateFinish();
@@ -278,7 +278,7 @@ var Package = new Class({
         indicateLoad();
         new Request({
             method: 'get',
-            url: '/api/restartPackage/' + this.id,
+            url: '/api/restart_package/' + this.id,
             onSuccess: function() {
                 this.close();
                 indicateSuccess();
