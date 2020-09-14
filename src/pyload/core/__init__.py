@@ -279,8 +279,9 @@ class Core:
         try:
             self.log.debug("Starting core...")
 
-            debug_level = reversemap(self.DEBUG_LEVEL_MAP)[self.debug].upper()
-            self.log.debug(f"Debug level: {debug_level}")
+            if self.debug:
+                debug_level = reversemap(self.DEBUG_LEVEL_MAP)[self.debug].upper()
+                self.log.debug(f"Debug level: {debug_level}")
 
             # self.evm.fire('pyload:starting')
             self._running.set()
