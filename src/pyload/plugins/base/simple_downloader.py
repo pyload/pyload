@@ -5,6 +5,7 @@ import re
 from pyload.core.network.http.exceptions import BadHeader
 from pyload.core.network.request_factory import get_url
 from pyload.core.utils import parse
+from pyload.core.utils.old import parse_name
 
 from ..helpers import replace_patterns
 from .downloader import BaseDownloader
