@@ -3,6 +3,7 @@
 import datetime
 import logging  # test
 import operator
+import re
 import os
 import sys
 import time
@@ -28,6 +29,8 @@ from ..helpers import (
     set_session,
     static_file_url,
 )
+
+_RE_LOGLINE = re.compile(r"\[([\d\-]+) ([\d:]+)\] +([A-Z]+) +(.*)")
 
 bp = flask.Blueprint("app", __name__)
 
@@ -376,11 +379,11 @@ def logs(start_line=-1):
 
         if counter >= start_line:
             try:
-                date, time, level, message = logline.split(" ", 3)
+                date, time, level, message = _RE_LOGLINE.match(logline).groups()
                 dtime = datetime.datetime.strptime(
                     date + " " + time, "%Y-%m-%d %H:%M:%S"
                 )
-            except Exception:
+            except (AttributeError, IndexError):
                 dtime = None
                 date = "?"
                 time = " "
