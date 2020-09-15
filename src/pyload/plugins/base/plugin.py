@@ -172,12 +172,10 @@ class BasePlugin:
         """
         if self.pyload.debug:
             self.log_debug(
-                "LOAD URL " + url,
-                *[
-                    "{}={}".format(key, value)
-                    for key, value in locals().items()
-                    if key not in ("self", "url", "_[1]")
-                ],
+                "LOAD URL " + url, " ",
+                ", ".join(["'{}': {}".format(key, value)
+                           for key, value in locals().items()
+                           if key not in ("self", "url", "_[1]")])
             )
 
         url = fixurl(url, unquote=True)  #: Recheck in 0.6.x

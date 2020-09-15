@@ -334,7 +334,7 @@ class BaseHoster(BasePlugin):
         new_wait_until = time.time() + wait_time + float(not strict)
 
         self.log_debug(
-            "WAIT set to timestamp {}".format(new_wait_until),
+            "WAIT set to timestamp {}, ".format(new_wait_until),
             "Previous wait_until: {}".format(old_wait_until),
         )
 
