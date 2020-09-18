@@ -12,6 +12,7 @@
 <script type="text/javascript" src="{{url_for('static', filename='vendor/MooTools/MooTools-Core.min.js')}}"></script>
 <script type="text/javascript" src="{{url_for('static', filename='vendor/MooTools/MooTools-More.min.js')}}"></script>
 <script type="text/javascript" src="{{url_for('static', filename='vendor/MooTools/MooDialog/MooDialog.js')}}"></script>
+<script type="text/javascript" src="{{url_for('static', filename='vendor/MooTools/MooDialog/MooDialog.Confirm.js')}}"></script>
 <script type="text/javascript" src="{{url_for('static', filename='vendor/MooTools/Purr/purr.js')}}"></script>
 <script type="text/javascript" src="{{theme_template('js/base.js')}}"></script>
 
@@ -164,6 +165,9 @@
 </div>
 </div>
 </div>
+
+{% block hidden %}
+{% endblock %}
 
 <div style="display: none;">
     {% include 'window.html' %}

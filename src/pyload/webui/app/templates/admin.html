@@ -21,6 +21,7 @@
     <form action="" method="POST">
         <table class="settable wide">
             <thead style="font-size: 11px">
+            <tr>
             <th>
                 {{ _("Name") }}
             </th>
@@ -32,7 +33,7 @@
             </th>
             <th>
                 {{ _("Permissions") }}
-            </th>
+            </th></tr>
             </thead>
 
             {% for name, data in users.items() %}
@@ -40,7 +41,7 @@
                     <td>{{ name }}</td>
                     <td><a class="change_password" href="#" id="change_pw|{{name}}">{{ _("change") }}</a></td>
                     <td><input name="{{ name }}|admin" type="checkbox" {% if data.perms.admin %}
-                               checked="True" {% endif %}"></td>
+                               checked="True" {% endif %}/></td>
                     <td>
                         <select multiple="multiple" size="{{ permlist|length }}" name="{{ name }}|perms">
                             {% for perm in permlist %}
