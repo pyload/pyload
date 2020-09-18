@@ -17,7 +17,7 @@ def convert_decimal_prefix(m):
 class UlozTo(SimpleHoster):
     __name__ = "UlozTo"
     __type__ = "hoster"
-    __version__ = "1.46"
+    __version__ = "1.47"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl|pornfile\.cz)/(?:live/)?(?P<ID>[!\w]+/[^/?]*)'
@@ -167,7 +167,7 @@ class UlozTo(SimpleHoster):
 
         domain = "https://pornfile.cz" if is_adult else "https://ulozto.net"
         jsvars = self.get_json_response(domain + action, inputs)
-        self.download(jsvars['downloadLink'])
+        self.download(jsvars['slowDownloadLink'])
 
     def handle_premium(self, pyfile):
         m = re.search("/file/(.+)/", pyfile.url)
