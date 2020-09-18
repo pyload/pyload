@@ -5,6 +5,7 @@ from module.network.HTTPRequest import HTTPRequest
 
 from ..hoster.MegaCoNz import MegaClient, MegaCrypto
 from ..internal.Crypter import Crypter
+from ..internal.Plugin import Abort
 
 
 class BIGHTTPRequest(HTTPRequest):
@@ -35,7 +36,7 @@ class BIGHTTPRequest(HTTPRequest):
 class MegaCoNzFolder(Crypter):
     __name__ = "MegaCoNzFolder"
     __type__ = "crypter"
-    __version__ = "0.23"
+    __version__ = "0.24"
     __status__ = "testing"
 
     __pattern__ = r'(?:https?://(?:www\.)?mega(?:\.co)?\.nz/|mega:|chrome:.+?)(?:folder/|#F!)(?P<ID>[\w^_]+)[!#](?P<KEY>[\w,\-=]+)'
