@@ -114,7 +114,7 @@ def set_permission(perms):
     """
     permission = 0
     for name in Perms:
-        if name.startswith("_"):
+        if str(name).startswith("_"):
             continue
 
         if name in perms and perms[name]:
