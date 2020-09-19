@@ -57,6 +57,7 @@ def add():
         api.add_package(package, urls, 0)
     else:
         api.generate_and_add_packages(urls, 0)
+    return jsonify(True)
 
 
 @bp.route("/addcrypted", methods=["POST"], endpoint="addcrypted")
