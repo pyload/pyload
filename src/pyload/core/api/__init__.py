@@ -21,7 +21,6 @@ from ..network.request_factory import get_url
 from ..utils.old.packagetools import parse_names
 from ..utils import seconds, fs
 
-import json
 from enum import IntFlag
 
 from ..datatypes.exceptions import *
@@ -1070,7 +1069,7 @@ class Api:
         if task:
             task.set_wating_for_user(exclusive=exclusive)
             data, type, result = task.get_captcha()
-            t = CaptchaTask(int(task.id), json.dumps(data), type, result)
+            t = CaptchaTask(int(task.id), data, type, result)
             return t
         else:
             return CaptchaTask(-1)

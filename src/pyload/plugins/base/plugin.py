@@ -241,7 +241,7 @@ class BasePlugin:
             html = html_unescape(html)
 
         # TODO: Move to network in 0.6.x
-        html = _decode(html)
+        # html = _decode(html)
 
         self.last_html = html
 
@@ -411,8 +411,12 @@ class BasePlugin:
 
             os.makedirs(os.path.dirname(framefile), exist_ok=True)
 
-            with open(framefile, mode="w") as fp:
-                fp.write(self.last_html)
+            if isinstance(self.last_html, bytes):
+                with open(framefile, mode="wb") as fp:
+                    fp.write(self.last_html)
+            else:
+                with open(framefile, mode="w") as fp:
+                    fp.write(self.last_html)
 
         except IOError as exc:
             self.log_error(exc)

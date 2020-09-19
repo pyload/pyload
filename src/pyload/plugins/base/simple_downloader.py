@@ -206,7 +206,7 @@ class SimpleDownloader(BaseDownloader):
             info["size"] = parse.bytesize(size)
 
         elif isinstance(info["size"], str):
-            unit = info["units"] if "units" in info else ""
+            unit = info["units"] if "units" in info else None
             info["size"] = parse.bytesize(info["size"], unit)
 
         if "H" in info["pattern"]:

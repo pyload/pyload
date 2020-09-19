@@ -222,7 +222,7 @@ def set_captcha():
         data = {
             "captcha": True,
             "id": task.tid,
-            "params": task.data,
+            "src": task.data['src'],
             "result_type": task.result_type,
         }
     else:

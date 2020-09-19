@@ -34,7 +34,9 @@ class BaseCaptcha(BasePlugin):
         """
         Extend to build your custom anti-captcha ocr.
         """
-        raise NotImplementedError
+        # ToDo: Extend to build your custom anti-captcha ocr.
+        return None
+        # raise NotImplementedError
 
     def decrypt(
         self,
@@ -113,7 +115,7 @@ class BaseCaptcha(BasePlugin):
             try:
                 params = {
                     "src": "data:image/{};base64,{}".format(
-                        input_type, base64.standard_b64encode(img)
+                        input_type, base64.standard_b64encode(img).decode('utf-8')
                     ),
                     "file": img_f.name,
                     "captcha_plugin": self.__name__,
