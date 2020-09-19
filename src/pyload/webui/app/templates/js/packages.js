@@ -171,13 +171,30 @@ var Package = new Class({
         }));
         ul.set("html", "");
         data.links.each(function(link) {
+            if (link.status === 0)
+                link.icon = 'status-finished.png';
+            else if (link.status === 2 || link.status === 3)
+                link.icon = 'status-queue.png';
+            else if (link.status ===  9 || link.status === 1)
+                link.icon = 'status-offline.png';
+            else if (link.status === 5)
+                link.icon = 'status-waiting.png';
+            else if (link.status === 8)
+                link.icon = 'status-failed.png';
+            else if (link.status === 4)
+                link.icon = 'arrow-right';
+            else if (link.status ===  11 || link.status === 13)
+                link.icon = 'status-proc.png';
+            else
+                link.icon = 'status-downloading.png';
+
             link.id = link.fid;
             var li = new Element("li", {
                 "style": {
                     "margin-left": 0
                 }
             });
-            var html = "<span style='cursor: move' class='child_status sorthandle'><img src='{{url_for('static', filename='img')}}/{icon}' style='width: 12px; height:12px;'/></span>\n".substitute({
+            var html = "<span style='cursor: move' class='child_status sorthandle'><img src='static/img/{icon}' style='width: 12px; height:12px;'/></span>\n".substitute({
                 icon: link.icon
             });
             html += "<span style='font-size: 15px'>{name}</span><br /><div class='child_secrow'>".substitute({
