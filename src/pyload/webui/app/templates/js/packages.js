@@ -194,8 +194,9 @@ var Package = new Class({
                     "margin-left": 0
                 }
             });
-            var html = "<span style='cursor: move' class='child_status sorthandle'><img src='static/img/{icon}' style='width: 12px; height:12px;'/></span>\n".substitute({
-                icon: link.icon
+            var icon_url = '{{ url_for('static', filename='img/button.png') }}'.replace('button.png', link.icon);
+            var html = "<span style='cursor: move' class='child_status sorthandle'><img src='{icon_url}' style='width: 12px; height:12px;'/></span>\n".substitute({
+                icon_url: icon_url
             });
             html += "<span style='font-size: 15px'>{name}</span><br /><div class='child_secrow'>".substitute({
                 name: link.name
