@@ -171,7 +171,7 @@ var Package = new Class({
         }));
         ul.set("html", "");
         data.links.each(function(link) {
-            /*if (link.status === 0)
+            if (link.status === 0)
                 link.icon = 'status-finished.png';
             else if (link.status === 2 || link.status === 3)
                 link.icon = 'status-queue.png';
@@ -186,7 +186,7 @@ var Package = new Class({
             else if (link.status ===  11 || link.status === 13)
                 link.icon = 'status-proc.png';
             else
-                link.icon = 'status-downloading.png';*/
+                link.icon = 'status-downloading.png';
 
             link.id = link.fid;
             var li = new Element("li", {
