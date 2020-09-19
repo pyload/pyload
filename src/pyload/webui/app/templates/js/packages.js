@@ -68,7 +68,7 @@ var PackageUI = new Class({
         indicateLoad();
         new Request.JSON({
             method: 'get',
-            url: '/api/deleteFinished',
+            url: '/api/delete_finished',
             onSuccess: function(data) {
                 if (data.length > 0) {
                     window.location.reload()
@@ -86,7 +86,7 @@ var PackageUI = new Class({
         indicateLoad();
         new Request.JSON({
             method: 'get',
-            url: '/api/restartFailed',
+            url: '/api/restart_failed',
             onSuccess: function(data) {
                 this.packages.each(function(pack) {
                     pack.close();
@@ -265,7 +265,7 @@ var Package = new Class({
         indicateLoad();
         new Request({
             method: 'get',
-            url: '/api/deletePackages/[' + this.id + ']',
+            url: '/api/delete_packages/[' + this.id + ']',
             onSuccess: function() {
                 this.ele.nix();
                 indicateFinish();
