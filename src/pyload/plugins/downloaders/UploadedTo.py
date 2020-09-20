@@ -62,7 +62,7 @@ class UploadedTo(SimpleDownloader):
                     "apikey": cls.API_KEY,
                     "id_0": re.match(cls.__pattern__, url).group("ID"),
                 },
-            )
+            ).decode('utf-8')
 
             if html != "can't find request":
                 api = html.split(",", 4)
