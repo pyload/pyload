@@ -369,7 +369,7 @@ class BaseDownloader(BaseHoster):
             self.log_warning(self._("No file to scan"))
             return
 
-        with open(dl_file, mode="rb") as fp:
+        with open(dl_file, mode="r") as fp:
             content = fp.read(read_size)
 
         #: Produces encoding errors, better log to other file in the future?
