@@ -68,7 +68,7 @@ var PackageUI = new Class({
         indicateLoad();
         new Request.JSON({
             method: 'get',
-            url: '/api/deleteFinished',
+            url: '/api/delete_finished',
             onSuccess: function(data) {
                 if (data.length > 0) {
                     window.location.reload()
@@ -86,7 +86,7 @@ var PackageUI = new Class({
         indicateLoad();
         new Request.JSON({
             method: 'get',
-            url: '/api/restartFailed',
+            url: '/api/restart_failed',
             onSuccess: function(data) {
                 this.packages.each(function(pack) {
                     pack.close();
@@ -194,8 +194,9 @@ var Package = new Class({
                     "margin-left": 0
                 }
             });
-            var html = "<span style='cursor: move' class='child_status sorthandle'><img src='static/img/{icon}' style='width: 12px; height:12px;'/></span>\n".substitute({
-                icon: link.icon
+            var icon_url = '{{ url_for('static', filename='img/button.png') }}'.replace('button.png', link.icon);
+            var html = "<span style='cursor: move' class='child_status sorthandle'><img src='{icon_url}' style='width: 12px; height:12px;'/></span>\n".substitute({
+                icon_url: icon_url
             });
             html += "<span style='font-size: 15px'>{name}</span><br /><div class='child_secrow'>".substitute({
                 name: link.name
@@ -242,7 +243,7 @@ var Package = new Class({
             imgs[0].addEvent('click', function(e) {
                 new Request({
                     method: 'get',
-                    url: '/api/delete_files/[' + this.id + ']',
+                    url: '/api/delete_files/[' + this + ']',
                     onSuccess: function() {
                         $('file_' + this).nix()
                     }.bind(this),
@@ -252,7 +253,7 @@ var Package = new Class({
             imgs[1].addEvent('click', function(e) {
                 new Request({
                     method: 'get',
-                    url: '/api/restartFile/' + this.id,
+                    url: '/api/restart_file/' + this,
                     onSuccess: function() {
                         var ele = $('file_' + this);
                         var imgs = ele.getElements("img");
@@ -282,7 +283,7 @@ var Package = new Class({
         indicateLoad();
         new Request({
             method: 'get',
-            url: '/api/deletePackages/[' + this.id + ']',
+            url: '/api/delete_packages/[' + this.id + ']',
             onSuccess: function() {
                 this.ele.nix();
                 indicateFinish();
@@ -295,7 +296,7 @@ var Package = new Class({
         indicateLoad();
         new Request({
             method: 'get',
-            url: '/api/restartPackage/' + this.id,
+            url: '/api/restart_package/' + this.id,
             onSuccess: function() {
                 this.close();
                 indicateSuccess();
