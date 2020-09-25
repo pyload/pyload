@@ -6,6 +6,7 @@
 from module.plugins.internal.XFSHoster import XFSHoster
 import re
 
+
 class FileAl(XFSHoster):
     __name__    = "FileAl"
     __type__    = "hoster"
@@ -18,16 +19,13 @@ class FileAl(XFSHoster):
     __license__     = "GPLv3"
     __authors__     = [("igel", "")]
 
-
     PLUGIN_DOMAIN = "file.al"
     LINK_PATTERN     = r'direct link.*?<a [^>]*href="(.+?)".*?>Click here to download', re.MULTILINE | re.DOTALL
     WAIT_PATTERN     = r'countdown.*?seconds.*?(\d+)'
     # "extend" the XFSHoster dict
-    RECAPTCHA_PATTERN= r"g-recaptcha.*?sitekey=[\"']([^\"]*)"
+    RECAPTCHA_PATTERN = r"g-recaptcha.*?sitekey=[\"']([^\"]*)"
     PREMIUM_ONLY_PATTERN  = r'(?:[Pp]remium Users only|can download files up to.*only)'
-    LOCAL_LOCATION = r'check_ip'
 
     def setup(self):
         self.multiDL = self.premium
         self.resume_download = True
-
