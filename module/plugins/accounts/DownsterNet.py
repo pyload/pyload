@@ -25,7 +25,7 @@ class DownsterNet(MultiAccount):
     __license__ = "GPLv3"
     __authors__ = [(None, None)]
 
-    API_URL = "http://localhost:8081"
+    API_URL = "https://downster.net/api"
 
     def rnd(self):
         return ''.join([random.choice(string.ascii_lowercase + string.digits) for n in xrange(5)])
