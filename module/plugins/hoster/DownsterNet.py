@@ -42,10 +42,7 @@ class DownsterNet(MultiHoster):
             pass
 
     def handle_free(self, pyfile):
-        try:
-            result = self.account.api_request('/download/get', get={'url': pyfile.url})
-        except BadHeader as e:
-            result = json.loads(e.content)
+        result = self.account.api_request('/download/get', get={'url': pyfile.url})
 
         if not result['success']:
             if 'offline' in result['error']:
