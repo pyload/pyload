@@ -1,25 +1,31 @@
 # -*- coding: utf-8 -*-
+import random
+import string
 
 import pycurl
-from module.network.HTTPRequest import BadHeader
 
 from ..internal.misc import json
 from ..internal.MultiHoster import MultiHoster
+from ...network.HTTPRequest import BadHeader
 
 
 class DownsterNet(MultiHoster):
     __name__ = "DownsterNet"
     __type__ = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.2"
     __status__ = "testing"
 
+    #: Since we want to allow the user to specify the list of hoster to use we let MultiHoster.activate
+    # Note: Falling back to ddl leads to wrong file offline recognition for ddl.to
     __pattern__ = r'^unmatchable$'
-    __config__ = [("activated", "bool", "Activated", True),
-                  ("use_premium", "bool", "Use premium account if available", True),
-                  ("fallback", "bool", "Fallback to free download if premium fails", False),
-                  ("chk_filesize", "bool", "Check file size", True),
-                  ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10),
-                  ("revert_failed", "bool", "Revert to standard download if fails", False)]
+    __config__ = [
+        ("activated", "bool", "Activated", True),
+        ("use_premium", "bool", "Use premium account if available", True),
+        ("fallback", "bool", "Fallback to free download if premium fails", False),
+        ("chk_filesize", "bool", "Check file size", True),
+        ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10),
+        ("revert_failed", "bool", "Revert to standard download if fails", False)
+    ]
 
     __description__ = """Downster.net hoster plugin"""
     __license__ = "GPLv3"
@@ -28,32 +34,27 @@ class DownsterNet(MultiHoster):
     FILE_ERRORS = [("Error", r'{"state":"error"}'),
                    ("Retry", r'{"state":"retry"}')]
 
-    API_URL = "https://downster.net/api/"
-
-    def api_response(self, method, get={}, **kwargs):
+    # Overwrite this function to prevent cleanCookies to don't remove token cookie
+    def clean(self):
         try:
-            res = self.load(self.API_URL + method,
-                            get=get,
-                            post=json.dumps(kwargs))
-        except BadHeader, e:
-            res = e.content
-
-        res = json.loads(res)
-
-        return res
+            self.req.close()
+        except Exception:
+            pass
 
     def handle_free(self, pyfile):
-        api_data = self.api_response("download/get",
-                                     get={'url': pyfile.url})
+        try:
+            result = self.account.api_request('/download/get', get={'url': pyfile.url})
+        except BadHeader as e:
+            result = json.loads(e.content)
 
-        if not api_data['success']:
-            if 'offline' in api_data['error']:
+        if not result['success']:
+            if 'offline' in result['error']:
                 self.offline()
-
             else:
-                self.fail(api_data['error'])
+                self.fail(result['error'])
 
-        pyfile.name = api_data['data']['name']
-        pyfile.size = int(api_data['data']['size'])
+        # Setting status may be better for reporting errors seee Base.py:235
+        pyfile.name = result['data']['name']
+        pyfile.size = int(result['data']['size'])
 
-        self.link = api_data['data']['downloadUrl']
+        self.link = result['data']['downloadUrl']
