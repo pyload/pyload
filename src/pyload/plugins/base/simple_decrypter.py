@@ -133,7 +133,7 @@ class SimpleDecrypter(BaseDecrypter):
 
         if "N" in info["pattern"]:
             name = replace_patterns(info["pattern"]["N"], cls.NAME_REPLACEMENTS)
-            info["name"] = parse_name(name)
+            info["name"] = name
 
         return info
 
