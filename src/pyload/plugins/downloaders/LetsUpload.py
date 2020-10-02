@@ -10,7 +10,8 @@ class LetsUpload(SimpleDownloader):
     __type__ = "downloader"
     __version__ = "0.1"
     __status__ = "testing"
-    # Note: it does not support Letsupload folders. You must put every file url in the folder on a new line in pyload.
+    # Note: it does not support Letsupload folders.
+    # You must put every file url in the folder on a new line in pyload.
 
     __pattern__ = r"https?://(?:www\.)?letsupload\.org/.+"
     __config__ = [("enabled", "bool", "Activated", True)]
@@ -18,14 +19,23 @@ class LetsUpload(SimpleDownloader):
     __description__ = """Letsupload.org downloader plugin"""
     __license__ = "GPLv3"
 
-    NAME_PATTERN = r'<div class="title"><i class="fa fa-file-text"></i> (?P<N>.+?)</div>'
+    NAME_PATTERN = (
+        r'<div class="title"><i class="fa fa-file-text"></i> (?P<N>.+?)</div>'
+    )
     SIZE_PATTERN = r"size : <p>(?P<S>[\d.,]+) (?P<U>[\w^_]+)</p>"
 
     LINK_FREE_PATTERN = r'<a class=\'btn btn-free\' href=\'(?P<url>[^"]+?)\'>'
-    LINK_FREE_PATTERN_2 = r'<meta http-equiv="refresh" content="0;url=(?P<url>[^"]+?)" />'
+    LINK_FREE_PATTERN_2 = (
+        r'<meta http-equiv="refresh" content="0;url=(?P<url>[^"]+?)" />'
+    )
 
-    # Can't simply do "File has been removed" because the text appears at the start of the page for some kind of localization
-    OFFLINE_PATTERN = r'<li class="no-side-margin"><i class="fa fa-exclamation-triangle margin-right-20"></i>&nbsp;File has been removed.</li>'
+    # Can't simply check "File has been removed"
+    # That text appears at the start of the page for some kind of localization
+    OFFLINE_PATTERN = (
+        r'<li class="no-side-margin">'
+        r'<i class="fa fa-exclamation-triangle margin-right-20">'
+        r'</i>&nbsp;File has been removed.</li>'
+    )
     TEMP_OFFLINE_PATTERN = OFFLINE_PATTERN
 
     def parse_regex(self, pattern, data, err="Free download link not found"):
@@ -46,4 +56,3 @@ class LetsUpload(SimpleDownloader):
         # Get the real download link
         html = self.load(html_file_link)
         self.link = self.parse_regex(self.LINK_FREE_PATTERN_2, html)
- 
