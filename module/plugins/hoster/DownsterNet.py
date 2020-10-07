@@ -9,7 +9,7 @@ from ..internal.MultiHoster import MultiHoster
 class DownsterNet(MultiHoster):
     __name__ = "DownsterNet"
     __type__ = "hoster"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __status__ = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -31,8 +31,8 @@ class DownsterNet(MultiHoster):
         self.api = DownsterApi(self)
 
     def handle_free(self, pyfile):
-        api_data = self.api.api_request("download/get",
-                                        get={'url': pyfile.url})
+        api_data = self.api.request("download/get",
+                                    get={'url': pyfile.url})
 
         if not api_data['success']:
             if 'offline' in api_data['error']:

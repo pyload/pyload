@@ -23,7 +23,7 @@ class DownsterApi(object):
         else:
             self.account_plugin = self.plugin
 
-    def api_request(self, method, get={}, **kwargs):
+    def request(self, method, get={}, **kwargs):
         self.plugin.req.http.c.setopt(pycurl.HTTPHEADER, [
             "Accept: application/json, text/plain, */",
             "Content-Type: application/json",
@@ -60,7 +60,7 @@ class DownsterApi(object):
 class DownsterNet(MultiAccount):
     __name__ = "DownsterNet"
     __type__ = "account"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __status__ = "testing"
 
     __config__ = [("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),
@@ -74,7 +74,7 @@ class DownsterNet(MultiAccount):
     api = None
 
     def grab_hosters(self, user, password, data):
-        api_data = self.api.api_request("download/usage")
+        api_data = self.api.request("download/usage")
         if not api_data['success']:
             self.log_error('Could not get hoster info: ' + api_data['error'])
             return []
@@ -83,7 +83,7 @@ class DownsterNet(MultiAccount):
             return [hoster['hoster'] for hoster in api_data['data']]
 
     def grab_info(self, user, password, data):
-        api_data = self.api.api_request("user/info")
+        api_data = self.api.request("user/info")
 
         if not api_data['success']:
             validuntil = None
@@ -105,13 +105,13 @@ class DownsterNet(MultiAccount):
         if self.api is None:
             self.api = DownsterApi(self)
 
-        api_data = self.api.api_request('user/info')
+        api_data = self.api.request('user/info')
         if api_data['success']:
             self.skip_login()
 
-        api_data = self.api.api_request("user/authenticate",
-                                        email=user,
-                                        password=password)
+        api_data = self.api.request("user/authenticate",
+                                    email=user,
+                                    password=password)
 
         if not api_data['success']:
             self.fail_login(api_data['error'])
