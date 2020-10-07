@@ -60,7 +60,7 @@ class DownsterApi(object):
 class DownsterNet(MultiAccount):
     __name__ = "DownsterNet"
     __type__ = "account"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __status__ = "testing"
 
     __config__ = [("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),
@@ -98,7 +98,7 @@ class DownsterNet(MultiAccount):
             premium = validuntil > time.time()
 
         return {'validuntil': validuntil,
-                '': trafficleft,
+                'trafficleft': trafficleft,
                 'premium': premium}
 
     def signin(self, user, password, data):
