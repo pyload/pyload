@@ -132,10 +132,10 @@ class SimpleDownloader(BaseDownloader):
     FILE_ERRORS = [
         (
             "Html error",
-            r"\A(?:\s*<.+>)?((?:[\w\s]*(?:[Ee]rror|ERROR)\s*\:?)?\s*\d{3})(?:\Z|\s+)",
+            b"\A(?:\s*<.+>)?((?:[\w\s]*(?:[Ee]rror|ERROR)\s*\:?)?\s*\d{3})(?:\Z|\s+)",
         ),
-        ("Request error", r"([Aa]n error occured while processing your request)"),
-        ("Html file", r"\A\s*<!DOCTYPE html"),
+        ("Request error", b"([Aa]n error occured while processing your request)"),
+        ("Html file", b"\A\s*<!DOCTYPE html"),
     ]
 
     @classmethod
