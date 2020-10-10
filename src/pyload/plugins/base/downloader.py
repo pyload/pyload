@@ -396,7 +396,7 @@ class BaseDownloader(BaseHoster):
             else:
                 self.error(self._("No file downloaded"))
 
-        elif self.scan_download({"Empty file": re.compile(b"\A((.|)(\2|\s)*)\Z")}):
+        elif self.scan_download({"Empty file": re.compile(rb"\A((.|)(\2|\s)*)\Z")}):
             if self.remove(self.last_download):
                 self.last_download = ""
             self.error(self._("Empty file"))
