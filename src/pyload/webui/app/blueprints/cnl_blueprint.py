@@ -53,10 +53,15 @@ def add():
         return jsonify(False)
 
     api = flask.current_app.config["PYLOAD_API"]
-    if package:
-        api.add_package(package, urls, 0)
-    else:
-        api.generate_and_add_packages(urls, 0)
+    try:
+        if package:
+            api.add_package(package, urls, 0)
+        else:
+            api.generate_and_add_packages(urls, 0)
+    except Exception as e:
+        return "failed " + e.args[0] + "\r\n"
+
+    return "success\r\n"
 
 
 @bp.route("/addcrypted", methods=["POST"], endpoint="addcrypted")
