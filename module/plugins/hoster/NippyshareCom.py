@@ -12,7 +12,8 @@ class NippyshareCom(XFSHoster):
     __pattern__ = r'https?://nippyshare.com/v/\w{6}'
     __config__ = [("activated", "bool", "Activated", True),
                   ("chk_filesize", "bool", "Check file size", True),
-                  ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10)]
+                  ("max_wait", "int",
+                   "Reconnect if waiting time is greater than minutes", 10)]
 
     __description__ = """Nippyshare.com hoster plugin"""
     __license__ = "GPLv3"
