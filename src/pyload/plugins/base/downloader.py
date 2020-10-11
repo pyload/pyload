@@ -8,7 +8,6 @@ from pyload.core.network.exceptions import Fail
 from pyload.core.network.http.exceptions import BadHeader
 from pyload.core.utils import parse
 from pyload.core.utils.old import safejoin
-from pyload.core.utils.convert import to_str
 
 from ..helpers import exists
 from .hoster import BaseHoster
