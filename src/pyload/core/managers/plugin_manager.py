@@ -6,8 +6,8 @@ import re
 import sys
 from ast import literal_eval
 from itertools import chain
+from collections import OrderedDict
 
-# import semver
 
 from pyload import APPID, PKGDIR
 
@@ -249,7 +249,8 @@ class PluginManager:
             plugins.update(temp_plugins)
             configs.update(temp_configs)
 
-        return plugins, configs
+        return OrderedDict(sorted(plugins.items(), key=lambda t: t[0])), \
+               OrderedDict(sorted(configs.items(), key=lambda t: t[0]))
 
     def parse_urls(self, urls):
         """
