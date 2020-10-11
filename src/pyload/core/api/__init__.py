@@ -868,7 +868,7 @@ class Api:
         """
         Aborts all running downloads.
         """
-        pyfiles = self.pyload.files.cache.values()
+        pyfiles = list(self.pyload.files.cache.values())
         for pyfile in pyfiles:
             pyfile.abort_download()
 
