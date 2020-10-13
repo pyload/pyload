@@ -10,6 +10,7 @@ class XFileSharing(XFSDownloader):
     __type__ = "downloader"
     __version__ = "0.65"
     __status__ = "testing"
+    __order__ = "100"
 
     __pattern__ = r"^unmatchable$"
     __config__ = [
