@@ -3,12 +3,12 @@
 import re
 
 from ..internal.XFSHoster import XFSHoster
-from ..internal.misc import search_pattern, parse_time
+from ..internal.misc import parse_time
 
 class CosmoboxOrg(XFSHoster):
     __name__ = "CosmoboxOrg"
     __type__ = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
     __pattern__ = r'https://cosmobox.org/\w{12}'
@@ -28,9 +28,10 @@ class CosmoboxOrg(XFSHoster):
     WAIT_PATTERN = r'<span class="circle"><span class="seconds">(\d+)</span></span>'
 
     def handle_free(self, pyfile):
-        self.check_errors()
-        self.data = self.load(pyfile.url)
         action, inputs = self.parse_html_form(input_names={'op': re.compile(r'^download')})
+        if inputs is None:
+            self.fail("Free download form not found")
+
         inputs['method_free'] = "Free+Download"
 
         self.data = self.load("https://cosmobox.org/download",
@@ -38,16 +39,17 @@ class CosmoboxOrg(XFSHoster):
                               ref=self.pyfile.url,
                               redirect=False)
 
-        m = search_pattern(r'role="alert">You have reached your download limit', self.data)
-        wait_time = None
+        m = re.search(r'role="alert">You have reached your download limit', self.data)
         if m is not None:
-            wait_time = 3*60*60 # wait 3 hours
+            wait_time = 3*60*60  #: wait 3 hours
+            self.wait(wait_time)
+
         else:
-            m = search_pattern(self.WAIT_PATTERN, self.data)
+            m = re.search(self.WAIT_PATTERN, self.data)
             if m is not None:
                 waitmsg = m.group(1).strip()
                 wait_time = parse_time(waitmsg)
-        self.wait(wait_time)
+                self.wait(wait_time)
 
         action, inputs = self.parse_html_form(input_names={'op': re.compile(r'^download')})
         self.handle_captcha(inputs)
