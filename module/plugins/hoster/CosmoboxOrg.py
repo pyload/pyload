@@ -8,10 +8,10 @@ from ..internal.misc import parse_time
 class CosmoboxOrg(XFSHoster):
     __name__ = "CosmoboxOrg"
     __type__ = "hoster"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __status__ = "testing"
 
-    __pattern__ = r'https://cosmobox.org/\w{12}'
+    __pattern__ = r'https?://cosmobox\.org/\w{12}'
     __config__ = [("activated", "bool", "Activated", True),
                   ("chk_filesize", "bool", "Check file size", True),
                   ("max_wait", "int",
@@ -26,6 +26,8 @@ class CosmoboxOrg(XFSHoster):
     NAME_PATTERN = r"You're downloading: (?P<N>.+?)<"
     SIZE_PATTERN = r'<span class="label label-default">(?P<S>[\d.,]+) (?P<U>[\w^_]+)</span>'
     WAIT_PATTERN = r'<span class="circle"><span class="seconds">(\d+)</span></span>'
+
+    URL_REPLACEMENTS = [(r'^http://', "https://")]
 
     def handle_free(self, pyfile):
         action, inputs = self.parse_html_form(input_names={'op': re.compile(r'^download')})
