@@ -12,7 +12,7 @@ from ..base.container import BaseContainer
 class CCF(BaseContainer):
     __name__ = "CCF"
     __type__ = "container"
-    __version__ = "0.29"
+    __version__ = "0.30"
     __status__ = "testing"
 
     __pattern__ = r".+\.ccf$"
@@ -30,7 +30,7 @@ class CCF(BaseContainer):
     __description__ = """CCF container decrypter plugin"""
     __license__ = "GPLv3"
     __authors__ = [
-        ("Willnix", "Willnix@pyload.net"),
+        ("Willnix", "Willnix@pyload.org"),
         ("Walter Purcaro", "vuolter@gmail.com"),
     ]
 

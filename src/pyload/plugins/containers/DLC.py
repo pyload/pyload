@@ -5,22 +5,75 @@ import os
 import re
 import xml.dom.minidom
 
-from cryptography.fernet import Fernet
-from cryptography.hazmat.backends import default_backend
-from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+import Crypto.Cipher.AES
 
 from pyload.core.utils.old import decode
 
 from ..base.container import BaseContainer
 
+class BadDLC(Exception):
+    pass
+
+
+class DLCDecrypter(object):
+    KEY = "cb99b5cbc24db398"
+    IV = "9bc24cb995cb8db3"
+    API_URL = "http://service.jdownloader.org/dlcrypt/service.php?srcType=dlc&destType=pylo&data=%s"
+
+    def __init__(self, plugin):
+        self.plugin = plugin
+
+    def decrypt(self, data):
+        data = data.strip()
+
+        data += '=' * (-len(data) % 4)
+
+        dlc_key = data[-88:]
+        dlc_data =  base64.b64decode(data[:-88])
+        dlc_content = self.plugin.load(self.API_URL % dlc_key)
+
+        try:
+            rc =  base64.b64decode(re.search(r'<rc>(.+)</rc>', dlc_content, re.S).group(1))[:16]
+
+        except AttributeError:
+            raise BadDLC
+
+        key = iv = Crypto.Cipher.AES.new(self.KEY, Crypto.Cipher.AES.MODE_CBC, self.IV).decrypt(rc)
+
+        xml_data =  base64.b64decode(Crypto.Cipher.AES.new(key, Crypto.Cipher.AES.MODE_CBC, iv).decrypt(dlc_data))
+
+        root = xml.dom.minidom.parseString(xml_data).documentElement
+        content_node = root.getElementsByTagName("content")[0]
+
+        packages = DLCDecrypter._parse_packages(content_node)
+
+        return packages
+
+    @staticmethod
+    def _parse_packages(start_node):
+        return [
+            (
+                base64.b64decode(decode(node.getAttribute("name"))).decode('utf-8'),
+                DLCDecrypter._parse_links(node)
+            )
+            for node in start_node.getElementsByTagName("package")
+        ]
+
+    @staticmethod
+    def _parse_links(start_node):
+        return [
+            base64.b64decode(node.getElementsByTagName("url")[0].firstChild.data).decode('utf-8')
+            for node in start_node.getElementsByTagName("file")
+        ]
+
 
 class DLC(BaseContainer):
     __name__ = "DLC"
     __type__ = "container"
-    __version__ = "0.32"
+    __version__ = "0.34"
     __status__ = "testing"
 
-    __pattern__ = r"(.+\.dlc|[\w\+^_]+==[\w\+^_/]+==)$"
+    __pattern__ = r"(.+\.DLC|dlc|[\w\+^_]+==[\w\+^_/]+==)$"
     __config__ = [
         ("enabled", "bool", "Activated", True),
         ("use_premium", "bool", "Use premium account if available", True),
@@ -35,8 +88,8 @@ class DLC(BaseContainer):
     __description__ = """DLC container decrypter plugin"""
     __license__ = "GPLv3"
     __authors__ = [
-        ("RaNaN", "RaNaN@pyload.net"),
-        ("spoob", "spoob@pyload.net"),
+        ("RaNaN", "RaNaN@pyload.org"),
+        ("spoob", "spoob@pyload.org"),
         ("mkaay", "mkaay@mkaay.de"),
         ("Schnusch", "Schnusch@users.noreply.github.com"),
         ("Walter Purcaro", "vuolter@gmail.com"),
@@ -50,51 +103,18 @@ class DLC(BaseContainer):
     def decrypt(self, pyfile):
         fs_filename = os.fsdecode(pyfile.url)
         with open(fs_filename) as dlc:
-            data = dlc.read().strip()
+            data = dlc.read()
 
-        data += "=" * (-len(data) % 4)
-
-        dlc_key = data[-88:]
-        dlc_data = base64.b64decode(data[:-88])
-        dlc_content = self.load(self.API_URL.format(dlc_key))
+        decrypter = DLCDecrypter(self)
 
         try:
-            rc = base64.b64decode(
-                re.search(r"<rc>(.+)</rc>", dlc_content, re.S).group(1)
-            )[:16]
+            packages = decrypter.decrypt(data)
 
-        except AttributeError:
-            self.fail(self._("Container is corrupted"))
-
-        cipher = Cipher(
-            algorithms.AES(self.KEY), modes.CBC(self.IV), backend=default_backend()
-        )
-        decryptor = cipher.decryptor()
-        key = decryptor.update(rc) + decryptor.finalize()
-
-        self.data = base64.b64decode(Fernet(key).decrypt(dlc_data))
+        except BadDLC:
+            self.fail(_("Container is corrupted"))
 
         self.packages = [
             (name or pyfile.name, links, name or pyfile.name)
-            for name, links in self.get_packages()
+            for name, links in packages
         ]
 
-    def get_packages(self):
-        root = xml.dom.minidom.parseString(self.data).documentElement
-        content = root.getElementsByTagName("content")[0]
-        return self.parse_packages(content)
-
-    def parse_packages(self, start_node):
-        return [
-            (
-                base64.b64decode(decode(node.getAttribute("name"))),
-                self.parse_links(node),
-            )
-            for node in start_node.getElementsByTagName("package")
-        ]
-
-    def parse_links(self, start_node):
-        return [
-            base64.b64decode(node.getElementsByTagName("url")[0].firstChild.data)
-            for node in start_node.getElementsByTagName("file")
-        ]

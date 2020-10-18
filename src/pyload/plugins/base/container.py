@@ -48,7 +48,7 @@ class BaseContainer(BaseDecrypter):
 
     def _delete_tmpfile(self):
         if os.path.basename(self.pyfile.name).startswith("tmp_"):
-            self.remove(self.pyfile.url, try_trash=False)
+            self.remove(self.pyfile.url, trash=False)
 
     def _make_tmpfile(self):
         """
