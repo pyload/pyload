@@ -148,7 +148,7 @@ def add_package():
 
     try:
         f = flask.request.files["add_file"]
-        if f.content_length:
+        if f.filename:
             if not name or name == "New Package":
                 name = f.name
 
