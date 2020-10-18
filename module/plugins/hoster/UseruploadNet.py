@@ -3,7 +3,6 @@
 import re
 
 from ..internal.XFSHoster import XFSHoster
-from ..internal.misc import search_pattern
 
 
 class UseruploadNet(XFSHoster):
@@ -14,10 +13,13 @@ class UseruploadNet(XFSHoster):
 
     __pattern__ = r'https://userupload\.net/\w{12}'
     __config__ = [("activated", "bool", "Activated", True),
-                  ("use_premium", "bool", "Use premium account if available", True),
-                  ("fallback", "bool", "Fallback to free download if premium fails", True),
+                  ("use_premium", "bool",
+                   "Use premium account if available", True),
+                  ("fallback", "bool",
+                   "Fallback to free download if premium fails", True),
                   ("chk_filesize", "bool", "Check file size", True),
-                  ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10)]
+                  ("max_wait", "int",
+                   "Reconnect if waiting time is greater than minutes", 10)]
 
     __description__ = """Userupload.net hoster plugin"""
     __license__ = "GPLv3"
@@ -38,8 +40,7 @@ class UseruploadNet(XFSHoster):
                               ref=self.pyfile.url,
                               redirect=False)
 
-        m = search_pattern(self.LINK_PATTERN, self.data)
+        m = re.search(self.LINK_PATTERN, self.data)
         if m is not None:
             self.link = m.group(1)
             self.pyfile.name = self.link.split('/')[-1]
-
