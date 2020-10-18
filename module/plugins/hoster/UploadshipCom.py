@@ -2,12 +2,12 @@
 import re
 
 from ..internal.XFSHoster import XFSHoster
-from ..internal.misc import search_pattern, parse_time, json
+from ..internal.misc import search_pattern
 
 class UploadshipCom(XFSHoster):
     __name__ = "UploadshipCom"
     __type__ = "hoster"
-    __version__ = "0.02"
+    __version__ = "0.01"
     __status__ = "testing"
 
     __pattern__ = r'https://www.uploadship\.com/\w{16}'
