@@ -11,7 +11,7 @@ class FilesMailRu(Account):
 
     __description__ = """Filesmail.ru account plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("RaNaN", "RaNaN@pyload.org")]
+    __authors__ = [("RaNaN", "RaNaN@pyload.net")]
 
     def grab_info(self, user, password, data):
         return {'validuntil': None, 'trafficleft': None}

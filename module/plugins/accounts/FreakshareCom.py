@@ -14,7 +14,7 @@ class FreakshareCom(Account):
 
     __description__ = """Freakshare.com account plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("RaNaN", "RaNaN@pyload.org")]
+    __authors__ = [("RaNaN", "RaNaN@pyload.net")]
 
     def grab_info(self, user, password, data):
         premium = False

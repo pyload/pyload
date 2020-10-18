@@ -271,7 +271,7 @@ class MegaCoNz(Hoster):
 
     __description__ = """Mega.co.nz hoster plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("RaNaN", "ranan@pyload.org"),
+    __authors__ = [("RaNaN", "ranan@pyload.net"),
                    ("Walter Purcaro", "vuolter@gmail.com"),
                    ("GammaC0de", "nitzo2001[AT}yahoo[DOT]com")]
 

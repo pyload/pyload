@@ -16,7 +16,7 @@ class PremiumTo(MultiAccount):
 
     __description__ = """Premium.to account plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("RaNaN", "RaNaN@pyload.org"),
+    __authors__ = [("RaNaN", "RaNaN@pyload.net"),
                    ("zoidberg", "zoidberg@mujmail.cz"),
                    ("stickell", "l.stickell@yahoo.it"),
                    ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]

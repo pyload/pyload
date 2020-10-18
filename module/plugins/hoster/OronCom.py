@@ -14,5 +14,5 @@ class OronCom(DeadHoster):
 
     __description__ = """Oron.com hoster plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("chrox", "chrox@pyload.org"),
+    __authors__ = [("chrox", "chrox@pyload.net"),
                    ("DHMH", "DHMH@pyload.org")]

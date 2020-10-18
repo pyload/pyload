@@ -20,7 +20,7 @@ class LinksaveIn(OCR):
 
     __description__ = """Linksave.in ocr plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("pyLoad Team", "admin@pyload.org")]
+    __authors__ = [("pyLoad Team", "admin@pyload.net")]
 
     def init(self):
         self.data_dir = os.path.dirname(os.path.abspath(
