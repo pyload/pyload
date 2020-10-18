@@ -70,7 +70,7 @@ class CaptchaTask:
         self.captcha_result_type = result_type
         self.handler = []  #: the addon plugins that will take care of the solution
         self.result = None
-        self.wait_until = None
+        self.wait_until = 0
         self.error = None  #: error message
 
         self.status = "init"
