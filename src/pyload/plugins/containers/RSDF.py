@@ -3,8 +3,7 @@ import base64
 import os
 import re
 
-from cryptography.hazmat.backends import default_backend
-from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+import Crypto.Cipher.AES
 
 from ..base.container import BaseContainer
 
@@ -12,7 +11,7 @@ from ..base.container import BaseContainer
 class RSDF(BaseContainer):
     __name__ = "RSDF"
     __type__ = "container"
-    __version__ = "0.37"
+    __version__ = "0.38"
     __status__ = "testing"
 
     __pattern__ = r".+\.rsdf$"
@@ -30,8 +29,8 @@ class RSDF(BaseContainer):
     __description__ = """RSDF container decrypter plugin"""
     __license__ = "GPLv3"
     __authors__ = [
-        ("RaNaN", "RaNaN@pyload.net"),
-        ("spoob", "spoob@pyload.net"),
+        ("RaNaN", "RaNaN@pyload.org"),
+        ("spoob", "spoob@pyload.org"),
         ("Walter Purcaro", "vuolter@gmail.com"),
     ]
 
@@ -42,11 +41,8 @@ class RSDF(BaseContainer):
         KEY = bytes.fromhex(self.KEY)
         IV = bytes.fromhex(self.IV)
 
-        backend = default_backend()
-
-        cipher = Cipher(algorithms.AES(KEY), modes.ECB, backend=backend)
-        encryptor = cipher.encryptor()
-        iv = encryptor.update(IV) + encryptor.finalize()
+        iv = Crypto.Cipher.AES.new(KEY, Crypto.Cipher.AES.MODE_ECB).encrypt(IV)
+        cipher = Crypto.Cipher.AES.new(KEY, Crypto.Cipher.AES.MODE_CFB, iv)
 
         try:
             fs_filename = os.fsdecode(pyfile.url)
@@ -69,8 +65,5 @@ class RSDF(BaseContainer):
             for link in raw_links:
                 if not link:
                     continue
-                cipher = Cipher(algorithms.AES(KEY), modes.CFB(iv), backend=backend)
-                decryptor = cipher.decryptor()
-                value = decryptor.update(base64.b64decode(link) + decryptor.finalize())
-                link = value.replace("CCF: ", "")
+                link = cipher.decrypt(base64.b64decode(link)).replace('CCF: ', '')
                 self.links.append(link)

@@ -8,7 +8,7 @@ from ..base.container import BaseContainer
 class TXT(BaseContainer):
     __name__ = "TXT"
     __type__ = "container"
-    __version__ = "0.21"
+    __version__ = "0.22"
     __status__ = "testing"
 
     __pattern__ = r".+\.(txt|text)$"
@@ -27,7 +27,8 @@ class TXT(BaseContainer):
 
     __description__ = """Read link lists in plain text formats"""
     __license__ = "GPLv3"
-    __authors__ = [("spoob", "spoob@pyload.net"), ("jeix", "jeix@hasnomail.com")]
+    __authors__ = [("spoob", "spoob@pyload.org"),
+                   ("jeix", "jeix@hasnomail.com")]
 
     def decrypt(self, pyfile):
         try:
@@ -57,6 +58,8 @@ class TXT(BaseContainer):
                     continue
 
                 packages[cur_pack].append(link)
+
+        txt.close()
 
         #: Empty packages fix
         for key, value in packages.items():

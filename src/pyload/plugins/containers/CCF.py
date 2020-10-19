@@ -30,7 +30,7 @@ class CCF(BaseContainer):
     __description__ = """CCF container decrypter plugin"""
     __license__ = "GPLv3"
     __authors__ = [
-        ("Willnix", "Willnix@pyload.net"),
+        ("Willnix", "Willnix@pyload.org"),
         ("Walter Purcaro", "vuolter@gmail.com"),
     ]
 
