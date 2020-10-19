@@ -4,6 +4,7 @@ import base64
 import json
 import re
 import time
+import os
 
 import pycurl
 from pyload.core.network.http.exceptions import BadHeader
@@ -46,7 +47,7 @@ class DeathByCaptchaException(Exception):
 class DeathByCaptcha(BaseAddon):
     __name__ = "DeathByCaptcha"
     __type__ = "addon"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __status__ = "testing"
 
     __config__ = [
@@ -58,7 +59,8 @@ class DeathByCaptcha(BaseAddon):
 
     __description__ = """Send captchas to DeathByCaptcha.com"""
     __license__ = "GPLv3"
-    __authors__ = [("RaNaN", "RaNaN@pyload.net"), ("zoidberg", "zoidberg@mujmail.cz")]
+    __authors__ = [("RaNaN", "RaNaN@pyload.org"),
+                   ("zoidberg", "zoidberg@mujmail.cz")]
 
     API_URL = "http://api.dbcapi.me/api/"
 
@@ -140,7 +142,7 @@ class DeathByCaptcha(BaseAddon):
             data = (pycurl.FORM_FILE, captcha)
         else:
             multipart = False
-            with open(captcha, mode="rb") as fp:
+            with open(os.fsencode(captcha), mode="rb") as fp:
                 data = fp.read()
             data = "base64:" + base64.b64encode(data)
 
@@ -180,14 +182,14 @@ class DeathByCaptcha(BaseAddon):
             self.get_status()
             self.get_credits()
         except DeathByCaptchaException as exc:
-            self.log_error(exc)
+            self.log_error(exc.message)
             return False
 
         balance, rate = self.info["balance"], self.info["rate"]
         self.log_info(
             self._("Account balance"),
             self._("US${:.3f} ({} captchas left at {:.2f} cents each)").format(
-                balance // 100, balance // rate, rate
+                balance / 100, balance // rate, rate
             ),
         )
 
@@ -205,7 +207,7 @@ class DeathByCaptcha(BaseAddon):
                 )
 
             except DeathByCaptchaException as exc:
-                self.log_error(exc)
+                self.log_error(exc.message)
 
             except Exception as exc:
                 self.log_error(
@@ -221,7 +223,7 @@ class DeathByCaptcha(BaseAddon):
             ticket, result = self.submit(c)
         except DeathByCaptchaException as exc:
             task.error = exc.get_code()
-            self.log_error(exc)
+            self.log_error(exc.message)
             return
 
         task.data["ticket"] = ticket

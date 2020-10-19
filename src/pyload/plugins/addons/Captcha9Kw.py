@@ -4,6 +4,7 @@ import base64
 import re
 import time
 import urllib.parse
+import os
 
 from pyload.core.network.http.exceptions import BadHeader
 
@@ -13,7 +14,7 @@ from ..base.addon import BaseAddon, threaded
 class Captcha9Kw(BaseAddon):
     __name__ = "Captcha9Kw"
     __type__ = "addon"
-    __version__ = "0.38"
+    __version__ = "0.40"
     __status__ = "testing"
 
     __config__ = [
@@ -49,7 +50,7 @@ class Captcha9Kw(BaseAddon):
     __description__ = """Send captchas to 9kw.eu"""
     __license__ = "GPLv3"
     __authors__ = [
-        ("RaNaN", "RaNaN@pyload.net"),
+        ("RaNaN", "RaNaN@pyload.org"),
         ("Walter Purcaro", "vuolter@gmail.com"),
         ("GammaC0de", "nitzo2001[AT]yahho[DOT]com"),
     ]
@@ -91,7 +92,7 @@ class Captcha9Kw(BaseAddon):
 
         else:
             try:
-                with open(task.captcha_params["file"], mode="rb") as fp:
+                with open(os.fsencode(task.captcha_params["file"]), mode="rb") as fp:
                     data = fp.read()
 
             except IOError as exc:
@@ -116,10 +117,7 @@ class Captcha9Kw(BaseAddon):
             "cpm": self.config.get("captchapermin"),
         }
 
-        for opt in self.config.get("hoster_options", "").split("|"):
-            if not opt:
-                continue
-
+        for opt in [x for x in self.config.get("hoster_options", "").split("|") if x]:
             details = (x.strip() for x in opt.split(";"))
 
             if not details or details[0].lower() != pluginname.lower():
@@ -184,7 +182,7 @@ class Captcha9Kw(BaseAddon):
 
         task.data["ticket"] = res
 
-        for _ in range(int(self.config.get("timeout") // 5)):
+        for _ in range(int(self.config.get("timeout") / 5)):
             result = self.load(
                 self.API_URL,
                 get={
@@ -214,7 +212,7 @@ class Captcha9Kw(BaseAddon):
         if task.is_interactive():
             if task.captcha_params[
                 "captcha_plugin"
-            ] != "ReCaptcha" or not self.config.get("solve_interactive"):
+            ] != "ReCaptcha" or self.config.get("solve_interactive") is False:
                 return
         else:
             if not task.is_textual() and not task.is_positional():
@@ -247,10 +245,7 @@ class Captcha9Kw(BaseAddon):
             self.log_error(self._("Too many captchas in queue"))
             return
 
-        for opt in self.config.get("hoster_options", "").split("|"):
-            if not opt:
-                continue
-
+        for opt in [x for x in self.config.get("hoster_options", "").split("|") if x]:
             details = (x.strip() for x in opt.split(":"))
 
             if not details or details[0].lower() != pluginname.lower():

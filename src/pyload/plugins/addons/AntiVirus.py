@@ -10,13 +10,13 @@ from ..helpers import exists
 try:
     import send2trash
 except ImportError:
-    send2trash = None
+    pass
 
 
 class AntiVirus(BaseAddon):
     __name__ = "AntiVirus"
     __type__ = "addon"
-    __version__ = "0.21"
+    __version__ = "0.22"
     __status__ = "broken"
 
     # TODO: add trash option (use Send2Trash lib)
@@ -73,7 +73,10 @@ class AntiVirus(BaseAddon):
         pyfile.set_progress(0)
 
         try:
-            p = subprocess.Popen([avfile, avargs, target])
+            p = Popen([avfile, avargs, target],
+                      bufsize=-1,
+                      stdout=subprocess.PIPE,
+                      stderr=subprocess.PIPE)
 
             out, err = (x.strip() for x in p.communicate())
 

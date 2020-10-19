@@ -9,7 +9,7 @@ from ..base.addon import BaseAddon
 class HotFolder(BaseAddon):
     __name__ = "HotFolder"
     __type__ = "addon"
-    __version__ = "0.24"
+    __version__ = "0.26"
     __status__ = "testing"
 
     __config__ = [
@@ -27,7 +27,8 @@ class HotFolder(BaseAddon):
     __authors__ = [("RaNaN", "RaNaN@pyload.de")]
 
     def activate(self):
-        self.periodical.start(60, threaded=True)
+        interval = max(self.config.get('interval'), 20)
+        self.periodical.start(interval, threaded=True)
 
     def periodical_task(self):
         folder = os.fsdecode(self.config.get("folder"))
@@ -35,7 +36,7 @@ class HotFolder(BaseAddon):
 
         try:
             if not os.path.isdir(os.path.join(folder, "finished")):
-                os.makedirs(os.path.join(folder, "finished"), exist_ok=True)
+                os.makedirs(os.path.join(folder, "finished"))
 
             if self.config.get("watchfile"):
                 with open(file, mode="a+") as fp:

@@ -10,7 +10,7 @@ from ..base.addon import BaseAddon
 class UserAgentSwitcher(BaseAddon):
     __name__ = "UserAgentSwitcher"
     __type__ = "addon"
-    __version__ = "0.16"
+    __version__ = "0.18"
     __status__ = "testing"
 
     __config__ = [
@@ -21,7 +21,7 @@ class UserAgentSwitcher(BaseAddon):
             "useragent",
             "str",
             "Custom user-agent string",
-            "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:38.0) Gecko/20100101 Firefox/38.0",
+            "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:71.0) Gecko/20100101 Firefox/71.0",
         ),
     ]
 
