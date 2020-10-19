@@ -75,10 +75,10 @@ class XMPP(IRC):
             self.log_debug
         )
         self.log_debug('activate xmpp')
-        xmpp.register_plugin('xep_0030') # Service Discovery
-        xmpp.register_plugin('xep_0004') # Data Forms
-        xmpp.register_plugin('xep_0060') # PubSub
-        xmpp.register_plugin('xep_0199') # XMPP Ping
+        xmpp.register_plugin('xep_0030')  # Service Discovery
+        xmpp.register_plugin('xep_0004')  # Data Forms
+        xmpp.register_plugin('xep_0060')  # PubSub
+        xmpp.register_plugin('xep_0199')  # XMPP Ping
         xmpp.ssl_version = ssl.PROTOCOL_TLSv1_2
 
         # The message event is triggered whenever a message
@@ -189,8 +189,8 @@ class XMPP(IRC):
         command = self.shortcut_command(command)
         self.log_debug("shortcut_command", command)
 
-	    handler = getattr(self, "event_{}".format(trigger), self.event_pass)
-	    ret = False
+        handler = getattr(self, "event_{}".format(trigger), self.event_pass)
+        ret = False
 
         try:
             self.log_debug("args", args, type(args))
@@ -204,14 +204,14 @@ class XMPP(IRC):
                 if command == "help":
                     msg_reply += "\nShortcut:\n"
                     for cmd_short, cmd_long in self.SHORTCUT_COMMANDS.items():
-                        msg_reply += cmd_short + ": "+ cmd_long + ", "
+                        msg_reply += cmd_short + ": " + cmd_long + ", "
 
             else:
                 msg_reply = "ERROR: command invalide, enter: help"
 
             self.log_debug('Send reponse', msg_reply)
             ret = stanza.reply(msg_reply).send()
-            
+
         except Exception as exc:
             self.log_error(
                 exc,
@@ -244,7 +244,7 @@ class XMPP(IRC):
             self.log_debug("Send message to", user)
             to_jid = sleekxmpp.jid.JID(user)
             self.xmpp.sendMessage(
-                mfrom=self.jid, mto=to_jid, mtype_type="chat", body=str(message))
+                mfrom=self.jid, mto=to_jid, mtype_type="chat", body=str(message)
             )
 
     def exit(self):
@@ -259,8 +259,7 @@ class XMPP(IRC):
         self.xmpp.connect()
         # self.periodical.start(600)
 
-    def downl
-    oad_failed(self, pyfile):
+    def download_failed(self, pyfile):
         self.log_debug("download_failed", pyfile, pyfile.error)
         try:
             if self.config.get("download_failed"):

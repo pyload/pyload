@@ -54,16 +54,16 @@ class CloudFlare:
                 if exc.code == 403:
                     for _ in range(3):
                         try:
-                    		data = CloudFlare._solve_cf_security_check(
-                    		       addon_plugin, owner_plugin, exc.content
+                            data = CloudFlare._solve_cf_security_check(
+                                addon_plugin, owner_plugin, exc.content
                             )
-                        except BadHeader, e:  #: Possibly we got another ddos challenge
+                        except BadHeader as exc:  #: Possibly we got another ddos challenge
                             addon_plugin.log_debug("%s(): got BadHeader exception %s" % (func_name, e.code))
 
-                            header = parse_html_header(e.header)
+                            header = parse_html_header(exc.header)
 
-			                if exc.code == 503 and "cloudflare" in header.get('server', "")::
-								continue  #: Yes, it's a ddos challenge again..
+                            if exc.code == 503 and "cloudflare" in header.get('server', ""):
+                                continue  #: Yes, it's a ddos challenge again..
 
                             else:
                                 data = None  # Tell the exception handler to re-throw the exception
@@ -73,7 +73,6 @@ class CloudFlare:
                         addon_plugin.log_error("{}(): Max solve retries reached".format(func_name))
                         data = None  # Tell the exception handler to re-throw the exception
 
-                                
                 else:
                     addon_plugin.log_warning(
                         addon_plugin._("Unknown CloudFlare response code {}").format(
@@ -83,7 +82,7 @@ class CloudFlare:
                     raise
 
                 if data is None:
-                    raise e
+                    raise exc
 
                 else:
                     return data
@@ -98,7 +97,7 @@ class CloudFlare:
                 addon_plugin._("Detected CloudFlare's DDoS protection page")
             )
             # Cloudflare requires a delay before solving the challenge
-            wait_time = (int(re.search("submit\(\);\r?\n\s*},\s*([0-9]+)", data).group(1)) + 999) / 1000
+            wait_time = (int(re.search(r"submit\(\);\r?\n\s*},\s*([0-9]+)", data).group(1)) + 999) / 1000
             owner_plugin.set_wait(wait_time)
 
             last_url = owner_plugin.req.last_effective_url
@@ -140,7 +139,6 @@ class CloudFlare:
                 )
                 return None  #: Tell the exception handler to re-throw the exception
 
-
             if "toFixed" not in js:
                 addon_plugin.log_error(
                     addon_plugin._("Unable to parse CloudFlare's DDoS protection page"))
@@ -171,10 +169,10 @@ class CloudFlare:
             return addon_plugin.load(submit_url,
                                      get=get_params,
                                      ref=last_url
-            )
+                                     )
         except BadHeader as exc:
             raise exc  #: Huston, we have a BadHeader!
-            
+
         except Exception as exc:
             addon_plugin.log_error(exc)
             return None  #: Tell the exception handler to re-throw the exception
@@ -297,17 +295,17 @@ class CloudFlareDdos(BaseAddon):
         Walk the callstack until we find SimpleDownloader or SimpleDecrypter class Dirty but
         works.
         """
-        f = frame = inspect.currentframe()
+        frame = inspect.currentframe()
         try:
             while True:
-                if f is None:
+                if frame is None:
                     return None
 
-                elif "self" in f.f_locals and is_simple_plugin(f.f_locals["self"]):
-                    return f.f_locals["self"]
+                elif "self" in frame.f_locals and is_simple_plugin(frame.f_locals["self"]):
+                    return frame.f_locals["self"]
 
                 else:
-                    f = f.f_back
+                    frame = frame.f_back
 
         finally:
             del frame

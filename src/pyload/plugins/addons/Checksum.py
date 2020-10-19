@@ -185,7 +185,7 @@ class Checksum(BaseAddon):
             data["hash"] = data.get("hash", {})
 
             for key in self.algorithms:
-                if key in data and not key in data["hash"]:
+                if key in data and key not in data["hash"]:
                     data["hash"][key] = data[key]
                     break
 

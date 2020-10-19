@@ -6,6 +6,7 @@ import socket
 import ssl
 import time
 from threading import Thread
+import traceback
 
 import pycurl
 from pyload.core.api import FileDoesNotExists, PackageDoesNotExists
@@ -297,7 +298,7 @@ class IRC(Thread, Notifier):
 
         lines = []
         idorname = args[0]
-        
+
         pack = self._getPackageByNameOrId(idorname)
         if not pack:
             return ["ERROR: Package doesn't exists."]

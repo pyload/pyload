@@ -19,8 +19,8 @@ class TORRENT(BaseAddon):
                                      "h:ZbigzCom",
                    "Associate torrents / magnets with plugin",
                    "None"
-                  )
-                 ]
+                   )
+                  ]
 
     __description__ = """Associate torrents / magnets with plugin"""
     __license__ = "GPLv3"
@@ -47,7 +47,10 @@ class TORRENT(BaseAddon):
                 self._associate(self.torrent_plugin)
 
     def config_changed(self, *args):
-        if args[3] == "plugin" and args[0] == "TORRENT" and args[1] == "torrent_plugin" and args[2] != self.torrent_plugin:
+        if args[3] == "plugin" \
+                and args[0] == "TORRENT" \
+                and args[1] == "torrent_plugin" \
+                and args[2] != self.torrent_plugin:
             self._remove_association(self.torrent_plugin)
             self.torrent_plugin = args[2]
             self._associate(self.torrent_plugin)
@@ -57,7 +60,7 @@ class TORRENT(BaseAddon):
         if self.torrent_plugin == "None":
             self.log_warning(self._("torrents / magnets are not associated with any plugin"))
         else:
-            self.log_info(self._("Using %s to handle torrents / magnets") % self.torrent_plugin.split(":")[1])
+            self.log_info(self._("Using {} to handle torrents / magnets").format(self.torrent_plugin.split(":")[1]))
 
     def _associate(self, plugin):
         if plugin != "None":
@@ -84,4 +87,3 @@ class TORRENT(BaseAddon):
             dict = self.pyload.plugin_manager.plugins['container']['TORRENT']
             dict['pattern'] = r'(?:file|https?)://.+\.torrent|magnet:\?.+|(?!file://).+\.(torrent|magnet)'
             dict['re'] = re.compile(dict['pattern'])
-

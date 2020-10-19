@@ -10,20 +10,24 @@ class AppriseNotify(Notifier):
     __version__ = "0.18"
     __status__ = "testing"
 
-    __config__ = [("enabled", "bool" , "Activated", False),
-                  ("configs", "string", "Configuration(s) path/URL (comma separated)", ""),
-                  ("title", "string", "Notification title", "pyLoad Notification"),
+    __config__ = [("enabled", "bool", "Activated", False),
+                  ("configs", "string",
+                   "Configuration(s) path/URL (comma separated)", ""),
+                  ("title", "string",
+                   "Notification title", "pyLoad Notification"),
                   ("captcha", "bool", "Notify captcha request", True),
                   ("reconnection", "bool", "Notify reconnection request", True),
                   ("downloadfinished", "bool", "Notify download finished", True),
-                  ("downloadfailed", "bool" ,"Notify download failed", True),
+                  ("downloadfailed", "bool","Notify download failed", True),
                   ("packagefinished", "bool", "Notify package finished", True),
                   ("packagefailed", "bool", "Notify package failed", True),
                   ("update", "bool", "Notify pyload update", False),
                   ("exit", "bool", "Notify pyload shutdown/restart", False),
-                  ("sendinterval", "int", "Interval in seconds between notifications", 1),
+                  ("sendinterval", "int",
+                   "Interval in seconds between notifications", 1),
                   ("sendpermin", "int", "Max notifications per minute", 60),
-                  ("ignoreclient", "bool", "Send notifications if client is connected", True)]
+                  ("ignoreclient", "bool",
+                   "Send notifications if client is connected", True)]
 
     __description__ = "Send push notifications to apprise."
     __license__ = "GPLv3"
