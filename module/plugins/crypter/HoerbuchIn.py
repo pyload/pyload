@@ -23,13 +23,13 @@ class HoerbuchIn(Crypter):
     __authors__ = [("spoob", "spoob@pyload.net"),
                    ("mkaay", "mkaay@mkaay.de")]
 
-    article = re.compile("https?://(?:www\.)?hoerbuch\.us/wp/horbucher/\d+/.+/")
+    article = re.compile(r"https?://(?:www\.)?hoerbuch\.us/wp/horbucher/\d+/.+/")
     protection = re.compile(
-        "https?://(?:www\.)?hoerbuch\.us/protection/folder_\d+.html")
+        r"https?://(?:www\.)?hoerbuch\.us/protection/folder_\d+.html")
     uploaded = re.compile(
-        "https?://(?:www\.)?hoerbuch\.us/protection/uploaded/(\w+)\.html")
+        r"https?://(?:www\.)?hoerbuch\.us/protection/uploaded/(\w+)\.html")
     hoster_links = re.compile(
-        "https?://(?:www\.)?hoerbuch\.us/wp/goto/Download/\d+/")
+        r"https?://(?:www\.)?hoerbuch\.us/wp/goto/Download/\d+/")
 
     def decrypt(self, pyfile):
         self.pyfile = pyfile
