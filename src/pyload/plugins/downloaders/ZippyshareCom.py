@@ -73,7 +73,7 @@ class ZippyshareCom(SimpleDownloader):
 
     def get_link(self):
         #: Get all the scripts inside the html body
-        soup = BeautifulSoup(self.data)
+        soup = BeautifulSoup(self.data, 'html.parser')
         scripts = [
             s.getText()
             for s in soup.body.findAll("script", type="text/javascript")
