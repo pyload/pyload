@@ -23,7 +23,8 @@ class HoerbuchIn(Crypter):
     __authors__ = [("spoob", "spoob@pyload.net"),
                    ("mkaay", "mkaay@mkaay.de")]
 
-    article = re.compile(r"https?://(?:www\.)?hoerbuch\.us/wp/horbucher/\d+/.+/")
+    article = re.compile(
+        r"https?://(?:www\.)?hoerbuch\.us/wp/horbucher/\d+/.+/")
     protection = re.compile(
         r"https?://(?:www\.)?hoerbuch\.us/protection/folder_\d+.html")
     uploaded = re.compile(
