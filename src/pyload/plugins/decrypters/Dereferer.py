@@ -8,7 +8,7 @@ from ..base.simple_decrypter import SimpleDecrypter
 class Dereferer(SimpleDecrypter):
     __name__ = "Dereferer"
     __type__ = "decrypter"
-    __version__ = "0.26"
+    __version__ = "0.27"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?(?:\w+\.)*?(?P<DOMAIN>(?:[\d.]+|[\w\-]{3,63}(?:\.[a-zA-Z]{2,}){1,2})(?:\:\d+)?)/.*?(?P<LINK>[\w^_]+://.+)"
