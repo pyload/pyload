@@ -8,7 +8,7 @@ from ..base.simple_downloader import SimpleDownloader
 class IronfilesNet(SimpleDownloader):
     __name__ = "IronfilesNet"
     __type__ = "downloader"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
     __pattern__ = r"https?://ironfiles\.net/file/download/id/(?P<ID>\d+)(?:/key/(?P<KEY>65a2bfa38c2c1899))?"
@@ -22,7 +22,8 @@ class IronfilesNet(SimpleDownloader):
 
     __description__ = """Ironfiles.net downloader plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
+    __authors__ = [("GammaC0de", "nitzo2001[AT]yahoo[DOT]com"),
+	               ("djraw", None)]
 
     LOGIN_PREMIUM = True
 

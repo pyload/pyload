@@ -3,14 +3,13 @@
 import re
 
 from pyload.core.utils import seconds
-
 from ..base.multi_downloader import MultiDownloader
 
 
 class HighWayMe(MultiDownloader):
     __name__ = "HighWayMe"
     __type__ = "downloader"
-    __version__ = "0.24"
+    __version__ = "0.25"
     __status__ = "testing"
 
     __pattern__ = r"https?://.+high-way\.my"
@@ -64,7 +63,7 @@ class HighWayMe(MultiDownloader):
                 self.log_debug("JSON data: " + self.data)
                 break
         else:
-            self.log_info(self._("Unable to get API data, waiting 1 minute and retry"))
+            self.log_warning(self._("Unable to get API data, waiting 1 minute and retry"))
             self.retry(5, 60, self._("Unable to get API data"))
 
         self.check_errors()
@@ -73,12 +72,13 @@ class HighWayMe(MultiDownloader):
             self.pyfile.name = re.search(r"<name>(.+?)</name>", self.data).group(1)
 
         except AttributeError:
-            self.pyfile.name = ""
+            self.log_warning(self._("Name pattern not found"))
 
         try:
             self.pyfile.size = re.search(r"<size>(\d+)</size>", self.data).group(1)
 
         except AttributeError:
+            self.log_warning(self._("Size pattern not found"))
             self.pyfile.size = 0
 
         self.link = re.search(r"<download>(.+?)</download>", self.data).group(1)

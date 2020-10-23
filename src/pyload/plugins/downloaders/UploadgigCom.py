@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import json
 
 from ..anticaptchas.ReCaptcha import ReCaptcha
 from ..base.simple_downloader import SimpleDownloader
@@ -8,7 +9,7 @@ from ..base.simple_downloader import SimpleDownloader
 class UploadgigCom(SimpleDownloader):
     __name__ = "UploadgigCom"
     __type__ = "downloader"
-    __version__ = "0.04"
+    __version__ = "0.06"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?uploadgig.com/file/download/\w+"
@@ -29,11 +30,7 @@ class UploadgigCom(SimpleDownloader):
     NAME_PATTERN = r'<span class="filename">(?P<N>.+?)<'
     SIZE_PATTERN = r'<span class="filesize">\[(?P<S>[\d.,]+) (?P<U>[\w^_]+)\]<'
 
-    OFFLINE_PATTERN = r"File not found"
-
-    LOGIN_PREMIUM = (
-        True  #: Free download is not possible because they blocked noscript ReCaptcha
-    )
+    OFFLINE_PATTERN = r'File not found'
 
     def handle_free(self, pyfile):
         url, inputs = self.parse_html_form('id="dl_captcha_form"')
@@ -51,3 +48,30 @@ class UploadgigCom(SimpleDownloader):
 
         inputs["g-recaptcha-response"] = response
         self.data = self.load(self.fixurl(url), post=inputs)
+        
+        if self.data == "m":
+            self.log_warning(self._("Max downloads for this hour reached"))
+            self.retry(wait=60*60)
+
+        elif self.data in ("fl", "rfd"):
+            self.fail(self._("File can be downloaded by premium users only"))
+
+        elif self.data == "e":
+            self.retry()
+
+        elif self.data == "0":
+            self.retry_captcha()
+
+        else:
+            try:
+                res = json.loads(self.data)
+
+            except:
+                self.fail(self._("Illegal response from the server"))
+
+            if any([_x not in res for _x in ('cd', 'fopg', 'fghre')]):
+                self.fail(self._("Illegal response from the server"))
+
+            self.wait(res['cd'])
+
+            self.link = "http://" + res["fopg"] + res["fghre"] +"/dlfile"

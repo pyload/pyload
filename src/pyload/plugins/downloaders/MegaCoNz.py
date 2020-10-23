@@ -44,7 +44,8 @@ from ..helpers import exists
 # EREAD               (-21): Read failed
 # EAPPKEY             (-22): Invalid application key; request not processed
 # ESSL                (-23): SSL verification failed
-
+# EGOINGOVERQUOTA     (-24): Not enough quota
+# EMFAREQUIRED        (-26): Multi-factor authentication required
 
 class MegaCrypto:
     @staticmethod
@@ -91,9 +92,19 @@ class MegaCrypto:
         return cbc.encrypt(data)
 
     @staticmethod
+    def ecb_decrypt(data, key):
+        ecb = Cryptodome.Cipher.AES.new(MegaCrypto.a32_to_str(key), Crypto.Cipher.AES.MODE_ECB)
+        return ecb.decrypt(data)
+
+    @staticmethod
+    def ecb_encrypt(data, key):
+        ecb = Cryptodome.Cipher.AES.new(MegaCrypto.a32_to_str(key), Crypto.Cipher.AES.MODE_ECB)
+        return ecb.encrypt(data)
+
+    @staticmethod
     def get_cipher_key(key):
         """
-        Construct the cipher key from the given data.
+        Construct the cipher key from the given data
         """
         k = (key[0] ^ key[4], key[1] ^ key[5], key[2] ^ key[6], key[3] ^ key[7])
         iv = key[4:6] + (0, 0)
@@ -123,32 +134,20 @@ class MegaCrypto:
         Decrypt an encrypted key ('k' member of a node)
         """
         data = MegaCrypto.base64_decode(data)
-        return sum(
-            (
-                MegaCrypto.str_to_a32(MegaCrypto.cbc_decrypt(data[i : i + 16], key))
-                for i in range(0, len(data), 16)
-            ),
-            (),
-        )
+        return MegaCrypto.str_to_a32(MegaCrypto.ecb_decrypt(data, key))
 
     @staticmethod
     def encrypt_key(data, key):
         """
-        Encrypt a decrypted key.
+        Encrypt a decrypted key
         """
         data = MegaCrypto.base64_decode(data)
-        return sum(
-            (
-                MegaCrypto.str_to_a32(MegaCrypto.cbc_encrypt(data[i : i + 16], key))
-                for i in range(0, len(data), 16)
-            ),
-            (),
-        )
+        return MegaCrypto.str_to_a32(MegaCrypto.ecb_encrypt(data, key))
 
     @staticmethod
     def get_chunks(size):
         """
-        Calculate chunks for a given encrypted file size.
+        Calculate chunks for a given encrypted file size
         """
         chunk_start = 0
         chunk_size = 0x20000
@@ -164,7 +163,7 @@ class MegaCrypto:
 
     class Checksum:
         """
-        interface for checking CBC-MAC checksum.
+        interface for checking CBC-MAC checksum
         """
 
         def __init__(self, key):
@@ -268,10 +267,10 @@ class MegaClient:
         if ecode in (9, 16, 21):
             self.plugin.offline()
 
-        elif ecode in (3, 13, 17, 18, 19):
+        elif ecode in (3, 13, 17, 18, 19, 24):
             self.plugin.temp_offline()
 
-        elif ecode in (1, 4, 6, 10, 15, 21):
+        elif ecode in (1, 4, 6, 10, 15):
             self.plugin.retry(
                 max_tries=5,
                 wait_time=30,
@@ -285,7 +284,7 @@ class MegaClient:
 class MegaCoNz(BaseDownloader):
     __name__ = "MegaCoNz"
     __type__ = "downloader"
-    __version__ = "0.52"
+    __version__ = "0.55"
     __status__ = "testing"
 
     __pattern__ = r"(https?://(?:www\.)?mega(\.co)?\.nz/|mega:|chrome:.+?)#(?P<TYPE>N|)!(?P<ID>[\w^_]+)!(?P<KEY>[\w\-,=]+)(?:###n=(?P<OWNER>[\w^_]+))?"
@@ -324,7 +323,7 @@ class MegaCoNz(BaseDownloader):
             df = open(file_decrypted, mode="wb")
 
         except IOError as exc:
-            self.fail(exc)
+            self.fail(exc.message)
 
         encrypted_size = os.path.getsize(file_crypted)
 
@@ -349,7 +348,7 @@ class MegaCoNz(BaseDownloader):
             df.write(chunk)
 
             progress += chunk_size
-            self.pyfile.set_progress((100 // encrypted_size) * progress)
+            self.pyfile.set_progress((100.0 / encrypted_size) * progress)
 
             if checksum_activated and check_checksum:
                 cbc_mac.update(chunk)

@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import re
-import urllib.parse
-from datetime import timedelta
 
 from ..base.simple_downloader import SimpleDownloader
 
@@ -10,7 +8,7 @@ from ..base.simple_downloader import SimpleDownloader
 class FastshareCz(SimpleDownloader):
     __name__ = "FastshareCz"
     __type__ = "downloader"
-    __version__ = "0.44"
+    __version__ = "0.45"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?fastshare\.cz/\d+/.+"
@@ -39,7 +37,7 @@ class FastshareCz(SimpleDownloader):
     TEMP_OFFLINE_PATTERN = r"[^\w](503\s|[Mm]aint(e|ai)nance|[Tt]emp([.-]|orarily))"
     OFFLINE_PATTERN = r">(The file has been deleted|Requested page not found|This file is no longer available)"
 
-    LINK_FREE_PATTERN = r'href="(.+?)" id=free-trigger>'
+    LINK_FREE_PATTERN = r'<form .*target="iframe_dwn" .*action=([^>]+)'
     LINK_PREMIUM_PATTERN = r"(https?://\w+\.fastshare\.cz/download\.php\?id=\d+&)"
 
     SLOT_ERROR = "> 100% of FREE slots are full"
@@ -62,14 +60,13 @@ class FastshareCz(SimpleDownloader):
         if m is None:
             self.error(self._("LINK_FREE_PATTERN not found"))
 
-        self.link = urllib.parse.urljoin("https://fastshare.cz", m.group(1))
-        baseurl = "https://fastshare.cz"
+        self.link = self.fixurl(m.group(1))
 
     def check_download(self):
         check = self.scan_download(
             {
                 "paralell-dl": re.compile(
-                    r"<title>FastShare.cz</title>|<script>alert\('Pres FREE muzete stahovat jen jeden soubor najednou.'\)"
+                    r"<title>FastShare.cz</title>|<title>FastShare.cz</title>|<script.*>alert\('Despite FREE can download only one file at a time.'\)"
                 ),
                 "wrong captcha": re.compile(r"Download for FREE"),
                 "credit": re.compile(self.CREDIT_ERROR),
@@ -77,12 +74,18 @@ class FastshareCz(SimpleDownloader):
         )
 
         if check == "paralell-dl":
+            self.log_warning(self._("Paralell download"))
+            self.remove(self.last_download)
             self.retry(6, timedelta(minutes=10).seconds, self._("Paralell download"))
 
         elif check == "wrong captcha":
+            self.log_warning(self._("Wrong captcha"))
+            self.remove(self.last_download)
             self.retry_captcha()
 
         elif check == "credit":
+            self.log_warning(self._("Out of credit"))
+            self.remove(self.last_download)
             self.restart(premium=False)
 
         return SimpleDownloader.check_download(self)

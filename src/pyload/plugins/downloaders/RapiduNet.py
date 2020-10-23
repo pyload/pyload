@@ -2,18 +2,18 @@
 
 import json
 import time
-from datetime import timedelta
 
 import pycurl
 
 from ..anticaptchas.ReCaptcha import ReCaptcha
+from pyload.core.utils import seconds
 from ..base.simple_downloader import SimpleDownloader
 
 
 class RapiduNet(SimpleDownloader):
     __name__ = "RapiduNet"
     __type__ = "downloader"
-    __version__ = "0.15"
+    __version__ = "0.16"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?rapidu\.net/(?P<ID>\d{10})"
@@ -31,6 +31,8 @@ class RapiduNet(SimpleDownloader):
 
     COOKIES = [("rapidu.net", "rapidu_lang", "en")]
 
+    URL_REPLACEMENTS = [(__pattern__ + ".*", "https://rapidu.net/\g<ID>")]
+
     INFO_PATTERN = (
         r'<h1 title="(?P<N>.*)">.*</h1>\s*<small>(?P<S>\d+(\.\d+)?)\s(?P<U>\w+)</small>'
     )
@@ -38,7 +40,7 @@ class RapiduNet(SimpleDownloader):
 
     ERROR_PATTERN = r'<div class="error">'
 
-    RECAPTCHA_KEY = r"6Ld12ewSAAAAAHoE6WVP_pSfCdJcBQScVweQh8Io"
+    RECAPTCHA_KEY = r"6LcOuQkUAAAAAF8FPp423qz-U2AXon68gJSdI_W4"
 
     def setup(self):
         self.resume_download = True
@@ -48,31 +50,24 @@ class RapiduNet(SimpleDownloader):
         self.req.http.last_url = pyfile.url
         self.req.http.c.setopt(pycurl.HTTPHEADER, ["X-Requested-With: XMLHttpRequest"])
 
-        jsvars = self.get_json_response(
+        json_data = self.get_json_response(
             "https://rapidu.net/ajax.php",
             get={"a": "getLoadTimeToDownload"},
             post={"_go": ""},
         )
 
-        if str(jsvars["timeToDownload"]) == "stop":
-            t = (
-                (timedelta(hours=24).seconds)
-                - (int(time.time()) % timedelta(hours=24).seconds)
-                + time.altzone
-            )
+        if str(json_data["timeToDownload"]) == "stop":
+            self.log_warning(self._("You've reach your daily download transfer"))
+            self.retry(10, wait=seconds.to_midnight(), msg=self._("You've reach your daily download transfer"))
 
-            self.log_info(self._("You've reach your daily download transfer"))
-
-            # NOTE: check t in case of not synchronised clock
-            self.retry(10, 10 if t < 1 else None, self._("Try tomorrow again"))
-
-        else:
-            self.wait(int(jsvars["timeToDownload"]) - int(time.time()))
+        self.set_wait(int(json_data["timeToDownload"]) - int(time.time()))
 
         self.captcha = ReCaptcha(pyfile)
         response, challenge = self.captcha.challenge(self.RECAPTCHA_KEY)
 
-        jsvars = self.get_json_response(
+        self.wait()
+
+        json_data = self.get_json_response(
             "https://rapidu.net/ajax.php",
             get={"a": "getCheckCaptcha"},
             post={
@@ -83,8 +78,8 @@ class RapiduNet(SimpleDownloader):
             },
         )
 
-        if jsvars["message"] == "success":
-            self.link = jsvars["url"]
+        if json_data["message"] == "success":
+            self.link = json_data["url"]
 
     def get_json_response(self, *args, **kwargs):
         res = self.load(*args, **kwargs)

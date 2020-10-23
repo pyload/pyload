@@ -9,7 +9,7 @@ from ..base.simple_downloader import SimpleDownloader
 class VimeoCom(SimpleDownloader):
     __name__ = "VimeoCom"
     __type__ = "downloader"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?(player\.)?vimeo\.com/(video/)?(?P<ID>\d+)"

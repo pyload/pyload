@@ -14,7 +14,7 @@ def args(**kwargs):
 class MegaDebridEu(MultiDownloader):
     __name__ = "MegaDebridEu"
     __type__ = "downloader"
-    __version__ = "0.59"
+    __version__ = "0.60"
     __status__ = "testing"
 
     __pattern__ = r"http://((?:www\d+\.|s\d+\.)?mega-debrid\.eu|\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/download/file/[\w^_]+"
@@ -42,7 +42,7 @@ class MegaDebridEu(MultiDownloader):
 
         # Better use pyLoad User-Agent so we don't get blocked
         self.req.http.c.setopt(
-            pycurl.USERAGENT, "pyLoad/{}".format(self.pyload.version).encode()
+            pycurl.USERAGENT, "pyLoad/{}".format(self.pyload.version)
         )
 
         json_data = self.load(self.API_URL, get=get, post=post)

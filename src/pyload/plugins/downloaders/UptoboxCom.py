@@ -8,7 +8,7 @@ from ..base.simple_downloader import SimpleDownloader
 class UptoboxCom(SimpleDownloader):
     __name__ = "UptoboxCom"
     __type__ = "downloader"
-    __version__ = "0.36"
+    __version__ = "0.37"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?(uptobox|uptostream)\.com/\w{12}"
@@ -35,15 +35,17 @@ class UptoboxCom(SimpleDownloader):
     OFFLINE_PATTERN = r"""(File not found|Access Denied|404 Not Found)"""
     TEMP_OFFLINE_PATTERN = r""">Service Unavailable"""
     WAIT_PATTERN = r"""data-remaining-time=["'](\d+)["']"""
+
     LINK_PATTERN = (
         r"""["'](https?://(?:obwp\d+\.uptobox\.com|\w+\.uptobox\.com/dl?)/.*?)["']"""
     )
 
     DL_LIMIT_PATTERN = r"""or you can wait (.+) to launch a new download"""
+
     URL_REPLACEMENTS = [("http://", "https://")]
 
     def setup(self):
-        self.multi_dl = True
+        self.multi_dl = self.premium
         self.chunk_limit = 1
         self.resume_download = True
 

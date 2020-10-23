@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from datetime import timedelta
+import json
+import re
 
 from ..base.multi_downloader import MultiDownloader
 
@@ -32,32 +33,26 @@ class PremiumTo(MultiDownloader):
 
     CHECK_TRAFFIC = True
 
+    # See https://premium.to/API.html
+    API_URL = "http://api.premium.to/api/2/"
+
     def handle_premium(self, pyfile):
         self.download(
-            "http://api.premium.to/api/getfile.php",
+            self.API_URL + "getfile.php",
             get={
-                "username": self.account.user,
-                "password": self.account.info["login"]["password"],
+                "userid": self.account.user,
+                "apikey": self.account.info["login"]["password"],
                 "link": pyfile.url,
             },
-            disposition=True,
+            disposition=True
         )
 
     def check_download(self):
-        if self.scan_download({"nopremium": "No premium account available"}):
-            self.retry(60, timedelta(minutes=5).seconds, "No premium account available")
+        if self.scan_download({"json": re.compile(r'\A{["\']code["\']:\d+,["\']message["\']:(["\']).+?\1}\Z')}):
+            with open(fs_encode(self.last_download), "rb") as f:
+                json_data = json.loads(f.read())
 
-        err = ""
-        if self.req.http.code == 420:
-            #: Custom error code sent - fail
-            file = encode(self.last_download)
-
-            with open(file, mode="rb") as fp:
-                err = fp.read(256).strip()
-
-            self.remove(file)
-
-        if err:
-            self.fail(err)
+            self.remove(self.last_download)
+            self.fail(self._("API error {} - {}").format(json_data["code"], json_data["message"]))
 
         return MultiDownloader.check_download(self)

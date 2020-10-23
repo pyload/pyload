@@ -15,10 +15,10 @@ from ..base.simple_downloader import SimpleDownloader
 class RapidgatorNet(SimpleDownloader):
     __name__ = "RapidgatorNet"
     __type__ = "downloader"
-    __version__ = "0.54"
+    __version__ = "0.56"
     __status__ = "testing"
 
-    __pattern__ = r"https?://(?:www\.)?(?:rapidgator\.net|rg\.to)/file/\w+"
+    __pattern__ = r"https?://(?:www\.)?(?:rapidgator\.(?:net|asia|)|rg\.to)/file/(?P<ID>\w+)"
     __config__ = [
         ("enabled", "bool", "Activated", True),
         ("use_premium", "bool", "Use premium account if available", True),
@@ -56,7 +56,7 @@ class RapidgatorNet(SimpleDownloader):
     )
     WAIT_PATTERN = r"(?:Delay between downloads must be not less than|Try again in).+"
 
-    LINK_FREE_PATTERN = r"return \'(http://\w+.rapidgator.net/.*)\';"
+    LINK_FREE_PATTERN = r"return \'(https?://\w+.rapidgator.net/.*)\';"
 
     RECAPTCHA_PATTERN = r'"http://api\.recaptcha\.net/challenge\?k=(.*?)"'
     ADSCAPTCHA_PATTERN = r'(http://api\.adscaptcha\.com/Get\.aspx[^"\']+)'
@@ -66,7 +66,8 @@ class RapidgatorNet(SimpleDownloader):
         (r"//(?:www\.)?rg\.to/", "//rapidgator.net/"),
         (r"(//rapidgator.net/file/[0-9A-z]+).*", r"\1"),
     ]
-
+    URL_REPLACEMENTS = [(__pattern__ + ".*", r"https://rapidgator.net/file/\g<ID>")]
+    
     API_URL = "https://rapidgator.net/api/"
 
     def api_response(self, method, **kwargs):

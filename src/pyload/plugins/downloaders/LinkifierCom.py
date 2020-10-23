@@ -12,7 +12,7 @@ from ..base.multi_downloader import MultiDownloader
 class LinkifierCom(MultiDownloader):
     __name__ = "AlldebridCom"
     __type__ = "downloader"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __status__ = "testing"
 
     __pattern__ = r"^unmatchable$"
@@ -35,7 +35,7 @@ class LinkifierCom(MultiDownloader):
     def api_response(self, method, user, password, **kwargs):
         post = {
             "login": user,
-            "md5Pass": hashlib.md5(password.encode()).hexdigest(),
+            "md5Pass": hashlib.md5(password).hexdigest(),
             "apiKey": self.API_KEY,
         }
         post.update(kwargs)
@@ -71,4 +71,4 @@ class LinkifierCom(MultiDownloader):
 
         self.resume_download = json_data["con_resume"]
         self.chunk_limit = json_data.get("con_max", 1) or 1
-        self.download(json_data["url"], fixurl=False)
+        self.download(json_data["url"])

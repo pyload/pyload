@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
+
+import time
 import json
-import re
-import urllib.parse
 
 from ..base.multi_downloader import MultiDownloader
 
@@ -9,7 +9,7 @@ from ..base.multi_downloader import MultiDownloader
 class LinksnappyCom(MultiDownloader):
     __name__ = "LinksnappyCom"
     __type__ = "downloader"
-    __version__ = "0.18"
+    __version__ = "0.19"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:[^/]+\.)?linksnappy\.com"
@@ -24,34 +24,49 @@ class LinksnappyCom(MultiDownloader):
 
     __description__ = """Linksnappy.com multi-downloader plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("stickell", "l.stickell@yahoo.it"), ("Bilal Ghouri", None)]
+    __authors__ = [("stickell", "l.stickell@yahoo.it"),
+			       ("Bilal Ghouri", None),
+			       ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
+
+    API_URL = "https://linksnappy.com/api/"
+
+    def api_response(self, method, **kwargs):
+        return json.loads(self.load(self.API_URL + method,
+                                    get=kwargs))
 
     def handle_premium(self, pyfile):
-        host = self._get_host(pyfile.url)
-        json_params = json.dumps(
-            {
-                "link": pyfile.url,
-                "type": host,
-                "username": self.account.user,
-                "password": self.account.get_login("password"),
-            }
-        )
+        json_params = json.dumps({'link': pyfile.url})
 
-        r = self.load(
-            "https://linksnappy.com/api/linkgen", post={"genLinks": json_params}
-        )
+        api_data = self.api_response("linkgen", genLinks=json_params)["links"][0]
 
-        self.log_debug("JSON data: " + r)
+        if api_data["status"] != "OK":
+            self.fail(api_data["error"])
 
-        j = json.loads(r)["links"][0]
+        if api_data.get("cacheDL", False):
+            self._cache_dl(api_data["hash"])
 
-        if j["error"]:
-            self.error(self._("Error converting the link"))
+        pyfile.name = api_data["filename"]
+        self.link = api_data["generated"]
 
-        pyfile.name = j["filename"]
-        self.link = j["generated"]
+    def _cache_dl(self,file_hash):
+        self.pyfile.set_custom_status("server dl")
+        self.pyfile.set_progress(0)
 
-    @staticmethod
-    def _get_host(url):
-        host = urllib.parse.urlsplit(url).netloc
-        return re.search(r"[\w\-]+\.\w+$", host).group(0)
+        while True:
+            api_data = self.api_response("CACHEDLSTATUS", id=file_hash)
+
+            if api_data["status"] != "OK":
+                self.fail(api_data["error"])
+
+            progress = api_data["return"]["percent"]
+            self.pyfile.setProgress(progress)
+            if progress == 100:
+                break
+
+            self._sleep(2)
+
+    def _sleep(self, sec):
+        for _i in range(sec):
+            if self.pyfile.abort:
+                break
+            time.sleep(1)

@@ -8,7 +8,7 @@ from ..base.xfs_downloader import XFSDownloader
 class XFileSharing(XFSDownloader):
     __name__ = "XFileSharing"
     __type__ = "downloader"
-    __version__ = "0.65"
+    __version__ = "0.66"
     __status__ = "testing"
 
     __pattern__ = r"^unmatchable$"

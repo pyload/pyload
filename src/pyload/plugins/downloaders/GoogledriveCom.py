@@ -1,21 +1,20 @@
 # -*- coding: utf-8 -*
-
 #
 # Test links:
 #   https://drive.google.com/file/d/0B6RNTe4ygItBQm15RnJiTmMyckU/view?pli=1
 
-
+import re
 import json
 
 from pyload.core.network.http.exceptions import BadHeader
 
 from ..base.downloader import BaseDownloader
-
+from pyload.core.utils import parse
 
 class GoogledriveCom(BaseDownloader):
     __name__ = "GoogledriveCom"
     __type__ = "downloader"
-    __version__ = "0.27"
+    __version__ = "0.32"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?(?:drive|docs)\.google\.com/(?:file/d/|uc\?.*id=)(?P<ID>[-\w]+)"
@@ -33,6 +32,8 @@ class GoogledriveCom(BaseDownloader):
         ("zapp-brannigan", "fuerst.reinje@web.de"),
         ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com"),
     ]
+
+    INFO_PATTERN = r'<span class="uc-name-size"><a href="[^"]+">(?P<N>.+?)</a> \((?P<S>[\d.,]+)(?P<U>[\w^_]+)\)</span>'
 
     API_URL = "https://www.googleapis.com/drive/v3/"
     API_KEY = "AIzaSyAcA9c4evtwSY1ifuvzo6HKBkeot5Bk_U4"
@@ -92,6 +93,8 @@ class GoogledriveCom(BaseDownloader):
                 raise
 
     def process(self, pyfile):
+        disposition = False
+        self.data = self.load(pyfile.url)
         json_data = self.api_response(
             "files/" + self.info["pattern"]["ID"], fields="md5Checksum,name,size"
         )
@@ -104,10 +107,44 @@ class GoogledriveCom(BaseDownloader):
                 self.offline()
 
             else:
-                self.fail(json_data["error"]["message"])
+                m = re.search(self.INFO_PATTERN, self.data)
+                if m is not None:
+                    pyfile.name = m.group("N")
+                    pyfile.size = parse.bytesize(m.group("S"), m.group("U"))
+                else:
+                    disposition = True
 
-        pyfile.size = int(json_data["size"])
-        pyfile.name = json_data["name"]
-        self.info["md5"] = json_data["md5Checksum"]
+            else:
+                self.fail(json_data['error']['message'])
 
-        self.api_download()
+        else:
+	        pyfile.size = int(json_data["size"])
+	        pyfile.name = json_data["name"]
+	        self.info["md5"] = json_data["md5Checksum"]
+
+        # Somehow, API downloads are sacrificially slow compared to "normal" download :(
+        # self.api_download()
+
+        for i in range(2):
+            m = re.search(r'"([^"]+uc\?.*?)"', self.data)
+            if m is None:
+                if "Quota exceeded" in self.data:
+                    self.temp_offline()
+                else:
+                    self.fail(self._("link pattern not found"))
+
+            link = urlparse.urljoin(pyfile.url, m.group(1).decode("unicode-escape"))
+
+            #: "Only files smaller than 100 MB can be scanned for viruses"
+            #: https://support.google.com/a/answer/172541?hl=en
+            if pyfile.size > 104857600 or "Virus scan warning" in self.data:
+                if re.search(r"/uc\?.*&confirm=", link):
+                    self.download(link, disposition=disposition)
+                    break
+
+                else:
+                    self.data = self.load(link)
+
+            else:
+                self.download(link, disposition=disposition)
+                break

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
+import json
 
 from ..anticaptchas.ReCaptcha import ReCaptcha
 from ..base.simple_downloader import SimpleDownloader
@@ -9,7 +10,7 @@ from ..base.simple_downloader import SimpleDownloader
 class UpstoreNet(SimpleDownloader):
     __name__ = "UpstoreNet"
     __type__ = "downloader"
-    __version__ = "0.13"
+    __version__ = "0.17"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?(?:upstore\.net|upsto\.re)/(?P<ID>\w+)"
@@ -38,7 +39,6 @@ class UpstoreNet(SimpleDownloader):
 
     DL_LIMIT_PATTERN = r"Please wait (.+?) before downloading next"
     WAIT_PATTERN = r"var sec = (\d+)"
-    CHASH_PATTERN = r'<input type="hidden" name="hash" value="(.+?)">'
 
     COOKIES = [("upstore.net", "lang", "en")]
 
@@ -52,44 +52,43 @@ class UpstoreNet(SimpleDownloader):
         self.log_debug("Read hash " + chash)
 
         #: Continue to stage2
-        post_data = {"hash": chash, "free": "Slow download"}
+        post_data = {"hash": self.info['pattern']['ID'], "free": "Slow download"}
         self.data = self.load(pyfile.url, post=post_data)
 
         #: STAGE 2: solve captcha and wait
         #: First get the infos we need: self.captcha key and wait time
-        self.captcha = ReCaptcha(pyfile)
+        m = re.search(self.WAIT_PATTERN, self.data)
+        if m is None:
+            self.error(self._("Wait pattern not found"))
 
-        #: Try the captcha 5 times
-        for i in range(5):
-            m = re.search(self.WAIT_PATTERN, self.data)
-            if m is None:
-                self.error(self._("Wait pattern not found"))
+        #: prepare the waiting
+        wait_time = int(m.group(1))
+        self.set_wait(wait_time)
 
-            #: then, do the waiting
-            wait_time = int(m.group(1))
-            self.wait(wait_time)
+        #: then, handle the captcha
+        recaptcha = ReCaptcha(self.pyfile)
 
-            #: then, handle the captcha
-            response, challenge = self.captcha.challenge()
-            post_data.update(
-                {
-                    "recaptcha_challenge_field": challenge,
-                    "recaptcha_response_field": response,
-                }
-            )
+        captcha_key = recaptcha.detect_key()
+        if captcha_key is None:
+            self.fail(self._("captcha key not found"))
 
-            self.data = self.load(pyfile.url, post=post_data)
+        self.captcha = recaptcha
 
-            # check whether the captcha was wrong
-            if "Wrong captcha" in self.data:
-                self.captcha.invalid()
+        post_data = {"hash": self.info["pattern"]["ID"],
+                     "free": "Get download link"}
+        post_data["g-recaptcha-response"], __ = recaptcha.challenge(captcha_key)
 
-            else:
-                self.captcha.correct()
-                break
+        #: then, do the waiting
+        self.wait()
+
+        self.data = self.load(pyfile.url, post=post_data)
+
+        # check whether the captcha was wrong
+        if "Captcha check failed" in self.data:
+            self.captcha.invalid()
 
         else:
-            self.fail(self._("Max captcha retries reached"))
+            self.captcha.correct()
 
         # STAGE 3: get direct link or wait time
         self.check_errors()
@@ -97,3 +96,11 @@ class UpstoreNet(SimpleDownloader):
         m = re.search(self.LINK_FREE_PATTERN, self.data)
         if m is not None:
             self.link = m.group(1)
+
+    def handle_premium(self, pyfile):
+        self.data = self.load("https://upstore.net/load/premium",
+                              post={'hash': self.info["pattern"]["ID"],
+                                    "antispam": "spam",
+                                    "js": "1"})
+        json_data = json.loads(self.data)
+        self.link = json_data["ok"]
