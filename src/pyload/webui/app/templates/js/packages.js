@@ -15,8 +15,7 @@ document.addEvent("domready", function() {
         $('pack_form').reset();
         root.packageBox.close();
     });
-
-    var pUI = new PackageUI("url", {{target}});
+    var pUI = new PackageUI()
 });
 
 function indicateLoad() {
@@ -41,9 +40,7 @@ function indicateFail() {
     });
 }
 var PackageUI = new Class({
-    initialize: function(url, type) {
-        this.url = url;
-        this.type = type;
+    initialize: function() {
         this.packages = [];
         this.parsePackages();
         this.sorts = new Sortables($("package-list"), {
