@@ -12,7 +12,7 @@ from ..helpers import exists
 try:
     import send2trash
 except ImportError:
-    send2trash = None
+    pass
 
 
 class ArchiveQueue:
@@ -53,7 +53,7 @@ class ArchiveQueue:
 class ExtractArchive(BaseAddon):
     __name__ = "ExtractArchive"
     __type__ = "addon"
-    __version__ = "1.67"
+    __version__ = "1.69"
     __status__ = "testing"
 
     __config__ = [
@@ -100,7 +100,6 @@ class ExtractArchive(BaseAddon):
         }
 
         self.queue = ArchiveQueue(self, "Queue")
-        self.failed = ArchiveQueue(self, "Failed")
 
         self.extracting = False
         self.last_package = False
@@ -109,7 +108,7 @@ class ExtractArchive(BaseAddon):
         self.repair = False
 
     def activate(self):
-        for p in ("UnRar", "SevenZip", "UnZip", "UnTar"):
+        for p in ("HjSplit", "UnRar", "SevenZip", "UnZip", "UnTar"):
             try:
                 module = self.pyload.plugin_manager.load_module("base", p)
                 klass = getattr(module, p)
@@ -255,10 +254,11 @@ class ExtractArchive(BaseAddon):
                     extract_folder,
                     pypack.folder or safename(pypack.name.replace("http://", "")),
                 )
+            if not exists(extract_folder):
+                os.makedirs(extract_folder)
 
-            os.makedirs(extract_folder, exist_ok=True)
-            if subfolder:
-                self.set_permissions(extract_folder)
+                if subfolder:
+                    self.set_permissions(extract_folder)
 
             matched = False
             success = True
@@ -422,7 +422,6 @@ class ExtractArchive(BaseAddon):
                     failed.append(pid)
                     self.m.dispatch_event("package_extract_failed", pypack)
 
-                    self.failed.add(pid)
             else:
                 self.log_info(self._("No files found to extract"))
 
@@ -611,8 +610,8 @@ class ExtractArchive(BaseAddon):
 
         except IOError as exc:
             if exc.errno == 2:
-                fp = open(file, mode="w")
-                fp.close()
+                with open(file, mode="wb") as f:
+                    pass
 
             else:
                 self.log_error(exc)
