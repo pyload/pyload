@@ -18,6 +18,8 @@ from base64 import b85decode, b85encode
 from collections.abc import Sequence
 from datetime import timedelta
 
+from ..core.utils.convert import to_str
+
 
 class Config:
     def __init__(self, plugin):
@@ -434,7 +436,7 @@ def set_cookies(cj, cookies):
 
 
 def parse_html_header(header):
-    header = str(header)
+    header = to_str(header)
 
     hdict = {}
     _re = r"[ ]*(?P<key>.+?)[ ]*:[ ]*(?P<value>.+?)[ ]*\r?\n"
