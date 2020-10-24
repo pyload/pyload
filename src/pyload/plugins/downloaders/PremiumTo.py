@@ -2,6 +2,7 @@
 
 import json
 import re
+import os
 
 from ..base.multi_downloader import MultiDownloader
 
@@ -49,7 +50,7 @@ class PremiumTo(MultiDownloader):
 
     def check_download(self):
         if self.scan_download({"json": re.compile(r'\A{["\']code["\']:\d+,["\']message["\']:(["\']).+?\1}\Z')}):
-            with open(fs_encode(self.last_download), "rb") as f:
+            with open(os.fsdecode(self.last_download), "rb") as f:
                 json_data = json.loads(f.read())
 
             self.remove(self.last_download)
