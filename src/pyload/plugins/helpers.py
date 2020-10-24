@@ -434,7 +434,7 @@ def set_cookies(cj, cookies):
 
 
 def parse_html_header(header):
-    header = str(header)
+    header = header.decode('utf-8')
 
     hdict = {}
     _re = r"[ ]*(?P<key>.+?)[ ]*:[ ]*(?P<value>.+?)[ ]*\r?\n"
