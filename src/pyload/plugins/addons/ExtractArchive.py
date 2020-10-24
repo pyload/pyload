@@ -6,7 +6,7 @@ from pyload.core.utils.old import safename
 from pyload.core.utils.purge import uniquify
 
 from ..base.addon import BaseAddon, expose, threaded
-from ..base.extractor import ArchiveError, CRCError, PasswordError
+from ..base.Extractor import ArchiveError, CRCError, PasswordError
 from ..helpers import exists
 
 try:
