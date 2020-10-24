@@ -220,7 +220,7 @@ class ExternalScripts(BaseAddon):
     def package_finished(self, pypack):
         dl_folder = self.pyload.config.get("general", "storage_folder")
 
-        if self.pyload.config.get("general", "folder_per_package"):
+        if self.pyload.config.get("general", "folder_per_package") == "True":
             dl_folder = os.path.join(dl_folder, pypack.folder)
 
         args = [pypack.id, pypack.name, dl_folder, pypack.password]
@@ -229,7 +229,7 @@ class ExternalScripts(BaseAddon):
     def package_processed(self, pypack):
         dl_folder = self.pyload.config.get("general", "storage_folder")
 
-        if self.pyload.config.get("general", "folder_per_package"):
+        if self.pyload.config.get("general", "folder_per_package") == "True":
             dl_folder = os.path.join(dl_folder, pypack.folder)
 
         args = [pypack.id, pypack.name, dl_folder, pypack.password]
@@ -239,7 +239,7 @@ class ExternalScripts(BaseAddon):
         dl_folder = self.pyload.config.get("general", "storage_folder")
         pdata = self.pyload.api.get_package_info(pid)
 
-        if self.pyload.config.get("general", "folder_per_package"):
+        if self.pyload.config.get("general", "folder_per_package") == "True":
             dl_folder = os.path.join(dl_folder, pdata.folder)
 
         args = [pdata.pid, pdata.name, dl_folder, pdata.password]
@@ -248,7 +248,7 @@ class ExternalScripts(BaseAddon):
     def package_failed(self, pypack):
         dl_folder = self.pyload.config.get("general", "storage_folder")
 
-        if self.pyload.config.get("general", "folder_per_package"):
+        if self.pyload.config.get("general", "folder_per_package") == "True":
             dl_folder = os.path.join(dl_folder, pypack.folder)
 
         args = [pypack.id, pypack.name, dl_folder, pypack.password]
@@ -257,7 +257,7 @@ class ExternalScripts(BaseAddon):
     def package_extract_failed(self, pypack):
         dl_folder = self.pyload.config.get("general", "storage_folder")
 
-        if self.pyload.config.get("general", "folder_per_package"):
+        if self.pyload.config.get("general", "folder_per_package") == "True":
             dl_folder = os.path.join(dl_folder, pypack.folder)
 
         args = [pypack.id, pypack.name, dl_folder, pypack.password]
@@ -266,7 +266,7 @@ class ExternalScripts(BaseAddon):
     def package_extracted(self, pypack):
         dl_folder = self.pyload.config.get("general", "storage_folder")
 
-        if self.pyload.config.get("general", "folder_per_package"):
+        if self.pyload.config.get("general", "folder_per_package") == "True":
             dl_folder = os.path.join(dl_folder, pypack.folder)
 
         args = [pypack.id, pypack.name, dl_folder]

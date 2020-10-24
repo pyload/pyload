@@ -416,7 +416,7 @@ class MegaCoNz(BaseDownloader):
         Raises Skip() if file exists and 'skip_existing' configuration option is
         set to True.
         """
-        if self.pyload.config.get("download", "skip_existing"):
+        if self.pyload.config.get("download", "skip_existing") == "True":
             storage_folder = self.pyload.config.get("general", "storage_folder")
             dest_file = os.path.join(
                 storage_folder,

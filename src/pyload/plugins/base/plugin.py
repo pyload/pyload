@@ -121,14 +121,14 @@ class BasePlugin:
         if not exists(path):
             return
 
-        if self.pyload.config.get("permission", "change_file"):
+        if self.pyload.config.get("permission", "change_file") == "True":
             permission = self.pyload.config.get(
                 "permission", "folder" if os.path.isdir(path) else "file"
             )
             mode = int(permission, 8)
             os.chmod(path, mode)
 
-        if os.name != "nt" and self.pyload.config.get("permission", "change_dl"):
+        if os.name != "nt" and self.pyload.config.get("permission", "change_dl") == "True":
             uid = pwd.getpwnam(self.pyload.config.get("permission", "user"))[2]
             gid = grp.getgrnam(self.pyload.config.get("permission", "group"))[2]
             os.chown(path, uid, gid)

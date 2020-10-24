@@ -76,7 +76,7 @@ class RequestFactory:
         """
         returns a proxy list for the request classes.
         """
-        if not self.pyload.config.get("proxy", "enabled"):
+        if self.pyload.config.get("proxy", "enabled") == "False":
             return {}
         else:
             type = "http"
@@ -115,17 +115,17 @@ class RequestFactory:
         return {
             "interface": self.iface(),
             "proxies": self.get_proxies(),
-            "ipv6": self.pyload.config.get("download", "ipv6"),
+            "ipv6": self.pyload.config.get("download", "ipv6") == "True",
         }
 
     def update_bucket(self):
         """
         set values in the bucket according to settings.
         """
-        if not self.pyload.config.get("download", "limit_speed"):
+        if self.pyload.config.get("download", "limit_speed") == "False":
             self.bucket.set_rate(-1)
         else:
-            self.bucket.set_rate(self.pyload.config.get("download", "max_speed") << 10)
+            self.bucket.set_rate(int(self.pyload.config.get("download", "max_speed")) << 10)
 
 
 def get_url(*args, **kwargs):

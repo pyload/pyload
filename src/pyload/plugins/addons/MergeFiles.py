@@ -33,7 +33,7 @@ class MergeFiles(BaseAddon):
 
         dl_folder = self.pyload.config.get("general", "storage_folder")
 
-        if self.pyload.config.get("general", "folder_per_package"):
+        if self.pyload.config.get("general", "folder_per_package") == "True":
             dl_folder = os.path.join(dl_folder, pack.folder)
 
         for name, file_list in files.items():

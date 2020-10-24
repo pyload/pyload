@@ -988,7 +988,7 @@ class YoutubeCom(BaseDownloader):
                         )
 
                         if (
-                            self.pyload.config.get("download", "skip_existing")
+                            self.pyload.config.get("download", "skip_existing") == "True"
                             and exists(srt_filename)
                             and os.stat(srt_filename).st_size != 0
                         ):
@@ -1026,7 +1026,7 @@ class YoutubeCom(BaseDownloader):
                     )
 
                     if (
-                        self.pyload.config.get("download", "skip_existing")
+                        self.pyload.config.get("download", "skip_existing") == "True"
                         and exists(srt_filename)
                         and os.stat(srt_filename).st_size != 0
                     ):

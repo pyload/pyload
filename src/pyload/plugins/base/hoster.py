@@ -312,7 +312,7 @@ class BaseHoster(BasePlugin):
         raise NotImplementedError
 
     def set_reconnect(self, reconnect):
-        if self.pyload.config.get("reconnect", "enabled"):
+        if self.pyload.config.get("reconnect", "enabled") == "True":
             reconnect = reconnect and self.pyload.api.is_time_reconnect()
             self.log_debug(
                 "RECONNECT{} required".format("" if reconnect else " not"),

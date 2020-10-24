@@ -83,9 +83,9 @@ class BaseDecrypter(BaseHoster):
         folder_per_package = self.config.get("folder_per_package", "Default")
 
         if folder_per_package == "Default":
-            folder_per_package = self.pyload.config.get("general", "folder_per_package")
+            folder_per_package = bool(self.pyload.config.get("general", "folder_per_package"))
         else:
-            folder_per_package = folder_per_package == "Yes"
+            folder_per_package = bool(folder_per_package == "True")
 
         for name, links, folder in self.packages:
             self.log_info(

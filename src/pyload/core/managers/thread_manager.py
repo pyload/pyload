@@ -56,7 +56,7 @@ class ThreadManager:
 
         # pycurl.global_init(pycurl.GLOBAL_DEFAULT)
 
-        for i in range(self.pyload.config.get("download", "max_downloads")):
+        for i in range(int(self.pyload.config.get("download", "max_downloads"))):
             self.create_thread()
 
     def create_thread(self):
@@ -163,7 +163,7 @@ class ThreadManager:
         checks if reconnect needed.
         """
         if not (
-            self.pyload.config.get("reconnect", "enabled")
+            self.pyload.config.get("reconnect", "enabled") == "True"
             and self.pyload.api.is_time_reconnect()
         ):
             return False
@@ -242,9 +242,9 @@ class ThreadManager:
         """
         checks if there are need for increasing or reducing thread count.
         """
-        if len(self.threads) == self.pyload.config.get("download", "max_downloads"):
+        if len(self.threads) == int(self.pyload.config.get("download", "max_downloads")):
             return True
-        elif len(self.threads) < self.pyload.config.get("download", "max_downloads"):
+        elif len(self.threads) < int(self.pyload.config.get("download", "max_downloads")):
             self.create_thread()
         else:
             free = [x for x in self.threads if not x.active]
@@ -327,7 +327,7 @@ class ThreadManager:
                     fs.free_space(self.pyload.config.get("general", "storage_folder"))
                     >> 20
                 )
-                if space_left < self.pyload.config.get("general", "min_free_space"):
+                if space_left < int(self.pyload.config.get("general", "min_free_space")):
                     self.pyload.log.warning(self._("Not enough space left on device"))
                     self.pause = True
 

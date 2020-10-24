@@ -223,7 +223,7 @@ class XFSDownloader(SimpleDownloader):
                     if (
                         wait_time
                         < timedelta(minutes=self.config.get("max_wait", 10)).seconds
-                        or not self.pyload.config.get("reconnect", "enabled")
+                        or self.pyload.config.get("reconnect", "enabled") == "False"
                         or not self.pyload.api.is_time_reconnect()
                     ):
                         self.handle_captcha(inputs)

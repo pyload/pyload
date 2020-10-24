@@ -218,7 +218,7 @@ class BaseDownloader(BaseHoster):
         filename = os.fsdecode(filename)
         resume = self.resume_download if resume is None else bool(resume)
 
-        dl_chunks = self.pyload.config.get("download", "chunks")
+        dl_chunks = int(self.pyload.config.get("download", "chunks"))
         chunk_limit = chunks or self.chunk_limit or -1
 
         if -1 in (dl_chunks, chunk_limit):
@@ -530,7 +530,7 @@ class BaseDownloader(BaseHoster):
                 self.last_download = ""
             return
 
-        if self.pyload.config.get("download", "skip_existing"):
+        if self.pyload.config.get("download", "skip_existing") == "True":
             plugin = self.pyload.db.find_duplicates(
                 self.pyfile.id, pack_folder, self.pyfile.name
             )

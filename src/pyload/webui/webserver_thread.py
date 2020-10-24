@@ -18,9 +18,9 @@ class WebServerThread(threading.Thread):
         self.pyload = pycore
         self._ = pycore._
 
-        self.develop = self.pyload.config.get("webui", "develop")
+        self.develop = self.pyload.config.get("webui", "develop") == "True"
 
-        self.use_ssl = self.pyload.config.get("webui", "use_ssl")  #: recheck
+        self.use_ssl = self.pyload.config.get("webui", "use_ssl") == "True"  #: recheck
         self.certfile = self.pyload.config.get("webui", "ssl_certfile")
         self.keyfile = self.pyload.config.get("webui", "ssl_keyfile")
         self.certchain = self.pyload.config.get("webui", "ssl_certchain") or None

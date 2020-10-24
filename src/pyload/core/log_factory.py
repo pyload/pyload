@@ -53,9 +53,9 @@ class LogFactory:
         return logger
 
     def _init_logger(self, logger):
-        console = self.pyload.config.get("log", "console")
-        syslog = self.pyload.config.get("log", "syslog")
-        filelog = self.pyload.config.get("log", "filelog")
+        console = self.pyload.config.get("log", "console") == "True"
+        syslog = self.pyload.config.get("log", "syslog") == "True"
+        filelog = self.pyload.config.get("log", "filelog") == "True"
 
         level = logging.DEBUG if self.pyload.debug else logging.INFO
         logger.setLevel(level)
@@ -93,7 +93,7 @@ class LogFactory:
         self.loggers.clear()
 
     def _init_console_handler(self, logger):
-        color = self.pyload.config.get("log", "console_color") and colorlog
+        color = (self.pyload.config.get("log", "console_color") == "True") and colorlog
 
         if color:
             consoleform = colorlog.ColoredFormatter(
@@ -124,7 +124,7 @@ class LogFactory:
         location = self.pyload.config.get("log", "syslog_location")
         if location == "remote":
             host = self.pyload.config.get("log", "syslog_host")
-            port = self.pyload.config.get("log", "syslog_port")
+            port = int(self.pyload.config.get("log", "syslog_port"))
             syslog_addr = (host, port)
         else:
             folder = self.pyload.config.get("log", "syslog_folder")
@@ -159,9 +159,9 @@ class LogFactory:
         filelog_path = os.path.join(filelog_folder, filename)
 
         encoding = locale.getpreferredencoding(do_setlocale=False)
-        if self.pyload.config.get("log", "filelog_rotate"):
-            max_size = self.pyload.config.get("log", "filelog_size") << 10
-            max_entries = self.pyload.config.get("log", "filelog_entries")
+        if self.pyload.config.get("log", "filelog_rotate") == "True":
+            max_size = int(self.pyload.config.get("log", "filelog_size")) << 10
+            max_entries = int(self.pyload.config.get("log", "filelog_entries"))
 
             filehdlr = logging.handlers.RotatingFileHandler(
                 filelog_path,

@@ -56,7 +56,7 @@ class AntiVirus(BaseAddon):
             dl_folder = self.pyload.config.get("general", "storage_folder")
             package_folder = (
                 pyfile.package().folder
-                if self.pyload.config.get("general", "folder_per_package")
+                if self.pyload.config.get("general", "folder_per_package") == "True"
                 else ""
             )
             target = os.path.join(dl_folder, package_folder, pyfile.name)

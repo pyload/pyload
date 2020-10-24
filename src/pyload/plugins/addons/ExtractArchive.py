@@ -390,7 +390,7 @@ class ExtractArchive(BaseAddon):
                     #: Delete empty pack folder if extract_folder resides outside download folder
                     if self.config.get("delete") and self.pyload.config.get(
                         "general", "folder_per_package"
-                    ):
+                    ) == "True":
                         if not extract_folder.startswith(pack_dl_folder):
                             if len(os.listdir(pack_dl_folder)) == 0:
                                 try:
