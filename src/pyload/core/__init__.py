@@ -197,7 +197,7 @@ class Core:
         if change_group:
             try:
                 from grp import getgrnam
-                
+
                 group = getgrnam(self.config.get("permission", "group"))
                 os.setgid(group[2])
             except Exception as exc:
@@ -211,7 +211,7 @@ class Core:
         if change_user:
             try:
                 from pwd import getpwnam
-                
+
                 user = getpwnam(self.config.get("permission", "user"))
                 os.setuid(user[2])
             except Exception as exc:
