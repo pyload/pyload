@@ -15,8 +15,6 @@ document.addEvent("domready", function() {
         $('pack_form').reset();
         root.packageBox.close();
     });
-
-    var pUI = new PackageUI("url", {{target}});
 });
 
 function indicateLoad() {
@@ -320,7 +318,7 @@ var Package = new Class({
         indicateLoad();
         new Request({
             method: 'get',
-            url: '/json/move_package/' + ((this.ui.type + 1) % 2) + '|' + this.id,
+            url: '/json/move_package/' + ((this.ui.type + 1) % 2) + '/' + this.id,
             onSuccess: function() {
                 this.ele.nix();
                 indicateFinish();

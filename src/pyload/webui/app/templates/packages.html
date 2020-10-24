@@ -3,6 +3,11 @@
   type="text/javascript"
   src="{{theme_template('js/packages.js')}}"
 ></script>
+<script type="text/javascript">
+$(function() {
+    var pUI = new PackageUI("url", {{ target }});
+});
+</script>
 {% endblock %} {% if target %} {% set name = _("Running Packages") %} {% else %}
 {% set name = _("Saved Packages") %} {% endif %} {% block title %}{{name}} -
 {{super()}} {% endblock %} {% block subtitle %}{{name}}{% endblock %} {% block

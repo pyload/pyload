@@ -1,9 +1,5 @@
 {% autoescape true %}
 
-$(function() {
-    var pUI = new PackageUI("url", {{target}})
-});
-
 function PackageUI (url, type){
     var packages = [];
     var thisObject;
@@ -315,7 +311,7 @@ function Package (ui, id, ele){
 
     this.movePackage = function(event) {
         indicateLoad();
-        $.get("/json/move_package/" + ((ui.type + 1) % 2) + '|' + id, function () {
+        $.get("/json/move_package/" + ((ui.type + 1) % 2) + '/' + id, function () {
             $(ele).remove();
             indicateFinish();
         }).fail(function () {
