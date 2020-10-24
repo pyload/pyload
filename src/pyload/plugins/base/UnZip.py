@@ -4,7 +4,7 @@ import os
 import sys
 import zipfile
 
-from .extractor import ArchiveError, BaseExtractor, CRCError, PasswordError
+from .Extractor import ArchiveError, BaseExtractor, CRCError, PasswordError
 
 
 class UnZip(BaseExtractor):

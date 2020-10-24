@@ -4,7 +4,7 @@ import os
 import sys
 import tarfile
 
-from .extractor import ArchiveError, BaseExtractor, CRCError
+from .Extractor import ArchiveError, BaseExtractor, CRCError
 
 
 class UnTar(BaseExtractor):

@@ -5,11 +5,11 @@ from __future__ import with_statement
 import os
 import re
 
-from .Extractor import ArchiveError, Extractor
-from .misc import exists, fsjoin
+from .Extractor import ArchiveError, BaseExtractor
+from ..helpers import exists
 
 
-class HjSplit(Extractor):
+class HjSplit(BaseExtractor):
     __name__ = "HjSplit"
     __type__ = "extractor"
     __version__ = "0.02"
@@ -23,7 +23,7 @@ class HjSplit(Extractor):
 
     EXTENSIONS = [("001", r'(?<!7z\.)001')]
 
-    _RE_PART = re.compile(r'(?<!\.7z)\.\d{3}$')
+    _RE_PART = re.compile(r"(?<!\.7z)\.\d{3}$")
 
     BUFFER_SIZE = 4096
 
@@ -40,9 +40,9 @@ class HjSplit(Extractor):
         dir, name = os.path.split(self.filename)
 
         #: eventually Multipart Files
-        files.extend(fsjoin(dir, os.path.basename(_f))
-                     for _f in filter(self.ismultipart, [_x[1]['name'] for _x in self.pyfile.package().getChildren().items()])
-                     if self._RE_PART.sub("", name) == self._RE_PART.sub("", _f))
+        files.extend(os.path.join(dir, os.path.basename(f))
+                     for f in filter(self.ismultipart, [x[1]["name"] for x in self.pyfile.package().getChildren().items()])
+                     if self._RE_PART.sub("", name) == self._RE_PART.sub("", f))
 
         #: Actually extracted file
         if self.filename not in files:
@@ -63,23 +63,23 @@ class HjSplit(Extractor):
 
         #: Verify HjSplit consistency
         if len(chunks) == 1:
-            raise ArchiveError("Cannot merge just one chunk '%s'" % chunks[0])
+            raise ArchiveError("Cannot merge just one chunk '{}'".format(chunks[0]))
 
         for i in range(0, num_chunks):
             if not exists(chunks[i]):
-                raise ArchiveError("Chunk '%s' not found" % chunks[i])
+                raise ArchiveError("Chunk '{}' not found".format(chunks[i]))
 
             if i == 0:
                 chunk_size = os.path.getsize(chunks[i])
 
             else:
                 if int(chunks[i][-3:]) != i + 1:
-                    missing_chunk = "%s.%03d" %(os.path.splitext(chunks[i])[0], i + 1)
-                    raise ArchiveError("Chunk '%s' is missing" % missing_chunk)
+                    missing_chunk = "{}.{:0>3d}".format(os.path.splitext(chunks[i])[0], i + 1)
+                    raise ArchiveError("Chunk '{}' is missing".format(missing_chunk))
 
                 if i < num_chunks - 1:
                     if os.path.getsize(chunks[i]) != chunk_size:
-                        raise ArchiveError("Invalid chunk size for chunk '%s'" % chunks[i])
+                        raise ArchiveError("Invalid chunk size for chunk '{}'".format(chunks[i]))
 
                     size_total += chunk_size
 
@@ -87,7 +87,7 @@ class HjSplit(Extractor):
                     size_total += os.path.getsize(chunks[i])
 
         #: Now do the actual merge
-        with open(fsjoin(self.dest, name), "wb") as output_file:
+        with open(os.path.join(self.dest, name), "wb") as output_file:
             size_written = 0
             for part_filename in chunks:
                 self.log_debug("Merging part", part_filename)
@@ -98,7 +98,7 @@ class HjSplit(Extractor):
                         if f_buffer:
                             output_file.write(f_buffer)
                             size_written += len(f_buffer)
-                            self.pyfile.setProgress((size_written * 100) / size_total)
+                            self.pyfile.set_progress((size_written * 100) / size_total)
                         else:
                             break
 

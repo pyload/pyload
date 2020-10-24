@@ -7,7 +7,7 @@ import subprocess
 from pyload import PKGDIR
 
 from ..helpers import renice
-from .extractor import ArchiveError, BaseExtractor, CRCError, PasswordError
+from .Extractor import ArchiveError, BaseExtractor, CRCError, PasswordError
 
 
 class UnRar(BaseExtractor):
