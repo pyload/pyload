@@ -193,7 +193,7 @@ def edit_package():
         id = int(flask.request.form["pack_id"])
         data = {
             "name": flask.request.form["pack_name"],
-            "folder": flask.request.form["pack_folder"],
+            "_folder": flask.request.form["pack_folder"],
             "password": flask.request.form["pack_pws"],
         }
 
