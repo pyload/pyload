@@ -8,11 +8,11 @@ from ..internal.XFSHoster import XFSHoster
 class XFileSharing(XFSHoster):
     __name__ = "XFileSharing"
     __type__ = "hoster"
-    __version__ = "0.66"
+    __version__ = "0.67"
     __status__ = "testing"
 
     __pattern__ = r'^unmatchable$'
-    __config__ = [("activated", "bool", "Activated", True),
+    __config__ = [("activated", "bool", "Activated", False),
                   ("use_premium", "bool", "Use premium account if available", True),
                   ("fallback", "bool",
                    "Fallback to free download if premium fails", True),
