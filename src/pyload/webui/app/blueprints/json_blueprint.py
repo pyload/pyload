@@ -170,7 +170,7 @@ def add_package():
     return jsonify(True)
 
 
-@bp.route("/move_package/<int:dest>|<int:id>", endpoint="move_package")
+@bp.route("/move_package/<int:dest>/<int:id>", endpoint="move_package")
 # @apiver_check
 @login_required("MODIFY")
 def move_package(dest, id):
