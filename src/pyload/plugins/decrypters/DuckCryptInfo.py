@@ -49,7 +49,7 @@ class DuckCryptInfo(BaseDecrypter):
         m = re.match(self.__pattern__, html)
         self.log_debug("Redirect to " + m.group(0))
         html = self.load(str(m.group(0)))
-        soup = BeautifulSoup(html)
+        soup = BeautifulSoup(html, 'html.parser')
         cryptlinks = soup.findAll("div", attrs={"class": "folderbox"})
         self.log_debug("Redirect to " + cryptlinks)
         if not cryptlinks:
@@ -60,7 +60,7 @@ class DuckCryptInfo(BaseDecrypter):
 
     def handle_link(self, url):
         html = self.load(url)
-        soup = BeautifulSoup(html)
+        soup = BeautifulSoup(html, 'html.parser')
         self.links = [soup.find("iframe")["src"]]
         if not self.links:
             self.log_info(self._("No link found"))
