@@ -5,7 +5,6 @@ import re
 import subprocess
 
 from pyload import PKGDIR
-from pyload.core.utils.old import decode
 
 from ..helpers import renice
 from .extractor import ArchiveError, BaseExtractor, CRCError, PasswordError
@@ -14,7 +13,7 @@ from .extractor import ArchiveError, BaseExtractor, CRCError, PasswordError
 class UnRar(BaseExtractor):
     __name__ = "UnRar"
     __type__ = "extractor"
-    __version__ = "1.38"
+    __version__ = "1.44"
     __status__ = "testing"
 
     __config__ = [("ignore_warnings", "bool", "Ignore unrar warnings", False)]
@@ -45,22 +44,23 @@ class UnRar(BaseExtractor):
         "z",
     ]
 
-    _RE_PART = re.compile(r"\.(part|r)\d+(\.rar|\.rev)?(\.bad)?", re.I)
+    _RE_PART = re.compile(r"\.(part|r)\d+(\.rar|\.rev)?(\.bad)?|\.rar$", re.I)
     _RE_FIXNAME = re.compile(r"Building (.+)")
-    _RE_FILES = re.compile(
-        r"^(.)(\s*[\w\-.]+)\s+(\d+\s+)+(?:\d+\%\s+)?[\d\-]{8,}\s+[\d\:]{5}", re.I | re.M
+    _RE_FILES_V4 = re.compile(
+        r"^([* ])(.+?)\s+(\d+)\s+(\d+)\s+(\d+%|-->|<--)\s+([\d-]+)\s+([\d:]+)\s*([ACHIRS.rw\-]+)\s+([0-9A-F]{8})\s+(\w+)\s+([\d.]+)", re.M
     )
+    _RE_FILES_V5 = re.compile(r"^([* ])\s*([ACHIRS.rw\-]+)\s+(\d+)(?:\s+\d+)?(?:\s+(?:\d+%|-->|<--))?\s+([\d-]+)\s+([\d:]+)(?:\s+[0-9A-F]{8})?\s+(.+)", re.M)
     _RE_BADPWD = re.compile(r"password", re.I)
     _RE_BADCRC = re.compile(
         r"encrypted|damaged|CRC failed|checksum error|corrupt", re.I
     )
-    _RE_VERSION = re.compile(r"(?:UN)?RAR\s(\d+\.\d+)", re.I)
+    _RE_VERSION = re.compile(rb"(?:UN)?RAR\s(\d+\.\d+)", re.I)
 
     @classmethod
     def find(cls):
         try:
             if os.name == "nt":
-                cls.CMD = os.path.join(PKGDIR, "lib", "RAR.exe")
+                cls.CMD = os.path.join(pypath, "RAR.exe")
             else:
                 cls.CMD = "rar"
 
@@ -94,7 +94,7 @@ class UnRar(BaseExtractor):
 
     @classmethod
     def ismultipart(cls, filename):
-        return cls._RE_PART.search(filename) is not None
+        return True if cls._RE_PART.search(filename) else False
 
     def verify(self, password=None):
         p = self.call_cmd("l", "-v", self.filename, password=password)
@@ -107,8 +107,8 @@ class UnRar(BaseExtractor):
             raise CRCError(err)
 
         #: Output only used to check if passworded files are present
-        for attr in self._RE_FILES.findall(out):
-            if attr[0].startswith("*"):
+        for groups in self._RE_FILES.findall(out):
+            if groups[0] == "*":
                 raise PasswordError
 
     def repair(self):
@@ -144,7 +144,7 @@ class UnRar(BaseExtractor):
             if not c:
                 break
             #: Reading a percentage sign -> set progress and restart
-            if c == "%":
+            if c == "%" and s:
                 self.pyfile.set_progress(int(s))
                 s = ""
             #: Not reading a digit -> therefore restart
@@ -202,7 +202,7 @@ class UnRar(BaseExtractor):
         return files
 
     def list(self, password=None):
-        command = "vb" if self.fullpath else "lb"
+        command = "v" if self.fullpath else "l"
 
         p = self.call_cmd(command, "-v", self.filename, password=password)
         out, err = (r.strip() if r else "" for r in p.communicate())
@@ -213,30 +213,14 @@ class UnRar(BaseExtractor):
         if err:  #: Only log error at this point
             self.log_error(err)
 
-        result = set()
-        if not self.fullpath and self.VERSION.startswith("5"):
-            # NOTE: Unrar 5 always list full path
-            for filename in decode(out).splitlines():
-                filename = os.path.join(self.dest, os.path.basename(filename.strip()))
-                if os.path.isfile(filename):
-                    result.add(os.path.join(self.dest, os.path.basename(filename)))
-        else:
-            if self.fullpath:
-                for filename in decode(out).splitlines():
-                    # Unrar fails to list all directories for some archives
-                    filename = filename.strip()
-                    while filename:
-                        fabs = os.path.join(self.dest, filename)
-                        if fabs not in result:
-                            result.add(fabs)
-                            filename = os.path.dirname(filename)
-                        else:
-                            break
-            else:
-                for filename in decode(out).splitlines():
-                    result.add(os.path.join(self.dest, filename.strip()))
-
-        self.files = list(result)
+        files = set()
+        f_grp = 5 if float(self.VERSION) >= 5 else 1
+        for groups in self._RE_FILES.findall(out):
+            f = groups[f_grp].strip()
+            if not self.fullpath:
+                f = os.path.basename(f)
+            files.add(fsjoin(self.dest, f))
+        self.files = list(files)
         return self.files
 
     def call_cmd(self, command, *xargs, **kwargs):
@@ -255,6 +239,9 @@ class UnRar(BaseExtractor):
         #: Assume yes on all queries
         args.append("-y")
 
+        #: Disable comments show
+        args.append("-c-")
+
         #: Set a password
         password = kwargs.get("password")
 
@@ -266,8 +253,7 @@ class UnRar(BaseExtractor):
         if self.keepbroken:
             args.append("-kb")
 
-        # NOTE: return codes are not reliable, some kind of threading, cleanup
-        # whatever issue
+        #@NOTE: return codes are not reliable, some kind of threading, cleanup whatever issue
         call = [self.CMD, command] + args + list(xargs)
         self.log_debug("EXECUTE " + " ".join(call))
 

@@ -13,7 +13,7 @@ from .extractor import ArchiveError, BaseExtractor, CRCError, PasswordError
 class SevenZip(BaseExtractor):
     __name__ = "SevenZip"
     __type__ = "extractor"
-    __version__ = "0.27"
+    __version__ = "0.32"
     __status__ = "testing"
 
     __description__ = """7-Zip extractor plugin"""
@@ -66,9 +66,9 @@ class SevenZip(BaseExtractor):
         "scap",
     ]
 
-    _RE_PART = re.compile(r"\.7z\.\d{3}|\.(part|r)\d+(\.rar|\.rev)?(\.bad)?", re.I)
+    _RE_PART = re.compile(r"\.7z\.\d{3}|\.(part|r)\d+(\.rar|\.rev)?(\.bad)?|\.rar$", re.I)
     _RE_FILES = re.compile(
-        r"([\d\-]+)\s+([\d\:]+)\s+([RHSA\.]+)\s+(\d+)\s+(\d+)\s+(.+)"
+        r"([\d\-]+)\s+([\d:]+)\s+([RHSA.]+)\s+(\d+)\s+(?:(\d+)\s+)?(.+)"
     )
     _RE_BADPWD = re.compile(
         r"(Can not open encrypted archive|Wrong password|Encrypted\s+\=\s+\+)", re.I
@@ -101,7 +101,7 @@ class SevenZip(BaseExtractor):
 
     @classmethod
     def ismultipart(cls, filename):
-        return cls._RE_PART.search(filename) is not None
+        return True if cls._RE_PART.search(filename) else False
 
     def verify(self, password=None):
         #: 7z can't distinguish crc and pw error in test
@@ -137,6 +137,7 @@ class SevenZip(BaseExtractor):
             #: Add digit to progressstring
             else:
                 s += c
+
 
     def extract(self, password=None):
         command = "x" if self.fullpath else "e"
@@ -179,9 +180,7 @@ class SevenZip(BaseExtractor):
         return files
 
     def list(self, password=None):
-        command = "l" if self.fullpath else "l"
-
-        p = self.call_cmd(command, self.filename, password=password)
+        p = self.call_cmd("l", self.filename, password=password)
         out, err = (r.strip() if r else "" for r in p.communicate())
 
         if any(e in err for e in ("Can not open", "cannot find the file")):
@@ -193,7 +192,9 @@ class SevenZip(BaseExtractor):
         files = set()
         for groups in self._RE_FILES.findall(out):
             f = groups[-1].strip()
-            files.add(os.path.join(self.dest, f))
+            if not self.fullpath:
+                f = os.path.basename(f)
+            files.add(fsjoin(self.dest, f))
 
         self.files = list(files)
 
@@ -202,8 +203,9 @@ class SevenZip(BaseExtractor):
     def call_cmd(self, command, *xargs, **kwargs):
         args = []
 
-        #: Progress output
         if self.VERSION and float(self.VERSION) >= 15.08:
+            #: Disable all output except progress and errors
+            args.append("-bso0")
             args.append("-bsp1")
 
         #: Overwrite flag

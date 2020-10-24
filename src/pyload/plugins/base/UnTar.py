@@ -10,7 +10,7 @@ from .extractor import ArchiveError, BaseExtractor, CRCError
 class UnTar(BaseExtractor):
     __name__ = "UnTar"
     __type__ = "extractor"
-    __version__ = "0.04"
+    __version__ = "0.05"
     __status__ = "stable"
 
     __description__ = """TAR extractor plugin"""
@@ -34,7 +34,7 @@ class UnTar(BaseExtractor):
 
     def list(self, password=None):
         with tarfile.open(self.filename) as t:
-            self.files = t.getnames()
+            self.files = [os.path.join(self.dest, f) for f in t.getnames()]
         return self.files
 
     def verify(self, password=None):
