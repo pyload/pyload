@@ -446,6 +446,9 @@ def admin():
     s = flask.session
     if flask.request.method == "POST":
         for name, data in users.items():
+            if flask.request.form.get(f"{name}|delete"):
+                api.remove_user(name)
+                continue
             if flask.request.form.get(f"{name}|admin"):
                 data["role"] = 0
                 data["perms"]["admin"] = True

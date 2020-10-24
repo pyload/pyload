@@ -7,7 +7,7 @@ from flask.json import jsonify
 
 from pyload.core.utils import format
 
-from ..helpers import login_required, render_template
+from ..helpers import login_required, render_template, set_permission, get_permission, permlist
 
 bp = flask.Blueprint("json", __name__, url_prefix="/json")
 
@@ -333,4 +333,25 @@ def change_password():
     if not done:
         return "Wrong password", 500
 
+    return jsonify(True)
+
+@bp.route("/add_user", methods=["POST"], endpoint="add_user")
+# @apiver_check
+@login_required("ADMIN")
+# @fresh_login_required
+def add_account():
+    api = flask.current_app.config["PYLOAD_API"]
+
+    user = flask.request.form["new_user"]
+    password = flask.request.form["new_password"]
+    role = int(flask.request.form.get("new_role") == "on")
+    data = {}
+    for perm in permlist():
+        data[perm] = False
+    for perm in flask.request.form.getlist("new_perms"):
+        data[perm] = True
+
+    data = set_permission(data)
+
+    api.add_user(user, password, role, data)
     return jsonify(True)

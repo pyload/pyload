@@ -43,7 +43,7 @@ class UserDatabaseMethods:
         }
 
     @style.queue
-    def add_user(self, user, password):
+    def add_user(self, user, password, role=0, perms=0):
         salt = reduce(lambda x, y: x + y, [str(random.randint(0, 9)) for i in range(5)])
         salt_pw = salt + _salted_password(password, salt)
 
@@ -52,7 +52,8 @@ class UserDatabaseMethods:
             self.c.execute("UPDATE users SET password=? WHERE name=?", (salt_pw, user))
         else:
             self.c.execute(
-                "INSERT INTO users (name, password) VALUES (?, ?)", (user, salt_pw)
+                "INSERT INTO users (name, password, role, permission) VALUES (?, ?, ?, ?)",
+                (user, salt_pw, role, perms)
             )
 
     @style.queue

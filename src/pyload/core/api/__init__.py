@@ -1402,3 +1402,15 @@ class Api:
     def set_user_permission(self, user, permission, role):
         self.pyload.db.set_permission(user, permission)
         self.pyload.db.set_role(user, role)
+
+    def add_user(self, user, newpw, role=0, perms=0):
+        """
+        adds new user.
+        """
+        return self.pyload.db.add_user(user, newpw, role, perms)
+
+    def remove_user(self, user):
+        """
+        adds new user.
+        """
+        return self.pyload.db.remove_user(user)

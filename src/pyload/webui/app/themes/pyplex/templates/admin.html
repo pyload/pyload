@@ -14,7 +14,6 @@
 <div class="row">
   <div class="col-sm-5 col-sm-offset-0">
     <div class="alert alert-danger" style="padding:8px;">
-    <p class="align-middle">{{_('To add user or change passwords use:')}} <b>python pyLoadCore.py -u</b><br></p>
     <p class="align-middle"><b>{{_('Important:')}}</b> {{_('Admin user have always all permissions!')}}</p>
     </div>
   </div>
@@ -29,6 +28,9 @@
                 <th>{{_('Change Password')}}</th>
                 <th>{{_('Admin')}}</th>
                 <th>{{_('Permissions')}}</th>
+                {% if user.is_admin %}
+                <th>{{_('Delete?')}}</th>
+                {% endif %}
               </tr>
             </thead>
 
@@ -40,7 +42,7 @@
                     <td>
                         <select multiple="multiple" size="{{permlist|length}}" name="{{name}}|perms">
                             {% for perm in permlist %}
-                            {% if data.perms|attr(perm) %}
+                            {% if data.perms[perm] %}
                                 <option selected="selected">{{perm}}</option>
                             {% else %}
                                 <option>{{perm}}</option>
@@ -48,12 +50,20 @@
                             {% endfor %}
                         </select>
                     </td>
+                    {% if user.is_admin %}
+                    <td>
+                    {% if user.name != name %}
+                      <input id="{{name}}|delete" name="{{name}}|delete" type="checkbox" value="True"/>
+                      {% endif %}
+                    </td>
+                    {% endif %}
+
                 </tr>
             {% endfor %}
 
 
         </table>
-
+        <button id="user_add" data-toggle="modal" data-target="#user_box" style="margin-left: 5px;" class="btn btn-success">&nbsp;<span class="glyphicon glyphicon-plus"></span></button>
         <button class="btn btn-bright" type="submit">{{_('Save')}}</button>
     </form>
 {% endblock %}
@@ -127,6 +137,46 @@
           </div>
           <button class="btn btn-success" id="login_password_button" type="submit" style="float: right">{{_('Ok')}}</button>
           <button class="btn btn-warning" id="login_password_reset" data-dismiss="modal" style="margin-right: 5px; float: right" type="reset">{{_('Cancel')}}</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="user_box" class="modal" role="dialog">
+  <div class="modal-dialog modal-sm">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header bg-info navbar-inverse text-center" style="padding: 5px;" >{{_('Add User')}}</div>
+        <div class="modal-body" style="margin-bottom: 30px;">
+        <form id="user_add_form" class="from-group" action="/json/add_user" method="POST" enctype="multipart/form-data" style="margin-bottom: 40px;">
+          <p>{{_('Enter new user name and desired Password.')}}</p>
+          <div class="form-group">
+            <label for="new_user">{{_('User')}}</label>
+            <input class="form-control" id="new_user" name="new_user" type="text"/>
+            <p class="help-block">{{_("New username.")}}</p>
+          </div>
+          <div class="form-group">
+              <label for="new_password">{{ _("User password") }}</label>
+              <input class="form-control reveal-pass" id="new_password" name="new_password" type="password"/>
+              <p class="help-block">{{ _("The password for the new account.") }}</p>
+          </div>
+          <div class="form-group">
+            <label for="new_role">{{ _("Admin") }}</label>
+            <input class="form-control" id="new_role" name="new_role" type="checkbox" style="width: auto; height: auto; display: inline;">
+            <p class="help-block">{{ _("Shall the user be an admin?") }}</p>
+          </div>
+          <div class="form-group">
+              <label for="new_perms">{{ _("Permissions") }}</label>
+              <select multiple="multiple" size="{{permlist|length}}" name="new_perms", id="new_perms">
+                            {% for perm in permlist %}
+                                <option>{{perm}}</option>
+                            {% endfor %}
+              </select>
+              <p class="help-block">{{ _("Shall the user be an admin?") }}</p>
+          </div>
+          <button class="btn btn-success" id="new_user_button" type="submit" style="float: right">{{ _("Ok") }}</button>
+          <button class="btn btn-warning" id="new_user_reset" data-dismiss="modal" style="margin-right: 5px; float: right" type="reset">{{ _("Cancel") }}</button>
         </form>
       </div>
     </div>
