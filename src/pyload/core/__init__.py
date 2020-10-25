@@ -196,7 +196,9 @@ class Core:
 
         if change_group:
             try:
-                group = self.config.get("permission", "group")
+                from grp import getgrnam
+
+                group = getgrnam(self.config.get("permission", "group"))
                 os.setgid(group[2])
             except Exception as exc:
                 self.log.warning(
@@ -208,7 +210,9 @@ class Core:
 
         if change_user:
             try:
-                user = self.config.get("permission", "user")
+                from pwd import getpwnam
+
+                user = getpwnam(self.config.get("permission", "user"))
                 os.setuid(user[2])
             except Exception as exc:
                 self.log.warning(
@@ -366,7 +370,7 @@ class Core:
             for thread in self.thread_manager.threads:
                 thread.put("quit")
 
-            for pyfile in self.files.cache.values():
+            for pyfile in list(self.files.cache.values()):
                 pyfile.abort_download()
 
             self.addon_manager.core_exiting()

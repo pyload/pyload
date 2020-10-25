@@ -133,7 +133,7 @@ class ClickNLoad(BaseAddon):
                             socket.AF_INET, socket.SOCK_STREAM
                         )
 
-                        if self.pyload.config.get("webui", "https"):
+                        if self.pyload.config.get("webui", "use_ssl"):
                             try:
                                 server_socket = ssl.wrap_socket(server_socket)
 

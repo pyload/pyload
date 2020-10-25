@@ -867,7 +867,7 @@ class Api:
         """
         Aborts all running downloads.
         """
-        pyfiles = self.pyload.files.cache.values()
+        pyfiles = list(self.pyload.files.cache.values())
         for pyfile in pyfiles:
             pyfile.abort_download()
 
@@ -880,7 +880,7 @@ class Api:
         :param fids: list of file ids
         :return:
         """
-        pyfiles = self.pyload.files.cache.values()
+        pyfiles = list(self.pyload.files.cache.values())
         for pyfile in pyfiles:
             if pyfile.id in fids:
                 pyfile.abort_download()
