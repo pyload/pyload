@@ -352,7 +352,7 @@ class ExtractArchive(BaseAddon):
                             self.log_debug(f"Extracted files: {new_files}")
 
                             new_folders = uniquify(
-                                os.path.dirname(f) for f in new_files
+                                [os.path.dirname(f) for f in new_files]
                             )
                             for foldername in new_folders:
                                 self.set_permissions(
