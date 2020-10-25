@@ -6,8 +6,10 @@ from functools import wraps
 from urllib.parse import unquote
 
 import flask
-from cryptography.fernet import Fernet
 from flask.json import jsonify
+
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
 from pyload.core.utils.misc import eval_js
 
@@ -48,7 +50,7 @@ def add():
         "package", flask.request.form.get("source", flask.request.form.get("referer"))
     )
 
-    urls = [url for url in flask.request.form["urls"].split("\n") if url.strip()]
+    urls = [url for url in flask.request.form["urls"].replace(' ', '\n').split("\n") if url.strip()]
     if not urls:
         return jsonify(False)
 
@@ -105,8 +107,14 @@ def addcrypted2():
     except Exception:
         return "Could not decrypt key", 500
 
-    obj = Fernet(key)
-    urls = obj.decrypt(crypted).replace("\x00", "").replace("\r", "").split("\n")
+    IV = key
+
+    cipher = Cipher(
+        algorithms.AES(key), modes.CBC(IV), backend=default_backend()
+    )
+    decryptor = cipher.decryptor()
+    decrypted = decryptor.update(crypted) + decryptor.finalize()
+    urls = to_str(decrypted).replace("\x00", "").replace("\r","").split("\n")
     urls = [url for url in urls if url.strip()]
 
     api = flask.current_app.config["PYLOAD_API"]

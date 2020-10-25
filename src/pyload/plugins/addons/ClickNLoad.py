@@ -91,7 +91,7 @@ class ClickNLoad(BaseAddon):
 
     @lock
     @threaded
-    def forward(self, source, destination, queue=False):
+    def forward(self, source, destination, queue=False, thread=None):
         if queue:
             old_ids = set(pack.pid for pack in self.pyload.api.get_collector())
 
@@ -103,7 +103,7 @@ class ClickNLoad(BaseAddon):
                 self.pyload.api.push_to_queue(id)
 
     @threaded
-    def proxy(self):
+    def proxy(self, thread):
         self.log_info(
             self._("Proxy listening on {}:{}").format(
                 self.cnl_ip or "0.0.0.0", self.cnl_port
@@ -112,7 +112,7 @@ class ClickNLoad(BaseAddon):
         self._server()
 
     @threaded
-    def _server(self):
+    def _server(self, thread):
         try:
             self.exit_done.clear()
             self.server_running = True
