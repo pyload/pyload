@@ -7,12 +7,16 @@ import base64
 import re
 import urllib.parse
 
-import Crypto.Cipher.AES
+# import Crypto.Cipher.AES
+
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
 from pyload.core.network.cookie_jar import CookieJar
 from pyload.core.network.exceptions import Abort
 from pyload.core.network.http.exceptions import BadHeader
 from pyload.core.network.http.http_request import HTTPRequest
+from pyload.core.utils.convert import to_str
 
 from ..anticaptchas.CoinHive import CoinHive
 from ..anticaptchas.ReCaptcha import ReCaptcha
@@ -369,13 +373,14 @@ class FilecryptCc(BaseDecrypter):
         key = bytes.fromhex(jk)
 
         #: Decrypt
-        #Key = key
-        #IV = key
-        obj = Crypto.Cipher.AES.new(key, Crypto.Cipher.AES.MODE_CBC, key)
-        text = obj.decrypt(base64.b64decode(crypted))
+        cipher = Cipher(
+            algorithms.AES(key), modes.CBC(key), backend=default_backend()
+        )
+        decryptor = cipher.decryptor()
+        text = decryptor.update(base64.b64decode(crypted)) + decryptor.finalize()
 
         #: Extract links
-        text = text.replace("\x00", "").replace("\r", "")
+        text = to_str(text).replace("\x00", "").replace("\r", "")
         links = [link for link in text.split("\n") if link]
 
         return links
