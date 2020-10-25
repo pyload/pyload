@@ -14,7 +14,7 @@ from ..base.simple_downloader import SimpleDownloader
 class ZippyshareCom(SimpleDownloader):
     __name__ = "ZippyshareCom"
     __type__ = "downloader"
-    __version__ = "0.98"
+    __version__ = "1.00"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?P<HOST>www\d{0,3}\.zippyshare\.com)/(?:[vd]/|view\.jsp.*key=)(?P<KEY>[\w^_]+)"
@@ -38,7 +38,7 @@ class ZippyshareCom(SimpleDownloader):
 
     URL_REPLACEMENTS = [(__pattern__ + ".*", r"http://\g<HOST>/v/\g<KEY>/file.html")]
 
-    NAME_PATTERN = r'(?:<title>Zippyshare.com - |"/)(?P<N>[^/]+)(?:</title>|";)'
+    NAME_PATTERN = r'"/d/[\w^_]+/".*".*/(?P<N>[^/]+?)";'
     SIZE_PATTERN = r'>Size:.+?">(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
     OFFLINE_PATTERN = r"does not exist (anymore )?on this server<"
     TEMP_OFFLINE_PATTERN = r"^unmatchable$"
@@ -73,7 +73,7 @@ class ZippyshareCom(SimpleDownloader):
 
     def get_link(self):
         #: Get all the scripts inside the html body
-        soup = BeautifulSoup(self.data)
+        soup = BeautifulSoup(self.data, 'html.parser')
         scripts = [
             s.getText()
             for s in soup.body.findAll("script", type="text/javascript")

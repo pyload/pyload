@@ -14,7 +14,7 @@ document.addEvent('domready', function() {
   root.accountDialog = new MooDialog({destroyOnHide: false});
   root.accountDialog.setContent($('account_box'));
 
-  new TinyTab($$('#tabs li a'), $$('#tabs-body > span'));
+  new TinyTab($$('#toptabs li a'), $$('#tabs-body > span'));
 
   $$('ul.nav').each(nav =>
     new MooDropMenu(nav, {

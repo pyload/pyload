@@ -122,7 +122,7 @@ def packs(nameurls):
 _RE_SIZE = re.compile(r"(?P<S>-?[\d.,]+)\s*(?P<U>[a-zA-Z]*)")
 _RE_SIZEFORMAT1 = re.compile(r"\d{1,3}(?:,\d{3})+(?:\.\d+)?$")
 _RE_SIZEFORMAT2 = re.compile(r"\d+,\d{2}$")
-# _RE_SIZEFORMAT3 = re.compile(r'\d+(?:\.\d+)?$')
+_RE_SIZEFORMAT3 = re.compile(r'\d+(?:\.\d+)?$')
 
 
 def bytesize(text, from_unit=None):  # returns integer bytes
@@ -140,8 +140,8 @@ def bytesize(text, from_unit=None):  # returns integer bytes
     elif re.match(_RE_SIZEFORMAT2, rawsize):
         rawsize = rawsize.replace(",", ".")
 
-    # elif not re.match(_RE_SIZEFORMAT3, rawsize):
-    # return 0  #: Unknown format
+    elif not re.match(_RE_SIZEFORMAT3, rawsize):
+        return 0  #: Unknown format
 
     if from_unit is None:
         from_unit = m.group("U") or DEFAULT_UNIT

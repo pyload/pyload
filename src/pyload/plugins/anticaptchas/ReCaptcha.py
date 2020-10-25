@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import io
@@ -14,7 +13,7 @@ from ..base.captcha_service import CaptchaService
 class ReCaptcha(CaptchaService):
     __name__ = "ReCaptcha"
     __type__ = "anticaptcha"
-    __version__ = "0.38"
+    __version__ = '0.43'
     __status__ = "testing"
 
     __description__ = "ReCaptcha captcha service plugin"
@@ -26,78 +25,75 @@ class ReCaptcha(CaptchaService):
         ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com"),
     ]
 
-    KEY_V1_PATTERN = r'(?:recaptcha(?:/api|\.net)/(?:challenge|noscript)\?k=|Recaptcha\.create\s*\(\s*["\'])((?:[\w\-]|%[0-9a-fA-F]{2})+)'
     KEY_V2_PATTERN = r'(?:data-sitekey=["\']|["\']sitekey["\']\s*:\s*["\'])((?:[\w\-]|%[0-9a-fA-F]{2})+)'
 
     STOKEN_V2_PATTERN = r'data-stoken=["\']([\w\-]+)'
 
-    RECAPTCHA_INTERACTIVE_SIG = (
-        "7b99386315b3e035285946b842049575fc69a88ccc219e1bc96a9afd0f3c4b7456f09d36bf3dc530"
-        + "a08cd50f1b3128716cf727b30f7de4ab1513f15bb82776e84404089a764c6305d9c6033c99f8514e"
-        + "249bc3fd5530b475c00059797ce5a45d131adb626a440366af9acc9a50a3a7327b9d3dc28b59f83f"
-        + "32129feb89e0cfb74521c306e8ac0b9fff9df31d453eedc54a17d41528c2d866363fc13cb524ad77"
-        + "60483b28bf4a347de4a8b2b1480f83f66c4408ad9dbfec78f6f1525b8507b6e52cdd13e13f8e3bfc"
-        + "0bb5dd1860e6fc5db99ef0c915fd626c3aaec0bb5ead3a668ebb31dd2a08eacaefffdf51e3a0ba31"
-        + "cb636da134c24633f2b2b38f56dfbb92"
-    )
+    RECAPTCHA_INTERACTIVE_SIG = "7b99386315b3e035285946b842049575fc69a88ccc219e1bc96a9afd0f3c4b7456f09d36bf3dc530" + \
+                                "a08cd50f1b3128716cf727b30f7de4ab1513f15bb82776e84404089a764c6305d9c6033c99f8514e" + \
+                                "249bc3fd5530b475c00059797ce5a45d131adb626a440366af9acc9a50a3a7327b9d3dc28b59f83f" + \
+                                "32129feb89e0cfb74521c306e8ac0b9fff9df31d453eedc54a17d41528c2d866363fc13cb524ad77" + \
+                                "60483b28bf4a347de4a8b2b1480f83f66c4408ad9dbfec78f6f1525b8507b6e52cdd13e13f8e3bfc" + \
+                                "0bb5dd1860e6fc5db99ef0c915fd626c3aaec0bb5ead3a668ebb31dd2a08eacaefffdf51e3a0ba31" + \
+                                "cb636da134c24633f2b2b38f56dfbb92"
 
     RECAPTCHA_INTERACTIVE_JS = """
-            while(document.children[0].childElementCount > 0) {
-                document.children[0].removeChild(document.children[0].children[0]);
-            }
-            document.children[0].innerHTML = '<html><head></head><body style="display:inline-block;"><div id="captchadiv" style="display: inline-block;"></div></body></html>';
+			while(document.children[0].childElementCount > 0) {
+				document.children[0].removeChild(document.children[0].children[0]);
+			}
+			document.children[0].innerHTML = '<html><head></head><body style="display:inline-block;"><div id="captchadiv" style="display: inline-block;"></div></body></html>';
 
-            gpyload.data.sitekey = request.params.sitekey;
+			gpyload.data.sitekey = request.params.sitekey;
 
-            gpyload.getFrameSize = function() {
-                var rectAnchor =  {top: 0, right: 0, bottom: 0, left: 0},
-                    rectPopup =  {top: 0, right: 0, bottom: 0, left: 0},
-                    rect;
-                var anchor = document.body.querySelector("iframe[src*='/anchor']");
-                if (anchor !== null && gpyload.isVisible(anchor)) {
-                    rect = anchor.getBoundingClientRect();
-                    rectAnchor = {top: rect.top, right: rect.right, bottom: rect.bottom, left: rect.left};
-                }
-                var popup = document.body.querySelector("iframe[src*='/bframe']");
-                if (popup !== null && gpyload.isVisible(popup)) {
-                    rect = popup.getBoundingClientRect();
-                    rectPopup = {top: rect.top, right: rect.right, bottom: rect.bottom, left: rect.left};
-                }
-                var left = Math.round(Math.min(rectAnchor.left, rectAnchor.right, rectPopup.left, rectPopup.right));
-                var right = Math.round(Math.max(rectAnchor.left, rectAnchor.right, rectPopup.left, rectPopup.right));
-                var top = Math.round(Math.min(rectAnchor.top, rectAnchor.bottom, rectPopup.top, rectPopup.bottom));
-                var bottom = Math.round(Math.max(rectAnchor.top, rectAnchor.bottom, rectPopup.top, rectPopup.bottom));
-                return {top: top, left: left, bottom: bottom, right: right};
-            };
+			gpyload.getFrameSize = function() {
+				var rectAnchor =  {top: 0, right: 0, bottom: 0, left: 0},
+					rectPopup =  {top: 0, right: 0, bottom: 0, left: 0},
+					rect;
+				var anchor = document.body.querySelector("iframe[src*='/anchor']");
+				if (anchor !== null && gpyload.isVisible(anchor)) {
+					rect = anchor.getBoundingClientRect();
+					rectAnchor = {top: rect.top, right: rect.right, bottom: rect.bottom, left: rect.left};
+				}
+				var popup = document.body.querySelector("iframe[src*='/bframe']");
+				if (popup !== null && gpyload.isVisible(popup)) {
+					rect = popup.getBoundingClientRect();
+					rectPopup = {top: rect.top, right: rect.right, bottom: rect.bottom, left: rect.left};
+				}
+				var left = Math.round(Math.min(rectAnchor.left, rectAnchor.right, rectPopup.left, rectPopup.right));
+				var right = Math.round(Math.max(rectAnchor.left, rectAnchor.right, rectPopup.left, rectPopup.right));
+				var top = Math.round(Math.min(rectAnchor.top, rectAnchor.bottom, rectPopup.top, rectPopup.bottom));
+				var bottom = Math.round(Math.max(rectAnchor.top, rectAnchor.bottom, rectPopup.top, rectPopup.bottom));
+				return {top: top, left: left, bottom: bottom, right: right};
+			};
 
-            // function that is called when the captcha finished loading and is ready to interact
-            window.pyloadCaptchaOnLoadCallback = function() {
-                grecaptcha.render (
-                    "captchadiv",
-                    {size: "compact",
-                     'sitekey': gpyload.data.sitekey,
-                     'callback': function() {
-                        var recaptchaResponse = grecaptcha.getResponse(); // get captcha response
-                        gpyload.submitResponse(recaptchaResponse);
-                     }}
-                );
-                gpyload.activated();
-            };
+			// function that is called when the captcha finished loading and is ready to interact
+			window.pyloadCaptchaOnLoadCallback = function() {
+				grecaptcha.render (
+					"captchadiv",
+					{size: "compact",
+					 'sitekey': gpyload.data.sitekey,
+					 'callback': function() {
+						var recaptchaResponse = grecaptcha.getResponse(); // get captcha response
+						gpyload.submitResponse(recaptchaResponse);
+					 }}
+				);
+				gpyload.activated();
+			};
 
-            if(typeof grecaptcha !== 'undefined' && grecaptcha) {
-                window.pyloadCaptchaOnLoadCallback();
-            } else {
-                var js_script = document.createElement('script');
-                js_script.type = "text/javascript";
-                js_script.src = "//www.google.com/recaptcha/api.js?onload=pyloadCaptchaOnLoadCallback&render=explicit";
-                js_script.async = true;
-                document.getElementsByTagName('head')[0].appendChild(js_script);
-            }"""
+			if(typeof grecaptcha !== 'undefined' && grecaptcha) {
+				window.pyloadCaptchaOnLoadCallback();
+			} else {
+				var js_script = document.createElement('script');
+				js_script.type = "text/javascript";
+				js_script.src = "//www.google.com/recaptcha/api.js?onload=pyloadCaptchaOnLoadCallback&render=explicit";
+				js_script.async = true;
+				document.getElementsByTagName('head')[0].appendChild(js_script);
+			}"""
 
     def detect_key(self, data=None):
         html = data or self.retrieve_data()
 
-        m = re.search(self.KEY_V2_PATTERN, html) or re.search(self.KEY_V1_PATTERN, html)
+        m = re.search(self.KEY_V2_PATTERN, html)
         if m is not None:
             self.key = urllib.parse.unquote(m.group(1).strip())
             self.log_debug(f"Key: {self.key}")
@@ -121,14 +117,9 @@ class ReCaptcha(CaptchaService):
     def detect_version(self, data=None):
         data = data or self.retrieve_data()
 
-        v1 = re.search(self.KEY_V1_PATTERN, data) is not None
         v2 = re.search(self.KEY_V2_PATTERN, data) is not None
 
-        if v1 is True and v2 is False:
-            self.log_debug("Detected reCAPTCHA v1")
-            return 1
-
-        elif v1 is False and v2 is True:
+        if v2 is True:
             self.log_debug("Detected reCAPTCHA v2")
             return 2
 
@@ -142,11 +133,11 @@ class ReCaptcha(CaptchaService):
         key = key or self.retrieve_key(data)
         secure_token = (
             secure_token or self.detect_secure_token(data)
-            if version in (2, "2js")
+            if secure_token is not False
             else None
         )
 
-        if version in (1, 2, "2js"):
+        if version in (2, "2js"):
             return getattr(self, "_challenge_v{}".format(version))(
                 key, secure_token=secure_token
             )

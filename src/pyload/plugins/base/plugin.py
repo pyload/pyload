@@ -101,9 +101,9 @@ class BasePlugin:
     # finally:
     # del frame
 
-    def remove(self, path, trash=True):  # TODO: Change to `trash=True` in 0.6.x
+    def remove(self, path, try_trash=True):  # TODO: Change to `trash=True` in 0.6.x
         try:
-            fs.remove(path, trash)
+            fs.remove(path, try_trash=try_trash)
 
         except (NameError, OSError) as exc:
             self.log_warning(
