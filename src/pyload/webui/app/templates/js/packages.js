@@ -15,8 +15,7 @@ document.addEvent("domready", function() {
         $('pack_form').reset();
         root.packageBox.close();
     });
-
-    var pUI = new PackageUI("url", {{target}});
+    var pUI = new PackageUI()
 });
 
 function indicateLoad() {
@@ -41,9 +40,7 @@ function indicateFail() {
     });
 }
 var PackageUI = new Class({
-    initialize: function(url, type) {
-        this.url = url;
-        this.type = type;
+    initialize: function() {
         this.packages = [];
         this.parsePackages();
         this.sorts = new Sortables($("package-list"), {
@@ -68,7 +65,7 @@ var PackageUI = new Class({
         indicateLoad();
         new Request.JSON({
             method: 'get',
-            url: '/api/deleteFinished',
+            url: '/api/delete_finished',
             onSuccess: function(data) {
                 if (data.length > 0) {
                     window.location.reload()
@@ -86,7 +83,7 @@ var PackageUI = new Class({
         indicateLoad();
         new Request.JSON({
             method: 'get',
-            url: '/api/restartFailed',
+            url: '/api/restart_failed',
             onSuccess: function(data) {
                 this.packages.each(function(pack) {
                     pack.close();
@@ -171,14 +168,32 @@ var Package = new Class({
         }));
         ul.set("html", "");
         data.links.each(function(link) {
+            if (link.status === 0)
+                link.icon = 'status-finished.png';
+            else if (link.status === 2 || link.status === 3)
+                link.icon = 'status-queue.png';
+            else if (link.status ===  9 || link.status === 1)
+                link.icon = 'status-offline.png';
+            else if (link.status === 5)
+                link.icon = 'status-waiting.png';
+            else if (link.status === 8)
+                link.icon = 'status-failed.png';
+            else if (link.status === 4)
+                link.icon = 'arrow-right';
+            else if (link.status ===  11 || link.status === 13)
+                link.icon = 'status-proc.png';
+            else
+                link.icon = 'status-downloading.png';
+
             link.id = link.fid;
             var li = new Element("li", {
                 "style": {
                     "margin-left": 0
                 }
             });
-            var html = "<span style='cursor: move' class='child_status sorthandle'><img src='{{url_for('static', filename='img')}}/{icon}' style='width: 12px; height:12px;'/></span>\n".substitute({
-                icon: link.icon
+            var icon_url = '{{ url_for('static', filename='img/button.png') }}'.replace('button.png', link.icon);
+            var html = "<span style='cursor: move' class='child_status sorthandle'><img src='{icon_url}' style='width: 12px; height:12px;'/></span>\n".substitute({
+                icon_url: icon_url
             });
             html += "<span style='font-size: 15px'>{name}</span><br /><div class='child_secrow'>".substitute({
                 name: link.name
@@ -225,7 +240,7 @@ var Package = new Class({
             imgs[0].addEvent('click', function(e) {
                 new Request({
                     method: 'get',
-                    url: '/api/delete_files/[' + this.id + ']',
+                    url: '/api/delete_files/[' + this + ']',
                     onSuccess: function() {
                         $('file_' + this).nix()
                     }.bind(this),
@@ -235,7 +250,7 @@ var Package = new Class({
             imgs[1].addEvent('click', function(e) {
                 new Request({
                     method: 'get',
-                    url: '/api/restartFile/' + this.id,
+                    url: '/api/restart_file/' + this,
                     onSuccess: function() {
                         var ele = $('file_' + this);
                         var imgs = ele.getElements("img");
@@ -265,7 +280,7 @@ var Package = new Class({
         indicateLoad();
         new Request({
             method: 'get',
-            url: '/api/deletePackages/[' + this.id + ']',
+            url: '/api/delete_packages/[' + this.id + ']',
             onSuccess: function() {
                 this.ele.nix();
                 indicateFinish();
@@ -278,7 +293,7 @@ var Package = new Class({
         indicateLoad();
         new Request({
             method: 'get',
-            url: '/api/restartPackage/' + this.id,
+            url: '/api/restart_package/' + this.id,
             onSuccess: function() {
                 this.close();
                 indicateSuccess();

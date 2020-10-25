@@ -104,7 +104,7 @@ class BaseDecrypter(BaseHoster):
             #: Workaround to do not break API add_package method
             def set_folder(x):
                 return self.pyload.api.set_package_data(
-                    pid, {"folder": safename(x or "")}
+                    pid, {"_folder": safename(x or "")}
                 )
 
             if not folder_per_package:
