@@ -1,7 +1,6 @@
 {% extends theme('base.html') %}
 
-<!-- {% block title %}{{_('Settings') - super()}} {% endblock %} -->
-<!-- {% block subtitle %}{{_('Settings')}}{% endblock %} -->
+{% block title %}pyLoad - {{_('Settings')}}{% endblock %}
 
 {% block head %}
 <meta id="plugins-list" data-plugin='{{conf.plugin|tojson}}'/>
