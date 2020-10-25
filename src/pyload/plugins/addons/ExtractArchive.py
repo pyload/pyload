@@ -636,7 +636,7 @@ class ExtractArchive(BaseAddon):
             self.passwords = uniquify([password] + self.passwords)
 
             file = os.fsdecode(self.config.get("passwordfile"))
-            with open(file, mode="wb") as fp:
+            with open(file, mode="w") as fp:
                 for pw in self.passwords:
                     fp.write(pw + "\n")
 

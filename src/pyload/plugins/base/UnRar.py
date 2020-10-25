@@ -8,7 +8,7 @@ from pyload import PKGDIR
 
 from ..helpers import renice
 from .Extractor import ArchiveError, BaseExtractor, CRCError, PasswordError
-
+from pyload.core.utils.convert import to_str
 
 class UnRar(BaseExtractor):
     __name__ = "UnRar"
@@ -47,9 +47,9 @@ class UnRar(BaseExtractor):
     _RE_PART = re.compile(r"\.(part|r)\d+(\.rar|\.rev)?(\.bad)?|\.rar$", re.I)
     _RE_FIXNAME = re.compile(r"Building (.+)")
     _RE_FILES_V4 = re.compile(
-        r"^([* ])(.+?)\s+(\d+)\s+(\d+)\s+(\d+%|-->|<--)\s+([\d-]+)\s+([\d:]+)\s*([ACHIRS.rw\-]+)\s+([0-9A-F]{8})\s+(\w+)\s+([\d.]+)", re.M
+        rb"^([* ])(.+?)\s+(\d+)\s+(\d+)\s+(\d+%|-->|<--)\s+([\d-]+)\s+([\d:]+)\s*([ACHIRS.rw\-]+)\s+([0-9A-F]{8})\s+(\w+)\s+([\d.]+)", re.M
     )
-    _RE_FILES_V5 = re.compile(r"^([* ])\s*([ACHIRS.rw\-]+)\s+(\d+)(?:\s+\d+)?(?:\s+(?:\d+%|-->|<--))?\s+([\d-]+)\s+([\d:]+)(?:\s+[0-9A-F]{8})?\s+(.+)", re.M)
+    _RE_FILES_V5 = re.compile(rb"^([* ])\s*([ACHIRS.rw\-]+)\s+(\d+)(?:\s+\d+)?(?:\s+(?:\d+%|-->|<--))?\s+([\d-]+)\s+([\d:]+)(?:\s+[0-9A-F]{8})?\s+(.+)", re.M)
     _RE_BADPWD = re.compile(r"password", re.I)
     _RE_BADCRC = re.compile(
         r"encrypted|damaged|CRC failed|checksum error|corrupt", re.I
@@ -89,6 +89,7 @@ class UnRar(BaseExtractor):
         m = cls._RE_VERSION.search(out)
         if m is not None:
             cls.VERSION = m.group(1)
+            cls._RE_FILES = cls._RE_FILES_V4 if float(cls.VERSION) < 5 else cls._RE_FILES_V5
 
         return True
 
@@ -152,7 +153,7 @@ class UnRar(BaseExtractor):
                 s = ""
             #: Add digit to progressstring
             else:
-                s += c
+                s += to_str(c)
 
     def extract(self, password=None):
         command = "x" if self.fullpath else "e"
@@ -218,8 +219,8 @@ class UnRar(BaseExtractor):
         for groups in self._RE_FILES.findall(out):
             f = groups[f_grp].strip()
             if not self.fullpath:
-                f = os.path.basename(f)
-            files.add(fsjoin(self.dest, f))
+                f = os.path.basename(to_str(f))
+            files.add(os.path.join(self.dest, to_str(f)))
         self.files = list(files)
         return self.files
 

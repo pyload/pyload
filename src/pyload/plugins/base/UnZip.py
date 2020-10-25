@@ -33,7 +33,7 @@ class UnZip(BaseExtractor):
     def isarchive(cls, filename):
         #: zipfile only checks for 'End of archive' so we have to check ourselves for 'start of archive'
         try:
-            with open(fs_encode(filename), "rb") as f:
+            with open(os.fsdecode(filename), "rb") as f:
                 data = f.read(4)
                 if data != "PK\003\004":
                     return False
