@@ -10,10 +10,10 @@ from ..internal.Crypter import Crypter
 class HoerbuchIn(Crypter):
     __name__ = "HoerbuchIn"
     __type__ = "crypter"
-    __version__ = "0.67"
+    __version__ = "0.68"
     __status__ = "testing"
 
-    __pattern__ = r'http://(?:www\.)?hoerbuch\.us/(wp/horbucher/\d+/|tp/out\.php\?.+|protection/folder_\d+\.html)'
+    __pattern__ = r'https?://(?:www\.)?hoerbuch\.us/(wp/horbucher/\d+/|tp/out\.php\?.+|protection/folder_\d+\.html)'
     __config__ = [("activated", "bool", "Activated", True),
                   ("use_premium", "bool", "Use premium account if available", True),
                   ("folder_per_package", "Default;Yes;No", "Create folder for each package", "Default")]
@@ -23,13 +23,14 @@ class HoerbuchIn(Crypter):
     __authors__ = [("spoob", "spoob@pyload.net"),
                    ("mkaay", "mkaay@mkaay.de")]
 
-    article = re.compile("http://(?:www\.)?hoerbuch\.us/wp/horbucher/\d+/.+/")
+    article = re.compile(
+        r"https?://(?:www\.)?hoerbuch\.us/wp/horbucher/\d+/.+/")
     protection = re.compile(
-        "http://(?:www\.)?hoerbuch\.us/protection/folder_\d+.html")
+        r"https?://(?:www\.)?hoerbuch\.us/protection/folder_\d+.html")
     uploaded = re.compile(
-        "http://(?:www\.)?hoerbuch\.us/protection/uploaded/(\w+)\.html")
+        r"https?://(?:www\.)?hoerbuch\.us/protection/uploaded/(\w+)\.html")
     hoster_links = re.compile(
-        "http://(?:www\.)?hoerbuch\.us/wp/goto/Download/\d+/")
+        r"https?://(?:www\.)?hoerbuch\.us/wp/goto/Download/\d+/")
 
     def decrypt(self, pyfile):
         self.pyfile = pyfile
