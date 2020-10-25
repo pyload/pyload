@@ -29,7 +29,7 @@ class AccountManager:
         configdir = os.path.join(core.userdir, "settings")
         os.makedirs(configdir, exist_ok=True)
 
-        self.configpath = os.path.join(configdir, "accounts.conf")
+        self.configpath = os.path.join(configdir, "accounts.cfg")
 
         self.init_plugins()
         self.save_accounts()  #: save to add categories to conf
