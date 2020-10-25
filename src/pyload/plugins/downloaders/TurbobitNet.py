@@ -48,7 +48,7 @@ class TurbobitNet(SimpleDownloader):
     LIMIT_WAIT_PATTERN = r"<div id=\'timeout\'>(\d+)<"
 
     def handle_free(self, pyfile):
-        self.free_url = "http://turbobit.net/download/free/{}".format(
+        self.free_url = "https://turbobit.net/download/free/{}".format(
             self.info["pattern"]["ID"]
         )
         self.data = self.load(self.free_url)
