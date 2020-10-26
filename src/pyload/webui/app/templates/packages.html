@@ -1,6 +1,11 @@
 {% extends 'base.html' %}
 {% block head %}
 <script type="text/javascript" src="{{theme_template('js/packages.js')}}"></script>
+<script type="text/javascript">
+  document.addEvent("domready", function(){
+      var pUI = new PackageUI({{ target }});
+  });
+</script>
 {% endblock %}
 
 {% if target %}
