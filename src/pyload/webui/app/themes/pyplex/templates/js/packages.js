@@ -1,12 +1,14 @@
 {% autoescape true %}
 
-function PackageUI (url, type){
+$(function() {
+    var pUI = new PackageUI()
+});
+
+function PackageUI (){
     var packages = [];
     var thisObject;
-    this.initialize = function(url, type) {
+    this.initialize = function() {
         thisObject = this;
-        this.url = url;
-        this.type = type;
 
         $("#del_finished").click(this.deleteFinished);
         $("#restart_failed").click(this.restartFailed);
@@ -77,7 +79,7 @@ function PackageUI (url, type){
         });
     };
 
-    this.initialize(url, type);
+    this.initialize();
 }
 
 function Package (ui, id, ele){
@@ -311,7 +313,7 @@ function Package (ui, id, ele){
 
     this.movePackage = function(event) {
         indicateLoad();
-        $.get("/json/move_package/" + ((ui.type + 1) % 2) + '/' + id, function () {
+        $.get("/json/move_package/" + ((ui.type + 1) % 2) + '|' + id, function () {
             $(ele).remove();
             indicateFinish();
         }).fail(function () {
