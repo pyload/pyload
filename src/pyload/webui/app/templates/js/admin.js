@@ -8,7 +8,7 @@
 
 {% autoescape true %}
 
-const root = this;
+var root = this;
 
 document.addEvent("domready", function() {
 

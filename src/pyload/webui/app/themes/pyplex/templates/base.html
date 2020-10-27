@@ -10,7 +10,7 @@
     <link rel="stylesheet" type="text/css" href="{{theme_static('vendor/jQuery/jQuery UI/jquery-ui.min.css')}}"/>
     <link rel="stylesheet" type="text/css" href="{{theme_static('css/base.css')}}" />
 
-    <!-- <link rel="icon" href="{{theme_static('img/favicon.ico')}}"/> -->
+    <link rel="icon" href="{{theme_static('img/favicon.ico')}}"/>
 
 <style type="text/css">
 .ui-icon,
@@ -31,7 +31,7 @@
 }
 </style>
 
-<title>pyLoad</title>
+<title>{% block title %}pyLoad{% endblock %}</title>
 
 {% block head %}
 {% endblock %}
@@ -189,9 +189,9 @@
 <div id="body-wrapper" class="dokuwiki">
     <div id="content" style="width: 99%; padding-left: 10px; padding-right: 10px;" lang="en" dir="ltr">
       <div style="display: flex;justify-content: space-between;">
-        <!-- <div style="margin-bottom: 20px;"> -->
-          <!-- <h3>{% block subtitle %}{{_(' ')}}{% endblock %}</h3> -->
-        <!-- </div> -->
+{#        <div style="margin-bottom: 20px;">#}
+{#          <h3>{% block subtitle %}{{_(' ')}}{% endblock %}</h3>#}
+{#        </div>#}
         <hr>
         <div>
           {% block statusbar %}

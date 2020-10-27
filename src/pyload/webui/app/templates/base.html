@@ -17,7 +17,7 @@
 
 <link rel="icon" type="image/ico" href="{{url_for('static', filename='img/favicon.ico')}}" />
 
-<title>pyLoad</title>
+<title>{% block title %}pyLoad{% endblock %}</title>
 
 {% block head %}
 {% endblock %}
@@ -168,6 +168,8 @@
 <div style="display: none;">
     {% include 'window.html' %}
     {% include 'captcha.html' %}
+    {% block hidden %}
+    {% endblock %}
 </div>
 
 </body>

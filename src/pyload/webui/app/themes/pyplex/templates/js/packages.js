@@ -1,16 +1,11 @@
 {% autoescape true %}
 
-$(function() {
-    var pUI = new PackageUI("url", {{target}})
-});
-
-function PackageUI (url, type){
+function PackageUI (type){
     var packages = [];
     var thisObject;
-    this.initialize = function(url, type) {
-        thisObject = this;
-        this.url = url;
+    this.initialize = function(type) {
         this.type = type;
+        thisObject = this;
 
         $("#del_finished").click(this.deleteFinished);
         $("#restart_failed").click(this.restartFailed);
@@ -81,7 +76,7 @@ function PackageUI (url, type){
         });
     };
 
-    this.initialize(url, type);
+    this.initialize(type);
 }
 
 function Package (ui, id, ele){
