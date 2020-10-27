@@ -439,7 +439,7 @@ class FileManager:
         """
         restart package.
         """
-        pyfiles = self.cache.values()
+        pyfiles = list(self.cache.values())
         for pyfile in pyfiles:
             if pyfile.packageid == id:
                 self.restart_file(pyfile.id)

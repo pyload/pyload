@@ -1,7 +1,6 @@
 {% extends theme('base.html') %}
 
-<!-- {% block title %}{{_('Settings') - super()}} {% endblock %} -->
-<!-- {% block subtitle %}{{_('Settings')}}{% endblock %} -->
+{% block title %}pyLoad - {{_('Settings')}}{% endblock %}
 
 {% block head %}
 <meta id="plugins-list" data-plugin='{{conf.plugin|tojson}}'/>
@@ -180,9 +179,6 @@
   </div>
 </div>
 
-
-
-
 <div id="path_chooser" class="modal" role="dialog">
   <div class="modal-dialog" style="width: 680px">
     <div class="modal-content">
@@ -204,6 +200,44 @@
           <button class="btn btn-warning" data-dismiss="modal" style="float: right;" type="reset">{{_('Cancel')}}</button>
         </div>
     </div>
+    </div>
+  </div>
+</div>
+
+<div id="restart_msg" class="hidden" style="position:fixed; z-index: 1; width: 100%;">
+  <div align="center" class="alert alert-success">
+    <p style="font-weight: bold;">{{_('pyLoad is restarting...')}}</p>
+  </div>
+</div>
+
+<div id="shutdown_msg" class="hidden" style="position:fixed; z-index: 1; width: 100%;">
+  <div align="center" class="alert alert-success">
+    <p style="font-weight: bold;">{{_('pyLoad was shut down, goodbye!')}}</p>
+  </div>
+</div>
+
+<div id="restart_box" class="modal" role="dialog">
+  <div class="modal-dialog modal-sm">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header bg-info navbar-inverse text-center" style="padding: 5px" >{{_('Are you sure you want to restart pyLoad?')}}</div>
+      <div class="modal-body" style="margin-bottom: 30px;">
+        <button class="btn btn-success" id="restart_button" type="submit" style="float: right">{{_('Ok')}}</button>
+        <button class="btn btn-warning" data-dismiss="modal" id="restart_reset" style="margin-right: 5px; float: right" type="reset">{{_('Cancel')}}</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="quit_box" class="modal" role="dialog">
+  <div class="modal-dialog modal-sm">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header bg-info navbar-inverse text-center" style="padding: 5px;" >{{_('You are really sure you want to quit pyLoad?')}}</div>
+      <div class="modal-body" style="margin-bottom: 30px;">
+        <button class="btn btn-success" id="quit_button" type="submit" style="float: right">{{_('Ok')}}</button>
+        <button class="btn btn-warning" data-dismiss="modal" id="quit_reset" style="margin-right: 5px; float: right" type="reset">{{_('Cancel')}}</button>
+      </div>
     </div>
   </div>
 </div>
