@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 #
 # Test links:
 #   http://filecrypt.cc/Container/64E039F859.html
@@ -6,8 +7,6 @@
 import base64
 import re
 import urllib.parse
-
-# import Crypto.Cipher.AES
 
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
@@ -53,7 +52,7 @@ class BIGHTTPRequest(HTTPRequest):
 class FilecryptCc(BaseDecrypter):
     __name__ = "FilecryptCc"
     __type__ = "decrypter"
-    __version__ = "0.40"
+    __version__ = "0.41"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?filecrypt\.cc/Container/\w+"
@@ -69,9 +68,6 @@ class FilecryptCc(BaseDecrypter):
         ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com"),
     ]
 
-    # URL_REPLACEMENTS  = [(r'.html$', ""), (r'$', ".html")]  # TODO: Extend
-    # SimpleDecrypter
-
     COOKIES = [("filecrypt.cc", "lang", "en")]
 
     DLC_LINK_PATTERN = r'onclick="DownloadDLC\(\'(.+)\'\);">'
@@ -83,7 +79,6 @@ class FilecryptCc(BaseDecrypter):
     CIRCLE_CAPTCHA_PATTERN = r'<input type="image" src="(.+?)"'
     KEY_CAPTCHA_PATTERN = r"<script language=JavaScript src='(http://backs\.keycaptcha\.com/swfs/cap\.js)'"
     SOLVEMEDIA_CAPTCHA_PATTERN = r'<script type="text/javascript" src="(https?://api(?:-secure)?\.solvemedia\.com/papi/challenge.+?)"'
-    CUTCAPTCHA_CAPTCHA_PATTERN = r'<script src=["\'](https://cutcaptcha\.com/captcha/\w+?\.js)["\']>'
 
     def setup(self):
         self.urls = []
@@ -171,7 +166,6 @@ class FilecryptCc(BaseDecrypter):
                 self._handle_circle_captcha,
                 self._handle_solvemedia_captcha,
                 self._handle_keycaptcha_captcha,
-                self._handle_cutcaptcha_captcha,
                 self._handle_coinhive_captcha,
                 self._handle_recaptcha_captcha,
             ):
@@ -285,28 +279,6 @@ class FilecryptCc(BaseDecrypter):
         else:
             return None
 
-    def _handle_cutcaptcha_captcha(self, url):
-        m = re.search(self.CUTCAPTCHA_CAPTCHA_PATTERN, self.data)
-        if m is not None:
-            self.log_debug("CutCaptcha Captcha URL: {}".format(m.group(1)))
-
-        else:
-            return None
-
-
-        cutcaptcha = CutCaptcha(self.pyfile)
-
-        cutcaptcha_key = cutcaptcha.detect_key()
-        if cutcaptcha_key:
-            self.captcha = cutcaptcha
-            token = cutcaptcha.challenge(cutcaptcha_key)
-
-            return self._filecrypt_load_url(url,
-                                            post={"cap_token": token})
-
-        else:
-            return None
-
     def _handle_recaptcha_captcha(self, url):
         recaptcha = ReCaptcha(self.pyfile)
         captcha_key = recaptcha.detect_key()
@@ -369,18 +341,20 @@ class FilecryptCc(BaseDecrypter):
             self.log_debug(f"Error decrypting CNL: {exc}")
 
     def _get_links(self, crypted, jk):
-        #: Get key
-        key = bytes.fromhex(jk)
+        #: Get key and iv
+        key = iv = bytes.fromhex(jk)
 
         #: Decrypt
         cipher = Cipher(
-            algorithms.AES(key), modes.CBC(key), backend=default_backend()
+            algorithms.AES(key), modes.CBC(iv), backend=default_backend()
         )
         decryptor = cipher.decryptor()
-        text = decryptor.update(base64.b64decode(crypted)) + decryptor.finalize()
+        text = to_str(
+            decryptor.update(base64.b64decode(crypted)) + decryptor.finalize()
+        )
 
         #: Extract links
-        text = to_str(text).replace("\x00", "").replace("\r", "")
+        text = text.replace("\x00", "").replace("\r", "")
         links = [link for link in text.split("\n") if link]
 
         return links
