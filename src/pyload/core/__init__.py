@@ -51,6 +51,7 @@ class Core:
     DEFAULT_TMPDIR = os.path.join(tempfile.gettempdir(), "pyLoad")
     DEFAULT_STORAGEDIR = os.path.join(USERHOMEDIR, "Downloads", "pyLoad")
     DEBUG_LEVEL_MAP = {"debug": 1, "trace": 2, "stack": 3}
+    log = None
 
     @property
     def version(self):
@@ -75,7 +76,7 @@ class Core:
         self._do_exit = False
         self._ = lambda x: x
         self._debug = 0
-
+        self.storagedir = storagedir
         # if self.tmpdir not in sys.path:
         # sys.path.append(self.tmpdir)
 
@@ -121,6 +122,9 @@ class Core:
     def _init_log(self):
         from .log_factory import LogFactory
 
+        if self.log:
+            for handler in self.log.handlers:
+                self.log.removeHandler(handler)
         self.logfactory = LogFactory(self)
         self.log = self.logfactory.get_logger(
             "pyload"
@@ -270,6 +274,11 @@ class Core:
             return
         self.webserver.start()
 
+    def _stop_webserver(self):
+        if not self.config.get("webui", "enabled"):
+            return
+        self.webserver.stop()
+
     # def _parse_linkstxt(self):
     #     link_file = os.path.join(self.userdir, "links.txt")
     #     try:
@@ -280,67 +289,76 @@ class Core:
     #         self.log.debug(exc, exc_info=self.debug > 1, stack_info=self.debug > 2)
 
     def start(self):
+        while True:
+            try:
+                self.log.debug("Starting core...")
+
+                if self.debug:
+                    debug_level = reversemap(self.DEBUG_LEVEL_MAP)[self.debug].upper()
+                    self.log.debug(f"Debug level: {debug_level}")
+
         try:
-            self.log.debug("Starting core...")
+            	self.log.debug("Starting core...")
 
-            debug_level = reversemap(self.DEBUG_LEVEL_MAP)[self.debug].upper()
-            self.log.debug(f"Debug level: {debug_level}")
+            	debug_level = reversemap(self.DEBUG_LEVEL_MAP)[self.debug].upper()
+            	self.log.debug(f"Debug level: {debug_level}")
 
-            # self.evm.fire('pyload:starting')
-            self._running.set()
+            	# self.evm.fire('pyload:starting')
+            	self._running.set()
 
-            self._setup_language()
-            self._setup_permissions()
+                self._setup_language()
+                self._setup_permissions()
 
-            self.log.info(self._("User directory: {}").format(self.userdir))
-            self.log.info(self._("Cache directory: {}").format(self.tempdir))
+                self.log.info(self._("User directory: {}").format(self.userdir))
+                self.log.info(self._("Cache directory: {}").format(self.tempdir))
 
-            storage_folder = self.config.get("general", "storage_folder")
-            self.log.info(self._("Storage directory: {}".format(storage_folder)))
+                storage_folder = self.config.get("general", "storage_folder")
+                self.log.info(self._("Storage directory: {}".format(storage_folder)))
 
-            avail_space = format.size(fs.free_space(storage_folder))
-            self.log.info(self._("Storage free space: {}").format(avail_space))
+                avail_space = format.size(fs.free_space(storage_folder))
+                self.log.info(self._("Storage free space: {}").format(avail_space))
 
-            self._setup_network()
-            # self._setup_niceness()
+                self._setup_network()
+                # self._setup_niceness()
 
-            # # some memory stats
-            # from guppy import hpy
-            # hp=hpy()
-            # print(hp.heap())
-            # import objgraph
-            # objgraph.show_most_common_types(limit=30)
-            # import memdebug
-            # memdebug.start(8002)
-            # from meliae import scanner
-            # scanner.dump_all_objects(os.path.join(PACKDIR, 'objs.json'))
+                # # some memory stats
+                # from guppy import hpy
+                # hp=hpy()
+                # print(hp.heap())
+                # import objgraph
+                # objgraph.show_most_common_types(limit=30)
+                # import memdebug
+                # memdebug.start(8002)
+                # from meliae import scanner
+                # scanner.dump_all_objects(os.path.join(PACKDIR, 'objs.json'))
 
-            self._start_webserver()
-            # self._parse_linkstxt()
+                self._start_webserver()
+                # self._parse_linkstxt()
 
-            self.log.debug("*** pyLoad is up and running ***")
-            # self.evm.fire('pyload:started')
+                self.log.debug("*** pyLoad is up and running ***")
+                # self.evm.fire('pyload:started')
 
-            self.thm.pause = False  # NOTE: Recheck...
-            while True:
-                self._running.wait()
-                self.thread_manager.run()
-                if self._do_restart:
-                    raise Restart
-                if self._do_exit:
-                    raise Exit
-                self.scheduler.run()
-                time.sleep(1)
+                self.thm.pause = False  # NOTE: Recheck...
+                while True:
+                    self._running.wait()
+                    self.thread_manager.run()
+                    if self._do_restart:
+                        raise Restart
+                    if self._do_exit:
+                        raise Exit
+                    self.scheduler.run()
+                    time.sleep(1)
 
-        except Restart:
-            self.restart()
+            except Restart:
+                self.restart()
 
-        except (Exit, KeyboardInterrupt, SystemExit):
-            self.terminate()
+            except (Exit, KeyboardInterrupt, SystemExit):
+                self.terminate()
 
-        except Exception as exc:
-            self.log.critical(exc, exc_info=True, stack_info=self.debug > 2)
-            self.terminate()
+            except Exception as exc:
+                self.log.critical(exc, exc_info=True, stack_info=self.debug > 2)
+                self.terminate()
+
 
     # TODO: Remove
     def is_client_connected(self):
@@ -348,19 +366,16 @@ class Core:
 
     def restart(self):
         self.stop()
+        self.db.shutdown()
         self.log.info(self._("Restarting core..."))
-        # self.evm.fire('pyload:restarting')
-        self.start()
+        self.logfactory.shutdown()
+        self.__init__(self.userdir, self.tempdir, self.storagedir, self._debug)
 
     def terminate(self):
         self.stop()
         self.log.info(self._("Exiting core..."))
-        # self.tsm.exit()
-        # self.db.exit()  # NOTE: Why here?
         self.logfactory.shutdown()
-        # if cleanup:
-        # self.log.info(self._("Deleting temp files..."))
-        # remove(self.tmpdir)
+        os._exit(0)
 
     def stop(self):
         try:
@@ -376,6 +391,6 @@ class Core:
             self.addon_manager.core_exiting()
 
         finally:
+            self._stop_webserver()
             self.files.sync_save()
             self._running.clear()
-            # self.evm.fire('pyload:stopped')
