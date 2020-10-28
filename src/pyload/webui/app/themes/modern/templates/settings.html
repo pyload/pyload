@@ -15,7 +15,7 @@
 {% if user.is_admin %}
   <div class="btn-group btn-group-sm" role="group" aria-label="...">
     <button id="quit-pyload" class="btn btn-danger" data-toggle="modal" data-target="#quit_box"><span class="glyphicon glyphicon-off"></span> {{_('Quit pyLoad')}}</button>
-    <button id="restart-pyload" class="btn btn-warning" data-toggle="modal" data-target="#restart_box"><span class="glyphicon glyphicon-repeat"></span> {{_('Restart pyLoad')}}</button>
+    <button id="restart-pyload" class="btn btn-primary" data-toggle="modal" data-target="#restart_box"><span class="glyphicon glyphicon-repeat"></span> {{_('Restart pyLoad')}}</button>
   </div>
 {% endif %}
 {% endblock %}
@@ -46,7 +46,7 @@
         <h3>{{_('Choose a section from the menu')}}</h3>
         <br>
       </span>
-      <input class="btn btn-bright" style="float:right; margin-right: 10px;" id="general_submit" type="submit" value="{{_('Save')}}"/>
+      <input class="btn btn-primary" style="float:right; margin-right: 10px;" id="general_submit" type="submit" value="{{_('Save')}}"/>
     </form>
   </div>
   <div id="plugins" class="tab-pane fade">
@@ -65,7 +65,7 @@
           </div>
           <div id="noresult-template" style="display: none;">
             <nobr>
-              <span id="no-result" class="noselect">No results found</span>
+              <span id="no-result" class="noselect" style="white-space: nowrap;">No results found</span>
             </nobr>
           </div>
         </ul>
@@ -77,7 +77,7 @@
             <h3>{{_('Choose a section from the menu')}}</h3>
             <br>
        </span>
-      <input class="btn btn-bright" style="float:right; margin-right: 10px;" id="plugin_submit" type="submit" value="{{_('Save')}}"/>
+      <input class="btn btn-primary" style="float:right; margin-right: 10px;" id="plugin_submit" type="submit" value="{{_('Save')}}"/>
     </form>
   </div>
   <div id="accounts" class="tab-pane fade">
@@ -106,17 +106,17 @@
           </td>
 
           <td>
-            <label for="{{plugin}}|password;{{account.login}}" style="font-size: 14px; font-weight: 400; color:#999;">{{account.login}}</label>
+            <label for="{{plugin}}|password;{{account.login}}" style="font-size: 14px; font-weight: 400;">{{account.login}}</label>
           </td>
           <td>
             <input id="{{plugin}}|password;{{account.login}}" name="{{plugin}}|password;{{account.login}}" type="password" value="{{account.password}}" size="12"/>
           </td>
           <td>
-            {% if account.valid %}<span style="font-weight: bold; color: #006400;">{{_('valid')}}{% else %}<span style="font-weight: bold; color: #8b0000;">{{_('not valid')}}{% endif %}</span>
+            {% if account.valid %}<span style="font-weight: bold; color: #333;">{{_('valid')}}{% else %}<span style="font-weight: bold; color: #D9534F;">{{_('not valid')}}{% endif %}</span>
           </td>
           <td>
             {% if account.premium %}
-            <span style="font-weight: bold; color: #006400;">{{_('yes')}}{% else %}<span style="font-weight: bold; color: #8b0000;">{{_('no')}}{% endif %}</span>
+              <span style="font-weight: bold; color: #333;">{{_('yes')}}{% else %}<span style="font-weight: bold; color: #D9534F;">{{_('no')}}{% endif %}</span>
           </td>
           <td>
                <span style="font-weight: bold;">{{account.validuntil}}</span>
@@ -136,8 +136,8 @@
         </tr>
         {% endfor %}
       </table>
-      <button id="account_add" data-toggle="modal" data-target="#account_box" style="margin-left: 5px;" class="btn btn-success">&nbsp;<span class="glyphicon glyphicon-plus"></span></button>
-      <button id="account_submit" type="submit" class="btn btn-bright">{{_('Submit')}}</button>
+      <button id="account_add" data-toggle="modal" data-target="#account_box" style="margin-left: 5px;" class="btn btn-default">&nbsp;<span class="glyphicon glyphicon-plus"></span></button>
+      <button id="account_submit" type="submit" class="btn btn-primary">{{_('Submit')}}</button>
     </form>
   </div>
 </div>
@@ -148,7 +148,7 @@
   <div class="modal-dialog modal-sm">
     <!-- Modal content-->
     <div class="modal-content">
-      <div class="modal-header bg-info navbar-inverse text-center" style="padding: 5px"> {{_('Add Account')}}</div>
+      <div class="modal-header bg-info text-center" style="padding: 5px"> {{_('Add Account')}}</div>
       <div class="modal-body" style="margin-bottom: 30px;">
         <form id="add_account_form" action="/json/add_account" method="POST" enctype="multipart/form-data" style="margin-bottom: 40px;">
           <p>{{_('Enter your account data to use premium features')}}</p>
@@ -171,7 +171,7 @@
               {% for type in types|sort %}<option value="{{type}}">{{type}}</option>{% endfor %}
             </select>
           </div>
-            <button class="btn btn-success" style="float: right; margin-left: 5px;" id="account_add_button" type="submit">{{_('Add')}}</button>
+            <button class="btn btn-primary" style="float: right; margin-left: 5px;" id="account_add_button" type="submit">{{_('Add')}}</button>
             <button class="btn btn-warning" style="float: right;" data-dismiss="modal" id="account_reset" type="reset">{{_('Cancel')}}</button>
         </form>
       </div>
@@ -182,7 +182,7 @@
 <div id="path_chooser" class="modal" role="dialog">
   <div class="modal-dialog" style="width: 680px">
     <div class="modal-content">
-      <div class="modal-header bg-info navbar-inverse text-center" id="chooser_title" style="padding: 5px">{{_('Select')}}</div>
+      <div class="modal-header bg-info text-center" id="chooser_title" style="padding: 5px">{{_('Select')}}</div>
       <div class="modal-body text-left" style="padding-top: 3px; padding-bottom: 3px;">
         <div class="form-group" style="margin-bottom: 0; margin-left: 6px;">
           <label for="path_type1">{{_('Path')}}: </label>
@@ -196,7 +196,7 @@
         <iframe id="chooser_ifrm" src="#" width="650" height="420" frameborder="0" allowtransparency="true" scrolling="no"></iframe><br>
         <p id="path_p" class="text-ellipsis noselect" style="height: 18px; padding-right: 6px; padding-left: 6px; font-size: 12px;" title=""></p>
         <div class="modal-footer">
-          <button class="btn btn-success" id="chooser_confirm_button" style="float: right; margin-left: 5px;" type="submit">{{_('Select')}}</button>
+          <button class="btn btn-primary" id="chooser_confirm_button" style="float: right; margin-left: 5px;" type="submit">{{_('Select')}}</button>
           <button class="btn btn-warning" data-dismiss="modal" style="float: right;" type="reset">{{_('Cancel')}}</button>
         </div>
     </div>
@@ -220,9 +220,9 @@
   <div class="modal-dialog modal-sm">
     <!-- Modal content-->
     <div class="modal-content">
-      <div class="modal-header bg-info navbar-inverse text-center" style="padding: 5px" >{{_('Are you sure you want to restart pyLoad?')}}</div>
+      <div class="modal-header bg-info navbar-default text-center" style="padding: 5px" >{{_('Are you sure you want to restart pyLoad?')}}</div>
       <div class="modal-body" style="margin-bottom: 30px;">
-        <button class="btn btn-success" id="restart_button" type="submit" style="float: right">{{_('Ok')}}</button>
+        <button class="btn btn-primary" id="restart_button" type="submit" style="float: right">{{_('Ok')}}</button>
         <button class="btn btn-warning" data-dismiss="modal" id="restart_reset" style="margin-right: 5px; float: right" type="reset">{{_('Cancel')}}</button>
       </div>
     </div>
@@ -233,9 +233,9 @@
   <div class="modal-dialog modal-sm">
     <!-- Modal content-->
     <div class="modal-content">
-      <div class="modal-header bg-info navbar-inverse text-center" style="padding: 5px;" >{{_('You are really sure you want to quit pyLoad?')}}</div>
+      <div class="modal-header bg-info text-center" style="padding: 5px;" >{{_('You are really sure you want to quit pyLoad?')}}</div>
       <div class="modal-body" style="margin-bottom: 30px;">
-        <button class="btn btn-success" id="quit_button" type="submit" style="float: right">{{_('Ok')}}</button>
+        <button class="btn btn-primary" id="quit_button" type="submit" style="float: right">{{_('Ok')}}</button>
         <button class="btn btn-warning" data-dismiss="modal" id="quit_reset" style="margin-right: 5px; float: right" type="reset">{{_('Cancel')}}</button>
       </div>
     </div>

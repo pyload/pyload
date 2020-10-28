@@ -4,7 +4,7 @@
   <div class="modal-dialog modal-sm" style="display: flex; justify-content: center;">
     <!-- Modal content-->
     <div class="modal-content">
-      <div class="modal-header bg-info navbar-inverse text-center" style="padding: 5px" >{{_('Captcha reading')}}</div>
+      <div class="modal-header bg-info text-center" style="padding: 5px" >{{_('Captcha reading')}}</div>
       <div class="modal-body text-left">
         <div id="cap_title"></div>
         <form id="cap_form" class="form-group" action="/json/set_captcha" method="POST" enctype="multipart/form-data" onsubmit="return false;" autocomplete="off" style="margin-bottom: 40px;">
@@ -35,7 +35,7 @@
               <p>{{_("Note: to solve this interactive captchas")}}<br>
               {{_("Please install the <a href='https://tampermonkey.net/' target='_blank'>Tampermonkey</a> add-on in your browser and add the ")}}<a href="{{url_for('static', filename='js/captcha-interactive.user.js')}}">{{_("pyload userscript")}}</a>.</p></div>
           </div>
-          <button class="btn btn-success pull-right" id="cap_submit" type="submit" style="margin-left: 5px;">{{_('Submit')}}</button>
+          <button class="btn btn-primary pull-right" id="cap_submit" type="submit" style="margin-left: 5px;">{{_('Submit')}}</button>
           <div class="btn btn-warning pull-right" data-dismiss="modal" id="cap_reset" >{{_('Close')}}</div>
         </form>
       </div>

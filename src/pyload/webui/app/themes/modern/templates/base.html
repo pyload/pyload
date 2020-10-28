@@ -1,0 +1,241 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="stylesheet" type="text/css" href="{{theme_static('vendor/Bootstrap/css/bootstrap.min.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{theme_static('vendor/jQuery/jQuery UI/jquery-ui.min.css')}}"/>
+    <link rel="stylesheet" type="text/css" href="{{theme_static('css/base.css')}}" />
+
+    <link rel="icon" href="{{theme_static('img/favicon.ico')}}"/>
+
+<style type="text/css">
+.ui-icon,
+.ui-widget-content .ui-icon {
+  background-image: url("{{theme_static('img/ui-icons_444444_256x240.png')}}");
+}
+
+#goto_top.affix-top {
+  position: absolute;
+  bottom: -82px;
+  left: 10px;
+}
+
+#goto_top.affix {
+  position: fixed;
+  bottom: 18px;
+  left: 10px;
+}
+</style>
+
+<title>{% block title %}pyLoad{% endblock %}</title>
+
+{% block head %}
+{% endblock %}
+
+</head>
+
+<body>
+
+{% macro selected(name, right=False) -%}
+  {% if name in url -%}class="{% if right -%}right {% endif %}selected"{%- endif %}
+  {% if not name in url and right -%}class="right"{%- endif %}
+{%- endmacro %}
+
+<nav id="sticky-nav" class="navbar navbar-default navbar-fixed-top hidden-xs hidden-sm" style="display: none; border-bottom: 1px solid rgba(0,0,0,.15); box-shadow: 0 1px 6px 0 rgba(32,33,36,0.28); min-height: 45px;">
+  <ul  class="nav navbar-nav">
+    <li ondragstart="return false;" {{selected('dashboard')}}>
+      <a href="/dashboard" title="{{_('Dashboard')}}"><span class="glyphicon glyphicon-home"></span></a>
+    </li>
+    <li ondragstart="return false;" {{selected('queue')}}>
+      <a href="/queue" title="{{_('Queue')}}"><span class="glyphicon glyphicon-tasks"></span></a>
+    </li>
+    <li ondragstart="return false;" {{selected('collector')}}>
+      <a href="/collector" title="{{_('Packages')}}"><span class="glyphicon glyphicon-magnet"></span></a>
+    </li>
+    <li ondragstart="return false;" {{selected('files')}}>
+      <a href="/files" title="{{_('Files')}}"><span class="glyphicon glyphicon-file"></span></a>
+    </li>
+    <li ondragstart="return false;" {{selected('logs')}}>
+      <a href="/logs" title="{{_('Logs')}}"><span class="glyphicon glyphicon-list-alt"></span></a>
+    </li>
+    <li ondragstart="return false;" {{selected('settings', True)}}>
+      <a href="/settings"  title="{{_('Settings')}}"><span class="glyphicon glyphicon-cog"></span></a>
+    </li>
+    {% if user.is_admin %}
+    <li ondragstart="return false;" {{selected('admin')}}>
+      <a href="/admin" title="{{_('Users')}}"><span class="glyphicon glyphicon-flag"></span></a>
+    </li>
+    {% endif %}
+  </ul>
+  <span id="cap_info1" class="cap_info col-xs-12 col-sm-auto" style="display: {% if captcha %}inline{%else%}none{% endif %};margin-top:-2px; height: 15px;">
+      <button id="action_cap1" class="btn btn-light navbar-btn col-xs-12 col-sm-auto" data-toggle="modal" data-target="#cap_box" data-backdrop="static"><span  class="glyphicon glyphicon-barcode"></span> {{_('Captcha waiting')}}</button>
+  </span>
+  <ul class="nav navbar-nav navbar-right">
+    <li id="load-indicator1" class="load-indicator" style="opacity: 0; display: block; margin-top: 11px; margin-right: 35px;">
+       <img src="{{theme_static('img/ajax-loader.gif')}}" alt="" style="padding-right: 5px"/>
+    </li>
+  </ul>
+</nav>
+<div id="head-panel">
+  <div id="head-search-and-login">
+    {% block headpanel %}
+      {% if user.is_authenticated %}
+        {% if update %}
+        <span>
+        <span style="font-weight: bold; margin: 0 2px 0 2px;">{{_('pyLoad Update available!')}}</span>
+        </span>
+        {% endif %}
+        {% if plugins %}
+        <span>
+        <span style="font-weight: bold; margin: 0 2px 0 2px;">{{_('Plugins updated, please restart!')}}</span>
+        </span>
+        {% endif %}
+      {% endif %}
+    {% endblock %}
+  </div>
+
+  <nav class="navbar navbar-default">
+    <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        <a class="navbar-brand" href="#"><img id="head-logo" src="{{theme_static('img/pyload-banner.png')}}" alt="pyLoad" style="height:30px;"/></a>
+      </div>
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav">
+        {% block menu %}
+         {% if user.is_authenticated %}
+          <li ondragstart="return false;" {{selected('dashboard')}}>
+              <a href="/dashboard" title=""><span class="glyphicon glyphicon-home"></span><span class="hidden-sm"> {{_('Dashboard')}}</span></a>
+          </li>
+          <li ondragstart="return false;" {{selected('queue')}}>
+              <a href="/queue" title=""><span class="glyphicon glyphicon-tasks"></span><span class="hidden-sm"> {{_('Queue')}}</span></a>
+          </li>
+          <li ondragstart="return false;" {{selected('collector')}}>
+              <a href="/collector" title=""><span class="glyphicon glyphicon-magnet"></span><span class="hidden-sm"> {{_('Packages')}}</span></a>
+          </li>
+          <li ondragstart="return false;" {{selected('files')}}>
+              <a href="/files" title=""> <span class="glyphicon glyphicon-file"></span><span class="hidden-sm"> {{_('Files')}}</span></a>
+          </li>
+    {#  <li ondragstart="return false;" {{selected('filemanager')}}>#}
+    {#      <a href="/filemanager" title=""><span class="glyphicon glyphicon-magnet"></span><span class="hidden-sm"> {{_('FileManager')}}</span></a>#}
+    {#  </li>#}
+          <li ondragstart="return false;" {{selected('logs')}}>
+              <a href="/logs" title=""><span class="glyphicon glyphicon-list-alt"></span><span class="hidden-sm"> {{_('Logs')}}</span></a>
+          </li>
+          <li ondragstart="return false;" {{selected('settings', True)}}>
+              <a href="/settings"  title=""><span class="glyphicon glyphicon-cog"></span><span class="hidden-sm"> {{_('Settings')}}</span></a>
+          </li>
+          {% if user.is_admin %}
+          <li ondragstart="return false;" {{selected('admin')}}>
+              <a href="/admin" title=""><span class="glyphicon glyphicon-flag"></span><span class="hidden-sm"> {{_('Users')}}</span></a>
+          </li>
+          {% endif %}
+         {% endif %}
+        {% endblock %}
+
+        </ul>
+        {% if user.is_authenticated %}
+          <ul class="nav navbar-nav navbar-right">
+            <li><span class="navbar-text"><span class="glyphicon glyphicon-user"></span><span class="hidden-sm hidden-md"> {{user.name}}</span></span></li>
+            <li><a href="/logout" class="action logout" rel="nofollow"><span class="glyphicon glyphicon-log-out"></span><span class="hidden-sm hidden-md">  {{_('Logout')}}</span></a></li>
+            <li ondragstart="return false;" {{selected('info')}}><a href="/info"  class="action info" rel="nofollow"><span class="glyphicon glyphicon-info-sign"></span><span class="hidden-sm hidden-md">  {{_('Info')}}</span></a></li>
+          </ul>
+        {% endif %}
+      </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+  </nav>
+
+  <div style="clear:both;"></div>
+</div>
+
+<div class="btn-toolbar" role="toolbar" aria-label="...">
+{% if perms.LIST %}
+    <div class="btn-group btn-group-sm col-xs-12 col-sm-auto" role="group" aria-label="..." style="float:right;">
+      <button class="btn col-xs-3 col-sm-auto"><span class="hidden-sm">{{_('Running:')}}</span><span class="glyphicon glyphicon-download hidden-xs hidden-md hidden-lg"></span> <span id="time"  class="label label-{% if status.download %}success{% else %}danger{% endif %}">{% if status.download %}{{_('on')}}{% else %}{{_('off')}}{% endif %}</span></button>
+      <button type="button" class="btn col-xs-3 col-sm-auto"><span class="hidden-sm">{{_('Reconnect:')}}</span><span class="glyphicon glyphicon-refresh hidden-xs hidden-md hidden-lg"></span> <span id="reconnect" class="label label-{% if status.reconnect %}success{% else %}danger{% endif %}">{% if status.reconnect %}{{_('on')}}{% else %}{{_('off')}}{% endif %}</span></button>
+      <button type="button" class="btn col-xs-3 col-sm-auto"><span class="action backlink"><span class="hidden-xs hidden-sm">{{_('Speed:')}} </span><b id="speed">{{status.speed}}</b></span></button>
+      <span class="btn col-xs-3 col-sm-auto" style="background-color: #F0F0F0"><span class="action cog">{{_('Active:')}} <b id="aktiv" title="{{_('Active')}}">{{status.active}}</b> / <b id="aktiv_from" title="{{_('Queued')}}">{{status.queue}}</b> / <b id="aktiv_total" title="{{_('Total')}}">{{status.total}}</b></span></span>
+    </div>
+{% endif %}
+
+{% if perms.STATUS %}
+    <!--<div class="btn-group btn-group-sm col-xs-12 col-sm-3 col-md-3 col-lg-3" role="group" aria-label="...">-->
+    <div class="btn-group btn-group-sm" style="margin-left: 20px; margin-right: 20px;" role="group" aria-label="...">
+      <button id="action_play" class="btn btn-default" href="#" title="{{_('Resume Queue')}}"><span class="glyphicon glyphicon-play"></span>&nbsp;</button>
+      <button id="action_stop" type="button" class="btn btn-default" title="{{_('Pause Queue')}}"><span class="glyphicon glyphicon-pause"></span>&nbsp;</button>
+      <button id="action_cancel" type="button" class="btn btn-default" title="{{_('Abort Downloads')}}"><span class="glyphicon glyphicon-stop"></span>&nbsp;</button>
+      <button id="action_add2" data-toggle="modal" data-target="#add_box" type="button" class="action_add btn btn-default" title="{{_('Add Package')}}"><span class="glyphicon glyphicon-plus"></span>&nbsp;</button>
+    </div>
+{% endif %}
+
+{% block pageactions %}
+{% endblock %}
+
+<span id="cap_info2" class="cap_info col-xs-12 col-sm-auto" style="display: {% if captcha %}inline{%else%}none{% endif %};margin-top:-2px;">
+    <button id="action_cap2" class="btn btn-default col-xs-12 col-sm-auto" data-toggle="modal" data-target="#cap_box" data-backdrop="static"><span  class="glyphicon glyphicon-barcode"></span> {{_('Captcha waiting')}}</button>
+</span>
+</div>
+
+<div id="body-wrapper" class="dokuwiki">
+    <div id="content" style="width: 99%; padding-left: 10px; padding-right: 10px;" lang="en" dir="ltr">
+      <div style="display: flex;justify-content: space-between;">
+{#        <div style="margin-bottom: 20px;">#}
+{#          <h3>{% block subtitle %}{{_(' ')}}{% endblock %}</h3>#}
+{#        </div>#}
+        <hr>
+        <div>
+          {% block statusbar %}
+          {% endblock %}
+          {% for message in messages %}
+              <p><b>{{message}}</b></p>
+          {% endfor %}
+        </div>
+        <div id="load-indicator2" class="load-indicator" style="opacity: 0; margin-top: 5px;">
+             <img src="{{theme_static('img/ajax-loader.gif')}}" alt="" style="padding-right: 5px"/>
+        </div>
+      </div>
+
+      {% block content %}
+      {% endblock content %}
+    </div>
+</div>
+
+<hr style="clear: both;" />
+<div id="foot" class="navbar navbar-static-bottom" style="width: 100%; text-align:center;">&copy; 2020 pyLoad Team</div>
+
+<div id="goto_top" class="btn-primary hidden" style="position: fixed; width: 25px; height: 25px;background-color: #007bff; color: #0b0b0b; opacity: 0.5; cursor: pointer; z-index: 10; border-radius: 5px; display: block;" title="{{_('Back to top')}}">
+    <div class="glyphicon glyphicon-chevron-up" style="padding-top: 5px; padding-left: 6px; opacity: 0.5;"></div>
+</div>
+
+<div style="display: none;">
+    {% block hidden %}
+    {% endblock %}
+</div>
+{% block dialog %}
+{% endblock %}
+
+{% include theme('window.html') %}
+{% include theme('captcha.html') %}
+<noscript><h1>Enable JavaScript to use the WebUI.</h1></noscript>
+
+<script type="text/javascript" src="{{theme_static('vendor/jQuery/jquery.min.js')}}"></script>
+<script type="text/javascript" src="{{theme_static('vendor/jQuery/jQuery UI/jquery-ui.min.js')}}"></script>
+<script type="text/javascript" src="{{theme_static('vendor/jQuery/jQuery.peekABar/js/jquery.peekabar.min.js')}}"></script>
+<script type="text/javascript" src="{{theme_static('vendor/Bootstrap/js/bootstrap.min.js')}}"></script>
+<script type="text/javascript" src="{{theme_template('js/base.js')}}"></script>
+
+{% block footer %}
+{% endblock %}
+
+</body>
+</html>
