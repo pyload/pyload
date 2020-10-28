@@ -116,7 +116,7 @@ class DatabaseThread(Thread):
             if j == "quit":
                 self.c.close()
                 self.conn.close()
-                return
+                break
             j.process_job()
 
     @style.queue

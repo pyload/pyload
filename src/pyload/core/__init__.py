@@ -293,18 +293,11 @@ class Core:
             try:
                 self.log.debug("Starting core...")
 
-                if self.debug:
-                    debug_level = reversemap(self.DEBUG_LEVEL_MAP)[self.debug].upper()
-                    self.log.debug(f"Debug level: {debug_level}")
+                debug_level = reversemap(self.DEBUG_LEVEL_MAP)[self.debug].upper()
+                self.log.debug(f"Debug level: {debug_level}")
 
-        try:
-            	self.log.debug("Starting core...")
-
-            	debug_level = reversemap(self.DEBUG_LEVEL_MAP)[self.debug].upper()
-            	self.log.debug(f"Debug level: {debug_level}")
-
-            	# self.evm.fire('pyload:starting')
-            	self._running.set()
+                # self.evm.fire('pyload:starting')
+                self._running.set()
 
                 self._setup_language()
                 self._setup_permissions()
