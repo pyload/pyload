@@ -24,7 +24,11 @@ def rpc(func, args=""):
 
     api = flask.current_app.config["PYLOAD_API"]
     s = flask.session
-    if not api.is_authorized(func, {"role": s["role"], "permission": s["perms"]}):
+    if (
+            "role" not in s or
+            "perms" not in s or
+            not api.is_authorized(func, {"role": s["role"], "permission": s["perms"]})
+    ):
         return "Unauthorized", 401
 
     args = args.split(",")
