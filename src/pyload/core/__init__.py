@@ -12,6 +12,8 @@ import atexit
 import gettext
 import locale
 import os
+import subprocess
+import sys
 import tempfile
 import time
 
@@ -270,6 +272,62 @@ class Core:
             return
         self.webserver.start()
 
+    def _get_args_for_reloading(self):
+        """Determine how the script was executed, and return the args needed
+        to execute it again in a new process.
+        """
+        rv = [sys.executable]
+        py_script = sys.argv[0]
+        args = sys.argv[1:]
+        # Need to look at main module to determine how it was executed.
+        __main__ = sys.modules["__main__"]
+
+        # The value of __package__ indicates how Python was called. It may
+        # not exist if a setuptools script is installed as an egg. It may be
+        # set incorrectly for entry points created with pip on Windows.
+        if getattr(__main__, "__package__", None) is None or (
+                os.name == "nt"
+                and __main__.__package__ == ""
+                and not os.path.exists(py_script)
+                and os.path.exists(f"{py_script}.exe")
+        ):
+            # Executed a file, like "python app.py".
+            py_script = os.path.abspath(py_script)
+
+            if os.name == "nt":
+                # Windows entry points have ".exe" extension and should be
+                # called directly.
+                if not os.path.exists(py_script) and os.path.exists(f"{py_script}.exe"):
+                    py_script += ".exe"
+
+                if (
+                        os.path.splitext(sys.executable)[1] == ".exe"
+                        and os.path.splitext(py_script)[1] == ".exe"
+                ):
+                    rv.pop(0)
+
+            rv.append(py_script)
+        else:
+            # Executed a module, like "python -m module".
+            if sys.argv[0] == "-m":
+                args = sys.argv
+            else:
+                if os.path.isfile(py_script):
+                    # Rewritten by Python from "-m script" to "/path/to/script.py".
+                    py_module = __main__.__package__
+                    name = os.path.splitext(os.path.basename(py_script))[0]
+
+                    if name != "__main__":
+                        py_module += f".{name}"
+                else:
+                    # Incorrectly rewritten by pydevd debugger from "-m script" to "script".
+                    py_module = py_script
+
+                rv.extend(("-m", py_module.lstrip(".")))
+
+        rv.extend(args)
+        return rv
+
     # def _parse_linkstxt(self):
     #     link_file = os.path.join(self.userdir, "links.txt")
     #     try:
@@ -347,10 +405,15 @@ class Core:
         return (self.last_client_connected + 30) > time.time()
 
     def restart(self):
-        self.stop()
-        self.log.info(self._("Restarting core..."))
+        self.log.info(self._("pyLoad is restarting..."))
         # self.evm.fire('pyload:restarting')
-        self.start()
+        self.terminate()
+        os.chdir(sys.path[0])
+
+        args = self._get_args_for_reloading()
+        exit_code = subprocess.call(args, close_fds=True)
+
+        os._exit(exit_code)
 
     def terminate(self):
         self.stop()
