@@ -95,7 +95,7 @@ def _parse_args(cmd_args):
     parser.add_argument(
         "--storagedir",
         help="use this location to save downloads",
-        default=Core.DEFAULT_STORAGEDIR,
+        default=None, # Core.DEFAULT_STORAGEDIR,
     )
     parser.add_argument("--daemon", action="store_true", help="run as daemon")
     parser.add_argument(
