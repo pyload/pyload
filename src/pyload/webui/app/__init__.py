@@ -16,7 +16,7 @@ from .blueprints import BLUEPRINTS
 from .filters import TEMPLATE_FILTERS
 from .globals import TEMPLATE_GLOBALS
 from .handlers import ERROR_HANDLERS
-from .extensions import EXTENSIONS
+from .extensions import EXTENSIONS, THEMES
 from .processors import CONTEXT_PROCESSORS
 from .config import get_default_config
 from .helpers import JSONEncoder
@@ -31,6 +31,8 @@ class App:
     FLASK_ERROR_HANDLERS = ERROR_HANDLERS
     FLASK_BLUEPRINTS = BLUEPRINTS
     FLASK_EXTENSIONS = EXTENSIONS
+    FLASK_THEMES = THEMES
+
 
     @classmethod
     def _configure_config(cls, app, develop):
@@ -38,14 +40,19 @@ class App:
         app.config.from_object(conf_obj)
 
     @classmethod
-    def _configure_blueprints(cls, app):
+    def _configure_blueprints(cls, app, path_prefix):
         for blueprint in cls.FLASK_BLUEPRINTS:
-            app.register_blueprint(blueprint)
+            app.register_blueprint(blueprint, url_prefix=path_prefix)
 
     @classmethod
     def _configure_extensions(cls, app):
         for extension in cls.FLASK_EXTENSIONS:
             extension.init_app(app)
+
+    @classmethod
+    def _configure_themes(cls, app, path_prefix=""):
+        for themes in cls.FLASK_THEMES:
+            themes.init_app(app, path_prefix)
 
     @classmethod
     def _configure_handlers(cls, app):
@@ -99,7 +106,7 @@ class App:
         # Inject our custom logger
         app.logger = pycore.log.getChild("webui")
 
-    def __new__(cls, pycore, develop=False):
+    def __new__(cls, pycore, develop=False, path_prefix=None):
         app = flask.Flask(__name__)
 
         cls._configure_logging(app, pycore)
@@ -108,8 +115,9 @@ class App:
         cls._configure_templating(app)
         cls._configure_json_encoding(app)
         cls._configure_session(app)
-        cls._configure_blueprints(app)
+        cls._configure_blueprints(app, path_prefix)
         cls._configure_extensions(app)
+        cls._configure_themes(app, path_prefix)
         cls._configure_handlers(app)
 
         return app

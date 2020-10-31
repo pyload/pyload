@@ -40,7 +40,7 @@ class WebServerThread(threading.Thread):
         self.app.run(self.host, self.port, use_reloader=False)
 
     def _run_produc(self):
-        bind_path = self.prefix.strip("/") + "/"
+        bind_path = "/"
         bind_addr = (self.host, self.port)
         wsgi_app = wsgi.PathInfoDispatcher({bind_path: self.app})
 

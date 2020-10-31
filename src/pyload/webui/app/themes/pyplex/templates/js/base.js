@@ -258,10 +258,10 @@ $(function() {
     });
 
     $("#action_play").click(function() {
-        $.get("/api/unpause_server", function () {
+        $.get(window.location.pathname + "/../api/unpause_server", function () {
             $.ajax({
                 method: "post",
-                url: "/json/status",
+                url: "{{url_for("json.status")}}",
                 async: true,
                 timeout: 3000,
                 success: LoadJsonToContent
@@ -270,14 +270,14 @@ $(function() {
     });
 
     $("#action_cancel").click(function() {
-        $.get("/api/stop_all_downloads");
+        $.get(window.location.pathname + "/../api/stop_all_downloads");
     });
 
     $("#action_stop").click(function() {
-        $.get("/api/pause_server", function () {
+        $.get(window.location.pathname + "/../api/pause_server", function () {
             $.ajax({
                 method: "post",
-                url: "/json/status",
+                url: "{{url_for("json.status")}}",
                 async: true,
                 timeout: 3000,
                 success: LoadJsonToContent
@@ -298,7 +298,7 @@ $(function() {
 
     $.ajax({
         method:"post",
-        url: "/json/status",
+        url: "{{url_for("json.status")}}",
         async: true,
         timeout: 3000,
         success:LoadJsonToContent
@@ -307,7 +307,7 @@ $(function() {
     setInterval(function() {
         $.ajax({
             method:"post",
-            url: "/json/status",
+            url: "{{url_for("json.status")}}",
             async: true,
             timeout: 3000,
             success:LoadJsonToContent
@@ -396,7 +396,7 @@ function set_captcha(a) {
 
 function load_captcha(b, a) {
     $.ajax({
-            url: "/json/set_captcha",
+            url: "{{url_for("json.set_captcha")}}",
             async: true,
             method: b,
             data: a,
