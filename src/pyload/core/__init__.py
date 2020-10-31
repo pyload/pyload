@@ -12,6 +12,8 @@ import atexit
 import gettext
 import locale
 import os
+import subprocess
+import sys
 import tempfile
 import time
 
@@ -51,7 +53,6 @@ class Core:
     DEFAULT_TMPDIR = os.path.join(tempfile.gettempdir(), "pyLoad")
     DEFAULT_STORAGEDIR = os.path.join(USERHOMEDIR, "Downloads", "pyLoad")
     DEBUG_LEVEL_MAP = {"debug": 1, "trace": 2, "stack": 3}
-    log = None
 
     @property
     def version(self):
@@ -76,7 +77,7 @@ class Core:
         self._do_exit = False
         self._ = lambda x: x
         self._debug = 0
-        self.storagedir = storagedir
+
         # if self.tmpdir not in sys.path:
         # sys.path.append(self.tmpdir)
 
@@ -122,9 +123,6 @@ class Core:
     def _init_log(self):
         from .log_factory import LogFactory
 
-        if self.log:
-            for handler in self.log.handlers:
-                self.log.removeHandler(handler)
         self.logfactory = LogFactory(self)
         self.log = self.logfactory.get_logger(
             "pyload"
@@ -279,6 +277,62 @@ class Core:
             return
         self.webserver.stop()
 
+    def _get_args_for_reloading(self):
+        """Determine how the script was executed, and return the args needed
+        to execute it again in a new process.
+        """
+        rv = [sys.executable]
+        py_script = sys.argv[0]
+        args = sys.argv[1:]
+        # Need to look at main module to determine how it was executed.
+        __main__ = sys.modules["__main__"]
+
+        # The value of __package__ indicates how Python was called. It may
+        # not exist if a setuptools script is installed as an egg. It may be
+        # set incorrectly for entry points created with pip on Windows.
+        if getattr(__main__, "__package__", None) is None or (
+                os.name == "nt"
+                and __main__.__package__ == ""
+                and not os.path.exists(py_script)
+                and os.path.exists(f"{py_script}.exe")
+        ):
+            # Executed a file, like "python app.py".
+            py_script = os.path.abspath(py_script)
+
+            if os.name == "nt":
+                # Windows entry points have ".exe" extension and should be
+                # called directly.
+                if not os.path.exists(py_script) and os.path.exists(f"{py_script}.exe"):
+                    py_script += ".exe"
+
+                if (
+                        os.path.splitext(sys.executable)[1] == ".exe"
+                        and os.path.splitext(py_script)[1] == ".exe"
+                ):
+                    rv.pop(0)
+
+            rv.append(py_script)
+        else:
+            # Executed a module, like "python -m module".
+            if sys.argv[0] == "-m":
+                args = sys.argv
+            else:
+                if os.path.isfile(py_script):
+                    # Rewritten by Python from "-m script" to "/path/to/script.py".
+                    py_module = __main__.__package__
+                    name = os.path.splitext(os.path.basename(py_script))[0]
+
+                    if name != "__main__":
+                        py_module += f".{name}"
+                else:
+                    # Incorrectly rewritten by pydevd debugger from "-m script" to "script".
+                    py_module = py_script
+
+                rv.extend(("-m", py_module.lstrip(".")))
+
+        rv.extend(args)
+        return rv
+
     # def _parse_linkstxt(self):
     #     link_file = os.path.join(self.userdir, "links.txt")
     #     try:
@@ -289,86 +343,93 @@ class Core:
     #         self.log.debug(exc, exc_info=self.debug > 1, stack_info=self.debug > 2)
 
     def start(self):
-        while True:
-            try:
-                self.log.debug("Starting core...")
+        try:
+            self.log.debug("Starting core...")
 
-                debug_level = reversemap(self.DEBUG_LEVEL_MAP)[self.debug].upper()
-                self.log.debug(f"Debug level: {debug_level}")
+            debug_level = reversemap(self.DEBUG_LEVEL_MAP)[self.debug].upper()
+            self.log.debug(f"Debug level: {debug_level}")
 
-                # self.evm.fire('pyload:starting')
-                self._running.set()
+            # self.evm.fire('pyload:starting')
+            self._running.set()
 
-                self._setup_language()
-                self._setup_permissions()
+            self._setup_language()
+            self._setup_permissions()
 
-                self.log.info(self._("User directory: {}").format(self.userdir))
-                self.log.info(self._("Cache directory: {}").format(self.tempdir))
+            self.log.info(self._("User directory: {}").format(self.userdir))
+            self.log.info(self._("Cache directory: {}").format(self.tempdir))
 
-                storage_folder = self.config.get("general", "storage_folder")
-                self.log.info(self._("Storage directory: {}".format(storage_folder)))
+            storage_folder = self.config.get("general", "storage_folder")
+            self.log.info(self._("Storage directory: {}".format(storage_folder)))
 
-                avail_space = format.size(fs.free_space(storage_folder))
-                self.log.info(self._("Storage free space: {}").format(avail_space))
+            avail_space = format.size(fs.free_space(storage_folder))
+            self.log.info(self._("Storage free space: {}").format(avail_space))
 
-                self._setup_network()
-                # self._setup_niceness()
+            self._setup_network()
+            # self._setup_niceness()
 
-                # # some memory stats
-                # from guppy import hpy
-                # hp=hpy()
-                # print(hp.heap())
-                # import objgraph
-                # objgraph.show_most_common_types(limit=30)
-                # import memdebug
-                # memdebug.start(8002)
-                # from meliae import scanner
-                # scanner.dump_all_objects(os.path.join(PACKDIR, 'objs.json'))
+            # # some memory stats
+            # from guppy import hpy
+            # hp=hpy()
+            # print(hp.heap())
+            # import objgraph
+            # objgraph.show_most_common_types(limit=30)
+            # import memdebug
+            # memdebug.start(8002)
+            # from meliae import scanner
+            # scanner.dump_all_objects(os.path.join(PACKDIR, 'objs.json'))
 
-                self._start_webserver()
-                # self._parse_linkstxt()
+            self._start_webserver()
+            # self._parse_linkstxt()
 
-                self.log.debug("*** pyLoad is up and running ***")
-                # self.evm.fire('pyload:started')
+            self.log.debug("*** pyLoad is up and running ***")
+            # self.evm.fire('pyload:started')
 
-                self.thm.pause = False  # NOTE: Recheck...
-                while True:
-                    self._running.wait()
-                    self.thread_manager.run()
-                    if self._do_restart:
-                        raise Restart
-                    if self._do_exit:
-                        raise Exit
-                    self.scheduler.run()
-                    time.sleep(1)
+            self.thm.pause = False  # NOTE: Recheck...
+            while True:
+                self._running.wait()
+                self.thread_manager.run()
+                if self._do_restart:
+                    raise Restart
+                if self._do_exit:
+                    raise Exit
+                self.scheduler.run()
+                time.sleep(1)
 
-            except Restart:
-                self.restart()
+        except Restart:
+            self.restart()
 
-            except (Exit, KeyboardInterrupt, SystemExit):
-                self.terminate()
+        except (Exit, KeyboardInterrupt, SystemExit):
+            self.terminate()
 
-            except Exception as exc:
-                self.log.critical(exc, exc_info=True, stack_info=self.debug > 2)
-                self.terminate()
-
+        except Exception as exc:
+            self.log.critical(exc, exc_info=True, stack_info=self.debug > 2)
+            self.terminate()
 
     # TODO: Remove
     def is_client_connected(self):
         return (self.last_client_connected + 30) > time.time()
 
     def restart(self):
-        self.stop()
-        self.db.shutdown()
-        self.log.info(self._("Restarting core..."))
-        self.logfactory.shutdown()
-        self.__init__(self.userdir, self.tempdir, self.storagedir, self._debug)
+        self.log.info(self._("pyLoad is restarting..."))
+        # self.evm.fire('pyload:restarting')
+        self.terminate()
+        self._stop_webserver()
+        os.chdir(sys.path[0])
+
+        args = self._get_args_for_reloading()
+        exit_code = subprocess.call(args, close_fds=True)
+
+        os._exit(exit_code)
 
     def terminate(self):
         self.stop()
         self.log.info(self._("Exiting core..."))
+        # self.tsm.exit()
+        # self.db.exit()  # NOTE: Why here?
         self.logfactory.shutdown()
-        os._exit(0)
+        # if cleanup:
+        # self.log.info(self._("Deleting temp files..."))
+        # remove(self.tmpdir)
 
     def stop(self):
         try:
@@ -384,6 +445,6 @@ class Core:
             self.addon_manager.core_exiting()
 
         finally:
-            self._stop_webserver()
             self.files.sync_save()
             self._running.clear()
+            # self.evm.fire('pyload:stopped')

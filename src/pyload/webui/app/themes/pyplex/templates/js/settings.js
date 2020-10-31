@@ -22,6 +22,9 @@ SettingsUI = (function() {
                 $('#quit_box').modal('hide');
                 $('#content').addClass("hidden");
                 $('#shutdown_msg').removeClass("hidden");
+            })
+            .fail(function () {
+                indicateFail("{{_('Error occurred')}}");
             });
         });
 
@@ -33,6 +36,9 @@ SettingsUI = (function() {
                 setTimeout(function() {
                     window.location = "/dashboard";
                 }, 10000);
+            })
+            .fail(function () {
+                indicateFail("{{_('Error occurred')}}");
             });
         });
         let activeTab = sessionStorage.getItem('activeTab');
