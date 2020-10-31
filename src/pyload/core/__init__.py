@@ -272,6 +272,11 @@ class Core:
             return
         self.webserver.start()
 
+    def _stop_webserver(self):
+        if not self.config.get("webui", "enabled"):
+            return
+        self.webserver.stop()
+
     def _get_args_for_reloading(self):
         """Determine how the script was executed, and return the args needed
         to execute it again in a new process.
@@ -408,6 +413,7 @@ class Core:
         self.log.info(self._("pyLoad is restarting..."))
         # self.evm.fire('pyload:restarting')
         self.terminate()
+        self._stop_webserver()
         os.chdir(sys.path[0])
 
         args = self._get_args_for_reloading()
