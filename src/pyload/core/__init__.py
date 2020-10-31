@@ -115,8 +115,9 @@ class Core:
         else:
             self._debug = max(0, int(debug))
 
-        # If no argument set, read storage dir from config file, otherwise save setting to config dir
-        if storagedir == None:
+        # If no argument set, read storage dir from config file,
+        # otherwise save setting to config dir
+        if storagedir is None:
             storagedir = self.config.get("general", "storage_folder")
         else:
             self.config.set("general", "storage_folder", storagedir)
