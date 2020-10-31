@@ -88,7 +88,7 @@ class UnRar(BaseExtractor):
 
         m = cls._RE_VERSION.search(out)
         if m is not None:
-            cls.VERSION = m.group(1)
+            cls.VERSION = to_str(m.group(1))
             cls._RE_FILES = cls._RE_FILES_V4 if float(cls.VERSION) < 5 else cls._RE_FILES_V5
 
         return True
@@ -101,6 +101,7 @@ class UnRar(BaseExtractor):
         p = self.call_cmd("l", "-v", self.filename, password=password)
         out, err = (r.strip() if r else "" for r in p.communicate())
 
+        err = to_str(err)
         if self._RE_BADPWD.search(err):
             raise PasswordError
 
@@ -109,7 +110,7 @@ class UnRar(BaseExtractor):
 
         #: Output only used to check if passworded files are present
         for groups in self._RE_FILES.findall(out):
-            if groups[0] == "*":
+            if groups[0] == b"*":
                 raise PasswordError
 
     def repair(self):
@@ -119,6 +120,7 @@ class UnRar(BaseExtractor):
         self.progress(p)
         out, err = (r.strip() if r else "" for r in p.communicate())
 
+        err = to_str(err)
         if err or p.returncode:
             p = self.call_cmd("r", self.filename)
 
@@ -145,7 +147,7 @@ class UnRar(BaseExtractor):
             if not c:
                 break
             #: Reading a percentage sign -> set progress and restart
-            if c == "%" and s:
+            if c == b"%" and s:
                 self.pyfile.set_progress(int(s))
                 s = ""
             #: Not reading a digit -> therefore restart
@@ -164,6 +166,7 @@ class UnRar(BaseExtractor):
         self.progress(p)
         out, err = (r.strip() if r else "" for r in p.communicate())
 
+        err=to_str(err)
         if err:
             if self._RE_BADPWD.search(err):
                 raise PasswordError
