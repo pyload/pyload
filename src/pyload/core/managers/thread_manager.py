@@ -220,8 +220,9 @@ class ThreadManager:
         retrieve current ip.
         """
         services = [
-            (r"http://icanhazip.com/", rb"(\S+)"),
+            ("http://icanhazip.com/", rb"(\S+)"),
             ("http://checkip.dyndns.org/", rb".*Current IP Address: (\S+)</body>.*"),
+            ("http://ifconfig.io/ip", rb"(\S+)"),
         ]
 
         ip = ""
