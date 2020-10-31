@@ -220,7 +220,7 @@ class ThreadManager:
         retrieve current ip.
         """
         services = [
-            (r"http://automation.whatismyip.com/n09230945.asp", r"(\S+)"),
+            (r"http://icanhazip.com/", r"(\S+)"),
             ("http://checkip.dyndns.org/", r".*Current IP Address: (\S+)</body>.*"),
         ]
 
