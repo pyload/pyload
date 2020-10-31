@@ -258,7 +258,7 @@ $(function() {
     });
 
     $("#action_play").click(function() {
-        $.get(window.location.pathname + "/../api/unpause_server", function () {
+        $.get("{{url_for("api.rpc", func="unpause_server")}}", function () {
             $.ajax({
                 method: "post",
                 url: "{{url_for("json.status")}}",
@@ -270,11 +270,11 @@ $(function() {
     });
 
     $("#action_cancel").click(function() {
-        $.get(window.location.pathname + "/../api/stop_all_downloads");
+        $.get("{{url_for("api.rpc", func="stop_all_downloads")}}");
     });
 
     $("#action_stop").click(function() {
-        $.get(window.location.pathname + "/../api/pause_server", function () {
+        $.get("{{url_for("api.rpc", func="pause_server")}}", function () {
             $.ajax({
                 method: "post",
                 url: "{{url_for("json.status")}}",
