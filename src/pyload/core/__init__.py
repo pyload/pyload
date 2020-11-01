@@ -115,8 +115,13 @@ class Core:
         else:
             self._debug = max(0, int(debug))
 
+        # If no argument set, read storage dir from config file,
+        # otherwise save setting to config dir
+        if storagedir is None:
+            storagedir = self.config.get("general", "storage_folder")
+        else:
+            self.config.set("general", "storage_folder", storagedir)
         os.makedirs(storagedir, exist_ok=True)
-        self.config.set("general", "storage_folder", storagedir)
 
         self.config.save()  #: save so config files gets filled
 
@@ -272,6 +277,11 @@ class Core:
             return
         self.webserver.start()
 
+    def _stop_webserver(self):
+        if not self.config.get("webui", "enabled"):
+            return
+        self.webserver.stop()
+
     def _get_args_for_reloading(self):
         """Determine how the script was executed, and return the args needed
         to execute it again in a new process.
@@ -341,8 +351,9 @@ class Core:
         try:
             self.log.debug("Starting core...")
 
-            debug_level = reversemap(self.DEBUG_LEVEL_MAP)[self.debug].upper()
-            self.log.debug(f"Debug level: {debug_level}")
+            if self.debug:
+                debug_level = reversemap(self.DEBUG_LEVEL_MAP)[self.debug].upper()
+                self.log.debug(f"Debug level: {debug_level}")
 
             # self.evm.fire('pyload:starting')
             self._running.set()
@@ -408,7 +419,9 @@ class Core:
         self.log.info(self._("pyLoad is restarting..."))
         # self.evm.fire('pyload:restarting')
         self.terminate()
-        os.chdir(sys.path[0])
+
+        if sys.path[0]:
+            os.chdir(sys.path[0])
 
         args = self._get_args_for_reloading()
         exit_code = subprocess.call(args, close_fds=True)
@@ -441,4 +454,6 @@ class Core:
         finally:
             self.files.sync_save()
             self._running.clear()
+            if self._do_restart:
+                self._stop_webserver()
             # self.evm.fire('pyload:stopped')
