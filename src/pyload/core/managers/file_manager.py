@@ -623,8 +623,8 @@ class FileManager:
         """
         deletes finished links and packages, return deleted packages.
         """
-        old_packs = self.get_info_data(0)
-        old_packs.update(self.get_info_data(1))
+        old_packs = self.get_info_data(Destination.QUEUE)
+        old_packs.update(self.get_info_data(Destination.COLLECTOR))
 
         self.pyload.db.delete_finished()
 
