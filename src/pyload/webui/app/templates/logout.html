@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block head %}
-<meta http-equiv="refresh" content="3; url={{'dashboard'}}">
+<meta http-equiv="refresh" content="3; url="{{url_for('app.dashboard')}}">
 {% endblock %}
 
 {% block content %}

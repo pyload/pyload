@@ -76,7 +76,7 @@
 {% endblock %}
 {% block hidden %}
 <div id="pack_box" class="window_box" style="z-index: 2;">
-  <form id="pack_form" action="/json/edit_package" method="POST" enctype="multipart/form-data">
+  <form id="pack_form" action="{{url_for('json.edit_package')}}" method="POST" enctype="multipart/form-data">
     <h1>{{_("Edit Package")}}</h1>
     <p>{{_("Edit the package detais below.")}}</p>
     <input name="pack_id" id="pack_id" type="hidden" value="" />

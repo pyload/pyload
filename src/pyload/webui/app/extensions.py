@@ -9,7 +9,9 @@ from pyload import APPID
 
 class Themes(_Themes):
     def init_app(self, app, path_prefix=""):
-        return super().init_themes(app, app_identifier=APPID, theme_url_prefix=path_prefix + "/_themes")
+        return super().init_themes(app,
+                                   app_identifier=APPID,
+                                   theme_url_prefix=path_prefix + "/_themes")
 
 
 babel = Babel()

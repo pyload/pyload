@@ -73,7 +73,7 @@
     <div class="modal-content">
       <div class="modal-header bg-info text-center" style="padding: 5px" >{{_('Edit Package')}}</div>
         <div class="modal-body" style="margin-bottom: 30px;">
-        <form id="pack_form" class="from-group" action="/json/edit_package" method="POST" enctype="multipart/form-data" style="margin-bottom: 40px;">
+        <form id="pack_form" class="from-group" action="{{url_for('json.edit_package')}}" method="POST" enctype="multipart/form-data" style="margin-bottom: 40px;">
           <p>{{_('Edit the package detais below')}}</p>
             <input name="pack_id" id="pack_id" type="hidden" value=""/>
             <div class="form-group">
