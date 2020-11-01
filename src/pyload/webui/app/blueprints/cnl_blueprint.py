@@ -13,7 +13,7 @@ from pyload.core.utils.misc import eval_js
 
 from .app_blueprint import bp as app_bp
 
-bp = flask.Blueprint("flash", __name__, url_prefix="/flash")
+bp = flask.Blueprint("flash", __name__)
 
 
 #: decorator
@@ -34,14 +34,14 @@ def local_check(func):
     return wrapper
 
 
-@bp.route("/", methods=["GET", "POST"], endpoint="index")
-@bp.route("/<id>", methods=["GET", "POST"], endpoint="index")
+@bp.route("/flash", methods=["GET", "POST"], endpoint="index")
+@bp.route("/flash/<id>", methods=["GET", "POST"], endpoint="index")
 @local_check
 def index(id="0"):
     return "JDownloader\r\n"
 
 
-@bp.route("/add", methods=["POST"], endpoint="add")
+@bp.route("/flash/add", methods=["POST"], endpoint="add")
 @local_check
 def add():
     package = flask.request.form.get(
@@ -64,7 +64,7 @@ def add():
     return "success\r\n"
 
 
-@bp.route("/addcrypted", methods=["POST"], endpoint="addcrypted")
+@bp.route("/flash/addcrypted", methods=["POST"], endpoint="addcrypted")
 @local_check
 def addcrypted():
     api = flask.current_app.config["PYLOAD_API"]
@@ -88,7 +88,7 @@ def addcrypted():
         return "success\r\n"
 
 
-@bp.route("/addcrypted2", methods=["POST"], endpoint="addcrypted2")
+@bp.route("/flash/addcrypted2", methods=["POST"], endpoint="addcrypted2")
 @local_check
 def addcrypted2():
     package = flask.request.form.get(
@@ -121,8 +121,8 @@ def addcrypted2():
         return "success\r\n"
 
 
-@app_bp.route("/flashgot", methods=["POST"], endpoint="flashgot")
-@app_bp.route("/flashgot_pyload", methods=["POST"], endpoint="flashgot")
+@app_bp.route("/flash/flashgot", methods=["POST"], endpoint="flashgot")
+@app_bp.route("/flash/flashgot_pyload", methods=["POST"], endpoint="flashgot")
 @local_check
 def flashgot():
     if flask.request.referrer not in (
@@ -143,7 +143,7 @@ def flashgot():
         api.generate_and_add_packages(urls, autostart)
 
 
-@app_bp.route("/crossdomain.xml", endpoint="crossdomain")
+@app_bp.route("/flash/crossdomain.xml", endpoint="crossdomain")
 @local_check
 def crossdomain():
     rep = '<?xml version="1.0"?>\n'
@@ -154,7 +154,7 @@ def crossdomain():
     return rep
 
 
-@bp.route("/check_support_for_url", methods=["POST"], endpoint="checksupport")
+@bp.route("/flash/check_support_for_url", methods=["POST"], endpoint="checksupport")
 @local_check
 def checksupport():
     api = flask.current_app.config["PYLOAD_API"]
@@ -166,7 +166,7 @@ def checksupport():
     return str(supported).lower()
 
 
-@app_bp.route("/jdcheck.js", endpoint="jdcheck")
+@app_bp.route("/flash/jdcheck.js", endpoint="jdcheck")
 @local_check
 def jdcheck():
     rep = "jdownloader=true;\n"
