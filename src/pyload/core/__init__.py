@@ -252,7 +252,8 @@ class Core:
         try:
             self.set_language(lang)
         except IOError as exc:
-            self.log.warning(exc, exc_info=self.debug > 1, stack_info=self.debug > 2)
+            if lang != "en":
+                self.log.warning(exc, exc_info=self.debug > 1, stack_info=self.debug > 2)
             self._set_language(self.LOCALE_DOMAIN, fallback=True)
 
     # def _setup_niceness(self):
@@ -360,7 +361,6 @@ class Core:
 
             self._setup_language()
             self._setup_permissions()
-
             self.log.info(self._("User directory: {}").format(self.userdir))
             self.log.info(self._("Cache directory: {}").format(self.tempdir))
 

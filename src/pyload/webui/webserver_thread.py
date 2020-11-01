@@ -28,10 +28,11 @@ class WebServerThread(threading.Thread):
         self.host = self.pyload.config.get("webui", "host")
         self.port = self.pyload.config.get("webui", "port")
         self.prefix = self.pyload.config.get("webui", "prefix")
+        locale = self.pyload.config.get("general", "language")
 
         # NOTE: Is really the right choice pass the pycore obj directly to app?!
         #       Or should we pass just core.api and server.logger instead?
-        self.app = App(self.pyload, self.develop)
+        self.app = App(self.pyload, self.develop, self.prefix, locale)
         self.log = self.app.logger
 
     def _run_develop(self):
@@ -66,8 +67,7 @@ class WebServerThread(threading.Thread):
 
 
     def run(self):
-        self.log.warning(
-            self._("Starting webserver: {scheme}://{host}:{port}").format(
+        self.log.warning("Starting webserver: {scheme}://{host}:{port}".format(
                 scheme="https" if self.use_ssl else "http", host=self.host, port=self.port
             )
         )
