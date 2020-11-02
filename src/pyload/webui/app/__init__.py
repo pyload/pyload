@@ -42,10 +42,8 @@ class App:
     @classmethod
     def _configure_blueprints(cls, app, path_prefix):
         for blueprint in cls.FLASK_BLUEPRINTS:
-            prefix = None
-            if not blueprint.url_prefix:
-                prefix = path_prefix
-            app.register_blueprint(blueprint, url_prefix=prefix)
+            url_prefix = path_prefix if not blueprint.url_prefix else None
+            app.register_blueprint(blueprint, url_prefix=url_prefix)
 
     @classmethod
     def _configure_extensions(cls, app):
