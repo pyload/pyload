@@ -18,7 +18,7 @@ SettingsUI = (function() {
         let c, e, b, d;
 
         $("#quit_box").on('click', '#quit_button', function () {
-            $.get("/api/kill", function() {
+            $.get("{{url_for('api.rpc', func='kill')}}", function() {
                 $('#quit_box').modal('hide');
                 $('#content').addClass("hidden");
                 $('#shutdown_msg').removeClass("hidden");
@@ -29,12 +29,12 @@ SettingsUI = (function() {
         });
 
         $("#restart_box").on('click', '#restart_button', function () {
-            $.get("/api/restart", function() {
+            $.get("{{url_for('api.rpc', func='restart')}}", function() {
                 $('#restart_box').modal('hide');
                 $('#content').addClass("hidden");
                 $('#restart_msg').removeClass("hidden");
                 setTimeout(function() {
-                    window.location = "/dashboard";
+                    window.location = "{{url_for('app.dashboard')}}";
                 }, 10000);
             })
             .fail(function () {
@@ -124,7 +124,7 @@ SettingsUI = (function() {
         d = $(this).attr('id').split('|'), c = d[0], g = d[1];
         b = $(this).text();
         f = c === 'general' ? generalPanel : pluginPanel;
-        $.get( "/json/load_config/" + c + '/' + g, function(e) {
+        $.get( window.location.pathname + "/../json/load_config/" + c + '/' + g, function(e) {
                 f.html(e);
             });
     };
@@ -133,7 +133,7 @@ SettingsUI = (function() {
         c = $(this).attr('id').split("_")[0];
         $.ajax({
             method: "post",
-            url: "/json/save_config/" + c,
+            url: window.location.pathname + "/../json/save_config/" + c,
             data: $("#" + c + "_form").serialize(),
             async: true,
             success: function () {
@@ -150,7 +150,7 @@ SettingsUI = (function() {
         $(this).addClass("disabled");
         $.ajax({
             method: "post",
-            url: "/json/add_account",
+            url: "{{url_for('json.add_account')}}",
             async: true,
             data: $("#add_account_form").serialize(),
             success: function () {
@@ -167,7 +167,7 @@ SettingsUI = (function() {
         indicateLoad();
         $.ajax({
             method: "post",
-            url: "/json/update_accounts",
+            url: "{{url_for('json.update_accounts')}}",
             data: $("#account_form").serialize(),
             async: true,
             success: function () {

@@ -81,7 +81,7 @@
     </form>
   </div>
   <div id="accounts" class="tab-pane fade">
-    <form id="account_form" action="/json/update_accounts" method="POST">
+    <form id="account_form" action="{{url_for('json.update_accounts')}}" method="POST">
       <table class="settable wide table">
         <thead>
         <tr>
@@ -150,7 +150,7 @@
     <div class="modal-content">
       <div class="modal-header bg-info text-center" style="padding: 5px"> {{_('Add Account')}}</div>
       <div class="modal-body" style="margin-bottom: 30px;">
-        <form id="add_account_form" action="/json/add_account" method="POST" enctype="multipart/form-data" style="margin-bottom: 40px;">
+        <form id="add_account_form" action="{{url_for('json.add_account')}}" method="POST" enctype="multipart/form-data" style="margin-bottom: 40px;">
           <p>{{_('Enter your account data to use premium features')}}</p>
           <div class="form-group">
             <label for="account_login">{{_('Login')}}</label>

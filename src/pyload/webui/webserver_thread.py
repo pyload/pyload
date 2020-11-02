@@ -31,7 +31,7 @@ class WebServerThread(threading.Thread):
 
         # NOTE: Is really the right choice pass the pycore obj directly to app?!
         #       Or should we pass just core.api and server.logger instead?
-        self.app = App(self.pyload, self.develop)
+        self.app = App(self.pyload, self.develop, self.prefix)
         self.log = self.app.logger
 
     def _run_develop(self):
@@ -40,7 +40,7 @@ class WebServerThread(threading.Thread):
         self.app.run(self.host, self.port, use_reloader=False)
 
     def _run_produc(self):
-        bind_path = self.prefix.strip("/") + "/"
+        bind_path = "/"
         bind_addr = (self.host, self.port)
         wsgi_app = wsgi.PathInfoDispatcher({bind_path: self.app})
         self.server = wsgi.Server(bind_addr, wsgi_app)

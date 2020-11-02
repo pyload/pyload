@@ -5,7 +5,7 @@
       <div class="modal-header bg-info text-center" style="cursor: move; padding: 5px">{{_('Add Package')}}</div>
       <div class="modal-body text-left" style="cursor: move;">
         <div id="cap_title">{{_('Paste your links or upload a container.')}}</div>
-        <form id="add_form" class="form-group" action="/json/add_package" method="POST" enctype="multipart/form-data" style="margin-bottom: 40px;">
+        <form id="add_form" class="form-group" action="{{url_for('json.add_package')}}" method="POST" enctype="multipart/form-data" style="margin-bottom: 40px;">
           <div class="form-group">
             <label for="add_name">{{_('Name')}}</label>
             <input id="add_name" class="form-control" name="add_name" type="text"/>
