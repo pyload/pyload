@@ -31,7 +31,7 @@ class WebServerThread(threading.Thread):
 
         # NOTE: Is really the right choice pass the pycore obj directly to app?!
         #       Or should we pass just core.api and server.logger instead?
-        self.app = App(self.pyload, self.develop)
+        self.app = App(self.pyload, self.develop, self.prefix)
         self.log = self.app.logger
 
     def _run_develop(self):
