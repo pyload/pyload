@@ -272,7 +272,7 @@ function Package (ui, id, ele){
 
     this.deletePackage = function(event) {
         indicateLoad();
-        $.get(window.location.pathname + "/../json/delete_packages/[" + id + "]", function () {
+        $.get("{{url_for('api.rpc', func='delete_packages')}}/[" + id + "]", function () {
             $(ele).remove();
             indicateFinish();
         }).fail(function () {

@@ -281,7 +281,7 @@ var Package = new Class({
         indicateLoad();
         new Request({
             method: 'get',
-            url: window.location.pathname + "/../json/delete_packages/[" + this.id + ']',
+            url: "{{url_for('api.rpc', func='delete_packages')}}/[" + this.id + ']',
             onSuccess: function() {
                 this.ele.nix();
                 indicateFinish();

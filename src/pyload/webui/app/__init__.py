@@ -117,7 +117,7 @@ class App:
         cls._configure_session(app)
         cls._configure_blueprints(app, path_prefix)
         cls._configure_extensions(app)
-        cls._configure_themes(app, path_prefix)
+        cls._configure_themes(app, path_prefix or "")
         cls._configure_handlers(app)
 
         return app
