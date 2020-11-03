@@ -27,7 +27,7 @@ class HotFolder(BaseAddon):
     __authors__ = [("RaNaN", "RaNaN@pyload.de")]
 
     def activate(self):
-        interval = max(self.config.get('interval'), 20)
+        interval = max(self.config.get('interval') or 0, 20)
         self.periodical.start(interval, threaded=True)
 
     def periodical_task(self):
