@@ -67,7 +67,7 @@ class RapidgatorNet(SimpleDownloader):
         (r"(//rapidgator.net/file/[0-9A-z]+).*", r"\1"),
     ]
     URL_REPLACEMENTS = [(__pattern__ + ".*", r"https://rapidgator.net/file/\g<ID>")]
-    
+
     API_URL = "https://rapidgator.net/api/"
 
     def api_response(self, method, **kwargs):
@@ -114,6 +114,9 @@ class RapidgatorNet(SimpleDownloader):
 
     def check_errors(self):
         SimpleDownloader.check_errors(self)
+        if isinstance(self.data, bytes):
+            self.log_debug(self._("No check on binary data"))
+            return
         m = re.search(self.DOWNLOAD_LIMIT_ERROR_PATTERN, self.data)
         if m is not None:
             self.log_warning(m.group(0))
