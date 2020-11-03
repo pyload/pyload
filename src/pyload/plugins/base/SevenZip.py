@@ -75,7 +75,7 @@ class SevenZip(BaseExtractor):
     )
     _RE_BADCRC = re.compile(r"CRC Failed|Can not open file", re.I)
     _RE_VERSION = re.compile(
-        r"7-Zip\s(?:\(\w+\)\s)?(?:\[(?:32|64)\]\s)?(\d+\.\d+)", re.I
+        rb"7-Zip\s(?:\(\w+\)\s)?(?:\[(?:32|64)\]\s)?(\d+\.\d+)", re.I
     )
 
     @classmethod
@@ -194,7 +194,7 @@ class SevenZip(BaseExtractor):
             f = groups[-1].strip()
             if not self.fullpath:
                 f = os.path.basename(f)
-            files.add(fsjoin(self.dest, f))
+            files.add(os.path.join(self.dest, f))
 
         self.files = list(files)
 
