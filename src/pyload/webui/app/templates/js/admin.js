@@ -56,7 +56,7 @@ document.addEvent("domready", function() {
     $('quit-pyload').addEvent("click", function(e) {
         new MooDialog.Confirm("{{_('You are really sure you want to quit pyLoad?')}}", function() {
             return new Request.JSON({
-                url: '/api/kill',
+                url: "{{url_for('api.rpc', func='kill')}}",
                 method: 'get'
             }).send();
         }
@@ -67,7 +67,7 @@ document.addEvent("domready", function() {
     return $('restart-pyload').addEvent("click", function(e) {
         new MooDialog.Confirm("{{_('Are you sure you want to restart pyLoad?')}}", function() {
             return new Request.JSON({
-                  url: '/api/restart',
+                  url: "{{url_for('api.rpc', func='restart')}}",
                   method: 'get',
                   onSuccess(data) { return alert("{{_('pyLoad restarted')}}"); }
             }).send();

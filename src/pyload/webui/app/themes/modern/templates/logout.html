@@ -1,0 +1,14 @@
+{% extends theme('base.html') %}
+
+{% block head %}
+<meta http-equiv="refresh" content="5; url='/'">
+<link rel="stylesheet" type="text/css" href="{{theme_static('css/logout.css')}}" />
+{% endblock %}
+
+{% block content %}
+<div class="col-sm-4 col-sm-offset-4">
+  <div align="center" class="alert alert-success" style="padding:8px;">
+    <p>{{_('You were successfully logged out.')}}</p>
+  </div>
+</div>
+{% endblock %}

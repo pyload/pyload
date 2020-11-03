@@ -10,7 +10,7 @@ document.addEvent("domready", function(){
 var EntryManager = new Class({
     initialize: function(){
         this.json = new Request.JSON({
-            url: "/json/links",
+            url: "{{url_for('json.links')}}",
             secure: false,
             async: true,
             onSuccess: this.update.bind(this),
@@ -163,7 +163,7 @@ var LinkEntry = new Class({
 
         this.elements.remove.addEvent('click', function(){
             new Request({
-                method: 'get', url: '/json/abort_link/' + this.id
+                method: 'get', url: window.location.pathname + "/../json/abort_link/" + this.id
             }).send();
         }.bind(this));
 

@@ -1,0 +1,101 @@
+{% extends theme('base.html') %}
+{% block head %}
+{% endblock %}
+
+{% block footer %}
+<script type="text/javascript" src="{{theme_template('js/packages.js')}}"></script>
+<script type="text/javascript">
+  $(function() {
+      var pUI = new PackageUI({{ target }});
+  });
+</script>
+{% endblock %}
+
+{% if target %}
+    {% set name = _("Queue") %}
+{% else %}
+    {% set name = _("Packages") %}
+{% endif %}
+
+{% block pageactions %}
+  <div class="btn-group btn-group-sm" role="group" aria-label="...">
+    <button id="del_finished" type="button" class="btn btn-default" title="{{_('Clear Finished')}}"><span class="glyphicon glyphicon-trash"></span>&nbsp;</button>
+    <button id="restart_failed" type="button" class="btn btn-default" title="{{_('Restart Failed')}}"><span class="glyphicon glyphicon-refresh"></span>&nbsp;</button>
+  </div>
+{% endblock %}
+
+{% block title %}pyLoad - {{name}}{% endblock %} -->
+{#{% block subtitle %}{{name}}{% endblock %}#}
+
+{% block content %}
+<ul id="package-list" style="list-style: none; padding-left: 0; margin-top: -10px;">
+{% for package in content %}
+    <li id="package_{{package.pid}}" class="left width100">
+      <div class="left width100">
+        <div class="order" style="display: none;">{{package.order}}</div>
+
+        <div class="packagename col-xs-8 col-sm-8 breakWords" style="cursor: pointer">
+          <span class="packageicon glyphicon glyphicon-folder-close" style="margin-right: 5px;"></span>
+          <span class="name" style="font-size: 16px; font-weight: bold;">{{package.name}}</span>
+          <span class="buttons" style="opacity:0">
+            <span class="glyphicon glyphicon-trash" title="{{_('Delete Package')}}" style="margin-left: 10px; color:#555; cursor: pointer; width:12px; height:12px;" ></span>
+            <span class="glyphicon glyphicon-repeat" title="{{_('Restart Package')}}" style=" cursor: pointer; color:#555; height:12px;" ></span>
+            <span class="glyphicon glyphicon-pencil" title="{{_('Edit Package')}}" style="cursor: pointer; color:#555; height:12px;" ></span>
+            <span class="glyphicon glyphicon-transfer" title="{{_('Move Package To')}} {% if target %}{{_('Collector')}}{% else %}{{_('Queue')}}{% endif %}" style="cursor: pointer; color:#555; height:12px;" ></span>
+            <span class="glyphicon glyphicon-sort" title="{{_('Reverse Entries')}}" style="cursor: pointer; color:#555; height:12px;" ></span>
+          </span>
+         </div>
+        {% set progress = (package.linksdone * 100) / package.linkstotal %}
+
+        <div id="progress" class="progress col-xs-4 col-sm-4 noPadding" style="color:#fff; font-weight: 700; font-size:12px; cursor: grab; margin-bottom: 15px;">
+            <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar" style="width: {{progress}}%; height: 100%; position: relative; z-index: 1; text-align:left;"> </div>
+            <label style="left:10px; line-height: 20px; position: absolute; z-index: 2; color: #000;">{{package.linksdone}} / {{package.linkstotal}}</label>
+            <label class="hidden-xs" style="line-height: 20px; right: 30px; position: absolute; z-index: 2; color:#000;">{{package.sizedone|formatsize}} / {{package.sizetotal|formatsize}}</label>
+        </div>
+
+        <div id="children_{{package.pid}}" style="display: none; margin-bottom: 15px;" class="children clear">
+          <div class="child_secrow col-xs-12" style="margin-bottom: 15px; margin-top: 5px;">
+            <div class="col-xs-6">{{_('Folder:')}} <span class="folder">{{package.folder}}</span></div>
+            <div class="col-xs-3">{{_('Password:')}} <span class="password">{{package.password}}</span></div>
+          </div>
+          <ul id="sort_children_{{package.pid}}" class="clear" style="list-style: none; padding-left: 0"></ul>
+        </div>
+      </div>
+    </li>
+{% endfor %}
+</ul>
+{% endblock %}
+
+{% block dialog %}
+<div id="pack_box" class="modal" role="dialog">
+  <div class="modal-dialog modal-sm">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header bg-info text-center" style="padding: 5px" >{{_('Edit Package')}}</div>
+        <div class="modal-body" style="margin-bottom: 30px;">
+        <form id="pack_form" class="from-group" action="{{url_for('json.edit_package')}}" method="POST" enctype="multipart/form-data" style="margin-bottom: 40px;">
+          <p>{{_('Edit the package detais below')}}</p>
+            <input name="pack_id" id="pack_id" type="hidden" value=""/>
+            <div class="form-group">
+                <label for="pack_name">{{_('Name')}}</label>
+                <input class="form-control" id="pack_name" name="pack_name" type="text" />
+                <p class="help-block">{{_('The name of the package')}}</p>
+            </div>
+            <div class="form-group">
+                <label for="pack_folder">{{_('Folder')}}</label>
+                <input class="form-control" id="pack_folder" name="pack_folder" type="text" />
+                <p class="help-block">{{_('Name of subfolder for these downloads')}}</p>
+            </div>
+            <div class="form-group">
+                <label for="pack_pws">{{_('Password')}}</label>
+                <input class="form-control" name="pack_pws" id="pack_pws" type="text" />
+                <p class="help-block">{{_('The package password')}}</p>
+            </div>
+          <button class="btn btn-primary" type="submit" style="float: right">{{_('Submit')}}</button>
+          <button class="btn btn-warning" id="pack_reset" data-dismiss="modal" style="margin-right: 5px; float: right" type="reset">{{_('Cancel')}}</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

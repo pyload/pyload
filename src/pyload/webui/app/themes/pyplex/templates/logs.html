@@ -10,7 +10,7 @@
 {% block content %}
 <div class="clear"></div>
 
-<div class="logpaginator"><a href="/logs/1"><span class="glyphicon glyphicon-fast-backward"></span></a> <a href="/logs/{{iprev}}"><span class="glyphicon glyphicon-step-backward"></span></a>  <a href="/logs/{{inext}}"><span class="glyphicon glyphicon-step-forward"></span></a> <a href="/logs"><span class="glyphicon glyphicon-fast-forward"></span></a></div>
+<div class="logpaginator"><a href="{{url_for('app.logs', start_line=1)}}"><span class="glyphicon glyphicon-fast-backward"></span></a> <a href="{{url_for('app.logs')}}/{{iprev}}"><span class="glyphicon glyphicon-step-backward"></span></a>  <a href="{{url_for('app.logs')}}/{{inext}}"><span class="glyphicon glyphicon-step-forward"></span></a> <a href="/logs"><span class="glyphicon glyphicon-fast-forward"></span></a></div>
 <div class="logperpage" style="float: right;">
   <form id="logform1" action="" method="POST">
     <label for="reversed">{{_('Reversed')}}:</label>
