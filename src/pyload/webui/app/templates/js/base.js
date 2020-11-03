@@ -11,7 +11,7 @@
 {% autoescape true %}
 
 // External scope
-const root = this;
+var root = this;
 
 // helper functions
 const humanFileSize = function(size) {
@@ -89,9 +89,9 @@ document.addEvent("domready", function() {
     $('add_reset').addEvent('click', () => root.addBox.close());
 
     $('action_add').addEvent('click', function() { $("add_form").reset(); return root.addBox.open(); });
-    $('action_play').addEvent('click', () => new Request({method: 'get', url: '/api/unpause_server'}).send());
-    $('action_cancel').addEvent('click', () => new Request({method: 'get', url: '/api/stop_all_downloads'}).send());
-    $('action_stop').addEvent('click', () => new Request({method: 'get', url: '/api/pause_server'}).send());
+    $('action_play').addEvent('click', () => new Request({method: 'get', url: "{{url_for('api.rpc', func='unpause_server')}}"}).send());
+    $('action_cancel').addEvent('click', () => new Request({method: 'get', url: "{{url_for('api.rpc', func='stop_all_downloads')}}"}).send());
+    $('action_stop').addEvent('click', () => new Request({method: 'get', url: "{{url_for('api.rpc', func='pause_server')}}"}).send());
 
 
     // captcha events
@@ -109,7 +109,7 @@ document.addEvent("domready", function() {
     $('cap_positional').addEvent('click', on_captcha_click);
 
     return new Request.JSON({
-        url: '/json/status',
+        url: "{{url_for('json.status')}}",
         onSuccess: LoadJsonToContent,
         secure: false,
         async: true,
@@ -178,7 +178,7 @@ const set_captcha = function(data) {
 
 var load_captcha = (method, post) =>
     new Request.JSON({
-        url: '/json/set_captcha',
+        url: "{{url_for('json.set_captcha')}}",
         onSuccess(data) { if (data.captcha) { return set_captcha(data); } else { return clear_captcha(); } },
         secure: false,
         async: true,

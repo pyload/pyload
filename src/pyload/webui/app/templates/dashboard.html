@@ -6,7 +6,7 @@
 {% endblock %} {% block subtitle %} {{_("Active Connections")}} {% endblock %}
 {% block menu %}
 <li class="selected">
-  <a href="{{'dashboard'}}" title=""
+  <a href="{{url_for('app.dashboard')}}" title=""
     ><img
       src="{{url_for('static', filename='img/head-menu-home.png')}}"
       alt=""
@@ -15,7 +15,7 @@
   >
 </li>
 <li>
-  <a href="/queue" title=""
+  <a href="{{url_for('app.queue')}}" title=""
     ><img
       src="{{url_for('static', filename='img/head-menu-queue.png')}}"
       alt=""
@@ -24,7 +24,7 @@
   >
 </li>
 <li>
-  <a href="/collector" title=""
+  <a href="{{url_for('app.collector')}}" title=""
     ><img
       src="{{url_for('static', filename='img/head-menu-collector.png')}}"
       alt=""
@@ -33,7 +33,7 @@
   >
 </li>
 <li>
-  <a href="/files" title=""
+  <a href="{{url_for('app.files')}}" title=""
     ><img
       src="{{url_for('static', filename='img/head-menu-development.png')}}"
       alt=""
@@ -45,7 +45,7 @@
 <!-- <a href="/filemanager" title=""><img src="{{url_for('static', filename='img/head-menu-download.png')}}" alt="" /> {{_("File Manager")}}</a> -->
 <!-- </li> -->
 <li class="right">
-  <a href="/logs" class="action index" accesskey="x" rel="nofollow"
+  <a href="{{url_for('app.logs')}}" class="action index" accesskey="x" rel="nofollow"
     ><img
       src="{{url_for('static', filename='img/head-menu-index.png')}}"
       alt=""
@@ -53,7 +53,7 @@
   >
 </li>
 <li class="right">
-  <a href="/settings" class="action index" accesskey="x" rel="nofollow"
+  <a href="{{url_for('app.settings')}}" class="action index" accesskey="x" rel="nofollow"
     ><img
       src="{{url_for('static', filename='img/head-menu-config.png')}}"
       alt=""

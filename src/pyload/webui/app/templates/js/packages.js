@@ -15,8 +15,6 @@ document.addEvent("domready", function() {
         $('pack_form').reset();
         root.packageBox.close();
     });
-
-    var pUI = new PackageUI("url", {{target}});
 });
 
 function indicateLoad() {
@@ -41,10 +39,10 @@ function indicateFail() {
     });
 }
 var PackageUI = new Class({
-    initialize: function(url, type) {
-        this.url = url;
+    initialize: function(type) {
         this.type = type;
         this.packages = [];
+
         this.parsePackages();
         this.sorts = new Sortables($("package-list"), {
             constrain: false,
@@ -68,7 +66,7 @@ var PackageUI = new Class({
         indicateLoad();
         new Request.JSON({
             method: 'get',
-            url: '/api/delete_finished',
+            url: "{{url_for('api.rpc', func='delete_finished')}}",
             onSuccess: function(data) {
                 if (data.length > 0) {
                     window.location.reload()
@@ -86,7 +84,7 @@ var PackageUI = new Class({
         indicateLoad();
         new Request.JSON({
             method: 'get',
-            url: '/api/restart_failed',
+            url: "{{url_for('api.rpc', func='restart_failed')}}",
             onSuccess: function(data) {
                 this.packages.each(function(pack) {
                     pack.close();
@@ -109,7 +107,7 @@ var PackageUI = new Class({
             indicateLoad();
             new Request.JSON({
                 method: 'get',
-                url: '/json/package_order/' + order[0],
+                url: window.location.pathname + "/../json/package_order/" + order[0],
                 onSuccess: indicateFinish,
                 onFailure: indicateFail
             }).send();
@@ -160,7 +158,7 @@ var Package = new Class({
         indicateLoad();
         new Request.JSON({
             method: 'get',
-            url: '/json/package/' + this.id,
+            url: window.location.pathname + "/../json/package/" + this.id,
             onSuccess: this.createLinks.bind(this),
             onFailure: indicateFail
         }).send();
@@ -243,7 +241,7 @@ var Package = new Class({
             imgs[0].addEvent('click', function(e) {
                 new Request({
                     method: 'get',
-                    url: '/api/delete_files/[' + this + ']',
+                    url: "{{url_for('api.rpc', func='delete_files')}}/[" + this + ']',
                     onSuccess: function() {
                         $('file_' + this).nix()
                     }.bind(this),
@@ -253,7 +251,7 @@ var Package = new Class({
             imgs[1].addEvent('click', function(e) {
                 new Request({
                     method: 'get',
-                    url: '/api/restart_file/' + this,
+                    url: "{{url_for('api.rpc', func='restart_file')}}/" + this,
                     onSuccess: function() {
                         var ele = $('file_' + this);
                         var imgs = ele.getElements("img");
@@ -283,7 +281,7 @@ var Package = new Class({
         indicateLoad();
         new Request({
             method: 'get',
-            url: '/api/delete_packages/[' + this.id + ']',
+            url: "{{url_for('api.rpc', func='delete_packages')}}/[" + this.id + ']',
             onSuccess: function() {
                 this.ele.nix();
                 indicateFinish();
@@ -296,7 +294,7 @@ var Package = new Class({
         indicateLoad();
         new Request({
             method: 'get',
-            url: '/api/restart_package/' + this.id,
+            url: "{{url_for('api.rpc', func='restart_package')}}/" + this.id,
             onSuccess: function() {
                 this.close();
                 indicateSuccess();
@@ -320,7 +318,7 @@ var Package = new Class({
         indicateLoad();
         new Request({
             method: 'get',
-            url: '/json/move_package/' + ((this.ui.type + 1) % 2) + '|' + this.id,
+            url: window.location.pathname + "/../json/move_package/" + ((this.ui.type + 1) % 2) + '/' + this.id,
             onSuccess: function() {
                 this.ele.nix();
                 indicateFinish();
@@ -359,7 +357,7 @@ var Package = new Class({
             indicateLoad();
             new Request.JSON({
                 method: 'get',
-                url: '/json/link_order/' + order[0],
+                url: window.location.pathname + "/../json/link_order/" + order[0],
                 onSuccess: indicateFinish,
                 onFailure: indicateFail
             }).send();
