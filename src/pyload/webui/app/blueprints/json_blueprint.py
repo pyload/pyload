@@ -74,12 +74,13 @@ def packages():
     return jsonify(False)
 
 
-@bp.route("/json/package/<int:id>", endpoint="package")
+@bp.route("/json/package", endpoint="package")
 # @apiver_check
 @login_required("LIST")
-def package(id):
+def package():
     api = flask.current_app.config["PYLOAD_API"]
     try:
+        id = int(flask.request.args.get('id'))
         data = api.get_package_data(id)
 
         tmp = data["links"]
@@ -93,12 +94,14 @@ def package(id):
     return jsonify(False)
 
 
-@bp.route("/json/package_order/<int:pid>|<int:pos>", endpoint="package_order")
+@bp.route("/json/package_order", endpoint="package_order")
 # @apiver_check
 @login_required("ADD")
-def package_order(pid, pos):
+def package_order():
     api = flask.current_app.config["PYLOAD_API"]
     try:
+        pid = int(flask.request.args.get('pid'))
+        pos = int(flask.request.args.get('pos'))
         api.order_package(pid, pos)
         return jsonify(response="success")
     except Exception:
@@ -107,12 +110,13 @@ def package_order(pid, pos):
     return jsonify(False)
 
 
-@bp.route("/json/abort_link/<int:id>", endpoint="abort_link")
+@bp.route("/json/abort_link", endpoint="abort_link")
 # @apiver_check
 @login_required("DELETE")
-def abort_link(id):
+def abort_link():
     api = flask.current_app.config["PYLOAD_API"]
     try:
+        id = int(flask.request.args.get('id'))
         api.stop_downloads([id])
         return jsonify(response="success")
     except Exception:
@@ -121,12 +125,14 @@ def abort_link(id):
     return jsonify(False)
 
 
-@bp.route("/json/link_order/<int:fid>|<int:pos>", endpoint="link_order")
+@bp.route("/json/link_order", endpoint="link_order")
 # @apiver_check
 @login_required("ADD")
-def link_order(fid, pos):
+def link_order():
     api = flask.current_app.config["PYLOAD_API"]
     try:
+        fid = int(flask.request.args.get('fid'))
+        pos = int(flask.request.args.get('pos'))
         api.order_file(fid, pos)
         return jsonify(response="success")
     except Exception:
@@ -170,12 +176,14 @@ def add_package():
     return jsonify(True)
 
 
-@bp.route("/json/move_package/<int:dest>|<int:id>", endpoint="move_package")
+@bp.route("/json/move_package", endpoint="move_package")
 # @apiver_check
 @login_required("MODIFY")
-def move_package(dest, id):
+def move_package():
     api = flask.current_app.config["PYLOAD_API"]
     try:
+        id = int(flask.request.args.get('id'))
+        dest = int(flask.request.args.get('dest'))
         api.move_package(dest, id)
         return jsonify(response="success")
     except Exception:
@@ -231,13 +239,18 @@ def set_captcha():
     return jsonify(data)
 
 
-@bp.route("/json/load_config/<category>/<section>", endpoint="load_config")
+@bp.route("/json/load_config", endpoint="load_config")
 # @apiver_check
 # @login_required("SETTINGS")
-def load_config(category, section):
+def load_config():
+    category = flask.request.args.get('category')
+    section = flask.request.args.get('section')
+    if category not in ("core", "plugin") or not section:
+        flask.abort(500)
+
     conf = None
     api = flask.current_app.config["PYLOAD_API"]
-    if category == "general":
+    if category == "core":
         conf = api.get_config_dict()
     elif category == "plugin":
         conf = api.get_plugin_config_dict()
@@ -252,19 +265,20 @@ def load_config(category, section):
     return render_template("settings_item.html", skey=section, section=conf[section])
 
 
-@bp.route("/json/save_config/<category>", methods=["POST"], endpoint="save_config")
+@bp.route("/json/save_config", methods=["POST"], endpoint="save_config")
 # @apiver_check
 @login_required("SETTINGS")
-def save_config(category):
+def save_config():
     api = flask.current_app.config["PYLOAD_API"]
+    category = flask.request.args.get('category')
+    if category not in ("core", "plugin"):
+        flask.abort(500)
+
     for key, value in flask.request.form.items():
         try:
             section, option = key.split("|")
         except Exception:
             continue
-
-        if category == "general":
-            category = "core"
 
         api.set_config_value(section, option, value, category)
 

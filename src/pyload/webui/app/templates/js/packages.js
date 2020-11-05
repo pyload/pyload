@@ -1,40 +1,38 @@
 {% autoescape true %}
 
-var root = this;
-
 document.addEvent("domready", function() {
-    root.load = new Fx.Tween($("load-indicator"), {
+    window.load = new Fx.Tween($("load-indicator"), {
         link: "cancel"
     });
-    root.load.set("opacity", 0);
-    root.packageBox = new MooDialog({
+    window.load.set("opacity", 0);
+    window.packageBox = new MooDialog({
         destroyOnHide: false
     });
-    root.packageBox.setContent($('pack_box'));
+    window.packageBox.setContent($('pack_box'));
     $('pack_reset').addEvent('click', function() {
         $('pack_form').reset();
-        root.packageBox.close();
+        window.packageBox.close();
     });
 });
 
 function indicateLoad() {
-    root.load.start("opacity", 1)
+    window.load.start("opacity", 1)
 }
 
 function indicateFinish() {
-    root.load.start("opacity", 0)
+    window.load.start("opacity", 0)
 }
 
 function indicateSuccess() {
     indicateFinish();
-    root.notify.alert('{{_("Success")}}', {
+    window.notify.alert('{{_("Success")}}', {
         'className': 'success'
     });
 }
 
 function indicateFail() {
     indicateFinish();
-    root.notify.alert('{{_("Failed")}}', {
+    window.notify.alert('{{_("Failed")}}', {
         'className': 'error'
     });
 }
@@ -105,9 +103,12 @@ var PackageUI = new Class({
         });
         if (order.length > 0) {
             indicateLoad();
+            let pid = order[0].split("|")[0]
+            let pos = order[0].split("|")[1]
             new Request.JSON({
                 method: 'get',
-                url: window.location.pathname + "/../json/package_order/" + order[0],
+                url: "{{url_for('json.package_order')}}",
+                data: {pid: pid, pos: pos},
                 onSuccess: indicateFinish,
                 onFailure: indicateFail
             }).send();
@@ -158,7 +159,8 @@ var Package = new Class({
         indicateLoad();
         new Request.JSON({
             method: 'get',
-            url: window.location.pathname + "/../json/package/" + this.id,
+            url: "{{url_for('json.package')}}",
+            data: {id: + this.id},
             onSuccess: this.createLinks.bind(this),
             onFailure: indicateFail
         }).send();
@@ -318,7 +320,8 @@ var Package = new Class({
         indicateLoad();
         new Request({
             method: 'get',
-            url: window.location.pathname + "/../json/move_package/" + ((this.ui.type + 1) % 2) + '/' + this.id,
+            url: "{{url_for('json.move_package')}}",
+            data: {id: this.id, dest: ((this.ui.type + 1) % 2)},
             onSuccess: function() {
                 this.ele.nix();
                 indicateFinish();
@@ -334,7 +337,7 @@ var Package = new Class({
         $("pack_name").set("value", this.name.get("text"));
         $("pack_folder").set("value", this.folder.get("text"));
         $("pack_pws").set("value", this.password.get("text"));
-        root.packageBox.open();
+        window.packageBox.open();
         event.stop();
     },
     savePackage: function(event) {
@@ -342,14 +345,14 @@ var Package = new Class({
         this.name.set("text", $("pack_name").get("value"));
         this.folder.set("text", $("pack_folder").get("value"));
         this.password.set("text", $("pack_pws").get("value"));
-        root.packageBox.close();
+        window.packageBox.close();
         event.stop();
     },
     saveSort: function(ele, copy) {
         var order = [];
         this.sorts.serialize(function(li, pos) {
             if (li === ele && ele.retrieve("order") !== pos) {
-                order.push(ele.retrieve("lid") + '|' + pos)
+                order.push([ele.retrieve("lid"), pos])
             }
             li.store("order", pos)
         });
@@ -357,7 +360,8 @@ var Package = new Class({
             indicateLoad();
             new Request.JSON({
                 method: 'get',
-                url: window.location.pathname + "/../json/link_order/" + order[0],
+                url: "{{url_for('json.link_order')}}",
+                data: {fid: order[0][0], pos: order[0][1]},
                 onSuccess: indicateFinish,
                 onFailure: indicateFail
             }).send();
