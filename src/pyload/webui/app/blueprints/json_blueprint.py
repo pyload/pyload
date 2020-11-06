@@ -147,28 +147,29 @@ def link_order():
 def add_package():
     api = flask.current_app.config["PYLOAD_API"]
 
-    name = flask.request.form.get("add_name", "New Package").strip()
+    package_name = flask.request.form.get("add_name", "New Package").strip()
     queue = int(flask.request.form["add_dest"])
     links = flask.request.form["add_links"].split("\n")
     pw = flask.request.form.get("add_password", "").strip("\n\r")
 
     try:
-        f = flask.request.files["add_file"]
+        file = flask.request.files["add_file"]
 
-        if not name or name == "New Package":
-            name = f.name
+        if file.filename:
+            if not package_name or package_name == "New Package":
+                package_name = file.filename
 
-        fpath = os.path.join(
-            api.get_config_value("general", "storage_folder"), "tmp_" + f.filename
-        )
-        f.save(fpath)
-        links.insert(0, fpath)
+            file_path = os.path.join(
+                api.get_config_value("general", "storage_folder"), "tmp_" + file.filename
+            )
+            file.save(file_path)
+            links.insert(0, file_path)
 
     except Exception:
         pass
 
     urls = [url for url in links if url.strip()]
-    pack = api.add_package(name, urls, queue)
+    pack = api.add_package(package_name, urls, queue)
     if pw:
         data = {"password": pw}
         api.set_package_data(pack, data)
