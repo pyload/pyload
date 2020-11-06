@@ -12,6 +12,7 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
 from pyload.core.utils.misc import eval_js
+from pyload.core.utils.convert import to_str
 
 from .app_blueprint import bp as app_bp
 
