@@ -1,0 +1,53 @@
+<div id="add_box" class="modal" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content" id="modal-content">
+      <div class="modal-header bg-info text-center" style="cursor: move; padding: 5px">{{_('Add Package')}}</div>
+      <div class="modal-body text-left" style="cursor: move;">
+        <div id="cap_title">{{_('Paste your links or upload a container.')}}</div>
+        <form id="add_form" class="form-group" action="{{url_for('json.add_package')}}" method="POST" enctype="multipart/form-data" style="margin-bottom: 40px;">
+          <div class="form-group">
+            <label for="add_name">{{_('Name')}}</label>
+            <input id="add_name" class="form-control" name="add_name" type="text"/>
+            <p class="help-block">{{_('The name of the package')}}</p>
+          </div>
+          <div class="form-group">
+            <label for="add_links">{{_('Links')}}</label>
+            <a onclick="parseUri()">
+              <span class="glyphicon glyphicon-filter" title="{{_('Filter urls')}}" style="color: #333 !important;float: right; font-size: 10px; line-height: 20px; cursor: pointer;"></span>
+            </a>
+            <textarea class="form-control" rows="4" wrap="soft" style="resize: none; width: 100%" name="add_links" id="add_links"></textarea>
+            <p class="help-block">{{_('Add a list of links')}}</p>
+          </div>
+          <div class="form-group">
+            <label for="add_password">{{_('Password')}}</label>
+            <input id="add_password" class="form-control" name="add_password" type="text">
+            <p class="help-block">{{_('Type the package password')}}</p>
+          </div>
+          <div class="form-group" style="white-space: nowrap; overflow: hidden;">
+            <label for="add_file">{{_('Upload a container')}}</label>
+            <p>
+            <div class="text-ellipsis">
+            <label class="btn btn-light" for="add_file" style="padding: 0 25px; margin-right: 5px;">
+                <input name="add_file" id="add_file" type="file" style="display: none;" onchange="$('#upload-file-info').text(this.files[0].name);"/>{{_('File')}}
+              </label>
+              <span id="upload-file-info">{{_('not available')}}</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="add_dest">{{_('Destination')}} </label>
+            <div class="radio" style="display: inline-block">
+              <label><input type="radio" name="add_dest" id="add_dest" value="1" checked="checked" style="padding: 10px 10px;"/>{{_('Queue')}}</label>
+            </div>
+            <div class="radio" style="display: inline-block">
+              <label><input type="radio" name="add_dest" id="add_dest2" value="0" style="padding: 10px 10px;"/>{{_('Packages')}}</label>
+            </div>
+          </div>
+          <button class="btn btn-primary pull-right" id="add_submit" type="submit" style="margin-left: 5px;">{{_('Add Package')}}</button>
+          <button class="btn btn-warning pull-right" data-dismiss="modal" id="add_reset" type="reset">{{_('Cancel')}}</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+

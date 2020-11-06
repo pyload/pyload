@@ -1,0 +1,32 @@
+{% extends theme('base.html') %}
+
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{{theme_static('css/dashboard.css')}}" />
+{% endblock %}
+
+{% block footer %}
+<script type="text/javascript" src="{{theme_template('js/dashboard.js')}}"></script>
+{% endblock %}
+
+{% block pageactions %}
+{% endblock %}
+
+{% block title %}pyLoad - {{_('Dashboard')}}{% endblock %}
+{#{% block subtitle %}{{_('Dashboard')}}{% endblock %}#}
+
+{% block content %}
+<table class="table" style="width:98%;">
+    <thead>
+  <tr class="header">
+    <th class="hidden-xs">{{_('Status')}}</th>
+    <th>{{_('Name')}}</th>
+    <th class="hidden-xs">{{_("Hoster")}}</th>
+    <th>{{_('Info')}}</th>
+    <th class="hidden-xs">{{_('Size')}}</th>
+    <th class="hidden-xs">{{_('Progress')}}</th>
+  </tr>
+    </thead>
+  <tbody id="links_active">
+  </tbody>
+</table>
+{% endblock %}
