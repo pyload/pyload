@@ -19,7 +19,7 @@
 - Walter Purcaro (vuolter) <vuolter@gmail.com>
 - himbrr <himbrr@himbrr.ws>
 - sebnapi
-- spoob <spoob@gmx.de>
+- Paul Spooren (spoob) <mail@aparcar.org>
 
 ### Developers
 
