@@ -540,7 +540,10 @@ def forward(source, destination):
             destination.sendall(bufdata)
             bufdata = source.recv(bufsize)
     finally:
-        destination.shutdown(socket.SHUT_WR)
+        try:
+            destination.shutdown(socket.SHUT_WR)
+        except BaseException:
+            pass
 
 
 def compute_checksum(filename, hashtype):
