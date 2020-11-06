@@ -2,6 +2,7 @@
 
 import logging
 import threading
+import time
 
 from cheroot import wsgi
 from cheroot.ssl.builtin import BuiltinSSLAdapter
@@ -54,12 +55,21 @@ class WebServerThread(threading.Thread):
         self.server.error_log = lambda *args, **kwgs: self.log.log(
             kwgs.get("level", logging.ERROR), args[0], exc_info=self.pyload.debug
         )
-
-        self.server.safe_start()
+        try:
+            self.server.start()
+        except (OSError) as exc:
+            self.log.error(exc)
+            time.sleep(240)
+            return self.run()
+        except (KeyboardInterrupt, IOError, SystemExit):
+            self.stop()
 
     def stop(self):
         if not self.develop:
-            self.server.stop()
+            try:
+                self.server.stop()
+            except AttributeError:
+                pass
         else:
             pass
             # ToDo: Not implemented
