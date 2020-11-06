@@ -1,0 +1,50 @@
+<table class="settable table">
+  {% if section.outline %}
+    <tr>
+      <th colspan="2">{{section.outline}}</th>
+    </tr>
+  {% endif %}
+  {% for okey, option in section.items() %}
+    {% if okey not in ("desc","outline") %}
+      <tr>
+        <td><label for="{{skey}}|{{okey}}" style="font-size: 14px; font-weight: 400;">{{_(option.desc)}}:</label></td>
+        <td>
+          {% if option.type == "bool" %}
+              <select id="{{skey}}|{{okey}}" name="{{skey}}|{{okey}}">
+                <option {% if option.value %}selected="selected" {% endif %}value="True">{{_('on')}}</option>
+                <option {% if not option.value %} selected="selected" {% endif %}value="False">{{_('off')}}</option>
+              </select>
+          {% elif ";" in option.type %}
+            <select id="{{skey}}|{{okey}}" name="{{skey}}|{{okey}}">
+              {% for entry in option.list %}
+                  <option {% if option.value == entry %}selected="selected" {% endif %}>{{entry}}</option>
+              {% endfor %}
+            </select>
+          {% elif option.type == "folder" %}
+            <div class="input-group">
+              <input style="float: right;" class="form-control" name="{{skey}}|{{okey}}" type="text" id="{{skey}}|{{okey}}" value="{{option.value}}"/>
+              <span class="input-group-btn">
+                <button class='btn btn-form' name="browsebutton" type='button' title="{{_('Browse')}}" data-toggle="modal" data-target="#path_chooser" data-browsefor="folder" data-targetinput="#{{skey}}|{{okey}}" onfocus="this.blur();">
+                  <span class='glyphicon glyphicon-folder-open' style='font-size: 11px;'></span>
+                </button>
+              </span>
+            </div>
+          {% elif option.type == "file" %}
+            <div class="input-group">
+              <input style="float: right;" class="form-control" name="{{skey}}|{{okey}}" type="text" id="{{skey}}|{{okey}}" value="{{option.value}}"/>
+              <span class="input-group-btn">
+                <button class='btn btn-form' name="browsebutton" type='button' title="{{_('Browse')}}" data-toggle="modal" data-target="#path_chooser" data-browsefor="file" data-targetinput="#{{skey}}|{{okey}}" onfocus="this.blur();">
+                  <span class='glyphicon glyphicon-folder-open' style='font-size: 11px;'></span>
+                </button>
+              </span>
+            </div>
+          {% elif option.type == "password" %}
+            <input style="float: right;" class="form-control" id="{{skey}}|{{okey}}" name="{{skey}}|{{okey}}" type="password" value="{{option.value}}"/>
+          {% else %}
+            <input style="float: right;" class="form-control" id="{{skey}}|{{okey}}" name="{{skey}}|{{okey}}" type="text" value="{{option.value}}"/>
+          {% endif %}
+        </td>
+      </tr>
+      {% endif %}
+  {% endfor %}
+</table>

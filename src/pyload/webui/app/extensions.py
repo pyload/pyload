@@ -8,12 +8,16 @@ from pyload import APPID
 
 
 class Themes(_Themes):
-    def init_app(self, app):
-        return super().init_themes(app, app_identifier=APPID)
+    def init_app(self, app, path_prefix=""):
+        return super().init_themes(app,
+                                   app_identifier=APPID,
+                                   theme_url_prefix=path_prefix + "/_themes")
 
 
 babel = Babel()
 cache = Cache()
 themes = Themes()
 
-EXTENSIONS = [babel, cache, themes]
+EXTENSIONS = [babel, cache]
+
+THEMES = [themes]

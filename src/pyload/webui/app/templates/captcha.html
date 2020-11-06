@@ -1,6 +1,6 @@
 <!-- Captcha box -->
 <div id="cap_box" class="window_box">
-    <form id="cap_form" action="/json/set_captcha" method="POST" enctype="multipart/form-data" onsubmit="return false;">
+    <form id="cap_form" action="{{url_for('json.set_captcha')}}" method="POST" enctype="multipart/form-data" onsubmit="return false;">
         <h1>{{_("Captcha reading")}}</h1>
         <p id="cap_title">{{_("Please read the text on the captcha.")}}</p>
 
