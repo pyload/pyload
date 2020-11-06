@@ -29,7 +29,7 @@
                         <ul id="general-menu">
                             {% for entry,name in conf.general %}
                                 <nobr>
-                                    <li id="general|{{ entry }}">{{ name }}</li>
+                                    <li id="core|{{ entry }}">{{ name }}</li>
                                 </nobr>
                                 <br>
                             {% endfor %}
@@ -37,14 +37,14 @@
                     </li>
                 </ul>
 
-                <form id="general_form" action="" method="POST" autocomplete="off">
+                <form id="core_form" action="" method="POST" autocomplete="off">
                     <span id="general_form_content">
                     <br>
                     <h3>&nbsp;&nbsp; {{ _("Choose a section from the menu") }}</h3>
                     <br>
                     </span>
 
-                  <input id="general|submit" class="styled_button" type="submit" value="{{_("Submit")}}"/>
+                  <input id="core|submit" class="styled_button" type="submit" value="{{_("Submit")}}"/>
                 </form>
             </span>
 
@@ -79,7 +79,7 @@
 
             <!-- Accounts -->
             <span id="accounts" class="tabContent">
-            <form id="account_form" action="/json/update_accounts" method="POST">
+            <form id="account_form" action="{{url_for('json.update_accounts')}}" method="POST">
 
                         <table class="settable wide">
 
@@ -170,7 +170,7 @@
 {% endblock %}
 {% block hidden %}
 <div id="account_box" class="window_box" style="z-index: 2">
-<form id="add_account_form" action="/json/add_account" method="POST" enctype="multipart/form-data">
+<form id="add_account_form" action="{{url_for('json.add_account')}}" method="POST" enctype="multipart/form-data">
 <h1>{{_("Add Account")}}</h1>
 <p>{{_("Enter your account data to use premium features.")}}</p>
 <label for="account_login">{{_("Login")}}

@@ -115,12 +115,13 @@ class ClickNLoad(BaseAddon):
     def _server(self, thread):
         try:
             self.exit_done.clear()
-            self.server_running = True
 
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as dock_socket:
                 dock_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
                 dock_socket.bind((self.cnl_ip, self.cnl_port))
                 dock_socket.listen(5)
+
+                self.server_running = True
 
                 while True:
                     client_socket, client_addr = dock_socket.accept()

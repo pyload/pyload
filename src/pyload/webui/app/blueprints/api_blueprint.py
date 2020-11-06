@@ -10,21 +10,25 @@ from flask.json import jsonify
 
 from ..helpers import clear_session, login_required, set_session
 
-bp = flask.Blueprint("api", __name__, url_prefix="/api")
+bp = flask.Blueprint("api", __name__)
 
 
 # accepting positional arguments, as well as kwargs via post and get
 # @bottle.route(
 # r"/api/<func><args:re:[a-zA-Z0-9\-_/\"\'\[\]%{},]*>")
 @login_required("ALL")
-@bp.route("/<func>", methods=["GET", "POST"], endpoint="rpc")
-@bp.route("/<func>/<args>", methods=["GET", "POST"], endpoint="rpc")
+@bp.route("/api/<func>", methods=["GET", "POST"], endpoint="rpc")
+@bp.route("/api/<func>/<args>", methods=["GET", "POST"], endpoint="rpc")
 # @apiver_check
 def rpc(func, args=""):
 
     api = flask.current_app.config["PYLOAD_API"]
     s = flask.session
-    if not api.is_authorized(func, {"role": s["role"], "permission": s["perms"]}):
+    if (
+            "role" not in s or
+            "perms" not in s or
+            not api.is_authorized(func, {"role": s["role"], "permission": s["perms"]})
+    ):
         return "Unauthorized", 401
 
     args = args.split(",")
@@ -60,7 +64,7 @@ def call_api(func, *args, **kwargs):
     return jsonify(result or True)
 
 
-@bp.route("/login", methods=["POST"], endpoint="login")
+@bp.route("/api/login", methods=["POST"], endpoint="login")
 # @apiver_check
 def login():
     user = flask.request.form["username"]
@@ -78,7 +82,7 @@ def login():
     return jsonify(s)
 
 
-@bp.route("/logout", endpoint="logout")
+@bp.route("/api/logout", endpoint="logout")
 # @apiver_check
 def logout():
     # logout_user()

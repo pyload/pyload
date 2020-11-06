@@ -37,8 +37,9 @@ jobs:
 
   allow_failures:
     - name: Docker Release
-    # - python: nightly
+    - python: 3.9
     - python: pypy3
+    # - python: nightly
     - os: osx
     - os: windows
 
@@ -66,6 +67,10 @@ jobs:
     - stage: Test
       os: linux
       python: 3.8
+      
+    - stage: Test
+      os: linux
+      python: 3.9
 
     # - stage: Test
     #   os: linux
@@ -92,8 +97,8 @@ jobs:
           - "$HOME/Library/Caches/pip"
       addons:
         homebrew:
-          # update: true
-          packages: python3
+          update: true
+          packages: python@3.9
       before_install:
         - python3 -m pip install --upgrade virtualenv
         - virtualenv -p python3 --system-site-packages "$HOME/venv"
