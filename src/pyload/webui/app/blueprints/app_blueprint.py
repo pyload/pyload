@@ -74,7 +74,7 @@ def login():
     if is_authenticated():
         return flask.redirect(next)
 
-    if api.get_config_value("webui", "autologin"):
+    if api.get_config_value("webui", "autologin") == "True":
         allusers = api.get_all_userdata()
         if len(allusers) == 1:  # TODO: check if localhost
             user_info = list(allusers.values())[0]

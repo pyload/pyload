@@ -194,10 +194,6 @@ class BaseAddon(BasePlugin):
     def package_finished(self, pypack):
         pass
 
-    #: Deprecated method, use `package_finished` instead (Remove in 0.6.x)
-    def package_finished(self, pypack):
-        return self.package_finished(pypack)
-
     def before_reconnect(self, ip):
         pass
 
