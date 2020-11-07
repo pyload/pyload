@@ -8,11 +8,9 @@
 
 {% autoescape true %}
 
-var root = this;
-
 document.addEvent('domready', function() {
-  root.accountDialog = new MooDialog({destroyOnHide: false});
-  root.accountDialog.setContent($('account_box'));
+  window.accountDialog = new MooDialog({destroyOnHide: false});
+  window.accountDialog.setContent($('account_box'));
 
   new TinyTab($$('#toptabs li a'), $$('#tabs-body > span'));
 
@@ -38,15 +36,15 @@ class SettingsUI {
 
     for (let el of Array.from(this.menu)) { el.addEvent('click', this.menuClick.bind(this)); }
 
-    $("general|submit").addEvent("click", this.configSubmit.bind(this));
+    $("core|submit").addEvent("click", this.configSubmit.bind(this));
     $("plugin|submit").addEvent("click", this.configSubmit.bind(this));
 
     $("account_add").addEvent("click", function(e) {
-      root.accountDialog.open();
+      window.accountDialog.open();
       return e.stop();
     });
 
-    $("account_reset").addEvent("click", e => root.accountDialog.close());
+    $("account_reset").addEvent("click", e => window.accountDialog.close());
 
     $("account_add_button").addEvent("click", this.addAccount.bind(this));
     $("account_submit").addEvent("click", this.submitAccounts.bind(this));
@@ -58,12 +56,13 @@ class SettingsUI {
     const name = e.target.get("text");
 
 
-    const target = category === "general" ? this.general : this.plugin;
+    let target = category === "core" ? this.general : this.plugin;
     target.dissolve();
 
     return new Request({
       "method" : "get",
-      "url" : window.location.pathname + "/../json/load_config//${category}/${section}",
+      "url" : "{{url_for('json.load_config')}}",
+      "data": {category: category, section: section},
       'onSuccess': data => {
         target.set("html", data);
         target.reveal();
@@ -75,18 +74,18 @@ class SettingsUI {
 
   configSubmit(e) {
     const category = e.target.get("id").split("|")[0];
-    const form = $(`${category}_form`);
+    const form = $(category + '_form');
 
     form.set("send", {
       'method': "post",
-      'url': window.location.pathname + "/../json/save_config/${category}",
+      'url': "{{url_for('json.save_config')}}" + "?category="  + category,
       "onSuccess"() {
-        return root.notify.alert('{{ _("Settings saved")}}', {
+        return window.notify.alert('{{ _("Settings saved")}}', {
               'className': 'success'
             });
       },
       'onFailure'() {
-        return root.notify.alert('{{ _("Error occured")}}', {
+        return window.notify.alert('{{ _("Error occured")}}', {
               'className': 'error'
             });
       }
@@ -101,7 +100,7 @@ class SettingsUI {
       'method': "post",
       "onSuccess"() { return window.location.reload(); },
       'onFailure'() {
-        return root.notify.alert('{{_("Error occured")}}', {
+        return window.notify.alert('{{_("Error occured")}}', {
           'className': 'error'
           });
       }
@@ -117,7 +116,7 @@ class SettingsUI {
        'method': "post",
        "onSuccess"() { return window.location.reload(); },
        'onFailure'() {
-         return root.notify.alert('{{ _("Error occured") }}', {
+         return window.notify.alert('{{ _("Error occured") }}', {
                'className': 'error'
              });
        }

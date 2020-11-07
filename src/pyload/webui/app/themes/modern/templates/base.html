@@ -69,6 +69,10 @@
     <li ondragstart="return false;" {{selected('admin')}}>
       <a href="{{url_for('app.admin')}}" title="{{_('Users')}}"><span class="glyphicon glyphicon-flag"></span></a>
     </li>
+	<li class="divider-vertical"></li>
+	<li ondragstart="return false;">
+		<a role="button" id="action_add1" data-toggle="modal" data-target="#add_box" class="action_add" title="{{_('Add Package')}}"><span class="glyphicon glyphicon-plus"></span></a>
+	</li>
     {% endif %}
   </ul>
   <span id="cap_info1" class="cap_info col-xs-12 col-sm-auto" style="display: {% if captcha %}inline{%else%}none{% endif %};margin-top:-2px; height: 15px;">

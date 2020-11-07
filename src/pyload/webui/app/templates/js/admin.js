@@ -8,14 +8,12 @@
 
 {% autoescape true %}
 
-var root = this;
-
 document.addEvent("domready", function() {
 
-    root.passwordDialog = new MooDialog({destroyOnHide: false});
-    root.passwordDialog.setContent($('password_box'));
+    window.passwordDialog = new MooDialog({destroyOnHide: false});
+    window.passwordDialog.setContent($('password_box'));
 
-    $("login_password_reset").addEvent("click", e => root.passwordDialog.close());
+    $("login_password_reset").addEvent("click", e => window.passwordDialog.close());
     $("login_password_button").addEvent("click", function(e) {
 
         const newpw = $("login_new_password").get("value");
@@ -25,12 +23,12 @@ document.addEvent("domready", function() {
             const form = $("password_form");
             form.set("send", {
                 onSuccess(data) {
-                    return root.notify.alert("Success", {
+                    return window.notify.alert("Success", {
                         'className': 'success'
                     });
                 },
                 onFailure(data) {
-                    return root.notify.alert("Error", {
+                    return window.notify.alert("Error", {
                         'className': 'error'
                     });
                 }
@@ -38,7 +36,7 @@ document.addEvent("domready", function() {
 
             form.send();
 
-            root.passwordDialog.close();
+            window.passwordDialog.close();
         } else {
             alert('{{_("Passwords did not match")}}');
         }
@@ -50,7 +48,7 @@ document.addEvent("domready", function() {
         const id = item.get("id");
         const user = id.split("|")[1];
         $("user_login").set("value", user);
-        item.addEvent("click", e => root.passwordDialog.open());
+        item.addEvent("click", e => window.passwordDialog.open());
     }
 
     $('quit-pyload').addEvent("click", function(e) {

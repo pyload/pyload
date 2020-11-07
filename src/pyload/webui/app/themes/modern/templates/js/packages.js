@@ -33,11 +33,15 @@ function PackageUI (type){
                 if (newIndex === oldIndex) {
                     return false;
                 }
-                let order = ui.item.data('pid') + '|' + newIndex;
                 indicateLoad();
-                $.get(window.location.pathname + "/../json/package_order/" + order, function () {
-                    indicateFinish();
-                    return true;
+                $.get({
+                    url: "{{url_for('json.package_order')}}",
+                    data: {pid: ui.item.data('pid'), pos: newIndex},
+                    traditional: true,
+                    success: function () {
+                        indicateFinish();
+                        return true;
+                    }
                 }).fail(function () {
                     indicateFail();
                     return false;
@@ -133,12 +137,15 @@ function Package (ui, id, ele){
 
     this.loadLinks = function () {
         indicateLoad();
-        $.get(window.location.pathname + "/../json/package/" + id, thisObject.createLinks)
-        .fail(function () {
+        $.get({
+            url: "{{url_for('json.package')}}",
+            data: {id: id},
+            traditional: true,
+            success: thisObject.createLinks
+        }).fail(function () {
             indicateFail();
             return false;
-        })
-        .done(function() {
+        }).done(function() {
             return true;
         });
     };
@@ -237,16 +244,20 @@ function Package (ui, id, ele){
                 if (newIndex === oldIndex) {
                     return false;
                 }
-                var order = ui.item.data('lid') + '|' + newIndex;
                 indicateLoad();
-                $.get(window.location.pathname + "/../json/link_order/" + order, function () {
-                    indicateFinish();
-                    return true;
-                } ).fail(function () {
+                $.get({
+                    url: "{{url_for('json.link_order')}}",
+                    data: {fid: ui.item.data('lid'), pos: newIndex},
+                    traditional: true,
+                    success: function () {
+                        indicateFinish();
+                        return true;
+                    }
+                }).fail(function () {
                     indicateFail();
                     return false;
                 });
-          }
+            }
         });
     };
 
@@ -310,9 +321,14 @@ function Package (ui, id, ele){
 
     this.movePackage = function(event) {
         indicateLoad();
-        $.get(window.location.pathname + "/../json/move_package/" + ((ui.type + 1) % 2) + '|' + id, function () {
-            $(ele).remove();
-            indicateFinish();
+        $.get({
+            url: "{{url_for('json.move_package')}}",
+            data: {id: id, dest: ((ui.type + 1) % 2)},
+            traditional: true,
+            success: function () {
+                $(ele).remove();
+                indicateFinish();
+            }
         }).fail(function () {
             indicateFail();
         });
@@ -322,13 +338,19 @@ function Package (ui, id, ele){
 
     this.editOrder = function(event) {
         indicateLoad();
-        $.get(window.location.pathname + "/../json/package/" + id, function(data){
-            length = data.links.length;
-            for (i = 1; i <= length/2; i++){
-                order = data.links[length-i].fid + '|' + (i-1);
-                $.get(window.location.pathname + "/../json/link_order/" + order).fail(function () {
-                    indicateFail();
-                });
+        $.get({
+            url: "{{url_for('json.package')}}",
+            success: function(data){
+                length = data.links.length;
+                for (i = 1; i <= length/2; i++){
+                    $.get({
+                        url: "{{url_for('json.link_order')}}",
+                        data: {fid: data.links[length-i].fid, pos: i-1},
+                        traditional: true,
+                    }).fail(function () {
+                        indicateFail();
+                    });
+                }
             }
         });
         indicateFinish();
