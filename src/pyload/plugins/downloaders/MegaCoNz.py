@@ -10,8 +10,13 @@ import struct
 import Cryptodome.Cipher.AES
 import Cryptodome.Util.Counter
 
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+
+
 from pyload.core.network.http.exceptions import BadHeader
 from pyload.core.utils.old import decode
+from pyload.core.utils.convert import to_str
 
 from ..base.downloader import BaseDownloader
 from ..helpers import exists
@@ -65,7 +70,7 @@ class MegaCrypto:
     @staticmethod
     def str_to_a32(s):
         # Add padding, we need a string with a length multiple of 4
-        s += "\0" * (-len(s) % 4)
+        s += b"\0" * (-len(s) % 4)
         #: big-endian, unsigned int
         return struct.unpack(">{}I".format(len(s) // 4), s)
 
@@ -79,27 +84,35 @@ class MegaCrypto:
 
     @staticmethod
     def cbc_decrypt(data, key):
-        cbc = Cryptodome.Cipher.AES.new(
-            MegaCrypto.a32_to_str(key), Cryptodome.Cipher.AES.MODE_CBC, "\0" * 16
+        cipher = Cipher(
+            algorithms.AES(MegaCrypto.a32_to_str(key)), modes.CBC(b"\0" * 16), backend=default_backend()
         )
-        return cbc.decrypt(data)
+        decryptor = cipher.decryptor()
+        return decryptor.update(data) + decryptor.finalize()
 
     @staticmethod
     def cbc_encrypt(data, key):
-        cbc = Cryptodome.Cipher.AES.new(
-            MegaCrypto.a32_to_str(key), Cryptodome.Cipher.AES.MODE_CBC, "\0" * 16
+        cbc = Cipher(
+            algorithms.AES(MegaCrypto.a32_to_str(key)), modes.CBC(b"\0" * 16), backend=default_backend()
         )
-        return cbc.encrypt(data)
+        encryptor = cbc.encryptor()
+        return encryptor.update(data) + encryptor.finalize()
 
     @staticmethod
     def ecb_decrypt(data, key):
-        ecb = Cryptodome.Cipher.AES.new(MegaCrypto.a32_to_str(key), Crypto.Cipher.AES.MODE_ECB)
-        return ecb.decrypt(data)
+        ecb = Cipher(
+            algorithms.AES(MegaCrypto.a32_to_str(key)), modes.ECB(), backend=default_backend()
+        )
+        decryptor = ecb.decryptor()
+        return decryptor.update(data) + decryptor.finalize()
 
     @staticmethod
     def ecb_encrypt(data, key):
-        ecb = Cryptodome.Cipher.AES.new(MegaCrypto.a32_to_str(key), Crypto.Cipher.AES.MODE_ECB)
-        return ecb.encrypt(data)
+        ecb = Cipher(
+            algorithms.AES(MegaCrypto.a32_to_str(key)), modes.ECB(), backend=default_backend()
+        )
+        encryptor = ecb.encryptor()
+        return encryptor.update(data) + encryptor.finalize()
 
     @staticmethod
     def get_cipher_key(key):
@@ -123,8 +136,8 @@ class MegaCrypto:
 
         #: Data is padded, 0-bytes must be stripped
         return (
-            json.loads(re.search(r"{.+}", attr).group(0))
-            if attr[:6] == 'MEGA{"'
+            json.loads(re.search(rb"{.+}", attr).group(0))
+            if attr[:6] == b'MEGA{"'
             else False
         )
 
@@ -171,19 +184,27 @@ class MegaCrypto:
             self.hash = "\0" * 16
             self.key = MegaCrypto.a32_to_str(k)
             self.iv = MegaCrypto.a32_to_str(iv[0:2] * 2)
-            self.AES = Cryptodome.Cipher.AES.new(
-                self.key, mode=Cryptodome.Cipher.AES.MODE_CBC, IV=self.hash
+            cipher = Cipher(
+                algorithms.AES(self.key), modes.CBC(self.hash), backend=default_backend()
             )
+            #self.AES = Cryptodome.Cipher.AES.new(
+            #    self.key, mode=Cryptodome.Cipher.AES.MODE_CBC, IV=self.hash
+            #)
+            self.AES = cipher.encryptor()
 
         def update(self, chunk):
             cbc = Cryptodome.Cipher.AES.new(
                 self.key, mode=Cryptodome.Cipher.AES.MODE_CBC, IV=self.iv
             )
+            cipher = Cipher(
+                algorithms.AES(self.key), modes.CBC(self.iv), backend=default_backend()
+            )
+            cbc = cipher.encryptor()
             for j in range(0, len(chunk), 16):
                 block = chunk[j : j + 16].ljust(16, "\0")
-                hash = cbc.encrypt(block)
+                hash = cbc.update(block) + cbc.finalize()
 
-            self.hash = self.AES.encrypt(hash)
+            self.hash = self.AES.update(hash) + self.AES.finalize()
 
         def digest(self):
             """
