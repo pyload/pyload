@@ -119,9 +119,9 @@ document.addEvent("domready", function() {
 
 var LoadJsonToContent = function(data) {
     $("speed").set('text', humanFileSize(data.speed)+"/s");
-    $("aktiv").set('text', data.active);
-    $("aktiv_from").set('text', data.queue);
-    $("aktiv_total").set('text', data.total);
+    $("actives").set('text', data.active);
+    $("actives_from").set('text', data.queue);
+    $("actives_total").set('text', data.total);
 
     if (data.captcha) {
         if ($("cap_info").getStyle("display") !== "inline") {
