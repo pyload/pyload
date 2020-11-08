@@ -61,7 +61,7 @@
     }
     function setFile(fullpath, name)
     {
-        cwd = fullpath;
+        cwd = fullpath.replace("%2F", "/");
         {% if type == "file" %} {# browsing for file #}
           abspath = "{{'/filechooser/' + cwd|abspath|quotepath|replace('\\', '\\\\')}}" + name;
           relpath = "{{'/filechooser/' + cwd|relpath|quotepath|replace('\\', '\\\\')}}" + name;
