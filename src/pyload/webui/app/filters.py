@@ -5,12 +5,13 @@ import os
 
 from pyload.core.utils import format
 
-_QUOTECHAR = "::%2F"
+_QUOTECHAR = "::"
+_ESCAPED_SLASH = "%2F"
 
 
 def quotepath(path):
     try:
-        return path.replace(".." + os.path.sep, _QUOTECHAR)
+        return path.replace("..", _QUOTECHAR).replace("/", _ESCAPED_SLASH)
     except AttributeError:
         return path
     except Exception:
@@ -19,7 +20,7 @@ def quotepath(path):
 
 def unquotepath(path):
     try:
-        return path.replace(_QUOTECHAR, ".." + os.path.sep)
+        return path.replace(_QUOTECHAR, "..").replace(_ESCAPED_SLASH, "/")
     except AttributeError:
         return path
     except Exception:
