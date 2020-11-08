@@ -5,10 +5,10 @@
   <script class="javascript">
     var submit = true;
     {% if absolute %}
-      var cwd = "{{oldfile|default(cwd, True)|abspath|quotepath|replace('\\', '\\\\')}}";
+      var cwd = "{{oldfile|default(cwd, True)|abspath|unquotepath|replace('\\', '\\\\')}}";
       var isabsolute = true;
     {% else %}
-      var cwd = "{{oldfile|default(cwd, True)|relpath|quotepath|replace('\\', '\\\\')}}";
+      var cwd = "{{oldfile|default(cwd, True)|relpath|unquotepath|replace('\\', '\\\\')}}";
       var isabsolute = false;
     {% endif %}
 
@@ -61,7 +61,7 @@
     }
     function setFile(fullpath, name)
     {
-        cwd = fullpath.replace("%2F", "/");
+        cwd = fullpath;
         {% if type == "file" %} {# browsing for file #}
           abspath = "{{'/filechooser/' + cwd|abspath|quotepath|replace('\\', '\\\\')}}" + name;
           relpath = "{{'/filechooser/' + cwd|relpath|quotepath|replace('\\', '\\\\')}}" + name;
