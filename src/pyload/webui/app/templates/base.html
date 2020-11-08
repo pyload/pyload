@@ -119,7 +119,7 @@
     <li><span class="time">{{_("Running:")}}</span><a id="time" style=" background-color: {% if status.download %}#8ffc25{% else %} #fc6e26{% endif %}; padding-left: 0cm; padding-right: 0.1cm; "> {% if status.download %}{{_("on")}}{% else %}{{_("off")}}{% endif %}</a></li>
     <li><span class="reconnect">{{_("Reconnect:")}}</span><a id="reconnect" style=" background-color: {% if status.reconnect %}#8ffc25{% else %} #fc6e26{% endif %}; padding-left: 0cm; padding-right: 0.1cm; "> {% if status.reconnect %}{{_("on")}}{% else %}{{_("off")}}{% endif %}</a></li>
     <li><a class="action backlink">{{_("Speed:")}} <b id="speed">{{ status.speed }}</b></a></li>
-    <li><a class="action cog">{{_("Active:")}} <b id="aktiv" title="{{_("Active")}}">{{ status.active }}</b> | <b id="aktiv_from" title="{{_("Queued")}}">{{ status.queue }}</b> | <b id="aktiv_total" title="{{_("Total")}}">{{ status.total }}</b></a></li>
+    <li><a class="action cog">{{_("Active:")}} <b id="actives" title="{{_("Active")}}">{{ status.active }}</b> | <b id="actives_from" title="{{_("Queued")}}">{{ status.queue }}</b> | <b id="actives_total" title="{{_("Total")}}">{{ status.total }}</b></a></li>
     <li><a href=""  class="action revisions" accesskey="o" rel="nofollow">{{_("Reload page")}}</a></li>
 </ul>
 {% endif %}
