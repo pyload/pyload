@@ -18,7 +18,7 @@
 
 <link rel="icon" type="image/ico" href="{{url_for('static', filename='img/favicon.ico')}}" />
 
-<title>pyLoad</title>
+<title>{% block title %}pyLoad{% endblock %}</title>
 
 {% block head %}
 {% endblock %}
@@ -52,11 +52,11 @@
 
     <img src="{{url_for('static', filename='img/head-login.png')}}" alt="User:" style="vertical-align:middle; margin:2px" /><span style="padding-right: 2px;">{{user.name}}</span>
     <ul id="user-actions">
-        <li><a href="/logout" class="action logout" rel="nofollow">{{_("Logout")}}</a></li>
+        <li><a href="{{url_for('app.logout')}}" class="action logout" rel="nofollow">{{_("Logout")}}</a></li>
         {% if user.is_admin %}
-        <li><a href="/admin" class="action profile" rel="nofollow">{{_("Profile")}}</a></li>
+        <li><a href="{{url_for('app.admin')}}" class="action profile" rel="nofollow">{{_("Profile")}}</a></li>
         {% endif %}
-        <li><a href="/info" class="action info" rel="nofollow">{{_("Status")}}</a></li>
+        <li><a href="{{url_for('app.info')}}" class="action info" rel="nofollow">{{_("Status")}}</a></li>
 
     </ul>
 {% else %}
@@ -66,7 +66,7 @@
     {% endblock %}
     </div>
 
-    <a href="{{'dashboard'}}"><img id="head-logo" src="{{url_for('static', filename='img/pyload-logo.png')}}" alt="pyLoad" /></a>
+    <a href="{{url_for('app.dashboard')}}"><img id="head-logo" src="{{url_for('static', filename='img/pyload-logo.png')}}" alt="pyLoad" /></a>
 
     <div id="head-menu">
         <ul>
@@ -78,25 +78,25 @@
 
         {% block menu %}
         <li>
-            <a href="{{'dashboard'}}" title=""><img src="{{url_for('static', filename='img/head-menu-home.png')}}" alt="" /> {{_("Dashboard")}}</a>
+            <a href="{{url_for('app.dashboard')}}" title=""><img src="{{url_for('static', filename='img/head-menu-home.png')}}" alt="" /> {{_("Dashboard")}}</a>
         </li>
         <li {{ selected('queue') }}>
-            <a href="/queue" title=""><img src="{{url_for('static', filename='img/head-menu-queue.png')}}" alt="" /> {{_("Queue")}}</a>
+            <a href="{{url_for('app.queue')}}" title=""><img src="{{url_for('static', filename='img/head-menu-queue.png')}}" alt="" /> {{_("Queue")}}</a>
         </li>
         <li {{ selected('collector') }}>
-            <a href="/collector" title=""><img src="{{url_for('static', filename='img/head-menu-collector.png')}}" alt="" /> {{_("Packages")}}</a>
+            <a href="{{url_for('app.collector')}}" title=""><img src="{{url_for('static', filename='img/head-menu-collector.png')}}" alt="" /> {{_("Packages")}}</a>
         </li>
         <li {{ selected('files') }}>
-            <a href="/files" title=""><img src="{{url_for('static', filename='img/head-menu-development.png')}}" alt="" /> {{_("Files")}}</a>
+            <a href="{{url_for('app.files')}}" title=""><img src="{{url_for('static', filename='img/head-menu-development.png')}}" alt="" /> {{_("Files")}}</a>
         </li>
         <!-- <li {{ selected('filemanager') }}> -->
             <!-- <a href="/filemanager" title=""><img src="{{url_for('static', filename='img/head-menu-download.png')}}" alt="" /> {{_("File Manager")}}</a> -->
         <!-- </li> -->
         <li {{ selected('logs', True) }}>
-            <a href="/logs"  class="action index" accesskey="x" rel="nofollow"><img src="{{url_for('static', filename='img/head-menu-index.png')}}" alt="" />{{_("Logs")}}</a>
+            <a href="{{url_for('app.logs')}}"  class="action index" accesskey="x" rel="nofollow"><img src="{{url_for('static', filename='img/head-menu-index.png')}}" alt="" />{{_("Logs")}}</a>
         </li>
         <li {{ selected('settings', True) }}>
-            <a href="/settings"  class="action index" accesskey="x" rel="nofollow"><img src="{{url_for('static', filename='img/head-menu-config.png')}}" alt="" />{{_("Settings")}}</a>
+            <a href="{{url_for('app.settings')}}"  class="action index" accesskey="x" rel="nofollow"><img src="{{url_for('static', filename='img/head-menu-config.png')}}" alt="" />{{_("Settings")}}</a>
         </li>
         {% endblock %}
 
@@ -166,12 +166,11 @@
 </div>
 </div>
 
-{% block hidden %}
-{% endblock %}
-
 <div style="display: none;">
     {% include 'window.html' %}
     {% include 'captcha.html' %}
+    {% block hidden %}
+    {% endblock %}
 </div>
 
 </body>

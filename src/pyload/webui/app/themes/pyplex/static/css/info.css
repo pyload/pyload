@@ -9,15 +9,17 @@ body {
 #twitter a:hover {
   text-decoration: none;
   outline: none;
-}
-#twitter a {
   color: #f9be03;
+}
+#twitter p {
+  color: #eee;
   display:block;
   background-color: #555555;
   padding:10px;
   margin-bottom:10px;
   border-radius: 3px;
 }
-#twitter a:hover {
+#twitter p:hover {
   background-color: #696969;
+  cursor: pointer;
 }

@@ -5,10 +5,12 @@ from base64 import standard_b64decode
 from functools import wraps
 from urllib.parse import unquote
 
-import flask
-from cryptography.fernet import Fernet
-from flask.json import jsonify
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
+import flask
+from flask.json import jsonify
+from pyload.core.utils.convert import to_str
 from pyload.core.utils.misc import eval_js
 
 from .app_blueprint import bp as app_bp
@@ -48,15 +50,20 @@ def add():
         "package", flask.request.form.get("source", flask.request.form.get("referer"))
     )
 
-    urls = [url for url in flask.request.form["urls"].split("\n") if url.strip()]
+    urls = [url for url in flask.request.form["urls"].replace(' ', '\n').split("\n") if url.strip()]
     if not urls:
         return jsonify(False)
 
     api = flask.current_app.config["PYLOAD_API"]
-    if package:
-        api.add_package(package, urls, 0)
-    else:
-        api.generate_and_add_packages(urls, 0)
+    try:
+        if package:
+            api.add_package(package, urls, 0)
+        else:
+            api.generate_and_add_packages(urls, 0)
+    except Exception as e:
+        return "failed " + e.args[0] + "\r\n"
+
+    return "success\r\n"
 
 
 @bp.route("/addcrypted", methods=["POST"], endpoint="addcrypted")
@@ -96,12 +103,16 @@ def addcrypted2():
     jk = eval_js(f"{jk} f()")
 
     try:
-        key = bytes.fromhex(jk)
+        IV = key = bytes.fromhex(jk)
     except Exception:
         return "Could not decrypt key", 500
 
-    obj = Fernet(key)
-    urls = obj.decrypt(crypted).replace("\x00", "").replace("\r", "").split("\n")
+    cipher = Cipher(
+        algorithms.AES(key), modes.CBC(IV), backend=default_backend()
+    )
+    decryptor = cipher.decryptor()
+    decrypted = decryptor.update(crypted) + decryptor.finalize()
+    urls = to_str(decrypted).replace("\x00", "").replace("\r", "").split("\n")
     urls = [url for url in urls if url.strip()]
 
     api = flask.current_app.config["PYLOAD_API"]

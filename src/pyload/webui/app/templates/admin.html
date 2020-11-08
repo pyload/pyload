@@ -64,7 +64,7 @@
 {% endblock %}
 {% block hidden %}
     <div id="password_box" class="window_box" style="z-index: 2">
-        <form id="password_form" action="/json/change_password" method="POST" enctype="multipart/form-data">
+        <form id="password_form" action="{{url_for('json.change_password')}}" method="POST" enctype="multipart/form-data">
             <h1>{{ _("Change Password") }}</h1>
 
             <p>{{ _("Enter your current and desired Password.") }}</p>
