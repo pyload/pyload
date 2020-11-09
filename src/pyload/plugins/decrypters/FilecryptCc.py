@@ -74,7 +74,7 @@ class FilecryptCc(BaseDecrypter):
     WEBLINK_PATTERN = r"openLink.?'([\w\-]*)',"
     MIRROR_PAGE_PATTERN = r'"[\w]*" href="(https?://(?:www\.)?filecrypt.cc/Container/\w+\.html\?mirror=\d+)">'
 
-    CAPTCHA_PATTERN = r'<h2>Security prompt</h2>'
+    CAPTCHA_PATTERN = r"<h2>Security prompt</h2>"
     INTERNAL_CAPTCHA_PATTERN = r'<img id="nc" .* src="(.+?)"'
     CIRCLE_CAPTCHA_PATTERN = r'<input type="image" src="(.+?)"'
     KEY_CAPTCHA_PATTERN = r"<script language=JavaScript src='(http://backs\.keycaptcha\.com/swfs/cap\.js)'"
