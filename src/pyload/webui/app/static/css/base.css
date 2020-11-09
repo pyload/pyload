@@ -834,116 +834,116 @@ table.system tr > td:first-child {
 
 
 #head-menu {
-    background:transparent url("{{ url_for('static', filename='img/tabs-border-bottom.png') }}") 0 100% repeat-x;
+    background:transparent url("../img/tabs-border-bottom.png") 0 100% repeat-x;
 }
 a.action.index {
-    background:transparent url("{{ url_for('static', filename='img/wiki-tools-index.png') }}") 0px 1px no-repeat;
+    background:transparent url("../img/wiki-tools-index.png") 0px 1px no-repeat;
 }
 a.action.recent {
-    background:transparent url("{{ url_for('static', filename='img/wiki-tools-recent.png') }}") 0px 1px no-repeat;
+    background:transparent url("../img/wiki-tools-recent.png") 0px 1px no-repeat;
 }
 a.logout {
-    background:transparent url("{{ url_for('static', filename='img/user-actions-logout.png') }}") 0px 1px no-repeat;
+    background:transparent url("../img/user-actions-logout.png") 0px 1px no-repeat;
 }
 
 a.info {
-    background:transparent url("{{ url_for('static', filename='img/user-info.png') }}") 0px 1px no-repeat;
+    background:transparent url("../img/user-info.png") 0px 1px no-repeat;
 }
 
 a.admin {
-    background:transparent url("{{ url_for('static', filename='img/user-actions-admin.png') }}") 0px 1px no-repeat;
+    background:transparent url("../img/user-actions-admin.png") 0px 1px no-repeat;
 }
 a.profile {
-    background:transparent url("{{ url_for('static', filename='img/user-actions-profile.png') }}") 0px 1px no-repeat;
+    background:transparent url("../img/user-actions-profile.png") 0px 1px no-repeat;
 }
 a.create, a.edit {
-    background:transparent url("{{ url_for('static', filename='img/page-tools-edit.png') }}") 0px 1px no-repeat;
+    background:transparent url("../img/page-tools-edit.png") 0px 1px no-repeat;
 }
 a.source, a.show {
-    background:transparent url("{{ url_for('static', filename='img/page-tools-source.png') }}") 0px 1px no-repeat;
+    background:transparent url("../img/page-tools-source.png") 0px 1px no-repeat;
 }
 a.revisions {
-    background:transparent url("{{ url_for('static', filename='img/page-tools-revisions.png') }}") 0px 1px no-repeat;
+    background:transparent url("../img/page-tools-revisions.png") 0px 1px no-repeat;
 }
 a.subscribe, a.unsubscribe {
-    background:transparent url("{{ url_for('static', filename='img/page-tools-subscribe.png') }}") 0px 1px no-repeat;
+    background:transparent url("../img/page-tools-subscribe.png") 0px 1px no-repeat;
 }
 a.backlink {
-    background:transparent url("{{ url_for('static', filename='img/page-tools-backlinks.png') }}") 0px 1px no-repeat;
+    background:transparent url("../img/page-tools-backlinks.png") 0px 1px no-repeat;
 }
 a.play {
-    background:transparent url("{{ url_for('static', filename='img/control-play.png') }}") 0px 1px no-repeat;
+    background:transparent url("../img/control-play.png") 0px 1px no-repeat;
 }
 .time {
-    background:transparent url("{{ url_for('static', filename='img/status-none.png') }}") 0px 1px no-repeat;
+    background:transparent url("../img/status-none.png") 0px 1px no-repeat;
 }
 a.play:hover {
-    background:transparent url("{{ url_for('static', filename='img/control-play-blue.png') }}") 0px 1px no-repeat;
+    background:transparent url("../img/control-play-blue.png") 0px 1px no-repeat;
 }
 a.cancel {
-    background:transparent url("{{ url_for('static', filename='img/control-cancel.png') }}") 0px 1px no-repeat;
+    background:transparent url("../img/control-cancel.png") 0px 1px no-repeat;
 }
 a.cancel:hover {
-    background:transparent url("{{ url_for('static', filename='img/control-cancel-blue.png') }}") 0px 1px no-repeat;
+    background:transparent url("../img/control-cancel-blue.png") 0px 1px no-repeat;
 }
 a.pause {
-    background:transparent url("{{ url_for('static', filename='img/control-pause.png') }}") 0px 1px no-repeat;
+    background:transparent url("../img/control-pause.png") 0px 1px no-repeat;
 }
 a.pause:hover {
-    background:transparent url("{{ url_for('static', filename='img/control-pause-blue.png') }}") 0px 1px no-repeat;
+    background:transparent url("../img/control-pause-blue.png") 0px 1px no-repeat;
     font-weight: bold;
 }
 a.stop {
-    background:transparent url("{{ url_for('static', filename='img/control-stop.png') }}") 0px 1px no-repeat;
+    background:transparent url("../img/control-stop.png") 0px 1px no-repeat;
 }
 a.stop:hover {
-    background:transparent url("{{ url_for('static', filename='img/control-stop-blue.png') }}") 0px 1px no-repeat;
+    background:transparent url("../img/control-stop-blue.png") 0px 1px no-repeat;
 }
 a.add {
-    background:transparent url("{{ url_for('static', filename='img/control-add.png') }}") 0px 1px no-repeat;
+    background:transparent url("../img/control-add.png") 0px 1px no-repeat;
 }
 a.add:hover {
-    background:transparent url("{{ url_for('static', filename='img/control-add-blue.png') }}") 0px 1px no-repeat;
+    background:transparent url("../img/control-add-blue.png") 0px 1px no-repeat;
 }
 a.cog {
-    background:transparent url("{{ url_for('static', filename='img/cog.png') }}") 0px 1px no-repeat;
+    background:transparent url("../img/cog.png") 0px 1px no-repeat;
 }
 #head-panel {
-    background:#525252 url("{{ url_for('static', filename='img/head-bg.png') }}") bottom left repeat-x;
+    background:#525252 url("../img/head-bg.png") bottom left repeat-x;
 }
 .reconnect {
-    background:transparent url("{{ url_for('static', filename='img/reconnect.png') }}") 0px 1px no-repeat;
+    background:transparent url("../img/reconnect.png") 0px 1px no-repeat;
 }
 #head-menu ul li a, #head-menu ul li a:link {
-    background:#eaeaea url("{{ url_for('static', filename='img/tab-background.png') }}") 0 100% repeat-x;
+    background:#eaeaea url("../img/tab-background.png") 0 100% repeat-x;
 }
 .purr-alert.error{
-    background:url("{{ url_for('static', filename='img/error.png') }}") no-repeat #000 7px 10px;
+    background:url("../img/error.png") no-repeat #000 7px 10px;
 }
 .purr-alert.success{
 }
-    background:url("{{ url_for('static', filename='img/success.png') }}") no-repeat #000 7px 10px;
+    background:url("../img/success.png") no-repeat #000 7px 10px;
 }
 .purr-alert.notice{
-    background:url("{{ url_for('static', filename='img/notice.png') }}") no-repeat #000 7px 10px;
+    background:url("../img/notice.png") no-repeat #000 7px 10px;
 }
 .MooDialog .close {
-    background: url("{{ url_for('static', filename='img/dialog-close.png') }}") no-repeat;
+    background: url("../img/dialog-close.png") no-repeat;
 }
 .MooDialog .MooDialogAlert,
 .MooDialog .MooDialogConfirm,
 .MooDialog .MooDialogPrompt,
 .MooDialog .MooDialogError {
-    background: url("{{ url_for('static', filename='img/dialog-warning.png') }}") no-repeat;
+    background: url("../img/dialog-warning.png") no-repeat;
     padding-left: 40px;
     min-height: 40px;
 }
 
 .MooDialog .MooDialogConfirm,
 .MooDialog .MooDialogPromt {
-    background: url("{{ url_for('static', filename='img/dialog-question.png') }}") no-repeat;
+    background: url("../img/dialog-question.png") no-repeat;
 }
 
 .MooDialog .MooDialogError {
-    background: url("{{ url_for('static', filename='img/dialog-error.png') }}") no-repeat;
+    background: url("../img/dialog-error.png") no-repeat;
 }
