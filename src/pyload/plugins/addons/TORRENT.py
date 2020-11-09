@@ -41,7 +41,7 @@ class TORRENT(BaseAddon):
     def plugins_updated(self, updated_plugins):
         if self.torrent_plugin != "None":
             plugin_type, plugin_name = self.torrent_plugin.split(':')
-            plugin_type = "crypter" if plugin_type == "c" else "hoster"
+            plugin_type = "crypter" if plugin_type == "c" else "downloader"
             if (plugin_type, plugin_name) in updated_plugins:
                 self._remove_association(self.torrent_plugin)
                 self._associate(self.torrent_plugin)
@@ -65,7 +65,7 @@ class TORRENT(BaseAddon):
     def _associate(self, plugin):
         if plugin != "None":
             plugin_type, plugin_name = plugin.split(':')
-            plugin_type = "crypter" if plugin_type == "c" else "hoster"
+            plugin_type = "crypter" if plugin_type == "c" else "downloader"
 
             dict = self.pyload.plugin_manager.plugins['container']['TORRENT']
             dict['pattern'] = r'(?!file://).+\.(?:torrent|magnet)'
@@ -78,7 +78,7 @@ class TORRENT(BaseAddon):
     def _remove_association(self, plugin):
         if plugin != "None":
             plugin_type, plugin_name = plugin.split(':')
-            plugin_type = "crypter" if plugin_type == "c" else "hoster"
+            plugin_type = "crypter" if plugin_type == "c" else "downloader"
 
             dict = self.pyload.plugin_manager.plugins[plugin_type][plugin_name]
             dict['pattern'] = r'^unmatchable$'
