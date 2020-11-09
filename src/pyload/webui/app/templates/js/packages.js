@@ -55,7 +55,7 @@ var PackageUI = new Class({
     },
     parsePackages: function() {
         $("package-list").getChildren("li").each(function(ele) {
-            var id = ele.getFirst().get("id").match(/[0-9]+/);
+            var id = ele.getFirst().get("id").match(/[0-9]+/)[0];
             this.packages.push(new Package(this, id, ele))
         }.bind(this))
     },
