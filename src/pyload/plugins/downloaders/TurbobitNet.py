@@ -12,10 +12,10 @@ from ..base.simple_downloader import SimpleDownloader
 class TurbobitNet(SimpleDownloader):
     __name__ = "TurbobitNet"
     __type__ = "downloader"
-    __version__ = "0.33"
+    __version__ = "0.37"
     __status__ = "testing"
 
-    __pattern__ = r"http://(?:www\.)?turbobit\.net/(?:download/free/)?(?P<ID>\w+)"
+    __pattern__ = r'https?://(?:(?:www|m)\.)?(?:turbobit\.net|turbo?\.(?:to|cc))/(?:download/free/)?(?P<ID>\w+)'
     __config__ = [
         ("enabled", "bool", "Activated", True),
         ("use_premium", "bool", "Use premium account if available", True),
@@ -33,6 +33,7 @@ class TurbobitNet(SimpleDownloader):
     ]
 
     URL_REPLACEMENTS = [(__pattern__ + ".*", r"https://turbobit.net/\g<ID>.html")]
+    SIZE_REPLACEMENTS = [(r' ', "")]
 
     COOKIES = [("turbobit.net", "user_lang", "en")]
 
@@ -40,7 +41,7 @@ class TurbobitNet(SimpleDownloader):
         r"<title>\s*Download file (?P<N>.+?) \((?P<S>[\d.,]+) (?P<U>[\w^_]+)\)"
     )
     OFFLINE_PATTERN = r"<h2>File Not Found</h2>|html\(\'File (?:was )?not found"
-    TEMP_OFFLINE_PATTERN = r""
+    TEMP_OFFLINE_PATTERN = r'^unmatchable$'
 
     LINK_FREE_PATTERN = r'(/download/redirect/[^"\']+)'
     LINK_PREMIUM_PATTERN = r'<a href=[\'"](.+?/download/redirect/[^"\']+)'
@@ -48,7 +49,7 @@ class TurbobitNet(SimpleDownloader):
     LIMIT_WAIT_PATTERN = r"<div id=\'timeout\'>(\d+)<"
 
     def handle_free(self, pyfile):
-        self.free_url = "http://turbobit.net/download/free/{}".format(
+        self.free_url = "https://turbobit.net/download/free/{}".format(
             self.info["pattern"]["ID"]
         )
         self.data = self.load(self.free_url)
@@ -68,7 +69,7 @@ class TurbobitNet(SimpleDownloader):
 
         self.req.http.c.setopt(pycurl.HTTPHEADER, ["X-Requested-With: XMLHttpRequest"])
         self.data = self.load(
-            "http://turbobit.net/download/getLinkTimeout/{}".format(
+            "https://turbobit.net/download/getLinkTimeout/{}".format(
                 self.info["pattern"]["ID"]
             ),
             ref=self.free_url,
@@ -77,14 +78,14 @@ class TurbobitNet(SimpleDownloader):
 
         if "/download/started/" in self.data:
             self.data = self.load(
-                "http://turbobit.net/download/started/{}".format(
+                "https://turbobit.net/download/started/{}".format(
                     self.info["pattern"]["ID"]
                 )
             )
 
             m = re.search(self.LINK_FREE_PATTERN, self.data)
             if m is not None:
-                self.link = "http://turbobit.net{}".format(m.group(1))
+                self.link = "https://turbobit.net{}".format(m.group(1))
 
     def solve_captcha(self):
         action, inputs = self.parse_html_form("action='#'")
