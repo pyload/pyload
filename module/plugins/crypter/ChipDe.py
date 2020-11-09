@@ -8,10 +8,10 @@ from ..internal.Crypter import Crypter
 class ChipDe(Crypter):
     __name__ = "ChipDe"
     __type__ = "crypter"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __status__ = "testing"
 
-    __pattern__ = r'http://(?:www\.)?chip\.de/video/.+\.html'
+    __pattern__ = r'https?://(?:www\.)?chip\.de/video/.+\.html'
     __config__ = [("activated", "bool", "Activated", True),
                   ("use_premium", "bool", "Use premium account if available", True),
                   ("folder_per_package", "Default;Yes;No", "Create folder for each package", "Default")]
@@ -23,7 +23,7 @@ class ChipDe(Crypter):
     def decrypt(self, pyfile):
         self.data = self.load(pyfile.url)
         try:
-            f = re.search(r'"(http://video\.chip\.de/.+)"', self.data)
+            f = re.search(r'"(https?://media-video\.chip\.de/.+/MEDIA/.+)"', self.data)
 
         except Exception:
             self.fail(_("Failed to find the URL"))
