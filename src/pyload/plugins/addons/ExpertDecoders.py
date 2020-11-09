@@ -24,7 +24,7 @@ class ExpertDecoders(BaseAddon):
 
     __description__ = """Send captchas to expertdecoders.com"""
     __license__ = "GPLv3"
-    __authors__ = [("RaNaN", "RaNaN@pyload.org"),
+    __authors__ = [("RaNaN", "RaNaN@pyload.net"),
                    ("zoidberg", "zoidberg@mujmail.cz")]
 
     API_URL = "http://www.fasttypers.org/imagepost.ashx"

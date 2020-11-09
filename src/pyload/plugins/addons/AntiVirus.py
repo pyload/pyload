@@ -73,10 +73,7 @@ class AntiVirus(BaseAddon):
         pyfile.set_progress(0)
 
         try:
-            p = Popen([avfile, avargs, target],
-                      bufsize=-1,
-                      stdout=subprocess.PIPE,
-                      stderr=subprocess.PIPE)
+            p = subprocess.Popen([avfile, avargs, target])
 
             out, err = (x.strip() for x in p.communicate())
 
