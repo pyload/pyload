@@ -22,31 +22,31 @@
 
 {% block content %}
 <ul id="toptabs" class="nav nav-tabs left col-xs-12 nav-settings">
-  <li class="active" ondragstart="return false;"><a class="noselect" data-toggle="tab" href="#general">{{_('General')}}</a></li>
+  <li class="active" ondragstart="return false;"><a class="noselect" data-toggle="tab" href="#core">{{_('General')}}</a></li>
   <li ondragstart="return false;"><a class="noselect" data-toggle="tab" href="#plugins">{{_('Plugins')}}</a></li>
   <li ondragstart="return false;"><a class="noselect" data-toggle="tab" href="#accounts">{{_('Accounts')}}</a></li>
 </ul>
 
 <div class="tab-content">
-  <div id="general" class="tab-pane fade in active">
+  <div id="core" class="tab-pane fade in active">
     <div class="panel panel-default col-xs-6 col-sm-4 col-md-3" style="float:left;">
       <div class="panel-body">
-        <ul id="general-menu" style="float: left; height: 300px; overflow: auto; overflow-x: hidden; width: 100%; padding-left: 0;">
+        <ul id="core-menu" style="float: left; height: 300px; overflow: auto; overflow-x: hidden; width: 100%; padding-left: 0;">
           {% for entry,name in conf.general %}
           <nobr>
-            <li style="list-style-type: none; cursor: pointer; margin-top: 10px;" id="general|{{entry}}">{{_(name)}}</li>
+            <li style="list-style-type: none; cursor: pointer; margin-top: 10px;" id="core|{{entry}}">{{_(name)}}</li>
           </nobr>
           {% endfor %}
         </ul>
       </div>
     </div>
-    <form style="overflow: auto;" class="col-lg-8 col-xs-6 col-md-5" id="general_form" action="" method="POST" autocomplete="off">
-      <span id="general_form_content">
+    <form style="overflow: auto;" class="col-lg-8 col-xs-6 col-md-5" id="core_form" action="" method="POST" autocomplete="off">
+      <span id="core_form_content">
         <br>
         <h3>{{_('Choose a section from the menu')}}</h3>
         <br>
       </span>
-      <input class="btn btn-primary" style="float:right; margin-right: 10px;" id="general_submit" type="submit" value="{{_('Save')}}"/>
+      <input class="btn btn-primary" style="float:right; margin-right: 10px;" id="core_submit" type="submit" value="{{_('Save')}}"/>
     </form>
   </div>
   <div id="plugins" class="tab-pane fade">

@@ -72,7 +72,7 @@ class UserDatabaseMethods:
         new_salt = reduce(
             lambda x, y: x + y, [str(random.randint(0, 9)) for i in range(5)]
         )
-        newpw = _salted_password(new_password, new_salt)
+        newpw = new_salt + _salted_password(new_password, new_salt)
 
         self.c.execute("UPDATE users SET password=? WHERE name=?", (newpw, user))
         return True

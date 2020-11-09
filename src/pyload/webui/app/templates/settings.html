@@ -29,7 +29,7 @@
                         <ul id="general-menu">
                             {% for entry,name in conf.general %}
                                 <nobr>
-                                    <li id="general|{{ entry }}">{{ name }}</li>
+                                    <li id="core|{{ entry }}">{{ name }}</li>
                                 </nobr>
                                 <br>
                             {% endfor %}
@@ -37,14 +37,14 @@
                     </li>
                 </ul>
 
-                <form id="general_form" action="" method="POST" autocomplete="off">
+                <form id="core_form" action="" method="POST" autocomplete="off">
                     <span id="general_form_content">
                     <br>
                     <h3>&nbsp;&nbsp; {{ _("Choose a section from the menu") }}</h3>
                     <br>
                     </span>
 
-                  <input id="general|submit" class="styled_button" type="submit" value="{{_("Submit")}}"/>
+                  <input id="core|submit" class="styled_button" type="submit" value="{{_("Submit")}}"/>
                 </form>
             </span>
 

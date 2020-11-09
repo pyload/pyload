@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
+
 import re
 import urllib.parse
 
 from pyload.core.network.http.exceptions import BadHeader
-
-from ..anticaptchas.ReCaptcha import ReCaptcha
 from ..base.simple_decrypter import SimpleDecrypter
+from ..anticaptchas.ReCaptcha import ReCaptcha
 
 
 class MultiUpOrg(SimpleDecrypter):
     __name__ = "MultiUpOrg"
     __type__ = "decrypter"
-    __version__ = "0.12"
+    __version__ = "0.15"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?multiup\.(?:org|eu)/(?:en/|fr/)?(?:(?P<TYPE>project|download|mirror)/)?\w+(?:/\w+)?"
@@ -39,11 +39,11 @@ class MultiUpOrg(SimpleDecrypter):
     TEMP_OFFLINE_PATTERN = r"^unmatchable$"
 
     URL_REPLACEMENTS = [
-        (r"https?://(?:www\.)?multiup\.(?:org|eu)/", "http://www.multiup.eu/"),
+        (r"https?://(?:www\.)?multiup\.(?:org|eu)/", "http://www.multiup.org/"),
         (r"/fr/", "/en/"),
     ]
 
-    COOKIES = [("multiup.eu", "_locale", "en")]
+    COOKIES = [("multiup.org", "_locale", "en")]
 
     def get_links(self):
         m_type = self.info["pattern"]["TYPE"]
@@ -53,51 +53,23 @@ class MultiUpOrg(SimpleDecrypter):
 
         if m_type == "project":
             return re.findall(
-                r"\n(http://www\.multiup\.eu/(?:en|fr)/download/.*)", self.data
+                r"\n(http://www\.multiup\.org/(?:en|fr)/download/.*)", self.data
             )
 
         elif m_type in ("download", None):
-            recaptcha = ReCaptcha(self.pyfile)
-            captcha_key = recaptcha.detect_key()
-            if captcha_key is not None:
-                self.captcha = recaptcha
-                url, inputs = self.parse_html_form()
-                mirror_page = urllib.parse.urljoin("http://www.multiup.eu/", url)
-                try:
-                    response, challenge = recaptcha.challenge(captcha_key)
-                except BadHeader as exc:
-                    if (
-                        exc.code == 400
-                        and "Please enable JavaScript to get a reCAPTCHA challenge"
-                        in exc.content
-                    ):
-                        self.log_warning(self._("Unsupported reCAPTCHA, retrying"))
-                        self.retry()
-
-                    else:
-                        raise
-
-                else:
-                    inputs["g-recaptcha-response"] = response
-                    self.data = self.load(mirror_page, post=inputs)
-
-            else:
-                dl_url = re.search(
-                    r'href="(.*)">.*\n.*<h5>DOWNLOAD</h5>', self.data
-                ).group(1)
-                mirror_page = urllib.parse.urljoin("http://www.multiup.eu/", dl_url)
-                self.data = self.load(mirror_page)
-
-        self.check_errors()
+            url, inputs = self.parse_html_form()
+            if inputs is not None:
+                self.data = self.load(urlparse.urljoin("http://www.multiup.org/", url),
+                                      post=inputs)
 
         hosts_data = {}
         for a in re.findall(
-            r'<a\s*class="btn btn-small disabled link host"(.+?)/a>', self.data, re.S
+            r'<button (.+?) class="host btn btn-md btn-default btn-block btn-3d hvr-bounce-to-right">', self.data, re.M
         ):
             validity = re.search(r"validity=(\w+)", a).group(1)
             if validity in ("valid", "unknown"):
                 host = re.search(r'nameHost="(.+?)"', a).group(1)
-                url = re.search(r'href="(.+?)"', a).group(1)
+                url = re.search(r'link="(.+?)"', a).group(1)
                 hosts_data[host] = url
 
         chosen_hosts = []

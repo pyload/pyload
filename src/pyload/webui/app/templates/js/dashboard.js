@@ -163,7 +163,9 @@ var LinkEntry = new Class({
 
         this.elements.remove.addEvent('click', function(){
             new Request({
-                method: 'get', url: window.location.pathname + "/../json/abort_link/" + this.id
+                method: 'get',
+                url: "{{url_for('json.abort_link')}}",
+                data: {id: this.id}
             }).send();
         }.bind(this));
 

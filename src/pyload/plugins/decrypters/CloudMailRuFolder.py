@@ -10,7 +10,7 @@ from ..base.decrypter import BaseDecrypter
 class CloudMailRuFolder(BaseDecrypter):
     __name__ = "CloudMailRuFolder"
     __type__ = "decrypter"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
     __pattern__ = r"https?://cloud\.mail\.ru/public/.+"
@@ -33,12 +33,14 @@ class CloudMailRuFolder(BaseDecrypter):
     def decrypt(self, pyfile):
         self.data = self.load(pyfile.url)
 
-        m = re.search(r"window\.cloudSettings\s*=\s*({{.+?}});", self.data, re.S)
+        m = re.search(r"window\.cloudSettings\s*=\s*(\{.+?\});", self.data, re.S)
         if m is None:
             self.fail(self._("Json pattern not found"))
 
         json_data = json.loads(m.group(1).replace("\\x3c", "<"))
 
+        pack_name = json_data['folders']['folder']['name']
+        
         pack_links = [
             "https://cloud.mail.ru/dl?q={}".format(
                 base64.b64encode(
@@ -62,5 +64,5 @@ class CloudMailRuFolder(BaseDecrypter):
 
         if pack_links:
             self.packages.append(
-                (pyfile.package().name, pack_links, pyfile.package().folder)
+                (pack_name or pyfile.package().name, pack_links, pack_name or pyfile.package().folder)
             )

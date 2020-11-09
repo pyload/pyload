@@ -1,14 +1,41 @@
 # -*- coding: utf-8 -*-
 
+from pyload.core.network.cookie_jar import CookieJar
+from pyload.core.network.http.http_request import HTTPRequest
 
 from ..base.decrypter import BaseDecrypter
 from ..downloaders.MegaCoNz import MegaClient, MegaCrypto
+from pyload.core.network.exceptions import Abort
+
+class BIGHTTPRequest(HTTPRequest):
+    """
+    Overcome HTTPRequest's load() size limit to allow
+    loading very big web pages by overrding HTTPRequest's write() function
+    """
+
+    # @TODO: Add 'limit' parameter to HTTPRequest in v0.4.10
+    def __init__(self, cookies=None, options=None, limit=2000000):
+        self.limit = limit
+        HTTPRequest.__init__(self, cookies=cookies, options=options)
+
+    def write(self, buf):
+        """ writes response """
+        if self.limit and self.rep.tell() > self.limit or self.abort:
+            rep = self.getResponse()
+            if self.abort:
+                raise Abort()
+            f = open("response.dump", "wb")
+            f.write(rep)
+            f.close()
+            raise Exception("Loaded Url exceeded limit")
+
+        self.rep.write(buf)
 
 
 class MegaCoNzFolder(BaseDecrypter):
     __name__ = "MegaCoNzFolder"
     __type__ = "decrypter"
-    __version__ = "0.21"
+    __version__ = "0.24"
     __status__ = "testing"
 
     __pattern__ = r"(https?://(?:www\.)?mega(\.co)?\.nz/|mega:|chrome:.+?)#F!(?P<ID>[\w^_]+)!(?P<KEY>[\w,\-=]+)"
@@ -29,6 +56,17 @@ class MegaCoNzFolder(BaseDecrypter):
         ("Walter Purcaro", "vuolter@gmail.com"),
         ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com"),
     ]
+
+    def setup(self):
+        try:
+            self.req.http.close()
+        except Exception:
+            pass
+
+        self.req.http = BIGHTTPRequest(
+            cookies=CookieJar(None),
+            options=self.pyload.requestFactory.getOptions(),
+            limit=10000000)
 
     def decrypt(self, pyfile):
         id = self.info["pattern"]["ID"]
@@ -55,10 +93,13 @@ class MegaCoNzFolder(BaseDecrypter):
                 MegaCrypto.a32_to_str(MegaCrypto.decrypt_key(k, master_key))
             )
 
-        self.links = [
+        urls = [
             self._("https://mega.co.nz/#N!{}!{}###n={}").format(
                 f["h"], get_node_key(f["k"][f["k"].index(":") + 1 :]), id
             )
             for f in res["f"]
             if f["t"] == 0 and ":" in f["k"]
         ]
+
+        if urls:
+            self.packages = [(pyfile.package().folder, urls, pyfile.package().name)]

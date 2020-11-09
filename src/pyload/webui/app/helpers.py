@@ -30,7 +30,7 @@ def get_redirect_url(fallback=None):
     for location in flask.request.values.get("next"), flask.request.referrer:
         if not location:
             continue
-        if location == flask.request.url:  # don't redirect to same location
+        if location == flask.request.url or flask.request.url.endswith('login'):  # don't redirect to same location
             continue
         if is_safe_url(location):
             return location
