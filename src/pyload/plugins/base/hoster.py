@@ -45,7 +45,7 @@ class BaseHoster(BasePlugin):
 
     @classmethod
     def get_info(cls, url="", html=""):
-        url = fixurl(url)
+        url = fixurl(url, unquote=True)
         info = {
             "name": parse.name(url),
             "hash": {},
@@ -509,7 +509,7 @@ class BaseHoster(BasePlugin):
         baseurl = baseurl or self.pyfile.url
         if not urllib.parse.urlparse(url).scheme:
             url_p = urllib.parse.urlparse(baseurl)
-            baseurl = "%s://%s" % (url_p.scheme, url_p.netloc)
+            baseurl = "{}://{}".format(url_p.scheme, url_p.netloc)
             url = urllib.parse.urljoin(baseurl, url)
 
         return url
