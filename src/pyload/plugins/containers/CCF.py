@@ -30,7 +30,7 @@ class CCF(BaseContainer):
     __description__ = """CCF container decrypter plugin"""
     __license__ = "GPLv3"
     __authors__ = [
-        ("Willnix", "Willnix@pyload.org"),
+        ("Willnix", "Willnix@pyload.net"),
         ("Walter Purcaro", "vuolter@gmail.com"),
     ]
 
@@ -41,7 +41,7 @@ class CCF(BaseContainer):
             dlc_content = requests.post(
                 "http://service.jdownloader.net/dlcrypt/getDLC.php",
                 data={"src": "ccf", "filename": "test.ccf"},
-                files={"upload": file},
+                files={"upload": fp},
             ).read()
 
         dl_folder = self.pyload.config.get("general", "storage_folder")
