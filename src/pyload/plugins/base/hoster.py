@@ -350,16 +350,16 @@ class BaseHoster(BasePlugin):
         if seconds is not None:
             self.set_wait(seconds)
 
-        if reconnect is None:
-            reconnect = seconds > self.config.get("max_wait", 10) * 60
-
-        self.set_reconnect(reconnect)
-
         wait_time = self.pyfile.wait_until - time.time()
 
         if wait_time < 1:
             self.log_warning(self._("Invalid wait time interval"))
             return
+
+        if reconnect is None:
+            reconnect = wait_time > self.config.get("max_wait", 10) * 60
+
+        self.set_reconnect(reconnect)
 
         self.waiting = True
 
