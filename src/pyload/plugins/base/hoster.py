@@ -28,7 +28,7 @@ def parse_file_info(klass, url="", html=""):
 class BaseHoster(BasePlugin):
     __name__ = "BaseHoster"
     __type__ = "base"
-    __version__ = "0.34"
+    __version__ = "0.39"
     __status__ = "stable"
 
     __pattern__ = r"^unmatchable$"
@@ -45,7 +45,7 @@ class BaseHoster(BasePlugin):
 
     @classmethod
     def get_info(cls, url="", html=""):
-        url = fixurl(url, unquote=True)
+        url = fixurl(url)
         info = {
             "name": parse.name(url),
             "hash": {},
@@ -235,7 +235,7 @@ class BaseHoster(BasePlugin):
         self.log_info(self._("Grabbing link info..."))
 
         old_info = dict(self.info)
-        new_info = self.get_info(self.pyfile.url, self.data)
+        new_info = self.get_info(replace_patterns(self.pyfile.url, self.URL_REPLACEMENTS), self.data)
 
         self.info.update(new_info)
 
@@ -505,16 +505,14 @@ class BaseHoster(BasePlugin):
         self.captcha.invalid(msg)
         self.retry(attemps, wait, msg=self._("Retry Captcha"), msgfail=msgfail)
 
-    def fixurl(self, url, baseurl=None, unquote=True):
-        url = fixurl(url, unquote=True)
-        baseurl = fixurl(baseurl or self.pyfile.url, unquote=True)
-
+    def fixurl(self, url, baseurl=None):
+        baseurl = baseurl or self.pyfile.url
         if not urllib.parse.urlparse(url).scheme:
             url_p = urllib.parse.urlparse(baseurl)
-            baseurl = "{}://{}".format(url_p.scheme, url_p.netloc)
+            baseurl = "%s://%s" % (url_p.scheme, url_p.netloc)
             url = urllib.parse.urljoin(baseurl, url)
 
-        return fixurl(url, unquote)
+        return url
 
     def load(self, *args, **kwargs):
         self.check_status()
