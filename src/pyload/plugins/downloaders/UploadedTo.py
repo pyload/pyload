@@ -5,6 +5,7 @@ import re
 import time
 
 from pyload.core.network.request_factory import get_url
+from pyload.core.utils.convert import to_str
 
 from ..anticaptchas.ReCaptcha import ReCaptcha
 from ..base.simple_downloader import SimpleDownloader
@@ -13,7 +14,7 @@ from ..base.simple_downloader import SimpleDownloader
 class UploadedTo(SimpleDownloader):
     __name__ = "UploadedTo"
     __type__ = "downloader"
-    __version__ = "1.08"
+    __version__ = "1.09"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?(uploaded\.(to|net)|ul\.to)(/file/|/?\?id=|.*?&id=|/)(?P<ID>\w+)"
@@ -62,8 +63,10 @@ class UploadedTo(SimpleDownloader):
                     "apikey": cls.API_KEY,
                     "id_0": re.match(cls.__pattern__, url).group("ID"),
                 },
+                decode=False,
             )
 
+            html = to_str(html, 'latin1')
             if html != "can't find request":
                 api = html.split(",", 4)
                 if api[0] == "online":
