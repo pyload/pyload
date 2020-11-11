@@ -359,7 +359,6 @@ class SimpleDownloader(BaseDownloader):
                 self.log_debug(self._("No check on binary data"))
                 return
 
-
         if self.IP_BLOCKED_PATTERN and re.search(self.IP_BLOCKED_PATTERN, self.data):
             self.fail(self._("Connection from your current IP address is not allowed"))
 
