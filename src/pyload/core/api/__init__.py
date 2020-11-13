@@ -152,13 +152,13 @@ class Api:
         :param category: name of category, or plugin
         :param option: config option
         :param section: 'plugin' or 'core'
-        :return: config value as string
+        :return: config value
         """
         if section == "core":
             value = self.pyload.config[category][option]
         else:
             value = self.pyload.config.get_plugin(category, option)
-        return str(value)
+        return value
 
     @legacy("setConfigValue")
     @permission(Perms.SETTINGS)

@@ -74,12 +74,12 @@ def login():
     if is_authenticated():
         return flask.redirect(next)
 
-    if api.get_config_value("webui", "autologin") == "True":
+    if api.get_config_value("webui", "autologin"):
         allusers = api.get_all_userdata()
         if len(allusers) == 1:  # TODO: check if localhost
             user_info = list(allusers.values())[0]
             set_session(user_info)
-            # NOTE: Double-check autentication here because if session[name] is empty,
+            # NOTE: Double-check authentication here because if session[name] is empty,
             #       next login_required redirects here again and all loop out.
             if is_authenticated():
                 return flask.redirect(next)
@@ -242,13 +242,11 @@ def settings():
 
 
 @bp.route("/pathchooser/", endpoint="pathchooser")
-@bp.route("/pathchooser/<path:path>", endpoint="pathchooser")
 @bp.route("/filechooser/", endpoint="filechooser")
-@bp.route("/filechooser/<path:path>", endpoint="filechooser")
 @login_required("STATUS")
-def pathchooser(path=""):
+def pathchooser():
     browse_for = "folder" if flask.request.endpoint == "app.pathchooser" else "file"
-    path = os.path.normpath(unquotepath(path))
+    path = os.path.normpath(flask.request.args.get('path', ""))
 
     if os.path.isfile(path):
         oldfile = path

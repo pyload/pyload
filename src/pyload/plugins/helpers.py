@@ -18,6 +18,8 @@ from base64 import b85decode, b85encode
 from collections.abc import Sequence
 from datetime import timedelta
 
+from ..core.utils.convert import to_str
+
 
 class Config:
     def __init__(self, plugin):
@@ -416,7 +418,7 @@ def replace_patterns(value, rules):
 
 # TODO: Remove in 0.6.x and fix exp in CookieJar.set_cookie
 def set_cookie(
-    cj, domain, name, value, path="/", exp=time.time() + timedelta(hours=744).seconds
+    cj, domain, name, value, path="/", exp=time.time() + timedelta(hours=744).total_seconds()
 ):  #: 31 days retention
     args = [domain, name, value, path, int(exp)]
     return cj.set_cookie(*args)
@@ -434,7 +436,7 @@ def set_cookies(cj, cookies):
 
 
 def parse_html_header(header):
-    header = str(header)
+    header = to_str(header)
 
     hdict = {}
     _re = r"[ ]*(?P<key>.+?)[ ]*:[ ]*(?P<value>.+?)[ ]*\r?\n"

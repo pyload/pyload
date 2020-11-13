@@ -200,7 +200,7 @@ class BasePlugin:
             # NOTE: req can be a HTTPRequest or a Browser object
             http_req.c.setopt(pycurl.FOLLOWLOCATION, 0)
 
-        elif isinstance(redirect, int):
+        elif type(redirect) is int:
             # NOTE: req can be a HTTPRequest or a Browser object
             http_req.c.setopt(pycurl.MAXREDIRS, redirect)
 
@@ -224,7 +224,7 @@ class BasePlugin:
             # NOTE: req can be a HTTPRequest or a Browser object
             http_req.c.setopt(pycurl.FOLLOWLOCATION, 1)
 
-        elif isinstance(redirect, int):
+        elif type(redirect) is int:
             maxredirs = (
                 int(
                     self.pyload.api.get_config_value(

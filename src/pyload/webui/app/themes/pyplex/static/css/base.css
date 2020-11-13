@@ -464,3 +464,9 @@ fieldset[disabled] .btn {
   text-align: center;
   z-index: 1040;
 }
+
+.navbar-nav .divider-vertical {
+  min-height: 32px;
+  margin: 6px 3px 0 3px;
+  border-left: 1px solid #CACACA;
+}

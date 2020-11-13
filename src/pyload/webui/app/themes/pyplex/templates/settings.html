@@ -1,7 +1,6 @@
 {% extends theme('base.html') %}
 
-<!-- {% block title %}{{_('Settings') - super()}} {% endblock %} -->
-<!-- {% block subtitle %}{{_('Settings')}}{% endblock %} -->
+{% block title %}pyLoad - {{_('Settings')}}{% endblock %}
 
 {% block head %}
 <meta id="plugins-list" data-plugin='{{conf.plugin|tojson}}'/>
@@ -15,39 +14,39 @@
 {% block pageactions %}
 {% if user.is_admin %}
   <div class="btn-group btn-group-sm" role="group" aria-label="...">
-    <button id="restart-pyload" class="btn btn-warning" data-toggle="modal" data-target="#restart_box"><span class="glyphicon glyphicon-repeat"></span> {{_('Restart pyLoad')}}</button>
     <button id="quit-pyload" class="btn btn-danger" data-toggle="modal" data-target="#quit_box"><span class="glyphicon glyphicon-off"></span> {{_('Quit pyLoad')}}</button>
+    <button id="restart-pyload" class="btn btn-warning" data-toggle="modal" data-target="#restart_box"><span class="glyphicon glyphicon-repeat"></span> {{_('Restart pyLoad')}}</button>
   </div>
 {% endif %}
 {% endblock %}
 
 {% block content %}
 <ul id="toptabs" class="nav nav-tabs left col-xs-12 nav-settings">
-  <li class="active" ondragstart="return false;"><a class="noselect" data-toggle="tab" href="#general">{{_('General')}}</a></li>
+  <li class="active" ondragstart="return false;"><a class="noselect" data-toggle="tab" href="#core">{{_('General')}}</a></li>
   <li ondragstart="return false;"><a class="noselect" data-toggle="tab" href="#plugins">{{_('Plugins')}}</a></li>
   <li ondragstart="return false;"><a class="noselect" data-toggle="tab" href="#accounts">{{_('Accounts')}}</a></li>
 </ul>
 
 <div class="tab-content">
-  <div id="general" class="tab-pane fade in active">
+  <div id="core" class="tab-pane fade in active">
     <div class="panel panel-default col-xs-6 col-sm-4 col-md-3" style="float:left;">
       <div class="panel-body">
-        <ul id="general-menu" style="float: left; height: 300px; overflow: auto; overflow-x: hidden; width: 100%; padding-left: 0;">
+        <ul id="core-menu" style="float: left; height: 300px; overflow: auto; overflow-x: hidden; width: 100%; padding-left: 0;">
           {% for entry,name in conf.general %}
           <nobr>
-            <li style="list-style-type: none; cursor: pointer; margin-top: 10px;" id="general|{{entry}}">{{_(name)}}</li>
+            <li style="list-style-type: none; cursor: pointer; margin-top: 10px;" id="core|{{entry}}">{{_(name)}}</li>
           </nobr>
           {% endfor %}
         </ul>
       </div>
     </div>
-    <form style="overflow: auto;" class="col-lg-8 col-xs-6 col-md-5" id="general_form" action="" method="POST" autocomplete="off">
-      <span id="general_form_content">
+    <form style="overflow: auto;" class="col-lg-8 col-xs-6 col-md-5" id="core_form" action="" method="POST" autocomplete="off">
+      <span id="core_form_content">
         <br>
         <h3>{{_('Choose a section from the menu')}}</h3>
         <br>
       </span>
-      <input class="btn btn-bright" style="float:right; margin-right: 10px;" id="general_submit" type="submit" value="{{_('Save')}}"/>
+      <input class="btn btn-bright" style="float:right; margin-right: 10px;" id="core_submit" type="submit" value="{{_('Save')}}"/>
     </form>
   </div>
   <div id="plugins" class="tab-pane fade">
@@ -82,7 +81,7 @@
     </form>
   </div>
   <div id="accounts" class="tab-pane fade">
-    <form id="account_form" action="/json/update_accounts" method="POST">
+    <form id="account_form" action="{{url_for("json.update_accounts")}}" method="POST">
       <table class="settable wide table">
         <thead>
         <tr>
@@ -151,7 +150,7 @@
     <div class="modal-content">
       <div class="modal-header bg-info navbar-inverse text-center" style="padding: 5px">{{_('Add Account')}}</div>
       <div class="modal-body" style="margin-bottom: 30px;">
-        <form id="add_account_form" action="/json/add_account" method="POST" enctype="multipart/form-data" style="margin-bottom: 40px;">
+        <form id="add_account_form" action="{{url_for("json.add_account")}}" method="POST" enctype="multipart/form-data" style="margin-bottom: 40px;">
           <p>{{_('Enter your account data to use premium features')}}</p>
           <div class="form-group">
             <label for="account_login">{{_('Login')}}</label>
@@ -180,9 +179,6 @@
   </div>
 </div>
 
-
-
-
 <div id="path_chooser" class="modal" role="dialog">
   <div class="modal-dialog" style="width: 680px">
     <div class="modal-content">
@@ -204,6 +200,44 @@
           <button class="btn btn-warning" data-dismiss="modal" style="float: right;" type="reset">{{_('Cancel')}}</button>
         </div>
     </div>
+    </div>
+  </div>
+</div>
+
+<div id="restart_msg" class="hidden" style="position:fixed; z-index: 1; width: 100%;">
+  <div align="center" class="alert alert-success">
+    <p style="font-weight: bold;">{{_('pyLoad is restarting...')}}</p>
+  </div>
+</div>
+
+<div id="shutdown_msg" class="hidden" style="position:fixed; z-index: 1; width: 100%;">
+  <div align="center" class="alert alert-success">
+    <p style="font-weight: bold;">{{_('pyLoad was shut down, goodbye!')}}</p>
+  </div>
+</div>
+
+<div id="restart_box" class="modal" role="dialog">
+  <div class="modal-dialog modal-sm">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header bg-info navbar-inverse text-center" style="padding: 5px" >{{_('Are you sure you want to restart pyLoad?')}}</div>
+      <div class="modal-body" style="margin-bottom: 30px;">
+        <button class="btn btn-success" id="restart_button" type="submit" style="float: right">{{_('Ok')}}</button>
+        <button class="btn btn-warning" data-dismiss="modal" id="restart_reset" style="margin-right: 5px; float: right" type="reset">{{_('Cancel')}}</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="quit_box" class="modal" role="dialog">
+  <div class="modal-dialog modal-sm">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header bg-info navbar-inverse text-center" style="padding: 5px;" >{{_('You are really sure you want to quit pyLoad?')}}</div>
+      <div class="modal-body" style="margin-bottom: 30px;">
+        <button class="btn btn-success" id="quit_button" type="submit" style="float: right">{{_('Ok')}}</button>
+        <button class="btn btn-warning" data-dismiss="modal" id="quit_reset" style="margin-right: 5px; float: right" type="reset">{{_('Cancel')}}</button>
+      </div>
     </div>
   </div>
 </div>

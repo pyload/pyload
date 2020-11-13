@@ -7,12 +7,13 @@ from flask.json import jsonify
 
 from pyload.core.utils import format
 
-from ..helpers import login_required, render_template, set_permission, get_permission, permlist
+from ..helpers import login_required, render_template
+from ..helpers import set_permission, get_permission, permlist
 
-bp = flask.Blueprint("json", __name__, url_prefix="/json")
+bp = flask.Blueprint("json", __name__)
 
 
-@bp.route("/status", methods=["GET", "POST"], endpoint="status")
+@bp.route("/json/status", methods=["GET", "POST"], endpoint="status")
 # @apiver_check
 @login_required("LIST")
 def status():
@@ -21,7 +22,7 @@ def status():
     return jsonify(data)
 
 
-@bp.route("/links", methods=["GET", "POST"], endpoint="links")
+@bp.route("/json/links", methods=["GET", "POST"], endpoint="links")
 # @apiver_check
 @login_required("LIST")
 def links():
@@ -53,7 +54,7 @@ def links():
     return jsonify(False)
 
 
-@bp.route("/packages", endpoint="packages")
+@bp.route("/json/packages", endpoint="packages")
 # @apiver_check
 @login_required("LIST")
 def packages():
@@ -74,12 +75,13 @@ def packages():
     return jsonify(False)
 
 
-@bp.route("/package/<int:id>", endpoint="package")
+@bp.route("/json/package", endpoint="package")
 # @apiver_check
 @login_required("LIST")
-def package(id):
+def package():
     api = flask.current_app.config["PYLOAD_API"]
     try:
+        id = int(flask.request.args.get('id'))
         data = api.get_package_data(id)
 
         tmp = data["links"]
@@ -93,12 +95,14 @@ def package(id):
     return jsonify(False)
 
 
-@bp.route("/package_order/<int:pid>|<int:pos>", endpoint="package_order")
+@bp.route("/json/package_order", endpoint="package_order")
 # @apiver_check
 @login_required("ADD")
-def package_order(pid, pos):
+def package_order():
     api = flask.current_app.config["PYLOAD_API"]
     try:
+        pid = int(flask.request.args.get('pid'))
+        pos = int(flask.request.args.get('pos'))
         api.order_package(pid, pos)
         return jsonify(response="success")
     except Exception:
@@ -107,12 +111,13 @@ def package_order(pid, pos):
     return jsonify(False)
 
 
-@bp.route("/abort_link/<int:id>", endpoint="abort_link")
+@bp.route("/json/abort_link", endpoint="abort_link")
 # @apiver_check
 @login_required("DELETE")
-def abort_link(id):
+def abort_link():
     api = flask.current_app.config["PYLOAD_API"]
     try:
+        id = int(flask.request.args.get('id'))
         api.stop_downloads([id])
         return jsonify(response="success")
     except Exception:
@@ -121,12 +126,14 @@ def abort_link(id):
     return jsonify(False)
 
 
-@bp.route("/link_order/<int:fid>|<int:pos>", endpoint="link_order")
+@bp.route("/json/link_order", endpoint="link_order")
 # @apiver_check
 @login_required("ADD")
-def link_order(fid, pos):
+def link_order():
     api = flask.current_app.config["PYLOAD_API"]
     try:
+        fid = int(flask.request.args.get('fid'))
+        pos = int(flask.request.args.get('pos'))
         api.order_file(fid, pos)
         return jsonify(response="success")
     except Exception:
@@ -135,34 +142,35 @@ def link_order(fid, pos):
     return jsonify(False)
 
 
-@bp.route("/add_package", methods=["POST"], endpoint="add_package")
+@bp.route("/json/add_package", methods=["POST"], endpoint="add_package")
 # @apiver_check
 @login_required("ADD")
 def add_package():
     api = flask.current_app.config["PYLOAD_API"]
 
-    name = flask.request.form.get("add_name", "New Package").strip()
+    package_name = flask.request.form.get("add_name", "New Package").strip()
     queue = int(flask.request.form["add_dest"])
     links = flask.request.form["add_links"].split("\n")
     pw = flask.request.form.get("add_password", "").strip("\n\r")
 
     try:
-        f = flask.request.files["add_file"]
+        file = flask.request.files["add_file"]
 
-        if not name or name == "New Package":
-            name = f.name
+        if file.filename:
+            if not package_name or package_name == "New Package":
+                package_name = file.filename
 
-        fpath = os.path.join(
-            api.get_config_value("general", "storage_folder"), "tmp_" + f.filename
-        )
-        f.save(fpath)
-        links.insert(0, fpath)
+            file_path = os.path.join(
+                api.get_config_value("general", "storage_folder"), "tmp_" + file.filename
+            )
+            file.save(file_path)
+            links.insert(0, file_path)
 
     except Exception:
         pass
 
     urls = [url for url in links if url.strip()]
-    pack = api.add_package(name, urls, queue)
+    pack = api.add_package(package_name, urls, queue)
     if pw:
         data = {"password": pw}
         api.set_package_data(pack, data)
@@ -170,12 +178,14 @@ def add_package():
     return jsonify(True)
 
 
-@bp.route("/move_package/<int:dest>|<int:id>", endpoint="move_package")
+@bp.route("/json/move_package", endpoint="move_package")
 # @apiver_check
 @login_required("MODIFY")
-def move_package(dest, id):
+def move_package():
     api = flask.current_app.config["PYLOAD_API"]
     try:
+        id = int(flask.request.args.get('id'))
+        dest = int(flask.request.args.get('dest'))
         api.move_package(dest, id)
         return jsonify(response="success")
     except Exception:
@@ -184,7 +194,7 @@ def move_package(dest, id):
     return jsonify(False)
 
 
-@bp.route("/edit_package", methods=["POST"], endpoint="edit_package")
+@bp.route("/json/edit_package", methods=["POST"], endpoint="edit_package")
 # @apiver_check
 @login_required("MODIFY")
 def edit_package():
@@ -193,7 +203,7 @@ def edit_package():
         id = int(flask.request.form["pack_id"])
         data = {
             "name": flask.request.form["pack_name"],
-            "folder": flask.request.form["pack_folder"],
+            "_folder": flask.request.form["pack_folder"],
             "password": flask.request.form["pack_pws"],
         }
 
@@ -206,7 +216,7 @@ def edit_package():
     return jsonify(False)
 
 
-@bp.route("/set_captcha", methods=["GET", "POST"], endpoint="set_captcha")
+@bp.route("/json/set_captcha", methods=["GET", "POST"], endpoint="set_captcha")
 # @apiver_check
 @login_required("ADD")
 def set_captcha():
@@ -231,13 +241,18 @@ def set_captcha():
     return jsonify(data)
 
 
-@bp.route("/load_config/<category>/<section>", endpoint="load_config")
+@bp.route("/json/load_config", endpoint="load_config")
 # @apiver_check
 # @login_required("SETTINGS")
-def load_config(category, section):
+def load_config():
+    category = flask.request.args.get('category')
+    section = flask.request.args.get('section')
+    if category not in ("core", "plugin") or not section:
+        flask.abort(500)
+
     conf = None
     api = flask.current_app.config["PYLOAD_API"]
-    if category == "general":
+    if category == "core":
         conf = api.get_config_dict()
     elif category == "plugin":
         conf = api.get_plugin_config_dict()
@@ -252,26 +267,27 @@ def load_config(category, section):
     return render_template("settings_item.html", skey=section, section=conf[section])
 
 
-@bp.route("/save_config/<category>", methods=["POST"], endpoint="save_config")
+@bp.route("/json/save_config", methods=["POST"], endpoint="save_config")
 # @apiver_check
 @login_required("SETTINGS")
-def save_config(category):
+def save_config():
     api = flask.current_app.config["PYLOAD_API"]
+    category = flask.request.args.get('category')
+    if category not in ("core", "plugin"):
+        flask.abort(500)
+
     for key, value in flask.request.form.items():
         try:
             section, option = key.split("|")
         except Exception:
             continue
 
-        if category == "general":
-            category = "core"
-
         api.set_config_value(section, option, value, category)
 
     return jsonify(True)
 
 
-@bp.route("/add_account", methods=["POST"], endpoint="add_account")
+@bp.route("/json/add_account", methods=["POST"], endpoint="add_account")
 # @apiver_check
 @login_required("ACCOUNTS")
 # @fresh_login_required
@@ -286,7 +302,7 @@ def add_account():
     return jsonify(True)
 
 
-@bp.route("/update_accounts", methods=["POST"], endpoint="update_accounts")
+@bp.route("/json/update_accounts", methods=["POST"], endpoint="update_accounts")
 # @apiver_check
 @login_required("ACCOUNTS")
 # @fresh_login_required
@@ -318,7 +334,7 @@ def update_accounts():
     return jsonify(True)
 
 
-@bp.route("/change_password", methods=["POST"], endpoint="change_password")
+@bp.route("/json/change_password", methods=["POST"], endpoint="change_password")
 # @apiver_check
 # @fresh_login_required
 @login_required("ACCOUNTS")
@@ -334,6 +350,7 @@ def change_password():
         return "Wrong password", 500
 
     return jsonify(True)
+
 
 @bp.route("/add_user", methods=["POST"], endpoint="add_user")
 # @apiver_check

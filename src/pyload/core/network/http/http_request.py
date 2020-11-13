@@ -219,7 +219,7 @@ class HTTPRequest:
         cookies=True,
         just_header=False,
         multipart=False,
-        decode=False,
+        decode=True,
         follow_location=True,
         save_cookies=True,
     ):
