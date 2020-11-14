@@ -204,7 +204,7 @@ class PluginManager:
                     plugins[name]["pattern"] = pattern
 
                     try:
-                        plugins[name]["re"] = re.compile(pattern)
+                        plugins[name]["re"] = re.compile(pattern, re.I)
                     except Exception:
                         self.pyload.log.error(
                             self._("{} has a invalid pattern").format(name)
