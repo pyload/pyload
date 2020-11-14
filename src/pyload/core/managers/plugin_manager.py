@@ -278,7 +278,7 @@ class PluginManager:
                 self.container_plugins.items(),
             ):
                 if value["re"].match(url):
-                    res.append((url, name))
+                    res.append((url.lower(), name))
                     last = (name, value)
                     found = True
                     break
