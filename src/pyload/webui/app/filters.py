@@ -4,6 +4,7 @@ import datetime
 import os
 
 from pyload.core.utils import format
+from urllib.parse import quote_plus as _quote_plus, unquote_plus as _unquote_plus
 
 _QUOTECHAR = "::%2F"
 
@@ -54,5 +55,10 @@ def date(date, format):
 def formatsize(*args, **kwargs):
     return format.size(*args, **kwargs)
 
+def quote_plus(arg):
+    return _quote_plus(arg)
 
-TEMPLATE_FILTERS = [quotepath, unquotepath, date, relpath, abspath, formatsize]
+def unquote_plus(arg):
+    return _unquote_plus(arg)
+
+TEMPLATE_FILTERS = [quotepath, unquotepath, date, relpath, abspath, formatsize, quote_plus, unquote_plus]

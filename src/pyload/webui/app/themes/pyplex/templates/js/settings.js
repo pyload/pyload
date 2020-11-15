@@ -201,15 +201,15 @@ SettingsUI = (function() {
 
             if (browseFor) {
                 chooserIfrm.height(Math.max($(window).height()-200,  150));
-                var val = targetInput ? $(targetInput).val().replace("../", "::%2F").replace("..\\", "::%2F") : "";
+                var val = targetInput ? encodeURIComponent($(targetInput).val()) : "";
                 $(this).data('targetinput', targetInput);
                 if (browseFor === "file") {
                     $(this).find("#chooser_title").text("{{_('Select File')}}");
-                    chooserIfrm.attr("src", "/filechooser/" + val);
+                    chooserIfrm.attr("src", "{{url_for('app.filechooser')}}?path=" + val);
                 }
                 else if (browseFor === "folder") {
                     $(this).find("#chooser_title").text("{{_('Select Folder')}}");
-                    chooserIfrm.attr("src", "/pathchooser/" + val);
+                    chooserIfrm.attr("src", "{{url_for('app.pathchooser')}}?path=" + val);
                 }
             }
         });

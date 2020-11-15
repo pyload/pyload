@@ -29,7 +29,7 @@ def rpc(func, args=""):
             "perms" not in s or
             not api.is_authorized(func, {"role": s["role"], "permission": s["perms"]})
     ):
-        return "Unauthorized", 401
+        return jsonify({'error': "Unauthorized"}), 401
 
     args = args.split(",")
     if len(args) == 1 and not args[0]:
@@ -53,7 +53,7 @@ def call_api(func, *args, **kwargs):
 
     if func.startswith("_"):
         flask.flash(f"Invalid API call '{func}'")
-        return "Forbidden", 403
+        return jsonify({'error': "Forbidden"}), 403
 
     result = getattr(api, func)(
         *[literal_eval(x) for x in args],

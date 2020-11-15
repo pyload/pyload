@@ -33,11 +33,11 @@ class CookieJar:
         name,
         value,
         path="/",
-        exp=time.time() + timedelta(hours=744).seconds,  #: 31 days retention
+        exp=time.time() + timedelta(hours=744).total_seconds(),  #: 31 days retention
     ):
         self.cookies[
             name
-        ] = f".{domain}    TRUE    {path}    FALSE    {exp}    {name}    {value}"
+        ] = f".{domain}\tTRUE\t{path}\tFALSE\t{exp}\t{name}\t{value}"
 
     def clear(self):
         self.cookies = {}

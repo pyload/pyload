@@ -204,7 +204,7 @@ class PluginManager:
                     plugins[name]["pattern"] = pattern
 
                     try:
-                        plugins[name]["re"] = re.compile(pattern)
+                        plugins[name]["re"] = re.compile(pattern, re.I)
                     except Exception:
                         self.pyload.log.error(
                             self._("{} has a invalid pattern").format(name)
@@ -278,7 +278,7 @@ class PluginManager:
                 self.container_plugins.items(),
             ):
                 if value["re"].match(url):
-                    res.append((url, name))
+                    res.append((url.lower(), name))
                     last = (name, value)
                     found = True
                     break
