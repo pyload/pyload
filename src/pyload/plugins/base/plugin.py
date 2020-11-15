@@ -226,13 +226,11 @@ class BasePlugin:
 
         elif type(redirect) is int:
             maxredirs = (
-                int(
-                    self.pyload.api.get_config_value(
-                        "UserAgentSwitcher", "maxredirs", "plugin"
-                    )
+                self.pyload.api.get_config_value(
+                    "UserAgentSwitcher", "maxredirs", "plugin"
                 )
                 or 5
-            )  # TODO: Remove `int` in 0.6.x
+            )
             # NOTE: req can be a HTTPRequest or a Browser object
             http_req.c.setopt(pycurl.MAXREDIRS, maxredirs)
 
@@ -364,13 +362,11 @@ class BasePlugin:
 
             elif isinstance(redirect, int):
                 maxredirs = (
-                    int(
-                        self.pyload.api.get_config_value(
-                            "UserAgentSwitcher", "maxredirs", "plugin"
-                        )
+                    self.pyload.api.get_config_value(
+                        "UserAgentSwitcher", "maxredirs", "plugin"
                     )
                     or 5
-                )  # TODO: Remove `int` in 0.6.x
+                )
                 # NOTE: req can be a HTTPRequest or a Browser object
                 http_req.c.setopt(pycurl.MAXREDIRS, maxredirs)
 
