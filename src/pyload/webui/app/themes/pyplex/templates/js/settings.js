@@ -56,11 +56,6 @@ SettingsUI = (function() {
 
         $("#core_submit").click(this.configSubmit);
         $("#plugin_submit").click(this.configSubmit);
-        $("#account_add").click(function(f) {
-            $("#account_box").modal('show');
-            f.stopPropagation();
-            f.preventDefault();
-        });
         $("#account_add_button").click(this.addAccount);
         $("#account_submit").click(this.submitAccounts);
 
