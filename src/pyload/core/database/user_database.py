@@ -43,17 +43,23 @@ class UserDatabaseMethods:
         }
 
     @style.queue
-    def add_user(self, user, password):
+    def add_user(self, user, password, role=0, perms=0, reset_pw=False):
         salt = reduce(lambda x, y: x + y, [str(random.randint(0, 9)) for i in range(5)])
         salt_pw = salt + _salted_password(password, salt)
 
         self.c.execute("SELECT name FROM users WHERE name=?", (user,))
         if self.c.fetchone() is not None:
-            self.c.execute("UPDATE users SET password=? WHERE name=?", (salt_pw, user))
+            if reset_pw:
+                self.c.execute("UPDATE users SET password=? WHERE name=?", (salt_pw, user))
+                return True
+            else:
+                return False
         else:
             self.c.execute(
-                "INSERT INTO users (name, password) VALUES (?, ?)", (user, salt_pw)
+                "INSERT INTO users (name, password, role, permission) VALUES (?, ?, ?, ?)",
+                (user, salt_pw, role, perms)
             )
+            return True
 
     @style.queue
     def change_password(self, user, old_password, new_password):

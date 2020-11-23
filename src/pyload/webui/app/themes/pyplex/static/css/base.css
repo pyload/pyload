@@ -300,6 +300,26 @@ input[type="color"]:focus,
   transition: background-color .3s;
 }
 
+textarea:read-only,
+input[type="text"]:read-only,
+input[type="password"]:read-only,
+input[type="datetime"]:read-only,
+input[type="datetime-local"]:read-only,
+input[type="date"]:read-only,
+input[type="month"]:read-only,
+input[type="time"]:read-only,
+input[type="week"]:read-only,
+input[type="number"]:read-only,
+input[type="email"]:read-only,
+input[type="url"]:read-only,
+input[type="search"]:read-only,
+input[type="tel"]:read-only,
+input[type="color"]:read-only,
+.uneditable-input:read-only {
+  color: #fff;
+  background-color: #555;
+}
+
 select.form-control,
 textarea.form-control {
   height: 100%;

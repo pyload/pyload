@@ -1391,6 +1391,18 @@ class Api:
         """
         return self.pyload.addon_manager.get_info(plugin)
 
+    def add_user(self, user, newpw, role=0, perms=0):
+        """
+        creates new user login.
+        """
+        return self.pyload.db.add_user(user, newpw, role, perms)
+
+    def remove_user(self, user):
+        """
+        deletes a user login.
+        """
+        return self.pyload.db.remove_user(user)
+
     @legacy("changePassword")
     def change_password(self, user, oldpw, newpw):
         """

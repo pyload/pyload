@@ -7,7 +7,6 @@ import flask
 import flask_themes2
 
 from pyload.core.api import Perms, Role, has_permission
-from pyload.core.utils.convert import to_str
 
 
 class JSONEncoder(flask.json.JSONEncoder):
@@ -115,8 +114,8 @@ def set_permission(perms):
     :param perms: dict
     """
     permission = 0
-    for name in Perms:
-        if to_str(name).startswith("_"):
+    for name in permlist():
+        if name.startswith("_"):
             continue
 
         if name in perms and perms[name]:

@@ -147,7 +147,7 @@ SettingsUI = (function() {
         d.preventDefault();
     };
     a.prototype.addAccount = function(c) {
-        $(this).addClass("disabled");
+        $(this).attr('disabled', true);
         $.ajax({
             method: "post",
             url: "{{url_for('json.add_account')}}",
@@ -161,6 +161,7 @@ SettingsUI = (function() {
         .fail(function() {
             indicateFail("{{_('Error occurred')}}");
         });
+        $(this).attr('disabled', false);
         c.preventDefault();
     };
     a.prototype.submitAccounts = function(c) {
@@ -222,9 +223,9 @@ SettingsUI = (function() {
         var path_p = $("#path_p");
         path_p.text(iframe.cwd);
         path_p.prop("title", iframe.cwd);
-        $("#chooser_confirm_button").toggleClass("disabled", !iframe.submit );
-        $("#path_type0").prop("checked", iframe.isabsolute ? "" : "checked");
-        $("#path_type1").prop("checked", iframe.isabsolute ? "checked" : "");
+        $("#chooser_confirm_button").attr("disabled", !iframe.submit);
+        $("#path_type0").attr("checked", !iframe.isabsolute);
+        $("#path_type1").attr("checked", iframe.isabsolute);
     };
     return a;
 })();
