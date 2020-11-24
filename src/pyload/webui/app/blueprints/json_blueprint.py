@@ -243,7 +243,7 @@ def set_captcha():
 
 @bp.route("/json/load_config", endpoint="load_config")
 # @apiver_check
-# @login_required("SETTINGS")
+@login_required("SETTINGS")
 def load_config():
     category = flask.request.args.get('category')
     section = flask.request.args.get('section')
