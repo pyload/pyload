@@ -163,7 +163,7 @@ class Core:
         userpw = (self.DEFAULT_USERNAME, self.DEFAULT_PASSWORD)
         # nousers = bool(self.db.list_users())
         if restore or newdb:
-            self.db.add_user(*userpw, reset_pw=True)
+            self.db.add_user(*userpw, reset=True)
         if restore:
             self.log.warning(
                 self._(
