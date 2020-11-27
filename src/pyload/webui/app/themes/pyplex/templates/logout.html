@@ -1,4 +1,5 @@
 {% extends theme('base.html') %}
+{% set no_status_polling = 1 %}
 
 {% block head %}
 <meta http-equiv="refresh" content='5; url="{{url_for('app.dashboard')}}"'>
