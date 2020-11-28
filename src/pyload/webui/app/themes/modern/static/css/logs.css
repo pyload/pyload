@@ -47,7 +47,8 @@ td.logline
   text-align:right;
   padding: 0 5px 0 5px;
 }
-td.loglevel
+td.loglevel,
+td.logsource
 {
   text-align:right;
 }
