@@ -381,6 +381,7 @@ def logs(start_line=-1):
                 dtime = datetime.datetime.strptime(
                     date + " " + time, "%Y-%m-%d %H:%M:%S"
                 )
+                message = message.strip()
             except (AttributeError, IndexError):
                 dtime = None
                 date = "?"
@@ -390,6 +391,7 @@ def logs(start_line=-1):
                 message = logline
             if start_line == -1 and dtime is not None and fro <= dtime:
                 start_line = counter  #: found our datetime.datetime
+
             if start_line >= 0:
                 data.append(
                     {
@@ -397,7 +399,7 @@ def logs(start_line=-1):
                         "date": date + " " + time,
                         "level": level,
                         "source": source,
-                        "message": message,
+                        "message": message.rstrip('\n'),
                     }
                 )
                 perpagecheck += 1
