@@ -51,8 +51,6 @@ def links():
     except Exception as exc:
         return jsonify(False), 500
 
-    return jsonify(False)
-
 
 @bp.route("/json/packages", endpoint="packages")
 # @apiver_check
@@ -72,8 +70,6 @@ def packages():
     except Exception:
         return jsonify(False), 500
 
-    return jsonify(False)
-
 
 @bp.route("/json/package", endpoint="package")
 # @apiver_check
@@ -92,8 +88,6 @@ def package():
     except Exception:
         return jsonify(False), 500
 
-    return jsonify(False)
-
 
 @bp.route("/json/package_order", endpoint="package_order")
 # @apiver_check
@@ -105,10 +99,9 @@ def package_order():
         pos = int(flask.request.args.get('pos'))
         api.order_package(pid, pos)
         return jsonify(response="success")
+
     except Exception:
         return jsonify(False), 500
-
-    return jsonify(False)
 
 
 @bp.route("/json/abort_link", endpoint="abort_link")
@@ -120,10 +113,9 @@ def abort_link():
         id = int(flask.request.args.get('id'))
         api.stop_downloads([id])
         return jsonify(response="success")
+
     except Exception:
         return jsonify(False), 500
-
-    return jsonify(False)
 
 
 @bp.route("/json/link_order", endpoint="link_order")
@@ -136,10 +128,9 @@ def link_order():
         pos = int(flask.request.args.get('pos'))
         api.order_file(fid, pos)
         return jsonify(response="success")
+
     except Exception:
         return jsonify(False), 500
-
-    return jsonify(False)
 
 
 @bp.route("/json/add_package", methods=["POST"], endpoint="add_package")
@@ -188,10 +179,9 @@ def move_package():
         dest = int(flask.request.args.get('dest'))
         api.move_package(dest, id)
         return jsonify(response="success")
+
     except Exception:
         return jsonify(False), 500
-
-    return jsonify(False)
 
 
 @bp.route("/json/edit_package", methods=["POST"], endpoint="edit_package")
@@ -212,8 +202,6 @@ def edit_package():
 
     except Exception:
         return jsonify(False), 500
-
-    return jsonify(False)
 
 
 @bp.route("/json/set_captcha", methods=["GET", "POST"], endpoint="set_captcha")
