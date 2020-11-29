@@ -7,11 +7,11 @@
 <center>
     <div id="paths">
     <form method="get" action="?" onSubmit="chosen();" onReset="exit();">
-        <input type="text" name="p" value="{{ oldfile|default(cwd) }}" size="60" onfocus="setValid();">
+        <input type="text" name="p" value="{{ oldfile|default(cwd, True) }}" size="60" onfocus="setValid();">
         <input type="submit" value="Ok" name="send">
     </form>
 
-    <span class="path_abs_rel">{{_("Path")}}: <a href="{{url_for('app.pathchooser')}}?path={{cwd|abspath|quotepath}}"{% if absolute %} style="text-decoration: underline;"{% endif %}>{{_("absolute")}}</a> | <a href="{{url_for('app.pathchooser')}}?path={{cwd|relpath|quotepath}}"{% if not absolute %} style="text-decoration: underline;"{% endif %}>{{_("relative")}}</a></span>
+    <span class="path_abs_rel">{{_("Path")}}: <a href="{{url_for('app.pathchooser' if type == 'folder' else 'app.filechooser')}}?path={{cwd|abspath|quote_plus}}"{% if absolute %} style="text-decoration: underline;"{% endif %}>{{_("absolute")}}</a> | <a href="{{url_for('app.pathchooser' if type == 'folder' else 'app.filechooser')}}?path={{cwd|relpath|quote_plus}}"{% if not absolute %} style="text-decoration: underline;"{% endif %}>{{_("relative")}}</a></span>
 
     </div>
     <table border="0" cellspacing="0" cellpadding="3">
@@ -24,7 +24,7 @@
     {% if parentdir %}
         <tr>
             <td colspan="4">
-                <a href="{{url_for('app.pathchooser')}}?path={{parentdir|quotepath}}"><span class="parentdir">{{_("parent directory")}}</span></a>
+                <a href="{{url_for('app.pathchooser' if type == 'folder' else 'app.filechooser')}}?path={{parentdir|quote_plus}}"><span class="parentdir">{{_("parent directory")}}</span></a>
             </td>
         </tr>
     {% endif %}
@@ -33,7 +33,7 @@
             {% if type == 'folder' %}
                 <td class="name">{% if file.type == 'dir' %}<a href="{{ url_for('app.pathchooser') }}?path={{ file.fullpath|quote_plus }}" title="{{ file.fullpath }}"><span class="path_directory">{{ file.name|truncate(25) }}</span></a>{% else %}<span class="path_file" title="{{ file.fullpath }}">{{ file.name|truncate(25) }}{% endif %}</span></td>
             {% else %}
-                <td class="name">{% if file.type == 'dir' %}<a href="{{ url_for('app.pathchooser') }}?path={{ file.fullpath|quote_plus }}" title="{{ file.fullpath }}"><span class="file_directory">{{ file.name|truncate(25) }}</span></a>{% else %}<a href="#" onclick="setFile('{{ file.fullpath }}');" title="{{ file.fullpath }}"><span class="file_file">{{ file.name|truncate(25) }}{% endif %}</span></a></td>
+                <td class="name">{% if file.type == 'dir' %}<a href="{{ url_for('app.filechooser') }}?path={{ file.fullpath|quote_plus }}" title="{{ file.fullpath }}"><span class="file_directory">{{ file.name|truncate(25) }}</span></a>{% else %}<a href="#" onclick="setFile('{{ file.fullpath }}');" title="{{ file.fullpath }}"><span class="file_file">{{ file.name|truncate(25) }}{% endif %}</span></a></td>
             {% endif %}
             <td class="size">{{ file.size|float|filesizeformat }}</td>
             <td class="type">{% if file.type == 'dir' %}directory{% else %}{{ file.ext|default("file") }}{% endif %}</td>

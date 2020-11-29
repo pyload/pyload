@@ -26,7 +26,7 @@
                         <input name="{{skey}}|{{okey}}" type="text"
                                id="{{skey}}|{{okey}}" value="{{option.value}}"/>
                         <input name="browsebutton" type="button"
-                               onclick="ifield = document.getElementById('{{skey}}|{{okey}}'); pathchooser = window.open({% if option.value %}'{{url_for('app.pathchooser')}}?path={{ option.value|quote_plus }}'{% else %}'{{ pathroot }}'{% endif %}, 'pathchooser', 'scrollbars=yes,toolbar=no,menubar=no,statusbar=no,width=650,height=300'); pathchooser.ifield = ifield; window.ifield = ifield;"
+                               onclick="ifield = document.getElementById('{{skey}}|{{okey}}'); pathchooser = window.open('{{url_for('app.pathchooser' if option.type == 'folder' else 'app.filechooser') +'?path=' + option.value|quote_plus }}', 'pathchooser', 'scrollbars=yes,toolbar=no,menubar=no,statusbar=no,width=650,height=300'); pathchooser.ifield = ifield; window.ifield = ifield;"
                                value="{{_("Browse")}}"/>
                         {% elif option.type == "password" %}
                         <input id="{{skey}}|{{okey}}" name="{{skey}}|{{okey}}"
