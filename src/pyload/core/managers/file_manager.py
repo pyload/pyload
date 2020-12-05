@@ -73,7 +73,7 @@ class FileManager:
     # ----------------------------------------------------------------------
     def sync_save(self):
         """
-        saves all data to backend and waits until all data are written.
+        saves all data to backend and waits until all the data is written.
         """
         pyfiles = self.cache.values()
         for pyfile in pyfiles:
