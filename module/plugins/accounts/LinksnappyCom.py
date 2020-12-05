@@ -7,7 +7,7 @@ from ..internal.MultiAccount import MultiAccount
 class LinksnappyCom(MultiAccount):
     __name__ = "LinksnappyCom"
     __type__ = "account"
-    __version__ = "0.21"
+    __version__ = "0.22"
     __status__ = "testing"
 
     __config__ = [("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),
@@ -27,7 +27,7 @@ class LinksnappyCom(MultiAccount):
 
     def grab_hosters(self, user, password, data):
         json_data = self.api_response("FILEHOSTS")
-        return json_data['return'].keys()
+        return [k for k,v in json_data['return'].items() if v['Status'] == "1"]
 
     def grab_info(self, user, password, data):
         premium = True
