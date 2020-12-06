@@ -20,6 +20,7 @@ class PluginManager:
         "container",
         "downloader",
         "anticaptcha",
+        "extractor",
         "account",
         "addon",
         "base",
@@ -91,6 +92,10 @@ class PluginManager:
 
         self.captcha_plugins, config = self.parse("anticaptchas")
         self.plugins["anticaptcha"] = self.captcha_plugins
+        merge(default_config, config)
+
+        self.captcha_plugins, config = self.parse("extractors")
+        self.plugins["extractor"] = self.captcha_plugins
         merge(default_config, config)
 
         self.account_plugins, config = self.parse("accounts")
@@ -204,7 +209,7 @@ class PluginManager:
                     plugins[name]["pattern"] = pattern
 
                     try:
-                        plugins[name]["re"] = re.compile(pattern, re.I)
+                        plugins[name]["re"] = re.compile(pattern)
                     except Exception:
                         self.pyload.log.error(
                             self._("{} has a invalid pattern").format(name)
@@ -278,7 +283,7 @@ class PluginManager:
                 self.container_plugins.items(),
             ):
                 if value["re"].match(url):
-                    res.append((url.lower(), name))
+                    res.append((url, name))
                     last = (name, value)
                     found = True
                     break

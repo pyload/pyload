@@ -33,6 +33,9 @@
             </th>
             <th>
                 {{ _("Permissions") }}
+            </th>
+            <th>
+                {{ _("Delete") }}
             </th></tr>
             </thead>
 
@@ -40,12 +43,12 @@
                 <tr>
                     <td>{{ name }}</td>
                     <td><a class="change_password" href="#" id="change_pw|{{name}}">{{ _("change") }}</a></td>
-                    <td><input name="{{ name }}|admin" type="checkbox" {% if data.perms.admin %}
-                               checked="True" {% endif %}/></td>
+                    <td><input class="is_admin" name="{{ name }}|admin" type="checkbox" {% if data.perms.admin %}
+                               checked="checked" {% endif %}/></td>
                     <td>
-                        <select multiple="multiple" size="{{ permlist|length }}" name="{{ name }}|perms">
+                        <select id="{{ name }}|perms" multiple="multiple" size="{{ permlist|length }}" name="{{ name }}|perms" {% if data.perms.admin %} disabled="disabled" {% endif %}>
                             {% for perm in permlist %}
-                            {% if data.perms|attr(perm) %}
+                            {% if data.perms[perm] %}
                                 <option selected="selected">{{ perm }}</option>
                             {% else %}
                                 <option>{{ perm }}</option>
@@ -53,13 +56,21 @@
                             {% endfor %}
                         </select>
                     </td>
+                  {% if user.is_admin %}
+                    <td>
+                      {% if user.name != name %}
+                        <input id="{{name}}|delete" name="{{name}}|delete" type="checkbox" value="True"/>
+                      {% endif %}
+                    </td>
+                  {% endif %}
                 </tr>
             {% endfor %}
 
 
         </table>
 
-        <button class="styled_button" type="submit">{{ _("Submit") }}</button>
+        <button id="user_submit" class="styled_button" type="submit">{{ _("Submit") }}</button>
+        <button id="user_add" style="margin-left: 0" type="submit" class="styled_button">{{_("Add")}}</button>
     </form>
 {% endblock %}
 {% block hidden %}
@@ -71,7 +82,7 @@
             <label for="user_login">{{ _("User") }}
                 <span class="small">{{ _("Your username.") }}</span>
             </label>
-            <input id="user_login" name="user_login" type="text" size="20"/>
+            <input id="user_login" name="user_login" type="text" size="20" readonly style="background-color: #eaeaea; cursor: not-allowed"/>
 
             <label for="login_current_password">{{ _("Current password") }}
                 <span class="small">{{ _("The password for this account.") }}</span>
@@ -94,6 +105,46 @@
             <div class="spacer"></div>
 
         </form>
+    </div>
 
+    <div id="user_box" class="window_box" style="z-index: 2">
+        <form id="user_add_form" action="{{url_for('json.add_user')}}" method="POST" enctype="multipart/form-data">
+            <h1>{{ _("Create new pyLoad login") }}</h1>
+
+            <p>{{ _("Enter new user name and password.") }}</p>
+            <label for="new_user">{{ _("Login") }}
+                <span class="small">{{ _("New username.") }}</span>
+            </label>
+            <input id="new_user" name="new_user" type="text" size="20" autocomplete="off"/>
+
+            <label for="new_password">{{ _("Password") }}
+                <span class="small">{{ _("The password for the new login.") }}</span>
+            </label>
+            <input id="new_password" name="new_password" type="password" size="20"/>
+
+            <label for="new_password2">{{ _("Password (repeat)") }}
+                <span class="small">{{ _("Please repeat the password.") }}</span>
+            </label>
+            <input id="new_password2" name="new_password2" type="password" size="20"/>
+
+            <label for="new_role">{{ _("Admin") }}
+              <span class="small">{{ _("Shall the user be an admin?") }}</span>
+            </label>
+            <input id="new_role" name="new_role" type="checkbox" />
+
+            <label for="new_perms">{{ _("Permissions") }}
+              <span class="small">{{ _("Permmisions for the new user.") }}</span>
+            </label>
+            <select multiple="multiple" id="new_perms" size="{{permlist|length}}" name="new_perms">
+              {% for perm in permlist %}
+                <option>{{perm}}</option>
+              {% endfor %}
+            </select>
+
+            <button id="new_user_button" type="submit">{{ _("Submit") }}</button>
+            <button id="new_user_reset" style="margin-left: 0" type="reset">{{ _("Reset") }}</button>
+            <div class="spacer"></div>
+
+        </form>
     </div>
 {% endblock %}

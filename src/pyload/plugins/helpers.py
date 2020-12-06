@@ -402,6 +402,23 @@ def format_exc(frame=None):
     return msg
 
 
+def search_pattern(pattern, value, flags=0):
+    try:
+        pattern, reflags = pattern
+
+    except ValueError:
+        reflags = 0
+
+    except TypeError:
+        return None
+
+    try:
+        return re.search(pattern, value, reflags | flags)
+
+    except TypeError:
+        return None
+
+
 def replace_patterns(value, rules):
     for r in rules:
         try:

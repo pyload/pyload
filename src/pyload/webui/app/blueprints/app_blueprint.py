@@ -30,7 +30,7 @@ from ..helpers import (
     static_file_url,
 )
 
-_RE_LOGLINE = re.compile(r"\[([\d\-]+) ([\d:]+)\] +([A-Z]+) +(.*)")
+_RE_LOGLINE = re.compile(r"\[([\d\-]+) ([\d:]+)\] +([A-Z]+) +(.+?) (.*)")
 
 bp = flask.Blueprint("app", __name__)
 
@@ -377,25 +377,29 @@ def logs(start_line=-1):
 
         if counter >= start_line:
             try:
-                date, time, level, message = _RE_LOGLINE.match(logline).groups()
+                date, time, level, source, message = _RE_LOGLINE.match(logline).groups()
                 dtime = datetime.datetime.strptime(
                     date + " " + time, "%Y-%m-%d %H:%M:%S"
                 )
+                message = message.strip()
             except (AttributeError, IndexError):
                 dtime = None
                 date = "?"
                 time = " "
                 level = "?"
+                source = "?"
                 message = logline
             if start_line == -1 and dtime is not None and fro <= dtime:
                 start_line = counter  #: found our datetime.datetime
+
             if start_line >= 0:
                 data.append(
                     {
                         "line": counter,
                         "date": date + " " + time,
                         "level": level,
-                        "message": message,
+                        "source": source,
+                        "message": message.rstrip('\n'),
                     }
                 )
                 perpagecheck += 1
@@ -443,7 +447,12 @@ def admin():
 
     s = flask.session
     if flask.request.method == "POST":
-        for name, data in users.items():
+        for name in list(users):
+            data = users[name]
+            if flask.request.form.get(f"{name}|delete"):
+                api.remove_user(name)
+                del users[name]
+                continue
             if flask.request.form.get(f"{name}|admin"):
                 data["role"] = 0
                 data["perms"]["admin"] = True

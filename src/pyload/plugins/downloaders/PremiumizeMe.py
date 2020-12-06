@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import json
-import urllib.parse
+import re
 
 from ..base.multi_downloader import MultiDownloader
 
@@ -8,10 +8,10 @@ from ..base.multi_downloader import MultiDownloader
 class PremiumizeMe(MultiDownloader):
     __name__ = "PremiumizeMe"
     __type__ = "downloader"
-    __version__ = "0.31"
+    __version__ = "0.34"
     __status__ = "testing"
 
-    __pattern__ = r"^unmatchable$"
+    __pattern__ = r"https?://(?:www\.)?premiumize\.me/file\?id=(?P<ID>\w+)"
     __config__ = [
         ("enabled", "bool", "Activated", True),
         ("use_premium", "bool", "Use premium account if available", True),
@@ -28,48 +28,44 @@ class PremiumizeMe(MultiDownloader):
         ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com"),
     ]
 
-    # See https://www.premiumize.me/static/api/api.html
-    API_URL = "https://api.premiumize.me/pm-api/v1.php"
+    DIRECT_LINK = False
 
-    def api_respond(self, method, user, password, **kwargs):
-        get_params = {"method": method, "params[login]": user, "params[pass]": password}
-        for key, val in kwargs.items():
-            get_params["params[{}]".format(key)] = val
+    # See https://www.premiumize.me/api
+    API_URL = "https://www.premiumize.me/api/"
 
-        json_data = self.load(self.API_URL, get=get_params)
+    def api_respond(self, method, **kwargs):
+        json_data = self.load(self.API_URL + method, get=kwargs)
 
         return json.loads(json_data)
 
     def handle_premium(self, pyfile):
-        res = self.api_respond(
-            "directdownloadlink",
-            self.account.user,
-            self.account.info["login"]["password"],
-            link=pyfile.url,
-        )
-
-        status = res["status"]
-        if status == 200:
-            self.pyfile.name = res["result"]["filename"]
-            self.pyfile.size = res["result"]["filesize"]
-
-            # NOTE: Hack to avoid `fixurl()` "fixing" the URL query arguments :(
-            urlp = urllib.parse.urlparse(res["result"]["location"])
-            urlq = urllib.parse.parse_qsl(urlp.query)
-            self.download(
-                "{}://{}{}".format(urlp.scheme, urlp.netloc, urlp.path), get=urlq
+        m = re.search(self.__pattern__, pyfile.url)
+        if m is None:
+            res = self.api_respond(
+                "transfer/directdl",
+                src=pyfile.url,
+                apikey=self.account.info['login']['password']
             )
 
-            # self.link        = res['result']['location']
+            if res['status'] == "success":
+                self.pyfile.name = res['content'][0]['path']
+                self.pyfile.size = res['content'][0]['size']
+                self.download(res['content'][0]['link'])
 
-        elif status == 400:
-            self.fail(self._("Invalid url"))
-
-        elif status == 404:
-            self.offline()
-
-        elif status >= 500:
-            self.temp_offline()
+            else:
+                self.fail(res['message'])
 
         else:
-            self.fail(res["statusmessage"])
+            res = self.api_respond(
+                "item/details",
+                id=m.group('ID'),
+                apikey=self.account.info['login']['password']
+            )
+
+            if res.get('status') != "error":
+                self.pyfile.name = res['name']
+                self.pyfile.size = res['size']
+                self.download(res['link'])
+
+            else:
+                self.fail(res['message'])

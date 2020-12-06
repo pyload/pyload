@@ -66,11 +66,11 @@ class BaseHoster(BasePlugin):
     def __init__(self, pyfile):
         self._init(pyfile.m.pyload)
 
-        #: Engage wan reconnection
-        self.want_reconnect = False  # TODO: Change to `want_reconnect` in 0.6.x
+        #: Engage want reconnection
+        self.want_reconnect = False
 
         #: Enable simultaneous processing of multiple downloads
-        self.multi_dl = True  # TODO: Change to `multi_dl` in 0.6.x
+        self.multi_dl = True
 
         #: time.time() + wait in seconds
         self.waiting = False

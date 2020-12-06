@@ -4,20 +4,21 @@ import operator
 import random
 import re
 from datetime import timedelta
+from urllib.parse import urljoin
 
 from pyload.core.utils import parse, seconds
 from pyload.core.utils.old import html_unescape
 
 from ..anticaptchas.ReCaptcha import ReCaptcha
 from ..anticaptchas.SolveMedia import SolveMedia
-from ..helpers import set_cookie
+from ..helpers import search_pattern, set_cookie
 from .simple_downloader import SimpleDownloader
 
 
 class XFSDownloader(SimpleDownloader):
     __name__ = "XFSDownloader"
     __type__ = "downloader"
-    __version__ = "0.81"
+    __version__ = "0.83"
     __status__ = "stable"
 
     __pattern__ = r"^unmatchable$"
@@ -102,20 +103,23 @@ class XFSDownloader(SimpleDownloader):
 
             self.check_errors()
 
-            m = re.search(self.LINK_PATTERN, self.data, re.S)
+            m = search_pattern(self.LINK_PATTERN, self.data, flags=re.S)
             if m is not None:
                 self.link = m.group(1)
                 break
 
             self.data = self.load(
-                pyfile.url, post=self._post_parameters(), redirect=False
+                pyfile.url,
+                post=self._post_parameters(),
+                ref = self.pyfile.url,
+                redirect=False
             )
 
             if "op=" not in self.last_header.get("location", "op="):
                 self.link = self.last_header.get("location")
                 break
 
-            m = re.search(self.LINK_PATTERN, self.data, re.S)
+            m = search_pattern(self.LINK_PATTERN, self.data, flags=re.S)
             if m is not None:
                 self.link = m.group(1)
                 break
@@ -175,8 +179,7 @@ class XFSDownloader(SimpleDownloader):
         else:
             self.fail(stmsg)
 
-        #: Get easybytez.com link for uploaded file
-        m = re.search(self.LINK_LEECH_PATTERN, self.data)
+        m = search_pattern(self.LINK_LEECH_PATTERN, self.data)
         if m is None:
             self.error(self._("LINK_LEECH_PATTERN not found"))
 
@@ -210,7 +213,7 @@ class XFSDownloader(SimpleDownloader):
                     self.fail(self._("Missing password"))
 
             if not self.premium:
-                m = re.search(self.WAIT_PATTERN, self.data)
+                m = search_pattern(self.WAIT_PATTERN, self.data)
                 if m is not None:
                     try:
                         waitmsg = m.group(1).strip()
@@ -249,13 +252,13 @@ class XFSDownloader(SimpleDownloader):
         return inputs
 
     def handle_captcha(self, inputs):
-        m = re.search(self.CAPTCHA_PATTERN, self.data)
+        m = search_pattern(self.CAPTCHA_PATTERN, self.data)
         if m is not None:
-            captcha_url = m.group(1)
+            captcha_url = urljoin(self.pyfile.url, m.group(1))
             inputs["code"] = self.captcha.decrypt(captcha_url)
             return
 
-        m = re.search(self.CAPTCHA_BLOCK_PATTERN, self.data, re.S)
+        m = search_pattern(self.CAPTCHA_BLOCK_PATTERN, self.data, flags=re.S)
         if m is not None:
             captcha_div = m.group(1)
             numerals = re.findall(
@@ -274,9 +277,9 @@ class XFSDownloader(SimpleDownloader):
 
         recaptcha = ReCaptcha(self.pyfile)
         try:
-            captcha_key = re.search(self.RECAPTCHA_PATTERN, self.data).group(1)
+            captcha_key = search_pattern(self.RECAPTCHA_PATTERN, self.data).group(1)
 
-        except Exception:
+        except (AttributeError, IndexError):
             captcha_key = recaptcha.detect_key()
 
         else:
@@ -284,14 +287,14 @@ class XFSDownloader(SimpleDownloader):
 
         if captcha_key:
             self.captcha = recaptcha
-            inputs["g-recaptcha-response"], challenge = recaptcha.challenge(captcha_key)
+            inputs["g-recaptcha-response"], _ = recaptcha.challenge(captcha_key)
             return
 
         solvemedia = SolveMedia(self.pyfile)
         try:
-            captcha_key = re.search(self.SOLVEMEDIA_PATTERN, self.data).group(1)
+            captcha_key = search_pattern(self.SOLVEMEDIA_PATTERN, self.data).group(1)
 
-        except Exception:
+        except (AttributeError, IndexError):
             captcha_key = solvemedia.detect_key()
 
         else:
@@ -303,4 +306,3 @@ class XFSDownloader(SimpleDownloader):
                 inputs["adcopy_response"],
                 inputs["adcopy_challenge"],
             ) = solvemedia.challenge(captcha_key)
-

@@ -41,7 +41,7 @@ class BaseDownloader(BaseHoster):
 
     def init_base(self):
         #: Enable simultaneous processing of multiple downloads
-        self.limit_dl = 0  # TODO: Change to `limit_dl` in 0.6.x
+        self.limit_dl = 0
 
         #:
         self.chunk_limit = None
@@ -103,7 +103,7 @@ class BaseDownloader(BaseHoster):
 
                 self._check_download()
 
-            except Fail as exc:  # TODO: Move to PluginThread in 0.6.x
+            except Fail as exc:  # TODO: Move to DownloadThread in 0.6.x
                 self.log_warning(
                     self._("Premium download failed")
                     if self.premium
@@ -118,7 +118,7 @@ class BaseDownloader(BaseHoster):
                     self.restart(premium=False)
 
                 else:
-                    raise Fail(exc)
+                    raise
 
         finally:
             self._finalize()
