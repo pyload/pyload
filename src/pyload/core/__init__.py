@@ -154,7 +154,7 @@ class Core:
     def _init_database(self, restore):
         from .threads.database_thread import DatabaseThread
 
-        db_path = os.path.join(self.userdir, DatabaseThread.DB_FILENAME)
+        db_path = os.path.join(self.userdir, "data", DatabaseThread.DB_FILENAME)
         newdb = not os.path.isfile(db_path)
 
         self.db = DatabaseThread(self)
@@ -163,7 +163,7 @@ class Core:
         userpw = (self.DEFAULT_USERNAME, self.DEFAULT_PASSWORD)
         # nousers = bool(self.db.list_users())
         if restore or newdb:
-            self.db.add_user(*userpw)
+            self.db.add_user(*userpw, reset=True)
         if restore:
             self.log.warning(
                 self._(

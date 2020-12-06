@@ -11,6 +11,11 @@ select:focus {
   border: none !important;
   outline: none;
 }
+select.disabled,
+select[disabled] {
+  background-color: #333;
+  color: #aaa;
+}
 .modal-dialog {
-  padding-top: 10%;
+  margin-top: 10px;
 }

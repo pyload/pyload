@@ -6,14 +6,14 @@ from pyload.core.network.http.exceptions import BadHeader
 from pyload.core.network.request_factory import get_url
 from pyload.core.utils import parse
 
-from ..helpers import replace_patterns
+from ..helpers import replace_patterns, search_pattern
 from .downloader import BaseDownloader
 
 
 class SimpleDownloader(BaseDownloader):
     __name__ = "SimpleDownloader"
     __type__ = "downloader"
-    __version__ = "2.27"
+    __version__ = "2.31"
     __status__ = "stable"
 
     __pattern__ = r"^unmatchable$"
@@ -116,9 +116,11 @@ class SimpleDownloader(BaseDownloader):
     NAME_PATTERN = None
     SIZE_PATTERN = None
     HASHSUM_PATTERN = r"[^\w](?P<H>(CRC|crc)(-?32)?|(MD|md)-?5|(SHA|sha)-?(1|224|256|384|512)).*(:|=|>)[ ]*(?P<D>(?:[a-z0-9]|[A-Z0-9]){8,})"
-    OFFLINE_PATTERN = r"[^\w](404\s|[Ii]nvalid|[Oo]ffline|[Dd]elet|[Rr]emov|([Nn]o(t|thing)?|sn\'t) (found|(longer )?(available|exist)))"
+    OFFLINE_PATTERN = (
+        r"[^\w](?:404\s|[Nn]ot [Ff]ound|[Ff]ile (?:was|has been)?\s*(?:removed|deleted)|[Ff]ile (?:does not exist|could not be found|no longer available))"
+    )
     TEMP_OFFLINE_PATTERN = (
-        r"[^\w](503\s|[Mm]aint(e|ai)nance|[Tt]emp([.-]|orarily)|[Mm]irror)"
+        r"[^\w](?:503\s|[Ss]erver (?:is (?:in|under) )?[Mm]aint(?:e|ai)nance|[Tt]emp(?:[.-]|orarily )(?:[Oo]ffline|[Uu]available)|[Uu]se (?:[Aa] )?[Mm]irror)"
     )
 
     WAIT_PATTERN = None
@@ -134,7 +136,7 @@ class SimpleDownloader(BaseDownloader):
             "Html error",
             rb"\A(?:\s*<.+>)?((?:[\w\s]*(?:[Ee]rror|ERROR)\s*\:?)?\s*\d{3})(?:\Z|\s+)",
         ),
-        ("Request error", rb"([Aa]n error occured while processing your request)"),
+        ("Request error", rb"([Aa]n error occurred while processing your request)"),
         ("Html file", rb"\A\s*<!DOCTYPE html"),
     ]
 
@@ -163,13 +165,10 @@ class SimpleDownloader(BaseDownloader):
                     pass
 
         if html:
-            if cls.OFFLINE_PATTERN and re.search(cls.OFFLINE_PATTERN, html) is not None:
+            if search_pattern(cls.OFFLINE_PATTERN, html) is not None:
                 info["status"] = 1
 
-            elif (
-                cls.TEMP_OFFLINE_PATTERN
-                and re.search(cls.TEMP_OFFLINE_PATTERN, html) is not None
-            ):
+            elif search_pattern(cls.TEMP_OFFLINE_PATTERN, html) is not None:
                 info["status"] = 6
 
             else:
@@ -181,7 +180,7 @@ class SimpleDownloader(BaseDownloader):
                 ):
                     try:
                         attr = getattr(cls, pattern)
-                        pdict = re.search(attr, html).groupdict()
+                        pdict = search_pattern(attr, html).groupdict()
 
                         if all(True for k in pdict if k not in info["pattern"]):
                             info["pattern"].update(pdict)
@@ -359,47 +358,43 @@ class SimpleDownloader(BaseDownloader):
                 self.log_debug(self._("No check on binary data"))
                 return
 
-
-        if self.IP_BLOCKED_PATTERN and re.search(self.IP_BLOCKED_PATTERN, self.data):
+        if search_pattern(self.IP_BLOCKED_PATTERN, self.data):
             self.fail(self._("Connection from your current IP address is not allowed"))
 
         elif not self.premium:
-            if self.PREMIUM_ONLY_PATTERN and re.search(
-                self.PREMIUM_ONLY_PATTERN, self.data
-            ):
+            if search_pattern(self.PREMIUM_ONLY_PATTERN, self.data):
                 self.fail(self._("File can be downloaded by premium users only"))
 
-            elif self.SIZE_LIMIT_PATTERN and re.search(
-                self.SIZE_LIMIT_PATTERN, self.data
-            ):
+            elif search_pattern(self.SIZE_LIMIT_PATTERN, self.data):
                 self.fail(self._("File too large for free download"))
 
-            elif self.DL_LIMIT_PATTERN and re.search(self.DL_LIMIT_PATTERN, self.data):
-                m = re.search(self.DL_LIMIT_PATTERN, self.data)
-                try:
-                    errmsg = m.group(1)
+            elif self.DL_LIMIT_PATTERN:
+                m = search_pattern(self.DL_LIMIT_PATTERN, self.data)
+                if m is not None:
+                    try:
+                        errmsg = m.group(1)
 
-                except (AttributeError, IndexError):
-                    errmsg = m.group(0)
+                    except (AttributeError, IndexError):
+                        errmsg = m.group(0)
 
-                finally:
-                    errmsg = re.sub(r"<.*?>", " ", errmsg.strip())
+                    finally:
+                        errmsg = re.sub(r"<.*?>", " ", errmsg.strip())
 
-                self.info["error"] = errmsg
-                self.log_warning(errmsg)
+                    self.info["error"] = errmsg
+                    self.log_warning(errmsg)
 
-                wait_time = parse.seconds(errmsg)
-                self.wait(
-                    wait_time,
-                    reconnect=wait_time > self.config.get("max_wait", 10) * 60,
-                )
-                self.restart(self._("Download limit exceeded"))
+                    wait_time = parse.seconds(errmsg)
+                    self.wait(
+                        wait_time,
+                        reconnect=wait_time > self.config.get("max_wait", 10) * 60,
+                    )
+                    self.restart(self._("Download limit exceeded"))
 
-        if self.HAPPY_HOUR_PATTERN and re.search(self.HAPPY_HOUR_PATTERN, self.data):
+        if search_pattern(self.HAPPY_HOUR_PATTERN, self.data):
             self.multi_dl = True
 
         if self.ERROR_PATTERN:
-            m = re.search(self.ERROR_PATTERN, self.data)
+            m = search_pattern(self.ERROR_PATTERN, self.data)
             if m is not None:
                 try:
                     errmsg = m.group(1).strip()
@@ -413,10 +408,10 @@ class SimpleDownloader(BaseDownloader):
                 self.info["error"] = errmsg
                 self.log_warning(errmsg)
 
-                if re.search(self.TEMP_OFFLINE_PATTERN, errmsg):
+                if search_pattern(self.TEMP_OFFLINE_PATTERN, errmsg):
                     self.temp_offline()
 
-                elif re.search(self.OFFLINE_PATTERN, errmsg):
+                elif search_pattern(self.OFFLINE_PATTERN, errmsg):
                     self.offline()
 
                 elif re.search(r"limit|wait|slot", errmsg, re.I):
@@ -462,7 +457,7 @@ class SimpleDownloader(BaseDownloader):
                     self.restart(errmsg)
 
         elif self.WAIT_PATTERN:
-            m = re.search(self.WAIT_PATTERN, self.data)
+            m = search_pattern(self.WAIT_PATTERN, self.data)
             if m is not None:
                 try:
                     waitmsg = m.group(1).strip()
@@ -495,7 +490,7 @@ class SimpleDownloader(BaseDownloader):
         if not self.LINK_FREE_PATTERN:
             self.fail(self._("Free download not implemented"))
 
-        m = re.search(self.LINK_FREE_PATTERN, self.data)
+        m = search_pattern(self.LINK_FREE_PATTERN, self.data)
         if m is None:
             self.error(self._("Free download link not found"))
         else:
@@ -506,7 +501,7 @@ class SimpleDownloader(BaseDownloader):
             self.log_warning(self._("Premium download not implemented"))
             self.restart(premium=False)
 
-        m = re.search(self.LINK_PREMIUM_PATTERN, self.data)
+        m = search_pattern(self.LINK_PREMIUM_PATTERN, self.data)
         if m is None:
             self.error(self._("Premium download link not found"))
         else:

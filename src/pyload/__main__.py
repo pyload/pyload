@@ -99,6 +99,7 @@ def _parse_args(cmd_args):
     )
     parser.add_argument("--daemon", action="store_true", help="run as daemon")
     parser.add_argument(
+        "-r",
         "--restore",
         action="store_true",
         help="reset default username/password",

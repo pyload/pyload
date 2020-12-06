@@ -3,13 +3,14 @@ import re
 
 from pyload.core.network.exceptions import Fail
 
+from ..helpers import replace_patterns
 from .simple_downloader import SimpleDownloader
 
 
 class MultiDownloader(SimpleDownloader):
     __name__ = "MultiDownloader"
     __type__ = "downloader"
-    __version__ = "0.67"
+    __version__ = "0.70"
     __status__ = "stable"
 
     __pattern__ = r"^unmatchable$"
@@ -33,6 +34,11 @@ class MultiDownloader(SimpleDownloader):
     TEMP_OFFLINE_PATTERN = r"^unmatchable$"
 
     LEECH_HOSTER = False
+    DIRECT_LINK = None
+
+    @classmethod
+    def get_info(cls, url="", html=""):
+        return super(SimpleDownloader, cls).get_info(url, html)
 
     def init(self):
         self.PLUGIN_NAME = self.pyload.plugin_manager.hoster_plugins.get(
@@ -56,13 +62,20 @@ class MultiDownloader(SimpleDownloader):
 
         super().setup_base()
 
+    def _preload(self):
+        pass
+
     def _prepare(self):
         super()._prepare()
 
+        if self.pyfile.pluginname != self.__name__:
+            overwritten_plugin = self.pyload.pluginManager.load_class("downloader", self.pyfile.pluginname)
+            self.pyfile.url = replace_patterns(self.pyfile.url, overwritten_plugin.URL_REPLACEMENTS)
+
         if self.DIRECT_LINK is None:
-            self.direct_dl = self.__pattern__ != r"^unmatchable$" and re.match(
+            self.direct_dl = self.__pattern__ != r'^unmatchable$' and re.match(
                 self.__pattern__, self.pyfile.url
-            )
+            ) is not None
 
         else:
             self.direct_dl = self.DIRECT_LINK

@@ -20,6 +20,7 @@ class PluginManager:
         "container",
         "downloader",
         "anticaptcha",
+        "extractor",
         "account",
         "addon",
         "base",
@@ -91,6 +92,10 @@ class PluginManager:
 
         self.captcha_plugins, config = self.parse("anticaptchas")
         self.plugins["anticaptcha"] = self.captcha_plugins
+        merge(default_config, config)
+
+        self.captcha_plugins, config = self.parse("extractors")
+        self.plugins["extractor"] = self.captcha_plugins
         merge(default_config, config)
 
         self.account_plugins, config = self.parse("accounts")

@@ -5,16 +5,15 @@ import re
 import subprocess
 
 from pyload import PKGDIR
-from pyload.core.utils.old import decode
-
-from ..helpers import renice
-from .extractor import ArchiveError, BaseExtractor, CRCError, PasswordError
+from pyload.core.utils.convert import to_str
+from pyload.plugins.base.extractor import ArchiveError, BaseExtractor, CRCError, PasswordError
+from pyload.plugins.helpers import renice
 
 
 class UnRar(BaseExtractor):
     __name__ = "UnRar"
     __type__ = "extractor"
-    __version__ = "1.38"
+    __version__ = "1.44"
     __status__ = "testing"
 
     __config__ = [("ignore_warnings", "bool", "Ignore unrar warnings", False)]
@@ -45,10 +44,15 @@ class UnRar(BaseExtractor):
         "z",
     ]
 
-    _RE_PART = re.compile(r"\.(part|r)\d+(\.rar|\.rev)?(\.bad)?", re.I)
+    _RE_PART = re.compile(r"\.(part|r)\d+(\.rar|\.rev)?(\.bad)?|\.rar$", re.I)
     _RE_FIXNAME = re.compile(r"Building (.+)")
-    _RE_FILES = re.compile(
-        r"^(.)(\s*[\w\-.]+)\s+(\d+\s+)+(?:\d+\%\s+)?[\d\-]{8,}\s+[\d\:]{5}", re.I | re.M
+    _RE_FILES_V4 = re.compile(
+        r"^([* ])(.+?)\s+(\d+)\s+(\d+)\s+(\d+%|-->|<--)\s+([\d-]+)\s+([\d:]+)\s*([ACHIRS.rw\-]+)\s+([0-9A-F]{8})\s+(\w+)\s+([\d.]+)",
+        re.M
+    )
+    _RE_FILES_V5 = re.compile(
+        r"^([* ])\s*([ACHIRS.rw\-]+)\s+(\d+)(?:\s+\d+)?(?:\s+(?:\d+%|-->|<--))?\s+([\d-]+)\s+([\d:]+)(?:\s+[0-9A-F]{8})?\s+(.+)",
+        re.M
     )
     _RE_BADPWD = re.compile(r"password", re.I)
     _RE_BADCRC = re.compile(
@@ -67,7 +71,7 @@ class UnRar(BaseExtractor):
             p = subprocess.Popen(
                 [cls.CMD], stdout=subprocess.PIPE, stderr=subprocess.PIPE
             )
-            out, err = (r.strip() if r else "" for r in p.communicate())
+            out, err = (to_str(r).strip() if r else "" for r in p.communicate())
             # cls.__name__ = "RAR"
             cls.REPAIR = True
 
@@ -81,7 +85,7 @@ class UnRar(BaseExtractor):
                 p = subprocess.Popen(
                     [cls.CMD], stdout=subprocess.PIPE, stderr=subprocess.PIPE
                 )
-                out, err = (r.strip() if r else "" for r in p.communicate())
+                out, err = (to_str(r).strip() if r else "" for r in p.communicate())
 
             except OSError:
                 return False
@@ -89,8 +93,11 @@ class UnRar(BaseExtractor):
         m = cls._RE_VERSION.search(out)
         if m is not None:
             cls.VERSION = m.group(1)
+            cls._RE_FILES = cls._RE_FILES_V4 if float(cls.VERSION) < 5 else cls._RE_FILES_V5
+            return True
 
-        return True
+        else:
+            return False
 
     @classmethod
     def ismultipart(cls, filename):
@@ -98,7 +105,7 @@ class UnRar(BaseExtractor):
 
     def verify(self, password=None):
         p = self.call_cmd("l", "-v", self.filename, password=password)
-        out, err = (r.strip() if r else "" for r in p.communicate())
+        out, err = (to_str(r, "utf-16").strip() if r else "" for r in p.communicate())
 
         if self._RE_BADPWD.search(err):
             raise PasswordError
@@ -106,9 +113,9 @@ class UnRar(BaseExtractor):
         if self._RE_BADCRC.search(err):
             raise CRCError(err)
 
-        #: Output only used to check if passworded files are present
-        for attr in self._RE_FILES.findall(out):
-            if attr[0].startswith("*"):
+        #: Output is only used to check if password protected files are present
+        for groups in self._RE_FILES.findall(out):
+            if groups[0] == "*":
                 raise PasswordError
 
     def repair(self):
@@ -116,14 +123,14 @@ class UnRar(BaseExtractor):
 
         #: Communicate and retrieve stderr
         self.progress(p)
-        out, err = (r.strip() if r else "" for r in p.communicate())
+        out, err = (to_str(r, "utf-16").strip() if r else "" for r in p.communicate())
 
         if err or p.returncode:
             p = self.call_cmd("r", self.filename)
 
             # communicate and retrieve stderr
             self.progress(p)
-            out, err = (r.strip() if r else "" for r in p.communicate())
+            out, err = (to_str(r, "utf-16").strip() if r else "" for r in p.communicate())
 
             if err or p.returncode:
                 return False
@@ -137,19 +144,19 @@ class UnRar(BaseExtractor):
         return True
 
     def progress(self, process):
-        s = ""
+        s = b""
         while True:
             c = process.stdout.read(1)
             #: Quit loop on eof
             if not c:
                 break
             #: Reading a percentage sign -> set progress and restart
-            if c == "%":
+            if c == b'%' and s:
                 self.pyfile.set_progress(int(s))
-                s = ""
+                s = b""
             #: Not reading a digit -> therefore restart
             elif not c.isdigit():
-                s = ""
+                s = b""
             #: Add digit to progressstring
             else:
                 s += c
@@ -161,7 +168,7 @@ class UnRar(BaseExtractor):
 
         #: Communicate and retrieve stderr
         self.progress(p)
-        out, err = (r.strip() if r else "" for r in p.communicate())
+        out, err = (to_str(r, "utf-16").strip() if r else "" for r in p.communicate())
 
         if err:
             if self._RE_BADPWD.search(err):
@@ -189,10 +196,9 @@ class UnRar(BaseExtractor):
 
         #: eventually Multipart Files
         files.extend(
-            os.path.join(dir, os.path.basename(entry))
-            for entry in os.listdir(dir)
-            if self.ismultipart(entry)
-            and self._RE_PART.sub("", name) == self._RE_PART.sub("", entry)
+            os.path.join(dir, os.path.basename(_f))
+            for _f in filter(self.ismultipart, os.listdir(dir))
+            if self._RE_PART.sub("", name) == self._RE_PART.sub("", _f)
         )
 
         #: Actually extracted file
@@ -202,10 +208,10 @@ class UnRar(BaseExtractor):
         return files
 
     def list(self, password=None):
-        command = "vb" if self.fullpath else "lb"
+        command = "v" if self.fullpath else "l"
 
         p = self.call_cmd(command, "-v", self.filename, password=password)
-        out, err = (r.strip() if r else "" for r in p.communicate())
+        out, err = (to_str(r, "utf-16").strip() if r else "" for r in p.communicate())
 
         if "Cannot open" in err:
             raise ArchiveError(self._("Cannot open file"))
@@ -213,34 +219,24 @@ class UnRar(BaseExtractor):
         if err:  #: Only log error at this point
             self.log_error(err)
 
-        result = set()
-        if not self.fullpath and self.VERSION.startswith("5"):
-            # NOTE: Unrar 5 always list full path
-            for filename in decode(out).splitlines():
-                filename = os.path.join(self.dest, os.path.basename(filename.strip()))
-                if os.path.isfile(filename):
-                    result.add(os.path.join(self.dest, os.path.basename(filename)))
-        else:
-            if self.fullpath:
-                for filename in decode(out).splitlines():
-                    # Unrar fails to list all directories for some archives
-                    filename = filename.strip()
-                    while filename:
-                        fabs = os.path.join(self.dest, filename)
-                        if fabs not in result:
-                            result.add(fabs)
-                            filename = os.path.dirname(filename)
-                        else:
-                            break
-            else:
-                for filename in decode(out).splitlines():
-                    result.add(os.path.join(self.dest, filename.strip()))
+        files = set()
+        f_grp = 5 if float(self.VERSION) >= 5 else 1
+        for groups in self._RE_FILES.findall(out):
+            f = groups[f_grp].strip()
+            if not self.fullpath:
+                f = os.path.basename(f)
 
-        self.files = list(result)
+            files.add(os.path.join(self.dest, f))
+
+        self.files = list(files)
+
         return self.files
 
     def call_cmd(self, command, *xargs, **kwargs):
         args = []
+
+        #: Specify UTF-16 encoding
+        args.append("-scu")
 
         #: Overwrite flag
         if self.overwrite:
@@ -254,6 +250,9 @@ class UnRar(BaseExtractor):
 
         #: Assume yes on all queries
         args.append("-y")
+
+        #: Disable comments show
+        args.append("-c-")
 
         #: Set a password
         password = kwargs.get("password")
@@ -271,7 +270,7 @@ class UnRar(BaseExtractor):
         call = [self.CMD, command] + args + list(xargs)
         self.log_debug("EXECUTE " + " ".join(call))
 
-        call = [str(cmd) for cmd in call]
+        call = [to_str(cmd) for cmd in call]
         p = subprocess.Popen(call, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         renice(p.pid, self.priority)

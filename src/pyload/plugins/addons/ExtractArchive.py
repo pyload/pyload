@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+from builtins import NameError
 
 from pyload.core.utils.old import safename
 from pyload.core.utils.purge import uniquify
@@ -72,7 +73,7 @@ class ExtractArchive(BaseAddon):
             "extensions",
             "str",
             "Extract archives ending with extension",
-            "7z,bz2,bzip2,gz,gzip,lha,lzh,lzma,rar,tar,taz,tbz,tbz2,tgz,xar,xz,z,zip",
+            "001,7z,bz2,bzip2,gz,gzip,lha,lzh,lzma,rar,tar,taz,tbz,tbz2,tgz,xar,xz,z,zip",
         ),
         (
             "excludefiles",
@@ -110,7 +111,7 @@ class ExtractArchive(BaseAddon):
     def activate(self):
         for p in ("HjSplit", "UnRar", "SevenZip", "UnZip", "UnTar"):
             try:
-                module = self.pyload.plugin_manager.load_module("base", p)
+                module = self.pyload.plugin_manager.load_module("extractor", p)
                 klass = getattr(module, p)
                 if klass.find():
                     self.extractors.append(klass)
@@ -147,7 +148,7 @@ class ExtractArchive(BaseAddon):
 
         packages = self.queue.get()
         while packages:
-            if self.last_package:  #: Called from all_downloads_processed
+            if self.last_package:  #: Set by all_downloads_processed()
                 self.last_package = False
                 if self.extract(
                     packages, thread
@@ -254,6 +255,7 @@ class ExtractArchive(BaseAddon):
                     extract_folder,
                     pypack.folder or safename(pypack.name.replace("http://", "")),
                 )
+
             if not exists(extract_folder):
                 os.makedirs(extract_folder)
 
@@ -289,7 +291,7 @@ class ExtractArchive(BaseAddon):
                         )
                     ]
 
-                #: Sort by filename to ensure (or at least try) that a multivolume archive is targeted by its first part
+                #: Sort by filename to ensure (or at least try) that a multi-volume archive is targeted by its first part
                 #: This is important because, for example, UnRar ignores preceding parts in listing mode
                 files_ids.sort(key=lambda file_id: file_id[1])
 
@@ -345,38 +347,32 @@ class ExtractArchive(BaseAddon):
 
                             #: Remove processed file and related multiparts from list
                             files_ids = [
-                                (fid, fname, fout)
-                                for fid, fname, fout in files_ids
-                                if fname not in chunks
+                                (_fid, _fname, _fout)
+                                for _fid, _fname, _fout in files_ids
+                                if _fname not in chunks
                             ]
                             self.log_debug(f"Extracted files: {new_files}")
 
-                            new_folders = uniquify(
-                                os.path.dirname(f) for f in new_files
-                            )
+                            new_folders = []
+                            for _f in new_files:
+                                _d = os.path.dirname(_f)
+                                while extract_folder in _d:
+                                    if _d not in new_folders:
+                                        new_folders.append(_d)
+                                    _d = os.path.dirname(_d)
+
                             for foldername in new_folders:
-                                self.set_permissions(
-                                    os.path.join(extract_folder, foldername)
-                                )
+                                self.set_permissions(foldername)
 
                             for filename in new_files:
-                                self.set_permissions(
-                                    os.path.join(extract_folder, filename)
-                                )
+                                self.set_permissions(filename)
 
                             for filename in new_files:
-                                file = os.fsdecode(
-                                    os.path.join(
-                                        os.path.dirname(archive.filename), filename
-                                    )
-                                )
-                                if not exists(file):
-                                    self.log_debug(
-                                        "New file {} does not exists".format(filename)
-                                    )
+                                if not exists(filename):
+                                    self.log_debug(f"New file {filename} does not exists")
                                     continue
 
-                                if recursive and os.path.isfile(file):
+                                if recursive and os.path.isfile(filename):
                                     new_files_ids.append(
                                         (fid, filename, os.path.dirname(filename))
                                     )  #: Append as new target
@@ -538,12 +534,12 @@ class ExtractArchive(BaseAddon):
                         try:
                             send2trash.send2trash(file)
 
-                        except AttributeError:
+                        except NameError:
                             self.log_warning(
                                 self._("Unable to move {} to trash").format(
                                     os.path.basename(f)
                                 ),
-                                self._("Send2Trash lib not found"),
+                                self._("Send2Trash lib not installed"),
                             )
 
                         except Exception as exc:
@@ -610,8 +606,8 @@ class ExtractArchive(BaseAddon):
 
         except IOError as exc:
             if exc.errno == 2:
-                with open(file, mode="wb") as f:
-                    pass
+                fp = open(file, mode="w")
+                fp.close()
 
             else:
                 self.log_error(exc)
@@ -636,7 +632,7 @@ class ExtractArchive(BaseAddon):
             self.passwords = uniquify([password] + self.passwords)
 
             file = os.fsdecode(self.config.get("passwordfile"))
-            with open(file, mode="wb") as fp:
+            with open(file, mode="w") as fp:
                 for pw in self.passwords:
                     fp.write(pw + "\n")
 
