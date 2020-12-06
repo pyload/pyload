@@ -8,7 +8,7 @@ from ..base.multi_account import MultiAccount
 class PremiumizeMe(MultiAccount):
     __name__ = "PremiumizeMe"
     __type__ = "account"
-    __version__ = "0.30"
+    __version__ = "0.32"
     __status__ = "testing"
 
     __config__ = [
@@ -24,41 +24,36 @@ class PremiumizeMe(MultiAccount):
         ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com"),
     ]
 
-    # See https://www.premiumize.me/static/api/api.html
-    API_URL = "https://api.premiumize.me/pm-api/v1.php"
+    # See https://www.premiumize.me/api
+    API_URL = "https://www.premiumize.me/api/"
 
-    def api_respond(self, method, user, password, **kwargs):
-        get_params = {"method": method, "params[login]": user, "params[pass]": password}
-        for key, val in kwargs.items():
-            get_params["params[{}]".format(key)] = val
-
-        json_data = self.load(self.API_URL, get=get_params)
+    def api_respond(self, method, **kwargs):
+        json_data = self.load(self.API_URL + method, get=kwargs)
 
         return json.loads(json_data)
 
     def grab_hosters(self, user, password, data):
-        res = self.api_respond("hosterlist", user, password)
+        res = self.api_respond("services/list", apikey=password)
 
-        if res["status"] != 200:
-            return []
+        hosters = []
+        for _h in res['directdl']:
+            hosters += res['aliases'][_h]
 
-        return res["result"]["tldlist"]
+        return hosters
 
     def grab_info(self, user, password, data):
         validuntil = None
         trafficleft = None
         premium = False
 
-        res = self.api_respond("accountstatus", user, password)
+        res = self.api_respond("account/info", apikey=password)
 
-        if res["status"] == 200:
-            validuntil = float(res["result"]["expires"])
+        if res['status'] == "success":
+            premium = res['premium_until'] is not False
 
-            # TODO: Remove `>> 10` in 0.6.x
-            trafficleft = max(0, res["result"]["trafficleft_bytes"] >> 10)
-
-            if res["result"]["type"] != "free":
-                premium = True
+            if premium:
+                validuntil = res['premium_until']
+                trafficleft = -1
 
         return {
             "validuntil": validuntil,
@@ -67,7 +62,18 @@ class PremiumizeMe(MultiAccount):
         }
 
     def signin(self, user, password, data):
-        res = self.api_respond("accountstatus", user, password)
+        res = self.api_respond("account/info", apikey=password)
 
-        if res["status"] != 200:
-            self.fail_login(res["statusmessage"])
+        if res['status'] != "success":
+            self.log_error(
+                self._("Password for premiumize.me should be the API token - get it from: https://www.premiumize.me/account")
+            )
+
+            self.fail_login(res['message'])
+
+        elif res['customer_id'] != user:
+            self.log_error(
+                self._("username for premiumize.me should be the Customer ID - get it from: https://www.premiumize.me/account")
+            )
+
+            self.fail_login()

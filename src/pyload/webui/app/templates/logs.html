@@ -27,7 +27,7 @@
 <div class="logdiv">
     <table class="logtable" cellpadding="0" cellspacing="0">
     {% for line in log %}
-        <tr><td class="logline">{{line.line}}</td><td>{{line.date}}</td><td class="loglevel">{{line.level}}</td><td>{{line.message}}</td></tr>
+        <tr><td class="logline">{{line.line}}</td><td>{{line.date}}</td><td class="loglevel">{{line.level}}</td><td class="logsource">{{line.source}}</td><td>{{line.message|escape|nbsp|safe}}</td></tr>
     {% endfor %}
     </table>
 </div>

@@ -52,7 +52,7 @@ class BIGHTTPRequest(HTTPRequest):
 class FilecryptCc(BaseDecrypter):
     __name__ = "FilecryptCc"
     __type__ = "decrypter"
-    __version__ = "0.41"
+    __version__ = "0.42"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?filecrypt\.cc/Container/\w+"
@@ -71,10 +71,10 @@ class FilecryptCc(BaseDecrypter):
     COOKIES = [("filecrypt.cc", "lang", "en")]
 
     DLC_LINK_PATTERN = r'onclick="DownloadDLC\(\'(.+)\'\);">'
-    WEBLINK_PATTERN = r"openLink.?'([\w\-]*)',"
+    WEBLINK_PATTERN = r"onclick=\"openLink.?'([\w\-]*)',"
     MIRROR_PAGE_PATTERN = r'"[\w]*" href="(https?://(?:www\.)?filecrypt.cc/Container/\w+\.html\?mirror=\d+)">'
 
-    CAPTCHA_PATTERN = r'<h2>Security prompt</h2>'
+    CAPTCHA_PATTERN = r"<h2>Security prompt</h2>"
     INTERNAL_CAPTCHA_PATTERN = r'<img id="nc" .* src="(.+?)"'
     CIRCLE_CAPTCHA_PATTERN = r'<input type="image" src="(.+?)"'
     KEY_CAPTCHA_PATTERN = r"<script language=JavaScript src='(http://backs\.keycaptcha\.com/swfs/cap\.js)'"
@@ -313,17 +313,16 @@ class FilecryptCc(BaseDecrypter):
                 link = "http://filecrypt.cc/Link/{}.html".format(link)
                 for i in range(5):
                     self.data = self._filecrypt_load_url(link)
-                    res = self.handle_captcha(link)
-                    if res not in (None, ""):
+                    m = re.search("top.location.href='(.*)';", self.data)
+                    if m is not None and "filecrypt.cc" in m.group(1):
+                        headers = self._filecrypt_load_url(m.group(1), just_header=True)
+                        self.urls.append(headers['location'])
                         break
 
                 else:
-                    self.fail(self._("Max captcha retries reached"))
+                    self.log_error(self._("Weblink could not be found"))
 
-                link2 = re.search('<iframe .* noresize src="(.*)"></iframe>', res)
-                if link2:
-                    res2 = self._filecrypt_load_url(link2.group(1), just_header=True)
-                    self.urls.append(res2["location"])
+
 
         except Exception as exc:
             self.log_debug(f"Error decrypting weblinks: {exc}")

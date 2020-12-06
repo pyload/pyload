@@ -1,14 +1,5 @@
-/*
- * decaffeinate suggestions:
- * DS101: Remove unnecessary use of Array.from
- * DS102: Remove unnecessary code created because of implicit returns
- * DS104: Avoid inline assignments
- * DS207: Consider shorter variations of null checks
- * DS208: Avoid top-level this
- * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
- */
-
 {% autoescape true %}
+const thisScript = document.currentScript;
 
 // helper functions
 const humanFileSize = function(size) {
@@ -105,23 +96,25 @@ document.addEvent("domready", function() {
 
     $('cap_positional').addEvent('click', on_captcha_click);
 
-    return new Request.JSON({
-        url: "{{url_for('json.status')}}",
-        onSuccess: LoadJsonToContent,
-        secure: false,
-        async: true,
-        initialDelay: 0,
-        delay: 4000,
-        limit: 3000
-    }).startTimer();
+    if (thisScript.getAttribute('nopoll') !== "1") {
+        return new Request.JSON({
+            url: "{{url_for('json.status')}}",
+            onSuccess: LoadJsonToContent,
+            secure: false,
+            async: true,
+            initialDelay: 0,
+            delay: 4000,
+            limit: 3000
+        }).startTimer();
+    }
 });
 
 
 var LoadJsonToContent = function(data) {
     $("speed").set('text', humanFileSize(data.speed)+"/s");
-    $("aktiv").set('text', data.active);
-    $("aktiv_from").set('text', data.queue);
-    $("aktiv_total").set('text', data.total);
+    $("actives").set('text', data.active);
+    $("actives_from").set('text', data.queue);
+    $("actives_total").set('text', data.total);
 
     if (data.captcha) {
         if ($("cap_info").getStyle("display") !== "inline") {

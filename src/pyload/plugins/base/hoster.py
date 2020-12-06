@@ -28,7 +28,7 @@ def parse_file_info(klass, url="", html=""):
 class BaseHoster(BasePlugin):
     __name__ = "BaseHoster"
     __type__ = "base"
-    __version__ = "0.34"
+    __version__ = "0.39"
     __status__ = "stable"
 
     __pattern__ = r"^unmatchable$"
@@ -66,11 +66,11 @@ class BaseHoster(BasePlugin):
     def __init__(self, pyfile):
         self._init(pyfile.m.pyload)
 
-        #: Engage wan reconnection
-        self.want_reconnect = False  # TODO: Change to `want_reconnect` in 0.6.x
+        #: Engage want reconnection
+        self.want_reconnect = False
 
         #: Enable simultaneous processing of multiple downloads
-        self.multi_dl = True  # TODO: Change to `multi_dl` in 0.6.x
+        self.multi_dl = True
 
         #: time.time() + wait in seconds
         self.waiting = False
@@ -235,7 +235,7 @@ class BaseHoster(BasePlugin):
         self.log_info(self._("Grabbing link info..."))
 
         old_info = dict(self.info)
-        new_info = self.get_info(self.pyfile.url, self.data)
+        new_info = self.get_info(replace_patterns(self.pyfile.url, self.URL_REPLACEMENTS), self.data)
 
         self.info.update(new_info)
 
@@ -350,16 +350,16 @@ class BaseHoster(BasePlugin):
         if seconds is not None:
             self.set_wait(seconds)
 
-        if reconnect is None:
-            reconnect = seconds > self.config.get("max_wait", 10) * 60
-
-        self.set_reconnect(reconnect)
-
         wait_time = self.pyfile.wait_until - time.time()
 
         if wait_time < 1:
             self.log_warning(self._("Invalid wait time interval"))
             return
+
+        if reconnect is None:
+            reconnect = wait_time > self.config.get("max_wait", 10) * 60
+
+        self.set_reconnect(reconnect)
 
         self.waiting = True
 
@@ -505,16 +505,14 @@ class BaseHoster(BasePlugin):
         self.captcha.invalid(msg)
         self.retry(attemps, wait, msg=self._("Retry Captcha"), msgfail=msgfail)
 
-    def fixurl(self, url, baseurl=None, unquote=True):
-        url = fixurl(url, unquote=True)
-        baseurl = fixurl(baseurl or self.pyfile.url, unquote=True)
-
+    def fixurl(self, url, baseurl=None):
+        baseurl = baseurl or self.pyfile.url
         if not urllib.parse.urlparse(url).scheme:
             url_p = urllib.parse.urlparse(baseurl)
             baseurl = "{}://{}".format(url_p.scheme, url_p.netloc)
             url = urllib.parse.urljoin(baseurl, url)
 
-        return fixurl(url, unquote)
+        return url
 
     def load(self, *args, **kwargs):
         self.check_status()

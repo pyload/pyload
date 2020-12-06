@@ -4,7 +4,6 @@ import hashlib
 import random
 
 from functools import reduce
-from hashlib import sha1
 
 from ..utils.struct.style import style
 
@@ -43,17 +42,24 @@ class UserDatabaseMethods:
         }
 
     @style.queue
-    def add_user(self, user, password):
+    def add_user(self, user, password, role=0, perms=0, reset=False):
         salt = reduce(lambda x, y: x + y, [str(random.randint(0, 9)) for i in range(5)])
         salt_pw = salt + _salted_password(password, salt)
 
         self.c.execute("SELECT name FROM users WHERE name=?", (user,))
         if self.c.fetchone() is not None:
-            self.c.execute("UPDATE users SET password=? WHERE name=?", (salt_pw, user))
+            if reset:
+                self.c.execute("UPDATE users SET password=?, role=?, permission=? WHERE name=?",
+                               (salt_pw, role, perms, user))
+                return True
+            else:
+                return False
         else:
             self.c.execute(
-                "INSERT INTO users (name, password) VALUES (?, ?)", (user, salt_pw)
+                "INSERT INTO users (name, password, role, permission) VALUES (?, ?, ?, ?)",
+                (user, salt_pw, role, perms)
             )
+            return True
 
     @style.queue
     def change_password(self, user, old_password, new_password):
@@ -72,7 +78,7 @@ class UserDatabaseMethods:
         new_salt = reduce(
             lambda x, y: x + y, [str(random.randint(0, 9)) for i in range(5)]
         )
-        newpw = _salted_password(new_password, new_salt)
+        newpw = new_salt + _salted_password(new_password, new_salt)
 
         self.c.execute("UPDATE users SET password=? WHERE name=?", (newpw, user))
         return True

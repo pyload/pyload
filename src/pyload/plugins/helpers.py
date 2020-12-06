@@ -402,6 +402,23 @@ def format_exc(frame=None):
     return msg
 
 
+def search_pattern(pattern, value, flags=0):
+    try:
+        pattern, reflags = pattern
+
+    except ValueError:
+        reflags = 0
+
+    except TypeError:
+        return None
+
+    try:
+        return re.search(pattern, value, reflags | flags)
+
+    except TypeError:
+        return None
+
+
 def replace_patterns(value, rules):
     for r in rules:
         try:
@@ -418,7 +435,7 @@ def replace_patterns(value, rules):
 
 # TODO: Remove in 0.6.x and fix exp in CookieJar.set_cookie
 def set_cookie(
-    cj, domain, name, value, path="/", exp=time.time() + timedelta(hours=744).seconds
+    cj, domain, name, value, path="/", exp=time.time() + timedelta(hours=744).total_seconds()
 ):  #: 31 days retention
     args = [domain, name, value, path, int(exp)]
     return cj.set_cookie(*args)

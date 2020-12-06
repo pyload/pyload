@@ -6,8 +6,9 @@ import os
 import re
 import subprocess
 import time
+from datetime import timedelta
 import urllib.parse
-import urlparse
+from urllib.parse import urlparse
 from functools import reduce
 from xml.dom.minidom import parseString as parse_xml
 
@@ -23,7 +24,7 @@ from pyload.core.network.exceptions import Abort, Skip
 
 def try_get(data, *path):
     def get_one(src, what):
-        if isinstance(src, dict) and isinstance(what, basestring):
+        if isinstance(src, dict) and isinstance(what, str):
             return src.get(what, None)
         elif isinstance(src, list) and type(what) is int:
             try:
@@ -107,8 +108,8 @@ class Ffmpeg:
         try:
             if os.name == "nt":
                 ffmpeg = (
-                    os.path.join(pypath, "lib", "ffmpeg.exe")
-                    if is_executable(os.path.join(pypath, "lib", "ffmpeg.exe"))
+                    os.path.join(PKGDIR, "lib", "ffmpeg.exe")
+                    if is_executable(os.path.join(PKGDIR, "lib", "ffmpeg.exe"))
                     else "ffmpeg.exe"
                 )
 
@@ -117,7 +118,7 @@ class Ffmpeg:
 
             cmd = which(ffmpeg) or ffmpeg
 
-            p = Popen(
+            p = subprocess.Popen(
                 [cmd, "-version"], stdout=subprocess.PIPE, stderr=subprocess.PIPE
             )
             out, err = (r.strip() if r else "" for r in p.communicate())
@@ -182,7 +183,7 @@ class Ffmpeg:
         )
 
         call = [self.CMD] + args + [self.output_filename]
-        p = Popen(call, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        p = subprocess.Popen(call, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         renice(p.pid, self.priority)
 
@@ -265,7 +266,7 @@ class Ffmpeg:
 class YoutubeCom(BaseDownloader):
     __name__ = "YoutubeCom"
     __type__ = "downloader"
-    __version__ = "0.80
+    __version__ = "0.80"
     __status__ = "testing"
 
     __pattern__ = (
@@ -296,15 +297,15 @@ class YoutubeCom(BaseDownloader):
         (
             "subs_dl_langs",
             "str",
-            <a href='https://sites.google.com/site/tomihasa/google-language-codes#interfacelanguage'>language codes</a> to download (comma separated)",
+            "<a href='https://sites.google.com/site/tomihasa/google-language-codes#interfacelanguage'>language codes</a> to download (comma separated)",
             "",
         ),
         ("auto_subs", "bool", "Allow machine generated subtitles", True),
         (
-        	"subs_translate",
-        	"str",
-        	"Translate subtitles to <a href='https://sites.google.com/site/tomihasa/google-language-codes#interfacelanguage'>language</a> (forces first_available)" ,
-        	"",
+            "subs_translate",
+            "str",
+            "Translate subtitles to <a href='https://sites.google.com/site/tomihasa/google-language-codes#interfacelanguage'>language</a> (forces first_available)" ,
+            "",
         ),
         (
             "subs_embed",
@@ -594,7 +595,7 @@ class YoutubeCom(BaseDownloader):
         #     player_url = json.loads(re.search(r'"assets":.+?"js":\s*("[^"]+")',self.data).group(1))
         # except (AttributeError, IndexError):
         #     self.fail(self._("Player URL not found"))
-        player_url = self.fixurl(player_config["assets"]["js"])
+        player_url = self.fixurl(self.player_config["assets"]["js"])
 
         if not player_url.endswith(".js"):
             self.fail(self._("Unsupported player type {}").format(player_url))
@@ -967,32 +968,33 @@ class YoutubeCom(BaseDownloader):
             dom = parse_xml(timedtext)
             body = dom.getElementsByTagName("body")[0]
             paras = body.getElementsByTagName("p")
+            subtitle_element = ""
             for para in paras:
                 subtitle_element += str(i) + "\n"
                 try:
-	                srt += (
-	                    _format_srt_time(int(para.attributes["t"].value))
-	                    + " --> "
-	                    + _format_srt_time(
-	                        int(para.attributes["t"].value)
-	                        + int(para.attributes["d"].value)
-	                    )
-	                    + "\n"
-	                )
-	            except KeyError:
-	            	continue
-	            	
+                    srt += (
+                        _format_srt_time(int(para.attributes["t"].value))
+                        + " --> "
+                        + _format_srt_time(
+                            int(para.attributes["t"].value)
+                            + int(para.attributes["d"].value)
+                        )
+                        + "\n"
+                    )
+                except KeyError:
+                    continue
+
                 subtitle_text = ""
                 words = para.getElementsByTagName("s")
                 if words:
-                    subtitle_text = "".join([unicode(word.firstChild.data) for word in words])
+                    subtitle_text = "".join([word.firstChild.data for word in words])
 
                 else:
-	                for child in para.childNodes:
-	                    if child.nodeName == "br":
-	                        srt += "\n"
-	                    elif child.nodeName == "#text":
-	                        srt += str(child.data)
+                    for child in para.childNodes:
+                        if child.nodeName == "br":
+                            srt += "\n"
+                        elif child.nodeName == "#text":
+                            srt += str(child.data)
 
                 if subtitle_text.strip():
                     subtitle_element += subtitle_text
@@ -1010,13 +1012,12 @@ class YoutubeCom(BaseDownloader):
             subs = json.loads(self.player_config["args"]["player_response"])[
                 "captions"
             ]["playerCaptionsTracklistRenderer"]["captionTracks"]
-            subtitles_info = {[
+            subtitles_info = {[(
                 subtitle["languageCode"], urllib.parse.unquote(
                     subtitle["baseUrl"]
                 ).decode("unicode-escape")
                 + "&fmt=3",
-               _subtitle["vssId"].startswith("a."),
-               _subtitle["isTranslatable"]
+               subtitle["vssId"].startswith("a."), subtitle["isTranslatable"])
                 for subtitle in subs]
             }
             self.log_debug(
@@ -1048,12 +1049,12 @@ class YoutubeCom(BaseDownloader):
                             self.log_warning(self._("Skipped machine generated subtitle: {}").format(lang))
                             continue
 
-                        subtitle_url = subtitles_info[_lang][0]
+                        subtitle_url = subtitles_info[lang][0]
                         if subs_translate:
-                            if subtitles_info[_lang][2]:  #: Translatable?
+                            if subtitles_info[lang][2]:  #: Translatable?
                                 subtitle_url += "&tlang={}".format(subs_translate)
                             else:
-                                self.log_warning(self._("Skipped non translatable subtitle: {}").format(_lang))
+                                self.log_warning(self._("Skipped non translatable subtitle: {}").format(lang))
                                 continue  #: No, try next one
                         srt_filename = os.path.join(
                             self.pyload.config.get("general", "storage_folder"),
@@ -1089,7 +1090,7 @@ class YoutubeCom(BaseDownloader):
 
             else:
                 # Download any available subtitle
-                for subtitle in subtitles_info.items():
+                for _subtitle in subtitles_info.items():
                     if auto_subs is False and _subtitle[1][1] is True:
                         self.log_warning(self._("Skipped machine generated subtitle: {}").format(_subtitle[0]))
                         continue
@@ -1101,14 +1102,14 @@ class YoutubeCom(BaseDownloader):
                         if _subtitle[1][2]:  #: Translatable?
                             subtitle_url += "&tlang={}".format(subs_translate)
                         else:
-                            self.log_warning(_("Skipped non translatable subtitle: {}").format(_subtitle[0]))
+                            self.log_warning(self._("Skipped non translatable subtitle: {}").format(_subtitle[0]))
                             continue  #: No, try next one
                     srt_filename = os.path.join(
                         self.pyload.config.get("general", "storage_folder"),
                         self.pyfile.package().folder,
                         os.path.splitext(self.file_name)[0]
                         + "."
-                        + subtitle[0]
+                        + _subtitle[0]
                         + ".srt",
                     )
 
@@ -1298,7 +1299,7 @@ class YoutubeCom(BaseDownloader):
         self.streams = []
 
         for path in [("args", "url_encoded_fmt_stream_map"),
-                     ("args", 'adaptive_fmts")]:
+                     ("args", 'adaptive_fmts')]:
             item = try_get(self.player_config, *path)
             if item is not None:
                 streams = [urlparse.parse_qs(_s) for _s in item.split(",")]

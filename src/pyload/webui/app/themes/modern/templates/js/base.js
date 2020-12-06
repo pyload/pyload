@@ -2,6 +2,7 @@
 
 let desktopNotifications;
 let interactiveCaptchaHandlerInstance = null;
+const thisScript = document.currentScript;
 
 function indicateLoad() {
     $(".load-indicator").css('opacity',1);
@@ -296,23 +297,25 @@ $(function() {
 
     $("#cap_box #cap_positional").click(submit_positional_captcha);
 
-    $.ajax({
-        method:"post",
-        url: "{{url_for('json.status')}}",
-        async: true,
-        timeout: 3000,
-        success:LoadJsonToContent
-    });
-
-    setInterval(function() {
+    if (thisScript.getAttribute('nopoll') !== "1") {
         $.ajax({
-            method:"post",
+            method: "post",
             url: "{{url_for('json.status')}}",
             async: true,
             timeout: 3000,
-            success:LoadJsonToContent
+            success: LoadJsonToContent
         });
-    }, 4000);
+
+        setInterval(function () {
+            $.ajax({
+                method: "post",
+                url: "{{url_for('json.status')}}",
+                async: true,
+                timeout: 3000,
+                success: LoadJsonToContent
+            });
+        }, 4000);
+    }
 });
 
 function LoadJsonToContent(a) {

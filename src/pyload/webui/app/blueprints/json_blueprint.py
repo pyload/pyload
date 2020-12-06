@@ -5,9 +5,10 @@ import os
 import flask
 from flask.json import jsonify
 
+from pyload.core.api import Role
 from pyload.core.utils import format
 
-from ..helpers import login_required, render_template
+from ..helpers import login_required, permlist, render_template, set_permission
 
 bp = flask.Blueprint("json", __name__)
 
@@ -48,9 +49,7 @@ def links():
         return jsonify(links=links, ids=ids)
 
     except Exception as exc:
-        flask.abort(500)
-
-    return jsonify(False)
+        return jsonify(False), 500
 
 
 @bp.route("/json/packages", endpoint="packages")
@@ -69,9 +68,7 @@ def packages():
         return jsonify(data)
 
     except Exception:
-        flask.abort(500)
-
-    return jsonify(False)
+        return jsonify(False), 500
 
 
 @bp.route("/json/package", endpoint="package")
@@ -89,9 +86,7 @@ def package():
         return jsonify(data)
 
     except Exception:
-        flask.abort(500)
-
-    return jsonify(False)
+        return jsonify(False), 500
 
 
 @bp.route("/json/package_order", endpoint="package_order")
@@ -104,10 +99,9 @@ def package_order():
         pos = int(flask.request.args.get('pos'))
         api.order_package(pid, pos)
         return jsonify(response="success")
-    except Exception:
-        flask.abort(500)
 
-    return jsonify(False)
+    except Exception:
+        return jsonify(False), 500
 
 
 @bp.route("/json/abort_link", endpoint="abort_link")
@@ -119,10 +113,9 @@ def abort_link():
         id = int(flask.request.args.get('id'))
         api.stop_downloads([id])
         return jsonify(response="success")
-    except Exception:
-        flask.abort(500)
 
-    return jsonify(False)
+    except Exception:
+        return jsonify(False), 500
 
 
 @bp.route("/json/link_order", endpoint="link_order")
@@ -135,10 +128,9 @@ def link_order():
         pos = int(flask.request.args.get('pos'))
         api.order_file(fid, pos)
         return jsonify(response="success")
-    except Exception:
-        flask.abort(500)
 
-    return jsonify(False)
+    except Exception:
+        return jsonify(False), 500
 
 
 @bp.route("/json/add_package", methods=["POST"], endpoint="add_package")
@@ -187,10 +179,9 @@ def move_package():
         dest = int(flask.request.args.get('dest'))
         api.move_package(dest, id)
         return jsonify(response="success")
-    except Exception:
-        flask.abort(500)
 
-    return jsonify(False)
+    except Exception:
+        return jsonify(False), 500
 
 
 @bp.route("/json/edit_package", methods=["POST"], endpoint="edit_package")
@@ -210,9 +201,7 @@ def edit_package():
         return jsonify(response="success")
 
     except Exception:
-        flask.abort(500)
-
-    return jsonify(False)
+        return jsonify(False), 500
 
 
 @bp.route("/json/set_captcha", methods=["GET", "POST"], endpoint="set_captcha")
@@ -242,12 +231,12 @@ def set_captcha():
 
 @bp.route("/json/load_config", endpoint="load_config")
 # @apiver_check
-# @login_required("SETTINGS")
+@login_required("SETTINGS")
 def load_config():
     category = flask.request.args.get('category')
     section = flask.request.args.get('section')
     if category not in ("core", "plugin") or not section:
-        flask.abort(500)
+        return jsonify(False), 500
 
     conf = None
     api = flask.current_app.config["PYLOAD_API"]
@@ -273,7 +262,7 @@ def save_config():
     api = flask.current_app.config["PYLOAD_API"]
     category = flask.request.args.get('category')
     if category not in ("core", "plugin"):
-        flask.abort(500)
+        return jsonify(False), 500
 
     for key, value in flask.request.form.items():
         try:
@@ -346,6 +335,30 @@ def change_password():
 
     done = api.change_password(user, oldpw, newpw)
     if not done:
-        return "Wrong password", 500
+        return jsonify(False), 500  #: Wrong password
+
+    return jsonify(True)
+
+@bp.route("/json/add_user", methods=["POST"], endpoint="add_user")
+# @apiver_check
+@login_required("ADMIN")
+# @fresh_login_required
+def add_account():
+    api = flask.current_app.config["PYLOAD_API"]
+
+    user = flask.request.form["new_user"]
+    password = flask.request.form["new_password"]
+    role = Role.ADMIN if flask.request.form.get("new_role") == "on" else Role.USER
+    perms = {}
+    for perm in permlist():
+        perms[perm] = False
+    for perm in flask.request.form.getlist("new_perms"):
+        perms[perm] = True
+
+    perms = set_permission(perms)
+
+    done = api.add_user(user, password, role, perms)
+    if not done:
+        return jsonify(False), 500  #: Duplicate user
 
     return jsonify(True)

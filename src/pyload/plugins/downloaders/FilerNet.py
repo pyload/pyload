@@ -36,7 +36,7 @@ class FilerNet(SimpleDownloader):
 
     WAIT_PATTERN = r"var count = (\d+);"
 
-    LINK_PATTERN = r"href="([^"]+)">Get download</a>"
+    LINK_PATTERN = r'href="([^"]+)">Get download</a>'
 
     def handle_free(self, pyfile):
         inputs = self.parse_html_form(input_names={"token": re.compile(r".+")})[1]

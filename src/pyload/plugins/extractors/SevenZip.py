@@ -5,20 +5,24 @@ import re
 import subprocess
 
 from pyload import PKGDIR
-
-from ..helpers import renice
-from .extractor import ArchiveError, BaseExtractor, CRCError, PasswordError
+from pyload.core.utils.convert import to_str
+from pyload.plugins.base.extractor import ArchiveError, BaseExtractor, CRCError, PasswordError
+from pyload.plugins.helpers import renice
 
 
 class SevenZip(BaseExtractor):
     __name__ = "SevenZip"
     __type__ = "extractor"
-    __version__ = "0.27"
+    __version__ = "0.32"
     __status__ = "testing"
 
     __description__ = """7-Zip extractor plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("Walter Purcaro", "vuolter@gmail.com"), ("Michael Nowak", None)]
+    __authors__ = [
+        ("Walter Purcaro", "vuolter@gmail.com"),
+        ("Michael Nowak", None),
+        ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")
+    ]
 
     CMD = "7z"
     EXTENSIONS = [
@@ -66,12 +70,12 @@ class SevenZip(BaseExtractor):
         "scap",
     ]
 
-    _RE_PART = re.compile(r"\.7z\.\d{3}|\.(part|r)\d+(\.rar|\.rev)?(\.bad)?", re.I)
+    _RE_PART = re.compile(r"\.7z\.\d{3}|\.(part|r)\d+(\.rar|\.rev)?(\.bad)?|\.rar$", re.I)
     _RE_FILES = re.compile(
-        r"([\d\-]+)\s+([\d\:]+)\s+([RHSA\.]+)\s+(\d+)\s+(\d+)\s+(.+)"
+        r"([\d\-]+)\s+([\d:]+)\s+([RHSA.]+)\s+(\d+)\s+(?:(\d+)\s+)?(.+)"
     )
     _RE_BADPWD = re.compile(
-        r"(Can not open encrypted archive|Wrong password|Encrypted\s+\=\s+\+)", re.I
+        r"(Can not open encrypted archive|Wrong password|Encrypted\s+=\s+\+)", re.I
     )
     _RE_BADCRC = re.compile(r"CRC Failed|Can not open file", re.I)
     _RE_VERSION = re.compile(
@@ -87,7 +91,7 @@ class SevenZip(BaseExtractor):
             p = subprocess.Popen(
                 [cls.CMD], stdout=subprocess.PIPE, stderr=subprocess.PIPE
             )
-            out, err = (r.strip() if r else "" for r in p.communicate())
+            out, err = (to_str(r).strip() if r else "" for r in p.communicate())
 
         except OSError:
             return False
@@ -106,7 +110,7 @@ class SevenZip(BaseExtractor):
     def verify(self, password=None):
         #: 7z can't distinguish crc and pw error in test
         p = self.call_cmd("l", "-slt", self.filename)
-        out, err = (r.strip() if r else "" for r in p.communicate())
+        out, err = (to_str(r).strip() if r else "" for r in p.communicate())
 
         if self._RE_BADPWD.search(out):
             raise PasswordError
@@ -121,20 +125,20 @@ class SevenZip(BaseExtractor):
             raise CRCError(err)
 
     def progress(self, process):
-        s = ""
+        s = b""
         while True:
             c = process.stdout.read(1)
             #: Quit loop on eof
             if not c:
                 break
             #: Reading a percentage sign -> set progress and restart
-            if c == "%":
+            if c == b'%' and s:
                 self.pyfile.set_progress(int(s))
-                s = ""
+                s = b""
             #: Not reading a digit -> therefore restart
             elif not c.isdigit():
-                s = ""
-            #: Add digit to progressstring
+                s = b""
+            #: Add digit to progress string
             else:
                 s += c
 
@@ -145,7 +149,7 @@ class SevenZip(BaseExtractor):
 
         #: Communicate and retrieve stderr
         self.progress(p)
-        out, err = (r.strip() if r else "" for r in p.communicate())
+        out, err = (to_str(r).strip() if r else "" for r in p.communicate())
 
         if err:
             if self._RE_BADPWD.search(err):
@@ -166,10 +170,9 @@ class SevenZip(BaseExtractor):
 
         #: eventually Multipart Files
         files.extend(
-            os.path.join(dir, os.path.basename(entry))
-            for entry in os.listdir(dir)
-            if self.ismultipart(entry)
-            and self._RE_PART.sub("", name) == self._RE_PART.sub("", entry)
+            os.path.join(dir, os.path.basename(_f))
+            for _f in filter(self.ismultipart, os.listdir(dir))
+            if self._RE_PART.sub("", name) == self._RE_PART.sub("", _f)
         )
 
         #: Actually extracted file
@@ -179,10 +182,9 @@ class SevenZip(BaseExtractor):
         return files
 
     def list(self, password=None):
-        command = "l" if self.fullpath else "l"
+        p = self.call_cmd("l", self.filename, password=password)
 
-        p = self.call_cmd(command, self.filename, password=password)
-        out, err = (r.strip() if r else "" for r in p.communicate())
+        out, err = (to_str(r).strip() if r else "" for r in p.communicate())
 
         if any(e in err for e in ("Can not open", "cannot find the file")):
             raise ArchiveError(self._("Cannot open file"))
@@ -193,6 +195,8 @@ class SevenZip(BaseExtractor):
         files = set()
         for groups in self._RE_FILES.findall(out):
             f = groups[-1].strip()
+            if not self.fullpath:
+                f = os.path.basename(f)
             files.add(os.path.join(self.dest, f))
 
         self.files = list(files)
@@ -202,8 +206,14 @@ class SevenZip(BaseExtractor):
     def call_cmd(self, command, *xargs, **kwargs):
         args = []
 
+        #: Use UTF8 for console encoding
+        args.append("-scsUTF-8")
+        args.append("-sccUTF-8")
+
         #: Progress output
         if self.VERSION and float(self.VERSION) >= 15.08:
+            #: Disable all output except progress and errors
+            args.append("-bso0")
             args.append("-bsp1")
 
         #: Overwrite flag
@@ -234,7 +244,7 @@ class SevenZip(BaseExtractor):
         call = [self.CMD, command] + args + list(xargs)
         self.log_debug("EXECUTE " + " ".join(call))
 
-        call = [str(cmd) for cmd in call]
+        call = [to_str(cmd) for cmd in call]
         p = subprocess.Popen(call, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         renice(p.pid, self.priority)

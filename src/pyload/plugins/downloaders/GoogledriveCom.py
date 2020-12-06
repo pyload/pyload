@@ -5,6 +5,7 @@
 
 import re
 import json
+from urllib.parse import urlparse
 
 from pyload.core.network.http.exceptions import BadHeader
 
@@ -104,23 +105,23 @@ class GoogledriveCom(BaseDownloader):
 
         if "error" in json_data:
             if json_data["error"]["code"] == 404:
-                self.offline()
-
-            else:
-                m = re.search(self.INFO_PATTERN, self.data)
-                if m is not None:
-                    pyfile.name = m.group("N")
-                    pyfile.size = parse.bytesize(m.group("S"), m.group("U"))
+                if "Virus scan warning" not in self.data:
+                    self.offline()
                 else:
-                    disposition = True
+                    m = re.search(self.INFO_PATTERN, self.data)
+                    if m is not None:
+                        pyfile.name = m.group("N")
+                        pyfile.size = parse.bytesize(m.group("S"), m.group("U"))
+                    else:
+                        disposition = True
 
             else:
                 self.fail(json_data['error']['message'])
 
         else:
-	        pyfile.size = int(json_data["size"])
-	        pyfile.name = json_data["name"]
-	        self.info["md5"] = json_data["md5Checksum"]
+            pyfile.size = int(json_data["size"])
+            pyfile.name = json_data["name"]
+            self.info["md5"] = json_data["md5Checksum"]
 
         # Somehow, API downloads are sacrificially slow compared to "normal" download :(
         # self.api_download()
