@@ -53,7 +53,7 @@ def permission(bits):
     return _Dec
 
 
-urlmatcher = re.compile(r"((https?|ftps?|xdcc|sftp):((//)|(\\\\))+[\w\d:#@%/;$()~_?\+\-=\\\.&]*)", re.IGNORECASE)
+urlmatcher = re.compile(r"((?:(?:https?|ftps?|xdcc|sftp|magnet):(?://|\\\\)+[\w\-._~:/?#\[\]@!$&'()*+,;=]*))", re.IGNORECASE)
 
 class PERMS:
     ALL = 0  # requires no permission, but login
