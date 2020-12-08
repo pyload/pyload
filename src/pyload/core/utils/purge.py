@@ -2,7 +2,6 @@
 
 import os
 import re
-import sys
 
 
 def chars(text, chars, repl=""):
@@ -39,14 +38,9 @@ _WINBADWORDS = (
 )
 
 
-def name(text, sep="_", allow_whitespaces=False):
+def name(text, sep="_", allow_whitespaces=True):
     """Remove invalid characters."""
-    if os.name == "nt":
-        bc = _WINBADCHARS
-    elif sys.platform == "darwin":
-        bc = _MACBADCHARS
-    else:
-        bc = _UNIXBADCHARS
+    bc = uniquify(_WINBADCHARS + _MACBADCHARS + _UNIXBADCHARS)
     repl = r"".join(bc)
     if not allow_whitespaces:
         repl += " "
