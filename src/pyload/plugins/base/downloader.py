@@ -6,7 +6,7 @@ import re
 
 from pyload.core.network.exceptions import Fail
 from pyload.core.network.http.exceptions import BadHeader
-from pyload.core.utils import parse
+from pyload.core.utils import format, parse
 from pyload.core.utils.old import safejoin
 
 from ..helpers import exists
@@ -16,7 +16,7 @@ from .hoster import BaseHoster
 class BaseDownloader(BaseHoster):
     __name__ = "BaseDownloader"
     __type__ = "downloader"
-    __version__ = "0.74"
+    __version__ = "0.79"
     __status__ = "stable"
 
     __pattern__ = r"^unmatchable$"
@@ -163,7 +163,7 @@ class BaseDownloader(BaseHoster):
         if resumable is None:
             resumable = self.resume_download
 
-        if isinstance(redirect, int):
+        if type(redirect) == int:
             maxredirs = max(redirect, 1)
 
         elif redirect:
@@ -412,9 +412,9 @@ class BaseDownloader(BaseHoster):
         else:
             size = self.pyfile.size
             self.log_info(
-                self._("Filesize: {} KiB").format(size),
-                self._("Traffic left for user `{}`: {} KiB").format(
-                    self.account.user, traffic
+                self._("Filesize: {}").format(format.size(size)),
+                self._("Traffic left for user `{}`: {}").format(
+                    self.account.user, format.size(traffic)
                 ),
             )
             return size > traffic
