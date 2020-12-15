@@ -318,8 +318,8 @@ class HTTPRequest:
             ):
                 continue
 
-            none, delemiter, charset = line.rpartition(b"charset=")
-            if delemiter:
+            none, delimiter, charset = line.rpartition(b"charset=")
+            if delimiter:
                 charset = charset.split(b";")
                 if charset:
                     encoding = to_str(charset[0])

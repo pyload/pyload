@@ -460,10 +460,10 @@ class BaseAccount(BasePlugin):
 
     ###########################################################################
 
-    def parse_traffic(self, size, unit=None):  # NOTE: Returns kilobytes only in 0.5.0
+    def parse_traffic(self, size, unit=None):  # NOTE: Returns kilobytes only in 0.4.9
         self.log_debug(f"Size: {size}", "Unit: {unit or 'N/D'}")
         # TODO: Remove `>> 10` in 0.6.x
-        return parse.bytesize(size, unit or "byte") >> 10
+        return parse.bytesize(size, unit or "byte")
 
     def fail_login(self, msg="Login handshake has failed"):
         return self.fail(msg)

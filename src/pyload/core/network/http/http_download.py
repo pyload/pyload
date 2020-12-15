@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import os
-import shutil
 import time
 from logging import getLogger
 
@@ -19,17 +18,18 @@ class HTTPDownload:
     """
 
     def __init__(
-        self,
-        url,
-        filename,
-        get={},
-        post={},
-        referer=None,
-        cj=None,
-        bucket=None,
-        options={},
-        progress_notify=None,
-        disposition=False,
+            self,
+            url,
+            filename,
+            size=0,
+            get={},
+            post={},
+            referer=None,
+            cj=None,
+            bucket=None,
+            options={},
+            status_notify=None,
+            disposition=False,
     ):
         self.url = url
         self.filename = filename  #: complete file destination, not only name
@@ -43,7 +43,7 @@ class HTTPDownload:
         # all arguments
 
         self.abort = False
-        self.size = 0
+        self.size = size
         self.name_disposition = None  #: will be parsed from content disposition
 
         self.chunks = []
@@ -66,7 +66,8 @@ class HTTPDownload:
         self.speeds = []
         self.last_speeds = [0, 0]
 
-        self.progress_notify = progress_notify
+        # notifications callback
+        self.status_notify = status_notify
 
     @property
     def speed(self):
@@ -114,7 +115,7 @@ class HTTPDownload:
                 os.path.dirname(self.filename), self.name_disposition
             )
 
-        shutil.move(init, self.filename)
+        os.rename(init, self.filename)
         self.info.remove()  #: os.remove info file
 
     def download(self, chunks=1, resume=False):
@@ -145,7 +146,8 @@ class HTTPDownload:
 
         if self.name_disposition and self.disposition:
             return self.name_disposition
-        return None
+        else:
+            return None
 
     def _download(self, chunks, resume):
         if not resume:
@@ -312,8 +314,13 @@ class HTTPDownload:
         self._copy_chunks()
 
     def update_progress(self):
-        if self.progress_notify:
-            self.progress_notify(self.percent)
+        if self.status_notify:
+            self.status_notify({'progress': self.percent})
+
+    def update_disposition(self, disposition):
+        self.name_disposition = disposition
+        if self.status_notify:
+            self.status_notify({'disposition': disposition})
 
     def find_chunk(self, handle):
         """
