@@ -16,7 +16,7 @@ from .hoster import BaseHoster
 class BaseDownloader(BaseHoster):
     __name__ = "BaseDownloader"
     __type__ = "downloader"
-    __version__ = "0.79"
+    __version__ = "0.80"
     __status__ = "stable"
 
     __pattern__ = r"^unmatchable$"
@@ -399,7 +399,7 @@ class BaseDownloader(BaseHoster):
 
     def out_of_traffic(self):
         if not self.account:
-            return
+            return False
 
         traffic = self.account.get_data("trafficleft")
 
