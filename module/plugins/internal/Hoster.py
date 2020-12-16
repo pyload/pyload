@@ -33,7 +33,7 @@ if not hasattr(__builtin__.property, "setter"):
 class Hoster(Base):
     __name__ = "Hoster"
     __type__ = "hoster"
-    __version__ = "0.79"
+    __version__ = "0.80"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -371,7 +371,7 @@ class Hoster(Base):
 
     def out_of_traffic(self):
         if not self.account:
-            return
+            return False
 
         traffic = self.account.get_data('trafficleft')
 
