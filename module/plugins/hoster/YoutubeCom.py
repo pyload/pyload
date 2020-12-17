@@ -853,7 +853,6 @@ class YoutubeCom(Hoster):
                         if url is None:
                             continue
 
-
             self.streams.append((itag,
                                  url,
                                  try_get(url_data, 's', 0) or url_data.get('s', url_data.get('sig', None)),
