@@ -9,7 +9,7 @@ from .plugin import BasePlugin
 class BaseCaptcha(BasePlugin):
     __name__ = "BaseCaptcha"
     __type__ = "anticaptcha"
-    __version__ = "0.56"
+    __version__ = "0.58"
     __status__ = "stable"
 
     __description__ = """Base anti-captcha plugin"""
