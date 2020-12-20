@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import os
 import re
 import urlparse
 
@@ -84,7 +83,7 @@ class UlozTo(SimpleHoster):
     def handle_free(self, pyfile):
         is_adult = self.adult_confirmation(pyfile)
 
-        #Let's try to find direct download
+        #: Let's try to find direct download
         m = re.search(r'<a id="limitedDownloadButton".*?href="(.*?)"', self.data)
         if m:
             domain = "https://pornfile.cz" if is_adult else "https://ulozto.net"
@@ -120,7 +119,6 @@ class UlozTo(SimpleHoster):
                 self.retry_captcha()
 
         self.download(jsvars['slowDownloadLink'])
-
 
     def handle_premium(self, pyfile):
         m = re.search("/file/(.+)/", pyfile.url)
