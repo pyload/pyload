@@ -342,7 +342,7 @@ class SimpleDownloader(BaseDownloader):
                         self.data = fp.read(1_048_576)  # TODO: Recheck in 0.6.x
 
                 except UnicodeDecodeError:
-                    with open(os.fsdecode(self.last_download), mode="r", encoding='latin1') as fp:
+                    with open(os.fsdecode(self.last_download), mode="r", encoding='iso-8859-1') as fp:
                         self.data = fp.read(1_048_576)  # TODO: Recheck in 0.6.x
 
                 self.check_errors()
