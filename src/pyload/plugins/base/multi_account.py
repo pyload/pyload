@@ -397,7 +397,7 @@ class MultiAccount(BaseAccount):
 
                 return
 
-        #: Make sure we have one active addon
+        #: Make sure we have one active event
         try:
             self.pyload.addon_manager.remove_event(
                 "plugin_updated", self.plugins_updated
