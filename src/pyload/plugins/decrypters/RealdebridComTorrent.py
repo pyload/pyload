@@ -91,12 +91,12 @@ class RealdebridComTorrent(SimpleDecrypter):
 
             else:
                 #: URL is local torrent file (uploaded container)
-                torrent_filename = urllib.request.url2pathname(self.pyfile.url[7:]).encode("latin1").decode("utf8")  #: trim the starting `file://`
+                torrent_filename = urllib.request.url2pathname(self.pyfile.url[7:])  #: trim the starting `file://`
                 if not exists(torrent_filename):
                     self.fail(self._("Torrent file does not exist"))
 
             #: Check if the torrent file path is inside pyLoad's config directory
-            if os.path.abspath(torrent_filename).startswith(os.path.abspath(os.getcwd()) + os.sep):
+            if os.path.abspath(torrent_filename).startswith(self.pyload.tempdir + os.sep):
                 for _i in range(2):
                     try:
                         #: send the torrent content to the server
@@ -181,12 +181,12 @@ class RealdebridComTorrent(SimpleDecrypter):
         self.pyfile.name = torrent_info["original_filename"]
         self.pyfile.size = torrent_info["original_bytes"]
 
-        self.pyfile.setCustomStatus("torrent")
-        self.pyfile.setProgress(0)
+        self.pyfile.set_custom_status("torrent")
+        self.pyfile.set_progress(0)
 
         while torrent_info["status"] != "downloaded" or torrent_info["progress"] != 100:
             progress = int(torrent_info["progress"])
-            self.pyfile.setProgress(progress)
+            self.pyfile.set_progress(progress)
 
             self.sleep(5)
 
@@ -195,7 +195,7 @@ class RealdebridComTorrent(SimpleDecrypter):
             if "error" in torrent_info:
                 self.fail("{} (code: {})".format(torrent_info["error"], torrent_info.get("error_code", -1)))
 
-        self.pyfile.setProgress(100)
+        self.pyfile.set_progress(100)
 
         return torrent_info["links"]
 
@@ -229,7 +229,7 @@ class RealdebridComTorrent(SimpleDecrypter):
         if len(self.account.accounts) == 0:
             self.fail(self._("This plugin requires an active Realdebrid.com account"))
 
-        self.api_token = self.account.accounts[self.account.accounts.keys()[0]]["api_token"]
+        self.api_token = self.account.accounts[list(self.account.accounts.keys())[0]]["api_token"]
 
         try:
             torrent_id = self.send_request_to_server()
