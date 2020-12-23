@@ -1,25 +1,23 @@
 # -*- coding: utf-8 -*-
 
 import hashlib
-import random
-
-from functools import reduce
+import os
 
 from ..utils.struct.style import style
 
 
 # TODO: rewrite using scrypt or argon2_cffi
 def _salted_password(password, salt):
-    dk = hashlib.pbkdf2_hmac("sha256", password.encode(), salt.encode(), 100000)
+    dk = hashlib.pbkdf2_hmac("sha256", password.encode(), bytes.fromhex(salt), 100000)
     return salt + dk.hex()
 
 
 def _gensalt():
-    return reduce(lambda x, y: x + y, [str(random.randint(0, 9)) for i in range(5)])
+    return os.urandom(16).hex()
 
 
 def _check_password(hashed, clear):
-    salt = hashed[:5]
+    salt = hashed[:32]
     to_compare = _salted_password(clear, salt)
 
     return hashed == to_compare
