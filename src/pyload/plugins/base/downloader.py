@@ -6,7 +6,7 @@ import re
 
 from pyload.core.network.exceptions import Fail
 from pyload.core.network.http.exceptions import BadHeader
-from pyload.core.utils import parse
+from pyload.core.utils import format, parse
 from pyload.core.utils.old import safejoin
 
 from ..helpers import exists
@@ -16,7 +16,7 @@ from .hoster import BaseHoster
 class BaseDownloader(BaseHoster):
     __name__ = "BaseDownloader"
     __type__ = "downloader"
-    __version__ = "0.74"
+    __version__ = "0.80"
     __status__ = "stable"
 
     __pattern__ = r"^unmatchable$"
@@ -36,12 +36,15 @@ class BaseDownloader(BaseHoster):
 
     @last_download.setter
     def last_download(self, value):
-        if exists(value):
-            self._last_download = value or ""
+        if isinstance(value, str) and exists(value):
+            self._last_download = value
+
+        else:
+            self._last_download = ""
 
     def init_base(self):
         #: Enable simultaneous processing of multiple downloads
-        self.limit_dl = 0  # TODO: Change to `limit_dl` in 0.6.x
+        self.limit_dl = 0
 
         #:
         self.chunk_limit = None
@@ -103,7 +106,7 @@ class BaseDownloader(BaseHoster):
 
                 self._check_download()
 
-            except Fail as exc:  # TODO: Move to PluginThread in 0.6.x
+            except Fail as exc:  # TODO: Move to DownloadThread in 0.6.x
                 self.log_warning(
                     self._("Premium download failed")
                     if self.premium
@@ -118,7 +121,7 @@ class BaseDownloader(BaseHoster):
                     self.restart(premium=False)
 
                 else:
-                    raise Fail(exc)
+                    raise
 
         finally:
             self._finalize()
@@ -160,14 +163,14 @@ class BaseDownloader(BaseHoster):
         if resumable is None:
             resumable = self.resume_download
 
-        if isinstance(redirect, int):
+        if type(redirect) == int:
             maxredirs = max(redirect, 1)
 
         elif redirect:
             maxredirs = (
-                int(self.config.get("maxredirs", plugin="UserAgentSwitcher"))
+                self.config.get("maxredirs", plugin="UserAgentSwitcher")
                 or maxredirs
-            )  # TODO: Remove `int` in 0.6.x
+            )
 
         header = self.load(url, just_header=True)
 
@@ -211,6 +214,13 @@ class BaseDownloader(BaseHoster):
 
             return resource
 
+    def _on_notification(self, notification):
+        if 'progress' in notification:
+            self.pyfile.set_progress(notification['progress'])
+
+        if 'disposition' in notification:
+            self.pyfile.set_name(notification['disposition'])
+
     def _download(
         self, url, filename, get, post, ref, cookies, disposition, resume, chunks
     ):
@@ -230,14 +240,15 @@ class BaseDownloader(BaseHoster):
             newname = self.req.http_download(
                 url,
                 filename,
-                get,
-                post,
-                ref,
-                cookies,
-                chunks,
-                resume,
-                self.pyfile.set_progress,
-                disposition,
+                size=self.pyfile.size,
+                get=get,
+                post=post,
+                ref=ref,
+                cookies=cookies,
+                chunks=chunks,
+                resume=resume,
+                status_notify=self._on_notification,
+                disposition=disposition,
             )
 
         except IOError as exc:
@@ -272,7 +283,6 @@ class BaseDownloader(BaseHoster):
         disposition=True,
         resume=None,
         chunks=None,
-        fixurl=True,
     ):
         """
         Downloads the content at url to download folder.
@@ -298,7 +308,7 @@ class BaseDownloader(BaseHoster):
                 ],
             )
 
-        dl_url = self.fixurl(url) if fixurl else url
+        dl_url = self.fixurl(url)
         dl_basename = parse.name(self.pyfile.name)
 
         self.pyfile.name = dl_basename
@@ -307,9 +317,11 @@ class BaseDownloader(BaseHoster):
 
         self.pyfile.set_status("downloading")
 
+        dl_url = self.fixurl(url)
+
         dl_folder = self.pyload.config.get("general", "storage_folder")
         dl_dirname = safejoin(dl_folder, self.pyfile.package().folder)
-        dl_filename = safejoin(dl_dirname, dl_basename)
+        dl_filename = safejoin(dl_dirname, self.pyfile.name)
 
         os.makedirs(dl_dirname, exist_ok=True)
         self.set_permissions(dl_dirname)
@@ -323,30 +335,9 @@ class BaseDownloader(BaseHoster):
             dl_url, dl_filename, get, post, ref, cookies, disposition, resume, chunks
         )
 
-        # TODO: Recheck in 0.6.x
         if disposition and newname:
-            safename = parse.name(newname.split(" filename*=")[0])
-
-            if safename != newname:
-                try:
-                    old_file = os.path.join(dl_dirname, newname)
-                    new_file = os.path.join(dl_dirname, safename)
-                    os.rename(old_file, new_file)
-
-                except OSError as exc:
-                    self.log_warning(
-                        self._("Error renaming `{}` to `{}`").format(newname, safename),
-                        exc,
-                    )
-                    safename = newname
-
-                self.log_info(
-                    self._("`{}` saved as `{}`").format(self.pyfile.name, safename)
-                )
-
-            self.pyfile.name = safename
-
-            dl_filename = os.path.join(dl_dirname, safename)
+            self.pyfile.name = newname
+            dl_filename = safejoin(dl_dirname, newname)
 
         self.set_permissions(dl_filename)
 
@@ -360,7 +351,7 @@ class BaseDownloader(BaseHoster):
         `last_check`
 
         :param rules: dict with names and rules to match (compiled regexp or strings)
-        :param delete: delete if matched
+        :param read_size: size to read and scan
         :return: dictionary key of the first rule that matched
         """
         dl_file = os.fsdecode(self.last_download)  # TODO: Recheck in 0.6.x
@@ -408,7 +399,7 @@ class BaseDownloader(BaseHoster):
 
     def out_of_traffic(self):
         if not self.account:
-            return
+            return False
 
         traffic = self.account.get_data("trafficleft")
 
@@ -419,12 +410,11 @@ class BaseDownloader(BaseHoster):
             return False
 
         else:
-            # TODO: Rewrite in 0.6.x
-            size = self.pyfile.size >> 10
+            size = self.pyfile.size
             self.log_info(
-                self._("Filesize: {} KiB").format(size),
-                self._("Traffic left for user `{}`: {} KiB").format(
-                    self.account.user, traffic
+                self._("Filesize: {}").format(format.size(size)),
+                self._("Traffic left for user `{}`: {}").format(
+                    self.account.user, format.size(traffic)
                 ),
             )
             return size > traffic

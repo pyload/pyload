@@ -6,11 +6,26 @@ import urllib.parse
 from ..convert import to_str
 from . import purge
 
-_RE_URL = re.compile(r"(?<!:)/{2,}")
+_RE_DOUBLE_SLASH = re.compile(r"(?<!:)/{2,}")
+_RE_UNICODE_ESCAPE = re.compile(r"\\[uU](\d{4})")
 
 
-def url(obj):
-    url = urllib.parse.unquote(to_str(obj).decode("unicode-escape"))
-    url = purge.text(url).lstrip(".").lower()
-    url = _RE_URL.sub("/", url).rstrip("/")
+def url(value):
+    url = urllib.parse.unquote(to_str(value))
+
+    #: Translate 'unicode-escape' escapes
+    url = re.sub(_RE_UNICODE_ESCAPE, lambda x: chr(int(x.group(1))), url)
+
+    #: Removes HTML tags and translate HTML escape characters
+    url = purge.text(url)
+
+    #: Decode RFC2047 email message header
+    url = purge.rfc2047(url)
+
+    #: Remove redundant '/'
+    url = _RE_DOUBLE_SLASH.sub("/", url)
+
+    #: Final cleanup
+    url = url.lstrip(".").rstrip("/")
+
     return url

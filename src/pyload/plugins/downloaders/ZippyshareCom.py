@@ -75,9 +75,9 @@ class ZippyshareCom(SimpleDownloader):
         #: Get all the scripts inside the html body
         soup = BeautifulSoup(self.data, 'html.parser')
         scripts = [
-            s.getText()
-            for s in soup.body.findAll("script", type="text/javascript")
-            if "('dlbutton').href =" in s.getText()
+            s.string
+            for s in soup.body.find_all("script", type="text/javascript")
+            if "('dlbutton').href =" in (s.string or "")
         ]
 
         #: Emulate a document in JS
@@ -98,7 +98,9 @@ class ZippyshareCom(SimpleDownloader):
         for m in re.findall(eltRE, " ".join(scripts)):
             JSid, JSattr = m[0], m[3]
             values = [
-                f for f in (elt.get(JSattr, None) for elt in soup.findAll(id=JSid)) if f
+                f
+                for f in (elt.get(JSattr, None) for elt in soup.find_all(id=JSid))
+                if f
             ]
             if values:
                 inits.append(

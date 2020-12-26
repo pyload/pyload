@@ -18,7 +18,7 @@ except ImportError:
 class ClickNLoad(BaseAddon):
     __name__ = "ClickNLoad"
     __type__ = "addon"
-    __version__ = "0.61"
+    __version__ = "0.62"
     __status__ = "testing"
 
     __config__ = [
@@ -39,18 +39,62 @@ class ClickNLoad(BaseAddon):
     def init(self):
         self.cnl_ip = "" if self.config.get("extern") else "127.0.0.1"
         self.cnl_port = self.config.get("port")
-        self.web_ip = (
-            "127.0.0.1"
-            if any(
-                ip == self.pyload.config.get("webui", "host") for ip in ("0.0.0.0", "")
-            )
-            else self.pyload.config.get("webui", "host")
-        )
-        self.web_port = self.pyload.config.get("webui", "port")
 
         self.server_running = False
         self.do_exit = False
         self.exit_done = threading.Event()
+        self.backend_found = threading.Event()
+
+        self.pyload.scheduler.add_job(5, self._find_backend, threaded=False)
+
+    @threaded
+    def _find_backend(self):
+        if self.pyload.config.get("webui", "enabled"):
+            web_host = self.pyload.config.get("webui", "host")
+            web_port = self.pyload.config.get("webui", "port")
+            try:
+                addrinfo = socket.getaddrinfo(
+                    web_host, web_port, socket.AF_UNSPEC,
+                    socket.SOCK_STREAM, 0, socket.AI_PASSIVE,
+                )
+            except socket.gaierror:
+                self.log_error(
+                    self._("Could not resolve backend server, ClickNLoad cannot start")
+                )
+                return
+
+            for addr in addrinfo:
+                test_socket = socket.socket(addr[0], socket.SOCK_STREAM)
+                test_socket.settimeout(1)
+
+                try:
+                    test_socket.connect(addr[4])
+
+                except socket.error:
+                    continue
+
+                test_socket.shutdown(socket.SHUT_WR)
+                self.web_addr = addr[4]
+                self.web_af = addr[0]
+
+                self.log_debug(
+                    self._("Backend found on {}:{}").format(
+                        self.web_addr[0], self.web_addr[1]
+                    )
+                )
+                self.backend_found.set()
+                break
+
+            else:
+                self.log_error(
+                    self._("Could not connect to backend server, ClickNLoad cannot start")
+                )
+
+    @threaded
+    def _activate(self):
+        self.backend_found.wait(20)
+        if self.backend_found.is_set():
+            self.proxy()
 
     def activate(self):
         if not self.pyload.config.get("webui", "enabled"):
@@ -59,7 +103,7 @@ class ClickNLoad(BaseAddon):
             )
             return
 
-        self.pyload.scheduler.add_job(5, self.proxy, threaded=False)
+        self._activate()
 
     def deactivate(self):
         if self.server_running:
@@ -115,12 +159,13 @@ class ClickNLoad(BaseAddon):
     def _server(self):
         try:
             self.exit_done.clear()
-            self.server_running = True
 
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as dock_socket:
                 dock_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
                 dock_socket.bind((self.cnl_ip, self.cnl_port))
                 dock_socket.listen(5)
+
+                self.server_running = True
 
                 while True:
                     client_socket, client_addr = dock_socket.accept()
@@ -130,7 +175,7 @@ class ClickNLoad(BaseAddon):
                         self.log_debug(f"Connection from {host}:{port}")
 
                         server_socket = socket.socket(
-                            socket.AF_INET, socket.SOCK_STREAM
+                            self.web_af, socket.SOCK_STREAM
                         )
 
                         if self.pyload.config.get("webui", "use_ssl"):
@@ -150,7 +195,7 @@ class ClickNLoad(BaseAddon):
                                 client_socket.close()
                                 continue
 
-                        server_socket.connect((self.web_ip, self.web_port))
+                        server_socket.connect(self.web_addr)
 
                         self.forward(
                             client_socket,

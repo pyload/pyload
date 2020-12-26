@@ -220,8 +220,9 @@ class ThreadManager:
         retrieve current ip.
         """
         services = [
-            (r"http://automation.whatismyip.com/n09230945.asp", r"(\S+)"),
+            ("http://icanhazip.com/", r"(\S+)"),
             ("http://checkip.dyndns.org/", r".*Current IP Address: (\S+)</body>.*"),
+            ("http://ifconfig.io/ip", r"(\S+)"),
         ]
 
         ip = ""
@@ -313,6 +314,7 @@ class ThreadManager:
         if job:
             try:
                 job.init_plugin()
+                job.set_status("starting")
             except Exception as exc:
                 self.pyload.log.critical(
                     exc, exc_info=True, stack_info=self.pyload.debug > 2

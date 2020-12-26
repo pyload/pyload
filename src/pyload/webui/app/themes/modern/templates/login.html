@@ -1,0 +1,44 @@
+{% extends theme('base.html') %}
+{% set no_status_polling = 1 %}
+{% block title %}{{_('Login')}} - {{super()}} {% endblock %}
+
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{{theme_static('css/login.css')}}" />
+{% endblock %}
+
+{% block content %}
+<div class="row">
+  <form action="" method="post" accept-charset="utf-8" id="login">
+    <input type="hidden" name="do" value="login"/>
+
+    <div class="login-logo">
+      <img alt="Pyload" src="{{theme_static('img/pyload-logo.png')}}">
+    </div>
+
+    {% if errors %}
+      <div class="col-sm-4 col-sm-offset-4">
+        <div class="alert alert-danger" style="padding:8px;">
+          <p class="align-middle">{{_('Incorrect username/email or password.')}}</p>
+        </div>
+      </div>
+    {% endif %}
+
+    <div class="col-sm-4 col-sm-offset-4">
+      <div class="form-group">
+        <label for="username">{{_('Username')}}</label>
+        <input type="text" class="form-control" id="username" size="20" name="username" autocomplete="off">
+      </div>
+      <div class="form-group">
+        <label for="password">{{_('Password')}}</label>
+        <input type="password" class="form-control reveal-pass" id="password" size="20" name="password" autocomplete="off">
+      </div>
+      <button type="submit" name="submit" value="Login" class="btn btn-primary">
+        <span class="glyphicon glyphicon-log-in"></span> {{_('SIGN IN')}}
+      </button>
+
+    </div>
+  </form>
+</div>
+<br>
+
+{% endblock %}

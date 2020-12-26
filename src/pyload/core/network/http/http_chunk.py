@@ -4,8 +4,14 @@ import codecs
 import os
 import re
 import time
+import urllib.parse
+from cgi import parse_header as parse_header_line
+from email.header import decode_header as parse_mime_header
+from ntpath import basename as ntpath_basename
+from posixpath import basename as posixpath_basename
 
 import pycurl
+from pyload.core.utils import purge
 
 from .http_request import HTTPRequest
 
@@ -132,7 +138,7 @@ class HTTPChunk(HTTPRequest):
 
         self.rep = None
 
-        self.sleep = 0.000
+        self.sleep = 0.0
         self.last_size = 0
 
     def __repr__(self):
@@ -143,7 +149,7 @@ class HTTPChunk(HTTPRequest):
         return self.p.cj
 
     def format_range(self):
-        if self.id == len(self.p.info.chunks) - 1:  # as last chunk don't set end range, so we get everything
+        if self.id == len(self.p.info.chunks) - 1:  #: as last chunk don't set end range, so we get everything
             end = ""
             if self.resume:
                 start = self.arrived + self.range[0]
@@ -151,7 +157,7 @@ class HTTPChunk(HTTPRequest):
                 start = self.range[0]
         else:
             end = min(self.range[1] + 1, self.p.size - 1)
-            if self.id == 0 and not self.resume:  # special case for first chunk
+            if self.id == 0 and not self.resume:  #: special case for first chunk
                 start = 0
             else:
                 start = self.arrived + self.range[0]
@@ -179,7 +185,7 @@ class HTTPChunk(HTTPRequest):
                 self.arrived = os.stat(fs_name).st_size
 
             if self.range:
-                # do nothing if chunk already finished
+                #: do nothing if chunk already finished
                 if self.arrived + self.range[0] >= self.range[1]:
                     return None
 
@@ -208,7 +214,7 @@ class HTTPChunk(HTTPRequest):
         # as first chunk, we will parse the headers
         if not self.range and self.header.endswith(b"\r\n\r\n"):
             self.parse_header()
-        # FTP file size parsing
+        #: FTP file size parsing
         elif not self.range and buf.startswith(b"150") and b"data connection" in buf:
             size = re.search(rb"(\d+) bytes", buf)
             if size:
@@ -218,7 +224,7 @@ class HTTPChunk(HTTPRequest):
         self.header_parsed = True
 
     def write_body(self, buf):
-        # ignore BOM, it confuses unrar
+        #: ignore BOM, it confuses unrar
         if not self.BOMChecked:
             if buf[:3] == codecs.BOM_UTF8:
                 buf = buf[3:]
@@ -254,16 +260,82 @@ class HTTPChunk(HTTPRequest):
         """
         parse data from recieved header.
         """
-        for orgline in self.decode_response(self.header).splitlines():
+        for orgline in self.header.splitlines():
+            try:
+                orgline = orgline.decode("iso-8859-1")
+            except UnicodeDecodeError:
+                continue
+
             line = orgline.strip().lower()
             if line.startswith("accept-ranges") and "bytes" in line:
                 self.p.chunk_support = True
 
-            if line.startswith("content-disposition") and "filename=" in line:
-                name = orgline.partition("filename=")[2]
-                name = name.replace('"', "").replace("'", "").replace(";", "").strip()
-                self.p.name_disposition = name
-                self.log.debug(f"Content-Disposition: {name}")
+            elif line.startswith("content-disposition"):
+                disposition_value = orgline.split(":", 1)[1].strip()
+                disposition_type, disposition_params = parse_header_line(disposition_value)
+
+                fname = None
+                if 'filename*' in disposition_params:
+                    fname = disposition_params['filename*']
+                    m = re.search(r'=\?([^?]+)\?([QB])\?([^?]*)\?=', fname, re.I)  #: rfc2047
+                    if m is not None:
+                        data, encoding = parse_mime_header(fname)[0]
+                        try:
+                            fname = data.decode(encoding)
+                        except LookupError:
+                            self.log.warning(f"Content-Disposition: | error: No decoder found for {encoding}")
+                            fname = None
+                        except UnicodeEncodeError:
+                            self.log.warning(f"Content-Disposition: | error: Error when decoding string from {encoding}")
+                            fname = None
+
+                    else:
+                        m = re.search(r'(.+?)\'(.*)\'(.+)', fname)
+                        if m is not None:
+                            encoding, lang, data = m.groups()
+                            try:
+                                fname = urllib.parse.unquote(data, encoding=encoding, errors="strict")
+                            except LookupError:
+                                self.log.warning(f"Content-Disposition: | error: No decoder found for {encoding}")
+                                fname = None
+                            except UnicodeDecodeError:
+                                self.log.warning(f"Content-Disposition: | error: Error when decoding string from {encoding}")
+                                fname = None
+
+                        else:
+                            fname = None
+
+                if fname is None:
+                    if 'filename' in disposition_params:
+                        fname = disposition_params['filename']
+                        m = re.search(r'=\?([^?]+)\?([QB])\?([^?]*)\?=', fname, re.I)  #: rfc2047
+                        if m is not None:
+                            data, encoding = parse_mime_header(m.group(0))[0]
+                            try:
+                                fname = data.decode(encoding)
+                            except LookupError:
+                                self.log.warning(f"Content-Disposition: | error: No decoder found for {encoding}")
+                                continue
+                            except UnicodeEncodeError:
+                                self.log.warning(f"Content-Disposition: | error: Error when decoding string from {encoding}")
+                                continue
+                        else:
+                            try:
+                                fname = urllib.parse.unquote(fname, encoding="iso-8859-1", errors="strict")
+                            except UnicodeDecodeError:
+                                self.log.warning("Content-Disposition: | error: Error when decoding string from iso-8859-1.")
+                                continue
+                    else:
+                        continue
+
+                #: Drop unsafe characters
+                fname = posixpath_basename(fname)
+                fname = ntpath_basename(fname)
+                fname = purge.name(fname, sep="")
+                fname = fname.lstrip('.')
+
+                self.log.debug(f"Content-Disposition: {fname}")
+                self.p.update_disposition(fname)
 
             if not self.resume and line.startswith("content-length"):
                 self.p.size = int(line.split(":")[1])

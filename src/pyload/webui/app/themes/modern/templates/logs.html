@@ -1,0 +1,44 @@
+{% extends theme('base.html') %}
+
+{% block title %}pyLoad - {{_('Logs')}}{% endblock %}
+{#{% block subtitle %}{{_('Logs')}}{% endblock %}#}
+
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{{theme_static('css/logs.css')}}" />
+{% endblock %}
+
+{% block content %}
+<div class="clear"></div>
+
+<div class="logpaginator"><a href="{{url_for('app.logs', start_line=1)}}"><span class="glyphicon glyphicon-fast-backward"></span></a> <a href="{{url_for('app.logs')}}/{{iprev}}"><span class="glyphicon glyphicon-step-backward"></span></a>  <a href="{{url_for('app.logs')}}/{{inext}}"><span class="glyphicon glyphicon-step-forward"></span></a> <a href="/logs"><span class="glyphicon glyphicon-fast-forward"></span></a></div>
+<div class="logperpage" style="float: right;">
+  <form id="logform1" action="" method="POST">
+    <label for="reversed">{{_('Reversed')}}:</label>
+    <input type="checkbox" name="reversed" id="reversed" onchange="this.form.submit();" {% if reversed %} checked="checked" {% endif %} />&nbsp;
+    <label for="perpage">{{_('Lines per page')}}:</label>&nbsp;
+    <select name="perpage" id ="perpage" style="width: auto; height: auto; padding: 0; border: 0; display:inline;" onchange="this.form.submit();">
+      {% for value in  perpage_p %}
+        <option value="{{value.0}}"{% if value.0 == perpage %} selected="selected" {% endif %}>{{value.1}}</option>
+      {% endfor %}
+    </select>
+  </form>
+</div>
+<div class="logwarn">{{warning}}</div>
+<div style="clear: both;"></div>
+<div class="logdiv">
+  <table class="logtable" cellpadding="0" cellspacing="0">
+  {% for line in log %}
+    <tr><td class="logline">{{line.line}}</td><td>{{line.date}}</td><td class="loglevel">{{line.level}}</td><td class="logsource">{{line.source}}</td><td>{{line.message|escape|nbsp|safe}}</td></tr>
+  {% endfor %}
+  </table>
+</div>
+<div class="logform">
+  <form id="logform2" action="" method="POST" style="width: auto">
+    <label for="from" style="display: inline-block; float: left; margin-right: 5px; height: 34px; line-height: 34px;">Jump to time:</label>
+    <input style="display: inline-block; text-align: center; float: left; width: 155px;" class="form-control" type="text" name="from" id="from" size="15" value="{{from}}"/>
+    <input style="display: inline-block; float: left; margin-left: 5px;" class="btn btn-primary" type="submit" value="{{_('Go')}}" />
+  </form>
+</div>
+<!--<div style="clear: both;"></div>-->
+
+{% endblock %}

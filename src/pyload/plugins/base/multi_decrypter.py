@@ -6,7 +6,7 @@ from .simple_decrypter import SimpleDecrypter
 class MultiDecrypter(SimpleDecrypter):
     __name__ = "MultiDecrypter"
     __type__ = "downloader"
-    __version__ = "0.10"
+    __version__ = "0.11"
     __status__ = "stable"
 
     __pattern__ = r"^unmatchable$"

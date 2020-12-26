@@ -83,17 +83,18 @@ class Browser:
             self.dl.abort = True
 
     def http_download(
-        self,
-        url,
-        filename,
-        get={},
-        post={},
-        ref=True,
-        cookies=True,
-        chunks=1,
-        resume=False,
-        progress_notify=None,
-        disposition=False,
+            self,
+            url,
+            filename,
+            size=0,
+            get={},
+            post={},
+            ref=True,
+            cookies=True,
+            chunks=1,
+            resume=False,
+            status_notify=None,
+            disposition=False,
     ):
         """
         this can also download ftp.
@@ -102,14 +103,15 @@ class Browser:
         self.dl = HTTPDownload(
             url,
             filename,
-            get,
-            post,
-            self.last_effective_url if ref else None,
-            self.cj if cookies else None,
-            self.bucket,
-            self.options,
-            progress_notify,
-            disposition,
+            size=size,
+            get=get,
+            post=post,
+            referer=self.last_effective_url if ref else None,
+            cj=self.cj if cookies else None,
+            bucket=self.bucket,
+            options=self.options,
+            status_notify=status_notify,
+            disposition=disposition,
         )
         name = self.dl.download(chunks, resume)
         self._size = self.dl.size

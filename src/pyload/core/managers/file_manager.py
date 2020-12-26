@@ -73,7 +73,7 @@ class FileManager:
     # ----------------------------------------------------------------------
     def sync_save(self):
         """
-        saves all data to backend and waits until all data are written.
+        saves all data to backend and waits until all the data is written.
         """
         pyfiles = self.cache.values()
         for pyfile in pyfiles:
@@ -439,7 +439,7 @@ class FileManager:
         """
         restart package.
         """
-        pyfiles = self.cache.values()
+        pyfiles = list(self.cache.values())
         for pyfile in pyfiles:
             if pyfile.packageid == id:
                 self.restart_file(pyfile.id)
@@ -623,8 +623,8 @@ class FileManager:
         """
         deletes finished links and packages, return deleted packages.
         """
-        old_packs = self.get_info_data(0)
-        old_packs.update(self.get_info_data(1))
+        old_packs = self.get_info_data(Destination.QUEUE)
+        old_packs.update(self.get_info_data(Destination.COLLECTOR))
 
         self.pyload.db.delete_finished()
 

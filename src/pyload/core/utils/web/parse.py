@@ -9,6 +9,8 @@ import urllib.parse
 # from ..check import isiterable
 
 from . import format, purge
+from ..purge import name as safe_nm
+
 
 # from .check import is_host, is_port
 # from .convert import host_to_ip, ip_to_host, splitaddress
@@ -104,7 +106,7 @@ from . import format, purge
 #     return mimetype or DEFAULT_MIMETYPE
 
 
-def name(url):
+def name(url, safe_name=True):
     url = format.url(url)
     up = urllib.parse.urlparse(url)
     name = up.path.split("/")[-1]
@@ -112,7 +114,8 @@ def name(url):
         name = up.query.split("=", 1)[::-1][0].split("&", 1)[0]
     if not name:
         name = up.netloc.split(".", 1)[0]
-    return name.strip()
+
+    return safe_nm(name) if safe_name else name
 
 
 # TODO: Recheck in 0.5.x

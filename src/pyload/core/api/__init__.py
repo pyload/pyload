@@ -42,7 +42,7 @@ def permission(bits):
 
 
 urlmatcher = re.compile(
-    r"((?:(?:https?|ftps?|xdcc|sftp|magnet):(?://|\\\\)+[\w\-._~:/?#\[\]@!$&'()*+,;=]*))",
+    r"(?:(?:https?|ftps?|xdcc|sftp):(?://|\\\\)+[\w\-._~:/?#\[\]@!$&'()*+,;=]*)|magnet:\?.+",
     re.IGNORECASE,
 )
 
@@ -151,13 +151,13 @@ class Api:
         :param category: name of category, or plugin
         :param option: config option
         :param section: 'plugin' or 'core'
-        :return: config value as string
+        :return: config value
         """
         if section == "core":
             value = self.pyload.config[category][option]
         else:
             value = self.pyload.config.get_plugin(category, option)
-        return str(value)
+        return value
 
     @legacy("setConfigValue")
     @permission(Perms.SETTINGS)
@@ -421,6 +421,7 @@ class Api:
 
         folder = (
             folder.replace("http://", "")
+            .replace("https://", "")
             .replace(":", "")
             .replace("/", "_")
             .replace("\\", "_")
@@ -453,11 +454,11 @@ class Api:
         urls = []
 
         if html:
-            urls += [x[0] for x in urlmatcher.findall(html)]
+            urls += urlmatcher.findall(html)
 
         if url:
             page = get_url(url)
-            urls += [x[0] for x in urlmatcher.findall(page)]
+            urls += urlmatcher.findall(page)
 
         # remove duplicates
         return self.check_urls(set(urls))
@@ -1389,6 +1390,18 @@ class Api:
         :return: dict of attr names mapped to value {"name": value}
         """
         return self.pyload.addon_manager.get_info(plugin)
+
+    def add_user(self, user, newpw, role=0, perms=0):
+        """
+        creates new user login.
+        """
+        return self.pyload.db.add_user(user, newpw, role, perms)
+
+    def remove_user(self, user):
+        """
+        deletes a user login.
+        """
+        return self.pyload.db.remove_user(user)
 
     @legacy("changePassword")
     def change_password(self, user, oldpw, newpw):

@@ -1,5 +1,7 @@
 {% extends theme('base.html') %}
 
+{% block title %}pyLoad - {{_('Information')}}{% endblock %}
+
 {% block head %}
 <link rel="stylesheet" type="text/css" href="{{theme_static('css/info.css')}}" />
 {% endblock %}
@@ -65,7 +67,7 @@
   <dt class="col-xs-12 col-sm-3"><b>{{_('Port:')}}</b></dt>
   <dd class="col-xs-12 col-sm-9">{{webif}}</dd>
   <dt class="col-xs-12 col-sm-3"><b>{{_('Theme:')}}</b></dt>
-  <dd class="col-xs-12 col-sm-9"><b>PyPlex</b> (by <a href="https://github.com/GammaC0de" target="_blank">GammaC0de</a> based on work of <a href="https://github.com/xunil75" target="_blank">Marco Fernandes</a> and Dogan Bagci)</dd>
+  <dd class="col-xs-12 col-sm-9"><b>pyplex</b> (by <a href="https://github.com/GammaC0de" target="_blank">GammaC0de</a> based on work of <a href="https://github.com/xunil75" target="_blank">Marco Fernandes</a> and Dogan Bagci)</dd>
 </dl>
 {% endblock %}
 
