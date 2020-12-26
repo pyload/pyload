@@ -295,7 +295,8 @@ def add_account():
 @login_required("ACCOUNTS")
 # @fresh_login_required
 def update_accounts():
-    deleted = []  #: dont update deleted accs or they will be created again
+    deleted = []  #: dont update deleted accounts or they will be created again
+    updated = {}
     api = flask.current_app.config["PYLOAD_API"]
 
     for name, value in flask.request.form.items():
@@ -306,18 +307,29 @@ def update_accounts():
         tmp, user = name.split(";")
         plugin, action = tmp.split("|")
 
-        if (plugin, user) in deleted:
-            continue
-
-        if action == "password":
-            api.update_account(plugin, user, value)
-        elif action == "time" and "-" in value:
-            api.update_account(plugin, user, options={"time": [value]})
-        elif action == "limitdl" and value.isdigit():
-            api.update_account(plugin, user, options={"limit_dl": [value]})
-        elif action == "delete":
-            deleted.append((plugin, user))
+        if action == "delete":
+            deleted.append((plugin,user, ))
             api.remove_account(plugin, user)
+
+        elif action == "password":
+            password, options = updated.get((plugin, user,), (None, {}))
+            password = value
+            updated[(plugin, user,)] = (password, options)
+        elif action == "time" and "-" in value:
+            password, options = updated.get((plugin, user,), (None, {}))
+            options["time"] = [value]
+            updated[(plugin, user,)] = (password, options)
+        elif action == "limitdl" and value.isdigit():
+            password, options = updated.get((plugin, user,), (None, {}))
+            options["limit_dl"] = [value]
+            updated[(plugin, user,)] = (password, options)
+
+    for tmp, options in updated.items():
+        plugin, user = tmp
+        if (plugin, user,) in deleted:
+            continue
+        password, options = options
+        api.update_account(plugin, user, password, options=options)
 
     return jsonify(True)
 

@@ -13,7 +13,7 @@ from .downloader import BaseDownloader
 class SimpleDownloader(BaseDownloader):
     __name__ = "SimpleDownloader"
     __type__ = "downloader"
-    __version__ = "2.31"
+    __version__ = "2.32"
     __status__ = "stable"
 
     __pattern__ = r"^unmatchable$"
@@ -297,15 +297,12 @@ class SimpleDownloader(BaseDownloader):
                     self.check_status()
                     self.check_duplicates()
 
-                if self.premium and (
-                    not self.CHECK_TRAFFIC or not self.out_of_traffic()
-                ):
+                out_of_traffic = self.CHECK_TRAFFIC and self.out_of_traffic()
+                if self.premium and not out_of_traffic:
                     self.log_info(self._("Processing as premium download..."))
                     self.handle_premium(pyfile)
 
-                elif not self.LOGIN_ACCOUNT or (
-                    not self.CHECK_TRAFFIC or not self.out_of_traffic()
-                ):
+                elif not self.LOGIN_ACCOUNT or not out_of_traffic:
                     self.log_info(self._("Processing as free download..."))
                     self.handle_free(pyfile)
 
@@ -340,12 +337,18 @@ class SimpleDownloader(BaseDownloader):
             if self.CHECK_FILE:
                 self.log_info(self._("Checking file (with custom rules)..."))
 
-                with open(os.fsdecode(self.last_download), mode="rb") as fp:
-                    self.data = fp.read(1_048_576)  # TODO: Recheck in 0.6.x
+                try:
+                    with open(os.fsdecode(self.last_download), mode="r", encoding='utf-8') as fp:
+                        self.data = fp.read(1_048_576)  # TODO: Recheck in 0.6.x
+
+                except UnicodeDecodeError:
+                    with open(os.fsdecode(self.last_download), mode="r", encoding='iso-8859-1') as fp:
+                        self.data = fp.read(1_048_576)  # TODO: Recheck in 0.6.x
 
                 self.check_errors()
 
-        self.log_info(self._("No errors found"))
+            else:
+                self.log_info(self._("No errors found"))
 
     def check_errors(self):
         self.log_info(self._("Checking for link errors..."))

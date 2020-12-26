@@ -47,11 +47,15 @@ class AccountManager:
         """
         if plugin in self.accounts:
             if plugin not in self.plugins:
-                self.plugins[plugin] = self.pyload.plugin_manager.load_class(
-                    "account", plugin
-                )(self, self.accounts[plugin])
+                klass = self.pyload.plugin_manager.load_class("account", plugin)
+                if klass:
+                    self.plugins[plugin] = klass(self, self.accounts[plugin])
+
+                else:
+                    return None
 
             return self.plugins[plugin]
+
         else:
             return None
 
@@ -191,12 +195,17 @@ class AccountManager:
             )
             force = False
 
-        for p in self.accounts.keys():
-            if self.accounts[p]:
-                p = self.get_account_plugin(p)
-                data[p.__name__] = p.get_all_accounts(force)
+        for acc in self.accounts.keys():
+            if self.accounts[acc]:
+                plugin = self.get_account_plugin(acc)
+                if plugin:
+                    data[plugin.__name__] = plugin.get_all_accounts(force)
+                else:
+                    self.pyload.log.error(self._("Bad or missing plugin: ACCOUNT {}").format(acc))
+                    data[acc] = []
+
             else:
-                data[p] = []
+                data[acc] = []
         e = AccountUpdateEvent()
         self.pyload.event_manager.add_event(e)
         return data

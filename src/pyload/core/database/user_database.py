@@ -1,17 +1,26 @@
 # -*- coding: utf-8 -*-
 
 import hashlib
-import random
-
-from functools import reduce
+import os
 
 from ..utils.struct.style import style
 
 
 # TODO: rewrite using scrypt or argon2_cffi
 def _salted_password(password, salt):
-    dk = hashlib.pbkdf2_hmac("sha256", password.encode(), salt.encode(), 100000)
-    return dk.hex()
+    dk = hashlib.pbkdf2_hmac("sha256", password.encode(), bytes.fromhex(salt), 100000)
+    return salt + dk.hex()
+
+
+def _gensalt():
+    return os.urandom(16).hex()
+
+
+def _check_password(hashed, clear):
+    salt = hashed[:32]
+    to_compare = _salted_password(clear, salt)
+
+    return hashed == to_compare
 
 
 class UserDatabaseMethods:
@@ -25,11 +34,8 @@ class UserDatabaseMethods:
         if not r:
             return {}
 
-        stored_salt = r[2][:5]
-        stored_pw = r[2][5:]
-
-        pw = _salted_password(password, stored_salt)
-        if pw != stored_pw:
+        stored_password = r[2]
+        if not _check_password(stored_password, password):
             return {}
 
         return {
@@ -43,21 +49,22 @@ class UserDatabaseMethods:
 
     @style.queue
     def add_user(self, user, password, role=0, perms=0, reset=False):
-        salt = reduce(lambda x, y: x + y, [str(random.randint(0, 9)) for i in range(5)])
-        salt_pw = salt + _salted_password(password, salt)
+        salt_pw = _salted_password(password, _gensalt())
 
         self.c.execute("SELECT name FROM users WHERE name=?", (user,))
         if self.c.fetchone() is not None:
             if reset:
-                self.c.execute("UPDATE users SET password=?, role=?, permission=? WHERE name=?",
-                               (salt_pw, role, perms, user))
+                self.c.execute(
+                    "UPDATE users SET password=?, role=?, permission=? WHERE name=?",
+                    (salt_pw, role, perms, user),
+                )
                 return True
             else:
                 return False
         else:
             self.c.execute(
                 "INSERT INTO users (name, password, role, permission) VALUES (?, ?, ?, ?)",
-                (user, salt_pw, role, perms)
+                (user, salt_pw, role, perms),
             )
             return True
 
@@ -68,17 +75,11 @@ class UserDatabaseMethods:
         if not r:
             return False
 
-        stored_salt = r[2][:5]
-        stored_pw = r[2][5:]
-
-        oldpw = _salted_password(old_password, stored_salt)
-        if oldpw != stored_pw:
+        stored_password = r[2]
+        if not _check_password(stored_password, old_password):
             return False
 
-        new_salt = reduce(
-            lambda x, y: x + y, [str(random.randint(0, 9)) for i in range(5)]
-        )
-        newpw = new_salt + _salted_password(new_password, new_salt)
+        newpw = _salted_password(new_password, _gensalt())
 
         self.c.execute("UPDATE users SET password=? WHERE name=?", (newpw, user))
         return True
