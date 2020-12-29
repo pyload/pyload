@@ -96,7 +96,7 @@ class Api:
     This is accessible either internal via core.api or via thrift backend.
 
     see Thrift specification file remote/thriftbackend/pyload.thrift\
-    for information about data structures and what methods are usuable with rpc.
+    for information about data structures and what methods are usable with rpc.
 
     Most methods requires specific permissions, please look at the source code if you need to know.\
     These can be configured via webinterface.
