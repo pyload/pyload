@@ -66,7 +66,7 @@ class MultiUpOrg(SimpleDecrypter):
         for a in re.findall(
             r'<button (.+?) class="host btn btn-md btn-default btn-block btn-3d hvr-bounce-to-right">', self.data, re.M
         ):
-            validity = re.search(r"validity=(\w+)", a).group(1)
+            validity = re.search(r'validity="(\w+)"', a).group(1)
             if validity in ("valid", "unknown"):
                 host = re.search(r'nameHost="(.+?)"', a).group(1)
                 url = re.search(r'link="(.+?)"', a).group(1)
