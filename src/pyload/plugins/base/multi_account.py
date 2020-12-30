@@ -171,7 +171,7 @@ class MultiAccount(BaseAccount):
         excluded = []
         self.supported = []
 
-        if self.plugintype == "hoster":
+        if self.plugintype == "downloader":
             plugin_map = {
                 name.lower(): name
                 for name in self.pyload.plugin_manager.hoster_plugins.keys()
@@ -235,7 +235,7 @@ class MultiAccount(BaseAccount):
         if new_supported:
             plugins = sorted(new_supported)
 
-            self.log_debug(f"New {self.plugintype}: {', '.join(plugins)}")
+            self.log_debug(f"New {self.plugintype}s: {', '.join(plugins)}")
 
             #: Create new regexp
             domains = "|".join(x.replace(".", r"\.") for x in plugins)
@@ -397,7 +397,7 @@ class MultiAccount(BaseAccount):
 
                 return
 
-        #: Make sure we have one active addon
+        #: Make sure we have one active event
         try:
             self.pyload.addon_manager.remove_event(
                 "plugin_updated", self.plugins_updated

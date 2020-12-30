@@ -195,17 +195,17 @@ class AccountManager:
             )
             force = False
 
-        for k in self.accounts.keys():
-            if self.accounts[k]:
-                p = self.get_account_plugin(p)
-                if p:
-                    data[p.__name__] = p.get_all_accounts(force)
+        for acc in self.accounts.keys():
+            if self.accounts[acc]:
+                plugin = self.get_account_plugin(acc)
+                if plugin:
+                    data[plugin.__name__] = plugin.get_all_accounts(force)
                 else:
-                    self.pyload.log.error(self._("Bad or missing plugin: ACCOUNT {}").format(k))
-                    data[k] = []
+                    self.pyload.log.error(self._("Bad or missing plugin: ACCOUNT {}").format(acc))
+                    data[acc] = []
 
             else:
-                data[k] = []
+                data[acc] = []
         e = AccountUpdateEvent()
         self.pyload.event_manager.add_event(e)
         return data

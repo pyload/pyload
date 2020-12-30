@@ -453,7 +453,7 @@ def set_cookies(cj, cookies):
 
 
 def parse_html_header(header):
-    header = to_str(header)
+    header = to_str(header, encoding="iso-8859-1")
 
     hdict = {}
     _re = r"[ ]*(?P<key>.+?)[ ]*:[ ]*(?P<value>.+?)[ ]*\r?\n"
@@ -461,11 +461,11 @@ def parse_html_header(header):
     for key, value in re.findall(_re, header):
         key = key.lower()
         if key in hdict:
-            header_key = hdict.get(key)
-            if isinstance(header_key, list):
-                header_key.append(value)
+            current_value = hdict.get(key)
+            if isinstance(current_value, list):
+                current_value.append(value)
             else:
-                hdict[key] = [header_key, value]
+                hdict[key] = [current_value, value]
         else:
             hdict[key] = value
 
