@@ -18,7 +18,7 @@ from base64 import b85decode, b85encode
 from collections.abc import Sequence
 from datetime import timedelta
 
-from ..core.utils.convert import to_str
+from ..core.utils.convert import to_bytes, to_str
 
 
 class Config:
@@ -194,6 +194,8 @@ def sign_string(message, pem_private, pem_passphrase="", sign_algo="SHA384"):
 
     if sign_algo not in ("MD5", "SHA1", "SHA256", "SHA384", "SHA512"):
         raise ValueError("Unsupported Signing algorithm")
+
+    message = to_bytes(message)
 
     priv_key = RSA.import_key(pem_private, passphrase=pem_passphrase)
     signer = PKCS1_v1_5.new(priv_key)
