@@ -5,7 +5,10 @@ import os
 import re
 import urllib.parse
 
-from PIL import Image, ImageDraw, ImageFont
+try:
+    from PIL import Image, ImageDraw, ImageFont
+except ImportError:
+    pass
 
 from ..base.captcha_service import CaptchaService
 
@@ -13,7 +16,7 @@ from ..base.captcha_service import CaptchaService
 class ReCaptcha(CaptchaService):
     __name__ = "ReCaptcha"
     __type__ = "anticaptcha"
-    __version__ = '0.43'
+    __version__ = '0.44'
     __status__ = "testing"
 
     __description__ = "ReCaptcha captcha service plugin"
@@ -26,7 +29,7 @@ class ReCaptcha(CaptchaService):
     ]
 
     KEY_V2_PATTERN = r'(?:data-sitekey=["\']|["\']sitekey["\']\s*:\s*["\'])((?:[\w\-]|%[0-9a-fA-F]{2})+)'
-
+    KEY_FORMAT_V2_PATTERN = r'^6L[\w-]{6}AAAAA[\w-]{27}$'
     STOKEN_V2_PATTERN = r'data-stoken=["\']([\w\-]+)'
 
     RECAPTCHA_INTERACTIVE_SIG = "7b99386315b3e035285946b842049575fc69a88ccc219e1bc96a9afd0f3c4b7456f09d36bf3dc530" + \
@@ -95,12 +98,18 @@ class ReCaptcha(CaptchaService):
 
         m = re.search(self.KEY_V2_PATTERN, html)
         if m is not None:
-            self.key = urllib.parse.unquote(m.group(1).strip())
-            self.log_debug(f"Key: {self.key}")
-            return self.key
-        else:
-            self.log_warning(self._("Key pattern not found"))
-            return None
+            key = urllib.parse.unquote(m.group(1).strip())
+            m = re.search(self.KEY_FORMAT_V2_PATTERN, key)
+            if m is not None:
+                self.key = key
+                self.log_debug(f"Key: {self.key}")
+                return self.key
+
+            else:
+                self.log_debug(key, "Wrong key format, this probably because is is not a reCAPTCHA key")
+
+        self.log_warning(self._("Key pattern not found"))
+        return None
 
     def detect_secure_token(self, data=None):
         html = data or self.retrieve_data()
@@ -148,63 +157,6 @@ class ReCaptcha(CaptchaService):
                 version=self.detect_version(data=data),
                 secure_token=secure_token,
             )
-
-    def _challenge_v1(self, key, secure_token=None):
-        html = self.pyfile.plugin.load(
-            "http://www.google.com/recaptcha/api/challenge", get={"k": key}
-        )
-        try:
-            challenge = re.search("challenge : '(.+?)',", html).group(1)
-            server = re.search("server : '(.+?)',", html).group(1)
-
-        except (AttributeError, IndexError):
-            self.fail(self._("reCAPTCHA challenge pattern not found"))
-
-        self.log_debug(f"Challenge: {challenge}")
-
-        return self.result(server, challenge, key)
-
-    def result(self, server, challenge, key):
-        self.pyfile.plugin.load("http://www.google.com/recaptcha/api/js/recaptcha.js")
-        html = self.pyfile.plugin.load(
-            "http://www.google.com/recaptcha/api/reload",
-            get={"c": challenge, "k": key, "reason": "i", "type": "image"},
-        )
-
-        try:
-            challenge = re.search(r"\(\'(.+?)\',", html).group(1)
-
-        except (AttributeError, IndexError):
-            self.fail(self._("reCAPTCHA second challenge pattern not found"))
-
-        self.log_debug(f"Second challenge: {challenge}")
-        result = self.decrypt(
-            urllib.parse.urljoin(server, "image"),
-            get={"c": challenge},
-            cookies=True,
-            input_type="jpg",
-        )
-
-        return result, challenge
-
-    def _collect_api_info(self):
-        html = self.pyfile.plugin.load("http://www.google.com/recaptcha/api.js")
-        a = re.search(r"po.src = \'(.*?)\';", html).group(1)
-        vers = a.split("/")[5]
-
-        self.log_debug(f"API version: {vers}")
-
-        language = a.split("__")[1].split(".")[0]
-
-        self.log_debug(f"API language: {language}")
-
-        html = self.pyfile.plugin.load("https://apis.google.com/js/api.js")
-        b = re.search(r'"h":"(.*?)","', html).group(1)
-        jsh = b.decode("unicode-escape")
-
-        self.log_debug(f"API jsh-string: {jsh}")
-
-        return vers, language, jsh
 
     def _prepare_image(self, image, challenge_msg):
         dummy_text = "pk"
@@ -287,7 +239,7 @@ class ReCaptcha(CaptchaService):
                     _eol = challenge_msg.rfind(" ", 0, _eol)
                     if _eol > 0:
                         challenge_msg = (
-                            challenge_msg[:_eol] + "\n" + challenge_msg[_eol + 1 :]
+                            challenge_msg[:_eol] + "\n" + challenge_msg[_eol + 1:]
                         )
                         _sol = _eol + 1
                 else:
@@ -436,21 +388,20 @@ class ReCaptcha(CaptchaService):
         return result, result
 
 
-# if __name__ == "__main__":
-#     # Sign with the command `python -m pyload.plugins.captcha.ReCaptcha
-#     # pyload.private.pem pem_passphrase`
-#     import sys
-#     from ..helpers import sign_string
+if __name__ == "__main__":
+    # Sign with the command `python -m pyload.plugins.anticaptchas.ReCaptcha pyload.private.pem pem_passphrase`
+    import sys
+    from ..helpers import sign_string
 
-#     if len(sys.argv) > 2:
-#         with open(sys.argv[1]) as fp:
-#             pem_private = fp.read()
+    if len(sys.argv) > 2:
+        with open(sys.argv[1]) as fp:
+            pem_private = fp.read()
 
-#         print(
-#             sign_string(
-#                 ReCaptcha.RECAPTCHA_INTERACTIVE_JS,
-#                 pem_private,
-#                 pem_passphrase=sys.argv[2],
-#                 sign_algo="SHA384",
-#             )
-#         )
+        print(
+            sign_string(
+                ReCaptcha.RECAPTCHA_INTERACTIVE_JS,
+                pem_private,
+                pem_passphrase=sys.argv[2],
+                sign_algo="SHA384",
+            )
+        )
