@@ -297,7 +297,7 @@ class Hoster(Base):
                 os.makedirs(dl_dir)
 
             except Exception, e:
-                self.fail(str(e))
+                self.fail(e.args[0])
 
         self.set_permissions(dl_dir)
 
