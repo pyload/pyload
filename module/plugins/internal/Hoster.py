@@ -33,7 +33,7 @@ if not hasattr(__builtin__.property, "setter"):
 class Hoster(Base):
     __name__ = "Hoster"
     __type__ = "hoster"
-    __version__ = "0.80"
+    __version__ = "0.81"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -297,7 +297,7 @@ class Hoster(Base):
                 os.makedirs(dl_dir)
 
             except Exception, e:
-                self.fail(e.message)
+                self.fail(e.args[0])
 
         self.set_permissions(dl_dir)
 
