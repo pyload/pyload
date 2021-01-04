@@ -343,7 +343,7 @@ class HTTPRequest:
         retrieve response from bytes io.
         """
         if self.rep is None:
-            return ""
+            return b""
         else:
             return self.rep.getvalue()
 

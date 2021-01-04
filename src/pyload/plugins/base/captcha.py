@@ -34,7 +34,7 @@ class BaseCaptcha(BasePlugin):
         """
         Extend to build your custom anti-captcha ocr.
         """
-        raise NotImplementedError
+        pass
 
     def decrypt(
         self,
