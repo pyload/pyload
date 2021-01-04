@@ -1,0 +1,21 @@
+option:checked,
+option:focus {
+  background: #0078D7 linear-gradient(0deg, #0078D7 0%, #0078D7 100%);
+}
+optgroup,
+select,
+textarea {
+    font-size: 11px;
+}
+select:focus {
+  border: none !important;
+  outline: none;
+}
+select.disabled,
+select[disabled] {
+    background-color: #eee;
+    color: #555;
+}
+.modal-dialog {
+    margin-top: 10px;
+}

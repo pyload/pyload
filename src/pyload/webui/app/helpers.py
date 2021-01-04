@@ -26,10 +26,11 @@ def is_safe_url(location):
 
 
 def get_redirect_url(fallback=None):
+    login_url = urljoin(flask.request.url_root, flask.url_for('app.login'))
     for location in flask.request.values.get("next"), flask.request.referrer:
         if not location:
             continue
-        if location == flask.request.url:  # don't redirect to same location
+        if location in (flask.request.url, login_url):  # don't redirect to same location
             continue
         if is_safe_url(location):
             return location
@@ -62,7 +63,7 @@ def static_file_url(filename):
 
 
 def theme_template(filename):
-    return f"render/{filename}"
+    return flask.url_for("app.render", filename=filename)
 
 
 #: tries to render the template of the current theme otherwise fallback to builtin template
@@ -113,7 +114,7 @@ def set_permission(perms):
     :param perms: dict
     """
     permission = 0
-    for name in Perms:
+    for name in permlist():
         if name.startswith("_"):
             continue
 
@@ -185,8 +186,9 @@ def login_required(perm):
 
             else:
                 location = flask.url_for(
-                    "app.login"
-                )  # flask.url_for("app.login", next=flask.request.url)
+                    "app.login",
+                    next=flask.request.url
+                )
                 response = flask.redirect(location)
 
             return response

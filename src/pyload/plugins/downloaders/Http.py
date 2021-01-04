@@ -70,11 +70,11 @@ class Http(BaseDownloader):
         errmsg = self.scan_download(
             {
                 "Html error": re.compile(
-                    r"\A(?:\s*<.+>)?((?:[\w\s]*(?:[Ee]rror|ERROR)\s*\:?)?\s*\d{3})(?:\Z|\s+)"
+                    rb"\A(?:\s*<.+>)?((?:[\w\s]*(?:[Ee]rror|ERROR)\s*\:?)?\s*\d{3})(?:\Z|\s+)"
                 ),
-                "Html file": re.compile(r"\A\s*<!DOCTYPE html"),
+                "Html file": re.compile(rb"\A\s*<!DOCTYPE html"),
                 "Request error": re.compile(
-                    r"([Aa]n error occured while processing your request)"
+                    rb"([Aa]n error occured while processing your request)"
                 ),
             }
         )

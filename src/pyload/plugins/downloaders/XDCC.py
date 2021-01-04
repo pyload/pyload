@@ -11,6 +11,7 @@ import time
 
 from pyload.core.network.exceptions import Abort
 from pyload.core.utils.old import lock
+from pyload.core.utils.convert import to_bytes
 
 from ..base.addon import threaded
 from ..base.downloader import BaseDownloader
@@ -97,13 +98,13 @@ class IRC:
 
         self.plugin.log_info(self._("Connecting to: {}:{}").format(host, port))
 
-        self.irc_sock.setTimeout(30)
+        self.irc_sock.settimeout(30)
         self.irc_sock.connect((host, port))
-        self.irc_sock.setTimeout(None)
+        self.irc_sock.settimeout(None)
 
-        self.irc_sock.send("NICK {}\r\n".format(self.nick))
+        self.irc_sock.send(to_bytes("NICK {}\r\n".format(self.nick)))
         self.irc_sock.send(
-            "USER {} {} bla :{}\r\n".format(self.ident, host, self.realname)
+            to_bytes("USER {} {} bla :{}\r\n".format(self.ident, host, self.realname))
         )
 
         start_time = time.time()
@@ -136,7 +137,7 @@ class IRC:
             self.plugin.log_info(
                 self._("Diconnecting from {}:{}").format(self.host, self.port)
             )
-            self.irc_sock.send("QUIT :byebye\r\n")
+            self.irc_sock.send(b"QUIT :byebye\r\n")
             self.plugin.log_debug("Disconnected")
             self.connected = False
 
@@ -156,7 +157,7 @@ class IRC:
 
             if command == "PING":
                 self.plugin.log_debug(f"[{args[0]}] Ping? Pong!")
-                self.irc_sock.send("PONG :{}\r\n".format(args[0]))
+                self.irc_sock.send(to_bytes("PONG :{}\r\n".format(args[0])))
 
             elif origin and command == "PRIVMSG":
                 sender_nick = origin.split("@")[0].split("!")[0]
@@ -174,8 +175,8 @@ class IRC:
                                 self._("[{}] CTCP VERSION").format(sender_nick)
                             )
                             self.irc_sock.send(
-                                "NOTICE {} :\x01VERSION {}\x01\r\n".format(
-                                    sender_nick, "pyLoad! IRC Interface"
+                                to_bytes("NOTICE {} :\x01VERSION {}\x01\r\n".format(
+                                    sender_nick, "pyLoad! IRC Interface")
                                 )
                             )
 
@@ -184,8 +185,8 @@ class IRC:
                                 self._("[{}] CTCP TIME").format(sender_nick)
                             )
                             self.irc_sock.send(
-                                "NOTICE {} :\x01{}\x01\r\n".format(
-                                    sender_nick, time.strftime("%a %b %d %H:%M:%S %Y")
+                                 to_bytes("NOTICE {} :\x01{}\x01\r\n".format(
+                                    sender_nick, time.strftime("%a %b %d %H:%M:%S %Y"))
                                 )
                             )
 
@@ -194,8 +195,8 @@ class IRC:
                                 self._("[{}] Ping? Pong!").format(sender_nick)
                             )
                             self.irc_sock.send(
-                                "NOTICE {} :\x01PING {}\x01\r\n".format(
-                                    sender_nick, ctcp_args
+                                to_bytes("NOTICE {} :\x01PING {}\x01\r\n".format(
+                                    sender_nick, ctcp_args)
                                 )
                             )  # NOTE: PING is not a typo
 
@@ -215,7 +216,7 @@ class IRC:
         chan = "#" + chan if chan[0] != "#" else chan
 
         self.plugin.log_info(self._("Joining channel {}").format(chan))
-        self.irc_sock.send("JOIN {}\r\n".format(chan))
+        self.irc_sock.send(to_bytes("JOIN {}\r\n".format(chan)))
 
         start_time = time.time()
         while time.time() - start_time < 30:
@@ -252,7 +253,7 @@ class IRC:
             )
             return
 
-        self.irc_sock.send("PRIVMSG {} :identify {}\r\n".format(bot, password))
+        self.irc_sock.send(to_bytes("PRIVMSG {} :identify {}\r\n".format(bot, password)))
 
         start_time = time.time()
         while time.time() - start_time < 30:
@@ -296,7 +297,7 @@ class IRC:
             return
 
         self.irc_sock.send(
-            "PRIVMSG {} :enter #{} {} {}\r\n".format(bot, chan, self.nick, password)
+            to_bytes("PRIVMSG {} :enter #{} {} {}\r\n".format(bot, chan, self.nick, password))
         )
         start_time = time.time()
         while time.time() - start_time < 30:
@@ -338,7 +339,7 @@ class IRC:
     @lock
     def is_bot_online(self, bot):
         self.plugin.log_info(self._("Checking if bot '{}' is online").format(bot))
-        self.irc_sock.send("WHOIS {}\r\n".format(bot))
+        self.irc_sock.send(to_bytes("WHOIS {}\r\n".format(bot)))
 
         start_time = time.time()
         while time.time() - start_time < 30:
@@ -385,14 +386,14 @@ class IRC:
     def xdcc_request_pack(self, bot, pack):
         self.plugin.log_info(self._("Requesting pack #{}").format(pack))
         self.xdcc_request_time = time.time()
-        self.irc_sock.send("PRIVMSG {} :xdcc send #{}\r\n".format(bot, pack))
+        self.irc_sock.send(to_bytes("PRIVMSG {} :xdcc send #{}\r\n".format(bot, pack)))
 
     @lock
     def xdcc_cancel_pack(self, bot):
         if self.xdcc_request_time:
             self.plugin.log_info(self._("Requesting XDCC cancellation"))
             self.xdcc_request_time = None
-            self.irc_sock.send("PRIVMSG {} :xdcc cancel\r\n".format(bot))
+            self.irc_sock.send(to_bytes("PRIVMSG {} :xdcc cancel\r\n".format(bot)))
 
         else:
             self.plugin.log_warning(self._("No XDCC request pending, cannot cancel"))
@@ -409,8 +410,8 @@ class IRC:
             )
 
             self.irc_sock.send(
-                'PRIVMSG {} :\x01DCC RESUME "{}" {} {}\x01\r\n'.format(
-                    bot, os.fsdecode(file_name), dcc_port, resume_position
+                to_bytes('PRIVMSG {} :\x01DCC RESUME "{}" {} {}\x01\r\n'.format(
+                    bot, os.fsdecode(file_name), dcc_port, resume_position)
                 )
             )
 
@@ -474,7 +475,7 @@ class IRC:
         bot_host = self.get_bot_host(bot)
 
         self.plugin.log_info(self._("Requesting pack #{} info").format(pack))
-        self.irc_sock.send("PRIVMSG {} :xdcc info #{}\r\n".format(bot, pack))
+        self.irc_sock.send(to_bytes("PRIVMSG {} :xdcc info #{}\r\n".format(bot, pack)))
 
         info = {}
         start_time = time.time()
@@ -534,7 +535,7 @@ class IRC:
 class XDCC(BaseDownloader):
     __name__ = "XDCC"
     __type__ = "downloader"
-    __version__ = "0.48"
+    __version__ = "0.49"
     __status__ = "testing"
 
     __pattern__ = (
@@ -680,7 +681,7 @@ class XDCC(BaseDownloader):
                                         )
 
                             origin, command, args = self.irc_client.get_irc_command()
-                            self.proccess_irc_command(origin, command, args)
+                            self.process_irc_command(origin, command, args)
 
                             if self.exc_info:
                                 raise self.exc_info
@@ -723,7 +724,7 @@ class XDCC(BaseDownloader):
         self.log_error(self._("Server blocked our ip, retry again later manually"))
         self.fail(self._("Server blocked our ip, retry again later manually"))
 
-    def proccess_irc_command(self, origin, command, args):
+    def process_irc_command(self, origin, command, args):
         bot = self.info["pattern"]["BOT"]
         nick = self.config.get("nick")
 
@@ -780,6 +781,10 @@ class XDCC(BaseDownloader):
 
             self.do_download(ip, self.dcc_port, self.dcc_file_name, file_size)
 
+    def _on_notification(self, notification):
+        if 'progress' in notification:
+            self.pyfile.set_progress(notification['progress'])
+
     @threaded
     def do_download(self, ip, port, file_name, file_size):
         if self.dl_started:
@@ -818,7 +823,7 @@ class XDCC(BaseDownloader):
                 ip,
                 port,
                 dl_file,
-                progressNotify=self.pyfile.set_progress,
+                status_notify=self._on_notification,
                 resume=self.xdcc_send_resume,
             )
             if newname and newname != dl_file:

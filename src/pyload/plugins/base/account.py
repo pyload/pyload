@@ -16,7 +16,7 @@ from .plugin import BasePlugin
 class BaseAccount(BasePlugin):
     __name__ = "BaseAccount"
     __type__ = "account"
-    __version__ = "0.84"
+    __version__ = "0.86"
     __status__ = "stable"
 
     __description__ = """Base account plugin"""
@@ -72,17 +72,25 @@ class BaseAccount(BasePlugin):
         log = getattr(self.pyload.log, level)
 
         #: Hide any user/password
-        user = self.user
-        pw = self.info["login"]["password"]
-        hidden_user = "{:*<{}}".format(self.user[:3], 7)
-        hidden_pw = "*" * 10
-        args = (a.replace(user, hidden_user).replace(pw, hidden_pw) for a in args if a)
+        try:
+            user = self.user
+            hidden_user = "{:*<{}}".format(self.user[:3], 7)
+            args = tuple(arg.replace(user, hidden_user) for arg in args if arg)
+        except (KeyError, TypeError):
+            pass
+
+        try:
+            pw = self.info["login"]["password"]
+            hidden_pw = "*" * 10
+            args = tuple(arg.replace(pw, hidden_pw) for arg in args if arg)
+        except (KeyError, TypeError):
+            pass
 
         log(
             "{plugintype} {pluginname}: {msg}".format(
                 plugintype=plugintype.upper(),
                 pluginname=pluginname,
-                msg="%s" * len(args),
+                msg=" | ".join(["%s"] * len(args)),
             ),
             *args,
             **kwargs,
@@ -450,12 +458,9 @@ class BaseAccount(BasePlugin):
 
             return True
 
-    ###########################################################################
-
-    def parse_traffic(self, size, unit=None):  # NOTE: Returns kilobytes only in 0.5.0
+    def parse_traffic(self, size, unit=None):  #: returns bytes
         self.log_debug(f"Size: {size}", "Unit: {unit or 'N/D'}")
-        # TODO: Remove `>> 10` in 0.6.x
-        return parse.bytesize(size, unit or "byte") >> 10
+        return parse.bytesize(size, unit or "byte")
 
     def fail_login(self, msg="Login handshake has failed"):
         return self.fail(msg)

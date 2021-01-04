@@ -27,7 +27,7 @@ class PasswordError(Exception):
 class BaseExtractor(BasePlugin):
     __name__ = "BaseExtractor"
     __type__ = "base"
-    __version__ = "0.48"
+    __version__ = "0.49"
     __status__ = "stable"
 
     __description__ = """Base extractor plugin"""
@@ -47,7 +47,7 @@ class BaseExtractor(BasePlugin):
     @classmethod
     def archivetype(cls, filename):
         """
-        Get archive default extension from filename.
+        Get archive default extension from filename
 
         :param filename: file name to test
         :return: Extension or None
@@ -84,14 +84,14 @@ class BaseExtractor(BasePlugin):
     @classmethod
     def find(cls):
         """
-        Check if system statisfy dependencies.
+        Check if system statisfy dependencies
         """
         pass
 
     @classmethod
     def get_targets(cls, files_ids):
         """
-        Filter suited targets from list of filename id tuple list.
+        Filter suited targets from list of filename id tuple list
 
         :param files_ids: List of filepathes
         :return: List of targets, id tuple list
@@ -128,7 +128,7 @@ class BaseExtractor(BasePlugin):
         keepbroken=False,
     ):
         """
-        Initialize extractor for specific file.
+        Initialize extractor for specific file
         """
         self._init(pyfile.m.pyload)
 
@@ -156,7 +156,7 @@ class BaseExtractor(BasePlugin):
     def verify(self, password=None):
         """
         Testing with Extractors built-in method Raise error if password is needed,
-        integrity is questionable or else.
+        integrity is questionable or else
         """
         pass
 
@@ -165,24 +165,24 @@ class BaseExtractor(BasePlugin):
 
     def extract(self, password=None):
         """
-        Extract the archive Raise specific errors in case of failure.
+        Extract the archive Raise specific errors in case of failure
         """
         raise NotImplementedError
 
     def chunks(self):
         """
-        Return list of archive parts.
+        Return list of archive parts
         """
         return [self.filename]
 
     def list(self, password=None):
         """
-        Return list of archive files.
+        Return list of archive files
         """
         raise NotImplementedError
 
     def progress(self, x):
         """
-        Set extraction progress.
+        Set extraction progress
         """
         return self.pyfile.set_progress(int(x))

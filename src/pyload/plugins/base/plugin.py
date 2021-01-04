@@ -7,7 +7,7 @@ import pycurl
 from pyload.core.network.exceptions import Fail, Skip
 from pyload.core.network.request_factory import get_request
 from pyload.core.utils import fs
-from pyload.core.utils.old import decode as _decode, fixurl, html_unescape
+from pyload.core.utils.old import fixurl, html_unescape
 
 from ..helpers import DB, Config, exists, format_exc, parse_html_header, set_cookies
 
@@ -54,7 +54,6 @@ class BasePlugin:
 
         #: Browser instance, see `network.Browser`
         self.req = self.pyload.request_factory.get_request(self.classname)
-        self.req.set_option("timeout", 60)  # TODO: Remove in 0.6.x
 
         #: Last loaded html
         self.last_html = ""
@@ -73,7 +72,7 @@ class BasePlugin:
             "{plugintype} {pluginname}: {msg}".format(
                 plugintype=plugintype.upper(),
                 pluginname=pluginname,
-                msg="%s" * len(args),
+                msg=" | ".join(["%s"] * len(args)),
             ),
             *args,
             **kwargs,
@@ -101,9 +100,9 @@ class BasePlugin:
     # finally:
     # del frame
 
-    def remove(self, path, trash=True):  # TODO: Change to `trash=True` in 0.6.x
+    def remove(self, path, try_trash=True):  # TODO: Change to `trash=True` in 0.6.x
         try:
-            fs.remove(path, trash)
+            fs.remove(path, try_trash=try_trash)
 
         except (NameError, OSError) as exc:
             self.log_warning(
@@ -184,7 +183,6 @@ class BasePlugin:
 
         if req is False:
             req = get_request()
-            req.set_option("timeout", 60)  # TODO: Remove in 0.6.x
 
         elif not req:
             req = self.req
@@ -200,7 +198,7 @@ class BasePlugin:
             # NOTE: req can be a HTTPRequest or a Browser object
             http_req.c.setopt(pycurl.FOLLOWLOCATION, 0)
 
-        elif isinstance(redirect, int):
+        elif type(redirect) is int:
             # NOTE: req can be a HTTPRequest or a Browser object
             http_req.c.setopt(pycurl.MAXREDIRS, redirect)
 
@@ -224,24 +222,19 @@ class BasePlugin:
             # NOTE: req can be a HTTPRequest or a Browser object
             http_req.c.setopt(pycurl.FOLLOWLOCATION, 1)
 
-        elif isinstance(redirect, int):
+        elif type(redirect) is int:
             maxredirs = (
-                int(
-                    self.pyload.api.get_config_value(
-                        "UserAgentSwitcher", "maxredirs", "plugin"
-                    )
+                self.pyload.api.get_config_value(
+                    "UserAgentSwitcher", "maxredirs", "plugin"
                 )
                 or 5
-            )  # TODO: Remove `int` in 0.6.x
+            )
             # NOTE: req can be a HTTPRequest or a Browser object
             http_req.c.setopt(pycurl.MAXREDIRS, maxredirs)
 
         # TODO: Move to network in 0.6.x
         if decode:
             html = html_unescape(html)
-
-        # TODO: Move to network in 0.6.x
-        html = _decode(html)
 
         self.last_html = html
 
@@ -250,8 +243,7 @@ class BasePlugin:
 
         # TODO: Move to network in 0.6.x
         header = {"code": req.code, "url": req.last_effective_url}
-        # NOTE: req can be a HTTPRequest or a Browser object
-        header.update(parse_html_header(http_req.header))
+        header.update(parse_html_header(http_req.response_header))
 
         self.last_header = header
 
@@ -299,7 +291,6 @@ class BasePlugin:
 
             if req is False:
                 req = get_request()
-                req.set_option("timeout", 60)  # TODO: Remove in 0.6.x
 
             elif not req:
                 req = self.req
@@ -307,22 +298,21 @@ class BasePlugin:
             if isinstance(cookies, list):
                 set_cookies(req.cj, cookies)
 
+            # NOTE: req can be a HTTPRequest or a Browser object
             http_req = self.req.http if hasattr(self.req, "http") else self.req
 
             if not redirect:
-                # NOTE: req can be a HTTPRequest or a Browser object
                 http_req.c.setopt(pycurl.FOLLOWLOCATION, 0)
 
             elif isinstance(redirect, int):
-                # NOTE: req can be a HTTPRequest or a Browser object
                 http_req.c.setopt(pycurl.MAXREDIRS, redirect)
 
             if isinstance(ref, str):
                 http_req.last_url = ref
 
             http_req.set_request_context(url, get, {}, bool(ref), bool(cookies), False)
-            http_req.header = ""
-            http_req.c.setopt(pycurl.HTTPHEADER, http_req.headers)
+            http_req.c.setopt(pycurl.HTTPHEADER, http_req.request_headers)
+            http_req.response_header = b""
 
             http_req.c.setopt(pycurl.UPLOAD, 1)
             http_req.c.setopt(pycurl.READFUNCTION, fp.read)
@@ -332,14 +322,12 @@ class BasePlugin:
                 http_req.c.setopt(pycurl.FOLLOWLOCATION, 0)
                 http_req.c.setopt(pycurl.NOBODY, 1)
                 http_req.c.perform()
-                html = http_req.header
 
                 http_req.c.setopt(pycurl.FOLLOWLOCATION, 1)
                 http_req.c.setopt(pycurl.NOBODY, 0)
 
             else:
                 http_req.c.perform()
-                html = http_req.get_response()
 
             http_req.c.setopt(pycurl.UPLOAD, 0)
             http_req.c.setopt(pycurl.INFILESIZE, 0)
@@ -349,12 +337,12 @@ class BasePlugin:
 
             http_req.add_cookies()
 
-            try:
-                http_req.code = http_req.verify_header()
+            http_req.code = http_req.verify_header()
 
-            finally:
-                http_req.rep.close()
-                http_req.rep = None
+            html = http_req.response_header if just_header else http_req.get_response()
+
+            http_req.rep.close()
+            http_req.rep = None
 
             if decode is True:
                 html = http_req.decode_response(html)
@@ -364,13 +352,11 @@ class BasePlugin:
 
             elif isinstance(redirect, int):
                 maxredirs = (
-                    int(
-                        self.pyload.api.get_config_value(
-                            "UserAgentSwitcher", "maxredirs", "plugin"
-                        )
+                    self.pyload.api.get_config_value(
+                        "UserAgentSwitcher", "maxredirs", "plugin"
                     )
                     or 5
-                )  # TODO: Remove `int` in 0.6.x
+                )
                 # NOTE: req can be a HTTPRequest or a Browser object
                 http_req.c.setopt(pycurl.MAXREDIRS, maxredirs)
 
@@ -388,7 +374,7 @@ class BasePlugin:
             # TODO: Move to network in 0.6.x
             header = {"code": req.code, "url": req.last_effective_url}
             # NOTE: req can be a HTTPRequest or a Browser object
-            header.update(parse_html_header(http_req.header))
+            header.update(parse_html_header(http_req.response_header))
 
             self.last_header = header
 
@@ -411,7 +397,8 @@ class BasePlugin:
 
             os.makedirs(os.path.dirname(framefile), exist_ok=True)
 
-            with open(framefile, mode="w") as fp:
+            is_bytes = isinstance(self.last_html, (bytes, bytearray))
+            with open(framefile, mode="wb" if is_bytes else "w") as fp:
                 fp.write(self.last_html)
 
         except IOError as exc:
