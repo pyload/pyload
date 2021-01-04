@@ -111,7 +111,7 @@ class BaseDownloader(BaseHoster):
                     self._("Premium download failed")
                     if self.premium
                     else self._("Free download failed"),
-                    exc,
+                    str(exc),
                 )
                 if (
                     not self.no_fallback
@@ -252,7 +252,7 @@ class BaseDownloader(BaseHoster):
             )
 
         except IOError as exc:
-            self.log_error(exc)
+            self.log_error(str(exc))
             self.fail(self._("IOError {}").format(exc.errno))
 
         except BadHeader as exc:
