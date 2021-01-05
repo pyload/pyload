@@ -9,9 +9,8 @@ class DlFreeFr(SimpleDownloader):
     __version__ = "0.39"
     __status__ = "testing"
 
-    __pattern__ = (
-        r"http://(?:www\.)?dl\.free\.fr/(getfile\.pl\?file=/|[a-z])(?P<ID>\w+)"
-    )
+    __pattern__ = r"http://(?:www\.)?dl\.free\.fr/(getfile\.pl\?file=/|[a-z])(?P<ID>\w+)"
+    
     __config__ = [
         ("enabled", "bool", "Activated", True),
         ("use_premium", "bool", "Use premium account if available", True),
