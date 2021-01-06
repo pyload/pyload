@@ -6,7 +6,7 @@ from ..internal.XFSCrypter import XFSCrypter
 class EasybytezComFolder(XFSCrypter):
     __name__ = "EasybytezComFolder"
     __type__ = "crypter"
-    __version__ = "0.18"
+    __version__ = "0.19"
     __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?easybytez\.com/users/\d+/\d+'
