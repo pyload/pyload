@@ -18,7 +18,7 @@ from .simple_downloader import SimpleDownloader
 class XFSDownloader(SimpleDownloader):
     __name__ = "XFSDownloader"
     __type__ = "downloader"
-    __version__ = "0.83"
+    __version__ = "0.85"
     __status__ = "stable"
 
     __pattern__ = r"^unmatchable$"

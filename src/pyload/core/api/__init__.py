@@ -21,6 +21,7 @@ from ..network.request_factory import get_url
 from ..utils.old.packagetools import parse_names
 from ..utils import seconds, fs
 
+import json
 from enum import IntFlag
 
 from ..datatypes.exceptions import *
@@ -95,7 +96,7 @@ class Api:
     This is accessible either internal via core.api or via thrift backend.
 
     see Thrift specification file remote/thriftbackend/pyload.thrift\
-    for information about data structures and what methods are usuable with rpc.
+    for information about data structures and what methods are usable with rpc.
 
     Most methods requires specific permissions, please look at the source code if you need to know.\
     These can be configured via webinterface.
@@ -1070,7 +1071,7 @@ class Api:
         if task:
             task.set_wating_for_user(exclusive=exclusive)
             data, type, result = task.get_captcha()
-            t = CaptchaTask(int(task.id), data, type, result)
+            t = CaptchaTask(int(task.id), json.dumps(data), type, result)
             return t
         else:
             return CaptchaTask(-1)

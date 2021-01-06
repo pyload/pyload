@@ -7,7 +7,7 @@ import re
 import pycurl
 from pyload.core.network.http.exceptions import BadHeader
 from pyload.core.network.request_factory import get_request
-
+from ..helpers import parse_html_header
 from ..base.addon import BaseAddon
 
 
@@ -67,9 +67,8 @@ class TransmissionRPC(BaseAddon):
 
         except Exception as exc:
             if isinstance(exc, BadHeader) and exc.code == 409:
-                headers = dict(
-                    re.findall(r"(?P<name>.+?): (?P<value>.+?)\r?\n", req.header)
-                )
+                headers = parse_html_header(exc.header)
+
                 session_id = headers["X-Transmission-Session-Id"]
                 req.c.setopt(
                     pycurl.HTTPHEADER, [f"X-Transmission-Session-Id: {session_id}"]

@@ -171,8 +171,6 @@ class BaseHoster(BasePlugin):
             self.req = self.pyload.request_factory.get_request(self.classname)
             self.premium = False
 
-        self.req.set_option("timeout", 60)  # TODO: Remove in 0.6.x
-
         self.setup_base()
         self.grab_info()
         self.setup()
@@ -345,8 +343,6 @@ class BaseHoster(BasePlugin):
         """
         if seconds is not None:
             self.set_wait(seconds)
-        else:
-            seconds = 0
 
         wait_time = self.pyfile.wait_until - time.time()
 

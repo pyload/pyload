@@ -5,13 +5,14 @@ import re
 
 from pyload.core.network.request_factory import get_url
 
+from ..anticaptchas.ReCaptcha import ReCaptcha
 from ..base.simple_downloader import SimpleDownloader
 
 
 class NitroflareCom(SimpleDownloader):
     __name__ = "NitroflareCom"
     __type__ = "downloader"
-    __version__ = "0.27"
+    __version__ = "0.29"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?nitroflare\.com/view/(?P<ID>[\w^_]+)"
@@ -36,12 +37,10 @@ class NitroflareCom(SimpleDownloader):
     OFFLINE_PATTERN = r">File doesn\'t exist"
 
     LINK_PATTERN = r'(https?://[\w\-]+\.nitroflare\.com/.+?)"'
-    FILE_ID_PATTERN = r"https?://(?:www\.)?nitroflare\.com/view/(?P<ID>[\w^_]+)"
     DIRECT_LINK = False
 
     PREMIUM_ONLY_PATTERN = r"This file is available with Premium only"
-    WAIT_PATTERN = r"You have to wait (\d+ minutes)"
-    # ERROR_PATTERN        = r'downloading is not possible'
+    DL_LIMIT_PATTERN = r'You have to wait \d+ minutes to download your next file.'
 
     @classmethod
     def api_info(cls, url):
@@ -79,6 +78,9 @@ class NitroflareCom(SimpleDownloader):
         except Exception:
             wait_time = 120
 
+        recaptcha = ReCaptcha(pyfile)
+        recaptcha_key = recaptcha.detect_key()
+
         self.data = self.load(
             "http://nitroflare.com/ajax/freeDownload.php",
             post={"method": "startTimer", "fileId": self.info["pattern"]["ID"]},
@@ -88,16 +90,22 @@ class NitroflareCom(SimpleDownloader):
 
         self.set_wait(wait_time)
 
-        response = self.captcha.decrypt(
-            "http://nitroflare.com/plugins/cool-captcha/captcha.php"
-        )
+        inputs = {'method': "fetchDownload"}
+
+        if recaptcha_key:
+            self.captcha = recaptcha
+            response, _ = self.captcha.challenge(recaptcha_key)
+            inputs['g-recaptcha-response'] = response
+
+        else:
+            response = self.captcha.decrypt("http://nitroflare.com/plugins/cool-captcha/captcha.php")
+
+        inputs['captcha'] = response
 
         self.wait()
 
-        self.data = self.load(
-            "http://nitroflare.com/ajax/freeDownload.php",
-            post={"method": "fetchDownload", "captcha": response},
-        )
+        self.data = self.load("http://nitroflare.com/ajax/freeDownload.php",
+                              post=inputs)
 
         if "The captcha wasn't entered correctly" in self.data:
             self.retry_captcha()

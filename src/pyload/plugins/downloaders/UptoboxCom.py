@@ -8,7 +8,7 @@ from ..base.simple_downloader import SimpleDownloader
 class UptoboxCom(SimpleDownloader):
     __name__ = "UptoboxCom"
     __type__ = "downloader"
-    __version__ = "0.36"
+    __version__ = "0.37"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?(uptobox|uptostream)\.com/\w{12}"
@@ -43,7 +43,7 @@ class UptoboxCom(SimpleDownloader):
     URL_REPLACEMENTS = [("http://", "https://")]
 
     def setup(self):
-        self.multi_dl = True
+        self.multi_dl = self.premium
         self.chunk_limit = 1
         self.resume_download = True
 
