@@ -3,6 +3,7 @@
 import os
 import sys
 import zipfile
+import fnmatch
 
 from pyload.plugins.base.extractor import ArchiveError, BaseExtractor, CRCError, PasswordError
 
@@ -80,7 +81,11 @@ class UnZip(BaseExtractor):
         try:
             with zipfile.ZipFile(self.filename, "r") as z:
                 z.setpassword(password)
-                z.extractall(self.dest)
+                members = (member for member in z.namelist()  
+                           if not any(re.compile(fnmatch.translate(exclusion)).match(member)
+                           for exclusion in self.excludefiles)
+                          )
+                z.extractall(self.dest,members=members)
                 self.files = [os.path.join(self.dest, _f)
                               for _f in z.namelist()
                               if _f[-1] != os.path.sep]
