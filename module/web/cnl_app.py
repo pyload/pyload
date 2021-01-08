@@ -37,7 +37,9 @@ def flash(id="0"):
 @local_check
 def add():
     package = request.forms.get("package", request.forms.get("source", request.POST.get('referer', None)))
-    urls = [x.decode('latin1').strip() for x in request.POST['urls'].split("\n") if x.decode('latin1').strip()]
+    urls = [x.decode('latin1').strip()
+            for x in request.POST['urls'].replace(' ', '\n').split("\n")
+            if x.decode('latin1').strip()]
 
     if package:
         PYLOAD.addPackage(package, urls, 0)
