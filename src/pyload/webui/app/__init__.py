@@ -9,17 +9,19 @@
 #           \/
 
 import os
-import jinja2
+
 import flask
+import jinja2
+from flask_compress import Compress
 
 from .blueprints import BLUEPRINTS
+from .config import get_default_config
+from .extensions import EXTENSIONS, THEMES
 from .filters import TEMPLATE_FILTERS
 from .globals import TEMPLATE_GLOBALS
 from .handlers import ERROR_HANDLERS
-from .extensions import EXTENSIONS, THEMES
-from .processors import CONTEXT_PROCESSORS
-from .config import get_default_config
 from .helpers import JSONEncoder
+from .processors import CONTEXT_PROCESSORS
 
 
 #: flask app singleton?
@@ -32,6 +34,7 @@ class App:
     FLASK_BLUEPRINTS = BLUEPRINTS
     FLASK_EXTENSIONS = EXTENSIONS
     FLASK_THEMES = THEMES
+    FLASK_COMPRESS = Compress()
 
 
     @classmethod
@@ -52,8 +55,8 @@ class App:
 
     @classmethod
     def _configure_themes(cls, app, path_prefix=""):
-        for themes in cls.FLASK_THEMES:
-            themes.init_app(app, path_prefix)
+        for theme in cls.FLASK_THEMES:
+            theme.init_app(app, path_prefix)
 
     @classmethod
     def _configure_handlers(cls, app):
@@ -66,6 +69,10 @@ class App:
     @classmethod
     def _configure_json_encoding(cls, app):
         app.json_encoder = JSONEncoder
+
+    @classmethod
+    def _configure_compression(cls, app):
+        cls.FLASK_COMPRESS.init_app(app)
 
     @classmethod
     def _configure_templating(cls, app):
@@ -115,6 +122,7 @@ class App:
         cls._configure_config(app, develop)
         cls._configure_templating(app)
         cls._configure_json_encoding(app)
+        cls._configure_compression(app)
         cls._configure_session(app)
         cls._configure_blueprints(app, path_prefix)
         cls._configure_extensions(app)
