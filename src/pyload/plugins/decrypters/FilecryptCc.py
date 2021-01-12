@@ -98,7 +98,10 @@ class FilecryptCc(BaseDecrypter):
         self.data = self._filecrypt_load_url(pyfile.url)
 
         # @NOTE: "content notfound" is NOT a typo
-        if "content notfound" in self.data or ">File <strong>not</strong> found<" in self.data:
+        if (
+            "content notfound" in self.data
+            or ">File <strong>not</strong> found<" in self.data
+        ):
             self.offline()
 
         self.handle_password_protection()
@@ -316,13 +319,11 @@ class FilecryptCc(BaseDecrypter):
                     m = re.search(r'<iframe .*src="(.+?)"></iframe>', self.data)
                     if m is not None and "filecrypt.cc" in m.group(1):
                         headers = self._filecrypt_load_url(m.group(1), just_header=True)
-                        self.urls.append(headers['location'])
+                        self.urls.append(headers["location"])
                         break
 
                 else:
                     self.log_error(self._("Weblink could not be found"))
-
-
 
         except Exception as exc:
             self.log_debug(f"Error decrypting weblinks: {exc}")
@@ -344,9 +345,7 @@ class FilecryptCc(BaseDecrypter):
         key = iv = bytes.fromhex(jk)
 
         #: Decrypt
-        cipher = Cipher(
-            algorithms.AES(key), modes.CBC(iv), backend=default_backend()
-        )
+        cipher = Cipher(algorithms.AES(key), modes.CBC(iv), backend=default_backend())
         decryptor = cipher.decryptor()
         text = to_str(
             decryptor.update(base64.b64decode(crypted)) + decryptor.finalize()
