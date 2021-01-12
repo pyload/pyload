@@ -47,7 +47,7 @@ class BIGHTTPRequest(HTTPRequest):
 class FilecryptCc(Crypter):
     __name__ = "FilecryptCc"
     __type__ = "crypter"
-    __version__ = "0.42"
+    __version__ = "0.43"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?filecrypt\.cc/Container/\w+'
@@ -65,7 +65,7 @@ class FilecryptCc(Crypter):
     COOKIES = [("filecrypt.cc", "lang", "en")]
 
     DLC_LINK_PATTERN = r'onclick="DownloadDLC\(\'(.+)\'\);">'
-    WEBLINK_PATTERN = r"onclick=\"openLink.?'([\w\-]*)',"
+    WEBLINK_PATTERN = r"<button onclick=\"openLink.?'([\w\-]*)',"
     MIRROR_PAGE_PATTERN = r'"[\w]*" href="(https?://(?:www\.)?filecrypt.cc/Container/\w+\.html\?mirror=\d+)">'
 
     CAPTCHA_PATTERN = r'<h2>Security prompt</h2>'
@@ -271,10 +271,10 @@ class FilecryptCc(Crypter):
             links = re.findall(self.WEBLINK_PATTERN, self.site_with_links)
 
             for _link in links:
-                _link = "http://filecrypt.cc/Link/%s.html" % _link
+                _link = "http://www.filecrypt.cc/Link/%s.html" % _link
                 for i in range(5):
                     self.data = self._filecrypt_load_url(_link)
-                    m = re.search("top.location.href='(.*)';", self.data)
+                    m = re.search(r'<iframe .*src="(.+?)"></iframe>', self.data)
                     if m is not None and "filecrypt.cc" in m.group(1):
                         headers = self._filecrypt_load_url(m.group(1), just_header=True)
                         self.urls.append(headers['location'])
