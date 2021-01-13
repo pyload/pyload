@@ -12,7 +12,6 @@ import os
 
 import flask
 import jinja2
-from flask_compress import Compress
 
 from .blueprints import BLUEPRINTS
 from .config import get_default_config
