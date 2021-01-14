@@ -97,7 +97,14 @@ class App:
         tempdir = app.config["PYLOAD_API"].get_cachedir()
         cache_path = os.path.join(tempdir, "flask")
         os.makedirs(cache_path, exist_ok=True)
+
         app.config["SESSION_FILE_DIR"] = cache_path
+        app.config["SESSION_TYPE"] = "filesystem"
+        app.config["SESSION_COOKIE_NAME"] = "pyload_session"
+        app.config["SESSION_PERMANENT"] = False
+
+        session_lifetime = app.config["PYLOAD_API"].get_config_value("webui", "session_lifetime") * 60
+        app.config["PERMANENT_SESSION_LIFETIME"] = session_lifetime
 
     @classmethod
     def _configure_api(cls, app, pycore):
