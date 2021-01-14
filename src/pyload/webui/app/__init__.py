@@ -103,7 +103,7 @@ class App:
         app.config["SESSION_COOKIE_NAME"] = "pyload_session"
         app.config["SESSION_PERMANENT"] = False
 
-        session_lifetime = app.config["PYLOAD_API"].get_config_value("webui", "session_lifetime") * 60
+        session_lifetime = max(app.config["PYLOAD_API"].get_config_value("webui", "session_lifetime"), 1) * 60
         app.config["PERMANENT_SESSION_LIFETIME"] = session_lifetime
 
     @classmethod
