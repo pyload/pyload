@@ -47,7 +47,7 @@ class BIGHTTPRequest(HTTPRequest):
 class FilecryptCc(Crypter):
     __name__ = "FilecryptCc"
     __type__ = "crypter"
-    __version__ = "0.43"
+    __version__ = "0.44"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?filecrypt\.cc/Container/\w+'
@@ -274,9 +274,9 @@ class FilecryptCc(Crypter):
                 _link = "http://www.filecrypt.cc/Link/%s.html" % _link
                 for i in range(5):
                     self.data = self._filecrypt_load_url(_link)
-                    m = re.search(r'<iframe .*src="(.+?)"></iframe>', self.data)
-                    if m is not None and "filecrypt.cc" in m.group(1):
-                        headers = self._filecrypt_load_url(m.group(1), just_header=True)
+                    m = re.search(r'https://www\.filecrypt\.cc/index\.php\?Action=Go&id=\w+', self.data)
+                    if m is not None:
+                        headers = self._filecrypt_load_url(m.group(0), just_header=True)
                         self.urls.append(headers['location'])
                         break
 
