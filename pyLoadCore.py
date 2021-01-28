@@ -257,7 +257,8 @@ class Core(object):
                     status = kernel32.Process32Next(hProcessSnapshot, ctypes.pointer(processInfo))
 
                 kernel32.CloseHandle(hProcessSnapshot)
-                if found and processInfo.szExeFile.decode().lower() in ("python.exe", "pythonw.exe", "pyloadcore.exe"):
+                # detect py2exe builds on windows, including pyLoadGui internal server
+                if found and processInfo.szExeFile.decode().lower() in ("python.exe", "pythonw.exe", "pyloadcore.exe", "pyloadgui.exe"):
                     ret = pid
 
             else:

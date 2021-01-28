@@ -91,7 +91,7 @@ from module.gui.CoreConfigParser import CoreConfigParser
 from module.gui.Options import (AutomaticReloadingOptions, CaptchaOptions, ClickNLoadForwarderOptions, ColorFixOptions,
                                 FontOptions, IconThemeOptions, LanguageOptions, LoggingOptions, NotificationOptions,
                                 OtherOptions, PyQtVersionOptions, TrayOptions, WhatsThisOptions)
-from module.gui.Tools import IconThemes, MessageBox
+from module.gui.Tools import PidFile, IconThemes, MessageBox
 from module.gui.AboutBox import AboutBox
 from module.gui.InfoCorePermissions import InfoCorePermissions
 from module.gui.ClickNLoadForwarder import ClickNLoadForwarder
@@ -1239,7 +1239,6 @@ class main(QObject):
         dm("18"); self.messageBox_18(pid)
         dm("21"); self.messageBox_21(optCat)
         dm("22"); self.messageBox_22()
-        dm("23"); self.messageBox_23(pidfile, pid)
         dm("24"); self.messageBox_24()
         dm("25"); self.messageBox_25()
         dm("26"); self.messageBox_26()
@@ -1684,14 +1683,16 @@ class main(QObject):
                     self.core = Core_()
                 except Exception:
                     return self.errorInternalCoreStartup(self.messageBox_14)
-                if self.configdir: pf = self.homedir + sep + self.core.pidfile
-                else:              pf = abspath(self.core.pidfile)
-                if os.name != "nt":
-                    pid = self.core.isAlreadyRunning()
-                    if pid: return self.errorInternalCoreStartup(self.messageBox_15, (pf, pid))
-                else:
-                    pid = self.core.checkPidFile()
-                    if pid and not self.messageBox_23(pf, pid): self.init(); return
+
+                pidFile = PidFile(self.core.pidfile)
+                pid = pidFile.isAlreadyRunning(("pyloadcore.exe", "pyloadgui.exe"))
+                if pid:
+                    if self.configdir:
+                        filename = self.homedir + sep + self.core.pidfile
+                    else:
+                        filename = abspath(self.core.pidfile)
+                    return self.errorInternalCoreStartup(self.messageBox_15, (filename, pid))
+
                 self.core.corePyQtSignal.coreRestartSGL.connect(self.slotCoreRestart, Qt.QueuedConnection)
                 self.core.startedInGui = True
                 try:
@@ -1753,14 +1754,6 @@ class main(QObject):
         text += "\n" + "PID-file: " + unicode(pidfile)
         text += "\n" + "PID: %d" % int(pid)
         self.msgBoxOk(text, "C")
-
-    def messageBox_23(self, pidfile, pid):
-        text  = _("A pyLoad server for this configuration is already running")
-        text += "\n" + _("or the server was not shut down properly last time.")
-        text += "\n" + _("PID-file: ") + unicode(pidfile)
-        text += "\n" + "PID: %d" % int(pid)
-        text += "\n\n" + _("Do you want to start the internal server anyway?")
-        return self.msgBoxYesNo(text, "C")
 
     def messageBox_16(self):
         text = _("Failed to start internal server thread.")
