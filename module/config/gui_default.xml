@@ -3,6 +3,7 @@
     <connections>
         <connection default="False" type="local" id="33965310e19b4a869112c43b39a16440">
             <name>Local</name>
+            <server ssl="auto"/>
         </connection>
         <connection default="False" type="internal" id="0e61deb8671b4421aa0d6bda07da5cb9">
             <name>Internal Server</name>

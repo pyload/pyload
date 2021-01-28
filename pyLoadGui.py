@@ -294,7 +294,7 @@ class main(QObject):
 
         self.appIconSet = IconThemes(self.newConfigFile, self.parser).loadTheme()
         self.initCorePermissions()
-        self.connector = Connector(first)
+        self.connector = Connector()
         self.inSlotToolbarSpeedLimitEdited = False
         self.inSlotToolbarMaxParallelDownloadsEdited = False
         self.mainWindow = MainWindow(self.corePermissions, self.appIconSet, self.connector)
@@ -320,7 +320,6 @@ class main(QObject):
         self.connectSignals(first)
 
         conn = self.refreshConnections(self.cmdLineConnection)
-        self.connData = None
         self.serverStatus = {"freespace":0}
 
         self.core = None # pyLoadCore if started
@@ -332,11 +331,12 @@ class main(QObject):
         else:
             if conn:
                 self.log.debug9("main.init: Using startup connection: '%s'" % conn["name"])
+                self.connWindow.edit.setData(conn)
+                data = self.connWindow.edit.getData()
+                self.slotConnect(data)
             else:
                 self.log.debug9("main.init: No startup connection set")
-            self.connWindow.edit.setData(conn)
-            data = self.connWindow.edit.getData()
-            self.slotConnect(data)
+                self.connWindow.show()
 
     def initLogging(self, first=False):
         # create the folder if it does not exist
@@ -1493,7 +1493,7 @@ class main(QObject):
 
     def loadAllConnections(self):
         """
-            parse all connections in the config file
+            load all connections from the config file
         """
         connectionsNode = self.parser.xml.elementsByTagName("connections").item(0)
         if connectionsNode.isNull():
@@ -1518,6 +1518,7 @@ class main(QObject):
                 if "server" not in subs:
                     continue
                 else:
+                    data["ssl"] = str(subs["server"].attribute("ssl", "auto"))
                     data["host"] = unicode(subs["server"].text())
                     data["user"] = unicode(subs["server"].attribute("user", "admin"))
                     data["port"] = int(subs["server"].attribute("port", "7227"))
@@ -1533,6 +1534,11 @@ class main(QObject):
                         data["cnlpfGetPort"] = True
                     else:
                         data["cnlpfGetPort"] = False
+            elif data["type"] == "local":
+                if "server" not in subs:
+                    continue
+                else:
+                    data["ssl"] = str(subs["server"].attribute("ssl", "auto"))
             ret.append(data)
         return ret
 
@@ -1585,6 +1591,7 @@ class main(QObject):
         connNode.appendChild(nameNode)
         if data["type"] == "remote":
             serverNode = self.parser.xml.createElement("server")
+            serverNode.setAttribute("ssl", data["ssl"])
             serverNode.setAttribute("user", data["user"])
             serverNode.setAttribute("port", str(data["port"]))
             serverNode.setAttribute("password", data["password"])
@@ -1594,6 +1601,10 @@ class main(QObject):
             host = data["host"].replace(" ", "")
             hostText = self.parser.xml.createTextNode(host)
             serverNode.appendChild(hostText)
+            connNode.appendChild(serverNode)
+        elif data["type"] == "local":
+            serverNode = self.parser.xml.createElement("server")
+            serverNode.setAttribute("ssl", data["ssl"])
             connNode.appendChild(serverNode)
         found = False
         for c in connections:
@@ -1641,16 +1652,16 @@ class main(QObject):
             coreConfigParser = CoreConfigParser(pyloadConf)
             if not coreConfigParser.config:
                 self.log.info("Failed to read server port number from local server config file, trying default port: 7227")
-                self.connector.setConnectionData("127.0.0.1", 7227, "anonymous", "anonymous")
+                self.connector.setConnectionData("127.0.0.1", 7227, "anonymous", "anonymous", data["ssl"])
                 title = _("pyLoad Client") + " - " + data["name"] + " [127.0.0.1:7227]"
             else:
-                self.connector.setConnectionData("127.0.0.1", coreConfigParser.get("remote", "port"), "anonymous", "anonymous")
+                self.connector.setConnectionData("127.0.0.1", coreConfigParser.get("remote", "port"), "anonymous", "anonymous", data["ssl"])
                 title = _("pyLoad Client") + " - " + data["name"] + " [127.0.0.1:" + str(coreConfigParser.get("remote", "port")) + "]"
             self.mainWindow.setWindowTitle(title)
             self.mainWindow.mactions["cnlfwding"].setEnabled(False)
 
         elif data["type"] == "remote":
-            self.connector.setConnectionData(data["host"], data["port"], data["user"], data["password"])
+            self.connector.setConnectionData(data["host"], data["port"], data["user"], data["password"], data["ssl"])
             self.clickNLoadForwarderOptions.settings["enabled"] = data["cnlpf"]
             self.clickNLoadForwarderOptions.settings["toIP"] = data["host"]
             self.clickNLoadForwarderOptions.settings["toPort"] = data["cnlpfPort"]

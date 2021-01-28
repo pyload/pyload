@@ -20,12 +20,12 @@ from module.gui.PyQtVersion import USE_PYQT5
 if USE_PYQT5:
     from PyQt5.QtCore import pyqtSignal, Qt, QTimer, QVariant
     from PyQt5.QtGui import QIcon
-    from PyQt5.QtWidgets import (QAbstractItemView, QCheckBox, QDialog, QDialogButtonBox, QGridLayout, QGroupBox, QHBoxLayout, QLabel, QLineEdit,
-                                 QListWidget, QListWidgetItem, QPushButton, QRadioButton, QSpinBox, QVBoxLayout)
+    from PyQt5.QtWidgets import (QAbstractItemView, QButtonGroup, QCheckBox, QDialog, QDialogButtonBox, QGridLayout, QGroupBox, QHBoxLayout, QLabel,
+                                 QLineEdit, QListWidget, QListWidgetItem, QPushButton, QRadioButton, QSpinBox, QVBoxLayout)
 else:
     from PyQt4.QtCore import pyqtSignal, QString, Qt, QTimer, QVariant
-    from PyQt4.QtGui import (QAbstractItemView, QCheckBox, QDialog, QDialogButtonBox, QGridLayout, QGroupBox, QHBoxLayout, QIcon, QLabel, QLineEdit,
-                             QListWidget, QListWidgetItem, QPushButton, QRadioButton, QSpinBox, QVBoxLayout)
+    from PyQt4.QtGui import (QAbstractItemView, QButtonGroup, QCheckBox, QDialog, QDialogButtonBox, QGridLayout, QGroupBox, QHBoxLayout, QIcon, QLabel,
+                             QLineEdit, QListWidget, QListWidgetItem, QPushButton, QRadioButton, QSpinBox, QVBoxLayout)
 
 import logging
 from os.path import join
@@ -138,7 +138,7 @@ class ConnectionManager(QDialog):
 
     def slotNew(self):
         self.edit.setWindowTitle(_("New"))
-        data = {"id":uuid().hex, "type":"remote", "default":False, "name":"", "host":"", "port":7227,
+        data = {"id":uuid().hex, "type":"remote", "ssl":"auto", "default":False, "name":"", "host":"", "port":7227,
                 "user":"", "password":"", "cnlpf":False, "cnlpfPort":9666, "cnlpfGetPort":False}
         self.edit.setData(data)
         self.edit.controls["name"].setFocus(Qt.OtherFocusReason)
@@ -289,13 +289,14 @@ class ConnectionManager(QDialog):
 
             nameLabel  = QLabel(_("Name"))
             typeLabel  = QLabel(_("Type"))
+            sslLabel   = QLabel(_("SSL"))
             hostLabel  = QLabel(_("Host"))
             portLabel  = QLabel(_("Port"))
             userLabel  = QLabel(_("User"))
             pwLabel    = QLabel(_("Password"))
 
             name = QLineEdit()
-            typeLocal    = QRadioButton(_("Local"))
+            typeLocal = QRadioButton(_("Local"))
             wt = _(
             "Use this for administrator permissions on a local server that requires no authentication "
             "('No authentication on local connections')."
@@ -303,15 +304,44 @@ class ConnectionManager(QDialog):
             typeLocal.setWhatsThis(whatsThisFormat(_("Local"), wt))
             typeInternal = QRadioButton(_("Internal"))
             typeInternal.setWhatsThis(whatsThisFormat(_("Internal"), _("Starts and connects to the internal server.")))
-            typeRemote   = QRadioButton(_("Remote"))
-            typeRemote.setWhatsThis(whatsThisFormat(_("Remote"), _("Connects to a remote server.")))
+            typeRemote = QRadioButton(_("Remote"))
+            typeRemote.setWhatsThis(whatsThisFormat(_("Remote"), _("Connects to a remote or local server with authentication.")))
+            typeBtnGrp = QButtonGroup()
+            typeBtnGrp.addButton(typeLocal)
+            typeBtnGrp.addButton(typeInternal)
+            typeBtnGrp.addButton(typeRemote)
+            typeRemote.setChecked(True)
             typeBtnHbox = QHBoxLayout()
             typeBtnHbox.addWidget(typeLocal)
             typeBtnHbox.addWidget(typeInternal)
             typeBtnHbox.addWidget(typeRemote)
             typeBtnHbox.addSpacing(10)
             typeBtnHbox.addStretch(1)
-            typeRemote.setChecked(True)
+            sslAuto = QRadioButton(_("Automatic"))
+            sslAuto.setWhatsThis(whatsThisFormat(_("Automatic"), _("Should work in most cases.")))
+            sslYes = QRadioButton(_("Yes"))
+            wt = _(
+            "Use this to connect to a server that has SSL enabled. "
+            "Especially when facing connection problems in Automatic mode."
+            )
+            sslYes.setWhatsThis(whatsThisFormat(_("Yes"), wt))
+            sslNo = QRadioButton(_("No"))
+            wt = _(
+            "Use this to connect to a server that has SSL disabled. "
+            "Especially when facing connection problems in Automatic mode."
+            )
+            sslNo.setWhatsThis(whatsThisFormat(_("No"), wt))
+            sslBtnGrp = QButtonGroup()
+            sslBtnGrp.addButton(sslAuto)
+            sslBtnGrp.addButton(sslYes)
+            sslBtnGrp.addButton(sslNo)
+            sslAuto.setChecked(True)
+            sslBtnHbox = QHBoxLayout()
+            sslBtnHbox.addWidget(sslAuto)
+            sslBtnHbox.addWidget(sslYes)
+            sslBtnHbox.addWidget(sslNo)
+            sslBtnHbox.addSpacing(10)
+            sslBtnHbox.addStretch(1)
             host = QLineEdit()
             port = QSpinBox()
             port.setRange(1, 65535)
@@ -325,15 +355,17 @@ class ConnectionManager(QDialog):
 
             grid1.addWidget(typeLabel,    0, 0)
             grid1.addLayout(typeBtnHbox,  0, 1)
-            grid1.addWidget(hostLabel,    1, 0)
-            grid1.addWidget(host,         1, 1)
-            grid1.addWidget(portLabel,    2, 0)
-            grid1.addWidget(port,         2, 1)
-            grid1.addWidget(userLabel,    3, 0)
-            grid1.addWidget(user,         3, 1)
-            grid1.addWidget(pwLabel,      4, 0)
-            grid1.addWidget(password,     4, 1)
-            #grid1.setRowMinimumHeight(    5, 7)
+            grid1.addWidget(sslLabel,     1, 0)
+            grid1.addLayout(sslBtnHbox,   1, 1)
+            grid1.addWidget(hostLabel,    2, 0)
+            grid1.addWidget(host,         2, 1)
+            grid1.addWidget(portLabel,    3, 0)
+            grid1.addWidget(port,         3, 1)
+            grid1.addWidget(userLabel,    4, 0)
+            grid1.addWidget(user,         4, 1)
+            grid1.addWidget(pwLabel,      5, 0)
+            grid1.addWidget(password,     5, 1)
+            #grid1.setRowMinimumHeight(    6, 7)
 
             gb1 = QGroupBox(_("Login") + "     ")
             gb1.setLayout(grid1)
@@ -380,9 +412,14 @@ class ConnectionManager(QDialog):
 
             # keep references of the QDialog elements
             self.controls = { "name":         name,
+                              "typeBtnGrp":   typeBtnGrp,
                               "typeLocal":    typeLocal,
                               "typeInternal": typeInternal,
                               "typeRemote":   typeRemote,
+                              "sslBtnGrp":    sslBtnGrp,
+                              "sslAuto":      sslAuto,
+                              "sslYes":       sslYes,
+                              "sslNo":        sslNo,
                               "host":         host,
                               "port":         port,
                               "user":         user,
@@ -395,9 +432,7 @@ class ConnectionManager(QDialog):
 
             cancel.clicked.connect(self.hide)
             save.clicked.connect(self.slotDone)
-            typeLocal.clicked.connect(self.slotTypeChanged)
-            typeInternal.clicked.connect(self.slotTypeChanged)
-            typeRemote.clicked.connect(self.slotTypeChanged)
+            typeBtnGrp.buttonClicked[int].connect(self.slotTypeChanged)
             cnlpfGetPort.toggled[bool].connect(cnlpfPort.setDisabled)
 
         def setData(self, data):
@@ -414,6 +449,22 @@ class ConnectionManager(QDialog):
                 self.controls["typeRemote"].setChecked(True)
             else:
                 raise ValueError("Invalid connection type: '%s'" % unicode(data["type"]))
+            if data["type"] == "internal":
+                self.controls["sslAuto"].setDisabled(True)
+                self.controls["sslYes"].setDisabled(True)
+                self.controls["sslNo"].setDisabled(True)
+            else:
+                self.controls["sslAuto"].setDisabled(False)
+                self.controls["sslYes"].setDisabled(False)
+                self.controls["sslNo"].setDisabled(False)
+                if data["ssl"] == "auto":
+                    self.controls["sslAuto"].setChecked(True)
+                elif data["ssl"] == "yes":
+                    self.controls["sslYes"].setChecked(True)
+                elif data["ssl"] == "no":
+                    self.controls["sslNo"].setChecked(True)
+                else:
+                    raise ValueError("Invalid connection ssl setting: '%s'" % unicode(data["ssl"]))
             if data["type"] == "local" or data["type"] == "internal":
                 self.controls["host"].setText("")
                 self.controls["port"].setValue(1)
@@ -441,6 +492,14 @@ class ConnectionManager(QDialog):
                 self.controls["cnlpf"].setDisabled(False)
 
         def slotTypeChanged(self):
+            if self.controls["typeInternal"].isChecked():
+                self.controls["sslAuto"].setDisabled(True)
+                self.controls["sslYes"].setDisabled(True)
+                self.controls["sslNo"].setDisabled(True)
+            else:
+                self.controls["sslAuto"].setDisabled(False)
+                self.controls["sslYes"].setDisabled(False)
+                self.controls["sslNo"].setDisabled(False)
             if self.controls["typeLocal"].isChecked() or self.controls["typeInternal"].isChecked():
                 self.controls["host"].setDisabled(True)
                 self.controls["port"].setDisabled(True)
@@ -467,6 +526,12 @@ class ConnectionManager(QDialog):
                 d["type"]     = str("internal")
             else:
                 d["type"]     = str("remote")
+            if self.controls["sslAuto"].isChecked():
+                d["ssl"]      = str("auto")
+            elif self.controls["sslYes"].isChecked():
+                d["ssl"]      = str("yes")
+            else:
+                d["ssl"]      = str("no")
             d["host"]         = unicode(self.controls["host"].text())
             d["port"]         = int(self.controls["port"].value())
             d["user"]         = unicode(self.controls["user"].text())

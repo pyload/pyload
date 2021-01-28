@@ -46,9 +46,8 @@ class Connector(QObject):
     msgBoxErrorSGL    = pyqtSignal(object)
     connectionLostSGL = pyqtSignal()
 
-    def __init__(self, firstAttempt):
+    def __init__(self):
         QObject.__init__(self)
-        self.firstAttempt = firstAttempt
         self.log = logging.getLogger("guilog")
 
         self.mutex = QMutex()
@@ -60,17 +59,19 @@ class Connector(QObject):
         self.ssl = None
         self.running = True
         self.internal = False
+        self.is_ssl_connection = None
         self.pwBox = AskForUserAndPassword()
         self.proxy = self.Dummy()
 
-    def setConnectionData(self, host, port, user, password):
+    def setConnectionData(self, host, port, user, password, ssl):
         """
-            set connection data for connection attempt, called from slotConnect
+            set connection data, called from slotConnect
         """
         self.host     = host
         self.port     = port
         self.user     = user
         self.password = password
+        self.ssl      = ssl
 
     def connectProxy(self):
         """
@@ -81,54 +82,18 @@ class Connector(QObject):
             check server version
         """
         self.timeoutTimerStart()
-        firstAttempt = self.firstAttempt
-        self.firstAttempt = False
 
         if self.internal:
             return True
         if not self.host:
             return False
 
-        # Quick test if the host responds, we probably do not want to wait until the default socket timeout kicks in (120sec)
-        soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        soc.settimeout(5) #seconds
-        gaierror = False
-        timeout = False
-        try:
-            soc.connect((self.host, self.port))
-        except socket.gaierror:
-            gaierror = True
-        except socket.timeout:
-            timeout = True
-        except Exception:
-            self.log.debug9("Connector.connectProxy: Quick test: Failed to connect to the server for whatever reason")
-        try:
-            soc.shutdown(socket.SHUT_RD)
-        except Exception:
-            self.log.debug9("Connector.connectProxy: Quick test: Failed to shut down the read side of the server connection socket. Don't worry about it!")
-        try:
-            soc.shutdown(socket.SHUT_WR)
-        except Exception:
-            self.log.debug9("Connector.connectProxy: Quick test: Failed to shut down the write side of the server connection socket. Don't worry about it!")
-        soc.close()
-        if gaierror:
-            if firstAttempt:
-                return False
-            self.messageBox_01(self.host, self.port)
-            return False
-        if timeout:
-            if firstAttempt:
-                return False
-            if not self.messageBox_02(self.host, self.port):
-                return False
-            else:
-                self.timeoutTimerStart()
         # login
         while True:
             err = None
             errlogin = False
             try:
-                client = ThriftClient(self.host, self.port, self.user, self.password)
+                client = ThriftClient(self.host, self.port, self.user, self.password, self.ssl)
             except WrongLogin:
                 errlogin = True
             except NoSSL:
@@ -151,15 +116,13 @@ class Connector(QObject):
             sleep(1) # some delay to let the dialog fade out
 
         if err is not None:
-            if firstAttempt:
-                return False
             if err == "nossl":
                 self.messageBox_04(self.host, self.port)
             elif err == "noconn":
                 self.messageBox_05(self.host, self.port)
             return False
 
-        self.ssl = client.socket.ssl # remember if we are connected with SSL
+        self.is_ssl_connection = client.socket.ssl # remember if we are connected with SSL
         self.proxy = DispatchRPC(self.mutex, client)
         self.proxy.connectionLostSGL.connect(self.connectionLostSGL)
 
@@ -167,8 +130,6 @@ class Connector(QObject):
         server_version = self.proxy.getServerVersion()
         self.connectionID = uuid().hex
         if not server_version == SERVER_VERSION:
-            if firstAttempt:
-                return False
             self.messageBox_06(server_version, self.host, self.port)
             return False
 
@@ -177,7 +138,7 @@ class Connector(QObject):
     def isSSLConnection(self):
         if self.internal:
             return False
-        return self.ssl
+        return self.is_ssl_connection
 
     def getOurUserData(self):
         return self.proxy.getUserData(self.user, self.password)
