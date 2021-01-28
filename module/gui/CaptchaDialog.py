@@ -123,6 +123,7 @@ class CaptchaDialog(QDialog):
             self.imgDataBuffer.close()
 
         (dummy, encoded) = data['src'].split(",", 1)   # separate the metadata from the image data
+        encoded = encoded.encode('utf_8')   # convert to 'str', QByteArray.fromBase64() automatic conversion has been removed in PyQt5 >= 5.5
         self.imgData = QByteArray.fromBase64(encoded)
         self.imgDataBuffer = QBuffer(self.imgData)
         if self.imgDataBuffer.open(QIODevice.ReadOnly):
