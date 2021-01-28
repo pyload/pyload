@@ -448,5 +448,9 @@ class Section(QGroupBox):
                 i = QLineEdit(self)
                 i.setText(option.value)
             self.inputs[option.name] = i;
-            layout.addRow(option.description, i)
+            if ctype == "plugin" and option.description == "Activated" and isinstance(i, QComboBox):
+                i.setStyleSheet("QComboBox {font-weight: bold;}")
+                layout.addRow("<b>" + option.description + "</b>", i)
+            else:
+                layout.addRow(option.description, i)
             layout.setFieldGrowthPolicy(QFormLayout.AllNonFixedFieldsGrow)
