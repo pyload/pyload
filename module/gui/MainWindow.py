@@ -493,18 +493,17 @@ class MainWindow(QMainWindow):
         self.toolbar.setIconSize(QSize(30,30))
         self.toolbar.setMovable(False)
         self.actions["status_start"] = self.toolbar.addAction(self.appIconSet["start"], "")
-        self.actions["status_start"].setWhatsThis(whatsThisFormat(_("Run"), _("Sets the server status to 'Running'.")))
+        wt = _("Resumes downloading the Queue.<br><br>Sets the server status to 'Running'.")
+        self.actions["status_start"].setWhatsThis(whatsThisFormat(_("Resume Queue"), wt))
+        self.actions["status_pause"] = self.toolbar.addAction(self.appIconSet["pause"], "")
+        wt = _("Proceeds with ongoing downloads.<br>Starts no further downloads.<br><br>Sets the server status to 'Paused'.")
+        self.actions["status_pause"].setWhatsThis(whatsThisFormat(_("Pause Queue"), wt))
         self.actions["status_stop"] = self.toolbar.addAction("")
-        self.actions["status_stop"].setWhatsThis(whatsThisFormat(_("Stop"), _("Aborts all ongoing downloads and sets the server status to 'Paused'.")))
+        wt = _("Aborts all ongoing downloads.<br>Starts no further downloads.<br><br>Sets the server status to 'Paused'.")
+        self.actions["status_stop"].setWhatsThis(whatsThisFormat(_("Abort Downloads"), wt))
         self.statusStopIcon = self.appIconSet["stop"]
         self.statusStopIconNoPause = self.appIconSet["stop_nopause"]
         self.actions["status_stop"].setIcon(self.statusStopIcon)
-        self.actions["status_pause"] = self.toolbar.addAction(self.appIconSet["pause"], "")
-        wt = _(
-        "Sets the server status to 'Paused'.<br>When the server is paused, "
-        "no further downloads will be started. Ongoing downloads continue."
-        )
-        self.actions["status_pause"].setWhatsThis(whatsThisFormat(_("Pause"), wt))
         self.startPauseActGrp = QActionGroup(self.toolbar)
         self.startPauseActGrp.addAction(self.actions["status_start"])
         self.startPauseActGrp.addAction(self.actions["status_pause"])
@@ -574,8 +573,8 @@ class MainWindow(QMainWindow):
         self.toolbar_maxParallelDownloads_value.editingFinished.connect(self.slotMaxParallelDownloadsValue)
         self.toolbar_captcha.clicked.connect(self.slotCaptchaStatusButton)
         self.actions["status_start"].triggered[bool].connect(self.slotStatusStart)
-        self.actions["status_stop"].triggered.connect(self.slotStatusStop)
         self.actions["status_pause"].triggered[bool].connect(self.slotStatusPause)
+        self.actions["status_stop"].triggered.connect(self.slotStatusStop)
         self.actions["restart_failed"].triggered.connect(self.slotRestartFailed)
         self.actions["remove_finished"].triggered.connect(self.slotRemoveFinished)
 
