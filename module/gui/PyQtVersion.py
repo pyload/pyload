@@ -37,9 +37,7 @@ def usePyQt5(pyloadgui_version):
         except ImportError:
             return False
 
-    data = cmdLineParser(pyloadgui_version)
-    cmdl_ver = data[0]
-    configdir_ = data[3]
+    cmdl_ver = cmdLineParser(pyloadgui_version)[0]
 
     if cmdl_ver is not None:
         # use the version number from the command line option
@@ -47,11 +45,7 @@ def usePyQt5(pyloadgui_version):
     else:
         # read version number from config file
         default_version = 4
-        homedir_ = os.path.abspath("")
-        if configdir_:
-            guiFile = homedir_ + os.sep + "gui.xml"
-        else:
-            guiFile = os.path.abspath("gui.xml")
+        guiFile = "gui.xml"
         if os.path.isfile(guiFile) and os.access(guiFile, os.R_OK):
             line = None
             with open(guiFile) as t:

@@ -110,7 +110,7 @@ def saveOptionsToConfig(self, backup):
         save options to the config file
     """
     if backup:
-        with open(join(self.homedir, "gui.xml"), 'r') as src, open(join(self.homedir, "gui.xml.backup.reset"), 'w') as dst: dst.write(src.read())
+        with open("gui.xml", "r") as src, open("gui.xml.backup.reset", "w") as dst: dst.write(src.read())
     mainWindowNode = self.parser.xml.elementsByTagName("mainWindow").item(0)
     if mainWindowNode.isNull():
         mainWindowNode = self.parser.xml.createElement("mainWindow")

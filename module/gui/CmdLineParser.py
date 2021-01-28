@@ -47,7 +47,6 @@ def cmdLineParser(pyloadgui_version):
     pyqt       = None
     desknotify = None
     connection = None
-    configdir_ = ""
     noconsole  = False
     icontest   = False
     pidfile    = "pyloadgui.pid"
@@ -84,8 +83,6 @@ def cmdLineParser(pyloadgui_version):
                     connection = argument
                 elif option in ("-p", "--pidfile"):
                     pidfile = argument
-                elif option in ("--configdir"):
-                    configdir_ = argument
                 elif option in ("-n", "--noconsole"):
                     if os.name == "nt":
                         noconsole = True
@@ -113,6 +110,6 @@ def cmdLineParser(pyloadgui_version):
             print_help()
             exit()
 
-    return (pyqt, desknotify, connection, configdir_, noconsole, icontest, pidfile, debug)
+    return (pyqt, desknotify, connection, noconsole, icontest, pidfile, debug)
 
 

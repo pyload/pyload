@@ -139,10 +139,8 @@ class main(QObject):
         self.app.setAttribute(Qt.AA_DontShowIconsInMenus, False)
         self.defAppFont = QApplication.font()
         self.defAppPalette = QApplication.palette()
-        self.path = pypath
-        self.homedir = abspath("")
 
-        (dummy, dummy, self.cmdLineConnection, self.configdir, self.noConsole, icontest, self.pidfile, self.debugLogLevel) = cmdLineParser(CURRENT_VERSION)
+        (dummy, dummy, self.cmdLineConnection, self.noConsole, icontest, self.pidfile, self.debugLogLevel) = cmdLineParser(CURRENT_VERSION)
         if icontest:
             self.icontest()
             exit()
@@ -211,16 +209,13 @@ class main(QObject):
         return False
 
     def checkConfigFiles(self):
-        if self.configdir:
-            guiFile = self.homedir + sep + "gui.xml"
-        else:
-            guiFile = abspath("gui.xml")
+        guiFile = "gui.xml"
         guiFileFound = os.path.isfile(guiFile) and os.access(guiFile, os.R_OK)
-        defaultGuiFile = join(self.path, "module", "config", "gui_default.xml")
+        defaultGuiFile = join(pypath, "module", "config", "gui_default.xml")
         defaultGuiFileFound = os.path.isfile(defaultGuiFile) and os.access(defaultGuiFile, os.R_OK)
         if not guiFileFound:
             text  = "Cannot find the configuration file:"
-            text += "\n" + guiFile
+            text += "\n" + abspath(guiFile)
             text += "\n\nDo you want to create a new one?"
             msgb = MessageBox(None, text, "W", "YES_NO", True)
             if not msgb.exec_():
@@ -263,10 +258,10 @@ class main(QObject):
         if not first:
             QApplication.setPalette(self.defAppPalette) # restore the default application palette
 
-        self.parser = XMLParser(join(self.homedir, "gui.xml"), join(self.path, "module", "config", "gui_default.xml"))
+        self.parser = XMLParser("gui.xml", join(pypath, "module", "config", "gui_default.xml"))
         self.lang = self.parser.xml.elementsByTagName("language").item(0).toElement().text()
         if not self.lang:
-            parser = XMLParser(join(self.path, "module", "config", "gui_default.xml"))
+            parser = XMLParser(join(pypath, "module", "config", "gui_default.xml"))
             self.lang = parser.xml.elementsByTagName("language").item(0).toElement().text()
 
         gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
@@ -291,9 +286,7 @@ class main(QObject):
             self.log.info("Starting pyLoad Client %s" % CURRENT_VERSION)
         else:
             self.log.info("Reinitializing pyLoad Client %s" % CURRENT_VERSION)
-        self.log.debug9("User's home directory: %s" % InitHomeDir.homedir)
-        self.log.info("Configuration directory: %s" % self.homedir)
-        #self.log.info("Using pid file: %s" % self.pidfile)
+        self.log.info("Using home directory: %s" % os.getcwd())
         self.log.info("Running in the Qt %d framework" % (5 if USE_PYQT5 == True else 4))
         if self.debugLogLevel is not None:
             self.log.info("Debug messages at level %d and higher" % self.debugLogLevel)
@@ -1641,10 +1634,7 @@ class main(QObject):
         self.connWindow.hide()
         self.lastConnection = data.copy()
 
-        if self.configdir:
-            pyloadConf = self.homedir + sep + "pyload.conf"
-        else:
-            pyloadConf = abspath("pyload.conf")
+        pyloadConf = "pyload.conf"
 
         if data["type"] not in ("remote", "internal"):
             coreConfigParser = CoreConfigParser(pyloadConf)
@@ -1708,11 +1698,7 @@ class main(QObject):
                 pidFile = PidFile(self.core.pidfile)
                 pid = pidFile.isAlreadyRunning(("pyloadcore.exe", "pyloadgui.exe"))
                 if pid:
-                    if self.configdir:
-                        filename = self.homedir + sep + self.core.pidfile
-                    else:
-                        filename = abspath(self.core.pidfile)
-                    return self.errorInternalCoreStartup(self.messageBox_15, (filename, pid))
+                    return self.errorInternalCoreStartup(self.messageBox_15, (abspath(self.core.pidfile), pid))
 
                 self.core.corePyQtSignal.coreRestartSGL.connect(self.slotCoreRestart, Qt.QueuedConnection)
                 self.core.startedInGui = True
@@ -2928,7 +2914,7 @@ class main(QObject):
             popup the language options dialog
         """
         def getLanguageList():
-            localedir = self.path + sep + "locale"
+            localedir = pypath + sep + "locale"
             if not (os.path.isdir(localedir) and os.access(localedir, os.R_OK)):
                 self.log.error("main.slotShowLanguageOptions.getLanguageList: Cannot access directory: %s" % localedir)
                 return []
