@@ -11,7 +11,7 @@ from ..internal.XFSHoster import XFSHoster
 class DdlTo(XFSHoster):
     __name__ = "DdlTo"
     __type__ = "hoster"
-    __version__ = "0.07"
+    __version__ = "0.08"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(?:ddl\.to|ddownload\.com)/(?P<ID>\w{12})'
@@ -36,7 +36,7 @@ class DdlTo(XFSHoster):
     DL_LIMIT_PATTERN = r'You have to wait (.+?) till next download'
 
     API_KEY = "37699zuaj90n9hxado2m7"
-    API_URL = "https://api-v2.ddl.to/api/"
+    API_URL = "https://api-v2.ddownload.com/api/"
 
     @classmethod
     def api_response(cls, method, **kwargs):

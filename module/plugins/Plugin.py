@@ -148,7 +148,7 @@ class Plugin(Base):
     __config__ = [("name", "type", "desc", "default")]
     __description__ = """Base Plugin"""
     __author_name__ = ("RaNaN", "spoob", "mkaay")
-    __author_mail__ = ("RaNaN@pyload.org", "spoob@pyload.org", "mkaay@mkaay.de")
+    __author_mail__ = ("RaNaN@pyload.net", "spoob@pyload.net", "mkaay@mkaay.de")
 
     def __init__(self, pyfile):
         Base.__init__(self, pyfile.m.core)

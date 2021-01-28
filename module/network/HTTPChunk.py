@@ -138,6 +138,8 @@ class HTTPChunk(HTTPRequest):
         self.arrived = 0
         self.lastURL = self.p.referer
 
+        self.aborted = False  # indicates that the chunk aborted gracefully
+
         self.c = pycurl.Curl()
 
         self.header = ""
@@ -162,8 +164,22 @@ class HTTPChunk(HTTPRequest):
     def cj(self):
         return self.p.cj
 
+    def formatRange(self):
+        if self.id == len(self.p.info.chunks) - 1:  # as last chunk dont set end range, so we get everything
+            if self.resume:
+                range = "%i-" % (self.arrived + self.range[0])
+            else:
+                range = "%i-" % self.range[0]
+        else:
+            if self.id == 0 and not self.resume:  # special case for first chunk
+                range = "%i-%i" % (0, min(self.range[1] + 1, self.p.size - 1))
+            else:
+                range = "%i-%i" % (self.arrived + self.range[0], min(self.range[1] + 1, self.p.size - 1))
+
+        return range
+
     def getHandle(self):
-        """ returns a Curl handle ready to use for perform/multiperform """
+        """ returns a Curl handle ready to use for perform/multi-perform """
 
         self.setRequestContext(self.p.url, self.p.get, self.p.post, self.p.referer, self.p.cj)
         self.c.setopt(pycurl.WRITEFUNCTION, self.writeBody)
@@ -180,14 +196,12 @@ class HTTPChunk(HTTPRequest):
 
             if self.range:
                 # do nothing if chunk already finished
-                if self.arrived + self.range[0] >= self.range[1]: return None
+                if self.arrived + self.range[0] >= self.range[1]:
+                    return None
 
-                if self.id == len(self.p.info.chunks) - 1:  # as last chunk dont set end range, so we get everything
-                    range = "%i-" % (self.arrived + self.range[0])
-                else:
-                    range = "%i-%i" % (self.arrived + self.range[0], min(self.range[1] + 1, self.p.size - 1))
+                range = self.formatRange()
 
-                self.log.debug("Chunked resume with range %s" % range)
+                self.log.debug("Chunked resume with range %s" % self.formatRange())
                 self.c.setopt(pycurl.RANGE, range)
             else:
                 self.log.debug("Resume File from %i" % self.arrived)
@@ -195,10 +209,7 @@ class HTTPChunk(HTTPRequest):
 
         else:
             if self.range:
-                if self.id == len(self.p.info.chunks) - 1:  # see above
-                    range = "%i-" % self.range[0]
-                else:
-                    range = "%i-%i" % (self.range[0], min(self.range[1] + 1, self.p.size - 1))
+                range = self.formatRange()
 
                 self.log.debug("Chunked with range %s" % range)
                 self.c.setopt(pycurl.RANGE, range)
@@ -221,10 +232,10 @@ class HTTPChunk(HTTPRequest):
 
         self.headerParsed = True
 
-        return None  #:All is fine
+        return None  #: All is fine
 
     def writeBody(self, buf):
-        #:Ignore BOM, it confuses unrar
+        #: Ignore BOM, it confuses unrar
         if not self.BOMChecked:
             if buf[:3] == codecs.BOM_UTF8:
                 buf = buf[3:]
@@ -254,9 +265,10 @@ class HTTPChunk(HTTPRequest):
             time.sleep(self.sleep)
 
         if self.range and self.arrived > self.size:
-            return 0  #:Close if we have enough data
+            self.aborted = True  #: Tell parent to ignore the pycurl Exception
+            return 0  #: Close if we have enough data
 
-        return None  #:All is fine
+        return None  #: All is fine
 
     def parseHeader(self):
         """parse data from recieved header"""
@@ -323,15 +335,15 @@ class HTTPChunk(HTTPRequest):
                     else:
                         continue
 
-                    #:Drop unsafe chararacters
-                    fname = posixpath_basename(fname)
-                    fname = ntpath_basename(fname)
-                    for badc in '<>:"/\\|?*\0':
-                        fname = fname.replace(badc, "")
-                    fname = fname.lstrip('.')
+                #: Drop unsafe characters
+                fname = posixpath_basename(fname)
+                fname = ntpath_basename(fname)
+                for badc in '<>:"/\\|?*\0':
+                    fname = fname.replace(badc, "")
+                fname = fname.lstrip('.')
 
-                    self.log.debug("Content-Disposition: %s" % fname)
-                    self.p.updateDisposition(fname)
+                self.log.debug("Content-Disposition: %s" % fname)
+                self.p.updateDisposition(fname)
 
             elif not self.resume and line.startswith("content-length"):
                 self.p.size = int(line.split(":")[1])
@@ -350,6 +362,7 @@ class HTTPChunk(HTTPRequest):
     def setRange(self, range):
         self.range = range
         self.size = range[1] - range[0]
+        self.log.debug("Chunked with range %s" % self.formatRange())
 
     def flushFile(self):
         """  flush and close file """

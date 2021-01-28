@@ -15,7 +15,7 @@ class RehostTo(MultiAccount):
 
     __description__ = """Rehost.to account plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("RaNaN", "RaNaN@pyload.org")]
+    __authors__ = [("RaNaN", "RaNaN@pyload.net")]
 
     def grab_hosters(self, user, password, data):
         html = self.load("http://rehost.to/api.php",

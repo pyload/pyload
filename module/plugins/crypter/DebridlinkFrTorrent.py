@@ -21,7 +21,7 @@ except ImportError:
 class DebridlinkFrTorrent(Crypter):
     __name__ = "DebridlinkFrTorrent"
     __type__ = "crypter"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -121,7 +121,7 @@ class DebridlinkFrTorrent(Crypter):
         if not api_data['success']:
             self.fail("%s (code: %s)" % (api_data.get('error_description', error_description(api_data["error"])), api_data['error']))
 
-        torrent_id = api_data['value']['torrentId']
+        torrent_id = api_data['value']['id']
 
         self.pyfile.setCustomStatus("metadata")
         self.pyfile.setProgress(0)

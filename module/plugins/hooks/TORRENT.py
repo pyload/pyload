@@ -8,11 +8,11 @@ from ..internal.Addon import Addon
 class TORRENT(Addon):
     __name__ = "TORRENT"
     __type__ = "hook"
-    __version__ = "0.04"
+    __version__ = "0.05"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", False),
-                  ("torrent_plugin", "None;c:AlldebridComTorrent;c:DebridlinkFrTorrent;c:RealdebridComTorrent;h:ZbigzCom", "Associate torrents / magnets with plugin", "None")]
+                  ("torrent_plugin", "None;c:AlldebridComTorrent;c:DebridlinkFrTorrent;h:LinksnappyComTorrent;c:RealdebridComTorrent;h:ZbigzCom", "Associate torrents / magnets with plugin", "None")]
 
     __description__ = """Associate torrents / magnets with plugin"""
     __license__ = "GPLv3"

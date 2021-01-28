@@ -33,7 +33,6 @@ class RealdebridCom(MultiHoster):
     API_URL = "https://api.real-debrid.com/rest/1.0"
 
     def api_response(self, namespace, get={}, post={}):
-
         self.req.http.c.setopt(pycurl.USERAGENT, "pyLoad/%s" % self.pyload.version)
 
         try:

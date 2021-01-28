@@ -13,7 +13,7 @@ from ..internal.MultiAccount import MultiAccount
 class DebridlinkFr(MultiAccount):
     __name__ = "DebridlinkFr"
     __type__ = "account"
-    __version__ = "0.04"
+    __version__ = "0.05"
     __status__ = "testing"
 
     __config__ = [("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),
@@ -31,7 +31,7 @@ class DebridlinkFr(MultiAccount):
 
     def api_request(self, method, get={}, post={}):
         api_token = self.info['data'].get('api_token', None)
-        if api_token:
+        if api_token and method != "oauth/token":
             self.req.http.c.setopt(pycurl.HTTPHEADER, ["Authorization: Bearer " + api_token])
         self.req.http.c.setopt(pycurl.USERAGENT, "pyLoad/%s" % self.pyload.version)
         try:

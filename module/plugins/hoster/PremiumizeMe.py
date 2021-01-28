@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import re
+
 from ..internal.misc import json
 from ..internal.MultiHoster import MultiHoster
 
@@ -7,10 +9,10 @@ from ..internal.MultiHoster import MultiHoster
 class PremiumizeMe(MultiHoster):
     __name__ = "PremiumizeMe"
     __type__ = "hoster"
-    __version__ = "0.33"
+    __version__ = "0.34"
     __status__ = "testing"
 
-    __pattern__ = r'^unmatchable$'
+    __pattern__ = r'https?://(?:www\.)?premiumize\.me/file\?id=(?P<ID>\w+)'
     __config__ = [("activated", "bool", "Activated", True),
                   ("use_premium", "bool", "Use premium account if available", True),
                   ("fallback", "bool", "Fallback to free download if premium fails", False),
@@ -23,6 +25,8 @@ class PremiumizeMe(MultiHoster):
     __authors__ = [("Florian Franzen", "FlorianFranzen@gmail.com"),
                    ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
+    DIRECT_LINK = False
+
     # See https://www.premiumize.me/api
     API_URL = "https://www.premiumize.me/api/"
 
@@ -32,14 +36,29 @@ class PremiumizeMe(MultiHoster):
         return json.loads(json_data)
 
     def handle_premium(self, pyfile):
-        res = self.api_respond("transfer/directdl",
-                               src=pyfile.url,
-                               apikey=self.account.info['login']['password'])
+        m = re.search(self.__pattern__, pyfile.url)
+        if m is None:
+            res = self.api_respond("transfer/directdl",
+                                   src=pyfile.url,
+                                   apikey=self.account.info['login']['password'])
 
-        if res['status'] == "success":
-            self.pyfile.name = res['content'][0]['path']
-            self.pyfile.size = res['content'][0]['size']
-            self.download(res['content'][0]['link'])
+            if res['status'] == "success":
+                self.pyfile.name = res['content'][0]['path']
+                self.pyfile.size = res['content'][0]['size']
+                self.download(res['content'][0]['link'])
+
+            else:
+                self.fail(res['message'])
 
         else:
-            self.fail(res['message'])
+            res = self.api_respond("item/details",
+                                   id=m.group('ID'),
+                                   apikey=self.account.info['login']['password'])
+
+            if res.get('status') != "error":
+                self.pyfile.name = res['name']
+                self.pyfile.size = res['size']
+                self.download(res['link'])
+
+            else:
+                self.fail(res['message'])

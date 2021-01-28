@@ -17,8 +17,8 @@ except:
 
 def local_check(function):
     def _view(*args, **kwargs):
-        if request.environ.get('REMOTE_ADDR', "0") in ('127.0.0.1', 'localhost') \
-        or request.environ.get('HTTP_HOST','0') == '127.0.0.1:9666':
+        if request.environ.get('REMOTE_ADDR', "0") in ('127.0.0.1', '::ffff:127.0.0.1', '::1', 'localhost') \
+        or request.environ.get('HTTP_HOST','0') in ('127.0.0.1:9666', '[::1]:9666'):
             return function(*args, **kwargs)
         else:
             return HTTPError(403, "Forbidden")
@@ -37,7 +37,9 @@ def flash(id="0"):
 @local_check
 def add():
     package = request.forms.get("package", request.forms.get("source", request.POST.get('referer', None)))
-    urls = [x.decode('latin1').strip() for x in request.POST['urls'].split("\n") if x.decode('latin1').strip()]
+    urls = [x.decode('latin1').strip()
+            for x in request.POST['urls'].replace(' ', '\n').split("\n")
+            if x.decode('latin1').strip()]
 
     if package:
         PYLOAD.addPackage(package, urls, 0)

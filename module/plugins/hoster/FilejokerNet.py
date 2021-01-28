@@ -5,6 +5,7 @@ import re
 import urlparse
 
 from ..captcha.ReCaptcha import ReCaptcha
+from ..captcha.HCaptcha import HCaptcha
 from ..internal.misc import json, parse_html_tag_attr_value
 from ..internal.XFSHoster import XFSHoster
 
@@ -12,7 +13,7 @@ from ..internal.XFSHoster import XFSHoster
 class FilejokerNet(XFSHoster):
     __name__ = "FilejokerNet"
     __type__ = "hoster"
-    __version__ = "0.10"
+    __version__ = "0.11"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?filejoker\.net/(?P<ID>\w{12})'
@@ -28,11 +29,12 @@ class FilejokerNet(XFSHoster):
 
     PLUGIN_DOMAIN = "filejoker.net"
 
-    ERROR_PATTERN = r'Wrong Captcha|Session expired'
+    ERROR_PATTERN = r'Wrong Captcha|Session expired|Your download has not finished yet'
     PREMIUM_ONLY_PATTERN = 'Free Members can download files no bigger'
 
     WAIT_PATTERN = r'<span id="count" class="alert-success">([\w ]+?)</span> seconds</p>'
     DL_LIMIT_PATTERN = r'Wait [\w ]+? to download for free.'
+    TEMP_OFFLINE_PATTERN = r'Your download has not finished yet'
 
     INFO_PATTERN = r'<div class="name-size"><span>(?P<N>.+?)</span> <p>\((?P<S>[\d.,]+) (?P<U>[\w^_]+)\)</p></div>'
     SIZE_REPLACEMENTS = [('Kb', 'KB'), ('Mb', 'MB'), ('Gb', 'GB')]
@@ -63,6 +65,14 @@ class FilejokerNet(XFSHoster):
                 self.captcha = recaptcha
                 response, _ = recaptcha.challenge(captcha_key)
 
+            else:
+                hcaptcha = HCaptcha(self.pyfile)
+                captcha_key = hcaptcha.detect_key()
+                if captcha_key:
+                    self.captcha = hcaptcha
+                    response = hcaptcha.challenge(captcha_key)
+
+            if captcha_key:
                 captcha_inputs = {}
                 for _i in m.group(1).split(','):
                     _k, _v = _i.split(':', 1)

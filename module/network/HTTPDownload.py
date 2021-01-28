@@ -172,7 +172,7 @@ class HTTPDownload():
 
         while 1:
             # need to create chunks
-            if not chunksCreated and self.chunkSupport and self.size: # will be setted later by first chunk
+            if not chunksCreated and self.chunkSupport and self.size: # will be set later by first chunk
 
                 if not resume:
                     self.info.setSize(self.size)
@@ -226,7 +226,7 @@ class HTTPDownload():
                     curl, errno, msg = c
                     chunk = self.findChunk(curl)
                     # test if chunk was finished
-                    if errno != 23 or "0 !=" not in msg:
+                    if errno != pycurl.E_WRITE_ERROR or not chunk.aborted:
                         failed.append(chunk)
                         ex = pycurl.error(errno, msg)
                         self.log.debug("Chunk %d failed: %s" % (chunk.id + 1, str(ex)))

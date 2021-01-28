@@ -23,7 +23,7 @@ class OCR(Plugin):
 
     __description__ = """OCR base plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("pyLoad Team", "admin@pyload.org")]
+    __authors__ = [("pyLoad Team", "admin@pyload.net")]
 
     def __init__(self, pyfile):
         self._init(pyfile.m.core)

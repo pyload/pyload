@@ -14,7 +14,7 @@ class AdsCaptcha(CaptchaService):
 
     __description__ = """AdsCaptcha captcha service plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("pyLoad Team", "admin@pyload.org")]
+    __authors__ = [("pyLoad Team", "admin@pyload.net")]
 
     CAPTCHAID_PATTERN = r'api\.adscaptcha\.com/Get\.aspx\?.*?CaptchaId=(\d+)'
     PUBLICKEY_PATTERN = r'api\.adscaptcha\.com/Get\.aspx\?.*?PublicKey=([\w\-]+)'

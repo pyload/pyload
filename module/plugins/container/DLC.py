@@ -73,8 +73,8 @@ class DLC(Container):
 
     __description__ = """DLC container decrypter plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("RaNaN", "RaNaN@pyload.org"),
-                   ("spoob", "spoob@pyload.org"),
+    __authors__ = [("RaNaN", "RaNaN@pyload.net"),
+                   ("spoob", "spoob@pyload.net"),
                    ("mkaay", "mkaay@mkaay.de"),
                    ("Schnusch", "Schnusch@users.noreply.github.com"),
                    ("Walter Purcaro", "vuolter@gmail.com"),

@@ -47,7 +47,7 @@ class BIGHTTPRequest(HTTPRequest):
 class FilecryptCc(Crypter):
     __name__ = "FilecryptCc"
     __type__ = "crypter"
-    __version__ = "0.40"
+    __version__ = "0.44"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?filecrypt\.cc/Container/\w+'
@@ -65,7 +65,7 @@ class FilecryptCc(Crypter):
     COOKIES = [("filecrypt.cc", "lang", "en")]
 
     DLC_LINK_PATTERN = r'onclick="DownloadDLC\(\'(.+)\'\);">'
-    WEBLINK_PATTERN = r"openLink.?'([\w\-]*)',"
+    WEBLINK_PATTERN = r"<button onclick=\"openLink.?'([\w\-]*)',"
     MIRROR_PAGE_PATTERN = r'"[\w]*" href="(https?://(?:www\.)?filecrypt.cc/Container/\w+\.html\?mirror=\d+)">'
 
     CAPTCHA_PATTERN = r'<h2>Security prompt</h2>'
@@ -73,7 +73,6 @@ class FilecryptCc(Crypter):
     CIRCLE_CAPTCHA_PATTERN = r'<input type="image" src="(.+?)"'
     KEY_CAPTCHA_PATTERN = r"<script language=JavaScript src='(http://backs\.keycaptcha\.com/swfs/cap\.js)'"
     SOLVEMEDIA_CAPTCHA_PATTERN = r'<script type="text/javascript" src="(https?://api(?:-secure)?\.solvemedia\.com/papi/challenge.+?)"'
-    CUTCAPTCHA_CAPTCHA_PATTERN = r'<script src=["\'](https://cutcaptcha\.com/captcha/\w+?\.js)["\']>'
 
     def setup(self):
         self.urls = []
@@ -145,7 +144,6 @@ class FilecryptCc(Crypter):
                            self._handle_circle_captcha,
                            self._handle_solvemedia_captcha,
                            self._handle_keycaptcha_captcha,
-                           self._handle_cutcaptcha_captcha,
                            self._handle_coinhive_captcha,
                            self._handle_recaptcha_captcha):
 
@@ -245,28 +243,6 @@ class FilecryptCc(Crypter):
         else:
             return None
 
-    def _handle_cutcaptcha_captcha(self, url):
-        m = re.search(self.CUTCAPTCHA_CAPTCHA_PATTERN, self.data)
-        if m is not None:
-            self.log_debug("CutCaptcha Captcha URL: %s" % m.group(1))
-
-        else:
-            return None
-
-
-        cutcaptcha = CutCaptcha(self.pyfile)
-
-        cutcaptcha_key = cutcaptcha.detect_key()
-        if cutcaptcha_key:
-            self.captcha = cutcaptcha
-            token = cutcaptcha.challenge(cutcaptcha_key)
-
-            return self._filecrypt_load_url(url,
-                                            post={'cap_token': token})
-
-        else:
-            return None
-
     def _handle_recaptcha_captcha(self, url):
         recaptcha = ReCaptcha(self.pyfile)
         captcha_key = recaptcha.detect_key()
@@ -295,20 +271,17 @@ class FilecryptCc(Crypter):
             links = re.findall(self.WEBLINK_PATTERN, self.site_with_links)
 
             for _link in links:
-                _link = "http://filecrypt.cc/Link/%s.html" % _link
+                _link = "http://www.filecrypt.cc/Link/%s.html" % _link
                 for i in range(5):
                     self.data = self._filecrypt_load_url(_link)
-                    res = self.handle_captcha(_link)
-                    if res not in (None, ""):
+                    m = re.search(r'https://www\.filecrypt\.cc/index\.php\?Action=Go&id=\w+', self.data)
+                    if m is not None:
+                        headers = self._filecrypt_load_url(m.group(0), just_header=True)
+                        self.urls.append(headers['location'])
                         break
 
                 else:
-                    self.fail(_("Max captcha retries reached"))
-
-                link2 = re.search('<iframe .* noresize src="(.*)"></iframe>', res)
-                if link2:
-                    res2 = self._filecrypt_load_url(link2.group(1), just_header=True)
-                    self.urls.append(res2['location'])
+                    self.log_error(_("Weblink could not be found"))
 
         except Exception, e:
             self.log_debug("Error decrypting weblinks: %s" % e)

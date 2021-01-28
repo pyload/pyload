@@ -6,10 +6,10 @@ from ..internal.SimpleHoster import SimpleHoster
 class AnonfileCom(SimpleHoster):
     __name__ = "AnonfileCom"
     __type__ = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
-    __pattern__ = r'https?://(?:www\.)?anonfile\.com/\w+'
+    __pattern__ = r'https?://(?:www\.)?anonfiles?\.com/(?P<ID>\w+)'
     __config__ = [("activated", "bool", "Activated", True),
                   ("use_premium", "bool", "Use premium account if available", True),
                   ("fallback", "bool", "Fallback to free download if premium fails", True),
@@ -23,7 +23,9 @@ class AnonfileCom(SimpleHoster):
     NAME_PATTERN = r'class="text-center text-wordwrap">(?P<N>.+?)<'
     SIZE_PATTERN = r'Download\s*\((?P<S>[\d.,]+) (?P<U>[\w^_]+)\)'
 
-    LINK_PATTERN = r'href="(https://cdn-\d+.anonfile.com/.+?)"'
+    LINK_PATTERN = r'href="(https://cdn-\d+.anonfiles.com/.+?)"'
+
+    URL_REPLACEMENTS = [(__pattern__ + ".*", "https://anonfiles.com/\g<ID>")]
 
     def setup(self):
         self.multiDL = True

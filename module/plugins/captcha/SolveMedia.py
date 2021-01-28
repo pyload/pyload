@@ -14,7 +14,7 @@ class SolveMedia(CaptchaService):
 
     __description__ = """SolveMedia captcha service plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("pyLoad Team", "admin@pyload.org")]
+    __authors__ = [("pyLoad Team", "admin@pyload.net")]
 
     KEY_PATTERN = r'api(?:-secure)?\.solvemedia\.com/papi/challenge\.(?:no)?script\?k=(.+?)["\']'
 

@@ -1,0 +1,25 @@
+body {
+  overflow-x: hidden;
+}
+
+#twitter a,
+#twitter a:active,
+#twitter a:focus,
+#twitter a:visited,
+#twitter a:hover {
+  text-decoration: none;
+  outline: none;
+  color: #f9be03;
+}
+#twitter p {
+  color: #eee;
+  display:block;
+  background-color: #555555;
+  padding:10px;
+  margin-bottom:10px;
+  border-radius: 3px;
+}
+#twitter p:hover {
+  background-color: #696969;
+  cursor: pointer;
+}

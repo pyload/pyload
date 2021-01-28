@@ -29,7 +29,7 @@ except ImportError:
 class ReCaptcha(CaptchaService):
     __name__ = 'ReCaptcha'
     __type__ = 'captcha'
-    __version__ = '0.43'
+    __version__ = '0.44'
     __status__ = 'testing'
 
     __description__ = 'ReCaptcha captcha service plugin'
@@ -40,7 +40,7 @@ class ReCaptcha(CaptchaService):
                    ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
     KEY_V2_PATTERN = r'(?:data-sitekey=["\']|["\']sitekey["\']\s*:\s*["\'])((?:[\w\-]|%[0-9a-fA-F]{2})+)'
-
+    KEY_FORMAT_V2_PATTERN = r'^6L[\w-]{6}AAAAA[\w-]{27}$'
     STOKEN_V2_PATTERN = r'data-stoken=["\']([\w\-]+)'
 
     RECAPTCHA_INTERACTIVE_SIG = "7b99386315b3e035285946b842049575fc69a88ccc219e1bc96a9afd0f3c4b7456f09d36bf3dc530" + \
@@ -109,12 +109,18 @@ class ReCaptcha(CaptchaService):
 
         m = re.search(self.KEY_V2_PATTERN, html)
         if m is not None:
-            self.key = urllib.unquote(m.group(1).strip())
-            self.log_debug("Key: %s" % self.key)
-            return self.key
-        else:
-            self.log_warning(_("Key pattern not found"))
-            return None
+            key = urllib.unquote(m.group(1).strip())
+            m = re.search(self.KEY_FORMAT_V2_PATTERN, key)
+            if m is not None:
+                self.key = key
+                self.log_debug("Key: %s" % self.key)
+                return self.key
+
+            else:
+                self.log_debug(key, "Wrong key format, this probably because is is not a reCAPTCHA key")
+
+        self.log_warning(_("Key pattern not found"))
+        return None
 
     def detect_secure_token(self, data=None):
         html = data or self.retrieve_data()
@@ -275,14 +281,7 @@ class ReCaptcha(CaptchaService):
         return img
 
     def _challenge_v2(self, key, secure_token=None):
-        fallback_url = "https://www.google.com/recaptcha/api/fallback?k=" + key \
-                       + ("&stoken=" + secure_token if secure_token else "")
-
-        html = self.pyfile.plugin.load(fallback_url, ref=self.pyfile.url)
-
-        if re.search(r'href="https://support.google.com/recaptcha.*"', html) is not None:
-            self.log_warning(_("reCAPTCHA noscript is blocked, trying reCAPTCHA interactive"))
-            return self._challenge_v2js(key, secure_token=secure_token)
+        return self._challenge_v2js(key, secure_token=secure_token)
 
         for i in range(10):
             try:

@@ -14,7 +14,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class RapidgatorNet(SimpleHoster):
     __name__ = "RapidgatorNet"
     __type__ = "hoster"
-    __version__ = "0.55"
+    __version__ = "0.56"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(?:rapidgator\.(?:net|asia|)|rg\.to)/file/(?P<ID>\w+)'
@@ -46,7 +46,7 @@ class RapidgatorNet(SimpleHoster):
                                ''
     WAIT_PATTERN = r'(?:Delay between downloads must be not less than|Try again in).+'
 
-    LINK_FREE_PATTERN = r'return \'(http://\w+.rapidgator.net/.*)\';'
+    LINK_FREE_PATTERN = r'return \'(https?://\w+.rapidgator.net/.*)\';'
 
     RECAPTCHA_PATTERN = r'"http://api\.recaptcha\.net/challenge\?k=(.*?)"'
     ADSCAPTCHA_PATTERN = r'(http://api\.adscaptcha\.com/Get\.aspx[^"\']+)'
