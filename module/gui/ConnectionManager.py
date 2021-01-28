@@ -58,6 +58,14 @@ class ConnectionManager(QDialog):
 
         self.connList = self.ListWidget()
         self.connList.setDragDropMode(QAbstractItemView.InternalMove)
+        txt = "<i>" + _("In order to connect to a server, you need to<br>close this window and restart the application.") + "</i>"
+        self.noteLbl = QLabel(txt)
+        wt = _(
+        "Needed to free up network resources (sockets/addresses/ports) "
+        "claimed by the previously started internal server instance."
+        )
+        self.noteLbl.setWhatsThis(whatsThisFormat(_("Restart the application"), wt))
+        self.noteLbl.hide()
         self.wtBtn = WhatsThisButton()
         labelLayout.setContentsMargins(0, 0, 0, 0)
         labelLayout.setSpacing(0)
@@ -65,6 +73,7 @@ class ConnectionManager(QDialog):
         labelLayout.addWidget(self.wtBtn)
         boxLayout.addLayout(labelLayout)
         boxLayout.addWidget(self.connList)
+        boxLayout.addWidget(self.noteLbl)
 
         self.btnNew     = QPushButton(_("New"))
         self.btnEdit    = QPushButton(_("Edit"))
@@ -75,11 +84,7 @@ class ConnectionManager(QDialog):
         self.btnConnect.setDefault(True)
         if self.disable_connect:
             self.btnConnect.setEnabled(False)
-            tt = _(
-            "Cannot connect when the internal server was running or has failed to start.\n"
-            "Please close this window and restart the application."
-            )
-            self.btnConnect.setToolTip(tt)
+            self.noteLbl.show()
 
         buttonLayout.addWidget(self.btnNew)
         buttonLayout.addWidget(self.btnEdit)
