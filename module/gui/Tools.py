@@ -602,8 +602,9 @@ class PidFile(object):
     """ taken from pyLoadCore.py """
 
     def __init__(self, pidfile):
-        self.log = logging.getLogger("guilog")
+        self.log = logging.getLogger("guilog_dummy")
         self.pidfile = pidfile
+        self.deleted_old = False
 
     def writePidFile(self):
         self.deletePidFile()
@@ -629,6 +630,7 @@ class PidFile(object):
 
         return 0
 
+    # modified to detect py2exe builds on windows
     def isAlreadyRunning(self, winExeFiles=()):
         pid = self.checkPidFile()
         if not pid:

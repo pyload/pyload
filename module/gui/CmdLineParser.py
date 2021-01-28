@@ -39,7 +39,7 @@ def cmdLineParser(pyloadgui_version):
         print "  -o, --notify=<system>    Force use of Linux desktop notification system:"
         print "                             notify2, pynotify or qt_tray"
         print "  -n, --noconsole          Hide Command Prompt on Windows OSs"
-        #print "  -p, --pidfile=<file>     Set pidfile to <file>"
+        print "  -p, --pidfile=<file>     Set pidfile to <file>"
         print "  -i, --icontest           Check for crash when loading icons"
         print "  -h, --help               Display this help screen"
         print ""
@@ -55,8 +55,8 @@ def cmdLineParser(pyloadgui_version):
 
     if len(sys.argv) > 1:
         try:
-            options, dummy = getopt(sys.argv[1:], 'vq:o:c:nihd:',
-                ["version", "pyqt=", "notify=", "connection=", "configdir=", "noconsole", "icontest", "help", "debug="])
+            options, dummy = getopt(sys.argv[1:], 'vq:o:c:p:nihd:',
+                ["version", "pyqt=", "notify=", "connection=", "pidfile=", "configdir=", "noconsole", "icontest", "help", "debug="])
             for option, argument in options:
                 if option in ("-v", "--version"):
                     print pyloadgui_version
@@ -82,6 +82,8 @@ def cmdLineParser(pyloadgui_version):
                         exit()
                 elif option in ("-c", "--connection"):
                     connection = argument
+                elif option in ("-p", "--pidfile"):
+                    pidfile = argument
                 elif option in ("--configdir"):
                     configdir_ = argument
                 elif option in ("-n", "--noconsole"):
@@ -92,10 +94,6 @@ def cmdLineParser(pyloadgui_version):
                         exit()
                 elif option in ("-i", "--icontest"):
                     icontest = True
-                #elif option in ("-p", "--pidfile"):
-                #    pidfile = argument
-                #    print "Error: The pidfile option is not implemented"
-                #    exit()
                 elif option in ("-h", "--help"):
                     print_help()
                     exit()

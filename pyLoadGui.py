@@ -150,6 +150,12 @@ class main(QObject):
         self.pullEventsCount = 0
         self.fileLogIsEnabled = None
         self.connManagerDisableConnect = False
+        self.pidFile = PidFile(self.pidfile)
+        if self.checkForRunningInstance():
+            exit()
+        if self.pidFile.checkPidFile():
+            self.pidFile.deleted_old = True  # print a debug msg later when logging is initialized
+        self.pidFile.writePidFile()
         if not self.checkConfigFiles():
             exit()
         if self.noConsole:
@@ -191,6 +197,18 @@ class main(QObject):
             i = style.standardIcon(i[0])
             print "OK"
         print "\nNo errors."
+
+    def checkForRunningInstance(self):
+        pid = self.pidFile.isAlreadyRunning(("pyloadgui.exe",))
+        if pid:
+            text =  "Cannot start pyLoad Client."
+            text += "\n" + "A pyLoad Client for this configuration is already running."
+            text += "\n" + "PID-file: " + unicode(abspath(self.pidfile))
+            text += "\n" + "PID: %d" % int(pid)
+            msgb = MessageBox(None, text, "C", "OK", True)
+            msgb.exec_()
+            return True
+        return False
 
     def checkConfigFiles(self):
         if self.configdir:
@@ -264,9 +282,12 @@ class main(QObject):
             except Exception:
                 self.loggingOptions.defaultSettings()
         self.initLogging(first)
+        self.pidFile.log = self.log
 
         self.log.info("====================================================================================================")
         if first:
+            if self.pidFile.deleted_old:
+                self.log.debug9("Old pidfile has been deleted: %s" % abspath(self.pidfile))
             self.log.info("Starting pyLoad Client %s" % CURRENT_VERSION)
         else:
             self.log.info("Reinitializing pyLoad Client %s" % CURRENT_VERSION)
@@ -2604,17 +2625,19 @@ class main(QObject):
         self.saveWindowToConfig()
         self.saveOptionsToConfig()
         self.quitInternal()
-        self.log.info("pyLoad Client quit")
         try:
             self.tray.deleteLater()
         except Exception:
             self.log.debug4("main.slotQuit_continue: tray was already deleted by the garbage collector")
+        self.pidFile.deletePidFile()
+        self.log.info("pyLoad Client quits")
         self.removeLogger()
         self.app.quit()
 
     def slotQuitConnWindow(self):
         self.connWindow = None # odd fix for python/pyqt crash on windows 7 when exiting the application
-        self.log.info("pyLoad Client quit")
+        self.pidFile.deletePidFile()
+        self.log.info("pyLoad Client quits")
         self.removeLogger()
         self.app.quit()
 
@@ -2676,7 +2699,8 @@ class main(QObject):
             self.log.error("                         If this happens again and this is your default connection,")
             self.log.error("                         use command line argument '-c' with a nonexistent connection-name")
             self.log.error("                         to get in the Connection Manager, e.g. 'pyLoadGui.py -c foobar'.")
-            self.log.info("pyLoad Client quit")
+            self.pidFile.deletePidFile()
+            self.log.info("pyLoad Client quits")
             self.removeLogger()
             exit()
 
