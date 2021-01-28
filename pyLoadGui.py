@@ -336,6 +336,8 @@ class main(QObject):
                 self.slotConnect(data)
             else:
                 self.log.debug9("main.init: No startup connection set")
+                if self.cmdLineConnection is not None:
+                    self.log.error("No such connection: '%s'" % self.cmdLineConnection)
                 self.connWindow.show()
 
     def initLogging(self, first=False):
