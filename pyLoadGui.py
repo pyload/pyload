@@ -166,6 +166,7 @@ class main(QObject):
 
     @classmethod
     def icontest(self):
+        print "Running in the Qt %d framework.\n" % (5 if USE_PYQT5 == True else 4)
         print "Test of the desktop environment icon theme."
         print "  This will crash (Segmentation fault) if an icon fails to load."
         print "  In such case, the active icon theme possibly is broken or incomplete."
