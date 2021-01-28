@@ -59,6 +59,8 @@ class AboutBox(QDialog):
         self.text3 = QLabel()
         self.text3.setAlignment(Qt.AlignTop)
         self.text3.setTextFormat(Qt.PlainText)
+        self.text4 = QLabel()
+        self.text4.setAlignment(Qt.AlignTop)
 
         vboxText = QVBoxLayout()
         vboxText.setContentsMargins(0, 0, 0, 0)
@@ -67,6 +69,8 @@ class AboutBox(QDialog):
         vboxText.addWidget(self.text2)
         vboxText.addSpacing(20)
         vboxText.addWidget(self.text3)
+        vboxText.addSpacing(20)
+        vboxText.addWidget(self.text4)
         vboxText.addStretch(1)
 
         hbox = QHBoxLayout()
@@ -138,6 +142,8 @@ class AboutBox(QDialog):
         txt3 += "\nPyQt version: " + pyqtver
         txt3 += "\nSIP version: " + sipver
         self.text3.setText(txt3)
+        txt4 = "Process ID: " + str(os.getpid())
+        self.text4.setText(txt4)
         self.okBtn.setFocus(Qt.OtherFocusReason)
         self.adjustSize()
         self.setFixedSize(self.width(), self.height())
