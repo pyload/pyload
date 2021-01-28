@@ -1293,7 +1293,7 @@ class MainWindow(QMainWindow):
         self.collectorContext.buttons["push"]              .setEnabled(self.corePermissions["MODIFY"] and packsCnt > 0                    )
         self.collectorContext.buttons["add_links"]         .setEnabled(self.corePermissions["ADD"   ] and packsCnt == 1                   )
         self.collectorContext.buttons["edit"]              .setEnabled(self.corePermissions["MODIFY"] and packsCnt > 0                    )
-        self.collectorContext.buttons["abort"]             .setEnabled(self.corePermissions["MODIFY"] and downloading                     )
+        self.collectorContext.buttons["abort"]             .setEnabled(self.corePermissions["MODIFY"] and (packsCnt > 0 or linksCnt > 0)  )
         self.collectorContext.buttons["restart"]           .setEnabled(self.corePermissions["MODIFY"] and (packsCnt > 0 or linksCnt > 0)  )
         self.collectorContext.buttons["remove"]            .setEnabled(self.corePermissions["DELETE"] and (packsCnt > 0 or linksCnt > 0)  )
         self.collectorContext.buttons["removepackagedupes"].setEnabled(self.corePermissions["DELETE"] and allPacksCnt > 1                 )
