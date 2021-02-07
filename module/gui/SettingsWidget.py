@@ -321,6 +321,7 @@ class SettingsWidget(QWidget):
                     else:
                         continue
                 self.pluginsComboBox.setCurrentIndex(i)
+                self.pluginsMenuCheckBox.setChecked(str(self.pluginsComboBox.currentText()) in self.menuPlugins)
                 self.pluginsStacked.setCurrentIndex(i)
                 if mc == 0:
                     self.pluginsSearchHitCount += 1
@@ -340,6 +341,7 @@ class SettingsWidget(QWidget):
                     if i == self.pluginsComboBox.currentIndex():
                         break
                     self.pluginsComboBox.setCurrentIndex(i)
+                    self.pluginsMenuCheckBox.setChecked(str(self.pluginsComboBox.currentText()) in self.menuPlugins)
                     self.pluginsStacked.setCurrentIndex(i)
                     if mc == 0:
                         self.pluginsSearchHitCount += 1
