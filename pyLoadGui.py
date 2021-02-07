@@ -2233,33 +2233,37 @@ class main(QObject):
             emitted from main window
             advanced link/package select
         """
-        pattern = unicode(self.mainWindow.advselect.patternEdit.currentText())
+        def cmbItemData(cmb):
+            if USE_PYQT5:
+                return cmb.itemData(cmb.currentIndex())
+            else:
+                return cmb.itemData(cmb.currentIndex()).toString()
+
+        wdg = self.mainWindow.advselect
+        pattern = unicode(wdg.patternEdit.currentText())
         if pattern:
-            self.mainWindow.advselect.setEnabled(False)
+            wdg.setEnabled(False)
+            mode = cmbItemData(wdg.modeCmb)
+            if mode == "string":
+                syntax = QRegExp.FixedString
+            elif mode == "wildcard":
+                syntax = QRegExp.Wildcard
+            elif mode == "regexp":
+                syntax = QRegExp.RegExp2
+            else:
+                raise ValueError("main.slotAdvancedSelect: Invalid mode")
+            cs = Qt.CaseSensitive if wdg.caseCb.isChecked() == True else Qt.CaseInsensitive
+            selectLinks = True if cmbItemData(wdg.itemsCmb) == "links" else False
+            column = cmbItemData(wdg.columnCmb)
             if queue:
                 self.mainWindow.slotQueueMsgHide()
                 self.mainWindow.tabs["queue"]["b"].repaint()
+                QTimer.singleShot(0, lambda: self.queue.advancedSelect(pattern, syntax, cs, deselect, selectLinks, column))
             else:
                 self.mainWindow.slotCollectorMsgHide()
                 self.mainWindow.tabs["collector"]["b"].repaint()
-            mode = self.mainWindow.advselect.modeCmb.currentIndex()
-            matchCase = self.mainWindow.advselect.caseCb.isChecked()
-            selectLinks = self.mainWindow.advselect.linksCb.isChecked()
-            if mode == self.mainWindow.advselect.modeIdx.STRING:
-                syntax = QRegExp.FixedString
-            elif mode == self.mainWindow.advselect.modeIdx.WILDCARD:
-                syntax = QRegExp.Wildcard
-            elif mode == self.mainWindow.advselect.modeIdx.REGEXP:
-                syntax = QRegExp.RegExp2
-            else:
-                self.log.error("main.slotAdvancedSelect: Invalid mode")
-                return
-            cs = Qt.CaseSensitive if matchCase == True else Qt.CaseInsensitive
-            if queue:
-                QTimer.singleShot(0, lambda: self.queue.advancedSelect(pattern, syntax, cs, deselect, selectLinks))
-            else:
-                QTimer.singleShot(0, lambda: self.collector.advancedSelect(pattern, syntax, cs, deselect, selectLinks))
-            QTimer.singleShot(300, lambda: self.mainWindow.advselect.setEnabled(True))
+                QTimer.singleShot(0, lambda: self.collector.advancedSelect(pattern, syntax, cs, deselect, selectLinks, column))
+            QTimer.singleShot(300, lambda: wdg.setEnabled(True))
 
     def slotRemovePackageDupes(self):
         """

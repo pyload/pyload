@@ -983,7 +983,7 @@ class CollectorModel(QAbstractItemModel):
             self.view.clearSelection()
             self.view.setCurrentIndex(QModelIndex())
 
-    def advancedSelect(self, pattern, syntax, cs, deselect, selectLinks):
+    def advancedSelect(self, pattern, syntax, cs, deselect, selectLinks, column):
         """
             called from main
         """
@@ -996,12 +996,19 @@ class CollectorModel(QAbstractItemModel):
         # select links
         if selectLinks:
             noPackagesSelected = True
-            for pindex in smodel.selectedRows(0):  # search in selected packages
+            for pindex in smodel.selectedRows(0):   # search in selected packages
                 package = pindex.internalPointer()
                 if isinstance(package, Package):
                     for l, link in enumerate(package.children):
-                        name = unicode(link.data["name"])
-                        match = rx.indexIn(name) != -1
+                        if column == "name_column":
+                            datastr = link.data["name"]
+                        elif column == "plugin_column":
+                            datastr = link.data["plugin"]
+                        elif column == "status_column":
+                            datastr = self.getStatus(link, None)
+                        else:
+                            raise ValueError("%s: Invalid column '%s'" % (self.cname, column))
+                        match = rx.indexIn(datastr) != -1
                         if match:
                             index = self.index(l, 0, pindex)
                             if not index.isValid():
@@ -1012,20 +1019,27 @@ class CollectorModel(QAbstractItemModel):
                             else:
                                 if smodel.isSelected(index): smodel.select(index, QItemSelectionModel.Deselect | QItemSelectionModel.Rows)
                             numOfmatches += 1
-                            self.log.debug9("%s.advancedSelect:selectedLink:   deselect:%s   name:'%s'   pid:%d   fid:%d" %
-                                            (self.cname, deselect, name, package.id, link.id))
+                            self.log.debug9("%s.advancedSelect:selectedLink:   deselect:%s   column:%s   datastr:'%s'   pid:%d   fid:%d" %
+                                            (self.cname, deselect, column, datastr, package.id, link.id))
                     noPackagesSelected = False
                 elif not isinstance(package, Link):
                     raise TypeError("%s: Unknown item instance" % self.cname)
 
-            if noPackagesSelected:  # search in all packages
+            if noPackagesSelected:   # search in all packages
                 for p, package in enumerate(self._data):
                     pindex = self.index(p, 0)
                     if not pindex.isValid():
                         raise ValueError("%s: Invalid index" % self.cname)
                     for l, link in enumerate(package.children):
-                        name = unicode(link.data["name"])
-                        match = rx.indexIn(name) != -1
+                        if column == "name_column":
+                            datastr = link.data["name"]
+                        elif column == "plugin_column":
+                            datastr = link.data["plugin"]
+                        elif column == "status_column":
+                            datastr = self.getStatus(link, None)
+                        else:
+                            raise ValueError("%s: Invalid column '%s'" % (self.cname, column))
+                        match = rx.indexIn(datastr) != -1
                         if match:
                             index = self.index(l, 0, pindex)
                             if not index.isValid():
@@ -1036,14 +1050,25 @@ class CollectorModel(QAbstractItemModel):
                             else:
                                 if smodel.isSelected(index): smodel.select(index, QItemSelectionModel.Deselect | QItemSelectionModel.Rows)
                             numOfmatches += 1
-                            self.log.debug9("%s.advancedSelect:selectedLink:   deselect:%s   name:'%s'   pid:%d   fid:%d" %
-                                            (self.cname, deselect, name, package.id, link.id))
+                            self.log.debug9("%s.advancedSelect:selectedLink:   deselect:%s   column:%s   datastr:'%s'   pid:%d   fid:%d" %
+                                            (self.cname, deselect, column, datastr, package.id, link.id))
 
         # select packages
         else:
             for p, package in enumerate(self._data):
-                name = unicode(package.data["name"])
-                match = rx.indexIn(name) != -1
+                if column == "name_column":
+                    datastr = package.data["name"]
+                elif column == "plugin_column":
+                    plugins = []
+                    for link in package.children:
+                        if not link.data["plugin"] in plugins:
+                            plugins.append(link.data["plugin"])
+                    datastr = ", ".join(plugins)
+                elif column == "status_column":
+                    datastr = self.getStatus(package, None)
+                else:
+                    raise ValueError("%s: Invalid column '%s'" % (self.cname, column))
+                match = rx.indexIn(datastr) != -1
                 if match:
                     index = self.index(p, 0)
                     if not index.isValid():
@@ -1053,7 +1078,8 @@ class CollectorModel(QAbstractItemModel):
                     else:
                         if smodel.isSelected(index): smodel.select(index, QItemSelectionModel.Deselect | QItemSelectionModel.Rows)
                     numOfmatches += 1
-                    self.log.debug9("%s.advancedSelect:selectedPackage:   deselect:%s   name:'%s'   pid:%d" % (self.cname, deselect,name, package.id))
+                    self.log.debug9("%s.advancedSelect:selectedPackage:   deselect:%s   column:%s   datastr:'%s'   pid:%d" %
+                                    (self.cname, deselect, column, datastr, package.id))
 
         # info text
         if selectLinks:
