@@ -2285,6 +2285,16 @@ class main(QObject):
         else:
             self.collector.removeLinkDupes()
 
+    def slotRemoveFinishedPackages(self):
+        """
+            emitted from main window
+            remove finished packages
+        """
+        if self.mainWindow.tabw.currentIndex() == 1:
+            self.queue.removeFinishedPackages()
+        else:
+            self.collector.removeFinishedPackages()
+
     def slotSortPackages(self):
         """
             emitted from main window
@@ -2349,7 +2359,7 @@ class main(QObject):
         self.queue.setDirty()
         self.collector.setDirty()
 
-    def slotRemoveFinishedPackages(self):
+    def slotRemoveAllFinishedPackages(self):
         """
             emitted from main window
             delete all finished packages
