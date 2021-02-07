@@ -1098,6 +1098,27 @@ class CollectorModel(QAbstractItemModel):
         self.view.buttonMsgHide(2000)
         self.log.debug8("%s.advancedSelect took %dms" % (self.cname, self.time_msec() - func_start_time))
 
+    def removeFinishedPackages(self):
+        """
+            called from main
+        """
+        func_start_time = self.time_msec()
+        QMutexLocker(self.mutex)
+        finishedIds = []
+        for package in self._data:
+            status = DownloadStatus.Finished
+            for link in package.children:
+                if link.data["status"] > status:
+                    status = link.data["status"]
+            if (status == DownloadStatus.Finished):
+                finishedIds.append(package.id)
+        if len(finishedIds) > 0:
+            self.view.setEnabled(False)
+            self.connector.proxy.deletePackages(finishedIds)
+            self.view.clearSelection()
+            self.view.setCurrentIndex(QModelIndex())
+        self.log.debug8("%s.removeFinishedPackages took %dms" % (self.cname, self.time_msec() - func_start_time))
+
     def removePackageDupes(self):
         """
             called from main

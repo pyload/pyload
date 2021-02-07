@@ -87,7 +87,7 @@ def connectSignals(self, first):
     self.mainWindow.stopAllDownloadsSGL.connect(self.slotStopAllDownloads)
     self.mainWindow.captchaStatusButtonSGL.connect(self.slotCaptchaStatusButton)
     self.mainWindow.restartFailedSGL.connect(self.slotRestartFailed)
-    self.mainWindow.deleteFinishedSGL.connect(self.slotDeleteFinished)
+    self.mainWindow.removeFinishedPackagesSGL.connect(self.slotRemoveFinishedPackages)
     self.mainWindow.pullOutPackagesSGL.connect(self.slotPullOutPackages)
     self.mainWindow.reloadAccountsSGL.connect(self.slotReloadAccounts)
     self.mainWindow.menuPluginNotFoundSGL.connect(self.slotMenuPluginNotFound)

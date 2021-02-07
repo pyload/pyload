@@ -64,7 +64,7 @@ class MainWindow(QMainWindow):
     setDownloadStatusSGL                 = pyqtSignal(object)
     stopAllDownloadsSGL                  = pyqtSignal()
     restartFailedSGL                     = pyqtSignal()
-    deleteFinishedSGL                    = pyqtSignal()
+    removeFinishedPackagesSGL            = pyqtSignal()
     showAddPackageSGL                    = pyqtSignal()
     showAddLinksSGL                      = pyqtSignal()
     showConnectorSGL                     = pyqtSignal()
@@ -412,8 +412,8 @@ class MainWindow(QMainWindow):
         self.queueContext.buttons["add"].setEnabled(corePermissions["ADD"])
         self.collectorContext.buttons["add"].setEnabled(corePermissions["ADD"])
 
-        # Api.deleteFinished
-        self.actions["remove_finished"].setEnabled(corePermissions["DELETE"])
+        # Api.deletePackages
+        self.actions["remove_finished_packages"].setEnabled(corePermissions["DELETE"])
 
         # Api.pauseServer and Api.unpauseServer
         self.actions["status_start"].setEnabled(corePermissions["STATUS"])
@@ -565,9 +565,9 @@ class MainWindow(QMainWindow):
         self.actions["restart_failed"] = self.toolbar.addAction(self.appIconSet["restart"], "")
         wt = _("Restarts (resumes if supported) all failed, aborted and temporary offline downloads.")
         self.actions["restart_failed"].setWhatsThis(whatsThisFormat(_("Restart Failed"), wt))
-        self.actions["remove_finished"] = self.toolbar.addAction(self.appIconSet["remove"], "")
-        wt = _("Removes all finished downloads from the Queue and the Collector.")
-        self.actions["remove_finished"].setWhatsThis(whatsThisFormat(_("Remove Finished"), wt))
+        self.actions["remove_finished_packages"] = self.toolbar.addAction(self.appIconSet["remove"], "")
+        wt = _("Removes all finished packages from the Queue and the Collector.")
+        self.actions["remove_finished_packages"].setWhatsThis(whatsThisFormat(_("Remove Finished Packages"), wt))
         self.toolbar_speedLimit_enabled.toggled[bool].connect(self.slotSpeedLimitStatus)
         self.toolbar_speedLimit_rate.editingFinished.connect(self.slotSpeedLimitRate)
         self.toolbar_maxParallelDownloads_value.editingFinished.connect(self.slotMaxParallelDownloadsValue)
@@ -576,7 +576,7 @@ class MainWindow(QMainWindow):
         self.actions["status_pause"].triggered[bool].connect(self.slotStatusPause)
         self.actions["status_stop"].triggered.connect(self.slotStatusStop)
         self.actions["restart_failed"].triggered.connect(self.slotRestartFailed)
-        self.actions["remove_finished"].triggered.connect(self.slotRemoveFinished)
+        self.actions["remove_finished_packages"].triggered.connect(self.slotRemoveFinishedPackages)
 
         self.addMenu = QMenu()
         self.actions["add_package"] = self.addMenu.addAction(_("Package"))
@@ -1121,12 +1121,12 @@ class MainWindow(QMainWindow):
         """
         self.restartFailedSGL.emit()
 
-    def slotRemoveFinished(self):
+    def slotRemoveFinishedPackages(self):
         """
-            remove finished button (toolbar)
+            remove finished packages button (toolbar)
             let main to the stuff
         """
-        self.deleteFinishedSGL.emit()
+        self.removeFinishedPackagesSGL.emit()
 
     def slotAdd(self):
         """

@@ -2349,16 +2349,15 @@ class main(QObject):
         self.queue.setDirty()
         self.collector.setDirty()
 
-    def slotDeleteFinished(self):
+    def slotRemoveFinishedPackages(self):
         """
             emitted from main window
-            delete all finished files and completly finished packages
+            delete all finished packages
         """
         if not self.corePermissions["DELETE"]:
             return
-        self.connector.proxy.deleteFinished()
-        self.queue.setDirty()
-        self.collector.setDirty()
+        self.queue.removeFinishedPackages()
+        self.collector.removeFinishedPackages()
 
     def slotClipboardChange(self):
         """
