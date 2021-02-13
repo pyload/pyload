@@ -408,6 +408,9 @@ class PluginManager:
         self.plugins["hoster"] = self.hosterPlugins
         merge(default_config, config)
 
+        temp, config = self.parse("hooks")
+        merge(default_config, config)
+
         self.captchaPlugins, config = self.parse("captcha")
         self.plugins["captcha"] = self.captchaPlugins
         merge(default_config, config)
