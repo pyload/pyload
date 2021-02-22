@@ -50,6 +50,9 @@ class FormFile():
         self.mimetype = mimetype or mimetypes.guess_type(filename)[0] if not data and os.path.exists(
             filename) else None or 'application/octet-stream'
 
+    def __repr__(self):
+        return f"FormFile <'{os.path.basename(self.filename)}'>"
+
 
 class HTTPRequest:
     def __init__(self, cookies=None, options=None, limit=2_000_000):
