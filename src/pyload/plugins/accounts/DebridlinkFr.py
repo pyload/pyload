@@ -1,22 +1,19 @@
 # -*- coding: utf-8 -*-
 
-import hashlib
 import json
 import time
 
 import pycurl
+from pyload.core.network.http.exceptions import BadHeader
 
 from ..base.multi_account import MultiAccount
-
-
-def args(**kwargs):
-    return kwargs
+from ..downloaders.DebridlinkFr import error_description
 
 
 class DebridlinkFr(MultiAccount):
     __name__ = "DebridlinkFr"
     __type__ = "account"
-    __version__ = "0.03"
+    __version__ = "0.05"
     __status__ = "testing"
 
     __config__ = [
@@ -29,80 +26,98 @@ class DebridlinkFr(MultiAccount):
     __license__ = "GPLv3"
     __authors__ = [("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
-    API_URL = "https://debrid-link.fr/api"
+    TUNE_TIMEOUT = False
 
-    def api_request(self, method, data=None, get={}, post={}):
+    #: See https://debrid-link.fr/api_doc/v2
+    API_URL = "https://debrid-link.fr/api/"
 
-        session = self.info["data"].get("session", None)
-        if session:
-            ts = str(int(time.time() - float(session["tsd"])))
-
-            m = hashlib.sha1()
-            data = ts + method + session["key"]
-            m.update(data.encode())
-            sign = m.hexdigest()
-
+    def api_request(self, method, get={}, post={}):
+        api_token = self.info["data"].get("api_token", None)
+        if api_token and method != "oauth/token":
             self.req.http.c.setopt(
-                pycurl.HTTPHEADER,
-                [
-                    "X-DL-TOKEN: " + session["token"],
-                    "X-DL-SIGN: " + sign,
-                    "X-DL-TS: " + ts,
-                ],
+                pycurl.HTTPHEADER, ["Authorization: Bearer " + api_token]
             )
-
-        json_data = self.load(self.API_URL + method, get=get, post=post)
+        self.req.http.c.setopt(pycurl.USERAGENT, "pyLoad/%s" % self.pyload.version)
+        try:
+            json_data = self.load(self.API_URL + method, get=get, post=post)
+        except BadHeader as exc:
+            json_data = exc.content
 
         return json.loads(json_data)
 
-    def grab_hosters(self, user, password, data):
-        res = self.api_request("/downloader/hostnames")
+    def _refresh_token(self, client_id, refresh_token):
+        api_data = self.api_request(
+            "oauth/token",
+            post={
+                "client_id": client_id,
+                "refresh_token": refresh_token,
+                "grant_type": "refresh_token",
+            },
+        )
 
-        if res["result"] == "OK":
-            return res["value"]
+        if "error" in api_data:
+            if api_data["error"] == "invalid_request":
+                self.log_error(
+                    self._(
+                        "You have to use GetDebridlinkToken.py to authorize pyLoad: "
+                        "https://github.com/pyload/pyload/files/4679112/GetDebridlinkToken.zip "
+                    )
+                )
+            else:
+                self.log_error(
+                    api_data.get(
+                        "error_description", error_description(api_data["error"])
+                    )
+                )
+            self.fail_login()
+
+        return api_data["access_token"], api_data["expires_in"]
+
+    def grab_hosters(self, user, password, data):
+        api_data = self.api_request("v2/downloader/hostnames")
+
+        if api_data["success"]:
+            return api_data["value"]
 
         else:
             return []
 
     def grab_info(self, user, password, data):
-        res = self.api_request("/account/infos")
+        api_data = self.api_request("v2/account/infos")
 
-        if res["result"] == "OK":
-            premium = res["value"]["premiumLeft"] > 0
-            validuntil = res["value"]["premiumLeft"] + time.time()
+        if api_data["success"]:
+            premium = api_data["value"]["premiumLeft"] > 0
+            validuntil = api_data["value"]["premiumLeft"] + time.time()
 
         else:
-            self.log_error(self._("Unable to retrieve account information"), res["ERR"])
+            self.log_error(
+                self._("Unable to retrieve account information"),
+                api_data.get("error_description", error_description(api_data["error"])),
+            )
             validuntil = None
             premium = None
 
         return {"validuntil": validuntil, "trafficleft": -1, "premium": premium}
 
     def signin(self, user, password, data):
-        cache_info = self.db.retrieve("cache_info", {})
-        if user in cache_info:
-            self.info["data"]["session"] = cache_info[user]
+        if "token" not in data:
+            api_token, timeout = self._refresh_token(user, password)
+            data["api_token"] = api_token
+            self.timeout = timeout - 5 * 60  #: Five minutes less to be on the safe side
 
-            res = self.api_request("/account/infos")
-            if res["result"] == "OK":
-                self.skip_login()
+        api_data = self.api_request("v2/account/infos")
+        if "error" in api_data:
+            if api_data["error"] == "badToken":  #: Token expired? try to refresh
+                api_token, timeout = self._refresh_token(user, password)
+                data["api_token"] = api_token
+                self.timeout = (
+                    timeout - 5 * 60
+                )  #: Five minutes less to be on the safe side
 
             else:
-                del cache_info[user]
-                self.db.store("cache_info", cache_info)
-
-        res = self.api_request(
-            "/account/login", post=args(pseudo=user, password=password)
-        )
-
-        if res["result"] != "OK":
-            self.fail_login()
-
-        cache_info[user] = {
-            "tsd": time.time() - float(res["ts"]),
-            "token": res["value"]["token"],
-            "key": res["value"]["key"],
-        }
-
-        self.info["data"]["session"] = cache_info[user]
-        self.db.store("cache_info", cache_info)
+                self.log_error(
+                    api_data.get(
+                        "error_description", error_description(api_data["error"])
+                    )
+                )
+                self.fail_login()
