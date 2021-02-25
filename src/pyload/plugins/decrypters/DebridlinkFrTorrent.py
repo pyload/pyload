@@ -90,7 +90,7 @@ class DebridlinkFrTorrent(SimpleDecrypter):
 
             else:
                 #: URL is local torrent file (uploaded container)
-                torrent_filename = urllib.request.url2pathname(self.pyfile.url[7:]).encode('latin1').decode('utf8') #: trim the starting `file://`
+                torrent_filename = urllib.request.url2pathname(self.pyfile.url[7:])  #: trim the starting `file://`
                 if not exists(torrent_filename):
                     self.fail(self._("Torrent file does not exist"))
 
