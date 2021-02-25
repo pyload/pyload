@@ -43,7 +43,7 @@ BAD_STATUS_CODES = tuple(
 )
 
 
-class FormFile():
+class FormFile:
     def __init__(self, filename, data=None, mimetype=None):
         self.filename = os.path.abspath(filename)
         self.data = data
@@ -208,12 +208,15 @@ class HTTPRequest:
         if post:
             self.c.setopt(pycurl.POST, 1)
             if not multipart:
-                if isinstance(post, str):
+                if post is True:
+                    pass
+                elif isinstance(post, str):
                     post = post.encode()
+                    self.c.setopt(pycurl.POSTFIELDS, post)
                 else:  # TODO: check if mapping
                     post = myurlencode(post)
+                    self.c.setopt(pycurl.POSTFIELDS, post)
 
-                self.c.setopt(pycurl.POSTFIELDS, post)
             else:
                 multipart_post = []
                 for k, v in post.items():
@@ -241,6 +244,7 @@ class HTTPRequest:
 
         else:
             self.c.setopt(pycurl.POST, 0)
+            self.c.setopt(pycurl.HTTPGET, 1)
 
         if referer and self.last_url:
             self.c.setopt(pycurl.REFERER, self.last_url)
@@ -271,11 +275,6 @@ class HTTPRequest:
         self.response_header = b""
 
         self.c.setopt(pycurl.HTTPHEADER, self.request_headers)
-
-        if post:
-            self.c.setopt(pycurl.POST, 1)
-        else:
-            self.c.setopt(pycurl.HTTPGET, 1)
 
         if not follow_location:
             self.c.setopt(pycurl.FOLLOWLOCATION, 0)
