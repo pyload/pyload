@@ -8,10 +8,10 @@ from ..internal.misc import json
 from ..internal.XFSHoster import XFSHoster
 
 
-class DdlTo(XFSHoster):
-    __name__ = "DdlTo"
+class DdownloadCom(XFSHoster):
+    __name__ = "DdownloadCom"
     __type__ = "hoster"
-    __version__ = "0.08"
+    __version__ = "0.09"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(?:ddl\.to|ddownload\.com)/(?P<ID>\w{12})'
@@ -21,7 +21,7 @@ class DdlTo(XFSHoster):
                   ("chk_filesize", "bool", "Check file size", True),
                   ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10)]
 
-    __description__ = """Ddl.to hoster plugin"""
+    __description__ = """Ddownload.com hoster plugin"""
     __license__ = "GPLv3"
     __authors__ = [("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 

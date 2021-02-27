@@ -5,13 +5,13 @@ import time
 from ..internal.XFSAccount import XFSAccount
 
 
-class DdlTo(XFSAccount):
-    __name__ = "DdlTo"
+class DdownloadCom(XFSAccount):
+    __name__ = "DdownloadCom"
     __type__ = "account"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __status__ = "testing"
 
-    __description__ = """Ddl.to account plugin"""
+    __description__ = """Ddownload.com account plugin"""
     __license__ = "GPLv3"
     __authors__ = [("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
