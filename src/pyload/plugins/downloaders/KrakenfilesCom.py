@@ -10,7 +10,7 @@ from ..base.simple_downloader import SimpleDownloader
 
 class KrakenfilesCom(SimpleDownloader):
     __name__ = "KrakenfilesCom"
-    __type__ = "hoster"
+    __type__ = "downloader"
     __version__ = "0.01"
     __status__ = "testing"
 

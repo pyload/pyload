@@ -29,7 +29,7 @@ def error_description(error_code):
 
 class DebridlinkFr(MultiDownloader):
     __name__ = "DebridlinkFr"
-    __type__ = "hoster"
+    __type__ = "downloader"
     __version__ = "0.07"
     __status__ = "testing"
 
