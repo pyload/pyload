@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import os
+import urllib.request
 
 from pyload.core.utils import parse
 from pyload.core.utils.old import safename
@@ -49,11 +51,19 @@ class BaseDecrypter(BaseHoster):
 
         self._create_packages()
 
+        self._delete_tmpfile()
+
     def decrypt(self, pyfile):
         """
         The "main" method of every decrypter plugin, you **have to** overwrite it.
         """
         raise NotImplementedError
+
+    def _delete_tmpfile(self):
+        if self.pyfile.url.startswith("file://"):
+            tmp_filename = urllib.request.url2pathname(self.pyfile.url[7:])  #: trim the starting `file://`
+            if os.path.basename(tmp_filename).startswith("tmp_"):
+                self.remove(tmp_filename, try_trash=False)
 
     def _generate_packages(self):
         """
