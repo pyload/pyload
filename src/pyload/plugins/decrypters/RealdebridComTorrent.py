@@ -77,6 +77,12 @@ class RealdebridComTorrent(SimpleDecrypter):
                 break
             time.sleep(1)
 
+    def exit_error(self, msg):
+        if self.tmp_file:
+            os.remove(self.tmp_file)
+
+        self.fail(msg)
+
     def send_request_to_server(self):
         """ Send torrent/magnet to the server """
 
@@ -85,7 +91,7 @@ class RealdebridComTorrent(SimpleDecrypter):
             if self.pyfile.url.startswith("http"):
                 #: remote URL, download the torrent to tmp directory
                 torrent_content = self.load(self.pyfile.url, decode=False)
-                torrent_filename = safejoin(self.pyload.tempdir, "tmp_{}.torrent".format(self.pyfile.package().name)) #: `tmp_` files are deleted automatically
+                torrent_filename = safejoin(self.pyload.tempdir, "tmp_{}.torrent".format(self.pyfile.package().name))
                 with open(torrent_filename, "wb") as f:
                     f.write(torrent_content)
 
@@ -95,7 +101,9 @@ class RealdebridComTorrent(SimpleDecrypter):
                 if not exists(torrent_filename):
                     self.fail(self._("Torrent file does not exist"))
 
-            #: Check if the torrent file path is inside pyLoad's config directory
+            self.tmp_file = torrent_filename
+
+            #: Check if the torrent file path is inside pyLoad's temp directory
             if os.path.abspath(torrent_filename).startswith(self.pyload.tempdir + os.sep):
                 for _i in range(2):
                     try:
@@ -112,23 +120,23 @@ class RealdebridComTorrent(SimpleDecrypter):
                         if api_data["error_code"] == 8:  #: token expired, refresh the token and retry
                             self.account.relogin()
                             if not self.account.info["login"]["valid"]:
-                                self.fail(_("Token refresh has failed"))
+                                self.exit_error(_("Token refresh has failed"))
 
                             else:
                                 self.api_token = self.account.accounts[self.account.accounts.keys()[0]]["api_token"]
 
                         else:
                             error_msg = api_data["error"]
-                            self.fail(error_msg)
+                            self.exit_error(error_msg)
 
                     else:
                         break
 
                 else:
-                    self.fail(self._("Token refresh has failed"))
+                    self.exit_error(self._("Token refresh has failed"))
 
             else:
-                self.fail(self._("Illegal URL"))  #: We don't allow files outside pyLoad's config directory
+                self.exit_error(self._("Illegal URL"))  #: We don't allow files outside pyLoad's config directory
 
         else:
             #: magnet URL, send to the server
@@ -142,7 +150,7 @@ class RealdebridComTorrent(SimpleDecrypter):
                                          get={'auth_token': self.api_token})
 
         if "error" in torrent_info:
-            self.fail("{} (code: {})".format(torrent_info["error"], torrent_info.get("error_code", -1)))
+            self.exit_error("{} (code: {})".format(torrent_info["error"], torrent_info.get("error_code", -1)))
 
         #: Filter and select files for downloading
         exclude_filters = self.config.get("exclude_filter").split(';')
@@ -166,6 +174,9 @@ class RealdebridComTorrent(SimpleDecrypter):
         self.api_response("/torrents/selectFiles/" + torrent_id,
                           get={"auth_token": self.api_token},
                           post={"files": selected_ids})
+
+        if self.tmp_file:
+            os.remove(self.tmp_file)
 
         return torrent_id
 
@@ -221,6 +232,7 @@ class RealdebridComTorrent(SimpleDecrypter):
         return code
 
     def decrypt(self, pyfile):
+        self.tmp_file = None
         torrent_id = 0
         if "RealdebridCom" not in self.pyload.account_manager.plugins:
             self.fail(self._("This plugin requires an active Realdebrid.com account"))

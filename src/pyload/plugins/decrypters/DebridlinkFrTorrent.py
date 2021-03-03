@@ -20,7 +20,7 @@ from ..helpers import exists
 class DebridlinkFrTorrent(SimpleDecrypter):
     __name__ = "DebridlinkFrTorrent"
     __type__ = "decrypter"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __status__ = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -76,6 +76,12 @@ class DebridlinkFrTorrent(SimpleDecrypter):
                 break
             time.sleep(1)
 
+    def exit_error(self, msg):
+        if self.tmp_file:
+            os.remove(self.tmp_file)
+
+        self.fail(msg)
+
     def send_request_to_server(self):
         """ Send torrent/magnet to the server """
 
@@ -84,7 +90,7 @@ class DebridlinkFrTorrent(SimpleDecrypter):
             if self.pyfile.url.startswith("http"):
                 #: remote URL, download the torrent to tmp directory
                 torrent_content = self.load(self.pyfile.url, decode=False)
-                torrent_filename = safejoin(self.pyload.tempdir, "tmp_{}.torrent".format(self.pyfile.package().name)) #: `tmp_` files are deleted automatically
+                torrent_filename = safejoin(self.pyload.tempdir, "tmp_{}.torrent".format(self.pyfile.package().name))
                 with open(torrent_filename, "wb") as f:
                     f.write(torrent_content)
 
@@ -94,6 +100,8 @@ class DebridlinkFrTorrent(SimpleDecrypter):
                 if not exists(torrent_filename):
                     self.fail(self._("Torrent file does not exist"))
 
+            self.tmp_file = torrent_filename
+
             #: Check if the torrent file path is inside pyLoad's temp directory
             if os.path.abspath(torrent_filename).startswith(self.pyload.tempdir + os.sep):
                 #: send the torrent content to the server
@@ -101,7 +109,7 @@ class DebridlinkFrTorrent(SimpleDecrypter):
                                                 post={'file': FormFile(torrent_filename, mimetype="application/x-bittorrent")},
                                                 multipart=True))
                 if api_data["result"] != "OK":
-                    self.fail(api_data["ERR"])
+                    self.exit_error(api_data["ERR"])
 
                 api_data = self.api_request_safe("v2/seedbox/add",
                                                  post={"url": api_data["link"],
@@ -109,7 +117,7 @@ class DebridlinkFrTorrent(SimpleDecrypter):
                                                         "async": True})
 
             else:
-                self.fail(self._("Illegal URL"))  #: We don't allow files outside pyLoad's config directory
+                self.exit_error(self._("Illegal URL"))  #: We don't allow files outside pyLoad's config directory
 
         else:
             #: magnet URL, send to the server
@@ -119,9 +127,9 @@ class DebridlinkFrTorrent(SimpleDecrypter):
                                                     "async": True})
 
         if not api_data["success"]:
-            self.fail("{} (code: {})".format(api_data.get("error_description",
-                                                          error_description(api_data["error"])),
-                                             api_data["error"]))
+            self.exit_error("{} (code: {})".format(api_data.get("error_description",
+                                                                error_description(api_data["error"])),
+                                                   api_data["error"]))
 
         torrent_id = api_data["value"]["id"]
 
@@ -138,9 +146,9 @@ class DebridlinkFrTorrent(SimpleDecrypter):
                                                    "perPage": 50})
 
             if not api_data['success']:
-                self.fail("{} (code: {})".format(api_data.get("error_description",
-                                                              error_description(api_data["error"])),
-                                                 api_data["error"]))
+                self.exit_error("{} (code: {})".format(api_data.get("error_description",
+                                                                    error_description(api_data["error"])),
+                                                       api_data["error"]))
 
             if api_data["value"][0]["status"] == 1:
                 files.extend([{"id": _file["id"], "name": _file["name"], "size": _file["size"], "url": _file["downloadUrl"]}
@@ -186,9 +194,12 @@ class DebridlinkFrTorrent(SimpleDecrypter):
                                          post={'files-unwanted': json.dumps(unwanted_ids)})
 
         if not api_data["success"]:
-            self.fail("{} (code: {})".format(api_data.get("error_description",
-                                                          error_description(api_data["error"])),
-                                             api_data["error"]))
+            self.exit_error("{} (code: {})".format(api_data.get("error_description",
+                                                                error_description(api_data["error"])),
+                                                   api_data["error"]))
+
+        if self.tmp_file:
+            os.remove(self.tmp_file)
 
         return torrent_id, [_file["url"] for _file in files
                             if _file["id"] in selected_ids]
@@ -252,6 +263,7 @@ class DebridlinkFrTorrent(SimpleDecrypter):
         return code
 
     def decrypt(self, pyfile):
+        self.tmp_file = None
         if "DebridlinkFr" not in self.pyload.account_manager.plugins:
             self.fail(self._("This plugin requires an active Debrid-slink.fr account"))
 
