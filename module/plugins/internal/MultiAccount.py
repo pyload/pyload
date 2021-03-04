@@ -10,7 +10,7 @@ from .misc import decode, remove_chars, uniqify
 class MultiAccount(Account):
     __name__ = "MultiAccount"
     __type__ = "account"
-    __version__ = "0.23"
+    __version__ = "0.24"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", True),
@@ -23,7 +23,8 @@ class MultiAccount(Account):
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com"),
                    ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
-    DOMAIN_REPLACEMENTS = [(r'180upload\.com', "hundredeightyupload.com"),
+    DOMAIN_REPLACEMENTS = [(r"ddl\.to", "ddownload.com"),
+                           (r'180upload\.com', "hundredeightyupload.com"),
                            (r'bayfiles\.net', "bayfiles.com"),
                            (r'cloudnator\.com', "shragle.com"),
                            (r'dfiles\.eu', "depositfiles.com"),
