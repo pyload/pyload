@@ -42,12 +42,6 @@ class LinksnappyComTorrent(BaseDownloader):
                 break
             time.sleep(1)
 
-    def exit_error(self, msg):
-        if self.tmp_file:
-            os.remove(self.tmp_file)
-
-        self.fail(msg)
-
     def send_request_to_server(self):
         """ Send torrent/magnet to the server """
 
@@ -178,8 +172,6 @@ class LinksnappyComTorrent(BaseDownloader):
         self.multiDL = True
         self.resume_download = True
         self.chunk_limit = 1
-
-        self.tmp_file = None
 
         if 'LinksnappyCom' not in self.pyload.account_manager.plugins:
             self.fail(self._("This plugin requires an active Linksnappy.com account"))
