@@ -21,7 +21,7 @@ class RealdebridComTorrent(SimpleDecrypter):
     __status__ = "testing"
 
     __pattern__ = r'^unmatchable$'
-    __config__ = [("activated", "bool", "Activated", True),
+    __config__ = [("enabled", "bool", "Activated", True),
                   ("folder_per_package", "Default;Yes;No", "Create folder for each package", "Default"),
                   ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10),
                   ("include_filter", "str",
