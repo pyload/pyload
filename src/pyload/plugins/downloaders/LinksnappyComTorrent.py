@@ -6,7 +6,7 @@ import time
 import urllib.request
 
 from pyload.core.network.http.http_request import FormFile
-from pyload.core.utils.parse import bytesize
+from pyload.core.utils import parse
 
 from ..base.downloader import BaseDownloader
 from ..helpers import exists
@@ -134,7 +134,7 @@ class LinksnappyComTorrent(BaseDownloader):
 
                 torrent_size = api_data['return'].get('getSize')
                 if torrent_size is not None and self.pyfile.size == 0:
-                    self.pyfile.size = bytesize(torrent_size)
+                    self.pyfile.size = parse.bytesize(torrent_size)
 
                 progress = int(api_data['return']['percentDone'])
                 self.pyfile.set_progress(progress)
