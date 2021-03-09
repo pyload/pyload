@@ -58,7 +58,7 @@ class RealdebridComTorrent(SimpleDecrypter):
                         return res
 
                     else:
-                        self.api_token = self.account.accounts[self.account.accounts.keys()[0]]["api_token"]
+                        self.api_token = self.account.accounts[list(self.account.accounts.keys())[0]]["api_token"]
                         get["auth_token"] = self.api_token
                         continue
 
@@ -123,7 +123,7 @@ class RealdebridComTorrent(SimpleDecrypter):
                                 self.exit_error(_("Token refresh has failed"))
 
                             else:
-                                self.api_token = self.account.accounts[self.account.accounts.keys()[0]]["api_token"]
+                                self.api_token = self.account.accounts[list(self.account.accounts.keys())[0]]["api_token"]
 
                         else:
                             error_msg = api_data["error"]
