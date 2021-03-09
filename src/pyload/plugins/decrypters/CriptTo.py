@@ -19,7 +19,7 @@ from ..base.simple_decrypter import SimpleDecrypter
 
 class CriptTo(SimpleDecrypter):
     __name__ = "CriptTo"
-    __type__ = "crypter"
+    __type__ = "decrypter"
     __version__ = "0.03"
     __status__ = "testing"
 
