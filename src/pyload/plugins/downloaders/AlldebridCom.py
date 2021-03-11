@@ -2,8 +2,6 @@
 
 import json
 
-from pyload.core.utils import parse
-
 from ..base.multi_downloader import MultiDownloader
 
 
@@ -30,32 +28,49 @@ class AlldebridCom(MultiDownloader):
         ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com"),
     ]
 
-    # See https://docs.alldebrid.com/
-    API_URL = "https://api.alldebrid.com/"
+    URL_REPLACEMENTS = [
+        (
+            r"https?://(?:www\.)?mega(?:\.co)?\.nz/#N!(?P<ID>[\w^_]+)!(?P<KEY>[\w\-,=]+)###n=(?P<OWNER>[\w^_]+)",
+            lambda m: "https://mega.nz/#!%s!%s~~%s"
+            % (m.group("ID"), m.group("KEY"), m.group("OWNER")),
+        ),
+        (
+            r"https?://(?:www\.)?mega(?:\.co)?\.nz/.*",
+            lambda m: m.group(0).replace("_", "/"),
+        ),
+    ]
 
-    def api_response(self, method, **kwargs):
-        kwargs["agent"] = "pyLoad"
-        kwargs["version"] = self.pyload.version
-        html = self.load(self.API_URL + method, get=kwargs)
-        return json.loads(html)
+    # See https://docs.alldebrid.com/
+    API_URL = "https://api.alldebrid.com/v4/"
+
+    def api_request(self, method, get={}, post={}, multipart=False):
+        get.update({"agent": "pyLoad", "version": self.pyload.version})
+        json_data = json.loads(
+            self.load(self.API_URL + method, get=get, post=post, multipart=multipart)
+        )
+        if json_data["status"] == "success":
+            return json_data["data"]
+        else:
+            return json_data
 
     def setup(self):
         self.chunk_limit = 16
 
     def handle_premium(self, pyfile):
-        json_data = self.api_response(
-            "link/unlock", link=pyfile.url, token=self.account.info["data"]["token"]
+        api_data = self.api_request(
+            "link/unlock",
+            get={"link": pyfile.url, "apikey": self.account.info["login"]["password"]},
         )
 
-        if json_data.get("error", False):
-            if json_data.get("errorCode", 0) in (12, 31):
+        if api_data.get("error", False):
+            if api_data["error"]["code"] == "LINK_DOWN":
                 self.offline()
 
             else:
-                self.log_warning(json_data["error"])
+                self.log_error(api_data["error"]["message"])
                 self.temp_offline()
 
         else:
-            pyfile.name = json_data["infos"]["filename"]
-            pyfile.size = parse.bytesize(json_data["infos"]["filesize"])
-            self.link = json_data["infos"]["link"]
+            pyfile.name = api_data["filename"]
+            pyfile.size = api_data["filesize"]
+            self.link = api_data["link"]
