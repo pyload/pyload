@@ -291,6 +291,11 @@ class PyFile:
         self.m.pyload.event_manager.add_event(e)
 
     def set_progress(self, value):
-        if not value == self.progress:
+        if value != self.progress:
             self.progress = value
+            self.notify_change()
+
+    def set_name(self, value):
+        if value != self.name:
+            self.name = value
             self.notify_change()

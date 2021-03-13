@@ -12,6 +12,8 @@ import atexit
 import gettext
 import locale
 import os
+import subprocess
+import sys
 import tempfile
 import time
 
@@ -113,8 +115,13 @@ class Core:
         else:
             self._debug = max(0, int(debug))
 
+        # If no argument set, read storage dir from config file,
+        # otherwise save setting to config dir
+        if storagedir is None:
+            storagedir = self.config.get("general", "storage_folder")
+        else:
+            self.config.set("general", "storage_folder", storagedir)
         os.makedirs(storagedir, exist_ok=True)
-        self.config.set("general", "storage_folder", storagedir)
 
         self.config.save()  #: save so config files gets filled
 
@@ -147,7 +154,7 @@ class Core:
     def _init_database(self, restore):
         from .threads.database_thread import DatabaseThread
 
-        db_path = os.path.join(self.userdir, DatabaseThread.DB_FILENAME)
+        db_path = os.path.join(self.userdir, "data", DatabaseThread.DB_FILENAME)
         newdb = not os.path.isfile(db_path)
 
         self.db = DatabaseThread(self)
@@ -156,7 +163,7 @@ class Core:
         userpw = (self.DEFAULT_USERNAME, self.DEFAULT_PASSWORD)
         # nousers = bool(self.db.list_users())
         if restore or newdb:
-            self.db.add_user(*userpw)
+            self.db.add_user(*userpw, reset=True)
         if restore:
             self.log.warning(
                 self._(
@@ -196,7 +203,9 @@ class Core:
 
         if change_group:
             try:
-                group = self.config.get("permission", "group")
+                from grp import getgrnam
+
+                group = getgrnam(self.config.get("permission", "group"))
                 os.setgid(group[2])
             except Exception as exc:
                 self.log.warning(
@@ -208,7 +217,9 @@ class Core:
 
         if change_user:
             try:
-                user = self.config.get("permission", "user")
+                from pwd import getpwnam
+
+                user = getpwnam(self.config.get("permission", "user"))
                 os.setuid(user[2])
             except Exception as exc:
                 self.log.warning(
@@ -266,6 +277,67 @@ class Core:
             return
         self.webserver.start()
 
+    def _stop_webserver(self):
+        if not self.config.get("webui", "enabled"):
+            return
+        self.webserver.stop()
+
+    def _get_args_for_reloading(self):
+        """Determine how the script was executed, and return the args needed
+        to execute it again in a new process.
+        """
+        rv = [sys.executable]
+        py_script = sys.argv[0]
+        args = sys.argv[1:]
+        # Need to look at main module to determine how it was executed.
+        __main__ = sys.modules["__main__"]
+
+        # The value of __package__ indicates how Python was called. It may
+        # not exist if a setuptools script is installed as an egg. It may be
+        # set incorrectly for entry points created with pip on Windows.
+        if getattr(__main__, "__package__", None) is None or (
+                os.name == "nt"
+                and __main__.__package__ == ""
+                and not os.path.exists(py_script)
+                and os.path.exists(f"{py_script}.exe")
+        ):
+            # Executed a file, like "python app.py".
+            py_script = os.path.abspath(py_script)
+
+            if os.name == "nt":
+                # Windows entry points have ".exe" extension and should be
+                # called directly.
+                if not os.path.exists(py_script) and os.path.exists(f"{py_script}.exe"):
+                    py_script += ".exe"
+
+                if (
+                        os.path.splitext(sys.executable)[1] == ".exe"
+                        and os.path.splitext(py_script)[1] == ".exe"
+                ):
+                    rv.pop(0)
+
+            rv.append(py_script)
+        else:
+            # Executed a module, like "python -m module".
+            if sys.argv[0] == "-m":
+                args = sys.argv
+            else:
+                if os.path.isfile(py_script):
+                    # Rewritten by Python from "-m script" to "/path/to/script.py".
+                    py_module = __main__.__package__
+                    name = os.path.splitext(os.path.basename(py_script))[0]
+
+                    if name != "__main__":
+                        py_module += f".{name}"
+                else:
+                    # Incorrectly rewritten by pydevd debugger from "-m script" to "script".
+                    py_module = py_script
+
+                rv.extend(("-m", py_module.lstrip(".")))
+
+        rv.extend(args)
+        return rv
+
     # def _parse_linkstxt(self):
     #     link_file = os.path.join(self.userdir, "links.txt")
     #     try:
@@ -279,8 +351,9 @@ class Core:
         try:
             self.log.debug("Starting core...")
 
-            debug_level = reversemap(self.DEBUG_LEVEL_MAP)[self.debug].upper()
-            self.log.debug(f"Debug level: {debug_level}")
+            if self.debug:
+                debug_level = reversemap(self.DEBUG_LEVEL_MAP)[self.debug].upper()
+                self.log.debug(f"Debug level: {debug_level}")
 
             # self.evm.fire('pyload:starting')
             self._running.set()
@@ -343,10 +416,17 @@ class Core:
         return (self.last_client_connected + 30) > time.time()
 
     def restart(self):
-        self.stop()
-        self.log.info(self._("Restarting core..."))
+        self.log.info(self._("pyLoad is restarting..."))
         # self.evm.fire('pyload:restarting')
-        self.start()
+        self.terminate()
+
+        if sys.path[0]:
+            os.chdir(sys.path[0])
+
+        args = self._get_args_for_reloading()
+        exit_code = subprocess.call(args, close_fds=True)
+
+        os._exit(exit_code)
 
     def terminate(self):
         self.stop()
@@ -366,7 +446,7 @@ class Core:
             for thread in self.thread_manager.threads:
                 thread.put("quit")
 
-            for pyfile in self.files.cache.values():
+            for pyfile in list(self.files.cache.values()):
                 pyfile.abort_download()
 
             self.addon_manager.core_exiting()
@@ -374,4 +454,6 @@ class Core:
         finally:
             self.files.sync_save()
             self._running.clear()
+            if self._do_restart:
+                self._stop_webserver()
             # self.evm.fire('pyload:stopped')

@@ -9,17 +9,18 @@
 #           \/
 
 import os
-import jinja2
+
 import flask
+import jinja2
 
 from .blueprints import BLUEPRINTS
+from .config import get_default_config
+from .extensions import EXTENSIONS, THEMES
 from .filters import TEMPLATE_FILTERS
 from .globals import TEMPLATE_GLOBALS
 from .handlers import ERROR_HANDLERS
-from .extensions import EXTENSIONS
-from .processors import CONTEXT_PROCESSORS
-from .config import get_default_config
 from .helpers import JSONEncoder
+from .processors import CONTEXT_PROCESSORS
 
 
 #: flask app singleton?
@@ -31,6 +32,8 @@ class App:
     FLASK_ERROR_HANDLERS = ERROR_HANDLERS
     FLASK_BLUEPRINTS = BLUEPRINTS
     FLASK_EXTENSIONS = EXTENSIONS
+    FLASK_THEMES = THEMES
+
 
     @classmethod
     def _configure_config(cls, app, develop):
@@ -38,14 +41,20 @@ class App:
         app.config.from_object(conf_obj)
 
     @classmethod
-    def _configure_blueprints(cls, app):
+    def _configure_blueprints(cls, app, path_prefix):
         for blueprint in cls.FLASK_BLUEPRINTS:
-            app.register_blueprint(blueprint)
+            url_prefix = path_prefix if not blueprint.url_prefix else None
+            app.register_blueprint(blueprint, url_prefix=url_prefix)
 
     @classmethod
     def _configure_extensions(cls, app):
         for extension in cls.FLASK_EXTENSIONS:
             extension.init_app(app)
+
+    @classmethod
+    def _configure_themes(cls, app, path_prefix=""):
+        for theme in cls.FLASK_THEMES:
+            theme.init_app(app, path_prefix)
 
     @classmethod
     def _configure_handlers(cls, app):
@@ -88,7 +97,14 @@ class App:
         tempdir = app.config["PYLOAD_API"].get_cachedir()
         cache_path = os.path.join(tempdir, "flask")
         os.makedirs(cache_path, exist_ok=True)
+
         app.config["SESSION_FILE_DIR"] = cache_path
+        app.config["SESSION_TYPE"] = "filesystem"
+        app.config["SESSION_COOKIE_NAME"] = "pyload_session"
+        app.config["SESSION_PERMANENT"] = False
+
+        session_lifetime = max(app.config["PYLOAD_API"].get_config_value("webui", "session_lifetime"), 1) * 60
+        app.config["PERMANENT_SESSION_LIFETIME"] = session_lifetime
 
     @classmethod
     def _configure_api(cls, app, pycore):
@@ -99,7 +115,7 @@ class App:
         # Inject our custom logger
         app.logger = pycore.log.getChild("webui")
 
-    def __new__(cls, pycore, develop=False):
+    def __new__(cls, pycore, develop=False, path_prefix=None):
         app = flask.Flask(__name__)
 
         cls._configure_logging(app, pycore)
@@ -108,8 +124,9 @@ class App:
         cls._configure_templating(app)
         cls._configure_json_encoding(app)
         cls._configure_session(app)
-        cls._configure_blueprints(app)
+        cls._configure_blueprints(app, path_prefix)
         cls._configure_extensions(app)
+        cls._configure_themes(app, path_prefix or "")
         cls._configure_handlers(app)
 
         return app

@@ -3,8 +3,8 @@
 import os
 import re
 
-from . import convert, purge, web
-from .convert import to_str
+from . import convert, purge
+from .web import parse as web_parse
 from .seconds import to_midnight as seconds_to_midnight
 
 # _RE_ALIAS = re.compile(r"[\d.-_]+")
@@ -39,12 +39,15 @@ def entries(text, allow_whitespaces=False):
     return [entry for entry in re.split(pattr, text) if entry]
 
 
-def name(text, purge=False):
+def name(text, safe_name=True):
     try:
-        name = web.parse.name(text)
-    except Exception:
+        name = web_parse.name(text, safe_name=safe_name)
+    except Exception as exc:
         name = os.path.basename(text).strip()
-    return purge.name(name) if purge else name
+        if safe_name:
+            name = purge.name(name)
+
+    return name
 
 
 _ONEWORDS = (
@@ -122,13 +125,13 @@ def packs(nameurls):
 _RE_SIZE = re.compile(r"(?P<S>-?[\d.,]+)\s*(?P<U>[a-zA-Z]*)")
 _RE_SIZEFORMAT1 = re.compile(r"\d{1,3}(?:,\d{3})+(?:\.\d+)?$")
 _RE_SIZEFORMAT2 = re.compile(r"\d+,\d{2}$")
-# _RE_SIZEFORMAT3 = re.compile(r'\d+(?:\.\d+)?$')
+_RE_SIZEFORMAT3 = re.compile(r'\d+(?:\.\d+)?$')
 
 
 def bytesize(text, from_unit=None):  # returns integer bytes
     DEFAULT_UNIT = "byte"
 
-    m = _RE_SIZE.match(to_str(text))
+    m = _RE_SIZE.match(convert.to_str(text))
     if m is None:
         return None
 
@@ -140,8 +143,8 @@ def bytesize(text, from_unit=None):  # returns integer bytes
     elif re.match(_RE_SIZEFORMAT2, rawsize):
         rawsize = rawsize.replace(",", ".")
 
-    # elif not re.match(_RE_SIZEFORMAT3, rawsize):
-    # return 0  #: Unknown format
+    elif not re.match(_RE_SIZEFORMAT3, rawsize):
+        return 0  #: Unknown format
 
     if from_unit is None:
         from_unit = m.group("U") or DEFAULT_UNIT

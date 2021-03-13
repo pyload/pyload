@@ -60,7 +60,7 @@
   margin-left: 150px;
   width: 125px;
   height: 31px;
-  background: #666666 url("{{ url_for('static', filename='img/button.png') }}")
+  background: #666666 url("../img/button.png")
     no-repeat;
   text-align: center;
   line-height: 31px;

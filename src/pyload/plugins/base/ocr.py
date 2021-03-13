@@ -15,7 +15,7 @@ from .plugin import BasePlugin
 class BaseOCR(BasePlugin):
     __name__ = "BaseOCR"
     __type__ = "base"
-    __version__ = "0.26"
+    __version__ = "0.28"
     __status__ = "stable"
 
     __description__ = """OCR base plugin"""

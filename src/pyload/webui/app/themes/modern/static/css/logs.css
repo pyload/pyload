@@ -1,0 +1,73 @@
+.form-control {
+  margin: 0 0 5px 0;
+}
+#logform2 {
+  width: 300px;
+}
+@media screen and (max-width: 400px) {
+  #logform2 {
+    width: 80vw;
+  }
+}
+.logdiv
+{
+  width: 100%;
+  height: 46vh;
+  overflow: auto;
+  border: 1px solid #cdcdcd;
+  outline: 1px solid #cdcdcd;
+  background-color: #F0F0F0;
+  margin-right: auto;
+  margin-left: auto;
+}
+.logform
+{
+  display: table;
+  margin: 0 auto 0 auto;
+  padding-top: 5px;
+}
+.logtable
+{
+  background-color: #F5F5F5;
+  margin: 0;
+}
+.logtable td
+{
+  border: none;
+  white-space: nowrap;
+  font-family: monospace;
+  font-size: 16px;
+  margin: 0;
+  padding: 0 10px 0 10px;
+  line-height: 110%;
+}
+td.logline
+{
+  background-color: #E0E0E0;
+  text-align:right;
+  padding: 0 5px 0 5px;
+}
+td.loglevel,
+td.logsource
+{
+  text-align:right;
+}
+.logperpage
+{
+  float: right;
+  padding-bottom: 8px;
+}
+.logpaginator
+{
+  float: left;
+  padding-top: 5px;
+}
+.logpaginator a
+{
+  padding: 0 8px 0 8px;
+}
+.logwarn
+{
+  text-align: center;
+  color: red;
+}

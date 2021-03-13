@@ -8,12 +8,14 @@ import base64
 import re
 import urllib.parse
 
-from cryptography.fernet import Fernet
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
 from pyload.core.network.cookie_jar import CookieJar
 from pyload.core.network.exceptions import Abort
 from pyload.core.network.http.exceptions import BadHeader
 from pyload.core.network.http.http_request import HTTPRequest
+from pyload.core.utils.convert import to_str
 
 from ..anticaptchas.CoinHive import CoinHive
 from ..anticaptchas.ReCaptcha import ReCaptcha
@@ -50,7 +52,7 @@ class BIGHTTPRequest(HTTPRequest):
 class FilecryptCc(BaseDecrypter):
     __name__ = "FilecryptCc"
     __type__ = "decrypter"
-    __version__ = "0.37"
+    __version__ = "0.44"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?filecrypt\.cc/Container/\w+"
@@ -66,13 +68,10 @@ class FilecryptCc(BaseDecrypter):
         ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com"),
     ]
 
-    # URL_REPLACEMENTS  = [(r'.html$', ""), (r'$', ".html")]  # TODO: Extend
-    # SimpleDecrypter
-
     COOKIES = [("filecrypt.cc", "lang", "en")]
 
     DLC_LINK_PATTERN = r'onclick="DownloadDLC\(\'(.+)\'\);">'
-    WEBLINK_PATTERN = r"openLink.?'([\w\-]*)',"
+    WEBLINK_PATTERN = r"<button onclick=\"openLink.?'([\w\-]*)',"
     MIRROR_PAGE_PATTERN = r'"[\w]*" href="(https?://(?:www\.)?filecrypt.cc/Container/\w+\.html\?mirror=\d+)">'
 
     CAPTCHA_PATTERN = r"<h2>Security prompt</h2>"
@@ -98,7 +97,11 @@ class FilecryptCc(BaseDecrypter):
     def decrypt(self, pyfile):
         self.data = self._filecrypt_load_url(pyfile.url)
 
-        if "content notfound" in self.data:  # NOTE: "content notfound" is NOT a typo
+        # @NOTE: "content notfound" is NOT a typo
+        if (
+            "content notfound" in self.data
+            or ">File <strong>not</strong> found<" in self.data
+        ):
             self.offline()
 
         self.handle_password_protection()
@@ -139,7 +142,7 @@ class FilecryptCc(BaseDecrypter):
     def handle_password_protection(self):
         if (
             re.search(
-                r'div class="input">\s*<input type="password" name="password" id="p4assw0rt"',
+                r'div class="input">\s*<input type="text" name="password" id="p4assw0rt"',
                 self.data,
             )
             is None
@@ -310,20 +313,17 @@ class FilecryptCc(BaseDecrypter):
             links = re.findall(self.WEBLINK_PATTERN, self.site_with_links)
 
             for link in links:
-                link = "http://filecrypt.cc/Link/{}.html".format(link)
+                link = "http://www.filecrypt.cc/Link/{}.html".format(link)
                 for i in range(5):
                     self.data = self._filecrypt_load_url(link)
-                    res = self.handle_captcha(link)
-                    if res not in (None, ""):
+                    m = re.search(r'https://www\.filecrypt\.cc/index\.php\?Action=Go&id=\w+', self.data)
+                    if m is not None:
+                        headers = self._filecrypt_load_url(m.group(0), just_header=True)
+                        self.urls.append(headers["location"])
                         break
 
                 else:
-                    self.fail(self._("Max captcha retries reached"))
-
-                link2 = re.search('<iframe .* noresize src="(.*)"></iframe>', res)
-                if link2:
-                    res2 = self._filecrypt_load_url(link2.group(1), just_header=True)
-                    self.urls.append(res2["location"])
+                    self.log_error(self._("Weblink could not be found"))
 
         except Exception as exc:
             self.log_debug(f"Error decrypting weblinks: {exc}")
@@ -341,12 +341,15 @@ class FilecryptCc(BaseDecrypter):
             self.log_debug(f"Error decrypting CNL: {exc}")
 
     def _get_links(self, crypted, jk):
-        #: Get key
-        key = bytes.fromhex(jk)
+        #: Get key and iv
+        key = iv = bytes.fromhex(jk)
 
         #: Decrypt
-        obj = Fernet(key)
-        text = obj.decrypt(base64.b64decode(crypted))
+        cipher = Cipher(algorithms.AES(key), modes.CBC(iv), backend=default_backend())
+        decryptor = cipher.decryptor()
+        text = to_str(
+            decryptor.update(base64.b64decode(crypted)) + decryptor.finalize()
+        )
 
         #: Extract links
         text = text.replace("\x00", "").replace("\r", "")
