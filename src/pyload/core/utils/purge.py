@@ -64,9 +64,9 @@ def pattern(text, rules):
 def truncate(text, to_length):
     min_length = len(text) // 2
     if to_length <= min_length:
-        return
+        raise OSError("File name too long")
     offset = to_length // 3
-    return f"{text[:offset * 2]}~{text[-offset + to_length % 3:]}"
+    return f"{text[:offset * 2]}~{text[-(offset - 1 + to_length % 3):]}"
 
 
 def uniquify(seq):

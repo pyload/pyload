@@ -126,7 +126,7 @@ class HTTPChunk(HTTPRequest):
 
         self.c = pycurl.Curl()
 
-        self.header = b""
+        self.response_header = b""
         self.header_parsed = False  #: indicates if the header has been processed
 
         self.fp = None  #: file handle
@@ -209,10 +209,10 @@ class HTTPChunk(HTTPRequest):
         return self.c
 
     def write_header(self, buf):
-        self.header += buf
+        self.response_header += buf
         # TODO: forward headers?, this is possibly unneeded, when we just parse valid 200 headers
         # as first chunk, we will parse the headers
-        if not self.range and self.header.endswith(b"\r\n\r\n"):
+        if not self.range and self.response_header.endswith(b"\r\n\r\n"):
             self.parse_header()
         #: FTP file size parsing
         elif not self.range and buf.startswith(b"150") and b"data connection" in buf:
@@ -260,7 +260,7 @@ class HTTPChunk(HTTPRequest):
         """
         parse data from recieved header.
         """
-        for orgline in self.header.splitlines():
+        for orgline in self.response_header.splitlines():
             try:
                 orgline = orgline.decode("iso-8859-1")
             except UnicodeDecodeError:

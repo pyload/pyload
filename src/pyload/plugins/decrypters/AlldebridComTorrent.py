@@ -1,24 +1,20 @@
 # -*- coding: utf-8 -*-
 
+import json
 import os
 import time
 import urllib.request
-import json
+
+from pyload.core.network.http.http_request import FormFile
+from pyload.core.utils.old import safejoin
 
 from ..base.simple_decrypter import SimpleDecrypter
-from pyload.core.utils.old import safejoin
 from ..helpers import exists
-
-try:
-    from module.network.HTTPRequest import FormFile
-except ImportError:
-    pass
-
 
 
 class AlldebridComTorrent(SimpleDecrypter):
     __name__ = "AlldebridComTorrent"
-    __type__ = "crypter"
+    __type__ = "decrypter"
     __version__ = "0.02"
     __status__ = "testing"
 
@@ -28,14 +24,14 @@ class AlldebridComTorrent(SimpleDecrypter):
                   ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10),
                   ("del_finished", "bool", "Delete downloaded torrents from the server", True)]
 
-    __description__ = """Alldebrid.com torrents crypter plugin"""
+    __description__ = """Alldebrid.com torrents decrypter plugin"""
     __license__ = "GPLv3"
     __authors__ = [("GammaC0de", "nitzo2001[AT}yahoo[DOT]com")]
 
     # See https://docs.alldebrid.com/
     API_URL = "https://api.alldebrid.com/v4/"
 
-    def api_response(self, method, get={}, post={}, multipart=False):
+    def api_request(self, method, get={}, post={}, multipart=False):
         get.update({"agent": "pyLoad",
                     "version": self.pyload.version})
         json_data = json.loads(self.load(self.API_URL + method, get=get, post=post, multipart=multipart))
@@ -50,6 +46,12 @@ class AlldebridComTorrent(SimpleDecrypter):
                 break
             time.sleep(1)
 
+    def exit_error(self, msg):
+        if self.tmp_file:
+            os.remove(self.tmp_file)
+
+        self.fail(msg)
+
     def send_request_to_server(self):
         """ Send torrent/magnet to the server """
 
@@ -58,32 +60,31 @@ class AlldebridComTorrent(SimpleDecrypter):
             if self.pyfile.url.startswith("http"):
                 #: remote URL, download the torrent to tmp directory
                 torrent_content = self.load(self.pyfile.url, decode=False)
-                torrent_filename = safejoin("tmp", "tmp_%s.torrent" % self.pyfile.package().name) #: `tmp_` files are deleted automatically
+                torrent_filename = safejoin(self.pyload.tempdir, "tmp_%s.torrent" % self.pyfile.package().name)
                 with open(torrent_filename, "wb") as f:
                     f.write(torrent_content)
 
             else:
                 #: URL is local torrent file (uploaded container)
-                torrent_filename = urllib.request.url2pathname(self.pyfile.url[7:]).encode('latin1').decode('utf8') #: trim the starting `file://`
+                torrent_filename = urllib.request.url2pathname(self.pyfile.url[7:])  #: trim the starting `file://`
                 if not exists(torrent_filename):
                     self.fail(self._("Torrent file does not exist"))
 
+            self.tmp_file = torrent_filename
+
             #: Check if the torrent file path is inside pyLoad's config directory
-            if os.path.abspath(torrent_filename).startswith(os.path.abspath(os.getcwd()) + os.sep):
-                try:
-                    #: send the torrent content to the server
-                    api_data = self.api_response("magnet/upload/file",
-                                                 get={'apikey': self.api_token},
-                                                 post={'files[]': FormFile(torrent_filename, mimetype="application/x-bittorrent")},
-                                                 multipart=True)
-                except NameError:
-                    self.fail(self._("Posting file attachments is not supported by HTTPRequest, please update your pyLoad installation"))
+            if os.path.abspath(torrent_filename).startswith(self.pyload.tempdir + os.sep):
+                #: send the torrent content to the server
+                api_data = self.api_request("magnet/upload/file",
+                                            get={'apikey': self.api_token},
+                                            post={'files[]': FormFile(torrent_filename, mimetype="application/x-bittorrent")},
+                                            multipart=True)
 
                 if api_data.get("error", False):
-                    self.fail("{} (code: {})".format(api_data['error']['message'], api_data['error']['code']))
+                    self.exit_error("{} (code: {})".format(api_data['error']['message'], api_data['error']['code']))
 
                 if api_data['files'][0].get('error', False):
-                    self.fail("{} (code: {})".format(api_data['files'][0]['error']['message'], api_data['files'][0]['error']['code']))
+                    self.exit_error("{} (code: {})".format(api_data['files'][0]['error']['message'], api_data['files'][0]['error']['code']))
 
                 torrent_id = api_data['files'][0]['id']
 
@@ -92,8 +93,8 @@ class AlldebridComTorrent(SimpleDecrypter):
 
         else:
             #: magnet URL, send to the server
-            api_data = self.api_response("magnet/upload",
-                                         get={"apikey": self.api_token,
+            api_data = self.api_request("magnet/upload",
+                                        get={"apikey": self.api_token,
                                               "magnets[]": self.pyfile.url})
 
             if api_data.get("error", False):
@@ -104,18 +105,21 @@ class AlldebridComTorrent(SimpleDecrypter):
 
             torrent_id = api_data["magnets"][0]["id"]
 
+        if self.tmp_file:
+            os.remove(self.tmp_file)
+
         return torrent_id
 
     def wait_for_server_dl(self, torrent_id):
         """ Show progress while the server does the download """
 
-        self.pyfile.setCustomStatus("torrent")
-        self.pyfile.setProgress(0)
+        self.pyfile.set_custom_status("torrent")
+        self.pyfile.set_progress(0)
 
         prev_status = -1
         while True:
-            torrent_info = self.api_response("magnet/status",
-                                             get={"apikey": self.api_token,
+            torrent_info = self.api_request("magnet/status",
+                                            get={"apikey": self.api_token,
                                                   "id": torrent_id})
 
             if torrent_info.get("error", False):
@@ -132,17 +136,17 @@ class AlldebridComTorrent(SimpleDecrypter):
                     self.pyfile.size = torrent_size
 
                 elif status_code in (2, 3):
-                    self.pyfile.setProgress(100)
-                    self.pyfile.setCustomStatus("postprocessing")
+                    self.pyfile.set_progress(100)
+                    self.pyfile.set_custom_status("postprocessing")
 
             if status_code == 1:
                 if torrent_size > 0:
                     self.pyfile.size = torrent_size
                     progress = int(100 * torrent_info["magnets"]["downloaded"] / torrent_size)
-                    self.pyfile.setProgress(progress)
+                    self.pyfile.set_progress(progress)
 
             elif status_code == 4:
-                self.pyfile.setProgress(100)
+                self.pyfile.set_progress(100)
                 break
 
             self.sleep(5)
@@ -153,14 +157,15 @@ class AlldebridComTorrent(SimpleDecrypter):
     def delete_torrent_from_server(self, torrent_id):
         """ Remove the torrent from the server """
 
-        api_data = self.api_response("magnet/delete",
-                                     get={"apikey": self.api_token,
+        api_data = self.api_request("magnet/delete",
+                                    get={"apikey": self.api_token,
                                           "id": torrent_id})
 
         if api_data.get("error", False):
             self.log_warning("{} (code: {})".format(api_data["error"]["message"], api_data["error"]["code"]))
 
     def decrypt(self, pyfile):
+        self.tmp_file = None
         if "AlldebridCom" not in self.pyload.account_manager.plugins:
             self.fail(self._("This plugin requires an active Alldebrid.com account"))
 
@@ -168,7 +173,7 @@ class AlldebridComTorrent(SimpleDecrypter):
         if len(account_plugin.accounts) == 0:
             self.fail(self._("This plugin requires an active Alldebrid.com account"))
 
-        self.api_token = account_plugin.accounts[account_plugin.accounts.keys()[0]]["password"]
+        self.api_token = account_plugin.accounts[list(account_plugin.accounts.keys())[0]]["password"]
 
         torrent_id = self.send_request_to_server()
         torrent_urls = self.wait_for_server_dl(torrent_id)

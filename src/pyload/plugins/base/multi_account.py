@@ -13,7 +13,7 @@ from .account import BaseAccount
 class MultiAccount(BaseAccount):
     __name__ = "MultiAccount"
     __type__ = "account"
-    __version__ = "0.23"
+    __version__ = "0.24"
     __status__ = "testing"
 
     __config__ = [
@@ -31,6 +31,7 @@ class MultiAccount(BaseAccount):
     ]
 
     DOMAIN_REPLACEMENTS = [
+        (r"ddl\.to", "ddownload.com"),
         (r"180upload\.com", "hundredeightyupload.com"),
         (r"bayfiles\.net", "bayfiles.com"),
         (r"cloudnator\.com", "shragle.com"),

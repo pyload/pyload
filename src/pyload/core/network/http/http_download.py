@@ -115,6 +115,10 @@ class HTTPDownload:
                 os.path.dirname(self.filename), self.name_disposition
             )
 
+        try:
+            os.remove(self.filename)
+        except FileNotFoundError:
+            pass
         os.rename(init, self.filename)
         self.info.remove()  #: os.remove info file
 

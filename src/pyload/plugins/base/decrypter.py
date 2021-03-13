@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import os
+import urllib.request
 
 from pyload.core.utils import parse
 from pyload.core.utils.old import safename

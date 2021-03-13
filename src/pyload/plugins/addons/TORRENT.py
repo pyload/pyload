@@ -7,7 +7,7 @@ from ..base.addon import BaseAddon
 class TORRENT(BaseAddon):
     __name__ = "TORRENT"
     __type__ = "addon"
-    __version__ = "0.05"
+    __version__ = "0.06"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", False),
@@ -33,11 +33,8 @@ class TORRENT(BaseAddon):
 
     def plugins_updated(self, updated_plugins):
         if self.torrent_plugin != "None":
-            plugin_type, plugin_name = self.torrent_plugin.split(":")
-            plugin_type = "decrypter" if plugin_type == "c" else "downloader"
-            if (plugin_type, plugin_name) in updated_plugins:
-                self._remove_association(self.torrent_plugin)
-                self._associate(self.torrent_plugin)
+            self._remove_association(self.torrent_plugin)
+            self._associate(self.torrent_plugin)
 
     def config_changed(self, *args):
         if args[3] == "plugin" and args[0] == "TORRENT" and args[1] == "torrent_plugin" and args[2] != self.torrent_plugin:
