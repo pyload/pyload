@@ -35,9 +35,14 @@ function PackageUI (type){
                 }
                 let order = ui.item.data('pid') + '|' + newIndex;
                 indicateLoad();
-                $.get("/json/package_order/" + order, function () {
-                    indicateFinish();
-                    return true;
+                $.get({
+                    url: "{{url_for('json.package_order')}}",
+                    data: {pid: ui.item.data('pid'), pos: newIndex},
+                    traditional: true,
+                    success: function () {
+                        indicateFinish();
+                        return true;
+                    }
                 }).fail(function () {
                     indicateFail();
                     return false;
@@ -48,7 +53,7 @@ function PackageUI (type){
 
     this.deleteFinished = function () {
         indicateLoad();
-        $.get("/api/delete_finished", function(data) {
+        $.get("{{url_for('api.rpc', func='delete_finished')}}", function(data) {
             if (data.length > 0) {
                 window.location.reload();
             } else {
@@ -64,7 +69,7 @@ function PackageUI (type){
 
     this.restartFailed = function () {
         indicateLoad();
-        $.get("/api/restart_failed", function(data) {
+        $.get("{{url_for('api.rpc', func='restart_failed')}}", function(data) {
             if (data.length > 0) {
                 $.each(packages,function(pack) {
                     this.close();
@@ -133,12 +138,15 @@ function Package (ui, id, ele){
 
     this.loadLinks = function () {
         indicateLoad();
-        $.get("/json/package/" + id, thisObject.createLinks)
-        .fail(function () {
+        $.get({
+            url: "{{url_for('json.package')}}",
+            data: {id: id},
+            traditional: true,
+            success: thisObject.createLinks
+        }).fail(function () {
             indicateFail();
             return false;
-        })
-        .done(function() {
+        }).done(function() {
             return true;
         });
     };
@@ -201,7 +209,7 @@ function Package (ui, id, ele){
             var lid = $(this).find('.child').attr('id').match(/[0-9]+/);
             var imgs = $(this).find('.child_secrow span');
             $(imgs[3]).bind('click',{ lid: lid}, function(e) {
-                $.get("/api/delete_files/[" + lid + "]", function () {
+                $.get("{{url_for('api.rpc', func='delete_files')}}/[" + lid + "]", function () {
                     $('#file_' + lid).remove()
                 }).fail(function () {
                     indicateFail();
@@ -209,7 +217,7 @@ function Package (ui, id, ele){
             });
 
             $(imgs[4]).bind('click',{ lid: lid},function(e) {
-                $.get("/api/restart_file/" + lid, function () {
+                $.get("{{url_for('api.rpc', func='restart_file')}}/" + lid, function () {
                     var ele1 = $('#file_' + lid);
                     var imgs1 = $(ele1).find(".glyphicon");
                     $(imgs1[0]).attr( "class", "glyphicon glyphicon-time text-info");
@@ -237,12 +245,16 @@ function Package (ui, id, ele){
                 if (newIndex === oldIndex) {
                     return false;
                 }
-                var order = ui.item.data('lid') + '|' + newIndex;
                 indicateLoad();
-                $.get("/json/link_order/" + order, function () {
-                    indicateFinish();
-                    return true;
-                } ).fail(function () {
+                $.get({
+                    url: "{{url_for('json.link_order')}}",
+                    data: {fid: ui.item.data('lid'), pos: newIndex},
+                    traditional: true,
+                    success: function () {
+                        indicateFinish();
+                        return true;
+                    }
+                }).fail(function () {
                     indicateFail();
                     return false;
                 });
@@ -272,7 +284,7 @@ function Package (ui, id, ele){
 
     this.deletePackage = function(event) {
         indicateLoad();
-        $.get("/api/delete_packages/[" + id + "]", function () {
+        $.get("{{url_for('api.rpc', func='delete_packages')}}/[" + id + "]", function () {
             $(ele).remove();
             indicateFinish();
         }).fail(function () {
@@ -285,7 +297,7 @@ function Package (ui, id, ele){
 
     this.restartPackage = function(event) {
         indicateLoad();
-        $.get("/api/restart_package/" + id, function () {
+        $.get("{{url_for('api.rpc', func='restart_package')}}/" + id, function () {
             thisObject.close();
             indicateSuccess();
         }).fail(function () {
@@ -310,9 +322,14 @@ function Package (ui, id, ele){
 
     this.movePackage = function(event) {
         indicateLoad();
-        $.get("/json/move_package/" + ((ui.type + 1) % 2) + '|' + id, function () {
-            $(ele).remove();
-            indicateFinish();
+        $.get({
+            url: "{{url_for('json.move_package')}}",
+            data: {id: id, dest: ((ui.type + 1) % 2)},
+            traditional: true,
+            success: function () {
+                $(ele).remove();
+                indicateFinish();
+            }
         }).fail(function () {
             indicateFail();
         });
@@ -322,13 +339,19 @@ function Package (ui, id, ele){
 
     this.editOrder = function(event) {
         indicateLoad();
-        $.get("/json/package/" + id, function(data){
-            length = data.links.length;
-            for (i = 1; i <= length/2; i++){
-                order = data.links[length-i].fid + '|' + (i-1);
-                $.get("/json/link_order/" + order).fail(function () {
-                    indicateFail();
-                });
+        $.get({
+            url: "{{url_for('json.package')}}",
+            success: function(data){
+                length = data.links.length;
+                for (i = 1; i <= length/2; i++){
+                    $.get({
+                        url: "{{url_for('json.link_order')}}",
+                        data: {fid: data.links[length-i].fid, pos: i-1},
+                        traditional: true,
+                    }).fail(function () {
+                        indicateFail();
+                    });
+                }
             }
         });
         indicateFinish();
@@ -352,7 +375,7 @@ function Package (ui, id, ele){
 
     this.savePackage = function(event) {
         $.ajax({
-            url: "/json/edit_package",
+            url: "{{url_for('json.edit_package')}}",
             type: 'post',
             dataType: 'json',
             data: $('#pack_form').serialize()

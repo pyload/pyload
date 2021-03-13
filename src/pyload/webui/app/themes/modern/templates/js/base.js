@@ -2,6 +2,7 @@
 
 let desktopNotifications;
 let interactiveCaptchaHandlerInstance = null;
+const thisScript = document.currentScript;
 
 function indicateLoad() {
     $(".load-indicator").css('opacity',1);
@@ -232,7 +233,7 @@ $(function() {
             return false;
         } else {
             $.ajax({
-                url: "/json/add_package",
+                url: "{{url_for('json.add_package')}}",
                 method: "POST",
                 data: formData,
                 processData: false,
@@ -253,15 +254,15 @@ $(function() {
         }
     });
 
-    $("#action_add").click(function() {
+    $(".action_add").click(function() {
         $("#add_form").trigger("reset");
     });
 
     $("#action_play").click(function() {
-        $.get("/api/unpause_server", function () {
+        $.get("{{url_for('api.rpc', func='unpause_server')}}", function () {
             $.ajax({
                 method: "post",
-                url: "/json/status",
+                url: "{{url_for('json.status')}}",
                 async: true,
                 timeout: 3000,
                 success: LoadJsonToContent
@@ -270,14 +271,14 @@ $(function() {
     });
 
     $("#action_cancel").click(function() {
-        $.get("/api/stop_all_downloads");
+        $.get("{{url_for('api.rpc', func='stop_all_downloads')}}");
     });
 
     $("#action_stop").click(function() {
-        $.get("/api/pause_server", function () {
+        $.get("{{url_for('api.rpc', func='pause_server')}}", function () {
             $.ajax({
                 method: "post",
-                url: "/json/status",
+                url: "{{url_for('json.status')}}",
                 async: true,
                 timeout: 3000,
                 success: LoadJsonToContent
@@ -296,23 +297,25 @@ $(function() {
 
     $("#cap_box #cap_positional").click(submit_positional_captcha);
 
-    $.ajax({
-        method:"post",
-        url: "/json/status",
-        async: true,
-        timeout: 3000,
-        success:LoadJsonToContent
-    });
-
-    setInterval(function() {
+    if (thisScript.getAttribute('nopoll') !== "1") {
         $.ajax({
-            method:"post",
-            url: "/json/status",
+            method: "post",
+            url: "{{url_for('json.status')}}",
             async: true,
             timeout: 3000,
-            success:LoadJsonToContent
+            success: LoadJsonToContent
         });
-    }, 4000);
+
+        setInterval(function () {
+            $.ajax({
+                method: "post",
+                url: "{{url_for('json.status')}}",
+                async: true,
+                timeout: 3000,
+                success: LoadJsonToContent
+            });
+        }, 4000);
+    }
 });
 
 function LoadJsonToContent(a) {
@@ -396,7 +399,7 @@ function set_captcha(a) {
 
 function load_captcha(b, a) {
     $.ajax({
-            url: "/json/set_captcha",
+            url: "{{url_for('json.set_captcha')}}",
             async: true,
             method: b,
             data: a,

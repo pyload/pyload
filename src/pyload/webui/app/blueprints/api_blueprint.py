@@ -10,15 +10,15 @@ from flask.json import jsonify
 
 from ..helpers import clear_session, login_required, set_session
 
-bp = flask.Blueprint("api", __name__, url_prefix="/api")
+bp = flask.Blueprint("api", __name__)
 
 
 # accepting positional arguments, as well as kwargs via post and get
 # @bottle.route(
 # r"/api/<func><args:re:[a-zA-Z0-9\-_/\"\'\[\]%{},]*>")
 @login_required("ALL")
-@bp.route("/<func>", methods=["GET", "POST"], endpoint="rpc")
-@bp.route("/<func>/<args>", methods=["GET", "POST"], endpoint="rpc")
+@bp.route("/api/<func>", methods=["GET", "POST"], endpoint="rpc")
+@bp.route("/api/<func>/<args>", methods=["GET", "POST"], endpoint="rpc")
 # @apiver_check
 def rpc(func, args=""):
 
@@ -29,7 +29,7 @@ def rpc(func, args=""):
             "perms" not in s or
             not api.is_authorized(func, {"role": s["role"], "permission": s["perms"]})
     ):
-        return "Unauthorized", 401
+        return jsonify({'error': "Unauthorized"}), 401
 
     args = args.split(",")
     if len(args) == 1 and not args[0]:
@@ -53,7 +53,7 @@ def call_api(func, *args, **kwargs):
 
     if func.startswith("_"):
         flask.flash(f"Invalid API call '{func}'")
-        return "Forbidden", 403
+        return jsonify({'error': "Forbidden"}), 403
 
     result = getattr(api, func)(
         *[literal_eval(x) for x in args],
@@ -64,7 +64,7 @@ def call_api(func, *args, **kwargs):
     return jsonify(result or True)
 
 
-@bp.route("/login", methods=["POST"], endpoint="login")
+@bp.route("/api/login", methods=["POST"], endpoint="login")
 # @apiver_check
 def login():
     user = flask.request.form["username"]
@@ -82,7 +82,7 @@ def login():
     return jsonify(s)
 
 
-@bp.route("/logout", endpoint="logout")
+@bp.route("/api/logout", endpoint="logout")
 # @apiver_check
 def logout():
     # logout_user()

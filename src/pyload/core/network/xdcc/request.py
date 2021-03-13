@@ -28,7 +28,7 @@ class XDCCRequest:
 
         self.abort = False
 
-        self.progress_notify = None
+        self.status_notify = None
 
     def create_socket(self):
         # proxytype = None
@@ -77,7 +77,7 @@ class XDCCRequest:
             time.sleep(self.sleep)
 
     def _send_ack(self):
-        # acknowledge data by sending number of recceived bytes
+        # acknowledge data by sending number of received bytes
         try:
             self.dccsock.send(
                 struct.pack("!Q" if self.send_64bits_ack else "!I", self.received)
@@ -86,8 +86,8 @@ class XDCCRequest:
         except socket.error:
             pass
 
-    def download(self, ip, port, filename, progress_notify=None, resume=None):
-        self.progress_notify = progress_notify
+    def download(self, ip, port, filename, status_notify=None, resume=None):
+        self.status_notify = status_notify
         self.send_64bits_ack = not self.filesize < 1 << 32
 
         chunk_name = filename + ".chunk0"
@@ -106,7 +106,7 @@ class XDCCRequest:
             self.fh = open(chunk_name, mode="wb")
 
         last_update = time.time()
-        cum_recv_len = 0
+        num_recv_len = 0
 
         self.dccsock = self.create_socket()
 
@@ -141,7 +141,7 @@ class XDCCRequest:
                 ):
                     break
 
-                cum_recv_len += data_len
+                num_recv_len += data_len
 
                 self._write_func(data)
                 self._send_ack()
@@ -152,9 +152,9 @@ class XDCCRequest:
                 # calc speed once per second, averaging over 3 seconds
                 self.speeds[2] = self.speeds[1]
                 self.speeds[1] = self.speeds[0]
-                self.speeds[0] = float(cum_recv_len) // timespan
+                self.speeds[0] = num_recv_len // timespan
 
-                cum_recv_len = 0
+                num_recv_len = 0
                 last_update = now
 
                 self.update_progress()
@@ -170,8 +170,8 @@ class XDCCRequest:
         self.abort = True
 
     def update_progress(self):
-        if self.progress_notify:
-            self.progress_notify(self.percent)
+        if self.status_notify:
+            self.status_notify(self.percent)
 
     @property
     def size(self):

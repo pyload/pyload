@@ -7,7 +7,7 @@
       <div class="modal-header bg-info text-center" style="padding: 5px" >{{_('Captcha reading')}}</div>
       <div class="modal-body text-left">
         <div id="cap_title"></div>
-        <form id="cap_form" class="form-group" action="/json/set_captcha" method="POST" enctype="multipart/form-data" onsubmit="return false;" autocomplete="off" style="margin-bottom: 40px;">
+        <form id="cap_form" class="form-group" action="{{url_for('json.set_captcha')}}" method="POST" enctype="multipart/form-data" onsubmit="return false;" autocomplete="off" style="margin-bottom: 40px;">
           <input id="cap_id" name="cap_id" type="hidden" value=""/>
           <div id="cap_textual" style="display: none;">
             <div class="form-group">

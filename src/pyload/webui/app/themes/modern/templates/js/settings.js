@@ -18,7 +18,7 @@ SettingsUI = (function() {
         let c, e, b, d;
 
         $("#quit_box").on('click', '#quit_button', function () {
-            $.get("/api/kill", function() {
+            $.get("{{url_for('api.rpc', func='kill')}}", function() {
                 $('#quit_box').modal('hide');
                 $('#content').addClass("hidden");
                 $('#shutdown_msg').removeClass("hidden");
@@ -29,12 +29,12 @@ SettingsUI = (function() {
         });
 
         $("#restart_box").on('click', '#restart_button', function () {
-            $.get("/api/restart", function() {
+            $.get("{{url_for('api.rpc', func='restart')}}", function() {
                 $('#restart_box').modal('hide');
                 $('#content').addClass("hidden");
                 $('#restart_msg').removeClass("hidden");
                 setTimeout(function() {
-                    window.location = "/dashboard";
+                    window.location = "{{url_for('app.dashboard')}}";
                 }, 10000);
             })
             .fail(function () {
@@ -47,22 +47,20 @@ SettingsUI = (function() {
             $('#toptabs a[href="' + activeTab + '"]').tab('show');
         }
 
-        generalPanel = $("#general_form_content");
+        generalPanel = $("#core_form_content");
         pluginPanel = $("#plugin_form_content");
         thisObject = this;
-        $("#general-menu").find("li").each(function(a) {
+        $("#core-menu").find("li").each(function(a) {
             $(this).click(thisObject.menuClick);
         });
 
-        $("#general_submit").click(this.configSubmit);
+        $("#core_submit").click(this.configSubmit);
         $("#plugin_submit").click(this.configSubmit);
-        $("#account_add").click(function(f) {
-            $("#account_box").modal('show');
-            f.stopPropagation();
-            f.preventDefault();
-        });
         $("#account_add_button").click(this.addAccount);
         $("#account_submit").click(this.submitAccounts);
+        $("#account_add").click(function() {
+            $("#add_account_form").trigger("reset");
+        });
 
         this.initPluginSearch();
         this.initPathcooser();
@@ -123,18 +121,23 @@ SettingsUI = (function() {
         var c, b, g, f, d;
         d = $(this).attr('id').split('|'), c = d[0], g = d[1];
         b = $(this).text();
-        f = c === 'general' ? generalPanel : pluginPanel;
-        $.get( "/json/load_config/" + c + '/' + g, function(e) {
+        f = c === 'core' ? generalPanel : pluginPanel;
+        $.get({
+            url: "{{url_for('json.load_config')}}",
+            data: {category: c, section: g},
+            traditional: true,
+            success: function(e) {
                 f.html(e);
-            });
+            }
+        })
     };
     a.prototype.configSubmit = function(d) {
-        var c, b;
-        c = $(this).attr('id').split("_")[0];
+        var category, b;
+        category = $(this).attr('id').split("_")[0];
         $.ajax({
             method: "post",
-            url: "/json/save_config/" + c,
-            data: $("#" + c + "_form").serialize(),
+            url: "{{url_for('json.save_config')}}" + "?category=" + category,
+            data: $("#" + category + "_form").serialize(),
             async: true,
             success: function () {
                 indicateSuccess("{{_('Settings saved')}}");
@@ -147,10 +150,10 @@ SettingsUI = (function() {
         d.preventDefault();
     };
     a.prototype.addAccount = function(c) {
-        $(this).addClass("disabled");
+        $(this).attr('disabled', true);
         $.ajax({
             method: "post",
-            url: "/json/add_account",
+            url: "{{url_for('json.add_account')}}",
             async: true,
             data: $("#add_account_form").serialize(),
             success: function () {
@@ -161,13 +164,14 @@ SettingsUI = (function() {
         .fail(function() {
             indicateFail("{{_('Error occurred')}}");
         });
+        $(this).attr('disabled', false);
         c.preventDefault();
     };
     a.prototype.submitAccounts = function(c) {
         indicateLoad();
         $.ajax({
             method: "post",
-            url: "/json/update_accounts",
+            url: "{{url_for('json.update_accounts')}}",
             data: $("#account_form").serialize(),
             async: true,
             success: function () {
@@ -196,15 +200,15 @@ SettingsUI = (function() {
 
             if (browseFor) {
                 chooserIfrm.height(Math.max($(window).height()-200,  150));
-                var val = targetInput ? $(targetInput).val().replace("../", "::%2F").replace("..\\", "::%2F") : "";
+                var val = targetInput ? encodeURIComponent($(targetInput).val()) : "";
                 $(this).data('targetinput', targetInput);
                 if (browseFor === "file") {
                     $(this).find("#chooser_title").text("{{_('Select File')}}");
-                    chooserIfrm.attr("src", "/filechooser/" + val);
+                    chooserIfrm.attr("src", "{{url_for('app.filechooser')}}?path=" + val);
                 }
                 else if (browseFor === "folder") {
                     $(this).find("#chooser_title").text("{{_('Select Folder')}}");
-                    chooserIfrm.attr("src", "/pathchooser/" + val);
+                    chooserIfrm.attr("src", "{{url_for('app.pathchooser')}}?path=" + val);
                 }
             }
         });
@@ -222,9 +226,9 @@ SettingsUI = (function() {
         var path_p = $("#path_p");
         path_p.text(iframe.cwd);
         path_p.prop("title", iframe.cwd);
-        $("#chooser_confirm_button").toggleClass("disabled", !iframe.submit );
-        $("#path_type0").prop("checked", iframe.isabsolute ? "" : "checked");
-        $("#path_type1").prop("checked", iframe.isabsolute ? "checked" : "");
+        $("#chooser_confirm_button").attr("disabled", !iframe.submit);
+        $("#path_type0").attr("checked", !iframe.isabsolute);
+        $("#path_type1").attr("checked", iframe.isabsolute);
     };
     return a;
 })();

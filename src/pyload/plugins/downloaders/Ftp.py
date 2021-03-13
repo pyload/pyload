@@ -64,7 +64,7 @@ class Ftp(BaseDownloader):
                 self.fail(self._("Error {}: {}").format(exc.args))
 
         self.req.http.c.setopt(pycurl.NOBODY, 0)
-        self.log_debug(self.req.http.header)
+        self.log_debug(self.req.http.response_header)
 
         if "content-length" in headers:
             pyfile.size = headers.get("content-length")
@@ -72,7 +72,7 @@ class Ftp(BaseDownloader):
 
         else:
             #: Naive ftp directory listing
-            if re.search(r'^25\d.*?"', self.req.http.header, re.M):
+            if re.search(r'^25\d.*?"', self.req.http.response_header, re.M):
                 pyfile.url = pyfile.url.rstrip("/")
                 pkgname = "/".join(
                     [

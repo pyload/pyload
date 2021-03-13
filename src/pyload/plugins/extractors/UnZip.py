@@ -3,14 +3,15 @@
 import os
 import sys
 import zipfile
+import fnmatch
 
-from .extractor import ArchiveError, BaseExtractor, CRCError, PasswordError
+from pyload.plugins.base.extractor import ArchiveError, BaseExtractor, CRCError, PasswordError
 
 
 class UnZip(BaseExtractor):
     __name__ = "UnZip"
     __type__ = "extractor"
-    __version__ = "1.25"
+    __version__ = "1.28"
     __status__ = "stable"
 
     __description__ = """ZIP extractor plugin"""
@@ -23,11 +24,26 @@ class UnZip(BaseExtractor):
 
     @classmethod
     def archivetype(cls, filename):
-        return "zip" if cls.isarchive(filename) else None
+        try:
+            return "zip" if cls.isarchive(filename) else None
+
+        except IOError:
+            return None
 
     @classmethod
     def isarchive(cls, filename):
-        return zipfile.is_zipfile(os.fsdecode(filename))
+        #: zipfile only checks for 'End of archive' so we have to check ourselves for 'start of archive'
+        try:
+            with open(filename, "rb") as f:
+                data = f.read(4)
+                if data != b"PK\003\004":
+                    return False
+
+                else:
+                    return zipfile.is_zipfile(f)
+
+        except IOError:
+            return False
 
     @classmethod
     def find(cls):
@@ -36,7 +52,10 @@ class UnZip(BaseExtractor):
     def list(self, password=None):
         with zipfile.ZipFile(self.filename, "r") as z:
             z.setpassword(password)
-            self.files = z.namelist()
+            self.files = [os.path.join(self.dest, _f)
+                          for _f in z.namelist()
+                          if _f[-1] != os.path.sep]
+
         return self.files
 
     def verify(self, password=None):
@@ -62,8 +81,14 @@ class UnZip(BaseExtractor):
         try:
             with zipfile.ZipFile(self.filename, "r") as z:
                 z.setpassword(password)
-                z.extractall(self.dest)
-                self.files = z.namelist()
+                members = (member for member in z.namelist()  
+                           if not any(fnmatch.fnmatch(member, exclusion)
+                           for exclusion in self.excludefiles))
+                z.extractall(self.dest, members = members)
+                self.files = [os.path.join(self.dest, _f)
+                              for _f in z.namelist()
+                              if _f[-1] != os.path.sep and _f in members]
+
             return self.files
 
         except RuntimeError as exc:

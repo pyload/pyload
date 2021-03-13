@@ -5,14 +5,14 @@ import urllib.parse
 
 from pyload.core.utils import parse
 
-from ..helpers import parse_html_form, set_cookie
+from ..helpers import parse_html_form, set_cookie, search_pattern
 from .account import BaseAccount
 
 
 class XFSAccount(BaseAccount):
     __name__ = "XFSAccount"
     __type__ = "account"
-    __version__ = "0.59"
+    __version__ = "0.60"
     __status__ = "stable"
 
     __config__ = [
@@ -87,9 +87,9 @@ class XFSAccount(BaseAccount):
             self.PLUGIN_URL, get={"op": "my_account"}, cookies=self.COOKIES
         )
 
-        premium = re.search(self.PREMIUM_PATTERN, self.data) is not None
+        premium = True if search_pattern(self.PREMIUM_PATTERN, self.data) is not None else False
 
-        m = re.search(self.VALID_UNTIL_PATTERN, self.data)
+        m = search_pattern(self.VALID_UNTIL_PATTERN, self.data)
         if m is not None:
             expiredate = m.group(1).strip()
             self.log_debug("Expire date: " + expiredate)
@@ -112,7 +112,7 @@ class XFSAccount(BaseAccount):
         else:
             self.log_debug("VALID UNTIL PATTERN not found")
 
-        m = re.search(self.TRAFFIC_LEFT_PATTERN, self.data)
+        m = search_pattern(self.TRAFFIC_LEFT_PATTERN, self.data)
         if m is not None:
             try:
                 traffic = m.groupdict()
@@ -179,7 +179,7 @@ class XFSAccount(BaseAccount):
     def signin(self, user, password, data):
         self.data = self.load(self.LOGIN_URL, cookies=self.COOKIES)
 
-        if re.search(self.LOGIN_SKIP_PATTERN, self.data):
+        if search_pattern(self.LOGIN_SKIP_PATTERN, self.data):
             self.skip_login()
 
         action, inputs = parse_html_form('name="FL"', self.data)
@@ -204,7 +204,7 @@ class XFSAccount(BaseAccount):
             self.log_warning(self._("No data to check"))
             return
 
-        m = re.search(self.LOGIN_BAN_PATTERN, self.data)
+        m = search_pattern(self.LOGIN_BAN_PATTERN, self.data)
         if m is not None:
             try:
                 errmsg = m.group(1)
@@ -221,7 +221,7 @@ class XFSAccount(BaseAccount):
 
             self.fail_login(errmsg)
 
-        m = re.search(self.LOGIN_FAIL_PATTERN, self.data)
+        m = search_pattern(self.LOGIN_FAIL_PATTERN, self.data)
         if m is not None:
             try:
                 errmsg = m.group(1)

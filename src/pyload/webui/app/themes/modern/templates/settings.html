@@ -22,31 +22,31 @@
 
 {% block content %}
 <ul id="toptabs" class="nav nav-tabs left col-xs-12 nav-settings">
-  <li class="active" ondragstart="return false;"><a class="noselect" data-toggle="tab" href="#general">{{_('General')}}</a></li>
+  <li class="active" ondragstart="return false;"><a class="noselect" data-toggle="tab" href="#core">{{_('General')}}</a></li>
   <li ondragstart="return false;"><a class="noselect" data-toggle="tab" href="#plugins">{{_('Plugins')}}</a></li>
   <li ondragstart="return false;"><a class="noselect" data-toggle="tab" href="#accounts">{{_('Accounts')}}</a></li>
 </ul>
 
 <div class="tab-content">
-  <div id="general" class="tab-pane fade in active">
+  <div id="core" class="tab-pane fade in active">
     <div class="panel panel-default col-xs-6 col-sm-4 col-md-3" style="float:left;">
       <div class="panel-body">
-        <ul id="general-menu" style="float: left; height: 300px; overflow: auto; overflow-x: hidden; width: 100%; padding-left: 0;">
+        <ul id="core-menu" style="float: left; height: 300px; overflow: auto; overflow-x: hidden; width: 100%; padding-left: 0;">
           {% for entry,name in conf.general %}
           <nobr>
-            <li style="list-style-type: none; cursor: pointer; margin-top: 10px;" id="general|{{entry}}">{{_(name)}}</li>
+            <li style="list-style-type: none; cursor: pointer; margin-top: 10px;" id="core|{{entry}}">{{_(name)}}</li>
           </nobr>
           {% endfor %}
         </ul>
       </div>
     </div>
-    <form style="overflow: auto;" class="col-lg-8 col-xs-6 col-md-5" id="general_form" action="" method="POST" autocomplete="off">
-      <span id="general_form_content">
+    <form style="overflow: auto;" class="col-lg-8 col-xs-6 col-md-5" id="core_form" action="" method="POST" autocomplete="off">
+      <span id="core_form_content">
         <br>
         <h3>{{_('Choose a section from the menu')}}</h3>
         <br>
       </span>
-      <input class="btn btn-primary" style="float:right; margin-right: 10px;" id="general_submit" type="submit" value="{{_('Save')}}"/>
+      <input class="btn btn-primary" style="float:right; margin-right: 10px;" id="core_submit" type="submit" value="{{_('Save')}}"/>
     </form>
   </div>
   <div id="plugins" class="tab-pane fade">
@@ -81,7 +81,7 @@
     </form>
   </div>
   <div id="accounts" class="tab-pane fade">
-    <form id="account_form" action="/json/update_accounts" method="POST">
+    <form id="account_form" action="{{url_for('json.update_accounts')}}" method="POST">
       <table class="settable wide table">
         <thead>
         <tr>
@@ -136,7 +136,7 @@
         </tr>
         {% endfor %}
       </table>
-      <button id="account_add" data-toggle="modal" data-target="#account_box" style="margin-left: 5px;" class="btn btn-default">&nbsp;<span class="glyphicon glyphicon-plus"></span></button>
+      <button id="account_add" type="button" data-toggle="modal" data-target="#account_box" style="margin-left: 5px;" class="btn btn-default">&nbsp;<span class="glyphicon glyphicon-plus"></span></button>
       <button id="account_submit" type="submit" class="btn btn-primary">{{_('Submit')}}</button>
     </form>
   </div>
@@ -150,7 +150,7 @@
     <div class="modal-content">
       <div class="modal-header bg-info text-center" style="padding: 5px"> {{_('Add Account')}}</div>
       <div class="modal-body" style="margin-bottom: 30px;">
-        <form id="add_account_form" action="/json/add_account" method="POST" enctype="multipart/form-data" style="margin-bottom: 40px;">
+        <form id="add_account_form" action="{{url_for('json.add_account')}}" method="POST" enctype="multipart/form-data" style="margin-bottom: 40px;">
           <p>{{_('Enter your account data to use premium features')}}</p>
           <div class="form-group">
             <label for="account_login">{{_('Login')}}</label>

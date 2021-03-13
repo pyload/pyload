@@ -40,17 +40,21 @@ class PluginThread(Thread):
             import zipfile
 
             with zipfile.ZipFile(dump_filename, "w") as zip:
-                for entry in os.listdir(
-                    os.path.join(self.pyload.tempdir, pyfile.pluginname)
-                ):
-                    try:
-                        # avoid encoding errors
-                        zip.write(
-                            os.path.join(self.pyload.tempdir, pyfile.pluginname, entry),
-                            os.path.join(pyfile.pluginname, entry),
-                        )
-                    except Exception:
-                        pass
+                try:
+                    for entry in os.listdir(
+                        os.path.join(self.pyload.tempdir, pyfile.pluginname)
+                    ):
+                        try:
+                            # avoid encoding errors
+                            zip.write(
+                                os.path.join(self.pyload.tempdir, pyfile.pluginname, entry),
+                                os.path.join(pyfile.pluginname, entry),
+                            )
+                        except Exception:
+                            pass
+
+                except OSError:
+                    pass
 
                 info = zipfile.ZipInfo(
                     os.path.join(pyfile.pluginname, "debug_Report.txt"), time.gmtime()

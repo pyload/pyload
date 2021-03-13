@@ -7,10 +7,10 @@ from ..base.decrypter import BaseDecrypter
 class ChipDe(BaseDecrypter):
     __name__ = "ChipDe"
     __type__ = "decrypter"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __status__ = "testing"
 
-    __pattern__ = r"http://(?:www\.)?chip\.de/video/.+\.html"
+    __pattern__ = r"https?://(?:www\.)?chip\.de/video/.+\.html"
     __config__ = [
         ("enabled", "bool", "Activated", True),
         ("use_premium", "bool", "Use premium account if available", True),
@@ -29,7 +29,7 @@ class ChipDe(BaseDecrypter):
     def decrypt(self, pyfile):
         self.data = self.load(pyfile.url)
         try:
-            f = re.search(r'"(http://video\.chip\.de/.+)"', self.data)
+            f = re.search(r'"(https?://media-video\.chip\.de/.+/MEDIA/.+)"', self.data)
 
         except Exception:
             self.fail(self._("Failed to find the URL"))

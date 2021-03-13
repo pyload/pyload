@@ -10,7 +10,7 @@ from ..base.decrypter import BaseDecrypter
 class DailymotionComFolder(BaseDecrypter):
     __name__ = "DailymotionComFolder"
     __type__ = "decrypter"
-    __version__ = "0.08"
+    __version__ = "0.09"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?dailymotion\.com/((playlists/)?(?P<TYPE>playlist|user)/)?(?P<ID>[\w^_]+)(?(TYPE)|#)"
@@ -108,7 +108,6 @@ class DailymotionComFolder(BaseDecrypter):
                 self.pyload.config.get("general", "storage_folder"), p_owner, p_name
             )
             self.log_debug(
-                r'{} video\s found on playlist "{}"'.format(len(p_videos), p_name)
-            )
+                r'{} video\s found on playlist "{}"'.format(len(p_videos), p_name))
             # NOTE: Folder is NOT recognized by pyload 0.5.0!
             self.packages.append((p_name, p_videos, p_folder))

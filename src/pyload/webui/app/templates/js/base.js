@@ -1,17 +1,5 @@
-/*
- * decaffeinate suggestions:
- * DS101: Remove unnecessary use of Array.from
- * DS102: Remove unnecessary code created because of implicit returns
- * DS104: Avoid inline assignments
- * DS207: Consider shorter variations of null checks
- * DS208: Avoid top-level this
- * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
- */
-
 {% autoescape true %}
-
-// External scope
-var root = this;
+const thisScript = document.currentScript;
 
 // helper functions
 const humanFileSize = function(size) {
@@ -64,16 +52,16 @@ Array.prototype.remove = function(from, to) {
 document.addEvent("domready", function() {
 
     // global notification
-    root.notify = new Purr({
+    window.notify = new Purr({
         'mode': 'top',
         'position': 'center'
     });
 
-    root.captchaBox = new MooDialog({destroyOnHide: false});
-    root.captchaBox.setContent($('cap_box'));
+    window.captchaBox = new MooDialog({destroyOnHide: false});
+    window.captchaBox.setContent($('cap_box'));
 
-    root.addBox = new MooDialog({destroyOnHide: false});
-    root.addBox.setContent($('add_box'));
+    window.addBox = new MooDialog({destroyOnHide: false});
+    window.addBox.setContent($('add_box'));
 
     $('add_form').onsubmit = function() {
         $('add_form').target = 'upload_target';
@@ -81,26 +69,26 @@ document.addEvent("domready", function() {
             alert('{{_("Please Enter a packagename")}}');
             return false;
         } else {
-            root.addBox.close();
+            window.addBox.close();
             return true;
         }
     };
 
-    $('add_reset').addEvent('click', () => root.addBox.close());
+    $('add_reset').addEvent('click', () => window.addBox.close());
 
-    $('action_add').addEvent('click', function() { $("add_form").reset(); return root.addBox.open(); });
-    $('action_play').addEvent('click', () => new Request({method: 'get', url: '/api/unpause_server'}).send());
-    $('action_cancel').addEvent('click', () => new Request({method: 'get', url: '/api/stop_all_downloads'}).send());
-    $('action_stop').addEvent('click', () => new Request({method: 'get', url: '/api/pause_server'}).send());
+    $('action_add').addEvent('click', function() { $("add_form").reset(); return window.addBox.open(); });
+    $('action_play').addEvent('click', () => new Request({method: 'get', url: "{{url_for('api.rpc', func='unpause_server')}}"}).send());
+    $('action_cancel').addEvent('click', () => new Request({method: 'get', url: "{{url_for('api.rpc', func='stop_all_downloads')}}"}).send());
+    $('action_stop').addEvent('click', () => new Request({method: 'get', url: "{{url_for('api.rpc', func='pause_server')}}"}).send());
 
 
     // captcha events
 
     $('cap_info').addEvent('click', function() {
         load_captcha("get", "");
-        return root.captchaBox.open();
+        return window.captchaBox.open();
     });
-    $('cap_reset').addEvent('click', () => root.captchaBox.close());
+    $('cap_reset').addEvent('click', () => window.captchaBox.close());
     $('cap_form').addEvent('submit', function(e) {
         submit_captcha();
         return e.stop();
@@ -108,28 +96,30 @@ document.addEvent("domready", function() {
 
     $('cap_positional').addEvent('click', on_captcha_click);
 
-    return new Request.JSON({
-        url: '/json/status',
-        onSuccess: LoadJsonToContent,
-        secure: false,
-        async: true,
-        initialDelay: 0,
-        delay: 4000,
-        limit: 3000
-    }).startTimer();
+    if (thisScript.getAttribute('nopoll') !== "1") {
+        return new Request.JSON({
+            url: "{{url_for('json.status')}}",
+            onSuccess: LoadJsonToContent,
+            secure: false,
+            async: true,
+            initialDelay: 0,
+            delay: 4000,
+            limit: 3000
+        }).startTimer();
+    }
 });
 
 
 var LoadJsonToContent = function(data) {
     $("speed").set('text', humanFileSize(data.speed)+"/s");
-    $("aktiv").set('text', data.active);
-    $("aktiv_from").set('text', data.queue);
-    $("aktiv_total").set('text', data.total);
+    $("actives").set('text', data.active);
+    $("actives_from").set('text', data.queue);
+    $("actives_total").set('text', data.total);
 
     if (data.captcha) {
         if ($("cap_info").getStyle("display") !== "inline") {
             $("cap_info").setStyle('display', 'inline');
-            root.notify.alert('{{_("New Captcha Request")}}', {
+            window.notify.alert('{{_("New Captcha Request")}}', {
                     'className': 'notify'
                   });
         }
@@ -178,7 +168,7 @@ const set_captcha = function(data) {
 
 var load_captcha = (method, post) =>
     new Request.JSON({
-        url: '/json/set_captcha',
+        url: "{{url_for('json.set_captcha')}}",
         onSuccess(data) { if (data.captcha) { return set_captcha(data); } else { return clear_captcha(); } },
         secure: false,
         async: true,
