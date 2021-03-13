@@ -1,17 +1,14 @@
 # -*- coding: utf-8 -*-
 
 import re
-import urllib.parse
 
-from pyload.core.network.http.exceptions import BadHeader
 from ..base.simple_decrypter import SimpleDecrypter
-from ..anticaptchas.ReCaptcha import ReCaptcha
 
 
 class MultiUpOrg(SimpleDecrypter):
     __name__ = "MultiUpOrg"
     __type__ = "decrypter"
-    __version__ = "0.15"
+    __version__ = "0.16"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?multiup\.(?:org|eu)/(?:en/|fr/)?(?:(?P<TYPE>project|download|mirror)/)?\w+(?:/\w+)?"
@@ -35,7 +32,7 @@ class MultiUpOrg(SimpleDecrypter):
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
     NAME_PATTERN = r"<title>.*(?:Project|Projet|ownload|élécharger) (?P<N>.+?) (\(|- )"
-    OFFLINE_PATTERN = r"File not found"
+    OFFLINE_PATTERN = r"The requested file could not be found"
     TEMP_OFFLINE_PATTERN = r"^unmatchable$"
 
     URL_REPLACEMENTS = [
@@ -44,6 +41,13 @@ class MultiUpOrg(SimpleDecrypter):
     ]
 
     COOKIES = [("multiup.org", "_locale", "en")]
+
+    def decrypt(self, pyfile):
+        self._prepare()
+        self._preload()
+
+        links = self.get_links()
+        self.packages = [(pyfile.package().name, links, pyfile.package().folder)]
 
     def get_links(self):
         m_type = self.info["pattern"]["TYPE"]
@@ -66,7 +70,7 @@ class MultiUpOrg(SimpleDecrypter):
         for a in re.findall(
             r'<button (.+?) class="host btn btn-md btn-default btn-block btn-3d hvr-bounce-to-right">', self.data, re.M
         ):
-            validity = re.search(r"validity=(\w+)", a).group(1)
+            validity = re.search(r'validity="(\w+)"', a).group(1)
             if validity in ("valid", "unknown"):
                 host = re.search(r'nameHost="(.+?)"', a).group(1)
                 url = re.search(r'link="(.+?)"', a).group(1)

@@ -311,4 +311,4 @@ Please refer to the [AUTHORS](/AUTHORS.md) for the full credits.
 
 ---
 
-###### © 2020 pyLoad team
+###### © 2021 pyLoad team

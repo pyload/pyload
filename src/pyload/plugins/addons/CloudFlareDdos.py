@@ -5,6 +5,7 @@ import re
 import urllib.parse
 
 from pyload.core.network.http.exceptions import BadHeader
+from pyload.core.utils.misc import eval_js
 
 from ..anticaptchas.ReCaptcha import ReCaptcha
 from ..base.addon import BaseAddon
@@ -28,7 +29,7 @@ def is_simple_plugin(obj):
 
 def get_plugin_last_header(plugin):
     # NOTE: req can be a HTTPRequest or a Browser object
-    return plugin.req.http.header if hasattr(plugin.req, "http") else plugin.req.header
+    return plugin.req.http.response_header if hasattr(plugin.req, "http") else plugin.req.response_header
 
 
 class CloudFlare:
@@ -50,19 +51,24 @@ class CloudFlare:
 
             header = parse_html_header(exc.header)
 
-            if "cloudflare" in header.get('server', ""):
+            if "cloudflare" in header.get("server", ""):
                 if exc.code == 403:
-                    for _ in range(3):
+                    data = CloudFlare._solve_cf_security_check(
+                        addon_plugin, owner_plugin, exc.content
+                    )
+
+                elif exc.code == 503:
+                    for _i in range(3):
                         try:
-                            data = CloudFlare._solve_cf_security_check(
-                                addon_plugin, owner_plugin, exc.content
-                            )
+                            data = CloudFlare._solve_cf_ddos_challenge(addon_plugin, owner_plugin, exc.content)
+                            break
+
                         except BadHeader as exc:  #: Possibly we got another ddos challenge
-                            addon_plugin.log_debug("%s(): got BadHeader exception %s" % (func_name, e.code))
+                            addon_plugin.log_debug(f"{func_name}(): got BadHeader exception {exc.code}")
 
                             header = parse_html_header(exc.header)
 
-                            if exc.code == 503 and "cloudflare" in header.get('server', ""):
+                            if exc.code == 503 and "cloudflare" in header.get("server", ""):
                                 continue  #: Yes, it's a ddos challenge again..
 
                             else:
@@ -70,7 +76,11 @@ class CloudFlare:
                                 break
 
                     else:
-                        addon_plugin.log_error("{}(): Max solve retries reached".format(func_name))
+                        addon_plugin.log_error(
+                            addon_plugin._("{}(): Max solve retries reached").format(
+                                func_name
+                            )
+                        )
                         data = None  # Tell the exception handler to re-throw the exception
 
                 else:
@@ -96,8 +106,8 @@ class CloudFlare:
             addon_plugin.log_info(
                 addon_plugin._("Detected CloudFlare's DDoS protection page")
             )
-            # Cloudflare requires a delay before solving the challenge
-            wait_time = (int(re.search(r"submit\(\);\r?\n\s*},\s*([0-9]+)", data).group(1)) + 999) / 1000
+
+            wait_time = (int(re.search(r"submit\(\);\r?\n\s*},\s*([0-9]+)", data).group(1)) + 999) // 1000
             owner_plugin.set_wait(wait_time)
 
             last_url = owner_plugin.req.last_effective_url
@@ -123,53 +133,50 @@ class CloudFlare:
                     r"setTimeout\(function\(\){\s+(var s,t,o,p,b,r,e,a,k,i,n,g,f.+?\r?\n[\s\S]+?a\.value =.+?)\r?\n",
                     data,
                 ).group(1)
-                js = re.sub(r"a\.value = (.+\.toFixed\(10\);).+", r"\1", js)
+                js = re.sub(r'a\.value = (.+\.toFixed\(10\);).+', r'\1', js)
 
                 solution_name = re.search(r's,t,o,p,b,r,e,a,k,i,n,g,f,\s*(.+)\s*=', js).group(1)
-                g = re.search(r'(.*};)\n\s*(t\s*=(.+))\n\s*(;{}.*)'.format(solution_name), js, re.M | re.I | re.S).groups()
+                g = re.search(r'(.*};)\n\s*(t\s*=(.+))\n\s*(;%s.*)' % solution_name, js, re.M | re.I | re.S).groups()
                 js = g[0] + g[-1]
+
                 js = re.sub(r"[\n\\']", "", js)
 
             except Exception:
                 # Something is wrong with the page.
                 # This may indicate CloudFlare has changed their anti-bot
                 # technique.
-                addon_plugin.log_error(
+                owner_plugin.log_error(
                     addon_plugin._("Unable to parse CloudFlare's DDoS protection page")
                 )
                 return None  #: Tell the exception handler to re-throw the exception
 
             if "toFixed" not in js:
-                addon_plugin.log_error(
-                    addon_plugin._("Unable to parse CloudFlare's DDoS protection page"))
+                owner_plugin.log_error(owner_plugin._("Unable to parse CloudFlare's DDoS protection page"))
                 return None  # Tell the exception handler to re-throw the exception
 
             atob = 'var atob = function(str) {return Buffer.from(str, "base64").toString("binary");}'
             try:
                 k = re.search(r'k\s*=\s*\'(.+?)\';', data).group(1)
                 v = re.search(r'<div(?:.*)id="%s"(?:.*)>(.*)</div>' % k, data).group(1)
-                doc = 'var document= {getElementById: function(x) { return {innerHTML:"{}"};}}'.format(v)
+                doc = 'var document= {getElementById: function(x) { return {innerHTML:"%s"};}}' % v
             except (AttributeError, IndexError):
-                doc = ''
+                doc = ""
             js = '%s;%s;var t="%s";%s' % (doc, atob, domain, js)
 
             # Safely evaluate the Javascript expression
-            res = addon_plugin.js.eval(js)
+            res = eval_js(js)
 
             try:
-                get_params["jschl_answer"] = str(float(res))
+                get_params['jschl_answer'] = str(float(res))
 
             except ValueError:
-                addon_plugin.log_error(
-                    addon_plugin._("Unable to parse CloudFlare's DDoS protection page"))
+                owner_plugin.log_error(owner_plugin._("Unable to parse CloudFlare's DDoS protection page"))
                 return None  # Tell the exception handler to re-throw the exception
 
-            addon_plugin.wait()  #: Do the actual wait
+            owner_plugin.wait()  #: Do the actual wait
 
-            return addon_plugin.load(submit_url,
-                                     get=get_params,
-                                     ref=last_url
-                                     )
+            return owner_plugin.load(submit_url, get=get_params, ref=last_url)
+
         except BadHeader as exc:
             raise exc  #: Huston, we have a BadHeader!
 
@@ -292,20 +299,20 @@ class CloudFlareDdos(BaseAddon):
 
     def _find_owner_plugin(self):
         """
-        Walk the callstack until we find SimpleDownloader or SimpleDecrypter class Dirty but
-        works.
+        Walk the callstack until we find SimpleDownloader or SimpleDecrypter class.
+        Dirty but works.
         """
-        frame = inspect.currentframe()
+        f = frame = inspect.currentframe()
         try:
             while True:
-                if frame is None:
+                if f is None:
                     return None
 
-                elif "self" in frame.f_locals and is_simple_plugin(frame.f_locals["self"]):
-                    return frame.f_locals["self"]
+                elif "self" in f.f_locals and is_simple_plugin(f.f_locals["self"]):
+                    return f.f_locals["self"]
 
                 else:
-                    frame = frame.f_back
+                    f = f.f_back
 
         finally:
             del frame

@@ -314,6 +314,7 @@ class ThreadManager:
         if job:
             try:
                 job.init_plugin()
+                job.set_status("starting")
             except Exception as exc:
                 self.pyload.log.critical(
                     exc, exc_info=True, stack_info=self.pyload.debug > 2

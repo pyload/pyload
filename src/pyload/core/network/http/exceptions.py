@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import http.client
+
 PROPRIETARY_RESPONSES = {
     440: "Login Timeout - The client's session has expired and must log in again.",
     449: "Retry With - The server cannot honour the request because the user has not provided the required information",
@@ -18,9 +20,9 @@ PROPRIETARY_RESPONSES = {
 
 
 class BadHeader(Exception):
-    def __init__(self, code, header=b"", content=b""):
+    def __init__(self, code, header="", content=""):
         code = int(code)
-        response = PROPRIETARY_RESPONSES.get(code, "unknown error code")
+        response = http.client.responses.get(code, PROPRIETARY_RESPONSES.get(code, "unknown error code"))
         super().__init__(f"Bad server response: {code} {response}")
         self.code = code
         self.header = header

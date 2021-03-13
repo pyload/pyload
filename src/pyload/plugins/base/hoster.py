@@ -171,8 +171,6 @@ class BaseHoster(BasePlugin):
             self.req = self.pyload.request_factory.get_request(self.classname)
             self.premium = False
 
-        self.req.set_option("timeout", 60)  # TODO: Remove in 0.6.x
-
         self.setup_base()
         self.grab_info()
         self.setup()
@@ -298,10 +296,6 @@ class BaseHoster(BasePlugin):
 
     #: Deprecated method, use `_process` instead (Remove in 0.6.x)
     def preprocessing(self, *args, **kwargs):
-        # NOTE: Set pyfile status from `queued` to `starting` as soon as possible to avoid race condition in ThreadManager's assign_job function
-        # NOTE: Move to ThreadManager in 0.6.x
-        self.pyfile.set_status("starting")
-
         # NOTE: Recheck info thread synchronization in 0.6.x
         return self._process(*args, **kwargs)
 
