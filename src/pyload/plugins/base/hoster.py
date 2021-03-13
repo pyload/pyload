@@ -6,7 +6,7 @@ import urllib.parse
 
 from pyload.core.network.exceptions import Abort, Fail, Reconnect, Retry, Skip
 from pyload.core.utils import format, parse
-from pyload.core.utils.old import decode, fixurl
+from pyload.core.utils.old import fixurl
 
 from ..helpers import parse_html_form, replace_patterns
 from .captcha import BaseCaptcha
@@ -193,12 +193,12 @@ class BaseHoster(BasePlugin):
                 self.account = False
 
     def _update_name(self):
-        name = decode(self.info.get("name"))
+        name = self.info.get("name")
 
-        if name and name != decode(self.info.get("url")):
+        if name and name != self.info.get("url"):
             self.pyfile.name = name
         else:
-            name = decode(self.pyfile.name)
+            name = self.pyfile.name
 
         self.log_info(self._("Link name: {}").format(name))
 
