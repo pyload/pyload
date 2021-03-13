@@ -494,10 +494,10 @@ class BaseHoster(BasePlugin):
         raise Retry(msg)
 
     def retry_captcha(
-        self, attemps=10, wait=1, msg="", msgfail="Max captcha retries reached"
+        self, attempts=10, wait=1, msg="", msgfail="Max captcha retries reached"
     ):
         self.captcha.invalid(msg)
-        self.retry(attemps, wait, msg=self._("Retry Captcha"), msgfail=msgfail)
+        self.retry(attempts, wait, msg=self._("Retry Captcha"), msgfail=msgfail)
 
     def fixurl(self, url, baseurl=None):
         baseurl = baseurl or self.pyfile.url
