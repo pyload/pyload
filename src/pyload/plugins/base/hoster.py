@@ -171,8 +171,6 @@ class BaseHoster(BasePlugin):
             self.req = self.pyload.request_factory.get_request(self.classname)
             self.premium = False
 
-        self.req.set_option("timeout", 60)  # TODO: Remove in 0.6.x
-
         self.setup_base()
         self.grab_info()
         self.setup()

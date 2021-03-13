@@ -9,13 +9,19 @@ from ..base.multi_account import MultiAccount
 class AlldebridCom(MultiAccount):
     __name__ = "AlldebridCom"
     __type__ = "account"
-    __version__ = "0.41"
+    __version__ = "0.44"
     __status__ = "testing"
 
     __config__ = [
         ("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),
         ("mh_list", "str", "Hoster list (comma separated)", ""),
         ("mh_interval", "int", "Reload interval in hours", 12),
+        (
+            "ignore_status",
+            "bool",
+            "Treat all hosters as available (ignore status field)",
+            False,
+        ),
     ]
 
     __description__ = """AllDebrid.com account plugin"""
@@ -26,47 +32,66 @@ class AlldebridCom(MultiAccount):
     ]
 
     # See https://docs.alldebrid.com/
-    API_URL = "https://api.alldebrid.com/"
+    API_URL = "https://api.alldebrid.com/v4/"
 
-    def api_response(self, method, **kwargs):
-        kwargs["agent"] = "pyLoad"
-        kwargs["version"] = self.pyload.version
-        html = self.load(self.API_URL + method, get=kwargs)
-        return json.loads(html)
+    def api_request(self, method, get={}, post={}, multipart=False):
+        get.update({"agent": "pyLoad", "version": self.pyload.version})
+        json_data = json.loads(
+            self.load(self.API_URL + method, get=get, post=post, multipart=multipart)
+        )
+        if json_data["status"] == "success":
+            return json_data["data"]
+        else:
+            return json_data
 
     def grab_hosters(self, user, password, data):
-        json_data = self.api_response("user/hosts", token=data["token"])
-        if json_data.get("error", False):
+        api_data = self.api_request("user/hosts", get={"apikey": password})
+        if api_data.get("error", False):
+            self.log_error(api_data["error"]["message"])
             return []
 
         else:
+            valid_statuses = (
+                (True, False) if self.config.get("ignore_status") is True else (True,)
+            )
             return reduce(
                 lambda x, y: x + y,
                 [
-                    [h["domain"]] + h.get("altDomains", [])
-                    for h in json_data["hosts"].values()
-                    if h["status"] is True
+                    _h["domains"]
+                    for _h in api_data["hosts"].values()
+                    if _h.get("status", False) in valid_statuses or _h.get("type") == "free"
                 ],
             )
 
     def grab_info(self, user, password, data):
-        json_data = self.api_response("user/login", token=data["token"])
+        api_data = self.api_request("user", get={"apikey": password})
 
-        if json_data.get("error", False):
+        if api_data.get("error", False):
+            self.log_error(api_data["error"]["message"])
             premium = False
             validuntil = -1
 
         else:
-            premium = json_data["user"]["isPremium"]
-            validuntil = json_data["user"]["premiumUntil"] or -1
+            premium = api_data["user"]["isPremium"]
+            validuntil = api_data["user"]["premiumUntil"] or -1
 
         return {"validuntil": validuntil, "trafficleft": -1, "premium": premium}
 
     def signin(self, user, password, data):
-        json_data = self.api_response("user/login", username=user, password=password)
+        api_data = self.api_request("user", get={"apikey": password})
 
-        if json_data.get("error", False):
-            self.fail_login(json_data["error"])
+        if api_data.get("error", False):
+            self.log_error(
+                self._(
+                    "Password for alldebrid.com should be the API token - use GetAlldebridTokenV4.py to get it: https://github.com/pyload/pyload/files/4489732/GetAlldebridTokenV4.zip"
+                )
+            )
+            self.fail_login(api_data["error"]["message"])
 
-        else:
-            data["token"] = json_data["token"]
+        elif api_data["user"]["username"] != user:
+            self.fail_login(
+                self._(
+                    "username for alldebrid.com should be your alldebrid.com username"
+                )
+            )
+            self.fail_login()

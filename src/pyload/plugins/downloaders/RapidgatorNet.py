@@ -15,10 +15,10 @@ from ..base.simple_downloader import SimpleDownloader
 class RapidgatorNet(SimpleDownloader):
     __name__ = "RapidgatorNet"
     __type__ = "downloader"
-    __version__ = "0.54"
+    __version__ = "0.56"
     __status__ = "testing"
 
-    __pattern__ = r"https?://(?:www\.)?(?:rapidgator\.net|rg\.to)/file/\w+"
+    __pattern__ = r"https?://(?:www\.)?(?:rapidgator\.(?:net|asia|)|rg\.to)/file/(?P<ID>\w+)"
     __config__ = [
         ("enabled", "bool", "Activated", True),
         ("use_premium", "bool", "Use premium account if available", True),
@@ -56,29 +56,27 @@ class RapidgatorNet(SimpleDownloader):
     )
     WAIT_PATTERN = r"(?:Delay between downloads must be not less than|Try again in).+"
 
-    LINK_FREE_PATTERN = r"return \'(http://\w+.rapidgator.net/.*)\';"
+    LINK_FREE_PATTERN = r"return '(https?://\w+.rapidgator.net/.*)';"
 
     RECAPTCHA_PATTERN = r'"http://api\.recaptcha\.net/challenge\?k=(.*?)"'
     ADSCAPTCHA_PATTERN = r'(http://api\.adscaptcha\.com/Get\.aspx[^"\']+)'
     SOLVEMEDIA_PATTERN = r'http://api\.solvemedia\.com/papi/challenge\.script\?k=(.*?)"'
 
-    URL_REPLACEMENTS = [
-        (r"//(?:www\.)?rg\.to/", "//rapidgator.net/"),
-        (r"(//rapidgator.net/file/[0-9A-z]+).*", r"\1"),
-    ]
+    URL_REPLACEMENTS = [(__pattern__ + '.*', r'https://rapidgator.net/file/\g<ID>')]
 
     API_URL = "https://rapidgator.net/api/"
 
-    def api_response(self, method, **kwargs):
+    def api_request(self, method, **kwargs):
         try:
-            html = self.load(self.API_URL + method, get=kwargs)
+            html = self.load(self.API_URL + method,
+                             get=kwargs)
             json_data = json.loads(html)
             status = json_data["response_status"]
             message = json_data["response_details"]
 
         except BadHeader as exc:
             status = exc.code
-            message = exc.message
+            message = exc.response
 
         if status == 200:
             return json_data["response"]
@@ -98,21 +96,25 @@ class RapidgatorNet(SimpleDownloader):
         self.chunk_limit = -1 if self.premium else 1
 
     def handle_premium(self, pyfile):
-        json_data = self.api_response(
-            "file/info", sid=self.account.info["data"]["sid"], url=pyfile.url
+        json_data = self.api_request(
+            "file/info",
+            sid=self.account.info["data"]["sid"],
+            url=pyfile.url
         )
 
         self.info["md5"] = json_data["hash"]
         pyfile.name = json_data["filename"]
         pyfile.size = json_data["size"]
 
-        json_data = self.api_response(
-            "file/download", sid=self.account.info["data"]["sid"], url=pyfile.url
+        json_data = self.api_request(
+            "file/download",
+            sid=self.account.info["data"]["sid"],
+            url=pyfile.url
         )
         self.link = json_data["url"]
 
     def check_errors(self):
-        SimpleDownloader.check_errors(self)
+        super().check_errors()
         m = re.search(self.DOWNLOAD_LIMIT_ERROR_PATTERN, self.data)
         if m is not None:
             self.log_warning(m.group(0))

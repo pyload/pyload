@@ -19,7 +19,7 @@
 - Walter Purcaro (vuolter) <vuolter@gmail.com>
 - himbrr <himbrr@himbrr.ws>
 - sebnapi
-- spoob <spoob@gmx.de>
+- Paul Spooren (spoob) <mail@aparcar.org>
 
 ### Developers
 
@@ -54,4 +54,4 @@ _A special thanks to **RaNaN**, **sebnapi** and **spoob** who started this journ
 
 ---
 
-###### © 2020 pyLoad team
+###### © 2021 pyLoad team

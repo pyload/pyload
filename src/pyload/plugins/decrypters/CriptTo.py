@@ -19,12 +19,12 @@ from ..base.simple_decrypter import SimpleDecrypter
 
 class CriptTo(SimpleDecrypter):
     __name__ = "CriptTo"
-    __type__ = "crypter"
+    __type__ = "decrypter"
     __version__ = "0.03"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?cript\.to/folder/(?P<ID>\w+)'
-    __config__ = [("activated", "bool", "Activated", True),
+    __config__ = [("enabled", "bool", "Activated", True),
                   ("use_premium", "bool", "Use premium account if available", True),
                   ("folder_per_package", "Default;Yes;No", "Create folder for each package", "Default"),
                   ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10)]
