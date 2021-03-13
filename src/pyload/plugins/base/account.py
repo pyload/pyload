@@ -75,14 +75,16 @@ class BaseAccount(BasePlugin):
         try:
             user = self.user
             hidden_user = "{:*<{}}".format(self.user[:3], 7)
-            args = tuple(arg.replace(user, hidden_user) for arg in args if arg)
+            args = tuple(arg.replace(user, hidden_user) if isinstance(arg, str) else arg
+                         for arg in args if arg)
         except (KeyError, TypeError):
             pass
 
         try:
             pw = self.info["login"]["password"]
             hidden_pw = "*" * 10
-            args = tuple(arg.replace(pw, hidden_pw) for arg in args if arg)
+            args = tuple(arg.replace(pw, hidden_pw) if isinstance(arg, str) else arg
+                         for arg in args if arg)
         except (KeyError, TypeError):
             pass
 
