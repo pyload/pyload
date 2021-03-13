@@ -5,7 +5,7 @@ import re
 import time
 
 from pyload.core.network.request_factory import get_url
-from pyload.core.utils.convert import to_str
+from pyload.core.utils.convert import to_bytes, to_str
 
 from ..anticaptchas.ReCaptcha import ReCaptcha
 from ..base.simple_downloader import SimpleDownloader
@@ -110,7 +110,7 @@ class UploadedTo(SimpleDownloader):
         self.check_errors()
 
     def check_download(self):
-        check = self.scan_download({"dl_limit": self.DL_LIMIT_PATTERN})
+        check = self.scan_download({"dl_limit": to_bytes(self.DL_LIMIT_PATTERN)})
 
         if check == "dl_limit":
             self.log_warning(self._("Free download limit reached"))

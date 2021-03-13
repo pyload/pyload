@@ -69,7 +69,7 @@ class MultiDownloader(SimpleDownloader):
         super()._prepare()
 
         if self.pyfile.pluginname != self.__name__:
-            overwritten_plugin = self.pyload.pluginManager.load_class("downloader", self.pyfile.pluginname)
+            overwritten_plugin = self.pyload.plugin_manager.load_class("downloader", self.pyfile.pluginname)
             self.pyfile.url = replace_patterns(self.pyfile.url, overwritten_plugin.URL_REPLACEMENTS)
 
         if self.DIRECT_LINK is None:

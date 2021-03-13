@@ -8,7 +8,7 @@ from ..base.multi_account import MultiAccount
 class LinksnappyCom(MultiAccount):
     __name__ = "LinksnappyCom"
     __type__ = "account"
-    __version__ = "0.17"
+    __version__ = "0.22"
     __status__ = "testing"
 
     __config__ = [
@@ -31,7 +31,7 @@ class LinksnappyCom(MultiAccount):
 
     def grab_hosters(self, user, password, data):
         json_data = self.api_response("FILEHOSTS")
-        return list(json_data["return"].keys())
+        return [k for k, v in json_data["return"].items() if v["Status"] == "1"]
 
     def grab_info(self, user, password, data):
         premium = True
@@ -44,25 +44,22 @@ class LinksnappyCom(MultiAccount):
             self.log_error(json_data["error"])
 
         else:
-            validuntil = json_data["return"]["expire"]
+            expire = json_data["return"]["expire"]
 
-            if validuntil == "lifetime":
+            if expire == "lifetime":
                 validuntil = -1
 
-            elif validuntil == "expired":
+            elif expire == "expired":
                 premium = False
 
             else:
-                validuntil = float(validuntil)
+                validuntil = float(expire)
 
-            if "trafficleft" not in json_data["return"] or isinstance(
-                json_data["return"]["trafficleft"], str
-            ):
+            if isinstance(json_data["return"].get("trafficleft", ""), str):
                 trafficleft = -1
 
             else:
-                # TODO: Remove `>> 10` in 0.6.x
-                trafficleft = float(json_data["return"]["trafficleft"]) >> 10
+                trafficleft = float(json_data["return"]["trafficleft"]) * 1024
 
         return {
             "premium": premium,

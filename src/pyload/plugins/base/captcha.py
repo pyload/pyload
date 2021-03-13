@@ -3,13 +3,15 @@ import base64
 import os
 import time
 
+from pyload.core.utils.convert import to_str
+
 from .plugin import BasePlugin
 
 
 class BaseCaptcha(BasePlugin):
     __name__ = "BaseCaptcha"
     __type__ = "anticaptcha"
-    __version__ = "0.56"
+    __version__ = "0.58"
     __status__ = "stable"
 
     __description__ = """Base anti-captcha plugin"""
@@ -34,7 +36,7 @@ class BaseCaptcha(BasePlugin):
         """
         Extend to build your custom anti-captcha ocr.
         """
-        raise NotImplementedError
+        pass
 
     def decrypt(
         self,
@@ -113,7 +115,7 @@ class BaseCaptcha(BasePlugin):
             try:
                 params = {
                     "src": "data:image/{};base64,{}".format(
-                        input_type, base64.standard_b64encode(img)
+                        input_type, to_str(base64.standard_b64encode(img))
                     ),
                     "file": img_f.name,
                     "captcha_plugin": self.__name__,

@@ -8,7 +8,7 @@ from ..base.account import BaseAccount
 class RapidgatorNet(BaseAccount):
     __name__ = "RapidgatorNet"
     __type__ = "account"
-    __version__ = "0.24"
+    __version__ = "0.25"
     __status__ = "testing"
 
     __description__ = """Rapidgator.net account plugin"""
@@ -36,8 +36,7 @@ class RapidgatorNet(BaseAccount):
 
             if json_data["response_status"] == 200:
                 validuntil = json_data["response"]["expire_date"]
-                # TODO: Remove `>> 10` in 0.6.x
-                trafficleft = float(json_data["response"]["traffic_left"]) >> 10
+                trafficleft = float(json_data["response"]["traffic_left"])
                 premium = True
 
             else:

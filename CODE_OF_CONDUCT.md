@@ -141,4 +141,4 @@ https://www.contributor-covenant.org/translations.
 
 ---
 
-###### © 2020 pyLoad team
+###### © 2021 pyLoad team

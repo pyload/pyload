@@ -73,9 +73,13 @@ def safepath(value):
         if os.name != "nt":
             return
 
+        excess_chars = len(path) - 259
+        if excess_chars < 1:
+            return
+
         dirname, basename = os.path.split(filename)
         name, ext = os.path.splitext(basename)
-        path = drive + dirname + purge.truncate(name, 259) + ext
+        path = drive + dirname + purge.truncate(name, len(name) - excess_chars) + ext
 
     finally:
         return path

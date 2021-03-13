@@ -52,7 +52,7 @@ class BIGHTTPRequest(HTTPRequest):
 class FilecryptCc(BaseDecrypter):
     __name__ = "FilecryptCc"
     __type__ = "decrypter"
-    __version__ = "0.42"
+    __version__ = "0.44"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?filecrypt\.cc/Container/\w+"
@@ -71,7 +71,7 @@ class FilecryptCc(BaseDecrypter):
     COOKIES = [("filecrypt.cc", "lang", "en")]
 
     DLC_LINK_PATTERN = r'onclick="DownloadDLC\(\'(.+)\'\);">'
-    WEBLINK_PATTERN = r"onclick=\"openLink.?'([\w\-]*)',"
+    WEBLINK_PATTERN = r"<button onclick=\"openLink.?'([\w\-]*)',"
     MIRROR_PAGE_PATTERN = r'"[\w]*" href="(https?://(?:www\.)?filecrypt.cc/Container/\w+\.html\?mirror=\d+)">'
 
     CAPTCHA_PATTERN = r"<h2>Security prompt</h2>"
@@ -98,7 +98,10 @@ class FilecryptCc(BaseDecrypter):
         self.data = self._filecrypt_load_url(pyfile.url)
 
         # @NOTE: "content notfound" is NOT a typo
-        if "content notfound" in self.data or ">File <strong>not</strong> found<" in self.data:
+        if (
+            "content notfound" in self.data
+            or ">File <strong>not</strong> found<" in self.data
+        ):
             self.offline()
 
         self.handle_password_protection()
@@ -310,19 +313,17 @@ class FilecryptCc(BaseDecrypter):
             links = re.findall(self.WEBLINK_PATTERN, self.site_with_links)
 
             for link in links:
-                link = "http://filecrypt.cc/Link/{}.html".format(link)
+                link = "http://www.filecrypt.cc/Link/{}.html".format(link)
                 for i in range(5):
                     self.data = self._filecrypt_load_url(link)
-                    m = re.search("top.location.href='(.*)';", self.data)
-                    if m is not None and "filecrypt.cc" in m.group(1):
-                        headers = self._filecrypt_load_url(m.group(1), just_header=True)
-                        self.urls.append(headers['location'])
+                    m = re.search(r'https://www\.filecrypt\.cc/index\.php\?Action=Go&id=\w+', self.data)
+                    if m is not None:
+                        headers = self._filecrypt_load_url(m.group(0), just_header=True)
+                        self.urls.append(headers["location"])
                         break
 
                 else:
                     self.log_error(self._("Weblink could not be found"))
-
-
 
         except Exception as exc:
             self.log_debug(f"Error decrypting weblinks: {exc}")
@@ -344,9 +345,7 @@ class FilecryptCc(BaseDecrypter):
         key = iv = bytes.fromhex(jk)
 
         #: Decrypt
-        cipher = Cipher(
-            algorithms.AES(key), modes.CBC(iv), backend=default_backend()
-        )
+        cipher = Cipher(algorithms.AES(key), modes.CBC(iv), backend=default_backend())
         decryptor = cipher.decryptor()
         text = to_str(
             decryptor.update(base64.b64decode(crypted)) + decryptor.finalize()

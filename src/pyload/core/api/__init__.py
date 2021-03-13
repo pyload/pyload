@@ -43,7 +43,7 @@ def permission(bits):
 
 
 urlmatcher = re.compile(
-    r"((?:(?:https?|ftps?|xdcc|sftp|magnet):(?://|\\\\)+[\w\-._~:/?#\[\]@!$&'()*+,;=]*))",
+    r"(?:(?:https?|ftps?|xdcc|sftp):(?://|\\\\)+[\w\-._~:/?#\[\]@!$&'()*+,;=]*)|magnet:\?.+",
     re.IGNORECASE,
 )
 
@@ -96,7 +96,7 @@ class Api:
     This is accessible either internal via core.api or via thrift backend.
 
     see Thrift specification file remote/thriftbackend/pyload.thrift\
-    for information about data structures and what methods are usuable with rpc.
+    for information about data structures and what methods are usable with rpc.
 
     Most methods requires specific permissions, please look at the source code if you need to know.\
     These can be configured via webinterface.
@@ -422,6 +422,7 @@ class Api:
 
         folder = (
             folder.replace("http://", "")
+            .replace("https://", "")
             .replace(":", "")
             .replace("/", "_")
             .replace("\\", "_")
@@ -454,11 +455,11 @@ class Api:
         urls = []
 
         if html:
-            urls += [x[0] for x in urlmatcher.findall(html)]
+            urls += urlmatcher.findall(html)
 
         if url:
             page = get_url(url)
-            urls += [x[0] for x in urlmatcher.findall(page)]
+            urls += urlmatcher.findall(page)
 
         # remove duplicates
         return self.check_urls(set(urls))
