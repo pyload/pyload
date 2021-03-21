@@ -349,7 +349,7 @@ def logs(start_line=-1):
         except Exception:
             pass
 
-        perpage = int(flask.request.form["perpage"])
+        perpage = int(flask.request.form.get("perpage", 34))
         s["perpage"] = perpage
 
         reversed = bool(flask.request.form.get("reversed", False))
