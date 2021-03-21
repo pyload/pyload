@@ -11,10 +11,10 @@ from ..internal.misc import decode, fs_encode, fsjoin, safename
 class TORRENT(Container):
     __name__ = "TORRENT"
     __type__ = "container"
-    __version__ = "0.04"
+    __version__ = "0.05"
     __status__ = "testing"
 
-    __pattern__ = r'(?:file|https?)://.+\.torrent|magnet:\?.+|(?!file://).+\.(torrent|magnet)'
+    __pattern__ = r'(?:file|https?)://.+\.torrent|magnet:\?.+|(?!(?:file|https?)://).+\.(?:torrent|magnet)'
     __config__ = [("activated", "bool", "Activated", True),
                   ("use_premium", "bool", "Use premium account if available", True),
                   ("folder_per_package", "Default;Yes;No", "Create folder for each package", "Default")]
@@ -23,7 +23,7 @@ class TORRENT(Container):
     __license__ = "GPLv3"
     __authors__ = [("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
-    CONTAINER_PATTERN = r'(?!file://).+\.(torrent|magnet)'
+    CONTAINER_PATTERN = r'(?!(?:file|https?)://).+\.(?:torrent|magnet)'
     CRYPTER_PATTERN = r'(?:file|https?)://.+\.torrent|magnet:\?.+'
 
     def process(self, pyfile):
