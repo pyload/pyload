@@ -461,7 +461,7 @@ class BaseAccount(BasePlugin):
             return True
 
     def parse_traffic(self, size, unit=None):  #: returns bytes
-        self.log_debug(f"Size: {size}", "Unit: {unit or 'N/D'}")
+        self.log_debug(f"Size: {size}", f"Unit: {unit or 'N/D'}")
         return parse.bytesize(size, unit or "byte")
 
     def fail_login(self, msg="Login handshake has failed"):
