@@ -102,12 +102,9 @@ class XFSAccount(BaseAccount):
                 validuntil = time.mktime(time.strptime(expiredate, "%d %B %Y"))
 
             except Exception as exc:
-                locale.setlocale(locale.LC_TIME, previous_locale)
                 self.log_error(exc)
 
             else:
-                locale.setlocale(locale.LC_TIME, previous_locale)
-
                 self.log_debug(f"Valid until: {validuntil}")
 
                 if validuntil > time.mktime(time.gmtime()):
@@ -116,6 +113,10 @@ class XFSAccount(BaseAccount):
                 else:
                     premium = False
                     validuntil = None  #: Registered account type (not premium)
+
+            finally:
+                locale.setlocale(locale.LC_TIME, previous_locale)
+
         else:
             self.log_debug("VALID UNTIL PATTERN not found")
 
