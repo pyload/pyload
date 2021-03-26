@@ -10,7 +10,7 @@ from module.network.HTTPRequest import BadHeader
 class Http(Hoster):
     __name__ = "Http"
     __type__ = "hoster"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __status__ = "testing"
 
     __pattern__ = r'(?:jd|pys?)://.+'
@@ -32,11 +32,6 @@ class Http(Hoster):
 
     def process(self, pyfile):
         url = re.sub(r'^(jd|py)', "http", pyfile.url)
-        netloc = urlparse.urlparse(url).netloc
-        try:
-            netloc = netloc.split('@', 2)[1]
-        except IndexError:
-            pass
 
         for _i in range(2):
             try:
@@ -55,22 +50,32 @@ class Http(Hoster):
                     "Received HTTP status code: %d" %
                     self.req.code)
 
-                if self.account:
-                    logins = dict((x['login'], x['password'])
-                                   for x in self.account.getAllAccounts())
-                else:
-                    logins = {}
+                if _i == 0:
+                    netloc = urlparse.urlparse(url).netloc
+                    try:
+                        netloc = netloc.split('@', 2)[1]
+                    except IndexError:
+                        pass
 
-                if netloc in logins:
-                    self.log_debug("Logging on to %s" % netloc)
-                    self.req.addAuth(logins[netloc])
-
-                else:
-                    auth = self.get_password()
-                    if ':' in auth:
-                        self.req.addAuth(auth)
+                    if self.account:
+                        logins = dict((x['login'], x['password'])
+                                       for x in self.account.getAllAccounts())
                     else:
-                        self.fail(_("Authorization required"))
+                        logins = {}
+
+                    if netloc in logins:
+                        self.log_debug("Logging on to %s" % netloc)
+                        self.req.addAuth(logins[netloc])
+
+                    else:
+                        auth = self.get_password()
+                        if ':' in auth:
+                            self.req.addAuth(auth)
+                        else:
+                            self.fail(_("Authorization required"))
+                else:
+                    self.fail(_("Authorization required"))
+
             else:
                 break
 
