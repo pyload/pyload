@@ -11,7 +11,7 @@ from ..base.downloader import BaseDownloader
 class Http(BaseDownloader):
     __name__ = "Http"
     __type__ = "downloader"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __status__ = "testing"
 
     __pattern__ = r"(?:jd|pys?)://.+"
@@ -34,7 +34,7 @@ class Http(BaseDownloader):
     def process(self, pyfile):
         url = re.sub(r"^(jd|py)", "http", pyfile.url)
 
-        for i in range(2):
+        for _i in range(2):
             try:
                 self.download(url, ref=False, disposition=True)
 
@@ -50,7 +50,7 @@ class Http(BaseDownloader):
                     "Auth required", f"Received HTTP status code: {self.req.code}"
                 )
 
-                if i == 0:
+                if _i == 0:
                     netloc = urllib.parse.urlparse(url).netloc
                     try:
                         netloc = netloc.split('@', 2)[1]
