@@ -10,7 +10,7 @@ from module.network.HTTPRequest import BadHeader
 class Http(Hoster):
     __name__ = "Http"
     __type__ = "hoster"
-    __version__ = "0.10"
+    __version__ = "0.11"
     __status__ = "testing"
 
     __pattern__ = r'(?:jd|pys?)://.+'
@@ -24,9 +24,19 @@ class Http(Hoster):
         self.chunk_limit = -1
         self.resume_download = True
 
+    def load_account(self):
+        class_name = self.classname
+        self.__class__.__name__ = "Http"
+        Hoster.load_account(self)
+        self.__class__.__name__ = class_name
+
     def process(self, pyfile):
         url = re.sub(r'^(jd|py)', "http", pyfile.url)
         netloc = urlparse.urlparse(url).netloc
+        try:
+            netloc = netloc.split('@', 2)[1]
+        except IndexError:
+            pass
 
         for _i in range(2):
             try:
@@ -45,21 +55,20 @@ class Http(Hoster):
                     "Received HTTP status code: %d" %
                     self.req.code)
 
-                #@TODO: Recheck in 0.4.10
                 if self.account:
-                    servers = [x['login']
-                               for x in self.account.getAllAccounts()]
+                    logins = dict((x['login'], x['password'])
+                                   for x in self.account.getAllAccounts())
                 else:
-                    servers = []
+                    logins = {}
 
-                if netloc in servers:
+                if netloc in logins:
                     self.log_debug("Logging on to %s" % netloc)
-                    self.req.addAuth(self.account.get_login('password'))
+                    self.req.addAuth(logins[netloc])
 
                 else:
-                    pwd = self.get_password()
-                    if ':' in pwd:
-                        self.req.addAuth(pwd)
+                    auth = self.get_password()
+                    if ':' in auth:
+                        self.req.addAuth(auth)
                     else:
                         self.fail(_("Authorization required"))
             else:
