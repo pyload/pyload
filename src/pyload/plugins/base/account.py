@@ -131,6 +131,12 @@ class BaseAccount(BasePlugin):
         try:
             self.signin(self.user, self.info["login"]["password"], self.info["data"])
 
+        except NotImplementedError:
+            self.log_error(
+                self._("Could not login user `{}`").format(self.user),
+                self._("Plugin is missing a function")
+            )
+
         except Skip as exc:
             self.log_warning(self._("Skipped login user `{}`").format(self.user), exc)
             self.info["login"]["valid"] = True
@@ -248,6 +254,12 @@ class BaseAccount(BasePlugin):
             if data and isinstance(data, dict):
                 self.info["data"].update(data)
 
+        except NotImplementedError:
+            self.log_error(
+                self._("Error loading info for user `{}`").format(self.user),
+                self._("Plugin is missing a function")
+            )
+
         except Exception as exc:
             self.log_warning(
                 self._("Error loading info for user `{}`").format(self.user), exc
@@ -322,7 +334,7 @@ class BaseAccount(BasePlugin):
             "trafficleft": None,
             "type": self.__name__,
             "valid": None,
-            "validuntil": None,
+            "validuntil": 0,
         }
 
         u = self.accounts[user] = d
