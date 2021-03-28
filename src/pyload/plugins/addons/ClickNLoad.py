@@ -3,7 +3,7 @@ import socket
 import threading
 import time
 
-from pyload.core.utils.old import lock
+from pyload.core.utils.struct.lock import lock
 
 from ..base.addon import BaseAddon, threaded
 from ..helpers import forward

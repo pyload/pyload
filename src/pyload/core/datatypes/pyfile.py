@@ -5,7 +5,7 @@ from threading import RLock
 
 from ..managers.event_manager import UpdateEvent
 from ..utils import format
-from ..utils.old import lock
+from ..utils.struct.lock import lock
 
 status_map = {
     "finished": 0,

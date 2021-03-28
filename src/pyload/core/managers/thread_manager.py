@@ -16,7 +16,7 @@ from ..threads.decrypter_thread import DecrypterThread
 from ..threads.download_thread import DownloadThread
 from ..threads.info_thread import InfoThread
 from ..utils import fs
-from ..utils.old import lock
+from ..utils.struct.lock import lock
 
 
 class ThreadManager:
@@ -364,4 +364,3 @@ class ThreadManager:
     # do global cleanup, should be called when finished with pycurl.
     # """
     # pycurl.global_cleanup()
-

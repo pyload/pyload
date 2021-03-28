@@ -112,19 +112,3 @@ def fixurl(url, unquote=None):
         url = urllib.parse.quote(url)
 
     return url
-
-
-# NOTE: decorator
-def lock(func=None, *decor_args, **decor_kwargs):
-    if func is None:
-        return partial(lock, *decor_args, **decor_kwargs)
-
-    @wraps(func)
-    def wrapper(self, *args, **kwargs):
-        self.lock.acquire(*decor_args, **decor_kwargs)
-        try:
-            return func(self, *args, **kwargs)
-        finally:
-            self.lock.release()
-
-    return wrapper

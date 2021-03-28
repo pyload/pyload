@@ -6,7 +6,7 @@ from threading import Lock
 
 from _thread import start_new_thread
 
-from .utils.old import lock
+from .utils.struct.lock import lock
 
 
 class AlreadyCalled(Exception):
