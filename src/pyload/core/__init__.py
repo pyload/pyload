@@ -78,6 +78,9 @@ class Core:
         self._ = lambda x: x
         self._debug = 0
 
+        #: addons can check this flag when deactivated to tell the reason for deactivation (unload or exit)
+        self.exiting = False
+
         # if self.tmpdir not in sys.path:
         # sys.path.append(self.tmpdir)
 
@@ -449,6 +452,7 @@ class Core:
             for pyfile in list(self.files.cache.values()):
                 pyfile.abort_download()
 
+            self.exiting = True
             self.addon_manager.core_exiting()
 
         finally:

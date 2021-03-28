@@ -29,7 +29,8 @@ class TORRENT(BaseAddon):
         self.pyload.addon_manager.remove_event("plugin_updated", self.plugins_updated)
         self._remove_association(self.torrent_plugin)
         self.torrent_plugin = "None"
-        self._report_status()
+        if self.pyload.exiting is False:
+            self._report_status()
 
     def plugins_updated(self, updated_plugins):
         if self.torrent_plugin != "None":
