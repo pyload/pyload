@@ -334,7 +334,7 @@ class BaseAccount(BasePlugin):
             "trafficleft": None,
             "type": self.__name__,
             "valid": None,
-            "validuntil": 0,
+            "validuntil": None,
         }
 
         u = self.accounts[user] = d
@@ -406,7 +406,8 @@ class BaseAccount(BasePlugin):
                 )
                 continue
 
-            if time.time() > data["validuntil"] > 0:
+            validuntil = -1 if not data["validuntil"] else data["validuntil"]
+            if time.time() > validuntil > 0:
                 self.log_warning(
                     self._(
                         "Not using account `{}` because the account has expired"
