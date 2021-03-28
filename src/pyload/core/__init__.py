@@ -66,6 +66,11 @@ class Core:
     def running(self):
         return self._running.is_set()
 
+    #: addons can check this property when deactivated to tell the reason for deactivation (unload or exit)
+    @property
+    def exiting(self):
+        return self._exiting
+
     @property
     def debug(self):
         return self._debug
@@ -73,13 +78,11 @@ class Core:
     # NOTE: should `restore` reset config as well?
     def __init__(self, userdir, tempdir, storagedir, debug=None, restore=False):
         self._running = Event()
+        self._exiting = False
         self._do_restart = False
         self._do_exit = False
         self._ = lambda x: x
         self._debug = 0
-
-        #: addons can check this flag when deactivated to tell the reason for deactivation (unload or exit)
-        self.exiting = False
 
         # if self.tmpdir not in sys.path:
         # sys.path.append(self.tmpdir)
@@ -452,7 +455,7 @@ class Core:
             for pyfile in list(self.files.cache.values()):
                 pyfile.abort_download()
 
-            self.exiting = True
+            self._exiting = True
             self.addon_manager.core_exiting()
 
         finally:
