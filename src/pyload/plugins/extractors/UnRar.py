@@ -105,7 +105,7 @@ class UnRar(BaseExtractor):
 
     def verify(self, password=None):
         p = self.call_cmd("l", "-v", self.filename, password=password)
-        out, err = (to_str(r, "utf-16").strip() if r else "" for r in p.communicate())
+        out, err = (to_str(r).strip() if r else "" for r in p.communicate())
 
         if self._RE_BADPWD.search(err):
             raise PasswordError
@@ -123,14 +123,14 @@ class UnRar(BaseExtractor):
 
         #: Communicate and retrieve stderr
         self.progress(p)
-        out, err = (to_str(r, "utf-16").strip() if r else "" for r in p.communicate())
+        out, err = (to_str(r).strip() if r else "" for r in p.communicate())
 
         if err or p.returncode:
             p = self.call_cmd("r", self.filename)
 
             # communicate and retrieve stderr
             self.progress(p)
-            out, err = (to_str(r, "utf-16").strip() if r else "" for r in p.communicate())
+            out, err = (to_str(r).strip() if r else "" for r in p.communicate())
 
             if err or p.returncode:
                 return False
@@ -168,7 +168,7 @@ class UnRar(BaseExtractor):
 
         #: Communicate and retrieve stderr
         self.progress(p)
-        out, err = (to_str(r, "utf-16").strip() if r else "" for r in p.communicate())
+        out, err = (to_str(r).strip() if r else "" for r in p.communicate())
 
         if err:
             if self._RE_BADPWD.search(err):
@@ -211,7 +211,7 @@ class UnRar(BaseExtractor):
         command = "v" if self.fullpath else "l"
 
         p = self.call_cmd(command, "-v", self.filename, password=password)
-        out, err = (to_str(r, "utf-16").strip() if r else "" for r in p.communicate())
+        out, err = (to_str(r).strip() if r else "" for r in p.communicate())
 
         if "Cannot open" in err:
             raise ArchiveError(self._("Cannot open file"))
@@ -235,8 +235,8 @@ class UnRar(BaseExtractor):
     def call_cmd(self, command, *xargs, **kwargs):
         args = []
 
-        #: Specify UTF-16 encoding
-        args.append("-scu")
+        #: Specify UTF-8 encoding
+        args.append("-scf")
 
         #: Overwrite flag
         if self.overwrite:
