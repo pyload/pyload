@@ -235,8 +235,9 @@ class UnRar(BaseExtractor):
     def call_cmd(self, command, *xargs, **kwargs):
         args = []
 
-        #: Specify UTF-8 encoding
-        args.append("-scf")
+        if float(self.VERSION) >= 5.5:
+            #: Specify UTF-8 encoding
+            args.append("-scf")
 
         #: Overwrite flag
         if self.overwrite:
