@@ -10,7 +10,7 @@ from ..internal.misc import json
 class FshareVn(Account):
     __name__ = "FshareVn"
     __type__ = "account"
-    __version__ = "0.25"
+    __version__ = "0.26"
     __status__ = "testing"
 
     __description__ = """Fshare.vn account plugin"""
@@ -19,17 +19,19 @@ class FshareVn(Account):
                    ("stickell", "l.stickell@yahoo.it"),
                    ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
-    API_KEY = "L2S7R6ZMagggC5wWkQhX2+aDi467PPuftWUMRFSn"
+    API_KEY = "dMnqMMZMUnN5YpvKENaEhdQQ5jxDqddt"
     API_URL = "https://api.fshare.vn/api/"
 
-    def api_response(self, method, session_id=None, **kwargs):
-        self.req.http.c.setopt(pycurl.USERAGENT, "okhttp/3.6.0")
+    # See https://www.fshare.vn/api-doc
+    def api_request(self, method, session_id=None, **kwargs):
+        self.req.http.c.setopt(pycurl.USERAGENT, "pyLoad-XBEMRN")
 
         if len(kwargs) == 0:
             json_data = self.load(self.API_URL + method,
                                   cookies=[("fshare.vn", 'session_id', session_id)] if session_id else True)
 
         else:
+            self.req.http.c.setopt(pycurl.HTTPHEADER, ["Content-Type: application/json"])
             json_data = self.load(self.API_URL + method,
                                   post=json.dumps(kwargs),
                                   cookies=[("fshare.vn", 'session_id', session_id)] if session_id else True)
@@ -40,7 +42,7 @@ class FshareVn(Account):
         trafficleft = None
         premium = False
 
-        api_data = self.api_response("user/get", session_id=data['session_id'])
+        api_data = self.api_request("user/get", session_id=data['session_id'])
 
         expire_vip = unicode(api_data.get("expire_vip", ""))  #: isnumeric() is only available for unicode strings
         validuntil = float(expire_vip) if expire_vip.isnumeric() else None
@@ -61,7 +63,7 @@ class FshareVn(Account):
             data['session_id'] = fshare_session_cache[user]['session_id']
 
             try:
-                api_data = self.api_response("user/get", session_id=data['session_id'])
+                api_data = self.api_request("user/get", session_id=data['session_id'])
 
             except BadHeader, e:
                 if e.code == 401:
@@ -79,11 +81,12 @@ class FshareVn(Account):
         data['session_id'] = None
 
         try:
-            api_data = self.api_response("user/login",
-                                         app_key=self.API_KEY,
-                                         user_email=user,
-                                         password=password)
+            api_data = self.api_request("user/login",
+                                        app_key=self.API_KEY,
+                                        user_email=user,
+                                        password=password)
         except BadHeader, e:
+            self.log_error(_("Login failed, error code %s") % e.code)
             self.fail_login()
 
         if api_data['code'] != 200:

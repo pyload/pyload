@@ -14,7 +14,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class FshareVn(SimpleHoster):
     __name__ = "FshareVn"
     __type__ = "hoster"
-    __version__ = "0.33"
+    __version__ = "0.34"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?fshare\.vn/file/(?P<ID>\w+)'
@@ -33,17 +33,19 @@ class FshareVn(SimpleHoster):
 
     URL_REPLACEMENTS = [("http://", "https://")]
 
-    API_KEY = "L2S7R6ZMagggC5wWkQhX2+aDi467PPuftWUMRFSn"
+    API_KEY = "dMnqMMZMUnN5YpvKENaEhdQQ5jxDqddt"
     API_URL = "https://api.fshare.vn/api/"
 
-    def api_response(self, method, session_id=None, **kwargs):
-        self.req.http.c.setopt(pycurl.USERAGENT, "okhttp/3.6.0")
+    # See https://www.fshare.vn/api-doc
+    def api_request(self, method, session_id=None, **kwargs):
+        self.req.http.c.setopt(pycurl.USERAGENT, "pyLoad-XBEMRN")
 
         if len(kwargs) == 0:
             json_data = self.load(self.API_URL + method,
                                   cookies=[("fshare.vn", 'session_id', session_id)] if session_id else True)
 
         else:
+            self.req.http.c.setopt(pycurl.HTTPHEADER, ["Content-Type: application/json"])
             json_data = self.load(self.API_URL + method,
                                   post=json.dumps(kwargs),
                                   cookies=[("fshare.vn", 'session_id', session_id)] if session_id else True)
@@ -119,15 +121,17 @@ class FshareVn(SimpleHoster):
         try:
             password = self.get_password()
             if password:
-                api_data = self.api_response("session/download",
-                                             token=self.account.info['data']['token'],
-                                             url=pyfile.url,
-                                             password=password)
+                api_data = self.api_request("session/download",
+                                            session_id=self.account.info['data']['session_id'],
+                                            token=self.account.info['data']['token'],
+                                            url=pyfile.url,
+                                            password=password)
 
             else:
-                api_data = self.api_response("session/download",
-                                             token=self.account.info['data']['token'],
-                                             url=pyfile.url)
+                api_data = self.api_request("session/download",
+                                            session_id=self.account.info['data']['session_id'],
+                                            token=self.account.info['data']['token'],
+                                            url=pyfile.url)
 
         except BadHeader, e:
                 if e.code == 403:
@@ -138,6 +142,7 @@ class FshareVn(SimpleHoster):
                         self.fail(_("Download is password protected"))
 
                 elif e.code != 200:
+                    self.log_debug("Download failed, error code %s" % e.code)
                     self.offline()
 
         self.link = api_data['location']
