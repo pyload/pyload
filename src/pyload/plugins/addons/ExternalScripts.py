@@ -9,7 +9,7 @@ from ..base.addon import BaseAddon, expose
 class ExternalScripts(BaseAddon):
     __name__ = "ExternalScripts"
     __type__ = "addon"
-    __version__ = "0.74"
+    __version__ = "0.75"
     __status__ = "testing"
 
     __config__ = [
@@ -201,7 +201,7 @@ class ExternalScripts(BaseAddon):
 
     def download_finished(self, pyfile):
         file = pyfile.plugin.last_download
-        args = [pyfile.id, pyfile.name, file, pyfile.pluginname, pyfile.url]
+        args = [pyfile.id, pyfile.name, file, pyfile.pluginname, pyfile.url, pyfile.package().name]
         self.call_script("download_finished", *args)
 
     def download_processed(self, pyfile):

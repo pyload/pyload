@@ -8,7 +8,7 @@ from ..base.addon import BaseAddon, threaded
 class MergeFiles(BaseAddon):
     __name__ = "MergeFiles"
     __type__ = "addon"
-    __version__ = "0.22"
+    __version__ = "0.24"
     __status__ = "testing"
 
     __config__ = [("enabled", "bool", "Activated", False)]
