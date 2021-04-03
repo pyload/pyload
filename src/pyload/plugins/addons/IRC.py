@@ -329,7 +329,7 @@ class IRC(Thread, Notifier):
         self.more = []
 
         lines.append(
-            'PACKAGE #{}: "{}" with {} links'.format(pack.id, pack.name, len(pack.links))
+            'PACKAGE #{}: "{}" with {} links'.format(pack.pid, pack.name, len(pack.links))
         )
         for pyfile in pack.links:
             self.more.append(
@@ -462,7 +462,7 @@ class IRC(Thread, Notifier):
         task.set_result(" ".join(args[1:]))
         return ["INFO: Result {} saved.".format(" ".join(args[1:]))]
 
-    def event_freesace(self, args):
+    def event_freespace(self, args):
         b = format.size(int(self.pyload.api.free_space()))
         return ["INFO: Free space is {}.".format(b)]
 
@@ -559,8 +559,8 @@ class IRC(Thread, Notifier):
         pack = None
         if id_or_name.isdigit():
             try:
-                id = int(id_or_name)
-                pack = self.pyload.api.get_package_data(id)
+                package_id = int(id_or_name)
+                pack = self.pyload.api.get_package_data(package_id)
             except PackageDoesNotExists:
                 pack = self._get_package_by_name(id_or_name)
         else:
