@@ -195,7 +195,7 @@ def settings():
         elif not data.trafficleft:
             trafficleft = "not available"
         else:
-            trafficleft = format.size(data.trafficleft << 10)
+            trafficleft = format.size(data.trafficleft)
 
         if data.validuntil == -1:
             validuntil = "unlimited"
@@ -203,7 +203,7 @@ def settings():
             validuntil = "not available"
         else:
             t = time.localtime(data.validuntil)
-            validuntil = time.strftime("%Y-%m-%d %H:%M:%S", t)
+            validuntil = time.strftime("%d.%m.%Y", t)
 
         if "time" in data.options:
             try:
@@ -349,7 +349,7 @@ def logs(start_line=-1):
         except Exception:
             pass
 
-        perpage = int(flask.request.form["perpage"])
+        perpage = int(flask.request.form.get("perpage", 34))
         s["perpage"] = perpage
 
         reversed = bool(flask.request.form.get("reversed", False))
