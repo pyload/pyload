@@ -789,7 +789,7 @@ class Api:
                 links=[self._convert_py_file(x) for x in pack["links"].values()],
             )
             for pack in self.pyload.files.get_complete_data(
-                Destination.COLLECTOR.value
+                Destination.COLLECTOR
             ).values()
         ]
 
