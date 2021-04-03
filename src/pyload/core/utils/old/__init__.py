@@ -9,21 +9,13 @@
 #           \/
 
 import os
-import random
 import re
-import string
-import sys
-import time
-from html.entities import name2codepoint
-import html.parser
 import unicodedata
-import datetime
-from datetime import timedelta
-import shutil
 import urllib.parse
 from functools import partial, wraps
 
 from .. import purge
+from ..web.purge import unescape as html_unescape
 
 try:
     import send2trash
@@ -106,9 +98,8 @@ def fixurl(url, unquote=None):
     url = urllib.parse.unquote(url)
 
     if unquote is None:
-        unquote = url is old
+        unquote = url == old
 
-    url = decode(url)
     # try:
     # url = url.decode("unicode-escape")
     # except UnicodeDecodeError:
@@ -121,40 +112,3 @@ def fixurl(url, unquote=None):
         url = urllib.parse.quote(url)
 
     return url
-
-
-def parse_name(value, safechar=True):
-    path = fixurl(decode(value), unquote=False)
-    url_p = urllib.parse.urlparse(path.rstrip("/"))
-    name = (
-        url_p.path.split("/")[-1]
-        or url_p.query.split("=", 1)[::-1][0].split("&", 1)[0]
-        or url_p.netloc.split(".", 1)[0]
-    )
-
-    name = urllib.parse.unquote(name)
-    return safename(name) if safechar else name
-
-
-# NOTE: decorator
-def lock(func=None, *decor_args, **decor_kwargs):
-    if func is None:
-        return partial(lock, *decor_args, **decor_kwargs)
-
-    @wraps(func)
-    def wrapper(self, *args, **kwargs):
-        self.lock.acquire(*decor_args, **decor_kwargs)
-        try:
-            return func(self, *args, **kwargs)
-        finally:
-            self.lock.release()
-
-    return wrapper
-
-
-def html_unescape(text):
-    """
-    Removes HTML or XML character references and entities from a text string.
-    """
-    h = html.parser.HTMLParser()
-    return h.unescape(text)

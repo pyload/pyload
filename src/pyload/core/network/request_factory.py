@@ -2,7 +2,7 @@
 
 from threading import Lock
 
-from ..utils.old import lock
+from ..utils.struct.lock import lock
 from .browser import Browser
 from .bucket import Bucket
 from .cookie_jar import CookieJar

@@ -7,7 +7,8 @@ import pycurl
 from pyload.core.network.exceptions import Fail, Skip
 from pyload.core.network.request_factory import get_request
 from pyload.core.utils import fs
-from pyload.core.utils.old import fixurl, html_unescape
+from pyload.core.utils.old import fixurl
+from pyload.core.utils.web import purge
 
 from ..helpers import DB, Config, exists, format_exc, parse_html_header, set_cookies
 
@@ -16,7 +17,6 @@ if os.name != "nt":
     import pwd
 
 
-# NOTE: save decode() as _decode() for use with load(url, decode='decode-str')
 class BasePlugin:
     __name__ = "BasePlugin"
     __type__ = "base"
@@ -88,9 +88,13 @@ class BasePlugin:
         self._log("warning", self.__type__, self.__name__, args, kwargs)
 
     def log_error(self, *args, **kwargs):
+        kwargs["exc_info"] = kwargs["exc_info"] if "exc_info" in kwargs else self.pyload.debug > 1
+        kwargs["stack_info"] = kwargs["stack_info"] if "stack_info" in kwargs else self.pyload.debug > 2
         self._log("error", self.__type__, self.__name__, args, kwargs)
 
     def log_critical(self, *args, **kwargs):
+        kwargs["exc_info"] = kwargs.get("exc_info", True)
+        kwargs["stack_info"] = kwargs.get("stack_info", True)
         self._log("critical", self.__type__, self.__name__, args, kwargs)
 
     # def _print_exc(self):
@@ -234,7 +238,7 @@ class BasePlugin:
 
         # TODO: Move to network in 0.6.x
         if decode:
-            html = html_unescape(html)
+            html = purge.unescape(html)
 
         self.last_html = html
 
@@ -361,10 +365,7 @@ class BasePlugin:
                 http_req.c.setopt(pycurl.MAXREDIRS, maxredirs)
 
             if decode:
-                html = html_unescape(html)
-
-            # TODO: Move to network in 0.6.x
-            html = _decode(html)
+                html = purge.unescape(html)
 
             self.last_html = html
 

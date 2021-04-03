@@ -7,7 +7,7 @@ from datetime import timedelta
 
 from pyload.core.network.exceptions import Skip
 from pyload.core.utils import parse, seconds
-from pyload.core.utils.old import lock
+from pyload.core.utils.struct.lock import lock
 
 from ..helpers import Periodical, is_sequence
 from .plugin import BasePlugin
@@ -75,14 +75,16 @@ class BaseAccount(BasePlugin):
         try:
             user = self.user
             hidden_user = "{:*<{}}".format(self.user[:3], 7)
-            args = tuple(arg.replace(user, hidden_user) for arg in args if arg)
+            args = tuple(arg.replace(user, hidden_user) if isinstance(arg, str) else arg
+                         for arg in args if arg)
         except (KeyError, TypeError):
             pass
 
         try:
             pw = self.info["login"]["password"]
             hidden_pw = "*" * 10
-            args = tuple(arg.replace(pw, hidden_pw) for arg in args if arg)
+            args = tuple(arg.replace(pw, hidden_pw) if isinstance(arg, str) else arg
+                         for arg in args if arg)
         except (KeyError, TypeError):
             pass
 
@@ -128,6 +130,12 @@ class BaseAccount(BasePlugin):
 
         try:
             self.signin(self.user, self.info["login"]["password"], self.info["data"])
+
+        except NotImplementedError:
+            self.log_error(
+                self._("Could not login user `{}`").format(self.user),
+                self._("Plugin is missing a function")
+            )
 
         except Skip as exc:
             self.log_warning(self._("Skipped login user `{}`").format(self.user), exc)
@@ -245,6 +253,12 @@ class BaseAccount(BasePlugin):
 
             if data and isinstance(data, dict):
                 self.info["data"].update(data)
+
+        except NotImplementedError:
+            self.log_error(
+                self._("Error loading info for user `{}`").format(self.user),
+                self._("Plugin is missing a function")
+            )
 
         except Exception as exc:
             self.log_warning(
@@ -392,7 +406,8 @@ class BaseAccount(BasePlugin):
                 )
                 continue
 
-            if time.time() > data["validuntil"] > 0:
+            validuntil = -1 if not data["validuntil"] else data["validuntil"]
+            if time.time() > validuntil > 0:
                 self.log_warning(
                     self._(
                         "Not using account `{}` because the account has expired"
@@ -459,7 +474,7 @@ class BaseAccount(BasePlugin):
             return True
 
     def parse_traffic(self, size, unit=None):  #: returns bytes
-        self.log_debug(f"Size: {size}", "Unit: {unit or 'N/D'}")
+        self.log_debug(f"Size: {size}", f"Unit: {unit or 'N/D'}")
         return parse.bytesize(size, unit or "byte")
 
     def fail_login(self, msg="Login handshake has failed"):
