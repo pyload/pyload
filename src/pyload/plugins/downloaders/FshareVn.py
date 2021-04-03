@@ -1,21 +1,22 @@
 # -*- coding: utf-8 -*-
 import json
+import re
 import urllib.parse
 
+import pycurl
+from pyload.core.network.http.exceptions import BadHeader
+from pyload.core.network.request_factory import get_request
+
 from ..base.simple_downloader import SimpleDownloader
-
-
-def double_decode(m):
-    return m.group(1).decode("raw_unicode_escape")
 
 
 class FshareVn(SimpleDownloader):
     __name__ = "FshareVn"
     __type__ = "downloader"
-    __version__ = "0.32"
+    __version__ = "0.34"
     __status__ = "testing"
 
-    __pattern__ = r"https?://(?:www\.)?fshare\.vn/file/.+"
+    __pattern__ = r"https?://(?:www\.)?fshare\.vn/file/(?P<ID>\w+)"
     __config__ = [
         ("enabled", "bool", "Activated", True),
         ("use_premium", "bool", "Use premium account if available", True),
@@ -31,17 +32,67 @@ class FshareVn(SimpleDownloader):
         ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com"),
     ]
 
-    NAME_PATTERN = (
-        r'<i class="material-icons">insert_drive_file</i>\s*(?P<N>.+?)\s*</div>'
-    )
-    SIZE_PATTERN = (
-        r'<i class="material-icons">save</i>\s*(?P<S>[\d.,]+) (?P<U>[\w^_]+)\s*</div>'
-    )
     OFFLINE_PATTERN = r"Tập tin của bạn yêu cầu không tồn tại"
 
-    NAME_REPLACEMENTS = [("(.*)", double_decode)]
-
     URL_REPLACEMENTS = [("http://", "https://")]
+
+    API_KEY = "dMnqMMZMUnN5YpvKENaEhdQQ5jxDqddt"
+    API_URL = "https://api.fshare.vn/api/"
+
+    # See https://www.fshare.vn/api-doc
+    def api_request(self, method, session_id=None, **kwargs):
+        self.req.http.c.setopt(pycurl.USERAGENT, "pyLoad-XBEMRN")
+
+        if len(kwargs) == 0:
+            json_data = self.load(
+                self.API_URL + method,
+                cookies=[("fshare.vn", "session_id", session_id)]
+                if session_id
+                else True,
+                )
+
+        else:
+            self.req.http.c.setopt(
+                pycurl.HTTPHEADER, ["Content-Type: application/json"]
+            )
+            json_data = self.load(
+                self.API_URL + method,
+                post=json.dumps(kwargs),
+                cookies=[("fshare.vn", "session_id", session_id)]
+                if session_id
+                else True,
+                )
+
+        return json.loads(json_data)
+
+    @classmethod
+    def api_info(cls, url):
+        info = {}
+        file_id = re.match(cls.__pattern__, url).group("ID")
+        req = get_request()
+
+        req.c.setopt(pycurl.HTTPHEADER, ["Accept: application/json, text/plain, */*"])
+        file_info = json.loads(
+            req.load(
+                "https://www.fshare.vn/api/v3/files/folder", get={"linkcode": file_id}
+            )
+        )
+
+        req.close()
+
+        if file_info.get("status") == 404:
+            info["status"] = 1
+
+        else:
+            info.update(
+                {
+                    "name": file_info["current"]["name"],
+                    "size": file_info["current"]["size"],
+                    "status": 2,
+                }
+            )
+
+        return info
 
     def handle_free(self, pyfile):
         action, inputs = self.parse_html_form('class="password-form"')
@@ -89,4 +140,35 @@ class FshareVn(SimpleDownloader):
         self.link = json_data["url"]
 
     def handle_premium(self, pyfile):
-        self.handle_free(pyfile)
+        try:
+            password = self.get_password()
+            if password:
+                api_data = self.api_request(
+                    "session/download",
+                    session_id=self.account.info["data"]["session_id"],
+                    token=self.account.info["data"]["token"],
+                    url=pyfile.url,
+                    password=password,
+                )
+
+            else:
+                api_data = self.api_request(
+                    "session/download",
+                    session_id=self.account.info["data"]["session_id"],
+                    token=self.account.info["data"]["token"],
+                    url=pyfile.url,
+                )
+
+        except BadHeader as exc:
+            if exc.code == 403:
+                if password:
+                    self.fail(self._("Wrong password"))
+
+                else:
+                    self.fail(self._("Download is password protected"))
+
+            elif exc.code != 200:
+                self.log_debug("Download failed, error code {}".format(exc.code))
+                self.offline()
+
+        self.link = api_data["location"]

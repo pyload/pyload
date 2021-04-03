@@ -39,6 +39,9 @@ class PluginManager:
         self.plugins = {}
         self.create_index()
 
+        # save generated config
+        self.pyload.config.save_config(self.pyload.config.plugin, self.pyload.config.pluginpath)
+
         # register for import addon
         sys.meta_path.append(self)
 

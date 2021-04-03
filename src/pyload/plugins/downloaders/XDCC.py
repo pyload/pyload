@@ -10,7 +10,7 @@ import threading
 import time
 
 from pyload.core.network.exceptions import Abort
-from pyload.core.utils.old import lock
+from pyload.core.utils.struct.lock import lock
 from pyload.core.utils.convert import to_bytes
 
 from ..base.addon import threaded

@@ -32,6 +32,9 @@ class UnZip(BaseExtractor):
 
     @classmethod
     def isarchive(cls, filename):
+        if os.path.splitext(filename)[1] != ".zip":
+            return False
+
         #: zipfile only checks for 'End of archive' so we have to check ourselves for 'start of archive'
         try:
             with open(filename, "rb") as f:
