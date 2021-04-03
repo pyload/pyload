@@ -7,7 +7,7 @@ from ..base.addon import BaseAddon
 class TORRENT(BaseAddon):
     __name__ = "TORRENT"
     __type__ = "addon"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", False),
@@ -29,7 +29,8 @@ class TORRENT(BaseAddon):
         self.pyload.addon_manager.remove_event("plugin_updated", self.plugins_updated)
         self._remove_association(self.torrent_plugin)
         self.torrent_plugin = "None"
-        self._report_status()
+        if self.pyload.exiting is False:
+            self._report_status()
 
     def plugins_updated(self, updated_plugins):
         if self.torrent_plugin != "None":
@@ -54,24 +55,24 @@ class TORRENT(BaseAddon):
             plugin_type, plugin_name = plugin.split(":")
             plugin_type = "decrypter" if plugin_type == "c" else "downloader"
 
-            dict = self.pyload.plugin_manager.plugins["container"]["TORRENT"]
-            dict["pattern"] = r"(?!file://).+\.(?:torrent|magnet)"
-            dict["re"] = re.compile(dict["pattern"])
+            hdict = self.pyload.plugin_manager.plugins["container"]["TORRENT"]
+            hdict["pattern"] = r"(?!(?:file|https?)://).+\.(?:torrent|magnet)"
+            hdict["re"] = re.compile(hdict["pattern"])
 
-            dict = self.pyload.plugin_manager.plugins[plugin_type][plugin_name]
-            dict["pattern"] = r"(?:file|https?)://.+\.torrent|magnet:\?.+"
-            dict["re"] = re.compile(dict["pattern"])
+            hdict = self.pyload.plugin_manager.plugins[plugin_type][plugin_name]
+            hdict["pattern"] = r"(?:file|https?)://.+\.torrent|magnet:\?.+"
+            hdict["re"] = re.compile(hdict["pattern"])
 
     def _remove_association(self, plugin):
         if plugin != "None":
             plugin_type, plugin_name = plugin.split(":")
             plugin_type = "decrypter" if plugin_type == "c" else "downloader"
 
-            dict = self.pyload.plugin_manager.plugins[plugin_type][plugin_name]
-            dict["pattern"] = r"^unmatchable$"
-            dict["re"] = re.compile(dict["pattern"])
+            hdict = self.pyload.plugin_manager.plugins[plugin_type][plugin_name]
+            hdict["pattern"] = r"^unmatchable$"
+            hdict["re"] = re.compile(hdict["pattern"])
 
-            dict = self.pyload.plugin_manager.plugins["container"]["TORRENT"]
-            dict["pattern"] = r"(?:file|https?)://.+\.torrent|magnet:\?.+|(?!file://).+\.(torrent|magnet)"
-            dict["re"] = re.compile(dict["pattern"])
+            hdict = self.pyload.plugin_manager.plugins["container"]["TORRENT"]
+            hdict["pattern"] = r"(?:file|https?)://.+\.torrent|magnet:\?.+|(?!(?:file|https?)://).+\.(?:torrent|magnet)"
+            hdict["re"] = re.compile(hdict["pattern"])
 

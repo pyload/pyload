@@ -12,7 +12,7 @@ from ..base.addon import BaseAddon, threaded
 class ExpertDecoders(BaseAddon):
     __name__ = "ExpertDecoders"
     __type__ = "addon"
-    __version__ = "0.12"
+    __version__ = "0.14"
     __status__ = "testing"
 
     __config__ = [

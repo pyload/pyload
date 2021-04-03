@@ -14,7 +14,7 @@ def comments(value):
     return _RE_COMMENTS.sub("", value).strip()
 
 
-def escape(value):
+def unescape(value):
     """Translates HTML or XML escape character references and entities from a text string."""
     return html.unescape(value)
 
@@ -40,4 +40,4 @@ def rfc2047(value):
 
 def text(value):
     """Removes HTML tags, translate HTML escape characters and removes surrounding quotation marks"""
-    return tags(escape(value)).strip("'\" ")
+    return tags(unescape(value)).strip("'\" ")
