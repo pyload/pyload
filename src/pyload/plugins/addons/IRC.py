@@ -10,14 +10,39 @@ from threading import Thread
 import pycurl
 from pyload.core.api import FileDoesNotExists, PackageDoesNotExists
 from pyload.core.utils import format
+from pyload.core.utils.convert import to_bytes, to_str
 
 from ..base.notifier import Notifier
+
+
+def parse_irc_msg(line):
+    """
+    Breaks a message from an IRC server into its origin, command, and arguments.
+    """
+    origin = ''
+    if not line:
+        return None, None, None
+
+    if line[0:1] == b':':
+        origin, line = line[1:].split(b' ', 1)
+
+    if line.find(b' :') != -1:
+        line, trailing = line.split(b' :', 1)
+        args = line.split()
+        args.append(trailing)
+
+    else:
+        args = line.split()
+
+    command = args.pop(0)
+
+    return to_str(origin), to_str(command), [to_str(arg) for arg in args]
 
 
 class IRC(Thread, Notifier):
     __name__ = "IRC"
     __type__ = "addon"
-    __version__ = "0.26"
+    __version__ = "0.28"
     __status__ = "testing"
 
     __config__ = [
@@ -37,6 +62,7 @@ class IRC(Thread, Notifier):
         ("info_file", "bool", "Inform about every file finished", False),
         ("info_pack", "bool", "Inform about every package finished", True),
         ("captcha", "bool", "Send captcha requests", True),
+        ("maxline", "int", "Maximum line per message", 6)
     ]
 
     __description__ = """Connect to irc and let owner perform different tasks"""
@@ -103,23 +129,23 @@ class IRC(Thread, Notifier):
             )  # TODO: support certificate
 
         nick = self.config.get("nick")
-        self.sock.send("NICK {}\r\n".format(nick))
-        self.sock.send("USER {} {} bla :{}\r\n".format(nick, host, nick))
-        for t in self.config.get("owner").split():
-            t = t.strip()
-            if t.startswith("#"):
-                self.sock.send("JOIN {}\r\n".format(t))
+        self.sock.send(to_bytes("NICK {}\r\n".format(nick)))
+        self.sock.send(to_bytes("USER {} {} bla :{}\r\n".format(nick, host, nick)))
         self.log_info(self._("Connected to"), host)
+        for t in self.config.get("owner").split():
+            if t.startswith("#"):
+                self.sock.send(to_bytes("JOIN {}\r\n".format(t)))
+                self.log_info(self._("Joined channel {}").format(to_str(t)))
         self.log_info(self._("Switching to listening mode!"))
         try:
             self.main_loop()
 
-        except IRCError as ex:
-            self.sock.send("QUIT :byebye\r\n")
+        except IRCError:
+            self.sock.send(b"QUIT :byebye\r\n")
             self.sock.close()
 
     def main_loop(self):
-        readbuffer = ""
+        readbuffer = b""
         while True:
             time.sleep(1)
             fdset = select.select([self.sock], [], [], 0)
@@ -130,86 +156,89 @@ class IRC(Thread, Notifier):
                 raise IRCError("quit")
 
             readbuffer += self.sock.recv(1 << 10)
-            temp = readbuffer.split("\n")
+            temp = readbuffer.split(b"\n")
             readbuffer = temp.pop()
 
             for line in temp:
                 line = line.rstrip()
-                first = line.split()
+                origin, command, args = parse_irc_msg(line)
 
-                if first[0] == "PING":
-                    self.sock.send("PONG :{}\r\n".format(first[1]))
+                if command == "PING":
+                    self.log_debug("[{}] Ping? Pong!".format(args[0]))
+                    self.sock.send(to_bytes("PONG :%s\r\n" % args[0]))
 
-                if first[0] == "ERROR":
+                if command == "ERROR":
                     raise IRCError(line)
 
-                msg = line.split(None, 3)
-                if len(msg) < 4:
-                    continue
-
                 msg = {
-                    "origin": msg[0][1:],
-                    "action": msg[1],
-                    "target": msg[2],
-                    "text": msg[3][1:],
+                    "origin": origin,
+                    "command": command,
+                    "args": args,
                 }
 
                 self.handle_events(msg)
 
     def handle_events(self, msg):
-        if msg["origin"].split("!", 1)[0] not in self.config.get("owner").split():
+        if msg["command"] != "PRIVMSG" or not msg["origin"]:
             return
 
-        if msg["target"].split("!", 1)[0] != self.config.get("nick"):
-            return
+        sender_nick = msg["origin"].split('@')[0].split('!')[0]
+        recipient = msg["args"][0]
+        text = msg["args"][1]
 
-        if msg["action"] != "PRIVMSG":
+        if recipient != self.config.get("nick"):
             return
 
         #: HANDLE CTCP ANTI FLOOD/BOT PROTECTION
-        if msg["text"] == "\x01VERSION\x01":
-            self.log_debug("Sending CTCP VERSION")
-            self.sock.send(
-                "NOTICE {} :{}\r\n".format(msg["origin"], "pyLoad! IRC Interface")
-            )
-            return
-        elif msg["text"] == "\x01TIME\x01":
-            self.log_debug("Sending CTCP TIME")
-            self.sock.send("NOTICE {} :{}\r\n".format(msg["origin"], time.time()))
-            return
-        elif msg["text"] == "\x01LAG\x01":
-            self.log_debug("Received CTCP LAG")  #: don't know how to answer
+        if text[0] == '\x01' and text[-1] == '\x01':  #: CTCP
+            ctcp_data = text[1:-1].split(' ', 1)
+            ctcp_command = ctcp_data[0]
+            ctcp_args    = ctcp_data[1] if len(ctcp_data) > 1 else ""
+
+            if ctcp_command == "VERSION":
+                self.log_debug("Sending CTCP VERSION")
+                self.sock.send(
+                    to_bytes("NOTICE {} :{}\r\n".format(msg["origin"], "pyLoad! IRC Interface"))
+                )
+                return
+            elif ctcp_command == "TIME":
+                self.log_debug("Sending CTCP TIME")
+                self.sock.send(to_bytes("NOTICE {} :{}\r\n".format(msg["origin"], time.time())))
+                return
+            elif ctcp_command == "PING":
+                self.log_debug("[{}] Ping? Pong!".format(sender_nick))
+                self.sock.send(to_bytes("NOTICE {} :\x01PING {}\x01\r\n".format(sender_nick, ctcp_args)))  #@NOTE: PING is not a typo
+            elif ctcp_command == "LAG":
+                self.log_debug("Received CTCP LAG")  #: don't know how to answer
+                return
+
+        if sender_nick not in self.config.get("owner").split():
             return
 
-        trigger = "pass"
-        args = None
-
+        args = []
         try:
-            temp = msg["text"].split()
-            trigger = temp[0]
-            if len(temp) > 1:
-                args = temp[1:]
+            trigger = text.split()[0]
+            args = text.split()[1:]
 
-        except Exception:
-            pass
+        except IndexError:
+            trigger = "pass"
 
         handler = getattr(self, "event_{}".format(trigger), self.event_pass)
         try:
             res = handler(args)
             for line in res:
                 self.response(line, msg["origin"])
+                time.sleep(0.5)
 
         except Exception as exc:
-            self.log_error(
-                exc, exc_info=self.pyload.debug > 1, stack_info=self.pyload.debug > 2
-            )
+            self.log_error(exc)
 
     def response(self, msg, origin=""):
         if origin == "":
             for t in self.config.get("owner").split():
-                self.sock.send("PRIVMSG {} :{}\r\n".format(t.strip(), msg))
+                self.sock.send(to_bytes("PRIVMSG {} :{}\r\n".format(t.strip(), msg)))
         else:
-            self.sock.send("PRIVMSG {} :{}\r\n".format(origin.split("!", 1)[0], msg))
+            self.sock.send(to_bytes("PRIVMSG {} :{}\r\n".format(origin.split("!", 1)[0], msg)))
 
     # Events
     def event_pass(self, args):
@@ -223,7 +252,6 @@ class IRC(Thread, Notifier):
         temp_progress = ""
         lines = ["ID - Name - Status - Speed - ETA - Progress"]
         for data in downloads:
-
             if data.status == 5:
                 temp_progress = data.format_wait
             else:
@@ -276,7 +304,6 @@ class IRC(Thread, Notifier):
         if not args:
             return ["ERROR: Use info like this: info <id>"]
 
-        info = None
         try:
             info = self.pyload.api.get_file_data(int(args[0]))
 
@@ -291,22 +318,18 @@ class IRC(Thread, Notifier):
 
     def event_packinfo(self, args):
         if not args:
-            return ["ERROR: Use packinfo like this: packinfo <id>"]
+            return ["ERROR: Use packinfo like this: packinfo <name|id>"]
 
         lines = []
-        pack = None
-        try:
-            pack = self.pyload.api.get_package_data(int(args[0]))
-
-        except PackageDoesNotExists:
+        id_or_name = args[0]
+        pack = self._get_package_by_name_or_id(id_or_name)
+        if not pack:
             return ["ERROR: Package doesn't exists."]
-
-        id = args[0]
 
         self.more = []
 
         lines.append(
-            'PACKAGE #{}: "{}" with {} links'.format(id, pack.name, len(pack.links))
+            'PACKAGE #{}: "{}" with {} links'.format(pack.id, pack.name, len(pack.links))
         )
         for pyfile in pack.links:
             self.more.append(
@@ -319,12 +342,13 @@ class IRC(Thread, Notifier):
                 )
             )
 
-        if len(self.more) < 6:
+        maxline = self.config.get('maxline')
+        if len(self.more) < maxline:
             lines.extend(self.more)
             self.more = []
         else:
-            lines.extend(self.more[:6])
-            self.more = self.more[6:]
+            lines.extend(self.more[:maxline])
+            self.more = self.more[maxline:]
             lines.append("{} more links do display.".format(len(self.more)))
 
         return lines
@@ -333,19 +357,26 @@ class IRC(Thread, Notifier):
         if not self.more:
             return ["No more information to display."]
 
-        lines = self.more[:6]
-        self.more = self.more[6:]
+        maxline = self.config.get('maxline')
+        lines = self.more[:maxline]
+        self.more = self.more[maxline:]
         lines.append("{} more links do display.".format(len(self.more)))
 
         return lines
 
-    def event_start(self, args):
+    def event_unpause(self, args):
         self.pyload.api.unpause_server()
         return ["INFO: Starting downloads."]
 
-    def event_stop(self, args):
+    def event_pause(self, args):
         self.pyload.api.pause_server()
         return ["INFO: No new downloads will be started."]
+
+    def event_togglepause(self, args):
+        if self.pyload.api.toggle_pause():
+            return ["INFO: Starting downloads."]
+        else:
+            return ["INFO: No new downloads will be started."]
 
     def event_add(self, args):
         if len(args) < 2:
@@ -354,31 +385,25 @@ class IRC(Thread, Notifier):
                 "This will add the link <link> to to the package <package> / the package with id <id>!",
             ]
 
-        pack = args[0].strip()
+        id_or_name = args[0].strip()
         links = [x.strip() for x in args[1:]]
 
-        try:
-            id = int(pack)
-            pack = self.pyload.api.get_package_data(id)
-            if not pack:
-                return ["ERROR: Package doesn't exists."]
-
-            # TODO: add links
-
-            return [
-                "INFO: Added {} links to Package {} [#{}]".format(
-                    len(links), pack["name"], id
-                )
-            ]
-
-        except Exception:
+        pack = self._get_package_by_name_or_id(id_or_name)
+        if not pack:
             #: Create new package
-            id = self.pyload.api.add_package(pack, links, 1)
+            id = self.pyload.api.add_package(id_or_name, links, 1)
             return [
-                "INFO: Created new Package {} [#{}] with {#{}} links.".format(
-                    pack, id, len(links)
+                "INFO: Created new Package {} [#{}] with {} links.".format(
+                    id_or_name, id, len(links)
                 )
             ]
+
+        self.pyload.api.add_files(pack.pid, links)
+        return [
+            "INFO: Added {} links to Package {} [#{}]".format(
+                len(links), pack.name, pack.pid
+            )
+        ]
 
     def event_del(self, args):
         if len(args) < 2:
@@ -403,25 +428,25 @@ class IRC(Thread, Notifier):
         if not args:
             return ["ERROR: Push package to queue like this: push <package id>"]
 
-        id = int(args[0])
+        package_id = int(args[0])
         try:
-            self.pyload.api.get_package_info(id)
+            self.pyload.api.get_package_info(package_id)
         except PackageDoesNotExists:
-            return ["ERROR: Package #{} does not exist.".format(id)]
+            return ["ERROR: Package #{} does not exist.".format(package_id)]
 
-        self.pyload.api.push_to_queue(id)
-        return ["INFO: Pushed package #{} to queue.".format(id)]
+        self.pyload.api.push_to_queue(package_id)
+        return ["INFO: Pushed package #{} to queue.".format(package_id)]
 
     def event_pull(self, args):
         if not args:
             return ["ERROR: Pull package from queue like this: pull <package id>."]
 
-        id = int(args[0])
-        if not self.pyload.api.get_package_data(id):
-            return ["ERROR: Package #{} does not exist.".format(id)]
+        package_id = int(args[0])
+        if not self.pyload.api.get_package_data(package_id):
+            return ["ERROR: Package #{} does not exist.".format(package_id)]
 
-        self.pyload.api.pull_from_queue(id)
-        return ["INFO: Pulled package #{} from queue to collector.".format(id)]
+        self.pyload.api.pull_from_queue(package_id)
+        return ["INFO: Pulled package #{} from queue to collector.".format(package_id)]
 
     def event_c(self, args):
         """
@@ -437,24 +462,126 @@ class IRC(Thread, Notifier):
         task.set_result(" ".join(args[1:]))
         return ["INFO: Result {} saved.".format(" ".join(args[1:]))]
 
+    def event_freesace(self, args):
+        b = format.size(int(self.pyload.api.free_space()))
+        return ["INFO: Free space is {}.".format(b)]
+
+    def event_restart(self, args):
+        self.pyload.api.restart()
+        return ["INFO: Done."]
+
+    def event_restartfailed(self, args):
+        self.pyload.api.restart_failed()
+        return ["INFO: Restarting all failed downloads."]
+
+    def event_restartfile(self, args):
+        if not args:
+            return ['ERROR: missing argument']
+        id = int(args[0])
+        if not self.pyload.api.get_file_data(id):
+            return ["ERROR: File #{} does not exist.".format(id)]
+        self.pyload.api.restart_file(id)
+        return ["INFO: Restart file #{}.".format(id)]
+
+    def event_restartpackage(self, args):
+        if not args:
+            return ['ERROR: missing argument']
+        id_or_name = args[0]
+        pack = self._get_package_by_name_or_id(id_or_name)
+        if not pack:
+            return ["ERROR: Package #{} does not exist.".format(id_or_name)]
+        self.pyload.api.restart_package(pack.pid)
+        return ["INFO: Restart package {} (#{}).".format(pack.name, pack.pid)]
+
+    def event_deletefinished(self, args):
+        return ["INFO: Deleted package ids: {}.".format(self.pyload.api.delete_finished())]
+
+    def event_getlog(self, args):
+        """Returns most recent log entries."""
+        self.more = []
+        lines = []
+        log = self.pyload.api.get_log()
+
+        for line in log:
+            if line:
+                if line[-1] == '\n':
+                    line = line[:-1]
+                self.more.append("LOG: {}".format(line))
+
+        maxline = self.config.get('maxline')
+        if args and args[0] == 'last':
+            if len(args) < 2:
+                self.more = self.more[-maxline:]
+            else:
+                self.more = self.more[-(int(args[1])):]
+
+        if len(self.more) < maxline:
+            lines.extend(self.more)
+            self.more = []
+        else:
+            lines.extend(self.more[:maxline])
+            self.more = self.more[maxline:]
+            lines.append("{} more logs do display.".format(len(self.more)))
+
+        return lines
+
     def event_help(self, args):
         lines = [
             "The following commands are available:",
             "add <package|packid> <links> [...] Adds link to package. (creates new package if it does not exist)",
-            "queue                       Shows all packages in the queue",
-            "collector                   Shows all packages in collector",
-            "del -p|-l <id> [...]        Deletes all packages|links with the ids specified",
-            "info <id>                   Shows info of the link with id <id>",
-            "packinfo <id>               Shows info of the package with id <id>",
-            "more                        Shows more info when the result was truncated",
-            "start                       Starts all downloads",
-            "stop                        Stops the download (but not abort active downloads)",
-            "push <id>                   Push package to queue",
-            "pull <id>                   Pull package from queue",
-            "status                      Show general download status",
-            "help                        Shows this help message",
+            "collector                          Shows all packages in collector",
+            "del -p|-l <id> [...]               Deletes all packages|links with the ids specified",
+            "deletefinished                     Deletes all finished files and completly finished packages",
+            "freespace                          Available free space at download directory in bytes",
+            "getlog [last [nb]]                 Returns most recent log entries",
+            "help                               Shows this help message",
+            "info <id>                          Shows info of the link with id <id>",
+            "more                               Shows more info when the result was truncated",
+            "packinfo <package|packid>          Shows info of the package with id <id>",
+            "pause                              Stops the download (but not abort active downloads)",
+            "pull <id>                          Pull package from queue",
+            "push <id>                          Push package to queue",
+            "queue                              Shows all packages in the queue",
+            "restart                            Restart pyload core",
+            "restartfailed                      Restarts all failed files",
+            "restartfile <id>                   Resets file status, so it will be downloaded again",
+            "restartpackage <package|packid>    Restarts a package, resets every containing files",
+            "status                             Show general download status",
+            "togglepause                        Toggle pause state",
+            "unpause                            Starts all downloads"
         ]
         return lines
+
+    # End events
+
+    def _get_package_by_name_or_id(self, id_or_name):
+        """Return the first packageData found or None."""
+        pack = None
+        if id_or_name.isdigit():
+            try:
+                id = int(id_or_name)
+                pack = self.pyload.api.get_package_data(id)
+            except PackageDoesNotExists:
+                pack = self._get_package_by_name(id_or_name)
+        else:
+            pack = self._get_package_by_name(id_or_name)
+        return pack
+
+    def _get_package_by_name(self, name):
+        """Return the first packageData found or None."""
+
+        pq = self.pyload.api.get_queue_data()
+        for pack in pq:
+            if pack.name == name:
+                self.log_debug('pack.name', pack.name, 'pack.pid', pack.pid)
+                return pack
+
+        pc = self.pyload.api.get_collector()
+        for pack in pc:
+            if pack.name == name:
+                self.log_debug('pack.name', pack.name, 'pack.pid', pack.pid)
+                return pack
+        return None
 
 
 class IRCError(Exception):

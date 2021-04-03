@@ -4,7 +4,7 @@ import os
 import shutil
 from threading import Lock
 
-from ..utils.old import lock
+from ..utils.struct.lock import lock
 from .event_manager import AccountUpdateEvent
 
 # MANAGER VERSION

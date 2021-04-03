@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+
+import locale
 import re
 import time
 import urllib.parse
@@ -94,7 +96,9 @@ class XFSAccount(BaseAccount):
             expiredate = m.group(1).strip()
             self.log_debug("Expire date: " + expiredate)
 
+            previous_locale = locale.getlocale(locale.LC_TIME)
             try:
+                locale.setlocale(locale.LC_TIME, "en_US")
                 validuntil = time.mktime(time.strptime(expiredate, "%d %B %Y"))
 
             except Exception as exc:
@@ -109,6 +113,10 @@ class XFSAccount(BaseAccount):
                 else:
                     premium = False
                     validuntil = None  #: Registered account type (not premium)
+
+            finally:
+                locale.setlocale(locale.LC_TIME, previous_locale)
+
         else:
             self.log_debug("VALID UNTIL PATTERN not found")
 
@@ -133,7 +141,7 @@ class XFSAccount(BaseAccount):
                     else:
                         unit = ""
 
-                    trafficleft = self.parse_traffic(size + unit)
+                    trafficleft = self.parse_traffic(size, unit)
 
             except Exception as exc:
                 self.log_error(exc)

@@ -9,7 +9,7 @@ from ..base.addon import BaseAddon, expose
 class ExternalScripts(BaseAddon):
     __name__ = "ExternalScripts"
     __type__ = "addon"
-    __version__ = "0.73"
+    __version__ = "0.74"
     __status__ = "testing"
 
     __config__ = [

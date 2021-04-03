@@ -428,9 +428,9 @@ class Api:
             .replace("\\", "_")
         )
 
-        pid = self.pyload.files.add_package(name, folder, Destination(dest))
+        package_id = self.pyload.files.add_package(name, folder, Destination(dest))
 
-        self.pyload.files.add_links(links, pid)
+        self.pyload.files.add_links(links, package_id)
 
         self.pyload.log.info(
             self._("Added package {name} containing {count:d} links").format(
@@ -440,7 +440,7 @@ class Api:
 
         self.pyload.files.save()
 
-        return pid
+        return package_id
 
     @legacy("parseURLs")
     @permission(Perms.ADD)
@@ -592,17 +592,17 @@ class Api:
 
     @legacy("getPackageData")
     @permission(Perms.LIST)
-    def get_package_data(self, pid):
+    def get_package_data(self, package_id):
         """
         Returns complete information about package, and included files.
 
-        :param pid: package id
+        :param package_id: package id
         :return: `PackageData` with .links attribute
         """
-        data = self.pyload.files.get_package_data(int(pid))
+        data = self.pyload.files.get_package_data(int(package_id))
 
         if not data:
-            raise PackageDoesNotExists(pid)
+            raise PackageDoesNotExists(package_id)
 
         pdata = PackageData(
             data["id"],
@@ -619,18 +619,18 @@ class Api:
 
     @legacy("getPackageInfo")
     @permission(Perms.LIST)
-    def get_package_info(self, pid):
+    def get_package_info(self, package_id):
         """
         Returns information about package, without detailed information about containing
         files.
 
-        :param pid: package id
+        :param package_id: package id
         :return: `PackageData` with .fid attribute
         """
-        data = self.pyload.files.get_package_data(int(pid))
+        data = self.pyload.files.get_package_data(int(package_id))
 
         if not data:
-            raise PackageDoesNotExists(pid)
+            raise PackageDoesNotExists(package_id)
 
         pdata = PackageData(
             data["id"],
@@ -647,16 +647,16 @@ class Api:
 
     @legacy("getFileData")
     @permission(Perms.LIST)
-    def get_file_data(self, fid):
+    def get_file_data(self, file_id):
         """
         Get complete information about a specific file.
 
-        :param fid: file id
+        :param file_id: file id
         :return: `FileData`
         """
-        info = self.pyload.files.get_file_data(int(fid))
+        info = self.pyload.files.get_file_data(int(file_id))
         if not info:
-            raise FileDoesNotExists(fid)
+            raise FileDoesNotExists(file_id)
 
         fileinfo = list(info.values())[0]
         fdata = self._convert_py_file(fileinfo)
@@ -664,26 +664,26 @@ class Api:
 
     @legacy("deleteFiles")
     @permission(Perms.DELETE)
-    def delete_files(self, fids):
+    def delete_files(self, file_ids):
         """
         Deletes several file entries from pyload.
 
-        :param fids: list of file ids
+        :param file_ids: list of file ids
         """
-        for id in fids:
+        for id in file_ids:
             self.pyload.files.delete_link(int(id))
 
         self.pyload.files.save()
 
     @legacy("deletePackages")
     @permission(Perms.DELETE)
-    def delete_packages(self, pids):
+    def delete_packages(self, package_ids):
         """
         Deletes packages and containing links.
 
-        :param pids: list of package ids
+        :param package_ids: list of package ids
         """
-        for id in pids:
+        for id in package_ids:
             self.pyload.files.delete_package(int(id))
 
         self.pyload.files.save()
@@ -789,79 +789,79 @@ class Api:
                 links=[self._convert_py_file(x) for x in pack["links"].values()],
             )
             for pack in self.pyload.files.get_complete_data(
-                Destination.COLLECTOR.value
+                Destination.COLLECTOR
             ).values()
         ]
 
     @legacy("addFiles")
     @permission(Perms.ADD)
-    def add_files(self, pid, links):
+    def add_files(self, package_id, links):
         """
         Adds files to specific package.
 
-        :param pid: package id
+        :param package_id: package id
         :param links: list of urls
         """
-        self.pyload.files.add_links(links, int(pid))
+        self.pyload.files.add_links(links, int(package_id))
 
         self.pyload.log.info(
             self._("Added {count:d} links to package #{package:d} ").format(
-                count=len(links), package=pid
+                count=len(links), package=package_id
             )
         )
         self.pyload.files.save()
 
     @legacy("pushToQueue")
     @permission(Perms.MODIFY)
-    def push_to_queue(self, pid):
+    def push_to_queue(self, package_id):
         """
         Moves package from Collector to Queue.
 
-        :param pid: package id
+        :param package_id: package id
         """
-        self.pyload.files.set_package_location(pid, Destination.QUEUE)
+        self.pyload.files.set_package_location(package_id, Destination.QUEUE)
 
     @legacy("pullFromQueue")
     @permission(Perms.MODIFY)
-    def pull_from_queue(self, pid):
+    def pull_from_queue(self, package_id):
         """
         Moves package from Queue to Collector.
 
-        :param pid: package id
+        :param package_id: package id
         """
-        self.pyload.files.set_package_location(pid, Destination.COLLECTOR)
+        self.pyload.files.set_package_location(package_id, Destination.COLLECTOR)
 
     @legacy("restartPackage")
     @permission(Perms.MODIFY)
-    def restart_package(self, pid):
+    def restart_package(self, package_id):
         """
         Restarts a package, resets every containing files.
 
-        :param pid: package id
+        :param package_id: package id
         """
-        self.pyload.files.restart_package(int(pid))
+        self.pyload.files.restart_package(int(package_id))
 
     @legacy("restartFile")
     @permission(Perms.MODIFY)
-    def restart_file(self, fid):
+    def restart_file(self, file_id):
         """
         Resets file status, so it will be downloaded again.
 
-        :param fid:  file id
+        :param file_id:  file id
         """
-        self.pyload.files.restart_file(int(fid))
+        self.pyload.files.restart_file(int(file_id))
 
     @legacy("recheckPackage")
     @permission(Perms.MODIFY)
-    def recheck_package(self, pid):
+    def recheck_package(self, package_id):
         """
         Proofes online status of all files in a package, also a default action when
         package is added.
 
-        :param pid:
+        :param package_id:
         :return:
         """
-        self.pyload.files.re_check_package(int(pid))
+        self.pyload.files.re_check_package(int(package_id))
 
     @legacy("stopAllDownloads")
     @permission(Perms.MODIFY)
@@ -875,55 +875,55 @@ class Api:
 
     @legacy("stopDownloads")
     @permission(Perms.MODIFY)
-    def stop_downloads(self, fids):
+    def stop_downloads(self, file_ids):
         """
         Aborts specific downloads.
 
-        :param fids: list of file ids
+        :param file_ids: list of file ids
         :return:
         """
         pyfiles = list(self.pyload.files.cache.values())
         for pyfile in pyfiles:
-            if pyfile.id in fids:
+            if pyfile.id in file_ids:
                 pyfile.abort_download()
 
     @legacy("setPackageName")
     @permission(Perms.MODIFY)
-    def set_package_name(self, pid, name):
+    def set_package_name(self, package_id, name):
         """
         Renames a package.
 
-        :param pid: package id
+        :param package_id: package id
         :param name: new package name
         """
-        pack = self.pyload.files.get_package(pid)
+        pack = self.pyload.files.get_package(package_id)
         pack.name = name
         pack.sync()
 
     @legacy("movePackage")
     @permission(Perms.MODIFY)
-    def move_package(self, destination, pid):
+    def move_package(self, destination, package_id):
         """
         Set a new package location.
 
         :param destination: `Destination`
-        :param pid: package id
+        :param package_id: package id
         """
         try:
             dest = Destination(destination)
         except ValueError:
             pass
         else:
-            self.pyload.files.set_package_location(pid, dest)
+            self.pyload.files.set_package_location(package_id, dest)
 
     @legacy("moveFiles")
     @permission(Perms.MODIFY)
-    def move_files(self, fids, pid):
+    def move_files(self, file_ids, package_id):
         """
         Move multiple files to another package.
 
-        :param fids: list of file ids
-        :param pid: destination package
+        :param file_ids: list of file ids
+        :param package_id: destination package
         :return:
         """
         # TODO: implement
@@ -950,38 +950,38 @@ class Api:
 
     @legacy("orderPackage")
     @permission(Perms.MODIFY)
-    def order_package(self, pid, position):
+    def order_package(self, package_id, position):
         """
         Gives a package a new position.
 
-        :param pid: package id
+        :param package_id: package id
         :param position:
         """
-        self.pyload.files.reorder_package(pid, position)
+        self.pyload.files.reorder_package(package_id, position)
 
     @legacy("orderFile")
     @permission(Perms.MODIFY)
-    def order_file(self, fid, position):
+    def order_file(self, file_id, position):
         """
         Gives a new position to a file within its package.
 
-        :param fid: file id
+        :param file_id: file id
         :param position:
         """
-        self.pyload.files.reorder_file(fid, position)
+        self.pyload.files.reorder_file(file_id, position)
 
     @legacy("setPackageData")
     @permission(Perms.MODIFY)
-    def set_package_data(self, pid, data):
+    def set_package_data(self, package_id, data):
         """
         Allows to modify several package attributes.
 
-        :param pid: package id
+        :param package_id: package id
         :param data: dict that maps attribute to desired value
         """
-        p = self.pyload.files.get_package(pid)
+        p = self.pyload.files.get_package(package_id)
         if not p:
-            raise PackageDoesNotExists(pid)
+            raise PackageDoesNotExists(package_id)
 
         for key, value in data.items():
             if key == "id":
@@ -1018,11 +1018,11 @@ class Api:
         :param destination: `Destination`
         :return: dict mapping order to package id
         """
-        packs = self.pyload.files.get_info_data(Destination(destination))
+        packages = self.pyload.files.get_info_data(Destination(destination))
         order = {}
 
-        for pid in packs:
-            pack = self.pyload.files.get_package_data(int(pid))
+        for package_id in packages:
+            pack = self.pyload.files.get_package_data(int(package_id))
             while pack["order"] in order.keys():  #: just in case
                 pack["order"] += 1
             order[pack["order"]] = pack["id"]
@@ -1030,14 +1030,14 @@ class Api:
 
     @legacy("getFileOrder")
     @permission(Perms.LIST)
-    def get_file_order(self, pid):
+    def get_file_order(self, package_id):
         """
         Information about file order within package.
 
-        :param pid:
+        :param package_id:
         :return: dict mapping order to file id
         """
-        raw_data = self.pyload.files.get_package_data(int(pid))
+        raw_data = self.pyload.files.get_package_data(int(package_id))
         order = {}
         for id, pyfile in raw_data["links"].items():
             while pyfile["order"] in order.keys():  #: just in case
