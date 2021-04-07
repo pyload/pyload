@@ -76,8 +76,7 @@ def legacy(func_name):
         @wraps(func)
         def wrapper(self, *args, **kwargs):
             if not hasattr(self, func_name):
-                setattr(self, func_name, func)
-                getattr(self, func_name).__new_func = func
+                setattr(self, func_name, func.__get__(self, self.__class__))
             return func(self, *args, **kwargs)
 
         return wrapper
