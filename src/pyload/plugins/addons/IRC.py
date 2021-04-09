@@ -165,7 +165,7 @@ class IRC(Thread, Notifier):
 
                 if command == "PING":
                     self.log_debug("[{}] Ping? Pong!".format(args[0]))
-                    self.sock.send(to_bytes("PONG :%s\r\n" % args[0]))
+                    self.sock.send(to_bytes("PONG :{}\r\n".format(args[0])))
 
                 if command == "ERROR":
                     raise IRCError(line)
