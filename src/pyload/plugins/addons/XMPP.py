@@ -41,7 +41,10 @@ class XMPP(IRC):
 
     __description__ = """Connect to jabber and let owner perform different tasks"""
     __license__ = "GPLv3"
-    __authors__ = [("RaNaN", "RaNaN@pyload.net")]
+    __authors__ = [
+        ("RaNaN", "RaNaN@pyload.net"),
+        ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com"),
+    ]
 
     SHORTCUT_COMMANDS = {
         "a": "add",
@@ -297,10 +300,7 @@ class XMPP(IRC):
             if self.config.get("info_file"):
                 self.announce(
                     self._("Download finished: {} (#{}) in #{} @ {}").format(
-                        pyfile.name,
-                        pyfile.id,
-                        pyfile.packageid,
-                        pyfile.pluginname
+                        pyfile.name, pyfile.id, pyfile.packageid, pyfile.pluginname
                     )
                 )
 
@@ -322,10 +322,7 @@ class XMPP(IRC):
             if self.config.get("download_start"):
                 self.announce(
                     self._("Download start: {} (#{}) in (#{}) @ {}.").format(
-                        pyfile.name,
-                        pyfile.id,
-                        pyfile.packageid,
-                        pyfile.pluginname
+                        pyfile.name, pyfile.id, pyfile.packageid, pyfile.pluginname
                     )
                 )
         except Exception:
