@@ -49,7 +49,7 @@ class XMPP(IRC):
     SHORTCUT_COMMANDS = {
         "a": "add",
         "c": "collector",
-        "f": "freeSpace",
+        "f": "freespace",
         "h": "help",
         "i": "info",
         "l": "getLog",
@@ -67,7 +67,6 @@ class XMPP(IRC):
 
     def activate(self):
         self.log_debug("activate")
-        self.new_package = {}
         self.jid = slixmpp.jid.JID(self.config.get("jid"))
         self.jid.resource = "PyLoadNotifyBot"
         self.log_debug(self.jid)
