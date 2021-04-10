@@ -165,6 +165,8 @@ class Ffmpeg(object):
                      "-sub_charenc", "utf8"])
 
         call = [self.CMD] + args + [self.output_filename]
+        self.plugin.log_debug("EXECUTE " + " ".join(call))
+
         p = Popen(
             call,
             stdout=subprocess.PIPE,
@@ -235,7 +237,7 @@ class Ffmpeg(object):
 class YoutubeCom(Hoster):
     __name__ = "YoutubeCom"
     __type__ = "hoster"
-    __version__ = "0.81"
+    __version__ = "0.82"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:[^/]*\.)?(?:youtu\.be/|youtube\.com/watch\?(?:.*&)?v=)[\w\-]+'
@@ -369,7 +371,7 @@ class YoutubeCom(Hoster):
 
             except (JSInterpreterError, AssertionError), e:
                 self.log_error(_("Signature decode failed"), e)
-                self.fail(e.message)
+                self.fail(e.args[0])
 
         #: Remove old records from cache
         for _k in list(cache_info['cache'].keys()):
@@ -459,7 +461,7 @@ class YoutubeCom(Hoster):
             filename = os.path.join(self.pyload.config.get("general", "download_folder"),
                                     self.pyfile.package().folder,
                                     self.pyfile.name)
-            self.log_info(_("Download skipped: %s due to %s") % (self.pyfile.name, e.message))
+            self.log_info(_("Download skipped: %s due to %s") % (self.pyfile.name, e.args[0]))
 
         return filename, chosen_fmt
 
@@ -613,7 +615,7 @@ class YoutubeCom(Hoster):
 
                         srt_filename = fsjoin(self.pyload.config.get("general", "download_folder"),
                                               self.pyfile.package().folder,
-                                              os.path.splitext(self.file_name)[0] + "." + subtitle_code + ".srt")
+                                              self.file_name + "." + subtitle_code + ".srt")
 
                         if self.pyload.config.get('download', 'skip_existing') and \
                                 exists(srt_filename) and os.stat(srt_filename).st_size != 0:
