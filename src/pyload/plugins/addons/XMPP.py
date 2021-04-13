@@ -1,19 +1,20 @@
 # -*- coding: utf-8 -*-
 
 import asyncio
+import os
 import ssl
 
 import slixmpp
 from slixmpp.xmlstream.handler import Callback
 from slixmpp.xmlstream.matcher import MatchXPath
 
-from .IRC import IRC
+from ..base.chat_bot import ChatBot
 
 
-class XMPP(IRC):
+class XMPP(ChatBot):
     __name__ = "XMPP"
     __type__ = "addon"
-    __version__ = "0.22"
+    __version__ = "0.23"
     __status__ = "testing"
 
     __config__ = [
@@ -46,39 +47,22 @@ class XMPP(IRC):
         ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com"),
     ]
 
-    SHORTCUT_COMMANDS = {
-        "a": "add",
-        "c": "collector",
-        "f": "freespace",
-        "h": "help",
-        "i": "info",
-        "l": "getLog",
-        "m": "more",
-        "p": "packinfo",
-        "q": "queue",
-        "r": "restart",
-        "rf": "restartfile",
-        "rp": "restartpackage",
-        "s": "status",
-    }
-
-    def __init__(self, *args, **kwargs):
-        IRC.__init__(self, *args, **kwargs)
-
     def activate(self):
         self.log_debug("activate")
         self.jid = slixmpp.jid.JID(self.config.get("jid"))
         self.jid.resource = "PyLoadNotifyBot"
         self.log_debug(self.jid)
 
-        self.start()
+        super().activate()
 
     def run(self):
         self.log_debug("def run")
+        if os.name == "nt":
+            asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
 
-        xmpp = NotifyBot(
+        xmpp = XMPPClient(
             self.jid,
             self.config.get("pw"),
             self.log_info,
@@ -172,42 +156,24 @@ class XMPP(IRC):
         if not (sender_jid.username in names or sender_jid.bare in names):
             return True
 
-        command = "pass"
-        args = None
-
+        temp = body.split()
         try:
-            temp = body.split()
             command = temp[0]
-            if len(temp) > 1:
-                args = temp[1:]
+            args = temp[1:]
+        except IndexError:
+            command = "error"
+            args = []
 
-        except Exception:
-            pass
-
-        self.log_debug("command", command)
-        command = self.shortcut_command(command)
-        self.log_debug("shortcut_command", command)
-
-        handler = getattr(self, f"event_{command}", self.event_pass)
         ret = False
         try:
-            self.log_debug("args", args, type(args))
-
-            res = handler(args)
-            self.log_debug("res", res)
-
+            res = self.do_bot_command(command, args)
             if res:
                 msg_reply = "\n".join(res)
-                # add shortcut in help
-                if command == "help":
-                    msg_reply += "\nShortcuts:\n"
-                    for cmd_short, cmd_long in self.SHORTCUT_COMMANDS.items():
-                        msg_reply += cmd_short + ": " + cmd_long + ", "
 
             else:
                 msg_reply = "ERROR: invalid command, enter: help"
 
-            self.log_debug("Send response", msg_reply)
+            self.log_debug("Send response")
             ret = stanza.reply(msg_reply).send()
 
         except Exception as exc:
@@ -218,14 +184,6 @@ class XMPP(IRC):
 
     # end xmpp handler
     ############################################################################
-
-    def shortcut_command(self, shortcommand):
-        if shortcommand and shortcommand in self.SHORTCUT_COMMANDS:
-            command = self.SHORTCUT_COMMANDS[shortcommand]
-        else:
-            command = shortcommand
-
-        return command
 
     def announce(self, message):
         """
@@ -331,7 +289,7 @@ class XMPP(IRC):
     ############################################################################
 
 
-class NotifyBot(slixmpp.ClientXMPP):
+class XMPPClient(slixmpp.ClientXMPP):
     def __init__(self, jid, password, log_info, log_debug):
         self.log_debug = log_debug
         self.log_info = log_info
