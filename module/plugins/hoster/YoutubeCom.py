@@ -237,7 +237,7 @@ class Ffmpeg(object):
 class YoutubeCom(Hoster):
     __name__ = "YoutubeCom"
     __type__ = "hoster"
-    __version__ = "0.82"
+    __version__ = "0.83"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:[^/]*\.)?(?:youtu\.be/|youtube\.com/watch\?(?:.*&)?v=)[\w\-]+'
@@ -538,16 +538,15 @@ class YoutubeCom(Hoster):
                 h, m = divmod(m, 60)
                 return "%02d:%02d:%02d,%s" % (h, m, s, milli)
 
-            i = 1
             srt = ""
             dom = parse_xml(timedtext)
             body = dom.getElementsByTagName("body")[0]
             paras = body.getElementsByTagName("p")
+            subtitles = []
             for para in paras:
-                subtitle_element = str(i) + "\n"
                 try:
-                    subtitle_element += _format_srt_time(int(para.attributes['t'].value)) + ' --> ' + \
-                                _format_srt_time(int(para.attributes['t'].value) + int(para.attributes['d'].value)) + "\n"
+                    start_time = int(para.attributes['t'].value)
+                    end_time = int(para.attributes['t'].value) + int(para.attributes['d'].value)
                 except KeyError:
                     continue
 
@@ -564,13 +563,25 @@ class YoutubeCom(Hoster):
                             subtitle_text += unicode(child.data)
 
                 if subtitle_text.strip():
-                    subtitle_element += subtitle_text
-
+                    subtitles.append({'start': start_time,
+                                      'end': end_time,
+                                      'text': subtitle_text})
                 else:
                     continue
 
-                srt += subtitle_element + "\n\n"
-                i += 1
+            for line_num in range(len(subtitles)):
+                start_time = subtitles[line_num]['start']
+                try:
+                    end_time = min(subtitles[line_num]['end'], subtitles[line_num + 1]['start'])
+                except IndexError:
+                    end_time = subtitles[line_num]['end']
+
+                subtitle_text = subtitles[line_num]['text']
+
+                subtitle_element = str(line_num) + "\n" \
+                                   + _format_srt_time(start_time) + ' --> ' + _format_srt_time(end_time) + "\n" \
+                                   + subtitle_text + "\n\n"
+                srt += subtitle_element
 
             return srt
 
