@@ -237,7 +237,7 @@ class Ffmpeg(object):
 class YoutubeCom(Hoster):
     __name__ = "YoutubeCom"
     __type__ = "hoster"
-    __version__ = "0.83"
+    __version__ = "0.84"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:[^/]*\.)?(?:youtu\.be/|youtube\.com/watch\?(?:.*&)?v=)[\w\-]+'
@@ -578,7 +578,7 @@ class YoutubeCom(Hoster):
 
                 subtitle_text = subtitles[line_num]['text']
 
-                subtitle_element = str(line_num) + "\n" \
+                subtitle_element = str(line_num + 1) + "\n" \
                                    + _format_srt_time(start_time) + ' --> ' + _format_srt_time(end_time) + "\n" \
                                    + subtitle_text + "\n\n"
                 srt += subtitle_element
