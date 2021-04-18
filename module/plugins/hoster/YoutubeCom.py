@@ -237,7 +237,7 @@ class Ffmpeg(object):
 class YoutubeCom(Hoster):
     __name__ = "YoutubeCom"
     __type__ = "hoster"
-    __version__ = "0.84"
+    __version__ = "0.85"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:[^/]*\.)?(?:youtu\.be/|youtube\.com/watch\?(?:.*&)?v=)[\w\-]+'
@@ -780,6 +780,10 @@ class YoutubeCom(Hoster):
     def process(self, pyfile):
         pyfile.url = replace_patterns(pyfile.url, self.URL_REPLACEMENTS)
         self.data = self.load(pyfile.url)
+
+        url, inputs = self.parse_html_form('action="https://consent.youtube.com/s"')
+        if url is not None:
+            self.data = self.load(url, post=inputs)
 
         m = re.search(r'"playabilityStatus":{"status":"(\w+)",(:?"(?:reason":|messages":\[)"([^"]+))?', self.data)
         if m is None:
