@@ -88,7 +88,8 @@ def safename(value):
     """
     Remove invalid characters.
     """
-    repl = '<>:"/\\|?*' if os.name == "nt" else '\0/\\"'
+    # repl = '<>:"/\\|?*' if os.name == "nt" else '\0/\\"'
+    repl = '<>:"/\\|?*\0'
     name = purge.chars(value, repl)
     return name
 
