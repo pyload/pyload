@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import re
 import time
 
 from ..internal.Account import Account
@@ -10,56 +9,41 @@ from ..internal.misc import json
 class RapiduNet(Account):
     __name__ = "RapiduNet"
     __type__ = "account"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __status__ = "testing"
 
     __description__ = """Rapidu.net account plugin"""
     __license__ = "GPLv3"
     __authors__ = [("prOq", None),
-                   ("Walter Purcaro", "vuolter@gmail.com")]
+                   ("Walter Purcaro", "vuolter@gmail.com"),
+                   ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
-    PREMIUM_PATTERN = r'>Account: <b>Premium'
+    # https://rapidu.net/documentation/api/
+    API_URL = 'https://rapidu.net/api/'
 
-    VALID_UNTIL_PATTERN = r'>Account: <b>\w+ \((\d+)'
+    def api_request(self, method, **kwargs):
+        json_data = self.load(self.API_URL + method + "/", post=kwargs)
+        return json.loads(json_data)
 
-    TRAFFIC_LEFT_PATTERN = r'class="tipsyS"><b>([\d.,]+)\s*([\w^_]*)<'
 
     def grab_info(self, user, password, data):
         validuntil = None
-        trafficleft = -1
-        premium = False
 
-        html = self.load("https://rapidu.net/")
+        api_data = self.api_request("getAccountDetails", login=user, password=password)
 
-        if re.search(self.PREMIUM_PATTERN, html):
-            premium = True
+        premium = True if api_data['userPremium'] == "1" else False
+        if premium:
+            validuntil = time.mktime(time.strptime(api_data['userPremiumDateEnd'], '%Y-%m-%d %H:%M:%S'))
 
-        m = re.search(self.VALID_UNTIL_PATTERN, html)
-        if m is not None:
-            validuntil = time.time() + (86400 * int(m.group(1)))
-
-        m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
-        if m is not None:
-            trafficleft = self.parse_traffic(m.group(1), m.group(2))
+        trafficleft = api_data['userTraffic']
 
         return {'validuntil': validuntil,
-                'trafficleft': trafficleft, 'premium': premium}
+                'trafficleft': trafficleft,
+                'premium': premium}
 
     def signin(self, user, password, data):
-        self.load("https://rapidu.net/ajax.php",
-                  get={'a': "getChangeLang"},
-                  post={'_go': "",
-                        'lang': "en"})
+        api_data = self.api_request("getAccountDetails", login=user, password=password)
 
-        html = self.load("https://rapidu.net/ajax.php",
-                         get={'a': "getUserLogin"},
-                         post={'_go': "",
-                               'login': user,
-                               'pass': password,
-                               'remember': "1"})
-        json_data = json.loads(html)
-
-        self.log_debug(json_data)
-
-        if json_data['message'] != "success":
+        if "message" in api_data:
+            self.log_error(api_data['message']['error'])
             self.fail_login()
