@@ -1,25 +1,26 @@
 # -*- coding: utf-8 -*-
-#      ____________
-#   _ /       |    \ ___________ _ _______________ _ ___ _______________
-#  /  |    ___/    |   _ __ _  _| |   ___  __ _ __| |   \\    ___  ___ _\
-# /   \___/  ______/  | '_ \ || | |__/ _ \/ _` / _` |    \\  / _ \/ _ `/ \
-# \       |   o|      | .__/\_, |____\___/\__,_\__,_|    // /_//_/\_, /  /
-#  \______\    /______|_|___|__/________________________//______ /___/__/
-#          \  /
-#           \/
+#       ____________
+#   ___/       |    \_____________ _                 _ ___
+#  /        ___/    |    _ __ _  _| |   ___  __ _ __| |   \
+# /    \___/  ______/   | '_ \ || | |__/ _ \/ _` / _` |    \
+# \            ◯ |      | .__/\_, |____\___/\__,_\__,_|    /
+#  \_______\    /_______|_|   |__/________________________/
+#           \  /
+#            \/
 
 import os
-import jinja2
+
 import flask
+import jinja2
 
 from .blueprints import BLUEPRINTS
+from .config import get_default_config
+from .extensions import EXTENSIONS, THEMES
 from .filters import TEMPLATE_FILTERS
 from .globals import TEMPLATE_GLOBALS
 from .handlers import ERROR_HANDLERS
-from .extensions import EXTENSIONS, THEMES
-from .processors import CONTEXT_PROCESSORS
-from .config import get_default_config
 from .helpers import JSONEncoder
+from .processors import CONTEXT_PROCESSORS
 
 
 #: flask app singleton?
@@ -52,8 +53,8 @@ class App:
 
     @classmethod
     def _configure_themes(cls, app, path_prefix=""):
-        for themes in cls.FLASK_THEMES:
-            themes.init_app(app, path_prefix)
+        for theme in cls.FLASK_THEMES:
+            theme.init_app(app, path_prefix)
 
     @classmethod
     def _configure_handlers(cls, app):
@@ -96,7 +97,14 @@ class App:
         tempdir = app.config["PYLOAD_API"].get_cachedir()
         cache_path = os.path.join(tempdir, "flask")
         os.makedirs(cache_path, exist_ok=True)
+
         app.config["SESSION_FILE_DIR"] = cache_path
+        app.config["SESSION_TYPE"] = "filesystem"
+        app.config["SESSION_COOKIE_NAME"] = "pyload_session"
+        app.config["SESSION_PERMANENT"] = False
+
+        session_lifetime = max(app.config["PYLOAD_API"].get_config_value("webui", "session_lifetime"), 1) * 60
+        app.config["PERMANENT_SESSION_LIFETIME"] = session_lifetime
 
     @classmethod
     def _configure_api(cls, app, pycore):

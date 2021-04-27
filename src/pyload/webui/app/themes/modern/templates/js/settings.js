@@ -58,6 +58,9 @@ SettingsUI = (function() {
         $("#plugin_submit").click(this.configSubmit);
         $("#account_add_button").click(this.addAccount);
         $("#account_submit").click(this.submitAccounts);
+        $("#account_add").click(function() {
+            $("#add_account_form").trigger("reset");
+        });
 
         this.initPluginSearch();
         this.initPathcooser();

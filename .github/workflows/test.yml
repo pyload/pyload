@@ -1,0 +1,120 @@
+name: test
+
+on:
+  pull_request:
+    branches:
+      - develop
+      - main
+  push:
+    branches:
+      - develop
+      - main
+
+env:
+  PYCURL_SSL_LIBRARY: openssl
+  default_python_version: 3.6
+  toxworkdir: .tox
+
+jobs:
+  pre-test:
+    name: Pre-Test
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        toxenv: [compileall, pylint, bandit]
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+
+      - name: Install binary packages
+        run: sudo apt-get -y --no-install-recommends install libcurl4-openssl-dev
+
+      - name: Set up Python environment
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ env.default_python_version }}
+
+      - name: Prepare cache
+        run: echo "day_of_year=$(date +%j)" >> $GITHUB_ENV
+
+      - name: Set up cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            ${{ env.pythonLocation }}
+            ${{ env.toxworkdir }}
+          key: ubuntu-latest--${{ env.default_python_version }}--${{ hashFiles('setup.cfg', 'pyproject.toml', 'tox.ini') }}--${{ env.pythonLocation }}--${{ env.day_of_year }}
+
+      - name: Install Python dependencies
+        run: pip install tox
+
+      - name: Check ${{ matrix.toxenv }} errors
+        run: tox -e ${{ matrix.toxenv }} --workdir ${{ env.toxworkdir }}
+
+  test:
+    name: Test
+    needs: pre-test
+
+    runs-on: ${{ matrix.os }}
+    env:
+      toxenv: py
+    continue-on-error: ${{ startsWith(matrix.python-version, 'pypy') }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [3.6, 3.7, 3.8, 3.9]
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        # include:
+        #   - python-version: pypy-3.6
+        #     toxenv: pypy
+
+        #   - python-version: pypy-3.7
+        #     toxenv: pypy
+        include:
+          - os: ubuntu-latest
+            python-version: pypy-3.6
+
+          - os: ubuntu-latest
+            python-version: pypy-3.7
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+
+      - name: Install binary packages
+        if: startsWith(matrix.os, 'ubuntu')
+        run: sudo apt-get -y --no-install-recommends install libcurl4-openssl-dev
+
+      - name: Set up Python environment
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Prepare cache
+        if: "!startsWith(matrix.os, 'windows')"
+        run: echo "day_of_year=$(date +%j)" >> $GITHUB_ENV
+        shell: bash
+
+      - name: Set up cache
+        if: "!startsWith(matrix.os, 'windows')"
+        uses: actions/cache@v2
+        with:
+          path: |
+            ${{ env.pythonLocation }}
+            ${{ env.toxworkdir }}
+          key: ${{ matrix.os }}--${{ matrix.python-version }}--${{ hashFiles('setup.cfg', 'pyproject.toml', 'tox.ini') }}--${{ env.pythonLocation }}--${{ env.day_of_year }}
+
+      - name: Install Python dependencies
+        run: |
+          pip install tox
+          [ ${{ startsWith(matrix.os, 'macos') }} = true ] && pip install --install-option="--openssl-dir=/usr/local/opt/openssl@1.1" pycurl || true
+          [ ${{ startsWith(matrix.os, 'windows') }} = true ] && { pip install pipwin; pipwin install pycurl; } || true
+        shell: bash
+
+      - name: Test pyLoad
+        run: tox -e ${{ matrix.toxenv || env.toxenv }} --sitepackages --workdir ${{ env.toxworkdir }}

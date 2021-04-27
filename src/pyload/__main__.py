@@ -27,10 +27,10 @@ def _daemon(core_args):
     try:
         pid = os.fork()
         if pid > 0:
-            sys.exit(0)
+            sys.exit()
     except OSError as exc:
         sys.stderr.write(f"fork #1 failed: {exc.errno} ({exc.strerror})\n")
-        sys.exit(1)
+        sys.exit(os.EX_OSERR)
 
     # decouple from parent environment
     os.setsid()
@@ -42,10 +42,10 @@ def _daemon(core_args):
         if pid > 0:
             # exit from second parent, print(eventual PID before)
             print(f"Daemon PID {pid}")
-            sys.exit(0)
+            sys.exit()
     except OSError as exc:
         sys.stderr.write(f"fork #2 failed: {exc.errno} ({exc.strerror})\n")
-        sys.exit(1)
+        sys.exit(os.EX_OSERR)
 
     # Iterate through and close some file descriptors.
     for fd in range(3):
@@ -105,6 +105,9 @@ def _parse_args(cmd_args):
         help="reset default username/password",
         default=None,
     )
+    parser.add_argument(
+        "--dry-run", action="store_true", help="test start-up and exit", default=False
+    )
 
     return parser.parse_args(cmd_args)
 
@@ -122,7 +125,7 @@ def run(core_args, daemon=False):
     except KeyboardInterrupt:
         pyload_core.log.info(pyload_core._("Killed from terminal"))
         pyload_core.terminate()
-        os._exit(1)
+        sys.exit(os.EX_TEMPFAIL)
 
 
 def main(cmd_args=sys.argv[1:]):
@@ -130,7 +133,7 @@ def main(cmd_args=sys.argv[1:]):
     Entry point for console_scripts.
     """
     args = _parse_args(cmd_args)
-    core_args = (args.userdir, args.tempdir, args.storagedir, args.debug, args.restore)
+    core_args = (args.userdir, args.tempdir, args.storagedir, args.debug, args.restore, args.dry_run)
 
     run(core_args, args.daemon)
 

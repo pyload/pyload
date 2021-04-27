@@ -110,7 +110,7 @@ def packs(nameurls):
 
     packs = {}
     for urlname, url in nameurls:
-        urlname = name(urlname, purge=True)
+        urlname = name(urlname, safe_name=True)
         urlname = os.path.splitext(urlname)[0].strip()
         urlname = _RE_PACKS.sub("_", urlname).strip("_")
 
@@ -135,24 +135,24 @@ def bytesize(text, from_unit=None):  # returns integer bytes
     if m is None:
         return None
 
-    rawsize = m.group("S")
+    raw_size = m.group("S")
 
-    if re.match(_RE_SIZEFORMAT1, rawsize):
-        rawsize = rawsize.replace(",", "")
+    if re.match(_RE_SIZEFORMAT1, raw_size):
+        raw_size = raw_size.replace(",", "")
 
-    elif re.match(_RE_SIZEFORMAT2, rawsize):
-        rawsize = rawsize.replace(",", ".")
+    elif re.match(_RE_SIZEFORMAT2, raw_size):
+        raw_size = raw_size.replace(",", ".")
 
-    elif not re.match(_RE_SIZEFORMAT3, rawsize):
+    elif not re.match(_RE_SIZEFORMAT3, raw_size):
         return 0  #: Unknown format
 
     if from_unit is None:
         from_unit = m.group("U") or DEFAULT_UNIT
 
-    size = float(rawsize)
+    size = float(raw_size)
     unit = from_unit[0].lower()
 
-    return convert.size(size, unit, "byte")
+    return int(convert.size(size, unit, "byte"))
 
 
 _TIMEWORDS = ("this", "a", "an", "next")

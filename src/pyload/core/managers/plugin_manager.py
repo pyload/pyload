@@ -39,6 +39,9 @@ class PluginManager:
         self.plugins = {}
         self.create_index()
 
+        # save generated config
+        self.pyload.config.save_config(self.pyload.config.plugin, self.pyload.config.pluginpath)
+
         # register for import addon
         sys.meta_path.append(self)
 
@@ -447,6 +450,9 @@ class PluginManager:
 
         self.hoster_plugins, config = self.parse("downloaders", pattern=True)
         self.plugins["downloader"] = self.hoster_plugins
+        merge(default_config, config)
+
+        temp, config = self.parse("addons")
         merge(default_config, config)
 
         self.captcha_plugins, config = self.parse("anticaptchas")

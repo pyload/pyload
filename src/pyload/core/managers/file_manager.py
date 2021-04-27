@@ -3,7 +3,7 @@
 from threading import RLock
 
 from ..datatypes.enums import Destination
-from ..utils.old import lock
+from ..utils.struct.lock import lock
 from .event_manager import InsertEvent, ReloadAllEvent, RemoveEvent, UpdateEvent
 
 
@@ -292,7 +292,7 @@ class FileManager:
 
         tmplist = []
 
-        cache = self.cache.values()
+        cache = list(self.cache.values())
         for x in cache:
             if int(x.to_db_dict()[x.id]["package"]) == int(id):
                 tmplist.append((x.id, x.to_db_dict()[x.id]))

@@ -1,29 +1,21 @@
 # -*- coding: utf-8 -*-
-#      ____________
-#   _ /       |    \ ___________ _ _______________ _ ___ _______________
-#  /  |    ___/    |   _ __ _  _| |   ___  __ _ __| |   \\    ___  ___ _\
-# /   \___/  ______/  | '_ \ || | |__/ _ \/ _` / _` |    \\  / _ \/ _ `/ \
-# \       |   o|      | .__/\_, |____\___/\__,_\__,_|    // /_//_/\_, /  /
-#  \______\    /______|_|___|__/________________________//______ /___/__/
-#          \  /
-#           \/
+#       ____________
+#   ___/       |    \_____________ _                 _ ___
+#  /        ___/    |    _ __ _  _| |   ___  __ _ __| |   \
+# /    \___/  ______/   | '_ \ || | |__/ _ \/ _` / _` |    \
+# \            ◯ |      | .__/\_, |____\___/\__,_\__,_|    /
+#  \_______\    /_______|_|   |__/________________________/
+#           \  /
+#            \/
 
 import os
-import random
 import re
-import string
-import sys
-import time
-from html.entities import name2codepoint
-import html.parser
 import unicodedata
-import datetime
-from datetime import timedelta
-import shutil
 import urllib.parse
 from functools import partial, wraps
 
 from .. import purge
+from ..web.purge import unescape as html_unescape
 
 try:
     import send2trash
@@ -73,9 +65,13 @@ def safepath(value):
         if os.name != "nt":
             return
 
+        excess_chars = len(path) - 259
+        if excess_chars < 1:
+            return
+
         dirname, basename = os.path.split(filename)
         name, ext = os.path.splitext(basename)
-        path = drive + dirname + purge.truncate(name, 259) + ext
+        path = drive + dirname + purge.truncate(name, len(name) - excess_chars) + ext
 
     finally:
         return path
@@ -92,7 +88,8 @@ def safename(value):
     """
     Remove invalid characters.
     """
-    repl = '<>:"/\\|?*' if os.name == "nt" else '\0/\\"'
+    # repl = '<>:"/\\|?*' if os.name == "nt" else '\0/\\"'
+    repl = '<>:"/\\|?*\0'
     name = purge.chars(value, repl)
     return name
 
@@ -102,9 +99,8 @@ def fixurl(url, unquote=None):
     url = urllib.parse.unquote(url)
 
     if unquote is None:
-        unquote = url is old
+        unquote = url == old
 
-    url = decode(url)
     # try:
     # url = url.decode("unicode-escape")
     # except UnicodeDecodeError:
@@ -117,40 +113,3 @@ def fixurl(url, unquote=None):
         url = urllib.parse.quote(url)
 
     return url
-
-
-def parse_name(value, safechar=True):
-    path = fixurl(decode(value), unquote=False)
-    url_p = urllib.parse.urlparse(path.rstrip("/"))
-    name = (
-        url_p.path.split("/")[-1]
-        or url_p.query.split("=", 1)[::-1][0].split("&", 1)[0]
-        or url_p.netloc.split(".", 1)[0]
-    )
-
-    name = urllib.parse.unquote(name)
-    return safename(name) if safechar else name
-
-
-# NOTE: decorator
-def lock(func=None, *decor_args, **decor_kwargs):
-    if func is None:
-        return partial(lock, *decor_args, **decor_kwargs)
-
-    @wraps(func)
-    def wrapper(self, *args, **kwargs):
-        self.lock.acquire(*decor_args, **decor_kwargs)
-        try:
-            return func(self, *args, **kwargs)
-        finally:
-            self.lock.release()
-
-    return wrapper
-
-
-def html_unescape(text):
-    """
-    Removes HTML or XML character references and entities from a text string.
-    """
-    h = html.parser.HTMLParser()
-    return h.unescape(text)

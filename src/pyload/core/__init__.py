@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
-#      ____________
-#   _ /       |    \ ___________ _ _______________ _ ___ _______________
-#  /  |    ___/    |   _ __ _  _| |   ___  __ _ __| |   \\    ___  ___ _\
-# /   \___/  ______/  | '_ \ || | |__/ _ \/ _` / _` |    \\  / _ \/ _ `/ \
-# \       |   o|      | .__/\_, |____\___/\__,_\__,_|    // /_//_/\_, /  /
-#  \______\    /______|_|___|__/________________________//______ /___/__/
-#          \  /
-#           \/
+#       ____________
+#   ___/       |    \_____________ _                 _ ___
+#  /        ___/    |    _ __ _  _| |   ___  __ _ __| |   \
+# /    \___/  ______/   | '_ \ || | |__/ _ \/ _` / _` |    \
+# \            ◯ |      | .__/\_, |____\___/\__,_\__,_|    /
+#  \_______\    /_______|_|   |__/________________________/
+#           \  /
+#            \/
 
 import atexit
 import gettext
@@ -66,17 +66,24 @@ class Core:
     def running(self):
         return self._running.is_set()
 
+    #: addons can check this property when deactivated to tell the reason for deactivation (unload or exit)
+    @property
+    def exiting(self):
+        return self._exiting
+
     @property
     def debug(self):
         return self._debug
 
     # NOTE: should `restore` reset config as well?
-    def __init__(self, userdir, tempdir, storagedir, debug=None, restore=False):
+    def __init__(self, userdir, tempdir, storagedir, debug=None, restore=False, dry=False):
         self._running = Event()
+        self._exiting = False
         self._do_restart = False
         self._do_exit = False
         self._ = lambda x: x
         self._debug = 0
+        self._dry_run = dry
 
         # if self.tmpdir not in sys.path:
         # sys.path.append(self.tmpdir)
@@ -87,7 +94,7 @@ class Core:
         self._init_config(userdir, tempdir, storagedir, debug)
         self._init_log()
 
-        self._init_database(restore)
+        self._init_database(restore and not dry)
         self._init_network()
         self._init_api()
         self._init_managers()
@@ -123,7 +130,8 @@ class Core:
             self.config.set("general", "storage_folder", storagedir)
         os.makedirs(storagedir, exist_ok=True)
 
-        self.config.save()  #: save so config files gets filled
+        if not self._dry_run:
+            self.config.save()  #: save so config files gets filled
 
     def _init_log(self):
         from .log_factory import LogFactory
@@ -133,7 +141,9 @@ class Core:
             "pyload"
         )  # NOTE: forced debug mode from console is not working actually
 
-        self.log.warning(f"*** Welcome to pyLoad {self.version} ***")
+        self.log.info(f"*** Welcome to pyLoad {self.version} ***")
+        if self._dry_run:
+            self.log.info(f"*** TEST RUN ***")
 
     def _init_network(self):
         from .network import request_factory
@@ -165,7 +175,7 @@ class Core:
         if restore or newdb:
             self.db.add_user(*userpw, reset=True)
         if restore:
-            self.log.warning(
+            self.log.info(
                 self._(
                     "Successfully restored default login credentials `{}|{}`"
                 ).format(*userpw)
@@ -391,6 +401,10 @@ class Core:
             # self.evm.fire('pyload:started')
 
             self.thm.pause = False  # NOTE: Recheck...
+
+            if self._dry_run:
+                raise Exit
+
             while True:
                 self._running.wait()
                 self.thread_manager.run()
@@ -410,6 +424,7 @@ class Core:
         except Exception as exc:
             self.log.critical(exc, exc_info=True, stack_info=self.debug > 2)
             self.terminate()
+            os._exit(os.EX_SOFTWARE)  #: this kind of stuff should not be here!
 
     # TODO: Remove
     def is_client_connected(self):
@@ -449,6 +464,7 @@ class Core:
             for pyfile in list(self.files.cache.values()):
                 pyfile.abort_download()
 
+            self._exiting = True
             self.addon_manager.core_exiting()
 
         finally:

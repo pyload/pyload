@@ -11,7 +11,7 @@ from ..base.downloader import BaseDownloader
 class Http(BaseDownloader):
     __name__ = "Http"
     __type__ = "downloader"
-    __version__ = "0.10"
+    __version__ = "0.12"
     __status__ = "testing"
 
     __pattern__ = r"(?:jd|pys?)://.+"
@@ -25,11 +25,16 @@ class Http(BaseDownloader):
         self.chunk_limit = -1
         self.resume_download = True
 
+    def load_account(self):
+        class_name = self.classname
+        self.__class__.__name__ = "Http"
+        super().load_account()
+        self.__class__.__name__ = class_name
+
     def process(self, pyfile):
         url = re.sub(r"^(jd|py)", "http", pyfile.url)
-        netloc = urllib.parse.urlparse(url).netloc
 
-        for _ in range(2):
+        for _i in range(2):
             try:
                 self.download(url, ref=False, disposition=True)
 
@@ -45,22 +50,32 @@ class Http(BaseDownloader):
                     "Auth required", f"Received HTTP status code: {self.req.code}"
                 )
 
-                # TODO: Recheck in 0.6.x
-                if self.account:
-                    servers = [x["login"] for x in self.account.get_all_accounts()]
-                else:
-                    servers = []
+                if _i == 0:
+                    netloc = urllib.parse.urlparse(url).netloc
+                    try:
+                        netloc = netloc.split('@', 2)[1]
+                    except IndexError:
+                        pass
 
-                if netloc in servers:
-                    self.log_debug(f"Logging on to {netloc}")
-                    self.req.add_auth(self.account.get_login("password"))
-
-                else:
-                    pwd = self.get_password()
-                    if ":" in pwd:
-                        self.req.add_auth(pwd)
+                    if self.account:
+                        logins = dict((x['login'], x['password'])
+                                      for x in self.account.get_all_accounts())
                     else:
-                        self.fail(self._("Authorization required"))
+                        logins = {}
+
+                    if netloc in logins:
+                        self.log_debug(f"Logging on to {netloc}")
+                        self.req.add_auth(logins[netloc])
+
+                    else:
+                        auth = self.get_password()
+                        if ":" in auth:
+                            self.req.add_auth(auth)
+                        else:
+                            self.fail(self._("Authorization required"))
+                else:
+                    self.fail(self._("Authorization required"))
+
             else:
                 break
 

@@ -1,5 +1,0 @@
-# Configuration for top-issue-bot
-
-labelName: "hot topic"
-labelColor: f7a691
-numberOfIssuesToLabel: 10
