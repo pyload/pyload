@@ -16,7 +16,7 @@
     <img alt="pypi" src="https://img.shields.io/pypi/v/pyload-ng?style=flat-square">
   </a>
   <a href="https://pyup.io/repos/github/pyload/pyload">
-    <img alt="pyup" src="https://pyup.io/repos/github/pyload/pyload/shield.svg?style=flat-square">
+    <img alt="pyup" src="https://pyup.io/repos/github/pyload/pyload/shield.svg">
   </a>
 </h4>
 
@@ -58,9 +58,9 @@ Get the latest stable release of pyLoad:
 
 #### Available modules
 
-- `pyload.core`: pyLoad's heart.
-- `pyload.plugins`: the collection of officially supported plugins for pyLoad.
-- `pyload.webui`: a web interface to interact with pyLoad.
+-   `pyload.core`: pyLoad's heart.
+-   `pyload.plugins`: the collection of officially supported plugins for pyLoad.
+-   `pyload.webui`: a web interface to interact with pyLoad.
 
 ### Development Release
 
@@ -79,9 +79,9 @@ To install them you have to append a specific tag name to the installation comma
 
 #### Available tags
 
-- `plugins`: packages required by some plugins to work.
-- `build`: packages required to [build translations](#build-translations).
-- `all`: shortcut to apply all available tags.
+-   `plugins`: packages required by some plugins to work.
+-   `build`: packages required to [build translations](#build-translations).
+-   `all`: shortcut to apply all available tags.
 
 You can use a tag in this way:
 
@@ -105,20 +105,21 @@ Invoke `build_locale` before building the package (eg. `bdist_wheel`).
 
 ## Usage
 
-    usage: pyload [-h] [--version] [-d] [--userdir USERDIR] [--tempdir TEMPDIR]
-                  [--daemon] [--restore]
+    usage: pyload [-h] [--version] [-d] [--userdir USERDIR] [--tempdir TEMPDIR] [--storagedir STORAGEDIR] [--daemon] [-r] [--dry-run]
 
     The free and open-source Download Manager written in pure Python
 
     optional arguments:
-      -h, --help               show this help message and exit
-      --version                show program's version number and exit
-      -d, --debug              enable debug mode
-      --userdir USERDIR        use this location to store user data files
-      --tempdir TEMPDIR        use this location to store temporary files
-      --storagedir STORAGEDIR  use this location to save downloads
-      --daemon                 run as daemon
-      --restore                reset default username/password
+    -h, --help            show this help message and exit
+    --version             show program's version number and exit
+    -d, --debug           enable debug mode
+    --userdir USERDIR     use this location to store user data files
+    --tempdir TEMPDIR     use this location to store temporary files
+    --storagedir STORAGEDIR
+                            use this location to save downloads
+    --daemon              run as daemon
+    -r, --restore         reset default username/password
+    --dry-run             test start-up and exit
 
 To start pyLoad, type the command:
 
@@ -126,9 +127,9 @@ To start pyLoad, type the command:
 
 This will create the following directories (if they don't exist already):
 
-- `~/Downloads/pyLoad`: where downloads will be saved.
-- `~/.pyload`: where user data (configuration files) are stored.
-- `<TMPDIR>/pyLoad`: where temporary files are stored. `<TMPDIR>` is [platform-specific](https://docs.python.org/3/library/tempfile.html#tempfile.gettempdir).
+-   `~/Downloads/pyLoad`: where downloads will be saved.
+-   `~/.pyload`: where user data (configuration files) are stored.
+-   `<TMPDIR>/pyLoad`: where temporary files are stored. `<TMPDIR>` is [platform-specific](https://docs.python.org/3/library/tempfile.html#tempfile.gettempdir).
 
 > **Note**:
 > On Windows, user data are saved by default in the directory `~\AppData\Roaming\pyLoad`.
@@ -144,8 +145,8 @@ To show an overview of the available options, type:
 Open your web browser and visit the url http://localhost:8000 to have access to
 the pyLoad's web interface.
 
-- Default username: `pyload`.
-- Default password: `pyload`.
+-   Default username: `pyload`.
+-   Default password: `pyload`.
 
 **It's highly recommended to change the default access credentials on first start**.
 
@@ -157,10 +158,10 @@ the pyLoad's web interface.
 
 #### Available images
 
-- `pyload/pyload:ubuntu`: default docker image of pyLoad (amd64, arm, arm64v8).
-- `pyload/pyload:ubuntu-arm32v7`: default docker image of pyLoad (arm32v7).
-- `pyload/pyload:alpine`: alternative docker image of pyLoad (maybe smaller).
-- `pyload/pyload`: alias of `pyload/pyload:ubuntu`.
+-   `pyload/pyload:ubuntu`: default docker image of pyLoad (amd64, arm, arm64v8).
+-   `pyload/pyload:ubuntu-arm32v7`: default docker image of pyLoad (arm32v7).
+-   `pyload/pyload:alpine`: alternative docker image of pyLoad (maybe smaller).
+-   `pyload/pyload`: alias of `pyload/pyload:ubuntu`.
 
 ### Create Container
 
@@ -283,14 +284,14 @@ Please refer to the [CLA](https://cla-assistant.io/pyload/pyload) for the full a
 
 This is essentially what you will be agreeing to:
 
-- You claim to have the right to make the contribution
-  (i.e. it's your own work).
-- You grant the project a perpetual, non-exclusive license to use the
-  contribution.
-- You grant the project rights to change the outbound license that we use to
-  distribute the code.
-- You retain full ownership (copyright) of your submission and are free to do
-  with it as you please.
+-   You claim to have the right to make the contribution
+    (i.e. it's your own work).
+-   You grant the project a perpetual, non-exclusive license to use the
+    contribution.
+-   You grant the project rights to change the outbound license that we use to
+    distribute the code.
+-   You retain full ownership (copyright) of your submission and are free to do
+    with it as you please.
 
 Contact us at licensing@pyload.net for any question about pyLoad licensing policy.
 
