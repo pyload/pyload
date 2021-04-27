@@ -257,9 +257,6 @@ Under Unix-based systems, try to install pyLoad with root privileges.
 Prefix the installation/uninstallation command with `sudo`:
 
     sudo pip install pyload-ng
-
-
-
     sudo pip uninstall pyload-ng
 
 Under Windows systems, open a _Command Prompt as administrator_ to install pyLoad
