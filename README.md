@@ -4,26 +4,24 @@
 </p>
 <h2 align="center">The free and open-source Download Manager written in pure Python</h2>
 <h4 align="center">
-  <a href="#status">Status</a> |
-  <a href="#quick-start">Quick Start</a> |
-  <a href="#advanced-installation">Advanced Installation</a> |
-  <a href="#usage">Usage</a> |
-  <a href="#docker-images">Docker Images</a> |
-  <a href="#troubleshooting">Troubleshooting</a> |
-  <a href="#licensing">Licensing</a> |
-  <a href="#credits">Credits</a>
+  <img alt="status" src="https://img.shields.io/pypi/status/pyload-ng?style=flat-square">
+  <a href="https://github.com/pyload/pyload/actions">
+    <img alt="build" src="https://img.shields.io/github/workflow/status/pyload/pyload/test?event=push&style=flat-square">
+  </a>
+  <a href="https://www.codacy.com/gh/pyload/pyload">
+    <img alt="codacy" src="https://img.shields.io/codacy/grade/1d047f77c0a6496eb708e1b3ca83006b?label=grade&style=flat-square">
+  </a>
+  <img alt="python" src="https://img.shields.io/pypi/pyversions/pyload-ng?style=flat-square">
+  <a href="https://pypi.python.org/pypi/pyload-ng">
+    <img alt="pypi" src="https://img.shields.io/pypi/v/pyload-ng?style=flat-square">
+  </a>
+  <a href="https://pyup.io/repos/github/pyload/pyload">
+    <img alt="pyup" src="https://pyup.io/repos/github/pyload/pyload/shield.svg?style=flat-square">
+  </a>
 </h4>
 
 <br />
 <br />
-
-## Status
-
-[![Travis build status](https://img.shields.io/travis/com/pyload/pyload/main)](https://travis-ci.com/pyload/pyload)
-[![PyUp updates](https://pyup.io/repos/github/pyload/pyload/shield.svg)](https://pyup.io/repos/github/pyload/pyload)
-[![Codacy grade](https://img.shields.io/codacy/grade/1d047f77c0a6496eb708e1b3ca83006b)](https://www.codacy.com/gh/pyload/pyload)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000)](https://github.com/ambv/black)
-[![CLA assistant](https://cla-assistant.io/readme/badge/pyload/pyload)](https://cla-assistant.io/pyload/pyload)
 
 **pyLoad Next** is the newest version of pyLoad.
 
@@ -32,13 +30,6 @@ Developed in the [main branch](https://github.com/pyload/pyload/tree/main) on Gi
 The old stable version of pyLoad resides in the [stable branch](https://github.com/pyload/pyload/tree/stable) and is compatible with Python 2 only.
 
 ## Quick Start
-
-[![PyPI status](https://img.shields.io/pypi/status/pyload-ng)](https://pypi.python.org/pypi/pyload-ng)
-[![PyPI version](https://img.shields.io/pypi/v/pyload-ng?label=version)](https://pypi.python.org/pypi/pyload-ng)
-[![PyPI format](https://img.shields.io/pypi/format/pyload-ng)](https://pypi.python.org/pypi/pyload-ng)
-[![PyPI python version](https://img.shields.io/pypi/pyversions/pyload-ng)](https://pypi.python.org/pypi/pyload-ng)
-[![PyPI implementation](https://img.shields.io/pypi/implementation/pyload-ng)](https://pypi.python.org/pypi/pyload-ng)
-[![PyPI license](https://img.shields.io/pypi/l/pyload-ng)](https://github.com/pyload/pyload/blob/main/LICENSE.md)
 
 Open a terminal window and install pyLoad typing:
 
@@ -269,6 +260,9 @@ Append the option `--user` to the installation command:
     pip install --user pyload-ng
 
 ## Licensing
+
+[![license](https://img.shields.io/pypi/l/pyload-ng)](https://github.com/pyload/pyload/blob/main/LICENSE.md)
+[![cla](https://cla-assistant.io/readme/badge/pyload/pyload)](https://cla-assistant.io/pyload/pyload)
 
 ### Open Source License
 
