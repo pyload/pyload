@@ -76,13 +76,14 @@ class Core:
         return self._debug
 
     # NOTE: should `restore` reset config as well?
-    def __init__(self, userdir, tempdir, storagedir, debug=None, restore=False):
+    def __init__(self, userdir, tempdir, storagedir, debug=None, restore=False, dry=False):
         self._running = Event()
         self._exiting = False
         self._do_restart = False
         self._do_exit = False
         self._ = lambda x: x
         self._debug = 0
+        self._dry_run = dry
 
         # if self.tmpdir not in sys.path:
         # sys.path.append(self.tmpdir)
@@ -93,7 +94,7 @@ class Core:
         self._init_config(userdir, tempdir, storagedir, debug)
         self._init_log()
 
-        self._init_database(restore)
+        self._init_database(restore and not dry)
         self._init_network()
         self._init_api()
         self._init_managers()
@@ -129,7 +130,8 @@ class Core:
             self.config.set("general", "storage_folder", storagedir)
         os.makedirs(storagedir, exist_ok=True)
 
-        self.config.save()  #: save so config files gets filled
+        if not self._dry_run:
+            self.config.save()  #: save so config files gets filled
 
     def _init_log(self):
         from .log_factory import LogFactory
@@ -139,7 +141,9 @@ class Core:
             "pyload"
         )  # NOTE: forced debug mode from console is not working actually
 
-        self.log.warning(f"*** Welcome to pyLoad {self.version} ***")
+        self.log.info(f"*** Welcome to pyLoad {self.version} ***")
+        if self._dry_run:
+            self.log.info(f"*** TEST RUN ***")
 
     def _init_network(self):
         from .network import request_factory
@@ -171,7 +175,7 @@ class Core:
         if restore or newdb:
             self.db.add_user(*userpw, reset=True)
         if restore:
-            self.log.warning(
+            self.log.info(
                 self._(
                     "Successfully restored default login credentials `{}|{}`"
                 ).format(*userpw)
@@ -397,6 +401,10 @@ class Core:
             # self.evm.fire('pyload:started')
 
             self.thm.pause = False  # NOTE: Recheck...
+
+            if self._dry_run:
+                raise Exit
+
             while True:
                 self._running.wait()
                 self.thread_manager.run()
@@ -416,6 +424,7 @@ class Core:
         except Exception as exc:
             self.log.critical(exc, exc_info=True, stack_info=self.debug > 2)
             self.terminate()
+            os._exit(os.EX_SOFTWARE)  #: this kind of stuff should not be here!
 
     # TODO: Remove
     def is_client_connected(self):
