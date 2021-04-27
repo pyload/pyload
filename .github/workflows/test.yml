@@ -47,8 +47,7 @@ jobs:
           path: |
             ${{ env.pythonLocation }}
             ${{ env.toxworkdir }}
-            /var/cache/apt
-          key: x--${{ env.default_python_version }}--ubuntu-latest--${{ hashFiles('setup.cfg', 'pyproject.toml', 'tox.ini') }}--${{ env.pythonLocation }}--${{ env.day_of_year }}
+          key: ubuntu-latest--${{ env.default_python_version }}--${{ hashFiles('setup.cfg', 'pyproject.toml', 'tox.ini') }}--${{ env.pythonLocation }}--${{ env.day_of_year }}
 
       - name: Install Python dependencies
         run: pip install tox
@@ -108,8 +107,7 @@ jobs:
           path: |
             ${{ env.pythonLocation }}
             ${{ env.toxworkdir }}
-            /var/cache/apt
-          key: x--${{ matrix.python-version }}--${{ matrix.os }}--${{ hashFiles('setup.cfg', 'pyproject.toml', 'tox.ini') }}--${{ env.pythonLocation }}--${{ env.day_of_year }}
+          key: ${{ matrix.os }}--${{ matrix.python-version }}--${{ hashFiles('setup.cfg', 'pyproject.toml', 'tox.ini') }}--${{ env.pythonLocation }}--${{ env.day_of_year }}
 
       - name: Install Python dependencies
         run: |
