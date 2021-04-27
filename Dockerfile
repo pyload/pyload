@@ -1,4 +1,4 @@
-# Highly-Optimized Docker Image of pyLoad (ubuntu variant)
+# Highly-Optimized Docker Image of pyLoad (alpine variant)
 #      ____________
 #   _ /       |    \ ___________ _ _______________ _ ___ _______________
 #  /  |    ___/    |   _ __ _  _| |   ___  __ _ __| |   \\    ___  ___ _\
@@ -8,12 +8,12 @@
 #          \  /
 #           \/
 
-ARG IMAGE_TAG="bionic"
+ARG IMAGE_TAG="3.11"
 ARG IMAGE_CREATED
 ARG IMAGE_AUTHORS="Walter Purcaro <vuolter@gmail.com>"
 ARG IMAGE_URL="https://github.com/pyload/pyload"
 ARG IMAGE_DOCUMENTATION="https://github.com/pyload/pyload/blob/main/README.md"
-ARG IMAGE_SOURCE="https://github.com/pyload/pyload/blob/main/Dockerfile"
+ARG IMAGE_SOURCE="https://github.com/pyload/pyload/blob/main/Dockerfile.alpine"
 ARG IMAGE_VERSION="2.0.0"
 ARG IMAGE_REVISION
 ARG IMAGE_VENDOR="pyload"
@@ -22,29 +22,37 @@ ARG IMAGE_TITLE="pyLoad"
 ARG IMAGE_DESCRIPTION="The free and open-source Download Manager written in pure Python"
 
 
-ARG APT_INSTALL_OPTIONS="--no-install-recommends --assume-yes"
+ARG APK_INSTALL_OPTIONS="--no-cache"
 ARG PIP_INSTALL_OPTIONS="--disable-pip-version-check --no-cache-dir --no-compile --upgrade"
 
 
-FROM lsiobase/ubuntu:$IMAGE_TAG AS builder
+FROM lsiobase/alpine:$IMAGE_TAG AS builder
 
-ARG APT_PACKAGES="python3 python3-distutils python3-pip python3-pycurl openssl sqlite tesseract-ocr unrar"
+ARG APK_PACKAGES="python3 openssl sqlite tesseract-ocr unrar libcurl"
 ARG PIP_PACKAGES="pip setuptools wheel"
 
 RUN echo "**** install binary packages ****" && \
-    apt-get update && \
-    apt-get install $APT_INSTALL_OPTIONS $APT_PACKAGES && \
+    apk add $APK_INSTALL_OPTIONS $APK_PACKAGES && \
     \
-    echo "**** install pip package ****" && \
+    echo "**** install pip packages ****" && \
+    python3 -m ensurepip && \
+    rm -rf /usr/lib/python*/ensurepip && \
     pip3 install $PIP_INSTALL_OPTIONS $PIP_PACKAGES
 
 
 FROM builder AS wheels_builder
 
+ARG APK_PACKAGES="gcc musl-dev python3-dev libffi-dev openssl-dev jpeg-dev zlib-dev libxml2-dev libxslt-dev curl-dev"
+
+ENV PYCURL_SSL_LIBRARY="openssl"
+
 COPY setup.cfg /source/setup.cfg
 WORKDIR /wheels
 
-RUN echo "**** build pyLoad dependencies ****" && \
+RUN echo "**** install build packages ****" && \
+    apk add $APK_INSTALL_OPTIONS $APK_PACKAGES && \
+    \
+    echo "**** build pyLoad dependencies ****" && \
     python3 -c "import configparser as cp; c = cp.ConfigParser(); c.read('/source/setup.cfg'); print(c['options']['install_requires'] + c['options.extras_require']['extra'])" | \
     xargs pip3 wheel --wheel-dir=.
 
@@ -79,7 +87,10 @@ ENV PYTHONUNBUFFERED="1"
 # Stop if any script (fix-attrs or cont-init) has failed.
 ENV S6_BEHAVIOUR_IF_STAGE2_FAILS="2"
 
-ARG TEMPDIR="/root/.cache /tmp/* /var/lib/apt/lists/* /var/tmp/*"
+# Set Python to use UTF-8 encoding rather than ASCII.
+ENV LANG="C.UTF-8"
+
+ARG TEMPDIR="/root/.cache /tmp/* /var/tmp/*"
 
 RUN echo "**** create s6 fix-attr script ****" && \
     echo -e "/config true abc 0644 0755\n \
@@ -92,7 +103,6 @@ RUN echo "**** create s6 fix-attr script ****" && \
     exec s6-setuidgid abc pyload --userdir /config --storagedir /downloads" > /etc/services.d/pyload/run && \
     \
     echo "**** cleanup ****" && \
-    apt-get clean && \
     rm -rf $TEMPDIR && \
     \
     echo "**** finalize ****"
