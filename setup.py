@@ -10,7 +10,8 @@
 #           \/
 
 import os
-import sys
+
+# import sys
 
 # from pkg_resources import VersionConflict, require
 from setuptools import Command, setup
