@@ -23,11 +23,11 @@
 <br />
 <br />
 
-**pyLoad Next** is the newest version of pyLoad.
+**pyLoad Next** is the newest version of pyLoad running on Python 3.6+ and PyPy (experimental).
 
-Developed in the [main branch](https://github.com/pyload/pyload/tree/main) on GitHub and deployed as `pyload-ng` on [PyPI](https://pypi.org/project/pyload-ng/), works on Python 3.6+ and is currently in alpha phase.
+pyLoad Next is developed in the [main branch on GitHub](https://github.com/pyload/pyload/tree/main) and published as [pyload-ng on PyPI](https://pypi.org/project/pyload-ng/).
 
-The old stable version of pyLoad resides in the [stable branch](https://github.com/pyload/pyload/tree/stable) and is compatible with Python 2 only.
+The old version of pyLoad working on Python 2 only resides in the [stable branch on GitHub](https://github.com/pyload/pyload/tree/stable) and keeps getting plugin updates.
 
 ## Quick Start
 
@@ -73,15 +73,15 @@ appending the option `--pre` to the installation command:
 
 ### Extra Dependencies
 
-Extra dependencies are non-essential packages that extend or unlock some features of pyLoad.
+Extra dependencies are non-essential packages that enable additional features of pyLoad.
 
 To install them you have to append a specific tag name to the installation command.
 
 #### Available tags
 
--   `plugins`: packages required by some plugins to work.
--   `build`: packages required to [build translations](#build-translations).
--   `all`: shortcut to apply all available tags.
+-   `plugins`: includes packages used by several plugins.
+-   `build`: includes packages used to [build translations](#build-translations).
+-   `all`: includes both plugins and build packages.
 
 You can use a tag in this way:
 
@@ -105,21 +105,21 @@ Invoke `build_locale` before building the package (eg. `bdist_wheel`).
 
 ## Usage
 
-    usage: pyload [-h] [--version] [-d] [--userdir USERDIR] [--tempdir TEMPDIR] [--storagedir STORAGEDIR] [--daemon] [-r] [--dry-run]
+    usage: pyload [-h] [-d] [-r] [--storagedir STORAGEDIR] [--userdir USERDIR]
+                  [--tempdir TEMPDIR] [--dry-run] [--daemon] [--version]
 
     The free and open-source Download Manager written in pure Python
 
     optional arguments:
-    -h, --help            show this help message and exit
-    --version             show program's version number and exit
-    -d, --debug           enable debug mode
-    --userdir USERDIR     use this location to store user data files
-    --tempdir TEMPDIR     use this location to store temporary files
-    --storagedir STORAGEDIR
-                            use this location to save downloads
-    --daemon              run as daemon
-    -r, --restore         reset default username/password
-    --dry-run             test start-up and exit
+      -h, --help                    show this help message and exit
+      -d, --debug                   enable debug mode
+      -r, --restore                 reset default username/password
+      --storagedir STORAGEDIR       use this location to save downloads
+      --userdir USERDIR             use this location to store user data files
+      --tempdir TEMPDIR             use this location to store temporary files
+      --dry-run                     test start-up and exit
+      --daemon                      run as daemon
+      --version                     show program's version number and exit
 
 To start pyLoad, type the command:
 
@@ -158,10 +158,9 @@ the pyLoad's web interface.
 
 #### Available images
 
--   `pyload/pyload:ubuntu`: default docker image of pyLoad (amd64, arm, arm64v8).
--   `pyload/pyload:ubuntu-arm32v7`: default docker image of pyLoad (arm32v7).
--   `pyload/pyload:alpine`: alternative docker image of pyLoad (maybe smaller).
--   `pyload/pyload`: alias of `pyload/pyload:ubuntu`.
+-   `pyload/pyload:alpine`: docker image for amd64, arm and arm64v8.
+-   `pyload/pyload:ubuntu-arm32v7`: docker image for arm32v7.
+-   `pyload/pyload`: alias of `pyload/pyload:alpine`.
 
 ### Create Container
 
@@ -271,7 +270,7 @@ You are allowed to use this software under the terms of the **GNU Affero
 General Public License** as published by the Free Software Foundation;
 either **version 3** of the License, or (at your option) any later version.
 
-Please refer to the [LICENSE](/LICENSE) for the full license.
+Please refer to the [LICENSE](https://github.com/pyload/pyload/blob/main/LICENSE.md) for the full license.
 
 ### Alternative License
 
@@ -297,7 +296,7 @@ Contact us at licensing@pyload.net for any question about pyLoad licensing polic
 
 ## Credits
 
-Please refer to the [AUTHORS](/AUTHORS.md) for the full credits.
+Please refer to the [AUTHORS](https://github.com/pyload/pyload/blob/main/AUTHORS.md) for the full credits.
 
 <br />
 
