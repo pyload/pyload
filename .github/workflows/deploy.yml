@@ -3,12 +3,9 @@ name: deploy
 on:
   workflow_run:
     workflows: build
+    branches: main
     # tags: v[\d.]+
     types: completed
-
-env:
-  PYCURL_SSL_LIBRARY: openssl
-  PYLOAD_BUILD: ${{ github.run_number }}
 
 jobs:
   pypi:

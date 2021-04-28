@@ -5,19 +5,18 @@ import argparse
 import os
 import sys
 
-from .core import Core
 from . import __version__
-
+from .core import Core
 
 DESCRIPTION = """
-      ____________
-   _ /       |    \ ___________ _ _______________ _ ___
-  /  |    ___/    |   _ __ _  _| |   ___  __ _ __| |   \\
- /   \___/  ______/  | '_ \ || | |__/ _ \/ _` / _` |    \\
- \       |   o|      | .__/\_, |____\___/\__,_\__,_|    /
-  \______\    /______|_|___|__/________________________/
-          \  /
-           \/
+       ____________
+   ___/       |    \_____________ _ _______________ _ ___
+  /   |    ___/    |    _ __ _  _| |   ___  __ _ __| |   \\
+ /    \___/  ______/   | '_ \ || | |__/ _ \/ _` / _` |    \\
+ \        |   ◯|       | .__/\_, |____\___/\__,_\__,_|    /
+  \_______\    /_______|_|___|__/________________________/
+           \  /
+            \/
 
 The free and open-source Download Manager written in pure Python
 """
@@ -77,10 +76,20 @@ def _parse_args(cmd_args):
     )
     group = parser.add_mutually_exclusive_group()
 
-    group.add_argument("--version", action="version", version=f"pyLoad {__version__}")
-
     parser.add_argument(
         "-d", "--debug", action="store_true", help="enable debug mode", default=None
+    )
+    parser.add_argument(
+        "-r",
+        "--restore",
+        action="store_true",
+        help="reset default username/password",
+        default=None,
+    )
+    parser.add_argument(
+        "--storagedir",
+        help="use this location to save downloads",
+        default=None,
     )
     parser.add_argument(
         "--userdir",
@@ -92,22 +101,10 @@ def _parse_args(cmd_args):
         help="use this location to store temporary files",
         default=Core.DEFAULT_TMPDIR,
     )
-    parser.add_argument(
-        "--storagedir",
-        help="use this location to save downloads",
-        default=None,
-    )
+    parser.add_argument("--dry-run", action="store_true", help="test start-up and exit", default=False)
     parser.add_argument("--daemon", action="store_true", help="run as daemon")
-    parser.add_argument(
-        "-r",
-        "--restore",
-        action="store_true",
-        help="reset default username/password",
-        default=None,
-    )
-    parser.add_argument(
-        "--dry-run", action="store_true", help="test start-up and exit", default=False
-    )
+
+    group.add_argument("--version", action="version", version=f"pyLoad {__version__}")
 
     return parser.parse_args(cmd_args)
 
