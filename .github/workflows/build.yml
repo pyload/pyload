@@ -1,8 +1,8 @@
-name: build
+name: Build
 
 on:
   workflow_run:
-    workflows: test
+    workflows: Test
     branches: main
     # tags: v[\d.]+
     types: completed
