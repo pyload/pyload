@@ -35,18 +35,30 @@ class PremiumTo(MultiDownloader):
     CHECK_TRAFFIC = True
 
     def handle_premium(self, pyfile):
-        self.download("http://api.premium.to/api/2/getfile.php",
-                      get={'userid': self.account.user,
-                           'apikey': self.account.info['login']['password'],
-                           'link': pyfile.url},
-                      disposition=True)
+        self.download(
+            "http://api.premium.to/api/2/getfile.php",
+            get={
+                "userid": self.account.user,
+                "apikey": self.account.info["login"]["password"],
+                "link": pyfile.url,
+            },
+            disposition=True,
+        )
 
     def check_download(self):
-        if self.scan_download({'json': re.compile(r'\A{["\']code["\']:\d+,["\']message["\']:(["\']).+?\1}\Z')}):
+        if self.scan_download(
+            {
+                "json": re.compile(
+                    r'\A{["\']code["\']:\d+,["\']message["\']:(["\']).+?\1}\Z'
+                )
+            }
+        ):
             with open(fs_encode(self.last_download), "rb") as f:
                 json_data = json.loads(f.read())
 
             self.remove(self.last_download)
-            self.fail(_("API error %s - %s") % (json_data['code'], json_data['message']))
+            self.fail(
+                _("API error %s - %s") % (json_data["code"], json_data["message"])
+            )
 
         return MultiDownloader.check_download(self)
