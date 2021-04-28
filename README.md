@@ -27,7 +27,7 @@
 
 pyLoad Next is developed in the [main branch on GitHub](https://github.com/pyload/pyload/tree/main) and published as [pyload-ng on PyPI](https://pypi.org/project/pyload-ng/).
 
-The old version of pyLoad working on Python 2 only resides in the [stable branch on GitHub](https://github.com/pyload/pyload/tree/stable) and keeps getting plugin updates.
+The old version of pyLoad for Python 2 resides in the [stable branch on GitHub](https://github.com/pyload/pyload/tree/stable) and keeps getting plugin updates.
 
 ## Quick Start
 
@@ -152,9 +152,9 @@ the pyLoad's web interface.
 
 ## Docker Images
 
-[![Docker build status](https://img.shields.io/docker/build/pyload/pyload)](https://hub.docker.com/r/pyload/pyload)
-[![MicroBadger layers](https://img.shields.io/microbadger/layers/pyload/pyload)](https://microbadger.com/images/pyload/pyload)
-[![MicroBadger size](https://img.shields.io/microbadger/image-size/pyload/pyload)](https://microbadger.com/images/pyload/pyload)
+[![Docker build status](https://img.shields.io/docker/build/pyload/pyload?style=flat-square)](https://hub.docker.com/r/pyload/pyload)
+[![MicroBadger layers](https://img.shields.io/microbadger/layers/pyload/pyload?style=flat-square)](https://microbadger.com/images/pyload/pyload)
+[![MicroBadger size](https://img.shields.io/microbadger/image-size/pyload/pyload?style=flat-square)](https://microbadger.com/images/pyload/pyload)
 
 #### Available images
 
@@ -261,7 +261,7 @@ Append the option `--user` to the installation command:
 
 ## Licensing
 
-[![license](https://img.shields.io/pypi/l/pyload-ng)](https://github.com/pyload/pyload/blob/main/LICENSE.md)
+[![license](https://img.shields.io/pypi/l/pyload-ng?style=flat-square)](https://github.com/pyload/pyload/blob/main/LICENSE.md)
 [![cla](https://cla-assistant.io/readme/badge/pyload/pyload)](https://cla-assistant.io/pyload/pyload)
 
 ### Open Source License
