@@ -52,7 +52,7 @@ jobs:
       - name: Install Python dependencies
         run: pip install tox
 
-      - name: Check ${{ matrix.toxenv }} errors
+      - name: Check pyLoad
         run: tox -e ${{ matrix.toxenv }} --workdir ${{ env.toxworkdir }}
 
   test:
