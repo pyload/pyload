@@ -1,8 +1,8 @@
-name: deploy
+name: Deploy
 
 on:
   workflow_run:
-    workflows: build
+    workflows: Build
     branches: main
     # tags: v[\d.]+
     types: completed

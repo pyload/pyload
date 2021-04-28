@@ -1,4 +1,4 @@
-name: test
+name: Test
 
 on:
   pull_request:
@@ -17,7 +17,7 @@ env:
 
 jobs:
   pre-test:
-    name: Pre-Test
+    name: Pre-Test ${{ matrix.toxenv }}
 
     runs-on: ubuntu-latest
 
@@ -52,11 +52,11 @@ jobs:
       - name: Install Python dependencies
         run: pip install tox
 
-      - name: Check ${{ matrix.toxenv }} errors
+      - name: Test pyLoad
         run: tox -e ${{ matrix.toxenv }} --workdir ${{ env.toxworkdir }}
 
   test:
-    name: Test
+    name: Test ${{ matrix.python-version }} on ${{ matrix.os }}
     needs: pre-test
 
     runs-on: ${{ matrix.os }}
@@ -76,11 +76,11 @@ jobs:
         #   - python-version: pypy-3.7
         #     toxenv: pypy
         include:
-          - os: ubuntu-latest
-            python-version: pypy-3.6
+          - python-version: pypy-3.6
+            os: ubuntu-latest
 
-          - os: ubuntu-latest
-            python-version: pypy-3.7
+          - python-version: pypy-3.7
+            os: ubuntu-latest
 
     steps:
       - name: Check out repository
