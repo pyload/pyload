@@ -52,7 +52,8 @@ class PremiumTo(MultiAccount):
         if json_data["code"] != 200:
             self.log_warning(
                 _(
-                    "Username and password for PremiumTo should be the API userid & apikey"
+                    "Username and password for PremiumTo should "
+                    "be the API userid & apikey"
                 ),
                 _("Trying via username and password"),
             )
