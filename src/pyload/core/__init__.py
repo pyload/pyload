@@ -75,8 +75,8 @@ class Core:
     def debug(self):
         return self._debug
 
-    # NOTE: should `restore` reset config as well?
-    def __init__(self, userdir, tempdir, storagedir, debug=None, restore=False, dry=False):
+    # NOTE: should `reset` restore the user config as well?
+    def __init__(self, userdir, tempdir, storagedir, debug=None, reset=False, dry=False):
         self._running = Event()
         self._exiting = False
         self._do_restart = False
@@ -94,7 +94,7 @@ class Core:
         self._init_config(userdir, tempdir, storagedir, debug)
         self._init_log()
 
-        self._init_database(restore and not dry)
+        self._init_database(reset and not dry)
         self._init_network()
         self._init_api()
         self._init_managers()
@@ -161,7 +161,7 @@ class Core:
 
         self.webserver = WebServerThread(self)
 
-    def _init_database(self, restore):
+    def _init_database(self, reset):
         from .threads.database_thread import DatabaseThread
 
         db_path = os.path.join(self.userdir, "data", DatabaseThread.DB_FILENAME)
@@ -172,12 +172,13 @@ class Core:
 
         userpw = (self.DEFAULT_USERNAME, self.DEFAULT_PASSWORD)
         # nousers = bool(self.db.list_users())
-        if restore or newdb:
+        if reset or newdb:
             self.db.add_user(*userpw, reset=True)
-        if restore:
+
+        if reset:
             self.log.info(
                 self._(
-                    "Successfully restored default login credentials `{}|{}`"
+                    "Successfully reset default login credentials `{}|{}`"
                 ).format(*userpw)
             )
 
