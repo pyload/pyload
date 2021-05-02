@@ -267,6 +267,7 @@ class ThreadManager:
         if job:
             try:
                 job.initPlugin()
+                job.setStatus("starting")
             except Exception, e:
                 self.log.critical(str(e), exc_info=True)
                 job.setStatus("failed")
