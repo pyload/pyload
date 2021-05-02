@@ -8,10 +8,10 @@ from ..internal.XFSHoster import XFSHoster
 class UseruploadNet(XFSHoster):
     __name__ = "UseruploadNet"
     __type__ = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
-    __pattern__ = r'https://userupload\.net/\w{12}'
+    __pattern__ = r'https?://(?:www\.)?userupload\.net/\w{12}'
     __config__ = [("activated", "bool", "Activated", True),
                   ("use_premium", "bool",
                    "Use premium account if available", True),
@@ -43,4 +43,4 @@ class UseruploadNet(XFSHoster):
         m = re.search(self.LINK_PATTERN, self.data)
         if m is not None:
             self.link = m.group(1)
-            self.pyfile.name = self.link.split('/')[-1]
+            pyfile.name = self.link.split('/')[-1]

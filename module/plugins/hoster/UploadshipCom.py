@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
+
 import re
 
 from ..internal.XFSHoster import XFSHoster
-from ..internal.misc import search_pattern
+
 
 class UploadshipCom(XFSHoster):
     __name__ = "UploadshipCom"
     __type__ = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
-    __pattern__ = r'https://www.uploadship\.com/\w{16}'
+    __pattern__ = r'https?://(?:www\.)?uploadship\.com/\w{16}'
     __config__ = [("activated", "bool", "Activated", True),
                   ("use_premium", "bool", "Use premium account if available", True),
                   ("fallback", "bool", "Fallback to free download if premium fails", True),
@@ -34,12 +35,11 @@ class UploadshipCom(XFSHoster):
     def handle_free(self, pyfile):
         action, inputs = self.parse_html_form(self.FORM_PATTERN or "", self.FORM_INPUTS_MAP or {})
 
-        secret = re.search('"data": {\r\n"(\w{32})": "(\w{32})"', self.data, re.S)
+        secret = re.search(r'"data": {\r\n"(\w{32})": "(\w{32})"', self.data, re.S)
         if secret is not None:
-            get_data = {}
-            get_data[secret.group(1)] = secret.group(2)
+            get_data = {secret.group(1): secret.group(2)}
             secret_data = self.load('https://www.uploadship.com/' + secret.group(1) + '.php',
-                                  get=get_data)
+                                    get=get_data)
             inputs[secret.group(1)] = secret_data
 
         self.handle_captcha(inputs)
@@ -49,6 +49,6 @@ class UploadshipCom(XFSHoster):
                               ref=self.pyfile.url,
                               redirect=False)
 
-        m = search_pattern(self.LINK_PATTERN, self.data, flags=re.M)
+        m = re.search(self.LINK_PATTERN, self.data, re.M)
         if m is not None:
             self.link = m.group(1)
