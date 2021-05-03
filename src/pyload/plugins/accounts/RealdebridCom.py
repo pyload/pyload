@@ -15,7 +15,7 @@ def args(**kwargs):
 class RealdebridCom(MultiAccount):
     __name__ = "RealdebridCom"
     __type__ = "account"
-    __version__ = "0.60"
+    __version__ = "0.61"
     __status__ = "testing"
 
     __config__ = [
