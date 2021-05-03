@@ -9,7 +9,7 @@ from ..base.simple_downloader import SimpleDownloader
 class FilerNet(SimpleDownloader):
     __name__ = "FilerNet"
     __type__ = "downloader"
-    __version__ = "0.28"
+    __version__ = "0.30"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?filer\.net/get/\w+"
@@ -30,11 +30,12 @@ class FilerNet(SimpleDownloader):
     ]
 
     INFO_PATTERN = r'<h1 class="page-header">Free Download (?P<N>\S+) <small>(?P<S>[\w.]+) (?P<U>[\w^_]+)</small></h1>'
-    OFFLINE_PATTERN = r"Nicht gefunden"
+
+    OFFLINE_PATTERN = r"Datei +nicht mehr vorhanden"
 
     WAIT_PATTERN = r"var count = (\d+);"
 
-    LINK_FREE_PATTERN = LINK_PREMIUM_PATTERN = r'href="([^"]+)">Get download</a>'
+    LINK_PATTERN = r'href="([^"]+)">Get download</a>'
 
     def handle_free(self, pyfile):
         inputs = self.parse_html_form(input_names={"token": re.compile(r".+")})[1]
@@ -50,25 +51,20 @@ class FilerNet(SimpleDownloader):
         self.captcha = ReCaptcha(pyfile)
         response, challenge = self.captcha.challenge()
 
-        #: Avoid 'Correct catcha'
-        captcha_task = self.captcha.task
-        self.captcha.task = None
-
         self.download(
             pyfile.url, post={"g-recaptcha-response": response, "hash": inputs["hash"]}
         )
 
-        #: Restore the captcha task
-        self.captcha.task = captcha_task
-
         if self.scan_download({"html": re.compile(r"\A\s*<!DOCTYPE html")}) == "html":
-            self.log_warning(
-                self._(
-                    "There was HTML code in the downloaded file ({})...bad captcha? The download will be restarted"
-                ).format(self.pyfile.name)
-            )
+            with open(self.last_download, "r") as f:
+                self.data = f.read()
             os.remove(self.last_download)
-            self.retry_captcha()
+
+            if re.search(self.TEMP_OFFLINE_PATTERN, self.data) is not None:
+                self.temp_offline()
+
+            else:
+                return SimpleDownloader.check_download(self)
 
         else:
-            self.captcha.correct()
+            return SimpleDownloader.check_download(self)
