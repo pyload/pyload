@@ -32,6 +32,7 @@ class FilerNet(SimpleDownloader):
     INFO_PATTERN = r'<h1 class="page-header">Free Download (?P<N>\S+) <small>(?P<S>[\w.]+) (?P<U>[\w^_]+)</small></h1>'
 
     OFFLINE_PATTERN = r"Datei +nicht mehr vorhanden"
+    TEMP_OFFLINE_PATTERN = r"Leider sind alle kostenlosen Download-Slots belegt"
 
     WAIT_PATTERN = r"var count = (\d+);"
 
