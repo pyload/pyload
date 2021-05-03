@@ -8,7 +8,7 @@ from ..base.multi_account import MultiAccount
 class PremiumTo(MultiAccount):
     __name__ = "PremiumTo"
     __type__ = "account"
-    __version__ = "0.19"
+    __version__ = "0.21"
     __status__ = "testing"
 
     __config__ = [
