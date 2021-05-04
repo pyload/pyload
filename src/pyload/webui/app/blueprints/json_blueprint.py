@@ -355,7 +355,7 @@ def change_password():
 # @apiver_check
 @login_required("ADMIN")
 # @fresh_login_required
-def add_account():
+def add_user():
     api = flask.current_app.config["PYLOAD_API"]
 
     user = flask.request.form["new_user"]
