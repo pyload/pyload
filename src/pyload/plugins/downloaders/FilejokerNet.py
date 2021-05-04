@@ -51,12 +51,12 @@ class FilejokerNet(XFSDownloader):
         return ".js" not in action if action else False
 
     FORM_PATTERN = filter_form
-    FORM_INPUTS_MAP = {'op': re.compile(r'^download')}
+    FORM_INPUTS_MAP = {"op": re.compile(r"^download")}
 
     API_URL = "https://filejoker.net/zapi"
 
-    def api_response(self, op, **kwargs):
-        args = {'op': op}
+    def api_request(self, op, **kwargs):
+        args = {"op": op}
         args.update(kwargs)
         return json.loads(self.load(self.API_URL, get=args))
 
@@ -78,18 +78,21 @@ class FilejokerNet(XFSDownloader):
 
             if captcha_key:
                 captcha_inputs = {}
-                for _i in m.group(1).split(','):
-                    _k, _v = _i.split(':', 1)
+                for _i in m.group(1).split(","):
+                    _k, _v = _i.split(":", 1)
                     _k = _k.strip('" ')
                     if "g-recaptcha-response" in _v:
                         _v = response + "1111"
 
                     captcha_inputs[_k] = _v.strip('" ')
 
-                self.req.http.c.setopt(pycurl.HTTPHEADER, ["X-Requested-With: XMLHttpRequest"])
+                self.req.http.c.setopt(
+                    pycurl.HTTPHEADER, ["X-Requested-With: XMLHttpRequest"]
+                )
 
-                html = self.load(urllib.parse.urljoin(self.pyfile.url, "/ddl"),
-                                 post=captcha_inputs)
+                html = self.load(
+                    urllib.parse.urljoin(self.pyfile.url, "/ddl"), post=captcha_inputs
+                )
 
                 self.req.http.c.setopt(pycurl.HTTPHEADER, ["X-Requested-With:"])
 
@@ -100,26 +103,30 @@ class FilejokerNet(XFSDownloader):
                     self.retry_captcha()
 
     def handle_premium(self, pyfile):
-        res = self.api_response("download1",
-                                file_code=self.info['pattern']['ID'],
-                                session=self.account.info['data']['session'])
+        api_data = self.api_request(
+            "download1",
+            file_code=self.info["pattern"]["ID"],
+            session=self.account.info["data"]["session"],
+        )
 
-        if 'error' in res:
-            if res['error'] == "no file":
+        if "error" in api_data:
+            if api_data["error"] == "no file":
                 self.offline()
 
             else:
-                self.fail(res['error'])
+                self.fail(api_data["error"])
 
-        pyfile.name = res['file_name']
-        pyfile.size = res['file_size']
+        pyfile.name = api_data["file_name"]
+        pyfile.size = api_data["file_size"]
 
-        res = self.api_response("download2",
-                                file_code=self.info['pattern']['ID'],
-                                download_id=res['download_id'],
-                                session=self.account.info['data']['session'])
+        api_data = self.api_request(
+            "download2",
+            file_code=self.info["pattern"]["ID"],
+            download_id=api_data["download_id"],
+            session=self.account.info["data"]["session"],
+        )
 
-        if 'error' in res:
-            self.fail(res['error'])
+        if "error" in api_data:
+            self.fail(api_data["error"])
 
-        self.link = res['direct_link']
+        self.link = api_data["direct_link"]
