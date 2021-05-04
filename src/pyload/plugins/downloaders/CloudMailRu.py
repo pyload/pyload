@@ -2,6 +2,7 @@
 
 import base64
 import json
+import re
 
 from ..base.downloader import BaseDownloader
 
@@ -9,7 +10,7 @@ from ..base.downloader import BaseDownloader
 class CloudMailRu(BaseDownloader):
     __name__ = "CloudMailRu"
     __type__ = "downloader"
-    __version__ = "0.02"
+    __version__ = "0.04"
     __status__ = "testing"
 
     __pattern__ = r"https?://cloud\.mail\.ru/dl\?q=(?P<QS>.+)"
@@ -27,15 +28,25 @@ class CloudMailRu(BaseDownloader):
 
     OFFLINE_PATTERN = r'"error":\s*"not_exists"'
 
+    @classmethod
+    def get_info(cls, url="", html=""):
+        info = super().get_info(url, html)
+
+        qs = re.match(cls.__pattern__, url).group('QS')
+        file_info = json.loads(base64.b64decode(qs).decode("utf-8"))
+
+        info.update({
+            'name': file_info['n'],
+            'size': file_info['s'],
+            'u': file_info['u']
+        })
+
+        return info
+
     def setup(self):
         self.chunk_limit = -1
         self.resume_download = True
         self.multi_dl = True
 
     def process(self, pyfile):
-        json_data = json.loads(base64.b64decode(self.info["pattern"]["QS"]))
-
-        pyfile.name = json_data["n"]
-        pyfile.size = json_data["s"]
-
-        self.download(json_data["u"], disposition=False)
+        self.download(self.info["u"], disposition=False)

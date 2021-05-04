@@ -2,7 +2,6 @@
 
 import json
 import re
-import os
 
 from ..base.multi_downloader import MultiDownloader
 
@@ -10,7 +9,7 @@ from ..base.multi_downloader import MultiDownloader
 class PremiumTo(MultiDownloader):
     __name__ = "PremiumTo"
     __type__ = "downloader"
-    __version__ = "0.33"
+    __version__ = "0.36"
     __status__ = "testing"
 
     __pattern__ = r"^unmatchable$"
@@ -45,15 +44,23 @@ class PremiumTo(MultiDownloader):
                 "apikey": self.account.info["login"]["password"],
                 "link": pyfile.url,
             },
-            disposition=True
+            disposition=True,
         )
 
     def check_download(self):
-        if self.scan_download({"json": re.compile(r'\A{["\']code["\']:\d+,["\']message["\']:(["\']).+?\1}\Z')}):
-            with open(os.fsdecode(self.last_download), "rb") as f:
-                json_data = json.loads(f.read())
+        if self.scan_download(
+            {
+                "json": re.compile(
+                    rb'\A{["\']code["\']:\d+,["\']message["\']:(["\']).+?\1}\Z'
+                )
+            }
+        ):
+            with open(self.last_download, "r") as fp:
+                json_data = json.loads(fp.read())
 
             self.remove(self.last_download)
-            self.fail(self._("API error {} - {}").format(json_data["code"], json_data["message"]))
+            self.fail(
+                self._("API error %s - %s") % (json_data["code"], json_data["message"])
+            )
 
-        return MultiDownloader.check_download(self)
+        return super().check_download()

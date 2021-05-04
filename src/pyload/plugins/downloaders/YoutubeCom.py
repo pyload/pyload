@@ -6,20 +6,21 @@ import os
 import re
 import subprocess
 import time
-from datetime import timedelta
 import urllib.parse
-from urllib.parse import urlparse
+from datetime import timedelta
 from functools import reduce
 from xml.dom.minidom import parseString as parse_xml
 
 from pyload import PKGDIR
 from pyload.core.network.cookie_jar import CookieJar
+from pyload.core.network.exceptions import Abort, Skip
 from pyload.core.network.http.http_request import HTTPRequest
+from pyload.core.utils.convert import to_str
+from pyload.core.utils.old import safename
+from pyload.core.utils.purge import uniquify
 
 from ..base.downloader import BaseDownloader
-from ..helpers import exists, is_executable, renice, replace_patterns, which,
-from pyload.core.utils.purge import uniquify
-from pyload.core.network.exceptions import Abort, Skip
+from ..helpers import exists, is_executable, renice, replace_patterns, which
 
 
 def try_get(data, *path):
@@ -48,36 +49,10 @@ def try_get(data, *path):
     return res
 
 
-class BIGHTTPRequest(HTTPRequest):
-    """
-    Overcome HTTPRequest's load() size limit to allow
-    loading very big web pages by overrding HTTPRequest's write() function
-    """
-
-    # TODO: Add 'limit' parameter to HTTPRequest in v0.6.x
-    def __init__(self, cookies=None, options=None, limit=2_000_000):
-        self.limit = limit
-        super().__init__(cookies=cookies, options=options)
-
-    def write(self, buf):
-        """
-        writes response
-        """
-        if self.limit and self.rep.tell() > self.limit or self.abort:
-            rep = self.getResponse()
-            if self.abort:
-                raise Abort
-            with open("response.dump", mode="wb") as fp:
-                fp.write(rep)
-            raise Exception("Loaded Url exceeded limit")
-
-        self.rep.write(buf)
-
-
 class Ffmpeg:
-    _RE_DURATION = re.compile(r"Duration: (\d{2}):(\d{2}):(\d{2})\.(\d{2}),")
-    _RE_TIME = re.compile(r"time=(\d{2}):(\d{2}):(\d{2})\.(\d{2})")
-    _RE_VERSION = re.compile((r"ffmpeg version (.+?) "))
+    _RE_DURATION = re.compile(rb"Duration: (\d{2}):(\d{2}):(\d{2})\.(\d{2}),")
+    _RE_TIME = re.compile(rb"time=(\d{2}):(\d{2}):(\d{2})\.(\d{2})")
+    _RE_VERSION = re.compile(rb"ffmpeg version (.+?) ")
 
     CMD = None
     priority = 0
@@ -100,7 +75,7 @@ class Ffmpeg:
     @classmethod
     def find(cls):
         """
-        Check for ffmpeg
+        Check for ffmpeg.
         """
         if cls.CMD is not None:
             return True
@@ -183,6 +158,8 @@ class Ffmpeg:
         )
 
         call = [self.CMD] + args + [self.output_filename]
+        self.plugin.log_debug("EXECUTE " + " ".join(call))
+
         p = subprocess.Popen(call, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         renice(p.pid, self.priority)
@@ -214,13 +191,7 @@ class Ffmpeg:
             m = self._RE_DURATION.search(line)
             if m is not None:
                 duration = sum(
-                    int(v)
-                    * [
-                        timedelta(hours=100).seconds,
-                        timedelta(minutes=100).seconds,
-                        100,
-                        1,
-                    ][i]
+                    int(v) * [60 * 60 * 100, 60 * 100, 100, 1][i]
                     for i, v in enumerate(m.groups())
                 )
                 break
@@ -228,8 +199,8 @@ class Ffmpeg:
         return duration
 
     def _progress(self, process, duration):
-        line = ""
-        last_line = ""
+        line = b""
+        last_line = b""
         while True:
             c = process.stderr.read(1)  #: ffmpeg writes to stderr
 
@@ -237,19 +208,13 @@ class Ffmpeg:
             if not c:
                 break
 
-            elif c == "\r":
-                last_line = line.strip("\r\n")
-                line = ""
+            elif c == b"\r":
+                last_line = line.strip(b"\r\n")
+                line = b""
                 m = self._RE_TIME.search(last_line)
                 if m is not None:
                     current_time = sum(
-                        int(v)
-                        * [
-                            timedelta(hours=100).seconds,
-                            timedelta(minutes=100).seconds,
-                            100,
-                            1,
-                        ][i]
+                        int(v) * [60 * 60 * 100, 60 * 100, 100, 1][i]
                         for i, v in enumerate(m.groups())
                     )
                     if self.plugin:
@@ -260,18 +225,16 @@ class Ffmpeg:
                 line += c
             continue
 
-        return last_line  #: Last line may contain error message
+        return to_str(last_line)  #: Last line may contain error message
 
 
 class YoutubeCom(BaseDownloader):
     __name__ = "YoutubeCom"
     __type__ = "downloader"
-    __version__ = "0.80"
+    __version__ = "0.85"
     __status__ = "testing"
 
-    __pattern__ = (
-        r"https?://(?:[^/]*\.)?(?:youtu\.be/|youtube\.com/watch\?(?:.*&)?v=)[\w\-]+"
-    )
+    __pattern__ = r"https?://(?:[^/]*\.)?(?:youtu\.be/|youtube\.com/watch\?(?:.*&)?v=)[\w\-]+"
     __config__ = [
         ("enabled", "bool", "Activated", True),
         (
@@ -297,14 +260,14 @@ class YoutubeCom(BaseDownloader):
         (
             "subs_dl_langs",
             "str",
-            "<a href='https://sites.google.com/site/tomihasa/google-language-codes#interfacelanguage'>language codes</a> to download (comma separated)",
+            "Subtitle <a href='https://sites.google.com/site/tomihasa/google-language-codes#interfacelanguage'>language codes</a> to download (comma separated)",
             "",
         ),
         ("auto_subs", "bool", "Allow machine generated subtitles", True),
         (
             "subs_translate",
             "str",
-            "Translate subtitles to <a href='https://sites.google.com/site/tomihasa/google-language-codes#interfacelanguage'>language</a> (forces first_available)" ,
+            "Translate subtitles to <a href='https://sites.google.com/site/tomihasa/google-language-codes#interfacelanguage'>language</a> (forces first_available)",
             "",
         ),
         (
@@ -588,62 +551,57 @@ class YoutubeCom(BaseDownloader):
     }
 
     def _decrypt_signature(self, encrypted_sig):
-        """
-        Turn the encrypted 's' field into a working signature.
-        """
-        # try:
-        #     player_url = json.loads(re.search(r'"assets":.+?"js":\s*("[^"]+")',self.data).group(1))
-        # except (AttributeError, IndexError):
-        #     self.fail(self._("Player URL not found"))
-        player_url = self.fixurl(self.player_config["assets"]["js"])
-
-        if not player_url.endswith(".js"):
-            self.fail(self._("Unsupported player type {}").format(player_url))
-
-        sig_cache_id = player_url + "_" + ".".join(str(len(part)) for part in encrypted_sig.split("."))
+        """Turn the encrypted 's' field into a working signature"""
+        sig_cache_id = (
+            self.player_url
+            + "_"
+            + ".".join(str(len(part)) for part in encrypted_sig.split("."))
+        )
 
         cache_info = self.db.retrieve("cache")
         cache_dirty = False
 
-        if (
-            cache_info is None
-            or "version" not in cache_info
-            or cache_info["version"] != self.__version__
-        ):
+        if cache_info is None or cache_info.get("version") != self.__version__:
             cache_info = {"version": self.__version__, "cache": {}}
             cache_dirty = True
 
         if (
             sig_cache_id in cache_info["cache"]
-            and time.time()
-            < cache_info["cache"][sig_cache_id]["time"] + timedelta(hours=24).seconds
+            and time.time() < cache_info["cache"][sig_cache_id]["time"] + timedelta(hours=24).seconds
         ):
             self.log_debug("Using cached decode function to decrypt the URL")
 
             def decrypt_func(s):
                 return "".join(
-                    s[i] for i in cache_info["cache"][sig_cache_id]["decrypt_map"]
+                    s[_i] for _i in cache_info['cache'][sig_cache_id]['decrypt_map']
                 )
 
             decrypted_sig = decrypt_func(encrypted_sig)
 
         else:
-            player_data = self.load(self.fixurl(player_url))
+            player_data = self.load(self.player_url)
 
             m = (
-                re.search(r"\b[cs]\s*&&\s*[adf]\.set\([^,]+\s*,\s*encodeURIComponent\s*\(\s*(?P<sig>[a-zA-Z0-9$]+)\(", player_data)
+                re.search(
+                    r"\b[cs]\s*&&\s*[adf]\.set\([^,]+\s*,\s*encodeURIComponent\s*\(\s*(?P<sig>[a-zA-Z0-9$]+)\(",
+                    player_data,
+                )
                 or re.search(
                     r"\b[a-zA-Z0-9]+\s*&&\s*[a-zA-Z0-9]+\.set\([^,]+\s*,\s*encodeURIComponent\s*\(\s*(?P<sig>[a-zA-Z0-9$]+)\(",
                     player_data,
                 )
                 or re.search(
-                    r"\b(?P<sig>[a-zA-Z0-9$]{2})\s*=\s*function\(\s*a\s*\)\s*{\s*a\s*=\s*a\.split\(\s*""\s*\)", player_data
+                    r'\b(?P<sig>[a-zA-Z0-9$]{2})\s*=\s*function\(\s*a\s*\)\s*{\s*a\s*=\s*a\.split\(\s*""\s*\)',
+                    player_data,
                 )
                 or re.search(
-                    r'(?P<sig>[a-zA-Z0-9$]+)\s*=\s*function\(\s*a\s*\)\s*{\s*a\s*=\s*a\.split\(\s*""\s*\)', player_data
+                    r'(?P<sig>[a-zA-Z0-9$]+)\s*=\s*function\(\s*a\s*\)\s*{\s*a\s*=\s*a\.split\(\s*""\s*\)',
+                    player_data,
                 )
+                or re.search(r"\.sig\|\|(?P<sig>[a-zA-Z0-9$]+)\(", player_data)
                 or re.search(
-                    r"\.sig\|\|(?P<sig>[a-zA-Z0-9$]+)\(", player_data
+                    r"\bc\s*&&\s*d\.set\([^,]+\s*,\s*\([^)]*\)\s*\(\s*(?P<sig>[a-zA-Z0-9$]+)\(",
+                    player_data,
                 )
                 or re.search(
                     r'(["\'])signature\1\s*,\s*(?P<sig>[a-zA-Z0-9$]+)\(', player_data
@@ -680,14 +638,11 @@ class YoutubeCom(BaseDownloader):
 
             except (JSInterpreterError, AssertionError) as exc:
                 self.log_error(self._("Signature decode failed"), exc)
-                self.fail(exc.message)
+                self.fail(str(exc))
 
         #: Remove old records from cache
         for k in list(cache_info["cache"].keys()):
-            if (
-                time.time()
-                >= cache_info["cache"][k]["time"] + timedelta(hours=24).seconds
-            ):
+            if time.time() >= cache_info["cache"][k]["time"] + timedelta(hours=24).seconds:
                 cache_info["cache"].pop(k, None)
                 cache_dirty = True
 
@@ -797,7 +752,7 @@ class YoutubeCom(BaseDownloader):
                 if quality_distance(x, desired_fmt) <= quality_distance(y, desired_fmt)
                 and quality_index(x) > quality_index(y)
                 else y,
-                video_streams.keys(),
+                list(video_streams.keys()),
             )
 
         self.log_debug(
@@ -843,7 +798,7 @@ class YoutubeCom(BaseDownloader):
                 self.pyfile.name,
             )
             self.log_info(
-                self._("Download skipped: {} due to {}").format(self.pyfile.name, exc.message)
+                self._("Download skipped: {} due to {}").format(self.pyfile.name, exc)
             )
 
         return filename, chosen_fmt
@@ -907,7 +862,7 @@ class YoutubeCom(BaseDownloader):
                 if quality_distance(x, desired_fmt) <= quality_distance(y, desired_fmt)
                 and quality_index(x) > quality_index(y)
                 else y,
-                audio_streams.keys(),
+                list(audio_streams.keys()),
             )
 
         self.log_debug(
@@ -950,7 +905,7 @@ class YoutubeCom(BaseDownloader):
                 self.pyfile.name,
             )
             self.log_info(
-                self._("Download skipped: {} due to {}").format(self.pyfile.name, exc.args[0])
+                self._("Download skipped: {} due to {}").format(self.pyfile.name, exc)
             )
 
         return filename, chosen_fmt
@@ -963,23 +918,16 @@ class YoutubeCom(BaseDownloader):
                 h, m = divmod(m, 60)
                 return "{:02}:{:02}:{:02},{}".format(h, m, s, milli)
 
-            i = 1
             srt = ""
             dom = parse_xml(timedtext)
             body = dom.getElementsByTagName("body")[0]
             paras = body.getElementsByTagName("p")
-            subtitle_element = ""
+            subtitles = []
             for para in paras:
-                subtitle_element += str(i) + "\n"
                 try:
-                    srt += (
-                        _format_srt_time(int(para.attributes["t"].value))
-                        + " --> "
-                        + _format_srt_time(
-                            int(para.attributes["t"].value)
-                            + int(para.attributes["d"].value)
-                        )
-                        + "\n"
+                    start_time = int(para.attributes["t"].value)
+                    end_time = int(para.attributes["t"].value) + int(
+                        para.attributes["d"].value
                     )
                 except KeyError:
                     continue
@@ -987,42 +935,64 @@ class YoutubeCom(BaseDownloader):
                 subtitle_text = ""
                 words = para.getElementsByTagName("s")
                 if words:
-                    subtitle_text = "".join([word.firstChild.data for word in words])
+                    subtitle_text = "".join(
+                        [str(word.firstChild.data) for word in words]
+                    )
 
                 else:
                     for child in para.childNodes:
                         if child.nodeName == "br":
-                            srt += "\n"
+                            subtitle_text += "\n"
                         elif child.nodeName == "#text":
-                            srt += str(child.data)
+                            subtitle_text += str(child.data)
 
                 if subtitle_text.strip():
-                    subtitle_element += subtitle_text
-
+                    subtitles.append(
+                        {"start": start_time, "end": end_time, "text": subtitle_text}
+                    )
                 else:
                     continue
 
-                srt += subtitle_element + "\n\n"
-                i += 1
+            for line_num in range(len(subtitles)):
+                start_time = subtitles[line_num]["start"]
+                try:
+                    end_time = min(
+                        subtitles[line_num]["end"], subtitles[line_num + 1]["start"]
+                    )
+                except IndexError:
+                    end_time = subtitles[line_num]["end"]
+
+                subtitle_text = subtitles[line_num]["text"]
+
+                subtitle_element = (
+                    str(line_num + 1)
+                    + "\n"
+                    + _format_srt_time(start_time)
+                    + " --> "
+                    + _format_srt_time(end_time)
+                    + "\n"
+                    + subtitle_text
+                    + "\n\n"
+                )
+                srt += subtitle_element
 
             return srt
 
         srt_files = []
         try:
-            subs = json.loads(self.player_config["args"]["player_response"])[
-                "captions"
-            ]["playerCaptionsTracklistRenderer"]["captionTracks"]
-            subtitles_info = {[(
-                subtitle["languageCode"], urllib.parse.unquote(
-                    subtitle["baseUrl"]
-                ).decode("unicode-escape")
-                + "&fmt=3",
-               subtitle["vssId"].startswith("a."), subtitle["isTranslatable"])
-                for subtitle in subs]
+            subs = self.player_response["captions"]["playerCaptionsTracklistRenderer"][
+                "captionTracks"
+            ]
+            subtitles_info = {
+                subtitle["languageCode"]:
+                    (
+                        urllib.parse.unquote(subtitle["baseUrl"], encoding="unicode-escape") + "&fmt=3",
+                        subtitle["vssId"].startswith("a."),
+                        subtitle["isTranslatable"],
+                    )
+                for subtitle in subs
             }
-            self.log_debug(
-                "AVAILABLE SUBTITLES: {}".format(list(subtitles_info.keys()) or "None")
-            )
+            self.log_debug("AVAILABLE SUBTITLES: {}".format(list(subtitles_info.keys()) or "None"))
 
         except KeyError:
             self.log_debug("AVAILABLE SUBTITLES: None")
@@ -1038,15 +1008,19 @@ class YoutubeCom(BaseDownloader):
                 for lang in self.config.get("subs_dl_langs", "").split(",")
                 if lang.strip()
             ]
+
             if subs_dl_langs:
-                # Download only listed subtitles (`subs_dl_langs` config gives the
-                # priority)
+                # Download only listed subtitles (`subs_dl_langs` config gives the priority)
                 for lang in subs_dl_langs:
                     if lang in subtitles_info:
-                        subtitle_code = lang if subs_translate == "" else subs_translate
+                        subtitle_code = (
+                            lang if subs_translate == "" else subs_translate
+                        )
 
                         if auto_subs is False and subtitles_info[lang][1] is True:
-                            self.log_warning(self._("Skipped machine generated subtitle: {}").format(lang))
+                            self.log_warning(
+                                self._("Skipped machine generated subtitle: {}").format(lang)
+                            )
                             continue
 
                         subtitle_url = subtitles_info[lang][0]
@@ -1054,12 +1028,15 @@ class YoutubeCom(BaseDownloader):
                             if subtitles_info[lang][2]:  #: Translatable?
                                 subtitle_url += "&tlang={}".format(subs_translate)
                             else:
-                                self.log_warning(self._("Skipped non translatable subtitle: {}").format(lang))
+                                self.log_warning(
+                                    self._("Skipped non translatable subtitle: {}").format(lang)
+                                )
                                 continue  #: No, try next one
+
                         srt_filename = os.path.join(
                             self.pyload.config.get("general", "storage_folder"),
                             self.pyfile.package().folder,
-                            os.path.splitext(self.file_name)[0] + "." + subtitle_code + ".srt",
+                            self.file_name + "." + subtitle_code + ".srt",
                         )
 
                         if (
@@ -1079,7 +1056,7 @@ class YoutubeCom(BaseDownloader):
                         srt = timedtext_to_srt(timed_text)
 
                         with open(srt_filename, mode="w") as fp:
-                            fp.write(srt.encode())
+                            fp.write(srt)
                         self.set_permissions(srt_filename)
                         self.log_debug(
                             "Saved subtitle: {}".format(os.path.basename(srt_filename))
@@ -1090,26 +1067,33 @@ class YoutubeCom(BaseDownloader):
 
             else:
                 # Download any available subtitle
-                for _subtitle in subtitles_info.items():
-                    if auto_subs is False and _subtitle[1][1] is True:
-                        self.log_warning(self._("Skipped machine generated subtitle: {}").format(_subtitle[0]))
+                for subtitle in subtitles_info.items():
+                    if auto_subs is False and subtitle[1][1] is True:
+                        self.log_warning(
+                            self._("Skipped machine generated subtitle: {}").format(subtitle[0])
+                        )
                         continue
 
-                    subtitle_code = _subtitle[0] if subs_translate == "" else subs_translate
+                    subtitle_code = (
+                        subtitle[0] if subs_translate == "" else subs_translate
+                    )
 
-                    subtitle_url = _subtitle[1][0]
+                    subtitle_url = subtitle[1][0]
                     if subs_translate:
-                        if _subtitle[1][2]:  #: Translatable?
+                        if subtitle[1][2]:  #: Translatable?
                             subtitle_url += "&tlang={}".format(subs_translate)
                         else:
-                            self.log_warning(self._("Skipped non translatable subtitle: {}").format(_subtitle[0]))
+                            self.log_warning(
+                                self._("Skipped non translatable subtitle: {}").format(subtitle[0])
+                            )
                             continue  #: No, try next one
+
                     srt_filename = os.path.join(
                         self.pyload.config.get("general", "storage_folder"),
                         self.pyfile.package().folder,
                         os.path.splitext(self.file_name)[0]
                         + "."
-                        + _subtitle[0]
+                        + subtitle_code
                         + ".srt",
                     )
 
@@ -1130,7 +1114,7 @@ class YoutubeCom(BaseDownloader):
                     srt = timedtext_to_srt(timed_text)
 
                     with open(srt_filename, mode="w") as fp:
-                        fp.write(srt.encode())
+                        fp.write(srt)
                     self.set_permissions(srt_filename)
 
                     self.log_debug(
@@ -1206,7 +1190,7 @@ class YoutubeCom(BaseDownloader):
                         self.ffmpeg.add_stream(("s", subtitle))
 
                 self.pyfile.name = os.path.basename(final_filename)
-                self.pyfile.size = os.path.getsize(inputfile)  #: : Just an estimate
+                self.pyfile.size = os.path.getsize(inputfile)  #: Just an estimate
 
                 if self.ffmpeg.run():
                     self.remove(inputfile, try_trash=False)
@@ -1243,7 +1227,7 @@ class YoutubeCom(BaseDownloader):
         except Exception:
             pass
 
-        self.req.http = BIGHTTPRequest(
+        self.req.http = HTTPRequest(
             cookies=CookieJar(None),
             options=self.pyload.request_factory.get_options(),
             limit=5_000_000,
@@ -1253,9 +1237,14 @@ class YoutubeCom(BaseDownloader):
         pyfile.url = replace_patterns(pyfile.url, self.URL_REPLACEMENTS)
         self.data = self.load(pyfile.url)
 
+        url, inputs = self.parse_html_form('action="https://consent.youtube.com/s"')
+        if url is not None:
+            self.data = self.load(url, post=inputs)
+
         m = re.search(
-                r'"playabilityStatus":{"status":"(\w+)",(:?"(?:reason":|messages":\[)"([^"]+))?',
-                self.data)
+            r'"playabilityStatus":{"status":"(\w+)",(:?"(?:reason":|messages":\[)"([^"]+))?',
+            self.data,
+        )
         if m is None:
             self.log_warning(self._("Playability status pattern not found"))
 
@@ -1264,6 +1253,7 @@ class YoutubeCom(BaseDownloader):
                 if m.group(2):
                     self.log_error(m.group(2))
                 self.offline()
+
         if (
             "We have been receiving a large volume of requests from your network."
             in self.data
@@ -1271,71 +1261,101 @@ class YoutubeCom(BaseDownloader):
             self.temp_offline()
 
         m = re.search(r"ytplayer.config = ({.+?});", self.data)
-        if m is None:
-            self.fail(self._("Player config pattern not found"))
+        if m is not None:
+            self.player_config = json.loads(m.group(1))
+            self.player_response = json.loads(
+                self.player_config["args"]["player_response"]
+            )
 
-        self.player_config = json.loads(m.group(1))
+        else:
+            m = re.search(r"ytInitialPlayerResponse = ({.+?});", self.data)
+            if m is not None:
+                self.player_config = json.loads(m.group(1))
+                self.player_response = self.player_config
+
+            else:
+                self.fail(self._("Player config pattern not found"))
+
+        m = re.search(r'"jsUrl"\s*:\s*"(.+?)"', self.data) or re.search(
+            r'"assets":.+?"js":\s*"(.+?)"', self.data
+        )
+        if m is None:
+            self.fail(self._("Player URL pattern not found"))
+
+        self.player_url = self.fixurl(m.group(1))
+
+        if not self.player_url.endswith(".js"):
+            self.fail(self._("Unsupported player type {}").format(self.player_url))
 
         self.ffmpeg = Ffmpeg(self.config.get("priority"), self)
 
         #: Set file name
-        self.file_name = json.loads(self.player_config["args"]["player_response"])["videoDetails"]["title"]
+        self.file_name = self.player_response['videoDetails']['title']
 
         #: Check for start time
         self.start_time = (0, 0)
         m = re.search(r"t=(?:(\d+)m)?(\d+)s", pyfile.url)
         if self.ffmpeg and m:
-            self.start_time = tuple(0 if x is None else int(x) for x in m.groups())
+            self.start_time = tuple(
+                map(lambda _x: 0 if _x is None else int(_x), m.groups())
+            )
             self.file_name += " (starting at {}m{}s)".format(
-                self.start_time[0], self.start_time[1]
+                self.start_time[0],
+                self.start_time[1],
             )
 
         #: Cleaning invalid characters from the file name
-        self.file_name = self.file_name.encode("ascii", "replace")
-        for c in self.invalid_chars:
-            self.file_name = self.file_name.replace(c, "_")
+        self.file_name = safename(self.file_name)
 
         #: Parse available streams
-        self.streams = []
-
-        for path in [("args", "url_encoded_fmt_stream_map"),
-                     ("args", 'adaptive_fmts')]:
+        streams = []
+        for path in [("args", "url_encoded_fmt_stream_map"), ("args", "adaptive_fmts")]:
             item = try_get(self.player_config, *path)
             if item is not None:
-                streams = [urlparse.parse_qs(_s) for _s in item.split(",")]
-                streams = [dict((k, v[0]) for k,v in _d.items()) for _d in streams]
-                self.streams.extend(streams)
+                strms = [urllib.parse.parse_qs(_s) for _s in item.split(",")]
+                strms = [dict((k, v[0]) for k, v in _d.items()) for _d in strms]
+                streams.extend(strms)
+        streams.extend(try_get(self.player_response, "streamingData", "formats") or [])
+        streams.extend(
+            try_get(self.player_response, "streamingData", "adaptiveFormats") or []
+        )
 
-        player_response = json.loads(self.player_config["args"]["player_response"])
-        self.streams.extend(try_get(player_response, "streamingData", "formats") or [])
-        self.streams.extend(try_get(player_response, "streamingData", "adaptiveFormats") or [])
-
-        streams = self.streams
         self.streams = []
-        for s in streams:
-            itag = int(s["itag"])
-            url_data = s
-            url = s.get("url", None)
+        for _s in streams:
+            itag = int(_s["itag"])
+            url_data = _s
+            url = _s.get("url", None)
             if url is None:
-                cipher = s.get("cipher", None)
-                if cipher is None:
-                    continue
+                cipher = _s.get("cipher", None)
+                if cipher is not None:
+                    url_data = urllib.parse.parse_qs(cipher)
+                    url_data = dict((k, v[0]) for k, v in url_data.items())
+                    url = url_data.get("url")
+                    if url is None:
+                        continue
 
-                url_data = urlparse.parse_qs(cipher)
-                url_data = dict((k, v[0]) for k,v in url_data.items())
-                url = url_data.get("url", None)
-                if url is None:
-                    continue
+                else:
+                    cipher = _s.get("signatureCipher")
+                    if cipher is not None:
+                        url_data = urllib.parse.parse_qs(cipher)
+                        url = try_get(url_data, "url", 0)
+                        if url is None:
+                            continue
 
-            self.streams.append((itag,
-                                 url,
-                                 url_data.get("s", url_data.get("sig", None)),
-                                 "s" in url_data,
-                                 url_data.get("sp", "signature")))
+            self.streams.append(
+                (
+                    itag,
+                    url,
+                    try_get(url_data, "s", 0)
+                    or url_data.get("s", url_data.get("sig", None)),
+                    "s" in url_data,
+                    try_get(url_data, "sp", 0) or url_data.get("sp", "signature"),
+                )
+            )
 
         self.streams = uniquify(self.streams)
 
-        self.log_debug("AVAILABLE STREAMS: {}".format([s[0] for s in self.streams]))
+        self.log_debug("AVAILABLE STREAMS: {}".format([_s[0] for _s in self.streams]))
 
         video_filename, video_itag = self._handle_video()
 
@@ -1359,6 +1379,7 @@ class YoutubeCom(BaseDownloader):
 
 
 """Credit to this awesome piece of code below goes to the 'youtube_dl' project, kudos!"""
+
 
 class JSInterpreterError(Exception):
     pass
@@ -1396,12 +1417,12 @@ class JSInterpreter:
         stmt = stmt.lstrip()
         stmt_m = re.match(r"var\s", stmt)
         if stmt_m:
-            expr = stmt[len(stmt_m.group(0)) :]
+            expr = stmt[len(stmt_m.group(0)):]
 
         else:
             return_m = re.match(r"return(?:\s+|$)", stmt)
             if return_m:
-                expr = stmt[len(return_m.group(0)) :]
+                expr = stmt[len(return_m.group(0)):]
                 should_abort = True
             else:
                 # Try interpreting it as an expression
@@ -1424,11 +1445,11 @@ class JSInterpreter:
                 else:
                     parens_count -= 1
                     if parens_count == 0:
-                        sub_expr = expr[1 : m.start()]
+                        sub_expr = expr[1:m.start()]
                         sub_result = self.interpret_expression(
                             sub_expr, local_vars, allow_recursion
                         )
-                        remaining_expr = expr[m.end() :].strip()
+                        remaining_expr = expr[m.end():].strip()
                         if not remaining_expr:
                             return sub_result
                         else:
@@ -1529,13 +1550,13 @@ class JSInterpreter:
 
             if member == "slice":
                 assert len(argvals) == 1
-                return obj[argvals[0] :]
+                return obj[argvals[0]:]
 
             if member == "splice":
                 assert isinstance(obj, list)
-                index, howMany = argvals
+                index, how_many = argvals
                 res = []
-                for i in range(index, min(index + howMany, len(obj))):
+                for i in range(index, min(index + how_many, len(obj))):
                     res.append(obj.pop(index))
                 return res
 
@@ -1593,7 +1614,7 @@ class JSInterpreter:
     def extract_object(self, objname):
         obj = {}
         obj_m = re.search(
-            r"(?:var\s+)?{}\s*=\s*{{\s*(?P<fields>([a-zA-Z$0-9]+\s*:\s*function\(.*?\)\s*\{.*?\}(?:,\s*)?)*)\}\s*;".format(
+            r"(?:var\s+)?{}\s*=\s*{{\s*(?P<fields>([a-zA-Z$0-9]+\s*:\s*function\(.*?\)\s*{{.*?}}(?:,\s*)?)*)}}\s*;".format(
                 re.escape(objname)
             ),
             self.code,
@@ -1612,7 +1633,7 @@ class JSInterpreter:
 
     def extract_function(self, function_name):
         func_m = re.search(
-            r"(?x)(?:function\s+{}|[{;,]\s*{}\s*=\s*function|var\s+{}\s*=\s*function)\s*\((?P<args>[^)]*)\)\s*{{(?P<code>[^}]+)}}".format(
+            r"(?x)(?:function\s+{}|[{{;,]\s*{}\s*=\s*function|var\s+{}\s*=\s*function)\s*\((?P<args>[^)]*)\)\s*{{(?P<code>[^}}]+)}}".format(
                 re.escape(function_name),
                 re.escape(function_name),
                 re.escape(function_name),

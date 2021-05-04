@@ -55,17 +55,17 @@ class DepositfilesCom(SimpleDownloader):
     LINK_MIRROR_PATTERN = r'class="repeat_mirror"><a href="(.+?)"'
 
     def handle_free(self, pyfile):
-        self.data = self.load(pyfile.url, post={"gateway_result": "1",
-                                                "asm": "0"})
+        self.data = self.load(pyfile.url, post={"gateway_result": "1", "asm": "0"})
 
         self.check_errors()
 
-        m = re.search(r"var fid = '(\w+?)';", self.data)
+        m = re.search(r"var fid = '(\w+?)'", self.data)
         if m is None:
             self.log_error(self._("fid pattern not found"))
             self.retry(wait=5)
 
-        params = {"fid": m.group(1)}
+        fid = m.group(1)
+        params = {"fid": fid}
         self.log_debug(f"FID: {fid}")
 
         self.data = self.load("https://depositfiles.com/get_file.php", get=params)

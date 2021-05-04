@@ -42,6 +42,7 @@ def entries(text, allow_whitespaces=False):
 def name(text, safe_name=True):
     try:
         name = web_parse.name(text, safe_name=safe_name)
+        name = os.path.basename(name)
     except Exception as exc:
         name = os.path.basename(text).strip()
         if safe_name:
@@ -110,7 +111,7 @@ def packs(nameurls):
 
     packs = {}
     for urlname, url in nameurls:
-        urlname = name(urlname, purge=True)
+        urlname = name(urlname, safe_name=True)
         urlname = os.path.splitext(urlname)[0].strip()
         urlname = _RE_PACKS.sub("_", urlname).strip("_")
 

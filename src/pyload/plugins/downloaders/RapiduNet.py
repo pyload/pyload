@@ -1,22 +1,24 @@
 # -*- coding: utf-8 -*-
 
 import json
+import re
 import time
 
 import pycurl
+from pyload.core.network.request_factory import get_url
+from pyload.core.utils import seconds
 
 from ..anticaptchas.ReCaptcha import ReCaptcha
-from pyload.core.utils import seconds
 from ..base.simple_downloader import SimpleDownloader
 
 
 class RapiduNet(SimpleDownloader):
     __name__ = "RapiduNet"
     __type__ = "downloader"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __status__ = "testing"
 
-    __pattern__ = r"https?://(?:www\.)?rapidu\.net/(?P<ID>\d{10})"
+    __pattern__ = r"https?://(?:www\.)?rapidu\.net/(?P<ID>\d+)"
     __config__ = [
         ("enabled", "bool", "Activated", True),
         ("use_premium", "bool", "Use premium account if available", True),
@@ -27,20 +29,38 @@ class RapiduNet(SimpleDownloader):
 
     __description__ = """Rapidu.net downloader plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("prOq", None)]
+    __authors__ = [
+        ("prOq", None),
+        ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")
+    ]
 
     COOKIES = [("rapidu.net", "rapidu_lang", "en")]
 
     URL_REPLACEMENTS = [(__pattern__ + ".*", "https://rapidu.net/\g<ID>")]
 
-    INFO_PATTERN = (
-        r'<h1 title="(?P<N>.*)">.*</h1>\s*<small>(?P<S>\d+(\.\d+)?)\s(?P<U>\w+)</small>'
-    )
-    OFFLINE_PATTERN = r"<h1>404"
-
-    ERROR_PATTERN = r'<div class="error">'
-
     RECAPTCHA_KEY = r"6LcOuQkUAAAAAF8FPp423qz-U2AXon68gJSdI_W4"
+
+    # https://rapidu.net/documentation/api/
+    API_URL = "http://rapidu.net/api/"
+
+    @classmethod
+    def api_request(cls, method, **kwargs):
+        json_data = get_url(cls.API_URL + method + "/", post=kwargs)
+        return json.loads(json_data)
+
+    @classmethod
+    def api_info(cls, url):
+        file_id = re.match(cls.__pattern__, url).group("ID")
+        api_data = cls.api_request("getFileDetails", id=file_id)["0"]
+
+        if api_data["fileStatus"] == 1:
+            return {
+                "status": 2,
+                "name": api_data["fileName"],
+                "size": int(api_data["fileSize"]),
+            }
+        else:
+            return {"status": 1}
 
     def setup(self):
         self.resume_download = True
@@ -58,7 +78,11 @@ class RapiduNet(SimpleDownloader):
 
         if str(json_data["timeToDownload"]) == "stop":
             self.log_warning(self._("You've reach your daily download transfer"))
-            self.retry(10, wait=seconds.to_midnight(), msg=self._("You've reach your daily download transfer"))
+            self.retry(
+                10,
+                wait=seconds.to_midnight(),
+                msg=self._("You've reach your daily download transfer"),
+            )
 
         self.set_wait(int(json_data["timeToDownload"]) - int(time.time()))
 
@@ -80,6 +104,19 @@ class RapiduNet(SimpleDownloader):
 
         if json_data["message"] == "success":
             self.link = json_data["url"]
+
+    def handle_premium(self, pyfile):
+        api_data = self.api_request(
+            "getFileDownload",
+            id=self.info["pattern"]["ID"],
+            login=self.account.user,
+            password=self.account.info["login"]["password"],
+        )
+
+        if "message" in api_data:
+            self.fail(api_data["message"]["error"])
+        else:
+            self.link = api_data.get("fileLocation")
 
     def get_json_response(self, *args, **kwargs):
         res = self.load(*args, **kwargs)
