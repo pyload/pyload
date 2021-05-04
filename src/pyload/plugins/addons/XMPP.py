@@ -1,284 +1,303 @@
 # -*- coding: utf-8 -*-
 
+import asyncio
+import os
+import ssl
 
-import pyxmpp2
-import pyxmpp2.client
-import pyxmpp2.interfaces
-import pyxmpp2.jid
-import pyxmpp2.message
-import pyxmpp2.streamtls
+import slixmpp
+from slixmpp.xmlstream.handler import Callback
+from slixmpp.xmlstream.matcher import MatchXPath
 
-from .IRC import IRC
+from ..base.chat_bot import ChatBot
 
 
-class XMPP(IRC, pyxmpp2.client.Client):
+class XMPP(ChatBot):
     __name__ = "XMPP"
     __type__ = "addon"
-    __version__ = "0.18"
+    __version__ = "0.23"
     __status__ = "testing"
 
     __config__ = [
         ("enabled", "bool", "Activated", False),
         ("jid", "str", "Jabber ID", "user@exmaple-jabber-server.org"),
         ("pw", "str", "Password", ""),
-        ("tls", "bool", "Use TLS", False),
+        ("use_ipv6", "bool", "Use ipv6", False),
+        ("tls", "bool", "Use TLS", True),
+        ("use_ssl", "bool", "Use old SSL", False),
         (
             "owners",
             "str",
             "List of JIDs accepting commands from",
             "me@icq-gateway.org;some@msn-gateway.org",
         ),
-        ("keepalive", "int", "Keepalive interval in seconds (0 to disable)", 0),
+        ("captcha", "bool", "Send captcha requests", True),
         ("info_file", "bool", "Inform about every file finished", False),
         ("info_pack", "bool", "Inform about every package finished", True),
-        ("captcha", "bool", "Send captcha requests", True),
+        ("all_download", "bool", "Inform about all download finished", False),
+        ("package_failed", "bool", "Notify package failed", False),
+        ("download_failed", "bool", "Notify download failed", True),
+        ("download_start", "bool", "Notify download start", True),
+        ("maxline", "int", "Maximum line per message", 6),
     ]
 
     __description__ = """Connect to jabber and let owner perform different tasks"""
     __license__ = "GPLv3"
-    __authors__ = [("RaNaN", "RaNaN@pyload.net")]
-
-    pyxmpp2.interface.implements(pyxmpp2.interfaces.IMessageHandlersProvider)
-
-    def __init__(self, *args, **kwargs):
-        IRC.__init__(self, *args, **kwargs)
-
-        self.jid = pyxmpp2.jid.JID(self.config.get("jid"))
-        password = self.config.get("pw")
-
-        #: If bare JID is provided add a resource -- it is required
-        if not self.jid.resource:
-            self.jid = pyxmpp2.jid.JID(self.jid.node, self.jid.domain, "pyLoad")
-
-        if self.config.get("tls"):
-            tls_settings = pyxmpp2.streamtls.TLSSettings(
-                require=True, verify_peer=False
-            )
-            auth = ("sasl:PLAIN", "sasl:DIGEST-MD5")
-        else:
-            tls_settings = None
-            auth = ("sasl:DIGEST-MD5", "digest")
-
-        #: Setup client with provided connection information
-        #: And identity data
-        super().__init__(
-            self.jid,
-            password,
-            disco_name="pyLoad XMPP Client",
-            disco_type="bot",
-            tls_settings=tls_settings,
-            auth_methods=auth,
-            keepalive=self.config.get("keepalive"),
-        )
-
-        self.interface_providers = [VersionHandler(self), self]
+    __authors__ = [
+        ("RaNaN", "RaNaN@pyload.net"),
+        ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com"),
+    ]
 
     def activate(self):
-        self.new_package = {}
+        self.log_debug("activate")
+        self.jid = slixmpp.jid.JID(self.config.get("jid"))
+        self.jid.resource = "PyLoadNotifyBot"
+        self.log_debug(self.jid)
 
-        self.start()
-
-    def package_finished(self, pypack):
-        try:
-            if self.config.get("info_pack"):
-                self.announce(self._("Package finished: {}").format(pypack.name))
-
-        except Exception:
-            pass
-
-    def download_finished(self, pyfile):
-        try:
-            if self.config.get("info_file"):
-                self.announce(
-                    self._("Download finished: {name} @ {plugin}").format(
-                        name=pyfile.name, plugin=pyfile.pluginname
-                    )
-                )
-
-        except Exception:
-            pass
+        super().activate()
 
     def run(self):
-        #: Connect to IRC etc.
-        self.connect()
-        try:
-            self.loop()
+        self.log_debug("def run")
+        if os.name == "nt":
+            asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
 
-        except Exception as ex:
-            self.log_error(ex)
+        xmpp = XMPPClient(
+            self.jid,
+            self.config.get("pw"),
+            self.log_info,
+            self.log_debug,
+        )
+        self.log_debug("activate xmpp")
+        xmpp.use_ipv6 = self.config.get("use_ipv6")
+        xmpp.register_plugin("xep_0030")  # Service Discovery
+        xmpp.register_plugin("xep_0004")  # Data Forms
+        xmpp.register_plugin("xep_0060")  # PubSub
+        xmpp.register_plugin("xep_0199")  # XMPP Ping
+        xmpp.ssl_version = ssl.PROTOCOL_TLSv1_2
 
-    def stream_state_changed(self, state, arg):
-        """
-        This one is called when the state of stream connecting the component to a server
-        changes.
+        # The message event is triggered whenever a message
+        # stanza is received. Be aware that that includes
+        # MUC messages and error messages.
+        xmpp.add_event_handler("message", self.message)
+        xmpp.add_event_handler("connected", self.connected)
+        xmpp.add_event_handler("connection_failed", self.connection_failed)
+        xmpp.add_event_handler("disconnected", self.disconnected)
+        xmpp.add_event_handler("failed_auth", self.failed_auth)
+        xmpp.add_event_handler("changed_status", self.changed_status)
+        xmpp.add_event_handler("presence_error", self.presence_error)
+        xmpp.add_event_handler("presence_unavailable", self.presence_unavailable)
 
-        This will usually be used to let the user know what is going on.
-        """
-        self.log_debug(f"State changed: {state} {repr(arg)}")
+        xmpp.register_handler(
+            Callback(
+                "Stream Error",
+                MatchXPath(f"{{{xmpp.stream_ns}}}error"),
+                self.stream_error,
+            )
+        )
 
-    def disconnected(self):
-        self.log_debug("Client was disconnected")
+        self.xmpp = xmpp
+        self.xmpp.connect(
+            use_ssl=self.config.get("use_ssl"),
+            force_starttls=self.config.get("tls"),
+        )
+        self.xmpp.process(forever=True)
 
-    def stream_closed(self, stream):
-        self.log_debug("Stream was closed", stream)
+    ############################################################################
+    # xmpp handlers
 
-    def stream_error(self, err):
+    def changed_status(self, stanza=None):
+        self.log_debug("changed_status", stanza, stanza.get_type())
+
+    def connection_failed(self, stanza=None):
+        self.log_error("Unable to connect", stanza)
+
+    def connected(self, event=None):
+        self.log_info("Client was connected", event)
+
+    def disconnected(self, event=None):
+        self.log_info("Client was disconnected", event)
+
+    def presence_error(self, stanza=None):
+        self.log_debug("presence_error", stanza)
+
+    def presence_unavailable(self, stanza=None):
+        self.log_debug("presence_unavailable", stanza)
+
+    def failed_auth(self, event=None):
+        self.log_info("Failed to authenticate")
+
+    def stream_error(self, err=None):
         self.log_debug("Stream Error", err)
-
-    def get_message_handlers(self):
-        """
-        Return list of (message_type, message_handler) tuples.
-
-        The handlers returned will be called when matching message is received in
-        a client session.
-        """
-        return [("normal", self.message)]
+        # self.periodical.stop()
 
     def message(self, stanza):
         """
         Message handler for the component.
         """
-        subject = stanza.get_subject()
-        body = stanza.get_body()
-        t = stanza.get_type()
-        sender = stanza.get_from()
+        self.log_debug("message", stanza)
 
-        self.log_debug(f"Message from {sender} received.")
-        self.log_debug(f"Body: {body} Subject: {subject} Type: {t}")
+        subject = stanza["subject"]
+        body = stanza["body"]
+        msg_type = stanza["type"]
+        sender_jid = stanza["from"]
+        names = self.config.get("owners").split(";")
 
-        if t == "headline":
+        self.log_debug(f"Message from {sender_jid} received.")
+        self.log_debug(f"Body: {body} Subject: {subject} Type: {msg_type}")
+
+        if msg_type == "headline":
             #: 'headline' messages should never be replied to
             return True
+
         if subject:
             subject = "Re: " + subject
 
-        to_jid = stanza.get_from()
-        from_jid = stanza.get_to()
-
-        # j = pyxmpp2.jid.JID()
-        to_name = to_jid.as_utf8()
-
-        names = self.config.get("owners").split(";")
-
-        if to_name in names or to_jid.node + "@" + to_jid.domain in names:
-            messages = []
-
-            trigger = "pass"
-            args = None
-
-            try:
-                temp = body.split()
-                trigger = temp[0]
-                if len(temp) > 1:
-                    args = temp[1:]
-
-            except Exception:
-                pass
-
-            handler = getattr(self, "event_{}".format(trigger), self.event_pass)
-            try:
-                res = handler(args)
-                for line in res:
-                    m = pyxmpp2.message.Message(
-                        to_jid=to_jid,
-                        from_jid=from_jid,
-                        stanza_type=stanza.get_type(),
-                        subject=subject,
-                        body=line,
-                    )
-
-                    messages.append(m)
-
-            except Exception as exc:
-                self.log_error(
-                    exc,
-                    exc_info=self.pyload.debug > 1,
-                    stack_info=self.pyload.debug > 2,
-                )
-
-            return messages
-
-        else:
+        if not (sender_jid.username in names or sender_jid.bare in names):
             return True
 
-    def response(self, msg, origin=""):
-        return self.announce(msg)
+        temp = body.split()
+        try:
+            command = temp[0]
+            args = temp[1:]
+        except IndexError:
+            command = "error"
+            args = []
+
+        ret = False
+        try:
+            res = self.do_bot_command(command, args)
+            if res:
+                msg_reply = "\n".join(res)
+
+            else:
+                msg_reply = "ERROR: invalid command, enter: help"
+
+            self.log_debug("Send response")
+            ret = stanza.reply(msg_reply).send()
+
+        except Exception as exc:
+            self.log_error(exc)
+            stanza.reply("ERROR: " + str(exc)).send()
+
+        return ret
+
+    # end xmpp handler
+    ############################################################################
 
     def announce(self, message):
         """
-        Send message to all owners.
+        Send message to all owners
         """
+        self.log_debug("Announce, message:", message)
         for user in self.config.get("owners").split(";"):
             self.log_debug("Send message to", user)
-
-            to_jid = pyxmpp2.jid.JID(user)
-
-            m = pyxmpp2.message.Message(
-                from_jid=self.jid, to_jid=to_jid, stanza_type="chat", body=message
+            to_jid = slixmpp.jid.JID(user)
+            self.xmpp.sendMessage(
+                mfrom=self.jid, mto=to_jid, mtype="chat", mbody=str(message)
             )
 
-            stream = self.getStream()
-            if not stream:
-                self.connect()
-                stream = self.getStream()
+    ############################################################################
+    # pyLoad events
 
-            stream.send(m)
+    def exit(self):
+        self.xmpp.disconnect()
 
     def before_reconnect(self, ip):
-        self.disconnect()
+        self.log_debug("before_reconnect")
+        self.xmpp.disconnect()
 
     def after_reconnect(self, ip, oldip):
-        self.connect()
+        self.log_debug("after_reconnect")
+        self.xmpp.connect()
+        # self.periodical.start(600)
+
+    def download_failed(self, pyfile):
+        self.log_debug("download_failed", pyfile, pyfile.error)
+        try:
+            if self.config.get("download_failed"):
+                self.announce(
+                    self._("Download failed: {} (#{}) in #{} @ {}: {}").format(
+                        pyfile.name,
+                        pyfile.id,
+                        pyfile.packageid,
+                        pyfile.pluginname,
+                        pyfile.error,
+                    )
+                )
+
+        except Exception as exc:
+            self.log_error(exc)
+
+    def package_failed(self, pypack):
+        self.log_debug("package_failed", pypack)
+        try:
+            if self.config.get("package_failed"):
+                self.announce(
+                    self._("Package failed: {} ({}).").format(pypack.name, pypack.id)
+                )
+
+        except Exception as exc:
+            self.log_error(exc)
+
+    def package_finished(self, pypack):
+        self.log_debug("package_finished")
+        try:
+            if self.config.get("info_pack"):
+                self.announce(
+                    self._("Package finished: {} ({}).").format(pypack.name, pypack.id)
+                )
+
+        except Exception as exc:
+            self.log_error(exc)
+
+    def download_finished(self, pyfile):
+        self.log_debug("download_finished")
+        try:
+            if self.config.get("info_file"):
+                self.announce(
+                    self._("Download finished: {} (#{}) in #{} @ {}").format(
+                        pyfile.name, pyfile.id, pyfile.packageid, pyfile.pluginname
+                    )
+                )
+
+        except Exception as exc:
+            self.log_error(exc)
+
+    def all_downloads_processed(self, arg=None):
+        self.log_debug("all_downloads_processed", arg)
+        try:
+            if self.config.get("all_download"):
+                self.announce(self._("All download finished."))
+
+        except Exception:
+            pass
+
+    def download_start(self, pyfile, url, filename):
+        self.log_debug("download_start", pyfile, url, filename)
+        try:
+            if self.config.get("download_start"):
+                self.announce(
+                    self._("Download start: {} (#{}) in (#{}) @ {}.").format(
+                        pyfile.name, pyfile.id, pyfile.packageid, pyfile.pluginname
+                    )
+                )
+        except Exception:
+            pass
+
+    # end pyLoad events
+    ############################################################################
 
 
-class VersionHandler:
-    """
-    Provides handler for a version query.
+class XMPPClient(slixmpp.ClientXMPP):
+    def __init__(self, jid, password, log_info, log_debug):
+        self.log_debug = log_debug
+        self.log_info = log_info
 
-    This class will answer version query and announce 'jabber:iq:version'
-    namespace in the client's disco#info results.
-    """
+        slixmpp.ClientXMPP.__init__(self, jid, password)
+        self.add_event_handler("session_start", self.start)
 
-    pyxmpp2.interface.implements(
-        pyxmpp2.interfaces.IIqHandlersProvider, pyxmpp2.interfaces.IFeaturesProvider
-    )
-
-    def __init__(self, client):
-        """
-        Just remember who created this.
-        """
-        self.client = client
-
-    def get_features(self):
-        """
-        Return namespace which should the client include in its reply to a disco#info
-        query.
-        """
-        return ["jabber:iq:version"]
-
-    def get_iq_get_handlers(self):
-        """
-        Return list of tuples (element_name, namespace, handler) describing handlers of
-        <iq type='get'/> stanzas.
-        """
-        return [("query", "jabber:iq:version", self.get_version)]
-
-    def get_iq_set_handlers(self):
-        """
-        Return empty list, as this class provides no <iq type='set'/> stanza handler.
-        """
-        return []
-
-    def get_version(self, iq):
-        """
-        Handler for jabber:iq:version queries.
-
-        jabber:iq:version queries are not supported directly by PyXMPP, so the
-        XML node is accessed directly through the libxml2 API. This should be
-        used very carefully!
-        """
-        iq = iq.make_result_response()
-        q = iq.new_query("jabber:iq:version")
-        q.newTextChild(q.ns(), "name", "Echo component")
-        q.newTextChild(q.ns(), "version", "1.0")
-        return iq
+    def start(self, event):
+        self.log_debug("Session started")
+        self.send_presence()
+        self.get_roster(timeout=60)

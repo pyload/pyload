@@ -360,7 +360,7 @@ class FileDatabaseMethods:
         """
         # TODO: improve this hardcoded method
         # plugins which are processed in collector
-        pre = "('DLC', 'LinkList', 'SerienjunkiesOrg', 'CCF', 'RSDF')"
+        pre = "('DLC', 'TXT', 'CCF', 'RSDF')"
 
         cmd = "("
         for i, item in enumerate(occ):

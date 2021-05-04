@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from datetime import timedelta
+import json
+import re
 
 from ..base.multi_downloader import MultiDownloader
 
@@ -8,7 +9,7 @@ from ..base.multi_downloader import MultiDownloader
 class PremiumTo(MultiDownloader):
     __name__ = "PremiumTo"
     __type__ = "downloader"
-    __version__ = "0.33"
+    __version__ = "0.36"
     __status__ = "testing"
 
     __pattern__ = r"^unmatchable$"
@@ -32,32 +33,34 @@ class PremiumTo(MultiDownloader):
 
     CHECK_TRAFFIC = True
 
+    # See https://premium.to/API.html
+    API_URL = "http://api.premium.to/api/2/"
+
     def handle_premium(self, pyfile):
         self.download(
-            "http://api.premium.to/api/getfile.php",
+            self.API_URL + "getfile.php",
             get={
-                "username": self.account.user,
-                "password": self.account.info["login"]["password"],
+                "userid": self.account.user,
+                "apikey": self.account.info["login"]["password"],
                 "link": pyfile.url,
             },
             disposition=True,
         )
 
     def check_download(self):
-        if self.scan_download({"nopremium": "No premium account available"}):
-            self.retry(60, timedelta(minutes=5).seconds, "No premium account available")
+        if self.scan_download(
+            {
+                "json": re.compile(
+                    rb'\A{["\']code["\']:\d+,["\']message["\']:(["\']).+?\1}\Z'
+                )
+            }
+        ):
+            with open(self.last_download, "r") as fp:
+                json_data = json.loads(fp.read())
 
-        err = ""
-        if self.req.http.code == 420:
-            #: Custom error code sent - fail
-            file = encode(self.last_download)
+            self.remove(self.last_download)
+            self.fail(
+                self._("API error %s - %s") % (json_data["code"], json_data["message"])
+            )
 
-            with open(file, mode="rb") as fp:
-                err = fp.read(256).strip()
-
-            self.remove(file)
-
-        if err:
-            self.fail(err)
-
-        return MultiDownloader.check_download(self)
+        return super().check_download()
