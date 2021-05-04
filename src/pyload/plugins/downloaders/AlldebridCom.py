@@ -8,7 +8,7 @@ from ..base.multi_downloader import MultiDownloader
 class AlldebridCom(MultiDownloader):
     __name__ = "AlldebridCom"
     __type__ = "downloader"
-    __version__ = "0.58"
+    __version__ = "0.61"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.|s\d+\.)?alldebrid\.com/dl/[\w^_]+"

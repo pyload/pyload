@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import json
 
 from ..base.multi_account import MultiAccount
 
@@ -7,7 +8,7 @@ from ..base.multi_account import MultiAccount
 class PremiumTo(MultiAccount):
     __name__ = "PremiumTo"
     __type__ = "account"
-    __version__ = "0.19"
+    __version__ = "0.21"
     __status__ = "testing"
 
     __config__ = [
@@ -25,36 +26,34 @@ class PremiumTo(MultiAccount):
         ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com"),
     ]
 
-    LOGIN_FAILED_PATTERN = r"wrong username"
+    # See https://premium.to/API.html
+    API_URL = "http://api.premium.to/api/2/"
 
-    API_URL = "http://api.premium.to/api/"
-
-    def api_response(self, method, user, password):
-        return self.load(
-            self.API_URL + method + ".php", get={"username": user, "password": password}
-        )
+    def api_resquest(self, method, **kwargs):
+        return json.loads(self.load(self.API_URL + method + ".php", get=kwargs))
 
     def grab_hosters(self, user, password, data):
-        html = self.api_response("hosters", user, password)
-        return (
-            [x.strip() for x in html.replace('"', "").split(";") if x]
-            if self.req.code == 200
-            else []
-        )
+        api_data = self.api_resquest("hosts", userid=user, apikey=password)
+        return api_data["hosts"] if api_data.get("code") == 200 else []
 
     def grab_info(self, user, password, data):
-        traffic = self.api_response("straffic", user, password)
+        api_data = self.api_resquest("traffic", userid=user, apikey=password)
 
-        if self.req.code == 200:
-            # TODO: Remove `>> 10` in 0.6.x
-            trafficleft = sum(float(x) for x in traffic.split(";")) >> 10
+        if api_data.get("code") == 200:
+            trafficleft = api_data["traffic"] + api_data["specialtraffic"]
             return {"premium": True, "trafficleft": trafficleft, "validuntil": -1}
 
         else:
             return {"premium": False, "trafficleft": None, "validuntil": None}
 
     def signin(self, user, password, data):
-        self.api_response("getauthcode", user, password)
+        api_data = self.api_resquest("traffic", userid=user, apikey=password)
 
-        if self.req.code != 200:
+        if api_data["code"] != 200:
+            self.log_warning(
+                self._(
+                    "Username and password for PremiumTo should be the API userid & apikey"
+                )
+            )
+            self.log_warning(api_data["message"])
             self.fail_login()
