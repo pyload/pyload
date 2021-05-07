@@ -495,7 +495,7 @@ class BaseDownloader(BaseHoster):
         """
         pack_folder = self.pyfile.package().folder
 
-        for pyfile in self.pyload.files.cache.values():
+        for pyfile in list(self.pyload.files.cache.values()):
             if (
                 pyfile != self.pyfile
                 and pyfile.name == self.pyfile.name
