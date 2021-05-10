@@ -1,7 +1,12 @@
 # -*- coding: utf-8 -*-
 import re
+import json
+import os
+
+from pyload.core.network.request_factory import get_url
 import xml.etree.ElementTree as etree
 
+import pycurl
 from ..base.downloader import BaseDownloader
 
 
@@ -9,54 +14,31 @@ from ..base.downloader import BaseDownloader
 class ZDF(BaseDownloader):
     __name__ = "ZDF Mediathek"
     __type__ = "downloader"
-    __version__ = "0.89"
+    __version__ = "0.91"
     __status__ = "testing"
 
-    __pattern__ = r"http://(?:www\.)?zdf\.de/ZDFmediathek/\D*(\d+)\D*"
+    __pattern__ = r"https://(?:www\.)?zdf\.de/(?P<ID>[/\w-]+)\.html"
     __config__ = [("enabled", "bool", "Activated", True)]
 
     __description__ = """ZDF.de downloader plugin"""
     __license__ = "GPLv3"
     __authors__ = []
 
-    XML_API = "http://www.zdf.de/ZDFmediathek/xmlservice/web/beitragsDetails?id={}"
-
-    @staticmethod
-    def video_key(video):
-        return (
-            int(video.findtext("videoBitrate", "0")),
-            any(f.text == "progressive" for f in video.iter("facet")),
-        )
-
-    @staticmethod
-    def video_valid(video):
-        return (
-            video.findtext("url").startswith("http")
-            and video.findtext("url").endswith(".mp4")
-            and video.findtext("facets/facet").startswith("progressive")
-        )
-
-    @staticmethod
-    def get_id(url):
-        return int(re.search(r"\D*(\d{4,})\D*", url).group(1))
-
     def process(self, pyfile):
-        id = self.get_id(pyfile.url)
-        url = self.XML_API.format(id)
-        xml = etree.fromstring(self.load(url, decode=False))
+        data = self.load(pyfile.url)
+        try:
+            apiToken = re.search(r'window\.zdfsite\.player\.apiToken = "([\d\w]+)";', data)[1]
 
-        status = xml.findtext("./status/statuscode")
-        if status != "ok":
-            self.fail(self._("Error retrieving manifest"))
+            self.req.http.c.setopt(pycurl.HTTPHEADER, ["Api-Auth: Bearer " + apiToken])
+            id = re.match(self.__pattern__, pyfile.url).group('ID')
 
-        video = xml.find("video")
-        title = video.findtext("information/title")
+            filename = json.loads(self.load("https://api.zdf.de/content/documents/zdf/" + id + ".json",
+                               get={'profile': "player-3"}))
+            stream_list = filename['mainVideoContent']['http://zdf.de/rels/target']['streams']['default']['extId']
 
-        pyfile.name = title.encode("ascii", errors="replace")
-
-        target_url = sorted(
-            (v for v in video.iter("formitaet") if self.video_valid(v)),
-            key=self.video_key,
-        )[-1].findtext("url")
-
-        self.download(target_url)
+            streams = json.loads(self.load("https://api.zdf.de/tmd/2/ngplayer_2_4/vod/ptmd/mediathek/" + stream_list))
+            download_name = streams['priorityList'][0]['formitaeten'][0]['qualities'][0]['audio']['tracks'][0]['uri']
+            self.pyfile.name = os.path.basename(id) + os.path.splitext(download_name)[1]
+            self.download(download_name)
+        except Exception as e:
+            self.log_error(e)
