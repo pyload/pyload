@@ -4,7 +4,7 @@ import re
 
 from ..anticaptchas.ReCaptcha import ReCaptcha
 from ..base.simple_downloader import SimpleDownloader
-
+from pyload.core.utils.convert import to_bytes
 
 class FilerNet(SimpleDownloader):
     __name__ = "FilerNet"
@@ -56,7 +56,7 @@ class FilerNet(SimpleDownloader):
             pyfile.url, post={"g-recaptcha-response": response, "hash": inputs["hash"]}
         )
 
-        if self.scan_download({"html": re.compile(r"\A\s*<!DOCTYPE html")}) == "html":
+        if self.scan_download({"html": re.compile(to_bytes(r"\A\s*<!DOCTYPE html"))}) == "html":
             with open(self.last_download, "r") as f:
                 self.data = f.read()
             os.remove(self.last_download)
