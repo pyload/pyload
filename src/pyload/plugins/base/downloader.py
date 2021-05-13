@@ -354,12 +354,11 @@ class BaseDownloader(BaseHoster):
         :param read_size: size to read and scan
         :return: dictionary key of the first rule that matched
         """
-        dl_file = os.fsdecode(self.last_download)  # TODO: Recheck in 0.6.x
-
         if not self.last_download:
             self.log_warning(self._("No file to scan"))
             return
 
+        dl_file = os.fsdecode(self.last_download)  # TODO: Recheck in 0.6.x
         with open(dl_file, mode="rb") as fp:
             content = fp.read(read_size)
 
