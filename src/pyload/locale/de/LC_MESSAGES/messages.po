@@ -1,0 +1,690 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: pyload\n"
+"Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
+"POT-Creation-Date: 2014-07-13 20:53+0200\n"
+"PO-Revision-Date: 2020-11-01 11:50\n"
+"Last-Translator: \n"
+"Language-Team: German\n"
+"Language: de_DE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: pyload\n"
+"X-Crowdin-Project-ID: 18363\n"
+"X-Crowdin-Language: de\n"
+"X-Crowdin-File: /pyLoad/django.pot\n"
+"X-Crowdin-File-ID: 42\n"
+
+#: module/web/translations.js:1
+msgid "New Captcha Request"
+msgstr "Neue Captcha-Anfrage"
+
+#: module/web/translations.js:2 module/web/templates/default/captcha.html:7
+msgid "Please read the text on the captcha."
+msgstr "Bitte lies den Text auf dem Captcha."
+
+#: module/web/translations.js:3
+msgid "pyLoad restarted"
+msgstr "pyLoad wurde neu gestartet"
+
+#: module/web/translations.js:4
+#: module/web/templates/default/settings_item.html:16
+#: module/web/templates/default/base.html:123
+#: module/web/templates/default/base.html:124
+msgid "off"
+msgstr "aus"
+
+#: module/web/translations.js:5
+msgid "Success"
+msgstr "Erfolgreich"
+
+#: module/web/translations.js:6
+#: module/web/templates/default/settings_item.html:14
+#: module/web/templates/default/base.html:123
+#: module/web/templates/default/base.html:124
+msgid "on"
+msgstr "ein"
+
+#: module/web/translations.js:7
+msgid "You are really sure you want to quit pyLoad?"
+msgstr "Bist du sicher, dass du pyLoad beenden möchtest?"
+
+#: module/web/translations.js:8
+msgid "Restart Link"
+msgstr "Link neu starten"
+
+#: module/web/translations.js:9
+msgid "Delete Link"
+msgstr "Link löschen"
+
+#: module/web/translations.js:10
+msgid "Please Enter a packagename."
+msgstr "Bitte gib einen Paketnamen ein."
+
+#: module/web/translations.js:11
+msgid "Please click on the right captcha position."
+msgstr "Bitte klicke auf die richtige Position im Captcha."
+
+#: module/web/translations.js:12
+msgid "Error occured."
+msgstr "Ein Fehler ist aufgetreten."
+
+#: module/web/translations.js:13
+#: module/web/templates/default/filemanager.html:65
+#: module/web/templates/default/folder.html:14
+msgid "Folder is empty"
+msgstr "Ordner ist leer"
+
+#: module/web/translations.js:14
+msgid "Failed"
+msgstr "Fehlgeschlagen"
+
+#: module/web/translations.js:15
+msgid "No Captchas to read."
+msgstr "Keine Captchas verfügbar."
+
+#: module/web/translations.js:16
+msgid "Passwords did not match."
+msgstr "Passwörter stimmen nicht überein."
+
+#: module/web/translations.js:17
+msgid "Settings saved."
+msgstr "Einstellungen gespeichert"
+
+#: module/web/translations.js:18
+msgid "New folder"
+msgstr "Neuer Ordner"
+
+#: module/web/translations.js:19
+msgid "Are you sure you want to restart pyLoad?"
+msgstr "Sicher, dass du pyLoad neustarten willst?"
+
+#: module/web/json_app.py:57
+#, python-format
+msgid "waiting %s"
+msgstr "Warte %s"
+
+#: module/web/templates/default/home.html:206
+msgid "Active Downloads"
+msgstr "Aktive Downloads"
+
+#: module/web/templates/default/home.html:211
+#: module/web/templates/default/base.html:84
+msgid "Home"
+msgstr "Start"
+
+#: module/web/templates/default/home.html:214
+#: module/web/templates/default/queue.html:15
+#: module/web/templates/default/window.html:34
+#: module/web/templates/default/base.html:87
+msgid "Queue"
+msgstr "Warteschlange"
+
+#: module/web/templates/default/home.html:217
+#: module/web/templates/default/queue.html:17
+#: module/web/templates/default/window.html:36
+#: module/web/templates/default/base.html:90
+msgid "Collector"
+msgstr "Linksammler"
+
+#: module/web/templates/default/home.html:220
+#: module/web/templates/default/downloads.html:6
+#: module/web/templates/default/base.html:93
+msgid "Downloads"
+msgstr "Downloads"
+
+#: module/web/templates/default/home.html:226
+#: module/web/templates/default/logs.html:3
+#: module/web/templates/default/logs.html:4
+#: module/web/templates/default/base.html:99
+msgid "Logs"
+msgstr "Protokoll"
+
+#: module/web/templates/default/home.html:229
+#: module/web/templates/default/settings.html:3
+#: module/web/templates/default/settings.html:4
+#: module/web/templates/default/base.html:102
+msgid "Config"
+msgstr "Einstellungen"
+
+#: module/web/templates/default/home.html:237
+#: module/web/templates/default/queue.html:82
+#: module/web/templates/default/settings.html:91
+#: module/web/templates/default/window.html:7
+#: module/web/templates/default/admin.html:25
+msgid "Name"
+msgstr "Name"
+
+#: module/web/templates/default/home.html:238
+#: module/web/templates/default/settings.html:93
+msgid "Status"
+msgstr "Status"
+
+#: module/web/templates/default/home.html:239
+#: module/web/templates/default/info.html:14
+#: module/web/templates/default/info.html:15
+msgid "Information"
+msgstr "Informationen"
+
+#: module/web/templates/default/home.html:240
+msgid "Size"
+msgstr "Größe"
+
+#: module/web/templates/default/home.html:241
+msgid "Progress"
+msgstr "Fortschritt"
+
+#: module/web/templates/default/login.html:3
+#: module/web/templates/default/settings.html:178
+msgid "Login"
+msgstr "Anmeldung"
+
+#: module/web/templates/default/login.html:14
+msgid "Username"
+msgstr "Benutzername"
+
+#: module/web/templates/default/login.html:19
+#: module/web/templates/default/queue.html:92
+#: module/web/templates/default/settings.html:92
+#: module/web/templates/default/settings.html:183
+#: module/web/templates/default/window.html:21
+msgid "Password"
+msgstr "Passwort"
+
+#: module/web/templates/default/login.html:29
+msgid "Your username and password didn't match. Please try again."
+msgstr "Dein Benutzername und/oder Passwort sind falsch. Bitte versuche es noch einmal."
+
+#: module/web/templates/default/login.html:30
+msgid "To reset your login data or add an user run:"
+msgstr "Um deine Login-Informationen zurückzusetzen oder einen Benutzer hinzuzufügen, starte:"
+
+#: module/web/templates/default/queue.html:25
+msgid "Delete Finished"
+msgstr "Fertige löschen"
+
+#: module/web/templates/default/queue.html:26
+msgid "Restart Failed"
+msgstr "Fehlgeschlagene neustarten"
+
+#: module/web/templates/default/queue.html:65
+msgid "Folder:"
+msgstr "Ordner:"
+
+#: module/web/templates/default/queue.html:65
+msgid "Password:"
+msgstr "Passwort:"
+
+#: module/web/templates/default/queue.html:79
+msgid "Edit Package"
+msgstr "Paket bearbeiten"
+
+#: module/web/templates/default/queue.html:80
+msgid "Edit the package detais below."
+msgstr "Bearbeiten Sie hier die Paketdetails."
+
+#: module/web/templates/default/queue.html:83
+msgid "The name of the package."
+msgstr "Name des Pakets."
+
+#: module/web/templates/default/queue.html:87
+msgid "Folder"
+msgstr "Verzeichnis"
+
+#: module/web/templates/default/queue.html:88
+msgid "Name of subfolder for these downloads."
+msgstr "Name des Unterordners für diese Downloads."
+
+#: module/web/templates/default/queue.html:93
+msgid "List of passwords used for unrar."
+msgstr "Liste der Passwörter, welche für das Entpacken genutzt werden."
+
+#: module/web/templates/default/queue.html:97
+#: module/web/templates/default/settings.html:167
+#: module/web/templates/default/captcha.html:33
+#: module/web/templates/default/admin.html:61
+#: module/web/templates/default/admin.html:91
+msgid "Submit"
+msgstr "Übernehmen"
+
+#: module/web/templates/default/queue.html:98
+#: module/web/templates/default/settings.html:198
+#: module/web/templates/default/window.html:41
+#: module/web/templates/default/admin.html:92
+msgid "Reset"
+msgstr "Zurücksetzen"
+
+#: module/web/templates/default/logout.html:8
+msgid "You were successfully logged out."
+msgstr "Du wurdest erfolgreich abgemeldet."
+
+#: module/web/templates/default/pathchooser.html:39
+#: module/web/templates/default/pathchooser.html:41
+msgid "Path"
+msgstr "Pfad"
+
+#: module/web/templates/default/pathchooser.html:39
+#: module/web/templates/default/pathchooser.html:41
+msgid "absolute"
+msgstr "absolut"
+
+#: module/web/templates/default/pathchooser.html:39
+#: module/web/templates/default/pathchooser.html:41
+msgid "relative"
+msgstr "relativ"
+
+#: module/web/templates/default/pathchooser.html:46
+msgid "name"
+msgstr "Name"
+
+#: module/web/templates/default/pathchooser.html:47
+msgid "size"
+msgstr "Größe"
+
+#: module/web/templates/default/pathchooser.html:48
+msgid "type"
+msgstr "Typ"
+
+#: module/web/templates/default/pathchooser.html:49
+msgid "last modified"
+msgstr "zuletzt verändert"
+
+#: module/web/templates/default/pathchooser.html:54
+msgid "parent directory"
+msgstr "übergeordnetes Verzeichnis"
+
+#: module/web/templates/default/pathchooser.html:70
+msgid "no content"
+msgstr "kein Inhalt"
+
+#: module/web/templates/default/settings.html:16
+msgid "General"
+msgstr "Allgemein"
+
+#: module/web/templates/default/settings.html:17
+msgid "Plugins"
+msgstr "Zusatzprogramme"
+
+#: module/web/templates/default/settings.html:18
+msgid "Accounts"
+msgstr "Konten"
+
+#: module/web/templates/default/settings.html:45
+#: module/web/templates/default/settings.html:74
+msgid "Choose a section from the menu"
+msgstr "Wähle einen Abschnitt aus dem Menü."
+
+#: module/web/templates/default/settings.html:90
+msgid "Plugin"
+msgstr "Erweiterung"
+
+#: module/web/templates/default/settings.html:94
+msgid "Premium"
+msgstr "Premium"
+
+#: module/web/templates/default/settings.html:95
+msgid "Valid until"
+msgstr "Gültig bis:"
+
+#: module/web/templates/default/settings.html:96
+msgid "Traffic left"
+msgstr "Verbleibender Traffic:"
+
+#: module/web/templates/default/settings.html:97
+msgid "Time"
+msgstr "Zeit:"
+
+#: module/web/templates/default/settings.html:98
+msgid "Max Parallel"
+msgstr "Max Parallel"
+
+#: module/web/templates/default/settings.html:99
+msgid "Delete?"
+msgstr "Löschen?"
+
+#: module/web/templates/default/settings.html:121
+msgid "valid"
+msgstr "gültig"
+
+#: module/web/templates/default/settings.html:124
+msgid "not valid"
+msgstr "ungültig"
+
+#: module/web/templates/default/settings.html:131
+msgid "yes"
+msgstr "ja"
+
+#: module/web/templates/default/settings.html:134
+msgid "no"
+msgstr "nein"
+
+#: module/web/templates/default/settings.html:168
+#: module/web/templates/default/settings.html:197
+#: module/web/templates/default/base.html:117
+msgid "Add"
+msgstr "Hinzufügen"
+
+#: module/web/templates/default/settings.html:176
+msgid "Add Account"
+msgstr "Konto hinzufügen"
+
+#: module/web/templates/default/settings.html:177
+msgid "Enter your account data to use premium features."
+msgstr "Gib deine Benutzerdaten ein, um die Premiumfunktionen zu nutzen."
+
+#: module/web/templates/default/settings.html:179
+#: module/web/templates/default/admin.html:71
+msgid "Your username."
+msgstr "Dein Benutzername."
+
+#: module/web/templates/default/settings.html:184
+#: module/web/templates/default/admin.html:76
+msgid "The password for this account."
+msgstr "Das Password für diesen Account."
+
+#: module/web/templates/default/settings.html:188
+msgid "Type"
+msgstr "Typ"
+
+#: module/web/templates/default/settings.html:189
+msgid "Choose the hoster for your account."
+msgstr "Wähle den Hoster für dein Benutzerkonto."
+
+#: module/web/templates/default/logs.html:12
+#: module/web/templates/default/base.html:114
+msgid "Start"
+msgstr "Starten"
+
+#: module/web/templates/default/logs.html:12
+msgid "prev"
+msgstr "zurück"
+
+#: module/web/templates/default/logs.html:12
+msgid "next"
+msgstr "weiter"
+
+#: module/web/templates/default/logs.html:12
+msgid "End"
+msgstr "Ende"
+
+#: module/web/templates/default/info.html:18
+msgid "News"
+msgstr "Neuigkeiten"
+
+#: module/web/templates/default/info.html:21
+msgid "Support"
+msgstr "Support"
+
+#: module/web/templates/default/info.html:37
+msgid "System"
+msgstr "System"
+
+#: module/web/templates/default/info.html:40
+msgid "Python:"
+msgstr "Python:"
+
+#: module/web/templates/default/info.html:44
+msgid "OS:"
+msgstr "Betriebssystem:"
+
+#: module/web/templates/default/info.html:48
+msgid "pyLoad version:"
+msgstr "pyLoad Version:"
+
+#: module/web/templates/default/info.html:52
+msgid "Installation Folder:"
+msgstr "Installationsordner:"
+
+#: module/web/templates/default/info.html:56
+msgid "Config Folder:"
+msgstr "Konfigurationsordner:"
+
+#: module/web/templates/default/info.html:60
+msgid "Download Folder:"
+msgstr "Downloadordner:"
+
+#: module/web/templates/default/info.html:64
+msgid "Free Space:"
+msgstr "Freier Speicherplatz:"
+
+#: module/web/templates/default/info.html:68
+msgid "Language:"
+msgstr "Sprache:"
+
+#: module/web/templates/default/info.html:72
+msgid "Webinterface Port:"
+msgstr "Webinterface Port:"
+
+#: module/web/templates/default/info.html:76
+msgid "Remote Interface Port:"
+msgstr "Remoteinterface Port:"
+
+#: module/web/templates/default/setup.html:3
+#: module/web/templates/default/setup.html:4
+msgid "Setup"
+msgstr "Konfiguration"
+
+#: module/web/templates/default/filemanager.html:19
+msgid "FileManager"
+msgstr "Dateimanager"
+
+#: module/web/templates/default/window.html:5
+#: module/web/templates/default/window.html:40
+msgid "Add Package"
+msgstr "Paket hinzufügen"
+
+#: module/web/templates/default/window.html:6
+msgid "Paste your links or upload a container."
+msgstr "Links einfügen oder Container hochladen."
+
+#: module/web/templates/default/window.html:8
+msgid "The name of the new package."
+msgstr "Name des neuen Pakets."
+
+#: module/web/templates/default/window.html:12
+msgid "Links"
+msgstr "Links"
+
+#: module/web/templates/default/window.html:13
+msgid "Paste your links here or any text and press the filter button."
+msgstr "Füge deine Links oder einen Text hier ein und drück den 'Filter' Knopf"
+
+#: module/web/templates/default/window.html:14
+msgid "Filter urls"
+msgstr "Links filtern"
+
+#: module/web/templates/default/window.html:22
+msgid "Password for RAR-Archive"
+msgstr "Passwort für RAR-Archive"
+
+#: module/web/templates/default/window.html:26
+msgid "File"
+msgstr "Datei"
+
+#: module/web/templates/default/window.html:27
+msgid "Upload a container."
+msgstr "Container hochladen."
+
+#: module/web/templates/default/window.html:31
+msgid "Destination"
+msgstr "Ziel"
+
+#: module/web/templates/default/captcha.html:6
+msgid "Captcha reading"
+msgstr "Captchas lesen"
+
+#: module/web/templates/default/captcha.html:13
+msgid "Captcha"
+msgstr "Captcha"
+
+#: module/web/templates/default/captcha.html:14
+msgid "The captcha."
+msgstr "Das Captcha."
+
+#: module/web/templates/default/captcha.html:20
+msgid "Text"
+msgstr "Text"
+
+#: module/web/templates/default/captcha.html:21
+msgid "Input the text on the captcha."
+msgstr "Gib den Text aus dem Captcha ein."
+
+#: module/web/templates/default/captcha.html:34
+msgid "Close"
+msgstr "Schließen"
+
+#: module/web/templates/default/base.html:20
+#: module/web/templates/default/base.html:139
+msgid "Webinterface"
+msgstr "Weboberfläche"
+
+#: module/web/templates/default/base.html:39
+#, python-format
+msgid "New pyLoad version %s available!"
+msgstr "Neue pyload Version verfügbar: %s"
+
+#: module/web/templates/default/base.html:46
+msgid "Plugins updated, please restart!"
+msgstr "Plugins aktualisiert, bitte pyLoad neustarten!"
+
+#: module/web/templates/default/base.html:52
+msgid "Captcha waiting"
+msgstr "Captchas verfügbar"
+
+#: module/web/templates/default/base.html:57
+msgid "Logout"
+msgstr "Abmelden"
+
+#: module/web/templates/default/base.html:59
+#: module/web/templates/default/admin.html:8
+#: module/web/templates/default/admin.html:9
+msgid "Administrate"
+msgstr "Administrieren"
+
+#: module/web/templates/default/base.html:61
+msgid "Info"
+msgstr "Info"
+
+#: module/web/templates/default/base.html:65
+msgid "Please Login!"
+msgstr "Bitte anmelden!"
+
+#: module/web/templates/default/base.html:115
+msgid "Stop"
+msgstr "Stoppen"
+
+#: module/web/templates/default/base.html:116
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#: module/web/templates/default/base.html:123
+msgid "Download:"
+msgstr "Download:"
+
+#: module/web/templates/default/base.html:124
+msgid "Reconnect:"
+msgstr "Erneut verbinden:"
+
+#: module/web/templates/default/base.html:125
+msgid "Speed:"
+msgstr "Geschwindigkeit:"
+
+#: module/web/templates/default/base.html:126
+msgid "Active:"
+msgstr "Aktiv:"
+
+#: module/web/templates/default/base.html:127
+msgid "Reload page"
+msgstr "Aktualisieren"
+
+#: module/web/templates/default/base.html:157
+msgid "loading"
+msgstr "lade"
+
+#: module/web/templates/default/base.html:166
+msgid "Back to top"
+msgstr "Nach oben"
+
+#: module/web/templates/default/admin.html:13
+msgid "Quit pyLoad"
+msgstr "pyLoad beenden"
+
+#: module/web/templates/default/admin.html:14
+msgid "Restart pyLoad"
+msgstr "pyLoad neustarten"
+
+#: module/web/templates/default/admin.html:18
+msgid "To add user or change passwords use:"
+msgstr "Um Benutzer hinzuzufügen oder Passwörter zu ändern benutze:"
+
+#: module/web/templates/default/admin.html:19
+msgid "Important: Admin user have always all permissions!"
+msgstr "Wichtig: Admin User haben immer alle Berechtigungen!"
+
+#: module/web/templates/default/admin.html:28
+#: module/web/templates/default/admin.html:67
+msgid "Change Password"
+msgstr "Passwort ändern"
+
+#: module/web/templates/default/admin.html:31
+msgid "Admin"
+msgstr "Administrator"
+
+#: module/web/templates/default/admin.html:34
+msgid "Permissions"
+msgstr "Berechtigungen"
+
+#: module/web/templates/default/admin.html:41
+msgid "change"
+msgstr "ändern"
+
+#: module/web/templates/default/admin.html:69
+msgid "Enter your current and desired Password."
+msgstr "Gib dein momentanes und dein neues Passwort ein."
+
+#: module/web/templates/default/admin.html:70
+msgid "User"
+msgstr "Benutzer"
+
+#: module/web/templates/default/admin.html:75
+msgid "Current password"
+msgstr "Momentanes Passwort"
+
+#: module/web/templates/default/admin.html:80
+msgid "New password"
+msgstr "Neues Passwort"
+
+#: module/web/templates/default/admin.html:81
+msgid "The new password."
+msgstr "Das neue Passwort."
+
+#: module/web/templates/default/admin.html:85
+msgid "New password (repeat)"
+msgstr "Neues Passwort (wiederholen)"
+
+#: module/web/templates/default/admin.html:86
+msgid "Please repeat the new password."
+msgstr "Bitte wiederhole das neue Passwort."
+
+#: module/web/pyload_app.py:127
+msgid "You dont have permission to access this page."
+msgstr "Sie haben nicht die Berechtigung diese Seite zu besuchen."
+
+#: module/web/pyload_app.py:195
+msgid "Download directory not found."
+msgstr "Downloadverzeichnis nicht gefunden."
+
+#: module/web/pyload_app.py:262 module/web/pyload_app.py:269
+msgid "unlimited"
+msgstr "unbegrenzt"
+
+#: module/web/pyload_app.py:264 module/web/pyload_app.py:271
+msgid "not available"
+msgstr "nicht verfügbar"
+
+#: module/web/pyload_app.py:509
+msgid "Run pyLoadCore.py -s to access the setup."
+msgstr "Starte das Setup durch Aufruf von 'pyLoadCore.py -s'."
+

@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from flask_babel import Babel
 from flask_caching import Cache
 from flask_compress import Compress
 from flask_session import Session
@@ -15,12 +14,9 @@ class Themes(_Themes):
                                    theme_url_prefix=path_prefix + "/_themes")
 
 
-babel = Babel()
 cache = Cache()
 compress = Compress()
 session = Session()
 themes = Themes()
 
-EXTENSIONS = [babel, cache, compress, session]
-
-THEMES = [themes]
+EXTENSIONS = [cache, compress, session]
