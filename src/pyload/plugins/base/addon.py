@@ -201,7 +201,7 @@ class BaseAddon(BasePlugin):
     def before_reconnecting(self, ip):
         return self.before_reconnect(ip)
 
-    def after_reconnect(self, ip, oldip):
+    def after_reconnect(self, ip, old_ip):
         pass
 
     #: Deprecated method, use `after_reconnect` instead (Remove in 0.6.x)
@@ -216,20 +216,8 @@ class BaseAddon(BasePlugin):
         """
         pass
 
-    #: Deprecated method, use `captcha_task` instead (Remove in 0.6.x)
-    def new_captcha_task(self, task):
-        return self.captcha_task(task)
-
     def captcha_correct(self, task):
         pass
 
-    #: Deprecated method, use `captcha_correct` instead (Remove in 0.6.x)
-    def captcha_correct(self, task):
-        return self.captcha_correct(task)
-
     def captcha_invalid(self, task):
         pass
-
-    #: Deprecated method, use `captcha_invalid` instead (Remove in 0.6.x)
-    def captcha_invalid(self, task):
-        return self.captcha_invalid(task)
