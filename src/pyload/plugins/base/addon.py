@@ -54,8 +54,6 @@ class BaseAddon(BasePlugin):
         #: Automatically register event listeners for functions, attribute will be deleted dont use it yourself
         self.event_map = {}
 
-        self.info["ip"] = None  # TODO: Remove in 0.6.x
-
         #: Callback of periodical job task, used by AddonManager
         self.periodical = Periodical(self, self.periodical_task)
         self.cb = self.periodical.cb  # TODO: Recheck in 0.6.x
@@ -197,17 +195,8 @@ class BaseAddon(BasePlugin):
     def before_reconnect(self, ip):
         pass
 
-    #: Deprecated method, use `before_reconnect` instead (Remove in 0.6.x)
-    def before_reconnecting(self, ip):
-        return self.before_reconnect(ip)
-
     def after_reconnect(self, ip, old_ip):
         pass
-
-    #: Deprecated method, use `after_reconnect` instead (Remove in 0.6.x)
-    def after_reconnecting(self, ip):
-        self.after_reconnect(ip, self.info["ip"])
-        self.info["ip"] = ip
 
     def captcha_task(self, task):
         """
