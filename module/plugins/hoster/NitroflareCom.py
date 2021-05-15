@@ -12,10 +12,10 @@ from ..internal.SimpleHoster import SimpleHoster
 class NitroflareCom(SimpleHoster):
     __name__ = "NitroflareCom"
     __type__ = "hoster"
-    __version__ = "0.29"
+    __version__ = "0.30"
     __status__ = "testing"
 
-    __pattern__ = r'https?://(?:www\.)?nitroflare\.com/view/(?P<ID>[\w^_]+)'
+    __pattern__ = r'https?://(?:www\.)?(?:nitro\.download|nitroflare\.com)/view/(?P<ID>[\w^_]+)'
     __config__ = [("activated", "bool", "Activated", True),
                   ("use_premium", "bool", "Use premium account if available", True),
                   ("fallback", "bool",
@@ -39,14 +39,15 @@ class NitroflareCom(SimpleHoster):
     PREMIUM_ONLY_PATTERN = r'This file is available with Premium only'
     DL_LIMIT_PATTERN = r'You have to wait \d+ minutes to download your next file.'
 
+    URL_REPLACEMENTS = [(r'nitro\.download', "nitroflare.com")]
+
     @classmethod
     def api_info(cls, url):
         info = {}
         file_id = re.search(cls.__pattern__, url).group('ID')
 
         data = json.loads(get_url("https://nitroflare.com/api/v2/getFileInfo",
-                                  get={'files': file_id},
-                                  decode=True))
+                                  get={'files': file_id}))
 
         if data['type'] == 'success':
             fileinfo = data['result']['files'][file_id]
@@ -67,7 +68,7 @@ class NitroflareCom(SimpleHoster):
         try:
             wait_time = int(re.search(r'var timerSeconds = (\d+);', self.data).group(1))
 
-        except Exception:
+        except (IndexError, ValueError):
             wait_time = 120
 
         recaptcha = ReCaptcha(pyfile)
