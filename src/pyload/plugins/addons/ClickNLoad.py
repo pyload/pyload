@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
+
 import socket
+import ssl
 import threading
 import time
 
@@ -8,13 +10,7 @@ from pyload.core.utils.struct.lock import lock
 from ..base.addon import BaseAddon, threaded
 from ..helpers import forward
 
-try:
-    import ssl
-except ImportError:
-    pass
 
-
-# TODO: IPv6 support
 class ClickNLoad(BaseAddon):
     __name__ = "ClickNLoad"
     __type__ = "addon"
@@ -52,6 +48,9 @@ class ClickNLoad(BaseAddon):
         if self.pyload.config.get("webui", "enabled"):
             web_host = self.pyload.config.get("webui", "host")
             web_port = self.pyload.config.get("webui", "port")
+            if web_host in ("0.0.0.0", "::"):
+                web_host = "127.0.0.1"
+
             try:
                 addrinfo = socket.getaddrinfo(
                     web_host, web_port, socket.AF_UNSPEC,
