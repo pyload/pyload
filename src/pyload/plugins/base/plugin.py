@@ -89,18 +89,16 @@ class BasePlugin:
         self._log("warning", self.__type__, self.__name__, args, kwargs)
 
     def log_error(self, *args, **kwargs):
-        kwargs["exc_info"] = (
-            kwargs["exc_info"]
-            if "exc_info" in kwargs
-            else self.pyload.debug > 1 and sys.exc_info() != (None, None, None)
+        kwargs["exc_info"] = kwargs.get(
+            "exc_info", self.pyload.debug > 1 and sys.exc_info() != (None, None, None)
         )
-        kwargs["stack_info"] = (
-            kwargs["stack_info"] if "stack_info" in kwargs else self.pyload.debug > 2
-        )
+        kwargs["stack_info"] = kwargs.get("stack_info", self.pyload.debug > 2)
         self._log("error", self.__type__, self.__name__, args, kwargs)
 
     def log_critical(self, *args, **kwargs):
-        kwargs["exc_info"] = kwargs.get("exc_info", True) and sys.exc_info() != (None, None, None,)
+        kwargs["exc_info"] = kwargs.get(
+            "exc_info", sys.exc_info() != (None, None, None)
+        )
         kwargs["stack_info"] = kwargs.get("stack_info", True)
         self._log("critical", self.__type__, self.__name__, args, kwargs)
 
