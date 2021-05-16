@@ -73,7 +73,7 @@ class RealdebridCom(MultiDownloader):
                 self.retry()
 
             else:
-                self.fail("%s (code: %s)" % (data["error"], data["error_code"]))
+                self.fail("{} (code: {})".format(data["error"], data["error_code"]))
 
         else:
             if data["filename"]:

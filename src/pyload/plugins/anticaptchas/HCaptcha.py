@@ -88,7 +88,7 @@ class HCaptcha(CaptchaService):
             m = re.search(self.KEY_FORMAT_PATTERN, key)
             if m is not None:
                 self.key = key
-                self.log_debug("Key: %s" % self.key)
+                self.log_debug("Key: {}".format(self.key))
                 return self.key
 
             else:
