@@ -8,9 +8,9 @@ from ..internal.misc import json, seconds_to_midnight
 
 
 class LinkifierCom(MultiHoster):
-    __name__ = "AlldebridCom"
+    __name__ = "LinkifierCom"
     __type__ = "hoster"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __status__ = "testing"
 
     __pattern__ = r'^unmatchable$'
