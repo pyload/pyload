@@ -11,7 +11,7 @@ from ..base.multi_account import MultiAccount
 class NoPremiumPl(MultiAccount):
     __name__ = "NoPremiumPl"
     __type__ = "account"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __status__ = "testing"
 
     __config__ = [
@@ -64,7 +64,7 @@ class NoPremiumPl(MultiAccount):
                 datetime.datetime.fromtimestamp(int(result["expire"])).timetuple()
             )
 
-        traffic_left = result["balance"] << 10
+        traffic_left = result["balance"] * 1024 ** 2
 
         return {
             "validuntil": valid_untill,
