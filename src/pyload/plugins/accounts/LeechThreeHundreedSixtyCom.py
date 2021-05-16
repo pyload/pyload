@@ -10,7 +10,7 @@ from ..base.multi_account import MultiAccount
 class LeechThreeHundreedSixtyCom(MultiAccount):
     __name__ = "LeechThreeHundreedSixtyCom"
     __type__ = "account"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
     __description__ = """Leech360.com account plugin"""
@@ -64,7 +64,7 @@ class LeechThreeHundreedSixtyCom(MultiAccount):
         # TODO: Remove `>> 10` in 0.6.x
         trafficleft = (
             536_870_912_000 - int(api_data["data"].get("total_used", 0))
-        ) >> 10
+        )
         return {
             "premium": premium,
             "validuntil": validuntil,
