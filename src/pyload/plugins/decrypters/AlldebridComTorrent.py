@@ -60,7 +60,7 @@ class AlldebridComTorrent(SimpleDecrypter):
             if self.pyfile.url.startswith("http"):
                 #: remote URL, download the torrent to tmp directory
                 torrent_content = self.load(self.pyfile.url, decode=False)
-                torrent_filename = safejoin(self.pyload.tempdir, "tmp_%s.torrent" % self.pyfile.package().name)
+                torrent_filename = safejoin(self.pyload.tempdir, "tmp_{}.torrent".format(self.pyfile.package().name))
                 with open(torrent_filename, "wb") as f:
                     f.write(torrent_content)
 
