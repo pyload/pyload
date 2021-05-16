@@ -18,9 +18,7 @@ class RealdebridCom(MultiDownloader):
     __version__ = "0.81"
     __status__ = "testing"
 
-    __pattern__ = (
-        r"https?://((?:www\.|s\d+\.)?real-debrid\.com/dl?/|[\w^_]\.rdb\.so/d/)[\w^_]+"
-    )
+    __pattern__ = r"https?://((?:www\.|s\d+\.)?real-debrid\.com/dl?/|[\w^_]\.rdb\.so/d/)[\w^_]+"
     __config__ = [
         ("use_premium", "bool", "Use premium account if available", True),
         ("fallback", "bool", "Fallback to free download if premium fails", False),
