@@ -560,8 +560,13 @@ def forward(source, destination):
         while bufdata:
             destination.sendall(bufdata)
             bufdata = source.recv(bufsize)
+    except ConnectionResetError:
+        pass
     finally:
-        destination.shutdown(socket.SHUT_WR)
+        try:
+            destination.shutdown(socket.SHUT_WR)
+        except OSError:
+            pass
 
 
 def compute_checksum(filename, hashtype):
