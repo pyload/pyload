@@ -215,7 +215,7 @@ class PyFile:
 
     def format_wait(self):
         """
-        formats and return wait time in humanreadable format.
+        formats and return wait time in human readable format.
         """
         seconds = int(self.wait_until - time.time())
         return format.time(seconds, literally=False)
