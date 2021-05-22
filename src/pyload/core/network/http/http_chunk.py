@@ -55,7 +55,7 @@ class ChunkInfo:
 
     def save(self):
         fs_name = f"{self.name}.chunks"
-        with open(fs_name, mode="w", encoding="utf-8") as fh:
+        with open(fs_name, mode="w", encoding="utf-8", newline="\n") as fh:
             fh.write(f"name:{self.name}\n")
             fh.write(f"size:{self.size}\n")
             for i, c in enumerate(self.chunks):
