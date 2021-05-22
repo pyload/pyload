@@ -33,12 +33,12 @@ def links():
         for link in links:
             ids.append(link["fid"])
 
-            if link["status"] == 12:
+            if link["status"] == 12:  #: downloading
                 formatted_eta = link["format_eta"]
                 formatted_speed = format.speed(link["speed"])
                 link["info"] = f"{formatted_eta} @ {formatted_speed}"
 
-            elif link["status"] == 5:
+            elif link["status"] == 5:  #: waiting
                 link["percent"] = 0
                 link["size"] = 0
                 link["bleft"] = 0
