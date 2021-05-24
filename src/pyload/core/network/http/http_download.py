@@ -314,6 +314,8 @@ class HTTPDownload:
 
         self._copy_chunks()
 
+        self.size = self.arrived  #: set size to actual downloaded size
+
     def update_progress(self):
         if self.status_notify:
             self.status_notify({"progress": self.percent})
