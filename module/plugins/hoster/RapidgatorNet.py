@@ -14,7 +14,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class RapidgatorNet(SimpleHoster):
     __name__ = "RapidgatorNet"
     __type__ = "hoster"
-    __version__ = "0.56"
+    __version__ = "0.57"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(?:rapidgator\.(?:net|asia|)|rg\.to)/file/(?P<ID>\w+)'
@@ -49,7 +49,6 @@ class RapidgatorNet(SimpleHoster):
     LINK_FREE_PATTERN = r'return \'(https?://\w+.rapidgator.net/.*)\';'
 
     RECAPTCHA_PATTERN = r'"http://api\.recaptcha\.net/challenge\?k=(.*?)"'
-    ADSCAPTCHA_PATTERN = r'(http://api\.adscaptcha\.com/Get\.aspx[^"\']+)'
     SOLVEMEDIA_PATTERN = r'http://api\.solvemedia\.com/papi/challenge\.script\?k=(.*?)"'
 
     URL_REPLACEMENTS = [(r'//(?:www\.)?rg\.to/', "//rapidgator.net/"),
