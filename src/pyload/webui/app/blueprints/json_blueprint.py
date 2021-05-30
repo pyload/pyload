@@ -141,7 +141,7 @@ def add_package():
 
     package_name = flask.request.form.get("add_name", "New Package").strip()
     queue = int(flask.request.form["add_dest"])
-    links = flask.request.form["add_links"].split("\n")
+    links = [l.strip() for l in flask.request.form["add_links"].splitlines()]
     pw = flask.request.form.get("add_password", "").strip("\n\r")
 
     try:
