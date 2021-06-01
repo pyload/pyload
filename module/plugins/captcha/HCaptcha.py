@@ -10,7 +10,7 @@ from ..internal.CaptchaService import CaptchaService
 class HCaptcha(CaptchaService):
     __name__ = 'HCaptcha'
     __type__ = 'captcha'
-    __version__ = '0.01'
+    __version__ = '0.02'
     __status__ = 'testing'
 
     __description__ = 'hCaptcha captcha service plugin'
@@ -20,13 +20,13 @@ class HCaptcha(CaptchaService):
     KEY_PATTERN = r'(?:data-sitekey=["\']|["\']sitekey["\']\s*:\s*["\'])((?:[\w\-]|%[0-9a-fA-F]{2})+)'
     KEY_FORMAT_PATTERN = r'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
 
-    HCAPTCHA_INTERACTIVE_SIG = "24f1aba331a2fd110dfe31791c55104beb34e14cd6e4a2d80915e8284ca25384c47375d303ae1457" + \
-                               "37cb9af1fa70902d90858a434fe4e9732d85dd9bcc427359dc1e67326cbfebc1b5972a57f07aa47f" + \
-                               "ead6fabf1624ee44ab39d53f77bc8903c81b7d8d007228a7f2ba161d7f6a42fea2589c42a4464676" + \
-                               "504ed02e1d7ed5f99d35a5b3871d85411098474ba2c135652c889f8f1b7845d75cd5c2b82e58265d" + \
-                               "48faf9ed586277d2ac3d7ff2efadff2b89b4082ec0d5d7f688b50b741489fd48e50560c1bd495a1a" + \
-                               "d5e24d67e9eb95fa111cd84793807a27bf6d3302493aeaa899036f08c7d8b187c1d14d1ff7a30b77" + \
-                               "5cba1e63e87cf829f536a7cff04b6639"
+    HCAPTCHA_INTERACTIVE_SIG = "9ba5840a96ad0503f445c33bddda5ec338c7785ffe27adb680fdb56ee241a9f2b1a3f648ffda0e82" + \
+                               "946a683bf9b43780f13d1690cdbca082e5c01deccb05a5d64f8cb84eb8beadf49107ad23da1b2317" + \
+                               "2a309fb78403ab3c0ed7019d1383978f2134b62f8d13ab28ebc4164de62b1f29080e31634b3da294" + \
+                               "0e7fc604e892ef4726baa672868e88c9600755e72beb674b7e36373febc9b7a0c1508ad7aeaa4c34" + \
+                               "79742d3bd71d706bc31b0b2b3d0d94858a28fd4ab0601ebeca4e1e4f0b2a0da395fcaf4c4e5c15b9" + \
+                               "4c8f6988f36029d3722d7e0767d141ce45c56d861cfc9a97c93a5817d7b764aaa9309af31b2b0528" + \
+                               "f714f7b179d326a303e17a381e99b8d0"
 
     HCAPTCHA_INTERACTIVE_JS = """
 			while(document.children[0].childElementCount > 0) {
@@ -59,12 +59,12 @@ class HCaptcha(CaptchaService):
 
 			// function that is called when the captcha finished loading and is ready to interact
 			window.pyloadCaptchaOnLoadCallback = function() {
-				hcaptcha.render (
+				var widgetID = hcaptcha.render (
 					"captchadiv",
 					{size: "compact",
 					 'sitekey': gpyload.data.sitekey,
 					 'callback': function() {
-						var hcaptchaResponse = hcaptcha.getResponse(); // get captcha response
+						var hcaptchaResponse = hcaptcha.getResponse(widgetID); // get captcha response
 						gpyload.submitResponse(hcaptchaResponse);
 					 }}
 				);
