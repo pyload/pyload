@@ -405,7 +405,7 @@ class Api:
 
     @legacy("addPackage")
     @permission(Perms.ADD)
-    def add_package(self, name, links, dest=Destination.QUEUE.value):
+    def add_package(self, name, links, dest=Destination.QUEUE):
         """
         Adds a package, with links to desired destination.
 
@@ -562,7 +562,7 @@ class Api:
 
     @legacy("generateAndAddPackages")
     @permission(Perms.ADD)
-    def generate_and_add_packages(self, links, dest=Destination.QUEUE.value):
+    def generate_and_add_packages(self, links, dest=Destination.COLLECTOR):
         """
         Generates and add packages.
 
@@ -577,7 +577,7 @@ class Api:
 
     @legacy("checkAndAddPackages")
     @permission(Perms.ADD)
-    def check_and_add_packages(self, links, dest=Destination.QUEUE.value):
+    def check_and_add_packages(self, links, dest=Destination.COLLECTOR):
         """
         Checks online status, retrieves names, and will add packages.
         Because of this packages are not added immediatly, only for internal use.
@@ -945,7 +945,7 @@ class Api:
         ) as th:
             th.write(data)
 
-        self.add_package(th.name, [th.name], Destination.QUEUE.value)
+        self.add_package(th.name, [th.name], Destination.COLLECTOR)
 
     @legacy("orderPackage")
     @permission(Perms.MODIFY)
