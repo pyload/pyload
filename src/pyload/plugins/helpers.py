@@ -553,20 +553,25 @@ def renice(pid, value):
         pass
 
 
-def forward(source, destination):
+def forward(source, destination, recv_timeout=None, buffering=1024):
+    """
+    Forward data from one socket to another
+    """
+    timeout = source.gettimeout()
+    source.settimeout(recv_timeout)
     try:
-        bufsize = 1 << 10
-        bufdata = source.recv(bufsize)
-        while bufdata:
-            destination.sendall(bufdata)
-            bufdata = source.recv(bufsize)
-    except ConnectionResetError:
+        raw_data = source.recv(buffering)
+    except socket.timeout:
         pass
-    finally:
-        try:
-            destination.shutdown(socket.SHUT_WR)
-        except OSError:
-            pass
+    else:
+        while raw_data:
+            destination.sendall(raw_data)
+            try:
+                raw_data = source.recv(buffering)
+            except socket.timeout:
+                break
+
+    source.settimeout(timeout)
 
 
 def compute_checksum(filename, hashtype):

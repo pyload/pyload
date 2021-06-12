@@ -11,6 +11,7 @@ from ..base.addon import BaseAddon, threaded
 from ..helpers import forward
 
 
+# TODO: IPv6 support
 class ClickNLoad(BaseAddon):
     __name__ = "ClickNLoad"
     __type__ = "addon"
@@ -77,8 +78,10 @@ class ClickNLoad(BaseAddon):
                 self.web_af = addr[0]
 
                 self.log_debug(
-                    self._("Backend found on {}:{}").format(
-                        self.web_addr[0], self.web_addr[1]
+                    self._("Backend found on {}://{}:{}").format(
+                        "https" if self.pyload.config.get("webui", "use_ssl") else "http",
+                        f"[{self.web_addr[0]}]" if ":" in self.web_addr[0] else self.web_addr[0],
+                        self.web_addr[1]
                     )
                 )
                 self.backend_found.set()
@@ -115,7 +118,7 @@ class ClickNLoad(BaseAddon):
                 wakeup_socket.connect(
                     (
                         "127.0.0.1"
-                        if any(ip == self.cnl_ip for ip in ("0.0.0.0", ""))
+                        if any(ip == self.cnl_ip for ip in ("0.0.0.0", "", "::"))
                         else self.cnl_ip,
                         self.cnl_port,
                     )
@@ -134,16 +137,20 @@ class ClickNLoad(BaseAddon):
 
     @lock
     @threaded
-    def forward(self, source, destination, queue=False):
+    def forward(self, client_socket, backend_socket, queue=False):
         if queue:
             old_ids = set(pack.pid for pack in self.pyload.api.get_collector())
 
-        forward(source, destination)
+        forward(client_socket, backend_socket, recv_timeout=0.5)
+        forward(backend_socket, client_socket)
 
         if queue:
             new_ids = set(pack.pid for pack in self.pyload.api.get_collector())
             for id in new_ids - old_ids:
                 self.pyload.api.push_to_queue(id)
+
+        backend_socket.close()
+        client_socket.close()
 
     @threaded
     def proxy(self):
@@ -162,7 +169,7 @@ class ClickNLoad(BaseAddon):
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as dock_socket:
                 dock_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
                 dock_socket.bind((self.cnl_ip, self.cnl_port))
-                dock_socket.listen(5)
+                dock_socket.listen()
 
                 self.server_running = True
 
@@ -173,35 +180,26 @@ class ClickNLoad(BaseAddon):
                         host, port = client_addr
                         self.log_debug(f"Connection from {host}:{port}")
 
-                        server_socket = socket.socket(
+                        backend_socket = socket.socket(
                             self.web_af, socket.SOCK_STREAM
                         )
 
                         if self.pyload.config.get("webui", "use_ssl"):
                             try:
-                                server_socket = ssl.wrap_socket(server_socket)
-
-                            except NameError:
-                                self.log_error(
-                                    self._("Missing SSL lib"),
-                                    self._("Please disable HTTPS in pyLoad settings"),
-                                )
-                                client_socket.close()
-                                continue
+                                backend_socket = ssl.wrap_socket(backend_socket)
 
                             except Exception as exc:
                                 self.log_error(self._("SSL error: {}").format(exc))
                                 client_socket.close()
                                 continue
 
-                        server_socket.connect(self.web_addr)
+                        backend_socket.connect(self.web_addr)
 
                         self.forward(
                             client_socket,
-                            server_socket,
+                            backend_socket,
                             self.config.get("dest") == "queue",
                         )
-                        self.forward(server_socket, client_socket)
 
                     else:
                         break

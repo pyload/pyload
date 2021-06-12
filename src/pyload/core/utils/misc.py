@@ -45,19 +45,6 @@ def reversemap(obj):
     return obj.__class__(reversed(item) for item in obj.items())
 
 
-def forward(source, destination, buffering=1024):
-    """
-    Forward data from one socket to another
-    """
-    try:
-        rawdata = source.recv(buffering)
-        while rawdata:
-            destination.sendall(rawdata)
-            rawdata = source.recv(buffering)
-    finally:
-        destination.shutdown(socket.SHUT_WR)
-
-
 # def get_translation(domain, localedir=None, languages=None, class_=None,
 # fallback=False, codeset=None):
 # try:
