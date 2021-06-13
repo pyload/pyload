@@ -287,7 +287,7 @@ class ConfigParser:
             return value
 
         elif typ in ("file", "folder"):
-            return "" if value is None else os.fsdecode(value)
+            return "" if value is None else os.path.realpath(os.path.expanduser(os.fsdecode(value)))
 
         else:
             return value
