@@ -93,8 +93,8 @@ class Core:
 
         self._init_config(userdir, tempdir, storagedir, debug)
         self._init_log()
-
         self._init_database(reset and not dry)
+        os.chdir(os.path.join(self.userdir, "data"))
         self._init_network()
         self._init_api()
         self._init_managers()
