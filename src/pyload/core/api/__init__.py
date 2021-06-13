@@ -1240,13 +1240,13 @@ class Api:
         else:
             return False
 
-    # TODO: add security permission check
     # remove?
+    @permission(Perms.SETTINGS)
     def get_userdir(self):
         return os.path.realpath(self.pyload.userdir)
 
-    # TODO: add security permission check
     # remove?
+    @permission(Perms.SETTINGS)
     def get_cachedir(self):
         return os.path.realpath(self.pyload.tempdir)
 
