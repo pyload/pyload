@@ -1,13 +1,16 @@
 # -*- coding: utf-8 -*-
-import random
 
-from ..base.simple_downloader import SimpleDownloader
+import json
+
+import pycurl
+
+from ..base.multi_downloader import MultiDownloader
 
 
-class MultishareCz(SimpleDownloader):
+class MultishareCz(MultiDownloader):
     __name__ = "MultishareCz"
     __type__ = "downloader"
-    __version__ = "0.48"
+    __version__ = "0.49"
     __status__ = "testing"
 
     __pattern__ = r"http://(?:www\.)?multishare\.cz/stahnout/(?P<ID>\d+)"
@@ -19,50 +22,48 @@ class MultishareCz(SimpleDownloader):
         ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10),
     ]
 
-    __description__ = """MultiShare.cz downloader plugin"""
+    __description__ = """MultiShare.cz multi-downloader plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+    __authors__ = [
+        ("zoidberg", "zoidberg@mujmail.cz"),
+        ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com"),
+    ]
 
-    SIZE_REPLACEMENTS = [("&nbsp;", "")]
+    #: See https://multishare.cz/api/
+    API_URL = "https://www.multishare.cz/api/"
 
-    CHECK_TRAFFIC = True
-    LEECH_HOSTER = True
+    def api_response(self, method, **kwargs):
+        get = {"sub": method}
+        get.update(kwargs)
+        self.req.http.c.setopt(pycurl.USERAGENT, "JDownloader")
+        json_data = self.load(self.API_URL, get=get)
 
-    INFO_PATTERN = r"(?:<li>Název|Soubor): <strong>(?P<N>.+?)</strong><(?:/li><li|br)>Velikost: <strong>(?P<S>.+?)</strong>"
-    OFFLINE_PATTERN = (
-        r"<h1>Stáhnout soubor</h1><p><strong>Požadovaný soubor neexistuje.</strong></p>"
-    )
+        if not json_data.startswith("{"):
+            if json_data.startswith("ERR:"):
+                json_data = json_data[4:].strip()
+            return {"err": json_data}
 
-    def handle_free(self, pyfile):
-        self.download(
-            "http://www.multishare.cz/html/download_free.php",
-            get={"ID": self.info["pattern"]["ID"]},
-        )
+        else:
+            return json.loads(json_data)
 
     def handle_premium(self, pyfile):
-        self.download(
-            "http://www.multishare.cz/html/download_premium.php",
-            get={"ID": self.info["pattern"]["ID"]},
+        api_data = self.api_response("check-file", link=pyfile.url)
+        if "err" in api_data:
+            if "Given link is dead" in api_data["err"]:
+                self.offline()
+
+            else:
+                self.fail(api_data["err"])
+
+        pyfile.name = api_data["file_name"]
+        pyfile.size = api_data["file_size"]
+
+        api_data = self.api_response(
+            "download-link",
+            link=pyfile.url,
+            login=self.account.user,
+            password=self.account.info["login"]["password"],
         )
 
-    def handle_multi(self, pyfile):
-        self.data = self.load(
-            "http://www.multishare.cz/html/mms_ajax.php", post={"link": pyfile.url}
-        )
-
-        infodata = self.account.get_data()
-
-        if self.out_of_traffic():
-            self.fail(self._("Not enough credit left to download file"))
-
-        self.download(
-            "http://dl{}.mms.multishare.cz/html/mms_process.php".format(
-                round(random.random() * 10000 * random.random())
-            ),
-            get={
-                "u_ID": infodata["u_ID"],
-                "u_hash": infodata["u_hash"],
-                "link": pyfile.url,
-            },
-            disposition=True,
-        )
+        self.chunk_limit = api_data["chunks"]
+        self.link = api_data["link"]
