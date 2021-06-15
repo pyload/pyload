@@ -16,7 +16,7 @@ class SolidfilesCom(SimpleDownloader):
     __version__ = "0.09"
     __status__ = "testing"
 
-    __pattern__ = r"http://(?:www\.)?solidfiles\.com\/d/\w+"
+    __pattern__ = r"https?://(?:www\.)?solidfiles\.com\/[dv]/\w+"
     __config__ = [
         ("enabled", "bool", "Activated", True),
         ("use_premium", "bool", "Use premium account if available", True),
