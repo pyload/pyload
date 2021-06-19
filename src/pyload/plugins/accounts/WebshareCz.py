@@ -11,7 +11,7 @@ from ..base.account import BaseAccount
 class WebshareCz(BaseAccount):
     __name__ = "WebshareCz"
     __type__ = "account"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __status__ = "testing"
 
     __description__ = """Webshare.cz account plugin"""
@@ -48,14 +48,14 @@ class WebshareCz(BaseAccount):
         return {"validuntil": validuntil, "trafficleft": -1, "premium": premium}
 
     def signin(self, user, password, data):
-        salt = self.api_response("salt", username_or_email=user, wst="")
+        salt = self.api_response("salt", username_or_email=user)
 
         if "<status>OK</status>" not in salt:
             message = re.search(r"<message>(.+?)</message>", salt).group(1)
             self.log_warning(message)
             self.fail_login()
 
-        salt = re.search("<salt>(.+?)</salt>", salt).group(1)
+        salt = re.search("<salt>(.*?)</salt>", salt).group(1)
         salt_pw = salt + password
 
         password = hashlib.sha1(
@@ -65,11 +65,9 @@ class WebshareCz(BaseAccount):
 
         login = self.api_response(
             "login",
-            digest=digest,
             keep_logged_in=1,
             username_or_email=user,
             password=password,
-            wst="",
         )
 
         if "<status>OK</status>" not in login:
