@@ -16,6 +16,9 @@ from ..exceptions import Abort
 from .exceptions import BadHeader
 
 
+if not hasattr(pycurl, 'PROXYTYPE_HTTPS'):
+    pycurl.PROXYTYPE_HTTPS = 2
+
 def myquote(url):
     try:
         url = url.encode()
@@ -141,12 +144,15 @@ class HTTPRequest:
             self.c.setopt(pycurl.INTERFACE, interface)
 
         if proxy:
-            if proxy["type"] == "socks4":
+            if proxy["type"] == "http":
+                self.c.setopt(pycurl.PROXYTYPE, pycurl.PROXYTYPE_HTTP)
+            elif proxy["type"] == "https":
+                self.c.setopt(pycurl.PROXYTYPE, pycurl.PROXYTYPE_HTTPS)
+                self.c.setopt(pycurl.PROXY_SSL_VERIFYPEER, 0)
+            elif proxy["type"] == "socks4":
                 self.c.setopt(pycurl.PROXYTYPE, pycurl.PROXYTYPE_SOCKS4)
             elif proxy["type"] == "socks5":
                 self.c.setopt(pycurl.PROXYTYPE, pycurl.PROXYTYPE_SOCKS5)
-            else:
-                self.c.setopt(pycurl.PROXYTYPE, pycurl.PROXYTYPE_HTTP)
 
             self.c.setopt(pycurl.PROXY, proxy["host"])
             self.c.setopt(pycurl.PROXYPORT, int(proxy["port"]))
