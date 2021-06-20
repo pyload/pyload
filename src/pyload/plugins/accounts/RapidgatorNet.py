@@ -22,7 +22,7 @@ class RapidgatorNet(BaseAccount):
 
     API_URL = "https://rapidgator.net/api/user/"
 
-    def api_response(self, method, **kwargs):
+    def api_request(self, method, **kwargs):
         json_data = self.load(self.API_URL + method, get=kwargs)
         return json.loads(json_data)
 
@@ -32,7 +32,7 @@ class RapidgatorNet(BaseAccount):
         premium = False
 
         try:
-            json_data = self.api_response("info", sid=data["sid"])
+            json_data = self.api_request("info", sid=data["sid"])
 
             if json_data["response_status"] == 200:
                 validuntil = json_data["response"]["expire_date"]
@@ -55,7 +55,7 @@ class RapidgatorNet(BaseAccount):
 
     def signin(self, user, password, data):
         try:
-            json_data = self.api_response("login", username=user, password=password)
+            json_data = self.api_request("login", username=user, password=password)
 
             if json_data["response_status"] == 200:
                 data["sid"] = str(json_data["response"]["session_id"])

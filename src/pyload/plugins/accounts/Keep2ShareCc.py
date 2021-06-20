@@ -32,12 +32,12 @@ class Keep2ShareCc(BaseAccount):
     #: See https://keep2share.github.io/api/ https://github.com/keep2share/api
 
     @classmethod
-    def api_response(cls, method, **kwargs):
+    def api_request(cls, method, **kwargs):
         html = get_url(cls.API_URL + method, post=json.dumps(kwargs))
         return json.loads(html)
 
     def grab_info(self, user, password, data):
-        json_data = self.api_response("AccountInfo", auth_token=data["token"])
+        json_data = self.api_request("AccountInfo", auth_token=data["token"])
 
         return {
             "validuntil": json_data["account_expires"],
@@ -48,7 +48,7 @@ class Keep2ShareCc(BaseAccount):
     def signin(self, user, password, data):
         if "token" in data:
             try:
-                json_data = self.api_response("test", auth_token=data["token"])
+                json_data = self.api_request("test", auth_token=data["token"])
 
             except BadHeader as exc:
                 if exc.code == 403:  #: Session expired
@@ -60,7 +60,7 @@ class Keep2ShareCc(BaseAccount):
                 self.skip_login()
 
         try:
-            json_data = self.api_response("login", username=user, password=password)
+            json_data = self.api_request("login", username=user, password=password)
 
         except BadHeader as exc:
             if exc.code == 406:  #: Captcha needed
@@ -87,7 +87,7 @@ class Keep2ShareCc(BaseAccount):
                     #: Recaptcha
                     self.captcha = ReCaptcha(pyfile)
                     for i in range(10):
-                        json_data = self.api_response("RequestReCaptcha")
+                        json_data = self.api_request("RequestReCaptcha")
                         if json_data["code"] != 200:
                             self.log_error(_("Request reCAPTCHA API failed"))
                             self.fail_login(_("Request reCAPTCHA API failed"))
@@ -96,7 +96,7 @@ class Keep2ShareCc(BaseAccount):
                             self.RECAPTCHA_KEY, version="2js", secure_token=False
                         )
                         try:
-                            json_data = self.api_response(
+                            json_data = self.api_request(
                                 "login",
                                 username=user,
                                 password=password,
@@ -135,7 +135,7 @@ class Keep2ShareCc(BaseAccount):
                     #: Normal captcha
                     self.captcha = BaseCaptcha(pyfile)
                     for i in range(10):
-                        json_data = self.api_response("RequestCaptcha")
+                        json_data = self.api_request("RequestCaptcha")
                         if json_data["code"] != 200:
                             self.log_error(self._("Request captcha API failed"))
                             self.fail_login(self._("Request captcha API failed"))
@@ -144,7 +144,7 @@ class Keep2ShareCc(BaseAccount):
                             json_data["captcha_url"]
                         )
                         try:
-                            json_data = self.api_response(
+                            json_data = self.api_request(
                                 "login",
                                 username=user,
                                 password=password,

@@ -32,7 +32,7 @@ class MultishareCz(MultiDownloader):
     #: See https://multishare.cz/api/
     API_URL = "https://www.multishare.cz/api/"
 
-    def api_response(self, method, **kwargs):
+    def api_request(self, method, **kwargs):
         get = {"sub": method}
         get.update(kwargs)
         self.req.http.c.setopt(pycurl.USERAGENT, "JDownloader")
@@ -47,7 +47,7 @@ class MultishareCz(MultiDownloader):
             return json.loads(json_data)
 
     def handle_premium(self, pyfile):
-        api_data = self.api_response("check-file", link=pyfile.url)
+        api_data = self.api_request("check-file", link=pyfile.url)
         if "err" in api_data:
             if "Given link is dead" in api_data["err"]:
                 self.offline()
@@ -58,7 +58,7 @@ class MultishareCz(MultiDownloader):
         pyfile.name = api_data["file_name"]
         pyfile.size = api_data["file_size"]
 
-        api_data = self.api_response(
+        api_data = self.api_request(
             "download-link",
             link=pyfile.url,
             login=self.account.user,

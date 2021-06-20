@@ -47,7 +47,7 @@ class GoogledriveCom(BaseDownloader):
         self.resume_download = True
         self.chunk_limit = 1
 
-    def api_response(self, cmd, **kwargs):
+    def api_request(self, cmd, **kwargs):
         kwargs["key"] = self.API_KEY
         try:
             json_data = json.loads(
@@ -99,7 +99,7 @@ class GoogledriveCom(BaseDownloader):
     def process(self, pyfile):
         disposition = False
         self.data = self.load(pyfile.url)
-        json_data = self.api_response(
+        json_data = self.api_request(
             "files/" + self.info["pattern"]["ID"], fields="md5Checksum,name,size"
         )
 

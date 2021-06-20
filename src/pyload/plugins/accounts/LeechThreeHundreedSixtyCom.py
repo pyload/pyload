@@ -28,14 +28,14 @@ class LeechThreeHundreedSixtyCom(MultiAccount):
 
     API_URL = "https://leech360.com/api/get_"
 
-    def api_response(self, method, **kwargs):
+    def api_request(self, method, **kwargs):
         if "pass_" in kwargs:
             kwargs["pass"] = kwargs.pop("pass_")
         json_data = self.load(self.API_URL + method, get=kwargs)
         return json.loads(json_data)
 
     def grab_hosters(self, user, password, data):
-        api_data = self.api_response("support", token=data["token"])
+        api_data = self.api_request("support", token=data["token"])
         valid_status = ("online", "vip") if self.info["data"]["premium"] else ("online")
         return [
             h["hostname"]
@@ -44,7 +44,7 @@ class LeechThreeHundreedSixtyCom(MultiAccount):
         ]
 
     def grab_info(self, user, password, data):
-        api_data = self.api_response("userinfo", token=data["token"])
+        api_data = self.api_request("userinfo", token=data["token"])
 
         premium_expire = int(api_data["data"].get("premium_expire", 0))
         status = api_data["data"]["status"]
@@ -72,7 +72,7 @@ class LeechThreeHundreedSixtyCom(MultiAccount):
         }
 
     def signin(self, user, password, data):
-        api_data = self.api_response("token", user=user, pass_=password)
+        api_data = self.api_request("token", user=user, pass_=password)
         if api_data["error"]:
             self.log_warning(api_data["error_message"])
             self.fail_login()

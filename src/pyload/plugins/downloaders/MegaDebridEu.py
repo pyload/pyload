@@ -37,7 +37,7 @@ class MegaDebridEu(MultiDownloader):
 
     API_URL = "https://www.mega-debrid.eu/api.php"
 
-    def api_response(self, action, get={}, post={}):
+    def api_request(self, action, get={}, post={}):
         get["action"] = action
 
         # Better use pyLoad User-Agent so we don't get blocked
@@ -51,7 +51,7 @@ class MegaDebridEu(MultiDownloader):
 
     def handle_premium(self, pyfile):
         try:
-            res = self.api_response(
+            res = self.api_request(
                 "getLink",
                 get=args(
                     token=self.account.info["data"]["cache_info"][self.account.user][

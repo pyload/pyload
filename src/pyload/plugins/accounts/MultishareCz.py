@@ -30,7 +30,7 @@ class MultishareCz(MultiAccount):
     #: See https://multishare.cz/api/
     API_URL = "https://www.multishare.cz/api/"
 
-    def api_response(self, method, **kwargs):
+    def api_request(self, method, **kwargs):
         get = {"sub": method}
         get.update(kwargs)
         self.req.http.c.setopt(pycurl.USERAGENT, "JDownloader")
@@ -45,11 +45,11 @@ class MultishareCz(MultiAccount):
             return json.loads(json_data)
 
     def grab_hosters(self, user, password, data):
-        api_data = self.api_response("supported-hosters")
+        api_data = self.api_request("supported-hosters")
         return api_data["server"]
 
     def grab_info(self, user, password, data):
-        api_data = self.api_response("account-details", login=user, password=password)
+        api_data = self.api_request("account-details", login=user, password=password)
         trafficleft = self.parse_traffic(api_data["credit"], "MB")
 
         premium = True if trafficleft else False
@@ -58,7 +58,7 @@ class MultishareCz(MultiAccount):
 
     def signin(self, user, password, data):
         try:
-            api_data = self.api_response(
+            api_data = self.api_request(
                 "account-details", login=user, password=password
             )
 

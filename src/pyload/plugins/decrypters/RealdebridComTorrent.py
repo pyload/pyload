@@ -39,7 +39,7 @@ class RealdebridComTorrent(SimpleDecrypter):
     # See https://api.real-debrid.com/
     API_URL = "https://api.real-debrid.com/rest/1.0"
 
-    def api_response(self, method, get={}, post={}):
+    def api_request(self, method, get={}, post={}):
         self.req.http.c.setopt(pycurl.USERAGENT, "pyLoad/{}".format(self.pyload.version))
 
         for _i in range(2):
@@ -140,13 +140,13 @@ class RealdebridComTorrent(SimpleDecrypter):
 
         else:
             #: magnet URL, send to the server
-            api_data = self.api_response("/torrents/addMagnet",
+            api_data = self.api_request("/torrents/addMagnet",
                                           get={"auth_token": self.api_token},
                                           post={"magnet": self.pyfile.url})
 
         torrent_id = api_data["id"]
 
-        torrent_info = self.api_response("/torrents/info/" + torrent_id,
+        torrent_info = self.api_request("/torrents/info/" + torrent_id,
                                          get={'auth_token': self.api_token})
 
         if "error" in torrent_info:
@@ -171,7 +171,7 @@ class RealdebridComTorrent(SimpleDecrypter):
 
         selected_ids = ",".join([str(_id) for _id in included_ids
                                  if _id not in excluded_ids])
-        self.api_response("/torrents/selectFiles/" + torrent_id,
+        self.api_request("/torrents/selectFiles/" + torrent_id,
                           get={"auth_token": self.api_token},
                           post={"files": selected_ids})
 
@@ -183,7 +183,7 @@ class RealdebridComTorrent(SimpleDecrypter):
     def wait_for_server_dl(self, torrent_id):
         """ Show progress while the server does the download """
 
-        torrent_info = self.api_response("/torrents/info/" + torrent_id,
+        torrent_info = self.api_request("/torrents/info/" + torrent_id,
                                          get={"auth_token": self.api_token})
 
         if "error" in torrent_info:
@@ -201,7 +201,7 @@ class RealdebridComTorrent(SimpleDecrypter):
 
             self.sleep(5)
 
-            torrent_info = self.api_response("/torrents/info/" + torrent_id,
+            torrent_info = self.api_request("/torrents/info/" + torrent_id,
                                              get={"auth_token": self.api_token})
             if "error" in torrent_info:
                 self.fail("{} (code: {})".format(torrent_info["error"], torrent_info.get("error_code", -1)))

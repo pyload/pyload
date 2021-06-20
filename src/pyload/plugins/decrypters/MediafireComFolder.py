@@ -33,7 +33,7 @@ class MediafireComFolder(BaseDecrypter):
     # See http://www.mediafire.com/developers/core_api/
     API_URL = "http://www.mediafire.com/api/"
 
-    def api_response(self, method, **kwargs):
+    def api_request(self, method, **kwargs):
         kwargs["response_format"] = "json"
         json_data = self.load(self.API_URL + method + ".php", get=kwargs)
         res = json.loads(json_data)
@@ -44,7 +44,7 @@ class MediafireComFolder(BaseDecrypter):
         return res
 
     def decrypt(self, pyfile):
-        api_data = self.api_response(
+        api_data = self.api_request(
             "folder/get_info", folder_key=self.info["pattern"]["ID"]
         )
         pack_name = (
@@ -52,7 +52,7 @@ class MediafireComFolder(BaseDecrypter):
             or self.pyfile.package().name
         )
 
-        api_data = self.api_response(
+        api_data = self.api_request(
             "folder/get_content",
             folder_key=self.info["pattern"]["ID"],
             content_type="files",

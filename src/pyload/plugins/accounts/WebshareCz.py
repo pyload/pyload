@@ -28,11 +28,11 @@ class WebshareCz(BaseAccount):
     API_URL = "https://webshare.cz/api/"
 
     @classmethod
-    def api_response(cls, method, **kwargs):
+    def api_request(cls, method, **kwargs):
         return get_url(cls.API_URL + method + "/", post=kwargs)
 
     def grab_info(self, user, password, data):
-        user_data = self.api_response("user_data", wst=data["wst"])
+        user_data = self.api_request("user_data", wst=data["wst"])
 
         expiredate = re.search(self.VALID_UNTIL_PATTERN, user_data).group(1)
         if expiredate:
@@ -48,7 +48,7 @@ class WebshareCz(BaseAccount):
         return {"validuntil": validuntil, "trafficleft": -1, "premium": premium}
 
     def signin(self, user, password, data):
-        salt = self.api_response("salt", username_or_email=user)
+        salt = self.api_request("salt", username_or_email=user)
 
         if "<status>OK</status>" not in salt:
             message = re.search(r"<message>(.+?)</message>", salt).group(1)
@@ -63,7 +63,7 @@ class WebshareCz(BaseAccount):
         ).hexdigest()
         digest = hashlib.md5(user + ":Webshare:" + password).hexdigest()
 
-        login = self.api_response(
+        login = self.api_request(
             "login",
             keep_logged_in=1,
             username_or_email=user,

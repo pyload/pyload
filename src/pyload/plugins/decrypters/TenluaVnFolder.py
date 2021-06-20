@@ -33,12 +33,12 @@ class TenluaVnFolder(SimpleDecrypter):
     API_URL = "https://api2.tenlua.vn/"
 
     @classmethod
-    def api_response(cls, method, **kwargs):
+    def api_request(cls, method, **kwargs):
         kwargs["a"] = method
         return json.loads(get_url(cls.API_URL, post=json.dumps([kwargs])))
 
     def decrypt(self, pyfile):
-        folder_info = self.api_response(
+        folder_info = self.api_request(
             "filemanager_gettree", p=self.info["pattern"]["ID"], download=1
         )
         pack_links = [

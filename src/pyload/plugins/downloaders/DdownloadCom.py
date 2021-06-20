@@ -41,7 +41,7 @@ class DdownloadCom(XFSDownloader):
     API_URL = "https://api-v2.ddownload.com/api/"
 
     @classmethod
-    def api_response(cls, method, **kwargs):
+    def api_request(cls, method, **kwargs):
         kwargs.update({"key": cls.API_KEY})
         json_data = get_url(cls.API_URL + method, get=kwargs)
         return json.loads(json_data)
@@ -49,7 +49,7 @@ class DdownloadCom(XFSDownloader):
     # @classmethod
     # def api_info(cls, url):
     #     info = {}
-    #     api_data = cls.api_response("file/info", file_code=re.match(cls.__pattern__, url).group('ID'))
+    #     api_data = cls.api_request("file/info", file_code=re.match(cls.__pattern__, url).group('ID'))
     #
     #     if api_data['status'] == 200:
     #         if api_data['result'][0]['status'] == 200:

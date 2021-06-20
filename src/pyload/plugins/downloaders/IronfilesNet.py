@@ -30,7 +30,7 @@ class IronfilesNet(SimpleDownloader):
 
     API_URL = "https://ironfiles.net/api/"
 
-    def api_response(self, method, **kwargs):
+    def api_request(self, method, **kwargs):
         json_data = self.load(self.API_URL + method, get=kwargs)
         return json.loads(json_data)
 

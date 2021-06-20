@@ -33,14 +33,14 @@ class FileboomMe(SimpleDownloader):
     #: Actually this is Keep2ShareCc API, see https://keep2share.github.io/api/ https://github.com/keep2share/api
 
     @classmethod
-    def api_response(cls, method, **kwargs):
+    def api_request(cls, method, **kwargs):
         html = get_url(cls.API_URL + method, post=json.dumps(kwargs))
         return json.loads(html)
 
     @classmethod
     def api_info(cls, url):
         file_id = re.match(cls.__pattern__, url).group("ID")
-        file_info = cls.api_response("GetFilesInfo", ids=[file_id], extended_info=False)
+        file_info = cls.api_request("GetFilesInfo", ids=[file_id], extended_info=False)
 
         if (
             file_info["code"] != 200
@@ -73,7 +73,7 @@ class FileboomMe(SimpleDownloader):
             self.fail(self._("This is a private file"))
 
         try:
-            api_data = self.api_response(
+            api_data = self.api_request(
                 "GetUrl",
                 file_id=file_id,
                 free_download_key=None,
@@ -84,13 +84,13 @@ class FileboomMe(SimpleDownloader):
         except BadHeader as exc:
             if exc.code == 406:
                 for i in range(10):
-                    api_data = self.api_response("RequestCaptcha")
+                    api_data = self.api_request("RequestCaptcha")
                     if api_data["code"] != 200:
                         self.fail(self._("Request captcha API failed"))
 
                     captcha_response = self.captcha.decrypt(api_data["captcha_url"])
                     try:
-                        api_data = self.api_response(
+                        api_data = self.api_request(
                             "GetUrl",
                             file_id=file_id,
                             free_download_key=None,
@@ -127,7 +127,7 @@ class FileboomMe(SimpleDownloader):
 
                 self.wait(api_data["time_wait"])
 
-                api_data = self.api_response(
+                api_data = self.api_request(
                     "GetUrl",
                     file_id=file_id,
                     free_download_key=free_download_key,
@@ -150,7 +150,7 @@ class FileboomMe(SimpleDownloader):
         if self.info["access"] == "private":
             self.fail(self._("This is a private file"))
 
-        json_data = self.api_response(
+        json_data = self.api_request(
             "GetUrl",
             file_id=file_id,
             free_download_key=None,

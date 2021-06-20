@@ -22,7 +22,7 @@ class MegacrypterCom(MegaCoNz):
     API_URL = "http://megacrypter.com/api"
     FILE_SUFFIX = ".crypted"
 
-    def api_response(self, **kwargs):
+    def api_request(self, **kwargs):
         """
         Dispatch a call to the api, see megacrypter.com/api_doc.
         """
@@ -36,10 +36,10 @@ class MegacrypterCom(MegaCoNz):
         node = re.match(self.__pattern__, pyfile.url).group(0)
 
         #: get Mega.co.nz link info
-        info = self.api_response(link=node, m="info")
+        info = self.api_request(link=node, m="info")
 
         #: Get crypted file URL
-        dl = self.api_response(link=node, m="dl")
+        dl = self.api_request(link=node, m="dl")
 
         # TODO: map error codes, implement password protection
         # if info['pass'] is True:
