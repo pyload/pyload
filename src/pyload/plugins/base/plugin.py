@@ -21,7 +21,7 @@ if os.name != "nt":
 class BasePlugin:
     __name__ = "BasePlugin"
     __type__ = "base"
-    __version__ = "0.74"
+    __version__ = "0.77"
     __status__ = "stable"
 
     __config__ = []  #: [("name", "type", "desc", "default")]
@@ -224,7 +224,7 @@ class BasePlugin:
             just_header,
             multipart,
             decode is True,
-        )  # TODO: Fix network multipart in 0.6.x
+        )
 
         # TODO: Move to network in 0.6.x
         if not redirect:
@@ -295,7 +295,7 @@ class BasePlugin:
                 ],
             )
 
-        with open(path, mode="rb") as fp:
+        with open(os.fsencode(path), mode="rb") as fp:
             url = fixurl(url, unquote=True)  #: Recheck in 0.6.x
 
             if req is False:
@@ -308,7 +308,7 @@ class BasePlugin:
                 set_cookies(req.cj, cookies)
 
             # NOTE: req can be a HTTPRequest or a Browser object
-            http_req = self.req.http if hasattr(self.req, "http") else self.req
+            http_req = req.http if hasattr(req, "http") else req
 
             if not redirect:
                 http_req.c.setopt(pycurl.FOLLOWLOCATION, 0)
