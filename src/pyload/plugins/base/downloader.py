@@ -16,7 +16,7 @@ from .hoster import BaseHoster
 class BaseDownloader(BaseHoster):
     __name__ = "BaseDownloader"
     __type__ = "downloader"
-    __version__ = "0.80"
+    __version__ = "0.81"
     __status__ = "stable"
 
     __pattern__ = r"^unmatchable$"
