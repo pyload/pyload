@@ -35,7 +35,7 @@ def expose(func):
 class BaseAddon(BasePlugin):
     __name__ = "BaseAddon"
     __type__ = "addon"  # TODO: Change to `addon` in 0.6.x
-    __version__ = "0.55"
+    __version__ = "0.56"
     __status__ = "stable"
 
     __threaded__ = []  # TODO: Remove in 0.6.x
