@@ -12,7 +12,7 @@ from ..base.container import BaseContainer
 class RSDF(BaseContainer):
     __name__ = "RSDF"
     __type__ = "container"
-    __version__ = "0.37"
+    __version__ = "0.38"
     __status__ = "testing"
 
     __pattern__ = r".+\.rsdf$"

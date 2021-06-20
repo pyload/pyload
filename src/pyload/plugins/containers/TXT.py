@@ -8,7 +8,7 @@ from ..base.container import BaseContainer
 class TXT(BaseContainer):
     __name__ = "TXT"
     __type__ = "container"
-    __version__ = "0.21"
+    __version__ = "0.22"
     __status__ = "testing"
 
     __pattern__ = r".+\.(txt|text)$"
