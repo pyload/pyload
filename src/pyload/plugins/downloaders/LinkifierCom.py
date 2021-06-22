@@ -10,9 +10,9 @@ from ..base.multi_downloader import MultiDownloader
 
 
 class LinkifierCom(MultiDownloader):
-    __name__ = "AlldebridCom"
+    __name__ = "LinkifierCom"
     __type__ = "downloader"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __status__ = "testing"
 
     __pattern__ = r"^unmatchable$"
@@ -32,10 +32,10 @@ class LinkifierCom(MultiDownloader):
     API_KEY = "d046c4309bb7cabd19f49118a2ab25e0"
     API_URL = "https://api.linkifier.com/downloadapi.svc/"
 
-    def api_response(self, method, user, password, **kwargs):
+    def api_request(self, method, user, password, **kwargs):
         post = {
             "login": user,
-            "md5Pass": hashlib.md5(password).hexdigest(),
+            "md5Pass": hashlib.md5(password.encode()).hexdigest(),
             "apiKey": self.API_KEY,
         }
         post.update(kwargs)
@@ -52,7 +52,7 @@ class LinkifierCom(MultiDownloader):
         self.multi_dl = True
 
     def handle_premium(self, pyfile):
-        json_data = self.api_response(
+        json_data = self.api_request(
             "stream",
             self.account.user,
             self.account.info["login"]["password"],
@@ -71,4 +71,4 @@ class LinkifierCom(MultiDownloader):
 
         self.resume_download = json_data["con_resume"]
         self.chunk_limit = json_data.get("con_max", 1) or 1
-        self.download(json_data["url"])
+        self.url = json_data["url"]

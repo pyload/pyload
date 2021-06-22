@@ -31,8 +31,9 @@ class AlldebridCom(MultiDownloader):
     URL_REPLACEMENTS = [
         (
             r"https?://(?:www\.)?mega(?:\.co)?\.nz/#N!(?P<ID>[\w^_]+)!(?P<KEY>[\w\-,=]+)###n=(?P<OWNER>[\w^_]+)",
-            lambda m: "https://mega.nz/#!%s!%s~~%s"
-            % (m.group("ID"), m.group("KEY"), m.group("OWNER")),
+            lambda m: "https://mega.nz/#!{}!{}~~{}".format(
+                m.group("ID"), m.group("KEY"), m.group("OWNER")
+            ),
         ),
         (
             r"https?://(?:www\.)?mega(?:\.co)?\.nz/.*",

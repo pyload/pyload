@@ -37,13 +37,13 @@ class LinksnappyCom(MultiDownloader):
 
     API_URL = "https://linksnappy.com/api/"
 
-    def api_response(self, method, **kwargs):
+    def api_request(self, method, **kwargs):
         return json.loads(self.load(self.API_URL + method, get=kwargs))
 
     def handle_premium(self, pyfile):
         json_params = json.dumps({"link": pyfile.url})
 
-        api_data = self.api_response("linkgen", genLinks=json_params)["links"][0]
+        api_data = self.api_request("linkgen", genLinks=json_params)["links"][0]
 
         if api_data["status"] != "OK":
             self.fail(api_data["error"])
@@ -56,7 +56,7 @@ class LinksnappyCom(MultiDownloader):
 
     def out_of_traffic(self):
         url_p = urllib.parse.urlparse(self.pyfile.url)
-        json_data = self.api_response("FILEHOSTS")
+        json_data = self.api_request("FILEHOSTS")
 
         for k, v in json_data["return"].items():
             url = urllib.parse.urlunparse(url_p._replace(netloc=k))
@@ -96,7 +96,7 @@ class LinksnappyCom(MultiDownloader):
         self.pyfile.set_progress(0)
 
         while True:
-            api_data = self.api_response("CACHEDLSTATUS", id=file_hash)
+            api_data = self.api_request("CACHEDLSTATUS", id=file_hash)
 
             if api_data["status"] != "OK":
                 self.fail(api_data["error"])

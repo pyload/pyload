@@ -69,16 +69,16 @@ class HighWayMe(MultiDownloader):
         self.check_errors()
 
         try:
-            self.pyfile.name = re.search(r"<name>(.+?)</name>", self.data).group(1)
+            self.pyfile.name = re.search(r'<name>(.+?)</name>', self.data).group(1)
 
         except AttributeError:
             self.log_warning(self._("Name pattern not found"))
 
         try:
-            self.pyfile.size = re.search(r"<size>(\d+)</size>", self.data).group(1)
+            self.pyfile.size = re.search(r'<size>(\d+)</size>', self.data).group(1)
 
         except AttributeError:
             self.log_warning(self._("Size pattern not found"))
             self.pyfile.size = 0
 
-        self.link = re.search(r"<download>(.+?)</download>", self.data).group(1)
+        self.link = re.search(r'<download>(.+?)</download>', self.data).group(1)

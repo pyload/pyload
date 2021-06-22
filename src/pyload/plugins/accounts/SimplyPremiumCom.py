@@ -9,7 +9,7 @@ from ..helpers import set_cookie
 class SimplyPremiumCom(MultiAccount):
     __name__ = "SimplyPremiumCom"
     __type__ = "account"
-    __version__ = "0.14"
+    __version__ = "0.15"
     __status__ = "testing"
 
     __config__ = [
@@ -24,7 +24,7 @@ class SimplyPremiumCom(MultiAccount):
 
     def grab_hosters(self, user, password, data):
         json_data = self.load(
-            "http://www.simply-premium.com/api/hosts.php",
+            "https://www.simply-premium.com/api/hosts.php",
             get={"format": "json", "online": 1},
         )
         json_data = json.loads(json_data)
@@ -38,7 +38,7 @@ class SimplyPremiumCom(MultiAccount):
         validuntil = -1
         trafficleft = None
 
-        json_data = self.load("http://www.simply-premium.com/api/user.php?format=json")
+        json_data = self.load("https://www.simply-premium.com/api/user.php?format=json")
 
         self.log_debug(f"JSON data: {json_data}")
 
@@ -54,8 +54,7 @@ class SimplyPremiumCom(MultiAccount):
             "remain_traffic" in json_data["result"]
             and json_data["result"]["remain_traffic"]
         ):
-            # TODO: Remove `>> 10` in 0.6.x
-            trafficleft = float(json_data["result"]["remain_traffic"]) >> 10
+            trafficleft = float(json_data["result"]["remain_traffic"])
 
         return {
             "premium": premium,

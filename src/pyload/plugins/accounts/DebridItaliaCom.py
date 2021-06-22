@@ -26,17 +26,17 @@ class DebridItaliaCom(MultiAccount):
 
     API_URL = "https://debriditalia.com/api.php"
 
-    def api_response(self, method, **kwargs):
+    def api_request(self, method, **kwargs):
         kwargs[method] = ""
         return self.load(self.API_URL, get=kwargs)
 
     def grab_hosters(self, user, password, data):
-        return self.api_response("hosts").replace('"', "").split(",")
+        return self.api_request("hosts").replace('"', "").split(",")
 
     def grab_info(self, user, password, data):
         validuntil = None
 
-        html = self.api_response("check", u=user, p=password)
+        html = self.api_request("check", u=user, p=password)
 
         m = re.search(r"<expiration>(.+?)</expiration>", html)
         if m is not None:
@@ -48,7 +48,7 @@ class DebridItaliaCom(MultiAccount):
         return {"validuntil": validuntil, "trafficleft": -1, "premium": True}
 
     def signin(self, user, password, data):
-        html = self.api_response("check", u=user, p=password)
+        html = self.api_request("check", u=user, p=password)
 
         if "<status>valid</status>" not in html:
             self.fail_login()

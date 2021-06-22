@@ -14,9 +14,7 @@ class XdadevelopersCom(SimpleDownloader):
     __version__ = "0.08"
     __status__ = "testing"
 
-    __pattern__ = (
-        r"https?://(?:www\.)?forum\.xda-developers\.com/devdb/project/dl/\?id=\d+"
-    )
+    __pattern__ = r"https?://(?:www\.)?forum\.xda-developers\.com/devdb/project/dl/\?id=\d+"
     __config__ = [
         ("enabled", "bool", "Activated", True),
         ("use_premium", "bool", "Use premium account if available", True),

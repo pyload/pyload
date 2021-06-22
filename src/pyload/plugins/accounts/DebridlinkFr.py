@@ -37,7 +37,7 @@ class DebridlinkFr(MultiAccount):
             self.req.http.c.setopt(
                 pycurl.HTTPHEADER, ["Authorization: Bearer " + api_token]
             )
-        self.req.http.c.setopt(pycurl.USERAGENT, "pyLoad/%s" % self.pyload.version)
+        self.req.http.c.setopt(pycurl.USERAGENT, "pyLoad/{}".format(self.pyload.version))
         try:
             json_data = self.load(self.API_URL + method, get=get, post=post)
         except BadHeader as exc:

@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
+
+
+from ..base.simple_downloader import SimpleDownloader
+
 #
 # Test links:
 #   http://www.solidfiles.com/d/609cdb4b1b
 
 import re
-
-from ..base.simple_downloader import SimpleDownloader
 
 
 class SolidfilesCom(SimpleDownloader):
@@ -14,7 +16,7 @@ class SolidfilesCom(SimpleDownloader):
     __version__ = "0.09"
     __status__ = "testing"
 
-    __pattern__ = r"http://(?:www\.)?solidfiles\.com\/[dv]/\w+"
+    __pattern__ = r"https?://(?:www\.)?solidfiles\.com\/[dv]/\w+"
     __config__ = [
         ("enabled", "bool", "Activated", True),
         ("use_premium", "bool", "Use premium account if available", True),
@@ -30,8 +32,8 @@ class SolidfilesCom(SimpleDownloader):
         ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com"),
     ]
 
-    NAME_PATTERN = r'<h1 class="node-name">(?P<N>.+?)\s*</h1>'
-    SIZE_PATTERN = r'</copy-button>\s*(?P<S>[\d.,]+) (?P<U>[\w_^]+)'
+    NAME_PATTERN = r'<h1 class="node-name">(?P<N>.+?)</h1>'
+    SIZE_PATTERN = r"</copy-button>\s*(?P<S>[\d.,]+) (?P<U>[\w_^]+)"
     OFFLINE_PATTERN = r"<h1>404"
 
     def setup(self):

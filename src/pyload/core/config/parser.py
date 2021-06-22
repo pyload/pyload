@@ -35,6 +35,7 @@ class ConfigParser:
     _CONFLINE = re.compile(
         r'\s*(?P<T>.+?)\s+(?P<N>[^ ]+?)\s*:\s*"(?P<D>.+?)"\s*=\s?(?P<V>.*)'
     )
+    _SECTLINE = re.compile(r'(.+?)\s+-\s+"(.+?)":')
     _VERSION = re.compile(r"\s*version\s*:\s*(\d+)")
 
     def __init__(self, userdir):
@@ -120,11 +121,11 @@ class ConfigParser:
         except Exception as exc:
             exc_logger.exception(exc)
 
-    def parse_config(self, config):
+    def parse_config(self, config_file):
         """
         parses a given configfile.
         """
-        with open(config) as fp:
+        with open(config_file) as fp:
 
             config = fp.read()
 
@@ -154,10 +155,9 @@ class ConfigParser:
                 try:
                     if line == "":
                         continue
-                    elif line.endswith(":"):
-                        section, none, desc = line[:-1].partition("-")
-                        section = section.strip()
-                        desc = desc.replace('"', "").strip()
+                    m = self._SECTLINE.match(line)
+                    if m is not None:
+                        section, desc = m.groups()
                         conf[section] = {"desc": desc}
                     else:
                         if listmode:
@@ -287,7 +287,7 @@ class ConfigParser:
             return value
 
         elif typ in ("file", "folder"):
-            return "" if value is None else os.fsdecode(value)
+            return "" if value is None else os.path.realpath(os.path.expanduser(os.fsdecode(value)))
 
         else:
             return value

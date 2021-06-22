@@ -97,7 +97,7 @@ def logout():
 @bp.route("/", endpoint="index")
 @bp.route("/home", endpoint="home")
 @bp.route("/dashboard", endpoint="dashboard")
-@login_required("ALL")
+@login_required("LIST")
 def dashboard():
     api = flask.current_app.config["PYLOAD_API"]
     links = api.status_downloads()
@@ -162,7 +162,7 @@ def files():
     return render_template("files.html", files=data)
 
 
-@bp.route("/files/get/<filename>", endpoint="get_file")
+@bp.route("/files/get/<path:filename>", endpoint="get_file")
 @login_required("DOWNLOAD")
 def get_file(filename):
     api = flask.current_app.config["PYLOAD_API"]

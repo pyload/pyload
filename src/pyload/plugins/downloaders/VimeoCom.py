@@ -98,7 +98,7 @@ class VimeoCom(SimpleDownloader):
 
         for q in qlevel:
             if q in videos.keys():
-                self.download(videos[q], fixurl=False)
+                self.download(videos[q])
                 return
 
             else:

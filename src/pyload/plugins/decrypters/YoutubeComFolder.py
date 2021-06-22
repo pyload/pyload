@@ -32,13 +32,13 @@ class YoutubeComFolder(BaseDecrypter):
 
     API_KEY = "AIzaSyAcA9c4evtwSY1ifuvzo6HKBkeot5Bk_U4"
 
-    def api_response(self, method, **kwargs):
+    def api_request(self, method, **kwargs):
         kwargs['key'] = self.API_KEY
         json_data = self.load("https://www.googleapis.com/youtube/v3/" + method, get=kwargs)
         return json.loads(json_data)
 
     def get_channel(self, user):
-        channels = self.api_response("channels",
+        channels = self.api_request("channels",
                                      part="id,snippet,contentDetails",
                                      forUsername=user,
                                      maxResults=50)
@@ -50,7 +50,7 @@ class YoutubeComFolder(BaseDecrypter):
                     'user': user}  #: One lone channel for user?
 
     def get_playlist(self, playlist_id):
-        playlists = self.api_response("playlists",
+        playlists = self.api_request("playlists",
                                       part="snippet",
                                       id=playlist_id)
         if playlists['items']:
@@ -62,13 +62,13 @@ class YoutubeComFolder(BaseDecrypter):
 
     def _get_playlists(self, playlist_id, token=None):
         if token:
-            playlists = self.api_response("playlists",
+            playlists = self.api_request("playlists",
                                           part="id",
                                           maxResults=50,
                                           channelId=playlist_id,
                                           pageToken=token)
         else:
-            playlists = self.api_response("playlists",
+            playlists = self.api_request("playlists",
                                           part="id",
                                           maxResults=50,
                                           channelId=playlist_id)
@@ -85,13 +85,13 @@ class YoutubeComFolder(BaseDecrypter):
 
     def _get_videos_id(self, playlist_id, token=None):
         if token:
-            playlist = self.api_response("playlistItems",
+            playlist = self.api_request("playlistItems",
                                          part="contentDetails",
                                          maxResults=50,
                                          playlistId=playlist_id,
                                          pageToken=token)
         else:
-            playlist = self.api_response("playlistItems",
+            playlist = self.api_request("playlistItems",
                                           part="contentDetails",
                                           maxResults=50,
                                           playlistId=playlist_id)

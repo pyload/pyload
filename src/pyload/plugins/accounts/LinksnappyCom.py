@@ -26,11 +26,11 @@ class LinksnappyCom(MultiAccount):
 
     API_URL = "https://linksnappy.com/api/"
 
-    def api_response(self, method, **kwargs):
+    def api_request(self, method, **kwargs):
         return json.loads(self.load(self.API_URL + method, get=kwargs))
 
     def grab_hosters(self, user, password, data):
-        json_data = self.api_response("FILEHOSTS")
+        json_data = self.api_request("FILEHOSTS")
         return [k for k, v in json_data["return"].items() if v["Status"] == "1"]
 
     def grab_info(self, user, password, data):
@@ -38,7 +38,7 @@ class LinksnappyCom(MultiAccount):
         validuntil = None
         trafficleft = None
 
-        json_data = self.api_response("USERDETAILS", username=user, password=password)
+        json_data = self.api_request("USERDETAILS", username=user, password=password)
 
         if json_data["status"] != "OK":
             self.log_error(json_data["error"])
@@ -68,7 +68,7 @@ class LinksnappyCom(MultiAccount):
         }
 
     def signin(self, user, password, data):
-        json_data = self.api_response("AUTHENTICATE", username=user, password=password)
+        json_data = self.api_request("AUTHENTICATE", username=user, password=password)
 
         if json_data["status"] != "OK":
             self.fail_login(json_data["error"])

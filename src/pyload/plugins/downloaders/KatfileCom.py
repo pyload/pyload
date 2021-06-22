@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from ..base.simple_downloader import SimpleDownloader
+from ..base.xfs_downloader import XFSDownloader
 
 
-class KatfileCom(SimpleDownloader):
+class KatfileCom(XFSDownloader):
     __name__ = "KatfileCom"
     __type__ = "downloader"
     __version__ = "0.03"

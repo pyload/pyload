@@ -211,7 +211,6 @@ class DownloadThread(PluginThread):
             finally:
                 self.pyload.files.save()
                 pyfile.check_if_processed()
-                # exc_clear()
 
             # pyfile.plugin.req.clean()
 

@@ -47,9 +47,7 @@ class DailymotionCom(BaseDownloader):
     __version__ = "0.30"
     __status__ = "testing"
 
-    __pattern__ = (
-        r"https?://(?:www\.)?(dailymotion\.com/.*video|dai\.ly)/(?P<ID>[\w^_]+)"
-    )
+    __pattern__ = r"https?://(?:www\.)?(dailymotion\.com/.*video|dai\.ly)/(?P<ID>[\w^_]+)"
     __config__ = [
         ("enabled", "bool", "Activated", True),
         (

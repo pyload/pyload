@@ -30,7 +30,7 @@ class UploadgigCom(SimpleDownloader):
     NAME_PATTERN = r'<span class="filename">(?P<N>.+?)<'
     SIZE_PATTERN = r'<span class="filesize">\[(?P<S>[\d.,]+) (?P<U>[\w^_]+)\]<'
 
-    OFFLINE_PATTERN = r'File not found'
+    OFFLINE_PATTERN = r"File not found"
 
     def handle_free(self, pyfile):
         url, inputs = self.parse_html_form('id="dl_captcha_form"')
@@ -47,8 +47,9 @@ class UploadgigCom(SimpleDownloader):
         response, challenge = recaptcha.challenge(captcha_key)
 
         inputs["g-recaptcha-response"] = response
-        self.data = self.load(self.fixurl(url), post=inputs)
-        
+        self.data = self.load(self.fixurl(url),
+                              post=inputs)
+
         if self.data == "m":
             self.log_warning(self._("Max downloads for this hour reached"))
             self.retry(wait=60*60)
@@ -74,4 +75,4 @@ class UploadgigCom(SimpleDownloader):
 
             self.wait(res['cd'])
 
-            self.link = "http://" + res["fopg"] + res["fghre"] +"/dlfile"
+            self.link = "http://" + res['fopg'] + res['fghre'] + "/dlfile"

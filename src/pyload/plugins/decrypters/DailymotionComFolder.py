@@ -29,7 +29,7 @@ class DailymotionComFolder(BaseDecrypter):
     __license__ = "GPLv3"
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
-    def api_response(self, ref, data=None):
+    def api_request(self, ref, data=None):
         url = urllib.parse.urljoin("https://api.dailymotion.com/", ref)
         html = self.load(url, get=data)
         return json.loads(html)
@@ -37,7 +37,7 @@ class DailymotionComFolder(BaseDecrypter):
     def get_playlist_info(self, id):
         ref = "playlist/" + id
         data = {"fields": "name,owner.screenname"}
-        playlist = self.api_response(ref, data)
+        playlist = self.api_request(ref, data)
 
         if "error" in playlist:
             return
@@ -49,7 +49,7 @@ class DailymotionComFolder(BaseDecrypter):
     def _get_playlists(self, user_id, page=1):
         ref = "user/{}/playlists".format(user_id)
         data = {"fields": "id", "page": page, "limit": 100}
-        user = self.api_response(ref, data)
+        user = self.api_request(ref, data)
 
         if "error" in user:
             return
@@ -69,7 +69,7 @@ class DailymotionComFolder(BaseDecrypter):
     def _get_videos(self, id, page=1):
         ref = "playlist/{}/videos".format(id)
         data = {"fields": "url", "page": page, "limit": 100}
-        playlist = self.api_response(ref, data)
+        playlist = self.api_request(ref, data)
 
         if "error" in playlist:
             return

@@ -1,16 +1,19 @@
 # -*- coding: utf-8 -*
+
 #
 # Test links:
 #   https://drive.google.com/file/d/0B6RNTe4ygItBQm15RnJiTmMyckU/view?pli=1
 
-import re
+
 import json
-from urllib.parse import urlparse
+import re
+import urllib.parse
 
 from pyload.core.network.http.exceptions import BadHeader
+from pyload.core.utils import parse
 
 from ..base.downloader import BaseDownloader
-from pyload.core.utils import parse
+
 
 class GoogledriveCom(BaseDownloader):
     __name__ = "GoogledriveCom"
@@ -44,7 +47,7 @@ class GoogledriveCom(BaseDownloader):
         self.resume_download = True
         self.chunk_limit = 1
 
-    def api_response(self, cmd, **kwargs):
+    def api_request(self, cmd, **kwargs):
         kwargs["key"] = self.API_KEY
         try:
             json_data = json.loads(
@@ -96,7 +99,7 @@ class GoogledriveCom(BaseDownloader):
     def process(self, pyfile):
         disposition = False
         self.data = self.load(pyfile.url)
-        json_data = self.api_response(
+        json_data = self.api_request(
             "files/" + self.info["pattern"]["ID"], fields="md5Checksum,name,size"
         )
 
@@ -107,6 +110,7 @@ class GoogledriveCom(BaseDownloader):
             if json_data["error"]["code"] == 404:
                 if "Virus scan warning" not in self.data:
                     self.offline()
+
                 else:
                     m = re.search(self.INFO_PATTERN, self.data)
                     if m is not None:
@@ -116,17 +120,17 @@ class GoogledriveCom(BaseDownloader):
                         disposition = True
 
             else:
-                self.fail(json_data['error']['message'])
+                self.fail(json_data["error"]["message"])
 
         else:
             pyfile.size = int(json_data["size"])
             pyfile.name = json_data["name"]
             self.info["md5"] = json_data["md5Checksum"]
 
-        # Somehow, API downloads are sacrificially slow compared to "normal" download :(
+        # Somehow, API downloads are significantly slow compared to "normal" download :(
         # self.api_download()
 
-        for i in range(2):
+        for _i in range(2):
             m = re.search(r'"([^"]+uc\?.*?)"', self.data)
             if m is None:
                 if "Quota exceeded" in self.data:
@@ -134,7 +138,10 @@ class GoogledriveCom(BaseDownloader):
                 else:
                     self.fail(self._("link pattern not found"))
 
-            link = urlparse.urljoin(pyfile.url, m.group(1).decode("unicode-escape"))
+            link = re.sub(
+                r"\\[uU]([\da-fA-F]{4})", lambda x: chr(int(x.group(1), 16)), m.group(1)
+            )  #: unescape unicode-escape
+            link = urllib.parse.urljoin(pyfile.url, link)
 
             #: "Only files smaller than 100 MB can be scanned for viruses"
             #: https://support.google.com/a/answer/172541?hl=en

@@ -106,8 +106,7 @@ class RapideoPl(MultiDownloader):
         pyfile.size = parsed["filesize"]
 
         try:
-            link = self.run_file_query(pyfile.url, "filedownload")
-            self.download(link)
+            self.link = self.run_file_query(pyfile.url, "filedownload")
 
         except Exception:
             self.temp_offline("Query error #2")

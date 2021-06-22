@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
+from datetime import timedelta
 
 from ..base.simple_downloader import SimpleDownloader
 
@@ -37,7 +38,7 @@ class FastshareCz(SimpleDownloader):
     TEMP_OFFLINE_PATTERN = r"[^\w](503\s|[Mm]aint(e|ai)nance|[Tt]emp([.-]|orarily))"
     OFFLINE_PATTERN = r">(The file has been deleted|Requested page not found|This file is no longer available)"
 
-    LINK_FREE_PATTERN = r'<form .*target="iframe_dwn" .*action=([^>]+)'
+    LINK_FREE_PATTERN = r'form .*target="iframe_dwn" .*action=([^>]+)'
     LINK_PREMIUM_PATTERN = r"(https?://\w+\.fastshare\.cz/download\.php\?id=\d+&)"
 
     SLOT_ERROR = "> 100% of FREE slots are full"
@@ -65,16 +66,16 @@ class FastshareCz(SimpleDownloader):
     def check_download(self):
         check = self.scan_download(
             {
-                "paralell-dl": re.compile(
-                    r"<title>FastShare.cz</title>|<title>FastShare.cz</title>|<script.*>alert\('Despite FREE can download only one file at a time.'\)"
+                "parallel-dl": re.compile(
+                    r"<title>FastShare.cz</title>|<script.*>alert\('Despite FREE can download only one file at a time.'\)"
                 ),
                 "wrong captcha": re.compile(r"Download for FREE"),
                 "credit": re.compile(self.CREDIT_ERROR),
             }
         )
 
-        if check == "paralell-dl":
-            self.log_warning(self._("Paralell download"))
+        if check == "parallel-dl":
+            self.log_warning(self._("Parallel download"))
             self.remove(self.last_download)
             self.retry(6, timedelta(minutes=10).seconds, self._("Paralell download"))
 

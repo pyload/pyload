@@ -8,7 +8,7 @@ from ..base.simple_downloader import SimpleDownloader
 class UptoboxCom(SimpleDownloader):
     __name__ = "UptoboxCom"
     __type__ = "downloader"
-    __version__ = "0.37"
+    __version__ = "0.38"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?(uptobox|uptostream)\.com/\w{12}"

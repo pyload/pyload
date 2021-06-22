@@ -11,7 +11,7 @@ from ..base.multi_account import MultiAccount
 class LinkifierCom(MultiAccount):
     __name__ = "LinkifierCom"
     __type__ = "account"
-    __version__ = "0.01"
+    __version__ = "0.03"
     __status__ = "testing"
 
     __description__ = """Linkifier.com account plugin"""
@@ -27,7 +27,7 @@ class LinkifierCom(MultiAccount):
     API_KEY = "d046c4309bb7cabd19f49118a2ab25e0"
     API_URL = "https://api.linkifier.com/downloadapi.svc/"
 
-    def api_response(self, method, user, password, **kwargs):
+    def api_request(self, method, user, password, **kwargs):
         post = {
             "login": user,
             "md5Pass": hashlib.md5(password.encode()).hexdigest(),
@@ -44,7 +44,7 @@ class LinkifierCom(MultiAccount):
         return res
 
     def grab_hosters(self, user, password, data):
-        json_data = self.api_response("hosters", user, password)
+        json_data = self.api_request("hosters", user, password)
         if json_data["hasErrors"]:
             self.log_warning(json_data["ErrorMSG"] or "Unknown error")
             return []
@@ -56,20 +56,20 @@ class LinkifierCom(MultiAccount):
         ]
 
     def grab_info(self, user, password, data):
-        json_data = self.api_response("user", user, password)
+        json_data = self.api_request("user", user, password)
         trafficleft = json_data["extraTraffic"]
-        validuntil = float(json_data["expirydate"]) // 1000
+        validuntil = float(json_data["expirydate"]) / 1000
 
         return {
             "validuntil": validuntil,
             "trafficleft": -1
             if trafficleft.lower() == "unlimited"
-            else int(trafficleft),
+            else int(trafficleft) * 1024,
             "premium": True,
         }
 
     def signin(self, user, password, data):
-        json_data = self.api_response("user", user, password)
+        json_data = self.api_request("user", user, password)
         if json_data.get("hasErrors", True) or not json_data.get("isActive", True):
             self.log_warning(json_data["ErrorMSG"] or "Unknown error")
             self.fail_login()

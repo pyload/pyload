@@ -41,7 +41,7 @@ class GoogledriveComFolder(BaseDecrypter):
     API_URL = "https://www.googleapis.com/drive/v3/"
     API_KEY = "AIzaSyAcA9c4evtwSY1ifuvzo6HKBkeot5Bk_U4"
 
-    def api_response(self, cmd, **kwargs):
+    def api_request(self, cmd, **kwargs):
         kwargs["key"] = self.API_KEY
         try:
             json_data = json.loads(
@@ -71,7 +71,7 @@ class GoogledriveComFolder(BaseDecrypter):
 
     def enum_folder(self, folder_id):
         links = []
-        json_data = self.api_response(
+        json_data = self.api_request(
             "files",
             q="'{}' in parents".format(folder_id),
             pageSize=100,
@@ -97,7 +97,7 @@ class GoogledriveComFolder(BaseDecrypter):
 
         next_page = json_data.get("nextPageToken", None)
         while next_page:
-            json_data = self.api_response(
+            json_data = self.api_request(
                 "files",
                 q="'{}' in parents".format(folder_id),
                 pageToken=next_page,
@@ -131,7 +131,7 @@ class GoogledriveComFolder(BaseDecrypter):
     def decrypt(self, pyfile):
         links = []
 
-        json_data = self.api_response("files/{}".format(self.info["pattern"]["ID"]))
+        json_data = self.api_request("files/{}".format(self.info["pattern"]["ID"]))
         if json_data is None:
             self.fail("API error")
 

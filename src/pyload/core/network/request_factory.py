@@ -79,12 +79,7 @@ class RequestFactory:
         if not self.pyload.config.get("proxy", "enabled"):
             return {}
         else:
-            type = "http"
-            setting = self.pyload.config.get("proxy", "type").lower()
-            if setting == "socks4":
-                type = "socks4"
-            elif setting == "socks5":
-                type = "socks5"
+            proxy_type = self.pyload.config.get("proxy", "type").lower()
 
             username = None
             if (
@@ -101,7 +96,7 @@ class RequestFactory:
                 pw = self.pyload.config.get("proxy", "password")
 
             return {
-                "type": type,
+                "type": proxy_type,
                 "host": self.pyload.config.get("proxy", "host"),
                 "port": self.pyload.config.get("proxy", "port"),
                 "username": username,
