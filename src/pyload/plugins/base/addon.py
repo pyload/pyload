@@ -35,7 +35,7 @@ def expose(func):
 class BaseAddon(BasePlugin):
     __name__ = "BaseAddon"
     __type__ = "addon"  # TODO: Change to `addon` in 0.6.x
-    __version__ = "0.55"
+    __version__ = "0.56"
     __status__ = "stable"
 
     __threaded__ = []  # TODO: Remove in 0.6.x
@@ -53,8 +53,6 @@ class BaseAddon(BasePlugin):
 
         #: Automatically register event listeners for functions, attribute will be deleted dont use it yourself
         self.event_map = {}
-
-        self.info["ip"] = None  # TODO: Remove in 0.6.x
 
         #: Callback of periodical job task, used by AddonManager
         self.periodical = Periodical(self, self.periodical_task)
@@ -197,17 +195,8 @@ class BaseAddon(BasePlugin):
     def before_reconnect(self, ip):
         pass
 
-    #: Deprecated method, use `before_reconnect` instead (Remove in 0.6.x)
-    def before_reconnecting(self, ip):
-        return self.before_reconnect(ip)
-
-    def after_reconnect(self, ip, oldip):
+    def after_reconnect(self, ip, old_ip):
         pass
-
-    #: Deprecated method, use `after_reconnect` instead (Remove in 0.6.x)
-    def after_reconnecting(self, ip):
-        self.after_reconnect(ip, self.info["ip"])
-        self.info["ip"] = ip
 
     def captcha_task(self, task):
         """
@@ -216,20 +205,8 @@ class BaseAddon(BasePlugin):
         """
         pass
 
-    #: Deprecated method, use `captcha_task` instead (Remove in 0.6.x)
-    def new_captcha_task(self, task):
-        return self.captcha_task(task)
-
     def captcha_correct(self, task):
         pass
 
-    #: Deprecated method, use `captcha_correct` instead (Remove in 0.6.x)
-    def captcha_correct(self, task):
-        return self.captcha_correct(task)
-
     def captcha_invalid(self, task):
         pass
-
-    #: Deprecated method, use `captcha_invalid` instead (Remove in 0.6.x)
-    def captcha_invalid(self, task):
-        return self.captcha_invalid(task)

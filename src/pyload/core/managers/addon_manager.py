@@ -242,19 +242,19 @@ class AddonManager:
         self.dispatch_event("package_finished", package)
 
     @lock
-    def before_reconnecting(self, ip):
+    def before_reconnect(self, ip):
         for plugin in self.plugins:
-            plugin.before_reconnecting(ip)
+            plugin.before_reconnect(ip)
 
-        self.dispatch_event("before_reconnecting", ip)
+        self.dispatch_event("before_reconnect", ip)
 
     @lock
-    def after_reconnecting(self, ip):
+    def after_reconnect(self, ip, old_ip):
         for plugin in self.plugins:
             if plugin.is_activated():
-                plugin.after_reconnecting(ip)
+                plugin.after_reconnect(ip, old_ip)
 
-        self.dispatch_event("after_reconnecting", ip)
+        self.dispatch_event("after_reconnect", old_ip, ip)
 
     def start_thread(self, function, *args, **kwargs):
         return AddonThread(self.pyload.thread_manager, function, args, kwargs)

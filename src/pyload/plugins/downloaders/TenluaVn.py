@@ -35,7 +35,7 @@ class TenluaVn(SimpleDownloader):
     API_URL = "https://api2.tenlua.vn/"
 
     @classmethod
-    def api_response(cls, method, **kwargs):
+    def api_request(cls, method, **kwargs):
         kwargs["a"] = method
         sid = kwargs.pop("sid", None)
         return json.loads(
@@ -49,7 +49,7 @@ class TenluaVn(SimpleDownloader):
     @classmethod
     def api_info(cls, url):
         file_id = re.match(cls.__pattern__, url).group("ID")
-        file_info = cls.api_response(
+        file_info = cls.api_request(
             "filemanager_builddownload_getinfo", n=file_id, r=gen_r()
         )[0]
 
@@ -83,7 +83,7 @@ class TenluaVn(SimpleDownloader):
                 if sid is not None:
                     args["sid"] = sid
 
-                password_status = self.api_response(
+                password_status = self.api_request(
                     "filemanager_builddownload_checkpassword", **args
                 )
                 if password_status["status"] == "0":

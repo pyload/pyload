@@ -193,11 +193,11 @@ class ThreadManager:
         ) != 0:
             time.sleep(0.25)
 
-        ip = self.get_ip()
+        old_ip = self.get_ip()
 
-        self.pyload.addon_manager.before_reconnecting(ip)
+        self.pyload.addon_manager.before_reconnect(old_ip)
 
-        self.pyload.log.debug(f"Old IP: {ip}")
+        self.pyload.log.debug(f"Old IP: {old_ip}")
 
         try:
             subprocess.run(reconnect_script)
@@ -209,7 +209,7 @@ class ThreadManager:
 
         time.sleep(1)
         ip = self.get_ip()
-        self.pyload.addon_manager.after_reconnecting(ip)
+        self.pyload.addon_manager.after_reconnect(ip, old_ip)
 
         self.pyload.log.info(self._("Reconnected, new IP: {}").format(ip))
 

@@ -8,7 +8,7 @@ from ..base.container import BaseContainer
 class TXT(BaseContainer):
     __name__ = "TXT"
     __type__ = "container"
-    __version__ = "0.21"
+    __version__ = "0.22"
     __status__ = "testing"
 
     __pattern__ = r".+\.(txt|text)$"
@@ -38,7 +38,7 @@ class TXT(BaseContainer):
 
         fs_filename = os.fsdecode(pyfile.url)
         with open(fs_filename, encoding=encoding) as txt:
-            cur_pack = "Parsed links from {}".format(pyfile.name)
+            cur_pack = "Parsed links from {}".format(pyfile.name.split("tmp_")[-1])
             packages = {cur_pack: []}
 
             for link in txt.readlines():

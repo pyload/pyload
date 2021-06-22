@@ -12,10 +12,10 @@ from ..base.downloader import BaseDownloader
 class ZbigzCom(BaseDownloader):
     __name__ = "ZbigzCom"
     __type__ = "downloader"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __status__ = "testing"
 
-    __pattern__ = r"https?://.+\.torrent|magnet:\?.+"
+    __pattern__ = r"^unmatchable$"
     __config__ = [("enabled", "bool", "Activated", False)]
 
     __description__ = """Zbigz.com downloader plugin"""

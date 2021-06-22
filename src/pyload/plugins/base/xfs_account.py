@@ -98,7 +98,7 @@ class XFSAccount(BaseAccount):
 
             previous_locale = locale.getlocale(locale.LC_TIME)
             try:
-                locale.setlocale(locale.LC_TIME, "en_US")
+                locale.setlocale(locale.LC_TIME, "en_US.UTF-8")
                 validuntil = time.mktime(time.strptime(expiredate, "%d %B %Y"))
 
             except Exception as exc:

@@ -15,7 +15,7 @@ from ..base.simple_downloader import SimpleDownloader
 class RapidgatorNet(SimpleDownloader):
     __name__ = "RapidgatorNet"
     __type__ = "downloader"
-    __version__ = "0.56"
+    __version__ = "0.57"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?(?:rapidgator\.(?:net|asia|)|rg\.to)/file/(?P<ID>\w+)"
@@ -59,7 +59,6 @@ class RapidgatorNet(SimpleDownloader):
     LINK_FREE_PATTERN = r"return '(https?://\w+.rapidgator.net/.*)';"
 
     RECAPTCHA_PATTERN = r'"http://api\.recaptcha\.net/challenge\?k=(.*?)"'
-    ADSCAPTCHA_PATTERN = r'(http://api\.adscaptcha\.com/Get\.aspx[^"\']+)'
     SOLVEMEDIA_PATTERN = r'http://api\.solvemedia\.com/papi/challenge\.script\?k=(.*?)"'
 
     URL_REPLACEMENTS = [(__pattern__ + '.*', r'https://rapidgator.net/file/\g<ID>')]

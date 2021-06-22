@@ -227,8 +227,8 @@ SettingsUI = (function() {
         path_p.text(iframe.cwd);
         path_p.prop("title", iframe.cwd);
         $("#chooser_confirm_button").attr("disabled", !iframe.submit);
-        $("#path_type0").attr("checked", !iframe.isabsolute);
-        $("#path_type1").attr("checked", iframe.isabsolute);
+        $("#path_type0").prop("checked", !iframe.isabsolute);
+        $("#path_type1").prop("checked", iframe.isabsolute);
     };
     return a;
 })();

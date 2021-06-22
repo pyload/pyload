@@ -6,9 +6,9 @@ from ..base.multi_account import MultiAccount
 
 
 class HighWayMe(MultiAccount):
-    __name__ = "HighWayMe.py"
+    __name__ = "HighWayMe"
     __type__ = "account"
-    __version__ = "0.10"
+    __version__ = "0.12"
     __status__ = "testing"
 
     __config__ = [
@@ -19,11 +19,20 @@ class HighWayMe(MultiAccount):
 
     __description__ = """High-Way.me account plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("EvolutionClip", "evolutionclip@live.de")]
+    __authors__ = [("EvolutionClip", "evolutionclip@live.de"),
+                   ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
+
+    API_URL = "https://high-way.me/api.php"
+
+    def api_request(self, method, **kwargs):
+        post = dict([(k.lstrip('_'), v) for k, v in kwargs.items()])
+        json_data = self.load(self.API_URL,
+                              get={method: ''},
+                              post=post)
+        return json.loads(json_data)
 
     def grab_hosters(self, user, password, data):
-        html = self.load("https://high-way.me/api.php", get={"hoster": 1})
-        json_data = json.loads(html)
+        json_data = self.api_request("hoster")
         return [element["name"] for element in json_data["hoster"]]
 
     def grab_info(self, user, password, data):
@@ -31,24 +40,16 @@ class HighWayMe(MultiAccount):
         validuntil = -1
         trafficleft = None
 
-        json_data = self.load("https://high-way.me/api.php?user")
-
-        self.log_debug(f"JSON data: {json_data}")
-
-        json_data = json.loads(json_data)
+        json_data = self.api_request("user")
 
         if "premium" in json_data["user"] and json_data["user"]["premium"]:
             premium = True
 
-        if "premium_bis" in json_data["user"] and json_data["user"]["premium_bis"]:
+        if 'premium_bis' in json_data['user'] and json_data['user']['premium_bis']:
             validuntil = float(json_data["user"]["premium_bis"])
 
-        if (
-            "premium_traffic" in json_data["user"]
-            and json_data["user"]["premium_traffic"]
-        ):
-            # TODO: Remove `>> 10` in 0.6.x
-            trafficleft = float(json_data["user"]["premium_traffic"]) >> 10
+        if 'premium_traffic' in json_data['user'] and json_data['user']['premium_traffic']:
+            trafficleft = int(json_data["user"]["premium_traffic"])
 
         return {
             "premium": premium,
@@ -57,10 +58,7 @@ class HighWayMe(MultiAccount):
         }
 
     def signin(self, user, password, data):
-        html = self.load(
-            "https://high-way.me/api.php?login",
-            post={"login": "1", "user": user, "pass": password},
-        )
+        json_data = self.api_request("login", user=user, _pass=password)
 
-        if "UserOrPassInvalid" in html:
+        if not json_data.get('loggedin', False):
             self.fail_login()
