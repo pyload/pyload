@@ -10,7 +10,7 @@ from ..base.multi_account import MultiAccount
 class SmoozedCom(MultiAccount):
     __name__ = "SmoozedCom"
     __type__ = "account"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __status__ = "testing"
 
     __config__ = [
@@ -39,7 +39,7 @@ class SmoozedCom(MultiAccount):
                 "validuntil": float(status["data"]["user"]["user_premium"]),
                 "trafficleft": max(
                     0, status["data"]["traffic"][1] - status["data"]["traffic"][0]
-                ),
+                ) << 10,
                 "session": status["data"]["session_key"],
                 "hosters": [hoster["name"] for hoster in status["data"]["hoster"]],
             }

@@ -215,7 +215,7 @@ class PyFile:
 
     def format_wait(self):
         """
-        formats and return wait time in humanreadable format.
+        formats and return wait time in human readable format.
         """
         seconds = int(self.wait_until - time.time())
         return format.time(seconds, literally=False)
@@ -248,7 +248,7 @@ class PyFile:
         """
         try:
             return int(self.get_bytes_left() // self.get_speed())
-        except Exception:
+        except ZeroDivisionError:
             return 0
 
     def get_bytes_left(self):
@@ -256,7 +256,7 @@ class PyFile:
         gets bytes left.
         """
         try:
-            return self.plugin.req.size - self.plugin.req.arrived
+            return max(self.get_size() - self.plugin.req.arrived, 0)
         except Exception:
             return 0
 

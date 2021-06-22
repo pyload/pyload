@@ -17,9 +17,7 @@ class DevhostStFolder(SimpleDecrypter):
     __version__ = "0.12"
     __status__ = "testing"
 
-    __pattern__ = (
-        r"http://(?:www\.)?d-h\.st/users/(?P<USER>\w+)(/\?fld_id=(?P<ID>\d+))?"
-    )
+    __pattern__ = r"http://(?:www\.)?d-h\.st/users/(?P<USER>\w+)(/\?fld_id=(?P<ID>\d+))?"
     __config__ = [
         ("enabled", "bool", "Activated", True),
         ("use_premium", "bool", "Use premium account if available", True),

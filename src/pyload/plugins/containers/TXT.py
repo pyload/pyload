@@ -39,7 +39,7 @@ class TXT(BaseContainer):
 
         fs_filename = os.fsdecode(pyfile.url)
         with open(fs_filename, encoding=encoding) as txt:
-            cur_pack = "Parsed links from {}".format(pyfile.name)
+            cur_pack = "Parsed links from {}".format(pyfile.name.split("tmp_")[-1])
             packages = {cur_pack: []}
 
             for link in txt.readlines():

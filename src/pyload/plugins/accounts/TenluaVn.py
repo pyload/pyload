@@ -21,7 +21,7 @@ class TenluaVn(BaseAccount):
     API_URL = "https://api2.tenlua.vn/"
 
     @classmethod
-    def api_response(cls, method, **kwargs):
+    def api_request(cls, method, **kwargs):
         kwargs["a"] = method
         sid = kwargs.pop("sid", None)
         return json.loads(
@@ -33,7 +33,7 @@ class TenluaVn(BaseAccount):
         )
 
     def grab_info(self, user, password, data):
-        user_info = self.api_response("user_info", sid=data["sid"])[0]
+        user_info = self.api_request("user_info", sid=data["sid"])[0]
 
         validuntil = time.mktime(time.strptime(user_info["endGold"], "%d-%m-%Y"))
         premium = user_info["free_used"] != "null"
@@ -42,7 +42,7 @@ class TenluaVn(BaseAccount):
 
     def signin(self, user, password, data):
         try:
-            login_info = self.api_response(
+            login_info = self.api_request(
                 "user_login", user=user, password=password, permanent=False
             )
 

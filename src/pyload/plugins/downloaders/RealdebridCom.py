@@ -18,9 +18,7 @@ class RealdebridCom(MultiDownloader):
     __version__ = "0.81"
     __status__ = "testing"
 
-    __pattern__ = (
-        r"https?://((?:www\.|s\d+\.)?real-debrid\.com/dl?/|[\w^_]\.rdb\.so/d/)[\w^_]+"
-    )
+    __pattern__ = r"https?://((?:www\.|s\d+\.)?real-debrid\.com/dl?/|[\w^_]\.rdb\.so/d/)[\w^_]+"
     __config__ = [
         ("use_premium", "bool", "Use premium account if available", True),
         ("fallback", "bool", "Fallback to free download if premium fails", False),
@@ -39,7 +37,7 @@ class RealdebridCom(MultiDownloader):
     # See https://api.real-debrid.com/
     API_URL = "https://api.real-debrid.com/rest/1.0"
 
-    def api_response(self, namespace, get={}, post={}):
+    def api_request(self, namespace, get={}, post={}):
         self.req.http.c.setopt(pycurl.USERAGENT, "pyLoad/{}".format(self.pyload.version))
         try:
             json_data = self.load(self.API_URL + namespace, get=get, post=post)
@@ -56,7 +54,7 @@ class RealdebridCom(MultiDownloader):
         user = list(self.account.accounts.keys())[0]
         api_token = self.account.accounts[user]["api_token"]
 
-        data = self.api_response(
+        data = self.api_request(
             "/unrestrict/link",
             args(auth_token=api_token),
             args(link=pyfile.url, password=self.get_password()),
@@ -73,7 +71,7 @@ class RealdebridCom(MultiDownloader):
                 self.retry()
 
             else:
-                self.fail("%s (code: %s)" % (data["error"], data["error_code"]))
+                self.fail("{} (code: {})".format(data["error"], data["error_code"]))
 
         else:
             if data["filename"]:

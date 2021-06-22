@@ -8,7 +8,7 @@ from ..base.xfs_decrypter import XFSDecrypter
 class XFileSharingFolder(XFSDecrypter):
     __name__ = "XFileSharingFolder"
     __type__ = "decrypter"
-    __version__ = "0.25"
+    __version__ = "0.26"
     __status__ = "testing"
 
     __pattern__ = r"^unmatchable$"

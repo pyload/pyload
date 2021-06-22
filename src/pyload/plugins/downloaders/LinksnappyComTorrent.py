@@ -32,7 +32,7 @@ class LinksnappyComTorrent(BaseDownloader):
 
     API_URL = "https://linksnappy.com/api/"
 
-    def api_response(self, method, **kwargs):
+    def api_request(self, method, **kwargs):
         return json.loads(self.load(self.API_URL + method,
                                          get=kwargs))
 
@@ -49,7 +49,7 @@ class LinksnappyComTorrent(BaseDownloader):
             #: torrent URL
             if self.pyfile.url.startswith("http"):
                 #: remote URL, download the torrent to tmp directory
-                api_data = self.api_response("torrents/ADDURL", url=self.pyfile.url).items()[0][1]
+                api_data = self.api_request("torrents/ADDURL", url=self.pyfile.url).items()[0][1]
 
                 if api_data['status'] == "FAILED" and api_data['error'] != "This torrent already exists in your account":
                     self.fail(api_data['error'])
@@ -80,7 +80,7 @@ class LinksnappyComTorrent(BaseDownloader):
 
         else:
             #: magnet URL, send to the server
-            api_data = self.api_response("torrents/ADDMAGNET", magnetlinks=self.pyfile.url)
+            api_data = self.api_request("torrents/ADDMAGNET", magnetlinks=self.pyfile.url)
 
             if api_data['status'] != "OK":
                 self.fail(api_data['error'])
@@ -97,7 +97,7 @@ class LinksnappyComTorrent(BaseDownloader):
     def wait_for_server_dl(self, torrent_id):
         """ Show progress while the server does the download """
 
-        api_data = self.api_response("torrents/STATUS", tid=torrent_id)
+        api_data = self.api_request("torrents/STATUS", tid=torrent_id)
         if api_data['status'] != "OK":
             self.fail(api_data['error'])
 
@@ -110,12 +110,12 @@ class LinksnappyComTorrent(BaseDownloader):
         self.pyfile.set_progress(0)
 
         if api_data['return']['status'] != "FINISHED":
-            api_data = self.api_response("torrents/START", tid=torrent_id)
+            api_data = self.api_request("torrents/START", tid=torrent_id)
             if api_data['status'] != "OK":
                 if api_data['error'] == "Magnet URI processing in progress. Please wait.":
                     for _i in range(8):
                         self.sleep(3)
-                        api_data = self.api_response("torrents/START", tid=torrent_id)
+                        api_data = self.api_request("torrents/START", tid=torrent_id)
                         if api_data['status'] == "OK":
                             break
                     else:
@@ -125,7 +125,7 @@ class LinksnappyComTorrent(BaseDownloader):
                     self.fail(api_data['error'])
 
             while True:
-                api_data = self.api_response("torrents/STATUS", tid=torrent_id)
+                api_data = self.api_request("torrents/STATUS", tid=torrent_id)
                 if api_data['status'] != "OK":
                     self.fail(api_data['error'])
 
@@ -151,7 +151,7 @@ class LinksnappyComTorrent(BaseDownloader):
         self.pyfile.set_custom_status("makezip")
         self.pyfile.set_progress(0)
         while True:
-            api_data = self.api_response("torrents/GENZIP", torrentid=torrent_id)
+            api_data = self.api_request("torrents/GENZIP", torrentid=torrent_id)
             if api_data['status'] == "ERROR":
                 self.fail(api_data['error'])
 
@@ -166,10 +166,10 @@ class LinksnappyComTorrent(BaseDownloader):
 
     def delete_torrent_from_server(self, torrent_id):
         """ Remove the torrent from the server """
-        self.api_response("torrents/DELETETORRENT", tid=torrent_id, delFiles=1)
+        self.api_request("torrents/DELETETORRENT", tid=torrent_id, delFiles=1)
 
     def setup(self):
-        self.multiDL = True
+        self.multi_dl = True
         self.resume_download = True
         self.chunk_limit = 1
 

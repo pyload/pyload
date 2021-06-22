@@ -35,7 +35,7 @@ class GooGl(SimpleDecrypter):
     API_URL = "https://www.googleapis.com/urlshortener/v1/"
     API_KEY = "AIzaSyAcA9c4evtwSY1ifuvzo6HKBkeot5Bk_U4"
 
-    def api_response(self, cmd, **kwargs):
+    def api_request(self, cmd, **kwargs):
         kwargs["key"] = self.API_KEY
 
         json_data = json.loads(self.load("{}{}".format(self.API_URL, cmd),
@@ -44,7 +44,7 @@ class GooGl(SimpleDecrypter):
         return json_data
 
     def decrypt(self, pyfile):
-        res = self.api_response("url", shortUrl=self.pyfile.url)
+        res = self.api_request("url", shortUrl=self.pyfile.url)
 
         if  res['status'] != "OK":
             self.offline()

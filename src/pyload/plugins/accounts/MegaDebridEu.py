@@ -36,7 +36,7 @@ class MegaDebridEu(MultiAccount):
 
     API_URL = "https://www.mega-debrid.eu/api.php"
 
-    def api_response(self, action, get={}, post={}):
+    def api_request(self, action, get={}, post={}):
         get["action"] = action
 
         # Better use pyLoad User-Agent so we don't get blocked
@@ -51,7 +51,7 @@ class MegaDebridEu(MultiAccount):
     def grab_hosters(self, user, password, data):
         hosters = []
         try:
-            res = self.api_response("getHostersList")
+            res = self.api_request("getHostersList")
 
         except BadHeader as exc:
             if exc.code == 405:
@@ -106,7 +106,7 @@ class MegaDebridEu(MultiAccount):
             self.skip_login()
 
         try:
-            res = self.api_response("connectUser", args(login=user, password=password))
+            res = self.api_request("connectUser", args(login=user, password=password))
 
         except BadHeader as exc:
             if exc.code == 401:

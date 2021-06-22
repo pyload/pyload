@@ -7,7 +7,7 @@ from ..base.multi_downloader import MultiDownloader
 class TwojlimitPl(MultiDownloader):
     __name__ = "TwojlimitPl"
     __type__ = "downloader"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
     __pattern__ = r"^unmatchable$"
@@ -87,7 +87,7 @@ class TwojlimitPl(MultiDownloader):
         pyfile.size = json_data["filesize"]
 
         try:
-            self.download(self.run_file_query(pyfile.url, "filedownload"), fixurl=False)
+            self.download(self.run_file_query(pyfile.url, "filedownload"))
 
         except Exception as exc:
             self.log_error(exc)

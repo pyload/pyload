@@ -33,12 +33,12 @@ def links():
         for link in links:
             ids.append(link["fid"])
 
-            if link["status"] == 12:
+            if link["status"] == 12:  #: downloading
                 formatted_eta = link["format_eta"]
                 formatted_speed = format.speed(link["speed"])
                 link["info"] = f"{formatted_eta} @ {formatted_speed}"
 
-            elif link["status"] == 5:
+            elif link["status"] == 5:  #: waiting
                 link["percent"] = 0
                 link["size"] = 0
                 link["bleft"] = 0
@@ -141,7 +141,7 @@ def add_package():
 
     package_name = flask.request.form.get("add_name", "New Package").strip()
     queue = int(flask.request.form["add_dest"])
-    links = flask.request.form["add_links"].split("\n")
+    links = [l.strip() for l in flask.request.form["add_links"].splitlines()]
     pw = flask.request.form.get("add_password", "").strip("\n\r")
 
     try:

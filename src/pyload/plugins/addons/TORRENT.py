@@ -10,7 +10,7 @@ class TORRENT(BaseAddon):
     __version__ = "0.07"
     __status__ = "testing"
 
-    __config__ = [("activated", "bool", "Activated", False),
+    __config__ = [("enabled", "bool", "Activated", True),
                   ("torrent_plugin",
                    "None;c:AlldebridComTorrent;c:DebridlinkFrTorrent;h:LinksnappyComTorrent;c:RealdebridComTorrent;h:ZbigzCom",
                    "Associate torrents / magnets with plugin", "None")]

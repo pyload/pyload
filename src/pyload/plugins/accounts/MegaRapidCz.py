@@ -9,7 +9,7 @@ from ..base.account import BaseAccount
 class MegaRapidCz(BaseAccount):
     __name__ = "MegaRapidCz"
     __type__ = "account"
-    __version__ = "0.42"
+    __version__ = "0.43"
     __status__ = "testing"
 
     __description__ = """MegaRapid.cz account plugin"""
@@ -41,7 +41,7 @@ class MegaRapidCz(BaseAccount):
 
         m = re.search(self.TRAFFIC_LEFT_PATTERN, htmll)
         if m is not None:
-            trafficleft = float(m.group(1)) * (1 << 20)
+            trafficleft = float(m.group(1)) * (1 << 30)
             return {"premium": True, "trafficleft": trafficleft, "validuntil": -1}
 
         return {"premium": False, "trafficleft": None, "validuntil": None}

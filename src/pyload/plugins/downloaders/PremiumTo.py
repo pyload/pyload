@@ -60,7 +60,7 @@ class PremiumTo(MultiDownloader):
 
             self.remove(self.last_download)
             self.fail(
-                self._("API error %s - %s") % (json_data["code"], json_data["message"])
+                self._("API error {} - {}").format(json_data["code"], json_data["message"])
             )
 
         return super().check_download()

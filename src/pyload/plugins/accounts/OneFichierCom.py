@@ -33,18 +33,14 @@ class OneFichierCom(BaseAccount):
 
         m = re.search(self.VALID_UNTIL_PATTERN, html)
         if m is not None:
-            expiredate = m.group(1)
-            self.log_debug("Expire date: " + expiredate)
+            expire_date = m.group(1)
+            self.log_debug("Expire date: " + expire_date)
 
             try:
-                validuntil = time.mktime(time.strptime(expiredate, "%Y-%m-%d"))
+                validuntil = time.mktime(time.strptime(expire_date, "%Y-%m-%d"))
 
             except Exception as exc:
-                self.log_error(
-                    exc,
-                    exc_info=self.pyload.debug > 1,
-                    stack_info=self.pyload.debug > 2,
-                )
+                self.log_error(exc)
 
             else:
                 premium = True

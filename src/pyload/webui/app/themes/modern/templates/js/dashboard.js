@@ -1,7 +1,6 @@
 {% autoescape true %}
 
 var em;
-//var operafix = (navigator.userAgent.toLowerCase().search("opera") >= 0);
 
 $( document ).ready(function() {
     em = new EntryManager();
@@ -9,13 +8,13 @@ $( document ).ready(function() {
 
 function labelcolor(color)
 {
-    if (color == 5) {
+    if (color === 5) {
             return 'label-warning';
-    } else if (color == 7) {
+    } else if (color === 7) {
             return 'label-info';
-    } else if (color == 12) {
+    } else if (color === 12) {
             return 'label-success';
-    } else if (color == 13) {
+    } else if (color === 13) {
             return 'label-primary';
     } else {
             return 'label-default';
@@ -41,7 +40,10 @@ function EntryManager(){
             url: "{{url_for('json.links')}}",
             async: true,
             timeout: 30000,
-            success: thisObject.update
+            success: thisObject.update,
+            error: function () {
+                thisObject.update({ids:[], links:[]})
+            }
         });
     }, 2500);
 
@@ -70,22 +72,18 @@ function EntryManager(){
         try{
             ids = entries.map(function(item){
                 return item.fid;
-                });
+            });
             var dataids = data.links.map(function(item){
                 return item.fid;
-                });
-
+            });
             var temp=ids.filter(function(id){
-                if ($.inArray(id,dataids)>-1)
-                    return false;
-                else
-                    return true;
+                return $.inArray(id, dataids) <= -1;
             },dataids);
             $.each(temp,function(id){
                 var elementid=Number(String(this));
                 var index = ids.indexOf(elementid);
                 entries[index].remove();
-                entries = entries.filter(function(item){return item.fid != elementid},id);
+                entries = entries.filter(function(item){return item.fid !== elementid},id);
                 ids.splice( $.inArray(elementid, ids), 1 );
                 //ids.splice(index,1);
                 // ids = ids.erase(id);

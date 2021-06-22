@@ -45,6 +45,7 @@ class AddonThread(PluginThread):
 
     def run(self):
         try:
+            retry = False
             try:
                 self.kwargs["thread"] = self
                 self.f(*self.args, **self.kwargs)
@@ -52,9 +53,13 @@ class AddonThread(PluginThread):
                 # dirty method to filter out exceptions
                 if "unexpected keyword argument 'thread'" not in exc.args[0]:
                     raise
+                else:
+                    retry = True
 
+            if retry:
                 del self.kwargs["thread"]
                 self.f(*self.args, **self.kwargs)
+
         finally:
             local = copy(self.active)
             for x in local:

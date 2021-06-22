@@ -37,7 +37,7 @@ class SafelinkingNet(BaseDecrypter):
     # Safelinking seems to use a static SolveMedia key
     SOLVEMEDIA_KEY = "OZ987i6xTzNs9lw5.MA-2Vxbc-UxFrLu"
 
-    def api_response(self, url, post_data):
+    def api_request(self, url, post_data):
         self.req.http.c.setopt(
             pycurl.HTTPHEADER,
             [
@@ -84,7 +84,7 @@ class SafelinkingNet(BaseDecrypter):
 
             post_data = {"hash": self.info["pattern"]["ID"]}
 
-            link_info = self.api_response(
+            link_info = self.api_request(
                 "http://safelinking.net/v1/protected", post_data
             )
 
@@ -114,7 +114,7 @@ class SafelinkingNet(BaseDecrypter):
                 post_data["challengeId"] = challenge
                 post_data["type"] = "0"
 
-            json_res = self.api_response(
+            json_res = self.api_request(
                 "https://safelinking.net/v1/captcha", post_data
             )
 
