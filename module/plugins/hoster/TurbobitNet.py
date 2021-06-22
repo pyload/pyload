@@ -3,14 +3,14 @@
 import pycurl
 import re
 
-from ..captcha.ReCaptcha import ReCaptcha
+from ..captcha.HCaptcha import HCaptcha
 from ..internal.SimpleHoster import SimpleHoster
 
 
 class TurbobitNet(SimpleHoster):
     __name__ = "TurbobitNet"
     __type__ = "hoster"
-    __version__ = "0.37"
+    __version__ = "0.38"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:(?:www|m)\.)?(?:turbobit\.net|turbo?\.(?:to|cc))/(?:download/free/)?(?P<ID>\w+)'
@@ -71,19 +71,14 @@ class TurbobitNet(SimpleHoster):
                 self.link = "https://turbobit.net%s" % m.group(1)
 
     def solve_captcha(self):
-        action, inputs = self.parse_html_form("action='#'")
-        if not inputs:
+        action, inputs = self.parse_html_form("id='form-captcha'")
+        if inputs is None:
             self.fail(_("Captcha form not found"))
 
-        if inputs['captcha_type'] == "recaptcha2":
-            self.captcha = ReCaptcha(self.pyfile)
-            inputs['g-recaptcha-response'], challenge = self.captcha.challenge()
+        self.captcha = HCaptcha(self.pyfile)
+        inputs["g-recaptcha-response"] = inputs["h-captcha-response"] = self.captcha.challenge()
 
-        else:
-            self.fail(_("Unknown captcha type"))
-
-        self.data = self.load(self.free_url,
-                              post=inputs)
+        self.data = self.load(self.free_url, post=inputs, ref=self.free_url)
 
     def handle_premium(self, pyfile):
         m = re.search(self.LINK_PREMIUM_PATTERN, self.data)
