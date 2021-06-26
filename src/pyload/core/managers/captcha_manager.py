@@ -49,7 +49,7 @@ class CaptchaManager:
 
         for plugin in self.pyload.addon_manager.active_plugins():
             try:
-                plugin.new_captcha_task(task)
+                plugin.captcha_task(task)
             except Exception:
                 pass
 
