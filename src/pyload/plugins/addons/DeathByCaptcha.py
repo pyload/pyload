@@ -8,6 +8,7 @@ import time
 import pycurl
 from pyload.core.network.http.exceptions import BadHeader
 from pyload.core.network.request_factory import get_request
+from pyload.core.utils.convert import to_str
 
 from ..base.addon import BaseAddon, threaded
 
@@ -142,7 +143,7 @@ class DeathByCaptcha(BaseAddon):
             multipart = False
             with open(captcha, mode="rb") as fp:
                 data = fp.read()
-            data = "base64:" + base64.b64encode(data)
+            data = "base64:" + to_str(base64.b64encode(data))
 
         res = self.api_request("captcha", {"captchafile": data}, multipart)
 
