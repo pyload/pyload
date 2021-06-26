@@ -6,6 +6,8 @@ import re
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
+from pyload.core.utils.convert import to_str
+
 from ..base.container import BaseContainer
 
 
@@ -44,14 +46,17 @@ class RSDF(BaseContainer):
 
         backend = default_backend()
 
-        cipher = Cipher(algorithms.AES(KEY), modes.ECB, backend=backend)
+        ecb = Cipher(algorithms.AES(KEY), modes.ECB(), backend=backend).encryptor()
+        iv = ecb.update(IV) + ecb.finalize()
+
+        cipher = Cipher(algorithms.AES(KEY), modes.CFB(iv), backend=backend)
         encryptor = cipher.encryptor()
         iv = encryptor.update(IV) + encryptor.finalize()
 
         try:
             fs_filename = os.fsdecode(pyfile.url)
-            with open(fs_filename, mode="rb") as rsdf:
-                data = rsdf.read()
+            with open(fs_filename, mode="r") as fp:
+                data = fp.read()
 
         except IOError as exc:
             self.fail(exc)
@@ -71,6 +76,6 @@ class RSDF(BaseContainer):
                     continue
                 cipher = Cipher(algorithms.AES(KEY), modes.CFB(iv), backend=backend)
                 decryptor = cipher.decryptor()
-                value = decryptor.update(base64.b64decode(link) + decryptor.finalize())
+                value = to_str(decryptor.update(base64.b64decode(link) + decryptor.finalize()))
                 link = value.replace("CCF: ", "")
                 self.links.append(link)
