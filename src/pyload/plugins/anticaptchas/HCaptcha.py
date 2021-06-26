@@ -92,7 +92,7 @@ class HCaptcha(CaptchaService):
                 return self.key
 
             else:
-                self.log_debug(key, "Wrong key format, this probably because is is not a hCaptcha key")
+                self.log_debug(key, "Wrong key format, this probably because it is not a hCaptcha key")
 
         self.log_warning(self._("Key pattern not found"))
         return None
