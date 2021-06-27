@@ -43,7 +43,7 @@ def name(text, safe_name=True):
     try:
         name = web_parse.name(text, safe_name=safe_name)
         name = os.path.basename(name)
-    except Exception as exc:
+    except Exception:
         name = os.path.basename(text).strip()
         if safe_name:
             name = purge.name(name)

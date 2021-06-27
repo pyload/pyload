@@ -114,10 +114,9 @@ class PluginManager:
             config = [[k] + list(v) for k, v in config.items()]
             try:
                 self.pyload.config.add_plugin_config(name, config, desc)
-            except Exception as exc:
+            except Exception:
                 self.pyload.log.error(
                     self._("Invalid config in {}: {}").format(name, config),
-                    exc,
                     exc_info=self.pyload.debug > 1,
                     stack_info=self.pyload.debug > 2,
                 )

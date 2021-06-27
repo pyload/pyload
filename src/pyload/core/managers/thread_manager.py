@@ -140,10 +140,9 @@ class ThreadManager:
 
         try:
             self.assign_job()
-        except Exception as exc:
+        except Exception:
             self.pyload.log.warning(
                 "Assign job error",
-                exc,
                 exc_info=self.pyload.debug > 1,
                 stack_info=self.pyload.debug > 2,
             )

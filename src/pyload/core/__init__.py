@@ -218,10 +218,9 @@ class Core:
 
                 group = getgrnam(self.config.get("permission", "group"))
                 os.setgid(group[2])
-            except Exception as exc:
+            except Exception:
                 self.log.warning(
                     self._("Unable to change gid"),
-                    exc,
                     exc_info=self.debug > 1,
                     stack_info=self.debug > 2,
                 )
@@ -232,10 +231,9 @@ class Core:
 
                 user = getpwnam(self.config.get("permission", "user"))
                 os.setuid(user[2])
-            except Exception as exc:
+            except Exception:
                 self.log.warning(
                     self._("Unable to change uid"),
-                    exc,
                     exc_info=self.debug > 1,
                     stack_info=self.debug > 2,
                 )
