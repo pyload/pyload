@@ -51,7 +51,11 @@ class CaptchaManager:
             try:
                 plugin.captcha_task(task)
             except Exception:
-                pass
+                self.pyload.log.warning(
+                    self.pyload._("Unable to create captcha task"),
+                    exc_info=self.pyload.debug > 1,
+                    stack_info=self.pyload.debug > 2
+                )
 
         if task.handler or cli:  #: The captcha was handled
             self.tasks.append(task)
