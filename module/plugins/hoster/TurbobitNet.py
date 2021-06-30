@@ -11,7 +11,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class TurbobitNet(SimpleHoster):
     __name__ = "TurbobitNet"
     __type__ = "hoster"
-    __version__ = "0.39"
+    __version__ = "0.40"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:(?:www|m)\.)?(?:turbobit\.net|turbo?\.(?:to|cc))/(?:download/free/)?(?P<ID>\w+)'
@@ -74,7 +74,7 @@ class TurbobitNet(SimpleHoster):
     def solve_captcha(self):
         action, inputs = self.parse_html_form("id='form-captcha'")
         if inputs is None:
-            self.fail(self._("Captcha form not found"))
+            self.fail(_("Captcha form not found"))
 
         else:
             recaptcha = ReCaptcha(self.pyfile)
