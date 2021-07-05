@@ -11,7 +11,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class TurbobitNet(SimpleHoster):
     __name__ = "TurbobitNet"
     __type__ = "hoster"
-    __version__ = "0.40"
+    __version__ = "0.41"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:(?:www|m)\.)?(?:turbobit\.net|turbo?\.(?:to|cc))/(?:download/free/)?(?P<ID>\w+)'
@@ -54,7 +54,9 @@ class TurbobitNet(SimpleHoster):
 
         m = re.search(r'minLimit : (.+?),', self.data)
         if m is None:
-            self.fail(_("minLimit pattern not found"))
+            self.retry_captcha()
+
+        self.captcha.correct()
 
         wait_time = self.js.eval(m.group(1))
         self.wait(wait_time)
