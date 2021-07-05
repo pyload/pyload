@@ -13,7 +13,7 @@ from ..base.simple_downloader import SimpleDownloader
 class TurbobitNet(SimpleDownloader):
     __name__ = "TurbobitNet"
     __type__ = "downloader"
-    __version__ = "0.40"
+    __version__ = "0.41"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:(?:www|m)\.)?(?:turbobit\.net|turbo?\.(?:to|cc))/(?:download/free/)?(?P<ID>\w+)'
@@ -63,7 +63,9 @@ class TurbobitNet(SimpleDownloader):
 
         m = re.search(r"minLimit : (.+?),", self.data)
         if m is None:
-            self.fail(self._("minLimit pattern not found"))
+            self.retry_captcha()
+
+        self.captcha.correct()
 
         wait_time = eval_js(m.group(1))
         self.wait(wait_time)
