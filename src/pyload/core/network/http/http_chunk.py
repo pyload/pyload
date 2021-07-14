@@ -259,13 +259,16 @@ class HTTPChunk(HTTPRequest):
 
     def parse_header(self):
         """
-        parse data from recieved header.
+        parse data from received header.
         """
         for orgline in self.response_header.splitlines():
             try:
-                orgline = orgline.decode("iso-8859-1")
+                orgline = orgline.decode("utf-8")
             except UnicodeDecodeError:
-                continue
+                try:
+                    orgline = orgline.decode("iso-8859-1")
+                except UnicodeDecodeError:
+                        continue
 
             line = orgline.strip().lower()
             if line.startswith("accept-ranges") and "bytes" in line:
