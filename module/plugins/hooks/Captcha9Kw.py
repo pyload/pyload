@@ -16,7 +16,7 @@ from ..internal.misc import threaded, fs_encode
 class Captcha9Kw(Addon):
     __name__ = "Captcha9Kw"
     __type__ = "hook"
-    __version__ = "0.40"
+    __version__ = "0.41"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", False),
@@ -40,6 +40,9 @@ class Captcha9Kw(Addon):
 
     API_URL = "https://www.9kw.eu/index.cgi"
 
+    INTERACTIVE_TYPES = {'ReCaptcha': "recaptchav2",
+                         'HCaptcha': "hcaptcha"}
+
     def get_credits(self):
         res = self.load(self.API_URL,
                         get={'apikey': self.config.get('passkey'),
@@ -57,6 +60,7 @@ class Captcha9Kw(Addon):
 
     @threaded
     def _process_captcha(self, task):
+        pluginname = task.captchaParams['plugin']
         if task.isInteractive():
             url_p = urlparse.urlparse(task.captchaParams['url'])
             if  url_p.scheme not in ("http", "https"):
@@ -64,8 +68,10 @@ class Captcha9Kw(Addon):
                 return
 
             post_data = {'pageurl': "%s://%s/" % (url_p.scheme, url_p.netloc),
+                         'oldsource': self.INTERACTIVE_TYPES[task.captchaParams['captcha_plugin']],
+                         'captchachoice': self.INTERACTIVE_TYPES[task.captchaParams['captcha_plugin']],
                          'data-sitekey': task.captchaParams['sitekey'],
-                         'securetoken': task.captchaParams['securetoken'] or ""}
+                         'securetoken': task.captchaParams.get('securetoken', "")}
 
         else:
             try:
@@ -76,9 +82,9 @@ class Captcha9Kw(Addon):
                 self.log_error(e)
                 return
 
-            post_data = {'file-upload-01': base64.b64encode(data)}
+            post_data = {'file-upload-01': base64.b64encode(data),
+                         'oldsource': pluginname}
 
-        pluginname = task.captchaParams['plugin']
         option = {'min': 2,
                   'max': 50,
                   'phrase': 0,
@@ -123,7 +129,6 @@ class Captcha9Kw(Addon):
                           'phrase': option['phrase'],
                           'numeric': option['numeric'],
                           'math': option['math'],
-                          'oldsource': pluginname,
                           'pyload': 1,
                           'source': "pyload",
                           'base64': 0 if task.isInteractive() else 1,
@@ -175,7 +180,7 @@ class Captcha9Kw(Addon):
 
     def captcha_task(self, task):
         if task.isInteractive():
-            if task.captchaParams['captcha_plugin'] != "ReCaptcha" or self.config.get('solve_interactive') is False:
+            if task.captchaParams['captcha_plugin'] not in self.INTERACTIVE_TYPES.keys() or self.config.get('solve_interactive') is False:
                 return
         else:
             if not task.isTextual() and not task.isPositional():
@@ -189,7 +194,7 @@ class Captcha9Kw(Addon):
 
         credits = self.get_credits()
 
-        if not credits:
+        if credits <= 0:
             self.log_error(_("Your captcha 9kw.eu account has not enough credits"))
             return
 
