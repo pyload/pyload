@@ -7,6 +7,11 @@ from pyload.core.network.request_factory import get_url
 
 from ..base.account import BaseAccount
 
+try:
+    import passlib.hash
+except ImportError:
+    pass
+
 
 class WebshareCz(BaseAccount):
     __name__ = "WebshareCz"
@@ -58,10 +63,7 @@ class WebshareCz(BaseAccount):
         salt = re.search("<salt>(.*?)</salt>", salt).group(1)
         salt_pw = salt + password
 
-        password = hashlib.sha1(
-            hashlib.md5(salt_pw.encode()).hexdigest().encode()
-        ).hexdigest()
-        digest = hashlib.md5(user + ":Webshare:" + password).hexdigest()
+        password = hashlib.sha1(passlib.hash.md5_crypt.encrypt(password, salt=salt).encode()).hexdigest()
 
         login = self.api_request(
             "login",
