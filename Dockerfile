@@ -100,6 +100,8 @@ RUN echo "**** create s6 fix-attr script ****" && \
     mkdir -p /etc/services.d/pyload && \
     echo -e "#!/usr/bin/with-contenv bash\n\n \
     umask 022\n \
+    export PYTHONPATH=\$PYTHONPATH:/usr/local/lib/python3.8/site-packages\n \
+    export HOME=/config\n \
     exec s6-setuidgid abc pyload --userdir /config --storagedir /downloads" > /etc/services.d/pyload/run && \
     \
     echo "**** cleanup ****" && \
