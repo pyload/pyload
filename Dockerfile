@@ -8,7 +8,7 @@
 #           \  /
 #            \/
 
-ARG IMAGE_TAG="3.11"
+ARG IMAGE_TAG="3.13"
 ARG IMAGE_CREATED
 ARG IMAGE_AUTHORS="Walter Purcaro <vuolter@gmail.com>"
 ARG IMAGE_URL="https://github.com/pyload/pyload"
@@ -42,7 +42,7 @@ RUN echo "**** install binary packages ****" && \
 
 FROM builder AS wheels_builder
 
-ARG APK_PACKAGES="gcc musl-dev python3-dev libffi-dev openssl-dev jpeg-dev zlib-dev libxml2-dev libxslt-dev curl-dev"
+ARG APK_PACKAGES="gcc musl-dev python3-dev libffi-dev openssl-dev jpeg-dev zlib-dev libxml2-dev libxslt-dev curl-dev cargo"
 
 ENV PYCURL_SSL_LIBRARY="openssl"
 
@@ -53,7 +53,7 @@ RUN echo "**** install build packages ****" && \
     apk add $APK_INSTALL_OPTIONS $APK_PACKAGES && \
     \
     echo "**** build pyLoad dependencies ****" && \
-    python3 -c "import configparser as cp; c = cp.ConfigParser(); c.read('/source/setup.cfg'); print(c['options']['install_requires'] + c['options.extras_require']['extra'])" | \
+    python3 -c "import configparser as cp; c = cp.ConfigParser(); c.read('/source/setup.cfg'); print(c['options']['install_requires'] + c['options.extras_require']['all'])" | \
     xargs pip3 wheel --wheel-dir=.
 
 
