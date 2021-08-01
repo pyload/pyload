@@ -42,7 +42,7 @@ RUN echo "**** install binary packages ****" && \
 
 FROM builder AS wheels_builder
 
-ARG APK_PACKAGES="gcc musl-dev python3-dev libffi-dev openssl-dev jpeg-dev zlib-dev libxml2-dev libxslt-dev curl-dev cargo"
+ARG APK_PACKAGES="gcc g++ musl-dev python3-dev libffi-dev openssl-dev jpeg-dev zlib-dev libxml2-dev libxslt-dev curl-dev cargo"
 
 ENV PYCURL_SSL_LIBRARY="openssl"
 
