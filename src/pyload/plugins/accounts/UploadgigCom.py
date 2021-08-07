@@ -14,7 +14,7 @@ from ..helpers import parse_html_form
 class UploadgigCom(BaseAccount):
     __name__ = "UploadgigCom"
     __type__ = "account"
-    __version__ = "0.04"
+    __version__ = "0.05"
     __status__ = "testing"
 
     __description__ = """UploadgigCom account plugin"""
@@ -135,6 +135,6 @@ class UploadgigCom(BaseAccount):
     def check_status(self):
         pass
 
-    def retry_captcha(self, attemps=10, wait=1, msg=_("Max captcha retries reached")):
+    def retry_captcha(self, attemps=10, wait=1, msg="Max captcha retries reached"):
         self.captcha.invalid()
-        self.fail_login(msg=_("Invalid captcha"))
+        self.fail_login(msg=self._("Invalid captcha"))
