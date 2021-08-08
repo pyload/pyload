@@ -9,7 +9,7 @@ from ..base.simple_downloader import SimpleDownloader
 class UploadgigCom(SimpleDownloader):
     __name__ = "UploadgigCom"
     __type__ = "downloader"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?uploadgig.com/file/download/\w+"
