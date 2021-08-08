@@ -70,9 +70,9 @@ class UploadgigCom(SimpleDownloader):
             except:
                 self.fail(self._("Illegal response from the server"))
 
-            if any([_x not in res for _x in ('cd', 'fopg', 'fghre')]):
+            if any([_x not in res for _x in ('cd', 'sp', 'q', 'id')]):
                 self.fail(self._("Illegal response from the server"))
 
             self.wait(res['cd'])
 
-            self.link = "http://" + res['fopg'] + res['fghre'] + "/dlfile"
+            self.link = res['sp'] + "id=" + str(res['id'] - 5) + "&" + res['q']
