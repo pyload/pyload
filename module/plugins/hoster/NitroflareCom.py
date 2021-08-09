@@ -4,6 +4,7 @@ import re
 
 from module.network.RequestFactory import getURL as get_url
 
+from ..captcha.HCaptcha import HCaptcha
 from ..captcha.ReCaptcha import ReCaptcha
 from ..internal.misc import json
 from ..internal.SimpleHoster import SimpleHoster
@@ -12,7 +13,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class NitroflareCom(SimpleHoster):
     __name__ = "NitroflareCom"
     __type__ = "hoster"
-    __version__ = "0.30"
+    __version__ = "0.31"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(?:nitro\.download|nitroflare\.com)/view/(?P<ID>[\w^_]+)'
@@ -71,9 +72,6 @@ class NitroflareCom(SimpleHoster):
         except (IndexError, ValueError):
             wait_time = 120
 
-        recaptcha = ReCaptcha(pyfile)
-        recaptcha_key = recaptcha.detect_key()
-
         self.data = self.load("http://nitroflare.com/ajax/freeDownload.php",
                               post={'method': "startTimer",
                                     'fileId': self.info['pattern']['ID']})
@@ -84,13 +82,22 @@ class NitroflareCom(SimpleHoster):
 
         inputs = {'method': "fetchDownload"}
 
+        recaptcha = ReCaptcha(pyfile)
+        recaptcha_key = recaptcha.detect_key()
         if recaptcha_key:
             self.captcha = recaptcha
             response, _ = self.captcha.challenge(recaptcha_key)
             inputs['g-recaptcha-response'] = response
 
         else:
-            response = self.captcha.decrypt("http://nitroflare.com/plugins/cool-captcha/captcha.php")
+            hcaptcha = HCaptcha(pyfile)
+            hcaptcha_key = hcaptcha.detect_key()
+            if hcaptcha_key:
+                self.captcha = hcaptcha
+                response = self.captcha.challenge(hcaptcha_key)
+                inputs["g-recaptcha-response"] = inputs["h-captcha-response"] = response
+            else:
+                response = self.captcha.decrypt("http://nitroflare.com/plugins/cool-captcha/captcha.php")
 
         inputs['captcha'] = response
 
