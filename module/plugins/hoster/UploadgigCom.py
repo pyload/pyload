@@ -8,7 +8,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class UploadgigCom(SimpleHoster):
     __name__ = "UploadgigCom"
     __type__ = "hoster"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?uploadgig.com/file/download/\w+'
@@ -68,9 +68,9 @@ class UploadgigCom(SimpleHoster):
             except:
                 self.fail(_("Illegal response from the server"))
 
-            if any([_x not in res for _x in ('cd', 'fopg', 'fghre')]):
+            if any([_x not in res for _x in ('cd', 'sp', 'q', 'id')]):
                 self.fail(_("Illegal response from the server"))
 
             self.wait(res['cd'])
 
-            self.link = "http://" + res['fopg'] + res['fghre'] +"/dlfile"
+            self.link = res['sp'] + "id=" + str(res['id'] - 5) + "&" + res['q']
