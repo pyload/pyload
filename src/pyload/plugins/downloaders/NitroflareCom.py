@@ -78,11 +78,6 @@ class NitroflareCom(SimpleDownloader):
         except (IndexError, ValueError):
             wait_time = 120
 
-        recaptcha = ReCaptcha(pyfile)
-        recaptcha_key = recaptcha.detect_key()
-        hcaptcha = HCaptcha(pyfile)
-        hcaptcha_key = hcaptcha.detect_key()
-
         self.data = self.load(
             "http://nitroflare.com/ajax/freeDownload.php",
             post={"method": "startTimer", "fileId": self.info["pattern"]["ID"]},
@@ -94,18 +89,23 @@ class NitroflareCom(SimpleDownloader):
 
         inputs = {"method": "fetchDownload"}
 
+        recaptcha = ReCaptcha(pyfile)
+        recaptcha_key = recaptcha.detect_key()
         if recaptcha_key:
             self.captcha = recaptcha
             response, _ = self.captcha.challenge(recaptcha_key)
             inputs["g-recaptcha-response"] = response
-        elif hcaptcha_key:
-            self.captcha = hcaptcha
-            response = self.captcha.challenge(hcaptcha_key)
-            inputs["g-recaptcha-response"] = inputs["h-captcha-response"] = response
         else:
-            response = self.captcha.decrypt(
-                "http://nitroflare.com/plugins/cool-captcha/captcha.php"
-            )
+            hcaptcha = HCaptcha(pyfile)
+            hcaptcha_key = hcaptcha.detect_key()
+            if hcaptcha_key:
+                self.captcha = hcaptcha
+                response = self.captcha.challenge(hcaptcha_key)
+                inputs["g-recaptcha-response"] = inputs["h-captcha-response"] = response
+            else:
+                response = self.captcha.decrypt(
+                    "http://nitroflare.com/plugins/cool-captcha/captcha.php"
+                )
 
         inputs["captcha"] = response
 
