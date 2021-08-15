@@ -110,6 +110,7 @@ class HTTPRequest:
             self.c.setopt(pycurl.USE_SSL, pycurl.USESSL_TRY)
 
         # self.c.setopt(pycurl.VERBOSE, 1)
+        # self.c.setopt(pycurl.HTTP_VERSION, pycurl.CURL_HTTP_VERSION_1_1)
 
         self.c.setopt(
             pycurl.USERAGENT,
