@@ -15,7 +15,7 @@ from ..base.simple_downloader import SimpleDownloader
 class RapidgatorNet(SimpleDownloader):
     __name__ = "RapidgatorNet"
     __type__ = "downloader"
-    __version__ = "0.57"
+    __version__ = "0.58"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?(?:rapidgator\.(?:net|asia|)|rg\.to)/file/(?P<ID>\w+)"
@@ -41,7 +41,7 @@ class RapidgatorNet(SimpleDownloader):
 
     NAME_PATTERN = r"<title>Download file (?P<N>.*)</title>"
     SIZE_PATTERN = r"File size:\s*<strong>(?P<S>[\d.,]+) (?P<U>[\w^_]+)</strong>"
-    OFFLINE_PATTERN = r">(File not found|Error 404)"
+    OFFLINE_PATTERN = r">(404 File not found|Error 404)"
 
     JSVARS_PATTERN = r"\s+var\s*(startTimerUrl|getDownloadUrl|captchaUrl|fid|secs)\s*=\s*\'?(.*?)\'?;"
 
@@ -75,7 +75,7 @@ class RapidgatorNet(SimpleDownloader):
 
         except BadHeader as exc:
             status = exc.code
-            message = exc.response
+            message = exc.content
 
         if status == 200:
             return json_data["response"]
