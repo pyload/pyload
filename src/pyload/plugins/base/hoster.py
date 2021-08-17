@@ -154,7 +154,6 @@ class BaseHoster(BasePlugin):
             self.load_account()  # TODO: Move to PluginThread in 0.6.x
         else:
             self.account = False
-            self.user = None  # TODO: Remove in 0.6.x
 
         try:
             self.req.close()
@@ -184,11 +183,9 @@ class BaseHoster(BasePlugin):
 
         if not self.account:
             self.account = False
-            self.user = None  # TODO: Remove in 0.6.x
 
         else:
             self.account.choose()
-            self.user = self.account.user  # TODO: Remove in 0.6.x
             if self.account.user is None:
                 self.account = False
 
