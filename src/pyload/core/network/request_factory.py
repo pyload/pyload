@@ -42,9 +42,10 @@ class RequestFactory:
 
             if account:
                 cj = self.get_cookie_jar(plugin_name, account)
-                req.set_cookie_jar(cj)
             else:
-                req.set_cookie_jar(CookieJar(plugin_name))
+                cj = CookieJar(plugin_name)
+
+            req.set_cookie_jar(cj)
 
         return req
 
