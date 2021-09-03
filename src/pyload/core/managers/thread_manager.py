@@ -266,7 +266,7 @@ class ThreadManager:
     # ----------------------------------------------------------------------
     def assign_job(self):
         """
-        assing a job to a thread if possible.
+        assign a job to a thread if possible.
         """
         if self.pause or not self.pyload.api.is_time_download():
             return
