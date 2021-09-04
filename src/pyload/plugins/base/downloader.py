@@ -46,10 +46,10 @@ class BaseDownloader(BaseHoster):
         #: Enable simultaneous processing of multiple downloads
         self.limit_dl = 0
 
-        #:
+        #: Download chunks limit
         self.chunk_limit = None
 
-        #:
+        #: Enable download resuming if the hoster supports resuming
         self.resume_download = False
 
         #: Location where the last call to download was saved
@@ -80,7 +80,6 @@ class BaseDownloader(BaseHoster):
     def load_account(self):
         if self.restart_free:
             self.account = False
-            self.user = None  # TODO: Remove in 0.6.x
         else:
             super().load_account()
             # self.restart_free = False
