@@ -354,7 +354,7 @@ class ThreadManager:
 
     def get_limit(self, thread):
         limit = thread.active.plugin.account.get_account_data(
-            thread.active.plugin.user
+            thread.active.plugin.account.user
         )["options"].get("limit_dl", ["0"])[0]
         return int(limit)
 

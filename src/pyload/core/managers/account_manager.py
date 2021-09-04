@@ -198,7 +198,7 @@ class AccountManager:
         for acc in self.accounts.keys():
             if self.accounts[acc]:
                 plugin = self.get_account_plugin(acc)
-                if plugin:
+                if plugin is not None:
                     data[plugin.__name__] = plugin.get_all_accounts(force)
                 else:
                     self.pyload.log.error(self._("Bad or missing plugin: ACCOUNT {}").format(acc))

@@ -44,6 +44,9 @@ class BaseAccount(BasePlugin):
 
         self.init()
 
+    def __bool__(self):
+        return self.user is not None
+
     @property
     def logged(self):
         """
