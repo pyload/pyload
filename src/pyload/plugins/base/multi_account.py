@@ -338,7 +338,7 @@ class MultiAccount(BaseAccount):
                         )
                     )
 
-                self.periodical.set_interval(timedelta(minutes=5).seconds)
+                self.periodical.set_interval(timedelta(minutes=5).total_seconds())
 
             else:
                 if reloading:
@@ -377,7 +377,7 @@ class MultiAccount(BaseAccount):
                             )
                         )
 
-                    self.periodical.set_interval(timedelta(minutes=5).seconds)
+                    self.periodical.set_interval(timedelta(minutes=5).total_seconds())
 
                 else:
                     if reloading:
@@ -418,7 +418,7 @@ class MultiAccount(BaseAccount):
                             "Failed to load hoster list for user `{}`, retry in 5 minutes"
                         ).format(self.user)
                     )
-                    self.periodical.set_interval(timedelta(minutes=5).seconds)
+                    self.periodical.set_interval(timedelta(minutes=5).total_seconds())
 
                 else:
                     self.log_error(
@@ -433,7 +433,7 @@ class MultiAccount(BaseAccount):
         if self.fail_count:
             self.fail_count = 0
 
-            interval = timedelta(hours=self.config.get("mh_interval", 12)).seconds
+            interval = timedelta(hours=self.config.get("mh_interval", 12)).total_seconds()
             self.periodical.set_interval(interval)
 
         self._override()
@@ -470,7 +470,7 @@ class MultiAccount(BaseAccount):
     def update_accounts(self, user, password=None, options={}):
         super().update_accounts(user, password, options)
         if self.need_reactivate:
-            interval = timedelta(hours=self.config.get("mh_interval", 12)).seconds
+            interval = timedelta(hours=self.config.get("mh_interval", 12)).total_seconds()
             self.periodical.restart(interval, threaded=True, delay=2)
 
         self.need_reactivate = True

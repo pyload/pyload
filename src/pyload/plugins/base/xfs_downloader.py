@@ -168,7 +168,7 @@ class XFSDownloader(SimpleDownloader):
             self.data = self.load(action, post=inputs)
 
         elif "Can not leech file" in stmsg:
-            self.retry(20, timedelta(minutes=3).seconds, self._("Can not leech file"))
+            self.retry(20, timedelta(minutes=3).total_seconds(), self._("Can not leech file"))
 
         elif "today" in stmsg:
             self.retry(
@@ -225,7 +225,7 @@ class XFSDownloader(SimpleDownloader):
                     self.set_wait(wait_time)
                     if (
                         wait_time
-                        < timedelta(minutes=self.config.get("max_wait", 10)).seconds
+                        < timedelta(minutes=self.config.get("max_wait", 10)).total_seconds()
                         or not self.pyload.config.get("reconnect", "enabled")
                         or not self.pyload.api.is_time_reconnect()
                     ):

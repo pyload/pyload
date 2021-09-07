@@ -31,7 +31,7 @@ def to_midnight(utc=None, strict=False):
         hour=0, minute=0 if strict else 1, second=0, microsecond=0
     ) + datetime.timedelta(days=1)
 
-    return (midnight - now).seconds
+    return (midnight - now).total_seconds()
 
 
 def to_nexthour(strict=False):

@@ -38,7 +38,7 @@ class UpdateManager(BaseAddon):
     # SERVER_URL     = "http://updatemanager.pyload.net"
     # SERVER_URL = "http://updatemanager-spyload.rhcloud.com"
     SERVER_URL = "https://raw.githubusercontent.com/pyload/updates/master/plugins.txt"
-    CHECK_INTERVAL = timedelta(hours=3).seconds  #: 3 hours
+    MIN_CHECK_INTERVAL = timedelta(hours=3).total_seconds()  #: minimum is 3 hours
 
     def activate(self):
         if self.checkonstart:
@@ -79,8 +79,8 @@ class UpdateManager(BaseAddon):
             self.config.get("checkperiod")
             and time.time()
             - max(
-                self.CHECK_INTERVAL,
-                timedelta(hours=self.config.get("checkinterval")).seconds,
+                self.MIN_CHECK_INTERVAL,
+                timedelta(hours=self.config.get("checkinterval")).total_seconds(),
             )
             > self.info["last_check"]
         ):

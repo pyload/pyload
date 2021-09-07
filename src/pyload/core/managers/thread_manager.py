@@ -71,7 +71,7 @@ class ThreadManager:
         start a thread whichs fetches online status and other infos
         data = [ .. () .. ]
         """
-        self.timestamp = time.time() + timedelta(minutes=5).seconds
+        self.timestamp = time.time() + timedelta(minutes=5).total_seconds()
 
         InfoThread(self, data, pid)
 
@@ -80,7 +80,7 @@ class ThreadManager:
         """
         creates a thread to fetch online status, returns result id.
         """
-        self.timestamp = time.time() + timedelta(minutes=5).seconds
+        self.timestamp = time.time() + timedelta(minutes=5).total_seconds()
 
         rid = self.result_ids
         self.result_ids += 1
@@ -94,7 +94,7 @@ class ThreadManager:
         """
         returns result and clears it.
         """
-        self.timestamp = time.time() + timedelta(minutes=5).seconds
+        self.timestamp = time.time() + timedelta(minutes=5).total_seconds()
 
         if rid in self.info_results:
             data = self.info_results[rid]
@@ -274,7 +274,7 @@ class ThreadManager:
         # if self.downloaded > 20:
         #    if not self.clean_py_curl(): return
 
-        free = [x for x in self.threads if not x.active]
+        free_threads = [x for x in self.threads if not x.active]
 
         inuse = set(
             [
@@ -297,7 +297,7 @@ class ThreadManager:
             )
             for x in inuse
         ]
-        onlimit = [x[0] for x in inuse if x[1] > 0 and x[2] >= x[1]]
+        onlimit = [x[0] for x in inuse if x[2] >= x[1] > 0]
 
         occ = sorted(
             [
@@ -332,8 +332,8 @@ class ThreadManager:
                     self.pyload.log.warning(self._("Not enough space left on device"))
                     self.pause = True
 
-                if free and not self.pause:
-                    thread = free[0]
+                if free_threads and not self.pause:
+                    thread = free_threads[0]
                     # self.downloaded += 1
 
                     thread.put(job)

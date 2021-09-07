@@ -186,7 +186,7 @@ class FileserveCom(BaseDownloader):
         wait_time = (
             (int(m.group(1)) * {"seconds": 1, "minutes": 60, "hours": 3600}[m.group(2)])
             if m
-            else timedelta(minutes=12).seconds
+            else timedelta(minutes=12).total_seconds()
         )
         self.wait(wait_time, True)
         self.retry()

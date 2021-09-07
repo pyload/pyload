@@ -38,7 +38,7 @@ class CatShareNet(BaseAccount):
                 validuntil = time.time()
                 for n, u in m:
                     validuntil += (
-                        timedelta(hours=n).seconds
+                        timedelta(hours=n).total_seconds()
                         * {"tydzień": 168, "dni": 24, "godzin": 1}[u]
                     )
 

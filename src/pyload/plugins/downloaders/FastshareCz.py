@@ -77,7 +77,7 @@ class FastshareCz(SimpleDownloader):
         if check == "parallel-dl":
             self.log_warning(self._("Parallel download"))
             self.remove(self.last_download)
-            self.retry(6, timedelta(minutes=10).seconds, self._("Paralell download"))
+            self.retry(6, timedelta(minutes=10).total_seconds(), self._("Paralell download"))
 
         elif check == "wrong captcha":
             self.log_warning(self._("Wrong captcha"))

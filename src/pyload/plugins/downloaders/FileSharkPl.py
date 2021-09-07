@@ -74,13 +74,13 @@ class FileSharkPl(SimpleDownloader):
                 self.log_warning(errmsg)
                 self.retry(
                     10,
-                    timedelta(minutes=30).seconds,
+                    timedelta(minutes=30).total_seconds(),
                     self._("Still no free download slots available"),
                 )
 
             else:
                 self.info["error"] = alert
-                self.retry(10, timedelta(minutes=10).seconds, self._("Try again later"))
+                self.retry(10, timedelta(minutes=10).total_seconds(), self._("Try again later"))
 
         self.info.pop("error", None)
 

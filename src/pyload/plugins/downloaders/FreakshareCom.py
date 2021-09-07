@@ -72,7 +72,7 @@ class FreakshareCom(BaseDownloader):
 
             elif check == "downloadserver":
                 self.retry(
-                    5, timedelta(minutes=15).seconds, self._("No Download server")
+                    5, timedelta(minutes=15).total_seconds(), self._("No Download server")
                 )
 
     def prepare(self):

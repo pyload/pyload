@@ -100,9 +100,9 @@ class MegaRapidoNet(MultiAccount):
             #: Hier weitermachen!!! (müssen umbedingt die zeit richtig machen damit! (sollte aber möglich))
             validuntil = (
                 time.time()
-                + timedelta(hours=int(validuntil.group(1)) * 24).seconds
-                + timedelta(hours=int(validuntil.group(2))).seconds
-                + timedelta(minutes=int(validuntil.group(3))).seconds
+                + timedelta(hours=int(validuntil.group(1)) * 24).total_seconds()
+                + timedelta(hours=int(validuntil.group(2))).total_seconds()
+                + timedelta(minutes=int(validuntil.group(3))).total_seconds()
                 + int(validuntil.group(4))
             )
             trafficleft = -1

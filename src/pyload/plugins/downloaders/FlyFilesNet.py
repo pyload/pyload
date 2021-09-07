@@ -45,7 +45,7 @@ class FlyFilesNet(SimpleDownloader):
             self.log_warning(
                 self._("Could not get the download URL. Please wait 10 minutes")
             )
-            self.wait(timedelta(minutes=10).seconds, True)
+            self.wait(timedelta(minutes=10).total_seconds(), True)
             self.retry()
 
         self.link = parsed_url.replace("#downlink|", "")

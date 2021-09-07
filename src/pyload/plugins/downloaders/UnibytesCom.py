@@ -52,7 +52,7 @@ class UnibytesCom(SimpleDownloader):
                 ">Somebody else is already downloading using your IP-address<"
                 in self.data
             ):
-                self.wait(timedelta(minutes=10).seconds, True)
+                self.wait(timedelta(minutes=10).total_seconds(), True)
                 self.restart()
 
             if post_data["step"] == "last":

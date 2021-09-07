@@ -120,7 +120,7 @@ class RapidgatorNet(SimpleDownloader):
             if m.group(1) == "daily":
                 wait_time = seconds.to_midnight()
             else:
-                wait_time = timedelta(hours=1).seconds
+                wait_time = timedelta(hours=1).total_seconds()
 
             self.retry(wait=wait_time, msg=m.group(0))
 
@@ -130,7 +130,7 @@ class RapidgatorNet(SimpleDownloader):
                 "You can't download more than one file within a certain time period in free mode"
             )
             self.log_warning(msg)
-            self.retry(wait=timedelta(hours=24).seconds, msg=msg)
+            self.retry(wait=timedelta(hours=24).total_seconds(), msg=msg)
 
     def handle_free(self, pyfile):
         jsvars = dict(re.findall(self.JSVARS_PATTERN, self.data))
