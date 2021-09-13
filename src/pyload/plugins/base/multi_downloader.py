@@ -33,7 +33,6 @@ class MultiDownloader(SimpleDownloader):
     OFFLINE_PATTERN = r"^unmatchable$"
     TEMP_OFFLINE_PATTERN = r"^unmatchable$"
 
-    LEECH_HOSTER = False
     DIRECT_LINK = None
 
     @classmethod
