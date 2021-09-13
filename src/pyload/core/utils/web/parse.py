@@ -108,11 +108,13 @@ from ..purge import name as safe_nm
 
 def name(url, safe_name=True):
     url = format.url(url)
-    up = urllib.parse.urlparse(url, allow_fragments=False)
+    up = urllib.parse.urlparse(url)
     name = up.path.split("/")[-1]
     if not name:
         name = up.query.split("=", 1)[::-1][0].split("&", 1)[0]
-    if not name:
+    if not name and up.fragment:
+        name = "#" + up.fragment
+    else:
         name = up.netloc.split(".", 1)[0]
 
     return safe_nm(name) if safe_name else name
