@@ -23,22 +23,6 @@ except ImportError:
     send2trash = None
 
 
-# Hotfix UnicodeDecodeError: 'ascii' codec can't decode..
-def normalize(value):
-    return unicodedata.normalize("NFKD", value).encode("ascii", "ignore")
-
-
-# NOTE: Revert to `decode` in Python 3
-def decode(value):
-    """
-    Encoded string (default to own system encoding) -> unicode string.
-    """
-    try:
-        return str(value)
-    except UnicodeEncodeError:
-        return normalize(value)
-
-
 # def save_join(*args):
 # """
 # joins a path, encoding aware.
