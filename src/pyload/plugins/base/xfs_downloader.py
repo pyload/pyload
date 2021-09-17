@@ -7,7 +7,7 @@ from datetime import timedelta
 from urllib.parse import urljoin
 
 from pyload.core.utils import parse, seconds
-from pyload.core.utils.old import html_unescape
+from pyload.core.utils.web.purge import unescape as html_unescape
 
 from ..anticaptchas.ReCaptcha import ReCaptcha
 from ..anticaptchas.SolveMedia import SolveMedia
