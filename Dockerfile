@@ -53,7 +53,7 @@ RUN echo "**** install build packages ****" && \
     apk add $APK_INSTALL_OPTIONS $APK_PACKAGES && \
     \
     echo "**** build pyLoad dependencies ****" && \
-    python3 -c "import configparser as cp; c = cp.ConfigParser(); c.read('/source/setup.cfg'); print(c['options']['install_requires'] + c['options.extras_require']['all'])" | \
+    python3 -c "import configparser as cp; c = cp.ConfigParser(); c.read('/source/setup.cfg'); print(c['options']['install_requires'] + c['options.extras_require']['plugins'])" | \
     xargs pip3 wheel --wheel-dir=.
 
 
