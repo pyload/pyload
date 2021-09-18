@@ -8,7 +8,7 @@
 #           \  /
 #            \/
 
-ARG IMAGE_TAG="3.11"
+ARG IMAGE_TAG="3.13"
 ARG IMAGE_CREATED
 ARG IMAGE_AUTHORS="Walter Purcaro <vuolter@gmail.com>"
 ARG IMAGE_URL="https://github.com/pyload/pyload"
@@ -42,7 +42,7 @@ RUN echo "**** install binary packages ****" && \
 
 FROM builder AS wheels_builder
 
-ARG APK_PACKAGES="gcc musl-dev python3-dev libffi-dev openssl-dev jpeg-dev zlib-dev libxml2-dev libxslt-dev curl-dev"
+ARG APK_PACKAGES="gcc g++ musl-dev python3-dev libffi-dev openssl-dev jpeg-dev zlib-dev libxml2-dev libxslt-dev curl-dev cargo"
 
 ENV PYCURL_SSL_LIBRARY="openssl"
 
@@ -53,7 +53,7 @@ RUN echo "**** install build packages ****" && \
     apk add $APK_INSTALL_OPTIONS $APK_PACKAGES && \
     \
     echo "**** build pyLoad dependencies ****" && \
-    python3 -c "import configparser as cp; c = cp.ConfigParser(); c.read('/source/setup.cfg'); print(c['options']['install_requires'] + c['options.extras_require']['extra'])" | \
+    python3 -c "import configparser as cp; c = cp.ConfigParser(); c.read('/source/setup.cfg'); print(c['options']['install_requires'] + c['options.extras_require']['plugins'])" | \
     xargs pip3 wheel --wheel-dir=.
 
 
@@ -100,6 +100,8 @@ RUN echo "**** create s6 fix-attr script ****" && \
     mkdir -p /etc/services.d/pyload && \
     echo -e "#!/usr/bin/with-contenv bash\n\n \
     umask 022\n \
+    export PYTHONPATH=\$PYTHONPATH:/usr/local/lib/python3.8/site-packages\n \
+    export HOME=/config\n \
     exec s6-setuidgid abc pyload --userdir /config --storagedir /downloads" > /etc/services.d/pyload/run && \
     \
     echo "**** cleanup ****" && \
