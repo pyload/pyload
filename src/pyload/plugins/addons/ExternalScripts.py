@@ -134,7 +134,7 @@ class ExternalScripts(BaseAddon):
             self.scripts[folder] = scripts
 
     def call_cmd(self, command, *args, **kwargs):
-        call = (str(cmd) for cmd in [command] + list(args))
+        call = [str(cmd) for cmd in [command] + list(args)]
 
         self.log_debug(
             "EXECUTE "
