@@ -87,7 +87,7 @@ class ExternalScripts(BaseAddon):
 
         for folder in self.folders:
             scripts = []
-            dirname = os.path.join("scripts", folder)
+            dirname = os.path.join(self.pyload.userdir, "scripts", folder)
 
             if folder not in self.scripts:
                 self.scripts[folder] = []
