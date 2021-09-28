@@ -29,15 +29,15 @@ class PremiumTo(MultiAccount):
     # See https://premium.to/API.html
     API_URL = "http://api.premium.to/api/2/"
 
-    def api_resquest(self, method, **kwargs):
+    def api_request(self, method, **kwargs):
         return json.loads(self.load(self.API_URL + method + ".php", get=kwargs))
 
     def grab_hosters(self, user, password, data):
-        api_data = self.api_resquest("hosts", userid=user, apikey=password)
+        api_data = self.api_request("hosts", userid=user, apikey=password)
         return api_data["hosts"] if api_data.get("code") == 200 else []
 
     def grab_info(self, user, password, data):
-        api_data = self.api_resquest("traffic", userid=user, apikey=password)
+        api_data = self.api_request("traffic", userid=user, apikey=password)
 
         if api_data.get("code") == 200:
             trafficleft = api_data["traffic"] + api_data["specialtraffic"]
@@ -47,7 +47,7 @@ class PremiumTo(MultiAccount):
             return {"premium": False, "trafficleft": None, "validuntil": None}
 
     def signin(self, user, password, data):
-        api_data = self.api_resquest("traffic", userid=user, apikey=password)
+        api_data = self.api_request("traffic", userid=user, apikey=password)
 
         if api_data["code"] != 200:
             self.log_warning(
