@@ -87,7 +87,7 @@ class ExternalScripts(BaseAddon):
 
         for folder in self.folders:
             scripts = []
-            dirname = os.path.join("scripts", folder)
+            dirname = os.path.join(self.pyload.userdir, "scripts", folder)
 
             if folder not in self.scripts:
                 self.scripts[folder] = []
@@ -134,7 +134,7 @@ class ExternalScripts(BaseAddon):
             self.scripts[folder] = scripts
 
     def call_cmd(self, command, *args, **kwargs):
-        call = (str(cmd) for cmd in [command] + list(args))
+        call = list(str(cmd) for cmd in [command] + list(args))
 
         self.log_debug(
             "EXECUTE "
