@@ -69,18 +69,14 @@ jobs:
       matrix:
         python-version: [3.6, 3.7, 3.8, 3.9]
         os: [ubuntu-latest, macos-latest, windows-latest]
-        # include:
-        #   - python-version: pypy-3.6
-        #     toxenv: pypy
-
-        #   - python-version: pypy-3.7
-        #     toxenv: pypy
         include:
           - python-version: pypy-3.6
             os: ubuntu-latest
+            toxenv: pypy
 
           - python-version: pypy-3.7
             os: ubuntu-latest
+            toxenv: pypy
 
     steps:
       - name: Check out repository

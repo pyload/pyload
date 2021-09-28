@@ -13,9 +13,7 @@ class MegasharesCom(SimpleDownloader):
     __version__ = "0.37"
     __status__ = "testing"
 
-    __pattern__ = (
-        r"http://(?:www\.)?(d\d{2}\.)?megashares\.com/((index\.php)?\?d\d{2}=|dl/)\w+"
-    )
+    __pattern__ = r"http://(?:www\.)?(d\d{2}\.)?megashares\.com/((index\.php)?\?d\d{2}=|dl/)\w+"
     __config__ = [
         ("enabled", "bool", "Activated", True),
         ("use_premium", "bool", "Use premium account if available", True),
@@ -59,7 +57,7 @@ class MegasharesCom(SimpleDownloader):
 
     def handle_free(self, pyfile):
         if self.NO_SLOTS_PATTERN in self.data:
-            self.retry(wait=timedelta(minutes=5).seconds)
+            self.retry(wait=timedelta(minutes=5).total_seconds())
 
         m = re.search(self.REACTIVATE_PASSPORT_PATTERN, self.data)
         if m is not None:
@@ -102,8 +100,8 @@ class MegasharesCom(SimpleDownloader):
             times = [int(x) for x in m.groups()]
             renew = (
                 times[0]
-                + timedelta(minutes=times[1]).seconds
-                + timedelta(minutes=times[2]).seconds
+                + timedelta(minutes=times[1]).total_seconds()
+                + timedelta(minutes=times[2]).total_seconds()
             )
             self.log_debug(f"Waiting {renew} seconds for a new passport")
             self.retry(wait=renew, msg=self._("Passport renewal"))

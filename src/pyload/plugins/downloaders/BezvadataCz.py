@@ -69,7 +69,7 @@ class BezvadataCz(SimpleDownloader):
         #: countdown
         m = re.search(r'id="countdown">(\d\d):(\d\d)<', self.data)
         wait_time = (
-            (timedelta(minutes=int(m.group(1))).seconds + int(m.group(2))) if m else 120
+            (timedelta(minutes=int(m.group(1))).total_seconds() + int(m.group(2))) if m else 120
         )
         self.wait(wait_time, False)
 
@@ -79,7 +79,7 @@ class BezvadataCz(SimpleDownloader):
         if "images/button-download-disable.png" in self.data:
             #: Parallel dl limit
             self.retry(
-                timedelta(minutes=5).seconds, 24, self._("Download limit reached")
+                timedelta(minutes=5).total_seconds(), 24, self._("Download limit reached")
             )
         elif '<div class="infobox' in self.data:
             self.temp_offline()

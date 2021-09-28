@@ -19,7 +19,7 @@ class AlldebridComTorrent(SimpleDecrypter):
     __status__ = "testing"
 
     __pattern__ = r'^unmatchable$'
-    __config__ = [("activated", "bool", "Activated", True),
+    __config__ = [("enabled", "bool", "Activated", True),
                   ("folder_per_package", "Default;Yes;No", "Create folder for each package", "Default"),
                   ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10),
                   ("del_finished", "bool", "Delete downloaded torrents from the server", True)]
@@ -60,7 +60,7 @@ class AlldebridComTorrent(SimpleDecrypter):
             if self.pyfile.url.startswith("http"):
                 #: remote URL, download the torrent to tmp directory
                 torrent_content = self.load(self.pyfile.url, decode=False)
-                torrent_filename = safejoin(self.pyload.tempdir, "tmp_%s.torrent" % self.pyfile.package().name)
+                torrent_filename = safejoin(self.pyload.tempdir, "tmp_{}.torrent".format(self.pyfile.package().name))
                 with open(torrent_filename, "wb") as f:
                     f.write(torrent_content)
 

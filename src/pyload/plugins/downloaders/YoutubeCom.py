@@ -567,7 +567,7 @@ class YoutubeCom(BaseDownloader):
 
         if (
             sig_cache_id in cache_info["cache"]
-            and time.time() < cache_info["cache"][sig_cache_id]["time"] + timedelta(hours=24).seconds
+            and time.time() < cache_info["cache"][sig_cache_id]["time"] + timedelta(hours=24).total_seconds()
         ):
             self.log_debug("Using cached decode function to decrypt the URL")
 
@@ -642,7 +642,7 @@ class YoutubeCom(BaseDownloader):
 
         #: Remove old records from cache
         for k in list(cache_info["cache"].keys()):
-            if time.time() >= cache_info["cache"][k]["time"] + timedelta(hours=24).seconds:
+            if time.time() >= cache_info["cache"][k]["time"] + timedelta(hours=24).total_seconds():
                 cache_info["cache"].pop(k, None)
                 cache_dirty = True
 

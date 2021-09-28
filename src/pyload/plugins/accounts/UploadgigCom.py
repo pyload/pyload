@@ -1,15 +1,20 @@
 # -*- coding: utf-8 -*-
 
+import json
 import re
 import time
 
+from pyload.core.datatypes.pyfile import PyFile
+
+from ..anticaptchas.ReCaptcha import ReCaptcha
 from ..base.account import BaseAccount
+from ..helpers import parse_html_form
 
 
 class UploadgigCom(BaseAccount):
     __name__ = "UploadgigCom"
     __type__ = "account"
-    __version__ = "0.03"
+    __version__ = "0.05"
     __status__ = "testing"
 
     __description__ = """UploadgigCom account plugin"""
@@ -57,27 +62,52 @@ class UploadgigCom(BaseAccount):
         if self.LOGIN_SKIP_PATTERN in html:
             self.skip_login()
 
-        m = re.search(r'name="csrf_tester" value="(\w+?)"', html)
-        if m is None:
-            self.fail_login()
+        url, inputs = parse_html_form('id="login_form"', html)
+        if inputs is None:
+            self.fail_login("Login form not found")
 
-        html = self.load(
-            "https://uploadgig.com/login/do_login",
-            post={
-                "email": user,
-                "pass": password,
-                "csrf_tester": m.group(1),
-                "rememberme": 1,
-            },
-        )
+        inputs["email"] = user
+        inputs["pass"] = password
 
-        if '"state":"1"' not in html:
+        if '<div class="row" id="parent_captcha_container">' in html:
+            # dummy pyfile
+            pyfile = PyFile(
+                self.pyload.files,
+                -1,
+                "https://uploadgig.com",
+                "https://uploadgig.com",
+                0,
+                0,
+                "",
+                self.classname,
+                -1,
+                -1,
+            )
+            pyfile.plugin = self
+            recaptcha = ReCaptcha(pyfile)
+            captcha_key = recaptcha.detect_key(html)
+
+            if captcha_key:
+                self.captcha = recaptcha
+                response, _ = recaptcha.challenge(captcha_key, html)
+                inputs["g-recaptcha-response"] = response
+
+            else:
+                self.log_error(self._("ReCaptcha key not found"))
+                self.fail_login(self._("ReCaptcha key not found"))
+
+        html = self.load(url, post=inputs)
+
+        json_data = json.loads(html)
+
+        if json_data.get("state") != "1":
+            self.log_error(json_data["msg"])
             self.fail_login()
 
     @property
     def logged(self):
         """
-        Checks if user is still logged in.
+        Checks if user is still logged in
         """
         if not self.user:
             return False
@@ -89,10 +119,22 @@ class UploadgigCom(BaseAccount):
             or self.timeout != -1
             and self.info["login"]["timestamp"] + self.timeout < time.time()
             or self.req
-            and not self.req.cj.parse_cookie("fs_secure")
+            and not self.req.cj.parseCookie("fs_secure")
         ):
 
-            self.log_debug(f"Reached login timeout for user `{self.user}`")
+            self.log_debug("Reached login timeout for user `%s`" % self.user)
             return False
         else:
             return True
+
+    """
+     @NOTE: below are methods
+      necessary for captcha to work with account plugins
+    """
+
+    def check_status(self):
+        pass
+
+    def retry_captcha(self, attemps=10, wait=1, msg="Max captcha retries reached"):
+        self.captcha.invalid()
+        self.fail_login(msg=self._("Invalid captcha"))

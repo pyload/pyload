@@ -15,7 +15,7 @@ def args(**kwargs):
 class RealdebridCom(MultiAccount):
     __name__ = "RealdebridCom"
     __type__ = "account"
-    __version__ = "0.60"
+    __version__ = "0.61"
     __status__ = "testing"
 
     __config__ = [
@@ -34,7 +34,7 @@ class RealdebridCom(MultiAccount):
     # See https://api.real-debrid.com/
     API_URL = "https://api.real-debrid.com"
 
-    def api_response(self, api_type, method, get={}, post={}):
+    def api_request(self, api_type, method, get={}, post={}):
         if api_type == "rest":
             endpoint = "/rest/1.0"
         elif api_type == "oauth":
@@ -52,7 +52,7 @@ class RealdebridCom(MultiAccount):
         return json.loads(json_data)
 
     def _refresh_token(self, client_id, client_secret, refresh_token):
-        res = self.api_response("oauth", "/token",
+        res = self.api_request("oauth", "/token",
                                 post=args(client_id=client_id,
                                           client_secret=client_secret,
                                           code=refresh_token,
@@ -68,12 +68,12 @@ class RealdebridCom(MultiAccount):
         return res['access_token'], res['expires_in']
 
     def grab_hosters(self, user, password, data):
-        api_data = self.api_response("rest", "/hosts/status", args(auth_token=data['api_token']))
+        api_data = self.api_request("rest", "/hosts/status", args(auth_token=data['api_token']))
         hosters = [x[0] for x in api_data.items() if x[1]['supported'] == 1]
         return hosters
 
     def grab_info(self, user, password, data):
-        api_data = self.api_response("rest", "/user", args(auth_token=data['api_token']))
+        api_data = self.api_request("rest", "/user", args(auth_token=data['api_token']))
 
         validuntil = time.time() + api_data["premium"]
 
@@ -97,7 +97,7 @@ class RealdebridCom(MultiAccount):
 
         api_token = data['api_token']
 
-        api_data = self.api_response("rest", "/user", args(auth_token=api_token))
+        api_data = self.api_request("rest", "/user", args(auth_token=api_token))
 
         if api_data.get('error_code') == 8:  #: Token expired? try to refresh
             api_token, timeout = self._refresh_token(client_id, client_secret, password)

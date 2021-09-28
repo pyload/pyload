@@ -15,7 +15,7 @@ class Browser:
         self.options = options  #: holds pycurl options
         self.bucket = bucket
 
-        self.cj = None  #: needs to be setted later
+        self.cj = None  #: needs to be set later
         self.http = None
         self._size = 0
 

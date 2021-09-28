@@ -15,7 +15,7 @@ from ..base.simple_downloader import SimpleDownloader
 class RapidgatorNet(SimpleDownloader):
     __name__ = "RapidgatorNet"
     __type__ = "downloader"
-    __version__ = "0.56"
+    __version__ = "0.58"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?(?:rapidgator\.(?:net|asia|)|rg\.to)/file/(?P<ID>\w+)"
@@ -41,7 +41,7 @@ class RapidgatorNet(SimpleDownloader):
 
     NAME_PATTERN = r"<title>Download file (?P<N>.*)</title>"
     SIZE_PATTERN = r"File size:\s*<strong>(?P<S>[\d.,]+) (?P<U>[\w^_]+)</strong>"
-    OFFLINE_PATTERN = r">(File not found|Error 404)"
+    OFFLINE_PATTERN = r">(404 File not found|Error 404)"
 
     JSVARS_PATTERN = r"\s+var\s*(startTimerUrl|getDownloadUrl|captchaUrl|fid|secs)\s*=\s*\'?(.*?)\'?;"
 
@@ -59,7 +59,6 @@ class RapidgatorNet(SimpleDownloader):
     LINK_FREE_PATTERN = r"return '(https?://\w+.rapidgator.net/.*)';"
 
     RECAPTCHA_PATTERN = r'"http://api\.recaptcha\.net/challenge\?k=(.*?)"'
-    ADSCAPTCHA_PATTERN = r'(http://api\.adscaptcha\.com/Get\.aspx[^"\']+)'
     SOLVEMEDIA_PATTERN = r'http://api\.solvemedia\.com/papi/challenge\.script\?k=(.*?)"'
 
     URL_REPLACEMENTS = [(__pattern__ + '.*', r'https://rapidgator.net/file/\g<ID>')]
@@ -76,7 +75,7 @@ class RapidgatorNet(SimpleDownloader):
 
         except BadHeader as exc:
             status = exc.code
-            message = exc.response
+            message = exc.content
 
         if status == 200:
             return json_data["response"]
@@ -121,7 +120,7 @@ class RapidgatorNet(SimpleDownloader):
             if m.group(1) == "daily":
                 wait_time = seconds.to_midnight()
             else:
-                wait_time = timedelta(hours=1).seconds
+                wait_time = timedelta(hours=1).total_seconds()
 
             self.retry(wait=wait_time, msg=m.group(0))
 
@@ -131,7 +130,7 @@ class RapidgatorNet(SimpleDownloader):
                 "You can't download more than one file within a certain time period in free mode"
             )
             self.log_warning(msg)
-            self.retry(wait=timedelta(hours=24).seconds, msg=msg)
+            self.retry(wait=timedelta(hours=24).total_seconds(), msg=msg)
 
     def handle_free(self, pyfile):
         jsvars = dict(re.findall(self.JSVARS_PATTERN, self.data))

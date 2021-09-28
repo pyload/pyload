@@ -184,8 +184,8 @@ class CriptTo(SimpleDecrypter):
                 text = decryptor.update(base64.b64decode(crypted)) + decryptor.finalize()
 
                 #: Extract links
-                text = to_str(text).replace("\x00", "").replace("\r", "")
-                links = filter(bool, text.split('\n'))
+                text = to_str(text).replace("\x00", "")
+                links = [item for item in text.splitlines() if item]
 
         return links
 

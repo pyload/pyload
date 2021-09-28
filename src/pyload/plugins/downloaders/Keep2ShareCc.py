@@ -12,7 +12,7 @@ from ..base.simple_downloader import SimpleDownloader
 class Keep2ShareCc(SimpleDownloader):
     __name__ = "Keep2ShareCc"
     __type__ = "downloader"
-    __version__ = "0.43"
+    __version__ = "0.45"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?(keep2share|k2s|keep2s)\.cc/file/(?P<ID>\w+)"
@@ -37,17 +37,17 @@ class Keep2ShareCc(SimpleDownloader):
     URL_REPLACEMENTS = [(__pattern__ + ".*", r"https://k2s.cc/file/\g<ID>")]
 
     API_URL = "https://keep2share.cc/api/v2/"
-    #: See https://github.com/keep2share/api
+    #: See https://keep2share.github.io/api/ https://github.com/keep2share/api
 
     @classmethod
-    def api_response(cls, method, **kwargs):
+    def api_request(cls, method, **kwargs):
         html = get_url(cls.API_URL + method, post=json.dumps(kwargs))
         return json.loads(html)
 
     @classmethod
     def api_info(cls, url):
         file_id = re.match(cls.__pattern__, url).group("ID")
-        file_info = cls.api_response("GetFilesInfo", ids=[file_id], extended_info=False)
+        file_info = cls.api_request("GetFilesInfo", ids=[file_id], extended_info=False)
 
         if (
             file_info["code"] != 200
@@ -79,7 +79,7 @@ class Keep2ShareCc(SimpleDownloader):
             self.fail(self._("This is a private file"))
 
         try:
-            json_data = self.api_response(
+            json_data = self.api_request(
                 "GetUrl",
                 file_id=file_id,
                 free_download_key=None,
@@ -89,13 +89,13 @@ class Keep2ShareCc(SimpleDownloader):
         except BadHeader as exc:
             if exc.code == 406:
                 for i in range(10):
-                    json_data = self.api_response("RequestCaptcha")
+                    json_data = self.api_request("RequestCaptcha")
                     if json_data["code"] != 200:
                         self.fail(self._("Request captcha API failed"))
 
                     captcha_response = self.captcha.decrypt(json_data["captcha_url"])
                     try:
-                        json_data = self.api_response(
+                        json_data = self.api_request(
                             "GetUrl",
                             file_id=file_id,
                             free_download_key=None,
@@ -132,7 +132,7 @@ class Keep2ShareCc(SimpleDownloader):
 
                 self.wait(json_data["time_wait"])
 
-                json_data = self.api_response(
+                json_data = self.api_request(
                     "GetUrl",
                     file_id=file_id,
                     free_download_key=free_download_key,
@@ -155,7 +155,7 @@ class Keep2ShareCc(SimpleDownloader):
         if self.info["access"] == "private":
             self.fail(self._("This is a private file"))
 
-        json_data = self.api_response(
+        json_data = self.api_request(
             "GetUrl",
             file_id=file_id,
             free_download_key=None,

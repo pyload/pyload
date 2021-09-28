@@ -81,7 +81,7 @@ def _parse_args(cmd_args):
     )
     parser.add_argument(
         "-r",
-        "--restore",
+        "--reset",
         action="store_true",
         help="reset default username/password",
         default=None,
@@ -130,7 +130,7 @@ def main(cmd_args=sys.argv[1:]):
     Entry point for console_scripts.
     """
     args = _parse_args(cmd_args)
-    core_args = (args.userdir, args.tempdir, args.storagedir, args.debug, args.restore, args.dry_run)
+    core_args = (args.userdir, args.tempdir, args.storagedir, args.debug, args.reset, args.dry_run)
 
     run(core_args, args.daemon)
 

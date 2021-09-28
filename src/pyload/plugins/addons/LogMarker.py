@@ -26,7 +26,7 @@ class LogMarker(BaseAddon):
 
     def activated(self):
         self.periodical.start(
-            timedelta(hours=1).seconds - 1, delay=seconds.to_nexthour(strict=True) - 1
+            timedelta(hours=1).total_seconds() - 1, delay=seconds.to_nexthour(strict=True) - 1
         )
 
     def periodical_task(self):

@@ -39,7 +39,7 @@ class GoogledriveComDereferer(BaseDecrypter):
     API_URL = "https://www.googleapis.com/drive/v3/"
     API_KEY = "AIzaSyAcA9c4evtwSY1ifuvzo6HKBkeot5Bk_U4"
 
-    def api_response(self, cmd, **kwargs):
+    def api_request(self, cmd, **kwargs):
         kwargs["key"] = self.API_KEY
         try:
             json_data = json.loads(
@@ -68,7 +68,7 @@ class GoogledriveComDereferer(BaseDecrypter):
             return None
 
     def decrypt(self, pyfile):
-        json_data = self.api_response("files/{}".format(self.info["pattern"]["ID"]))
+        json_data = self.api_request("files/{}".format(self.info["pattern"]["ID"]))
         if json_data is None:
             self.fail("API error")
 

@@ -62,13 +62,14 @@ class WebServerThread(threading.Thread):
             self.server.stop()
         else:
             pass
-            # ToDo: Not implemented
-
+            # TODO: Not implemented
 
     def run(self):
         self.log.warning(
             self._("Starting webserver: {scheme}://{host}:{port}").format(
-                scheme="https" if self.use_ssl else "http", host=self.host, port=self.port
+                scheme="https" if self.use_ssl else "http",
+                host=f"[{self.host}]" if ":" in self.host else self.host,
+                port=self.port,
             )
         )
 
@@ -80,10 +81,15 @@ class WebServerThread(threading.Thread):
 
         except OSError as exc:
             #: Unfortunately, CherryPy raises socket.error without setting errno :(
-            if exc.errno in (98, 10013) or isinstance(exc.args[0], str) and (
-                    "Errno 98" in exc.args[0] or "WinError 10048" in exc.args[0]):
+            if (
+                exc.errno in (98, 10013)
+                or isinstance(exc.args[0], str)
+                and ("Errno 98" in exc.args[0] or "WinError 10048" in exc.args[0])
+            ):
                 self.log.fatal(
-                    self._("** FATAL ERROR ** Could not start web server - Address Already in Use | Exiting pyLoad")
+                    self._(
+                        "** FATAL ERROR ** Could not start web server - Address Already in Use | Exiting pyLoad"
+                    )
                 )
                 self.pyload.api.kill()
             else:

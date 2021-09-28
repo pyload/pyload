@@ -4,7 +4,7 @@ import html
 import re
 from email.header import decode_header as decode_rfc2047_header
 
-_RE_COMMENTS = re.compile(r"<!--.*?-->", flags=re.S)
+_RE_COMMENTS = re.compile(r"<!--(?:(?!<!--).)*-->", flags=re.S)
 _RE_TAGS = re.compile(r"<[^<]+?>")
 _RE_RFC2047 = re.compile(r"=\?([^?]+)\?([QB])\?([^?]*)\?=")
 

@@ -84,7 +84,7 @@ class QuickshareCz(SimpleDownloader):
         if m is not None:
             if m.group(1) == "1":
                 self.retry(
-                    60, timedelta(minutes=2).seconds, "This IP is already downloading"
+                    60, timedelta(minutes=2).total_seconds(), "This IP is already downloading"
                 )
             elif m.group(1) == "2":
                 self.retry(60, 60, "No free slots available")

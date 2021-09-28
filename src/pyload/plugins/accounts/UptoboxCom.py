@@ -8,7 +8,7 @@ from ..base.xfs_account import XFSAccount
 class UptoboxCom(XFSAccount):
     __name__ = "UptoboxCom"
     __type__ = "account"
-    __version__ = "0.23"
+    __version__ = "0.25"
     __status__ = "testing"
 
     __description__ = """Uptobox.com account plugin"""
@@ -19,9 +19,12 @@ class UptoboxCom(XFSAccount):
     ]
 
     PLUGIN_DOMAIN = "uptobox.com"
-    PLUGIN_URL = "https://uptobox.com/"
+
+    LOGIN_URL = "https://uptobox.com/login"
+    LOGIN_SKIP_PATTERN = r"https://uptobox\.com/logout"
 
     PREMIUM_PATTERN = r"Premium member"
+
     VALID_UNTIL_PATTERN = r"class='expiration-date .+?'>(\d{1,2} [\w^_]+ \d{4})"
 
     def signin(self, user, password, data):
@@ -31,9 +34,9 @@ class UptoboxCom(XFSAccount):
             self.skip_login()
 
         html = self.load(
-            self.PLUGIN_URL,
-            get={"op": "login", "referer": "homepage"},
+            self.LOGIN_URL,
             post={"login": user, "password": password},
+            ref=self.LOGIN_URL,
             cookies=self.COOKIES,
         )
 

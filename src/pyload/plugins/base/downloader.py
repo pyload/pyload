@@ -16,7 +16,7 @@ from .hoster import BaseHoster
 class BaseDownloader(BaseHoster):
     __name__ = "BaseDownloader"
     __type__ = "downloader"
-    __version__ = "0.80"
+    __version__ = "0.81"
     __status__ = "stable"
 
     __pattern__ = r"^unmatchable$"
@@ -46,10 +46,10 @@ class BaseDownloader(BaseHoster):
         #: Enable simultaneous processing of multiple downloads
         self.limit_dl = 0
 
-        #:
+        #: Download chunks limit
         self.chunk_limit = None
 
-        #:
+        #: Enable download resuming if the hoster supports resuming
         self.resume_download = False
 
         #: Location where the last call to download was saved
@@ -80,7 +80,6 @@ class BaseDownloader(BaseHoster):
     def load_account(self):
         if self.restart_free:
             self.account = False
-            self.user = None  # TODO: Remove in 0.6.x
         else:
             super().load_account()
             # self.restart_free = False
@@ -354,12 +353,11 @@ class BaseDownloader(BaseHoster):
         :param read_size: size to read and scan
         :return: dictionary key of the first rule that matched
         """
-        dl_file = os.fsdecode(self.last_download)  # TODO: Recheck in 0.6.x
-
         if not self.last_download:
             self.log_warning(self._("No file to scan"))
             return
 
+        dl_file = os.fsdecode(self.last_download)  # TODO: Recheck in 0.6.x
         with open(dl_file, mode="rb") as fp:
             content = fp.read(read_size)
 
@@ -495,7 +493,7 @@ class BaseDownloader(BaseHoster):
         """
         pack_folder = self.pyfile.package().folder
 
-        for pyfile in self.pyload.files.cache.values():
+        for pyfile in list(self.pyload.files.cache.values()):
             if (
                 pyfile != self.pyfile
                 and pyfile.name == self.pyfile.name

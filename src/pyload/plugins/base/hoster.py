@@ -77,7 +77,6 @@ class BaseHoster(BasePlugin):
 
         #: Account handler instance, see :py:class:`Account`
         self.account = None
-        self.user = None  # TODO: Remove in 0.6.x
         self.premium = None
 
         #: Associated pyfile instance, see `PyFile`
@@ -154,7 +153,6 @@ class BaseHoster(BasePlugin):
             self.load_account()  # TODO: Move to PluginThread in 0.6.x
         else:
             self.account = False
-            self.user = None  # TODO: Remove in 0.6.x
 
         try:
             self.req.close()
@@ -177,20 +175,13 @@ class BaseHoster(BasePlugin):
         self.check_status()
 
     def load_account(self):
-        if not self.account:
+        if self.account is None:
             self.account = self.pyload.account_manager.get_account_plugin(
                 self.classname
             )
 
-        if not self.account:
-            self.account = False
-            self.user = None  # TODO: Remove in 0.6.x
-
-        else:
+        if self.account:
             self.account.choose()
-            self.user = self.account.user  # TODO: Remove in 0.6.x
-            if self.account.user is None:
-                self.account = False
 
     def _update_name(self):
         name = self.info.get("name")

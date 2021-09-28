@@ -43,7 +43,7 @@ class DeleteFinished(BaseAddon):
     def activate(self):
         self.info["sleep"] = True
         self.add_event("package_finished", self.wakeup)
-        self.periodical.start(timedelta(hours=self.config.get("interval")).seconds)
+        self.periodical.start(timedelta(hours=self.config.get("interval")).total_seconds())
 
     ## own methods ##
     @style.queue

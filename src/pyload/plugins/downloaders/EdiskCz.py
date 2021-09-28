@@ -10,9 +10,7 @@ class EdiskCz(SimpleDownloader):
     __version__ = "0.28"
     __status__ = "testing"
 
-    __pattern__ = (
-        r"http://(?:www\.)?edisk\.(cz|sk|eu)/(stahni|sk/stahni|en/download)/.+"
-    )
+    __pattern__ = r"http://(?:www\.)?edisk\.(cz|sk|eu)/(stahni|sk/stahni|en/download)/.+"
     __config__ = [
         ("enabled", "bool", "Activated", True),
         ("use_premium", "bool", "Use premium account if available", True),

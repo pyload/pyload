@@ -29,7 +29,7 @@ class ZeveraCom(MultiAccount):
 
     API_URL = "https://www.zevera.com/api/"
 
-    def api_response(self, method, api_key, **kwargs):
+    def api_request(self, method, api_key, **kwargs):
         get_data = {"client_id": "452508742", "apikey": api_key}
 
         get_data.update(kwargs)
@@ -41,13 +41,13 @@ class ZeveraCom(MultiAccount):
         return json.loads(res)
 
     def grab_hosters(self, user, password, data):
-        res = self.api_response("services/list", password)
+        res = self.api_request("services/list", password)
         return res["directdl"]
 
     def grab_info(self, user, password, data):
         trafficleft = None
 
-        res = self.api_response("account/info", password)
+        res = self.api_request("account/info", password)
 
         premium = res["premium_until"] is not False
         validuntil = (
@@ -65,7 +65,7 @@ class ZeveraCom(MultiAccount):
         }
 
     def signin(self, user, password, data):
-        res = self.api_response("account/info", password)
+        res = self.api_request("account/info", password)
         if res["status"] != "success":
             self.log_error(
                 self._(

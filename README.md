@@ -45,6 +45,53 @@ If you want to uninstall pyLoad:
 
     pip uninstall pyload-ng
 
+## Usage
+
+    usage: pyload [-h] [-d] [-r] [--storagedir STORAGEDIR] [--userdir USERDIR]
+                  [--tempdir TEMPDIR] [--dry-run] [--daemon] [--version]
+
+    The free and open-source Download Manager written in pure Python
+
+    optional arguments:
+      -h, --help                    show this help message and exit
+      -d, --debug                   enable debug mode
+      -r, --reset                   reset default username/password
+      --storagedir STORAGEDIR       use this location to save downloads
+      --userdir USERDIR             use this location to store user data files
+      --tempdir TEMPDIR             use this location to store temporary files
+      --dry-run                     test start-up and exit
+      --daemon                      run as daemon
+      --version                     show program's version number and exit
+
+To start pyLoad, type the command:
+
+    pyload
+
+This will create the following directories (if they don't exist already):
+
+-   `~/Downloads/pyLoad`: where downloads will be saved.
+-   `~/.pyload`: where user data (configuration files) are stored.
+-   `<TMPDIR>/pyLoad`: where temporary files are stored. `<TMPDIR>` is [platform-specific](https://docs.python.org/3/library/tempfile.html#tempfile.gettempdir).
+
+> **Note**:
+> On Windows, user data are saved by default in the directory `~\AppData\Roaming\pyLoad`.
+
+### Help
+
+To show an overview of the available options, type:
+
+    pyload --help
+
+### Web Interface
+
+Open your web browser and visit the url http://localhost:8000 to have access to
+the pyLoad's web interface.
+
+-   Default username: `pyload`.
+-   Default password: `pyload`.
+
+**It's highly recommended to change the default access credentials on first start**.
+
 ## Advanced Installation
 
 ### Stable Release
@@ -102,53 +149,6 @@ Use the command `build_locale` to retrieve and build the latest locale files (tr
     python setup.py build_locale
 
 Invoke `build_locale` before building the package (eg. `bdist_wheel`).
-
-## Usage
-
-    usage: pyload [-h] [-d] [-r] [--storagedir STORAGEDIR] [--userdir USERDIR]
-                  [--tempdir TEMPDIR] [--dry-run] [--daemon] [--version]
-
-    The free and open-source Download Manager written in pure Python
-
-    optional arguments:
-      -h, --help                    show this help message and exit
-      -d, --debug                   enable debug mode
-      -r, --restore                 reset default username/password
-      --storagedir STORAGEDIR       use this location to save downloads
-      --userdir USERDIR             use this location to store user data files
-      --tempdir TEMPDIR             use this location to store temporary files
-      --dry-run                     test start-up and exit
-      --daemon                      run as daemon
-      --version                     show program's version number and exit
-
-To start pyLoad, type the command:
-
-    pyload
-
-This will create the following directories (if they don't exist already):
-
--   `~/Downloads/pyLoad`: where downloads will be saved.
--   `~/.pyload`: where user data (configuration files) are stored.
--   `<TMPDIR>/pyLoad`: where temporary files are stored. `<TMPDIR>` is [platform-specific](https://docs.python.org/3/library/tempfile.html#tempfile.gettempdir).
-
-> **Note**:
-> On Windows, user data are saved by default in the directory `~\AppData\Roaming\pyLoad`.
-
-### Help
-
-To show an overview of the available options, type:
-
-    pyload --help
-
-### Web Interface
-
-Open your web browser and visit the url http://localhost:8000 to have access to
-the pyLoad's web interface.
-
--   Default username: `pyload`.
--   Default password: `pyload`.
-
-**It's highly recommended to change the default access credentials on first start**.
 
 ## Docker Images
 

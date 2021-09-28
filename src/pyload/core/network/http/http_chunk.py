@@ -55,7 +55,7 @@ class ChunkInfo:
 
     def save(self):
         fs_name = f"{self.name}.chunks"
-        with open(fs_name, mode="w", encoding="utf-8") as fh:
+        with open(fs_name, mode="w", encoding="utf-8", newline="\n") as fh:
             fh.write(f"name:{self.name}\n")
             fh.write(f"size:{self.size}\n")
             for i, c in enumerate(self.chunks):
@@ -132,6 +132,7 @@ class HTTPChunk(HTTPRequest):
         self.fp = None  #: file handle
 
         self.init_handle()
+        self.c.setopt(pycurl.ENCODING, None)  #: avoid pycurl error 61
         self.set_interface(self.p.options)
 
         self.BOMChecked = False  #: check and remove byte order mark
@@ -258,13 +259,16 @@ class HTTPChunk(HTTPRequest):
 
     def parse_header(self):
         """
-        parse data from recieved header.
+        parse data from received header.
         """
         for orgline in self.response_header.splitlines():
             try:
-                orgline = orgline.decode("iso-8859-1")
+                orgline = orgline.decode("utf-8")
             except UnicodeDecodeError:
-                continue
+                try:
+                    orgline = orgline.decode("iso-8859-1")
+                except UnicodeDecodeError:
+                        continue
 
             line = orgline.strip().lower()
             if line.startswith("accept-ranges") and "bytes" in line:

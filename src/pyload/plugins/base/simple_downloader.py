@@ -102,8 +102,6 @@ class SimpleDownloader(BaseDownloader):
     DISPOSITION = True
     LOGIN_ACCOUNT = False  #: Set to True to require account login
     LOGIN_PREMIUM = False  #: Set to True to require premium account login
-    #: Set to True to leech other hoster link (as defined in handle_multi method)
-    LEECH_HOSTER = False
     #: Set to encoding name if encoding value in http header is not correct
     TEXT_ENCODING = True
     # TRANSLATE_ERROR      = True
@@ -221,7 +219,6 @@ class SimpleDownloader(BaseDownloader):
     def _prepare(self):
         self.link = ""
         self.direct_dl = False
-        self.leech_dl = False
 
         if self.LOGIN_PREMIUM:
             self.no_fallback = True
@@ -240,27 +237,13 @@ class SimpleDownloader(BaseDownloader):
             if self.LINK_PREMIUM_PATTERN is None:
                 self.LINK_PREMIUM_PATTERN = self.LINK_PATTERN
 
-        if self.LEECH_HOSTER:
-            pattern = self.pyload.plugin_manager.hoster_plugins.get(self.classname)[
-                "pattern"
-            ]
-            if (
-                self.__pattern__ != pattern
-                and re.match(self.__pattern__, self.pyfile.url) is None
-            ):
-                self.leech_dl = True
-
-        if self.leech_dl:
-            self.direct_dl = False
-
         elif self.DIRECT_LINK is None:
             self.direct_dl = bool(self.premium)
 
         else:
             self.direct_dl = self.DIRECT_LINK
 
-        if not self.leech_dl:
-            self.pyfile.url = replace_patterns(self.pyfile.url, self.URL_REPLACEMENTS)
+        self.pyfile.url = replace_patterns(self.pyfile.url, self.URL_REPLACEMENTS)
 
     def _preload(self):
         if self.data:
@@ -273,38 +256,32 @@ class SimpleDownloader(BaseDownloader):
     def process(self, pyfile):
         self._prepare()
 
-        # TODO: Remove `handle_multi`, use MultiDownloader instead
-        if self.leech_dl:
-            self.log_info(self._("Processing as debrid download..."))
-            self.handle_multi(pyfile)
+        if not self.link and self.direct_dl:
+            self.log_info(self._("Looking for direct download link..."))
+            self.handle_direct(pyfile)
 
-        else:
-            if not self.link and self.direct_dl:
-                self.log_info(self._("Looking for direct download link..."))
-                self.handle_direct(pyfile)
+            if self.link:
+                self.log_info(self._("Direct download link detected"))
+            else:
+                self.log_info(self._("Direct download link not found"))
 
-                if self.link:
-                    self.log_info(self._("Direct download link detected"))
-                else:
-                    self.log_info(self._("Direct download link not found"))
+        if not self.link:
+            self._preload()
+            self.check_errors()
 
-            if not self.link:
-                self._preload()
-                self.check_errors()
+            if self.info.get("status", 7) != 2:
+                self.grab_info()
+                self.check_status()
+                self.check_duplicates()
 
-                if self.info.get("status", 7) != 2:
-                    self.grab_info()
-                    self.check_status()
-                    self.check_duplicates()
+            out_of_traffic = self.CHECK_TRAFFIC and self.out_of_traffic()
+            if self.premium and not out_of_traffic:
+                self.log_info(self._("Processing as premium download..."))
+                self.handle_premium(pyfile)
 
-                out_of_traffic = self.CHECK_TRAFFIC and self.out_of_traffic()
-                if self.premium and not out_of_traffic:
-                    self.log_info(self._("Processing as premium download..."))
-                    self.handle_premium(pyfile)
-
-                elif not self.LOGIN_ACCOUNT or not out_of_traffic:
-                    self.log_info(self._("Processing as free download..."))
-                    self.handle_free(pyfile)
+            elif not self.LOGIN_ACCOUNT or not out_of_traffic:
+                self.log_info(self._("Processing as free download..."))
+                self.handle_free(pyfile)
 
         if self.link and not self.last_download:
             self.log_info(self._("Downloading file..."))
@@ -485,9 +462,6 @@ class SimpleDownloader(BaseDownloader):
 
     def handle_direct(self, pyfile):
         self.link = pyfile.url if self.isresource(pyfile.url) else None
-
-    def handle_multi(self, pyfile):  #: Multi-hoster handler
-        pass
 
     def handle_free(self, pyfile):
         if not self.LINK_FREE_PATTERN:

@@ -42,7 +42,8 @@ def entries(text, allow_whitespaces=False):
 def name(text, safe_name=True):
     try:
         name = web_parse.name(text, safe_name=safe_name)
-    except Exception as exc:
+        name = os.path.basename(name)
+    except Exception:
         name = os.path.basename(text).strip()
         if safe_name:
             name = purge.name(name)

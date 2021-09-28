@@ -79,7 +79,7 @@ class BigfileTo(SimpleDownloader):
     def check_download(self):
         if self.scan_download({"wait": re.compile("Please wait for")}):
             self.log_info(self._("Downloadlimit reached, please wait or reconnect"))
-            self.wait(timedelta(hours=1).seconds, True)
+            self.wait(timedelta(hours=1).total_seconds(), True)
             self.retry()
 
         return SimpleDownloader.check_download(self)

@@ -8,6 +8,7 @@ import time
 import pycurl
 from pyload.core.network.http.exceptions import BadHeader
 from pyload.core.network.request_factory import get_request
+from pyload.core.utils.convert import to_str
 
 from ..base.addon import BaseAddon, threaded
 
@@ -62,7 +63,7 @@ class DeathByCaptcha(BaseAddon):
 
     API_URL = "http://api.dbcapi.me/api/"
 
-    def api_response(self, api="captcha", post=False, multipart=False):
+    def api_request(self, api="captcha", post=False, multipart=False):
         with get_request() as req:
             req.c.setopt(
                 pycurl.HTTPHEADER,
@@ -118,7 +119,7 @@ class DeathByCaptcha(BaseAddon):
         return res
 
     def get_credits(self):
-        res = self.api_response("user", True)
+        res = self.api_request("user", True)
 
         if "is_banned" in res and res["is_banned"]:
             raise DeathByCaptchaException("banned")
@@ -128,7 +129,7 @@ class DeathByCaptcha(BaseAddon):
             raise DeathByCaptchaException(res)
 
     def get_status(self):
-        res = self.api_response("status", False)
+        res = self.api_request("status", False)
 
         if "is_service_overloaded" in res and res["is_service_overloaded"]:
             raise DeathByCaptchaException("service-overload")
@@ -142,9 +143,9 @@ class DeathByCaptcha(BaseAddon):
             multipart = False
             with open(captcha, mode="rb") as fp:
                 data = fp.read()
-            data = "base64:" + base64.b64encode(data)
+            data = "base64:" + to_str(base64.b64encode(data))
 
-        res = self.api_response("captcha", {"captchafile": data}, multipart)
+        res = self.api_request("captcha", {"captchafile": data}, multipart)
 
         if "captcha" not in res:
             raise DeathByCaptchaException(res)
@@ -152,7 +153,7 @@ class DeathByCaptcha(BaseAddon):
 
         for _ in range(24):
             time.sleep(5)
-            res = self.api_response("captcha/{}".format(ticket), False)
+            res = self.api_request("captcha/{}".format(ticket), False)
             if res["text"] and res["is_correct"]:
                 break
         else:
@@ -200,7 +201,7 @@ class DeathByCaptcha(BaseAddon):
     def captcha_invalid(self, task):
         if task.data["service"] == self.classname and "ticket" in task.data:
             try:
-                res = self.api_response(
+                res = self.api_request(
                     "captcha/{}/report".format(task.data["ticket"]), True
                 )
 

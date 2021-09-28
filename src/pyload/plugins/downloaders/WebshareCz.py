@@ -33,13 +33,13 @@ class WebshareCz(SimpleDownloader):
     API_URL = "https://webshare.cz/api/"
 
     @classmethod
-    def api_response(cls, method, **kwargs):
+    def api_request(cls, method, **kwargs):
         return get_url(cls.API_URL + method + "/", post=kwargs)
 
     @classmethod
     def api_info(cls, url):
         info = {}
-        api_data = cls.api_response(
+        api_data = cls.api_request(
             "file_info", ident=re.match(cls.__pattern__, url).group("ID"), wst=""
         )
 
@@ -65,7 +65,7 @@ class WebshareCz(SimpleDownloader):
     def handle_free(self, pyfile):
         wst = self.account.get_data("wst") if self.account else None
 
-        api_data = self.api_response(
+        api_data = self.api_request(
             "file_link", ident=self.info["pattern"]["ID"], wst=wst
         )
 

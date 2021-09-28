@@ -71,7 +71,7 @@ class ThreadManager:
         start a thread whichs fetches online status and other infos
         data = [ .. () .. ]
         """
-        self.timestamp = time.time() + timedelta(minutes=5).seconds
+        self.timestamp = time.time() + timedelta(minutes=5).total_seconds()
 
         InfoThread(self, data, pid)
 
@@ -80,7 +80,7 @@ class ThreadManager:
         """
         creates a thread to fetch online status, returns result id.
         """
-        self.timestamp = time.time() + timedelta(minutes=5).seconds
+        self.timestamp = time.time() + timedelta(minutes=5).total_seconds()
 
         rid = self.result_ids
         self.result_ids += 1
@@ -94,7 +94,7 @@ class ThreadManager:
         """
         returns result and clears it.
         """
-        self.timestamp = time.time() + timedelta(minutes=5).seconds
+        self.timestamp = time.time() + timedelta(minutes=5).total_seconds()
 
         if rid in self.info_results:
             data = self.info_results[rid]
@@ -140,10 +140,9 @@ class ThreadManager:
 
         try:
             self.assign_job()
-        except Exception as exc:
+        except Exception:
             self.pyload.log.warning(
                 "Assign job error",
-                exc,
                 exc_info=self.pyload.debug > 1,
                 stack_info=self.pyload.debug > 2,
             )
@@ -193,11 +192,11 @@ class ThreadManager:
         ) != 0:
             time.sleep(0.25)
 
-        ip = self.get_ip()
+        old_ip = self.get_ip()
 
-        self.pyload.addon_manager.before_reconnecting(ip)
+        self.pyload.addon_manager.before_reconnect(old_ip)
 
-        self.pyload.log.debug(f"Old IP: {ip}")
+        self.pyload.log.debug(f"Old IP: {old_ip}")
 
         try:
             subprocess.run(reconnect_script)
@@ -209,7 +208,7 @@ class ThreadManager:
 
         time.sleep(1)
         ip = self.get_ip()
-        self.pyload.addon_manager.after_reconnecting(ip)
+        self.pyload.addon_manager.after_reconnect(ip, old_ip)
 
         self.pyload.log.info(self._("Reconnected, new IP: {}").format(ip))
 
@@ -267,7 +266,7 @@ class ThreadManager:
     # ----------------------------------------------------------------------
     def assign_job(self):
         """
-        assing a job to a thread if possible.
+        assign a job to a thread if possible.
         """
         if self.pause or not self.pyload.api.is_time_download():
             return
@@ -275,7 +274,7 @@ class ThreadManager:
         # if self.downloaded > 20:
         #    if not self.clean_py_curl(): return
 
-        free = [x for x in self.threads if not x.active]
+        free_threads = [x for x in self.threads if not x.active]
 
         inuse = set(
             [
@@ -298,7 +297,7 @@ class ThreadManager:
             )
             for x in inuse
         ]
-        onlimit = [x[0] for x in inuse if x[1] > 0 and x[2] >= x[1]]
+        onlimit = [x[0] for x in inuse if x[2] >= x[1] > 0]
 
         occ = sorted(
             [
@@ -333,8 +332,8 @@ class ThreadManager:
                     self.pyload.log.warning(self._("Not enough space left on device"))
                     self.pause = True
 
-                if free and not self.pause:
-                    thread = free[0]
+                if free_threads and not self.pause:
+                    thread = free_threads[0]
                     # self.downloaded += 1
 
                     thread.put(job)
@@ -355,7 +354,7 @@ class ThreadManager:
 
     def get_limit(self, thread):
         limit = thread.active.plugin.account.get_account_data(
-            thread.active.plugin.user
+            thread.active.plugin.account.user
         )["options"].get("limit_dl", ["0"])[0]
         return int(limit)
 

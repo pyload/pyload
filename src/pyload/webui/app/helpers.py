@@ -80,6 +80,7 @@ def parse_permissions(session=flask.session):
     if not session.get("authenticated", False):
         return perms
 
+    perms["ALL"] = True
     if session.get("role") == Role.ADMIN:
         for key in perms.keys():
             perms[key] = True

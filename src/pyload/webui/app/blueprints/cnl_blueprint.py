@@ -10,6 +10,7 @@ from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
 import flask
 from flask.json import jsonify
+from pyload.core.api import Destination
 from pyload.core.utils.convert import to_str
 from pyload.core.utils.misc import eval_js
 
@@ -66,9 +67,9 @@ def add():
     api = flask.current_app.config["PYLOAD_API"]
     try:
         if package:
-            api.add_package(package, urls, 0)
+            api.add_package(package, urls, Destination.COLLECTOR)
         else:
-            api.generate_and_add_packages(urls, 0)
+            api.generate_and_add_packages(urls, Destination.COLLECTOR)
     except Exception as e:
         return "failed " + e.args[0] + "\r\n"
 
@@ -92,7 +93,7 @@ def addcrypted():
         fp.write(dlc)
 
     try:
-        api.add_package(package, [dlc_path], 0)
+        api.add_package(package, [dlc_path], Destination.COLLECTOR)
     except Exception:
         flask.abort(500)
     else:
@@ -127,9 +128,9 @@ def addcrypted2():
     api = flask.current_app.config["PYLOAD_API"]
     try:
         if package:
-            api.add_package(package, urls, 0)
+            api.add_package(package, urls, Destination.COLLECTOR)
         else:
-            api.generate_and_add_packages(urls, 0)
+            api.generate_and_add_packages(urls, Destination.COLLECTOR)
     except Exception:
         return "failed can't add", 500
     else:
@@ -153,9 +154,9 @@ def flashgot():
 
     api = flask.current_app.config["PYLOAD_API"]
     if package:
-        api.add_package(package, urls, autostart)
+        api.add_package(package, urls, Destination.QUEUE if autostart else Destination.COLLECTOR)
     else:
-        api.generate_and_add_packages(urls, autostart)
+        api.generate_and_add_packages(urls, Destination.QUEUE if autostart else Destination.COLLECTOR)
 
 
 @bp.route("/crossdomain.xml", endpoint="crossdomain")

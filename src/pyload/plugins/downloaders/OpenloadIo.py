@@ -34,14 +34,14 @@ class OpenloadIo(SimpleDownloader):
     API_URL = "https://api.openload.co/1"
 
     @classmethod
-    def api_response(cls, file_id, method, **kwargs):
+    def api_request(cls, file_id, method, **kwargs):
         kwargs["file"] = file_id
         return json.loads(get_url(cls.API_URL + "/file/" + method, get=kwargs))
 
     @classmethod
     def api_info(cls, url):
         file_id = re.match(cls.__pattern__, url).group("ID")
-        info_json = cls.api_response(file_id, "info")
+        info_json = cls.api_request(file_id, "info")
         file_info = info_json["result"][file_id]
 
         return {"name": file_info["name"], "size": file_info["size"]}
@@ -53,7 +53,7 @@ class OpenloadIo(SimpleDownloader):
     def handle_free(self, pyfile):
         file_id = self.info["pattern"]["ID"]
 
-        ticket_json = self.api_response(file_id, "dlticket")
+        ticket_json = self.api_request(file_id, "dlticket")
 
         if ticket_json["status"] != 200:
             self.log_error(ticket_json["msg"])
@@ -81,7 +81,7 @@ class OpenloadIo(SimpleDownloader):
 
         ticket = ticket_json["result"]["ticket"]
 
-        download_json = self.api_response(
+        download_json = self.api_request(
             file_id, "dl", ticket=ticket, captcha_response=captcha_response
         )
 

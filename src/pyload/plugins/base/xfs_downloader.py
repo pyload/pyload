@@ -7,7 +7,7 @@ from datetime import timedelta
 from urllib.parse import urljoin
 
 from pyload.core.utils import parse, seconds
-from pyload.core.utils.old import html_unescape
+from pyload.core.utils.web.purge import unescape as html_unescape
 
 from ..anticaptchas.ReCaptcha import ReCaptcha
 from ..anticaptchas.SolveMedia import SolveMedia
@@ -41,8 +41,6 @@ class XFSDownloader(SimpleDownloader):
     PLUGIN_DOMAIN = None
 
     DIRECT_LINK = None
-    # NOTE: hould be set to `False` by default for safe, but I am lazy...
-    LEECH_HOSTER = True
 
     NAME_PATTERN = r'(Filename[ ]*:[ ]*</b>(</td><td nowrap>)?|name="fname"[ ]+value="|<[\w^_]+ class="(file)?name">)\s*(?P<N>.+?)(\s*<|")'
     SIZE_PATTERN = r'(Size[ ]*:[ ]*</b>(</td><td>)?|File:.*>|</font>\s*\(|<[\w^_]+ class="size">)\s*(?P<S>[\d.,]+)\s*(?P<U>[\w^_]+)'
@@ -129,62 +127,6 @@ class XFSDownloader(SimpleDownloader):
     def handle_premium(self, pyfile):
         return self.handle_free(pyfile)
 
-    def handle_multi(self, pyfile):
-        if not self.account:
-            self.fail(
-                self._("Only registered or premium users can use url leech feature")
-            )
-
-        #: Only tested with easybytez.com
-        self.data = self.load("http://www.{}/".format(self.PLUGIN_DOMAIN))
-
-        action, inputs = self.parse_html_form()
-
-        upload_id = "{:012}".format(int(random.random() * 10 ** 12))
-        action += upload_id + "&js_on=1&utype=prem&upload_type=url"
-
-        inputs["tos"] = "1"
-        inputs["url_mass"] = pyfile.url
-        inputs["up1oad_type"] = "url"
-
-        self.log_debug(action, inputs)
-
-        #: Wait for file to upload to easybytez.com
-        self.req.set_option("timeout", 600)
-
-        self.data = self.load(action, post=inputs)
-
-        self.check_errors()
-
-        action, inputs = self.parse_html_form("F1")
-        if not inputs:
-            self.retry(msg=self.info.get("error") or self._("TEXTAREA F1 not found"))
-
-        self.log_debug(inputs)
-
-        stmsg = inputs["st"]
-
-        if stmsg == "OK":
-            self.data = self.load(action, post=inputs)
-
-        elif "Can not leech file" in stmsg:
-            self.retry(20, timedelta(minutes=3).seconds, self._("Can not leech file"))
-
-        elif "today" in stmsg:
-            self.retry(
-                wait=seconds.to_midnight(),
-                msg=self._("You've used all Leech traffic today"),
-            )
-
-        else:
-            self.fail(stmsg)
-
-        m = search_pattern(self.LINK_LEECH_PATTERN, self.data)
-        if m is None:
-            self.error(self._("LINK_LEECH_PATTERN not found"))
-
-        self.link = self.load(m.group(1), just_header=True).get("location")
-
     def _post_parameters(self):
         if self.FORM_PATTERN or self.FORM_INPUTS_MAP:
             action, inputs = self.parse_html_form(
@@ -225,7 +167,7 @@ class XFSDownloader(SimpleDownloader):
                     self.set_wait(wait_time)
                     if (
                         wait_time
-                        < timedelta(minutes=self.config.get("max_wait", 10)).seconds
+                        < timedelta(minutes=self.config.get("max_wait", 10)).total_seconds()
                         or not self.pyload.config.get("reconnect", "enabled")
                         or not self.pyload.api.is_time_reconnect()
                     ):

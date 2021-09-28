@@ -8,7 +8,7 @@ from .addon import BaseAddon, expose
 class Notifier(BaseAddon):
     __name__ = "Notifier"
     __type__ = "addon"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __status__ = "testing"
 
     __config__ = [

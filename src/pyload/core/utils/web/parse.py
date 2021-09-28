@@ -112,6 +112,8 @@ def name(url, safe_name=True):
     name = up.path.split("/")[-1]
     if not name:
         name = up.query.split("=", 1)[::-1][0].split("&", 1)[0]
+    if not name and up.fragment:
+        name = "#" + up.fragment
     if not name:
         name = up.netloc.split(".", 1)[0]
 

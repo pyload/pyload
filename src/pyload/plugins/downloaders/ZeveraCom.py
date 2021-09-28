@@ -31,7 +31,7 @@ class ZeveraCom(MultiDownloader):
 
     API_URL = "https://www.zevera.com/api/"
 
-    def api_response(self, method, api_key, **kwargs):
+    def api_request(self, method, api_key, **kwargs):
         get_data = {"client_id": "452508742", "apikey": api_key}
 
         get_data.update(kwargs)
@@ -41,7 +41,7 @@ class ZeveraCom(MultiDownloader):
         return json.loads(res)
 
     def handle_premium(self, pyfile):
-        res = self.api_response(
+        res = self.api_request(
             "transfer/directdl", self.account.info["login"]["password"], src=pyfile.url
         )
         if res["status"] == "success":
