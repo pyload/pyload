@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#@TODO: Move to misc directory in 0.4.10
+# @TODO: Move to misc directory in 0.4.10
 
 from __future__ import with_statement
 
@@ -42,7 +42,7 @@ except ImportError:
 class misc(object):
     __name__ = "misc"
     __type__ = "plugin"
-    __version__ = "0.64"
+    __version__ = "0.65"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -79,7 +79,8 @@ class Config(object):
             return self.plugin.pyload.config.getPlugin(plugin or self.plugin.classname, option)
 
         except KeyError:
-            self.plugin.log_debug("Config option `%s` not found, use default `%s`" % (option, default))  # @TODO: Restore to `log_warning` in 0.4.10
+            self.plugin.log_debug("Config option `%s` not found, use default `%s`" % (
+            option, default))  # @TODO: Restore to `log_warning` in 0.4.10
             return default
 
 
@@ -111,7 +112,7 @@ class DB(object):
                 value = default
             else:
                 value = dict((k, json.loads(v.decode('base64')))
-                             for k, v in value.items())
+                             for k, v in entry.items())
 
         return value
 
@@ -127,6 +128,7 @@ class Expose(object):
     """
     Used for decoration to declare rpc services
     """
+
     def __new__(cls, fn, *args, **kwargs):
         hookManager.addRPC(fn.__module__, fn.__name__, fn.__doc__)
         return fn
@@ -172,7 +174,7 @@ class Periodical(object):
         finally:
             self.cb = None
 
-    stopped = property(lambda self: self.cb == None)
+    stopped = property(lambda self: self.cb is None)
 
     def _task(self, threaded):
         try:
@@ -239,7 +241,8 @@ def threaded(fn):
 
     return run
 
-def sign_string(message, pem_private, pem_passphrase="" , sign_algo="SHA384"):
+
+def sign_string(message, pem_private, pem_passphrase="", sign_algo="SHA384"):
     """
     Generate a signature for string using the `sign_algo` and `RSA` algorithms
     """
@@ -250,21 +253,22 @@ def sign_string(message, pem_private, pem_passphrase="" , sign_algo="SHA384"):
     if sign_algo not in ("MD5", "SHA1", "SHA256", "SHA384", "SHA512"):
         raise ValueError("Unsupported Signing algorithm")
 
-
     priv_key = RSA.importKey(pem_private, passphrase=pem_passphrase)
     signer = PKCS1_v1_5.new(priv_key)
     digest = getattr(__import__('Crypto.Hash', fromlist=[sign_algo]), sign_algo).new()
     digest.update(message)
     return b2a_hex(signer.sign(digest))
 
+
 def format_time(value):
     dt = datetime.datetime(1, 1, 1) + \
-        datetime.timedelta(seconds=abs(int(value)))
+         datetime.timedelta(seconds=abs(int(value)))
     days = ("%d days" % (dt.day - 1)) if dt.day > 1 else ""
     tm = ", ".join("%d %ss" % (getattr(dt, attr), attr)
-                            for attr in ("hour", "minute", "second")
-                            if getattr(dt, attr))
+                   for attr in ("hour", "minute", "second")
+                   if getattr(dt, attr))
     return days + (" and " if days and tm else "") + tm
+
 
 def format_size(value):
     for unit in ('B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB'):
@@ -355,6 +359,7 @@ def html_unescape(text):
     """
     Decode HTML or XML escape character references and entities from a text string
     """
+
     def fixup(m):
         text = m.group(0)
         if text[:2] == "&#":
@@ -374,10 +379,10 @@ def html_unescape(text):
             except KeyError:
                 pass
 
-        return text # leave as is
+        return text  # leave as is
 
     return re.sub("&#?\w+;", fixup, text)
-    #@TODO: Replace in 0.4.10 with:
+    # @TODO: Replace in 0.4.10 with:
     # h = HTMLParser.HTMLParser()
     # return h.unescape(text)
 
@@ -387,6 +392,7 @@ def isiterable(obj):
     Check if object is iterable (string excluded)
     """
     return hasattr(obj, "__iter__")
+
 
 def get_console_encoding(enc):
     if os.name == "nt":
@@ -408,7 +414,7 @@ def normalize(value):
     return unicodedata.normalize('NFKD', value).encode('ascii', 'ignore')
 
 
-#@NOTE: Revert to `decode` in Python 3
+# @NOTE: Revert to `decode` in Python 3
 def decode(value, encoding=None, errors='strict'):
     """
     Encoded string (default to own system encoding) -> unicode string
@@ -548,9 +554,10 @@ def truncate(name, length):
 
 if sys.getfilesystemencoding().startswith('ANSI'):
     """
-     Use fs_encode before accesing files on disk,
+     Use fs_encode before accessing files on disk,
      it will encode the string properly
     """
+
     def fs_encode(value):
         try:
             value = decode(value)
@@ -562,7 +569,7 @@ else:
     fs_encode = decode
 
 
-#@TODO: Recheck in 0.4.10
+# @TODO: Recheck in 0.4.10
 def safepath(value):
     """
     Remove invalid characters and truncate the path if needed
@@ -829,7 +836,7 @@ def replace_patterns(value, rules):
     return value
 
 
-#@TODO: Remove in 0.4.10 and fix exp in CookieJar.setCookie
+# @TODO: Remove in 0.4.10 and fix exp in CookieJar.setCookie
 def set_cookie(cj, domain, name, value, path='/', exp=time.time() + 180 * 24 * 3600):
     args = map(encode, [domain, name, value, path]) + [int(exp)]
     return cj.setCookie(*args)
@@ -871,7 +878,8 @@ def parse_html_tag_attr_value(attr_name, tag):
 
 def parse_html_form(attr_filter, html, input_names={}):
     attr_str = "" if callable(attr_filter) else attr_filter
-    for form in re.finditer(r'(?P<TAG><form[^>]*%s.*?>)(?P<CONTENT>.*?)</?(form|body|html).*?>' % attr_str, html, re.I | re.S):
+    for form in re.finditer(r'(?P<TAG><form[^>]*%s.*?>)(?P<CONTENT>.*?)</?(form|body|html).*?>' % attr_str, html,
+                            re.I | re.S):
         if callable(attr_filter) and not attr_filter(form.group('TAG')):
             continue
 
@@ -1068,50 +1076,57 @@ else:
     LPCTSTR = c_char_p
     LPTSTR = c_wchar_p
     LPSECURITY_ATTRIBUTES = c_void_p
-    LPBYTE  = ctypes.POINTER(BYTE)
+    LPBYTE = ctypes.POINTER(BYTE)
+
 
     class STARTUPINFOW(Structure):
         _fields_ = [
-            ("cb",              DWORD),
-            ("lpReserved",      LPWSTR),
-            ("lpDesktop",       LPWSTR),
-            ("lpTitle",         LPWSTR),
-            ("dwX",             DWORD),
-            ("dwY",             DWORD),
-            ("dwXSize",         DWORD),
-            ("dwYSize",         DWORD),
-            ("dwXCountChars",   DWORD),
-            ("dwYCountChars",   DWORD),
+            ("cb", DWORD),
+            ("lpReserved", LPWSTR),
+            ("lpDesktop", LPWSTR),
+            ("lpTitle", LPWSTR),
+            ("dwX", DWORD),
+            ("dwY", DWORD),
+            ("dwXSize", DWORD),
+            ("dwYSize", DWORD),
+            ("dwXCountChars", DWORD),
+            ("dwYCountChars", DWORD),
             ("dwFillAtrribute", DWORD),
-            ("dwFlags",         DWORD),
-            ("wShowWindow",     WORD),
-            ("cbReserved2",     WORD),
-            ("lpReserved2",     LPBYTE),
-            ("hStdInput",       HANDLE),
-            ("hStdOutput",      HANDLE),
-            ("hStdError",       HANDLE),
+            ("dwFlags", DWORD),
+            ("wShowWindow", WORD),
+            ("cbReserved2", WORD),
+            ("lpReserved2", LPBYTE),
+            ("hStdInput", HANDLE),
+            ("hStdOutput", HANDLE),
+            ("hStdError", HANDLE),
         ]
+
 
     LPSTARTUPINFOW = ctypes.POINTER(STARTUPINFOW)
 
+
     class PROCESS_INFORMATION(Structure):
         _fields_ = [
-            ("hProcess",         HANDLE),
-            ("hThread",          HANDLE),
-            ("dwProcessId",      DWORD),
-            ("dwThreadId",       DWORD),
+            ("hProcess", HANDLE),
+            ("hThread", HANDLE),
+            ("dwProcessId", DWORD),
+            ("dwThreadId", DWORD),
         ]
 
+
     LPPROCESS_INFORMATION = ctypes.POINTER(PROCESS_INFORMATION)
+
 
     class DUMMY_HANDLE(ctypes.c_void_p):
         def __init__(self, *args, **kwargs):
             super(DUMMY_HANDLE, self).__init__(*args, **kwargs)
             self.closed = False
+
         def Close(self):
             if not self.closed:
                 windll.kernel32.CloseHandle(self)
                 self.closed = True
+
         def __int__(self):
             return self.value
 
@@ -1119,8 +1134,9 @@ else:
     CreateProcessW = windll.kernel32.CreateProcessW
     CreateProcessW.argtypes = [LPCTSTR, LPTSTR, LPSECURITY_ATTRIBUTES,
                                LPSECURITY_ATTRIBUTES, BOOL, DWORD, LPVOID, LPCTSTR,
-                               LPSTARTUPINFOW, LPPROCESS_INFORMATION,]
+                               LPSTARTUPINFOW, LPPROCESS_INFORMATION, ]
     CreateProcessW.restype = BOOL
+
 
     def CreateProcess(executable, args, _p_attr, _t_attr, inherit_handles, creation_flags, env, cwd, startup_info):
         """
@@ -1157,6 +1173,7 @@ else:
         """
         This supersedes Popen and corrects a bug in cPython implementation
         """
+
         def _execute_child(self, args, executable, preexec_fn, close_fds,
                            cwd, env, universal_newlines,
                            startupinfo, creationflags, shell, to_close,
@@ -1185,5 +1202,6 @@ else:
                                               p2cread, p2cwrite,
                                               c2pread, c2pwrite,
                                               errread, errwrite)
+
 
     _subprocess.CreateProcess = CreateProcess
