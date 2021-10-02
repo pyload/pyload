@@ -83,7 +83,7 @@ class DB:
             if not entry:
                 value = default
             else:
-                value = {k: json.loads(b85decode(v).decode()) for k, v in value.items()}
+                value = {k: json.loads(b85decode(v).decode()) for k, v in entry.items()}
 
         return value
 
