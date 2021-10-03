@@ -8,85 +8,35 @@ from ..internal.Hoster import Hoster
 class PornhostCom(Hoster):
     __name__ = "PornhostCom"
     __type__ = "hoster"
-    __version__ = "0.26"
+    __version__ = "0.27"
     __status__ = "testing"
 
-    __pattern__ = r'http://(?:www\.)?pornhost\.com/(\d+/\d+\.html|\d+)'
+    __pattern__ = r'https?://(?:www\.)?pornhost\.com/\d+'
     __config__ = [("activated", "bool", "Activated", True)]
 
     __description__ = """Pornhost.com hoster plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("jeix", "jeix@hasnomail.de")]
+    __authors__ = [("jeix", "jeix@hasnomail.de"),
+                   ("GammaC0de", "nitzo2001[AT}yahoo[DOT]com")]
+
+    NAME_PATTERN = r'class="video-title">(.+?)<'
+    LINK_PATTERN = r'<source src="(https://cdn\d+-dl.pornhost.com/.+)" type="video/mp4">'
+    OFFLINE_PATTERN = r'>Gallery not found<'
 
     def process(self, pyfile):
-        self.download_html()
-        if not self.file_exists():
+        self.data = self.load(pyfile.url)
+
+        if re.search(self.OFFLINE_PATTERN, self.data) is not None:
             self.offline()
 
-        pyfile.name = self.get_file_name()
-        self.download(self.get_file_url())
+        m = re.search(self.NAME_PATTERN, self.data)
+        if m is None:
+            self.error(_("name pattern not found"))
 
-    #: Old interface
-    def download_html(self):
-        url = self.pyfile.url
-        self.data = self.load(url)
+        pyfile.name = m.group(1) + ".mp4"
 
-    def get_file_url(self):
-        """
-        Returns the absolute downloadable filepath
-        """
-        if not self.data:
-            self.download_html()
+        m = re.search(self.LINK_PATTERN, self.data)
+        if m is None:
+            self.error(_("link pattern not found"))
 
-        url = re.search(
-            r'download this file</label>.*?<a href="(.*?)"',
-            self.data)
-        if url is None:
-            url = re.search(
-                r'"(http://dl\d+\.pornhost\.com/files/.*?/.*?/.*?/.*?/.*?/.*?\..*?)"',
-                self.data)
-            if url is None:
-                url = re.search(
-                    r'width: 894px; height: 675px">.*?<img src="(.*?)"',
-                    self.data)
-                if url is None:
-                    url = re.search(r'"http://file\d+\.pornhost\.com/\d+/.*?"',
-                                    self.data)  # @TODO: fix this one since it doesn't match
-
-        return url.group(1)
-
-    def get_file_name(self):
-        if not self.data:
-            self.download_html()
-
-        name = re.search(
-            r'<title>pornhost\.com - free file hosting with a twist - gallery(.*?)</title>',
-            self.data)
-        if name is None:
-            name = re.search(
-                r'id="url" value="http://www\.pornhost\.com/(.*?)/"',
-                self.data)
-            if name is None:
-                name = re.search(
-                    r'<title>pornhost\.com - free file hosting with a twist -(.*?)</title>',
-                    self.data)
-                if name is None:
-                    name = re.search(
-                        r'"http://file\d+\.pornhost\.com/.*?/(.*?)"', self.data)
-
-        name = name.group(1).strip() + ".flv"
-
-        return name
-
-    def file_exists(self):
-        """
-        Returns True or False
-        """
-        if not self.data:
-            self.download_html()
-
-        if re.search(
-                r'gallery not found|You will be redirected to', self.data):
-            return False
-        else:
-            return True
+        self.download(m.group(1))
