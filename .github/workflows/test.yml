@@ -62,7 +62,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     env:
       toxenv: py
-    continue-on-error: ${{ startsWith(matrix.python-version, 'pypy') }}
+    continue-on-error: ${{ matrix.os != 'ubuntu-latest' || startsWith(matrix.python-version, 'pypy') }}
 
     strategy:
       fail-fast: false
