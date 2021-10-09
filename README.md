@@ -23,11 +23,13 @@
 <br />
 <br />
 
-**pyLoad Next** is the newest version of pyLoad running on Python 3.6+ and PyPy (experimental).
+## Choose your Version
 
-> **Note**:
-> pyLoad Next is developed in the [main branch on GitHub](https://github.com/pyload/pyload/tree/main) and published as [pyload-ng on PyPI](https://pypi.org/project/pyload-ng/).
-> The old version of pyLoad (for Python 2) is still available in the [stable branch on GitHub](https://github.com/pyload/pyload/tree/stable).
+**The newest version of pyLoad** running on Python 3.6+ and PyPy (experimental) is developed in the [main branch on GitHub](https://github.com/pyload/pyload/tree/main) and published as [pyload-ng on PyPI](https://pypi.org/project/pyload-ng/).
+
+**The old version of pyLoad** working on Python 2 is still available in the [stable branch on GitHub](https://github.com/pyload/pyload/tree/stable), pre-built packages are available for download on the [releases page on GitHub](https://github.com/pyload/pyload/releases).
+
+This README covers only the latest version of pyLoad.
 
 ## Quick Start
 
@@ -101,7 +103,7 @@ Get the latest stable release of pyLoad:
     pip install pyload-ng
 
 > **Note**:
-> No stable release is available. pyLoad is still in pre-release phase.
+> No stable release yet, pyLoad is now in pre-release phase.
 
 #### Available modules
 
@@ -140,15 +142,15 @@ Or group more together:
 
 ### Build Translations
 
-> **Note**:
-> You don't have to build the translations files if you installed pyLoad through `pip`,
-> because they're already included.
-
 Use the command `build_locale` to retrieve and build the latest locale files (translations):
 
     python setup.py build_locale
 
 Invoke `build_locale` before building the package (eg. `bdist_wheel`).
+
+> **Note**:
+>
+> You don't need to build the translations if you installed pyLoad through `pip`, they're already included.
 
 ## Report a Vulnerability
 
@@ -175,7 +177,9 @@ Please refer to [CONTRIBUTING](https://github.com/pyload/pyload/blob/main/CONTRI
     docker create --name=pyload -v <USERDIR>:/config -v <STORAGEDIR>:/downloads --restart unless-stopped pyload/pyload
 
 > **Note**:
+>
 > Replace `<STORAGEDIR>` with the location on the host machine where you want that downloads will be saved.
+>
 > Replace `<USERDIR>` with where you want that user data files (configurations) are stored.
 
 ### Start Container
@@ -212,7 +216,9 @@ Compatible with `docker-compose` v2 schemas:
         restart: unless-stopped
 
 > **Note**:
+>
 > Replace `<STORAGEDIR>` with the location on the host machine where you want that downloads will be saved.
+>
 > Replace `<USERDIR>` with where you want that user data files (configurations) are stored.
 
 ## Troubleshooting

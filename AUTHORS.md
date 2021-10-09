@@ -34,6 +34,7 @@
 ### Contributors
 
 The list of developers who have kindly contributed to the pyLoad project is constantly updated.
+
 You can found it here: <https://github.com/pyload/pyload/graphs/contributors>.
 
 ### Community
@@ -48,7 +49,7 @@ This has kept the project alive until today and we hope it will continue in the 
 <br />
 <br />
 
-_A special thanks to **RaNaN**, **sebnapi** and **spoob** who started this journey so long time ago!_
+_A special thanks to **RaNaN**, **sebnapi** and **spoob** who started this journey so long ago!_
 
 <br />
 
