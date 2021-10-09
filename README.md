@@ -25,9 +25,9 @@
 
 **pyLoad Next** is the newest version of pyLoad running on Python 3.6+ and PyPy (experimental).
 
-pyLoad Next is developed in the [main branch on GitHub](https://github.com/pyload/pyload/tree/main) and published as [pyload-ng on PyPI](https://pypi.org/project/pyload-ng/).
-
-The old version of pyLoad for Python 2 resides in the [stable branch on GitHub](https://github.com/pyload/pyload/tree/stable) and keeps getting plugin updates.
+> **Note**:
+> pyLoad Next is developed in the [main branch on GitHub](https://github.com/pyload/pyload/tree/main) and published as [pyload-ng on PyPI](https://pypi.org/project/pyload-ng/).
+> The old version of pyLoad (for Python 2) is still available in the [stable branch on GitHub](https://github.com/pyload/pyload/tree/stable).
 
 ## Quick Start
 
@@ -70,11 +70,11 @@ To start pyLoad, type the command:
 This will create the following directories (if they don't exist already):
 
 -   `~/Downloads/pyLoad`: where downloads will be saved.
--   `~/.pyload`: where user data (configuration files) are stored.
+-   `~/.pyload`: where user data and configuration files are stored.
 -   `<TMPDIR>/pyLoad`: where temporary files are stored. `<TMPDIR>` is [platform-specific](https://docs.python.org/3/library/tempfile.html#tempfile.gettempdir).
 
 > **Note**:
-> On Windows, user data are saved by default in the directory `~\AppData\Roaming\pyLoad`.
+> On Windows, user data and configuration files are stored in the directory `~\AppData\Roaming\pyLoad`.
 
 ### Help
 
@@ -150,6 +150,14 @@ Use the command `build_locale` to retrieve and build the latest locale files (tr
 
 Invoke `build_locale` before building the package (eg. `bdist_wheel`).
 
+## Report a Vulnerability
+
+Please refer to [SECURITY](https://github.com/pyload/pyload/blob/main/SECURITY.md) to read our security policy.
+
+## Contribute to pyLoad
+
+Please refer to [CONTRIBUTING](https://github.com/pyload/pyload/blob/main/CONTRIBUTING.md) to read our contribution guidelines.
+
 ## Docker Images
 
 [![Docker build status](https://img.shields.io/docker/build/pyload/pyload?style=flat-square)](https://hub.docker.com/r/pyload/pyload)
@@ -166,9 +174,9 @@ Invoke `build_locale` before building the package (eg. `bdist_wheel`).
 
     docker create --name=pyload -v <USERDIR>:/config -v <STORAGEDIR>:/downloads --restart unless-stopped pyload/pyload
 
-Replace `<STORAGEDIR>` with the location on the host machine where you want that downloads will be saved.
-
-Replace `<USERDIR>` with where you want that user data files (configurations) are stored.
+> **Note**:
+> Replace `<STORAGEDIR>` with the location on the host machine where you want that downloads will be saved.
+> Replace `<USERDIR>` with where you want that user data files (configurations) are stored.
 
 ### Start Container
 
@@ -203,9 +211,9 @@ Compatible with `docker-compose` v2 schemas:
           - 8000:8000
         restart: unless-stopped
 
-Replace `<STORAGEDIR>` with the location on the host machine where you want that downloads will be saved.
-
-Replace `<USERDIR>` with where you want that user data files (configurations) are stored.
+> **Note**:
+> Replace `<STORAGEDIR>` with the location on the host machine where you want that downloads will be saved.
+> Replace `<USERDIR>` with where you want that user data files (configurations) are stored.
 
 ## Troubleshooting
 
@@ -270,7 +278,7 @@ You are allowed to use this software under the terms of the **GNU Affero
 General Public License** as published by the Free Software Foundation;
 either **version 3** of the License, or (at your option) any later version.
 
-Please refer to the [LICENSE](https://github.com/pyload/pyload/blob/main/LICENSE.md) for the full license.
+Please refer to [LICENSE](https://github.com/pyload/pyload/blob/main/LICENSE.md) to read the project license.
 
 ### Alternative License
 
@@ -279,7 +287,7 @@ this software under a different license according to the agreement.
 
 ### Contributor License Agreement
 
-Please refer to the [CLA](https://cla-assistant.io/pyload/pyload) for the full agreement conditions.
+Please refer to [CLA](https://cla-assistant.io/pyload/pyload) for the full agreement conditions.
 
 This is essentially what you will be agreeing to:
 
@@ -292,11 +300,11 @@ This is essentially what you will be agreeing to:
 -   You retain full ownership (copyright) of your submission and are free to do
     with it as you please.
 
-Contact us at licensing@pyload.net for any question about pyLoad licensing policy.
+Contact us at licensing@pyload.net for any question about the pyLoad licensing policy.
 
 ## Credits
 
-Please refer to the [AUTHORS](https://github.com/pyload/pyload/blob/main/AUTHORS.md) for the full credits.
+Please refer to [AUTHORS](https://github.com/pyload/pyload/blob/main/AUTHORS.md) to know a bit more about the people behind pyLoad.
 
 <br />
 

@@ -1,10 +1,6 @@
 <p align="center">
   <img src="https://raw.githubusercontent.com/pyload/pyload/main/media/logo.png" alt="pyLoad" height="100" />
 </p>
-<h2></h2>
-
-<br />
-<br />
 
 ## GNU AFFERO GENERAL PUBLIC LICENSE
 
