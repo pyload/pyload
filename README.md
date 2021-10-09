@@ -25,9 +25,9 @@
 
 **pyLoad Next** is the newest version of pyLoad running on Python 3.6+ and PyPy (experimental).
 
-pyLoad Next is developed in the [main branch on GitHub](https://github.com/pyload/pyload/tree/main) and published as [pyload-ng on PyPI](https://pypi.org/project/pyload-ng/).
-
-The old version of pyLoad for Python 2 resides in the [stable branch on GitHub](https://github.com/pyload/pyload/tree/stable) and keeps getting plugin updates.
+> **Note**:
+> pyLoad Next is developed in the [main branch on GitHub](https://github.com/pyload/pyload/tree/main) and published as [pyload-ng on PyPI](https://pypi.org/project/pyload-ng/).
+> The old version of pyLoad (for Python 2) is still available in the [stable branch on GitHub](https://github.com/pyload/pyload/tree/stable).
 
 ## Quick Start
 
@@ -70,11 +70,11 @@ To start pyLoad, type the command:
 This will create the following directories (if they don't exist already):
 
 -   `~/Downloads/pyLoad`: where downloads will be saved.
--   `~/.pyload`: where user data (configuration files) are stored.
+-   `~/.pyload`: where user data and configuration files are stored.
 -   `<TMPDIR>/pyLoad`: where temporary files are stored. `<TMPDIR>` is [platform-specific](https://docs.python.org/3/library/tempfile.html#tempfile.gettempdir).
 
 > **Note**:
-> On Windows, user data are saved by default in the directory `~\AppData\Roaming\pyLoad`.
+> On Windows, user data and configuration files are stored in the directory `~\AppData\Roaming\pyLoad`.
 
 ### Help
 
@@ -174,9 +174,9 @@ Please refer to [CONTRIBUTING](https://github.com/pyload/pyload/blob/main/CONTRI
 
     docker create --name=pyload -v <USERDIR>:/config -v <STORAGEDIR>:/downloads --restart unless-stopped pyload/pyload
 
-Replace `<STORAGEDIR>` with the location on the host machine where you want that downloads will be saved.
-
-Replace `<USERDIR>` with where you want that user data files (configurations) are stored.
+> **Note**:
+> Replace `<STORAGEDIR>` with the location on the host machine where you want that downloads will be saved.
+> Replace `<USERDIR>` with where you want that user data files (configurations) are stored.
 
 ### Start Container
 
@@ -211,9 +211,9 @@ Compatible with `docker-compose` v2 schemas:
           - 8000:8000
         restart: unless-stopped
 
-Replace `<STORAGEDIR>` with the location on the host machine where you want that downloads will be saved.
-
-Replace `<USERDIR>` with where you want that user data files (configurations) are stored.
+> **Note**:
+> Replace `<STORAGEDIR>` with the location on the host machine where you want that downloads will be saved.
+> Replace `<USERDIR>` with where you want that user data files (configurations) are stored.
 
 ## Troubleshooting
 
