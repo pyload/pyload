@@ -1,0 +1,26 @@
+name: Lock Threads
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+
+permissions:
+  issues: write
+  pull-requests: write
+
+concurrency:
+  group: lock
+
+jobs:
+  action:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: dessant/lock-threads@v3
+        with:
+          issue-inactive-days: "90"
+          exclude-any-issue-labels: "checking,help wanted"
+          remove-issue-labels: "feedback wanted"
+          issue-comment: >
+            This ticket has been automatically locked since there has not been
+            any recent activity after it was closed.
+          process-only: "issues"
