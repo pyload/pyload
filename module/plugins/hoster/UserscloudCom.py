@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 
-import re
-
 from module.network.CookieJar import CookieJar
-from module.network.HTTPRequest import HTTPRequest
+from module.network.HTTPRequest import Abort, HTTPRequest
 
-from ..internal.SimpleHoster import SimpleHoster
+from ..internal.XFSHoster import XFSHoster
 
 
 class BIGHTTPRequest(HTTPRequest):
@@ -33,10 +31,10 @@ class BIGHTTPRequest(HTTPRequest):
         self.rep.write(buf)
 
 
-class UserscloudCom(SimpleHoster):
+class UserscloudCom(XFSHoster):
     __name__ = "UserscloudCom"
     __type__ = "hoster"
-    __version__ = "0.09"
+    __version__ = "0.10"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?userscloud\.com/(?P<ID>\w{12})'
@@ -49,6 +47,8 @@ class UserscloudCom(SimpleHoster):
     __description__ = """Userscloud.com hoster plugin"""
     __license__ = "GPLv3"
     __authors__ = [("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
+
+    PLUGIN_DOMAIN = "userscloud.com"
 
     INFO_PATTERN = r'<a href="https://userscloud.com/.+?" target="_blank">(?P<N>.+?) - (?P<S>[\d.,]+) (?P<U>[\w^_]+)</a>'
     OFFLINE_PATTERN = r'The file you are trying to download is no longer available'
@@ -69,17 +69,4 @@ class UserscloudCom(SimpleHoster):
         self.req.http = BIGHTTPRequest(
             cookies=CookieJar(None),
             options=self.pyload.requestFactory.getOptions(),
-            limit=300000)
-
-
-    def handle_free(self, pyfile):
-        url, inputs = self.parse_html_form('name="F1"')
-        if not inputs:
-            return
-
-        self.data = self.load(pyfile.url, post=inputs)
-
-        m = re.search(self.LINK_FREE_PATTERN, self.data)
-        if m is not None:
-            self.link = m.group(1)
-
+            limit=2000000)
