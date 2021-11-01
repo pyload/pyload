@@ -32,8 +32,6 @@ class Keep2ShareCc(SimpleDownloader):
         ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com"),
     ]
 
-    DISPOSITION = False  # TODO: Recheck in v0.6.x
-
     URL_REPLACEMENTS = [(__pattern__ + ".*", r"https://k2s.cc/file/\g<ID>")]
 
     API_URL = "https://keep2share.cc/api/v2/"
