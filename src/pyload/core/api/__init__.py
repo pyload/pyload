@@ -854,13 +854,13 @@ class Api:
     @permission(Perms.MODIFY)
     def recheck_package(self, package_id):
         """
-        Proofes online status of all files in a package, also a default action when
+        Probes online status of all files in a package, also a default action when
         package is added.
 
         :param package_id:
         :return:
         """
-        self.pyload.files.re_check_package(int(package_id))
+        self.pyload.files.recheck_package(int(package_id))
 
     @legacy("stopAllDownloads")
     @permission(Perms.MODIFY)

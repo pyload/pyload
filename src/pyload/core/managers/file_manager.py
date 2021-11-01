@@ -603,7 +603,7 @@ class FileManager:
                 self.pyload.addon_manager.package_finished(pyfile.package())
                 pyfile.package().set_finished = True
 
-    def re_check_package(self, pid):
+    def recheck_package(self, pid):
         """
         recheck links in package.
         """
