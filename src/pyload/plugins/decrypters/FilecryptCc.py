@@ -12,7 +12,6 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
 from pyload.core.network.cookie_jar import CookieJar
-from pyload.core.network.exceptions import Abort
 from pyload.core.network.http.exceptions import BadHeader
 from pyload.core.network.http.http_request import HTTPRequest
 from pyload.core.utils.convert import to_str
@@ -21,32 +20,6 @@ from ..anticaptchas.CoinHive import CoinHive
 from ..anticaptchas.ReCaptcha import ReCaptcha
 from ..anticaptchas.SolveMedia import SolveMedia
 from ..base.decrypter import BaseDecrypter
-
-
-class BIGHTTPRequest(HTTPRequest):
-    """
-    Overcome HTTPRequest's load() size limit to allow loading very big web pages by
-    overrding HTTPRequest's write() function.
-    """
-
-    # TODO: Add 'limit' parameter to HTTPRequest in v0.6.x
-    def __init__(self, cookies=None, options=None, limit=1_000_000):
-        self.limit = limit
-        super().__init__(cookies=cookies, options=options)
-
-    def write(self, buf):
-        """
-        writes response.
-        """
-        if self.limit and self.rep.tell() > self.limit or self.abort:
-            rep = self.getResponse()
-            if self.abort:
-                raise Abort
-            with open("response.dump", mode="wb") as fp:
-                fp.write(rep)
-            raise Exception("Loaded Url exceeded limit")
-
-        self.rep.write(buf)
 
 
 class FilecryptCc(BaseDecrypter):
@@ -88,7 +61,7 @@ class FilecryptCc(BaseDecrypter):
         except Exception:
             pass
 
-        self.req.http = BIGHTTPRequest(
+        self.req.http = HTTPRequest(
             cookies=CookieJar(None),
             options=self.pyload.request_factory.get_options(),
             limit=2_000_000,
