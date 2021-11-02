@@ -16,7 +16,7 @@ def args(**kwargs):
 class RealdebridCom(MultiAccount):
     __name__ = "RealdebridCom"
     __type__ = "account"
-    __version__ = "0.61"
+    __version__ = "0.62"
     __status__ = "testing"
 
     __config__ = [("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),
@@ -74,11 +74,13 @@ class RealdebridCom(MultiAccount):
     def grab_info(self, user, password, data):
         api_data = self.api_response("rest", "/user", args(auth_token=data['api_token']))
 
-        validuntil = time.time() + api_data["premium"]
+        premium_remain = api_data["premium"]
+        premium = premium_remain > 0
+        validuntil = time.time() + premium_remain if premium else -1
 
         return {'validuntil': validuntil,
                 'trafficleft': -1,
-                'premium': True}
+                'premium': premium}
 
     def signin(self, user, password, data):
         user = user.split('/')
