@@ -20,7 +20,7 @@ class XDCCRequest:
 
         self.filesize = 0
         self.received = 0
-        self.speeds = [0.0, 0.0, 0.0]
+        self.speeds = [0, 0, 0]
 
         self.sleep = 0.000
         self.last_recv_size = 0
@@ -112,7 +112,7 @@ class XDCCRequest:
 
         recv_list = [self.dccsock]
         self.dccsock.connect((ip, port))
-        self.dccsock.setblocking(0)
+        self.dccsock.setblocking(False)
 
         # recv loop for dcc socket
         while True:
@@ -127,7 +127,7 @@ class XDCCRequest:
                     data = self.dccsock.recv(16384)
 
                 except socket.error as exc:
-                    if exc.errno == errno.EAGAIN or exc.errno == errno.EWOULDBLOCK:
+                    if exc.errno in (errno.EAGAIN, errno.EWOULDBLOCK):
                         continue
 
                     else:
@@ -136,8 +136,7 @@ class XDCCRequest:
                 data_len = len(data)
                 if (
                     data_len == 0
-                    or self.filesize
-                    and self.received + data_len > self.filesize
+                    or self.received + data_len > self.filesize > 0
                 ):
                     break
 
