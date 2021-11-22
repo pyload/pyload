@@ -131,7 +131,7 @@ class CaptchaTask:
         """
         return self.captcha_result_type == "interactive"
 
-    def set_wating_for_user(self, exclusive):
+    def set_waiting_for_user(self, exclusive):
         if exclusive:
             self.status = "user"
         else:

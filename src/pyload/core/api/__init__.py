@@ -1068,7 +1068,7 @@ class Api:
         self.pyload.last_client_connected = time.time()
         task = self.pyload.captcha_manager.get_task()
         if task:
-            task.set_wating_for_user(exclusive=exclusive)
+            task.set_waiting_for_user(exclusive=exclusive)
             data, type, result = task.get_captcha()
             t = CaptchaTask(int(task.id), json.dumps(data), type, result)
             return t
