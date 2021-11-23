@@ -18,7 +18,7 @@ function indicateSuccess(message) {
    }
 
     indicateFinish();
-    var bar = new $.peekABar({
+    const bar = new $.peekABar({
         html: "<h4>" + message + '.' + "</h4>",
         padding: "6px",
         backgroundColor: '#B5BFC2',
@@ -393,6 +393,14 @@ function set_captcha(a) {
             $("#cap_interactive").css("display", "block");
             interactiveCaptchaHandlerInstance.startInteraction(params.url, params);
         }
+    } else if (a.result_type === "invisible") {
+        $("#cap_box #cap_title").text("");
+        if(interactiveCaptchaHandlerInstance == null) {
+            interactiveCaptchaHandlerInstance = new interactiveCaptchaHandler("cap_interactive_iframe", "cap_invisible_loading", submit_interactive_captcha);
+        }
+        if(params.url !== undefined && params.url.indexOf("http") === 0) {
+            interactiveCaptchaHandlerInstance.startInteraction(params.url, params);
+        }
     }
     return true;
 }
@@ -460,11 +468,11 @@ function submit_interactive_captcha(c) {
 
 function interactiveCaptchaHandler(iframeId, loadingid, captchaResponseCallback) {
     this._iframeId = iframeId;
-    this._loadingid = loadingid;
+    this._loadingId = loadingid;
     this._captchaResponseCallback = captchaResponseCallback;
     this._active = false; // true: link grabbing is running, false: standby
 
-    $("#" + this._loadingid).css("display", "block");
+    $("#" + this._loadingId).css("display", "block");
     $("#" + this._iframeId).on("load", this, this.iframeLoaded);
 
     // Register event listener for communication with iframe

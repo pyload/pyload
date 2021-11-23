@@ -11,7 +11,7 @@ from .plugin import BasePlugin
 class BaseCaptcha(BasePlugin):
     __name__ = "BaseCaptcha"
     __type__ = "anticaptcha"
-    __version__ = "0.58"
+    __version__ = "0.59"
     __status__ = "stable"
 
     __description__ = """Base anti-captcha plugin"""
@@ -167,6 +167,46 @@ class BaseCaptcha(BasePlugin):
                 {"captcha_plugin": self.__name__, "plugin": self.pyfile.plugin.__name__}
             )
             self.task = captcha_manager.new_task("interactive", params, "interactive")
+
+            captcha_manager.handle_captcha(self.task, timeout)
+
+            while self.task.is_waiting():
+                self.pyfile.plugin.check_status()
+                time.sleep(1)
+
+        finally:
+            captcha_manager.remove_task(self.task)
+
+        result = self.task.result
+
+        if self.task.error:
+            if not self.task.handler and not self.pyload.is_client_connected():
+                self.log_warning(self._("No Client connected for captcha decrypting"))
+                self.fail(self._("No Client connected for captcha decrypting"))
+            else:
+                self.pyfile.plugin.retry_captcha(msg=self.task.error)
+
+        elif self.task.result:
+            self.log_info(self._("Captcha result: `{}`").format(result))
+
+        else:
+            self.pyfile.plugin.retry_captcha(
+                msg=self._(
+                    "No captcha result obtained in appropriate timing ({}s)"
+                ).format(timeout)
+            )
+
+        return result
+
+    def decrypt_invisible(self, params={}, timeout=120):
+        captcha_manager = self.pyload.captcha_manager
+        timeout = max(timeout, 50)
+
+        try:
+            params.update(
+                {"captcha_plugin": self.__name__, "plugin": self.pyfile.plugin.__name__}
+            )
+            self.task = captcha_manager.new_task("invisible", params, "invisible")
 
             captcha_manager.handle_captcha(self.task, timeout)
 

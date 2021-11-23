@@ -18,7 +18,7 @@ function indicateSuccess(message) {
    }
 
     indicateFinish();
-    var bar = new $.peekABar({
+    const bar = new $.peekABar({
         html: "<h4>" + message + '.' + "</h4>",
         padding: "6px",
         backgroundColor: '#B5BFC2',
@@ -464,7 +464,7 @@ function interactiveCaptchaHandler(iframeId, loadingid, captchaResponseCallback)
     this._captchaResponseCallback = captchaResponseCallback;
     this._active = false; // true: link grabbing is running, false: standby
 
-    $("#" + this._loadingid).css("display", "block");
+    $("#" + this._loadingId).css("display", "block");
     $("#" + this._iframeId).on("load", this, this.iframeLoaded);
 
     // Register event listener for communication with iframe
