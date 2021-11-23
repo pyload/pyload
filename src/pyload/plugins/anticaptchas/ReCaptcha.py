@@ -16,7 +16,7 @@ from ..base.captcha_service import CaptchaService
 class ReCaptcha(CaptchaService):
     __name__ = "ReCaptcha"
     __type__ = "anticaptcha"
-    __version__ = '0.44'
+    __version__ = '0.45'
     __status__ = "testing"
 
     __description__ = "ReCaptcha captcha service plugin"
@@ -366,7 +366,7 @@ class ReCaptcha(CaptchaService):
         else:
             self.fail(self._("reCAPTCHA max retries exceeded"))
 
-        return result, challenge
+        return result
 
     # solve interactive captcha (javascript required), use when non-JS captcha
     # fallback for v2 is not allowed
@@ -385,7 +385,7 @@ class ReCaptcha(CaptchaService):
 
         result = self.decrypt_interactive(params, timeout=300)
 
-        return result, result
+        return result
 
 
 if __name__ == "__main__":

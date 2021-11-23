@@ -13,7 +13,7 @@ from ..base.simple_downloader import SimpleDownloader
 class NitroflareCom(SimpleDownloader):
     __name__ = "NitroflareCom"
     __type__ = "downloader"
-    __version__ = "0.31"
+    __version__ = "0.32"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?(?:nitro\.download|nitroflare\.com)/view/(?P<ID>[\w^_]+)"
@@ -93,7 +93,7 @@ class NitroflareCom(SimpleDownloader):
         recaptcha_key = recaptcha.detect_key()
         if recaptcha_key:
             self.captcha = recaptcha
-            response, _ = self.captcha.challenge(recaptcha_key)
+            response = self.captcha.challenge(recaptcha_key)
             inputs["g-recaptcha-response"] = response
         else:
             hcaptcha = HCaptcha(pyfile)

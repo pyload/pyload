@@ -15,7 +15,7 @@ from ..base.captcha import BaseCaptcha
 class FileboomMe(BaseAccount):
     __name__ = "FileboomMe"
     __type__ = "account"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __status__ = "testing"
 
     __description__ = """Fileboom.me account plugin"""
@@ -73,7 +73,7 @@ class FileboomMe(BaseAccount):
                             self.log_error(_("Request reCAPTCHA API failed"))
                             self.fail_login(_("Request reCAPTCHA API failed"))
 
-                        re_captcha_response, _ = self.captcha.challenge(self.RECAPTCHA_KEY, version="2js", secure_token=False)
+                        re_captcha_response = self.captcha.challenge(self.RECAPTCHA_KEY, version="2js", secure_token=False)
                         try:
                             json_data = self.api_request("login",
                                                           username=user,

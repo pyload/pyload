@@ -9,7 +9,7 @@ from ..base.simple_downloader import SimpleDownloader
 class UploadgigCom(SimpleDownloader):
     __name__ = "UploadgigCom"
     __type__ = "downloader"
-    __version__ = "0.07"
+    __version__ = "0.08"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?uploadgig.com/file/download/\w+"
@@ -44,7 +44,7 @@ class UploadgigCom(SimpleDownloader):
             self.error(self._("ReCaptcha key not found"))
 
         self.captcha = recaptcha
-        response, challenge = recaptcha.challenge(captcha_key)
+        response = recaptcha.challenge(captcha_key)
 
         inputs["g-recaptcha-response"] = response
         self.data = self.load(self.fixurl(url),

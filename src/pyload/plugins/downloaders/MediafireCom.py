@@ -9,7 +9,7 @@ from ..base.simple_downloader import SimpleDownloader
 class MediafireCom(SimpleDownloader):
     __name__ = "MediafireCom"
     __type__ = "downloader"
-    __version__ = "0.98"
+    __version__ = "0.99"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?mediafire\.com/(file/|view/\??|download(\.php\?|/)|\?)(?P<ID>\w+)"
@@ -66,7 +66,7 @@ class MediafireCom(SimpleDownloader):
 
             if url:
                 self.captcha = recaptcha
-                response, challenge = recaptcha.challenge(captcha_key)
+                response = recaptcha.challenge(captcha_key)
 
                 inputs["g-recaptcha-response"] = response
                 self.data = self.load(self.fixurl(url), post=inputs)

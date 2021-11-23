@@ -14,7 +14,7 @@ from ..helpers import parse_html_tag_attr_value
 class FilefoxCc(XFSDownloader):
     __name__ = "FilefoxCc"
     __type__ = "downloader"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?filefox\.cc/(?P<ID>\w{12})"
@@ -59,7 +59,7 @@ class FilefoxCc(XFSDownloader):
             captcha_key = recaptcha.detect_key()
             if captcha_key:
                 self.captcha = recaptcha
-                response, _ = recaptcha.challenge(captcha_key)
+                response = recaptcha.challenge(captcha_key)
 
             else:
                 hcaptcha = HCaptcha(self.pyfile)

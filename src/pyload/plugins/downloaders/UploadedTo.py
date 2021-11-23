@@ -14,7 +14,7 @@ from ..base.simple_downloader import SimpleDownloader
 class UploadedTo(SimpleDownloader):
     __name__ = "UploadedTo"
     __type__ = "downloader"
-    __version__ = "1.09"
+    __version__ = "1.10"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?(uploaded\.(to|net)|ul\.to)(/file/|/?\?id=|.*?&id=|/)(?P<ID>\w+)"
@@ -96,7 +96,7 @@ class UploadedTo(SimpleDownloader):
         self.data = self.load("http://uploaded.net/js/download.js")
 
         self.captcha = ReCaptcha(pyfile)
-        response, challenge = self.captcha.challenge()
+        response = self.captcha.challenge()
 
         self.data = self.load(
             "http://uploaded.net/io/ticket/captcha/{}".format(

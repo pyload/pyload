@@ -15,7 +15,7 @@ from ..base.simple_downloader import SimpleDownloader
 class RapidgatorNet(SimpleDownloader):
     __name__ = "RapidgatorNet"
     __type__ = "downloader"
-    __version__ = "0.58"
+    __version__ = "0.59"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?(?:rapidgator\.(?:net|asia|)|rg\.to)/file/(?P<ID>\w+)"
@@ -164,12 +164,12 @@ class RapidgatorNet(SimpleDownloader):
             if not captcha:
                 self.error(self._("Captcha pattern not found"))
 
-            response, challenge = captcha.challenge()
-
             if isinstance(captcha, ReCaptcha):
+                response = captcha.challenge()
                 post_params = {"g-recaptcha-response": response}
 
             elif isinstance(captcha, SolveMedia):
+                response, challenge = captcha.challenge()
                 post_params = {
                     "adcopy_challenge": challenge,
                     "adcopy_response": response,
