@@ -399,6 +399,7 @@ function set_captcha(a) {
             interactiveCaptchaHandlerInstance = new interactiveCaptchaHandler("cap_interactive_iframe", "cap_invisible_loading", submit_interactive_captcha);
         }
         if(params.url !== undefined && params.url.indexOf("http") === 0) {
+            $("#cap_interactive").css("display", "block");
             interactiveCaptchaHandlerInstance.startInteraction(params.url, params);
         }
     }
@@ -427,6 +428,8 @@ function captcha_reset_default() {
     // $("#cap_box #cap_title").text("{{_('No Captchas to read.')}}");
     $("#cap_interactive_iframe").attr("src", "").css({display: "none", top: "", left: ""})
         .parent().css({height: "", width: ""});
+    $("#cap_interactive_loading").css("display", "none");
+    $("#cap_invisible_loading").css("display", "none");
     if(interactiveCaptchaHandlerInstance) {
         interactiveCaptchaHandlerInstance.clearEventlisteners();
         interactiveCaptchaHandlerInstance = null;
@@ -511,7 +514,7 @@ interactiveCaptchaHandler.prototype.windowEventListener = function(e) {
         interactiveHandlerInstance.clearEventlisteners();
 
     } else if(requestMessage.actionCode === interactiveHandlerInstance.actionCodes.activated) {
-        $("#" + interactiveHandlerInstance._loadingid).css("display", "none");
+        $("#" + interactiveHandlerInstance._loadingId).css("display", "none");
         $("#" + interactiveHandlerInstance._iframeId).css("display", "block");
 
     } else if (requestMessage.actionCode === interactiveHandlerInstance.actionCodes.size)  {

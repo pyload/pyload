@@ -419,6 +419,8 @@ function captcha_reset_default() {
     // $("#cap_box #cap_title").text("{{_('No Captchas to read.')}}");
     $("#cap_interactive_iframe").attr("src", "").css({display: "none", top: "", left: ""})
         .parent().css({height: "", width: ""});
+    $("#cap_interactive_loading").css("display", "none");
+    $("#cap_invisible_loading").css("display", "none");
     if(interactiveCaptchaHandlerInstance) {
         interactiveCaptchaHandlerInstance.clearEventlisteners();
         interactiveCaptchaHandlerInstance = null;
@@ -460,7 +462,7 @@ function submit_interactive_captcha(c) {
 
 function interactiveCaptchaHandler(iframeId, loadingid, captchaResponseCallback) {
     this._iframeId = iframeId;
-    this._loadingid = loadingid;
+    this._loadingId = loadingid;
     this._captchaResponseCallback = captchaResponseCallback;
     this._active = false; // true: link grabbing is running, false: standby
 
@@ -503,7 +505,7 @@ interactiveCaptchaHandler.prototype.windowEventListener = function(e) {
         interactiveHandlerInstance.clearEventlisteners();
 
     } else if(requestMessage.actionCode === interactiveHandlerInstance.actionCodes.activated) {
-        $("#" + interactiveHandlerInstance._loadingid).css("display", "none");
+        $("#" + interactiveHandlerInstance._loadingId).css("display", "none");
         $("#" + interactiveHandlerInstance._iframeId).css("display", "block");
 
     } else if (requestMessage.actionCode === interactiveHandlerInstance.actionCodes.size)  {
