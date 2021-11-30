@@ -59,8 +59,8 @@ class FiregetCom(SimpleDownloader):
         captcha_key = self.captcha.detect_key()
 
         if captcha_key:
-            response, challenge = self.captcha.challenge(captcha_key)
-            inputs["g-recaptcha-response"] = challenge
+            response = self.captcha.challenge(captcha_key)
+            inputs["g-recaptcha-response"] = response
 
         else:
             captcha_code = "".join(
