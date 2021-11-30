@@ -14,7 +14,7 @@ from .SimpleHoster import SimpleHoster
 class XFSHoster(SimpleHoster):
     __name__ = "XFSHoster"
     __type__ = "hoster"
-    __version__ = "0.85"
+    __version__ = "0.86"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -256,7 +256,7 @@ class XFSHoster(SimpleHoster):
 
         if captcha_key:
             self.captcha = recaptcha
-            inputs['g-recaptcha-response'], _ = recaptcha.challenge(captcha_key)
+            inputs['g-recaptcha-response'] = recaptcha.challenge(captcha_key)
             return
 
         solvemedia = SolveMedia(self.pyfile)

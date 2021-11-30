@@ -29,7 +29,7 @@ except ImportError:
 class ReCaptcha(CaptchaService):
     __name__ = 'ReCaptcha'
     __type__ = 'captcha'
-    __version__ = '0.44'
+    __version__ = '0.45'
     __status__ = 'testing'
 
     __description__ = 'ReCaptcha captcha service plugin'
@@ -329,7 +329,7 @@ class ReCaptcha(CaptchaService):
         else:
             self.fail(_("reCAPTCHA max retries exceeded"))
 
-        return result, challenge
+        return result
     
     # solve interactive captcha (javascript required), use when non-JS captcha fallback for v2 is not allowed
     def _challenge_v2js(self, key, secure_token=None):
@@ -343,7 +343,7 @@ class ReCaptcha(CaptchaService):
 
         result = self.decrypt_interactive(params, timeout=300)
 
-        return result, result
+        return result
 
 if __name__ == "__main__":
     # Sign with the command `python -m module.plugins.captcha.ReCaptcha pyload.private.pem pem_passphrase`

@@ -14,7 +14,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class RapiduNet(SimpleHoster):
     __name__ = "RapiduNet"
     __type__ = "hoster"
-    __version__ = "0.17"
+    __version__ = "0.18"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?rapidu\.net/(?P<ID>\d+)'
@@ -74,7 +74,7 @@ class RapiduNet(SimpleHoster):
         self.set_wait(int(json_data['timeToDownload']) - int(time.time()))
 
         self.captcha = ReCaptcha(pyfile)
-        response, challenge = self.captcha.challenge(self.RECAPTCHA_KEY)
+        response = self.captcha.challenge(self.RECAPTCHA_KEY)
 
         self.wait()
 

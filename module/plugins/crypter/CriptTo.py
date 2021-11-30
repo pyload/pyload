@@ -17,7 +17,7 @@ from ..internal.SimpleCrypter import SimpleCrypter
 class CriptTo(SimpleCrypter):
     __name__ = "CriptTo"
     __type__ = "crypter"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?cript\.to/folder/(?P<ID>\w+)'
@@ -121,7 +121,7 @@ class CriptTo(SimpleCrypter):
                     self.log_debug("ReCaptcha captcha found")
 
                     self.captcha = recaptcha
-                    response, challenge = recaptcha.challenge(captcha_key)
+                    response = recaptcha.challenge(captcha_key)
 
                     inputs['g-recaptcha-response'] = response
 

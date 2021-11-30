@@ -13,7 +13,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class NitroflareCom(SimpleHoster):
     __name__ = "NitroflareCom"
     __type__ = "hoster"
-    __version__ = "0.31"
+    __version__ = "0.32"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(?:nitro\.download|nitroflare\.com)/view/(?P<ID>[\w^_]+)'
@@ -86,7 +86,7 @@ class NitroflareCom(SimpleHoster):
         recaptcha_key = recaptcha.detect_key()
         if recaptcha_key:
             self.captcha = recaptcha
-            response, _ = self.captcha.challenge(recaptcha_key)
+            response = self.captcha.challenge(recaptcha_key)
             inputs['g-recaptcha-response'] = response
 
         else:

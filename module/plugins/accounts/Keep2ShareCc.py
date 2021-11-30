@@ -15,7 +15,7 @@ from ..internal.misc import json
 class Keep2ShareCc(Account):
     __name__ = "Keep2ShareCc"
     __type__ = "account"
-    __version__ = "0.17"
+    __version__ = "0.18"
     __status__ = "testing"
 
     __description__ = """Keep2Share.cc account plugin"""
@@ -75,7 +75,7 @@ class Keep2ShareCc(Account):
                             self.log_error(_("Request reCAPTCHA API failed"))
                             self.fail_login(_("Request reCAPTCHA API failed"))
 
-                        re_captcha_response, _ = self.captcha.challenge(self.RECAPTCHA_KEY, version="2js", secure_token=False)
+                        re_captcha_response = self.captcha.challenge(self.RECAPTCHA_KEY, version="2js", secure_token=False)
                         try:
                             json_data = self.api_response("login",
                                                           username=user,

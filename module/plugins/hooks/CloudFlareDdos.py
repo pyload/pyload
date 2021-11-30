@@ -167,7 +167,7 @@ class CloudFlare(object):
             if captcha_key:
                 addon_plugin.log_info(_("Detected CloudFlare's security check page"))
 
-                response, challenge = captcha.challenge(captcha_key, data)
+                response = captcha.challenge(captcha_key, data)
                 return owner_plugin.load(owner_plugin.fixurl("/cdn-cgi/l/chk_captcha"),
                                          get={'g-recaptcha-response': response},
                                          ref=last_url)
@@ -200,7 +200,7 @@ class PreloadStub(object):
 class CloudFlareDdos(Addon):
     __name__ = "CloudFlareDdos"
     __type__ = "hook"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", False)]

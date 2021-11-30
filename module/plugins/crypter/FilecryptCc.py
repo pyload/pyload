@@ -47,7 +47,7 @@ class BIGHTTPRequest(HTTPRequest):
 class FilecryptCc(Crypter):
     __name__ = "FilecryptCc"
     __type__ = "crypter"
-    __version__ = "0.44"
+    __version__ = "0.45"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?filecrypt\.cc/Container/\w+'
@@ -249,7 +249,7 @@ class FilecryptCc(Crypter):
 
         if captcha_key:
             self.captcha = recaptcha
-            response, challenge = recaptcha.challenge(captcha_key)
+            response = recaptcha.challenge(captcha_key)
 
             return self._filecrypt_load_url(url,
                                             post={'g-recaptcha-response': response})

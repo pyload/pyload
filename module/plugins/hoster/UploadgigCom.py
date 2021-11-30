@@ -8,7 +8,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class UploadgigCom(SimpleHoster):
     __name__ = "UploadgigCom"
     __type__ = "hoster"
-    __version__ = "0.07"
+    __version__ = "0.08"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?uploadgig.com/file/download/\w+'
@@ -42,7 +42,7 @@ class UploadgigCom(SimpleHoster):
             self.error(_("ReCaptcha key not found"))
 
         self.captcha = recaptcha
-        response, challenge = recaptcha.challenge(captcha_key)
+        response = recaptcha.challenge(captcha_key)
 
         inputs['g-recaptcha-response'] = response
         self.data = self.load(self.fixurl(url),

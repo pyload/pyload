@@ -13,7 +13,7 @@ from ..internal.misc import json, parse_html_form
 class UploadgigCom(Account):
     __name__ = "UploadgigCom"
     __type__ = "account"
-    __version__ = "0.04"
+    __version__ = "0.05"
     __status__ = "testing"
 
     __description__ = """UploadgigCom account plugin"""
@@ -72,7 +72,7 @@ class UploadgigCom(Account):
 
             if captcha_key:
                 self.captcha = recaptcha
-                response, _ = recaptcha.challenge(captcha_key, html)
+                response = recaptcha.challenge(captcha_key, html)
                 inputs['g-recaptcha-response'] = response
 
             else:

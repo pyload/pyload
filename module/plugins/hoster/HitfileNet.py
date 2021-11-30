@@ -10,7 +10,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class HitfileNet(SimpleHoster):
     __name__ = "HitfileNet"
     __type__ = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(?:hitfile\.net|hil\.to)/(?:download/free/)?(?P<ID>\w+)'
@@ -73,7 +73,7 @@ class HitfileNet(SimpleHoster):
 
         if inputs['captcha_type'] == "recaptcha2":
             self.captcha = ReCaptcha(self.pyfile)
-            inputs['g-recaptcha-response'], challenge = self.captcha.challenge()
+            inputs['g-recaptcha-response'] = self.captcha.challenge()
             self.captcha.correct()
 
         else:
