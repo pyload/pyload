@@ -9,7 +9,7 @@ from ..base.simple_downloader import SimpleDownloader
 class FiregetCom(SimpleDownloader):
     __name__ = "FiregetCom"
     __type__ = "downloader"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
     __pattern__ = r"http://(?:www\.)?fireget\.com/(?P<ID>\w{12})/.+"
@@ -60,8 +60,7 @@ class FiregetCom(SimpleDownloader):
 
         if captcha_key:
             response, challenge = self.captcha.challenge(captcha_key)
-            inputs["recaptcha_challenge_field"] = challenge
-            inputs["recaptcha_response_field"] = response
+            inputs["g-recaptcha-response"] = challenge
 
         else:
             captcha_code = "".join(
