@@ -12,7 +12,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class FiregetCom(SimpleHoster):
     __name__ = "FiregetCom"
     __type__ = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?fireget\.com/(?P<ID>\w{12})/.+'
@@ -58,9 +58,8 @@ class FiregetCom(SimpleHoster):
         captcha_key = self.captcha.detect_key()
 
         if captcha_key:
-            response, challenge = self.captcha.challenge(captcha_key)
-            inputs['recaptcha_challenge_field'] = challenge
-            inputs['recaptcha_response_field'] = response
+            response = self.captcha.challenge(captcha_key)
+            inputs["g-recaptcha-response"] = response
 
         else:
             captcha_code = "".join(chr(int(_x[2:4])) if _x[0:2] == '&#' else _x for _p, _x in
