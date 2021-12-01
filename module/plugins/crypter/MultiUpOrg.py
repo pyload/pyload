@@ -11,7 +11,7 @@ from ..captcha.ReCaptcha import ReCaptcha
 class MultiUpOrg(SimpleCrypter):
     __name__ = "MultiUpOrg"
     __type__ = "crypter"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?multiup\.(?:org|eu)/(?:en/|fr/)?(?:(?P<TYPE>project|download|mirror)/)?\w+(?:/\w+)?'
@@ -33,7 +33,7 @@ class MultiUpOrg(SimpleCrypter):
     TEMP_OFFLINE_PATTERN = r'^unmatchable$'
     DIRECT_LINK = False
 
-    URL_REPLACEMENTS = [(r'https?://(?:www\.)?multiup\.(?:org|eu)/', "http://www.multiup.org/"),
+    URL_REPLACEMENTS = [(r'https?://(?:www\.)?multiup\.(?:org|eu)/', "https://www.multiup.org/"),
                         (r'/fr/', "/en/")]
 
     COOKIES = [("multiup.org", "_locale", "en")]
@@ -57,7 +57,7 @@ class MultiUpOrg(SimpleCrypter):
         elif m_type in ("download", None):
             url, inputs = self.parse_html_form()
             if inputs is not None:
-                self.data = self.load(urlparse.urljoin("http://www.multiup.org/", url),
+                self.data = self.load(urlparse.urljoin("https://www.multiup.org/", url),
                                       post=inputs)
 
         hosts_data = {}
