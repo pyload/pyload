@@ -8,7 +8,7 @@ from ..base.simple_decrypter import SimpleDecrypter
 class MultiUpOrg(SimpleDecrypter):
     __name__ = "MultiUpOrg"
     __type__ = "decrypter"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?multiup\.(?:org|eu)/(?:en/|fr/)?(?:(?P<TYPE>project|download|mirror)/)?\w+(?:/\w+)?"
@@ -29,14 +29,17 @@ class MultiUpOrg(SimpleDecrypter):
 
     __description__ = """MultiUp.org decrypter plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
+    __authors__ = [
+        ("Walter Purcaro", "vuolter@gmail.com"),
+        ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com"),
+    ]
 
     NAME_PATTERN = r"<title>.*(?:Project|Projet|ownload|élécharger) (?P<N>.+?) (\(|- )"
     OFFLINE_PATTERN = r"The requested file could not be found"
     TEMP_OFFLINE_PATTERN = r"^unmatchable$"
 
     URL_REPLACEMENTS = [
-        (r"https?://(?:www\.)?multiup\.(?:org|eu)/", "http://www.multiup.org/"),
+        (r"https?://(?:www\.)?multiup\.(?:org|eu)/", "https://www.multiup.org/"),
         (r"/fr/", "/en/"),
     ]
 
@@ -57,18 +60,21 @@ class MultiUpOrg(SimpleDecrypter):
 
         if m_type == "project":
             return re.findall(
-                r"\n(http://www\.multiup\.org/(?:en|fr)/download/.*)", self.data
+                r"\n(https://www\.multiup\.org/(?:en|fr)/download/.*)", self.data
             )
 
         elif m_type in ("download", None):
             url, inputs = self.parse_html_form()
             if inputs is not None:
-                self.data = self.load(urlparse.urljoin("http://www.multiup.org/", url),
-                                      post=inputs)
+                self.data = self.load(
+                    urlparse.urljoin("https://www.multiup.org/", url), post=inputs
+                )
 
         hosts_data = {}
         for a in re.findall(
-            r'<button (.+?) class="host btn btn-md btn-default btn-block btn-3d hvr-bounce-to-right">', self.data, re.M
+            r'<button (.+?) class="host btn btn-md btn-default btn-block btn-3d hvr-bounce-to-right">',
+            self.data,
+            re.M,
         ):
             validity = re.search(r'validity="(\w+)"', a).group(1)
             if validity in ("valid", "unknown"):
