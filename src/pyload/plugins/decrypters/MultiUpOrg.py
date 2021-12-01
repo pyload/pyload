@@ -92,7 +92,7 @@ class MultiUpOrg(SimpleDecrypter):
         # priority hosts goes first
         for _h in hosts_priority:
             if _h in hosts_data and _h not in ignored_hosts:
-                self.log_debug("Adding '%s' link" % _h)
+                self.log_debug(f"Adding '{_h}' link")
                 chosen_hosts.append(_h)
                 if not grab_all:
                     break
@@ -101,7 +101,7 @@ class MultiUpOrg(SimpleDecrypter):
         if grab_all or (not grab_all and not chosen_hosts):
             for _h in hosts_data:
                 if _h not in ignored_hosts and _h not in chosen_hosts:
-                    self.log_debug("Adding '%s' link" % _h)
+                    self.log_debug(f"Adding '{_h}' link")
                     chosen_hosts.append(_h)
                     if not grab_all:
                         break
