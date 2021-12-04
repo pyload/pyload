@@ -100,7 +100,7 @@ class CaptchaTask():
         return self.captchaParams, self.captchaFormat, self.captchaResultType
 
     def setResult(self, result):
-        if self.isTextual() or self.isInteractive():
+        if self.isTextual() or self.isInteractive() or self.isInvisible():
             self.result = result
 
         elif self.isPositional():
@@ -143,7 +143,13 @@ class CaptchaTask():
     def isInteractive(self):
         """ returns if user has to solve the captcha in an interactive iframe """
         return self.captchaResultType == 'interactive'
-        
+
+    def isInvisible(self):
+        """
+        returns if invisible (browser only, no user interaction) captcha.
+        """
+        return self.captchaResultType == "invisible"
+
     def setWatingForUser(self, exclusive):
         if exclusive:
             self.status = "user"
