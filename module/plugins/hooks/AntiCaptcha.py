@@ -11,7 +11,7 @@ from ..internal.misc import json, threaded, fs_encode
 class AntiCaptcha(Addon):
     __name__ = "AntiCaptcha"
     __type__ = "hook"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", False),
@@ -76,6 +76,7 @@ class AntiCaptcha(Addon):
                         "type": self.TASK_TYPES[task.captchaParams["captcha_plugin"]],
                         "websiteURL": r"%s://%s/" % (url_p.scheme, url_p.netloc),
                         "websiteKey": task.captchaParams["sitekey"],
+                        "isInvisible": task.isInvisible(),
                     },
                 },
             )

@@ -16,7 +16,7 @@ from ..internal.misc import threaded, fs_encode
 class Captcha9Kw(Addon):
     __name__ = "Captcha9Kw"
     __type__ = "hook"
-    __version__ = "0.41"
+    __version__ = "0.42"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", False),
@@ -61,7 +61,7 @@ class Captcha9Kw(Addon):
     @threaded
     def _process_captcha(self, task):
         pluginname = task.captchaParams['plugin']
-        if task.isInteractive():
+        if task.isInteractive() or task.isInvisible():
             url_p = urlparse.urlparse(task.captchaParams['url'])
             if  url_p.scheme not in ("http", "https"):
                 self.log_error(_("Invalid url"))
@@ -70,6 +70,7 @@ class Captcha9Kw(Addon):
             post_data = {'pageurl': "%s://%s/" % (url_p.scheme, url_p.netloc),
                          'oldsource': self.INTERACTIVE_TYPES[task.captchaParams['captcha_plugin']],
                          'captchachoice': self.INTERACTIVE_TYPES[task.captchaParams['captcha_plugin']],
+                         "isInvisible": "INVISIBLE" if task.is_invisible() else "NORMAL",
                          'data-sitekey': task.captchaParams['sitekey'],
                          'securetoken': task.captchaParams.get('securetoken', "")}
 
