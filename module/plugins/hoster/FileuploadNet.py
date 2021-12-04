@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 
 
+from ..captcha.ReCaptcha import ReCaptcha
 from ..internal.SimpleHoster import SimpleHoster
 
 
 class FileuploadNet(SimpleHoster):
     __name__ = "FileuploadNet"
     __type__ = "hoster"
-    __version__ = "0.07"
+    __version__ = "0.08"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(en\.)?file-upload\.net/download-\d+/.+'
@@ -20,7 +21,8 @@ class FileuploadNet(SimpleHoster):
 
     __description__ = """File-upload.net hoster plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("zapp-brannigan", "fuerst.reinje@web.de")]
+    __authors__ = [("zapp-brannigan", "fuerst.reinje@web.de"),
+                   ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
     NAME_PATTERN = r'<title>File-Upload.net - (?P<N>.+?)<'
     SIZE_PATTERN = r'</label><span>(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
@@ -31,3 +33,19 @@ class FileuploadNet(SimpleHoster):
     def setup(self):
         self.multiDL = True
         self.chunk_limit = 1
+
+    def handle_free(self, pyfile):
+        action, inputs = self.parse_html_form('id="downloadstart"')
+        if not inputs:
+            self.fail(_("download form not found"))
+
+        self.captcha = ReCaptcha(pyfile)
+        captcha_key = self.captcha.detect_key()
+
+        if captcha_key:
+            result = self.captcha.challenge(captcha_key, version="2invisible")
+            inputs["g-recaptcha-response"] = result
+            self.download(action, post=inputs)
+
+        else:
+            self.fail(self._("ReCaptcha key not found"))
