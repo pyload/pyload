@@ -452,11 +452,12 @@ class ReCaptcha(CaptchaService):
 
 
 if __name__ == "__main__":
-    # Sign with the command `python -m pyload.plugins.anticaptchas.ReCaptcha RECAPTCHA_INTERACTIVE_JS pyload.private.pem pem_passphrase`
+    # Sign with the command:
+    # `python -m pyload.plugins.anticaptchas.ReCaptcha RECAPTCHA_INTERACTIVE_JS pyload.private.pem pem_passphrase`
     import sys
     from ..helpers import sign_string
 
-    if len(sys.argv) > 2:
+    if len(sys.argv) > 3:
         with open(sys.argv[2]) as fp:
             pem_private = fp.read()
 
