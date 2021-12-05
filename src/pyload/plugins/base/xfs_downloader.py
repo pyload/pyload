@@ -90,7 +90,7 @@ class XFSDownloader(SimpleDownloader):
             domain = self.PLUGIN_DOMAIN.replace(".", r"\.")
             self.LINK_PATTERN = rf'(?:file: "(.+?)"|(https?://(?:www\.)?([^/]*?{domain}|\d+\.\d+\.\d+\.\d+)(\:\d+)?(/d/|(/files)?/\d+/\w+/).+?)["\'<])'
 
-        SimpleDownloader._prepare(self)
+        super(XFSDownloader, self)._prepare()
 
         if self.DIRECT_LINK is None:
             self.direct_dl = self.premium
