@@ -13,7 +13,7 @@ from ..internal.XFSHoster import XFSHoster
 class FilejokerNet(XFSHoster):
     __name__ = "FilejokerNet"
     __type__ = "hoster"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?filejoker\.net/(?P<ID>\w{12})'
@@ -36,7 +36,7 @@ class FilejokerNet(XFSHoster):
     DL_LIMIT_PATTERN = r'Wait [\w ]+? to download for free.'
     TEMP_OFFLINE_PATTERN = r'Your download has not finished yet'
 
-    INFO_PATTERN = r'<div class="name-size"><span>(?P<N>.+?)</span> <p>\((?P<S>[\d.,]+) (?P<U>[\w^_]+)\)</p></div>'
+    INFO_PATTERN = r'<div class="name-size"><span>(?P<N>.+?)</span> <p>(?:\()?(?P<S>[\d.,]+) (?P<U>[\w^_]+)(?:\()?</p></div>'
     SIZE_REPLACEMENTS = [('Kb', 'KB'), ('Mb', 'MB'), ('Gb', 'GB')]
 
     LINK_PATTERN = r'<div class="premium-download">\s+<a href="(.+?)"'
