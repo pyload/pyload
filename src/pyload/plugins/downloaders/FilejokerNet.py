@@ -15,10 +15,10 @@ from ..helpers import parse_html_tag_attr_value
 class FilejokerNet(XFSDownloader):
     __name__ = "FilejokerNet"
     __type__ = "downloader"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __status__ = "testing"
 
-    __pattern__ = r"https?://(?:www\.)?filejoker\.net/\w{12}"
+    __pattern__ = r"https?://(?:www\.)?filejoker\.net/(?P<ID>\w{12})"
     __config__ = [
         ("enabled", "bool", "Activated", True),
         ("use_premium", "bool", "Use premium account if available", True),
@@ -40,7 +40,7 @@ class FilejokerNet(XFSDownloader):
     DL_LIMIT_PATTERN = r"Wait [\w ]+? to download for free."
     TEMP_OFFLINE_PATTERN = r"Your download has not finished yet"
 
-    INFO_PATTERN = r'<div class="name-size"><span>(?P<N>.+?)</span> <p>\((?P<S>[\d.,]+) (?P<U>[\w^_]+)\)</p></div>'
+    INFO_PATTERN = r'<div class="name-size"><span>(?P<N>.+?)</span> <p>(?:\()?(?P<S>[\d.,]+) (?P<U>[\w^_]+)(?:\()?</p></div>'
     SIZE_REPLACEMENTS = [("Kb", "KiB"), ("Mb", "MiB"), ("Gb", "GiB")]
 
     LINK_PATTERN = r'<div class="premium-download">\s+<a href="(.+?)"'
