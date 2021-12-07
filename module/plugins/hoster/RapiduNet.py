@@ -14,7 +14,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class RapiduNet(SimpleHoster):
     __name__ = "RapiduNet"
     __type__ = "hoster"
-    __version__ = "0.18"
+    __version__ = "0.19"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?rapidu\.net/(?P<ID>\d+)'
@@ -81,8 +81,7 @@ class RapiduNet(SimpleHoster):
         json_data = self.get_json_response("https://rapidu.net/ajax.php",
                                            get={'a': "getCheckCaptcha"},
                                            post={'_go': "",
-                                                 'captcha1': challenge,
-                                                 'captcha2': response,
+                                                 'captcha1': response,
                                                  'fileId': self.info['pattern']['ID']})
 
         if json_data['message'] == "success":
