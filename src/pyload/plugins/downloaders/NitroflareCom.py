@@ -3,8 +3,6 @@
 import json
 import re
 
-from pyload.core.network.request_factory import get_url
-
 from ..anticaptchas.HCaptcha import HCaptcha
 from ..anticaptchas.ReCaptcha import ReCaptcha
 from ..base.simple_downloader import SimpleDownloader
@@ -13,7 +11,7 @@ from ..base.simple_downloader import SimpleDownloader
 class NitroflareCom(SimpleDownloader):
     __name__ = "NitroflareCom"
     __type__ = "downloader"
-    __version__ = "0.32"
+    __version__ = "0.33"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?(?:nitro\.download|nitroflare\.com)/view/(?P<ID>[\w^_]+)"
@@ -46,13 +44,12 @@ class NitroflareCom(SimpleDownloader):
 
     URL_REPLACEMENTS = [(r"nitro\.download", "nitroflare.com")]
 
-    @classmethod
-    def api_info(cls, url):
+    def api_info(self, url):
         info = {}
-        file_id = re.search(cls.__pattern__, url).group("ID")
+        file_id = re.search(self.__pattern__, url).group("ID")
 
         data = json.loads(
-            get_url("https://nitroflare.com/api/v2/getFileInfo", get={"files": file_id})
+            self.load("https://nitroflare.com/api/v2/getFileInfo", get={"files": file_id})
         )
 
         if data["type"] == "success":

@@ -3,7 +3,6 @@ import os
 import re
 
 from pyload.core.network.http.exceptions import BadHeader
-from pyload.core.network.request_factory import get_url
 from pyload.core.utils import parse
 
 from ..helpers import replace_patterns, search_pattern
@@ -13,7 +12,7 @@ from .downloader import BaseDownloader
 class SimpleDownloader(BaseDownloader):
     __name__ = "SimpleDownloader"
     __type__ = "downloader"
-    __version__ = "2.32"
+    __version__ = "2.33"
     __status__ = "stable"
 
     __pattern__ = r"^unmatchable$"
@@ -138,14 +137,12 @@ class SimpleDownloader(BaseDownloader):
         ("Html file", rb"\A\s*<!DOCTYPE html"),
     ]
 
-    @classmethod
-    def api_info(cls, url):
+    def api_info(self, url):
         return {}
 
-    @classmethod
-    def get_info(cls, url="", html=""):
-        info = super(SimpleDownloader, cls).get_info(url)
-        info.update(cls.api_info(url))
+    def get_info(self, url="", html=""):
+        info = super(SimpleDownloader, self).get_info(url)
+        info.update(self.api_info(url))
 
         if not html and info["status"] != 2:
             if not url:
@@ -154,7 +151,7 @@ class SimpleDownloader(BaseDownloader):
 
             elif info["status"] in (3, 7):
                 try:
-                    html = get_url(url, cookies=cls.COOKIES, decode=cls.TEXT_ENCODING)
+                    html = self.load(url, cookies=self.COOKIES, decode=self.TEXT_ENCODING)
 
                 except BadHeader as exc:
                     info["error"] = "{}: {}".format(exc.code, exc.content)
@@ -163,10 +160,10 @@ class SimpleDownloader(BaseDownloader):
                     pass
 
         if html:
-            if search_pattern(cls.OFFLINE_PATTERN, html) is not None:
+            if search_pattern(self.OFFLINE_PATTERN, html) is not None:
                 info["status"] = 1
 
-            elif search_pattern(cls.TEMP_OFFLINE_PATTERN, html) is not None:
+            elif search_pattern(self.TEMP_OFFLINE_PATTERN, html) is not None:
                 info["status"] = 6
 
             else:
@@ -177,7 +174,7 @@ class SimpleDownloader(BaseDownloader):
                     "HASHSUM_PATTERN",
                 ):
                     try:
-                        attr = getattr(cls, pattern)
+                        attr = getattr(self, pattern)
                         pdict = search_pattern(attr, html).groupdict()
 
                         if all(True for k in pdict if k not in info["pattern"]):
@@ -190,7 +187,7 @@ class SimpleDownloader(BaseDownloader):
                         info["status"] = 2
 
         if "N" in info["pattern"]:
-            name = replace_patterns(info["pattern"]["N"], cls.NAME_REPLACEMENTS)
+            name = replace_patterns(info["pattern"]["N"], self.NAME_REPLACEMENTS)
             info["name"] = parse.name(name)
 
         if "S" in info["pattern"]:
@@ -198,7 +195,7 @@ class SimpleDownloader(BaseDownloader):
                 info["pattern"]["S"] + info["pattern"]["U"]
                 if "U" in info["pattern"]
                 else info["pattern"]["S"],
-                cls.SIZE_REPLACEMENTS,
+                self.SIZE_REPLACEMENTS,
             )
             info["size"] = parse.bytesize(size)
 

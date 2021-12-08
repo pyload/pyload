@@ -7,7 +7,7 @@ from .downloader import BaseDownloader
 class DeadDownloader(BaseDownloader):
     __name__ = "DeadDownloader"
     __type__ = "downloader"
-    __version__ = "0.24"
+    __version__ = "0.25"
     __status__ = "stable"
 
     __pattern__ = r"^unmatchable$"
@@ -17,9 +17,8 @@ class DeadDownloader(BaseDownloader):
     __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
-    @classmethod
-    def get_info(cls, *args, **kwargs):
-        info = super(DeadDownloader, cls).get_info(*args, **kwargs)
+    def get_info(self, *args, **kwargs):
+        info = super(DeadDownloader, self).get_info(*args, **kwargs)
         info["status"] = 1
         return info
 

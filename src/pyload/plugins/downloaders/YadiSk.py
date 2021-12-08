@@ -10,7 +10,7 @@ from ..base.simple_downloader import SimpleDownloader
 class YadiSk(SimpleDownloader):
     __name__ = "YadiSk"
     __type__ = "downloader"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __status__ = "testing"
 
     __pattern__ = r"https?://yadi\.sk/d/[\w\-]+"
@@ -28,9 +28,8 @@ class YadiSk(SimpleDownloader):
 
     OFFLINE_PATTERN = r"Nothing found"
 
-    @classmethod
-    def get_info(cls, url="", html=""):
-        info = SimpleDownloader.get_info(url, html)
+    def get_info(self, url="", html=""):
+        info = super(SimpleDownloader, self).get_info(url, html)
 
         if html:
             if "idclient" not in info:

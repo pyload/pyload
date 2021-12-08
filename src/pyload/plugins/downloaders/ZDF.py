@@ -3,9 +3,6 @@ import re
 import json
 import os
 
-from pyload.core.network.request_factory import get_url
-import xml.etree.ElementTree as etree
-
 import pycurl
 from ..base.downloader import BaseDownloader
 
@@ -14,7 +11,7 @@ from ..base.downloader import BaseDownloader
 class ZDF(BaseDownloader):
     __name__ = "ZDF Mediathek"
     __type__ = "downloader"
-    __version__ = "0.92"
+    __version__ = "0.93"
     __status__ = "testing"
 
     __pattern__ = r"https://(?:www\.)?zdf\.de/(?P<ID>[/\w-]+)\.html"

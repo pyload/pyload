@@ -5,7 +5,6 @@ import re
 
 from pyload.core.datatypes.pyfile import PyFile
 from pyload.core.network.http.exceptions import BadHeader
-from pyload.core.network.request_factory import get_url
 
 from ..anticaptchas.ReCaptcha import ReCaptcha
 from ..base.account import BaseAccount
@@ -15,7 +14,7 @@ from ..base.captcha import BaseCaptcha
 class Keep2ShareCc(BaseAccount):
     __name__ = "Keep2ShareCc"
     __type__ = "account"
-    __version__ = "0.18"
+    __version__ = "0.19"
     __status__ = "testing"
 
     __description__ = """Keep2Share.cc account plugin"""
@@ -31,9 +30,8 @@ class Keep2ShareCc(BaseAccount):
     API_URL = "https://keep2share.cc/api/v2/"
     #: See https://keep2share.github.io/api/ https://github.com/keep2share/api
 
-    @classmethod
-    def api_request(cls, method, **kwargs):
-        html = get_url(cls.API_URL + method, post=json.dumps(kwargs))
+    def api_request(self, method, **kwargs):
+        html = self.load(self.API_URL + method, post=json.dumps(kwargs))
         return json.loads(html)
 
     def grab_info(self, user, password, data):

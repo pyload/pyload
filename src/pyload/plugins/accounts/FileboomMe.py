@@ -5,7 +5,6 @@ import re
 
 from pyload.core.datatypes.pyfile import PyFile
 from pyload.core.network.HTTPRequest import BadHeader
-from pyload.core.network.request_factory import get_url
 
 from ..anticaptchas.ReCaptcha import ReCaptcha
 from ..base.account import BaseAccount
@@ -15,7 +14,7 @@ from ..base.captcha import BaseCaptcha
 class FileboomMe(BaseAccount):
     __name__ = "FileboomMe"
     __type__ = "account"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __status__ = "testing"
 
     __description__ = """Fileboom.me account plugin"""
@@ -27,10 +26,9 @@ class FileboomMe(BaseAccount):
     API_URL = "https://fileboom.me/api/v2/"
     #: Actually this is Keep2ShareCc API, see https://keep2share.github.io/api/ https://github.com/keep2share/api
 
-    @classmethod
-    def api_request(cls, method, **kwargs):
-        html = get_url(cls.API_URL + method,
-                       post=json.dumps(kwargs))
+    def api_request(self, method, **kwargs):
+        html = self.load(self.API_URL + method,
+                         post=json.dumps(kwargs))
         return json.loads(html)
 
     def grab_info(self, user, password, data):

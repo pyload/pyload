@@ -11,7 +11,7 @@ from ..base.simple_downloader import SimpleDownloader
 class PornhubCom(SimpleDownloader):
     __name__ = "PornhubCom"
     __type__ = "downloader"
-    __version__ = "0.60"
+    __version__ = "0.61"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?pornhub\.com/view_video\.php\?viewkey=\w+"
@@ -35,9 +35,8 @@ class PornhubCom(SimpleDownloader):
     TEMP_OFFLINE_PATTERN = r"^unmatchable$"  #: Who knows?
     OFFLINE_PATTERN = r"^unmatchable$"  #: Who knows?
 
-    @classmethod
-    def get_info(cls, url="", html=""):
-        info = super(PornhubCom, cls).get_info(url, html)
+    def get_info(self, url="", html=""):
+        info = super(PornhubCom, self).get_info(url, html)
         # Unfortunately, NAME_PATTERN does not include file extension so we blindly add '.mp4' as an extension.
         # (hopefully all links are '.mp4' files)
         if "name" in info:

@@ -3,15 +3,13 @@
 import json
 import re
 
-from pyload.core.network.request_factory import get_url
-
 from ..base.simple_downloader import SimpleDownloader
 
 
 class PixeldrainCom(SimpleDownloader):
     __name__ = "PixeldrainCom"
     __type__ = "downloader"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?pixeldrain\.com/u/(?P<ID>\w+)"
@@ -32,10 +30,9 @@ class PixeldrainCom(SimpleDownloader):
     API_URL = "https://pixeldrain.com/api/"
     #: See https://pixeldrain.com/api/
 
-    @classmethod
-    def api_info(cls, url):
-        file_id = re.match(cls.__pattern__, url).group("ID")
-        json_data = get_url(f"{cls.API_URL}/file/{file_id}/info")
+    def api_info(self, url):
+        file_id = re.match(self.__pattern__, url).group("ID")
+        json_data = self.load(f"{self.API_URL}/file/{file_id}/info")
         file_info = json.loads(json_data)
 
         if file_info["success"] is False:

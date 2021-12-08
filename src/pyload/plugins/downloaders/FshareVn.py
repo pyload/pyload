@@ -5,7 +5,6 @@ import urllib.parse
 
 import pycurl
 from pyload.core.network.http.exceptions import BadHeader
-from pyload.core.network.request_factory import get_request
 
 from ..base.simple_downloader import SimpleDownloader
 
@@ -13,7 +12,7 @@ from ..base.simple_downloader import SimpleDownloader
 class FshareVn(SimpleDownloader):
     __name__ = "FshareVn"
     __type__ = "downloader"
-    __version__ = "0.34"
+    __version__ = "0.35"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?fshare\.vn/file/(?P<ID>\w+)"
@@ -65,15 +64,13 @@ class FshareVn(SimpleDownloader):
 
         return json.loads(json_data)
 
-    @classmethod
-    def api_info(cls, url):
+    def api_info(self, url):
         info = {}
-        file_id = re.match(cls.__pattern__, url).group("ID")
-        req = get_request()
+        file_id = re.match(self.__pattern__, url).group("ID")
 
-        req.c.setopt(pycurl.HTTPHEADER, ["Accept: application/json, text/plain, */*"])
+        self.req.c.setopt(pycurl.HTTPHEADER, ["Accept: application/json, text/plain, */*"])
         file_info = json.loads(
-            req.load(
+            self.load(
                 "https://www.fshare.vn/api/v3/files/folder", get={"linkcode": file_id}
             )
         )

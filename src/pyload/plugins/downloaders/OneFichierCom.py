@@ -2,16 +2,13 @@
 
 import re
 
-from pyload.core.network.request_factory import get_url
-
 from ..base.simple_downloader import SimpleDownloader
-from ..helpers import format_exc
 
 
 class OneFichierCom(SimpleDownloader):
     __name__ = "OneFichierCom"
     __type__ = "downloader"
-    __version__ = "1.18"
+    __version__ = "1.19"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?(?:(?P<ID1>\w+)\.)?(?P<HOST>1fichier\.com|alterupload\.com|cjoint\.net|d(?:es)?fichiers\.com|dl4free\.com|megadl\.fr|mesfichiers\.org|piecejointe\.net|pjointe\.com|tenvoi\.com)(?:/\?(?P<ID2>\w+))?"
