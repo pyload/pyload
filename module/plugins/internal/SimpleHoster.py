@@ -5,7 +5,6 @@ from __future__ import with_statement
 import re
 
 from module.network.HTTPRequest import BadHeader
-from module.network.RequestFactory import getURL as get_url
 
 from .Hoster import Hoster
 from .misc import fs_encode, parse_name, parse_size, parse_time, replace_patterns, search_pattern
@@ -14,7 +13,7 @@ from .misc import fs_encode, parse_name, parse_size, parse_time, replace_pattern
 class SimpleHoster(Hoster):
     __name__ = "SimpleHoster"
     __type__ = "hoster"
-    __version__ = "2.32"
+    __version__ = "2.33"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -129,14 +128,12 @@ class SimpleHoster(Hoster):
                    ('Request error', r'([Aa]n error occured while processing your request)'),
                    ('Html file', r'\A\s*<!DOCTYPE html')]
 
-    @classmethod
-    def api_info(cls, url):
+    def api_info(self, url):
         return {}
 
-    @classmethod
-    def get_info(cls, url="", html=""):
-        info = super(SimpleHoster, cls).get_info(url)
-        info.update(cls.api_info(url))
+    def get_info(self, url="", html=""):
+        info = super(SimpleHoster, self).get_info(url)
+        info.update(self.api_info(url))
 
         if not html and info['status'] != 2:
             if not url:
@@ -145,7 +142,7 @@ class SimpleHoster(Hoster):
 
             elif info['status'] in (3, 7):
                 try:
-                    html = get_url(url, cookies=cls.COOKIES, decode=cls.TEXT_ENCODING)
+                    html = self.load(url, cookies=self.COOKIES, decode=self.TEXT_ENCODING)
 
                 except BadHeader, e:
                     info['error'] = "%d: %s" % (e.code, e.content)
@@ -154,16 +151,16 @@ class SimpleHoster(Hoster):
                     pass
 
         if html:
-            if search_pattern(cls.OFFLINE_PATTERN, html) is not None:
+            if search_pattern(self.OFFLINE_PATTERN, html) is not None:
                 info['status'] = 1
 
-            elif search_pattern(cls.TEMP_OFFLINE_PATTERN, html) is not None:
+            elif search_pattern(self.TEMP_OFFLINE_PATTERN, html) is not None:
                 info['status'] = 6
 
             else:
                 for attr in ("INFO_PATTERN", "NAME_PATTERN", "SIZE_PATTERN", "HASHSUM_PATTERN"):
                     try:
-                        pattern = getattr(cls, attr)
+                        pattern = getattr(self, attr)
                         pdict = search_pattern(pattern, html).groupdict()
 
                         if all(True for k in pdict if k not in info['pattern']):
@@ -176,12 +173,12 @@ class SimpleHoster(Hoster):
                         info['status'] = 2
 
         if 'N' in info['pattern']:
-            name = replace_patterns(info['pattern']['N'], cls.NAME_REPLACEMENTS)
+            name = replace_patterns(info['pattern']['N'], self.NAME_REPLACEMENTS)
             info['name'] = parse_name(name)
 
         if 'S' in info['pattern']:
             size = replace_patterns(info['pattern']['S'] + info['pattern']['U'] if 'U' in info['pattern'] else info['pattern']['S'],
-                                    cls.SIZE_REPLACEMENTS)
+                                    self.SIZE_REPLACEMENTS)
             info['size'] = parse_size(size)
 
         elif isinstance(info['size'], basestring):

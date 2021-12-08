@@ -4,7 +4,6 @@ import re
 import time
 
 import pycurl
-from module.network.RequestFactory import getURL as get_url
 
 from ..captcha.ReCaptcha import ReCaptcha
 from ..internal.misc import json, seconds_to_midnight
@@ -14,7 +13,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class RapiduNet(SimpleHoster):
     __name__ = "RapiduNet"
     __type__ = "hoster"
-    __version__ = "0.19"
+    __version__ = "0.20"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?rapidu\.net/(?P<ID>\d+)'
@@ -38,15 +37,13 @@ class RapiduNet(SimpleHoster):
     # https://rapidu.net/documentation/api/
     API_URL = 'https://rapidu.net/api/'
 
-    @classmethod
-    def api_request(cls, method, **kwargs):
-        json_data = get_url(cls.API_URL + method + "/", post=kwargs)
+    def api_request(self, method, **kwargs):
+        json_data = self.load(self.API_URL + method + "/", post=kwargs)
         return json.loads(json_data)
 
-    @classmethod
-    def api_info(cls, url):
-        file_id = re.match(cls.__pattern__, url).group('ID')
-        api_data = cls.api_request("getFileDetails", id=file_id)['0']
+    def api_info(self, url):
+        file_id = re.match(self.__pattern__, url).group('ID')
+        api_data = self.api_request("getFileDetails", id=file_id)['0']
 
         if api_data['fileStatus'] == 1:
             return {'status': 2,

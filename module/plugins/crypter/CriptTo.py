@@ -5,8 +5,6 @@ import re
 
 import Crypto.Cipher.AES
 
-from module.network.RequestFactory import getURL as get_url
-
 from ..captcha.ReCaptcha import ReCaptcha
 from ..captcha.SolveMedia import SolveMedia
 from ..container.DLC import BadDLC, DLCDecrypter
@@ -17,7 +15,7 @@ from ..internal.SimpleCrypter import SimpleCrypter
 class CriptTo(SimpleCrypter):
     __name__ = "CriptTo"
     __type__ = "crypter"
-    __version__ = "0.04"
+    __version__ = "0.05"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?cript\.to/folder/(?P<ID>\w+)'
@@ -36,13 +34,12 @@ class CriptTo(SimpleCrypter):
     WEB_LINK_PATTERN = r'href="javascript:void\(0\);" onclick="popup\(\'(.+?)\''
     DLC_LINK_PATTERN = r'onclick="popup\(\'(https://cript\.to/dlc/.+?)\''
 
-    @classmethod
-    def api_info(cls, url):
+    def api_info(self, url):
         info = {}
 
-        folder_id = re.match(cls.__pattern__, url).group('ID')
-        folder_info = json.loads(get_url("https://cript.to/api/v1/folder/info",
-                                         get={'id': folder_id}))
+        folder_id = re.match(self.__pattern__, url).group('ID')
+        folder_info = json.loads(self.load("https://cript.to/api/v1/folder/info",
+                                           get={'id': folder_id}))
         if folder_info['status'] == "error":
             info['status'] = 8
             info['error'] = folder_info['message']

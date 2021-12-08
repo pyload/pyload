@@ -4,8 +4,6 @@ import os
 import re
 import time
 
-from module.network.RequestFactory import getURL as get_url
-
 from ..captcha.ReCaptcha import ReCaptcha
 from ..internal.misc import json
 from ..internal.SimpleHoster import SimpleHoster
@@ -14,7 +12,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class UploadedTo(SimpleHoster):
     __name__ = "UploadedTo"
     __type__ = "hoster"
-    __version__ = "1.10"
+    __version__ = "1.11"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(uploaded\.(to|net)|ul\.to)(/file/|/?\?id=|.*?&id=|/)(?P<ID>\w+)'
@@ -45,15 +43,14 @@ class UploadedTo(SimpleHoster):
     WAIT_PATTERN = r'(?:Current waiting period|Aktuelle Wartezeit): <span>(\d+)'
     DL_LIMIT_PATTERN = r'You have reached the max. number of possible free downloads for this hour'
 
-    @classmethod
-    def api_info(cls, url):
+    def api_info(self, url):
         info = {}
 
         for _i in range(5):
-            html = get_url("http://uploaded.net/api/filemultiple",
-                           get={'apikey': cls.API_KEY,
-                                'id_0': re.match(cls.__pattern__, url).group('ID')},
-                           decode=False)
+            html = self.load("http://uploaded.net/api/filemultiple",
+                             get={'apikey': self.API_KEY,
+                                  'id_0': re.match(self.__pattern__, url).group('ID')},
+                             decode=False)
 
             if html != "can't find request":
                 api = html.split(",", 4)

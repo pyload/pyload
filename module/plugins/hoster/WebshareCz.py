@@ -2,15 +2,13 @@
 
 import re
 
-from module.network.RequestFactory import getURL as get_url
-
 from ..internal.SimpleHoster import SimpleHoster
 
 
 class WebshareCz(SimpleHoster):
     __name__ = "WebshareCz"
     __type__ = "hoster"
-    __version__ = "0.25"
+    __version__ = "0.26"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(en\.)?webshare\.cz/(?:#/)?(file/)?(?P<ID>\w+)'
@@ -29,15 +27,13 @@ class WebshareCz(SimpleHoster):
 
     API_URL = "https://webshare.cz/api/"
 
-    @classmethod
-    def api_response(cls, method, **kwargs):
-        return get_url(cls.API_URL + method + "/",
-                       post=kwargs)
+    def api_response(self, method, **kwargs):
+        return self.load(self.API_URL + method + "/",
+                         post=kwargs)
 
-    @classmethod
-    def api_info(cls, url):
+    def api_info(self, url):
         info = {}
-        api_data = cls.api_response("file_info", ident=re.match(cls.__pattern__, url).group('ID'), wst="")
+        api_data = self.api_response("file_info", ident=re.match(self.__pattern__, url).group('ID'), wst="")
 
         if re.search(r'<status>OK', api_data):
             info['status'] = 2

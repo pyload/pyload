@@ -3,8 +3,6 @@
 import random
 import re
 
-from module.network.RequestFactory import getURL as get_url
-
 from ..internal.SimpleHoster import SimpleHoster
 from ..internal.misc import json
 
@@ -12,10 +10,11 @@ from ..internal.misc import json
 def gen_r():
     return "0." + "".join([random.choice("0123456789") for x in range(16)])
 
+
 class TenluaVn(SimpleHoster):
     __name__ = "TenluaVn"
     __type__ = "hoster"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?tenlua\.vn(?!/folder)/.+?/(?P<ID>[0-9a-f]+)/'
@@ -31,18 +30,16 @@ class TenluaVn(SimpleHoster):
 
     API_URL = "https://api2.tenlua.vn/"
 
-    @classmethod
-    def api_response(cls, method, **kwargs):
+    def api_response(self, method, **kwargs):
         kwargs['a'] = method
         sid = kwargs.pop('sid', None)
-        return json.loads(get_url(cls.API_URL,
-                                  get={'sid': sid} if sid is not None else {},
-                                  post=json.dumps([kwargs])))
+        return json.loads(self.load(self.API_URL,
+                                    get={'sid': sid} if sid is not None else {},
+                                    post=json.dumps([kwargs])))
 
-    @classmethod
-    def api_info(cls, url):
-        file_id = re.match(cls.__pattern__, url).group('ID')
-        file_info = cls.api_response("filemanager_builddownload_getinfo", n=file_id, r=gen_r())[0]
+    def api_info(self, url):
+        file_id = re.match(self.__pattern__, url).group('ID')
+        file_info = self.api_response("filemanager_builddownload_getinfo", n=file_id, r=gen_r())[0]
 
         if file_info['type'] == "none":
             return {'status': 1}

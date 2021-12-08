@@ -3,7 +3,6 @@
 import re
 
 from module.network.HTTPRequest import BadHeader
-from module.network.RequestFactory import getURL as get_url
 
 from .Crypter import Crypter
 from .misc import parse_name, parse_time, replace_patterns, search_pattern
@@ -12,7 +11,7 @@ from .misc import parse_name, parse_time, replace_patterns, search_pattern
 class SimpleCrypter(Crypter):
     __name__ = "SimpleCrypter"
     __type__ = "crypter"
-    __version__ = "0.96"
+    __version__ = "0.97"
     __status__ = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -81,15 +80,13 @@ class SimpleCrypter(Crypter):
     SIZE_LIMIT_PATTERN = None
     ERROR_PATTERN = None
 
-    @classmethod
-    def api_info(cls, url):
+    def api_info(self, url):
         return {}
 
-    @classmethod
-    def get_info(cls, url="", html=""):
-        info = super(SimpleCrypter, cls).get_info(url)
+    def get_info(self, url="", html=""):
+        info = super(SimpleCrypter, self).get_info(url)
 
-        info.update(cls.api_info(url))
+        info.update(self.api_info(url))
 
         if not html and info['status'] != 2:
             if not url:
@@ -98,7 +95,7 @@ class SimpleCrypter(Crypter):
 
             elif info['status'] in (3, 7):
                 try:
-                    html = get_url(url, cookies=cls.COOKIES, decode=cls.TEXT_ENCODING)
+                    html = self.load(url, cookies=self.COOKIES, decode=self.TEXT_ENCODING)
 
                 except BadHeader, e:
                     info['error'] = "%d: %s" % (e.code, e.content)
@@ -107,20 +104,20 @@ class SimpleCrypter(Crypter):
                     pass
 
         if html:
-            if search_pattern(cls.OFFLINE_PATTERN, html) is not None:
+            if search_pattern(self.OFFLINE_PATTERN, html) is not None:
                 info['status'] = 1
 
-            elif search_pattern(cls.TEMP_OFFLINE_PATTERN, html) is not None:
+            elif search_pattern(self.TEMP_OFFLINE_PATTERN, html) is not None:
                 info['status'] = 6
 
-            elif cls.NAME_PATTERN:
-                m = search_pattern(cls.NAME_PATTERN, html)
+            elif self.NAME_PATTERN:
+                m = search_pattern(self.NAME_PATTERN, html)
                 if m is not None:
                     info['status'] = 2
                     info['pattern'].update(m.groupdict())
 
         if 'N' in info['pattern']:
-            name = replace_patterns(info['pattern']['N'], cls.NAME_REPLACEMENTS)
+            name = replace_patterns(info['pattern']['N'], self.NAME_REPLACEMENTS)
             info['name'] = parse_name(name)
 
         return info

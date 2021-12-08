@@ -3,7 +3,6 @@
 import re
 
 from module.network.HTTPRequest import BadHeader
-from module.network.RequestFactory import getURL as get_url
 from module.PyFile import PyFile
 
 from ..captcha.ReCaptcha import ReCaptcha
@@ -15,7 +14,7 @@ from ..internal.misc import json
 class Keep2ShareCc(Account):
     __name__ = "Keep2ShareCc"
     __type__ = "account"
-    __version__ = "0.18"
+    __version__ = "0.19"
     __status__ = "testing"
 
     __description__ = """Keep2Share.cc account plugin"""
@@ -29,10 +28,9 @@ class Keep2ShareCc(Account):
     API_URL = "https://keep2share.cc/api/v2/"
     #: See https://keep2share.github.io/api/ https://github.com/keep2share/api
 
-    @classmethod
-    def api_response(cls, method, **kwargs):
-        html = get_url(cls.API_URL + method,
-                       post=json.dumps(kwargs))
+    def api_response(self, method, **kwargs):
+        html = self.load(self.API_URL + method,
+                         post=json.dumps(kwargs))
         return json.loads(html)
 
     def grab_info(self, user, password, data):

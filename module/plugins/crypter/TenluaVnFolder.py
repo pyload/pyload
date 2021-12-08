@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from module.network.RequestFactory import getURL as get_url
-
 from ..internal.SimpleCrypter import SimpleCrypter
 from ..internal.misc import json
 
@@ -9,7 +7,7 @@ from ..internal.misc import json
 class TenluaVnFolder(SimpleCrypter):
     __name__ = "TenluaVnFolder"
     __type__ = "crypter"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?tenlua\.vn/folder/.+?/(?P<ID>[0-9a-f]+)/'
@@ -24,10 +22,9 @@ class TenluaVnFolder(SimpleCrypter):
 
     API_URL = "https://api2.tenlua.vn/"
 
-    @classmethod
-    def api_response(cls, method, **kwargs):
+    def api_response(self, method, **kwargs):
         kwargs['a'] = method
-        return json.loads(get_url(cls.API_URL, post=json.dumps([kwargs])))
+        return json.loads(self.load(self.API_URL, post=json.dumps([kwargs])))
 
     def decrypt(self, pyfile):
         folder_info = self.api_response("filemanager_gettree", p=self.info['pattern']['ID'], download=1)

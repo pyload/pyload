@@ -10,15 +10,13 @@ except ImportError:
     passlib = None
 
 
-from module.network.RequestFactory import getURL as get_url
-
 from ..internal.Account import Account
 
 
 class WebshareCz(Account):
     __name__ = "WebshareCz"
     __type__ = "account"
-    __version__ = "0.17"
+    __version__ = "0.18"
     __status__ = "testing"
 
     __description__ = """Webshare.cz account plugin"""
@@ -32,10 +30,9 @@ class WebshareCz(Account):
 
     API_URL = "https://webshare.cz/api/"
 
-    @classmethod
-    def api_response(cls, method, **kwargs):
-        return get_url(cls.API_URL + method + "/",
-                       post=kwargs)
+    def api_response(self, method, **kwargs):
+        return self.load(self.API_URL + method + "/",
+                         post=kwargs)
 
     def grab_info(self, user, password, data):
         user_data = self.api_response("user_data", wst=data['wst'])

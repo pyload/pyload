@@ -10,7 +10,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class SmuleCom(SimpleHoster):
     __name__ = "SmuleCom"
     __type__ = "hoster"
-    __version__ = "0.04"
+    __version__ = "0.05"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?smule\.com/recording/.+'
@@ -30,8 +30,7 @@ class SmuleCom(SimpleHoster):
     COMMUNITY_JS_PATTERN = r'<script.+?src=["\']/*(\w[^"\']*community.+?js)["\']'
     OFFLINE_PATTERN = r'Page Not Found'
 
-    @classmethod
-    def get_info(cls, url="", html=""):
+    def get_info(self, url="", html=""):
         info = SimpleHoster.get_info(url, html)
         # Unfortunately, NAME_PATTERN does not include file extension so we blindly add '.mp4' as an extension.
         # (hopefully all links are '.mp4' files)

@@ -3,7 +3,6 @@
 import time
 
 from module.network.HTTPRequest import BadHeader
-from module.network.RequestFactory import getURL as get_url
 
 from ..internal.Account import Account
 from ..internal.misc import json
@@ -11,7 +10,7 @@ from ..internal.misc import json
 class TenluaVn(Account):
     __name__ = "TenluaVn"
     __type__ = "account"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
     __description__ = """TenluaVn account plugin"""
@@ -20,13 +19,12 @@ class TenluaVn(Account):
 
     API_URL = "https://api2.tenlua.vn/"
 
-    @classmethod
-    def api_response(cls, method, **kwargs):
+    def api_response(self, method, **kwargs):
         kwargs['a'] = method
         sid = kwargs.pop('sid', None)
-        return json.loads(get_url(cls.API_URL,
-                                  get={'sid': sid} if sid is not None else {},
-                                  post=json.dumps([kwargs])))
+        return json.loads(self.load(self.API_URL,
+                                    get={'sid': sid} if sid is not None else {},
+                                    post=json.dumps([kwargs])))
 
     def grab_info(self, user, password, data):
         user_info = self.api_response("user_info", sid=data['sid'])[0]

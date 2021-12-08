@@ -2,16 +2,13 @@
 
 import re
 
-from module.network.RequestFactory import getURL as get_url
-
-from ..internal.misc import format_exc
 from ..internal.SimpleHoster import SimpleHoster
 
 
 class OneFichierCom(SimpleHoster):
     __name__ = "OneFichierCom"
     __type__ = "hoster"
-    __version__ = "1.18"
+    __version__ = "1.19"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(?:(?P<ID1>\w+)\.)?(?P<HOST>1fichier\.com|alterupload\.com|cjoint\.net|d(?:es)?fichiers\.com|dl4free\.com|megadl\.fr|mesfichiers\.org|piecejointe\.net|pjointe\.com|tenvoi\.com)(?:/\?(?P<ID2>\w+))?'

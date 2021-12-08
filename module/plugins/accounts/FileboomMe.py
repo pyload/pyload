@@ -3,7 +3,6 @@
 import re
 
 from module.network.HTTPRequest import BadHeader
-from module.network.RequestFactory import getURL as get_url
 from module.PyFile import PyFile
 
 from ..captcha.ReCaptcha import ReCaptcha
@@ -15,7 +14,7 @@ from ..internal.misc import json
 class FileboomMe(Account):
     __name__ = "FileboomMe"
     __type__ = "account"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __status__ = "testing"
 
     __description__ = """Fileboom.me account plugin"""
@@ -27,9 +26,8 @@ class FileboomMe(Account):
     API_URL = "https://fileboom.me/api/v2/"
     #: Actually this is Keep2ShareCc API, see https://github.com/keep2share/api
 
-    @classmethod
-    def api_response(cls, method, **kwargs):
-        html = get_url(cls.API_URL + method,
+    def api_response(self, method, **kwargs):
+        html = self.load(self.API_URL + method,
                        post=json.dumps(kwargs))
         return json.loads(html)
 

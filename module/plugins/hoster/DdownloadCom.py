@@ -2,8 +2,6 @@
 
 import re
 
-from module.network.RequestFactory import getURL as get_url
-
 from ..internal.misc import json
 from ..internal.XFSHoster import XFSHoster
 
@@ -11,7 +9,7 @@ from ..internal.XFSHoster import XFSHoster
 class DdownloadCom(XFSHoster):
     __name__ = "DdownloadCom"
     __type__ = "hoster"
-    __version__ = "0.09"
+    __version__ = "0.10"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(?:ddl\.to|ddownload\.com)/(?P<ID>\w{12})'
@@ -38,16 +36,14 @@ class DdownloadCom(XFSHoster):
     API_KEY = "37699zuaj90n9hxado2m7"
     API_URL = "https://api-v2.ddownload.com/api/"
 
-    @classmethod
-    def api_response(cls, method, **kwargs):
-        kwargs.update({'key': cls.API_KEY})
-        json_data = get_url(cls.API_URL + method, get=kwargs)
+    def api_response(self, method, **kwargs):
+        kwargs.update({'key': self.API_KEY})
+        json_data = self.load(self.API_URL + method, get=kwargs)
         return json.loads(json_data)
 
-    # @classmethod
-    # def api_info(cls, url):
+    # def api_info(self, url):
     #     info = {}
-    #     api_data = cls.api_response("file/info", file_code=re.match(cls.__pattern__, url).group('ID'))
+    #     api_data = self.api_response("file/info", file_code=re.match(cls.__pattern__, url).group('ID'))
     #
     #     if api_data['status'] == 200:
     #         if api_data['result'][0]['status'] == 200:

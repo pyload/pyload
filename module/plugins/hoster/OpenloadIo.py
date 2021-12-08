@@ -2,8 +2,6 @@
 
 import re
 
-from module.network.RequestFactory import getURL as get_url
-
 from ..internal.misc import json
 from ..internal.SimpleHoster import SimpleHoster
 
@@ -11,7 +9,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class OpenloadIo(SimpleHoster):
     __name__ = "OpenloadIo"
     __type__ = "hoster"
-    __version__ = "0.20"
+    __version__ = "0.21"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?openload\.(co|io)/(f|embed)/(?P<ID>[\w\-]+)'
@@ -31,15 +29,13 @@ class OpenloadIo(SimpleHoster):
     # https://openload.co/api
     API_URL = 'https://api.openload.co/1'
 
-    @classmethod
-    def api_response(cls, file_id, method, **kwargs):
+    def api_response(self, file_id, method, **kwargs):
         kwargs['file'] = file_id
-        return json.loads(get_url(cls.API_URL + "/file/" + method, get=kwargs))
+        return json.loads(self.load(self.API_URL + "/file/" + method, get=kwargs))
 
-    @classmethod
-    def api_info(cls, url):
-        file_id = re.match(cls.__pattern__, url).group('ID')
-        info_json = cls.api_response(file_id, "info")
+    def api_info(self, url):
+        file_id = re.match(self.__pattern__, url).group('ID')
+        info_json = self.api_response(file_id, "info")
         file_info = info_json['result'][file_id]
 
         return {'name': file_info['name'],

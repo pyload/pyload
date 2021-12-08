@@ -11,7 +11,7 @@ from ..internal.misc import json
 class CloudMailRu(Hoster):
     __name__ = "CloudMailRu"
     __type__ = "hoster"
-    __version__ = "0.04"
+    __version__ = "0.05"
     __status__ = "testing"
 
     __pattern__ = r'https?://cloud\.mail\.ru/dl\?q=(?P<QS>.+)'
@@ -27,11 +27,10 @@ class CloudMailRu(Hoster):
 
     OFFLINE_PATTERN = r'"error":\s*"not_exists"'
 
-    @classmethod
-    def get_info(cls, url="", html=""):
-        info = super(CloudMailRu, cls).get_info(url, html)
+    def get_info(self, url="", html=""):
+        info = super(CloudMailRu, self).get_info(url, html)
 
-        qs = re.match(cls.__pattern__, url).group('QS')
+        qs = re.match(self.__pattern__, url).group('QS')
         file_info = json.loads(base64.b64decode(qs))
 
         info.update({

@@ -2,8 +2,6 @@
 
 import re
 
-from module.network.RequestFactory import getURL as get_url
-
 from ..internal.misc import json
 from ..internal.SimpleHoster import SimpleHoster
 
@@ -11,7 +9,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class PixeldrainCom(SimpleHoster):
     __name__ = "PixeldrainCom"
     __type__ = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?pixeldrain\.com/u/(?P<ID>\w+)'
@@ -30,10 +28,9 @@ class PixeldrainCom(SimpleHoster):
     API_URL = "https://pixeldrain.com/api/"
     #: See https://pixeldrain.com/api/
 
-    @classmethod
-    def api_info(cls, url):
-        file_id = re.match(cls.__pattern__, url).group('ID')
-        json_data = get_url("%s/file/%s/info" % (cls.API_URL, file_id))
+    def api_info(self, url):
+        file_id = re.match(self.__pattern__, url).group('ID')
+        json_data = self.load("%s/file/%s/info" % (self.API_URL, file_id))
         file_info = json.loads(json_data)
 
         if file_info['success'] is False:
