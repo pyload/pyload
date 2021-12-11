@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import re
+
 from ..captcha.ReCaptcha import ReCaptcha
 from ..internal.misc import json
 from ..internal.SimpleHoster import SimpleHoster
@@ -8,7 +10,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class UploadgigCom(SimpleHoster):
     __name__ = "UploadgigCom"
     __type__ = "hoster"
-    __version__ = "0.08"
+    __version__ = "0.09"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?uploadgig.com/file/download/\w+'
@@ -31,6 +33,15 @@ class UploadgigCom(SimpleHoster):
     OFFLINE_PATTERN = r'File not found'
 
     def handle_free(self, pyfile):
+        m = re.search(
+            r"<script>window\[String\.fromCharCode\(window\['m'\+'ax_upload_limi'\+'t'\]\)\] = (.+?);</script>",
+            self.data,
+        )
+        if m is None:
+            self.error(_("f pattern not found"))
+
+        f = self.js.eval(m.group(1))
+
         url, inputs = self.parse_html_form('id="dl_captcha_form"')
         if inputs is None:
             self.error(_("Free download form not found"))
@@ -73,4 +84,4 @@ class UploadgigCom(SimpleHoster):
 
             self.wait(res['cd'])
 
-            self.link = res['sp'] + "id=" + str(res['id'] - 5) + "&" + res['q']
+            self.link = res['sp'] + "id=" + str(res['id'] - f) + "&" + res['q']
