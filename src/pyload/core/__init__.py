@@ -279,7 +279,7 @@ class Core:
         self.acm.get_account_infos()
         # self.scheduler.add_job(0, self.acm.get_account_infos)
 
-        self.log.info(self._("Activating Plugins..."))
+        self.log.info(self._("Activating plugins..."))
         self.adm.core_ready()
 
     def _start_webserver(self):
