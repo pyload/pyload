@@ -15,7 +15,7 @@ from ..internal.misc import exists, json, safejoin, uniqify
 class RealdebridComTorrent(Crypter):
     __name__ = "RealdebridComTorrent"
     __type__ = "crypter"
-    __version__ = "0.14"
+    __version__ = "0.15"
     __status__ = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -32,33 +32,55 @@ class RealdebridComTorrent(Crypter):
 
     # See https://api.real-debrid.com/
     API_URL = "https://api.real-debrid.com/rest/1.0"
+    API_ERRORS_MAX = 20
 
-    def api_response(self, method, get={}, post={}):
-        self.req.http.c.setopt(pycurl.USERAGENT, "pyLoad/%s" % self.pyload.version)
+    def api_error_message(self, res):
+        """ Formatted API error message with defaults handled """
+        return "Error from API {} ({}) - {}.".format(
+            res.get('error', 'unhandled'),
+            res.get('error_code', '-1'),
+            res.get('error_details', '')
+        )
+
+    def api_error(self, res):
+        """ Fail with formatted API error message """
+        self.fail(self.api_error_message(res))
+
+    def api_response(self, method, get={}, post={}, fail_on_error=True):
+        """ Get API response with re-login support. """
+        self.req.http.c.setopt(pycurl.USERAGENT,
+                               "pyLoad/%s" % self.pyload.version)
 
         for _i in range(2):
             try:
-                json_data = self.load(self.API_URL + method, get=get, post=post)
+                json_data = self.load(self.API_URL + method,
+                                      get=get,
+                                      post=post)
 
-            except BadHeader, e:
+            except BadHeader as e:
                 json_data = e.content
+
+            except Exception as e:
+                self.log_debug("Unhandled exception {}".format(e))
+                json_data = ""
 
             res = json.loads(json_data) if len(json_data) > 0 else {}
 
             if 'error_code' in res:
-                if res['error_code'] == 8:  #: token expired, refresh the token and retry
+                # token expired, refresh the token and retry
+                if res['error_code'] == 8:
                     self.account.relogin()
                     if not self.account.info['login']['valid']:
                         return res
 
                     else:
-                        self.api_token = self.account.accounts[self.account.accounts.keys()[0]]["api_token"]
+                        self.api_token = self.account.accounts[
+                            self.account.accounts.keys()[0]]["api_token"]
                         get['auth_token'] = self.api_token
                         continue
 
-                else:
-                    error_msg = res['error']
-                    self.fail(error_msg)
+                elif fail_on_error:
+                    self.api_error(res)
 
             return res
 
@@ -136,7 +158,7 @@ class RealdebridComTorrent(Crypter):
                                          get={'auth_token': self.api_token})
 
         if 'error' in torrent_info:
-            self.fail("%s (code: %s)" % (torrent_info["error"], torrent_info.get("error_code", -1)))
+            self.api_error(torrent_info)
 
         #: Filter and select files for downloading
         exclude_filters = self.config.get('exclude_filter').split(';')
@@ -157,6 +179,13 @@ class RealdebridComTorrent(Crypter):
 
         selected_ids = ",".join([str(_id) for _id in included_ids
                                  if _id not in excluded_ids])
+
+        if len(selected_ids) == 0:
+            self.delete_torrent_from_server(torrent_id)
+            self.fail(("No files for TorrentID {}. "
+                       "Possibly wrong magnet or error "
+                       "on Real-Debrid's side.").format(torrent_id))
+
         self.api_response("/torrents/selectFiles/" + torrent_id,
                           get={'auth_token': self.api_token},
                           post={'files': selected_ids})
@@ -170,7 +199,7 @@ class RealdebridComTorrent(Crypter):
                                          get={'auth_token': self.api_token})
 
         if 'error' in torrent_info:
-            self.fail("%s (code: %s)" % (torrent_info["error"], torrent_info.get("error_code", -1)))
+            self.api_error(torrent_info)
 
         self.pyfile.name = torrent_info['original_filename']
         self.pyfile.size = torrent_info['original_bytes']
@@ -178,16 +207,70 @@ class RealdebridComTorrent(Crypter):
         self.pyfile.setCustomStatus("torrent")
         self.pyfile.setProgress(0)
 
+        api_errors_count = 0
         while torrent_info['status'] != 'downloaded' or torrent_info['progress'] != 100:
             progress = int(torrent_info['progress'])
             self.pyfile.setProgress(progress)
 
             self.sleep(5)
 
-            torrent_info = self.api_response("/torrents/info/" + torrent_id,
-                                             get={'auth_token': self.api_token})
-            if 'error' in torrent_info:
-                self.fail("%s (code: %s)" % (torrent_info["error"], torrent_info.get("error_code", -1)))
+            res = self.api_response("/torrents/info/" + torrent_id,
+                                    get={'auth_token': self.api_token},
+                                    fail_on_error=False)
+
+            log_info = ["WAITING [{}]".format(torrent_id)]
+            error = False
+
+            # we received json status from API
+            if len(res) > 0:
+                torrent_info = res
+
+                # There was error status (known) received from API
+                #
+                # FIXME: we are currently retrying for all error types
+                # but in some cases (missing parameter) retry won't help.
+                # But it also doesn't hurt much, so probably not worth to
+                # decide which cases should be retried and which ones not
+                # https://api.real-debrid.com/#api_error_codes
+                #
+                if 'error' in torrent_info:
+                    log_info.append(self.api_error_message(torrent_info))
+                    error = True
+
+                # reset errors count when everything is OK
+                else:
+                    api_errors_count = 0
+
+                    # Even with no API errors, torrent may still be in error
+                    # state. We cancel such downloads immediately.
+                    if torrent_info["status"] in ['magnet_error',
+                                                  'error',
+                                                  'virus',
+                                                  'waiting_files_selection',
+                                                  'dead']:
+                        log_info.append("Torrent in error state: {}".format(
+                            torrent_info["status"]))
+                        # hackish way to disable retrying
+                        api_errors_count = self.API_ERRORS_MAX
+
+            # No JSON from API. We definitely want to retry,
+            # maybe API was just down or glitching.
+            else:
+                log_info.append("Receiving JSON status from API failed")
+                error = True
+
+            if error:
+                api_errors_count += 1
+                log_info.append("Retrying {}/{}".format(api_errors_count,
+                                                        self.API_ERRORS_MAX))
+
+            if self.pyload.debug:
+                log_info.append("Torrent info: {}".format(torrent_info))
+
+            if api_errors_count < self.API_ERRORS_MAX:
+                self.log_debug(" | ".join(log_info))
+            else:
+                self.fail(" | ".join(log_info))
 
         self.pyfile.setProgress(100)
 
