@@ -16,7 +16,7 @@ from ..internal.misc import threaded, fs_encode
 class Captcha9Kw(Addon):
     __name__ = "Captcha9Kw"
     __type__ = "hook"
-    __version__ = "0.43"
+    __version__ = "0.44"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", False),
@@ -180,7 +180,11 @@ class Captcha9Kw(Addon):
         task.setResult(result)
 
     def captcha_task(self, task):
-        if task.isInteractive():
+        if not hasattr(task, "isInvisible"):
+            self.log_error(_("Please update pyLoad's core to support invisible captcha"))
+            task.isInvisible = lambda : False
+
+        if task.isInteractive() or task.isInvisible():
             if task.captchaParams['captcha_plugin'] not in self.INTERACTIVE_TYPES.keys() or self.config.get('solve_interactive') is False:
                 return
         else:
