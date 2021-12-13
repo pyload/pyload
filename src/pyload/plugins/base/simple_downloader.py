@@ -234,7 +234,7 @@ class SimpleDownloader(BaseDownloader):
             if self.LINK_PREMIUM_PATTERN is None:
                 self.LINK_PREMIUM_PATTERN = self.LINK_PATTERN
 
-        elif self.DIRECT_LINK is None:
+        if self.DIRECT_LINK is None:
             self.direct_dl = bool(self.premium)
 
         else:
