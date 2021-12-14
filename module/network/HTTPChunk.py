@@ -272,10 +272,14 @@ class HTTPChunk(HTTPRequest):
 
     def parseHeader(self):
         """parse data from recieved header"""
+        location = None
         for orgline in self.header.splitlines():
             line = orgline.strip().lower()
             if line.startswith("accept-ranges") and "bytes" in line:
                 self.p.chunkSupport = True
+
+            elif line.startswith("location"):
+                location = orgline.split(":", 1)[1].strip()
 
             elif line.startswith("content-disposition"):
                 disposition_value = orgline.split(":", 1)[1].strip()
@@ -332,6 +336,10 @@ class HTTPChunk(HTTPRequest):
                             except UnicodeEncodeError:
                                 self.log.warning("Content-Disposition: | error: Error when decoding string from iso-8859-1.")
                                 continue
+
+                    elif disposition_type.lower() == "attachment" and location is not None:
+                        fname = os.path.basename(location)
+
                     else:
                         continue
 
