@@ -230,7 +230,7 @@ class HTTPChunk(HTTPRequest):
                 self.p.size = int(size.group(1))
                 self.p.chunkSupport = True
 
-        self.headerParsed = True
+            self.headerParsed = True
 
         return None  #: All is fine
 
