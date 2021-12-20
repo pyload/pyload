@@ -12,7 +12,7 @@ from .downloader import BaseDownloader
 class SimpleDownloader(BaseDownloader):
     __name__ = "SimpleDownloader"
     __type__ = "downloader"
-    __version__ = "2.34"
+    __version__ = "2.35"
     __status__ = "stable"
 
     __pattern__ = r"^unmatchable$"
@@ -457,9 +457,8 @@ class SimpleDownloader(BaseDownloader):
         self.grab_info()
         return self.info
 
-    #: Override base class grab_info(), don't grab info (yet)
     def grab_info(self):
-        pass
+        self.pyfile.name = parse.name(self.pyfile.url)
 
     def handle_direct(self, pyfile):
         self.link = pyfile.url if self.isresource(pyfile.url) else None
