@@ -13,7 +13,7 @@ from .misc import fs_encode, parse_name, parse_size, parse_time, replace_pattern
 class SimpleHoster(Hoster):
     __name__ = "SimpleHoster"
     __type__ = "hoster"
-    __version__ = "2.34"
+    __version__ = "2.35"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -428,9 +428,8 @@ class SimpleHoster(Hoster):
         self.grab_info()
         return self.info
 
-    #: Override base class grab_info(), don't grab info (yet)
     def grab_info(self):
-        pass
+        self.pyfile.name = parse_name(self.pyfile.url)
 
     def handle_direct(self, pyfile):
         self.link = pyfile.url if self.isresource(pyfile.url) else None
