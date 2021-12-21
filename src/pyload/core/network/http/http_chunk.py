@@ -334,8 +334,11 @@ class HTTPChunk(HTTPRequest):
                                 self.log.warning("Content-Disposition: | error: Error when decoding string from iso-8859-1.")
                                 continue
 
-                    elif disposition_type.lower() == "attachment" and location is not None:
-                        fname = parse.name(location)
+                    elif disposition_type.lower() == "attachment":
+                        if location is not None:
+                            fname = parse.name(location)
+                        else:
+                            fname = parse.name(self.p.url)
 
                     else:
                         continue
