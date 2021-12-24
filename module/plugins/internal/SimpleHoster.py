@@ -13,7 +13,7 @@ from .misc import fs_encode, parse_name, parse_size, parse_time, replace_pattern
 class SimpleHoster(Hoster):
     __name__ = "SimpleHoster"
     __type__ = "hoster"
-    __version__ = "2.35"
+    __version__ = "2.36"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -432,7 +432,13 @@ class SimpleHoster(Hoster):
         self.pyfile.name = parse_name(self.pyfile.url)
 
     def handle_direct(self, pyfile):
-        self.link = pyfile.url if self.isresource(pyfile.url) else None
+        link = self.isresource(pyfile.url)
+        if link:
+            pyfile.name = parse_name(link)
+            self.link = pyfile.url
+
+        else:
+            self.link = None
 
     def handle_multi(self, pyfile):  #: Multi-hoster handler
         pass
