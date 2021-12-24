@@ -463,7 +463,7 @@ class SimpleDownloader(BaseDownloader):
     def handle_direct(self, pyfile):
         link = self.isresource(pyfile.url)
         if link:
-            pyfile.name = parse_name(link)
+            pyfile.name = parse.name(link)
             self.link = pyfile.url
 
         else:
