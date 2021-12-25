@@ -14,7 +14,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class FshareVn(SimpleHoster):
     __name__ = "FshareVn"
     __type__ = "hoster"
-    __version__ = "0.35"
+    __version__ = "0.36"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?fshare\.vn/file/(?P<ID>\w+)'
@@ -38,7 +38,7 @@ class FshareVn(SimpleHoster):
 
     # See https://www.fshare.vn/api-doc
     def api_request(self, method, session_id=None, **kwargs):
-        self.req.http.c.setopt(pycurl.USERAGENT, "pyLoad-XBEMRN")
+        self.req.http.c.setopt(pycurl.USERAGENT, "pyLoad-B1RS5N")
 
         if len(kwargs) == 0:
             json_data = self.load(self.API_URL + method,
@@ -55,13 +55,10 @@ class FshareVn(SimpleHoster):
     def api_info(self, url):
         info = {}
         file_id = re.match(self.__pattern__, url).group('ID')
-        req = get_request()
 
-        req.c.setopt(pycurl.HTTPHEADER, ["Accept: application/json, text/plain, */*"])
-        file_info = json.loads(req.load("https://www.fshare.vn/api/v3/files/folder",
-                                        get={'linkcode': file_id}))
-
-        req.close()
+        self.req.c.setopt(pycurl.HTTPHEADER, ["Accept: application/json, text/plain, */*"])
+        file_info = json.loads(self.load("https://www.fshare.vn/api/v3/files/folder",
+                                         get={'linkcode': file_id}))
 
         if file_info.get("status") == 404:
             info['status'] = 1
@@ -100,12 +97,15 @@ class FshareVn(SimpleHoster):
         try:
             json_data = json.loads(self.data)
 
-        except Exception:
+        except ValueError:
             self.fail(_("Expected JSON data"))
 
         err_msg = json_data.get('msg')
         if err_msg:
             self.fail(err_msg)
+
+        elif json_data.get('policydowload', False):
+            self.fail(_("File can be downloaded by premium users only"))
 
         elif 'url' not in json_data:
             self.fail(_("Unexpected response"))
