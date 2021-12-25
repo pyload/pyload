@@ -12,7 +12,7 @@ from ..base.simple_downloader import SimpleDownloader
 class FshareVn(SimpleDownloader):
     __name__ = "FshareVn"
     __type__ = "downloader"
-    __version__ = "0.36"
+    __version__ = "0.37"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?fshare\.vn/file/(?P<ID>\w+)"
