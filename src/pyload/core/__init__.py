@@ -126,6 +126,10 @@ class Core:
         # otherwise save setting to config dir
         if storagedir is None:
             storagedir = self.config.get("general", "storage_folder")
+            # Make sure storage directory is not empty
+            if not storagedir:
+                self.config.set("general", "storage_folder", "~/Downloads/pyLoad")
+                storagedir = self.config.get("general", "storage_folder")
         else:
             self.config.set("general", "storage_folder", storagedir)
         os.makedirs(storagedir, exist_ok=True)
