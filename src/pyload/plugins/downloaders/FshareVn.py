@@ -12,7 +12,7 @@ from ..base.simple_downloader import SimpleDownloader
 class FshareVn(SimpleDownloader):
     __name__ = "FshareVn"
     __type__ = "downloader"
-    __version__ = "0.35"
+    __version__ = "0.36"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?fshare\.vn/file/(?P<ID>\w+)"
@@ -40,7 +40,7 @@ class FshareVn(SimpleDownloader):
 
     # See https://www.fshare.vn/api-doc
     def api_request(self, method, session_id=None, **kwargs):
-        self.req.http.c.setopt(pycurl.USERAGENT, "pyLoad-XBEMRN")
+        self.req.http.c.setopt(pycurl.USERAGENT, "pyLoad-B1RS5N")
 
         if len(kwargs) == 0:
             json_data = self.load(
@@ -48,7 +48,7 @@ class FshareVn(SimpleDownloader):
                 cookies=[("fshare.vn", "session_id", session_id)]
                 if session_id
                 else True,
-                )
+            )
 
         else:
             self.req.http.c.setopt(
@@ -60,7 +60,7 @@ class FshareVn(SimpleDownloader):
                 cookies=[("fshare.vn", "session_id", session_id)]
                 if session_id
                 else True,
-                )
+            )
 
         return json.loads(json_data)
 
@@ -68,14 +68,14 @@ class FshareVn(SimpleDownloader):
         info = {}
         file_id = re.match(self.__pattern__, url).group("ID")
 
-        self.req.c.setopt(pycurl.HTTPHEADER, ["Accept: application/json, text/plain, */*"])
+        self.req.http.c.setopt(
+            pycurl.HTTPHEADER, ["Accept: application/json, text/plain, */*"]
+        )
         file_info = json.loads(
             self.load(
                 "https://www.fshare.vn/api/v3/files/folder", get={"linkcode": file_id}
             )
         )
-
-        req.close()
 
         if file_info.get("status") == 404:
             info["status"] = 1
@@ -120,12 +120,15 @@ class FshareVn(SimpleDownloader):
         try:
             json_data = json.loads(self.data)
 
-        except Exception:
+        except ValueError:
             self.fail(self._("Expected JSON data"))
 
         err_msg = json_data.get("msg")
         if err_msg:
             self.fail(err_msg)
+
+        elif json_data.get("policydowload", False):
+            self.fail(self._("File can be downloaded by premium users only"))
 
         elif "url" not in json_data:
             self.fail(self._("Unexpected response"))

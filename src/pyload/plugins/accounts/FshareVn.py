@@ -10,7 +10,7 @@ from ..base.account import BaseAccount
 class FshareVn(BaseAccount):
     __name__ = "FshareVn"
     __type__ = "account"
-    __version__ = "0.26"
+    __version__ = "0.27"
     __status__ = "testing"
 
     __description__ = """Fshare.vn account plugin"""
@@ -26,7 +26,7 @@ class FshareVn(BaseAccount):
 
     # See https://www.fshare.vn/api-doc
     def api_request(self, method, session_id=None, **kwargs):
-        self.req.http.c.setopt(pycurl.USERAGENT, "pyLoad-XBEMRN")
+        self.req.http.c.setopt(pycurl.USERAGENT, "pyLoad-B1RS5N")
 
         if len(kwargs) == 0:
             json_data = self.load(
