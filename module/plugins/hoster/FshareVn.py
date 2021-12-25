@@ -14,7 +14,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class FshareVn(SimpleHoster):
     __name__ = "FshareVn"
     __type__ = "hoster"
-    __version__ = "0.36"
+    __version__ = "0.37"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?fshare\.vn/file/(?P<ID>\w+)'
@@ -56,7 +56,7 @@ class FshareVn(SimpleHoster):
         info = {}
         file_id = re.match(self.__pattern__, url).group('ID')
 
-        self.req.c.setopt(pycurl.HTTPHEADER, ["Accept: application/json, text/plain, */*"])
+        self.req.http.c.setopt(pycurl.HTTPHEADER, ["Accept: application/json, text/plain, */*"])
         file_info = json.loads(self.load("https://www.fshare.vn/api/v3/files/folder",
                                          get={'linkcode': file_id}))
 
