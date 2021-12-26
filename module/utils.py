@@ -1,14 +1,18 @@
 # -*- coding: utf-8 -*-
 
-""" Store all usefull functions here """
+""" Store all useful functions here """
 
 import os
+import re
 import sys
 import time
-import re
+import urllib
+import urlparse
+from email.header import decode_header as decode_rfc2047_header
+from htmlentitydefs import name2codepoint
 from os.path import join
 from string import maketrans
-from htmlentitydefs import name2codepoint
+
 
 def chmod(*args):
     try:
@@ -33,12 +37,25 @@ def remove_chars(string, repl):
         return string.translate(dict([(ord(s), None) for s in repl]))
 
 
-def save_path(name):
-    #remove some chars
-    if os.name == 'nt':
-        return remove_chars(name, '/\\?%*:|"<>')
-    else:
-        return remove_chars(name, '/\\"')
+def save_path(value):
+    """ Remove invalid characters """
+    # repl = '<>:"/\\|?*' if os.name == "nt" else '\0/\\"'
+    repl = '<>:"/\\|?*\0'
+    name = remove_chars(value, repl)
+    return name
+
+
+def rfc2047_dec(value):
+    def decode_chunk(m):
+        data, enc = decode_rfc2047_header(m.group(0))[0]
+        try:
+            res = data.decode(enc)
+        except (LookupError, UnicodeEncodeError):
+            res = m.group(0)
+
+        return res
+
+    return re.sub(r'=\?([^?]+)\?([QB])\?([^?]*)\?=', decode_chunk, value, re.I)
 
 
 def save_join(*args):
@@ -46,8 +63,38 @@ def save_join(*args):
     return fs_encode(join(*[x if type(x) == unicode else decode(x) for x in args]))
 
 
+def parse_name(value, safechar=True):
+    path = urllib.unquote(decode(value))
+
+    try:
+        path = path.encode('latin1').decode('utf8')
+    except (UnicodeEncodeError, UnicodeDecodeError):
+        pass
+
+    #: 'unicode-escape' that work with unicode strings too
+    path = re.sub(r'\\[uU](\d{4})', lambda x: unichr(int(x.group(1))), path)
+
+    #: Decode HTML escape
+    path = html_unescape(path)
+
+    #: Decode rfc2047
+    path = rfc2047_dec(path)
+
+    #: Remove redundant '/'
+    path = re.sub(r'(?<!:)/{2,}', '/', path).strip().lstrip('.')
+
+    url_p = urlparse.urlparse(path.rstrip('/'))
+    name = (url_p.path.split('/')[-1] or
+            url_p.query.split('=', 1)[::-1][0].split('&', 1)[0] or
+            url_p.netloc.split('.', 1)[0])
+
+    name = os.path.basename(name)
+
+    return save_path(name) if safechar else name
+
+
 # File System Encoding functions:
-# Use fs_encode before accesing files on disk, it will encode the string properly
+# Use fs_encode before accessing files on disk, it will encode the string properly
 
 if sys.getfilesystemencoding().startswith('ANSI'):
     def fs_encode(string):
@@ -60,6 +107,7 @@ if sys.getfilesystemencoding().startswith('ANSI'):
 
 else:
     fs_encode = fs_decode = lambda x: x  # do nothing
+
 
 def get_console_encoding(enc):
     if os.name == "nt":
@@ -74,6 +122,7 @@ def get_console_encoding(enc):
         enc = "utf8"
 
     return enc
+
 
 def compare_time(start, end):
     start = map(int, start)
@@ -197,7 +246,8 @@ def fixup(m):
 
 def html_unescape(text):
     """Removes HTML or XML character references and entities from a text string"""
-    return re.sub("&#?\w+;", fixup, text)
+    return re.sub(r"&#?\w+;", fixup, text)
+
 
 if __name__ == "__main__":
     print freeSpace(".")

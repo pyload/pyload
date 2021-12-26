@@ -28,7 +28,7 @@ from posixpath import basename as posixpath_basename
 
 import pycurl
 from HTTPRequest import HTTPRequest
-from module.utils import decode, fs_encode
+from module.utils import decode, fs_encode, parse_name
 
 
 class WrongFormat(Exception):
@@ -339,9 +339,9 @@ class HTTPChunk(HTTPRequest):
 
                     elif disposition_type.lower() == "attachment":
                         if location is not None:
-                            fname = os.path.basename(location)
+                            fname = parse_name(location)
                         else:
-                            fname = os.path.basename(self.p.url)
+                            fname = parse_name(self.p.url)
 
                     else:
                         continue
