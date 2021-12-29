@@ -12,7 +12,7 @@ from .downloader import BaseDownloader
 class SimpleDownloader(BaseDownloader):
     __name__ = "SimpleDownloader"
     __type__ = "downloader"
-    __version__ = "2.36"
+    __version__ = "2.37"
     __status__ = "stable"
 
     __pattern__ = r"^unmatchable$"
@@ -269,6 +269,7 @@ class SimpleDownloader(BaseDownloader):
             if self.info.get("status", 7) != 2:
                 super(SimpleDownloader, self).grab_info()
                 self.check_status()
+                self.pyfile.set_status("starting")
                 self.check_duplicates()
 
             out_of_traffic = self.CHECK_TRAFFIC and self.out_of_traffic()
