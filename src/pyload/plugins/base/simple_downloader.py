@@ -12,7 +12,7 @@ from .downloader import BaseDownloader
 class SimpleDownloader(BaseDownloader):
     __name__ = "SimpleDownloader"
     __type__ = "downloader"
-    __version__ = "2.38"
+    __version__ = "2.39"
     __status__ = "stable"
 
     __pattern__ = r"^unmatchable$"
