@@ -18,13 +18,7 @@ function indicateSuccess(message) {
    }
 
     indicateFinish();
-    const bar = new $.peekABar({
-        html: "<h4>" + message + '.' + "</h4>",
-        padding: "6px",
-        backgroundColor: '#B5BFC2',
-        autohide: true
-    });
-    bar.show();
+    mdtoast(message + '.', {position: "bottom center", type: "success", duration: 3000});
 }
 
 function indicateFail(message) {
@@ -33,13 +27,7 @@ function indicateFail(message) {
    }
 
     indicateFinish();
-    var bar = new $.peekABar({
-        html: "<h4>" + message + '.' + "</h4>",
-        padding: "6px",
-        backgroundColor: '#FF4500',
-        autohide: true
-    });
-    bar.show();
+    mdtoast(message + '.', {position: "bottom center", type: "error", duration: 4000});
 }
 
 function humanFileSize(f) {
@@ -329,14 +317,7 @@ function LoadJsonToContent(a) {
         var notificationVisible = ($cap_info.css("display") !== "none");
         if (!notificationVisible) {
             $cap_info.css('display','inline');
-            var bar = new $.peekABar({
-                html: "<h4>{{_('New Captcha Request')}}</h4>",
-                padding: "6px",
-                backgroundColor: '#5CB85C',
-                delay: 5000,
-                autohide: true
-            });
-            bar.show();
+            mdtoast("{{_('New Captcha Request')}}", {position: "bottom center", type: "info", duration: 6000});
         }
         if (desktopNotifications && !document.hasFocus() && !notificationVisible) {
             notification = new Notification('pyLoad', {
