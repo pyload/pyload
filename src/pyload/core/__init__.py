@@ -379,7 +379,7 @@ class Core:
             self.log.info(self._("Cache directory: {}").format(self.tempdir))
 
             storage_folder = self.config.get("general", "storage_folder")
-            self.log.info(self._("Storage directory: {}".format(storage_folder)))
+            self.log.info(self._("Storage directory: {}").format(storage_folder))
 
             avail_space = format.size(fs.free_space(storage_folder))
             self.log.info(self._("Storage free space: {}").format(avail_space))

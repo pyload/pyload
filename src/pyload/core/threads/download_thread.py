@@ -49,7 +49,7 @@ class DownloadThread(PluginThread):
                 # this pyfile was deleted while queueing
 
                 pyfile.plugin.check_for_same_files(starting=True)
-                self.pyload.log.info(self._("Download starts: {}".format(pyfile.name)))
+                self.pyload.log.info(self._("Download starts: {}").format(pyfile.name))
 
                 # start download
                 self.pyload.addon_manager.download_preparing(pyfile)

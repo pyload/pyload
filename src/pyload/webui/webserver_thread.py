@@ -65,7 +65,7 @@ class WebServerThread(threading.Thread):
             # TODO: Not implemented
 
     def run(self):
-        self.log.warning(
+        self.log.info(
             self._("Starting webserver: {scheme}://{host}:{port}").format(
                 scheme="https" if self.use_ssl else "http",
                 host=f"[{self.host}]" if ":" in self.host else self.host,
