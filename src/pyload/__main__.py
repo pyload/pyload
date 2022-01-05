@@ -122,7 +122,10 @@ def run(core_args, daemon=False):
     except KeyboardInterrupt:
         pyload_core.log.info(pyload_core._("Killed from terminal"))
         pyload_core.terminate()
-        sys.exit(os.EX_TEMPFAIL)
+        if os.name == "nt":
+            sys.exit(75)
+        else:
+            sys.exit(os.EX_TEMPFAIL)
 
 
 def main(cmd_args=sys.argv[1:]):

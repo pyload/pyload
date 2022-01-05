@@ -43,7 +43,6 @@ class Exit(Exception):
 #  new attributes (date|sync status)
 #  improve external scripts
 class Core:
-
     LOCALE_DOMAIN = APPID
     DEFAULT_USERNAME = APPID
     DEFAULT_PASSWORD = APPID
@@ -126,7 +125,7 @@ class Core:
         # otherwise save setting to config dir
         if storagedir is None:
             storagedir = self.config.get("general", "storage_folder")
-            # Make sure storage directory is not empty
+            # Make sure storage_folder is not empty
             if not storagedir:
                 self.config.set("general", "storage_folder", "~/Downloads/pyLoad")
                 storagedir = self.config.get("general", "storage_folder")
@@ -147,7 +146,7 @@ class Core:
 
         self.log.info(f"*** Welcome to pyLoad {self.version} ***")
         if self._dry_run:
-            self.log.info(f"*** TEST RUN ***")
+            self.log.info("*** TEST RUN ***")
 
     def _init_network(self):
         from .network import request_factory
@@ -430,7 +429,6 @@ class Core:
             self.terminate()
             os._exit(os.EX_SOFTWARE)  #: this kind of stuff should not be here!
 
-    # TODO: Remove
     def is_client_connected(self):
         return (self.last_client_connected + 30) > time.time()
 
@@ -443,9 +441,9 @@ class Core:
             os.chdir(sys.path[0])
 
         args = self._get_args_for_reloading()
-        exit_code = subprocess.call(args, close_fds=True)
+        subprocess.Popen(args, close_fds=True)
 
-        os._exit(exit_code)
+        os._exit(0)
 
     def terminate(self):
         self.stop()
@@ -474,6 +472,4 @@ class Core:
         finally:
             self.files.sync_save()
             self._running.clear()
-            if self._do_restart:
-                self._stop_webserver()
             # self.evm.fire('pyload:stopped')
