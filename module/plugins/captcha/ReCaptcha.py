@@ -29,7 +29,7 @@ except ImportError:
 class ReCaptcha(CaptchaService):
     __name__ = 'ReCaptcha'
     __type__ = 'captcha'
-    __version__ = '0.47'
+    __version__ = '0.48'
     __status__ = 'testing'
 
     __description__ = 'ReCaptcha captcha service plugin'
@@ -39,7 +39,7 @@ class ReCaptcha(CaptchaService):
                    ("Arno-Nymous", None),
                    ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
-    KEY_V2_PATTERN = r'(?:data-sitekey=["\']|["\']sitekey["\']\s*:\s*["\'])((?:[\w\-]|%[0-9a-fA-F]{2}){24,})["\']'
+    KEY_V2_PATTERN = r'(?:data-sitekey=["\']|["\']sitekey["\']\s*:\s*["\'])((?:[\w\-]|%[0-9a-fA-F]{2})+)'
     KEY_FORMAT_V2_PATTERN = r'^6L[\w-]{6}AAAAA[\w-]{27}$'
     INVISIBLE_V2_PATTERN = r'data-size\s*=\s*(["\'])\s*invisible\s*\1'
     STOKEN_V2_PATTERN = r'data-stoken=["\']([\w\-]+)'
