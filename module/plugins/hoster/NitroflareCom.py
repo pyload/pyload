@@ -11,7 +11,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class NitroflareCom(SimpleHoster):
     __name__ = "NitroflareCom"
     __type__ = "hoster"
-    __version__ = "0.33"
+    __version__ = "0.34"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(?:nitro\.download|nitroflare\.com)/view/(?P<ID>[\w^_]+)'
@@ -57,7 +57,7 @@ class NitroflareCom(SimpleHoster):
 
     def handle_free(self, pyfile):
         #: Used here to load the cookies which will be required later
-        self.load("http://nitroflare.com/ajax/setCookie.php",
+        self.load("https://nitroflare.com/ajax/setCookie.php",
                   post={'fileId': self.info['pattern']['ID']})
 
         self.data = self.load(pyfile.url,
@@ -69,11 +69,9 @@ class NitroflareCom(SimpleHoster):
         except (IndexError, ValueError):
             wait_time = 120
 
-        self.data = self.load("http://nitroflare.com/ajax/freeDownload.php",
-                              post={'method': "startTimer",
-                                    'fileId': self.info['pattern']['ID']})
-
-        self.check_errors()
+        self.load("https://nitroflare.com/ajax/freeDownload.php",
+                  post={'method': "startTimer",
+                        'fileId': self.info['pattern']['ID']})
 
         self.set_wait(wait_time)
 
@@ -94,13 +92,13 @@ class NitroflareCom(SimpleHoster):
                 response = self.captcha.challenge(hcaptcha_key)
                 inputs["g-recaptcha-response"] = inputs["h-captcha-response"] = response
             else:
-                response = self.captcha.decrypt("http://nitroflare.com/plugins/cool-captcha/captcha.php")
+                response = self.captcha.decrypt("https://nitroflare.com/plugins/cool-captcha/captcha.php")
 
         inputs['captcha'] = response
 
         self.wait()
 
-        self.data = self.load("http://nitroflare.com/ajax/freeDownload.php",
+        self.data = self.load("https://nitroflare.com/ajax/freeDownload.php",
                               post=inputs)
 
         if "The captcha wasn't entered correctly" in self.data:
