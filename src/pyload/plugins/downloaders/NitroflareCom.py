@@ -11,7 +11,7 @@ from ..base.simple_downloader import SimpleDownloader
 class NitroflareCom(SimpleDownloader):
     __name__ = "NitroflareCom"
     __type__ = "downloader"
-    __version__ = "0.33"
+    __version__ = "0.34"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?(?:nitro\.download|nitroflare\.com)/view/(?P<ID>[\w^_]+)"
@@ -63,7 +63,7 @@ class NitroflareCom(SimpleDownloader):
     def handle_free(self, pyfile):
         #: Used here to load the cookies which will be required later
         self.load(
-            "http://nitroflare.com/ajax/setCookie.php",
+            "https://nitroflare.com/ajax/setCookie.php",
             post={"fileId": self.info["pattern"]["ID"]},
         )
 
@@ -75,12 +75,10 @@ class NitroflareCom(SimpleDownloader):
         except (IndexError, ValueError):
             wait_time = 120
 
-        self.data = self.load(
-            "http://nitroflare.com/ajax/freeDownload.php",
+        self.load(
+            "https://nitroflare.com/ajax/freeDownload.php",
             post={"method": "startTimer", "fileId": self.info["pattern"]["ID"]},
         )
-
-        self.check_errors()
 
         self.set_wait(wait_time)
 
@@ -101,7 +99,7 @@ class NitroflareCom(SimpleDownloader):
                 inputs["g-recaptcha-response"] = inputs["h-captcha-response"] = response
             else:
                 response = self.captcha.decrypt(
-                    "http://nitroflare.com/plugins/cool-captcha/captcha.php"
+                    "https://nitroflare.com/plugins/cool-captcha/captcha.php"
                 )
 
         inputs["captcha"] = response
@@ -109,7 +107,7 @@ class NitroflareCom(SimpleDownloader):
         self.wait()
 
         self.data = self.load(
-            "http://nitroflare.com/ajax/freeDownload.php", post=inputs
+            "https://nitroflare.com/ajax/freeDownload.php", post=inputs
         )
 
         if "The captcha wasn't entered correctly" in self.data:
