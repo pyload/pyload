@@ -2,6 +2,7 @@
 
 import re
 
+from ..captcha.ReCaptcha import ReCaptcha
 from ..captcha.SolveMedia import SolveMedia
 from ..internal.misc import json, seconds_to_midnight
 from ..internal.SimpleHoster import SimpleHoster
@@ -10,7 +11,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class AlfafileNet(SimpleHoster):
     __name__ = "AlfafileNet"
     __type__ = "hoster"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(alfafile\.net)/file/(?P<ID>\w+)'
@@ -55,22 +56,31 @@ class AlfafileNet(SimpleHoster):
                                       post={'adcopy_response': response,
                                             'adcopy_challenge': challenge})
 
-                if "Invalid captcha" in self.data:
-                    self.retry_captcha()
+            else:
+                recaptcha = ReCaptcha(self.pyfile)
+                captcha_key = recaptcha.detect_key()
+                if captcha_key:
+                    self.captcha = recaptcha
+                    response = recaptcha.challenge(captcha_key)
+
+                    self.data = self.load(redirect_url,
+                                          post={'g-recaptcha-response': response})
+
                 else:
-                    self.captcha.correct()
+                    self.error(_("Captcha pattern not found"))
+
+            if "Invalid captcha" in self.data:
+                self.retry_captcha()
+            else:
+                self.captcha.correct()
 
                 m = re.search(self.LINK_PATTERN, self.data)
                 if m is not None:
                     self.link = m.group(1)
 
-            else:
-                self.error(_("Captcha pattern not found"))
-
         else:
             self.data = json_data['html']
             self.check_errors()
-
 
     def check_errors(self):
         SimpleHoster.check_errors(self)
