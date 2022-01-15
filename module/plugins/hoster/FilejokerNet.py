@@ -1,19 +1,205 @@
 # -*- coding: utf-8 -*-
 
-import pycurl
+import io
+import os
 import re
 import urlparse
 
-from ..captcha.ReCaptcha import ReCaptcha
+import pycurl
+
 from ..captcha.HCaptcha import HCaptcha
-from ..internal.misc import json, parse_html_tag_attr_value
+from ..captcha.ReCaptcha import ReCaptcha
+from ..internal.misc import check_module, json, parse_html_tag_attr_value, uniqify
 from ..internal.XFSHoster import XFSHoster
+
+try:
+    from PIL import Image, ImageDraw, ImageFont
+except ImportError:
+    pass
+
+
+class XCaptcha:
+    def __init__(self, pyfile):
+        self.pyfile = pyfile
+        self.plugin = pyfile.plugin
+
+    def _load_image(self, url):
+        img_data = self.plugin.load(self.plugin.fixurl(url), ref=self.pyfile.url, decode=False)
+        s = io.BytesIO()
+        s.write(img_data)
+        img = Image.open(s)
+
+        return img
+
+    def _prepare_image(self, tiles, tiles_layout, challenge_msg, challenge_image_url):
+        if not check_module("PIL"):
+            self.plugin.log_error(
+                _("Missing Pillow lib"),
+                _("Please install python's Pillow library"))
+            self.plugin.fail(_("Missing Pillow lib"))
+
+        # assume all tiles are the same size, including challenge image
+        challenge_image = self._load_image(challenge_image_url)
+        margin = 6
+        tile_size = {'width': challenge_image.size[0],
+                     'height': challenge_image.size[1]}
+        tile_size_with_margin = {'width': tile_size['width'] + margin,
+                                 'height': tile_size['height'] + margin}
+
+        tiles_image_size = {
+            'width': tile_size_with_margin['width'] * tiles_layout['width'] - margin,
+            'height': tile_size_with_margin['height'] * tiles_layout['height'] - margin
+        }
+        tiles_image = Image.new('RGB', (tiles_image_size['width'], tiles_image_size['height']), 'white')
+        draw = ImageDraw.Draw(tiles_image)
+
+        if os.name == 'nt':
+            font = ImageFont.truetype('arialbd', 13)
+        else:
+            font = None
+
+        margin = 3
+        for x in range(tiles_layout['width']):
+            for y in range(tiles_layout['height']):
+                tile_number = y * tiles_layout['width'] + x
+                tile_index_text = str(tile_number + 1)
+
+                tile_image = self._load_image(tiles[tile_number][0])
+                tile_image_pos = {
+                    'x': x * tile_size_with_margin['width'],
+                    'y': y * tile_size_with_margin['height']
+                }
+                tiles_image.paste(tile_image, (tile_image_pos['x'], tile_image_pos['y']))
+
+                tile_index_text_size = {
+                    'width': draw.textsize(tile_index_text)[0],
+                    'height': draw.textsize(tile_index_text)[1]
+                }
+
+                tile_index_text_pos = {
+                    'x': tile_image_pos['x'] + tile_size['width'] - tile_index_text_size['width'] - margin,
+                    'y': tile_image_pos['y']
+                }
+
+                draw.rectangle(
+                    [
+                        tile_index_text_pos['x'] - margin,
+                        tile_index_text_pos['y'],
+                        tile_index_text_pos['x'] + tile_index_text_size['width'] + margin,
+                        tile_index_text_pos['y'] + tile_index_text_size['height']
+                    ],
+                    fill='white'
+                )
+
+                draw.text(
+                    (
+                        tile_index_text_pos['x'],
+                        tile_index_text_pos['y']
+                    ),
+                    tile_index_text,
+                    '#000',
+                    font=font
+                )
+
+        _sol = 0
+        _eol = 1
+        # determine maximum width of line
+        while True:
+            while draw.textsize(challenge_msg[_sol:_eol], font=font)[0] < tiles_image.size[0] and _eol < len(challenge_msg):
+                _eol += 1
+
+            # if we've wrapped the text, then adjust the wrap to the last word
+            if _eol < len(challenge_msg):
+                _eol = challenge_msg.rfind(" ", 0, _eol)
+                if _eol > 0:
+                    challenge_msg = challenge_msg[:_eol] + '\n' + challenge_msg[_eol + 1:]
+                    _sol = _eol + 1
+
+            else:
+                break
+
+        challenge_msg = challenge_msg + '\n(Type image numbers like "2,5,8")'
+
+        text_area_height = 0
+        challenge_msg_lines = challenge_msg.split('\n')
+        for challenge_line in challenge_msg_lines:
+            text_area_height += draw.textsize(challenge_line, font=font)[1]
+
+        margin = 5
+        # add some margin on top and bottom of text
+        text_area_height += margin * 2
+
+        dst_image_size = {
+            'width': tiles_image_size['width'],
+            'height': tiles_image_size['height'] + tile_size['height'] + text_area_height
+        }
+        dst_image = Image.new('RGB', (dst_image_size['width'], dst_image_size['height']), 'white')
+        draw = ImageDraw.Draw(dst_image)
+
+        dst_image.paste(challenge_image, ((dst_image_size['width'] - tile_size['width']) / 2, 0))
+
+        current_y = tile_size['height'] + margin
+        for challenge_line in challenge_msg_lines:
+            line_width, line_height = draw.textsize(challenge_line, font=font)
+            draw.text(((dst_image_size['width'] - line_width) / 2, current_y),
+                      challenge_line,
+                      fill='black',
+                      font=font)
+            current_y += line_height
+
+        dst_image.paste(tiles_image, (0, tile_size['height'] + text_area_height))
+
+        with io.BytesIO() as s:
+            dst_image.save(s, format='PNG')
+            dst = s.getvalue()
+
+        return dst
+
+    def challenge(self):
+        self.plugin.log_debug("xCaptcha | Challenge xCaptcha")
+
+        xcaptcha_data = self.plugin.load("https://filejoker.net/xcaptcha/api.js")
+        tiles = re.findall(r'url: "(.+?)",\s*val: "(.+?)"', xcaptcha_data)
+        if len(tiles) == 0:
+            self.plugin.log_error(_("xCaptcha | pics not found"))
+            self.plugin.fail(_("xCaptcha | pics not found"))
+
+        per_row = int(re.search(r'var per_row = parseInt\("(\d+)"\);', xcaptcha_data).group(1))
+        tiles_layout = {'width': per_row, 'height': len(tiles) / per_row}
+
+        try:
+            response_prefix = re.search(r"text: '([0-9a-f_]+)' \+ answer\.join", xcaptcha_data).group(1)
+        except (AttributeError, IndexError):
+            self.plugin.log_error(_("xCaptcha | prefix pattern not found"))
+            self.plugin.fail(_("xCaptcha | prefix pattern  not found"))
+
+        try:
+            example_pic = re.search(r'var example_pic = \$\(\'<img>\', {\s*src: "(.+?)"', xcaptcha_data).group(1)
+        except (AttributeError, IndexError):
+            self.plugin.log_error(_("xCaptcha | example pic pattern not found"))
+            self.plugin.fail(_("xCaptcha | example pic pattern not found"))
+
+        try:
+            example_text = re.search(r"var example_text = \$\('<p>', {\s*html: '(.+?)'", xcaptcha_data).group(1)
+        except (AttributeError, IndexError):
+            self.plugin.log_error(_("xCaptcha | example text pattern not found"))
+            self.plugin.fail(_("xCaptcha | example text pattern not found"))
+
+        img = self._prepare_image(tiles, tiles_layout, example_text, example_pic)
+        response = self.plugin.captcha.decrypt_image(img, input_type="png")
+
+        response = sorted(uniqify([int(x) - 1 for x in response.split(',')
+                                   if unicode(x.strip()).isnumeric() and 1 <= int(x) <= len(tiles)]))
+
+        response = response_prefix + "-".join([tiles[x][1] for x in response])
+
+        return response
 
 
 class FilejokerNet(XFSHoster):
     __name__ = "FilejokerNet"
     __type__ = "hoster"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?filejoker\.net/(?P<ID>\w{12})'
@@ -59,6 +245,7 @@ class FilejokerNet(XFSHoster):
     def handle_captcha(self, inputs):
         m = re.search(r'\$\.post\( "/ddl",\s*\{(.+?) \} \);', self.data)
         if m is not None:
+            response = None
             recaptcha = ReCaptcha(self.pyfile)
             captcha_key = recaptcha.detect_key()
             if captcha_key:
@@ -72,7 +259,11 @@ class FilejokerNet(XFSHoster):
                     self.captcha = hcaptcha
                     response = hcaptcha.challenge(captcha_key)
 
-            if captcha_key:
+                elif re.search(r'data-sitekey="d1d53ad768bbEskdfm32Mal"', self.data) is not None:
+                    xcaptcha = XCaptcha(self.pyfile)
+                    response = xcaptcha.challenge()
+
+            if response is not None:
                 captcha_inputs = {}
                 for _i in m.group(1).split(','):
                     _k, _v = _i.split(':', 1)
@@ -94,6 +285,9 @@ class FilejokerNet(XFSHoster):
 
                 else:
                     self.retry_captcha()
+
+            else:
+                self.fail(_("Unknown captcha type"))
 
     def handle_premium(self, pyfile):
         res = self.api_response("download1",
@@ -119,4 +313,3 @@ class FilejokerNet(XFSHoster):
             self.fail(res['error'])
 
         self.link = res['direct_link']
-
