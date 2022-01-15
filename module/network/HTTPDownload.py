@@ -303,8 +303,11 @@ class HTTPDownload():
 
     def updateDisposition(self, disposition):
         self.nameDisposition = disposition
-        if self.status_notify:
-            self.status_notify({'disposition': disposition})
+        if self.disposition:
+            if self.status_notify:
+                self.status_notify({'disposition': disposition})
+        else:
+            self.log.debug("Ignoring Content-Disposition header")
 
     def findChunk(self, handle):
         """ linear search to find a chunk (should be ok since chunk size is usually low) """
