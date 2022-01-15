@@ -322,8 +322,11 @@ class HTTPDownload:
 
     def update_disposition(self, disposition):
         self.name_disposition = disposition
-        if self.status_notify:
-            self.status_notify({"disposition": disposition})
+        if self.disposition:
+            if self.status_notify:
+                self.status_notify({"disposition": disposition})
+        else:
+            self.log.debug("Ignoring Content-Disposition header")
 
     def find_chunk(self, handle):
         """
