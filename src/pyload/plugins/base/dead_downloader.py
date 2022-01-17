@@ -13,7 +13,7 @@ class DeadDownloader(BaseDownloader):
     __pattern__ = r"^unmatchable$"
     __config__ = [("enabled", "bool", "Activated", True)]
 
-    __description__ = """Hoster is no longer available"""
+    __description__ = """Downloader is no longer available"""
     __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
@@ -23,4 +23,4 @@ class DeadDownloader(BaseDownloader):
         return info
 
     def setup(self):
-        self.offline(self._("Hoster is no longer available"))
+        self.offline(self._("Downloader is no longer available"))

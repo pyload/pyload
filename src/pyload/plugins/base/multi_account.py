@@ -18,8 +18,8 @@ class MultiAccount(BaseAccount):
 
     __config__ = [
         ("enabled", "bool", "Activated", True),
-        ("mh_mode", "all;listed;unlisted", "Hosters to use", "all"),
-        ("mh_list", "str", "Hoster list (comma separated)", ""),
+        ("mh_mode", "all;listed;unlisted", "Filter downloaders to use", "all"),
+        ("mh_list", "str", "Downloader list (comma separated)", ""),
         ("mh_interval", "int", "Reload interval in hours", 12),
     ]
 
@@ -152,7 +152,7 @@ class MultiAccount(BaseAccount):
 
         finally:
             self.log_debug(
-                "Hoster list for user `{}`: {}".format(
+                "Downloader list for user `{}`: {}".format(
                     self.user, self.info["data"]["hosters"]
                 )
             )

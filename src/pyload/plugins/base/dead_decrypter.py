@@ -13,7 +13,7 @@ class DeadDecrypter(BaseDecrypter):
     __pattern__ = r"^unmatchable$"
     __config__ = [("enabled", "bool", "Activated", True)]
 
-    __description__ = """Crypter is no longer available"""
+    __description__ = """Decrypter is no longer available"""
     __license__ = "GPLv3"
     __authors__ = [("stickell", "l.stickell@yahoo.it")]
 
@@ -23,4 +23,4 @@ class DeadDecrypter(BaseDecrypter):
         return info
 
     def setup(self):
-        self.offline(self._("Crypter is no longer available"))
+        self.offline(self._("Decrypter is no longer available"))
