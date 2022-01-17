@@ -398,15 +398,6 @@ class MultiAccount(BaseAccount):
 
                 return
 
-        #: Make sure we have one active event
-        try:
-            self.pyload.addon_manager.remove_event(
-                "plugin_updated", self.plugins_updated
-            )
-
-        except ValueError:
-            pass
-
         self.pyload.addon_manager.add_event("plugin_updated", self.plugins_updated)
 
         if refresh or not reloading:
@@ -444,13 +435,9 @@ class MultiAccount(BaseAccount):
         """
         self.log_info(self._("Reverting back to default hosters"))
 
-        try:
-            self.pyload.addon_manager.remove_event(
-                "plugin_updated", self.plugins_updated
-            )
-
-        except ValueError:
-            pass
+        self.pyload.addon_manager.remove_event(
+            "plugin_updated", self.plugins_updated
+        )
 
         self.periodical.stop()
 
