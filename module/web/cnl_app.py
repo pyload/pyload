@@ -11,7 +11,7 @@ from webinterface import DL_ROOT, JS, PYLOAD
 
 try:
     from Crypto.Cipher import AES
-except:
+except ImportError:
     pass
 
 
@@ -36,9 +36,9 @@ def flash(id="0"):
 @route("/flash/add", method="POST")
 @local_check
 def add():
-    package = request.forms.get("package", request.forms.get("source", request.POST.get('referer', None)))
+    package = request.forms.get("package", request.forms.get("source", request.forms.get('referer', None)))
     urls = [x.decode('latin1').strip()
-            for x in request.POST['urls'].replace(' ', '\n').split("\n")
+            for x in request.forms['urls'].replace(' ', '\n').split("\n")
             if x.decode('latin1').strip()]
 
     if package:
@@ -46,20 +46,17 @@ def add():
     else:
         pack = PYLOAD.generateAndAddPackages(urls, 0)
 
-    pw = request.POST['passwords']
-
+    pw = request.forms.get("passwords")
     if pw:
         pw = pw.decode("utf8", "ignore")
-        data = {"password": pw}
-        PYLOAD.setPackageData(pack, data)
-
+        PYLOAD.setPackageData(pack, {"password": pw})
 
     return ""
 
 @route("/flash/addcrypted", method="POST")
 @local_check
 def addcrypted():
-    package = request.forms.get("package", request.forms.get("source", request.POST.get('referer', None)))
+    package = request.forms.get("package", request.forms.get("source", request.forms.get('referer', None)))
     dlc = request.forms['crypted'].replace(" ", "+")
 
     dlc_path = save_join(DL_ROOT, package.replace("/", "").replace("\\", "").replace(":", "") + ".dlc")
@@ -67,7 +64,7 @@ def addcrypted():
     dlc_file.write(dlc)
     dlc_file.close()
 
-    pw = request.POST['passwords']
+    pw = request.forms.get("passwords")
 
     try:
         pack = PYLOAD.addPackage(package, [dlc_path], 0)
@@ -76,17 +73,16 @@ def addcrypted():
     else:
         if pw:
             pw = pw.decode("utf8", "ignore")
-            data = {"password": pw}
-            PYLOAD.setPackageData(pack, data)
+            PYLOAD.setPackageData(pack, {"password": pw})
         return "success\r\n"
 
 @route("/flash/addcrypted2", method="POST")
 @local_check
 def addcrypted2():
-    package = request.forms.get("package", request.forms.get("source", request.POST.get('referer', None)))
+    package = request.forms.get("package", request.forms.get("source", request.forms.get('referer', None)))
     crypted = request.forms["crypted"]
     jk = request.forms["jk"]
-    pw = request.POST['passwords']
+    pw = request.forms.get("passwords")
 
     crypted = standard_b64decode(unquote(crypted.replace(" ", "+")))
     if JS:
@@ -97,7 +93,7 @@ def addcrypted2():
         try:
             jk = re.findall(r"return ('|\")(.+)('|\")", jk)[0][1]
         except:
-        ## Test for some known js functions to decode
+            # Test for some known js functions to decode
             if jk.find("dec") > -1 and jk.find("org") > -1:
                 org = re.findall(r"var org = ('|\")([^\"']+)", jk)[0][1]
                 jk = list(org)
@@ -127,8 +123,7 @@ def addcrypted2():
 
         if pw:
             pw = pw.decode("utf8", "ignore")
-            data = {"password": pw}
-            PYLOAD.setPackageData(pack, data)
+            PYLOAD.setPackageData(pack, {"password": pw})
     except:
         return "failed can't add"
     else:
@@ -145,7 +140,7 @@ def flashgot():
 
     autostart = int(request.forms.get('autostart', 0))
     package = request.forms.get('package', None)
-    urls = [x.decode('latin1').strip() for x in request.POST['urls'].split("\n") if x.decode('latin1').strip()]
+    urls = [x.decode('latin1').strip() for x in request.forms['urls'].split("\n") if x.decode('latin1').strip()]
     folder = request.forms.get('dir', None)
 
     if package:
