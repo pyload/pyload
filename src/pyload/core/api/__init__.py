@@ -1001,7 +1001,7 @@ class Api:
     @permission(Perms.DELETE)
     def delete_finished(self):
         """
-        Deletes all finished files and completly finished packages.
+        Deletes all finished files and completely finished packages.
 
         :return: list of deleted package ids
         """
