@@ -427,7 +427,10 @@ class Core:
         except Exception as exc:
             self.log.critical(exc, exc_info=True, stack_info=self.debug > 2)
             self.terminate()
-            os._exit(os.EX_SOFTWARE)  #: this kind of stuff should not be here!
+            if os.name == "nt":
+                os._exit(70)
+            else:
+                os._exit(os.EX_SOFTWARE)  #: this kind of stuff should not be here!
 
     def is_client_connected(self):
         return (self.last_client_connected + 30) > time.time()

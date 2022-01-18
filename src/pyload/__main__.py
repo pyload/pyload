@@ -29,7 +29,10 @@ def _daemon(core_args):
             sys.exit()
     except OSError as exc:
         sys.stderr.write(f"fork #1 failed: {exc.errno} ({exc.strerror})\n")
-        sys.exit(os.EX_OSERR)
+        if os.name == "nt":
+            sys.exit(71)
+        else:
+            sys.exit(os.EX_OSERR)
 
     # decouple from parent environment
     os.setsid()
@@ -44,7 +47,10 @@ def _daemon(core_args):
             sys.exit()
     except OSError as exc:
         sys.stderr.write(f"fork #2 failed: {exc.errno} ({exc.strerror})\n")
-        sys.exit(os.EX_OSERR)
+        if os.name == "nt":
+            sys.exit(71)
+        else:
+            sys.exit(os.EX_OSERR)
 
     # Iterate through and close some file descriptors.
     for fd in range(3):
