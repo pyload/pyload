@@ -42,9 +42,17 @@ def add():
             if x.decode('latin1').strip()]
 
     if package:
-        PYLOAD.addPackage(package, urls, 0)
+        pack = PYLOAD.addPackage(package, urls, 0)
     else:
-        PYLOAD.generateAndAddPackages(urls, 0)
+        pack = PYLOAD.generateAndAddPackages(urls, 0)
+
+    pw = request.POST['passwords']
+
+    if pw:
+        pw = pw.decode("utf8", "ignore")
+        data = {"password": pw}
+        PYLOAD.setPackageData(pack, data)
+
 
     return ""
 
