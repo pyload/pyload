@@ -42,9 +42,17 @@ def add():
             if x.decode('latin1').strip()]
 
     if package:
-        PYLOAD.addPackage(package, urls, 0)
+        pack = PYLOAD.addPackage(package, urls, 0)
     else:
-        PYLOAD.generateAndAddPackages(urls, 0)
+        pack = PYLOAD.generateAndAddPackages(urls, 0)
+
+    pw = request.POST['passwords']
+
+    if pw:
+        pw = pw.decode("utf8", "ignore")
+        data = {"password": pw}
+        PYLOAD.setPackageData(pack, data)
+
 
     return ""
 
@@ -59,11 +67,17 @@ def addcrypted():
     dlc_file.write(dlc)
     dlc_file.close()
 
+    pw = request.POST['passwords']
+
     try:
-        PYLOAD.addPackage(package, [dlc_path], 0)
+        pack = PYLOAD.addPackage(package, [dlc_path], 0)
     except:
         return HTTPError()
     else:
+        if pw:
+            pw = pw.decode("utf8", "ignore")
+            data = {"password": pw}
+            PYLOAD.setPackageData(pack, data)
         return "success\r\n"
 
 @route("/flash/addcrypted2", method="POST")
@@ -72,6 +86,7 @@ def addcrypted2():
     package = request.forms.get("package", request.forms.get("source", request.POST.get('referer', None)))
     crypted = request.forms["crypted"]
     jk = request.forms["jk"]
+    pw = request.POST['passwords']
 
     crypted = standard_b64decode(unquote(crypted.replace(" ", "+")))
     if JS:
@@ -106,9 +121,14 @@ def addcrypted2():
 
     try:
         if package:
-            PYLOAD.addPackage(package, urls, 0)
+            pack = PYLOAD.addPackage(package, urls, 0)
         else:
-            PYLOAD.generateAndAddPackages(urls, 0)
+            pack = PYLOAD.generateAndAddPackages(urls, 0)
+
+        if pw:
+            pw = pw.decode("utf8", "ignore")
+            data = {"password": pw}
+            PYLOAD.setPackageData(pack, data)
     except:
         return "failed can't add"
     else:
