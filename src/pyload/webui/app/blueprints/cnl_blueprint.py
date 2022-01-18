@@ -14,7 +14,7 @@ from pyload.core.api import Destination
 from pyload.core.utils.convert import to_str
 from pyload.core.utils.misc import eval_js
 
-#: url_prefix here is intentional since it should not be affected py path prefix
+#: url_prefix here is intentional since it should not be affected by path prefix
 bp = flask.Blueprint("flash", __name__, url_prefix="/")
 
 
