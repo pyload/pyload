@@ -14,7 +14,7 @@ from .account import BaseAccount
 class XFSAccount(BaseAccount):
     __name__ = "XFSAccount"
     __type__ = "account"
-    __version__ = "0.60"
+    __version__ = "0.63"
     __status__ = "stable"
 
     __config__ = [
@@ -197,7 +197,7 @@ class XFSAccount(BaseAccount):
         inputs.update({"login": user, "password": password})
 
         if action:
-            url = urllib.parse.urljoin("http://", action)
+            url = urllib.parse.urljoin(self.LOGIN_URL, action)
         else:
             url = self.LOGIN_URL
 
