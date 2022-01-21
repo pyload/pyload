@@ -14,7 +14,7 @@ from ..internal.misc import json
 class Keep2ShareCc(Account):
     __name__ = "Keep2ShareCc"
     __type__ = "account"
-    __version__ = "0.19"
+    __version__ = "0.21"
     __status__ = "testing"
 
     __description__ = """Keep2Share.cc account plugin"""
@@ -23,7 +23,7 @@ class Keep2ShareCc(Account):
                    ("Walter Purcaro", "vuolter@gmail.com"),
                    ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
-    RECAPTCHA_KEY = "6LcYcN0SAAAAABtMlxKj7X0hRxOY8_2U86kI1vbb"
+    RECAPTCHA_KEY = "6LcOsNIaAAAAABzCMnQw7u0u8zd1mrqY6ibFtto8"
 
     API_URL = "https://keep2share.cc/api/v2/"
     #: See https://keep2share.github.io/api/ https://github.com/keep2share/api
