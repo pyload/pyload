@@ -83,6 +83,9 @@ class Job:
         self.deferred = deferred
         self.threaded = threaded
 
+    def __lt__(self, other):
+        return id(self) < id(other)
+
     def run(self):
         ret = self.call(*self.args, **self.kwargs)
         if self.deferred is None:
