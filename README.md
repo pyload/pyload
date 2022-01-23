@@ -199,10 +199,11 @@ Please refer to [CONTRIBUTING](https://github.com/pyload/pyload/blob/main/CONTRI
 Compatible with `docker-compose` v2 schemas:
 
     ---
-    version: 2
+    version: '2'
     services:
       pyload:
-        image: pyload/pyload
+        image: pyload
+        build: <REPODIR>
         container_name: pyload
         environment:
           - PUID=1000
@@ -212,10 +213,13 @@ Compatible with `docker-compose` v2 schemas:
           - <USERDIR>:/config
           - <STORAGEDIR>:/downloads
         ports:
-          - 8000:8000
+          - 8000:8000 # Webinterface
+          - 9666:9666 # Click 'N' Load
         restart: unless-stopped
 
 > **Note**:
+>
+> Replace `<REPODIR>` with the location on the host machine where you have checked out the pyload repository.
 >
 > Replace `<STORAGEDIR>` with the location on the host machine where you want that downloads will be saved.
 >
