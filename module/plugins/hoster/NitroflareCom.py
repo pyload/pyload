@@ -11,7 +11,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class NitroflareCom(SimpleHoster):
     __name__ = "NitroflareCom"
     __type__ = "hoster"
-    __version__ = "0.34"
+    __version__ = "0.35"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(?:nitro\.download|nitroflare\.com)/view/(?P<ID>[\w^_]+)'
@@ -52,6 +52,7 @@ class NitroflareCom(SimpleHoster):
             info['status'] = 2 if fileinfo['status'] == 'online' else 1
             info['name'] = fileinfo['name']
             info['size'] = fileinfo['size']  #: In bytes
+            info['post_url'] = fileinfo['url']
 
         return info
 
@@ -60,13 +61,13 @@ class NitroflareCom(SimpleHoster):
         self.load("https://nitroflare.com/ajax/setCookie.php",
                   post={'fileId': self.info['pattern']['ID']})
 
-        self.data = self.load(pyfile.url,
+        self.data = self.load(self.info["post_url"],
                               post={'goToFreePage': ""})
 
         try:
             wait_time = int(re.search(r'var timerSeconds = (\d+);', self.data).group(1))
 
-        except (IndexError, ValueError):
+        except (IndexError, ValueError, AttributeError):
             wait_time = 120
 
         self.load("https://nitroflare.com/ajax/freeDownload.php",
