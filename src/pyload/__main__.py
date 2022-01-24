@@ -107,6 +107,11 @@ def _parse_args(cmd_args):
         help="use this location to store temporary files",
         default=Core.DEFAULT_TMPDIR,
     )
+    parser.add_argument(
+        "--pidfile",
+        help="set the full path to the pidfile",
+        default=os.path.join(Core.DEFAULT_TMPDIR, "pyload.pid"),
+    )
     parser.add_argument("--dry-run", action="store_true", help="test start-up and exit", default=False)
     parser.add_argument("--daemon", action="store_true", help="run as daemon")
 
@@ -139,7 +144,7 @@ def main(cmd_args=sys.argv[1:]):
     Entry point for console_scripts.
     """
     args = _parse_args(cmd_args)
-    core_args = (args.userdir, args.tempdir, args.storagedir, args.debug, args.reset, args.dry_run)
+    core_args = (args.userdir, args.tempdir, args.storagedir, args.pidfile, args.debug, args.reset, args.dry_run)
 
     run(core_args, args.daemon)
 

@@ -75,12 +75,13 @@ class Core:
         return self._debug
 
     # NOTE: should `reset` restore the user config as well?
-    def __init__(self, userdir, tempdir, storagedir, debug=None, reset=False, dry=False):
+    def __init__(self, userdir, tempdir, storagedir, pidfile, debug=None, reset=False, dry=False):
         self._running = Event()
         self._exiting = False
         self._do_restart = False
         self._do_exit = False
         self._ = lambda x: x
+        self.pidfile = pidfile
         self._debug = 0
         self._dry_run = dry
 
@@ -92,6 +93,9 @@ class Core:
 
         self._init_config(userdir, tempdir, storagedir, debug)
         self._init_log()
+        pid = self.is_already_running()
+        if pid:
+            self.log.critical(self._("pyLoad already running with pid {}").format(pid))
         self._init_database(reset and not dry)
         os.chdir(os.path.join(self.userdir, "data"))
         self._init_network()
@@ -453,6 +457,7 @@ class Core:
         self.log.info(self._("Exiting core..."))
         # self.tsm.exit()
         # self.db.exit()  # NOTE: Why here?
+        self.delete_pid_file()
         self.logfactory.shutdown()
         # if cleanup:
         # self.log.info(self._("Deleting temp files..."))
@@ -476,3 +481,84 @@ class Core:
             self.files.sync_save()
             self._running.clear()
             # self.evm.fire('pyload:stopped')
+
+    def write_pid_file(self):
+        self.delete_pid_file()
+        pid = os.getpid()
+        with open(self.pidfile, "w") as fp:
+            fp.write(str(pid))
+
+    def delete_pid_file(self):
+        if self.check_pid_file():
+            self.log.debug(self._("Deleting old pidfile {}").format(self.pidfile))
+            os.remove(self.pidfile)
+
+    def check_pid_file(self):
+        """ return pid as int or 0"""
+        if os.path.isfile(self.pidfile):
+            with open(self.pidfile, "r") as fp:
+                pid = fp.read().strip()
+
+            if pid:
+                pid = int(pid)
+                return pid
+
+        else:
+            return 0
+
+    def is_already_running(self):
+        pid = self.check_pid_file()
+        if not pid:
+            return 0
+
+        if os.name == "nt":
+            ret = 0
+            import ctypes
+            import ctypes.wintypes
+
+            TH32CS_SNAPPROCESS = 2
+            INVALID_HANDLE_VALUE = -1
+
+            class PROCESSENTRY32(ctypes.Structure):
+                _fields_ = [('dwSize', ctypes.wintypes.DWORD),
+                            ('cntUsage', ctypes.wintypes.DWORD),
+                            ('th32ProcessID', ctypes.wintypes.DWORD),
+                            ('th32DefaultHeapID', ctypes.wintypes.LPVOID),
+                            ('th32ModuleID', ctypes.wintypes.DWORD),
+                            ('cntThreads', ctypes.wintypes.DWORD),
+                            ('th32ParentProcessID', ctypes.wintypes.DWORD),
+                            ('pcPriClassBase', ctypes.wintypes.LONG),
+                            ('dwFlags', ctypes.wintypes.DWORD),
+                            ('szExeFile', ctypes.c_char * 260)]
+
+            kernel32 = ctypes.windll.kernel32
+
+            process_info = PROCESSENTRY32()
+            process_info.dwSize = ctypes.sizeof(PROCESSENTRY32)
+            hProcessSnapshot = kernel32.CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0)
+            if hProcessSnapshot != INVALID_HANDLE_VALUE:
+                found = False
+                status = kernel32.Process32First(hProcessSnapshot , ctypes.pointer(process_info))
+                while status:
+                    if process_info.th32ProcessID == pid:
+                        found = True
+                        break
+                    status = kernel32.Process32Next(hProcessSnapshot, ctypes.pointer(process_info))
+
+                kernel32.CloseHandle(hProcessSnapshot)
+                if found and process_info.szExeFile.decode().lower() in ("python.exe", "pythonw.exe"):
+                    ret = pid
+
+            else:
+                self.log.error("Unhandled error in CreateToolhelp32Snapshot: {}".format(kernel32.GetLastError()))
+
+            return ret
+
+        else:
+            try:
+                os.kill(pid, 0)  # 0 - default signal (does nothing)
+            except Exception:
+                return 0
+
+            return pid
+
