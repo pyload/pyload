@@ -4,10 +4,10 @@ import re
 
 from ..anticaptchas.ReCaptcha import ReCaptcha
 from ..base.simple_downloader import SimpleDownloader
-(SimpleDownloader):
-    __name__
 
-class ClicknuploadCc = "ClicknuploadCc"
+
+class ClicknuploadCc(SimpleDownloader):
+    __name__ = "ClicknuploadCc"
     __type__ = "downloader"
     __version__ = "0.01"
     __status__ = "testing"
