@@ -11,7 +11,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class NitroflareCom(SimpleHoster):
     __name__ = "NitroflareCom"
     __type__ = "hoster"
-    __version__ = "0.35"
+    __version__ = "0.36"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(?:nitro\.download|nitroflare\.com)/view/(?P<ID>[\w^_]+)'
@@ -70,11 +70,14 @@ class NitroflareCom(SimpleHoster):
         except (IndexError, ValueError, AttributeError):
             wait_time = 120
 
-        self.load("https://nitroflare.com/ajax/freeDownload.php",
-                  post={'method': "startTimer",
-                        'fileId': self.info['pattern']['ID']})
+        self.data = self.load("https://nitroflare.com/ajax/freeDownload.php",
+                              post={'method': "startTimer",
+                                    'fileId': self.info['pattern']['ID']},
+                              ref=self.req.lastEffectiveURL)
 
         self.set_wait(wait_time)
+
+        self.check_errors()
 
         inputs = {'method': "fetchDownload"}
 
