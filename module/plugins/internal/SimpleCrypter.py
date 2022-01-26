@@ -11,7 +11,7 @@ from .misc import parse_name, parse_time, replace_patterns, search_pattern
 class SimpleCrypter(Crypter):
     __name__ = "SimpleCrypter"
     __type__ = "crypter"
-    __version__ = "0.97"
+    __version__ = "0.98"
     __status__ = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -264,25 +264,27 @@ class SimpleCrypter(Crypter):
 
         self.links = links
 
-    def check_errors(self):
+    def check_errors(self, data=None):
         self.log_info(_("Checking for link errors..."))
 
-        if not self.data:
+        data = data or self.data
+
+        if not data:
             self.log_warning(_("No data to check"))
             return
 
-        if search_pattern(self.IP_BLOCKED_PATTERN, self.data):
+        if search_pattern(self.IP_BLOCKED_PATTERN, data):
             self.fail(_("Connection from your current IP address is not allowed"))
 
         elif not self.premium:
-            if search_pattern(self.PREMIUM_ONLY_PATTERN, self.data):
+            if search_pattern(self.PREMIUM_ONLY_PATTERN, data):
                 self.fail(_("Link can be decrypted by premium users only"))
 
-            elif search_pattern(self.SIZE_LIMIT_PATTERN, self.data):
+            elif search_pattern(self.SIZE_LIMIT_PATTERN, data):
                 self.fail(_("Link list too large for free decrypt"))
 
         if self.ERROR_PATTERN:
-            m = search_pattern(self.ERROR_PATTERN, self.data)
+            m = search_pattern(self.ERROR_PATTERN, data)
             if m is not None:
                 try:
                     errmsg = m.group(1)
@@ -336,7 +338,7 @@ class SimpleCrypter(Crypter):
                     self.restart(errmsg)
 
         else:
-            m = search_pattern(self.WAIT_PATTERN, self.data)
+            m = search_pattern(self.WAIT_PATTERN, data)
             if m is not None:
                 try:
                     waitmsg = m.group(1).strip()
