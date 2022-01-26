@@ -11,7 +11,7 @@ from ..base.simple_downloader import SimpleDownloader
 class NitroflareCom(SimpleDownloader):
     __name__ = "NitroflareCom"
     __type__ = "downloader"
-    __version__ = "0.36"
+    __version__ = "0.37"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?(?:nitro\.download|nitroflare\.com)/view/(?P<ID>[\w^_]+)"
@@ -68,7 +68,7 @@ class NitroflareCom(SimpleDownloader):
             post={"fileId": self.info["pattern"]["ID"]},
         )
 
-        self.data = self.load(self.info["post_url"], post={"goToFreePage": ""})
+        self.data = page_data = self.load(self.info["post_url"], post={"goToFreePage": ""})
 
         try:
             wait_time = int(re.search(r"var timerSeconds = (\d+);", self.data).group(1))
@@ -88,6 +88,7 @@ class NitroflareCom(SimpleDownloader):
 
         inputs = {"method": "fetchDownload"}
 
+        self.data = page_data
         recaptcha = ReCaptcha(pyfile)
         recaptcha_key = recaptcha.detect_key()
         if recaptcha_key:
