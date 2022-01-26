@@ -12,7 +12,7 @@ from .downloader import BaseDownloader
 class SimpleDownloader(BaseDownloader):
     __name__ = "SimpleDownloader"
     __type__ = "downloader"
-    __version__ = "2.39"
+    __version__ = "2.40"
     __status__ = "stable"
 
     __pattern__ = r"^unmatchable$"
@@ -325,29 +325,30 @@ class SimpleDownloader(BaseDownloader):
             else:
                 self.log_info(self._("No errors found"))
 
-    def check_errors(self):
+    def check_errors(self, data=None):
         self.log_info(self._("Checking for link errors..."))
 
-        if not self.data:
+        data = data or self.data
+
+        if not data:
             self.log_warning(self._("No data to check"))
             return
-        else:
-            if isinstance(self.data, bytes):
-                self.log_debug(self._("No check on binary data"))
-                return
+        elif isinstance(data, bytes):
+            self.log_debug(self._("No check on binary data"))
+            return
 
-        if search_pattern(self.IP_BLOCKED_PATTERN, self.data):
+        if search_pattern(self.IP_BLOCKED_PATTERN, data):
             self.fail(self._("Connection from your current IP address is not allowed"))
 
         elif not self.premium:
-            if search_pattern(self.PREMIUM_ONLY_PATTERN, self.data):
+            if search_pattern(self.PREMIUM_ONLY_PATTERN, data):
                 self.fail(self._("File can be downloaded by premium users only"))
 
-            elif search_pattern(self.SIZE_LIMIT_PATTERN, self.data):
+            elif search_pattern(self.SIZE_LIMIT_PATTERN, data):
                 self.fail(self._("File too large for free download"))
 
             elif self.DL_LIMIT_PATTERN:
-                m = search_pattern(self.DL_LIMIT_PATTERN, self.data)
+                m = search_pattern(self.DL_LIMIT_PATTERN, data)
                 if m is not None:
                     try:
                         errmsg = m.group(1)
@@ -368,11 +369,11 @@ class SimpleDownloader(BaseDownloader):
                     )
                     self.restart(self._("Download limit exceeded"))
 
-        if search_pattern(self.HAPPY_HOUR_PATTERN, self.data):
+        if search_pattern(self.HAPPY_HOUR_PATTERN, data):
             self.multi_dl = True
 
         if self.ERROR_PATTERN:
-            m = search_pattern(self.ERROR_PATTERN, self.data)
+            m = search_pattern(self.ERROR_PATTERN, data)
             if m is not None:
                 try:
                     errmsg = m.group(1).strip()
@@ -435,7 +436,7 @@ class SimpleDownloader(BaseDownloader):
                     self.restart(errmsg)
 
         elif self.WAIT_PATTERN:
-            m = search_pattern(self.WAIT_PATTERN, self.data)
+            m = search_pattern(self.WAIT_PATTERN, data)
             if m is not None:
                 try:
                     waitmsg = m.group(1).strip()

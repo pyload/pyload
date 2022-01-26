@@ -14,7 +14,7 @@ from .account import BaseAccount
 class XFSAccount(BaseAccount):
     __name__ = "XFSAccount"
     __type__ = "account"
-    __version__ = "0.63"
+    __version__ = "0.64"
     __status__ = "stable"
 
     __config__ = [
@@ -205,14 +205,16 @@ class XFSAccount(BaseAccount):
 
         self.check_errors()
 
-    def check_errors(self):
+    def check_errors(self, data=None):
         self.log_info(self._("Checking for link errors..."))
 
-        if not self.data:
+        data = data or self.data
+
+        if not data:
             self.log_warning(self._("No data to check"))
             return
 
-        m = search_pattern(self.LOGIN_BAN_PATTERN, self.data)
+        m = search_pattern(self.LOGIN_BAN_PATTERN, data)
         if m is not None:
             try:
                 errmsg = m.group(1)
@@ -229,7 +231,7 @@ class XFSAccount(BaseAccount):
 
             self.fail_login(errmsg)
 
-        m = search_pattern(self.LOGIN_FAIL_PATTERN, self.data)
+        m = search_pattern(self.LOGIN_FAIL_PATTERN, data)
         if m is not None:
             try:
                 errmsg = m.group(1)

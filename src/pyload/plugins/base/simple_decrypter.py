@@ -12,7 +12,7 @@ from .decrypter import BaseDecrypter
 class SimpleDecrypter(BaseDecrypter):
     __name__ = "SimpleDecrypter"
     __type__ = "decrypter"
-    __version__ = "0.97"
+    __version__ = "0.98"
     __status__ = "testing"
 
     __pattern__ = r"^unmatchable$"
@@ -276,25 +276,30 @@ class SimpleDecrypter(BaseDecrypter):
 
         self.links = links
 
-    def check_errors(self):
+    def check_errors(self, data=None):
         self.log_info(self._("Checking for link errors..."))
 
-        if not self.data:
+        data = data or self.data
+
+        if not data:
             self.log_warning(self._("No data to check"))
             return
+        elif isinstance(data, bytes):
+            self.log_debug(self._("No check on binary data"))
+            return
 
-        if search_pattern(self.IP_BLOCKED_PATTERN, self.data):
+        if search_pattern(self.IP_BLOCKED_PATTERN, data):
             self.fail(self._("Connection from your current IP address is not allowed"))
 
         elif not self.premium:
-            if search_pattern(self.PREMIUM_ONLY_PATTERN, self.data):
+            if search_pattern(self.PREMIUM_ONLY_PATTERN, data):
                 self.fail(self._("Link can be decrypted by premium users only"))
 
-            elif search_pattern(self.SIZE_LIMIT_PATTERN, self.data):
+            elif search_pattern(self.SIZE_LIMIT_PATTERN, data):
                 self.fail(self._("Link list too large for free decrypt"))
 
         if self.ERROR_PATTERN:
-            m = search_pattern(self.ERROR_PATTERN, self.data)
+            m = search_pattern(self.ERROR_PATTERN, data)
             if m is not None:
                 try:
                     errmsg = m.group(1)
@@ -357,7 +362,7 @@ class SimpleDecrypter(BaseDecrypter):
                     self.restart(errmsg)
 
         elif self.WAIT_PATTERN:
-            m = search_pattern(self.WAIT_PATTERN, self.data)
+            m = search_pattern(self.WAIT_PATTERN, data)
             if m is not None:
                 try:
                     waitmsg = m.group(1).strip()
