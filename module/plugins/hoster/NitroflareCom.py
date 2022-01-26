@@ -11,7 +11,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class NitroflareCom(SimpleHoster):
     __name__ = "NitroflareCom"
     __type__ = "hoster"
-    __version__ = "0.37"
+    __version__ = "0.38"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(?:nitro\.download|nitroflare\.com)/view/(?P<ID>[\w^_]+)'
@@ -61,8 +61,8 @@ class NitroflareCom(SimpleHoster):
         self.load("https://nitroflare.com/ajax/setCookie.php",
                   post={'fileId': self.info['pattern']['ID']})
 
-        self.data = page_data = self.load(self.info["post_url"],
-                                          post={'goToFreePage': ""})
+        self.data = self.load(self.info["post_url"],
+                              post={'goToFreePage': ""})
 
         try:
             wait_time = int(re.search(r'var timerSeconds = (\d+);', self.data).group(1))
@@ -70,18 +70,17 @@ class NitroflareCom(SimpleHoster):
         except (IndexError, ValueError, AttributeError):
             wait_time = 120
 
-        self.data = self.load("https://nitroflare.com/ajax/freeDownload.php",
-                              post={'method': "startTimer",
-                                    'fileId': self.info['pattern']['ID']},
-                              ref=self.req.lastEffectiveURL)
+        data = self.load("https://nitroflare.com/ajax/freeDownload.php",
+                         post={'method': "startTimer",
+                               'fileId': self.info['pattern']['ID']},
+                         ref=self.req.lastEffectiveURL)
 
         self.set_wait(wait_time)
 
-        self.check_errors()
+        self.check_errors(data=data)
 
         inputs = {'method': "fetchDownload"}
 
-        self.data = page_data
         recaptcha = ReCaptcha(pyfile)
         recaptcha_key = recaptcha.detect_key()
         if recaptcha_key:
