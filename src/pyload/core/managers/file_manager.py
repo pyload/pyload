@@ -324,42 +324,42 @@ class FileManager:
 
     # ----------------------------------------------------------------------
     @lock
-    def get_job(self, occ):
+    def get_job(self, occupied):
         """
         get suitable job.
         """
         # TODO: clean mess
         # TODO: improve selection of valid jobs
 
-        if occ in self.job_cache:
-            if self.job_cache[occ]:
-                id = self.job_cache[occ].pop()
+        if occupied in self.job_cache:
+            if self.job_cache[occupied]:
+                id = self.job_cache[occupied].pop()
                 if id == "empty":
                     pyfile = None
-                    self.job_cache[occ].append("empty")
+                    self.job_cache[occupied].append("empty")
                 else:
                     pyfile = self.get_file(id)
             else:
-                jobs = self.pyload.db.get_job(occ)
+                jobs = self.pyload.db.get_job(occupied)
                 jobs.reverse()
                 if not jobs:
-                    self.job_cache[occ].append("empty")
+                    self.job_cache[occupied].append("empty")
                     pyfile = None
                 else:
-                    self.job_cache[occ].extend(jobs)
-                    pyfile = self.get_file(self.job_cache[occ].pop())
+                    self.job_cache[occupied].extend(jobs)
+                    pyfile = self.get_file(self.job_cache[occupied].pop())
 
         else:
-            self.job_cache = {}  #: better not caching to much
-            jobs = self.pyload.db.get_job(occ)
+            self.job_cache = {}  #: better not caching too much
+            jobs = self.pyload.db.get_job(occupied)
             jobs.reverse()
-            self.job_cache[occ] = jobs
+            self.job_cache[occupied] = jobs
 
             if not jobs:
-                self.job_cache[occ].append("empty")
+                self.job_cache[occupied].append("empty")
                 pyfile = None
             else:
-                pyfile = self.get_file(self.job_cache[occ].pop())
+                pyfile = self.get_file(self.job_cache[occupied].pop())
 
             # TODO: maybe the new job has to be approved...
 

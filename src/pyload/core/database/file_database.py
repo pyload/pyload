@@ -353,7 +353,7 @@ class FileDatabaseMethods:
         return PyFile(self.pyload.files, id, *r)
 
     @style.queue
-    def get_job(self, occ):
+    def get_job(self, occupied):
         """
         return pyfile ids, which are suitable for download and dont use a occupied
         plugin.
@@ -363,7 +363,7 @@ class FileDatabaseMethods:
         pre = "('DLC', 'TXT', 'CCF', 'RSDF')"
 
         cmd = "("
-        for i, item in enumerate(occ):
+        for i, item in enumerate(occupied):
             if i:
                 cmd += ", "
             cmd += f"'{item}'"

@@ -276,14 +276,15 @@ class ThreadManager:
 
         free_threads = [x for x in self.threads if not x.active]
 
-        inuse = set(
+        inuse_plugins = set(
             [
                 (x.active.pluginname, self.get_limit(x))
                 for x in self.threads
                 if x.active and x.active.has_plugin() and x.active.plugin.account
             ]
         )
-        inuse = [
+        # (pluginname, dl_limit, active_count)
+        inuse_plugins = [
             (
                 x[0],
                 x[1],
@@ -295,21 +296,21 @@ class ThreadManager:
                     ]
                 ),
             )
-            for x in inuse
+            for x in inuse_plugins
         ]
-        onlimit = [x[0] for x in inuse if x[2] >= x[1] > 0]
+        onlimit_plugins = [x[0] for x in inuse_plugins if x[2] >= x[1] > 0]
 
-        occ = sorted(
+        occupied_plugins = sorted(
             [
                 x.active.pluginname
                 for x in self.threads
                 if x.active and x.active.has_plugin() and not x.active.plugin.multi_dl
             ]
-            + onlimit
+            + onlimit_plugins
         )
 
-        occ = tuple(set(occ))
-        job = self.pyload.files.get_job(occ)
+        occupied_plugins = tuple(set(occupied_plugins))  # remove duplicates
+        job = self.pyload.files.get_job(occupied_plugins)
         if job:
             try:
                 job.init_plugin()
@@ -339,9 +340,9 @@ class ThreadManager:
                     thread.put(job)
                 else:
                     # put job back
-                    if occ not in self.pyload.files.job_cache:
-                        self.pyload.files.job_cache[occ] = []
-                    self.pyload.files.job_cache[occ].append(job.id)
+                    if occupied_plugins not in self.pyload.files.job_cache:
+                        self.pyload.files.job_cache[occupied_plugins] = []
+                    self.pyload.files.job_cache[occupied_plugins].append(job.id)
 
                     # check for decrypt jobs
                     job = self.pyload.files.get_decrypt_job()
