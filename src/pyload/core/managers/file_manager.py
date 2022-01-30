@@ -377,7 +377,7 @@ class FileManager:
         plugins = list(self.pyload.plugin_manager.crypter_plugins.keys()) + list(
             self.pyload.plugin_manager.container_plugins.keys()
         )
-        plugins = str(tuple(plugins))
+        plugins = tuple(plugins)
 
         jobs = self.pyload.db.get_plugin_job(plugins)
         if jobs:
