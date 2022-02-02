@@ -7,7 +7,7 @@ from ..internal.MultiHoster import MultiHoster
 class AlldebridCom(MultiHoster):
     __name__ = "AlldebridCom"
     __type__ = "hoster"
-    __version__ = "0.61"
+    __version__ = "0.62"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.|s\d+\.)?alldebrid\.com/dl/[\w^_]+'
@@ -58,4 +58,5 @@ class AlldebridCom(MultiHoster):
         else:
             pyfile.name = api_data['filename']
             pyfile.size = api_data['filesize']
+            self.chunk_limit = api_data.get("max_chunks", 16)
             self.link = api_data['link']
