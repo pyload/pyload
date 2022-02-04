@@ -3,6 +3,7 @@
 import re
 import urllib
 
+from ..captcha.ReCaptcha import ReCaptcha
 from ..captcha.SolveMedia import SolveMedia
 from ..internal.SimpleHoster import SimpleHoster
 
@@ -10,7 +11,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class DepositfilesCom(SimpleHoster):
     __name__ = "DepositfilesCom"
     __type__ = "hoster"
-    __version__ = "0.64"
+    __version__ = "0.65"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(depositfiles\.com|dfiles\.(eu|ru))(/\w{1,3})?/files/(?P<ID>\w+)'
@@ -61,14 +62,23 @@ class DepositfilesCom(SimpleHoster):
         params = {'fid': m.group(1)}
         self.log_debug("FID: %s" % params['fid'])
 
-        self.data = self.load("https://depositfiles.com/get_file.php", get=params)
+        captcha_data = self.load("https://depositfiles.com/get_file.php", get=params)
 
-        m = re.search(r'ACPuzzleKey = \'(.*?)\'', self.data)
+        m = re.search(r'ACPuzzleKey = \'(.*?)\'', captcha_data)
         if m is not None:
             self.captcha = SolveMedia(pyfile)
             captcha_key = m.group(1)
             params['acpuzzle'] = 1
             params['response'], params['challenge'] = self.captcha.challenge(captcha_key)
+
+        elif re.search(r"check_recaptcha\('(.+?)'", captcha_data) is not None:
+            recaptcha = ReCaptcha(self.pyfile)
+            captcha_key = recaptcha.detect_key()
+
+            if captcha_key:
+                self.captcha = recaptcha
+                response = recaptcha.challenge(captcha_key)
+                params["g-recaptcha-response"] = response
 
         else:
             self.log_error(_("Captcha pattern not found"))
