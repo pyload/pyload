@@ -20,7 +20,7 @@ class WebServerThread(threading.Thread):
 
         self.develop = self.pyload.config.get("webui", "develop")
 
-        self.use_ssl = self.pyload.config.get("webui", "use_ssl")  #: recheck
+        self.use_ssl = self.pyload.config.get("webui", "use_ssl")
         self.certfile = self.pyload.config.get("webui", "ssl_certfile")
         self.keyfile = self.pyload.config.get("webui", "ssl_keyfile")
         self.certchain = self.pyload.config.get("webui", "ssl_certchain") or None
@@ -46,9 +46,17 @@ class WebServerThread(threading.Thread):
         self.server = wsgi.Server(bind_addr, wsgi_app)
 
         if self.use_ssl:
-            self.server.ssl_adapter = BuiltinSSLAdapter(
-                self.certfile, self.keyfile, self.certchain
-            )
+            try:
+                self.server.ssl_adapter = BuiltinSSLAdapter(
+                    self.certfile, self.keyfile, self.certchain
+                )
+            except Exception as exc:
+                self.log.error(
+                    self._("Cannot use HTTPS: {}").format(exc),
+                    exc_info=self.pyload.debug,
+                    stack_info=self.pyload.debug > 2,
+                )
+                self.use_ssl = False
 
         #: hack cheroot to use our custom logger
         self.server.error_log = lambda *args, **kwgs: self.log.log(
@@ -65,6 +73,14 @@ class WebServerThread(threading.Thread):
             # TODO: Not implemented
 
     def run(self):
+        if self.use_ssl and self.develop:
+            self.log.warning(
+                self._(
+                    "Development mode does not support HTTPS, please disable development mode to use HTTPS"
+                )
+            )
+            self.use_ssl = False
+
         self.log.info(
             self._("Starting webserver: {scheme}://{host}:{port}").format(
                 scheme="https" if self.use_ssl else "http",

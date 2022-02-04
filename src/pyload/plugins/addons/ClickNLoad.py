@@ -79,7 +79,7 @@ class ClickNLoad(BaseAddon):
 
                 self.log_debug(
                     self._("Backend found on {}://{}:{}").format(
-                        "https" if self.pyload.config.get("webui", "use_ssl") else "http",
+                        "https" if self.pyload.webserver.use_ssl else "http",
                         f"[{self.web_addr[0]}]" if ":" in self.web_addr[0] else self.web_addr[0],
                         self.web_addr[1]
                     )
@@ -184,7 +184,7 @@ class ClickNLoad(BaseAddon):
                             self.web_af, socket.SOCK_STREAM
                         )
 
-                        if self.pyload.config.get("webui", "use_ssl"):
+                        if self.pyload.webserver.use_ssl:
                             try:
                                 backend_socket = ssl.wrap_socket(backend_socket)
 
