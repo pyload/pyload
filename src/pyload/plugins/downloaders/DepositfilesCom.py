@@ -4,6 +4,7 @@ import re
 import urllib.parse
 from datetime import timedelta
 
+from ..anticaptchas.ReCaptcha import ReCaptcha
 from ..anticaptchas.SolveMedia import SolveMedia
 from ..base.simple_downloader import SimpleDownloader
 
@@ -11,7 +12,7 @@ from ..base.simple_downloader import SimpleDownloader
 class DepositfilesCom(SimpleDownloader):
     __name__ = "DepositfilesCom"
     __type__ = "downloader"
-    __version__ = "0.64"
+    __version__ = "0.65"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?(depositfiles\.com|dfiles\.(eu|ru))(/\w{1,3})?/files/(?P<ID>\w+)"
@@ -68,9 +69,9 @@ class DepositfilesCom(SimpleDownloader):
         params = {"fid": fid}
         self.log_debug(f"FID: {fid}")
 
-        self.data = self.load("https://depositfiles.com/get_file.php", get=params)
+        captcha_data = self.load("https://depositfiles.com/get_file.php", get=params)
 
-        m = re.search(r"ACPuzzleKey = \'(.*?)\'", self.data)
+        m = re.search(r"ACPuzzleKey = '(.+?)'", captcha_data)
         if m is not None:
             self.captcha = SolveMedia(pyfile)
             captcha_key = m.group(1)
@@ -78,6 +79,15 @@ class DepositfilesCom(SimpleDownloader):
             params["response"], params["challenge"] = self.captcha.challenge(
                 captcha_key
             )
+
+        elif re.search(r"check_recaptcha\('(.+?)'", captcha_data) is not None:
+            recaptcha = ReCaptcha(self.pyfile)
+            captcha_key = recaptcha.detect_key()
+
+            if captcha_key:
+                self.captcha = recaptcha
+                response = recaptcha.challenge(captcha_key)
+                params["g-recaptcha-response"] = response
 
         else:
             self.log_error(self._("Captcha pattern not found"))
