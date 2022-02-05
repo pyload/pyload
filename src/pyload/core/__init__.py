@@ -461,14 +461,15 @@ class Core:
         sys.exit()
 
     def terminate(self):
-        self.stop()
-        self.log.info(self._("Exiting core..."))
-        # self.tsm.exit()
-        # self.db.exit()  # NOTE: Why here?
-        self.logfactory.shutdown()
-        # if cleanup:
-        # self.log.info(self._("Deleting temp files..."))
-        # remove(self.tmpdir)
+        if self.running:
+            self.stop()
+            self.log.info(self._("Exiting core..."))
+            # self.tsm.exit()
+            # self.db.exit()  # NOTE: Why here?
+            self.logfactory.shutdown()
+            # if cleanup:
+            # self.log.info(self._("Deleting temp files..."))
+            # remove(self.tmpdir)
 
     def stop(self):
         try:
