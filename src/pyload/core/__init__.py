@@ -12,17 +12,19 @@ import atexit
 import gettext
 import locale
 import os
+import signal
 import subprocess
 import sys
 import tempfile
 import time
+from threading import Event
 
-from pyload import PKGDIR, APPID, USERHOMEDIR
+from pyload import APPID, PKGDIR, USERHOMEDIR
+
 from .. import __version__ as PYLOAD_VERSION
 from .. import __version_info__ as PYLOAD_VERSION_INFO
 from .utils import format, fs
 from .utils.misc import reversemap
-from threading import Event
 
 
 class Restart(Exception):
@@ -309,10 +311,10 @@ class Core:
         # not exist if a setuptools script is installed as an egg. It may be
         # set incorrectly for entry points created with pip on Windows.
         if getattr(__main__, "__package__", None) is None or (
-                os.name == "nt"
-                and __main__.__package__ == ""
-                and not os.path.exists(py_script)
-                and os.path.exists(f"{py_script}.exe")
+            os.name == "nt"
+            and __main__.__package__ == ""
+            and not os.path.exists(py_script)
+            and os.path.exists(f"{py_script}.exe")
         ):
             # Executed a file, like "python app.py".
             py_script = os.path.abspath(py_script)
@@ -324,8 +326,8 @@ class Core:
                     py_script += ".exe"
 
                 if (
-                        os.path.splitext(sys.executable)[1] == ".exe"
-                        and os.path.splitext(py_script)[1] == ".exe"
+                    os.path.splitext(sys.executable)[1] == ".exe"
+                    and os.path.splitext(py_script)[1] == ".exe"
                 ):
                     rv.pop(0)
 
@@ -362,6 +364,11 @@ class Core:
 
     def start(self):
         try:
+            try:
+                signal.signal(signal.SIGQUIT, self.sigquit)
+            except Exception:
+                pass
+
             self.log.debug("Starting core...")
 
             if self.debug:
@@ -428,9 +435,9 @@ class Core:
             self.log.critical(exc, exc_info=True, stack_info=self.debug > 2)
             self.terminate()
             if os.name == "nt":
-                os._exit(70)
+                sys.exit(70)
             else:
-                os._exit(os.EX_SOFTWARE)  #: this kind of stuff should not be here!
+                sys.exit(os.EX_SOFTWARE)  #: this kind of stuff should not be here!
 
     def is_client_connected(self):
         return (self.last_client_connected + 30) > time.time()
@@ -446,7 +453,12 @@ class Core:
         args = self._get_args_for_reloading()
         subprocess.Popen(args, close_fds=True)
 
-        os._exit(0)
+        sys.exit()
+
+    def sigquit(self, a, b):
+        self.log.info(self._("Received Quit signal"))
+        self.terminate()
+        sys.exit()
 
     def terminate(self):
         self.stop()
