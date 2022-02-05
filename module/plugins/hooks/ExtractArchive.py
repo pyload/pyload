@@ -93,7 +93,7 @@ class ArchiveQueue(object):
 class ExtractArchive(Addon):
     __name__ = "ExtractArchive"
     __type__ = "hook"
-    __version__ = "1.69"
+    __version__ = "1.70"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", False),
@@ -467,6 +467,7 @@ class ExtractArchive(Addon):
 
                         archive.extract(pw)
                         self.add_password(pw)
+                        password = pw
                         break
 
                     except PasswordError:
@@ -477,7 +478,7 @@ class ExtractArchive(Addon):
             pyfile.setProgress(100)
             pyfile.setStatus("processing")
 
-            extracted_files = archive.files or archive.list()
+            extracted_files = archive.files or archive.list(password)
 
             delfiles = archive.chunks()
             self.log_debug("Would delete: " + ", ".join(delfiles))

@@ -12,7 +12,7 @@ from .misc import Popen, fs_encode, fsjoin, renice
 class SevenZip(Extractor):
     __name__ = "SevenZip"
     __type__ = "extractor"
-    __version__ = "0.32"
+    __version__ = "0.33"
     __status__ = "testing"
 
     __description__ = """7-Zip extractor plugin"""
@@ -61,7 +61,7 @@ class SevenZip(Extractor):
 
     def verify(self, password=None):
         #: 7z can't distinguish crc and pw error in test
-        p = self.call_cmd("l", "-slt", self.filename)
+        p = self.call_cmd("l", "-slt", self.filename, password=password)
         out, err = (_r.strip() if _r else "" for _r in p.communicate())
 
         if self._RE_BADPWD.search(out):
