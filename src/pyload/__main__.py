@@ -120,7 +120,11 @@ def run(core_args, daemon=False):
     # from .lib.rename_process import rename_process
     # rename_process('pyLoad')
     if daemon:
-        return _daemon(core_args)
+        if os.name == "nt":
+            sys.stderr.write("\nDaemon is not supported under windows")
+            sys.exit(70)  #: EX_SOFTWARE
+        else:
+            return _daemon(core_args)
 
     pyload_core = Core(*core_args)
     try:
