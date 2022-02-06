@@ -216,6 +216,9 @@ class DatabaseThread(Thread):
             "UPDATE SQLITE_SEQUENCE SET seq=? WHERE name=?", (pid, "packages")
         )
 
+        # set unfinished links as aborted
+        self.c.execute("UPDATE links SET status=9 WHERE status NOT IN (0, 1, 4, 6, 8, 9)")
+
         self.c.execute("VACUUM")
 
     def _migrate_user(self):
