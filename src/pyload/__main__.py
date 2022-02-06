@@ -229,8 +229,9 @@ def run(core_args, daemon=False, pid_file=""):
             return _daemon(core_args, pid_file=pid_file)
 
     else:
-        write_pid_file(pid_file)
-        atexit.register(partial(delete_pid_file, pid_file))
+        if pid_file:
+            write_pid_file(pid_file)
+            atexit.register(partial(delete_pid_file, pid_file))
 
     pyload_core = Core(*core_args)
     try:
@@ -246,6 +247,7 @@ def run(core_args, daemon=False, pid_file=""):
 
 def quit_instance(pid_file):
     if not pid_file:
+        sys.stderr.write("Cannot quit without pidfile.\n")
         return
 
     if os.name == "nt":
