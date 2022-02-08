@@ -12,6 +12,7 @@ import os
 
 import flask
 import jinja2
+from werkzeug.serving import WSGIRequestHandler
 
 from .blueprints import BLUEPRINTS
 from .config import get_default_config
@@ -128,5 +129,7 @@ class App:
         cls._configure_extensions(app)
         cls._configure_themes(app, path_prefix or "")
         cls._configure_handlers(app)
+
+        WSGIRequestHandler.protocol_version = "HTTP/1.1"
 
         return app
