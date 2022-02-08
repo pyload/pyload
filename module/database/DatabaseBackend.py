@@ -190,7 +190,7 @@ class DatabaseBackend(Thread):
             except:
                 print "Filedatabase could NOT be converted."
     
-    #--convert scripts start
+    # --convert scripts start
     
     def _convertV2(self):
         self.c.execute('CREATE TABLE IF NOT EXISTS "storage" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "identifier" TEXT NOT NULL, "key" TEXT NOT NULL, "value" TEXT DEFAULT "")')
@@ -207,7 +207,7 @@ class DatabaseBackend(Thread):
         except:
             print "Database was converted from v3 to v4."
     
-    #--convert scripts end
+    # --convert scripts end
     
     def _createTables(self):
         """create tables for database"""
@@ -225,7 +225,7 @@ class DatabaseBackend(Thread):
         FROM packages p JOIN links l ON p.id = l.package AND l.status in (0,4,13) GROUP BY p.id) s ON s.id = p.id \
         GROUP BY p.id')
 
-        #try to lower ids
+        # try to lower ids
         self.c.execute('SELECT max(id) FROM LINKS')
         fid = self.c.fetchone()[0]
         if fid:
@@ -242,6 +242,9 @@ class DatabaseBackend(Thread):
         else:
             pid = 0
         self.c.execute('UPDATE SQLITE_SEQUENCE SET seq=? WHERE name=?', (pid, "packages"))
+
+        # set unfinished links as aborted
+        self.c.execute("UPDATE links SET status=9 WHERE status NOT IN (0, 1, 4, 6, 8, 9)")
 
         self.c.execute('VACUUM')
 
