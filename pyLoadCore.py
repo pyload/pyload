@@ -284,7 +284,7 @@ class Core(object):
             return
 
         try:
-            os.kill(pid, 3) #SIGUIT
+            os.kill(pid, 3)  #: SIGQUIT
 
             t = time()
             print "waiting for pyLoad to quit"
