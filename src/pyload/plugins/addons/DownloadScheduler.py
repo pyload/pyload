@@ -108,12 +108,12 @@ class DownloadScheduler(BaseAddon):
 
             if speed > 0:
                 self.log_info(self._("Setting download speed to {} kB/s").format(speed))
-                self.pyload.config.set("download", "limit_speed", 1)
+                self.pyload.config.set("download", "limit_speed", True)
                 self.pyload.config.set("download", "max_speed", speed)
 
             else:
                 self.log_info(self._("Setting download speed to FULL"))
-                self.pyload.config.set("download", "limit_speed", 0)
+                self.pyload.config.set("download", "limit_speed", False)
                 self.pyload.config.set("download", "max_speed", -1)
 
             # Make new speed values take effect
