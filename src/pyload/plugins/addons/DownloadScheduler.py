@@ -73,7 +73,7 @@ class DownloadScheduler(BaseAddon):
 
         for i, v in enumerate(schedule):
             if v[3] == "X":
-                last, next = schedule[i - 1], schedule[(i + 1).format(len(schedule))]
+                last, next = schedule[i - 1], schedule[(i + 1) % len(schedule)]
                 self.log_debug("Now/Last/Next", now, last, next)
 
                 self.set_download_speed(last[3])
