@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import json
+import random
 import re
 
 from pyload.core.datatypes.pyfile import status_map
@@ -10,13 +11,14 @@ from ..base.downloader import BaseDownloader
 
 def get_info(urls):
     result = []
-    _re = re.compile(DailymotionCom.__pattern__)
-    apiurl = "https://api.dailymotion.com/video/{}"
-    request = {"fields": "access_error,status,title"}
+    m = re.compile(DailymotionCom.__pattern__)
 
     for url in urls:
-        id = _re.match(url).group("ID")
-        html = get_url(apiurl.format(id), get=request)
+        id = m.match(url).group("ID")
+        html = get_url(
+            "https://api.dailymotion.com/video/{}".format(id),
+            get={"fields": "access_error,status,title"},
+        )
         info = json.loads(html)
 
         name = info["title"] + ".mp4" if "title" in info else url
@@ -44,15 +46,15 @@ def get_info(urls):
 class DailymotionCom(BaseDownloader):
     __name__ = "DailymotionCom"
     __type__ = "downloader"
-    __version__ = "0.30"
+    __version__ = "0.31"
     __status__ = "testing"
 
-    __pattern__ = r"https?://(?:www\.)?(dailymotion\.com/.*video|dai\.ly)/(?P<ID>[\w^_]+)"
+    __pattern__ = r"https?://(?:www\.)?(?:dailymotion\.com/.*video|dai\.ly)/(?P<ID>[\w^_]+)"
     __config__ = [
         ("enabled", "bool", "Activated", True),
         (
             "quality",
-            "Lowest;LD 144p;LD 240p;SD 384p;HQ 480p;HD 720p;HD 1080p;Highest",
+            "Lowest;LD 144p;LD 240p;SD 380p;HQ 480p;HD 720p;HD 1080p;Highest",
             "Quality",
             "Highest",
         ),
@@ -63,6 +65,7 @@ class DailymotionCom(BaseDownloader):
     __authors__ = [
         ("Walter Purcaro", "vuolter@gmail.com"),
         ("Synology PAT", "pat@synology.com"),
+        ("GammaC0de", "nitzo2001[AT}yahoo[DOT]com"),
     ]
 
     STREAM_PATTERN = r"\"(?P<URL>https?:\\/\\/www.dailymotion.com\\/cdn\\/H264-(?P<QF_WIDTH>\d+)x(?P<QF_HEIGHT>\d+).*?)\""
@@ -71,70 +74,51 @@ class DailymotionCom(BaseDownloader):
         self.resume_download = True
         self.multi_dl = True
 
-    def get_streams(self):
-        streams = []
+    def get_info(self, url="", html=""):
+        info = super(DailymotionCom, self).get_info(url, html)
 
-        for result in re.finditer(self.STREAM_PATTERN, self.data):
-            url = result.group("URL")
-            qf_width = result.group("QF_WIDTH")
-            qf_height = result.group("QF_HEIGHT")
+        name, size, status, url = get_info([url])[0]
 
-            link = url.replace("\\", "")
-            quality = (int(qf_width), int(qf_height))
+        info.update({"name": name, "status": status})
 
-            streams.append((quality, link))
-
-        return sorted(streams, key=lambda x: x[0][::-1])
-
-    def get_quality(self):
-        q = self.config.get("quality")
-
-        if q == "Lowest":
-            quality = 0
-        elif q == "Highest":
-            quality = -1
-        else:
-            quality = int(q.rsplit(" ")[1][:-1])
-
-        return quality
-
-    def get_link(self, streams, quality):
-        if quality > 0:
-            for x, s in [item for item in enumerate(streams)][::-1]:
-                qf = s[0][1]
-                if qf <= quality:
-                    idx = x
-                    break
-            else:
-                idx = 0
-        else:
-            idx = quality
-
-        s = streams[idx]
-
-        self.log_info(self._("Download video quality {}x{}").format(s[0]))
-
-        return s[1]
-
-    def check_info(self, pyfile):
-        pyfile.name, pyfile.size, pyfile.status, pyfile.url = get_info([pyfile.url])[0]
-
-        if pyfile.status == 1:
-            self.offline()
-
-        elif pyfile.status == 6:
-            self.temp_offline()
+        return info
 
     def process(self, pyfile):
-        self.check_info(pyfile)
+        desired_quality = self.config.get("quality")
 
-        id = re.match(self.__pattern__, pyfile.url).group("ID")
-        self.data = self.load("http://www.dailymotion.com/embed/video/" + id)
+        self.data = self.load(
+            "https://www.dailymotion.com/player/metadata/video/{}".format(
+                self.info["pattern"]["ID"]
+            )
+        )
+        json_data = json.loads(self.data)
+        m3u8_url = next(iter(json_data["qualities"].values()))[0]["url"]
+        m3u8_data = self.load(m3u8_url)
 
-        streams = self.get_streams()
-        quality = self.get_quality()
+        streams = {}
+        for m in re.finditer(r"#EXT-X-STREAM-INF:(.+)", m3u8_data):
+            stream = dict(
+                [
+                    (x.group(1), x.group(2) or x.group(3))
+                    for x in re.finditer(
+                        r'([\w-]+)=(?:(?=")"([^"]+)|(?!")([^,]+))', m.group(1)
+                    )
+                ]
+            )
+            quality = int(stream["NAME"])
+            dl_url = stream["PROGRESSIVE-URI"]
+            streams[quality] = streams.get(quality, []) + [dl_url]
 
         if not streams:
             self.fail(self._("Failed to get any streams."))
 
-        self.download(self.get_link(streams, quality))
+        qualities = sorted(streams.keys())
+        if desired_quality == "Lowest":
+            quality = qualities[0]
+        elif desired_quality == "Highest":
+            quality = qualities[-1]
+        else:
+            desired_quality = int(re.search(r"\d+", desired_quality).group(0))
+            quality = min(qualities, key=lambda x: abs(x - desired_quality))
+
+        self.download(random.choice(streams[quality]))
