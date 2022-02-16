@@ -14,7 +14,7 @@ from ..helpers import parse_html_form
 class UploadgigCom(BaseAccount):
     __name__ = "UploadgigCom"
     __type__ = "account"
-    __version__ = "0.05"
+    __version__ = "0.06"
     __status__ = "testing"
 
     __description__ = """UploadgigCom account plugin"""
@@ -89,7 +89,7 @@ class UploadgigCom(BaseAccount):
 
             if captcha_key:
                 self.captcha = recaptcha
-                response, _ = recaptcha.challenge(captcha_key, html)
+                response = recaptcha.challenge(captcha_key, html)
                 inputs["g-recaptcha-response"] = response
 
             else:

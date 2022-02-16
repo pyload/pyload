@@ -1,15 +1,13 @@
 # -*- coding: utf-8 -*-
 import re
 
-from pyload.core.network.request_factory import get_url
-
 from ..base.simple_downloader import SimpleDownloader
 
 
 class WebshareCz(SimpleDownloader):
     __name__ = "WebshareCz"
     __type__ = "downloader"
-    __version__ = "0.25"
+    __version__ = "0.26"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?(en\.)?webshare\.cz/(?:#/)?(file/)?(?P<ID>\w+)"
@@ -32,15 +30,13 @@ class WebshareCz(SimpleDownloader):
 
     API_URL = "https://webshare.cz/api/"
 
-    @classmethod
-    def api_request(cls, method, **kwargs):
-        return get_url(cls.API_URL + method + "/", post=kwargs)
+    def api_request(self, method, **kwargs):
+        return self.load(self.API_URL + method + "/", post=kwargs)
 
-    @classmethod
-    def api_info(cls, url):
+    def api_info(self, url):
         info = {}
-        api_data = cls.api_request(
-            "file_info", ident=re.match(cls.__pattern__, url).group("ID"), wst=""
+        api_data = self.api_request(
+            "file_info", ident=re.match(self.__pattern__, url).group("ID"), wst=""
         )
 
         if re.search(r"<status>OK", api_data):

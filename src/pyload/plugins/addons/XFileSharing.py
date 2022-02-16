@@ -16,8 +16,8 @@ class XFileSharing(BaseAddon):
         ("use_downloader_list", "bool", "Load listed hosters only", False),
         ("use_decrypter_list", "bool", "Load listed crypters only", False),
         ("use_builtin_list", "bool", "Load built-in plugin list", True),
-        ("hoster_list", "str", "Hoster list (comma separated)", ""),
-        ("crypter_list", "str", "Crypter list (comma separated)", ""),
+        ("hoster_list", "str", "Downloader list (comma separated)", ""),
+        ("crypter_list", "str", "Decrypter list (comma separated)", ""),
     ]
 
     __description__ = (

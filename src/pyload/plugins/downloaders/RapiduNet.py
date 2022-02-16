@@ -5,7 +5,6 @@ import re
 import time
 
 import pycurl
-from pyload.core.network.request_factory import get_url
 from pyload.core.utils import seconds
 
 from ..anticaptchas.ReCaptcha import ReCaptcha
@@ -15,7 +14,7 @@ from ..base.simple_downloader import SimpleDownloader
 class RapiduNet(SimpleDownloader):
     __name__ = "RapiduNet"
     __type__ = "downloader"
-    __version__ = "0.17"
+    __version__ = "0.20"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?rapidu\.net/(?P<ID>\d+)"
@@ -43,15 +42,13 @@ class RapiduNet(SimpleDownloader):
     # https://rapidu.net/documentation/api/
     API_URL = "http://rapidu.net/api/"
 
-    @classmethod
-    def api_request(cls, method, **kwargs):
-        json_data = get_url(cls.API_URL + method + "/", post=kwargs)
+    def api_request(self, method, **kwargs):
+        json_data = self.load(self.API_URL + method + "/", post=kwargs)
         return json.loads(json_data)
 
-    @classmethod
-    def api_info(cls, url):
-        file_id = re.match(cls.__pattern__, url).group("ID")
-        api_data = cls.api_request("getFileDetails", id=file_id)["0"]
+    def api_info(self, url):
+        file_id = re.match(self.__pattern__, url).group("ID")
+        api_data = self.api_request("getFileDetails", id=file_id)["0"]
 
         if api_data["fileStatus"] == 1:
             return {
@@ -87,7 +84,7 @@ class RapiduNet(SimpleDownloader):
         self.set_wait(int(json_data["timeToDownload"]) - int(time.time()))
 
         self.captcha = ReCaptcha(pyfile)
-        response, challenge = self.captcha.challenge(self.RECAPTCHA_KEY)
+        response = self.captcha.challenge(self.RECAPTCHA_KEY)
 
         self.wait()
 
@@ -96,8 +93,7 @@ class RapiduNet(SimpleDownloader):
             get={"a": "getCheckCaptcha"},
             post={
                 "_go": "",
-                "captcha1": challenge,
-                "captcha2": response,
+                "captcha1": response,
                 "fileId": self.info["pattern"]["ID"],
             },
         )

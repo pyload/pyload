@@ -4,8 +4,6 @@ import json
 import random
 import re
 
-from pyload.core.network.request_factory import get_url
-
 from ..base.simple_downloader import SimpleDownloader
 
 
@@ -16,7 +14,7 @@ def gen_r():
 class TenluaVn(SimpleDownloader):
     __name__ = "TenluaVn"
     __type__ = "downloader"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?tenlua\.vn(?!/folder)/.+?/(?P<ID>[0-9a-f]+)/"
@@ -34,22 +32,20 @@ class TenluaVn(SimpleDownloader):
 
     API_URL = "https://api2.tenlua.vn/"
 
-    @classmethod
-    def api_request(cls, method, **kwargs):
+    def api_request(self, method, **kwargs):
         kwargs["a"] = method
         sid = kwargs.pop("sid", None)
         return json.loads(
-            get_url(
-                cls.API_URL,
+            self.load(
+                self.API_URL,
                 get={"sid": sid} if sid is not None else {},
                 post=json.dumps([kwargs]),
             )
         )
 
-    @classmethod
-    def api_info(cls, url):
-        file_id = re.match(cls.__pattern__, url).group("ID")
-        file_info = cls.api_request(
+    def api_info(self, url):
+        file_id = re.match(self.__pattern__, url).group("ID")
+        file_info = self.api_request(
             "filemanager_builddownload_getinfo", n=file_id, r=gen_r()
         )[0]
 

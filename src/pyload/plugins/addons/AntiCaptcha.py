@@ -13,7 +13,7 @@ from ..base.addon import BaseAddon, threaded
 class AntiCaptcha(BaseAddon):
     __name__ = "AntiCaptcha"
     __type__ = "addon"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
     __config__ = [
@@ -102,6 +102,7 @@ class AntiCaptcha(BaseAddon):
                         "type": self.TASK_TYPES[task.captcha_params["captcha_plugin"]],
                         "websiteURL": r"{}://{}/".format(url_p.scheme, url_p.netloc),
                         "websiteKey": task.captcha_params["sitekey"],
+                        "isInvisible": task.is_invisible(),
                     },
                 },
             )

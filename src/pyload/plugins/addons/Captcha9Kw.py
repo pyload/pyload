@@ -13,7 +13,7 @@ from ..base.addon import BaseAddon, threaded
 class Captcha9Kw(BaseAddon):
     __name__ = "Captcha9Kw"
     __type__ = "addon"
-    __version__ = "0.41"
+    __version__ = "0.44"
     __status__ = "testing"
 
     __config__ = [
@@ -83,7 +83,7 @@ class Captcha9Kw(BaseAddon):
     @threaded
     def _process_captcha(self, task):
         pluginname = task.captcha_params["plugin"]
-        if task.is_interactive():
+        if task.is_interactive() or task.is_invisible():
             url_p = urllib.parse.urlparse(task.captcha_params["url"])
             if url_p.scheme not in ("http", "https"):
                 self.log_error(self._("Invalid url"))
@@ -97,6 +97,7 @@ class Captcha9Kw(BaseAddon):
                 "captchachoice": self.INTERACTIVE_TYPES[
                     task.captcha_params["captcha_plugin"]
                 ],
+                "isInvisible": "INVISIBLE" if task.is_invisible() else "NORMAL",
                 "data-sitekey": task.captcha_params["sitekey"],
                 "securetoken": task.captcha_params.get("securetoken", ""),
             }
@@ -168,9 +169,9 @@ class Captcha9Kw(BaseAddon):
                 "math": option["math"],
                 "pyload": 1,
                 "source": "pyload",
-                "base64": 0 if task.is_interactive() else 1,
+                "base64": 0 if task.is_interactive() or task.is_invisible() else 1,
                 "mouse": 1 if task.is_positional() else 0,
-                "interactive": 1 if task.is_interactive() else 0,
+                "interactive": 1 if task.is_interactive() or task.is_invisible() else 0,
                 "action": "usercaptchaupload",
             }
         )
@@ -224,7 +225,7 @@ class Captcha9Kw(BaseAddon):
         task.set_result(result)
 
     def captcha_task(self, task):
-        if task.is_interactive():
+        if task.is_interactive() or task.is_invisible():
             if task.captcha_params[
                 "captcha_plugin"
             ] not in self.INTERACTIVE_TYPES.keys() or not self.config.get(

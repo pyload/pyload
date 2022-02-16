@@ -3,8 +3,6 @@ import hashlib
 import re
 import time
 
-from pyload.core.network.request_factory import get_url
-
 from ..base.account import BaseAccount
 
 try:
@@ -16,7 +14,7 @@ except ImportError:
 class WebshareCz(BaseAccount):
     __name__ = "WebshareCz"
     __type__ = "account"
-    __version__ = "0.17"
+    __version__ = "0.18"
     __status__ = "testing"
 
     __description__ = """Webshare.cz account plugin"""
@@ -32,9 +30,8 @@ class WebshareCz(BaseAccount):
 
     API_URL = "https://webshare.cz/api/"
 
-    @classmethod
-    def api_request(cls, method, **kwargs):
-        return get_url(cls.API_URL + method + "/", post=kwargs)
+    def api_request(self, method, **kwargs):
+        return self.load(self.API_URL + method + "/", post=kwargs)
 
     def grab_info(self, user, password, data):
         user_data = self.api_request("user_data", wst=data["wst"])

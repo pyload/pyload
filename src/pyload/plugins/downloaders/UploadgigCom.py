@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import json
+import re
+
+from pyload.core.utils.misc import eval_js
 
 from ..anticaptchas.ReCaptcha import ReCaptcha
 from ..base.simple_downloader import SimpleDownloader
@@ -9,7 +12,7 @@ from ..base.simple_downloader import SimpleDownloader
 class UploadgigCom(SimpleDownloader):
     __name__ = "UploadgigCom"
     __type__ = "downloader"
-    __version__ = "0.07"
+    __version__ = "0.09"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?uploadgig.com/file/download/\w+"
@@ -33,6 +36,15 @@ class UploadgigCom(SimpleDownloader):
     OFFLINE_PATTERN = r"File not found"
 
     def handle_free(self, pyfile):
+        m = re.search(
+            r"<script>window\[String\.fromCharCode\(window\['m'\+'ax_upload_limi'\+'t'\]\)\] = (.+?);</script>",
+            self.data,
+        )
+        if m is None:
+            self.error(self._("f pattern not found"))
+
+        f = eval_js(m.group(1))
+
         url, inputs = self.parse_html_form('id="dl_captcha_form"')
         if inputs is None:
             self.error(self._("Free download form not found"))
@@ -44,15 +56,14 @@ class UploadgigCom(SimpleDownloader):
             self.error(self._("ReCaptcha key not found"))
 
         self.captcha = recaptcha
-        response, challenge = recaptcha.challenge(captcha_key)
+        response = recaptcha.challenge(captcha_key)
 
         inputs["g-recaptcha-response"] = response
-        self.data = self.load(self.fixurl(url),
-                              post=inputs)
+        self.data = self.load(self.fixurl(url), post=inputs)
 
         if self.data == "m":
             self.log_warning(self._("Max downloads for this hour reached"))
-            self.retry(wait=60*60)
+            self.retry(wait=60 * 60)
 
         elif self.data in ("fl", "rfd"):
             self.fail(self._("File can be downloaded by premium users only"))
@@ -67,12 +78,12 @@ class UploadgigCom(SimpleDownloader):
             try:
                 res = json.loads(self.data)
 
-            except:
+            except ValueError:
                 self.fail(self._("Illegal response from the server"))
 
-            if any([_x not in res for _x in ('cd', 'sp', 'q', 'id')]):
+            if any([_x not in res for _x in ("cd", "sp", "q", "id")]):
                 self.fail(self._("Illegal response from the server"))
 
-            self.wait(res['cd'])
+            self.wait(res["cd"])
 
-            self.link = res['sp'] + "id=" + str(res['id'] - 5) + "&" + res['q']
+            self.link = res["sp"] + "id=" + str(res["id"] - f) + "&" + res["q"]

@@ -12,17 +12,19 @@ import atexit
 import gettext
 import locale
 import os
+import signal
 import subprocess
 import sys
 import tempfile
 import time
+from threading import Event
 
-from pyload import PKGDIR, APPID, USERHOMEDIR
+from pyload import APPID, PKGDIR, USERHOMEDIR
+
 from .. import __version__ as PYLOAD_VERSION
 from .. import __version_info__ as PYLOAD_VERSION_INFO
 from .utils import format, fs
 from .utils.misc import reversemap
-from threading import Event
 
 
 class Restart(Exception):
@@ -43,7 +45,6 @@ class Exit(Exception):
 #  new attributes (date|sync status)
 #  improve external scripts
 class Core:
-
     LOCALE_DOMAIN = APPID
     DEFAULT_USERNAME = APPID
     DEFAULT_PASSWORD = APPID
@@ -91,10 +92,13 @@ class Core:
         # if refresh:
         # cleanpy(PACKDIR)
 
+        datadir = os.path.join(os.path.realpath(userdir), "data")
+        os.makedirs(datadir, exist_ok=True)
+        os.chdir(datadir)
+
         self._init_config(userdir, tempdir, storagedir, debug)
         self._init_log()
         self._init_database(reset and not dry)
-        os.chdir(os.path.join(self.userdir, "data"))
         self._init_network()
         self._init_api()
         self._init_managers()
@@ -126,6 +130,10 @@ class Core:
         # otherwise save setting to config dir
         if storagedir is None:
             storagedir = self.config.get("general", "storage_folder")
+            # Make sure storage_folder is not empty
+            if not storagedir:
+                self.config.set("general", "storage_folder", "~/Downloads/pyLoad")
+                storagedir = self.config.get("general", "storage_folder")
         else:
             self.config.set("general", "storage_folder", storagedir)
         os.makedirs(storagedir, exist_ok=True)
@@ -143,7 +151,7 @@ class Core:
 
         self.log.info(f"*** Welcome to pyLoad {self.version} ***")
         if self._dry_run:
-            self.log.info(f"*** TEST RUN ***")
+            self.log.info("*** TEST RUN ***")
 
     def _init_network(self):
         from .network import request_factory
@@ -279,7 +287,7 @@ class Core:
         self.acm.get_account_infos()
         # self.scheduler.add_job(0, self.acm.get_account_infos)
 
-        self.log.info(self._("Activating Plugins..."))
+        self.log.info(self._("Activating plugins..."))
         self.adm.core_ready()
 
     def _start_webserver(self):
@@ -306,10 +314,10 @@ class Core:
         # not exist if a setuptools script is installed as an egg. It may be
         # set incorrectly for entry points created with pip on Windows.
         if getattr(__main__, "__package__", None) is None or (
-                os.name == "nt"
-                and __main__.__package__ == ""
-                and not os.path.exists(py_script)
-                and os.path.exists(f"{py_script}.exe")
+            os.name == "nt"
+            and __main__.__package__ == ""
+            and not os.path.exists(py_script)
+            and os.path.exists(f"{py_script}.exe")
         ):
             # Executed a file, like "python app.py".
             py_script = os.path.abspath(py_script)
@@ -321,8 +329,8 @@ class Core:
                     py_script += ".exe"
 
                 if (
-                        os.path.splitext(sys.executable)[1] == ".exe"
-                        and os.path.splitext(py_script)[1] == ".exe"
+                    os.path.splitext(sys.executable)[1] == ".exe"
+                    and os.path.splitext(py_script)[1] == ".exe"
                 ):
                     rv.pop(0)
 
@@ -359,6 +367,11 @@ class Core:
 
     def start(self):
         try:
+            try:
+                signal.signal(signal.SIGQUIT, self.sigquit)
+            except Exception:
+                pass
+
             self.log.debug("Starting core...")
 
             if self.debug:
@@ -375,7 +388,7 @@ class Core:
             self.log.info(self._("Cache directory: {}").format(self.tempdir))
 
             storage_folder = self.config.get("general", "storage_folder")
-            self.log.info(self._("Storage directory: {}".format(storage_folder)))
+            self.log.info(self._("Storage directory: {}").format(storage_folder))
 
             avail_space = format.size(fs.free_space(storage_folder))
             self.log.info(self._("Storage free space: {}").format(avail_space))
@@ -424,9 +437,11 @@ class Core:
         except Exception as exc:
             self.log.critical(exc, exc_info=True, stack_info=self.debug > 2)
             self.terminate()
-            os._exit(os.EX_SOFTWARE)  #: this kind of stuff should not be here!
+            if os.name == "nt":
+                sys.exit(70)
+            else:
+                sys.exit(os.EX_SOFTWARE)  #: this kind of stuff should not be here!
 
-    # TODO: Remove
     def is_client_connected(self):
         return (self.last_client_connected + 30) > time.time()
 
@@ -439,19 +454,25 @@ class Core:
             os.chdir(sys.path[0])
 
         args = self._get_args_for_reloading()
-        exit_code = subprocess.call(args, close_fds=True)
+        subprocess.Popen(args, close_fds=True)
 
-        os._exit(exit_code)
+        sys.exit()
+
+    def sigquit(self, a, b):
+        self.log.info(self._("Received Quit signal"))
+        self.terminate()
+        sys.exit()
 
     def terminate(self):
-        self.stop()
-        self.log.info(self._("Exiting core..."))
-        # self.tsm.exit()
-        # self.db.exit()  # NOTE: Why here?
-        self.logfactory.shutdown()
-        # if cleanup:
-        # self.log.info(self._("Deleting temp files..."))
-        # remove(self.tmpdir)
+        if self.running:
+            self.stop()
+            self.log.info(self._("Exiting core..."))
+            # self.tsm.exit()
+            # self.db.exit()  # NOTE: Why here?
+            self.logfactory.shutdown()
+            # if cleanup:
+            # self.log.info(self._("Deleting temp files..."))
+            # remove(self.tmpdir)
 
     def stop(self):
         try:
@@ -470,6 +491,4 @@ class Core:
         finally:
             self.files.sync_save()
             self._running.clear()
-            if self._do_restart:
-                self._stop_webserver()
             # self.evm.fire('pyload:stopped')

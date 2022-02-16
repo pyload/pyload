@@ -4,7 +4,6 @@ import os
 import re
 import time
 
-from pyload.core.network.request_factory import get_url
 from pyload.core.utils.convert import to_bytes, to_str
 
 from ..anticaptchas.ReCaptcha import ReCaptcha
@@ -14,7 +13,7 @@ from ..base.simple_downloader import SimpleDownloader
 class UploadedTo(SimpleDownloader):
     __name__ = "UploadedTo"
     __type__ = "downloader"
-    __version__ = "1.09"
+    __version__ = "1.11"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?(uploaded\.(to|net)|ul\.to)(/file/|/?\?id=|.*?&id=|/)(?P<ID>\w+)"
@@ -52,16 +51,15 @@ class UploadedTo(SimpleDownloader):
         r"You have reached the max. number of possible free downloads for this hour"
     )
 
-    @classmethod
-    def api_info(cls, url):
+    def api_info(self, url):
         info = {}
 
         for _ in range(5):
-            html = get_url(
+            html = self.load(
                 "http://uploaded.net/api/filemultiple",
                 get={
-                    "apikey": cls.API_KEY,
-                    "id_0": re.match(cls.__pattern__, url).group("ID"),
+                    "apikey": self.API_KEY,
+                    "id_0": re.match(self.__pattern__, url).group("ID"),
                 },
                 decode=False,
             )
@@ -96,7 +94,7 @@ class UploadedTo(SimpleDownloader):
         self.data = self.load("http://uploaded.net/js/download.js")
 
         self.captcha = ReCaptcha(pyfile)
-        response, challenge = self.captcha.challenge()
+        response = self.captcha.challenge()
 
         self.data = self.load(
             "http://uploaded.net/io/ticket/captcha/{}".format(

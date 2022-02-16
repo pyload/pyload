@@ -13,7 +13,7 @@ from ..base.simple_downloader import SimpleDownloader
 class TurbobitNet(SimpleDownloader):
     __name__ = "TurbobitNet"
     __type__ = "downloader"
-    __version__ = "0.41"
+    __version__ = "0.42"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:(?:www|m)\.)?(?:turbobit\.net|turbo?\.(?:to|cc))/(?:download/free/)?(?P<ID>\w+)'
@@ -100,7 +100,7 @@ class TurbobitNet(SimpleDownloader):
             captcha_key = recaptcha.detect_key()
             if captcha_key:
                 self.captcha = recaptcha
-                response, _ = recaptcha.challenge(captcha_key)
+                response = recaptcha.challenge(captcha_key)
                 inputs["g-recaptcha-response"] = response
 
             else:

@@ -10,7 +10,7 @@ from .simple_downloader import SimpleDownloader
 class MultiDownloader(SimpleDownloader):
     __name__ = "MultiDownloader"
     __type__ = "downloader"
-    __version__ = "0.70"
+    __version__ = "0.71"
     __status__ = "stable"
 
     __pattern__ = r"^unmatchable$"
@@ -35,9 +35,8 @@ class MultiDownloader(SimpleDownloader):
 
     DIRECT_LINK = None
 
-    @classmethod
-    def get_info(cls, url="", html=""):
-        return super(SimpleDownloader, cls).get_info(url, html)
+    def get_info(self, url="", html=""):
+        return super(SimpleDownloader, self).get_info(url, html)
 
     def init(self):
         self.PLUGIN_NAME = self.pyload.plugin_manager.hoster_plugins.get(
@@ -53,13 +52,6 @@ class MultiDownloader(SimpleDownloader):
         self.chunk_limit = 1
         self.multi_dl = bool(self.account)
         self.resume_download = self.premium
-
-    # TODO: Recheck in 0.6.x
-    def setup_base(self):
-        klass = self.pyload.plugin_manager.load_class("downloader", self.classname)
-        self.get_info = klass.get_info
-
-        super().setup_base()
 
     def _preload(self):
         pass

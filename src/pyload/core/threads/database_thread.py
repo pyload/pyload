@@ -105,7 +105,6 @@ class DatabaseThread(Thread):
             self._convert_db(convert)
 
         self._create_tables()
-        self._migrate_user()
 
         self.conn.commit()
 
@@ -216,26 +215,10 @@ class DatabaseThread(Thread):
             "UPDATE SQLITE_SEQUENCE SET seq=? WHERE name=?", (pid, "packages")
         )
 
+        # set unfinished links as aborted
+        self.c.execute("UPDATE links SET status=9 WHERE status NOT IN (0, 1, 4, 6, 8, 9)")
+
         self.c.execute("VACUUM")
-
-    def _migrate_user(self):
-        if os.path.exists("pyload.db"):
-            self.pyload.log.info(self._("Converting old Django DB"))
-
-            with sqlite3.connect("pyload.db", isolation_level=None) as conn:
-                with closing(conn.cursor()) as c:
-                    c.execute(
-                        "SELECT username, password, email from auth_user WHERE is_superuser"
-                    )
-                    users = []
-                    for r in c:
-                        pw = r[1].split("$")
-                        users.append((r[0], pw[1] + pw[2], r[2]))
-
-            self.c.executemany(
-                "INSERT INTO users(name, password, email) VALUES (?, ?, ?)", users
-            )
-            shutil.move("pyload.db", "pyload.old.db")
 
     def create_cursor(self):
         return self.conn.cursor()

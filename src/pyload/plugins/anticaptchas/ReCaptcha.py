@@ -16,7 +16,7 @@ from ..base.captcha_service import CaptchaService
 class ReCaptcha(CaptchaService):
     __name__ = "ReCaptcha"
     __type__ = "anticaptcha"
-    __version__ = '0.44'
+    __version__ = '0.48'
     __status__ = "testing"
 
     __description__ = "ReCaptcha captcha service plugin"
@@ -30,6 +30,7 @@ class ReCaptcha(CaptchaService):
 
     KEY_V2_PATTERN = r'(?:data-sitekey=["\']|["\']sitekey["\']\s*:\s*["\'])((?:[\w\-]|%[0-9a-fA-F]{2})+)'
     KEY_FORMAT_V2_PATTERN = r'^6L[\w-]{6}AAAAA[\w-]{27}$'
+    INVISIBLE_V2_PATTERN = r'data-size\s*=\s*(["\'])\s*invisible\s*\1'
     STOKEN_V2_PATTERN = r'data-stoken=["\']([\w\-]+)'
 
     RECAPTCHA_INTERACTIVE_SIG = "7b99386315b3e035285946b842049575fc69a88ccc219e1bc96a9afd0f3c4b7456f09d36bf3dc530" + \
@@ -93,6 +94,45 @@ class ReCaptcha(CaptchaService):
 				document.getElementsByTagName('head')[0].appendChild(js_script);
 			}"""
 
+    RECAPTCHA_INVISIBLE_SIG = "7a51902e14a4afd9cd6f09e6e4dab3ec7c44f3d901693e9fcd06ff915decfb942e60fc18752cfe72" + \
+                              "5a6e0017e26bab86d385cab9f3ebf49a7b3c1791bdde5754790852b695d28b4b304e7f14948c87f7" + \
+                              "6962fed3d18ed02e69d4f90aaa8f41b0e760355815220baeb9f696fa4ebde41ffb64cbdf774a84b5" + \
+                              "5e48e87eebea2237a9d196fe6bb2ecdf5e369581398ed489b1bc571cdae84d4724b4d7f7ab8f6e70" + \
+                              "a17cd0f85b4eca338c07b34b13bdf18242abd0dd7d0b85257013a5267af98381157eb855ee145506" + \
+                              "6759e37feee3e64cab997c0ed12063b2a00bd8ebc34d898463d97540d2538e41be1946e94202b445" + \
+                              "99c646544f79711f5ee1ee03a9b816b1"
+
+    RECAPTCHA_INVISIBLE_JS = """
+			while(document.children[0].childElementCount > 0) {
+				document.children[0].removeChild(document.children[0].children[0]);
+			}
+			document.children[0].innerHTML = '<html><head></head><body style="display:inline-block;"><div id="captchadiv" style="display: inline-block;"></div></body></html>';
+
+			gpyload.data.sitekey = request.params.sitekey;
+			// function that is called when the captcha finished loading and is ready to interact
+			window.pyloadCaptchaOnLoadCallback = function() {
+				grecaptcha.render (
+					"captchadiv",
+					{size: "invisible",
+					 'sitekey': gpyload.data.sitekey,
+					 'callback': function() {
+						var recaptchaResponse = grecaptcha.getResponse(); // get captcha response
+						gpyload.submitResponse(recaptchaResponse);
+					 }}
+				);
+				grecaptcha.execute();
+			};
+
+			if(typeof grecaptcha !== 'undefined' && grecaptcha) {
+				window.pyloadCaptchaOnLoadCallback();
+			} else {
+				var js_script = document.createElement('script');
+				js_script.type = "text/javascript";
+				js_script.src = "//www.google.com/recaptcha/api.js?onload=pyloadCaptchaOnLoadCallback&render=explicit";
+				js_script.async = true;
+				document.getElementsByTagName('head')[0].appendChild(js_script);
+			}"""
+
     def detect_key(self, data=None):
         html = data or self.retrieve_data()
 
@@ -127,10 +167,15 @@ class ReCaptcha(CaptchaService):
         data = data or self.retrieve_data()
 
         v2 = re.search(self.KEY_V2_PATTERN, data) is not None
+        invisible = re.search(self.INVISIBLE_V2_PATTERN, data) is not None
 
         if v2 is True:
-            self.log_debug("Detected reCAPTCHA v2")
-            return 2
+            if invisible is True:
+                self.log_debug("Detected reCAPTCHA v2 invisible")
+                return "2invisible"
+            else:
+                self.log_debug("Detected reCAPTCHA v2")
+                return 2
 
         else:
             self.log_warning(
@@ -146,7 +191,7 @@ class ReCaptcha(CaptchaService):
             else None
         )
 
-        if version in (2, "2js"):
+        if version in (2, "2js", "2invisible"):
             return getattr(self, "_challenge_v{}".format(version))(
                 key, secure_token=secure_token
             )
@@ -366,7 +411,7 @@ class ReCaptcha(CaptchaService):
         else:
             self.fail(self._("reCAPTCHA max retries exceeded"))
 
-        return result, challenge
+        return result
 
     # solve interactive captcha (javascript required), use when non-JS captcha
     # fallback for v2 is not allowed
@@ -385,23 +430,42 @@ class ReCaptcha(CaptchaService):
 
         result = self.decrypt_interactive(params, timeout=300)
 
-        return result, result
+        return result
+
+    # solve invisible captcha (browser only, no user interaction)
+    def _challenge_v2invisible(self, key, secure_token=None):
+        self.log_debug("Challenge reCAPTCHA v2 invisible")
+
+        params = {
+            "url": self.pyfile.url,
+            "sitekey": key,
+            "securetoken": secure_token,
+            "script": {
+                "signature": self.RECAPTCHA_INVISIBLE_SIG,
+                "code": self.RECAPTCHA_INVISIBLE_JS,
+            },
+        }
+
+        result = self.decrypt_invisible(params, timeout=300)
+
+        return result
 
 
 if __name__ == "__main__":
-    # Sign with the command `python -m pyload.plugins.anticaptchas.ReCaptcha pyload.private.pem pem_passphrase`
+    # Sign with the command:
+    # `python -m pyload.plugins.anticaptchas.ReCaptcha RECAPTCHA_INTERACTIVE_JS pyload.private.pem pem_passphrase`
     import sys
     from ..helpers import sign_string
 
-    if len(sys.argv) > 2:
-        with open(sys.argv[1]) as fp:
+    if len(sys.argv) > 3:
+        with open(sys.argv[2]) as fp:
             pem_private = fp.read()
 
         print(
             sign_string(
-                ReCaptcha.RECAPTCHA_INTERACTIVE_JS,
+                getattr(ReCaptcha, sys.argv[1]),
                 pem_private,
-                pem_passphrase=sys.argv[2],
+                pem_passphrase=sys.argv[3],
                 sign_algo="SHA384",
             )
         )

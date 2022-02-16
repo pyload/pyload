@@ -5,7 +5,6 @@ import re
 import urllib.parse
 
 from pyload.core.network.http.exceptions import BadHeader
-from pyload.core.network.request_factory import get_url
 
 from ..base.simple_downloader import SimpleDownloader
 
@@ -13,7 +12,7 @@ from ..base.simple_downloader import SimpleDownloader
 class FileboomMe(SimpleDownloader):
     __name__ = "FileboomMe"
     __type__ = "downloader"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __status__ = "testing"
 
     __pattern__ = r"https?://f(?:ile)?boom\.me/file/(?P<ID>\w+)"
@@ -32,15 +31,13 @@ class FileboomMe(SimpleDownloader):
     API_URL = "https://fileboom.me/api/v2/"
     #: Actually this is Keep2ShareCc API, see https://keep2share.github.io/api/ https://github.com/keep2share/api
 
-    @classmethod
-    def api_request(cls, method, **kwargs):
-        html = get_url(cls.API_URL + method, post=json.dumps(kwargs))
+    def api_request(self, method, **kwargs):
+        html = self.load(self.API_URL + method, post=json.dumps(kwargs))
         return json.loads(html)
 
-    @classmethod
-    def api_info(cls, url):
-        file_id = re.match(cls.__pattern__, url).group("ID")
-        file_info = cls.api_request("GetFilesInfo", ids=[file_id], extended_info=False)
+    def api_info(self, url):
+        file_id = re.match(self.__pattern__, url).group("ID")
+        file_info = self.api_request("GetFilesInfo", ids=[file_id], extended_info=False)
 
         if (
             file_info["code"] != 200

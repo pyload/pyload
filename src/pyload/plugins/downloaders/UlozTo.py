@@ -23,7 +23,7 @@ def convert_decimal_prefix(m):
 class UlozTo(SimpleDownloader):
     __name__ = "UlozTo"
     __type__ = "downloader"
-    __version__ = "1.49"
+    __version__ = "1.50"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl|pornfile\.cz)/(?:live/)?(?P<ID>[!\w]+/[^/?]*)"
@@ -203,7 +203,7 @@ class UlozTo(SimpleDownloader):
                     self.error(self._("ReCaptcha key not found"))
 
                 self.captcha = recaptcha
-                response, challenge = recaptcha.challenge(captcha_key)
+                response = recaptcha.challenge(captcha_key)
 
                 inputs['g-recaptcha-response'] = response
 

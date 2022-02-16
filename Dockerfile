@@ -28,7 +28,7 @@ ARG PIP_INSTALL_OPTIONS="--disable-pip-version-check --no-cache-dir --no-compile
 
 FROM lsiobase/alpine:$IMAGE_TAG AS builder
 
-ARG APK_PACKAGES="python3 openssl sqlite tesseract-ocr unrar libcurl"
+ARG APK_PACKAGES="python3 openssl sqlite tesseract-ocr unrar curl-dev"
 ARG PIP_PACKAGES="pip setuptools wheel"
 
 RUN echo "**** install binary packages ****" && \
@@ -42,7 +42,7 @@ RUN echo "**** install binary packages ****" && \
 
 FROM builder AS wheels_builder
 
-ARG APK_PACKAGES="gcc g++ musl-dev python3-dev libffi-dev openssl-dev jpeg-dev zlib-dev libxml2-dev libxslt-dev curl-dev cargo"
+ARG APK_PACKAGES="gcc g++ musl-dev python3-dev libffi-dev openssl-dev jpeg-dev zlib-dev libxml2-dev libxslt-dev cargo"
 
 ENV PYCURL_SSL_LIBRARY="openssl"
 

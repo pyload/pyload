@@ -3,7 +3,6 @@ import json
 import time
 
 from pyload.core.network.http.exceptions import BadHeader
-from pyload.core.network.request_factory import get_url
 
 from ..base.account import BaseAccount
 
@@ -11,7 +10,7 @@ from ..base.account import BaseAccount
 class TenluaVn(BaseAccount):
     __name__ = "TenluaVn"
     __type__ = "account"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
     __description__ = """TenluaVn account plugin"""
@@ -20,13 +19,12 @@ class TenluaVn(BaseAccount):
 
     API_URL = "https://api2.tenlua.vn/"
 
-    @classmethod
-    def api_request(cls, method, **kwargs):
+    def api_request(self, method, **kwargs):
         kwargs["a"] = method
         sid = kwargs.pop("sid", None)
         return json.loads(
-            get_url(
-                cls.API_URL,
+            self.load(
+                self.API_URL,
                 get={"sid": sid} if sid is not None else {},
                 post=json.dumps([kwargs]),
             )

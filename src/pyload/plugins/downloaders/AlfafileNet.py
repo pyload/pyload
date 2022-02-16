@@ -5,6 +5,7 @@ import re
 
 from pyload.core.utils import seconds
 
+from ..anticaptchas.ReCaptcha import ReCaptcha
 from ..anticaptchas.SolveMedia import SolveMedia
 from ..base.simple_downloader import SimpleDownloader
 
@@ -12,7 +13,7 @@ from ..base.simple_downloader import SimpleDownloader
 class AlfafileNet(SimpleDownloader):
     __name__ = "AlfafileNet"
     __type__ = "downloader"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?(alfafile\.net)/file/(?P<ID>\w+)"
@@ -62,17 +63,27 @@ class AlfafileNet(SimpleDownloader):
                     post={"adcopy_response": response, "adcopy_challenge": challenge},
                 )
 
-                if "Invalid captcha" in self.data:
-                    self.retry_captcha()
+            else:
+                recaptcha = ReCaptcha(self.pyfile)
+                captcha_key = recaptcha.detect_key()
+                if captcha_key:
+                    self.captcha = recaptcha
+                    response = recaptcha.challenge(captcha_key)
+
+                    self.data = self.load(redirect_url,
+                                          post={'g-recaptcha-response': response})
+
                 else:
-                    self.captcha.correct()
+                    self.error(self._("Captcha pattern not found"))
+
+            if "Invalid captcha" in self.data:
+                self.retry_captcha()
+            else:
+                self.captcha.correct()
 
                 m = re.search(self.LINK_PATTERN, self.data)
                 if m is not None:
                     self.link = m.group(1)
-
-            else:
-                self.error(self._("Captcha pattern not found"))
 
         else:
             self.data = json_data["html"]

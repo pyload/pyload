@@ -22,19 +22,23 @@ class TXT(BaseContainer):
             "Default",
         ),
         ("flush", "bool", "Flush list after adding", False),
-        ("encoding", "str", "File encoding", "utf-8"),
+        ("encoding", "str", "File encoding", "utf-8-sig"),
     ]
 
     __description__ = """Read link lists in plain text formats"""
     __license__ = "GPLv3"
-    __authors__ = [("spoob", "spoob@pyload.net"), ("jeix", "jeix@hasnomail.com")]
+    __authors__ = [
+        ("spoob", "spoob@pyload.net"),
+        ("jeix", "jeix@hasnomail.com"),
+        ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com"),
+    ]
 
     def decrypt(self, pyfile):
         try:
             encoding = codecs.lookup(self.config.get("encoding")).name
 
         except Exception:
-            encoding = "utf-8"
+            encoding = "utf-8-sig"
 
         fs_filename = os.fsdecode(pyfile.url)
         with open(fs_filename, encoding=encoding) as txt:

@@ -28,7 +28,7 @@ def parse_file_info(klass, url="", html=""):
 class BaseHoster(BasePlugin):
     __name__ = "BaseHoster"
     __type__ = "base"
-    __version__ = "0.39"
+    __version__ = "0.40"
     __status__ = "stable"
 
     __pattern__ = r"^unmatchable$"
@@ -43,8 +43,7 @@ class BaseHoster(BasePlugin):
 
     URL_REPLACEMENTS = []
 
-    @classmethod
-    def get_info(cls, url="", html=""):
+    def get_info(self, url="", html=""):
         url = fixurl(url, unquote=True)
         info = {
             "name": parse.name(url),
@@ -52,11 +51,11 @@ class BaseHoster(BasePlugin):
             "pattern": {},
             "size": 0,
             "status": 7 if url else 8,
-            "url": replace_patterns(url, cls.URL_REPLACEMENTS),
+            "url": replace_patterns(url, self.URL_REPLACEMENTS),
         }
 
         try:
-            info["pattern"] = re.match(cls.__pattern__, url).groupdict()
+            info["pattern"] = re.match(self.__pattern__, url).groupdict()
 
         except Exception:
             pass
@@ -221,17 +220,18 @@ class BaseHoster(BasePlugin):
         self._update_status()
 
     def grab_info(self):
-        self.log_info(self._("Grabbing link info..."))
+        if self.pyfile.status != 2:
+            self.log_info(self._("Grabbing link info..."))
 
-        old_info = dict(self.info)
-        new_info = self.get_info(replace_patterns(self.pyfile.url, self.URL_REPLACEMENTS), self.data)
+            old_info = dict(self.info)
+            new_info = self.get_info(replace_patterns(self.pyfile.url, self.URL_REPLACEMENTS), self.data)
 
-        self.info.update(new_info)
+            self.info.update(new_info)
 
-        self.log_debug(f"Link info: {self.info}")
-        self.log_debug(f"Previous link info: {old_info}")
+            self.log_debug(f"Link info: {self.info}")
+            self.log_debug(f"Previous link info: {old_info}")
 
-        self.sync_info()
+            self.sync_info()
 
     def check_status(self):
         status = self.pyfile.status

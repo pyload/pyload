@@ -62,4 +62,4 @@ Once you submit your PR, a Docs team member will review your proposal. We may as
 
 ---
 
-###### © 2021 pyLoad team
+###### © 2008-2022 pyLoad team

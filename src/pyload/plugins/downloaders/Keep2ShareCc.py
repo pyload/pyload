@@ -4,7 +4,6 @@ import json
 import re
 
 from pyload.core.network.http.exceptions import BadHeader
-from pyload.core.network.request_factory import get_url
 
 from ..base.simple_downloader import SimpleDownloader
 
@@ -12,7 +11,7 @@ from ..base.simple_downloader import SimpleDownloader
 class Keep2ShareCc(SimpleDownloader):
     __name__ = "Keep2ShareCc"
     __type__ = "downloader"
-    __version__ = "0.45"
+    __version__ = "0.46"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?(keep2share|k2s|keep2s)\.cc/file/(?P<ID>\w+)"
@@ -32,22 +31,18 @@ class Keep2ShareCc(SimpleDownloader):
         ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com"),
     ]
 
-    DISPOSITION = False  # TODO: Recheck in v0.6.x
-
     URL_REPLACEMENTS = [(__pattern__ + ".*", r"https://k2s.cc/file/\g<ID>")]
 
     API_URL = "https://keep2share.cc/api/v2/"
     #: See https://keep2share.github.io/api/ https://github.com/keep2share/api
 
-    @classmethod
-    def api_request(cls, method, **kwargs):
-        html = get_url(cls.API_URL + method, post=json.dumps(kwargs))
+    def api_request(self, method, **kwargs):
+        html = self.load(self.API_URL + method, post=json.dumps(kwargs))
         return json.loads(html)
 
-    @classmethod
-    def api_info(cls, url):
-        file_id = re.match(cls.__pattern__, url).group("ID")
-        file_info = cls.api_request("GetFilesInfo", ids=[file_id], extended_info=False)
+    def api_info(self, url):
+        file_id = re.match(self.__pattern__, url).group("ID")
+        file_info = self.api_request("GetFilesInfo", ids=[file_id], extended_info=False)
 
         if (
             file_info["code"] != 200

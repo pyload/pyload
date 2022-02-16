@@ -3,8 +3,6 @@
 import json
 import re
 
-from pyload.core.network.request_factory import get_url
-
 from ..anticaptchas.HCaptcha import HCaptcha
 from ..anticaptchas.ReCaptcha import ReCaptcha
 from ..base.simple_downloader import SimpleDownloader
@@ -13,7 +11,7 @@ from ..base.simple_downloader import SimpleDownloader
 class NitroflareCom(SimpleDownloader):
     __name__ = "NitroflareCom"
     __type__ = "downloader"
-    __version__ = "0.31"
+    __version__ = "0.38"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?(?:nitro\.download|nitroflare\.com)/view/(?P<ID>[\w^_]+)"
@@ -46,13 +44,12 @@ class NitroflareCom(SimpleDownloader):
 
     URL_REPLACEMENTS = [(r"nitro\.download", "nitroflare.com")]
 
-    @classmethod
-    def api_info(cls, url):
+    def api_info(self, url):
         info = {}
-        file_id = re.search(cls.__pattern__, url).group("ID")
+        file_id = re.search(self.__pattern__, url).group("ID")
 
         data = json.loads(
-            get_url("https://nitroflare.com/api/v2/getFileInfo", get={"files": file_id})
+            self.load("https://nitroflare.com/api/v2/getFileInfo", get={"files": file_id})
         )
 
         if data["type"] == "success":
@@ -60,32 +57,34 @@ class NitroflareCom(SimpleDownloader):
             info["status"] = 2 if fileinfo["status"] == "online" else 1
             info["name"] = fileinfo["name"]
             info["size"] = fileinfo["size"]  #: In bytes
+            info["post_url"] = fileinfo["url"]
 
         return info
 
     def handle_free(self, pyfile):
         #: Used here to load the cookies which will be required later
         self.load(
-            "http://nitroflare.com/ajax/setCookie.php",
+            "https://nitroflare.com/ajax/setCookie.php",
             post={"fileId": self.info["pattern"]["ID"]},
         )
 
-        self.data = self.load(pyfile.url, post={"goToFreePage": ""})
+        self.data = self.load(self.info["post_url"], post={"goToFreePage": ""})
 
         try:
             wait_time = int(re.search(r"var timerSeconds = (\d+);", self.data).group(1))
 
-        except (IndexError, ValueError):
+        except (IndexError, ValueError, AttributeError):
             wait_time = 120
 
-        self.data = self.load(
-            "http://nitroflare.com/ajax/freeDownload.php",
+        data = self.load(
+            "https://nitroflare.com/ajax/freeDownload.php",
             post={"method": "startTimer", "fileId": self.info["pattern"]["ID"]},
+            ref=self.req.last_effective_url
         )
 
-        self.check_errors()
-
         self.set_wait(wait_time)
+
+        self.check_errors(data=data)
 
         inputs = {"method": "fetchDownload"}
 
@@ -93,7 +92,7 @@ class NitroflareCom(SimpleDownloader):
         recaptcha_key = recaptcha.detect_key()
         if recaptcha_key:
             self.captcha = recaptcha
-            response, _ = self.captcha.challenge(recaptcha_key)
+            response = self.captcha.challenge(recaptcha_key)
             inputs["g-recaptcha-response"] = response
         else:
             hcaptcha = HCaptcha(pyfile)
@@ -104,7 +103,7 @@ class NitroflareCom(SimpleDownloader):
                 inputs["g-recaptcha-response"] = inputs["h-captcha-response"] = response
             else:
                 response = self.captcha.decrypt(
-                    "http://nitroflare.com/plugins/cool-captcha/captcha.php"
+                    "https://nitroflare.com/plugins/cool-captcha/captcha.php"
                 )
 
         inputs["captcha"] = response
@@ -112,7 +111,7 @@ class NitroflareCom(SimpleDownloader):
         self.wait()
 
         self.data = self.load(
-            "http://nitroflare.com/ajax/freeDownload.php", post=inputs
+            "https://nitroflare.com/ajax/freeDownload.php", post=inputs
         )
 
         if "The captcha wasn't entered correctly" in self.data:

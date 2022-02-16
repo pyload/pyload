@@ -18,7 +18,7 @@ from .simple_downloader import SimpleDownloader
 class XFSDownloader(SimpleDownloader):
     __name__ = "XFSDownloader"
     __type__ = "downloader"
-    __version__ = "0.85"
+    __version__ = "0.86"
     __status__ = "stable"
 
     __pattern__ = r"^unmatchable$"
@@ -90,7 +90,7 @@ class XFSDownloader(SimpleDownloader):
             domain = self.PLUGIN_DOMAIN.replace(".", r"\.")
             self.LINK_PATTERN = rf'(?:file: "(.+?)"|(https?://(?:www\.)?([^/]*?{domain}|\d+\.\d+\.\d+\.\d+)(\:\d+)?(/d/|(/files)?/\d+/\w+/).+?)["\'<])'
 
-        SimpleDownloader._prepare(self)
+        super(XFSDownloader, self)._prepare()
 
         if self.DIRECT_LINK is None:
             self.direct_dl = self.premium
@@ -229,7 +229,7 @@ class XFSDownloader(SimpleDownloader):
 
         if captcha_key:
             self.captcha = recaptcha
-            inputs["g-recaptcha-response"], _ = recaptcha.challenge(captcha_key)
+            inputs["g-recaptcha-response"] = recaptcha.challenge(captcha_key)
             return
 
         solvemedia = SolveMedia(self.pyfile)

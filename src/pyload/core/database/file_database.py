@@ -353,25 +353,25 @@ class FileDatabaseMethods:
         return PyFile(self.pyload.files, id, *r)
 
     @style.queue
-    def get_job(self, occ):
+    def get_job(self, occupied):
         """
         return pyfile ids, which are suitable for download and dont use a occupied
         plugin.
         """
         # TODO: improve this hardcoded method
         # plugins which are processed in collector
-        pre = "('DLC', 'TXT', 'CCF', 'RSDF')"
+        pre = ("DLC", "TXT", "CCF", "RSDF")
 
-        cmd = "("
-        for i, item in enumerate(occ):
-            if i:
-                cmd += ", "
-            cmd += f"'{item}'"
-
-        cmd += ")"
-        cmd = f"SELECT l.id FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE ((p.queue=1 AND l.plugin NOT IN {cmd}) OR l.plugin IN {pre}) AND l.status IN (2,3,14) ORDER BY p.packageorder ASC, l.linkorder ASC LIMIT 5"
-
-        self.c.execute(cmd)  #: very bad!
+        self.c.execute(
+            f"""
+            SELECT l.id FROM links as l
+            INNER JOIN packages as p ON l.package=p.id
+            WHERE ((p.queue=1 AND l.plugin NOT IN ({",".join("?" * len(occupied))})) OR l.plugin IN ({",".join("?" * len(pre))})) AND l.status IN (2,3,14)
+            ORDER BY p.packageorder ASC, l.linkorder ASC
+            LIMIT 5
+            """,
+            occupied + pre,
+        )
 
         return [x[0] for x in self.c]
 
@@ -380,9 +380,15 @@ class FileDatabaseMethods:
         """
         returns pyfile ids with suited plugins.
         """
-        cmd = f"SELECT l.id FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE l.plugin IN {plugins} AND l.status IN (2,3,14) ORDER BY p.packageorder ASC, l.linkorder ASC LIMIT 5"
-
-        self.c.execute(cmd)  #: very bad!
+        self.c.execute(
+            f"""
+            SELECT l.id FROM links as l
+            INNER JOIN packages as p ON l.package=p.id
+            WHERE l.plugin IN ({",".join("?" * len(plugins))}) AND l.status IN (2,3,14)
+            ORDER BY p.packageorder ASC, l.linkorder ASC LIMIT 5
+            """,
+            plugins,
+        )
 
         return [x[0] for x in self.c]
 

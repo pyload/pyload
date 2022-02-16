@@ -9,7 +9,7 @@ from ..base.simple_downloader import SimpleDownloader
 class FilerNet(SimpleDownloader):
     __name__ = "FilerNet"
     __type__ = "downloader"
-    __version__ = "0.30"
+    __version__ = "0.31"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?filer\.net/get/\w+"
@@ -50,7 +50,7 @@ class FilerNet(SimpleDownloader):
             self.error(self._("Unable to detect hash"))
 
         self.captcha = ReCaptcha(pyfile)
-        response, challenge = self.captcha.challenge()
+        response = self.captcha.challenge()
 
         self.download(
             pyfile.url, post={"g-recaptcha-response": response, "hash": inputs["hash"]}

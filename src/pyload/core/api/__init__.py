@@ -8,29 +8,25 @@
 #           \  /
 #            \/
 
-import re
-
+import json
 import os
+import re
 import time
+from enum import IntFlag
 
-from functools import wraps
-
+from ..datatypes.data import *
+from ..datatypes.enums import *
+from ..datatypes.exceptions import *
 from ..datatypes.pyfile import PyFile
 from ..log_factory import LogFactory
 from ..network.request_factory import get_url
+from ..utils import fs, seconds
 from ..utils.old.packagetools import parse_names
-from ..utils import seconds, fs
-
-import json
-from enum import IntFlag
-
-from ..datatypes.exceptions import *
-from ..datatypes.enums import *
-from ..datatypes.data import *
 
 # contains function names mapped to their permissions
 # unlisted functions are for admins only
 perm_map = {}
+
 
 # decorator only called on init, never initialized, so has no effect on runtime
 def permission(bits):
@@ -67,21 +63,17 @@ class Role(IntFlag):
 
 
 def has_permission(userperms, perms):
-    # bytewise or perms before if needed
+    # bitwise or perms before if needed
     return perms == (userperms & perms)
 
 
-def legacy(func_name):
-    def decorator(func):
-        @wraps(func)
-        def wrapper(self, *args, **kwargs):
-            if not hasattr(self, func_name):
-                setattr(self, func_name, func.__get__(self, self.__class__))
-            return func(self, *args, **kwargs)
+def legacy(legacy_name):
+    class Wrapper:
+        def __new__(cls, func, *args, **kwargs):
+            setattr(func, "__legacy__", legacy_name)
+            return func
 
-        return wrapper
-
-    return decorator
+    return Wrapper
 
 
 # API VERSION
@@ -101,6 +93,21 @@ class Api:
     These can be configured via webinterface.
     Admin user have all permissions, and are the only ones who can access the methods with no specific permission.
     """
+
+    def __new__(cls, core):
+        obj = super(Api, cls).__new__(cls)
+
+        # add methods specified by the @legacy decorator
+        for func_name in dir(obj):
+            if func_name[0] == "_":
+                continue
+
+            func = getattr(obj, func_name)
+            if callable(func) and hasattr(func, "__legacy__"):
+                legacy_name = getattr(func, "__legacy__")
+                setattr(obj, legacy_name, func)
+
+        return obj
 
     def __init__(self, core):
         self.pyload = core
@@ -854,13 +861,13 @@ class Api:
     @permission(Perms.MODIFY)
     def recheck_package(self, package_id):
         """
-        Proofes online status of all files in a package, also a default action when
+        Probes online status of all files in a package, also a default action when
         package is added.
 
         :param package_id:
         :return:
         """
-        self.pyload.files.re_check_package(int(package_id))
+        self.pyload.files.recheck_package(int(package_id))
 
     @legacy("stopAllDownloads")
     @permission(Perms.MODIFY)
@@ -994,7 +1001,7 @@ class Api:
     @permission(Perms.DELETE)
     def delete_finished(self):
         """
-        Deletes all finished files and completly finished packages.
+        Deletes all finished files and completely finished packages.
 
         :return: list of deleted package ids
         """
@@ -1068,7 +1075,7 @@ class Api:
         self.pyload.last_client_connected = time.time()
         task = self.pyload.captcha_manager.get_task()
         if task:
-            task.set_wating_for_user(exclusive=exclusive)
+            task.set_waiting_for_user(exclusive=exclusive)
             data, type, result = task.get_captcha()
             t = CaptchaTask(int(task.id), json.dumps(data), type, result)
             return t
@@ -1337,7 +1344,7 @@ class Api:
     @permission(Perms.STATUS)
     def has_service(self, plugin, func):
         """
-        Checks wether a service is available.
+        Checks whether a service is available.
 
         :param plugin:
         :param func:

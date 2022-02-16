@@ -14,7 +14,7 @@ from pyload.core.api import Destination
 from pyload.core.utils.convert import to_str
 from pyload.core.utils.misc import eval_js
 
-#: url_prefix here is intentional since it should not be affected py path prefix
+#: url_prefix here is intentional since it should not be affected by path prefix
 bp = flask.Blueprint("flash", __name__, url_prefix="/")
 
 
@@ -62,16 +62,21 @@ def add():
 
     urls = [url for url in flask.request.form["urls"].replace(' ', '\n').split("\n") if url.strip()]
     if not urls:
-        return jsonify(False)
+        return "failed no urls\r\n", 500
+
+    pack_password = flask.request.form.get("passwords")
 
     api = flask.current_app.config["PYLOAD_API"]
     try:
         if package:
-            api.add_package(package, urls, Destination.COLLECTOR)
+            pack = api.add_package(package, urls, Destination.COLLECTOR)
         else:
-            api.generate_and_add_packages(urls, Destination.COLLECTOR)
-    except Exception as e:
-        return "failed " + e.args[0] + "\r\n"
+            pack = api.generate_and_add_packages(urls, Destination.COLLECTOR)
+    except Exception as exc:
+        return "failed " + str(exc) + "\r\n", 500
+
+    if pack_password:
+        api.set_package_data(pack, {"password": pack_password})
 
     return "success\r\n"
 
@@ -92,11 +97,16 @@ def addcrypted():
     with open(dlc_path, mode="wb") as fp:
         fp.write(dlc)
 
+    pack_password = flask.request.form.get("passwords")
+
     try:
-        api.add_package(package, [dlc_path], Destination.COLLECTOR)
-    except Exception:
-        flask.abort(500)
+        pack = api.add_package(package, [dlc_path], Destination.COLLECTOR)
+    except Exception as exc:
+        return "failed " + str(exc) + "\r\n", 500
     else:
+        if pack_password:
+            api.set_package_data(pack, {"password": pack_password})
+
         return "success\r\n"
 
 
@@ -108,6 +118,7 @@ def addcrypted2():
     )
     crypted = flask.request.form["crypted"]
     jk = flask.request.form["jk"]
+    pack_password = flask.request.form.get("passwords")
 
     crypted = standard_b64decode(unquote(crypted.replace(" ", "+")))
     jk = eval_js(f"{jk} f()")
@@ -128,12 +139,15 @@ def addcrypted2():
     api = flask.current_app.config["PYLOAD_API"]
     try:
         if package:
-            api.add_package(package, urls, Destination.COLLECTOR)
+            pack = api.add_package(package, urls, Destination.COLLECTOR)
         else:
-            api.generate_and_add_packages(urls, Destination.COLLECTOR)
-    except Exception:
-        return "failed can't add", 500
+            pack = api.generate_and_add_packages(urls, Destination.COLLECTOR)
+    except Exception as exc:
+        return "failed " + str(exc) + "\r\n", 500
     else:
+        if pack_password:
+            api.set_package_data(pack, {"password": pack_password})
+
         return "success\r\n"
 
 

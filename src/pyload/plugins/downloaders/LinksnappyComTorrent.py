@@ -26,7 +26,7 @@ class LinksnappyComTorrent(BaseDownloader):
         ("del_finished", "bool", "Delete downloaded torrents from the server", True)
     ]
 
-    __description__ = """Linksnappy.com torrents crypter plugin"""
+    __description__ = """Linksnappy.com torrents decrypter plugin"""
     __license__ = "GPLv3"
     __authors__ = [("GammaC0de", "nitzo2001[AT}yahoo[DOT]com")]
 

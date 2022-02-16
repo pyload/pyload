@@ -8,6 +8,7 @@
 
     <link rel="stylesheet" type="text/css" href="{{theme_static('vendor/Bootstrap/css/bootstrap.min.css')}}">
     <link rel="stylesheet" type="text/css" href="{{theme_static('vendor/jQuery/jQuery UI/jquery-ui.min.css')}}"/>
+    <link rel="stylesheet" type="text/css" href="{{theme_static('vendor/mdtoast/css/mdtoast.min.css')}}"/>
     <link rel="stylesheet" type="text/css" href="{{theme_static('css/base.css')}}" />
 
     <link rel="icon" href="{{theme_static('img/favicon.ico')}}"/>
@@ -168,7 +169,7 @@
         <button class="btn btn-dark col-xs-3 col-sm-auto"><span class="hidden-sm">{{_('Running:')}}</span><span class="glyphicon glyphicon-download hidden-xs hidden-md hidden-lg"></span> <span id="time"  class="label label-{% if status.download %}success{% else %}danger{% endif %}">{% if status.download %}{{_('on')}}{% else %}{{_('off')}}{% endif %}</span></button>
         <button type="button" class="btn btn-dark col-xs-3 col-sm-auto"><span class="hidden-sm">{{_('Reconnect:')}}</span><span class="glyphicon glyphicon-refresh hidden-xs hidden-md hidden-lg"></span> <span id="reconnect" class="label label-{% if status.reconnect %}success{% else %}danger{% endif %}">{% if status.reconnect %}{{_('on')}}{% else %}{{_('off')}}{% endif %}</span></button>
         <button type="button" class="btn btn-dark col-xs-3 col-sm-auto"><span class="action backlink"><span class="hidden-xs hidden-sm">{{_('Speed:')}} </span><b id="speed">{{status.speed}}</b></span></button>
-        <span class="btn btn-dark col-xs-3 col-sm-auto"><span class="action cog">{{_('Active:')}} <b id="actives" title="{{_('Active')}}">{{status.active}}</b> / <b id="actives_from" title="{{_('Queued')}}">{{status.queue}}</b> | <b id="actives_total" title="{{_('Total')}}">{{status.total}}</b></span></span>
+        <span class="btn btn-dark col-xs-3 col-sm-auto"><span class="action cog">{{_('Queue:')}} <b id="actives" title="{{_('Active')}}">{{status.active}}</b> / <b id="actives_from" title="{{_('Queued')}}">{{status.queue}}</b> | <b id="actives_total" title="{{_('Total')}}">{{status.total}}</b></span></span>
     </div>
 {% endif %}
 
@@ -215,7 +216,7 @@
 </div>
 
 <hr style="clear: both;" />
-<div id="foot" class="navbar navbar-static-bottom navbar-inverse" style="width: 100%; text-align:center;">&copy; 2021 pyLoad team</div>
+<div id="foot" class="navbar navbar-static-bottom navbar-inverse" style="width: 100%; text-align:center;">&copy; 2008-2022 pyLoad team</div>
 
 <div id="goto_top" class="btn-dark hidden" style="position: fixed; width: 25px; height: 25px;background-color: #eeeeee; color: #282828; opacity: 0.5; cursor: pointer; z-index: 10; border-radius: 5px; display: block;" title="{{_('Back to top')}}">
     <div class="glyphicon glyphicon-chevron-up" style="padding-top: 5px; padding-left: 6px; opacity: 0.5;"></div>
@@ -234,7 +235,7 @@
 
 <script type="text/javascript" src="{{theme_static('vendor/jQuery/jquery.min.js')}}"></script>
 <script type="text/javascript" src="{{theme_static('vendor/jQuery/jQuery UI/jquery-ui.min.js')}}"></script>
-<script type="text/javascript" src="{{theme_static('vendor/jQuery/jQuery.peekABar/js/jquery.peekabar.min.js')}}"></script>
+<script type="text/javascript" src="{{theme_static('vendor/mdtoast/js/mdtoast.min.js')}}"></script>
 <script type="text/javascript" src="{{theme_static('vendor/Bootstrap/js/bootstrap.min.js')}}"></script>
 <script type="text/javascript" src="{{theme_template('js/base.js')}}" nopoll={{no_status_polling}}></script>
 

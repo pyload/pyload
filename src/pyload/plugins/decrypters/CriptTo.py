@@ -7,7 +7,6 @@ import json
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
-from pyload.core.network.request_factory import get_url
 from pyload.core.utils.convert import to_str
 
 from ..anticaptchas.ReCaptcha import ReCaptcha
@@ -20,7 +19,7 @@ from ..base.simple_decrypter import SimpleDecrypter
 class CriptTo(SimpleDecrypter):
     __name__ = "CriptTo"
     __type__ = "decrypter"
-    __version__ = "0.03"
+    __version__ = "0.05"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?cript\.to/folder/(?P<ID>\w+)'
@@ -39,12 +38,11 @@ class CriptTo(SimpleDecrypter):
     WEB_LINK_PATTERN = r'href="javascript:void\(0\);" onclick="popup\(\'(.+?)\''
     DLC_LINK_PATTERN = r'onclick="popup\(\'(https://cript\.to/dlc/.+?)\''
 
-    @classmethod
-    def api_info(cls, url):
+    def api_info(self, url):
         info = {}
 
-        folder_id = re.match(cls.__pattern__, url).group('ID')
-        folder_info = json.loads(get_url("https://cript.to/api/v1/folder/info",
+        folder_id = re.match(self.__pattern__, url).group('ID')
+        folder_info = json.loads(self.load("https://cript.to/api/v1/folder/info",
                                          get={'id': folder_id}))
         if folder_info["status"] == "error":
             info["status"] = 8
@@ -124,7 +122,7 @@ class CriptTo(SimpleDecrypter):
                     self.log_debug("ReCaptcha captcha found")
 
                     self.captcha = recaptcha
-                    response, challenge = recaptcha.challenge(captcha_key)
+                    response = recaptcha.challenge(captcha_key)
 
                     inputs["g-recaptcha-response"] = response
 

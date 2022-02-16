@@ -25,56 +25,60 @@ class HotFolder(BaseAddon):
         """Observe folder and file for changes and add container and links"""
     )
     __license__ = "GPLv3"
-    __authors__ = [("RaNaN", "RaNaN@pyload.de")]
+    __authors__ = [
+        ("RaNaN", "RaNaN@pyload.de"),
+        ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com"),
+    ]
 
     def activate(self):
         interval = max(self.config.get('interval'), 20)
         self.periodical.start(interval, threaded=True)
 
     def periodical_task(self):
-        folder = os.fsdecode(self.config.get("folder"))
-        file = os.fsdecode(self.config.get("file"))
+        watch_folder = os.fsdecode(self.config.get("folder"))
+        watch_file = os.fsdecode(self.config.get("file"))
 
         try:
-            if not os.path.isdir(os.path.join(folder, "finished")):
-                os.makedirs(os.path.join(folder, "finished"), exist_ok=True)
+            if not os.path.isdir(os.path.join(watch_folder, "finished")):
+                os.makedirs(os.path.join(watch_folder, "finished"), exist_ok=True)
 
             if self.config.get("watchfile"):
-                with open(file, mode="a+") as fp:
+                with open(watch_file, mode="a+") as fp:
                     fp.seek(0)
                     content = fp.read().strip()
 
-                    if content:
-                        fp = open(file, mode="w")
-                        fp.close()
+                if content:
+                    fp = open(watch_file, mode="w")
+                    fp.close()
 
-                    name = "{}_{}.txt".format(file, time.strftime("%H-%M-%S_%d%b%Y"))
+                    name = "{}_{}.txt".format(watch_file, time.strftime("%H-%M-%S_%d%b%Y"))
 
-                    with open(os.path.join(folder, "finished", name), mode="wb") as fp:
+                    with open(os.path.join(watch_folder, "finished", name), mode="w") as fp:
                         fp.write(content)
 
-                    self.pyload.api.add_package(fp.name, [fp.name], 1)
+                    self.pyload.api.add_package(name, [fp.name], 1)
 
-            for entry in os.listdir(folder):
-                path = os.path.join(folder, entry)
+            for entry in os.listdir(watch_folder):
+                entry_file = os.path.join(watch_folder, entry)
 
                 if (
-                    not os.path.isfile(path)
+                    not os.path.isfile(entry_file)
                     or entry.endswith("~")
                     or entry.startswith("#")
                     or entry.startswith(".")
+                    or os.path.realpath(watch_file) == os.path.realpath(entry_file)
                 ):
                     continue
 
-                newpath = os.path.join(
-                    folder,
+                new_path = os.path.join(
+                    watch_folder,
                     "finished",
                     "tmp_" + entry if self.config.get("delete") else entry,
                 )
-                shutil.move(path, newpath)
+                shutil.move(entry_file, new_path)
 
                 self.log_info(self._("Added {} from HotFolder").format(entry))
-                self.pyload.api.add_package(entry, [newpath], 1)
+                self.pyload.api.add_package(entry, [new_path], 1)
 
         except (IOError, OSError) as exc:
             self.log_error(

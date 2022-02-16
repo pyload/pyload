@@ -19,8 +19,8 @@ class LinkifierCom(MultiAccount):
     __authors__ = [("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
     __config__ = [
-        ("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),
-        ("mh_list", "str", "Hoster list (comma separated)", ""),
+        ("mh_mode", "all;listed;unlisted", "Filter downloaders to use", "all"),
+        ("mh_list", "str", "Downloader list (comma separated)", ""),
         ("mh_interval", "int", "Reload interval in hours", 12),
     ]
 

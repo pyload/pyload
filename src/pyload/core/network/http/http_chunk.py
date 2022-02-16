@@ -11,7 +11,7 @@ from ntpath import basename as ntpath_basename
 from posixpath import basename as posixpath_basename
 
 import pycurl
-from pyload.core.utils import purge
+from pyload.core.utils import purge, parse
 
 from .http_request import HTTPRequest
 
@@ -222,7 +222,7 @@ class HTTPChunk(HTTPRequest):
                 self.p.size = int(size.group(1))
                 self.p.chunk_support = True
 
-        self.header_parsed = True
+            self.header_parsed = True
 
     def write_body(self, buf):
         #: ignore BOM, it confuses unrar
@@ -261,6 +261,7 @@ class HTTPChunk(HTTPRequest):
         """
         parse data from received header.
         """
+        location = None
         for orgline in self.response_header.splitlines():
             try:
                 orgline = orgline.decode("utf-8")
@@ -273,6 +274,9 @@ class HTTPChunk(HTTPRequest):
             line = orgline.strip().lower()
             if line.startswith("accept-ranges") and "bytes" in line:
                 self.p.chunk_support = True
+
+            elif line.startswith("location"):
+                location = orgline.split(":", 1)[1].strip()
 
             elif line.startswith("content-disposition"):
                 disposition_value = orgline.split(":", 1)[1].strip()
@@ -329,6 +333,13 @@ class HTTPChunk(HTTPRequest):
                             except UnicodeDecodeError:
                                 self.log.warning("Content-Disposition: | error: Error when decoding string from iso-8859-1.")
                                 continue
+
+                    elif disposition_type.lower() == "attachment":
+                        if location is not None:
+                            fname = parse.name(location)
+                        else:
+                            fname = parse.name(self.p.url)
+
                     else:
                         continue
 
@@ -342,7 +353,7 @@ class HTTPChunk(HTTPRequest):
                 self.p.update_disposition(fname)
 
             if not self.resume and line.startswith("content-length"):
-                self.p.size = int(line.split(":")[1])
+                self.p.size = int(line.split(":", 1)[1])
 
         self.header_parsed = True
 

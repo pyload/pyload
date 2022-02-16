@@ -10,7 +10,7 @@ from ..base.downloader import BaseDownloader
 class CloudMailRu(BaseDownloader):
     __name__ = "CloudMailRu"
     __type__ = "downloader"
-    __version__ = "0.04"
+    __version__ = "0.05"
     __status__ = "testing"
 
     __pattern__ = r"https?://cloud\.mail\.ru/dl\?q=(?P<QS>.+)"
@@ -28,11 +28,10 @@ class CloudMailRu(BaseDownloader):
 
     OFFLINE_PATTERN = r'"error":\s*"not_exists"'
 
-    @classmethod
-    def get_info(cls, url="", html=""):
+    def get_info(self, url="", html=""):
         info = super().get_info(url, html)
 
-        qs = re.match(cls.__pattern__, url).group('QS')
+        qs = re.match(self.__pattern__, url).group('QS')
         file_info = json.loads(base64.b64decode(qs).decode("utf-8"))
 
         info.update({

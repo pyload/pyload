@@ -18,12 +18,12 @@ class MultiAccount(BaseAccount):
 
     __config__ = [
         ("enabled", "bool", "Activated", True),
-        ("mh_mode", "all;listed;unlisted", "Hosters to use", "all"),
-        ("mh_list", "str", "Hoster list (comma separated)", ""),
+        ("mh_mode", "all;listed;unlisted", "Filter downloaders to use", "all"),
+        ("mh_list", "str", "Downloader list (comma separated)", ""),
         ("mh_interval", "int", "Reload interval in hours", 12),
     ]
 
-    __description__ = """Multi-hoster account plugin"""
+    __description__ = """Multi-downloader account plugin"""
     __license__ = "GPLv3"
     __authors__ = [
         ("Walter Purcaro", "vuolter@gmail.com"),
@@ -92,7 +92,7 @@ class MultiAccount(BaseAccount):
         else:
             self.log_warning(
                 self._(
-                    "Multi-hoster feature will be deactivated due missing plugin reference"
+                    "Multi-downloader feature will be deactivated due missing plugin reference"
                 )
             )
 
@@ -144,7 +144,7 @@ class MultiAccount(BaseAccount):
 
         except Exception as exc:
             self.log_warning(
-                self._("Error loading hoster list for user `{}`").format(self.user),
+                self._("Error loading downloader list for user `{}`").format(self.user),
                 exc,
                 exc_info=self.pyload.debug > 1,
                 stack_info=self.pyload.debug > 2,
@@ -152,7 +152,7 @@ class MultiAccount(BaseAccount):
 
         finally:
             self.log_debug(
-                "Hoster list for user `{}`: {}".format(
+                "Downloader list for user `{}`: {}".format(
                     self.user, self.info["data"]["hosters"]
                 )
             )
@@ -160,7 +160,7 @@ class MultiAccount(BaseAccount):
 
     def grab_hosters(self, user, password, data):
         """
-        Load list of supported hoster.
+        Load list of supported downloaders.
 
         :return: List of domain names
         """
@@ -398,15 +398,6 @@ class MultiAccount(BaseAccount):
 
                 return
 
-        #: Make sure we have one active event
-        try:
-            self.pyload.addon_manager.remove_event(
-                "plugin_updated", self.plugins_updated
-            )
-
-        except ValueError:
-            pass
-
         self.pyload.addon_manager.add_event("plugin_updated", self.plugins_updated)
 
         if refresh or not reloading:
@@ -444,13 +435,9 @@ class MultiAccount(BaseAccount):
         """
         self.log_info(self._("Reverting back to default hosters"))
 
-        try:
-            self.pyload.addon_manager.remove_event(
-                "plugin_updated", self.plugins_updated
-            )
-
-        except ValueError:
-            pass
+        self.pyload.addon_manager.remove_event(
+            "plugin_updated", self.plugins_updated
+        )
 
         self.periodical.stop()
 
