@@ -34,7 +34,7 @@ def expose(func):
 
 class BaseAddon(BasePlugin):
     __name__ = "BaseAddon"
-    __type__ = "addon"  # TODO: Change to `addon` in 0.6.x
+    __type__ = "addon"
     __version__ = "0.56"
     __status__ = "stable"
 
