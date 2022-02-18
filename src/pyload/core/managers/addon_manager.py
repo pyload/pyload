@@ -211,10 +211,7 @@ class AddonManager:
     def download_finished(self, pyfile):
         for plugin in self.plugins:
             if plugin.is_activated():
-                if "download_finished" in plugin.__threaded__:
-                    self.start_thread(plugin.download_finished, pyfile)
-                else:
-                    plugin.download_finished(pyfile)
+                plugin.download_finished(pyfile)
 
         self.dispatch_event("download_finished", pyfile)
 
@@ -223,10 +220,7 @@ class AddonManager:
     def download_failed(self, pyfile):
         for plugin in self.plugins:
             if plugin.is_activated():
-                if "download_failed" in plugin.__threaded__:
-                    self.start_thread(plugin.download_finished, pyfile)
-                else:
-                    plugin.download_failed(pyfile)
+                plugin.download_failed(pyfile)
 
         self.dispatch_event("download_failed", pyfile)
 
@@ -234,10 +228,7 @@ class AddonManager:
     def package_finished(self, package):
         for plugin in self.plugins:
             if plugin.is_activated():
-                if "package_finished" in plugin.__threaded__:
-                    self.start_thread(plugin.package_finished, package)
-                else:
-                    plugin.package_finished(package)
+                plugin.package_finished(package)
 
         self.dispatch_event("package_finished", package)
 

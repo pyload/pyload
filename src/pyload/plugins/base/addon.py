@@ -38,8 +38,6 @@ class BaseAddon(BasePlugin):
     __version__ = "0.56"
     __status__ = "stable"
 
-    __threaded__ = []  # TODO: Remove in 0.6.x
-
     __description__ = """Base addon plugin"""
     __license__ = "GPLv3"
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
