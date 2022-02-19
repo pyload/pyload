@@ -77,8 +77,7 @@ def write_pid_file(pid_file):
 
 
 def delete_pid_file(pid_file):
-    if read_pid_file(pid_file):
-        sys.stdout.write(f"Deleting old pidfile {pid_file}\n")
+    if os.path.isfile(pid_file):
         os.remove(pid_file)
 
 
