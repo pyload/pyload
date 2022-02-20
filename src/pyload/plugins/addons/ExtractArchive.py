@@ -166,14 +166,6 @@ class ExtractArchive(BaseAddon):
 
         self.extracting = False
 
-    #: Deprecated method, use `extract_package` instead
-    @expose
-    def extract_package(self, *args, **kwargs):
-        """
-        See `extract_package`
-        """
-        return self.extract_package(*args, **kwargs)
-
     @expose
     def extract_package(self, *ids):
         """
@@ -578,14 +570,6 @@ class ExtractArchive(BaseAddon):
 
         raise Exception(self._("Extract failed"))
 
-    #: Deprecated method, use `get_passwords` instead
-    @expose
-    def get_passwords(self, *args, **kwargs):
-        """
-        See `get_passwords`
-        """
-        return self.get_passwords(*args, **kwargs)
-
     @expose
     def get_passwords(self, reload=True):
         """
@@ -615,14 +599,6 @@ class ExtractArchive(BaseAddon):
 
         else:
             self.passwords = passwords
-
-    #: Deprecated method, use `add_password` instead
-    @expose
-    def add_password(self, *args, **kwargs):
-        """
-        See `add_password`
-        """
-        return self.add_password(*args, **kwargs)
 
     @expose
     def add_password(self, password):
