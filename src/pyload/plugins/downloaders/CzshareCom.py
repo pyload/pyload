@@ -3,6 +3,7 @@
 import re
 
 from pyload.core.utils import parse
+from pyload.core.utils.convert import to_bytes
 
 from ..base.simple_downloader import SimpleDownloader
 
@@ -152,10 +153,10 @@ class CzshareCom(SimpleDownloader):
         #: Check download
         check = self.scan_download(
             {
-                "temp offline": re.compile(r"^Soubor je do.*asn.* nedostupn.*$"),
-                "credit": re.compile(r"^Nem.*te dostate.*n.* kredit.$"),
-                "multi-dl": re.compile(self.MULTIDL_PATTERN),
-                "captcha": "<li>Zadaný ověřovací kód nesouhlasí!</li>",
+                "temp offline": re.compile(rb"^Soubor je do.*asn.* nedostupn.*$"),
+                "credit": re.compile(rb"^Nem.*te dostate.*n.* kredit.$"),
+                "multi-dl": re.compile(to_bytes(self.MULTIDL_PATTERN)),
+                "captcha": to_bytes("<li>Zadaný ověřovací kód nesouhlasí!</li>"),
             }
         )
 

@@ -54,7 +54,7 @@ class SimplydebridCom(MultiDownloader):
         self.wait(5)
 
     def check_download(self):
-        if self.scan_download({"error": "No address associated with hostname"}):
+        if self.scan_download({"error": b"No address associated with hostname"}):
             self.retry(24, timedelta(minutes=3).total_seconds(), self._("Bad file downloaded"))
 
         return MultiDownloader.check_download(self)

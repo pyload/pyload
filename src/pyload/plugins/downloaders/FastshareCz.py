@@ -3,6 +3,8 @@
 import re
 from datetime import timedelta
 
+from pyload.core.utils.convert import to_bytes
+
 from ..base.simple_downloader import SimpleDownloader
 
 
@@ -67,10 +69,10 @@ class FastshareCz(SimpleDownloader):
         check = self.scan_download(
             {
                 "parallel-dl": re.compile(
-                    r"<title>FastShare.cz</title>|<script.*>alert\('Despite FREE can download only one file at a time.'\)"
+                    rb"<title>FastShare.cz</title>|<script.*>alert\('Despite FREE can download only one file at a time.'\)"
                 ),
-                "wrong captcha": re.compile(r"Download for FREE"),
-                "credit": re.compile(self.CREDIT_ERROR),
+                "wrong captcha": re.compile(rb"Download for FREE"),
+                "credit": re.compile(to_bytes(self.CREDIT_ERROR)),
             }
         )
 

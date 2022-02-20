@@ -361,12 +361,13 @@ class BaseDownloader(BaseHoster):
         with open(dl_file, mode="rb") as fp:
             content = fp.read(read_size)
 
-        #: Produces encoding errors, better log to other file in the future?
-        # self.log_debug(f"Content: {content}")
         for name, rule in rules.items():
-            if isinstance(rule, str):
+            if isinstance(rule, bytes):
                 if rule in content:
                     return name
+
+            elif isinstance(rule, str):
+                raise TypeError(f"Cannot check binary data with string rule '{name}'")
 
             elif hasattr(rule, "search"):
                 m = rule.search(content)

@@ -178,11 +178,11 @@ class LibgenIo(BaseDownloader):
         errmsg = self.scan_download(
             {
                 "Html error": re.compile(
-                    r"(?i)\A(?:\s*<.+>)?((?:[\w\s]*(?:error)\s*\:?)?\s*\d{3})(?:\Z|\s+)"
+                    rb"\A(?:\s*<.+>)?((?:[\w\s]*(?:error)\s*\:?)?\s*\d{3})(?:\Z|\s+)"
                 ),
-                "Html file": re.compile(r"(?i)\A\s*<!DOCTYPE html"),
+                "Html file": re.compile(rb"\A\s*<!DOCTYPE html"),
                 "Request error": re.compile(
-                    r"(?i)an error occured while processing your request"
+                    rb"an error occured while processing your request"
                 ),
             }
         )

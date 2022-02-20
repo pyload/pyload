@@ -83,7 +83,7 @@ class FiregetCom(SimpleDownloader):
         self.download(pyfile.url, post=inputs)
 
     def check_download(self):
-        check = self.scan_download({"wrong_captcha": ">Wrong captcha<"})
+        check = self.scan_download({"wrong_captcha": b">Wrong captcha<"})
 
         if check == "wrong_captcha":
             self.captcha.invalid()

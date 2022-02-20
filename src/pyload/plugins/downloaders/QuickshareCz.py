@@ -61,7 +61,7 @@ class QuickshareCz(SimpleDownloader):
         else:
             self.handle_free(pyfile)
 
-        if self.scan_download({"error": re.compile(r"\AChyba!")}, read_size=100):
+        if self.scan_download({"error": re.compile(rb"\AChyba!")}, read_size=100):
             self.fail(self._("File not found or plugin defect"))
 
     def handle_free(self, pyfile):

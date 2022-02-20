@@ -43,7 +43,7 @@ class LetsuploadCo(SimpleDownloader):
 
     def check_download(self):
         check = self.scan_download(
-            {"Html file": re.compile(r'\A\s*<script type=["\']text/javascript["\']')}
+            {"Html file": re.compile(rb'\A\s*<script type=["\']text/javascript["\']')}
         )
 
         if check is not None:

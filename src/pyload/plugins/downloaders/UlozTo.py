@@ -7,6 +7,7 @@ import urllib.parse
 
 import pycurl
 from pyload.core.utils import parse
+from pyload.core.utils.convert import to_bytes
 
 from ..anticaptchas.ReCaptcha import ReCaptcha
 from ..base.simple_downloader import SimpleDownloader
@@ -246,12 +247,12 @@ class UlozTo(SimpleDownloader):
     def check_download(self):
         check = self.scan_download(
             {
-                "wrong_captcha": ">An error ocurred while verifying the user",
-                "offline": re.compile(self.OFFLINE_PATTERN),
-                "passwd": self.PASSWD_PATTERN,
+                "wrong_captcha": b">An error ocurred while verifying the user",
+                "offline": re.compile(to_bytes(self.OFFLINE_PATTERN)),
+                "passwd": to_bytes(self.PASSWD_PATTERN),
                 #: Paralell dl, server overload etc.
-                "server_error": "<h1>Z Tvého počítače se již stahuje",
-                "not_found": "<title>Ulož.to</title>",
+                "server_error": to_bytes("<h1>Z Tvého počítače se již stahuje"),
+                "not_found": to_bytes("<title>Ulož.to</title>"),
             }
         )
 
