@@ -93,14 +93,6 @@ class UpdateManager(BaseAddon):
             ):
                 self.pyload.api.restart()
 
-    #: Deprecated method, use `autoreload_plugins` instead
-    @expose
-    def autoreload_plugins(self, *args, **kwargs):
-        """
-        See `autoreload_plugins`
-        """
-        return self.autoreload_plugins(*args, **kwargs)
-
     @expose
     def autoreload_plugins(self):
         """
@@ -401,14 +393,6 @@ class UpdateManager(BaseAddon):
                 )  # TODO: Remove rstrip in 0.6.x
 
         return updated
-
-    #: Deprecated method, use `remove_plugins` instead
-    @expose
-    def remove_plugins(self, *args, **kwargs):
-        """
-        See `remove_plugins`
-        """
-        return self.remove_plugins(*args, **kwargs)
 
     @expose
     def remove_plugins(self, plugin_ids):
