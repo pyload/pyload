@@ -43,7 +43,7 @@ def rpc(func, args=""):
     try:
         response = call_api(func, *args, **kwargs)
     except Exception as exc:
-        response = jsonify(error=exc, traceback=traceback.format_exc()), 500
+        response = jsonify(error=str(exc), traceback=traceback.format_exc()), 500
 
     return response
 
