@@ -9,7 +9,7 @@ from ..base.addon import BaseAddon, expose
 class ExternalScripts(BaseAddon):
     __name__ = "ExternalScripts"
     __type__ = "addon"
-    __version__ = "0.75"
+    __version__ = "0.76"
     __status__ = "testing"
 
     __config__ = [
@@ -41,6 +41,7 @@ class ExternalScripts(BaseAddon):
             "download_processed",
             "archive_extract_failed",
             "archive_extracted",
+            "archive_processed",
             # TODO: Invert 'package_finished', 'package_processed' order in
             # 0.6.x
             "package_finished",
@@ -49,8 +50,6 @@ class ExternalScripts(BaseAddon):
             "package_failed",
             "package_extract_failed",
             "package_extracted",
-            # TODO: Invert `all_downloads_processed`,
-            # `all_downloads_finished` order in 0.6.x
             "all_downloads_processed",
             "all_downloads_finished",
             "all_archives_extracted",
@@ -60,6 +59,7 @@ class ExternalScripts(BaseAddon):
         self.event_map = {
             "archive_extract_failed": "archive_extract_failed",
             "archive_extracted": "archive_extracted",
+            "archive_processed": "archive_processed",
             "package_extract_failed": "package_extract_failed",
             "package_extracted": "package_extracted",
             "all_archives_extracted": "all_archives_extracted",
@@ -175,49 +175,71 @@ class ExternalScripts(BaseAddon):
                     p.communicate()
 
     def pyload_updated(self, etag):
+        """plugins were updated by UpdateManager"""
         self.call_script("pyload_updated", etag)
 
     def pyload_start(self):
+        """pyload was just started"""
         self.call_script("pyload_start")
 
     def exit(self):
+        """deprecated method, use pyload_stop or pyload_restart instead"""
         event = "restart" if self.pyload._do_restart else "stop"
         self.call_script("pyload_" + event, lock=True)
 
     def before_reconnect(self, ip):
+        """called before reconnecting"""
         self.call_script("before_reconnect", ip)
 
     def after_reconnect(self, ip, oldip):
+        """called after reconnecting"""
         self.call_script("after_reconnect", ip, oldip)
 
     def download_preparing(self, pyfile):
+        """a download was just queued and will be prepared now"""
         args = [pyfile.id, pyfile.name, None, pyfile.pluginname, pyfile.url]
         self.call_script("download_preparing", *args)
 
     def download_failed(self, pyfile):
+        """download was failed"""
         file = pyfile.plugin.last_download
         args = [pyfile.id, pyfile.name, file, pyfile.pluginname, pyfile.url]
         self.call_script("download_failed", *args)
 
     def download_finished(self, pyfile):
+        """download successfully finished"""
         file = pyfile.plugin.last_download
         args = [pyfile.id, pyfile.name, file, pyfile.pluginname, pyfile.url, pyfile.package().name]
         self.call_script("download_finished", *args)
 
     def download_processed(self, pyfile):
+        """download was precessed"""
         file = pyfile.plugin.last_download
         args = [pyfile.id, pyfile.name, file, pyfile.pluginname, pyfile.url]
         self.call_script("download_processed", *args)
 
     def archive_extract_failed(self, pyfile, archive):
+        """archive extraction failed"""
         args = [pyfile.id, pyfile.name, archive.filename, archive.out, archive.files]
         self.call_script("archive_extract_failed", *args)
 
     def archive_extracted(self, pyfile, archive):
+        """archive was successfully extracted"""
         args = [pyfile.id, pyfile.name, archive.filename, archive.out, archive.files]
         self.call_script("archive_extracted", *args)
 
+    def archive_processed(self, pypack):
+        """package was either extracted (successfully or not) or ignored because not an archive"""
+        dl_folder = self.pyload.config.get("general", "storage_folder")
+
+        if self.pyload.config.get("general", "folder_per_package"):
+            dl_folder = os.path.join(dl_folder, pypack.folder)
+
+        args = [pypack.id, pypack.name, dl_folder, pypack.password]
+        self.call_script("archive_processed", *args)
+
     def package_finished(self, pypack):
+        """package finished successfully"""
         dl_folder = self.pyload.config.get("general", "storage_folder")
 
         if self.pyload.config.get("general", "folder_per_package"):
@@ -227,6 +249,7 @@ class ExternalScripts(BaseAddon):
         self.call_script("package_finished", *args)
 
     def package_processed(self, pypack):
+        """package was processed"""
         dl_folder = self.pyload.config.get("general", "storage_folder")
 
         if self.pyload.config.get("general", "folder_per_package"):
@@ -236,6 +259,7 @@ class ExternalScripts(BaseAddon):
         self.call_script("package_processed", *args)
 
     def package_deleted(self, pid):
+        """package wad deleted from the queue"""
         dl_folder = self.pyload.config.get("general", "storage_folder")
         pdata = self.pyload.api.get_package_info(pid)
 
@@ -246,6 +270,7 @@ class ExternalScripts(BaseAddon):
         self.call_script("package_deleted", *args)
 
     def package_failed(self, pypack):
+        """package failed somehow"""
         dl_folder = self.pyload.config.get("general", "storage_folder")
 
         if self.pyload.config.get("general", "folder_per_package"):
@@ -255,6 +280,7 @@ class ExternalScripts(BaseAddon):
         self.call_script("package_failed", *args)
 
     def package_extract_failed(self, pypack):
+        """package extraction failed"""
         dl_folder = self.pyload.config.get("general", "storage_folder")
 
         if self.pyload.config.get("general", "folder_per_package"):
@@ -264,6 +290,7 @@ class ExternalScripts(BaseAddon):
         self.call_script("package_extract_failed", *args)
 
     def package_extracted(self, pypack):
+        """package was successfully extracted"""
         dl_folder = self.pyload.config.get("general", "storage_folder")
 
         if self.pyload.config.get("general", "folder_per_package"):
@@ -273,13 +300,17 @@ class ExternalScripts(BaseAddon):
         self.call_script("package_extracted", *args)
 
     def all_downloads_finished(self):
+        """every download in queue is finished successfully"""
         self.call_script("all_downloads_finished")
 
     def all_downloads_processed(self):
+        """every download was handled (successfully or not), pyload would idle afterwards"""
         self.call_script("all_downloads_processed")
 
     def all_archives_extracted(self):
+        """all archives were extracted"""
         self.call_script("all_archives_extracted")
 
     def all_archives_processed(self):
+        """every archive was handled (successfully or not)"""
         self.call_script("all_archives_processed")
