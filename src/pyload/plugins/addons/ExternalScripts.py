@@ -201,7 +201,7 @@ class ExternalScripts(BaseAddon):
         self.call_script("download_preparing", *args)
 
     def download_failed(self, pyfile):
-        """download was failed"""
+        """download has failed"""
         file = pyfile.plugin.last_download
         args = [pyfile.id, pyfile.name, file, pyfile.pluginname, pyfile.url]
         self.call_script("download_failed", *args)
