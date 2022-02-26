@@ -55,18 +55,23 @@ except ImportError:
 
 
 class ArchiveQueue(object):
-
     def __init__(self, plugin, storage):
         self.plugin = plugin
         self.storage = storage
+        self.length = 0
+
+    def __len__(self):
+        return self.length
 
     def get(self):
         return self.plugin.db.retrieve(self.storage, default=[])
 
     def set(self, value):
+        self.length = len(value)
         return self.plugin.db.store(self.storage, value)
 
     def delete(self):
+        self.length = 0
         return self.plugin.db.delete(self.storage)
 
     def add(self, item):
@@ -93,7 +98,7 @@ class ArchiveQueue(object):
 class ExtractArchive(Addon):
     __name__ = "ExtractArchive"
     __type__ = "hook"
-    __version__ = "1.70"
+    __version__ = "1.71"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", False),
@@ -126,6 +131,7 @@ class ExtractArchive(Addon):
         self.queue = ArchiveQueue(self, "Queue")
 
         self.extracting = False
+        self.extracted = 0
         self.last_package = False
         self.extractors = []
         self.passwords = []
@@ -167,15 +173,15 @@ class ExtractArchive(Addon):
 
         packages = self.queue.get()
         while packages:
-            if self.last_package:  #: Set by self.all_downloads_processed()
+            if self.extract(packages, thread):
+                self.extracted += 1
+
+            if self.last_package and len(self.queue) == 0:  #: last_package is set by all_downloads_processed()
                 self.last_package = False
-                if self.extract(packages, thread):  # @NOTE: check only if all gone fine, no failed reporting for now
+                if self.extracted:
+                    self.extracted = 0
                     self.manager.dispatchEvent("all_archives_extracted")
                 self.manager.dispatchEvent("all_archives_processed")
-
-            else:
-                if self.extract(packages, thread):  # @NOTE: check only if all gone fine, no failed reporting for now
-                    pass
 
             packages = self.queue.get()  #: Check for packages added during extraction
 
@@ -213,8 +219,8 @@ class ExtractArchive(Addon):
             self.extract_queued()
 
     @Expose
-    def extract(self, ids, thread=None):  # @TODO: Use pypack, not pid to improve method usability
-        if not ids:
+    def extract(self, package_ids, thread=None):  # @TODO: Use pypack, not pid to improve method usability
+        if not package_ids:
             return False
 
         extracted = []
@@ -243,11 +249,11 @@ class ExtractArchive(Addon):
         dl_folder = self.pyload.config.get("general", "download_folder")
 
         #: Iterate packages -> extractors -> targets
-        for pid in ids:
-            pypack = self.pyload.files.getPackage(pid)
+        for package_id in package_ids:
+            pypack = self.pyload.files.getPackage(package_id)
 
             if not pypack:
-                self.queue.remove(pid)
+                self.queue.remove(package_id)
                 continue
 
             self.log_info(_("Check package: %s") % pypack.name)
@@ -286,7 +292,7 @@ class ExtractArchive(Addon):
                     files_ids = filter(lambda file_id: any([Extractor.archivetype(file_id[1]) in extensions
                                                             for Extractor in self.extractors]), files_ids)
 
-                #: Sort by filename to ensure (or at least try) that a multivolume archive is targeted by its first part
+                #: Sort by filename to ensure (or at least try) that a multi-volume archive is targeted by its first part
                 #: This is important because, for example, UnRar ignores preceding parts in listing mode
                 files_ids.sort(key=lambda file_id: file_id[1])
 
@@ -334,8 +340,9 @@ class ExtractArchive(Addon):
                                 success = False
                                 continue
 
-                            #: Remove processed file and related multiparts from list
-                            files_ids = [(_fid, _fname, _fout) for _fid, _fname, _fout in files_ids
+                            #: Remove processed file and related multi-parts from list
+                            files_ids = [(_fid, _fname, _fout)
+                                         for _fid, _fname, _fout in files_ids
                                          if _fname not in chunks]
 
                             self.log_debug("Extracted files: %s" % new_files)
@@ -382,11 +389,11 @@ class ExtractArchive(Addon):
                             else:
                                 self.log_warning("Not deleting pack folder %s, folder not empty" % pack_dl_folder)
 
-                    extracted.append(pid)
+                    extracted.append(package_id)
                     self.manager.dispatchEvent("package_extracted", pypack)
 
                 else:
-                    failed.append(pid)
+                    failed.append(package_id)
                     self.manager.dispatchEvent("package_extract_failed", pypack)
 
             else:
@@ -399,9 +406,11 @@ class ExtractArchive(Addon):
                 except OSError:
                     pass
 
-            self.queue.remove(pid)
+            self.queue.remove(package_id)
 
-        return True if not failed else False
+            self.manager.dispatchEvent("archive_processed", pypack)
+
+        return True if extracted else False
 
     def _extract(self, pyfile, archive, password):
         name = os.path.basename(archive.filename)
