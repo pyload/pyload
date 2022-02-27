@@ -20,14 +20,20 @@ class ArchiveQueue:
     def __init__(self, plugin, storage):
         self.plugin = plugin
         self.storage = storage
+        self.length = 0
+
+    def __len__(self):
+        return self.length
 
     def get(self):
         return self.plugin.db.retrieve(self.storage, default=[])
 
     def set(self, value):
+        self.length = len(value)
         return self.plugin.db.store(self.storage, value)
 
     def delete(self):
+        self.length = 0
         return self.plugin.db.delete(self.storage)
 
     def add(self, item):
@@ -54,7 +60,7 @@ class ArchiveQueue:
 class ExtractArchive(BaseAddon):
     __name__ = "ExtractArchive"
     __type__ = "addon"
-    __version__ = "1.70"
+    __version__ = "1.71"
     __status__ = "testing"
 
     __config__ = [
@@ -103,6 +109,7 @@ class ExtractArchive(BaseAddon):
         self.queue = ArchiveQueue(self, "Queue")
 
         self.extracting = False
+        self.extracted = 0
         self.last_package = False
         self.extractors = []
         self.passwords = []
@@ -148,19 +155,15 @@ class ExtractArchive(BaseAddon):
 
         packages = self.queue.get()
         while packages:
-            if self.last_package:  #: Set by all_downloads_processed()
+            if self.extract(packages, thread):
+                self.extracted += 1
+
+            if self.last_package and len(self.queue) == 0:  #: last_package is set by all_downloads_processed()
                 self.last_package = False
-                if self.extract(
-                    packages, thread
-                ):  # NOTE: check only if all gone fine, no failed reporting for now
+                if self.extracted:
+                    self.extracted = 0
                     self.m.dispatch_event("all_archives_extracted")
                 self.m.dispatch_event("all_archives_processed")
-
-            else:
-                if self.extract(
-                    packages, thread
-                ):  # NOTE: check only if all gone fine, no failed reporting for now
-                    pass
 
             packages = self.queue.get()  #: Check for packages added during extraction
 
@@ -191,9 +194,9 @@ class ExtractArchive(BaseAddon):
 
     @expose
     def extract(
-        self, ids, thread=None
+        self, package_ids, thread=None
     ):  # TODO: Use pypack, not pid to improve method usability
-        if not ids:
+        if not package_ids:
             return False
 
         extracted = []
@@ -224,11 +227,11 @@ class ExtractArchive(BaseAddon):
         dl_folder = self.pyload.config.get("general", "storage_folder")
 
         #: Iterate packages -> extractors -> targets
-        for pid in ids:
-            pypack = self.pyload.files.get_package(pid)
+        for package_id in package_ids:
+            pypack = self.pyload.files.get_package(package_id)
 
             if not pypack:
-                self.queue.remove(pid)
+                self.queue.remove(package_id)
                 continue
 
             self.log_info(self._("Check package: {}").format(pypack.name))
@@ -337,7 +340,7 @@ class ExtractArchive(BaseAddon):
                                 success = False
                                 continue
 
-                            #: Remove processed file and related multiparts from list
+                            #: Remove processed file and related multi-parts from list
                             files_ids = [
                                 (_fid, _fname, _fout)
                                 for _fid, _fname, _fout in files_ids
@@ -403,11 +406,11 @@ class ExtractArchive(BaseAddon):
                                     )
                                 )
 
-                    extracted.append(pid)
+                    extracted.append(package_id)
                     self.m.dispatch_event("package_extracted", pypack)
 
                 else:
-                    failed.append(pid)
+                    failed.append(package_id)
                     self.m.dispatch_event("package_extract_failed", pypack)
 
             else:
@@ -420,9 +423,11 @@ class ExtractArchive(BaseAddon):
                 except OSError:
                     pass
 
-            self.queue.remove(pid)
+            self.queue.remove(package_id)
 
-        return True if not failed else False
+            self.m.dispatch_event("archive_processed", pypack)
+
+        return True if extracted else False
 
     def _extract(self, pyfile, archive, password):
         name = os.path.basename(archive.filename)
