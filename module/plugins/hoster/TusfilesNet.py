@@ -1,18 +1,15 @@
 # -*- coding: utf-8 -*-
 
-from module.network.HTTPRequest import BadHeader
-
-from ..internal.Plugin import Retry
 from ..internal.XFSHoster import XFSHoster
 
 
 class TusfilesNet(XFSHoster):
     __name__ = "TusfilesNet"
     __type__ = "hoster"
-    __version__ = "0.18"
+    __version__ = "0.19"
     __status__ = "testing"
 
-    __pattern__ = r'https?://(?:www\.)?tusfiles\.net/\w{12}'
+    __pattern__ = r'https?://(?:www\.)?tusfiles\.(?:net|com)/\w{12}'
     __config__ = [("activated", "bool", "Activated", True),
                   ("use_premium", "bool", "Use premium account if available", True),
                   ("fallback", "bool",
@@ -23,23 +20,19 @@ class TusfilesNet(XFSHoster):
     __description__ = """Tusfiles.net hoster plugin"""
     __license__ = "GPLv3"
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com"),
-                   ("guidobelix", "guidobelix@hotmail.it")]
+                   ("guidobelix", "guidobelix@hotmail.it"),
+                   ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
-    PLUGIN_DOMAIN = "tusfiles.net"
+    PLUGIN_DOMAIN = "tusfiles.com"
+    URL_REPLACEMENTS = [(r"tusfiles\.net", "tusfiles.com")]
 
-    INFO_PATTERN = r'\](?P<N>.+) - (?P<S>[\d.,]+) (?P<U>[\w^_]+)\['
+    NAME_PATTERN = r'fa-file-o"></i>\s*(?P<N>.+) <'
+    SIZE_PATTERN = r"<b>\((?P<S>[\d.,]+) (?P<U>[\w^_]+)\)</b></small>"
+
+    OFFLINE_PATTERN = r"The file you are trying to download is no longer available!"
 
     def setup(self):
-        self.chunk_limit = -1
-        self.multiDL = True
-        self.limitDL = 2
         self.resume_download = True
-
-    def download(self, url, *args, **kwargs):
-        try:
-            return XFSHoster.download(self, url, *args, **kwargs)
-
-        except BadHeader, e:
-            if e.code == 503:
-                self.multiDL = False
-                raise Retry("503")
+        self.chunk_limit = 1
+        self.multi_dl = True
+        self.limit_dl = 2
