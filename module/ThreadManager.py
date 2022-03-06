@@ -255,7 +255,7 @@ class ThreadManager:
 
         free = [x for x in self.threads if not x.active]
 
-        inuse = set([(x.active.pluginname,self.getLimit(x)) for x in self.threads if x.active and x.active.hasPlugin() and x.active.plugin.account])
+        inuse = set([(x.active.pluginname,self.getLimit(x)) for x in self.threads if x.active and x.active.hasPlugin()])
         inuse = map(lambda x : (x[0], x[1], len([y for y in self.threads if y.active and y.active.pluginname == x[0]])) ,inuse)
         onlimit = [x[0] for x in inuse if x[1] > 0 and x[2] >= x[1]]
 
@@ -303,8 +303,29 @@ class ThreadManager:
                 thread = PluginThread.DecrypterThread(self, job)
 
     def getLimit(self, thread):
-        limit = thread.active.plugin.account.getAccountData(thread.active.plugin.user)["options"].get("limitDL",["0"])[0]
-        return int(limit)
+        if thread.active.plugin.account:
+            account_limit = max(
+                int(
+                    thread.active.plugin.account.get_account_data(
+                        thread.active.plugin.account.user
+                    )["options"].get("limitDL", ["0"])[0]
+                ),
+                0,
+            )
+        else:
+            account_limit = 0
+
+        plugin_limit = (
+            max(thread.active.plugin.limitDL, 0)
+            if hasattr(thread.active.plugin, "limitDL")
+            else 0
+        )
+        if account_limit > 0 and plugin_limit > 0:
+            limit = min(account_limit, plugin_limit)
+        else:
+            limit = account_limit or plugin_limit
+
+        return limit
 
     def cleanup(self):
         """do global cleanup, should be called when finished with pycurl"""
