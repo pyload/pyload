@@ -148,8 +148,8 @@ class ThreadManager:
             )
 
             time.sleep(0.5)
-            self.assign_job()
             # it may be failed non critical so we try it again
+            self.assign_job()
 
         if (self.info_cache or self.info_results) and self.timestamp < time.time():
             self.info_cache.clear()
@@ -272,7 +272,7 @@ class ThreadManager:
             return
 
         # if self.downloaded > 20:
-        #    if not self.clean_py_curl(): return
+        #    if not self.clean_pycurl(): return
 
         free_threads = [x for x in self.threads if not x.active]
 
@@ -280,7 +280,7 @@ class ThreadManager:
             [
                 (x.active.pluginname, self.get_limit(x))
                 for x in self.threads
-                if x.active and x.active.has_plugin() and x.active.plugin.account
+                if x.active and x.active.has_plugin()
             ]
         )
         # (pluginname, dl_limit, active_count)
@@ -298,7 +298,8 @@ class ThreadManager:
             )
             for x in inuse_plugins
         ]
-        onlimit_plugins = [x[0] for x in inuse_plugins if x[2] >= x[1] > 0]
+
+        over_limit_plugins = [x[0] for x in inuse_plugins if x[2] >= x[1] > 0]
 
         occupied_plugins = sorted(
             [
@@ -306,7 +307,7 @@ class ThreadManager:
                 for x in self.threads
                 if x.active and x.active.has_plugin() and not x.active.plugin.multi_dl
             ]
-            + onlimit_plugins
+            + over_limit_plugins
         )
 
         occupied_plugins = tuple(set(occupied_plugins))  # remove duplicates
@@ -354,10 +355,29 @@ class ThreadManager:
                 thread = DecrypterThread(self, job)
 
     def get_limit(self, thread):
-        limit = thread.active.plugin.account.get_account_data(
-            thread.active.plugin.account.user
-        )["options"].get("limit_dl", ["0"])[0]
-        return int(limit)
+        if thread.active.plugin.account:
+            account_limit = max(
+                int(
+                    thread.active.plugin.account.get_account_data(
+                        thread.active.plugin.account.user
+                    )["options"].get("limit_dl", ["0"])[0]
+                ),
+                0,
+            )
+        else:
+            account_limit = 0
+
+        plugin_limit = (
+            max(thread.active.plugin.limit_dl, 0)
+            if hasattr(thread.active.plugin, "limit_dl")
+            else 0
+        )
+        if account_limit > 0 and plugin_limit > 0:
+            limit = min(account_limit, plugin_limit)
+        else:
+            limit = account_limit or plugin_limit
+
+        return limit
 
     # def cleanup(self):
     # """
