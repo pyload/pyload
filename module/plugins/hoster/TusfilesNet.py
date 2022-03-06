@@ -6,7 +6,7 @@ from ..internal.XFSHoster import XFSHoster
 class TusfilesNet(XFSHoster):
     __name__ = "TusfilesNet"
     __type__ = "hoster"
-    __version__ = "0.19"
+    __version__ = "0.20"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?tusfiles\.(?:net|com)/\w{12}'
@@ -35,4 +35,4 @@ class TusfilesNet(XFSHoster):
         self.resume_download = True
         self.chunk_limit = 1
         self.multi_dl = True
-        self.limit_dl = 2
+        self.limitDL = 2
