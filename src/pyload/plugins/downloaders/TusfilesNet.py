@@ -6,7 +6,7 @@ from ..base.xfs_downloader import XFSDownloader
 class TusfilesNet(XFSDownloader):
     __name__ = "TusfilesNet"
     __type__ = "downloader"
-    __version__ = "0.19"
+    __version__ = "0.20"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?tusfiles\.(?:net|com)/\w{12}"
