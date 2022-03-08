@@ -13,7 +13,7 @@ from pyload.plugins.helpers import renice
 class SevenZip(BaseExtractor):
     __name__ = "SevenZip"
     __type__ = "extractor"
-    __version__ = "0.33"
+    __version__ = "0.34"
     __status__ = "testing"
 
     __description__ = """7-Zip extractor plugin"""
@@ -74,9 +74,9 @@ class SevenZip(BaseExtractor):
     _RE_FILES = re.compile(
         r"([\d\-]+)\s+([\d:]+)\s+([RHSA.]+)\s+(\d+)\s+(?:(\d+)\s+)?(.+)"
     )
-    _RE_BADPWD = re.compile(
-        r"(Can not open encrypted archive|Wrong password|Encrypted\s+=\s+\+)", re.I
-    )
+    _RE_ENCRYPTED_HEADER = re.compile(r"Headers Error")
+    _RE_ENCRYPTED_FILES = re.compile(r"Encrypted\s+=\s+\+")
+    _RE_BADPWD = re.compile(r"Wrong password", re.I)
     _RE_BADCRC = re.compile(r"CRC Failed|Can not open file", re.I)
     _RE_VERSION = re.compile(
         r"7-Zip\s(?:\(\w+\)\s)?(?:\[(?:32|64)\]\s)?(\d+\.\d+)", re.I
@@ -89,9 +89,9 @@ class SevenZip(BaseExtractor):
                 cls.CMD = os.path.join(PKGDIR, "lib", "7z.exe")
 
             p = subprocess.Popen(
-                [cls.CMD], stdout=subprocess.PIPE, stderr=subprocess.PIPE
+                [cls.CMD], stdout=subprocess.PIPE, stderr=subprocess.PIPE, encoding="utf-8"
             )
-            out, err = (to_str(r).strip() if r else "" for r in p.communicate())
+            out, err = (r.strip() if r else "" for r in p.communicate())
 
         except OSError:
             return False
@@ -107,49 +107,79 @@ class SevenZip(BaseExtractor):
     def ismultipart(cls, filename):
         return cls._RE_PART.search(filename) is not None
 
+    def init(self):
+        self.smallest = None
+
     def verify(self, password=None):
-        #: 7z can't distinguish crc and pw error in test
-        p = self.call_cmd("l", "-slt", self.filename, password=password)
-        out, err = (to_str(r).strip() if r else "" for r in p.communicate())
+        #: First we check if the header (file list) is protected
+        #: if the header is protected, we cen verify the password very fast without hassle
+        #: otherwise, whe find the smallest file in the archive and to try to extract it
+        p = self.call_cmd("l", "-slt", self.filename)
+        out, err = (r.strip() if r else "" for r in p.communicate())
 
-        if self._RE_BADPWD.search(out):
-            raise PasswordError
+        if err:
+            if self._RE_ENCRYPTED_HEADER.search(err):
+                p = self.call_cmd("l", "-slt", self.filename, password=password)
+                out, err = (r.strip() if r else "" for r in p.communicate())
 
-        elif self._RE_BADPWD.search(err):
-            raise PasswordError
+                if self._RE_ENCRYPTED_HEADER.search(err):
+                    raise PasswordError
 
-        elif self._RE_BADCRC.search(out):
-            raise CRCError(self._("Header protected"))
+            else:
+                raise ArchiveError(err)
 
-        elif self._RE_BADCRC.search(err):
-            raise CRCError(err)
+        elif self._RE_ENCRYPTED_FILES.search(out):
+            #: search for smallest file and do CRC test to verify password
+            smallest = self.find_smallest_file(password=password)[0]
+            if smallest is None:
+                raise ArchiveError("Cannot find smallest file")
+
+            try:
+                extracted = os.path.join(self.dest, smallest if self.fullpath else os.path.basename(smallest))
+                try:
+                    os.remove(extracted)
+                except OSError as exc:
+                    pass
+                self.extract(password=password, file=smallest)
+
+                #: Extraction was successful so exclude the file from further extraction
+                if smallest not in self.excludefiles:
+                    self.excludefiles.append(smallest)
+
+            except (PasswordError, CRCError, ArchiveError) as exc:
+                try:
+                    os.remove(extracted)
+                except OSError as exc:
+                    pass
+
+                raise
 
     def progress(self, process):
-        s = b""
+        s = ""
         while True:
             c = process.stdout.read(1)
             #: Quit loop on eof
             if not c:
                 break
             #: Reading a percentage sign -> set progress and restart
-            if c == b'%' and s:
+            if c == '%' and s:
                 self.pyfile.set_progress(int(s))
-                s = b""
+                s = ""
             #: Not reading a digit -> therefore restart
             elif not c.isdigit():
-                s = b""
+                s = ""
             #: Add digit to progress string
             else:
                 s += c
 
-    def extract(self, password=None):
+    def extract(self, password=None, file=None):
         command = "x" if self.fullpath else "e"
 
-        p = self.call_cmd(command, "-o" + self.dest, self.filename, password=password)
+        p = self.call_cmd(command, "-o" + self.dest, self.filename, file, password=password)
 
         #: Communicate and retrieve stderr
         self.progress(p)
-        out, err = (to_str(r).strip() if r else "" for r in p.communicate())
+        out, err = (r.strip() if r else "" for r in p.communicate())
 
         if err:
             if self._RE_BADPWD.search(err):
@@ -168,7 +198,7 @@ class SevenZip(BaseExtractor):
         files = []
         dir, name = os.path.split(self.filename)
 
-        #: eventually Multipart Files
+        #: eventually multi-part Files
         files.extend(
             os.path.join(dir, os.path.basename(_f))
             for _f in filter(self.ismultipart, os.listdir(dir))
@@ -181,25 +211,39 @@ class SevenZip(BaseExtractor):
 
         return files
 
+    def find_smallest_file(self, password=None):
+        if not self.smallest:
+            p = self.call_cmd("l", self.filename, password=password)
+            out, err = (r.strip() if r else "" for r in p.communicate())
+
+            if any(e in err for e in ("Can not open", "cannot find the file")):
+                raise ArchiveError(self._("Cannot open file"))
+
+            if p.returncode > 1:
+                raise ArchiveError(self._("Process return code: {}").format(p.returncode))
+
+            smallest = (None, 0)
+            files = set()
+            for groups in self._RE_FILES.findall(out):
+                s = int(groups[3])
+                f = groups[-1].strip()
+
+                if smallest[1] == 0 or smallest[1] > s > 0:
+                    smallest = (f, s)
+
+                if not self.fullpath:
+                    f = os.path.basename(f)
+                f = os.path.join(self.dest, f)
+                files.add(f)
+
+            self.smallest = smallest
+            self.files = list(files)
+
+        return self.smallest
+
     def list(self, password=None):
-        p = self.call_cmd("l", self.filename, password=password)
-
-        out, err = (to_str(r).strip() if r else "" for r in p.communicate())
-
-        if any(e in err for e in ("Can not open", "cannot find the file")):
-            raise ArchiveError(self._("Cannot open file"))
-
-        if p.returncode > 1:
-            raise ArchiveError(self._("Process return code: {}").format(p.returncode))
-
-        files = set()
-        for groups in self._RE_FILES.findall(out):
-            f = groups[-1].strip()
-            if not self.fullpath:
-                f = os.path.basename(f)
-            files.add(os.path.join(self.dest, f))
-
-        self.files = list(files)
+        if not self.files:
+            self.find_smallest_file(password=password)
 
         return self.files
 
@@ -240,12 +284,11 @@ class SevenZip(BaseExtractor):
         else:
             args.append("-p-")
 
-        # NOTE: return codes are not reliable, some kind of threading, cleanup whatever issue
-        call = [self.CMD, command] + args + list(xargs)
+        call = [self.CMD, command] + args + [arg for arg in xargs if arg]
         self.log_debug("EXECUTE " + " ".join(call))
 
         call = [to_str(cmd) for cmd in call]
-        p = subprocess.Popen(call, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        p = subprocess.Popen(call, stdout=subprocess.PIPE, stderr=subprocess.PIPE, encoding="utf-8")
 
         renice(p.pid, self.priority)
 
