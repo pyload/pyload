@@ -306,7 +306,7 @@ class ThreadManager:
         if thread.active.plugin.account:
             account_limit = max(
                 int(
-                    thread.active.plugin.account.get_account_data(
+                    thread.active.plugin.account.getAccountData(
                         thread.active.plugin.account.user
                     )["options"].get("limitDL", ["0"])[0]
                 ),
