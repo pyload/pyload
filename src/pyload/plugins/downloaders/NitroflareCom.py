@@ -11,7 +11,7 @@ from ..base.simple_downloader import SimpleDownloader
 class NitroflareCom(SimpleDownloader):
     __name__ = "NitroflareCom"
     __type__ = "downloader"
-    __version__ = "0.38"
+    __version__ = "0.39"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?(?:nitro\.download|nitroflare\.com)/view/(?P<ID>[\w^_]+)"
@@ -44,16 +44,21 @@ class NitroflareCom(SimpleDownloader):
 
     URL_REPLACEMENTS = [(r"nitro\.download", "nitroflare.com")]
 
+    # See https://nitroflare.com/member?s=general-api
+    API_URL = "https://nitroflare.com/api/v2/"
+
+    def api_request(self, method, **kwargs):
+        json_data = self.load(self.API_URL + method, get=kwargs)
+        return json.loads(json_data)
+
     def api_info(self, url):
         info = {}
         file_id = re.search(self.__pattern__, url).group("ID")
 
-        data = json.loads(
-            self.load("https://nitroflare.com/api/v2/getFileInfo", get={"files": file_id})
-        )
+        api_data = self.api_request("getFileInfo", files=file_id)
 
-        if data["type"] == "success":
-            fileinfo = data["result"]["files"][file_id]
+        if api_data["type"] == "success":
+            fileinfo = api_data["result"]["files"][file_id]
             info["status"] = 2 if fileinfo["status"] == "online" else 1
             info["name"] = fileinfo["name"]
             info["size"] = fileinfo["size"]  #: In bytes
@@ -120,18 +125,17 @@ class NitroflareCom(SimpleDownloader):
         return super().handle_free(pyfile)
 
     def handle_premium(self, pyfile):
-        data = json.loads(
-            self.load(
-                "https://nitroflare.com/api/v2/getDownloadLink",
-                get={
-                    "file": self.info["pattern"]["ID"],
-                    "user": self.account.user,
-                    "premiumKey": self.account.get_login("password"),
-                },
-            )
+        api_data = self.api_request(
+            "getDownloadLink",
+            file=self.info["pattern"]["ID"],
+            user=self.account.user,
+            premiumKey=self.account.get_login("password"),
         )
 
-        if data["type"] == "success":
-            pyfile.name = data["result"]["name"]
-            pyfile.size = int(data["result"]["size"])
-            self.link = data["result"]["url"]
+        if api_data["type"] == "success":
+            pyfile.name = api_data["result"]["name"]
+            pyfile.size = int(api_data["result"]["size"])
+            self.link = api_data["result"]["url"]
+
+        else:
+            self.fail(api_data["message"])
