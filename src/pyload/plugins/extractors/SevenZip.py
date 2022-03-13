@@ -129,7 +129,7 @@ class SevenZip(BaseExtractor):
                 raise ArchiveError(err)
 
         elif self._RE_ENCRYPTED_FILES.search(out):
-            #: search for smallest file and do CRC test to verify password
+            #: search for smallest file and try to extract it to verify password
             smallest = self.find_smallest_file(password=password)[0]
             if smallest is None:
                 raise ArchiveError("Cannot find smallest file")
