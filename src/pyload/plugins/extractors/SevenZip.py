@@ -113,7 +113,7 @@ class SevenZip(BaseExtractor):
     def verify(self, password=None):
         #: First we check if the header (file list) is protected
         #: if the header is protected, we cen verify the password very fast without hassle
-        #: otherwise, whe find the smallest file in the archive and to try to extract it
+        #: otherwise, we find the smallest file in the archive and then try to extract it
         p = self.call_cmd("l", "-slt", self.filename)
         out, err = (r.strip() if r else "" for r in p.communicate())
 
