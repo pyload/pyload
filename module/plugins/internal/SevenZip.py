@@ -67,7 +67,7 @@ class SevenZip(Extractor):
     def verify(self, password=None):
         #: First we check if the header (file list) is protected
         #: if the header is protected, we cen verify the password very fast without hassle
-        #: otherwise, whe find the smallest file in the archive and to try to extract it
+        #: otherwise, we find the smallest file in the archive and then try to extract it
         p = self.call_cmd("l", "-slt", self.filename)
         out, err = (_r.strip() if _r else "" for _r in p.communicate())
 
@@ -83,7 +83,7 @@ class SevenZip(Extractor):
                 raise ArchiveError(err)
 
         elif self._RE_ENCRYPTED_FILES.search(out):
-            #: search for smallest file and do CRC test to verify password
+            #: search for smallest file and try to extract it to verify password
             smallest = self.find_smallest_file(password=password)[0]
             if smallest is None:
                 raise ArchiveError("Cannot find smallest file")
