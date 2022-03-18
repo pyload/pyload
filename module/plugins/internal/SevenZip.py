@@ -12,7 +12,7 @@ from .misc import Popen, fs_encode, fsjoin, renice
 class SevenZip(Extractor):
     __name__ = "SevenZip"
     __type__ = "extractor"
-    __version__ = "0.34"
+    __version__ = "0.35"
     __status__ = "testing"
 
     __description__ = """7-Zip extractor plugin"""
@@ -100,13 +100,13 @@ class SevenZip(Extractor):
                 if smallest not in self.excludefiles:
                     self.excludefiles.append(smallest)
 
-            except (PasswordError, CRCError, ArchiveError):
+            except (PasswordError, CRCError, ArchiveError) as ex:
                 try:
                     os.remove(extracted)
                 except OSError:
                     pass
 
-                raise
+                raise ex
 
     def progress(self, process):
         s = ""
@@ -157,7 +157,7 @@ class SevenZip(Extractor):
         files = []
         dir, name = os.path.split(self.filename)
 
-        #: eventually multi-part Files
+        #: eventually multi-part files
         files.extend(fsjoin(dir, os.path.basename(_f))
                      for _f in filter(self.ismultipart, os.listdir(dir))
                      if self._RE_PART.sub("", name) == self._RE_PART.sub("", _f))
