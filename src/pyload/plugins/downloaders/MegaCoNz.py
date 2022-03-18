@@ -310,7 +310,7 @@ class MegaClient:
 class MegaCoNz(BaseDownloader):
     __name__ = "MegaCoNz"
     __type__ = "downloader"
-    __version__ = "0.56"
+    __version__ = "0.57"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?mega(?:\.co)?\.nz/(?:file/(?P<ID1>[\w^_]+)#(?P<K1>[\w\-,=]+)|folder/(?P<ID2>[\w^_]+)#(?P<K2>[\w\-,=]+)/file/(?P<NID>[\w^_]+))"
@@ -521,7 +521,7 @@ class MegaCoNz(BaseDownloader):
         # self.req.http.c.setopt(pycurl.SSL_CIPHER_LIST, "RC4-MD5:DEFAULT")
 
         try:
-            self.download(res["g"])
+            self.download(res["g"], disposition=False)
 
         except BadHeader as exc:
             if exc.code == 509:
