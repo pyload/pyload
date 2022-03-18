@@ -13,7 +13,7 @@ from pyload.plugins.helpers import renice
 class SevenZip(BaseExtractor):
     __name__ = "SevenZip"
     __type__ = "extractor"
-    __version__ = "0.35"
+    __version__ = "0.36"
     __status__ = "testing"
 
     __description__ = """7-Zip extractor plugin"""
