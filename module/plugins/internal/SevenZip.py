@@ -12,7 +12,7 @@ from .misc import Popen, fs_encode, fsjoin, renice
 class SevenZip(Extractor):
     __name__ = "SevenZip"
     __type__ = "extractor"
-    __version__ = "0.35"
+    __version__ = "0.36"
     __status__ = "testing"
 
     __description__ = """7-Zip extractor plugin"""
@@ -100,7 +100,7 @@ class SevenZip(Extractor):
                 if smallest not in self.excludefiles:
                     self.excludefiles.append(smallest)
 
-            except (PasswordError, CRCError, ArchiveError) as ex:
+            except (PasswordError, CRCError, ArchiveError), ex:
                 try:
                     os.remove(extracted)
                 except OSError:
