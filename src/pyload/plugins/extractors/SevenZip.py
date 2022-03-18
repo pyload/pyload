@@ -13,7 +13,7 @@ from pyload.plugins.helpers import renice
 class SevenZip(BaseExtractor):
     __name__ = "SevenZip"
     __type__ = "extractor"
-    __version__ = "0.34"
+    __version__ = "0.35"
     __status__ = "testing"
 
     __description__ = """7-Zip extractor plugin"""
@@ -152,7 +152,7 @@ class SevenZip(BaseExtractor):
                 except OSError as exc:
                     pass
 
-                raise
+                raise exc
 
     def progress(self, process):
         s = ""
@@ -198,7 +198,7 @@ class SevenZip(BaseExtractor):
         files = []
         dir, name = os.path.split(self.filename)
 
-        #: eventually multi-part Files
+        #: eventually multi-part files
         files.extend(
             os.path.join(dir, os.path.basename(_f))
             for _f in filter(self.ismultipart, os.listdir(dir))
