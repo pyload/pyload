@@ -149,7 +149,7 @@ class PluginManager:
                 os.path.isfile(os.path.join(pfolder, entry)) and entry.endswith(".py")
             ) and not entry.startswith("_"):
 
-                with open(os.path.join(pfolder, entry)) as data:
+                with open(os.path.join(pfolder, entry), encoding="utf-8-sig") as data:
                     content = data.read()
 
                 name = entry[:-3]
