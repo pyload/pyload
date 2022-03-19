@@ -122,7 +122,7 @@ class UnRar(BaseExtractor):
         #: First we check if the header (file list) is protected
         #: if the header is protected, we cen verify the password very fast without hassle
         #: otherwise, we find the smallest file in the archive and then try to extract it
-         encrypted_header, encrypted_files = self.check_archive_encryption()
+        encrypted_header, encrypted_files = self.check_archive_encryption()
         if encrypted_header:
             p = self.call_cmd("l", "-v", self.filename, password=password)
             out, err = (_r.strip() if _r else "" for _r in p.communicate())
