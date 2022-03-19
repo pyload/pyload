@@ -12,7 +12,7 @@ from .misc import Popen, decode, fs_encode, fsjoin, renice
 class UnRar(Extractor):
     __name__ = "UnRar"
     __type__ = "extractor"
-    __version__ = "1.44"
+    __version__ = "1.45"
     __status__ = "testing"
 
     __config__ = [("ignore_warnings", "bool", "Ignore unrar warnings", False)]
@@ -32,6 +32,7 @@ class UnRar(Extractor):
     _RE_FIXNAME = re.compile(r'Building (.+)')
     _RE_FILES_V4 = re.compile(r'^([* ])(.+?)\s+(\d+)\s+(\d+)\s+(\d+%|-->|<--)\s+([\d-]+)\s+([\d:]+)\s*([ACHIRS.rw\-]+)\s+([0-9A-F]{8})\s+(\w+)\s+([\d.]+)', re.M)
     _RE_FILES_V5 = re.compile(r'^([* ])\s*([ACHIRS.rw\-]+)\s+(\d+)(?:\s+\d+)?(?:\s+(?:\d+%|-->|<--))?\s+([\d-]+)\s+([\d:]+)(?:\s+[0-9A-F]{8})?\s+(.+)', re.M)
+    _RE_ENCRYPTED_HEADER = re.compile(r'\s0 files')
     _RE_BADPWD = re.compile(r'password', re.I)
     _RE_BADCRC = re.compile(r'encrypted|damaged|CRC failed|checksum error|corrupt', re.I)
     _RE_VERSION = re.compile(r'(?:UN)?RAR\s(\d+\.\d+)', re.I)
@@ -48,7 +49,6 @@ class UnRar(Extractor):
                       stdout=subprocess.PIPE,
                       stderr=subprocess.PIPE)
             out, err = (_r.strip() if _r else "" for _r in p.communicate())
-            # cls.__name__ = "RAR"
             cls.REPAIR = True
 
         except OSError:
@@ -77,20 +77,58 @@ class UnRar(Extractor):
     def ismultipart(cls, filename):
         return True if cls._RE_PART.search(filename) else False
 
+    def init(self):
+        self.smallest = None
+        self.archive_encryption = None
+
+    def check_archive_encryption(self):
+        if self.archive_encryption is None:
+            p = self.call_cmd("l", "-v", self.filename)
+            out, err = (_r.strip() if _r else "" for _r in p.communicate())
+            encrypted_header = self._RE_ENCRYPTED_HEADER.search(out) is not None
+            encrypted_files = any((m.group(1) == "*" for m in self._RE_FILES.finditer(decode(out))))
+
+            self.archive_encryption = (encrypted_header, encrypted_files)
+
+        return self.archive_encryption
+
     def verify(self, password=None):
-        p = self.call_cmd("l", "-v", self.filename, password=password)
-        out, err = (_r.strip() if _r else "" for _r in p.communicate())
+            #: First we check if the header (file list) is protected
+            #: if the header is protected, we cen verify the password very fast without hassle
+            #: otherwise, we find the smallest file in the archive and then try to extract it
+            encrypted_header, encrypted_files = self.check_archive_encryption()
+            if encrypted_header:
+                p = self.call_cmd("l", "-v", self.filename, password=password)
+                out, err = (_r.strip() if _r else "" for _r in p.communicate())
 
-        if self._RE_BADPWD.search(err):
-            raise PasswordError
+                if self._RE_ENCRYPTED_HEADER.search(out):
+                    raise PasswordError
 
-        if self._RE_BADCRC.search(err):
-            raise CRCError(err)
+            elif encrypted_files:
+                #: search for smallest file and try to extract it to verify password
+                smallest = self.find_smallest_file(password=password)[0]
+                if smallest is None:
+                    raise ArchiveError("Cannot find smallest file")
 
-        #: Output only used to check if passworded files are present
-        for groups in self._RE_FILES.findall(out):
-            if groups[0] == "*":
-                raise PasswordError
+                try:
+                    extracted = os.path.join(self.dest, smallest if self.fullpath else os.path.basename(smallest))
+                    try:
+                        os.remove(extracted)
+                    except OSError:
+                        pass
+                    self.extract(password=password, file=smallest)
+
+                    #: Extraction was successful so exclude the file from further extraction
+                    if smallest not in self.excludefiles:
+                        self.excludefiles.append(smallest)
+
+                except (PasswordError, CRCError, ArchiveError) as ex:
+                    try:
+                        os.remove(extracted)
+                    except OSError:
+                        pass
+
+                    raise ex
 
     def repair(self):
         p = self.call_cmd("rc", self.filename)
@@ -135,10 +173,10 @@ class UnRar(Extractor):
             else:
                 s += c
 
-    def extract(self, password=None):
+    def extract(self, password=None, file=None):
         command = "x" if self.fullpath else "e"
 
-        p = self.call_cmd(command, self.filename, self.dest, password=password)
+        p = self.call_cmd(command, self.filename, file, self.dest, password=password)
 
         #: Communicate and retrieve stderr
         self.progress(p)
@@ -157,7 +195,7 @@ class UnRar(Extractor):
             else:  #: Raise error if anything is on stderr
                 raise ArchiveError(err)
 
-        if p.returncode:
+        if p.returncode and p.returncode != 10:  #: RARX_NOFILES
             raise ArchiveError(_("Process return code: %d") % p.returncode)
 
         return self.list(password)
@@ -166,7 +204,7 @@ class UnRar(Extractor):
         files = []
         dir, name = os.path.split(self.filename)
 
-        #: eventually Multipart Files
+        #: eventually multi-part files
         files.extend(fsjoin(dir, os.path.basename(_f))
                      for _f in filter(self.ismultipart, os.listdir(dir))
                      if self._RE_PART.sub("", name) == self._RE_PART.sub("", _f))
@@ -177,26 +215,42 @@ class UnRar(Extractor):
 
         return files
 
+    def find_smallest_file(self, password=None):
+        if not self.smallest:
+            command = "v" if self.fullpath else "l"
+            p = self.call_cmd(command, "-v", self.filename, password=password)
+            out, err = (_r.strip() if _r else "" for _r in p.communicate())
+
+            if "Cannot open" in err:
+                raise ArchiveError(_("Cannot open file"))
+
+            if err:  #: Only log error at this point
+                self.log_error(err)
+
+            smallest = (None, 0)
+            files = set()
+            f_grp = 5 if float(self.VERSION) >= 5 else 1
+            for groups in self._RE_FILES.findall(decode(out)):
+                s = int(groups[2])
+                f = groups[f_grp].strip()
+
+                if smallest[1] == 0 or smallest[1] > s > 0:
+                    smallest = (f, s)
+
+                if not self.fullpath:
+                    f = os.path.basename(f)
+                f = os.path.join(self.dest, f)
+                files.add(f)
+
+            self.smallest = smallest
+            self.files = list(files)
+
+        return self.smallest
+
     def list(self, password=None):
-        command = "v" if self.fullpath else "l"
+        if not self.files:
+            self.find_smallest_file(password=password)
 
-        p = self.call_cmd(command, "-v", self.filename, password=password)
-        out, err = (_r.strip() if _r else "" for _r in p.communicate())
-
-        if "Cannot open" in err:
-            raise ArchiveError(_("Cannot open file"))
-
-        if err:  #: Only log error at this point
-            self.log_error(err)
-
-        files = set()
-        f_grp = 5 if float(self.VERSION) >= 5 else 1
-        for groups in self._RE_FILES.findall(decode(out)):
-            f = groups[f_grp].strip()
-            if not self.fullpath:
-                f = os.path.basename(f)
-            files.add(fsjoin(self.dest, f))
-        self.files = list(files)
         return self.files
 
     def call_cmd(self, command, *xargs, **kwargs):
@@ -230,7 +284,7 @@ class UnRar(Extractor):
             args.append("-kb")
 
         #@NOTE: return codes are not reliable, some kind of threading, cleanup whatever issue
-        call = [self.CMD, command] + args + list(xargs)
+        call = [self.CMD, command] + args + [arg for arg in xargs if arg]
         self.log_debug("EXECUTE " + " ".join(call))
 
         call = map(fs_encode, call)
