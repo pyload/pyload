@@ -12,7 +12,7 @@ from .misc import Popen, fs_encode, fsjoin, renice
 class SevenZip(Extractor):
     __name__ = "SevenZip"
     __type__ = "extractor"
-    __version__ = "0.37"
+    __version__ = "0.38"
     __status__ = "testing"
 
     __description__ = """7-Zip extractor plugin"""
@@ -65,24 +65,12 @@ class SevenZip(Extractor):
         self.smallest = None
         self.archive_encryption = None
 
-    def check_archive_encryption(self):
-        if self.archive_encryption is None:
-            p = self.call_cmd("l", "-slt", self.filename)
-            out, err = (r.strip() if r else "" for r in p.communicate())
-
-            encrypted_header = self._RE_ENCRYPTED_HEADER.search(err) is not None
-            encrypted_files =  self._RE_ENCRYPTED_FILES.search(out) is not None
-
-            self.archive_encryption = (encrypted_header, encrypted_files)
-
-        return self.archive_encryption
-
     def verify(self, password=None):
         #: First we check if the header (file list) is protected
         #: if the header is protected, we cen verify the password very fast without hassle
         #: otherwise, we find the smallest file in the archive and then try to extract it
 
-        encrypted_header, encrypted_files = self.check_archive_encryption()
+        encrypted_header, encrypted_files = self._check_archive_encryption()
         if encrypted_header:
             p = self.call_cmd("l", "-slt", self.filename, password=password)
             out, err = (_r.strip() if _r else "" for _r in p.communicate())
@@ -96,7 +84,7 @@ class SevenZip(Extractor):
 
         elif encrypted_files:
             #: search for smallest file and try to extract it to verify password
-            smallest = self.find_smallest_file(password=password)[0]
+            smallest = self._find_smallest_file(password=password)[0]
             if smallest is None:
                 raise ArchiveError("Cannot find smallest file")
 
@@ -180,39 +168,9 @@ class SevenZip(Extractor):
 
         return files
 
-    def find_smallest_file(self, password=None):
-        if not self.smallest:
-            p = self.call_cmd("l", self.filename, password=password)
-            out, err = (_r.strip() if _r else "" for _r in p.communicate())
-
-            if any(e in err for e in ("Can not open", "cannot find the file")):
-                raise ArchiveError(_("Cannot open file"))
-
-            if p.returncode > 1:
-                raise ArchiveError(_("Process return code: %s") % p.returncode)
-
-            smallest = (None, 0)
-            files = set()
-            for groups in self._RE_FILES.findall(out):
-                s = int(groups[3])
-                f = groups[-1].strip()
-
-                if smallest[1] == 0 or smallest[1] > s > 0:
-                    smallest = (f, s)
-
-                if not self.fullpath:
-                    f = os.path.basename(f)
-                f = os.path.join(self.dest, f)
-                files.add(f)
-
-            self.smallest = smallest
-            self.files = list(files)
-
-        return self.smallest
-
     def list(self, password=None):
         if not self.files:
-            self.find_smallest_file(password=password)
+            self._find_smallest_file(password=password)
 
         return self.files
 
@@ -260,3 +218,45 @@ class SevenZip(Extractor):
         renice(p.pid, self.priority)
 
         return p
+
+    def _check_archive_encryption(self):
+        if self.archive_encryption is None:
+            p = self.call_cmd("l", "-slt", self.filename)
+            out, err = (r.strip() if r else "" for r in p.communicate())
+
+            encrypted_header = self._RE_ENCRYPTED_HEADER.search(err) is not None
+            encrypted_files =  self._RE_ENCRYPTED_FILES.search(out) is not None
+
+            self.archive_encryption = (encrypted_header, encrypted_files)
+
+        return self.archive_encryption
+
+    def _find_smallest_file(self, password=None):
+        if not self.smallest:
+            p = self.call_cmd("l", self.filename, password=password)
+            out, err = (_r.strip() if _r else "" for _r in p.communicate())
+
+            if any(e in err for e in ("Can not open", "cannot find the file")):
+                raise ArchiveError(_("Cannot open file"))
+
+            if p.returncode > 1:
+                raise ArchiveError(_("Process return code: %s") % p.returncode)
+
+            smallest = (None, 0)
+            files = set()
+            for groups in self._RE_FILES.findall(out):
+                s = int(groups[3])
+                f = groups[-1].strip()
+
+                if smallest[1] == 0 or smallest[1] > s > 0:
+                    smallest = (f, s)
+
+                if not self.fullpath:
+                    f = os.path.basename(f)
+                f = os.path.join(self.dest, f)
+                files.add(f)
+
+            self.smallest = smallest
+            self.files = list(files)
+
+        return self.smallest
