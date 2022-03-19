@@ -98,7 +98,7 @@ class ArchiveQueue(object):
 class ExtractArchive(Addon):
     __name__ = "ExtractArchive"
     __type__ = "hook"
-    __version__ = "1.71"
+    __version__ = "1.72"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", False),
@@ -289,8 +289,8 @@ class ExtractArchive(Addon):
                 new_files_ids = []
 
                 if extensions:  #: Include only specified archive types
-                    files_ids = filter(lambda file_id: any([Extractor.archivetype(file_id[1]) in extensions
-                                                            for Extractor in self.extractors]), files_ids)
+                    files_ids = filter(lambda file_id: any((Extractor.archivetype(file_id[1]) in extensions
+                                                            for Extractor in self.extractors)), files_ids)
 
                 #: Sort by filename to ensure (or at least try) that a multi-volume archive is targeted by its first part
                 #: This is important because, for example, UnRar ignores preceding parts in listing mode
@@ -419,7 +419,7 @@ class ExtractArchive(Addon):
 
         encrypted = False
         try:
-            self.log_debug("Password: %s" % (password or "None provided"))
+            self.log_debug("Password: %s" % (password or "none provided"))
             passwords = uniqify([password] + self.get_passwords(False)) if \
                 self.config.get('usepasswordfile') else [password]
 
@@ -427,6 +427,7 @@ class ExtractArchive(Addon):
                 try:
                     pyfile.setCustomStatus(_("archive testing"))
                     pyfile.setProgress(0)
+                    self.log_debug("Verifying using password: %s" % (pw or "None"))
                     archive.verify(pw)
                     pyfile.setProgress(100)
 
@@ -434,6 +435,7 @@ class ExtractArchive(Addon):
                     if not encrypted:
                         self.log_info(name, _("Password protected"))
                         encrypted = True
+                    self.log_debug("Password was wrong")
 
                 except CRCError, e:
                     self.log_debug(name, e)
@@ -454,6 +456,7 @@ class ExtractArchive(Addon):
 
                         else:
                             self.add_password(pw)
+                            password = pw
                             break
 
                 except ArchiveError, e:
@@ -461,34 +464,24 @@ class ExtractArchive(Addon):
 
                 else:
                     self.add_password(pw)
+                    password = pw
+                    self.log_debug("Password Correct")
                     break
 
-            pyfile.setCustomStatus(_("archive extracting"))
-            pyfile.setProgress(0)
-
-            if not encrypted or not self.config.get('usepasswordfile'):
-                self.log_debug("Extracting using password: %s" % (password or "None"))
-                archive.extract(password)
             else:
-                for pw in filter(None, uniqify([password] + self.get_passwords(False))):
-                    try:
-                        self.log_debug("Extracting using password: %s" % pw)
-
-                        archive.extract(pw)
-                        self.add_password(pw)
-                        password = pw
-                        break
-
-                    except PasswordError:
-                        self.log_debug("Password was wrong")
-                else:
+                if encrypted:
+                    self.log_error(_("None of the known passwords worked"))
                     raise PasswordError
 
+            pyfile.setCustomStatus(_("archive extracting"))
+
+            pyfile.setProgress(0)
+            self.log_debug("Extracting using password: %s" % (password or "None"))
+            archive.extract(password)
             pyfile.setProgress(100)
+
             pyfile.setStatus("processing")
-
             extracted_files = archive.files or archive.list(password)
-
             delfiles = archive.chunks()
             self.log_debug("Would delete: " + ", ".join(delfiles))
 
