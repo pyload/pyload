@@ -60,7 +60,7 @@ class ArchiveQueue:
 class ExtractArchive(BaseAddon):
     __name__ = "ExtractArchive"
     __type__ = "addon"
-    __version__ = "1.71"
+    __version__ = "1.72"
     __status__ = "testing"
 
     __config__ = [
@@ -447,6 +447,7 @@ class ExtractArchive(BaseAddon):
                 try:
                     pyfile.set_custom_status(self._("archive testing"))
                     pyfile.set_progress(0)
+                    self.log_debug("Verifying using password: {}".format(pw or "None"))
                     archive.verify(pw)
                     pyfile.set_progress(100)
 
@@ -454,6 +455,7 @@ class ExtractArchive(BaseAddon):
                     if not encrypted:
                         self.log_info(name, self._("Password protected"))
                         encrypted = True
+                    self.log_debug("Password was wrong")
 
                 except CRCError as exc:
                     self.log_debug(name, exc)
@@ -474,6 +476,7 @@ class ExtractArchive(BaseAddon):
 
                         else:
                             self.add_password(pw)
+                            password = pw
                             break
 
                 except ArchiveError as exc:
@@ -481,34 +484,23 @@ class ExtractArchive(BaseAddon):
 
                 else:
                     self.add_password(pw)
+                    password = pw
+                    self.log_debug("Password Correct")
                     break
 
-            pyfile.set_custom_status(self._("archive extracting"))
-            pyfile.set_progress(0)
-
-            if not encrypted or not self.config.get("usepasswordfile"):
-                self.log_debug(
-                    "Extracting using password: {}".format(password or "None")
-                )
-                archive.extract(password)
             else:
-                for pw in [
-                    f for f in uniquify([password] + self.get_passwords(False)) if f
-                ]:
-                    try:
-                        self.log_debug(f"Extracting using password: {pw}")
-
-                        archive.extract(pw)
-                        self.add_password(pw)
-                        password = pw
-                        break
-
-                    except PasswordError:
-                        self.log_debug("Password was wrong")
-                else:
+                if encrypted:
                     raise PasswordError
 
+            pyfile.set_custom_status(self._("archive extracting"))
+
+            pyfile.set_progress(0)
+            self.log_debug(
+                "Extracting using password: {}".format(password or "None")
+            )
+            archive.extract(password)
             pyfile.set_progress(100)
+
             pyfile.set_status("processing")
 
             extracted_files = archive.files or archive.list(password)
