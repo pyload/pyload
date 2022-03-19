@@ -13,7 +13,7 @@ from pyload.plugins.helpers import renice
 class SevenZip(BaseExtractor):
     __name__ = "SevenZip"
     __type__ = "extractor"
-    __version__ = "0.36"
+    __version__ = "0.37"
     __status__ = "testing"
 
     __description__ = """7-Zip extractor plugin"""
@@ -109,26 +109,38 @@ class SevenZip(BaseExtractor):
 
     def init(self):
         self.smallest = None
+        self.archive_encryption = None
+
+    def check_archive_encryption(self):
+        if self.archive_encryption is None:
+            p = self.call_cmd("l", "-slt", self.filename)
+            out, err = (r.strip() if r else "" for r in p.communicate())
+
+            encrypted_header = self._RE_ENCRYPTED_HEADER.search(err) is not None
+            encrypted_files =  self._RE_ENCRYPTED_FILES.search(out) is not None
+
+            self.archive_encryption = (encrypted_header, encrypted_files)
+
+        return self.archive_encryption
 
     def verify(self, password=None):
         #: First we check if the header (file list) is protected
         #: if the header is protected, we cen verify the password very fast without hassle
         #: otherwise, we find the smallest file in the archive and then try to extract it
-        p = self.call_cmd("l", "-slt", self.filename)
-        out, err = (r.strip() if r else "" for r in p.communicate())
 
-        if err:
-            if self._RE_ENCRYPTED_HEADER.search(err):
-                p = self.call_cmd("l", "-slt", self.filename, password=password)
-                out, err = (r.strip() if r else "" for r in p.communicate())
+        encrypted_header, encrypted_files = self.check_archive_encryption()
+        if encrypted_header:
+            p = self.call_cmd("l", "-slt", self.filename, password=password)
+            out, err = (r.strip() if r else "" for r in p.communicate())
 
+            if err:
                 if self._RE_ENCRYPTED_HEADER.search(err):
                     raise PasswordError
 
-            else:
-                raise ArchiveError(err)
+                else:
+                    raise ArchiveError(err)
 
-        elif self._RE_ENCRYPTED_FILES.search(out):
+        elif encrypted_files:
             #: search for smallest file and try to extract it to verify password
             smallest = self.find_smallest_file(password=password)[0]
             if smallest is None:
