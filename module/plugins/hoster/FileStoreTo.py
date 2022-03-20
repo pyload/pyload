@@ -8,7 +8,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class FileStoreTo(SimpleHoster):
     __name__ = "FileStoreTo"
     __type__ = "hoster"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?filestore\.to/\?d=(?P<ID>\w+)'
@@ -27,7 +27,7 @@ class FileStoreTo(SimpleHoster):
     NAME_PATTERN = r'<div class="file">(?P<N>.+?)</div>'
     SIZE_PATTERN = r'<div class="size">(?P<S>[\d.,]+) (?P<U>[\w^_]+)</div>'
     OFFLINE_PATTERN = r'>Download-Datei wurde nicht gefunden<'
-    TEMP_OFFLINE_PATTERN = r'>Der Download ist nicht bereit !<'
+    TEMP_OFFLINE_PATTERN = r'>(?:Der Download ist nicht bereit !|Leider sind aktuell keine freien Downloadslots für Freeuser verfügbar)<'
 
     WAIT_PATTERN = r'data-wait="(\d+?)"'
 
@@ -42,6 +42,9 @@ class FileStoreTo(SimpleHoster):
                               post={'Aktion': "Download"})
 
         self.check_errors()
+        if re.search(self.TEMP_OFFLINE_PATTERN, self.data) is not None:
+            self.temp_offline()
+
         m = re.search(r'name="DID" value="(.+?)"', self.data)
         if m is None:
             self.fail(_("DID pattern not found"))
