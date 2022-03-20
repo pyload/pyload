@@ -31,8 +31,7 @@ class FileStoreTo(SimpleDownloader):
     SIZE_PATTERN = r'<div class="size">(?P<S>[\d.,]+) (?P<U>[\w^_]+)</div>'
 
     OFFLINE_PATTERN = r">(?:Download-Datei wurde nicht gefunden|Datei nicht gefunden)<"
-    TEMP_OFFLINE_PATTERN = r">Der Download ist nicht bereit !<"
-    PREMIUM_ONLY_PATTERN = r"Leider sind aktuell keine freien Downloadslots für Freeuser verfügbar"
+    TEMP_OFFLINE_PATTERN = r">(?:Der Download ist nicht bereit !|Leider sind aktuell keine freien Downloadslots für Freeuser verfügbar)<"
 
     WAIT_PATTERN = r'data-wait="(\d+?)"'
     LINK_PATTERN = r'klicke <a href="(.+?)">hier<'
@@ -45,6 +44,9 @@ class FileStoreTo(SimpleDownloader):
         self.data = self.load(pyfile.url, post={"Aktion": "Download"})
 
         self.check_errors()
+        if re.search(self.TEMP_OFFLINE_PATTERN, self.data) is not None:
+            self.temp_offline()
+
         m = re.search(r'name="DID" value="(.+?)"', self.data)
         if m is None:
             self.fail(self._("DID pattern not found"))
