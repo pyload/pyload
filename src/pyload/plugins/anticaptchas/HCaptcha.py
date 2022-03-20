@@ -5,14 +5,15 @@ import urllib.parse
 
 from ..base.captcha_service import CaptchaService
 
-class HCaptcha(CaptchaService):
-    __name__ = 'HCaptcha'
-    __type__ = 'captcha'
-    __version__ = '0.02'
-    __status__ = 'testing'
 
-    __description__ = 'hCaptcha captcha service plugin'
-    __license__ = 'GPLv3'
+class HCaptcha(CaptchaService):
+    __name__ = "HCaptcha"
+    __type__ = "anticaptcha"
+    __version__ = "0.02"
+    __status__ = "testing"
+
+    __description__ = "hCaptcha captcha service plugin"
+    __license__ = "GPLv3"
     __authors__ = [("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
     KEY_PATTERN = r'(?:data-sitekey=["\']|["\']sitekey["\']\s*:\s*["\'])((?:[\w\-]|%[0-9a-fA-F]{2})+)'
@@ -92,7 +93,10 @@ class HCaptcha(CaptchaService):
                 return self.key
 
             else:
-                self.log_debug(key, "Wrong key format, this probably because it is not a hCaptcha key")
+                self.log_debug(
+                    key,
+                    "Wrong key format, this probably because it is not a hCaptcha key",
+                )
 
         self.log_warning(self._("Key pattern not found"))
         return None
@@ -106,10 +110,14 @@ class HCaptcha(CaptchaService):
     def _challenge_js(self, key):
         self.log_debug("Challenge hCaptcha interactive")
 
-        params = {'url': self.pyfile.url,
-                  'sitekey': key,
-                  'script': {'signature': self.HCAPTCHA_INTERACTIVE_SIG,
-                             'code': self.HCAPTCHA_INTERACTIVE_JS}}
+        params = {
+            "url": self.pyfile.url,
+            "sitekey": key,
+            "script": {
+                "signature": self.HCAPTCHA_INTERACTIVE_SIG,
+                "code": self.HCAPTCHA_INTERACTIVE_JS,
+            },
+        }
 
         result = self.decrypt_interactive(params, timeout=300)
 

@@ -7,7 +7,7 @@ from ..base.simple_downloader import SimpleDownloader
 class FileStoreTo(SimpleDownloader):
     __name__ = "FileStoreTo"
     __type__ = "downloader"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __status__ = "testing"
 
     __pattern__ = r"http://(?:www\.)?filestore\.to/\?d=(?P<ID>\w+)"
@@ -29,11 +29,12 @@ class FileStoreTo(SimpleDownloader):
 
     NAME_PATTERN = r'<div class="file">(?P<N>.+?)</div>'
     SIZE_PATTERN = r'<div class="size">(?P<S>[\d.,]+) (?P<U>[\w^_]+)</div>'
-    OFFLINE_PATTERN = r">Download-Datei wurde nicht gefunden<"
+
+    OFFLINE_PATTERN = r">(?:Download-Datei wurde nicht gefunden|Datei nicht gefunden)<"
     TEMP_OFFLINE_PATTERN = r">Der Download ist nicht bereit !<"
+    PREMIUM_ONLY_PATTERN = r"Leider sind aktuell keine freien Downloadslots für Freeuser verfügbar"
 
     WAIT_PATTERN = r'data-wait="(\d+?)"'
-
     LINK_PATTERN = r'klicke <a href="(.+?)">hier<'
 
     def setup(self):

@@ -8,7 +8,7 @@ from .decrypter import BaseDecrypter
 
 class BaseContainer(BaseDecrypter):
     __name__ = "Container"
-    __type__ = "container"
+    __type__ = "base"
     __version__ = "0.15"
     __status__ = "stable"
 
