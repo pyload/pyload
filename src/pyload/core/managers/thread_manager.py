@@ -57,9 +57,9 @@ class ThreadManager:
         # pycurl.global_init(pycurl.GLOBAL_DEFAULT)
 
         for i in range(self.pyload.config.get("download", "max_downloads")):
-            self.create_download_thread()
+            self.create_thread()
 
-    def create_download_thread(self):
+    def create_thread(self):
         """
         create a download thread.
         """
@@ -245,7 +245,7 @@ class ThreadManager:
         if len(self.threads) == self.pyload.config.get("download", "max_downloads"):
             return True
         elif len(self.threads) < self.pyload.config.get("download", "max_downloads"):
-            self.create_download_thread()
+            self.create_thread()
         else:
             free = [x for x in self.threads if not x.active]
             if free:
@@ -315,6 +315,7 @@ class ThreadManager:
         if job:
             try:
                 job.init_plugin()
+                job.set_status("starting")
             except Exception as exc:
                 self.pyload.log.critical(
                     exc, exc_info=True, stack_info=self.pyload.debug > 2
@@ -337,7 +338,6 @@ class ThreadManager:
                     thread = free_threads[0]
                     # self.downloaded += 1
 
-                    job.set_status("starting")
                     thread.put(job)
                 else:
                     # put job back
