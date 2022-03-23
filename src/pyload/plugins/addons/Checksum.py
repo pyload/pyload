@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 import hashlib
 import os
 import re
@@ -67,7 +68,7 @@ def compute_checksum(local_file, algorithm, progress_notify=None, abort=None):
 class Checksum(BaseAddon):
     __name__ = "Checksum"
     __type__ = "addon"
-    __version__ = "0.35"
+    __version__ = "0.36"
     __status__ = "testing"
 
     __config__ = [
@@ -127,7 +128,7 @@ class Checksum(BaseAddon):
     def download_finished(self, pyfile):
         """
         Compute checksum for the downloaded file and compare it with the hash provided
-        by the hoster.
+        by the downloader.
 
         pyfile.plugin.check_data should be a dictionary which can
         contain: a) if known, the exact filesize in bytes (e.g. 'size':
@@ -182,7 +183,7 @@ class Checksum(BaseAddon):
             data["hash"] = data.get("hash", {})
 
             for key in self.algorithms:
-                if key in data and key not in data["hash"]:
+                if data.get(key) and key not in data["hash"]:
                     data["hash"][key] = data[key]
                     break
 
