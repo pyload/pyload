@@ -15,7 +15,7 @@ def args(**kwargs):
 class AccioDebridCom(MultiAccount):
     __name__ = "AccioDebridCom"
     __type__ = "account"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
     __config__ = [("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),
