@@ -11,7 +11,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class NitroflareCom(SimpleHoster):
     __name__ = "NitroflareCom"
     __type__ = "hoster"
-    __version__ = "0.39"
+    __version__ = "0.40"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(?:nitro\.download|nitroflare\.com)/view/(?P<ID>[\w^_]+)'
@@ -51,7 +51,7 @@ class NitroflareCom(SimpleHoster):
         info = {}
         file_id = re.search(self.__pattern__, url).group('ID')
 
-        api_data = self.api_request("getKeyInfo", user=user, premiumKey=password)
+        api_data = self.api_request("getFileInfo", files=file_id)
 
         if api_data['type'] == 'success':
             fileinfo = api_data['result']['files'][file_id]
