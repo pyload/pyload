@@ -64,7 +64,7 @@ def compute_checksum(local_file, algorithm, progress_notify=None, abort=None):
 class Checksum(Addon):
     __name__ = "Checksum"
     __type__ = "hook"
-    __version__ = "0.35"
+    __version__ = "0.36"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", False),
@@ -155,7 +155,7 @@ class Checksum(Addon):
             data['hash'] = data.get('hash', {})
 
             for key in self.algorithms:
-                if key in data and not key in data['hash']:
+                if data.get(key) and not key in data['hash']:
                     data['hash'][key] = data[key]
                     break
 
