@@ -14,7 +14,7 @@ def args(**kwargs):
 class AccioDebridCom(MultiHoster):
     __name__ = "AccioDebridCom"
     __type__ = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
     __pattern__ = r'http://((?:www\d+\.|s\d+\.)?accio-debrid\.com|\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/download/file/[\w^_]+'
