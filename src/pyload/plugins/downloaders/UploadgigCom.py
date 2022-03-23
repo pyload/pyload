@@ -12,7 +12,7 @@ from ..base.simple_downloader import SimpleDownloader
 class UploadgigCom(SimpleDownloader):
     __name__ = "UploadgigCom"
     __type__ = "downloader"
-    __version__ = "0.09"
+    __version__ = "0.10"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?uploadgig.com/file/download/\w+"
@@ -86,4 +86,4 @@ class UploadgigCom(SimpleDownloader):
 
             self.wait(res["cd"])
 
-            self.link = res["sp"] + "id=" + str(res["id"] - f) + "&" + res["q"]
+            self.link = res["sp"] + "id=" + str(res["id"] - int(f)) + "&" + res["q"]
