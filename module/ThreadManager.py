@@ -68,12 +68,11 @@ class ThreadManager:
         pycurl.global_init(pycurl.GLOBAL_DEFAULT)
 
         for i in range(0, self.core.config.get("download", "max_downloads")):
-            self.createThread()
+            self.createDownloadThread()
 
 
-    def createThread(self):
+    def createDownloadThread(self):
         """create a download thread"""
-
         thread = PluginThread.DownloadThread(self)
         self.threads.append(thread)
 
@@ -227,7 +226,7 @@ class ThreadManager:
         if len(self.threads) == self.core.config.get("download", "max_downloads"):
             return True
         elif len(self.threads) < self.core.config.get("download", "max_downloads"):
-            self.createThread()
+            self.createDownloadThread()
         else:
             free = [x for x in self.threads if not x.active]
             if free:
@@ -267,7 +266,6 @@ class ThreadManager:
         if job:
             try:
                 job.initPlugin()
-                job.setStatus("starting")
             except Exception, e:
                 self.log.critical(str(e), exc_info=True)
                 job.setStatus("failed")
@@ -285,6 +283,7 @@ class ThreadManager:
                     thread = free[0]
                     #self.downloaded += 1
 
+                    job.setStatus("starting")
                     thread.put(job)
                 else:
                     #put job back
@@ -292,7 +291,7 @@ class ThreadManager:
                         self.core.files.jobCache[occ] = []
                     self.core.files.jobCache[occ].append(job.id)
 
-                    #check for decrypt jobs
+                    # check for decrypt jobs
                     job = self.core.files.getDecryptJob()
                     if job:
                         job.initPlugin()
