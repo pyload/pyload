@@ -105,8 +105,7 @@ def filetype(filename):
     try:
         return magic.from_file(filename, mime=True)
     except AttributeError:
-        pass
-    return guess_mime(filename)
+        return guess_mime(filename)
 
 
 def encode(path):
