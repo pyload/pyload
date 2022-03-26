@@ -18,7 +18,7 @@ try:
     import magic
 except ImportError:
     magic = None
-    import filetype
+    import filetype as file_type
 try:
     import zlib
 except ImportError:
@@ -105,7 +105,7 @@ def filetype(filename):
     if magic:
         return magic.from_file(filename, mime=True)
     else:
-        return filetype.guess_mime(filename)
+        return file_type.guess_mime(filename)
 
 
 def encode(path):
