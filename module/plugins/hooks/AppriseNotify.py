@@ -7,7 +7,7 @@ from ..internal.Notifier import Notifier
 class AppriseNotify(Notifier):
     __name__ = "AppriseNotify"
     __type__ = "hook"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
     __config__ = [("activated", "bool" , "Activated", False),
@@ -17,6 +17,8 @@ class AppriseNotify(Notifier):
                   ("reconnection", "bool", "Notify reconnection request", True),
                   ("downloadfinished", "bool", "Notify download finished", True),
                   ("downloadfailed", "bool" ,"Notify download failed", True),
+                  ("alldownloadsfinished", "bool", "Notify all downloads finished", True),
+                  ("alldownloadsprocessed", "bool", "Notify all downloads processed", True),
                   ("packagefinished", "bool", "Notify package finished", True),
                   ("packagefailed", "bool", "Notify package failed", True),
                   ("update", "bool", "Notify pyload update", False),
