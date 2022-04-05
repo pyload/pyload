@@ -8,7 +8,7 @@ from .addon import BaseAddon, expose
 class Notifier(BaseAddon):
     __name__ = "Notifier"
     __type__ = "addon"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __status__ = "testing"
 
     __config__ = [
@@ -17,6 +17,8 @@ class Notifier(BaseAddon):
         ("reconnection", "bool", "Notify reconnection request", False),
         ("downloadfinished", "bool", "Notify download finished", True),
         ("downloadfailed", "bool", "Notify download failed", True),
+        ("alldownloadsfinished", "bool", "Notify all downloads finished", True),
+        ("alldownloadsprocessed", "bool", "Notify all downloads processed", True),
         ("packagefinished", "bool", "Notify package finished", True),
         ("packagefailed", "bool", "Notify package failed", True),
         ("update", "bool", "Notify pyLoad update", False),
@@ -103,10 +105,12 @@ class Notifier(BaseAddon):
         self.notify(self._("Download failed"), pyfile.name)
 
     def all_downloads_processed(self):
-        self.notify(self._("All downloads processed"))
+        if self.config.get("alldownloadsprocessed", True):
+            self.notify(self._("All downloads processed"))
 
     def all_downloads_finished(self):
-        self.notify(self._("All downloads finished"))
+        if self.config.get("alldownloadsfinished", True):
+            self.notify(self._("All downloads finished"))
 
     @expose
     def notify(self, event, msg=None, key=None):

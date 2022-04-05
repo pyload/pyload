@@ -6,7 +6,7 @@ from ..base.notifier import Notifier
 class AndroidPhoneNotify(Notifier):
     __name__ = "AndroidPhoneNotify"
     __type__ = "addon"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __status__ = "testing"
 
     __config__ = [
@@ -16,6 +16,8 @@ class AndroidPhoneNotify(Notifier):
         ("reconnection", "bool", "Notify reconnection request", False),
         ("downloadfinished", "bool", "Notify download finished", True),
         ("downloadfailed", "bool", "Notify download failed", True),
+        ("alldownloadsfinished", "bool", "Notify all downloads finished", True),
+        ("alldownloadsprocessed", "bool", "Notify all downloads processed", True),
         ("packagefinished", "bool", "Notify package finished", True),
         ("packagefailed", "bool", "Notify package failed", True),
         ("update", "bool", "Notify pyLoad update", False),

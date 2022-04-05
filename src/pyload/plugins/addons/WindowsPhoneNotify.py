@@ -9,7 +9,7 @@ from ..base.notifier import Notifier
 class WindowsPhoneNotify(Notifier):
     __name__ = "WindowsPhoneNotify"
     __type__ = "addon"
-    __version__ = "0.18"
+    __version__ = "0.19"
     __status__ = "testing"
 
     __config__ = [
@@ -20,6 +20,8 @@ class WindowsPhoneNotify(Notifier):
         ("reconnection", "bool", "Notify reconnection request", False),
         ("downloadfinished", "bool", "Notify download finished", True),
         ("downloadfailed", "bool", "Notify download failed", True),
+        ("alldownloadsfinished", "bool", "Notify all downloads finished", True),
+        ("alldownloadsprocessed", "bool", "Notify all downloads processed", True),
         ("packagefinished", "bool", "Notify package finished", True),
         ("packagefailed", "bool", "Notify package failed", True),
         ("update", "bool", "Notify pyLoad update", False),
