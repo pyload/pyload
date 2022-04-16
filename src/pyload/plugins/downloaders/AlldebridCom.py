@@ -60,7 +60,7 @@ class AlldebridCom(MultiDownloader):
     def handle_premium(self, pyfile):
         api_data = self.api_request(
             "link/unlock",
-            get={"link": pyfile.url, "apikey": self.account.info["login"]["password"]},
+            get={"link": pyfile.url, "password": self.get_password(), "apikey": self.account.info["login"]["password"]},
         )
 
         if api_data.get("error", False):
