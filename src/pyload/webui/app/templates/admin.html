@@ -43,8 +43,14 @@
                 <tr>
                     <td>{{ name }}</td>
                     <td><a class="change_password" href="#" id="change_pw|{{name}}">{{ _("change") }}</a></td>
-                    <td><input class="is_admin" name="{{ name }}|admin" type="checkbox" {% if data.perms.admin %}
-                               checked="checked" {% endif %}/></td>
+                    <td>
+                      {% if user.name == name %}
+                        <input class="is_admin" name="{{ name }}|admin" type="checkbox" {% if data.perms.admin %}checked="checked" disabled="disabled" {% endif %}>
+                        <input name="{{ name }}|admin" type="checkbox" {% if data.perms.admin %}checked="checked" hidden="hidden" {% endif %}>
+                      {% else %}
+                        <input class="is_admin" name="{{ name }}|admin" type="checkbox" {% if data.perms.admin %}checked="checked" {% endif %}>
+                      {% endif %}
+                    </td>
                     <td>
                         <select id="{{ name }}|perms" multiple="multiple" size="{{ permlist|length }}" name="{{ name }}|perms" {% if data.perms.admin %} disabled="disabled" {% endif %}>
                             {% for perm in permlist %}

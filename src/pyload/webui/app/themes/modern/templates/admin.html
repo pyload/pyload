@@ -41,7 +41,14 @@
                 <tr>
                     <td>{{name}}</td>
                     <td><div class="change_password btn btn-success btn-xs" data-toggle="modal" data-target="#password_box" id="change_pw|{{name}}"><span class="glyphicon glyphicon-pencil"></span> {{_('change')}}</div></td>
-                    <td><input class="is_admin" name="{{name}}|admin" type="checkbox" {% if data.perms.admin %} checked="checked" {% endif %}></td>
+                    <td>
+                      {% if user.name == name %}
+                        <input class="is_admin" name="{{name}}|admin" type="checkbox" {% if data.perms.admin %} checked="checked" {% endif %} disabled="disabled">
+                        <input name="{{name}}|admin" type="checkbox" {% if data.perms.admin %} checked="checked" {% endif %} hidden="hidden">
+                      {% else %}
+                        <input class="is_admin" name="{{name}}|admin" type="checkbox" {% if data.perms.admin %} checked="checked" {% endif %}>
+                      {% endif %}
+                    </td>
                     <td>
                         <select id="{{name}}|perms" multiple="multiple" size="{{permlist|length}}" name="{{name}}|perms" {% if data.perms.admin %} disabled="disabled" {% endif %}>
                             {% for perm in permlist %}
