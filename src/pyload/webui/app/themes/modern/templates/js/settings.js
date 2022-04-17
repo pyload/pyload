@@ -46,6 +46,13 @@ SettingsUI = (function() {
             sessionStorage.removeItem('activeTab');
             $('#toptabs a[href="' + activeTab + '"]').tab('show');
         }
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function(event) {
+            if (event.target !== event.relatedTarget && $(event.target).attr("href") === "#accounts") {
+                $('#account_form input[type=checkbox]').each(function() {
+                    $(this).prop("checked", false);
+                })
+            }
+        });
 
         generalPanel = $("#core_form_content");
         pluginPanel = $("#plugin_form_content");
