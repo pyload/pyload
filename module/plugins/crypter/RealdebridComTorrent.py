@@ -36,7 +36,7 @@ class RealdebridComTorrent(Crypter):
 
     def api_error_message(self, res):
         """ Formatted API error message with defaults handled """
-        return "Error from API {} ({}) - {}.".format(
+        return "Error from API %s (%s) - %s." % (
             res.get('error', 'unhandled'),
             res.get('error_code', '-1'),
             res.get('error_details', '')
@@ -57,11 +57,11 @@ class RealdebridComTorrent(Crypter):
                                       get=get,
                                       post=post)
 
-            except BadHeader as e:
+            except BadHeader, e:
                 json_data = e.content
 
-            except Exception as e:
-                self.log_debug("Unhandled exception {}".format(e))
+            except Exception, e:
+                self.log_debug("Unhandled exception %s" % e)
                 json_data = ""
 
             res = json.loads(json_data) if len(json_data) > 0 else {}
@@ -182,9 +182,9 @@ class RealdebridComTorrent(Crypter):
 
         if len(selected_ids) == 0:
             self.delete_torrent_from_server(torrent_id)
-            self.fail(("No files for TorrentID {}. "
+            self.fail(("No files for TorrentID %s. "
                        "Possibly wrong magnet or error "
-                       "on Real-Debrid's side.").format(torrent_id))
+                       "on Real-Debrid's side.") % torrent_id)
 
         self.api_response("/torrents/selectFiles/" + torrent_id,
                           get={'auth_token': self.api_token},
@@ -218,7 +218,7 @@ class RealdebridComTorrent(Crypter):
                                     get={'auth_token': self.api_token},
                                     fail_on_error=False)
 
-            log_info = ["WAITING [{}]".format(torrent_id)]
+            log_info = ["WAITING [%s]" % torrent_id]
             error = False
 
             # we received json status from API
@@ -248,8 +248,7 @@ class RealdebridComTorrent(Crypter):
                                                   'virus',
                                                   'waiting_files_selection',
                                                   'dead']:
-                        log_info.append("Torrent in error state: {}".format(
-                            torrent_info["status"]))
+                        log_info.append("Torrent in error state: %s" % torrent_info["status"])
                         # hackish way to disable retrying
                         api_errors_count = self.API_ERRORS_MAX
 
@@ -261,11 +260,11 @@ class RealdebridComTorrent(Crypter):
 
             if error:
                 api_errors_count += 1
-                log_info.append("Retrying {}/{}".format(api_errors_count,
+                log_info.append("Retrying %d/%d" % (api_errors_count,
                                                         self.API_ERRORS_MAX))
 
             if self.pyload.debug:
-                log_info.append("Torrent info: {}".format(torrent_info))
+                log_info.append("Torrent info: %s" % torrent_info)
 
             if api_errors_count < self.API_ERRORS_MAX:
                 self.log_debug(" | ".join(log_info))
