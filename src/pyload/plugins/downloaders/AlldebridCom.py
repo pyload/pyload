@@ -8,7 +8,7 @@ from ..base.multi_downloader import MultiDownloader
 class AlldebridCom(MultiDownloader):
     __name__ = "AlldebridCom"
     __type__ = "downloader"
-    __version__ = "0.62"
+    __version__ = "0.63"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.|s\d+\.)?alldebrid\.com/dl/[\w^_]+"
@@ -60,7 +60,11 @@ class AlldebridCom(MultiDownloader):
     def handle_premium(self, pyfile):
         api_data = self.api_request(
             "link/unlock",
-            get={"link": pyfile.url, "apikey": self.account.info["login"]["password"]},
+            get={
+                "link": pyfile.url,
+                "password": self.get_password(),
+                "apikey": self.account.info["login"]["password"],
+            },
         )
 
         if api_data.get("error", False):
