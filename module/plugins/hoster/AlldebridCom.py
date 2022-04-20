@@ -7,7 +7,7 @@ from ..internal.MultiHoster import MultiHoster
 class AlldebridCom(MultiHoster):
     __name__ = "AlldebridCom"
     __type__ = "hoster"
-    __version__ = "0.62"
+    __version__ = "0.63"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.|s\d+\.)?alldebrid\.com/dl/[\w^_]+'
@@ -45,6 +45,7 @@ class AlldebridCom(MultiHoster):
     def handle_premium(self, pyfile):
         api_data = self.api_response("link/unlock",
                                       get={'link': pyfile.url,
+                                           'password': self.get_password(),
                                            'apikey': self.account.info['login']['password']})
 
         if api_data.get("error", False):
