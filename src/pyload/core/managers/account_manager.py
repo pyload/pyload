@@ -134,20 +134,22 @@ class AccountManager:
         """
         save all account information.
         """
+        account_plugins = self.pyload.plugin_manager.get_account_plugins()
         with open(self.configpath, mode="w") as fp:
             fp.write(f"version: {__version__}\n")
 
-            for plugin, accounts in self.accounts.items():
-                fp.write("\n")
-                fp.write(plugin + ":\n")
+            for plugin, accounts in sorted(self.accounts.items()):
+                if plugin in account_plugins:
+                    fp.write("\n")
+                    fp.write(plugin + ":\n")
 
-                for name, data in accounts.items():
-                    pw = data["password"]
-                    fp.write(f"\n\t{name}:{pw}\n")
-                    if data["options"]:
-                        for option, values in data["options"].items():
-                            line = " ".join(values)
-                            fp.write(f"\t@{option} {line}\n")
+                    for name, data in accounts.items():
+                        pw = data["password"]
+                        fp.write(f"\n\t{name}:{pw}\n")
+                        if data["options"]:
+                            for option, values in data["options"].items():
+                                line = " ".join(values)
+                                fp.write(f"\t@{option} {line}\n")
             os.chmod(fp.name, 0o600)
 
     # ----------------------------------------------------------------------
@@ -166,13 +168,14 @@ class AccountManager:
         """
         if plugin in self.accounts:
             p = self.get_account_plugin(plugin)
-            updated = p.update_accounts(user, password, options)
-            # since accounts is a ref in plugin self.accounts doesnt need to be
-            # updated here
+            if p is not None:
+                updated = p.update_accounts(user, password, options)
+                # since accounts is a ref in plugin self.accounts doesn't need to be
+                # updated here
 
-            self.save_accounts()
-            if updated:
-                p.schedule_refresh(user, force=False)
+                self.save_accounts()
+                if updated:
+                    p.schedule_refresh(user, force=False)
 
     @lock
     def remove_account(self, plugin, user):
