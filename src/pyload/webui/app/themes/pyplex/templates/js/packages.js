@@ -33,7 +33,6 @@ function PackageUI (type){
                 if (newIndex === oldIndex) {
                     return false;
                 }
-                let order = ui.item.data('pid') + '|' + newIndex;
                 indicateLoad();
                 $.get({
                     url: "{{url_for('json.package_order')}}",
