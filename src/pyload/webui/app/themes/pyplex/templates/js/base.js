@@ -374,6 +374,15 @@ function set_captcha(a) {
             $("#cap_interactive").css("display", "block");
             interactiveCaptchaHandlerInstance.startInteraction(params.url, params);
         }
+    } else if (a.result_type === "invisible") {
+        $("#cap_box #cap_title").text("");
+        if(interactiveCaptchaHandlerInstance == null) {
+            interactiveCaptchaHandlerInstance = new interactiveCaptchaHandler("cap_interactive_iframe", "cap_invisible_loading", submit_interactive_captcha);
+        }
+        if(params.url !== undefined && params.url.indexOf("http") === 0) {
+            $("#cap_interactive").css("display", "block");
+            interactiveCaptchaHandlerInstance.startInteraction(params.url, params);
+        }
     }
     return true;
 }
