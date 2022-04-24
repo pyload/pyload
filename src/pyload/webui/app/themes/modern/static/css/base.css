@@ -280,3 +280,11 @@ fieldset[disabled] .btn {
   margin: 6px 3px 0 3px;
   border-left: 1px solid #CACACA;
 }
+
+.modal-dialog {
+    margin-top: 10px;
+}
+
+.modal-dialog {
+    margin-top: 10px;
+}

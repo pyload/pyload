@@ -1,7 +1,6 @@
-<?xml version="1.0" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html lang="en">
+
 <head>
 
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
@@ -53,9 +52,6 @@
     <img src="{{url_for('static', filename='img/head-login.png')}}" alt="User:" style="vertical-align:middle; margin:2px" /><span style="padding-right: 2px;">{{user.name}}</span>
     <ul id="user-actions">
         <li><a href="{{url_for('app.logout')}}" class="action logout" rel="nofollow">{{_("Logout")}}</a></li>
-        {% if user.is_admin %}
-        <li><a href="{{url_for('app.admin')}}" class="action profile" rel="nofollow">{{_("Profile")}}</a></li>
-        {% endif %}
         <li><a href="{{url_for('app.info')}}" class="action info" rel="nofollow">{{_("Status")}}</a></li>
 
     </ul>

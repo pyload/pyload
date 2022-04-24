@@ -8,7 +8,7 @@ from flask.json import jsonify
 from pyload.core.api import Role
 from pyload.core.utils import format
 
-from ..helpers import login_required, permlist, render_template, set_permission
+from ..helpers import get_permission, login_required, permlist, render_template, set_permission
 
 bp = flask.Blueprint("json", __name__)
 
@@ -372,5 +372,49 @@ def add_user():
     done = api.add_user(user, password, role, perms)
     if not done:
         return jsonify(False), 500  #: Duplicate user
+
+    return jsonify(True)
+
+@bp.route("/json/update_users", methods=["POST"], endpoint="update_users")
+# @apiver_check
+# @fresh_login_required
+@login_required("ADMIN")
+def update_users():
+    api = flask.current_app.config["PYLOAD_API"]
+
+    all_users = api.get_all_userdata()
+
+    users = {}
+
+    # NOTE: messy code...
+    for data in all_users.values():
+        name = data["name"]
+        users[name] = {"perms": get_permission(data["permission"])}
+        users[name]["perms"]["admin"] = data["role"] == 0
+
+    s = flask.session
+    for name in list(users):
+        data = users[name]
+        if flask.request.form.get(f"{name}|delete"):
+            api.remove_user(name)
+            del users[name]
+            continue
+        if flask.request.form.get(f"{name}|admin"):
+            data["role"] = 0
+            data["perms"]["admin"] = True
+        elif name != s["name"]:
+            data["role"] = 1
+            data["perms"]["admin"] = False
+
+        # set all perms to false
+        for perm in permlist():
+            data["perms"][perm] = False
+
+        for perm in flask.request.form.getlist(f"{name}|perms"):
+            data["perms"][perm] = True
+
+        data["permission"] = set_permission(data["perms"])
+
+        api.set_user_permission(name, data["permission"], data["role"])
 
     return jsonify(True)

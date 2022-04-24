@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import datetime
-import logging  # test
 import operator
 import re
 import os
@@ -15,7 +14,6 @@ import flask
 from pyload import PKGDIR
 from pyload.core.utils import format
 
-from ..filters import unquotepath
 from ..helpers import (
     clear_session,
     get_permission,
@@ -25,7 +23,6 @@ from ..helpers import (
     permlist,
     render_base,
     render_template,
-    set_permission,
     set_session,
     static_file_url,
 )
@@ -189,33 +186,33 @@ def settings():
 
     accs = []
 
-    for data in api.get_accounts(False):
-        if data.trafficleft == -1:
+    for userdata in api.get_accounts(False):
+        if userdata.trafficleft == -1:
             trafficleft = "unlimited"
-        elif not data.trafficleft:
+        elif not userdata.trafficleft:
             trafficleft = "not available"
         else:
-            trafficleft = format.size(data.trafficleft)
+            trafficleft = format.size(userdata.trafficleft)
 
-        if data.validuntil == -1:
+        if userdata.validuntil == -1:
             validuntil = "unlimited"
-        elif not data.validuntil:
+        elif not userdata.validuntil:
             validuntil = "not available"
         else:
-            t = time.localtime(data.validuntil)
+            t = time.localtime(userdata.validuntil)
             validuntil = time.strftime("%d.%m.%Y", t)
 
-        if "time" in data.options:
+        if "time" in userdata.options:
             try:
-                _time = data.options["time"][0]
+                _time = userdata.options["time"][0]
             except Exception:
                 _time = ""
         else:
             _time = ""
 
-        if "limit_dl" in data.options:
+        if "limit_dl" in userdata.options:
             try:
-                limitdl = data.options["limit_dl"][0]
+                limitdl = userdata.options["limit_dl"][0]
             except Exception:
                 limitdl = "0"
         else:
@@ -223,10 +220,10 @@ def settings():
 
         accs.append(
             {
-                "type": data.type,
-                "login": data.login,
-                "valid": data.valid,
-                "premium": data.premium,
+                "type": userdata.type,
+                "login": userdata.login,
+                "valid": userdata.valid,
+                "premium": userdata.premium,
                 "trafficleft": trafficleft,
                 "validuntil": validuntil,
                 "limitdl": limitdl,
@@ -234,8 +231,20 @@ def settings():
             }
         )
 
+    all_users = api.get_all_userdata()
+    users = {}
+    for userdata in all_users.values():
+        name = userdata["name"]
+        users[name] = {"perms": get_permission(userdata["permission"])}
+        users[name]["perms"]["admin"] = userdata["role"] == 0
+
+    admin_menu = {
+        "permlist": permlist(),
+        "users": users
+    }
+
     context = {
-        "conf": {"plugin": plugin_menu, "general": conf_menu, "accs": accs},
+        "conf": {"plugin": plugin_menu, "general": conf_menu, "accs": accs, "admin": admin_menu},
         "types": api.get_account_types(),
     }
     return render_template("settings.html", **context)
@@ -427,51 +436,6 @@ def logs(start_line=-1):
         "inext": (start_line + perpage) if start_line + perpage <= len(log) else start_line,
     }
     return render_template("logs.html", **context)
-
-
-@bp.route("/admin", methods=["GET", "POST"], endpoint="admin")
-@login_required("ADMIN")
-def admin():
-    api = flask.current_app.config["PYLOAD_API"]
-
-    allusers = api.get_all_userdata()
-
-    perms = permlist()
-    users = {}
-
-    # NOTE: messy code... users just need "perms" data in admin template
-    for data in allusers.values():
-        name = data["name"]
-        users[name] = {"perms": get_permission(data["permission"])}
-        users[name]["perms"]["admin"] = data["role"] == 0
-
-    s = flask.session
-    if flask.request.method == "POST":
-        for name in list(users):
-            data = users[name]
-            if flask.request.form.get(f"{name}|delete"):
-                api.remove_user(name)
-                del users[name]
-                continue
-            if flask.request.form.get(f"{name}|admin"):
-                data["role"] = 0
-                data["perms"]["admin"] = True
-            elif name != s["name"]:
-                data["role"] = 1
-                data["perms"]["admin"] = False
-
-            # set all perms to false
-            for perm in perms:
-                data["perms"][perm] = False
-
-            for perm in flask.request.form.getlist(f"{name}|perms"):
-                data["perms"][perm] = True
-
-            data["permission"] = set_permission(data["perms"])
-
-            api.set_user_permission(name, data["permission"], data["role"])
-
-    return render_template("admin.html", users=users, permlist=perms)
 
 
 @bp.route("/filemanager", endpoint="filemanager")
