@@ -4,7 +4,7 @@ import json
 import re
 
 from pyload.core.datatypes.pyfile import PyFile
-from pyload.core.network.HTTPRequest import BadHeader
+from pyload.core.network.http.exceptions import BadHeader
 
 from ..anticaptchas.ReCaptcha import ReCaptcha
 from ..base.account import BaseAccount
