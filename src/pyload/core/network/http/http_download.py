@@ -94,9 +94,9 @@ class HTTPDownload:
                     fo.seek(self.info.get_chunk_range(i - 1)[1] + 1)
                     fname = f"{self.filename}.chunk{i}"
                     with open(fname, mode="rb") as fi:
-                        buf = 32 << 10
+                        buffer_size = 32 << 10
                         while True:  #: copy in chunks, consumes less memory
-                            data = fi.read(buf)
+                            data = fi.read(buffer_size)
                             if not data:
                                 break
                             fo.write(data)
