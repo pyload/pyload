@@ -60,8 +60,7 @@ def call_api(func, *args, **kwargs):
         **{x: literal_eval(y) for x, y in kwargs.items()},
     )
 
-    # null is invalid json response
-    return jsonify(result or True)
+    return jsonify(result)
 
 
 @bp.route("/api/login", methods=["POST"], endpoint="login")
