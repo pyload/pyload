@@ -12,13 +12,34 @@ def _salted_password(password, salt):
     return salt + dk.hex()
 
 
+def _salted_password_old(password, salt):
+    dk = hashlib.pbkdf2_hmac("sha256", password.encode(), salt.encode(), 100000)
+    return salt + dk.hex()
+
+
 def _gensalt():
     return os.urandom(16).hex()
 
 
 def _check_password(hashed, clear):
     salt = hashed[:32]
-    to_compare = _salted_password(clear, salt)
+
+    to_compare = ""
+    if len(hashed) == 96:
+        # new format
+        to_compare = _salted_password(clear, salt)
+    elif len(hashed) == 69:
+        # old format before 1e2446a998096a6282d805826b38a11eadfe0a5b
+        salt = hashed[:5]
+        to_compare = _salted_password_old(clear, salt)
+        print( 
+            f"core/database/user_database.py: _check_password: warning: database stores password in old format. "
+            f"debug: sqlite3 -header ~/.pyload/data/pyload.db 'select * from users where LENGTH(password) = 69'"
+        )
+        # TODO how to migrate to new format?
+    else:
+        print(f"core/database/user_database.py: _check_password: error: database version mismatch. len(hashed) = {len(hashed)}")
+        return False
 
     return hashed == to_compare
 
