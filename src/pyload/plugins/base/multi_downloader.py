@@ -89,7 +89,7 @@ class MultiDownloader(SimpleDownloader):
                 hdict["new_module"] = tmp_module
                 hdict["new_name"] = tmp_name
 
-                self.restart(self._("Revert to original hoster plugin"))
+                self.restart(self._("Revert to original downloader plugin"))
 
             else:
                 raise

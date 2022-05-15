@@ -28,7 +28,7 @@ class CriptTo(SimpleDecrypter):
                   ("folder_per_package", "Default;Yes;No", "Create folder for each package", "Default"),
                   ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10)]
 
-    __description__ = """cript.to decrypter plugin"""
+    __description__ = """Cript.to decrypter plugin"""
     __license__ = "GPLv3"
     __authors__ = [("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 

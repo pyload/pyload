@@ -26,7 +26,7 @@ class AccioDebridCom(MultiDownloader):
                   ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10),
                   ("revert_failed", "bool", "Revert to standard download if fails", True)]
 
-    __description__ = """Accio-debrid.com multi-hoster plugin"""
+    __description__ = """Accio-debrid.com multi-downloader plugin"""
     __license__ = "GPLv3"
     __authors__ = [("PlugPlus", "accio.debrid@gmail.com")]
 

@@ -23,7 +23,7 @@ class GetTwentyFourOrg(MultiDownloader):
         ("revert_failed", "bool", "Revert to standard download if fails", True),
     ]
 
-    __description__ = "GeT24.org multi-hoster plugin"
+    __description__ = "GeT24.org multi-downloader plugin"
     __license__ = "GPLv3"
     __authors__ = ["get24", "contact@get24.org"]
 

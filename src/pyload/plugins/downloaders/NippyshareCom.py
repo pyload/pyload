@@ -16,7 +16,7 @@ class NippyshareCom(XFSDownloader):
         ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10),
     ]
 
-    __description__ = """Nippyshare.com hoster plugin"""
+    __description__ = """Nippyshare.com downloader plugin"""
     __license__ = "GPLv3"
     __authors__ = [("OzzieIsaacs", "Ozzie.Fernandez.Isaacs@googlemail.com")]
 

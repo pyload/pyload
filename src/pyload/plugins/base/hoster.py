@@ -470,7 +470,7 @@ class BaseHoster(BasePlugin):
         try:
             id = frame.f_back.f_lineno
         finally:
-            del frame  #: Delete the frame or it wont be cleaned
+            del frame  #: Delete the frame or it won't be cleaned
 
         if id not in self.retries:
             self.retries[id] = 0

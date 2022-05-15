@@ -23,7 +23,7 @@ class TbSevenPl(MultiDownloader):
         ("revert_failed", "bool", "Revert to standard download if fails", True),
     ]
 
-    __description__ = """tb7.pl multi-downloader plugin"""
+    __description__ = """Tb7.pl multi-downloader plugin"""
     __license__ = "GPLv3"
     __authors__ = [("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 

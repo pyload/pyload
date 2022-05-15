@@ -11,7 +11,7 @@ from .plugin_thread import PluginThread
 
 class DownloadThread(PluginThread):
     """
-    thread for downloading files from 'real' hoster plugins.
+    thread for downloading files from 'real' downloader plugins.
     """
 
     # ----------------------------------------------------------------------

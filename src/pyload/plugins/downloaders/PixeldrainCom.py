@@ -21,7 +21,7 @@ class PixeldrainCom(SimpleDownloader):
         ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10),
     ]
 
-    __description__ = """Pixeldrain.com hoster plugin"""
+    __description__ = """Pixeldrain.com downloader plugin"""
     __license__ = "GPLv3"
     __authors__ = [("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 

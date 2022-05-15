@@ -213,7 +213,7 @@ class BaseAccount(BasePlugin):
     def get_info(self, refresh=True):
         """
         Retrieve account infos for an user, do **not** overwrite this method! just use
-        it to retrieve infos in hoster plugins. see `grab_info`
+        it to retrieve infos in downloader plugins. see `grab_info`
 
         :param user: username
         :param relogin: reloads cached account information
