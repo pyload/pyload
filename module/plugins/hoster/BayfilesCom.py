@@ -9,7 +9,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class BayfilesCom(SimpleHoster):
     __name__ = "BayfilesCom"
     __type__ = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
     __pattern__ = r"https://bayfiles.com/(?P<ID>\w+)"
