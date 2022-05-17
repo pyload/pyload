@@ -9,7 +9,7 @@ from ..base.simple_downloader import SimpleDownloader
 class BayfilesCom(SimpleDownloader):
     __name__ = "BayfilesCom"
     __type__ = "downloader"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
     __pattern__ = r"https://bayfiles.com/(?P<ID>\w+)"
