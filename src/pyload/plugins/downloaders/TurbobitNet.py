@@ -13,10 +13,10 @@ from ..base.simple_downloader import SimpleDownloader
 class TurbobitNet(SimpleDownloader):
     __name__ = "TurbobitNet"
     __type__ = "downloader"
-    __version__ = "0.42"
+    __version__ = "0.43"
     __status__ = "testing"
 
-    __pattern__ = r'https?://(?:(?:www|m)\.)?(?:turbobit\.net|turbo?\.(?:to|cc))/(?:download/free/)?(?P<ID>\w+)'
+    __pattern__ = r'https?://(?:(?:www|m)\.)?(?:turbobit\.net|turbo?\.(?:to|cc)|turb\.pw)/(?:download/free/)?(?P<ID>\w+)'
     __config__ = [
         ("enabled", "bool", "Activated", True),
         ("use_premium", "bool", "Use premium account if available", True),
