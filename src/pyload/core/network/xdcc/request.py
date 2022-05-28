@@ -170,7 +170,7 @@ class XDCCRequest:
 
     def update_progress(self):
         if self.status_notify:
-            self.status_notify(self.percent)
+            self.status_notify({"progress": self.percent})
 
     @property
     def size(self):
