@@ -59,7 +59,7 @@ RUN echo "**** install build packages ****" && \
 
 FROM builder AS source_builder
 
-ARG PIP_PACKAGES="Babel Jinja2==3.0.3"
+ARG PIP_PACKAGES="Babel Jinja2!=3.1.0"
 
 COPY . /source
 WORKDIR /source
