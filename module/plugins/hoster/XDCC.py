@@ -122,14 +122,21 @@ class IRC(object):
 
                 return True
 
-        self.plugin.log_error(_("Connection to %s:%s failed.") % (host, port))
+            elif command == "432":  #: ERR_ERRONEUSNICKNAME
+                self.plugin.log_error(_("Illegal nickname: %s") % self.nick)
+                break
 
+            elif command == "433":  #: ERR_NICKNAMEINUSE
+                self.plugin.log_error(_("Nickname %s is already in use") % self.nick)
+                break
+
+        self.plugin.log_error(_("Connection to %s:%s failed.") % (host, port))
         return False
 
     @lock
     def disconnect_server(self):
         if self.connected:
-            self.plugin.log_info(_("Diconnecting from %s:%s") % (self.host, self.port))
+            self.plugin.log_info(_("Disconnecting from %s:%s") % (self.host, self.port))
             self.irc_sock.send("QUIT :byebye\r\n")
             self.plugin.log_debug(_("Disconnected"))
             self.connected = False
@@ -443,7 +450,7 @@ class IRC(object):
 class XDCC(Hoster):
     __name__    = "XDCC"
     __type__    = "hoster"
-    __version__ = "0.53"
+    __version__ = "0.54"
     __status__  = "testing"
 
     __pattern__ = r'xdcc://(?P<SERVER>.*?)/#?(?P<CHAN>.*?)/(?P<BOT>.*?)/#?(?P<PACK>\d+)/?'
@@ -464,12 +471,11 @@ class XDCC(Hoster):
     __authors__     = [("jeix", "jeix@hasnomail.com"),
                        ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
+    RE_QUEUED = re.compile(r'Added you to the (?:main|idle) queue for pack \d+ \("[^"]+"\) in position (\d+)')
+    RE_QUEUE_STAT = re.compile(r'^Queued \w+ for ".+?", in position (\d+).+?([\dhm]+) or less remaining')
+    RE_XDCC = re.compile(r'\x01DCC SEND "?(?P<NAME>.*?)"? (?P<IP>\d+) (?P<PORT>\d+)(?: (?P<SIZE>\d+))?\x01')
 
     def setup(self):
-        self.RE_QUEUED = re.compile(r'Added you to the (?:main|idle) queue for pack \d+ \("[^"]+"\) in position (\d+)')
-        self.RE_QUEUE_STAT = re.compile(r'^Queued \w+ for ".+?", in position (\d+).+?([\dhm]+) or less remaining')
-        self.RE_XDCC = re.compile(r'\x01DCC SEND "?(?P<NAME>.*?)"? (?P<IP>\d+) (?P<PORT>\d+)(?: (?P<SIZE>\d+))?\x01')
-
         self.dl_started = False
         self.dl_finished = False
         self.last_response_time = 0
@@ -517,7 +523,7 @@ class XDCC(Hoster):
         queued_timeout = self.config.get('queued_timeout') * 60
         queue_query_interval = self.config.get('queue_query_interval') * 60
         response_timeout = max(self.config.get('response_timeout'), 60)
-        self.config.get('response_timeout', response_timeout)
+        self.config.set('response_timeout', response_timeout)
 
         waiting_opts = [_x.split('/')
                         for _x in self.config.get('waiting_opts').strip().split(',')
@@ -692,8 +698,7 @@ class XDCC(Hoster):
             else:
                 m = self.RE_QUEUED.search(text)
                 if m:
-                    self.queued_time = time.time()
-                    self.last_response_time = time.time()
+                    self.queued_time = self.last_response_time = time.time()
                     self.log_info(_("Got queued at position %s") % m.group(1))
 
                 else:
