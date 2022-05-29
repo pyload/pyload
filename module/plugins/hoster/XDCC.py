@@ -450,7 +450,7 @@ class IRC(object):
 class XDCC(Hoster):
     __name__    = "XDCC"
     __type__    = "hoster"
-    __version__ = "0.54"
+    __version__ = "0.55"
     __status__  = "testing"
 
     __pattern__ = r'xdcc://(?P<SERVER>.*?)/#?(?P<CHAN>.*?)/(?P<BOT>.*?)/#?(?P<PACK>\d+)/?'
@@ -571,7 +571,8 @@ class XDCC(Hoster):
 
                         for opt in channel_opts:
                             if opt[0].lower() == host.lower() and opt[1].lower() == chan.lower():
-                                self.irc_client.join_channel(opt[2])
+                                if not self.irc_client.join_channel(opt[2]):
+                                    self.fail(_("Cannot join channel"))
 
                         if not self.irc_client.join_channel(chan):
                             self.fail(_("Cannot join channel"))
