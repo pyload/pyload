@@ -122,6 +122,8 @@ class AccountManager:
 
             elif ":" in line:
                 name, sep, pw = line.partition(":")
+                name = name.replace(r"\x3a", ":")
+                pw = pw.replace(r"\x3a", ":")
                 self.accounts[plugin][name] = {
                     "password": pw,
                     "options": {},
@@ -145,6 +147,8 @@ class AccountManager:
 
                     for name, data in accounts.items():
                         pw = data["password"]
+                        name = name.replace(":", r"\x3a")
+                        pw = pw.replace(":", r"\x3a")
                         fp.write(f"\n\t{name}:{pw}\n")
                         if data["options"]:
                             for option, values in data["options"].items():
