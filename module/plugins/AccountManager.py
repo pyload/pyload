@@ -117,6 +117,8 @@ class AccountManager():
                 
             elif ":" in line:
                 name, sep, pw = line.partition(":")
+                name = name.replace(r"\x3a", ":")
+                pw = pw.replace(r"\x3a", ":")
                 self.accounts[plugin][name] = {"password": pw, "options": {}, "valid": True}
     #----------------------------------------------------------------------
     def saveAccounts(self):
@@ -130,7 +132,10 @@ class AccountManager():
             f.write(plugin+":\n")
             
             for name, data in accounts.iteritems():
-                f.write("\n\t%s:%s\n" % (name, data['password']) )
+                pw = data['password']
+                name = name.replace(":", r"\x3a")
+                pw = pw.replace(":", r"\x3a")
+                f.write("\n\t%s:%s\n" % (name, pw))
                 if data['options']:
                     for option, values in data['options'].iteritems():
                         f.write("\t@%s %s\n" % (option, " ".join(values)))
