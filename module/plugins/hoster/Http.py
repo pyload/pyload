@@ -10,7 +10,7 @@ from module.network.HTTPRequest import BadHeader
 class Http(Hoster):
     __name__ = "Http"
     __type__ = "hoster"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __status__ = "testing"
 
     __pattern__ = r'(?:jd|pys?)://.+'
@@ -18,7 +18,8 @@ class Http(Hoster):
 
     __description__ = """Download simple http link"""
     __license__ = "GPLv3"
-    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
+    __authors__ = [("Walter Purcaro", "vuolter@gmail.com"),
+                   ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
     def setup(self):
         self.chunk_limit = -1
@@ -31,53 +32,46 @@ class Http(Hoster):
         self.__class__.__name__ = class_name
 
     def process(self, pyfile):
-        url = re.sub(r'^(jd|py)', "http", pyfile.url)
+        url = re.sub(r"^(jd|py)", "http", pyfile.url)
 
-        for _i in range(2):
-            try:
-                self.download(url, ref=False, disposition=True)
+        netloc = urlparse.urlparse(url).netloc
+        try:
+            auth, netloc = netloc.split('@', 2)
+        except ValueError:
+            auth = None
 
-            except BadHeader, e:
-                if e.code not in (401, 403, 404, 410):
-                    raise
-
-            if self.req.code in (404, 410):
-                self.offline()
-
-            elif self.req.code in (401, 403):
-                self.log_debug(
-                    "Auth required",
-                    "Received HTTP status code: %d" %
-                    self.req.code)
-
-                if _i == 0:
-                    netloc = urlparse.urlparse(url).netloc
-                    try:
-                        netloc = netloc.split('@', 2)[1]
-                    except IndexError:
-                        pass
-
-                    if self.account:
-                        logins = dict((x['login'], x['password'])
-                                       for x in self.account.getAllAccounts())
-                    else:
-                        logins = {}
-
-                    if netloc in logins:
-                        self.log_debug("Logging on to %s" % netloc)
-                        self.req.addAuth(logins[netloc])
-
-                    else:
-                        auth = self.get_password()
-                        if ':' in auth:
-                            self.req.addAuth(auth)
-                        else:
-                            self.fail(_("Authorization required"))
-                else:
-                    self.fail(_("Authorization required"))
+        if auth is None:
+            password = self.get_password()
+            if ":" in password:
+                auth = password
+                self.log_debug("Logging on to %s using credentials specified in the package password" % netloc)
 
             else:
-                break
+                if self.account:
+                    logins = dict((x['login'], x['password'])
+                                  for x in self.account.getAllAccounts())
+                else:
+                    logins = {}
+
+                if netloc in logins:
+                    auth = logins[netloc]
+                    self.log_debug("Logging on to %s using the account plugin" % netloc)
+
+            if auth is not None:
+                self.req.addAuth(auth)
+
+        else:
+            self.log_debug("Logging on to %s using credentials specified in the URL" % netloc)
+
+        try:
+            self.download(url, ref=False, disposition=True)
+
+        except BadHeader, e:
+            if e.code == 401:
+                self.fail(_("Unauthorized"))
+
+            else:
+                raise
 
         self.check_download()
 
