@@ -30,7 +30,7 @@ class SevenZip(Extractor):
 
     _RE_PART = re.compile(r'\.7z\.\d{3}|\.(part|r)\d+(\.rar|\.rev)?(\.bad)?|\.rar$', re.I)
     _RE_FILES = re.compile(r'([\d\-]+)\s+([\d:]+)\s+([RHSA.]+)\s+(\d+)\s+(?:(\d+)\s+)?(.+)')
-    _RE_ENCRYPTED_HEADER = re.compile(r'Headers Error')
+    _RE_ENCRYPTED_HEADER = re.compile(r'encrypted archive')
     _RE_ENCRYPTED_FILES = re.compile(r'Encrypted\s+=\s+\+')
     _RE_BADPWD = re.compile(r"Wrong password", re.I)
     _RE_BADCRC = re.compile(r'CRC Failed|Can not open file', re.I)
