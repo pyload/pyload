@@ -12,7 +12,7 @@ from .misc import Popen, fs_encode, fsjoin, renice
 class SevenZip(Extractor):
     __name__ = "SevenZip"
     __type__ = "extractor"
-    __version__ = "0.38"
+    __version__ = "0.39"
     __status__ = "testing"
 
     __description__ = """7-Zip extractor plugin"""
