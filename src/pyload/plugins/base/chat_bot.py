@@ -25,6 +25,7 @@ class ChatBot(Thread, BaseAddon):
     SHORTCUT_COMMANDS = {
         "a": "add",
         "c": "collector",
+        "ca": "captcha",
         "f": "freespace",
         "h": "help",
         "i": "info",
@@ -308,7 +309,7 @@ class ChatBot(Thread, BaseAddon):
         self.pyload.api.pull_from_queue(package_id)
         return [self._("INFO: Pulled package #{} from queue to collector.").format(package_id)]
 
-    def _cmd_c(self, args):
+    def _cmd_captcha(self, args):
         """
         Captcha answer.
         """
@@ -400,6 +401,7 @@ class ChatBot(Thread, BaseAddon):
         lines = [
             "The following commands are available:",
             "add <package|packid> <links> [...] Adds link to package. (creates new package if it does not exist)",
+            "captcha <id> <answer>              Solve a captcha task with id <id>",
             "collector                          Shows all packages in collector",
             "del -p|-l <id> [...]               Deletes all packages|links with the ids specified",
             "deletefinished                     Deletes all finished files and completly finished packages",
@@ -422,7 +424,10 @@ class ChatBot(Thread, BaseAddon):
             "unpause                            Starts all downloads"
         ]
         lines.append("Shortcuts:")
-        lines.append(", ".join(cmd_short + ": " + cmd_long for cmd_short, cmd_long in self.SHORTCUT_COMMANDS.items()))
+        lines.append(", ".join(
+            cmd_short + ": " + cmd_long
+            for cmd_short, cmd_long in self.SHORTCUT_COMMANDS.items())
+        )
 
         return lines
 
