@@ -16,7 +16,7 @@ from .hoster import BaseHoster
 class BaseDownloader(BaseHoster):
     __name__ = "BaseDownloader"
     __type__ = "downloader"
-    __version__ = "0.81"
+    __version__ = "0.82"
     __status__ = "stable"
 
     __pattern__ = r"^unmatchable$"
@@ -167,8 +167,7 @@ class BaseDownloader(BaseHoster):
 
         elif redirect:
             maxredirs = (
-                self.config.get("maxredirs", plugin="UserAgentSwitcher")
-                or maxredirs
+                self.config.get("maxredirs", plugin="UserAgentSwitcher") or maxredirs
             )
 
         header = self.load(url, just_header=True)
@@ -214,11 +213,11 @@ class BaseDownloader(BaseHoster):
             return resource
 
     def _on_notification(self, notification):
-        if 'progress' in notification:
-            self.pyfile.set_progress(notification['progress'])
+        if "progress" in notification:
+            self.pyfile.set_progress(notification["progress"])
 
-        if 'disposition' in notification:
-            self.pyfile.set_name(notification['disposition'])
+        if "disposition" in notification:
+            self.pyfile.set_name(notification["disposition"])
 
     def _download(
         self, url, filename, get, post, ref, cookies, disposition, resume, chunks
@@ -375,7 +374,15 @@ class BaseDownloader(BaseHoster):
                     self.last_check = m
                     return name
 
+            elif callable(rule):
+                return rule(content)
+
     def _check_download(self):
+        def _is_empty_file(content):
+            firstbyte = content[0:1]
+            whitespaces_count = len(re.findall(rb"[%s\s]" % firstbyte, content))
+            return whitespaces_count == len(content)
+
         self.log_info(self._("Checking download..."))
         self.pyfile.set_custom_status(self._("checking"))
 
@@ -385,7 +392,7 @@ class BaseDownloader(BaseHoster):
             else:
                 self.error(self._("No file downloaded"))
 
-        elif self.scan_download({"Empty file": re.compile(rb"\A((.|)(\2|\s)*)\Z")}):
+        elif self.scan_download({"Empty file": _is_empty_file}):
             if self.remove(self.last_download):
                 self.last_download = ""
             self.error(self._("Empty file"))
@@ -527,7 +534,7 @@ class BaseDownloader(BaseHoster):
             self.skip(msg)
 
         else:
-            # Same file exists but it does not belongs to our pack, add a trailing
+            # Same file exists but, it does not belong to our pack, add a trailing
             # counter
             name, ext = os.path.splitext(self.pyfile.name)
             m = re.match(r"(.+?)(?:\((\d+)\))?$", name)
