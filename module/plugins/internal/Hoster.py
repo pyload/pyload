@@ -33,7 +33,7 @@ if not hasattr(__builtin__.property, "setter"):
 class Hoster(Base):
     __name__ = "Hoster"
     __type__ = "hoster"
-    __version__ = "0.81"
+    __version__ = "0.82"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -348,7 +348,15 @@ class Hoster(Base):
                     self.last_check = m
                     return name
 
+            elif callable(rule):
+                return rule(content)
+
     def _check_download(self):
+        def _is_empty_file(content):
+            firstbyte = content[0:1]
+            whitespaces_count = len(re.findall(r"[%s\s]" % firstbyte, content))
+            return whitespaces_count == len(content)
+
         self.log_info(_("Checking download..."))
         self.pyfile.setCustomStatus(_("checking"))
 
@@ -358,7 +366,7 @@ class Hoster(Base):
             else:
                 self.error(_("No file downloaded"))
 
-        elif self.scan_download({'Empty file': re.compile(r'\A((.|)(\2|\s)*)\Z')}):
+        elif self.scan_download({'Empty file': _is_empty_file}):
             if self.remove(self.last_download):
                 self.last_download = ""
             self.error(_("Empty file"))
