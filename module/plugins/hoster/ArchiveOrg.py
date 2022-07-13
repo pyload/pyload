@@ -6,7 +6,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class ArchiveOrg(SimpleHoster):
     __name__ = "ArchiveOrg"
     __type__ = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?archive\.org/download/.+"
@@ -23,6 +23,6 @@ class ArchiveOrg(SimpleHoster):
     __authors__ = [("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
     def setup(self):
-        self.multi_dl = True
+        self.multiDl = True
         self.resume_download = True
         self.chunk_limit = -1
