@@ -154,6 +154,11 @@ textarea.form-control {
   user-select: none;
 }
 
+.modal-body,
+.modal-header {
+  overflow: auto;
+}
+
 .modal-footer {
   padding: 6px 12px;
   border-top: none;
