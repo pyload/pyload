@@ -24,7 +24,7 @@ def convert_decimal_prefix(m):
 class UlozTo(SimpleDownloader):
     __name__ = "UlozTo"
     __type__ = "downloader"
-    __version__ = "1.50"
+    __version__ = "1.51"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl|pornfile\.cz)/(?:live/)?(?P<ID>[!\w]+/[^/?]*)"
@@ -146,12 +146,6 @@ class UlozTo(SimpleDownloader):
 
                 xapca = self.load("https://ulozto.net/reloadXapca.php",
                                   get={'rnd': timestamp()})
-
-                xapca = xapca.replace(
-                    'sound":"',
-                    'sound":"https:').replace(
-                    'image":"',
-                    'image":"https:')
                 self.log_debug("xapca: %s" % xapca)
 
                 data = json.loads(xapca)
