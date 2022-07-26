@@ -9,7 +9,7 @@ from ..base.simple_downloader import SimpleDownloader
 class FiregetCom(SimpleDownloader):
     __name__ = "FiregetCom"
     __type__ = "downloader"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __status__ = "testing"
 
     __pattern__ = r"http://(?:www\.)?fireget\.com/(?P<ID>\w{12})/.+"
@@ -55,10 +55,11 @@ class FiregetCom(SimpleDownloader):
         if not inputs:
             self.error("Form F1 not found")
 
-        self.captcha = ReCaptcha(pyfile)
-        captcha_key = self.captcha.detect_key()
+        recaptcha = ReCaptcha(pyfile)
+        captcha_key = recaptcha.detect_key()
 
         if captcha_key:
+            self.captcha = recaptcha
             response = self.captcha.challenge(captcha_key)
             inputs["g-recaptcha-response"] = response
 
@@ -78,7 +79,12 @@ class FiregetCom(SimpleDownloader):
                 inputs["code"] = captcha_code
 
             else:
-                self.error("Captcha not found")
+                m = re.search(r'<img src="(http://fireget.com/captchas/.+?)"', self.data)
+                if m is not None:
+                    captcha_code = self.captcha.decrypt(m.group(1))
+                    inputs["code"] = captcha_code
+                else:
+                    self.error("Captcha not found")
 
         self.download(pyfile.url, post=inputs)
 
