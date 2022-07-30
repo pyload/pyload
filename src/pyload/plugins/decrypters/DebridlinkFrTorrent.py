@@ -97,7 +97,7 @@ class DebridlinkFrTorrent(SimpleDecrypter):
         if self.pyfile.url.endswith(".torrent"):
             #: torrent URL
             if self.pyfile.url.startswith("http"):
-                #: torrent URL, send to the server
+                #: remote URL, send to the server
                 api_data = self.api_request_safe(
                     "v2/seedbox/add",
                     post={
