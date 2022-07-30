@@ -227,8 +227,8 @@ class HTTPRequest:
             else:
                 multipart_post = []
                 for k, v in post.items():
-                    if isinstance(v, str):
-                        multipart_post.append((k, v.encode('utf8')))
+                    if isinstance(v, (str, bool, int)):
+                        multipart_post.append((k, to_str(v)))
 
                     elif isinstance(v, FormFile):
                         filename = os.path.basename(v.filename).encode('utf8')
