@@ -200,10 +200,10 @@ class HTTPRequest():
 
                 self.c.setopt(pycurl.POSTFIELDS, post)
             else:
-                _post = []
+                multipart_post = []
                 for k, v in post.iteritems():
-                    if isinstance(v, basestring):
-                        _post.append((k, v.encode('utf8') if type(v) == unicode else v))
+                    if isinstance(v, (basestring, bool, int)):
+                        multipart_post.append((k, v.encode('utf8') if type(v) == unicode else str(v)))
 
                     elif isinstance(v, FormFile):
                         filename = basename(v.filename)
@@ -215,11 +215,11 @@ class HTTPRequest():
                             else:
                                 with open(v.filename, "rb") as f:  #: workaround for pycurl.FORM_FILE UnicodeEncodeError
                                     data = f.read()
-                        _post.append((k, (pycurl.FORM_BUFFER, filename,
-                                          pycurl.FORM_BUFFERPTR, data,
-                                          pycurl.FORM_CONTENTTYPE, str(v.mimetype))))
+                        multipart_post.append((k, (pycurl.FORM_BUFFER, filename,
+                                                   pycurl.FORM_BUFFERPTR, data,
+                                                   pycurl.FORM_CONTENTTYPE, str(v.mimetype))))
 
-                self.c.setopt(pycurl.HTTPPOST, _post)
+                self.c.setopt(pycurl.HTTPPOST, multipart_post)
 
         else:
             self.c.setopt(pycurl.POST, 0)
