@@ -21,9 +21,21 @@ bp = flask.Blueprint("api", __name__)
 @bp.route("/api/<func>/<args>", methods=["GET", "POST"], endpoint="rpc")
 # @apiver_check
 def rpc(func, args=""):
-
     api = flask.current_app.config["PYLOAD_API"]
-    s = flask.session
+
+    if flask.request.authorization:
+        user = flask.request.authorization.get("username", "")
+        password = flask.request.authorization.get("password", "")
+    else:
+        user = flask.request.form.get("u", "")
+        password = flask.request.form.get("p", "")
+
+    if user:
+        user_info = api.check_auth(user, password)
+        s = set_session(user_info)
+    else:
+        s = flask.session
+
     if (
             "role" not in s or
             "perms" not in s or
@@ -38,7 +50,8 @@ def rpc(func, args=""):
     kwargs = {}
 
     for x, y in chain(flask.request.args.items(), flask.request.form.items()):
-        kwargs[x] = unquote(y)
+        if x not in ("u", "p"):
+            kwargs[x] = unquote(y)
 
     try:
         response = call_api(func, *args, **kwargs)
