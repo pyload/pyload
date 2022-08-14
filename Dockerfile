@@ -93,6 +93,7 @@ ENV LANG="C.UTF-8"
 ARG TEMPDIR="/root/.cache /tmp/* /var/tmp/*"
 
 RUN echo "**** create s6 fix-attr script ****" && \
+    mkdir -p /etc/fix-attrs.d && \
     echo -e "/config true abc 0644 0755\n \
     /downloads false abc 0644 0755" > /etc/fix-attrs.d/10-run && \
     \
