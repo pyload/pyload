@@ -8,7 +8,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class FileStoreTo(SimpleHoster):
     __name__ = "FileStoreTo"
     __type__ = "hoster"
-    __version__ = "0.14"
+    __version__ = "0.15"
     __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?filestore\.to/\?d=(?P<ID>\w+)'
@@ -47,6 +47,21 @@ class FileStoreTo(SimpleHoster):
 
         self.check_errors()
 
+        m = re.search(r'name="DID" value="(.+?)"', self.data)
+        if m is None:
+            self.fail(_("DID pattern not found"))
+
+        self.data = self.load(pyfile.url,
+                              post={'DID': m.group(1),
+                                    'Aktion': "Downloading"})
+
+        self.check_errors()
+
+        m = re.search(self.LINK_PATTERN, self.data)
+        if m is not None:
+            self.link = m.group(1)
+
+    def handle_premium(self, pyfile):
         m = re.search(r'name="DID" value="(.+?)"', self.data)
         if m is None:
             self.fail(_("DID pattern not found"))
