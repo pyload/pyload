@@ -13,7 +13,7 @@ from ..internal.MultiAccount import MultiAccount
 class DebridlinkFr(MultiAccount):
     __name__ = "DebridlinkFr"
     __type__ = "account"
-    __version__ = "0.05"
+    __version__ = "0.06"
     __status__ = "testing"
 
     __config__ = [("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),
@@ -49,7 +49,7 @@ class DebridlinkFr(MultiAccount):
 
         if 'error' in api_data:
             if api_data['error'] == 'invalid_request':
-                self.log_error(_("You have to use GetDebridlinkToken.py to authorize pyLoad: https://github.com/pyload/pyload/files/4679112/GetDebridlinkToken.zip"))
+                self.log_error(_("You have to use GetDebridlinkToken.py to authorize pyLoad: https://github.com/pyload/pyload/files/9353788/GetDebridlinkToken.zip"))
             else:
                 self.log_error(api_data.get('error_description', error_description(api_data["error"])))
             self.fail_login()
