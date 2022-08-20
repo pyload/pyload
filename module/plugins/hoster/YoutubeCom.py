@@ -237,7 +237,7 @@ class Ffmpeg(object):
 class YoutubeCom(Hoster):
     __name__ = "YoutubeCom"
     __type__ = "hoster"
-    __version__ = "0.85"
+    __version__ = "0.86"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:[^/]*\.)?(?:youtu\.be/|youtube\.com/watch\?(?:.*&)?v=)[\w\-]+'
@@ -456,7 +456,7 @@ class YoutubeCom(Hoster):
         self.pyfile.name = self.file_name + file_suffix
 
         try:
-            filename = self.download(url, disposition=False, resume=False)
+            filename = self.download(url, disposition=False)
         except Skip, e:
             filename = os.path.join(self.pyload.config.get("general", "download_folder"),
                                     self.pyfile.package().folder,
@@ -765,6 +765,7 @@ class YoutubeCom(Hoster):
 
     def setup(self):
         self.resume_download = True
+        self.chunk_limit = -1
         self.multiDL = True
 
         try:
