@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
-import re
 import random
-from ..base.simple_downloader import SimpleDownloader
+import re
+
 from pyload.core.network.http.exceptions import BadHeader
+
+from ..base.simple_downloader import SimpleDownloader
 
 
 class FileStoreTo(SimpleDownloader):
@@ -69,11 +71,14 @@ class FileStoreTo(SimpleDownloader):
             return super().process(pyfile)
 
         except BadHeader as exc:
-            self.log_debug(f"FileStore.to httpcode: {exc.code}")
+            self.log_debug(self._(f"FileStore.to httpcode: {exc.code}"))
             if exc.code == 503 and self.config.get("beadheader_retry", True):
                 rand_delay = random.randrange(0, 6) * 5
-                self.log_warning("Temporary server error, retrying...")
+                self.log_warning(self._("Temporary server error, retrying..."))
                 self.retry(10, 10 + rand_delay)
+
+            else:
+                raise
 
     def handle_premium(self, pyfile):
         m = re.search(r'name="DID" value="(.+?)"', self.data)
