@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 import re
-
+import random
 from ..base.simple_downloader import SimpleDownloader
+from pyload.core.network.http.exceptions import BadHeader
 
 
 class FileStoreTo(SimpleDownloader):
     __name__ = "FileStoreTo"
     __type__ = "downloader"
-    __version__ = "0.15"
+    __version__ = "0.16"
     __status__ = "testing"
 
     __pattern__ = r"http://(?:www\.)?filestore\.to/\?d=(?P<ID>\w+)"
@@ -19,6 +20,7 @@ class FileStoreTo(SimpleDownloader):
         ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10),
         ("freeslot_wait", "int", "Delay to wait for free slot (seconds)", 600),
         ("freeslot_attemps", "int", "Number of retries to wait for free slot", 15),
+        ("beadheader_retry", "bool", "Retry download on HTTP Header 503", True)
     ]
 
     __description__ = """FileStore.to downloader plugin"""
@@ -61,6 +63,17 @@ class FileStoreTo(SimpleDownloader):
         m = re.search(self.LINK_PATTERN, self.data)
         if m is not None:
             self.link = m.group(1)
+
+    def process(self, pyfile):
+        try:
+            return super().process(pyfile)
+
+        except BadHeader as exc:
+            self.log_debug(f"FileStore.to httpcode: {exc.code}")
+            if exc.code == 503 and self.config.get("beadheader_retry", True):
+                rand_delay = random.randrange(0, 6) * 5
+                self.log_warning("Temporary server error, retrying...")
+                self.retry(10, 10 + rand_delay)
 
     def handle_premium(self, pyfile):
         m = re.search(r'name="DID" value="(.+?)"', self.data)
