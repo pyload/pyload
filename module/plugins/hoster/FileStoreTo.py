@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 
+import random
 import re
+
+from module.network.HTTPRequest import BadHeader
 
 from ..internal.SimpleHoster import SimpleHoster
 
@@ -8,7 +11,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class FileStoreTo(SimpleHoster):
     __name__ = "FileStoreTo"
     __type__ = "hoster"
-    __version__ = "0.15"
+    __version__ = "0.16"
     __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?filestore\.to/\?d=(?P<ID>\w+)'
@@ -18,7 +21,8 @@ class FileStoreTo(SimpleHoster):
                   ("chk_filesize", "bool", "Check file size", True),
                   ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10),
                   ("freeslot_wait", "int", "Delay to wait for free slot (seconds)", 600),
-                  ("freeslot_attemps", "int", "Number of retries to wait for free slot", 15)]
+                  ("freeslot_attemps", "int", "Number of retries to wait for free slot", 15),
+                  ("beadheader_retry", "bool", "Retry download on HTTP Header 503", True)]
 
     __description__ = """FileStore.to hoster plugin"""
     __license__ = "GPLv3"
@@ -60,6 +64,20 @@ class FileStoreTo(SimpleHoster):
         m = re.search(self.LINK_PATTERN, self.data)
         if m is not None:
             self.link = m.group(1)
+
+    def process(self, pyfile):
+        try:
+            return super(FileStoreTo, self).process(pyfile)
+
+        except BadHeader, e:
+            self.log_debug("FileStore.to httpcode: %s" % e.code)
+            if e.code == 503 and self.config.get("beadheader_retry", True):
+                rand_delay = random.randrange(0, 6) * 5
+                self.log_warning(_("Temporary server error, retrying..."))
+                self.retry(10, 10 + rand_delay)
+
+            else:
+                raise
 
     def handle_premium(self, pyfile):
         m = re.search(r'name="DID" value="(.+?)"', self.data)
