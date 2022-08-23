@@ -8,7 +8,7 @@ from pyload.core.network.http.exceptions import BadHeader
 class FileStoreTo(SimpleDownloader):
     __name__ = "FileStoreTo"
     __type__ = "downloader"
-    __version__ = "0.15"
+    __version__ = "0.16"
     __status__ = "testing"
 
     __pattern__ = r"http://(?:www\.)?filestore\.to/\?d=(?P<ID>\w+)"
