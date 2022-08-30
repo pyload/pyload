@@ -47,10 +47,10 @@ class BIGHTTPRequest(HTTPRequest):
 class FilecryptCc(Crypter):
     __name__ = "FilecryptCc"
     __type__ = "crypter"
-    __version__ = "0.45"
+    __version__ = "0.46"
     __status__ = "testing"
 
-    __pattern__ = r'https?://(?:www\.)?filecrypt\.cc/Container/\w+'
+    __pattern__ = r'https?://(?:www\.)?filecrypt\.(?:cc|co)/Container/\w+'
     __config__ = [("activated", "bool", "Activated", True),
                   ("handle_mirror_pages", "bool", "Handle Mirror Pages", True)]
 
