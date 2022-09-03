@@ -20,12 +20,13 @@ from ..anticaptchas.CoinHive import CoinHive
 from ..anticaptchas.ReCaptcha import ReCaptcha
 from ..anticaptchas.SolveMedia import SolveMedia
 from ..base.decrypter import BaseDecrypter
+from ..helpers import replace_patterns
 
 
 class FilecryptCc(BaseDecrypter):
     __name__ = "FilecryptCc"
     __type__ = "decrypter"
-    __version__ = "0.46"
+    __version__ = "0.47"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?filecrypt\.(?:cc|co)/Container/\w+"
@@ -42,6 +43,7 @@ class FilecryptCc(BaseDecrypter):
     ]
 
     COOKIES = [("filecrypt.cc", "lang", "en")]
+    URL_REPLACEMENTS = [(r"filecrypt.co", "filecrypt.cc")]
 
     DLC_LINK_PATTERN = r'onclick="DownloadDLC\(\'(.+)\'\);">'
     WEBLINK_PATTERN = r"<button onclick=\"openLink.?'([\w\-]*)',"
@@ -68,6 +70,8 @@ class FilecryptCc(BaseDecrypter):
         )
 
     def decrypt(self, pyfile):
+        pyfile.url = replace_patterns(pyfile.url, self.URL_REPLACEMENTS)
+
         self.data = self._filecrypt_load_url(pyfile.url)
 
         # @NOTE: "content notfound" is NOT a typo
