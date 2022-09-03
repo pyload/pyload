@@ -11,7 +11,7 @@ import Crypto.Cipher.AES
 
 from module.network.CookieJar import CookieJar
 from module.network.HTTPRequest import BadHeader, HTTPRequest
-from module.plugins.internal.misc import json
+from module.plugins.internal.misc import replace_patterns
 
 from ..captcha.CoinHive import CoinHive
 from ..captcha.ReCaptcha import ReCaptcha
@@ -47,7 +47,7 @@ class BIGHTTPRequest(HTTPRequest):
 class FilecryptCc(Crypter):
     __name__ = "FilecryptCc"
     __type__ = "crypter"
-    __version__ = "0.46"
+    __version__ = "0.47"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?filecrypt\.(?:cc|co)/Container/\w+'
@@ -59,10 +59,8 @@ class FilecryptCc(Crypter):
     __authors__ = [("zapp-brannigan", "fuerst.reinje@web.de"),
                    ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
-    # URL_REPLACEMENTS  = [(r'.html$', ""), (r'$', ".html")]  #@TODO: Extend
-    # SimpleCrypter
-
     COOKIES = [("filecrypt.cc", "lang", "en")]
+    URL_REPLACEMENTS = [(r"filecrypt.co", "filecrypt.cc")]
 
     DLC_LINK_PATTERN = r'onclick="DownloadDLC\(\'(.+)\'\);">'
     WEBLINK_PATTERN = r"<button onclick=\"openLink.?'([\w\-]*)',"
@@ -88,6 +86,8 @@ class FilecryptCc(Crypter):
             limit=2000000)
 
     def decrypt(self, pyfile):
+        pyfile.url = replace_patterns(pyfile.url, self.URL_REPLACEMENTS)
+
         self.data = self._filecrypt_load_url(pyfile.url)
 
         # @NOTE: "content notfound" is NOT a typo
