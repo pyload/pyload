@@ -147,11 +147,11 @@ class UlozTo(SimpleDownloader):
                 xapca = self.load("https://ulozto.net/reloadXapca.php",
                                   get={'rnd': timestamp()})
 
-                xapca = xapca.replace(
-                    'sound":"',
-                    'sound":"https:').replace(
-                    'image":"',
-                    'image":"https:')
+                #xapca = xapca.replace(
+                    #'sound":"',
+                    #'sound":"https:').replace(
+                    #'image":"',
+                    #'image":"https:')
                 self.log_debug("xapca: %s" % xapca)
 
                 data = json.loads(xapca)
