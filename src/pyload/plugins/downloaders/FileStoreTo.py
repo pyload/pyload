@@ -71,7 +71,7 @@ class FileStoreTo(SimpleDownloader):
             return super().process(pyfile)
 
         except BadHeader as exc:
-            self.log_debug(self._(f"FileStore.to httpcode: {exc.code}"))
+            self.log_debug(f"FileStore.to httpcode: {exc.code}")
             if exc.code == 503 and self.config.get("beadheader_retry", True):
                 rand_delay = random.randrange(0, 6) * 5
                 self.log_warning(self._("Temporary server error, retrying..."))
