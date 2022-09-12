@@ -157,7 +157,7 @@ def bytesize(text, from_unit=None):  # returns integer bytes
 
 
 _TIMEWORDS = ("this", "a", "an", "next")
-_TIMEMAP = {"day": 60 ** 2 * 12, "hr": 60 ** 2, "hour": 60 ** 2, "min": 60, "sec": 1}
+_TIMEMAP = {"day": 60 ** 2 * 24, "hr": 60 ** 2, "hour": 60 ** 2, "min": 60, "sec": 1}
 _RE_TIME = re.compile(r"(\d+|[a-zA-Z-]+)\s*(day|hr|hour|min|sec)|(\d+)")
 
 
