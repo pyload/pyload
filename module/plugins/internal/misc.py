@@ -43,7 +43,7 @@ except ImportError:
 class misc(object):
     __name__ = "misc"
     __type__ = "plugin"
-    __version__ = "0.65"
+    __version__ = "0.66"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -704,13 +704,13 @@ def str2int(value):
 
 
 def parse_time(value):
-    if re.search("da(il)?y|today", value):
+    if re.search("(?:(?:this|a|an|next)\s+day)|today|daily", value):
         seconds = seconds_to_midnight()
 
     else:
-        _re = re.compile(r'(\d+| (?:this|an?) )\s*(hr|hour|min|sec|)', re.I)
+        _re = re.compile(r'(\d+| (?:this|an?) )\s*(day|hr|hour|min|sec|)', re.I)
         seconds = sum((int(v) if v.strip() not in ("this", "a", "an") else 1) *
-                      {'hr': 3600, 'hour': 3600, 'min': 60, 'sec': 1, '': 1}[u.lower()]
+                      {'day': 86400, 'hr': 3600, 'hour': 3600, 'min': 60, 'sec': 1, '': 1}[u.lower()]
                       for v, u in _re.findall(value))
     return seconds
 
