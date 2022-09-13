@@ -8,10 +8,10 @@ from ..base.simple_downloader import SimpleDownloader
 class WrzucajplikiPl(SimpleDownloader):
     __name__ = "WrzucajplikiPl"
     __type__ = "downloader"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
-    __pattern__ = r"https?://(?:www\.)?wrzucajpliki\.pl/(?P<ID>\w{12})/.+"
+    __pattern__ = r"https?://(?:www\.)?wrzucajpliki\.pl/(?P<ID>\w{12})"
     __config__ = [
         ("enabled", "bool", "Activated", True),
         ("use_premium", "bool", "Use premium account if available", True),
