@@ -8,7 +8,7 @@ from ..internal.Crypter import Crypter
 class ChipDe(Crypter):
     __name__ = "ChipDe"
     __type__ = "crypter"
-    __version__ = "0.17"
+    __version__ = "0.18"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?chip\.de/video/.+\.html'
