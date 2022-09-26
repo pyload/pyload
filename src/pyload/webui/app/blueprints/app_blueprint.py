@@ -159,13 +159,13 @@ def files():
     return render_template("files.html", files=data)
 
 
-@bp.route("/files/get/<path:filename>", endpoint="get_file")
+@bp.route("/files/get/<path:path>", endpoint="get_file")
 @login_required("DOWNLOAD")
-def get_file(filename):
+def get_file(path):
     api = flask.current_app.config["PYLOAD_API"]
-    filename = unquote(filename).replace("..", "")
+    path = unquote(path).replace("..", "")
     directory = api.get_config_value("general", "storage_folder")
-    return flask.send_from_directory(directory, filename, as_attachment=True)
+    return flask.send_from_directory(directory, path, as_attachment=True)
 
 
 @bp.route("/settings", endpoint="settings")
