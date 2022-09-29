@@ -45,7 +45,7 @@ urlmatcher = re.compile(
 
 
 class Perms(IntFlag):
-    ALL = 0  #: requires no permission, but login
+    ANY = 0  #: requires no permission, but login
     ADD = 1  #: can add packages
     DELETE = 2  #: can delete packages
     STATUS = 4  #: see and change server status
@@ -306,7 +306,7 @@ class Api:
         return fs.free_space(self.pyload.config.get("general", "storage_folder"))
 
     @legacy("getServerVersion")
-    @permission(Perms.ALL)
+    @permission(Perms.ANY)
     def get_server_version(self):
         """
         pyLoad Core version.
@@ -1176,7 +1176,7 @@ class Api:
         return accounts
 
     @legacy("getAccountTypes")
-    @permission(Perms.ALL)
+    @permission(Perms.ANY)
     def get_account_types(self):
         """
         All available account types.
@@ -1204,7 +1204,7 @@ class Api:
         """
         self.pyload.account_manager.remove_account(plugin, account)
 
-    @permission(Perms.ALL)
+    @permission(Perms.ANY)
     def login(self, username, password):
         """
         Login into pyLoad, this **must** be called when using rpc before any methods can
@@ -1258,7 +1258,7 @@ class Api:
         return os.path.realpath(self.pyload.tempdir)
 
     #: Old API
-    @permission(Perms.ALL)
+    @permission(Perms.ANY)
     def getUserData(self, username, password):
         """
         similar to `check_auth` but returns UserData thrift type.
@@ -1275,7 +1275,7 @@ class Api:
         else:
             return OldUserData()
 
-    @permission(Perms.ALL)
+    @permission(Perms.ANY)
     def get_userdata(self, username, password):
         """
         similar to `check_auth` but returns UserData thrift type.

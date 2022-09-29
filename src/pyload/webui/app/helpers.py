@@ -80,7 +80,7 @@ def parse_permissions(session=flask.session):
     if not session.get("authenticated", False):
         return perms
 
-    perms["ALL"] = True
+    perms["ANY"] = True
     if session.get("role") == Role.ADMIN:
         for key in perms.keys():
             perms[key] = True
@@ -93,7 +93,7 @@ def parse_permissions(session=flask.session):
 
 
 def permlist():
-    return [x.name for x in Perms if x.name != "ALL"]
+    return [x.name for x in Perms if x.name != "ANY"]
 
 
 def get_permission(userperms):
@@ -174,7 +174,7 @@ def login_required(perm):
         @wraps(func)
         def wrapper(*args, **kwargs):
             s = flask.session
-            #: already authenticated
+            #: already authenticated?
             if is_authenticated(s):
                 perms = parse_permissions(s)
                 if perm not in perms or not perms[perm]:
