@@ -18,7 +18,9 @@ class HotFolder(BaseAddon):
         ("watchfile", "bool", "Watch link file", False),
         ("delete", "bool", "Delete added containers", False),
         ("file", "str", "Link file", "links.txt"),
-        ("interval", "int", "File / folder check interval in seconds (minimum 20)", 60)
+        ("interval", "int", "File / folder check interval in seconds (minimum 20)", 60),
+        ("enable_extension_filter", "bool", "Extension filter", False),
+        ("extension_filter", "str", "Extensions to look for (comma separated)", "dlc"),
     ]
 
     __description__ = (
@@ -58,6 +60,12 @@ class HotFolder(BaseAddon):
 
                     self.pyload.api.add_package(name, [fp.name], 1)
 
+            extensions = None
+            if self.config.get("enable_extension_filter"):
+                extension_filter = self.config.get("extension_filter")
+                extensions = [s.strip() for s in extension_filter.split(",")]
+                self.log_debug(f"Watching only for extensions {extensions} in HotFolder")
+
             for entry in os.listdir(watch_folder):
                 entry_file = os.path.join(watch_folder, entry)
 
@@ -69,6 +77,12 @@ class HotFolder(BaseAddon):
                     or os.path.realpath(watch_file) == os.path.realpath(entry_file)
                 ):
                     continue
+
+                if extensions is not None:
+                    _, extension = os.path.splitext(entry)
+                    # Note that extension contains the leading dot
+                    if extension[1:] not in extensions:
+                        continue
 
                 new_path = os.path.join(
                     watch_folder,
