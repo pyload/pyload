@@ -4,6 +4,7 @@ import shutil
 import time
 
 from ..base.addon import BaseAddon
+from ...core.datatypes.enums import Destination
 
 
 class HotFolder(BaseAddon):
@@ -21,6 +22,7 @@ class HotFolder(BaseAddon):
         ("interval", "int", "File / folder check interval in seconds (minimum 20)", 60),
         ("enable_extension_filter", "bool", "Extension filter", False),
         ("extension_filter", "str", "Extensions to look for (comma separated)", "dlc"),
+        ("add_file_to_packages", "bool", "Add file to packages (not queue)", False),
     ]
 
     __description__ = (
@@ -39,6 +41,7 @@ class HotFolder(BaseAddon):
     def periodical_task(self):
         watch_folder = os.fsdecode(self.config.get("folder"))
         watch_file = os.fsdecode(self.config.get("file"))
+        add_to = Destination.COLLECTOR if self.config.get("add_file_to_packages") else Destination.QUEUE
 
         try:
             if not os.path.isdir(os.path.join(watch_folder, "finished")):
@@ -58,7 +61,7 @@ class HotFolder(BaseAddon):
                     with open(os.path.join(watch_folder, "finished", name), mode="w") as fp:
                         fp.write(content)
 
-                    self.pyload.api.add_package(name, [fp.name], 1)
+                    self.pyload.api.add_package(name, [fp.name], add_to)
 
             extensions = None
             if self.config.get("enable_extension_filter"):
@@ -92,7 +95,7 @@ class HotFolder(BaseAddon):
                 shutil.move(entry_file, new_path)
 
                 self.log_info(self._("Added {} from HotFolder").format(entry))
-                self.pyload.api.add_package(entry, [new_path], 1)
+                self.pyload.api.add_package(entry, [new_path], add_to)
 
         except (IOError, OSError) as exc:
             self.log_error(
