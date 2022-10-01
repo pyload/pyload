@@ -27,6 +27,9 @@ from ..utils.old.packagetools import parse_names
 # unlisted functions are for admins only
 perm_map = {}
 
+# contains function names mapped to their legacy name
+legacy_map = {}
+
 
 # decorator only called on init, never initialized, so has no effect on runtime
 def permission(bits):
@@ -38,8 +41,17 @@ def permission(bits):
     return Wrapper
 
 
+def legacy(legacy_name):
+    class Wrapper:
+        def __new__(cls, func, *args, **kwargs):
+            legacy_map[func.__name__] = legacy_name
+            return func
+
+    return Wrapper
+
+
 urlmatcher = re.compile(
-    r"(?:(?:https?|ftps?|xdcc|sftp):(?://|\\\\)+[\w\-._~:/?#\[\]@!$&'()*+,;=]*)|magnet:\?.+",
+    r"(?:https?|ftps?|xdcc|sftp):(?://|\\\\)+[\w\-._~:/?#\[\]@!$&'()*+,;=]*|magnet:\?.+",
     re.IGNORECASE,
 )
 
@@ -50,7 +62,7 @@ class Perms(IntFlag):
     DELETE = 2  #: can delete packages
     STATUS = 4  #: see and change server status
     LIST = 16  #: see queue and collector
-    MODIFY = 32  #: moddify some attribute of downloads
+    MODIFY = 32  #: modify some attribute of downloads
     DOWNLOAD = 64  #: can download from webinterface
     SETTINGS = 128  #: can access settings
     ACCOUNTS = 256  #: can access accounts
@@ -65,15 +77,6 @@ class Role(IntFlag):
 def has_permission(userperms, perms):
     # bitwise or perms before if needed
     return perms == (userperms & perms)
-
-
-def legacy(legacy_name):
-    class Wrapper:
-        def __new__(cls, func, *args, **kwargs):
-            setattr(func, "__legacy__", legacy_name)
-            return func
-
-    return Wrapper
 
 
 # API VERSION
@@ -98,14 +101,14 @@ class Api:
         obj = super(Api, cls).__new__(cls)
 
         # add methods specified by the @legacy decorator
-        for func_name in dir(obj):
-            if func_name[0] == "_":
-                continue
-
+        # also set legacy method permissions according to the @permissions decorator
+        for func_name, legacy_name in legacy_map.items():
             func = getattr(obj, func_name)
-            if callable(func) and hasattr(func, "__legacy__"):
-                legacy_name = getattr(func, "__legacy__")
-                setattr(obj, legacy_name, func)
+            setattr(obj, legacy_name, func)
+
+            permissions = perm_map.get(func_name)
+            if permissions is not None:
+                perm_map[legacy_name] = permissions
 
         return obj
 
