@@ -1241,12 +1241,14 @@ class Api:
         :param userdata: dictionary of user data
         :return: boolean
         """
-        if func in perm_map:
-            if userdata["role"] == Role.ADMIN or has_permission(
-                userdata["permission"], perm_map[func]
-            ):
-                return True
-        return False
+        if userdata["role"] == Role.ADMIN:
+            return True
+        elif func in perm_map and has_permission(
+            userdata["permission"], perm_map[func]
+        ):
+            return True
+        else:
+            return False
 
     @permission(Perms.SETTINGS)
     def get_userdir(self):
