@@ -4,12 +4,13 @@ import shutil
 import time
 
 from ..base.addon import BaseAddon
+from ...core.datatypes.enums import Destination
 
 
 class HotFolder(BaseAddon):
     __name__ = "HotFolder"
     __type__ = "addon"
-    __version__ = "0.26"
+    __version__ = "0.27"
     __status__ = "testing"
 
     __config__ = [
@@ -18,7 +19,10 @@ class HotFolder(BaseAddon):
         ("watchfile", "bool", "Watch link file", False),
         ("delete", "bool", "Delete added containers", False),
         ("file", "str", "Link file", "links.txt"),
-        ("interval", "int", "File / folder check interval in seconds (minimum 20)", 60)
+        ("interval", "int", "File / folder check interval in seconds (minimum 20)", 60),
+        ("enable_extension_filter", "bool", "Extension filter", False),
+        ("extension_filter", "str", "Extensions to look for (comma separated)", "dlc"),
+        ("add_file_to_packages", "bool", "Add file to packages (not queue)", False),
     ]
 
     __description__ = (
@@ -37,6 +41,7 @@ class HotFolder(BaseAddon):
     def periodical_task(self):
         watch_folder = os.fsdecode(self.config.get("folder"))
         watch_file = os.fsdecode(self.config.get("file"))
+        add_to = Destination.COLLECTOR if self.config.get("add_file_to_packages") else Destination.QUEUE
 
         try:
             if not os.path.isdir(os.path.join(watch_folder, "finished")):
@@ -56,7 +61,13 @@ class HotFolder(BaseAddon):
                     with open(os.path.join(watch_folder, "finished", name), mode="w") as fp:
                         fp.write(content)
 
-                    self.pyload.api.add_package(name, [fp.name], 1)
+                    self.pyload.api.add_package(name, [fp.name], add_to)
+
+            extensions = None
+            if self.config.get("enable_extension_filter"):
+                extension_filter = self.config.get("extension_filter")
+                extensions = [s.strip() for s in extension_filter.split(",")]
+                self.log_debug(f"Watching only for extensions {extensions} in HotFolder")
 
             for entry in os.listdir(watch_folder):
                 entry_file = os.path.join(watch_folder, entry)
@@ -70,6 +81,12 @@ class HotFolder(BaseAddon):
                 ):
                     continue
 
+                if extensions is not None:
+                    _, extension = os.path.splitext(entry)
+                    # Note that extension contains the leading dot
+                    if len(extension) == 0 or extension[1:] not in extensions:
+                        continue
+
                 new_path = os.path.join(
                     watch_folder,
                     "finished",
@@ -78,7 +95,7 @@ class HotFolder(BaseAddon):
                 shutil.move(entry_file, new_path)
 
                 self.log_info(self._("Added {} from HotFolder").format(entry))
-                self.pyload.api.add_package(entry, [new_path], 1)
+                self.pyload.api.add_package(entry, [new_path], add_to)
 
         except (IOError, OSError) as exc:
             self.log_error(
