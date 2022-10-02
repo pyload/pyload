@@ -84,7 +84,7 @@ class HotFolder(BaseAddon):
                 if extensions is not None:
                     _, extension = os.path.splitext(entry)
                     # Note that extension contains the leading dot
-                    if extension[1:] not in extensions:
+                    if len(extension) == 0 or extension[1:] not in extensions:
                         continue
 
                 new_path = os.path.join(
