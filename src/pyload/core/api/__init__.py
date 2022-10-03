@@ -1215,7 +1215,6 @@ class Api:
 
         :param username:
         :param password:
-        :param remoteip: Omit this argument, its only used internal
         :return: bool indicating login was successful
         """
         return True if self.check_auth(username, password) else False
@@ -1227,7 +1226,6 @@ class Api:
 
         :param username:
         :param password:
-        :param remoteip:
         :return: dict with info, empty when login is incorrect
         """
         return self.pyload.db.check_auth(username, password)
