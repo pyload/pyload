@@ -237,7 +237,7 @@ class Ffmpeg(object):
 class YoutubeCom(Hoster):
     __name__ = "YoutubeCom"
     __type__ = "hoster"
-    __version__ = "0.86"
+    __version__ = "0.87"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:[^/]*\.)?(?:youtu\.be/|youtube\.com/watch\?(?:.*&)?v=)[\w\-]+'
@@ -712,8 +712,8 @@ class YoutubeCom(Hoster):
                 self.ffmpeg.set_output_filename(final_filename)
 
                 self.pyfile.name = os.path.basename(final_filename)
-                self.pyfile.size = os.path.getsize(video_filename) + \
-                                   os.path.getsize(audio_filename)  #: Just an estimate
+                self.pyfile.size = os.path.getsize(fs_encode(video_filename)) + \
+                                   os.path.getsize(fs_encode(audio_filename))  #: Just an estimate
 
                 if self.ffmpeg.run():
                     self.remove(video_filename, trash=False)
