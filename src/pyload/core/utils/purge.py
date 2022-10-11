@@ -8,7 +8,8 @@ def chars(text, chars, repl=""):
     """
     Removes all chars in repl from text.
     """
-    return re.sub(rf"[{chars}]+", repl, text)
+    chars = chars.replace("\\", "\\\\")
+    return re.sub(rf"[{chars}]", repl, text)
 
 
 _UNIXBADCHARS = ("\0", "/", "\\")
