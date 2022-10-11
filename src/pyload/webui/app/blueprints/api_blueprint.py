@@ -15,8 +15,6 @@ bp = flask.Blueprint("api", __name__)
 
 # accepting positional arguments, as well as kwargs via post and get
 # @bottle.route(
-# r"/api/<func><args:re:[a-zA-Z0-9\-_/\"\'\[\]%{},]*>")
-@login_required("ALL")
 @bp.route("/api/<func>", methods=["GET", "POST"], endpoint="rpc")
 @bp.route("/api/<func>/<args>", methods=["GET", "POST"], endpoint="rpc")
 # @apiver_check
