@@ -4,7 +4,7 @@ import time
 from threading import RLock
 
 from ..managers.event_manager import UpdateEvent
-from ..utils import format
+from ..utils import format, purge
 from ..utils.struct.lock import lock
 
 status_map = {
@@ -26,8 +26,12 @@ status_map = {
 }
 
 
-def set_size(self, value):
+def _set_size(self, value):
     self._size = int(value)
+
+
+def _set_name(self, value):
+    self._name = purge.name(value, sep="")
 
 
 class PyFile:
@@ -43,6 +47,7 @@ class PyFile:
 
         self.id = int(id)
         self.url = url
+        self._name = None
         self.name = name
 
         self._size = None
@@ -73,7 +78,10 @@ class PyFile:
         self.maxprogress = 100
 
     # will convert all sizes to ints
-    size = property(lambda self: self._size, set_size)
+    size = property(lambda self: self._size, _set_size)
+
+    # ensure safe name assignment
+    name = property(lambda self: self._name, _set_name)
 
     def __repr__(self):
         return f"PyFile {self.id}: {self.name}@{self.pluginname}"
