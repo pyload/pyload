@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import os
 import re
 
 
@@ -46,8 +45,8 @@ def name(text, sep="_", allow_whitespaces=True):
     if not allow_whitespaces:
         repl += " "
     res = chars(text, repl, sep).strip()
-    if os.name == "nt" and res.lower() in _WINBADWORDS:
-        res = sep + res
+    if res.lower() in _WINBADWORDS:
+        res = (sep or "_") + res
     return res
 
 
