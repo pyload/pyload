@@ -6,8 +6,8 @@ import re
 import sys
 from ast import literal_eval
 from itertools import chain
+from collections import OrderedDict
 
-# import semver
 
 from pyload import APPID, PKGDIR
 
@@ -28,6 +28,7 @@ class PluginManager:
 
     _PATTERN = re.compile(r'\s*__pattern__\s*=\s*r?(?:"|\')([^"\']+)')
     _VERSION = re.compile(r'\s*__version__\s*=\s*(?:"|\')([\d.]+)')
+    _ORDER = re.compile(r'\s*__order__\s*=\s*(?:"|\')([\d.]+)')
     # _PYLOAD_VERSION = re.compile(r'\s*__pyload_version__\s*=\s*(?:"|\')([\d.]+)')
     _CONFIG = re.compile(r"\s*__config__\s*=\s*(\[[^\]]+\])", re.MULTILINE)
     _DESC = re.compile(r'\s*__description__\s*=\s*(?:"|"""|\')([^"\']+)', re.MULTILINE)
@@ -189,6 +190,12 @@ class PluginManager:
                 else:
                     version = float(m_ver.group(1))
 
+                m_order = self._ORDER.search(content)
+                if m_order is None:
+                    order = 0
+                else:
+                    order = float(m_order.group(1))
+
                 # home contains plugins from pyload root
                 if isinstance(home, dict) and name in home:
                     if home[name]["v"] >= version:
@@ -203,6 +210,7 @@ class PluginManager:
                 plugins[name]["user"] = True if home else False
                 plugins[name]["name"] = module
                 plugins[name]["folder"] = folder
+                plugins[name]["order"] = order
 
                 if pattern:
                     m_pat = self._PATTERN.search(content)
@@ -256,7 +264,7 @@ class PluginManager:
             plugins.update(temp_plugins)
             configs.update(temp_configs)
 
-        return plugins, configs
+        return plugins , configs
 
     def parse_urls(self, urls):
         """
@@ -280,9 +288,9 @@ class PluginManager:
                 continue
 
             for name, value in chain(
-                self.crypter_plugins.items(),
-                self.hoster_plugins.items(),
-                self.container_plugins.items(),
+                    OrderedDict(sorted(self.crypter_plugins.items(), key=lambda t: t[1]['order'])).items(),
+                    OrderedDict(sorted(self.hoster_plugins.items(), key=lambda t: t[1]['order'])).items(),
+                    OrderedDict(sorted(self.container_plugins.items(), key=lambda t: t[1]['order'])).items()
             ):
                 if value["re"].match(url):
                     res.append((url, name))
