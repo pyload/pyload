@@ -16,10 +16,10 @@ from ..internal.XFSHoster import XFSHoster
 class NovafileCom(XFSHoster):
     __name__ = "NovafileCom"
     __type__ = "hoster"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __status__ = "testing"
 
-    __pattern__ = r'https?://(?:www\.)?novafile\.com/\w{12}'
+    __pattern__ = r'https?://(?:www\.)?novafile\.(?:com|org)/(?:file/)?\w{12}'
     __config__ = [("activated", "bool", "Activated", True),
                   ("use_premium", "bool", "Use premium account if available", True),
                   ("fallback", "bool",
@@ -36,8 +36,9 @@ class NovafileCom(XFSHoster):
 
     ERROR_PATTERN = r'class="alert.+?alert-separate".*?>\s*(?:<p>)?(.*?)\s*</'
     WAIT_PATTERN = r'<p>Please wait <span id="count".*?>(\d+)</span> seconds</p>'
+    DL_LIMIT_PATTERN = r'You have to wait (.+?) until the next download becomes available.'
 
-    LINK_PATTERN = r'<a href="(https://s\d+\.novafile\.com/.*?)" class="btn btn-green">Download File</a>'
+    LINK_PATTERN = r'<a href="(https://s\d+\.novafile\.(?:com|org)/.*?)" class="btn btn-green">Download File</a>'
 
     def handle_captcha(self, inputs):
         m = re.search(r'\$\.post\( "/ddl",\s*\{(.+?) \} \);', self.data)
