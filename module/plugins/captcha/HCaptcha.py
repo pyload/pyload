@@ -10,7 +10,7 @@ from ..internal.CaptchaService import CaptchaService
 class HCaptcha(CaptchaService):
     __name__ = 'HCaptcha'
     __type__ = 'captcha'
-    __version__ = '0.02'
+    __version__ = '0.03'
     __status__ = 'testing'
 
     __description__ = 'hCaptcha captcha service plugin'
@@ -20,13 +20,13 @@ class HCaptcha(CaptchaService):
     KEY_PATTERN = r'(?:data-sitekey=["\']|["\']sitekey["\']\s*:\s*["\'])((?:[\w\-]|%[0-9a-fA-F]{2})+)'
     KEY_FORMAT_PATTERN = r'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
 
-    HCAPTCHA_INTERACTIVE_SIG = "9ba5840a96ad0503f445c33bddda5ec338c7785ffe27adb680fdb56ee241a9f2b1a3f648ffda0e82" + \
-                               "946a683bf9b43780f13d1690cdbca082e5c01deccb05a5d64f8cb84eb8beadf49107ad23da1b2317" + \
-                               "2a309fb78403ab3c0ed7019d1383978f2134b62f8d13ab28ebc4164de62b1f29080e31634b3da294" + \
-                               "0e7fc604e892ef4726baa672868e88c9600755e72beb674b7e36373febc9b7a0c1508ad7aeaa4c34" + \
-                               "79742d3bd71d706bc31b0b2b3d0d94858a28fd4ab0601ebeca4e1e4f0b2a0da395fcaf4c4e5c15b9" + \
-                               "4c8f6988f36029d3722d7e0767d141ce45c56d861cfc9a97c93a5817d7b764aaa9309af31b2b0528" + \
-                               "f714f7b179d326a303e17a381e99b8d0"
+    HCAPTCHA_INTERACTIVE_SIG = "8595965f0f9fd776231ff65294f515e74384063b64c31d68bdb98ee33a500ab9a5f4ecaf84d24b77" + \
+                               "621b516fc8799bbe284e5e6985dcbd6b05dbcb8a5704d75fc566ec8da380ab30d0b65afbd0300169" + \
+                               "57432878020c737cee20746c350c79a8888f087041b443e6def2587d9ff6f5ca52a1476dae96c9d1" + \
+                               "0d8f3b95edd337a0e8344435a563756eca3b2e4a76fb9581fe265fa8ff6040d1c64180c67798b063" + \
+                               "2beb5a8b95f3bc2c16c545bd7335ebaeb9d2fcd654bef7bf51ac1907204eaf9fe1671118c4cf9011" + \
+                               "45722303d475f1ab876a75062ba60d17f48da3d2bf795e09749660ce1348a9aeb228eb2129caa565" + \
+                               "9268b345ee306113e0c5a2c436cbb0aa"
 
     HCAPTCHA_INTERACTIVE_JS = """
 			while(document.children[0].childElementCount > 0) {
@@ -40,12 +40,12 @@ class HCaptcha(CaptchaService):
 				var rectAnchor =  {top: 0, right: 0, bottom: 0, left: 0},
 					rectPopup =  {top: 0, right: 0, bottom: 0, left: 0},
 					rect;
-				var anchor = document.body.querySelector("iframe[src*='/hcaptcha-challenge.html']");
+				var anchor = document.body.querySelector("iframe[src*='/hcaptcha.html#frame=checkbox']");
 				if (anchor !== null && gpyload.isVisible(anchor)) {
 					rect = anchor.getBoundingClientRect();
 					rectAnchor = {top: rect.top, right: rect.right, bottom: rect.bottom, left: rect.left};
 				}
-				var popup = document.body.querySelector("iframe[src*='/hcaptcha-checkbox.html']");
+				var popup = document.body.querySelector("iframe[src*='/hcaptcha.html#frame=challenge']");
 				if (popup !== null && gpyload.isVisible(popup)) {
 					rect = popup.getBoundingClientRect();
 					rectPopup = {top: rect.top, right: rect.right, bottom: rect.bottom, left: rect.left};
