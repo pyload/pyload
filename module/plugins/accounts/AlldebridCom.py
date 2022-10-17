@@ -9,13 +9,14 @@ from ..internal.MultiAccount import MultiAccount
 class AlldebridCom(MultiAccount):
     __name__ = "AlldebridCom"
     __type__ = "account"
-    __version__ = "0.44"
+    __version__ = "0.45"
     __status__ = "testing"
 
     __config__ = [("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),
                   ("mh_list", "str", "Hoster list (comma separated)", ""),
                   ("mh_interval", "int", "Reload interval in hours", 12),
-                  ("ignore_status", "bool", "Treat all hosters as available (ignore status field)", False)]
+                  ("ignore_status", "bool", "Treat all hosters as available (ignore status field)", False),
+                  ("streams_also", "bool", "Also download from stream hosters", False)]
 
     __description__ = """AllDebrid.com account plugin"""
     __license__ = "GPLv3"
@@ -43,9 +44,14 @@ class AlldebridCom(MultiAccount):
 
         else:
             valid_statuses = (True, False) if self.config.get("ignore_status") is True else (True,)
+            valid_hosters = api_data["hosts"].values() + (
+                api_data["streams"].values()
+                if self.config.get("streams_also") is True
+                else []
+            )
             return reduce(lambda x, y: x + y,
                           [_h['domains']
-                           for _h in api_data['hosts'].values()
+                           for _h in valid_hosters
                            if _h.get('status', False) in valid_statuses or _h.get('type') == "free"])
 
     def grab_info(self, user, password, data):
