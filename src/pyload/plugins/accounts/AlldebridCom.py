@@ -9,7 +9,7 @@ from ..base.multi_account import MultiAccount
 class AlldebridCom(MultiAccount):
     __name__ = "AlldebridCom"
     __type__ = "account"
-    __version__ = "0.44"
+    __version__ = "0.45"
     __status__ = "testing"
 
     __config__ = [
@@ -22,6 +22,7 @@ class AlldebridCom(MultiAccount):
             "Treat all hosters as available (ignore status field)",
             False,
         ),
+        ("streams_also", "bool", "Also download from stream hosters", False),
     ]
 
     __description__ = """AllDebrid.com account plugin"""
@@ -54,14 +55,21 @@ class AlldebridCom(MultiAccount):
             valid_statuses = (
                 (True, False) if self.config.get("ignore_status") is True else (True,)
             )
-            return reduce(
+            valid_hosters = list(api_data["hosts"].values()) + (
+                list(api_data["streams"].values())
+                if self.config.get("streams_also") is True
+                else []
+            )
+            hosts = reduce(
                 lambda x, y: x + y,
                 [
                     _h["domains"]
-                    for _h in api_data["hosts"].values()
-                    if _h.get("status", False) in valid_statuses or _h.get("type") == "free"
+                    for _h in valid_hosters
+                    if _h.get("status", False) in valid_statuses
+                    or _h.get("type") == "free"
                 ],
             )
+            return hosts
 
     def grab_info(self, user, password, data):
         api_data = self.api_request("user", get={"apikey": password})
