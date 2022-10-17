@@ -11,7 +11,7 @@ from .SimpleHoster import SimpleHoster
 class MultiHoster(SimpleHoster):
     __name__ = "MultiHoster"
     __type__ = "hoster"
-    __version__ = "0.71"
+    __version__ = "0.72"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -57,7 +57,8 @@ class MultiHoster(SimpleHoster):
 
         if self.pyfile.pluginname != self.__name__:
             overwritten_plugin = self.pyload.pluginManager.loadClass("hoster", self.pyfile.pluginname)
-            self.pyfile.url = replace_patterns(self.pyfile.url, overwritten_plugin.URL_REPLACEMENTS)
+            if overwritten_plugin is not None:
+                self.pyfile.url = replace_patterns(self.pyfile.url, overwritten_plugin.URL_REPLACEMENTS)
 
         if self.DIRECT_LINK is None:
             self.direct_dl = self.__pattern__ != r'^unmatchable$' and re.match(self.__pattern__, self.pyfile.url) is not None
