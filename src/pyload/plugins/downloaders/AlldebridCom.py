@@ -36,6 +36,7 @@ class AlldebridCom(MultiDownloader):
         ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com"),
     ]
 
+    DISPOSITION = False
     URL_REPLACEMENTS = [
         (
             r"https?://(?:www\.)?mega(?:\.co)?\.nz/#N!(?P<ID>[\w^_]+)!(?P<KEY>[\w\-,=]+)###n=(?P<OWNER>[\w^_]+)",
