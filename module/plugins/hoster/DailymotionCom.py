@@ -45,7 +45,7 @@ def get_info(urls):
 class DailymotionCom(Hoster):
     __name__ = "DailymotionCom"
     __type__ = "hoster"
-    __version__ = "0.31"
+    __version__ = "0.32"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?(?:dailymotion\.com/.*video|dai\.ly)/(?P<ID>[\w^_]+)"
@@ -62,7 +62,7 @@ class DailymotionCom(Hoster):
 
     def setup(self):
         self.resume_download = True
-        self.multi_dl = True
+        self.multiDl = True
 
     def get_info(self, url="", html=""):
         info = super(DailymotionCom, self).get_info(url, html)
