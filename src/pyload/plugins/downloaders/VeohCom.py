@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-import re
+
+import json
 
 from ..base.simple_downloader import SimpleDownloader
 
@@ -7,10 +8,10 @@ from ..base.simple_downloader import SimpleDownloader
 class VeohCom(SimpleDownloader):
     __name__ = "VeohCom"
     __type__ = "downloader"
-    __version__ = "0.28"
+    __version__ = "0.29"
     __status__ = "testing"
 
-    __pattern__ = r"http://(?:www\.)?veoh\.com/(tv/)?(watch|videos)/(?P<ID>v\w+)"
+    __pattern__ = r"https?://(?:www\.)?veoh\.com/(?:tv/)?(?:watch|videos)/(?P<ID>v\w+)"
     __config__ = [
         ("enabled", "bool", "Activated", True),
         ("use_premium", "bool", "Use premium account if available", True),
@@ -21,12 +22,15 @@ class VeohCom(SimpleDownloader):
 
     __description__ = """Veoh.com downloader plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
+    __authors__ = [
+        ("Walter Purcaro", "vuolter@gmail.com"),
+        ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com"),
+    ]
 
     NAME_PATTERN = r'<meta name="title" content="(?P<N>.*?)"'
     OFFLINE_PATTERN = r">Sorry, we couldn\'t find the video you were looking for"
 
-    URL_REPLACEMENTS = [(__pattern__ + ".*", r"http://www.veoh.com/watch/\g<ID>")]
+    URL_REPLACEMENTS = [(__pattern__ + ".*", r"https://www.veoh.com/watch/\g<ID>")]
 
     COOKIES = [("veoh.com", "lassieLocale", "en")]
 
@@ -36,18 +40,9 @@ class VeohCom(SimpleDownloader):
         self.chunk_limit = -1
 
     def handle_free(self, pyfile):
-        quality = self.config.get("quality")
-        if quality == "Auto" or quality is None:
-            quality = ("High", "Low")
-
-        for q in quality:
-            pattern = rf'"fullPreviewHash{q}Path":"(.+?)"'
-            m = re.search(pattern, self.data)
-            if m is not None:
-                pyfile.name += ".mp4"
-                self.link = m.group(1).replace("\\", "")
-                return
-            else:
-                self.log_info(self._("No {} quality video found").format(q.upper()))
-        else:
-            self.fail(self._("No video found!"))
+        video_id = self.info["pattern"]["ID"]
+        video_data = json.loads(
+            self.load(fr"https://www.veoh.com/watch/getVideo/{video_id}")
+        )
+        pyfile.name = video_data["video"]["title"] + ".mp4"
+        self.link = video_data["video"]["src"]["HQ"]
