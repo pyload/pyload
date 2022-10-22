@@ -6,7 +6,7 @@ from binascii import unhexlify
 from urllib import unquote
 
 from bottle import HTTPError, request, route
-from module.utils import save_join
+from module.utils import decode, save_join
 from webinterface import DL_ROOT, JS, PYLOAD
 
 try:
@@ -36,7 +36,7 @@ def flash(id="0"):
 @route("/flash/add", method="POST")
 @local_check
 def add():
-    package = request.forms.get("package", request.forms.get("source", request.forms.get('referer', None)))
+    package = decode(request.forms.get("package", request.forms.get("source", request.forms.get('referer', None))))
     urls = [x.decode('latin1').strip()
             for x in request.forms['urls'].replace(' ', '\n').split("\n")
             if x.decode('latin1').strip()]
@@ -56,7 +56,7 @@ def add():
 @route("/flash/addcrypted", method="POST")
 @local_check
 def addcrypted():
-    package = request.forms.get("package", request.forms.get("source", request.forms.get('referer', None)))
+    package = decode(request.forms.get("package", request.forms.get("source", request.forms.get('referer', None))))
     dlc = request.forms['crypted'].replace(" ", "+")
 
     dlc_path = save_join(DL_ROOT, package.replace("/", "").replace("\\", "").replace(":", "") + ".dlc")
@@ -79,7 +79,7 @@ def addcrypted():
 @route("/flash/addcrypted2", method="POST")
 @local_check
 def addcrypted2():
-    package = request.forms.get("package", request.forms.get("source", request.forms.get('referer', None)))
+    package = decode(request.forms.get("package", request.forms.get("source", request.forms.get('referer', None))))
     crypted = request.forms["crypted"]
     jk = request.forms["jk"]
     pw = request.forms.get("passwords")
@@ -139,7 +139,7 @@ def flashgot():
         return HTTPError()
 
     autostart = int(request.forms.get('autostart', 0))
-    package = request.forms.get('package', None)
+    package = decode(request.forms.get('package', None))
     urls = [x.decode('latin1').strip() for x in request.forms['urls'].split("\n") if x.decode('latin1').strip()]
     folder = request.forms.get('dir', None)
 
