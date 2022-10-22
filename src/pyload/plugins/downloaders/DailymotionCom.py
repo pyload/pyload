@@ -46,7 +46,7 @@ def get_info(urls):
 class DailymotionCom(BaseDownloader):
     __name__ = "DailymotionCom"
     __type__ = "downloader"
-    __version__ = "0.31"
+    __version__ = "0.32"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?(?:dailymotion\.com/.*video|dai\.ly)/(?P<ID>[\w^_]+)"
