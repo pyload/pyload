@@ -7,7 +7,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class VeohCom(SimpleHoster):
     __name__ = "VeohCom"
     __type__ = "hoster"
-    __version__ = "0.29"
+    __version__ = "0.30"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?veoh\.com/(?:tv/)?(?:watch|videos)/(?P<ID>v\w+)'
@@ -28,7 +28,8 @@ class VeohCom(SimpleHoster):
 
     URL_REPLACEMENTS = [
         (__pattern__ + ".*",
-         r'http://www.veoh.com/watch/\g<ID>')]
+         r'https://www.veoh.com/watch/\g<ID>')
+    ]
 
     COOKIES = [("veoh.com", "lassieLocale", "en")]
 
