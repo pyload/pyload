@@ -8,7 +8,7 @@ from ..base.simple_downloader import SimpleDownloader
 class VeohCom(SimpleDownloader):
     __name__ = "VeohCom"
     __type__ = "downloader"
-    __version__ = "0.29"
+    __version__ = "0.30"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?veoh\.com/(?:tv/)?(?:watch|videos)/(?P<ID>v\w+)"
