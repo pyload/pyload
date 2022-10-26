@@ -13,7 +13,7 @@ from .misc import fsjoin
 class Captcha(Plugin):
     __name__ = "Captcha"
     __type__ = "captcha"
-    __version__ = "0.59"
+    __version__ = "0.60"
     __status__ = "stable"
 
     __description__ = """Base anti-captcha plugin"""
@@ -93,7 +93,8 @@ class Captcha(Plugin):
                 params = {'src': "data:image/%s;base64,%s" % (input_type, base64.standard_b64encode(img)),
                           'file': img_f.name,
                           'captcha_plugin': self.__name__,
-                          'plugin': self.pyfile.plugin.__name__}
+                          'plugin': self.pyfile.plugin.__name__,
+                          "url": self.pyfile.url}
                 self.task = captchaManager.newTask(input_type, params, output_type)
 
                 captchaManager.handleCaptcha(self.task, timeout)
@@ -131,7 +132,8 @@ class Captcha(Plugin):
 
         try:
             params.update({'captcha_plugin': self.__name__,
-                           'plugin': self.pyfile.plugin.__name__})
+                           'plugin': self.pyfile.plugin.__name__,
+                           "url": self.pyfile.url})
             self.task = captchaManager.newTask("interactive", params, "interactive")
 
             captchaManager.handleCaptcha(self.task, timeout)
@@ -166,7 +168,8 @@ class Captcha(Plugin):
 
         try:
             params.update({'captcha_plugin': self.__name__,
-                           'plugin': self.pyfile.plugin.__name__})
+                           'plugin': self.pyfile.plugin.__name__,
+                           "url": self.pyfile.url})
             self.task = captchaManager.newTask("invisible", params, "invisible")
 
             captchaManager.handleCaptcha(self.task, timeout)
