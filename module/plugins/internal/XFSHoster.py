@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import operator
 import random
 import re
 import urlparse
@@ -8,14 +7,14 @@ import urlparse
 from ..captcha.HCaptcha import HCaptcha
 from ..captcha.ReCaptcha import ReCaptcha
 from ..captcha.SolveMedia import SolveMedia
-from .misc import html_unescape, parse_time, seconds_to_midnight, set_cookie, search_pattern
+from .misc import html_unescape, parse_time, search_pattern, seconds_to_midnight, set_cookie
 from .SimpleHoster import SimpleHoster
 
 
 class XFSHoster(SimpleHoster):
     __name__ = "XFSHoster"
     __type__ = "hoster"
-    __version__ = "0.88"
+    __version__ = "0.89"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
