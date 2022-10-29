@@ -175,7 +175,7 @@ def seconds(text):
     text = text.lower()
 
     w = "|".join(_TIMEWORDS)
-    pattr = rf"({w})\s+day|today|daily"
+    pattr = rf"(?:(?:{w})\s+day)|today|daily"
     m = re.search(pattr, text)
     if m is not None:
         return seconds_to_midnight()
