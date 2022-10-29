@@ -1,18 +1,14 @@
 # -*- coding: utf-8 -*-
 
 import re
-import urllib
 
-from module.network.HTTPRequest import BadHeader
-
-from ..captcha.ReCaptcha import ReCaptcha
-from ..internal.SimpleHoster import SimpleHoster
+from ..internal.XFSHoster import XFSHoster
 
 
-class FiregetCom(SimpleHoster):
+class FiregetCom(XFSHoster):
     __name__ = "FiregetCom"
     __type__ = "hoster"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?fireget\.com/(?P<ID>\w{12})/.+'
@@ -32,59 +28,7 @@ class FiregetCom(SimpleHoster):
     WAIT_PATTERN = r'<span id="countdown_str">.+?<span .+?>(\d+)</span>'
     DL_LIMIT_PATTERN = r'>You have to wait (.+?) till next download<'
 
-    OFFLINE_PATTERN = r'File Not Found'
+    OFFLINE_PATTERN = r'File Not Found|No such file with this filename'
     TEMP_OFFLINE_PATTERN = "Connection limit reached|Server error|You have reached the download limit"
 
-    COOKIES = [("fireget.com", "lang", "english")]
-
-    def setup(self):
-        self.multiDL = True
-        self.chunk_limit = 1
-        self.resume_download = True
-
-    def handle_free(self, pyfile):
-        url, inputs = self.parse_html_form(input_names={'op': re.compile(r'^download')})
-
-        if inputs:
-            inputs.pop('method_premium', None)
-            self.data = self.load(pyfile.url, post=inputs)
-            self.check_errors()
-
-        url, inputs = self.parse_html_form('name="F1"')
-        if not inputs:
-            self.error("Form F1 not found")
-
-        recaptcha = ReCaptcha(pyfile)
-        captcha_key = recaptcha.detect_key()
-
-        if captcha_key:
-            self.captcha = recaptcha
-            response = self.captcha.challenge(captcha_key)
-            inputs["g-recaptcha-response"] = response
-
-        else:
-            captcha_code = "".join(chr(int(_x[2:4])) if _x[0:2] == '&#' else _x for _p, _x in
-                                   sorted(re.findall(r'<span style=[\'"]position:absolute;padding-left:(\d+)px;.+?[\'"]>(.+?)</span>', self.data),
-                                          key=lambda _i: int(_i[0])))
-
-            if captcha_code:
-                inputs['code'] = captcha_code
-
-            else:
-                m = re.search(r'<img src="(http://fireget.com/captchas/.+?)"', self.data)
-                if m is not None:
-                    captcha_code = self.captcha.decrypt(m.group(1))
-                    inputs["code"] = captcha_code
-                else:
-                    self.error("Captcha not found")
-
-        self.download(pyfile.url, post=inputs)
-
-    def check_download(self):
-        check = self.scan_download({
-            'wrong_captcha': ">Wrong captcha<"
-        })
-
-        if check == "wrong_captcha":
-            self.captcha.invalid()
-            self.retry(msg=_("Wrong captcha code"))
+    PLUGIN_DOMAIN = "fireget.com"
