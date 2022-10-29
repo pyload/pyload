@@ -15,7 +15,7 @@ from .SimpleHoster import SimpleHoster
 class XFSHoster(SimpleHoster):
     __name__ = "XFSHoster"
     __type__ = "hoster"
-    __version__ = "0.87"
+    __version__ = "0.88"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -242,7 +242,7 @@ class XFSHoster(SimpleHoster):
 
             self.log_debug(captcha_div)
 
-            inputs['code'] = "".join(a[1] for a in sorted(numerals, key=operator.itemgetter(0)))
+            inputs['code'] = "".join(a[1] for a in sorted(numerals, key=lambda i: int(i[0])))
 
             self.log_debug("Captcha code: %s" % inputs['code'], numerals)
             return
