@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import operator
 import re
 from datetime import timedelta
 from urllib.parse import urljoin
@@ -18,7 +17,7 @@ from .simple_downloader import SimpleDownloader
 class XFSDownloader(SimpleDownloader):
     __name__ = "XFSDownloader"
     __type__ = "downloader"
-    __version__ = "0.87"
+    __version__ = "0.88"
     __status__ = "stable"
 
     __pattern__ = r"^unmatchable$"
@@ -213,7 +212,7 @@ class XFSDownloader(SimpleDownloader):
             self.log_debug(captcha_div)
 
             code = inputs["code"] = "".join(
-                a[1] for a in sorted(numerals, key=operator.itemgetter(0))
+                a[1] for a in sorted(numerals, key=lambda i: int(i[0]))
             )
 
             self.log_debug(f"Captcha code: {code}", numerals)
