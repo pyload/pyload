@@ -43,7 +43,7 @@ except ImportError:
 class misc(object):
     __name__ = "misc"
     __type__ = "plugin"
-    __version__ = "0.66"
+    __version__ = "0.67"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -524,6 +524,8 @@ def remove_chars(value, repl):
 def fixurl(url, unquote=None):
     old = url
     url = urllib.unquote(url)
+    if isinstance(url, unicode):
+        url = url.encode("latin1").decode("utf8")  #: bugfix urllib
 
     if unquote is None:
         unquote = url == old
