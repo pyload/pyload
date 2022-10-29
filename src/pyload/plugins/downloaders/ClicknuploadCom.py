@@ -6,10 +6,10 @@ from ..base.xfs_downloader import XFSDownloader
 class ClicknuploadCom(XFSDownloader):
     __name__ = "ClicknuploadCom"
     __type__ = "downloader"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __status__ = "testing"
 
-    __pattern__ = r"https?://(?:www\.)?clicknupload\.(?:com|org|me|link)/(?P<ID>\w{12})"
+    __pattern__ = r"https?://(?:www\.)?clicknupload\.(?:com|org|cc|to|me|link|club)/(?P<ID>\w{12})"
     __config__ = [
         ("enabled", "bool", "Activated", True),
         ("use_premium", "bool", "Use premium account if available", True),
@@ -25,14 +25,16 @@ class ClicknuploadCom(XFSDownloader):
         ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com"),
     ]
 
-    PLUGIN_DOMAIN = "clicknupload.org"
+    PLUGIN_DOMAIN = "clicknupload.to"
 
-    URL_REPLACEMENTS = [(__pattern__ + ".*", r"https://clicknupload.org/\g<ID>")]
+    URL_REPLACEMENTS = [(__pattern__ + ".*", r"https://clicknupload.to/\g<ID>")]
+
+    LINK_PATTERN = r"onClick=\"window.open\('(.+?)'\);"
 
     NAME_PATTERN = r'name="fname" value="(?P<N>.+?)">'
-    SIZE_PATTERN = r"<b>Size: (?P<S>[\d.,]+) (?P<U>[\w^_]+)"
-    LINK_PATTERN = r'onClick="window.open\(\'(.+?)\'\);"'
+    SIZE_PATTERN = r">size</span>\s*<span>(?P<S>[\d.,]+) (?P<U>[\w^_]+)</span>"
 
-    OFFLINE_PATTERN = r"<b>File Not Found</b>"
+    OFFLINE_PATTERN = r"File Not Found"
+    ERROR_PATTERN = ""
 
-    WAIT_PATTERN = r">Please wait <.+?>(\d+)<"
+    WAIT_PATTERN = r'<span class="seconds">(\d+)</span>'
