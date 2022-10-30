@@ -347,8 +347,9 @@ class BaseHoster(BasePlugin):
         self.set_reconnect(reconnect)
 
         self.waiting = True
+        
+        self.info["status"] = 5 # waiting
 
-        status = self.pyfile.status  # NOTE: Recheck in 0.6.x
         self.pyfile.set_status("waiting")
 
         self.log_info(self._("Waiting {}...").format(format.time(wait_time)))
@@ -378,7 +379,6 @@ class BaseHoster(BasePlugin):
                 time.sleep(2)
 
         self.waiting = False
-        self.pyfile.status = status  # NOTE: Recheck in 0.6.x
 
     def skip(self, msg=""):
         """
