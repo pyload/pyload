@@ -2,11 +2,12 @@
 
 from __future__ import with_statement
 
+import os
 import sys
 import tarfile
 
 from .Extractor import ArchiveError, CRCError, Extractor
-from .misc import encode, fsjoin
+from .misc import fs_encode, fsjoin
 
 
 class UnTar(Extractor):
@@ -24,10 +25,14 @@ class UnTar(Extractor):
                             sys.version_info[2])
 
     @classmethod
+    def archivetype(cls, filename):
+        return "tar" if cls.isarchive(filename) else None
+
+    @classmethod
     def isarchive(cls, filename):
         try:
-            return tarfile.is_tarfile(encode(filename))
-        except:
+            return tarfile.is_tarfile(fs_encode(filename))
+        except IOError:
             return False
 
     @classmethod
