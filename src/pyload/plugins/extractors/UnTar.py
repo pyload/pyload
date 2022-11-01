@@ -22,10 +22,14 @@ class UnTar(BaseExtractor):
     )
 
     @classmethod
+    def archivetype(cls, filename):
+        return "tar" if cls.isarchive(filename) else None
+
+    @classmethod
     def isarchive(cls, filename):
         try:
             return tarfile.is_tarfile(os.fsdecode(filename))
-        except Exception:
+        except IOError:
             return False
 
     @classmethod
