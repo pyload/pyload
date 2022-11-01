@@ -5,6 +5,7 @@ import os
 import re
 import sys
 from ast import literal_eval
+from importlib.abc import MetaPathFinder
 from itertools import chain
 
 # import semver
@@ -12,7 +13,7 @@ from itertools import chain
 from pyload import APPID, PKGDIR
 
 
-class PluginManager:
+class PluginManager(MetaPathFinder):
     ROOT = "pyload.plugins."
     USERROOT = "plugins."
     TYPES = (
@@ -26,11 +27,11 @@ class PluginManager:
         "base",
     )
 
-    _PATTERN = re.compile(r'\s*__pattern__\s*=\s*r?(?:"|\')([^"\']+)')
-    _VERSION = re.compile(r'\s*__version__\s*=\s*(?:"|\')([\d.]+)')
-    # _PYLOAD_VERSION = re.compile(r'\s*__pyload_version__\s*=\s*(?:"|\')([\d.]+)')
-    _CONFIG = re.compile(r"\s*__config__\s*=\s*(\[[^\]]+\])", re.MULTILINE)
-    _DESC = re.compile(r'\s*__description__\s*=\s*(?:"|"""|\')([^"\']+)', re.MULTILINE)
+    _RE_PATTERN = re.compile(r'\s*__pattern__\s*=\s*r?["\']([^"\']+)')
+    _RE_VERSION = re.compile(r'\s*__version__\s*=\s*["\']([\d.]+)')
+    # RE_PYLOAD_VERSION = re.compile(r'\s*__pyload_version__\s*=\s*(?:"|\')([\d.]+)')
+    _RE_CONFIG = re.compile(r"\s*__config__\s*=\s*(\[[^\]]+\])", re.MULTILINE)
+    _RE_DESC = re.compile(r'\s*__description__\s*=\s*(?:"|"""|\')([^"\']+)', re.MULTILINE)
 
     def __init__(self, core):
         self.pyload = core
@@ -156,7 +157,7 @@ class PluginManager:
                 if name[-1] == ".":
                     name = name[:-4]
 
-                # m_pyver = self._PYLOAD_VERSION.search(content)
+                # m_pyver = self.RE_PYLOAD_VERSION.search(content)
                 # if m_pyver is None:
                 #     self.pyload.log.debug(
                 #         f"__pyload_version__ not found in plugin {name}"
@@ -182,7 +183,7 @@ class PluginManager:
                 #         )
                 #         continue
 
-                m_ver = self._VERSION.search(content)
+                m_ver = self._RE_VERSION.search(content)
                 if m_ver is None:
                     self.pyload.log.debug(f"__version__ not found in plugin {name}")
                     version = 0
@@ -205,7 +206,7 @@ class PluginManager:
                 plugins[name]["folder"] = folder
 
                 if pattern:
-                    m_pat = self._PATTERN.search(content)
+                    m_pat = self._RE_PATTERN.search(content)
                     pattern = r"^unmachtable$" if m_pat is None else m_pat.group(1)
 
                     plugins[name]["pattern"] = pattern
@@ -222,10 +223,10 @@ class PluginManager:
                     self.pyload.config.delete_config(name)
                     continue
 
-                m_desc = self._DESC.search(content)
+                m_desc = self._RE_DESC.search(content)
                 desc = "" if m_desc is None else m_desc.group(1)
 
-                config = self._CONFIG.findall(content)
+                config = self._RE_CONFIG.findall(content)
                 if not config:
                     new_config = {"enabled": ["bool", "Activated", False], "desc": desc}
                     configs[name] = new_config
@@ -374,10 +375,10 @@ class PluginManager:
         return list(self.account_plugins.keys())
 
     def find_module(self, fullname, path=None):
-        # redirecting imports if necesarry
+        # redirecting imports if necessary
         if fullname.startswith(self.ROOT) or fullname.startswith(
             self.USERROOT
-        ):  #: os.seperate pyload plugins
+        ):  #: os.separate pyload plugins
             if fullname.startswith(self.USERROOT):
                 user = 1
             else:
@@ -386,19 +387,19 @@ class PluginManager:
             split = fullname.split(".")
             if len(split) != 4 - user:
                 return
-            type, name = split[2 - user : 4 - user]
+            type, name = split[2 - user:4 - user]
 
             if type in self.plugins and name in self.plugins[type]:
                 # userplugin is a newer version
                 if not user and self.plugins[type][name]["user"]:
                     return self
-                # imported from userdir, but pyloads is newer
+                # imported from userplugins dir, but pyload's version is newer
                 if user and not self.plugins[type][name]["user"]:
                     return self
 
     def reload_plugins(self, type_plugins):
         """
-        reloads and reindexes plugins.
+        reloads and reindex plugins.
         """
 
         def merge(dst, src, overwrite=False):
