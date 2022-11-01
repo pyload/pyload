@@ -10,10 +10,26 @@ from .Extractor import ArchiveError, CRCError, Extractor
 from .misc import fs_encode, fsjoin
 
 
+# Fix for tarfile CVE-2007-4559
+def _safe_extractall(tar, path=".", members=None):
+    def _is_within_directory(directory, target):
+        abs_directory = os.path.abspath(directory)
+        abs_target = os.path.abspath(target)
+        prefix = os.path.commonprefix([abs_directory, abs_target])
+        return prefix == abs_directory
+
+    for member in tar.getmembers():
+        member_path = os.path.join(path, member.name)
+        if not _is_within_directory(path, member_path):
+            raise ArchiveError("Attempted Path Traversal in Tar File (CVE-2007-4559)")
+
+    tar.extractall(path, members)
+
+
 class UnTar(Extractor):
     __name__ = "UnTar"
     __type__ = "extractor"
-    __version__ = "0.05"
+    __version__ = "0.06"
     __status__ = "stable"
 
     __description__ = """TAR extractor plugin"""
@@ -62,7 +78,7 @@ class UnTar(Extractor):
 
         try:
             with tarfile.open(self.filename, errorlevel=2) as t:
-                t.extractall(self.dest)
+                _safe_extractall(t, self.dest)
                 self.files = t.getnames()
             return self.files
 
