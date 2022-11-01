@@ -29,7 +29,7 @@ class PluginManager(MetaPathFinder):
 
     _RE_PATTERN = re.compile(r'\s*__pattern__\s*=\s*r?["\']([^"\']+)')
     _RE_VERSION = re.compile(r'\s*__version__\s*=\s*["\']([\d.]+)')
-    # RE_PYLOAD_VERSION = re.compile(r'\s*__pyload_version__\s*=\s*(?:"|\')([\d.]+)')
+    # _RE_PYLOAD_VERSION = re.compile(r'\s*__pyload_version__\s*=\s*(?:"|\')([\d.]+)')
     _RE_CONFIG = re.compile(r"\s*__config__\s*=\s*(\[[^\]]+\])", re.MULTILINE)
     _RE_DESC = re.compile(r'\s*__description__\s*=\s*(?:"|"""|\')([^"\']+)', re.MULTILINE)
 
@@ -78,24 +78,24 @@ class PluginManager(MetaPathFinder):
         except Exception:
             pass
 
-        self.crypter_plugins, config = self.parse("decrypters", pattern=True)
-        self.plugins["decrypter"] = self.crypter_plugins
+        self.decrypter_plugins, config = self.parse("decrypters", pattern=True)
+        self.plugins["decrypter"] = self.decrypter_plugins
         default_config = config
 
         self.container_plugins, config = self.parse("containers", pattern=True)
         self.plugins["container"] = self.container_plugins
         merge(default_config, config)
 
-        self.hoster_plugins, config = self.parse("downloaders", pattern=True)
-        self.plugins["downloader"] = self.hoster_plugins
+        self.downloader_plugins, config = self.parse("downloaders", pattern=True)
+        self.plugins["downloader"] = self.downloader_plugins
         merge(default_config, config)
 
         self.addon_plugins, config = self.parse("addons")
         self.plugins["addon"] = self.addon_plugins
         merge(default_config, config)
 
-        self.captcha_plugins, config = self.parse("anticaptchas")
-        self.plugins["anticaptcha"] = self.captcha_plugins
+        self.anticaptcha_plugins, config = self.parse("anticaptchas")
+        self.plugins["anticaptcha"] = self.anticaptcha_plugins
         merge(default_config, config)
 
         self.extract_plugins, config = self.parse("extractors")
@@ -157,7 +157,7 @@ class PluginManager(MetaPathFinder):
                 if name[-1] == ".":
                     name = name[:-4]
 
-                # m_pyver = self.RE_PYLOAD_VERSION.search(content)
+                # m_pyver = self._RE_PYLOAD_VERSION.search(content)
                 # if m_pyver is None:
                 #     self.pyload.log.debug(
                 #         f"__pyload_version__ not found in plugin {name}"
@@ -281,8 +281,8 @@ class PluginManager(MetaPathFinder):
                 continue
 
             for name, value in chain(
-                self.crypter_plugins.items(),
-                self.hoster_plugins.items(),
+                self.decrypter_plugins.items(),
+                self.downloader_plugins.items(),
                 self.container_plugins.items(),
             ):
                 if value["re"].match(url):
@@ -310,7 +310,7 @@ class PluginManager(MetaPathFinder):
 
         if not plugin:
             self.pyload.log.warning(self._("Plugin {} not found").format(name))
-            plugin = self.hoster_plugins["DefaultPlugin"]
+            plugin = self.downloader_plugins["DefaultPlugin"]
 
         if "new_module" in plugin and not original:
             return plugin["new_module"]
@@ -440,23 +440,23 @@ class PluginManager(MetaPathFinder):
                         importlib.reload(self.plugins[type][plugin][APPID])
 
         # index creation
-        self.crypter_plugins, config = self.parse("decrypters", pattern=True)
-        self.plugins["decrypter"] = self.crypter_plugins
+        self.decrypter_plugins, config = self.parse("decrypters", pattern=True)
+        self.plugins["decrypter"] = self.decrypter_plugins
         default_config = config
 
         self.container_plugins, config = self.parse("containers", pattern=True)
         self.plugins["container"] = self.container_plugins
         merge(default_config, config)
 
-        self.hoster_plugins, config = self.parse("downloaders", pattern=True)
-        self.plugins["downloader"] = self.hoster_plugins
+        self.downloader_plugins, config = self.parse("downloaders", pattern=True)
+        self.plugins["downloader"] = self.downloader_plugins
         merge(default_config, config)
 
         temp, config = self.parse("addons")
         merge(default_config, config)
 
-        self.captcha_plugins, config = self.parse("anticaptchas")
-        self.plugins["anticaptcha"] = self.captcha_plugins
+        self.anticaptcha_plugins, config = self.parse("anticaptchas")
+        self.plugins["anticaptcha"] = self.anticaptcha_plugins
         merge(default_config, config)
 
         self.extract_plugins, config = self.parse("extractors")

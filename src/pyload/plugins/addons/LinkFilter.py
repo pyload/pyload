@@ -86,7 +86,7 @@ class LinkFilter(BaseAddon):
         if self.config.get("filter_all"):
             # declare all links as downloader links so the filter will work on all links
             return True
-        for item in self.pyload.plugin_manager.hoster_plugins.items():
+        for item in self.pyload.plugin_manager.downloader_plugins.items():
             if item[1]["re"].match(link):
                 return True
         return False

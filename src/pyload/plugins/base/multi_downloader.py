@@ -39,7 +39,7 @@ class MultiDownloader(SimpleDownloader):
         return super(SimpleDownloader, self).get_info(url, html)
 
     def init(self):
-        self.PLUGIN_NAME = self.pyload.plugin_manager.hoster_plugins.get(
+        self.PLUGIN_NAME = self.pyload.plugin_manager.downloader_plugins.get(
             self.classname
         )["name"]
 
@@ -77,7 +77,7 @@ class MultiDownloader(SimpleDownloader):
             super()._process(thread)
 
         except Fail as exc:
-            hdict = self.pyload.plugin_manager.hoster_plugins.get(
+            hdict = self.pyload.plugin_manager.downloader_plugins.get(
                 self.pyfile.pluginname, {}
             )
             if self.config.get("revert_failed", True) and hdict.get("new_module"):

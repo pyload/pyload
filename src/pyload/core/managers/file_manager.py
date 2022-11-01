@@ -374,7 +374,7 @@ class FileManager:
         if "decrypt" in self.job_cache:
             return None
 
-        plugins = list(self.pyload.plugin_manager.crypter_plugins.keys()) + list(
+        plugins = list(self.pyload.plugin_manager.decrypter_plugins.keys()) + list(
             self.pyload.plugin_manager.container_plugins.keys()
         )
         plugins = tuple(plugins)

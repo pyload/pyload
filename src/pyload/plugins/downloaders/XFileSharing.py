@@ -31,7 +31,7 @@ class XFileSharing(XFSDownloader):
         return super()._log(level, plugintype, pluginname, args, kwargs)
 
     def init(self):
-        self.__pattern__ = self.pyload.plugin_manager.hoster_plugins[self.classname][
+        self.__pattern__ = self.pyload.plugin_manager.downloader_plugins[self.classname][
             "pattern"
         ]
 
