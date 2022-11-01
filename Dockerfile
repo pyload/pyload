@@ -8,7 +8,7 @@
 #           \  /
 #            \/
 
-ARG IMAGE_TAG="3.13"
+ARG IMAGE_TAG="3.14"
 ARG IMAGE_CREATED
 ARG IMAGE_AUTHORS="Walter Purcaro <vuolter@gmail.com>"
 ARG IMAGE_URL="https://github.com/pyload/pyload"
