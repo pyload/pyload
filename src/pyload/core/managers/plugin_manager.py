@@ -38,6 +38,15 @@ class PluginManager(MetaPathFinder):
         self._ = core._
 
         self.plugins = {}
+        self.account_plugins = []
+        self.addon_plugins = []
+        self.anticaptcha_plugins = []
+        self.container_plugins = []
+        self.decrypter_plugins = []
+        self.downloader_plugins = []
+        self.extractor_plugins = []
+        self.internal_plugins = []
+
         self.create_index()
 
         # save generated config
@@ -98,8 +107,8 @@ class PluginManager(MetaPathFinder):
         self.plugins["anticaptcha"] = self.anticaptcha_plugins
         merge(default_config, config)
 
-        self.extract_plugins, config = self.parse("extractors")
-        self.plugins["extractor"] = self.extract_plugins
+        self.extractor_plugins, config = self.parse("extractors")
+        self.plugins["extractor"] = self.extractor_plugins
         merge(default_config, config)
 
         self.account_plugins, config = self.parse("accounts")
@@ -264,7 +273,7 @@ class PluginManager(MetaPathFinder):
         parse plugins for given list of urls.
         """
         last = (None, {})
-        res = []  #: tupels of (url, plugin)
+        res = []  #: tuples of (url, plugin)
 
         for url in urls:
             if type(url) not in (
@@ -387,7 +396,7 @@ class PluginManager(MetaPathFinder):
             split = fullname.split(".")
             if len(split) != 4 - user:
                 return
-            type, name = split[2 - user:4 - user]
+            type, name = split[2 - user : 4 - user]
 
             if type in self.plugins and name in self.plugins[type]:
                 # userplugin is a newer version
@@ -428,7 +437,7 @@ class PluginManager(MetaPathFinder):
             else:
                 as_dict[t] = [n]
 
-        # we do not reload addons or internals, would cause to much side effects
+        # we do not reload addons or internals, would cause too much side effects
         if "addon" in as_dict or "base" in as_dict:
             return False
 
@@ -459,8 +468,8 @@ class PluginManager(MetaPathFinder):
         self.plugins["anticaptcha"] = self.anticaptcha_plugins
         merge(default_config, config)
 
-        self.extract_plugins, config = self.parse("extractors")
-        self.plugins["extractor"] = self.extract_plugins
+        self.extractor_plugins, config = self.parse("extractors")
+        self.plugins["extractor"] = self.extractor_plugins
         merge(default_config, config)
 
         self.account_plugins, config = self.parse("accounts")
