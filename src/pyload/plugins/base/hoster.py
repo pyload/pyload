@@ -457,13 +457,13 @@ class BaseHoster(BasePlugin):
 
         raise Retry(msg)
 
-    def retry(self, attemps=5, wait=1, msg="", msgfail="Max retries reached"):
+    def retry(self, attempts=5, wait=1, msg="", msgfail="Max retries reached"):
         """
         Retries and begin again from the beginning.
 
-        :param attemps: number of maximum retries
+        :param attempts: number of maximum retries
         :param wait: time to wait in seconds before retry
-        :param msg: message passed to fail if attemps value was reached
+        :param msg: message passed to fail if attempts value was reached
         """
         frame = inspect.currentframe()
 
@@ -475,7 +475,7 @@ class BaseHoster(BasePlugin):
         if id not in self.retries:
             self.retries[id] = 0
 
-        if 0 < attemps <= self.retries[id]:
+        if 0 < attempts <= self.retries[id]:
             self.fail(msgfail)
 
         self.retries[id] += 1
