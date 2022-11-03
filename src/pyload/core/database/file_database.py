@@ -2,8 +2,9 @@
 
 from ..datatypes.pyfile import PyFile
 from ..datatypes.pypackage import PyPackage
-from ..utils.struct.style import style
 from ..utils import format
+from ..utils.struct.style import style
+from ..utils.web import parse
 
 
 class FileDatabaseMethods:
@@ -74,7 +75,7 @@ class FileDatabaseMethods:
         """
         order = self._next_file_order(package)
         orders = [order + x for x in range(len(links))]
-        links = [(x[0], x[0], x[1], package, o) for x, o in zip(links, orders)]
+        links = [(x[0], parse.name(x[0]), x[1], package, o) for x, o in zip(links, orders)]
         self.c.executemany(
             "INSERT INTO links(url, name, plugin, package, linkorder) VALUES(?,?,?,?,?)",
             links,
