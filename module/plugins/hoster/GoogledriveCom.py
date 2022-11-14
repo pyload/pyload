@@ -15,7 +15,7 @@ from ..internal.misc import json, parse_size, search_pattern
 class GoogledriveCom(Hoster):
     __name__ = "GoogledriveCom"
     __type__ = "hoster"
-    __version__ = "0.32"
+    __version__ = "0.33"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(?:drive|docs)\.google\.com/(?:file/d/|uc\?.*id=)(?P<ID>[-\w]+)'
@@ -83,7 +83,9 @@ class GoogledriveCom(Hoster):
     def process(self, pyfile):
         disposition = False
         self.data = self.load(pyfile.url)
-        json_data = self.api_response("files/" + self.info['pattern']['ID'], fields="md5Checksum,name,size")
+        json_data = self.api_response("files/" + self.info['pattern']['ID'],
+                                      fields="md5Checksum,name,size",
+                                      supportsAllDrives="true")
 
         if json_data is None:
             self.fail("API error")
