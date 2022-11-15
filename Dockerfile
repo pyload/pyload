@@ -8,7 +8,7 @@
 #           \  /
 #            \/
 
-ARG IMAGE_TAG="3.14"
+ARG IMAGE_TAG="3.13"
 ARG IMAGE_CREATED
 ARG IMAGE_AUTHORS="Walter Purcaro <vuolter@gmail.com>"
 ARG IMAGE_URL="https://github.com/pyload/pyload"
@@ -28,7 +28,7 @@ ARG PIP_INSTALL_OPTIONS="--disable-pip-version-check --no-cache-dir --no-compile
 
 FROM lsiobase/alpine:$IMAGE_TAG AS builder
 
-ARG APK_PACKAGES="python3 openssl sqlite tesseract-ocr unrar curl-dev"
+ARG APK_PACKAGES="curl-dev ffmpeg openssl p7zip python3 sqlite tesseract-ocr"
 ARG PIP_PACKAGES="pip setuptools wheel"
 
 RUN echo "**** install binary packages ****" && \
