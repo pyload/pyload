@@ -8,7 +8,7 @@
 #           \  /
 #            \/
 
-ARG IMAGE_TAG="3.13"
+ARG IMAGE_TAG="3.16"
 ARG IMAGE_CREATED
 ARG IMAGE_AUTHORS="Walter Purcaro <vuolter@gmail.com>"
 ARG IMAGE_URL="https://github.com/pyload/pyload"
@@ -92,16 +92,11 @@ ENV LANG="C.UTF-8"
 
 ARG TEMPDIR="/root/.cache /tmp/* /var/tmp/*"
 
-RUN echo "**** create s6 fix-attr script ****" && \
-    mkdir -p /etc/fix-attrs.d && \
-    echo -e "/config true abc 0644 0755\n \
-    /downloads false abc 0644 0755" > /etc/fix-attrs.d/10-run && \
-    \
-    echo "**** create s6 service script ****" && \
+RUN echo "**** create s6 service script ****" && \
     mkdir -p /etc/services.d/pyload && \
     echo -e "#!/usr/bin/with-contenv bash\n\n \
     umask 022\n \
-    export PYTHONPATH=\$PYTHONPATH:/usr/local/lib/python3.8/site-packages\n \
+    export PYTHONPATH=\$PYTHONPATH:/usr/local/lib/python3.10/site-packages\n \
     export HOME=/config\n \
     exec s6-setuidgid abc pyload --userdir /config --storagedir /downloads" > /etc/services.d/pyload/run && \
     \
