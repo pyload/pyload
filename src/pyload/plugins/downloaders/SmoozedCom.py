@@ -25,12 +25,12 @@ class SmoozedCom(MultiDownloader):
     __license__ = "GPLv3"
     __authors__ = [(None, None)]
 
-    FILE_ERRORS = [("Error", r'{"state":"error"}'), ("Retry", r'{"state":"retry"}')]
+    FILE_ERRORS = [("Error", rb'{"state":"error"}'), ("Retry", rb'{"state":"retry"}')]
 
     def handle_free(self, pyfile):
-        #: In some cases hostsers do not supply us with a filename at download, so we
-        #: Are going to set a fall back filename (e.g. for freakshare or xfileshare)
-        #: Remove everthing before last slash
+        #: In some cases hosters do not supply us with a filename at download, so we
+        #: Are going to set a fallback filename (e.g. for freakshare or xfileshare)
+        #: Remove everything before last slash
         pyfile.name = pyfile.name.split("/").pop()
 
         #: Correction for automatic assigned filename: Removing html at end if needed
