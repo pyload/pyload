@@ -24,8 +24,6 @@ class DownsterNet(MultiDownloader):
     __license__ = "GPLv3"
     __authors__ = [(None, None)]
 
-    FILE_ERRORS = [("Error", r'{"state":"error"}'), ("Retry", r'{"state":"retry"}')]
-
     def setup(self):
         self.api = DownsterApi(self)
 
