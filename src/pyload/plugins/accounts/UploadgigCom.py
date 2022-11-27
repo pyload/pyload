@@ -135,6 +135,6 @@ class UploadgigCom(BaseAccount):
     def check_status(self):
         pass
 
-    def retry_captcha(self, attemps=10, wait=1, msg="Max captcha retries reached"):
+    def retry_captcha(self, attempts=10, wait=1, msg="Max captcha retries reached"):
         self.captcha.invalid()
         self.fail_login(msg=self._("Invalid captcha"))

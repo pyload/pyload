@@ -50,10 +50,10 @@ class RPNetBiz(MultiDownloader):
             self.wait(30)  #: Wait for 30 seconds
             #: Lets query the server again asking for the status on the link,
             #: We need to keep doing this until we reach 100
-            attemps = 30
+            attempts = 30
             my_try = 0
-            while my_try <= attemps:
-                self.log_debug(f"Try: {my_try}; Max Tries: {attemps}")
+            while my_try <= attempts:
+                self.log_debug(f"Try: {my_try}; Max Tries: {attempts}")
                 res = self.load(
                     "https://premium.rpnet.biz/client_api.php",
                     get={
@@ -77,7 +77,7 @@ class RPNetBiz(MultiDownloader):
                 self.wait(30)
                 my_try += 1
 
-            if my_try > attemps:  #: We went over the limit!
+            if my_try > attempts:  #: We went over the limit!
                 self.fail(
                     self._(
                         "Waited for about 15 minutes for download to finish but failed"

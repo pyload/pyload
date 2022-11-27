@@ -21,7 +21,7 @@ class FileStoreTo(SimpleDownloader):
         ("chk_filesize", "bool", "Check file size", True),
         ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10),
         ("freeslot_wait", "int", "Delay to wait for free slot (seconds)", 600),
-        ("freeslot_attemps", "int", "Number of retries to wait for free slot", 15),
+        ("freeslot_attempts", "int", "Number of retries to wait for free slot", 15),
         ("beadheader_retry", "bool", "Retry download on HTTP Header 503", True)
     ]
 
@@ -99,8 +99,8 @@ class FileStoreTo(SimpleDownloader):
         if re.search(self.NO_FREESLOTS_PATTERN, self.data) is not None:
             self.log_warning(self._("No free slot available"))
             freeslot_wait = self.config.get("freeslot_wait", 600)
-            freeslot_attemps = self.config.get("freeslot_attemps", 15)
-            self.retry(attemps=freeslot_attemps, wait=freeslot_wait)
+            freeslot_attempts = self.config.get("freeslot_attempts", 15)
+            self.retry(attempts=freeslot_attempts, wait=freeslot_wait)
 
         else:
             super(FileStoreTo, self).check_errors(data=data)

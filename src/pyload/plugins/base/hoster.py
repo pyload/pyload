@@ -307,10 +307,10 @@ class BaseHoster(BasePlugin):
 
     def set_wait(self, seconds, strict=False):
         """
-        Set a specific wait time later used with `wait`
+        Set a specific wait time later used with wait()
 
         :param seconds: wait time in seconds
-        :param reconnect: True if a reconnect would avoid wait time
+        :param strict: strict mode
         """
         wait_time = float(seconds)
 
@@ -331,6 +331,9 @@ class BaseHoster(BasePlugin):
     def wait(self, seconds=None, reconnect=None):
         """
         Waits the time previously set.
+
+        :param seconds: How many seconds to wait or if equals to None then use the value from set_wait()
+        :param reconnect: True if reconnect would avoid wait time
         """
         if seconds is not None:
             self.set_wait(seconds)
@@ -457,13 +460,14 @@ class BaseHoster(BasePlugin):
 
         raise Retry(msg)
 
-    def retry(self, attemps=5, wait=1, msg="", msgfail="Max retries reached"):
+    def retry(self, attempts=5, wait=1, msg="", msgfail="Max retries reached"):
         """
         Retries and begin again from the beginning.
 
-        :param attemps: number of maximum retries
+        :param attempts: number of maximum retries
         :param wait: time to wait in seconds before retry
-        :param msg: message passed to fail if attemps value was reached
+        :param msg: message to pass to retry if attempts value was not yet reached
+        :param msgfail: message passed to fail if attempts value was reached
         """
         frame = inspect.currentframe()
 
@@ -475,7 +479,7 @@ class BaseHoster(BasePlugin):
         if id not in self.retries:
             self.retries[id] = 0
 
-        if 0 < attemps <= self.retries[id]:
+        if 0 < attempts <= self.retries[id]:
             self.fail(msgfail)
 
         self.retries[id] += 1
