@@ -9,7 +9,7 @@ from ..internal.MultiHoster import MultiHoster
 class DownsterNet(MultiHoster):
     __name__ = "DownsterNet"
     __type__ = "hoster"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __status__ = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -23,9 +23,6 @@ class DownsterNet(MultiHoster):
     __description__ = """Downster.net hoster plugin"""
     __license__ = "GPLv3"
     __authors__ = [(None, None)]
-
-    FILE_ERRORS = [("Error", r'{"state":"error"}'),
-                   ("Retry", r'{"state":"retry"}')]
 
     def setup(self):
         self.api = DownsterApi(self)
