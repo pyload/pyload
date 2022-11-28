@@ -3,8 +3,8 @@
 from ..internal.SimpleHoster import SimpleHoster
 
 
-class AnonfileCom(SimpleHoster):
-    __name__ = "AnonfileCom"
+class AnonfilesCom(SimpleHoster):
+    __name__ = "AnonfilesCom"
     __type__ = "hoster"
     __version__ = "0.02"
     __status__ = "testing"
@@ -16,7 +16,7 @@ class AnonfileCom(SimpleHoster):
                   ("chk_filesize", "bool", "Check file size", True),
                   ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10)]
 
-    __description__ = """Anonfile.com hoster plugin"""
+    __description__ = """Anonfiles.com hoster plugin"""
     __license__ = "GPLv3"
     __authors__ = [("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
