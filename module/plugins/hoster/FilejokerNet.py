@@ -199,10 +199,10 @@ class XCaptcha:
 class FilejokerNet(XFSHoster):
     __name__ = "FilejokerNet"
     __type__ = "hoster"
-    __version__ = "0.14"
+    __version__ = "0.15"
     __status__ = "testing"
 
-    __pattern__ = r'https?://(?:www\.)?filejoker\.net/(?P<ID>\w{12})'
+    __pattern__ = r'https?://(?:www\.)?filejoker\.net/(?:file/)?(?P<ID>\w{12})'
     __config__ = [("activated", "bool", "Activated", True),
                   ("use_premium", "bool", "Use premium account if available", True),
                   ("fallback", "bool", "Fallback to free download if premium fails", True),
@@ -218,14 +218,14 @@ class FilejokerNet(XFSHoster):
     ERROR_PATTERN = r'Wrong Captcha|Session expired|Your download has not finished yet'
     PREMIUM_ONLY_PATTERN = 'Free Members can download files no bigger'
 
-    WAIT_PATTERN = r'<span id="count" class="alert-success">([\w ]+?)</span> seconds</p>'
+    WAIT_PATTERN = r'<span id="count" class="alert-success">([\w ]+?)</span>\s*seconds'
     DL_LIMIT_PATTERN = r'Wait [\w ]+? to download for free.'
     TEMP_OFFLINE_PATTERN = r'Your download has not finished yet'
 
     INFO_PATTERN = r'<div class="name-size"><span>(?P<N>.+?)</span> <p>(?:\()?(?P<S>[\d.,]+) (?P<U>[\w^_]+)(?:\()?</p></div>'
     SIZE_REPLACEMENTS = [('Kb', 'KB'), ('Mb', 'MB'), ('Gb', 'GB')]
 
-    LINK_PATTERN = r'<div class="premium-download">\s+<a href="(.+?)"'
+    LINK_PATTERN = r'<div class=".*premium-download">\s+<a href="(.+?)"'
 
     @staticmethod
     def filter_form(tag):
@@ -276,7 +276,8 @@ class FilejokerNet(XFSHoster):
                 self.req.http.c.setopt(pycurl.HTTPHEADER, ["X-Requested-With: XMLHttpRequest"])
 
                 html = self.load(urlparse.urljoin(self.pyfile.url, "/ddl"),
-                                 post=captcha_inputs)
+                                 post=captcha_inputs,
+                                 ref=self.pyfile.url)
 
                 self.req.http.c.setopt(pycurl.HTTPHEADER, ["X-Requested-With:"])
 
