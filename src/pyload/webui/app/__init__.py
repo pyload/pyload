@@ -60,10 +60,15 @@ class App:
     @classmethod
     def _configure_handlers(cls, app):
         """
-        Register error handlers.
+        Register app handlers.
         """
         for exc, fn in cls.FLASK_ERROR_HANDLERS:
             app.register_error_handler(exc, fn)
+
+        @app.after_request
+        def deny_iframe(response):
+            response.headers["X-Frame-Options"] = "DENY"
+            return response
 
     @classmethod
     def _configure_json_encoding(cls, app):
