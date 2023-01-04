@@ -55,4 +55,4 @@ _A special thanks to **RaNaN**, **sebnapi** and **spoob** who started this journ
 
 ---
 
-###### © 2008-2022 pyLoad team
+###### © 2008-2023 pyLoad team
