@@ -28,13 +28,13 @@ jobs:
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Install binary packages
         run: sudo apt-get update && sudo apt-get -y --no-install-recommends install libcurl4-openssl-dev
 
       - name: Set up Python environment
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ env.default_python_version }}
 
@@ -42,7 +42,7 @@ jobs:
         run: echo "day_of_year=$(date +%j)" >> $GITHUB_ENV
 
       - name: Set up cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             ${{ env.pythonLocation }}
@@ -80,14 +80,13 @@ jobs:
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v2
-
+        uses: actions/checkout@v23
       - name: Install binary packages
         if: startsWith(matrix.os, 'ubuntu')
         run: sudo apt-get update && sudo apt-get -y --no-install-recommends install libcurl4-openssl-dev
 
       - name: Set up Python environment
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -98,7 +97,7 @@ jobs:
 
       - name: Set up cache
         if: "!startsWith(matrix.os, 'windows')"
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             ${{ env.pythonLocation }}
