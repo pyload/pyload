@@ -36,6 +36,12 @@
 
 {% block head %}
 {% endblock %}
+<script>
+  // Prevent Flash of Unstyled Content (FOUC) in Firefox
+  // see: https://bugzilla.mozilla.org/show_bug.cgi?id=1404468
+  // see: https://stackoverflow.com/a/64158043
+  let FF_FOUC_FIX;
+</script>
 </head>
 <body>
 
