@@ -1117,7 +1117,7 @@ class Api:
     @permission(Perms.STATUS)
     def get_events(self, uuid):
         """
-        Lists occured events, may be affected to changes in future.
+        Lists occurred events, may be affected to changes in the future.
 
         :param uuid:
         :return: list of `Events`
@@ -1229,6 +1229,15 @@ class Api:
         :return: dict with info, empty when login is incorrect
         """
         return self.pyload.db.check_auth(username, password)
+
+    def user_exists(self, username):
+        """
+        Check if a user actually exists in the database.
+
+        :param username:
+        :return: boolean
+        """
+        return self.pyload.db.user_exists(username)
 
     @legacy("isAuthorized")
     def is_authorized(self, func, userdata):

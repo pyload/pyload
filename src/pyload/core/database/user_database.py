@@ -93,6 +93,11 @@ class UserDatabaseMethods:
         self.c.execute("UPDATE users SET role=? WHERE name=?", (role, user))
 
     @style.queue
+    def user_exists(self, user):
+        self.c.execute("SELECT name FROM users WHERE name=?", (user,))
+        return self.c.fetchone() is not None
+
+    @style.queue
     def list_users(self):
         self.c.execute("SELECT name FROM users")
         users = []
