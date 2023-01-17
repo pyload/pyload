@@ -184,15 +184,17 @@ def login_required(perm):
                 else:
                     response = func(*args, **kwargs)
 
-            elif flask.request.headers.get("X-Requested-With") == "XMLHttpRequest":
-                response = "Forbidden", 403
-
             else:
-                location = flask.url_for(
-                    "app.login",
-                    next=flask.request.url
-                )
-                response = flask.redirect(location)
+                clear_session(s)
+                if flask.request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                    response = "Forbidden", 403
+
+                else:
+                    location = flask.url_for(
+                        "app.login",
+                        next=flask.request.url
+                    )
+                    response = flask.redirect(location)
 
             return response
 
