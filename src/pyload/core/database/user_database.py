@@ -51,7 +51,7 @@ class UserDatabaseMethods:
     def check_openid(self, oidc_user):
         self.c.execute(
             "SELECT id, name, role, permission, template, email FROM users WHERE oidc_user=?",
-            (oidc_user_field,),
+            (oidc_user,),
         )
         r = self.c.fetchone()
         if not r:

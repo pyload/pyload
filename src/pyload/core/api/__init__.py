@@ -22,7 +22,6 @@ from ..log_factory import LogFactory
 from ..network.request_factory import get_url
 from ..utils import fs, seconds
 from ..utils.old.packagetools import parse_names
-from functools import wraps
 
 # contains function names mapped to their permissions
 # unlisted functions are for admins only
