@@ -48,6 +48,32 @@ class UserDatabaseMethods:
         }
 
     @style.queue
+    def check_openid(self, oidc_user):
+        self.c.execute(
+            "SELECT id, name, role, permission, template, email FROM users WHERE oidc_user=?",
+            (oidc_user_field,),
+        )
+        r = self.c.fetchone()
+        if not r:
+            return {}
+
+        return {
+            "id": r[0],
+            "name": r[1],
+            "role": r[2],
+            "permission": r[3],
+            "template": r[4],
+            "email": r[5],
+        }
+
+    @style.queue
+    def connect_openid(self, user_id, oidc_user):
+        self.c.execute(
+            "UPDATE users SET oidc_user=? WHERE id=?",
+            (oidc_user, user_id),
+        )
+
+    @style.queue
     def add_user(self, user, password, role=0, perms=0, reset=False):
         salt_pw = _salted_password(password, _gensalt())
 

@@ -14,7 +14,7 @@ from ..database import FileDatabaseMethods, StorageDatabaseMethods, UserDatabase
 from ..utils.struct.style import style
 
 # DATABASE VERSION
-__version__ = 4
+__version__ = 5
 
 # TODO: rewrite using peewee
 class DatabaseJob:
@@ -164,6 +164,12 @@ class DatabaseThread(Thread):
     def _convertV3(self):
         self.c.execute(
             'CREATE TABLE IF NOT EXISTS "users" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "name" TEXT NOT NULL, "email" TEXT DEFAULT "" NOT NULL, "password" TEXT NOT NULL, "role" INTEGER DEFAULT 0 NOT NULL, "permission" INTEGER DEFAULT 0 NOT NULL, "template" TEXT DEFAULT "default" NOT NULL)'
+        )
+        self.pyload.log.info(self._("Database was converted from v3 to v4."))
+
+    def _convertV4(self):
+        self.c.execute(
+            'ALTER TABLE "users" ADD COLUMN oidc_user TEXT DEFAULT NULL'
         )
         self.pyload.log.info(self._("Database was converted from v3 to v4."))
 

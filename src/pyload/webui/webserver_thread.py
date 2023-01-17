@@ -8,6 +8,8 @@ from cheroot.ssl.builtin import BuiltinSSLAdapter
 
 from .app import App
 
+from ..webui.app.helpers import OpenIDConnect
+
 
 # TODO: make configurable to serve API
 class WebServerThread(threading.Thread):
@@ -32,6 +34,7 @@ class WebServerThread(threading.Thread):
         # NOTE: Is really the right choice pass the pycore obj directly to app?!
         #       Or should we pass just core.api and server.logger instead?
         self.app = App(self.pyload, self.develop, self.prefix)
+        self.pyload.oidc = OpenIDConnect(pycore, self.app) if pycore.config.get("webui", "use_oidc") else None
         self.log = self.app.logger
 
     def _run_develop(self):

@@ -68,6 +68,10 @@
   <dd class="col-xs-12 col-sm-9">{{webif}}</dd>
   <dt class="col-xs-12 col-sm-3"><b>{{_('Theme:')}}</b></dt>
   <dd class="col-xs-12 col-sm-9"><b>modern</b> (by <a href="https://github.com/GammaC0de" target="_blank">GammaC0de</a> based on work of <a href="https://github.com/xunil75" target="_blank">Marco Fernandes</a> and Dogan Bagci)</dd>
+  {% if oidc_enabled and user.is_authenticated %}
+    <dt class="col-xs-12 col-sm-3"><b>{{_('OpenID:')}}</b></dt>
+    <dd class="col-xs-12 col-sm-9"><a href="{{url_for('app.oidc_connect')}}">{{ _("Connect OpenID") }}</a></dd>
+  {% endif %}
 </dl>
 {% endblock %}
 
