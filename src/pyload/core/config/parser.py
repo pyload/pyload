@@ -279,15 +279,32 @@ class ConfigParser:
             return value.lower() in ("1", "true", "on", "yes", "y")
 
         elif typ == "time":
+            default_value = "0:00"
             value = "" if value is None else str(value)
             if not value:
-                value = "0:00"
-            if ":" not in value:
+                value = default_value
+            elif ":" not in value:
                 value += ":00"
+
+            hours, seconds = value.split(":", 1)
+            if (
+                hours.isnumeric()
+                and seconds.isnumeric()
+                and 0 <= int(hours) <= 23
+                and 0 <= int(seconds) <= 59
+            ):
+                pass
+            else:
+                value = default_value
+
             return value
 
         elif typ in ("file", "folder"):
-            return "" if value in (None, "") else os.path.realpath(os.path.expanduser(os.fsdecode(value)))
+            return (
+                ""
+                if value in (None, "")
+                else os.path.realpath(os.path.expanduser(os.fsdecode(value)))
+            )
 
         else:
             return value
