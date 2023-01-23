@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from functools import wraps
-from urllib.parse import urljoin, urlparse
+from urllib.parse import unquote, urljoin, urlparse
 
 import flask
 import flask_themes2
-
 from pyload.core.api import Perms, Role, has_permission
 
 
@@ -27,10 +26,11 @@ def is_safe_url(location):
 
 def get_redirect_url(fallback=None):
     login_url = urljoin(flask.request.url_root, flask.url_for('app.login'))
+    request_url = unquote(flask.request.url)
     for location in flask.request.values.get("next"), flask.request.referrer:
         if not location:
             continue
-        if location in (flask.request.url, login_url):  # don't redirect to same location
+        if location in (request_url, login_url):  # don't redirect to same location
             continue
         if is_safe_url(location):
             return location
