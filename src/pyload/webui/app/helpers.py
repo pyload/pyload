@@ -21,7 +21,7 @@ class JSONEncoder(flask.json.JSONEncoder):
 def is_safe_url(location):
     ref_url = urlparse(flask.request.host_url)
     test_url = urlparse(urljoin(flask.request.host_url, location))
-    return ref_url.netloc == test_url.netloc
+    return test_url.scheme in ('http', 'https') and ref_url.netloc == test_url.netloc
 
 
 def get_redirect_url(fallback=None):
