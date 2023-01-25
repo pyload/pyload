@@ -439,6 +439,8 @@ class Api:
 
         package_id = self.pyload.files.add_package(name, folder, Destination(dest))
 
+        links = [links] if isinstance(links, str) else links
+
         self.pyload.files.add_links(links, package_id)
 
         self.pyload.log.info(
