@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from functools import wraps
-from urllib.parse import urljoin, urlparse
+from urllib.parse import unquote, urljoin, urlparse
 
 import flask
 import flask_themes2
-
 from pyload.core.api import Perms, Role, has_permission
 
 
@@ -22,15 +21,16 @@ class JSONEncoder(flask.json.JSONEncoder):
 def is_safe_url(location):
     ref_url = urlparse(flask.request.host_url)
     test_url = urlparse(urljoin(flask.request.host_url, location))
-    return ref_url.netloc == test_url.netloc
+    return test_url.scheme in ('http', 'https') and ref_url.netloc == test_url.netloc
 
 
 def get_redirect_url(fallback=None):
     login_url = urljoin(flask.request.url_root, flask.url_for('app.login'))
+    request_url = unquote(flask.request.url)
     for location in flask.request.values.get("next"), flask.request.referrer:
         if not location:
             continue
-        if location in (flask.request.url, login_url):  # don't redirect to same location
+        if location in (request_url, login_url):  # don't redirect to same location
             continue
         if is_safe_url(location):
             return location
@@ -184,15 +184,17 @@ def login_required(perm):
                 else:
                     response = func(*args, **kwargs)
 
-            elif flask.request.headers.get("X-Requested-With") == "XMLHttpRequest":
-                response = "Forbidden", 403
-
             else:
-                location = flask.url_for(
-                    "app.login",
-                    next=flask.request.url
-                )
-                response = flask.redirect(location)
+                clear_session(s)
+                if flask.request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                    response = "Forbidden", 403
+
+                else:
+                    location = flask.url_for(
+                        "app.login",
+                        next=flask.request.url
+                    )
+                    response = flask.redirect(location)
 
             return response
 

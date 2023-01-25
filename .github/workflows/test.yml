@@ -67,7 +67,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.6", "3.7", "3.8", "3.9", "3.10"]
+        python-version: ["3.6", "3.7", "3.8", "3.9", "3.10", "3.11"]
         os: [ubuntu-20.04, macos-latest, windows-latest]
         include:
           - python-version: pypy-3.6
@@ -108,7 +108,7 @@ jobs:
         run: |
           pip install tox
           [ ${{ startsWith(matrix.os, 'macos') }} = true ] && pip install --install-option="--openssl-dir=/usr/local/opt/openssl@1.1" pycurl || true
-          [ ${{ startsWith(matrix.os, 'windows') }} = true ] && { pip install pipwin; pipwin install pycurl; } || true
+          [ ${{ startsWith(matrix.os, 'windows') }} = true ] && ./.github/scripts/install_pycurl_win.sh ${{ matrix.python-version }} || true
         shell: bash
 
       - name: Test pyLoad
