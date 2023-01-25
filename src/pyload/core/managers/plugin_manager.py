@@ -352,7 +352,7 @@ class PluginManager(MetaPathFinder):
                 module_name = plugins[name]["name"]
                 module_folder = plugins[name]["folder"]
                 module = __import__(
-                    self.ROOT + f"{module_folder}.{module_name}",
+                    (self.USERROOT if plugins[name]['user'] else self.ROOT) + f"{module_folder}.{module_name}",
                     globals(),
                     locals(),
                     plugins[name]["name"],
