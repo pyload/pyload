@@ -103,7 +103,7 @@ class HTTPRequest:
         self.c.setopt(pycurl.NOPROGRESS, 1)
         if hasattr(pycurl, "AUTOREFERER"):
             self.c.setopt(pycurl.AUTOREFERER, 1)
-        self.c.setopt(pycurl.SSL_VERIFYPEER, 0)
+        self.c.setopt(pycurl.SSL_VERIFYPEER, 1)
         self.c.setopt(pycurl.LOW_SPEED_TIME, 60)
         self.c.setopt(pycurl.LOW_SPEED_LIMIT, 5)
         if hasattr(pycurl, "USE_SSL"):
@@ -114,7 +114,7 @@ class HTTPRequest:
 
         self.c.setopt(
             pycurl.USERAGENT,
-            b"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36",
+            b"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/109.0",
         )
         if pycurl.version_info()[7]:
             self.c.setopt(pycurl.ENCODING, b"gzip, deflate")
@@ -173,6 +173,9 @@ class HTTPRequest:
 
         if "timeout" in options:
             self.c.setopt(pycurl.LOW_SPEED_TIME, int(options["timeout"]))
+
+        if "ssl_verify" in options:
+            self.c.setopt(pycurl.SSL_VERIFYPEER, 1 if options["ssl_verify"] else 0)
 
     def add_cookies(self):
         """
