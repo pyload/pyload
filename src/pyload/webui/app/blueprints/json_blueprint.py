@@ -228,6 +228,18 @@ def set_captcha():
 
     return jsonify(data)
 
+@bp.route("/json/set_captcha_failed", methods=["POST"], endpoint="set_captcha_failed")
+# @apiver_check
+@login_required("ADD")
+def set_captcha_failed():
+    api = flask.current_app.config["PYLOAD_API"]
+
+    if flask.request.method == "POST":
+        tid = int(flask.request.form["cap_id"])
+        result = flask.request.form["cap_result"]
+        api.set_captcha_failed(tid, result)
+        return jsonify(True)
+    return jsonify(False)
 
 @bp.route("/json/load_config", endpoint="load_config")
 # @apiver_check

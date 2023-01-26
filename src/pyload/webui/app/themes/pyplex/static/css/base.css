@@ -486,3 +486,12 @@ fieldset[disabled] .btn {
 .modal-dialog {
   margin-top: 10px;
 }
+
+#cap_interactive_content_loading {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    background-repeat:no-repeat;
+    background-position: top center;
+    min-height: 24px;
+}

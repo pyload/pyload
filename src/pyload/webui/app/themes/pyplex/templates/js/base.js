@@ -368,7 +368,12 @@ function set_captcha(a) {
     } else if (a.result_type === "interactive") {
         $("#cap_box #cap_title").text("");
         if(interactiveCaptchaHandlerInstance == null) {
-            interactiveCaptchaHandlerInstance = new interactiveCaptchaHandler("cap_interactive_iframe", "cap_interactive_loading", submit_interactive_captcha);
+            interactiveCaptchaHandlerInstance = new interactiveCaptchaHandler(
+                "cap_interactive_iframe",
+                "cap_interactive_loading",
+                "cap_interactive_content_loading",
+                submit_interactive_captcha
+            );
         }
         if(params.url !== undefined && params.url.indexOf("http") === 0) {
             $("#cap_interactive").css("display", "block");
@@ -377,7 +382,12 @@ function set_captcha(a) {
     } else if (a.result_type === "invisible") {
         $("#cap_box #cap_title").text("");
         if(interactiveCaptchaHandlerInstance == null) {
-            interactiveCaptchaHandlerInstance = new interactiveCaptchaHandler("cap_interactive_iframe", "cap_invisible_loading", submit_interactive_captcha);
+            interactiveCaptchaHandlerInstance = new interactiveCaptchaHandler(
+                "cap_interactive_iframe",
+                "cap_invisible_loading",
+                "cap_interactive_content_loading",
+                submit_interactive_captcha
+            );
         }
         if(params.url !== undefined && params.url.indexOf("http") === 0) {
             $("#cap_interactive").css("display", "block");
@@ -395,6 +405,18 @@ function load_captcha(b, a) {
             data: a,
             success: function(c) {
                 return (c.captcha ? set_captcha(c) : clear_captcha());
+        }
+    });
+}
+
+function set_captcha_failed(a) {
+    $.ajax({
+            url: "{{url_for('json.set_captcha_failed')}}",
+            async: true,
+            method: 'post',
+            data: a,
+            success: function(c) {
+                clear_captcha()
         }
     });
 }
@@ -450,9 +472,10 @@ function submit_interactive_captcha(c) {
     return submit_captcha();
 }
 
-function interactiveCaptchaHandler(iframeId, loadingid, captchaResponseCallback) {
+function interactiveCaptchaHandler(iframeId, loadingId, contentLoadingId, captchaResponseCallback) {
     this._iframeId = iframeId;
-    this._loadingId = loadingid;
+    this._loadingId = loadingId;
+    this._contentLoadingId = contentLoadingId;
     this._captchaResponseCallback = captchaResponseCallback;
     this._active = false; // true: link grabbing is running, false: standby
 
@@ -496,6 +519,7 @@ interactiveCaptchaHandler.prototype.windowEventListener = function(e) {
 
     } else if(requestMessage.actionCode === interactiveHandlerInstance.actionCodes.activated) {
         $("#" + interactiveHandlerInstance._loadingId).css("display", "none");
+        $("#" + interactiveHandlerInstance._contentLoadingId).css("display", "none");
         $("#" + interactiveHandlerInstance._iframeId).css("display", "block");
 
     } else if (requestMessage.actionCode === interactiveHandlerInstance.actionCodes.size)  {
@@ -505,6 +529,14 @@ interactiveCaptchaHandler.prototype.windowEventListener = function(e) {
         $iframe.css({top : - requestMessage.params.rect.top + "px",
             left : - requestMessage.params.rect.left + "px"})
             .parent().width(width).height(height);
+    } else if(requestMessage.actionCode === interactiveHandlerInstance.actionCodes.loading) {
+        $("#" + interactiveHandlerInstance._loadingId).css("display", "none");
+        $("#" + interactiveHandlerInstance._contentLoadingId).css("display", "block");
+    } else if(requestMessage.actionCode === interactiveHandlerInstance.actionCodes.loaded) {
+        $("#" + interactiveHandlerInstance._contentLoadingId).css("display", "none");
+    } else if(requestMessage.actionCode === interactiveHandlerInstance.actionCodes.aborted) {
+        set_captcha_failed({"cap_id": $("#cap_id").val(),"cap_result": 'Loading failed'});
+        interactiveHandlerInstance.clearEventlisteners();
     }
 };
 
@@ -519,6 +551,9 @@ interactiveCaptchaHandler.prototype.clearEventlisteners = function() {
 
 // Action codes for communication with iframe via postMessage
 interactiveCaptchaHandler.prototype.actionCodes = {
+    loading: "pyloadLoadingInteractive",
+    loaded: "pyloadLoadedInteractive",
+    aborted: "pyloadAbortedInteractive",
     activate: "pyloadActivateInteractive",
     activated: "pyloadActivatedInteractive",
     size: "pyloadIframeSize",
