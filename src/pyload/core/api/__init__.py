@@ -238,7 +238,7 @@ class Api:
     @permission(Perms.STATUS)
     def pause_server(self):
         """
-        Pause server: Tt wont start any new downloads, but nothing gets aborted.
+        Pause server: It won't start any new downloads, but nothing gets aborted.
         """
         self.pyload.thread_manager.pause = True
 
@@ -455,10 +455,11 @@ class Api:
     @permission(Perms.ADD)
     def parse_urls(self, html=None, url=None):
         """
-        Parses html content or any arbitaty text for links and returns result of
+        Parses html content or any arbitrary text for links and returns result of
         `check_urls`
 
         :param html: html source
+        :param url: url to load html source from
         :return:
         """
         urls = []
@@ -590,7 +591,7 @@ class Api:
     def check_and_add_packages(self, links, dest=Destination.COLLECTOR):
         """
         Checks online status, retrieves names, and will add packages.
-        Because of this packages are not added immediatly, only for internal use.
+        Because of these packages are not added immediately, only for internal use.
 
         :param links: list of urls
         :param dest: `Destination`
@@ -944,7 +945,7 @@ class Api:
         """
         Uploads and adds a container file to pyLoad.
 
-        :param filename: filename, extension is important so it can correctly decrypted
+        :param filename: file name - extension is important, so it can correctly decrypt
         :param data: file content
         """
         with open(
@@ -1368,8 +1369,8 @@ class Api:
 
         :param info: `ServiceCall`
         :return: result
-        :raises: ServiceDoesNotExists, when its not available
-        :raises: ServiceException, when a exception was raised
+        :raises: ServiceDoesNotExists, when it's not available
+        :raises: ServiceException, when an exception was raised
         """
         plugin = info.plugin
         func = info.func
