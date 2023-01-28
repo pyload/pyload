@@ -8,13 +8,14 @@ from itertools import chain
 from logging import getLogger
 from urllib.parse import quote, urlencode
 
+import certifi
+
 import pycurl
 from pyload import APPID
 
 from ...utils.convert import to_bytes, to_str
 from ..exceptions import Abort
 from .exceptions import BadHeader
-
 
 if not hasattr(pycurl, "PROXYTYPE_HTTPS"):
     pycurl.PROXYTYPE_HTTPS = 2
@@ -180,7 +181,13 @@ class HTTPRequest:
             self.c.setopt(pycurl.LOW_SPEED_TIME, int(options["timeout"]))
 
         if "ssl_verify" in options:
-            self.c.setopt(pycurl.SSL_VERIFYPEER, 1 if options["ssl_verify"] else 0)
+            if options["ssl_verify"]:
+                self.c.setopt(pycurl.CAINFO, certifi.where())
+                ssl_verify = 1
+            else:
+                ssl_verify = 0
+
+            self.c.setopt(pycurl.SSL_VERIFYPEER, ssl_verify)
 
     def add_cookies(self):
         """
