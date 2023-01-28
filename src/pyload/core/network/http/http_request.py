@@ -16,8 +16,9 @@ from ..exceptions import Abort
 from .exceptions import BadHeader
 
 
-if not hasattr(pycurl, 'PROXYTYPE_HTTPS'):
+if not hasattr(pycurl, "PROXYTYPE_HTTPS"):
     pycurl.PROXYTYPE_HTTPS = 2
+
 
 def myquote(url):
     try:
@@ -50,8 +51,11 @@ class FormFile:
     def __init__(self, filename, data=None, mimetype=None):
         self.filename = os.path.abspath(filename)
         self.data = data
-        self.mimetype = mimetype or mimetypes.guess_type(filename)[0] if not data and os.path.exists(
-            filename) else None or 'application/octet-stream'
+        self.mimetype = (
+            mimetype or mimetypes.guess_type(filename)[0]
+            if not data and os.path.exists(filename)
+            else "application/octet-stream"
+        )
 
     def __repr__(self):
         return f"FormFile <'{os.path.basename(self.filename)}'>"
@@ -118,6 +122,7 @@ class HTTPRequest:
         )
         if pycurl.version_info()[7]:
             self.c.setopt(pycurl.ENCODING, b"gzip, deflate")
+
         self.c.setopt(
             pycurl.HTTPHEADER,
             [
@@ -234,7 +239,7 @@ class HTTPRequest:
                         multipart_post.append((k, to_str(v)))
 
                     elif isinstance(v, FormFile):
-                        filename = os.path.basename(v.filename).encode('utf8')
+                        filename = os.path.basename(v.filename).encode("utf8")
                         data = v.data
                         if data is None:
                             if not os.path.exists(v.filename):
@@ -317,7 +322,11 @@ class HTTPRequest:
         ret = self.response_header if just_header else self.get_response()
 
         if decode:
-            ret = to_str(ret, encoding="iso-8859-1") if just_header else self.decode_response(ret)
+            ret = (
+                to_str(ret, encoding="iso-8859-1")
+                if just_header
+                else self.decode_response(ret)
+            )
 
         self.rep.close()
         self.rep = None
@@ -336,11 +345,7 @@ class HTTPRequest:
             self.rep = None
 
             # 404 will NOT raise an exception
-            raise BadHeader(
-                code,
-                header,
-                response
-            )
+            raise BadHeader(code, header, response)
 
         return code
 
