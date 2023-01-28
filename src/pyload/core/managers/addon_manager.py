@@ -128,10 +128,10 @@ class AddonManager:
                 )
 
         self.pyload.log.info(
-            self._("Activated plugins: {}").format(", ".join(sorted(active)))
+            self._("Activated addons: {}").format(", ".join(sorted(active)))
         )
         self.pyload.log.info(
-            self._("Deactivate plugins: {}").format(", ".join(sorted(deactive)))
+            self._("Deactivate addons: {}").format(", ".join(sorted(deactive)))
         )
 
         self.plugins = plugins
