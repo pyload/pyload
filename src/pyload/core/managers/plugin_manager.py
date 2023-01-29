@@ -219,7 +219,7 @@ class PluginManager(MetaPathFinder):
                     try:
                         plugins[name]["re"] = re.compile(pattern)
                     except re.error:
-                        plugins[name]["re"] = re.compile(r"^unmachtable$")
+                        plugins[name]["re"] = re.compile(r"(?!.*)")
                         self.pyload.log.error(
                             self._("{} has a invalid pattern").format(name)
                         )
