@@ -76,10 +76,10 @@ class PluginManager(MetaPathFinder):
 
         self.pyload.log.debug("Indexing plugins...")
 
-        sys.path.append(os.path.join(self.pyload.userdir, "plugins"))
-
         userplugins_dir = os.path.join(self.pyload.userdir, "plugins")
         os.makedirs(userplugins_dir, exist_ok=True)
+        sys.path.append(userplugins_dir)
+
 
         try:
             fp = open(os.path.join(userplugins_dir, "__init__.py"), mode="wb")
@@ -162,9 +162,7 @@ class PluginManager(MetaPathFinder):
                 with open(os.path.join(pfolder, entry), encoding="utf-8-sig") as data:
                     content = data.read()
 
-                name = entry[:-3]
-                if name[-1] == ".":
-                    name = name[:-4]
+                name = entry[:-3] #: Trim ending ".py"
 
                 # m_pyver = self._RE_PYLOAD_VERSION.search(content)
                 # if m_pyver is None:
@@ -207,11 +205,9 @@ class PluginManager(MetaPathFinder):
                 plugins[name] = {}
                 plugins[name]["v"] = version
 
-                module = entry.replace(".pyc", "").replace(".py", "")
-
-                # the plugin is loaded from user directory
+                # was the plugin is loaded from user directory?
                 plugins[name]["user"] = True if home else False
-                plugins[name]["name"] = module
+                plugins[name]["name"] = name
                 plugins[name]["folder"] = folder
 
                 if pattern:
@@ -222,7 +218,8 @@ class PluginManager(MetaPathFinder):
 
                     try:
                         plugins[name]["re"] = re.compile(pattern)
-                    except Exception:
+                    except re.error:
+                        plugins[name]["re"] = re.compile(r"^unmachtable$")
                         self.pyload.log.error(
                             self._("{} has a invalid pattern").format(name)
                         )
