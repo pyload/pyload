@@ -13,9 +13,83 @@ from itertools import chain
 from pyload import APPID, PKGDIR
 
 
-class PluginManager(MetaPathFinder):
+class ImportRedirector(MetaPathFinder):
     ROOT = "pyload.plugins."
     USERROOT = "plugins."
+
+    def __init__(self, core):
+        self.pyload = core
+        self._ = core._
+
+        userplugins_dir = os.path.join(self.pyload.userdir, self.USERROOT)
+        os.makedirs(userplugins_dir, exist_ok=True)
+        try:
+            with open(os.path.join(userplugins_dir, "__init__.py"), mode="wb") as fp:
+                pass
+        except OSError:
+            pass
+
+        # add USERROOT to sys.path
+        sys.path.append(self.pyload.userdir)
+
+        # register for import addon
+        sys.meta_path.append(self)
+
+    def find_module(self, fullname, path=None):
+        # redirecting imports if necessary
+        if fullname.startswith(self.ROOT) or fullname.startswith(
+            self.USERROOT
+        ):  #: separate pyload plugins
+            if fullname.startswith(self.USERROOT):
+                user = 1
+            else:
+                user = 0  #: used as bool and int
+
+            split = fullname.split(".")
+            if len(split) == 3 - user:
+                return self
+            elif len(split) == 4 - user:
+                plugin_type, plugin_name = split[2 - user: 4 - user]
+                if plugin_type != "base" and plugin_type[-1] == "s":
+                    plugin_type = plugin_type[:-1]  #: remove trailing plural "s" character
+
+                plugins = self.pyload.plugin_manager.plugins
+                if plugin_type in plugins and plugin_name in plugins[plugin_type]:
+                    # userplugin is a newer version
+                    if not user and plugins[plugin_type][plugin_name]["user"]:
+                        return self
+                    # imported from userplugins dir, but pyload's version is newer
+                    if user and not plugins[plugin_type][plugin_name]["user"]:
+                        return self
+
+        return None
+
+    def load_module(self, fullname, replace=True):
+        if fullname not in sys.modules:  #: could be already in modules
+            if replace:
+                if self.ROOT in fullname:
+                    newname = fullname.replace(self.ROOT, self.USERROOT)
+
+                else:
+                    newname = fullname.replace(self.USERROOT, self.ROOT)
+
+            else:
+                newname = fullname
+
+            base, plugin = newname.rsplit(".", 1)
+
+            self.pyload.log.debug("Redirected import {} -> {}".format(fullname, newname))
+
+            module = __import__(newname, globals(), locals(), [plugin])
+
+            #: Inject under new and old name
+            sys.modules[fullname] = module
+            sys.modules[newname] = module
+
+        return sys.modules[fullname]
+
+
+class PluginManager:
     TYPES = (
         "decrypter",
         "container",
@@ -45,15 +119,14 @@ class PluginManager(MetaPathFinder):
         self.decrypter_plugins = []
         self.downloader_plugins = []
         self.extractor_plugins = []
-        self.internal_plugins = []
+        self.base_plugins = []
+
+        self.import_redirector = ImportRedirector(core)
 
         self.create_index()
 
         # save generated config
         self.pyload.config.save_config(self.pyload.config.plugin, self.pyload.config.pluginpath)
-
-        # register for import addon
-        sys.meta_path.append(self)
 
     def create_index(self):
         """
@@ -75,17 +148,6 @@ class PluginManager(MetaPathFinder):
                     dst[name] = src[name]
 
         self.pyload.log.debug("Indexing plugins...")
-
-        userplugins_dir = os.path.join(self.pyload.userdir, "plugins")
-        os.makedirs(userplugins_dir, exist_ok=True)
-        sys.path.append(userplugins_dir)
-
-
-        try:
-            fp = open(os.path.join(userplugins_dir, "__init__.py"), mode="wb")
-            fp.close()
-        except Exception:
-            pass
 
         self.decrypter_plugins, config = self.parse("decrypters", pattern=True)
         self.plugins["decrypter"] = self.decrypter_plugins
@@ -115,8 +177,8 @@ class PluginManager(MetaPathFinder):
         self.plugins["account"] = self.account_plugins
         merge(default_config, config)
 
-        self.internal_plugins, config = self.parse("base")
-        self.plugins["base"] = self.internal_plugins
+        self.base_plugins, config = self.parse("base")
+        self.plugins["base"] = self.base_plugins
         merge(default_config, config)
 
         for name, config in default_config.items():
@@ -334,36 +396,36 @@ class PluginManager(MetaPathFinder):
 
         return name
 
-    def load_module(self, type, name):
+    def load_module(self, module_type, module_name):
         """
         Returns loaded module for plugin.
 
-        :param type: plugin type, subfolder of module.plugins
-        :param name:
+        :param module_type: plugin type, subfolder of module.plugins
+        :param module_name: plugin name
         """
-        plugins = self.plugins[type]
-        if name in plugins:
-            if APPID in plugins[name]:
-                return plugins[name][APPID]
+        plugins = self.plugins[module_type]
+        if module_name in plugins:
+            if APPID in plugins[module_name]:
+                return plugins[module_name][APPID]
             try:
-                module_name = plugins[name]["name"]
-                module_folder = plugins[name]["folder"]
+                module_name = plugins[module_name]["name"]
+                module_folder = plugins[module_name]["folder"]
                 module = __import__(
-                    self.ROOT + f"{module_folder}.{module_name}",
+                    self.import_redirector.ROOT + f"{module_folder}.{module_name}",
                     globals(),
                     locals(),
-                    plugins[name]["name"],
+                    plugins[module_name]["name"],
                 )
-                plugins[name][APPID] = module  #: cache import, maybe unneeded
+                plugins[module_name][APPID] = module  #: cache import, maybe unneeded
                 return module
             except Exception as exc:
                 self.pyload.log.error(
-                    self._("Error importing {name}: {msg}").format(name=name, msg=exc),
+                    self._("Error importing {name}: {msg}").format(name=module_name, msg=exc),
                     exc_info=self.pyload.debug > 1,
                     stack_info=self.pyload.debug > 2,
                 )
         else:
-            self.pyload.log.debug(f"Plugin {name} not found")
+            self.pyload.log.debug(f"Plugin {module_name} not found")
             self.pyload.log.debug(f"Available plugins : {plugins}")
 
     def load_class(self, type, name):
@@ -379,29 +441,6 @@ class PluginManager(MetaPathFinder):
         return list of account plugin names.
         """
         return list(self.account_plugins.keys())
-
-    def find_module(self, fullname, path=None):
-        # redirecting imports if necessary
-        if fullname.startswith(self.ROOT) or fullname.startswith(
-            self.USERROOT
-        ):  #: os.separate pyload plugins
-            if fullname.startswith(self.USERROOT):
-                user = 1
-            else:
-                user = 0  #: used as bool and int
-
-            split = fullname.split(".")
-            if len(split) != 4 - user:
-                return
-            type, name = split[2 - user : 4 - user]
-
-            if type in self.plugins and name in self.plugins[type]:
-                # userplugin is a newer version
-                if not user and self.plugins[type][name]["user"]:
-                    return self
-                # imported from userplugins dir, but pyload's version is newer
-                if user and not self.plugins[type][name]["user"]:
-                    return self
 
     def reload_plugins(self, type_plugins):
         """
@@ -434,7 +473,7 @@ class PluginManager(MetaPathFinder):
             else:
                 as_dict[t] = [n]
 
-        # we do not reload addons or internals, would cause too much side effects
+        # we do not reload addons or base, would cause too much side effects
         if "addon" in as_dict or "base" in as_dict:
             return False
 
