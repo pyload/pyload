@@ -21,10 +21,10 @@ class ImportRedirector(MetaPathFinder):
         self.pyload = core
         self._ = core._
 
-        userplugins_dir = os.path.join(self.pyload.userdir, self.USERROOT)
+        userplugins_dir = os.path.join(self.pyload.userdir, *self.USERROOT.split("."))
         os.makedirs(userplugins_dir, exist_ok=True)
         try:
-            with open(os.path.join(userplugins_dir, "__init__.py"), mode="wb") as fp:
+            with open(os.path.join(userplugins_dir, "__init__.py"), mode="wb"):
                 pass
         except OSError:
             pass
@@ -58,7 +58,7 @@ class ImportRedirector(MetaPathFinder):
                     # userplugin is a newer version
                     if not user and plugins[plugin_type][plugin_name]["user"]:
                         return self
-                    # imported from userplugins dir, but pyload's version is newer
+                    # imported from userplugins dir, but pyLoad's version is newer
                     if user and not plugins[plugin_type][plugin_name]["user"]:
                         return self
 
@@ -339,7 +339,7 @@ class PluginManager:
                 str,
                 bytes,
                 memoryview,
-            ):  #: check memoryview (as py2 byffer)
+            ):  #: check memoryview (as py2 buffer)
                 continue
             found = False
 
@@ -400,7 +400,7 @@ class PluginManager:
         """
         Returns loaded module for plugin.
 
-        :param module_type: plugin type, subfolder of module.plugins
+        :param module_type: plugin type, subfolder of pyload.plugins
         :param module_name: plugin name
         """
         plugins = self.plugins[module_type]
@@ -477,12 +477,12 @@ class PluginManager:
         if "addon" in as_dict or "base" in as_dict:
             return False
 
-        for type in as_dict.keys():
-            for plugin in as_dict[type]:
-                if plugin in self.plugins[type]:
-                    if APPID in self.plugins[type][plugin]:
-                        self.pyload.log.debug(f"Reloading {plugin}")
-                        importlib.reload(self.plugins[type][plugin][APPID])
+        for plugin_type in as_dict.keys():
+            for plugin_name in as_dict[plugin_type]:
+                if plugin_name in self.plugins[plugin_type]:
+                    if APPID in self.plugins[plugin_type][plugin_name]:
+                        self.pyload.log.debug(f"Reloading {plugin_name}")
+                        importlib.reload(self.plugins[plugin_type][plugin_name][APPID])
 
         # index creation
         self.decrypter_plugins, config = self.parse("decrypters", pattern=True)
