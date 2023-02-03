@@ -8,7 +8,7 @@ from ..base.simple_downloader import SimpleDownloader
 class SoundcloudCom(SimpleDownloader):
     __name__ = "SoundcloudCom"
     __type__ = "downloader"
-    __version__ = "0.18"
+    __version__ = "0.19"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?soundcloud\.com/[\w\-]+/[\w\-]+"
@@ -30,43 +30,42 @@ class SoundcloudCom(SimpleDownloader):
     NAME_PATTERN = r'title" content="(?P<N>.+?)"'
     OFFLINE_PATTERN = r'<title>"SoundCloud - Hear the world’s sounds"</title>'
 
+    CLIENT_ID = "wuM9g7pMB4mU13fW6SuRfQeJNRYNIX9O"
+
+    def get_info(self, url="", html=""):
+        info = super(SoundcloudCom, self).get_info(url, html)
+        # Unfortunately, NAME_PATTERN does not include file extension, so we add '.mp3' as an extension.
+        if "name" in info:
+            info["name"] += ".mp3"
+
+        return info
+
     def handle_free(self, pyfile):
         try:
-            song_id = re.search(r'sounds:(\d+)"', self.data).group(1)
-
-        except Exception:
-            self.error(self._("Could not find song id"))
-
-        try:
-            script = re.search(
-                r'<script(?:\s+[^>]+|\s+)src=(["\'])([^>]*/app-[^>]*\.js)\1', self.data
-            ).group(2)
-            self.data = self.load(script)
-            client_id = re.search(
-                r'\Wclient_id\s*:\s*(["\'])(\w+?)\1', self.data
-            ).group(2)
+            json_data = re.search(
+                r"<script>window\.__sc_hydration = (.+?);</script>", self.data
+            ).group(1)
 
         except (AttributeError, IndexError):
-            self.fail("Failed to retrieve client_id")
+            self.fail("Failed to retrieve json_data")
 
-        #: Url to retrieve the actual song url
-        html = self.load(
-            "https://api.soundcloud.com/tracks/{}/streams".format(song_id),
-            get={"client_id": client_id},
-        )
-        streams = json.loads(html)
+        hydra_table = {
+            table["hydratable"]: table["data"] for table in json.loads(json_data)
+        }
+        streams = [
+            s["url"]
+            for s in hydra_table["sound"]["media"]["transcodings"]
+            if s["format"]["protocol"] == "progressive"
+            and s["format"]["mime_type"] == "audio/mpeg"
+        ]
+        track_authorization = hydra_table["sound"]["track_authorization"]
 
-        _re = re.compile(r"[^\d]")
-        http_streams = sorted(
-            [(key, value) for key, value in streams.items() if key.startswith("http_")],
-            key=lambda t: _re.sub(t[0], ""),
-            reverse=True,
-        )
-
-        self.log_debug(f"Streams found: {http_streams or None}")
-
-        if http_streams:
-            stream_name, self.link = http_streams[
-                0 if self.config.get("quality") == "Higher" else -1
-            ]
-            pyfile.name += ".{}".format(stream_name.split("_")[1].lower())
+        if streams:
+            json_data = self.load(
+                streams[0],
+                get={
+                    "client_id": self.CLIENT_ID,
+                    "track_authorization": track_authorization,
+                },
+            )
+            self.link = json.loads(json_data).get("url")
