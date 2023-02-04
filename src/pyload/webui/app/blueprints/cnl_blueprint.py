@@ -60,7 +60,7 @@ def add():
         "package", flask.request.form.get("source", flask.request.form.get("referer"))
     )
 
-    urls = [url for url in flask.request.form["urls"].replace(' ', '\n').split("\n") if url.strip()]
+    urls = [url.strip() for url in unquote(flask.request.form["urls"]).replace(' ', '\n').split("\n") if url.strip()]
     if not urls:
         return "failed no urls\r\n", 500
 
