@@ -4,8 +4,7 @@ on:
   issue_comment:
     types: [created]
   schedule:
-    # Schedule for five minutes after the midnight, every day
-    - cron: "5 0 * * *"
+    - cron: "5 * * * *"
 
 jobs:
   noResponse:
@@ -14,23 +13,16 @@ jobs:
       - uses: lee-dohm/no-response@v0.5.0
         with:
           token: ${{ github.token }}
+          daysUntilClose: 14
+          responseRequiredLabel: "feedback wanted"
+          closeComment: >
+            **This ticket has been automatically closed**.
 
 
-# Number of days of inactivity before an Issue is closed for lack of response
-daysUntilClose: 14
+            This is because additional information has been requested,
+            but no response has been given in the last **2 weeks**.
 
-# Label requiring a response
-responseRequiredLabel: "feedback wanted"
-
-# Comment to post when closing an Issue for lack of response. Set to `false` to disable
-closeComment: >
-  **This ticket has been automatically closed**.
+            Feel free to reopen this ticket if you need.
 
 
-  This is because additional information has been requested,
-  but no response has been given in the last **2 weeks**.
-
-  Feel free to reopen this ticket if you need.
-
-
-  Thanks for your contributions.
+            Thanks for your contributions.
