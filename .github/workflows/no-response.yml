@@ -4,7 +4,7 @@ on:
   issue_comment:
     types: [created]
   schedule:
-    - cron: "5 * * * *"
+    - cron: "50 * * * *"
 
 jobs:
   noResponse:
