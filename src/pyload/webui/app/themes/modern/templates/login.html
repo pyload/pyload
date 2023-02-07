@@ -35,7 +35,11 @@
       <button type="submit" name="submit" value="Login" class="btn btn-primary">
         <span class="glyphicon glyphicon-log-in"></span> {{_('SIGN IN')}}
       </button>
-
+      {% if oidc_enabled %}
+      <button type="submit" name="submit" value="login_oidc" class="btn btn-secondary">
+        <span class="glyphicon glyphicon-link"></span> {{_('Sign in with oidc')}}
+      </button>
+      {% endif %}
     </div>
   </form>
 </div>

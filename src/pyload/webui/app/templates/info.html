@@ -73,5 +73,10 @@
         <td>{{ _("WebUI port:") }}</td>
         <td>{{ webif }}</td>
     </tr>
+{% if oidc_enabled and user.is_authenticated %}
+    <tr>
+        <td colspan="2"><a href="{{url_for('app.oidc')}}">{{ _("Connect OpenID") }}</a></td>
+    </tr>
+{% endif %}
 </table>
 {% endblock %}

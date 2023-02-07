@@ -5,8 +5,67 @@ from urllib.parse import unquote, urljoin, urlparse
 
 import flask
 import flask_themes2
+from flask_oidc import OpenIDConnect as BaseOpenIDConnect
 from pyload.core.api import Perms, Role, has_permission
 
+class OpenIDConfig:
+    map = {
+        "auth_uri": ["webui", "oidc_auth_uri"],
+        "userinfo_uri": ["webui", "oidc_userinfo_uri"],
+        "token_uri": ["webui", "oidc_token_uri"],
+        "client_id": ["webui", "oidc_client_id"],
+        "client_secret": ["webui", "oidc_client_secret"],
+        "issuer": ["webui", "oidc_issuer"]
+    }
+
+    def __init__(self, pyload):
+        self.pyload = pyload
+
+    def get_issuer(self):
+        config = self.pyload.config
+        scheme = "https" if config.get('webui', 'use_ssl') else "http"
+        host = config.get('webui', 'host')
+        port = config.get('webui', 'port')
+        port_str = "" if ((scheme == "https" and port == 443) or (scheme == "http" and port == 80)) else f":{port}"
+        return f"{scheme}://{host}{port_str}"
+
+    def get(self, key):
+        if key in ("revoke_uri",):
+            return None
+        if key in self.__class__.map.keys():
+            return self.pyload.config.get(*self.__class__.map.get(key))
+
+        raise KeyError
+
+    def __getitem__(self, item):
+        if type(item) == int:
+            keys = ["revoke_uri"]
+            for k in self.__class__.map.keys():
+                keys.append(k)
+            return self.get(keys[item])
+        return self.get(item)
+
+    def __iter__(self):
+        yield "revoke_uri"
+        for k in self.__class__.map.keys():
+            yield k
+
+    def __missing__(self, key):
+        pass
+    def __getattr__(self, item):
+        return self.get(item)
+
+
+class OpenIDConnect(BaseOpenIDConnect):
+    def __init__(self, pyload, app):
+        self.pyload = pyload
+        self.config = OpenIDConfig(pyload)
+        app.config.setdefault("OIDC_CLIENT_SECRETS", None)
+        app.config.setdefault("OIDC_CALLBACK_ROUTE", '/oidc_callback')
+        app.config.setdefault("OIDC_SCOPES", ['openid', 'dynamic'])
+        super().__init__(app)
+    def load_secrets(self, app):
+        return {"web": self.config}
 
 class JSONEncoder(flask.json.JSONEncoder):
     def default(self, obj):

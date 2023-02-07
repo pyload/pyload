@@ -1220,6 +1220,44 @@ class Api:
         """
         return True if self.check_auth(username, password) else False
 
+    def oidc_logout(self):
+        if self.pyload.oidc.user_loggedin:
+            self.pyload.oidc.logout()
+
+    def oidc_user_loggedin(self):
+        return self.pyload.oidc.user_loggedin
+
+    def oidc_redirect_to_auth_server(self, destination=None, customstate=None):
+        return self.pyload.oidc.redirect_to_auth_server(destination, customstate)
+
+    def openid_login(self):
+        field_name = self.pyload.config.get("webui", 'oidc_user_field')
+        if not field_name:
+            return None
+
+        if not self.oidc_user_loggedin():
+            return None
+
+        field = self.pyload.oidc.user_getfield(field_name)
+        if not field:
+            return None
+
+        return self.pyload.db.check_openid(field)
+
+    def openid_connect(self, user_id):
+        field_name = self.pyload.config.get("webui", 'oidc_user_field')
+        if not field_name:
+            return None
+
+        if not self.oidc_user_loggedin():
+            return None
+
+        field = self.pyload.oidc.user_getfield(field_name)
+        if not field:
+            return None
+
+        return self.pyload.db.connect_openid(user_id, field)
+
     @legacy("checkAuth")
     def check_auth(self, username, password):
         """

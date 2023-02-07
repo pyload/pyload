@@ -10,6 +10,7 @@ from urllib.parse import unquote
 import mimetypes
 
 import flask
+from functools import wraps
 
 from pyload import PKGDIR
 from pyload.core.utils import format
@@ -26,6 +27,8 @@ from ..helpers import (
     set_session,
     static_file_url,
 )
+
+from oauth2client.client import FlowExchangeError
 
 _RE_LOGLINE = re.compile(r"\[([\d\-]+) ([\d:]+)\] +([A-Z]+) +(.+?) (.*)")
 
@@ -58,15 +61,26 @@ def login():
     next = get_redirect_url(fallback=flask.url_for("app.dashboard"))
 
     if flask.request.method == "POST":
-        user = flask.request.form["username"]
-        password = flask.request.form["password"]
-        user_info = api.check_auth(user, password)
+        if flask.request.form['submit'] == 'login_oidc':
+            api = flask.current_app.config["PYLOAD_API"]
+            user_info = None
+            if api.oidc_user_loggedin():
+                user_info = api.openid_login()
+            else:
+                return api.oidc_redirect_to_auth_server(customstate={"next": flask.url_for("app.login", values={"check_oidc"})})
+
+        else:
+            user = flask.request.form["username"]
+            password = flask.request.form["password"]
+            user_info = api.check_auth(user, password)
 
         if not user_info:
             return render_template("login.html", next=next, errors=True)
 
         set_session(user_info)
         flask.flash("Logged in successfully")
+    elif flask.request.method == "GET" and 'oidc' in flask.request.values and not api.oidc_user_loggedin():
+        return render_template("login.html", next=next, errors=True)
 
     if is_authenticated():
         return flask.redirect(next)
@@ -90,6 +104,90 @@ def logout():
     clear_session()
     return render_template("logout.html")
 
+def require_oidc_login(view_func):
+    @wraps(view_func)
+    def decorated(*args, **kwargs):
+        api = flask.current_app.config["PYLOAD_API"]
+        wrapped = api.pyload.oidc.require_login(view_func, *args, **kwargs)
+        res = wrapped()
+        return res
+
+    return decorated
+
+def require_oidc_token(view_func):
+    def decorated(*args, **kwargs):
+        api = flask.current_app.config["PYLOAD_API"]
+        wrapped = api.pyload.oidc.accept_token()
+        res = wrapped(view_func)
+        return res
+
+    return decorated
+
+def register_oidc_custom_callback(view_func):
+    @wraps(view_func)
+    def decorated(*args, **kwargs):
+        api = flask.current_app.config["PYLOAD_API"]
+        wrapped = api.pyload.oidc.custom_callback(view_func, *args, **kwargs)
+
+    return decorated
+
+def oidc_custom_callback(view_func):
+    @wraps(view_func)
+    def decorated(*args, **kwargs):
+        api = flask.current_app.config["PYLOAD_API"]
+        wrapped = api.pyload.oidc.custom_callback(view_func, *args, **kwargs)
+        try:
+            res = wrapped()
+        except FlowExchangeError:
+            api.oidc_logout()
+            return view_func()
+        return res
+
+    return decorated
+
+@bp.route("/openid/login", endpoint="oidc_login")
+def openid_login():
+    api = flask.current_app.config["PYLOAD_API"]
+    logged_in = False
+    if api.oidc_user_loggedin():
+        logged_in = api.openid_login()
+    else:
+        return api.oidc_redirect_to_auth_server(customstate={"next": flask.url_for("app.login")})
+
+    if logged_in:
+        return flask.redirect(get_redirect_url(fallback=flask.url_for("app.dashboard")))
+    else:
+        flask.flash("Log-in failed", category="error")
+        return flask.redirect(get_redirect_url(fallback=flask.url_for("app.login")))
+
+@bp.route("/openid/connect", endpoint="oidc_connect")
+def openid_connect():
+    register_oidc_custom_callback(openid_custom_callback)()
+    api = flask.current_app.config["PYLOAD_API"]
+    if not api.oidc_user_loggedin():
+        return api.oidc_redirect_to_auth_server(customstate={"next": flask.url_for("app.oidc_connect")})
+    api = flask.current_app.config["PYLOAD_API"]
+    if not is_authenticated():
+        flask.redirect(get_redirect_url(fallback=flask.url_for("app.dashboard")))
+    user_id = flask.session.get('id')
+    api.openid_connect(user_id)
+    flask.flash("OpenId account linked", category="info")
+    return flask.redirect(get_redirect_url(fallback=flask.url_for("app.dashboard")))
+
+@bp.route("/oidc_callback", endpoint="oidc_callback")
+@oidc_custom_callback
+def openid_custom_callback(*args):
+    api = flask.current_app.config["PYLOAD_API"]
+    if is_authenticated() and api.oidc_user_loggedin():
+        try:
+            api.openid_connect()
+        except Exception:
+            flask.flash(message="Error linking OpenId", category="error")
+        return flask.redirect(get_redirect_url(fallback=flask.url_for("app.dashboard")))
+    elif api.openid_login():
+        return flask.redirect(get_redirect_url(fallback=flask.url_for("app.dashboard")))
+    else:
+        return flask.redirect(flask.url_for("app.login", oidc=1))
 
 @bp.route("/", endpoint="index")
 @bp.route("/home", endpoint="home")
@@ -461,5 +559,6 @@ def info():
         "freespace": format.size(api.free_space()),
         "webif": conf["webui"]["port"]["value"],
         "language": conf["general"]["language"]["value"],
+        "oidc_enabled": conf["webui"]["use_oidc"]["value"]
     }
     return render_template("info.html", **context)
