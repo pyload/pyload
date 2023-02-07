@@ -1,4 +1,20 @@
-# Configuration for probot-no-response - https://github.com/probot/no-response
+name: No Response
+
+on:
+  issue_comment:
+    types: [created]
+  schedule:
+    # Schedule for five minutes after the hour, every hour
+    - cron: '5 * * * *'
+
+jobs:
+  noResponse:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: lee-dohm/no-response@v0.5.0
+        with:
+          token: ${{ github.token }}
+
 
 # Number of days of inactivity before an Issue is closed for lack of response
 daysUntilClose: 14
