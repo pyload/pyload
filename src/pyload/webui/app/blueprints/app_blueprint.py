@@ -1,31 +1,22 @@
 # -*- coding: utf-8 -*-
 
 import datetime
+import mimetypes
 import operator
-import re
 import os
+import re
 import sys
 import time
+from logging import getLogger
 from urllib.parse import unquote
-import mimetypes
 
 import flask
-
-from pyload import PKGDIR
+from pyload import APPID, PKGDIR
 from pyload.core.utils import format
 
 from ..helpers import (
-    clear_session,
-    get_permission,
-    get_redirect_url,
-    is_authenticated,
-    login_required,
-    permlist,
-    render_base,
-    render_template,
-    set_session,
-    static_file_url,
-)
+    clear_session, get_permission, get_redirect_url, is_authenticated, login_required, permlist, render_base,
+    render_template, set_session, static_file_url)
 
 _RE_LOGLINE = re.compile(r"\[([\d\-]+) ([\d:]+)\] +([A-Z]+) +(.+?) (.*)")
 
@@ -54,6 +45,7 @@ def robots():
 @bp.route("/login", methods=["GET", "POST"], endpoint="login")
 def login():
     api = flask.current_app.config["PYLOAD_API"]
+    log = getLogger(APPID)
 
     next = get_redirect_url(fallback=flask.url_for("app.dashboard"))
 
@@ -63,9 +55,11 @@ def login():
         user_info = api.check_auth(user, password)
 
         if not user_info:
+            log.error(f"Login failed for user '{user}'")
             return render_template("login.html", next=next, errors=True)
 
         set_session(user_info)
+        log.info(f"User '{user}' successfully logged in")
         flask.flash("Logged in successfully")
 
     if is_authenticated():
@@ -86,8 +80,12 @@ def login():
 
 @bp.route("/logout", endpoint="logout")
 def logout():
-    # logout_user()
-    clear_session()
+    session=flask.session
+    log = getLogger(APPID)
+    user = session.get("name")
+    clear_session(session)
+    if user:
+        log.info(f"User '{user}' logged out")
     return render_template("logout.html")
 
 

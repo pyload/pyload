@@ -3,12 +3,14 @@
 import traceback
 from ast import literal_eval
 from itertools import chain
+from logging import getLogger
 from urllib.parse import unquote
 
 import flask
 from flask.json import jsonify
+from pyload import APPID
 
-from ..helpers import clear_session, login_required, set_session
+from ..helpers import clear_session, set_session
 
 bp = flask.Blueprint("api", __name__)
 
@@ -81,12 +83,15 @@ def login():
     password = flask.request.form["password"]
 
     api = flask.current_app.config["PYLOAD_API"]
+    log = getLogger(APPID)
     user_info = api.check_auth(user, password)
 
     if not user_info:
+        log.error(f"Login failed for user '{user}'")
         return jsonify(False)
 
     s = set_session(user_info)
+    log.info(f"User '{user}' successfully logged in")
     flask.flash("Logged in successfully")
 
     return jsonify(s)
@@ -95,6 +100,10 @@ def login():
 @bp.route("/api/logout", endpoint="logout")
 # @apiver_check
 def logout():
-    # logout_user()
-    clear_session()
+    session=flask.session
+    log = getLogger(APPID)
+    user = session.get("name")
+    clear_session(session)
+    if user:
+        log.info(f"User '{user}' logged out")
     return jsonify(True)
