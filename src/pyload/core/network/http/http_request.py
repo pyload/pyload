@@ -208,7 +208,7 @@ class HTTPRequest:
     def clear_cookies(self):
         self.c.setopt(pycurl.COOKIELIST, "")
 
-    def set_request_context(self, url, get, post, referer, cookies, multipart=False, decode=True):
+    def set_request_context(self, url, get, post, referer, cookies, multipart=False, decode=True, method=None):
         """
         sets everything needed for the request.
         """
@@ -226,6 +226,11 @@ class HTTPRequest:
 
         self.c.setopt(pycurl.URL, url)
         self.c.last_url = url
+
+        if method is not None:
+            self.c.setopt(pycurl.CUSTOMREQUEST, method)
+        else:
+            self.c.setopt(pycurl.CUSTOMREQUEST, None)
 
         if post:
             self.c.setopt(pycurl.POST, 1)
@@ -288,11 +293,12 @@ class HTTPRequest:
         decode=True,
         follow_location=True,
         save_cookies=True,
+        method=None
     ):
         """
         load and returns a given page.
         """
-        self.set_request_context(url, get, post, referer, cookies, multipart, decode)
+        self.set_request_context(url, get, post, referer, cookies, multipart, decode, method)
 
         self.response_header = b""
 
