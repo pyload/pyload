@@ -13,6 +13,7 @@ from pyload import APPID
 from ..helpers import clear_session, set_session
 
 bp = flask.Blueprint("api", __name__)
+log = getLogger(APPID)
 
 
 # accepting positional arguments, as well as kwargs via post and get
@@ -83,7 +84,6 @@ def login():
     password = flask.request.form["password"]
 
     api = flask.current_app.config["PYLOAD_API"]
-    log = getLogger(APPID)
     user_info = api.check_auth(user, password)
 
     if not user_info:
@@ -100,10 +100,9 @@ def login():
 @bp.route("/api/logout", endpoint="logout")
 # @apiver_check
 def logout():
-    session=flask.session
-    log = getLogger(APPID)
-    user = session.get("name")
-    clear_session(session)
+    s = flask.session
+    user = s.get("name")
+    clear_session(s)
     if user:
         log.info(f"User '{user}' logged out")
     return jsonify(True)
