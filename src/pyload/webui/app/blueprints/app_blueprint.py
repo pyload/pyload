@@ -376,7 +376,7 @@ def logs(start_line=-1):
         start_line = -1
 
     data = []
-    inpage_line = 0
+    inpage_counter = 0
     for counter, logline in enumerate(log_entries, start=1):
         if counter >= start_line:
             try:
@@ -405,12 +405,12 @@ def logs(start_line=-1):
                         "message": message.rstrip('\n'),
                     }
                 )
-                inpage_line += 1
+                inpage_counter += 1
                 if (
                     fro is None and dtime is not None
                 ):  #: if fro not set, set it to first showed line
                     fro = dtime
-            if inpage_line >= per_page > 0:
+            if inpage_counter >= per_page > 0:
                 break
 
     if fro is None:  #: still not set, empty log?
