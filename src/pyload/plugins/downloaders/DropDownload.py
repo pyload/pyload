@@ -6,7 +6,7 @@ from ..base.xfs_downloader import XFSDownloader
 class DropDownload(XFSDownloader):
     __name__ = "DropDownload"
     __type__ = "downloader"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?drop\.download/\w{12}"
