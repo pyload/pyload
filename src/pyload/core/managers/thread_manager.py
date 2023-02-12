@@ -119,7 +119,7 @@ class ThreadManager:
 
     def processing_ids(self):
         """
-        get a id list of all pyfiles processed.
+        get an id list of all pyfiles processed.
         """
         return [x.id for x in self.get_active_files()]
 
@@ -219,9 +219,9 @@ class ThreadManager:
         retrieve current ip.
         """
         services = [
-            ("http://icanhazip.com/", r"(\S+)"),
+            ("https://icanhazip.com/", r"(\S+)"),
             ("http://checkip.dyndns.org/", r".*Current IP Address: (\S+)</body>.*"),
-            ("http://ifconfig.io/ip", r"(\S+)"),
+            ("https://ifconfig.io/ip", r"(\S+)"),
         ]
 
         ip = ""
