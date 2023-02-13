@@ -328,7 +328,6 @@ class BaseAccount(BasePlugin):
 
         d = {
             "login": user,
-            "maxtraffic": None,
             "options": options or {"limit_dl": ["0"]},
             "password": password or "",
             "plugin": self.pyload.account_manager.get_account_plugin(self.classname),
