@@ -16,7 +16,7 @@ from .plugin import BasePlugin
 class BaseAccount(BasePlugin):
     __name__ = "BaseAccount"
     __type__ = "account"
-    __version__ = "0.86"
+    __version__ = "0.87"
     __status__ = "stable"
 
     __description__ = """Base account plugin"""
@@ -118,15 +118,17 @@ class BaseAccount(BasePlugin):
         raise NotImplementedError
 
     def login(self):
-        if not self.req:
+        self.clean()
+        self.sync()
+
+        self.info["login"]["stats"][0] += 1
+        if self.info["login"]["stats"][0] == 1:
             self.log_info(self._("Login user `{}`...").format(self.user))
         else:
             self.log_info(self._("Relogin user `{}`...").format(self.user))
-            self.clean()
 
         self.req = self.pyload.request_factory.get_request(self.classname, self.user)
 
-        self.sync()
         self.setup()
 
         timestamp = time.time()
@@ -189,7 +191,7 @@ class BaseAccount(BasePlugin):
             d = {"login": {}, "data": {}}
 
             for k, v in u.items():
-                if k in ("password", "timestamp", "valid"):
+                if k in ("password", "timestamp", "stats", "valid"):
                     d["login"][k] = v
                 else:
                     d["data"][k] = v
@@ -212,11 +214,9 @@ class BaseAccount(BasePlugin):
 
     def get_info(self, refresh=True):
         """
-        Retrieve account infos for an user, do **not** overwrite this method! just use
+        Retrieve account infos for a user, do **not** overwrite this method! just use
         it to retrieve infos in downloader plugins. see `grab_info`
 
-        :param user: username
-        :param relogin: reloads cached account information
         :return: dictionary with information
         """
         if not self.logged:
@@ -332,6 +332,7 @@ class BaseAccount(BasePlugin):
             "password": password or "",
             "plugin": self.pyload.account_manager.get_account_plugin(self.classname),
             "premium": None,
+            "stats": [0, 0],  #: login_count, chosen_time
             "timestamp": 0,
             "trafficleft": None,
             "type": self.__name__,
@@ -378,6 +379,9 @@ class BaseAccount(BasePlugin):
         premium_accounts = {}
 
         for user in self.accounts:
+            if not self.accounts[user]["plugin"].choose(user):
+                continue
+
             info = self.accounts[user]["plugin"].get_info()
             data = info["data"]
 
@@ -428,17 +432,12 @@ class BaseAccount(BasePlugin):
         if not account_list:
             return None, None
 
-        validuntil_list = [
-            (user, info) for user, info in account_list if info["data"]["validuntil"]
-        ]
+        #: Choose the oldest used account
+        chosen_account = sorted(account_list, key=lambda x: x[1]["login"]["stats"][1])[0]
+        self.accounts[chosen_account[0]]["stats"][1] = time.time()
 
-        if not validuntil_list:
-            # TODO: Random account?! Rewrite in 0.6.x
-            return random.choice(account_list)
-
-        return sorted(
-            validuntil_list, key=lambda a: a[1]["data"]["validuntil"], reverse=True
-        )[0]
+        self.log_debug("Using account {}".format(chosen_account[0][:3] + "*******"))
+        return chosen_account
 
     @lock
     def choose(self, user=None):
@@ -455,17 +454,19 @@ class BaseAccount(BasePlugin):
             )
             return False
 
-        if self.req and user == self.user:
-            return True
-
-        self.user = user
-        self.info.clear()
-        self.clean()
+        else:
+            if self.req and user == self.user:
+                return True
 
         if user is None:
             return False
 
         else:
+            self.user = user
+            self.info.clear()
+            self.req.close()
+            self.req = None
+
             if not self.logged:
                 self.relogin()
             else:
