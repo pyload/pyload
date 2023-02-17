@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import random
 import threading
 import time
 from datetime import timedelta
@@ -277,7 +276,8 @@ class BaseAccount(BasePlugin):
         for user.
 
         :param user:
-        :param req: `Request` instance
+        :param password:
+        :param data:
         :return:
         """
         raise NotImplementedError
