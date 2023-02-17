@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import random
 import threading
 import time
 
@@ -245,7 +244,8 @@ class Account(Plugin):
         and retrieving account information for user
 
         :param user:
-        :param req: `Request` instance
+        :param password:
+        :param data:
         :return:
         """
         pass
@@ -390,6 +390,7 @@ class Account(Plugin):
         if not account_list:
             return None, None
 
+        #: Choose the oldest used account
         chosen_account = sorted(account_list, key=lambda x: x[1]["login"]["stats"][1])[0]
         self.accounts[chosen_account[0]]["stats"][1] = time.time()
 
