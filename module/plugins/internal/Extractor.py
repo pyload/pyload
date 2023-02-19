@@ -22,7 +22,7 @@ class PasswordError(Exception):
 class Extractor(Plugin):
     __name__ = "Extractor"
     __type__ = "extractor"
-    __version__ = "0.49"
+    __version__ = "0.50"
     __status__ = "stable"
 
     __description__ = """Base extractor plugin"""
@@ -51,7 +51,7 @@ class Extractor(Plugin):
                     return ext
 
             elif isinstance(ext, tuple):
-                if re.search("\." + ext[1] + "$", name):
+                if re.search(r"\." + ext[1] + "$", name):
                     return ext[0]
         return None
 
