@@ -306,9 +306,7 @@ class BaseDownloader(BaseHoster):
                 ],
             )
 
-        dl_url = self.fixurl(url)
         dl_basename = parse.name(self.pyfile.name)
-
         self.pyfile.name = dl_basename
 
         self.check_duplicates()
