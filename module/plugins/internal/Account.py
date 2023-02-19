@@ -11,7 +11,7 @@ from .Plugin import Plugin, Skip
 class Account(Plugin):
     __name__ = "Account"
     __type__ = "account"
-    __version__ = "0.87"
+    __version__ = "0.88"
     __status__ = "stable"
 
     __description__ = """Base account plugin"""
@@ -422,13 +422,10 @@ class Account(Plugin):
             self.user = user
             self.info.clear()
             self.req.close()
-            self.req = None
+            self.req = self.pyload.requestFactory.getRequest(self.classname, self.user)
 
             if not self.logged:
                 self.relogin()
-            else:
-                self.req = self.pyload.requestFactory.getRequest(
-                    self.classname, self.user)
 
             return True
 
