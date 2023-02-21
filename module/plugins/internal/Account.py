@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 
+import copy
 import threading
 import time
 
-from .misc import (Periodical, compare_time, decode, isiterable, lock,
-                   parse_size)
+from .misc import Periodical, compare_time, decode, isiterable, lock, parse_size
 from .Plugin import Plugin, Skip
 
 
 class Account(Plugin):
     __name__ = "Account"
     __type__ = "account"
-    __version__ = "0.88"
+    __version__ = "0.89"
     __status__ = "stable"
 
     __description__ = """Base account plugin"""
@@ -341,6 +341,10 @@ class Account(Plugin):
 
     @lock
     def select(self):
+        def hide(secret):
+            hidden = secret[:3] + "*******"
+            return hidden
+
         free_accounts = {}
         premium_accounts = {}
 
@@ -365,25 +369,25 @@ class Account(Plugin):
 
                 except Exception:
                     self.log_warning(_("Invalid time format `%s` for account `%s`, use 1:22-3:44")
-                                     % (user, time_data))
+                                     % (hide(user), time_data))
 
             if data['trafficleft'] == 0:
                 self.log_warning(
                     _("Not using account `%s` because the account has no traffic left") %
-                    user)
+                    hide(user))
                 continue
 
             if time.time() > data['validuntil'] > 0:
                 self.log_warning(
                     _("Not using account `%s` because the account has expired") %
-                    user)
+                    hide(user))
                 continue
 
             if data['premium']:
-                premium_accounts[user] = info
+                premium_accounts[user] = copy.copy(info)
 
             else:
-                free_accounts[user] = info
+                free_accounts[user] = copy.copy(info)
 
         account_list = (premium_accounts or free_accounts).items()
 
@@ -394,7 +398,7 @@ class Account(Plugin):
         chosen_account = sorted(account_list, key=lambda x: x[1]["login"]["stats"][1])[0]
         self.accounts[chosen_account[0]]["stats"][1] = time.time()
 
-        self.log_debug("Using account %s" % (chosen_account[0][:3] + "*******"))
+        self.log_debug("Using account %s" % (hide(chosen_account[0])))
         return chosen_account
 
     @lock
