@@ -21,7 +21,7 @@ class TurbobitNet(BaseAccount):
 
     LOGIN_FAIL_PATTERN = r">(?:E-Mail address appears to be invalid\. Please try again|Incorrect login or password)</div>"
 
-    @Account.logged.getter
+    @BaseAccount.logged.getter
     def logged(self):
         if super(TurbobitNet, self).logged is False:
             return False
