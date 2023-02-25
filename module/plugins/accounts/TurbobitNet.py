@@ -10,7 +10,7 @@ from ..internal.misc import parse_html_form, set_cookie
 class TurbobitNet(Account):
     __name__ = "TurbobitNet"
     __type__ = "account"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __status__ = "testing"
 
     __description__ = """TurbobitNet account plugin"""
@@ -19,6 +19,14 @@ class TurbobitNet(Account):
                    ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
     LOGIN_FAIL_PATTERN = r'>(?:E-Mail address appears to be invalid\. Please try again|Incorrect login or password)</div>'
+
+    @Account.logged.getter
+    def logged(self):
+        if super(TurbobitNet, self).logged is False:
+            return False
+
+        self.data = self.load("https://turbobit.net/")
+        return re.search(r'>Turbo access till ([\d.]+)<', self.data) is not None
 
     def grab_info(self, user, password, data):
         html = self.load("https://turbobit.net/")
