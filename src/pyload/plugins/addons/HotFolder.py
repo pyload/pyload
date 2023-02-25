@@ -4,12 +4,13 @@ import shutil
 import time
 
 from ..base.addon import BaseAddon
+from ...core.datatypes.enums import Destination
 
 
 class HotFolder(BaseAddon):
     __name__ = "HotFolder"
     __type__ = "addon"
-    __version__ = "0.26"
+    __version__ = "0.27"
     __status__ = "testing"
 
     __config__ = [
@@ -18,7 +19,10 @@ class HotFolder(BaseAddon):
         ("watchfile", "bool", "Watch link file", False),
         ("delete", "bool", "Delete added containers", False),
         ("file", "str", "Link file", "links.txt"),
-        ("interval", "int", "File / folder check interval in seconds (minimum 20)", 60)
+        ("interval", "int", "File / folder check interval in seconds (minimum 20)", 60),
+        ("enable_extension_filter", "bool", "Extension filter", False),
+        ("extension_filter", "str", "Extensions to look for (comma separated)", "dlc"),
+        ("add_to", "Packages;Queue", "Add files to", "Queue"),
     ]
 
     __description__ = (
@@ -31,12 +35,25 @@ class HotFolder(BaseAddon):
     ]
 
     def activate(self):
-        interval = max(self.config.get('interval'), 20)
+        self.extensions = None
+        if self.config.get("enable_extension_filter"):
+            extension_filter = self.config.get("extension_filter")
+            self.extensions = [s.strip() for s in extension_filter.split(",")]
+            self.log_info(
+                self._("Watching only for extensions {}").format(self.extensions)
+            )
+
+        interval = max(self.config.get("interval"), 20)
         self.periodical.start(interval, threaded=True)
 
     def periodical_task(self):
         watch_folder = os.fsdecode(self.config.get("folder"))
         watch_file = os.fsdecode(self.config.get("file"))
+        add_to = (
+            Destination.COLLECTOR
+            if self.config.get("add_to") == "Packages"
+            else Destination.QUEUE
+        )
 
         try:
             if not os.path.isdir(os.path.join(watch_folder, "finished")):
@@ -51,12 +68,16 @@ class HotFolder(BaseAddon):
                     fp = open(watch_file, mode="w")
                     fp.close()
 
-                    name = "{}_{}.txt".format(watch_file, time.strftime("%H-%M-%S_%d%b%Y"))
+                    name = "{}_{}.txt".format(
+                        watch_file, time.strftime("%H-%M-%S_%d%b%Y")
+                    )
 
-                    with open(os.path.join(watch_folder, "finished", name), mode="w") as fp:
+                    with open(
+                        os.path.join(watch_folder, "finished", name), mode="w"
+                    ) as fp:
                         fp.write(content)
 
-                    self.pyload.api.add_package(name, [fp.name], 1)
+                    self.pyload.api.add_package(name, [fp.name], add_to)
 
             for entry in os.listdir(watch_folder):
                 entry_file = os.path.join(watch_folder, entry)
@@ -70,6 +91,12 @@ class HotFolder(BaseAddon):
                 ):
                     continue
 
+                if self.extensions is not None:
+                    extension = os.path.splitext(entry)[1]
+                    # Note that extension contains the leading dot
+                    if len(extension) == 0 or extension[1:] not in self.extensions:
+                        continue
+
                 new_path = os.path.join(
                     watch_folder,
                     "finished",
@@ -78,7 +105,7 @@ class HotFolder(BaseAddon):
                 shutil.move(entry_file, new_path)
 
                 self.log_info(self._("Added {} from HotFolder").format(entry))
-                self.pyload.api.add_package(entry, [new_path], 1)
+                self.pyload.api.add_package(entry, [new_path], add_to)
 
         except (IOError, OSError) as exc:
             self.log_error(

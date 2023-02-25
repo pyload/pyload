@@ -20,6 +20,7 @@ class PluginThread(Thread):
         Constructor.
         """
         super().__init__()
+        self.active = False
         self.daemon = True
         self.pyload = manager.pyload
         self._ = manager._
@@ -27,9 +28,9 @@ class PluginThread(Thread):
 
     def write_debug_report(self, pyfile):
         """
-        writes a.
+        writes a debug report.
 
-        :return:
+        :return:``
         """
         date = time.strftime("%Y-%m-%d_%H-%M-%S")
         dump_name = f"debug_{pyfile.pluginname}_{date}.zip"
@@ -129,7 +130,7 @@ class PluginThread(Thread):
 
     def clean(self, pyfile):
         """
-        set thread unactive and release pyfile.
+        set thread as inactive and release pyfile.
         """
         self.active = False
         pyfile.release()

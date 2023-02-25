@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from itertools import chain
 from threading import RLock
 
 from ..datatypes.enums import Destination
@@ -374,10 +375,12 @@ class FileManager:
         if "decrypt" in self.job_cache:
             return None
 
-        plugins = list(self.pyload.plugin_manager.crypter_plugins.keys()) + list(
-            self.pyload.plugin_manager.container_plugins.keys()
+        plugins = tuple(
+            chain(
+                self.pyload.plugin_manager.decrypter_plugins.keys(),
+                self.pyload.plugin_manager.container_plugins.keys(),
+            )
         )
-        plugins = tuple(plugins)
 
         jobs = self.pyload.db.get_plugin_job(plugins)
         if jobs:

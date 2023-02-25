@@ -107,7 +107,7 @@ class IRC(ChatBot):
             url = re.search(r"src='([^']+)'", html).group(1)
             self.response(self._("New Captcha Request: {}").format(url))
             self.response(
-                self._("Answer with 'c {} text on the captcha'").format(task.id)
+                self._("Answer with 'ca {} text on the captcha'").format(task.id)
             )
 
     def run(self):

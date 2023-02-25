@@ -27,7 +27,6 @@ class AccountInfo(AbstractData):
         "options",
         "valid",
         "trafficleft",
-        "maxtraffic",
         "premium",
         "type",
     ]
@@ -39,7 +38,6 @@ class AccountInfo(AbstractData):
         options=None,
         valid=None,
         trafficleft=None,
-        maxtraffic=None,
         premium=None,
         type=None,
     ):
@@ -48,7 +46,6 @@ class AccountInfo(AbstractData):
         self.options = options
         self.valid = valid
         self.trafficleft = trafficleft
-        self.maxtraffic = maxtraffic
         self.premium = premium
         self.type = type
 

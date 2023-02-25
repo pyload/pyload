@@ -10,7 +10,7 @@ from .simple_downloader import SimpleDownloader
 class MultiDownloader(SimpleDownloader):
     __name__ = "MultiDownloader"
     __type__ = "downloader"
-    __version__ = "0.71"
+    __version__ = "0.72"
     __status__ = "stable"
 
     __pattern__ = r"^unmatchable$"
@@ -39,7 +39,7 @@ class MultiDownloader(SimpleDownloader):
         return super(SimpleDownloader, self).get_info(url, html)
 
     def init(self):
-        self.PLUGIN_NAME = self.pyload.plugin_manager.hoster_plugins.get(
+        self.PLUGIN_NAME = self.pyload.plugin_manager.downloader_plugins.get(
             self.classname
         )["name"]
 
@@ -61,7 +61,8 @@ class MultiDownloader(SimpleDownloader):
 
         if self.pyfile.pluginname != self.__name__:
             overwritten_plugin = self.pyload.plugin_manager.load_class("downloader", self.pyfile.pluginname)
-            self.pyfile.url = replace_patterns(self.pyfile.url, overwritten_plugin.URL_REPLACEMENTS)
+            if overwritten_plugin is not None:
+                self.pyfile.url = replace_patterns(self.pyfile.url, overwritten_plugin.URL_REPLACEMENTS)
 
         if self.DIRECT_LINK is None:
             self.direct_dl = self.__pattern__ != r'^unmatchable$' and re.match(
@@ -76,7 +77,7 @@ class MultiDownloader(SimpleDownloader):
             super()._process(thread)
 
         except Fail as exc:
-            hdict = self.pyload.plugin_manager.hoster_plugins.get(
+            hdict = self.pyload.plugin_manager.downloader_plugins.get(
                 self.pyfile.pluginname, {}
             )
             if self.config.get("revert_failed", True) and hdict.get("new_module"):

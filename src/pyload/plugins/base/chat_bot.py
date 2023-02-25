@@ -11,7 +11,7 @@ from .addon import BaseAddon
 class ChatBot(Thread, BaseAddon):
     __name__ = "ChatBot"
     __type__ = "addon"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
     __config__ = [
@@ -25,6 +25,7 @@ class ChatBot(Thread, BaseAddon):
     SHORTCUT_COMMANDS = {
         "a": "add",
         "c": "collector",
+        "ca": "captcha",
         "f": "freespace",
         "h": "help",
         "i": "info",
@@ -65,19 +66,19 @@ class ChatBot(Thread, BaseAddon):
         raise NotImplementedError
 
     def do_bot_command(self, cmd, args):
-        cmd = self.SHORTCUT_COMMANDS.get(cmd, cmd)
+        cmd = self.SHORTCUT_COMMANDS.get(cmd.lower(), cmd.lower())
         handler = getattr(self, "_cmd_{}".format(cmd), self._cmd_error)
         return handler(args)
 
     def _cmd_error(self, args):
-        return ["ERROR: invalid command, for a list of commands enter: help"]
+        return [self._("ERROR: invalid command, for a list of commands enter: help")]
 
     def _cmd_status(self, args):
         downloads = self.pyload.api.status_downloads()
         if not downloads:
-            return ["INFO: There are no active downloads currently."]
+            return [self._("INFO: There are no active downloads currently.")]
 
-        lines = ["ID - Name - Status - Speed - ETA - Progress"]
+        lines = [self._("ID - Name - Status - Speed - ETA - Progress")]
         for data in downloads:
             if data.status == 5:
                 temp_progress = data.format_wait
@@ -100,7 +101,7 @@ class ChatBot(Thread, BaseAddon):
         packages = self.pyload.api.get_queue_data()
 
         if not packages:
-            return ["INFO: There are no packages in queue."]
+            return [self._("INFO: There are no packages in queue.")]
 
         lines = []
         for pack in packages:
@@ -115,7 +116,7 @@ class ChatBot(Thread, BaseAddon):
     def _cmd_collector(self, args):
         packages = self.pyload.api.get_collector_data()
         if not packages:
-            return ["INFO: No packages in collector!"]
+            return [self._("INFO: No packages in collector!")]
 
         lines = []
         for pack in packages:
@@ -128,44 +129,58 @@ class ChatBot(Thread, BaseAddon):
         return lines
 
     def _cmd_info(self, args):
-        if not args:
-            return ["ERROR: Use info like this: info <id>"]
+        try:
+            file_id = int(args[0])
+
+        except IndexError:
+            return [
+                self._("ERROR: Missing argument"),
+                self._("Use info command like this: info <link id>"),
+            ]
+
+        except ValueError:
+            return [self._("ERROR: invalid link id {}").format(args[0])]
 
         try:
-            info = self.pyload.api.get_file_data(int(args[0]))
+            info = self.pyload.api.get_file_data(int(file_id))
 
         except FileDoesNotExists:
-            return ["ERROR: Link doesn't exists."]
+            return [self._("ERROR: Link doesn't exists.")]
 
         return [
-            "LINK #{}: {} ({}) [{}][{}]".format(
+            self._("LINK #{}: {} ({}) [{}][{}]").format(
                 info.fid, info.name, info.format_size, info.statusmsg, info
             )
         ]
 
     def _cmd_packinfo(self, args):
-        if not args:
-            return ["ERROR: Use packinfo like this: packinfo <name|id>"]
+        try:
+            id_or_name = args[0]
+
+        except IndexError:
+            return [
+                self._("ERROR: Missing argument"),
+                self._("ERROR: Use packinfo like this: packinfo <name|id>"),
+            ]
 
         lines = []
-        id_or_name = args[0]
+
         pack = self._get_package_by_name_or_id(id_or_name)
         if not pack:
-            return ["ERROR: Package doesn't exists."]
+            return [self._("ERROR: Package doesn't exists.")]
 
         self.more = []
 
         lines.append(
-            'PACKAGE #{}: "{}" with {} links'.format(pack.pid, pack.name, len(pack.links))
+            'PACKAGE #{}: "{}" with {} links:'.format(pack.pid, pack.name, len(pack.links))
         )
         for pyfile in pack.links:
             self.more.append(
-                "LINK #{}: {} ({}) [{}][{}]".format(
+                "LINK #{}: {} ({}) [{}]".format(
                     pyfile.fid,
                     pyfile.name,
                     pyfile.format_size,
                     pyfile.statusmsg,
-                    pyfile,
                 )
             )
 
@@ -181,7 +196,7 @@ class ChatBot(Thread, BaseAddon):
 
     def _cmd_more(self, args):
         if not self.more:
-            return ["No more information to display."]
+            return [self._("No more information to display.")]
 
         lines = self.more[:self.max_lines]
         self.more = self.more[self.max_lines:]
@@ -191,23 +206,23 @@ class ChatBot(Thread, BaseAddon):
 
     def _cmd_unpause(self, args):
         self.pyload.api.unpause_server()
-        return ["INFO: Starting downloads."]
+        return [self._("INFO: Starting downloads.")]
 
     def _cmd_pause(self, args):
         self.pyload.api.pause_server()
-        return ["INFO: No new downloads will be started."]
+        return [self._("INFO: No new downloads will be started.")]
 
     def _cmd_togglepause(self, args):
         if self.pyload.api.toggle_pause():
-            return ["INFO: Starting downloads."]
+            return [self._("INFO: Starting downloads.")]
         else:
-            return ["INFO: No new downloads will be started."]
+            return [self._("INFO: No new downloads will be started.")]
 
     def _cmd_add(self, args):
         if len(args) < 2:
             return [
-                'ERROR: Add links like this: "add <packagename|id> links". ',
-                "This will add the link <link> to to the package <package> / the package with id <id>!",
+                self._('ERROR: Add links like this: "add <name|id> link(s)". '),
+                self._("This will add the link <link> to to the package name <name> / the package with id <id>!"),
             ]
 
         id_or_name = args[0].strip()
@@ -218,14 +233,14 @@ class ChatBot(Thread, BaseAddon):
             #: Create new package
             id = self.pyload.api.add_package(id_or_name, links, 1)
             return [
-                "INFO: Created new Package {} [#{}] with {} links.".format(
+                self._("INFO: Created new Package {} [#{}] with {} links.").format(
                     id_or_name, id, len(links)
                 )
             ]
 
         self.pyload.api.add_files(pack.pid, links)
         return [
-            "INFO: Added {} links to Package {} [#{}]".format(
+            self._("INFO: Added {} links to Package {} [#{}]").format(
                 len(links), pack.name, pack.pid
             )
         ]
@@ -233,93 +248,126 @@ class ChatBot(Thread, BaseAddon):
     def _cmd_del(self, args):
         if len(args) < 2:
             return [
-                "ERROR: Use del command like this: del -p|-l <id> [...] (-p indicates that the ids are from packages, -l indicates that the ids are from links)"
+                self._("ERROR: Use del command like this: del -p|-l <id> [...]"),
+                self._("(-p indicates that the ids are from packages,"),
+                self._("-l indicates that the ids are from links"),
             ]
 
         if args[0] == "-p":
             ret = self.pyload.api.delete_packages(int(arg) for arg in args[1:])
-            return ["INFO: Deleted {} packages!".format(len(args[1:]))]
+            return [self._("INFO: Deleted {} packages!").format(len(args[1:]))]
 
         elif args[0] == "-l":
             ret = self.pyload.api.del_links(int(arg) for arg in args[1:])
-            return ["INFO: Deleted {} links!".format(len(args[1:]))]
+            return [self._("INFO: Deleted {} links!").format(len(args[1:]))]
 
         else:
             return [
-                "ERROR: Use del command like this: del <-p|-l> <id> [...] (-p indicates that the ids are from packages, -l indicates that the ids are from links)"
+                self._("ERROR: Use del command like this: del <-p|-l> <id> [...]"),
+                self._("-p indicates that the ids are from packages,"),
+                self._("-l indicates that the ids are from links"),
             ]
 
     def _cmd_push(self, args):
-        if not args:
-            return ["ERROR: Push package to queue like this: push <package id>"]
+        try:
+            package_id = int(args[0])
 
-        package_id = int(args[0])
+        except IndexError:
+            return [
+                self._("ERROR: Missing argument"),
+                self._("Push package to queue like this: push <package id>")
+            ]
+
+        except ValueError:
+            return [self._("ERROR: invalid package id {}").format(args[0])]
+
         try:
             self.pyload.api.get_package_info(package_id)
+
         except PackageDoesNotExists:
-            return ["ERROR: Package #{} does not exist.".format(package_id)]
+            return [self._("ERROR: Package #{} does not exist.").format(package_id)]
 
         self.pyload.api.push_to_queue(package_id)
-        return ["INFO: Pushed package #{} to queue.".format(package_id)]
+        return [self._("INFO: Pushed package #{} to queue.").format(package_id)]
 
     def _cmd_pull(self, args):
-        if not args:
-            return ["ERROR: Pull package from queue like this: pull <package id>."]
+        try:
+            package_id = int(args[0])
 
-        package_id = int(args[0])
+        except IndexError:
+            return [
+                self._("ERROR: Missing argument"),
+                self._("Pull package from queue like this: pull <package id>"),
+            ]
+
+        except ValueError:
+            return [self._("ERROR: invalid package id {}").format(args[0])]
+
         if not self.pyload.api.get_package_data(package_id):
-            return ["ERROR: Package #{} does not exist.".format(package_id)]
+            return [self._("ERROR: Package #{} does not exist.").format(package_id)]
 
         self.pyload.api.pull_from_queue(package_id)
-        return ["INFO: Pulled package #{} from queue to collector.".format(package_id)]
+        return [self._("INFO: Pulled package #{} from queue to collector.").format(package_id)]
 
-    def _cmd_c(self, args):
+    def _cmd_captcha(self, args):
         """
         Captcha answer.
         """
         if not args:
-            return ["ERROR: Captcha ID missing."]
+            return [self._("ERROR: Captcha ID missing.")]
 
         task = self.pyload.captcha_manager.get_task_by_id(args[0])
         if not task:
-            return ["ERROR: Captcha Task with ID {} does not exists.".format(args[0])]
+            return [self._("ERROR: Captcha Task with ID {} does not exists.").format(args[0])]
 
         task.set_result(" ".join(args[1:]))
-        return ["INFO: Result {} saved.".format(" ".join(args[1:]))]
+        return [self._("INFO: Result {} saved.").format(" ".join(args[1:]))]
 
     def _cmd_freespace(self, args):
         b = format.size(int(self.pyload.api.free_space()))
-        return ["INFO: Free space is {}.".format(b)]
+        return [self._("INFO: Free space is {}.").format(b)]
 
     def _cmd_restart(self, args):
         self.pyload.api.restart()
-        return ["INFO: Done."]
+        return [self._("INFO: Done.")]
 
     def _cmd_restartfailed(self, args):
         self.pyload.api.restart_failed()
-        return ["INFO: Restarting all failed downloads."]
+        return [self._("INFO: Restarting all failed downloads.")]
 
     def _cmd_restartfile(self, args):
-        if not args:
-            return ['ERROR: missing argument']
-        id = int(args[0])
-        if not self.pyload.api.get_file_data(id):
-            return ["ERROR: File #{} does not exist.".format(id)]
-        self.pyload.api.restart_file(id)
-        return ["INFO: Restart file #{}.".format(id)]
+        try:
+            file_id = int(args[0])
+
+        except IndexError:
+            return [
+                self._("ERROR: Missing argument"),
+                self._("Use restartfile command like this: pull <package id>"),
+            ]
+
+        except ValueError:
+            return [self._("ERROR: Invalid file id")]
+
+        if not self.pyload.api.get_file_data(file_id):
+            return [self._("ERROR: File #{} does not exist.").format(file_id)]
+
+        self.pyload.api.restart_file(file_id)
+        return [self._("INFO: Restart file #{}.").format(file_id)]
 
     def _cmd_restartpackage(self, args):
-        if not args:
-            return ['ERROR: missing argument']
-        id_or_name = args[0]
+        try:
+            id_or_name = args[0]
+        except IndexError:
+            return [self._("ERROR: missing argument")]
+
         pack = self._get_package_by_name_or_id(id_or_name)
         if not pack:
-            return ["ERROR: Package #{} does not exist.".format(id_or_name)]
+            return [self._("ERROR: Package {} does not exist.").format(id_or_name)]
         self.pyload.api.restart_package(pack.pid)
-        return ["INFO: Restart package {} (#{}).".format(pack.name, pack.pid)]
+        return [self._("INFO: Restart package {} (#{}).").format(pack.name, pack.pid)]
 
     def _cmd_deletefinished(self, args):
-        return ["INFO: Deleted package ids: {}.".format(self.pyload.api.delete_finished())]
+        return [self._("INFO: Deleted package ids: {}.").format(self.pyload.api.delete_finished())]
 
     def _cmd_getlog(self, args):
         """Returns most recent log entries."""
@@ -353,6 +401,7 @@ class ChatBot(Thread, BaseAddon):
         lines = [
             "The following commands are available:",
             "add <package|packid> <links> [...] Adds link to package. (creates new package if it does not exist)",
+            "captcha <id> <answer>              Solve a captcha task with id <id>",
             "collector                          Shows all packages in collector",
             "del -p|-l <id> [...]               Deletes all packages|links with the ids specified",
             "deletefinished                     Deletes all finished files and completly finished packages",
@@ -375,7 +424,10 @@ class ChatBot(Thread, BaseAddon):
             "unpause                            Starts all downloads"
         ]
         lines.append("Shortcuts:")
-        lines.append(", ".join(cmd_short + ": " + cmd_long for cmd_short, cmd_long in self.SHORTCUT_COMMANDS.items()))
+        lines.append(", ".join(
+            cmd_short + ": " + cmd_long
+            for cmd_short, cmd_long in self.SHORTCUT_COMMANDS.items())
+        )
 
         return lines
 

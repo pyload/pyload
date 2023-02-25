@@ -11,7 +11,7 @@ from .plugin import BasePlugin
 class BaseCaptcha(BasePlugin):
     __name__ = "BaseCaptcha"
     __type__ = "anticaptcha"
-    __version__ = "0.59"
+    __version__ = "0.60"
     __status__ = "stable"
 
     __description__ = """Base anti-captcha plugin"""
@@ -120,6 +120,7 @@ class BaseCaptcha(BasePlugin):
                     "file": img_f.name,
                     "captcha_plugin": self.__name__,
                     "plugin": self.pyfile.plugin.__name__,
+                    "url": self.pyfile.url,
                 }
                 self.task = captcha_manager.new_task(input_type, params, output_type)
 
@@ -164,7 +165,11 @@ class BaseCaptcha(BasePlugin):
 
         try:
             params.update(
-                {"captcha_plugin": self.__name__, "plugin": self.pyfile.plugin.__name__}
+                {
+                    "captcha_plugin": self.__name__,
+                    "plugin": self.pyfile.plugin.__name__,
+                    "url": self.pyfile.url,
+                }
             )
             self.task = captcha_manager.new_task("interactive", params, "interactive")
 
@@ -204,7 +209,11 @@ class BaseCaptcha(BasePlugin):
 
         try:
             params.update(
-                {"captcha_plugin": self.__name__, "plugin": self.pyfile.plugin.__name__}
+                {
+                    "captcha_plugin": self.__name__,
+                    "plugin": self.pyfile.plugin.__name__,
+                    "url": self.pyfile.url,
+                }
             )
             self.task = captcha_manager.new_task("invisible", params, "invisible")
 

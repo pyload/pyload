@@ -46,7 +46,7 @@ class Scheduler:
 
     def remove_job(self, d):
         """
-        :param d: defered object
+        :param d: deferred object
         :return: if job was deleted
         """
         index = -1

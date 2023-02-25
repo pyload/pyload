@@ -18,7 +18,7 @@ from ..base.downloader import BaseDownloader
 class GoogledriveCom(BaseDownloader):
     __name__ = "GoogledriveCom"
     __type__ = "downloader"
-    __version__ = "0.32"
+    __version__ = "0.33"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?(?:drive|docs)\.google\.com/(?:file/d/|uc\?.*id=)(?P<ID>[-\w]+)"
@@ -100,7 +100,9 @@ class GoogledriveCom(BaseDownloader):
         disposition = False
         self.data = self.load(pyfile.url)
         json_data = self.api_request(
-            "files/" + self.info["pattern"]["ID"], fields="md5Checksum,name,size"
+            "files/" + self.info["pattern"]["ID"],
+            fields="md5Checksum,name,size",
+            supportsAllDrives="true",
         )
 
         if json_data is None:

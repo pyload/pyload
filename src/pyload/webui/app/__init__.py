@@ -60,10 +60,15 @@ class App:
     @classmethod
     def _configure_handlers(cls, app):
         """
-        Register error handlers.
+        Register app handlers.
         """
         for exc, fn in cls.FLASK_ERROR_HANDLERS:
             app.register_error_handler(exc, fn)
+
+        @app.after_request
+        def deny_iframe(response):
+            response.headers["X-Frame-Options"] = "DENY"
+            return response
 
     @classmethod
     def _configure_json_encoding(cls, app):
@@ -78,7 +83,7 @@ class App:
 
         app.create_jinja_environment()
 
-        # NOTE: enable autoescape for all file extensions (included .js)
+        # NOTE: enable auto escape for all file extensions (including .js)
         #       maybe this will break .txt rendering, but we don't render this kind of files actually
         #       that does not change 'default_for_string=False' (by default)
         app.jinja_env.autoescape = jinja2.select_autoescape(default=True)
@@ -102,6 +107,7 @@ class App:
         app.config["SESSION_FILE_DIR"] = cache_path
         app.config["SESSION_TYPE"] = "filesystem"
         app.config["SESSION_COOKIE_NAME"] = "pyload_session"
+        app.config["SESSION_COOKIE_SECURE"] = app.config["PYLOAD_API"].get_config_value("webui", "use_ssl")
         app.config["SESSION_PERMANENT"] = False
 
         session_lifetime = max(app.config["PYLOAD_API"].get_config_value("webui", "session_lifetime"), 1) * 60

@@ -2,8 +2,9 @@
 
 from ..datatypes.pyfile import PyFile
 from ..datatypes.pypackage import PyPackage
-from ..utils.struct.style import style
 from ..utils import format
+from ..utils.struct.style import style
+from ..utils.web import parse
 
 
 class FileDatabaseMethods:
@@ -32,7 +33,7 @@ class FileDatabaseMethods:
     @style.queue
     def processcount(self, queue, fid):
         """
-        number of files which have to be proccessed.
+        number of files which have to be processed.
         """
         self.c.execute(
             "SELECT COUNT(*) FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE p.queue=? AND l.status IN (2,3,5,7,12) AND l.id != ?",
@@ -43,18 +44,18 @@ class FileDatabaseMethods:
     @style.inner
     def _next_package_order(self, queue=0):
         self.c.execute("SELECT MAX(packageorder) FROM packages WHERE queue=?", (queue,))
-        max = self.c.fetchone()[0]
-        if max is not None:
-            return max + 1
+        max_order = self.c.fetchone()[0]
+        if max_order is not None:
+            return max_order + 1
         else:
             return 0
 
     @style.inner
     def _next_file_order(self, package):
         self.c.execute("SELECT MAX(linkorder) FROM links WHERE package=?", (package,))
-        max = self.c.fetchone()[0]
-        if max is not None:
-            return max + 1
+        max_order = self.c.fetchone()[0]
+        if max_order is not None:
+            return max_order + 1
         else:
             return 0
 
@@ -70,11 +71,11 @@ class FileDatabaseMethods:
     @style.queue
     def add_links(self, links, package):
         """
-        links is a list of tupels (url,plugin)
+        links is a list of tuples (url,plugin)
         """
         order = self._next_file_order(package)
         orders = [order + x for x in range(len(links))]
-        links = [(x[0], x[0], x[1], package, o) for x, o in zip(links, orders)]
+        links = [(x[0], parse.name(x[0]), x[1], package, o) for x, o in zip(links, orders)]
         self.c.executemany(
             "INSERT INTO links(url, name, plugin, package, linkorder) VALUES(?,?,?,?,?)",
             links,
@@ -147,8 +148,9 @@ class FileDatabaseMethods:
         """
         return information about packages in queue q (only useful in get all data)
 
-        q0 queue
-        q1 collector
+        q:
+          0: queue
+          1: packages
 
         format:
 
@@ -191,22 +193,24 @@ class FileDatabaseMethods:
             "SELECT id,url,name,size,status,error,plugin,package,linkorder FROM links WHERE id=?",
             (str(id),),
         )
-        data = {}
         r = self.c.fetchone()
         if not r:
             return None
-        data[r[0]] = {
-            "id": r[0],
-            "url": r[1],
-            "name": r[2],
-            "size": r[3],
-            "format_size": format.size(r[3]),
-            "status": r[4],
-            "statusmsg": self.pyload.files.status_msg[r[4]],
-            "error": r[5],
-            "plugin": r[6],
-            "package": r[7],
-            "order": r[8],
+
+        data = {
+            r[0]: {
+                "id": r[0],
+                "url": r[1],
+                "name": r[2],
+                "size": r[3],
+                "format_size": format.size(r[3]),
+                "status": r[4],
+                "statusmsg": self.pyload.files.status_msg[r[4]],
+                "error": r[5],
+                "plugin": r[6],
+                "package": r[7],
+                "order": r[8],
+            }
         }
 
         return data
@@ -256,7 +260,7 @@ class FileDatabaseMethods:
     @style.queue
     def update_link_info(self, data):
         """
-        data is list of tupels (name, size, status, url)
+        data is list of tuples (name, size, status, url)
         """
         self.c.executemany(
             "UPDATE links SET name=?, size=?, status=? WHERE url=? AND status IN (1,2,3,14)",
@@ -355,7 +359,7 @@ class FileDatabaseMethods:
     @style.queue
     def get_job(self, occupied):
         """
-        return pyfile ids, which are suitable for download and dont use a occupied
+        return pyfile ids, which are suitable for download and don't use an occupied
         plugin.
         """
         # TODO: improve this hardcoded method

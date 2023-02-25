@@ -38,6 +38,7 @@ class DdownloadCom(XFSDownloader):
     API_KEY = "37699zuaj90n9hxado2m7"
     API_URL = "https://api-v2.ddownload.com/api/"
 
+    #: See https://ddownload.com/api
     def api_request(self, method, **kwargs):
         kwargs.update({"key": self.API_KEY})
         json_data = self.load(self.API_URL + method, get=kwargs)

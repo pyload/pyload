@@ -8,6 +8,8 @@ from itertools import chain
 from logging import getLogger
 from urllib.parse import quote, urlencode
 
+import certifi
+
 import pycurl
 from pyload import APPID
 
@@ -15,9 +17,9 @@ from ...utils.convert import to_bytes, to_str
 from ..exceptions import Abort
 from .exceptions import BadHeader
 
-
-if not hasattr(pycurl, 'PROXYTYPE_HTTPS'):
+if not hasattr(pycurl, "PROXYTYPE_HTTPS"):
     pycurl.PROXYTYPE_HTTPS = 2
+
 
 def myquote(url):
     try:
@@ -50,8 +52,11 @@ class FormFile:
     def __init__(self, filename, data=None, mimetype=None):
         self.filename = os.path.abspath(filename)
         self.data = data
-        self.mimetype = mimetype or mimetypes.guess_type(filename)[0] if not data and os.path.exists(
-            filename) else None or 'application/octet-stream'
+        self.mimetype = (
+            mimetype or mimetypes.guess_type(filename)[0]
+            if not data and os.path.exists(filename)
+            else "application/octet-stream"
+        )
 
     def __repr__(self):
         return f"FormFile <'{os.path.basename(self.filename)}'>"
@@ -103,7 +108,7 @@ class HTTPRequest:
         self.c.setopt(pycurl.NOPROGRESS, 1)
         if hasattr(pycurl, "AUTOREFERER"):
             self.c.setopt(pycurl.AUTOREFERER, 1)
-        self.c.setopt(pycurl.SSL_VERIFYPEER, 0)
+        self.c.setopt(pycurl.SSL_VERIFYPEER, 1)
         self.c.setopt(pycurl.LOW_SPEED_TIME, 60)
         self.c.setopt(pycurl.LOW_SPEED_LIMIT, 5)
         if hasattr(pycurl, "USE_SSL"):
@@ -114,10 +119,11 @@ class HTTPRequest:
 
         self.c.setopt(
             pycurl.USERAGENT,
-            b"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36",
+            b"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/109.0",
         )
         if pycurl.version_info()[7]:
             self.c.setopt(pycurl.ENCODING, b"gzip, deflate")
+
         self.c.setopt(
             pycurl.HTTPHEADER,
             [
@@ -174,6 +180,15 @@ class HTTPRequest:
         if "timeout" in options:
             self.c.setopt(pycurl.LOW_SPEED_TIME, int(options["timeout"]))
 
+        if "ssl_verify" in options:
+            if options["ssl_verify"]:
+                self.c.setopt(pycurl.CAINFO, certifi.where())
+                ssl_verify = 1
+            else:
+                ssl_verify = 0
+
+            self.c.setopt(pycurl.SSL_VERIFYPEER, ssl_verify)
+
     def add_cookies(self):
         """
         put cookies from curl handle to cj.
@@ -227,11 +242,11 @@ class HTTPRequest:
             else:
                 multipart_post = []
                 for k, v in post.items():
-                    if isinstance(v, str):
-                        multipart_post.append((k, v.encode('utf8')))
+                    if isinstance(v, (str, bool, int)):
+                        multipart_post.append((k, to_str(v)))
 
                     elif isinstance(v, FormFile):
-                        filename = os.path.basename(v.filename).encode('utf8')
+                        filename = os.path.basename(v.filename).encode("utf8")
                         data = v.data
                         if data is None:
                             if not os.path.exists(v.filename):
@@ -254,7 +269,7 @@ class HTTPRequest:
             self.c.setopt(pycurl.HTTPGET, 1)
 
         if referer and self.last_url:
-            self.c.setopt(pycurl.REFERER, self.last_url)
+            self.c.setopt(pycurl.REFERER, to_bytes(self.last_url))
 
         if cookies:
             self.c.setopt(pycurl.COOKIEFILE, b"")
@@ -314,7 +329,11 @@ class HTTPRequest:
         ret = self.response_header if just_header else self.get_response()
 
         if decode:
-            ret = to_str(ret, encoding="iso-8859-1") if just_header else self.decode_response(ret)
+            ret = (
+                to_str(ret, encoding="iso-8859-1")
+                if just_header
+                else self.decode_response(ret)
+            )
 
         self.rep.close()
         self.rep = None
@@ -333,11 +352,7 @@ class HTTPRequest:
             self.rep = None
 
             # 404 will NOT raise an exception
-            raise BadHeader(
-                code,
-                header,
-                response
-            )
+            raise BadHeader(code, header, response)
 
         return code
 

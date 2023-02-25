@@ -6,7 +6,7 @@
 <h4 align="center">
   <img alt="status" src="https://img.shields.io/pypi/status/pyload-ng?style=flat-square">
   <a href="https://github.com/pyload/pyload/actions">
-    <img alt="build" src="https://img.shields.io/github/workflow/status/pyload/pyload/test?event=push&style=flat-square">
+    <img alt="build" src="https://img.shields.io/github/actions/workflow/status/pyload/pyload/test.yml?event=push&style=flat-square">
   </a>
   <a href="https://www.codacy.com/gh/pyload/pyload">
     <img alt="codacy" src="https://img.shields.io/codacy/grade/1d047f77c0a6496eb708e1b3ca83006b?label=grade&style=flat-square">
@@ -320,4 +320,4 @@ Please refer to [AUTHORS](https://github.com/pyload/pyload/blob/main/AUTHORS.md)
 
 ---
 
-###### © 2008-2022 pyLoad team
+###### © 2008-2023 pyLoad team

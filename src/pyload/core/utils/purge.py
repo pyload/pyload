@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import os
 import re
 
 
@@ -8,7 +7,8 @@ def chars(text, chars, repl=""):
     """
     Removes all chars in repl from text.
     """
-    return re.sub(rf"[{chars}]+", repl, text)
+    chars = chars.replace("\\", "\\\\")
+    return re.sub(rf"[{chars}]", repl, text)
 
 
 _UNIXBADCHARS = ("\0", "/", "\\")
@@ -45,8 +45,8 @@ def name(text, sep="_", allow_whitespaces=True):
     if not allow_whitespaces:
         repl += " "
     res = chars(text, repl, sep).strip()
-    if os.name == "nt" and res.lower() in _WINBADWORDS:
-        res = sep + res
+    if res.lower() in _WINBADWORDS:
+        res = (sep or "_") + res
     return res
 
 

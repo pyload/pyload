@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 
-import operator
-import random
 import re
 from datetime import timedelta
 from urllib.parse import urljoin
 
-from pyload.core.utils import parse, seconds
+from pyload.core.utils import parse
 from pyload.core.utils.web.purge import unescape as html_unescape
 
+from ..anticaptchas.HCaptcha import HCaptcha
 from ..anticaptchas.ReCaptcha import ReCaptcha
 from ..anticaptchas.SolveMedia import SolveMedia
 from ..helpers import search_pattern, set_cookie
@@ -18,7 +17,7 @@ from .simple_downloader import SimpleDownloader
 class XFSDownloader(SimpleDownloader):
     __name__ = "XFSDownloader"
     __type__ = "downloader"
-    __version__ = "0.86"
+    __version__ = "0.89"
     __status__ = "stable"
 
     __pattern__ = r"^unmatchable$"
@@ -36,6 +35,7 @@ class XFSDownloader(SimpleDownloader):
         ("zoidberg", "zoidberg@mujmail.cz"),
         ("stickell", "l.stickell@yahoo.it"),
         ("Walter Purcaro", "vuolter@gmail.com"),
+        ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com"),
     ]
 
     PLUGIN_DOMAIN = None
@@ -62,6 +62,7 @@ class XFSDownloader(SimpleDownloader):
     CAPTCHA_PATTERN = r'(https?://[^"\']+?/captchas?/[^"\']+)'
     CAPTCHA_BLOCK_PATTERN = r">Enter code.*?<div.*?>(.+?)</div>"
     RECAPTCHA_PATTERN = None
+    HCAPTCHA_PATTERN = None
     SOLVEMEDIA_PATTERN = None
 
     FORM_PATTERN = None
@@ -109,7 +110,7 @@ class XFSDownloader(SimpleDownloader):
             self.data = self.load(
                 pyfile.url,
                 post=self._post_parameters(),
-                ref = self.pyfile.url,
+                ref=self.pyfile.url,
                 redirect=False
             )
 
@@ -211,7 +212,7 @@ class XFSDownloader(SimpleDownloader):
             self.log_debug(captcha_div)
 
             code = inputs["code"] = "".join(
-                a[1] for a in sorted(numerals, key=operator.itemgetter(0))
+                a[1] for a in sorted(numerals, key=lambda i: int(i[0]))
             )
 
             self.log_debug(f"Captcha code: {code}", numerals)
@@ -230,6 +231,21 @@ class XFSDownloader(SimpleDownloader):
         if captcha_key:
             self.captcha = recaptcha
             inputs["g-recaptcha-response"] = recaptcha.challenge(captcha_key)
+            return
+
+        hcaptcha = HCaptcha(self.pyfile)
+        try:
+            captcha_key = search_pattern(self.HCAPTCHA_PATTERN, self.data).group(1)
+
+        except (AttributeError, IndexError):
+            captcha_key = hcaptcha.detect_key()
+
+        else:
+            self.log_debug(f"HCaptcha key: {captcha_key}")
+
+        if captcha_key:
+            self.captcha = hcaptcha
+            inputs["g-recaptcha-response"] = inputs["h-captcha-response"] = hcaptcha.challenge(captcha_key)
             return
 
         solvemedia = SolveMedia(self.pyfile)

@@ -175,7 +175,7 @@ class MultiAccount(BaseAccount):
         if self.plugintype == "downloader":
             plugin_map = {
                 name.lower(): name
-                for name in self.pyload.plugin_manager.hoster_plugins.keys()
+                for name in self.pyload.plugin_manager.downloader_plugins.keys()
             }
 
             account_list = [
@@ -188,7 +188,7 @@ class MultiAccount(BaseAccount):
             plugin_map = {}
             account_list = [
                 name[::-1].replace("Folder"[::-1], "", 1).lower()[::-1]
-                for name in self.pyload.plugin_manager.crypter_plugins.keys()
+                for name in self.pyload.plugin_manager.decrypter_plugins.keys()
             ]
 
         for plugin in self.get_plugins():

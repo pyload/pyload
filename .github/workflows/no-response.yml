@@ -1,0 +1,28 @@
+name: No Response
+
+on:
+  issue_comment:
+    types: [created]
+  schedule:
+    - cron: "5 0 * * *"
+
+jobs:
+  noResponse:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: lee-dohm/no-response@v0.5.0
+        with:
+          token: ${{ github.token }}
+          daysUntilClose: 14
+          responseRequiredLabel: "feedback wanted"
+          closeComment: >
+            **This ticket has been automatically closed**.
+
+
+            This is because additional information has been requested,
+            but no response has been given in the last **2 weeks**.
+
+            Feel free to reopen this ticket if you need.
+
+
+            Thanks for your contributions.

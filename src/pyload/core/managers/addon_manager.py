@@ -30,7 +30,7 @@ class AddonManager:
     Manages addons, delegates and handles Events.
 
     Every plugin can define events, \
-    but some very usefull events are called by the Core.
+    but some very useful events are called by the Core.
     Contrary to overwriting addon methods you can use event listener,
     which provides additional entry point in the control flow.
     Only do very short tasks or use threads.
@@ -42,7 +42,7 @@ class AddonManager:
     Name                     Arguments      Description
     ===================== ============== ==================================
     download_preparing     fid            A download was just queued and will be prepared now.
-    download_starts        fid            A plugin will immediately starts the download afterwards.
+    download_starts        fid            A plugin will immediately start the download afterwards.
     links_added            links, pid     Someone just added links, you are able to modify the links.
     all_downloads_processed                Every link was handled, pyload would idle afterwards.
     all_downloads_finished                 Every download in queue is finished.
@@ -101,13 +101,13 @@ class AddonManager:
         active = []
         deactive = []
 
-        for pluginname in self.pyload.plugin_manager.addon_plugins:
+        for plugin_name in self.pyload.plugin_manager.addon_plugins:
             try:
                 # addon_class = getattr(plugin, plugin.__name__)
 
-                if self.pyload.config.get_plugin(pluginname, "enabled"):
+                if self.pyload.config.get_plugin(plugin_name, "enabled"):
                     plugin_class = self.pyload.plugin_manager.load_class(
-                        "addon", pluginname
+                        "addon", plugin_name
                     )
                     if not plugin_class:
                         continue
@@ -118,20 +118,20 @@ class AddonManager:
                     if plugin.is_activated():
                         active.append(plugin_class.__name__)
                 else:
-                    deactive.append(pluginname)
+                    deactive.append(plugin_name)
 
             except Exception:
                 self.pyload.log.warning(
-                    self._("Failed activating {}").format(pluginname),
+                    self._("Failed activating {}").format(plugin_name),
                     exc_info=self.pyload.debug > 1,
                     stack_info=self.pyload.debug > 2,
                 )
 
         self.pyload.log.info(
-            self._("Activated plugins: {}").format(", ".join(sorted(active)))
+            self._("Activated addons: {}").format(", ".join(sorted(active)))
         )
         self.pyload.log.info(
-            self._("Deactivate plugins: {}").format(", ".join(sorted(deactive)))
+            self._("Deactivate addons: {}").format(", ".join(sorted(deactive)))
         )
 
         self.plugins = plugins

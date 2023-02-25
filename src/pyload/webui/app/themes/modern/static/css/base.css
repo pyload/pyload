@@ -154,6 +154,11 @@ textarea.form-control {
   user-select: none;
 }
 
+.modal-body,
+.modal-header {
+  overflow: auto;
+}
+
 .modal-footer {
   padding: 6px 12px;
   border-top: none;
@@ -279,10 +284,6 @@ fieldset[disabled] .btn {
   min-height: 32px;
   margin: 6px 3px 0 3px;
   border-left: 1px solid #CACACA;
-}
-
-.modal-dialog {
-    margin-top: 10px;
 }
 
 .modal-dialog {

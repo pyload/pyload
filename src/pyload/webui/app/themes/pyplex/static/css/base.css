@@ -393,6 +393,7 @@ textarea.form-control:focus {
 }
 
 .modal-body {
+  overflow: auto;
   background-color: #282828;
 }
 
@@ -401,6 +402,7 @@ textarea.form-control:focus {
 }
 
 .modal-header {
+  overflow: auto;
   border-bottom: 1px solid #212121;
 }
 

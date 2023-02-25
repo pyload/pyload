@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 
-from ..base.simple_downloader import SimpleDownloader
+from ..base.xfs_downloader import XFSDownloader
 
 
-class AnonfileCom(SimpleDownloader):
-    __name__ = "AnonfileCom"
+class DropDownload(XFSDownloader):
+    __name__ = "DropDownload"
     __type__ = "downloader"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __status__ = "testing"
 
-    __pattern__ = r"https?://(?:www\.)?anonfiles?\.com/(?P<ID>\w+)"
+    __pattern__ = r"https?://(?:www\.)?drop\.download/\w{12}"
     __config__ = [
         ("enabled", "bool", "Activated", True),
         ("use_premium", "bool", "Use premium account if available", True),
@@ -18,16 +18,12 @@ class AnonfileCom(SimpleDownloader):
         ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10),
     ]
 
-    __description__ = """Anonfile.com downloader plugin"""
+    __description__ = """Drop.download downloader plugin"""
     __license__ = "GPLv3"
     __authors__ = [("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
-    NAME_PATTERN = r'class="text-center text-wordwrap">(?P<N>.+?)<'
-    SIZE_PATTERN = r"Download\s*\((?P<S>[\d.,]+) (?P<U>[\w^_]+)\)"
-
-    LINK_PATTERN = r'href="(https://cdn-\d+.anonfiles.com/.+?)"'
-
-    URL_REPLACEMENTS = [(__pattern__ + ".*", r"https://anonfiles.com/\g<ID>")]
+    PLUGIN_DOMAIN = "drop.download"
+    LINK_PATTERN = r'<a href="(https://s\d+\.drop\.download.+?)"'
 
     def setup(self):
         self.multi_dl = True

@@ -59,8 +59,8 @@ class WebServerThread(threading.Thread):
                 self.use_ssl = False
 
         #: hack cheroot to use our custom logger
-        self.server.error_log = lambda *args, **kwgs: self.log.log(
-            kwgs.get("level", logging.ERROR), args[0], exc_info=self.pyload.debug
+        self.server.error_log = lambda *args, **kwargs: self.log.log(
+            kwargs.get("level", logging.ERROR), args[0], exc_info=self.pyload.debug
         )
 
         self.server.start()

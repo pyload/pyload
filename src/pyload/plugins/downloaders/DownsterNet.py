@@ -7,7 +7,7 @@ from ..base.multi_downloader import MultiDownloader
 class DownsterNet(MultiDownloader):
     __name__ = "DownsterNet"
     __type__ = "downloader"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __status__ = "testing"
 
     __pattern__ = r"^unmatchable$"
@@ -23,8 +23,6 @@ class DownsterNet(MultiDownloader):
     __description__ = """Downster.net downloader plugin"""
     __license__ = "GPLv3"
     __authors__ = [(None, None)]
-
-    FILE_ERRORS = [("Error", r'{"state":"error"}'), ("Retry", r'{"state":"retry"}')]
 
     def setup(self):
         self.api = DownsterApi(self)

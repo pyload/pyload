@@ -264,8 +264,8 @@ class XMPP(ChatBot):
         except Exception as exc:
             self.log_error(exc)
 
-    def all_downloads_processed(self, arg=None):
-        self.log_debug("all_downloads_processed", arg)
+    def all_downloads_processed(self):
+        self.log_debug("all_downloads_processed")
         try:
             if self.config.get("all_download"):
                 self.announce(self._("All download finished."))

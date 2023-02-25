@@ -13,7 +13,7 @@ from pyload.plugins.helpers import renice
 class SevenZip(BaseExtractor):
     __name__ = "SevenZip"
     __type__ = "extractor"
-    __version__ = "0.38"
+    __version__ = "0.39"
     __status__ = "testing"
 
     __description__ = """7-Zip extractor plugin"""
@@ -74,7 +74,7 @@ class SevenZip(BaseExtractor):
     _RE_FILES = re.compile(
         r"([\d\-]+)\s+([\d:]+)\s+([RHSA.]+)\s+(\d+)\s+(?:(\d+)\s+)?(.+)"
     )
-    _RE_ENCRYPTED_HEADER = re.compile(r"Headers Error")
+    _RE_ENCRYPTED_HEADER = re.compile(r"encrypted archive")
     _RE_ENCRYPTED_FILES = re.compile(r"Encrypted\s+=\s+\+")
     _RE_BADPWD = re.compile(r"Wrong password", re.I)
     _RE_BADCRC = re.compile(r"CRC Failed|Can not open file", re.I)

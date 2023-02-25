@@ -13,7 +13,7 @@ from ..downloaders.DebridlinkFr import error_description
 class DebridlinkFr(MultiAccount):
     __name__ = "DebridlinkFr"
     __type__ = "account"
-    __version__ = "0.05"
+    __version__ = "0.06"
     __status__ = "testing"
 
     __config__ = [
@@ -60,7 +60,7 @@ class DebridlinkFr(MultiAccount):
                 self.log_error(
                     self._(
                         "You have to use GetDebridlinkToken.py to authorize pyLoad: "
-                        "https://github.com/pyload/pyload/files/4679112/GetDebridlinkToken.zip "
+                        "https://github.com/pyload/pyload/files/9353788/GetDebridlinkToken.zip"
                     )
                 )
             else:

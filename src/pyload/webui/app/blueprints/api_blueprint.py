@@ -3,27 +3,40 @@
 import traceback
 from ast import literal_eval
 from itertools import chain
+from logging import getLogger
 from urllib.parse import unquote
 
 import flask
 from flask.json import jsonify
+from pyload import APPID
 
-from ..helpers import clear_session, login_required, set_session
+from ..helpers import clear_session, set_session
 
 bp = flask.Blueprint("api", __name__)
+log = getLogger(APPID)
 
 
 # accepting positional arguments, as well as kwargs via post and get
 # @bottle.route(
-# r"/api/<func><args:re:[a-zA-Z0-9\-_/\"\'\[\]%{},]*>")
-@login_required("ALL")
 @bp.route("/api/<func>", methods=["GET", "POST"], endpoint="rpc")
 @bp.route("/api/<func>/<args>", methods=["GET", "POST"], endpoint="rpc")
 # @apiver_check
 def rpc(func, args=""):
-
     api = flask.current_app.config["PYLOAD_API"]
-    s = flask.session
+
+    if flask.request.authorization:
+        user = flask.request.authorization.get("username", "")
+        password = flask.request.authorization.get("password", "")
+    else:
+        user = flask.request.form.get("u", "")
+        password = flask.request.form.get("p", "")
+
+    if user:
+        user_info = api.check_auth(user, password)
+        s = set_session(user_info)
+    else:
+        s = flask.session
+
     if (
             "role" not in s or
             "perms" not in s or
@@ -38,7 +51,8 @@ def rpc(func, args=""):
     kwargs = {}
 
     for x, y in chain(flask.request.args.items(), flask.request.form.items()):
-        kwargs[x] = unquote(y)
+        if x not in ("u", "p"):
+            kwargs[x] = unquote(y)
 
     try:
         response = call_api(func, *args, **kwargs)
@@ -73,9 +87,11 @@ def login():
     user_info = api.check_auth(user, password)
 
     if not user_info:
+        log.error(f"Login failed for user '{user}'")
         return jsonify(False)
 
     s = set_session(user_info)
+    log.info(f"User '{user}' successfully logged in")
     flask.flash("Logged in successfully")
 
     return jsonify(s)
@@ -84,6 +100,9 @@ def login():
 @bp.route("/api/logout", endpoint="logout")
 # @apiver_check
 def logout():
-    # logout_user()
-    clear_session()
+    s = flask.session
+    user = s.get("name")
+    clear_session(s)
+    if user:
+        log.info(f"User '{user}' logged out")
     return jsonify(True)

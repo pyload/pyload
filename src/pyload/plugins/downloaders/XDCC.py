@@ -5,16 +5,22 @@ import re
 import select
 import socket
 import struct
-import sys
 import threading
 import time
 
 from pyload.core.network.exceptions import Abort
+from pyload.core.utils import format
+from pyload.core.utils.convert import to_bytes, to_str
 from pyload.core.utils.struct.lock import lock
-from pyload.core.utils.convert import to_bytes
 
 from ..base.addon import threaded
 from ..base.downloader import BaseDownloader
+
+
+def decode_text(text):
+    # TODO: check
+    decoded = text
+    return decoded
 
 
 class IRC:
@@ -25,7 +31,7 @@ class IRC:
 
         #: last 4 digits
         self.nick = (
-            "pyload-{:04}".format(time.time() % 10000) if nick == "pyload" else nick
+            "pyload-{:04.0f}".format(time.time() % 10000) if nick == "pyload" else nick
         )
         self.ident = ident
         self.realname = realname
@@ -40,7 +46,8 @@ class IRC:
 
         self.bot_host = {}
 
-        self.xdcc_request_time = None
+        self.xdcc_request_time = 0
+        self.xdcc_queue_query_time = 0
 
     def _data_available(self):
         fdset = select.select([self.irc_sock], [], [], 0)
@@ -50,7 +57,7 @@ class IRC:
         start_time = time.time()
         while time.time() - start_time < timeout:
             if self._data_available():
-                self.receive_buffer += self.irc_sock.recv(1 << 10)
+                self.receive_buffer += to_str(self.irc_sock.recv(1 << 10))
                 self.lines += self.receive_buffer.split("\r\n")
                 self.receive_buffer = self.lines.pop()
 
@@ -127,15 +134,24 @@ class IRC:
 
                 return True
 
-        self.plugin.log_error(self._("Connection to {}:{} failed").format(host, port))
+            elif command == "432":  #: ERR_ERRONEUSNICKNAME
+                self.plugin.log_error(self._("Illegal nickname: {}").format(self.nick))
+                break
 
+            elif command == "433":  #: ERR_NICKNAMEINUSE
+                self.plugin.log_error(
+                    self._("Nickname {} is already in use").format(self.nick)
+                )
+                break
+
+        self.plugin.log_error(self._("Connection to {}:{} failed").format(host, port))
         return False
 
     @lock
     def disconnect_server(self):
         if self.connected:
             self.plugin.log_info(
-                self._("Diconnecting from {}:{}").format(self.host, self.port)
+                self._("Disconnecting from {}:{}").format(self.host, self.port)
             )
             self.irc_sock.send(b"QUIT :byebye\r\n")
             self.plugin.log_debug("Disconnected")
@@ -175,8 +191,10 @@ class IRC:
                                 self._("[{}] CTCP VERSION").format(sender_nick)
                             )
                             self.irc_sock.send(
-                                to_bytes("NOTICE {} :\x01VERSION {}\x01\r\n".format(
-                                    sender_nick, "pyLoad! IRC Interface")
+                                to_bytes(
+                                    "NOTICE {} :\x01VERSION {}\x01\r\n".format(
+                                        sender_nick, "pyLoad! IRC Interface"
+                                    )
                                 )
                             )
 
@@ -185,8 +203,11 @@ class IRC:
                                 self._("[{}] CTCP TIME").format(sender_nick)
                             )
                             self.irc_sock.send(
-                                 to_bytes("NOTICE {} :\x01{}\x01\r\n".format(
-                                    sender_nick, time.strftime("%a %b %d %H:%M:%S %Y"))
+                                to_bytes(
+                                    "NOTICE {} :\x01{}\x01\r\n".format(
+                                        sender_nick,
+                                        time.strftime("%a %b %d %H:%M:%S %Y"),
+                                    )
                                 )
                             )
 
@@ -195,8 +216,10 @@ class IRC:
                                 self._("[{}] Ping? Pong!").format(sender_nick)
                             )
                             self.irc_sock.send(
-                                to_bytes("NOTICE {} :\x01PING {}\x01\r\n".format(
-                                    sender_nick, ctcp_args)
+                                to_bytes(
+                                    "NOTICE {} :\x01PING {}\x01\r\n".format(
+                                        sender_nick, ctcp_args
+                                    )
                                 )
                             )  # NOTE: PING is not a typo
 
@@ -253,7 +276,9 @@ class IRC:
             )
             return
 
-        self.irc_sock.send(to_bytes("PRIVMSG {} :identify {}\r\n".format(bot, password)))
+        self.irc_sock.send(
+            to_bytes("PRIVMSG {} :identify {}\r\n".format(bot, password))
+        )
 
         start_time = time.time()
         while time.time() - start_time < 30:
@@ -271,11 +296,7 @@ class IRC:
             ):
                 continue
 
-            try:
-                text = str(args[1], "utf-8")
-            except UnicodeDecodeError:
-                text = str(args[1], "latin1", "replace")
-
+            text = decode_text(args[1])
             sender_nick = origin.split("@")[0].split("!")[0]
             self.plugin.log_info(self._("PrivMsg: <{}> {}").format(sender_nick, text))
             break
@@ -297,7 +318,9 @@ class IRC:
             return
 
         self.irc_sock.send(
-            to_bytes("PRIVMSG {} :enter #{} {} {}\r\n".format(bot, chan, self.nick, password))
+            to_bytes(
+                "PRIVMSG {} :enter #{} {} {}\r\n".format(bot, chan, self.nick, password)
+            )
         )
         start_time = time.time()
         while time.time() - start_time < 30:
@@ -315,11 +338,7 @@ class IRC:
             ):
                 continue
 
-            try:
-                text = str(args[1], "utf-8")
-            except UnicodeDecodeError:
-                text = str(args[1], "latin1", "replace")
-
+            text = decode_text(args[1])
             sender_nick = origin.split("@")[0].split("!")[0]
             if command == "INVITE":
                 self.plugin.log_info(self._("Got invite to #{}").format(chan))
@@ -392,11 +411,35 @@ class IRC:
     def xdcc_cancel_pack(self, bot):
         if self.xdcc_request_time:
             self.plugin.log_info(self._("Requesting XDCC cancellation"))
-            self.xdcc_request_time = None
+            self.xdcc_request_time = 0
             self.irc_sock.send(to_bytes("PRIVMSG {} :xdcc cancel\r\n".format(bot)))
 
         else:
             self.plugin.log_warning(self._("No XDCC request pending, cannot cancel"))
+
+    @lock
+    def xdcc_remove_queued(self, bot):
+        if self.xdcc_request_time:
+            self.plugin.log_info(self._("Requesting XDCC remove from queue"))
+            self.xdcc_request_time = 0
+            self.irc_sock.send(to_bytes("PRIVMSG {} :xdcc remove\r\n".format(bot)))
+
+        else:
+            self.plugin.log_warning(
+                self._("No XDCC request pending, cannot remove from queue")
+            )
+
+    @lock
+    def xdcc_query_queue_status(self, bot):
+        if self.xdcc_request_time:
+            self.plugin.log_info(self._("Requesting XDCC queue status"))
+            self.xdcc_queue_query_time = time.time()
+            self.irc_sock.send(to_bytes("PRIVMSG {} :xdcc queue\r\n".format(bot)))
+
+        else:
+            self.plugin.log_warning(
+                self._("No XDCC request pending, cannot query queue status")
+            )
 
     @lock
     def xdcc_request_resume(self, bot, dcc_port, file_name, resume_position):
@@ -410,8 +453,10 @@ class IRC:
             )
 
             self.irc_sock.send(
-                to_bytes('PRIVMSG {} :\x01DCC RESUME "{}" {} {}\x01\r\n'.format(
-                    bot, os.fsdecode(file_name), dcc_port, resume_position)
+                to_bytes(
+                    'PRIVMSG {} :\x01DCC RESUME "{}" {} {}\x01\r\n'.format(
+                        bot, os.fsdecode(file_name), dcc_port, resume_position
+                    )
                 )
             )
 
@@ -434,11 +479,7 @@ class IRC:
                     and command in ("PRIVMSG", "NOTICE")
                 ):
 
-                    try:
-                        text = str(args[1], "utf-8")
-                    except UnicodeDecodeError:
-                        text = str(args[1], "latin1", "replace")
-
+                    text = decode_text(args[1])
                     sender_nick = origin.split("@")[0].split("!")[0]
                     self.plugin.log_debug(
                         self._("PrivMsg: <{}> {}").format(sender_nick, text)
@@ -496,11 +537,7 @@ class IRC:
                 and command in ("PRIVMSG", "NOTICE")
             ):
 
-                try:
-                    text = str(args[1], "utf-8")
-                except UnicodeDecodeError:
-                    text = str(args[1], "latin1", "replace")
-
+                text = decode_text(args[1])
                 pack_info = text.split()
                 if pack_info[0].lower() == "filename":
                     self.plugin.log_debug(f"Filename: '{pack_info[1]}'")
@@ -535,7 +572,7 @@ class IRC:
 class XDCC(BaseDownloader):
     __name__ = "XDCC"
     __type__ = "downloader"
-    __version__ = "0.49"
+    __version__ = "0.55"
     __status__ = "testing"
 
     __pattern__ = r"xdcc://(?P<SERVER>.*?)/#?(?P<CHAN>.*?)/(?P<BOT>.*?)/#?(?P<PACK>\d+)/?"
@@ -546,9 +583,39 @@ class XDCC(BaseDownloader):
         ("try_resume", "bool", "Request XDCC resume?", True),
         ("nick_pw", "str", "Registered nickname password (optional)", ""),
         (
+            "queued_timeout",
+            "int",
+            "Time to wait before failing if queued (minutes, 0 = infinite)",
+            300,
+        ),
+        (
+            "queue_query_interval",
+            "int",
+            "Interval to query queue position when queued (minutes, 0 = disabled)",
+            3,
+        ),
+        (
+            "response_timeout",
+            "int",
+            "XDCC Bot response timeout (seconds, minimum 60)",
+            300,
+        ),
+        (
+            "waiting_opts",
+            "str",
+            "Time to wait before requesting pack from the XDCC Bot (format: ircserver/channel/wait_seconds, ...)",
+            0,
+        ),
+        (
             "invite_opts",
             "str",
             "Invite bots options (format ircserver/channel/invitebot/password, ...)",
+            "",
+        ),
+        (
+            "channel_opts",
+            "str",
+            "Join custom channel before joining channel (format: ircserver/channel/customchannel, ...)",
             "",
         ),
     ]
@@ -560,13 +627,24 @@ class XDCC(BaseDownloader):
         ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com"),
     ]
 
+    RE_QUEUED = re.compile(
+        r'Added you to the (?:main|idle) queue for pack \d+ \("[^"]+"\) in position (\d+)'
+    )
+    RE_QUEUE_STAT = re.compile(
+        r'^Queued \w+ for ".+?", in position (\d+).+?([\dhm]+) or less remaining'
+    )
+    RE_XDCC = re.compile(
+        r'\x01DCC SEND "?(?P<NAME>.*?)"? (?P<IP>\d+) (?P<PORT>\d+)(?: (?P<SIZE>\d+))?\x01'
+    )
+
     def setup(self):
         self.dl_started = False
         self.dl_finished = False
-        self.request_again = False
+        self.last_response_time = 0
+        self.queued_time = 0
 
         self.irc_client = None
-        self.exc_info = None
+        self.last_exception = None
 
         self.dcc_port = 0
         self.dcc_file_name = ""
@@ -605,16 +683,43 @@ class XDCC(BaseDownloader):
         nick_pw = self.config.get("nick_pw")
         ident = self.config.get("ident")
         realname = self.config.get("realname")
+
+        queued_timeout = self.config.get("queued_timeout") * 60
+        queue_query_interval = self.config.get("queue_query_interval") * 60
+        response_timeout = max(self.config.get("response_timeout"), 60)
+        self.config.set("response_timeout", response_timeout)
+
+        waiting_opts = [
+            _x.split("/")
+            for _x in self.config.get("waiting_opts").strip().split(",")
+            if len(_x.split("/")) == 3 and _x.split("/")[2].isnumeric()
+        ]
+
+        #: Remove leading '#' from channel name
+        for opt in waiting_opts:
+            opt[1] = opt[1][1:] if opt[1].startswith("#") else opt[1]
+            opt[2] = int(opt[2])
+
         invite_opts = [
-            x.split("/")
-            for x in self.config.get("invite_opts").strip().split(",")
-            if len(x.split("/")) == 4
+            _x.split("/")
+            for _x in self.config.get("invite_opts").strip().split(",")
+            if len(_x.split("/")) == 4
         ]
 
         #: Remove leading '#' from channel name
         for opt in invite_opts:
-            if opt[1].startswith("#"):
-                opt[1] = opt[1][1:]
+            opt[1] = opt[1][1:] if opt[1].startswith("#") else opt[1]
+
+        channel_opts = [
+            _x.split("/")
+            for _x in self.config.get("channel_opts").strip().split(",")
+            if len(_x.split("/")) == 3
+        ]
+
+        #: Remove leading '#' from channel name and custom channel name
+        for opt in channel_opts:
+            opt[1] = opt[1][1:] if opt[1].startswith("#") else opt[1]
+            opt[2] = opt[2][1:] if opt[2].startswith("#") else opt[2]
 
         #: Change request type
         self.req.close()
@@ -640,11 +745,27 @@ class XDCC(BaseDownloader):
                                 )
                                 break
 
+                        for opt in channel_opts:
+                            if (
+                                opt[0].lower() == host.lower()
+                                and opt[1].lower() == chan.lower()
+                            ):
+                                if not self.irc_client.join_channel(opt[2]):
+                                    self.fail(self._("Cannot join channel"))
+
                         if not self.irc_client.join_channel(chan):
                             self.fail(self._("Cannot join channel"))
 
                         if not self.irc_client.is_bot_online(bot):
                             self.fail(self._("Bot is offline"))
+
+                        for opt in waiting_opts:
+                            if (
+                                opt[0].lower() == host.lower()
+                                and opt[1].lower() == chan.lower()
+                                and opt[2] > 0
+                            ):
+                                self.wait(opt[2], reconnect=False)
 
                         self.pyfile.set_status("waiting")
 
@@ -655,20 +776,50 @@ class XDCC(BaseDownloader):
                             not self.pyfile.abort or self.dl_started
                         ) and not self.dl_finished:
                             if not self.dl_started:
-                                if self.request_again:
+                                if self.queued_time:
                                     if (
-                                        time.time() - self.irc_client.xdcc_request_time
-                                        > 300
+                                        queued_timeout
+                                        and time.time() - self.queued_time
+                                        > queued_timeout
+                                    ):
+                                        self.irc_client.xdcc_remove_queued(bot)
+                                        self.queued_time = False
+                                        self.irc_client.disconnect_server()
+                                        self.log_error(
+                                            self._(
+                                                "Timed out while waiting in the XDCC queue ({} seconds)"
+                                            ).format(queued_timeout)
+                                        )
+                                        self.retry(
+                                            3,
+                                            60,
+                                            self._(
+                                                "Timed out while waiting in the XDCC queue ({} seconds)"
+                                            ).format(queued_timeout),
+                                        )
+
+                                    elif (
+                                        queue_query_interval
+                                        and time.time()
+                                        - self.irc_client.xdcc_queue_query_time
+                                        > queue_query_interval
+                                    ):
+                                        self.irc_client.xdcc_query_queue_status(bot)
+
+                                elif self.last_response_time:
+                                    if (
+                                        time.time() - self.last_response_time
+                                        > response_timeout
                                     ):
                                         self.irc_client.xdcc_request_pack(bot, pack)
-                                        self.request_again = False
+                                        self.last_response_time = 0
 
                                 else:
                                     if (
                                         self.irc_client.xdcc_request_time
                                         and time.time()
                                         - self.irc_client.xdcc_request_time
-                                        > 90
+                                        > response_timeout
                                     ):
                                         self.irc_client.disconnect_server()
                                         self.log_error(
@@ -681,10 +832,16 @@ class XDCC(BaseDownloader):
                             origin, command, args = self.irc_client.get_irc_command()
                             self.process_irc_command(origin, command, args)
 
-                            if self.exc_info:
-                                raise self.exc_info
+                            if self.last_exception:
+                                raise self.last_exception
 
                     finally:
+                        if (
+                            self.pyfile.abort
+                            and not self.dl_started
+                            and self.queued_time
+                        ):
+                            self.irc_client.xdcc_remove_queued(bot)
                         self.irc_client.disconnect_server()
 
                 return
@@ -729,6 +886,12 @@ class XDCC(BaseDownloader):
         if origin is None or command is None or args is None:
             return
 
+        #: ERR_CANTSENDTOUSER
+        if command == "531" and args[0] == nick and args[1] == bot:
+            text = decode_text(args[2])
+            self.log_error("<{}> {}".format(bot, text))
+            self.fail(text)
+
         # Private message from bot to us?
         bot_host = self.irc_client.get_bot_host(bot)
         if (
@@ -743,20 +906,16 @@ class XDCC(BaseDownloader):
         ):
             return
 
-        try:
-            text = str(args[1], "utf-8")
-        except UnicodeDecodeError:
-            text = str(args[1], "latin1", "replace")
-
+        text = decode_text(args[1])
         sender_nick = origin.split("@")[0].split("!")[0]
         self.log_debug(f"PrivMsg: <{sender_nick}> {text}")
 
-        if text in (
+        if not self.queued_time and text in (
             "You already requested that pack",
             "All Slots Full",
             "You have a DCC pending",
         ):
-            self.request_again = True
+            self.last_response_time = time.time()
 
         elif "you must be on a known channel to request a pack" in text:
             self.log_error(self._("Invalid channel"))
@@ -766,10 +925,7 @@ class XDCC(BaseDownloader):
             self.log_error(self._("Invalid Pack Number"))
             self.fail(self._("Invalid Pack Number"))
 
-        m = re.match(
-            r'\x01DCC SEND "?(?P<NAME>.*?)"? (?P<IP>\d+) (?P<PORT>\d+)(?: (?P<SIZE>\d+))?\x01',
-            text,
-        )  #: XDCC?
+        m = self.RE_XDCC.match(text)  #: XDCC?
         if m:
             ip = socket.inet_ntoa(struct.pack("!I", int(m.group("IP"))))
             self.dcc_port = int(m.group("PORT"))
@@ -779,9 +935,33 @@ class XDCC(BaseDownloader):
 
             self.do_download(ip, self.dcc_port, self.dcc_file_name, file_size)
 
+        else:
+            m = self.RE_QUEUED.search(text)
+            if m:
+                self.queued_time = self.last_response_time = time.time()
+                self.log_info(self._("Got queued at position {}").format(m.group(1)))
+
+            else:
+                m = self.RE_QUEUE_STAT.search(text)
+                if m:
+                    self.log_info(
+                        self._(
+                            "Waiting in the queue for about {}, current position {}, estimated remaining wait time: {}"
+                        ).format(
+                            format.time(time.time() - self.queued_time),
+                            m.group(1),
+                            m.group(2),
+                        )
+                    )
+                    self.log_info(
+                        self._(
+                            "Currently queued at position {}, estimated wait time: {}"
+                        ).format(m.group(1), m.group(2))
+                    )
+
     def _on_notification(self, notification):
-        if 'progress' in notification:
-            self.pyfile.set_progress(notification['progress'])
+        if "progress" in notification:
+            self.pyfile.set_progress(notification["progress"])
 
     @threaded
     def do_download(self, ip, port, file_name, file_size):
@@ -813,7 +993,7 @@ class XDCC(BaseDownloader):
                 self._("DOWNLOAD XDCC '{}' from {}:{}").format(file_name, ip, port)
             )
 
-            self.pyload.addonManager.dispatchEvent(
+            self.pyload.addon_manager.dispatch_event(
                 "download_start", self.pyfile, "{}:{}".format(ip, port), dl_file
             )
 
@@ -841,7 +1021,7 @@ class XDCC(BaseDownloader):
             bot = self.info["pattern"]["BOT"]
             self.irc_client.xdcc_cancel_pack(bot)
 
-            if not self.exc_info:
-                self.exc_info = sys.exc_info()  #: pass the exception to the main thread
+            if not self.last_exception:
+                self.last_exception = exc  #: pass the exception to the main thread
 
         self.dl_finished = True

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import random
+import copy
 import threading
 import time
 from datetime import timedelta
@@ -16,7 +16,7 @@ from .plugin import BasePlugin
 class BaseAccount(BasePlugin):
     __name__ = "BaseAccount"
     __type__ = "account"
-    __version__ = "0.86"
+    __version__ = "0.89"
     __status__ = "stable"
 
     __description__ = """Base account plugin"""
@@ -118,15 +118,17 @@ class BaseAccount(BasePlugin):
         raise NotImplementedError
 
     def login(self):
-        if not self.req:
+        self.clean()
+        self.sync()
+
+        self.info["login"]["stats"][0] += 1
+        if self.info["login"]["stats"][0] == 1:
             self.log_info(self._("Login user `{}`...").format(self.user))
         else:
             self.log_info(self._("Relogin user `{}`...").format(self.user))
-            self.clean()
 
         self.req = self.pyload.request_factory.get_request(self.classname, self.user)
 
-        self.sync()
         self.setup()
 
         timestamp = time.time()
@@ -189,7 +191,7 @@ class BaseAccount(BasePlugin):
             d = {"login": {}, "data": {}}
 
             for k, v in u.items():
-                if k in ("password", "timestamp", "valid"):
+                if k in ("password", "timestamp", "stats", "valid"):
                     d["login"][k] = v
                 else:
                     d["data"][k] = v
@@ -212,11 +214,9 @@ class BaseAccount(BasePlugin):
 
     def get_info(self, refresh=True):
         """
-        Retrieve account infos for an user, do **not** overwrite this method! just use
+        Retrieve account infos for a user, do **not** overwrite this method! just use
         it to retrieve infos in downloader plugins. see `grab_info`
 
-        :param user: username
-        :param relogin: reloads cached account information
         :return: dictionary with information
         """
         if not self.logged:
@@ -277,7 +277,8 @@ class BaseAccount(BasePlugin):
         for user.
 
         :param user:
-        :param req: `Request` instance
+        :param password:
+        :param data:
         :return:
         """
         raise NotImplementedError
@@ -328,11 +329,11 @@ class BaseAccount(BasePlugin):
 
         d = {
             "login": user,
-            "maxtraffic": None,
             "options": options or {"limit_dl": ["0"]},
             "password": password or "",
             "plugin": self.pyload.account_manager.get_account_plugin(self.classname),
             "premium": None,
+            "stats": [0, 0],  #: login_count, chosen_time
             "timestamp": 0,
             "trafficleft": None,
             "type": self.__name__,
@@ -375,10 +376,17 @@ class BaseAccount(BasePlugin):
 
     @lock
     def select(self):
+        def hide(secret):
+            hidden = secret[:3] + "*******"
+            return hidden
+
         free_accounts = {}
         premium_accounts = {}
 
         for user in self.accounts:
+            if not self.accounts[user]["plugin"].choose(user):
+                continue
+
             info = self.accounts[user]["plugin"].get_info()
             data = info["data"]
 
@@ -398,14 +406,14 @@ class BaseAccount(BasePlugin):
                     self.log_warning(
                         self._(
                             "Invalid time format `{}` for account `{}`, use 1:22-3:44"
-                        ).format(user, time_data)
+                        ).format(hide(user), time_data)
                     )
 
             if data["trafficleft"] == 0:
                 self.log_warning(
                     self._(
                         "Not using account `{}` because the account has no traffic left"
-                    ).format(user)
+                    ).format(hide(user))
                 )
                 continue
 
@@ -414,32 +422,27 @@ class BaseAccount(BasePlugin):
                 self.log_warning(
                     self._(
                         "Not using account `{}` because the account has expired"
-                    ).format(user)
+                    ).format(hide(user))
                 )
                 continue
 
             if data["premium"]:
-                premium_accounts[user] = info
+                premium_accounts[user] =  copy.copy(info)
 
             else:
-                free_accounts[user] = info
+                free_accounts[user] = copy.copy(info)
 
         account_list = list((premium_accounts or free_accounts).items())
 
         if not account_list:
             return None, None
 
-        validuntil_list = [
-            (user, info) for user, info in account_list if info["data"]["validuntil"]
-        ]
+        #: Choose the oldest used account
+        chosen_account = sorted(account_list, key=lambda x: x[1]["login"]["stats"][1])[0]
+        self.accounts[chosen_account[0]]["stats"][1] = time.time()
 
-        if not validuntil_list:
-            # TODO: Random account?! Rewrite in 0.6.x
-            return random.choice(account_list)
-
-        return sorted(
-            validuntil_list, key=lambda a: a[1]["data"]["validuntil"], reverse=True
-        )[0]
+        self.log_debug("Using account {}".format(hide(chosen_account[0])))
+        return chosen_account
 
     @lock
     def choose(self, user=None):
@@ -456,23 +459,24 @@ class BaseAccount(BasePlugin):
             )
             return False
 
-        if self.req and user == self.user:
-            return True
-
-        self.user = user
-        self.info.clear()
-        self.clean()
+        else:
+            if self.req and user == self.user:
+                return True
 
         if user is None:
             return False
 
         else:
+            self.user = user
+            self.info.clear()
+            self.req.close()
+
+            self.req = self.pyload.request_factory.get_request(
+                self.classname, self.user
+            )
+
             if not self.logged:
                 self.relogin()
-            else:
-                self.req = self.pyload.request_factory.get_request(
-                    self.classname, self.user
-                )
 
             return True
 

@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import random
-import socket
 import string
 
 import js2py
 
-from .check import is_mapping
+js2py.disable_pyimport()
 
 
 def random_string(length):
