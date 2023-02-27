@@ -12,7 +12,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class ZippyshareCom(SimpleHoster):
     __name__ = "ZippyshareCom"
     __type__ = "hoster"
-    __version__ = "0.99"
+    __version__ = "1.00"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?P<HOST>www\d{0,3}\.zippyshare\.com)/(?:[vd]/|view\.jsp.*key=)(?P<KEY>[\w^_]+)'
@@ -69,9 +69,10 @@ class ZippyshareCom(SimpleHoster):
         #: Get all the scripts inside the html body
         soup = BeautifulSoup.BeautifulSoup(self.data)
         scripts = [
-            s.getText() for s in soup.body.findAll(
-                'script',
-                type='text/javascript') if "('dlbutton').href =" in s.getText()]
+            s.getText()
+            for s in soup.body.findAll('script', type='text/javascript')
+            if re.search(r"\('dlbutton'\).href *=", s.getText() or "") is not None
+        ]
 
         #: Emulate a document in JS
         inits = ['''
