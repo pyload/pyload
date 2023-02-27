@@ -77,7 +77,7 @@ class ZippyshareCom(SimpleDownloader):
         scripts = [
             s.string
             for s in soup.body.find_all("script", type="text/javascript")
-            if "('dlbutton').href =" in (s.string or "")
+            if re.search(r"\('dlbutton'\).href *=", s.string or "") is not None
         ]
 
         #: Emulate a document in JS
