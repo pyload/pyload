@@ -47,7 +47,7 @@ class BIGHTTPRequest(HTTPRequest):
 class FilecryptCc(Crypter):
     __name__ = "FilecryptCc"
     __type__ = "crypter"
-    __version__ = "0.47"
+    __version__ = "0.48"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?filecrypt\.(?:cc|co)/Container/\w+'
@@ -63,7 +63,7 @@ class FilecryptCc(Crypter):
     URL_REPLACEMENTS = [(r"filecrypt.co", "filecrypt.cc")]
 
     DLC_LINK_PATTERN = r'onclick="DownloadDLC\(\'(.+)\'\);">'
-    WEBLINK_PATTERN = r"<button onclick=\"openLink.?'([\w\-]*)',"
+    WEBLINK_PATTERN = r"<button onclick=\"[\w\-]+?/\*\d+?\*/\('([\w/-]+?)',"
     MIRROR_PAGE_PATTERN = r'"[\w]*" href="(https?://(?:www\.)?filecrypt.cc/Container/\w+\.html\?mirror=\d+)">'
 
     CAPTCHA_PATTERN = r'<h2>Security prompt</h2>'
@@ -258,23 +258,26 @@ class FilecryptCc(Crypter):
             return None
 
     def handle_dlc_container(self):
+        m = re.search(r"const (\w+) = DownloadDLC;", self.site_with_links)
+        if m is not None:
+            self.site_with_links = self.site_with_links.replace(m.group(1), "DownloadDLC")
         dlcs = re.findall(self.DLC_LINK_PATTERN, self.site_with_links)
 
         if not dlcs:
             return
 
-        for _dlc in dlcs:
-            self.urls.append(urlparse.urljoin(self.pyfile.url, "/DLC/%s.dlc" % _dlc))
+        for dlc in dlcs:
+            self.urls.append(urlparse.urljoin(self.pyfile.url, "/DLC/%s.dlc" % dlc))
 
     def handle_weblinks(self):
         try:
             links = re.findall(self.WEBLINK_PATTERN, self.site_with_links)
 
-            for _link in links:
-                _link = "http://www.filecrypt.cc/Link/%s.html" % _link
+            for link in links:
+                link = "https://filecrypt.cc/Link/%s.html" % link
                 for i in range(5):
-                    self.data = self._filecrypt_load_url(_link)
-                    m = re.search(r'https://www\.filecrypt\.cc/index\.php\?Action=Go&id=\w+', self.data)
+                    self.data = self._filecrypt_load_url(link)
+                    m = re.search(r'https://.filecrypt\.cc/index\.php\?Action=Go&id=\w+', self.data)
                     if m is not None:
                         headers = self._filecrypt_load_url(m.group(0), just_header=True)
                         self.urls.append(headers['location'])
@@ -288,6 +291,10 @@ class FilecryptCc(Crypter):
 
     def handle_CNL(self):
         try:
+            m = re.search(r"const (\w+) = CNLPOP;", self.site_with_links)
+            if m is not None:
+                self.site_with_links = self.site_with_links.replace(m.group(1), "CNLPOP")
+
             CNLdata = re.findall('onsubmit="CNLPOP\(\'(.*)\', \'(.*)\', \'(.*)\', \'(.*)\'\);',self.site_with_links)
             for index in CNLdata:
                 self.urls.extend(self._get_links(index[2], index[1]))
