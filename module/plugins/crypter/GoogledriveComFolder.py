@@ -9,7 +9,7 @@ from ..internal.misc import json
 class GoogledriveComFolder(Crypter):
     __name__ = "GoogledriveComFolder"
     __type__ = "crypter"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?drive\.google\.com/(?:folderview\?.*id=|drive/(?:.+?/)?folders/)(?P<ID>[-\w]+)'
@@ -58,7 +58,9 @@ class GoogledriveComFolder(Crypter):
         links = []
         json_data = self.api_response("files", q="'%s' in parents" % folder_id,
                                       pageSize=100,
-                                      fields="files/id,files/mimeType,nextPageToken")
+                                      fields="files/id,files/mimeType,nextPageToken",
+                                      supportsAllDrives="true",
+                                      includeItemsFromAllDrives="true")
 
         if json_data is None:
             self.fail("API error")
@@ -83,7 +85,9 @@ class GoogledriveComFolder(Crypter):
             json_data = self.api_response("files", q="'%s' in parents" % folder_id,
                                           pageToken=next_page,
                                           pageSize=100,
-                                          fields="files/id,files/mimeType,nextPageToken")
+                                          fields="files/id,files/mimeType,nextPageToken",
+                                          supportsAllDrives="true",
+                                          includeItemsFromAllDrives="true")
 
             if json_data is None:
                 self.fail("API error")
@@ -110,7 +114,8 @@ class GoogledriveComFolder(Crypter):
     def decrypt(self, pyfile):
         links = []
 
-        json_data = self.api_response("files/%s" % self.info['pattern']['ID'])
+        json_data = self.api_response("files/%s" % self.info['pattern']['ID'],
+                                      supportsAllDrives="true")
         if json_data is None:
             self.fail("API error")
 
