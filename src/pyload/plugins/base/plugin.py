@@ -200,15 +200,14 @@ class BasePlugin:
         if isinstance(cookies, list):
             set_cookies(req.cj, cookies)
 
+        # NOTE: req can be a HTTPRequest or a Browser object
         http_req = self.req.http if hasattr(self.req, "http") else self.req
 
         # TODO: Move to network in 0.6.x
         if not redirect:
-            # NOTE: req can be a HTTPRequest or a Browser object
             http_req.c.setopt(pycurl.FOLLOWLOCATION, 0)
 
         elif type(redirect) is int:
-            # NOTE: req can be a HTTPRequest or a Browser object
             http_req.c.setopt(pycurl.MAXREDIRS, redirect)
 
         # TODO: Move to network in 0.6.x
