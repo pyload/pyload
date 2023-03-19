@@ -70,7 +70,8 @@ class RequestFactory:
             return self.cookiejars[(plugin_name, account)]
 
         cj = CookieJar(plugin_name, account)
-        self.cookiejars[(plugin_name, account)] = cj
+        if account:
+            self.cookiejars[(plugin_name, account)] = cj
         return cj
 
     def get_proxies(self):
