@@ -14,7 +14,7 @@ from .account import BaseAccount
 class XFSAccount(BaseAccount):
     __name__ = "XFSAccount"
     __type__ = "account"
-    __version__ = "0.64"
+    __version__ = "0.65"
     __status__ = "stable"
 
     __config__ = [
@@ -141,7 +141,7 @@ class XFSAccount(BaseAccount):
                     else:
                         unit = ""
 
-                    trafficleft = self.parse_traffic(size, unit)
+                    trafficleft = max(0, self.parse_traffic(size, unit))
 
             except Exception as exc:
                 self.log_error(exc)
