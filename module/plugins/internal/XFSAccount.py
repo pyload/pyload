@@ -128,7 +128,7 @@ class XFSAccount(Account):
                     else:
                         unit = None
 
-                    trafficleft = self.parse_traffic(size, unit)
+                    trafficleft = max(0, self.parse_traffic(size, unit))
 
             except Exception, e:
                 self.log_error(e)
