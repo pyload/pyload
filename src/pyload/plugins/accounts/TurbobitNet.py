@@ -9,7 +9,7 @@ from ..helpers import parse_html_form, set_cookie
 class TurbobitNet(BaseAccount):
     __name__ = "TurbobitNet"
     __type__ = "account"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __status__ = "testing"
 
     __description__ = """TurbobitNet account plugin"""
@@ -20,14 +20,6 @@ class TurbobitNet(BaseAccount):
     ]
 
     LOGIN_FAIL_PATTERN = r">(?:E-Mail address appears to be invalid\. Please try again|Incorrect login or password)</div>"
-
-    @BaseAccount.logged.getter
-    def logged(self):
-        if super(TurbobitNet, self).logged is False:
-            return False
-
-        self.data = self.load("https://turbobit.net/")
-        return re.search(r'>Turbo access till ([\d.]+)<', self.data) is not None
 
     def grab_info(self, user, password, data):
         html = self.load("https://turbobit.net/")
@@ -59,6 +51,7 @@ class TurbobitNet(BaseAccount):
         inputs["user[login]"] = user
         inputs["user[pass]"] = password
         inputs["user[submit]"] = "Sign in"
+        inputs["user[memory]"] = "on"
 
         if inputs.get("user[captcha_type]"):
             self.fail_login(

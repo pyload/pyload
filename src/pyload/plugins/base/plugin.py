@@ -21,7 +21,7 @@ if os.name != "nt":
 class BasePlugin:
     __name__ = "BasePlugin"
     __type__ = "base"
-    __version__ = "0.78"
+    __version__ = "0.79"
     __status__ = "stable"
 
     __config__ = []  #: [("name", "type", "desc", "default")]
@@ -417,7 +417,7 @@ class BasePlugin:
         Remove references.
         """
         try:
-            self.req.clear_cookies()
+            # self.req.clear_cookies()
             self.req.close()
 
         except AttributeError:
