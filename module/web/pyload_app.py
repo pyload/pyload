@@ -354,7 +354,7 @@ def config():
             trafficleft = _("not available")
         elif data.trafficleft == -1:
             trafficleft = _("unlimited")
-        elif userdata.trafficleft == 0:
+        elif data.trafficleft == 0:
             trafficleft = _("drained")
         else:
             trafficleft = formatSize(data.trafficleft)
