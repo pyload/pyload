@@ -27,7 +27,7 @@ _decode = decode
 class Plugin(object):
     __name__ = "Plugin"
     __type__ = "plugin"
-    __version__ = "0.78"
+    __version__ = "0.79"
     __status__ = "stable"
 
     __config__ = []  #: [("name", "type", "desc", "default")]
@@ -435,7 +435,7 @@ class Plugin(object):
         Remove references
         """
         try:
-            self.req.clearCookies()
+            # self.req.clearCookies()
             self.req.close()
 
         except AttributeError:

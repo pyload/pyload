@@ -11,7 +11,7 @@ from .Plugin import Plugin, Skip
 class Account(Plugin):
     __name__ = "Account"
     __type__ = "account"
-    __version__ = "0.89"
+    __version__ = "0.90"
     __status__ = "stable"
 
     __description__ = """Base account plugin"""
@@ -78,7 +78,7 @@ class Account(Plugin):
 
     def setup(self):
         """
-        Setup for enviroment and other things, called before logging (possibly more than one time)
+        Setup for environment and other things, called before logging (possibly more than one time)
         """
         pass
 
@@ -136,6 +136,15 @@ class Account(Plugin):
             self.syncback()
 
             return bool(self.info['login']['valid'])
+
+
+    def logout(self):
+        """
+        Invalidate the account timestamp so relogin will be forced next time.
+        """
+        self.sync()
+        self.info["login"]["timestamp"] = 0
+        self.syncback()
 
     #@TODO: Recheck in 0.4.10
     def syncback(self):
@@ -336,6 +345,8 @@ class Account(Plugin):
     def removeAccount(self, user):
         self.log_info(_("Removing user `%s`...") % user)
         self.accounts.pop(user, None)
+        # self.pyload.requestFactory.remove_cookie_jar(self.classname, user)
+        self.pyload.requestFactory.cookiejars.pop((self.classname, user), None)
         if user is self.user:
             self.choose()
 

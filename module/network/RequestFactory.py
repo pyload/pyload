@@ -80,8 +80,12 @@ class RequestFactory():
             return self.cookiejars[(pluginName, account)]
 
         cj = CookieJar(pluginName, account)
-        self.cookiejars[(pluginName, account)] = cj
+        if account:
+            self.cookiejars[(pluginName, account)] = cj
         return cj
+
+    def removeCookieJar(self, plugin_name, account):
+        self.cookiejars.pop((plugin_name, account), None)
 
     def getProxies(self):
         """ returns a proxy list for the request classes """

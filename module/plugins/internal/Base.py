@@ -26,7 +26,7 @@ def parse_fileInfo(klass, url="", html=""):
 class Base(Plugin):
     __name__ = "Base"
     __type__ = "base"
-    __version__ = "0.40"
+    __version__ = "0.41"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -435,8 +435,6 @@ class Base(Plugin):
                 self.restart_free = True
             else:
                 self.fail("%s | %s" % (msg, _("Url was already processed as free")))
-
-        self.req.clearCookies()
 
         raise Retry(encode(msg))  # @TODO: Remove `encode` in 0.4.10
 
