@@ -350,10 +350,12 @@ def config():
     accs = []
 
     for data in PYLOAD.getAccounts(False):
-        if data.trafficleft == -1:
-            trafficleft = _("unlimited")
-        elif not data.trafficleft:
+        if data.trafficleft is None:
             trafficleft = _("not available")
+        elif data.trafficleft == -1:
+            trafficleft = _("unlimited")
+        elif userdata.trafficleft == 0:
+            trafficleft = _("drained")
         else:
             trafficleft = formatSize(data.trafficleft)
 
