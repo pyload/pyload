@@ -1,16 +1,18 @@
 # -*- coding: utf-8 -*-
 
+import fnmatch
 import re
 import urlparse
 
-from ..internal.Hoster import Hoster
 from module.network.HTTPRequest import BadHeader
+
+from ..internal.Hoster import Hoster
 
 
 class Http(Hoster):
     __name__ = "Http"
     __type__ = "hoster"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __status__ = "testing"
 
     __pattern__ = r'(?:jd|pys?)://.+'
@@ -53,9 +55,12 @@ class Http(Hoster):
                 else:
                     logins = {}
 
-                if netloc in logins:
-                    auth = logins[netloc]
-                    self.log_debug("Logging on to %s using the account plugin" % netloc)
+                for pattern, auth in logins.items():
+                    if fnmatch.fnmatch(netloc, pattern):
+                        self.log_debug("Logging on to %s using the account plugin" % netloc)
+                        break
+                else:
+                    auth = None
 
             if auth is not None:
                 self.req.addAuth(auth)
