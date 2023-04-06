@@ -485,9 +485,18 @@ interactiveCaptchaHandler.prototype.startInteraction = function(url, params) {
 };
 
 // This function listens to messages from the TamperMonkey script in the iframe
-interactiveCaptchaHandler.prototype.windowEventListener = function(e) {
-    var interactiveHandlerInstance = e.data;
-    var requestMessage = JSON.parse(e.originalEvent.data);
+interactiveCaptchaHandler.prototype.windowEventListener = function(event) {
+    var requestMessage;
+    try {
+        requestMessage = JSON.parse(event.originalEvent.data);
+    } catch (e) {
+        if (e instanceof SyntaxError) {
+            return
+        } else {
+            console.error(e)
+        }
+    }
+    var interactiveHandlerInstance = event.data;
 
     if(requestMessage.actionCode === interactiveHandlerInstance.actionCodes.submitResponse) {
         // We got the response! pass it to the callback function
