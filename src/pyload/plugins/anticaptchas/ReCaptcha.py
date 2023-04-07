@@ -16,7 +16,7 @@ from ..base.captcha_service import CaptchaService
 class ReCaptcha(CaptchaService):
     __name__ = "ReCaptcha"
     __type__ = "anticaptcha"
-    __version__ = '0.49'
+    __version__ = '0.50'
     __status__ = "testing"
 
     __description__ = "ReCaptcha captcha service plugin"
