@@ -11,7 +11,7 @@ from ..base.simple_downloader import SimpleDownloader
 class EasyuploadIo(SimpleDownloader):
     __name__ = "EasyuploadIo"
     __type__ = "downloader"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?easyupload\.io/(?P<ID>\w+)"
@@ -37,7 +37,7 @@ class EasyuploadIo(SimpleDownloader):
         self.multi_dl = True
 
     def handle_free(self, pyfile):
-        password_protected = '<input id="password"' in self.data
+        password_protected = "$('#password-modal').modal('open');" in self.data
 
         m = re.search(r'url: "(https://\w+\.easyupload\.io/action\.php)"', self.data)
         if m is None:
