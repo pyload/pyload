@@ -9,10 +9,11 @@ from logging import getLogger
 from urllib.parse import quote, urlencode
 
 import certifi
-
 import pycurl
+
 from pyload import APPID
 
+from ...utils.check import is_mapping
 from ...utils.convert import to_bytes, to_str
 from ..exceptions import Abort
 from .exceptions import BadHeader
@@ -235,9 +236,11 @@ class HTTPRequest:
                 elif isinstance(post, str):
                     post = post.encode()
                     self.c.setopt(pycurl.POSTFIELDS, post)
-                else:  # TODO: check if mapping
+                elif is_mapping(post):
                     post = myurlencode(post)
                     self.c.setopt(pycurl.POSTFIELDS, post)
+                else:
+                    raise ValueError("Invalid value for 'post'")
 
             else:
                 multipart_post = []
