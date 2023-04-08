@@ -16,7 +16,7 @@ from ..base.captcha_service import CaptchaService
 class ReCaptcha(CaptchaService):
     __name__ = "ReCaptcha"
     __type__ = "anticaptcha"
-    __version__ = '0.48'
+    __version__ = '0.50'
     __status__ = "testing"
 
     __description__ = "ReCaptcha captcha service plugin"
@@ -33,147 +33,148 @@ class ReCaptcha(CaptchaService):
     INVISIBLE_V2_PATTERN = r'data-size\s*=\s*(["\'])\s*invisible\s*\1'
     STOKEN_V2_PATTERN = r'data-stoken=["\']([\w\-]+)'
 
-    RECAPTCHA_INTERACTIVE_SIG = "7b99386315b3e035285946b842049575fc69a88ccc219e1bc96a9afd0f3c4b7456f09d36bf3dc530" + \
-                                "a08cd50f1b3128716cf727b30f7de4ab1513f15bb82776e84404089a764c6305d9c6033c99f8514e" + \
-                                "249bc3fd5530b475c00059797ce5a45d131adb626a440366af9acc9a50a3a7327b9d3dc28b59f83f" + \
-                                "32129feb89e0cfb74521c306e8ac0b9fff9df31d453eedc54a17d41528c2d866363fc13cb524ad77" + \
-                                "60483b28bf4a347de4a8b2b1480f83f66c4408ad9dbfec78f6f1525b8507b6e52cdd13e13f8e3bfc" + \
-                                "0bb5dd1860e6fc5db99ef0c915fd626c3aaec0bb5ead3a668ebb31dd2a08eacaefffdf51e3a0ba31" + \
-                                "cb636da134c24633f2b2b38f56dfbb92"
+    RECAPTCHA_INTERACTIVE_SIG = "661a94a7eeb590d8d0f20d8d6e7aefa474918af01cc573da7101bc53df6ebd4ccf62df44c0bf3171" + \
+                                "fa389cf9ed8e9bb9b684621e2a1d1a3bd5bd1d5450ba5350d26f63c119477fcc3f53c5a4e784a5b9" + \
+                                "7a013cbc4e802325df4a693de112bc8fe72e8d64ec6e14d14b907290c0db04e139283733a7981daf" + \
+                                "b05a00785d1ed32c9dcd2ae9aa10f2c058ecb7667c3d000adfc1372d6a161e348ba1170e4211737f" + \
+                                "1f54518bf9f50197bba1bb336ceb17be220245f1554dfad7af1e2b996d65419d259e98a1f468dfc2" + \
+                                "ce492fa359f7489184786ea9d02f595101910d711d2c93978a81e9a573a27720f2e81c5d636b2483" + \
+                                "0c85257db01aeaf58474b00190fb702f"
 
     RECAPTCHA_INTERACTIVE_JS = """
-(() => {
-    let is_replaced=false;
-    gpyload.getFrameSize = function() {
-            var rectAnchor =  {top: 0, right: 0, bottom: 0, left: 0},
-                rectPopup =  {top: 0, right: 0, bottom: 0, left: 0},
-                rect;
-            if (is_replaced) {
-                var anchor = document.body.querySelector("iframe[src*='/anchor']");
-                if (anchor !== null && gpyload.isVisible(anchor)) {
-                    rect = anchor.getBoundingClientRect();
-                    rectAnchor = {top: rect.top, right: rect.right, bottom: rect.bottom, left: rect.left};
-                }
-                var popup = document.body.querySelector("iframe[src*='/bframe']");
-                if (popup !== null && gpyload.isVisible(popup)) {
-                    rect = popup.getBoundingClientRect();
-                    rectPopup = {top: rect.top, right: rect.right, bottom: rect.bottom, left: rect.left};
-                }
-            }
-            var left = Math.round(Math.min(rectAnchor.left, rectAnchor.right, rectPopup.left, rectPopup.right));
-            var right = Math.round(Math.max(rectAnchor.left, rectAnchor.right, rectPopup.left, rectPopup.right));
-            var top = Math.round(Math.min(rectAnchor.top, rectAnchor.bottom, rectPopup.top, rectPopup.bottom));
-            var bottom = Math.round(Math.max(rectAnchor.top, rectAnchor.bottom, rectPopup.top, rectPopup.bottom));
-            return {top: top, left: left, bottom: bottom, right: right};
-        };
-    let do_replacement = function()
-    {
-        while(document.children[0].childElementCount > 0) {
-            document.children[0].removeChild(document.children[0].children[0]);
-        }
-        document.children[0].innerHTML = '<html><head></head><body style="display:inline-block;"><div id="captchadiv" style="display: inline-block;"></div></body></html>';
-        is_replaced = true;
-        gpyload.data.sitekey = request.params.sitekey;
-
-        // function that is called when the captcha finished loading and is ready to interact
-        window.pyloadCaptchaOnLoadCallback = function() {
-            grecaptcha.render (
-                "captchadiv",
-                {size: "compact",
-                    'sitekey': gpyload.data.sitekey,
-                    'callback': function() {
-                        var recaptchaResponse = grecaptcha.getResponse(); // get captcha response
-                        gpyload.submitResponse(recaptchaResponse);
-                    }}
-            );
-            gpyload.activated();
-        };
-
-
-        if(typeof grecaptcha !== 'undefined' && grecaptcha) {
-            window.pyloadCaptchaOnLoadCallback();
-        } else {
-            var js_script = document.createElement('script');
-            js_script.type = "text/javascript";
-            js_script.src = "//www.google.com/recaptcha/api.js?onload=pyloadCaptchaOnLoadCallback&render=explicit";
-            js_script.async = true;
-            document.getElementsByTagName('head')[0].appendChild(js_script);
-        }
-    };
-
-    if (
-        typeof request.params.script.params == 'undefined'
-        || request.params.script.params === null
-        || request.params.script.params.wait_for === null
-    ) {
-        do_replacement();
-    } else {
-        let wait_for_target = typeof request.params.script.params.wait_for_target === 'undefined'
-            ? null
-            : request.params.script.params.wait_for_target;
-        let wait_for_element = document.querySelector(request.params.script.params.wait_for);
-        if (
-            wait_for_element !== null
-            && (
-                wait_for_target === null
-                || wait_for_element.parentNode.matches(wait_for_target)
-            )
-        ) {
-            console.log('already found');
-            do_replacement();
-        } else {
-            let did_replacement = false;
-            let observer = new MutationObserver((mutations) => {
-                const loaded = function() {
-                    gpyload.loaded();
-                    window.clearTimeout(loadTimeOut);
-                    did_replacement = true;
-                    observer.disconnect()
-                    do_replacement();
-                };
-
-                mutations.forEach((mutation) => {
-                    if (!mutation.addedNodes) return
-                    if (wait_for_target !== null && ! mutation.target.matches(wait_for_target)) {
-                        return;
-                    }
-                    for (let i = 0; i < mutation.addedNodes.length; i++) {
-                        let node = mutation.addedNodes[i];
-                        if (
-                            (
-                                node.nodeType === 1
-                                && [node, ...node.querySelectorAll(request.params.script.params.wait_for)]
-                                    .filter(el => el.matches(request.params.script.params.wait_for)).length > 0
-                            )
-                            && !did_replacement
-                        ) {
-                            loaded();
+            (() => {
+                let is_replaced=false;
+                gpyload.getFrameSize = function() {
+                    var rectAnchor =  {top: 0, right: 0, bottom: 0, left: 0},
+                        rectPopup =  {top: 0, right: 0, bottom: 0, left: 0},
+                        rect;
+                    if (is_replaced) {
+                        var anchor = document.body.querySelector("iframe[src*='/anchor']");
+                        if (anchor !== null && gpyload.isVisible(anchor)) {
+                            rect = anchor.getBoundingClientRect();
+                            rectAnchor = {top: rect.top, right: rect.right, bottom: rect.bottom, left: rect.left};
+                        }
+                        var popup = document.body.querySelector("iframe[src*='/bframe']");
+                        if (popup !== null && gpyload.isVisible(popup)) {
+                            rect = popup.getBoundingClientRect();
+                            rectPopup = {top: rect.top, right: rect.right, bottom: rect.bottom, left: rect.left};
                         }
                     }
-                });
-            });
+                    var left = Math.round(Math.min(rectAnchor.left, rectAnchor.right, rectPopup.left, rectPopup.right));
+                    var right = Math.round(Math.max(rectAnchor.left, rectAnchor.right, rectPopup.left, rectPopup.right));
+                    var top = Math.round(Math.min(rectAnchor.top, rectAnchor.bottom, rectPopup.top, rectPopup.bottom));
+                    var bottom = Math.round(Math.max(rectAnchor.top, rectAnchor.bottom, rectPopup.top, rectPopup.bottom));
+                    return {top: top, left: left, bottom: bottom, right: right};
+                };
+                let do_replacement = function()
+                {
+                    while(document.children[0].childElementCount > 0) {
+                        document.children[0].removeChild(document.children[0].children[0]);
+                    }
+                    document.children[0].innerHTML = '<html><head></head><body style="display:inline-block;"><div id="captchadiv" style="display: inline-block;"></div></body></html>';
+                    is_replaced = true;
+                    gpyload.data.sitekey = request.params.sitekey;
 
-            console.log('loading');
-            gpyload.loading();
-            let loadTimeOut = window.setTimeout(() => { gpyload.aborted(); }, 10000);
-            observer.observe(document, {
-                childList: true,
-                subtree: true,
-                attributes: false,
-                characterData: false
-            });
-        }
-    }
-})();
+                    // function that is called when the captcha finished loading and is ready to interact
+                    window.pyloadCaptchaOnLoadCallback = function() {
+                        grecaptcha.render (
+                            "captchadiv", {
+                                size: "compact",
+                                'sitekey': gpyload.data.sitekey,
+                                'callback': function() {
+                                    var recaptchaResponse = grecaptcha.getResponse(); // get captcha response
+                                    gpyload.submitResponse(recaptchaResponse);
+                                }
+                            }
+                        );
+                        gpyload.activated();
+                    };
+
+                    delete window.grecaptcha;
+                    if(typeof grecaptcha !== 'undefined' && grecaptcha) {
+                        window.pyloadCaptchaOnLoadCallback();
+                    } else {
+                        var js_script = document.createElement('script');
+                        js_script.type = "text/javascript";
+                        js_script.src = "//www.google.com/recaptcha/api.js?onload=pyloadCaptchaOnLoadCallback&render=explicit";
+                        js_script.async = true;
+                        document.getElementsByTagName('head')[0].appendChild(js_script);
+                    }
+                };
+
+                if (
+                    typeof request.params.script.params == 'undefined'
+                    || request.params.script.params === null
+                    || request.params.script.params.wait_for === null
+                ) {
+                    do_replacement();
+                } else {
+                    let wait_for_target = typeof request.params.script.params.wait_for_target === 'undefined'
+                        ? null
+                        : request.params.script.params.wait_for_target;
+                    let wait_for_element = document.querySelector(request.params.script.params.wait_for);
+                    if (
+                        wait_for_element !== null
+                        && (
+                            wait_for_target === null
+                            || wait_for_element.parentNode.matches(wait_for_target)
+                        )
+                    ) {
+                        console.log('already found');
+                        do_replacement();
+                    } else {
+                        let did_replacement = false;
+                        let observer = new MutationObserver((mutations) => {
+                            const loaded = function() {
+                                gpyload.loaded();
+                                window.clearTimeout(loadTimeOut);
+                                did_replacement = true;
+                                observer.disconnect()
+                                do_replacement();
+                            };
+
+                            mutations.forEach((mutation) => {
+                                if (!mutation.addedNodes) return
+                                if (wait_for_target !== null && ! mutation.target.matches(wait_for_target)) {
+                                    return;
+                                }
+                                for (let i = 0; i < mutation.addedNodes.length; i++) {
+                                    let node = mutation.addedNodes[i];
+                                    if (
+                                        (
+                                            node.nodeType === 1
+                                            && [node, ...node.querySelectorAll(request.params.script.params.wait_for)]
+                                                .filter(el => el.matches(request.params.script.params.wait_for)).length > 0
+                                        )
+                                        && !did_replacement
+                                    ) {
+                                        loaded();
+                                    }
+                                }
+                            });
+                        });
+
+                        console.log('loading');
+                        gpyload.loading();
+                        let loadTimeOut = window.setTimeout(() => { gpyload.aborted(); }, 10000);
+                        observer.observe(document, {
+                            childList: true,
+                            subtree: true,
+                            attributes: false,
+                            characterData: false
+                        });
+                    }
+                }
+            })();
 """
 
-    RECAPTCHA_INVISIBLE_SIG = "7a51902e14a4afd9cd6f09e6e4dab3ec7c44f3d901693e9fcd06ff915decfb942e60fc18752cfe72" + \
-                              "5a6e0017e26bab86d385cab9f3ebf49a7b3c1791bdde5754790852b695d28b4b304e7f14948c87f7" + \
-                              "6962fed3d18ed02e69d4f90aaa8f41b0e760355815220baeb9f696fa4ebde41ffb64cbdf774a84b5" + \
-                              "5e48e87eebea2237a9d196fe6bb2ecdf5e369581398ed489b1bc571cdae84d4724b4d7f7ab8f6e70" + \
-                              "a17cd0f85b4eca338c07b34b13bdf18242abd0dd7d0b85257013a5267af98381157eb855ee145506" + \
-                              "6759e37feee3e64cab997c0ed12063b2a00bd8ebc34d898463d97540d2538e41be1946e94202b445" + \
-                              "99c646544f79711f5ee1ee03a9b816b1"
+    RECAPTCHA_INVISIBLE_SIG = "6c6fb9970fdeac68b95809ce45a344f1225d2284e2c08507261f3506dbeebe9f0e1d9040df64191e" + \
+                              "938f578b52009c31d0da920e1a9616d73ff7b7eb1e964477fac169e412fd1e325992c1783c4664e8" + \
+                              "ba207986af12939fcc50bed642f8c26136cc8656a22be2fc51651437d1e0d356ae19a8c33d569f4d" + \
+                              "7d11d3d794a074caf06f58bd2e2e339d31968967ad78c955ea36c707a8524ba3933509525a22e3ba" + \
+                              "56ad3e71770700e6a1d18158db33f65f47d6558f16d2db5c75ab8b1be8595846a27f4aa514a98d7c" + \
+                              "b13d6a557a1273ca5a06b1251f7481d787e3eca77523a8733be179318f46baaa1d99112daaf08c4f" + \
+                              "86e067931f593c0f1941d9a8414fa1a4"
 
     RECAPTCHA_INVISIBLE_JS = """
 			while(document.children[0].childElementCount > 0) {
@@ -196,6 +197,7 @@ class ReCaptcha(CaptchaService):
 				grecaptcha.execute();
 			};
 
+			delete window.grecaptcha;
 			if(typeof grecaptcha !== 'undefined' && grecaptcha) {
 				window.pyloadCaptchaOnLoadCallback();
 			} else {

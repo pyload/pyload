@@ -1182,7 +1182,6 @@ class Api:
                         acc["options"],
                         acc["valid"],
                         acc["trafficleft"],
-                        acc["maxtraffic"],
                         acc["premium"],
                         acc["type"],
                     )

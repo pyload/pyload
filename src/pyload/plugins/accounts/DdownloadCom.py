@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from ..base.xfs_account import XFSAccount
+from ..helpers import search_pattern
 
 
 class DdownloadCom(XFSAccount):
     __name__ = "DdownloadCom"
     __type__ = "account"
-    __version__ = "0.04"
+    __version__ = "0.06"
     __status__ = "testing"
 
     __description__ = """Ddownload.com account plugin"""

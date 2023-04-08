@@ -1,35 +1,27 @@
 # -*- coding: utf-8 -*-
 
 import datetime
+import mimetypes
 import operator
-import re
 import os
+import re
 import sys
 import time
+from logging import getLogger
 from urllib.parse import unquote
-import mimetypes
 
 import flask
-
-from pyload import PKGDIR
+from pyload import APPID, PKGDIR
 from pyload.core.utils import format
 
 from ..helpers import (
-    clear_session,
-    get_permission,
-    get_redirect_url,
-    is_authenticated,
-    login_required,
-    permlist,
-    render_base,
-    render_template,
-    set_session,
-    static_file_url,
-)
+    clear_session, get_permission, get_redirect_url, is_authenticated, login_required, permlist, render_base,
+    render_template, set_session, static_file_url)
 
 _RE_LOGLINE = re.compile(r"\[([\d\-]+) ([\d:]+)\] +([A-Z]+) +(.+?) (.*)")
 
 bp = flask.Blueprint("app", __name__)
+log = getLogger(APPID)
 
 
 @bp.route("/favicon.ico", endpoint="favicon")
@@ -63,9 +55,11 @@ def login():
         user_info = api.check_auth(user, password)
 
         if not user_info:
+            log.error(f"Login failed for user '{user}'")
             return render_template("login.html", next=next, errors=True)
 
         set_session(user_info)
+        log.info(f"User '{user}' successfully logged in")
         flask.flash("Logged in successfully")
 
     if is_authenticated():
@@ -86,8 +80,11 @@ def login():
 
 @bp.route("/logout", endpoint="logout")
 def logout():
-    # logout_user()
-    clear_session()
+    s = flask.session
+    user = s.get("name")
+    clear_session(s)
+    if user:
+        log.info(f"User '{user}' logged out")
     return render_template("logout.html")
 
 
@@ -187,10 +184,12 @@ def settings():
     accs = []
 
     for userdata in api.get_accounts(False):
-        if userdata.trafficleft == -1:
-            trafficleft = "unlimited"
-        elif not userdata.trafficleft:
+        if userdata.trafficleft is None:
             trafficleft = "not available"
+        elif userdata.trafficleft == -1:
+            trafficleft = "unlimited"
+        elif userdata.trafficleft == 0:
+            trafficleft = "drained"
         else:
             trafficleft = format.size(userdata.trafficleft)
 
@@ -340,7 +339,7 @@ def logs(start_line=-1):
     s = flask.session
     api = flask.current_app.config["PYLOAD_API"]
 
-    perpage = s.get("perpage", 34)
+    per_page = s.get("perpage", 34)
     reversed = s.get("reversed", False)
 
     warning = ""
@@ -348,7 +347,7 @@ def logs(start_line=-1):
     if not conf:
         warning = "Warning: File log is disabled, see settings page."
 
-    perpage_p = ((20, 20), (34, 34), (40, 40), (100, 100), (0, "all"))
+    per_page_selection = ((20, 20), (34, 34), (40, 40), (100, 100), (0, "all"))
     fro = None
 
     if flask.request.method == "POST":
@@ -358,32 +357,29 @@ def logs(start_line=-1):
         except Exception:
             pass
 
-        perpage = int(flask.request.form.get("perpage", 34))
-        s["perpage"] = perpage
+        per_page = int(flask.request.form.get("perpage", 34))
+        s["perpage"] = per_page
 
         reversed = bool(flask.request.form.get("reversed", False))
         s["reversed"] = reversed
 
         # s.modified = True
 
-    log = api.get_log()
-    if not perpage:
+    log_entries = api.get_log()
+    if not per_page:
         start_line = 0
 
     if start_line < 1:
         start_line = (
-            1 if len(log) - perpage + 1 < 1 or perpage == 0 else len(log) - perpage + 1
+            1 if len(log_entries) - per_page + 1 < 1 or per_page == 0 else len(log_entries) - per_page + 1
         )
 
     if isinstance(fro, datetime.datetime):  #: we will search for datetime.datetime
         start_line = -1
 
     data = []
-    counter = 0
-    perpagecheck = 0
-    for logline in log:
-        counter += 1
-
+    inpage_counter = 0
+    for counter, logline in enumerate(log_entries, start=1):
         if counter >= start_line:
             try:
                 date, time, level, source, message = _RE_LOGLINE.match(logline).groups()
@@ -411,12 +407,12 @@ def logs(start_line=-1):
                         "message": message.rstrip('\n'),
                     }
                 )
-                perpagecheck += 1
+                inpage_counter += 1
                 if (
                     fro is None and dtime is not None
-                ):  #: if fro not set set it to first showed line
+                ):  #: if fro not set, set it to first showed line
                     fro = dtime
-            if perpagecheck >= perpage > 0:
+            if inpage_counter >= per_page > 0:
                 break
 
     if fro is None:  #: still not set, empty log?
@@ -430,10 +426,10 @@ def logs(start_line=-1):
         "log": data,
         "from": fro.strftime("%Y-%m-%d %H:%M:%S"),
         "reversed": reversed,
-        "perpage": perpage,
-        "perpage_p": sorted(perpage_p),
-        "iprev": max(start_line - perpage, 1),
-        "inext": (start_line + perpage) if start_line + perpage <= len(log) else start_line,
+        "perpage": per_page,
+        "perpage_p": sorted(per_page_selection),
+        "iprev": max(start_line - per_page, 1),
+        "inext": (start_line + per_page) if start_line + per_page <= len(log_entries) else start_line,
     }
     return render_template("logs.html", **context)
 

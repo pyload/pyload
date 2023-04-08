@@ -10,7 +10,7 @@ from ..base.decrypter import BaseDecrypter
 class GoogledriveComFolder(BaseDecrypter):
     __name__ = "GoogledriveComFolder"
     __type__ = "decrypter"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?drive\.google\.com/(?:folderview\?.*id=|drive/(?:.+?/)?folders/)(?P<ID>[-\w]+)"
@@ -76,6 +76,8 @@ class GoogledriveComFolder(BaseDecrypter):
             q="'{}' in parents".format(folder_id),
             pageSize=100,
             fields="files/id,files/mimeType,nextPageToken",
+            supportsAllDrives="true",
+            includeItemsFromAllDrives="true",
         )
 
         if json_data is None:
@@ -103,6 +105,8 @@ class GoogledriveComFolder(BaseDecrypter):
                 pageToken=next_page,
                 pageSize=100,
                 fields="files/id,files/mimeType,nextPageToken",
+                supportsAllDrives="true",
+                includeItemsFromAllDrives="true",
             )
 
             if json_data is None:
@@ -131,7 +135,10 @@ class GoogledriveComFolder(BaseDecrypter):
     def decrypt(self, pyfile):
         links = []
 
-        json_data = self.api_request("files/{}".format(self.info["pattern"]["ID"]))
+        json_data = self.api_request(
+            "files/{}".format(self.info["pattern"]["ID"]),
+            supportsAllDrives="true",
+        )
         if json_data is None:
             self.fail("API error")
 

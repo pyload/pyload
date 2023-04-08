@@ -282,7 +282,7 @@ class Core:
     def _setup_network(self):
         self.log.debug("Setup network...")
 
-        # TODO: Move to accountmanager
+        # TODO: Move to AccountManager
         self.log.info(self._("Activating accounts..."))
         self.acm.get_account_infos()
         # self.scheduler.add_job(0, self.acm.get_account_infos)
