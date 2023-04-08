@@ -4,9 +4,9 @@ import imp
 from collections.abc import Iterable, Mapping
 
 
-def bitset(bits, bset):
-    """Checks if all bits are set in bset or bits is zero."""
-    return bits == (bits & bset)
+def is_bits_set(value, bits):
+    """Checks if all bits are set in value or some bits are zero."""
+    return bits == (value & bits)
 
 
 def cmp(x, y):
@@ -15,12 +15,12 @@ def cmp(x, y):
     return (x > y) - (x < y)
 
 
-def hasmethod(obj, name):
+def has_method(obj, name):
     """Check if method `name` was defined in obj."""
     return callable(getattr(obj, name, None))
 
 
-def haspropriety(obj, name):
+def has_propriety(obj, name):
     """Check if propriety `name` was defined in obj."""
     attr = getattr(obj, name, None)
     return attr and not callable(attr)
@@ -28,12 +28,12 @@ def haspropriety(obj, name):
 
 def methods(obj):
     """List all the methods declared in obj."""
-    return [name for name in dir(obj) if hasmethod(obj, name)]
+    return [name for name in dir(obj) if has_method(obj, name)]
 
 
 def proprieties(obj):
     """List all the propriety attribute declared in obj."""
-    return [name for name in dir(obj) if haspropriety(obj, name)]
+    return [name for name in dir(obj) if has_propriety(obj, name)]
 
 
 def is_iterable(obj, strict=False):
@@ -61,6 +61,7 @@ def is_module(name, path=None):
 
 
 def missing(iterable, start=None, end=None):
+    """List all the values between 'start' and 'stop' that are missing from 'iterable'."""
     iter_seq = set(map(int, iterable))
     min_val = start or min(iter_seq)
     max_val = end or max(iter_seq)
