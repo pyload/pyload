@@ -191,7 +191,9 @@ class HTTPRequest():
         if post:
             self.c.setopt(pycurl.POST, 1)
             if not multipart:
-                if type(post) == unicode:
+                if post is True:
+                    post = ""
+                elif type(post) == unicode:
                     post = str(post) #unicode not allowed
                 elif type(post) == str:
                     pass
