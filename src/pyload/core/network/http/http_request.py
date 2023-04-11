@@ -232,15 +232,15 @@ class HTTPRequest:
             self.c.setopt(pycurl.POST, 1)
             if not multipart:
                 if post is True:
-                    pass
+                    post = b""
                 elif isinstance(post, str):
                     post = post.encode()
-                    self.c.setopt(pycurl.POSTFIELDS, post)
                 elif is_mapping(post):
                     post = myurlencode(post)
-                    self.c.setopt(pycurl.POSTFIELDS, post)
                 else:
                     raise ValueError("Invalid value for 'post'")
+
+                self.c.setopt(pycurl.POSTFIELDS, post)
 
             else:
                 multipart_post = []
