@@ -70,8 +70,8 @@ class HTTPDownload:
 
     @property
     def speed(self):
-        speeds = [sum(x) for x in self.last_speeds if x]
-        return sum(speeds) // len(speeds)  #: average
+        #: bytes per second
+        return sum(self.last_speeds) // len(self.last_speeds)  #: average
 
     @property
     def arrived(self):
@@ -219,7 +219,7 @@ class HTTPDownload:
                 failed = []
                 ex = None  #: save only last exception, we can only raise one anyway
 
-                num_q, ok_list, err_list = self.m.info_read()
+                num_queued, ok_list, err_list = self.m.info_read()
                 for c in ok_list:
                     chunk = self.find_chunk(c)
                     try:  #: check if the header implies success, else add it to failed list
@@ -232,9 +232,8 @@ class HTTPDownload:
                         self.log.debug(f"Chunk {chunk.id + 1} download finished")
                         chunks_done.add(c)
 
-                for c in err_list:
-                    curl, errno, msg = c
-                    chunk = self.find_chunk(curl)
+                for c, errno, msg in err_list:
+                    chunk = self.find_chunk(c)
                     #: test if chunk was finished
                     if errno != pycurl.E_WRITE_ERROR or not chunk.aborted:
                         failed.append(chunk)
@@ -250,10 +249,10 @@ class HTTPDownload:
                         ex = exc
                     else:
                         self.log.debug(f"Chunk {chunk.id + 1} download finished")
-                        chunks_done.add(curl)
-                if not num_q:  #: no more infos to get
+                        chunks_done.add(c)
+                if not num_queued:  #: no more infos to get
 
-                    #: check if init is not finished so we reset download connections
+                    #: check if init is not finished, so we reset download connections
                     #: note that other chunks are closed and downloaded with init too
                     if failed and init not in failed and init.c not in chunks_done:
                         self.log.error(
@@ -291,12 +290,12 @@ class HTTPDownload:
 
             #: calc speed once per second, averaging over 3 seconds
             if last_time_check + 1 < t:
-                arrived_delta = [
+                arrived_delta = (
                     chunk.arrived - (self.last_arrived[i] if len(self.last_arrived) > i else 0)
                     for i, chunk in enumerate(self.chunks)
-                ]
+                )
                 self.last_speeds = [
-                    list(float(a) / (t - last_time_check) for a in arrived_delta)
+                    sum(float(delta) / (t - last_time_check) for delta in arrived_delta)
                 ] + self.last_speeds[:2]
 
                 self.last_arrived = [c.arrived for c in self.chunks]
