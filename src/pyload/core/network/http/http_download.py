@@ -63,7 +63,7 @@ class HTTPDownload:
 
         #: needed for speed calculation
         self.last_arrived = []
-        self.last_speeds = [0, 0]
+        self.last_speeds = []
 
         #: notifications callback
         self.status_notify = status_notify
