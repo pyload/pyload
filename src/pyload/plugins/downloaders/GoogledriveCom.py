@@ -18,7 +18,7 @@ from ..base.downloader import BaseDownloader
 class GoogledriveCom(BaseDownloader):
     __name__ = "GoogledriveCom"
     __type__ = "downloader"
-    __version__ = "0.33"
+    __version__ = "0.34"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?(?:drive|docs)\.google\.com/(?:file/d/|uc\?.*id=)(?P<ID>[-\w]+)"
@@ -81,7 +81,8 @@ class GoogledriveCom(BaseDownloader):
                 "{}{}/{}".format(self.API_URL, "files", self.info["pattern"]["ID"]),
                 get={
                     "alt": "media",
-                    # 'acknowledgeAbuse': "true",
+                    "acknowledgeAbuse": "true",
+                    "supportsAllDrives": "true",
                     "key": self.API_KEY,
                 },
             )
@@ -98,7 +99,6 @@ class GoogledriveCom(BaseDownloader):
 
     def process(self, pyfile):
         disposition = False
-        self.data = self.load(pyfile.url)
         json_data = self.api_request(
             "files/" + self.info["pattern"]["ID"],
             fields="md5Checksum,name,size",
@@ -108,6 +108,7 @@ class GoogledriveCom(BaseDownloader):
         if json_data is None:
             self.fail("API error")
 
+        self.data = self.load(pyfile.url, ref=False)
         if "error" in json_data:
             if json_data["error"]["code"] == 404:
                 if "Virus scan warning" not in self.data:
