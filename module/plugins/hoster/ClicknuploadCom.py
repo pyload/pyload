@@ -8,10 +8,10 @@ from ..internal.XFSHoster import XFSHoster
 class ClicknuploadCom(XFSHoster):
     __name__ = "ClicknuploadCom"
     __type__ = "hoster"
-    __version__ = "0.07"
+    __version__ = "0.08"
     __status__ = "testing"
 
-    __pattern__ = r'https?://(?:www\.)?clicknupload\.(?:com|org|cc|to|me|link|club)/(?P<ID>\w{12})'
+    __pattern__ = r'https?://(?:www\.)?clicknupload\.(?:com|org|cc|to|me|link|club|click|red)/(?P<ID>\w{12})'
     __config__ = [("activated", "bool", "Activated", True),
                   ("use_premium", "bool", "Use premium account if available", True),
                   ("fallback", "bool", "Fallback to free download if premium fails", True),
@@ -23,9 +23,9 @@ class ClicknuploadCom(XFSHoster):
     __authors__ = [("tbsn", "tbsnpy_github@gmx.de"),
                    ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
-    PLUGIN_DOMAIN = "clicknupload.to"
+    PLUGIN_DOMAIN = "clicknupload.red"
 
-    URL_REPLACEMENTS = [(__pattern__ + '.*', "https://clicknupload.to/\g<ID>")]
+    URL_REPLACEMENTS = [(__pattern__ + '.*', "https://clicknupload.red/\g<ID>")]
 
     LINK_PATTERN = r"onClick=\"window.open\('(.+?)'\);"
 
