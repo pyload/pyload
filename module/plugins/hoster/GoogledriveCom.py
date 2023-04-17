@@ -15,7 +15,7 @@ from ..internal.misc import json, parse_size, search_pattern
 class GoogledriveCom(Hoster):
     __name__ = "GoogledriveCom"
     __type__ = "hoster"
-    __version__ = "0.33"
+    __version__ = "0.34"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(?:drive|docs)\.google\.com/(?:file/d/|uc\?.*id=)(?P<ID>[-\w]+)'
@@ -67,7 +67,8 @@ class GoogledriveCom(Hoster):
         try:
             self.download("%s%s/%s" % (self.API_URL, "files", self.info['pattern']['ID']),
                           get={'alt': "media",
-                               # 'acknowledgeAbuse': "true",
+                               "acknowledgeAbuse": "true",
+                               "supportsAllDrives": "true",
                                'key': self.API_KEY})
 
         except BadHeader, e:
@@ -82,7 +83,6 @@ class GoogledriveCom(Hoster):
 
     def process(self, pyfile):
         disposition = False
-        self.data = self.load(pyfile.url)
         json_data = self.api_response("files/" + self.info['pattern']['ID'],
                                       fields="md5Checksum,name,size",
                                       supportsAllDrives="true")
@@ -90,6 +90,7 @@ class GoogledriveCom(Hoster):
         if json_data is None:
             self.fail("API error")
 
+        self.data = self.load(pyfile.url, ref=False)
         if 'error' in json_data:
             if json_data['error']['code'] == 404:
                 if "Virus scan warning" not in self.data:
