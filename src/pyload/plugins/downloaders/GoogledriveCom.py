@@ -75,7 +75,7 @@ class GoogledriveCom(BaseDownloader):
                 )
             return None
 
-    def api_download(self):
+    def api_download(self, disposition):
         try:
             self.download(
                 "{}{}/{}".format(self.API_URL, "files", self.info["pattern"]["ID"]),
@@ -85,6 +85,7 @@ class GoogledriveCom(BaseDownloader):
                     "supportsAllDrives": "true",
                     "key": self.API_KEY,
                 },
+                disposition=disposition
             )
 
         except BadHeader as exc:
@@ -131,7 +132,7 @@ class GoogledriveCom(BaseDownloader):
             self.info["md5"] = json_data["md5Checksum"]
 
         # Somehow, API downloads are significantly slow compared to "normal" download :(
-        # self.api_download()
+        # self.api_download(disposition)
 
         for _i in range(2):
             m = re.search(r'"([^"]+uc\?.*?)"', self.data)
