@@ -63,13 +63,14 @@ class GoogledriveCom(Hoster):
                                "Error code: %s" % e.code)
             return None
 
-    def api_download(self):
+    def api_download(self, disposition):
         try:
             self.download("%s%s/%s" % (self.API_URL, "files", self.info['pattern']['ID']),
                           get={'alt': "media",
                                "acknowledgeAbuse": "true",
                                "supportsAllDrives": "true",
-                               'key': self.API_KEY})
+                               'key': self.API_KEY},
+                          disposition=disposition)
 
         except BadHeader, e:
             if e.code == 404:
@@ -113,7 +114,7 @@ class GoogledriveCom(Hoster):
             self.info['md5'] = json_data['md5Checksum']
 
         # Somehow, API downloads are sacrificially slow compared to "normal" download :(
-        # self.api_download()
+        # self.api_download(disposition)
 
         for _i in range(2):
             m = re.search(r'"([^"]+uc\?.*?)"', self.data)
