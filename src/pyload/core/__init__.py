@@ -195,10 +195,9 @@ class Core:
         from .managers.addon_manager import AddonManager
         from .managers.captcha_manager import CaptchaManager
         from .managers.event_manager import EventManager
+        from .managers.file_manager import FileManager
         from .managers.plugin_manager import PluginManager
         from .managers.thread_manager import ThreadManager
-        from .managers.file_manager import FileManager
-
         from .scheduler import Scheduler
 
         self.files = self.file_manager = FileManager(self)
@@ -369,6 +368,7 @@ class Core:
         try:
             try:
                 signal.signal(signal.SIGQUIT, self.sigquit)
+                signal.signal(signal.SIGTERM, self.sigterm)
             except Exception:
                 pass
 
@@ -460,6 +460,11 @@ class Core:
 
     def sigquit(self, a, b):
         self.log.info(self._("Received Quit signal"))
+        self.terminate()
+        sys.exit()
+
+    def sigterm(self, a, b):
+        self.log.info(self._("Received Terminate signal"))
         self.terminate()
         sys.exit()
 
