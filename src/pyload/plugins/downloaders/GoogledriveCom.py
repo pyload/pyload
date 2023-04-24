@@ -21,7 +21,7 @@ class GoogledriveCom(BaseDownloader):
     __version__ = "0.34"
     __status__ = "testing"
 
-    __pattern__ = r"https?://(?:www\.)?(?:drive|docs)\.google\.com/(?:file/d/|uc\?.*id=)(?P<ID>[-\w]+)"
+    __pattern__ = r"https?://(?:www\.)?(?:drive|docs)\.google\.com/(?:u/[0-9]/)?(?:file/)?(?:u/[0-9]/)?(?:d/|uc\?.*id=)(?P<ID>[-\w]+)"
     __config__ = [
         ("enabled", "bool", "Activated", True),
         ("use_premium", "bool", "Use premium account if available", True),
