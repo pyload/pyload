@@ -11,7 +11,7 @@ from ..base.simple_downloader import SimpleDownloader
 class KrakenfilesCom(SimpleDownloader):
     __name__ = "KrakenfilesCom"
     __type__ = "downloader"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?krakenfiles\.com/view/\w+/file.html"
@@ -35,7 +35,7 @@ class KrakenfilesCom(SimpleDownloader):
         if url is None:
             self.fail(_("Free download form not found"))
 
-        m = re.search(r'data-file-hash="(\w+?)">', self.data)
+        m = re.search(r'<div.+?data-file-hash="(\w+?)".*?>', self.data)
         if m is None:
             self.fail(_("hash pattern not found"))
 
