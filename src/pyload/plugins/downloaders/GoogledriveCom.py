@@ -3,6 +3,8 @@
 #
 # Test links:
 #   https://drive.google.com/file/d/0B6RNTe4ygItBQm15RnJiTmMyckU/view?pli=1
+#   https://drive.google.com/file/u/0/d/0B6RNTe4ygItBQm15RnJiTmMyckU/view?usp=share_link
+#   https://drive.google.com/u/0/uc?id=0B6RNTe4ygItBQm15RnJiTmMyckU&export=download
 
 
 import json
@@ -21,7 +23,7 @@ class GoogledriveCom(BaseDownloader):
     __version__ = "0.34"
     __status__ = "testing"
 
-    __pattern__ = r"https?://(?:www\.)?(?:drive|docs)\.google\.com/(?:u/[0-9]/)?(?:file/)?(?:u/[0-9]/)?(?:d/|uc\?.*id=)(?P<ID>[-\w]+)"
+    __pattern__ = r"https?://(?:www\.)?(?:drive|docs)\.google\.com/(?:file/d/|uc\?.*id=)(?P<ID>[-\w]+)"
     __config__ = [
         ("enabled", "bool", "Activated", True),
         ("use_premium", "bool", "Use premium account if available", True),
