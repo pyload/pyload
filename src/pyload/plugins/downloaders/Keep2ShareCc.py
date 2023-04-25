@@ -11,7 +11,7 @@ from ..base.simple_downloader import SimpleDownloader
 class Keep2ShareCc(SimpleDownloader):
     __name__ = "Keep2ShareCc"
     __type__ = "downloader"
-    __version__ = "0.46"
+    __version__ = "0.47"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?(keep2share|k2s|keep2s)\.cc/file/(?P<ID>\w+)"
@@ -57,6 +57,7 @@ class Keep2ShareCc(SimpleDownloader):
                 "size": file_info["files"][0]["size"],
                 "md5": file_info["files"][0]["md5"],
                 "access": file_info["files"][0]["access"],
+                "free_access": file_info["files"][0]["isAvailableForFree"],
                 "status": 2 if file_info["files"][0]["is_available"] else 1,
             }
 
@@ -67,7 +68,7 @@ class Keep2ShareCc(SimpleDownloader):
     def handle_free(self, pyfile):
         file_id = self.info["pattern"]["ID"]
 
-        if self.info["access"] == "premium":
+        if self.info["access"] == "premium" or self.info["free_access"] is False:
             self.fail(self._("File can be downloaded by premium users only"))
 
         elif self.info["access"] == "private":
