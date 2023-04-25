@@ -11,7 +11,7 @@ from ..internal.misc import json
 class Keep2ShareCc(SimpleHoster):
     __name__ = "Keep2ShareCc"
     __type__ = "hoster"
-    __version__ = "0.46"
+    __version__ = "0.47"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(keep2share|k2s|keep2s)\.cc/file/(?P<ID>\w+)'
@@ -53,6 +53,7 @@ class Keep2ShareCc(SimpleHoster):
                     'size': file_info['files'][0]['size'],
                     'md5': file_info['files'][0]['md5'],
                     'access': file_info['files'][0]['access'],
+                    'free_access': file_info['files'][0]['isAvailableForFree'],
                     'status': 2 if file_info['files'][0]['is_available'] else 1}
 
     def setup(self):
@@ -62,7 +63,7 @@ class Keep2ShareCc(SimpleHoster):
     def handle_free(self, pyfile):
         file_id = self.info['pattern']['ID']
 
-        if self.info['access'] == "premium":
+        if self.info['access'] == "premium" or self.info["free_access"] is False:
             self.fail(_("File can be downloaded by premium users only"))
 
         elif self.info['access'] == "private":
