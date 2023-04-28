@@ -25,7 +25,7 @@ except AttributeError:
 else:
     class JSONProvider(JSONProviderBase):
         def dumps(self, obj, **kwargs):
-            return json.dumps(obj, **kwargs, cls=self.JSONEncoder)
+            return json.dumps(obj, **kwargs, cls=JSONEncoder)
 
         def loads(self, s, **kwargs):
             return json.loads(s, **kwargs)
