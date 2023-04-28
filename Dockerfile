@@ -46,15 +46,14 @@ ARG APK_PACKAGES="gcc g++ musl-dev python3-dev libffi-dev openssl-dev jpeg-dev z
 
 ENV PYCURL_SSL_LIBRARY="openssl"
 
-COPY setup.cfg /source/setup.cfg
+COPY . /source
 WORKDIR /wheels
 
 RUN echo "**** install build packages ****" && \
     apk add $APK_INSTALL_OPTIONS $APK_PACKAGES && \
     \
     echo "**** build pyLoad dependencies ****" && \
-    python3 -c "import configparser as cp; c = cp.ConfigParser(); c.read('/source/setup.cfg'); plugins = '\\n'.join([l for l in c['options.extras_require']['plugins'].strip().split('\\n') if 'platform_system' not in l]); print(c['options']['install_requires'] + plugins)" | \
-    xargs pip3 wheel --wheel-dir=.
+    pip3 wheel -w /wheels /source
 
 
 FROM builder AS source_builder
