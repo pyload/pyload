@@ -66,7 +66,7 @@ def retrieve_version():
     with open(filename) as fp:
         version = os.environ.get("PYLOAD_VERSION", fp.read()).strip()
 
-    return f"{version}.dev{build}" if build else version
+    return f"{version}+dev{build}" if build else version
 
 
 # TODO: BuildDocs running `sphinx-apidoc`
