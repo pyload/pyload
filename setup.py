@@ -39,12 +39,12 @@ class BuildLocale(Command):
 
     def finalize_options(self):
         jinja2_version = pkg_resources.get_distribution("jinja2").version
-        if pkg_resources.parse_version(jinja2_version) > pkg_resources.parse_version(
+        if pkg_resources.parse_version(jinja2_version) < pkg_resources.parse_version(
             "3.0.0"
         ):
-            mapping_file_version = 3
-        else:
             mapping_file_version = 2
+        else:
+            mapping_file_version = 3
         mapping_file = f"babel_v{mapping_file_version}.cfg"
 
         with open(mapping_file, "r", encoding="utf-8-sig") as fp:
