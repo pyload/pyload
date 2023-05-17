@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import re
+import pycurl
 
 from ..internal.misc import json
 from ..internal.XFSHoster import XFSHoster
@@ -9,7 +9,7 @@ from ..internal.XFSHoster import XFSHoster
 class DdownloadCom(XFSHoster):
     __name__ = "DdownloadCom"
     __type__ = "hoster"
-    __version__ = "0.10"
+    __version__ = "0.11"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(?:ddl\.to|ddownload\.com)/(?P<ID>\w{12})'
@@ -56,3 +56,15 @@ class DdownloadCom(XFSHoster):
     #             info['status'] = 8
     #
     #     return info
+
+    def set_useragent(self):
+        self.req.http.c.setopt(pycurl.USERAGENT, "pyLoad/%s" % self.pyload.version)
+
+    def setup(self):
+        super(DdownloadCom, self).setup()
+        self.set_useragent()
+
+    def load_account(self):
+        self.set_useragent()
+        super(DdownloadCom, self).load_account()
+
