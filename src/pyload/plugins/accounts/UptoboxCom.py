@@ -8,7 +8,7 @@ from ..base.xfs_account import XFSAccount
 class UptoboxCom(XFSAccount):
     __name__ = "UptoboxCom"
     __type__ = "account"
-    __version__ = "0.25"
+    __version__ = "0.26"
     __status__ = "testing"
 
     __description__ = """Uptobox.com account plugin"""
@@ -18,10 +18,10 @@ class UptoboxCom(XFSAccount):
         ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com"),
     ]
 
-    PLUGIN_DOMAIN = "uptobox.com"
+    PLUGIN_DOMAIN = "uptobox.eu"
 
-    LOGIN_URL = "https://uptobox.com/login"
-    LOGIN_SKIP_PATTERN = r"https://uptobox\.com/logout"
+    LOGIN_URL = "https://uptobox.eu/login"
+    LOGIN_SKIP_PATTERN = r"https://uptobox\.eu/logout"
 
     PREMIUM_PATTERN = r"Premium member"
 
