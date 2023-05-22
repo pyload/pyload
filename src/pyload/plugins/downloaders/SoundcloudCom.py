@@ -33,8 +33,6 @@ class SoundcloudCom(SimpleDownloader):
     NAME_PATTERN = r'title" content="(?P<N>.+?)"'
     OFFLINE_PATTERN = r'<title>"SoundCloud - Hear the world’s sounds"</title>'
 
-    CLIENT_ID = "wuM9g7pMB4mU13fW6SuRfQeJNRYNIX9O"
-
     def setup(self):
         try:
             self.req.http.close()
@@ -64,8 +62,17 @@ class SoundcloudCom(SimpleDownloader):
         except (AttributeError, IndexError):
             self.fail("Failed to retrieve json_data")
 
-        js_url = re.findall(r'script crossorigin src="(.+?)"></script>', self.data)[-1]
-        self.CLIENT_ID = re.search(r'client_id:"(.+?)"', self.load(js_url)).group(1)
+        try:
+            js_url = re.findall(r'script crossorigin src="(.+?)"></script>', self.data)[-1]
+        except IndexError:
+            self.fail(self._("Failed to find js_url"))
+
+        js_data = self.load(js_url)
+        m = re.search(r'[ ,]client_id:"(.+?)"', js_data)
+        if m is None:
+            self.fail(self._("client_id not found"))
+
+        client_id = m.group(1)
 
         hydra_table = {
             table["hydratable"]: table["data"] for table in json.loads(json_data)
@@ -82,7 +89,7 @@ class SoundcloudCom(SimpleDownloader):
             json_data = self.load(
                 streams[0],
                 get={
-                    "client_id": self.CLIENT_ID,
+                    "client_id": client_id,
                     "track_authorization": track_authorization,
                 },
             )
