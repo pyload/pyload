@@ -2,13 +2,16 @@
 import json
 import re
 
+from pyload.core.network.cookie_jar import CookieJar
+from pyload.core.network.http.http_request import HTTPRequest
+
 from ..base.simple_downloader import SimpleDownloader
 
 
 class SoundcloudCom(SimpleDownloader):
     __name__ = "SoundcloudCom"
     __type__ = "downloader"
-    __version__ = "0.19"
+    __version__ = "0.20"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?soundcloud\.com/[\w\-]+/[\w\-]+"
@@ -32,6 +35,18 @@ class SoundcloudCom(SimpleDownloader):
 
     CLIENT_ID = "wuM9g7pMB4mU13fW6SuRfQeJNRYNIX9O"
 
+    def setup(self):
+        try:
+            self.req.http.close()
+        except Exception:
+            pass
+
+        self.req.http = HTTPRequest(
+            cookies=CookieJar(None),
+            options=self.pyload.request_factory.get_options(),
+            limit=5_000_000,
+        )
+
     def get_info(self, url="", html=""):
         info = super(SoundcloudCom, self).get_info(url, html)
         # Unfortunately, NAME_PATTERN does not include file extension, so we add '.mp3' as an extension.
@@ -48,6 +63,9 @@ class SoundcloudCom(SimpleDownloader):
 
         except (AttributeError, IndexError):
             self.fail("Failed to retrieve json_data")
+
+        js_url = re.findall(r'script crossorigin src="(.+?)"></script>', self.data)[-1]
+        self.CLIENT_ID = re.search(r'client_id:"(.+?)"', self.load(js_url)).group(1)
 
         hydra_table = {
             table["hydratable"]: table["data"] for table in json.loads(json_data)
