@@ -6,10 +6,10 @@ from ..base.xfs_downloader import XFSDownloader
 class FiregetCom(XFSDownloader):
     __name__ = "FiregetCom"
     __type__ = "downloader"
-    __version__ = "0.04"
+    __version__ = "0.05"
     __status__ = "testing"
 
-    __pattern__ = r"http://(?:www\.)?fireget\.com/(?P<ID>\w{12})/.+"
+    __pattern__ = r"https?://(?:www\.)?fireget\.com/(?P<ID>\w{12})/.+"
     __config__ = [
         ("enabled", "bool", "Activated", True),
         ("use_premium", "bool", "Use premium account if available", True),
