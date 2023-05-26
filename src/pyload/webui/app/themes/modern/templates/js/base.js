@@ -361,6 +361,7 @@ function set_captcha(a) {
         $("#cap_submit").css("display", "inline");
         $("#cap_box #cap_title").text("");
         $("#cap_textual").css("display", "block");
+        $("#cap_result").focus();
     } else if (a.result_type === "positional") {
         $("#cap_positional_img").attr("src", params.src);
         $("#cap_box #cap_title").text("{{_('Please click on the right captcha position.')}}");
