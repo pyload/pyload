@@ -3,6 +3,8 @@
 import base64
 import urllib
 
+from module.network.HTTPRequest import BadHeader
+
 from ..internal.Crypter import Crypter
 from ..internal.misc import json
 
@@ -10,7 +12,7 @@ from ..internal.misc import json
 class GofileIoFolder(Crypter):
     __name__ = "GofileIoFolder"
     __type__ = "crypter"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?gofile\.io/d/(?P<ID>\w+)"
@@ -28,7 +30,11 @@ class GofileIoFolder(Crypter):
     API_URL = "https://api.gofile.io/"
 
     def api_request(self, method, **kwargs):
-        json_data = self.load(self.API_URL + method, get=kwargs)
+        try:
+            json_data = self.load(self.API_URL + method, get=kwargs)
+        except BadHeader, e:
+            json_data = e.content
+
         return json.loads(json_data)
 
     def decrypt(self, pyfile):
@@ -61,5 +67,8 @@ class GofileIoFolder(Crypter):
         elif status == "error-notFound":
             self.offline()
 
+        elif status == "error-notPremium":
+            self.fail(_("File can be downloaded by premium users only"))
+
         else:
-            self.fail("getContent API failed | %s" % status)
+            self.fail(_("getContent API failed | %s") % status)
