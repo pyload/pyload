@@ -12,7 +12,7 @@ from ..base.simple_downloader import SimpleDownloader
 class FshareVn(SimpleDownloader):
     __name__ = "FshareVn"
     __type__ = "downloader"
-    __version__ = "0.38"
+    __version__ = "0.39"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?fshare\.vn/file/(?P<ID>\w+)"
@@ -30,8 +30,6 @@ class FshareVn(SimpleDownloader):
         ("zoidberg", "zoidberg@mujmail.cz"),
         ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com"),
     ]
-
-    DIRECT_LINK = False
 
     OFFLINE_PATTERN = r"Tập tin của bạn yêu cầu không tồn tại"
     TEMP_OFFLINE_PATTERN = r"^unmatchable$"
