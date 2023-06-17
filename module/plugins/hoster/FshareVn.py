@@ -14,7 +14,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class FshareVn(SimpleHoster):
     __name__ = "FshareVn"
     __type__ = "hoster"
-    __version__ = "0.38"
+    __version__ = "0.39"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?fshare\.vn/file/(?P<ID>\w+)'
@@ -28,8 +28,6 @@ class FshareVn(SimpleHoster):
     __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
                    ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
-
-    DIRECT_LINK = False
 
     OFFLINE_PATTERN = ur'Tập tin của bạn yêu cầu không tồn tại'
     TEMP_OFFLINE_PATTERN = r"^unmatchable$"
