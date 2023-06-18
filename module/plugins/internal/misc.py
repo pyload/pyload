@@ -20,8 +20,11 @@ import traceback
 import urllib
 import urlparse
 import zlib
-from htmlentitydefs import name2codepoint
 from email.header import decode_header as decode_rfc2047_header
+from htmlentitydefs import name2codepoint
+
+from module.network.HTTPRequest import HTTPRequest
+from module.plugins.Plugin import Abort
 
 try:
     import simplejson as json
@@ -43,7 +46,7 @@ except ImportError:
 class misc(object):
     __name__ = "misc"
     __type__ = "plugin"
-    __version__ = "0.67"
+    __version__ = "0.68"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -1208,3 +1211,28 @@ else:
 
 
     _subprocess.CreateProcess = CreateProcess
+
+
+class BIGHTTPRequest(HTTPRequest):
+    """
+    Overcome HTTPRequest's load() size limit to allow
+    loading very big web pages by overriding HTTPRequest's write() function
+    """
+
+    # @TODO: Add 'limit' parameter to HTTPRequest in v0.4.10
+    def __init__(self, cookies=None, options=None, limit=1000000):
+        self.limit = limit
+        HTTPRequest.__init__(self, cookies=cookies, options=options)
+
+    def write(self, buf):
+        """ writes response """
+        if self.limit and self.rep.tell() > self.limit or self.abort:
+            rep = self.getResponse()
+            if self.abort:
+                raise Abort()
+            f = open("response.dump", "wb")
+            f.write(rep)
+            f.close()
+            raise Exception("Loaded Url exceeded limit")
+
+        self.rep.write(buf)

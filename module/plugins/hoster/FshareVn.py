@@ -4,17 +4,17 @@ import re
 import urlparse
 
 import pycurl
+from module.network.CookieJar import CookieJar
 from module.network.HTTPRequest import BadHeader
-from module.network.RequestFactory import getRequest as get_request
 
-from ..internal.misc import json
+from ..internal.misc import BIGHTTPRequest, json
 from ..internal.SimpleHoster import SimpleHoster
 
 
 class FshareVn(SimpleHoster):
     __name__ = "FshareVn"
     __type__ = "hoster"
-    __version__ = "0.39"
+    __version__ = "0.40"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?fshare\.vn/file/(?P<ID>\w+)'
@@ -70,6 +70,17 @@ class FshareVn(SimpleHoster):
                          'status': 2})
 
         return info
+
+    def setup(self):
+        try:
+            self.req.http.close()
+        except Exception:
+            pass
+
+        self.req.http = BIGHTTPRequest(
+            cookies=CookieJar(None),
+            options=self.pyload.requestFactory.getOptions(),
+            limit=5000000)
 
     def handle_free(self, pyfile):
         action, inputs = self.parse_html_form('class="password-form"')

@@ -10,13 +10,12 @@ import urlparse
 from xml.dom.minidom import parseString as parse_xml
 
 from module.network.CookieJar import CookieJar
-from module.network.HTTPRequest import HTTPRequest
 
 from ..internal.Hoster import Hoster
 from ..internal.misc import (
-    Popen, decode, exists, fs_encode, fsjoin, isexecutable, json, reduce, renice, replace_patterns, safename,
-    uniqify, which)
-from ..internal.Plugin import Abort, Skip
+    BIGHTTPRequest, Popen, decode, exists, fs_encode, fsjoin, isexecutable, json, reduce, renice, replace_patterns,
+    safename, uniqify, which)
+from ..internal.Plugin import Skip
 
 
 def try_get(data, *path):
@@ -43,31 +42,6 @@ def try_get(data, *path):
         res = get_one(res, item)
 
     return res
-
-
-class BIGHTTPRequest(HTTPRequest):
-    """
-    Overcome HTTPRequest's load() size limit to allow
-    loading very big web pages by overrding HTTPRequest's write() function
-    """
-
-    # @TODO: Add 'limit' parameter to HTTPRequest in v0.4.10
-    def __init__(self, cookies=None, options=None, limit=2000000):
-        self.limit = limit
-        HTTPRequest.__init__(self, cookies=cookies, options=options)
-
-    def write(self, buf):
-        """ writes response """
-        if self.limit and self.rep.tell() > self.limit or self.abort:
-            rep = self.getResponse()
-            if self.abort:
-                raise Abort()
-            f = open("response.dump", "wb")
-            f.write(rep)
-            f.close()
-            raise Exception("Loaded Url exceeded limit")
-
-        self.rep.write(buf)
 
 
 class Ffmpeg(object):
@@ -237,7 +211,7 @@ class Ffmpeg(object):
 class YoutubeCom(Hoster):
     __name__ = "YoutubeCom"
     __type__ = "hoster"
-    __version__ = "0.87"
+    __version__ = "0.88"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:[^/]*\.)?(?:youtu\.be/|youtube\.com/watch\?(?:.*&)?v=)[\w\-]+'

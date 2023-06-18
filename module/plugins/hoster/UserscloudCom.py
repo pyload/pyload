@@ -1,40 +1,15 @@
 # -*- coding: utf-8 -*-
 
 from module.network.CookieJar import CookieJar
-from module.network.HTTPRequest import Abort, HTTPRequest
 
+from ..internal.misc import BIGHTTPRequest
 from ..internal.XFSHoster import XFSHoster
-
-
-class BIGHTTPRequest(HTTPRequest):
-    """
-    Overcome HTTPRequest's load() size limit to allow
-    loading very big web pages by overrding HTTPRequest's write() function
-    """
-
-    # @TODO: Add 'limit' parameter to HTTPRequest in v0.4.10
-    def __init__(self, cookies=None, options=None, limit=1000000):
-        self.limit = limit
-        HTTPRequest.__init__(self, cookies=cookies, options=options)
-
-    def write(self, buf):
-        """ writes response """
-        if self.limit and self.rep.tell() > self.limit or self.abort:
-            rep = self.getResponse()
-            if self.abort:
-                raise Abort()
-            f = open("response.dump", "wb")
-            f.write(rep)
-            f.close()
-            raise Exception("Loaded Url exceeded limit")
-
-        self.rep.write(buf)
 
 
 class UserscloudCom(XFSHoster):
     __name__ = "UserscloudCom"
     __type__ = "hoster"
-    __version__ = "0.10"
+    __version__ = "0.11"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?userscloud\.com/(?P<ID>\w{12})'

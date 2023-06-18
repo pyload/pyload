@@ -3,42 +3,15 @@
 import re
 
 from module.network.CookieJar import CookieJar
-from module.network.HTTPRequest import HTTPRequest
-from module.plugins.Plugin import Abort
 
-from ..internal.misc import json
+from ..internal.misc import BIGHTTPRequest, json
 from ..internal.SimpleHoster import SimpleHoster
-
-
-class BIGHTTPRequest(HTTPRequest):
-    """
-    Overcome HTTPRequest's load() size limit to allow
-    loading very big web pages by overrding HTTPRequest's write() function
-    """
-
-    # @TODO: Add 'limit' parameter to HTTPRequest in v0.4.10
-    def __init__(self, cookies=None, options=None, limit=1000000):
-        self.limit = limit
-        HTTPRequest.__init__(self, cookies=cookies, options=options)
-
-    def write(self, buf):
-        """ writes response """
-        if self.limit and self.rep.tell() > self.limit or self.abort:
-            rep = self.getResponse()
-            if self.abort:
-                raise Abort()
-            f = open("response.dump", "wb")
-            f.write(rep)
-            f.close()
-            raise Exception("Loaded Url exceeded limit")
-
-        self.rep.write(buf)
 
 
 class SoundcloudCom(SimpleHoster):
     __name__ = "SoundcloudCom"
     __type__ = "hoster"
-    __version__ = "0.20"
+    __version__ = "0.21"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?soundcloud\.com/[\w\-]+/[\w\-]+'

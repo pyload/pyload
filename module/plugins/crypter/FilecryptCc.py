@@ -10,44 +10,19 @@ import urlparse
 import Crypto.Cipher.AES
 
 from module.network.CookieJar import CookieJar
-from module.network.HTTPRequest import BadHeader, HTTPRequest
-from module.plugins.internal.misc import replace_patterns
+from module.network.HTTPRequest import BadHeader
 
 from ..captcha.CoinHive import CoinHive
 from ..captcha.ReCaptcha import ReCaptcha
 from ..captcha.SolveMedia import SolveMedia
 from ..internal.Crypter import Crypter
-
-
-class BIGHTTPRequest(HTTPRequest):
-    """
-    Overcome HTTPRequest's load() size limit to allow
-    loading very big web pages by overrding HTTPRequest's write() function
-    """
-
-    # @TODO: Add 'limit' parameter to HTTPRequest in v0.4.10
-    def __init__(self, cookies=None, options=None, limit=1000000):
-        self.limit = limit
-        HTTPRequest.__init__(self, cookies=cookies, options=options)
-
-    def write(self, buf):
-        """ writes response """
-        if self.limit and self.rep.tell() > self.limit or self.abort:
-            rep = self.getResponse()
-            if self.abort:
-                raise Abort()
-            f = open("response.dump", "wb")
-            f.write(rep)
-            f.close()
-            raise Exception("Loaded Url exceeded limit")
-
-        self.rep.write(buf)
+from ..internal.misc import BIGHTTPRequest, replace_patterns
 
 
 class FilecryptCc(Crypter):
     __name__ = "FilecryptCc"
     __type__ = "crypter"
-    __version__ = "0.48"
+    __version__ = "0.49"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?filecrypt\.(?:cc|co)/Container/\w+'
