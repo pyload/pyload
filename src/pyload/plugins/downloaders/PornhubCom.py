@@ -11,7 +11,7 @@ from ..base.simple_downloader import SimpleDownloader
 class PornhubCom(SimpleDownloader):
     __name__ = "PornhubCom"
     __type__ = "downloader"
-    __version__ = "0.61"
+    __version__ = "0.62"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?pornhub\.com/view_video\.php\?viewkey=\w+"

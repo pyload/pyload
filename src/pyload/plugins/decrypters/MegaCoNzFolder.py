@@ -12,7 +12,7 @@ from ..downloaders.MegaCoNz import MegaClient, MegaCrypto
 class MegaCoNzFolder(BaseDecrypter):
     __name__ = "MegaCoNzFolder"
     __type__ = "decrypter"
-    __version__ = "0.25"
+    __version__ = "0.26"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?mega(?:\.co)?\.nz/folder/(?P<ID>[\w^_]+)#(?P<KEY>[\w,\-=]+)/?$"

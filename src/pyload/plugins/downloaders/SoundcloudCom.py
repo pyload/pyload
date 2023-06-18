@@ -11,7 +11,7 @@ from ..base.simple_downloader import SimpleDownloader
 class SoundcloudCom(SimpleDownloader):
     __name__ = "SoundcloudCom"
     __type__ = "downloader"
-    __version__ = "0.20"
+    __version__ = "0.21"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?soundcloud\.com/[\w\-]+/[\w\-]+"
