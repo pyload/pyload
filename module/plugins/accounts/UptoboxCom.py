@@ -9,7 +9,7 @@ from ..internal.Account import Account
 class UptoboxCom(Account):
     __name__ = "UptoboxCom"
     __type__ = "account"
-    __version__ = "0.27"
+    __version__ = "0.28"
     __status__ = "testing"
 
     __description__ = """Uptobox.com account plugin"""
@@ -21,9 +21,6 @@ class UptoboxCom(Account):
     LOGIN_SKIP_PATTERN = r"https://uptobox\.eu/logout"
 
     PREMIUM_PATTERN = r'Premium member'
-    VALID_UNTIL_PATTERN = r"class='expiration-date .+?'>(\d{1,2} [\w^_]+ \d{4})"
-
-
     VALID_UNTIL_PATTERN = r'data-tippy-content="Expires on ([\d\-: ]+)"'
 
     def grab_info(self, user, password, data):
