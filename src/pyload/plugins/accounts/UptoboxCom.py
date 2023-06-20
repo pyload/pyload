@@ -9,7 +9,7 @@ from ..base.account import BaseAccount
 class UptoboxCom(BaseAccount):
     __name__ = "UptoboxCom"
     __type__ = "account"
-    __version__ = "0.27"
+    __version__ = "0.28"
     __status__ = "testing"
 
     __description__ = """Uptobox.com account plugin"""
