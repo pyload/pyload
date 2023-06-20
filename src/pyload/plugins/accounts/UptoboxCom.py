@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
 
 import re
+import time
 
-from ..base.xfs_account import XFSAccount
+from ..base.account import BaseAccount
 
 
-class UptoboxCom(XFSAccount):
+class UptoboxCom(BaseAccount):
     __name__ = "UptoboxCom"
     __type__ = "account"
-    __version__ = "0.26"
+    __version__ = "0.27"
     __status__ = "testing"
 
     __description__ = """Uptobox.com account plugin"""
@@ -18,26 +19,38 @@ class UptoboxCom(XFSAccount):
         ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com"),
     ]
 
-    PLUGIN_DOMAIN = "uptobox.eu"
-
     LOGIN_URL = "https://uptobox.eu/login"
     LOGIN_SKIP_PATTERN = r"https://uptobox\.eu/logout"
 
     PREMIUM_PATTERN = r"Premium member"
 
-    VALID_UNTIL_PATTERN = r"class='expiration-date .+?'>(\d{1,2} [\w^_]+ \d{4})"
+    VALID_UNTIL_PATTERN = r'data-tippy-content="Expires on ([\d\-: ]+)"'
+
+    def grab_info(self, user, password, data):
+        html = self.load("https://uptobox.eu/my_account")
+
+        premium = re.search(self.PREMIUM_PATTERN, html) is not None
+
+        m = re.search(self.VALID_UNTIL_PATTERN, html)
+        if m is not None:
+            validuntil = time.mktime(time.strptime(m.group(1), "%Y-%m-%d %H:%M:%S"))
+
+        else:
+            self.log_error(self._("VALID_UNTIL_PATTERN not found"))
+            validuntil = None
+
+        return {"validuntil": validuntil, "trafficleft": -1, "premium": premium}
 
     def signin(self, user, password, data):
-        html = self.load(self.LOGIN_URL, cookies=self.COOKIES)
+        html = self.load(self.LOGIN_URL)
 
-        if re.search(self.LOGIN_SKIP_PATTERN, html):
+        if re.search(self.LOGIN_SKIP_PATTERN, html) is not None:
             self.skip_login()
 
         html = self.load(
             self.LOGIN_URL,
             post={"login": user, "password": password},
             ref=self.LOGIN_URL,
-            cookies=self.COOKIES,
         )
 
         if re.search(self.LOGIN_SKIP_PATTERN, html) is None:
