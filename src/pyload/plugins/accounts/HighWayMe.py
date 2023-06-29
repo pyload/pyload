@@ -22,7 +22,7 @@ class HighWayMe(MultiAccount):
     __authors__ = [("EvolutionClip", "evolutionclip@live.de"),
                    ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
-    API_URL = "https://high-way.me/api.php"
+    API_URL = "https://high-way.me/apiV2.php"
 
     def api_request(self, method, **kwargs):
         post = dict([(k.lstrip('_'), v) for k, v in kwargs.items()])
