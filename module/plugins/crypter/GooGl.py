@@ -7,7 +7,7 @@ from ..internal.misc import json
 class GooGl(Crypter):
     __name__ = "GooGl"
     __type__ = "crypter"
-    __version__ = "0.09"
+    __version__ = "0.10"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?goo\.gl/([a-zA-Z]+/)?\w+'
@@ -23,7 +23,7 @@ class GooGl(Crypter):
                    ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
     API_URL = "https://www.googleapis.com/urlshortener/v1/"
-    API_KEY = "AIzaSyAcA9c4evtwSY1ifuvzo6HKBkeot5Bk_U4"
+    API_KEY = "AIzaSyB68u-qFPP9oBJpo1DWAPFE_VD2Sfy9hpk"
 
     def api_response(self, cmd, **kwargs):
         kwargs['key'] = self.API_KEY

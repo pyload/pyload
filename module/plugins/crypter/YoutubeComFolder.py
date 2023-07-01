@@ -7,7 +7,7 @@ from ..internal.misc import json
 class YoutubeComFolder(Crypter):
     __name__ = "YoutubeComFolder"
     __type__ = "crypter"
-    __version__ = "1.11"
+    __version__ = "1.12"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.|m\.)?youtube\.com/(?P<TYPE>user|playlist|view_play_list)(/|.*?[?&](?:list|p)=)(?P<ID>[\w\-]+)'
@@ -23,7 +23,7 @@ class YoutubeComFolder(Crypter):
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com"),
                    ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
-    API_KEY = "AIzaSyAcA9c4evtwSY1ifuvzo6HKBkeot5Bk_U4"
+    API_KEY = "AIzaSyB68u-qFPP9oBJpo1DWAPFE_VD2Sfy9hpk"
 
     def api_response(self, method, **kwargs):
         kwargs['key'] = self.API_KEY

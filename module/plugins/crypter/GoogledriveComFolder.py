@@ -9,7 +9,7 @@ from ..internal.misc import json
 class GoogledriveComFolder(Crypter):
     __name__ = "GoogledriveComFolder"
     __type__ = "crypter"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?drive\.google\.com/(?:folderview\?.*id=|drive/(?:.+?/)?folders/)(?P<ID>[-\w]+)'
@@ -29,7 +29,7 @@ class GoogledriveComFolder(Crypter):
     OFFLINE_PATTERN = r'<TITLE>'
 
     API_URL = "https://www.googleapis.com/drive/v3/"
-    API_KEY = "AIzaSyAcA9c4evtwSY1ifuvzo6HKBkeot5Bk_U4"
+    API_KEY = "AIzaSyB68u-qFPP9oBJpo1DWAPFE_VD2Sfy9hpk"
 
     def api_response(self, cmd, **kwargs):
         kwargs['key'] = self.API_KEY
