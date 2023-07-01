@@ -10,7 +10,7 @@ from ..base.decrypter import BaseDecrypter
 class GoogledriveComDereferer(BaseDecrypter):
     __name__ = "GoogledriveComDereferer"
     __type__ = "decrypter"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?(?:drive|docs)\.google\.com/open\?(?:.+;)?id=(?P<ID>[-\w]+)"
@@ -37,7 +37,7 @@ class GoogledriveComDereferer(BaseDecrypter):
     OFFLINE_PATTERN = r"<TITLE>"
 
     API_URL = "https://www.googleapis.com/drive/v3/"
-    API_KEY = "AIzaSyAcA9c4evtwSY1ifuvzo6HKBkeot5Bk_U4"
+    API_KEY = "AIzaSyB68u-qFPP9oBJpo1DWAPFE_VD2Sfy9hpk"
 
     def api_request(self, cmd, **kwargs):
         kwargs["key"] = self.API_KEY
