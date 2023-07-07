@@ -184,10 +184,12 @@ def settings():
     accs = []
 
     for userdata in api.get_accounts(False):
-        if userdata.trafficleft == -1:
-            trafficleft = "unlimited"
-        elif not userdata.trafficleft:
+        if userdata.trafficleft is None:
             trafficleft = "not available"
+        elif userdata.trafficleft == -1:
+            trafficleft = "unlimited"
+        elif userdata.trafficleft == 0:
+            trafficleft = "drained"
         else:
             trafficleft = format.size(userdata.trafficleft)
 

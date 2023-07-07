@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import fnmatch
 import re
 import urllib.parse
 
@@ -11,7 +12,7 @@ from ..base.downloader import BaseDownloader
 class Http(BaseDownloader):
     __name__ = "Http"
     __type__ = "downloader"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __status__ = "testing"
 
     __pattern__ = r"(?:jd|pys?)://.+"
@@ -56,9 +57,12 @@ class Http(BaseDownloader):
                 else:
                     logins = {}
 
-                if netloc in logins:
-                    auth = logins[netloc]
-                    self.log_debug(f"Logging on to {netloc} using the account plugin")
+                for pattern, auth in logins.items():
+                    if fnmatch.fnmatch(netloc, pattern):
+                        self.log_debug(f"Logging on to {netloc} using the account plugin")
+                        break
+                else:
+                    auth = None
 
             if auth is not None:
                 self.req.add_auth(auth)

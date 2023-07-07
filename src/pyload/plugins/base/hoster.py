@@ -28,7 +28,7 @@ def parse_file_info(klass, url="", html=""):
 class BaseHoster(BasePlugin):
     __name__ = "BaseHoster"
     __type__ = "base"
-    __version__ = "0.40"
+    __version__ = "0.41"
     __status__ = "stable"
 
     __pattern__ = r"^unmatchable$"
@@ -455,8 +455,6 @@ class BaseHoster(BasePlugin):
                 self.fail(
                     "{} | {}".format(msg, self._("Url was already processed as free"))
                 )
-
-        self.req.clear_cookies()
 
         raise Retry(msg)
 

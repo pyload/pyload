@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 
+import pycurl
+
 from ..base.xfs_account import XFSAccount
-from ..helpers import search_pattern
 
 
 class DdownloadCom(XFSAccount):
     __name__ = "DdownloadCom"
     __type__ = "account"
-    __version__ = "0.05"
+    __version__ = "0.07"
     __status__ = "testing"
 
     __description__ = """Ddownload.com account plugin"""
@@ -15,16 +16,12 @@ class DdownloadCom(XFSAccount):
     __authors__ = [("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
     PLUGIN_DOMAIN = "ddownload.com"
+    PLUGIN_URL = "http://ddownload.com"
 
     PREMIUM_PATTERN = r"Premium Account \(expires"
     TRAFFIC_LEFT_PATTERN = r'<span>Traffic available</span>\s*<div class="price">(?:<sup>(?P<U>[^<>]+)</sup>)?(?P<S>-?\d+|[Uu]nlimited)</div>'
     VALID_UNTIL_PATTERN = r"Premium Account \(expires ([^)]+)\)"
 
-
-    @XFSAccount.logged.getter
-    def logged(self):
-        if super(DdownloadCom, self).logged is False:
-            return False
-
-        self.data = self.load(self.PLUGIN_URL, cookies=self.COOKIES)
-        return search_pattern(self.LOGIN_SKIP_PATTERN, self.data) is not None
+    def setup(self):
+        super(DdownloadCom, self).setup()
+        self.req.http.c.setopt(pycurl.USERAGENT, "pyLoad/{}".format(self.pyload.version))

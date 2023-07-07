@@ -3,13 +3,15 @@
 import base64
 import json
 
+from pyload.core.network.http.exceptions import BadHeader
+
 from ..base.decrypter import BaseDecrypter
 
 
 class GofileIoFolder(BaseDecrypter):
     __name__ = "GofileIoFolder"
     __type__ = "decrypter"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?gofile\.io/d/(?P<ID>\w+)"
@@ -34,7 +36,11 @@ class GofileIoFolder(BaseDecrypter):
     API_URL = "https://api.gofile.io/"
 
     def api_request(self, method, **kwargs):
-        json_data = self.load(self.API_URL + method, get=kwargs)
+        try:
+            json_data = self.load(self.API_URL + method, get=kwargs)
+        except BadHeader as exc:
+            json_data = exc.content
+
         return json.loads(json_data)
 
     def decrypt(self, pyfile):
@@ -82,5 +88,8 @@ class GofileIoFolder(BaseDecrypter):
         elif status == "error-notFound":
             self.offline()
 
+        elif status == "error-notPremium":
+            self.fail(self._("File can be downloaded by premium users only"))
+
         else:
-            self.fail("getContent API failed | {}".format(status))
+            self.fail(self._("getContent API failed | {}").format(status))

@@ -16,7 +16,7 @@ from .plugin import BasePlugin
 class BaseAccount(BasePlugin):
     __name__ = "BaseAccount"
     __type__ = "account"
-    __version__ = "0.89"
+    __version__ = "0.90"
     __status__ = "stable"
 
     __description__ = """Base account plugin"""
@@ -103,7 +103,7 @@ class BaseAccount(BasePlugin):
 
     def setup(self):
         """
-        Setup for enviroment and other things, called before logging (possibly more than
+        Setup for environment and other things, called before logging (possibly more than
         one time)
         """
         pass
@@ -164,6 +164,14 @@ class BaseAccount(BasePlugin):
             self.syncback()
 
             return bool(self.info["login"]["valid"])
+
+    def logout(self):
+        """
+        Invalidate the account timestamp so relogin will be forced next time.
+        """
+        self.sync()
+        self.info["login"]["timestamp"] = 0
+        self.syncback()
 
     # TODO: Recheck in 0.6.x
     def syncback(self):
@@ -371,6 +379,7 @@ class BaseAccount(BasePlugin):
     def remove_account(self, user):
         self.log_info(self._("Removing user `{}`...").format(user))
         self.accounts.pop(user, None)
+        self.pyload.request_factory.remove_cookie_jar(self.classname, user)
         if user is self.user:
             self.choose()
 
@@ -427,7 +436,7 @@ class BaseAccount(BasePlugin):
                 continue
 
             if data["premium"]:
-                premium_accounts[user] =  copy.copy(info)
+                premium_accounts[user] = copy.copy(info)
 
             else:
                 free_accounts[user] = copy.copy(info)

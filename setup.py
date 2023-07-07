@@ -11,10 +11,13 @@
 
 import os
 
-# import sys
+import pkg_resources
 
 # from pkg_resources import VersionConflict, require
 from setuptools import Command, setup
+
+# import sys
+
 
 # try:
 #     require("setuptools>=38.3")
@@ -35,7 +38,22 @@ class BuildLocale(Command):
         pass
 
     def finalize_options(self):
-        pass
+        jinja2_version = pkg_resources.get_distribution("jinja2").version
+        if pkg_resources.parse_version(jinja2_version) < pkg_resources.parse_version(
+            "3.0.0"
+        ):
+            mapping_file_version = 2
+        else:
+            mapping_file_version = 3
+        mapping_file = f"babel_v{mapping_file_version}.cfg"
+
+        with open(mapping_file, "r", encoding="utf-8-sig") as fp:
+            mapping = fp.read()
+        input_dirs = self.distribution.get_option_dict("extract_messages")[
+            "input_dirs"
+        ][1]
+
+        self.distribution.message_extractors = {input_dirs: mapping}
 
     def _execute(self, func_name, cmd_list):
         execute = getattr(self, func_name)
@@ -71,4 +89,7 @@ def retrieve_version():
 
 # TODO: BuildDocs running `sphinx-apidoc`
 if __name__ == "__main__":
-    setup(version=retrieve_version(), cmdclass={"build_locale": BuildLocale})
+    setup(
+        version=retrieve_version(),
+        cmdclass={"build_locale": BuildLocale},
+    )

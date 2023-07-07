@@ -4,7 +4,9 @@ import re
 import urllib.parse
 
 import pycurl
+from pyload.core.network.cookie_jar import CookieJar
 from pyload.core.network.http.exceptions import BadHeader
+from pyload.core.network.http.http_request import HTTPRequest
 
 from ..base.simple_downloader import SimpleDownloader
 
@@ -12,7 +14,7 @@ from ..base.simple_downloader import SimpleDownloader
 class FshareVn(SimpleDownloader):
     __name__ = "FshareVn"
     __type__ = "downloader"
-    __version__ = "0.37"
+    __version__ = "0.40"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?fshare\.vn/file/(?P<ID>\w+)"
@@ -32,6 +34,7 @@ class FshareVn(SimpleDownloader):
     ]
 
     OFFLINE_PATTERN = r"Tập tin của bạn yêu cầu không tồn tại"
+    TEMP_OFFLINE_PATTERN = r"^unmatchable$"
 
     URL_REPLACEMENTS = [("http://", "https://")]
 
@@ -90,6 +93,18 @@ class FshareVn(SimpleDownloader):
             )
 
         return info
+
+    def setup(self):
+        try:
+            self.req.http.close()
+        except Exception:
+            pass
+
+        self.req.http = HTTPRequest(
+            cookies=CookieJar(None),
+            options=self.pyload.request_factory.get_options(),
+            limit=5_000_000,
+        )
 
     def handle_free(self, pyfile):
         action, inputs = self.parse_html_form('class="password-form"')

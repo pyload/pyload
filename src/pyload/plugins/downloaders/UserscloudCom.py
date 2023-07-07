@@ -8,7 +8,7 @@ from ..base.xfs_downloader import XFSDownloader
 class UserscloudCom(XFSDownloader):
     __name__ = "UserscloudCom"
     __type__ = "downloader"
-    __version__ = "0.10"
+    __version__ = "0.11"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?userscloud\.com/(?P<ID>\w{12})"

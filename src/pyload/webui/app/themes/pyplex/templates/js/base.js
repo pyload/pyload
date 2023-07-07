@@ -361,6 +361,7 @@ function set_captcha(a) {
         $("#cap_submit").css("display", "inline");
         $("#cap_box #cap_title").text("");
         $("#cap_textual").css("display", "block");
+        $("#cap_result").focus();
     } else if (a.result_type === "positional") {
         $("#cap_positional_img").attr("src", params.src);
         $("#cap_box #cap_title").text("{{_('Please click on the right captcha position.')}}");
@@ -485,9 +486,18 @@ interactiveCaptchaHandler.prototype.startInteraction = function(url, params) {
 };
 
 // This function listens to messages from the TamperMonkey script in the iframe
-interactiveCaptchaHandler.prototype.windowEventListener = function(e) {
-    var interactiveHandlerInstance = e.data;
-    var requestMessage = JSON.parse(e.originalEvent.data);
+interactiveCaptchaHandler.prototype.windowEventListener = function(event) {
+    var requestMessage;
+    try {
+        requestMessage = JSON.parse(event.originalEvent.data);
+    } catch (e) {
+        if (e instanceof SyntaxError) {
+            return
+        } else {
+            console.error(e)
+        }
+    }
+    var interactiveHandlerInstance = event.data;
 
     if(requestMessage.actionCode === interactiveHandlerInstance.actionCodes.submitResponse) {
         // We got the response! pass it to the callback function

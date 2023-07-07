@@ -107,8 +107,8 @@ jobs:
       - name: Install Python dependencies
         run: |
           pip install tox
-          [ ${{ startsWith(matrix.os, 'macos') }} = true ] && pip install --install-option="--openssl-dir=/usr/local/opt/openssl@1.1" pycurl || true
-          [ ${{ startsWith(matrix.os, 'windows') }} = true ] && ./.github/scripts/install_pycurl_win.sh ${{ matrix.python-version }} || true
+          [ ${{ startsWith(matrix.os, 'macos') }} = true ] && { python -m pip install --upgrade pip==21.3.1; python -m pip install --install-option="--openssl-dir=/usr/local/opt/openssl@1.1" pycurl; } || true
+          [ ${{ startsWith(matrix.os, 'windows') }} = true ] && { pip install pipwin; pipwin install pycurl; } || true
         shell: bash
 
       - name: Test pyLoad

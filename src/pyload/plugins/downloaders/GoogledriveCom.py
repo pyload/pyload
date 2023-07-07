@@ -18,7 +18,7 @@ from ..base.downloader import BaseDownloader
 class GoogledriveCom(BaseDownloader):
     __name__ = "GoogledriveCom"
     __type__ = "downloader"
-    __version__ = "0.33"
+    __version__ = "0.35"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?(?:drive|docs)\.google\.com/(?:file/d/|uc\?.*id=)(?P<ID>[-\w]+)"
@@ -40,7 +40,7 @@ class GoogledriveCom(BaseDownloader):
     INFO_PATTERN = r'<span class="uc-name-size"><a href="[^"]+">(?P<N>.+?)</a> \((?P<S>[\d.,]+)(?P<U>[\w^_]+)\)</span>'
 
     API_URL = "https://www.googleapis.com/drive/v3/"
-    API_KEY = "AIzaSyAcA9c4evtwSY1ifuvzo6HKBkeot5Bk_U4"
+    API_KEY = "AIzaSyB68u-qFPP9oBJpo1DWAPFE_VD2Sfy9hpk"
 
     def setup(self):
         self.multi_dl = True
@@ -75,15 +75,17 @@ class GoogledriveCom(BaseDownloader):
                 )
             return None
 
-    def api_download(self):
+    def api_download(self, disposition):
         try:
             self.download(
                 "{}{}/{}".format(self.API_URL, "files", self.info["pattern"]["ID"]),
                 get={
                     "alt": "media",
-                    # 'acknowledgeAbuse': "true",
+                    "acknowledgeAbuse": "true",
+                    "supportsAllDrives": "true",
                     "key": self.API_KEY,
                 },
+                disposition=disposition
             )
 
         except BadHeader as exc:
@@ -98,7 +100,6 @@ class GoogledriveCom(BaseDownloader):
 
     def process(self, pyfile):
         disposition = False
-        self.data = self.load(pyfile.url)
         json_data = self.api_request(
             "files/" + self.info["pattern"]["ID"],
             fields="md5Checksum,name,size",
@@ -108,6 +109,7 @@ class GoogledriveCom(BaseDownloader):
         if json_data is None:
             self.fail("API error")
 
+        self.data = self.load(pyfile.url, ref=False)
         if "error" in json_data:
             if json_data["error"]["code"] == 404:
                 if "Virus scan warning" not in self.data:
@@ -130,7 +132,7 @@ class GoogledriveCom(BaseDownloader):
             self.info["md5"] = json_data["md5Checksum"]
 
         # Somehow, API downloads are significantly slow compared to "normal" download :(
-        # self.api_download()
+        # self.api_download(disposition)
 
         for _i in range(2):
             m = re.search(r'"([^"]+uc\?.*?)"', self.data)

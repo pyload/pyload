@@ -1,15 +1,14 @@
 # -*- coding: utf-8 -*-
 
 import json
-import re
-
+import pycurl
 from ..base.xfs_downloader import XFSDownloader
 
 
 class DdownloadCom(XFSDownloader):
     __name__ = "DdownloadCom"
     __type__ = "downloader"
-    __version__ = "0.10"
+    __version__ = "0.11"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?(?:ddl\.to|ddownload\.com)/(?P<ID>\w{12})"
@@ -43,6 +42,17 @@ class DdownloadCom(XFSDownloader):
         kwargs.update({"key": self.API_KEY})
         json_data = self.load(self.API_URL + method, get=kwargs)
         return json.loads(json_data)
+
+    def set_useragent(self):
+        self.req.http.c.setopt(pycurl.USERAGENT, "pyLoad/{}".format(self.pyload.version))
+
+    def setup(self):
+        super(DdownloadCom, self).setup()
+        self.set_useragent()
+
+    def load_account(self):
+        self.set_useragent()
+        super(DdownloadCom, self).load_account()
 
     # def api_info(self, url):
     #     info = {}

@@ -2,13 +2,16 @@
 import json
 import re
 
+from pyload.core.network.cookie_jar import CookieJar
+from pyload.core.network.http.http_request import HTTPRequest
+
 from ..base.simple_downloader import SimpleDownloader
 
 
 class SoundcloudCom(SimpleDownloader):
     __name__ = "SoundcloudCom"
     __type__ = "downloader"
-    __version__ = "0.19"
+    __version__ = "0.21"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?soundcloud\.com/[\w\-]+/[\w\-]+"
@@ -30,7 +33,17 @@ class SoundcloudCom(SimpleDownloader):
     NAME_PATTERN = r'title" content="(?P<N>.+?)"'
     OFFLINE_PATTERN = r'<title>"SoundCloud - Hear the world’s sounds"</title>'
 
-    CLIENT_ID = "wuM9g7pMB4mU13fW6SuRfQeJNRYNIX9O"
+    def setup(self):
+        try:
+            self.req.http.close()
+        except Exception:
+            pass
+
+        self.req.http = HTTPRequest(
+            cookies=CookieJar(None),
+            options=self.pyload.request_factory.get_options(),
+            limit=5_000_000,
+        )
 
     def get_info(self, url="", html=""):
         info = super(SoundcloudCom, self).get_info(url, html)
@@ -49,6 +62,18 @@ class SoundcloudCom(SimpleDownloader):
         except (AttributeError, IndexError):
             self.fail("Failed to retrieve json_data")
 
+        try:
+            js_url = re.findall(r'script crossorigin src="(.+?)"></script>', self.data)[-1]
+        except IndexError:
+            self.fail(self._("Failed to find js_url"))
+
+        js_data = self.load(js_url)
+        m = re.search(r'[ ,]client_id:"(.+?)"', js_data)
+        if m is None:
+            self.fail(self._("client_id not found"))
+
+        client_id = m.group(1)
+
         hydra_table = {
             table["hydratable"]: table["data"] for table in json.loads(json_data)
         }
@@ -64,7 +89,7 @@ class SoundcloudCom(SimpleDownloader):
             json_data = self.load(
                 streams[0],
                 get={
-                    "client_id": self.CLIENT_ID,
+                    "client_id": client_id,
                     "track_authorization": track_authorization,
                 },
             )
