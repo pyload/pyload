@@ -8,7 +8,7 @@ from ..base.simple_downloader import SimpleDownloader
 class WorkuploadCom(SimpleDownloader):
     __name__ = "WorkuploadCom"
     __type__ = "downloader"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
     __pattern__ = r"https?://workupload\.com/(?:file|start)/(?P<ID>\w+)"
@@ -30,13 +30,13 @@ class WorkuploadCom(SimpleDownloader):
     URL_REPLACEMENTS = [(__pattern__ + ".*", r"https://workupload.com/file/\g<ID>")]
 
     def api_request(self, method, **kwargs):
-        json_data = self.load("{}{}".format(self.API_URL, method))
+        json_data = self.load(self.API_URL + method)
         return json.loads(json_data)
 
     def setup(self):
         self.multi_dl = True
 
     def handle_free(self, pyfile):
-        api_data = self.api_request("file/getDownloadServer/{}".format(self.info["pattern"]["ID"]))
+        api_data = self.api_request("file/getDownloadServer/" + self.info["pattern"]["ID"])
         if api_data["success"]:
             self.link = api_data["data"]["url"]
