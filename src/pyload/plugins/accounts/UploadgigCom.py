@@ -14,7 +14,7 @@ from ..helpers import parse_html_form
 class UploadgigCom(BaseAccount):
     __name__ = "UploadgigCom"
     __type__ = "account"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __status__ = "testing"
 
     __description__ = """UploadgigCom account plugin"""
@@ -119,7 +119,7 @@ class UploadgigCom(BaseAccount):
             or self.timeout != -1
             and self.info["login"]["timestamp"] + self.timeout < time.time()
             or self.req
-            and not self.req.cj.parseCookie("fs_secure")
+            and not self.req.cj.parse_cookie("fs_secure")
         ):
 
             self.log_debug("Reached login timeout for user `%s`" % self.user)
