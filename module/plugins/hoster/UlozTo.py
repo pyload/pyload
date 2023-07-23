@@ -18,10 +18,10 @@ def convert_decimal_prefix(m):
 class UlozTo(SimpleHoster):
     __name__ = "UlozTo"
     __type__ = "hoster"
-    __version__ = "1.51"
+    __version__ = "1.52"
     __status__ = "testing"
 
-    __pattern__ = r'https?://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl|pornfile\.cz)/(?:live/)?(?P<ID>[!\w]+/[^/?]*)'
+    __pattern__ = r'https?://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl|pornfile\.cz|pinkfile\.cz)/(?:live/)?(?P<ID>[!\w]+/[^/?]*)'
 
     __config__ = [("activated", "bool", "Activated", True),
                   ("use_premium", "bool", "Use premium account if available", True),
@@ -43,13 +43,13 @@ class UlozTo(SimpleHoster):
     TEMP_OFFLINE_PATTERN = r"<title>500 - Internal Server Error</title>"
 
     URL_REPLACEMENTS = [("http://", "https://"),
-                        (r'(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl|pornfile\.cz)', "ulozto.net")]
+                        (r'(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl|pornfile\.cz|pinkfile\.cz)', "ulozto.net")]
 
     SIZE_REPLACEMENTS = [(r'([\d.]+)\s([kMG])B', convert_decimal_prefix)]
 
     CHECK_TRAFFIC = True
 
-    ADULT_PATTERN = r'PORNfile.cz'
+    ADULT_PATTERN = r'PINKfile.cz'
     PASSWD_PATTERN = r'<div class="passwordProtectedFile">'
     VIPLINK_PATTERN = r'<a href=".+?\?disclaimer=1" class="linkVip">'
     TOKEN_PATTERN = r'<input type="hidden" name="_token_" .*?value="(.+?)"'
@@ -64,8 +64,8 @@ class UlozTo(SimpleHoster):
             adult = True
             self.log_info(_("Adult content confirmation needed"))
 
-            url = pyfile.url.replace("ulozto.net", "pornfile.cz")
-            self.load("https://pornfile.cz/porn-disclaimer",
+            url = pyfile.url.replace("ulozto.net", "pinkfile.cz")
+            self.load("https://pinkfile.cz/porn-disclaimer",
                       post={'agree': "Confirm",
                             '_do': "pornDisclaimer-submit"})
 
@@ -82,7 +82,7 @@ class UlozTo(SimpleHoster):
 
     def handle_free(self, pyfile):
         is_adult = self.adult_confirmation(pyfile)
-        domain = "https://pornfile.cz" if is_adult else "https://ulozto.net"
+        domain = "https://pinkfile.cz" if is_adult else "https://ulozto.net"
 
         #: Let's try to find direct download
         m = re.search(r'<a id="limitedDownloadButton".*?href="(.*?)"', self.data)
