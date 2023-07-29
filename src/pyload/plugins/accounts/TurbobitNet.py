@@ -21,7 +21,6 @@ class TurbobitNet(BaseAccount):
 
     LOGIN_FAIL_PATTERN = r">(?:E-Mail address appears to be invalid\. Please try again|Incorrect login or password)</div>"
 
-
     def grab_info(self, user, password, data):
         html = self.load("https://turbobit.net/")
 
