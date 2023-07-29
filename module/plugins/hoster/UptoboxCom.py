@@ -8,10 +8,10 @@ from ..internal.SimpleHoster import SimpleHoster
 class UptoboxCom(SimpleHoster):
     __name__ = "UptoboxCom"
     __type__ = "hoster"
-    __version__ = "0.39"
+    __version__ = "0.40"
     __status__ = "testing"
 
-    __pattern__ = r'https?://(?:www\.)?(uptobox|uptostream)\.(?:com|eu)/(?P<ID>\w{12})'
+    __pattern__ = r'https?://(?:www\.)?(uptobox|uptostream)\.(?:com|eu|link)/(?P<ID>\w{12})'
     __config__ = [("activated", "bool", "Activated", True),
                   ("use_premium", "bool", "Use premium account if available", True),
                   ("fallback", "bool",
@@ -24,18 +24,18 @@ class UptoboxCom(SimpleHoster):
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com"),
                    ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
-    PLUGIN_DOMAIN = "uptobox.eu"
+    PLUGIN_DOMAIN = "uptobox.link"
 
     INFO_PATTERN = r"""(?:"para_title">|<h1(?: .*)?>)(?P<N>.+) \((?P<S>[\d.,]+) (?P<U>[\w^_]+)\)"""
     OFFLINE_PATTERN = r"""(File not found|Access Denied|404 Not Found)"""
     TEMP_OFFLINE_PATTERN = r""">Service Unavailable"""
     WAIT_PATTERN = r"""data-remaining-time=["'](\d+)["']"""
 
-    LINK_PATTERN = r"""['"](https?://(?:obwp\d+\.uptobox\.(?:com|eu)|\w+\.uptobox\.(?:com|eu)/dl?)/.+?)['"]"""
+    LINK_PATTERN = r"""['"](https?://(?:obwp\d+\.uptobox\.(?:com|eu|link)|\w+\.uptobox\.(?:com|eu|link)/dl?)/.+?)['"]"""
     DIRECT_LINK = False
 
     DL_LIMIT_PATTERN = r"""or you can wait (.+) to launch a new download"""
-    URL_REPLACEMENTS = [(__pattern__ + ".*", r"https://uptobox.eu/\g<ID>")]
+    URL_REPLACEMENTS = [(__pattern__ + ".*", r"https://uptobox.link/\g<ID>")]
 
     def setup(self):
         self.multiDL = self.premium
