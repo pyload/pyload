@@ -24,10 +24,10 @@ def convert_decimal_prefix(m):
 class UlozTo(SimpleDownloader):
     __name__ = "UlozTo"
     __type__ = "downloader"
-    __version__ = "1.51"
+    __version__ = "1.52"
     __status__ = "testing"
 
-    __pattern__ = r"https?://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl|pornfile\.cz)/(?:live/)?(?P<ID>[!\w]+/[^/?]*)"
+    __pattern__ = r"https?://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl|pornfile\.cz|pinkfile\.cz)/(?:live/)?(?P<ID>[!\w]+/[^/?]*)"
 
     __config__ = [
         ("enabled", "bool", "Activated", True),
@@ -54,7 +54,7 @@ class UlozTo(SimpleDownloader):
     URL_REPLACEMENTS = [
         ("http://", "https://"),
         (
-            r"(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl|pornfile\.cz)",
+            r"(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl|pornfile\.cz|pinkfile\.cz)",
             "ulozto.net",
         ),
     ]
@@ -63,7 +63,7 @@ class UlozTo(SimpleDownloader):
 
     CHECK_TRAFFIC = True
 
-    ADULT_PATTERN = r"PORNfile.cz"
+    ADULT_PATTERN = r"PINKfile.cz"
     PASSWD_PATTERN = r'<div class="passwordProtectedFile">'
     VIPLINK_PATTERN = r'<a href=".+?\?disclaimer=1" class="linkVip">'
     TOKEN_PATTERN = r'<input type="hidden" name="_token_" .*?value="(.+?)"'
@@ -78,9 +78,9 @@ class UlozTo(SimpleDownloader):
             adult = True
             self.log_info(self._("Adult content confirmation needed"))
 
-            url = pyfile.url.replace("ulozto.net", "pornfile.cz")
+            url = pyfile.url.replace("ulozto.net", "pinkfile.cz")
             self.load(
-                "https://pornfile.cz/porn-disclaimer",
+                "https://pinkfile.cz/porn-disclaimer",
                 post={"agree": "Confirm", "_do": "pornDisclaimer-submit"},
             )
 
@@ -97,7 +97,7 @@ class UlozTo(SimpleDownloader):
 
     def handle_free(self, pyfile):
         is_adult = self.adult_confirmation(pyfile)
-        domain = "https://pornfile.cz" if is_adult else "https://ulozto.net"
+        domain = "https://pinkfile.cz" if is_adult else "https://ulozto.net"
 
         #: Let's try to find direct download
         m = re.search(r'<a id="limitedDownloadButton".*?href="(.*?)"', self.data)
