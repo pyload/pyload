@@ -24,7 +24,7 @@ def convert_decimal_prefix(m):
 class UlozTo(SimpleDownloader):
     __name__ = "UlozTo"
     __type__ = "downloader"
-    __version__ = "1.51"
+    __version__ = "1.52"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl|pornfile\.cz|pinkfile\.cz)/(?:live/)?(?P<ID>[!\w]+/[^/?]*)"
