@@ -9,7 +9,7 @@ from ..internal.Account import Account
 class UptoboxCom(Account):
     __name__ = "UptoboxCom"
     __type__ = "account"
-    __version__ = "0.28"
+    __version__ = "0.29"
     __status__ = "testing"
 
     __description__ = """Uptobox.com account plugin"""
@@ -17,14 +17,14 @@ class UptoboxCom(Account):
     __authors__ = [("benbox69", "dev@tollet.me"),
                    ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
-    LOGIN_URL = "https://uptobox.eu/login"
-    LOGIN_SKIP_PATTERN = r"https://uptobox\.eu/logout"
+    LOGIN_URL = "https://uptobox.link/login"
+    LOGIN_SKIP_PATTERN = r"https://uptobox\.link/logout"
 
     PREMIUM_PATTERN = r'Premium member'
     VALID_UNTIL_PATTERN = r'data-tippy-content="Expires on ([\d\-: ]+)"'
 
     def grab_info(self, user, password, data):
-        html = self.load("https://uptobox.eu/my_account")
+        html = self.load("https://uptobox.link/my_account")
 
         premium = re.search(self.PREMIUM_PATTERN, html) is not None
 
