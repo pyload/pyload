@@ -15,7 +15,7 @@ class MegaCoNzFolder(BaseDecrypter):
     __version__ = "0.26"
     __status__ = "testing"
 
-    __pattern__ = r"https?://(?:www\.)?mega(?:\.co)?\.nz/folder/(?P<ID>[\w^_]+)#(?P<KEY>[\w,\-=]+)/?$"
+    __pattern__ = r"https?://(?:www\.)?mega(?:\.co)?\.nz/folder/(?P<ID>[\w^_]+)#(?P<KEY>[\w,\-=]+)(/(folder/(?P<SUBDIR>[\w]+)))?$"
     __config__ = [
         ("enabled", "bool", "Activated", True),
         ("use_premium", "bool", "Use premium account if available", True),
@@ -49,6 +49,7 @@ class MegaCoNzFolder(BaseDecrypter):
     def decrypt(self, pyfile):
         id = self.info["pattern"]["ID"]
         master_key = self.info["pattern"]["KEY"]
+        subdir = self.info["pattern"].get("SUBDIR")
 
         self.log_debug(
             "ID: {}".format(id), "Key: {}".format(master_key), "Type: public folder"
@@ -67,6 +68,7 @@ class MegaCoNzFolder(BaseDecrypter):
             "https://mega.co.nz/folder/{}#{}/file/{}".format(id, master_key, node["h"])
             for node in res["f"]
             if node["t"] == 0 and ":" in node["k"]
+            if not subdir or node["p"] == subdir
         ]
 
         if urls:
