@@ -10,10 +10,10 @@ from ..internal.Crypter import Crypter
 class MegaCoNzFolder(Crypter):
     __name__ = "MegaCoNzFolder"
     __type__ = "crypter"
-    __version__ = "0.26"
+    __version__ = "0.27"
     __status__ = "testing"
 
-    __pattern__ = r'https?://(?:www\.)?mega(?:\.co)?\.nz/folder/(?P<ID>[\w^_]+)#(?P<KEY>[\w,\-=]+)/?$'
+    __pattern__ = r'https?://(?:www\.)?mega(?:\.co)?\.nz/folder/(?P<ID>[\w^_]+)#(?P<KEY>[\w,\-=]+)(?:/folder/(?P<SUBDIR>[\w]+))?/?$'
     __config__ = [("activated", "bool", "Activated", True),
                   ("use_premium", "bool", "Use premium account if available", True),
                   ("folder_per_package", "Default;Yes;No", "Create folder for each package", "Default")]
@@ -37,6 +37,7 @@ class MegaCoNzFolder(Crypter):
     def decrypt(self, pyfile):
         id = self.info['pattern']['ID']
         master_key = self.info['pattern']['KEY']
+        subdir = self.info["pattern"]["SUBDIR"]
 
         self.log_debug(
             "ID: %s" % id,
@@ -55,7 +56,8 @@ class MegaCoNzFolder(Crypter):
         urls = ["https://mega.co.nz/folder/%s#%s/file/%s" %
                 (id, master_key, node['h'])
                 for node in res['f']
-                if node['t'] == 0 and ':' in node['k']]
+                if node['t'] == 0 and ':' in node['k']
+                if subdir is None or node["p"] == subdir]
 
         if urls:
             self.packages = [(pyfile.package().folder, urls, pyfile.package().name)]
