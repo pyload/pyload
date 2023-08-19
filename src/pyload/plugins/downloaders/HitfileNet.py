@@ -73,14 +73,15 @@ class HitfileNet(SimpleDownloader):
         m = re.search(self.LINK_FREE_PATTERN, self.data)
         if m is not None:
             self.link = "https://hitfile.net%s" % m.group(1)
-            self.data = self.load(self.link)
+            header = self.load(self.link,redirect=False, just_header=True)
+            self.link = header['location']
 
     def solve_captcha(self):
         action, inputs = self.parse_html_form("action='#'")
         if not inputs:
             self.fail(self._("Captcha form not found"))
 
-        if inputs["captcha_type"] == "recaptcha2":
+        if inputs.get("captcha_type") == "recaptcha2" or "g-captcha-index" in inputs:
             self.captcha = ReCaptcha(self.pyfile)
             inputs["g-recaptcha-response"] = self.captcha.challenge()
             self.captcha.correct()
