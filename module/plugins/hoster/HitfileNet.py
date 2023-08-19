@@ -10,7 +10,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class HitfileNet(SimpleHoster):
     __name__ = "HitfileNet"
     __type__ = "hoster"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(?:hitfile\.net|hil\.to)/(?:download/free/)?(?P<ID>\w+)'
@@ -63,21 +63,18 @@ class HitfileNet(SimpleHoster):
 
         m = re.search(self.LINK_FREE_PATTERN, self.data)
         if m is not None:
-            self.link = "https://hitfile.net%s" % m.group(1)
-            self.data = self.load(self.link)
+            link = "https://hitfile.net%s" % m.group(1)
+            header = self.load(link, redirect=False, just_header=True)
+            self.link = header['location']
 
     def solve_captcha(self):
-        action, inputs = self.parse_html_form("action='#'")
+        action, inputs = self.parse_html_form("id='captcha_form'")
         if not inputs:
             self.fail(_("Captcha form not found"))
 
-        if inputs['captcha_type'] == "recaptcha2":
-            self.captcha = ReCaptcha(self.pyfile)
-            inputs['g-recaptcha-response'] = self.captcha.challenge()
-            self.captcha.correct()
-
-        else:
-            self.fail(_("Unknown captcha type"))
+        self.captcha = ReCaptcha(self.pyfile)
+        inputs["g-recaptcha-response"] = self.captcha.challenge()
+        self.captcha.correct()
 
         self.data = self.load(self.free_url,
                               post=inputs)
