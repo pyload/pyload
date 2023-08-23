@@ -11,7 +11,7 @@ from ..helpers import parse_html_form
 class UlozTo(BaseAccount):
     __name__ = "UlozTo"
     __type__ = "account"
-    __version__ = "0.35"
+    __version__ = "0.36"
     __status__ = "testing"
 
     __description__ = """Uloz.to account plugin"""
