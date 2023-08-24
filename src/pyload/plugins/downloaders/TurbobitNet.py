@@ -16,7 +16,7 @@ class TurbobitNet(SimpleDownloader):
     __version__ = "0.48"
     __status__ = "testing"
 
-    __pattern__ = r'https?://(?:(?:www|m)\.)?(?:turbobite?\.net|turbobif\.com|turbo?\.(?:to|cc)|turb\.pw|tourbobit\.com|turbobitn\.com)/(?:download/free/)?(?P<ID>\w+)'
+    __pattern__ = r"https?://(?:(?:www|m)\.)?(?:turbobite?\.net|turbobi(?:tn?|f)\.com|turbo?\.(?:to|cc)|turb\.pw|tourbobit\.com)/(?:download/free/)?(?P<ID>\w+)"
     __config__ = [
         ("enabled", "bool", "Activated", True),
         ("use_premium", "bool", "Use premium account if available", True),
