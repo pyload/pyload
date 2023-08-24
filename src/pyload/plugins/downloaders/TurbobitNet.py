@@ -13,7 +13,7 @@ from ..base.simple_downloader import SimpleDownloader
 class TurbobitNet(SimpleDownloader):
     __name__ = "TurbobitNet"
     __type__ = "downloader"
-    __version__ = "0.48"
+    __version__ = "0.49"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:(?:www|m)\.)?(?:turbobite?\.net|turbobi(?:tn?|f)\.com|turbo?\.(?:to|cc)|turb\.pw|tourbobit\.com)/(?:download/free/)?(?P<ID>\w+)"
