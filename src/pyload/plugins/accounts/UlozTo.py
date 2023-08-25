@@ -11,7 +11,7 @@ from ..helpers import parse_html_form
 class UlozTo(BaseAccount):
     __name__ = "UlozTo"
     __type__ = "account"
-    __version__ = "0.35"
+    __version__ = "0.36"
     __status__ = "testing"
 
     __description__ = """Uloz.to account plugin"""
@@ -23,7 +23,7 @@ class UlozTo(BaseAccount):
         ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com"),
     ]
 
-    INFO_PATTERN = r'title="credit in use"><\/span>\s*([\d.,]+) ([\w^_]+)\s*<\/td>\s*<td class="right">([\d.]+)<\/td>'
+    INFO_PATTERN = r'<span>Closest expiration<\/span>\s*<span class="highlight">([\d.,]+)\s*([\w^_]+)<\/span>\s*<span>on (\d{2}\.\d{2}.\d{4})<\/span>'
 
     def grab_info(self, user, password, data):
         html = self.load("https://ulozto.net/platby")
