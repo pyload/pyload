@@ -18,6 +18,18 @@ except ImportError:
     pass
 
 
+def _text_size(draw, text, font=None):
+    try:
+        text_size = draw.textsize(text, font=font)
+    except AttributeError:
+        text_bbox = draw.textbbox((0,0), text, font=font)
+        text_size = (
+            text_bbox[2] - text_bbox[0],
+            text_bbox[3] - text_bbox[1]
+        )
+    return text_size
+
+
 class XCaptcha:
     def __init__(self, pyfile):
         self.pyfile = pyfile
@@ -71,9 +83,10 @@ class XCaptcha:
                 }
                 tiles_image.paste(tile_image, (tile_image_pos['x'], tile_image_pos['y']))
 
+                text_size = _text_size(draw, tile_index_text)
                 tile_index_text_size = {
-                    'width': draw.textsize(tile_index_text)[0],
-                    'height': draw.textsize(tile_index_text)[1]
+                    'width': text_size[0],
+                    'height': text_size[1]
                 }
 
                 tile_index_text_pos = {
@@ -105,7 +118,7 @@ class XCaptcha:
         _eol = 1
         # determine maximum width of line
         while True:
-            while draw.textsize(challenge_msg[_sol:_eol], font=font)[0] < tiles_image.size[0] and _eol < len(challenge_msg):
+            while _text_size(draw, challenge_msg[_sol:_eol], font=font)[0] < tiles_image.size[0] and _eol < len(challenge_msg):
                 _eol += 1
 
             # if we've wrapped the text, then adjust the wrap to the last word
@@ -123,7 +136,7 @@ class XCaptcha:
         text_area_height = 0
         challenge_msg_lines = challenge_msg.split('\n')
         for challenge_line in challenge_msg_lines:
-            text_area_height += draw.textsize(challenge_line, font=font)[1]
+            text_area_height += _text_size(draw, challenge_line, font=font)[1]
 
         margin = 5
         # add some margin on top and bottom of text
@@ -140,7 +153,7 @@ class XCaptcha:
 
         current_y = tile_size['height'] + margin
         for challenge_line in challenge_msg_lines:
-            line_width, line_height = draw.textsize(challenge_line, font=font)
+            line_width, line_height = _text_size(draw, challenge_line, font=font)
             draw.text(((dst_image_size['width'] - line_width) / 2, current_y),
                       challenge_line,
                       fill='black',
@@ -199,7 +212,7 @@ class XCaptcha:
 class FilejokerNet(XFSHoster):
     __name__ = "FilejokerNet"
     __type__ = "hoster"
-    __version__ = "0.15"
+    __version__ = "0.16"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?filejoker\.net/(?:file/)?(?P<ID>\w{12})'
