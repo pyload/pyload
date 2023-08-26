@@ -134,7 +134,7 @@ class XCaptcha:
         _eol = 1
         # determine maximum width of line
         while True:
-            while  _text_size(draw, challenge_msg[_sol:_eol], font=font)[
+            while _text_size(draw, challenge_msg[_sol:_eol], font=font)[
                 0
             ] < tiles_image.size[0] and _eol < len(challenge_msg):
                 _eol += 1
