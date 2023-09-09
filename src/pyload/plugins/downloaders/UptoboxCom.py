@@ -8,7 +8,7 @@ from ..base.simple_downloader import SimpleDownloader
 class UptoboxCom(SimpleDownloader):
     __name__ = "UptoboxCom"
     __type__ = "downloader"
-    __version__ = "0.40"
+    __version__ = "0.41"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?(uptobox|uptostream)\.(?:com|eu|link)/(?P<ID>\w{12})"
@@ -38,7 +38,6 @@ class UptoboxCom(SimpleDownloader):
     LINK_PATTERN = (
         r"""['"](https?://(?:obwp\d+\.uptobox\.(?:com|eu|link)|\w+\.uptobox\.(?:com|eu|link)/dl?)/.+?)['"]"""
     )
-    DIRECT_LINK = False
 
     DL_LIMIT_PATTERN = r"""or you can wait (.+) to launch a new download"""
     URL_REPLACEMENTS = [(__pattern__ + ".*", r"https://uptobox.link/\g<ID>")]
