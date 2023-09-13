@@ -4,7 +4,6 @@ import re
 import urllib.parse
 
 import pycurl
-from pyload.core.network.cookie_jar import CookieJar
 from pyload.core.network.http.exceptions import BadHeader
 from pyload.core.network.http.http_request import HTTPRequest
 
@@ -14,7 +13,7 @@ from ..base.simple_downloader import SimpleDownloader
 class FshareVn(SimpleDownloader):
     __name__ = "FshareVn"
     __type__ = "downloader"
-    __version__ = "0.40"
+    __version__ = "0.41"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?fshare\.vn/file/(?P<ID>\w+)"
@@ -39,11 +38,12 @@ class FshareVn(SimpleDownloader):
     URL_REPLACEMENTS = [("http://", "https://")]
 
     API_KEY = "dMnqMMZMUnN5YpvKENaEhdQQ5jxDqddt"
+    API_USERAGENT = "pyLoad-B1RS5N"
     API_URL = "https://api.fshare.vn/api/"
 
     # See https://www.fshare.vn/api-doc
     def api_request(self, method, session_id=None, **kwargs):
-        self.req.http.c.setopt(pycurl.USERAGENT, "pyLoad-B1RS5N")
+        self.req.http.c.setopt(pycurl.USERAGENT, self.API_USERAGENT)
 
         if len(kwargs) == 0:
             json_data = self.load(
@@ -101,7 +101,7 @@ class FshareVn(SimpleDownloader):
             pass
 
         self.req.http = HTTPRequest(
-            cookies=CookieJar(None),
+            cookies=self.req.cj,
             options=self.pyload.request_factory.get_options(),
             limit=5_000_000,
         )
