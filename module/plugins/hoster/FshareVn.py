@@ -4,7 +4,6 @@ import re
 import urlparse
 
 import pycurl
-from module.network.CookieJar import CookieJar
 from module.network.HTTPRequest import BadHeader
 
 from ..internal.misc import BIGHTTPRequest, json
@@ -14,7 +13,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class FshareVn(SimpleHoster):
     __name__ = "FshareVn"
     __type__ = "hoster"
-    __version__ = "0.40"
+    __version__ = "0.41"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?fshare\.vn/file/(?P<ID>\w+)'
@@ -35,11 +34,12 @@ class FshareVn(SimpleHoster):
     URL_REPLACEMENTS = [("http://", "https://")]
 
     API_KEY = "dMnqMMZMUnN5YpvKENaEhdQQ5jxDqddt"
+    API_USERAGENT = "pyLoad-B1RS5N"
     API_URL = "https://api.fshare.vn/api/"
 
     # See https://www.fshare.vn/api-doc
     def api_request(self, method, session_id=None, **kwargs):
-        self.req.http.c.setopt(pycurl.USERAGENT, "pyLoad-B1RS5N")
+        self.req.http.c.setopt(pycurl.USERAGENT, self.API_USERAGENT)
 
         if len(kwargs) == 0:
             json_data = self.load(self.API_URL + method,
@@ -78,7 +78,7 @@ class FshareVn(SimpleHoster):
             pass
 
         self.req.http = BIGHTTPRequest(
-            cookies=CookieJar(None),
+            cookies=self.req.cj,
             options=self.pyload.requestFactory.getOptions(),
             limit=5000000)
 
