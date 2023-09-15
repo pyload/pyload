@@ -51,7 +51,7 @@ class ArchiveQueue:
         except ValueError:
             pass
 
-        if queue is []:
+        if queue == []:
             return self.delete()
 
         return self.set(queue)
