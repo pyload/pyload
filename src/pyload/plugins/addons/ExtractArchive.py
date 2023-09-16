@@ -51,7 +51,7 @@ class ArchiveQueue:
         except ValueError:
             pass
 
-        if queue == []:
+        if not queue:
             return self.delete()
 
         return self.set(queue)
@@ -60,7 +60,7 @@ class ArchiveQueue:
 class ExtractArchive(BaseAddon):
     __name__ = "ExtractArchive"
     __type__ = "addon"
-    __version__ = "1.72"
+    __version__ = "1.73"
     __status__ = "testing"
 
     __config__ = [
