@@ -2,6 +2,7 @@
 import json
 import re
 
+from pyload.core.network.cookie_jar import CookieJar
 from pyload.core.network.http.http_request import HTTPRequest
 
 from ..base.simple_downloader import SimpleDownloader
@@ -39,7 +40,7 @@ class SoundcloudCom(SimpleDownloader):
             pass
 
         self.req.http = HTTPRequest(
-            cookies=self.req.cj,
+            cookies=CookieJar(None),
             options=self.pyload.request_factory.get_options(),
             limit=5_000_000,
         )
