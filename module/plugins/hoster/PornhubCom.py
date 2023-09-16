@@ -2,8 +2,6 @@
 
 import re
 
-from module.network.CookieJar import CookieJar
-
 from ..internal.misc import BIGHTTPRequest, json
 from ..internal.SimpleHoster import SimpleHoster
 
@@ -11,7 +9,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class PornhubCom(SimpleHoster):
     __name__ = "PornhubCom"
     __type__ = "hoster"
-    __version__ = "0.61"
+    __version__ = "0.62"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?pornhub\.com/view_video\.php\?viewkey=\w+'
@@ -51,7 +49,7 @@ class PornhubCom(SimpleHoster):
             pass
 
         self.req.http = BIGHTTPRequest(
-            cookies=CookieJar(None),
+            cookies=self.req.cj,
             options=self.pyload.requestFactory.getOptions(),
             limit=2000000)
 

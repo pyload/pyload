@@ -2,8 +2,6 @@
 
 import re
 
-from module.network.CookieJar import CookieJar
-
 from ..internal.misc import BIGHTTPRequest, json
 from ..internal.SimpleHoster import SimpleHoster
 
@@ -11,7 +9,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class SoundcloudCom(SimpleHoster):
     __name__ = "SoundcloudCom"
     __type__ = "hoster"
-    __version__ = "0.21"
+    __version__ = "0.22"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?soundcloud\.com/[\w\-]+/[\w\-]+'
@@ -37,7 +35,7 @@ class SoundcloudCom(SimpleHoster):
             pass
 
         self.req.http = BIGHTTPRequest(
-            cookies=CookieJar(None),
+            cookies=self.req.cj,
             options=self.pyload.requestFactory.getOptions(),
             limit=5000000,
         )

@@ -9,8 +9,6 @@ import urllib
 import urlparse
 from xml.dom.minidom import parseString as parse_xml
 
-from module.network.CookieJar import CookieJar
-
 from ..internal.Hoster import Hoster
 from ..internal.misc import (
     BIGHTTPRequest, Popen, decode, exists, fs_encode, fsjoin, isexecutable, json, reduce, renice, replace_patterns,
@@ -211,7 +209,7 @@ class Ffmpeg(object):
 class YoutubeCom(Hoster):
     __name__ = "YoutubeCom"
     __type__ = "hoster"
-    __version__ = "0.88"
+    __version__ = "0.89"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:[^/]*\.)?(?:youtu\.be/|youtube\.com/watch\?(?:.*&)?v=)[\w\-]+'
@@ -748,7 +746,7 @@ class YoutubeCom(Hoster):
             pass
 
         self.req.http = BIGHTTPRequest(
-            cookies=CookieJar(None),
+            cookies=self.req.cj,
             options=self.pyload.requestFactory.getOptions(),
             limit=5000000)
 

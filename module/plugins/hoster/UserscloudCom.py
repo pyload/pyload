@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from module.network.CookieJar import CookieJar
-
 from ..internal.misc import BIGHTTPRequest
 from ..internal.XFSHoster import XFSHoster
 
@@ -9,7 +7,7 @@ from ..internal.XFSHoster import XFSHoster
 class UserscloudCom(XFSHoster):
     __name__ = "UserscloudCom"
     __type__ = "hoster"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?userscloud\.com/(?P<ID>\w{12})'
@@ -42,6 +40,6 @@ class UserscloudCom(XFSHoster):
             pass
 
         self.req.http = BIGHTTPRequest(
-            cookies=CookieJar(None),
+            cookies=self.req.cj,
             options=self.pyload.requestFactory.getOptions(),
             limit=2000000)

@@ -9,7 +9,6 @@ import urlparse
 
 import Crypto.Cipher.AES
 
-from module.network.CookieJar import CookieJar
 from module.network.HTTPRequest import BadHeader
 
 from ..captcha.CoinHive import CoinHive
@@ -22,7 +21,7 @@ from ..internal.misc import BIGHTTPRequest, replace_patterns
 class FilecryptCc(Crypter):
     __name__ = "FilecryptCc"
     __type__ = "crypter"
-    __version__ = "0.49"
+    __version__ = "0.50"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?filecrypt\.(?:cc|co)/Container/\w+'
@@ -56,7 +55,7 @@ class FilecryptCc(Crypter):
             pass
 
         self.req.http = BIGHTTPRequest(
-            cookies=CookieJar(None),
+            cookies=self.req.cj,
             options=self.pyload.requestFactory.getOptions(),
             limit=2000000)
 

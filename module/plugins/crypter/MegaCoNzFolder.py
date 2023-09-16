@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from module.network.CookieJar import CookieJar
 from ..internal.misc import BIGHTTPRequest
 
 from ..hoster.MegaCoNz import MegaClient
@@ -10,7 +9,7 @@ from ..internal.Crypter import Crypter
 class MegaCoNzFolder(Crypter):
     __name__ = "MegaCoNzFolder"
     __type__ = "crypter"
-    __version__ = "0.27"
+    __version__ = "0.28"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?mega(?:\.co)?\.nz/folder/(?P<ID>[\w^_]+)#(?P<KEY>[\w,\-=]+)(?:/folder/(?P<SUBDIR>[\w]+))?/?$'
@@ -30,7 +29,7 @@ class MegaCoNzFolder(Crypter):
             pass
 
         self.req.http = BIGHTTPRequest(
-            cookies=CookieJar(None),
+            cookies=self.req.cj,
             options=self.pyload.requestFactory.getOptions(),
             limit=10000000)
 
