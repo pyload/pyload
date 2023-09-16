@@ -12,15 +12,30 @@ from functools import reduce
 from xml.dom.minidom import parseString as parse_xml
 
 from pyload import PKGDIR
-from pyload.core.network.cookie_jar import CookieJar
 from pyload.core.network.exceptions import Abort, Skip
 from pyload.core.network.http.http_request import HTTPRequest
 from pyload.core.utils.convert import to_str
 from pyload.core.utils.old import safename
-from pyload.core.utils.purge import uniquify
 
 from ..base.downloader import BaseDownloader
 from ..helpers import exists, is_executable, renice, replace_patterns, which
+
+
+def find_by_keyvalue(lst, key, value):
+    """
+    Find a key/value in a list of dicts
+
+    :param lst: the list of dicts to search in
+    :param key: name of the key to check for value
+    :param value: value to search for
+    :return: index of the found item inside lst or None
+    """
+    for i, dic in enumerate(lst):
+        if dic[key] == value:
+            return i
+
+    else:
+        return None
 
 
 def try_get(data, *path):
@@ -47,6 +62,31 @@ def try_get(data, *path):
         res = get_one(res, item)
 
     return res
+
+
+def codec_from_mime_codec(mime_codec):
+    if mime_codec.startswith("mp4a.40"):
+        codec = "aac"
+    elif mime_codec in ("mp4a.a5", "mp4a.a6", "ec-3"):
+        codec = "ac3"
+    elif mime_codec in ("mp4a.a9", "mp4a.b2", "dtsx"):
+        codec = "dts"
+    elif mime_codec in ("opus", "mp4a.ad"):
+        codec = "opus"
+    elif mime_codec == "vorbis":
+        codec = "vorbis"
+    elif mime_codec.split(".")[0] == "vp8":
+        codec = "vp8"
+    elif mime_codec.split(".")[0] == "vp9":
+        codec = "vp9"
+    elif mime_codec.split(".")[0] == "av01":
+        codec = "av1"
+    elif mime_codec.split(".")[0] == "avc1":
+        codec = "h264"
+    else:
+        codec = None  #: Unknown
+
+    return codec
 
 
 class Ffmpeg:
@@ -239,9 +279,9 @@ class YoutubeCom(BaseDownloader):
         ("enabled", "bool", "Activated", True),
         (
             "quality",
-            "sd;hd;fullhd;240p;360p;480p;720p;1080p;1440p;2160p;3072p;4320p",
+            "144p;240p;360p;480p;720p;1080p;1440p;2160p;3072p;4320p",
             "Quality Setting",
-            "hd",
+            "720p",
         ),
         ("vfmt", "int", "Video FMT/ITAG Number (0 for auto)", 0),
         ("afmt", "int", "Audio FMT/ITAG Number (0 for auto)", 0),
@@ -256,6 +296,7 @@ class YoutubeCom(BaseDownloader):
         ("ac3", "bool", "Allow ac3 audio (DASH video only)", True),
         ("dts", "bool", "Allow dts audio (DASH video only)", True),
         ("3d", "bool", "Prefer 3D", False),
+        ("60fps", "bool", "Allow 60 FPS video", False),
         ("subs_dl", "off;all_specified;first_available", "Download subtitles", "off"),
         (
             "subs_dl_langs",
@@ -288,267 +329,6 @@ class YoutubeCom(BaseDownloader):
     ]
 
     URL_REPLACEMENTS = [(r"youtu\.be/", "youtube.com/watch?v=")]
-
-    #: name, width, height, quality ranking, 3D, type
-    formats = {
-        # 3gp
-        17: {
-            "ext": ".3gp",
-            "width": 176,
-            "height": 144,
-            "qi": 0,
-            "3d": False,
-            "type": "av",
-        },
-        36: {
-            "ext": ".3gp",
-            "width": 400,
-            "height": 240,
-            "qi": 1,
-            "3d": False,
-            "type": "av",
-        },
-        # flv
-        5: {
-            "ext": ".flv",
-            "width": 400,
-            "height": 240,
-            "qi": 1,
-            "3d": False,
-            "type": "av",
-        },
-        6: {
-            "ext": ".flv",
-            "width": 640,
-            "height": 400,
-            "qi": 4,
-            "3d": False,
-            "type": "av",
-        },
-        34: {
-            "ext": ".flv",
-            "width": 640,
-            "height": 360,
-            "qi": 4,
-            "3d": False,
-            "type": "av",
-        },
-        35: {
-            "ext": ".flv",
-            "width": 854,
-            "height": 480,
-            "qi": 6,
-            "3d": False,
-            "type": "av",
-        },
-        # mp4
-        83: {
-            "ext": ".mp4",
-            "width": 400,
-            "height": 240,
-            "qi": 1,
-            "3d": True,
-            "type": "av",
-        },
-        18: {
-            "ext": ".mp4",
-            "width": 480,
-            "height": 360,
-            "qi": 2,
-            "3d": False,
-            "type": "av",
-        },
-        82: {
-            "ext": ".mp4",
-            "width": 640,
-            "height": 360,
-            "qi": 3,
-            "3d": True,
-            "type": "av",
-        },
-        22: {
-            "ext": ".mp4",
-            "width": 1280,
-            "height": 720,
-            "qi": 8,
-            "3d": False,
-            "type": "av",
-        },
-        136: {
-            "ext": ".mp4",
-            "width": 1280,
-            "height": 720,
-            "qi": 8,
-            "3d": False,
-            "type": "v",
-        },
-        84: {
-            "ext": ".mp4",
-            "width": 1280,
-            "height": 720,
-            "qi": 8,
-            "3d": True,
-            "type": "av",
-        },
-        37: {
-            "ext": ".mp4",
-            "width": 1920,
-            "height": 1080,
-            "qi": 9,
-            "3d": False,
-            "type": "av",
-        },
-        137: {
-            "ext": ".mp4",
-            "width": 1920,
-            "height": 1080,
-            "qi": 9,
-            "3d": False,
-            "type": "v",
-        },
-        85: {
-            "ext": ".mp4",
-            "width": 1920,
-            "height": 1080,
-            "qi": 9,
-            "3d": True,
-            "type": "av",
-        },
-        264: {
-            "ext": ".mp4",
-            "width": 2560,
-            "height": 1440,
-            "qi": 10,
-            "3d": False,
-            "type": "v",
-        },
-        266: {
-            "ext": ".mp4",
-            "width": 3840,
-            "height": 2160,
-            "qi": 11,
-            "3d": False,
-            "type": "v",
-        },
-        38: {
-            "ext": ".mp4",
-            "width": 4096,
-            "height": 3072,
-            "qi": 12,
-            "3d": False,
-            "type": "av",
-        },
-        # webm
-        43: {
-            "ext": ".webm",
-            "width": 640,
-            "height": 360,
-            "qi": 3,
-            "3d": False,
-            "type": "av",
-        },
-        100: {
-            "ext": ".webm",
-            "width": 640,
-            "height": 360,
-            "qi": 3,
-            "3d": True,
-            "type": "av",
-        },
-        101: {
-            "ext": ".webm",
-            "width": 640,
-            "height": 360,
-            "qi": 4,
-            "3d": True,
-            "type": "av",
-        },
-        44: {
-            "ext": ".webm",
-            "width": 854,
-            "height": 480,
-            "qi": 5,
-            "3d": False,
-            "type": "av",
-        },
-        45: {
-            "ext": ".webm",
-            "width": 1280,
-            "height": 720,
-            "qi": 7,
-            "3d": False,
-            "type": "av",
-        },
-        247: {
-            "ext": ".webm",
-            "width": 1280,
-            "height": 720,
-            "qi": 7,
-            "3d": False,
-            "type": "v",
-        },
-        102: {
-            "ext": ".webm",
-            "width": 1280,
-            "height": 720,
-            "qi": 8,
-            "3d": True,
-            "type": "av",
-        },
-        46: {
-            "ext": ".webm",
-            "width": 1920,
-            "height": 1080,
-            "qi": 9,
-            "3d": False,
-            "type": "av",
-        },
-        248: {
-            "ext": ".webm",
-            "width": 1920,
-            "height": 1080,
-            "qi": 9,
-            "3d": False,
-            "type": "v",
-        },
-        271: {
-            "ext": ".webm",
-            "width": 2560,
-            "height": 1440,
-            "qi": 10,
-            "3d": False,
-            "type": "v",
-        },
-        313: {
-            "ext": ".webm",
-            "width": 3840,
-            "height": 2160,
-            "qi": 11,
-            "3d": False,
-            "type": "v",
-        },
-        272: {
-            "ext": ".webm",
-            "width": 7680,
-            "height": 4320,
-            "qi": 13,
-            "3d": False,
-            "type": "v",
-        },
-        # audio
-        139: {"ext": ".mp4", "qi": 1, "acodec": "aac", "type": "a"},
-        140: {"ext": ".mp4", "qi": 2, "acodec": "aac", "type": "a"},
-        141: {"ext": ".mp4", "qi": 3, "acodec": "aac", "type": "a"},
-        256: {"ext": ".mp4", "qi": 4, "acodec": "aac", "type": "a"},
-        258: {"ext": ".mp4", "qi": 5, "acodec": "aac", "type": "a"},
-        325: {"ext": ".mp4", "qi": 6, "acodec": "dts", "type": "a"},
-        328: {"ext": ".mp4", "qi": 7, "acodec": "ac3", "type": "a"},
-        171: {"ext": ".webm", "qi": 1, "acodec": "vorbis", "type": "a"},
-        172: {"ext": ".webm", "qi": 2, "acodec": "vorbis", "type": "a"},
-        249: {"ext": ".webm", "qi": 3, "acodec": "opus", "type": "a"},
-        250: {"ext": ".webm", "qi": 4, "acodec": "opus", "type": "a"},
-        251: {"ext": ".webm", "qi": 5, "acodec": "opus", "type": "a"},
-    }
 
     def _decrypt_signature(self, encrypted_sig):
         """Turn the encrypted 's' field into a working signature"""
@@ -653,138 +433,98 @@ class YoutubeCom(BaseDownloader):
 
     def _handle_video(self):
         use3d = self.config.get("3d")
-
-        if use3d:
-            quality = {
-                "sd": 82,
-                "hd": 84,
-                "fullhd": 85,
-                "240p": 83,
-                "360p": 82,
-                "480p": 82,
-                "720p": 84,
-                "1080p": 85,
-                "1440p": 85,
-                "2160p": 85,
-                "3072p": 85,
-                "4320p": 85,
-            }
-        else:
-            quality = {
-                "sd": 18,
-                "hd": 22,
-                "fullhd": 37,
-                "240p": 5,
-                "360p": 18,
-                "480p": 35,
-                "720p": 22,
-                "1080p": 37,
-                "1440p": 264,
-                "2160p": 266,
-                "3072p": 38,
-                "4320p": 272,
-            }
-
-        desired_fmt = self.config.get("vfmt") or quality.get(
-            self.config.get("quality"), 0
-        )
+        use60fps = self.config.get("60fps")
+        desired_itag = self.config.get("vfmt")
+        desired_quality = self.config.get("quality")
 
         def is_video(x):
-            return "v" in self.formats[x]["type"]
+            return "v" in x["type"]
 
-        if desired_fmt not in self.formats or not is_video(desired_fmt):
-            self.log_warning(
-                self._("VIDEO ITAG {} unknown, using default").format(desired_fmt)
-            )
-            desired_fmt = 22
+        def allowed_suffix(x):
+            return self.config.get(x["ext"], False)
+
+        def allowed_fps(x):
+            info = x["quality"].split("p")[1]
+            fps, hdr = (info.split((" ")) + [""])[:2]
+            allowed = fps != "60" or use60fps
+            return allowed
 
         #: Build dictionary of supported itags (3D/2D)
-        def allowed_suffix(x):
-            return self.config.get(self.formats[x]["ext"])
-
-        video_streams = {
-            s[0]: s[1:]
-            for s in self.streams
-            if s[0] in self.formats
-            and allowed_suffix(s[0])
-            and is_video(s[0])
-            and self.formats[s[0]]["3d"] == use3d
-        }
+        video_streams = [
+            _i
+            for _i, _s in enumerate(self.streams)
+            if is_video(_s)
+            and allowed_suffix(_s)
+            and allowed_fps(_s)
+            and _s["3d"] == use3d
+        ]
 
         if not video_streams:
             self.fail(self._("No available video stream meets your preferences"))
 
-        self.log_debug(
-            "DESIRED VIDEO STREAM: ITAG:{} ({} {}x{} Q:{} 3D:{}) {}found, {}allowed".format(
-                desired_fmt,
-                self.formats[desired_fmt]["ext"],
-                self.formats[desired_fmt]["width"],
-                self.formats[desired_fmt]["height"],
-                self.formats[desired_fmt]["qi"],
-                self.formats[desired_fmt]["3d"],
-                "" if desired_fmt in video_streams else "NOT ",
-                "" if allowed_suffix(desired_fmt) else "NOT ",
-            )
-        )
-
-        #: Return fmt nearest to quality index
-        if desired_fmt in video_streams and allowed_suffix(desired_fmt):
-            chosen_fmt = desired_fmt
-        else:
-
-            def quality_index(x):
-                return self.formats[x]["qi"]  #: Select quality index
-
-            def quality_distance(x, y):
-                return abs(quality_index(x) - quality_index(y))
+        chosen_stream_index = None
+        if desired_itag != 0:
+            desired_stream = find_by_keyvalue(self.streams, "itag", desired_itag)
+            is_3d = try_get(self.streams, desired_stream, "3d")
 
             self.log_debug(
-                "Choosing nearest stream: {}".format(
-                    [
-                        (s, allowed_suffix(s), quality_distance(s, desired_fmt))
-                        for s in video_streams.keys()
-                    ]
+                "DESIRED VIDEO STREAM: ITAG:{} (EXT:{} {}x{} 3D:{}) {}found, {}allowed".format(
+                    desired_itag,
+                    try_get(self.streams, desired_stream, "ext") or "n/a",
+                    try_get(self.streams, desired_stream, "width") or 0,
+                    try_get(self.streams, desired_stream, "height") or 0,
+                    is_3d if is_3d is not None else "n/a",
+                    "NOT " if desired_stream is None else "",
+                    "" if desired_stream in video_streams else "NOT ",
                 )
             )
+            #: if found and allowed
+            if desired_stream in video_streams:
+                chosen_stream_index = desired_stream
 
-            chosen_fmt = reduce(
-                lambda x, y: x
-                if quality_distance(x, desired_fmt) <= quality_distance(y, desired_fmt)
-                and quality_index(x) > quality_index(y)
-                else y,
-                list(video_streams.keys()),
+        if chosen_stream_index is None:
+            #: Return fmt nearest to desired quality
+            def quality_distance(x, y):
+                return abs(int(x.split("p")[0]) - int(y.split("p")[0]))
+
+            chosen_stream_index = reduce(
+                lambda x, y: x if quality_distance(self.streams[x]["quality"], desired_quality) <= quality_distance(self.streams[y]["quality"], desired_quality) else y,
+                video_streams
             )
 
+        chosen_stream = self.streams[chosen_stream_index]
+
+        is_3d = try_get(chosen_stream, "3d")
+        vmime, amime = ([x.strip() for x in chosen_stream["codecs"].split(",")] + [None])[:2]
         self.log_debug(
-            "CHOSEN VIDEO STREAM: ITAG:{} ({} {}x{} Q:{} 3D:{})".format(
-                chosen_fmt,
-                self.formats[chosen_fmt]["ext"],
-                self.formats[chosen_fmt]["width"],
-                self.formats[chosen_fmt]["height"],
-                self.formats[chosen_fmt]["qi"],
-                self.formats[chosen_fmt]["3d"],
+            "CHOSEN VIDEO STREAM: ITAG:{} ({}/{} {}x{} 3D:{} AUDIO:{})".format(
+                try_get(chosen_stream, "itag"),
+                try_get(chosen_stream, "ext") or "n/a",
+                codec_from_mime_codec(vmime) or "unknown",
+                try_get(chosen_stream, "width") or 0,
+                try_get(chosen_stream, "height") or 0,
+                is_3d if is_3d is not None else "n/a",
+                "None" if amime is None else (codec_from_mime_codec(amime) or "unknown"),
             )
         )
 
-        url = video_streams[chosen_fmt][0]
+        url = chosen_stream["url"]
 
-        if video_streams[chosen_fmt][1]:
-            if video_streams[chosen_fmt][2]:
-                signature = self._decrypt_signature(video_streams[chosen_fmt][1])
+        if chosen_stream["signature"]:
+            if chosen_stream["has_encrypted_signature"]:
+                signature = self._decrypt_signature(chosen_stream["signature"])
 
             else:
-                signature = video_streams[chosen_fmt][1]
+                signature = chosen_stream["signature"]
 
-            url += "&{}={}".format(video_streams[chosen_fmt][3], signature)
+            url += "&{}={}".format(chosen_stream["signature_query_param"], signature)
 
         if "&ratebypass=" not in url:
             url += "&ratebypass=yes"
 
-        file_suffix = (
-            self.formats[chosen_fmt]["ext"] if chosen_fmt in self.formats else ".flv"
-        )
+        file_suffix = try_get(chosen_stream, "ext") or "flv"
 
-        if "a" not in self.formats[chosen_fmt]["type"]:
+        if "a" not in chosen_stream["type"]:
             file_suffix = ".video" + file_suffix
 
         self.pyfile.name = self.file_name + file_suffix
@@ -801,98 +541,83 @@ class YoutubeCom(BaseDownloader):
                 self._("Download skipped: {} due to {}").format(self.pyfile.name, exc)
             )
 
-        return filename, chosen_fmt
+        return filename, chosen_stream_index
 
-    def _handle_audio(self, video_fmt):
-        desired_fmt = self.config.get("afmt") or 141
-
+    def _handle_audio(self, video_stream_index=None):
         def is_audio(x):
-            return self.formats[x]["type"] == "a"
+            return x["type"] == "a"
 
-        if desired_fmt not in self.formats or not is_audio(desired_fmt):
-            self.log_warning(
-                self._("AUDIO ITAG {} unknown, using default").format(desired_fmt)
-            )
-            desired_fmt = 141
-
-        #: Build dictionary of supported audio itags
         def allowed_codec(x):
-            return self.config.get(self.formats[x]["acodec"])
+            mime_codec = x["codecs"].lower()
+            codec = codec_from_mime_codec(mime_codec)
+            if codec is None:
+                return False
+            else:
+                return self.config.get(codec)
 
         def allowed_suffix(x):
-            return (
-                self.config.get(".mkv")
-                or self.config.get(self.formats[x]["ext"])
-                and self.formats[x]["ext"] == self.formats[video_fmt]["ext"]
-            )
+            if video_stream_index is None:
+                return self.config.get(".mkv") or self.config.get(x["ext"])
 
-        audio_streams = {
-            s[0]: s[1:]
-            for s in self.streams
-            if s[0] in self.formats
-            and is_audio(s[0])
-            and allowed_codec(s[0])
-            and allowed_suffix(s[0])
-        }
-
-        if not audio_streams:
-            self.fail(self._("No available audio stream meets your preferences"))
-
-        if desired_fmt in audio_streams and allowed_suffix(desired_fmt):
-            chosen_fmt = desired_fmt
-        else:
-
-            def quality_index(x):
-                return self.formats[x]["qi"]  #: Select quality index
-
-            def quality_distance(x, y):
-                return abs(quality_index(x) - quality_index(y))
-
-            self.log_debug(
-                "Choosing nearest stream: {}".format(
-                    [
-                        (s, allowed_suffix(s), quality_distance(s, desired_fmt))
-                        for s in audio_streams.keys()
-                    ]
+            else:
+                return (
+                    self.config.get(".mkv")
+                    or self.config.get(x["ext"])
+                    and x["ext"] == self.streams[video_stream_index]["ext"]
                 )
-            )
 
-            chosen_fmt = reduce(
-                lambda x, y: x
-                if quality_distance(x, desired_fmt) <= quality_distance(y, desired_fmt)
-                and quality_index(x) > quality_index(y)
-                else y,
-                list(audio_streams.keys()),
-            )
+        chosen_stream_index = None
+        desired_itag = self.config.get("afmt", 0)
+        if desired_itag != 0:
+            desired_stream = find_by_keyvalue(self.streams, "itag", desired_itag)
+            if desired_stream is None or not is_audio(desired_stream):
+                self.log_warning(
+                    self._("AUDIO ITAG {} unknown, using default").format(desired_itag)
+                )
 
+            else:
+                chosen_stream_index = desired_stream
+
+        if chosen_stream_index is None:
+            #: Build dictionary of supported audio itags
+            audio_streams = [
+                _i
+                for _i, _s in enumerate(self.streams)
+                if is_audio(_s)
+                and allowed_codec(_s)
+                and allowed_suffix(_s)
+            ]
+
+            if not audio_streams:
+                self.fail(self._("No available audio stream meets your preferences"))
+
+            chosen_stream_index = sorted(audio_streams, key=lambda x: self.streams[x]["bitrate"])[0]
+
+        chosen_stream = self.streams[chosen_stream_index]
         self.log_debug(
-            "CHOSEN AUDIO STREAM: ITAG:{} ({} {} Q:{})".format(
-                chosen_fmt,
-                self.formats[chosen_fmt]["ext"],
-                self.formats[chosen_fmt]["acodec"],
-                self.formats[chosen_fmt]["qi"],
+            "CHOSEN AUDIO STREAM: ITAG:{} ({} {} bitrate: {})".format(
+                chosen_stream["itag"],
+                chosen_stream["ext"],
+                codec_from_mime_codec(chosen_stream["codecs"]),
+                chosen_stream["bitrate"],
             )
         )
 
-        url = audio_streams[chosen_fmt][0]
+        url = chosen_stream["url"]
 
-        if audio_streams[chosen_fmt][1]:
-            if audio_streams[chosen_fmt][2]:
-                signature = self._decrypt_signature(audio_streams[chosen_fmt][1])
+        if chosen_stream["signature"]:
+            if chosen_stream["has_encrypted_signature"]:
+                signature = self._decrypt_signature(chosen_stream["signature"])
 
             else:
-                signature = audio_streams[chosen_fmt][1]
+                signature = chosen_stream["signature"]
 
-            url += "&{}={}".format(audio_streams[chosen_fmt][3], signature)
+            url += "&{}={}".format(chosen_stream["signature_query_param"], signature)
 
         if "&ratebypass=" not in url:
             url += "&ratebypass=yes"
 
-        file_suffix = (
-            ".audio" + self.formats[chosen_fmt]["ext"]
-            if chosen_fmt in self.formats
-            else ".m4a"
-        )
+        file_suffix = ".audio" + (".webm" if chosen_stream["ext"] == ".webm" else ".m4a")
 
         self.pyfile.name = self.file_name + file_suffix
 
@@ -908,7 +633,7 @@ class YoutubeCom(BaseDownloader):
                 self._("Download skipped: {} due to {}").format(self.pyfile.name, exc)
             )
 
-        return filename, chosen_fmt
+        return filename, chosen_stream_index
 
     def _handle_subtitles(self):
         def timedtext_to_srt(timedtext):
@@ -1229,7 +954,7 @@ class YoutubeCom(BaseDownloader):
             pass
 
         self.req.http = HTTPRequest(
-            cookies=CookieJar(None),
+            cookies=self.req.cj,
             options=self.pyload.request_factory.get_options(),
             limit=5_000_000,
         )
@@ -1321,48 +1046,56 @@ class YoutubeCom(BaseDownloader):
             try_get(self.player_response, "streamingData", "adaptiveFormats") or []
         )
 
-        self.streams = []
-        for _s in streams:
-            itag = int(_s["itag"])
-            url_data = _s
-            url = _s.get("url", None)
+        def get_ext(mime):
+            return "." + mime.split(";")[0].split("/")[1]
+
+        def get_codecs(mime):
+            return re.search('"(.+?)"', mime.split(";")[1]).group(1)
+
+        self.streams = {}
+        for stream in streams:
+            itag = int(stream["itag"])
+            url = stream.get("url", None)
             if url is None:
-                cipher = _s.get("cipher", None)
+                cipher = stream.get("cipher") or stream.get("signatureCipher")
                 if cipher is not None:
                     url_data = urllib.parse.parse_qs(cipher)
                     url_data = dict((k, v[0]) for k, v in url_data.items())
                     url = url_data.get("url")
                     if url is None:
                         continue
+                    else:
+                        stream.update(url_data)
 
                 else:
-                    cipher = _s.get("signatureCipher")
-                    if cipher is not None:
-                        url_data = urllib.parse.parse_qs(cipher)
-                        url = try_get(url_data, "url", 0)
-                        if url is None:
-                            continue
+                    continue
 
-            self.streams.append(
-                (
-                    itag,
-                    url,
-                    try_get(url_data, "s", 0)
-                    or url_data.get("s", url_data.get("sig", None)),
-                    "s" in url_data,
-                    try_get(url_data, "sp", 0) or url_data.get("sp", "signature"),
-                )
-            )
+            if itag not in self.streams:
+                self.streams[itag] = {
+                    "itag": itag,
+                    "url": url,
+                    "size": int(stream.get("contentLength", 0)),
+                    "ext": get_ext(stream["mimeType"]),
+                    "signature": try_get(stream, "s", 0) or stream.get("s", stream.get("sig", None)),
+                    "has_encrypted_signature": "s" in stream,
+                    "signature_query_param": try_get(stream, "sp", 0) or stream.get("sp", "signature"),
+                    "width": stream.get("width", 0),
+                    "height": stream.get("height", 0),
+                    "quality": stream.get("qualityLabel"),
+                    "codecs": get_codecs(stream["mimeType"]),
+                    "bitrate": stream.get("bitrate"),
+                    "3d": "stereoLayout" in stream,
+                    "type": ("a" if "audioChannels" in stream else "") + ("v" if "fps" in stream else ""),
+                }
 
-        self.streams = uniquify(self.streams)
+        self.streams = list(self.streams.values())
+        self.log_debug("AVAILABLE STREAMS: {}".format([_s["itag"] for _s in self.streams]))
 
-        self.log_debug("AVAILABLE STREAMS: {}".format([_s[0] for _s in self.streams]))
+        video_filename, video_stream_index = self._handle_video()
 
-        video_filename, video_itag = self._handle_video()
-
-        has_audio = "a" in self.formats[video_itag]["type"]
+        has_audio = "a" in self.streams[video_stream_index]["type"]
         if not has_audio:
-            audio_filename, audio_itag = self._handle_audio(video_itag)
+            audio_filename, audio_stream_index = self._handle_audio(video_stream_index)
 
         else:
             audio_filename = None

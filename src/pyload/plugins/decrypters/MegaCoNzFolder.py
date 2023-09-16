@@ -2,7 +2,6 @@
 
 from pyload.core.utils.convert import to_str
 
-from pyload.core.network.cookie_jar import CookieJar
 from pyload.core.network.http.http_request import HTTPRequest
 
 from ..base.decrypter import BaseDecrypter
@@ -41,7 +40,7 @@ class MegaCoNzFolder(BaseDecrypter):
             pass
 
         self.req.http = HTTPRequest(
-            cookies=CookieJar(None),
+            cookies=self.req.cj,
             options=self.pyload.request_factory.get_options(),
             limit=10_000_000,
         )
