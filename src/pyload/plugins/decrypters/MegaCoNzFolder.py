@@ -1,18 +1,15 @@
 # -*- coding: utf-8 -*-
 
-from pyload.core.utils.convert import to_str
-
-from pyload.core.network.cookie_jar import CookieJar
 from pyload.core.network.http.http_request import HTTPRequest
 
 from ..base.decrypter import BaseDecrypter
-from ..downloaders.MegaCoNz import MegaClient, MegaCrypto
+from ..downloaders.MegaCoNz import MegaClient
 
 
 class MegaCoNzFolder(BaseDecrypter):
     __name__ = "MegaCoNzFolder"
     __type__ = "decrypter"
-    __version__ = "0.27"
+    __version__ = "0.28"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?mega(?:\.co)?\.nz/folder/(?P<ID>[\w^_]+)#(?P<KEY>[\w,\-=]+)(?:/folder/(?P<SUBDIR>[\w]+))?/?$"
@@ -41,7 +38,7 @@ class MegaCoNzFolder(BaseDecrypter):
             pass
 
         self.req.http = HTTPRequest(
-            cookies=CookieJar(None),
+            cookies=self.req.cj,
             options=self.pyload.request_factory.get_options(),
             limit=10_000_000,
         )

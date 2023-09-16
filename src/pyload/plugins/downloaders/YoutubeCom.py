@@ -12,7 +12,6 @@ from functools import reduce
 from xml.dom.minidom import parseString as parse_xml
 
 from pyload import PKGDIR
-from pyload.core.network.cookie_jar import CookieJar
 from pyload.core.network.exceptions import Abort, Skip
 from pyload.core.network.http.http_request import HTTPRequest
 from pyload.core.utils.convert import to_str
@@ -231,7 +230,7 @@ class Ffmpeg:
 class YoutubeCom(BaseDownloader):
     __name__ = "YoutubeCom"
     __type__ = "downloader"
-    __version__ = "0.88"
+    __version__ = "0.89"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:[^/]*\.)?(?:youtu\.be/|youtube\.com/watch\?(?:.*&)?v=)[\w\-]+"
@@ -1229,7 +1228,7 @@ class YoutubeCom(BaseDownloader):
             pass
 
         self.req.http = HTTPRequest(
-            cookies=CookieJar(None),
+            cookies=self.req.cj,
             options=self.pyload.request_factory.get_options(),
             limit=5_000_000,
         )

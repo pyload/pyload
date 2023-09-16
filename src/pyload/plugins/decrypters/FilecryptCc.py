@@ -11,7 +11,6 @@ import urllib.parse
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
-from pyload.core.network.cookie_jar import CookieJar
 from pyload.core.network.http.exceptions import BadHeader
 from pyload.core.network.http.http_request import HTTPRequest
 from pyload.core.utils.convert import to_str
@@ -26,7 +25,7 @@ from ..helpers import replace_patterns
 class FilecryptCc(BaseDecrypter):
     __name__ = "FilecryptCc"
     __type__ = "decrypter"
-    __version__ = "0.49"
+    __version__ = "0.50"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?filecrypt\.(?:cc|co)/Container/\w+"
@@ -64,7 +63,7 @@ class FilecryptCc(BaseDecrypter):
             pass
 
         self.req.http = HTTPRequest(
-            cookies=CookieJar(None),
+            cookies=self.req.cj,
             options=self.pyload.request_factory.get_options(),
             limit=2_000_000,
         )
