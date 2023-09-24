@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 import time
 
-from ..helpers import is_sequence
+from pyload.core.utils.check import is_sequence
+
 from .addon import BaseAddon, expose
 
 

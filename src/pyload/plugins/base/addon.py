@@ -3,7 +3,9 @@
 import threading
 from functools import wraps
 
-from ..helpers import Periodical, is_sequence
+from pyload.core.utils.check import is_sequence
+
+from ..helpers import Periodical
 from .plugin import BasePlugin
 
 

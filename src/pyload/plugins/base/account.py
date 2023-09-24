@@ -7,9 +7,10 @@ from datetime import timedelta
 
 from pyload.core.network.exceptions import Skip
 from pyload.core.utils import parse, seconds
+from pyload.core.utils.check import is_sequence
 from pyload.core.utils.struct.lock import lock
 
-from ..helpers import Periodical, is_sequence
+from ..helpers import Periodical
 from .plugin import BasePlugin
 
 

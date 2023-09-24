@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import imp
-from collections.abc import Iterable, Mapping
+from collections.abc import Iterable, Mapping, Sequence
 
 
 def is_bits_set(value, bits):
@@ -42,6 +42,11 @@ def is_iterable(obj, strict=False):
     return isinstance(obj, Iterable) and (
         strict or not isinstance(obj, str) or not isinstance(obj, bytes)
     )
+
+
+def is_sequence(obj):
+    """Check if object is sequence."""
+    return isinstance(obj, Sequence) and not isinstance(obj, (str, bytes, bytearray))
 
 
 def is_mapping(obj):
