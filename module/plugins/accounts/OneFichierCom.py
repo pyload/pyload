@@ -12,7 +12,7 @@ from ..internal.Account import Account
 class OneFichierCom(Account):
     __name__ = "OneFichierCom"
     __type__ = "account"
-    __version__ = "0.24"
+    __version__ = "0.25"
     __status__ = "testing"
 
     __description__ = """1fichier.com account plugin"""
@@ -51,17 +51,21 @@ class OneFichierCom(Account):
     def signin(self, user, password, data):
         login_url = "https://1fichier.com/login.pl?lg=en"
 
+        html = self.load(login_url)
+        if "/logout.pl" in html:
+            self.skip_login()
+
         try:
             html = self.load(login_url,
                              ref=login_url,
                              post={'mail': user,
                                    'pass': password,
-                                   'It': "on",
+                                   'lt': "on",
                                    'purge': "off",
-                                   'valider': "Send"})
+                                   'valider': "OK"})
 
             if any(_x in html for _x in
-                   ('>Invalid username or Password', '>Invalid email address', '>Invalid password')):
+                   ('>Invalid username or Password', '>Invalid email address', '>Invalid password', '>Invalid username')):
                 self.fail_login()
 
         except BadHeader, e:
