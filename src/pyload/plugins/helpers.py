@@ -2,6 +2,7 @@
 
 # TODO: Move to utils directory in 0.6.x
 
+import functools
 import hashlib
 import itertools
 import json
@@ -655,3 +656,22 @@ def move_tree(src, dst, overwrite=False):
             os.rmdir(src_dir)
         except OSError:
             pass
+
+
+def ttl_cache(maxsize=128, typed=False, ttl=-1):
+    """Like functools.lru_cache decorator with time to live feature"""
+    if ttl <= 0:
+        ttl = 65536
+
+    start_time = time.time()
+
+    def wrapper(func):
+        @functools.lru_cache(maxsize, typed)
+        def ttl_func(ttl_hash,  *args, **kwargs):
+            return func(*args, **kwargs)
+
+        def wrapped(*args, **kwargs):
+            ttl_hash = int((time.time() - start_time) / ttl)
+            return ttl_func(ttl_hash, *args, **kwargs)
+        return functools.update_wrapper(wrapped, func)
+    return wrapper
