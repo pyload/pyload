@@ -463,34 +463,6 @@ class BaseDownloader(BaseHoster):
     # if delete:
     # self.remove(dl_file, try_trash=False)
 
-    # def check_hash(self, type, digest, delete=False):
-    # hashtype = type.strip('-').upper()
-
-    # self.log_info(self._("Checking file hashsum {}...").format(hashtype))
-
-    # if not self.last_download:
-    # self.log_warning(self._("No file to check"))
-    # return
-
-    # dl_file = encode(self.last_download)
-
-    # try:
-    # dl_hash   = digest
-    # file_hash = compute_checksum(dl_file, hashtype)
-
-    # if not file_hash:
-    # self.fail(self._("Unsupported hashing algorithm: ") + hashtype)
-
-    # elif dl_hash == file_hash:
-    # delete = False
-    # self.log_info(self._("File hashsum {} match").format(hashtype))
-
-    # else:
-    # self.fail(self._("File hashsum {} mismatch | Expected file hashsum: {} | Downloaded file hashsum: {}").format(hashtype, dl_hash, file_hash))
-    # finally:
-    # if delete:
-    # self.remove(dl_file, try_trash=False)
-
     def check_duplicates(self):
         """
         Checks if same file was downloaded within same package.
