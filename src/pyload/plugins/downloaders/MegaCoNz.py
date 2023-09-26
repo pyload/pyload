@@ -310,10 +310,10 @@ class MegaClient:
 class MegaCoNz(BaseDownloader):
     __name__ = "MegaCoNz"
     __type__ = "downloader"
-    __version__ = "0.57"
+    __version__ = "0.58"
     __status__ = "testing"
 
-    __pattern__ = r"https?://(?:www\.)?mega(?:\.co)?\.nz/(?:file/(?P<ID1>[\w^_]+)#(?P<K1>[\w\-,=]+)|folder/(?P<ID2>[\w^_]+)#(?P<K2>[\w\-,=]+)/file/(?P<NID>[\w^_]+))"
+    __pattern__ = r"https?://(?:www\.)?mega(?:\.co)?\.nz/(?:file/(?P<ID1>[\w^_]+)#(?P<K1>[\w\-,=]+)|folder/(?P<ID2>[\w^_]+)#(?P<K2>[\w\-,=]+)/file/(?P<NID>[\w^_]+)|#!(?P<ID3>[\w^_]+)!(?P<K3>[\w\-,=]+))"
     __config__ = [("enabled", "bool", "Activated", True)]
 
     __description__ = """Mega.co.nz downloader plugin"""
@@ -458,8 +458,8 @@ class MegaCoNz(BaseDownloader):
     def process(self, pyfile):
         node_id = self.info['pattern']['NID']
         public = node_id in ("", None)
-        id = self.info['pattern']['ID1'] or self.info['pattern']['ID2']
-        key = self.info['pattern']['K1'] or self.info['pattern']['K2']
+        id = self.info['pattern']['ID1'] or self.info['pattern']['ID2'] or self.info['pattern']['ID3']
+        key = self.info['pattern']['K1'] or self.info['pattern']['K2'] or self.info['pattern']['K3']
 
         self.log_debug("ID: {},".format(id),
                        "Key: {}".format(key),
