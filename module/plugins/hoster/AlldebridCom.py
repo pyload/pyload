@@ -10,10 +10,10 @@ from ..internal.MultiHoster import MultiHoster
 class AlldebridCom(MultiHoster):
     __name__ = "AlldebridCom"
     __type__ = "hoster"
-    __version__ = "0.64"
+    __version__ = "0.65"
     __status__ = "testing"
 
-    __pattern__ = r'https?://(?:\w+\.)?(?:alldebrid\.com|debrid\.it|alld\.io)/dl/[\w^_]+'
+    __pattern__ = r'https?://(?:\w+\.)?(?:alldebrid\.com|debrid\.it)/(?:dl|f)/[\w^_]+'
     __config__ = [("activated", "bool", "Activated", True),
                   ("use_premium", "bool", "Use premium account if available", True),
                   ("fallback", "bool", "Fallback to free download if premium fails", False),
