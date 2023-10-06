@@ -8,7 +8,7 @@ from ..base.account import BaseAccount
 class FilerNet(BaseAccount):
     __name__ = "FilerNet"
     __type__ = "account"
-    __version__ = "0.14"
+    __version__ = "0.15"
     __status__ = "testing"
 
     __description__ = """Filer.net account plugin"""
@@ -68,5 +68,5 @@ class FilerNet(BaseAccount):
             },
         )
 
-        if "Logout" not in html:
+        if re.search(self.LOGIN_SKIP_PATTERN, html) is None:
             self.fail_login()
