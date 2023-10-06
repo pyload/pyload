@@ -8,7 +8,7 @@ from ..base.account import BaseAccount
 class FilerNet(BaseAccount):
     __name__ = "FilerNet"
     __type__ = "account"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __status__ = "testing"
 
     __description__ = """Filer.net account plugin"""
@@ -18,6 +18,7 @@ class FilerNet(BaseAccount):
         ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com"),
     ]
 
+    LOGIN_SKIP_PATTERN = r'<a href="/logout"'
     TOKEN_PATTERN = r'name="_csrf_token" value="(.+?)"'
     VALID_UNTIL_PATTERN = r"Der Premium-Zugang ist gültig bis (.+)\.\s*</td>"
     TRAFFIC_LEFT_PATTERN = r"Traffic</th>\s*<td>([\d.,]+) (?:([\w^_]+))</td>"
@@ -27,7 +28,7 @@ class FilerNet(BaseAccount):
         html = self.load("https://filer.net/profile")
 
         #: Free user
-        if re.search(self.FREE_PATTERN, html):
+        if re.search(self.FREE_PATTERN, html) is not None:
             return {"premium": False, "validuntil": None, "trafficleft": None}
 
         until = re.search(self.VALID_UNTIL_PATTERN, html)
@@ -50,6 +51,9 @@ class FilerNet(BaseAccount):
 
     def signin(self, user, password, data):
         html = self.load("https://filer.net/login")
+
+        if re.search(self.LOGIN_SKIP_PATTERN, html) is not None:
+            self.skip_login()
 
         token = re.search(self.TOKEN_PATTERN, html).group(1)
 
