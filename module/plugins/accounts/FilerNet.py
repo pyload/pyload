@@ -9,7 +9,7 @@ from ..internal.Account import Account
 class FilerNet(Account):
     __name__ = "FilerNet"
     __type__ = "account"
-    __version__ = "0.14"
+    __version__ = "0.15"
     __status__ = "testing"
 
     __description__ = """Filer.net account plugin"""
@@ -63,5 +63,5 @@ class FilerNet(Account):
                                '_csrf_token': token,
                                '_target_path': "https://filer.net/"})
 
-        if 'Logout' not in html:
+        if re.search(self.LOGIN_SKIP_PATTERN, html) is None:
             self.fail_login()
