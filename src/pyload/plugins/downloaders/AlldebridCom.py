@@ -10,10 +10,10 @@ from ..base.multi_downloader import MultiDownloader
 class AlldebridCom(MultiDownloader):
     __name__ = "AlldebridCom"
     __type__ = "downloader"
-    __version__ = "0.65"
+    __version__ = "0.66"
     __status__ = "testing"
 
-    __pattern__ = r"https?://(?:\w+\.)?(?:alldebrid\.com|debrid\.it)/(?:dl|f)/[\w^_]+"
+    __pattern__ = r"https?://(?:\w+\.)?(?:alldebrid\.com|debrid\.it|alld\.io)/(?:dl|f)/[\w^_]+"
     __config__ = [
         ("enabled", "bool", "Activated", True),
         ("use_premium", "bool", "Use premium account if available", True),
