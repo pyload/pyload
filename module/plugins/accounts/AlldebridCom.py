@@ -9,7 +9,7 @@ from ..internal.MultiAccount import MultiAccount
 class AlldebridCom(MultiAccount):
     __name__ = "AlldebridCom"
     __type__ = "account"
-    __version__ = "0.45"
+    __version__ = "0.46"
     __status__ = "testing"
 
     __config__ = [("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),
@@ -80,5 +80,5 @@ class AlldebridCom(MultiAccount):
             self.fail_login(api_data['error']['message'])
 
         elif api_data['user']['username'] != user:
-            self.fail_login(_("username for alldebrid.com should be your alldebrid.com username"))
+            self.log_error(_("username for alldebrid.com should be your alldebrid.com username"))
             self.fail_login()
