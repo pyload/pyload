@@ -267,7 +267,7 @@ class Captcha9Kw(BaseAddon):
             if not opt:
                 continue
 
-            details = (x.strip() for x in opt.split(":"))
+            details = [x.strip() for x in opt.split(":")]
 
             if not details or details[0].lower() != pluginname.lower():
                 continue
