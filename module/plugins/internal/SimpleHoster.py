@@ -13,7 +13,7 @@ from .misc import fs_encode, parse_name, parse_size, parse_time, replace_pattern
 class SimpleHoster(Hoster):
     __name__ = "SimpleHoster"
     __type__ = "hoster"
-    __version__ = "2.41"
+    __version__ = "2.42"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -150,7 +150,7 @@ class SimpleHoster(Hoster):
                 except Exception:
                     pass
 
-        if html:
+        if html and info["status"] in (3, 7):
             if search_pattern(self.OFFLINE_PATTERN, html) is not None:
                 info['status'] = 1
 
