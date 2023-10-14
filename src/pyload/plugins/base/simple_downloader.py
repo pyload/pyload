@@ -12,7 +12,7 @@ from .downloader import BaseDownloader
 class SimpleDownloader(BaseDownloader):
     __name__ = "SimpleDownloader"
     __type__ = "downloader"
-    __version__ = "2.41"
+    __version__ = "2.42"
     __status__ = "stable"
 
     __pattern__ = r"^unmatchable$"
@@ -159,7 +159,7 @@ class SimpleDownloader(BaseDownloader):
                 except Exception:
                     pass
 
-        if html:
+        if html and info["status"] in (3, 7):
             if search_pattern(self.OFFLINE_PATTERN, html) is not None:
                 info["status"] = 1
 

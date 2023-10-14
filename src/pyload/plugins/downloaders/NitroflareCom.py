@@ -11,7 +11,7 @@ from ..base.simple_downloader import SimpleDownloader
 class NitroflareCom(SimpleDownloader):
     __name__ = "NitroflareCom"
     __type__ = "downloader"
-    __version__ = "0.41"
+    __version__ = "0.43"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?(?:nitro\.download|nitroflare\.com)/view/(?P<ID>[\w^_]+)"
@@ -33,8 +33,6 @@ class NitroflareCom(SimpleDownloader):
     ]
 
     INFO_PATTERN = r'title="(?P<N>.+?)".+>(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
-    OFFLINE_PATTERN = r">File doesn\'t exist"
-
     LINK_PATTERN = r'(https?://[\w\-]+\.nitroflare\.com/.+?)"'
 
     DIRECT_LINK = False
