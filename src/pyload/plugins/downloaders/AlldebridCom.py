@@ -13,7 +13,7 @@ class AlldebridCom(MultiDownloader):
     __version__ = "0.64"
     __status__ = "testing"
 
-    __pattern__ = r"https?://(?:\w+\.)?(?:alldebrid\.com|debrid\.it)/dl/[\w^_]+"
+    __pattern__ = r"https?://(?:\w+\.)?(?:alldebrid\.com|debrid\.it)/(?:dl|f)/[\w^_]+"
     __config__ = [
         ("enabled", "bool", "Activated", True),
         ("use_premium", "bool", "Use premium account if available", True),
