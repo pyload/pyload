@@ -98,6 +98,8 @@ class Core:
 
         self._init_config(userdir, tempdir, storagedir, debug)
         self._init_log()
+        if storagedir is not None:
+            self.log.warning("Download folder was specified from the commandline")
         self._init_database(reset and not dry)
         self._init_network()
         self._init_api()
