@@ -1,19 +1,19 @@
 # -*- coding: utf-8 -*-
 
-import importlib
+import importlib.abc
+import importlib.util
 import os
 import re
 import sys
 from ast import literal_eval
-from importlib.abc import MetaPathFinder
 from itertools import chain
-
-# import semver
 
 from pyload import APPID, PKGDIR
 
+# import semver
 
-class ImportRedirector(MetaPathFinder):
+
+class ImportRedirector(importlib.abc.MetaPathFinder):
     ROOT = "pyload.plugins."
     USERROOT = "plugins."
 
@@ -33,60 +33,45 @@ class ImportRedirector(MetaPathFinder):
         sys.path.append(self.pyload.userdir)
 
         # register for import addon
-        sys.meta_path.append(self)
+        sys.meta_path.insert(0, self)
 
-    def find_module(self, fullname, path=None):
-        # redirecting imports if necessary
-        if fullname.startswith(self.ROOT) or fullname.startswith(
-            self.USERROOT
-        ):  #: separate pyload plugins
-            if fullname.startswith(self.USERROOT):
-                user = 1
-            else:
-                user = 0  #: used as bool and int
-
-            split = fullname.split(".")
-            if len(split) == 3 - user:
-                return self
-            elif len(split) == 4 - user:
-                plugin_type, plugin_name = split[2 - user: 4 - user]
-                if plugin_type != "base" and plugin_type[-1] == "s":
-                    plugin_type = plugin_type[:-1]  #: remove trailing plural "s" character
+    def find_spec(self, fullname, path, target=None):
+        split = fullname.split(".")
+        if fullname.startswith(self.ROOT) or fullname.startswith(self.USERROOT):
+            is_userimport = 1 if fullname.startswith(self.USERROOT) else 0  # used as bool and int
+            if len(split) == 4 - is_userimport:
+                plugin_subfolder, plugin_name = split[2 - is_userimport:4 - is_userimport]
+                if plugin_subfolder != "base" and plugin_subfolder[-1] == "s":
+                    plugin_type = plugin_subfolder[:-1]  #: remove trailing plural "s" character
+                else:
+                    plugin_type = plugin_subfolder
 
                 plugins = self.pyload.plugin_manager.plugins
                 if plugin_type in plugins and plugin_name in plugins[plugin_type]:
-                    # userplugin is a newer version
-                    if not user and plugins[plugin_type][plugin_name]["user"]:
-                        return self
-                    # imported from userplugins dir, but pyLoad's version is newer
-                    if user and not plugins[plugin_type][plugin_name]["user"]:
-                        return self
+                    newname = None
+                    # imported from pyLoad, but user-plugin is a newer version
+                    if not is_userimport and plugins[plugin_type][plugin_name]["user"]:
+                        newname = fullname.replace(self.ROOT, self.USERROOT)
+                    # imported from userplugins but user-plugin does not exist or pyLoad's version is newer
+                    elif is_userimport and not plugins[plugin_type][plugin_name]["user"]:
+                        newname = fullname.replace(self.USERROOT, self.ROOT)
 
+                    if newname is not None:
+                        self.pyload.log.debug("Redirected import {} -> {}".format(fullname, newname))
+                        spec = importlib.util.find_spec(newname)
+                        spec.loader = self
+                        return spec
+
+        # return None to tell the python this finder can't find the module
         return None
 
-    def load_module(self, fullname, replace=True):
-        if fullname not in sys.modules:  #: could be already in modules
-            if replace:
-                if self.ROOT in fullname:
-                    newname = fullname.replace(self.ROOT, self.USERROOT)
+    @staticmethod
+    def create_module(spec):
+        return importlib.import_module(spec.name)
 
-                else:
-                    newname = fullname.replace(self.USERROOT, self.ROOT)
-
-            else:
-                newname = fullname
-
-            base, plugin = newname.rsplit(".", 1)
-
-            self.pyload.log.debug("Redirected import {} -> {}".format(fullname, newname))
-
-            module = __import__(newname, globals(), locals(), [plugin])
-
-            #: Inject under new and old name
-            sys.modules[fullname] = module
-            sys.modules[newname] = module
-
-        return sys.modules[fullname]
+    @staticmethod
+    def exec_module(module):
+        pass
 
 
 class PluginManager:
@@ -208,10 +193,11 @@ class PluginManager:
             pfolder = os.path.join(self.pyload.userdir, "plugins", folder)
             os.makedirs(pfolder, exist_ok=True)
             try:
-                fp = open(os.path.join(pfolder, "__init__.py"), mode="wb")
-                fp.close()
-            except Exception:
+                with open(os.path.join(pfolder, "__init__.py"), mode="wb"):
+                    pass
+            except OSError:
                 pass
+
         else:
             pfolder = os.path.join(PKGDIR, "plugins", folder)
 
@@ -224,7 +210,7 @@ class PluginManager:
                 with open(os.path.join(pfolder, entry), encoding="utf-8-sig") as data:
                     content = data.read()
 
-                name = entry[:-3] #: Trim ending ".py"
+                name = entry[:-3]  #: Trim ending ".py"
 
                 # m_pyver = self._RE_PYLOAD_VERSION.search(content)
                 # if m_pyver is None:
@@ -320,7 +306,7 @@ class PluginManager:
                 config["desc"] = desc
                 configs[name] = config
 
-        if not home and folder != "base":
+        if not home:
             temp_plugins, temp_configs = self.parse(folder, pattern, plugins or True)
             plugins.update(temp_plugins)
             configs.update(temp_configs)
@@ -370,26 +356,26 @@ class PluginManager:
                 return self.plugins[ptype][name], ptype
         return None, None
 
-    def get_plugin(self, name, original=False):
+    def get_plugin(self, plugin_name, original=False):
         """
         return plugin module from downloader|decrypter|container.
         """
-        plugin, type = self.find_plugin(name)
+        plugin, plugin_type = self.find_plugin(plugin_name)
 
         if not plugin:
-            self.pyload.log.warning(self._("Plugin {} not found").format(name))
+            self.pyload.log.warning(self._("Plugin {} not found").format(plugin_name))
             plugin = self.downloader_plugins["DefaultPlugin"]
 
         if "new_module" in plugin and not original:
             return plugin["new_module"]
 
-        return self.load_module(type, name)
+        return self.load_module(plugin_type, plugin_name)
 
     def get_plugin_name(self, name):
         """
         used to obtain new name if other plugin was injected.
         """
-        plugin, type = self.find_plugin(name)
+        plugin, plugin_type = self.find_plugin(name)
 
         if "new_name" in plugin:
             return plugin["new_name"]
@@ -406,16 +392,12 @@ class PluginManager:
         plugins = self.plugins[module_type]
         if module_name in plugins:
             if APPID in plugins[module_name]:
-                return plugins[module_name][APPID]
+                return plugins[module_name][APPID]  #: use cached module
             try:
                 module_name = plugins[module_name]["name"]
                 module_folder = plugins[module_name]["folder"]
-                module = __import__(
-                    self.import_redirector.ROOT + f"{module_folder}.{module_name}",
-                    globals(),
-                    locals(),
-                    plugins[module_name]["name"],
-                )
+                module_abs_name = f"{self.import_redirector.ROOT}{module_folder}.{module_name}"
+                module = importlib.import_module(module_abs_name)
                 plugins[module_name][APPID] = module  #: cache import, maybe unneeded
                 return module
             except Exception as exc:
@@ -428,13 +410,13 @@ class PluginManager:
             self.pyload.log.debug(f"Plugin {module_name} not found")
             self.pyload.log.debug(f"Available plugins : {plugins}")
 
-    def load_class(self, type, name):
+    def load_class(self, module_type, module_name):
         """
         Returns the class of a plugin with the same name.
         """
-        module = self.load_module(type, name)
+        module = self.load_module(module_type, module_name)
         if module:
-            return getattr(module, name)
+            return getattr(module, module_name)
 
     def get_account_plugins(self):
         """
