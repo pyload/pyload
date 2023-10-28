@@ -410,7 +410,7 @@ class BasePlugin:
             self.log_error(exc)
 
         finally:
-            del frame  #: Delete the frame or it wont be cleaned
+            del frame  #: Delete the frame or it won't be cleaned
 
     def clean(self):
         """
