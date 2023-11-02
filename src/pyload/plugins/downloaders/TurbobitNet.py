@@ -45,7 +45,7 @@ class TurbobitNet(SimpleDownloader):
     TEMP_OFFLINE_PATTERN = r'^unmatchable$'
 
     LINK_FREE_PATTERN = r'(/download/redirect/[^"\']+)'
-    LINK_PREMIUM_PATTERN = r'href=[\'|\"](.+?/download/redirect/[^\'|\"]+)'
+    LINK_PREMIUM_PATTERN = r'href=[\'"](.+?/download/redirect/[^"\']+)'
 
     LIMIT_WAIT_PATTERN = r"<div id=\'timeout\'>(\d+)<"
 
