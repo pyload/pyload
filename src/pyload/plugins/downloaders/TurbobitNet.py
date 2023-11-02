@@ -13,7 +13,7 @@ from ..base.simple_downloader import SimpleDownloader
 class TurbobitNet(SimpleDownloader):
     __name__ = "TurbobitNet"
     __type__ = "downloader"
-    __version__ = "0.51"
+    __version__ = "0.52"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:(?:www|m)\.)?(?:(?:trbbt|turbo(?:beet|bite?))\.net|(?:tourbobit|turbobi(?:tn?|f))\.com|turbo?\.(?:to|cc)|turb\.pw)/(?:download/free/)?(?P<ID>\w+)"
@@ -45,7 +45,7 @@ class TurbobitNet(SimpleDownloader):
     TEMP_OFFLINE_PATTERN = r'^unmatchable$'
 
     LINK_FREE_PATTERN = r'(/download/redirect/[^"\']+)'
-    LINK_PREMIUM_PATTERN = r'<a href=[\'"](.+?/download/redirect/[^"\']+)'
+    LINK_PREMIUM_PATTERN = r'href=[\'|\"](.+?/download/redirect/[^\'|\"]+)'
 
     LIMIT_WAIT_PATTERN = r"<div id=\'timeout\'>(\d+)<"
 
