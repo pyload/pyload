@@ -13,10 +13,13 @@ from pyload.plugins.helpers import renice
 class UnRar(BaseExtractor):
     __name__ = "UnRar"
     __type__ = "extractor"
-    __version__ = "1.47"
+    __version__ = "1.48"
     __status__ = "testing"
 
-    __config__ = [("ignore_warnings", "bool", "Ignore unrar warnings", False)]
+    __config__ = [
+        ("ignore_warnings", "bool", "Ignore unrar warnings", False),
+        ("ignore_file_attributes", "bool", "Ignore File Attributes", False)
+    ]
 
     __description__ = """RAR extractor plugin"""
     __license__ = "GPLv3"
@@ -273,6 +276,9 @@ class UnRar(BaseExtractor):
 
         if self.keepbroken:
             args.append("-kb")
+
+        if self.config.get("ignore_file_attributes", True):
+            args.append("-ai")
 
         # NOTE: return codes are not reliable, some kind of threading, cleanup
         # whatever issue
