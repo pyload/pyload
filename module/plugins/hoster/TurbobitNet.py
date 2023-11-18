@@ -11,7 +11,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class TurbobitNet(SimpleHoster):
     __name__ = "TurbobitNet"
     __type__ = "hoster"
-    __version__ = "0.52"
+    __version__ = "0.53"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:(?:www|m)\.)?(?:(?:trbbt|turbo(?:beet|bite?))\.net|(?:tourbobit|turbobi(?:tn?|f))\.com|turbo?\.(?:to|cc)|turb\.pw)/(?:download/free/)?(?P<ID>\w+)'
@@ -33,7 +33,7 @@ class TurbobitNet(SimpleHoster):
     COOKIES = [("turbobit.net", "user_lang", "en")]
 
     INFO_PATTERN = r'<title>\s*Download file (?P<N>.+?) \((?P<S>[\d., ]+) (?P<U>[\w^_]+)\)'
-    OFFLINE_PATTERN = r'<h2>File Not Found</h2>|html\(\'File (?:was )?not found'
+    OFFLINE_PATTERN = r'<h2>File Not Found</h2>|html\(\'File (?:was )?not found|>Searching for the file\.\.\.Please wait'
     TEMP_OFFLINE_PATTERN = r'^unmatchable$'
 
     LINK_FREE_PATTERN = r'(/download/redirect/[^"\']+)'
