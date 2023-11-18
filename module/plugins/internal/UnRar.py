@@ -12,10 +12,11 @@ from .misc import Popen, decode, fs_encode, fsjoin, renice
 class UnRar(Extractor):
     __name__ = "UnRar"
     __type__ = "extractor"
-    __version__ = "1.46"
+    __version__ = "1.48"
     __status__ = "testing"
 
-    __config__ = [("ignore_warnings", "bool", "Ignore unrar warnings", False)]
+    __config__ = [("ignore_warnings", "bool", "Ignore unrar warnings", False),
+                  ("ignore_file_attributes", "bool", "Ignore File Attributes", False)]
 
     __description__ = """RAR extractor plugin"""
     __license__ = "GPLv3"
@@ -240,7 +241,10 @@ class UnRar(Extractor):
         if self.keepbroken:
             args.append("-kb")
 
-        #@NOTE: return codes are not reliable, some kind of threading, cleanup whatever issue
+        if self.config.get("ignore_file_attributes", False):
+            args.append("-ai")
+
+        # @NOTE: return codes are not reliable, some kind of threading, cleanup whatever issue
         call = [self.CMD, command] + args + [arg for arg in xargs if arg]
         self.log_debug("EXECUTE " + " ".join(call))
 
