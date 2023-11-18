@@ -277,7 +277,7 @@ class UnRar(BaseExtractor):
         if self.keepbroken:
             args.append("-kb")
 
-        if self.config.get("ignore_file_attributes", True):
+        if self.config.get("ignore_file_attributes", False):
             args.append("-ai")
 
         # NOTE: return codes are not reliable, some kind of threading, cleanup
