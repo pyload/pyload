@@ -190,14 +190,15 @@ def move_package():
 def edit_package():
     api = flask.current_app.config["PYLOAD_API"]
     try:
-        id = int(flask.request.form["pack_id"])
+        pack_id = int(flask.request.form["pack_id"])
+        pack_folder = flask.request.form["pack_folder"].lstrip(f"{os.path.sep}").replace(f"..{os.path.sep}", f"")
         data = {
             "name": flask.request.form["pack_name"],
-            "_folder": flask.request.form["pack_folder"],
+            "_folder": pack_folder,
             "password": flask.request.form["pack_pws"],
         }
 
-        api.set_package_data(id, data)
+        api.set_package_data(pack_id, data)
         return jsonify(response="success")
 
     except Exception:

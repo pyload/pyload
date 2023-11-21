@@ -432,6 +432,8 @@ class Api:
         folder = (
             folder.replace("http://", "")
             .replace("https://", "")
+            .replace("../", "_")
+            .replace("..\\", "_")
             .replace(":", "")
             .replace("/", "_")
             .replace("\\", "_")
