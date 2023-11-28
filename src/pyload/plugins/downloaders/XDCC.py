@@ -57,7 +57,7 @@ class IRC:
         start_time = time.time()
         while time.time() - start_time < timeout:
             if self._data_available():
-                self.receive_buffer += to_str(self.irc_sock.recv(1 << 10))
+                self.receive_buffer += to_str(self.irc_sock.recv(1 << 10), encoding="latin-1")
                 self.lines += self.receive_buffer.split("\r\n")
                 self.receive_buffer = self.lines.pop()
 
