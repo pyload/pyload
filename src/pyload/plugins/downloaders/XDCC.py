@@ -17,12 +17,6 @@ from ..base.addon import threaded
 from ..base.downloader import BaseDownloader
 
 
-def decode_text(text):
-    # TODO: check
-    decoded = text
-    return decoded
-
-
 class IRC:
     def __init__(self, plugin, nick, ident, realname):
         self.plugin = plugin
@@ -57,7 +51,12 @@ class IRC:
         start_time = time.time()
         while time.time() - start_time < timeout:
             if self._data_available():
-                self.receive_buffer += to_str(self.irc_sock.recv(1 << 10))
+                receive_bytes = self.irc_sock.recv(1 << 10)
+                try:
+                    self.receive_buffer += to_str(receive_bytes)
+                except UnicodeDecodeError:
+                    self.receive_buffer += to_str(receive_bytes, encoding="iso-8859-1")
+
                 self.lines += self.receive_buffer.split("\r\n")
                 self.receive_buffer = self.lines.pop()
 
@@ -296,7 +295,7 @@ class IRC:
             ):
                 continue
 
-            text = decode_text(args[1])
+            text = args[1]
             sender_nick = origin.split("@")[0].split("!")[0]
             self.plugin.log_info(self._("PrivMsg: <{}> {}").format(sender_nick, text))
             break
@@ -338,7 +337,7 @@ class IRC:
             ):
                 continue
 
-            text = decode_text(args[1])
+            text = args[1]
             sender_nick = origin.split("@")[0].split("!")[0]
             if command == "INVITE":
                 self.plugin.log_info(self._("Got invite to #{}").format(chan))
@@ -479,7 +478,7 @@ class IRC:
                     and command in ("PRIVMSG", "NOTICE")
                 ):
 
-                    text = decode_text(args[1])
+                    text = args[1]
                     sender_nick = origin.split("@")[0].split("!")[0]
                     self.plugin.log_debug(
                         self._("PrivMsg: <{}> {}").format(sender_nick, text)
@@ -537,7 +536,7 @@ class IRC:
                 and command in ("PRIVMSG", "NOTICE")
             ):
 
-                text = decode_text(args[1])
+                text = args[1]
                 pack_info = text.split()
                 if pack_info[0].lower() == "filename":
                     self.plugin.log_debug(f"Filename: '{pack_info[1]}'")
@@ -888,7 +887,7 @@ class XDCC(BaseDownloader):
 
         #: ERR_CANTSENDTOUSER
         if command == "531" and args[0] == nick and args[1] == bot:
-            text = decode_text(args[2])
+            text = args[2]
             self.log_error("<{}> {}".format(bot, text))
             self.fail(text)
 
@@ -906,7 +905,7 @@ class XDCC(BaseDownloader):
         ):
             return
 
-        text = decode_text(args[1])
+        text = args[1]
         sender_nick = origin.split("@")[0].split("!")[0]
         self.log_debug(f"PrivMsg: <{sender_nick}> {text}")
 
