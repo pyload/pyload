@@ -10,7 +10,7 @@ from ..internal.Addon import Addon
 class SkipRev(Addon):
     __name__ = "SkipRev"
     __type__ = "hook"
-    __version__ = "0.38"
+    __version__ = "0.39"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", False),
@@ -22,7 +22,7 @@ class SkipRev(Addon):
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
     def _name(self, pyfile):
-        return pyfile.pluginclass.get_info(pyfile.url)['name']
+        return pyfile.plugin.get_info(pyfile.url)['name']
 
     def _create_pyFile(self, data):
         pylink = self.pyload.api._convertPyFile(data)
