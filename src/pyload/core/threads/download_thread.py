@@ -35,8 +35,7 @@ class DownloadThread(PluginThread):
 
         while True:
             del pyfile
-            self.active = self.queue.get()
-            pyfile = self.active
+            pyfile = self.active = self.queue.get()
 
             if self.active == "quit":
                 self.active = False

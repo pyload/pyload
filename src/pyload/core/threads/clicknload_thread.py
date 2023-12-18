@@ -46,7 +46,7 @@ class BaseServerThread(threading.Thread):
         pass
 
     def stop(self):
-        self.enabled = False  #: set flag and call shutdowm message, so thread can react
+        self.enabled = False  #: set flag and call shutdown message, so thread can react
         self.shutdown()
 
 
