@@ -114,6 +114,7 @@ class HTTPRequest():
         self.c.setopt(pycurl.LOW_SPEED_LIMIT, 5)
 
         #self.c.setopt(pycurl.VERBOSE, 1)
+        #self.c.setopt(pycurl.HTTP_VERSION, pycurl.CURL_HTTP_VERSION_1_1)
 
         self.c.setopt(pycurl.USERAGENT,
                       "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:75.0) Gecko/20100101 Firefox/75.0")
@@ -127,19 +128,23 @@ class HTTPRequest():
                                           "Expect:"])
 
     def setInterface(self, options):
-
         interface, proxy, ipv6 = options["interface"], options["proxies"], options["ipv6"]
 
         if interface and interface.lower() != "none":
             self.c.setopt(pycurl.INTERFACE, str(interface))
 
         if proxy:
-            if proxy["type"] == "socks4":
-                self.c.setopt(pycurl.PROXYTYPE, pycurl.PROXYTYPE_SOCKS4)
-            elif proxy["type"] == "socks5":
-                self.c.setopt(pycurl.PROXYTYPE, pycurl.PROXYTYPE_SOCKS5)
-            else:
+            if proxy["type"] == "http":
                 self.c.setopt(pycurl.PROXYTYPE, pycurl.PROXYTYPE_HTTP)
+            elif proxy["type"] == "https":
+                self.c.setopt(pycurl.PROXYTYPE, pycurl.PROXYTYPE_HTTPS)
+                self.c.setopt(pycurl.PROXY_SSL_VERIFYPEER, 0)
+            elif proxy["type"] == "socks4":
+                self.c.setopt(pycurl.PROXYTYPE,
+                              pycurl.PROXYTYPE_SOCKS4A if proxy["socksResolveDns"] else pycurl.PROXYTYPE_SOCKS4)
+            elif proxy["type"] == "socks5":
+                self.c.setopt(pycurl.PROXYTYPE,
+                              pycurl.PROXYTYPE_SOCKS5_HOSTNAME if proxy["socksResolveDns"] else pycurl.PROXYTYPE_SOCKS5)
 
             self.c.setopt(pycurl.PROXY, str(proxy["address"]))
             self.c.setopt(pycurl.PROXYPORT, proxy["port"])
