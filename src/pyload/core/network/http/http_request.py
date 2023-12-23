@@ -158,9 +158,15 @@ class HTTPRequest:
                 self.c.setopt(pycurl.PROXYTYPE, pycurl.PROXYTYPE_HTTPS)
                 self.c.setopt(pycurl.PROXY_SSL_VERIFYPEER, 0)
             elif proxy["type"] == "socks4":
-                self.c.setopt(pycurl.PROXYTYPE, pycurl.PROXYTYPE_SOCKS4)
+                self.c.setopt(
+                    pycurl.PROXYTYPE,
+                    pycurl.PROXYTYPE_SOCKS4A if proxy["socks_resolve_dns"] else pycurl.PROXYTYPE_SOCKS4
+                )
             elif proxy["type"] == "socks5":
-                self.c.setopt(pycurl.PROXYTYPE, pycurl.PROXYTYPE_SOCKS5)
+                self.c.setopt(
+                    pycurl.PROXYTYPE,
+                    pycurl.PROXYTYPE_SOCKS5_HOSTNAME if proxy["socks_resolve_dns"] else pycurl.PROXYTYPE_SOCKS5
+                )
 
             self.c.setopt(pycurl.PROXY, proxy["host"])
             self.c.setopt(pycurl.PROXYPORT, int(proxy["port"]))

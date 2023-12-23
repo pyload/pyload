@@ -79,33 +79,25 @@ class RequestFactory:
 
     def get_proxies(self):
         """
-        returns a proxy list for the request classes.
+        returns proxy related options.
         """
         if not self.pyload.config.get("proxy", "enabled"):
             return {}
         else:
-            proxy_type = self.pyload.config.get("proxy", "type").lower()
-
-            username = None
-            if (
-                self.pyload.config.get("proxy", "username")
-                and self.pyload.config.get("proxy", "username").lower() != "none"
-            ):
-                username = self.pyload.config.get("proxy", "username")
-
-            pw = None
-            if (
-                self.pyload.config.get("proxy", "password")
-                and self.pyload.config.get("proxy", "password").lower() != "none"
-            ):
-                pw = self.pyload.config.get("proxy", "password")
+            proxy_type = self.pyload.config.get("proxy", "type")
+            socks_resolve_dns = self.pyload.config.get("proxy", "socks_resolve_dns")
+            proxy_host = self.pyload.config.get("proxy", "host")
+            proxy_port = self.pyload.config.get("proxy", "port")
+            proxy_username = self.pyload.config.get("proxy", "username") or None
+            proxy_password = self.pyload.config.get("proxy", "password") or None
 
             return {
                 "type": proxy_type,
-                "host": self.pyload.config.get("proxy", "host"),
-                "port": self.pyload.config.get("proxy", "port"),
-                "username": username,
-                "password": pw,
+                "socks_resolve_dns": socks_resolve_dns,
+                "host": proxy_host,
+                "port": proxy_port,
+                "username": proxy_username,
+                "password": proxy_password,
             }
 
     def get_options(self):
