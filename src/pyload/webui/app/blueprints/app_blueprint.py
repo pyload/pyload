@@ -452,7 +452,7 @@ def info():
         "os": " ".join((os.name, sys.platform) + extra),
         "version": api.get_server_version(),
         "folder": PKGDIR,
-        "config": api.get_userdir(),
+        "config_folder": api.get_userdir(),
         "download": conf["general"]["storage_folder"]["value"],
         "freespace": format.size(api.free_space()),
         "webif": conf["webui"]["port"]["value"],
