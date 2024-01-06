@@ -14,9 +14,9 @@ from ..internal.misc import threaded, fs_encode
 
 
 class Captcha9Kw(Addon):
-    __name__ = "Captcha9Kw"
+    __name__ = "f"
     __type__ = "hook"
-    __version__ = "0.44"
+    __version__ = "0.45"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", False),
@@ -219,7 +219,7 @@ class Captcha9Kw(Addon):
             return
 
         for opt in [x for x in self.config.get('hoster_options', "").split('|') if x]:
-            details = map(str.strip, opt.split(':'))
+            details = [x.strip() for x in opt.split(':')]
 
             if not details or details[0].lower() != pluginname.lower():
                 continue
