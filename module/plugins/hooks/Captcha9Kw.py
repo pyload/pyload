@@ -14,9 +14,9 @@ from ..internal.misc import threaded, fs_encode
 
 
 class Captcha9Kw(Addon):
-    __name__ = "f"
+    __name__ = "Captcha9Kw"
     __type__ = "hook"
-    __version__ = "0.45"
+    __version__ = "0.46"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", False),
