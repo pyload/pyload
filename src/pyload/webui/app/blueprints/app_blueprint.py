@@ -54,12 +54,13 @@ def login():
         password = flask.request.form["password"]
         user_info = api.check_auth(user, password)
 
+        sanitized_user = user.replace("\n", "\\n").replace("\r", "\\r")
         if not user_info:
-            log.error(f"Login failed for user '{user}'")
+            log.error(f"Login failed for user '{sanitized_user}'")
             return render_template("login.html", next=next, errors=True)
 
         set_session(user_info)
-        log.info(f"User '{user}' successfully logged in")
+        log.info(f"User '{sanitized_user}' successfully logged in")
         flask.flash("Logged in successfully")
 
     if is_authenticated():
