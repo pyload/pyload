@@ -14,7 +14,7 @@ from .SimpleHoster import SimpleHoster
 class XFSHoster(SimpleHoster):
     __name__ = "XFSHoster"
     __type__ = "hoster"
-    __version__ = "0.89"
+    __version__ = "0.90"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -32,6 +32,7 @@ class XFSHoster(SimpleHoster):
                    ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
     PLUGIN_DOMAIN = None
+    PLUGIN_URL = None
 
     DIRECT_LINK = None
     # @NOTE: should be set to `False` by default for safe, but I am lazy...
@@ -98,9 +99,9 @@ class XFSHoster(SimpleHoster):
                 self.link = m.group(1)
                 break
 
-            self.data = self.load(pyfile.url,
+            self.data = self.load(self.PLUGIN_URL or pyfile.url,
                                   post=self._post_parameters(),
-                                  ref=self.pyfile.url,
+                                  ref=self.PLUGIN_URL or pyfile.url,
                                   redirect=False)
 
             if not "op=" in self.last_header.get('location', "op="):
@@ -213,10 +214,10 @@ class XFSHoster(SimpleHoster):
                     self.handle_captcha(inputs)
 
                 if 'referer' in inputs and len(inputs['referer']) == 0:
-                    inputs['referer'] = self.pyfile.url
+                    inputs['referer'] = self.PLUGIN_URL or self.pyfile.url
 
         else:
-            inputs['referer'] = self.pyfile.url
+            inputs['referer'] = self.PLUGIN_URL or self.pyfile.url
 
         if self.premium:
             inputs['method_premium'] = "Premium Download"
