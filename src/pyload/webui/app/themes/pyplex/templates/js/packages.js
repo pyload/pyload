@@ -14,8 +14,8 @@ function PackageUI (type){
     };
 
     this.parsePackages = function () {
-       var $packageList = $("#package-list");
-       $packageList.children("li").each(function(ele) {
+        var $packageList = $("#package-list");
+        $packageList.children("li").each(function(ele) {
             var id = this.id.match(/[0-9]+/);
             packages.push(new Package(thisObject, id, this));
         });
@@ -46,7 +46,7 @@ function PackageUI (type){
                     indicateFail();
                     return false;
                 });
-          }
+            }
         });
     };
 
@@ -131,6 +131,7 @@ function Package (ui, id, ele){
         $(imgs[5]).click(this.editPackage);
         $(imgs[6]).click(this.movePackage);
         $(imgs[7]).click(this.editOrder);
+        $(imgs[8]).click(this.extractPackage);
 
         $(ele).find('.packagename').click(this.toggle);
     };
@@ -176,13 +177,13 @@ function Package (ui, id, ele){
                 link.icon = 'glyphicon glyphicon-cloud-download';
 
             var html = "<span class='child_status'><span style='margin-right: 2px;color: #f9be03;' class='" + link.icon + "'></span></span>\n" +
-                       "<span style='font-size: 16px; font-weight: bold;'><a onclick='return false' href='" + link.url + "'>" + link.name + "</a></span><br/>" +
-                       "<div class='child_secrow' style='margin-left: 21px; margin-bottom: 7px; border-radius: 4px;'>" +
-                       "<span class='child_status' style='font-size: 12px; color:#eee; padding-left: 5px;'>" + link.statusmsg + "</span>&nbsp;" + link.error + "&nbsp;" +
-                       "<span class='child_status' style='font-size: 12px; color:#eee;'>" + link.format_size + "</span>" +
-                       "<span class='child_status' style='font-size: 12px; color:#eee;'> " + link.plugin + "</span>&nbsp;&nbsp;" +
-                       "<span class='glyphicon glyphicon-trash' title='{{_('Delete Link')}}' style='cursor: pointer;  font-size: 12px; color:#eee;' ></span>&nbsp;&nbsp;" +
-                       "<span class='glyphicon glyphicon-repeat' title='{{_('Restart Link')}}' style='cursor: pointer; font-size: 12px; color:#eee;' ></span></div>";
+                "<span style='font-size: 16px; font-weight: bold;'><a onclick='return false' href='" + link.url + "'>" + link.name + "</a></span><br/>" +
+                "<div class='child_secrow' style='margin-left: 21px; margin-bottom: 7px; border-radius: 4px;'>" +
+                "<span class='child_status' style='font-size: 12px; color:#eee; padding-left: 5px;'>" + link.statusmsg + "</span>&nbsp;" + link.error + "&nbsp;" +
+                "<span class='child_status' style='font-size: 12px; color:#eee;'>" + link.format_size + "</span>" +
+                "<span class='child_status' style='font-size: 12px; color:#eee;'> " + link.plugin + "</span>&nbsp;&nbsp;" +
+                "<span class='glyphicon glyphicon-trash' title='{{_('Delete Link')}}' style='cursor: pointer;  font-size: 12px; color:#eee;' ></span>&nbsp;&nbsp;" +
+                "<span class='glyphicon glyphicon-repeat' title='{{_('Restart Link')}}' style='cursor: pointer; font-size: 12px; color:#eee;' ></span></div>";
 
             var div = document.createElement("div");
             $(div).attr("id", "file_" + link.id);
@@ -257,7 +258,7 @@ function Package (ui, id, ele){
                     indicateFail();
                     return false;
                 });
-          }
+            }
         });
     };
 
@@ -297,6 +298,18 @@ function Package (ui, id, ele){
     this.restartPackage = function(event) {
         indicateLoad();
         $.get("{{url_for('api.rpc', func='restart_package')}}/" + id, function () {
+            thisObject.close();
+            indicateSuccess();
+        }).fail(function () {
+            indicateFail();
+        });
+        event.stopPropagation();
+        event.preventDefault();
+    };
+
+    this.extractPackage = function (event) {
+        indicateLoad();
+        $.get("{{url_for('api.rpc', func='extract_package')}}/" + id, function () {
             thisObject.close();
             indicateSuccess();
         }).fail(function () {
