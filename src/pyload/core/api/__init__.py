@@ -852,6 +852,19 @@ class Api:
         :param package_id: package id
         """
         self.pyload.files.restart_package(int(package_id))
+        
+    @legacy("extractPackage")
+    @permission(Perms.MODIFY)
+    def extract_package(self, package_id):
+        """
+        Extracts a package with the ExtractArchive plugin.
+
+        :param package_id: package id
+        """
+        for plugin in self.pyload.addon_manager.plugins:
+            if plugin.classname == 'ExtractArchive' and plugin.is_activated():
+                package = self.pyload.files.get_package(package_id)
+                plugin.package_finished(package)
 
     @legacy("restartFile")
     @permission(Perms.MODIFY)
