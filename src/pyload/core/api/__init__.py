@@ -852,7 +852,7 @@ class Api:
         :param package_id: package id
         """
         self.pyload.files.restart_package(int(package_id))
-        
+
     @legacy("extractPackage")
     @permission(Perms.MODIFY)
     def extract_package(self, package_id):
