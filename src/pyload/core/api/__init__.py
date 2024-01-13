@@ -7,7 +7,7 @@
 #  \_______\    /_______|_|   |__/________________________/
 #           \  /
 #            \/
-import functools
+
 import json
 import os
 import re
@@ -43,13 +43,9 @@ def permission(bits):
 
 def legacy(legacy_name):
     class Wrapper:
-        def __init__(self, func):
-            functools.update_wrapper(self, func)
-
         def __new__(cls, func, *args, **kwargs):
             legacy_map[func.__name__] = legacy_name
-            instance = super().__new__(cls)
-            return instance
+            return func
 
     return Wrapper
 
@@ -1349,7 +1345,7 @@ class Api:
         :return: dict with this style: {"plugin": {"method": "description"}}
         """
         data = {}
-        for plugin, funcs in self.pyload.addon_manager.rpc_methods.items():
+        for plugin, funcs in self.pyload.addon_manager.methods.items():
             data[plugin] = funcs
 
         return data
@@ -1364,7 +1360,7 @@ class Api:
         :param func:
         :return: bool
         """
-        cont = self.pyload.addon_manager.rpc_methods
+        cont = self.pyload.addon_manager.methods
         return plugin in cont and func in cont[plugin]
 
     @permission(Perms.STATUS)
@@ -1435,13 +1431,3 @@ class Api:
     def set_user_permission(self, user, permission, role):
         self.pyload.db.set_permission(user, permission)
         self.pyload.db.set_role(user, role)
-
-    @legacy("extractPackage")
-    @permission(Perms.MODIFY)
-    def extract_package(self, package_id):
-        """
-        Extracts a package with the ExtractArchive plugin.
-
-        :param package_id: package id
-        """
-        self.call(ServiceCall("ExtractArchive", "extract", [package_id]))
