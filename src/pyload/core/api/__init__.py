@@ -34,9 +34,12 @@ legacy_map = {}
 # decorator only called on init, never initialized, so has no effect on runtime
 def permission(bits):
     class Wrapper:
+        def __init__(self, func):
+            functools.update_wrapper(self, func)
+
         def __new__(cls, func, *args, **kwargs):
             perm_map[func.__name__] = bits
-            return func
+            return super().__new__(cls)
 
     return Wrapper
 
@@ -48,8 +51,7 @@ def legacy(legacy_name):
 
         def __new__(cls, func, *args, **kwargs):
             legacy_map[func.__name__] = legacy_name
-            instance = super().__new__(cls)
-            return instance
+            return super().__new__(cls)
 
     return Wrapper
 
