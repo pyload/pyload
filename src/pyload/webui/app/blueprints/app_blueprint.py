@@ -252,7 +252,7 @@ def settings():
 
 @bp.route("/pathchooser/", endpoint="pathchooser")
 @bp.route("/filechooser/", endpoint="filechooser")
-@login_required("STATUS")
+@login_required("SETTINGS")
 def pathchooser():
     browse_for = "folder" if flask.request.endpoint == "app.pathchooser" else "file"
     path = os.path.normpath(flask.request.args.get('path', ""))
