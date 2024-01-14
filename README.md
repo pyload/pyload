@@ -320,4 +320,4 @@ Please refer to [AUTHORS](https://github.com/pyload/pyload/blob/main/AUTHORS.md)
 
 ---
 
-###### © 2008-2023 pyLoad team
+###### © 2008-2024 pyLoad team

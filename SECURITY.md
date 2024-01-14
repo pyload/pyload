@@ -20,4 +20,4 @@ If the issue is confirmed, we will release a patch as soon as possible depending
 
 ---
 
-###### © 2008-2023 pyLoad team
+###### © 2008-2024 pyLoad team
