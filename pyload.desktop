@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Pyload
+GenericName=Download Manager 
+Comment=Lightweight download manager
+Exec=pyLoadGui
+Icon=pyload
+Terminal=false
+Type=Application
