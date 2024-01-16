@@ -193,7 +193,7 @@ class DownloadInfo(TBase):
     (1, TType.I32, 'fid', None, None, ), # 1
     (2, TType.STRING, 'name', None, None, ), # 2
     (3, TType.I64, 'speed', None, None, ), # 3
-    (4, TType.I32, 'eta', None, None, ), # 4
+    (4, TType.I64, 'eta', None, None, ), # 4
     (5, TType.STRING, 'format_eta', None, None, ), # 5
     (6, TType.I64, 'bleft', None, None, ), # 6
     (7, TType.I64, 'size', None, None, ), # 7
