@@ -112,6 +112,7 @@ class App:
         app.config["SESSION_FILE_DIR"] = cache_path
         app.config["SESSION_TYPE"] = "filesystem"
         app.config["SESSION_COOKIE_NAME"] = "pyload_session"
+        app.config["SESSION_COOKIE_SAMESITE"] = "None"
         app.config["SESSION_COOKIE_SECURE"] = app.config["PYLOAD_API"].get_config_value("webui", "use_ssl")
         app.config["SESSION_PERMANENT"] = False
 
