@@ -62,7 +62,7 @@ class AddonManager:
 
         self.plugins = []
         self.plugin_map = {}
-        self.methods = {}  #: dict of names and list of methods usable by rpc
+        self.rpc_methods = {}  #: dict of names and list of methods usable by rpc
 
         self.events = {}  #: contains events
 
@@ -80,10 +80,10 @@ class AddonManager:
         plugin = plugin.rpartition(".")[2]
         doc = doc.strip() if doc else ""
 
-        if plugin in self.methods:
-            self.methods[plugin][func] = doc
+        if plugin in self.rpc_methods:
+            self.rpc_methods[plugin][func] = doc
         else:
-            self.methods[plugin] = {func: doc}
+            self.rpc_methods[plugin] = {func: doc}
 
     def call_rpc(self, plugin, func, args, parse):
         if not args:
