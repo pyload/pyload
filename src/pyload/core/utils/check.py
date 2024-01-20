@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import importlib
+import importlib.util
 from collections.abc import Iterable, Mapping, Sequence
 
 
