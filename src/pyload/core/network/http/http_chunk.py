@@ -103,7 +103,7 @@ class ChunkInfo:
     def get_count(self):
         return len(self.chunks)
 
-    def get_chunk_name(self, index):
+    def get_chunk_filename(self, index):
         return self.chunks[index][0]
 
     def get_chunk_range(self, index):
@@ -121,6 +121,8 @@ class HTTPChunk(HTTPRequest):
         self.size = range[1] - range[0] if range else -1
         self.arrived = 0
         self.last_url = self.p.referer
+
+        self.code = 0  #: last http code, set by parent
 
         self.aborted = False  # indicates that the chunk aborted gracefully
 
@@ -178,7 +180,7 @@ class HTTPChunk(HTTPRequest):
         # request all bytes, since some servers in russia seems to have a defect
         # arithmetic unit
 
-        fs_name = self.p.info.get_chunk_name(self.id)
+        fs_name = self.p.info.get_chunk_filename(self.id)
         if self.resume:
             self.fp = open(fs_name, mode="ab")
             self.arrived = self.fp.tell()

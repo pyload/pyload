@@ -12,7 +12,7 @@ from ..base.downloader import BaseDownloader
 class Http(BaseDownloader):
     __name__ = "Http"
     __type__ = "downloader"
-    __version__ = "0.14"
+    __version__ = "0.15"
     __status__ = "testing"
 
     __pattern__ = r"(?:jd|pys?)://.+"
@@ -79,6 +79,9 @@ class Http(BaseDownloader):
 
             else:
                 raise
+
+        if self.req.code in (404, 410):
+            self.offline()
 
         self.check_download()
 
