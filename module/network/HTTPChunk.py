@@ -119,7 +119,7 @@ class ChunkInfo():
     def getCount(self):
         return len(self.chunks)
 
-    def getChunkName(self, index):
+    def getChunkFilename(self, index):
         return self.chunks[index][0]
 
     def getChunkRange(self, index):
@@ -187,7 +187,7 @@ class HTTPChunk(HTTPRequest):
 
         # request all bytes, since some servers in russia seems to have a defect arihmetic unit
 
-        fs_name = fs_encode(self.p.info.getChunkName(self.id))
+        fs_name = fs_encode(self.p.info.getChunkFilename(self.id))
         if self.resume:
             self.fp = open(fs_name, "ab")
             self.arrived = self.fp.tell()

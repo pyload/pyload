@@ -87,6 +87,7 @@ class Browser(object):
                                cj=self.cj if cookies else None, bucket=self.bucket, options=self.options,
                                status_notify=status_notify, disposition=disposition)
         name = self.dl.download(chunks, resume)
+        self.http.code = self.dl.code
         self._size = self.dl.size
 
         self.dl = None

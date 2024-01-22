@@ -48,6 +48,8 @@ class HTTPDownload():
         self.disposition = disposition
         # all arguments
 
+        self.code = 0  #: last http code, would be set from the first chunk
+
         self.abort = False
         self.size = size
         self.nameDisposition = None # will be parsed from content disposition
@@ -90,7 +92,7 @@ class HTTPDownload():
         return (self.arrived * 100) / self.size
 
     def _copyChunks(self):
-        init = fs_encode(self.info.getChunkName(0)) # initial chunk name
+        init = fs_encode(self.info.getChunkFilename(0)) # initial chunk name
 
         if self.info.getCount() > 1:
             fo = open(init, "rb+") # first chunkfile
@@ -171,7 +173,7 @@ class HTTPDownload():
             self.chunkSupport = True
 
         while 1:
-            # need to create chunks
+            # do we need to create chunks?
             if not chunksCreated and self.chunkSupport and self.size: # will be set later by first chunk
 
                 if not resume:
@@ -214,9 +216,10 @@ class HTTPDownload():
                 for c in ok_list:
                     chunk = self.findChunk(c)
                     try: # check if the header implies success, else add it to failed list
-                        chunk.verifyHeader()
+                        chunk.code = chunk.verifyHeader()
                     except BadHeader, e:
                         self.log.debug("Chunk %d failed: %s" % (chunk.id + 1, str(e)))
+                        chunk.code = e.code
                         failed.append(chunk)
                         ex = e
                     else:
@@ -233,14 +236,16 @@ class HTTPDownload():
                         continue
 
                     try: # check if the header implies success, else add it to failed list
-                        chunk.verifyHeader()
+                        chunk.code = chunk.verifyHeader()
                     except BadHeader, e:
                         self.log.debug("Chunk %d failed: %s" % (chunk.id + 1, str(e)))
+                        chunk.code = e.code
                         failed.append(chunk)
                         ex = e
                     else:
                         chunksDone.add(curl)
-                if not num_q: # no more infos to get
+
+                if num_q == 0: # no more infos to get
 
                     # check if init is not finished so we reset download connections
                     # note that other chunks are closed and downloaded with init too
@@ -252,7 +257,7 @@ class HTTPDownload():
                         for chunk in to_clean:
                             self.closeChunk(chunk)
                             self.chunks.remove(chunk)
-                            remove(fs_encode(self.info.getChunkName(chunk.id)))
+                            remove(fs_encode(self.info.getChunkFilename(chunk.id)))
 
                         # let first chunk load the rest and update the info file
                         init.resetRange()
@@ -296,6 +301,8 @@ class HTTPDownload():
             chunk.flushFile() # make sure downloads are written to disk
 
         self._copyChunks()
+
+        self.code = init.code
 
     def updateProgress(self):
         if self.status_notify:
