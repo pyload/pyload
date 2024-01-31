@@ -99,7 +99,7 @@ class AddonManager:
         plugins = []
 
         active = []
-        deactive = []
+        inactive = []
 
         for plugin_name in self.pyload.plugin_manager.addon_plugins:
             try:
@@ -118,7 +118,7 @@ class AddonManager:
                     if plugin.is_activated():
                         active.append(plugin_class.__name__)
                 else:
-                    deactive.append(plugin_name)
+                    inactive.append(plugin_name)
 
             except Exception:
                 self.pyload.log.warning(
@@ -131,7 +131,7 @@ class AddonManager:
             self._("Activated addons: {}").format(", ".join(sorted(active)))
         )
         self.pyload.log.info(
-            self._("Deactivate addons: {}").format(", ".join(sorted(deactive)))
+            self._("Deactivate addons: {}").format(", ".join(sorted(inactive)))
         )
 
         self.plugins = plugins
