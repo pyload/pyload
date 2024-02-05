@@ -47,7 +47,7 @@ def robots():
 def login():
     api = flask.current_app.config["PYLOAD_API"]
 
-    next = get_redirect_url(fallback=flask.url_for("app.dashboard"))
+    next_url = get_redirect_url(fallback="app.dashboard")
 
     if flask.request.method == "POST":
         user = flask.request.form["username"]
@@ -57,14 +57,14 @@ def login():
         sanitized_user = user.replace("\n", "\\n").replace("\r", "\\r")
         if not user_info:
             log.error(f"Login failed for user '{sanitized_user}'")
-            return render_template("login.html", next=next, errors=True)
+            return render_template("login.html", errors=True)
 
         set_session(user_info)
         log.info(f"User '{sanitized_user}' successfully logged in")
         flask.flash("Logged in successfully")
 
     if is_authenticated():
-        return flask.redirect(next)
+        return flask.redirect(next_url)
 
     if api.get_config_value("webui", "autologin"):
         allusers = api.get_all_userdata()
@@ -74,9 +74,9 @@ def login():
             # NOTE: Double-check authentication here because if session[name] is empty,
             #       next login_required redirects here again and all loop out.
             if is_authenticated():
-                return flask.redirect(next)
+                return flask.redirect(next_url)
 
-    return render_template("login.html", next=next)
+    return render_template("login.html")
 
 
 @bp.route("/logout", endpoint="logout")
