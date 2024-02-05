@@ -6,7 +6,7 @@ from urllib.parse import urljoin, urlparse
 
 import flask
 import flask_themes2
-import werkzeug.routing.exceptions
+import werkzeug.routing
 from pyload.core.api import Perms, Role, has_permission
 
 
@@ -49,7 +49,7 @@ def get_redirect_url(fallback=None):
     if next_arg and next_arg != "login":  # don't redirect to same location
         try:
             redirect_url = flask.url_for(f"app.{next_arg}")
-        except werkzeug.routing.exceptions.BuildError:
+        except werkzeug.routing.BuildError:
             pass
 
     return urljoin(flask.request.url_root, redirect_url)
