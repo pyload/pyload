@@ -140,8 +140,7 @@ class ExtractArchive(Addon):
     def activate(self):
         for p in ("HjSplit", "UnRar", "SevenZip", "UnZip", "UnTar"):
             try:
-                module = self.pyload.pluginManager.loadModule("internal", p)
-                klass = getattr(module, p)
+                klass = self.pyload.pluginManager.loadClass("internal", p)
                 if klass.find():
                     self.extractors.append(klass)
                 if klass.REPAIR:
