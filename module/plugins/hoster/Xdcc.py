@@ -49,8 +49,6 @@ class Xdcc(Hoster):
         self.timeout = 30
         self.multiDL = False
         
-        
-    
     def process(self, pyfile):
         # change request type
         self.req = pyfile.m.core.requestFactory.getRequest(self.__name__, type="XDCC")
@@ -58,7 +56,8 @@ class Xdcc(Hoster):
         self.pyfile = pyfile
         for i in range(0,3):
             try:
-                self.doDownload(pyfile.url)
+                nmn = self.doDownload(pyfile.url)
+                self.log.debug("%s: Download of %s finished." % (self.__name__, nmn))
                 return
             except socket.error, e:
                 if hasattr(e, "errno"):
@@ -75,7 +74,6 @@ class Xdcc(Hoster):
                 self.fail("Failed due to socket errors. Code: %d" % errno)
                 
         self.fail("Server blocked our ip, retry again later manually")
-
 
     def doDownload(self, url):
         self.pyfile.setStatus("waiting") # real link
@@ -103,7 +101,6 @@ class Xdcc(Hoster):
         else:
             self.fail("Invalid hostname for IRC Server (%s)" % server)
         
-        
         #######################
         # CONNECT TO IRC AND IDLE FOR REAL LINK
         dl_time = time.time()
@@ -124,7 +121,6 @@ class Xdcc(Hoster):
         retry = None
         m = None
         while True:
-
             # done is set if we got our real link
             if done:
                 break
@@ -134,13 +130,11 @@ class Xdcc(Hoster):
                     retry = None
                     dl_time = time.time()
                     sock.send("PRIVMSG %s :xdcc send #%s\r\n" % (bot, pack))
-
             else:
                 if (dl_time + self.timeout) < time.time(): # todo: add in config
                     sock.send("QUIT :byebye\r\n")
                     sock.close()
                     self.fail("XDCC Bot did not answer")
-
 
             fdset = select([sock], [], [], 0)
             if sock not in fdset[0]:
@@ -155,7 +149,7 @@ class Xdcc(Hoster):
                 line  = line.rstrip()
                 first = line.split()
 
-                if(first[0] == "PING"):
+                if first[0] == "PING":
                     sock.send("PONG %s\r\n" % first[1])
                     
                 if first[0] == "ERROR":
@@ -171,7 +165,6 @@ class Xdcc(Hoster):
                     "target":msg[2], \
                     "text"  :msg[3][1:] \
                 }
-
 
                 if nick == msg["target"][0:len(nick)] and "PRIVMSG" == msg["action"]:
                     if msg["text"] == "\x01VERSION\x01":
@@ -214,7 +207,7 @@ class Xdcc(Hoster):
         self.log.info("XDCC: Downloading %s from %s:%d" % (packname, ip, port))
 
         self.pyfile.setStatus("downloading")
-        newname = self.req.download(ip, port, filename, self.pyfile.progress.setValue)
+        newname = self.req.download(ip, port, filename, self.pyfile.setProgress)
         if newname and newname != filename:
             self.log.info("%(name)s saved as %(newname)s" % {"name": self.pyfile.name, "newname": newname})
             filename = newname
@@ -223,19 +216,6 @@ class Xdcc(Hoster):
         # sock.send("QUIT :byebye\r\n")
         sock.close()
 
-        if self.core.config["permission"]["change_file"]:
-            chmod(filename, int(self.core.config["permission"]["file"],8))
-
-        if self.core.config["permission"]["change_dl"] and os.name != "nt":
-            try:
-                uid = getpwnam(self.config["permission"]["user"])[2]
-                gid = getgrnam(self.config["permission"]["group"])[2]
-
-                chown(filename, uid, gid)
-            except Exception,e:
-                self.log.warning(_("Setting User and Group failed: %s") % str(e))
-
         self.lastDownload = filename
         return self.lastDownload
-        
-        
+
