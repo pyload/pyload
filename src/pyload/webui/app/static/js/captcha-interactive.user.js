@@ -85,6 +85,19 @@
                             var responseMessage = {actionCode: "pyloadSubmitResponse", params: {response: response}};
                             parent.postMessage(JSON.stringify(responseMessage),"*");
                         },
+                        loading: function() {
+                            var responseMessage = {actionCode: "pyloadLoadingInteractive"};
+                            parent.postMessage(JSON.stringify(responseMessage),"*");
+                        },
+                        loaded: function() {
+                            console.log('loading ...');
+                            var responseMessage = {actionCode: "pyloadLoadedInteractive"};
+                            parent.postMessage(JSON.stringify(responseMessage),"*");
+                        },
+                        aborted: function() {
+                            var responseMessage = {actionCode: "pyloadAbortedInteractive"};
+                            parent.postMessage(JSON.stringify(responseMessage),"*");
+                        },
                         activated: function() {
                             var responseMessage = {actionCode: "pyloadActivatedInteractive"};
                             parent.postMessage(JSON.stringify(responseMessage),"*");

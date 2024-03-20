@@ -1116,6 +1116,18 @@ class Api:
             task.set_result(result)
             self.pyload.captcha_manager.remove_task(task)
 
+    def set_captcha_failed(self, tid, message):
+        """
+        Set result for a captcha task.
+
+        :param tid: task id
+        """
+        self.pyload.last_client_connected = time.time()
+        task = self.pyload.captcha_manager.get_task_by_id(tid)
+        if task:
+            task.set_failed(message)
+            self.pyload.captcha_manager.remove_task(task)
+
     @legacy("getEvents")
     @permission(Perms.STATUS)
     def get_events(self, uuid):

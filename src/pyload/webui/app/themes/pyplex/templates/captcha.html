@@ -35,6 +35,7 @@
               <p>{{_("Note: to solve this interactive captcha")}}<br>
               {{_("Please install the <a href='https://tampermonkey.net/' target='_blank'>Tampermonkey</a> add-on in your browser and add the ")}}<a href="{{url_for('static', filename='js/captcha-interactive.user.js')}}">{{_("pyload userscript")}}</a>.</p>
             </div>
+            <div id="cap_interactive_content_loading" style="display: none; background-image: url({{theme_static('img/ajax-loader.gif')}});" ></div>
             <div id="cap_invisible_loading">
               <p style="white-space: nowrap;">{{_("Invisible captcha is in background progress,")}}<br>
               <p style="white-space: nowrap;">{{_("this window will automatically close, please wait.")}}</p><br>
