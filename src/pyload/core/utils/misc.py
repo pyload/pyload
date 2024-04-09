@@ -3,9 +3,7 @@
 import random
 import string
 
-import js2py
-
-js2py.disable_pyimport()
+import dukpy
 
 
 def random_string(length):
@@ -23,7 +21,7 @@ def is_plural(value):
 
 def eval_js(script, es6=False):
     # return requests_html.HTML().render(script=script, reload=False)
-    return (js2py.eval_js6 if es6 else js2py.eval_js)(script)
+    return dukpy.evaljs(script)
 
 
 def accumulate(iterable, to_map=None):
