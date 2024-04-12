@@ -6,7 +6,7 @@ from ..internal.XFSHoster import XFSHoster
 class KatfileCom(XFSHoster):
     __name__ = "KatfileCom"
     __type__ = "hoster"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?katfile\.com/\w+'
@@ -23,6 +23,7 @@ class KatfileCom(XFSHoster):
     NAME_PATTERN = r'name="fname" value="(?P<N>.+?)"'
     SIZE_PATTERN = r'<span id="fsize" .+?>(?P<S>[\d.,]+) (?P<U>[\w^_]+)<'
 
+    OFFLINE_PATTERN = r"File has been removed"
     WAIT_PATTERN = r'(?:var estimated_time = |Delay between free downloads must be not less than )([\w ]+?)[.;]'
     LINK_PATTERN = r'<a href="([^"]+)" id="dlink"'
 
