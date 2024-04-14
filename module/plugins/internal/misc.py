@@ -46,7 +46,7 @@ except ImportError:
 class misc(object):
     __name__ = "misc"
     __type__ = "plugin"
-    __version__ = "0.68"
+    __version__ = "0.69"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -528,7 +528,10 @@ def fixurl(url, unquote=None):
     old = url
     url = urllib.unquote(url)
     if isinstance(url, unicode):
-        url = url.encode("latin1").decode("utf8")  #: bugfix urllib
+        try:
+            url = url.encode("latin1").decode("utf8")  #: bugfix urllib
+        except UnicodeEncodeError:
+            pass
 
     if unquote is None:
         unquote = url == old
