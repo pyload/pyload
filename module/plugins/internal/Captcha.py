@@ -13,7 +13,7 @@ from .misc import fsjoin
 class Captcha(Plugin):
     __name__ = "Captcha"
     __type__ = "captcha"
-    __version__ = "0.60"
+    __version__ = "0.61"
     __status__ = "stable"
 
     __description__ = """Base anti-captcha plugin"""
@@ -70,7 +70,8 @@ class Captcha(Plugin):
         result = None
         time_ref = ("%.2f" % time.time())[-6:].replace(".", "")
 
-        with open(fsjoin("tmp", "captcha_image_%s_%s.%s" % (self.pyfile.plugin.__name__, time_ref, input_type)), "wb") as img_f:
+        img_path = fsjoin("tmp", "captcha_image_%s_%s.%s" % (self.pyfile.plugin.__name__, time_ref, input_type))
+        with open(img_path, "wb") as img_f:
             img_f.write(img)
 
         if ocr:
@@ -105,6 +106,7 @@ class Captcha(Plugin):
 
             finally:
                 captchaManager.removeTask(self.task)
+                os.remove(img_path)
 
             result = self.task.result
 
