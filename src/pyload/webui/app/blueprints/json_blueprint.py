@@ -296,7 +296,7 @@ def add_account():
 @login_required("ACCOUNTS")
 # @fresh_login_required
 def update_accounts():
-    deleted = []  #: dont update deleted accounts or they will be created again
+    deleted = []  #: don't update deleted accounts, or they will be created again
     updated = {}
     api = flask.current_app.config["PYLOAD_API"]
 

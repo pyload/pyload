@@ -527,7 +527,7 @@ class Api:
     @permission(Perms.ADD)
     def check_online_status_container(self, urls, container, data):
         """
-        checks online status of urls and a submited container file.
+        checks online status of urls and a submitted container file.
 
         :param urls: list of urls
         :param container: container file name
