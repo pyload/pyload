@@ -94,6 +94,11 @@ class CaptchaTask:
             except Exception:
                 self.result = None
 
+    def set_failed(self, message):
+        self.result = None
+        self.status = 'failed'
+        self.error = message
+
     def get_result(self):
         return self.result
 
