@@ -4,7 +4,7 @@ import os
 
 import flask
 from flask.json import jsonify
-
+from pyload import PKGDIR
 from pyload.core.api import Role
 from pyload.core.utils import format
 
@@ -270,6 +270,12 @@ def save_config():
             section, option = key.split("|")
         except Exception:
             continue
+
+        if section == 'general' and option=='storage_folder':
+            abs_path_value = os.path.join(os.path.abspath(value).lower(), "")
+            abs_PKGDIR = os.path.join(os.path.abspath(PKGDIR).lower(), "")
+            if abs_path_value.startswith(abs_PKGDIR):
+                continue
 
         api.set_config_value(section, option, value, category)
 
