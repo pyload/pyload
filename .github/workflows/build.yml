@@ -32,7 +32,7 @@ jobs:
         run: python setup.py -q sdist
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
           name: dist--${{ github.run_id }}
           path: dist/*.tar.gz
@@ -57,7 +57,7 @@ jobs:
         run: python setup.py -q build_locale bdist_wheel
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
           name: dist--${{ github.run_id }}
           path: dist/*.whl
