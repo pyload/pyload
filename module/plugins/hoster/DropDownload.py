@@ -6,7 +6,7 @@ from ..internal.XFSHoster import XFSHoster
 class DropDownload(XFSHoster):
     __name__ = "DropDownload"
     __type__ = "hoster"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?drop\.download/\w{12}"
@@ -24,6 +24,8 @@ class DropDownload(XFSHoster):
 
     PLUGIN_DOMAIN = "drop.download"
     LINK_PATTERN = r'<a href="(https://s\d+\.drop\.download.+?)"'
+
+    DL_LIMIT_PATTERN = r'You have reached the download-limit: [\d.,]+\s*[a-zA-Z]* for last (\d+ days)'
 
     def setup(self):
         self.multi_dl = True
