@@ -462,3 +462,7 @@ fieldset[disabled] .btn {
   margin: 6px 3px 0 3px;
   border-left: 1px solid #CACACA;
 }
+
+#cap_textual_img:hover, #cap_textual_img:active{
+  filter: brightness(51%) contrast(6400%) grayscale(100%);
+}

@@ -827,3 +827,7 @@ table.system tr > td:first-child {
     font-weight: bold;
     padding-right: 10px;
 }
+
+#cap_textual_img:hover, #cap_textual_img:active{
+	filter: brightness(51%) contrast(6400%) grayscale(100%);
+}
