@@ -549,7 +549,7 @@ td p {
 .progress_bar {
 	background: #0C0;
 	height: 5px;
-	
+
 }
 
 .queue {
@@ -957,4 +957,8 @@ a.cog {
 
 .MooDialog .MooDialogError {
     background: url("../img/dialog-error.png") no-repeat;
+}
+
+#cap_textual_img:hover, #cap_textual_img:active{
+  filter: brightness(51%) contrast(6400%) grayscale(100%);
 }

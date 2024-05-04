@@ -486,3 +486,7 @@ fieldset[disabled] .btn {
 .modal-dialog {
   margin-top: 10px;
 }
+
+#cap_textual_img:hover, #cap_textual_img:active{
+  filter: brightness(51%) contrast(6400%) grayscale(100%);
+}
