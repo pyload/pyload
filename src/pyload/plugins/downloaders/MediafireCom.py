@@ -30,7 +30,7 @@ class MediafireCom(SimpleDownloader):
         ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com"),
     ]
 
-    NAME_PATTERN = r'<META NAME="description" CONTENT="(?P<N>.+?)"/>'
+    NAME_PATTERN = r'<meta itemprop="name" content="(?P<N>.+?)"/>'
     SIZE_PATTERN = r'<div class="fileName">(?P<N>.+?)</div>'
 
     TEMP_OFFLINE_PATTERN = r"^unmatchable$"
