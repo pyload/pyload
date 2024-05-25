@@ -13,7 +13,7 @@ from .misc import fsjoin
 class Captcha(Plugin):
     __name__ = "Captcha"
     __type__ = "captcha"
-    __version__ = "0.61"
+    __version__ = "0.62"
     __status__ = "stable"
 
     __description__ = """Base anti-captcha plugin"""
@@ -106,7 +106,6 @@ class Captcha(Plugin):
 
             finally:
                 captchaManager.removeTask(self.task)
-                os.remove(img_path)
 
             result = self.task.result
 
@@ -123,8 +122,7 @@ class Captcha(Plugin):
             else:
                 self.pyfile.plugin.retry_captcha(msg=_("No captcha result obtained in appropriate timing (%ss)") % timeout)
 
-        if not self.pyload.debug:
-            self.remove(img_f.name, trash=False)
+        self.remove(img_f.name, trash=False)
 
         return result
 
