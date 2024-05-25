@@ -11,7 +11,7 @@ from .plugin import BasePlugin
 class BaseCaptcha(BasePlugin):
     __name__ = "BaseCaptcha"
     __type__ = "anticaptcha"
-    __version__ = "0.61"
+    __version__ = "0.62"
     __status__ = "stable"
 
     __description__ = """Base anti-captcha plugin"""
@@ -130,7 +130,6 @@ class BaseCaptcha(BasePlugin):
 
             finally:
                 captcha_manager.remove_task(self.task)
-                os.remove(img_path)
 
             result = self.task.result
 
@@ -153,8 +152,7 @@ class BaseCaptcha(BasePlugin):
                     ).format(timeout)
                 )
 
-        if not self.pyload.debug:
-            self.remove(img_fp.name, try_trash=False)
+        self.remove(img_fp.name, try_trash=False)
 
         return result
 
