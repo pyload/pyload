@@ -8,7 +8,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class MediafireCom(SimpleHoster):
     __name__ = "MediafireCom"
     __type__ = "hoster"
-    __version__ = "0.99"
+    __version__ = "1.00"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?mediafire\.com/(file/|view/\??|download(\.php\?|/)|\?)(?P<ID>\w+)'
@@ -25,8 +25,8 @@ class MediafireCom(SimpleHoster):
                    ("Walter Purcaro", "vuolter@gmail.com"),
                    ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
-    NAME_PATTERN = r'<META NAME="description" CONTENT="(?P<N>.+?)"/>'
-    SIZE_PATTERN = r'<div class="fileName">(?P<N>.+?)</div>'
+    NAME_PATTERN = r'<div class="fileName">(?P<N>.+?)</div>'
+    SIZE_PATTERN = r'>File size: <span>(?P<S>[\d.,]+)(?P<U>[\w^_]+)<'
 
     TEMP_OFFLINE_PATTERN = r'^unmatchable$'
     OFFLINE_PATTERN = r'class="error_msg_title"'
