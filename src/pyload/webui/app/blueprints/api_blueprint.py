@@ -33,7 +33,11 @@ def rpc(func, args=""):
 
     if user:
         user_info = api.check_auth(user, password)
-        s = set_session(user_info)
+        if user_info:
+            s = set_session(user_info)
+        else:
+            return jsonify({'error': "Unauthorized"}), 401
+
     else:
         s = flask.session
 
