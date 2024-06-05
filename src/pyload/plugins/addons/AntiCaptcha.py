@@ -83,7 +83,10 @@ class AntiCaptcha(BaseAddon):
         balance = credits["balance"]
         self.log_info(self._("Credits left: {:.2f}$").format(balance))
 
-        return balance
+        # 1 credit = 0.001 usd
+        credits = round(balance * 1000)
+
+        return credits
 
     @threaded
     def _process_captcha(self, task):
@@ -192,9 +195,10 @@ class AntiCaptcha(BaseAddon):
             return
 
         credits = self.get_credits()
-        if credits < 0.05:
+        # a normal captcha costs 3 credits
+        if credits < 3:
             self.log_error(
-                self._("Your captcha anti-captcha.com account has not enough credits")
+                self._(f"Your captcha anti-captcha.com account has not enough credits: {credits}")
             )
             return
 
