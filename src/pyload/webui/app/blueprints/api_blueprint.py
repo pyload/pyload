@@ -31,11 +31,13 @@ def rpc(func, args=""):
         user = flask.request.form.get("u", "")
         password = flask.request.form.get("p", "")
 
+    sanitized_user = user.replace("\n", "\\n").replace("\r", "\\r")
     if user:
         user_info = api.check_auth(user, password)
         if user_info:
             s = set_session(user_info)
         else:
+            log.error(f"API access failed for user '{sanitized_user}'")
             return jsonify({'error': "Unauthorized"}), 401
 
     else:
@@ -46,6 +48,7 @@ def rpc(func, args=""):
             "perms" not in s or
             not api.is_authorized(func, {"role": s["role"], "permission": s["perms"]})
     ):
+        log.error(f"API access failed for user '{sanitized_user}'")
         return jsonify({'error': "Unauthorized"}), 401
 
     args = args.split(",")
