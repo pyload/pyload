@@ -153,7 +153,7 @@ class AccountManager():
     @lock
     def updateAccount(self, plugin , user, password=None, options={}):
         """add or update account"""
-        if plugin in self.accounts:
+        if plugin in self.accounts and user:
             p = self.getAccountPlugin(plugin)
             updated = p.updateAccounts(user, password, options)
             #since accounts is a ref in plugin self.accounts doesnt need to be updated here

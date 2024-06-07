@@ -271,15 +271,16 @@ def save_config(category):
 def add_account():
     login = request.POST["account_login"]
     password = request.POST["account_password"]
-    type = request.POST["account_type"]
+    account_type = request.POST["account_type"]
 
-    PYLOAD.updateAccount(type, login, password)
+    if login:
+        PYLOAD.updateAccount(account_type, login, password)
 
 
 @route("/json/update_accounts", method="POST")
 @login_required("ACCOUNTS")
 def update_accounts():
-    deleted = []  #: dont update deleted accs or they will be created again
+    deleted = []  #: don't update deleted accounts or they will be created again
     updated = {}
 
     for name, value in request.POST.iteritems():
