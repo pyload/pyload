@@ -3,6 +3,7 @@
 from ..base.decrypter import BaseDecrypter
 import re, json, os
 
+
 class Knigavuhe(BaseDecrypter):
     __name__ = "Knigavuhe"
     __type__ = "decrypter"
@@ -15,7 +16,7 @@ class Knigavuhe(BaseDecrypter):
 
     BOOK_PLAYER_DATA_PATTERN = r"new BookPlayer\(\d+,\s?(\[.+?\]),"
     BOOK_TITLE_PATTERN = r"book = ({.+});"
-    VOLUME_PATTERN = r'((?:\d+.?)\d+)\.<\/span>\s+<strong>{}'
+    VOLUME_PATTERN = r"((?:\d+.?)\d+)\.<\/span>\s+<strong>{}"
 
     def _get_book_title(self, html):
         text = re.search(self.BOOK_TITLE_PATTERN, html)
@@ -25,7 +26,7 @@ class Knigavuhe(BaseDecrypter):
 
         title = json.loads(text[1])["name"]
         volume = re.search(self.VOLUME_PATTERN.format(title), html)
-        if volume: # If single volume omit number in series
+        if volume:  # If single volume omit number in series
             title = f"{volume.group(1)}. {title}"
 
         return title
@@ -49,7 +50,10 @@ class Knigavuhe(BaseDecrypter):
         self.packages.append(
             (
                 title or pyfile.package().name,
-                [f"{x['url']}#{x['title']}{os.path.splitext(x['url'])[1]}" for x in data],
+                [
+                    f"{x['url']}#{x['title']}{os.path.splitext(x['url'])[1]}"
+                    for x in data
+                ],
                 title or pyfile.package().folder,
             )
         )
