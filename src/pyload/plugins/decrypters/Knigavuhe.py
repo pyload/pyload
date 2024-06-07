@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from ..base.decrypter import BaseDecrypter
-import re, json, os
+
+import re
+import json
+import os
 
 
 class Knigavuhe(BaseDecrypter):
