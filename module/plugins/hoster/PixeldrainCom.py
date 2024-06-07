@@ -9,7 +9,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class PixeldrainCom(SimpleHoster):
     __name__ = "PixeldrainCom"
     __type__ = "hoster"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?pixeldrain\.com/u/(?P<ID>\w+)'
@@ -25,8 +25,8 @@ class PixeldrainCom(SimpleHoster):
 
     DIRECT_LINK = False
 
-    API_URL = "https://pixeldrain.com/api/"
     #: See https://pixeldrain.com/api/
+    API_URL = "https://pixeldrain.com/api/"
 
     def api_info(self, url):
         file_id = re.match(self.__pattern__, url).group('ID')
@@ -41,6 +41,13 @@ class PixeldrainCom(SimpleHoster):
                     'size': file_info['size'],
                     'status': 2}
 
+    def setup(self):
+        if self.premium:
+            self.req.addAuth(":%s" % self.account.info["login"]["password"])
+
     def handle_free(self, pyfile):
         file_id = self.info['pattern']['ID']
         self.download("%s/file/%s" % (self.API_URL, file_id))
+
+    def handle_premium(self, pyfile):
+        self.handle_free(pyfile)
