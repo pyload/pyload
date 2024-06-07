@@ -291,10 +291,14 @@ def add_account():
 
     login = flask.request.form["account_login"]
     password = flask.request.form["account_password"]
-    type = flask.request.form["account_type"]
+    account_type = flask.request.form["account_type"]
 
-    api.update_account(type, login, password)
-    return jsonify(True)
+    if login:
+        api.update_account(account_type, login, password)
+        return jsonify(True)
+
+    else:
+        return jsonify(False)
 
 
 @bp.route("/json/update_accounts", methods=["POST"], endpoint="update_accounts")

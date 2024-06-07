@@ -168,9 +168,9 @@ class AccountManager:
     @lock
     def update_account(self, plugin, user, password=None, options={}):
         """
-        add or update account.
+        add or update an account.
         """
-        if plugin in self.accounts:
+        if plugin in self.accounts and user:
             p = self.get_account_plugin(plugin)
             if p is not None:
                 updated = p.update_accounts(user, password, options)
