@@ -7,10 +7,10 @@ import json
 import os
 
 
-class Knigavuhe(BaseDecrypter):
-    __name__ = "Knigavuhe"
+class KnigavuheOrg(BaseDecrypter):
+    __name__ = "KnigavuheOrg"
     __type__ = "decrypter"
-    __version__ = "0.1"
+    __version__ = "0.01"
     __status__ = "testing"
     __pattern__ = r"https?:\/\/knigavuhe\.org\/book\/.+"
 
