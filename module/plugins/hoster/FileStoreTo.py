@@ -14,7 +14,7 @@ class FileStoreTo(SimpleHoster):
     __version__ = "0.16"
     __status__ = "testing"
 
-    __pattern__ = r'http://(?:www\.)?filestore\.to/\?d=(?P<ID>\w+)'
+    __pattern__ = r'https?://(?:www\.)?filestore\.to/\?d=(?P<ID>\w+)'
     __config__ = [("activated", "bool", "Activated", True),
                   ("use_premium", "bool", "Use premium account if available", True),
                   ("fallback", "bool", "Fallback to free download if premium fails", True),
@@ -38,12 +38,27 @@ class FileStoreTo(SimpleHoster):
     NO_FREESLOTS_PATTERN = ur'>Leider sind aktuell keine freien Downloadslots für Freeuser verfügbar<'
 
     WAIT_PATTERN = r'data-wait="(\d+?)"'
-
     LINK_PATTERN = r'klicke <a href="(.+?)">hier<'
+
+    URL_REPLACEMENTS = [("http://", "https://")]
 
     def setup(self):
         self.resume_download = True
         self.multiDL = True
+
+    def process(self, pyfile):
+        try:
+            return super(FileStoreTo, self).process(pyfile)
+
+        except BadHeader, e:
+            self.log_debug("FileStore.to httpcode: %s" % e.code)
+            if e.code == 503 and self.config.get("beadheader_retry", True):
+                rand_delay = random.randrange(0, 6) * 5
+                self.log_warning(_("Temporary server error, retrying..."))
+                self.retry(10, 10 + rand_delay)
+
+            else:
+                raise
 
     def handle_free(self, pyfile):
         self.data = self.load(pyfile.url,
@@ -64,20 +79,6 @@ class FileStoreTo(SimpleHoster):
         m = re.search(self.LINK_PATTERN, self.data)
         if m is not None:
             self.link = m.group(1)
-
-    def process(self, pyfile):
-        try:
-            return super(FileStoreTo, self).process(pyfile)
-
-        except BadHeader, e:
-            self.log_debug("FileStore.to httpcode: %s" % e.code)
-            if e.code == 503 and self.config.get("beadheader_retry", True):
-                rand_delay = random.randrange(0, 6) * 5
-                self.log_warning(_("Temporary server error, retrying..."))
-                self.retry(10, 10 + rand_delay)
-
-            else:
-                raise
 
     def handle_premium(self, pyfile):
         m = re.search(r'name="DID" value="(.+?)"', self.data)
