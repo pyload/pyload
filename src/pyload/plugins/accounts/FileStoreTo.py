@@ -9,21 +9,21 @@ from ..base.account import BaseAccount
 class FileStoreTo(BaseAccount):
     __name__ = "FileStoreTo"
     __type__ = "account"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
     __description__ = """Filestore.to account plugin"""
     __license__ = "GPLv3"
     __authors__ = [("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
-    LOGIN_URL = "http://filestore.to/login"
+    LOGIN_URL = "https://filestore.to/login"
     VALID_UNTIL_PATTERN = r'<small>Premium-Status</small><div class="value text-success">([\d\.]+? - [\d:]+)'
 
     def grab_info(self, user, password, data):
         premium = False
         validuntil = None
 
-        html = self.load("http://filestore.to/konto")
+        html = self.load("https://filestore.to/konto")
         m = re.search(self.VALID_UNTIL_PATTERN, html)
         if m is not None:
             validuntil = time.mktime(time.strptime(m.group(1), "%d.%m.%Y - %H:%M"))
