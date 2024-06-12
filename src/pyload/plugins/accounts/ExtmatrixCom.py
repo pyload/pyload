@@ -13,7 +13,7 @@ from ..base.captcha import BaseCaptcha
 class ExtmatrixCom(BaseAccount):
     __name__ = "ExtmatrixCom"
     __type__ = "account"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
     __description__ = """Extmatrix.com account plugin"""
@@ -30,7 +30,7 @@ class ExtmatrixCom(BaseAccount):
         m = re.search(self.VALID_UNTIL_PATTERN, html)
         if m is not None:
             validuntil = time.mktime(
-                time.strptime(m.group(1) + " 23:59:59", "%d-%m-%Y %H:%M:%S")
+                time.strptime(m.group(1) + " 23:59:59", "%Y-%m-%d %H:%M:%S")
             )
 
         else:
