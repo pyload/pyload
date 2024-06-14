@@ -304,6 +304,8 @@ class Core:
         self.reload_plugins_is_scheduled = False
 
         def reload_plugins():
+            # no. reload_plugins does not add new plugins
+            #self.plugin_manager.reload_plugins(type_plugins)
             self.plugin_manager.create_index()
             # save generated config
             self.config.save_config(self.config.plugin, self.config.pluginpath)
@@ -323,8 +325,13 @@ class Core:
                     watchdog.events.FileCreatedEvent,
                 )
                 if isinstance(event, ignore_events):
+                    # verbose!
+                    # self.pyload.log.debug(f"WatchdogThread dispatch ignoring event {event}")
                     return
-                #print("WatchdogThread dispatch event", event)
+                if isinstance(event, watchdog.events.FileMovedEvent):
+                    if "/__pycache__/" in event.src_path:
+                        return
+                self.pyload.log.debug(f"WatchdogThread dispatch event {event}")
                 self.pyload.reload_plugins_is_scheduled = True
                 # self.pyload.scheduler.add_job(0, reload_plugins)
                 reload_plugins()
