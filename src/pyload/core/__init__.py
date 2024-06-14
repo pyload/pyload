@@ -22,6 +22,7 @@ from threading import Event
 
 from pyload import APPID, PKGDIR, USERHOMEDIR
 import OpenSSL
+import jurigged
 
 from .. import __version__ as PYLOAD_VERSION
 from .. import __version_info__ as PYLOAD_VERSION_INFO
@@ -107,6 +108,7 @@ class Core:
         self._init_api()
         self._init_managers()
         self._init_webserver()
+        self._init_hotreload_code()
 
         atexit.register(self.terminate)
 
@@ -282,6 +284,17 @@ class Core:
         self.thm = self.thread_manager = ThreadManager(self)
         self.cpm = self.captcha_manager = CaptchaManager(self)
         self.adm = self.addon_manager = AddonManager(self)
+
+    def _init_hotreload_code(self):
+        # start hot-reload for code
+        self.log.info(f"Starting hot-reload from userdir {self.userdir}")
+        # FIXME disable "watch ..." messages
+        jurigged.watch(self.userdir)
+        self.sourcedir = os.path.dirname(os.path.dirname(__file__))
+        if os.access(__file__, os.W_OK):
+            self.log.info(f"Starting hot-reload from sourcedir {self.sourcedir}")
+            # FIXME disable "watch ..." messages
+            jurigged.watch(self.sourcedir)
 
     def _setup_permissions(self):
         self.log.debug("Setup permissions...")
