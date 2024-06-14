@@ -386,6 +386,17 @@ def format_exc(frame=None):
     return msg
 
 
+def str_exc(exc):
+    """
+    format exception as short string.
+
+    example: "SomeError: some message"
+    """
+    if isinstance(exc, BaseException):
+        return traceback.format_exception_only(exc)[0].rstrip()
+    return str(exc)
+
+
 def search_pattern(pattern, value, flags=0):
     try:
         pattern, reflags = pattern
