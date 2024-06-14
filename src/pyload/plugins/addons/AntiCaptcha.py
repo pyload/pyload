@@ -18,7 +18,7 @@ class AntiCaptcha(BaseAddon):
 
     __config__ = [
         ("enabled", "bool", "Activated", False),
-        ("check_client", "bool", "Don't use if client is connected", True),
+        ("check_client", "bool", "Don't use if client is connected", False),
         (
             "solve_image",
             "bool",
