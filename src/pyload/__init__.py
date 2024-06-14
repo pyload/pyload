@@ -28,7 +28,12 @@ PKGDIR = pkg_resources.resource_filename(__name__, "")
 USERHOMEDIR = os.path.expanduser("~")
 os.chdir(USERHOMEDIR)
 
-__version__ = pkg_resources.get_distribution(PKGNAME).parsed_version.base_version
+# FIXME move version from VERSION to src/pyload/__init__.py
+#__version__ = pkg_resources.get_distribution(PKGNAME).parsed_version.base_version
+try:
+    __version__ = pkg_resources.get_distribution(PKGNAME).parsed_version.base_version
+except pkg_resources.DistributionNotFound:
+    __version__ = "0.0.0"
 __version_info__ = semver.parse_version_info(__version__)
 
 
