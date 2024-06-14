@@ -198,7 +198,7 @@ class DownloadThread(PluginThread):
                     exc_info=self.pyload.debug > 1,
                     stack_info=self.pyload.debug > 2,
                 )
-                pyfile.error = str(exc)
+                pyfile.error = type(exc).__name__ + ": " + str(exc)
 
                 if self.pyload.debug:
                     self.write_debug_report(pyfile)
