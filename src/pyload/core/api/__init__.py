@@ -436,6 +436,10 @@ class Api:
         :param dest: `Destination`
         :return: package id of the new package
         """
+        if re.fullmatch(r"\s*", name):
+            # name is empty or spaces -> use current time
+            name = time.strftime("%Y-%m-%dT%H-%M-%S%z")
+
         if self.pyload.config.get("general", "folder_per_package"):
             folder = name
         else:
