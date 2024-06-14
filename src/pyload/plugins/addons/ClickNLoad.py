@@ -8,7 +8,7 @@ import time
 from pyload.core.utils.struct.lock import lock
 
 from ..base.addon import BaseAddon, threaded
-from ..helpers import forward
+from ..helpers import forward, str_exc
 
 
 # TODO: IPv6 support
@@ -192,7 +192,7 @@ class ClickNLoad(BaseAddon):
                                 backend_socket = context.wrap_socket(backend_socket, server_hostname=self.web_addr[0])
 
                             except Exception as exc:
-                                self.log_error(self._("SSL error: {}").format(exc))
+                                self.log_error(self._("SSL error: {}").format(str_exc(exc)))
                                 client_socket.close()
                                 continue
 
