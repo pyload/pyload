@@ -22,11 +22,14 @@ from threading import Event
 
 from pyload import APPID, PKGDIR, USERHOMEDIR
 import OpenSSL
+import jurigged
 
 from .. import __version__ as PYLOAD_VERSION
 from .. import __version_info__ as PYLOAD_VERSION_INFO
 from .utils import format, fs
 from .utils.misc import reversemap
+from .threads.watchdog_thread import WatchdogThread
+from ..plugins.helpers import str_exc
 
 
 class Restart(Exception):
@@ -107,6 +110,7 @@ class Core:
         self._init_api()
         self._init_managers()
         self._init_webserver()
+        self._init_hotreload_code()
 
         atexit.register(self.terminate)
 
@@ -293,6 +297,72 @@ class Core:
         self.thm = self.thread_manager = ThreadManager(self)
         self.cpm = self.captcha_manager = CaptchaManager(self)
         self.adm = self.addon_manager = AddonManager(self)
+
+    def _init_hotreload_code(self):
+        # start hot-reload for code
+        def jurigged_logger(arg):
+            # dont log "watch ..." messages. too verbose
+            if isinstance(arg, jurigged.live.WatchOperation):
+                return
+            # verbose
+            self.log.debug(f"hot-reload {str_exc(arg)}")
+        def jurigged_watch(path):
+            jurigged.watch(path + "/**/*.py", jurigged_logger)
+        self.log.info(f"Starting hot-reload from userdir {self.userdir}")
+        jurigged_watch(self.userdir)
+        self.sourcedir = os.path.dirname(os.path.dirname(__file__))
+        if os.access(__file__, os.W_OK):
+            self.log.info(f"Starting hot-reload from sourcedir {self.sourcedir}")
+            jurigged_watch(self.sourcedir)
+
+    def _init_hotreload_plugins(self):
+        # start hot-reload for plugins
+        self.reload_plugins_is_scheduled = False
+
+        def reload_plugins():
+            # no. reload_plugins does not add new plugins
+            #self.plugin_manager.reload_plugins(type_plugins)
+            self.plugin_manager.create_index()
+            # save generated config
+            self.config.save_config(self.config.plugin, self.config.pluginpath)
+            self.reload_plugins_is_scheduled = False
+
+        class WatchdogHandler(watchdog.events.FileSystemEventHandler):
+            def __init__(self, pyload):
+                self.pyload = pyload
+                super().__init__()
+            def dispatch(self, event):
+                if self.pyload.reload_plugins_is_scheduled:
+                    return
+                ignore_events = (
+                    watchdog.events.FileOpenedEvent,
+                    watchdog.events.DirModifiedEvent,
+                    watchdog.events.FileClosedEvent,
+                    watchdog.events.FileCreatedEvent,
+                )
+                if isinstance(event, ignore_events):
+                    # verbose!
+                    # self.pyload.log.debug(f"WatchdogThread dispatch ignoring event {event}")
+                    return
+                if isinstance(event, (watchdog.events.FileMovedEvent, watchdog.events.FileModifiedEvent)):
+                    if "/__pycache__/" in event.src_path:
+                        return
+                self.pyload.log.debug(f"WatchdogThread dispatch event {event}")
+                self.pyload.reload_plugins_is_scheduled = True
+                # self.pyload.scheduler.add_job(0, reload_plugins)
+                reload_plugins()
+
+        plugindirs = [self.userdir + "/plugins"]
+        if os.access(__file__, os.W_OK):
+            plugindirs.append(self.sourcedir + "/plugins")
+
+        for plugindir in plugindirs:
+            self.log.info(f'Watching plugin directory for changes: {plugindir!r}')
+            event_handler = WatchdogHandler(self)
+            watchdog_thread = WatchdogThread(self.thread_manager)
+            watchdog_thread.schedule(event_handler, plugindir, recursive=True)
+            watchdog_thread.start()
+            self.thread_manager.threads.append(watchdog_thread)
 
     def _setup_permissions(self):
         self.log.debug("Setup permissions...")
