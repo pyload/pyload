@@ -63,7 +63,7 @@ class BaseHoster(BasePlugin):
         return info
 
     def __init__(self, pyfile):
-        self._init(pyfile.m.pyload)
+        self._init(pyfile.m.pyload, pyfile)
 
         #: Engage want reconnection
         self.want_reconnect = False
@@ -160,12 +160,12 @@ class BaseHoster(BasePlugin):
 
         if self.account:
             self.req = self.pyload.request_factory.get_request(
-                self.classname, self.account.user
+                self.classname, self.account.user, pyfile=self.pyfile
             )
             # NOTE: Avoid one unnecessary get_info call by `self.account.premium` here
             self.premium = self.account.info["data"]["premium"]
         else:
-            self.req = self.pyload.request_factory.get_request(self.classname)
+            self.req = self.pyload.request_factory.get_request(self.classname, pyfile=self.pyfile)
             self.premium = False
 
         self.setup_base()

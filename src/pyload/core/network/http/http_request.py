@@ -150,6 +150,9 @@ class HTTPRequest:
             options["ipv6"],
         )
 
+        if hasattr(options["pyfile"], "proxy") and options["pyfile"].proxy != None:
+            proxy = options["pyfile"].proxy
+
         if interface and interface.lower() != "none":
             self.c.setopt(pycurl.INTERFACE, interface)
 

@@ -43,18 +43,20 @@ class BasePlugin:
     def classname(self):
         return self.__class__.__name__
 
-    def _init(self, core):
+    def _init(self, core, pyfile=None):
         #: Internal modules
         self.pyload = core
         self._ = core._
         self.db = DB(self)
         self.config = Config(self)
 
+        self.pyfile = pyfile
+
         #: Provide information in dict here
         self.info = {}
 
         #: Browser instance, see `network.Browser`
-        self.req = self.pyload.request_factory.get_request(self.classname)
+        self.req = self.pyload.request_factory.get_request(self.classname, pyfile=self.pyfile)
 
         #: Last loaded html
         self.last_html = ""
