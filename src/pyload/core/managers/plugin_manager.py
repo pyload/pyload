@@ -454,9 +454,6 @@ class PluginManager:
                     exc_info=self.pyload.debug > 1,
                     stack_info=self.pyload.debug > 2,
                 )
-        else:
-            self.pyload.log.debug(f"Plugin {module_name} not found")
-            self.pyload.log.debug(f"Available plugins : {plugins}")
 
     def load_class(self, module_type, module_name):
         """
