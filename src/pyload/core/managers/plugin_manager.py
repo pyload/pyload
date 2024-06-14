@@ -5,6 +5,7 @@ import importlib.util
 import os
 import re
 import sys
+import ast
 from ast import literal_eval
 from itertools import chain
 
@@ -96,12 +97,6 @@ class PluginManager:
         "addon",
         "base",
     )
-
-    _RE_PATTERN = re.compile(r'\s*__pattern__\s*=\s*r?["\']([^"\']+)')
-    _RE_VERSION = re.compile(r'\s*__version__\s*=\s*["\']([\d.]+)')
-    # _RE_PYLOAD_VERSION = re.compile(r'\s*__pyload_version__\s*=\s*(?:"|\')([\d.]+)')
-    _RE_CONFIG = re.compile(r"\s*__config__\s*=\s*(\[[^\]]+\])", re.MULTILINE)
-    _RE_DESC = re.compile(r'\s*__description__\s*=\s*(?:"|"""|\')([^"\']+)', re.MULTILINE)
 
     def __init__(self, core):
         self.pyload = core
@@ -218,18 +213,67 @@ class PluginManager:
                 os.path.isfile(os.path.join(pfolder, entry)) and entry.endswith(".py")
             ) and not entry.startswith("_"):
 
-                with open(os.path.join(pfolder, entry), encoding="utf-8-sig") as data:
+                plugin_path = os.path.join(pfolder, entry)
+
+                with open(plugin_path, encoding="utf-8-sig") as data:
                     content = data.read()
 
                 name = entry[:-3]  #: Trim ending ".py"
 
-                # m_pyver = self._RE_PYLOAD_VERSION.search(content)
-                # if m_pyver is None:
+                plugin_attr_names = [
+                    #"__name__",
+                    #"__type__",
+                    #"__pyload_version__",
+                    "__version__",
+                    #"__status__",
+                    "__pattern__",
+                    "__config__",
+                    "__description__",
+                ]
+
+                plugin_attrs = dict()
+
+                try:
+                    plugin_tree = ast.parse(content, filename=entry)
+                except SyntaxError as exc:
+                    self.pyload.log.error(f"failed to parse plugin {plugin_path}: {exc}")
+                    continue
+
+                for class_node in plugin_tree.body:
+                    if not isinstance(class_node, ast.ClassDef):
+                        continue
+                    for assign_node in class_node.body:
+                        if not isinstance(assign_node, ast.Assign):
+                            continue
+                        for target_node in assign_node.targets:
+                            found = False
+                            val = None
+                            if not target_node.id in plugin_attr_names:
+                                continue
+                            if target_node.id in plugin_attrs:
+                                # keep the first value
+                                continue
+                            if not found:
+                                try:
+                                    # no. this evals only literal expressions
+                                    # no function calls, etc
+                                    # val = ast.literal_eval(assign_node.value)
+                                    val = eval(ast.unparse(assign_node.value))
+                                    if target_node.id == "__version__" and isinstance(val, str):
+                                        val = float(val)
+                                except Exception as exc:
+                                    self.pyload.log.error(f"{plugin_path}: failed to parse {name}.{target_node.id}: {exc}")
+                                found = True
+                            plugin_attrs[target_node.id] = val
+
+                del plugin_tree
+
+                # pyload_version = plugin_attrs.get("__pyload_version__")
+                # if pyload_version is None:
                 #     self.pyload.log.debug(
                 #         f"__pyload_version__ not found in plugin {name}"
                 #     )
                 # else:
-                #     pyload_version = m_pyver.group(1)
 
                 #     requires_version = f"{pyload_version}.0"
                 #     requires_version_info = semver.parse_version_info(requires_version)
@@ -249,12 +293,11 @@ class PluginManager:
                 #         )
                 #         continue
 
-                m_ver = self._RE_VERSION.search(content)
-                if m_ver is None:
-                    self.pyload.log.debug(f"__version__ not found in plugin {name}")
+                version = plugin_attrs.get("__version__")
+                if version is None:
+                    #self.pyload.log.debug(f"__version__ not found in plugin {name}")
+                    self.pyload.log.debug(f"__version__ not found in plugin {plugin_path}")
                     version = 0
-                else:
-                    version = float(m_ver.group(1))
 
                 # home contains plugins from pyload root
                 if isinstance(home, dict) and name in home:
@@ -270,8 +313,7 @@ class PluginManager:
                 plugins[name]["folder"] = folder
 
                 if pattern:
-                    m_pat = self._RE_PATTERN.search(content)
-                    pattern = r"^unmachtable$" if m_pat is None else m_pat.group(1)
+                    pattern = plugin_attrs.get("__pattern__", r"^unmachtable$")
 
                     plugins[name]["pattern"] = pattern
 
@@ -288,18 +330,13 @@ class PluginManager:
                     self.pyload.config.delete_config(name)
                     continue
 
-                m_desc = self._RE_DESC.search(content)
-                desc = "" if m_desc is None else m_desc.group(1)
+                desc = plugin_attrs.get("__description__", "")
 
-                config = self._RE_CONFIG.findall(content)
+                config = plugin_attrs.get("__config__")
                 if not config:
                     new_config = {"enabled": ["bool", "Activated", False], "desc": desc}
                     configs[name] = new_config
                     continue
-
-                config = literal_eval(
-                    config[0].strip().replace("\n", "").replace("\r", "")
-                )
 
                 if isinstance(config, list) and all(
                     isinstance(c, tuple) for c in config
