@@ -216,10 +216,6 @@ $(function() {
         event.preventDefault();
         var formData = new FormData(this);
         var $this = $(this);
-        if ($this.find("#add_name").val() === "" && $this.find("#add_file").val() === "") {
-            alert("{{_('Please Enter a package name.')}}");
-            return false;
-        } else {
             $.ajax({
                 url: "{{url_for('json.add_package')}}",
                 method: "POST",
@@ -239,7 +235,6 @@ $(function() {
             });
             $("#add_box").modal('hide');
             return false;
-        }
     });
 
     $(".action_add").click(function() {
