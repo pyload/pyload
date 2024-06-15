@@ -30,6 +30,7 @@ from .. import __version_info__ as PYLOAD_VERSION_INFO
 from .utils import format, fs
 from .utils.misc import reversemap
 from .threads.watchdog_thread import WatchdogThread
+from ..plugins.helpers import str_exc
 
 
 class Restart(Exception):
@@ -290,14 +291,19 @@ class Core:
 
     def _init_hotreload_code(self):
         # start hot-reload for code
+        def jurigged_logger(arg):
+            # dont log "watch ..." messages. too verbose
+            if isinstance(arg, jurigged.live.WatchOperation):
+                return
+            self.log.info(f"jurigged: {str_exc(arg)}")
+        def jurigged_watch(path):
+            jurigged.watch(path, jurigged_logger)
         self.log.info(f"Starting hot-reload from userdir {self.userdir}")
-        # FIXME disable "watch ..." messages
-        jurigged.watch(self.userdir)
+        jurigged_watch(self.userdir)
         self.sourcedir = os.path.dirname(os.path.dirname(__file__))
         if os.access(__file__, os.W_OK):
             self.log.info(f"Starting hot-reload from sourcedir {self.sourcedir}")
-            # FIXME disable "watch ..." messages
-            jurigged.watch(self.sourcedir)
+            jurigged_watch(self.sourcedir)
 
     def _init_hotreload_plugins(self):
         # start hot-reload for plugins
