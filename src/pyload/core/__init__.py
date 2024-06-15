@@ -297,7 +297,7 @@ class Core:
                 return
             self.log.info(f"jurigged: {str_exc(arg)}")
         def jurigged_watch(path):
-            jurigged.watch(path, jurigged_logger)
+            jurigged.watch(path + "/**/*.py", jurigged_logger)
         self.log.info(f"Starting hot-reload from userdir {self.userdir}")
         jurigged_watch(self.userdir)
         self.sourcedir = os.path.dirname(os.path.dirname(__file__))
