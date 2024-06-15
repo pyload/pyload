@@ -11,7 +11,7 @@ from pyload.core.utils import fs
 from pyload.core.utils.old import fixurl
 from pyload.core.utils.web import purge
 
-from ..helpers import DB, Config, exists, format_exc, parse_html_header, set_cookies
+from ..helpers import DB, Config, exists, format_exc, str_exc, parse_html_header, set_cookies
 
 if os.name != "nt":
     import grp
@@ -71,15 +71,11 @@ class BasePlugin:
     # TODO: Rewrite to use unique logger from logfactory
     def _log(self, level, plugintype, pluginname, args, kwargs):
         log = getattr(self.pyload.log, level)
-        log(
-            "{plugintype} {pluginname}: {msg}".format(
-                plugintype=plugintype.upper(),
-                pluginname=pluginname,
-                msg=" | ".join(["%s"] * len(args)),
-            ),
-            *args,
-            **kwargs,
-        )
+        msg = " | ".join(map(
+            lambda a: str_exc(a) if isinstance(a, Exception) else str(a),
+            args
+        ))
+        log(f"{plugintype} {pluginname}: {msg}", **kwargs)
 
     def log_debug(self, *args, **kwargs):
         self._log("debug", self.__type__, self.__name__, args, kwargs)
