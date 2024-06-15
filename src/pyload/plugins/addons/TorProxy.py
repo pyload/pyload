@@ -36,7 +36,10 @@ class TorProxy(BaseAddon):
             port=self.config.get("g_socks_port"),
             # use curl socks5h to avoid dns leaks
             socks_resolve_dns=True,
+            # FIXME we must use the same username here and in
+            # src/pyload/plugins/base/plugin.py
             # proxy username specifies the tor identity
-            username=f"pyload{pyload_pid}-file{pyfile.id}",
+            username="",
+            #username=f"pyload{pyload_pid}-file{pyfile.id}",
             password="",
         )
