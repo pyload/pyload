@@ -334,7 +334,7 @@ class Core:
                     # verbose!
                     # self.pyload.log.debug(f"WatchdogThread dispatch ignoring event {event}")
                     return
-                if isinstance(event, watchdog.events.FileMovedEvent):
+                if isinstance(event, (watchdog.events.FileMovedEvent, watchdog.events.FileModifiedEvent)):
                     if "/__pycache__/" in event.src_path:
                         return
                 self.pyload.log.debug(f"WatchdogThread dispatch event {event}")
