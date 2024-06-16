@@ -158,20 +158,38 @@ class BaseHoster(BasePlugin):
         except Exception:
             pass
 
-        if self.account:
-            self.req = self.pyload.request_factory.get_request(
-                self.classname, self.account.user
-            )
-            # NOTE: Avoid one unnecessary get_info call by `self.account.premium` here
-            self.premium = self.account.info["data"]["premium"]
-        else:
-            self.req = self.pyload.request_factory.get_request(self.classname)
-            self.premium = False
+        # Browser instance, see `network.Browser`
+        self._req = False
 
         self.setup_base()
         self.grab_info()
         self.setup()
         self.check_status()
+
+    @property
+    def req(self):
+        """
+        Browser instance, see `network.Browser`
+        """
+        if self._req == False:
+            # first init
+            self._init_req()
+        return self._req
+
+    @req.setter
+    def req(self, val):
+        self._req = val
+
+    def _init_req(self):
+        if self.account:
+            self._req = self.pyload.request_factory.get_request(
+                self.classname, self.account.user, pyfile=self.pyfile
+            )
+            # NOTE: Avoid one unnecessary get_info call by `self.account.premium` here
+            self.premium = self.account.info["data"]["premium"]
+        else:
+            self._req = self.pyload.request_factory.get_request(self.classname, pyfile=self.pyfile)
+            self.premium = False
 
     def load_account(self):
         if self.account is None:
