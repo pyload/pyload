@@ -176,6 +176,11 @@ class HTTPDownload:
         chunks_done = set()  #: list of curl handles that are finished
         chunks_created = False
         done = False
+
+        if self.size > 0 and init.arrived >= self.size:
+            # complete file was downloaded in one chunk
+            chunks_created = True
+
         if (
             self.info.get_count() > 1
         ):  #: This is a resume, if we were chunked originally assume still can
