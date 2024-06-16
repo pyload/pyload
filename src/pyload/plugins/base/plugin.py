@@ -54,11 +54,28 @@ class BasePlugin:
         self.info = {}
 
         #: Browser instance, see `network.Browser`
-        self.req = self.pyload.request_factory.get_request(self.classname)
+        self._req = False
 
         #: Last loaded html
         self.last_html = ""
         self.last_header = {}
+
+    @property
+    def req(self):
+        """
+        Browser instance, see `network.Browser`
+        """
+        if self._req == False:
+            # first init
+            self._init_req()
+        return self._req
+
+    @req.setter
+    def req(self, val):
+        self._req = val
+
+    def _init_req(self):
+        self._req = self.pyload.request_factory.get_request(self.classname)
 
     def init(self):
         """
