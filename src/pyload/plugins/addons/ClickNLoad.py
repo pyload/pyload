@@ -41,6 +41,7 @@ class ClickNLoad(BaseAddon):
         self.do_exit = False
         self.exit_done = threading.Event()
         self.backend_found = threading.Event()
+        self.last_error_str = None
 
         self.pyload.scheduler.add_job(5, self._find_backend, threaded=False)
 
@@ -215,6 +216,9 @@ class ClickNLoad(BaseAddon):
             return self._server()
 
         except socket.error as exc:
-            self.log_error(exc)
+            error_str = str_exc(exc)
+            if self.last_error_str != error_str:
+                self.log_error(error_str)
+                self.last_error_str = error_str
             time.sleep(240)
             return self._server()
