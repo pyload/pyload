@@ -164,6 +164,11 @@ class ClickNLoad(BaseAddon):
 
     @threaded
     def _server(self):
+        while True:
+            if self._server_inner():
+                break
+
+    def _server_inner(self):
         try:
             self.exit_done.clear()
 
@@ -211,9 +216,11 @@ class ClickNLoad(BaseAddon):
             self.server_running = False
             self.exit_done.set()
 
+            return True
+
         except socket.timeout:
             self.log_debug("Connection timed out, retrying...")
-            return self._server()
+            return False
 
         except socket.error as exc:
             error_str = str_exc(exc)
@@ -221,4 +228,4 @@ class ClickNLoad(BaseAddon):
                 self.log_error(error_str)
                 self.last_error_str = error_str
             time.sleep(240)
-            return self._server()
+            return False
