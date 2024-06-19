@@ -20,7 +20,7 @@ class HotFolder(BaseAddon):
         ("delete", "bool", "Delete added containers", False),
         ("file", "str", "Link file", "links.txt"),
         ("interval", "int", "File / folder check interval in seconds (minimum 20)", 60),
-        ("enable_extension_filter", "bool", "Extension filter", False),
+        ("enable_extension_filter", "bool", "Extension filter", True),
         ("extension_filter", "str", "Extensions to look for (comma separated)", "dlc"),
         ("add_to", "Packages;Queue", "Add files to", "Queue"),
     ]
