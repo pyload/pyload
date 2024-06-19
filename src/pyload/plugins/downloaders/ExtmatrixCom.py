@@ -8,7 +8,7 @@ from ..base.simple_downloader import SimpleDownloader
 class ExtmatrixCom(SimpleDownloader):
     __name__ = "ExtmatrixCom"
     __type__ = "downloader"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __status__ = "testing"
 
     __pattern__ = r"https?://www\.extmatrix\.com/(?:get|files)/\w+"
@@ -27,7 +27,7 @@ class ExtmatrixCom(SimpleDownloader):
     LOGIN_PREMIUM = True
     INFO_PATTERN = r">Download \| (?P<N>.+?) \((?P<S>[\d.,]+) (?P<U>[\w^_]+)\)<"
 
-    LINK_PATTERN = r'a href="(https://s\d+\.extmatrix\.com/.+?)"'
+    LINK_PATTERN = r'<a href="(https://s\w+\.extmatrix\.com/get/.+?)"'
 
     def setup(self):
         self.chunk_limit = -1
