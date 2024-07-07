@@ -20,7 +20,7 @@ class KnigavuheOrg(BaseDecrypter):
     BOOK_PLAYER_DATA_PATTERN = r"new BookPlayer\(\d+,\s?(\[.+?\]),"
     BOOK_TITLE_PATTERN = r"book = ({.+});"
     VOLUME_PATTERN = r"((?:\d+.?)\d+)\.<\/span>\s+<strong>{}"
-    COVER_PATTERN = r"https:\/\/s2\.knigavuhe\.org\/2\/covers\/\d+\/1-2\.jpg\?1"
+    COVER_PATTERN = r"https:\/\/s\d+\.knigavuhe\.org\/\d+\/covers\/\d+\/1-2\.jpg\?\d+"
 
     def _get_book_title(self, html):
         text = re.search(self.BOOK_TITLE_PATTERN, html)
