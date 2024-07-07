@@ -8,7 +8,7 @@ class KnigavuheOrg(SimpleDownloader):
     __type__ = "downloader"
     __version__ = "0.01"
     __status__ = "testing"
-    __pattern__ = r"https?:\/\/s\d+\.knigavuhe\.org\/\d+\/audio\/\d+\/[0-9a-z\-]+\.mp3.+"
+    __pattern__ = r"https?:\/\/s\d+\.knigavuhe\.org\/.+"
 
     __authors__ = [("EnergoStalin", "ens.stalin@gmail.com")]
     __license__ = "GPLv3"
