@@ -14,7 +14,7 @@ class FastshareCz(SimpleDownloader):
     __version__ = "0.45"
     __status__ = "testing"
 
-    __pattern__ = r"https?://(?:www\.)?fastshare\.cz/\d+/.+"
+    __pattern__ = r"https?://(?:www\.)?fastshare\.(cz/\d+/.+|cloud/[0-9a-f]+)"
     __config__ = [
         ("enabled", "bool", "Activated", True),
         ("use_premium", "bool", "Use premium account if available", True),
