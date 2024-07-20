@@ -11,10 +11,10 @@ from ..base.simple_downloader import SimpleDownloader
 class FastshareCz(SimpleDownloader):
     __name__ = "FastshareCz"
     __type__ = "downloader"
-    __version__ = "0.45"
+    __version__ = "0.46"
     __status__ = "testing"
 
-    __pattern__ = r"https?://(?:www\.)?fastshare\.(cz/\d+/.+|cloud/[0-9a-f]+)"
+    __pattern__ = r"https?://(?:www\.)?fastshare\.(?:cz/\d+/.+|cloud/[0-9a-f]+)"
     __config__ = [
         ("enabled", "bool", "Activated", True),
         ("use_premium", "bool", "Use premium account if available", True),
