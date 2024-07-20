@@ -8,10 +8,10 @@ from ..internal.SimpleHoster import SimpleHoster
 class FastshareCz(SimpleHoster):
     __name__ = "FastshareCz"
     __type__ = "hoster"
-    __version__ = "0.45"
+    __version__ = "0.46"
     __status__ = "testing"
 
-    __pattern__ = r'https?://(?:www\.)?fastshare\.cz/\d+/.+'
+    __pattern__ = r'https?://(?:www\.)?fastshare\.(?:cz/\d+/.+|cloud/[0-9a-f]+)'
     __config__ = [("activated", "bool", "Activated", True),
                   ("use_premium", "bool", "Use premium account if available", True),
                   ("fallback", "bool", "Fallback to free download if premium fails", True),
