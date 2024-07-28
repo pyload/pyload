@@ -186,7 +186,8 @@ class ClickNLoad(BaseAddon):
 
                         if self.pyload.webserver.use_ssl:
                             try:
-                                backend_socket = ssl.wrap_socket(backend_socket)
+                                context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+                                backend_socket = context.wrap_socket(backend_socket)
 
                             except Exception as exc:
                                 self.log_error(self._("SSL error: {}").format(exc))
