@@ -6,7 +6,7 @@ import re
 import pycurl
 from pyload.core.network.http.exceptions import BadHeader
 
-from ..anticaptchas.SolveMedia import SolveMedia
+from ..anticaptchas.ReCaptcha import ReCaptcha
 from ..base.simple_downloader import SimpleDownloader
 
 
@@ -29,7 +29,7 @@ class FikperCom(SimpleDownloader):
     __license__ = "GPLv3"
     __authors__ = [("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
-    SOLVEMEDIA_KEY = "U0PGYjYQo61wWfWxQ43vpsJrUQSpCiuY"
+    RECAPTCHA_KEY = "6Ley0XQeAAAAAK-H0p0T_zeun7NnUgMcLFQy0cU3"
     API_URL = "https://sapi.fikper.com/"
 
     DIRECT_LINK = False
@@ -74,16 +74,16 @@ class FikperCom(SimpleDownloader):
             )
             self.restart(self._("Download limit exceeded"))
 
-        self.captcha = SolveMedia(pyfile)
+        self.captcha = ReCaptcha(pyfile)
         self.set_wait(self.info["delay_dime"] / 1000)
-        response, challenge = self.captcha.challenge(self.SOLVEMEDIA_KEY)
+        response = self.captcha.challenge(self.RECAPTCHA_KEY)
         self.wait()
         json_data = self.api_request(
             "",
             fileHashName=self.info["pattern"]["ID"],
             downloadToken=self.info["download_token"],
-            captchaValue=response,
-            challenge=challenge
+            captchaType="recaptcha2",
+            captchaValue=response
         )
         if "directLink" in json_data:
             self.link = json_data["directLink"]
