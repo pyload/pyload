@@ -10,7 +10,7 @@ from ..helpers import set_cookie
 class FastshareCz(BaseAccount):
     __name__ = "FastshareCz"
     __type__ = "account"
-    __version__ = "0.18"
+    __version__ = "0.19"
     __status__ = "testing"
 
     __description__ = """Fastshare.cz account plugin"""
@@ -26,7 +26,7 @@ class FastshareCz(BaseAccount):
     VALID_UNTILL_PATTERN = r">Active until ([\d.]+)<"
 
     def grab_info(self, user, password, data):
-        html = self.load("https://www.fastshare.cz/user")
+        html = self.load("https://fastshare.cz/user")
 
         m = re.search(self.VALID_UNTILL_PATTERN, html)
         if m is not None:
@@ -45,6 +45,11 @@ class FastshareCz(BaseAccount):
                 if not premium:
                     trafficleft = None
 
+            elif ">Unlimited downloading<" in html:
+                premium = True
+                trafficleft = -1
+                validuntil = None
+
             else:
                 premium = False
                 trafficleft = None
@@ -58,12 +63,12 @@ class FastshareCz(BaseAccount):
     def signin(self, user, password, data):
         set_cookie(self.req.cj, "fastshare.cz", "lang", "en")
 
-        html = self.load("https://www.fastshare.cz/user")
+        html = self.load("https://fastshare.cz/user")
         if 'href="/logout.php"' in html:
             self.skip_login()
 
         html = self.load(
-            "https://www.fastshare.cz/sql.php",
+            "https://fastshare.cz/sql.php",
             post={"login": user, "heslo": password},
         )
 
