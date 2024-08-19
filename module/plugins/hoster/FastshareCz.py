@@ -8,7 +8,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class FastshareCz(SimpleHoster):
     __name__ = "FastshareCz"
     __type__ = "hoster"
-    __version__ = "0.46"
+    __version__ = "0.47"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?fastshare\.(?:cz/\d+/.+|cloud/[0-9a-f]+)'
@@ -34,7 +34,7 @@ class FastshareCz(SimpleHoster):
     OFFLINE_PATTERN = r'>(The file has been deleted|Requested page not found|This file is no longer available)'
 
     LINK_FREE_PATTERN = r'<form .*target="iframe_dwn" .*action=([^>]+)'
-    LINK_PREMIUM_PATTERN = r'(https?://\w+\.fastshare\.cz/download\.php\?id=\d+&)'
+    LINK_PREMIUM_PATTERN = r'(https?://\w+\.fastshare\.(?:cz|cloud)/download\.php\?id=\d+)&'
 
     SLOT_ERROR = "> 100% of FREE slots are full"
     CREDIT_ERROR = " credit for "
