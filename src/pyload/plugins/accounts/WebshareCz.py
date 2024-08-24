@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
-import random
 import re
 import string
 import time
 
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes
+
+from pyload.core.utils.misc import random_string
 
 from ..base.account import BaseAccount
 
@@ -15,7 +16,7 @@ def md5_crypt(password, salt=None):
     BASE64_CHARS = "./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 
     if salt is None:
-        salt = "".join(random.choice(string.ascii_letters + string.digits + "./") for _ in range(8))
+        salt = random_string(8, valid_chars=string.ascii_letters + string.digits + "./")
     else:
         salt = salt[:8]
 
@@ -117,6 +118,8 @@ class WebshareCz(BaseAccount):
         return {"validuntil": validuntil, "trafficleft": -1, "premium": premium}
 
     def signin(self, user, password, data):
+        md5_crypt("abc")
+        self.fail_login()
         salt = self.api_request("salt", username_or_email=user)
 
         if "<status>OK</status>" not in salt:
