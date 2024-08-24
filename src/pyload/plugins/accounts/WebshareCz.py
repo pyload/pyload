@@ -118,8 +118,6 @@ class WebshareCz(BaseAccount):
         return {"validuntil": validuntil, "trafficleft": -1, "premium": premium}
 
     def signin(self, user, password, data):
-        md5_crypt("abc")
-        self.fail_login()
         salt = self.api_request("salt", username_or_email=user)
 
         if "<status>OK</status>" not in salt:
