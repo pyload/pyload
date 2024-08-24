@@ -13,7 +13,7 @@ from ..base.simple_downloader import SimpleDownloader
 class FikperCom(SimpleDownloader):
     __name__ = "FikperCom"
     __type__ = "downloader"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __status__ = "testing"
 
     __pattern__ = r"https?://fikper\.com/(?P<ID>\w+)"
@@ -53,6 +53,7 @@ class FikperCom(SimpleDownloader):
         info = {}
         file_id = re.match(self.__pattern__, url).group("ID")
         file_info = self.api_request("", fileHashName=file_id)
+
         if file_info.get("code") == 404:
             info["status"] = 1
         else:
@@ -66,12 +67,10 @@ class FikperCom(SimpleDownloader):
         return info
 
     def handle_free(self, pyfile):
+        self.info.update(self.api_info(pyfile.url))
         dl_limit_delay = self.info["dl_limit_delay"]
         if dl_limit_delay:
-            self.wait(
-                dl_limit_delay,
-                reconnect=dl_limit_delay > self.config.get("max_wait", 10) * 60,
-            )
+            self.wait(dl_limit_delay)
             self.restart(self._("Download limit exceeded"))
 
         self.captcha = ReCaptcha(pyfile)
@@ -87,6 +86,10 @@ class FikperCom(SimpleDownloader):
         )
         if "directLink" in json_data:
             self.link = json_data["directLink"]
+
+        elif json_data.get("code") == 403 and json_data.get("message") == "Bandwidth limit.":
+            self.wait(120*60)  #: "1 file per 120 minutes"
+            self.restart(_("Download limit exceeded"))
 
     def handle_premium(self, pyfile):
         file_id = self.info["pattern"]["ID"]
