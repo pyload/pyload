@@ -11,9 +11,8 @@ else:
     import dukpy
 
 
-def random_string(length):
-    seq = string.ascii_letters + string.digits + string.punctuation
-    return "".join(random.choice(seq) for _ in range(length))
+def random_string(length, valid_chars=string.ascii_letters + string.digits + string.punctuation):
+    return "".join(random.choice(valid_chars) for _ in range(length))
 
 
 def is_plural(value):
