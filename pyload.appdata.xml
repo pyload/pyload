@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2014 Richard Hughes <richard@hughsie.com> -->
+<component type="desktop">
+  <id>pyload.desktop</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>AGPLv3</project_license>
+  <name>pyLoad</name>
+  <summary>Lightweight download manager</summary>
+  <summary xml:lang="es">Gestor de descargas ligero</summary>
+  <description>
+    <p>
+      pyLoad is the Free and Open Source download manager written in Pure Python and designed to be extremely lightweight, fully customizable and remotely manageable.
+    </p>
+    <p xml:lang="es">
+      pyLoad es un gestor de descargas libre y de codigo abierto escrito en puro Python y diseñado para ser extreamdamente ligero, personalizable y con una interface de administración remota.
+    </p>
+  </description>
+  <screenshots>
+    <screenshot type="default">
+      <image>https://camo.githubusercontent.com/12681cc0f5ac2da47d86905d7b5709d3f48672dd/687474703a2f2f7765622e617263686976652e6f72672f7765622f3230313530393039313534353432696d5f2f687474703a2f2f70796c6f61642e6f72672f5f6d656469612f77656269662e706e67</image>
+    </screenshot>
+  </screenshots>
+  <url type="homepage">https://pyload.net/</url>
+  <update_contact>williamjmorenor_at_fedoraproject.org</update_contact>
+</component>
