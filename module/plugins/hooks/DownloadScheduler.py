@@ -9,7 +9,7 @@ from ..internal.Addon import Addon
 class DownloadScheduler(Addon):
     __name__ = "DownloadScheduler"
     __type__ = "hook"
-    __version__ = "0.30"
+    __version__ = "0.31"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", False),
@@ -19,7 +19,8 @@ class DownloadScheduler(Addon):
     __description__ = """Download Scheduler"""
     __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
-                   ("stickell", "l.stickell@yahoo.it")]
+                   ("stickell", "l.stickell@yahoo.it"),
+                   ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
     def activate(self):
         self.last_timetable = None
@@ -47,8 +48,9 @@ class DownloadScheduler(Addon):
 
         t0 = time.localtime()
         now = (t0.tm_hour, t0.tm_min, t0.tm_sec, "X")
-        schedule = sorted([(int(x[0]), int(x[1]), 0, int(x[2]))
-                           for x in schedule] + [now])
+        schedule = sorted([(int(x[0]), int(x[1]), 0, int(x[2])) for x in schedule] + [now],
+                          key=lambda a: (a[0], a[1], a[2], a[3] == "X")
+                          )
 
         self.log_debug("Schedule", schedule)
 
