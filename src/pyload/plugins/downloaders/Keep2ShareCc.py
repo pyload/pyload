@@ -2,6 +2,7 @@
 
 import json
 import re
+from enum import Enum
 
 from pyload.core.network.http.exceptions import BadHeader
 
@@ -11,7 +12,7 @@ from ..base.simple_downloader import SimpleDownloader
 class Keep2ShareCc(SimpleDownloader):
     __name__ = "Keep2ShareCc"
     __type__ = "downloader"
-    __version__ = "0.47"
+    __version__ = "0.48"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?(keep2share|k2s|keep2s)\.cc/file/(?P<ID>\w+)"
@@ -29,12 +30,18 @@ class Keep2ShareCc(SimpleDownloader):
         ("stickell", "l.stickell@yahoo.it"),
         ("Walter Purcaro", "vuolter@gmail.com"),
         ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com"),
+        ("zep6yr", "Ievu6hah[AT]protonmail[DOT]com"),
     ]
 
     URL_REPLACEMENTS = [(__pattern__ + ".*", r"https://k2s.cc/file/\g<ID>")]
 
     API_URL = "https://keep2share.cc/api/v2/"
     #: See https://keep2share.github.io/api/ https://github.com/keep2share/api
+
+    class ErrorCode(Enum):
+        CAPTCHA_REQUIRED = 30
+        CAPTCHA_INVALID = 31
+        DOWNLOAD_NOT_AVAILABLE = 42
 
     def api_request(self, method, **kwargs):
         html = self.load(self.API_URL + method, post=json.dumps(kwargs))
@@ -65,99 +72,80 @@ class Keep2ShareCc(SimpleDownloader):
         self.multi_dl = self.premium
         self.resume_download = True
 
-    def handle_free(self, pyfile):
+    def solve_captcha(self, req):
+        json_data = self.api_request("RequestCaptcha")
+        if "code" not in json_data or json_data["code"] != 200:
+            return False
+        captcha_response = self.captcha.decrypt(json_data["captcha_url"])
+        req["captcha_challenge"] = json_data["challenge"]
+        req["captcha_response"] = captcha_response
+        return True
+
+    def handle_free(self, pyfile, has_premium=False):
         file_id = self.info["pattern"]["ID"]
 
-        if self.info["access"] == "premium" or self.info["free_access"] is False:
-            self.fail(self._("File can be downloaded by premium users only"))
+        req = {
+            "file_id": file_id,
+            "free_download_key": None,
+            "captcha_challenge": None,
+            "captcha_response": None,
+        }
 
-        elif self.info["access"] == "private":
-            self.fail(self._("This is a private file"))
+        if self.info["access"] == "private":
+            self.fail("This is a private file")
+        elif has_premium:
+            req["auth_token"] = self.account.info["data"]["token"]
+        elif self.info["access"] == "premium" or self.info["free_access"] is False:
+            self.fail("File can be downloaded by premium users only")
+
+        if not has_premium:
+            if not self.solve_captcha(req):
+                self.fail("Request captcha API failed")
 
         try:
-            json_data = self.api_request(
-                "GetUrl",
-                file_id=file_id,
-                free_download_key=None,
-                captcha_challenge=None,
-                captcha_response=None,
-            )
-        except BadHeader as exc:
-            if exc.code == 406:
-                for i in range(10):
-                    json_data = self.api_request("RequestCaptcha")
-                    if json_data["code"] != 200:
-                        self.fail(self._("Request captcha API failed"))
+            # The first request will return with "free_download_key"
+            # The secound request will return with "url"
+            for _ in range(2):
+                json_data = self.api_request("GetUrl", **req)
 
-                    captcha_response = self.captcha.decrypt(json_data["captcha_url"])
-                    try:
-                        json_data = self.api_request(
-                            "GetUrl",
-                            file_id=file_id,
-                            free_download_key=None,
-                            captcha_challenge=json_data["challenge"],
-                            captcha_response=captcha_response,
-                        )
-
-                    except BadHeader as exc:
-                        if exc.code == 406:
-                            json_data = json.loads(exc.content)
-                            if json_data["errorCode"] == 31:  #: ERROR_CAPTCHA_INVALID
-                                self.captcha.invalid()
-                                continue
-
-                            elif (
-                                json_data["errorCode"] == 42
-                            ):  #: ERROR_DOWNLOAD_NOT_AVAILABLE
-                                self.captcha.correct()
-                                self.retry(wait=json_data["errors"][0]["timeRemaining"])
-
-                            else:
-                                self.fail(json_data["message"])
-
-                        else:
-                            raise
-
-                    else:
+                if "code" in json_data and json_data["code"] == 200:
+                    if (
+                        "captcha_response" in req
+                        and req["captcha_response"] is not None
+                    ):
                         self.captcha.correct()
-                        free_download_key = json_data["free_download_key"]
+                        req["captcha_challenge"] = None
+                        req["captcha_response"] = None
+
+                    if "url" in json_data:
+                        self.link = json_data["url"]
                         break
 
+                    if "free_download_key" in json_data:
+                        req["free_download_key"] = json_data["free_download_key"]
+
+                    if "time_wait" in json_data:
+                        self.wait(json_data["time_wait"])
                 else:
-                    self.fail(self._("Max captcha retries reached"))
+                    self.fail(json_data["message"])
 
-                self.wait(json_data["time_wait"])
+        except BadHeader as exc:
+            if exc.code == 406:
+                json_data = json.loads(exc.content)
+                err = Keep2ShareCc.ErrorCode(json_data["errorCode"])
+                self.log_debug(f"Handling HTTP 406 code: {err}")
 
-                json_data = self.api_request(
-                    "GetUrl",
-                    file_id=file_id,
-                    free_download_key=free_download_key,
-                    captcha_challenge=None,
-                    captcha_response=None,
-                )
+                if err in [err.CAPTCHA_REQUIRED, err.CAPTCHA_INVALID]:
+                    self.retry_captcha()
 
-                if json_data["code"] == 200:
-                    self.link = json_data["url"]
+                elif err == err.DOWNLOAD_NOT_AVAILABLE:
+                    self.retry(wait=json_data["errors"][0]["timeRemaining"])
+
+                else:
+                    self.fail(json_data["message"])
 
             else:
                 raise
 
-        else:
-            self.link = json_data["url"]
-
     def handle_premium(self, pyfile):
-        file_id = self.info["pattern"]["ID"]
-
-        if self.info["access"] == "private":
-            self.fail(self._("This is a private file"))
-
-        json_data = self.api_request(
-            "GetUrl",
-            file_id=file_id,
-            free_download_key=None,
-            captcha_challenge=None,
-            captcha_response=None,
-            auth_token=self.account.info["data"]["token"],
-        )
-
-        self.link = json_data["url"]
+        handle_free(pyfile, has_premium=True)
