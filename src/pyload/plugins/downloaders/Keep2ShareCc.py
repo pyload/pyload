@@ -2,7 +2,9 @@
 
 import json
 import re
+import random
 from enum import Enum
+from datetime import datetime, timedelta
 
 from pyload.core.network.http.exceptions import BadHeader
 
@@ -39,6 +41,7 @@ class Keep2ShareCc(SimpleDownloader):
     #: See https://keep2share.github.io/api/ https://github.com/keep2share/api
 
     class ErrorCode(Enum):
+        FILE_IS_NOT_AVAILABLE = 21  # also used for: Traffic limit exceed
         CAPTCHA_REQUIRED = 30
         CAPTCHA_INVALID = 31
         DOWNLOAD_NOT_AVAILABLE = 42
@@ -71,6 +74,18 @@ class Keep2ShareCc(SimpleDownloader):
     def setup(self):
         self.multi_dl = self.premium
         self.resume_download = True
+
+    @staticmethod
+    def seconds_until_midnight_utc():
+        """calculate seconds until UTC 0:00 and add some randomness"""
+        now = datetime.utcnow()
+        midnight = datetime.utcnow().replace(
+            hour=random.randint(0, 2),
+            minute=random.randint(0, 59),
+            second=random.randint(0, 59),
+        )  # prevent clients from retrying all at the same time
+        midnight += timedelta(days=1)
+        return (midnight - now).total_seconds()
 
     def solve_captcha(self, req):
         json_data = self.api_request("RequestCaptcha")
@@ -140,6 +155,10 @@ class Keep2ShareCc(SimpleDownloader):
 
                 elif err == err.DOWNLOAD_NOT_AVAILABLE:
                     self.retry(wait=json_data["errors"][0]["timeRemaining"])
+
+                elif err == err.FILE_IS_NOT_AVAILABLE:
+                    # apparently traffic will reset at 0:00 UTC
+                    self.retry(wait=Keep2ShareCc.seconds_until_midnight_utc())
 
                 else:
                     self.fail(json_data["message"])
