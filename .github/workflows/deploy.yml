@@ -2,10 +2,10 @@ name: Deploy
 
 on:
   workflow_run:
-    workflows: Build
-    branches: main
+    workflows: [Build]
+    branches: [main]
     # tags: v[\d.]+
-    types: completed
+    types: [completed]
 
 jobs:
   pypi:
