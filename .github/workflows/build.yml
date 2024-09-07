@@ -9,7 +9,7 @@ on:
 
 env:
   PYCURL_SSL_LIBRARY: openssl
-  default_python_version: 3.10
+  default_python_version: "3.10"
   PYLOAD_BUILD: ${{ github.run_number }}
 
 jobs:
