@@ -9,6 +9,7 @@ on:
 
 env:
   PYCURL_SSL_LIBRARY: openssl
+  default_python_version: 3.6
   PYLOAD_BUILD: ${{ github.run_number }}
 
 jobs:
@@ -24,6 +25,8 @@ jobs:
 
       - name: Set up Python environment
         uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.default_python_version }}
 
       - name: Install Python dependencies
         run: python -m pip install --upgrade pip setuptools
@@ -49,6 +52,8 @@ jobs:
 
       - name: Set up Python environment
         uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.default_python_version }}
 
       - name: Install Python dependencies
         run: python -m pip install --upgrade pip setuptools wheel Babel Jinja2
