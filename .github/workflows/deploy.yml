@@ -16,7 +16,7 @@ jobs:
 
     steps:
       - name: Download artifacts
-        uses: dawidd6/action-download-artifact@v3
+        uses: dawidd6/action-download-artifact@v6
         with:
           workflow: build.yml
           name: dist--${{ github.event.workflow_run.id }}
