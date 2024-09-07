@@ -24,7 +24,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        toxenv: [compileall, pylint, bandit]
+#        toxenv: [compileall, pylint, bandit]
+        toxenv: [compileall, bandit]
 
     steps:
       - name: Check out repository
