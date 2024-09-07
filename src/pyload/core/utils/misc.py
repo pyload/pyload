@@ -5,8 +5,20 @@ import string
 import sys
 
 if sys.version_info < (3, 12):
+    def monkey_patch():
+        """Patching js2py for CVE-2024-28397"""
+        from js2py.constructors.jsobject import Object
+        fn = Object.own["getOwnPropertyNames"]["value"].code
+
+        def wraps(*args, **kwargs):
+            result = fn(*args, **kwargs)
+            return list(result)
+        Object.own["getOwnPropertyNames"]["value"].code = wraps
+
     import js2py
+    monkey_patch()
     js2py.disable_pyimport()
+
 else:
     import dukpy
 
