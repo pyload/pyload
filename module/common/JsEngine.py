@@ -38,9 +38,23 @@ if not ENGINE:
         import js2py
         out = js2py.eval_js("(23+19).toString()")
 
-        #integrity check
+        # integrity check
         if out.strip() == "42":
             ENGINE = "js2py"
+
+            def monkey_patch():
+                """Patching js2py for CVE-2024-28397"""
+                from js2py.constructors.jsobject import Object
+                fn = Object.own["getOwnPropertyNames"]["value"].code
+
+                def wraps(*args, **kwargs):
+                    result = fn(*args, **kwargs)
+                    return list(result)
+                Object.own["getOwnPropertyNames"]["value"].code = wraps
+
+            monkey_patch()
+            js2py.disable_pyimport()
+
         JS2PY = True
     except:
         pass
