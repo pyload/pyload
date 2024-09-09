@@ -40,7 +40,7 @@ class XFSAccount(BaseAccount):
 
     PREMIUM_PATTERN = r"\(Premium only\)"
 
-    VALID_UNTIL_PATTERN = r"Premium.[Aa]ccount expire:.*?(\d{1,2} [\w^_]+ \d{4})"
+    VALID_UNTIL_PATTERN = r"Premium.[Aa]ccount expires?:.*?(\d{1,2} [\w^_]+ \d{4})"
 
     TRAFFIC_LEFT_PATTERN = r"Traffic available today:.*?<b>\s*(?P<S>[\d.,]+|[Uu]nlimited)\s*(?:(?P<U>[\w^_]+)\s*)?</b>"
     TRAFFIC_LEFT_UNIT = "MiB"  #: Used only if no group <U> was found
