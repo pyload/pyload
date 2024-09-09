@@ -17,7 +17,7 @@ from ..base.xfs_downloader import XFSDownloader
 class NovafileCom(XFSDownloader):
     __name__ = "NovafileCom"
     __type__ = "downloader"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?novafile\.(?:com|org)/(?:file/)?\w{12}"
@@ -36,7 +36,13 @@ class NovafileCom(XFSDownloader):
         ("stickell", "l.stickell@yahoo.it"),
     ]
 
-    PLUGIN_DOMAIN = "novafile.com"
+    PLUGIN_DOMAIN = "novafile.org"
+    URL_REPLACEMENTS = [
+        (r"novafile\.com", "novafile.org"),
+        ("http://", "https://")
+    ]
+
+    DIRECT_LINK = False
 
     ERROR_PATTERN = r'class="alert.+?alert-separate".*?>\s*(?:<p>)?(.*?)\s*</'
     WAIT_PATTERN = r'<p>Please wait <span id="count".*?>(\d+)</span> seconds</p>'
