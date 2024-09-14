@@ -6,10 +6,10 @@ from ..base.xfs_downloader import XFSDownloader
 class SendCm(XFSDownloader):
     __name__ = "SendCm"
     __type__ = "downloader"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
-    __pattern__ = r"https?://(?:www\.)?send\.cm/\w{12}"
+    __pattern__ = r"https?://(?:www\.)?send\.cm/(?:\w{12}|d/\w{5})"
     __config__ = [
         ("enabled", "bool", "Activated", True),
         ("use_premium", "bool", "Use premium account if available", True),
