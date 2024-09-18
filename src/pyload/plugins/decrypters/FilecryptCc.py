@@ -70,6 +70,7 @@ class FilecryptCc(BaseDecrypter):
 
     def decrypt(self, pyfile):
         pyfile.url = replace_patterns(pyfile.url, self.URL_REPLACEMENTS)
+        self.log_info("74 pyfile.url", pyfile.url)
 
         self.data = self._filecrypt_load_url(pyfile.url)
 
@@ -80,16 +81,20 @@ class FilecryptCc(BaseDecrypter):
         ):
             self.offline()
 
+        self.log_info("84 handle_password_protection")
         self.handle_password_protection()
 
         self.site_with_links = self.handle_captcha(pyfile.url)
         if self.site_with_links is None:
+            self.log_info("89 retry_captcha")
             self.retry_captcha()
 
         elif self.site_with_links == "":
+            self.log_info("93 self.retry")
             self.retry()
 
         if self.config.get("handle_mirror_pages"):
+            self.log_info("97 handle_mirror_pages")
             self.handle_mirror_pages()
 
         for handle in (
@@ -118,11 +123,12 @@ class FilecryptCc(BaseDecrypter):
     def handle_password_protection(self):
         if (
             re.search(
-                r'div class="input">\s*<input type="text" name="password" id="p4assw0rt"',
+                r'<input type="text" name="pssw" id="p4assw0rt"',
                 self.data,
             )
             is None
         ):
+            self.log_info("not found password input")
             return
 
         self.log_info(self._("Folder is password protected"))
@@ -135,7 +141,7 @@ class FilecryptCc(BaseDecrypter):
             )
 
         self.data = self._filecrypt_load_url(
-            self.pyfile.url, post={"password": password}
+            self.pyfile.url, post={"pssw": password}
         )
 
     def handle_captcha(self, submit_url):
