@@ -1,18 +1,22 @@
 # -*- coding: utf-8 -*-
 
 import json
-import random
-import re
+import os
 import time
+import urllib.request
 import urllib.parse
 
+from pyload.core.utils.old import safejoin
+from pyload.core.network.http.http_request import FormFile
+
 from ..base.downloader import BaseDownloader
+from ..helpers import exists
 
 
 class ZbigzCom(BaseDownloader):
     __name__ = "ZbigzCom"
     __type__ = "downloader"
-    __version__ = "0.04"
+    __version__ = "0.05"
     __status__ = "testing"
 
     __pattern__ = r"^unmatchable$"
@@ -22,25 +26,14 @@ class ZbigzCom(BaseDownloader):
     __license__ = "GPLv3"
     __authors__ = [("GammaC0de", "nitzo2001[AT}yahoo[DOT]com")]
 
-    def jquery_call(self, url, file_id, call_id, **kwargs):
-        current_millis = int(time.time() * 1000)
-        json_callback = "jQuery{}_{}".format(call_id, current_millis)
+    API_URL = "https://api.zbigz.com/v1/"
 
-        urlp = urllib.parse.urlparse(url)
-        get_params = kwargs.copy()
-        get_params.update(urllib.parse.parse_qs(urlp.query))
+    def load_json(self, url, **kwargs):
+        json_data = self.load(url, **kwargs)
+        return json.loads(json_data)
 
-        get_params["hash"] = file_id
-        get_params["jsoncallback"] = json_callback
-        get_params["_"] = current_millis
-
-        jquery_data = self.load(
-            urlp.scheme + "://" + urlp.netloc + urlp.path, get=get_params
-        )
-
-        m = re.search(r"{}\((.+?)\);".format(json_callback), jquery_data)
-
-        return json.loads(m.group(1)) if m else None
+    def api_call(self, method, **kwargs):
+        return self.load_json(self.API_URL + method, **kwargs)
 
     def sleep(self, sec):
         for _ in range(sec):
@@ -48,102 +41,139 @@ class ZbigzCom(BaseDownloader):
                 break
             time.sleep(1)
 
-    def process(self, pyfile):
-        self.data = self.load("http://m.zbigz.com/myfiles", post={"url": pyfile.url})
+    def exit_error(self, msg):
+        if self.tmp_file:
+            os.remove(self.tmp_file)
 
-        if "Error. Only premium members are able to download" in self.data:
-            self.fail(self._("File can be downloaded by premium users only"))
+        self.fail(msg)
 
-        m = re.search(r'&hash=(\w+)"', self.data)
-        if m is None:
-            self.fail("Hash not found")
+    def send_request_to_server(self):
+        """ Send torrent/magnet to the server """
 
-        file_id = m.group(1)
-        call_id = "".join(random.choice("0123456789") for _ in range(20))
+        if self.pyfile.url.startswith("magnet:"):
+            #: magnet URL, send it to the server
+            api_data = self.api_call(
+                "torrent/add",
+                post={'url': self.pyfile.url},
+                multipart=True
+            )
+
+        else:
+            #: torrent URL
+            if self.pyfile.url.startswith("http"):
+                #: remote URL, download the torrent to tmp directory
+                torrent_content = self.load(self.pyfile.url, decode=False)
+                torrent_filename = safejoin(self.pyload.tempdir, "tmp_{}.torrent".format(self.pyfile.package().name))
+                with open(torrent_filename, "wb") as f:
+                    f.write(torrent_content)
+
+            else:
+                #: URL is a local torrent file (uploaded container)
+                torrent_filename = urllib.request.url2pathname(self.pyfile.url[7:])  #: trim the starting `file://`
+                if not exists(torrent_filename):
+                    self.fail(self._("Torrent file does not exist"))
+
+            self.tmp_file = torrent_filename
+
+            #: Check if the torrent file path is inside pyLoad's temp directory
+            if os.path.abspath(torrent_filename).startswith(self.pyload.tempdir + os.sep):
+                #: send the torrent content to the server
+                api_data = self.api_call(
+                    "torrent/add",
+                    post={'file': FormFile(torrent_filename, mimetype="application/octet-stream")},
+                    multipart=True
+                )
+
+            else:
+                self.fail(self._("Illegal URL"))  #: We don't allow files outside pyLoad's temp directory
+
+        if api_data['error']:
+            self.fail(api_data['message'])
+
+        api_data = self.api_call("storage/list")
+        if api_data['error']:
+            self.fail(api_data['error_msg'])
+
+        torrent_id = api_data["0"]["hash"]
+        server = api_data["0"]["server"]
+
+        if self.tmp_file:
+            os.remove(self.tmp_file)
+            self.tmp_file = None
+
+        return torrent_id, server
+
+    def wait_for_server_dl(self, torrent_id, server):
+        """ Show progress while the server does the download """
 
         self.pyfile.set_custom_status("torrent")
         self.pyfile.set_progress(0)
 
-        json_data = self.jquery_call(
-            "http://m.zbigz.com/core/info.php", file_id, call_id
-        )
-        if json_data is None:
-            self.fail("Unexpected jQuery response")
-
-        if "faultString" in json_data:
-            self.fail(json_data["faultString"])
-
-        pyfile.name = json_data["info"]["name"] + (
-            ".zip" if len(json_data["files"]) > 1 else ""
-        )
-        pyfile.size = json_data["info"]["size"]
-
         while True:
-            json_data = self.jquery_call(
-                "http://m.zbigz.com/core/info.php", file_id, call_id
+            api_data = self.load_json(
+                f"https://{server}/gate/status",
+                get={"hash": torrent_id}
             )
-            if json_data is None:
-                self.fail("Unexpected jQuery response")
 
-            if "faultString" in json_data:
-                self.fail(json_data["faultString"])
+            if api_data["error"] == 404 and api_data["result"] == "not found +init":
+                pass
 
-            progress = int(json_data["info"]["progress"])
-            pyfile.set_progress(progress)
+            elif api_data["error"]:
+                self.exit_error(api_data["result"])
 
-            if json_data["info"]["state"] != "downloading" or progress == 100:
+            if api_data.get("has_metadata", False):
+                self.pyfile.name = api_data["name"]
+                self.pyfile.size = api_data["size"]
                 break
 
             self.sleep(5)
 
-        pyfile.set_progress(100)
-
-        if len(json_data["files"]) == 1:
-            download_url = "http://m.zbigz.com/file/{}/0".format(file_id)
-
-        else:
-            self.data = self.load("http://m.zbigz.com/file/{}/-1".format(file_id))
-
-            m = re.search(
-                r"\'(http://\w+.zbigz.com/core/zipstate.php\?hash={}&did=(\w+)).+?\'".format(
-                    file_id
-                ),
-                self.data,
+        while True:
+            api_data = self.load_json(
+                f"https://{server}/gate/status",
+                get={"hash": torrent_id}
             )
-            if m is None:
-                self.fail("Zip state URL not found")
+            if api_data["error"]:
+                self.exit_error(api_data["result"])
 
-            zip_status_url = m.group(1)
-            download_id = m.group(2)
+            progress = api_data["progress"]
+            self.pyfile.set_progress(progress)
+            if progress >= 100:
+                break
 
-            m = re.search(
-                r"\'(http://\w+.zbigz.com/z/{}/.+?)\'".format(download_id), self.data
-            )
-            if m is None:
-                self.fail("Zip download URL not found")
+            self.sleep(5)
 
-            download_url = m.group(1)
+        self.pyfile.set_progress(100)
 
-            self.pyfile.set_custom_status("zip")
+    def download_from_server(self, torrent_id, server):
+        api_data = self.api_call(f"storage/download/{torrent_id}")
+        if api_data['error']:
+            self.fail(api_data['error_msg'])
+
+        if "state" in api_data:
+            zip_status_url = urllib.parse.urljoin("https://", api_data["state"])
+            self.pyfile.set_custom_status("zipping")
             self.pyfile.set_progress(0)
 
             while True:
-                json_data = self.jquery_call(zip_status_url, file_id, call_id)
-                if json_data is None:
-                    self.fail("Unexpected jQuery response")
-
-                if "faultString" in json_data:
-                    self.fail(json_data["faultString"])
-
-                progress = int(json_data["proc"])
-
+                zip_status = self.load_json(zip_status_url)
+                progress = zip_status["proc"]
                 self.pyfile.set_progress(progress)
-
-                if progress == 100:
+                if progress >= 100:
                     break
 
-                self.sleep(5)
+                self.sleep(2)
 
+            self.pyfile.set_progress(100)
+
+        download_url = api_data["link"]
         self.download(download_url)
 
-        self.load("http://m.zbigz.com/delete.php?hash={}".format(file_id))
+    def process(self, pyfile):
+        self.tmp_file = None
+        torrent_id, server = self.send_request_to_server()
+        self.wait_for_server_dl(torrent_id, server)
+        self.download_from_server(torrent_id, server)
+
+        if self.tmp_file:
+            os.remove(self.tmp_file)
