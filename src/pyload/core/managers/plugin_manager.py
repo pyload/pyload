@@ -15,63 +15,74 @@ from pyload import APPID, PKGDIR
 
 class ImportRedirector(importlib.abc.MetaPathFinder):
     ROOT = "pyload.plugins."
-    USERROOT = "plugins."
+
+    class CustomModuleLoader(importlib.abc.Loader):
+        def __init__(self, fullpath):
+            self.fullpath = fullpath
+
+        def create_module(self, spec):
+            return None  # Use default module creation
+
+        def exec_module(self, module):
+            with open(self.fullpath, mode="r", encoding="utf-8-sig") as fp:
+                code = fp.read()
+            exec(code, module.__dict__)
 
     def __init__(self, core):
         self.pyload = core
         self._ = core._
+        self.redirect_path = os.path.join(self.pyload.userdir, "plugins")
 
-        userplugins_dir = os.path.join(self.pyload.userdir, *self.USERROOT.split("."))
-        os.makedirs(userplugins_dir, exist_ok=True)
+        os.makedirs(self.redirect_path, exist_ok=True)
         try:
-            with open(os.path.join(userplugins_dir, "__init__.py"), mode="wb"):
+            init_py = os.path.join(self.redirect_path, "__init__.py")
+            with open(init_py, mode="wb"):
                 pass
+            os.chmod(init_py, 0o600)
         except OSError:
             pass
-
-        # add USERROOT to sys.path
-        sys.path.append(self.pyload.userdir)
 
         # register for import addon
         sys.meta_path.insert(0, self)
 
     def find_spec(self, fullname, path, target=None):
         split = fullname.split(".")
-        if fullname.startswith(self.ROOT) or fullname.startswith(self.USERROOT):
-            is_userimport = 1 if fullname.startswith(self.USERROOT) else 0  # used as bool and int
-            if len(split) == 4 - is_userimport:
-                plugin_subfolder, plugin_name = split[2 - is_userimport:4 - is_userimport]
-                if plugin_subfolder != "base" and plugin_subfolder[-1] == "s":
-                    plugin_type = plugin_subfolder[:-1]  #: remove trailing plural "s" character
-                else:
-                    plugin_type = plugin_subfolder
+        if fullname.startswith(self.ROOT) and len(split) == 4:
+            plugin_subfolder, plugin_name = split[2:4]
+            if plugin_subfolder != "base" and plugin_subfolder[-1] == "s":
+                plugin_type = plugin_subfolder[:-1]  #: remove trailing plural "s" character
+            else:
+                plugin_type = plugin_subfolder
 
-                plugins = self.pyload.plugin_manager.plugins
-                if plugin_type in plugins and plugin_name in plugins[plugin_type]:
-                    newname = None
-                    # imported from pyLoad, but user-plugin is a newer version
-                    if not is_userimport and plugins[plugin_type][plugin_name]["user"]:
-                        newname = fullname.replace(self.ROOT, self.USERROOT)
-                    # imported from userplugins but user-plugin does not exist or pyLoad's version is newer
-                    elif is_userimport and not plugins[plugin_type][plugin_name]["user"]:
-                        newname = fullname.replace(self.USERROOT, self.ROOT)
-
-                    if newname is not None:
-                        self.pyload.log.debug("Redirected import {} -> {}".format(fullname, newname))
-                        spec = importlib.util.find_spec(newname)
-                        spec.loader = self
-                        return spec
+            plugins = self.pyload.plugin_manager.plugins
+            if (
+                plugin_type in plugins and
+                plugin_name in plugins[plugin_type] and
+                plugins[plugin_type][plugin_name]["user"]
+            ):
+                fullpath = os.path.join(self.redirect_path, split[2], f"{split[3]}.py")
+                split[1] = "userplugins"
+                newname = ".".join(split)
+                self.pyload.log.debug("Redirected import {} -> {}".format(fullname, newname))
+                return importlib.util.spec_from_file_location(
+                    fullname,
+                    self.redirect_path,
+                    loader=self.CustomModuleLoader(fullpath)
+                )
 
         # return None to tell the python this finder can't find the module
         return None
 
-    @staticmethod
-    def create_module(spec):
-        return importlib.import_module(spec.name)
+    # @staticmethod
+    def create_module(self, spec):
+        return None  # Use default module creation
 
-    @staticmethod
-    def exec_module(module):
-        pass
+    # @staticmethod
+    def exec_module(self, module):
+        return importlib.abc.Loader.load_module(module, fullname=module.__name__)
+        with open(self.fullpath, 'r') as file:
+            code = file.read()
+        exec(code, module.__dict__)
 
 
 class PluginManager:
