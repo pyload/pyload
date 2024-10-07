@@ -13,6 +13,12 @@ jobs:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
     runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/pyload-ng
+    permissions:
+      id-token: write  # IMPORTANT: mandatory for trusted publishing
+
 
     steps:
       - name: Download artifacts
