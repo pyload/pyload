@@ -14,6 +14,8 @@ import re
 import time
 from enum import IntFlag
 
+from pyload import PKGDIR
+
 from ..datatypes.data import *
 from ..datatypes.enums import *
 from ..datatypes.exceptions import *
@@ -185,12 +187,22 @@ class Api:
         )
 
         if section == "core":
-            self.pyload.config[category][option] = value
+            if category == "general" and option == "storage_folder":
+                # Forbid setting the download folder inside dangerous locations
+                correct_case = lambda x: x.lower() if os.name == "nt" else x
+                directories = [
+                    correct_case(os.path.join(os.path.realpath(d), ""))
+                    for d in [value, PKGDIR, self.pyload.userdir]
+                ]
+                if any(directories[0].startswith(d) for d in directories[1:]):
+                    return
 
-            if option in (
+            self.pyload.config.set(category, option, value)
+
+            if category == "download" and option in (
                 "limit_speed",
                 "max_speed",
-            ):  #: not so nice to update the limit
+            ):  #: not such a nice method to update the limit
                 self.pyload.request_factory.update_bucket()
 
         elif section == "plugin":
