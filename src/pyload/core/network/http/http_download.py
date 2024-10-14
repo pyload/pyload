@@ -219,8 +219,6 @@ class HTTPDownload:
                 ret, num_handles = self.m.perform()
                 if ret != pycurl.E_CALL_MULTI_PERFORM:
                     break
-                # reduce cpu load
-                time.sleep(1)
 
             t = time.time()
 
@@ -318,9 +316,6 @@ class HTTPDownload:
 
             if self.abort:
                 raise Abort
-
-            # reduce cpu load
-            time.sleep(1)
 
             # time.sleep(0.003)  #: suppress busy waiting - limits dl speed to  (1 / x) * buffersize
             self.m.select(1)
