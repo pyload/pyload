@@ -60,6 +60,7 @@ class SerienfansOrg(BaseDecrypter):
         # ("prefer_hosters", "bool", "Prefer hosters", False),
         # ("prefer_hosters_list", "str", "Prefer hosters list", "rapidgator 1fichier katfile turbobit"),
         ("include_episode_links", "bool", "Include episode links", False),
+        ("split_packages_by_hoster", "bool", "Split packages by hoster", True),
     ]
 
     __description__ = """Serienfans.org decrypter plugin"""
@@ -179,7 +180,7 @@ class SerienfansOrg(BaseDecrypter):
             retry_step += 1
 
             try:
-                response_text = self.load(request_2_url)
+                response_text = self.load(url)
 
             except BadHeader as exc:
                 # Bad server response: 400 Bad Request
@@ -229,6 +230,7 @@ class SerienfansOrg(BaseDecrypter):
                 request_url = f"https://{self.pyfile_netloc}/api/v1/{self.session_id}/season/{season_num}?_={request_time}"
             else:
                 request_url = f"https://{self.pyfile_netloc}/api/v1/{self.session_id}?_={request_time}"
+            return request_url
 
         response_2_json = self._get_response_json(get_request_url, self._response_2_cache)
 
@@ -369,7 +371,7 @@ class SerienfansOrg(BaseDecrypter):
                     continue
 
                 self.log_info(f"package {release_name}: hoster {hoster_name} {link_status} {hoster_url}")
-                release_urls.append(hoster_url)
+                release_urls.append((hoster_name, hoster_url))
 
                 # break # debug: stop after first hoster_link
 
@@ -378,15 +380,8 @@ class SerienfansOrg(BaseDecrypter):
                     self.log_debug(f"package {release_name}: using first online hoster only: {hoster_name}")
                     break
 
-            if release_urls:
-                package_name = release_name
-                if release_size:
-                    package_name += f" [{release_size}]"
-                # TODO also add release_languages
-                self.packages += [
-                    (package_name, release_urls, release_name)
-                ]
-                release_urls = []
+            self._add_release_urls(release_name, release_size, release_urls)
+            release_urls = []
 
             if self._is_serienfans and include_episode_links:
 
@@ -416,18 +411,39 @@ class SerienfansOrg(BaseDecrypter):
                             done_head = True
                         """
                         short_hoster_name = hoster_link.select_one("div > span").text.strip()
+                        # TODO translate short_hoster_name to hoster_name
                         hoster_url = "https://" + self.pyfile_netloc + hoster_link["href"]
                         hoster_url = self._resolve_hoster_url(release_name, hoster_url)
                         if not hoster_url:
                             continue
                         self.log_info(f"package {release_name}: hoster {short_hoster_name} {hoster_url}")
-                        release_urls.append(hoster_url)
+                        release_urls.append((short_hoster_name, hoster_url))
 
-            if release_urls:
-                package_name = release_name
+            release_size = None # ?
+            self._add_release_urls(release_name, release_size, release_urls)
+            release_urls = []
+
+
+
+    def _add_release_urls(self, release_name, release_size, release_urls):
+        if not release_urls:
+            return
+        package_name = release_name
+        if release_size:
+            package_name += f" [{release_size}]"
+        # TODO also add release_languages
+        split_packages_by_hoster = self.config.get("split_packages_by_hoster")
+        if split_packages_by_hoster:
+            for hoster_name, hoster_url in release_urls:
+                _package_name = package_name + f" [{hoster_name}]"
                 self.packages += [
-                    (package_name, release_urls, release_name)
+                    (_package_name, [hoster_url], _package_name)
                 ]
+        else:
+            release_urls = list(map(lambda x: x[1], release_urls))
+            self.packages += [
+                (package_name, release_urls, package_name)
+            ]
 
 
 
