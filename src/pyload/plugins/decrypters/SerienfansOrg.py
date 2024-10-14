@@ -1,5 +1,21 @@
 # -*- coding: utf-8 -*-
 
+# TODO dont trust online status, can be offline
+# only trust offline status?
+
+# TODO prefer new releases
+# old releases can have missing parts
+
+# TODO prefer "complete" series
+# example:
+# https://serienfans.org/south-park
+# example complete:
+# Staffel 24 Complete 1080p | 5.9 GB
+# <h3><label class="opn" for="se2820259829056"></label>Staffel24<div class="complete"><span>Complete</span></div><span class="morespec">1080p | 5.9GB</span><span class="audiotag"><img src="/images/DE.svg"><img src="/images/EN.svg"></span><span class="grouptag">JaJunge</span></h3>
+# example incomplete: "2 4" means "2 of 4 episodes"
+# Staffel 24 2 4 720p | 921.7 MB
+# <h3><label class="opn" for="se1525622736550"></label>Staffel24<div class="complete"><span>2</span><span>4</span></div><span class="morespec">720p | 921.7MB</span><span class="audiotag"><img src="/images/DE.svg"><img src="/images/EN.svg"></span><span class="grouptag">JaJunge</span></h3>
+
 #
 # Test links:
 #   https://serienfans.org/breaking-bad
