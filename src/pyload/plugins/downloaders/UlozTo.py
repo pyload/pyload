@@ -34,7 +34,6 @@ class UlozTo(SimpleDownloader):
         ("use_premium", "bool", "Use premium account if available", True),
         ("fallback", "bool", "Fallback to free download if premium fails", True),
         ("chk_filesize", "bool", "Check file size", True),
-        ("captcha", "Image;Sound", "Captcha recognition", "Image"),
         ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10),
     ]
 
@@ -149,11 +148,7 @@ class UlozTo(SimpleDownloader):
                 self.log_debug("xapca: %s" % xapca)
 
                 data = json.loads(xapca)
-                if self.config.get("captcha") == "Sound":
-                    captcha_value = self.captcha.decrypt(
-                        str(data['sound']), input_type=os.path.splitext(data['sound'])[1], ocr="UlozTo")
-                else:
-                    captcha_value = self.captcha.decrypt(data['image'])
+                captcha_value = self.captcha.decrypt(data['image'])
                 self.log_debug(
                     "CAPTCHA HASH: " +
                     data['hash'],
