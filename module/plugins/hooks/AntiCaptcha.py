@@ -11,7 +11,7 @@ from ..internal.misc import json, threaded, fs_encode
 class AntiCaptcha(Addon):
     __name__ = "AntiCaptcha"
     __type__ = "hook"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", False),
@@ -20,6 +20,7 @@ class AntiCaptcha(Addon):
                   ("solve_recaptcha", "bool", "Solve ReCaptcha", True),
                   ("solve_hcaptcha", "bool", "Solve HCaptcha", True),
                   ("refund", "bool", "Request refund if result incorrect", False),
+                  ("api_url", "password", "API base URL", "https://api.anti-captcha.com/"),
                   ("passkey", "password", "API key", ""),
                   ("timeout", "int", "Timeout in seconds (min 60, max 3999)", "900")]
 
@@ -36,7 +37,9 @@ class AntiCaptcha(Addon):
     API_URL = "https://api.anti-captcha.com/"
 
     def api_request(self, method, post):
-        json_data = self.load(self.API_URL + method, post=json.dumps(post))
+        api_url = self.config.get("api_url", self.API_URL)
+        api_url += "/" if not api_url.endswith("/") else ""
+        json_data = self.load(api_url + method, post=json.dumps(post))
         return json.loads(json_data)
 
     def get_credits(self):
