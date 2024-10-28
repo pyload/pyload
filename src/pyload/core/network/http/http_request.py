@@ -8,7 +8,6 @@ from itertools import chain
 from logging import getLogger
 from urllib.parse import quote, urlencode
 
-import certifi
 import pycurl
 
 from pyload import APPID
@@ -17,6 +16,7 @@ from ...utils.check import is_mapping
 from ...utils.convert import to_bytes, to_str
 from ..exceptions import Abort
 from .exceptions import BadHeader
+from .aia_retry_wrap_download import aia_retry_wrap_download
 
 if not hasattr(pycurl, "PROXYTYPE_HTTPS"):
     pycurl.PROXYTYPE_HTTPS = 2
@@ -83,6 +83,8 @@ class HTTPRequest:
 
         self.abort = False
         self.decode = False
+
+        self.options = options
 
         self.init_handle()
         self.set_interface(options)
@@ -189,7 +191,7 @@ class HTTPRequest:
 
         if "ssl_verify" in options:
             if options["ssl_verify"]:
-                self.c.setopt(pycurl.CAINFO, certifi.where())
+                self.c.setopt(pycurl.CAINFO, options["pyload"].ca_bundle_path)
                 ssl_verify = 1
             else:
                 ssl_verify = 0
@@ -285,6 +287,7 @@ class HTTPRequest:
             self.c.setopt(pycurl.COOKIEJAR, b"")
             self.get_cookies()
 
+    @aia_retry_wrap_download
     def load(
         self,
         url,
