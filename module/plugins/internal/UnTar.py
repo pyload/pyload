@@ -29,7 +29,7 @@ def _safe_extractall(tar, path=".", members=None):
 class UnTar(Extractor):
     __name__ = "UnTar"
     __type__ = "extractor"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __status__ = "stable"
 
     __description__ = """TAR extractor plugin"""
@@ -46,8 +46,12 @@ class UnTar(Extractor):
 
     @classmethod
     def isarchive(cls, filename):
+        fsname = fs_encode(filename)
         try:
-            return tarfile.is_tarfile(fs_encode(filename))
+            if tarfile.is_tarfile(fsname):
+                with tarfile.open(fsname) as tf:
+                    return len(tf.getmembers()) > 0
+            return False
         except IOError:
             return False
 
