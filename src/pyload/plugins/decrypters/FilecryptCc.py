@@ -18,6 +18,8 @@ from pyload.core.utils.convert import to_str
 from ..anticaptchas.CoinHive import CoinHive
 from ..anticaptchas.ReCaptcha import ReCaptcha
 from ..anticaptchas.SolveMedia import SolveMedia
+from ..anticaptchas.CutCaptcha import CutCaptcha
+
 from ..base.decrypter import BaseDecrypter
 from ..helpers import replace_patterns
 
@@ -54,12 +56,15 @@ class FilecryptCc(BaseDecrypter):
     CIRCLE_CAPTCHA_PATTERN = r'<input type="image" src="(.+?)"'
     KEY_CAPTCHA_PATTERN = r"<script language=JavaScript src='(http://backs\.keycaptcha\.com/swfs/cap\.js)'"
     SOLVEMEDIA_CAPTCHA_PATTERN = r'<script type="text/javascript" src="(https?://api(?:-secure)?\.solvemedia\.com/papi/challenge.+?)"'
+    CUTCAPTCHA_CAPTCHA_KEY_PATTERN = r'''\sCUTCAPTCHA_MISERY_KEY\s*=\s*["']([0-9a-f]{40})["']'''
+    CUTCAPTCHA_API_KEY_PATTERN = r'''cutcaptcha\.net/captcha/([0-9a-zA-Z]+)\.js'''
 
     CAPTCHA_PATTERNS = [
         INTERNAL_CAPTCHA_PATTERN,
         CIRCLE_CAPTCHA_PATTERN,
         KEY_CAPTCHA_PATTERN,
         SOLVEMEDIA_CAPTCHA_PATTERN,
+        CUTCAPTCHA_CAPTCHA_KEY_PATTERN,
     ]
 
     def setup(self):
@@ -178,6 +183,7 @@ class FilecryptCc(BaseDecrypter):
                 self._handle_keycaptcha_captcha,
                 self._handle_coinhive_captcha,
                 self._handle_recaptcha_captcha,
+                self._handle_cutcaptcha_captcha,
             ):
 
                 self.log_info("plugins/decrypters/FilecryptCc.py: handle_captcha: handle", handle)
@@ -193,7 +199,7 @@ class FilecryptCc(BaseDecrypter):
 
                 elif res == "":
                     return res
-                
+
                 if self.search_captcha(res):
                     self.log_info("plugins/decrypters/FilecryptCc.py: handle_captcha: found another captcha in res")
                     return None
@@ -323,6 +329,25 @@ class FilecryptCc(BaseDecrypter):
 
         else:
             return None
+
+    def _handle_cutcaptcha_captcha(self, url):
+        # based on jdownloader
+        # src/org/jdownloader/captcha/v2/challenge/cutcaptcha/AbstractCaptchaHelperCutCaptcha.java
+        m = re.search(self.CUTCAPTCHA_CAPTCHA_KEY_PATTERN, self.data)
+        if not m:
+            return None
+        captcha_key = m.group(1)
+        m = re.search(self.CUTCAPTCHA_API_KEY_PATTERN, self.data)
+        if not m:
+            self.log_error("Cutcaptcha: Not found CUTCAPTCHA_API_KEY_PATTERN")
+            return None
+        api_key = m.group(1)
+        # jd: CutCaptchaChallenge(plugin, siteKey, apiKey)
+        self.captcha = CutCaptcha(self.pyfile)
+        # example: wtFFUUHAxlOI4bNQjRsunHTFPZriu56a
+        captcha_token = self.captcha.challenge(captcha_key, api_key)
+        self.log_debug(f"Cutcaptcha: captcha_token={captcha_token}")
+        return self._filecrypt_load_url(url, post={"cap_token": captcha_token})
 
     def handle_dlc_container(self):
         m = re.search(r"const (\w+) = DownloadDLC;", self.site_with_links)
