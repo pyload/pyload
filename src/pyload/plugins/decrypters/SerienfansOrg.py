@@ -145,7 +145,7 @@ class SerienfansOrg(BaseDecrypter):
         else:
             self.num_seasons = 1
 
-        for season_num in range(self.num_seasons):
+        for season_num in range(1, 1 + self.num_seasons):
             self._decrypt_season(season_num)
             if self._response_2_cache:
                 # stop after first season
@@ -253,6 +253,11 @@ class SerienfansOrg(BaseDecrypter):
         # response_2_json["bubblesLanguage"] # ?
 
         response_2_html = response_2_json["html"]
+
+        html_not_found = '\n Leider liegen zu dieser Staffel noch keine Einträge vor\n '
+        if response_2_html == html_not_found:
+            self.log_error("empty result")
+            return
 
         # list of known release qualities
         release_quality_list = next(c for c in self.__config__ if c[0] == "prefer_video_quality")[1].split(";")[1:]
