@@ -137,18 +137,11 @@ class AntiCaptcha(BaseAddon):
                 task.error = api_data["errorDescription"]
                 self.log_error(self._("API error"), api_data["errorDescription"])
                 break
-
-            if api_data["status"] == "processing":
-                time.sleep(5)
-            else:
-                captcha_plugin = task.captcha_params["captcha_plugin"]
-                if captcha_plugin in ("HCaptcha", "ReCaptcha"):
-                    result = api_data["solution"]["gRecaptchaResponse"]
-
-                elif task.is_textual():
-                    result = api_data["solution"]["text"]
-
+            if api_data["status"] == "ready":
+                result = self._result_of_api_data(api_data, task)
                 break
+            assert api_data["status"] == "processing"
+            time.sleep(5)
 
         else:
             self.log_debug(f"Could not get result: {ticket}")
@@ -157,12 +150,30 @@ class AntiCaptcha(BaseAddon):
 
         task.set_result(result)
 
+    def _result_of_api_data(self, api_data, task):
+        captcha_plugin = task.captcha_params["captcha_plugin"]
+        solution = api_data["solution"]
+        if captcha_plugin in ("HCaptcha", "ReCaptcha"):
+            return solution["gRecaptchaResponse"]
+        if captcha_plugin in ("CutCaptcha"):
+            return solution["token"]
+        if task.is_textual():
+            return solution["text"]
+        self.log_warning(f"_result_of_api_data: using solution as result. captcha_plugin={captcha_plugin}. solution={json.dumps(solution)}")
+        return solution
+
     def captcha_task(self, task):
+        self.log_info(f"captcha_task {task}")
         if task.is_interactive():
             captcha_plugin = task.captcha_params["captcha_plugin"]
             if captcha_plugin == "ReCaptcha" and not self.config.get("solve_recaptcha"):
+                self.log_debug(f"Not solving {captcha_plugin}")
                 return
             elif captcha_plugin == "HCaptcha" and not self.config.get("solve_hcaptcha"):
+                self.log_debug(f"Not solving {captcha_plugin}")
+                return
+            else:
+                self.log_debug(f"Not solving {captcha_plugin}")
                 return
 
         else:
