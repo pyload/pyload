@@ -147,7 +147,8 @@ class SerienfansOrg(BaseDecrypter):
 
         for season_num in range(1, 1 + self.num_seasons):
             self._decrypt_season(season_num)
-            if self._response_2_cache:
+            cache_path = self._response_2_cache
+            if self._read_cache and os.path.exists(cache_path):
                 # stop after first season
                 break
 
