@@ -99,7 +99,8 @@ class Core:
 
         datadir = os.path.join(os.path.realpath(userdir), "data")
         os.makedirs(datadir, exist_ok=True)
-        os.chdir(datadir)
+        # why?!
+        #os.chdir(datadir)
 
         self._init_config(userdir, tempdir, storagedir, debug)
         self._init_log()
@@ -594,8 +595,9 @@ class Core:
         # self.evm.fire('pyload:restarting')
         self.terminate()
 
-        if sys.path[0]:
-            os.chdir(sys.path[0])
+        # why?!
+        #if sys.path[0]:
+        #    os.chdir(sys.path[0])
 
         args = self._get_args_for_reloading()
         subprocess.Popen(args, close_fds=True)
