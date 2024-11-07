@@ -165,12 +165,14 @@ class AntiCaptcha(BaseAddon):
     def captcha_task(self, task):
         if task.is_interactive():
             captcha_plugin = task.captcha_params["captcha_plugin"]
-            if captcha_plugin == "ReCaptcha" and not self.config.get("solve_recaptcha"):
-                self.log_debug(f"Not solving {captcha_plugin}")
-                return
-            elif captcha_plugin == "HCaptcha" and not self.config.get("solve_hcaptcha"):
-                self.log_debug(f"Not solving {captcha_plugin}")
-                return
+            if captcha_plugin == "ReCaptcha":
+                if not self.config.get("solve_recaptcha"):
+                    self.log_debug(f"Not solving {captcha_plugin}")
+                    return
+            elif captcha_plugin == "HCaptcha":
+                if not self.config.get("solve_hcaptcha"):
+                    self.log_debug(f"Not solving {captcha_plugin}")
+                    return
             else:
                 self.log_debug(f"Not solving {captcha_plugin}")
                 return
