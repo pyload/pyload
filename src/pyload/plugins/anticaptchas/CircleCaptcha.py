@@ -12,7 +12,15 @@ import urllib.request
 
 from PIL import Image, ImageDraw
 
-from ..base.ocr import BaseOCR
+if __name__ == "__main__":
+    import os
+    import sys
+    # fix: ModuleNotFoundError: No module named 'pyload'
+    sys.path.insert(0, os.path.dirname(__file__) + "/../../..")
+
+# ImportError: attempted relative import with no known parent package
+#from ..base.ocr import BaseOCR
+from pyload.plugins.base.ocr import BaseOCR
 
 
 class ImageSequence:
@@ -552,7 +560,7 @@ class CircleCaptcha(BaseOCR):
                 # if i_debug_save_file < 7:
                 # continue
                 im.save("output{}.png".format(i_debug_save_file), "png")
-                input("frame: {}".format(im))
+                print("frame: {}".format(im))
 
             pix = im.load()
 
@@ -810,11 +818,29 @@ class CircleCaptcha(BaseOCR):
         self.log_info(self._("Coords: {}").format(coords))
 
 
-# DEBUG
-# import datetime
-# a = datetime.now()
-# x = CircleCaptcha()
-# coords = x.decrypt_from_file("decripter/captx.html2.gif")
-# coords = x.decrypt_from_web("http://ncrypt.in/classes/captcha/circlecaptcha.php")
-# b = datetime.now()
-# self.log_debug(f"Elapsed time: {(b-a).seconds} seconds")
+if __name__ == "__main__":
+    # debug
+    """
+    example:
+    python src/pyload/plugins/anticaptchas/CircleCaptcha.py circle.png
+    """
+    captcha_path = sys.argv[1]
+    from pyload.plugins.decrypters.SerienfansOrg import _mock_decrypter
+    #captcha = CircleCaptcha(pyfile)
+    captcha = _mock_decrypter(CircleCaptcha)
+    #coords = captcha.decrypt_from_file(captcha_path)
+    im = Image.open(captcha_path)
+    coords = captcha.decrypt(im)
+    #coords = 50, 20 # mock
+    if coords is None:
+        print("error: not found open circle")
+        sys.exit(1)
+    x, y = coords
+    # draw red crosshair on captcha image
+    result_im = im.copy()
+    draw = ImageDraw.Draw(result_im)
+    red = (255, 0, 0, 255)
+    draw.line((x, 0, x, im.size[1]), fill=red)
+    draw.line((0, y, im.size[0], y), fill=red)
+    print("result_im.show")
+    result_im.show()
