@@ -159,6 +159,9 @@ class AntiCaptcha(BaseAddon):
             return solution["token"]
         if task.is_textual():
             return solution["text"]
+        if captcha_plugin in ("CircleCaptcha"):
+            point = solution["coordinates"][0]
+            return (point["x"], point["y"])
         self.log_warning(f"_result_of_api_data: using solution as result. captcha_plugin={captcha_plugin}. solution={json.dumps(solution)}")
         return solution
 
