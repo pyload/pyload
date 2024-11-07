@@ -163,7 +163,6 @@ class AntiCaptcha(BaseAddon):
         return solution
 
     def captcha_task(self, task):
-        self.log_info(f"captcha_task {task}")
         if task.is_interactive():
             captcha_plugin = task.captcha_params["captcha_plugin"]
             if captcha_plugin == "ReCaptcha" and not self.config.get("solve_recaptcha"):
