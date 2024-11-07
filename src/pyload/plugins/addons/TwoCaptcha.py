@@ -162,7 +162,6 @@ class TwoCaptcha(BaseAddon):
                 "getTaskResult",
                 {"clientKey": self.config.get("passkey"), "taskId": ticket},
             )
-            self.log_debug("api_data = " + json.dumps(api_data, indent=2))
             if api_data["errorId"] != 0:
                 task.error = api_data["errorDescription"]
                 self.log_error(self._("API error"), api_data["errorDescription"])
@@ -184,7 +183,6 @@ class TwoCaptcha(BaseAddon):
         task.set_result(result)
 
     def captcha_task(self, task):
-        self.log_info(f"captcha_task {task}")
         if task.is_interactive():
             captcha_plugin = task.captcha_params["captcha_plugin"]
             if not self.config.get(f"solve_{captcha_plugin}"):
