@@ -175,7 +175,8 @@ class TwoCaptcha(BaseAddon):
                 result = AntiCaptcha._result_of_api_data(self, api_data, task)
                 self.log_info(f"result = {result}")
                 break
-            assert api_data["status"] == "processing"
+            if api_data["status"] != "processing":
+                raise ValueError("unexpected api_data: " + json.dumps(api_data, indent=2))
             time.sleep(5)
         else:
             self.log_debug(f"Could not get result: {ticket}")
