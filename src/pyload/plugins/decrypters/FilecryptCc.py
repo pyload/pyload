@@ -92,6 +92,8 @@ class FilecryptCc(BaseDecrypter):
         if (
             "content notfound" in self.data
             or ">File <strong>not</strong> found<" in self.data
+            or
+            "<strong>Not Found</strong></h2>" in self.data
         ):
             self.log_info("plugins/decrypters/FilecryptCc.py: offline")
             self.offline()
