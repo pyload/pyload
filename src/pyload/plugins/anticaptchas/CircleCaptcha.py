@@ -9,6 +9,7 @@ import math
 import operator
 import sys
 import urllib.request
+import base64
 
 from PIL import Image, ImageDraw
 
@@ -19,8 +20,8 @@ if __name__ == "__main__":
     sys.path.insert(0, os.path.dirname(__file__) + "/../../..")
 
 # ImportError: attempted relative import with no known parent package
-#from ..base.ocr import BaseOCR
-from pyload.plugins.base.ocr import BaseOCR
+#from ..base.captcha_service import CaptchaService
+from pyload.plugins.base.captcha_service import CaptchaService
 
 
 class ImageSequence:
@@ -36,9 +37,9 @@ class ImageSequence:
             raise IndexError  #: end of sequence
 
 
-class CircleCaptcha(BaseOCR):
+class CircleCaptcha(CaptchaService):
     __name__ = "CircleCaptcha"
-    __type__ = "ocr"
+    __type__ = "anticaptcha"
     __version__ = "1.11"
     __status__ = "testing"
 
@@ -545,7 +546,25 @@ class CircleCaptcha(BaseOCR):
         # self.log_debug(f"{(x, y)} = {result}")
         return result
 
+    def challenge(self, img, instructions="click into the open circle"):
+        #if isinstance(img, bytes):
+        #    img = PIL.Image.open(io.BytesIO(img))
+        self.log_debug(f"challenge img {type(img)} {repr(img)[:1000]}")
+        assert isinstance(img, bytes)
+        img_base64 = base64.b64encode(img).decode("ascii")
+        params = {
+            "url": self.pyfile.url,
+            # TODO rename keys?
+            "body": img_base64,
+            "comment": instructions,
+        }
+        # AttributeError: 'CircleCaptcha' object has no attribute 'decrypt_interactive'
+        result = self.decrypt_interactive(params, timeout=300)
+        return result
+
     def decrypt(self, img):
+        if isinstance(img, bytes):
+            img = PIL.Image.open(io.BytesIO(img))
         i_debug_save_file = 0
         mypalette = None
         for im in ImageSequence(img):
