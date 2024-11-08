@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 
+# TODO let user manually solve captchas
+# currently this requires premium account for
+# src/pyload/plugins/addons/TwoCaptcha.py
+
 import io
 import os
 import re
