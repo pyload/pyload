@@ -25,6 +25,7 @@ import re
 import urllib.parse
 import time
 import json
+import functools
 
 from bs4 import BeautifulSoup
 
@@ -39,6 +40,14 @@ from pyload.plugins.base.decrypter import BaseDecrypter
 from pyload.core.network.http.exceptions import BadHeader
 
 
+class Release:
+    name = None
+    quality = None
+    size = None
+    urls = []
+    entry = None
+
+
 class SerienfansOrg(BaseDecrypter):
     __name__ = "SerienfansOrg"
     __type__ = "decrypter"
@@ -51,8 +60,7 @@ class SerienfansOrg(BaseDecrypter):
         ("enabled", "bool", "Activated", True),
         # 720p is small and "good enough"
         # but 1080p releases seem to be better maintained, more up-to-date
-        #("prefer_video_quality", "none;180p;240p;360p;480p;720p;1080p;2160p", "Prefer video quality", "1080p"),
-        ("prefer_video_quality", "none;180p;240p;360p;480p;720p;1080p;2160p", "Prefer video quality", "none"),
+        ("prefer_video_quality", "none;180p;240p;360p;480p;720p;1080p;2160p", "Prefer video quality", "1080p"),
         # TODO dont trust online status reported by serienfans
         ("use_first_online_hoster_only", "bool", "Use first online hoster only", False),
         # TODO implement ...
@@ -60,6 +68,8 @@ class SerienfansOrg(BaseDecrypter):
         # ("prefer_hosters", "bool", "Prefer hosters", False),
         # ("prefer_hosters_list", "str", "Prefer hosters list", "rapidgator 1fichier katfile turbobit"),
         ("include_episode_links", "bool", "Include episode links", False),
+        # FIXME with split == False, pyload should merge packages with same name but different hosters
+        # FIXME in any case, pyload should deduplicate download links per file -> download the same file only once
         ("split_packages_by_hoster", "bool", "Split packages by hoster", True),
     ]
 
@@ -68,6 +78,14 @@ class SerienfansOrg(BaseDecrypter):
     __authors__ = [
         ("milahu", "milahu@gmail.com"),
     ]
+
+    # short names are used for single-episode links at serienfans.org
+    _hoster_name_map = {
+        "1F": "1fichier",
+        "RG": "rapidgator",
+        "DD": "ddownload",
+        # TODO more
+    }
 
     _is_serienfans = False
     _is_filmfans = False
@@ -99,10 +117,16 @@ class SerienfansOrg(BaseDecrypter):
         # self.log_debug(f"pyfile.status: {pyfile.status}")
         # raise 123
 
+        self.pyfile_url_parsed = urllib.parse.urlparse(pyfile.url)
+
         # usually this is "serienfans.org" or "filmfans.org"
-        self.pyfile_netloc = urllib.parse.urlparse(pyfile.url).netloc.lower()
+        self.pyfile_netloc = self.pyfile_url_parsed.netloc.lower()
         if self.pyfile_netloc.startswith("www."):
             self.pyfile_netloc = self.pyfile_netloc[4:]
+
+        # parse query string in url fragment
+        # example: s=25 -> only fetch season 25
+        self.pyfile_fragment = urllib.parse.parse_qs(self.pyfile_url_parsed.fragment)
 
         if self.pyfile_netloc == "serienfans.org":
             self._is_serienfans = True
@@ -145,7 +169,47 @@ class SerienfansOrg(BaseDecrypter):
         else:
             self.num_seasons = 1
 
-        for season_num in range(1, 1 + self.num_seasons):
+        self._decrypt_configure()
+
+        self._decrypt_run()
+
+    def _decrypt_configure(self):
+
+        # list of known release qualities
+        self.release_quality_list = next(c for c in self.__config__ if c[0] == "prefer_video_quality")[1].split(";")[1:]
+        # self.log_debug(f"self.release_quality_list {self.release_quality_list}")
+
+        self.prefer_video_quality = self.config.get("prefer_video_quality")
+        self.use_first_online_hoster_only = self.config.get("use_first_online_hoster_only")
+        self.include_episode_links = self.config.get("include_episode_links")
+        self.include_season_links = True
+
+        # quality
+        if q := self.pyfile_fragment.get("q"):
+            self.prefer_video_quality = q[0]
+            self.log_info(f"quality: {self.prefer_video_quality}")
+
+        # season
+        if s := self.pyfile_fragment.get("s"):
+            self.season_num_list = list(map(int, re.findall("[0-9]+", " ".join(s))))
+            self.log_info(f"seasons: {self.season_num_list}")
+        else:
+            # fetch all seasons
+            self.season_num_list = range(1, 1 + self.num_seasons)
+
+        # episode
+        if e := self.pyfile_fragment.get("e"):
+            self.episode_num_list = list(map(int, re.findall("[0-9]+", " ".join(e))))
+            self.include_episode_links = True
+            self.include_season_links = False
+            self.log_info(f"episodes: {self.episode_num_list}")
+        else:
+            # fetch all episodes
+            self.episode_num_list = None
+
+    def _decrypt_run(self):
+
+        for season_num in self.season_num_list:
             self._decrypt_season(season_num)
             cache_path = self._response_2_cache
             if self._read_cache and os.path.exists(cache_path):
@@ -239,7 +303,7 @@ class SerienfansOrg(BaseDecrypter):
 
     def _decrypt_response_2(self, response_2_json):
 
-        self.log_info(f"response_2_json {repr(response_2_json)[:100]} ...")
+        #self.log_info(f"response_2_json {repr(response_2_json)[:1000]} ...")
 
         # response_2_json["qualitys"] # ["1080p", "480p", "720p"]
         # TODO filter by quality
@@ -253,54 +317,63 @@ class SerienfansOrg(BaseDecrypter):
 
         # response_2_json["bubblesLanguage"] # ?
 
-        response_2_html = response_2_json["html"]
+        if response_2_json.get("error") == True:
+            # usually "an error occured" (helpful...)
+            # caused by
+            # https://filmfans.org/shutter-island
+            message = response_2_json.get("message")
+            self.log_error(f"server error: {message}")
+            return
+
+        response_2_html = response_2_json.get("html")
+
+        if response_2_html is None:
+            self.log_error(f"no html in response_2_json: {json.dumps(response_2_json, indent=2)}")
+            return
 
         html_not_found = '\n Leider liegen zu dieser Staffel noch keine Einträge vor\n '
         if response_2_html == html_not_found:
             self.log_error("empty result")
             return
 
-        # list of known release qualities
-        release_quality_list = next(c for c in self.__config__ if c[0] == "prefer_video_quality")[1].split(";")[1:]
-        # self.log_debug(f"release_quality_list {release_quality_list}")
-
-        prefer_video_quality = self.config.get("prefer_video_quality")
-        use_first_online_hoster_only = self.config.get("use_first_online_hoster_only")
-        include_episode_links = self.config.get("include_episode_links")
-
         self.packages = []
 
         movie_soup = BeautifulSoup(response_2_html, "html.parser")
 
-        # loop releases
+        # later: sort release_list by quality
+        release_list = []
+
+        # loop unsorted releases
         for release_entry in movie_soup.select("div.entry"):
 
+            release = Release()
+            release_list.append(release)
+
+            release.entry = release_entry
+
             if self._is_serienfans:
-                # release_entry: div.row, div.row, div.list.simple
-                release_name = release_entry.select_one("small").text.strip()
+                # release.entry: div.row, div.row, div.list.simple
+                release.name = release.entry.select_one("small").text.strip()
             elif self._is_filmfans:
-                release_name = release_entry.select_one("h3 > span").text.strip()
+                release.name = release.entry.select_one("h3 > span").text.strip()
 
-            self.log_info(f"package {release_name}")
-
-            release_quality = None
-            release_size = None
+            self.log_info(f"release {release.name}")
 
             if self._is_serienfans:
                 # example: "480p | 1.3 GB"
-                release_morespec = release_entry.select_one("div:nth-child(1) > div > h3 > span.morespec").text.strip()
+                release_morespec = release.entry.select_one("div:nth-child(1) > div > h3 > span.morespec").text.strip()
                 morespec_list = release_morespec.split(" | ")
                 if len(morespec_list) >= 1:
-                    release_quality = morespec_list[0].lower()
+                    release.quality = morespec_list[0].lower()
                 if len(morespec_list) >= 2:
-                    release_size = morespec_list[1]
+                    release.size = morespec_list[1]
                 # release_audio = ?
                 # example: "4SF"
-                # release_grouptag = release_entry.select_one("div:nth-child(1) > div > h3 > span.grouptag").text.strip()
+                # release_grouptag = release.entry.select_one("div:nth-child(1) > div > h3 > span.grouptag").text.strip()
             elif self._is_filmfans:
                 # parse key-value pairs
                 release_info = dict()
-                for audiotag in release_entry.select("span.audiotag"):
+                for audiotag in release.entry.select("span.audiotag"):
                     key = audiotag.select_one("small").text.strip()
                     if key[-1] == ":":
                         key = key[:-1]
@@ -308,147 +381,212 @@ class SerienfansOrg(BaseDecrypter):
                     # print("audiotag.contents", audiotag.contents)
                     val = audiotag.contents[2].text.strip()
                     release_info[key] = val
-                # self.log_debug(f"package {release_name}: release_info {release_info}")
-                release_quality = release_info.get("Auflösung")
-                if type(release_quality) == str:
-                    release_quality = release_quality.lower()
-                release_size = release_info.get("Größe")
+                # self.log_debug(f"package {release.name}: release_info {release_info}")
+                release.quality = release_info.get("Auflösung")
+                if type(release.quality) == str:
+                    release.quality = release.quality.lower()
+                release.size = release_info.get("Größe")
                 # release_audio = release_info.get("Audio")
                 # release_grouptag = release_info.get("Releasegruppe")
 
-            if not release_quality in release_quality_list:
-                release_quality = None
+            if not release.quality in self.release_quality_list:
+                release.quality = None
 
+        if self.prefer_video_quality != "none":
+            # sort release_list by quality
+            def compare_release_quality(a, b):
+                return compare_quality(a.quality, b.quality)
+            def compare_quality(a, b):
+                if a == b: return 0
+                a = a.lower()
+                b = b.lower()
+                if a == b: return 0
+                if a.endswith("p") and b.endswith("p"):
+                    a = int(a[:-1])
+                    b = int(b[:-1])
+                    if a == b: return 0
+                    if a < b: return -1
+                    if a > b: return +1
+                return -1 # a < b
+            sort_key_release_quality = functools.cmp_to_key(compare_release_quality)
+            def filter_same_quality(release):
+                return compare_quality(release.quality, self.prefer_video_quality) == 0
+            def filter_better_quality(release):
+                return compare_quality(release.quality, self.prefer_video_quality) == +1
+            def filter_worse_quality(release):
+                return (
+                    release.quality == None
+                    or
+                    compare_quality(release.quality, self.prefer_video_quality) == -1
+                )
+            def same_quality(release_list):
+                return filter(filter_same_quality, release_list)
+            def better_quality(release_list):
+                return sorted(filter(filter_better_quality, release_list), key=sort_key_release_quality)
+            def worse_quality(release_list):
+                return reversed(sorted(filter(filter_worse_quality, release_list), key=sort_key_release_quality))
+            def format_release_list(release_list):
+                result = ""
+                for release in release_list:
+                    result += f"\n  {release.quality} {release.name} asdf"
+                    # FIXME dont run __main__ via jurigged
+                return result
+            self.log_debug(f"unsorted release_list: {format_release_list(release_list)}")
+            release_list = [
+                *(same_quality(release_list)),
+                *(better_quality(release_list)),
+                *(worse_quality(release_list)),
+            ]
+            self.log_debug(f"sorted release_list: {format_release_list(release_list)}")
+
+        # loop sorted releases
+        for release in release_list:
+
+            # TODO move down
+            """
             if (
-                release_quality and
-                prefer_video_quality != "none" and
-                release_quality != prefer_video_quality
+                release.quality and
+                self.prefer_video_quality != "none" and
+                release.quality != self.prefer_video_quality
             ):
-                self.log_debug(f"package {release_name}: skipping quality {release_quality} != {prefer_video_quality}")
+                self.log_debug(f"package {release.name}: skipping quality {release.quality} != {self.prefer_video_quality}")
                 continue
                 # TODO use other quality if the preferred quality is not available
                 # first try better quality, then worse quality
+            """
 
-            # start new package
-            release_urls = []
+            if self.include_season_links:
 
-            if self._is_serienfans:
-                hoster_link_selector = "div:nth-child(2) > a"
-            elif self._is_filmfans:
-                hoster_link_selector = "div:nth-child(3) > a"
+                # start new package
+                release.urls = []
 
-            # loop hosters
-            self.log_debug(f"package {release_name}: looping hosters")
-            for hoster_link in release_entry.select(hoster_link_selector):
+                if self._is_serienfans:
+                    hoster_link_selector = "div:nth-child(2) > a"
+                elif self._is_filmfans:
+                    hoster_link_selector = "div:nth-child(3) > a"
 
-                #self.log_debug(f"package {release_name}: hoster_link {hoster_link}")
+                # loop hosters
+                self.log_debug(f"package {release.name}: looping hosters")
+                for hoster_link in release.entry.select(hoster_link_selector):
 
-                hoster_name = hoster_link.select_one("div > span").text.strip()
-                # hoster_url returns redirect to filecrypt.co (etc)
-                # hoster_url expires after some time
+                    #self.log_debug(f"package {release.name}: hoster_link {hoster_link}")
 
-                # skip offline links
-                link_online = True
-                if hoster_link.select_one("i.st.off"):
-                    link_online = False
-                elif hoster_link.select_one("i.st.mix"):
-                    # status: mixed
-                    # only some links are online
-                    link_online = None
-                # elif hoster_link.select_one("i.st"):
-                #    link_online = True
-                #    # note: "status online" can be wrong
+                    hoster_name = hoster_link.select_one("div > span").text.strip()
+                    # hoster_url returns redirect to filecrypt.co (etc)
+                    # hoster_url expires after some time
 
-                if link_online == False:
-                    # skip offline link
-                    self.log_debug(f"package {release_name}: skipping offline hoster {hoster_name}")
-                    continue
+                    # skip offline links
+                    link_online = True
+                    if hoster_link.select_one("i.st.off"):
+                        link_online = False
+                    elif hoster_link.select_one("i.st.mix"):
+                        # status: mixed
+                        # only some links are online
+                        link_online = None
+                    # elif hoster_link.select_one("i.st"):
+                    #    link_online = True
+                    #    # note: "status online" can be wrong
 
-                link_status = "online" if link_online else "mixed"
+                    if link_online == False:
+                        # skip offline link
+                        self.log_debug(f"package {release.name}: skipping offline hoster {hoster_name}")
+                        continue
 
-                if use_first_online_hoster_only and link_online == None:
-                    # skip mixed link
-                    self.log_debug(f"package {release_name}: skipping mixed-online hoster: {hoster_name}")
-                    continue
+                    link_status = "online" if link_online else "mixed"
 
-                hoster_url = "https://" + self.pyfile_netloc + hoster_link["href"]
-                hoster_url = self._resolve_hoster_url(release_name, hoster_url)
-                if not hoster_url:
-                    continue
+                    if self.use_first_online_hoster_only and link_online == None:
+                        # skip mixed link
+                        self.log_debug(f"package {release.name}: skipping mixed-online hoster: {hoster_name}")
+                        continue
 
-                self.log_info(f"package {release_name}: hoster {hoster_name} {link_status} {hoster_url}")
-                release_urls.append((hoster_name, hoster_url))
+                    hoster_url = "https://" + self.pyfile_netloc + hoster_link["href"]
+                    hoster_url = self._resolve_hoster_url(release.name, hoster_url)
+                    if not hoster_url:
+                        continue
 
-                # break # debug: stop after first hoster_link
+                    self.log_info(f"release {release.name}: hoster {hoster_name} {link_status} {hoster_url}")
+                    release.urls.append((hoster_name, hoster_url))
 
-                if use_first_online_hoster_only and link_online == True:
-                    # stop after first online link
-                    self.log_debug(f"package {release_name}: using first online hoster only: {hoster_name}")
-                    break
+                    # break # debug: stop after first hoster_link
 
-            self._add_release_urls(release_name, release_size, release_urls)
-            release_urls = []
+                    if self.use_first_online_hoster_only and link_online == True:
+                        # stop after first online link
+                        self.log_debug(f"package {release.name}: using first online hoster only: {hoster_name}")
+                        break
 
-            if self._is_serienfans and include_episode_links:
+                self._add_release_urls(release)
+                # start new package
+                release.urls = []
+
+            if self._is_serienfans and self.include_episode_links:
 
                 # add episode links to separate package
-                release_urls = []
-                package_name = release_name + " [episodes]"
-                release_size = None
+                # start new package
+                release.urls = []
+                package_name = release.name + " [episodes]"
+                release.size = None
 
                 # loop hosters
                 # NOTE most download links are complete seasons
-                for episode_div in release_entry.select("div.list.simple > div.row:not(.head)"):
+                for episode_div in release.entry.select("div.list.simple > div.row:not(.head)"):
 
                     episode_num = episode_div.select_one("div:nth-child(1)").text.strip() # "1." "2." "3." ...
                     episode_num = episode_num.replace(".", "")
                     episode_num = int(episode_num)
 
+                    if self.episode_num_list and not episode_num in self.episode_num_list:
+                        continue
+
                     episode_name = episode_div.select_one("div:nth-child(2)").text.strip()
 
-                    self.log_info(f"package {release_name}: episode {episode_num} {episode_name}")
+                    self.log_info(f"release {release.name}: episode {episode_num} {episode_name}")
 
                     # loop hosters
                     done_head = False
                     for hoster_link in episode_div.select("div.row > a"):
                         """
                         if not done_head:
-                            self.log_info(f"package {release_name}: episode {episode_num} {episode_name}")
+                            self.log_info(f"release {release.name}: episode {episode_num} {episode_name}")
                             done_head = True
                         """
                         short_hoster_name = hoster_link.select_one("div > span").text.strip()
+                        hoster_name = self._hoster_name_map.get(short_hoster_name)
+                        if not hoster_name:
+                            self.log_warning(f"using short_hoster_name as hoster_name: {short_hoster_name}. TODO add hoster_name to _hoster_name_map")
+                            hoster_name = short_hoster_name
                         # TODO translate short_hoster_name to hoster_name
                         hoster_url = "https://" + self.pyfile_netloc + hoster_link["href"]
-                        hoster_url = self._resolve_hoster_url(release_name, hoster_url)
+                        hoster_url = self._resolve_hoster_url(release.name, hoster_url)
                         if not hoster_url:
                             continue
-                        self.log_info(f"package {release_name}: hoster {short_hoster_name} {hoster_url}")
-                        release_urls.append((short_hoster_name, hoster_url))
+                        self.log_info(f"release {release.name}: hoster {hoster_name} {hoster_url}")
+                        release.urls.append((hoster_name, hoster_url))
 
-            release_size = None # ?
-            self._add_release_urls(release_name, release_size, release_urls)
-            release_urls = []
+            release.size = None # ?
+            self._add_release_urls(release)
+            # start new package
+            release.urls = []
 
 
 
-    def _add_release_urls(self, release_name, release_size, release_urls):
-        if not release_urls:
+    def _add_release_urls(self, release):
+        if not release.urls:
             return
-        package_name = release_name
-        if release_size:
-            package_name += f" [{release_size}]"
-        # TODO also add release_languages
+        package_name = release.name
+        if release.size:
+            package_name += f" [{release.size}]"
+        # TODO also add release_languages to package_name
         split_packages_by_hoster = self.config.get("split_packages_by_hoster")
         if split_packages_by_hoster:
-            for hoster_name, hoster_url in release_urls:
+            for hoster_name, hoster_url in release.urls:
                 _package_name = package_name + f" [{hoster_name}]"
                 self.packages += [
                     (_package_name, [hoster_url], _package_name)
                 ]
         else:
-            release_urls = list(map(lambda x: x[1], release_urls))
+            package_urls = list(map(lambda x: x[1], release.urls))
             self.packages += [
-                (package_name, release_urls, package_name)
+                (package_name, package_urls, package_name)
             ]
 
 
@@ -481,7 +619,7 @@ class SerienfansOrg(BaseDecrypter):
 
         # if response.status_code != 302:
         #     # status_code can be 429 = too many requests
-        #     self.log_info(f"package {release_name}: response.status_code", response.status_code)
+        #     self.log_info(f"release {release_name}: response.status_code", response.status_code)
 
         # assert response.status_code == 302
 
@@ -494,10 +632,111 @@ class SerienfansOrg(BaseDecrypter):
             self.log_error(f"got no redirect from {hoster_url}")
             return
 
-        #self.log_info(f"package {release_name}: redirect {hoster_url} -> {hoster_url_2}")
+        #self.log_info(f"release {release_name}: redirect {hoster_url} -> {hoster_url_2}")
         hoster_url = hoster_url_2
         return hoster_url
 
+
+# TODO move this to some util.py
+def _mock_decrypter(cls):
+    import logging
+    from pyload.core.managers.file_manager import FileManager
+    from pyload.core.network.request_factory import RequestFactory
+    #from pyload.core.network.request_factory import get_request
+    pyload_config = {
+        "general": {
+            "ssl_verify": False, # Verify SSL certificates
+        },
+        "download": {
+            "ipv6": True, # allow ipv6
+            "interface": "", # Download interface to bind (IP Address)
+            "limit_speed": None,
+        },
+        "proxy": {
+            "enabled": False,
+        },
+    }
+    class MockConfig:
+        # def get_plugin(self, plugin, key):
+        #     print("MockConfig.get_plugin", plugin, key)
+        #     return None
+        def get(self, scope, key):
+            try:
+                return pyload_config[scope][key]
+            except KeyError:
+                pass
+            print("MockConfig.get", scope, key)
+            return None
+    class MockPyload:
+        log = logging.getLogger(__name__)
+        #debug = 1 # compact debug log
+        debug = 2 # trace debug log
+        config = MockConfig()
+        tempdir = "/tmp/pyLoad" # pyload.tempdir
+        def __init__(self):
+            self.log.setLevel(logging.DEBUG)
+            self.files = self.file_manager = FileManager(self)
+            self.req = self.request_factory = RequestFactory(self)
+        def _(self, *a, **k):
+            # translator function?
+            return a[0]
+    mock_pyload = MockPyload()
+    class MockPackage:
+        password = None
+    import pycurl
+    class MockPyFile:
+        url = "http://localhost:99999999/"
+        id = 123
+        # set status for check_status in pyload/plugins/base/hoster.py
+        # pyload.core.datatypes.enums.DownloadStatus.STARTING = 7
+        status = 7
+        abort = False
+        _ = mock_pyload._
+        def __init__(
+            # actually "manager" is pyload.files
+            # self.files = self.file_manager = FileManager(self)
+            # self, manager, id, url, name, size, status, error, pluginname, package, order
+            self, *args, **kwargs
+        ):
+            if args:
+                print("MockPyFile.__init__: args", args, kwargs)
+                manager, id, url, name, size, status, error, pluginname, package, order = args
+                self.id = id
+                self.url = url
+                self.name = name
+                self.size = size
+                self.status = status
+            #self.m = self.manager = pycurl.CurlMulti() # no! this is FileManager
+            #self.m = self.manager = manager
+            self.m = self.manager = mock_pyload.files
+            self._package = MockPackage()
+        def package(self):
+            return self._package
+    def mock_init(self, *a, **k):
+        mock_pyfile = MockPyFile()
+        mock_pyload = MockPyload()
+        self.pyload = mock_pyload
+        self.pyfile = mock_pyfile
+        self.config = dict()
+        for config_item in self.__config__:
+            key, _type, desc, default = config_item
+            self.config[key] = default
+        self.log_debug = lambda *a: print("debug:", *a)
+        self.log_info = lambda *a: print("info:", *a)
+        self.log_warning = lambda *a: print("warning:", *a)
+        self.log_error = lambda *a: print("error:", *a)
+    #cls.__init__ = mock_init
+    pyfile = MockPyFile()
+    decrypter = cls(pyfile)
+    decrypter.log_debug = lambda *a: print("debug:", *a)
+    decrypter.log_info = lambda *a: print("info:", *a)
+    decrypter.log_warning = lambda *a: print("warning:", *a)
+    decrypter.log_error = lambda *a: print("error:", *a)
+    decrypter.config = dict()
+    for config_item in decrypter.__config__:
+        key, _type, desc, default = config_item
+        decrypter.config[key] = default
+    return decrypter
 
 
 if __name__ == "__main__":
@@ -508,113 +747,12 @@ if __name__ == "__main__":
     python src/pyload/plugins/decrypters/SerienfansOrg.py https://filmfans.org/parasite
     """
 
-    # TODO move this to some util.py
-    def mock_decrypter(cls):
-        import logging
-        from pyload.core.managers.file_manager import FileManager
-        from pyload.core.network.request_factory import RequestFactory
-        #from pyload.core.network.request_factory import get_request
-        pyload_config = {
-            "general": {
-                "ssl_verify": False, # Verify SSL certificates
-            },
-            "download": {
-                "ipv6": True, # allow ipv6
-                "interface": "", # Download interface to bind (IP Address)
-                "limit_speed": None,
-            },
-            "proxy": {
-                "enabled": False,
-            },
-        }
-        class MockConfig:
-            # def get_plugin(self, plugin, key):
-            #     print("MockConfig.get_plugin", plugin, key)
-            #     return None
-            def get(self, scope, key):
-                try:
-                    return pyload_config[scope][key]
-                except KeyError:
-                    pass
-                print("MockConfig.get", scope, key)
-                return None
-        class MockPyload:
-            log = logging.getLogger(__name__)
-            #debug = 1 # compact debug log
-            debug = 2 # trace debug log
-            config = MockConfig()
-            tempdir = "/tmp/pyLoad" # pyload.tempdir
-            def __init__(self):
-                self.log.setLevel(logging.DEBUG)
-                self.files = self.file_manager = FileManager(self)
-                self.req = self.request_factory = RequestFactory(self)
-            def _(self, *a, **k):
-                # translator function?
-                return a[0]
-        mock_pyload = MockPyload()
-        class MockPackage:
-            password = None
-        import pycurl
-        class MockPyFile:
-            url = "http://localhost:99999999/"
-            id = 123
-            # set status for check_status in pyload/plugins/base/hoster.py
-            # pyload.core.datatypes.enums.DownloadStatus.STARTING = 7
-            status = 7
-            abort = False
-            _ = mock_pyload._
-            def __init__(
-                # actually "manager" is pyload.files
-                # self.files = self.file_manager = FileManager(self)
-                # self, manager, id, url, name, size, status, error, pluginname, package, order
-                self, *args, **kwargs
-            ):
-                if args:
-                    print("MockPyFile.__init__: args", args, kwargs)
-                    manager, id, url, name, size, status, error, pluginname, package, order = args
-                    self.id = id
-                    self.url = url
-                    self.name = name
-                    self.size = size
-                    self.status = status
-                #self.m = self.manager = pycurl.CurlMulti() # no! this is FileManager
-                #self.m = self.manager = manager
-                self.m = self.manager = mock_pyload.files
-                self._package = MockPackage()
-            def package(self):
-                return self._package
-        def mock_init(self, *a, **k):
-            mock_pyfile = MockPyFile()
-            mock_pyload = MockPyload()
-            self.pyload = mock_pyload
-            self.pyfile = mock_pyfile
-            self.config = dict()
-            for config_item in self.__config__:
-                key, _type, desc, default = config_item
-                self.config[key] = default
-            self.log_debug = lambda *a: print("debug:", *a)
-            self.log_info = lambda *a: print("info:", *a)
-            self.log_warning = lambda *a: print("warning:", *a)
-            self.log_error = lambda *a: print("error:", *a)
-        #cls.__init__ = mock_init
-        pyfile = MockPyFile()
-        decrypter = cls(pyfile)
-        decrypter.log_debug = lambda *a: print("debug:", *a)
-        decrypter.log_info = lambda *a: print("info:", *a)
-        decrypter.log_warning = lambda *a: print("warning:", *a)
-        decrypter.log_error = lambda *a: print("error:", *a)
-        decrypter.config = dict()
-        for config_item in decrypter.__config__:
-            key, _type, desc, default = config_item
-            decrypter.config[key] = default
-        return decrypter
-
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument("url")
     args = parser.parse_args()
 
-    decrypter = mock_decrypter(SerienfansOrg)
+    decrypter = _mock_decrypter(SerienfansOrg)
 
     # write cache files
     decrypter._write_cache = True
