@@ -19,6 +19,7 @@ from ..anticaptchas.CoinHive import CoinHive
 from ..anticaptchas.ReCaptcha import ReCaptcha
 from ..anticaptchas.SolveMedia import SolveMedia
 from ..anticaptchas.CutCaptcha import CutCaptcha
+from ..anticaptchas.CircleCaptcha import CircleCaptcha
 
 from ..base.decrypter import BaseDecrypter
 from ..helpers import replace_patterns
@@ -236,34 +237,21 @@ class FilecryptCc(BaseDecrypter):
     def _handle_circle_captcha(self, url):
         m = re.search(self.CIRCLE_CAPTCHA_PATTERN, self.data)
         if m is not None:
+            # Please click into the open circle to continue.
             self.log_debug(
                 "Circle Captcha URL: {}".format(
                     urllib.parse.urljoin(self.pyfile.url, m.group(1))
                 )
             )
-
             captcha_url = urllib.parse.urljoin(self.pyfile.url, m.group(1))
-
             self.log_debug(f"Circle Captcha URL: {captcha_url}")
-
-            """
-            FIXME OCR fails to solve captcha
-
-            [2024-09-18 21:03:33]  DEBUG               pyload  DECRYPTER FilecryptCc[3306]: Circle Captcha URL: https://filecrypt.cc/captcha/circle.php
-            [2024-09-18 21:03:33]  DEBUG               pyload  DECRYPTER FilecryptCc[3306]: Circle Captcha URL: https://filecrypt.cc/captcha/circle.php
-            [2024-09-18 21:03:33]  DEBUG               pyload  ANTICAPTCHA FilecryptCc[3306]: BaseCaptcha | LOAD URL https://filecrypt.cc/captcha/circle.php | get={} | post={} | ref=False | cookies=True | just_header=False | decode=False | multipart=False | redirect=True | req=<src.pyload.core.network.browser.Browser object at 0x7f77fc1c3490>
-            [2024-09-18 21:03:34]  INFO                pyload  ANTICAPTCHA FilecryptCc[3306]: BaseCaptcha | Using OCR to decrypt captcha...
-            [2024-09-18 21:03:34]  WARNING             pyload  ANTICAPTCHA FilecryptCc[3306]: BaseCaptcha | No OCR result
-            """
-
-            captcha_code = self.captcha.decrypt(
-                captcha_url, input_type="png", output_type="positional"
-            )
-
+            captcha_image = self._filecrypt_load_url(captcha_url, decode=False)
+            self.captcha = CircleCaptcha(self.pyfile)
+            captcha_coords = self.captcha.challenge(captcha_image)
             return self._filecrypt_load_url(
                 # TODO parse dynamic input name: "button" or "buttonx" or ...
-                #url, post={"button.x": captcha_code[0], "button.y": captcha_code[1]}
-                url, post={"buttonx.x": captcha_code[0], "buttonx.y": captcha_code[1]}
+                #url, post={"button.x": captcha_coords[0], "button.y": captcha_coords[1]}
+                url, post={"buttonx.x": captcha_coords[0], "buttonx.y": captcha_coords[1]}
             )
 
         else:
