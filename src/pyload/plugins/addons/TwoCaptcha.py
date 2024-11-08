@@ -36,6 +36,7 @@ class TwoCaptcha(BaseAddon):
             #"ReCaptcha",
             #"HCaptcha",
             "CutCaptcha",
+            "CircleCaptcha",
         )),
         (
             "refund",
@@ -59,6 +60,7 @@ class TwoCaptcha(BaseAddon):
         #"ReCaptcha": "RecaptchaV2TaskProxyless",
         #"HCaptcha": "HCaptchaTaskProxyless",
         "CutCaptcha": "CutCaptchaTaskProxyless",
+        "CircleCaptcha": "CoordinatesTask",
     }
 
     # https://2captcha.com/api-docs
