@@ -84,10 +84,9 @@ class FilecryptCc(BaseDecrypter):
 
     def decrypt(self, pyfile):
         pyfile.url = replace_patterns(pyfile.url, self.URL_REPLACEMENTS)
-        self.log_info("74 pyfile.url", pyfile.url)
 
         self.data = self._filecrypt_load_url(pyfile.url)
-        self.log_info("plugins/decrypters/FilecryptCc.py: self.data[:1000]", self.data[:1000])
+        #self.log_info("self.data[:1000]", self.data[:1000])
 
         # @NOTE: "content notfound" is NOT a typo
         if (
@@ -96,27 +95,24 @@ class FilecryptCc(BaseDecrypter):
             or
             "<strong>Not Found</strong></h2>" in self.data
         ):
-            self.log_info("plugins/decrypters/FilecryptCc.py: offline")
             self.offline()
 
-        self.log_info("plugins/decrypters/FilecryptCc.py: handle_password_protection")
+        self.log_info("handle_password_protection")
         self.handle_password_protection()
 
-        self.log_info("plugins/decrypters/FilecryptCc.py: handle_captcha")
         self.site_with_links = self.handle_captcha(pyfile.url)
-        self.log_info("plugins/decrypters/FilecryptCc.py: self.site_with_links", repr(self.site_with_links)[:1000])
+        #self.log_info("self.site_with_links", repr(self.site_with_links)[:1000])
 
         if self.site_with_links is None:
             # FIXME why? captcha should be solved
-            self.log_info("plugins/decrypters/FilecryptCc.py: retry_captcha")
+            self.log_info("retry_captcha")
             self.retry_captcha()
 
         elif self.site_with_links == "":
-            self.log_info("plugins/decrypters/FilecryptCc.py: retry")
+            self.log_info("retry")
             self.retry()
 
         if self.config.get("handle_mirror_pages"):
-            self.log_info("plugins/decrypters/FilecryptCc.py: handle_mirror_pages")
             self.handle_mirror_pages()
 
         for handle in (
@@ -124,7 +120,6 @@ class FilecryptCc(BaseDecrypter):
             self.handle_weblinks,
             self.handle_dlc_container,
         ):
-            self.log_info("plugins/decrypters/FilecryptCc.py: handle", handle)
             handle()
             if self.urls:
                 self.packages = [
@@ -172,12 +167,11 @@ class FilecryptCc(BaseDecrypter):
     def search_captcha(self, html):
         for pattern in self.CAPTCHA_PATTERNS:
             if match := re.search(pattern, html):
-                self.log_info("plugins/decrypters/FilecryptCc.py: search_captcha: found captcha", repr(match.group(0)))
+                self.log_info("search_captcha: found captcha", repr(match.group(0)))
                 return True
         return False
 
     def handle_captcha(self, submit_url):
-        self.log_info("plugins/decrypters/FilecryptCc.py: handle_captcha: submit_url", submit_url)
         if self.search_captcha(self.data):
             for handle in (
                 self._handle_internal_captcha,
@@ -188,23 +182,14 @@ class FilecryptCc(BaseDecrypter):
                 self._handle_recaptcha_captcha,
                 self._handle_cutcaptcha_captcha,
             ):
-
-                self.log_info("plugins/decrypters/FilecryptCc.py: handle_captcha: handle", handle)
-
                 res = handle(submit_url)
-
-                #self.log_info("plugins/decrypters/FilecryptCc.py: handle_captcha: handle -> res[:1000]", repr(res)[:1000])
-                self.log_info("plugins/decrypters/FilecryptCc.py: handle_captcha: handle -> res", repr(res))
                 # res: html code
-
                 if res is None:
                     continue
-
                 elif res == "":
                     return res
-
                 if self.search_captcha(res):
-                    self.log_info("plugins/decrypters/FilecryptCc.py: handle_captcha: found another captcha in res")
+                    self.log_info("found another captcha in res")
                     return None
 
                 else:
@@ -334,7 +319,6 @@ class FilecryptCc(BaseDecrypter):
         api_key = m.group(1)
         # jd: CutCaptchaChallenge(plugin, siteKey, apiKey)
         self.captcha = CutCaptcha(self.pyfile)
-        # example: wtFFUUHAxlOI4bNQjRsunHTFPZriu56a
         captcha_token = self.captcha.challenge(captcha_key, api_key)
         self.log_debug(f"Cutcaptcha: captcha_token={captcha_token}")
         return self._filecrypt_load_url(url, post={"cap_token": captcha_token})
