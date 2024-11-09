@@ -53,7 +53,7 @@ class KnigavuheOrg(BaseDecrypter):
 
     def _check_exists(self, url):
         headers = self.load(url, just_header=True)
-        return "code" in headers and headers.get("code") == "200"
+        return "code" in headers and headers.get("code") == 200
 
     def _get_book_cover(self, html):
         text = re.search(self.COVER_PATTERN, html)
