@@ -7,10 +7,10 @@ from ..base.simple_downloader import SimpleDownloader
 class WebshareCz(SimpleDownloader):
     __name__ = "WebshareCz"
     __type__ = "downloader"
-    __version__ = "0.26"
+    __version__ = "0.27"
     __status__ = "testing"
 
-    __pattern__ = r"https?://(?:www\.)?(en\.)?webshare\.cz/(?:#/)?(file/)?(?P<ID>\w+)"
+    __pattern__ = r"https?://(?:www\.)?(?:en\.)?webshare\.cz/(?:#/)?(?:file/)(?P<ID>\w+)"
     __config__ = [
         ("enabled", "bool", "Activated", True),
         ("use_premium", "bool", "Use premium account if available", True),
@@ -19,7 +19,7 @@ class WebshareCz(SimpleDownloader):
         ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10),
     ]
 
-    __description__ = """WebShare.cz downloader plugin"""
+    __description__ = """Webshare.cz downloader plugin"""
     __license__ = "GPLv3"
     __authors__ = [
         ("stickell", "l.stickell@yahoo.it"),
@@ -59,7 +59,7 @@ class WebshareCz(SimpleDownloader):
         self.chunk_limit = 2
 
     def handle_free(self, pyfile):
-        wst = self.account.get_data("wst") if self.account else None
+        wst = self.account.get_data("wst") if self.account else ""
 
         api_data = self.api_request(
             "file_link", ident=self.info["pattern"]["ID"], wst=wst
