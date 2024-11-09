@@ -87,8 +87,7 @@ class KnigavuheOrg(BaseDecrypter):
         if cover: urls.append(f"{cover}#cover.jpg")
 
         package_folder = title
-        if author:
-            package_folder = f"{author} - {package_folder}"
+        if author: package_folder = f"{author} - {package_folder}"
 
         self.packages.append(
             (
