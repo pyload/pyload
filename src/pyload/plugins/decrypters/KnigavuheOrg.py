@@ -26,7 +26,6 @@ class KnigavuheOrg(BaseDecrypter):
         text = re.search(self.BOOK_TITLE_PATTERN, html)
         if not text:
             self.fail("Could not obtain title.")
-            return
 
         title = json.loads(text[1])["name"]
         volume = re.search(self.VOLUME_PATTERN.format(title), html)
@@ -39,7 +38,6 @@ class KnigavuheOrg(BaseDecrypter):
         text = re.search(self.BOOK_PLAYER_DATA_PATTERN, html)
         if not text:
             self.fail("Could not find BookPlayer data.")
-            return
 
         return json.loads(text.group(1))
 
@@ -47,7 +45,6 @@ class KnigavuheOrg(BaseDecrypter):
         text = re.search(self.COVER_PATTERN, html)
         if not text:
             self.fail("Could not find cover url.")
-            return
 
         s, e = text.span()
         return html[s:e]
