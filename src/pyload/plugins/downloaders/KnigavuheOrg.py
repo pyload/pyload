@@ -15,5 +15,10 @@ class KnigavuheOrg(SimpleDownloader):
 
     OFFLINE_PATTERN = r">404 Not Found<"
 
+    def setup(self):
+        self.multi_dl = True
+        self.resume_download = True
+        self.chunk_limit = -1
+
     def handle_direct(self, pyfile):
         [self.link, pyfile.name] = pyfile.url.split("#")
