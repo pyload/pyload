@@ -61,7 +61,7 @@ class KnigavuheOrg(BaseDecrypter):
             self.log_warning("Could not find cover.")
             return None
 
-        cover = text.group(1)
+        cover = text.group()
 
         # Might work might not discovered by manual experimenting
         bigger_cover = cover.replace("1-2", "1-4")
