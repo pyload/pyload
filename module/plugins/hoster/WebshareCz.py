@@ -8,17 +8,17 @@ from ..internal.SimpleHoster import SimpleHoster
 class WebshareCz(SimpleHoster):
     __name__ = "WebshareCz"
     __type__ = "hoster"
-    __version__ = "0.26"
+    __version__ = "0.27"
     __status__ = "testing"
 
-    __pattern__ = r'https?://(?:www\.)?(en\.)?webshare\.cz/(?:#/)?(file/)?(?P<ID>\w+)'
+    __pattern__ = r'https?://(?:www\.)?(?:en\.)?webshare\.cz/(?:#/)?(?:file/)(?P<ID>\w+)'
     __config__ = [("activated", "bool", "Activated", True),
                   ("use_premium", "bool", "Use premium account if available", True),
                   ("fallback", "bool", "Fallback to free download if premium fails", True),
                   ("chk_filesize", "bool", "Check file size", True),
                   ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10)]
 
-    __description__ = """WebShare.cz hoster plugin"""
+    __description__ = """Webshare.cz hoster plugin"""
     __license__ = "GPLv3"
     __authors__ = [("stickell", "l.stickell@yahoo.it"),
                    ("rush", "radek.senfeld@gmail.com"),
@@ -55,7 +55,7 @@ class WebshareCz(SimpleHoster):
         self.chunk_limit = 2
 
     def handle_free(self, pyfile):
-        wst = self.account.get_data('wst') if self.account else None
+        wst = self.account.get_data('wst') if self.account else ""
 
         api_data = self.api_response("file_link", ident=self.info['pattern']['ID'], wst=wst)
 
