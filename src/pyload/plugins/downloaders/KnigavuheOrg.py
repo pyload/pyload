@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from ..base.simple_downloader import SimpleDownloader
-
+from urllib.parse import urlparse, urlunparse
 
 class KnigavuheOrg(SimpleDownloader):
     __name__ = "KnigavuheOrg"
@@ -22,4 +22,5 @@ class KnigavuheOrg(SimpleDownloader):
         self.retries = 4
 
     def handle_direct(self, pyfile):
-        [self.link, pyfile.name] = pyfile.url.split("#")
+        url = urlparse(pyfile.url)
+        [self.link, pyfile.name] = [urlunparse(url._replace(fragment="")), url.fragment]
