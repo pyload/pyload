@@ -18,7 +18,7 @@ class KnigavuheOrg(SimpleDownloader):
     def setup(self):
         self.multi_dl = True
         self.resume_download = True
-        self.chunk_limit = -1
+        self.chunk_limit = 2
         self.retries = 4
 
     def handle_direct(self, pyfile):
