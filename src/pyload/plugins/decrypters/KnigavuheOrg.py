@@ -5,6 +5,7 @@ from ..base.decrypter import BaseDecrypter
 import re
 import json
 import os
+from urllib.parse import urlparse
 
 
 class KnigavuheOrg(BaseDecrypter):
@@ -58,7 +59,7 @@ class KnigavuheOrg(BaseDecrypter):
         if not data or not title:
             return
 
-        urls = [f"{x['url']}#{x['title']}{os.path.splitext(x['url'])[1]}" for x in data]
+        urls = [f"{x['url']}#{x['title']}{os.path.splitext(urlparse(x['url']).path)[1]}" for x in data]
         urls.append(f"{cover}#cover.jpg")
 
         package = pyfile.package()
