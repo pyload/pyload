@@ -8,8 +8,8 @@ import os
 from urllib.parse import quote, urlparse
 
 
-class KnigavuheOrg(BaseDecrypter):
-    __name__ = "KnigavuheOrg"
+class KnigavuheOrgFolder(BaseDecrypter):
+    __name__ = "KnigavuheOrgFolder"
     __type__ = "decrypter"
     __version__ = "0.01"
     __status__ = "testing"
