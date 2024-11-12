@@ -81,7 +81,7 @@ class KnigavuheOrgFolder(BaseDecrypter):
         cover = self._get_book_cover(html)
 
         if not data or not title:
-            return
+            self.fail("No book data or title found.")
 
         urls = [f"{x['url']}#{quote(x['title'] + os.path.splitext(urlparse(x['url']).path)[1])}" for x in data]
         if cover: urls.append(f"{cover}#cover.jpg")
