@@ -60,11 +60,14 @@ class SerienfansOrg(BaseDecrypter):
         ("enabled", "bool", "Activated", True),
         # 720p is small and "good enough"
         # but 1080p releases seem to be better maintained, more up-to-date
-        ("prefer_video_quality", "none;180p;240p;360p;480p;720p;1080p;2160p", "Prefer video quality", "1080p"),
+        ("prefer_video_quality", "none;180p;240p;360p;480p;720p;1080p;1440p;2160p;4320p", "Prefer video quality", "1080p"),
+        ("max_video_quality", "none;180p;240p;360p;480p;720p;1080p;1440p;2160p;4320p", "Maximum video quality", "1080p"),
+        ("min_video_quality", "none;180p;240p;360p;480p;720p;1080p;1440p;2160p;4320p", "Minimum video quality", "720p"),
         # TODO dont trust online status reported by serienfans
         ("use_first_online_hoster_only", "bool", "Use first online hoster only", False),
         # TODO implement ...
         # ("randomize_online_hosters", "bool", "Randomize online hosters", True),
+        ("prefer_hoster", "none;rapidgator;1fichier;katfile;turbobit;ddownload", "Prefer hoster", "rapidgator"),
         # ("prefer_hosters", "bool", "Prefer hosters", False),
         # ("prefer_hosters_list", "str", "Prefer hosters list", "rapidgator 1fichier katfile turbobit"),
         ("include_episode_links", "bool", "Include episode links", False),
@@ -85,6 +88,9 @@ class SerienfansOrg(BaseDecrypter):
         "RG": "rapidgator",
         "DD": "ddownload",
         # TODO more
+        # "??": "katfile",
+        # "??": "turbobit",
+        # "??": "frdl",
     }
 
     _is_serienfans = False
@@ -180,9 +186,18 @@ class SerienfansOrg(BaseDecrypter):
         # self.log_debug(f"self.release_quality_list {self.release_quality_list}")
 
         self.prefer_video_quality = self.config.get("prefer_video_quality")
+        self.prefer_hoster = self.config.get("prefer_hoster")
+        self.max_video_quality = self.config.get("max_video_quality")
+        self.min_video_quality = self.config.get("min_video_quality")
         self.use_first_online_hoster_only = self.config.get("use_first_online_hoster_only")
         self.include_episode_links = self.config.get("include_episode_links")
         self.include_season_links = True
+
+        # "none" -> None
+        self.log_info(f"self.config {self.config}")
+        for key in self.config.keys():
+            if hasattr(self, key) and getattr(self, key) == "none":
+                setattr(self, key, None)
 
         # quality
         if q := self.pyfile_fragment.get("q"):
@@ -392,7 +407,7 @@ class SerienfansOrg(BaseDecrypter):
             if not release.quality in self.release_quality_list:
                 release.quality = None
 
-        if self.prefer_video_quality != "none":
+        if self.prefer_video_quality != None:
             # sort release_list by quality
             def compare_release_quality(a, b):
                 return compare_quality(a.quality, b.quality)
@@ -401,6 +416,7 @@ class SerienfansOrg(BaseDecrypter):
                 a = a.lower()
                 b = b.lower()
                 if a == b: return 0
+                # TODO "p" or "i" = progressive or interlaced
                 if a.endswith("p") and b.endswith("p"):
                     a = int(a[:-1])
                     b = int(b[:-1])
@@ -412,8 +428,22 @@ class SerienfansOrg(BaseDecrypter):
             def filter_same_quality(release):
                 return compare_quality(release.quality, self.prefer_video_quality) == 0
             def filter_better_quality(release):
+                if (
+                    self.max_video_quality != None
+                    and
+                    compare_quality(release.quality, self.max_video_quality) == +1
+                ):
+                    # release.quality is better than self.max_video_quality
+                    return False
                 return compare_quality(release.quality, self.prefer_video_quality) == +1
             def filter_worse_quality(release):
+                if (
+                    self.min_video_quality != None
+                    and
+                    compare_quality(release.quality, self.min_video_quality) == -1
+                ):
+                    # release.quality is worse than self.min_video_quality
+                    return False
                 return (
                     release.quality == None
                     or
@@ -428,16 +458,19 @@ class SerienfansOrg(BaseDecrypter):
             def format_release_list(release_list):
                 result = ""
                 for release in release_list:
-                    result += f"\n  {release.quality} {release.name} asdf"
-                    # FIXME dont run __main__ via jurigged
+                    # TODO use NamedTuple for release.urls
+                    # no. all release.urls are empty here
+                    # hosters_str = ", ".join(list(set(map(lambda x: x[0], release.urls))))
+                    # result += f"\n  {release.quality}   {release.name}   size: {release.size}   hosters: {hosters_str}"
+                    result += f"\n  {release.quality}   {release.name}   size: {release.size}"
                 return result
-            self.log_debug(f"unsorted release_list: {format_release_list(release_list)}")
+            self.log_debug(f"raw release_list: {format_release_list(release_list)}")
             release_list = [
                 *(same_quality(release_list)),
                 *(better_quality(release_list)),
                 *(worse_quality(release_list)),
             ]
-            self.log_debug(f"sorted release_list: {format_release_list(release_list)}")
+            self.log_debug(f"sorted and filtered release_list: {format_release_list(release_list)}")
 
         # loop sorted releases
         for release in release_list:
@@ -446,7 +479,7 @@ class SerienfansOrg(BaseDecrypter):
             """
             if (
                 release.quality and
-                self.prefer_video_quality != "none" and
+                self.prefer_video_quality != None and
                 release.quality != self.prefer_video_quality
             ):
                 self.log_debug(f"package {release.name}: skipping quality {release.quality} != {self.prefer_video_quality}")
@@ -494,6 +527,7 @@ class SerienfansOrg(BaseDecrypter):
 
                     link_status = "online" if link_online else "mixed"
 
+                    # TODO remove. dont trust the online status
                     if self.use_first_online_hoster_only and link_online == None:
                         # skip mixed link
                         self.log_debug(f"package {release.name}: skipping mixed-online hoster: {hoster_name}")
@@ -505,6 +539,7 @@ class SerienfansOrg(BaseDecrypter):
                         continue
 
                     self.log_info(f"release {release.name}: hoster {hoster_name} {link_status} {hoster_url}")
+                    # TODO use NamedTuple for release.urls
                     release.urls.append((hoster_name, hoster_url))
 
                     # break # debug: stop after first hoster_link
@@ -560,6 +595,7 @@ class SerienfansOrg(BaseDecrypter):
                         if not hoster_url:
                             continue
                         self.log_info(f"release {release.name}: hoster {hoster_name} {hoster_url}")
+                        # TODO use NamedTuple for release.urls
                         release.urls.append((hoster_name, hoster_url))
 
             release.size = None # ?
@@ -576,14 +612,26 @@ class SerienfansOrg(BaseDecrypter):
         if release.size:
             package_name += f" [{release.size}]"
         # TODO also add release_languages to package_name
+        # TODO config: use_preferred_hoster_only
+        # TODO if preferred hoster was found, add other hosters in "paused" state (package collector)
+        # and only add preferred hoster links to the download queue
+        if self.prefer_hoster != None:
+            # sort hosters. preferred hoster first
+            release.urls = [
+                # TODO use NamedTuple for release.urls
+                *filter(lambda hu: hu[0] == self.prefer_hoster, release.urls),
+                *filter(lambda hu: hu[0] != self.prefer_hoster, release.urls),
+            ]
         split_packages_by_hoster = self.config.get("split_packages_by_hoster")
         if split_packages_by_hoster:
+            # TODO use NamedTuple for release.urls
             for hoster_name, hoster_url in release.urls:
                 _package_name = package_name + f" [{hoster_name}]"
                 self.packages += [
                     (_package_name, [hoster_url], _package_name)
                 ]
         else:
+            # TODO use NamedTuple for release.urls
             package_urls = list(map(lambda x: x[1], release.urls))
             self.packages += [
                 (package_name, package_urls, package_name)
