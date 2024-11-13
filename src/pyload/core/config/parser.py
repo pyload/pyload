@@ -346,6 +346,9 @@ class ConfigParser:
         """
         return self.plugin[plugin][option]["value"]
 
+    def get_options(self, plugin):
+        return self.plugin[plugin].keys()
+
     def set_plugin(self, plugin, option, value):
         """
         sets a value for a plugin.

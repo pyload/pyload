@@ -55,6 +55,10 @@ class Config:
             )  # TODO: Restore to `log_warning` in 0.6.x
             return default
 
+    def keys(self, plugin=None):
+        plugin = plugin or self.plugin.classname
+        return self.plugin.pyload.config.get_options(plugin)
+
 
 class DB:
     def __init__(self, plugin):
