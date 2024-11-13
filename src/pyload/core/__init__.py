@@ -305,6 +305,9 @@ class Core:
             # dont log "watch ..." messages. too verbose
             if isinstance(arg, jurigged.live.WatchOperation):
                 return
+            if isinstance(arg, jurigged.codetools.AddOperation):
+                # ignore "Run" of main branch: if __name__ == "__main__":
+                return
             # verbose
             self.log.debug(f"hot-reload {str_exc(arg)}")
         def jurigged_watch(path):
