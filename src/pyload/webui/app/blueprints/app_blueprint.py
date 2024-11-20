@@ -135,8 +135,14 @@ def collector():
 @bp.route("/files", endpoint="files")
 @login_required("DOWNLOAD")
 def files():
+    def decode_name(filename):
+        try:
+            return filename.decode("utf-8")
+        except UnicodeDecodeError:
+            return filename.decode("iso-8859-1")
+
     api = flask.current_app.config["PYLOAD_API"]
-    root = api.get_config_value("general", "storage_folder")
+    root = os.fsencode(api.get_config_value("general", "storage_folder"))
 
     if not os.path.isdir(root):
         messages = ["Download directory not found."]
@@ -145,19 +151,19 @@ def files():
 
     for entry in sorted(os.listdir(root)):
         if os.path.isdir(os.path.join(root, entry)):
-            folder = {"name": entry, "path": entry, "files": []}
+            folder = {"name": decode_name(entry), "path": decode_name(entry), "files": []}
             files = os.listdir(os.path.join(root, entry))
             for file in sorted(files):
                 try:
                     if os.path.isfile(os.path.join(root, entry, file)):
-                        folder["files"].append(file)
+                        folder["files"].append(decode_name(file))
                 except Exception:
                     pass
 
             data["folder"].append(folder)
 
         elif os.path.isfile(os.path.join(root, entry)):
-            data["files"].append(entry)
+            data["files"].append(decode_name(entry))
 
     return render_template("files.html", files=data)
 
