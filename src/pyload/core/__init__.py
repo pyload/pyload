@@ -155,11 +155,36 @@ class Core:
         ]
         is_bad_dir = any(directories[0].startswith(d) for d in directories[1:])
 
+        default_storagedir = "$HOME/Downloads/pyLoad"
+
+        fallback_storagedir_list = [
+            "$PWD/Downloads/pyLoad",
+            "$TMP/Downloads/pyLoad",
+            "$TEMP/Downloads/pyLoad",
+        ]
+
         if not storagedir or is_bad_dir:
-            self.config.set("general", "storage_folder", "~/Downloads/pyLoad")
+            self.config.set("general", "storage_folder", default_storagedir)
             storagedir = self.config.get("general", "storage_folder")
 
-        os.makedirs(storagedir, exist_ok=True)
+        for _storagedir in [storagedir, default_storagedir, *fallback_storagedir_list]:
+            _storagedir = os.path.expandvars(_storagedir)
+            self.log.debug(f"trying to create storagedir {_storagedir!r}")
+            try:
+                os.makedirs(_storagedir, exist_ok=True)
+                # TODO check if _storagedir is writable
+                if storagedir != _storagedir:
+                    self.log.error(f"using fallback storagedir {_storagedir!r}")
+                    storagedir = _storagedir
+                    self.config.set("general", "storage_folder", storagedir)
+                break
+            except PermissionError as exc:
+                # test: set storage_folder to /no/such/dir
+                self.log.error(f"failed to create storagedir {_storagedir!r}: {str_exc(exc)}")
+            # TODO handle more exceptions
+        else:
+            pyload_config_path = f"{self.userdir}/settings/pyload.cfg"
+            raise Exception(f"failed to create all storagedir candidates. hint: set storage_folder in {pyload_config_path!r}")
 
         if not self._dry_run:
             self.config.save()  #: save so config files gets filled
