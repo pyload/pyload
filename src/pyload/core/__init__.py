@@ -91,6 +91,9 @@ class Core:
         self._debug = 0
         self._dry_run = dry
 
+        self._init_log_before_config()
+        # self.log.debug("testing self.log")
+
         # if self.tmpdir not in sys.path:
         # sys.path.append(self.tmpdir)
 
@@ -161,13 +164,31 @@ class Core:
         if not self._dry_run:
             self.config.save()  #: save so config files gets filled
 
-    def _init_log(self):
+    def _init_log_before_config(self):
+        # the attribute self.config does not-yet exist
+        # this is tolerated by LogFactory
         from .log_factory import LogFactory
 
         self.logfactory = LogFactory(self)
-        self.log = self.logfactory.get_logger(
-            "pyload"
-        )  # NOTE: forced debug mode from console is not working actually
+        # NOTE: forced debug mode from console is not working actually
+        self.log = self.logfactory.get_logger("pyload-before-config")
+
+        self.log.info(f"*** Welcome to pyLoad {self.version} ***")
+        if self._dry_run:
+            self.log.info("*** TEST RUN ***")
+
+    def _init_log(self):
+        from .log_factory import LogFactory
+
+        # revert _init_log_before_config
+        if hasattr(self, "logfactory"):
+            del self.logfactory
+        if hasattr(self, "log"):
+            del self.log
+
+        self.logfactory = LogFactory(self)
+        # NOTE: forced debug mode from console is not working actually
+        self.log = self.logfactory.get_logger("pyload")
 
         self.log.info(f"*** Welcome to pyLoad {self.version} ***")
         if self._dry_run:
