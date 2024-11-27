@@ -205,77 +205,69 @@ class FilecryptCc(BaseDecrypter):
 
     def _handle_internal_captcha(self, url):
         m = re.search(self.INTERNAL_CAPTCHA_PATTERN, self.data)
-        if m is not None:
-            captcha_url = urllib.parse.urljoin(self.pyfile.url, m.group(1))
+        if m is None:
+            return
+        captcha_url = urllib.parse.urljoin(self.pyfile.url, m.group(1))
 
-            self.log_debug(f"Internal Captcha URL: {captcha_url}")
+        self.log_debug(f"Internal Captcha URL: {captcha_url}")
 
-            captcha_code = self.captcha.decrypt(captcha_url, input_type="gif")
+        captcha_code = self.captcha.decrypt(captcha_url, input_type="gif")
 
-            return self._filecrypt_load_url(
-                url, post={"recaptcha_response_field": captcha_code}
-            )
-
-        else:
-            return None
+        return self._filecrypt_load_url(
+            url, post={"recaptcha_response_field": captcha_code}
+        )
 
     def _handle_circle_captcha(self, url):
         m = re.search(self.CIRCLE_CAPTCHA_PATTERN, self.data)
-        if m is not None:
-            # Please click into the open circle to continue.
-            self.log_debug(
-                "Circle Captcha URL: {}".format(
-                    urllib.parse.urljoin(self.pyfile.url, m.group(1))
-                )
+        if m is None:
+            return
+        # Please click into the open circle to continue.
+        self.log_debug(
+            "Circle Captcha URL: {}".format(
+                urllib.parse.urljoin(self.pyfile.url, m.group(1))
             )
-            captcha_url = urllib.parse.urljoin(self.pyfile.url, m.group(1))
-            self.log_debug(f"Circle Captcha URL: {captcha_url}")
-            captcha_image = self._filecrypt_load_url(captcha_url, decode=False)
-            self.captcha = CircleCaptcha(self.pyfile)
-            captcha_coords = self.captcha.challenge(captcha_image)
-            return self._filecrypt_load_url(
-                # TODO parse dynamic input name: "button" or "buttonx" or ...
-                #url, post={"button.x": captcha_coords[0], "button.y": captcha_coords[1]}
-                url, post={"buttonx.x": captcha_coords[0], "buttonx.y": captcha_coords[1]}
-            )
-
-        else:
-            return None
+        )
+        captcha_url = urllib.parse.urljoin(self.pyfile.url, m.group(1))
+        self.log_debug(f"Circle Captcha URL: {captcha_url}")
+        captcha_image = self._filecrypt_load_url(captcha_url, decode=False)
+        self.captcha = CircleCaptcha(self.pyfile)
+        captcha_coords = self.captcha.challenge(captcha_image)
+        return self._filecrypt_load_url(
+            # TODO parse dynamic input name: "button" or "buttonx" or ...
+            #url, post={"button.x": captcha_coords[0], "button.y": captcha_coords[1]}
+            url, post={"buttonx.x": captcha_coords[0], "buttonx.y": captcha_coords[1]}
+        )
 
     def _handle_solvemedia_captcha(self, url):
         m = re.search(self.SOLVEMEDIA_CAPTCHA_PATTERN, self.data)
-        if m is not None:
-            self.log_debug(
-                "Solvemedia Captcha URL: {}".format(
-                    urllib.parse.urljoin(self.pyfile.url, m.group(1))
-                )
+        if m is None:
+            return
+        self.log_debug(
+            "Solvemedia Captcha URL: {}".format(
+                urllib.parse.urljoin(self.pyfile.url, m.group(1))
             )
+        )
 
-            solvemedia = SolveMedia(self.pyfile)
-            captcha_key = solvemedia.detect_key()
+        solvemedia = SolveMedia(self.pyfile)
+        captcha_key = solvemedia.detect_key()
 
-            if captcha_key:
-                self.captcha = solvemedia
-                response, challenge = solvemedia.challenge(captcha_key)
+        if captcha_key:
+            self.captcha = solvemedia
+            response, challenge = solvemedia.challenge(captcha_key)
 
-                return self._filecrypt_load_url(
-                    url,
-                    post={"adcopy_response": response, "adcopy_challenge": challenge},
-                )
-
-        else:
-            return None
+            return self._filecrypt_load_url(
+                url,
+                post={"adcopy_response": response, "adcopy_challenge": challenge},
+            )
 
     def _handle_keycaptcha_captcha(self, url):
         m = re.search(self.KEY_CAPTCHA_PATTERN, self.data)
-        if m is not None:
-            self.log_debug(
-                "Keycaptcha Captcha URL: {} unsupported, retrying".format(m.group(1))
-            )
-            return ""
-
-        else:
-            return None
+        if m is None:
+            return
+        self.log_debug(
+            "Keycaptcha Captcha URL: {} unsupported, retrying".format(m.group(1))
+        )
+        return ""
 
     def _handle_coinhive_captcha(self, url):
         coinhive = CoinHive(self.pyfile)
