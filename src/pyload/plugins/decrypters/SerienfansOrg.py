@@ -202,6 +202,8 @@ class SerienfansOrg(BaseDecrypter):
         # quality
         if q := self.pyfile_fragment.get("q"):
             self.prefer_video_quality = q[0]
+            self.min_video_quality = q[0]
+            self.max_video_quality = q[0]
             self.log_info(f"quality: {self.prefer_video_quality}")
 
         # season
