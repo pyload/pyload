@@ -47,6 +47,8 @@ class FilecryptCc(BaseDecrypter):
     COOKIES = [("filecrypt.cc", "lang", "en")]
     URL_REPLACEMENTS = [(r"filecrypt.co", "filecrypt.cc")]
 
+    PACKAGE_NAME_PATTERN = r"<h2>([^<]+)</h2>"
+
     DLC_LINK_PATTERN = r'onclick="DownloadDLC\(\'(.+)\'\);">'
     WEBLINK_PATTERN = r"<button onclick=\"[\w\-]+?/\*\d+?\*/\('([\w/-]+?)',"
     MIRROR_PAGE_PATTERN = r'"[\w]*" href="(https?://(?:www\.)?filecrypt.cc/Container/\w+\.html\?mirror=\d+)">'
@@ -83,6 +85,7 @@ class FilecryptCc(BaseDecrypter):
         )
 
     def decrypt(self, pyfile):
+        self.pyfile = pyfile
         pyfile.url = replace_patterns(pyfile.url, self.URL_REPLACEMENTS)
 
         self.data = self._filecrypt_load_url(pyfile.url)
@@ -115,6 +118,8 @@ class FilecryptCc(BaseDecrypter):
         if self.config.get("handle_mirror_pages"):
             self.handle_mirror_pages()
 
+        package_name = self.get_package_name()
+
         for handle in (
             self.handle_CNL,
             self.handle_weblinks,
@@ -123,9 +128,18 @@ class FilecryptCc(BaseDecrypter):
             handle()
             if self.urls:
                 self.packages = [
-                    (pyfile.package().name, self.urls, pyfile.package().name)
+                    (package_name, self.urls, package_name)
                 ]
                 return
+
+    def get_package_name(self):
+        m = re.search(self.PACKAGE_NAME_PATTERN, self.site_with_links)
+        if m:
+            name = m.group(1).strip()
+            if name:
+                return name
+        # keep the pyload package name
+        return self.pyfile.package().name
 
     def handle_mirror_pages(self):
         if "mirror=" not in self.site_with_links:
