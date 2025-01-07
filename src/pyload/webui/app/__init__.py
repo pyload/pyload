@@ -66,7 +66,7 @@ class App:
 
         @app.after_request
         def deny_iframe(response):
-            response.headers["X-Frame-Options"] = "DENY"
+            response.headers["Content-Security-Policy"] = "frame-ancestors 'self';"
             return response
 
     @classmethod
