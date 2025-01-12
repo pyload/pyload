@@ -124,7 +124,7 @@ class DLC(BaseContainer):
             packages = decrypter.decrypt(data)
 
         except BadDLC:
-            self.fail(_("Container is corrupted"))
+            self.fail(self._("Container is corrupted"))
 
         self.packages = [(name or pyfile.name, links, name or pyfile.name)
                          for name, links in packages]
