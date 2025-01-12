@@ -8,7 +8,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class FastshareCz(SimpleHoster):
     __name__ = "FastshareCz"
     __type__ = "hoster"
-    __version__ = "0.47"
+    __version__ = "0.48"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?fastshare\.(?:cz/\d+/.+|cloud/[0-9a-f]+)'
@@ -60,7 +60,7 @@ class FastshareCz(SimpleHoster):
 
     def check_download(self):
         check = self.scan_download({
-            'paralell-dl': re.compile(r"<title>FastShare.cz</title>|<title>FastShare.cz</title>|<script.*>alert\('Despite FREE can download only one file at a time.'\)"),
+            'paralell-dl': re.compile(r"<title>FastShare.cz</title>|^<script|<script.*>alert\('Despite FREE can download only one file at a time.'\)"),
             'wrong captcha': re.compile(r'Download for FREE'),
             'credit': re.compile(self.CREDIT_ERROR)
         })
@@ -68,7 +68,7 @@ class FastshareCz(SimpleHoster):
         if check == "paralell-dl":
             self.log_warning(_("Paralell download"))
             self.remove(self.last_download)
-            self.retry(6, 10 * 60, _("Paralell download"))
+            self.retry(6, 2 * 60, _("Paralell download"))
 
         elif check == "wrong captcha":
             self.log_warning(_("Wrong captcha"))
