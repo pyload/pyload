@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import sys
 import threading
 from functools import wraps
 
@@ -17,21 +18,16 @@ def threaded(func):
     return wrapper
 
 
-# NOTE: Performance penalty than original 'Expose' class decorator :(
-def expose(func):
+class expose:
     """
     Used for decoration to declare rpc services.
     """
-
-    @wraps(func)
-    def wrapper(self, *args, **kwargs):
-        if not wrapper._exposed:
-            self.pyload.adm.add_rpc(func.__module__, func.__name__, func.__doc__)
-            wrapper._exposed = True
-        return func(self, *args, **kwargs)
-
-    wrapper._exposed = False
-    return wrapper
+    def __new__(cls, func, *args, **kwargs):
+        module = sys.modules[func.__module__]
+        rpc_methods = getattr(module, "rpc_methods", [])
+        rpc_methods.append((func.__module__, func.__name__, func.__doc__))
+        setattr(module, "rpc_methods", rpc_methods)
+        return func
 
 
 class BaseAddon(BasePlugin):
@@ -51,10 +47,10 @@ class BaseAddon(BasePlugin):
         self.m = self.manager = manager
         self.lock = threading.Lock()
 
-        #: Automatically register event listeners for functions, attribute will be deleted dont use it yourself
+        #: Automatically register event listeners for functions, attribute will be deleted don't use it yourself
         self.event_map = {}
 
-        #: Callback of periodical job task, used by AddonManager
+        #: Callback of the periodical job task, used by AddonManager
         self.periodical = Periodical(self, self.periodical_task)
         self.cb = self.periodical.cb  # TODO: Recheck in 0.6.x
 

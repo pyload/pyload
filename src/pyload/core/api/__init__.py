@@ -1357,7 +1357,7 @@ class Api:
         :return: dict with this style: {"plugin": {"method": "description"}}
         """
         data = {}
-        for plugin, funcs in self.pyload.addon_manager.methods.items():
+        for plugin, funcs in self.pyload.addon_manager.rpc_methods.items():
             data[plugin] = funcs
 
         return data
@@ -1372,8 +1372,27 @@ class Api:
         :param func:
         :return: bool
         """
-        cont = self.pyload.addon_manager.methods
+        cont = self.pyload.addon_manager.rpc_methods
         return plugin in cont and func in cont[plugin]
+
+    @permission(Perms.STATUS)
+    def service_call(self, service_name, arguments, parse_arguments=False):
+        """
+        Calls a service (a method in addon plugin).
+
+        :param service_name:
+        :param arguments:
+        :param parse_arguments:
+        :return: result
+        :raises: ServiceDoesNotExists, when it's not available
+        :raises: ServiceException, when an exception was raised
+        """
+        try:
+            plugin, func =  service_name.split(".")
+        except ValueError:
+            raise ServiceDoesNotExists()
+        info = ServiceCall(plugin, func, arguments, parse_arguments)
+        return self.call(info)
 
     @permission(Perms.STATUS)
     def call(self, info):

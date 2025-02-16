@@ -62,7 +62,7 @@ class AddonManager:
 
         self.plugins = []
         self.plugin_map = {}
-        self.rpc_methods = {}  #: dict of names and list of methods usable by rpc
+        self.rpc_methods = {}  #: dict of plugin names and list of methods usable by rpc
 
         self.events = {}  #: contains events
 
@@ -71,28 +71,47 @@ class AddonManager:
             self.dispatch_event, "plugin_config_changed"
         )
 
-        self.add_event("plugin_config_changed", self.manage_addons)
+        self.add_event("plugin_config_changed", self._config_change_callback)
 
         self.lock = RLock()
         self.create_index()
 
-    def add_rpc(self, plugin, func, doc):
-        plugin = plugin.rpartition(".")[2]
+    def _config_change_callback(self, plugin_name, config_name, config_value):
+        if config_name == "enabled" and config_value:
+            self.activate_addon(plugin_name)
+        elif config_name == "enabled" and not config_value:
+            self.deactivate_addon(plugin_name)
+
+    def _add_module_rpcs(self, plugin_module):
+        rpc_methods = getattr(plugin_module, "rpc_methods", [])
+        for rpc_method in rpc_methods:
+            self.add_rpc(*rpc_method)
+
+    def add_rpc(self, plugin_name, method_name, doc):
+        plugin_name = plugin_name.rpartition(".")[2]
         doc = doc.strip() if doc else ""
 
-        if plugin in self.rpc_methods:
-            self.rpc_methods[plugin][func] = doc
-        else:
-            self.rpc_methods[plugin] = {func: doc}
+        if plugin_name in self.rpc_methods:
+            if method_name not in self.rpc_methods[plugin_name]:
+                self.rpc_methods[plugin_name][method_name] = doc
 
-    def call_rpc(self, plugin, func, args, parse):
+            else:
+                self.pyload.log.error(
+                    self._("Cannot expose RPC.. method {}.{}() already exposed").format(plugin_name, method_name),
+                    exc_info=self.pyload.debug > 1,
+                    stack_info=self.pyload.debug > 2,
+                )
+        else:
+            self.rpc_methods[plugin_name] = {method_name: doc}
+
+    def call_rpc(self, plugin_name, method_name, args, parse):
         if not args:
             args = tuple()
         if parse:
             args = tuple(literal_eval(x) for x in args)
 
-        plugin = self.plugin_map[plugin]
-        f = getattr(plugin, func)
+        plugin = self.plugin_map[plugin_name]
+        f = getattr(plugin, method_name)
         return f(*args)
 
     def create_index(self):
@@ -106,17 +125,22 @@ class AddonManager:
                 # addon_class = getattr(plugin, plugin.__name__)
 
                 if self.pyload.config.get_plugin(plugin_name, "enabled"):
-                    plugin_class = self.pyload.plugin_manager.load_class(
+                    plugin_module = self.pyload.plugin_manager.load_module(
                         "addon", plugin_name
                     )
+                    if not plugin_module:
+                        continue
+                    plugin_class = getattr(plugin_module, plugin_name)
                     if not plugin_class:
                         continue
 
                     plugin = plugin_class(self.pyload, self)
                     plugins.append(plugin)
-                    self.plugin_map[plugin_class.__name__] = plugin
-                    if plugin.is_activated():
-                        active.append(plugin_class.__name__)
+                    self.plugin_map[plugin_name] = plugin
+                    active.append(plugin_name)
+
+                    self._add_module_rpcs(plugin_module)
+
                 else:
                     inactive.append(plugin_name)
 
@@ -136,50 +160,52 @@ class AddonManager:
 
         self.plugins = plugins
 
-    def manage_addons(self, plugin, name, value):
-        if name == "enabled" and value:
-            self.activate_addon(plugin)
-        elif name == "enabled" and not value:
-            self.deactivate_addon(plugin)
-
-    def activate_addon(self, plugin):
+    def activate_addon(self, plugin_name):
 
         # check if already loaded
         for inst in self.plugins:
-            if inst.__name__ == plugin:
+            if inst.__name__ == plugin_name:
                 return
 
-        plugin_class = self.pyload.plugin_manager.load_class("addon", plugin)
-
+        plugin_module = self.pyload.plugin_manager.load_module(
+            "addon", plugin_name
+        )
+        if not plugin_module:
+            return
+        plugin_class = getattr(plugin_module, plugin_name)
         if not plugin_class:
             return
 
-        self.pyload.log.debug(f"Plugin loaded: {plugin}")
+        self.pyload.log.debug(f"Addon loaded: {plugin_name}")
 
         plugin = plugin_class(self.pyload, self)
         self.plugins.append(plugin)
-        self.plugin_map[plugin_class.__name__] = plugin
+        self.plugin_map[plugin_name] = plugin
+
+        self._add_module_rpcs(plugin_module)
 
         # call core Ready
         start_new_thread(plugin.core_ready, tuple())
 
-    def deactivate_addon(self, plugin):
-
-        addon = None
+    def deactivate_addon(self, plugin_name):
         for inst in self.plugins:
-            if inst.__name__ == plugin:
+            if inst.__name__ == plugin_name:
                 addon = inst
-
-        if not addon:
+                break
+        else:
             return
 
-        self.pyload.log.debug(f"Plugin unloaded: {plugin}")
+        self.pyload.log.debug(f"Addon unloaded: {plugin_name}")
 
         addon.unload()
 
         # remove periodic call
         res = self.pyload.scheduler.remove_job(addon.cb)
         self.pyload.log.debug(f"Removed callback {res}")
+
+        # remove rpc calls
+        del self.rpc_methods[plugin_name]
+
         self.plugins.remove(addon)
         del self.plugin_map[addon.__name__]
 
