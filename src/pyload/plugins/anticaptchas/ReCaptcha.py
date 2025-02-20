@@ -16,7 +16,7 @@ from ..base.captcha_service import CaptchaService
 class ReCaptcha(CaptchaService):
     __name__ = "ReCaptcha"
     __type__ = "anticaptcha"
-    __version__ = '0.50'
+    __version__ = '0.51'
     __status__ = "testing"
 
     __description__ = "ReCaptcha captcha service plugin"
@@ -33,13 +33,13 @@ class ReCaptcha(CaptchaService):
     INVISIBLE_V2_PATTERN = r'data-size\s*=\s*(["\'])\s*invisible\s*\1'
     STOKEN_V2_PATTERN = r'data-stoken=["\']([\w\-]+)'
 
-    RECAPTCHA_INTERACTIVE_SIG = "661a94a7eeb590d8d0f20d8d6e7aefa474918af01cc573da7101bc53df6ebd4ccf62df44c0bf3171" + \
-                                "fa389cf9ed8e9bb9b684621e2a1d1a3bd5bd1d5450ba5350d26f63c119477fcc3f53c5a4e784a5b9" + \
-                                "7a013cbc4e802325df4a693de112bc8fe72e8d64ec6e14d14b907290c0db04e139283733a7981daf" + \
-                                "b05a00785d1ed32c9dcd2ae9aa10f2c058ecb7667c3d000adfc1372d6a161e348ba1170e4211737f" + \
-                                "1f54518bf9f50197bba1bb336ceb17be220245f1554dfad7af1e2b996d65419d259e98a1f468dfc2" + \
-                                "ce492fa359f7489184786ea9d02f595101910d711d2c93978a81e9a573a27720f2e81c5d636b2483" + \
-                                "0c85257db01aeaf58474b00190fb702f"
+    RECAPTCHA_INTERACTIVE_SIG = "2f33aef5ba02a663108edf83d0e31e991454e6da8ea0fdf8fbc1ba4a3bd70aa3998de5444097c5e9" + \
+                                "2972b6b3c3bdb318a21b6241e027508b98434deb7ff1b214b8bbb459e2f4dd0bd603efda09498023" + \
+                                "52eef4d280b3e196a602d4c7f05374bc9b71d9d9d232355610512b6299cfcf243b5b5cc5e632b019" + \
+                                "6bf62036316c0b335cc69e33d48b6d0d853b3917b681d8ff1a3e3d1b32c97627453345121689ec38" + \
+                                "8a89e877ec6ff9e2058f6ffa3c037f5fcb5b5a543a8d9fd2d89b9a400b9dc86eefbd441629ef6313" + \
+                                "a1921bf70555c30f378d165b1fb96d52a0810252365af344a965be9e9ab3ac98646e27228e6e4481" + \
+                                "8f076d48524a6a4fde517678c4f962ce"
 
     RECAPTCHA_INTERACTIVE_JS = """
 			while(document.children[0].childElementCount > 0) {
@@ -60,6 +60,8 @@ class ReCaptcha(CaptchaService):
 				}
 				var popup = document.body.querySelector("iframe[src*='/bframe']");
 				if (popup !== null && gpyload.isVisible(popup)) {
+				    popup.parentNode.style.width = "";
+				    popup.parentNode.style.height = "";
 					rect = popup.getBoundingClientRect();
 					rectPopup = {top: rect.top, right: rect.right, bottom: rect.bottom, left: rect.left};
 				}

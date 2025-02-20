@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import imp
+import importlib.util
 from collections.abc import Iterable, Mapping, Sequence
 
 
@@ -54,15 +54,9 @@ def is_mapping(obj):
     return isinstance(obj, Mapping)
 
 
-def is_module(name, path=None):
+def is_module(name):
     """Check if exists a module with given name."""
-    try:
-        fp, _, _ = imp.find_module(name, path)
-        if fp is not None:
-            fp.close()
-        return True
-    except ImportError:
-        return False
+    return importlib.util.find_spec(name) is not None
 
 
 def missing(iterable, start=None, end=None):

@@ -114,6 +114,7 @@ class Browser:
             disposition=disposition,
         )
         name = self.dl.download(chunks, resume)
+        self.http.code = self.dl.code
         self._size = self.dl.size
 
         self.dl = None

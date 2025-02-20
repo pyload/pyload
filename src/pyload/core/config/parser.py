@@ -73,11 +73,11 @@ class ConfigParser:
 
             if not os.path.exists(self.pluginpath):
                 os.makedirs(os.path.dirname(self.pluginpath), exist_ok=True)
-                with open(self.pluginpath, mode="w") as fp:
+                with open(self.pluginpath, mode="w", encoding="utf-8") as fp:
                     fp.write(f"version: {__version__}")
                 os.chmod(self.pluginpath, 0o600)
 
-            with open(self.configpath) as fp:
+            with open(self.configpath, encoding="utf-8") as fp:
                 content = fp.read()
 
             m_ver = self._VERSION.search(content)
@@ -88,12 +88,12 @@ class ConfigParser:
                 )
                 print("Old version of config was replaced")
 
-            with open(self.pluginpath) as fp:
+            with open(self.pluginpath, encoding="utf-8") as fp:
                 content = fp.read()
 
             m_ver = self._VERSION.search(content)
             if m_ver is None or int(m_ver.group(1)) < __version__:
-                with open(self.pluginpath, mode="w") as fp:
+                with open(self.pluginpath, mode="w", encoding="utf-8") as fp:
                     fp.write(f"version: {__version__}")
 
                 print("Old version of plugin-config replaced")
@@ -125,7 +125,7 @@ class ConfigParser:
         """
         parses a given configfile.
         """
-        with open(config_file) as fp:
+        with open(config_file, encoding="utf-8") as fp:
 
             config = fp.read()
 
@@ -236,7 +236,7 @@ class ConfigParser:
         """
         saves config to filename.
         """
-        with open(filename, mode="w") as fp:
+        with open(filename, mode="w", encoding="utf-8") as fp:
             os.chmod(filename, 0o600)
             fp.write(f"version: {__version__} \n")
             for section in sorted(config.keys()):
@@ -318,7 +318,7 @@ class ConfigParser:
 
     def __getitem__(self, section):
         """
-        provides dictonary like access: c['section']['option']
+        provides dictionary like access: c['section']['option']
         """
         return Section(self, section)
 

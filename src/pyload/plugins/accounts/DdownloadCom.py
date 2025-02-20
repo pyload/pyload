@@ -8,7 +8,7 @@ from ..base.xfs_account import XFSAccount
 class DdownloadCom(XFSAccount):
     __name__ = "DdownloadCom"
     __type__ = "account"
-    __version__ = "0.07"
+    __version__ = "0.08"
     __status__ = "testing"
 
     __description__ = """Ddownload.com account plugin"""
@@ -18,9 +18,9 @@ class DdownloadCom(XFSAccount):
     PLUGIN_DOMAIN = "ddownload.com"
     PLUGIN_URL = "http://ddownload.com"
 
-    PREMIUM_PATTERN = r"Premium Account \(expires"
+    PREMIUM_PATTERN = r">Premium Account<"
     TRAFFIC_LEFT_PATTERN = r'<span>Traffic available</span>\s*<div class="price">(?:<sup>(?P<U>[^<>]+)</sup>)?(?P<S>-?\d+|[Uu]nlimited)</div>'
-    VALID_UNTIL_PATTERN = r"Premium Account \(expires ([^)]+)\)"
+    VALID_UNTIL_PATTERN = r">\(expires ([^)]+)\)<"
 
     def setup(self):
         super(DdownloadCom, self).setup()

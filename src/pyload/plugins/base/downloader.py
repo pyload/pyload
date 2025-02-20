@@ -16,7 +16,7 @@ from .hoster import BaseHoster
 class BaseDownloader(BaseHoster):
     __name__ = "BaseDownloader"
     __type__ = "downloader"
-    __version__ = "0.82"
+    __version__ = "0.84"
     __status__ = "stable"
 
     __pattern__ = r"^unmatchable$"
@@ -157,7 +157,6 @@ class BaseDownloader(BaseHoster):
 
     def isresource(self, url, redirect=True, resumable=None):
         resource = False
-        maxredirs = 5
 
         if resumable is None:
             resumable = self.resume_download
@@ -167,10 +166,13 @@ class BaseDownloader(BaseHoster):
 
         elif redirect:
             maxredirs = (
-                self.config.get("maxredirs", plugin="UserAgentSwitcher") or maxredirs
+                self.config.get("maxredirs", default=5, plugin="UserAgentSwitcher")
             )
 
-        header = self.load(url, just_header=True)
+        else:
+            maxredirs = 1
+
+        header = self.load(url, just_header=True, redirect=False)
 
         for i in range(1, maxredirs):
             if not redirect or header.get("connection") == "close":
@@ -185,7 +187,7 @@ class BaseDownloader(BaseHoster):
 
                 if code in (301, 302) or resumable:
                     self.log_debug(f"Redirect #{i} to: {location}")
-                    header = self.load(location, just_header=True)
+                    header = self.load(location, just_header=True, redirect=False)
                     url = location
                     continue
 
@@ -259,9 +261,12 @@ class BaseDownloader(BaseHoster):
 
         else:
             if self.req.code in (404, 410):
-                bad_file = os.path.join(os.path.dirname(filename), newname)
-                if self.remove(bad_file):
-                    return ""
+                if newname:
+                    bad_file = os.path.join(os.path.dirname(filename), newname)
+                else:
+                    bad_file = filename
+                self.remove(bad_file)
+                return ""
             else:
                 self.log_info(self._("File saved"))
 

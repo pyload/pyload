@@ -2,10 +2,11 @@
 
 import json
 from functools import wraps
-from urllib.parse import unquote, urljoin, urlparse
+from urllib.parse import urljoin, urlparse
 
 import flask
 import flask_themes2
+import werkzeug.routing
 from pyload.core.api import Perms, Role, has_permission
 
 
@@ -33,22 +34,25 @@ else:
 
 #: Checks if location belongs to same host address
 def is_safe_url(location):
-    ref_url = urlparse(flask.request.host_url)
-    test_url = urlparse(urljoin(flask.request.host_url, location))
-    return test_url.scheme in ('http', 'https') and ref_url.netloc == test_url.netloc
+    location_urlp = urlparse(location)
+    #: if relative URL then must start with "/"
+    if not location_urlp.netloc and location[0] != "/":
+        return False
+    host_urlp = urlparse(flask.request.host_url)
+    test_urlp = urlparse(urljoin(flask.request.host_url, location))
+    return test_urlp.scheme in ('http', 'https') and host_urlp.netloc == test_urlp.netloc
 
 
 def get_redirect_url(fallback=None):
-    login_url = urljoin(flask.request.url_root, flask.url_for('app.login'))
-    request_url = unquote(flask.request.url)
-    for location in flask.request.values.get("next"), flask.request.referrer:
-        if not location:
-            continue
-        if location in (request_url, login_url):  # don't redirect to same location
-            continue
-        if is_safe_url(location):
-            return location
-    return fallback
+    next_arg = flask.request.values.get("next")
+    redirect_url = flask.url_for(fallback)
+    if next_arg and next_arg != "login":  # don't redirect to same location
+        try:
+            redirect_url = flask.url_for(f"app.{next_arg}")
+        except werkzeug.routing.BuildError:
+            pass
+
+    return urljoin(flask.request.url_root, redirect_url)
 
 
 def render_base(messages):
@@ -206,7 +210,7 @@ def login_required(perm):
                 else:
                     location = flask.url_for(
                         "app.login",
-                        next=flask.request.url
+                        next=flask.request.endpoint.split(".")[-1]
                     )
                     response = flask.redirect(location)
 

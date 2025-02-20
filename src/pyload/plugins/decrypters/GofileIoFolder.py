@@ -3,6 +3,7 @@
 import base64
 import json
 
+import pycurl
 from pyload.core.network.http.exceptions import BadHeader
 
 from ..base.decrypter import BaseDecrypter
@@ -11,7 +12,7 @@ from ..base.decrypter import BaseDecrypter
 class GofileIoFolder(BaseDecrypter):
     __name__ = "GofileIoFolder"
     __type__ = "decrypter"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?gofile\.io/d/(?P<ID>\w+)"
@@ -35,27 +36,30 @@ class GofileIoFolder(BaseDecrypter):
 
     API_URL = "https://api.gofile.io/"
 
-    def api_request(self, method, **kwargs):
+    def api_request(self, method, token=None, get={}, post={}):
+        if token is not None:
+            self.req.http.c.setopt(
+                pycurl.HTTPHEADER, ["Authorization: Bearer " + token]
+            )
         try:
-            json_data = self.load(self.API_URL + method, get=kwargs)
+            json_data = self.load(self.API_URL + method, get=get, post=post)
         except BadHeader as exc:
             json_data = exc.content
 
         return json.loads(json_data)
 
     def decrypt(self, pyfile):
-        api_data = self.api_request("createAccount")
+        api_data = self.api_request("accounts", post=True)
         if api_data["status"] != "ok":
             self.fail(
-                self._("createAccount API failed | {}").format(api_data["status"])
+                self._("accounts API failed | {}").format(api_data["status"])
             )
 
         token = api_data["data"]["token"]
         api_data = self.api_request(
-            "getContent",
-            contentId=self.info["pattern"]["ID"],
+            "contents/{}".format(self.info["pattern"]["ID"]),
             token=token,
-            websiteToken=12345,
+            get={"wt": "4fd6sg89d7s6"}
         )
         status = api_data["status"]
         if status == "ok":
@@ -73,7 +77,7 @@ class GofileIoFolder(BaseDecrypter):
                         ).encode("utf-8")
                     ).decode("utf-8")
                 )
-                for file_data in api_data["data"]["contents"].values()
+                for file_data in api_data["data"]["children"].values()
                 if file_data["type"] == "file"
             ]
 

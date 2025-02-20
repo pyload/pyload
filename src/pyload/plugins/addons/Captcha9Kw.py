@@ -13,7 +13,7 @@ from ..base.addon import BaseAddon, threaded
 class Captcha9Kw(BaseAddon):
     __name__ = "Captcha9Kw"
     __type__ = "addon"
-    __version__ = "0.44"
+    __version__ = "0.46"
     __status__ = "testing"
 
     __config__ = [

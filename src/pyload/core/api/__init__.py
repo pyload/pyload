@@ -14,6 +14,8 @@ import re
 import time
 from enum import IntFlag
 
+from pyload import PKGDIR
+
 from ..datatypes.data import *
 from ..datatypes.enums import *
 from ..datatypes.exceptions import *
@@ -185,12 +187,22 @@ class Api:
         )
 
         if section == "core":
-            self.pyload.config[category][option] = value
+            if category == "general" and option == "storage_folder":
+                # Forbid setting the download folder inside dangerous locations
+                correct_case = lambda x: x.lower() if os.name == "nt" else x
+                directories = [
+                    correct_case(os.path.join(os.path.realpath(d), ""))
+                    for d in [value, PKGDIR, self.pyload.userdir]
+                ]
+                if any(directories[0].startswith(d) for d in directories[1:]):
+                    return
 
-            if option in (
+            self.pyload.config.set(category, option, value)
+
+            if category == "download" and option in (
                 "limit_speed",
                 "max_speed",
-            ):  #: not so nice to update the limit
+            ):  #: not such a nice method to update the limit
                 self.pyload.request_factory.update_bucket()
 
         elif section == "plugin":
@@ -527,7 +539,7 @@ class Api:
     @permission(Perms.ADD)
     def check_online_status_container(self, urls, container, data):
         """
-        checks online status of urls and a submited container file.
+        checks online status of urls and a submitted container file.
 
         :param urls: list of urls
         :param container: container file name
@@ -1358,7 +1370,7 @@ class Api:
         :return: dict with this style: {"plugin": {"method": "description"}}
         """
         data = {}
-        for plugin, funcs in self.pyload.addon_manager.methods.items():
+        for plugin, funcs in self.pyload.addon_manager.rpc_methods.items():
             data[plugin] = funcs
 
         return data
@@ -1373,8 +1385,27 @@ class Api:
         :param func:
         :return: bool
         """
-        cont = self.pyload.addon_manager.methods
+        cont = self.pyload.addon_manager.rpc_methods
         return plugin in cont and func in cont[plugin]
+
+    @permission(Perms.STATUS)
+    def service_call(self, service_name, arguments, parse_arguments=False):
+        """
+        Calls a service (a method in addon plugin).
+
+        :param service_name:
+        :param arguments:
+        :param parse_arguments:
+        :return: result
+        :raises: ServiceDoesNotExists, when it's not available
+        :raises: ServiceException, when an exception was raised
+        """
+        try:
+            plugin, func =  service_name.split(".")
+        except ValueError:
+            raise ServiceDoesNotExists()
+        info = ServiceCall(plugin, func, arguments, parse_arguments)
+        return self.call(info)
 
     @permission(Perms.STATUS)
     def call(self, info):

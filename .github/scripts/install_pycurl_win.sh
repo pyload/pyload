@@ -20,6 +20,9 @@ case "$1" in
   "3.11")
     WHEEL_FILE="pycurl-7.45.1-cp311-cp311-win_amd64.whl"
     ;;
+  "3.12")
+    WHEEL_FILE="pycurl-7.45.2-cp312-cp312-win_amd64.whl"
+    ;;
   *)
     echo "::error::Unsupported Python version"
     exit 1

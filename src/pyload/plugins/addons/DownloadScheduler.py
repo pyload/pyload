@@ -8,7 +8,7 @@ from ..base.addon import BaseAddon
 class DownloadScheduler(BaseAddon):
     __name__ = "DownloadScheduler"
     __type__ = "addon"
-    __version__ = "0.30"
+    __version__ = "0.31"
     __status__ = "testing"
 
     __config__ = [
@@ -32,6 +32,7 @@ class DownloadScheduler(BaseAddon):
     __authors__ = [
         ("zoidberg", "zoidberg@mujmail.cz"),
         ("stickell", "l.stickell@yahoo.it"),
+        ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com"),
     ]
 
     def activate(self):
@@ -66,7 +67,8 @@ class DownloadScheduler(BaseAddon):
         t0 = time.localtime()
         now = (t0.tm_hour, t0.tm_min, t0.tm_sec, "X")
         schedule = sorted(
-            [(int(x[0]), int(x[1]), 0, int(x[2])) for x in schedule] + [now]
+            [(int(x[0]), int(x[1]), 0, int(x[2])) for x in schedule] + [now],
+            key=lambda a: (a[0], a[1], a[2], a[3] == "X")
         )
 
         self.log_debug("Schedule", schedule)
@@ -87,6 +89,7 @@ class DownloadScheduler(BaseAddon):
                 self.cb = self.pyload.scheduler.add_job(
                     next_time, self.update_schedule, threaded=False
                 )
+                break
 
     def set_download_speed(self, speed):
         if speed == 0:

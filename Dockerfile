@@ -37,7 +37,7 @@ RUN echo "**** install binary packages ****" && \
     echo "**** install pip packages ****" && \
     python3 -m ensurepip && \
     rm -rf /usr/lib/python*/ensurepip && \
-    pip3 install $PIP_INSTALL_OPTIONS $PIP_PACKAGES
+    python3 -m pip install $PIP_INSTALL_OPTIONS $PIP_PACKAGES
 
 
 FROM builder AS wheels_builder
@@ -53,7 +53,7 @@ RUN echo "**** install build packages ****" && \
     apk add $APK_INSTALL_OPTIONS $APK_PACKAGES && \
     \
     echo "**** build pyLoad dependencies ****" && \
-    pip3 wheel -w /wheels /source
+    python3 -m pip wheel -w /wheels /source
 
 
 FROM builder AS source_builder
@@ -64,7 +64,7 @@ COPY . /source
 WORKDIR /source
 
 RUN echo "**** build pyLoad locales ****" && \
-    pip3 install $PIP_INSTALL_OPTIONS $PIP_PACKAGES && \
+    python3 -m pip install $PIP_INSTALL_OPTIONS $PIP_PACKAGES && \
     python3 setup.py build_locale
 
 
@@ -75,7 +75,7 @@ COPY --from=source_builder /source /source
 WORKDIR /package
 
 RUN echo "**** build pyLoad package ****" && \
-    pip3 install $PIP_INSTALL_OPTIONS --find-links=/wheels --no-index --prefix=. /source[extra]
+    python3 -m pip install $PIP_INSTALL_OPTIONS --find-links=/wheels --no-index --prefix=. /source[extra]
 
 
 FROM builder

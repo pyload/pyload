@@ -108,24 +108,45 @@ from ..purge import name as safe_nm
 
 def name(url, safe_name=True):
     url = format.url(url)
-    up = urllib.parse.urlparse(url)
-    name = up.path.split("/")[-1]
+    us = urllib.parse.urlsplit(url)
+    name = us.path.split("/")[-1]
     if not name:
-        name = up.query.split("=", 1)[::-1][0].split("&", 1)[0]
-    if not name and up.fragment:
-        name = "#" + up.fragment
-    elif name and up.fragment:
-        name += "#" + up.fragment
+        name = us.query.split("=", 1)[::-1][0].split("&", 1)[0]
     if not name:
-        name = up.netloc.split(".", 1)[0]
+        name = ".".join(us.netloc.split(".")[:-1])
 
     return safe_nm(name) if safe_name else name
 
 
-# TODO: Recheck in 0.5.x
-# def grab_name(url, *args, **kwargs):
-#     kwargs.setdefault('allow_redirects', True)
-#     kwargs.setdefault('verify', False)
-#     r = requests.head(url, *args, **kwargs)
-#     cd = r.headers.get('content-disposition')
-#     return url_to_name(cd or url)
+def http_header(line):
+    """
+    Parse a Content-type like http header.
+
+    :param line:
+    :Return: the main content-type and a dictionary of options.
+    """
+    def _parseparam(s):
+        while s[:1] == ';':
+            s = s[1:]
+            end = s.find(';')
+            while end > 0 and (s.count('"', 0, end) - s.count('\\"', 0, end)) % 2:
+                end = s.find(';', end + 1)
+            if end < 0:
+                end = len(s)
+            f = s[:end]
+            yield f.strip()
+            s = s[end:]
+
+    parts = _parseparam(';' + line)
+    key = parts.__next__()
+    pdict = {}
+    for p in parts:
+        i = p.find('=')
+        if i >= 0:
+            name = p[:i].strip().lower()
+            value = p[i+1:].strip()
+            if len(value) >= 2 and value[0] == value[-1] == '"':
+                value = value[1:-1]
+                value = value.replace('\\\\', '\\').replace('\\"', '"')
+            pdict[name] = value
+    return key, pdict

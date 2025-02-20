@@ -11,7 +11,7 @@ from .plugin import BasePlugin
 class BaseCaptcha(BasePlugin):
     __name__ = "BaseCaptcha"
     __type__ = "anticaptcha"
-    __version__ = "0.60"
+    __version__ = "0.62"
     __status__ = "stable"
 
     __description__ = """Base anti-captcha plugin"""
@@ -83,16 +83,14 @@ class BaseCaptcha(BasePlugin):
         result = None
         time_ref = "{:.2f}".format(time.time())[-6:].replace(".", "")
 
-        with open(
-            os.path.join(
-                self.pyload.tempdir,
-                "captcha_image_{}_{}.{}".format(
-                    self.pyfile.plugin.__name__, time_ref, input_type
-                ),
+        img_path = os.path.join(
+            self.pyload.tempdir,
+            "captcha_image_{}_{}.{}".format(
+                self.pyfile.plugin.__name__, time_ref, input_type
             ),
-            "wb",
-        ) as img_f:
-            img_f.write(img)
+        )
+        with open(img_path, "wb") as img_fp:
+            img_fp.write(img)
 
         if ocr:
             self.log_info(self._("Using OCR to decrypt captcha..."))
@@ -101,9 +99,9 @@ class BaseCaptcha(BasePlugin):
                 _OCR = self.pyload.plugin_manager.load_class(
                     "anticaptcha", ocr
                 )  #: Rename `captcha` to `ocr` in 0.6.x
-                result = _OCR(self.pyfile).recognize(img_f.name)
+                result = _OCR(self.pyfile).recognize(img_fp.name)
             else:
-                result = self.recognize(img_f.name)
+                result = self.recognize(img_fp.name)
 
                 if not result:
                     self.log_warning(self._("No OCR result"))
@@ -117,7 +115,7 @@ class BaseCaptcha(BasePlugin):
                     "src": "data:image/{};base64,{}".format(
                         input_type, to_str(base64.standard_b64encode(img))
                     ),
-                    "file": img_f.name,
+                    "file": img_fp.name,
                     "captcha_plugin": self.__name__,
                     "plugin": self.pyfile.plugin.__name__,
                     "url": self.pyfile.url,
@@ -154,8 +152,7 @@ class BaseCaptcha(BasePlugin):
                     ).format(timeout)
                 )
 
-        if not self.pyload.debug:
-            self.remove(img_f.name, try_trash=False)
+        self.remove(img_fp.name, try_trash=False)
 
         return result
 

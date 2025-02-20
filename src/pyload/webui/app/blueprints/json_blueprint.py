@@ -4,7 +4,7 @@ import os
 
 import flask
 from flask.json import jsonify
-
+from pyload import PKGDIR
 from pyload.core.api import Role
 from pyload.core.utils import format
 
@@ -268,7 +268,7 @@ def save_config():
     for key, value in flask.request.form.items():
         try:
             section, option = key.split("|")
-        except Exception:
+        except ValueError:
             continue
 
         api.set_config_value(section, option, value, category)
@@ -285,10 +285,14 @@ def add_account():
 
     login = flask.request.form["account_login"]
     password = flask.request.form["account_password"]
-    type = flask.request.form["account_type"]
+    account_type = flask.request.form["account_type"]
 
-    api.update_account(type, login, password)
-    return jsonify(True)
+    if login:
+        api.update_account(account_type, login, password)
+        return jsonify(True)
+
+    else:
+        return jsonify(False)
 
 
 @bp.route("/json/update_accounts", methods=["POST"], endpoint="update_accounts")
@@ -296,7 +300,7 @@ def add_account():
 @login_required("ACCOUNTS")
 # @fresh_login_required
 def update_accounts():
-    deleted = []  #: dont update deleted accounts or they will be created again
+    deleted = []  #: don't update deleted accounts, or they will be created again
     updated = {}
     api = flask.current_app.config["PYLOAD_API"]
 

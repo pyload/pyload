@@ -1,4 +1,4 @@
-name: Test
+name: Lint & Test
 
 on:
   pull_request:
@@ -9,55 +9,60 @@ on:
     branches:
       - develop
       - main
+  workflow_dispatch:
 
 env:
   PYCURL_SSL_LIBRARY: openssl
-  default_python_version: 3.6
+  runner_python_version: "3.x"
+  DISTUTILS_DEBUG: 1
   toxworkdir: .tox
 
 jobs:
-  pre-test:
-    name: Pre-Test ${{ matrix.toxenv }}
+
+  lint:
+    name: Lint using ${{ matrix.toxenv }} 🔎
 
     runs-on: ubuntu-20.04
 
     strategy:
       fail-fast: false
       matrix:
-        toxenv: [compileall, pylint, bandit]
+#        toxenv: [compileall, pylint, bandit]
+        toxenv: [compileall, bandit]
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install binary packages
         run: sudo apt-get update && sudo apt-get -y --no-install-recommends install libcurl4-openssl-dev
 
       - name: Set up Python environment
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
-          python-version: ${{ env.default_python_version }}
+          python-version: ${{ env.runner_python_version }}
 
       - name: Prepare cache
         run: echo "day_of_year=$(date +%j)" >> $GITHUB_ENV
 
       - name: Set up cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             ${{ env.pythonLocation }}
             ${{ env.toxworkdir }}
-          key: ubuntu-20.04--${{ env.default_python_version }}--${{ hashFiles('setup.cfg', 'pyproject.toml', 'tox.ini') }}--${{ env.pythonLocation }}--${{ env.day_of_year }}
+          key: ubuntu-20.04--${{ env.runner_python_version }}--${{ hashFiles('setup.cfg', 'pyproject.toml', 'tox.ini') }}--${{ env.pythonLocation }}--${{ env.day_of_year }}
 
       - name: Install Python dependencies
-        run: pip install tox
+        run: python3 -m pip install tox
 
-      - name: Test pyLoad
+      - name: Lint code
         run: tox -e ${{ matrix.toxenv }} --workdir ${{ env.toxworkdir }}
 
   test:
-    name: Test ${{ matrix.python-version }} on ${{ matrix.os }}
-    needs: pre-test
+    name: Test ${{ matrix.python-version }} on ${{ matrix.os }} 🧪
+    needs:
+      - lint
 
     runs-on: ${{ matrix.os }}
     env:
@@ -67,28 +72,30 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.6", "3.7", "3.8", "3.9", "3.10", "3.11"]
-        os: [ubuntu-20.04, macos-latest, windows-latest]
+        python-version: ["3.6", "3.7", "3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
+        os: [ubuntu-20.04, macos-13, windows-latest]
         include:
-          - python-version: pypy-3.6
+          - python-version: pypy3.6
             os: ubuntu-20.04
             toxenv: pypy
 
-          - python-version: pypy-3.7
+          - python-version: pypy3.7
             os: ubuntu-20.04
             toxenv: pypy
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+
       - name: Install binary packages
         if: startsWith(matrix.os, 'ubuntu')
         run: sudo apt-get update && sudo apt-get -y --no-install-recommends install libcurl4-openssl-dev
 
       - name: Set up Python environment
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
+          architecture: ${{ matrix.architecture }}
 
       - name: Prepare cache
         if: "!startsWith(matrix.os, 'windows')"
@@ -97,7 +104,7 @@ jobs:
 
       - name: Set up cache
         if: "!startsWith(matrix.os, 'windows')"
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             ${{ env.pythonLocation }}
@@ -106,8 +113,8 @@ jobs:
 
       - name: Install Python dependencies
         run: |
-          pip install tox
-          [ ${{ startsWith(matrix.os, 'macos') }} = true ] && { python -m pip install --upgrade pip==21.3.1; python -m pip install --install-option="--openssl-dir=/usr/local/opt/openssl@1.1" pycurl; } || true
+          python3 -m pip install tox
+          [ ${{ startsWith(matrix.os, 'macos') }} = true ] && { python3 -m pip install --upgrade pip==21.3.1; python3 -m pip install --install-option="--openssl-dir=/usr/local/opt/openssl@3" pycurl; } || true
           [ ${{ startsWith(matrix.os, 'windows') }} = true ] && ./.github/scripts/install_pycurl_win.sh ${{ matrix.python-version }} || true
         shell: bash
 

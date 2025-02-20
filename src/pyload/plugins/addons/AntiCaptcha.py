@@ -13,36 +13,17 @@ from ..base.addon import BaseAddon, threaded
 class AntiCaptcha(BaseAddon):
     __name__ = "AntiCaptcha"
     __type__ = "addon"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __status__ = "testing"
 
     __config__ = [
         ("enabled", "bool", "Activated", False),
         ("check_client", "bool", "Don't use if client is connected", True),
-        (
-            "solve_image",
-            "bool",
-            "Solve image catcha",
-            True,
-        ),
-        (
-            "solve_recaptcha",
-            "bool",
-            "Solve ReCaptcha",
-            True,
-        ),
-        (
-            "solve_hcaptcha",
-            "bool",
-            "Solve HCaptcha",
-            True,
-        ),
-        (
-            "refund",
-            "bool",
-            "Request refund if result incorrect",
-            False,
-        ),
+        ("solve_image", "bool", "Solve image catcha", True),
+        ("solve_recaptcha", "bool", "Solve ReCaptcha", True),
+        ("solve_hcaptcha", "bool", "Solve HCaptcha", True),
+        ("refund", "bool", "Request refund if result incorrect", False),
+        ("api_url", "password", "API base URL", "https://api.anti-captcha.com/"),
         ("passkey", "password", "API key", ""),
         ("timeout", "int", "Timeout in seconds (min 60, max 3999)", "900"),
     ]
@@ -62,7 +43,9 @@ class AntiCaptcha(BaseAddon):
     API_URL = "https://api.anti-captcha.com/"
 
     def api_request(self, method, post):
-        json_data = self.load(self.API_URL + method, post=json.dumps(post))
+        api_url = self.config.get("api_url", self.API_URL)
+        api_url += "/" if not api_url.endswith("/") else ""
+        json_data = self.load(api_url + method, post=json.dumps(post))
         return json.loads(json_data)
 
     def get_credits(self):

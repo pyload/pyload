@@ -2,15 +2,29 @@
 
 import random
 import string
+import sys
 
-import js2py
+if sys.version_info < (3, 12):
+    def monkey_patch():
+        """Patching js2py for CVE-2024-28397"""
+        from js2py.constructors.jsobject import Object
+        fn = Object.own["getOwnPropertyNames"]["value"].code
 
-js2py.disable_pyimport()
+        def wraps(*args, **kwargs):
+            result = fn(*args, **kwargs)
+            return list(result)
+        Object.own["getOwnPropertyNames"]["value"].code = wraps
+
+    import js2py
+    monkey_patch()
+    js2py.disable_pyimport()
+
+else:
+    import dukpy
 
 
-def random_string(length):
-    seq = string.ascii_letters + string.digits + string.punctuation
-    return "".join(random.choice(seq) for _ in range(length))
+def random_string(length, valid_chars=string.ascii_letters + string.digits + string.punctuation):
+    return "".join(random.choice(valid_chars) for _ in range(length))
 
 
 def is_plural(value):
@@ -22,8 +36,10 @@ def is_plural(value):
 
 
 def eval_js(script, es6=False):
-    # return requests_html.HTML().render(script=script, reload=False)
-    return (js2py.eval_js6 if es6 else js2py.eval_js)(script)
+    if sys.version_info < (3, 12):
+        return (js2py.eval_js6 if es6 else js2py.eval_js)(script)
+    else:
+        return dukpy.evaljs(script)
 
 
 def accumulate(iterable, to_map=None):
