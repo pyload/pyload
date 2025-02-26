@@ -24,6 +24,22 @@ DESCRIPTION = """
 The free and open-source Download Manager written in pure Python
 """
 
+# fix logo for narrow terminals
+import shutil
+if shutil.get_terminal_size((49, 24)).columns < 58:
+    DESCRIPTION = r"""
+  ____________
+ /       |    \             _                 _
+ |    ___/    |   _ __ _  _| |   ___  __ _ __| |
+ \___/  ______/  | '_ \ || | |__/ _ \/ _` / _` |
+     |   ◯|      | .__/\_, |____\___/\__,_\__,_|
+     \    /      |_|   |__/
+      \  /
+       \/
+
+The free and open-source Download Manager
+written in pure Python
+"""
 
 def _daemon(core_args, pid_file=""):
     try:
