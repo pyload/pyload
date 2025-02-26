@@ -334,6 +334,7 @@ class Core:
         from .managers.event_manager import EventManager
         from .managers.file_manager import FileManager
         from .managers.plugin_manager import PluginManager
+        from .remote.remote_manager import RemoteManager
         from .managers.thread_manager import ThreadManager
         from .scheduler import Scheduler
 
@@ -346,6 +347,7 @@ class Core:
         self.thm = self.thread_manager = ThreadManager(self)
         self.cpm = self.captcha_manager = CaptchaManager(self)
         self.adm = self.addon_manager = AddonManager(self)
+        self.rem = self.remote_manager = RemoteManager(self)
 
     def _init_hotreload_code(self):
         # start hot-reload for code
@@ -502,6 +504,11 @@ class Core:
             return
         self.webserver.start()
 
+    def _start_remote_server(self):
+        if not self.config.get("remote", "enabled"):
+            return
+        self.remote_manager.start_backends()
+
     def _stop_webserver(self):
         if not self.config.get("webui", "enabled"):
             return
@@ -607,6 +614,7 @@ class Core:
             # scanner.dump_all_objects(os.path.join(PACKDIR, 'objs.json'))
 
             self._start_webserver()
+            self._start_remote_server()
 
             self.log.debug("*** pyLoad is up and running ***")
             # self.evm.fire('pyload:started')
