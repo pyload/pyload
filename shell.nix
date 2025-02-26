@@ -5,14 +5,6 @@
 pkgs.mkShell {
   buildInputs =
   with pkgs;
-
-# workaround for...
-# FIXME error: js2py-0.74 not supported for interpreter python3.12
-# js2py is required: ModuleNotFoundError: No module named 'dukpy'
-# but js2py should work with python 3.12
-# https://github.com/PiotrDabkowski/Js2Py/issues/317
-let python3 = python311; in
-
   [
 
     # propagatedBuildInputs
@@ -41,9 +33,11 @@ let python3 = python311; in
     tkinter
     beautifulsoup4
     send2trash
-    # FIXME error: js2py-0.74 not supported for interpreter python3.12
-    # js2py is required: ModuleNotFoundError: No module named 'dukpy'
-    js2py
+
+    # version switch since pyload 1da386c2
+    #js2py # python <3.12
+    dukpy # python >=3.12
+
     # FIXME: ERROR: Could not find a version that satisfies the requirement Flask>=2.3.0; python_version >= "3.8"
     # pkgs.python3.pkgs.flask.version = "2.2.5"
     # https://github.com/NixOS/nixpkgs/pull/245320 # python3.pkgs.flask: 2.2.5 -> 2.3.2
