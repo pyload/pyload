@@ -213,6 +213,12 @@ def _parse_args(cmd_args):
         help="set the full path to the pidfile",
         default=os.path.join(Core.DEFAULT_TMPDIR, "pyload.pid"),
     )
+    parser.add_argument(
+        "--port",
+        help="set webinterface port in pyload.cfg",
+        default=None,
+        type=int,
+    )
     parser.add_argument("--dry-run", action="store_true", help="test start-up and exit", default=False)
     parser.add_argument("--daemon", action="store_true", help="run as daemon")
     parser.add_argument("--quit", action="store_true", help="quit running pyLoad instance", default=False)
@@ -300,7 +306,7 @@ def main(cmd_args=sys.argv[1:]):
     Entry point for console_scripts.
     """
     args = _parse_args(cmd_args)
-    core_args = (args.userdir, args.tempdir, args.storagedir, args.debug, args.reset, args.dry_run)
+    core_args = (args.userdir, args.tempdir, args.storagedir, args.debug, args.reset, args.dry_run, args.port)
 
     if args.quit:
         quit_instance(args.pidfile)
