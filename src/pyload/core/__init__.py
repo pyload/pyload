@@ -28,7 +28,6 @@ from .. import __version__ as PYLOAD_VERSION
 from .. import __version_info__ as PYLOAD_VERSION_INFO
 from .utils import format, fs
 from .utils.misc import reversemap
-from .threads.watchdog_thread import WatchdogThread
 from ..plugins.helpers import str_exc
 
 
@@ -405,6 +404,8 @@ class Core:
         plugindirs = [self.userdir + "/plugins"]
         if os.access(__file__, os.W_OK):
             plugindirs.append(self.sourcedir + "/plugins")
+
+        from .threads.watchdog_thread import WatchdogThread
 
         for plugindir in plugindirs:
             self.log.info(f'Watching plugin directory for changes: {plugindir!r}')
