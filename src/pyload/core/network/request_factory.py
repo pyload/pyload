@@ -103,12 +103,15 @@ class RequestFactory:
     def get_options(self):
         """
         returns options needed for pycurl.
+
+        passed to http_download.HTTPDownload and http_request.HTTPRequest
         """
         return {
             "interface": self.iface(),
             "proxies": self.get_proxies(),
             "ipv6": self.pyload.config.get("download", "ipv6"),
             "ssl_verify": self.pyload.config.get("general", "ssl_verify"),
+            "pyload": self.pyload,
         }
 
     def update_bucket(self):

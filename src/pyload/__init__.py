@@ -26,7 +26,8 @@ PKGNAME = "pyload-ng"
 PKGDIR = pkg_resources.resource_filename(__name__, "")
 
 USERHOMEDIR = os.path.expanduser("~")
-os.chdir(USERHOMEDIR)
+# why?!
+#os.chdir(USERHOMEDIR)
 
 try:
     __version__ = pkg_resources.get_distribution(PKGNAME).parsed_version.base_version
@@ -49,6 +50,8 @@ exc_logger = logging.getLogger("exception")
 
 def excepthook(exc_type, exc_value, exc_traceback):
     if issubclass(exc_type, KeyboardInterrupt):
+        # fix: NameError: name 'sys' is not defined
+        import sys
         sys.__excepthook__(exc_type, exc_value, exc_traceback)
         return
     msg_list = traceback.format_exception_only(exc_type, exc_value)

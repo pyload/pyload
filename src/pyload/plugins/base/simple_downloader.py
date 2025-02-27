@@ -290,6 +290,9 @@ class SimpleDownloader(BaseDownloader):
         self.check_download()
 
     def check_download(self):
+        if self.last_download == "":
+            # response was html error page, etc
+            return
         self.log_info(self._("Checking file (with built-in rules)..."))
         for r, p in self.FILE_ERRORS:
             errmsg = self.scan_download({r: re.compile(p)})

@@ -9,10 +9,19 @@ import math
 import operator
 import sys
 import urllib.request
+import base64
 
 from PIL import Image, ImageDraw
 
-from ..base.ocr import BaseOCR
+if __name__ == "__main__":
+    import os
+    import sys
+    # fix: ModuleNotFoundError: No module named 'pyload'
+    sys.path.insert(0, os.path.dirname(__file__) + "/../../..")
+
+# ImportError: attempted relative import with no known parent package
+#from ..base.captcha_service import CaptchaService
+from pyload.plugins.base.captcha_service import CaptchaService
 
 
 class ImageSequence:
@@ -28,9 +37,9 @@ class ImageSequence:
             raise IndexError  #: end of sequence
 
 
-class CircleCaptcha(BaseOCR):
+class CircleCaptcha(CaptchaService):
     __name__ = "CircleCaptcha"
-    __type__ = "ocr"
+    __type__ = "anticaptcha"
     __version__ = "1.11"
     __status__ = "testing"
 
@@ -537,7 +546,25 @@ class CircleCaptcha(BaseOCR):
         # self.log_debug(f"{(x, y)} = {result}")
         return result
 
+    def challenge(self, img, instructions="click into the open circle"):
+        #if isinstance(img, bytes):
+        #    img = PIL.Image.open(io.BytesIO(img))
+        self.log_debug(f"challenge img {type(img)} {repr(img)[:1000]}")
+        assert isinstance(img, bytes)
+        img_base64 = base64.b64encode(img).decode("ascii")
+        params = {
+            "url": self.pyfile.url,
+            # TODO rename keys?
+            "body": img_base64,
+            "comment": instructions,
+        }
+        # AttributeError: 'CircleCaptcha' object has no attribute 'decrypt_interactive'
+        result = self.decrypt_interactive(params, timeout=300)
+        return result
+
     def decrypt(self, img):
+        if isinstance(img, bytes):
+            img = PIL.Image.open(io.BytesIO(img))
         i_debug_save_file = 0
         mypalette = None
         for im in ImageSequence(img):
@@ -552,7 +579,7 @@ class CircleCaptcha(BaseOCR):
                 # if i_debug_save_file < 7:
                 # continue
                 im.save("output{}.png".format(i_debug_save_file), "png")
-                input("frame: {}".format(im))
+                print("frame: {}".format(im))
 
             pix = im.load()
 
@@ -810,11 +837,29 @@ class CircleCaptcha(BaseOCR):
         self.log_info(self._("Coords: {}").format(coords))
 
 
-# DEBUG
-# import datetime
-# a = datetime.now()
-# x = CircleCaptcha()
-# coords = x.decrypt_from_file("decripter/captx.html2.gif")
-# coords = x.decrypt_from_web("http://ncrypt.in/classes/captcha/circlecaptcha.php")
-# b = datetime.now()
-# self.log_debug(f"Elapsed time: {(b-a).seconds} seconds")
+if __name__ == "__main__":
+    # debug
+    """
+    example:
+    python src/pyload/plugins/anticaptchas/CircleCaptcha.py circle.png
+    """
+    captcha_path = sys.argv[1]
+    from pyload.plugins.decrypters.SerienfansOrg import _mock_decrypter
+    #captcha = CircleCaptcha(pyfile)
+    captcha = _mock_decrypter(CircleCaptcha)
+    #coords = captcha.decrypt_from_file(captcha_path)
+    im = Image.open(captcha_path)
+    coords = captcha.decrypt(im)
+    #coords = 50, 20 # mock
+    if coords is None:
+        print("error: not found open circle")
+        sys.exit(1)
+    x, y = coords
+    # draw red crosshair on captcha image
+    result_im = im.copy()
+    draw = ImageDraw.Draw(result_im)
+    red = (255, 0, 0, 255)
+    draw.line((x, 0, x, im.size[1]), fill=red)
+    draw.line((0, y, im.size[0], y), fill=red)
+    print("result_im.show")
+    result_im.show()

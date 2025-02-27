@@ -9,7 +9,7 @@ from pyload.core.network.http.exceptions import BadHeader
 from pyload.core.utils import format, parse
 from pyload.core.utils.old import safejoin
 
-from ..helpers import exists
+from ..helpers import exists, str_exc
 from .hoster import BaseHoster
 
 
@@ -252,8 +252,8 @@ class BaseDownloader(BaseHoster):
             )
 
         except IOError as exc:
-            self.log_error(str(exc))
-            self.fail(self._("IOError {}").format(exc.errno))
+            self.log_error(str_exc(exc))
+            self.fail(str_exc(exc))
 
         except BadHeader as exc:
             self.req.http.code = exc.code

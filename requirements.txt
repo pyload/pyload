@@ -1,0 +1,61 @@
+# based on shell.nix
+
+requests
+
+# buildInputs
+paver
+
+# propagatedBuildInputs
+pycurl
+jinja2
+thrift
+simplejson
+
+# fatal error: 'longintrepr.h' file not found
+# pycrypto
+pycryptodome
+
+feedparser
+
+# ERROR: No matching distribution found for tkinter
+# tkinter
+
+beautifulsoup4
+send2trash
+
+# version switch since pyload 1da386c2
+#js2py # python <3.12
+dukpy # python >=3.12
+
+flask
+flask-compress
+flask-caching
+flask-themes2
+filetype
+semver
+cheroot
+cryptography
+flask-babel
+flask-session
+flask-session2
+bitmath
+setuptools # pkg_resources
+certifi
+
+# TODO use pypi relase instead of
+# src/pyload/core/network/http/aia.py
+#aia
+
+# extra deps for aia:
+pyopenssl
+timeout-decorator
+
+# hot-reload
+jurigged
+#reloading
+watchdog
+
+# optional dependencies
+colorlog # colorful console logging
+pillow # for some CAPTCHA plugin
+slixmpp # XMPP plugin

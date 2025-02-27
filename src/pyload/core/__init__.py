@@ -17,14 +17,18 @@ import subprocess
 import sys
 import tempfile
 import time
+import glob
 from threading import Event
 
 from pyload import APPID, PKGDIR, USERHOMEDIR
+import OpenSSL
+import jurigged
 
 from .. import __version__ as PYLOAD_VERSION
 from .. import __version_info__ as PYLOAD_VERSION_INFO
 from .utils import format, fs
 from .utils.misc import reversemap
+from ..plugins.helpers import str_exc
 
 
 class Restart(Exception):
@@ -77,7 +81,7 @@ class Core:
         return self._debug
 
     # NOTE: should `reset` restore the user config as well?
-    def __init__(self, userdir, tempdir, storagedir, debug=None, reset=False, dry=False):
+    def __init__(self, userdir, tempdir, storagedir, debug=None, reset=False, dry=False, port=None):
         self._running = Event()
         self._exiting = False
         self._do_restart = False
@@ -85,6 +89,9 @@ class Core:
         self._ = lambda x: x
         self._debug = 0
         self._dry_run = dry
+
+        self._init_log_before_config()
+        # self.log.debug("testing self.log")
 
         # if self.tmpdir not in sys.path:
         # sys.path.append(self.tmpdir)
@@ -94,9 +101,10 @@ class Core:
 
         datadir = os.path.join(os.path.realpath(userdir), "data")
         os.makedirs(datadir, exist_ok=True)
-        os.chdir(datadir)
+        # why?!
+        #os.chdir(datadir)
 
-        self._init_config(userdir, tempdir, storagedir, debug)
+        self._init_config(userdir, tempdir, storagedir, debug, port)
         self._init_log()
         if storagedir is not None:
             self.log.warning("Download folder was specified from the commandline")
@@ -105,13 +113,14 @@ class Core:
         self._init_api()
         self._init_managers()
         self._init_webserver()
+        self._init_hotreload_code()
 
         atexit.register(self.terminate)
 
         # TODO: Remove...
         self.last_client_connected = 0
 
-    def _init_config(self, userdir, tempdir, storagedir, debug):
+    def _init_config(self, userdir, tempdir, storagedir, debug, port=None):
         from .config.parser import ConfigParser
 
         self.userdir = os.path.realpath(userdir)
@@ -136,6 +145,9 @@ class Core:
         else:
             self.config.set("general", "storage_folder", storagedir)
 
+        if port:
+            self.config.set("webui", "port", port)
+
         # Make sure storage_folder is not empty
         # and also not inside dangerous locations
         correct_case = lambda x: x.lower() if os.name == "nt" else x
@@ -145,22 +157,65 @@ class Core:
         ]
         is_bad_dir = any(directories[0].startswith(d) for d in directories[1:])
 
+        default_storagedir = "$HOME/Downloads/pyLoad"
+
+        fallback_storagedir_list = [
+            "$PWD/Downloads/pyLoad",
+            "$TMP/Downloads/pyLoad",
+            "$TEMP/Downloads/pyLoad",
+        ]
+
         if not storagedir or is_bad_dir:
-            self.config.set("general", "storage_folder", "~/Downloads/pyLoad")
+            self.config.set("general", "storage_folder", default_storagedir)
             storagedir = self.config.get("general", "storage_folder")
 
-        os.makedirs(storagedir, exist_ok=True)
+        for _storagedir in [storagedir, default_storagedir, *fallback_storagedir_list]:
+            _storagedir = os.path.expandvars(_storagedir)
+            self.log.debug(f"trying to create storagedir {_storagedir!r}")
+            try:
+                os.makedirs(_storagedir, exist_ok=True)
+                # TODO check if _storagedir is writable
+                if storagedir != _storagedir:
+                    self.log.error(f"using fallback storagedir {_storagedir!r}")
+                    storagedir = _storagedir
+                    self.config.set("general", "storage_folder", storagedir)
+                break
+            except PermissionError as exc:
+                # test: set storage_folder to /no/such/dir
+                self.log.error(f"failed to create storagedir {_storagedir!r}: {str_exc(exc)}")
+            # TODO handle more exceptions
+        else:
+            pyload_config_path = f"{self.userdir}/settings/pyload.cfg"
+            raise Exception(f"failed to create all storagedir candidates. hint: set storage_folder in {pyload_config_path!r}")
 
         if not self._dry_run:
             self.config.save()  #: save so config files gets filled
 
-    def _init_log(self):
+    def _init_log_before_config(self):
+        # the attribute self.config does not-yet exist
+        # this is tolerated by LogFactory
         from .log_factory import LogFactory
 
         self.logfactory = LogFactory(self)
-        self.log = self.logfactory.get_logger(
-            "pyload"
-        )  # NOTE: forced debug mode from console is not working actually
+        # NOTE: forced debug mode from console is not working actually
+        self.log = self.logfactory.get_logger("pyload-before-config")
+
+        self.log.info(f"*** Welcome to pyLoad {self.version} ***")
+        if self._dry_run:
+            self.log.info("*** TEST RUN ***")
+
+    def _init_log(self):
+        from .log_factory import LogFactory
+
+        # revert _init_log_before_config
+        if hasattr(self, "logfactory"):
+            del self.logfactory
+        if hasattr(self, "log"):
+            del self.log
+
+        self.logfactory = LogFactory(self)
+        # NOTE: forced debug mode from console is not working actually
+        self.log = self.logfactory.get_logger("pyload")
 
         self.log.info(f"*** Welcome to pyLoad {self.version} ***")
         if self._dry_run:
@@ -169,6 +224,75 @@ class Core:
     def _init_network(self):
         from .network import request_factory
         from .network.request_factory import RequestFactory
+
+        ca_bundle_dir = self.userdir + "/cache/ca-bundle"
+        os.makedirs(ca_bundle_dir, exist_ok=True)
+        ca_bundle_files = sorted(glob.glob(ca_bundle_dir + "/*.crt"))
+
+        # delete empty ca-bundles
+        def filter_bundle_file(f):
+            if os.path.getsize(f) == 0:
+                os.unlink(f)
+                return False
+            return True
+
+        ca_bundle_files = list(filter(filter_bundle_file, ca_bundle_files))
+
+        # delete old ca-bundles
+        for f in ca_bundle_files[0:-1]:
+            try:
+                os.unlink(f)
+            except Exception as exc:
+                self.log.warning(
+                    f"failed to delete old ca-bundle file {repr(f)}: {exc}"
+                )
+
+        if len(ca_bundle_files) == 0:
+            import certifi
+
+            self.log.info(f"using default ca-bundle {certifi.where()}")
+            ca_bundle_files.append(certifi.where())
+        # use the latest ca-bundle
+        self.ca_bundle_path = ca_bundle_files[-1]
+        from .network.http.aia import AIASession
+
+        self.aia_session = None
+        for retry_step in range(2):
+            try:
+                self.aia_session = AIASession(
+                    cafile=self.ca_bundle_path,
+                    cache_db=self.userdir + "/cache/ssl-cached-branch-certs.db",
+                    # TODO implement in aia
+                    # trusted_dir = self.userdir + "/settings/ssl-trusted-root-certs",
+                )
+            except OpenSSL.SSL.Error as exc:
+                if retry_step == 1:
+                    self.log.error(f"failed to create AIASession: {exc}")
+                    raise
+                self.log.warning(
+                    f"failed to load ca-bundle {self.ca_bundle_path}: {exc}"
+                )
+                try:
+                    os.rename(self.ca_bundle_path, self.ca_bundle_path + ".broken")
+                except Exception as exc:
+                    self.log.warning(
+                        f"failed to move broken ca-bundle {self.ca_bundle_path}: {exc}"
+                    )
+                self.log.info(f"using default ca-bundle {certifi.where()}")
+                self.ca_bundle_path = certifi.where()
+
+        # load trusted root certs
+        trusted_root_certs_dir = self.userdir + "/settings/trusted-root-certs"
+        os.makedirs(trusted_root_certs_dir, exist_ok=True)
+        for cert_file in glob.glob(trusted_root_certs_dir + "/*.crt"):
+            if os.path.isdir(cert_file):  # also allow symlinks
+                continue
+            try:
+                self.aia_session.add_trusted_root_cert_file(cert_file)
+            except Exception as exc:
+                self.log.warning(
+                    f"failed to load trusted root cert from {cert_file}: {exc}"
+                )
 
         self.req = self.request_factory = RequestFactory(self)
 
@@ -210,6 +334,7 @@ class Core:
         from .managers.event_manager import EventManager
         from .managers.file_manager import FileManager
         from .managers.plugin_manager import PluginManager
+        from .remote.remote_manager import RemoteManager
         from .managers.thread_manager import ThreadManager
         from .scheduler import Scheduler
 
@@ -222,6 +347,78 @@ class Core:
         self.thm = self.thread_manager = ThreadManager(self)
         self.cpm = self.captcha_manager = CaptchaManager(self)
         self.adm = self.addon_manager = AddonManager(self)
+        self.rem = self.remote_manager = RemoteManager(self)
+
+    def _init_hotreload_code(self):
+        # start hot-reload for code
+        def jurigged_logger(arg):
+            # dont log "watch ..." messages. too verbose
+            if isinstance(arg, jurigged.live.WatchOperation):
+                return
+            if isinstance(arg, jurigged.codetools.AddOperation):
+                # ignore "Run" of main branch: if __name__ == "__main__":
+                return
+            # verbose
+            self.log.debug(f"hot-reload {str_exc(arg)}")
+        def jurigged_watch(path):
+            jurigged.watch(path + "/**/*.py", jurigged_logger)
+        self.log.info(f"Starting hot-reload from userdir {self.userdir}")
+        jurigged_watch(self.userdir)
+        self.sourcedir = os.path.dirname(os.path.dirname(__file__))
+        if os.access(__file__, os.W_OK):
+            self.log.info(f"Starting hot-reload from sourcedir {self.sourcedir}")
+            jurigged_watch(self.sourcedir)
+
+    def _init_hotreload_plugins(self):
+        # start hot-reload for plugins
+        self.reload_plugins_is_scheduled = False
+
+        def reload_plugins():
+            # no. reload_plugins does not add new plugins
+            #self.plugin_manager.reload_plugins(type_plugins)
+            self.plugin_manager.create_index()
+            # save generated config
+            self.config.save_config(self.config.plugin, self.config.pluginpath)
+            self.reload_plugins_is_scheduled = False
+
+        class WatchdogHandler(watchdog.events.FileSystemEventHandler):
+            def __init__(self, pyload):
+                self.pyload = pyload
+                super().__init__()
+            def dispatch(self, event):
+                if self.pyload.reload_plugins_is_scheduled:
+                    return
+                ignore_events = (
+                    watchdog.events.FileOpenedEvent,
+                    watchdog.events.DirModifiedEvent,
+                    watchdog.events.FileClosedEvent,
+                    watchdog.events.FileCreatedEvent,
+                )
+                if isinstance(event, ignore_events):
+                    # verbose!
+                    # self.pyload.log.debug(f"WatchdogThread dispatch ignoring event {event}")
+                    return
+                if isinstance(event, (watchdog.events.FileMovedEvent, watchdog.events.FileModifiedEvent)):
+                    if "/__pycache__/" in event.src_path:
+                        return
+                self.pyload.log.debug(f"WatchdogThread dispatch event {event}")
+                self.pyload.reload_plugins_is_scheduled = True
+                # self.pyload.scheduler.add_job(0, reload_plugins)
+                reload_plugins()
+
+        plugindirs = [self.userdir + "/plugins"]
+        if os.access(__file__, os.W_OK):
+            plugindirs.append(self.sourcedir + "/plugins")
+
+        from .threads.watchdog_thread import WatchdogThread
+
+        for plugindir in plugindirs:
+            self.log.info(f'Watching plugin directory for changes: {plugindir!r}')
+            event_handler = WatchdogHandler(self)
+            watchdog_thread = WatchdogThread(self.thread_manager)
+            watchdog_thread.schedule(event_handler, plugindir, recursive=True)
+            watchdog_thread.start()
+            self.thread_manager.threads.append(watchdog_thread)
 
     def _setup_permissions(self):
         self.log.debug("Setup permissions...")
@@ -306,6 +503,11 @@ class Core:
         if not self.config.get("webui", "enabled"):
             return
         self.webserver.start()
+
+    def _start_remote_server(self):
+        if not self.config.get("remote", "enabled"):
+            return
+        self.remote_manager.start_backends()
 
     def _stop_webserver(self):
         if not self.config.get("webui", "enabled"):
@@ -412,6 +614,7 @@ class Core:
             # scanner.dump_all_objects(os.path.join(PACKDIR, 'objs.json'))
 
             self._start_webserver()
+            self._start_remote_server()
 
             self.log.debug("*** pyLoad is up and running ***")
             # self.evm.fire('pyload:started')
@@ -453,8 +656,9 @@ class Core:
         # self.evm.fire('pyload:restarting')
         self.terminate()
 
-        if sys.path[0]:
-            os.chdir(sys.path[0])
+        # why?!
+        #if sys.path[0]:
+        #    os.chdir(sys.path[0])
 
         args = self._get_args_for_reloading()
         subprocess.Popen(args, close_fds=True)

@@ -53,11 +53,17 @@ class LogFactory:
         return logger
 
     def _init_logger(self, logger):
-        console = self.pyload.config.get("log", "console")
-        syslog = self.pyload.config.get("log", "syslog")
-        filelog = self.pyload.config.get("log", "filelog")
+        if not hasattr(self.pyload, "config"):
+            # before _init_config
+            console = True
+            syslog = False
+            filelog = False
+        else:
+            console = self.pyload.config.get("log", "console")
+            syslog = self.pyload.config.get("log", "syslog")
+            filelog = self.pyload.config.get("log", "filelog")
 
-        level = logging.DEBUG if self.pyload.debug else logging.INFO
+        level = logging.DEBUG if getattr(self.pyload, "debug", True) else logging.INFO
         logger.setLevel(level)
 
         if console:
@@ -93,7 +99,10 @@ class LogFactory:
         self.loggers.clear()
 
     def _init_console_handler(self, logger):
-        color = self.pyload.config.get("log", "console_color") and colorlog
+        if not hasattr(self.pyload, "config"):
+            color = False
+        else:
+            color = self.pyload.config.get("log", "console_color") and colorlog
 
         if color:
             consoleform = colorlog.ColoredFormatter(
