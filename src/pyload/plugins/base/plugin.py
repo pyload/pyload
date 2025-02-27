@@ -165,6 +165,7 @@ class BasePlugin:
         multipart=False,
         redirect=True,
         req=None,
+        method=None,
     ):
         """
         Load content at url and returns it.
@@ -223,6 +224,7 @@ class BasePlugin:
             just_header,
             multipart,
             decode is True,
+            method=method
         )
 
         # TODO: Move to network in 0.6.x
