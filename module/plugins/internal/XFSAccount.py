@@ -11,7 +11,7 @@ from .Account import Account
 class XFSAccount(Account):
     __name__ = "XFSAccount"
     __type__ = "account"
-    __version__ = "0.65"
+    __version__ = "0.66"
     __status__ = "stable"
 
     __config__ = [("activated", "bool", "Activated", True),
@@ -34,6 +34,7 @@ class XFSAccount(Account):
     PREMIUM_PATTERN = r'\(Premium only\)'
 
     VALID_UNTIL_PATTERN = r'Premium.[Aa]ccount expires?:.*?(\d{1,2} [\w^_]+ \d{4})'
+    VALID_UNTIL_FORMAT = r"%d %B %Y"
 
     TRAFFIC_LEFT_PATTERN = r'Traffic available today:.*?<b>\s*(?P<S>[\d.,]+|[Uu]nlimited)\s*(?:(?P<U>[\w^_]+)\s*)?</b>'
     TRAFFIC_LEFT_UNIT = "MB"  #: Used only if no group <U> was found
@@ -90,7 +91,7 @@ class XFSAccount(Account):
             self.log_debug("Expire date: " + expiredate)
 
             try:
-                validuntil = time.mktime(time.strptime(expiredate, "%d %B %Y"))
+                validuntil = time.mktime(time.strptime(expiredate, self.VALID_UNTIL_FORMAT))
 
             except Exception, e:
                 self.log_error(e)
