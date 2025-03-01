@@ -14,7 +14,7 @@ from .account import BaseAccount
 class XFSAccount(BaseAccount):
     __name__ = "XFSAccount"
     __type__ = "account"
-    __version__ = "0.65"
+    __version__ = "0.66"
     __status__ = "stable"
 
     __config__ = [
@@ -41,6 +41,7 @@ class XFSAccount(BaseAccount):
     PREMIUM_PATTERN = r"\(Premium only\)"
 
     VALID_UNTIL_PATTERN = r"Premium.[Aa]ccount expires?:.*?(\d{1,2} [\w^_]+ \d{4})"
+    VALID_UNTIL_FORMAT = r"%d %B %Y"
 
     TRAFFIC_LEFT_PATTERN = r"Traffic available today:.*?<b>\s*(?P<S>[\d.,]+|[Uu]nlimited)\s*(?:(?P<U>[\w^_]+)\s*)?</b>"
     TRAFFIC_LEFT_UNIT = "MiB"  #: Used only if no group <U> was found
@@ -99,7 +100,7 @@ class XFSAccount(BaseAccount):
             previous_locale = locale.getlocale(locale.LC_TIME)
             try:
                 locale.setlocale(locale.LC_TIME, "en_US.UTF-8")
-                validuntil = time.mktime(time.strptime(expiredate, "%d %B %Y"))
+                validuntil = time.mktime(time.strptime(expiredate, self.VALID_UNTIL_FORMAT))
 
             except Exception as exc:
                 self.log_error(exc)
