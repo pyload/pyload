@@ -320,7 +320,7 @@ class ThreadManager:
                     exc, exc_info=True, stack_info=self.pyload.debug > 2
                 )
                 job.set_status("failed")
-                job.error = str(exc)
+                job.error = type(exc).__name__ + ": " + str(exc)
                 job.release()
                 return
 

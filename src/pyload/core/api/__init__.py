@@ -436,6 +436,10 @@ class Api:
         :param dest: `Destination`
         :return: package id of the new package
         """
+        if re.fullmatch(r"\s*", name):
+            # name is empty or spaces -> use current time
+            name = time.strftime("%Y-%m-%dT%H-%M-%S%z")
+
         if self.pyload.config.get("general", "folder_per_package"):
             folder = name
         else:
@@ -1241,6 +1245,10 @@ class Api:
         :param username:
         :param password:
         :return: dict with info, empty when login is incorrect
+        """
+        """
+        if self.pyload.config.get("remote", "nolocalauth") and remoteip == "127.0.0.1":
+            return "local"
         """
         return self.pyload.db.check_auth(username, password)
 

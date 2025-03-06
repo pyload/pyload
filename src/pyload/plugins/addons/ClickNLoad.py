@@ -8,7 +8,7 @@ import time
 from pyload.core.utils.struct.lock import lock
 
 from ..base.addon import BaseAddon, threaded
-from ..helpers import forward
+from ..helpers import forward, str_exc
 
 
 # TODO: IPv6 support
@@ -41,6 +41,7 @@ class ClickNLoad(BaseAddon):
         self.do_exit = False
         self.exit_done = threading.Event()
         self.backend_found = threading.Event()
+        self.last_error_str = None
 
         self.pyload.scheduler.add_job(5, self._find_backend, threaded=False)
 
@@ -163,6 +164,11 @@ class ClickNLoad(BaseAddon):
 
     @threaded
     def _server(self):
+        while True:
+            if self._server_inner():
+                break
+
+    def _server_inner(self):
         try:
             self.exit_done.clear()
 
@@ -192,7 +198,7 @@ class ClickNLoad(BaseAddon):
                                 backend_socket = context.wrap_socket(backend_socket, server_hostname=self.web_addr[0])
 
                             except Exception as exc:
-                                self.log_error(self._("SSL error: {}").format(exc))
+                                self.log_error(self._("SSL error: {}").format(str_exc(exc)))
                                 client_socket.close()
                                 continue
 
@@ -210,11 +216,16 @@ class ClickNLoad(BaseAddon):
             self.server_running = False
             self.exit_done.set()
 
+            return True
+
         except socket.timeout:
             self.log_debug("Connection timed out, retrying...")
-            return self._server()
+            return False
 
         except socket.error as exc:
-            self.log_error(exc)
+            error_str = str_exc(exc)
+            if self.last_error_str != error_str:
+                self.log_error(error_str)
+                self.last_error_str = error_str
             time.sleep(240)
-            return self._server()
+            return False

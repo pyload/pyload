@@ -52,6 +52,8 @@ class ConfigParser:
         self.configpath = os.path.join(configdir, "pyload.cfg")
         self.pluginpath = os.path.join(configdir, "plugins.cfg")
 
+        self.old_remote_data = {}
+
         self.plugin_cb = None  #: callback when plugin config value is changed
 
         self.check_version()
@@ -116,6 +118,16 @@ class ConfigParser:
 
         try:
             homeconf = self.parse_config(self.configpath)
+
+            if "username" in homeconf.get("remote", {}):
+                if "password" in homeconf["remote"]:
+                    self.old_remote_data = {
+                        "username": homeconf["remote"]["username"]["value"],
+                        "password": homeconf["remote"]["username"]["value"],
+                    }
+                    del homeconf["remote"]["password"]
+                del homeconf["remote"]["username"]
+
             self.update_values(homeconf, self.config)
 
         except Exception as exc:
@@ -345,6 +357,9 @@ class ConfigParser:
         gets a value for a plugin.
         """
         return self.plugin[plugin][option]["value"]
+
+    def get_options(self, plugin):
+        return self.plugin[plugin].keys()
 
     def set_plugin(self, plugin, option, value):
         """

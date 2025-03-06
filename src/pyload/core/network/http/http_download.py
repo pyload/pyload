@@ -10,6 +10,7 @@ from pyload import APPID
 from ..exceptions import Abort
 from .http_chunk import ChunkInfo, HTTPChunk
 from .http_request import BadHeader
+from .aia_retry_wrap_download import aia_retry_wrap_download
 
 
 class HTTPDownload:
@@ -154,6 +155,7 @@ class HTTPDownload:
         else:
             return None
 
+    @aia_retry_wrap_download
     def _download(self, chunks, resume):
         if not resume:
             self.info.clear()
@@ -174,6 +176,11 @@ class HTTPDownload:
         chunks_done = set()  #: list of curl handles that are finished
         chunks_created = False
         done = False
+
+        if self.size > 0 and init.arrived >= self.size:
+            # complete file was downloaded in one chunk
+            chunks_created = True
+
         if (
             self.info.get_count() > 1
         ):  #: This is a resume, if we were chunked originally assume still can

@@ -1,0 +1,139 @@
+# -*- coding: utf-8 -*-
+
+# note: bad audio quality, bad video quality
+# south park S21E09: 1 episode = 80 MByte, audio: 15khz
+
+#
+# Test links:
+#   https://bs.to/serie/South-Park/21/9-Total-PC/de
+
+import base64
+import re
+import urllib.parse
+import time
+import json
+import functools
+
+if __name__ == "__main__":
+    import os
+    import sys
+    # fix: ModuleNotFoundError: No module named 'pyload'
+    sys.path.insert(0, os.path.dirname(__file__) + "/../../..")
+
+from pyload.core.network.http.http_request import HTTPRequest
+from pyload.plugins.base.decrypter import BaseDecrypter
+from pyload.core.network.http.exceptions import BadHeader
+
+
+# based on src/pyload/plugins/decrypters/SerienfansOrg.py
+
+class BurningSeries(BaseDecrypter):
+    __name__ = "BurningSeries"
+    __type__ = "decrypter"
+    __version__ = "0.1"
+    __status__ = "testing"
+
+
+    __pattern__ = r"https?://(?:www\.)?bs\.to/.+"
+    __config__ = [
+        ("enabled", "bool", "Activated", True),
+    ]
+
+    __description__ = """BurningSeries decrypter plugin"""
+    __license__ = "MIT"
+    __authors__ = [
+        ("milahu", "milahu@gmail.com"),
+    ]
+
+    def setup(self):
+        self.urls = []
+
+        try:
+            self.req.http.close()
+        except Exception:
+            pass
+
+        self.req.http = HTTPRequest(
+            cookies=self.req.cj,
+            options=self.pyload.request_factory.get_options(),
+            limit=2_000_000,
+        )
+
+    def decrypt(self, pyfile):
+
+        self.pyfile = pyfile
+
+        # self.log_debug(f"pyfile.status: {pyfile.status}")
+        # raise 123
+
+        self.pyfile_url_parsed = urllib.parse.urlparse(pyfile.url)
+
+        # parse query string in url fragment
+        # example: s=25 -> only fetch season 25
+        self.pyfile_fragment = urllib.parse.parse_qs(self.pyfile_url_parsed.fragment)
+
+        self._response_1_cache = self.pyload.tempdir + "/burningseries-cache-file-1.txt"
+        self._response_2_cache = self.pyload.tempdir + "/burningseries-cache-file-2.txt"
+
+        """
+        # fix: FilecryptCc: Folder is password protected
+        # usually this is only needed for serienfans.org
+        self.log_debug(f"setting password: {self.pyfile_netloc}")
+        self.pyfile.package().password = self.pyfile_netloc
+        """
+
+        response_1_text = self._get_response_text(pyfile.url, self._response_1_cache)
+
+        # TODO check for http status 404
+        if response_1_text == "Not Found":
+            self.offline()
+            return
+
+        # initSeason('UQauKRVkdAM84pWBtMJSdAPe499YUzRr', 26, '', 'ALL');
+        #session_id_regex = r"initSeason\('([0-9a-zA-Z]+)', ([0-9]+), '', 'ALL'\);"
+
+        # https://bs.to/public/scripts/page.18dad0637254.js
+        #   init: function (e, t, s) {
+        # https://bs.to/serie/South-Park # TODO loop seasons, languages
+        #   <script>series.init (1, 1, '');</script>
+        # https://bs.to/serie/South-Park/21/de # TODO loop episodes
+        #   <script>series.init (21, 1, '');</script>
+        # https://bs.to/serie/South-Park/21/9-Total-PC/de # TODO loop hosters: Streamtape, VOE, ...
+        # https://bs.to/serie/South-Park/21/9-Total-PC/de/Streamtape
+        #   <script>series.init (21, 9, '6Ldd07ogAAAAACktG1QNsMTcUWuwcwtkneCnPDOL');</script>
+        session_id_regex = r"<script>series.init \(([0-9]+), ([0-9]+), '([0-9a-zA-Z]*)'\);</script>"
+
+        session_id_match = re.search(session_id_regex, response_1_text)
+
+        self.session_id = session_id_match.group(3)
+
+        # TODO use self.session_id as siteKey for google recaptcha
+        #   grecaptcha.render("challenge", {
+        #     sitekey: s,
+        # TODO cache and re-use captcha result?
+        # how long is a session valid?
+
+        #self.num_seasons = int(session_id_match.group(2))
+
+        #self._decrypt_configure()
+
+        # TODO get iframe src
+        # <iframe scrolling="no" frameborder="no" width="100%" height="100%" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" src="https://streamtape.com/e/BekM7ZpVZLIyOOZ"></iframe>
+        # https://streamtape.com/e/BekM7ZpVZLIyOOZ
+        # download with real-debrid
+
+        # TODO wait
+
+        # TODO solve captcha
+
+        # send post request to https://bs.to/ajax/embed.php
+        #   token=697e65fe776f8653db2d306f
+        #     token: $("meta[name=\"security_token\"]").attr("content") || ""
+        #     <meta name="security_token" content="f5fffffd4dd251652bb6be13" />
+        #   LID=5295588
+        #     var t = $('section.serie .hoster-player').data('lid');
+        #     <div class="hoster-player" data-lid="5295586">
+        #   ticket=03AFcWeA6cKkr-kxCiis5FfUKTPsczwSwQkNH9lLH5oEFU-AWhhsky4A1iDA8IOkvPnysKPhBazNfLI7Ttzh7qkWdyAxEKdHVS3OSawwBEk9EBHVoUcmId8GF8ba_HlNfuLPkPKgIdMXuNvAgaIWxuRW732VaVcA2TgMNSAgD54lk-cVYFW1JNaGrzrGsV7XClkaw9UhZs1FbAOYpK9_Yml3vkmExCM4qLHCaMpyxPgm3aIsMyuQg-_1-Qx3BLywC07mKoMygTAeuMdA_uXD6-JXOZVbkNjWCHaCPdMmRXWvprdrCgA_icbangV5pbwDVxZDABOxzQ_JxGAjLuIS7JHwqe2PQ2WZesR8u1f4iy7xWgoorbvRuDo183xTgkQk8afq6-0x7tEAL8eh3ZUnTGmZMQPYg85xWMT5Q3D_53ijt35ON41TykZ2MS4RhIYZfw27j4TotHD3aOzXnER9pBArXRtwzXtf7cc8_kHaPv9_h60ZxxU5hSDDpDIuJLNscmuLQGe8ZmENTgnZFHgnTWN9gysTCN0Rv_KaQgfKwdJKTOhS56T8lchTpdNPXCDB1b3pGLhYc73ZnzWlUfQLXF8ql878NdexigBJ7Bq9ddMOPsWnWxK4xQlQpE93QG2ZbFZIKXSyuWN_yFUsqglYrsgjxZr1Ne4m911TOwf23yQ_9f1BoD5wJjvcIzaPWbwUCvfzrXcMegoRBRSNVeNDlDOQ8jQjGtPEeU3CeNshv7NpUiY6JFj9aceTibD84nlrFPGfZVOfq8xMNNGGAqg1uaAzbHtG89nMYat-ZLWn4ZRh2hsLjeXu2vrMjoBUONTLKAHQWXvsolD6dpMebW8sHb02BBDQZj8jM4B_CLDM37ALt3Gja0VRoXR5Y
+        #     captcha solution?
+
+        self._decrypt_run()

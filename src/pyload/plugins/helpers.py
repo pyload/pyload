@@ -55,6 +55,10 @@ class Config:
             )  # TODO: Restore to `log_warning` in 0.6.x
             return default
 
+    def keys(self, plugin=None):
+        plugin = plugin or self.plugin.classname
+        return self.plugin.pyload.config.get_options(plugin)
+
 
 class DB:
     def __init__(self, plugin):
@@ -384,6 +388,17 @@ def format_exc(frame=None):
     msg += exc_desc
 
     return msg
+
+
+def str_exc(exc):
+    """
+    format exception as short string.
+
+    example: "SomeError: some message"
+    """
+    if isinstance(exc, BaseException):
+        return traceback.format_exception_only(exc)[0].rstrip()
+    return str(exc)
 
 
 def search_pattern(pattern, value, flags=0):

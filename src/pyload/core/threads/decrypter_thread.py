@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 
 
+import os
+import inspect
+
+
 from ..network.exceptions import Abort, Fail, Retry
 from .plugin_thread import PluginThread
 
@@ -77,14 +81,32 @@ class DecrypterThread(PluginThread):
 
         except Exception as exc:
             self.active.set_status("failed")
+
+            msg = str(exc)
+            if msg == "":
+                msg = type(exc).__name__
+            else:
+                msg = f"{type(exc).__name__}: {msg}"
+
+            exc_trace = inspect.trace()
+            exc_path = os.path.realpath(exc_trace[-1][1])
+            exc_line = exc_trace[-1][2]
+            exc_source = exc_trace[-1][4][0].strip()
+
+            pyload_src_root = os.path.realpath(os.path.dirname(__file__) + "/../../..")
+            if exc_path.startswith(pyload_src_root):
+                exc_path = exc_path[(len(pyload_src_root) + 1):]
+
+            msg += f" @ {exc_path} line {exc_line}: {exc_source}"
+
             self.pyload.log.warning(
                 self._("Decrypting failed: {name} | {msg}").format(
-                    name=self.active.name, msg=exc
+                    name=self.active.name, msg=msg
                 ),
                 exc_info=self.pyload.debug > 1,
                 stack_info=self.pyload.debug > 2,
             )
-            self.active.error = str(exc)
+            self.active.error = type(exc).__name__ + ": " + str(exc)
 
             if self.pyload.debug:
                 self.write_debug_report(pyfile)
