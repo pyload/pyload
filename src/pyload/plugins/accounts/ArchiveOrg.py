@@ -18,7 +18,7 @@ class ArchiveOrg(BaseAccount):
     __authors__ = [("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
     LOGIN_URL = "https://archive.org/account/login"
-    LOGIN_CHECK_URL = "https://archive.org/account/index.php"
+    LOGIN_CHECK_URL = "https://archive.org/account/index.php?settings=1"
 
     def grab_info(self, user, password, data):
         return {'validuntil': None,
@@ -27,7 +27,7 @@ class ArchiveOrg(BaseAccount):
 
     def signin(self, user, password, data):
         html = self.load(self.LOGIN_CHECK_URL)
-        if "<title>cannot find account</title>" not in html:
+        if "You must be logged in to change your settings." not in html:
             self.skip_login()
 
         else:
