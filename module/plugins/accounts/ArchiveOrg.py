@@ -11,7 +11,7 @@ from ..internal.misc import json
 class ArchiveOrg(Account):
     __name__ = "ArchiveOrg"
     __type__ = "account"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
     __description__ = """Archive.org account plugin"""
@@ -19,7 +19,7 @@ class ArchiveOrg(Account):
     __authors__ = [("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
     LOGIN_URL = "https://archive.org/account/login"
-    LOGIN_CHECK_URL = "https://archive.org/account/index.php"
+    LOGIN_CHECK_URL = "https://archive.org/account/index.php?settings=1"
 
     def grab_info(self, user, password, data):
         return {'validuntil': None,
@@ -28,7 +28,7 @@ class ArchiveOrg(Account):
 
     def signin(self, user, password, data):
         html = self.load(self.LOGIN_CHECK_URL)
-        if "<title>cannot find account</title>" not in html:
+        if "You must be logged in to change your settings." not in html:
             self.skip_login()
 
         else:
