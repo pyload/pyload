@@ -10,7 +10,7 @@ from ..base.account import BaseAccount
 class ArchiveOrg(BaseAccount):
     __name__ = "ArchiveOrg"
     __type__ = "account"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
     __description__ = """Archive.org account plugin"""
