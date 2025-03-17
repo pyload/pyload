@@ -309,7 +309,7 @@ function Package (ui, id, ele){
 
     this.extractPackage = function (event) {
         indicateLoad();
-        $.get("{{url_for('api.rpc', func='extract_package')}}/" + id, function () {
+        $.get("{{url_for('api.rpc', func='service_call')}}/'ExtractArchive.extract_package', [" + id + "]", function () {
             thisObject.close();
             indicateSuccess();
         }).fail(function () {

@@ -310,7 +310,7 @@ var Package = new Class({
         indicateLoad();
         new Request({
             method: 'get',
-            url: "{{url_for('api.rpc', func='extract_package')}}/" + this.id,
+            url: "{{url_for('api.rpc', func='service_call')}}/'ExtractArchive.extract_package', [" + this.id + "]",
             onSuccess: function () {
                 this.close();
                 indicateSuccess();
