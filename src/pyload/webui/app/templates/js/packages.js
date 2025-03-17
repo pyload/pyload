@@ -153,6 +153,7 @@ var Package = new Class({
         imgs[2].addEvent('click', this.restartPackage.bind(this));
         imgs[3].addEvent('click', this.editPackage.bind(this));
         imgs[4].addEvent('click', this.movePackage.bind(this));
+        imgs[5].addEvent('click', this.extractPackage.bind(this));
         this.ele.getElement('.packagename').addEvent('click', this.toggle.bind(this));
     },
     loadLinks: function() {
@@ -297,7 +298,20 @@ var Package = new Class({
         new Request({
             method: 'get',
             url: "{{url_for('api.rpc', func='restart_package')}}/" + this.id,
-            onSuccess: function() {
+            onSuccess: function () {
+                this.close();
+                indicateSuccess();
+            }.bind(this),
+            onFailure: indicateFail
+        }).send();
+        event.stop();
+    },
+    extractPackage: function (event) {
+        indicateLoad();
+        new Request({
+            method: 'get',
+            url: "{{url_for('api.rpc', func='service_call')}}/'ExtractArchive.extract_package', [" + this.id + "]",
+            onSuccess: function () {
                 this.close();
                 indicateSuccess();
             }.bind(this),
