@@ -274,6 +274,42 @@ $(function() {
         });
     });
 
+    $("#toggle_queue").click(function() {
+        $.get("{{url_for('api.rpc', func='toggle_pause')}}", function () {
+            $.ajax({
+                method: "post",
+                url: "{{url_for('json.status')}}",
+                async: true,
+                timeout: 3000,
+                success: LoadJsonToContent
+            });
+        });
+    });
+
+    $("#toggle_proxy").click(function() {
+        $.get("{{url_for('api.rpc', func='toggle_proxy')}}", function () {
+            $.ajax({
+                method: "post",
+                url: "{{url_for('json.status')}}",
+                async: true,
+                timeout: 3000,
+                success: LoadJsonToContent
+            });
+        });
+    });
+
+    $("#toggle_reconnect").click(function() {
+        $.get("{{url_for('api.rpc', func='toggle_reconnect')}}", function () {
+            $.ajax({
+                method: "post",
+                url: "{{url_for('json.status')}}",
+                async: true,
+                timeout: 3000,
+                success: LoadJsonToContent
+            });
+        });
+    });
+
     $(".cap_info").click(function() {
         load_captcha("get", "");
     });
@@ -342,6 +378,11 @@ function LoadJsonToContent(a) {
         $("#time").text(" {{_('on')}}").css('background-color', '#5cb85c');
     } else {
         $("#time").text(" {{_('off')}}").css('background-color', "#d9534f");
+    }
+    if (a.proxy) {
+        $("#proxy").text(" {{_('on')}}").css('background-color', "#5cb85c");
+    } else {
+        $("#proxy").text(" {{_('off')}}").css('background-color', "#d9534f");
     }
     if (a.reconnect) {
         $("#reconnect").text(" {{_('on')}}").css('background-color', "#5cb85c");

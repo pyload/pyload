@@ -307,6 +307,7 @@ class ServerStatus(AbstractData):
         "download",
         "reconnect",
         "captcha",
+        "proxy",
     ]
 
     def __init__(
@@ -319,6 +320,7 @@ class ServerStatus(AbstractData):
         download=None,
         reconnect=None,
         captcha=None,
+        proxy=None,
     ):
         self.pause = pause
         self.active = active
@@ -328,6 +330,7 @@ class ServerStatus(AbstractData):
         self.download = download
         self.reconnect = reconnect
         self.captcha = captcha
+        self.proxy = proxy
 
 
 class ServiceCall(AbstractData):
