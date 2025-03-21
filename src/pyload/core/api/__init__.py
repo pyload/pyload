@@ -395,7 +395,7 @@ class Api:
         """
         Status of all currently running downloads.
 
-        :return: list of `DownloadStatus`
+        :return: list of `DownloadInfo`
         """
         data = []
         for pyfile in self.pyload.thread_manager.get_active_files():
