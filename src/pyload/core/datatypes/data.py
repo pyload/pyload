@@ -39,14 +39,11 @@ class CaptchaTask(BaseModel):
     result_type: str = None
 
 
-class ConfigItem(AbstractData):
-    __slots__ = ["name", "description", "value", "type"]
-
-    def __init__(self, name=None, description=None, value=None, type=None):
-        self.name = name
-        self.description = description
-        self.value = value
-        self.type = type
+class ConfigItem(BaseModel):
+    name: str
+    description: str
+    value: str
+    type: str
 
 
 class ConfigSection(AbstractData):
