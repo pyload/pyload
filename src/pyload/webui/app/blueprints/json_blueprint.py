@@ -81,7 +81,7 @@ def package():
         data = api.get_package_data(id)
 
         tmp = data["links"]
-        tmp.sort(key=lambda entry: entry["order"])
+        tmp.sort(key=lambda entry: entry.order)
         data["links"] = tmp
         return jsonify(data)
 

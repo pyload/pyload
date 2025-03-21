@@ -80,47 +80,18 @@ class EventInfo(BaseModel):
     destination: int | None = None
 
 
-class FileData(AbstractData):
-    __slots__ = [
-        "fid",
-        "url",
-        "name",
-        "plugin",
-        "size",
-        "format_size",
-        "status",
-        "statusmsg",
-        "package_id",
-        "error",
-        "order",
-    ]
-
-    def __init__(
-        self,
-        fid=None,
-        url=None,
-        name=None,
-        plugin=None,
-        size=None,
-        format_size=None,
-        status=None,
-        statusmsg=None,
-        package_id=None,
-        error=None,
-        order=None,
-    ):
-        self.fid = fid
-        self.url = url
-        self.name = name
-        self.plugin = plugin
-        self.size = size
-        self.format_size = format_size
-        self.status = status
-        self.statusmsg = statusmsg
-        self.package_id = package_id
-        self.error = error
-        self.order = order
-
+class FileData(BaseModel):
+    fid: int
+    url: str
+    name: str
+    plugin: str
+    size: int
+    format_size: str
+    status: int
+    statusmsg: str
+    package_id: int
+    error: str
+    order: int
 
 class InteractionTask(AbstractData):
     __slots__ = [

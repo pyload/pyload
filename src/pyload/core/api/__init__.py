@@ -120,17 +120,17 @@ class Api:
 
     def _convert_py_file(self, p):
         f = FileData(
-            p["id"],
-            p["url"],
-            p["name"],
-            p["plugin"],
-            p["size"],
-            p["format_size"],
-            p["status"],
-            p["statusmsg"],
-            p["package"],
-            p["error"],
-            p["order"],
+            fid=p["id"],
+            url=p["url"],
+            name=p["name"],
+            plugin=p["plugin"],
+            size=p["size"],
+            format_size=p["format_size"],
+            status=p["status"],
+            statusmsg=p["statusmsg"],
+            package_id=p["package"],
+            error=p["error"],
+            order=p["order"]
         )
         return f
 
