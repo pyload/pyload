@@ -513,7 +513,7 @@ class Api:
     @permission(Perms.ADD)
     def check_online_status(self, urls):
         """
-        initiates online status check.
+        Initiates online status check.
 
         :param urls:
         :return: initial set of data as `OnlineCheck` instance containing the result id
@@ -534,7 +534,7 @@ class Api:
                 status.packagename = k
                 result[url] = status
 
-        return OnlineCheck(rid, result)
+        return OnlineCheck(rid=rid, data=result)
 
     @legacy("checkOnlineStatusContainer")
     @permission(Perms.ADD)
@@ -570,9 +570,9 @@ class Api:
 
         if "ALL_INFO_FETCHED" in result:
             del result["ALL_INFO_FETCHED"]
-            return OnlineCheck(-1, result)
+            return OnlineCheck(rid=-1, data=result)
         else:
-            return OnlineCheck(rid, result)
+            return OnlineCheck(rid=rid, data=result)
 
     @legacy("generatePackages")
     @permission(Perms.ADD)
