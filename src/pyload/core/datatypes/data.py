@@ -93,41 +93,6 @@ class FileData(BaseModel):
     error: str
     order: int
 
-class InteractionTask(AbstractData):
-    __slots__ = [
-        "iid",
-        "input",
-        "structure",
-        "preset",
-        "output",
-        "data",
-        "title",
-        "description",
-        "plugin",
-    ]
-
-    def __init__(
-        self,
-        iid=None,
-        input=None,
-        structure=None,
-        preset=None,
-        output=None,
-        data=None,
-        title=None,
-        description=None,
-        plugin=None,
-    ):
-        self.iid = iid
-        self.input = input
-        self.structure = structure
-        self.preset = preset
-        self.output = output
-        self.data = data
-        self.title = title
-        self.description = description
-        self.plugin = plugin
-
 
 class OnlineCheck(AbstractData):
     __slots__ = ["rid", "data"]
