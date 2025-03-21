@@ -103,10 +103,10 @@ def dashboard():
     links = api.status_downloads()
 
     for link in links:
-        if link["status"] == 12:
-            current_size = link["size"] - link["bleft"]
-            formatted_speed = format.speed(link["speed"])
-            link["info"] = f"{current_size} KiB @ {formatted_speed}"
+        if link.status == 12:
+            current_size = link.size - link.bleft
+            formatted_speed = format.speed(link.speed)
+            link.info = f"{current_size} KiB @ {formatted_speed}"
 
     return render_template("dashboard.html", res=links)
 

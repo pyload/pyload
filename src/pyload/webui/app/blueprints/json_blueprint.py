@@ -31,20 +31,20 @@ def links():
         links = api.status_downloads()
         ids = []
         for link in links:
-            ids.append(link["fid"])
+            ids.append(link.fid)
 
-            if link["status"] == 12:  #: downloading
-                formatted_eta = link["format_eta"]
-                formatted_speed = format.speed(link["speed"])
-                link["info"] = f"{formatted_eta} @ {formatted_speed}"
+            if link.status == 12:  #: downloading
+                formatted_eta = link.format_eta
+                formatted_speed = format.speed(link.speed)
+                link.info = f"{formatted_eta} @ {formatted_speed}"
 
-            elif link["status"] == 5:  #: waiting
-                link["percent"] = 0
-                link["size"] = 0
-                link["bleft"] = 0
-                link["info"] = api._("waiting {}").format(link["format_wait"])
+            elif link.status == 5:  #: waiting
+                link.percent = 0
+                link.size = 0
+                link.bleft = 0
+                link.info = api._("waiting {}").format(link.format_wait)
             else:
-                link["info"] = ""
+                link.info = ""
 
         return jsonify(links=links, ids=ids)
 

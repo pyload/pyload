@@ -393,7 +393,7 @@ class Api:
     @permission(Perms.LIST)
     def status_downloads(self):
         """
-        Status off all currently running downloads.
+        Status of all currently running downloads.
 
         :return: list of `DownloadStatus`
         """
@@ -404,22 +404,23 @@ class Api:
 
             data.append(
                 DownloadInfo(
-                    pyfile.id,
-                    pyfile.name,
-                    pyfile.get_speed(),
-                    pyfile.get_eta(),
-                    pyfile.format_eta(),
-                    pyfile.get_bytes_left(),
-                    pyfile.get_size(),
-                    pyfile.format_size(),
-                    pyfile.get_percent(),
-                    pyfile.status,
-                    pyfile.get_status_name(),
-                    pyfile.format_wait(),
-                    pyfile.wait_until,
-                    pyfile.packageid,
-                    pyfile.package().name,
-                    pyfile.pluginname,
+                    fid=pyfile.id,
+                    name=pyfile.name,
+                    speed=pyfile.get_speed(),
+                    eta=pyfile.get_eta(),
+                    format_eta=pyfile.format_eta(),
+                    bleft=pyfile.get_bytes_left(),
+                    size=pyfile.get_size(),
+                    format_size=pyfile.format_size(),
+                    percent=pyfile.get_percent(),
+                    status=pyfile.status,
+                    statusmsg=pyfile.get_status_name(),
+                    format_wait=pyfile.format_wait(),
+                    wait_until=pyfile.wait_until,
+                    package_id=pyfile.packageid,
+                    package_name=pyfile.package().name,
+                    plugin=pyfile.pluginname,
+                    info=""
                 )
             )
 
