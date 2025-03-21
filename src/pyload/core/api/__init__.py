@@ -293,14 +293,14 @@ class Api:
         :return: `ServerStatus`
         """
         server_status = ServerStatus(
-            self.pyload.thread_manager.pause,
-            len(self.pyload.thread_manager.processing_ids()),
-            self.pyload.files.get_queue_count(),
-            self.pyload.files.get_file_count(),
-            0,
-            not self.pyload.thread_manager.pause and self.is_time_download(),
-            self.pyload.config.get("reconnect", "enabled") and self.is_time_reconnect(),
-            self.is_captcha_waiting(),
+            pause=self.pyload.thread_manager.pause,
+            active=len(self.pyload.thread_manager.processing_ids()),
+            queue=self.pyload.files.get_queue_count(),
+            total=self.pyload.files.get_file_count(),
+            speed=0,
+            download=not self.pyload.thread_manager.pause and self.is_time_download(),
+            reconnect=self.pyload.config.get("reconnect", "enabled") and self.is_time_reconnect(),
+            captcha=self.is_captcha_waiting(),
         )
 
         for pyfile in [
