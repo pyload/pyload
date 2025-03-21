@@ -1191,13 +1191,13 @@ class Api:
             accounts.extend(
                 [
                     AccountInfo(
-                        acc["validuntil"],
-                        acc["login"],
-                        acc["options"],
-                        acc["valid"],
-                        acc["trafficleft"],
-                        acc["premium"],
-                        acc["type"],
+                        validuntil=acc["validuntil"],
+                        login=acc["login"],
+                        options=acc["options"],
+                        valid=acc["valid"],
+                        trafficleft=acc["trafficleft"],
+                        premium=acc["premium"],
+                        type=acc["type"],
                     )
                     for acc in group
                 ]

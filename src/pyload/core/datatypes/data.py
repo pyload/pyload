@@ -22,34 +22,14 @@ class AbstractData(Mapping):
         return len(self.__slots__)
 
 
-class AccountInfo(AbstractData):
-    __slots__ = [
-        "validuntil",
-        "login",
-        "options",
-        "valid",
-        "trafficleft",
-        "premium",
-        "type",
-    ]
-
-    def __init__(
-        self,
-        validuntil=None,
-        login=None,
-        options=None,
-        valid=None,
-        trafficleft=None,
-        premium=None,
-        type=None,
-    ):
-        self.validuntil = validuntil
-        self.login = login
-        self.options = options
-        self.valid = valid
-        self.trafficleft = trafficleft
-        self.premium = premium
-        self.type = type
+class AccountInfo(BaseModel):
+    validuntil: float
+    login: str
+    options: dict
+    valid: bool
+    trafficleft: int
+    premium: bool
+    type: str
 
 
 class CaptchaTask(AbstractData):
