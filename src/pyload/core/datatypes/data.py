@@ -73,14 +73,11 @@ class DownloadInfo(BaseModel):
     info: str # NOTE: needed by webui, remove in future...
 
 
-class EventInfo(AbstractData):
-    __slots__ = ["eventname", "id", "type", "destination"]
-
-    def __init__(self, eventname=None, id=None, type=None, destination=None):
-        self.eventname = eventname
-        self.id = id
-        self.type = type
-        self.destination = destination
+class EventInfo(BaseModel):
+    eventname: str
+    id: str | None = None
+    type: int | None = None
+    destination: int | None = None
 
 
 class FileData(AbstractData):
