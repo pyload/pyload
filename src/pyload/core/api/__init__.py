@@ -137,7 +137,6 @@ class Api:
     def _convert_config_format(self, c):
         sections = {}
         for section_name, sub in c.items():
-            section = ConfigSection(section_name, sub["desc"])
             items = []
             for key, data in sub.items():
                 if key in ("desc", "outline"):
@@ -147,10 +146,12 @@ class Api:
                                   value=str(data["value"]),
                                   type=data["type"])
                 items.append(item)
-            section.items = items
+            section = ConfigSection(name=section_name,
+                                    description=sub["desc"],
+                                    items=items,
+                                    outline=sub.get("outline"))
             sections[section_name] = section
-            if "outline" in sub:
-                section.outline = sub["outline"]
+
         return sections
 
     @legacy("getConfigValue")
