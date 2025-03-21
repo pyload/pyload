@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from collections.abc import Mapping
+from typing import Optional
 
 from pydantic import BaseModel
 
@@ -34,9 +35,9 @@ class AccountInfo(BaseModel):
 
 class CaptchaTask(BaseModel):
     tid: int
-    data: dict = None
-    type: str = None
-    result_type: str = None
+    data: Optional[dict] = None
+    type: Optional[str] = None
+    result_type: Optional[str] = None
 
 
 class ConfigItem(BaseModel):
@@ -50,7 +51,7 @@ class ConfigSection(BaseModel):
     name: str
     description: str
     items: list[ConfigItem]
-    outline: str | None
+    outline: Optional[str]
 
 
 class DownloadInfo(BaseModel):
@@ -75,9 +76,9 @@ class DownloadInfo(BaseModel):
 
 class EventInfo(BaseModel):
     eventname: str
-    id: str | None = None
-    type: int | None = None
-    destination: int | None = None
+    id: Optional[str] = None
+    type: Optional[int] = None
+    destination: Optional[int] = None
 
 
 class FileData(BaseModel):
