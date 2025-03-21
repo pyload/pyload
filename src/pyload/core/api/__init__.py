@@ -1150,7 +1150,7 @@ class Api:
         Lists occurred events, may be affected to changes in the future.
 
         :param uuid:
-        :return: list of `Events`
+        :return: list of `EventInfo`
         """
         events = self.pyload.event_manager.get_events(uuid)
         new_events = []
@@ -1159,8 +1159,7 @@ class Api:
             return (Destination.QUEUE if d == "queue" else Destination.COLLECTOR).value
 
         for e in events:
-            event = EventInfo()
-            event.eventname = e[0]
+            event = EventInfo(eventname=e[0])
             if e[0] in ("update", "remove", "insert"):
                 event.id = e[3]
                 event.type = (
