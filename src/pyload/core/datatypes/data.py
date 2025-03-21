@@ -46,14 +46,11 @@ class ConfigItem(BaseModel):
     type: str
 
 
-class ConfigSection(AbstractData):
-    __slots__ = ["name", "description", "items", "outline"]
-
-    def __init__(self, name=None, description=None, items=None, outline=None):
-        self.name = name
-        self.description = description
-        self.items = items
-        self.outline = outline
+class ConfigSection(BaseModel):
+    name: str
+    description: str
+    items: list[ConfigItem]
+    outline: str | None
 
 
 class DownloadInfo(BaseModel):
