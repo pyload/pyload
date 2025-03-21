@@ -124,40 +124,16 @@ class PackageData(BaseModel):
     fids: Optional[list[int]] = None
 
 
-class ServerStatus(AbstractData):
-    __slots__ = [
-        "pause",
-        "active",
-        "queue",
-        "total",
-        "speed",
-        "download",
-        "reconnect",
-        "captcha",
-        "proxy",
-    ]
-
-    def __init__(
-        self,
-        pause=None,
-        active=None,
-        queue=None,
-        total=None,
-        speed=None,
-        download=None,
-        reconnect=None,
-        captcha=None,
-        proxy=None,
-    ):
-        self.pause = pause
-        self.active = active
-        self.queue = queue
-        self.total = total
-        self.speed = speed
-        self.download = download
-        self.reconnect = reconnect
-        self.captcha = captcha
-        self.proxy = proxy
+class ServerStatus(BaseModel):
+    pause: bool
+    active: int
+    queue: int
+    total: int
+    speed: int
+    download: bool
+    reconnect: bool
+    captcha: bool
+    proxy: bool
 
 
 class ServiceCall(AbstractData):
