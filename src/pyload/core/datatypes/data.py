@@ -2,6 +2,8 @@
 
 from collections.abc import Mapping
 
+from pydantic import BaseModel
+
 
 class AbstractData(Mapping):
     __slots__ = []
@@ -80,64 +82,24 @@ class ConfigSection(AbstractData):
         self.outline = outline
 
 
-class DownloadInfo(AbstractData):
-    __slots__ = [
-        "fid",
-        "name",
-        "speed",
-        "eta",
-        "format_eta",
-        "bleft",
-        "size",
-        "format_size",
-        "percent",
-        "status",
-        "statusmsg",
-        "format_wait",
-        "wait_until",
-        "package_id",
-        "package_name",
-        "plugin",
-        "info",  # NOTE: needed by webui, remove in future...
-    ]
-
-    def __init__(
-        self,
-        fid=None,
-        name=None,
-        speed=None,
-        eta=None,
-        format_eta=None,
-        bleft=None,
-        size=None,
-        format_size=None,
-        percent=None,
-        status=None,
-        statusmsg=None,
-        format_wait=None,
-        wait_until=None,
-        package_id=None,
-        package_name=None,
-        plugin=None,
-        info=None,
-    ):
-        self.fid = fid
-        self.name = name
-        self.speed = speed
-        self.eta = eta
-        self.format_eta = format_eta
-        self.bleft = bleft
-        self.size = size
-        self.format_size = format_size
-        self.percent = percent
-        self.status = status
-        self.statusmsg = statusmsg
-        self.format_wait = format_wait
-        self.wait_until = wait_until
-        self.package_id = package_id
-        self.package_name = package_name
-        self.plugin = plugin
-        self.info = info
+class DownloadInfo(BaseModel):
+    fid: int
+    name: str
+    speed: float
+    eta: int
+    format_eta: str
+    bleft: int
+    size: int
+    format_size: str
+    percent: int
+    status: int
+    statusmsg: str
+    format_wait: str
+    wait_until: int
+    package_id: int
+    package_name: str
+    plugin: str
+    info: str # NOTE: needed by webui, remove in future...
 
 
 class EventInfo(AbstractData):
