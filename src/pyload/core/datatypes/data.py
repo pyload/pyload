@@ -94,12 +94,9 @@ class FileData(BaseModel):
     order: int
 
 
-class OnlineCheck(AbstractData):
-    __slots__ = ["rid", "data"]
-
-    def __init__(self, rid=None, data=None):
-        self.rid = rid
-        self.data = data
+class OnlineCheck(BaseModel):
+    rid: int
+    data: dict
 
 
 class OnlineStatus(AbstractData):
