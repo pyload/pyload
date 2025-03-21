@@ -116,7 +116,7 @@ def dashboard():
 def queue():
     api = flask.current_app.config["PYLOAD_API"]
     queue = api.get_queue()
-    queue.sort(key=operator.attrgetter("order"))
+    queue.sort(key=lambda x: x.order)
 
     return render_template("packages.html", content=queue, target=1)
 
@@ -126,8 +126,7 @@ def queue():
 def collector():
     api = flask.current_app.config["PYLOAD_API"]
     queue = api.get_collector()
-
-    queue.sort(key=operator.attrgetter("order"))
+    queue.sort(key=lambda x: x.order)
 
     return render_template("packages.html", content=queue, target=0)
 

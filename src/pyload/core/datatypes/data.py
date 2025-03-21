@@ -108,52 +108,20 @@ class OnlineStatus(BaseModel):
     size: int
 
 
-class PackageData(AbstractData):
-    __slots__ = [
-        "pid",
-        "name",
-        "folder",
-        "site",
-        "password",
-        "dest",
-        "order",
-        "linksdone",
-        "sizedone",
-        "sizetotal",
-        "linkstotal",
-        "links",
-        "fids",
-    ]
-
-    def __init__(
-        self,
-        pid=None,
-        name=None,
-        folder=None,
-        site=None,
-        password=None,
-        dest=None,
-        order=None,
-        linksdone=None,
-        sizedone=None,
-        sizetotal=None,
-        linkstotal=None,
-        links=None,
-        fids=None,
-    ):
-        self.pid = pid
-        self.name = name
-        self.folder = folder
-        self.site = site
-        self.password = password
-        self.dest = dest
-        self.order = order
-        self.linksdone = linksdone
-        self.sizedone = sizedone
-        self.sizetotal = sizetotal
-        self.linkstotal = linkstotal
-        self.links = links
-        self.fids = fids
+class PackageData(BaseModel):
+    pid: int
+    name: str
+    folder: str
+    site: str
+    password: str
+    dest: int
+    order: int
+    linksdone: Optional[int] = None
+    sizedone: Optional[int] = None
+    sizetotal: Optional[int] = None
+    linkstotal: Optional[int] = None
+    links: Optional[list[FileData]] = None
+    fids: Optional[list[int]] = None
 
 
 class ServerStatus(AbstractData):

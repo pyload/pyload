@@ -645,13 +645,13 @@ class Api:
             raise PackageDoesNotExists(package_id)
 
         pdata = PackageData(
-            data["id"],
-            data["name"],
-            data["folder"],
-            data["site"],
-            data["password"],
-            data["queue"],
-            data["order"],
+            pid=data["id"],
+            name=data["name"],
+            folder=data["folder"],
+            site=data["site"],
+            password=data["password"],
+            dest=data["queue"],
+            order=data["order"],
             links=[self._convert_py_file(x) for x in data["links"].values()],
         )
 
@@ -673,13 +673,13 @@ class Api:
             raise PackageDoesNotExists(package_id)
 
         pdata = PackageData(
-            data["id"],
-            data["name"],
-            data["folder"],
-            data["site"],
-            data["password"],
-            data["queue"],
-            data["order"],
+            pid=data["id"],
+            name=data["name"],
+            folder=data["folder"],
+            site=data["site"],
+            password=data["password"],
+            dest=data["queue"],
+            order=data["order"],
             fids=[int(x) for x in data["links"]],
         )
 
@@ -735,21 +735,21 @@ class Api:
         Returns info about queue and packages, **not** about files, see `get_queue_data` \
         or `get_package_data` instead.
 
-        :return: list of `PackageInfo`
+        :return: list of `PackageData`
         """
         return [
             PackageData(
-                pack["id"],
-                pack["name"],
-                pack["folder"],
-                pack["site"],
-                pack["password"],
-                pack["queue"],
-                pack["order"],
-                pack["linksdone"],
-                pack["sizedone"],
-                pack["sizetotal"],
-                pack["linkstotal"],
+                pid=pack["id"],
+                name=pack["name"],
+                folder=pack["folder"],
+                site=pack["site"],
+                password=pack["password"],
+                dest=pack["queue"],
+                order=pack["order"],
+                linksdone=pack["linksdone"],
+                sizedone=pack["sizedone"],
+                sizetotal=pack["sizetotal"],
+                linkstotal=pack["linkstotal"],
             )
             for pack in self.pyload.files.get_info_data(Destination.QUEUE).values()
         ]
@@ -766,16 +766,16 @@ class Api:
         """
         return [
             PackageData(
-                pack["id"],
-                pack["name"],
-                pack["folder"],
-                pack["site"],
-                pack["password"],
-                pack["queue"],
-                pack["order"],
-                pack["linksdone"],
-                pack["sizedone"],
-                pack["sizetotal"],
+                pid=pack["id"],
+                name=pack["name"],
+                folder=pack["folder"],
+                site=pack["site"],
+                password=pack["password"],
+                dest=pack["queue"],
+                order=pack["order"],
+                linksdone=pack["linksdone"],
+                sizedone=pack["sizedone"],
+                sizetotal=pack["sizetotal"],
                 links=[self._convert_py_file(x) for x in pack["links"].values()],
             )
             for pack in self.pyload.files.get_complete_data(Destination.QUEUE).values()
@@ -791,17 +791,17 @@ class Api:
         """
         return [
             PackageData(
-                pack["id"],
-                pack["name"],
-                pack["folder"],
-                pack["site"],
-                pack["password"],
-                pack["queue"],
-                pack["order"],
-                pack["linksdone"],
-                pack["sizedone"],
-                pack["sizetotal"],
-                pack["linkstotal"],
+                pid=pack["id"],
+                name=pack["name"],
+                folder=pack["folder"],
+                site=pack["site"],
+                password=pack["password"],
+                dest=pack["queue"],
+                order=pack["order"],
+                linksdone=pack["linksdone"],
+                sizedone=pack["sizedone"],
+                sizetotal=pack["sizetotal"],
+                linkstotal=pack["linkstotal"],
             )
             for pack in self.pyload.files.get_info_data(Destination.COLLECTOR).values()
         ]
@@ -816,16 +816,16 @@ class Api:
         """
         return [
             PackageData(
-                pack["id"],
-                pack["name"],
-                pack["folder"],
-                pack["site"],
-                pack["password"],
-                pack["queue"],
-                pack["order"],
-                pack["linksdone"],
-                pack["sizedone"],
-                pack["sizetotal"],
+                pid=pack["id"],
+                name=pack["name"],
+                folder=pack["folder"],
+                site=pack["site"],
+                password=pack["password"],
+                dest=pack["queue"],
+                order=pack["order"],
+                linksdone=pack["linksdone"],
+                sizedone=pack["sizedone"],
+                sizetotal=pack["sizetotal"],
                 links=[self._convert_py_file(x) for x in pack["links"].values()],
             )
             for pack in self.pyload.files.get_complete_data(
