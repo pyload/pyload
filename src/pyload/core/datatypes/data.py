@@ -32,14 +32,11 @@ class AccountInfo(BaseModel):
     type: str
 
 
-class CaptchaTask(AbstractData):
-    __slots__ = ["tid", "data", "type", "result_type"]
-
-    def __init__(self, tid=None, data=None, type=None, result_type=None):
-        self.tid = tid
-        self.data = data
-        self.type = type
-        self.result_type = result_type
+class CaptchaTask(BaseModel):
+    tid: int
+    data: dict = None
+    type: str = None
+    result_type: str = None
 
 
 class ConfigItem(AbstractData):

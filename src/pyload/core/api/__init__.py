@@ -1107,10 +1107,13 @@ class Api:
         if task:
             task.set_waiting_for_user(exclusive=exclusive)
             data, type, result = task.get_captcha()
-            t = CaptchaTask(int(task.id), json.dumps(data), type, result)
+            t = CaptchaTask(tid=int(task.id),
+                            data=json.dumps(data),
+                            type=type,
+                            result_type=result)
             return t
         else:
-            return CaptchaTask(-1)
+            return CaptchaTask(tid=-1)
 
     @legacy("getCaptchaTaskStatus")
     @permission(Perms.STATUS)
