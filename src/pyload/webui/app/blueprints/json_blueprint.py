@@ -52,25 +52,6 @@ def links():
         return jsonify(False), 500
 
 
-@bp.route("/json/packages", endpoint="packages")
-# @apiver_check
-@login_required("LIST")
-def packages():
-    api = flask.current_app.config["PYLOAD_API"]
-    try:
-        data = api.get_queue()
-
-        for package in data:
-            package["links"] = []
-            for file in api.get_package_files(package["id"]):
-                package["links"].append(api.get_file_info(file))
-
-        return jsonify(data)
-
-    except Exception:
-        return jsonify(False), 500
-
-
 @bp.route("/json/package", endpoint="package")
 # @apiver_check
 @login_required("LIST")
@@ -80,9 +61,9 @@ def package():
         id = int(flask.request.args.get('id'))
         data = api.get_package_data(id)
 
-        tmp = data["links"]
+        tmp = data.links
         tmp.sort(key=lambda entry: entry.order)
-        data["links"] = tmp
+        data.links = tmp
         return jsonify(data)
 
     except Exception:
