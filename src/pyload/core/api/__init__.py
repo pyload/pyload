@@ -523,7 +523,11 @@ class Api:
         rid = self.pyload.thread_manager.create_result_thread(data, False)
 
         tmp = [
-            (url, (url, OnlineStatus(url, pluginname, "unknown", 3, 0)))
+            (url, (url, OnlineStatus(name=url,
+                                     plugin=pluginname,
+                                     packagename="unknown",
+                                     status=3,
+                                     size=0)))
             for url, pluginname in data
         ]
         data = parse_names(tmp)

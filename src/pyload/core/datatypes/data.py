@@ -99,17 +99,12 @@ class OnlineCheck(BaseModel):
     data: dict
 
 
-class OnlineStatus(AbstractData):
-    __slots__ = ["name", "plugin", "packagename", "status", "size"]
-
-    def __init__(
-        self, name=None, plugin=None, packagename=None, status=None, size=None
-    ):
-        self.name = name
-        self.plugin = plugin
-        self.packagename = packagename
-        self.status = status
-        self.size = size
+class OnlineStatus(BaseModel):
+    name: str
+    plugin: str
+    packagename: str
+    status: int
+    size: int
 
 
 class PackageData(AbstractData):
