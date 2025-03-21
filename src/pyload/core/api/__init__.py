@@ -142,11 +142,10 @@ class Api:
             for key, data in sub.items():
                 if key in ("desc", "outline"):
                     continue
-                item = ConfigItem()
-                item.name = key
-                item.description = data["desc"]
-                item.value = str(data["value"])
-                item.type = data["type"]
+                item = ConfigItem(name=key,
+                                  description=data["desc"],
+                                  value=str(data["value"]),
+                                  type=data["type"])
                 items.append(item)
             section.items = items
             sections[section_name] = section
