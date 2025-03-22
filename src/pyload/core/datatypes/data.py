@@ -135,14 +135,11 @@ class ServerStatus(BaseModel):
     captcha: bool
 
 
-class ServiceCall(AbstractData):
-    __slots__ = ["plugin", "func", "arguments", "parse_arguments"]
-
-    def __init__(self, plugin=None, func=None, arguments=None, parse_arguments=None):
-        self.plugin = plugin
-        self.func = func
-        self.arguments = arguments
-        self.parse_arguments = parse_arguments
+class ServiceCall(BaseModel):
+    plugin: str
+    func: str
+    arguments: Optional[tuple]
+    parse_arguments: bool
 
 
 #: Needed by legacy API
