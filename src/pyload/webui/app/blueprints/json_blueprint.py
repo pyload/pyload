@@ -373,10 +373,10 @@ def update_users():
     users = {}
 
     # NOTE: messy code...
-    for data in all_users.values():
-        name = data["name"]
-        users[name] = {"perms": get_permission(data["permission"])}
-        users[name]["perms"]["admin"] = data["role"] == 0
+    for userdata in all_users.values():
+        name = userdata.name
+        users[name] = {"perms": get_permission(userdata.permission)}
+        users[name]["perms"]["admin"] = userdata.role == 0
 
     s = flask.session
     for name in list(users):

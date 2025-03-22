@@ -1306,11 +1306,11 @@ class Api:
         user = self.check_auth(username, password)
         if user:
             return OldUserData(
-                user["name"],
-                user["email"],
-                user["role"],
-                user["permission"],
-                user["template"],
+                name=user["name"],
+                email=user["email"],
+                role=user["role"],
+                permission=user["permission"],
+                template_name=user["template"],
             )
         else:
             return OldUserData()
@@ -1323,12 +1323,12 @@ class Api:
         user = self.check_auth(username, password)
         if user:
             return UserData(
-                user["id"],
-                user["name"],
-                user["email"],
-                user["role"],
-                user["permission"],
-                user["template"],
+                id=user["id"],
+                name=user["name"],
+                email=user["email"],
+                role=user["role"],
+                permission=user["permission"],
+                template=user["template"],
             )
         else:
             return UserData()
@@ -1341,11 +1341,11 @@ class Api:
         res = {}
         for id, data in self.pyload.db.get_all_user_data().items():
             res[data["name"]] = OldUserData(
-                data["name"],
-                data["email"],
-                data["role"],
-                data["permission"],
-                data["template"],
+                name=data["name"],
+                email=data["email"],
+                role=data["role"],
+                permission=data["permission"],
+                template_name=data["template"],
             )
 
         return res
@@ -1357,12 +1357,12 @@ class Api:
         res = {}
         for id, data in self.pyload.db.get_all_user_data().items():
             res[id] = UserData(
-                id,
-                data["name"],
-                data["email"],
-                data["role"],
-                data["permission"],
-                data["template"],
+                id=id,
+                name=data["name"],
+                email=data["email"],
+                role=data["role"],
+                permission=data["permission"],
+                template=data["template"],
             )
         return res
 

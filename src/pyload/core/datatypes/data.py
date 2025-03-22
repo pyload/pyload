@@ -144,28 +144,18 @@ class ServiceCall(BaseModel):
 
 
 #: Needed by legacy API
-class OldUserData(AbstractData):
-    __slots__ = ["name", "email", "role", "permission", "template_name"]
-
-    def __init__(
-        self, name=None, email=None, role=None, permission=None, template_name=None
-    ):
-        self.name = name
-        self.email = email
-        self.role = role
-        self.permission = permission
-        self.template_name = template_name
+class OldUserData(BaseModel):
+    name: Optional[str] = None
+    email: Optional[str] = None
+    role: Optional[int] = None
+    permission: Optional[int] = None
+    template_name: Optional[str] = None
 
 
-class UserData(AbstractData):
-    __slots__ = ["id", "name", "email", "role", "permission", "template"]
-
-    def __init__(
-        self, id=None, name=None, email=None, role=None, permission=None, template=None
-    ):
-        self.id = id
-        self.name = name
-        self.email = email
-        self.role = role
-        self.permission = permission
-        self.template = template
+class UserData(BaseModel):
+    id: Optional[int]
+    name: Optional[str] = None
+    email: Optional[str] = None
+    role: Optional[int] = None
+    permission: Optional[int] = None
+    template: Optional[str] = None
