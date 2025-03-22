@@ -1409,7 +1409,11 @@ class Api:
             plugin, func =  service_name.split(".")
         except ValueError:
             raise ServiceDoesNotExists()
-        info = ServiceCall(plugin, func, arguments, parse_arguments)
+
+        info = ServiceCall(plugin=plugin,
+                           func=func,
+                           arguments=arguments,
+                           parse_arguments=parse_arguments)
         return self.call(info)
 
     @permission(Perms.STATUS)
