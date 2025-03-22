@@ -74,8 +74,8 @@ def login():
     if api.get_config_value("webui", "autologin"):
         allusers = api.get_all_userdata()
         if len(allusers) == 1:  # TODO: check if localhost
-            user_info = list(allusers.values())[0]
-            set_session(user_info)
+            userdata = list(allusers.values())[0]
+            set_session(userdata.model_dump())
             # NOTE: Double-check authentication here because if session[name] is empty,
             #       next login_required redirects here again and all loop out.
             if is_authenticated():
@@ -244,9 +244,9 @@ def settings():
     all_users = api.get_all_userdata()
     users = {}
     for userdata in all_users.values():
-        name = userdata["name"]
-        users[name] = {"perms": get_permission(userdata["permission"])}
-        users[name]["perms"]["admin"] = userdata["role"] == 0
+        name = userdata.name
+        users[name] = {"perms": get_permission(userdata.permission)}
+        users[name]["perms"]["admin"] = userdata.role == 0
 
     admin_menu = {
         "permlist": permlist(),
