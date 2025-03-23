@@ -284,6 +284,16 @@ class Api:
         self.pyload.config.toggle("reconnect", "enabled")
         return self.pyload.config.get("reconnect", "enabled")
 
+    @permission(Perms.STATUS)
+    def toggle_proxy(self):
+        """
+        Toggle proxy activation.
+
+        :return: new proxy state
+        """
+        self.pyload.config.toggle("proxy", "enabled")
+        return self.pyload.config.get("proxy", "enabled")
+
     @legacy("statusServer")
     @permission(Perms.LIST)
     def status_server(self):
@@ -301,6 +311,7 @@ class Api:
             not self.pyload.thread_manager.pause and self.is_time_download(),
             self.pyload.config.get("reconnect", "enabled") and self.is_time_reconnect(),
             self.is_captcha_waiting(),
+            self.pyload.config.get("proxy", "enabled"),
         )
 
         for pyfile in [

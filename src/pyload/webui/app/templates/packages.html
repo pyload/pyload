@@ -25,6 +25,7 @@
 {% endblock %}
 {% block content %}
   <ul id="package-list" style="list-style: none; padding-left: 0; margin-top: -10px;">
+  {% set has_extract = has_service("ExtractArchive.extract_package") %}
   {% for package in content %}
     <li>
       <div id="package_{{package.pid}}" class="package">
@@ -35,9 +36,11 @@
           <span class="buttons" style="opacity: 0;">
             <img title="{{_("Delete Package")}}" style="cursor: pointer" width="12px" height="12px" src="{{url_for('static', filename='img/delete.png')}}" />&nbsp;&nbsp;
             <img title="{{_("Restart Package")}}" style="margin-left: -10px; cursor: pointer" height="12px" src="{{url_for('static', filename='img/arrow-refresh.png')}}" />&nbsp;&nbsp;
-            <img title="{{_("Edit Package")}}" style="margin-left:
-            -10px; cursor: pointer" height="12px" src="{{url_for('static', filename='img/pencil.png')}}" />&nbsp;&nbsp;
-            <img title="{{_("Move Package")}}" style="margin-left: -10px; cursor: pointer" height="12px" src="{{url_for('static', filename='img/package-go.png')}}" />
+            <img title="{{_("Edit Package")}}" style="margin-left:-10px; cursor: pointer" height="12px" src="{{url_for('static', filename='img/pencil.png')}}" />&nbsp;&nbsp;
+            <img title="{{_("Move Package")}}" style="margin-left: -10px; cursor: pointer" height="12px" src="{{url_for('static', filename='img/package-go.png')}}" />&nbsp;&nbsp;
+            {% if has_extract %}
+            <img title="{{_("Extract Package")}}" style="margin-left: -10px; cursor: pointer" height="12px" src="{{url_for('static', filename='img/package-extract.png')}}" />
+            {% endif %}
           </span>
         </div>
         {% set progress = (package.linksdone * 100) / package.linkstotal %}

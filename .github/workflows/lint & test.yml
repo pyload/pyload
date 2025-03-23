@@ -33,6 +33,8 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
 
       - name: Install binary packages
         run: sudo apt-get update && sudo apt-get -y --no-install-recommends install libcurl4-openssl-dev
@@ -86,6 +88,8 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
 
       - name: Install binary packages
         if: startsWith(matrix.os, 'ubuntu')

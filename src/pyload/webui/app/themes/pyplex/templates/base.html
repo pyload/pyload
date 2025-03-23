@@ -2,15 +2,15 @@
 <html lang="en">
 
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-    <link rel="stylesheet" type="text/css" href="{{theme_static('vendor/Bootstrap/css/bootstrap.min.css')}}">
-    <link rel="stylesheet" type="text/css" href="{{theme_static('vendor/jQuery/jQuery UI/jquery-ui.min.css')}}"/>
-    <link rel="stylesheet" type="text/css" href="{{theme_static('vendor/mdtoast/css/mdtoast.min.css')}}"/>
-    <link rel="stylesheet" type="text/css" href="{{theme_static('css/base.css')}}" />
+  <link rel="stylesheet" type="text/css" href="{{theme_static('vendor/Bootstrap/css/bootstrap.min.css')}}">
+  <link rel="stylesheet" type="text/css" href="{{theme_static('vendor/jQuery/jQuery UI/jquery-ui.min.css')}}"/>
+  <link rel="stylesheet" type="text/css" href="{{theme_static('vendor/mdtoast/css/mdtoast.min.css')}}"/>
+  <link rel="stylesheet" type="text/css" href="{{theme_static('css/base.css')}}" />
 
-    <link rel="icon" href="{{theme_static('img/favicon.ico')}}"/>
+  <link rel="icon" href="{{theme_static('img/favicon.ico')}}"/>
 
 <style type="text/css">
 .ui-icon,
@@ -71,10 +71,10 @@
     <li ondragstart="return false;" {{selected('settings', True)}}>
       <a href="{{url_for("app.settings")}}"  title="{{_('Settings')}}"><span class="glyphicon glyphicon-cog"></span></a>
     </li>
-	<li class="divider-vertical"></li>
-	<li ondragstart="return false;">
-		<a role="button" id="action_add1" data-toggle="modal" data-target="#add_box" class="action_add" title="{{_('Add Package')}}"><span class="glyphicon glyphicon-plus"></span></a>
-	</li>
+  <li class="divider-vertical"></li>
+  <li ondragstart="return false;">
+    <a role="button" id="action_add1" data-toggle="modal" data-target="#add_box" class="action_add" title="{{_('Add Package')}}"><span class="glyphicon glyphicon-plus"></span></a>
+  </li>
   </ul>
   <span id="cap_info1" class="cap_info col-xs-12 col-sm-auto" style="display: {% if captcha %}inline{%else%}none{% endif %};margin-top:-2px; height: 15px;">
       <button id="action_cap1" class="btn btn-default navbar-btn col-xs-12 col-sm-auto" data-toggle="modal" data-target="#cap_box" data-backdrop="static"><span  class="glyphicon glyphicon-barcode"></span> {{_('Captcha waiting')}}</button>
@@ -161,8 +161,9 @@
 <div class="btn-toolbar" role="toolbar" aria-label="...">
 {% if perms.LIST %}
     <div class="btn-group btn-group-sm col-xs-12 col-sm-auto" role="group" aria-label="..." style="float:right;">
-        <button class="btn btn-dark col-xs-3 col-sm-auto"><span class="hidden-sm">{{_('Running:')}}</span><span class="glyphicon glyphicon-download hidden-xs hidden-md hidden-lg"></span> <span id="time"  class="label label-{% if status.download %}success{% else %}danger{% endif %}">{% if status.download %}{{_('on')}}{% else %}{{_('off')}}{% endif %}</span></button>
-        <button type="button" class="btn btn-dark col-xs-3 col-sm-auto"><span class="hidden-sm">{{_('Reconnect:')}}</span><span class="glyphicon glyphicon-refresh hidden-xs hidden-md hidden-lg"></span> <span id="reconnect" class="label label-{% if status.reconnect %}success{% else %}danger{% endif %}">{% if status.reconnect %}{{_('on')}}{% else %}{{_('off')}}{% endif %}</span></button>
+        <button id="toggle_queue" class="btn btn-dark col-xs-3 col-sm-auto"><span class="hidden-sm">{{_('Running:')}}</span><span class="glyphicon glyphicon-download hidden-xs hidden-md hidden-lg"></span> <span id="time"  class="label label-{% if status.download %}success{% else %}danger{% endif %}">{% if status.download %}{{_('on')}}{% else %}{{_('off')}}{% endif %}</span></button>
+        <button id="toggle_proxy" type="button" class="btn btn-dark col-xs-3 col-sm-auto"><span class="hidden-sm">{{_('Proxy:')}}</span><span class="glyphicon glyphicon-refresh hidden-xs hidden-md hidden-lg"></span> <span id="proxy" class="label label-{% if status.proxy %}success{% else %}danger{% endif %}">{% if status.proxy %}{{_('on')}}{% else %}{{_('off')}}{% endif %}</span></button>
+        <button id="toggle_reconnect" type="button" class="btn btn-dark col-xs-3 col-sm-auto"><span class="hidden-sm">{{_('Reconnect:')}}</span><span class="glyphicon glyphicon-refresh hidden-xs hidden-md hidden-lg"></span> <span id="reconnect" class="label label-{% if status.reconnect %}success{% else %}danger{% endif %}">{% if status.reconnect %}{{_('on')}}{% else %}{{_('off')}}{% endif %}</span></button>
         <button type="button" class="btn btn-dark col-xs-3 col-sm-auto"><span class="action backlink"><span class="hidden-xs hidden-sm">{{_('Speed:')}} </span><b id="speed">{{status.speed}}</b></span></button>
         <span class="btn btn-dark col-xs-3 col-sm-auto"><span class="action cog">{{_('Queue:')}} <b id="actives" title="{{_('Active')}}">{{status.active}}</b> / <b id="actives_from" title="{{_('Queued')}}">{{status.queue}}</b> | <b id="actives_total" title="{{_('Total')}}">{{status.total}}</b></span></span>
     </div>
@@ -187,41 +188,52 @@
 </div>
 
 <div id="body-wrapper" class="dokuwiki">
-    <div id="content" style="width: 99%; padding-left: 10px; padding-right: 10px;" lang="en" dir="ltr">
-      <div style="display: flex;justify-content: space-between;">
-{#        <div style="margin-bottom: 20px;">#}
-{#          <h3>{% block subtitle %}{{_(' ')}}{% endblock %}</h3>#}
+  <div id="content" style="width: 99%; padding-left: 10px; padding-right: 10px;" lang="en" dir="ltr">
+    <div style="display: flex;justify-content: space-between;">
+{#      <div style="margin-bottom: 20px;">#}
+{#        <h3>{% block subtitle %}{{_(' ')}}{% endblock %}</h3>#}
 {#        </div>#}
-        <hr>
-        <div>
-          {% block statusbar %}
-          {% endblock %}
-          {% for message in messages %}
-              <p><b>{{message}}</b></p>
-          {% endfor %}
-        </div>
-        <div id="load-indicator2" class="load-indicator" style="opacity: 0; margin-top: 5px;">
-             <img src="{{theme_static('img/ajax-loader.gif')}}" alt="" style="padding-right: 5px"/>
-        </div>
+    <hr>
+      <div>
+        {% block statusbar %}
+        {% endblock %}
+        {% for message in messages %}
+          <p><b>{{message}}</b></p>
+        {% endfor %}
       </div>
-
-      {% block content %}
-      {% endblock content %}
+      <div id="load-indicator2" class="load-indicator" style="opacity: 0; margin-top: 5px;">
+         <img src="{{theme_static('img/ajax-loader.gif')}}" alt="" style="padding-right: 5px"/>
+      </div>
     </div>
+
+    {% block content %}
+    {% endblock content %}
+  </div>
 </div>
 
 <hr style="clear: both;" />
 <div id="foot" class="navbar navbar-static-bottom navbar-inverse" style="width: 100%; text-align:center;">&copy; 2008-2025 pyLoad team</div>
 
 <div id="goto_top" class="btn-dark hidden" style="position: fixed; width: 25px; height: 25px;background-color: #eeeeee; color: #282828; opacity: 0.5; cursor: pointer; z-index: 10; border-radius: 5px; display: block;" title="{{_('Back to top')}}">
-    <div class="glyphicon glyphicon-chevron-up" style="padding-top: 5px; padding-left: 6px; opacity: 0.5;"></div>
+  <div class="glyphicon glyphicon-chevron-up" style="padding-top: 5px; padding-left: 6px; opacity: 0.5;"></div>
 </div>
 
 <div style="display: none;">
-    {% block hidden %}
-    {% endblock %}
+  {% block hidden %}
+  {% endblock %}
 </div>
 {% block dialog %}
+  <div id="yesno_box" class="modal" role="dialog">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <div id="modal_question" class="modal-header bg-info navbar-inverse text-center" style="padding: 5px" ></div>
+          <div class="modal-body" style="margin-bottom: 30px;">
+              <button type="button" class="btn btn-primary" id="okButton" style="float: right">{{_('Ok')}}</button>
+              <button type="button" class="btn btn-warning" data-dismiss="modal" id="cancelButton" style="margin-right: 5px; float: right">{{_('Cancel')}}</button>
+          </div>
+        </div>
+      </div>
+  </div>
 {% endblock %}
 
 {% include theme('window.html') %}
