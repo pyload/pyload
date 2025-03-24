@@ -17,9 +17,11 @@ import subprocess
 import sys
 import tempfile
 import time
+import glob
 from threading import Event
 
 from pyload import APPID, PKGDIR, USERHOMEDIR
+import OpenSSL
 
 from .. import __version__ as PYLOAD_VERSION
 from .. import __version_info__ as PYLOAD_VERSION_INFO
@@ -169,6 +171,75 @@ class Core:
     def _init_network(self):
         from .network import request_factory
         from .network.request_factory import RequestFactory
+
+        ca_bundle_dir = self.userdir + "/cache/ca-bundle"
+        os.makedirs(ca_bundle_dir, exist_ok=True)
+        ca_bundle_files = sorted(glob.glob(ca_bundle_dir + "/*.crt"))
+
+        # delete empty ca-bundles
+        def filter_bundle_file(f):
+            if os.path.getsize(f) == 0:
+                os.unlink(f)
+                return False
+            return True
+
+        ca_bundle_files = list(filter(filter_bundle_file, ca_bundle_files))
+
+        # delete old ca-bundles
+        for f in ca_bundle_files[0:-1]:
+            try:
+                os.unlink(f)
+            except Exception as exc:
+                self.log.warning(
+                    f"failed to delete old ca-bundle file {repr(f)}: {exc}"
+                )
+
+        if len(ca_bundle_files) == 0:
+            import certifi
+
+            self.log.info(f"using default ca-bundle {certifi.where()}")
+            ca_bundle_files.append(certifi.where())
+        # use the latest ca-bundle
+        self.ca_bundle_path = ca_bundle_files[-1]
+        from .network.http.aia import AIASession
+
+        self.aia_session = None
+        for retry_step in range(2):
+            try:
+                self.aia_session = AIASession(
+                    cafile=self.ca_bundle_path,
+                    cache_db=self.userdir + "/cache/ssl-cached-branch-certs.db",
+                    # TODO implement in aia
+                    # trusted_dir = self.userdir + "/settings/ssl-trusted-root-certs",
+                )
+            except OpenSSL.SSL.Error as exc:
+                if retry_step == 1:
+                    self.log.error(f"failed to create AIASession: {exc}")
+                    raise
+                self.log.warning(
+                    f"failed to load ca-bundle {self.ca_bundle_path}: {exc}"
+                )
+                try:
+                    os.rename(self.ca_bundle_path, self.ca_bundle_path + ".broken")
+                except Exception as exc:
+                    self.log.warning(
+                        f"failed to move broken ca-bundle {self.ca_bundle_path}: {exc}"
+                    )
+                self.log.info(f"using default ca-bundle {certifi.where()}")
+                self.ca_bundle_path = certifi.where()
+
+        # load trusted root certs
+        trusted_root_certs_dir = self.userdir + "/settings/trusted-root-certs"
+        os.makedirs(trusted_root_certs_dir, exist_ok=True)
+        for cert_file in glob.glob(trusted_root_certs_dir + "/*.crt"):
+            if os.path.isdir(cert_file):  # also allow symlinks
+                continue
+            try:
+                self.aia_session.add_trusted_root_cert_file(cert_file)
+            except Exception as exc:
+                self.log.warning(
+                    f"failed to load trusted root cert from {cert_file}: {exc}"
+                )
 
         self.req = self.request_factory = RequestFactory(self)
 
