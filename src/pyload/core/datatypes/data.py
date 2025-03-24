@@ -1,26 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from collections.abc import Mapping
 from typing import Optional
 
 from pydantic import BaseModel
-
-
-class AbstractData(Mapping):
-    __slots__ = []
-
-    def __getitem__(self, name):
-        return getattr(self, name)
-
-    def __setitem__(self, name, value):
-        return setattr(self, name, value)
-
-    def __iter__(self):
-        for attr in self.__slots__:
-            yield attr
-
-    def __len__(self):
-        return len(self.__slots__)
 
 
 class AccountInfo(BaseModel):
