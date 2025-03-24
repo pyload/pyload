@@ -135,7 +135,7 @@ class OldUserData(BaseModel):
 
 
 class UserData(BaseModel):
-    id: Optional[int]
+    id: Optional[int] = None
     name: Optional[str] = None
     email: Optional[str] = None
     role: Optional[int] = None
