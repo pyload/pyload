@@ -115,6 +115,7 @@ class ServerStatus(BaseModel):
     download: bool
     reconnect: bool
     captcha: bool
+    proxy: bool
 
 
 class ServiceCall(BaseModel):
