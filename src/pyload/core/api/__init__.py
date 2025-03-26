@@ -1408,7 +1408,7 @@ class Api:
         return plugin in cont and func in cont[plugin]
 
     @permission(Perms.STATUS)
-    def service_call(self, service_name: str, arguments: Optional[tuple], parse_arguments: bool = False) -> str:
+    def service_call(self, service_name: str, arguments: Optional[list[Any]], parse_arguments: bool = False) -> str:
         """
         Calls a service (a method in addon plugin).
 

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional
+from typing import Optional, Any
 
 from pydantic import BaseModel
 
@@ -121,7 +121,7 @@ class ServerStatus(BaseModel):
 class ServiceCall(BaseModel):
     plugin: str
     func: str
-    arguments: Optional[tuple]
+    arguments: Optional[list[Any]]
     parse_arguments: bool
 
 
