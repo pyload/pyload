@@ -263,7 +263,7 @@ class Api:
 
     @legacy("pauseServer")
     @permission(Perms.STATUS)
-    def pause_server(self):
+    def pause_server(self) -> None:
         """
         Pause server: It won't start any new downloads, but nothing gets aborted.
         """
@@ -300,7 +300,7 @@ class Api:
         return self.pyload.config.get("reconnect", "enabled")
 
     @permission(Perms.STATUS)
-    def toggle_proxy(self):
+    def toggle_proxy(self) -> bool:
         """
         Toggle proxy activation.
 
