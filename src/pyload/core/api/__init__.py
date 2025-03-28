@@ -494,7 +494,7 @@ class Api:
 
     @legacy("parseURLs")
     @permission(Perms.ADD)
-    def parse_urls(self, html: Optional[str], url: Optional[str]) -> dict[str, list[str]]:
+    def parse_urls(self, html: Optional[str] = None, url: Optional[str] = None) -> dict[str, list[str]]:
         """
         Parses html content or any arbitrary text for links and returns result of
         `check_urls`
@@ -1236,7 +1236,7 @@ class Api:
 
     @legacy("updateAccount")
     @permission(Perms.ACCOUNTS)
-    def update_account(self, plugin: str, account: str, password: Optional[str], options: dict[str: Any] = {}) -> None:
+    def update_account(self, plugin: str, account: str, password: Optional[str] = None, options: dict[str: Any] = {}) -> None:
         """
         Changes pw/options for specific account.
         """
