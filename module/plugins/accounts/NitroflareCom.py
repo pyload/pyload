@@ -2,6 +2,9 @@
 
 import time
 
+from module.PyFile import PyFile
+
+from ..captcha.ReCaptcha import ReCaptcha
 from ..internal.Account import Account
 from ..internal.misc import json
 
@@ -9,13 +12,15 @@ from ..internal.misc import json
 class NitroflareCom(Account):
     __name__ = "NitroflareCom"
     __type__ = "account"
-    __version__ = "0.21"
+    __version__ = "0.22"
     __status__ = "testing"
 
     __description__ = """Nitroflare.com account plugin"""
     __license__ = "GPLv3"
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com"),
                    ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
+
+    RECAPTCHA_KEY = "6Lenx_USAAAAAF5L1pmTWvWcH73dipAEzNnmNLgy"
 
     # See https://nitroflare.com/member?s=general-api
     API_URL = "https://nitroflare.com/api/v2/"
@@ -53,4 +58,30 @@ class NitroflareCom(Account):
                 self.fail_login()
 
             else:
-                self.fail_login(_("Account Login Requires Recaptcha"))
+                # dummy pyfile
+                pyfile = PyFile(self.pyload.files, -1, "https://nitroflare.com", "https://nitroflare.com", 0, 0, "", self.classname, -1, -1)
+                pyfile.plugin = self
+
+                self.captcha = ReCaptcha(pyfile)
+                response = self.captcha.challenge(self.RECAPTCHA_KEY, version="2js", secure_token=False)
+
+                api_response = self.load(
+                    self.API_URL + "solveCaptcha",
+                    get={"user": user},
+                    post={"response": response}
+                )
+
+                if api_response != "passed":
+                    self.log_error(_("Recaptcha verification failed"))
+                    self.fail_login(_("Recaptcha verification failed"))
+
+    """
+     @NOTE: below are methods
+      necessary for captcha to work with account plugins
+    """
+    def check_status(self):
+        pass
+
+    def retry_captcha(self, attempts=10, wait=1, msg="Max captcha retries reached"):
+        self.captcha.invalid()
+        self.fail_login(msg=_("Invalid captcha"))
