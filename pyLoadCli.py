@@ -406,6 +406,7 @@ def print_help(config):
     print "  --pw=<password>", " " * 2, "Password"
     print "  -a, --address=", " " * 3, "Specify address (current=%s)" % config["addr"]
     print "  -p, --port", " " * 7, "Specify port (current=%s)" % config["port"]
+    print "  -s, --ssl", " " * 8, "<auto|yes|no> (current=%s)" % config["ssl"]
     print
     print "  -l, --language", " " * 3, "Set user interface language (current=%s)" % config["language"]
     print "  -h, --help", " " * 7, "Display this help screen"
@@ -466,7 +467,7 @@ def print_commands():
 def writeConfig(opts):
     try:
         with open(join(homedir, ".pyloadcli"), "w") as cfgfile:
-            cfgfile.write("[cli]")
+            cfgfile.write("[cli]\n")
             for opt in opts:
                 cfgfile.write("%s=%s\n" % (opt, opts[opt]))
     except:
@@ -474,7 +475,7 @@ def writeConfig(opts):
 
 
 def main():
-    config = {"addr": "127.0.0.1", "port": "7227", "language": "en"}
+    config = {"addr": "127.0.0.1", "port": "7227", "ssl": "auto", "language": "en"}
     try:
         config["language"] = os.environ["LANG"][0:2]
     except:
@@ -500,8 +501,8 @@ def main():
     username = ""
     password = ""
 
-    shortOptions = 'iu:p:a:hcl:'
-    longOptions = ['interactive', "username=", "pw=", "address=", "port=", "help", "commands", "language="]
+    shortOptions = 'iu:p:a:s:hcl:'
+    longOptions = ['interactive', "username=", "pw=", "address=", "port=", "ssl=", "help", "commands", "language="]
 
     try:
         opts, extraparams = getopt(sys.argv[1:], shortOptions, longOptions)
@@ -514,6 +515,13 @@ def main():
                 config["addr"] = params
             elif option in ("-p", "--port"):
                 config["port"] = params
+            elif option in ("-s", "--ssl"):
+                ssl_val = params
+                if ssl_val not in ("auto", "yes", "no"):
+                    print 'Invalid ssl value: "%s"' % ssl_val
+                    print_help(config)
+                    exit()
+                config["ssl"] = ssl_val
             elif option in ("-l", "--language"):
                 config["language"] = params
                 gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
@@ -541,19 +549,24 @@ def main():
 
     if interactive:
         try:
-            client = ThriftClient(config["addr"], int(config["port"]), username, password)
+            client = ThriftClient(config["addr"], int(config["port"]), username, password, config["ssl"])
         except WrongLogin:
             pass
         except NoSSL:
             print _("You need py-openssl to connect to this pyLoad Core.")
             exit()
-        except NoConnection:
+        except (NoConnection, ConnectionClosed):
+            print _("SSL option '%(ssl)s' was used." % {"ssl": config["ssl"]})
+            print _("Could not establish connection to %(addr)s:%(port)s." % {"addr": config["addr"],
+                                                                              "port": config["port"]})
             config["addr"] = False
             config["port"] = False
+            config["ssl"] = False
 
         if not client:
             if not config["addr"]: config["addr"] = raw_input(_("Address: "))
             if not config["port"]: config["port"] = raw_input(_("Port: "))
+            if not config["ssl"]: config["ssl"] = raw_input("SSL (auto,yes,no): ")
             if not username: username = raw_input(_("Username: "))
             if not password:
                 from getpass import getpass
@@ -561,19 +574,21 @@ def main():
                 password = getpass(_("Password: "))
 
             try:
-                client = ThriftClient(config["addr"], int(config["port"]), username, password)
+                client = ThriftClient(config["addr"], int(config["port"]), username, password, config["ssl"])
             except WrongLogin:
                 print _("Login data is wrong.")
-            except NoConnection:
+            except (NoConnection, ConnectionClosed):
+                print _("SSL option '%(ssl)s' was used." % {"ssl": config["ssl"]})
                 print _("Could not establish connection to %(addr)s:%(port)s." % {"addr": config["addr"],
                                                                                   "port": config["port"]})
 
     else:
         try:
-            client = ThriftClient(config["addr"], int(config["port"]), username, password)
+            client = ThriftClient(config["addr"], int(config["port"]), username, password, config["ssl"])
         except WrongLogin:
             print _("Login data is wrong.")
-        except NoConnection:
+        except (NoConnection, ConnectionClosed):
+            print _("SSL option '%(ssl)s' was used." % {"ssl": config["ssl"]})
             print _("Could not establish connection to %(addr)s:%(port)s." % {"addr": config["addr"],
                                                                               "port": config["port"]})
         except NoSSL:
