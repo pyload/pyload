@@ -3,6 +3,8 @@
 #
 # Test links:
 #   https://drive.google.com/file/d/0B6RNTe4ygItBQm15RnJiTmMyckU/view?pli=1
+#   https://drive.google.com/file/u/0/d/0B6RNTe4ygItBQm15RnJiTmMyckU/view?usp=share_link
+#   https://drive.google.com/u/0/uc?id=0B6RNTe4ygItBQm15RnJiTmMyckU&export=download
 
 
 import json
