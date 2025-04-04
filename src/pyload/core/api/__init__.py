@@ -454,7 +454,7 @@ class Api:
 
     @legacy("addPackage")
     @permission(Perms.ADD)
-    def add_package(self, name: str, links: list[str], dest: int = Destination.QUEUE) -> int:
+    def add_package(self, name: str, links: list[str], dest: Destination = Destination.QUEUE) -> int:
         """
         Adds a package, with links to desired destination.
 
@@ -617,7 +617,7 @@ class Api:
 
     @legacy("generateAndAddPackages")
     @permission(Perms.ADD)
-    def generate_and_add_packages(self, links: list[str], dest: int = Destination.COLLECTOR) -> list[int]:
+    def generate_and_add_packages(self, links: list[str], dest: Destination = Destination.COLLECTOR) -> list[int]:
         """
         Generates and add packages.
 
@@ -632,7 +632,7 @@ class Api:
 
     @legacy("checkAndAddPackages")
     @permission(Perms.ADD)
-    def check_and_add_packages(self, links: list[str], dest: int = Destination.COLLECTOR) -> None:
+    def check_and_add_packages(self, links: list[str], dest: Destination = Destination.COLLECTOR) -> None:
         """
         Checks online status, retrieves names, and will add packages.
         Because of these packages are not added immediately, only for internal use.
@@ -746,7 +746,7 @@ class Api:
     @permission(Perms.LIST)
     def get_queue(self) -> list[PackageData]:
         """
-        Returns info about queue and packages, **not** about files, see `get_queue_data` \
+        Returns info about queue and packages, **not** about files, see `get_queue_data`
         or `get_package_data` instead.
 
         :return: list of `PackageData`
@@ -956,7 +956,7 @@ class Api:
 
     @legacy("movePackage")
     @permission(Perms.MODIFY)
-    def move_package(self, destination: int, package_id: int) -> None:
+    def move_package(self, destination: Destination, package_id: int) -> None:
         """
         Set a new package location.
 
@@ -1065,7 +1065,7 @@ class Api:
 
     @legacy("getPackageOrder")
     @permission(Perms.LIST)
-    def get_package_order(self, destination: int) -> dict[int, int]:
+    def get_package_order(self, destination: Destination) -> dict[int, int]:
         """
         Returns information about package order.
 

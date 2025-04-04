@@ -2,15 +2,30 @@
 
 from typing import Optional, Any
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
+from pyload.core.datatypes.enums import DownloadStatus
+
+INT64_JSON_SCHEMA = {
+    "type": "integer",
+    "format": "int64"
+}
+
+OPTIONAL_INT64_JSON_SCHEMA = {
+    "anyOf": [
+        INT64_JSON_SCHEMA,
+        {
+            "type": "null"
+        }
+    ]
+}
 
 class AccountInfo(BaseModel):
-    validuntil: float
+    validuntil: float = Field(json_schema_extra={"format": "float"})
     login: str
     options: dict
     valid: bool
-    trafficleft: int
+    trafficleft: int = Field(json_schema_extra=INT64_JSON_SCHEMA)
     premium: bool
     type: str
 
@@ -39,14 +54,14 @@ class ConfigSection(BaseModel):
 class DownloadInfo(BaseModel):
     fid: int
     name: str
-    speed: float
+    speed: float = Field(json_schema_extra={"format": "float"})
     eta: int
     format_eta: str
-    bleft: int
-    size: int
+    bleft: int = Field(json_schema_extra=INT64_JSON_SCHEMA)
+    size: int = Field(json_schema_extra=INT64_JSON_SCHEMA)
     format_size: str
     percent: int
-    status: int
+    status: DownloadStatus
     statusmsg: str
     format_wait: str
     wait_until: int
@@ -68,9 +83,9 @@ class FileData(BaseModel):
     url: str
     name: str
     plugin: str
-    size: int
+    size: int = Field(json_schema_extra=INT64_JSON_SCHEMA)
     format_size: str
-    status: int
+    status: DownloadStatus
     statusmsg: str
     package_id: int
     error: str
@@ -87,7 +102,7 @@ class OnlineStatus(BaseModel):
     plugin: str
     packagename: str
     status: int
-    size: int
+    size: int = Field(json_schema_extra=INT64_JSON_SCHEMA)
 
 
 class PackageData(BaseModel):
@@ -99,8 +114,8 @@ class PackageData(BaseModel):
     dest: int
     order: int
     linksdone: Optional[int] = None
-    sizedone: Optional[int] = None
-    sizetotal: Optional[int] = None
+    sizedone: Optional[int] = Field(default=None, json_schema_extra=OPTIONAL_INT64_JSON_SCHEMA)
+    sizetotal: Optional[int] = Field(default=None, json_schema_extra=OPTIONAL_INT64_JSON_SCHEMA)
     linkstotal: Optional[int] = None
     links: Optional[list[FileData]] = None
     fids: Optional[list[int]] = None
