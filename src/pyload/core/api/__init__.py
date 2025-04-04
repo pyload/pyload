@@ -13,7 +13,7 @@ import os
 import re
 import time
 from enum import IntFlag
-from typing import Any, AnyStr, Optional
+from typing import Any, Optional
 
 from pyload import PKGDIR
 from ..datatypes.data import (
@@ -567,7 +567,7 @@ class Api:
 
     @legacy("checkOnlineStatusContainer")
     @permission(Perms.ADD)
-    def check_online_status_container(self, urls: list[str], container: str, data: AnyStr) -> OnlineCheck:
+    def check_online_status_container(self, urls: list[str], container: str, data: bytes) -> OnlineCheck:
         """
         checks online status of urls and a submitted container file.
 
@@ -985,7 +985,7 @@ class Api:
 
     @legacy("uploadContainer")
     @permission(Perms.ADD)
-    def upload_container(self, filename: str, data: AnyStr) -> None:
+    def upload_container(self, filename: str, data: bytes) -> None:
         """
         Uploads and adds a container file to pyLoad.
 
@@ -1253,18 +1253,6 @@ class Api:
         """
         self.pyload.account_manager.remove_account(plugin, account)
 
-    @permission(Perms.ANY)
-    def login(self, username: str, password: str) -> bool:
-        """
-        Login into pyLoad, this **must** be called when using rpc before any methods can
-        be used.
-
-        :param username:
-        :param password:
-        :return: bool indicating login was successful
-        """
-        return True if self.check_auth(username, password) else False
-
     @legacy("checkAuth")
     def check_auth(self, username: str, password: str) -> dict[str: Any]:
         """
@@ -1286,18 +1274,18 @@ class Api:
         return self.pyload.db.user_exists(username)
 
     @legacy("isAuthorized")
-    def is_authorized(self, func: str, userdata: dict[str, Any]) -> bool:
+    def is_authorized(self, func_name: str, userdata: dict[str, Any]) -> bool:
         """
         checks if the user is authorized for specific method.
 
-        :param func: function name
+        :param func_name: function name
         :param userdata: dictionary of user data
         :return: boolean
         """
         if userdata["role"] == Role.ADMIN:
             return True
-        elif func in perm_map and has_permission(
-            userdata["permission"], perm_map[func]
+        elif func_name in perm_map and has_permission(
+            userdata["permission"], perm_map[func_name]
         ):
             return True
         else:
@@ -1396,16 +1384,16 @@ class Api:
 
     @legacy("hasService")
     @permission(Perms.STATUS)
-    def has_service(self, plugin: str, func: str) -> bool:
+    def has_service(self, plugin: str, func_name: str) -> bool:
         """
         Checks whether a service is available.
 
         :param plugin:
-        :param func:
+        :param func_name:
         :return: bool
         """
         cont = self.pyload.addon_manager.rpc_methods
-        return plugin in cont and func in cont[plugin]
+        return plugin in cont and func_name in cont[plugin]
 
     @permission(Perms.STATUS)
     def service_call(self, service_name: str, arguments: Optional[list[Any]], parse_arguments: bool = False) -> str:
@@ -1428,10 +1416,10 @@ class Api:
                            func=func,
                            arguments=arguments,
                            parse_arguments=parse_arguments)
-        return self.call(info)
+        return self._call(info)
 
     @permission(Perms.STATUS)
-    def call(self, info: ServiceCall) -> str:
+    def _call(self, info: ServiceCall) -> str:
         """
         Calls a service (a method in addon plugin).
 
