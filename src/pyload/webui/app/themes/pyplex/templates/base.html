@@ -146,7 +146,7 @@
         </ul>
         {% if user.is_authenticated %}
           <ul class="nav navbar-nav navbar-right">
-            <li><span class="navbar-text"><span class="glyphicon glyphicon-user" title="{{user.name}}></span><span class="hidden-sm hidden-md"> {{user.name}}</span></span></li>
+            <li><span class="navbar-text"><span class="glyphicon glyphicon-user" title="{{user.name}}"></span><span class="hidden-sm hidden-md"> {{user.name}}</span></span></li>
             <li><a href="{{url_for("app.logout")}}" class="action logout" rel="nofollow"><span class="glyphicon glyphicon-log-out"></span><span class="hidden-sm hidden-md">  {{_('Logout')}}</span></a></li>
             <li ondragstart="return false;" {{selected('info')}}><a href="{{url_for("app.info")}}"  class="action info" rel="nofollow"><span class="glyphicon glyphicon-info-sign"></span><span class="hidden-sm hidden-md">  {{_('Info')}}</span></a></li>
           </ul>
@@ -244,7 +244,7 @@
 <script type="text/javascript" src="{{theme_static('vendor/jQuery/jQuery UI/jquery-ui.min.js')}}"></script>
 <script type="text/javascript" src="{{theme_static('vendor/mdtoast/js/mdtoast.min.js')}}"></script>
 <script type="text/javascript" src="{{theme_static('vendor/Bootstrap/js/bootstrap.min.js')}}"></script>
-<script type="text/javascript" src="{{theme_template('js/base.js')}}" nopoll={{no_status_polling}}></script>
+<script type="text/javascript" src="{{theme_template('js/base.js')}}" nopoll="{{no_status_polling}}"></script>
 
 {% block footer %}
 {% endblock %}
