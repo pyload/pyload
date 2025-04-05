@@ -193,7 +193,7 @@ class SettingsUI {
     const search = (query) => {
       let results = [];
       if (query) {
-        results = pluginList.filter(p => p[1].toLowerCase().startsWith(query.toLowerCase()));
+        results = pluginList.filter(p => p[1].toLowerCase().includes(query.toLowerCase()));
       } else {
         results = pluginList;
       }
