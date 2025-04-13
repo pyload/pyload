@@ -7,7 +7,7 @@ from .misc import decode, parse_name, safepath
 class Crypter(Base):
     __name__ = "Crypter"
     __type__ = "crypter"
-    __version__ = "0.21"
+    __version__ = "0.22"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -49,15 +49,15 @@ class Crypter(Base):
         """
         Generate new packages from self.links
         """
+        links = map(self.fixurl, self.links)
         name = self.info['pattern'].get("N")
         if name is None:
-            links = map(self.fixurl, self.links)
             pdict = self.pyload.api.generatePackages(links)
             packages = [(_name, _links, parse_name(_name))
                         for _name, _links in pdict.items()]
 
         else:
-            packages = [(name, self.links, parse_name(name))]
+            packages = [(name, links, parse_name(name))]
 
         self.packages.extend(packages)
 
