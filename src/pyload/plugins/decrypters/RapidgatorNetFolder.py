@@ -6,7 +6,7 @@ from ..base.simple_decrypter import SimpleDecrypter
 class RapidgatorNetFolder(SimpleDecrypter):
     __name__ = "RapidgatorNetFolder"
     __type__ = "decrypter"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?(?:rapidgator\.(?:net|asia|)|rg\.to)/folder/(?P<ID>\w+)"
@@ -26,5 +26,5 @@ class RapidgatorNetFolder(SimpleDecrypter):
     __license__ = "GPLv3"
     __authors__ = [("GammaCode", "nitzo2001[AT]yahoo[DOT]com")]
 
-    NAME_PATTERN = r"<strong>\s*Downloading:\s*</strong>\s*(?P<N>[^\s<]+)"
+    NAME_PATTERN = r"<strong>\s*Downloading:\s*</strong>\s*(?P<N>.+?)\s+<"
     LINK_PATTERN = r'href="(/file/[^"]+)'
