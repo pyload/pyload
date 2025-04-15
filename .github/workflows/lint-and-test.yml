@@ -22,7 +22,7 @@ jobs:
   lint:
     name: Lint using ${{ matrix.toxenv }} 🔎
 
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
@@ -59,7 +59,7 @@ jobs:
           path: |
             ${{ env.pythonLocation }}
             ${{ env.toxworkdir }}
-          key: ubuntu-20.04--${{ env.runner_python_version }}--${{ hashFiles('setup.cfg', 'pyproject.toml', 'tox.ini') }}--${{ env.pythonLocation }}--${{ env.day_of_year }}
+          key: ${{ runner.os }}--${{ env.runner_python_version }}--${{ hashFiles('setup.cfg', 'pyproject.toml', 'tox.ini') }}--${{ env.pythonLocation }}--${{ env.day_of_year }}
 
       - name: Install Python dependencies
         run: python3 -m pip install tox
