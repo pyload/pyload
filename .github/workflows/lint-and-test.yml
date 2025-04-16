@@ -107,6 +107,14 @@ jobs:
         if: startsWith(matrix.os, 'ubuntu')
         run: sudo apt-get update && sudo apt-get -y --no-install-recommends install libcurl4-openssl-dev
 
+      - name: Install Python ${{ matrix.python-version }}
+        if: matrix.python-version == '3.6'
+        run: |
+          sudo add-apt-repository ppa:deadsnakes/ppa
+          sudo apt-get update
+          sudo apt-get install -y python${{ matrix.python-version }} python${{ matrix.python-version }}-dev python3-pip
+          sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python${{ matrix.python-version }} 1
+
       - name: Set up Python environment
         uses: actions/setup-python@v5
         with:
