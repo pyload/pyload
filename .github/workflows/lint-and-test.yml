@@ -90,9 +90,9 @@ jobs:
           - python-version: pypy3.7
             os: ubuntu-20.04
             toxenv: pypy
-      if: matrix.python-version == '3.6' && runner.os == 'Linux'
-      container:
-        image: matthewfeickert/docker-python3-ubuntu:3.6.8
+    if: matrix.python-version == '3.6' && runner.os == 'Linux'
+    container:
+      image: matthewfeickert/docker-python3-ubuntu:3.6.8
 
     steps:
       - name: Check out repository
