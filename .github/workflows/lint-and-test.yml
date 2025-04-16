@@ -80,9 +80,17 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.6", "3.7", "3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
         os: [ubuntu-22.04, macos-13, windows-latest]
         include:
+          - python-version: 3.6
+            os: macos-13
+            toxenv: py
+
+          - python-version: 3.6
+            os: windows-latest
+            toxenv: py
+
           - python-version: pypy3.6
             os: ubuntu-20.04
             toxenv: pypy
@@ -90,9 +98,6 @@ jobs:
           - python-version: pypy3.7
             os: ubuntu-20.04
             toxenv: pypy
-    if: matrix.python-version == '3.6' && runner.os == 'Linux'
-    container:
-      image: matthewfeickert/docker-python3-ubuntu:3.6.8
 
     steps:
       - name: Check out repository
