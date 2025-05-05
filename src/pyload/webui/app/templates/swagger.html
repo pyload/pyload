@@ -23,9 +23,9 @@
 </script>
 <script src="//unpkg.com/swagger-editor@5.0.0-alpha.101/dist/umd/swagger-editor.js"></script>
 <script>
-  const spec = {{ openapi_spec|safe }};
+  const baseUrl = window.location.origin;
   SwaggerUIBundle({
-    spec: spec,
+    url: baseUrl + "/api/openapi.json",
     persistAuthorization: true,
     dom_id: '#swagger-ui',
     presets: [

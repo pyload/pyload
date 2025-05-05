@@ -113,8 +113,7 @@ def api_docs():
 @bp.route("/api/docs", methods=["GET"])
 def swagger_ui():
     """Serve Swagger UI with the API documentation"""
-    openapi_spec = OpenAPIGenerator().generate_openapi_json()
-    return render_template("swagger.html", openapi_spec=json.dumps(openapi_spec))
+    return render_template("swagger.html")
 
 
 @bp.route("/api/login", methods=["POST"], endpoint="login")
