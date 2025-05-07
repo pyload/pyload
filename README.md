@@ -25,7 +25,7 @@
 
 ## Choose your Version
 
-**The newest version of pyLoad** running on Python 3.6+ and PyPy (experimental) is developed in the [main branch on GitHub](https://github.com/pyload/pyload/tree/main) and published as [pyload-ng on PyPI](https://pypi.org/project/pyload-ng/).
+**The newest version of pyLoad** running on Python 3.9+ and PyPy (experimental) is developed in the [main branch on GitHub](https://github.com/pyload/pyload/tree/main) and published as [pyload-ng on PyPI](https://pypi.org/project/pyload-ng/).
 
 **The old version of pyLoad** working on Python 2 is still available in the [stable branch on GitHub](https://github.com/pyload/pyload/tree/stable), pre-built packages are available for download on the [releases page on GitHub](https://github.com/pyload/pyload/releases).
 
@@ -251,7 +251,7 @@ To show the version of your **default** Python interpreter, type the command:
 
 If the version is too old, try to upgrage Python, then you can retry to install pyLoad.
 
-Python releases below version 3.6 are not supported!
+Python releases below version 3.9 are not supported!
 
 ### Setuptools is too old
 
