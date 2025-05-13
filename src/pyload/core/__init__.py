@@ -13,6 +13,7 @@ import gettext
 import json
 import locale
 import os
+import pathlib
 import signal
 import subprocess
 import sys
@@ -375,15 +376,14 @@ class Core:
     def _generate_open_api_spec(self):
         from pyload.webui.app.api_docs.openapi_generator import OpenAPIGenerator
 
-        base_path = "".join(PKGDIR.partition(os.sep + "pyload")[:-1])
-        spec_path = os.path.join(base_path, "openapi-generator")
-        self.log.debug("Saving OpenAPI spec to: %s", spec_path)
-
-        openapi_spec = OpenAPIGenerator(api=self.api).generate_openapi_json()
-
-        file_path = os.path.join(spec_path, "openapi.json")
-        with open(file_path, 'w') as f:
-            json.dump(openapi_spec, f, indent=2)
+        base_path =  pathlib.Path("".join(PKGDIR.partition(os.sep + "pyload")[:-1]))
+        if spec_path := next((p for p in base_path.rglob('openapi.json')), None):
+            self.log.debug("Saving OpenAPI spec to: %s", spec_path)
+            openapi_spec = OpenAPIGenerator(api=self.api).generate_openapi_json()
+            with open(spec_path, 'w') as f:
+                json.dump(openapi_spec, f, indent=2)
+        else:
+            raise IOError("Unable to locate openapi.json file")
 
     def start(self):
         try:
