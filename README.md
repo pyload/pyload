@@ -163,8 +163,6 @@ Please refer to [CONTRIBUTING](https://github.com/pyload/pyload/blob/main/CONTRI
 ## Docker Images
 
 [![Docker build status](https://img.shields.io/docker/build/pyload/pyload?style=flat-square)](https://hub.docker.com/r/pyload/pyload)
-[![MicroBadger layers](https://img.shields.io/microbadger/layers/pyload/pyload?style=flat-square)](https://microbadger.com/images/pyload/pyload)
-[![MicroBadger size](https://img.shields.io/microbadger/image-size/pyload/pyload?style=flat-square)](https://microbadger.com/images/pyload/pyload)
 
 #### Available images
 
