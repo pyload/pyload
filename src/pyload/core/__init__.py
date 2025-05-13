@@ -10,6 +10,7 @@
 
 import atexit
 import gettext
+import json
 import locale
 import os
 import signal
@@ -77,7 +78,7 @@ class Core:
         return self._debug
 
     # NOTE: should `reset` restore the user config as well?
-    def __init__(self, userdir, tempdir, storagedir, debug=None, reset=False, dry=False):
+    def __init__(self, userdir, tempdir, storagedir, debug=None, reset=False, dry=False, api_spec=False):
         self._running = Event()
         self._exiting = False
         self._do_restart = False
@@ -85,6 +86,7 @@ class Core:
         self._ = lambda x: x
         self._debug = 0
         self._dry_run = dry
+        self._api_spec = api_spec
 
         # if self.tmpdir not in sys.path:
         # sys.path.append(self.tmpdir)
@@ -151,8 +153,10 @@ class Core:
 
         os.makedirs(storagedir, exist_ok=True)
 
-        if not self._dry_run:
-            self.config.save()  #: save so config files gets filled
+        if self._dry_run or self._api_spec:
+            return
+
+        self.config.save()  #: save so config files gets filled
 
     def _init_log(self):
         from .log_factory import LogFactory
@@ -368,6 +372,19 @@ class Core:
         rv.extend(args)
         return rv
 
+    def _generate_open_api_spec(self):
+        from pyload.webui.app.api_docs.openapi_generator import OpenAPIGenerator
+
+        base_path = "".join(PKGDIR.partition(os.sep + "pyload")[:-1])
+        spec_path = os.path.join(base_path, "openapi-generator")
+        self.log.debug("Saving OpenAPI spec to: %s", spec_path)
+
+        openapi_spec = OpenAPIGenerator(api=self.api).generate_openapi_json()
+
+        file_path = os.path.join(spec_path, "openapi.json")
+        with open(file_path, 'w') as f:
+            json.dump(openapi_spec, f, indent=2)
+
     def start(self):
         try:
             try:
@@ -417,6 +434,10 @@ class Core:
             # self.evm.fire('pyload:started')
 
             self.thm.pause = False  # NOTE: Recheck...
+
+            if self._api_spec:
+                self._generate_open_api_spec()
+                raise Exit
 
             if self._dry_run:
                 raise Exit

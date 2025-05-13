@@ -8,13 +8,14 @@
 #           \  /
 #            \/
 import inspect
+import sys
+from collections.abc import Hashable
 from enum import IntEnum, Enum
 from typing import get_origin, get_args, Union, Any, Type, Optional
 
-import flask
 from pydantic import BaseModel
 
-from pyload.core.api import legacy_map
+from pyload.core.api import legacy_map, Api
 
 PRIMITIVE_TYPE_MAP = {
     str: {"type": "string"},
@@ -22,6 +23,8 @@ PRIMITIVE_TYPE_MAP = {
     float: {"type": "number", "format": "float"},
     bool: {"type": "boolean"},
 }
+
+REF_PREFIX = "#/components/schemas/"
 
 """
 This will build an OpenAPI specification based on the existing api functions
@@ -35,7 +38,8 @@ To conform with OpenAPI standards, the following logic is used to determine the 
 * File uploads will use a POST method with multipart request body
 """
 class OpenAPIGenerator:
-    def __init__(self):
+    def __init__(self, api: Api):
+        self.api = api
         self.spec: dict[str, Any] = {
             "info": {
                 "title": "pyLoad API Documentation - OpenAPI",
@@ -95,7 +99,7 @@ class OpenAPIGenerator:
                     "cookieAuth": {
                         "type": "apiKey",
                         "in": "cookie",
-                        "name": flask.current_app.config["SESSION_COOKIE_NAME"]
+                        "name": "pyload_session_" + str(api.get_config_value("webui", "port"))
                     }
                 }
             },
@@ -104,9 +108,14 @@ class OpenAPIGenerator:
 
     def generate_openapi_json(self) -> dict[str, Any]:
         """Generate OpenAPI documentation by introspecting the API module"""
-        api = flask.current_app.config["PYLOAD_API"]
+        if sys.version_info < (3, 11):
+            self.spec["info"]["description"] = """
+            WARNING: due to bugs with subclass checks in earlier Python versions we require the min version to be 3.11
+            Update your Python version to retrieve the full OpenAPI specification
+            """
+            return self.spec
 
-        for name, method in inspect.getmembers(api, predicate=inspect.ismethod):
+        for name, method in inspect.getmembers(self.api, predicate=inspect.ismethod):
             if name.startswith('_') or name in legacy_map.values() or name == "login":
                 continue
 
@@ -227,7 +236,7 @@ class OpenAPIGenerator:
         if isinstance(return_type, type) and issubclass(return_type, BaseModel):
             self._register_pydantic_model(return_type)
             response_schema = {
-                "$ref": "#/components/schemas/" + return_type.__name__
+                "$ref": REF_PREFIX + return_type.__name__
             }
         if response_schema:
             response["content"] = {
@@ -266,7 +275,7 @@ class OpenAPIGenerator:
             elif isinstance(field_type, type) and issubclass(field_type, IntEnum):
                 self._register_enum(field_type)
 
-        schema = model.model_json_schema(ref_template="#/components/schemas/{model}")
+        schema = model.model_json_schema(ref_template=REF_PREFIX + "{model}")
         schema.pop('$defs', None)  # Remove duplicate inner model definitions if present
 
         self.spec["components"]["schemas"][model_name] = schema
@@ -285,13 +294,16 @@ class OpenAPIGenerator:
         if annotation is None:
             return None
 
-        if annotation in PRIMITIVE_TYPE_MAP:
-            return PRIMITIVE_TYPE_MAP[annotation].copy()
-
-        # Pydantic models
-        if isinstance(annotation, type) and issubclass(annotation, BaseModel):
-            self._register_pydantic_model(annotation)
-            return {"$ref": "#/components/schemas/" + annotation.__name__}
+        if isinstance(annotation, type):
+            if issubclass(annotation, Hashable) and annotation in PRIMITIVE_TYPE_MAP:
+                return PRIMITIVE_TYPE_MAP[annotation].copy()
+            # Pydantic models
+            elif issubclass(annotation, BaseModel):
+                self._register_pydantic_model(annotation)
+                return {"$ref": REF_PREFIX + annotation.__name__}
+            elif issubclass(annotation, IntEnum):
+                self._register_enum(annotation)
+                return {"$ref": REF_PREFIX + annotation.__name__}
 
         if annotation == bytes:
             return {"type": "string", "format": "binary"}
@@ -329,9 +341,5 @@ class OpenAPIGenerator:
         object_types = [Any, object]
         if annotation in object_types:
             return {"type": "object"}
-
-        if isinstance(annotation, type) and issubclass(annotation, IntEnum):
-            self._register_enum(annotation)
-            return {"$ref": "#/components/schemas/" + annotation.__name__}
 
         raise ValueError(f"Unexpected type annotation {annotation} with origin {origin}")

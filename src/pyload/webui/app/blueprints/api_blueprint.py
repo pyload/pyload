@@ -107,7 +107,7 @@ def _parse_parameter(param: str) -> Any:
 @bp.route("/api/openapi.json", methods=["GET"])
 def api_docs():
     """Return OpenAPI specification JSON"""
-    openapi_spec = OpenAPIGenerator().generate_openapi_json()
+    openapi_spec = OpenAPIGenerator(api=flask.current_app.config["PYLOAD_API"]).generate_openapi_json()
     return openapi_spec
 
 @bp.route("/api/docs", methods=["GET"])
