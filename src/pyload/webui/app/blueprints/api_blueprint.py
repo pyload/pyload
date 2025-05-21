@@ -11,7 +11,7 @@ import flask
 from flask.json import jsonify
 
 from pyload import APPID
-from ..api_docs.openapi_generator import OpenAPIGenerator
+from ..api_docs.openapi_specification_generator import OpenAPISpecificationGenerator
 from ..helpers import clear_session, set_session, render_template
 
 bp = flask.Blueprint("api", __name__)
@@ -107,7 +107,7 @@ def _parse_parameter(param: str) -> Any:
 @bp.route("/api/openapi.json", methods=["GET"])
 def api_docs():
     """Return OpenAPI specification JSON"""
-    openapi_spec = OpenAPIGenerator(api=flask.current_app.config["PYLOAD_API"]).generate_openapi_json()
+    openapi_spec = OpenAPISpecificationGenerator(api=flask.current_app.config["PYLOAD_API"]).generate_openapi_json()
     return openapi_spec
 
 @bp.route("/api/docs", methods=["GET"])

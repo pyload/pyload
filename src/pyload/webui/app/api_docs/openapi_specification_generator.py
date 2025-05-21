@@ -37,7 +37,7 @@ To conform with OpenAPI standards, the following logic is used to determine the 
 * Functions with non-primitive parameters (e.g. arrays) will use a POST method with json request body
 * File uploads will use a POST method with multipart request body
 """
-class OpenAPIGenerator:
+class OpenAPISpecificationGenerator:
     def __init__(self, api: Api):
         self.api = api
         self.spec: dict[str, Any] = {

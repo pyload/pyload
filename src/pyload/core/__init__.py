@@ -374,12 +374,12 @@ class Core:
         return rv
 
     def _generate_open_api_spec(self):
-        from pyload.webui.app.api_docs.openapi_generator import OpenAPIGenerator
+        from pyload.webui.app.api_docs.openapi_specification_generator import OpenAPISpecificationGenerator
 
         base_path =  pathlib.Path("".join(PKGDIR.partition(os.sep + "pyload")[:-1]))
         if spec_path := next((p for p in base_path.rglob('openapi.json')), None):
             self.log.debug("Saving OpenAPI spec to: %s", spec_path)
-            openapi_spec = OpenAPIGenerator(api=self.api).generate_openapi_json()
+            openapi_spec = OpenAPISpecificationGenerator(api=self.api).generate_openapi_json()
             with open(spec_path, 'w') as f:
                 json.dump(openapi_spec, f, indent=2)
         else:
