@@ -91,6 +91,20 @@ class OpenAPISpecificationGenerator:
                             }
                         }
                     }
+                },
+                "/api/logout": {
+                    "get": {
+                        "security": [],
+                        "summary": "Logout current user, clear session data",
+                        "tags": [
+                            "pyLoad Authentication"
+                        ],
+                        "responses": {
+                            "200": {
+                                "description": "",
+                            }
+                        }
+                    }
                 }
             },
             "components": {

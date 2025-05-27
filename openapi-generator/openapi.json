@@ -53,6 +53,20 @@
         }
       }
     },
+    "/api/logout": {
+      "get": {
+        "security": [],
+        "summary": "Logout current user, clear session data",
+        "tags": [
+          "pyLoad Authentication"
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
     "/api/add_files": {
       "post": {
         "summary": "Adds files to specific package.",
