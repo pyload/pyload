@@ -347,38 +347,37 @@ const LoadJsonToContent = (a) => {
   return null;
 };
 
-const set_captcha = (a) => {
+const set_captcha = (catchaData) => {
   captcha_reset_default();
 
-  const params = JSON.parse(a.params);
-  $("#cap_id").val(a.id);
-  if (a.result_type === "textual") {
-    $("#cap_textual_img").attr("src", params.src);
+  $("#cap_id").val(catchaData.id);
+  if (catchaData.result_type === "textual") {
+    $("#cap_textual_img").attr("src", catchaData.params.src);
     $("#cap_submit").css("display", "inline");
     $("#cap_box #cap_title").text("");
     $("#cap_textual").css("display", "block");
     $("#cap_result").focus();
-  } else if (a.result_type === "positional") {
-    $("#cap_positional_img").attr("src", params.src);
+  } else if (catchaData.result_type === "positional") {
+    $("#cap_positional_img").attr("src", catchaData.params.src);
     $("#cap_box #cap_title").text("{{_('Please click on the right captcha position.')}}");
     $("#cap_positional").css("display", "block");
-  } else if (a.result_type === "interactive") {
+  } else if (catchaData.result_type === "interactive") {
     $("#cap_box #cap_title").text("");
     if (interactiveCaptchaHandlerInstance == null) {
       interactiveCaptchaHandlerInstance = new interactiveCaptchaHandler("cap_interactive_iframe", "cap_interactive_loading", submit_interactive_captcha);
     }
-    if (params.url !== undefined && params.url.indexOf("http") === 0) {
+    if (catchaData.params.url !== undefined && catchaData.params.url.indexOf("http") === 0) {
       $("#cap_interactive").css("display", "block");
-      interactiveCaptchaHandlerInstance.startInteraction(params.url, params);
+      interactiveCaptchaHandlerInstance.startInteraction(catchaData.params.url, catchaData.params);
     }
-  } else if (a.result_type === "invisible") {
+  } else if (catchaData.result_type === "invisible") {
     $("#cap_box #cap_title").text("");
     if (interactiveCaptchaHandlerInstance == null) {
       interactiveCaptchaHandlerInstance = new interactiveCaptchaHandler("cap_interactive_iframe", "cap_invisible_loading", submit_interactive_captcha);
     }
-    if (params.url !== undefined && params.url.indexOf("http") === 0) {
+    if (catchaData.params.url !== undefined && catchaData.params.url.indexOf("http") === 0) {
       $("#cap_interactive").css("display", "block");
-      interactiveCaptchaHandlerInstance.startInteraction(params.url, params);
+      interactiveCaptchaHandlerInstance.startInteraction(catchaData.params.url, catchaData.params);
     }
   }
   return true;

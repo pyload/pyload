@@ -1126,7 +1126,7 @@ class Api:
             task.set_waiting_for_user(exclusive=exclusive)
             data, type, result = task.get_captcha()
             t = CaptchaTask(tid=int(task.id),
-                            data=json.dumps(data),
+                            data=data,
                             type=type,
                             result_type=result)
             return t
