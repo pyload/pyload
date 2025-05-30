@@ -71,13 +71,6 @@ def truncate(text, to_length):
 
 def uniquify(seq):
     """Remove duplicates from list preserving order."""
+
     seen = set()
-    result = []
-
-    for item in seq:
-        hashable_item = tuple(item) if isinstance(item, list) else item
-        if hashable_item not in seen:
-            seen.add(hashable_item)
-            result.append(item)
-
-    return type(seq)(result)
+    return type(seq)(x for x in seq if x not in seen and not seen.add(x))
