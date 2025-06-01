@@ -121,8 +121,9 @@ jobs:
 
       - name: Install Python dependencies
         run: |
-          [ ${{ startsWith(matrix.os, 'macos') }} = true ] && { python3 -m pip install --upgrade pip==21.3.1; python3 -m pip install --install-option="--openssl-dir=/usr/local/opt/openssl@3" pycurl; } || true
+          python3 -m pip install --upgrade pip
           python3 -m pip install tox
+#          [ ${{ startsWith(matrix.os, 'macos') }} = true ] && { python3 -m pip install --upgrade pip==21.3.1; python3 -m pip install --install-option="--openssl-dir=/usr/local/opt/openssl@3" pycurl; } || true
 #          [ ${{ startsWith(matrix.os, 'windows') }} = true ] && ./.github/scripts/install_pycurl_win.sh ${{ matrix.python-version }} || true
         shell: bash
 
