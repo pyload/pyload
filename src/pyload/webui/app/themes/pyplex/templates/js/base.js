@@ -190,21 +190,40 @@ const thisScript = document.currentScript;
 class UIHandler {
   constructor() {
     this.topbuttonVisible = $(window).scrollTop() > 100;
-    this.initUI();
   }
 
   initUI() {
     const $goto_top = $('#goto_top');
     const $stickyNav = $("#sticky-nav");
+    const navHeight = $('#head-panel').height();
 
     $goto_top.toggleClass('hidden', !this.topbuttonVisible).affix({ offset: { top: 100 } });
-    $stickyNav.css(this.stickynavlCss($(window).scrollTop()));
+    const navCss = this.stickynavlCss($(window).scrollTop(), navHeight);
+    const modalTop = navHeight + parseFloat((navCss.top || `${-navHeight}`.replace('px', ''))) + 5;
+    $(".modal .modal-dialog").css({top: `${modalTop}px`});
+    $stickyNav.css(navCss);
 
-    $(window).scroll(() => this.handleScroll($goto_top, $stickyNav));
+    const addlinksMinHeight = getScrollBarHeight() + Math.round(parseFloat($("#add_links").css("line-height").replace('px', '')));
+    let addlinksHeight;
+    $("#modal-content").resizable({
+      minHeight: 520 + addlinksMinHeight,
+      minWidth: 310,
+      start: (event, ui) => {
+        addlinksHeight = $("#add_links").height();
+      },
+      resize: (event, ui) => {
+        const addlinksNewHeight = Math.max(addlinksHeight + ui.size.height - ui.originalSize.height, addlinksMinHeight);
+        $("#add_links").height(addlinksNewHeight);
+      }
+    }).draggable({ scroll: false });
+
+    $(window).scroll(() => this.handleScroll($goto_top, $stickyNav, navHeight));
     $goto_top.click(() => this.scrollToTop());
+    this.initPasswordReveal();
+    this.initButtonHandlers();
   }
 
-  handleScroll($goto_top, $stickyNav) {
+  handleScroll($goto_top, $stickyNav, navHeight) {
     const scrollTop = $(window).scrollTop();
     const visible = Boolean(scrollTop > 100);
 
@@ -212,20 +231,163 @@ class UIHandler {
       $goto_top.toggleClass('hidden', !visible);
       this.topbuttonVisible = visible;
     }
-    $stickyNav.css(this.stickynavlCss(scrollTop));
+    const navCss = this.stickynavlCss(scrollTop, navHeight);
+    const modalTop = navHeight + parseFloat((navCss.top || `${-navHeight}`).replace('px', '')) + 5;
+    $(".modal .modal-dialog").css({top: `${modalTop}px`});
+    $stickyNav.css(navCss);
   }
 
-  stickynavlCss(scrollTop) {
-    const $headPanel = $('#head-panel');
-    const headpanelHeight = $headPanel.height();
-
-    if (scrollTop <= headpanelHeight) {
+  stickynavlCss(scrollTop, navHeight) {
+    if (scrollTop <= navHeight) {
       return { "display": "none" };
-    } else if (scrollTop > headpanelHeight && scrollTop < headpanelHeight * 2) {
-      return { "display": "block", "top": `${scrollTop - headpanelHeight * 2}px` };
+    } else if (scrollTop > navHeight && scrollTop < navHeight * 2) {
+      return { "display": "block", "top": `${scrollTop - navHeight * 2}px` };
     } else {
       return { "display": "block", "top": "0" };
     }
+  }
+
+  initPasswordReveal() {
+    $('input[type=password].reveal-pass').map(function() {
+      const reveal_id = Date.now();
+
+      $(this).wrap("<div class=\"form-group has-feedback\"></div>");
+      const button = $("<button class='close form-control-feedback hidden' type='button' style='pointer-events: auto;'><span class='glyphicon glyphicon-eye-close' style='font-size: 11px;'></span></button>");
+      button.attr("data-reveal-pass-id", reveal_id);
+      $(this).after(button);
+      $(this).attr("data-reveal-pass-id", reveal_id);
+      $(this).on('input', function() {
+        const visible = Boolean($(this).val());
+        $(this).siblings(`button[data-reveal-pass-id="${$(this).attr("data-reveal-pass-id")}"]`).toggleClass('hidden', !visible);
+      });
+      button.mousedown(event => {
+        event.preventDefault();
+        button.find("span.glyphicon").removeClass('glyphicon-eye-close').addClass('glyphicon-eye-open');
+        $(this).siblings(`input[data-reveal-pass-id="${$(this).attr("data-reveal-pass-id")}"]`).attr('type', 'text');
+      }).mouseup(event => {
+        event.preventDefault();
+        button.find("span.glyphicon").removeClass('glyphicon-eye-open').addClass('glyphicon-eye-close');
+        $(this).siblings(`input[data-reveal-pass-id="${$(this).attr("data-reveal-pass-id")}"]`).attr('type', 'password');
+      }).click(event => {
+        event.preventDefault();
+      });
+    });
+  }
+
+  initButtonHandlers() {
+    $('.btn, input[type="radio"]').focus(function() { this.blur(); });
+
+    $("#add_form").submit(function(event) {
+      event.preventDefault();
+      const formData = new FormData(this);
+      const $this = $(this);
+      if ($this.find("#add_name").val() === "" && $this.find("#add_file").val() === "") {
+        alert("{{_('Please Enter a package name.')}}");
+        return false;
+      } else {
+        $.ajax({
+          url: "{{url_for('json.add_package')}}",
+          method: "POST",
+          data: formData,
+          processData: false,
+          contentType: false,
+          success: () => {
+            const queue = $this.find("#add_dest").val() === "1" ? "queue" : "collector";
+            const re = new RegExp(`/${queue}/?$`, "i");
+            if (window.location.toString().match(re)) {
+              window.location.reload();
+            }
+          },
+          error: () => {
+            indicateFail("{{_('Error occurred')}}");
+          }
+        });
+        $("#add_box").modal('hide');
+        return false;
+      }
+    });
+
+    $(".action_add").click(() => {
+      $("#add_form").trigger("reset");
+    });
+
+    $("#action_play").click(() => {
+      $.get("{{url_for('api.rpc', func='unpause_server')}}", () => {
+        $.ajax({
+          method: "post",
+          url: "{{url_for('json.status')}}",
+          async: true,
+          timeout: 3000,
+          success: LoadJsonToContent
+        });
+      });
+    });
+
+    $("#action_cancel").click(() => {
+      this.yesNoDialog("{{_('Are you sure you want to abort all downloads?')}}", (answer) => {
+        if (answer) {
+          $.get("{{url_for('api.rpc', func='stop_all_downloads')}}");
+        }
+      });
+    });
+
+    $("#action_stop").click(() => {
+      $.get("{{url_for('api.rpc', func='pause_server')}}", () => {
+        $.ajax({
+          method: "post",
+          url: "{{url_for('json.status')}}",
+          async: true,
+          timeout: 3000,
+          success: LoadJsonToContent
+        });
+      });
+    });
+
+    $("#toggle_queue").click(() => {
+      $.get("{{url_for('api.rpc', func='toggle_pause')}}", () => {
+        $.ajax({
+          method: "post",
+          url: "{{url_for('json.status')}}",
+          async: true,
+          timeout: 3000,
+          success: LoadJsonToContent
+        });
+      });
+    });
+
+    $("#toggle_proxy").click(() => {
+      $.get("{{url_for('api.rpc', func='toggle_proxy')}}", () => {
+        $.ajax({
+          method: "post",
+          url: "{{url_for('json.status')}}",
+          async: true,
+          timeout: 3000,
+          success: LoadJsonToContent
+        });
+      });
+    });
+
+    $("#toggle_reconnect").click(() => {
+      $.get("{{url_for('api.rpc', func='toggle_reconnect')}}", () => {
+        $.ajax({
+          method: "post",
+          url: "{{url_for('json.status')}}",
+          async: true,
+          timeout: 3000,
+          success: LoadJsonToContent
+        });
+      });
+    });
+
+    $(".cap_info").click(() => {
+      captchaHandler.loadCaptcha("get", "");
+    });
+
+    $("#cap_submit").click(() => {
+      captchaHandler.submitCaptcha();
+    });
+
+    $("#cap_box #cap_positional").click(captchaHandler.submitPositionalCaptcha);
   }
 
   scrollToTop() {
@@ -297,10 +459,12 @@ const parseUri = () => {
   return $add_links.val(e);
 };
 
-Array.prototype.remove = function(d, c) {
-  const a = this.slice((c || d) + 1 || this.length);
-  this.length = (d < 0 ? this.length + d : d);
-  return this.push(...a);
+Array.prototype.remove = function(from, to) {
+    let left;
+    const rest = this.slice(((to || from) + 1) || this.length);
+    this.length = (left = from < 0) != null ? left : this.length + {from};
+    if (this.length === 0) { return []; }
+    return this.push.apply(this, rest);
 };
 
 const getScrollBarHeight = () => {
@@ -329,195 +493,7 @@ const getScrollBarHeight = () => {
 };
 
 $(() => {
-  const $goto_top = $('#goto_top');
-  const $stickyNav = $("#sticky-nav");
-  let topbuttonVisible = $(window).scrollTop() > 100;
-
-  $goto_top.toggleClass('hidden', !topbuttonVisible).affix({ offset: { top: 100 } });
-
-  const stickynavlCss = (scrollTop) => {
-    const $headPanel = $('#head-panel');
-    const headpanelHeight = $headPanel.height();
-
-    if (scrollTop <= headpanelHeight) {
-      return { "display": "none" };
-    } else if (scrollTop > headpanelHeight && scrollTop < headpanelHeight * 2) {
-      return { "display": "block", "top": `${scrollTop - headpanelHeight * 2}px` };
-    } else {
-      return { "display": "block", "top": "0" };
-    }
-  };
-
-  $stickyNav.css(stickynavlCss($(window).scrollTop()));
-
-  $(window).scroll(() => {
-    const scrollTop = $(this).scrollTop();
-    const visible = Boolean(scrollTop > 100);
-
-    if (topbuttonVisible !== visible) {
-      $goto_top.toggleClass('hidden', !visible);
-      topbuttonVisible = visible;
-    }
-    $stickyNav.css(stickynavlCss(scrollTop));
-  });
-
-  $goto_top.click(() => {
-    $('html,body').animate({ scrollTop: 0 }, 'slow');
-    return false;
-  });
-
-  const addlinksMinHeight = getScrollBarHeight() + Math.round(parseFloat($("#add_links").css("line-height").replace('px', '')));
-  let addlinksHeight;
-  $("#modal-content").resizable({
-    minHeight: 520 + addlinksMinHeight,
-    minWidth: 310,
-    start: (event, ui) => {
-      addlinksHeight = $("#add_links").height();
-    },
-    resize: (event, ui) => {
-      const addlinksNewHeight = Math.max(addlinksHeight + ui.size.height - ui.originalSize.height, addlinksMinHeight);
-      $("#add_links").height(addlinksNewHeight);
-    }
-  }).draggable({ scroll: false });
-
-  $('input[type=password].reveal-pass').map(function() {
-    const reveal_id = Date.now();
-
-    $(this).wrap("<div class=\"form-group has-feedback\"></div>");
-    const button = $("<button class='close form-control-feedback hidden' type='button' style='pointer-events: auto;'><span class='glyphicon glyphicon-eye-close' style='font-size: 11px;'></span></button>");
-    button.attr("data-reveal-pass-id", reveal_id);
-    $(this).after(button);
-    $(this).attr("data-reveal-pass-id", reveal_id);
-    $(this).on('input', function() {
-      const visible = Boolean($(this).val());
-      $(this).siblings(`button[data-reveal-pass-id="${$(this).attr("data-reveal-pass-id")}"]`).toggleClass('hidden', !visible);
-    });
-    button.mousedown(event => {
-      event.preventDefault();
-      button.find("span.glyphicon").removeClass('glyphicon-eye-close').addClass('glyphicon-eye-open');
-      $(this).siblings(`input[data-reveal-pass-id="${$(this).attr("data-reveal-pass-id")}"]`).attr('type', 'text');
-    }).mouseup(event => {
-      event.preventDefault();
-      button.find("span.glyphicon").removeClass('glyphicon-eye-open').addClass('glyphicon-eye-close');
-      $(this).siblings(`input[data-reveal-pass-id="${$(this).attr("data-reveal-pass-id")}"]`).attr('type', 'password');
-    }).click(event => {
-      event.preventDefault();
-    });
-  });
-
-  $('.btn, input[type="radio"]').focus(function() { this.blur(); });
-
-  $("#add_form").submit(function(event) {
-    event.preventDefault();
-    const formData = new FormData(this);
-    const $this = $(this);
-    if ($this.find("#add_name").val() === "" && $this.find("#add_file").val() === "") {
-      alert("{{_('Please Enter a package name.')}}");
-      return false;
-    } else {
-      $.ajax({
-        url: "{{url_for('json.add_package')}}",
-        method: "POST",
-        data: formData,
-        processData: false,
-        contentType: false,
-        success: () => {
-          const queue = $this.find("#add_dest").val() === "1" ? "queue" : "collector";
-          const re = new RegExp(`/${queue}/?$`, "i");
-          if (window.location.toString().match(re)) {
-            window.location.reload();
-          }
-        },
-        error: () => {
-          indicateFail("{{_('Error occurred')}}");
-        }
-      });
-      $("#add_box").modal('hide');
-      return false;
-    }
-  });
-
-  $(".action_add").click(() => {
-    $("#add_form").trigger("reset");
-  });
-
-  $("#action_play").click(() => {
-    $.get("{{url_for('api.rpc', func='unpause_server')}}", () => {
-      $.ajax({
-        method: "post",
-        url: "{{url_for('json.status')}}",
-        async: true,
-        timeout: 3000,
-        success: LoadJsonToContent
-      });
-    });
-  });
-
-  $("#action_cancel").click(() => {
-    uiHandler.yesNoDialog("{{_('Are you sure you want to abort all downloads?')}}", (answer) => {
-      if (answer) {
-        $.get("{{url_for('api.rpc', func='stop_all_downloads')}}");
-      }
-    });
-  });
-
-  $("#action_stop").click(() => {
-    $.get("{{url_for('api.rpc', func='pause_server')}}", () => {
-      $.ajax({
-        method: "post",
-        url: "{{url_for('json.status')}}",
-        async: true,
-        timeout: 3000,
-        success: LoadJsonToContent
-      });
-    });
-  });
-
-  $("#toggle_queue").click(() => {
-    $.get("{{url_for('api.rpc', func='toggle_pause')}}", () => {
-      $.ajax({
-        method: "post",
-        url: "{{url_for('json.status')}}",
-        async: true,
-        timeout: 3000,
-        success: LoadJsonToContent
-      });
-    });
-  });
-
-  $("#toggle_proxy").click(() => {
-    $.get("{{url_for('api.rpc', func='toggle_proxy')}}", () => {
-      $.ajax({
-        method: "post",
-        url: "{{url_for('json.status')}}",
-        async: true,
-        timeout: 3000,
-        success: LoadJsonToContent
-      });
-    });
-  });
-
-  $("#toggle_reconnect").click(() => {
-    $.get("{{url_for('api.rpc', func='toggle_reconnect')}}", () => {
-      $.ajax({
-        method: "post",
-        url: "{{url_for('json.status')}}",
-        async: true,
-        timeout: 3000,
-        success: LoadJsonToContent
-      });
-    });
-  });
-
-  $(".cap_info").click(() => {
-    captchaHandler.loadCaptcha("get", "");
-  });
-
-  $("#cap_submit").click(() => {
-    captchaHandler.submitCaptcha();
-  });
-
-  $("#cap_box #cap_positional").click(captchaHandler.submitPositionalCaptcha);
+  uiHandler.initUI()
 
   if (thisScript.getAttribute('nopoll') !== "1") {
     $.ajax({
