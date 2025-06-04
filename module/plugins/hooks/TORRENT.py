@@ -12,7 +12,7 @@ class TORRENT(Addon):
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", False),
-                  ("torrent_plugin", "None;c:AlldebridComTorrent;c:DebridlinkFrTorrent;h:LinksnappyComTorrent;c:RealdebridComTorrent;h:ZbigzCom", "Associate torrents / magnets with plugin", "None")]
+                  ("torrent_plugin", "None;c:AlldebridComTorrent;c:DebridlinkFrTorrent;h:LinksnappyComTorrent;c:RealdebridComTorrent;c:TorboxAppTorrent;h:ZbigzCom", "Associate torrents / magnets with plugin", "None")]
 
     __description__ = """Associate torrents / magnets with plugin"""
     __license__ = "GPLv3"

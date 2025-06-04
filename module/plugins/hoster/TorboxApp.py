@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 
+import re
 import time
 
 import pycurl
+import urlparse
 
 from module.network.HTTPRequest import BadHeader
 
@@ -13,10 +15,10 @@ from ..internal.MultiHoster import MultiHoster
 class TorboxApp(MultiHoster):
     __name__ = "TorboxApp"
     __type__ = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
-    __pattern__ = r"^unmatchable$"
+    __pattern__ = r"https://store-\d+\.wnam\.tb-cdn\.io/dld/.*|(?P<APIURL>https://api\.torbox\.app/v1/api/(?P<ENDPOINT>webdl|torrents)/requestdl\?.*redirect=true.*)"
     __config__ = [
         ("activated", "bool", "Activated", True),
         ("use_premium", "bool", "Use premium account if available", True),
@@ -55,6 +57,37 @@ class TorboxApp(MultiHoster):
 
     def setup(self):
         self.chunk_limit = 16
+
+    def grab_info(self):
+        super(TorboxApp, self).grab_info()
+        m = re.match(self.__pattern__, self.pyfile.url)
+        if m is not None:
+            api_url = m.group("APIURL")
+            if api_url is not None:
+                url_p = urlparse.urlparse(api_url)
+                parse_qs = urlparse.parse_qs(url_p.query)
+                endpoint = m.group("ENDPOINT")
+                api_data = self.api_request("%s/mylist" % endpoint,
+                                            api_key=parse_qs["token"][0],
+                                            get={
+                                                "id": parse_qs["web_id" if endpoint == "webdl" else "torrent_id"][0]
+                                            })
+
+                if api_data.get("success", False) and api_data.get("data"):
+                    file_id = int(parse_qs["file_id"][0])
+                    for file in api_data["data"]["files"]:
+                        if file["id"] == file_id:
+                            self.pyfile.name = file["short_name"]
+                            self.pyfile.size = file["size"]
+                            break
+
+    def handle_direct(self, pyfile):
+        link = self.isresource(pyfile.url)
+        if link:
+            self.link = pyfile.url
+
+        else:
+            self.link = None
 
     def handle_premium(self, pyfile):
         api_key = self.account.info["login"]["password"]
@@ -102,7 +135,7 @@ class TorboxApp(MultiHoster):
                 if file_name:
                     pyfile.name = file_name
 
-                progress = api_data["data"].get("progress", 0) * 100
+                progress = int(api_data["data"].get("progress", 0) * 100)
                 pyfile.set_progress(progress)
                 if api_data["data"].get("download_state") == "completed":
                     break
