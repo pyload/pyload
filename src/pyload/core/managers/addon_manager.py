@@ -204,7 +204,10 @@ class AddonManager:
         self.pyload.log.debug(f"Removed callback {res}")
 
         # remove rpc calls
-        del self.rpc_methods[plugin_name]
+        try:
+            del self.rpc_methods[plugin_name]
+        except KeyError:
+            pass
 
         self.plugins.remove(addon)
         del self.plugin_map[addon.__name__]
