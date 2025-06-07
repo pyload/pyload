@@ -33,6 +33,12 @@ jobs:
         with:
           ref: ${{ github.ref_name }}
 
+      - name: Verify checked out commit
+        run: |
+          echo "Checked out commit: $(git rev-parse HEAD)"
+          echo "GitHub SHA: ${{ github.sha }}"
+          echo "Ref used: ${{ github.ref_name }}"
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:

@@ -27,7 +27,7 @@ class SettingsUI {
 
   initEventListeners() {
     $("#quit-pyload").click(() => {
-      yesNoDialog("{{_('You are really sure you want to quit pyLoad?')}}", (answer) => {
+      uiHandler.yesNoDialog("{{_('You are really sure you want to quit pyLoad?')}}", (answer) => {
         if (answer) {
           this.quitPyload();
         }
@@ -35,7 +35,7 @@ class SettingsUI {
     });
 
     $("#restart-pyload").click(() =>{
-      yesNoDialog("{{_('Are you sure you want to restart pyLoad?')}}", (answer) => {
+      uiHandler.yesNoDialog("{{_('Are you sure you want to restart pyLoad?')}}", (answer) => {
         if (answer) {
           this.restartPyload();
         }
@@ -71,7 +71,7 @@ class SettingsUI {
         }, 10000);
       })
       .fail(() => {
-        indicateFail("{{_('Error occurred')}}");
+        uiHandler.indicateFail("{{_('Error occurred')}}");
       });
   };
 
@@ -83,7 +83,7 @@ class SettingsUI {
         $('#shutdown_msg').removeClass("hidden");
       })
       .fail(() => {
-        indicateFail("{{_('Error occurred')}}");
+        uiHandler.indicateFail("{{_('Error occurred')}}");
       });
   };
 
@@ -98,10 +98,10 @@ class SettingsUI {
           data: $("#password_form").serialize(),
           async: true,
           success: () => {
-            indicateSuccess("{{_('Password successfully changed')}}");
+            uiHandler.indicateSuccess("{{_('Password successfully changed')}}");
           }
         }).fail(() => {
-          indicateFail("{{_('Error occurred')}}");
+          uiHandler.indicateFail("{{_('Error occurred')}}");
         });
         $('#password_box').modal('hide');
       } else {
@@ -170,7 +170,7 @@ class SettingsUI {
               window.location.assign(window.location.href);
             }
           }).fail(() => {
-            indicateFail("{{_('Error occurred')}}");
+            uiHandler.indicateFail("{{_('Error occurred')}}");
           });
           $('#user_box').modal('hide');
         } else {
@@ -193,7 +193,7 @@ class SettingsUI {
     const search = (query) => {
       let results = [];
       if (query) {
-        results = pluginList.filter(p => p[1].toLowerCase().startsWith(query.toLowerCase()));
+        results = pluginList.filter(p => p[1].toLowerCase().includes(query.toLowerCase()));
       } else {
         results = pluginList;
       }
@@ -250,10 +250,10 @@ class SettingsUI {
       data: $(`#${category}_form`).serialize(),
       async: true,
       success: () => {
-        indicateSuccess("{{_('Settings saved')}}");
+        uiHandler.indicateSuccess("{{_('Settings saved')}}");
       }
     }).fail(() => {
-      indicateFail("{{_('Error occurred')}}");
+      uiHandler.indicateFail("{{_('Error occurred')}}");
     });
     event.stopPropagation();
     event.preventDefault();
@@ -271,13 +271,13 @@ class SettingsUI {
         window.location.reload();
       }
     }).fail(() => {
-      indicateFail("{{_('Error occurred')}}");
+      uiHandler.indicateFail("{{_('Error occurred')}}");
     });
     event.preventDefault();
   }
 
   submitUsers(event) {
-    indicateLoad();
+    uiHandler.indicateLoad();
     $.ajax({
       method: "POST",
       url: "{{url_for('json.update_users')}}",
@@ -288,13 +288,13 @@ class SettingsUI {
         window.location.reload();
       }
     }).fail(() => {
-      indicateFail("{{_('Error occurred')}}");
+      uiHandler.indicateFail("{{_('Error occurred')}}");
     });
     event.preventDefault();
   }
 
   submitAccounts(event) {
-    indicateLoad();
+    uiHandler.indicateLoad();
     $.ajax({
       method: "POST",
       url: "{{url_for('json.update_accounts')}}",
@@ -305,7 +305,7 @@ class SettingsUI {
         window.location.reload();
       }
     }).fail(() => {
-      indicateFail("{{_('Error occurred')}}");
+      uiHandler.indicateFail("{{_('Error occurred')}}");
     });
     event.preventDefault();
   }

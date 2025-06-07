@@ -12,7 +12,7 @@ class TORRENT(BaseAddon):
 
     __config__ = [("enabled", "bool", "Activated", True),
                   ("torrent_plugin",
-                   "None;c:AlldebridComTorrent;c:DebridlinkFrTorrent;h:LinksnappyComTorrent;c:RealdebridComTorrent;h:ZbigzCom",
+                   "None;c:AlldebridComTorrent;c:DebridlinkFrTorrent;h:LinksnappyComTorrent;c:RealdebridComTorrent;c:TorboxAppTorrent;h:ZbigzCom",
                    "Associate torrents / magnets with plugin", "None")]
 
     __description__ = """Associate torrents / magnets with plugin"""
