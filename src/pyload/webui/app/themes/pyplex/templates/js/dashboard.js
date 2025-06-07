@@ -2,90 +2,16 @@
 
 $(() => new EntryManager());
 
-const labelcolor = (color) => {
-  switch (color) {
-    case 5:
-      return 'label-warning';
-    case 7:
-      return 'label-info';
-    case 12:
-      return 'label-success';
-    case 13:
-      return 'label-primary';
-    default:
-      return 'label-default';
-  }
+const labelColor = (color) => {
+  const colorMap = {
+    5: 'label-warning',
+    7: 'label-info',
+    12: 'label-success',
+    13: 'label-primary'
+  };
+
+  return colorMap[color] || 'label-default';
 };
-
-class EntryManager {
-  constructor() {
-    this.ids = [];
-    this.entries = [];
-    this.container = $('#links_active');
-    this.initialize();
-  }
-
-  initialize() {
-    this.fetchLinks();
-    setInterval(() => this.fetchLinks(), 2500);
-    this.ids = [{% for link in content %}
-    {{link.id}}{% if not forloop.last %},{% endif %}
-    {% endfor %}];
-    this.parseFromContent();
-  }
-
-  fetchLinks() {
-    $.ajax({
-      method: "post",
-      url: "{{url_for('json.links')}}",
-      async: true,
-      timeout: 30000,
-      success: (data) => this.update(data),
-      error: () => this.update({ ids: [], links: [] })
-    });
-  }
-
-  parseFromContent() {
-    this.ids.forEach(id => {
-      const entry = new LinkEntry(id);
-      entry.parse();
-      this.entries.push(entry);
-    });
-  }
-
-  update(data) {
-    try {
-      const ids = this.entries.map(item => item.fid);
-      const dataids = data.links.map(item => item.fid);
-      const temp = ids.filter(id => !dataids.includes(id));
-
-      temp.forEach(elementid => {
-        const index = ids.indexOf(elementid);
-        this.entries[index].remove();
-        this.entries = this.entries.filter(item => item.fid !== elementid);
-        this.ids.splice(this.ids.indexOf(elementid), 1);
-      });
-
-      data.links.forEach(link => {
-        const index = this.ids.indexOf(link.fid);
-        if (index > -1) {
-          this.entries[index].update(link);
-        } else {
-          const entry = new LinkEntry(link.fid);
-          entry.insert(link);
-          this.entries.push(entry);
-          this.ids.push(link.fid);
-          this.container.append(entry.elements.tr);
-          this.container.append(entry.elements.pgbTr);
-          $(entry.fade).fadeIn('fast');
-          $(entry.fadeBar).fadeIn('fast');
-        }
-      });
-    } catch (e) {
-      alert(e);
-    }
-  }
-}
 
 class LinkEntry {
   constructor(id) {
@@ -113,7 +39,7 @@ class LinkEntry {
     try {
       const tr = $('<tr>').css('display', 'none');
       const status = $('<td>').html('&nbsp;').addClass('hidden-xs');
-      const statusspan = $('<span>').html(item.statusmsg).addClass(`label ${labelcolor(item.status)} lbl_status`);
+      const statusspan = $('<span>').html(item.statusmsg).addClass(`label ${labelColor(item.status)} lbl_status`);
       const name = $('<td>').html(item.name);
       const hoster = $('<td>').html(item.plugin);
       const info = $('<td>').html(item.info);
@@ -146,8 +72,8 @@ class LinkEntry {
       const child = $('<td>').append(this.elements.percent, this.elements.remove);
       this.elements.tr.append(child);
 
-      const secondchild = $('<td>').attr('colspan', 6).append(this.elements.progress);
-      this.elements.pgbTr.append(secondchild);
+      const secondChild = $('<td>').attr('colspan', 6).append(this.elements.progress);
+      this.elements.pgbTr.append(secondChild);
 
       this.initEffects();
     } catch (e) {
@@ -175,7 +101,7 @@ class LinkEntry {
     $(this.elements.info).text(item.info);
     $(this.elements.bleft).text(item.format_size);
     $(this.elements.percent).text(`${item.percent}% / ${humanFileSize(item.size - item.bleft)}`);
-    $(this.elements.statusspan).removeClass().addClass(`label ${labelcolor(item.status)} lbl_status`);
+    $(this.elements.statusspan).removeClass().addClass(`label ${labelColor(item.status)} lbl_status`);
     $(this.elements.pgb).css('width', `${item.percent}%`).animate({ duration: 'slow' });
     $(this.elements.pgb).html(`${item.percent}%`);
   }
@@ -187,6 +113,74 @@ class LinkEntry {
     $(this.fadeBar).fadeOut("slow", function() {
       this.remove();
     });
+  }
+}
+
+class EntryManager {
+  constructor() {
+    this.entries = new Map();
+    this.container = $('#links_active');
+    this.initialize();
+  }
+
+  initialize() {
+    this.fetchLinks();
+    setInterval(() => this.fetchLinks(), 2500);
+    {% for link in content %}
+    this.entries.set({{link.id}}, new LinkEntry({{link.id}}));
+    {% endfor %}
+    this.parseFromContent();
+  }
+
+  fetchLinks() {
+    $.ajax({
+      method: "post",
+      url: "{{url_for('json.links')}}",
+      async: true,
+      timeout: 30000,
+      success: (data) => this.update(data),
+      error: () => this.update({ ids: [], links: [] })
+    });
+  }
+
+  parseFromContent() {
+    this.entries.forEach((entry, id) => {
+      entry.parse();
+    });
+  }
+
+  update(data) {
+    try {
+      const dataIds = new Set(data.links.map(item => item.fid));
+      const removedIds = [...this.entries.keys()].filter(id => !dataIds.has(id));
+
+      removedIds.forEach(entryId => {
+        const entry = this.entries.get(entryId);
+        if (entry) {
+          entry.remove();
+          this.entries.delete(entryId);
+        }
+      });
+
+      data.links.forEach(link => {
+        if (this.entries.has(link.fid)) {
+          const entry = this.entries.get(link.fid);
+          if (entry) {
+            entry.update(link);
+          }
+        } else {
+          const entry = new LinkEntry(link.fid);
+          entry.insert(link);
+          this.entries.set(link.fid, entry);
+          this.container.append(entry.elements.tr);
+          this.container.append(entry.elements.pgbTr);
+          $(entry.fade).fadeIn('fast');
+          $(entry.fadeBar).fadeIn('fast');
+        }
+      });
+    } catch (e) {
+      alert(e);
+    }
   }
 }
 

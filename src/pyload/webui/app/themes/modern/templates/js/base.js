@@ -318,7 +318,7 @@ class UIHandler {
           url: "{{url_for('json.status')}}",
           async: true,
           timeout: 3000,
-          success: LoadJsonToContent
+          success: loadJsonToContent
         });
       });
     });
@@ -338,7 +338,7 @@ class UIHandler {
           url: "{{url_for('json.status')}}",
           async: true,
           timeout: 3000,
-          success: LoadJsonToContent
+          success: loadJsonToContent
         });
       });
     });
@@ -350,7 +350,7 @@ class UIHandler {
           url: "{{url_for('json.status')}}",
           async: true,
           timeout: 3000,
-          success: LoadJsonToContent
+          success: loadJsonToContent
         });
       });
     });
@@ -362,7 +362,7 @@ class UIHandler {
           url: "{{url_for('json.status')}}",
           async: true,
           timeout: 3000,
-          success: LoadJsonToContent
+          success: loadJsonToContent
         });
       });
     });
@@ -374,7 +374,7 @@ class UIHandler {
           url: "{{url_for('json.status')}}",
           async: true,
           timeout: 3000,
-          success: LoadJsonToContent
+          success: loadJsonToContent
         });
       });
     });
@@ -501,7 +501,7 @@ $(() => {
       url: "{{url_for('json.status')}}",
       async: true,
       timeout: 3000,
-      success: LoadJsonToContent
+      success: loadJsonToContent
     });
 
     setInterval(() => {
@@ -510,19 +510,19 @@ $(() => {
         url: "{{url_for('json.status')}}",
         async: true,
         timeout: 3000,
-        success: LoadJsonToContent
+        success: loadJsonToContent
       });
     }, 4000);
   }
 });
 
-const LoadJsonToContent = (a) => {
-  $("#speed").text(`${humanFileSize(a.speed)}/s`);
-  $("#actives").text(a.active);
-  $("#actives_from").text(a.queue);
-  $("#actives_total").text(a.total);
+const loadJsonToContent = (message) => {
+  $("#speed").text(`${humanFileSize(message.speed)}/s`);
+  $("#actives").text(message.active);
+  $("#actives_from").text(message.queue);
+  $("#actives_total").text(message.total);
   const $cap_info = $(".cap_info");
-  if (a.captcha) {
+  if (message.captcha) {
     const notificationVisible = ($cap_info.css("display") !== "none");
     if (!notificationVisible) {
       $cap_info.css('display', 'inline');
@@ -543,9 +543,9 @@ const LoadJsonToContent = (a) => {
   } else {
     $cap_info.css('display', 'none');
   }
-  $("#time").text(a.download ? " {{_('on')}}" : " {{_('off')}}").css('background-color', a.download ? '#5cb85c' : "#d9534f");
-  $("#proxy").text(a.proxy ? " {{_('on')}}" : " {{_('off')}}").css('background-color', a.proxy ? "#5cb85c" : "#d9534f");
-  $("#reconnect").text(a.reconnect ? " {{_('on')}}" : " {{_('off')}}").css('background-color', a.reconnect ? "#5cb85c" : "#d9534f");
+  $("#time").text(message.download ? " {{_('on')}}" : " {{_('off')}}").css('background-color', message.download ? '#5cb85c' : "#d9534f");
+  $("#proxy").text(message.proxy ? " {{_('on')}}" : " {{_('off')}}").css('background-color', message.proxy ? "#5cb85c" : "#d9534f");
+  $("#reconnect").text(message.reconnect ? " {{_('on')}}" : " {{_('off')}}").css('background-color', message.reconnect ? "#5cb85c" : "#d9534f");
   return null;
 };
 

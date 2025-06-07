@@ -318,7 +318,7 @@ class UIHandler {
           url: "{{url_for('json.status')}}",
           async: true,
           timeout: 3000,
-          success: LoadJsonToContent
+          success: loadJsonToContent
         });
       });
     });
@@ -338,7 +338,7 @@ class UIHandler {
           url: "{{url_for('json.status')}}",
           async: true,
           timeout: 3000,
-          success: LoadJsonToContent
+          success: loadJsonToContent
         });
       });
     });
@@ -350,7 +350,7 @@ class UIHandler {
           url: "{{url_for('json.status')}}",
           async: true,
           timeout: 3000,
-          success: LoadJsonToContent
+          success: loadJsonToContent
         });
       });
     });
@@ -362,7 +362,7 @@ class UIHandler {
           url: "{{url_for('json.status')}}",
           async: true,
           timeout: 3000,
-          success: LoadJsonToContent
+          success: loadJsonToContent
         });
       });
     });
@@ -374,7 +374,7 @@ class UIHandler {
           url: "{{url_for('json.status')}}",
           async: true,
           timeout: 3000,
-          success: LoadJsonToContent
+          success: loadJsonToContent
         });
       });
     });
@@ -501,7 +501,7 @@ $(() => {
       url: "{{url_for('json.status')}}",
       async: true,
       timeout: 3000,
-      success: LoadJsonToContent
+      success: loadJsonToContent
     });
 
     setInterval(() => {
@@ -510,13 +510,13 @@ $(() => {
         url: "{{url_for('json.status')}}",
         async: true,
         timeout: 3000,
-        success: LoadJsonToContent
+        success: loadJsonToContent
       });
     }, 4000);
   }
 });
 
-const LoadJsonToContent = (a) => {
+const loadJsonToContent = (a) => {
   $("#speed").text(`${humanFileSize(a.speed)}/s`);
   $("#actives").text(a.active);
   $("#actives_from").text(a.queue);
