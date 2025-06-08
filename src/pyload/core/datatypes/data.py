@@ -64,7 +64,7 @@ class DownloadInfo(BaseModel):
     status: DownloadStatus
     statusmsg: str
     format_wait: str
-    wait_until: int
+    wait_until: float = Field(json_schema_extra={"format": "float"})
     package_id: int
     package_name: str
     plugin: str
