@@ -1,22 +1,441 @@
 {% autoescape true %}
+class NotificationHandler {
+  constructor() {
+    this.enabled = false;
+    this.checkPermission();
+  }
 
-let desktopNotifications;
-let interactiveCaptchaHandlerInstance = null;
+  checkPermission() {
+    if ("Notification" in window) {
+      if (Notification.permission === 'granted') {
+        this.enabled = true;
+      } else if (Notification.permission !== 'denied') {
+        Notification.requestPermission().then(result => {
+          this.enabled = (result === 'granted');
+        });
+      }
+    }
+  }
+
+  showNotification(title, options, callback) {
+    if (this.enabled) {
+      const notification = new Notification(title, options);
+      if (callback) {
+        notification.onclick = callback;
+      }
+      setTimeout(() => {
+        notification.close();
+      }, options.duration || 8000);
+      return notification;
+    }
+    return null;
+  }
+}
+
+let notificationHandler = new NotificationHandler();
+
+class CaptchaHandler {
+  constructor() {
+    this._interactiveCaptchaActive = false;
+  }
+
+  iframeLoaded = (event) => {
+    const interactionData = event.data;
+    if (this._interactiveCaptchaActive) {
+      const requestMessage = {
+        actionCode: this.actionCodes.activate,
+        params: interactionData.params
+      };
+      $("#cap_interactive_iframe").get(0).contentWindow.postMessage(JSON.stringify(requestMessage), "*");
+    }
+  }
+
+  windowEventListener = (event) => {
+    let requestMessage;
+    try {
+      requestMessage = JSON.parse(event.originalEvent.data);
+    } catch (e) {
+      if (e instanceof SyntaxError) {
+        return;
+      } else {
+        console.error(e);
+      }
+    }
+    const interactionData = event.data;
+    if (requestMessage.actionCode === this.actionCodes.submitResponse) {
+      this.submitInteractiveCaptcha(requestMessage.params.response);
+      this.clearEventlisteners();
+    } else if (requestMessage.actionCode === this.actionCodes.activated) {
+      $(`#${interactionData.infoId}`).css("display", "none");
+      $("#cap_interactive_iframe").css("display", "block");
+    } else if (requestMessage.actionCode === this.actionCodes.size) {
+      const $iframe = $("#cap_interactive_iframe");
+      const width = requestMessage.params.rect.right - requestMessage.params.rect.left;
+      const height = requestMessage.params.rect.bottom - requestMessage.params.rect.top;
+      $iframe.css({ top: -requestMessage.params.rect.top + "px", left: -requestMessage.params.rect.left + "px" })
+        .parent().width(width).height(height);
+    }
+  }
+
+  clearEventlisteners = () => {
+    this._interactiveCaptchaActive = false;
+    $("#cap_interactive_iframe").off("load", this.iframeLoaded);
+    $(window).off('message', this.windowEventListener);
+  }
+
+  startInteraction = (interactionData) => {
+    $(`#${interactionData.infoId}`).css("display", "block");
+    $("#cap_interactive_iframe").on("load", interactionData, this.iframeLoaded);
+    $(window).on('message', interactionData, this.windowEventListener);
+    if (interactionData.params.url !== undefined && interactionData.params.url.indexOf("http") === 0) {
+      $("#cap_interactive").css("display", "block");
+      this._interactiveCaptchaActive = true;
+      $("#cap_interactive_iframe").attr("src", interactionData.params.url);
+    }
+  }
+
+  actionCodes = {
+    activate: "pyloadActivateInteractive",
+    activated: "pyloadActivatedInteractive",
+    size: "pyloadIframeSize",
+    submitResponse: "pyloadSubmitResponse"
+  }
+
+  setCaptcha = (captchaData) => {
+    this.captchaResetDefault();
+
+    const params = JSON.parse(captchaData.params);
+    $("#cap_id").val(captchaData.id);
+    if (captchaData.result_type === "textual") {
+      $("#cap_textual_img").attr("src", params.src);
+      $("#cap_submit").css("display", "inline");
+      $("#cap_box #cap_title").text("");
+      $("#cap_textual").css("display", "block");
+      $("#cap_result").focus();
+    } else if (captchaData.result_type === "positional") {
+      $("#cap_positional_img").attr("src", params.src);
+      $("#cap_box #cap_title").text("{{_('Please click on the right captcha position.')}}");
+      $("#cap_positional").css("display", "block");
+    } else if (captchaData.result_type === "interactive" || captchaData.result_type === "invisible") {
+      $("#cap_box #cap_title").text("");
+      const infoId = captchaData.result_type === "interactive" ? "cap_interactive_loading" : "cap_invisible_loading"
+      const interactionData = {
+        infoId: infoId,
+        params: params
+      }
+      this.startInteraction(interactionData);
+    }
+    return true;
+  }
+
+  loadCaptcha = (method, data) => {
+    $.ajax({
+      url: "{{url_for('json.set_captcha')}}",
+      async: true,
+      method: method,
+      data: data,
+      success: (response) => (response.captcha ? this.setCaptcha(response) : this.clearCaptcha())
+    });
+  }
+
+  captchaResetDefault = () => {
+    $("#cap_textual").css("display", "none");
+    $("#cap_textual_img").attr("src", "");
+    $("#cap_positional").css("display", "none");
+    $("#cap_positional_img").attr("src", "");
+    $("#cap_interactive").css("display", "none");
+    $("#cap_submit").css("display", "none");
+    $("#cap_interactive_iframe").attr("src", "").css({ display: "none", top: "", left: "" })
+      .parent().css({ height: "", width: "" });
+    $("#cap_interactive_loading").css("display", "none");
+    $("#cap_invisible_loading").css("display", "none");
+    this.clearEventlisteners();
+    return true;
+  }
+
+  clearCaptcha = () => {
+    this.captchaResetDefault();
+    $('#cap_box').modal('hide');
+    return true;
+  }
+
+  submitCaptcha = () => {
+    const $cap_result = $("#cap_result");
+    this.loadCaptcha("post", `cap_id=${$("#cap_id").val()}&cap_result=${$cap_result.val()}`);
+    $cap_result.val("");
+    return false;
+  }
+
+  submitPositionalCaptcha = (event) => {
+    const x = (event.pageX - $(event.target).offset().left).toFixed(0);
+    const y = (event.pageY - $(event.target).offset().top).toFixed(0);
+    $("#cap_box #cap_result").val(`${x} , ${y}`);
+    return this.submitCaptcha();
+  }
+
+  submitInteractiveCaptcha = (data) => {
+    if (data.constructor === {}.constructor)
+      data = JSON.stringify(data);
+    else if (data.constructor !== "".constructor)
+      return;
+
+    $("#cap_box #cap_result").val(data);
+    return this.submitCaptcha();
+  }
+}
+
+var captchaHandler = new CaptchaHandler();
 const thisScript = document.currentScript;
 
-const indicateLoad = () => $(".load-indicator").css('opacity', 1);
+class UIHandler {
+  constructor() {
+    this.topbuttonVisible = $(window).scrollTop() > 100;
+  }
 
-const indicateFinish = () => $(".load-indicator").css('opacity', 0);
+  initUI() {
+    const $goto_top = $('#goto_top');
+    const $stickyNav = $("#sticky-nav");
+    const navHeight = $('#head-panel').height();
 
-const indicateSuccess = (message = "{{_('Success')}}") => {
-  indicateFinish();
-  mdtoast(`${message}.`, { position: "bottom center", type: "success", duration: 3000 });
-};
+    $goto_top.toggleClass('hidden', !this.topbuttonVisible).affix({ offset: { top: 100 } });
+    const navCss = this.stickynavlCss($(window).scrollTop(), navHeight);
+    const modalTop = navHeight + parseFloat((navCss.top || `${-navHeight}`.replace('px', ''))) + 5;
+    $(".modal .modal-dialog").css({top: `${modalTop}px`});
+    $stickyNav.css(navCss);
 
-const indicateFail = (message = "{{_('Failed')}}") => {
-  indicateFinish();
-  mdtoast(`${message}.`, { position: "bottom center", type: "error", duration: 4000 });
-};
+    const addlinksMinHeight = getScrollBarHeight() + Math.round(parseFloat($("#add_links").css("line-height").replace('px', '')));
+    let addlinksHeight;
+    $("#modal-content").resizable({
+      minHeight: 520 + addlinksMinHeight,
+      minWidth: 310,
+      start: (event, ui) => {
+        addlinksHeight = $("#add_links").height();
+      },
+      resize: (event, ui) => {
+        const addlinksNewHeight = Math.max(addlinksHeight + ui.size.height - ui.originalSize.height, addlinksMinHeight);
+        $("#add_links").height(addlinksNewHeight);
+      }
+    }).draggable({ scroll: false });
+
+    $(window).scroll(() => this.handleScroll($goto_top, $stickyNav, navHeight));
+    $goto_top.click(() => this.scrollToTop());
+    this.initPasswordReveal();
+    this.initButtonHandlers();
+  }
+
+  handleScroll($goto_top, $stickyNav, navHeight) {
+    const scrollTop = $(window).scrollTop();
+    const visible = Boolean(scrollTop > 100);
+
+    if (this.topbuttonVisible !== visible) {
+      $goto_top.toggleClass('hidden', !visible);
+      this.topbuttonVisible = visible;
+    }
+    const navCss = this.stickynavlCss(scrollTop, navHeight);
+    const modalTop = navHeight + parseFloat((navCss.top || `${-navHeight}`).replace('px', '')) + 5;
+    $(".modal .modal-dialog").css({top: `${modalTop}px`});
+    $stickyNav.css(navCss);
+  }
+
+  stickynavlCss(scrollTop, navHeight) {
+    if (scrollTop <= navHeight) {
+      return { "display": "none" };
+    } else if (scrollTop > navHeight && scrollTop < navHeight * 2) {
+      return { "display": "block", "top": `${scrollTop - navHeight * 2}px` };
+    } else {
+      return { "display": "block", "top": "0" };
+    }
+  }
+
+  initPasswordReveal() {
+    $('input[type=password].reveal-pass').map(function() {
+      const reveal_id = Date.now();
+
+      $(this).wrap("<div class=\"form-group has-feedback\"></div>");
+      const button = $("<button class='close form-control-feedback hidden' type='button' style='pointer-events: auto;'><span class='glyphicon glyphicon-eye-close' style='font-size: 11px;'></span></button>");
+      button.attr("data-reveal-pass-id", reveal_id);
+      $(this).after(button);
+      $(this).attr("data-reveal-pass-id", reveal_id);
+      $(this).on('input', function() {
+        const visible = Boolean($(this).val());
+        $(this).siblings(`button[data-reveal-pass-id="${$(this).attr("data-reveal-pass-id")}"]`).toggleClass('hidden', !visible);
+      });
+      button.mousedown(event => {
+        event.preventDefault();
+        button.find("span.glyphicon").removeClass('glyphicon-eye-close').addClass('glyphicon-eye-open');
+        $(this).siblings(`input[data-reveal-pass-id="${$(this).attr("data-reveal-pass-id")}"]`).attr('type', 'text');
+      }).mouseup(event => {
+        event.preventDefault();
+        button.find("span.glyphicon").removeClass('glyphicon-eye-open').addClass('glyphicon-eye-close');
+        $(this).siblings(`input[data-reveal-pass-id="${$(this).attr("data-reveal-pass-id")}"]`).attr('type', 'password');
+      }).click(event => {
+        event.preventDefault();
+      });
+    });
+  }
+
+  initButtonHandlers() {
+    $('.btn, input[type="radio"]').focus(function() { this.blur(); });
+
+    $("#add_form").submit(function(event) {
+      event.preventDefault();
+      const formData = new FormData(this);
+      const $this = $(this);
+      if ($this.find("#add_name").val() === "" && $this.find("#add_file").val() === "") {
+        alert("{{_('Please Enter a package name.')}}");
+        return false;
+      } else {
+        $.ajax({
+          url: "{{url_for('json.add_package')}}",
+          method: "POST",
+          data: formData,
+          processData: false,
+          contentType: false,
+          success: () => {
+            const queue = $this.find("#add_dest").val() === "1" ? "queue" : "collector";
+            const re = new RegExp(`/${queue}/?$`, "i");
+            if (window.location.toString().match(re)) {
+              window.location.reload();
+            }
+          },
+          error: () => {
+            indicateFail("{{_('Error occurred')}}");
+          }
+        });
+        $("#add_box").modal('hide');
+        return false;
+      }
+    });
+
+    $(".action_add").click(() => {
+      $("#add_form").trigger("reset");
+    });
+
+    $("#action_play").click(() => {
+      $.get("{{url_for('api.rpc', func='unpause_server')}}", () => {
+        $.ajax({
+          method: "post",
+          url: "{{url_for('json.status')}}",
+          async: true,
+          timeout: 3000,
+          success: loadJsonToContent
+        });
+      });
+    });
+
+    $("#action_cancel").click(() => {
+      this.yesNoDialog("{{_('Are you sure you want to abort all downloads?')}}", (answer) => {
+        if (answer) {
+          $.get("{{url_for('api.rpc', func='stop_all_downloads')}}");
+        }
+      });
+    });
+
+    $("#action_stop").click(() => {
+      $.get("{{url_for('api.rpc', func='pause_server')}}", () => {
+        $.ajax({
+          method: "post",
+          url: "{{url_for('json.status')}}",
+          async: true,
+          timeout: 3000,
+          success: loadJsonToContent
+        });
+      });
+    });
+
+    $("#toggle_queue").click(() => {
+      $.get("{{url_for('api.rpc', func='toggle_pause')}}", () => {
+        $.ajax({
+          method: "post",
+          url: "{{url_for('json.status')}}",
+          async: true,
+          timeout: 3000,
+          success: loadJsonToContent
+        });
+      });
+    });
+
+    $("#toggle_proxy").click(() => {
+      $.get("{{url_for('api.rpc', func='toggle_proxy')}}", () => {
+        $.ajax({
+          method: "post",
+          url: "{{url_for('json.status')}}",
+          async: true,
+          timeout: 3000,
+          success: loadJsonToContent
+        });
+      });
+    });
+
+    $("#toggle_reconnect").click(() => {
+      $.get("{{url_for('api.rpc', func='toggle_reconnect')}}", () => {
+        $.ajax({
+          method: "post",
+          url: "{{url_for('json.status')}}",
+          async: true,
+          timeout: 3000,
+          success: loadJsonToContent
+        });
+      });
+    });
+
+    $(".cap_info").click(() => {
+      captchaHandler.loadCaptcha("get", "");
+    });
+
+    $("#cap_submit").click(() => {
+      captchaHandler.submitCaptcha();
+    });
+
+    $("#cap_box #cap_positional").click(captchaHandler.submitPositionalCaptcha);
+  }
+
+  scrollToTop() {
+    $('html,body').animate({ scrollTop: 0 }, 'slow');
+    return false;
+  }
+
+  indicateLoad() {
+    $(".load-indicator").css('opacity', 1);
+  }
+
+  indicateFinish() {
+    $(".load-indicator").css('opacity', 0);
+  }
+
+  indicateSuccess(message = "{{_('Success')}}", duration = 3000) {
+    this.indicateFinish();
+    mdtoast(`${message}.`, { position: "bottom center", type: "success", duration: duration });
+  }
+
+  indicateFail(message = "{{_('Failed')}}", duration = 4000) {
+    this.indicateFinish();
+    mdtoast(`${message}.`, { position: "bottom center", type: "error", duration: duration });
+  }
+
+  indicateInfo(message, duration = 6000) {
+    this.indicateFinish();
+    mdtoast(`${message}.`, { position: "bottom center", type: "info", duration: duration });
+  }
+
+  yesNoDialog(question, callback) {
+    $('#modal_question').text(question);
+
+    $('#okButton').off('click').on('click', () => {
+      $('#yesno_box').modal('hide');
+      callback(true);
+    });
+
+    $('#cancelButton').off('click').on('click', () => {
+      $('#yesno_box').modal('hide');
+      callback(false);
+    });
+
+    $('#yesno_box').modal('show');
+  }
+}
+
+var uiHandler = new UIHandler();
 
 const humanFileSize = (f) => {
   const d = ["B", "KiB", "MiB", "GiB", "TiB", "PiB"];
@@ -40,10 +459,12 @@ const parseUri = () => {
   return $add_links.val(e);
 };
 
-Array.prototype.remove = function(d, c) {
-  const a = this.slice((c || d) + 1 || this.length);
-  this.length = (d < 0 ? this.length + d : d);
-  return this.push(...a);
+Array.prototype.remove = function(from, to) {
+    let left;
+    const rest = this.slice(((to || from) + 1) || this.length);
+    this.length = (left = from < 0) != null ? left : this.length + {from};
+    if (this.length === 0) { return []; }
+    return this.push.apply(this, rest);
 };
 
 const getScrollBarHeight = () => {
@@ -71,223 +492,8 @@ const getScrollBarHeight = () => {
   return (w1 - w2);
 };
 
-const yesNoDialog = (question, callback) => {
-  $('#modal_question').text(question);
-
-  $('#okButton').off('click').on('click', () => {
-    $('#yesno_box').modal('hide');
-    callback(true);
-  });
-
-  $('#cancelButton').off('click').on('click', () => {
-    $('#yesno_box').modal('hide');
-    callback(false);
-  });
-
-  $('#yesno_box').modal('show');
-};
-
 $(() => {
-  const $goto_top = $('#goto_top');
-  const $stickyNav = $("#sticky-nav");
-  let topbuttonVisible = $(window).scrollTop() > 100;
-
-  $goto_top.toggleClass('hidden', !topbuttonVisible).affix({ offset: { top: 100 } });
-
-  const stickynavlCss = (scrollTop) => {
-    const $headPanel = $('#head-panel');
-    const headpanelHeight = $headPanel.height();
-
-    if (scrollTop <= headpanelHeight) {
-      return { "display": "none" };
-    } else if (scrollTop > headpanelHeight && scrollTop < headpanelHeight * 2) {
-      return { "display": "block", "top": `${scrollTop - headpanelHeight * 2}px` };
-    } else {
-      return { "display": "block", "top": "0" };
-    }
-  };
-
-  $stickyNav.css(stickynavlCss($(window).scrollTop()));
-
-  $(window).scroll(() => {
-    const scrollTop = $(this).scrollTop();
-    const visible = Boolean(scrollTop > 100);
-
-    if (topbuttonVisible !== visible) {
-      $goto_top.toggleClass('hidden', !visible);
-      topbuttonVisible = visible;
-    }
-    $stickyNav.css(stickynavlCss(scrollTop));
-  });
-
-  $goto_top.click(() => {
-    $('html,body').animate({ scrollTop: 0 }, 'slow');
-    return false;
-  });
-
-  desktopNotifications = false;
-  if ("Notification" in window) {
-    if (Notification.permission === 'granted') {
-      desktopNotifications = true;
-    } else if (Notification.permission !== 'denied') {
-      Notification.requestPermission().then(result => {
-        desktopNotifications = (result === 'granted');
-      });
-    }
-  }
-
-  const addlinksMinHeight = getScrollBarHeight() + Math.round(parseFloat($("#add_links").css("line-height").replace('px', '')));
-  let addlinksHeight;
-  $("#modal-content").resizable({
-    minHeight: 520 + addlinksMinHeight,
-    minWidth: 310,
-    start: (event, ui) => {
-      addlinksHeight = $("#add_links").height();
-    },
-    resize: (event, ui) => {
-      const addlinksNewHeight = Math.max(addlinksHeight + ui.size.height - ui.originalSize.height, addlinksMinHeight);
-      $("#add_links").height(addlinksNewHeight);
-    }
-  }).draggable({ scroll: false });
-
-  $('input[type=password].reveal-pass').map(function() {
-    const reveal_id = Date.now();
-
-    $(this).wrap("<div class=\"form-group has-feedback\"></div>");
-    const button = $("<button class='close form-control-feedback hidden' type='button' style='pointer-events: auto;'><span class='glyphicon glyphicon-eye-close' style='font-size: 11px;'></span></button>");
-    button.attr("data-reveal-pass-id", reveal_id);
-    $(this).after(button);
-    $(this).attr("data-reveal-pass-id", reveal_id);
-    $(this).on('input', function() {
-      const visible = Boolean($(this).val());
-      $(this).siblings(`button[data-reveal-pass-id="${$(this).attr("data-reveal-pass-id")}"]`).toggleClass('hidden', !visible);
-    });
-    button.mousedown(event => {
-      event.preventDefault();
-      button.find("span.glyphicon").removeClass('glyphicon-eye-close').addClass('glyphicon-eye-open');
-      $(this).siblings(`input[data-reveal-pass-id="${$(this).attr("data-reveal-pass-id")}"]`).attr('type', 'text');
-    }).mouseup(event => {
-      event.preventDefault();
-      button.find("span.glyphicon").removeClass('glyphicon-eye-open').addClass('glyphicon-eye-close');
-      $(this).siblings(`input[data-reveal-pass-id="${$(this).attr("data-reveal-pass-id")}"]`).attr('type', 'password');
-    }).click(event => {
-      event.preventDefault();
-    });
-  });
-
-  $('.btn, input[type="radio"]').focus(function() { this.blur(); });
-
-  $("#add_form").submit(function(event) {
-    event.preventDefault();
-    const formData = new FormData(this);
-    const $this = $(this);
-    if ($this.find("#add_name").val() === "" && $this.find("#add_file").val() === "") {
-      alert("{{_('Please Enter a package name.')}}");
-      return false;
-    } else {
-      $.ajax({
-        url: "{{url_for('json.add_package')}}",
-        method: "POST",
-        data: formData,
-        processData: false,
-        contentType: false,
-        success: () => {
-          const queue = $this.find("#add_dest").val() === "1" ? "queue" : "collector";
-          const re = new RegExp(`/${queue}/?$`, "i");
-          if (window.location.toString().match(re)) {
-            window.location.reload();
-          }
-        },
-        error: () => {
-          indicateFail("{{_('Error occurred')}}");
-        }
-      });
-      $("#add_box").modal('hide');
-      return false;
-    }
-  });
-
-  $(".action_add").click(() => {
-    $("#add_form").trigger("reset");
-  });
-
-  $("#action_play").click(() => {
-    $.get("{{url_for('api.rpc', func='unpause_server')}}", () => {
-      $.ajax({
-        method: "post",
-        url: "{{url_for('json.status')}}",
-        async: true,
-        timeout: 3000,
-        success: LoadJsonToContent
-      });
-    });
-  });
-
-  $("#action_cancel").click(() => {
-    yesNoDialog("{{_('Are you sure you want to abort all downloads?')}}", (answer) => {
-      if (answer) {
-        $.get("{{url_for('api.rpc', func='stop_all_downloads')}}");
-      }
-    });
-  });
-
-  $("#action_stop").click(() => {
-    $.get("{{url_for('api.rpc', func='pause_server')}}", () => {
-      $.ajax({
-        method: "post",
-        url: "{{url_for('json.status')}}",
-        async: true,
-        timeout: 3000,
-        success: LoadJsonToContent
-      });
-    });
-  });
-
-  $("#toggle_queue").click(() => {
-    $.get("{{url_for('api.rpc', func='toggle_pause')}}", () => {
-      $.ajax({
-        method: "post",
-        url: "{{url_for('json.status')}}",
-        async: true,
-        timeout: 3000,
-        success: LoadJsonToContent
-      });
-    });
-  });
-
-  $("#toggle_proxy").click(() => {
-    $.get("{{url_for('api.rpc', func='toggle_proxy')}}", () => {
-      $.ajax({
-        method: "post",
-        url: "{{url_for('json.status')}}",
-        async: true,
-        timeout: 3000,
-        success: LoadJsonToContent
-      });
-    });
-  });
-
-  $("#toggle_reconnect").click(() => {
-    $.get("{{url_for('api.rpc', func='toggle_reconnect')}}", () => {
-      $.ajax({
-        method: "post",
-        url: "{{url_for('json.status')}}",
-        async: true,
-        timeout: 3000,
-        success: LoadJsonToContent
-      });
-    });
-  });
-
-  $(".cap_info").click(() => {
-    load_captcha("get", "");
-  });
-
-  $("#cap_submit").click(() => {
-    submit_captcha();
-  });
-
-  $("#cap_box #cap_positional").click(submit_positional_captcha);
+  uiHandler.initUI()
 
   if (thisScript.getAttribute('nopoll') !== "1") {
     $.ajax({
@@ -295,7 +501,7 @@ $(() => {
       url: "{{url_for('json.status')}}",
       async: true,
       timeout: 3000,
-      success: LoadJsonToContent
+      success: loadJsonToContent
     });
 
     setInterval(() => {
@@ -304,211 +510,43 @@ $(() => {
         url: "{{url_for('json.status')}}",
         async: true,
         timeout: 3000,
-        success: LoadJsonToContent
+        success: loadJsonToContent
       });
     }, 4000);
   }
 });
 
-const LoadJsonToContent = (a) => {
-  $("#speed").text(`${humanFileSize(a.speed)}/s`);
-  $("#actives").text(a.active);
-  $("#actives_from").text(a.queue);
-  $("#actives_total").text(a.total);
+const loadJsonToContent = (message) => {
+  $("#speed").text(`${humanFileSize(message.speed)}/s`);
+  $("#actives").text(message.active);
+  $("#actives_from").text(message.queue);
+  $("#actives_total").text(message.total);
   const $cap_info = $(".cap_info");
-  if (a.captcha) {
+  if (message.captcha) {
     const notificationVisible = ($cap_info.css("display") !== "none");
     if (!notificationVisible) {
       $cap_info.css('display', 'inline');
-      mdtoast("{{_('New Captcha Request')}}", { position: "bottom center", type: "info", duration: 6000 });
+      uiHandler.indicateInfo("{{_('New Captcha Request')}}");
     }
-    if (desktopNotifications && !document.hasFocus() && !notificationVisible) {
-      const notification = new Notification('pyLoad', {
+    if (notificationHandler.enabled && !document.hasFocus() && !notificationVisible) {
+      const notification = notificationHandler.showNotification('pyLoad', {
         icon: "{{theme_static('img/favicon.ico')}}",
         body: "{{_('New Captcha Request')}}",
         tag: 'pyload_captcha'
-      });
-      notification.onclick = (event) => {
+      }, (event) => {
         event.preventDefault();
         parent.focus();
         window.focus();
         $("#action_cap")[0].click();
-      };
-      setTimeout(() => {
-        notification.close();
-      }, 8000);
+      });
     }
   } else {
     $cap_info.css('display', 'none');
   }
-  $("#time").text(a.download ? " {{_('on')}}" : " {{_('off')}}").css('background-color', a.download ? '#5cb85c' : "#d9534f");
-  $("#proxy").text(a.proxy ? " {{_('on')}}" : " {{_('off')}}").css('background-color', a.proxy ? "#5cb85c" : "#d9534f");
-  $("#reconnect").text(a.reconnect ? " {{_('on')}}" : " {{_('off')}}").css('background-color', a.reconnect ? "#5cb85c" : "#d9534f");
+  $("#time").text(message.download ? " {{_('on')}}" : " {{_('off')}}").css('background-color', message.download ? '#5cb85c' : "#d9534f");
+  $("#proxy").text(message.proxy ? " {{_('on')}}" : " {{_('off')}}").css('background-color', message.proxy ? "#5cb85c" : "#d9534f");
+  $("#reconnect").text(message.reconnect ? " {{_('on')}}" : " {{_('off')}}").css('background-color', message.reconnect ? "#5cb85c" : "#d9534f");
   return null;
-};
-
-const set_captcha = (catchaData) => {
-  captcha_reset_default();
-
-  $("#cap_id").val(catchaData.id);
-  if (catchaData.result_type === "textual") {
-    $("#cap_textual_img").attr("src", catchaData.params.src);
-    $("#cap_submit").css("display", "inline");
-    $("#cap_box #cap_title").text("");
-    $("#cap_textual").css("display", "block");
-    $("#cap_result").focus();
-  } else if (catchaData.result_type === "positional") {
-    $("#cap_positional_img").attr("src", catchaData.params.src);
-    $("#cap_box #cap_title").text("{{_('Please click on the right captcha position.')}}");
-    $("#cap_positional").css("display", "block");
-  } else if (catchaData.result_type === "interactive") {
-    $("#cap_box #cap_title").text("");
-    if (interactiveCaptchaHandlerInstance == null) {
-      interactiveCaptchaHandlerInstance = new interactiveCaptchaHandler("cap_interactive_iframe", "cap_interactive_loading", submit_interactive_captcha);
-    }
-    if (catchaData.params.url !== undefined && catchaData.params.url.indexOf("http") === 0) {
-      $("#cap_interactive").css("display", "block");
-      interactiveCaptchaHandlerInstance.startInteraction(catchaData.params.url, catchaData.params);
-    }
-  } else if (catchaData.result_type === "invisible") {
-    $("#cap_box #cap_title").text("");
-    if (interactiveCaptchaHandlerInstance == null) {
-      interactiveCaptchaHandlerInstance = new interactiveCaptchaHandler("cap_interactive_iframe", "cap_invisible_loading", submit_interactive_captcha);
-    }
-    if (catchaData.params.url !== undefined && catchaData.params.url.indexOf("http") === 0) {
-      $("#cap_interactive").css("display", "block");
-      interactiveCaptchaHandlerInstance.startInteraction(catchaData.params.url, catchaData.params);
-    }
-  }
-  return true;
-};
-
-const load_captcha = (b, a) => {
-  $.ajax({
-    url: "{{url_for('json.set_captcha')}}",
-    async: true,
-    method: b,
-    data: a,
-    success: (c) => (c.captcha ? set_captcha(c) : clear_captcha())
-  });
-};
-
-const captcha_reset_default = () => {
-  $("#cap_textual").css("display", "none");
-  $("#cap_textual_img").attr("src", "");
-  $("#cap_positional").css("display", "none");
-  $("#cap_positional_img").attr("src", "");
-  $("#cap_interactive").css("display", "none");
-  $("#cap_submit").css("display", "none");
-  $("#cap_interactive_iframe").attr("src", "").css({ display: "none", top: "", left: "" })
-    .parent().css({ height: "", width: "" });
-  $("#cap_interactive_loading").css("display", "none");
-  $("#cap_invisible_loading").css("display", "none");
-  if (interactiveCaptchaHandlerInstance) {
-    interactiveCaptchaHandlerInstance.clearEventlisteners();
-    interactiveCaptchaHandlerInstance = null;
-  }
-  return true;
-};
-
-const clear_captcha = () => {
-  captcha_reset_default();
-  $('#cap_box').modal('hide');
-  return true;
-};
-
-const submit_captcha = () => {
-  const $cap_result = $("#cap_result");
-  load_captcha("post", `cap_id=${$("#cap_id").val()}&cap_result=${$cap_result.val()}`);
-  $cap_result.val("");
-  return false;
-};
-
-const submit_positional_captcha = (c) => {
-  const x = (c.pageX - $(this).offset().left).toFixed(0);
-  const y = (c.pageY - $(this).offset().top).toFixed(0);
-  $("#cap_box #cap_result").val(`${x} , ${y}`);
-  return submit_captcha();
-};
-
-const submit_interactive_captcha = (c) => {
-  if (c.constructor === {}.constructor)
-    c = JSON.stringify(c);
-  else if (c.constructor !== "".constructor)
-    return;
-
-  $("#cap_box #cap_result").val(c);
-  return submit_captcha();
-};
-
-function interactiveCaptchaHandler(iframeId, loadingid, captchaResponseCallback) {
-  this._iframeId = iframeId;
-  this._loadingId = loadingid;
-  this._captchaResponseCallback = captchaResponseCallback;
-  this._active = false;
-
-  $(`#${this._loadingId}`).css("display", "block");
-  $(`#${this._iframeId}`).on("load", this, this.iframeLoaded);
-
-  $(window).on('message', this, this.windowEventListener);
-}
-
-interactiveCaptchaHandler.prototype.iframeLoaded = function(e) {
-  const interactiveHandlerInstance = e.data;
-  if (interactiveHandlerInstance._active) {
-    const requestMessage = {
-      actionCode: interactiveHandlerInstance.actionCodes.activate,
-      params: interactiveHandlerInstance._params
-    };
-    $(`#${interactiveHandlerInstance._iframeId}`).get(0).contentWindow.postMessage(JSON.stringify(requestMessage), "*");
-  }
-};
-
-interactiveCaptchaHandler.prototype.startInteraction = function(url, params) {
-  this._active = true;
-  this._params = params;
-  $(`#${this._iframeId}`).attr("src", url);
-};
-
-interactiveCaptchaHandler.prototype.windowEventListener = function(event) {
-  let requestMessage;
-  try {
-    requestMessage = JSON.parse(event.originalEvent.data);
-  } catch (e) {
-    if (e instanceof SyntaxError) {
-      return;
-    } else {
-      console.error(e);
-    }
-  }
-  const interactiveHandlerInstance = event.data;
-
-  if (requestMessage.actionCode === interactiveHandlerInstance.actionCodes.submitResponse) {
-    interactiveHandlerInstance._captchaResponseCallback(requestMessage.params.response);
-    interactiveHandlerInstance.clearEventlisteners();
-  } else if (requestMessage.actionCode === interactiveHandlerInstance.actionCodes.activated) {
-    $(`#${interactiveHandlerInstance._loadingId}`).css("display", "none");
-    $(`#${interactiveHandlerInstance._iframeId}`).css("display", "block");
-  } else if (requestMessage.actionCode === interactiveHandlerInstance.actionCodes.size) {
-    const $iframe = $(`#${interactiveHandlerInstance._iframeId}`);
-    const width = requestMessage.params.rect.right - requestMessage.params.rect.left;
-    const height = requestMessage.params.rect.bottom - requestMessage.params.rect.top;
-    $iframe.css({ top: -requestMessage.params.rect.top + "px", left: -requestMessage.params.rect.left + "px" })
-      .parent().width(width).height(height);
-  }
-};
-
-interactiveCaptchaHandler.prototype.clearEventlisteners = function() {
-  this._active = false;
-  $(`#${this._iframeId}`).off("load", this.iframeLoaded);
-  $(window).off('message', this.windowEventListener);
-};
-
-interactiveCaptchaHandler.prototype.actionCodes = {
-  activate: "pyloadActivateInteractive",
-  activated: "pyloadActivatedInteractive",
-  size: "pyloadIframeSize",
-  submitResponse: "pyloadSubmitResponse"
 };
 
 {% endautoescape %}
