@@ -104,16 +104,15 @@ class CaptchaHandler {
   setCaptcha = (captchaData) => {
     this.captchaResetDefault();
 
-    const params = JSON.parse(captchaData.params);
     $("#cap_id").val(captchaData.id);
     if (captchaData.result_type === "textual") {
-      $("#cap_textual_img").attr("src", params.src);
+      $("#cap_textual_img").attr("src", captchaData.params.src);
       $("#cap_submit").css("display", "inline");
       $("#cap_box #cap_title").text("");
       $("#cap_textual").css("display", "block");
       $("#cap_result").focus();
     } else if (captchaData.result_type === "positional") {
-      $("#cap_positional_img").attr("src", params.src);
+      $("#cap_positional_img").attr("src", captchaData.params.src);
       $("#cap_box #cap_title").text("{{_('Please click on the right captcha position.')}}");
       $("#cap_positional").css("display", "block");
     } else if (captchaData.result_type === "interactive" || captchaData.result_type === "invisible") {
@@ -121,7 +120,7 @@ class CaptchaHandler {
       const infoId = captchaData.result_type === "interactive" ? "cap_interactive_loading" : "cap_invisible_loading"
       const interactionData = {
         infoId: infoId,
-        params: params
+        params: captchaData.params
       }
       this.startInteraction(interactionData);
     }
