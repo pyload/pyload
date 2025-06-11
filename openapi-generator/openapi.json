@@ -3386,8 +3386,9 @@
             "type": "string"
           },
           "wait_until": {
+            "format": "float",
             "title": "Wait Until",
-            "type": "integer"
+            "type": "number"
           },
           "package_id": {
             "title": "Package Id",
