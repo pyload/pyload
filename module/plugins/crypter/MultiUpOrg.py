@@ -11,10 +11,10 @@ from ..captcha.ReCaptcha import ReCaptcha
 class MultiUpOrg(SimpleCrypter):
     __name__ = "MultiUpOrg"
     __type__ = "crypter"
-    __version__ = "0.18"
+    __version__ = "0.19"
     __status__ = "testing"
 
-    __pattern__ = r'https?://(?:www\.)?multiup\.(?:org|eu)/(?:en/|fr/)?(?:(?P<TYPE>project|download|mirror)/)?\w+(?:/\w+)?'
+    __pattern__ = r'https?://(?:www\.)?multiup\.(?:io|org|eu)/(?:en/|fr/)?(?:(?P<TYPE>project|download|mirror)/)?\w+(?:/\w+)?'
     __config__ = [("activated", "bool", "Activated", True),
                   ("use_premium", "bool", "Use premium account if available", True),
                   ("folder_per_package", "Default;Yes;No", "Create folder for each package", "Default"),
@@ -33,10 +33,10 @@ class MultiUpOrg(SimpleCrypter):
     TEMP_OFFLINE_PATTERN = r'^unmatchable$'
     DIRECT_LINK = False
 
-    URL_REPLACEMENTS = [(r'https?://(?:www\.)?multiup\.(?:org|eu)/', "https://www.multiup.org/"),
+    URL_REPLACEMENTS = [(r'https?://(?:www\.)?multiup\.(?:io|org|eu)/', "https://multiup.io/"),
                         (r'/fr/', "/en/")]
 
-    COOKIES = [("multiup.org", "_locale", "en")]
+    COOKIES = [("multiup.io", "_locale", "en")]
 
     def decrypt(self, pyfile):
         self._prepare()
@@ -52,21 +52,23 @@ class MultiUpOrg(SimpleCrypter):
         grab_all = self.config.get('grab_all')
 
         if m_type == "project":
-            return re.findall(r'(https?://www\.multiup\.org/(?:en/|fr/)?download/.*)', self.data)
+            return re.findall(r'(https?://multiup\.io/(?:en/|fr/)?download/.*)', self.data)
 
         elif m_type in ("download", None):
             url, inputs = self.parse_html_form()
             if inputs is not None:
-                self.data = self.load(urlparse.urljoin("https://www.multiup.org/", url),
+                self.data = self.load(urlparse.urljoin("https://multiup.io/", url),
                                       post=inputs)
 
         hosts_data = {}
-        for _a in re.findall(r'<button (.+?) class="host btn btn-md btn-default btn-block btn-3d hvr-bounce-to-right">', self.data, re.M):
+        for _a in re.findall(r'<footer (.+?) class="host btn btn-md btn-default btn-block btn-3d hvr-bounce-to-right">', self.data, re.S):
             validity = re.search(r'validity="(\w+)"', _a).group(1)
             if validity in ("valid", "unknown"):
-                host = re.search(r'namehost="(.+?)"', _a).group(1)
+                host = re.search(r'nameHost="(.+?)"', _a).group(1)
                 url = re.search(r'link="(.+?)"', _a).group(1)
-                hosts_data[host] = url
+                id = re.search(r'id="(.+?)"', _a).group(1)
+                if id != "0":
+                    hosts_data[host] = url
 
         chosen_hosts = []
         # priority hosts goes first
