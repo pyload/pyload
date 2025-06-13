@@ -201,6 +201,7 @@ def _parse_args(cmd_args):
     parser.add_argument("--daemon", action="store_true", help="run as daemon")
     parser.add_argument("--quit", action="store_true", help="quit running pyLoad instance", default=False)
     parser.add_argument("--status", action="store_true", help="display pid if running or 0", default=False)
+    parser.add_argument("--generate-api-spec", action="store_true", help="generate openapi json and exit", default=False)
     group.add_argument("--version", action="version", version=f"pyLoad {__version__}")
 
     return parser.parse_args(cmd_args)
@@ -284,7 +285,7 @@ def main(cmd_args=sys.argv[1:]):
     Entry point for console_scripts.
     """
     args = _parse_args(cmd_args)
-    core_args = (args.userdir, args.tempdir, args.storagedir, args.debug, args.reset, args.dry_run)
+    core_args = (args.userdir, args.tempdir, args.storagedir, args.debug, args.reset, args.dry_run, args.generate_api_spec)
 
     if args.quit:
         quit_instance(args.pidfile)

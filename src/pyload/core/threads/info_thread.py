@@ -134,7 +134,12 @@ class InfoThread(PluginThread):
         if len(self.cache) >= 20 or force:
             # used for package generating
             tmp = [
-                (name, (url, OnlineStatus(name, plugin, "unknown", status, int(size))))
+                (name, (url, OnlineStatus(name=name,
+                                          plugin=plugin,
+                                          packagename="unknown",
+                                          status=status,
+                                          size=int(size)
+                                          )))
                 for name, size, status, url in self.cache
             ]
 

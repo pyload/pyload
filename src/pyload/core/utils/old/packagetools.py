@@ -24,7 +24,7 @@ def parse_names(files):
     Generates packages names from name, data lists.
 
     :param files: list of (name, data)
-    :return: packagenames mapt to data lists (eg. urls)
+    :return: packagenames map to data lists (eg. urls)
     """
     packs = {}
 
