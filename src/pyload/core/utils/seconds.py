@@ -25,7 +25,7 @@ def to_midnight(utc=None, strict=False):
     if utc is None:
         now = datetime.datetime.today()
     else:
-        now = datetime.datetime.utcnow() + datetime.timedelta(hours=utc)
+        now = datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=utc)
 
     midnight = now.replace(
         hour=0, minute=0 if strict else 1, second=0, microsecond=0
@@ -39,4 +39,4 @@ def to_nexthour(strict=False):
     nexthour = now.replace(
         minute=0 if strict else 1, second=0, microsecond=0
     ) + datetime.timedelta(hours=1)
-    return (nexthour - now).seconds
+    return (nexthour - now).total_seconds()
