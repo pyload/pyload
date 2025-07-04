@@ -167,4 +167,4 @@ class Keep2ShareCc(SimpleDownloader):
                 raise
 
     def handle_premium(self, pyfile):
-        handle_free(pyfile, has_premium=True)
+        self.handle_free(pyfile, has_premium=True)
