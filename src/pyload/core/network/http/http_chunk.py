@@ -5,13 +5,14 @@ import os
 import re
 import time
 import urllib.parse
-from cgi import parse_header as parse_header_line
 from email.header import decode_header as parse_mime_header
 from ntpath import basename as ntpath_basename
 from posixpath import basename as posixpath_basename
 
 import pycurl
-from pyload.core.utils import purge, parse
+
+from pyload.core.utils import parse, purge
+from pyload.core.utils.web.parse import http_header as parse_header_line
 
 from .http_request import HTTPRequest
 

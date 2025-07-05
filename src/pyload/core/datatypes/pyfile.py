@@ -146,7 +146,7 @@ class PyFile:
         if self.packageid > 0:
             self.sync()
 
-        if hasattr(self, "plugin") and self.plugin:
+        if self.has_plugin():
             self.plugin.clean()
             del self.plugin
 

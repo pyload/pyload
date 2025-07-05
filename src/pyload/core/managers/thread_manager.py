@@ -68,7 +68,7 @@ class ThreadManager:
 
     def create_info_thread(self, data, pid):
         """
-        start a thread whichs fetches online status and other infos
+        start a thread which fetches online status and other infos
         data = [ .. () .. ]
         """
         self.timestamp = time.time() + timedelta(minutes=5).total_seconds()
@@ -148,7 +148,7 @@ class ThreadManager:
             )
 
             time.sleep(0.5)
-            # it may be failed non critical so we try it again
+            # it may be failed non-critical so we try it again
             self.assign_job()
 
         if (self.info_cache or self.info_results) and self.timestamp < time.time():

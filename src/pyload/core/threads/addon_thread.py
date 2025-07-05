@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import inspect
 from copy import copy
 
 from .plugin_thread import PluginThread
@@ -32,7 +33,7 @@ class AddonThread(PluginThread):
 
     def add_active(self, pyfile):
         """
-        Adds a pyfile to active list and thus will be displayed on overview.
+        Adds a pyfile to the active list and thus will be displayed on overview.
         """
         if pyfile not in self.active:
             self.active.append(pyfile)
@@ -44,21 +45,15 @@ class AddonThread(PluginThread):
         pyfile.finish_if_done()
 
     def run(self):
-        try:
-            retry = False
-            try:
-                self.kwargs["thread"] = self
-                self.f(*self.args, **self.kwargs)
-            except TypeError as exc:
-                # dirty method to filter out exceptions
-                if "unexpected keyword argument 'thread'" not in exc.args[0]:
-                    raise
-                else:
-                    retry = True
+        sig = inspect.signature(self.f)
+        param_info = sig.parameters.get("thread")
+        if param_info is not None and param_info.kind in (
+            inspect.Parameter.KEYWORD_ONLY, inspect.Parameter.POSITIONAL_OR_KEYWORD
+        ):
+            self.kwargs["thread"] = self
 
-            if retry:
-                del self.kwargs["thread"]
-                self.f(*self.args, **self.kwargs)
+        try:
+            self.f(*self.args, **self.kwargs)
 
         finally:
             local = copy(self.active)

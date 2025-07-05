@@ -11,7 +11,7 @@ from ..base.simple_downloader import SimpleDownloader
 class FastshareCz(SimpleDownloader):
     __name__ = "FastshareCz"
     __type__ = "downloader"
-    __version__ = "0.47"
+    __version__ = "0.48"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?fastshare\.(?:cz/\d+/.+|cloud/[0-9a-f]+)"
@@ -69,7 +69,7 @@ class FastshareCz(SimpleDownloader):
         check = self.scan_download(
             {
                 "parallel-dl": re.compile(
-                    rb"<title>FastShare.cz</title>|<script.*>alert\('Despite FREE can download only one file at a time.'\)"
+                    rb"<title>FastShare.cz</title>|^<script|<script.*>alert\('Despite FREE can download only one file at a time.'\)"
                 ),
                 "wrong captcha": re.compile(rb"Download for FREE"),
                 "credit": re.compile(to_bytes(self.CREDIT_ERROR)),
@@ -79,7 +79,7 @@ class FastshareCz(SimpleDownloader):
         if check == "parallel-dl":
             self.log_warning(self._("Parallel download"))
             self.remove(self.last_download)
-            self.retry(6, timedelta(minutes=10).total_seconds(), self._("Paralell download"))
+            self.retry(6, timedelta(minutes=2).total_seconds(), self._("Paralell download"))
 
         elif check == "wrong captcha":
             self.log_warning(self._("Wrong captcha"))

@@ -93,13 +93,18 @@ def login():
     api = flask.current_app.config["PYLOAD_API"]
     user_info = api.check_auth(user, password)
 
+    if flask.request.headers.get("X-Forwarded-For"):
+        client_ip = flask.request.headers.get("X-Forwarded-For").split(',')[0].strip()
+    else:
+        client_ip = flask.request.remote_addr
+
     sanitized_user = user.replace("\n", "\\n").replace("\r", "\\r")
     if not user_info:
-        log.error(f"Login failed for user '{sanitized_user}'")
+        log.error(f"Login failed for user '{sanitized_user}' [CLIENT: {client_ip}]")
         return jsonify(False)
 
     s = set_session(user_info)
-    log.info(f"User '{sanitized_user}' successfully logged in")
+    log.info(f"User '{sanitized_user}' successfully logged in [CLIENT: {client_ip}]")
     flask.flash("Logged in successfully")
 
     return jsonify(s)

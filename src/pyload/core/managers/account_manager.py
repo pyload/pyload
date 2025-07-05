@@ -76,16 +76,16 @@ class AccountManager:
         loads all accounts available.
         """
         if not os.path.exists(self.configpath):
-            with open(self.configpath, mode="w") as fp:
+            with open(self.configpath, mode="w", encoding="utf-8") as fp:
                 fp.write(f"version: {__version__}")
 
-        with open(self.configpath) as fp:
+        with open(self.configpath, encoding="utf-8") as fp:
             content = fp.readlines()
             version = content[0].split(":")[1].strip() if content else ""
 
         if not version or int(version) < __version__:
             shutil.copy(self.configpath, "accounts.backup")
-            with open(self.configpath, mode="w") as fp:
+            with open(self.configpath, mode="w", encoding="utf-8") as fp:
                 fp.write(f"version: {__version__}")
             self.pyload.log.warning(
                 self._("Account settings deleted, due to new config format.")
@@ -137,7 +137,7 @@ class AccountManager:
         save all account information.
         """
         account_plugins = self.pyload.plugin_manager.get_account_plugins()
-        with open(self.configpath, mode="w") as fp:
+        with open(self.configpath, mode="w", encoding="utf-8") as fp:
             fp.write(f"version: {__version__}\n")
 
             for plugin, accounts in sorted(self.accounts.items()):

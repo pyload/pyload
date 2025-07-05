@@ -36,7 +36,7 @@ RUN echo "**** install binary packages ****" && \
     apt-get install $APT_INSTALL_OPTIONS $APT_PACKAGES && \
     \
     echo "**** install pip package ****" && \
-    pip3 install $PIP_INSTALL_OPTIONS $PIP_PACKAGES
+    python3 -m pip install $PIP_INSTALL_OPTIONS $PIP_PACKAGES
 
 
 FROM builder AS wheels_builder
@@ -46,7 +46,7 @@ WORKDIR /wheels
 
 RUN echo "**** build pyLoad dependencies ****" && \
     python3 -c "import configparser as cp; c = cp.ConfigParser(); c.read('/source/setup.cfg'); print(c['options']['install_requires'] + c['options.extras_require']['extra'])" | \
-    xargs pip3 wheel --wheel-dir=.
+    xargs python3 -m pip wheel --wheel-dir=.
 
 
 FROM builder AS source_builder
@@ -57,7 +57,7 @@ COPY . /source
 WORKDIR /source
 
 RUN echo "**** build pyLoad locales ****" && \
-    pip3 install $PIP_INSTALL_OPTIONS $PIP_PACKAGES && \
+    python3 -m pip install $PIP_INSTALL_OPTIONS $PIP_PACKAGES && \
     python3 setup.py build_locale
 
 
@@ -68,7 +68,7 @@ COPY --from=source_builder /source /source
 WORKDIR /package
 
 RUN echo "**** build pyLoad package ****" && \
-    pip3 install $PIP_INSTALL_OPTIONS --find-links=/wheels --no-index --prefix=. /source[extra]
+    python3 -m pip install $PIP_INSTALL_OPTIONS --find-links=/wheels --no-index --prefix=. /source[extra]
 
 
 FROM builder

@@ -54,13 +54,18 @@ def login():
         password = flask.request.form["password"]
         user_info = api.check_auth(user, password)
 
+        if flask.request.headers.get("X-Forwarded-For"):
+            client_ip = flask.request.headers.get("X-Forwarded-For").split(',')[0].strip()
+        else:
+            client_ip = flask.request.remote_addr
+
         sanitized_user = user.replace("\n", "\\n").replace("\r", "\\r")
         if not user_info:
-            log.error(f"Login failed for user '{sanitized_user}'")
+            log.error(f"Login failed for user '{sanitized_user}' [CLIENT: {client_ip}]")
             return render_template("login.html", errors=True)
 
         set_session(user_info)
-        log.info(f"User '{sanitized_user}' successfully logged in")
+        log.info(f"User '{sanitized_user}' successfully logged in [CLIENT: {client_ip}]")
         flask.flash("Logged in successfully")
 
     if is_authenticated():
@@ -130,8 +135,14 @@ def collector():
 @bp.route("/files", endpoint="files")
 @login_required("DOWNLOAD")
 def files():
+    def decode_name(filename):
+        try:
+            return filename.decode("utf-8")
+        except UnicodeDecodeError:
+            return filename.decode("iso-8859-1")
+
     api = flask.current_app.config["PYLOAD_API"]
-    root = api.get_config_value("general", "storage_folder")
+    root = os.fsencode(api.get_config_value("general", "storage_folder"))
 
     if not os.path.isdir(root):
         messages = ["Download directory not found."]
@@ -140,19 +151,19 @@ def files():
 
     for entry in sorted(os.listdir(root)):
         if os.path.isdir(os.path.join(root, entry)):
-            folder = {"name": entry, "path": entry, "files": []}
+            folder = {"name": decode_name(entry), "path": decode_name(entry), "files": []}
             files = os.listdir(os.path.join(root, entry))
             for file in sorted(files):
                 try:
                     if os.path.isfile(os.path.join(root, entry, file)):
-                        folder["files"].append(file)
+                        folder["files"].append(decode_name(file))
                 except Exception:
                     pass
 
             data["folder"].append(folder)
 
         elif os.path.isfile(os.path.join(root, entry)):
-            data["files"].append(entry)
+            data["files"].append(decode_name(entry))
 
     return render_template("files.html", files=data)
 

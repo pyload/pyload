@@ -403,7 +403,7 @@ class BasePlugin:
             os.makedirs(os.path.dirname(framefile), exist_ok=True)
 
             is_bytes = isinstance(self.last_html, (bytes, bytearray))
-            with open(framefile, mode="wb" if is_bytes else "w") as fp:
+            with open(framefile, mode="wb" if is_bytes else "w", encoding=None if is_bytes else "utf-8") as fp:
                 fp.write(self.last_html)
 
         except IOError as exc:
