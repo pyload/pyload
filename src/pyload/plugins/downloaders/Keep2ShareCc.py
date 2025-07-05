@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import json
-import re
 import random
+import re
+from datetime import datetime, timedelta, timezone
 from enum import Enum
-from datetime import datetime, timedelta
 
 from pyload.core.network.http.exceptions import BadHeader
 
@@ -78,25 +78,51 @@ class Keep2ShareCc(SimpleDownloader):
     @staticmethod
     def seconds_until_midnight_utc():
         """calculate seconds until UTC 0:00 and add some randomness"""
-        now = datetime.utcnow()
-        midnight = datetime.utcnow().replace(
+        now_utc = datetime.now(timezone.utc)
+        midnight_utc = datetime.now(timezone.utc).replace(
             hour=random.randint(0, 2),
             minute=random.randint(0, 59),
             second=random.randint(0, 59),
         )  # prevent clients from retrying all at the same time
-        midnight += timedelta(days=1)
-        return (midnight - now).total_seconds()
+        midnight_utc += timedelta(days=1)
+        return (midnight_utc - now_utc).total_seconds()
 
     def solve_captcha(self, req):
         json_data = self.api_request("RequestCaptcha")
-        if "code" not in json_data or json_data["code"] != 200:
+        if json_data.get("code") != 200:
             return False
         captcha_response = self.captcha.decrypt(json_data["captcha_url"])
         req["captcha_challenge"] = json_data["challenge"]
         req["captcha_response"] = captcha_response
         return True
 
-    def handle_free(self, pyfile, has_premium=False):
+    def check_errors(self, data=None):
+        if data is not None:
+            json_data = json.loads(data)
+            if json_data.get("errorCode"):
+                err = Keep2ShareCc.ErrorCode(json_data["errorCode"])
+                self.log_debug(self._("Handling error code: {}").format(err))
+
+                if err in [err.CAPTCHA_REQUIRED, err.CAPTCHA_INVALID]:
+                    self.retry_captcha()
+
+                elif err == err.DOWNLOAD_NOT_AVAILABLE:
+                    self.retry(wait=json_data["errors"][0]["timeRemaining"])
+
+                elif err == err.FILE_IS_NOT_AVAILABLE:
+                    # apparently traffic will reset at 0:00 UTC
+                    self.retry(wait=Keep2ShareCc.seconds_until_midnight_utc())
+
+                else:
+                    self.fail(json_data["message"])
+
+    def handle_free(self, pyfile):
+        self.do_download(pyfile)
+
+    def handle_premium(self, pyfile):
+        self.do_download(pyfile)
+
+    def do_download(self, pyfile):
         file_id = self.info["pattern"]["ID"]
 
         req = {
@@ -107,27 +133,24 @@ class Keep2ShareCc(SimpleDownloader):
         }
 
         if self.info["access"] == "private":
-            self.fail("This is a private file")
-        elif has_premium:
+            self.fail(self._("This is a private file"))
+        elif self.premium:
             req["auth_token"] = self.account.info["data"]["token"]
         elif self.info["access"] == "premium" or self.info["free_access"] is False:
-            self.fail("File can be downloaded by premium users only")
+            self.fail(self._("File can be downloaded by premium users only"))
 
-        if not has_premium:
+        if not self.premium:
             if not self.solve_captcha(req):
-                self.fail("Request captcha API failed")
+                self.fail(self._("Request captcha API failed"))
 
         try:
             # The first request will return with "free_download_key"
-            # The secound request will return with "url"
+            # The second request will return with "url"
             for _ in range(2):
                 json_data = self.api_request("GetUrl", **req)
 
-                if "code" in json_data and json_data["code"] == 200:
-                    if (
-                        "captcha_response" in req
-                        and req["captcha_response"] is not None
-                    ):
+                if json_data.get("code") == 200:
+                    if req.get("captcha_response", None) is not None:
                         self.captcha.correct()
                         req["captcha_challenge"] = None
                         req["captcha_response"] = None
@@ -146,25 +169,6 @@ class Keep2ShareCc(SimpleDownloader):
 
         except BadHeader as exc:
             if exc.code == 406:
-                json_data = json.loads(exc.content)
-                err = Keep2ShareCc.ErrorCode(json_data["errorCode"])
-                self.log_debug(f"Handling HTTP 406 code: {err}")
-
-                if err in [err.CAPTCHA_REQUIRED, err.CAPTCHA_INVALID]:
-                    self.retry_captcha()
-
-                elif err == err.DOWNLOAD_NOT_AVAILABLE:
-                    self.retry(wait=json_data["errors"][0]["timeRemaining"])
-
-                elif err == err.FILE_IS_NOT_AVAILABLE:
-                    # apparently traffic will reset at 0:00 UTC
-                    self.retry(wait=Keep2ShareCc.seconds_until_midnight_utc())
-
-                else:
-                    self.fail(json_data["message"])
-
+                self.check_errors(exc.content)
             else:
                 raise
-
-    def handle_premium(self, pyfile):
-        self.handle_free(pyfile, has_premium=True)
