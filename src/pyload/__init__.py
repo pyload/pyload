@@ -10,6 +10,7 @@
 
 import importlib.metadata
 import importlib.resources
+import packaging.version
 import locale
 import logging
 import os
@@ -30,7 +31,7 @@ USERHOMEDIR = os.path.expanduser("~")
 os.chdir(USERHOMEDIR)
 
 try:
-    __version__ = importlib.metadata.version(PKGNAME)
+    __version__ = packaging.version.Version(importlib.metadata.version(PKGNAME)).base_version
 except importlib.metadata.PackageNotFoundError:
     __version__ =  "0.5.0"
 __version_info__ = semver.parse_version_info(__version__)

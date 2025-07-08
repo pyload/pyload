@@ -9,11 +9,10 @@
 #           \  /
 #            \/
 
+import importlib.metadata
 import os
 
-import importlib.metadata
 import packaging.version
-
 # from pkg_resources import VersionConflict, require
 from setuptools import Command, setup
 
