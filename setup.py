@@ -11,7 +11,8 @@
 
 import os
 
-import pkg_resources
+import importlib.metadata
+import packaging.version
 
 # from pkg_resources import VersionConflict, require
 from setuptools import Command, setup
@@ -38,8 +39,8 @@ class BuildLocale(Command):
         pass
 
     def finalize_options(self):
-        jinja2_version = pkg_resources.get_distribution("jinja2").version
-        if pkg_resources.parse_version(jinja2_version) < pkg_resources.parse_version(
+        jinja2_version = importlib.metadata.version("jinja2")
+        if packaging.version.Version(jinja2_version) < packaging.version.Version(
             "3.0.0"
         ):
             mapping_file_version = 2
