@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         pyLoad Script for Interactive Captcha
 // @namespace    https://pyload.net/
-// @version      0.19
+// @version      0.20
 // @author       Michi-F, GammaC0de
 // @description  pyLoad Script for Interactive Captcha
 // @homepage     https://github.com/pyload/pyload
@@ -39,60 +39,61 @@
 
     // this function listens to messages from the pyload main page
     window.addEventListener('message', function(e) {
+        let request;
         try {
-            var request = JSON.parse(e.data);
+            request = JSON.parse(e.data);
         } catch(e) {
             return
         }
         if(request.constructor === {}.constructor && request.actionCode === "pyloadActivateInteractive") {
             if (request.params.script) {
-                var sig = new KJUR.crypto.Signature({"alg": "SHA384withRSA", "prov": 'cryptojs/jsrsa'});
+                const sig = new KJUR.crypto.Signature({"alg": "SHA384withRSA", "prov": 'cryptojs/jsrsa'});
                 sig.init("-----BEGIN PUBLIC KEY-----\n" +
-                    "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuEHE4uAeTeEQjIwB//YH\n" +
-                    "Gl5e058aJRCRyOvApv1iC1ZQgXGHopgEd528+AtkAZKdCRkoNCWda7L/hROpZNjq\n" +
-                    "xgO5NjjlBnotntQiZ6xr7A4Kfdctmw1DPcv/dkp6SXRpAAw8BE9CctZ3H7cE/4UT\n" +
-                    "FIJOYQQXF2dcBTWLnUAjesNoHBz0uHTdvBIwJdfdUIrNMI4IYXL4mq9bpKNvrwrb\n" +
-                    "iNhSqN0yV8sanofZmDX4JUmVGpWIkpX0u+LA4bJlaylwPxjuWyIn5OBED0cdqpbO\n" +
-                    "7t7Qtl5Yu639DF1eZDR054d9OB3iKZX1a6DTg4C5DWMIcU9TsLDm/JJKGLWRxcJJ\n" +
-                    "fwIDAQAB\n" +
-                    "-----END PUBLIC KEY----- ");
+                  "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuEHE4uAeTeEQjIwB//YH\n" +
+                  "Gl5e058aJRCRyOvApv1iC1ZQgXGHopgEd528+AtkAZKdCRkoNCWda7L/hROpZNjq\n" +
+                  "xgO5NjjlBnotntQiZ6xr7A4Kfdctmw1DPcv/dkp6SXRpAAw8BE9CctZ3H7cE/4UT\n" +
+                  "FIJOYQQXF2dcBTWLnUAjesNoHBz0uHTdvBIwJdfdUIrNMI4IYXL4mq9bpKNvrwrb\n" +
+                  "iNhSqN0yV8sanofZmDX4JUmVGpWIkpX0u+LA4bJlaylwPxjuWyIn5OBED0cdqpbO\n" +
+                  "7t7Qtl5Yu639DF1eZDR054d9OB3iKZX1a6DTg4C5DWMIcU9TsLDm/JJKGLWRxcJJ\n" +
+                  "fwIDAQAB\n" +
+                  "-----END PUBLIC KEY----- ");
                 sig.updateString(request.params.script.code);
                 if (sig.verify(request.params.script.signature)) {
                     window.gpyload = {
                         isVisible : function(element) {
-                            var style = window.getComputedStyle(element);
+                            const style = window.getComputedStyle(element);
                             return !(style.width === 0 ||
-                                    style.height === 0 ||
-                                    style.opacity === 0 ||
-                                    style.display ==='none' ||
-                                    style.visibility === 'hidden'
+                              style.height === 0 ||
+                              style.opacity === 0 ||
+                              style.display ==='none' ||
+                              style.visibility === 'hidden'
                             );
                         },
                         debounce : function (fn, delay) {
-                          var timer = null;
-                          return function () {
-                            var context = this, args = arguments;
-                            clearTimeout(timer);
-                            timer = setTimeout(function () {
-                                fn.apply(context, args);
-                            }, delay);
-                          };
+                            let timer = null;
+                            return function () {
+                                const context = this, args = arguments;
+                                clearTimeout(timer);
+                                timer = setTimeout(function () {
+                                    fn.apply(context, args);
+                                }, delay);
+                            };
                         },
                         submitResponse: function(response) {
                             if (typeof gpyload.observer !== 'undefined') {
                                 gpyload.observer.disconnect();
                             }
-                            var responseMessage = {actionCode: "pyloadSubmitResponse", params: {response: response}};
+                            const responseMessage = {actionCode: "pyloadSubmitResponse", params: {response: response}};
                             parent.postMessage(JSON.stringify(responseMessage),"*");
                         },
                         activated: function() {
-                            var responseMessage = {actionCode: "pyloadActivatedInteractive"};
+                            const responseMessage = {actionCode: "pyloadActivatedInteractive"};
                             parent.postMessage(JSON.stringify(responseMessage),"*");
                         },
                         setSize : function(rect) {
                             if (gpyload.data.rectDoc.left !== rect.left || gpyload.data.rectDoc.right !== rect.right || gpyload.data.rectDoc.top !== rect.top || gpyload.data.rectDoc.bottom !== rect.bottom) {
                                 gpyload.data.rectDoc = rect;
-                                var responseMessage = {actionCode: "pyloadIframeSize", params: {rect: rect}};
+                                const responseMessage = {actionCode: "pyloadIframeSize", params: {rect: rect}};
                                 parent.postMessage(JSON.stringify(responseMessage), "*");
                             }
                         },
@@ -103,13 +104,14 @@
                     };
 
                     try {
-                        eval(request.params.script.code);
+                        const scriptFunction = new Function('request', 'gpyload', '"use strict";' + request.params.script.code);
+                        scriptFunction(request, gpyload);
                     } catch(err) {
                         console.error("pyLoad: Script aborted: " + err.name + ": " + err.message + " (" + err.stack +")");
                         return;
                     }
                     if (typeof gpyload.getFrameSize === "function") {
-                        var checkDocSize = gpyload.debounce(function() {
+                        const checkDocSize = gpyload.debounce(() => {
                             window.scrollTo(0,0);
                             var rect = gpyload.getFrameSize();
                             gpyload.setSize(rect);
@@ -117,7 +119,7 @@
                         gpyload.observer = new MutationObserver(function(mutationsList) {
                             checkDocSize();
                         });
-                        var js_script = document.createElement("script");
+                        const js_script = document.createElement("script");
                         js_script.type = "text/javascript";
                         js_script.innerHTML = "gpyload.observer.observe(document.querySelector('body'), {attributes:true, attributeOldValue:false, characterData:true, characterDataOldValue:false, childList:true, subtree:true});";
                         document.getElementsByTagName('body')[0].appendChild(js_script);
