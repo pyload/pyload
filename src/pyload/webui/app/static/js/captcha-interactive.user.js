@@ -103,8 +103,8 @@
                     };
 
                     try {
-                        var scriptFunction = new Function('gpyload', '"use strict";' + request.params.script.code);
-                        scriptFunction(gpyload);
+                        var scriptFunction = new Function('request', 'gpyload', '"use strict";' + request.params.script.code);
+                        scriptFunction(request, gpyload);
                     } catch(err) {
                         console.error("pyLoad: Script aborted: " + err.name + ": " + err.message + " (" + err.stack +")");
                         return;
