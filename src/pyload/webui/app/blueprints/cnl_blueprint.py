@@ -23,12 +23,8 @@ def local_check(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
         remote_addr = flask.request.environ.get("REMOTE_ADDR", "0")
-        http_host = flask.request.environ.get("HTTP_HOST", "0")
 
-        if remote_addr in ("127.0.0.1", "::ffff:127.0.0.1", "::1", "localhost") or http_host in (
-            "127.0.0.1:9666",
-            "[::1]:9666",
-        ):
+        if remote_addr in ("127.0.0.1", "::ffff:127.0.0.1", "::1", "localhost"):
             return func(*args, **kwargs)
         else:
             return "Forbidden", 403
