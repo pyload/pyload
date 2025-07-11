@@ -65,8 +65,6 @@ del excepthook
 # Cleanup
 
 del _locale
-del importlib.metadata
-del importlib.resources
 del locale
 del logging
 del os
