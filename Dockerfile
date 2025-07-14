@@ -29,7 +29,7 @@ ARG PIP_INSTALL_OPTIONS="--disable-pip-version-check --no-cache-dir --no-compile
 FROM lsiobase/alpine:$IMAGE_TAG AS builder
 
 ARG APK_PACKAGES="curl-dev ffmpeg openssl p7zip python3 sqlite tesseract-ocr"
-ARG PIP_PACKAGES="pip setuptools wheel"
+ARG PIP_PACKAGES="pip setuptools wheel packaging"
 
 RUN echo "**** install binary packages ****" && \
     apk add $APK_INSTALL_OPTIONS $APK_PACKAGES && \
