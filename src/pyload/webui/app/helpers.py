@@ -184,7 +184,7 @@ def apiver_check(func):
 def is_authenticated(session=flask.session):
     api = flask.current_app.config["PYLOAD_API"]
     user = session.get("name")
-    authenticated = session.get("authenticated")
+    authenticated = session.get("authenticated", False)
 
     return authenticated and api.user_exists(user)
 
