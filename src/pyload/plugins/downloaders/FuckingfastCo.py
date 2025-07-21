@@ -3,15 +3,22 @@
 from ..base.simple_downloader import SimpleDownloader
 
 
-class FuckingFast(SimpleDownloader):
-    __name__ = "FuckingFast"
+class FuckingfastCo(SimpleDownloader):
+    __name__ = "FuckingfastCo"
     __version__ = "0.1"
     __type__ = "downloader"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?fuckingfast\.co/[A-Za-z0-9]+(?:#.*)?'
+    __config__ = [
+        ("enabled", "bool", "Activated", True),
+        ("use_premium", "bool", "Use premium account if available", True),
+        ("fallback", "bool", "Fallback to free download if premium fails", True),
+        ("chk_filesize", "bool", "Check file size", True),
+        ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10),
+    ]
 
-    __description__ = """FuckingFast downloader plugin"""
+    __description__ = """FuckingFast.co downloader plugin"""
     __license__ = "GPLv3"
     __authors__ = [
         ("Alexander Sulfrian", "alexander@sulfrian.net"),
