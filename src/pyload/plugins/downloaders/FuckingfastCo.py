@@ -5,7 +5,7 @@ from ..base.simple_downloader import SimpleDownloader
 
 class FuckingfastCo(SimpleDownloader):
     __name__ = "FuckingfastCo"
-    __version__ = "0.1"
+    __version__ = "0.01"
     __type__ = "downloader"
     __status__ = "testing"
 
