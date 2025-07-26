@@ -393,9 +393,7 @@ class Package {
       });
   }
 
-  editPackage(event) {
-    event.stopPropagation();
-    event.preventDefault();
+  editPackage() {
     $("#pack_form").off("submit").submit((e) => this.savePackage(e));
 
     $("#pack_id").val(this.id[0]);
@@ -405,14 +403,13 @@ class Package {
     $('#pack_box').modal('show');
   }
 
-  savePackage(event) {
+  savePackage() {
     $.ajax({
       url: "{{url_for('json.edit_package')}}",
       type: 'post',
       dataType: 'json',
       data: $('#pack_form').serialize()
     });
-    event.preventDefault();
     this.name.text($("#pack_name").val());
     this.folder.text($("#pack_folder").val());
     this.password.text($("#pack_pws").val());
