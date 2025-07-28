@@ -55,7 +55,7 @@ def safepath(value):
 
         dirname, basename = os.path.split(filename)
         name, ext = os.path.splitext(basename)
-        path = drive + dirname + purge.truncate(name, len(name) - excess_chars) + ext
+        path = drive + os.path.join(dirname, purge.truncate(name, len(name) - excess_chars)) + ext
 
     finally:
         return path
