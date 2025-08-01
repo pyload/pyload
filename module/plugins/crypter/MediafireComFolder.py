@@ -9,10 +9,10 @@ from ..internal.misc import json
 class MediafireComFolder(Crypter):
     __name__ = "MediafireComFolder"
     __type__ = "crypter"
-    __version__ = "0.25"
+    __version__ = "0.26"
     __status__ = "testing"
 
-    __pattern__ = r'https?://(?:www\.)?mediafire\.com/(?:folder/|\?sharekey=|\?)(?P<ID>\w+)'
+    __pattern__ = r'https?://(?:www\.)?mediafire\.com/(?:folder/|\?sharekey=)(?P<ID>\w+)'
     __config__ = [("activated", "bool", "Activated", True),
                   ("use_premium", "bool", "Use premium account if available", True),
                   ("folder_per_package", "Default;Yes;No", "Create folder for each package", "Default")]

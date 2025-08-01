@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import base64
+import re
 
 from ..captcha.ReCaptcha import ReCaptcha
 from ..captcha.SolveMedia import SolveMedia
@@ -8,7 +10,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class MediafireCom(SimpleHoster):
     __name__ = "MediafireCom"
     __type__ = "hoster"
-    __version__ = "1.00"
+    __version__ = "1.01"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?mediafire\.com/(file/|view/\??|download(\.php\?|/)|\?)(?P<ID>\w+)'
@@ -83,4 +85,9 @@ class MediafireCom(SimpleHoster):
                 if self.PASSWORD_PATTERN in self.data:
                     self.fail(_("Wrong password"))
 
-        return SimpleHoster.handle_free(self, pyfile)
+        m = re.search(r'data-scrambled-url="([^"]+)"', self.data)
+        if m is not None:
+            self.link = base64.b64decode(m.group(1)).decode()
+
+        else:
+            SimpleHoster.handle_free(self, pyfile)
