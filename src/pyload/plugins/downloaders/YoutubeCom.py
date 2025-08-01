@@ -230,8 +230,8 @@ class Ffmpeg:
 class YoutubeCom(BaseDownloader):
     __name__ = "YoutubeCom"
     __type__ = "downloader"
-    __version__ = "0.89"
-    __status__ = "testing"
+    __version__ = "0.90"
+    __status__ = "broken"
 
     __pattern__ = r"https?://(?:[^/]*\.)?(?:youtu\.be/|youtube\.com/watch\?(?:.*&)?v=)[\w\-]+"
     __config__ = [
