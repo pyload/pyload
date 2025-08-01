@@ -86,9 +86,12 @@ def addcrypted():
         "package", flask.request.form.get("source", flask.request.form.get("referer"))
     )
     dl_path = api.get_config_value("general", "storage_folder")
-    dlc_path = os.path.join(
-        dl_path, package.replace("/", "").replace("\\", "").replace(":", "") + ".dlc"
-    )
+    dlc_filename = package.replace("/", "").replace("\\", "").replace(":", "") + ".dlc"
+    dlc_path = os.path.join(dl_path, dlc_filename)
+    dlc_path = os.path.normpath(dlc_path)
+    # Ensure dlc_path is within dl_path
+    if not os.path.abspath(dlc_path).startswith(os.path.abspath(dl_path) + os.sep):
+        return "failed: invalid package name\r\n", 400
     dlc = flask.request.form["crypted"].replace(" ", "+")
     with open(dlc_path, mode="wb") as fp:
         fp.write(dlc)
