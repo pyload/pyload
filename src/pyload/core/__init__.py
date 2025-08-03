@@ -10,8 +10,10 @@
 
 import atexit
 import gettext
+import json
 import locale
 import os
+import pathlib
 import signal
 import subprocess
 import sys
@@ -77,7 +79,7 @@ class Core:
         return self._debug
 
     # NOTE: should `reset` restore the user config as well?
-    def __init__(self, userdir, tempdir, storagedir, debug=None, reset=False, dry=False):
+    def __init__(self, userdir, tempdir, storagedir, debug=None, reset=False, dry=False, api_spec=False):
         self._running = Event()
         self._exiting = False
         self._do_restart = False
@@ -85,6 +87,7 @@ class Core:
         self._ = lambda x: x
         self._debug = 0
         self._dry_run = dry
+        self._api_spec = api_spec
 
         # if self.tmpdir not in sys.path:
         # sys.path.append(self.tmpdir)
@@ -151,8 +154,10 @@ class Core:
 
         os.makedirs(storagedir, exist_ok=True)
 
-        if not self._dry_run:
-            self.config.save()  #: save so config files gets filled
+        if self._dry_run or self._api_spec:
+            return
+
+        self.config.save()  #: save so config files gets filled
 
     def _init_log(self):
         from .log_factory import LogFactory
@@ -368,6 +373,18 @@ class Core:
         rv.extend(args)
         return rv
 
+    def _generate_open_api_spec(self):
+        from pyload.webui.app.api_docs.openapi_specification_generator import OpenAPISpecificationGenerator
+
+        base_path =  pathlib.Path("".join(PKGDIR.partition(os.sep + "pyload")[:-1]))
+        if spec_path := next((p for p in base_path.rglob('openapi.json')), None):
+            self.log.debug("Saving OpenAPI spec to: %s", spec_path)
+            openapi_spec = OpenAPISpecificationGenerator(api=self.api).generate_openapi_json()
+            with open(spec_path, 'w') as f:
+                json.dump(openapi_spec, f, indent=2)
+        else:
+            raise IOError("Unable to locate openapi.json file")
+
     def start(self):
         try:
             try:
@@ -417,6 +434,10 @@ class Core:
             # self.evm.fire('pyload:started')
 
             self.thm.pause = False  # NOTE: Recheck...
+
+            if self._api_spec:
+                self._generate_open_api_spec()
+                raise Exit
 
             if self._dry_run:
                 raise Exit

@@ -32,43 +32,24 @@ def links():
         links = api.status_downloads()
         ids = []
         for link in links:
-            ids.append(link["fid"])
+            ids.append(link.fid)
 
-            if link["status"] == 12:  #: downloading
-                formatted_eta = link["format_eta"]
-                formatted_speed = format.speed(link["speed"])
-                link["info"] = f"{formatted_eta} @ {formatted_speed}"
+            if link.status == 12:  #: downloading
+                formatted_eta = link.format_eta
+                formatted_speed = format.speed(link.speed)
+                link.info = f"{formatted_eta} @ {formatted_speed}"
 
-            elif link["status"] == 5:  #: waiting
-                link["percent"] = 0
-                link["size"] = 0
-                link["bleft"] = 0
-                link["info"] = api._("waiting {}").format(link["format_wait"])
+            elif link.status == 5:  #: waiting
+                link.percent = 0
+                link.size = 0
+                link.bleft = 0
+                link.info = api._("waiting {}").format(link.format_wait)
             else:
-                link["info"] = ""
+                link.info = ""
 
         return jsonify(links=links, ids=ids)
 
     except Exception as exc:
-        return jsonify(False), 500
-
-
-@bp.route("/json/packages", endpoint="packages")
-# @apiver_check
-@login_required("LIST")
-def packages():
-    api = flask.current_app.config["PYLOAD_API"]
-    try:
-        data = api.get_queue()
-
-        for package in data:
-            package["links"] = []
-            for file in api.get_package_files(package["id"]):
-                package["links"].append(api.get_file_info(file))
-
-        return jsonify(data)
-
-    except Exception:
         return jsonify(False), 500
 
 
@@ -81,9 +62,9 @@ def package():
         id = int(flask.request.args.get('id'))
         data = api.get_package_data(id)
 
-        tmp = data["links"]
-        tmp.sort(key=lambda entry: entry["order"])
-        data["links"] = tmp
+        tmp = data.links
+        tmp.sort(key=lambda entry: entry.order)
+        data.links = tmp
         return jsonify(data)
 
     except Exception:
@@ -394,10 +375,10 @@ def update_users():
     users = {}
 
     # NOTE: messy code...
-    for data in all_users.values():
-        name = data["name"]
-        users[name] = {"perms": get_permission(data["permission"])}
-        users[name]["perms"]["admin"] = data["role"] == 0
+    for userdata in all_users.values():
+        name = userdata.name
+        users[name] = {"perms": get_permission(userdata.permission)}
+        users[name]["perms"]["admin"] = userdata.role == 0
 
     s = flask.session
     for name in list(users):
