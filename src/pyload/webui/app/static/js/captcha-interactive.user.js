@@ -103,9 +103,23 @@
             }
           };
 
+          // Define allowed actions and their handlers here
+          const gpyloadActions = {
+            // Example action: 'showAlert'
+            showAlert: function(request, gpyload, data) {
+              alert(data && data.message ? data.message : "No message provided.");
+            },
+            // Add more allowed actions here
+            // e.g., 'doSomething': function(request, gpyload, data) { ... }
+          };
+
           try {
-            let scriptFunction = new Function('request', 'gpyload', '"use strict";' + request.params.script.code);
-            scriptFunction(request, gpyload);
+            // Instead of executing arbitrary code, dispatch based on an allowed action
+            if (request.params.script.action && typeof gpyloadActions[request.params.script.action] === "function") {
+              gpyloadActions[request.params.script.action](request, gpyload, request.params.script.data);
+            } else {
+              throw new Error("Unknown or missing action in script payload");
+            }
           } catch(err) {
             console.error("pyLoad: Script aborted: " + err.name + ": " + err.message + " (" + err.stack +")");
             return;
