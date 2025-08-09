@@ -2,6 +2,8 @@
 import base64
 import re
 
+from pyload.core.utils.convert import to_str
+
 from ..anticaptchas.ReCaptcha import ReCaptcha
 from ..anticaptchas.SolveMedia import SolveMedia
 from ..base.simple_downloader import SimpleDownloader
@@ -94,7 +96,7 @@ class MediafireCom(SimpleDownloader):
 
         m = re.search(r'data-scrambled-url="([^"]+)"', self.data)
         if m is not None:
-            self.link = base64.b64decode(m.group(1))
+            self.link = to_str(base64.b64decode(m.group(1)))
 
         else:
             super().handle_free(pyfile)
