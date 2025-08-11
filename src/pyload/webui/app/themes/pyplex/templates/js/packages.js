@@ -10,6 +10,13 @@ class PackageUI {
   initialize() {
     $("#del_finished").click(() => this.deleteFinished());
     $("#restart_failed").click(() => this.restartFailed());
+    $("#pack_box .modal-content").resizable({
+      handles: "e,w",
+      minHeight: 420,
+      minWidth: 300
+    }).draggable({ scroll: false }).append(
+      '<div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se"></div>'
+    );
     this.parsePackages();
   }
 
