@@ -15,7 +15,7 @@ class PackageUI {
       minHeight: 420,
       minWidth: 300
     }).draggable({ scroll: false }).append(
-      '<div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se"></div>'
+      '<div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="cursor: default;"></div>'
     );
     this.parsePackages();
   }
