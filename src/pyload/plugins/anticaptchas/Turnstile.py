@@ -19,13 +19,13 @@ class Turnstile(CaptchaService):
     KEY_PATTERN = r'(?:data-sitekey=["\']|["\']sitekey["\']\s*:\s*["\'])((?:[\w\-]|%[0-9a-fA-F]{2})+)'
     KEY_FORMAT_PATTERN = r'^0x[0-9a-zA-Z]{22}$'
 
-    TURNSTILE_INTERACTIVE_SIG = "a517150c6b790444f3023e3ac8c2b862af12f261f6e2c569fc3774005f253a94bdec248c2da2742" + \
-                                "95ae6f390f420d29fdabf6cded436c87030062d6f4fce45a12b155a4c3ec1c533b630b706f0dbe6" + \
-                                "8e14f535fb5f1ed7284db21492f5b4ab17c16e0c0b66b89f011cb5344bb3e6572fd79247fe58a58" + \
-                                "f6186633d0a604dfb35985fe9c67845b242d497a367249e48e0cca971fecbe5c3738d4d6ab81f57" + \
-                                "bcdc5637fba3fa7d05f5daf86338947116009e443c4cf3ab1071e0f7a371c086ec589cc03727ebc" + \
-                                "875b6e6edf715d4b47feb2fadbc80d30c01a6b985b46e600bc6faf89330837681b27d4b018bded4" + \
-                                "e0b40ffaea19a62e34bbef294d864db5616e09"
+    TURNSTILE_INTERACTIVE_SIG = "779b06997b45a7e8faa47641544530cace0fa1dd6455c4a079a7c0abd7dd981de159e5f8efe43ba" + \
+                                "234f49fc3f6c8f3404026c6bceda79a66cb07b75ac256404bc903e9d44574a861ba1153f79f31d4" + \
+                                "7af6c27c002d403760419e02917addd29573c7fb3f51996051f7378df2a373746ec6ddd7f704817" + \
+                                "35483ff38308fc036f211d11345d0fa560f04e9cb024d4ea76b0c569f7e3116cd0b3d52b64e8e3e" + \
+                                "2fe04454c799be5cd3d620d9f00489d43a22b6c621c6de39b20f3ed1f4b9f8bdbf43866d6e90568" + \
+                                "c2747ca006536e9f913f2c60d8e3a45fa2014f87ffe9202d94da70dbca7e83917ff58f77e11945c" + \
+                                "f7e63f73facb1de766ddcd811ceffc32829425"
 
     TURNSTILE_INTERACTIVE_JS = """
 			while(document.children[0].childElementCount > 0) {
@@ -47,8 +47,7 @@ class Turnstile(CaptchaService):
                   size: "compact",
                   'sitekey': gpyload.data.sitekey,
                   'callback': function(turnstileToken) {
-                      var turnstileResponse = turnstile.getResponse(widgetID); // get captcha response
-                      console.log(`turnstileToken=${turnstileToken}, turnstileResponse=${turnstileResponse}`);
+                      const turnstileResponse = turnstile.getResponse(widgetID); // get captcha response
                       gpyload.submitResponse(turnstileResponse);
                   }
               }
@@ -59,7 +58,7 @@ class Turnstile(CaptchaService):
           if(typeof turnstile !== 'undefined' && turnstile) {
             window.pyloadCaptchaOnLoadCallback();
           } else {
-            var js_script = document.createElement('script');
+            const js_script = document.createElement('script');
             js_script.type = "text/javascript";
             js_script.src = "//challenges.cloudflare.com/turnstile/v0/api.js?onload=pyloadCaptchaOnLoadCallback";
             js_script.defer = true;
