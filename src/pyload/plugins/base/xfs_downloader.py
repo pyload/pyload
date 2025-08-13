@@ -10,6 +10,7 @@ from pyload.core.utils.web.purge import unescape as html_unescape
 from ..anticaptchas.HCaptcha import HCaptcha
 from ..anticaptchas.ReCaptcha import ReCaptcha
 from ..anticaptchas.SolveMedia import SolveMedia
+from ..anticaptchas.Turnstile import Turnstile
 from ..helpers import search_pattern, set_cookie
 from .simple_downloader import SimpleDownloader
 
@@ -17,7 +18,7 @@ from .simple_downloader import SimpleDownloader
 class XFSDownloader(SimpleDownloader):
     __name__ = "XFSDownloader"
     __type__ = "downloader"
-    __version__ = "0.90"
+    __version__ = "0.91"
     __status__ = "stable"
 
     __pattern__ = r"^unmatchable$"
@@ -64,6 +65,7 @@ class XFSDownloader(SimpleDownloader):
     CAPTCHA_BLOCK_PATTERN = r">Enter code.*?<div.*?>(.+?)</div>"
     RECAPTCHA_PATTERN = None
     HCAPTCHA_PATTERN = None
+    TURNSTILE_PATTERN = None
     SOLVEMEDIA_PATTERN = None
 
     FORM_PATTERN = None
@@ -265,3 +267,18 @@ class XFSDownloader(SimpleDownloader):
                 inputs["adcopy_response"],
                 inputs["adcopy_challenge"],
             ) = solvemedia.challenge(captcha_key)
+
+        turnstile = Turnstile(self.pyfile)
+        try:
+            captcha_key = search_pattern(self.TURNSTILE_PATTERN, self.data).group(1)
+
+        except (AttributeError, IndexError):
+            captcha_key = turnstile.detect_key()
+
+        else:
+            self.log_debug(f"Turnstile key: {captcha_key}")
+
+        if captcha_key:
+            self.captcha = turnstile
+            inputs["cf-turnstile-response"] = turnstile.challenge(captcha_key)
+            return
