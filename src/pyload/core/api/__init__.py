@@ -702,7 +702,9 @@ class Api:
 
     @legacy("deleteFiles")
     @permission(Perms.DELETE)
-    def delete_files(self, file_ids):
+    def delete_files(self, *args, file_ids=None):
+        file_ids = args or file_ids
+        if not file_ids: return
         """
         Deletes several file entries from pyload.
 
