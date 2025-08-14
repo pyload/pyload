@@ -267,6 +267,7 @@ class XFSDownloader(SimpleDownloader):
                 inputs["adcopy_response"],
                 inputs["adcopy_challenge"],
             ) = solvemedia.challenge(captcha_key)
+            return
 
         turnstile = Turnstile(self.pyfile)
         try:
