@@ -7,6 +7,7 @@ import urlparse
 from ..captcha.HCaptcha import HCaptcha
 from ..captcha.ReCaptcha import ReCaptcha
 from ..captcha.SolveMedia import SolveMedia
+from ..captcha.Turnstile import Turnstile
 from .misc import html_unescape, parse_time, search_pattern, seconds_to_midnight, set_cookie
 from .SimpleHoster import SimpleHoster
 
@@ -14,7 +15,7 @@ from .SimpleHoster import SimpleHoster
 class XFSHoster(SimpleHoster):
     __name__ = "XFSHoster"
     __type__ = "hoster"
-    __version__ = "0.90"
+    __version__ = "0.91"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -290,3 +291,19 @@ class XFSHoster(SimpleHoster):
         if captcha_key:
             self.captcha = solvemedia
             inputs['adcopy_response'], inputs['adcopy_challenge'] = solvemedia.challenge(captcha_key)
+            return
+
+        turnstile = Turnstile(self.pyfile)
+        try:
+            captcha_key = search_pattern(self.TURNSTILE_PATTERN, self.data).group(1)
+
+        except (AttributeError, IndexError):
+            captcha_key = turnstile.detect_key()
+
+        else:
+            self.log_debug("Turnstile key: %s" % captcha_key)
+
+        if captcha_key:
+            self.captcha = turnstile
+            inputs["cf-turnstile-response"] = turnstile.challenge(captcha_key)
+            return
