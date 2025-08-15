@@ -77,11 +77,18 @@ def call_api(func, *args, **kwargs):
         return jsonify({'error': "Forbidden"}), 403
 
     result = getattr(api, func)(
-        *[literal_eval(x) for x in args],
-        **{x: literal_eval(y) for x, y in kwargs.items()},
+        *[_try_literal_eval(x) for x in args],
+        **{x: _try_literal_eval(y) for x, y in kwargs.items()},
     )
 
     return jsonify(result)
+
+
+def _try_literal_eval(val):
+    try:
+        return literal_eval(val)
+    except SyntaxError:
+        return val
 
 
 @bp.route("/api/login", methods=["POST"], endpoint="login")
