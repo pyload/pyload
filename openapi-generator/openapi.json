@@ -2638,7 +2638,8 @@
                     "additionalProperties": {
                       "type": "object"
                     },
-                    "default": {}
+                    "nullable": true,
+                    "default": null
                   }
                 },
                 "required": [

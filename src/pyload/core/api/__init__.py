@@ -1239,10 +1239,11 @@ class Api:
 
     @legacy("updateAccount")
     @permission(Perms.ACCOUNTS)
-    def update_account(self, plugin: str, account: str, password: Optional[str] = None, options: dict[str: Any] = {}) -> None:
+    def update_account(self, plugin: str, account: str, password: Optional[str] = None, options: Optional[dict[str, Any]] = None) -> None:
         """
         Changes pw/options for specific account.
         """
+        options = options or {}
         self.pyload.account_manager.update_account(plugin, account, password, options)
 
     @legacy("removeAccount")
