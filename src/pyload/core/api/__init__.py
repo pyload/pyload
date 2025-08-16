@@ -476,15 +476,18 @@ class Api:
             .replace(":", "")
             .replace("/", "_")
             .replace("\\", "_")
+            .replace("\r", "_")
+            .replace("\n", "_")
         )
 
-        package_id = self.pyload.files.add_package(name, folder, Destination(dest))
+        sanitized_name = name.replace("\n", "\\n").replace("\r", "\\r")
+        package_id = self.pyload.files.add_package(sanitized_name, folder, Destination(dest))
 
         self.pyload.files.add_links(links, package_id)
 
         self.pyload.log.info(
             self._("Added package {name} containing {count:d} links").format(
-                name=name, count=len(links)
+                name=sanitized_name, count=len(links)
             )
         )
 

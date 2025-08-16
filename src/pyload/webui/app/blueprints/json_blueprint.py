@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+from werkzeug.utils import secure_filename
 
 import flask
 from flask.json import jsonify
@@ -132,8 +133,9 @@ def add_package():
             if not package_name or package_name == "New Package":
                 package_name = file.filename
 
+            safe_filename = secure_filename(file.filename)
             file_path = os.path.join(
-                api.get_config_value("general", "storage_folder"), "tmp_" + file.filename
+                api.get_config_value("general", "storage_folder"), "tmp_" + safe_filename
             )
             file.save(file_path)
             links.insert(0, file_path)

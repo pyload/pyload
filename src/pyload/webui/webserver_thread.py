@@ -43,7 +43,10 @@ class WebServerThread(threading.Thread):
         bind_path = "/"
         bind_addr = (self.host, self.port)
         wsgi_app = wsgi.PathInfoDispatcher({bind_path: self.app})
-        self.server = wsgi.Server(bind_addr, wsgi_app, request_queue_size=512)
+        self.server = wsgi.Server(
+            bind_addr, wsgi_app, server_name="pyLoad/{}".format(self.pyload.version),
+            request_queue_size=512
+        )
 
         if self.use_ssl:
             try:

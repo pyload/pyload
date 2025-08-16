@@ -10,6 +10,13 @@ class PackageUI {
   initialize() {
     $("#del_finished").click(() => this.deleteFinished());
     $("#restart_failed").click(() => this.restartFailed());
+    $("#pack_box .modal-content").resizable({
+      handles: "e,w",
+      minHeight: 420,
+      minWidth: 300
+    }).draggable({ scroll: false }).append(
+      '<div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="cursor: default;"></div>'
+    );
     this.parsePackages();
   }
 
@@ -119,12 +126,12 @@ class Package {
     this.folder = $(this.ele).find('.folder');
     this.password = $(this.ele).find('.password');
 
-    $(imgs[3]).click(() => this.deletePackage());
-    $(imgs[4]).click(() => this.restartPackage());
-    $(imgs[5]).click(() => this.editPackage());
-    $(imgs[6]).click(() => this.movePackage());
-    $(imgs[7]).click(() => this.editOrder());
-    $(imgs[8]).click(() => this.extractPackage());
+    $(imgs[3]).click((e) => this.deletePackage(e));
+    $(imgs[4]).click((e) => this.restartPackage(e));
+    $(imgs[5]).click((e) => this.editPackage(e));
+    $(imgs[6]).click((e) => this.movePackage(e));
+    $(imgs[7]).click((e) => this.editOrder(e));
+    $(imgs[8]).click((e) => this.extractPackage(e));
 
     $(this.ele).find('.packagename').click(() => this.toggle());
   }
@@ -298,7 +305,9 @@ class Package {
     }
   }
 
-  deletePackage() {
+  deletePackage(event) {
+    event.stopPropagation();
+    event.preventDefault();
     uiHandler.yesNoDialog("{{_('Are you sure you want to delete this package?')}}", (answer) => {
       if (answer) {
         uiHandler.indicateLoad();
@@ -314,7 +323,9 @@ class Package {
     });
   }
 
-  restartPackage() {
+  restartPackage(event) {
+    event.stopPropagation();
+    event.preventDefault();
     uiHandler.indicateLoad();
     $.get(`{{url_for('api.rpc', func='restart_package')}}/${this.id}`)
       .done(() => {
@@ -326,7 +337,9 @@ class Package {
       });
   }
 
-  extractPackage() {
+  extractPackage(event) {
+    event.stopPropagation();
+    event.preventDefault();
     uiHandler.indicateLoad();
     $.get(`{{url_for('api.rpc', func='service_call')}}/'ExtractArchive.extract_package', [${this.id}]`)
       .done(() => {
@@ -351,7 +364,9 @@ class Package {
     this.linksLoaded = false;
   }
 
-  movePackage() {
+  movePackage(event) {
+    event.stopPropagation();
+    event.preventDefault();
     uiHandler.indicateLoad();
     $.get({
       url: "{{url_for('json.move_package')}}",
@@ -367,7 +382,9 @@ class Package {
       });
   }
 
-  editOrder() {
+  editOrder(event) {
+    event.stopPropagation();
+    event.preventDefault();
     uiHandler.indicateLoad();
     $.get({
       url: "{{url_for('json.package')}}",

@@ -23,12 +23,8 @@ def local_check(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
         remote_addr = flask.request.environ.get("REMOTE_ADDR", "0")
-        http_host = flask.request.environ.get("HTTP_HOST", "0")
 
-        if remote_addr in ("127.0.0.1", "::ffff:127.0.0.1", "::1", "localhost") or http_host in (
-            "127.0.0.1:9666",
-            "[::1]:9666",
-        ):
+        if remote_addr in ("127.0.0.1", "::ffff:127.0.0.1", "::1", "localhost"):
             return func(*args, **kwargs)
         else:
             return "Forbidden", 403
@@ -90,9 +86,12 @@ def addcrypted():
         "package", flask.request.form.get("source", flask.request.form.get("referer"))
     )
     dl_path = api.get_config_value("general", "storage_folder")
-    dlc_path = os.path.join(
-        dl_path, package.replace("/", "").replace("\\", "").replace(":", "") + ".dlc"
-    )
+    dlc_filename = package.replace("/", "").replace("\\", "").replace(":", "") + ".dlc"
+    dlc_path = os.path.join(dl_path, dlc_filename)
+    dlc_path = os.path.normpath(dlc_path)
+    # Ensure dlc_path is within dl_path
+    if not os.path.abspath(dlc_path).startswith(os.path.abspath(dl_path) + os.sep):
+        return "failed: invalid package name\r\n", 400
     dlc = flask.request.form["crypted"].replace(" ", "+")
     with open(dlc_path, mode="wb") as fp:
         fp.write(dlc)

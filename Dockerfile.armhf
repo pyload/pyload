@@ -29,7 +29,7 @@ ARG PIP_INSTALL_OPTIONS="--disable-pip-version-check --no-cache-dir --no-compile
 FROM lsiobase/ubuntu:$IMAGE_TAG AS builder
 
 ARG APT_PACKAGES="python3 python3-distutils python3-pip python3-pycurl openssl sqlite tesseract-ocr unrar"
-ARG PIP_PACKAGES="pip setuptools wheel"
+ARG PIP_PACKAGES="pip packaging setuptools wheel"
 
 RUN echo "**** install binary packages ****" && \
     apt-get update && \

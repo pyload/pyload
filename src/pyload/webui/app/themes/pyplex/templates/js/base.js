@@ -204,7 +204,7 @@ class UIHandler {
 
     const addlinksMinHeight = getScrollBarHeight() + Math.round(parseFloat($("#add_links").css("line-height").replace('px', '')));
     let addlinksHeight;
-    $("#modal-content").resizable({
+    $("#add_box .modal-content").resizable({
       minHeight: 520 + addlinksMinHeight,
       minWidth: 310,
       start: (event, ui) => {

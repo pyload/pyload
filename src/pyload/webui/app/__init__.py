@@ -69,6 +69,14 @@ class App:
             response.headers["Content-Security-Policy"] = "frame-ancestors 'self';"
             return response
 
+        # Dynamically set SESSION_COOKIE_SECURE according to the value of X-Forwarded-Proto
+        @app.before_request
+        def set_session_cookie_secure():
+            x_forwarded_proto = flask.request.headers.get("X-Forwarded-Proto")
+            if x_forwarded_proto is not None:
+                is_secure = x_forwarded_proto.split(',')[0].strip() == "https"
+                flask.current_app.config['SESSION_COOKIE_SECURE'] = is_secure
+
     @classmethod
     def _configure_json_encoding(cls, app):
         try:
@@ -112,7 +120,7 @@ class App:
         app.config["SESSION_FILE_DIR"] = cache_path
         app.config["SESSION_TYPE"] = "filesystem"
         app.config["SESSION_COOKIE_NAME"] = "pyload_session_" + str(app.config["PYLOAD_API"].get_config_value("webui", "port"))
-        app.config["SESSION_COOKIE_SAMESITE"] = "Strict"
+        app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
         app.config["SESSION_COOKIE_SECURE"] = app.config["PYLOAD_API"].get_config_value("webui", "use_ssl")
         app.config["SESSION_PERMANENT"] = False
 
