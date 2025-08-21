@@ -173,7 +173,7 @@ docker run --rm -v "${PWD}:/local" openapitools/openapi-generator-cli generate \
   -i /local/openapi-generator/openapi.json \
   -g java \
   -o /local/openapi-generator/out \
-  --additional-properties library=retrofit2,serializationLibrary=gson,openApiNullable=false,invokerPackage=org.pyload.android.openapi,apiPackage=org.pyload.android.openapi.api,modelPackage=org.pyload.android.openapi.models
+  --additional-properties library=retrofit2,serializationLibrary=gson,openApiNullable=false,hideGenerationTimestamp=true,invokerPackage=org.pyload.android.openapi,apiPackage=org.pyload.android.openapi.api,modelPackage=org.pyload.android.openapi.models
 ```
 
 If you are developing a client application for pyLoad, you can use this specification to generate a client
