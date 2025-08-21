@@ -1258,7 +1258,7 @@ class Api:
         self.pyload.account_manager.remove_account(plugin, account)
 
     @legacy("checkAuth")
-    def check_auth(self, username: str, password: str) -> dict[str: Any]:
+    def check_auth(self, username: str, password: str) -> dict[str, Any]:
         """
         Check authentication and returns details.
 
