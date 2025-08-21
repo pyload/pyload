@@ -1,26 +1,15 @@
 # -*- coding: utf-8 -*-
 
+import multiprocessing
+import os
 import random
 import string
 import sys
 
-if sys.version_info < (3, 12):
-    def monkey_patch():
-        """Patching js2py for CVE-2024-28397"""
-        from js2py.constructors.jsobject import Object
-        fn = Object.own["getOwnPropertyNames"]["value"].code
+if os.name == "posix":
+    import resource
 
-        def wraps(*args, **kwargs):
-            result = fn(*args, **kwargs)
-            return list(result)
-        Object.own["getOwnPropertyNames"]["value"].code = wraps
-
-    import js2py
-    monkey_patch()
-    js2py.disable_pyimport()
-
-else:
-    import dukpy
+from py_mini_racer import MiniRacer
 
 
 def random_string(length, valid_chars=string.ascii_letters + string.digits + string.punctuation):
@@ -35,11 +24,39 @@ def is_plural(value):
         return value.endswith("s")  # TODO: detect uncommon plurals
 
 
-def eval_js(script, es6=False):
-    if sys.version_info < (3, 12):
-        return (js2py.eval_js6 if es6 else js2py.eval_js)(script)
-    else:
-        return dukpy.evaljs(script)
+def _run_js(script, queue, timeout_seconds, max_memory):
+    try:
+        print(f"running script in process with PID: {os.getpid()}")
+        if max_memory and os.name == "posix":
+            resource.setrlimit(resource.RLIMIT_AS, (max_memory, max_memory))
+
+        ctx = MiniRacer()
+        ctx.set_soft_memory_limit(max(1_048_576, max_memory - 1_048_576))
+        result = ctx.eval(script, timeout=timeout_seconds*1000, max_memory=max_memory)
+
+        queue.put(("success", result))
+
+    except Exception as exc:
+        queue.put(("error", exc))
+
+
+def eval_js(script, timeout_seconds=5.0, max_memory=10_485_760):  # 10MiB limit
+    result_queue = multiprocessing.Queue()
+
+    process = multiprocessing.Process(target=_run_js, args=(script, result_queue, timeout_seconds, max_memory,))
+    process.start()
+    process.join(timeout_seconds)
+
+    if process.is_alive():
+        process.terminate()
+        process.join(1.0)
+        raise TimeoutError(f"JavaScript execution timed out after {timeout_seconds} seconds")
+
+    status, value = result_queue.get()
+    if status == "error":
+        raise value
+
+    return value
 
 
 def accumulate(iterable, to_map=None):
@@ -58,7 +75,6 @@ def reversemap(obj):
     Invert mapping object preserving type and ordering.
     """
     return obj.__class__(reversed(item) for item in obj.items())
-
 
 # def get_translation(domain, localedir=None, languages=None, class_=None,
 # fallback=False, codeset=None):
