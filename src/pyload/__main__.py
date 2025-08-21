@@ -11,7 +11,7 @@ from functools import partial
 from . import __version__
 from .core import Core
 
-DESCRIPTION = """
+DESCRIPTION = r"""
        ____________
    ___/       |    \_____________ _ _______________ _ ___
   /   |    ___/    |    _ __ _  _| |   ___  __ _ __| |   \\
@@ -295,3 +295,4 @@ def main(cmd_args=sys.argv[1:]):
 
 if __name__ == "__main__":
     main()
+    sys.exit(0)
