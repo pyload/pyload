@@ -158,7 +158,6 @@ class LogFactory:
         )
         filelog_path = os.path.join(filelog_folder, filename)
 
-        encoding = locale.getpreferredencoding(do_setlocale=False)
         if self.pyload.config.get("log", "filelog_rotate"):
             max_size = self.pyload.config.get("log", "filelog_size") << 10
             max_entries = self.pyload.config.get("log", "filelog_entries")
@@ -167,11 +166,11 @@ class LogFactory:
                 filelog_path,
                 maxBytes=max_size,
                 backupCount=max_entries,
-                encoding=encoding,
+                encoding="utf-8",
             )
 
         else:
-            filehdlr = logging.FileHandler(filelog_path, encoding=encoding)
+            filehdlr = logging.FileHandler(filelog_path, encoding="utf-8")
 
         filehdlr.setFormatter(filelog_form)
         logger.addHandler(filehdlr)
