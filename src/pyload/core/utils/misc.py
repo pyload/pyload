@@ -26,7 +26,6 @@ def is_plural(value):
 
 def _run_js(script, queue, timeout_seconds, max_memory):
     try:
-        print(f"running script in process with PID: {os.getpid()}")
         if max_memory and os.name == "posix":
             resource.setrlimit(resource.RLIMIT_AS, (max_memory, max_memory))
 

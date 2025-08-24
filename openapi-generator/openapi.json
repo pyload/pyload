@@ -2827,9 +2827,17 @@
       "AccountInfo": {
         "properties": {
           "validuntil": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
             "format": "float",
-            "title": "Validuntil",
-            "type": "number"
+            "title": "Validuntil"
           },
           "login": {
             "title": "Login",
@@ -2844,6 +2852,15 @@
             "type": "boolean"
           },
           "trafficleft": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
             "format": "int64",
             "title": "Trafficleft",
             "type": "integer"
@@ -2858,11 +2875,9 @@
           }
         },
         "required": [
-          "validuntil",
           "login",
           "options",
           "valid",
-          "trafficleft",
           "premium",
           "type"
         ],

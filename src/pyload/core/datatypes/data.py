@@ -21,11 +21,11 @@ OPTIONAL_INT64_JSON_SCHEMA = {
 }
 
 class AccountInfo(BaseModel):
-    validuntil: float = Field(json_schema_extra={"format": "float"})
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    validuntil: Optional[float] = Field(default=None, json_schema_extra={"format": "float"})
     login: str
     options: dict
     valid: bool
-    trafficleft: int = Field(json_schema_extra=INT64_JSON_SCHEMA)
+    trafficleft: Optional[int] = Field(default=None, json_schema_extra=INT64_JSON_SCHEMA)
     premium: bool
     type: str
 
