@@ -376,14 +376,18 @@ class Core:
     def _generate_open_api_spec(self):
         from pyload.webui.app.api_docs.openapi_specification_generator import OpenAPISpecificationGenerator
 
-        base_path =  pathlib.Path("".join(PKGDIR.partition(os.sep + "pyload")[:-1]))
-        if spec_path := next((p for p in base_path.rglob('openapi.json')), None):
-            self.log.debug("Saving OpenAPI spec to: %s", spec_path)
-            openapi_spec = OpenAPISpecificationGenerator(api=self.api).generate_openapi_json()
-            with open(spec_path, 'w') as f:
-                json.dump(openapi_spec, f, indent=2)
+        last_index = __file__.rfind("src"+ os.sep + "pyload")
+        if last_index != -1:
+            base_path =  pathlib.Path(__file__[:last_index])
+            if spec_path := next((p for p in base_path.rglob('openapi.json')), None):
+                self.log.debug("Saving OpenAPI spec to: %s", spec_path)
+                openapi_spec = OpenAPISpecificationGenerator(api=self.api).generate_openapi_json()
+                with open(spec_path, 'w') as f:
+                    json.dump(openapi_spec, f, indent=2)
+            else:
+                raise IOError("Unable to locate openapi.json file")
         else:
-            raise IOError("Unable to locate openapi.json file")
+            raise IOError("Unable to locate pyLoad's project directory")
 
     def start(self):
         try:
