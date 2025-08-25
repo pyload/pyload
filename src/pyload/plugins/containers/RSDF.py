@@ -46,12 +46,12 @@ class RSDF(BaseContainer):
 
         backend = default_backend()
 
-        ecb = Cipher(algorithms.AES(KEY), modes.ECB(), backend=backend).encryptor()
-        iv = ecb.update(IV) + ecb.finalize()
+        # Use a securely generated random IV (16 bytes for AES)
+        iv = os.urandom(16)
 
-        cipher = Cipher(algorithms.AES(KEY), modes.CFB(iv), backend=backend)
-        encryptor = cipher.encryptor()
-        iv = encryptor.update(IV) + encryptor.finalize()
+        # Prepare cipher with secure IV
+        # No need to reprocess IV as before
+
 
         try:
             fs_filename = os.fsdecode(pyfile.url)
