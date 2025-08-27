@@ -1,13 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import multiprocessing
-import os
 import random
 import string
-import sys
-
-if os.name == "posix":
-    import resource
 
 from py_mini_racer import MiniRacer
 
@@ -26,10 +21,6 @@ def is_plural(value):
 
 def _run_js(script, queue, timeout_seconds, max_memory):
     try:
-        print(f"running script in process with PID: {os.getpid()}")
-        if max_memory and os.name == "posix":
-            resource.setrlimit(resource.RLIMIT_AS, (max_memory, max_memory))
-
         ctx = MiniRacer()
         ctx.set_soft_memory_limit(max(1_048_576, max_memory - 1_048_576))
         result = ctx.eval(script, timeout=timeout_seconds*1000, max_memory=max_memory)
