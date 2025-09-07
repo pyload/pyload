@@ -341,7 +341,7 @@ class BaseAccount(BasePlugin):
             "options": options or {"limit_dl": ["0"]},
             "password": password or "",
             "plugin": self.pyload.account_manager.get_account_plugin(self.classname),
-            "premium": None,
+            "premium": False,
             "stats": [0, 0],  #: login_count, chosen_time
             "timestamp": 0,
             "trafficleft": None,
