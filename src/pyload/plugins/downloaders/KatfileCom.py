@@ -6,10 +6,10 @@ from ..base.xfs_downloader import XFSDownloader
 class KatfileCom(XFSDownloader):
     __name__ = "KatfileCom"
     __type__ = "downloader"
-    __version__ = "0.04"
+    __version__ = "0.05"
     __status__ = "testing"
 
-    __pattern__ = r"https?://(?:www\.)?katfile\.com/\w+"
+    __pattern__ = r"https?://(?:www\.)?katfile\.(?:com|cloud)/\w+"
     __config__ = [
         ("enabled", "bool", "Activated", True),
         ("use_premium", "bool", "Use premium account if available", True),
