@@ -148,21 +148,30 @@ def files():
         return render_base(messages)
     data = {"folder": [], "files": []}
 
-    for entry in sorted(os.listdir(root)):
-        if os.path.isdir(os.path.join(root, entry)):
-            folder = {"name": decode_name(entry), "path": decode_name(entry), "files": []}
-            files = os.listdir(os.path.join(root, entry))
-            for file in sorted(files):
-                try:
-                    if os.path.isfile(os.path.join(root, entry, file)):
-                        folder["files"].append(decode_name(file))
-                except Exception:
-                    pass
+    try:
+        for entry in sorted(os.listdir(root)):
+            try:
+                if os.path.isdir(os.path.join(root, entry)):
+                    folder = {"name": decode_name(entry), "path": decode_name(entry), "files": []}
+                    try:
+                        files = os.listdir(os.path.join(root, entry))
+                        for file in sorted(files):
+                            if os.path.isfile(os.path.join(root, entry, file)):
+                                folder["files"].append(decode_name(file))
 
-            data["folder"].append(folder)
+                    except OSError as exc:
+                        log.debug("Failed to list files in folder '%s': %s", decode_name(entry), exc)
 
-        elif os.path.isfile(os.path.join(root, entry)):
-            data["files"].append(decode_name(entry))
+                    data["folder"].append(folder)
+
+                elif os.path.isfile(os.path.join(root, entry)):
+                    data["files"].append(decode_name(entry))
+
+            except OSError as exc:
+                log.debug("Failed to access entry '%s': %s", decode_name(entry), exc)
+
+    except OSError as exc:
+        log.debug("Failed to list download directory '{}': {}".format(os.fsdecode(root), exc))
 
     return render_template("files.html", files=data)
 
