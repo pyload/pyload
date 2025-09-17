@@ -101,23 +101,33 @@ class MegaCrypto:
 
     @staticmethod
     def ecb_decrypt(data, key):
+        """
+        Decrypts data using AES-CBC mode with a 16-byte random IV prepended to the ciphertext.
+        """
+        iv = data[:16]
+        ciphertext = data[16:]
         cipher = Cipher(
             algorithms.AES(MegaCrypto.a32_to_bytes(key)),
-            modes.ECB(),
+            modes.CBC(iv),
             backend=default_backend(),
         )
         decryptor = cipher.decryptor()
-        return decryptor.update(data) + decryptor.finalize()
+        return decryptor.update(ciphertext) + decryptor.finalize()
 
     @staticmethod
     def ecb_encrypt(data, key):
+        """
+        Encrypts data using AES-CBC mode with a 16-byte random IV prepended to the ciphertext.
+        """
+        iv = os.urandom(16)
         cipher = Cipher(
             algorithms.AES(MegaCrypto.a32_to_bytes(key)),
-            modes.ECB(),
+            modes.CBC(iv),
             backend=default_backend(),
         )
         encryptor = cipher.encryptor()
-        return encryptor.update(data) + encryptor.finalize()
+        ciphertext = encryptor.update(data) + encryptor.finalize()
+        return iv + ciphertext
 
     @staticmethod
     def get_cipher_key(key):

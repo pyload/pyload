@@ -9,7 +9,7 @@
     "python.pythonPath": ".venv/bin/python3.9",
     "[python]": {
         "editor.codeActionsOnSave": {
-            "source.organizeImports": true
+            "source.organizeImports": "explicit"
         }
     }
 }
