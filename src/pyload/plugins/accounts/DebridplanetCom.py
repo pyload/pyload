@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import hashlib
+import bcrypt
 import json
 import time
 
@@ -63,7 +64,9 @@ class DebridplanetCom(MultiAccount):
             self.skip_login()
 
         data["token"] = None
-        api_data = self.api_request("login", username=user, password=hashlib.sha256(to_bytes(password)).hexdigest())
+        # Use bcrypt to hash the password before sending, ensuring computationally expensive hashing.
+        hashed_pw = bcrypt.hashpw(to_bytes(password), bcrypt.gensalt())
+        api_data = self.api_request("login", username=user, password=hashed_pw.decode("utf-8"))
         if api_data.get("success", False):
             data["token"] = api_data["token"]
 

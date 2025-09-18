@@ -73,7 +73,7 @@ class RapideoPl(MultiAccount):
 
     def signin(self, user, password, data):
         data["usr"] = user
-        data["pwd"] = hashlib.md5(password.encode()).hexdigest()
+        data["pwd"] = hashlib.pbkdf2_hmac('sha256', password.encode(), b'pyload-static-salt', 100000).hex()
 
         try:
             response = json.loads(self.run_auth_query())

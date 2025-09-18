@@ -2,6 +2,7 @@
 
 import datetime
 import hashlib
+import os
 import json
 import time
 
@@ -73,7 +74,10 @@ class TwojlimitPl(MultiAccount):
         }
 
     def signin(self, user, password, data):
-        data["hash_password"] = hashlib.md5(password.encode()).hexdigest()
+        # Use PBKDF2-HMAC-SHA256 for secure password hashing
+        salt = b"pyload_twojlimitpl_salt"  # Replace or generate per user in production
+        dk = hashlib.pbkdf2_hmac("sha256", password.encode(), salt, 100_000)
+        data["hash_password"] = dk.hex()
 
         try:
             response = json.loads(self.run_auth_query())
