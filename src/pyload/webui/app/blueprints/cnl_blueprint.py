@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+from werkzeug.utils import secure_filename
 from base64 import standard_b64decode
 from functools import wraps
 from urllib.parse import unquote
@@ -12,7 +13,6 @@ import flask
 from flask.json import jsonify
 from pyload.core.api import Destination
 from pyload.core.utils.convert import to_str
-from pyload.core.utils.misc import eval_js
 
 #: url_prefix here is intentional since it should not be affected by path prefix
 bp = flask.Blueprint("flash", __name__, url_prefix="/")
@@ -86,11 +86,11 @@ def addcrypted():
         "package", flask.request.form.get("source", flask.request.form.get("referer"))
     )
     dl_path = api.get_config_value("general", "storage_folder")
-    dlc_filename = package.replace("/", "").replace("\\", "").replace(":", "") + ".dlc"
+    dlc_filename = secure_filename(package) + ".dlc"
     dlc_path = os.path.join(dl_path, dlc_filename)
-    dlc_path = os.path.normpath(dlc_path)
+    dlc_path = os.path.normpath(os.path.realpath(dlc_path))
     # Ensure dlc_path is within dl_path
-    if not os.path.abspath(dlc_path).startswith(os.path.abspath(dl_path) + os.sep):
+    if not dlc_path.startswith(os.path.abspath(dl_path) + os.sep):
         return "failed: invalid package name\r\n", 400
     dlc = flask.request.form["crypted"].replace(" ", "+")
     with open(dlc_path, mode="wb") as fp:

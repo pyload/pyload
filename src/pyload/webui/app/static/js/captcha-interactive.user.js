@@ -34,20 +34,29 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-(function() {
+(function () {
   'use strict';
 
   // this function listens to messages from the pyload main page
-  window.addEventListener('message', function(e) {
+  window.addEventListener('message', function (e) {
+    // Restrict accepted origins to a trusted set.
+    const trustedOrigins = [
+      "https://pyload.net",    // Replace with your trusted parent origins
+      // Add additional origins as needed.
+    ];
+    if (!trustedOrigins.includes(e.origin)) {
+      // Ignore messages from untrusted or unknown origins
+      return;
+    }
     let request;
     try {
       request = JSON.parse(e.data);
-    } catch(e) {
+    } catch (e) {
       return
     }
-    if(request.constructor === {}.constructor && request.actionCode === "pyloadActivateInteractive") {
+    if (request.constructor === {}.constructor && request.actionCode === "pyloadActivateInteractive") {
       if (request.params.script) {
-        const sig = new KJUR.crypto.Signature({"alg": "SHA384withRSA", "prov": 'cryptojs/jsrsa'});
+        const sig = new KJUR.crypto.Signature({ "alg": "SHA384withRSA", "prov": 'cryptojs/jsrsa' });
         sig.init("-----BEGIN PUBLIC KEY-----\n" +
           "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuEHE4uAeTeEQjIwB//YH\n" +
           "Gl5e058aJRCRyOvApv1iC1ZQgXGHopgEd528+AtkAZKdCRkoNCWda7L/hROpZNjq\n" +
@@ -60,16 +69,16 @@
         sig.updateString(request.params.script.code);
         if (sig.verify(request.params.script.signature)) {
           window.gpyload = {
-            isVisible : function(element) {
+            isVisible: function (element) {
               const style = window.getComputedStyle(element);
               return !(style.width === 0 ||
                 style.height === 0 ||
                 style.opacity === 0 ||
-                style.display ==='none' ||
+                style.display === 'none' ||
                 style.visibility === 'hidden'
               );
             },
-            debounce : function (fn, delay) {
+            debounce: function (fn, delay) {
               let timer = null;
               return function () {
                 const context = this, args = arguments;
@@ -79,44 +88,44 @@
                 }, delay);
               };
             },
-            submitResponse: function(response) {
+            submitResponse: function (response) {
               if (typeof gpyload.observer !== 'undefined') {
                 gpyload.observer.disconnect();
               }
-              const responseMessage = {actionCode: "pyloadSubmitResponse", params: {response: response}};
-              parent.postMessage(JSON.stringify(responseMessage),"*");
+              const responseMessage = { actionCode: "pyloadSubmitResponse", params: { response: response } };
+              parent.postMessage(JSON.stringify(responseMessage), "*");
             },
-            activated: function() {
-              const responseMessage = {actionCode: "pyloadActivatedInteractive"};
-              parent.postMessage(JSON.stringify(responseMessage),"*");
+            activated: function () {
+              const responseMessage = { actionCode: "pyloadActivatedInteractive" };
+              parent.postMessage(JSON.stringify(responseMessage), "*");
             },
-            setSize : function(rect) {
+            setSize: function (rect) {
               if (gpyload.data.rectDoc.left !== rect.left || gpyload.data.rectDoc.right !== rect.right || gpyload.data.rectDoc.top !== rect.top || gpyload.data.rectDoc.bottom !== rect.bottom) {
                 gpyload.data.rectDoc = rect;
-                const responseMessage = {actionCode: "pyloadIframeSize", params: {rect: rect}};
+                const responseMessage = { actionCode: "pyloadIframeSize", params: { rect: rect } };
                 parent.postMessage(JSON.stringify(responseMessage), "*");
               }
             },
-            data : {
+            data: {
               debounceInterval: 1500,
-              rectDoc: {top: 0, right: 0, bottom: 0, left: 0}
+              rectDoc: { top: 0, right: 0, bottom: 0, left: 0 }
             }
           };
 
           try {
             let scriptFunction = new Function('request', 'gpyload', '"use strict";' + request.params.script.code);
             scriptFunction(request, gpyload);
-          } catch(err) {
-            console.error("pyLoad: Script aborted: " + err.name + ": " + err.message + " (" + err.stack +")");
+          } catch (err) {
+            console.error("pyLoad: Script aborted: " + err.name + ": " + err.message + " (" + err.stack + ")");
             return;
           }
           if (typeof gpyload.getFrameSize === "function") {
             const checkDocSize = gpyload.debounce(() => {
-              window.scrollTo(0,0);
+              window.scrollTo(0, 0);
               var rect = gpyload.getFrameSize();
               gpyload.setSize(rect);
             }, gpyload.data.debounceInterval);
-            gpyload.observer = new MutationObserver(function(mutationsList) {
+            gpyload.observer = new MutationObserver(function (mutationsList) {
               checkDocSize();
             });
             const js_script = document.createElement("script");
