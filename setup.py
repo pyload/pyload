@@ -90,6 +90,7 @@ def retrieve_version():
 # TODO: BuildDocs running `sphinx-apidoc`
 if __name__ == "__main__":
     setup(
+        install_requires=['argon2-cffi==25.1.0', 'bcrypt==4.3.0'],
         version=retrieve_version(),
         cmdclass={"build_locale": BuildLocale},
     )
