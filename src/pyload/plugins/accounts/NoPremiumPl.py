@@ -2,6 +2,8 @@
 
 import datetime
 import hashlib
+import os
+import base64
 import json
 import time
 
@@ -73,9 +75,12 @@ class NoPremiumPl(MultiAccount):
         }
 
     def signin(self, user, password, data):
-        data["hash_password"] = hashlib.sha1(
-            hashlib.md5(password.encode()).hexdigest().encode()
-        ).hexdigest()
+        # Use PBKDF2_HMAC with SHA256 and a random salt
+        salt = os.urandom(16)
+        hash_bytes = hashlib.pbkdf2_hmac('sha256', password.encode(), salt, 100000)
+        # Store hash and salt as base64 for transfer
+        data["hash_password"] = base64.b64encode(hash_bytes).decode('utf-8')
+        data["hash_salt"] = base64.b64encode(salt).decode('utf-8')
 
         try:
             response = json.loads(self.run_auth_query())
@@ -90,6 +95,9 @@ class NoPremiumPl(MultiAccount):
         query = self.API_QUERY
         query["username"] = self.user
         query["password"] = self.info["data"]["hash_password"]
+        # Optionally transmit salt if API supports it
+        if "hash_salt" in self.info["data"]:
+            query["hash_salt"] = self.info["data"]["hash_salt"]
         return query
 
     def run_auth_query(self):
