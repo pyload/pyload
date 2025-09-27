@@ -15,7 +15,7 @@ from ..internal.MultiHoster import MultiHoster
 class TorboxApp(MultiHoster):
     __name__ = "TorboxApp"
     __type__ = "hoster"
-    __version__ = "0.02"
+    __version__ = "0.01"
     __status__ = "testing"
 
     __pattern__ = r"https://store-\d+\.wnam\.tb-cdn\.io/dld/.*|(?P<APIURL>https://api\.torbox\.app/v1/api/(?P<ENDPOINT>webdl|torrents)/requestdl\?.*redirect=true.*)"
@@ -127,6 +127,7 @@ class TorboxApp(MultiHoster):
                                                 "id": file_id,
                                                 "bypass_cache": True,
                                             })
+                self.check_errors(api_data)
 
                 file_size = api_data["data"].get("size")
                 if file_size:
@@ -151,11 +152,9 @@ class TorboxApp(MultiHoster):
                                         "zip": False,
                                         "token": api_key
                                     })
-        if api_data.get("success", False):
-            self.link = api_data["data"]
+        self.check_errors(api_data)
 
-        else:
-            self.fail(api_data["detail"])
+        self.link = api_data["data"]
 
     def check_errors(self, data=None):
         if isinstance(data, dict):
@@ -165,7 +164,8 @@ class TorboxApp(MultiHoster):
                     self.offline()
 
                 elif error_code == "DOWNLOAD_LIMIT_REACHED":
-                    self.retry(5, 6*60, data["detail"])
+                    self.log_error(data["detail"])
+                    self.temp_offline()
 
                 else:
                     self.log_error(data["detail"])
