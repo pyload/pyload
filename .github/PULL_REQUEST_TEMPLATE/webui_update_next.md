@@ -3,7 +3,7 @@ name: WebUI Update (pyLoad Next)
 about: Propose an update for the web interface
 title: ""
 labels: pyLoad Next, enhancement
-assignees: vuolter
+assignees: gammac0de
 ---
 
 <!-- ANNOTATIONS LIKE THIS WILL NOT BE VISIBLE IN YOUR TICKET -->

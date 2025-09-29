@@ -3,7 +3,7 @@ name: Feature Request (pyLoad Next)
 about: Suggest an idea for pyLoad
 title: ""
 labels: pyLoad Next, feature request
-assignees: vuolter
+assignees: gammac0de
 ---
 
 <!-- ANNOTATIONS LIKE THIS WILL NOT BE VISIBLE IN YOUR TICKET -->
