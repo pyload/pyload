@@ -5,11 +5,11 @@ from base64 import standard_b64decode
 from functools import wraps
 from urllib.parse import unquote
 
+import flask
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+from werkzeug.utils import secure_filename
 
-import flask
-from flask.json import jsonify
 from pyload.core.api import Destination
 from pyload.core.utils.convert import to_str
 from pyload.core.utils.misc import eval_js
@@ -86,11 +86,10 @@ def addcrypted():
         "package", flask.request.form.get("source", flask.request.form.get("referer"))
     )
     dl_path = api.get_config_value("general", "storage_folder")
-    dlc_filename = package.replace("/", "").replace("\\", "").replace(":", "") + ".dlc"
-    dlc_path = os.path.join(dl_path, dlc_filename)
-    dlc_path = os.path.normpath(dlc_path)
+    dlc_filename = secure_filename(package) + ".dlc"
+    dlc_path = os.path.abspath(os.path.join(dl_path, dlc_filename))
     # Ensure dlc_path is within dl_path
-    if not os.path.abspath(dlc_path).startswith(os.path.abspath(dl_path) + os.sep):
+    if not dlc_path.startswith(os.path.abspath(dl_path) + os.sep):
         return "failed: invalid package name\r\n", 400
     dlc = flask.request.form["crypted"].replace(" ", "+")
     with open(dlc_path, mode="wb") as fp:
