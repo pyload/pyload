@@ -3,7 +3,7 @@ name: Bug Report (pyLoad Next)
 about: Create a report to help us improve
 title: ""
 labels: pyLoad Next, bug
-assignees: vuolter
+assignees: gammac0de
 ---
 
 <!-- ANNOTATIONS LIKE THIS WILL NOT BE VISIBLE IN YOUR TICKET -->
