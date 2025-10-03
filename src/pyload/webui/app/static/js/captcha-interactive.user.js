@@ -41,6 +41,7 @@
   // Settings storage abstraction
   class SettingsStore {
     constructor() {
+      this._modified = false;
       this.settings = {
         trustedOrigins: [], // array of trusted parent origins
         initialShow: true // whether to show the settings panel on first run
@@ -52,6 +53,7 @@
     }
     set(key, value) {
       this.settings[key] = value;
+      this._modified = true;
     }
     load() {
       for (const key of Object.keys(this.settings)) {
@@ -61,8 +63,9 @@
         }
         this.settings[key] = value;
       }
+      this._modified = false;
     }
-    save(key=null) {
+    save(key= null) {
       if (key !== null) {
         // Save single setting
         GM_setValue(key, this.settings[key]);
@@ -71,7 +74,11 @@
         for (const [key, value] of Object.entries(this.settings)) {
           GM_setValue(key, value);
         }
+        this._modified = false;
       }
+    }
+    modified() {
+      return this._modified;
     }
   }
 
@@ -101,10 +108,8 @@
       this.listbox = null;
       this._prevBodyOverflow = null;
       this.overlay = null;
-      // Promise resolution hook
       this._promise = null;
       this._resolveFunc = null;
-      this._returnVal = null;
     }
 
     open() {
@@ -136,11 +141,21 @@
       return this._promise;
     }
 
-    close() {
+    close(returnVal = false) {
       if (this._prevBodyOverflow !== null) {
         document.body.style.overflow = this._prevBodyOverflow;
         this._prevBodyOverflow = null;
       }
+
+      // Detach key event boundary listeners
+      if (this._stopKeyEventPropagation && this.host) {
+        ["keydown", "keyup", "keypress"].forEach((type) => {
+          this.host.removeEventListener(type, this._stopKeyEventPropagation, true);
+          this.host.removeEventListener(type, this._stopKeyEventPropagation, false);
+        });
+        this._stopKeyEventPropagation = null;
+      }
+
       if (this.host) {
         this.host.remove();
         this.host = null;
@@ -150,14 +165,15 @@
         this.overlay = null;
       }
 
-      if (this._returnVal === null) {
-        // If the panel is closed without saving, resolve with false
-        this._returnVal = false;
-        this.settings.load(); // revert unsaved changes
+      if (returnVal === false) {
+        // If the panel is closed without saving, revert unsaved changes
+        this.settings.load();
+      } else {
+        this.settings.save();
       }
       if (this._resolveFunc) {
         try {
-          this._resolveFunc(this._returnVal);
+          this._resolveFunc(returnVal);
         } catch (e) { /* no-op */ }
       }
       this._promise = null;
@@ -299,6 +315,18 @@
       this.shadow.appendChild(this.overlay);
       this.shadow.appendChild(this.panel);
 
+      // Prevent key events from escaping the shadow DOM by stopping propagation
+      // at the host boundary (both capture and bubble phases)
+      this._stopKeyEventPropagation = (ev) => {
+        // Do not preventDefault here so inputs inside the panel retain native behavior
+        ev.stopPropagation();
+        if (typeof ev.stopImmediatePropagation === "function") ev.stopImmediatePropagation();
+      };
+      ["keydown", "keyup", "keypress"].forEach((type) => {
+        this.host.addEventListener(type, this._stopKeyEventPropagation, true);  // capture
+        this.host.addEventListener(type, this._stopKeyEventPropagation, false); // bubble
+      });
+
       // Cache listbox reference
       this.listbox = this.shadow.querySelector("#originList");
     }
@@ -320,7 +348,7 @@
         const newOrigin = newOriginInput.value.trim();
         const normalized = normalizeOrigin(newOrigin);
         if (!normalized) {
-          alert("Invalid URL. Please enter a valid http(s) URL including the scheme and optional port (e.g. https://pyload.example.com:8080).");
+          this.showToast("Invalid URL. Please enter a valid http(s) URL including the scheme and optional port (e.g. https://pyload.example.com:8080).", "red", 10000);
           return;
         }
         let trustedOrigins = this.settings.get("trustedOrigins");
@@ -344,40 +372,25 @@
         }
       });
 
-      // Save settings (non-blocking toast)
+      // Save settings
       this.shadow.querySelector("#saveSettings").addEventListener("click", () => {
-        this.settings.save();
-        // Indicate that settings were saved
-        this._returnVal = true;
-
-        const toastDiv = this.shadow.querySelector("#saveStatus");
-        if (!toastDiv) {
-          const status = document.createElement("div");
-          status.id = "saveStatus";
-          status.textContent = "Settings saved";
-          status.style.color = "green";
-          this.panel.appendChild(status);
-          setTimeout(() => {
-            if (status.parentNode) status.parentNode.removeChild(status);
-            this.close();
-          }, 1500);
-        } else {
-          setTimeout(() => this.close(), 1500);
-        }
+        this.showToast("Settings saved", "green", 1500).then(() => this.close(true));
       });
 
-      // Close panel button
-      this.shadow.querySelector("#closeSettings").addEventListener("click", () => this.close());
-
-      // Title bar close button
-      const closeWindowBtn = this.shadow.querySelector("#windowClose");
-      if (closeWindowBtn) {
-        closeWindowBtn.addEventListener("click", () => this.close());
-      }
+      // Close panel button and Title bar close button
+      ["#closeSettings", "#windowClose"].forEach((sel) => {
+        this.shadow.querySelector(sel).addEventListener("click", () => {
+          if (this.settings.modified()) {
+            this.showToast("NOT saved", "red", 1500).then(() => this.close(false));
+          } else {
+            this.close(false)
+          }
+        });
+      });
 
       // // Close on overlay click
       // if (this.overlay) {
-      //   this.overlay.addEventListener("click", () => this.close());
+      //   this.overlay.addEventListener("click", () => this.close(false));
       // }
 
       // Close on Escape key + focus trap
@@ -407,6 +420,27 @@
       });
     }
 
+    showToast(text, color = "green", duration = 1500) {
+      return new Promise((resolve) => {
+        const toastDiv = this.shadow.querySelector("#saveStatus");
+        if (!toastDiv) {
+          const status = document.createElement("div");
+          status.id = "saveStatus";
+          status.textContent = text;
+          status.style.color = color;
+          this.panel.appendChild(status);
+          setTimeout(() => {
+            if (status.parentNode) status.parentNode.removeChild(status);
+            resolve();
+          }, duration);
+        } else {
+          setTimeout(() => {
+            resolve();
+          }, duration);
+        }
+      });
+    }
+
     getFocusableElements() {
       if (!this.panel) return [];
       const selectors = [
@@ -428,7 +462,6 @@
             title: "pyLoad Interactive Captcha Script",
             text: "Please configure the script settings before use.\nYou can open the settings later from the user script manager menu."
           });
-          // alert("pyLoad Interactive Captcha Script\n\nPlease configure the script settings before use.\n\nYou can open the settings later from the user script manager menu.");
         }
         // Disable initial show on subsequent runs
         settings.set("initialShow", false);
@@ -465,7 +498,7 @@
       }
       if (request && typeof request === "object" && request.actionCode === "pyloadActivateInteractive") {
         if (request.params.script) {
-          if (!KJUR || !KJUR.crypto || !KJUR.crypto.Signature) {
+          if (typeof KJUR === "undefined" || typeof KJUR.crypto?.Signature !== "function") {
             console.error("pyLoad: crypto library not available; aborting.");
             return;
           }
