@@ -1,4 +1,16 @@
 {% autoescape true %}
+// Set up CSRF token for all AJAX requests
+const getCsrfToken = () => document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+// Add CSRF token to all jQuery AJAX requests
+$.ajaxSetup({
+  beforeSend: function (xhr, settings) {
+    if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+      xhr.setRequestHeader("X-CSRFToken", getCsrfToken());
+    }
+  }
+});
+
 class NotificationHandler {
   constructor() {
     this.enabled = false;
@@ -503,13 +515,19 @@ $(() => {
       success: loadJsonToContent
     });
 
-    setInterval(() => {
+    const statusInterval = setInterval(() => {
       $.ajax({
         method: "post",
         url: "{{url_for('json.status')}}",
         async: true,
         timeout: 3000,
-        success: loadJsonToContent
+        success: loadJsonToContent,
+        error: (xhr) => {
+          if (xhr.status === 400) {
+            clearInterval(statusInterval);
+            uiHandler.indicateInfo("{{_('Status updates stopped due to authentication error')}}");
+          }
+        }
       });
     }, 4000);
   }

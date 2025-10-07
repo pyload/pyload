@@ -1,6 +1,18 @@
 {% autoescape true %}
 const thisScript = document.currentScript;
 
+// Set up CSRF token for all AJAX requests
+const getCsrfToken = () => document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+// Add CSRF token to all AJAX requests using MooTools
+Request.implement({
+    options: {
+        headers: {
+            'X-CSRFToken': getCsrfToken()
+        }
+    }
+});
+
 // helper functions
 const humanFileSize = function(size) {
     const filesizename = new Array("B", "KiB", "MiB", "GiB", "TiB", "PiB");
@@ -100,6 +112,14 @@ document.addEvent("domready", function() {
         return new Request.JSON({
             url: "{{url_for('json.status')}}",
             onSuccess: LoadJsonToContent,
+            onFailure: function(xhr) {
+              if (xhr.status === 400) {
+                this.stopTimer();
+                window.notify.alert('{{_("Status updates stopped due to authentication error")}}', {
+                  'className': 'error'
+                });
+              }
+            },
             secure: false,
             async: true,
             initialDelay: 0,

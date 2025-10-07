@@ -16,7 +16,7 @@
 <script type="text/javascript" src="{{theme_template('js/base.js')}}" nopoll={{no_status_polling}}></script>
 
 <link rel="icon" type="image/ico" href="{{url_for('static', filename='img/favicon.ico')}}" />
-
+<meta name="csrf-token" content="{{ csrf_token() }}" />
 <title>{% block title %}pyLoad{% endblock %}</title>
 
 {% block head %}

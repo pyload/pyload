@@ -11,12 +11,13 @@ from logging import getLogger
 from urllib.parse import unquote
 
 import flask
+
 from pyload import APPID, PKGDIR
 from pyload.core.utils import format
 
 from ..helpers import (
-    clear_session, get_permission, get_redirect_url, is_authenticated, login_required, permlist, render_base,
-    render_template, set_session, static_file_url)
+    clear_session, csrf_exempt, get_permission, get_redirect_url, is_authenticated, login_required, permlist,
+    render_base, render_template, set_session, static_file_url)
 
 _RE_LOGLINE = re.compile(r"\[([\d\-]+) ([\d:]+)\] +([A-Z]+) +(.+?) (.*)")
 
@@ -44,6 +45,7 @@ def robots():
 
 # TODO: Rewrite login route using flask-login
 @bp.route("/login", methods=["GET", "POST"], endpoint="login")
+@csrf_exempt
 def login():
     api = flask.current_app.config["PYLOAD_API"]
 
@@ -54,18 +56,15 @@ def login():
         password = flask.request.form["password"]
         user_info = api.check_auth(user, password)
 
-        if flask.request.headers.get("X-Forwarded-For"):
-            client_ip = flask.request.headers.get("X-Forwarded-For").split(',')[0].strip()
-        else:
-            client_ip = flask.request.remote_addr
+        client_ip = flask.request.headers.get("X-Forwarded-For", "").split(',')[0].strip() or flask.request.remote_addr
 
         sanitized_user = user.replace("\n", "\\n").replace("\r", "\\r")
         if not user_info:
-            log.error(f"Login failed for user '{sanitized_user}' [CLIENT: {client_ip}]")
+            log.error(f"Login failed for user '{sanitized_user}' using Web Client [CLIENT: {client_ip}]")
             return render_template("login.html", errors=True)
 
         set_session(user_info)
-        log.info(f"User '{sanitized_user}' successfully logged in [CLIENT: {client_ip}]")
+        log.info(f"User '{sanitized_user}' successfully logged in using Web Client [CLIENT: {client_ip}]")
         flask.flash("Logged in successfully")
 
     if is_authenticated():

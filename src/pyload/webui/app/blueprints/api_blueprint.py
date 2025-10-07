@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import json
 import traceback
 from ast import literal_eval
 from itertools import chain
@@ -11,47 +10,37 @@ import flask
 from flask.json import jsonify
 
 from pyload import APPID
+
 from ..api_docs.openapi_specification_generator import OpenAPISpecificationGenerator
-from ..helpers import clear_session, set_session, render_template
+from ..helpers import apikey_auth, clear_session, is_authenticated, render_template, set_session
 
 bp = flask.Blueprint("api", __name__)
 log = getLogger(APPID)
 
 
 # accepting positional arguments, as well as kwargs via post and get
-# @bottle.route(
 @bp.route("/api/<func>", methods=["GET", "POST"], endpoint="rpc")
 @bp.route("/api/<func>/<args>", methods=["GET", "POST"], endpoint="rpc")
 # @apiver_check
+@apikey_auth
 def rpc(func, args=""):
     api = flask.current_app.config["PYLOAD_API"]
 
-    if flask.request.authorization:
-        user = flask.request.authorization.get("username", "")
-        password = flask.request.authorization.get("password", "")
+    # Get user info from API auth or session
+    if hasattr(flask.g, 'user_info'):
+        # Using API auth
+        user_info = flask.g.user_info
     else:
-        user = flask.request.form.get("u", "")
-        password = flask.request.form.get("p", "")
-
-    sanitized_user = user.replace("\n", "\\n").replace("\r", "\\r")
-    if user:
-        user_info = api.check_auth(user, password)
-        if user_info:
-            s = set_session(user_info)
-        else:
-            log.error(f"API access failed for user '{sanitized_user}'")
-            return jsonify({'error': "Unauthorized"}), 401
-
-    else:
+        # Using session auth
         s = flask.session
+        if not is_authenticated(s):
+            return jsonify({'error': "Unauthorized - Login required"}), 401
+        user_info = {"role": s["role"], "permission": s["perms"]}
 
-    if (
-            "role" not in s or
-            "perms" not in s or
-            not api.is_authorized(func, {"role": s["role"], "permission": s["perms"]})
-    ):
-        log.error(f"API access failed for user '{sanitized_user}'")
-        return jsonify({'error': "Unauthorized"}), 401
+    # Check permissions
+    if not api.is_authorized(func, {"role": user_info["role"], "permission": user_info["permission"]}):
+        log.error(f"API access denied for function '{func}'")
+        return jsonify({'error': "Unauthorized - Insufficient permissions"}), 401
 
     if func.startswith("_"):
         flask.flash(f"Invalid API call '{func}'")
@@ -65,8 +54,7 @@ def rpc(func, args=""):
     # get query parameters
     kwargs = {}
     for x, y in chain(flask.request.args.items(), flask.request.form.items()):
-        if x not in ("u", "p"):
-            kwargs[x] = unquote(y)
+        kwargs[x] = unquote(y)
 
     try:
         if flask.request.mimetype == "application/json":
@@ -125,10 +113,7 @@ def login():
     api = flask.current_app.config["PYLOAD_API"]
     user_info = api.check_auth(user, password)
 
-    if flask.request.headers.get("X-Forwarded-For"):
-        client_ip = flask.request.headers.get("X-Forwarded-For").split(',')[0].strip()
-    else:
-        client_ip = flask.request.remote_addr
+    client_ip = flask.request.headers.get("X-Forwarded-For", "").split(',')[0].strip() or flask.request.remote_addr
 
     sanitized_user = user.replace("\n", "\\n").replace("\r", "\\r")
     if not user_info:
