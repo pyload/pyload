@@ -5,6 +5,7 @@ import argparse
 import atexit
 import os
 import sys
+from werkzeug.utils import secure_filename
 import time
 from functools import partial
 
@@ -290,7 +291,7 @@ def main(cmd_args=sys.argv[1:]):
     if args.quit:
         quit_instance(args.pidfile)
     else:
-        run(core_args, args.daemon, args.pidfile)
+        run(core_args, args.daemon, secure_filename(args.pidfile))
 
 
 if __name__ == "__main__":
