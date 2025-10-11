@@ -9,7 +9,7 @@ from ..base.captcha_service import CaptchaService
 class Turnstile(CaptchaService):
     __name__ = "Turnstile"
     __type__ = "anticaptcha"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
     __description__ = "Turnstile captcha service plugin"
@@ -17,7 +17,7 @@ class Turnstile(CaptchaService):
     __authors__ = [("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
     KEY_PATTERN = r'(?:data-sitekey=["\']|["\']sitekey["\']\s*:\s*["\'])((?:[\w\-]|%[0-9a-fA-F]{2})+)'
-    KEY_FORMAT_PATTERN = r'^0x[0-9a-zA-Z]{22}$'
+    KEY_FORMAT_PATTERN = r'^0x[0-9a-zA-Z\-_]{22}$'
 
     TURNSTILE_INTERACTIVE_SIG = "779b06997b45a7e8faa47641544530cace0fa1dd6455c4a079a7c0abd7dd981de159e5f8efe43ba" + \
                                 "234f49fc3f6c8f3404026c6bceda79a66cb07b75ac256404bc903e9d44574a861ba1153f79f31d4" + \
