@@ -10,17 +10,10 @@
 
 import os
 import re
-import unicodedata
 import urllib.parse
-from functools import partial, wraps
 
 from .. import purge
 from ..web.purge import unescape as html_unescape
-
-try:
-    import send2trash
-except ImportError:
-    send2trash = None
 
 
 # def save_join(*args):
@@ -37,12 +30,12 @@ def safepath(value):
     """
     Remove invalid characters and truncate the path if needed.
     """
+    path_sep = os.sep if os.path.isabs(value) else ""
     drive, filename = os.path.splitdrive(value)
 
-    filesep = os.sep if os.path.isabs(filename) else ""
     fileparts = (safename(name) for name in filename.split(os.sep))
 
-    filename = os.path.join(filesep, *fileparts)
+    filename = os.path.join(path_sep, *fileparts)
     path = drive + filename
 
     try:
