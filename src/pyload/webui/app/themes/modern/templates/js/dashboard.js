@@ -145,7 +145,7 @@ fetchLinks() {
         if (this.fetchInterval) {
           clearInterval(this.fetchInterval);
           this.fetchInterval = null;
-          uiHandler.indicateInfo("{{_('Status updates stopped due to authentication error')}}");
+          uiHandler.indicateInfo("{{_('Status updates stopped due to authentication error,<br>please refresh the page')}}", 0);
         }
       }
       this.update({ ids: [], links: [] });

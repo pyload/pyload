@@ -525,7 +525,7 @@ $(() => {
         error: (xhr) => {
           if (xhr.status === 400) {
             clearInterval(statusInterval);
-            uiHandler.indicateInfo("{{_('Status updates stopped due to authentication error')}}");
+            uiHandler.indicateInfo("{{_('Status updates stopped due to authentication error,<br>please refresh the page')}}", 0);
           }
         }
       });
