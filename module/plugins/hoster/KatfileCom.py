@@ -6,10 +6,10 @@ from ..internal.XFSHoster import XFSHoster
 class KatfileCom(XFSHoster):
     __name__ = "KatfileCom"
     __type__ = "hoster"
-    __version__ = "0.05"
+    __version__ = "0.06"
     __status__ = "testing"
 
-    __pattern__ = r'https?://(?:www\.)?katfile\.(?:com|cloud)/\w+'
+    __pattern__ = r'https?://(?:www\.)?katfile\.(?:com|cloud)/(?P<ID>\w{12})'
     __config__ = [("activated", "bool", "Activated", True),
                   ("use_premium", "bool", "Use premium account if available", True),
                   ("fallback", "bool", "Fallback to free download if premium fails", True),
@@ -24,7 +24,8 @@ class KatfileCom(XFSHoster):
     SIZE_PATTERN = r'<span id="fsize" .+?>(?P<S>[\d.,]+) (?P<U>[\w^_]+)<'
 
     OFFLINE_PATTERN = r"File has been removed"
-    WAIT_PATTERN = r'(?:var estimated_time = |Delay between free downloads must be not less than )([\w ]+?)[.;]'
+    WAIT_PATTERN = r'var estimated_time = ([\w ]+?);'
+    DL_LIMIT_PATTERN = r'Delay between downloads must be not less than ([\w ]+?),'
     LINK_PATTERN = r'<a href="([^"]+)" id="dlink"'
 
-    PLUGIN_DOMAIN = "katfile.com"
+    PLUGIN_DOMAIN = "katfile.cloud"
