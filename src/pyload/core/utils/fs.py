@@ -8,6 +8,7 @@ import shutil
 # import portalocker
 # import psutil
 from ... import exc_logger
+from . import purge
 from .convert import to_bytes, to_str
 
 try:
@@ -380,3 +381,48 @@ def which(filename):
         filename = os.path.join(envpath.strip('"'), filename)
         if is_exec(filename):
             return filename
+
+
+def safepath(value):
+    """
+    Remove invalid characters and truncate the path if needed.
+    """
+    path_sep = os.sep if os.path.isabs(value) else ""
+    drive, filename = os.path.splitdrive(value)
+
+    fileparts = (safename(name) for name in filename.split(os.sep))
+
+    filename = os.path.join(path_sep, *fileparts)
+    path = drive + filename
+
+    try:
+        if os.name != "nt":
+            return
+
+        excess_chars = len(path) - 259
+        if excess_chars < 1:
+            return
+
+        dirname, basename = os.path.split(filename)
+        name, ext = os.path.splitext(basename)
+        path = drive + os.path.join(dirname, purge.truncate(name, len(name) - excess_chars)) + ext
+
+    finally:
+        return path
+
+
+def safejoin(*args):
+    """
+    os.path.join + safepath.
+    """
+    return safepath(os.path.join(*args))
+
+
+def safename(value):
+    """
+    Remove invalid characters.
+    """
+    # badchars = '<>:"/\\|?*' if os.name == "nt" else '\0/\\"'
+    badchars = '<>:"/\\|?*\0'
+    name = purge.chars(value, badchars)
+    return name

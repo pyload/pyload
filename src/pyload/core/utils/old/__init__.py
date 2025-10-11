@@ -8,11 +8,9 @@
 #           \  /
 #            \/
 
-import os
 import re
 import urllib.parse
 
-from .. import purge
 from ..web.purge import unescape as html_unescape
 
 
@@ -26,51 +24,6 @@ from ..web.purge import unescape as html_unescape
 
 
 # TODO: Remove in 0.6.x
-def safepath(value):
-    """
-    Remove invalid characters and truncate the path if needed.
-    """
-    path_sep = os.sep if os.path.isabs(value) else ""
-    drive, filename = os.path.splitdrive(value)
-
-    fileparts = (safename(name) for name in filename.split(os.sep))
-
-    filename = os.path.join(path_sep, *fileparts)
-    path = drive + filename
-
-    try:
-        if os.name != "nt":
-            return
-
-        excess_chars = len(path) - 259
-        if excess_chars < 1:
-            return
-
-        dirname, basename = os.path.split(filename)
-        name, ext = os.path.splitext(basename)
-        path = drive + os.path.join(dirname, purge.truncate(name, len(name) - excess_chars)) + ext
-
-    finally:
-        return path
-
-
-def safejoin(*args):
-    """
-    os.path.join + safepath.
-    """
-    return safepath(os.path.join(*args))
-
-
-def safename(value):
-    """
-    Remove invalid characters.
-    """
-    # repl = '<>:"/\\|?*' if os.name == "nt" else '\0/\\"'
-    repl = '<>:"/\\|?*\0'
-    name = purge.chars(value, repl)
-    return name
-
-
 def fixurl(url, unquote=None):
     old = url
     url = urllib.parse.unquote(url)

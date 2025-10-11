@@ -11,7 +11,7 @@ from pyload.core.network.http.exceptions import BadHeader
 
 from ..base.simple_decrypter import SimpleDecrypter
 from ..helpers import exists
-from pyload.core.utils.old import safejoin
+from pyload.core.utils.fs import safejoin
 from pyload.core.utils.purge import uniquify
 
 class RealdebridComTorrent(SimpleDecrypter):

@@ -6,7 +6,7 @@ import time
 import urllib.request
 
 from pyload.core.network.http.http_request import FormFile
-from pyload.core.utils.old import safejoin
+from pyload.core.utils.fs import safejoin
 
 from ..base.simple_decrypter import SimpleDecrypter
 from ..helpers import exists

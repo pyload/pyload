@@ -10,7 +10,7 @@ import pycurl
 
 from pyload.core.network.http.exceptions import BadHeader
 from pyload.core.network.http.http_request import FormFile
-from pyload.core.utils.old import safejoin
+from pyload.core.utils.fs import safejoin
 from pyload.core.utils.purge import uniquify
 
 from ..base.simple_decrypter import SimpleDecrypter

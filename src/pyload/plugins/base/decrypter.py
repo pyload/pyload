@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from pyload.core.utils import parse
-from pyload.core.utils.old import safename
+from pyload.core.utils import fs, parse
 
 from .hoster import BaseHoster
 
@@ -103,7 +102,7 @@ class BaseDecrypter(BaseHoster):
             #: Workaround to do not break API add_package method
             def set_folder(x):
                 return self.pyload.api.set_package_data(
-                    pid, {"_folder": safename(x or "")}
+                    pid, {"_folder": fs.safename(x or "")}
                 )
 
             if not folder_per_package:

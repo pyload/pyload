@@ -6,8 +6,7 @@ import re
 
 from pyload.core.network.exceptions import Fail
 from pyload.core.network.http.exceptions import BadHeader
-from pyload.core.utils import format, parse
-from pyload.core.utils.old import safejoin
+from pyload.core.utils import format, fs, parse
 
 from ..helpers import exists
 from .hoster import BaseHoster
@@ -321,8 +320,8 @@ class BaseDownloader(BaseHoster):
         dl_url = self.fixurl(url)
 
         dl_folder = self.pyload.config.get("general", "storage_folder")
-        dl_dirname = safejoin(dl_folder, self.pyfile.package().folder)
-        dl_filename = safejoin(dl_dirname, self.pyfile.name)
+        dl_dirname = fs.safejoin(dl_folder, self.pyfile.package().folder)
+        dl_filename = fs.safejoin(dl_dirname, self.pyfile.name)
 
         os.makedirs(dl_dirname, exist_ok=True)
         self.set_permissions(dl_dirname)
@@ -338,7 +337,7 @@ class BaseDownloader(BaseHoster):
 
         if disposition and newname:
             self.pyfile.name = newname
-            dl_filename = safejoin(dl_dirname, newname)
+            dl_filename = fs.safejoin(dl_dirname, newname)
 
         self.set_permissions(dl_filename)
 

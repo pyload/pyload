@@ -3,7 +3,7 @@
 import os
 from builtins import NameError
 
-from pyload.core.utils.old import safename
+from pyload.core.utils.fs import safename
 from pyload.core.utils.purge import uniquify
 
 from ..base.addon import BaseAddon, expose, threaded
