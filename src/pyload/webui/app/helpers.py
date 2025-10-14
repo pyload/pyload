@@ -84,7 +84,7 @@ def static_file_url(filename):
 
 
 def theme_template(filename):
-    return flask.url_for("app.render", filename=filename)
+    return flask.url_for("app.web", filename=filename)
 
 
 #: tries to render the template of the current theme otherwise fallback to builtin template

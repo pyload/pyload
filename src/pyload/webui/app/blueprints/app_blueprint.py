@@ -31,7 +31,7 @@ def favicon():
     return flask.redirect(location)
 
 
-@bp.route("/render/<path:filename>", endpoint="render")
+@bp.route("/web/<path:filename>", endpoint="web")
 def render(filename):
     mimetype = mimetypes.guess_type(filename)[0] or "text/html"
     data = render_template(filename)
