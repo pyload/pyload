@@ -380,18 +380,17 @@ class Core:
         openapi_spec = OpenAPISpecificationGenerator(api=self.api).generate_openapi_json()
         self.log.debug("OpenAPI spec has been generated")
 
-        if self._dry_run is False:
-            last_index = __file__.rfind("src"+ os.sep + "pyload")
-            if last_index != -1:
-                base_path =  pathlib.Path(__file__[:last_index])
-                if spec_path := next((p for p in base_path.rglob('openapi.json')), None):
-                    self.log.debug(f"Saving OpenAPI spec to: {spec_path}")
-                    with open(spec_path, 'w') as f:
-                        json.dump(openapi_spec, f, indent=2)
-                else:
-                    raise IOError("Unable to locate openapi.json file")
+        last_index = __file__.rfind("src"+ os.sep + "pyload")
+        if last_index != -1:
+            spec_path = pathlib.Path(f"{__file__[:last_index]}/openapi-generator/openapi.json")
+            if spec_path.exists():
+                self.log.debug(f"Saving OpenAPI spec to: {spec_path}")
+                with open(spec_path, 'w') as f:
+                    json.dump(openapi_spec, f, indent=2)
             else:
-                raise IOError("Unable to locate pyLoad's project directory")
+                raise IOError("Unable to locate openapi.json file")
+        else:
+            raise IOError("Unable to locate pyLoad's project directory")
 
     def start(self):
         try:

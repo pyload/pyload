@@ -154,6 +154,23 @@ Invoke `build_locale` before building the package (eg. `bdist_wheel`).
 
 ## Development
 
+### Set up your development environment
+
+* Clone the repository
+* Recommended: create a virtual environment for pyLoad
+```
+python3 -m venv .venv
+source .venv/bin/activate
+```
+* Install pyLoad as editable install
+```
+pip install -e .
+```
+* Run pyLoad in debug mode
+```
+pyload -d
+```
+
 ### API specification
 
 pyLoad provides an OpenAPI specification for its REST API, visible via Swagger UI under the endpoint
@@ -164,10 +181,9 @@ The specification file itself is available under
 
     <pyload base url>/api/openapi.json
 
-Based on this file. it is possible to generate client code with the [official OpenAPI code generator](https://github.com/OpenAPITools/openapi-generator).
-
+For reference, there is a local copy of the API specification in `openapi-generator/openapi.json`.
+Based on this file, it is possible to generate client code with the [official OpenAPI code generator](https://github.com/OpenAPITools/openapi-generator).
 For example, this command will generate a client for Android, using the dockerized generator:
-
 ```
 docker run --rm -v "${PWD}:/local" openapitools/openapi-generator-cli generate \
   -i /local/openapi-generator/openapi.json \
@@ -179,12 +195,13 @@ docker run --rm -v "${PWD}:/local" openapitools/openapi-generator-cli generate \
 If you are developing a client application for pyLoad, you can use this specification to generate a client
 in any language / framework the OpenAPI generator supports.
 
-The API specification is parsed from the REST API implementation and should not be edited manually.
-Instead, if changes have been made to the API, re-generate the specification by running
+The API specification is parsed from the REST API implementation.
+The local `openapi.json` copy should not be edited manually.
+Instead, if changes have been made to the API, re-generate the specification file by running
 
     pyload --generate-api-spec 
 
-which will produce an updated `openapi.json` file.
+which will update the `openapi.json` file in place.
 
 ## Report a Vulnerability
 
