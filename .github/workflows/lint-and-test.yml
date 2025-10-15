@@ -75,7 +75,6 @@ jobs:
     runs-on: ${{ matrix.os }}
     env:
       toxenv: py
-    continue-on-error: ${{ startsWith(matrix.os,'ubuntu') }}
 
     strategy:
       fail-fast: false
