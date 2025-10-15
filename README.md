@@ -154,6 +154,23 @@ Invoke `build_locale` before building the package (eg. `bdist_wheel`).
 
 ## Development
 
+### Set up your development environment
+
+* Clone the repository
+* Recommended: create a virtual environment for pyLoad
+```
+python3 -m venv .venv
+source .venv/bin/activate
+```
+* Install pyLoad as editable install
+```
+pip install -e .
+```
+* Run pyLoad in debug mode
+```
+pyload -d
+```
+
 ### API specification
 
 pyLoad provides an OpenAPI specification for its REST API, visible via Swagger UI under the endpoint
