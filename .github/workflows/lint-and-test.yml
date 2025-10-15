@@ -132,7 +132,8 @@ jobs:
       - name: Test OpenAPI spec generator
         if: startsWith(matrix.os, 'ubuntu') && matrix.python-version == '3.13'
         run: |
-          tox -e api_spec --sitepackages --workdir ${{ env.toxworkdir }}
+          python3 -m pip install -e .
+          python3 -m pyload --generate-api-spec
 
       - name: Check diff in generated OpenAPI spec
         if: startsWith(matrix.os, 'ubuntu') && matrix.python-version == '3.13'
