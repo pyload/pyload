@@ -95,7 +95,7 @@ class DebridlinkFr(MultiAccount):
                 api_data.get("error_description", error_description(api_data["error"])),
             )
             validuntil = None
-            premium = None
+            premium = False
 
         return {"validuntil": validuntil, "trafficleft": -1, "premium": premium}
 
