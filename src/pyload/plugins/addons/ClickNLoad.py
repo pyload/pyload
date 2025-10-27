@@ -19,7 +19,7 @@ class ClickNLoad(BaseAddon):
     __status__ = "testing"
 
     __config__ = [
-        ("enabled", "bool", "Activated", True),
+        ("enabled", "bool", "Activated - Insecure! Use at your own risk!!!", False),
         ("port", "int", "Port", 9666),
         ("extern", "bool", "Listen for external connections", True),
         ("dest", "queue;collector", "Add packages to", "collector"),
