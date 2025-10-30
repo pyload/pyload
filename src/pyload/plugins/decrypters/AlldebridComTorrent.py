@@ -29,7 +29,7 @@ class AlldebridComTorrent(SimpleDecrypter):
     __authors__ = [("GammaC0de", "nitzo2001[AT}yahoo[DOT]com")]
 
     # See https://docs.alldebrid.com/
-    API_URL = "https://api.alldebrid.com/v4/"
+    API_URL = "https://api.alldebrid.com/v4.1/"
 
     def api_request(self, method, get={}, post={}, multipart=False):
         get.update({"agent": "pyLoad",
