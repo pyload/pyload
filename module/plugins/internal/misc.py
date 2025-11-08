@@ -46,7 +46,7 @@ except ImportError:
 class misc(object):
     __name__ = "misc"
     __type__ = "plugin"
-    __version__ = "0.69"
+    __version__ = "0.70"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -655,6 +655,7 @@ def parse_name(value, safechar=True):
 
 
 def parse_size(value, unit=""):  #: returns bytes
+    unit = unit or ""
     m = re.match(r'((?:[\d.,]*)\d)\s*([\w^_]*)', str(value).lower())
 
     if m is None:
