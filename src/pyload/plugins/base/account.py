@@ -17,7 +17,7 @@ from .plugin import BasePlugin
 class BaseAccount(BasePlugin):
     __name__ = "BaseAccount"
     __type__ = "account"
-    __version__ = "0.90"
+    __version__ = "0.91"
     __status__ = "stable"
 
     __description__ = """Base account plugin"""
@@ -492,7 +492,7 @@ class BaseAccount(BasePlugin):
 
     def parse_traffic(self, size, unit=None):  #: returns bytes
         self.log_debug(f"Size: {size}", f"Unit: {unit or 'N/D'}")
-        return parse.bytesize(size, unit or "byte")
+        return parse.bytesize(size, unit)
 
     def fail_login(self, msg="Login handshake has failed"):
         return self.fail(msg)
