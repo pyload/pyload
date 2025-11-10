@@ -472,7 +472,9 @@ def parse_html_tag_attr_value(attr_name, tag):
     return m.group(2) if m else None
 
 
-def parse_html_form(attr_filter, html, input_names={}):
+def parse_html_form(attr_filter, html, input_names=None):
+    input_names = input_names or {}
+
     attr_str = "" if callable(attr_filter) else attr_filter
     for form in re.finditer(
         rf"(?P<TAG><form[^>]*{attr_str}.*?>)(?P<CONTENT>.*?)</?(form|body|html).*?>",

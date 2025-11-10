@@ -50,7 +50,7 @@ class DebridlinkFr(MultiDownloader):
     #: See https://debrid-link.fr/api_doc/v2
     API_URL = "https://debrid-link.fr/api/"
 
-    def api_request(self, method, get={}, post={}):
+    def api_request(self, method, get=None, post=None):
         api_token = self.account.info["data"].get("api_token", None)
         if api_token:
             self.req.http.c.setopt(

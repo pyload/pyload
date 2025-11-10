@@ -189,7 +189,7 @@ class PluginManager:
                     stack_info=self.pyload.debug > 2,
                 )
 
-    def parse(self, folder, pattern=False, home={}):
+    def parse(self, folder, pattern=False, home=None):
         """
         returns dict with information
         home contains parsed plugins from pyload.
@@ -199,6 +199,7 @@ class PluginManager:
         }
 
         """
+        home = home or {}
         plugins = {}
         if home:
             pfolder = os.path.join(self.pyload.userdir, "plugins", folder)

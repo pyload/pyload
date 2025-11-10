@@ -39,7 +39,7 @@ class RealdebridComTorrent(SimpleDecrypter):
     # See https://api.real-debrid.com/
     API_URL = "https://api.real-debrid.com/rest/1.0"
 
-    def api_request(self, method, get={}, post={}):
+    def api_request(self, method, get=None, post=None):
         self.req.http.c.setopt(pycurl.USERAGENT, "pyLoad/{}".format(self.pyload.version))
 
         for _i in range(2):

@@ -23,7 +23,7 @@ class DownsterApi(object):
         else:
             self.account_plugin = self.plugin
 
-    def request(self, method, get={}, **kwargs):
+    def request(self, method, get=None, **kwargs):
         self.plugin.req.http.c.setopt(
             pycurl.HTTPHEADER,
             [

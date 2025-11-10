@@ -326,7 +326,7 @@ class BaseAccount(BasePlugin):
         pass
 
     @lock
-    def add(self, user, password=None, options={}):
+    def add(self, user, password=None, options=None):
         self.log_info(self._("Adding user `{}`...").format(user[:3] + "*" * 7))
 
         if user in self.accounts:
@@ -357,7 +357,7 @@ class BaseAccount(BasePlugin):
         return result
 
     @lock
-    def update_accounts(self, user, password=None, options={}):
+    def update_accounts(self, user, password=None, options=None):
         """
         Updates account and return true if anything changed.
         """

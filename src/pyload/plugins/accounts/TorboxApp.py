@@ -36,7 +36,7 @@ class TorboxApp(MultiAccount):
     # See https://api-docs.torbox.app/
     API_URL = "https://api.torbox.app/v1/api/"
 
-    def api_request(self, method, api_key=None, get={}, post={}):
+    def api_request(self, method, api_key=None, get=None, post=None):
         if api_key is not None:
             self.req.http.c.setopt(
                 pycurl.HTTPHEADER, ["Authorization: Bearer " + api_key]

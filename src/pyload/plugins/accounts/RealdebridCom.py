@@ -34,7 +34,7 @@ class RealdebridCom(MultiAccount):
     # See https://api.real-debrid.com/
     API_URL = "https://api.real-debrid.com"
 
-    def api_request(self, api_type, method, get={}, post={}):
+    def api_request(self, api_type, method, get=None, post=None):
         if api_type == "rest":
             endpoint = "/rest/1.0"
         elif api_type == "oauth":

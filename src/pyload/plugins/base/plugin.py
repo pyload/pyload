@@ -156,8 +156,8 @@ class BasePlugin:
     def load(
         self,
         url,
-        get={},
-        post={},
+        get=None,
+        post=None,
         ref=True,
         cookies=True,
         just_header=False,
@@ -264,7 +264,7 @@ class BasePlugin:
         self,
         path,
         url,
-        get={},
+        get=None,
         ref=True,
         cookies=True,
         just_header=False,
@@ -318,7 +318,7 @@ class BasePlugin:
             if isinstance(ref, str):
                 http_req.last_url = ref
 
-            http_req.set_request_context(url, get, {}, bool(ref), bool(cookies), False)
+            http_req.set_request_context(url, get, None, bool(ref), bool(cookies), False)
             http_req.c.setopt(pycurl.HTTPHEADER, http_req.request_headers)
             http_req.response_header = b""
 

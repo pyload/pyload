@@ -9,10 +9,10 @@ from .http.http_request import HTTPRequest
 
 
 class Browser:
-    def __init__(self, bucket=None, options={}):
+    def __init__(self, bucket=None, options=None):
         self.log = getLogger(APPID)
 
-        self.options = options  #: holds pycurl options
+        self.options = options or {}  #: holds pycurl options
         self.bucket = bucket
 
         self.cj = None  #: needs to be set later
@@ -87,8 +87,8 @@ class Browser:
             url,
             filename,
             size=0,
-            get={},
-            post={},
+            get=None,
+            post=None,
             ref=True,
             cookies=True,
             chunks=1,
@@ -104,8 +104,8 @@ class Browser:
             url,
             filename,
             size=size,
-            get=get,
-            post=post,
+            get=get or {},
+            post=post or {},
             referer=self.last_effective_url if ref else None,
             cj=self.cj if cookies else None,
             bucket=self.bucket,
