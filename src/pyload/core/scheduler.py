@@ -78,8 +78,8 @@ class Job:
     def __init__(self, time, call, args=None, kwargs=None, deferred=None, threaded=True):
         self.time = float(time)
         self.call = call
-        self.args = [] if args is None else args
-        self.kwargs = {} if kwargs is None else kwargs
+        self.args = args or []
+        self.kwargs = kwargs or {}
         self.deferred = deferred
         self.threaded = threaded
 
