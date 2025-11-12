@@ -43,81 +43,24 @@ class OpenAPISpecificationGenerator:
         self.spec: dict[str, Any] = {
             "info": {
                 "title": "pyLoad API Documentation - OpenAPI",
-                "version": "1.0.0"
+                "version": "1.1.0"
             },
             "openapi": "3.1.1",
             "tags": [{
-                "name": "pyLoad Authentication",
-                "description": ""
-            }, {
                 "name": "pyLoad REST",
                 "description": ""
             }],
-            "paths": {
-                "/api/login": {
-                    "post": {
-                        "security": [],
-                        "summary": "Login into pyLoad, this must be called when using rpc before any methods can be used.",
-                        "tags": [
-                            "pyLoad Authentication"
-                        ],
-                        "requestBody": {
-                            "required": True,
-                            "content": {
-                                "application/x-www-form-urlencoded": {
-                                    "schema": {
-                                        "type": "object",
-                                        "properties": {
-                                            "username": {
-                                                "type": "string",
-                                                "default": "pyload"
-                                            },
-                                            "password": {
-                                                "type": "string",
-                                                "default": "pyload"
-                                            }
-                                        },
-                                        "required": [
-                                            "username",
-                                            "password"
-                                        ]
-                                    }
-                                }
-                            }
-                        },
-                        "responses": {
-                            "200": {
-                                "description": "Session data if successful, False otherwise",
-                            }
-                        }
-                    }
-                },
-                "/api/logout": {
-                    "get": {
-                        "security": [],
-                        "summary": "Logout current user, clear session data",
-                        "tags": [
-                            "pyLoad Authentication"
-                        ],
-                        "responses": {
-                            "200": {
-                                "description": "",
-                            }
-                        }
-                    }
-                }
-            },
+            "paths": {},
             "components": {
                 "schemas": {},
                 "securitySchemes": {
-                    "cookieAuth": {
-                        "type": "apiKey",
-                        "in": "cookie",
-                        "name": "pyload_session_" + str(api.get_config_value("webui", "port"))
+                    "basicAuth": {
+                        "type": "http",
+                        "scheme": "basic",
                     }
                 }
             },
-            "security": [{"cookieAuth": []}]
+            "security": [{"basicAuth": []}]
         }
 
     def generate_openapi_json(self) -> dict[str, Any]:
@@ -130,7 +73,7 @@ class OpenAPISpecificationGenerator:
             return self.spec
 
         for name, method in inspect.getmembers(self.api, predicate=inspect.ismethod):
-            if name.startswith('_') or name in legacy_map.values() or name == "login":
+            if name.startswith('_') or name in legacy_map.values():
                 continue
 
             docstring = inspect.getdoc(method) or "No documentation available"
