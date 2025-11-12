@@ -2798,6 +2798,7 @@
           "trafficleft": {
             "anyOf": [
               {
+                "format": "int64",
                 "type": "integer"
               },
               {
@@ -2805,9 +2806,7 @@
               }
             ],
             "default": null,
-            "format": "int64",
-            "title": "Trafficleft",
-            "type": "integer"
+            "title": "Trafficleft"
           },
           "premium": {
             "title": "Premium",

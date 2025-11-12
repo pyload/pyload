@@ -25,7 +25,7 @@ class AccountInfo(BaseModel):
     login: str
     options: dict
     valid: bool
-    trafficleft: Optional[int] = Field(default=None, json_schema_extra=INT64_JSON_SCHEMA)
+    trafficleft: Optional[int] = Field(default=None, json_schema_extra=OPTIONAL_INT64_JSON_SCHEMA)
     premium: bool
     type: str
 
