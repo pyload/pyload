@@ -98,7 +98,8 @@ def api_docs():
     openapi_spec = OpenAPISpecificationGenerator(api=flask.current_app.config["PYLOAD_API"]).generate_openapi_json()
     return openapi_spec
 
-@bp.route("/api/docs", methods=["GET"])
+
+@bp.route("/api", methods=["GET"], strict_slashes=False)
 def swagger_ui():
     """Serve Swagger UI with the API documentation"""
     return render_template("swagger.html")
