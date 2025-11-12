@@ -2773,6 +2773,7 @@
           "validuntil": {
             "anyOf": [
               {
+                "format": "float",
                 "type": "number"
               },
               {
@@ -2780,7 +2781,6 @@
               }
             ],
             "default": null,
-            "format": "float",
             "title": "Validuntil"
           },
           "login": {

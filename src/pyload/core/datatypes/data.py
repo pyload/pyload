@@ -20,8 +20,22 @@ OPTIONAL_INT64_JSON_SCHEMA = {
     ]
 }
 
+FLOAT_JSON_SCHEMA = {
+    "type": "number",
+    "format": "float"
+}
+
+OPTIONAL_FLOAT_JSON_SCHEMA = {
+    "anyOf": [
+        FLOAT_JSON_SCHEMA,
+        {
+            "type": "null"
+        }
+    ]
+}
+
 class AccountInfo(BaseModel):
-    validuntil: Optional[float] = Field(default=None, json_schema_extra={"format": "float"})
+    validuntil: Optional[float] = Field(default=None, json_schema_extra=OPTIONAL_FLOAT_JSON_SCHEMA)
     login: str
     options: dict
     valid: bool
@@ -54,7 +68,7 @@ class ConfigSection(BaseModel):
 class DownloadInfo(BaseModel):
     fid: int
     name: str
-    speed: float = Field(json_schema_extra={"format": "float"})
+    speed: float = Field(json_schema_extra=FLOAT_JSON_SCHEMA)
     eta: int
     format_eta: str
     bleft: int = Field(json_schema_extra=INT64_JSON_SCHEMA)
@@ -64,7 +78,7 @@ class DownloadInfo(BaseModel):
     status: DownloadStatus
     statusmsg: str
     format_wait: str
-    wait_until: float = Field(json_schema_extra={"format": "float"})
+    wait_until: float = Field(json_schema_extra=FLOAT_JSON_SCHEMA)
     package_id: int
     package_name: str
     plugin: str
