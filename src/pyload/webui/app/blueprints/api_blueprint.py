@@ -108,32 +108,10 @@ def swagger_ui():
 @bp.route("/api/login", methods=["POST"], endpoint="login")
 # @apiver_check
 def login():
-    user = flask.request.form["username"]
-    password = flask.request.form["password"]
-
-    api = flask.current_app.config["PYLOAD_API"]
-    user_info = api.check_auth(user, password)
-
-    client_ip = flask.request.headers.get("X-Forwarded-For", "").split(',')[0].strip() or flask.request.remote_addr
-
-    sanitized_user = user.replace("\n", "\\n").replace("\r", "\\r")
-    if not user_info:
-        log.error(f"Login failed for user '{sanitized_user}' [CLIENT: {client_ip}]")
-        return jsonify(False)
-
-    s = set_session(user_info)
-    log.info(f"User '{sanitized_user}' successfully logged in [CLIENT: {client_ip}]")
-    flask.flash("Logged in successfully")
-
-    return jsonify(s)
+    return "Obsolete API", 404
 
 
 @bp.route("/api/logout", endpoint="logout")
 # @apiver_check
 def logout():
-    s = flask.session
-    user = s.get("name")
-    clear_session(s)
-    if user:
-        log.info(f"User '{user}' logged out")
-    return jsonify(True)
+    return "Obsolete API", 404
