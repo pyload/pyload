@@ -22,8 +22,8 @@ class HTTPDownload:
         url,
         filename,
         size=0,
-        get={},
-        post={},
+        get=None,
+        post=None,
         referer=None,
         cj=None,
         bucket=None,
@@ -33,8 +33,8 @@ class HTTPDownload:
     ):
         self.url = url
         self.filename = filename  #: complete file destination, not only name
-        self.get = get
-        self.post = post
+        self.get = get or {}
+        self.post = post or {}
         self.referer = referer
         self.cj = cj  #: cookiejar if cookies are needed
         self.bucket = bucket

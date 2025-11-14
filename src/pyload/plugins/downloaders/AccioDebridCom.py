@@ -32,7 +32,7 @@ class AccioDebridCom(MultiDownloader):
 
     API_URL = "https://accio-debrid.com/apiv2/"
 
-    def api_response(self, action, get={}, post={}):
+    def api_response(self, action, get=None, post=None):
         get['action'] = action
 
         # Better use pyLoad User-Agent so we don't get blocked

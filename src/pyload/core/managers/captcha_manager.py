@@ -67,9 +67,9 @@ class CaptchaManager:
 
 
 class CaptchaTask:
-    def __init__(self, id, format, params={}, result_type="textual"):
+    def __init__(self, id, format, params=None, result_type="textual"):
         self.id = str(id)
-        self.captcha_params = params
+        self.captcha_params = params or {}
         self.captcha_format = format
         self.captcha_result_type = result_type
         self.handler = []  #: the addon plugins that will take care of the solution

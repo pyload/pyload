@@ -5,27 +5,18 @@ from typing import Optional, Any
 from pydantic import BaseModel, Field
 
 from pyload.core.datatypes.enums import DownloadStatus
+from pyload.core.datatypes.json_schema_extras import FLOAT_JSON_SCHEMA
+from pyload.core.datatypes.json_schema_extras import INT64_JSON_SCHEMA
+from pyload.core.datatypes.json_schema_extras import OPTIONAL_FLOAT_JSON_SCHEMA
+from pyload.core.datatypes.json_schema_extras import OPTIONAL_INT64_JSON_SCHEMA
 
-INT64_JSON_SCHEMA = {
-    "type": "integer",
-    "format": "int64"
-}
-
-OPTIONAL_INT64_JSON_SCHEMA = {
-    "anyOf": [
-        INT64_JSON_SCHEMA,
-        {
-            "type": "null"
-        }
-    ]
-}
 
 class AccountInfo(BaseModel):
-    validuntil: Optional[float] = Field(default=None, json_schema_extra={"format": "float"})
+    validuntil: Optional[float] = Field(default=None, json_schema_extra=OPTIONAL_FLOAT_JSON_SCHEMA)
     login: str
     options: dict
     valid: bool
-    trafficleft: Optional[int] = Field(default=None, json_schema_extra=INT64_JSON_SCHEMA)
+    trafficleft: Optional[int] = Field(default=None, json_schema_extra=OPTIONAL_INT64_JSON_SCHEMA)
     premium: bool
     type: str
 
@@ -54,7 +45,7 @@ class ConfigSection(BaseModel):
 class DownloadInfo(BaseModel):
     fid: int
     name: str
-    speed: float = Field(json_schema_extra={"format": "float"})
+    speed: float = Field(json_schema_extra=FLOAT_JSON_SCHEMA)
     eta: int
     format_eta: str
     bleft: int = Field(json_schema_extra=INT64_JSON_SCHEMA)
@@ -64,7 +55,7 @@ class DownloadInfo(BaseModel):
     status: DownloadStatus
     statusmsg: str
     format_wait: str
-    wait_until: float = Field(json_schema_extra={"format": "float"})
+    wait_until: float = Field(json_schema_extra=FLOAT_JSON_SCHEMA)
     package_id: int
     package_name: str
     plugin: str

@@ -36,7 +36,7 @@ class GofileIoFolder(BaseDecrypter):
 
     API_URL = "https://api.gofile.io/"
 
-    def api_request(self, method, token=None, get={}, post={}):
+    def api_request(self, method, token=None, get=None, post=None):
         if token is not None:
             self.req.http.c.setopt(
                 pycurl.HTTPHEADER, ["Authorization: Bearer " + token]

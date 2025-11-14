@@ -454,7 +454,9 @@ class MultiAccount(BaseAccount):
         hdict["pattern"] = getattr(self.pluginclass, "__pattern__", r"^unmatchable$")
         hdict["re"] = re.compile(hdict["pattern"])
 
-    def update_accounts(self, user, password=None, options={}):
+    def update_accounts(self, user, password=None, options=None):
+        options = options or {}
+
         super().update_accounts(user, password, options)
         if self.need_reactivate:
             interval = timedelta(hours=self.config.get("mh_interval", 12)).total_seconds()

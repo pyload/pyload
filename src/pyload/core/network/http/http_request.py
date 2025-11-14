@@ -288,8 +288,8 @@ class HTTPRequest:
     def load(
         self,
         url,
-        get={},
-        post={},
+        get=None,
+        post=None,
         referer=True,
         cookies=True,
         just_header=False,

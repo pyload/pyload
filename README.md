@@ -175,7 +175,7 @@ pyload -d
 
 pyLoad provides an OpenAPI specification for its REST API, visible via Swagger UI under the endpoint
 
-    <pyload base url>/api/docs
+    <pyload base url>/api/
 
 The specification file itself is available under
 

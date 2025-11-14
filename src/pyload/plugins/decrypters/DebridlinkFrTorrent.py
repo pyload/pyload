@@ -40,7 +40,7 @@ class DebridlinkFrTorrent(SimpleDecrypter):
     #: See https://debrid-link.fr/api_doc/v2
     API_URL = "https://debrid-link.fr/api/"
 
-    def api_request(self, method, get={}, post={}, multipart=False):
+    def api_request(self, method, get=None, post=None, multipart=False):
         self.req.http.c.setopt(
             pycurl.HTTPHEADER, ["Authorization: Bearer " + self.api_token]
         )
@@ -54,7 +54,7 @@ class DebridlinkFrTorrent(SimpleDecrypter):
 
         return json.loads(json_data)
 
-    def api_request_safe(self, method, get={}, post={}, multipart=False):
+    def api_request_safe(self, method, get=None, post=None, multipart=False):
         for _i in range(2):
             api_data = self.api_request(method, get=get, post=post, multipart=multipart)
 

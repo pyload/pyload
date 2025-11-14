@@ -156,7 +156,9 @@ class BaseCaptcha(BasePlugin):
 
         return result
 
-    def decrypt_interactive(self, params={}, timeout=120):
+    def decrypt_interactive(self, params=None, timeout=120):
+        params = params or {}
+
         captcha_manager = self.pyload.captcha_manager
         timeout = max(timeout, 50)
 
@@ -200,7 +202,9 @@ class BaseCaptcha(BasePlugin):
 
         return result
 
-    def decrypt_invisible(self, params={}, timeout=120):
+    def decrypt_invisible(self, params=None, timeout=120):
+        params = params or {}
+
         captcha_manager = self.pyload.captcha_manager
         timeout = max(timeout, 50)
 

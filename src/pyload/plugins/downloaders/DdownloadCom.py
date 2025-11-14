@@ -8,7 +8,7 @@ from ..base.xfs_downloader import XFSDownloader
 class DdownloadCom(XFSDownloader):
     __name__ = "DdownloadCom"
     __type__ = "downloader"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?(?:ddl\.to|ddownload\.com)/(?P<ID>\w{12})"
@@ -31,7 +31,7 @@ class DdownloadCom(XFSDownloader):
     NAME_PATTERN = r'<div class="name position-relative">\s*<h4>(?P<N>.+?)</h4>'
     SIZE_PATTERN = r'<span class="file-size">(?P<S>[\d.,]+) (?P<U>[\w^_]+)</span>'
 
-    OFFLINE_PATTERN = r"<h4>File Not Found</h4>"
+    OFFLINE_PATTERN = r">File Not Found<"
     DL_LIMIT_PATTERN = r"You have to wait (.+?) till next download"
 
     API_KEY = "37699zuaj90n9hxado2m7"
