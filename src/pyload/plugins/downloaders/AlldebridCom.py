@@ -51,7 +51,7 @@ class AlldebridCom(MultiDownloader):
     ]
 
     # See https://docs.alldebrid.com/
-    API_URL = "https://api.alldebrid.com/v4/"
+    API_URL = "https://api.alldebrid.com/v4.1/"
 
     def api_request(self, method, get=None, post=None, multipart=False):
         get.update({"agent": "pyLoad", "version": self.pyload.version})
