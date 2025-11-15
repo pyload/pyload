@@ -33,8 +33,8 @@ This will build an OpenAPI specification based on the existing api functions
 * Descriptions are parsed from the docstring
 * Data models are registered as components via Pydantic's inbuilt conversion
 To conform with OpenAPI standards, the following logic is used to determine the appropriate REST method:
-* Functions requiring no parameters will use a GET method
-* Functions with primitive parameters will use a POST method with query params
+* Functions that does not have any side effects on the server's state, will use a GET method
+* Functions with primitive parameters will use a method with query params
 * Functions with non-primitive parameters (e.g. arrays) will use a POST method with json request body
 * File uploads will use a POST method with multipart request body
 """
