@@ -12,7 +12,7 @@ from flask.json import jsonify
 from pyload import APPID
 
 from ..api_docs.openapi_specification_generator import OpenAPISpecificationGenerator
-from ..helpers import apikey_auth, clear_session, is_authenticated, render_template, set_session
+from ..helpers import apikey_auth, is_authenticated, render_template
 
 bp = flask.Blueprint("api", __name__)
 log = getLogger(APPID)
@@ -24,7 +24,19 @@ log = getLogger(APPID)
 # @apiver_check
 @apikey_auth
 def rpc(func, args=""):
+    if func.startswith("_"):
+        flask.flash(f"Invalid API call '{func}'")
+        return jsonify({'error': "Forbidden"}), 403
+
     api = flask.current_app.config["PYLOAD_API"]
+
+    # Enforce HTTP method for the API method
+    expected = api._required_http_method_for_api(func)
+    actual = flask.request.method
+    if actual != expected:
+        err_message = f"Method not allowed in API {func}(): Expected {expected}, got {actual}"
+        log.error(err_message)
+        return jsonify({'error': err_message}), 405
 
     # Get user info from API auth or session
     if hasattr(flask.g, 'user_info'):
@@ -41,10 +53,6 @@ def rpc(func, args=""):
     if not api.is_authorized(func, {"role": user_info["role"], "permission": user_info["permission"]}):
         log.error(f"API access denied for function '{func}'")
         return jsonify({'error': "Unauthorized - Insufficient permissions"}), 401
-
-    if func.startswith("_"):
-        flask.flash(f"Invalid API call '{func}'")
-        return jsonify({'error': "Forbidden"}), 403
 
     # get path parameters
     args = args.split(",")

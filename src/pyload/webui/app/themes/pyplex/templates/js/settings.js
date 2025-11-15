@@ -61,7 +61,7 @@ class SettingsUI {
   }
 
   restartPyload() {
-    $.get("{{url_for('api.rpc', func='restart')}}")
+    $.post("{{url_for('api.rpc', func='restart')}}")
       .done(() => {
         $('#restart_box').modal('hide');
         $('#content').addClass("hidden");
@@ -76,7 +76,7 @@ class SettingsUI {
   };
 
   quitPyload() {
-    $.get("{{url_for('api.rpc', func='kill')}}")
+    $.post("{{url_for('api.rpc', func='kill')}}")
       .done(() => {
         $('#quit_box').modal('hide');
         $('#content').addClass("hidden");

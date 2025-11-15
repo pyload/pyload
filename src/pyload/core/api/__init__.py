@@ -8,32 +8,19 @@
 #           \  /
 #            \/
 
-import json
 import os
 import re
 import time
 from enum import IntFlag
-from typing import Any, Optional
+from typing import Any, Callable, Optional
 
 from pyload import PKGDIR
+
 from ..datatypes.data import (
-    AccountInfo,
-    CaptchaTask,
-    ConfigItem,
-    ConfigSection,
-    DownloadInfo,
-    EventInfo,
-    FileData,
-    OldUserData,
-    OnlineCheck,
-    OnlineStatus,
-    PackageData,
-    ServerStatus,
-    ServiceCall,
-    UserData,
-)
+    AccountInfo, CaptchaTask, ConfigItem, ConfigSection, DownloadInfo, EventInfo, FileData, OldUserData, OnlineCheck,
+    OnlineStatus, PackageData, ServerStatus, ServiceCall, UserData)
 from ..datatypes.enums import Destination, ElementType
-from ..datatypes.exceptions import PackageDoesNotExists, FileDoesNotExists, ServiceDoesNotExists, ServiceException
+from ..datatypes.exceptions import FileDoesNotExists, PackageDoesNotExists, ServiceDoesNotExists, ServiceException
 from ..datatypes.pyfile import PyFile
 from ..log_factory import LogFactory
 from ..network.request_factory import get_url
@@ -47,27 +34,11 @@ perm_map = {}
 # contains function names mapped to their legacy name
 legacy_map = {}
 
-
-# decorator only called on init, never initialized, so has no effect on runtime
-def permission(bits):
-    class Wrapper:
-        def __new__(cls, func, *args, **kwargs):
-            perm_map[func.__name__] = bits
-            return func
-
-    return Wrapper
+# contains function names mapped to their allowed HTTP method (e.g., 'GET', 'POST', 'PUT', 'DELETE')
+method_map = {}
 
 
-def legacy(legacy_name):
-    class Wrapper:
-        def __new__(cls, func, *args, **kwargs):
-            legacy_map[func.__name__] = legacy_name
-            return func
-
-    return Wrapper
-
-
-urlmatcher = re.compile(
+RE_URLMATCH = re.compile(
     r"(?:https?|ftps?|xdcc|sftp):(?://|\\\\)+[\w\-._~:/?#\[\]@!$&'()*+,;=]*|magnet:\?.+",
     re.IGNORECASE,
 )
@@ -91,28 +62,62 @@ class Role(IntFlag):
     USER = 1
 
 
-def has_permission(userperms, perms):
+# decorator only called on init, never initialized, so has no effect on runtime
+def permission(bits: Perms) -> Callable:
+    class Wrapper:
+        def __new__(cls, func, *args, **kwargs):
+            perm_map[func.__name__] = bits
+            return func
+
+    return Wrapper
+
+
+def legacy(legacy_name: str) -> Callable:
+    class Wrapper:
+        def __new__(cls, func, *args, **kwargs):
+            legacy_map[func.__name__] = legacy_name
+            return func
+
+    return Wrapper
+
+
+def http_method(method_type: str) -> Callable:
+    class Wrapper:
+        def __new__(cls, func, *args, **kwargs):
+            method_map[func.__name__] = method_type.upper()
+            return func
+
+    return Wrapper
+
+
+# Convenience aliases for common methods
+get = http_method('GET')
+post = http_method('POST')
+put = http_method('PUT')
+delete = http_method('DELETE')
+
+
+def has_permission(user_perms: Perms, required_perms: Perms):
     # bitwise or perms before if needed
-    return perms == (userperms & perms)
+    return required_perms == (user_perms & required_perms)
 
-
-# API VERSION
-__version__ = 1
 
 
 class Api:
     """
     **pyLoads API**
 
-    This is accessible either internal via core.api or via thrift backend.
+    This is accessible either internal via core.api.
 
-    see Thrift specification file remote/thriftbackend/pyload.thrift\
-    for information about data structures and what methods are usable with rpc.
+    see openapi.json for information about data structures and what methods are usable with rpc.
 
     Most methods requires specific permissions, please look at the source code if you need to know.\
     These can be configured via webinterface.
     Admin user have all permissions, and are the only ones who can access the methods with no specific permission.
     """
+
+    # API VERSION
+    __version__ = 1
 
     def __new__(cls, core):
         obj = super(Api, cls).__new__(cls)
@@ -132,6 +137,15 @@ class Api:
     def __init__(self, core):
         self.pyload = core
         self._ = core._
+
+    def _required_http_method_for_api(self, func_name: str) -> str:
+        """
+        Get the allowed HTTP method for an API method
+
+        :param func_name: the name of the API method
+        :return: allowed HTTP method (e.g., 'GET', 'POST', 'PUT', 'DELETE') for the API method or None
+        """
+        return method_map.get(func_name)
 
     def _convert_py_file(self, p) -> FileData:
         f = FileData(
@@ -171,6 +185,7 @@ class Api:
 
     @legacy("getConfigValue")
     @permission(Perms.SETTINGS)
+    @get
     def get_config_value(self, category: str, option: str, section: str = "core") -> Any:
         """
         Retrieve config value.
@@ -188,6 +203,7 @@ class Api:
 
     @legacy("setConfigValue")
     @permission(Perms.SETTINGS)
+    @post
     def set_config_value(self, category: str, option: str, value: Any, section: str ="core") -> None:
         """
         Set new config value.
@@ -225,6 +241,7 @@ class Api:
 
     @legacy("getConfig")
     @permission(Perms.SETTINGS)
+    @get
     def get_config(self) -> dict[str, ConfigSection]:
         """
         Retrieves complete config of core.
@@ -234,6 +251,7 @@ class Api:
         return self._convert_config_format(self.pyload.config.config)
 
     @legacy("getConfigDict")
+    @get
     def get_config_dict(self) -> dict[Any, Any]:
         """
         Retrieves complete config in dict format, not for RPC.
@@ -244,6 +262,7 @@ class Api:
 
     @legacy("getPluginConfig")
     @permission(Perms.SETTINGS)
+    @get
     def get_plugin_config(self) -> dict[str, ConfigSection]:
         """
         Retrieves complete config for all plugins.
@@ -253,6 +272,8 @@ class Api:
         return self._convert_config_format(self.pyload.config.plugin)
 
     @legacy("getPluginConfigDict")
+    @permission(Perms.SETTINGS)
+    @get
     def get_plugin_config_dict(self) -> dict[Any, Any]:
         """
         Plugin config as dict, not for RPC.
@@ -263,6 +284,7 @@ class Api:
 
     @legacy("pauseServer")
     @permission(Perms.STATUS)
+    @post
     def pause_server(self) -> None:
         """
         Pause server: It won't start any new downloads, but nothing gets aborted.
@@ -271,6 +293,7 @@ class Api:
 
     @legacy("unpauseServer")
     @permission(Perms.STATUS)
+    @post
     def unpause_server(self) -> None:
         """
         Unpause server: New Downloads will be started.
@@ -279,6 +302,7 @@ class Api:
 
     @legacy("togglePause")
     @permission(Perms.STATUS)
+    @post
     def toggle_pause(self) -> bool:
         """
         Toggle pause state.
@@ -290,6 +314,7 @@ class Api:
 
     @legacy("toggleReconnect")
     @permission(Perms.STATUS)
+    @post
     def toggle_reconnect(self) -> bool:
         """
         Toggle reconnect activation.
@@ -300,6 +325,7 @@ class Api:
         return self.pyload.config.get("reconnect", "enabled")
 
     @permission(Perms.STATUS)
+    @post
     def toggle_proxy(self) -> bool:
         """
         Toggle proxy activation.
@@ -311,6 +337,7 @@ class Api:
 
     @legacy("statusServer")
     @permission(Perms.LIST)
+    @get
     def status_server(self) -> ServerStatus:
         """
         Some general information about the current status of pyLoad.
@@ -340,6 +367,7 @@ class Api:
 
     @legacy("freeSpace")
     @permission(Perms.STATUS)
+    @get
     def free_space(self) -> int:
         """
         Available free space at download directory in bytes.
@@ -348,18 +376,21 @@ class Api:
 
     @legacy("getServerVersion")
     @permission(Perms.ANY)
+    @get
     def get_server_version(self) -> str:
         """
         pyLoad Core version.
         """
         return self.pyload.version
 
+    @post
     def kill(self) -> None:
         """
         Clean way to quit pyLoad.
         """
         self.pyload._do_exit = True
 
+    @post
     def restart(self) -> None:
         """
         Restart pyload core.
@@ -368,6 +399,7 @@ class Api:
 
     @legacy("getLog")
     @permission(Perms.LOGS)
+    @get
     def get_log(self, offset: int = 0) -> list[str]:
         """
         Returns most recent log entries.
@@ -391,6 +423,7 @@ class Api:
 
     @legacy("isTimeDownload")
     @permission(Perms.STATUS)
+    @get
     def is_time_download(self) -> bool:
         """
         Checks if pyload will start new downloads according to time in config.
@@ -403,6 +436,7 @@ class Api:
 
     @legacy("isTimeReconnect")
     @permission(Perms.STATUS)
+    @get
     def is_time_reconnect(self) -> bool:
         """
         Checks if pyload will try to make a reconnect.
@@ -417,6 +451,7 @@ class Api:
 
     @legacy("statusDownloads")
     @permission(Perms.LIST)
+    @get
     def status_downloads(self) -> list[DownloadInfo]:
         """
         Status of all currently running downloads.
@@ -454,6 +489,7 @@ class Api:
 
     @legacy("addPackage")
     @permission(Perms.ADD)
+    @post
     def add_package(self, name: str, links: list[str], dest: Destination = Destination.QUEUE) -> int:
         """
         Adds a package, with links to desired destination.
@@ -497,6 +533,7 @@ class Api:
 
     @legacy("parseURLs")
     @permission(Perms.ADD)
+    @post
     def parse_urls(self, html: Optional[str] = None, url: Optional[str] = None) -> dict[str, list[str]]:
         """
         Parses html content or any arbitrary text for links and returns result of
@@ -509,16 +546,17 @@ class Api:
         urls = set()
 
         if html:
-            urls.update(urlmatcher.findall(html))
+            urls.update(RE_URLMATCH.findall(html))
 
         if url:
             page = get_url(url)
-            urls.update(urlmatcher.findall(page))
+            urls.update(RE_URLMATCH.findall(page))
 
         return self.check_urls(list(urls))
 
     @legacy("checkURLs")
     @permission(Perms.ADD)
+    @post
     def check_urls(self, urls: list[str]) -> dict[str, list[str]]:
         """
         Gets urls and returns pluginname mapped to list of matched urls.
@@ -539,6 +577,7 @@ class Api:
 
     @legacy("checkOnlineStatus")
     @permission(Perms.ADD)
+    @post
     def check_online_status(self, urls: list[str]) -> OnlineCheck:
         """
         Initiates online status check.
@@ -570,6 +609,7 @@ class Api:
 
     @legacy("checkOnlineStatusContainer")
     @permission(Perms.ADD)
+    @post
     def check_online_status_container(self, urls: list[str], container: str, data: bytes) -> OnlineCheck:
         """
         checks online status of urls and a submitted container file.
@@ -591,6 +631,7 @@ class Api:
 
     @legacy("pollResults")
     @permission(Perms.ADD)
+    @get
     def poll_results(self, rid: int) -> OnlineCheck:
         """
         Polls the result available for ResultID.
@@ -608,6 +649,7 @@ class Api:
 
     @legacy("generatePackages")
     @permission(Perms.ADD)
+    @post
     def generate_packages(self, links: list[str]) -> dict[str, list[str]]:
         """
         Parses links, generates packages names from urls.
@@ -620,6 +662,7 @@ class Api:
 
     @legacy("generateAndAddPackages")
     @permission(Perms.ADD)
+    @post
     def generate_and_add_packages(self, links: list[str], dest: Destination = Destination.COLLECTOR) -> list[int]:
         """
         Generates and add packages.
@@ -635,6 +678,7 @@ class Api:
 
     @legacy("checkAndAddPackages")
     @permission(Perms.ADD)
+    @post
     def check_and_add_packages(self, links: list[str], dest: Destination = Destination.COLLECTOR) -> None:
         """
         Checks online status, retrieves names, and will add packages.
@@ -649,6 +693,7 @@ class Api:
 
     @legacy("getPackageData")
     @permission(Perms.LIST)
+    @get
     def get_package_data(self, package_id: int) -> PackageData:
         """
         Returns complete information about package, and included files.
@@ -676,6 +721,7 @@ class Api:
 
     @legacy("getPackageInfo")
     @permission(Perms.LIST)
+    @get
     def get_package_info(self, package_id: int) -> PackageData:
         """
         Returns information about package, without detailed information about containing
@@ -704,6 +750,7 @@ class Api:
 
     @legacy("getFileData")
     @permission(Perms.LIST)
+    @get
     def get_file_data(self, file_id: int) -> FileData:
         """
         Get complete information about a specific file.
@@ -721,6 +768,7 @@ class Api:
 
     @legacy("deleteFiles")
     @permission(Perms.DELETE)
+    @post
     def delete_files(self, file_ids: list[int]) -> None:
         """
         Deletes several file entries from pyload.
@@ -734,6 +782,7 @@ class Api:
 
     @legacy("deletePackages")
     @permission(Perms.DELETE)
+    @post
     def delete_packages(self, package_ids: list[int]) -> None:
         """
         Deletes packages and containing links.
@@ -747,6 +796,7 @@ class Api:
 
     @legacy("getQueue")
     @permission(Perms.LIST)
+    @get
     def get_queue(self) -> list[PackageData]:
         """
         Returns info about queue and packages, **not** about files, see `get_queue_data`
@@ -773,6 +823,7 @@ class Api:
 
     @legacy("getQueueData")
     @permission(Perms.LIST)
+    @get
     def get_queue_data(self) -> list[PackageData]:
         """
         Return complete data about everything in queue, this is very expensive use it
@@ -800,6 +851,7 @@ class Api:
 
     @legacy("getCollector")
     @permission(Perms.LIST)
+    @get
     def get_collector(self) -> list[PackageData]:
         """
         same as `get_queue` for collector.
@@ -825,6 +877,7 @@ class Api:
 
     @legacy("getCollectorData")
     @permission(Perms.LIST)
+    @get
     def get_collector_data(self) -> list[PackageData]:
         """
         same as `get_queue_data` for collector.
@@ -852,6 +905,7 @@ class Api:
 
     @legacy("addFiles")
     @permission(Perms.ADD)
+    @post
     def add_files(self, package_id: int, links: list[str]) -> None:
         """
         Adds files to specific package.
@@ -870,6 +924,7 @@ class Api:
 
     @legacy("pushToQueue")
     @permission(Perms.MODIFY)
+    @post
     def push_to_queue(self, package_id: int) -> None:
         """
         Moves package from Collector to Queue.
@@ -880,6 +935,7 @@ class Api:
 
     @legacy("pullFromQueue")
     @permission(Perms.MODIFY)
+    @post
     def pull_from_queue(self, package_id: int) -> None:
         """
         Moves package from Queue to Collector.
@@ -890,6 +946,7 @@ class Api:
 
     @legacy("restartPackage")
     @permission(Perms.MODIFY)
+    @post
     def restart_package(self, package_id: int) -> None:
         """
         Restarts a package, resets every containing files.
@@ -900,6 +957,7 @@ class Api:
 
     @legacy("restartFile")
     @permission(Perms.MODIFY)
+    @post
     def restart_file(self, file_id: int) -> None:
         """
         Resets file status, so it will be downloaded again.
@@ -910,6 +968,7 @@ class Api:
 
     @legacy("recheckPackage")
     @permission(Perms.MODIFY)
+    @post
     def recheck_package(self, package_id: int) -> None:
         """
         Probes online status of all files in a package, also a default action when
@@ -922,6 +981,7 @@ class Api:
 
     @legacy("stopAllDownloads")
     @permission(Perms.MODIFY)
+    @post
     def stop_all_downloads(self) -> None:
         """
         Aborts all running downloads.
@@ -932,6 +992,7 @@ class Api:
 
     @legacy("stopDownloads")
     @permission(Perms.MODIFY)
+    @post
     def stop_downloads(self, file_ids: list[int]) -> None:
         """
         Aborts specific downloads.
@@ -946,6 +1007,7 @@ class Api:
 
     @legacy("setPackageName")
     @permission(Perms.MODIFY)
+    @post
     def set_package_name(self, package_id: int, name: str) -> None:
         """
         Renames a package.
@@ -959,6 +1021,7 @@ class Api:
 
     @legacy("movePackage")
     @permission(Perms.MODIFY)
+    @post
     def move_package(self, destination: Destination, package_id: int) -> None:
         """
         Set a new package location.
@@ -975,6 +1038,7 @@ class Api:
 
     @legacy("moveFiles")
     @permission(Perms.MODIFY)
+    @post
     def move_files(self, file_ids: list[int], package_id: int) -> None:
         """
         Move multiple files to another package.
@@ -988,6 +1052,7 @@ class Api:
 
     @legacy("uploadContainer")
     @permission(Perms.ADD)
+    @post
     def upload_container(self, filename: str, data: bytes) -> None:
         """
         Uploads and adds a container file to pyLoad.
@@ -1007,6 +1072,7 @@ class Api:
 
     @legacy("orderPackage")
     @permission(Perms.MODIFY)
+    @post
     def order_package(self, package_id: int, position: int) -> None:
         """
         Gives a package a new position.
@@ -1018,6 +1084,7 @@ class Api:
 
     @legacy("orderFile")
     @permission(Perms.MODIFY)
+    @post
     def order_file(self, file_id: int, position: int) -> None:
         """
         Gives a new position to a file within its package.
@@ -1029,6 +1096,7 @@ class Api:
 
     @legacy("setPackageData")
     @permission(Perms.MODIFY)
+    @post
     def set_package_data(self, package_id: int, data: dict[str, Any]) -> None:
         """
         Allows to modify several package attributes.
@@ -1050,6 +1118,7 @@ class Api:
 
     @legacy("deleteFinished")
     @permission(Perms.DELETE)
+    @post
     def delete_finished(self) -> list[int]:
         """
         Deletes all finished files and completely finished packages.
@@ -1060,6 +1129,7 @@ class Api:
 
     @legacy("restartFailed")
     @permission(Perms.MODIFY)
+    @post
     def restart_failed(self) -> None:
         """
         Restarts all failed failes.
@@ -1068,6 +1138,7 @@ class Api:
 
     @legacy("getPackageOrder")
     @permission(Perms.LIST)
+    @get
     def get_package_order(self, destination: Destination) -> dict[int, int]:
         """
         Returns information about package order.
@@ -1087,6 +1158,7 @@ class Api:
 
     @legacy("getFileOrder")
     @permission(Perms.LIST)
+    @get
     def get_file_order(self, package_id: int) -> dict[int, int]:
         """
         Information about file order within package.
@@ -1104,6 +1176,7 @@ class Api:
 
     @legacy("isCaptchaWaiting")
     @permission(Perms.STATUS)
+    @get
     def is_captcha_waiting(self) -> bool:
         """
         Indicates whether a captcha task is available.
@@ -1116,6 +1189,7 @@ class Api:
 
     @legacy("getCaptchaTask")
     @permission(Perms.STATUS)
+    @get
     def get_captcha_task(self, exclusive: bool = False) -> CaptchaTask:
         """
         Returns a captcha task.
@@ -1138,6 +1212,7 @@ class Api:
 
     @legacy("getCaptchaTaskStatus")
     @permission(Perms.STATUS)
+    @get
     def get_captcha_task_status(self, tid: int) -> str:
         """
         Get information about captcha task.
@@ -1151,6 +1226,7 @@ class Api:
 
     @legacy("setCaptchaResult")
     @permission(Perms.STATUS)
+    @post
     def set_captcha_result(self, tid: int, result: str) -> None:
         """
         Set result for a captcha task.
@@ -1166,6 +1242,7 @@ class Api:
 
     @legacy("getEvents")
     @permission(Perms.STATUS)
+    @get
     def get_events(self, uuid: str) -> list[EventInfo]:
         """
         Lists occurred events, may be affected to changes in the future.
@@ -1201,6 +1278,7 @@ class Api:
 
     @legacy("getAccounts")
     @permission(Perms.ACCOUNTS)
+    @get
     def get_accounts(self, refresh: bool) -> list[AccountInfo]:
         """
         Get information about all entered accounts.
@@ -1229,6 +1307,7 @@ class Api:
 
     @legacy("getAccountTypes")
     @permission(Perms.ANY)
+    @get
     def get_account_types(self) -> list[str]:
         """
         All available account types.
@@ -1239,6 +1318,7 @@ class Api:
 
     @legacy("updateAccount")
     @permission(Perms.ACCOUNTS)
+    @post
     def update_account(self, plugin: str, account: str, password: Optional[str] = None, options: Optional[dict[str, Any]] = None) -> None:
         """
         Changes pw/options for specific account.
@@ -1248,6 +1328,7 @@ class Api:
 
     @legacy("removeAccount")
     @permission(Perms.ACCOUNTS)
+    @post
     def remove_account(self, plugin: str, account: str) -> None:
         """
         Remove account from pyload.
@@ -1258,6 +1339,7 @@ class Api:
         self.pyload.account_manager.remove_account(plugin, account)
 
     @legacy("checkAuth")
+    @get
     def check_auth(self, username: str, password: str) -> dict[str, Any]:
         """
         Check authentication and returns details.
@@ -1268,6 +1350,7 @@ class Api:
         """
         return self.pyload.db.check_auth(username, password)
 
+    @get
     def user_exists(self, username: str) -> bool:
         """
         Check if a user actually exists in the database.
@@ -1278,6 +1361,7 @@ class Api:
         return self.pyload.db.user_exists(username)
 
     @legacy("isAuthorized")
+    @post
     def is_authorized(self, func_name: str, userdata: dict[str, Any]) -> bool:
         """
         checks if the user is authorized for specific method.
@@ -1288,26 +1372,27 @@ class Api:
         """
         if userdata["role"] == Role.ADMIN:
             return True
-        elif func_name in perm_map and has_permission(
-            userdata["permission"], perm_map[func_name]
-        ):
+        elif func_name in perm_map and has_permission(userdata["permission"], perm_map[func_name]):
             return True
         else:
             return False
 
     @permission(Perms.SETTINGS)
+    @get
     def get_userdir(self) -> str:
         return os.path.realpath(self.pyload.userdir)
 
     @permission(Perms.SETTINGS)
+    @get
     def get_cachedir(self) -> str:
         return os.path.realpath(self.pyload.tempdir)
 
     #: Old API
     @permission(Perms.ANY)
+    @get
     def getUserData(self, username: str, password: str) -> OldUserData:
         """
-        similar to `check_auth` but returns UserData thrift type.
+        similar to `check_auth` but returns UserData type.
         """
         user = self.check_auth(username, password)
         if user:
@@ -1322,9 +1407,10 @@ class Api:
             return OldUserData()
 
     @permission(Perms.ANY)
+    @get
     def get_userdata(self, username: str, password: str) -> UserData:
         """
-        similar to `check_auth` but returns UserData thrift type.
+        similar to `check_auth` but returns UserData pe.
         """
         user = self.check_auth(username, password)
         if user:
@@ -1340,6 +1426,7 @@ class Api:
             return UserData()
 
     #: Old API
+    @get
     def getAllUserData(self) -> dict[str, OldUserData]:
         """
         returns all known user and info.
@@ -1356,6 +1443,7 @@ class Api:
 
         return res
 
+    @get
     def get_all_userdata(self) -> dict[int, UserData]:
         """
         returns all known user and info.
@@ -1374,6 +1462,7 @@ class Api:
 
     @legacy("getServices")
     @permission(Perms.STATUS)
+    @get
     def get_services(self) -> dict[str, dict[str, str]]:
         """
         A dict of available services, these can be defined by addon plugins.
@@ -1388,6 +1477,7 @@ class Api:
 
     @legacy("hasService")
     @permission(Perms.STATUS)
+    @get
     def has_service(self, plugin: str, func_name: str) -> bool:
         """
         Checks whether a service is available.
@@ -1400,6 +1490,7 @@ class Api:
         return plugin in cont and func_name in cont[plugin]
 
     @permission(Perms.STATUS)
+    @post
     def service_call(self, service_name: str, arguments: Optional[list[Any]], parse_arguments: bool = False) -> str:
         """
         Calls a service (a method in addon plugin).
@@ -1448,6 +1539,7 @@ class Api:
 
     @legacy("getAllInfo")
     @permission(Perms.STATUS)
+    @get
     def get_all_info(self) -> dict[str, dict[str, str]]:
         """
         Returns all information stored by addon plugins. Values are always strings.
@@ -1458,6 +1550,7 @@ class Api:
 
     @legacy("getInfoByPlugin")
     @permission(Perms.STATUS)
+    @get
     def get_info_by_plugin(self, plugin: str) -> dict[str, str]:
         """
         Returns information stored by a specific plugin.
@@ -1467,12 +1560,14 @@ class Api:
         """
         return self.pyload.addon_manager.get_info(plugin)
 
+    @post
     def add_user(self, user: str, newpw: str, role: int = 0, perms: int = 0) -> bool:
         """
         creates new user login.
         """
         return self.pyload.db.add_user(user, newpw, role, perms)
 
+    @post
     def remove_user(self, user: str) -> bool:
         """
         deletes a user login.
@@ -1482,6 +1577,7 @@ class Api:
         return True
 
     @legacy("changePassword")
+    @post
     def change_password(self, user: str, oldpw: str, newpw: str) -> bool:
         """
         changes password for specific user.
@@ -1489,6 +1585,7 @@ class Api:
         return self.pyload.db.change_password(user, oldpw, newpw)
 
     @legacy("setUserPermission")
+    @post
     def set_user_permission(self, user: str, permission: int, role: int) -> None:
         self.pyload.db.set_permission(user, permission)
         self.pyload.db.set_role(user, role)

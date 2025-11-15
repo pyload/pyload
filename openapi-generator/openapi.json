@@ -248,7 +248,7 @@
       }
     },
     "/api/check_auth": {
-      "post": {
+      "get": {
         "summary": "Check authentication and returns details.",
         "description": "Check authentication and returns details.",
         "tags": [
@@ -466,7 +466,7 @@
       }
     },
     "/api/delete_finished": {
-      "get": {
+      "post": {
         "summary": "Deletes all finished files and completely finished packages.",
         "description": "Deletes all finished files and completely finished packages.",
         "tags": [
@@ -668,9 +668,9 @@
       }
     },
     "/api/getUserData": {
-      "post": {
-        "summary": "similar to `check_auth` but returns UserData thrift type.",
-        "description": "similar to `check_auth` but returns UserData thrift type.",
+      "get": {
+        "summary": "similar to `check_auth` but returns UserData type.",
+        "description": "similar to `check_auth` but returns UserData type.",
         "tags": [
           "pyLoad REST"
         ],
@@ -731,7 +731,7 @@
       }
     },
     "/api/get_accounts": {
-      "post": {
+      "get": {
         "summary": "Get information about all entered accounts.",
         "description": "Get information about all entered accounts.",
         "tags": [
@@ -838,7 +838,7 @@
       }
     },
     "/api/get_captcha_task": {
-      "post": {
+      "get": {
         "summary": "Returns a captcha task.",
         "description": "Returns a captcha task.",
         "tags": [
@@ -871,7 +871,7 @@
       }
     },
     "/api/get_captcha_task_status": {
-      "post": {
+      "get": {
         "summary": "Get information about captcha task.",
         "description": "Get information about captcha task.",
         "tags": [
@@ -999,7 +999,7 @@
       }
     },
     "/api/get_config_value": {
-      "post": {
+      "get": {
         "summary": "Retrieve config value.",
         "description": "Retrieve config value.",
         "tags": [
@@ -1050,7 +1050,7 @@
       }
     },
     "/api/get_events": {
-      "post": {
+      "get": {
         "summary": "Lists occurred events, may be affected to changes in the future.",
         "description": "Lists occurred events, may be affected to changes in the future.",
         "tags": [
@@ -1084,7 +1084,7 @@
       }
     },
     "/api/get_file_data": {
-      "post": {
+      "get": {
         "summary": "Get complete information about a specific file.",
         "description": "Get complete information about a specific file.",
         "tags": [
@@ -1116,7 +1116,7 @@
       }
     },
     "/api/get_file_order": {
-      "post": {
+      "get": {
         "summary": "Information about file order within package.",
         "description": "Information about file order within package.",
         "tags": [
@@ -1150,7 +1150,7 @@
       }
     },
     "/api/get_info_by_plugin": {
-      "post": {
+      "get": {
         "summary": "Returns information stored by a specific plugin.",
         "description": "Returns information stored by a specific plugin.",
         "tags": [
@@ -1185,7 +1185,7 @@
       }
     },
     "/api/get_log": {
-      "post": {
+      "get": {
         "summary": "Returns most recent log entries.",
         "description": "Returns most recent log entries.",
         "tags": [
@@ -1221,7 +1221,7 @@
       }
     },
     "/api/get_package_data": {
-      "post": {
+      "get": {
         "summary": "Returns complete information about package, and included files.",
         "description": "Returns complete information about package, and included files.",
         "tags": [
@@ -1253,7 +1253,7 @@
       }
     },
     "/api/get_package_info": {
-      "post": {
+      "get": {
         "summary": "Returns information about package, without detailed information about containing files.",
         "description": "Returns information about package, without detailed information about containing files.",
         "tags": [
@@ -1285,7 +1285,7 @@
       }
     },
     "/api/get_package_order": {
-      "post": {
+      "get": {
         "summary": "Returns information about package order.",
         "description": "Returns information about package order.",
         "tags": [
@@ -1464,9 +1464,9 @@
       }
     },
     "/api/get_userdata": {
-      "post": {
-        "summary": "similar to `check_auth` but returns UserData thrift type.",
-        "description": "similar to `check_auth` but returns UserData thrift type.",
+      "get": {
+        "summary": "similar to `check_auth` but returns UserData pe.",
+        "description": "similar to `check_auth` but returns UserData pe.",
         "tags": [
           "pyLoad REST"
         ],
@@ -1524,7 +1524,7 @@
       }
     },
     "/api/has_service": {
-      "post": {
+      "get": {
         "summary": "Checks whether a service is available.",
         "description": "Checks whether a service is available.",
         "tags": [
@@ -1673,7 +1673,7 @@
       }
     },
     "/api/kill": {
-      "get": {
+      "post": {
         "summary": "Clean way to quit pyLoad.",
         "description": "Clean way to quit pyLoad.",
         "tags": [
@@ -1877,7 +1877,7 @@
       }
     },
     "/api/pause_server": {
-      "get": {
+      "post": {
         "summary": "Pause server: It won't start any new downloads, but nothing gets aborted.",
         "description": "Pause server: It won't start any new downloads, but nothing gets aborted.",
         "tags": [
@@ -1891,7 +1891,7 @@
       }
     },
     "/api/poll_results": {
-      "post": {
+      "get": {
         "summary": "Polls the result available for ResultID.",
         "description": "Polls the result available for ResultID.",
         "tags": [
@@ -2062,7 +2062,7 @@
       }
     },
     "/api/restart": {
-      "get": {
+      "post": {
         "summary": "Restart pyload core.",
         "description": "Restart pyload core.",
         "tags": [
@@ -2076,7 +2076,7 @@
       }
     },
     "/api/restart_failed": {
-      "get": {
+      "post": {
         "summary": "Restarts all failed failes.",
         "description": "Restarts all failed failes.",
         "tags": [
@@ -2428,7 +2428,7 @@
       }
     },
     "/api/stop_all_downloads": {
-      "get": {
+      "post": {
         "summary": "Aborts all running downloads.",
         "description": "Aborts all running downloads.",
         "tags": [
@@ -2477,7 +2477,7 @@
       }
     },
     "/api/toggle_pause": {
-      "get": {
+      "post": {
         "summary": "Toggle pause state.",
         "description": "Toggle pause state.",
         "tags": [
@@ -2498,7 +2498,7 @@
       }
     },
     "/api/toggle_proxy": {
-      "get": {
+      "post": {
         "summary": "Toggle proxy activation.",
         "description": "Toggle proxy activation.",
         "tags": [
@@ -2519,7 +2519,7 @@
       }
     },
     "/api/toggle_reconnect": {
-      "get": {
+      "post": {
         "summary": "Toggle reconnect activation.",
         "description": "Toggle reconnect activation.",
         "tags": [
@@ -2540,7 +2540,7 @@
       }
     },
     "/api/unpause_server": {
-      "get": {
+      "post": {
         "summary": "Unpause server: New Downloads will be started.",
         "description": "Unpause server: New Downloads will be started.",
         "tags": [
@@ -2640,7 +2640,7 @@
       }
     },
     "/api/user_exists": {
-      "post": {
+      "get": {
         "summary": "Check if a user actually exists in the database.",
         "description": "Check if a user actually exists in the database.",
         "tags": [

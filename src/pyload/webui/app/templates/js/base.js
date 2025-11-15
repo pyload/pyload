@@ -89,9 +89,9 @@ document.addEvent("domready", function() {
     $('add_reset').addEvent('click', () => window.addBox.close());
 
     $('action_add').addEvent('click', function() { $("add_form").reset(); return window.addBox.open(); });
-    $('action_play').addEvent('click', () => new Request({method: 'get', url: "{{url_for('api.rpc', func='unpause_server')}}"}).send());
-    $('action_cancel').addEvent('click', () => new Request({method: 'get', url: "{{url_for('api.rpc', func='stop_all_downloads')}}"}).send());
-    $('action_stop').addEvent('click', () => new Request({method: 'get', url: "{{url_for('api.rpc', func='pause_server')}}"}).send());
+    $('action_play').addEvent('click', () => new Request({method: 'post', url: "{{url_for('api.rpc', func='unpause_server')}}"}).send());
+    $('action_cancel').addEvent('click', () => new Request({method: 'post', url: "{{url_for('api.rpc', func='stop_all_downloads')}}"}).send());
+    $('action_stop').addEvent('click', () => new Request({method: 'post', url: "{{url_for('api.rpc', func='pause_server')}}"}).send());
 
 
     // captcha events

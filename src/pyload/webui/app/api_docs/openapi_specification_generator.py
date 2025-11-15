@@ -7,6 +7,7 @@
 #  \_______\    /_______|_|   |__/________________________/
 #           \  /
 #            \/
+
 import inspect
 import sys
 from collections.abc import Hashable
@@ -73,7 +74,8 @@ class OpenAPISpecificationGenerator:
             return self.spec
 
         for name, method in inspect.getmembers(self.api, predicate=inspect.ismethod):
-            if name.startswith('_') or name in legacy_map.values():
+            rest_method = self.api._required_http_method_for_api(name)
+            if name.startswith('_') or name in legacy_map.values() or rest_method is None:
                 continue
 
             docstring = inspect.getdoc(method) or "No documentation available"
@@ -86,31 +88,31 @@ class OpenAPISpecificationGenerator:
                 "description": summary,
                 "tags": ["pyLoad REST"]
             }
-            rest_method = "post"
 
             method_params = dict(inspect.signature(method).parameters)
             method_params.pop("self", None)
 
-            if not method_params:
-                rest_method = "get"
-            elif all(self._is_primitive_type(param_type.annotation) for param_type in method_params.values()):
-                query_params = self._build_post_request_with_query_params(docstring_lines, method_params)
-                operation.update({
-                    "parameters": query_params,
-                })
-            else:
-                request_body = self._build_post_request_with_request_body(docstring_lines, method_params)
-                operation.update(request_body)
+            if method_params:
+                if all(self._is_primitive_type(param_type.annotation) for param_type in method_params.values()):
+                    query_params = self._build_request_with_query_params(docstring_lines, method_params)
+                    operation.update({
+                        "parameters": query_params,
+                    })
+                elif rest_method == "POST":
+                    request_body = self._build_post_request_with_request_body(docstring_lines, method_params)
+                    operation.update(request_body)
+                else:
+                    raise ValueError(f"REST method {name}() with non primitive types, POST method expected but {rest_method} specified")
 
             response = self._build_response(docstring_lines, method)
             operation.update({
                 "responses": {"200": response}
             })
-            self.spec["paths"][f"/api/{name}"] = {rest_method: operation}
+            self.spec["paths"][f"/api/{name}"] = {rest_method.lower(): operation}
 
         return self.spec
 
-    def _build_post_request_with_query_params(self, docstring_lines, method_params) -> list[dict[str, Any]]:
+    def _build_request_with_query_params(self, docstring_lines, method_params) -> list[dict[str, Any]]:
         query_params = []
         for param_name, param in method_params.items():
             param_info: dict[str, Any] = {

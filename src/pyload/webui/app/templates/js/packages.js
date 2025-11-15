@@ -63,7 +63,7 @@ var PackageUI = new Class({
     deleteFinished: function() {
         indicateLoad();
         new Request.JSON({
-            method: 'get',
+            method: 'post',
             url: "{{url_for('api.rpc', func='delete_finished')}}",
             onSuccess: function(data) {
                 if (data.length > 0) {
@@ -81,7 +81,7 @@ var PackageUI = new Class({
     restartFailed: function() {
         indicateLoad();
         new Request.JSON({
-            method: 'get',
+            method: 'post',
             url: "{{url_for('api.rpc', func='restart_failed')}}",
             onSuccess: function(data) {
                 this.packages.each(function(pack) {
@@ -243,7 +243,7 @@ var Package = new Class({
             var imgs = child.getElements('.child_secrow img');
             imgs[0].addEvent('click', function(e) {
                 new Request({
-                    method: 'get',
+                    method: 'post',
                     url: "{{url_for('api.rpc', func='delete_files')}}/[" + this + ']',
                     onSuccess: function() {
                         $('file_' + this).nix()
@@ -253,7 +253,7 @@ var Package = new Class({
             }.bind(lid));
             imgs[1].addEvent('click', function(e) {
                 new Request({
-                    method: 'get',
+                    method: 'post',
                     url: "{{url_for('api.rpc', func='restart_file')}}/" + this,
                     onSuccess: function() {
                         var ele = $('file_' + this);
@@ -283,7 +283,7 @@ var Package = new Class({
     deletePackage: function(event) {
         indicateLoad();
         new Request({
-            method: 'get',
+            method: 'post',
             url: "{{url_for('api.rpc', func='delete_packages')}}/[" + this.id + ']',
             onSuccess: function() {
                 this.ele.nix();
@@ -296,7 +296,7 @@ var Package = new Class({
     restartPackage: function(event) {
         indicateLoad();
         new Request({
-            method: 'get',
+            method: 'post',
             url: "{{url_for('api.rpc', func='restart_package')}}/" + this.id,
             onSuccess: function () {
                 this.close();
@@ -309,7 +309,7 @@ var Package = new Class({
     extractPackage: function (event) {
         indicateLoad();
         new Request({
-            method: 'get',
+            method: 'post',
             url: "{{url_for('api.rpc', func='service_call')}}/'ExtractArchive.extract_package', [" + this.id + "]",
             onSuccess: function () {
                 this.close();

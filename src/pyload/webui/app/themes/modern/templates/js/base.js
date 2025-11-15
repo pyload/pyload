@@ -323,7 +323,7 @@ class UIHandler {
     });
 
     $("#action_play").click(() => {
-      $.get("{{url_for('api.rpc', func='unpause_server')}}", () => {
+      $.post("{{url_for('api.rpc', func='unpause_server')}}", () => {
         $.ajax({
           method: "post",
           url: "{{url_for('json.status')}}",
@@ -337,13 +337,13 @@ class UIHandler {
     $("#action_cancel").click(() => {
       this.yesNoDialog("{{_('Are you sure you want to abort all downloads?')}}", (answer) => {
         if (answer) {
-          $.get("{{url_for('api.rpc', func='stop_all_downloads')}}");
+          $.post("{{url_for('api.rpc', func='stop_all_downloads')}}");
         }
       });
     });
 
     $("#action_stop").click(() => {
-      $.get("{{url_for('api.rpc', func='pause_server')}}", () => {
+      $.post("{{url_for('api.rpc', func='pause_server')}}", () => {
         $.ajax({
           method: "post",
           url: "{{url_for('json.status')}}",
@@ -355,7 +355,7 @@ class UIHandler {
     });
 
     $("#toggle_queue").click(() => {
-      $.get("{{url_for('api.rpc', func='toggle_pause')}}", () => {
+      $.post("{{url_for('api.rpc', func='toggle_pause')}}", () => {
         $.ajax({
           method: "post",
           url: "{{url_for('json.status')}}",
@@ -367,7 +367,7 @@ class UIHandler {
     });
 
     $("#toggle_proxy").click(() => {
-      $.get("{{url_for('api.rpc', func='toggle_proxy')}}", () => {
+      $.post("{{url_for('api.rpc', func='toggle_proxy')}}", () => {
         $.ajax({
           method: "post",
           url: "{{url_for('json.status')}}",
@@ -379,7 +379,7 @@ class UIHandler {
     });
 
     $("#toggle_reconnect").click(() => {
-      $.get("{{url_for('api.rpc', func='toggle_reconnect')}}", () => {
+      $.post("{{url_for('api.rpc', func='toggle_reconnect')}}", () => {
         $.ajax({
           method: "post",
           url: "{{url_for('json.status')}}",
