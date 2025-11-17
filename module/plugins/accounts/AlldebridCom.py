@@ -9,7 +9,7 @@ from ..internal.MultiAccount import MultiAccount
 class AlldebridCom(MultiAccount):
     __name__ = "AlldebridCom"
     __type__ = "account"
-    __version__ = "0.46"
+    __version__ = "0.47"
     __status__ = "testing"
 
     __config__ = [("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),
@@ -24,7 +24,7 @@ class AlldebridCom(MultiAccount):
                    ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
     # See https://docs.alldebrid.com/
-    API_URL = "https://api.alldebrid.com/v4/"
+    API_URL = "https://api.alldebrid.com/v4.1/"
 
     def api_response(self, method, get={}, post={}, multipart=False):
         get.update({'agent': "pyLoad",

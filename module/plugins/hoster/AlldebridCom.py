@@ -10,7 +10,7 @@ from ..internal.MultiHoster import MultiHoster
 class AlldebridCom(MultiHoster):
     __name__ = "AlldebridCom"
     __type__ = "hoster"
-    __version__ = "0.66"
+    __version__ = "0.67"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:\w+\.)?(?:alldebrid\.com|debrid\.it|alld\.io)/(?:dl|f)/[\w^_]+'
@@ -33,7 +33,7 @@ class AlldebridCom(MultiHoster):
                         (r'https?://(?:www\.)?mega(?:\.co)?\.nz/.*', lambda m:m.group(0).replace('_', '/'))]
 
     # See https://docs.alldebrid.com/
-    API_URL = "https://api.alldebrid.com/v4/"
+    API_URL = "https://api.alldebrid.com/v4.1/"
 
     def api_response(self, method, get={}, post={}, multipart=False):
         get.update({'agent': "pyLoad",

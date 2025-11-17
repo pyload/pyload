@@ -17,7 +17,7 @@ except ImportError:
 class AlldebridComTorrent(Crypter):
     __name__ = "AlldebridComTorrent"
     __type__ = "crypter"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __status__ = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -31,7 +31,7 @@ class AlldebridComTorrent(Crypter):
     __authors__ = [("GammaC0de", "nitzo2001[AT}yahoo[DOT]com")]
 
     # See https://docs.alldebrid.com/
-    API_URL = "https://api.alldebrid.com/v4/"
+    API_URL = "https://api.alldebrid.com/v4.1/"
 
     def api_response(self, method, get={}, post={}, multipart=False):
         get.update({'agent': "pyLoad",
