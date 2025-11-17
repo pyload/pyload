@@ -15,7 +15,7 @@ from ..helpers import exists
 class AlldebridComTorrent(SimpleDecrypter):
     __name__ = "AlldebridComTorrent"
     __type__ = "decrypter"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __status__ = "testing"
 
     __pattern__ = r'^unmatchable$'
