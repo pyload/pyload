@@ -13,17 +13,30 @@ except ImportError:
     pass
 
 
+def resolve_host(host):
+    try:
+        IPs = [
+            result [4][0]
+            for result in socket.getaddrinfo(host, None, family=0, type=socket.SOCK_STREAM)
+        ]
+    except socket.gaierror:
+        IPs = []
+
+    return IPs
+
+
 #@TODO: IPv6 support
 class ClickNLoad(Addon):
     __name__ = "ClickNLoad"
     __type__ = "hook"
-    __version__ = "0.61"
+    __version__ = "0.63"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", True),
                   ("port", "int", "Port", 9666),
                   ("extern", "bool", "Listen for external connections", True),
-                  ("dest", "queue;collector", "Add packages to", "collector")]
+                  ("dest", "queue;collector", "Add packages to", "collector"),
+                  ("hosts_filter", "str", "allowed source hosts (e.g. host:mycomputer.ddns.com;ip:127.0.0.1", "")]
 
     __description__ = """Click'n'Load support"""
     __license__ = "GPLv3"
@@ -111,7 +124,30 @@ class ClickNLoad(Addon):
                 client_socket, client_addr = dock_socket.accept()
 
                 if not self.do_exit:
-                    self.log_debug("Connection from %s:%s" % client_addr)
+                    host, port = client_addr
+                    hosts_filter = self.config.get("hosts_filter")
+                    if hosts_filter:
+                        allowed = False
+                        for h in hosts_filter.split(";"):
+                            try:
+                                filter_type, filter_val = h.split(":")
+                            except ValueError:
+                                continue
+                            if filter_type == "ip":
+                                allowed_ips = [filter_val]
+                            elif filter_type == "host":
+                                allowed_ips = resolve_host(filter_val)
+                            else:
+                                continue
+                            if host in allowed_ips:
+                                allowed = True
+                                break
+                        if not allowed:
+                            self.log_error(_("Connection from unauthorized host %s ignored") % host)
+                            client_socket.close()
+                            continue
+
+                    self.log_debug("Connection from %s:%s" % (host, port))
 
                     server_socket = socket.socket(
                         socket.AF_INET, socket.SOCK_STREAM)
