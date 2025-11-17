@@ -12,7 +12,7 @@ from flask.json import jsonify
 from pyload import APPID
 
 from ..api_docs.openapi_specification_generator import OpenAPISpecificationGenerator
-from ..helpers import apikey_auth, is_authenticated, render_template
+from ..helpers import apikey_auth, csrf_exempt, is_authenticated, render_template
 
 bp = flask.Blueprint("api", __name__)
 log = getLogger(APPID)
@@ -114,6 +114,7 @@ def swagger_ui():
 
 
 @bp.route("/api/login", methods=["POST"], endpoint="login")
+@csrf_exempt
 # @apiver_check
 def login():
     return "Obsolete API", 404
