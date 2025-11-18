@@ -1132,7 +1132,7 @@ class Api:
     @post
     def restart_failed(self) -> None:
         """
-        Restarts all failed failes.
+        Restarts all failed fails.
         """
         self.pyload.files.restart_failed()
 
