@@ -3407,8 +3407,9 @@
             "type": "integer"
           },
           "speed": {
+            "format": "float",
             "title": "Speed",
-            "type": "integer"
+            "type": "number"
           },
           "download": {
             "title": "Download",
