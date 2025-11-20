@@ -3303,9 +3303,9 @@
             "type": "string"
           },
           "speed": {
-            "format": "float",
+            "format": "int64",
             "title": "Speed",
-            "type": "number"
+            "type": "integer"
           },
           "eta": {
             "title": "Eta",

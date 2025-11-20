@@ -45,7 +45,7 @@ class ConfigSection(BaseModel):
 class DownloadInfo(BaseModel):
     fid: int
     name: str
-    speed: float = Field(json_schema_extra=FLOAT_JSON_SCHEMA)
+    speed: int = Field(json_schema_extra=INT64_JSON_SCHEMA)
     eta: int
     format_eta: str
     bleft: int = Field(json_schema_extra=INT64_JSON_SCHEMA)
