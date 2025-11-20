@@ -138,7 +138,7 @@ class Api:
         self.pyload = core
         self._ = core._
 
-    def _required_http_method_for_api(self, func_name: str) -> str:
+    def _required_http_method_for_api(self, func_name: str) -> Optional[str]:
         """
         Get the allowed HTTP method for an API method
 
