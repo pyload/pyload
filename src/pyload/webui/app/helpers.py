@@ -262,7 +262,7 @@ def apikey_auth(func):
             user_info = api.check_auth(user, password)
             if user_info:
                 # Log successful API authentication and store user info
-                log.info(f"API authentication successful for user '{sanitized_user}' using {auth_method} [CLIENT: {client_ip}]")
+                log.debug(f"API authentication successful for user '{sanitized_user}' using {auth_method} [CLIENT: {client_ip}]")
                 flask.g.user_info = user_info
                 return decorated(*args, **kwargs)
 
