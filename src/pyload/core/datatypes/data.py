@@ -117,7 +117,7 @@ class ServerStatus(BaseModel):
     active: int
     queue: int
     total: int
-    speed: int
+    speed: int = Field(json_schema_extra=INT64_JSON_SCHEMA)
     download: bool
     reconnect: bool
     captcha: bool

@@ -3407,6 +3407,7 @@
             "type": "integer"
           },
           "speed": {
+            "format": "int64",
             "title": "Speed",
             "type": "integer"
           },
