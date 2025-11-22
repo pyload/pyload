@@ -30,11 +30,11 @@ class RequestFactory:
         return self.pyload.config.get("download", "interface")
 
     @lock
-    def get_request(self, plugin_name, account=None, type="HTTP", **kwargs):
+    def get_request(self, plugin_name, account=None, request_type="HTTP", **kwargs):
         options = self.get_options()
         options.update(kwargs)  #: submit kwargs as additional options
 
-        if type == "XDCC":
+        if request_type == "XDCC":
             req = XDCCRequest(self.bucket, options)
 
         else:
@@ -51,7 +51,7 @@ class RequestFactory:
 
     def get_http_request(self, **kwargs):
         """
-        returns a http request, dont forget to close it !
+        returns an http request, don't forget to close it!
         """
         options = self.get_options()
         options.update(kwargs)  #: submit kwargs as additional options
@@ -109,6 +109,7 @@ class RequestFactory:
             "proxies": self.get_proxies(),
             "ipv6": self.pyload.config.get("download", "ipv6"),
             "ssl_verify": self.pyload.config.get("general", "ssl_verify"),
+            "max_redirect": self.pyload.config.get_plugin("UserAgentSwitcher", "maxredirs"),
         }
 
     def update_bucket(self):

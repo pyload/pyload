@@ -15,6 +15,7 @@ from pyload import APPID
 
 from ...utils.check import is_mapping
 from ...utils.convert import to_bytes, to_str
+from ...utils.web.purge import unescape as html_unescape
 from ..exceptions import Abort
 from .exceptions import BadHeader
 
@@ -86,6 +87,7 @@ class HTTPRequest:
 
         self.init_handle()
         self.set_interface(options)
+        self.default_max_redirect = max(options.get("max_redirect", 10), 0) or 5
 
         self.c.setopt(pycurl.WRITEFUNCTION, self.write_body)
         self.c.setopt(pycurl.HEADERFUNCTION, self.write_header)
@@ -232,7 +234,6 @@ class HTTPRequest:
             url = f"{url}?{get}"
 
         self.c.setopt(pycurl.URL, url)
-        self.c.last_url = url
 
         if post:
             self.c.setopt(pycurl.POST, 1)
@@ -277,12 +278,17 @@ class HTTPRequest:
             self.c.setopt(pycurl.POST, 0)
             self.c.setopt(pycurl.HTTPGET, 1)
 
+        if isinstance(referer, str):
+            self.last_url = referer
+
         if referer and self.last_url:
             self.c.setopt(pycurl.REFERER, to_bytes(self.last_url))
 
         if cookies:
             self.c.setopt(pycurl.COOKIEFILE, b"")
             self.c.setopt(pycurl.COOKIEJAR, b"")
+            if isinstance(cookies, list):
+                self.set_cookies(self.cj, cookies)
             self.get_cookies()
 
     def load(
@@ -295,7 +301,7 @@ class HTTPRequest:
         just_header=False,
         multipart=False,
         decode=True,
-        follow_location=True,
+        redirect=True,
         save_cookies=True,
     ):
         """
@@ -307,8 +313,11 @@ class HTTPRequest:
 
         self.c.setopt(pycurl.HTTPHEADER, self.request_headers)
 
-        if not follow_location:
+        if not redirect:
             self.c.setopt(pycurl.FOLLOWLOCATION, 0)
+
+        elif type(redirect) is int:
+            self.c.setopt(pycurl.MAXREDIRS, redirect)
 
         if just_header:
             self.c.setopt(pycurl.NOBODY, 1)
@@ -321,11 +330,14 @@ class HTTPRequest:
             else:
                 raise
 
-        if not follow_location:
-            self.c.setopt(pycurl.FOLLOWLOCATION, 1)
-
         if just_header:
             self.c.setopt(pycurl.NOBODY, 0)
+
+        if not redirect:
+            self.c.setopt(pycurl.FOLLOWLOCATION, 1)
+
+        elif type(redirect) is int:
+            self.c.setopt(pycurl.MAXREDIRS, self.default_max_redirect)
 
         self.c.setopt(pycurl.POSTFIELDS, b"")
         self.last_effective_url = self.c.getinfo(pycurl.EFFECTIVE_URL)
@@ -335,19 +347,101 @@ class HTTPRequest:
 
         self.code = self.verify_header()
 
-        ret = self.response_header if just_header else self.get_response()
+        res = self.response_header if just_header else self.get_response()
 
         if decode:
-            ret = (
-                to_str(ret, encoding="iso-8859-1")
+            res = (
+                to_str(res, encoding="iso-8859-1")
                 if just_header
-                else self.decode_response(ret)
+                else self.decode_response(res)
             )
 
         self.rep.close()
         self.rep = None
 
-        return ret
+        return res
+
+    def upload(
+        self,
+        filename,
+        url,
+        get=None,
+        referer=True,
+        cookies=True,
+        just_header=False,
+        decode=True,
+        redirect=True,
+        save_cookies=True,
+    ):
+        """
+        Uploads a file at url and returns response content.
+
+        :param filename: path of the file to upload
+        :param url: URL to upload to
+        :param get: Query string parameters
+        :param referer: Either a str with referrer, True to use default, False to disable
+        :param cookies: True or False or list of tuples [(domain, name, value)]
+        :param just_header: If True only the header will be retrieved and returned as dict
+        :param redirect: Either a number with maximum redirections, True to use default or False to disable
+        :param decode: The codec name to decode the output, True to use codec from http header, should be True in most cases
+        :param save_cookies: Weather to save received cookies
+        :return: Response content
+        """
+        with open(os.fsencode(filename), mode="rb") as fp:
+            self.set_request_context(url, get, None, referer, cookies, False)
+
+            self.response_header = b""
+
+            self.c.setopt(pycurl.HTTPHEADER, self.request_headers)
+
+            if not redirect:
+                self.c.setopt(pycurl.FOLLOWLOCATION, 0)
+
+            elif isinstance(redirect, int):
+                self.c.setopt(pycurl.MAXREDIRS, redirect)
+
+            self.c.setopt(pycurl.UPLOAD, 1)
+            self.c.setopt(pycurl.READFUNCTION, fp.read)
+            self.c.setopt(pycurl.INFILESIZE, os.fstat(fp.fileno()).st_size)
+
+            if just_header:
+                self.c.setopt(pycurl.NOBODY, 1)
+
+            self.c.perform()
+
+            if just_header:
+                self.c.setopt(pycurl.NOBODY, 0)
+
+            if not redirect:
+                self.c.setopt(pycurl.FOLLOWLOCATION, 1)
+
+            elif type(redirect) is int:
+                self.c.setopt(pycurl.MAXREDIRS, self.default_max_redirect)
+
+            self.c.setopt(pycurl.UPLOAD, 0)
+            self.c.setopt(pycurl.INFILESIZE, 0)
+
+            self.c.setopt(pycurl.POSTFIELDS, "")
+            self.last_effective_url = self.c.getinfo(pycurl.EFFECTIVE_URL)
+
+            if save_cookies:
+                self.add_cookies()
+
+            self.code = self.verify_header()
+
+            res = self.response_header if just_header else self.get_response()
+
+            if decode:
+                res = (
+                    to_str(res, encoding="iso-8859-1")
+                    if just_header
+                    else self.decode_response(res)
+                )
+
+            self.rep.close()
+            self.rep = None
+
+            return res
 
     def verify_header(self):
         """
@@ -387,16 +481,23 @@ class HTTPRequest:
         header = self.response_header.splitlines()
         encoding = "utf-8"  #: default encoding
 
-        for line in header:
-            line = line.lower().replace(b" ", b"")
-            if not line.startswith(b"content-type:") or (b"text" not in line and b"application" not in line):
-                continue
+        if isinstance(self.decode, str):
+            encoding = self.decode
 
-            none, delimiter, charset = line.rpartition(b"charset=")
-            if delimiter:
-                charset = charset.split(b";")
-                if charset:
-                    encoding = to_str(charset[0])
+        elif self.decode:
+            #: detect encoding
+            for line in header:
+                line = line.lower().replace(b" ", b"")
+                if not line.startswith(b"content-type:") or (b"text" not in line and b"application" not in line):
+                    continue
+
+                none, delimiter, charset = line.rpartition(b"charset=")
+                if delimiter:
+                    charset = charset.split(b";")
+                    if charset:
+                        encoding = to_str(charset[0])
+                        break
+
 
         try:
             # self.log.debug(f"Decoded {encoding}")
@@ -408,13 +509,13 @@ class HTTPRequest:
             decoder = codecs.getincrementaldecoder(encoding)("replace")
             response = decoder.decode(response, True)
 
-            # TODO: html_unescape as default
-
         except LookupError:
             self.log.debug(f"No Decoder found for {encoding}")
 
-        except Exception:
+        except UnicodeDecodeError:
             self.log.debug(f"Error when decoding string from {encoding}", exc_info=True)
+
+        response = html_unescape(response)
 
         return response
 

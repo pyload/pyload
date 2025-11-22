@@ -127,6 +127,12 @@ class Browser:
         """
         return self.http.load(*args, **kwargs)
 
+    def upload(self, *args, **kwargs):
+        """
+        perform upload.
+        """
+        return self.http.upload(*args, **kwargs)
+
     def put_header(self, name, value):
         """
         add a header to the request.
