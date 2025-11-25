@@ -250,7 +250,7 @@ class HTTPRequest:
             chaser = AiaChaser()
             try:
                 pem_data = "".join([
-                    cert.public_bytes(encoding=Encoding.PEM).decode()
+                    cert.public_bytes(encoding=Encoding.PEM).decode("ascii")
                     for cert in chaser.fetch_ca_chain_for_url(url)
                 ])
             except Exception as exc:
