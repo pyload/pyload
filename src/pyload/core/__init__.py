@@ -118,7 +118,7 @@ class Core:
         from .config.parser import ConfigParser
 
         self.userdir = os.path.realpath(userdir)
-        self.tempdir = os.path.realpath(tempdir)
+        tempfile.tempdir = self.tempdir = os.path.realpath(tempdir)
         os.makedirs(self.userdir, exist_ok=True)
         os.makedirs(self.tempdir, exist_ok=True)
 

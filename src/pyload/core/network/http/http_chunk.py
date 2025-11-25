@@ -134,6 +134,8 @@ class HTTPChunk(HTTPRequest):
 
         self.fp = None  #: file handle
 
+        self.aia_cainfo = None
+
         self.init_handle()
         self.c.setopt(pycurl.ENCODING, None)  #: avoid pycurl error 61
         self.set_interface(self.p.options)
@@ -390,6 +392,9 @@ class HTTPChunk(HTTPRequest):
         """
         closes everything, unusable after this.
         """
+        if self.aia_cainfo:
+            os.unlink(self.aia_cainfo)
+            self.aia_cainfo = None
         if self.fp:
             self.fp.close()
         self.c.close()

@@ -4,12 +4,15 @@ import codecs
 import io
 import mimetypes
 import os
+import tempfile
 from itertools import chain
 from logging import getLogger
 from urllib.parse import quote, urlencode
 
 import certifi
 import pycurl
+from aia_chaser import AiaChaser
+from cryptography.hazmat.primitives.serialization import Encoding
 
 from pyload import APPID
 
@@ -85,6 +88,9 @@ class HTTPRequest:
         self.abort = False
         self.decode = False
 
+        self.ssl_aiachaser = False
+        self.aia_cainfo = None
+
         self.init_handle()
         self.set_interface(options)
         self.default_max_redirect = max(options.get("max_redirect", 10), 0) or 5
@@ -112,6 +118,7 @@ class HTTPRequest:
         if hasattr(pycurl, "AUTOREFERER"):
             self.c.setopt(pycurl.AUTOREFERER, 1)
         self.c.setopt(pycurl.SSL_VERIFYPEER, 1)
+        self.c.setopt(pycurl.SSL_VERIFYHOST, 2)
         self.c.setopt(pycurl.LOW_SPEED_TIME, 60)
         self.c.setopt(pycurl.LOW_SPEED_LIMIT, 5)
         if hasattr(pycurl, "USE_SSL"):
@@ -190,13 +197,19 @@ class HTTPRequest:
             self.c.setopt(pycurl.LOW_SPEED_TIME, int(options["timeout"]))
 
         if "ssl_verify" in options:
-            if options["ssl_verify"]:
-                self.c.setopt(pycurl.CAINFO, certifi.where())
+            aiachaser_on = b"on (using aia-chaser)"
+            if options["ssl_verify"] in [True, b"on", aiachaser_on]:
+                if options["ssl_verify"] == aiachaser_on:
+                    self.ssl_aiachaser = True
+                else:
+                    self.ssl_aiachaser = False
+                    self.c.setopt(pycurl.CAINFO, certifi.where())
                 ssl_verify = 1
             else:
                 ssl_verify = 0
 
             self.c.setopt(pycurl.SSL_VERIFYPEER, ssl_verify)
+            self.c.setopt(pycurl.SSL_VERIFYHOST, ssl_verify * 2)
 
     def add_cookies(self):
         """
@@ -232,6 +245,26 @@ class HTTPRequest:
         if get:
             get = urlencode(get)
             url = f"{url}?{get}"
+
+        if self.ssl_aiachaser and url.startswith("https://"):
+            chaser = AiaChaser()
+            try:
+                pem_data = "".join([
+                    cert.public_bytes(encoding=Encoding.PEM).decode()
+                    for cert in chaser.fetch_ca_chain_for_url(url)
+                ])
+            except Exception as exc:
+                self.log.warning(f"AiaChaser failed with {exc}")
+                aia_cainfo = certifi.where()
+
+            else:
+                with tempfile.NamedTemporaryFile(mode="wt",prefix="aia_", suffix=".pem", delete=False) as tmp:
+                    tmp.write(pem_data)
+                    if self.aia_cainfo:
+                        os.unlink(self.aia_cainfo)
+                    aia_cainfo = self.aia_cainfo = tmp.name
+
+            self.c.setopt(pycurl.CAINFO, aia_cainfo)
 
         self.c.setopt(pycurl.URL, url)
 
@@ -329,6 +362,10 @@ class HTTPRequest:
                 raise self.exception from None
             else:
                 raise
+        finally:
+            if self.ssl_aiachaser:
+                os.unlink(self.aia_cainfo)
+                self.aia_cainfo = None
 
         if just_header:
             self.c.setopt(pycurl.NOBODY, 0)
