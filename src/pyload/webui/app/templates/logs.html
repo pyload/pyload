@@ -12,6 +12,7 @@
 <div class="logpaginator"><a href={{url_for('app.logs', start_line=1)}}>&lt;&lt; {{_("Start")}}</a>  <a href="{{url_for('app.logs')}}/{{iprev|int}}">&lt; {{_("prev")}}</a>  <a href="{{url_for('app.logs')}}/{{inext|int}}">{{_("next")}} &gt;</a> <a href="{{url_for('app.logs')}}">{{_("End")}} &gt;&gt;</a></div>
 <div class="logperpage">
     <form id="logform1" action="" method="POST">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
         <label for="reversed">Reversed:</label>
         <input type="checkbox" name="reversed" onchange="this.form.submit();" {% if reversed %} checked="checked" {% endif %} />&nbsp;
         <label for="perpage">Lines per page:</label>
@@ -33,6 +34,7 @@
 </div>
 <div class="logform">
 <form id="logform2" action="" method="POST">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
     <label for="from">Jump to time:</label><input type="text" name="from" size="15" value="{{from}}"/>
     <input type="submit" value="ok" />
 </form>
