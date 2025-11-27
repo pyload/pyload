@@ -134,6 +134,7 @@ class HTTPChunk(HTTPRequest):
 
         self.fp = None  #: file handle
 
+        self.ssl_aiachaser = False
         self.aia_cainfo = None
 
         self.init_handle()
