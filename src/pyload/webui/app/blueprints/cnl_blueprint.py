@@ -164,7 +164,21 @@ def addcrypted2():
     )
     decryptor = cipher.decryptor()
     decrypted = decryptor.update(crypted) + decryptor.finalize()
-    urls = to_str(decrypted).replace("\x00", "").replace("\r", "").split("\n")
+
+    # Remove PKCS7 padding if present
+    if decrypted:
+        pad_byte = decrypted[-1]
+        if 1 <= pad_byte <= 16 and decrypted.endswith(bytes([pad_byte] * pad_byte)):
+            decrypted = decrypted[:-pad_byte]
+
+    # Remove any leading bytes in front of the first actual link
+    start = decrypted.find(b"http")
+    if start == -1:
+        return "No URLs found in request", 400
+    payload = decrypted[start:]
+
+    decoded = to_str(payload)
+    urls = decoded.replace("\x00", "").replace("\r", "").split("\n")
     urls = [url for url in urls if url.strip()]
 
     api = flask.current_app.config["PYLOAD_API"]
