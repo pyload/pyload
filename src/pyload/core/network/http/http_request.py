@@ -320,8 +320,6 @@ class HTTPRequest:
         if cookies:
             self.c.setopt(pycurl.COOKIEFILE, b"")
             self.c.setopt(pycurl.COOKIEJAR, b"")
-            if isinstance(cookies, list):
-                self.set_cookies(self.cj, cookies)
             self.get_cookies()
 
     def load(
