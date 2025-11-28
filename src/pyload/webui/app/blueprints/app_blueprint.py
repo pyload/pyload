@@ -24,6 +24,9 @@ _RE_LOGLINE = re.compile(r"\[([\d\-]+) ([\d:]+)\] +([A-Z]+) +(.+?) (.*)")
 bp = flask.Blueprint("app", __name__)
 log = getLogger(APPID)
 
+# Only allow file operations within this directory tree.
+SAFE_BASE_DIR = "/"  # Change this to a safer directory if you want to lock down further.
+
 
 @bp.route("/favicon.ico", endpoint="favicon")
 def favicon():
@@ -292,6 +295,9 @@ def pathchooser():
     else:
         cwd = os.getcwd()
 
+    # Security check: ensure cwd is inside SAFE_BASE_DIR.
+    if not os.path.commonpath([cwd, SAFE_BASE_DIR]) == os.path.abspath(SAFE_BASE_DIR):
+        flask.abort(403, description="Access denied.")
     cwd = os.path.normpath(os.path.realpath(cwd))
     parentdir = os.path.dirname(cwd)
     if not abs:
