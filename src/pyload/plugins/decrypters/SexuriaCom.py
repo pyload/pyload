@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import re
+from urllib.parse import urlparse
 
 from ..base.decrypter import BaseDecrypter
 
@@ -118,7 +119,8 @@ class SexuriaCom(BaseDecrypter):
                         "http://sexuria.com/", "http://www.sexuria.com/"
                     )
                     finallink = self.load(link, just_header=True)["url"]
-                    if not finallink or "sexuria.com/" in finallink:
+                    hostname = urlparse(finallink).hostname
+                    if not finallink or (hostname is not None and hostname.endswith("sexuria.com")):
                         self.log_error(self._("Broken for link: {}").format(link))
                     else:
                         linklist.append(finallink)
