@@ -152,20 +152,39 @@ def addcrypted2():
     pack_password = flask.request.form.get("passwords")
 
     crypted = standard_b64decode(unquote(crypted.replace(" ", "+")))
-    jk = eval_js(f"{jk} f()")
+    if len(crypted) % 16 != 0:
+        return "Encrypted data length must be multiple of 16 bytes", 500
 
     try:
+        jk = eval_js(f"{jk} f()")
         IV = key = bytes.fromhex(jk)
     except Exception:
         return "Could not decrypt key", 500
+    if len(key) != 16:
+        return "Key must be 16 bytes", 500
 
     cipher = Cipher(
         algorithms.AES(key), modes.CBC(IV), backend=default_backend()
     )
     decryptor = cipher.decryptor()
     decrypted = decryptor.update(crypted) + decryptor.finalize()
-    urls = to_str(decrypted).replace("\x00", "").replace("\r", "").split("\n")
-    urls = [url for url in urls if url.strip()]
+    decrypted = decrypted.replace(b"\x00", b"")
+    try:
+        decrypted = to_str(decrypted).strip()
+    except UnicodeDecodeError:
+        IV = crypted[:16]
+        cipher = Cipher(
+            algorithms.AES(key), modes.CBC(IV), backend=default_backend()
+        )
+        decryptor = cipher.decryptor()
+        decrypted = decryptor.update(crypted[16:]) + decryptor.finalize()
+        decrypted = decrypted.replace(b"\x00", b"")
+        try:
+            decrypted = to_str(decrypted).strip()
+        except UnicodeDecodeError:
+            return "Decrypted output is invalid UTF-8", 500
+
+    urls = [url for url in decrypted.splitlines()]
 
     api = flask.current_app.config["PYLOAD_API"]
     try:
