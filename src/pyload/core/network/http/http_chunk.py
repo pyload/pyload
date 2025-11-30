@@ -394,7 +394,7 @@ class HTTPChunk(HTTPRequest):
         closes everything, unusable after this.
         """
         if self.aia_cainfo:
-            os.unlink(self.aia_cainfo)
+            os.remove(self.aia_cainfo)
             self.aia_cainfo = None
         if self.fp:
             self.fp.close()

@@ -261,7 +261,7 @@ class HTTPRequest:
                 with tempfile.NamedTemporaryFile(mode="wt",prefix="aia_", suffix=".pem", delete=False) as tmp:
                     tmp.write(pem_data)
                     if self.aia_cainfo:
-                        os.unlink(self.aia_cainfo)
+                        os.remove(self.aia_cainfo)
                     aia_cainfo = self.aia_cainfo = tmp.name
 
             self.c.setopt(pycurl.CAINFO, aia_cainfo)
@@ -361,8 +361,8 @@ class HTTPRequest:
             else:
                 raise
         finally:
-            if self.ssl_aiachaser:
-                os.unlink(self.aia_cainfo)
+            if self.aia_cainfo:
+                os.remove(self.aia_cainfo)
                 self.aia_cainfo = None
 
         if just_header:
