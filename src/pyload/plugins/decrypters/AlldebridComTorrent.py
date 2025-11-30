@@ -2,6 +2,7 @@
 
 import json
 import os
+import re
 import time
 import urllib.request
 
@@ -15,7 +16,7 @@ from ..helpers import exists
 class AlldebridComTorrent(SimpleDecrypter):
     __name__ = "AlldebridComTorrent"
     __type__ = "decrypter"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __status__ = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -32,6 +33,7 @@ class AlldebridComTorrent(SimpleDecrypter):
     API_URL = "https://api.alldebrid.com/v4.1/"
 
     def api_request(self, method, get=None, post=None, multipart=False):
+        get = get or {}
         get.update({"agent": "pyLoad",
                     "version": self.pyload.version})
         json_data = json.loads(self.load(self.API_URL + method, get=get, post=post, multipart=multipart))
@@ -55,9 +57,9 @@ class AlldebridComTorrent(SimpleDecrypter):
     def send_request_to_server(self):
         """ Send torrent/magnet to the server """
 
-        if self.pyfile.url.endswith(".torrent"):
+        if (m := re.search(r"^(file|https?)://.+?\.torrent$", self.pyfile.url)) is not None:
             #: torrent URL
-            if self.pyfile.url.startswith("http"):
+            if m.group(1).startswith("http"):
                 #: remote URL, download the torrent to tmp directory
                 torrent_content = self.load(self.pyfile.url, decode=False)
                 torrent_filename = safejoin(self.pyload.tempdir, "tmp_{}.torrent".format(self.pyfile.package().name))
@@ -94,8 +96,10 @@ class AlldebridComTorrent(SimpleDecrypter):
         else:
             #: magnet URL, send to the server
             api_data = self.api_request("magnet/upload",
-                                        get={"apikey": self.api_token,
-                                              "magnets[]": self.pyfile.url})
+                                        post={
+                                            "apikey": self.api_token,
+                                              "magnets[]": self.pyfile.url
+                                        })
 
             if api_data.get("error", False):
                 self.fail("{} (code: {})".format(api_data["error"]["message"], api_data["error"]["code"]))
@@ -107,6 +111,7 @@ class AlldebridComTorrent(SimpleDecrypter):
 
         if self.tmp_file:
             os.remove(self.tmp_file)
+            self.tmp_file = None
 
         return torrent_id
 
@@ -119,8 +124,10 @@ class AlldebridComTorrent(SimpleDecrypter):
         prev_status = -1
         while True:
             torrent_info = self.api_request("magnet/status",
-                                            get={"apikey": self.api_token,
-                                                  "id": torrent_id})
+                                            post={
+                                                "apikey": self.api_token,
+                                                  "id": torrent_id
+                                            })
 
             if torrent_info.get("error", False):
                 self.fail("{} (code: {})".format(torrent_info["error"]["message"], torrent_info["error"]["code"]))
@@ -152,14 +159,16 @@ class AlldebridComTorrent(SimpleDecrypter):
             self.sleep(5)
             prev_status = status_code
 
-        return [l["link"] for l in torrent_info["magnets"]["links"]]
+        return [_f["l"] for _f in torrent_info["magnets"]["files"]]
 
     def delete_torrent_from_server(self, torrent_id):
         """ Remove the torrent from the server """
 
         api_data = self.api_request("magnet/delete",
-                                    get={"apikey": self.api_token,
-                                          "id": torrent_id})
+                                    post={
+                                        "apikey": self.api_token,
+                                        "id": torrent_id
+                                    })
 
         if api_data.get("error", False):
             self.log_warning("{} (code: {})".format(api_data["error"]["message"], api_data["error"]["code"]))

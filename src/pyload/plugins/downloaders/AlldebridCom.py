@@ -10,7 +10,7 @@ from ..base.multi_downloader import MultiDownloader
 class AlldebridCom(MultiDownloader):
     __name__ = "AlldebridCom"
     __type__ = "downloader"
-    __version__ = "0.67"
+    __version__ = "0.68"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:\w+\.)?(?:alldebrid\.com|debrid\.it|alld\.io)/(?:dl|f)/[\w^_]+"
@@ -54,7 +54,11 @@ class AlldebridCom(MultiDownloader):
     API_URL = "https://api.alldebrid.com/v4.1/"
 
     def api_request(self, method, get=None, post=None, multipart=False):
-        get.update({"agent": "pyLoad", "version": self.pyload.version})
+        get = get or {}
+        get.update({
+            "agent": "pyLoad",
+            "version": self.pyload.version
+        })
         json_data = json.loads(
             self.load(self.API_URL + method, get=get, post=post, multipart=multipart)
         )
@@ -75,7 +79,7 @@ class AlldebridCom(MultiDownloader):
     def handle_premium(self, pyfile):
         api_data = self.api_request(
             "link/unlock",
-            get={
+            post={
                 "link": pyfile.url,
                 "password": self.get_password(),
                 "apikey": self.account.info["login"]["password"],
@@ -126,7 +130,7 @@ class AlldebridCom(MultiDownloader):
                 stream_size = streams[chosen_quality]["filesize"]
                 api_data = self.api_request(
                     "link/streaming",
-                    get={
+                    post={
                         "apikey": self.account.info["login"]["password"],
                         "id": unlock_id,
                         "stream": stream_id,
@@ -142,7 +146,7 @@ class AlldebridCom(MultiDownloader):
                     while True:
                         api_data = self.api_request(
                             "link/delayed",
-                            get={
+                            post={
                                 "apikey": self.account.info["login"]["password"],
                                 "id": delayed_id,
                             },
