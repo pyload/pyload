@@ -11,7 +11,8 @@ from ..exceptions import Abort
 
 
 class XDCCRequest:
-    def __init__(self, bucket=None, options={}):
+    def __init__(self, bucket=None, options=None):
+        options = options or {}
         self.proxies = options.get("proxies", {})
         self.bucket = bucket
 
