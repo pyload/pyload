@@ -2,6 +2,7 @@
 
 import fnmatch
 import os
+import re
 import time
 import urllib.request
 import json
@@ -86,9 +87,9 @@ class RealdebridComTorrent(SimpleDecrypter):
     def send_request_to_server(self):
         """ Send torrent/magnet to the server """
 
-        if self.pyfile.url.endswith(".torrent"):
+        if (m := re.search(r"^(file|https?)://.+?\.torrent$", self.pyfile.url)) is not None:
             #: torrent URL
-            if self.pyfile.url.startswith("http"):
+            if m.group(1).startswith("http"):
                 #: remote URL, download the torrent to tmp directory
                 torrent_content = self.load(self.pyfile.url, decode=False)
                 torrent_filename = safejoin(self.pyload.tempdir, "tmp_{}.torrent".format(self.pyfile.package().name))

@@ -3,6 +3,7 @@
 import fnmatch
 import json
 import os
+import re
 import time
 import urllib.request
 
@@ -93,9 +94,9 @@ class DebridlinkFrTorrent(SimpleDecrypter):
     def send_request_to_server(self):
         """ Send torrent/magnet to the server """
 
-        if self.pyfile.url.endswith(".torrent"):
+        if (m := re.search(r"^(file|https?)://.+?\.torrent$", self.pyfile.url)) is not None:
             #: torrent URL
-            if self.pyfile.url.startswith("http"):
+            if m.group(1).startswith("http"):
                 #: remote URL, send to the server
                 api_data = self.api_request_safe(
                     "v2/seedbox/add",
