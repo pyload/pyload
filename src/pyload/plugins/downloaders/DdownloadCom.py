@@ -8,7 +8,7 @@ from ..base.xfs_downloader import XFSDownloader
 class DdownloadCom(XFSDownloader):
     __name__ = "DdownloadCom"
     __type__ = "downloader"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?(?:ddl\.to|ddownload\.com)/(?P<ID>\w{12})"
@@ -28,7 +28,7 @@ class DdownloadCom(XFSDownloader):
 
     URL_REPLACEMENTS = [(__pattern__ + ".*", r"https://ddownload.com/\g<ID>")]
 
-    NAME_PATTERN = r'<div class="name position-relative">\s*<h4>(?P<N>.+?)</h4>'
+    NAME_PATTERN = r'class="file-info-name">(?P<N>.+?)<'
     SIZE_PATTERN = r'<span class="file-size">(?P<S>[\d.,]+) (?P<U>[\w^_]+)</span>'
 
     OFFLINE_PATTERN = r">File Not Found<"
