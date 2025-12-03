@@ -110,7 +110,7 @@ def api_docs():
 @bp.route("/api", methods=["GET"], strict_slashes=False)
 def swagger_ui():
     """Serve Swagger UI with the API documentation"""
-    return render_template("swagger.html")
+    return flask.send_from_directory("static", "swagger.html")
 
 
 @bp.route("/api/login", methods=["POST"], endpoint="login")
