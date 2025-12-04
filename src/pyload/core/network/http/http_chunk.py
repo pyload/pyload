@@ -78,8 +78,12 @@ class ChunkInfo:
             else:
                 fh.close()
                 raise WrongFormat
-            dl_folder = os.path.dirname(name)
-            if not os.path.exists(dl_folder) and not os.path.isdir(dl_folder):
+            save_folder = os.path.dirname(name)
+            if (
+                not os.path.exists(save_folder)
+                and not os.path.isdir(save_folder)
+                or save_folder != os.path.dirname(fs_name)
+            ):
                 raise IOError
             ci = ChunkInfo(name)
             ci.loaded = True
@@ -94,6 +98,9 @@ class ChunkInfo:
                     range = range[6:].split("-")
                 else:
                     raise WrongFormat
+
+                if save_folder != os.path.dirname(name):
+                    raise IOError
 
                 ci.add_chunk(name, (int(range[0]), int(range[1])))
 
