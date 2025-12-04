@@ -78,6 +78,9 @@ class ChunkInfo:
             else:
                 fh.close()
                 raise WrongFormat
+            dl_folder = os.path.dirname(name)
+            if not os.path.exists(dl_folder) and not os.path.isdir(dl_folder):
+                raise IOError
             ci = ChunkInfo(name)
             ci.loaded = True
             ci.set_size(size)
@@ -186,6 +189,8 @@ class HTTPChunk(HTTPRequest):
 
         fs_name = self.p.info.get_chunk_filename(self.id)
         if self.resume:
+            if not os.path.exists(fs_name):
+                raise pycurl.error(33)  #: simulate cannot resume
             self.fp = open(fs_name, mode="ab")
             self.arrived = self.fp.tell()
             if not self.arrived:

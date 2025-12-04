@@ -319,12 +319,12 @@ class BaseDownloader(BaseHoster):
 
         dl_url = self.fixurl(url)
 
-        dl_folder = self.pyload.config.get("general", "storage_folder")
-        dl_dirname = fs.safejoin(dl_folder, self.pyfile.package().folder)
-        dl_filename = fs.safejoin(dl_dirname, self.pyfile.name)
+        dl_root_folder = self.pyload.config.get("general", "storage_folder")
+        dl_package_folder = fs.safejoin(dl_root_folder, self.pyfile.package().folder)
+        dl_filename = fs.safejoin(dl_package_folder, self.pyfile.name)
 
-        os.makedirs(dl_dirname, exist_ok=True)
-        self.set_permissions(dl_dirname)
+        os.makedirs(dl_package_folder, exist_ok=True)
+        self.set_permissions(dl_package_folder)
 
         self.pyload.addon_manager.dispatch_event(
             "download_start", self.pyfile, dl_url, dl_filename
@@ -337,7 +337,7 @@ class BaseDownloader(BaseHoster):
 
         if disposition and newname:
             self.pyfile.name = newname
-            dl_filename = fs.safejoin(dl_dirname, newname)
+            dl_filename = fs.safejoin(dl_package_folder, newname)
 
         self.set_permissions(dl_filename)
 
@@ -489,8 +489,8 @@ class BaseDownloader(BaseHoster):
                 ):  #: finished / downloading / waiting / starting
                     self.skip(pyfile.pluginname)
 
-        dl_folder = self.pyload.config.get("general", "storage_folder")
-        dl_file = os.path.join(dl_folder, pack_folder, self.pyfile.name)
+        dl_root_folder = self.pyload.config.get("general", "storage_folder")
+        dl_file = os.path.join(dl_root_folder, pack_folder, self.pyfile.name)
 
         if not exists(dl_file):
             return
@@ -516,7 +516,7 @@ class BaseDownloader(BaseHoster):
 
             while True:
                 name = "{} ({}){}".format(m.group(1), dl_n + 1, ext)
-                dl_file = os.path.join(dl_folder, pack_folder, name)
+                dl_file = os.path.join(dl_root_folder, pack_folder, name)
                 if not exists(dl_file):
                     break
 
