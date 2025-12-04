@@ -10,7 +10,7 @@ from ..base.account import BaseAccount
 class FilerNet(BaseAccount):
     __name__ = "FilerNet"
     __type__ = "account"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __status__ = "testing"
 
     __description__ = """Filer.net account plugin"""
@@ -40,7 +40,7 @@ class FilerNet(BaseAccount):
         if premium is False:
             return {"premium": False, "validuntil": None, "trafficleft": None}
 
-        validuntil = time.mktime(time.strptime(api_data["premiumUntil"], "%Y-%m-%d %H:%M:%S%z"))
+        validuntil = time.mktime(time.strptime(api_data["premiumUntil"], "%Y-%m-%dT%H:%M:%S%z"))
         trafficleft = self.parse_traffic(api_data["traffic"])
 
         return {"premium": premium, "validuntil": validuntil, "trafficleft": trafficleft}
