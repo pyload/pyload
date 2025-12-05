@@ -66,7 +66,7 @@ class HitfileNet(SimpleDownloader):
         self.data = self.load(
             "https://hitfile.net/download/getLinkTimeout/%s"
             % self.info["pattern"]["ID"],
-            ref=self.free_url,
+            referrer=self.free_url,
         )
         self.req.http.c.setopt(pycurl.HTTPHEADER, ["X-Requested-With:"])
 

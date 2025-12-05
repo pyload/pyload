@@ -151,12 +151,12 @@ class RapidgatorNet(SimpleDownloader):
         url = "https://rapidgator.net{}".format(
             jsvars.get("captchaUrl", "/download/captcha")
         )
-        self.data = self.load(url, ref=pyfile.url)
+        self.data = self.load(url, referrer=pyfile.url)
 
         m = re.search(self.LINK_FREE_PATTERN, self.data)
         if m is not None:
             # self.link = m.group(1)
-            self.download(m.group(1), ref=url)
+            self.download(m.group(1), referrer=url)
 
         else:
             captcha = self.handle_captcha()
@@ -176,7 +176,7 @@ class RapidgatorNet(SimpleDownloader):
                 }
 
             post_params["DownloadCaptchaForm[verifyCode]"] = response
-            self.data = self.load(url, post=post_params, ref=url)
+            self.data = self.load(url, post=post_params, referrer=url)
 
             if "The verification code is incorrect" in self.data:
                 self.retry_captcha()
@@ -185,7 +185,7 @@ class RapidgatorNet(SimpleDownloader):
                 m = re.search(self.LINK_FREE_PATTERN, self.data)
                 if m is not None:
                     # self.link = m.group(1)
-                    self.download(m.group(1), ref=url)
+                    self.download(m.group(1), referrer=url)
 
     def handle_captcha(self):
         for klass in (ReCaptcha, SolveMedia):
@@ -197,7 +197,7 @@ class RapidgatorNet(SimpleDownloader):
     def get_json_response(self, url):
         self.req.http.c.setopt(pycurl.HTTPHEADER, ["X-Requested-With: XMLHttpRequest"])
 
-        res = self.load(url, ref=self.pyfile.url)
+        res = self.load(url, referrer=self.pyfile.url)
         self.req.http.c.setopt(pycurl.HTTPHEADER, ["X-Requested-With:"])
 
         if not res.startswith("{"):

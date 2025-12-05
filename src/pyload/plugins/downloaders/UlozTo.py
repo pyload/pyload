@@ -269,7 +269,7 @@ class UlozTo(SimpleDownloader):
     def get_json_response(self, url, inputs):
         self.req.http.c.setopt(pycurl.HTTPHEADER, ["X-Requested-With: XMLHttpRequest"])
 
-        res = self.load(url, post=inputs, ref=self.pyfile.url)
+        res = self.load(url, post=inputs, referrer=self.pyfile.url)
         self.req.http.c.setopt(pycurl.HTTPHEADER, ["X-Requested-With:"])
 
         if not res.startswith('{'):

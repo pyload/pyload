@@ -62,7 +62,7 @@ class UploadrocketNet(XFSDownloader):
         url,
         get={},
         post={},
-        ref=True,
+        referrer=True,
         cookies=True,
         disposition=True,
         resume=None,
@@ -74,4 +74,4 @@ class UploadrocketNet(XFSDownloader):
         if m is not None and m.group(1):
             self.pyfile.name = m.group(1)
 
-        super().download(url, get, post, ref, cookies, disposition, resume, chunks)
+        super().download(url, get, post, referrer, cookies, disposition, resume, chunks)

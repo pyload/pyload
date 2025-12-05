@@ -71,7 +71,7 @@ class Http(BaseDownloader):
             self.log_debug(f"Logging on to {netloc} using credentials specified in the URL")
 
         try:
-            self.download(url, ref=False, disposition=True)
+            self.download(url, referrer=False, disposition=True)
 
         except BadHeader as exc:
             if exc.code == 401:

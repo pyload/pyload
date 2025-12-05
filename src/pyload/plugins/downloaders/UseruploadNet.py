@@ -37,7 +37,7 @@ class UseruploadNet(XFSDownloader):
         self.data = self.load(
             pyfile.url,
             post=self._post_parameters(),
-            ref=self.pyfile.url,
+            referrer=self.pyfile.url,
             redirect=False,
         )
 

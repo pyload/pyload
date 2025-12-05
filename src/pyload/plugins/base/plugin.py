@@ -158,7 +158,7 @@ class BasePlugin:
         url,
         get=None,
         post=None,
-        ref=True,
+        referrer=True,
         cookies=True,
         just_header=False,
         decode=True,
@@ -172,7 +172,7 @@ class BasePlugin:
         :param url: URL to load
         :param get: Query string parameters
         :param post: POST parameters
-        :param ref: Either a str with referrer, True to use default, False to disable
+        :param referrer: Either a str with referrer, True to use default, False to disable
         :param cookies: True or False or list of tuples [(domain, name, value)]
         :param just_header: If True only the header will be retrieved and returned as dict
         :param decode: The codec name to decode the output, True to use codec from http header, should be True in most cases
@@ -203,7 +203,7 @@ class BasePlugin:
             url,
             get,
             post,
-            referer=ref,
+            referer=referrer,
             cookies=cookies,
             just_header=just_header,
             multipart=multipart,
@@ -235,7 +235,7 @@ class BasePlugin:
         filename,
         url,
         get=None,
-        ref=True,
+        referrer=True,
         cookies=True,
         just_header=False,
         decode=True,
@@ -248,7 +248,7 @@ class BasePlugin:
         :param filename: path to the file to upload
         :param url: URL to upload to
         :param get: Query string parameters
-        :param ref: Either a str with referrer, True to use default, False to disable
+        :param referrer: Either a str with referrer, True to use default, False to disable
         :param cookies: True or False or list of tuples [(domain, name, value)]
         :param just_header: If True only the header will be retrieved and returned as dict
         :param decode: The codec name to decode the output, True to use codec from http header, should be True in most cases
@@ -278,7 +278,7 @@ class BasePlugin:
             filename,
             url,
             get=get,
-            referer=ref,
+            referer=referrer,
             cookies=cookies,
             just_header=just_header,
             decode=decode,

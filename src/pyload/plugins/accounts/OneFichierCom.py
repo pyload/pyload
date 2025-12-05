@@ -61,7 +61,7 @@ class OneFichierCom(BaseAccount):
         try:
             html = self.load(
                 login_url,
-                ref=login_url,
+                referrer=login_url,
                 post={
                     "mail": user,
                     "pass": password,

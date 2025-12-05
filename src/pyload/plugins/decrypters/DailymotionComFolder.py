@@ -29,15 +29,14 @@ class DailymotionComFolder(BaseDecrypter):
     __license__ = "GPLv3"
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
-    def api_request(self, ref, data=None):
-        url = urllib.parse.urljoin("https://api.dailymotion.com/", ref)
+    def api_request(self, method, data=None):
+        url = urllib.parse.urljoin("https://api.dailymotion.com/", method)
         html = self.load(url, get=data)
         return json.loads(html)
 
-    def get_playlist_info(self, id):
-        ref = "playlist/" + id
+    def get_playlist_info(self, playlist_id):
         data = {"fields": "name,owner.screenname"}
-        playlist = self.api_request(ref, data)
+        playlist = self.api_request("playlist/{}".format(playlist_id), data)
 
         if "error" in playlist:
             return
@@ -47,9 +46,8 @@ class DailymotionComFolder(BaseDecrypter):
         return name, owner
 
     def _get_playlists(self, user_id, page=1):
-        ref = "user/{}/playlists".format(user_id)
         data = {"fields": "id", "page": page, "limit": 100}
-        user = self.api_request(ref, data)
+        user = self.api_request("user/{}/playlists".format(user_id), data)
 
         if "error" in user:
             return
@@ -66,10 +64,9 @@ class DailymotionComFolder(BaseDecrypter):
             (id,) + self.get_playlist_info(id) for id in self._get_playlists(user_id)
         ]
 
-    def _get_videos(self, id, page=1):
-        ref = "playlist/{}/videos".format(id)
+    def _get_videos(self, video_id, page=1):
         data = {"fields": "url", "page": page, "limit": 100}
-        playlist = self.api_request(ref, data)
+        playlist = self.api_request("playlist/{}/videos".format(video_id), data)
 
         if "error" in playlist:
             return
@@ -78,7 +75,7 @@ class DailymotionComFolder(BaseDecrypter):
             yield video["url"]
 
         if playlist["has_more"]:
-            for item in self._get_videos(id, page + 1):
+            for item in self._get_videos(video_id, page + 1):
                 yield item
 
     def get_videos(self, playlist_id):

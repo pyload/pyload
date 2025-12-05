@@ -40,7 +40,7 @@ class XCaptcha:
 
     def _load_image(self, url):
         img_data = self.plugin.load(
-            self.plugin.fixurl(url), ref=self.pyfile.url, decode=False
+            self.plugin.fixurl(url), referrer=self.pyfile.url, decode=False
         )
         s = io.BytesIO()
         s.write(img_data)
@@ -341,7 +341,7 @@ class FilejokerNet(XFSDownloader):
                 html = self.load(
                     urllib.parse.urljoin(self.pyfile.url, "/ddl"),
                     post=captcha_inputs,
-                    ref=self.pyfile.url
+                    referrer=self.pyfile.url
                 )
 
                 self.req.http.c.setopt(pycurl.HTTPHEADER, ["X-Requested-With:"])

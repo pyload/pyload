@@ -76,9 +76,7 @@ class UpstoreNet(SimpleDownloader):
         #: then, do the waiting
         self.wait()
 
-        self.data = self.load(pyfile.url,
-                              post=post_data,
-                              ref=pyfile.url)
+        self.data = self.load(pyfile.url, post=post_data, referrer=pyfile.url)
 
         #: check whether the captcha was wrong
         if "Captcha check failed" in self.data:

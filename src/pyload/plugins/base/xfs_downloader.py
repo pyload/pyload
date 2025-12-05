@@ -113,7 +113,7 @@ class XFSDownloader(SimpleDownloader):
             self.data = self.load(
                 self.PLUGIN_URL or pyfile.url,
                 post=self._post_parameters(),
-                ref=self.PLUGIN_URL or pyfile.url,
+                referrer=self.PLUGIN_URL or pyfile.url,
                 redirect=False
             )
 

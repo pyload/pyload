@@ -221,7 +221,7 @@ class BaseDownloader(BaseHoster):
             self.pyfile.set_name(notification["disposition"])
 
     def _download(
-        self, url, filename, get, post, ref, cookies, disposition, resume, chunks
+        self, url, filename, get, post, referrer, cookies, disposition, resume, chunks
     ):
         # TODO: Safe-filename check in HTTPDownload in 0.6.x
         filename = os.fsdecode(filename)
@@ -242,7 +242,7 @@ class BaseDownloader(BaseHoster):
                 size=self.pyfile.size,
                 get=get,
                 post=post,
-                ref=ref,
+                referrer=referrer,
                 cookies=cookies,
                 chunks=chunks,
                 resume=resume,
@@ -280,7 +280,7 @@ class BaseDownloader(BaseHoster):
         url,
         get={},
         post={},
-        ref=True,
+        referrer=True,
         cookies=True,
         disposition=True,
         resume=None,
@@ -292,7 +292,7 @@ class BaseDownloader(BaseHoster):
         :param url:
         :param get:
         :param post:
-        :param ref:
+        :param referrer:
         :param cookies:
         :param disposition: if True and server provides content-disposition header\
         the filename will be changed if needed
@@ -332,7 +332,7 @@ class BaseDownloader(BaseHoster):
         self.check_status()
 
         newname = self._download(
-            dl_url, dl_filename, get, post, ref, cookies, disposition, resume, chunks
+            dl_url, dl_filename, get, post, referrer, cookies, disposition, resume, chunks
         )
 
         if disposition and newname:

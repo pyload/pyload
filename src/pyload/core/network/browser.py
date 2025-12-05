@@ -89,7 +89,7 @@ class Browser:
             size=0,
             get=None,
             post=None,
-            ref=True,
+            referrer=True,
             cookies=True,
             chunks=1,
             resume=False,
@@ -106,7 +106,7 @@ class Browser:
             size=size,
             get=get,
             post=post,
-            referer=self.last_effective_url if ref else None,
+            referer=self.last_effective_url if referrer else None,
             cj=self.cj if cookies else None,
             bucket=self.bucket,
             options=self.options,
@@ -138,6 +138,12 @@ class Browser:
         add a header to the request.
         """
         self.http.put_header(name, value)
+
+    def remove_header(self, name, value=b""):
+        """
+        remove a header from the request.
+        """
+        self.http.remove_header(name, value)
 
     def add_auth(self, pwd):
         """
