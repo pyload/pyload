@@ -95,7 +95,7 @@ def _parse_parameter(param: str) -> Any:
     else:
         try:
             return literal_eval(param)
-        except ValueError:
+        except (ValueError, SyntaxError):
             # this is required to allow string parameters without extra quotes
             return literal_eval("\"" + param + "\"")
 
