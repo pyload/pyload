@@ -102,7 +102,6 @@ def has_permission(user_perms: Perms, required_perms: Perms):
     return required_perms == (user_perms & required_perms)
 
 
-
 class Api:
     """
     **pyLoads API**
@@ -204,7 +203,7 @@ class Api:
     @legacy("setConfigValue")
     @permission(Perms.SETTINGS)
     @post
-    def set_config_value(self, category: str, option: str, value: Any, section: str ="core") -> None:
+    def set_config_value(self, category: str, option: str, value: Any, section: str = "core") -> None:
         """
         Set new config value.
 
@@ -775,8 +774,8 @@ class Api:
 
         :param file_ids: list of file ids
         """
-        for id in file_ids:
-            self.pyload.files.delete_link(int(id))
+        for file_id in file_ids:
+            self.pyload.files.delete_link(int(file_id))
 
         self.pyload.files.save()
 
@@ -789,8 +788,8 @@ class Api:
 
         :param package_ids: list of package ids
         """
-        for id in package_ids:
-            self.pyload.files.delete_package(int(id))
+        for package_id in package_ids:
+            self.pyload.files.delete_package(int(package_id))
 
         self.pyload.files.save()
 
@@ -1168,7 +1167,7 @@ class Api:
         """
         raw_data = self.pyload.files.get_package_data(int(package_id))
         order = {}
-        for id, pyfile in raw_data["links"].items():
+        for file_id, pyfile in raw_data["links"].items():
             while pyfile["order"] in order.keys():  #: just in case
                 pyfile["order"] += 1
             order[pyfile["order"]] = pyfile["id"]
@@ -1201,11 +1200,11 @@ class Api:
         task = self.pyload.captcha_manager.get_task()
         if task:
             task.set_waiting_for_user(exclusive=exclusive)
-            data, type, result = task.get_captcha()
+            captcha_data, captcha_type, result_type = task.get_captcha()
             t = CaptchaTask(tid=int(task.id),
-                            data=data,
-                            type=type,
-                            result_type=result)
+                            data=captcha_data,
+                            type=captcha_type,
+                            result_type=result_type)
             return t
         else:
             return CaptchaTask(tid=-1)
@@ -1432,7 +1431,7 @@ class Api:
         returns all known user and info.
         """
         res = {}
-        for id, data in self.pyload.db.get_all_user_data().items():
+        for user_id, data in self.pyload.db.get_all_user_data().items():
             res[data["name"]] = OldUserData(
                 name=data["name"],
                 email=data["email"],
@@ -1449,9 +1448,9 @@ class Api:
         returns all known user and info.
         """
         res = {}
-        for id, data in self.pyload.db.get_all_user_data().items():
-            res[id] = UserData(
-                id=id,
+        for user_id, data in self.pyload.db.get_all_user_data().items():
+            res[user_id] = UserData(
+                id=user_id,
                 name=data["name"],
                 email=data["email"],
                 role=data["role"],
@@ -1503,14 +1502,16 @@ class Api:
         :raises: ServiceException, when an exception was raised
         """
         try:
-            plugin, func =  service_name.split(".")
+            plugin, func = service_name.split(".")
         except ValueError:
             raise ServiceDoesNotExists()
 
-        info = ServiceCall(plugin=plugin,
-                           func=func,
-                           arguments=arguments,
-                           parse_arguments=parse_arguments)
+        info = ServiceCall(
+            plugin=plugin,
+            func=func,
+            arguments=arguments,
+            parse_arguments=parse_arguments
+        )
         return self._call(info)
 
     @permission(Perms.STATUS)
