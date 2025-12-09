@@ -25,7 +25,7 @@ from ..helpers import replace_patterns
 class FilecryptCc(BaseDecrypter):
     __name__ = "FilecryptCc"
     __type__ = "decrypter"
-    __version__ = "0.51"
+    __version__ = "0.52"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?filecrypt\.(?:cc|co)/Container/\w+"
@@ -49,7 +49,7 @@ class FilecryptCc(BaseDecrypter):
     MIRROR_PAGE_PATTERN = r'"[\w]*" href="(https?://(?:www\.)?filecrypt.cc/Container/\w+\.html\?mirror=\d+)">'
     OFFLINE_PATTERN = r">Not Found<"
 
-    CAPTCHA_PATTERN = r"<h2>Security prompt</h2>"
+    CAPTCHA_PATTERN = r"<h2>Security Check</h2>"
     INTERNAL_CAPTCHA_PATTERN = r'<img id="nc" .* src="(.+?)"'
     CIRCLE_CAPTCHA_PATTERN = r'<input type="image" src="(.+?)"'
     KEY_CAPTCHA_PATTERN = r"<script language=JavaScript src='(http://backs\.keycaptcha\.com/swfs/cap\.js)'"
