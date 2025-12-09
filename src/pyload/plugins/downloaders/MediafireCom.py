@@ -15,7 +15,7 @@ class MediafireCom(SimpleDownloader):
     __version__ = "1.02"
     __status__ = "testing"
 
-    __pattern__ = r"https?://(?:www\.)?mediafire\.com/(file(_premium)?/|view/\??|download(\.php\?|/)|\?)(?P<ID>\w+)"
+    __pattern__ = r"https?://(?:www\.)?mediafire\.com/(file(?:_premium)?/|view/\??|download(\.php\?|/)|\?)(?P<ID>\w+)"
     __config__ = [
         ("enabled", "bool", "Activated", True),
         ("use_premium", "bool", "Use premium account if available", True),
