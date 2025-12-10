@@ -8,6 +8,7 @@ from urllib.parse import unquote
 import flask
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+from cryptography.hazmat.primitives import padding
 from werkzeug.utils import secure_filename
 
 from pyload.core.api import Destination
@@ -157,34 +158,37 @@ def addcrypted2():
 
     try:
         jk = eval_js(f"{jk} f()")
-        IV = key = bytes.fromhex(jk)
+        key = bytes.fromhex(jk)
     except Exception:
         return "Could not decrypt key", 500
     if len(key) != 16:
         return "Key must be 16 bytes", 500
 
-    cipher = Cipher(
-        algorithms.AES(key), modes.CBC(IV), backend=default_backend()
-    )
-    decryptor = cipher.decryptor()
-    decrypted = decryptor.update(crypted) + decryptor.finalize()
-    decrypted = decrypted.replace(b"\x00", b"")
-    try:
-        decrypted = to_str(decrypted).strip()
-    except UnicodeDecodeError:
-        IV = crypted[:16]
+    def decrypt(crypted: bytes, IV: bytes) -> str:
         cipher = Cipher(
             algorithms.AES(key), modes.CBC(IV), backend=default_backend()
         )
         decryptor = cipher.decryptor()
-        decrypted = decryptor.update(crypted[16:]) + decryptor.finalize()
-        decrypted = decrypted.replace(b"\x00", b"")
+        decrypted = decryptor.update(crypted) + decryptor.finalize()
+
         try:
-            decrypted = to_str(decrypted).strip()
+            unpadder = padding.PKCS7(algorithms.AES.block_size).unpadder()
+            decrypted = unpadder.update(decrypted) + unpadder.finalize()
+        except ValueError:
+            pass
+
+        decrypted = decrypted.replace(b"\x00", b"")
+        return to_str(decrypted).strip()
+
+    try:
+        decrypted_urls = decrypt(crypted, key)
+    except UnicodeDecodeError:
+        try:
+            decrypted_urls = decrypt(crypted[16:], crypted[:16])
         except UnicodeDecodeError:
             return "Decrypted output is invalid UTF-8", 500
 
-    urls = [url for url in decrypted.splitlines()]
+    urls = [url for url in decrypted_urls.splitlines()]
 
     api = flask.current_app.config["PYLOAD_API"]
     try:
