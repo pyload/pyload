@@ -16,7 +16,7 @@ from ..helpers import exists
 class AlldebridComTorrent(SimpleDecrypter):
     __name__ = "AlldebridComTorrent"
     __type__ = "decrypter"
-    __version__ = "0.04"
+    __version__ = "0.05"
     __status__ = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -118,6 +118,24 @@ class AlldebridComTorrent(SimpleDecrypter):
     def wait_for_server_dl(self, torrent_id):
         """ Show progress while the server does the download """
 
+        def extract_links(obj, links=None):
+            if links is None:
+                links = []
+
+            if isinstance(obj, dict):
+                if 'l' in obj:
+                    links.append(obj['l'])
+
+                elif "e" in obj:
+                    for item in obj["e"]:
+                        extract_links(item, links)
+
+            elif isinstance(obj, list):
+                for item in obj:
+                    extract_links(item, links)
+
+            return links
+
         self.pyfile.set_custom_status("torrent")
         self.pyfile.set_progress(0)
 
@@ -159,7 +177,7 @@ class AlldebridComTorrent(SimpleDecrypter):
             self.sleep(5)
             prev_status = status_code
 
-        return [_f["l"] for _f in torrent_info["magnets"]["files"]]
+        return extract_links(torrent_info["magnets"]["files"])
 
     def delete_torrent_from_server(self, torrent_id):
         """ Remove the torrent from the server """
