@@ -188,23 +188,28 @@ def sign_string(message, pem_private, pem_passphrase="", sign_algo="SHA384"):
     """
     Generate a signature for string using the `sign_algo` and `RSA` algorithms.
     """
-    from Cryptodome.PublicKey import RSA
-    from Cryptodome.Signature import PKCS1_v1_5
-    from binascii import b2a_hex
-
     if sign_algo not in ("MD5", "SHA1", "SHA256", "SHA384", "SHA512"):
         raise ValueError("Unsupported Signing algorithm")
 
+    from cryptography.hazmat.primitives.asymmetric import padding
+    from cryptography.hazmat.primitives import hashes
+    from cryptography.hazmat.primitives.serialization import load_pem_private_key
+
+    pem_passphrase = to_bytes(pem_passphrase) or None
+    pem_private = to_bytes(pem_private)
     message = to_bytes(message)
 
-    priv_key = RSA.import_key(pem_private, passphrase=pem_passphrase)
-    signer = PKCS1_v1_5.new(priv_key)
-    digest = getattr(
-        __import__("Cryptodome.Hash", fromlist=[sign_algo]), sign_algo
-    ).new()
-    digest.update(message)
-    return b2a_hex(signer.sign(digest))
+    priv_key = load_pem_private_key(pem_private, password=pem_passphrase)
 
+    hash_algo = getattr(hashes, sign_algo)()
+
+    signature = priv_key.sign(
+        message,
+        padding.PKCS1v15(),
+        hash_algo
+    )
+
+    return signature.hex()
 
 def fsbsize(path):
     """
@@ -467,7 +472,9 @@ def parse_html_tag_attr_value(attr_name, tag):
     return m.group(2) if m else None
 
 
-def parse_html_form(attr_filter, html, input_names={}):
+def parse_html_form(attr_filter, html, input_names=None):
+    input_names = input_names or {}
+
     attr_str = "" if callable(attr_filter) else attr_filter
     for form in re.finditer(
         rf"(?P<TAG><form[^>]*{attr_str}.*?>)(?P<CONTENT>.*?)</?(form|body|html).*?>",

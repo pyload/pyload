@@ -3,7 +3,7 @@ name: Core Update (pyLoad Next)
 about: Propose an update for pyLoad
 title: ""
 labels: pyLoad Next, enhancement
-assignees: vuolter
+assignees: gammac0de
 ---
 
 <!-- ANNOTATIONS LIKE THIS WILL NOT BE VISIBLE IN YOUR TICKET -->

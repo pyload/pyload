@@ -175,7 +175,7 @@ class CloudFlare:
 
             owner_plugin.wait()  #: Do the actual wait
 
-            return owner_plugin.load(submit_url, get=get_params, ref=last_url)
+            return owner_plugin.load(submit_url, get=get_params, referrer=last_url)
 
         except BadHeader as exc:
             raise exc  #: Huston, we have a BadHeader!
@@ -201,7 +201,7 @@ class CloudFlare:
                 return owner_plugin.load(
                     owner_plugin.fixurl("/cdn-cgi/l/chk_captcha"),
                     get={"g-recaptcha-response": response},
-                    ref=last_url,
+                    referrer=last_url,
                 )
 
             else:

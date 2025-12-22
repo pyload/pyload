@@ -505,7 +505,9 @@ class BaseHoster(BasePlugin):
         self.check_status()
         return super().load(*args, **kwargs)
 
-    def parse_html_form(self, attr_str="", input_names={}):
+    def parse_html_form(self, attr_str="", input_names=None):
+        input_names = input_names or {}
+
         return parse_html_form(attr_str, self.data, input_names)
 
     def get_password(self):

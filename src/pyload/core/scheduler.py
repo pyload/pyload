@@ -37,10 +37,10 @@ class Scheduler:
         self._ = core._
         self.queue = PriorityQueue()
 
-    def add_job(self, t, call, args=[], kwargs={}, threaded=True):
+    def add_job(self, t, call, args=None, kwargs=None, threaded=True):
         d = Deferred()
         t += time.time()
-        j = Job(t, call, args, kwargs, d, threaded)
+        j = Job(t, call, args or [], kwargs or {}, d, threaded)
         self.queue.put((t, j))
         return d
 
@@ -75,11 +75,11 @@ class Scheduler:
 
 
 class Job:
-    def __init__(self, time, call, args=[], kwargs={}, deferred=None, threaded=True):
+    def __init__(self, time, call, args=None, kwargs=None, deferred=None, threaded=True):
         self.time = float(time)
         self.call = call
-        self.args = args
-        self.kwargs = kwargs
+        self.args = args or []
+        self.kwargs = kwargs or {}
         self.deferred = deferred
         self.threaded = threaded
 

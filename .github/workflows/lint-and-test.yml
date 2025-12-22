@@ -75,13 +75,12 @@ jobs:
     runs-on: ${{ matrix.os }}
     env:
       toxenv: py
-    continue-on-error: ${{ startsWith(matrix.os,'ubuntu') }}
 
     strategy:
       fail-fast: false
       matrix:
         python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
-        os: [ubuntu-latest, macos-13, windows-latest]
+        os: [ubuntu-latest, macos-latest, windows-latest]
 
     steps:
       - name: Check out repository
@@ -129,3 +128,24 @@ jobs:
 
       - name: Test pyLoad
         run: tox -e ${{ matrix.toxenv || env.toxenv }} --sitepackages --workdir ${{ env.toxworkdir }}
+
+      - name: Test OpenAPI spec generator
+        if: startsWith(matrix.os, 'ubuntu') && matrix.python-version == '3.13'
+        run: |
+          python3 -m pip install -e .
+          python3 -m pyload --generate-api-spec
+
+      - name: Check diff in generated OpenAPI spec
+        if: startsWith(matrix.os, 'ubuntu') && matrix.python-version == '3.13'
+        run: |
+          output=$(/usr/bin/git ls-files -m)
+          if [ -z "$output" ]; then
+            exit 0
+          else
+            echo "Detected changes in files:"
+            echo "$output"
+            echo "If you made changes to the pyload API make sure to re-generate the openapi.json specification"
+            echo "Verify the changes still produce a valid specification and commit the file to the repo"
+            echo "To re-generate the specification run pyload --generate-api-spec"
+            exit 1
+          fi

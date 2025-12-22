@@ -81,7 +81,6 @@ class XFSAccount(BaseAccount):
         validuntil = None
         trafficleft = None
         leechtraffic = None
-        premium = None
 
         if not self.PLUGIN_URL:  # TODO: Remove in 0.6.x
             return

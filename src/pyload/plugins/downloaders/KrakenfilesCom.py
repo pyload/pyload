@@ -48,4 +48,4 @@ class KrakenfilesCom(SimpleDownloader):
 
         json_data = json.loads(self.data)
         if json_data.get("status") == "ok":
-            self.download(json_data["url"], ref="https://krakenfiles.com/")
+            self.download(json_data["url"], referrer="https://krakenfiles.com/")

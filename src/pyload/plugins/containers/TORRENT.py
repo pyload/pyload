@@ -12,7 +12,7 @@ from cryptography.hazmat.primitives import hashes
 
 from pyload.core.network.request_factory import get_url
 from pyload.core.utils.convert import to_str
-from pyload.core.utils.old import safename
+from pyload.core.utils.fs import safename
 
 from ..base.container import BaseContainer
 

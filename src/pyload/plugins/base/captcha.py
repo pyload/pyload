@@ -43,7 +43,7 @@ class BaseCaptcha(BasePlugin):
         url,
         get={},
         post={},
-        ref=False,
+        referrer=False,
         cookies=True,
         req=None,
         input_type="jpg",
@@ -55,7 +55,7 @@ class BaseCaptcha(BasePlugin):
             url,
             get=get,
             post=post,
-            ref=ref,
+            referrer=referrer,
             cookies=cookies,
             decode=False,
             req=req or self.pyfile.plugin.req,
@@ -156,7 +156,9 @@ class BaseCaptcha(BasePlugin):
 
         return result
 
-    def decrypt_interactive(self, params={}, timeout=120):
+    def decrypt_interactive(self, params=None, timeout=120):
+        params = params or {}
+
         captcha_manager = self.pyload.captcha_manager
         timeout = max(timeout, 50)
 
@@ -200,7 +202,9 @@ class BaseCaptcha(BasePlugin):
 
         return result
 
-    def decrypt_invisible(self, params={}, timeout=120):
+    def decrypt_invisible(self, params=None, timeout=120):
+        params = params or {}
+
         captcha_manager = self.pyload.captcha_manager
         timeout = max(timeout, 50)
 

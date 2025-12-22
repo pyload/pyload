@@ -46,7 +46,7 @@ class CosmoboxOrg(XFSDownloader):
         self.data = self.load(
             "https://cosmobox.org/download",
             post=inputs,
-            ref=self.pyfile.url,
+            referrer=self.pyfile.url,
             redirect=False,
         )
 

@@ -1,0 +1,3458 @@
+{
+  "info": {
+    "title": "pyLoad API Documentation - OpenAPI",
+    "version": "1.1.0"
+  },
+  "openapi": "3.1.1",
+  "tags": [
+    {
+      "name": "pyLoad REST",
+      "description": ""
+    }
+  ],
+  "paths": {
+    "/api/add_files": {
+      "post": {
+        "summary": "Adds files to specific package.",
+        "description": "Adds files to specific package.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "package_id": {
+                    "type": "integer",
+                    "description": "package id"
+                  },
+                  "links": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "list of urls"
+                  }
+                },
+                "required": [
+                  "package_id",
+                  "links"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "No response"
+          }
+        }
+      }
+    },
+    "/api/add_package": {
+      "post": {
+        "summary": "Adds a package, with links to desired destination.",
+        "description": "Adds a package, with links to desired destination.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "name of the new package"
+                  },
+                  "links": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "list of urls"
+                  },
+                  "dest": {
+                    "$ref": "#/components/schemas/Destination",
+                    "default": 1,
+                    "description": "`Destination`"
+                  }
+                },
+                "required": [
+                  "name",
+                  "links"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "package id of the new package",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/add_user": {
+      "post": {
+        "summary": "creates new user login.",
+        "description": "creates new user login.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "parameters": [
+          {
+            "name": "user",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "newpw",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "role",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 0
+            }
+          },
+          {
+            "name": "perms",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/change_password": {
+      "post": {
+        "summary": "changes password for specific user.",
+        "description": "changes password for specific user.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "parameters": [
+          {
+            "name": "user",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "oldpw",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "newpw",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/check_and_add_packages": {
+      "post": {
+        "summary": "Checks online status, retrieves names, and will add packages. Because of these packages are not added immediately, only for internal use.",
+        "description": "Checks online status, retrieves names, and will add packages. Because of these packages are not added immediately, only for internal use.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "links": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "list of urls"
+                  },
+                  "dest": {
+                    "$ref": "#/components/schemas/Destination",
+                    "default": 0,
+                    "description": "`Destination`"
+                  }
+                },
+                "required": [
+                  "links"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "No response"
+          }
+        }
+      }
+    },
+    "/api/check_auth": {
+      "get": {
+        "summary": "Check authentication and returns details.",
+        "description": "Check authentication and returns details.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "parameters": [
+          {
+            "name": "username",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "password",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "dict with info, empty when login is incorrect",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/check_online_status": {
+      "post": {
+        "summary": "Initiates online status check.",
+        "description": "Initiates online status check.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "urls": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "required": [
+                  "urls"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "initial set of data as `OnlineCheck` instance containing the result id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OnlineCheck"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/check_online_status_container": {
+      "post": {
+        "summary": "checks online status of urls and a submitted container file.",
+        "description": "checks online status of urls and a submitted container file.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "urls": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "list of urls"
+                  },
+                  "container": {
+                    "type": "string",
+                    "description": "container file name"
+                  },
+                  "data": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "file content"
+                  }
+                },
+                "required": [
+                  "urls",
+                  "container",
+                  "data"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "online check",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OnlineCheck"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/check_urls": {
+      "post": {
+        "summary": "Gets urls and returns pluginname mapped to list of matched urls.",
+        "description": "Gets urls and returns pluginname mapped to list of matched urls.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "urls": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "required": [
+                  "urls"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "{plugin: urls}",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/delete_files": {
+      "post": {
+        "summary": "Deletes several file entries from pyload.",
+        "description": "Deletes several file entries from pyload.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file_ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    },
+                    "description": "list of file ids"
+                  }
+                },
+                "required": [
+                  "file_ids"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "No response"
+          }
+        }
+      }
+    },
+    "/api/delete_finished": {
+      "post": {
+        "summary": "Deletes all finished files and completely finished packages.",
+        "description": "Deletes all finished files and completely finished packages.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "responses": {
+          "200": {
+            "description": "list of deleted package ids",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/delete_packages": {
+      "post": {
+        "summary": "Deletes packages and containing links.",
+        "description": "Deletes packages and containing links.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "package_ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    },
+                    "description": "list of package ids"
+                  }
+                },
+                "required": [
+                  "package_ids"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "No response"
+          }
+        }
+      }
+    },
+    "/api/free_space": {
+      "get": {
+        "summary": "Available free space at download directory in bytes.",
+        "description": "Available free space at download directory in bytes.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/generate_and_add_packages": {
+      "post": {
+        "summary": "Generates and add packages.",
+        "description": "Generates and add packages.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "links": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "list of urls"
+                  },
+                  "dest": {
+                    "$ref": "#/components/schemas/Destination",
+                    "default": 0,
+                    "description": "`Destination`"
+                  }
+                },
+                "required": [
+                  "links"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "list of package ids",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/generate_packages": {
+      "post": {
+        "summary": "Parses links, generates packages names from urls.",
+        "description": "Parses links, generates packages names from urls.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "links": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "list of urls"
+                  }
+                },
+                "required": [
+                  "links"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "package names mapped to urls",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/getAllUserData": {
+      "get": {
+        "summary": "returns all known user and info.",
+        "description": "returns all known user and info.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "$ref": "#/components/schemas/OldUserData"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/getUserData": {
+      "get": {
+        "summary": "similar to `check_auth` but returns UserData type.",
+        "description": "similar to `check_auth` but returns UserData type.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "parameters": [
+          {
+            "name": "username",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "password",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OldUserData"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/get_account_types": {
+      "get": {
+        "summary": "All available account types.",
+        "description": "All available account types.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "responses": {
+          "200": {
+            "description": "list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/get_accounts": {
+      "get": {
+        "summary": "Get information about all entered accounts.",
+        "description": "Get information about all entered accounts.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "parameters": [
+          {
+            "name": "refresh",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "reload account info"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "list of `AccountInfo`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AccountInfo"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/get_all_info": {
+      "get": {
+        "summary": "Returns all information stored by addon plugins. Values are always strings.",
+        "description": "Returns all information stored by addon plugins. Values are always strings.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "responses": {
+          "200": {
+            "description": "{\"plugin\": {\"name\": value } }",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/get_all_userdata": {
+      "get": {
+        "summary": "returns all known user and info.",
+        "description": "returns all known user and info.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "$ref": "#/components/schemas/UserData"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/get_cachedir": {
+      "get": {
+        "summary": "No documentation available",
+        "description": "No documentation available",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/get_captcha_task": {
+      "get": {
+        "summary": "Returns a captcha task.",
+        "description": "Returns a captcha task.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "parameters": [
+          {
+            "name": "exclusive",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false
+            },
+            "description": "unused"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "`CaptchaTask`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaptchaTask"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/get_captcha_task_status": {
+      "get": {
+        "summary": "Get information about captcha task.",
+        "description": "Get information about captcha task.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "parameters": [
+          {
+            "name": "tid",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "task id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "string",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/get_collector": {
+      "get": {
+        "summary": "same as `get_queue` for collector.",
+        "description": "same as `get_queue` for collector.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "responses": {
+          "200": {
+            "description": "list of `PackageData`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PackageData"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/get_collector_data": {
+      "get": {
+        "summary": "same as `get_queue_data` for collector.",
+        "description": "same as `get_queue_data` for collector.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "responses": {
+          "200": {
+            "description": "list of `PackageData`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PackageData"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/get_config": {
+      "get": {
+        "summary": "Retrieves complete config of core.",
+        "description": "Retrieves complete config of core.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "responses": {
+          "200": {
+            "description": "dict of section name to `ConfigSection`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "$ref": "#/components/schemas/ConfigSection"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/get_config_dict": {
+      "get": {
+        "summary": "Retrieves complete config in dict format, not for RPC.",
+        "description": "Retrieves complete config in dict format, not for RPC.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "responses": {
+          "200": {
+            "description": "dict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/get_config_value": {
+      "get": {
+        "summary": "Retrieve config value.",
+        "description": "Retrieve config value.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "parameters": [
+          {
+            "name": "category",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "name of category, or plugin"
+          },
+          {
+            "name": "option",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "config option"
+          },
+          {
+            "name": "section",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "core"
+            },
+            "description": "'plugin' or 'core'"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "config value",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/get_events": {
+      "get": {
+        "summary": "Lists occurred events, may be affected to changes in the future.",
+        "description": "Lists occurred events, may be affected to changes in the future.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "parameters": [
+          {
+            "name": "uuid",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "list of `EventInfo`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EventInfo"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/get_file_data": {
+      "get": {
+        "summary": "Get complete information about a specific file.",
+        "description": "Get complete information about a specific file.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "parameters": [
+          {
+            "name": "file_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "file id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "`FileData`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileData"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/get_file_order": {
+      "get": {
+        "summary": "Information about file order within package.",
+        "description": "Information about file order within package.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "parameters": [
+          {
+            "name": "package_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "dict mapping order to file id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/get_info_by_plugin": {
+      "get": {
+        "summary": "Returns information stored by a specific plugin.",
+        "description": "Returns information stored by a specific plugin.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "parameters": [
+          {
+            "name": "plugin",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "pluginname"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "dict of attr names mapped to value {\"name\": value}",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/get_log": {
+      "get": {
+        "summary": "Returns most recent log entries.",
+        "description": "Returns most recent log entries.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "parameters": [
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 0
+            },
+            "description": "line offset"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of log entries",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/get_package_data": {
+      "get": {
+        "summary": "Returns complete information about package, and included files.",
+        "description": "Returns complete information about package, and included files.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "parameters": [
+          {
+            "name": "package_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "package id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "`PackageData` with .links attribute",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PackageData"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/get_package_info": {
+      "get": {
+        "summary": "Returns information about package, without detailed information about containing files.",
+        "description": "Returns information about package, without detailed information about containing files.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "parameters": [
+          {
+            "name": "package_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "package id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "`PackageData` with .fid attribute",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PackageData"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/get_package_order": {
+      "get": {
+        "summary": "Returns information about package order.",
+        "description": "Returns information about package order.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "parameters": [
+          {
+            "name": "destination",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Destination"
+            },
+            "description": "`Destination`"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "dict mapping order to package id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/get_plugin_config": {
+      "get": {
+        "summary": "Retrieves complete config for all plugins.",
+        "description": "Retrieves complete config for all plugins.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "responses": {
+          "200": {
+            "description": "dict of section name to `ConfigSection`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "$ref": "#/components/schemas/ConfigSection"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/get_plugin_config_dict": {
+      "get": {
+        "summary": "Plugin config as dict, not for RPC.",
+        "description": "Plugin config as dict, not for RPC.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "responses": {
+          "200": {
+            "description": "dict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/get_queue": {
+      "get": {
+        "summary": "Returns info about queue and packages, **not** about files, see `get_queue_data` or `get_package_data` instead.",
+        "description": "Returns info about queue and packages, **not** about files, see `get_queue_data` or `get_package_data` instead.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "responses": {
+          "200": {
+            "description": "list of `PackageData`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PackageData"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/get_queue_data": {
+      "get": {
+        "summary": "Return complete data about everything in queue, this is very expensive use it sparely. See `get_queue` for alternative.",
+        "description": "Return complete data about everything in queue, this is very expensive use it sparely. See `get_queue` for alternative.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "responses": {
+          "200": {
+            "description": "list of `PackageData`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PackageData"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/get_server_version": {
+      "get": {
+        "summary": "pyLoad Core version.",
+        "description": "pyLoad Core version.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/get_services": {
+      "get": {
+        "summary": "A dict of available services, these can be defined by addon plugins.",
+        "description": "A dict of available services, these can be defined by addon plugins.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "responses": {
+          "200": {
+            "description": "dict with this style: {\"plugin\": {\"method\": \"description\"}}",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/get_userdata": {
+      "get": {
+        "summary": "similar to `check_auth` but returns UserData pe.",
+        "description": "similar to `check_auth` but returns UserData pe.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "parameters": [
+          {
+            "name": "username",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "password",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserData"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/get_userdir": {
+      "get": {
+        "summary": "No documentation available",
+        "description": "No documentation available",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/has_service": {
+      "get": {
+        "summary": "Checks whether a service is available.",
+        "description": "Checks whether a service is available.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "parameters": [
+          {
+            "name": "plugin",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "func_name",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "bool",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/is_authorized": {
+      "post": {
+        "summary": "checks if the user is authorized for specific method.",
+        "description": "checks if the user is authorized for specific method.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "func_name": {
+                    "type": "string",
+                    "description": "function name"
+                  },
+                  "userdata": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "object"
+                    },
+                    "description": "dictionary of user data"
+                  }
+                },
+                "required": [
+                  "func_name",
+                  "userdata"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "boolean",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/is_captcha_waiting": {
+      "get": {
+        "summary": "Indicates whether a captcha task is available.",
+        "description": "Indicates whether a captcha task is available.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "responses": {
+          "200": {
+            "description": "bool",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/is_time_download": {
+      "get": {
+        "summary": "Checks if pyload will start new downloads according to time in config.",
+        "description": "Checks if pyload will start new downloads according to time in config.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "responses": {
+          "200": {
+            "description": "bool",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/is_time_reconnect": {
+      "get": {
+        "summary": "Checks if pyload will try to make a reconnect.",
+        "description": "Checks if pyload will try to make a reconnect.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "responses": {
+          "200": {
+            "description": "bool",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/kill": {
+      "post": {
+        "summary": "Clean way to quit pyLoad.",
+        "description": "Clean way to quit pyLoad.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "responses": {
+          "200": {
+            "description": "No response"
+          }
+        }
+      }
+    },
+    "/api/move_files": {
+      "post": {
+        "summary": "Move multiple files to another package.",
+        "description": "Move multiple files to another package.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file_ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    },
+                    "description": "list of file ids"
+                  },
+                  "package_id": {
+                    "type": "integer",
+                    "description": "destination package"
+                  }
+                },
+                "required": [
+                  "file_ids",
+                  "package_id"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "No response"
+          }
+        }
+      }
+    },
+    "/api/move_package": {
+      "post": {
+        "summary": "Set a new package location.",
+        "description": "Set a new package location.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "parameters": [
+          {
+            "name": "destination",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Destination"
+            },
+            "description": "`Destination`"
+          },
+          {
+            "name": "package_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "package id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response"
+          }
+        }
+      }
+    },
+    "/api/order_file": {
+      "post": {
+        "summary": "Gives a new position to a file within its package.",
+        "description": "Gives a new position to a file within its package.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "parameters": [
+          {
+            "name": "file_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "file id"
+          },
+          {
+            "name": "position",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response"
+          }
+        }
+      }
+    },
+    "/api/order_package": {
+      "post": {
+        "summary": "Gives a package a new position.",
+        "description": "Gives a package a new position.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "parameters": [
+          {
+            "name": "package_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "package id"
+          },
+          {
+            "name": "position",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response"
+          }
+        }
+      }
+    },
+    "/api/parse_urls": {
+      "post": {
+        "summary": "Parses html content or any arbitrary text for links and returns result of `check_urls`",
+        "description": "Parses html content or any arbitrary text for links and returns result of `check_urls`",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "html": {
+                    "type": "string",
+                    "nullable": true,
+                    "default": null,
+                    "description": "html source"
+                  },
+                  "url": {
+                    "type": "string",
+                    "nullable": true,
+                    "default": null,
+                    "description": "url to load html source from"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/pause_server": {
+      "post": {
+        "summary": "Pause server: It won't start any new downloads, but nothing gets aborted.",
+        "description": "Pause server: It won't start any new downloads, but nothing gets aborted.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "responses": {
+          "200": {
+            "description": "No response"
+          }
+        }
+      }
+    },
+    "/api/poll_results": {
+      "get": {
+        "summary": "Polls the result available for ResultID.",
+        "description": "Polls the result available for ResultID.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "parameters": [
+          {
+            "name": "rid",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "`ResultID`"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "`OnlineCheck`, if rid is -1 then no more data available",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OnlineCheck"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/pull_from_queue": {
+      "post": {
+        "summary": "Moves package from Queue to Collector.",
+        "description": "Moves package from Queue to Collector.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "parameters": [
+          {
+            "name": "package_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "package id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response"
+          }
+        }
+      }
+    },
+    "/api/push_to_queue": {
+      "post": {
+        "summary": "Moves package from Collector to Queue.",
+        "description": "Moves package from Collector to Queue.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "parameters": [
+          {
+            "name": "package_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "package id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response"
+          }
+        }
+      }
+    },
+    "/api/recheck_package": {
+      "post": {
+        "summary": "Probes online status of all files in a package, also a default action when package is added.",
+        "description": "Probes online status of all files in a package, also a default action when package is added.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "parameters": [
+          {
+            "name": "package_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response"
+          }
+        }
+      }
+    },
+    "/api/remove_account": {
+      "post": {
+        "summary": "Remove account from pyload.",
+        "description": "Remove account from pyload.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "parameters": [
+          {
+            "name": "plugin",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "pluginname"
+          },
+          {
+            "name": "account",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "accountname"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response"
+          }
+        }
+      }
+    },
+    "/api/remove_user": {
+      "post": {
+        "summary": "deletes a user login.",
+        "description": "deletes a user login.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "parameters": [
+          {
+            "name": "user",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/restart": {
+      "post": {
+        "summary": "Restart pyload core.",
+        "description": "Restart pyload core.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "responses": {
+          "200": {
+            "description": "No response"
+          }
+        }
+      }
+    },
+    "/api/restart_failed": {
+      "post": {
+        "summary": "Restarts all failed failes.",
+        "description": "Restarts all failed failes.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "responses": {
+          "200": {
+            "description": "No response"
+          }
+        }
+      }
+    },
+    "/api/restart_file": {
+      "post": {
+        "summary": "Resets file status, so it will be downloaded again.",
+        "description": "Resets file status, so it will be downloaded again.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "parameters": [
+          {
+            "name": "file_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": " file id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response"
+          }
+        }
+      }
+    },
+    "/api/restart_package": {
+      "post": {
+        "summary": "Restarts a package, resets every containing files.",
+        "description": "Restarts a package, resets every containing files.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "parameters": [
+          {
+            "name": "package_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "package id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response"
+          }
+        }
+      }
+    },
+    "/api/service_call": {
+      "post": {
+        "summary": "Calls a service (a method in addon plugin).",
+        "description": "Calls a service (a method in addon plugin).",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "service_name": {
+                    "type": "string"
+                  },
+                  "arguments": {
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    },
+                    "nullable": true
+                  },
+                  "parse_arguments": {
+                    "type": "boolean",
+                    "default": false
+                  }
+                },
+                "required": [
+                  "service_name",
+                  "arguments"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/set_captcha_result": {
+      "post": {
+        "summary": "Set result for a captcha task.",
+        "description": "Set result for a captcha task.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "parameters": [
+          {
+            "name": "tid",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "task id"
+          },
+          {
+            "name": "result",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "captcha result"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response"
+          }
+        }
+      }
+    },
+    "/api/set_config_value": {
+      "post": {
+        "summary": "Set new config value.",
+        "description": "Set new config value.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "category": {
+                    "type": "string"
+                  },
+                  "option": {
+                    "type": "string"
+                  },
+                  "value": {
+                    "type": "object",
+                    "description": "new config value"
+                  },
+                  "section": {
+                    "type": "string",
+                    "default": "core",
+                    "description": "'plugin' or 'core"
+                  }
+                },
+                "required": [
+                  "category",
+                  "option",
+                  "value"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "No response"
+          }
+        }
+      }
+    },
+    "/api/set_package_data": {
+      "post": {
+        "summary": "Allows to modify several package attributes.",
+        "description": "Allows to modify several package attributes.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "package_id": {
+                    "type": "integer",
+                    "description": "package id"
+                  },
+                  "data": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "object"
+                    },
+                    "description": "dict that maps attribute to desired value"
+                  }
+                },
+                "required": [
+                  "package_id",
+                  "data"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "No response"
+          }
+        }
+      }
+    },
+    "/api/set_package_name": {
+      "post": {
+        "summary": "Renames a package.",
+        "description": "Renames a package.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "parameters": [
+          {
+            "name": "package_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "package id"
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "new package name"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response"
+          }
+        }
+      }
+    },
+    "/api/set_user_permission": {
+      "post": {
+        "summary": "No documentation available",
+        "description": "No documentation available",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "parameters": [
+          {
+            "name": "user",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "permission",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "role",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response"
+          }
+        }
+      }
+    },
+    "/api/status_downloads": {
+      "get": {
+        "summary": "Status of all currently running downloads.",
+        "description": "Status of all currently running downloads.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "responses": {
+          "200": {
+            "description": "list of `DownloadInfo`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DownloadInfo"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/status_server": {
+      "get": {
+        "summary": "Some general information about the current status of pyLoad.",
+        "description": "Some general information about the current status of pyLoad.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "responses": {
+          "200": {
+            "description": "`ServerStatus`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServerStatus"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/stop_all_downloads": {
+      "post": {
+        "summary": "Aborts all running downloads.",
+        "description": "Aborts all running downloads.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "responses": {
+          "200": {
+            "description": "No response"
+          }
+        }
+      }
+    },
+    "/api/stop_downloads": {
+      "post": {
+        "summary": "Aborts specific downloads.",
+        "description": "Aborts specific downloads.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file_ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    },
+                    "description": "list of file ids"
+                  }
+                },
+                "required": [
+                  "file_ids"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "No response"
+          }
+        }
+      }
+    },
+    "/api/toggle_pause": {
+      "post": {
+        "summary": "Toggle pause state.",
+        "description": "Toggle pause state.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "responses": {
+          "200": {
+            "description": "new pause state",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/toggle_proxy": {
+      "post": {
+        "summary": "Toggle proxy activation.",
+        "description": "Toggle proxy activation.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "responses": {
+          "200": {
+            "description": "new proxy state",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/toggle_reconnect": {
+      "post": {
+        "summary": "Toggle reconnect activation.",
+        "description": "Toggle reconnect activation.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "responses": {
+          "200": {
+            "description": "new reconnect state",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/unpause_server": {
+      "post": {
+        "summary": "Unpause server: New Downloads will be started.",
+        "description": "Unpause server: New Downloads will be started.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "responses": {
+          "200": {
+            "description": "No response"
+          }
+        }
+      }
+    },
+    "/api/update_account": {
+      "post": {
+        "summary": "Changes pw/options for specific account.",
+        "description": "Changes pw/options for specific account.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "plugin": {
+                    "type": "string"
+                  },
+                  "account": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string",
+                    "nullable": true,
+                    "default": null
+                  },
+                  "options": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "object"
+                    },
+                    "nullable": true,
+                    "default": null
+                  }
+                },
+                "required": [
+                  "plugin",
+                  "account"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "No response"
+          }
+        }
+      }
+    },
+    "/api/upload_container": {
+      "post": {
+        "summary": "Uploads and adds a container file to pyLoad.",
+        "description": "Uploads and adds a container file to pyLoad.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "filename": {
+                    "type": "string",
+                    "description": "file name - extension is important, so it can correctly decrypt"
+                  },
+                  "data": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "file content"
+                  }
+                },
+                "required": [
+                  "filename",
+                  "data"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "No response"
+          }
+        }
+      }
+    },
+    "/api/user_exists": {
+      "get": {
+        "summary": "Check if a user actually exists in the database.",
+        "description": "Check if a user actually exists in the database.",
+        "tags": [
+          "pyLoad REST"
+        ],
+        "parameters": [
+          {
+            "name": "username",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "boolean",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Destination": {
+        "type": "integer",
+        "enum": [
+          0,
+          1
+        ],
+        "x-enum-varnames": [
+          "COLLECTOR",
+          "QUEUE"
+        ]
+      },
+      "OnlineCheck": {
+        "properties": {
+          "rid": {
+            "title": "Rid",
+            "type": "integer"
+          },
+          "data": {
+            "title": "Data",
+            "type": "object"
+          }
+        },
+        "required": [
+          "rid",
+          "data"
+        ],
+        "title": "OnlineCheck",
+        "type": "object"
+      },
+      "OldUserData": {
+        "properties": {
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Name"
+          },
+          "email": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Email"
+          },
+          "role": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Role"
+          },
+          "permission": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Permission"
+          },
+          "template_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Template Name"
+          }
+        },
+        "title": "OldUserData",
+        "type": "object"
+      },
+      "AccountInfo": {
+        "properties": {
+          "validuntil": {
+            "anyOf": [
+              {
+                "format": "float",
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Validuntil"
+          },
+          "login": {
+            "title": "Login",
+            "type": "string"
+          },
+          "options": {
+            "title": "Options",
+            "type": "object"
+          },
+          "valid": {
+            "title": "Valid",
+            "type": "boolean"
+          },
+          "trafficleft": {
+            "anyOf": [
+              {
+                "format": "int64",
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Trafficleft"
+          },
+          "premium": {
+            "title": "Premium",
+            "type": "boolean"
+          },
+          "type": {
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "login",
+          "options",
+          "valid",
+          "premium",
+          "type"
+        ],
+        "title": "AccountInfo",
+        "type": "object"
+      },
+      "UserData": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Id"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Name"
+          },
+          "email": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Email"
+          },
+          "role": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Role"
+          },
+          "permission": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Permission"
+          },
+          "template": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Template"
+          }
+        },
+        "title": "UserData",
+        "type": "object"
+      },
+      "CaptchaTask": {
+        "properties": {
+          "tid": {
+            "title": "Tid",
+            "type": "integer"
+          },
+          "data": {
+            "anyOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Data"
+          },
+          "type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Type"
+          },
+          "result_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Result Type"
+          }
+        },
+        "required": [
+          "tid"
+        ],
+        "title": "CaptchaTask",
+        "type": "object"
+      },
+      "PackageData": {
+        "properties": {
+          "pid": {
+            "title": "Pid",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "folder": {
+            "title": "Folder",
+            "type": "string"
+          },
+          "site": {
+            "title": "Site",
+            "type": "string"
+          },
+          "password": {
+            "title": "Password",
+            "type": "string"
+          },
+          "dest": {
+            "title": "Dest",
+            "type": "integer"
+          },
+          "order": {
+            "title": "Order",
+            "type": "integer"
+          },
+          "linksdone": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Linksdone"
+          },
+          "sizedone": {
+            "anyOf": [
+              {
+                "format": "int64",
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Sizedone"
+          },
+          "sizetotal": {
+            "anyOf": [
+              {
+                "format": "int64",
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Sizetotal"
+          },
+          "linkstotal": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Linkstotal"
+          },
+          "links": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/FileData"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Links"
+          },
+          "fids": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "integer"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Fids"
+          }
+        },
+        "required": [
+          "pid",
+          "name",
+          "folder",
+          "site",
+          "password",
+          "dest",
+          "order"
+        ],
+        "title": "PackageData",
+        "type": "object"
+      },
+      "ConfigItem": {
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "value": {
+            "title": "Value",
+            "type": "string"
+          },
+          "type": {
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "description",
+          "value",
+          "type"
+        ],
+        "title": "ConfigItem",
+        "type": "object"
+      },
+      "ConfigSection": {
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ConfigItem"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "outline": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Outline"
+          }
+        },
+        "required": [
+          "name",
+          "description",
+          "items",
+          "outline"
+        ],
+        "title": "ConfigSection",
+        "type": "object"
+      },
+      "EventInfo": {
+        "properties": {
+          "eventname": {
+            "title": "Eventname",
+            "type": "string"
+          },
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Id"
+          },
+          "type": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Type"
+          },
+          "destination": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Destination"
+          }
+        },
+        "required": [
+          "eventname"
+        ],
+        "title": "EventInfo",
+        "type": "object"
+      },
+      "DownloadStatus": {
+        "type": "integer",
+        "enum": [
+          9,
+          11,
+          10,
+          12,
+          8,
+          0,
+          1,
+          2,
+          13,
+          3,
+          4,
+          7,
+          6,
+          14,
+          5
+        ],
+        "x-enum-varnames": [
+          "ABORTED",
+          "CUSTOM",
+          "DECRYPTING",
+          "DOWNLOADING",
+          "FAILED",
+          "FINISHED",
+          "OFFLINE",
+          "ONLINE",
+          "PROCESSING",
+          "QUEUED",
+          "SKIPPED",
+          "STARTING",
+          "TEMPOFFLINE",
+          "UNKNOWN",
+          "WAITING"
+        ]
+      },
+      "FileData": {
+        "properties": {
+          "fid": {
+            "title": "Fid",
+            "type": "integer"
+          },
+          "url": {
+            "title": "Url",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "plugin": {
+            "title": "Plugin",
+            "type": "string"
+          },
+          "size": {
+            "format": "int64",
+            "title": "Size",
+            "type": "integer"
+          },
+          "format_size": {
+            "title": "Format Size",
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/DownloadStatus"
+          },
+          "statusmsg": {
+            "title": "Statusmsg",
+            "type": "string"
+          },
+          "package_id": {
+            "title": "Package Id",
+            "type": "integer"
+          },
+          "error": {
+            "title": "Error",
+            "type": "string"
+          },
+          "order": {
+            "title": "Order",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "fid",
+          "url",
+          "name",
+          "plugin",
+          "size",
+          "format_size",
+          "status",
+          "statusmsg",
+          "package_id",
+          "error",
+          "order"
+        ],
+        "title": "FileData",
+        "type": "object"
+      },
+      "DownloadInfo": {
+        "properties": {
+          "fid": {
+            "title": "Fid",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "speed": {
+            "format": "int64",
+            "title": "Speed",
+            "type": "integer"
+          },
+          "eta": {
+            "title": "Eta",
+            "type": "integer"
+          },
+          "format_eta": {
+            "title": "Format Eta",
+            "type": "string"
+          },
+          "bleft": {
+            "format": "int64",
+            "title": "Bleft",
+            "type": "integer"
+          },
+          "size": {
+            "format": "int64",
+            "title": "Size",
+            "type": "integer"
+          },
+          "format_size": {
+            "title": "Format Size",
+            "type": "string"
+          },
+          "percent": {
+            "title": "Percent",
+            "type": "integer"
+          },
+          "status": {
+            "$ref": "#/components/schemas/DownloadStatus"
+          },
+          "statusmsg": {
+            "title": "Statusmsg",
+            "type": "string"
+          },
+          "format_wait": {
+            "title": "Format Wait",
+            "type": "string"
+          },
+          "wait_until": {
+            "format": "float",
+            "title": "Wait Until",
+            "type": "number"
+          },
+          "package_id": {
+            "title": "Package Id",
+            "type": "integer"
+          },
+          "package_name": {
+            "title": "Package Name",
+            "type": "string"
+          },
+          "plugin": {
+            "title": "Plugin",
+            "type": "string"
+          },
+          "info": {
+            "title": "Info",
+            "type": "string"
+          }
+        },
+        "required": [
+          "fid",
+          "name",
+          "speed",
+          "eta",
+          "format_eta",
+          "bleft",
+          "size",
+          "format_size",
+          "percent",
+          "status",
+          "statusmsg",
+          "format_wait",
+          "wait_until",
+          "package_id",
+          "package_name",
+          "plugin",
+          "info"
+        ],
+        "title": "DownloadInfo",
+        "type": "object"
+      },
+      "ServerStatus": {
+        "properties": {
+          "pause": {
+            "title": "Pause",
+            "type": "boolean"
+          },
+          "active": {
+            "title": "Active",
+            "type": "integer"
+          },
+          "queue": {
+            "title": "Queue",
+            "type": "integer"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          },
+          "speed": {
+            "format": "int64",
+            "title": "Speed",
+            "type": "integer"
+          },
+          "download": {
+            "title": "Download",
+            "type": "boolean"
+          },
+          "reconnect": {
+            "title": "Reconnect",
+            "type": "boolean"
+          },
+          "captcha": {
+            "title": "Captcha",
+            "type": "boolean"
+          },
+          "proxy": {
+            "title": "Proxy",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "pause",
+          "active",
+          "queue",
+          "total",
+          "speed",
+          "download",
+          "reconnect",
+          "captcha",
+          "proxy"
+        ],
+        "title": "ServerStatus",
+        "type": "object"
+      }
+    },
+    "securitySchemes": {
+      "basicAuth": {
+        "type": "http",
+        "scheme": "basic"
+      }
+    }
+  },
+  "security": [
+    {
+      "basicAuth": []
+    }
+  ]
+}

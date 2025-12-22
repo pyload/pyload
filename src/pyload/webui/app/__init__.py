@@ -123,6 +123,7 @@ class App:
         app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
         app.config["SESSION_COOKIE_SECURE"] = app.config["PYLOAD_API"].get_config_value("webui", "use_ssl")
         app.config["SESSION_PERMANENT"] = False
+        app.config["SESSION_REFRESH_EACH_REQUEST"] = False
 
         session_lifetime = max(app.config["PYLOAD_API"].get_config_value("webui", "session_lifetime"), 1) * 60
         app.config["PERMANENT_SESSION_LIFETIME"] = session_lifetime

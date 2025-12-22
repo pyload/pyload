@@ -71,11 +71,14 @@ def size(value, in_unit, out_unit):
 
 
 def to_bytes(obj, encoding="utf-8", errors="strict"):
-    try:
+    if isinstance(obj, bytes):
+        return obj
+    elif isinstance(obj, str):
         return obj.encode(encoding, errors)
-    except AttributeError:
-        return bytes(obj, encoding)
-
+    elif isinstance(obj, (bytearray, memoryview)):
+        return bytes(obj)  # No encoding needed for binary types
+    else:
+        raise TypeError(f"Cannot convert {type(obj).__name__} to bytes; supported types: str, bytes, bytearray, memoryview")
 
 def to_str(obj, encoding="utf-8", errors="strict"):
     try:

@@ -1,4 +1,16 @@
 {% autoescape true %}
+// Set up CSRF token for all AJAX requests
+const getCsrfToken = () => document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+// Add CSRF token to all jQuery AJAX requests
+$.ajaxSetup({
+  beforeSend: function (xhr, settings) {
+    if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+      xhr.setRequestHeader("X-CSRFToken", getCsrfToken());
+    }
+  }
+});
+
 class NotificationHandler {
   constructor() {
     this.enabled = false;
@@ -104,16 +116,15 @@ class CaptchaHandler {
   setCaptcha = (captchaData) => {
     this.captchaResetDefault();
 
-    const params = JSON.parse(captchaData.params);
     $("#cap_id").val(captchaData.id);
     if (captchaData.result_type === "textual") {
-      $("#cap_textual_img").attr("src", params.src);
+      $("#cap_textual_img").attr("src", captchaData.params.src);
       $("#cap_submit").css("display", "inline");
       $("#cap_box #cap_title").text("");
       $("#cap_textual").css("display", "block");
       $("#cap_result").focus();
     } else if (captchaData.result_type === "positional") {
-      $("#cap_positional_img").attr("src", params.src);
+      $("#cap_positional_img").attr("src", captchaData.params.src);
       $("#cap_box #cap_title").text("{{_('Please click on the right captcha position.')}}");
       $("#cap_positional").css("display", "block");
     } else if (captchaData.result_type === "interactive" || captchaData.result_type === "invisible") {
@@ -121,7 +132,7 @@ class CaptchaHandler {
       const infoId = captchaData.result_type === "interactive" ? "cap_interactive_loading" : "cap_invisible_loading"
       const interactionData = {
         infoId: infoId,
-        params: params
+        params: captchaData.params
       }
       this.startInteraction(interactionData);
     }
@@ -205,7 +216,7 @@ class UIHandler {
 
     const addlinksMinHeight = getScrollBarHeight() + Math.round(parseFloat($("#add_links").css("line-height").replace('px', '')));
     let addlinksHeight;
-    $("#modal-content").resizable({
+    $("#add_box .modal-content").resizable({
       minHeight: 520 + addlinksMinHeight,
       minWidth: 310,
       start: (event, ui) => {
@@ -312,7 +323,7 @@ class UIHandler {
     });
 
     $("#action_play").click(() => {
-      $.get("{{url_for('api.rpc', func='unpause_server')}}", () => {
+      $.post("{{url_for('api.rpc', func='unpause_server')}}", () => {
         $.ajax({
           method: "post",
           url: "{{url_for('json.status')}}",
@@ -326,13 +337,13 @@ class UIHandler {
     $("#action_cancel").click(() => {
       this.yesNoDialog("{{_('Are you sure you want to abort all downloads?')}}", (answer) => {
         if (answer) {
-          $.get("{{url_for('api.rpc', func='stop_all_downloads')}}");
+          $.post("{{url_for('api.rpc', func='stop_all_downloads')}}");
         }
       });
     });
 
     $("#action_stop").click(() => {
-      $.get("{{url_for('api.rpc', func='pause_server')}}", () => {
+      $.post("{{url_for('api.rpc', func='pause_server')}}", () => {
         $.ajax({
           method: "post",
           url: "{{url_for('json.status')}}",
@@ -344,7 +355,7 @@ class UIHandler {
     });
 
     $("#toggle_queue").click(() => {
-      $.get("{{url_for('api.rpc', func='toggle_pause')}}", () => {
+      $.post("{{url_for('api.rpc', func='toggle_pause')}}", () => {
         $.ajax({
           method: "post",
           url: "{{url_for('json.status')}}",
@@ -356,7 +367,7 @@ class UIHandler {
     });
 
     $("#toggle_proxy").click(() => {
-      $.get("{{url_for('api.rpc', func='toggle_proxy')}}", () => {
+      $.post("{{url_for('api.rpc', func='toggle_proxy')}}", () => {
         $.ajax({
           method: "post",
           url: "{{url_for('json.status')}}",
@@ -368,7 +379,7 @@ class UIHandler {
     });
 
     $("#toggle_reconnect").click(() => {
-      $.get("{{url_for('api.rpc', func='toggle_reconnect')}}", () => {
+      $.post("{{url_for('api.rpc', func='toggle_reconnect')}}", () => {
         $.ajax({
           method: "post",
           url: "{{url_for('json.status')}}",
@@ -504,13 +515,19 @@ $(() => {
       success: loadJsonToContent
     });
 
-    setInterval(() => {
+    const statusInterval = setInterval(() => {
       $.ajax({
         method: "post",
         url: "{{url_for('json.status')}}",
         async: true,
         timeout: 3000,
-        success: loadJsonToContent
+        success: loadJsonToContent,
+        error: (xhr) => {
+          if (xhr.status === 400) {
+            clearInterval(statusInterval);
+            uiHandler.indicateInfo("{{_('Status updates stopped due to authentication error,<br>please refresh the page')}}", 0);
+          }
+        }
       });
     }, 4000);
   }

@@ -59,14 +59,3 @@ def excepthook(exc_type, exc_value, exc_traceback):
 
 
 sys.excepthook = excepthook
-del excepthook
-
-
-# Cleanup
-
-del _locale
-del locale
-del logging
-del os
-del semver
-del sys

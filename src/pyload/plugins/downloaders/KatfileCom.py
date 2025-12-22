@@ -6,10 +6,10 @@ from ..base.xfs_downloader import XFSDownloader
 class KatfileCom(XFSDownloader):
     __name__ = "KatfileCom"
     __type__ = "downloader"
-    __version__ = "0.04"
+    __version__ = "0.06"
     __status__ = "testing"
 
-    __pattern__ = r"https?://(?:www\.)?katfile\.com/\w+"
+    __pattern__ = r"https?://(?:www\.)?katfile\.(?:com|cloud)/(?P<ID>\w{12})"
     __config__ = [
         ("enabled", "bool", "Activated", True),
         ("use_premium", "bool", "Use premium account if available", True),
@@ -26,7 +26,11 @@ class KatfileCom(XFSDownloader):
     SIZE_PATTERN = r'<span id="fsize" .+?>(?P<S>[\d.,]+) (?P<U>[\w^_]+)<'
 
     OFFLINE_PATTERN = r"File has been removed"
-    WAIT_PATTERN = r"(?:var estimated_time = |Delay between free downloads must be not less than )([\w ]+?)[.;]"
+    WAIT_PATTERN = r"var estimated_time = ([\w ]+?);"
+    DL_LIMIT_PATTERN = r"Delay between downloads must be not less than ([\w ]+?),"
     LINK_PATTERN = r'<a href="([^"]+)" id="dlink"'
 
-    PLUGIN_DOMAIN = "katfile.com"
+    URL_REPLACEMENTS = [(__pattern__ + ".*", r"https://katfile.cloud/\g<ID>")]
+
+    PLUGIN_DOMAIN = "katfile.cloud"
+

@@ -6,7 +6,7 @@
 <script type="text/javascript" src="{{theme_template('js/packages.js')}}"></script>
 <script type="text/javascript">
   $(function() {
-      var pUI = new PackageUI({{ target }});
+      const pUI = new PackageUI({{ target }});
   });
 </script>
 {% endblock %}
@@ -39,13 +39,13 @@
           <span class="packageicon glyphicon glyphicon-folder-close" style="margin-right: 5px;"></span>
           <span class="name" style="font-size: 16px; font-weight: bold;">{{package.name}}</span>
           <span class="buttons" style="opacity:0">
-            <span class="glyphicon glyphicon-trash" title="{{_('Delete Package')}}" style="margin-left: 10px; color:#555; cursor: pointer; width:12px; height:12px;" ></span>
-            <span class="glyphicon glyphicon-repeat" title="{{_('Restart Package')}}" style=" cursor: pointer; color:#555; height:12px;" ></span>
-            <span class="glyphicon glyphicon-pencil" title="{{_('Edit Package')}}" style="cursor: pointer; color:#555; height:12px;" ></span>
-            <span class="glyphicon glyphicon-transfer" title="{{_('Move Package To')}} {% if target %}{{_('Collector')}}{% else %}{{_('Queue')}}{% endif %}" style="cursor: pointer; color:#555; height:12px;" ></span>
-            <span class="glyphicon glyphicon-sort" title="{{_('Reverse Entries')}}" style="cursor: pointer; color:#555; height:12px;" ></span>
+            <span class="glyphicon glyphicon-trash" title="{{_('Delete Package')}}" style="margin-left: 10px; cursor: pointer; color:#555; width:12px; height:12px;" ></span>
+            <span class="glyphicon glyphicon-repeat" title="{{_('Restart Package')}}" style="margin-left: 10px; cursor: pointer; color:#555; height:12px;" ></span>
+            <span class="glyphicon glyphicon-pencil" title="{{_('Edit Package')}}" style="margin-left: 10px; cursor: pointer; color:#555; height:12px;" ></span>
+            <span class="glyphicon glyphicon-transfer" title="{{_('Move Package To')}} {% if target %}{{_('Collector')}}{% else %}{{_('Queue')}}{% endif %}" style="margin-left: 10px; cursor: pointer; color:#555; height:12px;" ></span>
+            <span class="glyphicon glyphicon-sort" title="{{_('Reverse Entries')}}" style="margin-left: 10px; cursor: pointer; color:#555; height:12px;" ></span>
             {% if has_extract %}
-            <span class="glyphicon glyphicon-fullscreen" title="{{_('Extract Package')}}" style="cursor: pointer; color:#555; height:12px;" ></span>
+            <span class="glyphicon glyphicon-fullscreen" title="{{_('Extract Package')}}" style="margin-left: 10px; cursor: pointer; color:#555; height:12px;" ></span>
             {% endif %}
           </span>
          </div>
@@ -76,8 +76,8 @@
   <div class="modal-dialog modal-sm">
     <!-- Modal content-->
     <div class="modal-content">
-      <div class="modal-header bg-info text-center" style="padding: 5px" >{{_('Edit Package')}}</div>
-        <div class="modal-body" style="margin-bottom: 30px;">
+      <div class="modal-header bg-info text-center" style="cursor: move; padding: 5px" >{{_('Edit Package')}}</div>
+        <div class="modal-body" style="cursor: move; margin-bottom: 30px;">
         <form id="pack_form" class="from-group" action="{{url_for('json.edit_package')}}" method="POST" enctype="multipart/form-data" style="margin-bottom: 40px;">
           <p>{{_('Edit the package detais below')}}</p>
             <input name="pack_id" id="pack_id" type="hidden" value=""/>

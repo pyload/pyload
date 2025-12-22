@@ -11,12 +11,13 @@ from logging import getLogger
 from urllib.parse import unquote
 
 import flask
+
 from pyload import APPID, PKGDIR
 from pyload.core.utils import format
 
 from ..helpers import (
-    clear_session, get_permission, get_redirect_url, is_authenticated, login_required, permlist, render_base,
-    render_template, set_session, static_file_url)
+    clear_session, csrf_exempt, get_permission, get_redirect_url, is_authenticated, login_required, permlist,
+    render_base, render_template, set_session, static_file_url)
 
 _RE_LOGLINE = re.compile(r"\[([\d\-]+) ([\d:]+)\] +([A-Z]+) +(.+?) (.*)")
 
@@ -30,7 +31,7 @@ def favicon():
     return flask.redirect(location)
 
 
-@bp.route("/render/<path:filename>", endpoint="render")
+@bp.route("/web/<path:filename>", endpoint="web")
 def render(filename):
     mimetype = mimetypes.guess_type(filename)[0] or "text/html"
     data = render_template(filename)
@@ -44,6 +45,7 @@ def robots():
 
 # TODO: Rewrite login route using flask-login
 @bp.route("/login", methods=["GET", "POST"], endpoint="login")
+@csrf_exempt
 def login():
     api = flask.current_app.config["PYLOAD_API"]
 
@@ -54,18 +56,15 @@ def login():
         password = flask.request.form["password"]
         user_info = api.check_auth(user, password)
 
-        if flask.request.headers.get("X-Forwarded-For"):
-            client_ip = flask.request.headers.get("X-Forwarded-For").split(',')[0].strip()
-        else:
-            client_ip = flask.request.remote_addr
+        client_ip = flask.request.headers.get("X-Forwarded-For", "").split(',')[0].strip() or flask.request.remote_addr
 
         sanitized_user = user.replace("\n", "\\n").replace("\r", "\\r")
         if not user_info:
-            log.error(f"Login failed for user '{sanitized_user}' [CLIENT: {client_ip}]")
+            log.error(f"Login failed for user '{sanitized_user}' using Web Client [CLIENT: {client_ip}]")
             return render_template("login.html", errors=True)
 
         set_session(user_info)
-        log.info(f"User '{sanitized_user}' successfully logged in [CLIENT: {client_ip}]")
+        log.info(f"User '{sanitized_user}' successfully logged in using Web Client [CLIENT: {client_ip}]")
         flask.flash("Logged in successfully")
 
     if is_authenticated():
@@ -74,8 +73,8 @@ def login():
     if api.get_config_value("webui", "autologin"):
         allusers = api.get_all_userdata()
         if len(allusers) == 1:  # TODO: check if localhost
-            user_info = list(allusers.values())[0]
-            set_session(user_info)
+            userdata = list(allusers.values())[0]
+            set_session(userdata.model_dump())
             # NOTE: Double-check authentication here because if session[name] is empty,
             #       next login_required redirects here again and all loop out.
             if is_authenticated():
@@ -103,10 +102,10 @@ def dashboard():
     links = api.status_downloads()
 
     for link in links:
-        if link["status"] == 12:
-            current_size = link["size"] - link["bleft"]
-            formatted_speed = format.speed(link["speed"])
-            link["info"] = f"{current_size} KiB @ {formatted_speed}"
+        if link.status == 12:
+            current_size = link.size - link.bleft
+            formatted_speed = format.speed(link.speed)
+            link.info = f"{current_size} KiB @ {formatted_speed}"
 
     return render_template("dashboard.html", res=links)
 
@@ -116,7 +115,7 @@ def dashboard():
 def queue():
     api = flask.current_app.config["PYLOAD_API"]
     queue = api.get_queue()
-    queue.sort(key=operator.attrgetter("order"))
+    queue.sort(key=lambda x: x.order)
 
     return render_template("packages.html", content=queue, target=1)
 
@@ -126,8 +125,7 @@ def queue():
 def collector():
     api = flask.current_app.config["PYLOAD_API"]
     queue = api.get_collector()
-
-    queue.sort(key=operator.attrgetter("order"))
+    queue.sort(key=lambda x: x.order)
 
     return render_template("packages.html", content=queue, target=0)
 
@@ -149,21 +147,30 @@ def files():
         return render_base(messages)
     data = {"folder": [], "files": []}
 
-    for entry in sorted(os.listdir(root)):
-        if os.path.isdir(os.path.join(root, entry)):
-            folder = {"name": decode_name(entry), "path": decode_name(entry), "files": []}
-            files = os.listdir(os.path.join(root, entry))
-            for file in sorted(files):
-                try:
-                    if os.path.isfile(os.path.join(root, entry, file)):
-                        folder["files"].append(decode_name(file))
-                except Exception:
-                    pass
+    try:
+        for entry in sorted(os.listdir(root)):
+            try:
+                if os.path.isdir(os.path.join(root, entry)):
+                    folder = {"name": decode_name(entry), "path": decode_name(entry), "files": []}
+                    try:
+                        files = os.listdir(os.path.join(root, entry))
+                        for file in sorted(files):
+                            if os.path.isfile(os.path.join(root, entry, file)):
+                                folder["files"].append(decode_name(file))
 
-            data["folder"].append(folder)
+                    except OSError as exc:
+                        log.debug("Failed to list files in folder '%s': %s", decode_name(entry), exc)
 
-        elif os.path.isfile(os.path.join(root, entry)):
-            data["files"].append(decode_name(entry))
+                    data["folder"].append(folder)
+
+                elif os.path.isfile(os.path.join(root, entry)):
+                    data["files"].append(decode_name(entry))
+
+            except OSError as exc:
+                log.debug("Failed to access entry '%s': %s", decode_name(entry), exc)
+
+    except OSError as exc:
+        log.debug("Failed to list download directory '{}': {}".format(os.fsdecode(root), exc))
 
     return render_template("files.html", files=data)
 
@@ -245,9 +252,9 @@ def settings():
     all_users = api.get_all_userdata()
     users = {}
     for userdata in all_users.values():
-        name = userdata["name"]
-        users[name] = {"perms": get_permission(userdata["permission"])}
-        users[name]["perms"]["admin"] = userdata["role"] == 0
+        name = userdata.name
+        users[name] = {"perms": get_permission(userdata.permission)}
+        users[name]["perms"]["admin"] = userdata.role == 0
 
     admin_menu = {
         "permlist": permlist(),

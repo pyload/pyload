@@ -9,10 +9,10 @@ from .http.http_request import HTTPRequest
 
 
 class Browser:
-    def __init__(self, bucket=None, options={}):
+    def __init__(self, bucket=None, options=None):
         self.log = getLogger(APPID)
 
-        self.options = options  #: holds pycurl options
+        self.options = options or {}  #: holds pycurl options
         self.bucket = bucket
 
         self.cj = None  #: needs to be set later
@@ -87,9 +87,9 @@ class Browser:
             url,
             filename,
             size=0,
-            get={},
-            post={},
-            ref=True,
+            get=None,
+            post=None,
+            referrer=True,
             cookies=True,
             chunks=1,
             resume=False,
@@ -106,7 +106,7 @@ class Browser:
             size=size,
             get=get,
             post=post,
-            referer=self.last_effective_url if ref else None,
+            referer=self.last_effective_url if referrer else None,
             cj=self.cj if cookies else None,
             bucket=self.bucket,
             options=self.options,
@@ -127,11 +127,23 @@ class Browser:
         """
         return self.http.load(*args, **kwargs)
 
+    def upload(self, *args, **kwargs):
+        """
+        perform upload.
+        """
+        return self.http.upload(*args, **kwargs)
+
     def put_header(self, name, value):
         """
         add a header to the request.
         """
         self.http.put_header(name, value)
+
+    def remove_header(self, name, value=b""):
+        """
+        remove a header from the request.
+        """
+        self.http.remove_header(name, value)
 
     def add_auth(self, pwd):
         """

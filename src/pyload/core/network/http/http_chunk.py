@@ -78,6 +78,13 @@ class ChunkInfo:
             else:
                 fh.close()
                 raise WrongFormat
+            save_folder = os.path.dirname(name)
+            if (
+                not os.path.exists(save_folder)
+                and not os.path.isdir(save_folder)
+                or save_folder != os.path.dirname(fs_name)
+            ):
+                raise IOError
             ci = ChunkInfo(name)
             ci.loaded = True
             ci.set_size(size)
@@ -91,6 +98,9 @@ class ChunkInfo:
                     range = range[6:].split("-")
                 else:
                     raise WrongFormat
+
+                if save_folder != os.path.dirname(name):
+                    raise IOError
 
                 ci.add_chunk(name, (int(range[0]), int(range[1])))
 
@@ -133,6 +143,9 @@ class HTTPChunk(HTTPRequest):
         self.header_parsed = False  #: indicates if the header has been processed
 
         self.fp = None  #: file handle
+
+        self.ssl_aiachaser = False
+        self.aia_cainfo = None
 
         self.init_handle()
         self.c.setopt(pycurl.ENCODING, None)  #: avoid pycurl error 61
@@ -183,6 +196,8 @@ class HTTPChunk(HTTPRequest):
 
         fs_name = self.p.info.get_chunk_filename(self.id)
         if self.resume:
+            if not os.path.exists(fs_name):
+                raise pycurl.error(33)  #: simulate cannot resume
             self.fp = open(fs_name, mode="ab")
             self.arrived = self.fp.tell()
             if not self.arrived:
@@ -390,6 +405,9 @@ class HTTPChunk(HTTPRequest):
         """
         closes everything, unusable after this.
         """
+        if self.aia_cainfo:
+            os.remove(self.aia_cainfo)
+            self.aia_cainfo = None
         if self.fp:
             self.fp.close()
         self.c.close()

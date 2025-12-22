@@ -83,7 +83,7 @@ class NitroflareCom(SimpleDownloader):
         data = self.load(
             "https://nitroflare.com/ajax/freeDownload.php",
             post={"method": "startTimer", "fileId": self.info["pattern"]["ID"]},
-            ref=self.req.last_effective_url
+            referrer=self.req.last_effective_url
         )
 
         self.set_wait(wait_time)

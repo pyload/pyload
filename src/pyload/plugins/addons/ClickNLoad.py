@@ -11,18 +11,31 @@ from ..base.addon import BaseAddon, threaded
 from ..helpers import forward
 
 
+def resolve_host(host):
+    try:
+        IPs = [
+            result [4][0]
+            for result in socket.getaddrinfo(host, None, family=0, type=socket.SOCK_STREAM)
+        ]
+    except socket.gaierror:
+        IPs = []
+
+    return IPs
+
+
 # TODO: IPv6 support
 class ClickNLoad(BaseAddon):
     __name__ = "ClickNLoad"
     __type__ = "addon"
-    __version__ = "0.62"
+    __version__ = "0.63"
     __status__ = "testing"
 
     __config__ = [
-        ("enabled", "bool", "Activated", True),
+        ("enabled", "bool", "Activated - Insecure! Use at your own risk!!!", False),
         ("port", "int", "Port", 9666),
         ("extern", "bool", "Listen for external connections", True),
         ("dest", "queue;collector", "Add packages to", "collector"),
+        ("hosts_filter", "str", "allowed source hosts (e.g. host:mycomputer.ddns.com;ip:127.0.0.1", ""),
     ]
 
     __description__ = """Click'n'Load support"""
@@ -178,6 +191,28 @@ class ClickNLoad(BaseAddon):
 
                     if not self.do_exit:
                         host, port = client_addr
+                        hosts_filter = self.config.get("hosts_filter")
+                        if hosts_filter:
+                            allowed = False
+                            for h in hosts_filter.split(";"):
+                                try:
+                                    filter_type, filter_val = h.split(":")
+                                except ValueError:
+                                    continue
+                                if filter_type == "ip":
+                                    allowed_ips = [filter_val]
+                                elif filter_type == "host":
+                                    allowed_ips = resolve_host(filter_val)
+                                else:
+                                    continue
+                                if host in allowed_ips:
+                                    allowed = True
+                                    break
+                            if not allowed:
+                                self.log_error(self._("Connection from unauthorized host {} ignored").format(host))
+                                client_socket.close()
+                                continue
+
                         self.log_debug(f"Connection from {host}:{port}")
 
                         backend_socket = socket.socket(

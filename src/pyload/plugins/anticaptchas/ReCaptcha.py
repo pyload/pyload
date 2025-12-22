@@ -341,7 +341,7 @@ class ReCaptcha(CaptchaService):
             + ("&stoken=" + secure_token if secure_token else "")
         )
 
-        html = self.pyfile.plugin.load(fallback_url, ref=self.pyfile.url)
+        html = self.pyfile.plugin.load(fallback_url, referrer=self.pyfile.url)
 
         if (
             re.search(r'href="https://support.google.com/recaptcha.*"', html)
@@ -382,7 +382,7 @@ class ReCaptcha(CaptchaService):
                 re.search(r'"(/recaptcha/api2/payload[^"]+)', html).group(1),
             )
 
-            img = self.pyfile.plugin.load(image_url, ref=fallback_url, decode=False)
+            img = self.pyfile.plugin.load(image_url, referrer=fallback_url, decode=False)
 
             img = self._prepare_image(img, challenge_msg)
 
@@ -398,7 +398,7 @@ class ReCaptcha(CaptchaService):
                 )
             )
             html = self.pyfile.plugin.load(
-                fallback_url, post=post_str, ref=fallback_url
+                fallback_url, post=post_str, referrer=fallback_url
             )
 
             try:

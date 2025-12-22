@@ -207,7 +207,7 @@ class LibgenIo(BaseDownloader):
             self.log_debug("Link is a single file")
             for _i in range(2):
                 try:
-                    self.download(url, ref=False, disposition=True)
+                    self.download(url, referrer=False, disposition=True)
                 except BadHeader as e:
                     if e.code not in (401, 403, 404, 410):
                         raise

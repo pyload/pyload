@@ -70,7 +70,17 @@ def truncate(text, to_length):
 
 
 def uniquify(seq):
-    """Remove duplicates from list preserving order."""
+    """Remove duplicates from seq preserving order."""
+
     seen = set()
-    seen_add = seen.add
-    return type(seq)(x for x in seq if x not in seen and not seen_add(x))
+
+    def make_hashable(item):
+        if isinstance(item, list):
+            return tuple(make_hashable(x) for x in item)
+        elif isinstance(item, dict):
+            return tuple(sorted((k, make_hashable(v)) for k, v in item.items()))
+        elif isinstance(item, set):
+            return tuple(sorted(make_hashable(x) for x in item))
+        return item
+
+    return type(seq)(x for x in seq if not (make_hashable(x) in seen or seen.add(make_hashable(x))))

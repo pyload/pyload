@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html  lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#000000" />
+  <meta name="description" content="SwaggerUIMultifold" />
+  <link rel="stylesheet" href="//unpkg.com/swagger-editor@^5.0.0-alpha/dist/swagger-editor.css" />
+  <style>
+    .swagger-ui .topbar { display: none; }
+  </style>
+  <title>pyLoad Swagger UI</title>
+</head>
+<body style="margin:0; padding:0;">
+<section id="swagger-ui"></section>
+
+<script src="//unpkg.com/swagger-ui-dist@^5.0.0/swagger-ui-bundle.js"></script>
+<script src="//unpkg.com/swagger-ui-dist@^5.0.0/swagger-ui-standalone-preset.js"></script>
+<script>
+  ui = SwaggerUIBundle({});
+  // expose SwaggerUI React globally for SwaggerEditor to use
+  window.React = ui.React;
+</script>
+<script src="//unpkg.com/swagger-editor@^5.0.0-alpha/dist/umd/swagger-editor.js"></script>
+<script>
+  const baseUrl = window.location.origin;
+  SwaggerUIBundle({
+    url: baseUrl + "/api/openapi.json",
+    persistAuthorization: true,
+    dom_id: '#swagger-ui',
+    validatorUrl : null,
+    presets: [
+      SwaggerUIBundle.presets.apis,
+      SwaggerUIStandalonePreset,
+    ],
+    plugins: [
+      SwaggerEditor.plugins.EditorContentType,
+      SwaggerEditor.plugins.EditorPreviewAsyncAPI,
+      SwaggerEditor.plugins.EditorPreviewApiDesignSystems,
+      SwaggerEditor.plugins.SwaggerUIAdapter,
+      SwaggerUIBundle.plugins.DownloadUrl,
+    ],
+    layout: 'StandaloneLayout',
+  });
+</script>
+</body>
+</html>

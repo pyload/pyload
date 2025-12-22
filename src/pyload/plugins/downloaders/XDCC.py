@@ -722,7 +722,7 @@ class XDCC(BaseDownloader):
 
         #: Change request type
         self.req.close()
-        self.req = self.pyload.request_factory.get_request(self.classname, type="XDCC")
+        self.req = self.pyload.request_factory.get_request(self.classname, request_type="XDCC")
 
         self.pyfile.set_custom_status("connect irc")
 

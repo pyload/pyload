@@ -51,7 +51,7 @@ class UploadshipCom(XFSDownloader):
         self.handle_captcha(inputs)
 
         self.data = self.load(
-            pyfile.url, post=inputs, ref=self.pyfile.url, redirect=False
+            pyfile.url, post=inputs, referrer=self.pyfile.url, redirect=False
         )
 
         m = re.search(self.LINK_PATTERN, self.data, re.M)

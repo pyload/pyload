@@ -1,15 +1,19 @@
 # -*- coding: utf-8 -*-
 
-from ..base.simple_decrypter import SimpleDecrypter
+import json
+
+from pyload.core.network.http.exceptions import BadHeader
+
+from ..base.decrypter import BaseDecrypter
 
 
-class FilerNetFolder(SimpleDecrypter):
+class FilerNetFolder(BaseDecrypter):
     __name__ = "FilerNetFolder"
     __type__ = "decrypter"
-    __version__ = "0.48"
+    __version__ = "0.49"
     __status__ = "testing"
 
-    __pattern__ = r"https?://filer\.net/folder/\w{16}"
+    __pattern__ = r"https?://filer\.net/folder/(?P<ID>\w+)"
     __config__ = [
         ("enabled", "bool", "Activated", True),
         ("use_premium", "bool", "Use premium account if available", True),
@@ -27,9 +31,32 @@ class FilerNetFolder(SimpleDecrypter):
     __authors__ = [
         ("nath_schwarz", "nathan.notwhite@gmail.com"),
         ("stickell", "l.stickell@yahoo.it"),
+        ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com"),
     ]
 
-    LINK_PATTERN = r'href="(/get/\w{16})">(?!<)'
+    # See https://filer.net/api
+    API_URL = "https://filer.net/api/"
 
-    NAME_PATTERN = r"<h3>(?P<N>.+?) - <small"
-    OFFLINE_PATTERN = r"Nicht gefunden"
+    def api_request(self, method, **kwargs):
+        try:
+            json_data = self.load(self.API_URL + method, post=kwargs)
+        except BadHeader as exc:
+            json_data = exc.content
+
+        return json.loads(json_data)
+
+    def decrypt(self, pyfile):
+        api_data = self.api_request(f"folder/{self.info['pattern']['ID']}")
+        pack_name = api_data["name"]
+        pack_links = [
+            f"https://filer.net/get/{f['hash']}"
+            for f in api_data["files"]
+        ]
+        if pack_links:
+            self.packages.append(
+                (
+                    pack_name or pyfile.package().name,
+                    pack_links,
+                    pack_name or pyfile.package().folder,
+                )
+            )

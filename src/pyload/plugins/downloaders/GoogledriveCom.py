@@ -109,7 +109,7 @@ class GoogledriveCom(BaseDownloader):
         if json_data is None:
             self.fail("API error")
 
-        self.data = self.load(pyfile.url, ref=False)
+        self.data = self.load(pyfile.url, referrer=False)
         if "error" in json_data:
             if json_data["error"]["code"] == 404:
                 if "Virus scan warning" not in self.data:

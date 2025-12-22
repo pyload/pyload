@@ -7,7 +7,10 @@ from urllib.parse import urljoin, urlparse
 import flask
 import flask_themes2
 import werkzeug.routing
+
 from pyload.core.api import Perms, Role, has_permission
+
+from .extensions import csrf
 
 
 class JSONEncoder(json.JSONEncoder):
@@ -81,7 +84,7 @@ def static_file_url(filename):
 
 
 def theme_template(filename):
-    return flask.url_for("app.render", filename=filename)
+    return flask.url_for("app.web", filename=filename)
 
 
 #: tries to render the template of the current theme otherwise fallback to builtin template
@@ -219,3 +222,60 @@ def login_required(perm):
         return wrapper
 
     return decorator
+
+
+def apikey_auth(func):
+    """
+    Decorator that handles API authentication with automatic CSRF exemption.
+    If API authentication is provided (Basic Auth or API key), it will:
+    1. Authenticate using the API credentials
+    2. Store user info in flask.g
+    3. Not create or use sessions
+
+    If no API auth is provided, it will use session-based authentication.
+
+    Note: This decorator automatically makes the endpoint CSRF exempt to allow API access.
+    """
+    # Apply CSRF exemption at decoration time
+    decorated = csrf_exempt(func)
+
+    @wraps(func)  # Keep the original function's metadata
+    def decorated_function(*args, **kwargs):
+        api = flask.current_app.config["PYLOAD_API"]
+        log = flask.current_app.logger
+
+        # Get client IP, safely handling X-Forwarded-For
+        client_ip = flask.request.headers.get("X-Forwarded-For", "").split(",")[0].strip() or flask.request.remote_addr
+
+        # Check for API authentication
+        auth = flask.request.authorization
+        if auth:
+            # Extract credentials from Basic Auth header
+            user = auth.username
+            password = auth.password
+            auth_method = "Basic auth"
+
+            # Sanitize username for logging
+            sanitized_user = user.replace("\n", "\\n").replace("\r", "\\r") if user else "unknown"
+
+            # Verify API credentials
+            user_info = api.check_auth(user, password)
+            if user_info:
+                # Log successful API authentication and store user info
+                log.debug(f"API authentication successful for user '{sanitized_user}' using {auth_method} [CLIENT: {client_ip}]")
+                flask.g.user_info = user_info
+                return decorated(*args, **kwargs)
+
+            # Log failed API authentication
+            log.error(f"API authentication failed for user '{sanitized_user}' using {auth_method} [CLIENT: {client_ip}]")
+            return flask.json.jsonify({"error": "Invalid API credentials"}), 401
+
+        # No API auth - still use the decorated function but rely on session auth
+        csrf.protect()
+        return decorated(*args, **kwargs)
+
+    return decorated_function
+
+
+# Decorator alias equal to csrf.exempt for convenient import
+csrf_exempt = csrf.exempt

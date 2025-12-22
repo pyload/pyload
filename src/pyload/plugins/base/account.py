@@ -17,7 +17,7 @@ from .plugin import BasePlugin
 class BaseAccount(BasePlugin):
     __name__ = "BaseAccount"
     __type__ = "account"
-    __version__ = "0.90"
+    __version__ = "0.91"
     __status__ = "stable"
 
     __description__ = """Base account plugin"""
@@ -326,7 +326,7 @@ class BaseAccount(BasePlugin):
         pass
 
     @lock
-    def add(self, user, password=None, options={}):
+    def add(self, user, password=None, options=None):
         self.log_info(self._("Adding user `{}`...").format(user[:3] + "*" * 7))
 
         if user in self.accounts:
@@ -341,7 +341,7 @@ class BaseAccount(BasePlugin):
             "options": options or {"limit_dl": ["0"]},
             "password": password or "",
             "plugin": self.pyload.account_manager.get_account_plugin(self.classname),
-            "premium": None,
+            "premium": False,
             "stats": [0, 0],  #: login_count, chosen_time
             "timestamp": 0,
             "trafficleft": None,
@@ -357,7 +357,7 @@ class BaseAccount(BasePlugin):
         return result
 
     @lock
-    def update_accounts(self, user, password=None, options={}):
+    def update_accounts(self, user, password=None, options=None):
         """
         Updates account and return true if anything changed.
         """
@@ -492,7 +492,7 @@ class BaseAccount(BasePlugin):
 
     def parse_traffic(self, size, unit=None):  #: returns bytes
         self.log_debug(f"Size: {size}", f"Unit: {unit or 'N/D'}")
-        return parse.bytesize(size, unit or "byte")
+        return parse.bytesize(size, unit)
 
     def fail_login(self, msg="Login handshake has failed"):
         return self.fail(msg)

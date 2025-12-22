@@ -65,7 +65,7 @@ class EasyuploadIo(SimpleDownloader):
 
         data = self.load(
             action_url,
-            ref="https://easyupload.io/",
+            referrer="https://easyupload.io/",
             post={
                 "type": "download-token",
                 "url": self.info["pattern"]["ID"],

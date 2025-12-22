@@ -37,7 +37,7 @@ class RealdebridCom(MultiDownloader):
     # See https://api.real-debrid.com/
     API_URL = "https://api.real-debrid.com/rest/1.0"
 
-    def api_request(self, namespace, get={}, post={}):
+    def api_request(self, namespace, get=None, post=None):
         self.req.http.c.setopt(pycurl.USERAGENT, "pyLoad/{}".format(self.pyload.version))
         try:
             json_data = self.load(self.API_URL + namespace, get=get, post=post)

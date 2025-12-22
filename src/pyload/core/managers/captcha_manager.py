@@ -15,8 +15,8 @@ class CaptchaManager:
 
         self.ids = 0  #: Only for internal purpose
 
-    def new_task(self, format, params, result_type):
-        task = CaptchaTask(self.ids, format, params, result_type)
+    def new_task(self, captcha_format, params, result_type):
+        task = CaptchaTask(self.ids, captcha_format, params, result_type)
         self.ids += 1
         return task
 
@@ -67,10 +67,10 @@ class CaptchaManager:
 
 
 class CaptchaTask:
-    def __init__(self, id, format, params={}, result_type="textual"):
+    def __init__(self, id, captcha_format, captcha_params=None, result_type="textual"):
         self.id = str(id)
-        self.captcha_params = params
-        self.captcha_format = format
+        self.captcha_params = captcha_params or {}
+        self.captcha_format = captcha_format
         self.captcha_result_type = result_type
         self.handler = []  #: the addon plugins that will take care of the solution
         self.result = None

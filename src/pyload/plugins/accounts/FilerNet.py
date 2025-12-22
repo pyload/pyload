@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
-import re
+import json
 import time
+
+from pyload.core.network.http.exceptions import BadHeader
 
 from ..base.account import BaseAccount
 
@@ -8,7 +10,7 @@ from ..base.account import BaseAccount
 class FilerNet(BaseAccount):
     __name__ = "FilerNet"
     __type__ = "account"
-    __version__ = "0.15"
+    __version__ = "0.17"
     __status__ = "testing"
 
     __description__ = """Filer.net account plugin"""
@@ -18,55 +20,37 @@ class FilerNet(BaseAccount):
         ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com"),
     ]
 
-    LOGIN_SKIP_PATTERN = r'<a href="/logout"'
-    TOKEN_PATTERN = r'name="_csrf_token" value="(.+?)"'
-    VALID_UNTIL_PATTERN = r"Der Premium-Zugang ist gültig bis (.+)\.\s*</td>"
-    TRAFFIC_LEFT_PATTERN = r"Traffic</th>\s*<td>([\d.,]+) (?:([\w^_]+))</td>"
-    FREE_PATTERN = r"Account Status</th>\s*<td>\s*Free"
+    # See https://filer.net/api
+    API_URL = "https://filer.net/api/"
+
+    def api_request(self, method, **kwargs):
+        try:
+            json_data = self.load(self.API_URL + method, post=kwargs)
+        except BadHeader as exc:
+            json_data = exc.content
+
+        return json.loads(json_data)
 
     def grab_info(self, user, password, data):
-        html = self.load("https://filer.net/profile")
+        api_data = self.api_request("user/account")
+
+        premium = api_data["status"] == "Premium"
 
         #: Free user
-        if re.search(self.FREE_PATTERN, html) is not None:
+        if premium is False:
             return {"premium": False, "validuntil": None, "trafficleft": None}
 
-        until = re.search(self.VALID_UNTIL_PATTERN, html)
-        traffic = re.search(self.TRAFFIC_LEFT_PATTERN, html)
+        validuntil = time.mktime(time.strptime(api_data["premiumUntil"], "%Y-%m-%dT%H:%M:%S%z"))
+        trafficleft = self.parse_traffic(api_data["traffic"])
 
-        if until and traffic:
-            validuntil = time.mktime(
-                time.strptime(until.group(1), "%d.%m.%Y, %H:%M:%S")
-            )
-            trafficleft = self.parse_traffic(traffic.group(1), traffic.group(2))
-            return {
-                "premium": True,
-                "validuntil": validuntil,
-                "trafficleft": trafficleft,
-            }
-
-        else:
-            self.log_error(self._("Unable to retrieve account information"))
-            return {"premium": False, "validuntil": None, "trafficleft": None}
+        return {"premium": premium, "validuntil": validuntil, "trafficleft": trafficleft}
 
     def signin(self, user, password, data):
-        html = self.load("https://filer.net/login")
-
-        if re.search(self.LOGIN_SKIP_PATTERN, html) is not None:
+        api_data = self.api_request("user/account")
+        if "message" not in api_data:
             self.skip_login()
 
-        token = re.search(self.TOKEN_PATTERN, html).group(1)
-
-        html = self.load(
-            "https://filer.net/login_check",
-            post={
-                "_username": user,
-                "_password": password,
-                "_remember_me": "on",
-                "_csrf_token": token,
-                "_target_path": "https://filer.net/",
-            },
-        )
-
-        if re.search(self.LOGIN_SKIP_PATTERN, html) is None:
+        api_data = self.api_request("user/login", email=user, password=password)
+        if api_data.get("message", "") != "Login successful":
+            self.log_error(api_data["message"])
             self.fail_login()

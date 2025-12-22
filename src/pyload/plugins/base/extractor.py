@@ -123,7 +123,7 @@ class BaseExtractor(BasePlugin):
         out,
         fullpath=True,
         overwrite=False,
-        excludefiles=[],
+        excludefiles=None,
         priority=0,
         keepbroken=False,
     ):
@@ -138,7 +138,7 @@ class BaseExtractor(BasePlugin):
         self.out = out
         self.fullpath = fullpath
         self.overwrite = overwrite
-        self.excludefiles = excludefiles
+        self.excludefiles = excludefiles or []
         self.priority = priority
         self.keepbroken = keepbroken
         self.files = None

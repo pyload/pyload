@@ -3,13 +3,13 @@
 import fnmatch
 import json
 import os
+import re
 import time
 import urllib.request
 
 import pycurl
 from pyload.core.network.http.exceptions import BadHeader
 from pyload.core.network.http.http_request import FormFile
-from pyload.core.utils.old import safejoin
 from pyload.core.utils.purge import uniquify
 
 from ..base.simple_decrypter import SimpleDecrypter
@@ -41,7 +41,7 @@ class DebridlinkFrTorrent(SimpleDecrypter):
     #: See https://debrid-link.fr/api_doc/v2
     API_URL = "https://debrid-link.fr/api/"
 
-    def api_request(self, method, get={}, post={}, multipart=False):
+    def api_request(self, method, get=None, post=None, multipart=False):
         self.req.http.c.setopt(
             pycurl.HTTPHEADER, ["Authorization: Bearer " + self.api_token]
         )
@@ -55,7 +55,7 @@ class DebridlinkFrTorrent(SimpleDecrypter):
 
         return json.loads(json_data)
 
-    def api_request_safe(self, method, get={}, post={}, multipart=False):
+    def api_request_safe(self, method, get=None, post=None, multipart=False):
         for _i in range(2):
             api_data = self.api_request(method, get=get, post=post, multipart=multipart)
 
@@ -94,9 +94,9 @@ class DebridlinkFrTorrent(SimpleDecrypter):
     def send_request_to_server(self):
         """ Send torrent/magnet to the server """
 
-        if self.pyfile.url.endswith(".torrent"):
+        if (m := re.search(r"^(file|https?)://.+?\.torrent$", self.pyfile.url)) is not None:
             #: torrent URL
-            if self.pyfile.url.startswith("http"):
+            if m.group(1).startswith("http"):
                 #: remote URL, send to the server
                 api_data = self.api_request_safe(
                     "v2/seedbox/add",
