@@ -10,10 +10,10 @@ from ..base.multi_downloader import MultiDownloader
 class AlldebridCom(MultiDownloader):
     __name__ = "AlldebridCom"
     __type__ = "downloader"
-    __version__ = "0.69"
+    __version__ = "0.68"
     __status__ = "testing"
 
-    __pattern__ = r"https?://(?:\w+\.)?(?:alldebrid\.com|debrid\.it|alld\.io)/(?:dl|f)/[\w\-^_]+"
+    __pattern__ = r"https?://(?:\w+\.)?(?:alldebrid\.com|debrid\.it|alld\.io)/(?:dl|f)/[\w^_]+"
     __config__ = [
         ("enabled", "bool", "Activated", True),
         ("use_premium", "bool", "Use premium account if available", True),
@@ -76,46 +76,13 @@ class AlldebridCom(MultiDownloader):
     def setup(self):
         self.chunk_limit = 16
 
-    def _get_api_key(self):
-        """
-        Safely retrieve API key from account info.
-        Ensures self.account.info is populated before access.
-
-        :return: API key string or None
-        :raises: temp_offline if not available
-        """
-        if not self.account:
-            self.log_warning("No premium account available")
-            return None
-
-        try:
-            # get_info() ensures account is logged in and info is populated
-            account_info = self.account.get_info()
-            api_key = account_info.get("login", {}).get("password")
-
-            if not api_key:
-                self.log_warning("API key not found in account info")
-                self.temp_offline()
-                return None
-
-            return api_key
-
-        except Exception as exc:
-            self.log_error("Error retrieving API key", exc)
-            self.temp_offline()
-            return None
-
     def handle_premium(self, pyfile):
-        api_key = self._get_api_key()
-        if api_key is None:
-            return
-
         api_data = self.api_request(
             "link/unlock",
             post={
                 "link": pyfile.url,
                 "password": self.get_password(),
-                "apikey": api_key,
+                "apikey": self.account.info["login"]["password"],
             },
         )
 
@@ -161,16 +128,10 @@ class AlldebridCom(MultiDownloader):
                     api_data["filename"] + "." + streams[chosen_quality]["ext"]
                 )
                 stream_size = streams[chosen_quality]["filesize"]
-
-                # Get API key again for streaming request (ensuring it's still available)
-                api_key = self._get_api_key()
-                if api_key is None:
-                    return
-
                 api_data = self.api_request(
                     "link/streaming",
                     post={
-                        "apikey": api_key,
+                        "apikey": self.account.info["login"]["password"],
                         "id": unlock_id,
                         "stream": stream_id,
                     },
@@ -183,15 +144,10 @@ class AlldebridCom(MultiDownloader):
                 if delayed_id:
                     pyfile.set_custom_status("delayed stream")
                     while True:
-                        # Re-validate API key for each delayed request
-                        api_key = self._get_api_key()
-                        if api_key is None:
-                            return
-
                         api_data = self.api_request(
                             "link/delayed",
                             post={
-                                "apikey": api_key,
+                                "apikey": self.account.info["login"]["password"],
                                 "id": delayed_id,
                             },
                         )
