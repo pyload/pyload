@@ -131,8 +131,7 @@ class GoogledriveCom(BaseDownloader):
             pyfile.name = json_data["name"]
             self.info["md5"] = json_data["md5Checksum"]
 
-        # Somehow, API downloads are significantly slow compared to "normal" download :(
-        # self.api_download(disposition)
+        self.api_download(disposition)
 
         for _i in range(2):
             m = re.search(r'"([^"]+uc\?.*?)"', self.data)
