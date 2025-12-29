@@ -18,7 +18,7 @@ from ..base.downloader import BaseDownloader
 class GoogledriveCom(BaseDownloader):
     __name__ = "GoogledriveCom"
     __type__ = "downloader"
-    __version__ = "0.35"
+    __version__ = "0.36"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?(?:drive|docs)\.google\.com/(?:file/d/|uc\?.*id=)(?P<ID>[-\w]+)"
@@ -133,29 +133,29 @@ class GoogledriveCom(BaseDownloader):
 
         self.api_download(disposition)
 
-        for _i in range(2):
-            m = re.search(r'"([^"]+uc\?.*?)"', self.data)
-            if m is None:
-                if "Quota exceeded" in self.data:
-                    self.temp_offline()
-                else:
-                    self.fail(self._("link pattern not found"))
-
-            link = re.sub(
-                r"\\[uU]([\da-fA-F]{4})", lambda x: chr(int(x.group(1), 16)), m.group(1)
-            )  #: unescape unicode-escape
-            link = urllib.parse.urljoin(pyfile.url, link)
-
-            #: "Only files smaller than 100 MB can be scanned for viruses"
-            #: https://support.google.com/a/answer/172541?hl=en
-            if pyfile.size > 104857600 or "Virus scan warning" in self.data:
-                if re.search(r"/uc\?.*&confirm=", link):
-                    self.download(link, disposition=disposition)
-                    break
-
-                else:
-                    self.data = self.load(link)
-
-            else:
-                self.download(link, disposition=disposition)
-                break
+        # for _i in range(2):
+        #     m = re.search(r'"([^"]+uc\?.*?)"', self.data)
+        #     if m is None:
+        #         if "Quota exceeded" in self.data:
+        #             self.temp_offline()
+        #         else:
+        #             self.fail(self._("link pattern not found"))
+        #
+        #     link = re.sub(
+        #         r"\\[uU]([\da-fA-F]{4})", lambda x: chr(int(x.group(1), 16)), m.group(1)
+        #     )  #: unescape unicode-escape
+        #     link = urllib.parse.urljoin(pyfile.url, link)
+        #
+        #     #: "Only files smaller than 100 MB can be scanned for viruses"
+        #     #: https://support.google.com/a/answer/172541?hl=en
+        #     if pyfile.size > 104857600 or "Virus scan warning" in self.data:
+        #         if re.search(r"/uc\?.*&confirm=", link):
+        #             self.download(link, disposition=disposition)
+        #             break
+        #
+        #         else:
+        #             self.data = self.load(link)
+        #
+        #     else:
+        #         self.download(link, disposition=disposition)
+        #         break
