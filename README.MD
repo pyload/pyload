@@ -1,3 +1,11 @@
+# ⚠️ Important: This Branch is Deprecated
+
+pyLoad v0.4.x has reached **end-of-life**.  
+There will be **no further updates, bug fixes, or new features** here.
+Python 2.x has been deprecated for over 6 years, yet pyLoad continued to support it until now. It's time to move on.
+
+# **please migrate to [pyLoad-ng](https://github.com/pyload/pyload/tree/main) (v0.5.x).**
+<hr>
 # pyLoad
 
 [![pyload.net](https://img.shields.io/badge/.net-pyload-orange.svg)](https://pyload.net)
