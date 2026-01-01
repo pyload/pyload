@@ -1,13 +1,40 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <root>
     <connections>
-        <connection default="True" type="local" id="33965310e19b4a869112c43b39a16440">
+        <connection default="False" type="local" id="33965310e19b4a869112c43b39a16440">
             <name>Local</name>
+            <server ssl="auto"/>
+        </connection>
+        <connection default="False" type="internal" id="0e61deb8671b4421aa0d6bda07da5cb9">
+            <name>Internal Server</name>
         </connection>
     </connections>
     <mainWindow>
         <state></state>
         <geometry></geometry>
+        <geometryUnmaximized></geometryUnmaximized>
+        <geometryOther></geometryOther>
+        <visibilitySpeedLimit></visibilitySpeedLimit>
+        <visibilityMaxParallelDownloads></visibilityMaxParallelDownloads>
+        <stateQueue></stateQueue>
+        <stateCollector></stateCollector>
+        <stateAccounts></stateAccounts>
+        <statePackageDock></statePackageDock>
+        <stateLinkDock></stateLinkDock>
+        <optionsNotifications></optionsNotifications>
+        <optionsLogging></optionsLogging>
+        <optionsClickNLoadForwarder></optionsClickNLoadForwarder>
+        <optionsAutomaticReloading></optionsAutomaticReloading>
+        <optionsCaptcha></optionsCaptcha>
+        <optionsIconTheme></optionsIconTheme>
+        <optionsFonts></optionsFonts>
+        <optionsColorFix></optionsColorFix>
+        <optionsTray></optionsTray>
+        <optionsWhatsThis></optionsWhatsThis>
+        <optionsOther></optionsOther>
+        <menuPlugins></menuPlugins>
+        <lastAddContainerDir></lastAddContainerDir>
     </mainWindow>
     <language>en</language>
+    <pyqtVersion></pyqtVersion>
 </root>

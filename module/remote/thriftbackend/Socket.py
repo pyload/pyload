@@ -4,13 +4,16 @@ import sys
 import socket
 import errno
 
-from time import sleep
+from time import sleep, time
 
 from thrift.transport.TSocket import TSocket, TServerSocket, TTransportException
 
 WantReadError = Exception #overwritten when ssl is used
 
 class SecureSocketConnection:
+
+    TIMEOUT = 30   # seconds
+
     def __init__(self, connection):
         self.__dict__["connection"] = connection
 
@@ -28,18 +31,26 @@ class SecureSocketConnection:
         return SecureSocketConnection(connection), address
     
     def send(self, buff):
-        try:
-            return self.__dict__["connection"].send(buff)
-        except WantReadError:
-            sleep(0.1)
-            return self.send(buff)
+        start = time()
+        while True:
+            try:
+                return self.__dict__["connection"].send(buff)
+            except WantReadError:
+                sleep(0.1)
+            if time() - start > self.TIMEOUT:
+                #print "SecureSocketConnection timed out (send)"
+                return 0
     
     def recv(self, buff):
-        try:
-            return self.__dict__["connection"].recv(buff)
-        except WantReadError:
-            sleep(0.1)
-            return self.recv(buff)
+        start = time()
+        while True:
+            try:
+                return self.__dict__["connection"].recv(buff)
+            except WantReadError:
+                sleep(0.1)
+            if time() - start > self.TIMEOUT:
+                #print "SecureSocketConnection timed out (recv)"
+                return ''
 
 class Socket(TSocket):
     def __init__(self, host='localhost', port=7228, ssl=False):
@@ -75,6 +86,10 @@ class Socket(TSocket):
                 self.close()
                 # Trigger the check to raise the END_OF_FILE exception below.
                 buff = ''
+            elif e.args[0] == 10054:  # WSAECONNRESET
+                self.close()
+                # Trigger the check to raise the END_OF_FILE exception below.
+                buff = ''
             else:
                 raise
         except Exception, e:
@@ -90,6 +105,25 @@ class Socket(TSocket):
         if not len(buff):
             raise TTransportException(type=TTransportException.END_OF_FILE, message='TSocket read 0 bytes')
         return buff
+
+    def write(self, buff):
+        if not self.handle:
+            raise TTransportException(type=TTransportException.NOT_OPEN, message='Transport not open')
+        sent = 0
+        have = len(buff)
+        while sent < have:
+            try:
+                plus = self.handle.send(buff)
+            except socket.error, e:
+                if (e.args[0] == 10054):  # WSAECONNRESET
+                    # Trigger the check to raise the END_OF_FILE exception below.
+                    plus = 0
+                else:
+                    raise
+            if plus == 0:
+                raise TTransportException(type=TTransportException.END_OF_FILE, message='TSocket sent 0 bytes')
+            sent += plus
+            buff = buff[plus:]
 
 
 class ServerSocket(TServerSocket, Socket):

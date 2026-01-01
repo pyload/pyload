@@ -12,13 +12,21 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
+
     @author: mkaay
 """
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from module.gui.PyQtVersion import USE_PYQT5
+if USE_PYQT5:
+    from PyQt5.QtCore import QAbstractListModel, QModelIndex, QSize, Qt, QVariant
+    from PyQt5.QtWidgets import QApplication, QItemDelegate, QListView, QStyle, QStyleOptionProgressBar
+else:
+    from PyQt4.QtCore import QAbstractListModel, QModelIndex, QSize, Qt, QVariant
+    from PyQt4.QtGui import QApplication, QItemDelegate, QListView, QStyle
+    from PyQt4.QtGui import QStyleOptionProgressBarV2 as QStyleOptionProgressBar
 
+import logging
+from module.remote.thriftbackend.ThriftClient import DownloadStatus
 from module.utils import formatSpeed, formatSize
 
 class OverviewModel(QAbstractListModel):
@@ -31,31 +39,32 @@ class OverviewModel(QAbstractListModel):
     CurrentSize = 16
     MaxSize = 17
     Status = 18
-    
-    def __init__(self, view, connector):
+
+    def __init__(self, view, queue):
         QAbstractListModel.__init__(self)
-        
+        self.log = logging.getLogger("guilog")
+        self.queue = queue
         self.packages = []
-    
-    def queueChanged(self): #dirty..
+
+    def slotQueueChanged(self, dummy1, dummy2): #dirty..
         self.beginResetModel()
-        
+
         self.packages = []
-        
+
         def partsFinished(p):
             f = 0
             for c in p.children:
-                if c.data["status"] == 0:
+                if c.data["status"] == DownloadStatus.Finished:
                     f += 1
             return f
-        
+
         def maxSize(p):
             ms = 0
             cs = 0
             for c in p.children:
                 try:
                     s = c.data["downloading"]["size"]
-                except:
+                except Exception:
                     s = c.data["size"]
                 if c.data["downloading"]:
                     cs += s - c.data["downloading"]["bleft"]
@@ -63,24 +72,23 @@ class OverviewModel(QAbstractListModel):
                     cs += s
                 ms += s
             return ms, cs
-        
-        def getProgress(p):
-            for c in p.children:
-                if c.data["status"] == 13:
-                    pass # TODO return _("Unpacking"), int(c.data["progress"])
-            return _("Downloading"), self.queue.getProgress(p)
-        
+
+        #def getProgress(p):
+        #    for c in p.children:
+        #        if c.data["status"] == DownloadStatus.Processing:
+        #            pass # TODO return _("Unpacking"), int(c.data["progress"])
+        #   return _("Downloading"), self.queue.getProgress(p)
+
         d = self.queue._data
         for p in d:
-            status, progress = getProgress(p)
+            progress = self.queue.getProgress(p)
+            status = self.queue.getStatus(p, None)
             maxsize, currentsize = maxSize(p)
             speed = self.queue.getSpeed(p)
             if speed:
                 eta = (maxsize - (maxsize * (progress/100.0)))/speed
             else:
                 eta = 0
-            if not speed and not progress:
-                status = _("Queued")
             info = {
                 OverviewModel.PackageName: p.data["name"],
                 OverviewModel.Progress: progress,
@@ -92,27 +100,33 @@ class OverviewModel(QAbstractListModel):
                 OverviewModel.MaxSize: maxsize,
                 OverviewModel.Status: status,
             }
-            
+
             self.packages.append(info)
-        
+
         self.endResetModel()
-        
+
+    @classmethod
     def headerData(self, section, orientation, role=Qt.DisplayRole):
         return QVariant(_("Package"))
-    
+
     def rowCount(self, parent=QModelIndex()):
         return len(self.packages)
-    
+
     def data(self, index, role=Qt.DisplayRole):
-        if role in [OverviewModel.PackageName, OverviewModel.Progress, OverviewModel.PartsFinished, OverviewModel.Parts, OverviewModel.ETA, OverviewModel.Speed, OverviewModel.CurrentSize, OverviewModel.MaxSize, OverviewModel.Status]:
+        if role in [OverviewModel.PackageName, OverviewModel.Progress, OverviewModel.PartsFinished,
+                    OverviewModel.Parts, OverviewModel.ETA, OverviewModel.Speed, OverviewModel.CurrentSize,
+                    OverviewModel.MaxSize, OverviewModel.Status]:
             return QVariant(self.packages[index.row()][role])
         return QVariant()
-    
+
 class OverviewView(QListView):
-    def __init__(self, connector):
+    def __init__(self, queue):
         QListView.__init__(self)
-        self.setModel(OverviewModel(self, connector))
-        
+        self.log = logging.getLogger("guilog")
+        self.model = OverviewModel(self, queue)
+        self.setModel(self.model)
+
+        self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
         self.setAlternatingRowColors(True)
         self.delegate = OverviewDelegate(self)
         self.setItemDelegate(self.delegate)
@@ -120,78 +134,88 @@ class OverviewView(QListView):
 class OverviewDelegate(QItemDelegate):
     def __init__(self, parent):
         QItemDelegate.__init__(self, parent)
+        self.log = logging.getLogger("guilog")
         self.parent = parent
-        self.model = parent.model()
-    
+        self.model = parent.model
+
     def paint(self, painter, option, index):
         option.rect.setHeight(59+16)
         option.rect.setWidth(self.parent.width()-20)
-        
+
         #if option.state & QStyle.State_Selected:
         #    painter.fillRect(option.rect, option.palette.color(QPalette.Highlight))
-        
-        packagename = index.data(OverviewModel.PackageName).toString()
-        partsf = index.data(OverviewModel.PartsFinished).toString()
-        parts = index.data(OverviewModel.Parts).toString()
-        eta = int(index.data(OverviewModel.ETA).toString())
-        speed = index.data(OverviewModel.Speed).toString() or 0
-        progress = int(index.data(OverviewModel.Progress).toString())
-        currentSize = int(index.data(OverviewModel.CurrentSize).toString())
-        maxSize = int(index.data(OverviewModel.MaxSize).toString())
-        status = index.data(OverviewModel.Status).toString()
-        
+
+        if USE_PYQT5:
+            packagename = unicode(index.data(OverviewModel.PackageName))
+            partsf = unicode(index.data(OverviewModel.PartsFinished))
+            parts = unicode(index.data(OverviewModel.Parts))
+            eta = int(index.data(OverviewModel.ETA))
+            speed = unicode(index.data(OverviewModel.Speed)) or unicode("0")
+            progress = int(index.data(OverviewModel.Progress))
+            currentSize = int(index.data(OverviewModel.CurrentSize))
+            maxSize = int(index.data(OverviewModel.MaxSize))
+            status = unicode(index.data(OverviewModel.Status))
+        else:
+            packagename = index.data(OverviewModel.PackageName).toString()
+            partsf = index.data(OverviewModel.PartsFinished).toString()
+            parts = index.data(OverviewModel.Parts).toString()
+            eta = int(index.data(OverviewModel.ETA).toString())
+            speed = index.data(OverviewModel.Speed).toString() or "0"
+            progress = int(index.data(OverviewModel.Progress).toString())
+            currentSize = int(index.data(OverviewModel.CurrentSize).toString())
+            maxSize = int(index.data(OverviewModel.MaxSize).toString())
+            status = index.data(OverviewModel.Status).toString()
+
         def formatEta(seconds): #TODO add to utils
-            if seconds <= 0: return ""
+            if seconds <= 0: return unicode("")
             hours, seconds = divmod(seconds, 3600)
             minutes, seconds = divmod(seconds, 60)
-            return _("ETA: ") + "%.2i:%.2i:%.2i" % (hours, minutes, seconds)
-        
-        statusline = QString(_("Parts: ") + "%s/%s" % (partsf, parts))
-        if partsf == parts:
-            speedline = _("Finished")
-        elif not status == _("Downloading"):
-            speedline = QString(status)
+            return _("ETA") + ": %.2i:%.2i:%.2i" % (hours, minutes, seconds)
+
+        statusline = unicode(_("Parts") + ": %s/%s" % (partsf, parts))
+        if status == _("downloading"):
+            speedline = unicode(formatEta(eta) + "     " + _("Speed") + ": " + formatSpeed(speed))
         else:
-            speedline = QString(formatEta(eta) + "     " + _("Speed: %s") % formatSpeed(speed))
-        
+            speedline = unicode(status).capitalize()
+
         if progress in (0,100):
-            sizeline = QString(_("Size:") + "%s" % formatSize(maxSize))
+            sizeline = unicode(_("Size") + ": %s" % formatSize(maxSize))
         else:
-            sizeline = QString(_("Size:") + "%s / %s" % (formatSize(currentSize), formatSize(maxSize)))
-        
+            sizeline = unicode(_("Size") + ": %s / %s" % (formatSize(currentSize), formatSize(maxSize)))
+
         f = painter.font()
         f.setPointSize(12)
         f.setBold(True)
         painter.setFont(f)
-        
-        r = option.rect.adjusted(4, 4, -4, -4)
+
+        r = option.rect.adjusted(4, 4, -6, -4)
         painter.drawText(r.left(), r.top(), r.width(), r.height(), Qt.AlignTop | Qt.AlignLeft, packagename)
         newr = painter.boundingRect(r.left(), r.top(), r.width(), r.height(), Qt.AlignTop | Qt.AlignLeft, packagename)
-        
+
         f.setPointSize(10)
         f.setBold(False)
         painter.setFont(f)
-        
+
         painter.drawText(r.left(), newr.bottom()+5, r.width(), r.height(), Qt.AlignTop | Qt.AlignLeft, statusline)
         painter.drawText(r.left(), newr.bottom()+5, r.width(), r.height(), Qt.AlignTop | Qt.AlignHCenter, sizeline)
         painter.drawText(r.left(), newr.bottom()+5, r.width(), r.height(), Qt.AlignTop | Qt.AlignRight, speedline)
         newr = painter.boundingRect(r.left(), newr.bottom()+2, r.width(), r.height(), Qt.AlignTop | Qt.AlignLeft, statusline)
         newr.setTop(newr.bottom()+8)
         newr.setBottom(newr.top()+20)
-        newr.setRight(self.parent.width()-25)
-        
+        newr.setRight(self.parent.width()-27)
+
         f.setPointSize(10)
         painter.setFont(f)
-        
-        opts = QStyleOptionProgressBarV2()
+
+        opts = QStyleOptionProgressBar()
         opts.maximum = 100
         opts.minimum = 0
         opts.progress = progress
         opts.rect = newr
         opts.textVisible = True
         opts.textAlignment = Qt.AlignCenter
-        opts.text = QString.number(opts.progress) + "%"
+        opts.text = unicode(opts.progress) + "%"
         QApplication.style().drawControl(QStyle.CE_ProgressBar, opts, painter)
-    
+
     def sizeHint(self, option, index):
         return QSize(self.parent.width()-22, 59+16)

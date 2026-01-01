@@ -12,14 +12,19 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
+
     @author: mkaay
 """
+
 from __future__ import with_statement
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from PyQt4.QtXml import *
+from module.gui.PyQtVersion import USE_PYQT5
+if USE_PYQT5:
+    from PyQt5.QtCore import QMutex
+    from PyQt5.QtXml import QDomDocument
+else:
+    from PyQt4.QtCore import QMutex
+    from PyQt4.QtXml import QDomDocument
 
 import os
 
@@ -33,7 +38,7 @@ class XMLParser():
         self.mutex.unlock()
         self.loadData()
         self.root = self.xml.documentElement()
-    
+
     def loadData(self):
         self.mutex.lock()
         f = self.file
@@ -43,15 +48,17 @@ class XMLParser():
             content = fh.read()
         self.xml.setContent(content)
         self.mutex.unlock()
-    
+
     def saveData(self):
         self.mutex.lock()
-        content = self.xml.toString()
+        content = unicode(self.xml.toString())
+        content = content.encode('utf8')
         with open(self.file, 'w') as fh:
             fh.write(content)
         self.mutex.unlock()
         return content
-    
+
+    @classmethod
     def parseNode(self, node, ret_type="list"):
         if ret_type == "dict":
             childNodes = {}
@@ -64,7 +71,7 @@ class XMLParser():
                 break
             else:
                 if ret_type == "dict":
-                    childNodes[str(n.tagName())] = n
+                    childNodes[unicode(n.tagName())] = n
                 else:
                     childNodes.append(n)
             child = child.nextSibling()

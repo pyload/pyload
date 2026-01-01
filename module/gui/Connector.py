@@ -12,7 +12,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
+
     @author: mkaay
 """
 
@@ -21,23 +21,35 @@ SERVER_VERSION = "0.4.20"
 from time import sleep
 from uuid import uuid4 as uuid
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from module.gui.PyQtVersion import USE_PYQT5
+if USE_PYQT5:
+    from PyQt5.QtCore import pyqtSignal, QMutex, QObject, Qt
+    from PyQt5.QtGui import QIcon
+    from PyQt5.QtWidgets import QDialog, QDialogButtonBox, QGridLayout, QLabel, QLineEdit
+else:
+    from PyQt4.QtCore import pyqtSignal, QMutex, QObject, Qt
+    from PyQt4.QtGui import QDialog, QDialogButtonBox, QGridLayout, QIcon, QLabel, QLineEdit
 
+import logging
 import socket
+from os.path import join
 
-from module.remote.thriftbackend.ThriftClient import ThriftClient, WrongLogin, NoSSL, NoConnection
+from module.remote.thriftbackend.ThriftClient import ThriftClient, WrongLogin, NoSSL, NoConnection, ConnectionClosed
 from thrift.Thrift import TException
+from module.gui.Tools import MessageBox, WtDialogButtonBox
 
 class Connector(QObject):
     """
         manages the connection to the pyload core via thrift
     """
-    
-    firstAttempt = True
-    
+    connectTimeoutSGL = pyqtSignal(object)
+    msgBoxErrorSGL    = pyqtSignal(object)
+    connectionLostSGL = pyqtSignal()
+
     def __init__(self):
         QObject.__init__(self)
+        self.log = logging.getLogger("guilog")
+
         self.mutex = QMutex()
         self.connectionID = None
         self.host = None
@@ -47,18 +59,20 @@ class Connector(QObject):
         self.ssl = None
         self.running = True
         self.internal = False
+        self.is_ssl_connection = None
+        self.pwBox = AskForUserAndPassword()
         self.proxy = self.Dummy()
-    
-    def setConnectionData(self, host, port, user, password, ssl=False):
+
+    def setConnectionData(self, host, port, user, password, ssl):
         """
-            set connection data for connection attempt, called from slotConnect
+            set connection data, called from slotConnect
         """
-        self.host = host
-        self.port = port
-        self.user = user
+        self.host     = host
+        self.port     = port
+        self.user     = user
         self.password = password
-        self.ssl = ssl
-    
+        self.ssl      = ssl
+
     def connectProxy(self):
         """
             initialize thrift rpc client,
@@ -67,41 +81,131 @@ class Connector(QObject):
             connect error signals,
             check server version
         """
-        if self.internal: return True
+        self.timeoutTimerStart()
 
-        err = None
-        try:
-            client = ThriftClient(self.host, self.port, self.user, self.password)
-        except WrongLogin:
-            err = _("bad login credentials")
-        except NoSSL:
-            err = _("no ssl support")
-        except NoConnection:
-            err = _("can't connect to host")
-        if err:
-            if not Connector.firstAttempt:
-                self.emit(SIGNAL("errorBox"), err)
-            Connector.firstAttempt = False
+        if self.internal:
+            return True
+        if not self.host:
             return False
-        
+
+        # login
+        while True:
+            err = None
+            errlogin = False
+            try:
+                client = ThriftClient(self.host, self.port, self.user, self.password, self.ssl)
+            except WrongLogin:
+                errlogin = True
+            except NoSSL:
+                err = "nossl"
+            except NoConnection:
+                err = "noconn"
+            except ConnectionClosed:
+                err = "noconn"
+
+            if not errlogin:
+                break
+
+            # user and password popup
+            if self.messageBox_03(self.host, self.port, self.user, self.password) == QDialog.Rejected:
+                return False
+            else:
+                self.timeoutTimerStart()
+            self.user = unicode(self.pwBox.userLE.text())
+            self.password = unicode(self.pwBox.passwordLE.text())
+            sleep(1) # some delay to let the dialog fade out
+
+        if err is not None:
+            if err == "nossl":
+                self.messageBox_04(self.host, self.port)
+            elif err == "noconn":
+                self.messageBox_05(self.host, self.port)
+            return False
+
+        self.is_ssl_connection = client.socket.ssl # remember if we are connected with SSL
         self.proxy = DispatchRPC(self.mutex, client)
-        self.connect(self.proxy, SIGNAL("connectionLost"), self, SIGNAL("connectionLost"))
-        
+        self.proxy.connectionLostSGL.connect(self.connectionLostSGL)
+
+        # check server version
         server_version = self.proxy.getServerVersion()
         self.connectionID = uuid().hex
-        
         if not server_version == SERVER_VERSION:
-            self.emit(SIGNAL("errorBox"), _("server is version %(new)s client accepts version %(current)s") % { "new": server_version, "current": SERVER_VERSION})
+            self.messageBox_06(server_version, self.host, self.port)
             return False
-        
+
         return True
-    
+
+    def isSSLConnection(self):
+        if self.internal:
+            return False
+        return self.is_ssl_connection
+
+    def getOurUserData(self):
+        return self.proxy.getUserData(self.user, self.password)
+
+    def disconnectProxy(self):
+        """
+            close the sockets
+        """
+        if self.internal:
+            return
+        self.proxy.server.close()
+        self.proxy = self.Dummy()
+
+    def timeoutTimerStart(self):
+        self.connectTimeoutSGL.emit(True)
+
+    def timeoutTimerStop(self):
+        self.connectTimeoutSGL.emit(False)
+
+    def messageBox_01(self, host, port):
+        self.timeoutTimerStop()
+        err = _("Invalid hostname or address:")
+        err += "\n" + host + ":" + str(port)
+        self.msgBoxErrorSGL.emit(err)
+
+    def messageBox_02(self, host, port):
+        self.timeoutTimerStop()
+        err = _("No response from host:")
+        err += "\n" + host + ":" + str(port)
+        err += "\n\n" + _("Wait longer?")
+        msgb = MessageBox(None, err, "Q", "YES_NO")
+        return msgb.exec_()
+
+    def messageBox_03(self, host, port, user, password):
+        self.timeoutTimerStop()
+        pwboxtxt = _("Please enter correct login credentials for host:")
+        pwboxtxt += "\n" + host + ":" + str(port)
+        self.pwBox.textLabel.setText(pwboxtxt)
+        self.pwBox.userLE.setText(user)
+        self.pwBox.passwordLE.setText(password)
+        return self.pwBox.exec_()
+
+    def messageBox_04(self, host, port):
+        self.timeoutTimerStop()
+        err = _("No SSL support to connect to host:")
+        err += "\n" + host + ":" + str(port)
+        self.msgBoxErrorSGL.emit(err)
+
+    def messageBox_05(self, host, port):
+        self.timeoutTimerStop()
+        err = _("Cannot connect to host:")
+        err += "\n" + host + ":" + str(port)
+        self.msgBoxErrorSGL.emit(err)
+
+    def messageBox_06(self, server_version, host, port):
+        self.timeoutTimerStop()
+        err = _("Cannot connect to server:")
+        err += "\n" + host + ":" + str(port)
+        err += "\n" + (_("Server version is %s") % server_version) + ", " + _("but we need version %s") % SERVER_VERSION
+        self.msgBoxErrorSGL.emit(err)
+
     def __getattr__(self, attr):
         """
             redirect rpc calls to dispatcher
         """
         return getattr(self.proxy, attr)
-    
+
     class Dummy(object):
         """
             dummy rpc proxy, to prevent errors
@@ -114,17 +218,77 @@ class Connector(QObject):
                 return None
             return dummy
 
+class AskForUserAndPassword(QDialog):
+    """
+        user and password popup
+    """
+    def __init__(self):
+        QDialog.__init__(self)
+        self.log = logging.getLogger("guilog")
+
+        self.lastFont = None
+
+        self.setAttribute(Qt.WA_DeleteOnClose, False)
+        self.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
+        self.setWindowTitle(_("pyLoad Client"))
+        self.setWindowIcon(QIcon(join(pypath, "icons", "logo.png")))
+
+        grid = QGridLayout()
+
+        self.textLabel = QLabel()
+        userLabel = QLabel(_("User") + ":")
+        self.userLE = QLineEdit()
+        pwLabel = QLabel(_("Password") + ":")
+        self.passwordLE = QLineEdit()
+        self.passwordLE.setEchoMode(QLineEdit.Password)
+        self.buttons = WtDialogButtonBox(Qt.Horizontal)
+        self.buttons.hideWhatsThisButton()
+        self.okBtn = self.buttons.addButton(QDialogButtonBox.Ok)
+        self.okBtn.setText(_("OK"))
+        self.cancelBtn = self.buttons.addButton(QDialogButtonBox.Cancel)
+        self.cancelBtn.setText(_("Cancel"))
+
+        grid.addWidget(self.textLabel,        0, 0, 1, 2)
+        grid.setRowMinimumHeight(1, 7)
+        grid.addWidget(userLabel,             2, 0)
+        grid.addWidget(self.userLE,           2, 1)
+        grid.addWidget(pwLabel,               3, 0)
+        grid.addWidget(self.passwordLE,       3, 1)
+        grid.setRowMinimumHeight(4, 7)
+        grid.setRowStretch(4, 1)
+        grid.addLayout(self.buttons.layout(), 5, 0, 1, 2)
+        self.setLayout(grid)
+
+        self.setMinimumWidth(300)
+        self.adjustSize()
+        #self.setFixedHeight(self.height())
+
+        self.okBtn.clicked.connect(self.accept)
+        self.cancelBtn.clicked.connect(self.reject)
+
+    def exec_(self):
+        # It does not resize very well when the font size has changed
+        if self.font() != self.lastFont:
+            self.lastFont = self.font()
+            self.adjustSize()
+        return QDialog.exec_(self)
+
+    def appFontChanged(self):
+        self.buttons.updateWhatsThisButton()
+
 class DispatchRPC(QObject):
     """
         wraps the thrift client, to catch critical exceptions (connection lost)
         adds thread safety
     """
-    
+    connectionLostSGL = pyqtSignal()
+
     def __init__(self, mutex, server):
         QObject.__init__(self)
+        self.log = logging.getLogger("guilog")
         self.mutex = mutex
         self.server = server
-    
+
     def __getattr__(self, attr):
         """
             redirect and wrap call in Wrapper instance, locks dispatcher
@@ -133,17 +297,17 @@ class DispatchRPC(QObject):
         self.fname = attr
         f = self.Wrapper(getattr(self.server, attr), self.mutex, self)
         return f
-    
+
     class Wrapper(object):
         """
             represents a rpc call
         """
-        
+
         def __init__(self, f, mutex, dispatcher):
             self.f = f
             self.mutex = mutex
             self.dispatcher = dispatcher
-        
+
         def __call__(self, *args, **kwargs):
             """
                 instance is called, rpc is executed
@@ -162,4 +326,4 @@ class DispatchRPC(QObject):
             if lost:
                 from traceback import print_exc
                 print_exc()
-                self.dispatcher.emit(SIGNAL("connectionLost"))
+                self.dispatcher.connectionLostSGL.emit()

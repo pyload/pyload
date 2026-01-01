@@ -12,93 +12,123 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
+
     @author: mkaay
 """
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from module.gui.PyQtVersion import USE_PYQT5
+if USE_PYQT5:
+    from PyQt5.QtCore import pyqtSignal, Qt
+    from PyQt5.QtGui import QIcon
+    from PyQt5.QtWidgets import QCheckBox, QComboBox, QDialog, QDialogButtonBox, QGridLayout, QLabel, QLineEdit
+else:
+    from PyQt4.QtCore import pyqtSignal, Qt
+    from PyQt4.QtGui import QCheckBox, QComboBox, QDialog, QDialogButtonBox, QGridLayout, QIcon, QLabel, QLineEdit
 
+import logging
 from os.path import join
 
-class AccountEdit(QWidget):
+from module.gui.Tools import WtDialogButtonBox
+
+class AccountEdit(QDialog):
     """
         account editor widget
     """
-    
-    def __init__(self):
-        QMainWindow.__init__(self)
+    accountEditSaveSGL = pyqtSignal(object)
 
-        self.setWindowTitle(_("Edit account"))
-        self.setWindowIcon(QIcon(join(pypath, "icons","logo.png")))
-        
+    def __init__(self, parent):
+        QDialog.__init__(self, parent)
+        self.log = logging.getLogger("guilog")
+
+        self.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
+        self.setWindowIcon(QIcon(join(pypath, "icons", "logo.png")))
+
         self.setLayout(QGridLayout())
         l = self.layout()
-        
+
         typeLabel = QLabel(_("Type"))
         loginLabel = QLabel(_("Login"))
-        passwordLabel = QLabel(_("New password"))
-        changePw = QCheckBox()
-        changePw.setChecked(False)
-        self.changePw = changePw
-        password = QLineEdit()
-        password.setEnabled(False)
-        password.setEchoMode(QLineEdit.Password)
-        self.password = password
-        login = QLineEdit()
-        self.login = login
-        acctype = QComboBox()
-        self.acctype = acctype
-        
-        save = QPushButton(_("Save"))
-        
-        self.connect(changePw, SIGNAL("toggled(bool)"), password, SLOT("setEnabled(bool)"))
-        
-        l.addWidget(save, 3, 0, 1, 3)
-        l.addWidget(acctype, 0, 1, 1, 2)
-        l.addWidget(login, 1, 1, 1, 2)
-        l.addWidget(password, 2, 2)
-        l.addWidget(changePw, 2, 1)
-        l.addWidget(passwordLabel, 2, 0)
+        self.passwordLabel = QLabel()
+        self.changePw = QCheckBox()
+        self.changePw.setChecked(False)
+        self.password = QLineEdit()
+        self.password.setEnabled(False)
+        self.password.setEchoMode(QLineEdit.Password)
+        self.login = QLineEdit()
+        self.acctype = QComboBox()
+
+        self.buttons = WtDialogButtonBox(Qt.Horizontal)
+        self.buttons.hideWhatsThisButton()
+        self.save = self.buttons.addButton(QDialogButtonBox.Save)
+        self.save.setDefault(False)
+        self.save.setAutoDefault(False)
+        self.cancel = self.buttons.addButton(QDialogButtonBox.Cancel)
+        self.cancel.setDefault(True)
+        self.cancel.setAutoDefault(True)
+        self.buttons.button(QDialogButtonBox.Save).setText(_("Save"))
+        self.buttons.button(QDialogButtonBox.Cancel).setText(_("Cancel"))
+
+        self.changePw.toggled[bool].connect(self.password.setEnabled)
+
+        l.setRowMinimumHeight(3, 7)
+        l.addLayout(self.buttons.layout(), 4, 0, 1, 3)
+        l.addWidget(self.acctype, 0, 1, 1, 2)
+        l.addWidget(self.login, 1, 1, 1, 2)
+        l.addWidget(self.password, 2, 2)
+        l.addWidget(self.changePw, 2, 1)
+        l.addWidget(self.passwordLabel, 2, 0)
         l.addWidget(loginLabel, 1, 0)
         l.addWidget(typeLabel, 0, 0)
-        
-        self.connect(save, SIGNAL("clicked()"), self.slotSave)
-    
+
+        self.setMinimumWidth(280)
+        self.adjustSize()
+        self.setFixedHeight(self.height())
+
+        self.save.clicked.connect(self.slotSave)
+        self.cancel.clicked.connect(self.reject)
+
     def slotSave(self):
         """
             save entered data
         """
-        data = {"login": str(self.login.text()), "acctype": str(self.acctype.currentText()), "password": False}
+        data = {"login": unicode(self.login.text()), "acctype": unicode(self.acctype.currentText()), "password": None}
         if self.changePw.isChecked():
-            data["password"] = str(self.password.text())
-        self.emit(SIGNAL("done"), data)
-    
+            data["password"] = unicode(self.password.text())
+        self.accountEditSaveSGL.emit(data)
+
     @staticmethod
-    def newAccount(types):
+    def newAccount(parent, types):
         """
             create empty editor instance
         """
-        w = AccountEdit()
-        w.setWindowTitle(_("Create account"))
-        
+        w = AccountEdit(parent)
+        w.setWindowTitle(_("Create Account"))
+        w.passwordLabel.setText(_("Password"))
+
         w.changePw.setChecked(True)
         w.password.setEnabled(True)
-        
         w.acctype.addItems(types)
-        
+        w.acctype.setFocus(Qt.OtherFocusReason)
+        w.adjustSize()
         return w
-    
+
     @staticmethod
-    def editAccount(types, base):
+    def editAccount(parent, types, base):
         """
             create editor instance with given data
         """
-        w = AccountEdit()
-        
+        w = AccountEdit(parent)
+        w.setWindowTitle(_("Edit Account"))
+        w.passwordLabel.setText(_("New Password"))
+
+        w.changePw.setChecked(True)
         w.acctype.addItems(types)
-        w.acctype.setCurrentIndex(types.index(base["type"]))
-        
-        w.login.setText(base["login"])
-        
+        i = w.acctype.findText(base.type)
+        w.acctype.setCurrentIndex(i)
+        w.acctype.setEnabled(False)
+
+        w.login.setText(base.login)
+        w.login.setEnabled(False)
+        w.password.setFocus(Qt.OtherFocusReason)
+        w.adjustSize()
         return w

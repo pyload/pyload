@@ -12,53 +12,75 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
+
     @author: mkaay
 """
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from module.gui.PyQtVersion import USE_PYQT5
+if USE_PYQT5:
+    from PyQt5.QtCore import QAbstractItemModel, QModelIndex, QMutex, QMutexLocker, Qt, QTimer, QVariant
+    from PyQt5.QtWidgets import QAbstractItemView, QApplication, QItemDelegate, QStyle, QStyleOptionProgressBar, QTreeView
+else:
+    from PyQt4.QtCore import QAbstractItemModel, QModelIndex, QMutex, QMutexLocker, Qt, QTimer, QVariant
+    from PyQt4.QtGui import QAbstractItemView, QApplication, QItemDelegate, QStyle, QTreeView
+    from PyQt4.QtGui import QStyleOptionProgressBarV2 as QStyleOptionProgressBar
 
+import logging
 from time import strftime, gmtime
 
 class AccountModel(QAbstractItemModel):
     """
         model for account view
     """
-    
+
     def __init__(self, view, connector):
         QAbstractItemModel.__init__(self)
-        self.connector = connector
+        self.log = logging.getLogger("guilog")
         self.view = view
+        self.connector = connector
+
         self._data = []
         self.cols = 4
         self.mutex = QMutex()
-    
-    def reloadData(self, force=False):
+        self.timer = QTimer()
+        self.timer.timeout.connect(self.slotReloadData)
+
+    def getSelectedIndexes(self):
+        """
+            called from main
+        """
+        QMutexLocker(self.mutex)
+        return self.view.selectedIndexes()
+
+    def slotReloadData(self, force=False):
         """
             reload account list
         """
+        if not self.view.corePermissions["ACCOUNTS"]:
+            return
+
         accounts = self.connector.proxy.getAccounts(False)
 
         if self._data == accounts:
             return
-        
-        if len(self._data) > 0:        
-            self.beginRemoveRows(QModelIndex(), 0, len(self._data)-1)
-            self._data = []
-            self.endRemoveRows()
-            
+
+        QMutexLocker(self.mutex)
+        self.beginResetModel()
+        self._data = []
+        self.endResetModel()
+
         if len(accounts) > 0:
             self.beginInsertRows(QModelIndex(), 0, len(accounts)-1)
             self._data = accounts
             self.endInsertRows()
-    
+
+    @classmethod
     def toData(self, index):
         """
             return index pointer
         """
         return index.internalPointer()
-    
+
     def data(self, index, role=Qt.DisplayRole):
         """
             return cell data
@@ -85,11 +107,13 @@ class AccountModel(QAbstractItemModel):
         #    if index.column() == 0:
         #        return QVariant(index.internalPointer().data["name"])
         return QVariant()
-        
+
     def index(self, row, column, parent=QModelIndex()):
         """
             create index with data pointer
         """
+        if row < 0 or column < 0:
+            return QModelIndex()
         if parent == QModelIndex() and len(self._data) > row:
             pointer = self._data[row]
             index = self.createIndex(row, column, pointer)
@@ -99,13 +123,14 @@ class AccountModel(QAbstractItemModel):
         else:
             index = QModelIndex()
         return index
-    
+
+    @classmethod
     def parent(self, index):
         """
             no parents, everything on top level
         """
         return QModelIndex()
-    
+
     def rowCount(self, parent=QModelIndex()):
         """
             account count
@@ -113,10 +138,11 @@ class AccountModel(QAbstractItemModel):
         if parent == QModelIndex():
             return len(self._data)
         return 0
-    
+
     def columnCount(self, parent=QModelIndex()):
         return self.cols
-    
+
+    @classmethod
     def hasChildren(self, parent=QModelIndex()):
         """
             everything on top level
@@ -125,10 +151,12 @@ class AccountModel(QAbstractItemModel):
             return True
         else:
             return False
-    
+
+    @classmethod
     def canFetchMore(self, parent):
         return False
-    
+
+    @classmethod
     def headerData(self, section, orientation, role=Qt.DisplayRole):
         """
             returns column heading
@@ -143,39 +171,48 @@ class AccountModel(QAbstractItemModel):
             elif section == 3:
                 return QVariant(_("Traffic left"))
         return QVariant()
-    
+
+    @classmethod
     def flags(self, index):
         """
             cell flags
         """
         return Qt.ItemIsSelectable | Qt.ItemIsEnabled
-    
+
 class AccountView(QTreeView):
     """
         view component for accounts
     """
-    
-    def __init__(self, connector):
+
+    def __init__(self, corePermissions, connector):
         QTreeView.__init__(self)
-        self.setModel(AccountModel(self, connector))
-        
+        self.log = logging.getLogger("guilog")
+        self.corePermissions = corePermissions
+        self.model = AccountModel(self, connector)
+        self.setModel(self.model)
+
         self.setColumnWidth(0, 150)
         self.setColumnWidth(1, 150)
         self.setColumnWidth(2, 150)
         self.setColumnWidth(3, 150)
-        
+
+        self.setAlternatingRowColors(True)
         self.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        
-        self.delegate = AccountDelegate(self, self.model())
+
+        self.delegate = AccountDelegate(self, self.model)
         self.setItemDelegateForColumn(3, self.delegate)
+
+    def setCorePermissions(self, corePermissions):
+        self.corePermissions = corePermissions
 
 class AccountDelegate(QItemDelegate):
     """
         used to display a progressbar for the traffic in the traffic cell
     """
-    
+
     def __init__(self, parent, model):
         QItemDelegate.__init__(self, parent)
+        self.log = logging.getLogger("guilog")
         self.model = model
 
     def paint(self, painter, option, index):
@@ -186,7 +223,7 @@ class AccountDelegate(QItemDelegate):
             return
         if index.column() == 3:
             data = self.model.toData(index)
-            opts = QStyleOptionProgressBarV2()
+            opts = QStyleOptionProgressBar()
             opts.minimum = 0
             if data.trafficleft:
                 if data.trafficleft == -1 or data.trafficleft is None:
@@ -195,18 +232,18 @@ class AccountDelegate(QItemDelegate):
                     opts.maximum = opts.progress = data.trafficleft
             if data.maxtraffic:
                 opts.maximum = data.maxtraffic
-            
+
             opts.rect = option.rect
             opts.rect.setRight(option.rect.right()-1)
             opts.rect.setHeight(option.rect.height()-1)
             opts.textVisible = True
             opts.textAlignment = Qt.AlignCenter
             if data.trafficleft and data.trafficleft == -1:
-                opts.text = QString(_("unlimited"))
+                opts.text = _("unlimited")
             elif data.trafficleft is None:
-                opts.text = QString(_("n/a"))
+                opts.text = _("n/a")
             else:
-                opts.text = QString.number(round(float(opts.progress)/1024/1024, 2)) + " GB"
+                opts.text = unicode(round(float(opts.progress)/1024/1024, 2)) + " GB"
             QApplication.style().drawControl(QStyle.CE_ProgressBar, opts, painter)
             return
         QItemDelegate.paint(self, painter, option, index)
