@@ -6,7 +6,7 @@
 <h4 align="center">
   <img alt="status" src="https://img.shields.io/pypi/status/pyload-ng?style=flat-square">
   <a href="https://github.com/pyload/pyload/actions">
-    <img alt="build" src="https://img.shields.io/github/actions/workflow/status/pyload/pyload/test.yml?event=push&style=flat-square">
+    <img alt="build" src="https://img.shields.io/github/actions/workflow/status/pyload/pyload/build-and-deploy.yml">
   </a>
   <a href="https://www.codacy.com/gh/pyload/pyload">
     <img alt="codacy" src="https://img.shields.io/codacy/grade/1d047f77c0a6496eb708e1b3ca83006b?label=grade&style=flat-square">
@@ -23,13 +23,15 @@
 <br />
 <br />
 
-## Choose your Version
+## Overview
 
-**The newest version of pyLoad** running on Python 3.9+ is developed in the [main branch on GitHub](https://github.com/pyload/pyload/tree/main) and published as [pyload-ng on PyPI](https://pypi.org/project/pyload-ng/).
+pyLoad is a lightweight, pure-Python download manager with a modern web UI and rich plugin ecosystem. It automates downloads from one-click hosters, cloud drives, and many other sources; supports premium accounts, captcha-solving services, and link decryption; and can run headless on servers, NAS devices, or desktops. Designed for extensibility and low resource usage.
 
-**The old version of pyLoad** working on Python 2 is still available in the [stable branch on GitHub](https://github.com/pyload/pyload/tree/stable), pre-built packages are available for download on the [releases page on GitHub](https://github.com/pyload/pyload/releases).
+## Introduction
 
-This README covers only the latest version of pyLoad.
+- Cross-platform: works on Linux, macOS, and Windows (Python 3.9+)
+- Web interface: manage downloads from your browser
+- Plugin-driven: hundreds of hosters, decrypters, and addons (notifications, schedulers, extractors, etc.)
 
 ## Quick Start
 
@@ -217,9 +219,13 @@ Please refer to [CONTRIBUTING](https://github.com/pyload/pyload/blob/main/CONTRI
 
 #### Available images
 
--   `pyload/pyload:alpine`: docker image for amd64, arm and arm64v8.
--   `pyload/pyload:ubuntu-arm32v7`: docker image for arm32v7.
--   `pyload/pyload`: alias of `pyload/pyload:alpine`.
+-   [linuxserver/pyload-ng](https://hub.docker.com/r/linuxserver/pyload-ng)
+
+[//]: # (-   `pyload/pyload:alpine`: docker image for amd64, arm and arm64v8.)
+
+[//]: # (-   `pyload/pyload:ubuntu-arm32v7`: docker image for arm32v7.)
+
+[//]: # (-   `pyload/pyload`: alias of `pyload/pyload:alpine`.)
 
 ### Create Container
 
