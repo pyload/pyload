@@ -369,4 +369,4 @@ Please refer to [AUTHORS](https://github.com/pyload/pyload/blob/main/AUTHORS.md)
 
 ---
 
-###### © 2008-2025 pyLoad team
+###### © 2008-2026 pyLoad team
