@@ -3,13 +3,13 @@ import re
 import time
 
 from ..base.account import BaseAccount
-from ..helpers import parse_html_form, set_cookie
+from ..helpers import parse_html_form
 
 
 class TurbobitNet(BaseAccount):
     __name__ = "TurbobitNet"
     __type__ = "account"
-    __version__ = "0.14"
+    __version__ = "0.15"
     __status__ = "testing"
 
     __description__ = """TurbobitNet account plugin"""
@@ -35,7 +35,7 @@ class TurbobitNet(BaseAccount):
         return {"premium": premium, "trafficleft": -1, "validuntil": validuntil}
 
     def signin(self, user, password, data):
-        set_cookie(self.req.cj, "turbobit.net", "user_lang", "en")
+        self.req.cj.set_cookie("turbobit.net", "user_lang", "en")
 
         self.data = self.load("https://turbobit.net/login")
 

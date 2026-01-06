@@ -5,13 +5,12 @@ import json
 import re
 
 from ..base.downloader import BaseDownloader
-from ..helpers import set_cookie
 
 
 class GofileIo(BaseDownloader):
     __name__ = "GofileIo"
     __type__ = "downloader"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?gofile\.io/dl\?q=(?P<QS>.+)"
@@ -58,5 +57,5 @@ class GofileIo(BaseDownloader):
 
     def process(self, pyfile):
         token = self.info["token"]
-        set_cookie(self.req.cj, "gofile.io", "accountToken", token)
+        self.req.cj.set_cookie("gofile.io", "accountToken", token)
         self.download(self.info["u"], disposition=False)

@@ -3,13 +3,12 @@
 import json
 
 from ..base.account import BaseAccount
-from ..helpers import set_cookie
 
 
 class FilecloudIo(BaseAccount):
     __name__ = "FilecloudIo"
     __type__ = "account"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __status__ = "testing"
 
     __description__ = """FilecloudIo account plugin"""
@@ -51,7 +50,7 @@ class FilecloudIo(BaseAccount):
             return {"premium": False}
 
     def signin(self, user, password, data):
-        set_cookie(self.req.cj, "secure.filecloud.io", "lang", "en")
+        self.req.cj.set_cookie("secure.filecloud.io", "lang", "en")
         html = self.load("https://secure.filecloud.io/user-login.html")
 
         if not hasattr(self, "form_data"):

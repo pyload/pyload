@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 
 from ..base.account import BaseAccount
-from ..helpers import set_cookie
 
 
 class FourSharedCom(BaseAccount):
     __name__ = "FourSharedCom"
     __type__ = "account"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __status__ = "testing"
 
     __description__ = """FourShared.com account plugin"""
@@ -22,7 +21,7 @@ class FourSharedCom(BaseAccount):
         return {"premium": False}
 
     def signin(self, user, password, data):
-        set_cookie(self.req.cj, "4shared.com", "4langcookie", "en")
+        self.req.cj.set_cookie("4shared.com", "4langcookie", "en")
 
         res = self.load(
             "https://www.4shared.com/web/login",

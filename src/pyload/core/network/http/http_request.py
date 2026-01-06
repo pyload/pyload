@@ -216,7 +216,7 @@ class HTTPRequest:
         put cookies from curl handle to cj.
         """
         if self.cj:
-            self.cj.add_cookies(self.c.getinfo(pycurl.INFO_COOKIELIST))
+            self.cj.set_cookies(self.c.getinfo(pycurl.INFO_COOKIELIST))
 
     def get_cookies(self):
         """
@@ -320,6 +320,8 @@ class HTTPRequest:
         if cookies:
             self.c.setopt(pycurl.COOKIEFILE, b"")
             self.c.setopt(pycurl.COOKIEJAR, b"")
+            if isinstance(cookies, list) and self.cj:
+                self.cj.set_cookies(cookies)
             self.get_cookies()
 
     def load(
