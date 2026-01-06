@@ -6,7 +6,7 @@ from ..base.xfs_downloader import XFSDownloader
 class KatfileCom(XFSDownloader):
     __name__ = "KatfileCom"
     __type__ = "downloader"
-    __version__ = "0.07"
+    __version__ = "0.08"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?katfile\.(?:com|cloud|online)/(?P<ID>\w{12})"
@@ -32,5 +32,5 @@ class KatfileCom(XFSDownloader):
 
     URL_REPLACEMENTS = [(__pattern__ + ".*", r"https://katfile.online/\g<ID>")]
 
-    PLUGIN_DOMAIN = "katfile.cloud"
+    PLUGIN_DOMAIN = "katfile.online"
 

@@ -6,15 +6,15 @@ from ..base.xfs_account import XFSAccount
 class KatfileCom(XFSAccount):
     __name__ = "KatfileCom"
     __type__ = "account"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __status__ = "testing"
 
     __description__ = """Katfile.com account plugin"""
     __license__ = "GPLv3"
     __authors__ = [("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
-    PLUGIN_DOMAIN = "katfile.cloud"
-    PLUGIN_URL = "https://katfile.cloud"
+    PLUGIN_DOMAIN = "katfile.online"
+    PLUGIN_URL = "https://katfile.online"
 
     PREMIUM_PATTERN = r"Extend Premium account"
     VALID_UNTIL_PATTERN = r"<TD>Premium Pro account expire</TD><TD><b>(.+?)<"
