@@ -4,7 +4,7 @@ import re
 
 from pyload.core.network.http.exceptions import BadHeader
 
-from ..anticaptchas.ReCaptcha import ReCaptcha
+from ..anticaptchas.HCaptcha import HCaptcha
 from ..base.simple_downloader import SimpleDownloader
 
 
