@@ -11,7 +11,7 @@ from ..base.simple_downloader import SimpleDownloader
 class FilerNet(SimpleDownloader):
     __name__ = "FilerNet"
     __type__ = "downloader"
-    __version__ = "0.32"
+    __version__ = "0.33"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?filer\.net/get/(?P<ID>\w+)"
@@ -31,7 +31,7 @@ class FilerNet(SimpleDownloader):
         ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com"),
     ]
 
-    RECAPTCHA_KEY = "6LdvqRAqAAAAAE2OriJIn9DX6QR59hHZuuj7keeo"
+    HCAPTCHA_KEY = "45623a98-7b08-43ae-b758-c21c13024e2a"
 
     # See https://filer.net/api
     API_URL = "https://filer.net/api/"
@@ -74,13 +74,13 @@ class FilerNet(SimpleDownloader):
         wait_time = api_data.get("wt", 0)
         if wait_time > 0:
             self.set_wait(wait_time)
-            self.captcha = ReCaptcha(pyfile)
-            captcha_response = self.captcha.challenge(self.RECAPTCHA_KEY, version="2invisible")
+            self.captcha = HCaptcha(pyfile)
+            captcha_response = self.captcha.challenge(self.HCAPTCHA_KEY)
             self.wait()
+            api_data = self.api_request("file/download", ticket=api_data["t"], recaptcha=captcha_response)
         else:
-            captcha_response = ""
+            api_data = self.api_request("file/download", ticket=api_data["t"])
 
-        api_data = self.api_request("file/download", ticket=api_data["t"], recaptcha=captcha_response)
         error = api_data.get("error")
         if error:
             self.log_error(error)
