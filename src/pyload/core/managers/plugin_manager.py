@@ -17,16 +17,26 @@ class ImportRedirector(importlib.abc.MetaPathFinder):
     ROOT = "pyload.plugins."
 
     class CustomModuleLoader(importlib.abc.Loader):
-        def __init__(self, fullpath):
+        def __init__(self, fullpath, public_name, parent_pkg):
             self.fullpath = fullpath
+            self.public_name = public_name
+            self.parent_pkg = parent_pkg
 
         def create_module(self, spec):
             return None  # Use default module creation
 
         def exec_module(self, module):
+            # Execute the redirected module file
             with open(self.fullpath, mode="r", encoding="utf-8-sig") as fp:
                 code = fp.read()
             exec(code, module.__dict__)
+
+            # Adjust module identity so relative imports resolve to the original package
+            module.__name__ = self.public_name
+            module.__package__ = self.parent_pkg
+
+            if getattr(module, "__spec__", None) is not None:
+                module.__spec__.name = self.public_name
 
     def __init__(self, core):
         self.pyload = core
@@ -60,29 +70,33 @@ class ImportRedirector(importlib.abc.MetaPathFinder):
                 plugin_name in plugins[plugin_type] and
                 plugins[plugin_type][plugin_name]["user"]
             ):
+                # Path to the user plugin file that overrides the stock one
                 fullpath = os.path.join(self.redirect_path, split[2], f"{split[3]}.py")
-                split[1] = "userplugins"
-                newname = ".".join(split)
-                self.pyload.log.debug("Redirected import {} -> {}".format(fullname, newname))
-                return importlib.util.spec_from_file_location(
-                    fullname,
-                    self.redirect_path,
-                    loader=self.CustomModuleLoader(fullpath)
+
+                # Keep the public (original) name so relative imports resolve correctly
+                public_name = fullname
+                parent_pkg = ".".join(split[:-1])
+
+                self.pyload.log.debug("Redirected import {} -> file {}".format(fullname, fullpath))
+
+                spec = importlib.util.spec_from_file_location(
+                    public_name,
+                    fullpath,
+                    loader=self.CustomModuleLoader(fullpath, public_name, parent_pkg)
                 )
+                if spec is not None:
+                    # Ensure spec carries the correct name for relative import machinery
+                    spec.name = public_name
+                return spec
 
         # return None to tell the python this finder can't find the module
         return None
 
-    # @staticmethod
     def create_module(self, spec):
         return None  # Use default module creation
 
-    # @staticmethod
     def exec_module(self, module):
-        return importlib.abc.Loader.load_module(module, fullname=module.__name__)
-        with open(self.fullpath, 'r') as file:
-            code = file.read()
-        exec(code, module.__dict__)
+        return module
 
 
 class PluginManager:
