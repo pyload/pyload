@@ -11,7 +11,7 @@ from ..base.simple_downloader import SimpleDownloader
 class FilerNet(SimpleDownloader):
     __name__ = "FilerNet"
     __type__ = "downloader"
-    __version__ = "0.33"
+    __version__ = "0.34"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?filer\.net/get/(?P<ID>\w+)"
@@ -84,8 +84,8 @@ class FilerNet(SimpleDownloader):
         error = api_data.get("error")
         if error:
             self.log_error(error)
-            if error == "Download limit reached - please try again later":
-                self.temp_offline()
+            if error == "HOURLY_DOWNLOAD_LIMIT":
+                self.retry(wait=3600)
             else:
                 self.fail(error)
 
