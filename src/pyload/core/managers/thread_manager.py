@@ -1,22 +1,21 @@
 # -*- coding: utf-8 -*-
 
 import os
-import re
 import subprocess
 import time
 from datetime import timedelta
-from random import choice
 from threading import Event, Lock
 
-# import pycurl
-
 from ..datatypes.pyfile import PyFile
-from ..network.request_factory import get_url
 from ..threads.decrypter_thread import DecrypterThread
 from ..threads.download_thread import DownloadThread
 from ..threads.info_thread import InfoThread
 from ..utils import fs
 from ..utils.struct.lock import lock
+from ..utils.web.check import get_public_ipv4
+
+# import pycurl
+
 
 
 class ThreadManager:
@@ -192,7 +191,7 @@ class ThreadManager:
         ) != 0:
             time.sleep(0.25)
 
-        old_ip = self.get_ip()
+        old_ip = get_public_ipv4()
 
         self.pyload.addon_manager.before_reconnect(old_ip)
 
@@ -207,43 +206,19 @@ class ThreadManager:
             return
 
         time.sleep(1)
-        ip = self.get_ip()
-        self.pyload.addon_manager.after_reconnect(ip, old_ip)
+        new_ip = get_public_ipv4()
+        self.pyload.addon_manager.after_reconnect(new_ip, old_ip)
 
-        self.pyload.log.info(self._("Reconnected, new IP: {}").format(ip))
+        self.pyload.log.info(self._("Reconnected, new IP: {}").format(new_ip))
 
         self.reconnecting.clear()
 
-    def get_ip(self):
-        """
-        retrieve current ip.
-        """
-        services = [
-            ("https://icanhazip.com/", r"(\S+)"),
-            ("http://checkip.dyndns.org/", r".*Current IP Address: (\S+)</body>.*"),
-            ("https://ifconfig.io/ip", r"(\S+)"),
-        ]
-
-        ip = ""
-        for i in range(10):
-            try:
-                sv = choice(services)
-                ip = get_url(sv[0])
-                ip = re.match(sv[1], ip).group(1)
-                break
-            except Exception:
-                ip = ""
-                time.sleep(1)
-
-        return ip
-
-    # ----------------------------------------------------------------------
     def check_thread_count(self):
         """
         checks if there are need for increasing or reducing thread count.
         """
         if len(self.threads) == self.pyload.config.get("download", "max_downloads"):
-            return True
+            return
         elif len(self.threads) < self.pyload.config.get("download", "max_downloads"):
             self.create_download_thread()
         else:
