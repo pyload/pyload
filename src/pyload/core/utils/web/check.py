@@ -121,7 +121,7 @@ from . import format
 #     except validators.ValidationFailure:
 #         return False
 
-def get_public_ipv4(self):
+def get_public_ipv4():
     """
     retrieve current public ipv4.
     """
