@@ -4,10 +4,11 @@ import errno
 import os
 import select
 import socket
+import ssl
 import struct
 import time
 
-from ..exceptions import Abort
+from ..exceptions import Abort, Fail
 
 
 class XDCCRequest:
@@ -17,7 +18,7 @@ class XDCCRequest:
         self.bucket = bucket
 
         self.fh = None
-        self.dccsock = None
+        self.dcc_sock = None
 
         self.filesize = 0
         self.received = 0
@@ -80,14 +81,14 @@ class XDCCRequest:
     def _send_ack(self):
         # acknowledge data by sending number of received bytes
         try:
-            self.dccsock.send(
+            self.dcc_sock.send(
                 struct.pack("!Q" if self.send_64bits_ack else "!I", self.received)
             )
 
-        except socket.error:
+        except (socket.error, ssl.SSLError):
             pass
 
-    def download(self, ip, port, filename, status_notify=None, resume=None):
+    def download(self, ip, port, filename, status_notify=None, resume=None, use_ssl=False):
         self.status_notify = status_notify
         self.send_64bits_ack = not self.filesize < 1 << 32
 
@@ -106,31 +107,138 @@ class XDCCRequest:
         else:
             self.fh = open(chunk_name, mode="wb")
 
+        self.dcc_sock = self.create_socket()
+
+        try:
+            self.dcc_sock.connect((ip, port))
+
+            # Wrap socket with SSL if enabled
+            if use_ssl:
+                ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+                ssl_context.check_hostname = False
+                ssl_context.verify_mode = ssl.CERT_NONE
+                self.dcc_sock = ssl_context.wrap_socket(self.dcc_sock, server_hostname=ip)
+        except (socket.error, ssl.SSLError) as exc:
+            raise Fail("Unable to connect to server") from exc
+
+        self.dcc_sock.setblocking(False)
+
+        try:
+            self._download_loop()
+        finally:
+            self.dcc_sock.close()
+            self.fh.close()
+
+        os.rename(chunk_name, filename)
+
+        return filename
+
+    def download_passive(self, listen_port, filename, passive_initiate_cb, dcc_token, status_notify=None, resume=None, listen_timeout=120):
+        self.status_notify = status_notify
+        self.send_64bits_ack = not self.filesize < 1 << 32
+
+        chunk_name = filename + ".chunk0"
+
+        if resume and os.path.exists(chunk_name):
+            self.fh = open(chunk_name, mode="ab")
+            resume_position = self.fh.tell()
+            if not resume_position:
+                resume_position = os.stat(chunk_name).st_size
+            resume_position = resume(resume_position)
+            self.fh.truncate(resume_position)
+            self.received = resume_position
+        else:
+            self.fh = open(chunk_name, mode="wb")
+
+        # Send CTCP DCC SEND reply with our ip/port
+        passive_initiate_cb(dcc_token)
+
+        try:
+            # Setup listening socket
+            listen_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            listen_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            listen_sock.bind(("", listen_port))
+            listen_sock.listen(1)
+
+            # Accept incoming connection
+            conn = None
+            listen_sock.settimeout(listen_timeout)
+            conn, _ = listen_sock.accept()
+        except socket.timeout as exc:
+            self.fh.close()
+            raise Fail("Passive DCC connection timeout") from exc
+
+        finally:
+            listen_sock.close()
+
+        self.dcc_sock = conn
+        self.dcc_sock.setblocking(False)
+
+        try:
+            self._download_loop()
+        finally:
+            self.dcc_sock.close()
+            self.fh.close()
+
+        os.rename(chunk_name, filename)
+
+        return filename
+
+    def abort_downloads(self):
+        self.abort = True
+
+    @property
+    def size(self):
+        return self.filesize
+
+    @property
+    def arrived(self):
+        return self.received
+
+    @property
+    def speed(self):
+        speeds = [x for x in self.speeds if x]
+        return sum(speeds) // len(speeds)
+
+    @property
+    def percent(self):
+        if not self.filesize:
+            return 0
+        return (self.received * 100) // self.filesize
+
+    def close(self):
+        pass
+
+    def _update_progress(self):
+        if self.status_notify:
+            self.status_notify({"progress": self.percent})
+
+    def _download_loop(self):
+        # recv loop for dcc socket
         last_update = time.time()
         num_recv_len = 0
+        recv_list = [self.dcc_sock]
 
-        self.dccsock = self.create_socket()
-
-        recv_list = [self.dccsock]
-        self.dccsock.connect((ip, port))
-        self.dccsock.setblocking(False)
-
-        # recv loop for dcc socket
         while True:
             if self.abort:
-                self.dccsock.close()
-                self.fh.close()
                 raise Abort
 
             fdset = select.select(recv_list, [], [], 0.1)
-            if self.dccsock in fdset[0]:
+            if self.dcc_sock in fdset[0]:
                 try:
-                    data = self.dccsock.recv(16384)
+                    data = self.dcc_sock.recv(16384)
 
                 except socket.error as exc:
                     if exc.errno in (errno.EAGAIN, errno.EWOULDBLOCK):
                         continue
 
+                    else:
+                        raise
+
+                except ssl.SSLError as exc:
+                    # Handle SSL-specific errors
+                    if exc.errno in (ssl.SSL_ERROR_WANT_READ, ssl.SSL_ERROR_WANT_WRITE):
+                        continue
                     else:
                         raise
 
@@ -157,40 +265,4 @@ class XDCCRequest:
                 num_recv_len = 0
                 last_update = now
 
-                self.update_progress()
-
-        self.dccsock.close()
-        self.fh.close()
-
-        os.rename(chunk_name, filename)
-
-        return filename
-
-    def abort_downloads(self):
-        self.abort = True
-
-    def update_progress(self):
-        if self.status_notify:
-            self.status_notify({"progress": self.percent})
-
-    @property
-    def size(self):
-        return self.filesize
-
-    @property
-    def arrived(self):
-        return self.received
-
-    @property
-    def speed(self):
-        speeds = [x for x in self.speeds if x]
-        return sum(speeds) // len(speeds)
-
-    @property
-    def percent(self):
-        if not self.filesize:
-            return 0
-        return (self.received * 100) // self.filesize
-
-    def close(self):
-        pass
+                self._update_progress()
