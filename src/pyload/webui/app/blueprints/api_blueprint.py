@@ -39,17 +39,11 @@ def rpc(func, args=""):
         return jsonify({'error': err_message}), 405
 
     # Get user info from API auth or session
-    if hasattr(flask.g, 'user_info'):
-        # Using API auth
-        user_info = flask.g.user_info
-    else:
-        # Using session auth
-        s = flask.session
-        if not is_authenticated(s):
-            return jsonify({'error': "Unauthorized - Login required"}), 401
-        user_info = {"role": s["role"], "permission": s["perms"]}
+    if not hasattr(flask.g, 'user_info'):
+        return jsonify({'error': "Unauthorized - Login required"}), 401
 
     # Check permissions
+    user_info = flask.g.user_info
     if not api.is_authorized(func, {"role": user_info["role"], "permission": user_info["permission"]}):
         log.error(f"API access denied for function '{func}'")
         return jsonify({'error': "Unauthorized - Insufficient permissions"}), 401
