@@ -110,6 +110,8 @@ class OpenAPISpecificationGenerator:
             })
             self.spec["paths"][f"/api/{name}"] = {rest_method.lower(): operation}
 
+        self._remove_additional_properties_keys()  #: so python will generate the same output for every python v3.x
+
         return self.spec
 
     def _build_request_with_query_params(self, docstring_lines, method_params) -> list[dict[str, Any]]:
@@ -302,3 +304,39 @@ class OpenAPISpecificationGenerator:
             return {"type": "object"}
 
         raise ValueError(f"Unexpected type annotation {annotation} with origin {origin}")
+
+    def _remove_additional_properties_keys(self):
+        """Recursively remove 'additionalProperties' key from all object schemas
+        if it exists — this mimics older pydantic behavior where it was often omitted.
+        """
+        def recurse(node):
+            if isinstance(node, dict):
+                # Remove the key entirely if present (even if true/false/object)
+                node.pop("additionalProperties", None)
+
+                # Recurse into common object locations
+                if "properties" in node:
+                    for prop_schema in node["properties"].values():
+                        recurse(prop_schema)
+
+                for composite in ("allOf", "anyOf", "oneOf"):
+                    if composite in node:
+                        for subschema in node[composite]:
+                            recurse(subschema)
+
+                # Also handle items in arrays that are objects
+                if node.get("type") == "array" and "items" in node:
+                    recurse(node["items"])
+
+                # Nested in $ref targets (though rare here)
+                if "$ref" not in node:
+                    for value in node.values():
+                        recurse(value)
+
+            elif isinstance(node, list):
+                for item in node:
+                    recurse(item)
+
+        # Apply to all registered schemas
+        for schema in self.spec["components"]["schemas"].values():
+            recurse(schema)
