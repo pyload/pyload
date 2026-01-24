@@ -723,7 +723,7 @@ class IRC:
 class XDCC(BaseDownloader):
     __name__ = "XDCC"
     __type__ = "downloader"
-    __version__ = "0.56"
+    __version__ = "0.57"
     __status__ = "testing"
 
     __pattern__ = r"(?P<PROTO>xdccs?)://(?P<SERVER>.*?)/#?(?P<CHAN>.*?)/(?P<BOT>.*?)/#?(?P<PACK>\d+)/?"
@@ -1281,6 +1281,7 @@ class XDCC(BaseDownloader):
                 listen_port,
                 dl_file,
                 self.xdcc_initiate_passive,
+                listen_host=self.pyload.config.get("webui", "host"),
                 status_notify=self._on_notification,
                 resume=self.xdcc_send_resume,
                 dcc_token=dcc_token,

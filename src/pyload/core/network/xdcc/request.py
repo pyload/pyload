@@ -133,7 +133,7 @@ class XDCCRequest:
 
         return filename
 
-    def download_passive(self, listen_port, filename, passive_initiate_cb, dcc_token, status_notify=None, resume=None, listen_timeout=120):
+    def download_passive(self, listen_port, filename, passive_initiate_cb, dcc_token, status_notify=None, listen_host=None, resume=None, listen_timeout=120):
         self.status_notify = status_notify
         self.send_64bits_ack = not self.filesize < 1 << 32
 
@@ -157,7 +157,7 @@ class XDCCRequest:
             # Setup listening socket
             listen_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             listen_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-            listen_sock.bind(("", listen_port))
+            listen_sock.bind((listen_host or "", listen_port))
             listen_sock.listen(1)
 
             # Accept incoming connection
