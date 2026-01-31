@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 
 
-from ..helpers import set_cookie
 from .simple_decrypter import SimpleDecrypter
 
 
 class XFSDecrypter(SimpleDecrypter):
     __name__ = "XFSDecrypter"
     __type__ = "decrypter"
-    __version__ = "0.26"
+    __version__ = "0.28"
     __status__ = "stable"
 
     __pattern__ = r"^unmatchable$"
@@ -48,7 +47,7 @@ class XFSDecrypter(SimpleDecrypter):
         if isinstance(self.COOKIES, list) and cookie not in self.COOKIES:
             self.COOKIES.insert(cookie)
         else:
-            set_cookie(self.req.cj, *cookie)
+            self.req.cj.set_cookies(*cookie)
 
     def _prepare(self):
         if not self.PLUGIN_DOMAIN:

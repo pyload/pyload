@@ -1,14 +1,18 @@
 # -*- coding: utf-8 -*-
 
 import os
+import random
 import re
+import time
+
+from ...network.request_factory import get_url
+# import validators
+from ..convert import to_str
+from . import format
 
 # import idna
 # import requests
 
-# import validators
-from ..convert import to_str
-from . import format
 
 # from .convert import splitaddress
 
@@ -116,3 +120,30 @@ from . import format
 #         return validators.url(url)
 #     except validators.ValidationFailure:
 #         return False
+
+def get_public_ipv4():
+    """
+    retrieve current public ipv4.
+    """
+    services = [
+        ("https://ipv4.icanhazip.com/", r"(\S+)"),
+        ("https://checkip.amazonaws.com/", r"(\S+)"),
+        ("https://whatismyip.akamai.com/", r"(\S+)"),
+        ("http://checkip.dyndns.org/", r".*Current IP Address: (\S+)</body>.*"),
+        ("https://api4.ipify.org/", r"(\S+)"),
+        ("https://v4.ident.me/", r"(\S+)"),
+    ]
+
+    ip = ""
+    for i in range(10):
+        try:
+            sv = random.choice(services)
+            ip = get_url(sv[0])
+            ip = re.match(sv[1], ip).group(1)
+            break
+        except Exception:
+            ip = ""
+            time.sleep(0.5)
+
+    return ip
+

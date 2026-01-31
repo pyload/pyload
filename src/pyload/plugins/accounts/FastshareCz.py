@@ -4,13 +4,12 @@ import re
 import time
 
 from ..base.account import BaseAccount
-from ..helpers import set_cookie
 
 
 class FastshareCz(BaseAccount):
     __name__ = "FastshareCz"
     __type__ = "account"
-    __version__ = "0.19"
+    __version__ = "0.20"
     __status__ = "testing"
 
     __description__ = """Fastshare.cz account plugin"""
@@ -61,7 +60,7 @@ class FastshareCz(BaseAccount):
         }
 
     def signin(self, user, password, data):
-        set_cookie(self.req.cj, "fastshare.cz", "lang", "en")
+        self.req.cj.set_cookie("fastshare.cz", "lang", "en")
 
         html = self.load("https://fastshare.cz/user")
         if 'href="/logout.php"' in html:

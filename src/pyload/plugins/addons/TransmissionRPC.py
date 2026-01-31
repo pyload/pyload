@@ -67,12 +67,8 @@ class TransmissionRPC(BaseAddon):
 
         except Exception as exc:
             if isinstance(exc, BadHeader) and exc.code == 409:
-                headers = parse_html_header(exc.header)
-
-                session_id = headers["X-Transmission-Session-Id"]
-                req.c.setopt(
-                    pycurl.HTTPHEADER, [f"X-Transmission-Session-Id: {session_id}"]
-                )
+                session_id = exc.headers["X-Transmission-Session-Id"]
+                req.set_header("X-Transmission-Session-Id", session_id)
                 try:
                     response = self.load(
                         transmission_rpc_url,

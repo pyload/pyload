@@ -11,14 +11,14 @@ from ..anticaptchas.HCaptcha import HCaptcha
 from ..anticaptchas.ReCaptcha import ReCaptcha
 from ..anticaptchas.SolveMedia import SolveMedia
 from ..anticaptchas.Turnstile import Turnstile
-from ..helpers import search_pattern, set_cookie
+from ..helpers import search_pattern
 from .simple_downloader import SimpleDownloader
 
 
 class XFSDownloader(SimpleDownloader):
     __name__ = "XFSDownloader"
     __type__ = "downloader"
-    __version__ = "0.91"
+    __version__ = "0.92"
     __status__ = "stable"
 
     __pattern__ = r"^unmatchable$"
@@ -81,7 +81,7 @@ class XFSDownloader(SimpleDownloader):
         if isinstance(self.COOKIES, list) and cookie not in self.COOKIES:
             self.COOKIES.insert(cookie)
         else:
-            set_cookie(self.req.cj, *cookie)
+            self.req.cj.set_cookie(*cookie)
 
     def _prepare(self):
         if not self.PLUGIN_DOMAIN:

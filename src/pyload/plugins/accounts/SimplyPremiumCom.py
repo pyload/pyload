@@ -3,13 +3,12 @@
 import json
 
 from ..base.multi_account import MultiAccount
-from ..helpers import set_cookie
 
 
 class SimplyPremiumCom(MultiAccount):
     __name__ = "SimplyPremiumCom"
     __type__ = "account"
-    __version__ = "0.15"
+    __version__ = "0.16"
     __status__ = "testing"
 
     __config__ = [
@@ -63,7 +62,7 @@ class SimplyPremiumCom(MultiAccount):
         }
 
     def signin(self, user, password, data):
-        set_cookie(self.req.cj, "simply-premium.com", "lang", "EN")
+        self.req.cj.set_cookie("simply-premium.com", "lang", "EN")
 
         html = self.load(
             "https://www.simply-premium.com/login.php",

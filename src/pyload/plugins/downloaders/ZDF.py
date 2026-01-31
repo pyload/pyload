@@ -34,7 +34,7 @@ class ZDF(BaseDownloader):
                 r'window\.zdfsite\.player\.apiToken = "([\d\w]+)";', self.data
             ).group(1)
 
-            self.req.http.c.setopt(pycurl.HTTPHEADER, ["Api-Auth: Bearer " + api_token])
+            self.req.http.set_header("Api-Auth", f"Bearer {api_token}")
             id = re.match(self.__pattern__, pyfile.url).group("ID")
 
             filename = json.loads(

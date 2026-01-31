@@ -2,13 +2,13 @@
 
 import re
 
-from ..base.simple_downloader import SimpleDownloader
+from ..base.xfs_downloader import XFSDownloader
 
 
-class DailyuploadsNet(SimpleDownloader):
+class DailyuploadsNet(XFSDownloader):
     __name__ = "DailyuploadsNet"
     __type__ = "downloader"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?dailyuploads\.net/\w+"
@@ -20,30 +20,19 @@ class DailyuploadsNet(SimpleDownloader):
         ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10),
     ]
 
-    __description__ = """Sendit.cloud downloader plugin"""
+    __description__ = """Dailyuploads.net downloader plugin"""
     __license__ = "GPLv3"
     __authors__ = [("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
-    NAME_PATTERN = r"<b>Filename:</b></td><td nowrap>(?P<N>.+?)</td>"
-    SIZE_PATTERN = (
-        r"<b>Size:</b></td><td>.+?<small>\((?P<S>[\d.,]+) (?P<U>bytes)\)</small>"
-    )
+    PLUGIN_DOMAIN = "dailyuploads.net"
 
-    OFFLINE_PATTERN = r">File Not Found</"
+    NAME_PATTERN = r'<textarea readonly="" .+?>https://dailyuploads.net/\w+?/(?P<N>.+?)<'
+    SIZE_PATTERN = r"<small>\((?P<S>[\d.,]+) (?P<U>bytes)\)</small>"
 
-    LINK_FREE_PATTERN = r'<a href="(https?://down\d+.dailyuploads.net(?::\d+)?/.+?)">'
+    LINK_PATTERN = r'<a href="(https?://cdn\d+.dailyuploads.net/.+?)">'
 
     def setup(self):
         self.multi_dl = True
         self.resume_download = True
         self.chunk_limit = 1
 
-    def handle_free(self, pyfile):
-        url, inputs = self.parse_html_form('name="F1"')
-        if inputs is not None:
-            inputs["referer"] = pyfile.url
-            self.data = self.load(pyfile.url, post=inputs)
-
-            m = re.search(self.LINK_FREE_PATTERN, self.data)
-            if m is not None:
-                self.link = m.group(1)

@@ -4,14 +4,13 @@ import urllib.parse
 
 import pycurl
 from pyload.core.utils import parse
-
 from ..base.downloader import BaseDownloader
 
 
 class Ftp(BaseDownloader):
     __name__ = "Ftp"
     __type__ = "downloader"
-    __version__ = "0.61"
+    __version__ = "0.62"
     __status__ = "testing"
 
     __pattern__ = r"(?:ftps?|sftp)://([\w\-.]+(:[\w\-.]+)?@)?[\w\-.]+(:\d+)?/.+"
@@ -63,16 +62,13 @@ class Ftp(BaseDownloader):
             else:
                 self.fail(self._("Error {}: {}").format(exc.args))
 
-        self.req.http.c.setopt(pycurl.NOBODY, 0)
-        self.log_debug(self.req.http.response_header)
-
         if "content-length" in headers:
-            pyfile.size = headers.get("content-length")
+            pyfile.size = int(headers.get("content-length"))
             self.download(pyfile.url)
 
         else:
             #: Naive ftp directory listing
-            if re.search(r'^25\d.*?"', self.req.http.response_header, re.M):
+            if re.search(rb'^25\d.*?"', self.req.http._header_buffer, re.M):
                 pyfile.url = pyfile.url.rstrip("/")
                 pkgname = "/".join(
                     [
@@ -83,13 +79,13 @@ class Ftp(BaseDownloader):
 
                 pyfile.url += "/"
 
-                self.req.http.c.setopt(48, 1)  #: CURLOPT_DIRLISTONLY
-                res = self.load(pyfile.url, decode=False)
+                self.req.http.c.setopt(pycurl.DIRLISTONLY, 1)
+                res = self.load(pyfile.url, decode="utf-8")
 
                 links = [pyfile.url + x for x in res.splitlines()]
                 self.log_debug("LINKS", links)
 
-                self.pyload.api.addPackage(pkgname, links)
+                self.pyload.api.add_package(pkgname, links)
 
             else:
                 self.fail(self._("Unexpected server response"))

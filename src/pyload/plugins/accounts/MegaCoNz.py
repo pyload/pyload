@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
-import hashlib
+from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 
+from pyload.core.network.http.exceptions import BadHeader
 from pyload.core.utils.convert import to_bytes, to_str
 
 from ..base.account import BaseAccount
@@ -11,7 +13,7 @@ from ..downloaders.MegaCoNz import MegaClient, MegaCrypto
 class MegaCoNz(BaseAccount):
     __name__ = "MegaCoNz"
     __type__ = "account"
-    __version__ = "0.08"
+    __version__ = "0.09"
     __status__ = "testing"
 
     __description__ = """Mega.co.nz account plugin"""
@@ -69,12 +71,16 @@ class MegaCoNz(BaseAccount):
 
         elif res["v"] == 2:  #: v2 account
             salt = MegaCrypto.base64_decode(res["s"])
-            pbkdf = hashlib.pbkdf2_hmac("SHA512", to_bytes(password, "utf-8"), salt, 100_000, 32)
+            kdf = PBKDF2HMAC(
+                algorithm=hashes.SHA512(),
+                length=32,
+                salt=salt,
+                iterations=100_000,
+            )
+            pbkdf = kdf.derive(to_bytes(password, "utf-8"))
 
             password_key = MegaCrypto.bytes_to_a32(pbkdf[:16])
-            user_hash = (
-                to_str(MegaCrypto.base64_encode(pbkdf[16:]), "ascii").replace("=", "")
-            )
+            user_hash = MegaCrypto.base64_encode(pbkdf[16:])
 
         else:
             self.log_error(
@@ -82,7 +88,47 @@ class MegaCoNz(BaseAccount):
             )
             self.fail_login()
 
-        res = mega.api_request(a="us", user=user, uh=user_hash)  #: us if for user sign-in
+        for attempt in range(2):
+            try:
+                res = mega.api_request(a="us", user=user, uh=user_hash)  #: us is for user sign-in
+            except BadHeader as exc:
+                if exc.code == 402:
+                    if attempt == 0:
+                        challenge_header = exc.headers.get("x-hashcash")
+                        if not challenge_header:
+                            self.log_error(self._("402 response missing X-Hashcash header"))
+                            self.fail_login(self._("402 response missing X-Hashcash header"))
+
+                        parts = challenge_header.split(':')
+                        if len(parts) != 4:
+                            self.log_error(self._(f"Invalid 402 response, unexpected number of elements {challenge_header}"))
+                            self.fail_login(self._(f"Invalid 402 response, unexpected number of elements {challenge_header}"))
+
+                        easiness = int(parts[1])
+                        if parts[0] != "1" or easiness < 0 or easiness > 255:
+                            self.log_error(self._(f"Invalid 402 response, illegal easiness value {challenge_header}"))
+                            self.fail_login(self._(f"Invalid 402 response, illegal easiness value {challenge_header}"))
+
+                        try:
+                            cash = MegaCrypto.solve_hashcash(parts[3], easiness)
+                            response_header = f"1:{parts[3]}:{cash}"
+                            self.req.http.set_header("X-Hashcash", response_header)
+
+                        except ValueError as exc:
+                            self.log_error(str(exc))
+                            self.fail_login(str(exc))
+
+                    else:
+                        self.log_error(self._("Failed to solve Hashcash challenge"))
+                        self.fail_login(self._("Failed to solve Hashcash challenge"))
+
+                else:
+                    raise
+
+            else:
+                self.req.remove_header("X-Hashcash")
+                break
+
         if isinstance(res, int) or isinstance(res, dict) and "e" in res:
             self.fail_login()
 
@@ -130,8 +176,8 @@ class MegaCoNz(BaseAccount):
                 )
             )
             sid = "0" * (-len(sid) % 2) + sid
-            sid = bytes([(int(sid[i : i + 2], 16)) for i in range(0, len(sid), 2)])
-            sid = to_str(MegaCrypto.base64_encode(sid[:43]), "ascii").replace("=", "")
+            sid = bytes([(int(sid[i:i + 2], 16)) for i in range(0, len(sid), 2)])
+            sid = MegaCrypto.base64_encode(sid[:43])
 
         else:
             self.fail_login()
@@ -173,4 +219,4 @@ class MegaCoNz(BaseAccount):
         """
         Convert GCRYMPI_FMT_PGP bignum format to integer.
         """
-        return int("".join("{:02x}".format(s[2:][x]) for x in range(len(s[2:]))), 16)
+        return int.from_bytes(s[2:], byteorder='big')

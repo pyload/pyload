@@ -8,7 +8,7 @@ from ..base.simple_downloader import SimpleDownloader
 class OneFichierCom(SimpleDownloader):
     __name__ = "OneFichierCom"
     __type__ = "downloader"
-    __version__ = "1.20"
+    __version__ = "1.21"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?(?:(?P<ID1>\w+)\.)?(?P<HOST>1fichier\.com|alterupload\.com|cjoint\.net|d(?:es)?fichiers\.com|dl4free\.com|megadl\.fr|mesfichiers\.org|piecejointe\.net|pjointe\.com|tenvoi\.com)(?:/\?(?P<ID2>\w+))?"
@@ -52,6 +52,7 @@ class OneFichierCom(SimpleDownloader):
     PREMIUM_ONLY_PATTERN = r"is not possible to unregistered users|need a subscription"
 
     WAIT_PATTERN = r">You must wait \d+ minutes"
+    DL_LIMIT_PATTERN = r"Free download in ⏳ \d+"
 
     def setup(self):
         self.multi_dl = self.premium

@@ -36,10 +36,11 @@ class SwisstransferComFolder(SimpleDecrypter):
     API_URL = "https://www.swisstransfer.com/api/"
 
     def api_request(self, method, auth=None, **kwargs):
-        headers = ["Content-Type: application/json"]
+        self.req.http.set_header("Content-Type", "application/json")
         if auth:
-            headers.append(f"Authorization: {auth}")
-        self.req.http.c.setopt(pycurl.HTTPHEADER, headers)
+            self.req.http.set_header("Authorization", str(auth))
+        else:
+            self.req.http.remove_header("Authorization")
 
         json_data = self.load(self.API_URL + method,
                               post=json.dumps(kwargs) if kwargs else {})

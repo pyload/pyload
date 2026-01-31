@@ -121,8 +121,9 @@ class Api:
     def __new__(cls, core):
         obj = super(Api, cls).__new__(cls)
 
-        # add methods specified by the @legacy decorator
-        # also set legacy method permissions according to the @permissions decorator
+        # add methods specified by the @legacy decorator,
+        # set legacy method permissions according to the @permissions decorator
+        # and also set the correct allowed HTTP method for the legacy function
         for func_name, legacy_name in legacy_map.items():
             func = getattr(obj, func_name)
             setattr(obj, legacy_name, func)
@@ -130,6 +131,10 @@ class Api:
             permissions = perm_map.get(func_name)
             if permissions is not None:
                 perm_map[legacy_name] = permissions
+
+            allowed_method = method_map.get(func_name)
+            if allowed_method is not None:
+                method_map[legacy_name] = allowed_method
 
         return obj
 
