@@ -344,7 +344,7 @@ class MegaClient:
 class MegaCoNz(BaseDownloader):
     __name__ = "MegaCoNz"
     __type__ = "downloader"
-    __version__ = "0.58"
+    __version__ = "0.59"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?mega(?:\.co)?\.nz/(?:file/(?P<ID1>[\w^_]+)#(?P<K1>[\w\-,=]+)|folder/(?P<ID2>[\w^_]+)#(?P<K2>[\w\-,=]+)/file/(?P<NID>[\w^_]+)|#!(?P<ID3>[\w^_]+)!(?P<K3>[\w\-,=]+))"
