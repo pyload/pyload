@@ -39,12 +39,10 @@ class KrakenfilesCom(SimpleDownloader):
         if m is None:
             self.fail(_("hash pattern not found"))
 
-        self.req.http.c.setopt(
-            pycurl.HTTPHEADER,
-            ["X-Requested-With: XMLHttpRequest", f"hash: {m.group(1)}"],
-        )
+        self.req.http.set_header("X-Requested-With", "XMLHttpRequest")
+        self.req.http.set_header("hash", m.group(1))
         self.data = self.load(self.fixurl(url), post=inputs)
-        self.req.http.c.setopt(pycurl.HTTPHEADER, ["X-Requested-With:"])
+        self.req.http.remove_header("X-Requested-With")
 
         json_data = json.loads(self.data)
         if json_data.get("status") == "ok":

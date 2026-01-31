@@ -65,13 +65,8 @@ class DeathByCaptcha(BaseAddon):
 
     def api_request(self, api="captcha", post=False, multipart=False):
         with get_request() as req:
-            req.c.setopt(
-                pycurl.HTTPHEADER,
-                [
-                    "Accept: application/json",
-                    f"User-Agent: pyLoad {self.pyload.version}",
-                ],
-            )
+            req.set_header("Accept", "application/json")
+            req.set_header("User-Agent", f"pyLoad {self.pyload.version}")
 
             if post:
                 if not isinstance(post, dict):

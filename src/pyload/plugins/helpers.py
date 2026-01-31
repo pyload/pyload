@@ -16,7 +16,6 @@ import time
 import traceback
 import zlib
 from base64 import b85decode, b85encode
-from datetime import timedelta
 
 from ..core.utils.convert import to_bytes, to_str
 
@@ -426,18 +425,21 @@ def parse_html_header(header):
     header = to_str(header, encoding="iso-8859-1")
 
     hdict = {}
-    _re = r"[ ]*(?P<key>.+?)[ ]*:[ ]*(?P<value>.+?)[ ]*\r?\n"
+    _re = r"^ *(?P<key>[!#$%&'*+-.^_`|~0-9a-zA-Z]+) *: *(?P<value>[^ ]+) *$"
 
-    for key, value in re.findall(_re, header):
-        key = key.lower()
-        if key in hdict:
-            current_value = hdict.get(key)
-            if isinstance(current_value, list):
-                current_value.append(value)
+    for header_line in header.splitlines():
+        m = re.match(_re, header_line)
+        if m is not None:
+            key = m.group("key").lower()
+            value = m.group("value")
+            if key in hdict:
+                current_value = hdict.get(key)
+                if isinstance(current_value, list):
+                    current_value.append(value)
+                else:
+                    hdict[key] = [current_value, value]
             else:
-                hdict[key] = [current_value, value]
-        else:
-            hdict[key] = value
+                hdict[key] = value
 
     return hdict
 

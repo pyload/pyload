@@ -38,13 +38,8 @@ class SafelinkingNet(BaseDecrypter):
     SOLVEMEDIA_KEY = "OZ987i6xTzNs9lw5.MA-2Vxbc-UxFrLu"
 
     def api_request(self, url, post_data):
-        self.req.http.c.setopt(
-            pycurl.HTTPHEADER,
-            [
-                "Accept: application/json, text/plain, */*",
-                "Content-Type: application/json",
-            ],
-        )
+        self.req.http.set_header("Accept", "application/json, text/plain, */*")
+        self.req.http.set_header("Content-Type", "application/json")
 
         try:
             res = json.loads(self.load(url, post=json.dumps(post_data)))
@@ -54,17 +49,7 @@ class SafelinkingNet(BaseDecrypter):
             self.fail(exc)
 
         # Headers back to normal
-        self.req.http.c.setopt(
-            pycurl.HTTPHEADER,
-            [
-                "Accept: */*",
-                "Accept-Language: en-US,en",
-                "Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7",
-                "Connection: keep-alive",
-                "Keep-Alive: 300",
-                "Expect:",
-            ],
-        )
+        self.req.http.clear_headers(use_defaults=True)
 
         return res
 

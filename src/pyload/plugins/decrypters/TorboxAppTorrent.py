@@ -43,9 +43,7 @@ class TorboxAppTorrent(SimpleDecrypter):
 
     def api_request(self, method, api_key=None, get=None, post=None):
         if api_key is not None:
-            self.req.http.c.setopt(
-                pycurl.HTTPHEADER, ["Authorization: Bearer " + api_key]
-            )
+            self.req.http.set_header("Authorization", f"Bearer {api_key}")
         multipart = any(
             isinstance(x, FormFile)
             for x in post.values()

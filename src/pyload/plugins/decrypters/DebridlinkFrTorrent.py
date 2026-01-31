@@ -42,9 +42,7 @@ class DebridlinkFrTorrent(SimpleDecrypter):
     API_URL = "https://debrid-link.fr/api/"
 
     def api_request(self, method, get=None, post=None, multipart=False):
-        self.req.http.c.setopt(
-            pycurl.HTTPHEADER, ["Authorization: Bearer " + self.api_token]
-        )
+        self.req.http.set_header("Authorization", f"Bearer {self.api_token}")
         self.req.http.c.setopt(
             pycurl.USERAGENT, "pyLoad/{}".format(self.pyload.version)
         )

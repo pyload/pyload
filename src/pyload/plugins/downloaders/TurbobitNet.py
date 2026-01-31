@@ -70,14 +70,14 @@ class TurbobitNet(SimpleDownloader):
         wait_time = eval_js(m.group(1))
         self.wait(wait_time)
 
-        self.req.http.c.setopt(pycurl.HTTPHEADER, ["X-Requested-With: XMLHttpRequest"])
+        self.req.http.set_header("X-Requested-With", "XMLHttpRequest")
         self.data = self.load(
             "https://turbobit.net/download/getLinkTimeout/{}".format(
                 self.info["pattern"]["ID"]
             ),
             referrer=self.free_url,
         )
-        self.req.http.c.setopt(pycurl.HTTPHEADER, ["X-Requested-With:"])
+        self.req.http.remove_header("X-Requested-With")
 
         if "/download/started/" in self.data:
             self.data = self.load(

@@ -108,9 +108,9 @@ class UlozTo(SimpleDownloader):
         if not m:
             self.error(self._("Free download button not found"))
 
-        self.req.http.c.setopt(pycurl.HTTPHEADER, ["X-Requested-With: XMLHttpRequest"])
+        self.req.http.set_header("X-Requested-With", "XMLHttpRequest")
         self.data = self.load(domain + m.group(1))
-        self.req.http.c.setopt(pycurl.HTTPHEADER, ["X-Requested-With:"])
+        self.req.http.remove_header("X-Requested-With")
 
         if not self.data.startswith('{'):
             action, inputs = self.parse_html_form(
@@ -267,13 +267,13 @@ class UlozTo(SimpleDownloader):
         return SimpleDownloader.check_download(self)
 
     def get_json_response(self, url, inputs):
-        self.req.http.c.setopt(pycurl.HTTPHEADER, ["X-Requested-With: XMLHttpRequest"])
+        self.req.http.set_header("X-Requested-With", "XMLHttpRequest")
 
         res = self.load(url, post=inputs, referrer=self.pyfile.url)
-        self.req.http.c.setopt(pycurl.HTTPHEADER, ["X-Requested-With:"])
+        self.req.http.remove_header("X-Requested-With")
 
         if not res.startswith('{'):
-            self.retry(msg=_("Something went wrong"))
+            self.retry(msg=self._("Something went wrong"))
 
         jsonres = json.loads(res)
         if 'formErrorContent' in jsonres:

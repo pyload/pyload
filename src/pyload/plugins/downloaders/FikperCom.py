@@ -37,7 +37,7 @@ class FikperCom(SimpleDownloader):
     # See https://sapi.fikper.com/api/reference/
     def api_request(self, method, api_key=None, **kwargs):
         if api_key is not None:
-            self.req.http.c.setopt(pycurl.HTTPHEADER, [f"x-api-key: {api_key}"])
+            self.req.http.set_header("x-api-key", api_key)
 
         try:
             json_data = self.load(self.API_URL + method, post=kwargs)

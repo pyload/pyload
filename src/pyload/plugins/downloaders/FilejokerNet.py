@@ -334,9 +334,7 @@ class FilejokerNet(XFSDownloader):
 
                     captcha_inputs[_k] = _v.strip('" ')
 
-                self.req.http.c.setopt(
-                    pycurl.HTTPHEADER, ["X-Requested-With: XMLHttpRequest"]
-                )
+                self.req.http.set_header("X-Requested-With", "XMLHttpRequest")
 
                 html = self.load(
                     urllib.parse.urljoin(self.pyfile.url, "/ddl"),
@@ -344,7 +342,7 @@ class FilejokerNet(XFSDownloader):
                     referrer=self.pyfile.url
                 )
 
-                self.req.http.c.setopt(pycurl.HTTPHEADER, ["X-Requested-With:"])
+                self.req.http.remove_header("X-Requested-With")
 
                 if html == "OK":
                     self.captcha.correct()

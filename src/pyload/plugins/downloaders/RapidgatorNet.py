@@ -200,10 +200,11 @@ class RapidgatorNet(SimpleDownloader):
                 return captcha
 
     def get_json_response(self, url):
-        self.req.http.c.setopt(pycurl.HTTPHEADER, ["X-Requested-With: XMLHttpRequest"])
+        self.req.http.set_header("X-Requested-With", "XMLHttpRequest")
 
         res = self.load(url, referrer=self.pyfile.url)
-        self.req.http.c.setopt(pycurl.HTTPHEADER, ["X-Requested-With:"])
+
+        self.req.http.remove_header("X-Requested-With")
 
         if not res.startswith("{"):
             self.retry()

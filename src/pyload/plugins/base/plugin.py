@@ -11,7 +11,7 @@ from pyload.core.network.request_factory import get_request
 from pyload.core.utils import fs
 from pyload.core.utils.old import fixurl
 
-from ..helpers import DB, Config, exists, format_exc, parse_html_header
+from ..helpers import DB, Config, exists
 
 if os.name != "nt":
     import grp
@@ -211,22 +211,23 @@ class BasePlugin:
             redirect=redirect
         )
 
-        self.last_html = html
+        if not just_header:
+            self.last_html = html
 
-        if self.pyload.debug:
-            self.dump_html()
+            if self.pyload.debug:
+                self.dump_html()
 
         # NOTE: req can be a HTTPRequest or a Browser object
         http_req = self.req.http if hasattr(self.req, "http") else self.req
 
         # TODO: Move to network in 0.6.x
         header = {"code": req.code, "url": req.last_effective_url}
-        header.update(parse_html_header(http_req.response_header))
+        header.update(http_req.response_headers)
 
         self.last_header = header
 
         if just_header:
-            return header
+            return header if decode else html
         else:
             return html
 
@@ -295,12 +296,12 @@ class BasePlugin:
 
         # TODO: Move to network in 0.6.x
         header = {"code": req.code, "url": req.last_effective_url}
-        header.update(parse_html_header(http_req.response_header))
+        header.update(http_req.response_headers)
 
         self.last_header = header
 
         if just_header:
-            return header
+            return header if decode else res
         else:
             return res
 
