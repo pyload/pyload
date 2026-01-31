@@ -206,6 +206,7 @@ class ClickNLoad(BaseAddon):
                         if hosts_filter:
                             allowed_networks = []
                             for host_filter in hosts_filter.split(";"):
+                                host_filter = host_filter.strip()
                                 try:
                                     network = ipaddress.ip_network(host_filter)
                                     if not isinstance(network, ipaddress.IPv4Network):
