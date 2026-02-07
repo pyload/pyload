@@ -263,7 +263,7 @@ class UIHandler {
       const reveal_id = Date.now();
 
       $(this).wrap("<div class=\"form-group has-feedback\"></div>");
-      const button = $("<button class='close form-control-feedback hidden' type='button' style='pointer-events: auto;'><span class='glyphicon glyphicon-eye-close' style='font-size: 11px;'></span></button>");
+      const button = $("<button class='close form-control-feedback hidden' type='button' tabindex='-1' style='pointer-events: auto;'><span class='glyphicon glyphicon-eye-close' style='font-size: 11px;'></span></button>");
       button.attr("data-reveal-pass-id", reveal_id);
       $(this).after(button);
       $(this).attr("data-reveal-pass-id", reveal_id);
