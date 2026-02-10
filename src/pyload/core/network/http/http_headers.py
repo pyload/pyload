@@ -3,7 +3,7 @@ from typing import Dict, Iterator, List, Optional
 
 from ...utils.convert import to_bytes, to_str
 
-RE_HEADERLINE = re.compile(r"^ *(?P<name>[!#$%&'*+-.^_`|~0-9a-zA-Z]+) *: *(?P<value>[^ ]+) *$")
+RE_HEADERLINE = re.compile(r"^ *(?P<name>[!#$%&'*+-.^_`|~0-9a-zA-Z]+) *: *(?P<value>.+?) *$")
 
 class HttpHeaders:
     """Mutable HTTP/1.1 header collection.
