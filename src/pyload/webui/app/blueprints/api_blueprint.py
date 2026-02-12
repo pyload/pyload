@@ -33,8 +33,7 @@ def rpc(func, args=""):
     # Enforce HTTP method for the API method
     expected = api._required_http_method_for_api(func)
     if expected is None:
-        api.generate_api_key(8)
-        return jsonify({"error": "The requested API method does not exist"}), 404
+        return jsonify({'error': "Forbidden"}), 403
 
     actual = flask.request.method
     if actual != expected:
