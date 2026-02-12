@@ -11,7 +11,7 @@ from ..base.simple_downloader import SimpleDownloader
 class FilerNet(SimpleDownloader):
     __name__ = "FilerNet"
     __type__ = "downloader"
-    __version__ = "0.34"
+    __version__ = "0.35"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?filer\.net/get/(?P<ID>\w+)"
@@ -36,9 +36,12 @@ class FilerNet(SimpleDownloader):
     # See https://filer.net/api
     API_URL = "https://filer.net/api/"
 
-    def api_request(self, method, **kwargs):
+    def api_request(self, method, is_post=True, **kwargs):
         try:
-            json_data = self.load(self.API_URL + method, post=kwargs)
+            if is_post:
+                json_data = self.load(self.API_URL + method, post=kwargs)
+            else:
+                json_data = self.load(self.API_URL + method, get=kwargs)
         except BadHeader as exc:
             json_data = exc.content
 
@@ -62,35 +65,33 @@ class FilerNet(SimpleDownloader):
         return info
 
     def handle_free(self, pyfile):
-        if self.info["premium_only"] is True:
+        if self.info["premium_only"] is True and not self.premium:
             self.fail(self._("File can be downloaded by premium users only"))
 
         file_id = self.info["pattern"]["ID"]
 
-        api_data = self.api_request(f"file/request/{file_id}")
-        if "error" in api_data:
-            self.fail(api_data["error"])
+        self.captcha = HCaptcha(pyfile)
+        captcha_response = self.captcha.challenge(self.HCAPTCHA_KEY)
 
-        wait_time = api_data.get("wt", 0)
-        if wait_time > 0:
-            self.set_wait(wait_time)
-            self.captcha = HCaptcha(pyfile)
-            captcha_response = self.captcha.challenge(self.HCAPTCHA_KEY)
-            self.wait()
-            api_data = self.api_request("file/download", ticket=api_data["t"], recaptcha=captcha_response)
-        else:
-            api_data = self.api_request("file/download", ticket=api_data["t"])
-
+        api_data = self.api_request(f"file/request/{file_id}", is_post=False, hCaptchaToken=captcha_response)
         error = api_data.get("error")
         if error:
             self.log_error(error)
             if error == "HOURLY_DOWNLOAD_LIMIT":
                 self.retry(wait=3600)
+            elif error == "CONCURRENT_DOWNLOAD_LIMIT":
+                self.temp_offline()
             else:
                 self.fail(error)
 
+        wait_time = api_data["wt"]
+        self.wait(wait_time)
+        api_data = self.api_request("file/download", ticket=api_data["t"])
+        if "error" in api_data:
+            self.fail(api_data["error"])
         else:
             self.link = api_data["downloadUrl"]
 
     def handle_premium(self, pyfile):
         self.handle_free(pyfile)
+
