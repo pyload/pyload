@@ -1,6 +1,6 @@
 import re
 from collections import UserDict
-from typing import Dict, Iterator, List, Optional
+from typing import Dict, Iterator, List, Optional, Union
 
 from ...utils.convert import to_bytes, to_str
 
@@ -18,7 +18,7 @@ class HttpHeaders(UserDict):
     def __init__(self):
         # normalized-name (lowercase) -> list[str]
         super().__init__()
-        self.data: Dict[str, List[str | int]] = {}
+        self.data: Dict[str, List[Union[str, int]]] = {}
         self._original_case: Dict[str, str] = {}
 
     def clear(self, use_defaults: bool = False) -> None:
@@ -94,7 +94,7 @@ class HttpHeaders(UserDict):
         values = self.get_list(name)
         return values[-1] if values else default  # last one wins (common convention)
 
-    def set(self, name: str, value: str | int) -> None:
+    def set(self, name: str, value: Union[str, int]) -> None:
         """Set a header to a single value, replacing all existing values for the name."""
         key = name.lower()
         self.data[key] = [value.strip() if isinstance(value, str) else value]
@@ -162,7 +162,7 @@ class HttpHeaders(UserDict):
             raise KeyError(name)
         return values[-1]
 
-    def __setitem__(self, name: str, value: str | int) -> None:
+    def __setitem__(self, name: str, value: Union[str, int]) -> None:
         """Dictionary-like assignment; replaces all values for the header with a single value."""
         self.set(name, value)  # replace all previous values
 
