@@ -75,37 +75,76 @@ class RealdebridCom(MultiAccount):
     def grab_info(self, user, password, data):
         api_data = self.api_request("rest", "/user", args(auth_token=data['api_token']))
 
-        premium_remain = api_data["premium"]
-        premium = premium_remain > 0
+        # Ensure premium is always converted to boolean to avoid Pydantic validation errors
+        premium_value = api_data.get("premium", 0)
+        if premium_value is None:
+            premium = False
+            premium_remain = 0
+        elif isinstance(premium_value, (int, float)):
+            premium = premium_value > 0
+            premium_remain = premium_value
+        else:
+            premium = bool(premium_value)
+            premium_remain = 0
         validuntil = time.time() + premium_remain if premium else -1
 
         return {"validuntil": validuntil, "trafficleft": -1, "premium": premium}
 
     def signin(self, user, password, data):
-        user = user.split('/')
-        if len(user) != 2:
-            self.log_error(self._(
-                ("You have to use GetRealdebridToken.py to authorize pyLoad: "
-                 "https://github.com/pyload/pyload/files/4406037/GetRealdebridToken.zip")
-            ))
-            self.fail_login()
-
-        client_id, client_secret = user
-
-        if 'api_token' not in data:
-            api_token, timeout = self._refresh_token(client_id, client_secret, password)
+        # Support both OAuth (client_id/client_secret) and direct API token authentication
+        # Check if this is a direct API token scenario (email as user, token as password)
+        if '@' in user and password and len(password) > 30 and not '/' in user:
+            # This looks like email as user and API token as password
+            api_token = password
             data['api_token'] = api_token
-            self.timeout = timeout - 5 * 60  #: Five minutes less to be on the safe side
-
-        api_token = data['api_token']
-
-        api_data = self.api_request("rest", "/user", args(auth_token=api_token))
-
-        if api_data.get('error_code') == 8:  #: Token expired? try to refresh
-            api_token, timeout = self._refresh_token(client_id, client_secret, password)
+            self.timeout = -1  # API tokens don't expire like OAuth tokens
+            
+            # Test the API token
+            api_data = self.api_request("rest", "/user", args(auth_token=api_token))
+            
+            if 'error' in api_data:
+                self.log_error(api_data.get('error', 'API token authentication failed'))
+                self.fail_login()
+                
+        elif ':' in user:
+            # Direct API token format: email:token (legacy support)
+            email, api_token = user.split(':', 1)
             data['api_token'] = api_token
-            self.timeout = timeout - 5 * 60  #: Five minutes less to be on the safe side
+            self.timeout = -1  # API tokens don't expire like OAuth tokens
+            
+            # Test the API token
+            api_data = self.api_request("rest", "/user", args(auth_token=api_token))
+            
+            if 'error' in api_data:
+                self.log_error(api_data.get('error', 'API token authentication failed'))
+                self.fail_login()
+                
+        else:
+            # OAuth format: client_id/client_secret
+            user_parts = user.split('/')
+            if len(user_parts) != 2:
+                self.log_error(self._(
+                    ("You have to use GetRealdebridToken.py to authorize pyLoad or use email:token format: "
+                     "https://github.com/pyload/pyload/files/4406037/GetRealdebridToken.zip")
+                ))
+                self.fail_login()
 
-        elif 'error' in api_data:
-            self.log_error(api_data['error'])
-            self.fail_login()
+            client_id, client_secret = user_parts
+
+            if 'api_token' not in data:
+                api_token, timeout = self._refresh_token(client_id, client_secret, password)
+                data['api_token'] = api_token
+                self.timeout = timeout - 5 * 60  #: Five minutes less to be on the safe side
+
+            api_token = data['api_token']
+
+            api_data = self.api_request("rest", "/user", args(auth_token=api_token))
+
+            if api_data.get('error_code') == 8:  #: Token expired? try to refresh
+                api_token, timeout = self._refresh_token(client_id, client_secret, password)
+                data['api_token'] = api_token
+                self.timeout = timeout - 5 * 60  #: Five minutes less to be on the safe side
+
+            elif 'error' in api_data:
+                self.log_error(api_data['error'])
+                self.fail_login()
