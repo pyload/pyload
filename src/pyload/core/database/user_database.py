@@ -123,3 +123,4 @@ class UserDatabaseMethods:
     @style.queue
     def remove_user(self, user):
         self.c.execute("DELETE FROM users WHERE name=?", (user,))
+        return self.c.rowcount > 0
