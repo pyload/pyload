@@ -8,7 +8,7 @@ from ..base.simple_downloader import SimpleDownloader
 class OneFichierCom(SimpleDownloader):
     __name__ = "OneFichierCom"
     __type__ = "downloader"
-    __version__ = "1.21"
+    __version__ = "1.22"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?(?:(?P<ID1>\w+)\.)?(?P<HOST>1fichier\.com|alterupload\.com|cjoint\.net|d(?:es)?fichiers\.com|dl4free\.com|megadl\.fr|mesfichiers\.org|piecejointe\.net|pjointe\.com|tenvoi\.com)(?:/\?(?P<ID2>\w+))?"
@@ -57,7 +57,7 @@ class OneFichierCom(SimpleDownloader):
     def setup(self):
         self.multi_dl = self.premium
         self.chunk_limit = -1 if self.premium else 1
-        self.resume_download = True
+        self.resume_download = self.premium
 
     def handle_free(self, pyfile):
         url, inputs = self.parse_html_form(r'action="https://1fichier.com/\?[\w^_]+')
