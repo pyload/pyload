@@ -516,7 +516,7 @@ class HTTPRequest:
             #: detect encoding
             for content_value in self.response_headers.get_list("Content-Type"):
                 content_type, content_params = parse_header_line(content_value)
-                if content_type.startswith("text/") or content_type.startswith("application/") and "charset" in content_params:
+                if (content_type.startswith("text/") or content_type.startswith("application/")) and "charset" in content_params:
                     encoding = content_params["charset"]
                     break
 
