@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import time
 
 from pyload.core.utils.check import is_sequence

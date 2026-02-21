@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import importlib.abc
 import importlib.util
 import os

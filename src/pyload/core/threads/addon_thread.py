@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import inspect
 from copy import copy
 

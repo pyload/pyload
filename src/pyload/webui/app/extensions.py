@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from flask_babel import Babel
 from flask_caching import Cache
 from flask_compress import Compress

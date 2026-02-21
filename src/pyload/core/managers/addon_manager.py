@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-
-
 from functools import wraps
 from threading import RLock
 from types import MethodType

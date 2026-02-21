@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import os
 from base64 import standard_b64decode
 from functools import wraps

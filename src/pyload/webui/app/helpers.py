@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import json
 from functools import wraps
 from urllib.parse import urljoin, urlparse

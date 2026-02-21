@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-
-
 from ..managers.event_manager import UpdateEvent
 from ..utils.fs import safepath
 

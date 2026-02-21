@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import re
 import threading
 from base64 import standard_b64decode

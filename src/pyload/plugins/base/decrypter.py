@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from pyload.core.utils import fs, parse
 
 from .hoster import BaseHoster

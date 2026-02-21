@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import traceback
 from ast import literal_eval
 from itertools import chain

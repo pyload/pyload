@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import json
 import pycurl
 from ..base.xfs_downloader import XFSDownloader

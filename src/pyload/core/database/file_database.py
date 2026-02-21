@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from ..datatypes.pyfile import PyFile
 from ..datatypes.pypackage import PyPackage
 from ..utils import format

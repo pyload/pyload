@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import http.client
 from contextlib import closing
 
