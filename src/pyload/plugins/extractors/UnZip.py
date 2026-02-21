@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import os
 import sys
 import zipfile
@@ -84,7 +82,7 @@ class UnZip(BaseExtractor):
         try:
             with zipfile.ZipFile(self.filename, "r") as z:
                 z.setpassword(password)
-                members = (member for member in z.namelist()  
+                members = (member for member in z.namelist()
                            if not any(fnmatch.fnmatch(member, exclusion)
                            for exclusion in self.excludefiles))
                 z.extractall(self.dest, members = members)

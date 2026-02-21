@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from ..base.multi_downloader import MultiDownloader
 
 

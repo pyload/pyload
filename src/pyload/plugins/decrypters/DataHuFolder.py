@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-
-
 from ..base.simple_decrypter import SimpleDecrypter
 
 

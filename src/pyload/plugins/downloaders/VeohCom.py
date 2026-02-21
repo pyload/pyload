@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import json
 
 from ..base.simple_downloader import SimpleDownloader

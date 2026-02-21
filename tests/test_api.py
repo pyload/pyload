@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from builtins import object, range
 
 from nose.tools import nottest

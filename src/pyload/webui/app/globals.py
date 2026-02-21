@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import flask
 
 from .helpers import theme_template

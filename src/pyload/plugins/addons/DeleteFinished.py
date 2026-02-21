@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from datetime import timedelta
 
 from pyload.core.utils.struct.style import style

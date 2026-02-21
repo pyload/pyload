@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from pyload.core.network.request_factory import get_request
 
 from ..base.notifier import Notifier

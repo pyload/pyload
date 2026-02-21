@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from ..base.simple_downloader import SimpleDownloader
 
 
@@ -10,7 +8,7 @@ class DlFreeFr(SimpleDownloader):
     __status__ = "testing"
 
     __pattern__ = r"http://(?:www\.)?dl\.free\.fr/(getfile\.pl\?file=/|[a-z])(?P<ID>\w+)"
-    
+
     __config__ = [
         ("enabled", "bool", "Activated", True),
         ("use_premium", "bool", "Use premium account if available", True),

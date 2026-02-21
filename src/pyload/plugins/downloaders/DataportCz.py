@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from pyload.core.utils.convert import to_bytes
 
 from ..base.simple_downloader import SimpleDownloader

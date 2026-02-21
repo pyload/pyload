@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-
-
 import pycurl
 from pyload.core.network.http.exceptions import BadHeader
 from pyload.core.network.request_factory import get_request

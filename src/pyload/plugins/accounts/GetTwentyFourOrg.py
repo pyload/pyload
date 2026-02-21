@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import json
 import time
 from hashlib import sha256

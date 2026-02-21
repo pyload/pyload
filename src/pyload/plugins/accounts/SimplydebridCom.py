@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import time
 
 from ..base.multi_account import MultiAccount

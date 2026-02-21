@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import ipaddress
 import socket
 import ssl

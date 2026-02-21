@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import pycurl
 
 from ..base.xfs_account import XFSAccount

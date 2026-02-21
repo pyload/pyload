@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from ..base.simple_downloader import SimpleDownloader
 from urllib.parse import urlparse, urlunparse
 

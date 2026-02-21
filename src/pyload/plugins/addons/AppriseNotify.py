@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from ..base.notifier import Notifier
 from ..helpers import check_module
 

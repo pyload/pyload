@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import re
 
 from ..base.xfs_account import XFSAccount

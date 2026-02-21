@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from ..base.account import BaseAccount
 from ..helpers import parse_html_form
 

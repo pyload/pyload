@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from threading import Thread
 
 from pyload.core.api import FileDoesNotExists, PackageDoesNotExists

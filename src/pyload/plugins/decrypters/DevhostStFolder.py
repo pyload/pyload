@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 #
 # Test links:
 # http://d-h.st/users/shine/?fld_id=37263#files

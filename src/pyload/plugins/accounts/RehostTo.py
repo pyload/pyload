@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-
-
 from ..base.multi_account import MultiAccount
 
 

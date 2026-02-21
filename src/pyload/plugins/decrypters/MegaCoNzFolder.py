@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from pyload.core.network.http.http_request import HTTPRequest
 
 from ..base.decrypter import BaseDecrypter
