@@ -1300,7 +1300,7 @@ class Api:
                         options=acc["options"],
                         valid=acc["valid"],
                         trafficleft=acc["trafficleft"],
-                        premium=acc["premium"],
+                        premium=bool(acc["premium"]) if acc["premium"] is not None else False,
                         type=acc["type"],
                     )
                     for acc in group
