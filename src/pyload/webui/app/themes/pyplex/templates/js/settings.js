@@ -48,10 +48,7 @@ class SettingsUI {
       }
     });
 
-    $("#core-menu").find("li").each((_, element) => {
-      $(element).click(this.menuClick.bind(this));
-    });
-
+    $("#core-menu li").click(this.menuClick.bind(this));
     $("#core_submit").click(this.configSubmit.bind(this));
     $("#plugin_submit").click(this.configSubmit.bind(this));
     $("#account_add_button").click(this.addAccount.bind(this));
@@ -111,24 +108,22 @@ class SettingsUI {
       event.preventDefault();
     });
 
-    $(".is_admin").each(function() {
+    $(document).on("change", ".is_admin", function() {
       const userName = $(this).attr("name").split("|")[0];
-      $(this).on("change", { userName }, function(event) {
-        const checked = $(this).is(":checked");
-        const permsList = $(`#${userName}\\|perms`);
-        permsList.prop('disabled', checked);
-        if (checked) {
-          permsList.val([]);
-        }
-      });
+      const checked = $(this).is(":checked");
+      const permsList = $(`#${userName}\\|perms`);
+
+      permsList.prop("disabled", checked);
+      if (checked) {
+        permsList.val([]);
+      }
     });
 
-    $(".change_password").each(function() {
+    $(document).on("click", ".change_password", function() {
       const userName = $(this).attr("id").split("|")[1];
-      $(this).on("click", { userName }, function(event) {
-        $("#password_form").trigger("reset");
-        $("#password_box #user_login").val(userName);
-      });
+
+      $("#password_form").trigger("reset");
+      $("#password_box #user_login").val(userName);
     });
 
     $('#password_box').on('shown.bs.modal', () => {
@@ -190,6 +185,8 @@ class SettingsUI {
     const searchInput = $('#query-text');
     const pluginList = $('#plugins-list').data('plugin');
 
+    pluginListPanel.on("click", ".plugin-row", this.menuClick.bind(this));
+
     const search = (query) => {
       let results = [];
       if (query) {
@@ -201,14 +198,16 @@ class SettingsUI {
       pluginListPanel.empty();
 
       if (results.length) {
+        const $fragment = $(document.createDocumentFragment());
         results.forEach(p => {
           resultTemplate.clone().find('.plugin-row')
             .attr('id', `plugin|${p[0]}`)
             .text(p[1])
             .removeAttr('class')
-            .click(this.menuClick.bind(this))
-            .end().appendTo(pluginListPanel);
+            .end()
+            .appendTo($fragment);
         });
+        pluginListPanel.append($fragment);
       } else {
         pluginListPanel.append(noresultTemplate);
       }

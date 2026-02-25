@@ -22,10 +22,12 @@ class PackageUI {
 
   parsePackages() {
     const $packageList = $("#package-list");
-    $packageList.children("li").each((_, ele) => {
+    const lis = $packageList.children("li");
+    for (let i = 0, len = lis.length; i < len; i++) {
+      const ele = lis[i];
       const id = ele.id.match(/[0-9]+/);
       this.packages.push(new Package(this, id, ele));
-    });
+    }
 
     $packageList.sortable({
       handle: ".progress",
@@ -218,11 +220,15 @@ class Package {
   }
 
   registerLinkEvents() {
-    $(this.ele).find('.children').children('ul').children("li").each((_, child) => {
-      const lid = $(child).find('.child').attr('id').match(/[0-9]+/);
-      const imgs = $(child).find('.child_secrow span');
-      $(imgs[3]).click(() => this.deleteLink(lid));
-      $(imgs[4]).click(() => this.restartLink(lid));
+    $(this.ele).on("click", ".children ul li .child_secrow span", (e) => {
+      const $span = $(e.currentTarget);
+      const index = $span.index();
+      const lid = $span.closest("li").find(".child").attr("id").match(/[0-9]+/);
+      if (index === 3) {
+        this.deleteLink(lid);
+      } else if (index === 4) {
+        this.restartLink(lid);
+      }
     });
 
     $(this.ele).find('.children').children('ul').sortable({
