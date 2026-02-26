@@ -1,4 +1,5 @@
-import hashlib
+from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 import os
 
 from ..utils.struct.style import style
@@ -6,7 +7,14 @@ from ..utils.struct.style import style
 
 # TODO: rewrite using scrypt or argon2_cffi
 def _salted_password(password, salt):
-    dk = hashlib.pbkdf2_hmac("sha256", password.encode(), bytes.fromhex(salt), 100000)
+    # Use PBKDF2 via cryptography to derive a 32-byte key with 100,000 iterations (SHA-256)
+    kdf = PBKDF2HMAC(
+        algorithm=hashes.SHA256(),
+        length=32,
+        salt=bytes.fromhex(salt),
+        iterations=100000,
+    )
+    dk = kdf.derive(password.encode())
     return salt + dk.hex()
 
 
@@ -117,6 +125,15 @@ class UserDatabaseMethods:
             }
 
         return user
+
+    @style.queue
+    def get_user_id(self, user):
+        self.c.execute("SELECT id, name FROM users WHERE name=?", (user,))
+        r = self.c.fetchone()
+        if not r:
+            return False
+        else:
+            return r[0]
 
     @style.queue
     def remove_user(self, user):
