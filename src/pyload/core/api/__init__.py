@@ -522,6 +522,8 @@ class Api:
         sanitized_name = name.replace("\n", "\\n").replace("\r", "\\r")
         package_id = self.pyload.files.add_package(sanitized_name, folder, Destination(dest))
 
+        links = [links] if isinstance(links, str) else links
+
         self.pyload.files.add_links(links, package_id)
 
         self.pyload.log.info(
