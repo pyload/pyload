@@ -32,7 +32,7 @@ def rpc(func, args=""):
     # Enforce HTTP method for the API method
     expected = api._required_http_method_for_api(func)
     if expected is None:
-        return jsonify({'error': "Forbidden"}), 403
+        return jsonify({'error': "Not Found"}), 404
 
     actual = flask.request.method
     if actual != expected:
@@ -42,13 +42,13 @@ def rpc(func, args=""):
 
     # Get user info from API auth or session
     if not hasattr(flask.g, 'user_info'):
-        return jsonify({'error': "Unauthorized - Login required"}), 401
+        return jsonify({'error': "Login required"}), 401
 
     # Check permissions
     user_info = flask.g.user_info
     if not api.is_authorized(func, {"role": user_info["role"], "permission": user_info["permission"]}):
         log.error(f"API access denied for function '{func}'")
-        return jsonify({'error': "Unauthorized - Insufficient permissions"}), 401
+        return jsonify({'error': "Access denied"}), 401
 
     # get path parameters
     args = args.split(",")
@@ -78,7 +78,10 @@ def rpc(func, args=""):
                 **{x: _parse_parameter(y) for x, y in kwargs.items()},
             ))
     except Exception as exc:
-        response = jsonify(error=str(exc), traceback=traceback.format_exc()), 500
+        resp = {'error': str(exc)}
+        if api.pyload.debug > 2:
+            resp["traceback"] = traceback.print_exc()
+        response = jsonify(resp), 500
 
     return response
 
