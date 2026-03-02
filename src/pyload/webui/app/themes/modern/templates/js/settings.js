@@ -48,7 +48,7 @@ class SettingsUI {
       }
     });
 
-    $("#core-menu li").click(this.menuClick.bind(this));
+    $("#core-menu").on('click', 'li', this.menuClick.bind(this));
     $("#core_submit").click(this.configSubmit.bind(this));
     $("#plugin_submit").click(this.configSubmit.bind(this));
     $("#account_add_button").click(this.addAccount.bind(this));
@@ -193,7 +193,7 @@ class SettingsUI {
         results = pluginList;
       }
 
-      pluginListPanel.empty();
+      pluginListPanel.empty().on('click', 'li', this.menuClick.bind(this));
 
       if (results.length) {
         const $fragment = $(document.createDocumentFragment());
