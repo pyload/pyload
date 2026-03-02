@@ -65,7 +65,7 @@ class PackageUI {
     $.post("{{url_for('api.rpc', func='delete_finished')}}")
       .done((data) => {
         if (data.length > 0) {
-          window.location.reload();
+          window.location.assign(window.location.origin + window.location.pathname + window.location.search);
         } else {
           this.packages.forEach(pack => pack.close());
         }

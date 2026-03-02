@@ -162,7 +162,7 @@ class SettingsUI {
             data: $userForm.serialize(),
             success: () => {
               sessionStorage.setItem("activeTab", "#users");
-              window.location.assign(window.location.href);
+              window.location.assign(window.location.origin + window.location.pathname + window.location.search);
             }
           }).fail(() => {
             uiHandler.indicateFail("{{_('Error occurred')}}");
@@ -265,7 +265,7 @@ class SettingsUI {
       data: $("#add_account_form").serialize(),
       success: () => {
         sessionStorage.setItem("activeTab", "#accounts");
-        window.location.reload();
+        window.location.assign(window.location.origin + window.location.pathname + window.location.search);
       }
     }).fail(() => {
       uiHandler.indicateFail("{{_('Error occurred')}}");
@@ -282,7 +282,7 @@ class SettingsUI {
       async: true,
       success: () => {
         sessionStorage.setItem("activeTab", "#users");
-        window.location.reload();
+        window.location.assign(window.location.origin + window.location.pathname + window.location.search);
       }
     }).fail(() => {
       uiHandler.indicateFail("{{_('Error occurred')}}");
@@ -299,7 +299,7 @@ class SettingsUI {
       async: true,
       success: () => {
         sessionStorage.setItem("activeTab", "#accounts");
-        window.location.reload();
+        window.location.assign(window.location.origin + window.location.pathname + window.location.search);
       }
     }).fail(() => {
       uiHandler.indicateFail("{{_('Error occurred')}}");
