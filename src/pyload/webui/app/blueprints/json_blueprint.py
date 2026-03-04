@@ -172,7 +172,7 @@ def edit_package():
     api = flask.current_app.config["PYLOAD_API"]
     try:
         pack_id = int(flask.request.form["pack_id"])
-        pack_folder = flask.request.form["pack_folder"].lstrip(f"{os.path.sep}").replace(f"..{os.path.sep}", f"")
+        pack_folder = secure_filename(flask.request.form["pack_folder"])
         data = {
             "name": flask.request.form["pack_name"],
             "_folder": pack_folder,
