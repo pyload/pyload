@@ -9,7 +9,7 @@ from ..base.account import BaseAccount
 class PixeldrainCom(BaseAccount):
     __name__ = "PixeldrainCom"
     __type__ = "account"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
     __description__ = """Pixeldrain.com account plugin"""
@@ -17,7 +17,7 @@ class PixeldrainCom(BaseAccount):
     __authors__ = [("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
     #: See https://pixeldrain.com/api/
-    API_URL = "https://pixeldrain.com/api/"
+    API_URL = "https://pixeldrain.com/api"
 
     def grab_info(self, user, password, data):
         # unfortunately, there is no method for account info, assume premium
