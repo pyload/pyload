@@ -22,7 +22,7 @@
             </select>
           {% elif option.type == "folder" %}
             <div class="input-group">
-              <input style="float: right;" class="form-control" name="{{skey}}|{{okey}}" type="text" id="{{skey}}|{{okey}}" value="{{option.value}}"/>
+              <input style="float: right; min-width: 300px;" class="form-control" name="{{skey}}|{{okey}}" type="text" id="{{skey}}|{{okey}}" value="{{option.value}}"/>
               <span class="input-group-btn">
                 <button class='btn btn-form' name="browsebutton" type='button' title="{{_('Browse')}}" data-toggle="modal" data-target="#path_chooser" data-browsefor="folder" data-targetinput="#{{skey}}|{{okey}}" onfocus="this.blur();">
                   <span class='glyphicon glyphicon-folder-open' style='font-size: 11px;'></span>
@@ -31,7 +31,7 @@
             </div>
           {% elif option.type == "file" %}
             <div class="input-group">
-              <input style="float: right;" class="form-control" name="{{skey}}|{{okey}}" type="text" id="{{skey}}|{{okey}}" value="{{option.value}}"/>
+              <input style="float: right; min-width: 300px;" class="form-control" name="{{skey}}|{{okey}}" type="text" id="{{skey}}|{{okey}}" value="{{option.value}}"/>
               <span class="input-group-btn">
                 <button class='btn btn-form' name="browsebutton" type='button' title="{{_('Browse')}}" data-toggle="modal" data-target="#path_chooser" data-browsefor="file" data-targetinput="#{{skey}}|{{okey}}" onfocus="this.blur();">
                   <span class='glyphicon glyphicon-folder-open' style='font-size: 11px;'></span>
