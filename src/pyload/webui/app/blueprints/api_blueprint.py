@@ -11,7 +11,7 @@ from flask.json import jsonify
 from pyload import APPID
 
 from ..api_docs.openapi_specification_generator import OpenAPISpecificationGenerator
-from ..helpers import apikey_auth, csrf_exempt, is_authenticated, render_template
+from ..helpers import apikey_auth, csrf_exempt, is_authenticated
 
 bp = flask.Blueprint("api", __name__)
 log = getLogger(APPID)
@@ -102,6 +102,23 @@ def _parse_parameter(param: str) -> Any:
 @bp.route("/api/openapi.json", methods=["GET"])
 def api_docs():
     """Return OpenAPI specification JSON"""
+    api = flask.current_app.config["PYLOAD_API"]
+
+    s = flask.session
+    basic_auth = flask.request.authorization
+
+    if basic_auth:
+        user_info = api.check_auth(basic_auth.username, basic_auth.password)
+        if not user_info:
+            return "Forbidden", 403
+    elif not is_authenticated(s):
+        return "Authentication required", 401, {'WWW-Authenticate': 'Basic realm="Login Required"'}
+    else:
+        user_info = {"role": s["role"], "permission": s["perms"], "id": s["id"]}
+
+    if user_info["role"] != 0:  #: Role.ADMIN
+        return "Forbidden", 403
+
     openapi_spec = OpenAPISpecificationGenerator(api=flask.current_app.config["PYLOAD_API"]).generate_openapi_json()
     return openapi_spec
 
@@ -109,6 +126,23 @@ def api_docs():
 @bp.route("/api", methods=["GET"], strict_slashes=False)
 def swagger_ui():
     """Serve Swagger UI with the API documentation"""
+    api = flask.current_app.config["PYLOAD_API"]
+
+    s = flask.session
+    basic_auth = flask.request.authorization
+
+    if basic_auth:
+        user_info = api.check_auth(basic_auth.username, basic_auth.password)
+        if not user_info:
+            return "Forbidden", 403
+    elif not is_authenticated(s):
+        return "Authentication required", 401, {'WWW-Authenticate': 'Basic realm="Login Required"'}
+    else:
+        user_info = {"role": s["role"], "permission": s["perms"], "id": s["id"]}
+
+    if user_info["role"] != 0:  #: Role.ADMIN
+        return "Forbidden", 403
+
     return flask.send_from_directory("static", "swagger.html")
 
 
