@@ -119,7 +119,7 @@ def api_docs():
     if user_info["role"] != 0:  #: Role.ADMIN
         return "Forbidden", 403
 
-    openapi_spec = OpenAPISpecificationGenerator(api=flask.current_app.config["PYLOAD_API"]).generate_openapi_json()
+    openapi_spec = OpenAPISpecificationGenerator(api=api).generate_openapi_json()
     return openapi_spec
 
 
