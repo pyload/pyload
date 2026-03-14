@@ -102,6 +102,32 @@ def _validate_parse_url_target(url: str) -> None:
             )
 
 
+def _resolve_public_fetch_targets(url: str) -> list[str]:
+    _validate_parse_url_target(url)
+
+    parsed = urlparse(url)
+    hostname = parsed.hostname
+    if not hostname:
+        raise ValueError("URL must include a hostname")
+
+    try:
+        addrinfo = socket.getaddrinfo(
+            hostname, parsed.port or None, type=socket.SOCK_STREAM
+        )
+    except socket.gaierror as exc:
+        raise ValueError("Unable to resolve URL hostname") from exc
+
+    approved_addresses = []
+    for info in addrinfo:
+        address = ipaddress.ip_address(info[4][0])
+        approved_addresses.append(str(address))
+
+    if not approved_addresses:
+        raise ValueError("Unable to resolve URL hostname")
+
+    return list(dict.fromkeys(approved_addresses))
+
+
 class Perms(IntFlag):
     ANY = 0  #: requires no permission, but login
     ADD = 1  #: can add packages
@@ -626,8 +652,15 @@ class Api:
             urls.update(RE_URLMATCH.findall(html))
 
         if url:
-            _validate_parse_url_target(url)
-            page = get_url(url, redirect=False)
+            approved_addresses = _resolve_public_fetch_targets(url)
+            page = get_url(
+                url,
+                redirect=False,
+                request_options={
+                    "proxies": {},
+                    "resolved_addresses": approved_addresses,
+                },
+            )
             page_text = str(to_str(page))
             urls.update(RE_URLMATCH.findall(page_text))
 
