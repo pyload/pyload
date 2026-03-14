@@ -1,0 +1,52 @@
+services:
+  pyload:
+    container_name: pyload
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      PUID: ${PUID:-1000}
+      PGID: ${PGID:-1000}
+      TZ: ${TZ:-Europe/Paris}
+    ports:
+      - "8000:8000"
+      - "9666:9666"
+    volumes:
+      - ./docker-data/config:/config
+      - ./docker-data/downloads:/downloads
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        set -eu
+        mkdir -p /config/settings
+        python3 - <<'PY'
+        import shutil
+        from pathlib import Path
+
+        from pyload import PKGDIR
+
+        config_path = Path("/config/settings/pyload.cfg")
+        default_path = Path(PKGDIR) / "core" / "config" / "default.cfg"
+
+        if not config_path.exists():
+            shutil.copyfile(default_path, config_path)
+            config_path.chmod(0o600)
+
+        content = config_path.read_text(encoding="utf-8")
+        needle = 'ip host : "IP address" = localhost'
+        replacement = 'ip host : "IP address" = 0.0.0.0'
+
+        if needle in content:
+            config_path.write_text(content.replace(needle, replacement, 1), encoding="utf-8")
+        PY
+        exec /init
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - python3 -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/', timeout=5)"
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+    restart: unless-stopped

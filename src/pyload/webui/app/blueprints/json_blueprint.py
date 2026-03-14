@@ -7,7 +7,13 @@ from pyload import PKGDIR
 from pyload.core.api import Role
 from pyload.core.utils import format
 
-from ..helpers import get_permission, login_required, permlist, render_template, set_permission
+from ..helpers import (
+    get_permission,
+    login_required,
+    permlist,
+    render_template,
+    set_permission,
+)
 
 bp = flask.Blueprint("json", __name__)
 
@@ -57,7 +63,7 @@ def links():
 def package():
     api = flask.current_app.config["PYLOAD_API"]
     try:
-        id = int(flask.request.args.get('id'))
+        id = int(flask.request.args.get("id"))
         data = api.get_package_data(id)
 
         tmp = data.links
@@ -69,14 +75,14 @@ def package():
         return jsonify(False), 500
 
 
-@bp.route("/json/package_order", endpoint="package_order")
+@bp.route("/json/package_order", methods=["POST"], endpoint="package_order")
 # @apiver_check
 @login_required("ADD")
 def package_order():
     api = flask.current_app.config["PYLOAD_API"]
     try:
-        pid = int(flask.request.args.get('pid'))
-        pos = int(flask.request.args.get('pos'))
+        pid = int(flask.request.form.get("pid"))
+        pos = int(flask.request.form.get("pos"))
         api.order_package(pid, pos)
         return jsonify(response="success")
 
@@ -84,13 +90,13 @@ def package_order():
         return jsonify(False), 500
 
 
-@bp.route("/json/abort_link", endpoint="abort_link")
+@bp.route("/json/abort_link", methods=["POST"], endpoint="abort_link")
 # @apiver_check
 @login_required("DELETE")
 def abort_link():
     api = flask.current_app.config["PYLOAD_API"]
     try:
-        id = int(flask.request.args.get('id'))
+        id = int(flask.request.form.get("id"))
         api.stop_downloads([id])
         return jsonify(response="success")
 
@@ -98,14 +104,14 @@ def abort_link():
         return jsonify(False), 500
 
 
-@bp.route("/json/link_order", endpoint="link_order")
+@bp.route("/json/link_order", methods=["POST"], endpoint="link_order")
 # @apiver_check
 @login_required("ADD")
 def link_order():
     api = flask.current_app.config["PYLOAD_API"]
     try:
-        fid = int(flask.request.args.get('fid'))
-        pos = int(flask.request.args.get('pos'))
+        fid = int(flask.request.form.get("fid"))
+        pos = int(flask.request.form.get("pos"))
         api.order_file(fid, pos)
         return jsonify(response="success")
 
@@ -133,7 +139,8 @@ def add_package():
 
             safe_filename = secure_filename(file.filename)
             file_path = os.path.join(
-                api.get_config_value("general", "storage_folder"), "tmp_" + safe_filename
+                api.get_config_value("general", "storage_folder"),
+                "tmp_" + safe_filename,
             )
             file.save(file_path)
             links.insert(0, file_path)
@@ -150,14 +157,14 @@ def add_package():
     return jsonify(True)
 
 
-@bp.route("/json/move_package", endpoint="move_package")
+@bp.route("/json/move_package", methods=["POST"], endpoint="move_package")
 # @apiver_check
 @login_required("MODIFY")
 def move_package():
     api = flask.current_app.config["PYLOAD_API"]
     try:
-        id = int(flask.request.args.get('id'))
-        dest = int(flask.request.args.get('dest'))
+        id = int(flask.request.form.get("id"))
+        dest = int(flask.request.form.get("dest"))
         api.move_package(dest, id)
         return jsonify(response="success")
 
@@ -215,8 +222,8 @@ def set_captcha():
 # @apiver_check
 @login_required("SETTINGS")
 def load_config():
-    category = flask.request.args.get('category')
-    section = flask.request.args.get('section')
+    category = flask.request.args.get("category")
+    section = flask.request.args.get("section")
     if category not in ("core", "plugin") or not section:
         return jsonify(False), 500
 
@@ -242,7 +249,7 @@ def load_config():
 @login_required("SETTINGS")
 def save_config():
     api = flask.current_app.config["PYLOAD_API"]
-    category = flask.request.args.get('category')
+    category = flask.request.args.get("category")
     if category not in ("core", "plugin"):
         return jsonify(False), 500
 
@@ -294,25 +301,66 @@ def update_accounts():
         plugin, action = tmp.split("|")
 
         if action == "delete":
-            deleted.append((plugin,user, ))
+            deleted.append(
+                (
+                    plugin,
+                    user,
+                )
+            )
             api.remove_account(plugin, user)
 
         elif action == "password":
-            password, options = updated.get((plugin, user,), (None, {}))
+            password, options = updated.get(
+                (
+                    plugin,
+                    user,
+                ),
+                (None, {}),
+            )
             password = value
-            updated[(plugin, user,)] = (password, options)
+            updated[
+                (
+                    plugin,
+                    user,
+                )
+            ] = (password, options)
         elif action == "time" and "-" in value:
-            password, options = updated.get((plugin, user,), (None, {}))
+            password, options = updated.get(
+                (
+                    plugin,
+                    user,
+                ),
+                (None, {}),
+            )
             options["time"] = [value]
-            updated[(plugin, user,)] = (password, options)
+            updated[
+                (
+                    plugin,
+                    user,
+                )
+            ] = (password, options)
         elif action == "limitdl" and value.isdigit():
-            password, options = updated.get((plugin, user,), (None, {}))
+            password, options = updated.get(
+                (
+                    plugin,
+                    user,
+                ),
+                (None, {}),
+            )
             options["limit_dl"] = [value]
-            updated[(plugin, user,)] = (password, options)
+            updated[
+                (
+                    plugin,
+                    user,
+                )
+            ] = (password, options)
 
     for tmp, options in updated.items():
         plugin, user = tmp
-        if (plugin, user,) in deleted:
+        if (
+            plugin,
+            user,
+        ) in deleted:
             continue
         password, options = options
         api.update_account(plugin, user, password, options=options)
@@ -337,6 +385,7 @@ def change_password():
 
     return jsonify(True)
 
+
 @bp.route("/json/add_user", methods=["POST"], endpoint="add_user")
 # @apiver_check
 @login_required("ADMIN")
@@ -360,6 +409,7 @@ def add_user():
         return jsonify(False), 500  #: Duplicate user
 
     return jsonify(True)
+
 
 @bp.route("/json/update_users", methods=["POST"], endpoint="update_users")
 # @apiver_check

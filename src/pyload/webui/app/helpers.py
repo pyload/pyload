@@ -1,3 +1,4 @@
+import ipaddress
 import json
 from functools import wraps
 from urllib.parse import urljoin, urlparse
@@ -25,6 +26,7 @@ try:
 except AttributeError:
     pass
 else:
+
     class JSONProvider(JSONProviderBase):
         def dumps(self, obj, **kwargs):
             return json.dumps(obj, **kwargs, cls=JSONEncoder)
@@ -41,7 +43,9 @@ def is_safe_url(location):
         return False
     host_urlp = urlparse(flask.request.host_url)
     test_urlp = urlparse(urljoin(flask.request.host_url, location))
-    return test_urlp.scheme in ('http', 'https') and host_urlp.netloc == test_urlp.netloc
+    return (
+        test_urlp.scheme in ("http", "https") and host_urlp.netloc == test_urlp.netloc
+    )
 
 
 def get_redirect_url(fallback=None):
@@ -190,6 +194,28 @@ def is_authenticated(session=flask.session):
     return authenticated and api.user_exists(user)
 
 
+def is_loopback_request(request=None):
+    request = request or flask.request
+
+    if any(
+        request.headers.get(header)
+        for header in ("X-Forwarded-For", "X-Real-IP", "Forwarded")
+    ):
+        return False
+
+    remote_addr = request.remote_addr
+    if not remote_addr:
+        return False
+
+    if remote_addr.startswith("::ffff:"):
+        remote_addr = remote_addr[7:]
+
+    try:
+        return ipaddress.ip_address(remote_addr).is_loopback
+    except ValueError:
+        return remote_addr == "localhost"
+
+
 def login_required(perm):
     def decorator(func):
         @wraps(func)
@@ -210,8 +236,7 @@ def login_required(perm):
 
                 else:
                     location = flask.url_for(
-                        "app.login",
-                        next=flask.request.endpoint.split(".")[-1]
+                        "app.login", next=flask.request.endpoint.split(".")[-1]
                     )
                     response = flask.redirect(location)
 
@@ -243,7 +268,10 @@ def apikey_auth(func):
         log = flask.current_app.logger
 
         # Get client IP, safely handling X-Forwarded-For
-        client_ip = flask.request.headers.get("X-Forwarded-For", "").split(",")[0].strip() or flask.request.remote_addr
+        client_ip = (
+            flask.request.headers.get("X-Forwarded-For", "").split(",")[0].strip()
+            or flask.request.remote_addr
+        )
 
         # Check for API authentication
         auth = flask.request.authorization
@@ -254,7 +282,9 @@ def apikey_auth(func):
             auth_method = "Basic auth"
 
             # Sanitize username for logging
-            sanitized_user = user.replace("\n", "\\n").replace("\r", "\\r") if user else "unknown"
+            sanitized_user = (
+                user.replace("\n", "\\n").replace("\r", "\\r") if user else "unknown"
+            )
 
             # Verify API credentials
             user_info = api.check_auth(user, password)
@@ -263,7 +293,9 @@ def apikey_auth(func):
                 return decorated(*args, **kwargs)
 
             # Log failed API authentication
-            log.error(f"API authentication failed for user '{sanitized_user}' using {auth_method} [CLIENT: {client_ip}]")
+            log.error(
+                f"API authentication failed for user '{sanitized_user}' using {auth_method} [CLIENT: {client_ip}]"
+            )
             return flask.json.jsonify({"error": "Invalid API credentials"}), 401
 
         # No API auth - still use the decorated function but rely on session auth
@@ -276,8 +308,12 @@ def apikey_auth(func):
         else:
             user = s.get("name")
             # Sanitize username for logging
-            sanitized_user = user.replace("\n", "\\n").replace("\r", "\\r") if user else "unknown"
-            log.error(f"API authentication failed for user '{sanitized_user}' using session [CLIENT: {client_ip}]")
+            sanitized_user = (
+                user.replace("\n", "\\n").replace("\r", "\\r") if user else "unknown"
+            )
+            log.error(
+                f"API authentication failed for user '{sanitized_user}' using session [CLIENT: {client_ip}]"
+            )
             return flask.json.jsonify({"error": "Invalid API credentials"}), 401
 
     return decorated_function

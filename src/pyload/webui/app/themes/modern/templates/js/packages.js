@@ -44,7 +44,7 @@ class PackageUI {
           return false;
         }
         uiHandler.indicateLoad();
-        $.get({
+        $.post({
           url: "{{url_for('json.package_order')}}",
           data: { pid: ui.item.data('pid'), pos: newIndex },
           traditional: true,
@@ -246,7 +246,7 @@ class Package {
           return false;
         }
         uiHandler.indicateLoad();
-        $.get({
+        $.post({
           url: "{{url_for('json.link_order')}}",
           data: { fid: ui.item.data('lid'), pos: newIndex },
           traditional: true,
@@ -374,7 +374,7 @@ class Package {
     event.stopPropagation();
     event.preventDefault();
     uiHandler.indicateLoad();
-    $.get({
+    $.post({
       url: "{{url_for('json.move_package')}}",
       data: { id: this.id, dest: ((this.ui.type + 1) % 2) },
       traditional: true
@@ -400,7 +400,7 @@ class Package {
       .done((data) => {
         const length = data.links.length;
         for (let i = 1; i <= length / 2; i++) {
-          $.get({
+          $.post({
             url: "{{url_for('json.link_order')}}",
             data: { fid: data.links[length - i].fid, pos: i - 1 },
             traditional: true
