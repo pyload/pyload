@@ -381,6 +381,16 @@ def which(filename):
             return filename
 
 
+def is_within_directory(base_dir, target_dir):
+    """
+    Check if target_dir is within base_dir
+    """
+    # Use realpath for normalization to handle symlinks and traversal sequences
+    real_base = os.path.realpath(base_dir)
+    real_target = os.path.realpath(target_dir)
+    return os.path.commonpath([real_base, real_target]) == real_base
+
+
 def safepath(value):
     """
     Remove invalid characters and truncate the path if needed.
@@ -411,9 +421,19 @@ def safepath(value):
 
 def safejoin(*args):
     """
-    os.path.join + safepath.
+    os.path.join + safepath, with path traversal protection.
+    Assumes the first argument is the base directory.
     """
-    return safepath(os.path.join(*args))
+    if len(args) < 1:
+        raise ValueError("At least one argument required (base directory)")
+
+    base = args[0]
+    safe_joined = safepath(os.path.join(*args))
+
+    if not is_within_directory(base, safe_joined):
+        raise ValueError("Path traversal attempt detected")
+
+    return safe_joined
 
 
 def safename(value):
