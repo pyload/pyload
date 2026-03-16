@@ -29,7 +29,7 @@ class DdownloadCom(XFSDownloader):
     NAME_PATTERN = r'class="file-info-name">(?P<N>.+?)<'
     SIZE_PATTERN = r'<span class="file-size">(?P<S>[\d.,]+) (?P<U>[\w^_]+)</span>'
 
-    OFFLINE_PATTERN = r">File Not Found<"
+    OFFLINE_PATTERN = r">File Not Found<|>File Deleted<"
     DL_LIMIT_PATTERN = r"You have to wait (.+?) till next download"
 
     API_KEY = "37699zuaj90n9hxado2m7"

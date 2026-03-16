@@ -211,10 +211,16 @@ class BaseAccount(BasePlugin):
     def reset(self):
         self.sync()
 
-        def clear(x):
-            return {} if isinstance(x, dict) else [] if is_sequence(x) else None
+        _preserve = {"login", "type", "plugin"}
 
-        self.info["data"] = {k: clear(v) for k, v in self.info["data"].items()}
+        def clear(k, v):
+            if k in _preserve:
+                return v
+            if k == "premium":
+                return False
+            return {} if isinstance(v, dict) else [] if is_sequence(v) else None
+
+        self.info["data"] = {k: clear(k, v) for k, v in self.info["data"].items()}
         self.info["data"]["options"] = {"limit_dl": ["0"]}
 
         self.syncback()
@@ -364,12 +370,22 @@ class BaseAccount(BasePlugin):
 
             u = self.accounts[user]
             if password:
+                old_password = u.get("password", "")
                 u["password"] = password
+
+                #: Fix A: Clear cookie jar when password changes so signin()
+                #: is forced to authenticate with the new password instead of
+                #: reusing the old session cookies (which would cause skip_login).
+                if password != old_password:
+                    self.pyload.request_factory.remove_cookie_jar(
+                        self.classname, user
+                    )
 
             if options:
                 u["options"].update(options)
 
             u["plugin"].relogin()
+            u["plugin"].get_info()
 
         else:
             self.add(user, password, options)
