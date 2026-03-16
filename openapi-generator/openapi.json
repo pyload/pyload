@@ -2784,14 +2784,17 @@
             "title": "Validuntil"
           },
           "login": {
+            "default": "",
             "title": "Login",
             "type": "string"
           },
           "options": {
+            "default": {},
             "title": "Options",
             "type": "object"
           },
           "valid": {
+            "default": false,
             "title": "Valid",
             "type": "boolean"
           },
@@ -2809,21 +2812,16 @@
             "title": "Trafficleft"
           },
           "premium": {
+            "default": false,
             "title": "Premium",
             "type": "boolean"
           },
           "type": {
+            "default": "",
             "title": "Type",
             "type": "string"
           }
         },
-        "required": [
-          "login",
-          "options",
-          "valid",
-          "premium",
-          "type"
-        ],
         "title": "AccountInfo",
         "type": "object"
       },
