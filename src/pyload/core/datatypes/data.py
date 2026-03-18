@@ -11,12 +11,12 @@ from pyload.core.datatypes.json_schema_extras import OPTIONAL_INT64_JSON_SCHEMA
 
 class AccountInfo(BaseModel):
     validuntil: Optional[float] = Field(default=None, json_schema_extra=OPTIONAL_FLOAT_JSON_SCHEMA)
-    login: str
-    options: dict
-    valid: bool
+    login: str = ""
+    options: dict = {}
+    valid: bool = False
     trafficleft: Optional[int] = Field(default=None, json_schema_extra=OPTIONAL_INT64_JSON_SCHEMA)
-    premium: bool
-    type: str
+    premium: bool = False
+    type: str = ""
 
 
 class CaptchaTask(BaseModel):

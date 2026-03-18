@@ -1292,20 +1292,23 @@ class Api:
         accs = self.pyload.account_manager.get_account_infos(False, refresh)
         accounts = []
         for group in accs.values():
-            accounts.extend(
-                [
-                    AccountInfo(
-                        validuntil=acc["validuntil"],
-                        login=acc["login"],
-                        options=acc["options"],
-                        valid=acc["valid"],
-                        trafficleft=acc["trafficleft"],
-                        premium=acc["premium"],
-                        type=acc["type"],
+            for acc in group:
+                try:
+                    accounts.append(
+                        AccountInfo(
+                            validuntil=acc.get("validuntil"),
+                            login=acc.get("login") or "",
+                            options=acc.get("options") or {},
+                            valid=bool(acc.get("valid")),
+                            trafficleft=acc.get("trafficleft"),
+                            premium=bool(acc.get("premium")),
+                            type=acc.get("type") or "",
+                        )
                     )
-                    for acc in group
-                ]
-            )
+                except Exception:
+                    self.pyload.log.warning(
+                        f"Skipping broken account entry: {acc.get('login', 'unknown')}"
+                    )
         return accounts
 
     @legacy("getAccountTypes")
