@@ -23,16 +23,20 @@ bp = flask.Blueprint("flash", __name__, url_prefix="/")
 def local_check(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
-        remote_addr = flask.request.environ.get("REMOTE_ADDR", "0")
-        http_host = flask.request.environ.get("HTTP_HOST", "0")
-
-        if remote_addr in ("127.0.0.1", "::ffff:127.0.0.1", "::1", "localhost") or http_host in (
-                "127.0.0.1:9666",
-                "[::1]:9666",
-        ):
+        remote_addr = flask.request.environ.get("REMOTE_ADDR")
+        if remote_addr in ("127.0.0.1", "::ffff:127.0.0.1", "::1", "localhost"):
             return func(*args, **kwargs)
-        else:
-            return "Forbidden", 403
+
+        elif "wsgi.input" in flask.request.environ:
+            try:
+                local_addr = flask.request.environ["wsgi.input"].rfile.raw._sock.getsockname()[0]
+            except Exception:
+                pass
+            else:
+                if local_addr == remote_addr:
+                    return func(*args, **kwargs)
+
+        return "Forbidden", 403
 
     return wrapper
 
