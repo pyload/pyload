@@ -24,15 +24,20 @@ bp = flask.Blueprint("flash", __name__, url_prefix="/")
 def local_check(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
-        remote_addr = flask.request.environ.get("REMOTE_ADDR")
-        if remote_addr in ("127.0.0.1", "::ffff:127.0.0.1", "::1", "localhost"):
-            return func(*args, **kwargs)
-
-        else:
-            local_addr = g.get("web_addr")
-
-            if local_addr == remote_addr:
+        http_host = flask.request.environ.get("HTTP_HOST")
+        if http_host in (
+                "localhost:9666",
+                "127.0.0.1:9666",
+                "[::1]:9666",
+        ):
+            remote_addr = flask.request.environ.get("REMOTE_ADDR")
+            if remote_addr in ("127.0.0.1", "::ffff:127.0.0.1", "::1", "localhost"):
                 return func(*args, **kwargs)
+
+            else:
+                local_addr = g.get("web_addr")
+                if local_addr == remote_addr:
+                    return func(*args, **kwargs)
 
         return "Forbidden", 403
 
