@@ -4,6 +4,7 @@ import ssl
 import threading
 import time
 
+from pyload import g
 from pyload.core.utils.struct.lock import lock
 
 from ..base.addon import BaseAddon, threaded
@@ -90,6 +91,9 @@ class ClickNLoad(BaseAddon):
                 test_socket.shutdown(socket.SHUT_WR)
                 self.web_addr = addr[4]
                 self.web_af = addr[0]
+
+                #: save backend address for later use
+                g.web_addr = addr[4][0]
 
                 self.log_debug(
                     self._("Backend found on {}://{}:{}").format(

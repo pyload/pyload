@@ -5,10 +5,11 @@ from urllib.parse import unquote
 
 import flask
 from cryptography.hazmat.backends import default_backend
-from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.primitives import padding
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from werkzeug.utils import secure_filename
 
+from pyload import g
 from pyload.core.api import Destination
 from pyload.core.utils.convert import to_str
 from pyload.core.utils.misc import eval_js
@@ -27,17 +28,8 @@ def local_check(func):
         if remote_addr in ("127.0.0.1", "::ffff:127.0.0.1", "::1", "localhost"):
             return func(*args, **kwargs)
 
-        elif "wsgi.input" in flask.request.environ:
-            local_addr = None
-            try:
-                local_addr = flask.request.environ["wsgi.input"].rfile.raw._sock.getsockname()[0]
-            except AttributeError:
-                try:
-                    local_addr = flask.request.environ["wsgi.input"].raw._sock.getsockname()[0]
-                except Exception:
-                    pass
-            except Exception:
-                pass
+        else:
+            local_addr = g.get("web_addr")
 
             if local_addr == remote_addr:
                 return func(*args, **kwargs)
