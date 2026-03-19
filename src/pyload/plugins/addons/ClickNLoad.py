@@ -26,7 +26,7 @@ def resolve_host(host):
 class ClickNLoad(BaseAddon):
     __name__ = "ClickNLoad"
     __type__ = "addon"
-    __version__ = "0.64"
+    __version__ = "0.65"
     __status__ = "testing"
 
     __config__ = [
@@ -61,8 +61,10 @@ class ClickNLoad(BaseAddon):
         if self.pyload.config.get("webui", "enabled"):
             web_host = self.pyload.config.get("webui", "host")
             web_port = self.pyload.config.get("webui", "port")
-            if web_host in ("0.0.0.0", "::"):
+            if web_host == "0.0.0.0":
                 web_host = "127.0.0.1"
+            elif web_host == "::":
+                web_host = "::1"
 
             try:
                 addrinfo = socket.getaddrinfo(
