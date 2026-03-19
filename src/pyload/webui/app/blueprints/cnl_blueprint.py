@@ -28,13 +28,19 @@ def local_check(func):
             return func(*args, **kwargs)
 
         elif "wsgi.input" in flask.request.environ:
+            local_addr = None
             try:
                 local_addr = flask.request.environ["wsgi.input"].rfile.raw._sock.getsockname()[0]
+            except AttributeError:
+                try:
+                    local_addr = flask.request.environ["wsgi.input"].raw._sock.getsockname()[0]
+                except Exception:
+                    pass
             except Exception:
                 pass
-            else:
-                if local_addr == remote_addr:
-                    return func(*args, **kwargs)
+
+            if local_addr == remote_addr:
+                return func(*args, **kwargs)
 
         return "Forbidden", 403
 
