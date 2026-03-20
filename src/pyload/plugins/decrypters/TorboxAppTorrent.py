@@ -5,8 +5,6 @@ import re
 import time
 import urllib.request
 
-import pycurl
-
 from pyload.core.network.http.exceptions import BadHeader
 from pyload.core.network.http.http_request import FormFile
 from pyload.core.utils.fs import safejoin
