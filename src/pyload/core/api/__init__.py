@@ -216,9 +216,18 @@ class Api:
         :param value: new config value
         :param section: 'plugin' or 'core
         """
-        self.pyload.addon_manager.dispatch_event(
-            "config_changed", category, option, value, section
-        )
+
+        ADMIN_ONLY_OPTIONS = {
+            ("reconnect", "script"),
+            ("webui", "host"),
+            ("webui", "use_ssl"),
+            ("webui", "ssl_cert"),
+            ("webui", "ssl_key"),
+            ("log", "syslog_host"),
+            ("log", "syslog_port"),
+            ("proxy", "username"),
+            ("proxy", "password"),
+        }
 
         if section == "core":
             if category == "general" and option == "storage_folder":
@@ -231,6 +240,21 @@ class Api:
                 if any(directories[0].startswith(d) for d in directories[1:]):
                     return
 
+            # Require ADMIN role for security-critical settings
+            try:
+                try:
+                    user_info = flask.g.user_info
+                except AttributeError:
+                    user_info = flask.session
+
+                if (category, option) in ADMIN_ONLY_OPTIONS and user_info.get("role") != Role.ADMIN:
+                    self.pyload.log.error(self._("Writing config value {}/{} requires Admin role").format(category, option))
+                    return
+
+            # Attempt to access outside an active Flask request
+            except RuntimeError:
+                pass
+
             self.pyload.config.set(category, option, value)
 
             if category == "download" and option in (
@@ -241,6 +265,10 @@ class Api:
 
         elif section == "plugin":
             self.pyload.config.set_plugin(category, option, value)
+
+        self.pyload.addon_manager.dispatch_event(
+            "config_changed", category, option, value, section
+        )
 
     @legacy("getConfig")
     @permission(Perms.SETTINGS)
