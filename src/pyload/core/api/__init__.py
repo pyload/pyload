@@ -9,9 +9,12 @@
 
 import os
 import re
+import secrets
 import time
 from enum import IntFlag
 from typing import Any, Callable, Optional
+
+import flask
 
 from pyload import PKGDIR
 
@@ -34,6 +37,7 @@ perm_map = {}
 legacy_map = {}
 
 # contains function names mapped to their allowed HTTP method (e.g., 'GET', 'POST', 'PUT', 'DELETE')
+# unlisted functions are not exported
 method_map = {}
 
 
@@ -1623,3 +1627,115 @@ class Api:
     def set_user_permission(self, user: str, permission: int, role: int) -> None:
         self.pyload.db.set_permission(user, permission)
         self.pyload.db.set_role(user, role)
+
+    def generate_apikey(self, user: str, password: str, name: str = "API Key", expires: Optional[int] = None) -> dict[str, Any]:
+        """
+        Generate a new API key for the current user.
+
+        :param user: username to add an apikey to
+        :param password: the password of the username
+        :param name: Name/description for the API key
+        :param expires: Expiration timestamp or None
+        :return: dict with 'key' and 'key_id'
+        """
+        user_info = self.check_auth(user, password)
+        if not user_info:
+            return {
+                "success": False,
+                "error": "Invalid username or password",
+            }
+
+        # Generate a random API key
+        api_key = secrets.token_urlsafe(32)
+
+        expires = expires or 0
+
+        # Store in database
+        key_id = self.pyload.db.create_user_apikey(user_info["id"], name, expires, api_key)
+        if not key_id:
+            return {
+                "success": False,
+                "error": "Create API key failed",
+            }
+
+        full_api_key = f"pl_{(int(str(key_id)) + 9) % 10 + 1}{key_id}{api_key}"
+
+        return {
+            "success": True,
+            "data": {
+                "key": full_api_key,
+                "key_id": key_id,
+                "expires_at": expires,
+                "name": name,
+            }
+        }
+
+    def get_apikeys(self, user: str) -> dict[str, Any]:
+        """
+        Get all API keys for the user.
+
+        :param user: the username to add an apikey to
+        :return: dict with a list of API key dicts
+        """
+        user_id = self.pyload.db.get_user_id(user)
+        if not user_id:
+            return {
+                "success": False,
+                "error": "Invalid username",
+            }
+        else:
+            return {
+                "success": True,
+                "data": self.pyload.db.get_user_apikeys(user_id)
+            }
+
+    def delete_apikey(self, user: str, key_id: int) -> dict[str, Any]:
+        """
+        Delete an API key.
+
+        :param user: username associated with the API key
+        :param key_id: ID of the API key to delete
+        :return: dict with `success` as True if deleted, False otherwise
+        """
+        user_id = self.pyload.db.get_user_id(user)
+        if not user_id:
+            return {
+                "success": False,
+                "error": "Invalid username",
+            }
+        else:
+            return {
+                "success": self.pyload.db.delete_user_apikey(user_id, key_id),
+            }
+            return
+
+    def check_apikey(self, apikey: str) -> dict[str, Any]:
+        """
+        Validates an API key.
+        :param apikey: API key to validate
+        :return: dict with `data` as the API key info
+        """
+        if (
+            not apikey.startswith("pl_") or
+            len(apikey) < 4 or
+            not apikey[3].isdigit() or
+            len(apikey) != ((int(apikey[3]) + 9) % 10 + 1) + 47
+        ):
+            return {
+                "success": False,
+                "error": "Invalid API key",
+            }
+
+        key_id = int(apikey[4:4 + (int(apikey[3]) + 9) % 10 + 1])
+        key_data = self.pyload.db.check_apikey(key_id, apikey[-43:])
+        if not key_data:
+            return {
+                "success": False,
+                "error": "Invalid API key",
+            }
+        else:
+            self.pyload.db.update_apikey_last_used(key_id)
+            return {
+                "success": True,
+                "data": key_data,
+            }

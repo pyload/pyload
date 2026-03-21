@@ -1,4 +1,5 @@
 import json
+import time
 from functools import wraps
 from urllib.parse import urljoin, urlparse
 
@@ -234,6 +235,7 @@ def apikey_auth(func):
 
     Note: This decorator automatically makes the endpoint CSRF exempt to allow API access.
     """
+
     # Apply CSRF exemption at decoration time
     decorated = csrf_exempt(func)
 
@@ -245,32 +247,49 @@ def apikey_auth(func):
         # Get client IP, safely handling X-Forwarded-For
         client_ip = flask.request.headers.get("X-Forwarded-For", "").split(",")[0].strip() or flask.request.remote_addr
 
-        # Check for API authentication
-        auth = flask.request.authorization
-        if auth:
-            # Extract credentials from Basic Auth header
-            user = auth.username
-            password = auth.password
-            auth_method = "Basic auth"
+        # Check for API key in header
+        auth_header = flask.request.headers.get("Authorization")
+        if auth_header:
+            parts = auth_header.split()
+            # Check for valid API key pattern
+            if parts[0].lower() == 'bearer' and len(parts) == 2 and parts[1].startswith("pl_"):
+                # Look up the API key in the database
+                key_info = api.check_apikey(parts[1])
+                if key_info["success"]:
+                    # Get user info from the user_id in the key
+                    user_id = key_info["data"]["user_id"]
+                    key_name = key_info["data"]["name"]
+                    user_data = api.pyload.db.get_all_user_data().get(user_id)
+                    if user_data:
+                        now = int(time.time() * 1000)
+                        timestamp = int(user_data["last_used"] * 1000)
+                        user_info = {
+                            "id": user_id,
+                            "name": user_data["name"],
+                            "role": user_data["role"],
+                            "permission": user_data["permission"],
+                        }
+                        flask.g.user_info = user_info
+                        # Log once per 8 hours
+                        if now >= timestamp + 480_000:
+                            log.info(f"API authentication successful for user {user_info['name']} using the '{key_name}' API key [CLIENT: {client_ip}]")
+                        return decorated(*args, **kwargs)
 
-            # Sanitize username for logging
-            sanitized_user = user.replace("\n", "\\n").replace("\r", "\\r") if user else "unknown"
-
-            # Verify API credentials
-            user_info = api.check_auth(user, password)
-            if user_info:
-                flask.g.user_info = user_info
-                return decorated(*args, **kwargs)
-
-            # Log failed API authentication
-            log.error(f"API authentication failed for user '{sanitized_user}' using {auth_method} [CLIENT: {client_ip}]")
-            return flask.json.jsonify({"error": "Invalid API credentials"}), 401
+                else:
+                    # Log failed API key authentication
+                    log.error(f"API authentication failed using API key {parts[1]} [CLIENT: {client_ip}]")
+                    return flask.json.jsonify({"error": key_info["error"]}), 401
 
         # No API auth - still use the decorated function but rely on session auth
         csrf.protect()
         s = flask.session
         if is_authenticated(s):
-            user_info = {"role": s["role"], "permission": s["perms"]}
+            user_info = {
+                "id": s["id"],
+                "name": s["name"],
+                "role": s["role"],
+                "permission": s["perms"],
+            }
             flask.g.user_info = user_info
             return decorated(*args, **kwargs)
         else:

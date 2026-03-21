@@ -8,7 +8,7 @@
         <form id="add_form" class="form-group" action="{{url_for('json.add_package')}}" method="POST" enctype="multipart/form-data" style="margin-bottom: 40px;">
           <div class="form-group">
             <label for="add_name">{{_('Name')}}</label>
-            <input id="add_name" class="form-control" name="add_name" type="text"/>
+            <input id="add_name" class="form-control" name="add_name" type="text" required/>
             <p class="help-block">{{_('The name of the package')}}</p>
           </div>
           <div class="form-group">

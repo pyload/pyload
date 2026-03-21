@@ -1,8 +1,10 @@
 import os
-from werkzeug.utils import secure_filename
+from functools import wraps
 
 import flask
 from flask.json import jsonify
+from werkzeug.utils import secure_filename
+
 from pyload import PKGDIR
 from pyload.core.api import Role
 from pyload.core.utils import format
@@ -10,6 +12,34 @@ from pyload.core.utils import format
 from ..helpers import get_permission, login_required, permlist, render_template, set_permission
 
 bp = flask.Blueprint("json", __name__)
+
+
+def expect_json(f):
+    """Decorator: parses JSON and passes it as named arguments"""
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        if not flask.request.is_json:
+            return jsonify({
+                "success": False,
+                "error": "Request must be JSON"
+            }), 415
+
+        params = flask.request.get_json()
+        if params is None:
+            return jsonify({
+                "success": False,
+                "error": "Invalid or empty JSON"
+            }), 400
+
+        try:
+            return f(**params)
+        except TypeError:
+            return jsonify({
+                "success": False,
+                "error": "Invalid Parameters"
+            }), 400
+
+    return wrapper
 
 
 @bp.route("/json/status", methods=["GET", "POST"], endpoint="status")
@@ -406,3 +436,25 @@ def update_users():
         api.set_user_permission(name, data["permission"], data["role"])
 
     return jsonify(True)
+
+@bp.route("/json/get_apikeys", methods=["POST"], endpoint="get_apikeys")
+@login_required("ADMIN")
+@expect_json
+def get_apikeys(*, user=None):
+    api = flask.current_app.config["PYLOAD_API"]
+    user = user or flask.session["name"]
+    return jsonify(api.get_apikeys(user))
+
+@bp.route("/json/generate_apikey", methods=["POST"], endpoint="generate_apikey")
+@login_required("ADMIN")
+@expect_json
+def generate_apikey(*, user, password, name, expires):
+    api = flask.current_app.config["PYLOAD_API"]
+    return jsonify(api.generate_apikey(user, password, name, expires))
+
+@bp.route("/json/delete_apikey", methods=["POST"], endpoint="delete_apikey")
+@login_required("ADMIN")
+@expect_json
+def delete_apikey(*, user, key):
+    api = flask.current_app.config["PYLOAD_API"]
+    return jsonify(api.delete_apikey(user, key))

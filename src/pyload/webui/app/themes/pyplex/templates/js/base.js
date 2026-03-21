@@ -142,7 +142,6 @@ class CaptchaHandler {
   loadCaptcha = (method, data) => {
     $.ajax({
       url: "{{url_for('json.set_captcha')}}",
-      async: true,
       method: method,
       data: data,
       success: (response) => (response.captcha ? this.setCaptcha(response) : this.clearCaptcha())
@@ -293,7 +292,7 @@ class UIHandler {
       const formData = new FormData(this);
       const $this = $(this);
       if ($this.find("#add_name").val() === "" && $this.find("#add_file").val() === "") {
-        alert("{{_('Please Enter a package name.')}}");
+        $this[0].reportValidity();
         return false;
       } else {
         $.ajax({
@@ -327,7 +326,9 @@ class UIHandler {
         $.ajax({
           method: "post",
           url: "{{url_for('json.status')}}",
-          async: true,
+          dataType: 'json',
+          contentType: 'application/json',
+          data: '{}',
           timeout: 3000,
           success: loadJsonToContent
         });
@@ -347,7 +348,9 @@ class UIHandler {
         $.ajax({
           method: "post",
           url: "{{url_for('json.status')}}",
-          async: true,
+          dataType: 'json',
+          contentType: 'application/json',
+          data: '{}',
           timeout: 3000,
           success: loadJsonToContent
         });
@@ -359,7 +362,9 @@ class UIHandler {
         $.ajax({
           method: "post",
           url: "{{url_for('json.status')}}",
-          async: true,
+          dataType: 'json',
+          data: '{}',
+          contentType: 'application/json',
           timeout: 3000,
           success: loadJsonToContent
         });
@@ -371,7 +376,9 @@ class UIHandler {
         $.ajax({
           method: "post",
           url: "{{url_for('json.status')}}",
-          async: true,
+          dataType: 'json',
+          contentType: 'application/json',
+          data: '{}',
           timeout: 3000,
           success: loadJsonToContent
         });
@@ -383,7 +390,9 @@ class UIHandler {
         $.ajax({
           method: "post",
           url: "{{url_for('json.status')}}",
-          async: true,
+          dataType: 'json',
+          contentType: 'application/json',
+          data: '{}',
           timeout: 3000,
           success: loadJsonToContent
         });
@@ -430,19 +439,48 @@ class UIHandler {
   }
 
   yesNoDialog(question, callback) {
-    $('#modal_question').text(question);
+    const visibleModals = $('.modal.in');
+    if (visibleModals.length > 0) {
+      const activeModal = visibleModals.first();
+      const modalTitle = activeModal.find('.modal-title');
+      const modalBody = activeModal.find('.modal-body');
 
-    $('#okButton').off('click').on('click', () => {
-      $('#yesno_box').modal('hide');
-      callback(true);
-    });
+      const originalTitle = modalTitle.text().trim();
+      const originalBody = modalBody.html().trim();
 
-    $('#cancelButton').off('click').on('click', () => {
-      $('#yesno_box').modal('hide');
-      callback(false);
-    });
+      modalTitle.text('{{_("Confirmation")}}');
+      modalBody.html(
+        '<p>' + question + '</p>' +
+        '<button type="button" class="btn btn-success" style="float: right;" id="okButton">{{_("Ok")}}</button>' +
+        '<button type="button" class="btn warning" style="margin-right: 5px; float: right" id="cancelButton">{{_("Cancel")}}</button>'
+      );
 
-    $('#yesno_box').modal('show');
+      modalBody.one('click', '#okButton', function () {
+        modalTitle.text(originalTitle);
+        modalBody.html(originalBody);
+        callback(true);
+      });
+
+      modalBody.one('click', '#cancelButton', function () {
+        modalTitle.text(originalTitle);
+        modalBody.html(originalBody);
+        callback(false);
+      });
+    } else {
+      $('#modal_question').text(question);
+
+      $('#okButton').one('click', () => {
+        $('#yesno_box').modal('hide');
+        callback(true);
+      });
+
+      $('#cancelButton').one('click', () => {
+        $('#yesno_box').modal('hide');
+        callback(false);
+      });
+
+      $('#yesno_box').modal('show');
+    }
   }
 }
 
@@ -510,7 +548,9 @@ $(() => {
     $.ajax({
       method: "post",
       url: "{{url_for('json.status')}}",
-      async: true,
+      dataType: 'json',
+      contentType: 'application/json',
+      data: '{}',
       timeout: 3000,
       success: loadJsonToContent
     });
@@ -519,7 +559,9 @@ $(() => {
       $.ajax({
         method: "post",
         url: "{{url_for('json.status')}}",
-        async: true,
+        dataType: 'json',
+        contentType: 'application/json',
+        data: '{}',
         timeout: 3000,
         success: loadJsonToContent,
         error: (xhr) => {
