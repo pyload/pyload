@@ -15,6 +15,7 @@ from enum import IntFlag
 from typing import Any, Callable, Optional
 
 import flask
+from werkzeug.utils import secure_filename
 
 from pyload import PKGDIR
 
@@ -654,12 +655,11 @@ class Api:
         :param data: file content
         :return: online check
         """
-        with open(
-            os.path.join(
-                self.pyload.config.get("general", "storage_folder"), "tmp_" + container
-            ),
-            "wb",
-        ) as th:
+        upload_path = os.path.join(self.pyload.tempdir, "upload")
+        os.makedirs(upload_path, exist_ok=True)
+
+        container = "tmp_" + secure_filename(os.path.basename(container))
+        with open(os.path.join(upload_path, container), "wb") as th:
             th.write(data)
 
         return self.check_online_status(urls + [th.name])
@@ -1095,12 +1095,11 @@ class Api:
         :param filename: file name - extension is important, so it can correctly decrypt
         :param data: file content
         """
-        with open(
-            os.path.join(
-                self.pyload.config.get("general", "storage_folder"), "tmp_" + filename
-            ),
-            "wb",
-        ) as th:
+        upload_path = os.path.join(self.pyload.tempdir, "upload")
+        os.makedirs(upload_path, exist_ok=True)
+
+        filename = "tmp_" + secure_filename(os.path.basename(filename))
+        with open(os.path.join(upload_path, filename), "wb") as th:
             th.write(data)
 
         self.add_package(th.name, [th.name], Destination.COLLECTOR)

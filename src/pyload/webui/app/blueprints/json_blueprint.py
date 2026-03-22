@@ -162,9 +162,9 @@ def add_package():
                 package_name = file.filename
 
             safe_filename = secure_filename(file.filename)
-            file_path = os.path.join(
-                api.get_config_value("general", "storage_folder"), "tmp_" + safe_filename
-            )
+            upload_path = os.path.join(api.get_cachedir(), "upload")
+            os.makedirs(upload_path, exist_ok=True)
+            file_path = os.path.join(upload_path, safe_filename)
             file.save(file_path)
             links.insert(0, file_path)
 

@@ -59,10 +59,11 @@ class BaseContainer(BaseDecrypter):
         if remote:
             content = self.load(self.pyfile.url)
 
+            upload_path = os.path.join(self.pyload.tempdir, "upload")
+            os.makedirs(upload_path, exist_ok=True)
+
             self.pyfile.name = "tmp_" + self.pyfile.name
-            self.pyfile.url = os.path.join(
-                self.pyload.config.get("general", "storage_folder"), self.pyfile.name
-            )
+            self.pyfile.url = os.path.join(upload_path, self.pyfile.name)
 
             try:
                 with open(self.pyfile.url, mode="wb") as fp:
