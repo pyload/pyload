@@ -15,7 +15,6 @@ from pyload.core.utils import format
 
 from ..helpers import (
     clear_session,
-    csrf_exempt,
     get_permission,
     get_redirect_url,
     is_authenticated,
@@ -54,7 +53,6 @@ def robots():
 
 # TODO: Rewrite login route using flask-login
 @bp.route("/login", methods=["GET", "POST"], endpoint="login")
-@csrf_exempt
 def login():
     api = flask.current_app.config["PYLOAD_API"]
 
@@ -205,9 +203,13 @@ def files():
 @login_required("DOWNLOAD")
 def get_file(path):
     api = flask.current_app.config["PYLOAD_API"]
-    path = unquote(path).replace("..", "")
-    directory = api.get_config_value("general", "storage_folder")
-    return flask.send_from_directory(directory, path, as_attachment=True)
+    path = unquote(path)
+    directory = os.path.realpath(api.get_config_value("general", "storage_folder"))
+    resolved = os.path.realpath(os.path.join(directory, path))
+    if not resolved.startswith(directory + os.sep) and resolved != directory:
+        flask.abort(403)
+    relative = os.path.relpath(resolved, directory)
+    return flask.send_from_directory(directory, relative, as_attachment=True)
 
 
 @bp.route("/settings", endpoint="settings")

@@ -62,8 +62,14 @@ class App:
             app.register_error_handler(exc, fn)
 
         @app.after_request
-        def deny_iframe(response):
+        def set_security_headers(response):
             response.headers["Content-Security-Policy"] = "frame-ancestors 'self';"
+            response.headers["X-Content-Type-Options"] = "nosniff"
+            response.headers["X-Frame-Options"] = "SAMEORIGIN"
+            response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+            response.headers["Permissions-Policy"] = "geolocation=(), camera=(), microphone=()"
+            if app.config.get("PYLOAD_API") and app.config["PYLOAD_API"].get_config_value("webui", "use_ssl"):
+                response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
             return response
 
     @classmethod

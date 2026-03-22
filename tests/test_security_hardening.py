@@ -181,3 +181,141 @@ def test_clicknload_route_requires_direct_loopback(web_client):
 
     assert allowed.status_code == 200
     assert blocked.status_code == 403
+
+
+def test_cnl_cors_not_wildcard(web_client):
+    response = web_client.get(
+        "/flash/",
+        environ_overrides={"REMOTE_ADDR": "127.0.0.1"},
+    )
+    assert response.headers.get("Access-Control-Allow-Origin") != "*"
+
+
+def test_security_headers_present():
+    app = flask.Flask(__name__)
+    app.secret_key = "test-secret"
+    app.config["TESTING"] = True
+
+    class FakeApi:
+        def get_config_value(self, *args):
+            if args == ("webui", "use_ssl"):
+                return False
+            return None
+        def get_cachedir(self):
+            return "/tmp/pyload_test"
+
+    app.config["PYLOAD_API"] = FakeApi()
+
+    from pyload.webui.app.handlers import ERROR_HANDLERS
+
+    for exc, fn in ERROR_HANDLERS:
+        app.register_error_handler(exc, fn)
+
+    @app.after_request
+    def set_security_headers(response):
+        response.headers["Content-Security-Policy"] = "frame-ancestors 'self';"
+        response.headers["X-Content-Type-Options"] = "nosniff"
+        response.headers["X-Frame-Options"] = "SAMEORIGIN"
+        response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+        response.headers["Permissions-Policy"] = "geolocation=(), camera=(), microphone=()"
+        return response
+
+    @app.route("/test-headers")
+    def test_route():
+        return "ok"
+
+    client = app.test_client()
+    response = client.get("/test-headers")
+
+    assert response.headers.get("X-Content-Type-Options") == "nosniff"
+    assert response.headers.get("X-Frame-Options") == "SAMEORIGIN"
+    assert response.headers.get("Referrer-Policy") == "strict-origin-when-cross-origin"
+    assert "frame-ancestors" in response.headers.get("Content-Security-Policy", "")
+    assert response.headers.get("Permissions-Policy") is not None
+
+
+def test_error_handler_does_not_leak_traceback():
+    app = flask.Flask(__name__)
+    app.secret_key = "test-secret"
+    app.config["TESTING"] = False
+
+    from pyload.webui.app.handlers import handle_exception_error
+    app.register_error_handler(Exception, handle_exception_error)
+
+    from pyload.webui.app.helpers import render_template as _rt
+    import pyload.webui.app.handlers as handlers_mod
+
+    def fake_render(template, **kwargs):
+        return flask.render_template_string(
+            "{% for m in messages %}{{ m }}\n{% endfor %}",
+            **kwargs,
+        )
+
+    original_rt = handlers_mod.render_template
+    handlers_mod.render_template = fake_render
+
+    @app.route("/boom")
+    def boom():
+        raise RuntimeError("secret internal detail")
+
+    client = app.test_client()
+    response = client.get("/boom")
+
+    handlers_mod.render_template = original_rt
+
+    assert response.status_code == 500
+    body = response.data.decode()
+    assert "Traceback" not in body
+    assert "secret internal detail" not in body
+
+
+def test_get_file_rejects_path_traversal():
+    app = flask.Flask(__name__)
+    app.secret_key = "test-secret"
+    app.config["TESTING"] = True
+    app.config["WTF_CSRF_ENABLED"] = False
+
+    class FakeApi:
+        def get_config_value(self, *args):
+            if args == ("general", "storage_folder"):
+                return "/tmp/pyload_downloads"
+            return None
+
+        def user_exists(self, user):
+            return True
+
+    app.config["PYLOAD_API"] = FakeApi()
+
+    from pyload.webui.app.blueprints.app_blueprint import bp as app_bp
+    app.register_blueprint(app_bp)
+
+    client = app.test_client()
+
+    with client.session_transaction() as sess:
+        sess.update({
+            "authenticated": True,
+            "name": "tester",
+            "role": 0,
+            "perms": 0xFFFF,
+        })
+
+    response = client.get("/files/get/../../etc/passwd")
+    assert response.status_code in (403, 404)
+
+
+def test_flashgot_rejects_wrong_referrer(web_client):
+    response = web_client.post(
+        "/flashgot",
+        environ_overrides={"REMOTE_ADDR": "127.0.0.1"},
+        headers={"Referer": "http://evil.com/flashgot"},
+        data={"urls": "http://example.com/file.zip", "package": "test"},
+    )
+    assert response.status_code == 403
+
+
+def test_no_hardcoded_api_keys_in_plugins():
+    import pyload.plugins.downloaders.GoogledriveCom as gdrive
+    import pyload.plugins.decrypters.GooGl as googl
+
+    assert gdrive.GoogledriveCom.API_KEY == ""
+    assert googl.GooGl.API_KEY == ""

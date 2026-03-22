@@ -1,5 +1,3 @@
-import traceback
-
 import flask
 from flask_wtf.csrf import CSRFError
 
@@ -12,18 +10,16 @@ def handle_404_error(exc):
     return render_template('error.html', messages=messages), 404
 
 def handle_exception_error(exc):
-    tb = traceback.format_exc()
     try:
         code = exc.code
-        desc = exc.desc
+        desc = exc.description if hasattr(exc, 'description') else str(exc)
     except AttributeError:
         code = 500
-        desc = exc
+        desc = "Internal Server Error"
 
-    flask.current_app.logger.debug(exc, exc_info=True)
+    flask.current_app.logger.error(exc, exc_info=True)
 
     messages = [f"Error {code}: {desc}"]
-    messages.extend(tb.split('\n'))
     return render_template("error.html", messages=messages), code
 
 

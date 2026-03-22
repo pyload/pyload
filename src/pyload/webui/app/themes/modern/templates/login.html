@@ -10,6 +10,7 @@
 <div class="row">
   <form action="" method="post" accept-charset="utf-8" id="login">
     <input type="hidden" name="do" value="login"/>
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
 
     <div class="login-logo">
       <img alt="Pyload" src="{{theme_static('img/pyload-logo.png')}}">

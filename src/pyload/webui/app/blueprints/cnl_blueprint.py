@@ -58,7 +58,7 @@ def add_cors(response):
     response.headers.update(
         {
             "Access-Control-Max-Age": 1800,
-            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Origin": "http://127.0.0.1:9666",
             "Access-Control-Allow-Methods": "OPTIONS, GET, POST",
         }
     )
@@ -100,7 +100,8 @@ def add():
         else:
             pack = api.generate_and_add_packages(urls, Destination.COLLECTOR)
     except Exception as exc:
-        return "failed " + str(exc) + "\r\n", 500
+        flask.current_app.logger.error("CNL add failed: %s", exc, exc_info=True)
+        return "failed\r\n", 500
 
     if pack_password:
         api.set_package_data(pack, {"password": pack_password})
@@ -133,7 +134,8 @@ def addcrypted():
     try:
         pack = api.add_package(package, [dlc_path], Destination.COLLECTOR)
     except Exception as exc:
-        return "failed " + str(exc) + "\r\n", 500
+        flask.current_app.logger.error("CNL addcrypted failed: %s", exc, exc_info=True)
+        return "failed\r\n", 500
     else:
         if pack_password:
             api.set_package_data(pack, {"password": pack_password})
@@ -197,7 +199,8 @@ def addcrypted2():
         else:
             pack = api.generate_and_add_packages(urls, Destination.COLLECTOR)
     except Exception as exc:
-        return "failed " + str(exc) + "\r\n", 500
+        flask.current_app.logger.error("CNL addcrypted2 failed: %s", exc, exc_info=True)
+        return "failed\r\n", 500
     else:
         if pack_password:
             api.set_package_data(pack, {"password": pack_password})
@@ -211,11 +214,14 @@ def addcrypted2():
 @local_check
 @csrf_exempt
 def flashgot():
-    if flask.request.referrer not in (
-        "http://localhost:9666/flashgot",
-        "http://127.0.0.1:9666/flashgot",
-    ):
-        flask.abort(500)
+    api = flask.current_app.config["PYLOAD_API"]
+    cnl_port = api.get_config_value("ClickNLoad", "port", "plugin") or 9666
+    allowed_referrers = (
+        f"http://localhost:{cnl_port}/flashgot",
+        f"http://127.0.0.1:{cnl_port}/flashgot",
+    )
+    if flask.request.referrer not in allowed_referrers:
+        flask.abort(403)
 
     package = flask.request.form.get("package")
     urls = [url for url in flask.request.form["urls"].split("\n") if url.strip()]
