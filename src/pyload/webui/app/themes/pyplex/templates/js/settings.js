@@ -8,6 +8,12 @@ if (!String.prototype.startsWith) {
   };
 }
 
+function timestampToLocalISOTime(timestamp) {
+  const offset = timestamp.getTimezoneOffset() * 60000;
+  const localISOTime = new Date(timestamp - offset).toISOString().slice(0, 16);
+  return localISOTime;
+}
+
 class SettingsUI {
   constructor() {
     this.generalPanel = $("#core_form_content");
