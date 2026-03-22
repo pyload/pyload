@@ -55,9 +55,9 @@ class OpenAPISpecificationGenerator:
                 "schemas": {},
                 "securitySchemes": {
                     "ApiKeyAuth": {
-                        "type": "http",
-                        "scheme": "bearer",
-                        "bearerFormat": "custom",
+                        "type": "apiKey",
+                        "in": "header",
+                        "name": "X-API-Key",
                     }
                 }
             },
