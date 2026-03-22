@@ -261,7 +261,7 @@ def apikey_auth(func):
                     user_data = api.pyload.db.get_all_user_data().get(user_id)
                     if user_data:
                         now = int(time.time() * 1000)
-                        timestamp = int(user_data["last_used"] * 1000)
+                        timestamp = int(key_info["data"]["last_used"] * 1000)
                         user_info = {
                             "id": user_id,
                             "name": user_data["name"],
