@@ -248,37 +248,37 @@ def apikey_auth(func):
         client_ip = flask.request.headers.get("X-Forwarded-For", "").split(",")[0].strip() or flask.request.remote_addr
 
         # Check for API key in header
-        auth_header = flask.request.headers.get("Authorization")
-        if auth_header:
-            parts = auth_header.split()
-            # Check for valid API key pattern
-            if parts[0].lower() == 'bearer' and len(parts) == 2 and parts[1].startswith("pl_"):
-                # Look up the API key in the database
-                key_info = api.check_apikey(parts[1])
-                if key_info["success"]:
-                    # Get user info from the user_id in the key
-                    user_id = key_info["data"]["user_id"]
-                    key_name = key_info["data"]["name"]
-                    user_data = api.pyload.db.get_all_user_data().get(user_id)
-                    if user_data:
-                        now = int(time.time() * 1000)
-                        timestamp = int(user_data["last_used"] * 1000)
-                        user_info = {
-                            "id": user_id,
-                            "name": user_data["name"],
-                            "role": user_data["role"],
-                            "permission": user_data["permission"],
-                        }
-                        flask.g.user_info = user_info
-                        # Log once per 8 hours
-                        if now >= timestamp + 480_000:
-                            log.info(f"API authentication successful for user {user_info['name']} using the '{key_name}' API key [CLIENT: {client_ip}]")
-                        return decorated(*args, **kwargs)
+        api_key = flask.request.headers.get("X-API-Key")
+        if api_key and api_key.startswith("pl_"):
+            # Look up the API key in the database
+            key_info = api.check_apikey(api_key)
+            if key_info["success"]:
+                # Get user info from the user_id in the key
+                user_id = key_info["data"]["user_id"]
+                key_name = key_info["data"]["name"]
+                user_data = api.pyload.db.get_all_user_data().get(user_id)
+                if user_data:
+                    now = int(time.time() * 1000)
+                    last_used = int(key_info["data"]["last_used"] * 1000)
+                    user_info = {
+                        "id": user_id,
+                        "name": user_data["name"],
+                        "role": user_data["role"],
+                        "permission": user_data["permission"],
+                    }
+                    flask.g.user_info = user_info
+                    # Log if it has not been used for more than 1 hour
+                    if now >= last_used + 3_600_000:
+                        log.info(f"API authentication successful for user {user_info['name']} using the '{key_name}' API key [CLIENT: {client_ip}]")
+                    return decorated(*args, **kwargs)
 
-                else:
-                    # Log failed API key authentication
-                    log.error(f"API authentication failed using API key {parts[1]} [CLIENT: {client_ip}]")
-                    return flask.json.jsonify({"error": key_info["error"]}), 401
+            else:
+                # Log failed API key authentication
+                log_api_key = f"{api_key[:4]}********{api_key[-4:]}"
+                if len(api_key) <= 8:
+                    log_api_key = "*" * 8
+                log.error(f"API authentication failed using API key {log_api_key} [CLIENT: {client_ip}]")
+                return flask.json.jsonify({"error": key_info["error"]}), 401
 
         # No API auth - still use the decorated function but rely on session auth
         csrf.protect()
