@@ -276,7 +276,10 @@ def apikey_auth(func):
 
                 else:
                     # Log failed API key authentication
-                    log.error(f"API authentication failed using API key {auth.token} [CLIENT: {client_ip}]")
+                    log_api_key = f"{auth.token[:4]}********{auth.token[-4:]}"
+                    if len(auth.token) <= 8:
+                        log_api_key = "*" * 8
+                    log.error(f"API authentication failed using API key {log_api_key} [CLIENT: {client_ip}]")
                     return flask.json.jsonify({"error": key_info["error"]}), 401
 
         # No API auth - still use the decorated function but rely on session auth
