@@ -2,17 +2,15 @@ import inspect
 import os
 import shutil
 import sqlite3
-
-from contextlib import closing
 from queue import Queue
 from threading import Event, Thread
 
 from ... import exc_logger
-from ..database import FileDatabaseMethods, StorageDatabaseMethods, UserDatabaseMethods
+from ..database import ApikeyDatabaseMethods, FileDatabaseMethods, StorageDatabaseMethods, UserDatabaseMethods
 from ..utils.struct.style import style
 
 # DATABASE VERSION
-__version__ = 4
+__version__ = 5
 
 # TODO: rewrite using peewee
 class DatabaseJob:
@@ -60,9 +58,7 @@ class DatabaseJob:
 
 
 class DatabaseThread(Thread):
-
     subs = []
-
     DB_FILENAME = "pyload.db"
     VERSION_FILENAME = "db.version"
 
@@ -165,6 +161,15 @@ class DatabaseThread(Thread):
         )
         self.pyload.log.info(self._("Database was converted from v3 to v4."))
 
+    def _convertV4(self):
+        self.c.execute(
+            'CREATE TABLE IF NOT EXISTS "apikeys" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "user_id" INTEGER NOT NULL, "name" TEXT NOT NULL, "key_hash" TEXT NOT NULL UNIQUE, "created_at" INTEGER NOT NULL, "expires_at" INTEGER, "last_used" INTEGER, FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE)'
+        )
+        self.c.execute('CREATE INDEX IF NOT EXISTS "apikeys_user_id_index" ON apikeys(user_id)')
+        self.c.execute('CREATE INDEX IF NOT EXISTS "apikeys_key_hash_index" ON apikeys(key_hash)')
+
+        self.pyload.log.info(self._("Database was converted from v4 to v5."))
+
     # --convert scripts end
 
     def _create_tables(self):
@@ -184,6 +189,10 @@ class DatabaseThread(Thread):
         self.c.execute(
             'CREATE TABLE IF NOT EXISTS "users" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "name" TEXT NOT NULL, "email" TEXT DEFAULT "" NOT NULL, "password" TEXT NOT NULL, "role" INTEGER DEFAULT 0 NOT NULL, "permission" INTEGER DEFAULT 0 NOT NULL, "template" TEXT DEFAULT "default" NOT NULL)'
         )
+        self.c.execute(
+            'CREATE TABLE IF NOT EXISTS "apikeys" ("id" INTEGER PRIMARY KEY, "user_id" INTEGER NOT NULL, "name" TEXT NOT NULL, "key_hash" TEXT NOT NULL UNIQUE, "created_at" INTEGER NOT NULL, "expires_at" INTEGER, "last_used" INTEGER, FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE)'
+        )
+        self.c.execute('CREATE INDEX IF NOT EXISTS "apikeys_userid_index" ON apikeys(user_id)')
 
         self.c.execute(
             'CREATE VIEW IF NOT EXISTS "pstats" AS \
@@ -234,11 +243,40 @@ class DatabaseThread(Thread):
         self.conn.rollback()
 
     def async_(self, f, *args, **kwargs):
+        """
+        Asynchronously executes a database job.
+
+        Wraps the provided function in a DatabaseJob and adds it to the execution queue.
+        Returns immediately without blocking the calling thread or waiting for the job
+        to complete.
+
+        Args:
+            f (callable): The function or method to execute in the database thread.
+            *args: Positional arguments to pass to the function.
+            **kwargs: Keyword arguments to pass to the function.
+
+        Returns:
+            None: does not return any value
+        """
         args = (self,) + args
         job = DatabaseJob(f, *args, **kwargs)
         self.jobs.put(job)
 
     def queue(self, f, *args, **kwargs):
+        """
+        Synchronously executes a database job and retrieves the result.
+
+        Wraps the provided function in a DatabaseJob, adds it to the execution queue,
+        and blocks the calling thread until the database thread finishes processing it.
+
+        Args:
+            f (callable): The function or method to execute in the database thread.
+            *args: Positional arguments to pass to the function.
+            **kwargs: Keyword arguments to pass to the function.
+
+        Returns:
+            Any: The result returned by the executed function `f`.
+        """
         args = (self,) + args
         job = DatabaseJob(f, *args, **kwargs)
         self.jobs.put(job)
@@ -262,7 +300,7 @@ class DatabaseThread(Thread):
             f"'{self.__class__.__name__}' object has no attribute '{attr}'"
         )
 
-
 DatabaseThread.register_sub(FileDatabaseMethods)
 DatabaseThread.register_sub(UserDatabaseMethods)
 DatabaseThread.register_sub(StorageDatabaseMethods)
+DatabaseThread.register_sub(ApikeyDatabaseMethods)

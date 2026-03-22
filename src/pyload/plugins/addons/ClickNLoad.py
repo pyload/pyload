@@ -4,6 +4,7 @@ import ssl
 import threading
 import time
 
+from pyload import g
 from pyload.core.utils.struct.lock import lock
 
 from ..base.addon import BaseAddon, threaded
@@ -26,7 +27,7 @@ def resolve_host(host):
 class ClickNLoad(BaseAddon):
     __name__ = "ClickNLoad"
     __type__ = "addon"
-    __version__ = "0.64"
+    __version__ = "0.65"
     __status__ = "testing"
 
     __config__ = [
@@ -61,8 +62,10 @@ class ClickNLoad(BaseAddon):
         if self.pyload.config.get("webui", "enabled"):
             web_host = self.pyload.config.get("webui", "host")
             web_port = self.pyload.config.get("webui", "port")
-            if web_host in ("0.0.0.0", "::"):
+            if web_host == "0.0.0.0":
                 web_host = "127.0.0.1"
+            elif web_host == "::":
+                web_host = "::1"
 
             try:
                 addrinfo = socket.getaddrinfo(
@@ -88,6 +91,9 @@ class ClickNLoad(BaseAddon):
                 test_socket.shutdown(socket.SHUT_WR)
                 self.web_addr = addr[4]
                 self.web_af = addr[0]
+
+                #: save backend address for later use
+                g.web_addr = addr[4][0]
 
                 self.log_debug(
                     self._("Backend found on {}://{}:{}").format(

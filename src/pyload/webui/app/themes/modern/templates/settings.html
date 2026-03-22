@@ -159,19 +159,15 @@
           <thead>
           <tr>
             <th>{{_('Name')}}</th>
-            <th>{{_('Change Password')}}</th>
             <th>{{_('Admin')}}</th>
             <th>{{_('Permissions')}}</th>
-            {% if user.is_admin %}
-              <th>{{_('Delete?')}}</th>
-            {% endif %}
+            <th>{{_('Actions')}}</th>
           </tr>
           </thead>
 
           {% for name, data in conf.admin.users.items() %}
             <tr>
               <td>{{name}}</td>
-              <td><div class="change_password btn btn-success btn-xs" data-toggle="modal" data-target="#password_box" id="change_pw|{{name}}"><span class="glyphicon glyphicon-pencil"></span> {{_('change')}}</div></td>
               <td>
                 {% if user.name == name %}
                   <input class="is_admin" name="{{name}}|admin" type="checkbox" {% if data.perms.admin %} checked="checked" {% endif %} disabled="disabled">
@@ -191,17 +187,20 @@
                   {% endfor %}
                 </select>
               </td>
-              {% if user.is_admin %}
-                <td>
-                  {% if user.name != name %}
-                    <input id="{{name}}|delete" name="{{name}}|delete" type="checkbox" value="True"/>
-                  {% endif %}
-                </td>
-              {% endif %}
-
+              <td>
+                <div class="dropdown">
+                  <button class="btn btn-success btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{_('Actions')}}&nbsp;<span class="caret"></span></button>
+                  <ul class="dropdown-menu">
+                    <li><a class="change_password" href="#" data-toggle="modal" data-target="#password_box" id="{{name}}|change_pw"><span class="glyphicon glyphicon-pencil"></span> {{_('Change Password')}}</a></li>
+                    {% if user.is_admin %}
+                      <li {% if user.name == name %} class="disabled" {% endif %}><a href="#" class="delete_user" id="{{name}}|delete"><span class="glyphicon glyphicon-trash"></span> {{_('Delete User')}}</a></li>
+                    {% endif %}
+                    <li><a href="#" data-toggle="modal" data-target="#apikeys_box" id="{{name}}|apikeys"><span class="glyphicon glyphicon-lock"></span> {{_('Manage API Keys')}}</a></li>
+                  </ul>
+                </div>
+              </td>
             </tr>
           {% endfor %}
-
         </table>
         <button id="user_add" type="button" data-toggle="modal" data-target="#user_box" style="margin-left: 5px;" class="btn btn-default">&nbsp;<span class="glyphicon glyphicon-plus"></span></button>
         <button id="user_submit" class="btn btn-primary" type="submit">{{_('Submit')}}</button>
@@ -289,13 +288,13 @@
   <div class="modal-dialog modal-sm">
     <!-- Modal content-->
     <div class="modal-content">
-      <div class="modal-header bg-info text-center" style="padding: 5px" >{{_('Change Password')}}</div>
+      <div class="modal-header bg-info text-center" style="padding: 5px">{{_('Change Password')}}</div>
       <div class="modal-body" style="margin-bottom: 30px;">
         <form id="password_form" class="from-group" action="{{url_for("json.change_password")}}" method="POST" enctype="multipart/form-data" style="margin-bottom: 40px;">
           <p>{{_('Enter your current and desired Password.')}}</p>
           <div class="form-group">
             <label for="user_login">{{_('User')}}</label>
-            <input class="form-control" id="user_login" name="user_login" type="text" readonly/>
+            <input class="form-control" id="user_login" name="user_login" type="text" readonly tabindex="-1" onfocus="this.blur()"/>
             <p class="help-block">{{_('Your username.')}}</p>
           </div>
           <div class="form-group">
@@ -313,9 +312,88 @@
             <input class="form-control reveal-pass" id="login_new_password2" name="login_new_password2" type="password" />
             <p class="help-block">{{_('Please repeat the new password.')}}</p>
           </div>
-          <button class="btn btn-success" id="login_password_button" type="submit" style="float: right">{{_('Ok')}}</button>
+          <button class="btn btn-primary" id="login_password_button" type="submit" style="float: right">{{_('Submit')}}</button>
           <button class="btn btn-warning" id="login_password_reset" data-dismiss="modal" style="margin-right: 5px; float: right" type="reset">{{_('Cancel')}}</button>
         </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="apikeys_box" class="modal"role="dialog" data-backdrop="static">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header bg-info text-center" style="padding: 5px">{{_('API Keys')}}</div>
+      <div class="modal-body" style="margin-bottom: 30px;">
+        <div id="apikeyMainContent">
+          <p>{{_('Manage your API keys for programmatic access to pyLoad.')}}</p>
+          <div style="overflow-y: auto; max-height: 300px;">
+            <table class="table table-striped">
+              <thead style="position: sticky; top: 0; z-index: 1; background-color: #f7f7f7">
+              <tr>
+                <th>{{_('Name')}}</th>
+                <th>{{_('Created')}}</th>
+                <th>{{_('Expires')}}</th>
+                <th>{{_('Last Used')}}</th>
+                <th>{{_('Actions')}}</th>
+              </tr>
+              </thead>
+              <tbody id="apikeysTbody">
+                <tr><td colspan="4" class="text-center">{{_('Loading...')}}</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div id="apikeyGenContent" class="hidden">
+          <p>{{_('Generate API key for this user.')}}</p>
+          <form id="apikeyGenForm" class="from-group" action="#" method="POST" enctype="application/json" style="margin-bottom: 40px;">
+            <div class="form-group">
+              <label for="apikeyUser">{{_('Username')}}</label>
+              <input class="form-control" id="apikeyUser" name="apikeyUser" type="text" readonly tabindex="-1" onfocus="this.blur()"/>
+              <p class="help-block">{{_('Username bound to this API key.')}}</p>
+            </div>
+            <div class="form-group">
+              <label for="apikeyPassword">{{_('Password')}}</label>
+              <input class="form-control reveal-pass" id="apikeyPassword" name="apikeyPassword" type="password" required/>
+              <p class="help-block">{{_('The password for this user.')}}</p>
+            </div>
+            <div class="form-group">
+              <label for="apikeyName">{{_('API key name')}}</label>
+              <input class="form-control" id="apikeyName" name="apikeyName" type="text" required/>
+              <p class="help-block">{{_('Name for this API key.')}}</p>
+            </div>
+            <div class="form-group">
+              <label for="apikeyExpiration">{{_('Expires')}}</label>
+              <input class="form-control" id="apikeyExpiration" name="apikeyExpiration" type="datetime-local"/>
+              <p class="help-block">{{_('API key expiration (leave empty for never).')}}</p>
+            </div>
+          </form>
+        </div>
+        <div id="apikeyCopyContent" class="hidden">
+          <div class="alert alert-danger text-center"><h4 class="modal-title text-center">{{_("API Key generated successfully")}}</h4><br>{{_("Please save this key in a secure location,")}}<br><strong>{{_("You won't be able to see it again!")}}</strong></div>
+          <div class="input-group">
+            <input type="text" id="apikeyGeneratedKey" class="form-control font-mono" style="cursor: text" value="" readonly>
+            <span class="input-group-btn">
+              <button class="btn btn-default" type="button" id="apikeyCopyBtn" style="margin-left: 5px; float: left">
+                <span class="glyphicon glyphicon-copy" style="margin-right: 5px;"></span>{{_("Copy")}}
+              </button>
+          </span>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div id="apikeyMainFooter">
+          <button class="btn btn-primary" id="apikeyAddBtn" type="button" style="float: right">{{_("Generate")}}</button>
+          <button class="btn btn-warning" data-dismiss="modal" style="margin-right: 5px; float: right" type="reset">{{_("Cancel") }}</button>
+        </div>
+        <div id="apikeyGenFooter" class="hidden">
+          <button class="btn btn-primary" id="apikeyGenSubmitBtn" type="button" style="float: right">{{_('Submit')}}</button>
+          <button class="btn btn-warning" id="apikeyGenCancelBtn" style="margin-right: 5px; float: right" type="button">{{_("Cancel")}}</button>
+        </div>
+        <div id="apikeyCopyFooter" class="hidden">
+          <button class="btn btn-primary btn-block" id="apikeyCopyDismissBtn" style="margin-right: 5px; float: right" type="button">{{_("I've saved my key")}}</button>
+        </div>
       </div>
     </div>
   </div>
@@ -358,7 +436,7 @@
             </select>
             <p class="help-block">{{ _("Permmisions for the new user.") }}</p>
           </div>
-          <button class="btn btn-success" id="new_user_button" type="submit" style="float: right">{{ _("Add") }}</button>
+          <button class="btn btn-primary" id="new_user_button" type="submit" style="float: right">{{ _("Add") }}</button>
           <button class="btn btn-warning" id="new_user_reset" data-dismiss="modal" style="margin-right: 5px; float: right" type="reset">{{ _("Cancel") }}</button>
         </form>
       </div>

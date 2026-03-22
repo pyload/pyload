@@ -11,10 +11,14 @@ import os
 import ipaddress
 import re
 import socket
+import secrets
 import time
 from enum import IntFlag
 from typing import Any, Callable, Optional
 from urllib.parse import urlparse
+
+import flask
+from werkzeug.utils import secure_filename
 
 from pyload import PKGDIR
 
@@ -56,6 +60,7 @@ perm_map = {}
 legacy_map = {}
 
 # contains function names mapped to their allowed HTTP method (e.g., 'GET', 'POST', 'PUT', 'DELETE')
+# unlisted functions are not exported
 method_map = {}
 
 
@@ -309,9 +314,18 @@ class Api:
         :param value: new config value
         :param section: 'plugin' or 'core
         """
-        self.pyload.addon_manager.dispatch_event(
-            "config_changed", category, option, value, section
-        )
+
+        ADMIN_ONLY_OPTIONS = {
+            ("reconnect", "script"),
+            ("webui", "host"),
+            ("webui", "use_ssl"),
+            ("webui", "ssl_cert"),
+            ("webui", "ssl_key"),
+            ("log", "syslog_host"),
+            ("log", "syslog_port"),
+            ("proxy", "username"),
+            ("proxy", "password"),
+        }
 
         if section == "core":
             if category == "general" and option == "storage_folder":
@@ -324,6 +338,21 @@ class Api:
                 if any(directories[0].startswith(d) for d in directories[1:]):
                     return
 
+            # Require ADMIN role for security-critical settings
+            try:
+                try:
+                    user_info = flask.g.user_info
+                except AttributeError:
+                    user_info = flask.session
+
+                if (category, option) in ADMIN_ONLY_OPTIONS and user_info.get("role") != Role.ADMIN:
+                    self.pyload.log.error(self._("Writing config value {}/{} requires Admin role").format(category, option))
+                    return
+
+            # Attempt to access outside an active Flask request
+            except RuntimeError:
+                pass
+
             self.pyload.config.set(category, option, value)
 
             if category == "download" and option in (
@@ -334,6 +363,10 @@ class Api:
 
         elif section == "plugin":
             self.pyload.config.set_plugin(category, option, value)
+
+        self.pyload.addon_manager.dispatch_event(
+            "config_changed", category, option, value, section
+        )
 
     @legacy("getConfig")
     @permission(Perms.SETTINGS)
@@ -741,12 +774,11 @@ class Api:
         :param data: file content
         :return: online check
         """
-        with open(
-            os.path.join(
-                self.pyload.config.get("general", "storage_folder"), "tmp_" + container
-            ),
-            "wb",
-        ) as th:
+        upload_path = os.path.join(self.pyload.tempdir, "upload")
+        os.makedirs(upload_path, exist_ok=True)
+
+        container = "tmp_" + secure_filename(os.path.basename(container))
+        with open(os.path.join(upload_path, container), "wb") as th:
             th.write(data)
 
         return self.check_online_status(urls + [th.name])
@@ -1186,12 +1218,11 @@ class Api:
         :param filename: file name - extension is important, so it can correctly decrypt
         :param data: file content
         """
-        with open(
-            os.path.join(
-                self.pyload.config.get("general", "storage_folder"), "tmp_" + filename
-            ),
-            "wb",
-        ) as th:
+        upload_path = os.path.join(self.pyload.tempdir, "upload")
+        os.makedirs(upload_path, exist_ok=True)
+
+        filename = "tmp_" + secure_filename(os.path.basename(filename))
+        with open(os.path.join(upload_path, filename), "wb") as th:
             th.write(data)
 
         self.add_package(th.name, [th.name], Destination.COLLECTOR)
@@ -1417,20 +1448,23 @@ class Api:
         accs = self.pyload.account_manager.get_account_infos(False, refresh)
         accounts = []
         for group in accs.values():
-            accounts.extend(
-                [
-                    AccountInfo(
-                        validuntil=acc["validuntil"],
-                        login=acc["login"],
-                        options=acc["options"],
-                        valid=acc["valid"],
-                        trafficleft=acc["trafficleft"],
-                        premium=acc["premium"],
-                        type=acc["type"],
+            for acc in group:
+                try:
+                    accounts.append(
+                        AccountInfo(
+                            validuntil=acc.get("validuntil"),
+                            login=acc.get("login") or "",
+                            options=acc.get("options") or {},
+                            valid=bool(acc.get("valid")),
+                            trafficleft=acc.get("trafficleft"),
+                            premium=bool(acc.get("premium")),
+                            type=acc.get("type") or "",
+                        )
                     )
-                    for acc in group
-                ]
-            )
+                except Exception:
+                    self.pyload.log.warning(
+                        f"Skipping broken account entry: {acc.get('login', 'unknown')}"
+                    )
         return accounts
 
     @legacy("getAccountTypes")
@@ -1730,3 +1764,115 @@ class Api:
     def set_user_permission(self, user: str, permission: int, role: int) -> None:
         self.pyload.db.set_permission(user, permission)
         self.pyload.db.set_role(user, role)
+
+    def generate_apikey(self, user: str, password: str, name: str = "API Key", expires: Optional[int] = None) -> dict[str, Any]:
+        """
+        Generate a new API key for the current user.
+
+        :param user: username to add an apikey to
+        :param password: the password of the username
+        :param name: Name/description for the API key
+        :param expires: Expiration timestamp or None
+        :return: dict with 'key' and 'key_id'
+        """
+        user_info = self.check_auth(user, password)
+        if not user_info:
+            return {
+                "success": False,
+                "error": "Invalid username or password",
+            }
+
+        # Generate a random API key
+        api_key = secrets.token_urlsafe(32)
+
+        expires = expires or 0
+
+        # Store in database
+        key_id = self.pyload.db.create_user_apikey(user_info["id"], name, expires, api_key)
+        if not key_id:
+            return {
+                "success": False,
+                "error": "Create API key failed",
+            }
+
+        full_api_key = f"pl_{(int(str(key_id)) + 9) % 10 + 1}{key_id}{api_key}"
+
+        return {
+            "success": True,
+            "data": {
+                "key": full_api_key,
+                "key_id": key_id,
+                "expires_at": expires,
+                "name": name,
+            }
+        }
+
+    def get_apikeys(self, user: str) -> dict[str, Any]:
+        """
+        Get all API keys for the user.
+
+        :param user: the username to add an apikey to
+        :return: dict with a list of API key dicts
+        """
+        user_id = self.pyload.db.get_user_id(user)
+        if not user_id:
+            return {
+                "success": False,
+                "error": "Invalid username",
+            }
+        else:
+            return {
+                "success": True,
+                "data": self.pyload.db.get_user_apikeys(user_id)
+            }
+
+    def delete_apikey(self, user: str, key_id: int) -> dict[str, Any]:
+        """
+        Delete an API key.
+
+        :param user: username associated with the API key
+        :param key_id: ID of the API key to delete
+        :return: dict with `success` as True if deleted, False otherwise
+        """
+        user_id = self.pyload.db.get_user_id(user)
+        if not user_id:
+            return {
+                "success": False,
+                "error": "Invalid username",
+            }
+        else:
+            return {
+                "success": self.pyload.db.delete_user_apikey(user_id, key_id),
+            }
+            return
+
+    def check_apikey(self, apikey: str) -> dict[str, Any]:
+        """
+        Validates an API key.
+        :param apikey: API key to validate
+        :return: dict with `data` as the API key info
+        """
+        if (
+            not apikey.startswith("pl_") or
+            len(apikey) < 4 or
+            not apikey[3].isdigit() or
+            len(apikey) != ((int(apikey[3]) + 9) % 10 + 1) + 47
+        ):
+            return {
+                "success": False,
+                "error": "Invalid API key",
+            }
+
+        key_id = int(apikey[4:4 + (int(apikey[3]) + 9) % 10 + 1])
+        key_data = self.pyload.db.check_apikey(key_id, apikey[-43:])
+        if not key_data:
+            return {
+                "success": False,
+                "error": "Invalid API key",
+            }
+        else:
+            self.pyload.db.update_apikey_last_used(key_id)
+            return {
+                "success": True,
+                "data": key_data,
+            }

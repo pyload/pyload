@@ -5,10 +5,11 @@ from urllib.parse import unquote
 
 import flask
 from cryptography.hazmat.backends import default_backend
-from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.primitives import padding
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from werkzeug.utils import secure_filename
 
+from pyload import g
 from pyload.core.api import Destination
 from pyload.core.utils.convert import to_str
 from pyload.core.utils.misc import eval_js
@@ -23,10 +24,21 @@ bp = flask.Blueprint("flash", __name__, url_prefix="/")
 def local_check(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
-        if is_loopback_request():
-            return func(*args, **kwargs)
-        else:
-            return "Forbidden", 403
+        http_host = flask.request.environ.get("HTTP_HOST")
+        if http_host in (
+                "localhost:9666",
+                "127.0.0.1:9666",
+                "[::1]:9666",
+        ):
+            local_addr = g.get("web_addr")
+            if local_addr == remote_addr:
+                return func(*args, **kwargs)
+
+            else:
+                if is_loopback_request():
+                    return func(*args, **kwargs)
+
+        return "Forbidden", 403
 
     return wrapper
 

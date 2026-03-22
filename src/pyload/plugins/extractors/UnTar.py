@@ -2,6 +2,7 @@ import os
 import sys
 import tarfile
 
+from pyload.core.utils.fs import safejoin
 from pyload.plugins.base.extractor import ArchiveError, BaseExtractor, CRCError
 
 
@@ -24,7 +25,7 @@ def _safe_extractall(tar, path=".", members=None, *, numeric_owner=False):
 class UnTar(BaseExtractor):
     __name__ = "UnTar"
     __type__ = "extractor"
-    __version__ = "0.07"
+    __version__ = "0.08"
     __status__ = "stable"
 
     __description__ = """TAR extractor plugin"""
@@ -56,7 +57,7 @@ class UnTar(BaseExtractor):
 
     def list(self, password=None):
         with tarfile.open(self.filename) as t:
-            self.files = [os.path.join(self.dest, _f) for _f in t.getnames()]
+            self.files = [safejoin(self.dest, _f) for _f in t.getnames()]
         return self.files
 
     def verify(self, password=None):

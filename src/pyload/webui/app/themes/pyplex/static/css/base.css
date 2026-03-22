@@ -491,6 +491,10 @@ fieldset[disabled] .btn {
   filter: brightness(51%) contrast(6400%) grayscale(100%);
 }
 
+.mdtoast {
+  justify-content: center
+}
+
 .mdtoast .mdt-message {
   text-align: center;
 }
