@@ -248,13 +248,12 @@ def apikey_auth(func):
         client_ip = flask.request.headers.get("X-Forwarded-For", "").split(",")[0].strip() or flask.request.remote_addr
 
         # Check for API key in header
-        auth_header = flask.request.headers.get("Authorization")
-        if auth_header:
-            parts = auth_header.split()
+        auth = flask.request.authorization
+        if auth:
             # Check for valid API key pattern
-            if parts[0].lower() == 'bearer' and len(parts) == 2 and parts[1].startswith("pl_"):
+            if auth.token and auth.token.startswith("pl_"):
                 # Look up the API key in the database
-                key_info = api.check_apikey(parts[1])
+                key_info = api.check_apikey(auth.token)
                 if key_info["success"]:
                     # Get user info from the user_id in the key
                     user_id = key_info["data"]["user_id"]
@@ -277,7 +276,7 @@ def apikey_auth(func):
 
                 else:
                     # Log failed API key authentication
-                    log.error(f"API authentication failed using API key {parts[1]} [CLIENT: {client_ip}]")
+                    log.error(f"API authentication failed using API key {auth.token} [CLIENT: {client_ip}]")
                     return flask.json.jsonify({"error": key_info["error"]}), 401
 
         # No API auth - still use the decorated function but rely on session auth
