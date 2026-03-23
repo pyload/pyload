@@ -1,4 +1,3 @@
-import traceback
 from ast import literal_eval
 from itertools import chain
 from logging import getLogger
@@ -78,9 +77,8 @@ def rpc(func, args=""):
                 **{x: _parse_parameter(y) for x, y in kwargs.items()},
             ))
     except Exception as exc:
-        resp = {'error': str(exc)}
-        if api.pyload.debug > 2:
-            resp["traceback"] = traceback.print_exc()
+        log.error("API error in %s: %s", func, exc, exc_info=True)
+        resp = {'error': "Internal server error"}
         response = jsonify(resp), 500
 
     return response

@@ -32,6 +32,7 @@ class UpdateManager(BaseAddon):
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
     _VERSION = re.compile(r'\s*__version__\s*=\s*("|\')([\d.]+)\1', re.M)
+    _SAFE_PLUGIN_NAME = re.compile(r"^[A-Za-z0-9_]+$")
 
     # SERVER_URL     = "http://updatemanager.pyload.net"
     # SERVER_URL = "http://updatemanager-spyload.rhcloud.com"
@@ -405,12 +406,43 @@ class UpdateManager(BaseAddon):
         self.log_debug(f"Requested deletion of plugins: {plugin_ids}")
 
         for plugin_type, plugin_name in plugin_ids:
+            if not self._SAFE_PLUGIN_NAME.fullmatch(
+                plugin_type
+            ) or not self._SAFE_PLUGIN_NAME.fullmatch(plugin_name):
+                self.log_warning(
+                    self._(
+                        "Refusing to remove plugin with invalid identifier: {} {}"
+                    ).format(plugin_type, plugin_name)
+                )
+                continue
+
             userplugins = os.path.join(self.pyload.userdir, "plugins")
             rootplugins = os.path.join(PKGDIR, "plugins")
 
             for basedir in (userplugins, rootplugins):
-                py_filename = os.path.join(basedir, plugin_type, plugin_name + ".py")
+                base_plugin_dir = os.path.realpath(os.path.join(basedir, plugin_type))
+                expected_root = os.path.realpath(basedir)
+
+                if not base_plugin_dir.startswith(expected_root + os.sep):
+                    self.log_warning(
+                        self._(
+                            "Refusing to remove plugin outside plugin directory: {} {}"
+                        ).format(plugin_type, plugin_name)
+                    )
+                    continue
+
+                py_filename = os.path.realpath(
+                    os.path.join(base_plugin_dir, plugin_name + ".py")
+                )
                 pyc_filename = py_filename + "c"
+
+                if not py_filename.startswith(base_plugin_dir + os.sep):
+                    self.log_warning(
+                        self._(
+                            "Refusing to remove plugin outside plugin directory: {} {}"
+                        ).format(plugin_type, plugin_name)
+                    )
+                    continue
 
                 if plugin_type == "addon":
                     try:

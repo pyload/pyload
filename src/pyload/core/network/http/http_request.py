@@ -5,7 +5,7 @@ import os
 import tempfile
 from itertools import chain
 from logging import getLogger
-from urllib.parse import quote, urlencode
+from urllib.parse import quote, urlencode, urlparse
 
 import certifi
 import pycurl
@@ -38,9 +38,7 @@ def myurlencode(data):
     data = dict(data)
     return urlencode(
         {
-            x.encode()
-            if hasattr(x, "encode")
-            else x: y.encode()
+            x.encode() if hasattr(x, "encode") else x: y.encode()
             if hasattr(y, "encode")
             else y
             for x, y in data.items()
@@ -48,9 +46,7 @@ def myurlencode(data):
     )
 
 
-BAD_STATUS_CODES = tuple(
-    chain(range(400, 404), range(405, 418), range(500, 506))
-)
+BAD_STATUS_CODES = tuple(chain(range(400, 404), range(405, 418), range(500, 506)))
 
 
 class FormFile:
@@ -88,6 +84,7 @@ class HTTPRequest:
 
         self.abort = False
         self.decode = False
+        self.resolved_addresses = list(options.get("resolved_addresses", []))
 
         self.ssl_aiachaser = False
         self.aia_cainfo = None
@@ -160,12 +157,16 @@ class HTTPRequest:
             elif proxy["type"] == "socks4":
                 self.c.setopt(
                     pycurl.PROXYTYPE,
-                    pycurl.PROXYTYPE_SOCKS4A if proxy["socks_resolve_dns"] else pycurl.PROXYTYPE_SOCKS4
+                    pycurl.PROXYTYPE_SOCKS4A
+                    if proxy["socks_resolve_dns"]
+                    else pycurl.PROXYTYPE_SOCKS4,
                 )
             elif proxy["type"] == "socks5":
                 self.c.setopt(
                     pycurl.PROXYTYPE,
-                    pycurl.PROXYTYPE_SOCKS5_HOSTNAME if proxy["socks_resolve_dns"] else pycurl.PROXYTYPE_SOCKS5
+                    pycurl.PROXYTYPE_SOCKS5_HOSTNAME
+                    if proxy["socks_resolve_dns"]
+                    else pycurl.PROXYTYPE_SOCKS5,
                 )
 
             self.c.setopt(pycurl.PROXY, proxy["host"])
@@ -221,7 +222,9 @@ class HTTPRequest:
     def clear_cookies(self):
         self.c.setopt(pycurl.COOKIELIST, "")
 
-    def set_request_context(self, url, get, post, referer, cookies, multipart=False, decode=True):
+    def set_request_context(
+        self, url, get, post, referer, cookies, multipart=False, decode=True
+    ):
         """
         sets everything needed for the request.
         """
@@ -240,16 +243,20 @@ class HTTPRequest:
         if self.ssl_aiachaser and url.startswith("https://"):
             chaser = AiaChaser()
             try:
-                pem_data = "".join([
-                    cert.public_bytes(encoding=Encoding.PEM).decode("ascii")
-                    for cert in chaser.fetch_ca_chain_for_url(url)
-                ])
+                pem_data = "".join(
+                    [
+                        cert.public_bytes(encoding=Encoding.PEM).decode("ascii")
+                        for cert in chaser.fetch_ca_chain_for_url(url)
+                    ]
+                )
             except Exception as exc:
                 self.log.warning(f"AiaChaser failed with {exc}")
                 aia_cainfo = certifi.where()
 
             else:
-                with tempfile.NamedTemporaryFile(mode="wt",prefix="aia_", suffix=".pem", delete=False) as tmp:
+                with tempfile.NamedTemporaryFile(
+                    mode="wt", prefix="aia_", suffix=".pem", delete=False
+                ) as tmp:
                     tmp.write(pem_data)
                     if self.aia_cainfo:
                         os.remove(self.aia_cainfo)
@@ -292,9 +299,19 @@ class HTTPRequest:
                         else:
                             data = to_bytes(data)
 
-                        multipart_post.append((k, (pycurl.FORM_BUFFER, filename,
-                                                   pycurl.FORM_BUFFERPTR, data,
-                                                   pycurl.FORM_CONTENTTYPE, v.mimetype)))
+                        multipart_post.append(
+                            (
+                                k,
+                                (
+                                    pycurl.FORM_BUFFER,
+                                    filename,
+                                    pycurl.FORM_BUFFERPTR,
+                                    data,
+                                    pycurl.FORM_CONTENTTYPE,
+                                    v.mimetype,
+                                ),
+                            )
+                        )
 
                 self.c.setopt(pycurl.HTTPPOST, multipart_post)
 
@@ -332,6 +349,7 @@ class HTTPRequest:
         load and returns a given page.
         """
         self.set_request_context(url, get, post, referer, cookies, multipart, decode)
+        resolve_entries = None
 
         self._header_buffer = b""
         self.response_headers.clear(use_defaults=False)
@@ -347,6 +365,17 @@ class HTTPRequest:
         if just_header:
             self.c.setopt(pycurl.NOBODY, 1)
 
+        if self.resolved_addresses:
+            parsed_url = urlparse(to_str(self.last_url or url))
+            hostname = parsed_url.hostname
+            port = parsed_url.port or (443 if parsed_url.scheme == "https" else 80)
+            if hostname:
+                resolve_entries = [
+                    f"{hostname}:{port}:{address}".encode()
+                    for address in self.resolved_addresses
+                ]
+                self.c.setopt(pycurl.RESOLVE, resolve_entries)
+
         try:
             self.c.perform()
         except pycurl.error as exc:
@@ -358,6 +387,8 @@ class HTTPRequest:
             if self.aia_cainfo:
                 os.remove(self.aia_cainfo)
                 self.aia_cainfo = None
+            if resolve_entries is not None:
+                self.c.setopt(pycurl.RESOLVE, [])
 
         if not self.response_headers:
             self.response_headers.parse(self._header_buffer)
@@ -477,7 +508,11 @@ class HTTPRequest:
         """
         code = int(self.c.getinfo(pycurl.RESPONSE_CODE))
         if code in BAD_STATUS_CODES:
-            response = self.decode_response(self.get_response()) if self.decode else self.get_response()
+            response = (
+                self.decode_response(self.get_response())
+                if self.decode
+                else self.get_response()
+            )
             self._body_buffer.close()
             self._body_buffer = None
 
@@ -514,7 +549,10 @@ class HTTPRequest:
             #: detect encoding
             for content_value in self.response_headers.get_list("Content-Type"):
                 content_type, content_params = parse_header_line(content_value)
-                if (content_type.startswith("text/") or content_type.startswith("application/")) and "charset" in content_params:
+                if (
+                    content_type.startswith("text/")
+                    or content_type.startswith("application/")
+                ) and "charset" in content_params:
                     encoding = content_params["charset"]
                     break
 
@@ -580,7 +618,6 @@ class HTTPRequest:
 
     def clear_headers(self, use_defaults=True):
         self.request_headers.clear(use_defaults=use_defaults)
-
 
     def close(self):
         """

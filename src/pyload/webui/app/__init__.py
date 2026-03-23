@@ -24,7 +24,6 @@ from .processors import CONTEXT_PROCESSORS
 
 #: flask app singleton?
 class App:
-
     JINJA_TEMPLATE_GLOBALS = TEMPLATE_GLOBALS
     JINJA_TEMPLATE_FILTERS = TEMPLATE_FILTERS
     JINJA_CONTEXT_PROCESSORS = CONTEXT_PROCESSORS
@@ -32,7 +31,6 @@ class App:
     FLASK_BLUEPRINTS = BLUEPRINTS
     FLASK_EXTENSIONS = EXTENSIONS
     FLASK_THEMES = THEMES
-
 
     @classmethod
     def _configure_config(cls, app, develop):
@@ -64,25 +62,26 @@ class App:
             app.register_error_handler(exc, fn)
 
         @app.after_request
-        def deny_iframe(response):
+        def set_security_headers(response):
             response.headers["Content-Security-Policy"] = "frame-ancestors 'self';"
+            response.headers["X-Content-Type-Options"] = "nosniff"
+            response.headers["X-Frame-Options"] = "SAMEORIGIN"
+            response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+            response.headers["Permissions-Policy"] = "geolocation=(), camera=(), microphone=()"
+            if app.config.get("PYLOAD_API") and app.config["PYLOAD_API"].get_config_value("webui", "use_ssl"):
+                response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
             return response
-
-        # Dynamically set SESSION_COOKIE_SECURE according to the value of X-Forwarded-Proto
-        @app.before_request
-        def set_session_cookie_secure():
-            x_forwarded_proto = flask.request.headers.get("X-Forwarded-Proto", "")
-            is_secure = x_forwarded_proto.split(',')[0].strip() == "https"
-            flask.current_app.config['SESSION_COOKIE_SECURE'] = is_secure
 
     @classmethod
     def _configure_json_encoding(cls, app):
         try:
             from .helpers import JSONProvider
+
             app.json = JSONProvider(app)
 
         except ImportError:
             from .helpers import JSONEncoder
+
             app.json_encoder = JSONEncoder
 
     @classmethod
@@ -117,13 +116,23 @@ class App:
 
         app.config["SESSION_FILE_DIR"] = cache_path
         app.config["SESSION_TYPE"] = "filesystem"
-        app.config["SESSION_COOKIE_NAME"] = "pyload_session_" + str(app.config["PYLOAD_API"].get_config_value("webui", "port"))
+        app.config["SESSION_COOKIE_NAME"] = "pyload_session_" + str(
+            app.config["PYLOAD_API"].get_config_value("webui", "port")
+        )
         app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
-        app.config["SESSION_COOKIE_SECURE"] = app.config["PYLOAD_API"].get_config_value("webui", "use_ssl")
+        app.config["SESSION_COOKIE_SECURE"] = app.config["PYLOAD_API"].get_config_value(
+            "webui", "use_ssl"
+        )
         app.config["SESSION_PERMANENT"] = False
         app.config["SESSION_REFRESH_EACH_REQUEST"] = False
 
-        session_lifetime = max(app.config["PYLOAD_API"].get_config_value("webui", "session_lifetime"), 1) * 60
+        session_lifetime = (
+            max(
+                app.config["PYLOAD_API"].get_config_value("webui", "session_lifetime"),
+                1,
+            )
+            * 60
+        )
         app.config["PERMANENT_SESSION_LIFETIME"] = session_lifetime
 
     @classmethod

@@ -14,7 +14,7 @@ from pyload.core.api import Destination
 from pyload.core.utils.convert import to_str
 from pyload.core.utils.misc import eval_js
 
-from ..helpers import csrf_exempt
+from ..helpers import csrf_exempt, is_loopback_request
 
 #: url_prefix here is intentional since it should not be affected by path prefix
 bp = flask.Blueprint("flash", __name__, url_prefix="/")
@@ -30,13 +30,12 @@ def local_check(func):
                 "127.0.0.1:9666",
                 "[::1]:9666",
         ):
-            remote_addr = flask.request.environ.get("REMOTE_ADDR")
-            if remote_addr in ("127.0.0.1", "::ffff:127.0.0.1", "::1", "localhost"):
+            local_addr = g.get("web_addr")
+            if local_addr == remote_addr:
                 return func(*args, **kwargs)
 
             else:
-                local_addr = g.get("web_addr")
-                if local_addr == remote_addr:
+                if is_loopback_request():
                     return func(*args, **kwargs)
 
         return "Forbidden", 403
@@ -52,6 +51,7 @@ def config_check(config_key: list[str], not_found_msg: str = "Not Found"):
     :param not_found_msg: Custom message for the 404 response.
     :return: A decorator to wrap view functions.
     """
+
     def decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
@@ -59,17 +59,21 @@ def config_check(config_key: list[str], not_found_msg: str = "Not Found"):
             if not api.get_config_value(*config_key):
                 return not_found_msg, 404
             return f(*args, **kwargs)
+
         return decorated_function
+
     return decorator
 
 
 @bp.after_request
 def add_cors(response):
-    response.headers.update({
-        'Access-Control-Max-Age': 1800,
-        'Access-Control-Allow-Origin': "*",
-        'Access-Control-Allow-Methods': "OPTIONS, GET, POST"
-    })
+    response.headers.update(
+        {
+            "Access-Control-Max-Age": 1800,
+            "Access-Control-Allow-Origin": "http://127.0.0.1:9666",
+            "Access-Control-Allow-Methods": "OPTIONS, GET, POST",
+        }
+    )
     return response
 
 
@@ -91,7 +95,11 @@ def add():
         "package", flask.request.form.get("source", flask.request.form.get("referer"))
     )
 
-    urls = [url.strip() for url in unquote(flask.request.form["urls"]).replace(' ', '\n').split("\n") if url.strip()]
+    urls = [
+        url.strip()
+        for url in unquote(flask.request.form["urls"]).replace(" ", "\n").split("\n")
+        if url.strip()
+    ]
     if not urls:
         return "failed no urls\r\n", 500
 
@@ -104,7 +112,8 @@ def add():
         else:
             pack = api.generate_and_add_packages(urls, Destination.COLLECTOR)
     except Exception as exc:
-        return "failed " + str(exc) + "\r\n", 500
+        flask.current_app.logger.error("CNL add failed: %s", exc, exc_info=True)
+        return "failed\r\n", 500
 
     if pack_password:
         api.set_package_data(pack, {"password": pack_password})
@@ -137,7 +146,8 @@ def addcrypted():
     try:
         pack = api.add_package(package, [dlc_path], Destination.COLLECTOR)
     except Exception as exc:
-        return "failed " + str(exc) + "\r\n", 500
+        flask.current_app.logger.error("CNL addcrypted failed: %s", exc, exc_info=True)
+        return "failed\r\n", 500
     else:
         if pack_password:
             api.set_package_data(pack, {"password": pack_password})
@@ -151,9 +161,7 @@ def addcrypted():
 @csrf_exempt
 def addcrypted2():
     def decrypt(crypted: bytes, key: bytes, IV: bytes) -> str:
-        cipher = Cipher(
-            algorithms.AES(key), modes.CBC(IV), backend=default_backend()
-        )
+        cipher = Cipher(algorithms.AES(key), modes.CBC(IV), backend=default_backend())
         decryptor = cipher.decryptor()
         decrypted = decryptor.update(crypted) + decryptor.finalize()
 
@@ -203,7 +211,8 @@ def addcrypted2():
         else:
             pack = api.generate_and_add_packages(urls, Destination.COLLECTOR)
     except Exception as exc:
-        return "failed " + str(exc) + "\r\n", 500
+        flask.current_app.logger.error("CNL addcrypted2 failed: %s", exc, exc_info=True)
+        return "failed\r\n", 500
     else:
         if pack_password:
             api.set_package_data(pack, {"password": pack_password})
@@ -217,11 +226,14 @@ def addcrypted2():
 @local_check
 @csrf_exempt
 def flashgot():
-    if flask.request.referrer not in (
-        "http://localhost:9666/flashgot",
-        "http://127.0.0.1:9666/flashgot",
-    ):
-        flask.abort(500)
+    api = flask.current_app.config["PYLOAD_API"]
+    cnl_port = api.get_config_value("ClickNLoad", "port", "plugin") or 9666
+    allowed_referrers = (
+        f"http://localhost:{cnl_port}/flashgot",
+        f"http://127.0.0.1:{cnl_port}/flashgot",
+    )
+    if flask.request.referrer not in allowed_referrers:
+        flask.abort(403)
 
     package = flask.request.form.get("package")
     urls = [url for url in flask.request.form["urls"].split("\n") if url.strip()]
@@ -230,9 +242,13 @@ def flashgot():
 
     api = flask.current_app.config["PYLOAD_API"]
     if package:
-        api.add_package(package, urls, Destination.QUEUE if autostart else Destination.COLLECTOR)
+        api.add_package(
+            package, urls, Destination.QUEUE if autostart else Destination.COLLECTOR
+        )
     else:
-        api.generate_and_add_packages(urls, Destination.QUEUE if autostart else Destination.COLLECTOR)
+        api.generate_and_add_packages(
+            urls, Destination.QUEUE if autostart else Destination.COLLECTOR
+        )
 
 
 @bp.route("/crossdomain.xml", endpoint="crossdomain")

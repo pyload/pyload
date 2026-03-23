@@ -20,6 +20,7 @@ class GooGl(SimpleDecrypter):
             "Default",
         ),
         ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10),
+        ("api_key", "str", "Google API key", ""),
     ]
 
     __description__ = """Goo.gl decrypter plugin"""
@@ -31,10 +32,13 @@ class GooGl(SimpleDecrypter):
     ]
 
     API_URL = "https://www.googleapis.com/urlshortener/v1/"
-    API_KEY = "AIzaSyB68u-qFPP9oBJpo1DWAPFE_VD2Sfy9hpk"
+    API_KEY = ""
 
     def api_request(self, cmd, **kwargs):
-        kwargs["key"] = self.API_KEY
+        api_key = self.config.get("api_key") or self.API_KEY
+        if not api_key:
+            self.fail("Google API key not configured")
+        kwargs["key"] = api_key
 
         json_data = json.loads(self.load("{}{}".format(self.API_URL, cmd),
                                          get=kwargs))

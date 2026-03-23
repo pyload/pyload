@@ -28,6 +28,7 @@ class GoogledriveCom(BaseDownloader):
         ("fallback", "bool", "Fallback to free download if premium fails", True),
         ("chk_filesize", "bool", "Check file size", True),
         ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10),
+        ("api_key", "str", "Google API key", ""),
     ]
 
     __description__ = """Drive.google.com downloader plugin"""
@@ -40,7 +41,7 @@ class GoogledriveCom(BaseDownloader):
     INFO_PATTERN = r'<span class="uc-name-size"><a href="[^"]+">(?P<N>.+?)</a> \((?P<S>[\d.,]+)(?P<U>[\w^_]+)\)</span>'
 
     API_URL = "https://www.googleapis.com/drive/v3/"
-    API_KEY = "AIzaSyB68u-qFPP9oBJpo1DWAPFE_VD2Sfy9hpk"
+    API_KEY = ""
 
     def setup(self):
         self.multi_dl = True
@@ -48,7 +49,10 @@ class GoogledriveCom(BaseDownloader):
         self.chunk_limit = 1
 
     def api_request(self, cmd, **kwargs):
-        kwargs["key"] = self.API_KEY
+        api_key = self.config.get("api_key") or self.API_KEY
+        if not api_key:
+            self.fail("Google API key not configured")
+        kwargs["key"] = api_key
         try:
             json_data = json.loads(
                 self.load("{}{}".format(self.API_URL, cmd), get=kwargs)

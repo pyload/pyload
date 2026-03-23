@@ -59,7 +59,10 @@ class RequestFactory:
         """
         see HTTPRequest for argument list.
         """
-        with HTTPRequest(None, self.get_options()) as h:
+        request_options = kwargs.pop("request_options", None) or {}
+        options = self.get_options()
+        options.update(request_options)
+        with HTTPRequest(None, options) as h:
             rep = h.load(*args, **kwargs)
         return rep
 
@@ -107,7 +110,9 @@ class RequestFactory:
             "proxies": self.get_proxies(),
             "ipv6": self.pyload.config.get("download", "ipv6"),
             "ssl_verify": self.pyload.config.get("general", "ssl_verify"),
-            "max_redirect": self.pyload.config.get_plugin("UserAgentSwitcher", "maxredirs"),
+            "max_redirect": self.pyload.config.get_plugin(
+                "UserAgentSwitcher", "maxredirs"
+            ),
         }
 
     def update_bucket(self):

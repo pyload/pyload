@@ -96,6 +96,16 @@ the pyLoad's web interface.
 
 **It's highly recommended to change the default access credentials on first start**.
 
+### Reverse Proxy and Secure Deployment
+
+-   Do not expose pyLoad directly to the Internet with the default credentials.
+-   If you publish the web UI through a reverse proxy, terminate TLS at the proxy and keep a strict network boundary between the proxy and pyLoad.
+-   Do not rely on localhost-only features such as Click'N'Load or single-user autologin when pyLoad is placed behind a same-host reverse proxy. Those features are intended for direct local access only.
+-   Prefer restricting the upstream listener to a private interface and allow access only from the reverse proxy.
+-   If you enable Click'N'Load on a hosted instance, treat it as a local-network feature and do not expose it publicly.
+
+For coordinated vulnerability handling and more deployment guidance, see [`SECURITY.md`](SECURITY.md).
+
 ## Advanced Installation
 
 ### Stable Release
@@ -279,6 +289,11 @@ Compatible with `docker-compose` v2 schemas:
 > Replace `<STORAGEDIR>` with the location on the host machine where you want that downloads will be saved.
 >
 > Replace `<USERDIR>` with where you want that user data files (configurations) are stored.
+
+> **Security note**:
+>
+> If you use Docker or Docker Compose behind a reverse proxy, publish only the web UI you actually need.
+> Avoid exposing Click'N'Load (`9666`) publicly, and keep localhost-only convenience features disabled for internet-facing deployments.
 
 ## Troubleshooting
 

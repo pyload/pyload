@@ -8,11 +8,14 @@
 #            \/
 
 import os
+import ipaddress
 import re
+import socket
 import secrets
 import time
 from enum import IntFlag
 from typing import Any, Callable, Optional
+from urllib.parse import urlparse
 
 import flask
 from werkzeug.utils import secure_filename
@@ -20,14 +23,33 @@ from werkzeug.utils import secure_filename
 from pyload import PKGDIR
 
 from ..datatypes.data import (
-    AccountInfo, CaptchaTask, ConfigItem, ConfigSection, DownloadInfo, EventInfo, FileData, OldUserData, OnlineCheck,
-    OnlineStatus, PackageData, ServerStatus, ServiceCall, UserData)
+    AccountInfo,
+    CaptchaTask,
+    ConfigItem,
+    ConfigSection,
+    DownloadInfo,
+    EventInfo,
+    FileData,
+    OldUserData,
+    OnlineCheck,
+    OnlineStatus,
+    PackageData,
+    ServerStatus,
+    ServiceCall,
+    UserData,
+)
 from ..datatypes.enums import Destination, ElementType
-from ..datatypes.exceptions import FileDoesNotExists, PackageDoesNotExists, ServiceDoesNotExists, ServiceException
+from ..datatypes.exceptions import (
+    FileDoesNotExists,
+    PackageDoesNotExists,
+    ServiceDoesNotExists,
+    ServiceException,
+)
 from ..datatypes.pyfile import PyFile
 from ..log_factory import LogFactory
 from ..network.request_factory import get_url
 from ..utils import fs, seconds
+from ..utils.convert import to_str
 from ..utils.old.packagetools import parse_names
 
 # contains function names mapped to their permissions
@@ -46,6 +68,69 @@ RE_URLMATCH = re.compile(
     r"(?:https?|ftps?|xdcc|sftp):(?://|\\\\)+[\w\-._~:/?#\[\]@!$&'()*+,;=]*|magnet:\?.+",
     re.IGNORECASE,
 )
+
+
+def _validate_parse_url_target(url: str) -> None:
+    parsed = urlparse(url)
+
+    if parsed.scheme not in {"http", "https"}:
+        raise ValueError("Only http and https URLs are supported")
+
+    hostname = parsed.hostname
+    if not hostname:
+        raise ValueError("URL must include a hostname")
+
+    try:
+        addresses = {
+            ipaddress.ip_address(info[4][0])
+            for info in socket.getaddrinfo(
+                hostname, parsed.port or None, type=socket.SOCK_STREAM
+            )
+        }
+    except socket.gaierror as exc:
+        raise ValueError("Unable to resolve URL hostname") from exc
+
+    if not addresses:
+        raise ValueError("Unable to resolve URL hostname")
+
+    for address in addresses:
+        if (
+            address.is_private
+            or address.is_loopback
+            or address.is_link_local
+            or address.is_multicast
+            or address.is_reserved
+            or address.is_unspecified
+        ):
+            raise ValueError(
+                "Refusing to fetch URLs that resolve to local or reserved addresses"
+            )
+
+
+def _resolve_public_fetch_targets(url: str) -> list[str]:
+    _validate_parse_url_target(url)
+
+    parsed = urlparse(url)
+    hostname = parsed.hostname
+    if not hostname:
+        raise ValueError("URL must include a hostname")
+
+    try:
+        addrinfo = socket.getaddrinfo(
+            hostname, parsed.port or None, type=socket.SOCK_STREAM
+        )
+    except socket.gaierror as exc:
+        raise ValueError("Unable to resolve URL hostname") from exc
+
+    approved_addresses = []
+    for info in addrinfo:
+        address = ipaddress.ip_address(info[4][0])
+        approved_addresses.append(str(address))
+
+    if not approved_addresses:
+        raise ValueError("Unable to resolve URL hostname")
+
+    return list(dict.fromkeys(approved_addresses))
 
 
 class Perms(IntFlag):
@@ -95,10 +180,10 @@ def http_method(method_type: str) -> Callable:
 
 
 # Convenience aliases for common methods
-get = http_method('GET')
-post = http_method('POST')
-put = http_method('PUT')
-delete = http_method('DELETE')
+get = http_method("GET")
+post = http_method("POST")
+put = http_method("PUT")
+delete = http_method("DELETE")
 
 
 def has_permission(user_perms: Perms, required_perms: Perms):
@@ -167,7 +252,7 @@ class Api:
             statusmsg=p["statusmsg"],
             package_id=p["package"],
             error=p["error"],
-            order=p["order"]
+            order=p["order"],
         )
         return f
 
@@ -178,15 +263,19 @@ class Api:
             for key, data in sub.items():
                 if key in ("desc", "outline"):
                     continue
-                item = ConfigItem(name=key,
-                                  description=data["desc"],
-                                  value=str(data["value"]),
-                                  type=data["type"])
+                item = ConfigItem(
+                    name=key,
+                    description=data["desc"],
+                    value=str(data["value"]),
+                    type=data["type"],
+                )
                 items.append(item)
-            section = ConfigSection(name=section_name,
-                                    description=sub["desc"],
-                                    items=items,
-                                    outline=sub.get("outline"))
+            section = ConfigSection(
+                name=section_name,
+                description=sub["desc"],
+                items=items,
+                outline=sub.get("outline"),
+            )
             sections[section_name] = section
 
         return sections
@@ -194,7 +283,9 @@ class Api:
     @legacy("getConfigValue")
     @permission(Perms.SETTINGS)
     @get
-    def get_config_value(self, category: str, option: str, section: str = "core") -> Any:
+    def get_config_value(
+        self, category: str, option: str, section: str = "core"
+    ) -> Any:
         """
         Retrieve config value.
 
@@ -212,7 +303,9 @@ class Api:
     @legacy("setConfigValue")
     @permission(Perms.SETTINGS)
     @post
-    def set_config_value(self, category: str, option: str, value: Any, section: str = "core") -> None:
+    def set_config_value(
+        self, category: str, option: str, value: Any, section: str = "core"
+    ) -> None:
         """
         Set new config value.
 
@@ -387,7 +480,8 @@ class Api:
             total=self.pyload.files.get_file_count(),
             speed=0,
             download=not self.pyload.thread_manager.pause and self.is_time_download(),
-            reconnect=self.pyload.config.get("reconnect", "enabled") and self.is_time_reconnect(),
+            reconnect=self.pyload.config.get("reconnect", "enabled")
+            and self.is_time_reconnect(),
             captcha=self.is_captcha_waiting(),
             proxy=self.pyload.config.get("proxy", "enabled"),
         )
@@ -517,7 +611,7 @@ class Api:
                     package_id=pyfile.packageid,
                     package_name=pyfile.package().name,
                     plugin=pyfile.pluginname,
-                    info=""
+                    info="",
                 )
             )
 
@@ -526,7 +620,9 @@ class Api:
     @legacy("addPackage")
     @permission(Perms.ADD)
     @post
-    def add_package(self, name: str, links: list[str], dest: Destination = Destination.QUEUE) -> int:
+    def add_package(
+        self, name: str, links: list[str], dest: Destination = Destination.QUEUE
+    ) -> int:
         """
         Adds a package, with links to desired destination.
 
@@ -553,7 +649,9 @@ class Api:
         )
 
         sanitized_name = name.replace("\n", "\\n").replace("\r", "\\r")
-        package_id = self.pyload.files.add_package(sanitized_name, folder, Destination(dest))
+        package_id = self.pyload.files.add_package(
+            sanitized_name, folder, Destination(dest)
+        )
 
         self.pyload.files.add_links(links, package_id)
 
@@ -570,7 +668,9 @@ class Api:
     @legacy("parseURLs")
     @permission(Perms.ADD)
     @post
-    def parse_urls(self, html: Optional[str] = None, url: Optional[str] = None) -> dict[str, list[str]]:
+    def parse_urls(
+        self, html: Optional[str] = None, url: Optional[str] = None
+    ) -> dict[str, list[str]]:
         """
         Parses html content or any arbitrary text for links and returns result of
         `check_urls`
@@ -585,8 +685,17 @@ class Api:
             urls.update(RE_URLMATCH.findall(html))
 
         if url:
-            page = get_url(url)
-            urls.update(RE_URLMATCH.findall(page))
+            approved_addresses = _resolve_public_fetch_targets(url)
+            page = get_url(
+                url,
+                redirect=False,
+                request_options={
+                    "proxies": {},
+                    "resolved_addresses": approved_addresses,
+                },
+            )
+            page_text = str(to_str(page))
+            urls.update(RE_URLMATCH.findall(page_text))
 
         return self.check_urls(list(urls))
 
@@ -626,11 +735,19 @@ class Api:
         rid = self.pyload.thread_manager.create_result_thread(data, False)
 
         tmp = [
-            (url, (url, OnlineStatus(name=url,
-                                     plugin=pluginname,
-                                     packagename="unknown",
-                                     status=3,
-                                     size=0)))
+            (
+                url,
+                (
+                    url,
+                    OnlineStatus(
+                        name=url,
+                        plugin=pluginname,
+                        packagename="unknown",
+                        status=3,
+                        size=0,
+                    ),
+                ),
+            )
             for url, pluginname in data
         ]
         data = parse_names(tmp)
@@ -646,7 +763,9 @@ class Api:
     @legacy("checkOnlineStatusContainer")
     @permission(Perms.ADD)
     @post
-    def check_online_status_container(self, urls: list[str], container: str, data: bytes) -> OnlineCheck:
+    def check_online_status_container(
+        self, urls: list[str], container: str, data: bytes
+    ) -> OnlineCheck:
         """
         checks online status of urls and a submitted container file.
 
@@ -698,7 +817,9 @@ class Api:
     @legacy("generateAndAddPackages")
     @permission(Perms.ADD)
     @post
-    def generate_and_add_packages(self, links: list[str], dest: Destination = Destination.COLLECTOR) -> list[int]:
+    def generate_and_add_packages(
+        self, links: list[str], dest: Destination = Destination.COLLECTOR
+    ) -> list[int]:
         """
         Generates and add packages.
 
@@ -714,7 +835,9 @@ class Api:
     @legacy("checkAndAddPackages")
     @permission(Perms.ADD)
     @post
-    def check_and_add_packages(self, links: list[str], dest: Destination = Destination.COLLECTOR) -> None:
+    def check_and_add_packages(
+        self, links: list[str], dest: Destination = Destination.COLLECTOR
+    ) -> None:
         """
         Checks online status, retrieves names, and will add packages.
         Because of these packages are not added immediately, only for internal use.
@@ -1236,10 +1359,12 @@ class Api:
         if task:
             task.set_waiting_for_user(exclusive=exclusive)
             captcha_data, captcha_type, result_type = task.get_captcha()
-            t = CaptchaTask(tid=int(task.id),
-                            data=captcha_data,
-                            type=captcha_type,
-                            result_type=result_type)
+            t = CaptchaTask(
+                tid=int(task.id),
+                data=captcha_data,
+                type=captcha_type,
+                result_type=result_type,
+            )
             return t
         else:
             return CaptchaTask(tid=-1)
@@ -1356,7 +1481,13 @@ class Api:
     @legacy("updateAccount")
     @permission(Perms.ACCOUNTS)
     @post
-    def update_account(self, plugin: str, account: str, password: Optional[str] = None, options: Optional[dict[str, Any]] = None) -> None:
+    def update_account(
+        self,
+        plugin: str,
+        account: str,
+        password: Optional[str] = None,
+        options: Optional[dict[str, Any]] = None,
+    ) -> None:
         """
         Changes pw/options for specific account.
         """
@@ -1409,7 +1540,9 @@ class Api:
         """
         if userdata["role"] == Role.ADMIN:
             return True
-        elif func_name in perm_map and has_permission(userdata["permission"], perm_map[func_name]):
+        elif func_name in perm_map and has_permission(
+            userdata["permission"], perm_map[func_name]
+        ):
             return True
         else:
             return False
@@ -1526,9 +1659,15 @@ class Api:
         cont = self.pyload.addon_manager.rpc_methods
         return plugin in cont and func_name in cont[plugin]
 
-    @permission(Perms.STATUS)
+    # Intentionally left without a @permission decorator so the API dispatcher
+    # treats it as admin-only.
     @post
-    def service_call(self, service_name: str, arguments: Optional[list[Any]], parse_arguments: bool = False) -> str:
+    def service_call(
+        self,
+        service_name: str,
+        arguments: Optional[list[Any]],
+        parse_arguments: bool = False,
+    ) -> str:
         """
         Calls a service (a method in addon plugin).
 
@@ -1548,11 +1687,10 @@ class Api:
             plugin=plugin,
             func=func,
             arguments=arguments,
-            parse_arguments=parse_arguments
+            parse_arguments=parse_arguments,
         )
         return self._call(info)
 
-    @permission(Perms.STATUS)
     def _call(self, info: ServiceCall) -> str:
         """
         Calls a service (a method in addon plugin).

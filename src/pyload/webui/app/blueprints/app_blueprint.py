@@ -14,8 +14,18 @@ from pyload import APPID, PKGDIR
 from pyload.core.utils import format
 
 from ..helpers import (
-    clear_session, csrf_exempt, get_permission, get_redirect_url, is_authenticated, login_required, permlist,
-    render_base, render_template, set_session, static_file_url)
+    clear_session,
+    get_permission,
+    get_redirect_url,
+    is_authenticated,
+    is_loopback_request,
+    login_required,
+    permlist,
+    render_base,
+    render_template,
+    set_session,
+    static_file_url,
+)
 
 _RE_LOGLINE = re.compile(r"\[([\d\-]+) ([\d:]+)\] +([A-Z]+) +(.+?) (.*)")
 
@@ -43,7 +53,6 @@ def robots():
 
 # TODO: Rewrite login route using flask-login
 @bp.route("/login", methods=["GET", "POST"], endpoint="login")
-@csrf_exempt
 def login():
     api = flask.current_app.config["PYLOAD_API"]
 
@@ -54,15 +63,22 @@ def login():
         password = flask.request.form["password"]
         user_info = api.check_auth(user, password)
 
-        client_ip = flask.request.headers.get("X-Forwarded-For", "").split(',')[0].strip() or flask.request.remote_addr
+        client_ip = (
+            flask.request.headers.get("X-Forwarded-For", "").split(",")[0].strip()
+            or flask.request.remote_addr
+        )
 
         sanitized_user = user.replace("\n", "\\n").replace("\r", "\\r")
         if not user_info:
-            log.error(f"Login failed for user '{sanitized_user}' using Web Client [CLIENT: {client_ip}]")
+            log.error(
+                f"Login failed for user '{sanitized_user}' using Web Client [CLIENT: {client_ip}]"
+            )
             return render_template("login.html", errors=True)
 
         set_session(user_info)
-        log.info(f"User '{sanitized_user}' successfully logged in using Web Client [CLIENT: {client_ip}]")
+        log.info(
+            f"User '{sanitized_user}' successfully logged in using Web Client [CLIENT: {client_ip}]"
+        )
         flask.flash("Logged in successfully")
 
     if is_authenticated():
@@ -70,7 +86,7 @@ def login():
 
     if api.get_config_value("webui", "autologin"):
         allusers = api.get_all_userdata()
-        if len(allusers) == 1:  # TODO: check if localhost
+        if len(allusers) == 1 and is_loopback_request():
             userdata = list(allusers.values())[0]
             set_session(userdata.model_dump())
             # NOTE: Double-check authentication here because if session[name] is empty,
@@ -149,7 +165,11 @@ def files():
         for entry in sorted(os.listdir(root)):
             try:
                 if os.path.isdir(os.path.join(root, entry)):
-                    folder = {"name": decode_name(entry), "path": decode_name(entry), "files": []}
+                    folder = {
+                        "name": decode_name(entry),
+                        "path": decode_name(entry),
+                        "files": [],
+                    }
                     try:
                         files = os.listdir(os.path.join(root, entry))
                         for file in sorted(files):
@@ -157,7 +177,11 @@ def files():
                                 folder["files"].append(decode_name(file))
 
                     except OSError as exc:
-                        log.debug("Failed to list files in folder '%s': %s", decode_name(entry), exc)
+                        log.debug(
+                            "Failed to list files in folder '%s': %s",
+                            decode_name(entry),
+                            exc,
+                        )
 
                     data["folder"].append(folder)
 
@@ -168,7 +192,9 @@ def files():
                 log.debug("Failed to access entry '%s': %s", decode_name(entry), exc)
 
     except OSError as exc:
-        log.debug("Failed to list download directory '{}': {}".format(os.fsdecode(root), exc))
+        log.debug(
+            "Failed to list download directory '{}': {}".format(os.fsdecode(root), exc)
+        )
 
     return render_template("files.html", files=data)
 
@@ -177,9 +203,13 @@ def files():
 @login_required("DOWNLOAD")
 def get_file(path):
     api = flask.current_app.config["PYLOAD_API"]
-    path = unquote(path).replace("..", "")
-    directory = api.get_config_value("general", "storage_folder")
-    return flask.send_from_directory(directory, path, as_attachment=True)
+    path = unquote(path)
+    directory = os.path.realpath(api.get_config_value("general", "storage_folder"))
+    resolved = os.path.realpath(os.path.join(directory, path))
+    if not resolved.startswith(directory + os.sep) and resolved != directory:
+        flask.abort(403)
+    relative = os.path.relpath(resolved, directory)
+    return flask.send_from_directory(directory, relative, as_attachment=True)
 
 
 @bp.route("/settings", endpoint="settings")
@@ -254,13 +284,15 @@ def settings():
         users[name] = {"perms": get_permission(userdata.permission)}
         users[name]["perms"]["admin"] = userdata.role == 0
 
-    admin_menu = {
-        "permlist": permlist(),
-        "users": users
-    }
+    admin_menu = {"permlist": permlist(), "users": users}
 
     context = {
-        "conf": {"plugin": plugin_menu, "general": conf_menu, "accs": accs, "admin": admin_menu},
+        "conf": {
+            "plugin": plugin_menu,
+            "general": conf_menu,
+            "accs": accs,
+            "admin": admin_menu,
+        },
         "types": api.get_account_types(),
     }
     return render_template("settings.html", **context)
@@ -271,7 +303,7 @@ def settings():
 @login_required("SETTINGS")
 def pathchooser():
     browse_for = "folder" if flask.request.endpoint == "app.pathchooser" else "file"
-    path = os.path.normpath(flask.request.args.get('path', ""))
+    path = os.path.normpath(flask.request.args.get("path", ""))
 
     if os.path.isfile(path):
         oldfile = path
@@ -388,7 +420,9 @@ def logs(start_line=-1):
 
     if start_line < 1:
         start_line = (
-            1 if len(log_entries) - per_page + 1 < 1 or per_page == 0 else len(log_entries) - per_page + 1
+            1
+            if len(log_entries) - per_page + 1 < 1 or per_page == 0
+            else len(log_entries) - per_page + 1
         )
 
     if isinstance(fro, datetime.datetime):  #: we will search for datetime.datetime
@@ -421,7 +455,7 @@ def logs(start_line=-1):
                         "date": date + " " + time,
                         "level": level,
                         "source": source,
-                        "message": message.rstrip('\n'),
+                        "message": message.rstrip("\n"),
                     }
                 )
                 inpage_counter += 1
@@ -446,7 +480,9 @@ def logs(start_line=-1):
         "perpage": per_page,
         "perpage_p": sorted(per_page_selection),
         "iprev": max(start_line - per_page, 1),
-        "inext": (start_line + per_page) if start_line + per_page <= len(log_entries) else start_line,
+        "inext": (start_line + per_page)
+        if start_line + per_page <= len(log_entries)
+        else start_line,
     }
     return render_template("logs.html", **context)
 
