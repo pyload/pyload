@@ -154,7 +154,7 @@ class SettingsUI {
               data: {[`${userName}|delete`]: true},
               success: () => {
                 sessionStorage.setItem("activeTab", "#users");
-                window.location.assign(window.location.origin + window.location.pathname + window.location.search);
+                window.location.assign(window.location.href.replace(/#.*$/, ''));
               }
             }).fail(() => {
               uiHandler.indicateFail("{{_('Error occurred')}}");
@@ -192,7 +192,7 @@ class SettingsUI {
             data: $userForm.serialize(),
             success: () => {
               sessionStorage.setItem("activeTab", "#users");
-              window.location.assign(window.location.origin + window.location.pathname + window.location.search);
+              window.location.assign(window.location.href.replace(/#.*$/, ''));
             }
           }).fail(() => {
             uiHandler.indicateFail("{{_('Error occurred')}}");
@@ -293,7 +293,7 @@ class SettingsUI {
       data: $("#add_account_form").serialize(),
       success: () => {
         sessionStorage.setItem("activeTab", "#accounts");
-        window.location.assign(window.location.origin + window.location.pathname + window.location.search);
+        window.location.assign(window.location.href.replace(/#.*$/, ''));
       }
     }).fail(() => {
       uiHandler.indicateFail("{{_('Error occurred')}}");
@@ -309,7 +309,7 @@ class SettingsUI {
       data: $("#user_form").serialize(),
       success: () => {
         sessionStorage.setItem("activeTab", "#users");
-        window.location.assign(window.location.origin + window.location.pathname + window.location.search);
+        window.location.assign(window.location.href.replace(/#.*$/, ''));
       }
     }).fail(() => {
       uiHandler.indicateFail("{{_('Error occurred')}}");
@@ -325,7 +325,7 @@ class SettingsUI {
       data: $("#account_form").serialize(),
       success: () => {
         sessionStorage.setItem("activeTab", "#accounts");
-        window.location.assign(window.location.origin + window.location.pathname + window.location.search);
+        window.location.assign(window.location.href.replace(/#.*$/, ''));
       }
     }).fail(() => {
       uiHandler.indicateFail("{{_('Error occurred')}}");

@@ -305,7 +305,7 @@ class UIHandler {
             const queue = $this.find("#add_dest").val() === "1" ? "queue" : "collector";
             const re = new RegExp(`/${queue}/?$`, "i");
             if (window.location.toString().match(re)) {
-              window.location.assign(window.location.origin + window.location.pathname + window.location.search);
+              window.location.assign(window.location.href.replace(/#.*$/, ''));
             }
           },
           error: () => {
