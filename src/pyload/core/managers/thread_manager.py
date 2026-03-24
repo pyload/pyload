@@ -10,7 +10,7 @@ from ..threads.download_thread import DownloadThread
 from ..threads.info_thread import InfoThread
 from ..utils import fs
 from ..utils.struct.lock import lock
-from ..utils.web.check import get_public_ipv4
+from ..utils.web.check import get_public_address
 
 # import pycurl
 
@@ -189,7 +189,7 @@ class ThreadManager:
         ) != 0:
             time.sleep(0.25)
 
-        old_ip = get_public_ipv4()
+        old_ip = get_public_address()
 
         self.pyload.addon_manager.before_reconnect(old_ip)
 
@@ -204,7 +204,7 @@ class ThreadManager:
             return
 
         time.sleep(1)
-        new_ip = get_public_ipv4()
+        new_ip = get_public_address()
         self.pyload.addon_manager.after_reconnect(new_ip, old_ip)
 
         self.pyload.log.info(self._("Reconnected, new IP: {}").format(new_ip))
