@@ -103,7 +103,7 @@ def package():
         return jsonify(False), 500
 
 
-@bp.route("/json/package_order", endpoint="package_order")
+@bp.route("/json/package_order", methods=["POST"], endpoint="package_order")
 # @apiver_check
 @login_required("ADD")
 def package_order():
@@ -118,7 +118,7 @@ def package_order():
         return jsonify(False), 500
 
 
-@bp.route("/json/abort_link", endpoint="abort_link")
+@bp.route("/json/abort_link", methods=["POST"], endpoint="abort_link")
 # @apiver_check
 @login_required("DELETE")
 def abort_link():
@@ -132,7 +132,7 @@ def abort_link():
         return jsonify(False), 500
 
 
-@bp.route("/json/link_order", endpoint="link_order")
+@bp.route("/json/link_order", methods=["POST"], endpoint="link_order")
 # @apiver_check
 @login_required("ADD")
 def link_order():
@@ -184,7 +184,7 @@ def add_package():
     return jsonify(True)
 
 
-@bp.route("/json/move_package", endpoint="move_package")
+@bp.route("/json/move_package", methods=["POST"], endpoint="move_package")
 # @apiver_check
 @login_required("MODIFY")
 def move_package():

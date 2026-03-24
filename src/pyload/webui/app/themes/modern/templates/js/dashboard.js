@@ -86,7 +86,7 @@ class LinkEntry {
     this.fadeBar = this.elements.pgbTr;
 
     $(this.elements.remove).click(() => {
-      $.get({
+      $.post({
         url: "{{url_for('json.abort_link')}}",
         data: { id: this.id },
         traditional: true,
