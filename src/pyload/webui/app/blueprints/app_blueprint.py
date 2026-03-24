@@ -43,7 +43,6 @@ def robots():
 
 # TODO: Rewrite login route using flask-login
 @bp.route("/login", methods=["GET", "POST"], endpoint="login")
-@csrf_exempt
 def login():
     api = flask.current_app.config["PYLOAD_API"]
 
