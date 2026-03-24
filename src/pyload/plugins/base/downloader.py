@@ -209,7 +209,7 @@ class BaseDownloader(BaseHoster):
                 else:
                     resource = False
 
-            return resource
+        return resource
 
     def _on_notification(self, notification):
         if "progress" in notification:
