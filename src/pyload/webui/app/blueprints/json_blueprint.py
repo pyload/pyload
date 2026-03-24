@@ -1,4 +1,5 @@
 import os
+import sys
 from functools import wraps
 
 import flask
@@ -34,10 +35,13 @@ def expect_json(f):
         try:
             return f(**params)
         except TypeError:
-            return jsonify({
-                "success": False,
-                "error": "Invalid Parameters"
-            }), 400
+            if sys.exc_info()[2].tb_next is None:
+                return jsonify({
+                    "success": False,
+                    "error": "Invalid Parameters"
+                }), 400
+            else:
+                raise
 
     return wrapper
 

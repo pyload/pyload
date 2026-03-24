@@ -14,7 +14,7 @@ from pyload.core.api import Destination
 from pyload.core.utils.convert import to_str
 from pyload.core.utils.misc import eval_js
 
-from ..helpers import csrf_exempt
+from ..helpers import config_check, csrf_exempt, is_loopback_request
 
 #: url_prefix here is intentional since it should not be affected by path prefix
 bp = flask.Blueprint("flash", __name__, url_prefix="/")
@@ -31,12 +31,12 @@ def local_check(func):
                 "[::1]:9666",
         ):
             remote_addr = flask.request.environ.get("REMOTE_ADDR")
-            if remote_addr in ("127.0.0.1", "::ffff:127.0.0.1", "::1", "localhost"):
+            local_addr = g.get("web_addr")
+            if local_addr == remote_addr:
                 return func(*args, **kwargs)
 
             else:
-                local_addr = g.get("web_addr")
-                if local_addr == remote_addr:
+                if is_loopback_request(check_source=False):
                     return func(*args, **kwargs)
 
         return "Forbidden", 403
@@ -44,30 +44,11 @@ def local_check(func):
     return wrapper
 
 
-def config_check(config_key: list[str], not_found_msg: str = "Not Found"):
-    """
-    Decorator factory: Checks [config_key] config value and aborts with 404 if False.
-
-    :param config_key: The config key to check (e.g., ["ClickNLoad", "enabled", "plugin"]).
-    :param not_found_msg: Custom message for the 404 response.
-    :return: A decorator to wrap view functions.
-    """
-    def decorator(f):
-        @wraps(f)
-        def decorated_function(*args, **kwargs):
-            api = flask.current_app.config["PYLOAD_API"]
-            if not api.get_config_value(*config_key):
-                return not_found_msg, 404
-            return f(*args, **kwargs)
-        return decorated_function
-    return decorator
-
-
 @bp.after_request
 def add_cors(response):
     response.headers.update({
         'Access-Control-Max-Age': 1800,
-        'Access-Control-Allow-Origin': "*",
+        'Access-Control-Allow-Origin': "http://127.0.0.1:9666",
         'Access-Control-Allow-Methods': "OPTIONS, GET, POST"
     })
     return response

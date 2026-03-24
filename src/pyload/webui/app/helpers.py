@@ -8,6 +8,7 @@ import flask_themes2
 import werkzeug.routing
 
 from pyload.core.api import Perms, Role, has_permission
+from pyload.core.utils.web.check import is_loopback_address
 
 from .extensions import csrf
 
@@ -189,6 +190,40 @@ def is_authenticated(session=flask.session):
     authenticated = session.get("authenticated", False)
 
     return authenticated and api.user_exists(user)
+
+
+def config_check(config_key: list[str], not_found_msg: str = "Not Found"):
+    """
+    Decorator factory: Checks [config_key] config value and aborts with 404 if False.
+
+    :param config_key: The config key to check (e.g., ["ClickNLoad", "enabled", "plugin"]).
+    :param not_found_msg: Custom message for the 404 response.
+    :return: A decorator to wrap view functions.
+    """
+    def decorator(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            api = flask.current_app.config["PYLOAD_API"]
+            if not api.get_config_value(*config_key):
+                return not_found_msg, 404
+            return f(*args, **kwargs)
+        return decorated_function
+    return decorator
+
+
+def is_loopback_request(request=flask.request, check_source=True):
+    if check_source:
+        if any(
+            request.headers.get(header)
+            for header in ("X-Forwarded-For", "X-Real-IP", "Forwarded")
+        ):
+            return False
+
+    remote_addr = request.remote_addr
+    if not remote_addr:
+        return False
+
+    return is_loopback_address(remote_addr)
 
 
 def login_required(perm):
