@@ -69,6 +69,7 @@ class App:
             return response
 
         # Dynamically set SESSION_COOKIE_SECURE according to the value of X-Forwarded-Proto
+        # TODO: Add trusted proxy check
         @app.before_request
         def set_session_cookie_secure():
             x_forwarded_proto = flask.request.headers.get("X-Forwarded-Proto", "")
