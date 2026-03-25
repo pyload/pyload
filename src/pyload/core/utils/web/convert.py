@@ -21,15 +21,21 @@ from ..convert import to_str
 #     return addr, port
 
 
-# def host_to_ip(hostname):
-#     _, _, ipaddrlist = socket.gethostbyname_ex(hostname)
-#     return ipaddrlist
+def host_to_ip(hostname):
+    try:
+        IPs = [
+            result [4][0]
+            for result in socket.getaddrinfo(hostname, None, family=socket.AF_INET, type=socket.SOCK_STREAM)
+        ]
+    except socket.gaierror:
+        IPs = []
+
+    return IPs
 
 
-# def ip_to_host(ipaddress):
-#     hostname, aliaslist, _ = socket.gethostbyaddr(ipaddress)
-#     return [hostname] + aliaslist
-
+def ip_to_host(ipaddress):
+    hostname, _ = socket.getnameinfo((ipaddress, 0), 0)
+    return hostname
 
 # def socket_to_endpoint(socket):
 #     ip, port = splitaddress(socket)

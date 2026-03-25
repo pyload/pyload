@@ -6,21 +6,10 @@ import time
 
 from pyload import g
 from pyload.core.utils.struct.lock import lock
+from pyload.core.utils.web.convert import host_to_ip
 
 from ..base.addon import BaseAddon, threaded
 from ..helpers import forward
-
-
-def resolve_host(host):
-    try:
-        IPs = [
-            result [4][0]
-            for result in socket.getaddrinfo(host, None, family=socket.AF_INET, type=socket.SOCK_STREAM)
-        ]
-    except socket.gaierror:
-        IPs = []
-
-    return IPs
 
 
 # TODO: IPv6 support
@@ -218,7 +207,7 @@ class ClickNLoad(BaseAddon):
                                     allowed_networks.append(network)
                                 except ValueError:
                                     try:
-                                        networks = [ipaddress.ip_network(ip) for ip in resolve_host(host_filter)]
+                                        networks = [ipaddress.ip_network(ip) for ip in host_to_ip(host_filter)]
                                         networks = [
                                             network
                                             for network in networks
