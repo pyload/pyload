@@ -39,15 +39,15 @@ class ApikeyDatabaseMethods:
         """
         key_hash = _hashed_key(apikey)
         self.c.execute(
-            """INSERT INTO apikeys (id, user_id, name, key_hash, created_at, expires_at)
+            """INSERT INTO apikeys (id, user_id, name, key_hash, created_at, expires_at, last_used)
                VALUES (
                   (SELECT 1 WHERE NOT EXISTS (SELECT 1 FROM apikeys WHERE id = 1)
                    UNION
                    SELECT t1.id + 1 FROM apikeys t1 LEFT JOIN apikeys t2 ON t1.id + 1 = t2.id WHERE t2.id IS NULL
                    ORDER BY 1 LIMIT 1),
-                   ?, ?, ?, ?, ?
+                   ?, ?, ?, ?, ?, ?
                )""",
-            (user_id, name, key_hash, int(time.time() * 1000), expires),
+            (user_id, name, key_hash, int(time.time() * 1000), expires, 0),
         )
         return self.c.lastrowid
 
