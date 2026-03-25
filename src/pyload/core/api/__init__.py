@@ -95,10 +95,10 @@ def http_method(method_type: str) -> Callable:
 
 
 # Convenience aliases for common methods
-get = http_method('GET')
-post = http_method('POST')
-put = http_method('PUT')
-delete = http_method('DELETE')
+get = http_method("GET")
+post = http_method("POST")
+put = http_method("PUT")
+delete = http_method("DELETE")
 
 
 def has_permission(user_perms: Perms, required_perms: Perms):
@@ -1657,7 +1657,7 @@ class Api:
                 "error": "Create API key failed",
             }
 
-        full_api_key = f"pl_{(int(str(key_id)) + 9) % 10 + 1}{key_id}{api_key}"
+        full_api_key = f"pl_{(len(str(key_id)) + 9) % 10 + 1}{key_id}{api_key}"
 
         return {
             "success": True,
@@ -1718,14 +1718,14 @@ class Api:
             not apikey.startswith("pl_") or
             len(apikey) < 4 or
             not apikey[3].isdigit() or
-            len(apikey) != ((int(apikey[3]) + 9) % 10 + 1) + 47
+            len(apikey) != int(apikey[3]) + 47
         ):
             return {
                 "success": False,
                 "error": "Invalid API key",
             }
 
-        key_id = int(apikey[4:4 + (int(apikey[3]) + 9) % 10 + 1])
+        key_id = int(apikey[4:4 + int(apikey[3])])
         key_data = self.pyload.db.check_apikey(key_id, apikey[-43:])
         if not key_data:
             return {
