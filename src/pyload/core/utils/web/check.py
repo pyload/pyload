@@ -113,15 +113,15 @@ def is_port(value):
     return 0 <= value <= 65535
 
 
-def get_public_address(iptype="ipv4"):
+def get_public_address(addr_type="ipv4"):
     """
-    Attempt to retrieve the machine's public IPv4 address.
+    Attempt to retrieve the machine's public IPv4 or IPv6 address.
 
     Returns:
-    - str: The public IPv4 address as returned by the external service, or
+    - str: The public IPv4 or IPv6 address as returned by the external service, or
       an empty string if all attempts fail.
     """
-    if iptype == "ipv4":
+    if addr_type == "ipv4":
         services = [
             ("https://ipv4.icanhazip.com/", r"(\S+)"),
             ("https://checkip.amazonaws.com/", r"(\S+)"),
@@ -131,7 +131,7 @@ def get_public_address(iptype="ipv4"):
             ("https://v4.ident.me/", r"(\S+)"),
         ]
 
-    elif iptype == "ipv6":
+    elif addr_type == "ipv6":
         services = [
             ("https://ipv6.icanhazip.com/", r"(\S+)"),
             ("https://api6.ipify.org/", r"(\S+)"),
@@ -139,7 +139,7 @@ def get_public_address(iptype="ipv4"):
         ]
 
     else:
-        raise TypeError(f"Unsupported IP address type: {iptype}")
+        raise TypeError(f"Unsupported IP address type: {addr_type}")
 
     ip = ""
     for i in range(10):
