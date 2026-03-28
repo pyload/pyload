@@ -228,7 +228,11 @@
       <div class="modal-dialog modal-sm">
         <div class="modal-content">
           <div id="modal_question" class="modal-header bg-info navbar-inverse text-center" style="padding: 5px" ></div>
-          <div class="modal-body" style="margin-bottom: 30px;">
+          <div class="modal-body" id="modal_body" style="margin-bottom: 30px;">
+            <div style="margin-bottom: 25px;">
+              <input type="checkbox" id="dontAskAgain">
+              <label for="dontAskAgain" style="font-weight: normal; user-select: none;">{{_("Don't ask again")}}</label>
+            </div>
               <button type="button" class="btn btn-success" id="okButton" style="float: right">{{_('Ok')}}</button>
               <button type="button" class="btn btn-warning" data-dismiss="modal" id="cancelButton" style="margin-right: 5px; float: right">{{_('Cancel')}}</button>
           </div>

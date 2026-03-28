@@ -439,52 +439,62 @@ class UIHandler {
   }
 
   yesNoDialog(question, callback) {
-    const visibleModals = $('.modal.in');
-    if (visibleModals.length > 0) {
-      const activeModal = visibleModals.first();
-      const modalTitle = activeModal.find('.modal-title');
-      const modalBody = activeModal.find('.modal-body');
-      const modalFooter = activeModal.find('.modal-footer');
+    const callStack = (new Error().stack).split('\n');
+    const callerId = callStack[1].split('/').at(-1)
+    const yesNoSettings = JSON.parse(sessionStorage.getItem('yesNoSettings') || "{}");
+    const storedAnswer = yesNoSettings[callerId];
+    if (storedAnswer === undefined)  {
+      const visibleModals = $('.modal.in');
+      if (visibleModals.length > 0) {
+        const activeModal = visibleModals.first();
+        const modalTitle = activeModal.find('.modal-title');
+        const modalBody = activeModal.find('.modal-body');
+        const modalFooter = activeModal.find('.modal-footer');
 
-      const originalTitle = modalTitle.text().trim();
-      const originalBody = modalBody.html().trim();
+        const originalTitle = modalTitle.text().trim();
+        const originalBody = modalBody.html().trim();
 
-      modalFooter.addClass("hidden");
-      modalTitle.text('{{_("Confirmation")}}');
-      modalBody.html(
-        '<p>' + question + '</p>' +
-        '<button type="button" class="btn btn-primary" style="float: right" id="okButton">{{_("Ok")}}</button>' +
-        '<button type="button" class="btn btn-warning" style="margin-right: 5px; float: right" id="cancelButton">{{_("Cancel")}}</button>'
-      );
+        modalFooter.addClass("hidden");
+        modalTitle.text('{{_("Confirmation")}}');
+        modalBody.html(
+          '<p>' + question + '</p>' +
+          `<div style="margin-bottom: 25px;"><input type="checkbox" id="dontAskAgain2"><label for="dontAskAgain2" style="font-weight: normal; margin-left: 4px; user-select: none;">{{_("Don't ask again")}}</label></div>` +
+          '<button type="button" class="btn btn-primary" style="float: right" id="okButton">{{_("Ok")}}</button>' +
+          '<button type="button" class="btn btn-warning" style="margin-right: 5px; float: right" id="cancelButton">{{_("Cancel")}}</button>'
+        );
 
-      modalBody.one('click', '#okButton', () => {
-        modalTitle.text(originalTitle);
-        modalBody.html(originalBody);
-        modalFooter.removeClass('hidden');
-        callback(true);
-      });
+        modalBody.one('click', '#okButton, #cancelButton', (event) => {
+          const answer = $(event.target).attr("id") === "okButton";
+          const dontAskAgain = $('#dontAskAgain2').is(':checked');
+          modalTitle.text(originalTitle);
+          modalBody.html(originalBody);
+          modalFooter.removeClass('hidden');
+          if (dontAskAgain) {
+            yesNoSettings[callerId] = answer;
+            sessionStorage.setItem("yesNoSettings", JSON.stringify(yesNoSettings));
+          }
+          callback(answer);
+        });
+      }
+      else {
+        $('#modal_question').text(question);
+        $('#dontAskAgain').prop('checked', false);
 
-      modalBody.one('click', '#cancelButton', () => {
-        modalTitle.text(originalTitle);
-        modalBody.html(originalBody);
-        modalFooter.removeClass('hidden');
-        callback(false);
-      });
-    }
-    else {
-      $('#modal_question').text(question);
+        $('#modal_body').one('click', '#okButton, #cancelButton', (event) => {
+          const answer = $(event.target).attr("id") === "okButton";
+          const dontAskAgain = $('#dontAskAgain').is(':checked');
+          $('#yesno_box').modal('hide');
+          if (dontAskAgain) {
+            yesNoSettings[callerId] = answer;
+            sessionStorage.setItem("yesNoSettings", JSON.stringify(yesNoSettings));
+          }
+          callback(answer);
+        });
 
-      $('#okButton').one('click', () => {
-        $('#yesno_box').modal('hide');
-        callback(true);
-      });
-
-      $('#cancelButton').one('click', () => {
-        $('#yesno_box').modal('hide');
-        callback(false);
-      });
-
-      $('#yesno_box').modal('show');
+        $('#yesno_box').modal('show');
+      }
+    } else {
+      callback(storedAnswer);
     }
   }
 }
