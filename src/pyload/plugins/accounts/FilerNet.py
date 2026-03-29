@@ -1,5 +1,5 @@
 import json
-import time
+from pyload.core.network.http.exceptions import BadHeader
 
 from ..base.account import BaseAccount
 
@@ -20,35 +20,36 @@ class FilerNet(BaseAccount):
     # See https://filer.net/api
     API_URL = "https://filer.net/api/"
 
-    def grab_info(self, user, password, data):
-        self.req.add_auth(f"{user}:{password}")
+    def api_request(self, method, user=None, password=None):
         try:
-            json_data = self.load(self.API_URL + "profile.json")
-            api_data = json.loads(json_data)["data"]
-        except Exception as e:
-            self.log_error(str(e))
-            return {"premium": False, "validuntil": None, "trafficleft": None}
+            if user and password:
+                self.req.add_auth(f"{user}:{password}")
+            json_data = self.load(f"{self.API_URL}{method}.json")
+        except BadHeader as exc:
+            json_data = exc.content
         finally:
-            self.req.remove_auth()
+            if user and password:
+                self.req.remove_auth()
 
+        return json.loads(json_data)
+
+    def grab_info(self, user, password, data):
+        api_data = self.api_request("profile", user, password)
         premium = api_data["premium"]
+        if premium:
+            validuntil = api_data["data"]["until"]
+            trafficleft = api_data["data"]["traffic_left"]
+        else:
+            validuntil = None
+            trafficleft = None
 
-        #: Free user
-        if premium is False:
-            return {"premium": False, "validuntil": None, "trafficleft": None}
-
-        validuntil = api_data["until"]
-        trafficleft = api_data["traffic_left"]
-
-        return {"premium": premium, "validuntil": validuntil, "trafficleft": trafficleft}
+        return {
+            "premium": premium,
+            "validuntil": validuntil,
+            "trafficleft": trafficleft
+        }
 
     def signin(self, user, password, data):
-        self.req.add_auth(f"{user}:{password}")
-        try:
-            self.load(self.API_URL + "profile.json")
-        except Exception as e:
-            self.fail_login(str(e))
-        else:
-            self.skip_login()
-        finally:
-            self.req.remove_auth()
+        api_data = self.api_request("profile", user, password)
+        if api_data["code"] != 200:
+            self.fail_login(api_data["status"])
