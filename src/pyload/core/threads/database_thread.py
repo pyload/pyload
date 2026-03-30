@@ -12,6 +12,7 @@ from ..utils.struct.style import style
 # DATABASE VERSION
 __version__ = 5
 
+
 # TODO: rewrite using peewee
 class DatabaseJob:
     def __init__(self, f, *args, **kwargs):
@@ -27,7 +28,6 @@ class DatabaseJob:
         self.frame = inspect.currentframe()
 
     def __repr__(self):
-
         frame = self.frame.f_back
         output = ""
 
@@ -73,6 +73,9 @@ class DatabaseThread(Thread):
 
         self.db_path = os.path.join(datadir, self.DB_FILENAME)
         self.version_path = os.path.join(datadir, self.VERSION_FILENAME)
+
+        self.conn = None
+        self.c = None
 
         self.jobs = Queue()
 
@@ -132,10 +135,11 @@ class DatabaseThread(Thread):
         if v < __version__:
             if v < 2:
                 self.pyload.log.warning(
-                    self._("Filedatabase was deleted due to incompatible version.")
+                    self._("Database was deleted due to incompatible version.")
                 )
                 os.remove(self.version_path)
-                shutil.move(self.db_path, "files.backup.db")
+                backup_path = "{}.backup{}".format(*os.path.splitext(self.DB_FILENAME))
+                shutil.move(self.db_path, backup_path)
             with open(self.version_path, mode="w") as fp:
                 fp.write(str(__version__))
             return v
@@ -143,8 +147,8 @@ class DatabaseThread(Thread):
     def _convert_db(self, v):
         try:
             getattr(self, f"_convertV{v}")()
-        except Exception:
-            self.pyload.log.error(self._("Filedatabase could NOT be converted."))
+        except Exception as exc:
+            self.pyload.log.error(self._("Database could NOT be converted | {}").format(str(exc)))
 
     # --convert scripts start
 
