@@ -210,7 +210,7 @@ def edit_package():
         data = {
             "name": flask.request.form["pack_name"],
             "_folder": pack_folder,
-            "password": flask.request.form["pack_pws"],
+            "password": flask.request.form["pack_pwd"],
         }
 
         api.set_package_data(pack_id, data)

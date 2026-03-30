@@ -424,7 +424,7 @@ class Package {
     $("#pack_id").val(this.id[0]);
     $("#pack_name").val(this.name.text());
     $("#pack_folder").val(this.folder.text());
-    $("#pack_pws").val(this.password.text());
+    $("#pack_pwd").val(this.password.text());
     $('#pack_box').modal('show');
   }
 
@@ -438,7 +438,7 @@ class Package {
     event.preventDefault();
     this.name.text($("#pack_name").val());
     this.folder.text($("#pack_folder").val());
-    this.password.text($("#pack_pws").val());
+    this.password.text($("#pack_pwd").val());
     $('#pack_box').modal('hide');
   }
 }
