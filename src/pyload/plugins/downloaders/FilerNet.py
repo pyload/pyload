@@ -3,6 +3,7 @@ import re
 
 from pyload.core.network.http.exceptions import BadHeader
 
+from ..anticaptchas.HCaptcha import HCaptcha
 from ..base.simple_downloader import SimpleDownloader
 
 
@@ -29,6 +30,8 @@ class FilerNet(SimpleDownloader):
         ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com"),
     ]
 
+    HCAPTCHA_KEY = "45623a98-7b08-43ae-b758-c21c13024e2a"
+
     # See https://filer.net/api
     API_URL = "https://filer.net/api/"
 
@@ -42,6 +45,17 @@ class FilerNet(SimpleDownloader):
         finally:
             if user and password:
                 self.req.remove_auth()
+
+        return json.loads(json_data)
+
+    def old_api_request(self, method, is_post=True, **kwargs):
+        try:
+            if is_post:
+                json_data = self.load(self.API_URL + method, post=kwargs)
+            else:
+                json_data = self.load(self.API_URL + method, get=kwargs)
+        except BadHeader as exc:
+            json_data = exc.content
 
         return json.loads(json_data)
 
@@ -66,7 +80,38 @@ class FilerNet(SimpleDownloader):
     def handle_free(self, pyfile):
         if self.info["premium_only"] is True and not self.premium:
             self.fail(self._("File can be downloaded by premium users only"))
-        self.fail(self._("Only premium users can download from Filer.net"))
+
+        if self.account:
+            self.fail(self._("Free account downloads are unsupported"))
+
+        file_id = self.info["pattern"]["ID"]
+
+        self.captcha = HCaptcha(pyfile)
+        captcha_response = self.captcha.challenge(self.HCAPTCHA_KEY)
+        api_data = self.old_api_request(f"file/request/{file_id}", False, hCaptchaToken=captcha_response)
+        error = api_data.get("error")
+        if error:
+            self.log_error(error)
+            if error == "HOURLY_DOWNLOAD_LIMIT":
+                self.retry(wait=3600)
+            elif error in ("CONCURRENT_DOWNLOAD_LIMIT", "TICKET_LIMIT_REACHED"):
+                self.temp_offline()
+            else:
+                self.fail(error)
+
+
+        wait_time = api_data["wt"]
+        self.wait(wait_time)
+        api_data = self.old_api_request("file/download", True, ticket=api_data["t"])
+        error = api_data.get("error")
+        if error:
+            self.log_error(error)
+            if error == "HOURLY_DOWNLOAD_LIMIT":
+                self.retry(wait=3600)
+            else:
+                self.fail(error)
+        else:
+            self.link = api_data["downloadUrl"]
 
     def handle_premium(self, pyfile):
         file_id = self.info["pattern"]["ID"]
