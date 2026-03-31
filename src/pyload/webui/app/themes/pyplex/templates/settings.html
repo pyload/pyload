@@ -219,7 +219,7 @@
     <div class="modal-content">
       <div class="modal-header bg-info navbar-inverse text-center" style="padding: 5px"> {{_('Add Account')}}</div>
       <div class="modal-body" style="margin-bottom: 30px;">
-        <form id="add_account_form" action="{{url_for("json.add_account")}}" method="POST" enctype="multipart/form-data" style="margin-bottom: 40px;">
+        <form id="add_account_form" style="margin-bottom: 40px;">
           <p>{{_('Enter your account data to use premium features')}}</p>
           <div class="form-group">
             <label for="account_login">{{_('Login')}}</label>
@@ -299,18 +299,18 @@
             <p class="help-block">{{_('Your username.')}}</p>
           </div>
           <div class="form-group">
-            <label for="login_current_password">{{_('Current password')}}</label>
-            <input class="form-control reveal-pass" id="login_current_password" name="login_current_password" type="password"/>
+            <label for="user_curpw">{{_('Current password')}}</label>
+            <input class="form-control reveal-pass" id="user_curpw" name="user_curpw" type="password"/>
             <p class="help-block">{{_('The password for this account.')}}</p>
           </div>
           <div class="form-group">
-            <label for="login_new_password">{{_('New password')}}</label>
-            <input class="form-control reveal-pass" id="login_new_password" name="login_new_password" type="password"/>
+            <label for="user_newpw">{{_('New password')}}</label>
+            <input class="form-control reveal-pass" id="user_newpw" name="user_newpw" type="password"/>
             <p class="help-block">{{_('The new password.')}}</p>
           </div>
           <div class="form-group">
-            <label for="login_new_password2">{{_('New password (repeat)')}}</label>
-            <input class="form-control reveal-pass" id="login_new_password2" name="login_new_password2" type="password" />
+            <label for="user_confpw">{{_('New password (repeat)')}}</label>
+            <input class="form-control reveal-pass" id="user_confpw" name="user_confpw" type="password" />
             <p class="help-block">{{_('Please repeat the new password.')}}</p>
           </div>
           <button class="btn btn-success" id="login_password_button" type="submit" style="float: right">{{_('Submit')}}</button>

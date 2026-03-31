@@ -25,7 +25,7 @@ class PackageUI {
     const lis = $packageList.children("li");
     for (let i = 0, len = lis.length; i < len; i++) {
       const ele = lis[i];
-      const id = ele.id.match(/[0-9]+/);
+      const id = parseInt(ele.id.match(/[0-9]+/)[0]);
       this.packages.push(new Package(this, id, ele));
     }
 
@@ -46,8 +46,9 @@ class PackageUI {
         uiHandler.indicateLoad();
         $.post({
           url: "{{url_for('json.package_order')}}",
-          data: { pid: ui.item.data('pid'), pos: newIndex },
-          traditional: true,
+          dataType: 'json',
+          contentType: 'application/json',
+          data: JSON.stringify({ pack_id: ui.item.data('pid'), pos: newIndex }),
           success: () => {
             uiHandler.indicateFinish();
             return true;
@@ -154,7 +155,7 @@ class Package {
   }
 
   createLinks(data) {
-    const ul = $(`#sort_children_${this.id[0]}`);
+    const ul = $(`#sort_children_${this.id}`);
     ul.html("");
     data.links.forEach(link => {
       link.id = link.fid;
@@ -248,8 +249,9 @@ class Package {
         uiHandler.indicateLoad();
         $.post({
           url: "{{url_for('json.link_order')}}",
-          data: { fid: ui.item.data('lid'), pos: newIndex },
-          traditional: true,
+          dataType: 'json',
+          contentType: 'application/json',
+          data: JSON.stringify({ file_id: ui.item.data('lid'), pos: newIndex }),
           success: () => {
             uiHandler.indicateFinish();
             return true;
@@ -421,7 +423,7 @@ class Package {
     event.preventDefault();
     $("#pack_form").off("submit").submit((e) => this.savePackage(e));
 
-    $("#pack_id").val(this.id[0]);
+    $("#pack_id").val(this.id);
     $("#pack_name").val(this.name.text());
     $("#pack_folder").val(this.folder.text());
     $("#pack_pwd").val(this.password.text());
@@ -429,11 +431,11 @@ class Package {
   }
 
   savePackage(event) {
-    $.ajax({
+    $.post({
       url: "{{url_for('json.edit_package')}}",
-      type: 'post',
       dataType: 'json',
-      data: $('#pack_form').serialize()
+      contentType: 'application/json',
+      data: JSON.stringify(formToObject('#pack_form'))
     });
     event.preventDefault();
     this.name.text($("#pack_name").val());

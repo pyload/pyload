@@ -95,18 +95,22 @@ class SettingsUI {
 
   initUsersAdmin() {
     $("#password_box").on('click', '#login_password_button', (event) => {
-      const passwd = $("#login_new_password").val();
-      const passwdConfirm = $("#login_new_password2").val();
+      const passwd = $("#user_newpw").val();
+      const $passwdConfirm = $("#user_confpw");
+      const passwdConfirm = $passwdConfirm.prop('disabled', true).val();
       if (passwd === passwdConfirm) {
-        $.ajax({
-          method: "POST",
+        $.post({
           url: "{{url_for('json.change_password')}}",
-          data: $("#password_form").serialize(),
+          dataType: 'json',
+          contentType: 'application/json',
+          data: JSON.stringify(formToObject("#password_form")),
           success: () => {
             uiHandler.indicateSuccess("{{_('Password successfully changed')}}");
           }
         }).fail(() => {
           uiHandler.indicateFail("{{_('Error occurred')}}");
+        }).always(() => {
+          $passwdConfirm.prop('disabled', false);
         });
         $('#password_box').modal('hide');
       } else {
@@ -127,15 +131,15 @@ class SettingsUI {
       }
     });
 
-    $(document).on("click", ".change_password", () => {
-      const userName = $(this).attr("id").split("|")[0];
+    $(document).on("click", ".change_password", (event) => {
+      const userName = $(event.target).attr("id").split("|")[0];
 
       $("#password_form").trigger("reset");
       $("#password_box #user_login").val(userName);
     });
 
     $('#password_box').on('shown.bs.modal', () => {
-      $('#login_current_password').focus();
+      $('#user_curpw').focus();
     });
 
     $("#user_add").click(() => {
@@ -148,10 +152,11 @@ class SettingsUI {
       uiHandler.yesNoDialog("{{_('Are you sure you want to delete the user {}?')}}".replace("{}", userName), (answer) => {
           if (answer) {
             uiHandler.indicateLoad();
-            $.ajax({
-              method: "POST",
+            $.post({
               url: "{{url_for('json.update_users')}}",
-              data: {[`${userName}|delete`]: true},
+              dataType: 'json',
+              contentType: 'application/json',
+              data: JSON.stringify({update_data: {[`${userName}|delete`]: true}}),
               success: () => {
                 sessionStorage.setItem("activeTab", "#users");
                 window.location.assign(window.location.href.replace(/#.*$/, ''));
@@ -186,8 +191,7 @@ class SettingsUI {
         const passwd = $("#new_password").val();
         const passwdConfirm = $("#new_password2").val();
         if (passwd === passwdConfirm) {
-          $.ajax({
-            method: "POST",
+          $.post({
             url: "{{url_for('json.add_user')}}",
             data: $userForm.serialize(),
             success: () => {
@@ -214,8 +218,6 @@ class SettingsUI {
     const pluginListPanel = $('#plugin-menu');
     const searchInput = $('#query-text');
     const pluginList = $('#plugins-list').data('plugin');
-
-    pluginListPanel.on("click", ".plugin-row", this.menuClick.bind(this));
 
     const search = (query) => {
       let results = [];
@@ -273,10 +275,11 @@ class SettingsUI {
 
   configSubmit(event) {
     const category = $(event.currentTarget).attr('id').split("_")[0];
-    $.ajax({
-      method: "POST",
-      url: `{{url_for('json.save_config')}}?category=${category}`,
-      data: $(`#${category}_form`).serialize(),
+    $.post({
+      url: "{{url_for('json.save_config')}}",
+      dataType: 'json',
+      contentType: 'application/json',
+      data: JSON.stringify({category: category, config: formToObject(`#${category}_form`)}),
       success: () => {
         uiHandler.indicateSuccess("{{_('Settings saved')}}");
       }
@@ -289,10 +292,11 @@ class SettingsUI {
 
   addAccount(event) {
     $(event.currentTarget).prop('disabled', true);
-    $.ajax({
-      method: "POST",
+    $.post({
       url: "{{url_for('json.add_account')}}",
-      data: $("#add_account_form").serialize(),
+      dataType: 'json',
+      contentType: 'application/json',
+      data: JSON.stringify(formToObject("#add_account_form")),
       success: () => {
         sessionStorage.setItem("activeTab", "#accounts");
         window.location.assign(window.location.href.replace(/#.*$/, ''));
@@ -305,10 +309,11 @@ class SettingsUI {
 
   submitUsers(event) {
     uiHandler.indicateLoad();
-    $.ajax({
-      method: "POST",
+    $.post({
       url: "{{url_for('json.update_users')}}",
-      data: $("#user_form").serialize(),
+      dataType: 'json',
+      contentType: 'application/json',
+      data: JSON.stringify({update_data: formToObject("#user_form")}),
       success: () => {
         sessionStorage.setItem("activeTab", "#users");
         window.location.assign(window.location.href.replace(/#.*$/, ''));
@@ -321,8 +326,7 @@ class SettingsUI {
 
   submitAccounts(event) {
     uiHandler.indicateLoad();
-    $.ajax({
-      method: "POST",
+    $.post({
       url: "{{url_for('json.update_accounts')}}",
       data: $("#account_form").serialize(),
       success: () => {

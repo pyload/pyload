@@ -88,8 +88,9 @@ class LinkEntry {
     $(this.elements.remove).click(() => {
       $.post({
         url: "{{url_for('json.abort_link')}}",
-        data: { id: this.id },
-        traditional: true,
+        dataType: 'json',
+        contentType: 'application/json',
+        data: JSON.stringify({ link_id: this.id })
       });
     });
   }
@@ -134,8 +135,7 @@ class EntryManager {
   }
 
   fetchLinks() {
-    $.ajax({
-      method: "post",
+    $.post({
       url: "{{url_for('json.links')}}",
       timeout: 30000,
       success: (data) => this.update(data),

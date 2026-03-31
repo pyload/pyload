@@ -295,9 +295,8 @@ class UIHandler {
         $this[0].reportValidity();
         return false;
       } else {
-        $.ajax({
+        $.post({
           url: "{{url_for('json.add_package')}}",
-          method: "POST",
           data: formData,
           processData: false,
           contentType: false,
@@ -323,8 +322,7 @@ class UIHandler {
 
     $("#action_play").click(() => {
       $.post("{{url_for('api.rpc', func='unpause_server')}}", () => {
-        $.ajax({
-          method: "post",
+        $.post({
           url: "{{url_for('json.status')}}",
           dataType: 'json',
           contentType: 'application/json',
@@ -345,8 +343,7 @@ class UIHandler {
 
     $("#action_stop").click(() => {
       $.post("{{url_for('api.rpc', func='pause_server')}}", () => {
-        $.ajax({
-          method: "post",
+        $.post({
           url: "{{url_for('json.status')}}",
           dataType: 'json',
           contentType: 'application/json',
@@ -359,8 +356,7 @@ class UIHandler {
 
     $("#toggle_queue").click(() => {
       $.post("{{url_for('api.rpc', func='toggle_pause')}}", () => {
-        $.ajax({
-          method: "post",
+        $.post({
           url: "{{url_for('json.status')}}",
           dataType: 'json',
           data: '{}',
@@ -373,8 +369,7 @@ class UIHandler {
 
     $("#toggle_proxy").click(() => {
       $.post("{{url_for('api.rpc', func='toggle_proxy')}}", () => {
-        $.ajax({
-          method: "post",
+        $.post({
           url: "{{url_for('json.status')}}",
           dataType: 'json',
           contentType: 'application/json',
@@ -387,8 +382,7 @@ class UIHandler {
 
     $("#toggle_reconnect").click(() => {
       $.post("{{url_for('api.rpc', func='toggle_reconnect')}}", () => {
-        $.ajax({
-          method: "post",
+        $.post({
           url: "{{url_for('json.status')}}",
           dataType: 'json',
           contentType: 'application/json',
@@ -497,6 +491,30 @@ class UIHandler {
 
 var uiHandler = new UIHandler();
 
+const formToObject = (form) => {
+  const obj = {};
+
+  $(form).find("input, select, textarea").each(function() {
+    let value;
+    const $el = $(this);
+    const name = $el.attr("name");
+    if (!name || $el.prop("disabled")) return;
+
+    if ($el.is('input[type="checkbox"]')) {
+      value = $el.prop("checked") ? true : false;
+    }
+    else {
+      value = $el.val();
+    }
+
+    if (!value) return;
+
+    obj[name] = value
+  });
+
+  return obj;
+};
+
 const humanFileSize = (f) => {
   const d = ["B", "KiB", "MiB", "GiB", "TiB", "PiB"];
   const b = Math.log(f) / Math.log(1024);
@@ -556,8 +574,7 @@ $(() => {
   uiHandler.initUI()
 
   if (thisScript.getAttribute('nopoll') !== "1") {
-    $.ajax({
-      method: "post",
+    $.post({
       url: "{{url_for('json.status')}}",
       dataType: 'json',
       contentType: 'application/json',
@@ -567,8 +584,7 @@ $(() => {
     });
 
     const statusInterval = setInterval(() => {
-      $.ajax({
-        method: "post",
+      $.post({
         url: "{{url_for('json.status')}}",
         dataType: 'json',
         contentType: 'application/json',

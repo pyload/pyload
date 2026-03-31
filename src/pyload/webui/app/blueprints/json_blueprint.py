@@ -16,7 +16,10 @@ bp = flask.Blueprint("json", __name__)
 
 
 def expect_json(f):
-    """Decorator: parses JSON and passes it as named arguments"""
+    """
+    Decorator: parses JSON and passes it as named arguments,
+    enforces application/json content type
+    """
     @wraps(f)
     def wrapper(*args, **kwargs):
         if not flask.request.is_json:
@@ -85,7 +88,7 @@ def links():
         return jsonify(False), 500
 
 
-@bp.route("/json/package", endpoint="package")
+@bp.route("/json/package", methods=["GET"], endpoint="package")
 # @apiver_check
 @login_required("LIST")
 def package():
@@ -106,12 +109,11 @@ def package():
 @bp.route("/json/package_order", methods=["POST"], endpoint="package_order")
 # @apiver_check
 @login_required("ADD")
-def package_order():
+@expect_json
+def package_order(pack_id, pos):
     api = flask.current_app.config["PYLOAD_API"]
     try:
-        pid = int(flask.request.form.get('pid'))
-        pos = int(flask.request.form.get('pos'))
-        api.order_package(pid, pos)
+        api.order_package(int(pack_id), int(pos))
         return jsonify(response="success")
 
     except Exception:
@@ -121,11 +123,11 @@ def package_order():
 @bp.route("/json/abort_link", methods=["POST"], endpoint="abort_link")
 # @apiver_check
 @login_required("DELETE")
-def abort_link():
+@expect_json
+def abort_link(link_id):
     api = flask.current_app.config["PYLOAD_API"]
     try:
-        id = int(flask.request.form.get('id'))
-        api.stop_downloads([id])
+        api.stop_downloads([link_id])
         return jsonify(response="success")
 
     except Exception:
@@ -135,12 +137,11 @@ def abort_link():
 @bp.route("/json/link_order", methods=["POST"], endpoint="link_order")
 # @apiver_check
 @login_required("ADD")
-def link_order():
+@expect_json
+def link_order(file_id, pos):
     api = flask.current_app.config["PYLOAD_API"]
     try:
-        fid = int(flask.request.form.get('fid'))
-        pos = int(flask.request.form.get('pos'))
-        api.order_file(fid, pos)
+        api.order_file(int(file_id), int(pos))
         return jsonify(response="success")
 
     except Exception:
@@ -187,12 +188,11 @@ def add_package():
 @bp.route("/json/move_package", methods=["POST"], endpoint="move_package")
 # @apiver_check
 @login_required("MODIFY")
-def move_package():
+@expect_json
+def move_package(pack_id, dest):
     api = flask.current_app.config["PYLOAD_API"]
     try:
-        id = int(flask.request.form.get('id'))
-        dest = int(flask.request.form.get('dest'))
-        api.move_package(dest, id)
+        api.move_package(dest, pack_id)
         return jsonify(response="success")
 
     except Exception:
@@ -202,18 +202,18 @@ def move_package():
 @bp.route("/json/edit_package", methods=["POST"], endpoint="edit_package")
 # @apiver_check
 @login_required("MODIFY")
-def edit_package():
+@expect_json
+def edit_package(pack_id, pack_name, pack_folder, pack_pwd):
     api = flask.current_app.config["PYLOAD_API"]
     try:
-        pack_id = int(flask.request.form["pack_id"])
-        pack_folder = secure_filename(flask.request.form["pack_folder"])
+        pack_folder = secure_filename(pack_folder)
         data = {
-            "name": flask.request.form["pack_name"],
+            "name": pack_name,
             "_folder": pack_folder,
-            "password": flask.request.form["pack_pwd"],
+            "password": pack_pwd,
         }
 
-        api.set_package_data(pack_id, data)
+        api.set_package_data(int(pack_id), data)
         return jsonify(response="success")
 
     except Exception:
@@ -245,7 +245,7 @@ def set_captcha():
     return jsonify(data)
 
 
-@bp.route("/json/load_config", endpoint="load_config")
+@bp.route("/json/load_config", methods=["GET"], endpoint="load_config")
 # @apiver_check
 @login_required("SETTINGS")
 def load_config():
@@ -274,13 +274,13 @@ def load_config():
 @bp.route("/json/save_config", methods=["POST"], endpoint="save_config")
 # @apiver_check
 @login_required("SETTINGS")
-def save_config():
+@expect_json
+def save_config(category, config):
     api = flask.current_app.config["PYLOAD_API"]
-    category = flask.request.args.get('category')
     if category not in ("core", "plugin"):
         return jsonify(False), 500
 
-    for key, value in flask.request.form.items():
+    for key, value in config.items():
         try:
             section, option = key.split("|")
         except ValueError:
@@ -294,16 +294,12 @@ def save_config():
 @bp.route("/json/add_account", methods=["POST"], endpoint="add_account")
 # @apiver_check
 @login_required("ACCOUNTS")
+@expect_json
 # @fresh_login_required
-def add_account():
+def add_account(account_login, account_password, account_type):
     api = flask.current_app.config["PYLOAD_API"]
-
-    login = flask.request.form["account_login"]
-    password = flask.request.form["account_password"]
-    account_type = flask.request.form["account_type"]
-
-    if login:
-        api.update_account(account_type, login, password)
+    if account_login:
+        api.update_account(account_type, account_login, account_password)
         return jsonify(True)
 
     else:
@@ -358,14 +354,10 @@ def update_accounts():
 # @apiver_check
 # @fresh_login_required
 @login_required("ACCOUNTS")
-def change_password():
+@expect_json
+def change_password(user_login, user_curpw, user_newpw):
     api = flask.current_app.config["PYLOAD_API"]
-
-    user = flask.request.form["user_login"]
-    oldpw = flask.request.form["login_current_password"]
-    newpw = flask.request.form["login_new_password"]
-
-    done = api.change_password(user, oldpw, newpw)
+    done = api.change_password(user_login, user_curpw, user_newpw)
     if not done:
         return jsonify(False), 403  #: Wrong password
 
@@ -399,7 +391,8 @@ def add_user():
 # @apiver_check
 # @fresh_login_required
 @login_required("ADMIN")
-def update_users():
+@expect_json
+def update_users(update_data):
     api = flask.current_app.config["PYLOAD_API"]
 
     all_users = api.get_all_userdata()
@@ -416,12 +409,12 @@ def update_users():
     s = flask.session
     for name in list(users):
         data = users[name]
-        if flask.request.form.get(f"{name}|delete"):
+        if update_data.get(f"{name}|delete"):
             if name != s["name"]:
                 api.remove_user(name)
                 del users[name]
             continue
-        if flask.request.form.get(f"{name}|admin"):
+        if update_data.get(f"{name}|admin"):
             data["role"] = 0
             data["perms"]["admin"] = True
         elif name != s["name"]:
@@ -432,7 +425,7 @@ def update_users():
         for perm in permlist():
             data["perms"][perm] = False
 
-        for perm in flask.request.form.getlist(f"{name}|perms"):
+        for perm in update_data.get(f"{name}|perms", []):
             data["perms"][perm] = True
 
         data["permission"] = set_permission(data["perms"])
