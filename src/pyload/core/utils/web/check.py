@@ -4,7 +4,7 @@ import re
 import time
 
 from ...network.request_factory import get_url
-from ..convert import host_to_ip
+from .convert import host_to_ip
 
 
 def is_ipv4_address(value):
