@@ -13,11 +13,13 @@ import secrets
 import time
 from enum import IntFlag
 from typing import Any, Callable, Optional
+from urllib.parse import urlparse
 
 import flask
 from werkzeug.utils import secure_filename
 
 from pyload import PKGDIR
+from pyload.core.utils.web.check import is_global_host
 
 from ..datatypes.data import (
     AccountInfo, CaptchaTask, ConfigItem, ConfigSection, DownloadInfo, EventInfo, FileData, OldUserData, OnlineCheck,
@@ -43,7 +45,7 @@ method_map = {}
 
 
 RE_URLMATCH = re.compile(
-    r"(?:https?|ftps?|xdcc|sftp):(?://|\\\\)+[\w\-._~:/?#\[\]@!$&'()*+,;=]*|magnet:\?.+",
+    r"(?:https?|ftps?|xdccs?|sftp):(?://|\\\\)+[\w\-._~:/?#\[\]@!$&'()*+,;=]*|magnet:\?.+",
     re.IGNORECASE,
 )
 
@@ -585,8 +587,11 @@ class Api:
             urls.update(RE_URLMATCH.findall(html))
 
         if url:
-            page = get_url(url)
-            urls.update(RE_URLMATCH.findall(page))
+            urlp = urlparse(url)
+            hostname = urlp.hostname
+            if urlp.scheme in ("http", "https") and hostname and is_global_host(hostname):
+                page = get_url(url)
+                urls.update(RE_URLMATCH.findall(page))
 
         return self.check_urls(list(urls))
 
