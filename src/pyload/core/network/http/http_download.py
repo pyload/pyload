@@ -1,11 +1,12 @@
 import os
 import time
+import urllib
 from logging import getLogger
 
 import pycurl
 from pyload import APPID
 
-from ..exceptions import Abort
+from ..exceptions import Abort, Fail
 from .http_chunk import ChunkInfo, HTTPChunk
 from .http_request import BadHeader
 
@@ -142,8 +143,13 @@ class HTTPDownload:
                     self.close_chunk(chunk)
 
                 return self._download(chunks, False)
+            elif code == 42:
+                hostname = urllib.parse.urlparse(self.url).hostname
+                raise Fail(f"Refusing to download from Server-Side host '{hostname}'")
+
             else:
                 raise
+
         finally:
             self.close()
 
@@ -239,7 +245,8 @@ class HTTPDownload:
                     if errno != pycurl.E_WRITE_ERROR or not chunk.aborted:
                         failed.append(chunk)
                         ex = pycurl.error(errno, msg)
-                        self.log.debug(f"Chunk {chunk.id + 1} failed: {ex}")
+                        if errno != pycurl.E_ABORTED_BY_CALLBACK:
+                            self.log.debug(f"Chunk {chunk.id + 1} failed: {ex}")
                         continue
 
                     try:  #: check if the header implies success, else add it to failed list

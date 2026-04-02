@@ -3,7 +3,6 @@ import random
 import re
 import time
 
-from ...network.request_factory import get_url
 from .convert import host_to_ip
 
 
@@ -137,6 +136,7 @@ def get_public_address(addr_type="ipv4"):
     - str: The public IPv4 or IPv6 address as returned by the external service, or
       an empty string if all attempts fail.
     """
+    from ...network.request_factory import get_url
     if addr_type == "ipv4":
         services = [
             ("https://ipv4.icanhazip.com/", r"(\S+)"),

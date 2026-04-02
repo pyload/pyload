@@ -6,8 +6,7 @@ import urllib
 from pyload.core.network.exceptions import Fail
 from pyload.core.network.http.exceptions import BadHeader
 from pyload.core.utils import format, fs, parse
-from pyload.core.utils.web.check import is_global_address, is_ip_address
-from pyload.core.utils.web.convert import host_to_ip
+from pyload.core.utils.web.check import is_global_host
 
 from ..helpers import exists
 from .hoster import BaseHoster
@@ -331,14 +330,6 @@ class BaseDownloader(BaseHoster):
             "download_start", self.pyfile, dl_url, dl_filename
         )
         self.check_status()
-
-        dl_hostname = urllib.parse.urlparse(dl_url).hostname
-        if is_ip_address(dl_hostname) and not is_global_address(dl_hostname):
-            self.fail(self._("Refusing to download from Server-Side host {}".format(dl_hostname)))
-        else:
-            for ip in host_to_ip(dl_hostname):
-                if not is_global_address(ip):
-                    self.fail(self._("Refusing to download from Server-Side host {} ({})".format(dl_hostname, ip)))
 
         newname = self._download(
             dl_url, dl_filename, get, post, referrer, cookies, disposition, resume, chunks

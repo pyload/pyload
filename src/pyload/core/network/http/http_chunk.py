@@ -133,6 +133,7 @@ class HTTPChunk(HTTPRequest):
 
         self.code = 0  #: last http code, set by parent
 
+        self.allow_private_ip = False
         self.aborted = False  # indicates that the chunk aborted gracefully
 
         self.c = pycurl.Curl()
@@ -189,6 +190,7 @@ class HTTPChunk(HTTPRequest):
         )
         self.c.setopt(pycurl.WRITEFUNCTION, self._write_body_callback)
         self.c.setopt(pycurl.HEADERFUNCTION, self._write_header_callback)
+        self.c.setopt(pycurl.PREREQFUNCTION, self._pre_request_callback)
 
         # request all bytes, since some servers in russia seems to have a defect
         # arithmetic unit

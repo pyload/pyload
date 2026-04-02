@@ -16,6 +16,7 @@ from pyload import APPID
 
 from ...utils.check import is_mapping
 from ...utils.convert import to_bytes, to_str
+from ...utils.web.check import is_global_address
 from ...utils.web.parse import http_header as parse_header_line
 from ...utils.web.purge import unescape as html_unescape
 from ..exceptions import Abort
@@ -71,6 +72,7 @@ class HTTPRequest:
     def __init__(self, cookies=None, options=None, limit=2_000_000):
         self.exception = None
         self.limit = limit
+        self.allow_private_ip = True
 
         self.c = pycurl.Curl()
 
@@ -98,6 +100,7 @@ class HTTPRequest:
 
         self.c.setopt(pycurl.WRITEFUNCTION, self._write_body_callback)
         self.c.setopt(pycurl.HEADERFUNCTION, self._write_header_callback)
+        self.c.setopt(pycurl.PREREQFUNCTION, self._pre_request_callback)
 
         self.log = getLogger(APPID)
 
@@ -567,6 +570,16 @@ class HTTPRequest:
 
         if self._header_buffer.endswith(b"\r\n\r\n"):
             self.response_headers.parse(self._header_buffer)
+
+    def _pre_request_callback(self, conn_primary_ip, conn_local_ip, conn_primary_port, conn_local_port):
+        """
+        Called after TCP/TLS connection is established, before request is sent.
+        This runs for the initial request AND every redirect follow.
+        """
+        if not self.allow_private_ip and not is_global_address(conn_primary_ip):
+            return pycurl.PREREQFUNC_ABORT  # Aborts the entire transfer
+
+        return pycurl.PREREQFUNC_OK
 
     def add_header(self, name, value):
         """Append a value to a header name without replacing existing ones."""
