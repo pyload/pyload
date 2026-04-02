@@ -113,6 +113,7 @@ class HTTPRequest:
         """
         self.c.setopt(pycurl.FOLLOWLOCATION, 1)
         self.c.setopt(pycurl.MAXREDIRS, 10)
+        self.c.setopt(pycurl.REDIR_PROTOCOLS, pycurl.PROTO_HTTP | pycurl.PROTO_HTTPS)
         self.c.setopt(pycurl.CONNECTTIMEOUT, 30)
         self.c.setopt(pycurl.NOSIGNAL, 1)
         self.c.setopt(pycurl.NOPROGRESS, 1)
