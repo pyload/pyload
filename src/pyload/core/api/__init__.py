@@ -223,17 +223,33 @@ class Api:
         :param value: new config value
         :param section: 'plugin' or 'core
         """
+        try:
+            try:
+                user_info = flask.g.user_info
+            except AttributeError:
+                user_info = flask.session
 
-        ADMIN_ONLY_OPTIONS = {
-            ("reconnect", "script"),
-            ("webui", "host"),
-            ("webui", "use_ssl"),
-            ("webui", "ssl_cert"),
-            ("webui", "ssl_key"),
+        # Attempt to access outside an active Flask request
+        except RuntimeError:
+            user_info = {"role": Role.ADMIN}
+        is_admin = user_info.get("role") == Role.ADMIN
+
+        ADMIN_ONLY_CORE_OPTIONS = {
+            ("general", "storage_folder"),
             ("log", "syslog_host"),
             ("log", "syslog_port"),
-            ("proxy", "username"),
             ("proxy", "password"),
+            ("proxy", "username"),
+            ("reconnect", "script"),
+            ("webui", "host"),
+            ("webui", "ssl_cert"),
+            ("webui", "ssl_key"),
+            ("webui", "use_ssl"),
+        }
+
+        ADMIN_ONLY_PLUGIN_OPTIONS = {
+            ("AntiVirus", "avfile"),
+            ("AntiVirus", "avargs"),
         }
 
         if section == "core":
@@ -248,19 +264,9 @@ class Api:
                     return
 
             # Require ADMIN role for security-critical settings
-            try:
-                try:
-                    user_info = flask.g.user_info
-                except AttributeError:
-                    user_info = flask.session
-
-                if (category, option) in ADMIN_ONLY_OPTIONS and user_info.get("role") != Role.ADMIN:
-                    self.pyload.log.error(self._("Writing config value {}/{} requires Admin role").format(category, option))
-                    return
-
-            # Attempt to access outside an active Flask request
-            except RuntimeError:
-                pass
+            if (category, option) in ADMIN_ONLY_CORE_OPTIONS and not is_admin:
+                self.pyload.log.error(self._("Writing config value {}/{} requires Admin role").format(category, option))
+                return
 
             self.pyload.config.set(category, option, value)
 
@@ -271,6 +277,11 @@ class Api:
                 self.pyload.request_factory.update_bucket()
 
         elif section == "plugin":
+            # Require ADMIN role for security-critical settings
+            if (category, option) in ADMIN_ONLY_PLUGIN_OPTIONS and not is_admin:
+                self.pyload.log.error(self._("Writing config value {}/{} requires Admin role").format(category, option))
+                return
+
             self.pyload.config.set_plugin(category, option, value)
 
         self.pyload.addon_manager.dispatch_event(
