@@ -1,6 +1,8 @@
 {% autoescape true %}
 
-$(() => new SettingsUI());
+$(() => {
+  window.settingsUI = new SettingsUI();
+});
 
 if (!String.prototype.startsWith) {
   String.prototype.startsWith = function(searchString, position = 0) {
