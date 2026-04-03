@@ -131,6 +131,12 @@ class AddonManager:
                     if not plugin_class:
                         continue
 
+                    if plugin_class.__status__ == "broken":
+                        self.pyload.log.error(self._("Cannot activate broken addon: {}").format(plugin_name))
+                        self.pyload.config.set_plugin(plugin_name, "enabled", False)
+                        inactive.append(plugin_name)
+                        continue
+
                     plugin = plugin_class(self.pyload, self)
                     plugins.append(plugin)
                     self.plugin_map[plugin_name] = plugin
