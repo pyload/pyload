@@ -197,7 +197,7 @@ class AddonManager:
         else:
             return
 
-        self.pyload.log.debug("Addon unloaded: {plugin_name}")
+        self.pyload.log.debug(f"Addon unloaded: {plugin_name}")
 
         addon.unload()
 
