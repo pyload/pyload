@@ -612,7 +612,7 @@ class Api:
     @post
     def check_urls(self, urls: list[str]) -> dict[str, list[str]]:
         """
-        Gets urls and returns pluginname mapped to list of matched urls.
+        Gets urls and returns plugin name mapped to list of matched urls.
 
         :param urls:
         :return: {plugin: urls}
@@ -676,7 +676,7 @@ class Api:
         os.makedirs(upload_path, exist_ok=True)
 
         container = "tmp_" + secure_filename(os.path.basename(container))
-        with open(os.path.join(upload_path, container), "wb") as th:
+        with open(fs.safejoin(upload_path, container), "wb") as th:
             th.write(data)
 
         return self.check_online_status(urls + [th.name])
@@ -1116,7 +1116,7 @@ class Api:
         os.makedirs(upload_path, exist_ok=True)
 
         filename = "tmp_" + secure_filename(os.path.basename(filename))
-        with open(os.path.join(upload_path, filename), "wb") as th:
+        with open(fs.safejoin(upload_path, filename), "wb") as th:
             th.write(data)
 
         self.add_package(th.name, [th.name], Destination.COLLECTOR)
