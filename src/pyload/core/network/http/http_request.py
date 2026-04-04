@@ -206,16 +206,16 @@ class HTTPRequest:
             self.c.setopt(pycurl.SSL_VERIFYPEER, ssl_verify)
             self.c.setopt(pycurl.SSL_VERIFYHOST, ssl_verify * 2)
 
-    def add_cookies(self):
+    def load_cookies(self):
         """
-        put cookies from curl handle to cj.
+        put cookies from curl handle to cookiejar.
         """
         if self.cj:
             self.cj.set_cookies(self.c.getinfo(pycurl.INFO_COOKIELIST))
 
-    def get_cookies(self):
+    def send_cookies(self):
         """
-        add cookies from cj to curl handle.
+        send cookies from cookiejar to curl handle.
         """
         if self.cj:
             for c in self.cj.get_cookies():
@@ -317,7 +317,7 @@ class HTTPRequest:
             self.c.setopt(pycurl.COOKIEJAR, b"")
             if isinstance(cookies, list) and self.cj:
                 self.cj.set_cookies(cookies)
-            self.get_cookies()
+            self.send_cookies()
 
     def load(
         self,
@@ -335,7 +335,7 @@ class HTTPRequest:
         """
         load and returns a given page.
         """
-        self.set_request_context(url, get, post, referer, cookies, multipart, decode)
+        self.set_request_context(url, get, post, referer, cookies, multipart=multipart, decode=decode)
 
         self._header_buffer = b""
         self.response_headers.clear(use_defaults=False)
@@ -379,7 +379,7 @@ class HTTPRequest:
         self.last_effective_url = self.c.getinfo(pycurl.EFFECTIVE_URL)
 
         if save_cookies:
-            self.add_cookies()
+            self.load_cookies()
 
         self.code = self.verify_header()
 
@@ -420,7 +420,7 @@ class HTTPRequest:
         :return: Response content
         """
         with open(os.fsencode(filename), mode="rb") as fp:
-            self.set_request_context(url, get, None, referer, cookies, False)
+            self.set_request_context(url, get, None, referer, cookies)
 
             self._header_buffer = b""
 
@@ -457,7 +457,7 @@ class HTTPRequest:
             self.last_effective_url = self.c.getinfo(pycurl.EFFECTIVE_URL)
 
             if save_cookies:
-                self.add_cookies()
+                self.load_cookies()
 
             self.code = self.verify_header()
 

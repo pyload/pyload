@@ -42,9 +42,7 @@ class Browser:
 
     @property
     def speed(self):
-        if self.dl:
-            return self.dl.speed
-        return 0
+        return 0 if not self.dl else self.dl.speed
 
     @property
     def size(self):
@@ -56,15 +54,11 @@ class Browser:
 
     @property
     def arrived(self):
-        if self.dl:
-            return self.dl.arrived
-        return 0
+        return 0 if not self.dl else self.dl.arrived
 
     @property
     def percent(self):
-        if not self.size:
-            return 0
-        return (self.arrived * 100) // self.size
+        return 0 if not self.size else (self.arrived * 100) // self.size
 
     def clear_cookies(self):
         if self.cj:
@@ -164,8 +158,7 @@ class Browser:
         self.options[name] = value
 
     def delete_option(self, name):
-        if name in self.options:
-            del self.options[name]
+        self.options.pop(name, None)
 
     def clear_headers(self):
         self.http.clear_headers()
