@@ -78,6 +78,8 @@ class HTTPRequest:
 
         self.cj = cookies  #: cookiejar
 
+        self.auth = None
+
         self.last_url = None
         self.last_effective_url = None
         self.code = 0  #: last http code
@@ -185,9 +187,6 @@ class HTTPRequest:
         else:
             self.c.setopt(pycurl.IPRESOLVE, pycurl.IPRESOLVE_V4)
 
-        if "auth" in options:
-            self.c.setopt(pycurl.USERPWD, options["auth"])
-
         if "timeout" in options:
             self.c.setopt(pycurl.LOW_SPEED_TIME, int(options["timeout"]))
 
@@ -224,6 +223,21 @@ class HTTPRequest:
 
     def clear_cookies(self):
         self.c.setopt(pycurl.COOKIELIST, "")
+
+    def add_auth(self, pwd):
+        """
+        Adds user and pw for http auth.
+
+        :param pwd: str in the form `user:password`
+        """
+        self.auth = pwd
+
+    def remove_auth(self):
+        """
+        Removes the auth from the request.
+        """
+        self.auth = None
+
 
     def set_request_context(self, url, get, post, referer, cookies, multipart=False, decode=True):
         """
@@ -318,6 +332,11 @@ class HTTPRequest:
             if isinstance(cookies, list) and self.cj:
                 self.cj.set_cookies(cookies)
             self.send_cookies()
+
+        if self.auth:
+            self.c.setopt(pycurl.USERPWD, to_bytes(self.auth))
+        else:
+            self.c.setopt(pycurl.USERPWD, None)
 
     def load(
         self,
