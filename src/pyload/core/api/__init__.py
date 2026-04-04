@@ -242,8 +242,9 @@ class Api:
             ("proxy", "username"),
             ("reconnect", "script"),
             ("webui", "host"),
-            ("webui", "ssl_cert"),
-            ("webui", "ssl_key"),
+            ("webui", "ssl_certfile"),
+            ("webui", "ssl_keyfile"),
+            ("webui", "ssl_certchain"),
             ("webui", "use_ssl"),
         }
 
