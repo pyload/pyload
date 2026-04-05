@@ -385,8 +385,8 @@
     },
     "/api/check_urls": {
       "post": {
-        "summary": "Gets urls and returns pluginname mapped to list of matched urls.",
-        "description": "Gets urls and returns pluginname mapped to list of matched urls.",
+        "summary": "Gets urls and returns plugin name mapped to list of matched urls.",
+        "description": "Gets urls and returns plugin name mapped to list of matched urls.",
         "tags": [
           "pyLoad REST"
         ],
