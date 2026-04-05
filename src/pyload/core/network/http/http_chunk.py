@@ -9,8 +9,7 @@ from posixpath import basename as posixpath_basename
 
 import pycurl
 
-from ...utils import parse, purge
-from ...utils.web.parse import http_header as parse_header_line
+from ...utils import parse, purge, web
 from .http_headers import HttpHeaders
 from .http_request import HTTPRequest
 
@@ -137,6 +136,8 @@ class HTTPChunk(HTTPRequest):
         self.aborted = False  # indicates that the chunk aborted gracefully
 
         self.c = pycurl.Curl()
+
+        self.auth = None
 
         self._header_buffer = b""
         self._body_buffer = None
@@ -288,7 +289,7 @@ class HTTPChunk(HTTPRequest):
 
         disposition_value = self.response_headers.get("Content-Disposition")
         if disposition_value:
-            disposition_type, disposition_params = parse_header_line(disposition_value)
+            disposition_type, disposition_params = web.parse.http_header(disposition_value)
 
             fname = None
             if 'filename*' in disposition_params:
