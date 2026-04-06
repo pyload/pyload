@@ -14,7 +14,7 @@ from pyload import APPID, PKGDIR
 from pyload.core.utils import format
 
 from ..helpers import (
-    clear_session, csrf_exempt, get_permission, get_redirect_url, is_authenticated, login_required, permlist,
+    clear_session, get_permission, get_redirect_url, is_authenticated, login_required, permlist,
     render_base, render_template, set_session, static_file_url)
 
 _RE_LOGLINE = re.compile(r"\[([\d\-]+) ([\d:]+)\] +([A-Z]+) +(.+?) (.*)")

@@ -22,9 +22,13 @@
 
 {% block content %}
 <ul id="toptabs" class="nav nav-tabs left col-xs-12 nav-settings">
-  <li class="active" ondragstart="return false;"><a class="noselect" data-toggle="tab" href="#core">{{_('General')}}</a></li>
-  <li ondragstart="return false;"><a class="noselect" data-toggle="tab" href="#plugins">{{_('Plugins')}}</a></li>
-  <li ondragstart="return false;"><a class="noselect" data-toggle="tab" href="#accounts">{{_('Accounts')}}</a></li>
+  {% if perms.SETTINGS %}
+    <li class="active" ondragstart="return false;"><a class="noselect" data-toggle="tab" href="#core">{{_('General')}}</a></li>
+    <li ondragstart="return false;"><a class="noselect" data-toggle="tab" href="#plugins">{{_('Plugins')}}</a></li>
+  {% endif %}
+  {% if perms.ACCOUNTS %}
+    <li ondragstart="return false;"><a class="noselect" data-toggle="tab" href="#accounts">{{_('Accounts')}}</a></li>
+  {% endif %}
   {% if user.is_admin %}
     <li ondragstart="return false;"><a class="noselect" data-toggle="tab" href="#users">{{_('Users')}}</a></li>
   {% endif %}
