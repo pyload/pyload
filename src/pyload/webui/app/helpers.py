@@ -299,7 +299,7 @@ def login_required(perm):
 def apikey_auth(func):
     """
     Decorator that handles API authentication with automatic CSRF exemption.
-    If API authentication is provided (Basic Auth or API key), it will:
+    If API authentication is provided using API key, it will:
     1. Authenticate using the API credentials
     2. Store user info in flask.g
     3. Not create or use sessions
