@@ -57,15 +57,19 @@
     <li ondragstart="return false;" {{selected('dashboard')}}>
       <a href="{{url_for("app.dashboard")}}" title="{{_('Dashboard')}}"><span class="glyphicon glyphicon-home"></span></a>
     </li>
-    <li ondragstart="return false;" {{selected('queue')}}>
-      <a href="{{url_for("app.queue")}}" title="{{_('Queue')}}"><span class="glyphicon glyphicon-tasks"></span></a>
-    </li>
-    <li ondragstart="return false;" {{selected('collector')}}>
-      <a href="{{url_for("app.collector")}}" title="{{_('Packages')}}"><span class="glyphicon glyphicon-magnet"></span></a>
-    </li>
-    <li ondragstart="return false;" {{selected('files')}}>
-      <a href="{{url_for("app.files")}}" title="{{_('Files')}}"><span class="glyphicon glyphicon-file"></span></a>
-    </li>
+    {% if perms.LIST %}
+        <li ondragstart="return false;" {{selected('queue')}}>
+          <a href="{{url_for("app.queue")}}" title="{{_('Queue')}}"><span class="glyphicon glyphicon-tasks"></span></a>
+        </li>
+        <li ondragstart="return false;" {{selected('collector')}}>
+          <a href="{{url_for("app.collector")}}" title="{{_('Packages')}}"><span class="glyphicon glyphicon-magnet"></span></a>
+        </li>
+    {% endif %}
+    {% if perms.DOWNLOAD %}
+      <li ondragstart="return false;" {{selected('files')}}>
+        <a href="{{url_for("app.files")}}" title="{{_('Files')}}"><span class="glyphicon glyphicon-file"></span></a>
+      </li>
+    {% endif %}
     {% if perms.LOGS %}
       <li ondragstart="return false;" {{selected('logs')}}>
         <a href="{{url_for("app.logs")}}" title="{{_('Logs')}}"><span class="glyphicon glyphicon-list-alt"></span></a>
@@ -127,15 +131,19 @@
           <li ondragstart="return false;" {{selected('dashboard')}}>
               <a href="{{url_for("app.dashboard")}}" title=""><span class="glyphicon glyphicon-home"></span><span class="hidden-sm"> {{_('Dashboard')}}</span></a>
           </li>
-          <li ondragstart="return false;" {{selected('queue')}}>
-              <a href="{{url_for("app.queue")}}" title=""><span class="glyphicon glyphicon-tasks"></span><span class="hidden-sm"> {{_('Queue')}}</span></a>
-          </li>
-          <li ondragstart="return false;" {{selected('collector')}}>
-              <a href="{{url_for("app.collector")}}" title=""><span class="glyphicon glyphicon-magnet"></span><span class="hidden-sm"> {{_('Packages')}}</span></a>
-          </li>
-          <li ondragstart="return false;" {{selected('files')}}>
-              <a href="{{url_for("app.files")}}" title=""> <span class="glyphicon glyphicon-file"></span><span class="hidden-sm"> {{_('Files')}}</span></a>
-          </li>
+          {% if perms.LIST %}
+            <li ondragstart="return false;" {{selected('queue')}}>
+                <a href="{{url_for("app.queue")}}" title=""><span class="glyphicon glyphicon-tasks"></span><span class="hidden-sm"> {{_('Queue')}}</span></a>
+            </li>
+            <li ondragstart="return false;" {{selected('collector')}}>
+                <a href="{{url_for("app.collector")}}" title=""><span class="glyphicon glyphicon-magnet"></span><span class="hidden-sm"> {{_('Packages')}}</span></a>
+            </li>
+          {% endif %}
+          {% if perms.DOWNLOAD %}
+            <li ondragstart="return false;" {{selected('files')}}>
+                <a href="{{url_for("app.files")}}" title=""> <span class="glyphicon glyphicon-file"></span><span class="hidden-sm"> {{_('Files')}}</span></a>
+            </li>
+          {% endif %}
     {#  <li ondragstart="return false;" {{selected('filemanager')}}>#}
     {#      <a href="/filemanager" title=""><span class="glyphicon glyphicon-magnet"></span><span class="hidden-sm"> {{_('FileManager')}}</span></a>#}
     {#  </li>#}
