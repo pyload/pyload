@@ -1,5 +1,8 @@
 name: Build & Deploy
 
+permissions:
+  contents: read
+
 on:
   workflow_run:
     workflows: [Lint & Test]
