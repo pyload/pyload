@@ -1,7 +1,7 @@
 import json
 import time
 from functools import wraps
-from urllib.parse import urljoin, urlparse
+from urllib.parse import urljoin, urlparse, urlsplit
 
 import flask
 import flask_themes2
@@ -35,16 +35,54 @@ else:
             return json.loads(s, **kwargs)
 
 
-#: Checks if location belongs to same host address
 def is_safe_url(location):
-    location_urlp = urlparse(location)
-    #: if relative URL then must start with "/"
-    if not location_urlp.netloc and location[0] != "/":
+    """
+    Checks if a redirect target is safe (same origin or safe relative path).
+    Prevents open redirects.
+    """
+    if not location or not isinstance(location, str):
         return False
-    host_urlp = urlparse(flask.request.host_url)
-    test_urlp = urlparse(urljoin(flask.request.host_url, location))
-    return test_urlp.scheme in ('http', 'https') and host_urlp.netloc == test_urlp.netloc
 
+    # Strip dangerous leading whitespace/control characters (tabs, newlines, etc.)
+    # This mitigates CVE-2023-24329 and similar parser bypasses
+    location = location.lstrip(" \t\n\r\x0b\x0c")
+
+    # Handle empty or obviously bad input
+    if not location:
+        return False
+
+    # Use urljoin against the current host_url to resolve relatives
+    # This ensures relative paths stay on-origin
+    base_url = flask.request.host_url.rstrip('/') + '/'  # Ensure trailing slash for correct joining
+    test_url = urljoin(base_url, location)
+
+    # Parse both the base and the resolved test URL
+    base_parsed = urlparse(base_url)
+    test_parsed = urlparse(test_url)
+
+    # Additional safety: re-parse with urlsplit for scheme edge cases
+    test_split = urlsplit(test_url)
+
+    # Strict checks:
+    # 1. Scheme must be http or https (or empty for relative)
+    # 2. Netloc (host + port) must match the application's host
+    # 3. Reject protocol-relative URLs (//evil.com) explicitly if desired
+    if test_parsed.scheme not in ('', 'http', 'https'):
+        return False
+
+    # Reject if netloc differs (this catches absolute external URLs)
+    if test_parsed.netloc and test_parsed.netloc != base_parsed.netloc:
+        return False
+
+    # Optional: explicitly reject protocol-relative (starts with //)
+    if location.lstrip().startswith('//'):
+        return False
+
+    # Extra hardening: ensure the final path doesn't contain dangerous schemes in edge cases
+    if test_split.scheme and test_split.scheme not in ('http', 'https'):
+        return False
+
+    return True
 
 def get_redirect_url(fallback=None):
     next_arg = flask.request.values.get("next")
