@@ -1747,18 +1747,11 @@ class Api:
         if not key_data:
             return {
                 "success": False,
-                "error": "Invalid API key",
+                "error": "Invalid or expired API key",
             }
         else:
             self.pyload.db.update_apikey_last_used(key_id)
-            now = int(time.time() * 1000)
-            if now >= key_data["expires_at"]:
-                return {
-                    "success": False,
-                    "error": "Expired API key",
-                }
-            else:
-                return {
-                    "success": True,
-                    "data": key_data,
-                }
+            return {
+                "success": True,
+                "data": key_data,
+            }

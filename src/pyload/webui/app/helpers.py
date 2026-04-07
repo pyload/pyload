@@ -342,7 +342,7 @@ def apikey_auth(func):
                     flask.g.user_info = user_info
                     # Log if it has not been used for more than 1 hour
                     if now >= last_used + 3_600_000:
-                        log.info(f"API authentication successful for user {user_info['name']} using the '{key_name}' API key [CLIENT: {client_ip}]")
+                        log.info(f"API authentication successful for user '{user_info['name']}' using the '{key_name}' API key [CLIENT: {client_ip}]")
                     return decorated(*args, **kwargs)
 
             else:

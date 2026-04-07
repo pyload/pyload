@@ -100,8 +100,8 @@ class ApikeyDatabaseMethods:
         :return: dict with key info or empty dict if not found
         """
         self.c.execute(
-            "SELECT id, user_id, name, key_hash, created_at, expires_at, last_used FROM apikeys WHERE id=?",
-            (key_id,),
+            "SELECT id, user_id, name, key_hash, created_at, expires_at, last_used FROM apikeys WHERE id=? AND expires_at>?",
+            (key_id, int(time.time() * 1000)),
         )
         r = self.c.fetchone()
         if not r:
