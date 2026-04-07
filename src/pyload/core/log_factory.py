@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import locale
 import logging
 import logging.handlers

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import base64
 
 from ..base.decrypter import BaseDecrypter

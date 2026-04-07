@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #       ____________
 #   ___/       |    \_____________ _                 _ ___
 #  /        ___/    |    _ __ _  _| |   ___  __ _ __| |   \
@@ -7,7 +6,7 @@
 #  \_______\    /_______|_|   |__/________________________/
 #           \  /
 #            \/
-
+from .apikey_database import ApikeyDatabaseMethods
 from .file_database import FileDatabaseMethods
-from .user_database import UserDatabaseMethods
 from .storage_database import StorageDatabaseMethods
+from .user_database import UserDatabaseMethods

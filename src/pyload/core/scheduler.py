@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import time
 from heapq import heappop, heappush
 from threading import Lock

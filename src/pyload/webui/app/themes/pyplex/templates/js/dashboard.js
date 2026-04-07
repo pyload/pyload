@@ -86,10 +86,11 @@ class LinkEntry {
     this.fadeBar = this.elements.pgbTr;
 
     $(this.elements.remove).click(() => {
-      $.get({
+      $.post({
         url: "{{url_for('json.abort_link')}}",
-        data: { id: this.id },
-        traditional: true,
+        dataType: 'json',
+        contentType: 'application/json',
+        data: JSON.stringify({ link_id: this.id })
       });
     });
   }
@@ -126,32 +127,30 @@ class EntryManager {
 
   initialize() {
     this.fetchLinks();
-    this.fetchInterval = setInterval(() => this.fetchLinks(), 2500);
+    this.fetchInterval = setInterval(() => this.fetchLinks(), 1000);
     {% for link in content %}
     this.entries.set({{link.id}}, new LinkEntry({{link.id}}));
     {% endfor %}
     this.parseFromContent();
   }
 
-fetchLinks() {
-  $.ajax({
-    method: "post",
-    url: "{{url_for('json.links')}}",
-    async: true,
-    timeout: 30000,
-    success: (data) => this.update(data),
-    error: (xhr) => {
-      if (xhr.status === 400) {
-        if (this.fetchInterval) {
-          clearInterval(this.fetchInterval);
-          this.fetchInterval = null;
-          uiHandler.indicateInfo("{{_('Status updates stopped due to authentication error,<br>please refresh the page')}}", 0);
+  fetchLinks() {
+    $.post({
+      url: "{{url_for('json.links')}}",
+      timeout: 30000,
+      success: (data) => this.update(data),
+      error: (xhr) => {
+        if (xhr.status === 400) {
+          if (this.fetchInterval) {
+            clearInterval(this.fetchInterval);
+            this.fetchInterval = null;
+            uiHandler.indicateInfo("{{_('Status updates stopped due to authentication error,<br>please refresh the page')}}", 0);
+          }
         }
+        this.update({ids: [], links: []});
       }
-      this.update({ ids: [], links: [] });
-    }
-  });
-}
+    });
+  }
 
   parseFromContent() {
     this.entries.forEach((entry, id) => {

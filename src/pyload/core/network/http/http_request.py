@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import codecs
 import io
 import mimetypes
@@ -18,6 +16,7 @@ from pyload import APPID
 
 from ...utils.check import is_mapping
 from ...utils.convert import to_bytes, to_str
+from ...utils.web.check import is_global_address
 from ...utils.web.parse import http_header as parse_header_line
 from ...utils.web.purge import unescape as html_unescape
 from ..exceptions import Abort
@@ -73,10 +72,13 @@ class HTTPRequest:
     def __init__(self, cookies=None, options=None, limit=2_000_000):
         self.exception = None
         self.limit = limit
+        self.allow_private_ip = True
 
         self.c = pycurl.Curl()
 
         self.cj = cookies  #: cookiejar
+
+        self.auth = None
 
         self.last_url = None
         self.last_effective_url = None
@@ -100,6 +102,7 @@ class HTTPRequest:
 
         self.c.setopt(pycurl.WRITEFUNCTION, self._write_body_callback)
         self.c.setopt(pycurl.HEADERFUNCTION, self._write_header_callback)
+        self.c.setopt(pycurl.PREREQFUNCTION, self._pre_request_callback)
 
         self.log = getLogger(APPID)
 
@@ -115,6 +118,7 @@ class HTTPRequest:
         """
         self.c.setopt(pycurl.FOLLOWLOCATION, 1)
         self.c.setopt(pycurl.MAXREDIRS, 10)
+        self.c.setopt(pycurl.REDIR_PROTOCOLS, pycurl.PROTO_HTTP | pycurl.PROTO_HTTPS)
         self.c.setopt(pycurl.CONNECTTIMEOUT, 30)
         self.c.setopt(pycurl.NOSIGNAL, 1)
         self.c.setopt(pycurl.NOPROGRESS, 1)
@@ -183,9 +187,6 @@ class HTTPRequest:
         else:
             self.c.setopt(pycurl.IPRESOLVE, pycurl.IPRESOLVE_V4)
 
-        if "auth" in options:
-            self.c.setopt(pycurl.USERPWD, options["auth"])
-
         if "timeout" in options:
             self.c.setopt(pycurl.LOW_SPEED_TIME, int(options["timeout"]))
 
@@ -204,16 +205,16 @@ class HTTPRequest:
             self.c.setopt(pycurl.SSL_VERIFYPEER, ssl_verify)
             self.c.setopt(pycurl.SSL_VERIFYHOST, ssl_verify * 2)
 
-    def add_cookies(self):
+    def load_cookies(self):
         """
-        put cookies from curl handle to cj.
+        put cookies from curl handle to cookiejar.
         """
         if self.cj:
             self.cj.set_cookies(self.c.getinfo(pycurl.INFO_COOKIELIST))
 
-    def get_cookies(self):
+    def send_cookies(self):
         """
-        add cookies from cj to curl handle.
+        send cookies from cookiejar to curl handle.
         """
         if self.cj:
             for c in self.cj.get_cookies():
@@ -222,6 +223,21 @@ class HTTPRequest:
 
     def clear_cookies(self):
         self.c.setopt(pycurl.COOKIELIST, "")
+
+    def add_auth(self, pwd):
+        """
+        Adds user and pw for http auth.
+
+        :param pwd: str in the form `user:password`
+        """
+        self.auth = pwd
+
+    def remove_auth(self):
+        """
+        Removes the auth from the request.
+        """
+        self.auth = None
+
 
     def set_request_context(self, url, get, post, referer, cookies, multipart=False, decode=True):
         """
@@ -315,7 +331,12 @@ class HTTPRequest:
             self.c.setopt(pycurl.COOKIEJAR, b"")
             if isinstance(cookies, list) and self.cj:
                 self.cj.set_cookies(cookies)
-            self.get_cookies()
+            self.send_cookies()
+
+        if self.auth:
+            self.c.setopt(pycurl.USERPWD, to_bytes(self.auth))
+        else:
+            self.c.setopt(pycurl.USERPWD, None)
 
     def load(
         self,
@@ -333,7 +354,7 @@ class HTTPRequest:
         """
         load and returns a given page.
         """
-        self.set_request_context(url, get, post, referer, cookies, multipart, decode)
+        self.set_request_context(url, get, post, referer, cookies, multipart=multipart, decode=decode)
 
         self._header_buffer = b""
         self.response_headers.clear(use_defaults=False)
@@ -377,7 +398,7 @@ class HTTPRequest:
         self.last_effective_url = self.c.getinfo(pycurl.EFFECTIVE_URL)
 
         if save_cookies:
-            self.add_cookies()
+            self.load_cookies()
 
         self.code = self.verify_header()
 
@@ -418,7 +439,7 @@ class HTTPRequest:
         :return: Response content
         """
         with open(os.fsencode(filename), mode="rb") as fp:
-            self.set_request_context(url, get, None, referer, cookies, False)
+            self.set_request_context(url, get, None, referer, cookies)
 
             self._header_buffer = b""
 
@@ -455,7 +476,7 @@ class HTTPRequest:
             self.last_effective_url = self.c.getinfo(pycurl.EFFECTIVE_URL)
 
             if save_cookies:
-                self.add_cookies()
+                self.load_cookies()
 
             self.code = self.verify_header()
 
@@ -516,8 +537,8 @@ class HTTPRequest:
             #: detect encoding
             for content_value in self.response_headers.get_list("Content-Type"):
                 content_type, content_params = parse_header_line(content_value)
-                if content_type.startswith("text/") or content_type.startswith("application/") and "charset" in content_params:
-                    encoding = content_params["charset"]
+                if (content_type.startswith("text/") or content_type.startswith("application/")) and "charset" in content_params:
+                    encoding = content_params.get("charset", "utf-8")
                     break
 
         try:
@@ -568,6 +589,16 @@ class HTTPRequest:
 
         if self._header_buffer.endswith(b"\r\n\r\n"):
             self.response_headers.parse(self._header_buffer)
+
+    def _pre_request_callback(self, conn_primary_ip, conn_local_ip, conn_primary_port, conn_local_port):
+        """
+        Called after TCP/TLS connection is established, before request is sent.
+        This runs for the initial request AND every redirect follow.
+        """
+        if not self.allow_private_ip and not is_global_address(conn_primary_ip):
+            return pycurl.PREREQFUNC_ABORT  # Aborts the entire transfer
+
+        return pycurl.PREREQFUNC_OK
 
     def add_header(self, name, value):
         """Append a value to a header name without replacing existing ones."""

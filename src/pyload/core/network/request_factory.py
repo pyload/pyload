@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from threading import Lock
 
 from ..utils.struct.lock import lock

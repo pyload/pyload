@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import os
 from base64 import standard_b64decode
 from functools import wraps
@@ -7,15 +5,16 @@ from urllib.parse import unquote
 
 import flask
 from cryptography.hazmat.backends import default_backend
-from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.primitives import padding
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from werkzeug.utils import secure_filename
 
+from pyload import g
 from pyload.core.api import Destination
 from pyload.core.utils.convert import to_str
 from pyload.core.utils.misc import eval_js
 
-from ..helpers import csrf_exempt
+from ..helpers import config_check, csrf_exempt, is_loopback_request
 
 #: url_prefix here is intentional since it should not be affected by path prefix
 bp = flask.Blueprint("flash", __name__, url_prefix="/")
@@ -25,44 +24,31 @@ bp = flask.Blueprint("flash", __name__, url_prefix="/")
 def local_check(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
-        remote_addr = flask.request.environ.get("REMOTE_ADDR", "0")
-        http_host = flask.request.environ.get("HTTP_HOST", "0")
-
-        if remote_addr in ("127.0.0.1", "::ffff:127.0.0.1", "::1", "localhost") or http_host in (
+        http_host = flask.request.environ.get("HTTP_HOST")
+        if http_host in (
+                "localhost:9666",
                 "127.0.0.1:9666",
                 "[::1]:9666",
         ):
-            return func(*args, **kwargs)
-        else:
-            return "Forbidden", 403
+            remote_addr = flask.request.environ.get("REMOTE_ADDR")
+            local_addr = g.get("web_addr")
+            if local_addr == remote_addr:
+                return func(*args, **kwargs)
+
+            else:
+                if is_loopback_request(check_source=False):
+                    return func(*args, **kwargs)
+
+        return "Forbidden", 403
 
     return wrapper
-
-
-def config_check(config_key: list[str], not_found_msg: str = "Not Found"):
-    """
-    Decorator factory: Checks [config_key] config value and aborts with 404 if False.
-
-    :param config_key: The config key to check (e.g., ["ClickNLoad", "enabled", "plugin"]).
-    :param not_found_msg: Custom message for the 404 response.
-    :return: A decorator to wrap view functions.
-    """
-    def decorator(f):
-        @wraps(f)
-        def decorated_function(*args, **kwargs):
-            api = flask.current_app.config["PYLOAD_API"]
-            if not api.get_config_value(*config_key):
-                return not_found_msg, 404
-            return f(*args, **kwargs)
-        return decorated_function
-    return decorator
 
 
 @bp.after_request
 def add_cors(response):
     response.headers.update({
         'Access-Control-Max-Age': 1800,
-        'Access-Control-Allow-Origin': "*",
+        'Access-Control-Allow-Origin': "http://127.0.0.1:9666",
         'Access-Control-Allow-Methods': "OPTIONS, GET, POST"
     })
     return response

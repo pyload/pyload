@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-
-
 from .Http import Http
 
 

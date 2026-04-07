@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # ATTENTION: if you cannot see the interactive captcha (on firefox), make sure to activate/install X-Frame-Options Header:
 # https://addons.mozilla.org/en-US/firefox/addon/ignore-x-frame-options-header/
 

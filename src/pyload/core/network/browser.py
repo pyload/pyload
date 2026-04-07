@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from logging import getLogger
 
 from pyload import APPID
@@ -44,9 +42,7 @@ class Browser:
 
     @property
     def speed(self):
-        if self.dl:
-            return self.dl.speed
-        return 0
+        return 0 if not self.dl else self.dl.speed
 
     @property
     def size(self):
@@ -58,15 +54,11 @@ class Browser:
 
     @property
     def arrived(self):
-        if self.dl:
-            return self.dl.arrived
-        return 0
+        return 0 if not self.dl else self.dl.arrived
 
     @property
     def percent(self):
-        if not self.size:
-            return 0
-        return (self.arrived * 100) // self.size
+        return 0 if not self.size else (self.arrived * 100) // self.size
 
     def clear_cookies(self):
         if self.cj:
@@ -151,13 +143,10 @@ class Browser:
 
         :param pwd: string, user:password
         """
-        self.options["auth"] = pwd
-        self.renew_http_request()  #: we need a new request
+        self.http.add_auth(pwd)
 
     def remove_auth(self):
-        if "auth" in self.options:
-            del self.options["auth"]
-        self.renew_http_request()
+        self.http.remove_auth()
 
     def set_option(self, name, value):
         """
@@ -166,8 +155,7 @@ class Browser:
         self.options[name] = value
 
     def delete_option(self, name):
-        if name in self.options:
-            del self.options[name]
+        self.options.pop(name, None)
 
     def clear_headers(self):
         self.http.clear_headers()

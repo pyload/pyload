@@ -1,6 +1,8 @@
 {% autoescape true %}
 
-$(() => new SettingsUI());
+$(() => {
+  window.settingsUI = new SettingsUI();
+});
 
 if (!String.prototype.startsWith) {
   String.prototype.startsWith = function(searchString, position = 0) {
@@ -8,33 +10,40 @@ if (!String.prototype.startsWith) {
   };
 }
 
+function timestampToLocalISOTime(timestamp) {
+  const offset = timestamp.getTimezoneOffset() * 60000;
+  const localISOTime = new Date(timestamp - offset).toISOString().slice(0, 16);
+  return localISOTime;
+}
+
 class SettingsUI {
   constructor() {
     this.generalPanel = $("#core_form_content");
     this.pluginPanel = $("#plugin_form_content");
+
+    this.initEventListeners();
+    this.initUsersAdmin();
+    this.initPluginSearch();
+    this.initPathChooser();
+    this.apikeysUI = new ApikeysUI();
 
     const activeTab = sessionStorage.getItem('activeTab');
     if (activeTab) {
       sessionStorage.removeItem('activeTab');
       $(`#toptabs a[href="${activeTab}"]`).tab('show');
     }
-
-    this.initEventListeners();
-    this.initUsersAdmin();
-    this.initPluginSearch();
-    this.initPathChooser();
   };
 
   initEventListeners() {
     $("#quit-pyload").click(() => {
-      uiHandler.yesNoDialog("{{_('You are really sure you want to quit pyLoad?')}}", (answer) => {
+      uiHandler.yesNoDialog("{{_('Are you really sure you want to quit pyLoad?')}}", (answer) => {
         if (answer) {
           this.quitPyload();
         }
       });
     });
 
-    $("#restart-pyload").click(() =>{
+    $("#restart-pyload").click(() => {
       uiHandler.yesNoDialog("{{_('Are you sure you want to restart pyLoad?')}}", (answer) => {
         if (answer) {
           this.restartPyload();
@@ -43,21 +52,20 @@ class SettingsUI {
     });
 
     $('a[data-toggle="tab"]').on('shown.bs.tab', (event) => {
-      if (event.target !== event.relatedTarget && $(event.target).attr("href") === "#accounts") {
+      if (event.currentTarget !== event.relatedTarget && $(event.currentTarget).attr("href") === "#accounts") {
         $('#account_form input[type=checkbox]').prop("checked", false);
       }
     });
 
-    $("#core-menu").find("li").each((_, element) => {
-      $(element).click(this.menuClick.bind(this));
-    });
-
+    $("#core-menu").on('click', 'li', this.menuClick.bind(this));
     $("#core_submit").click(this.configSubmit.bind(this));
     $("#plugin_submit").click(this.configSubmit.bind(this));
     $("#account_add_button").click(this.addAccount.bind(this));
     $("#account_submit").click(this.submitAccounts.bind(this));
     $("#account_add").click(() => $("#add_account_form").trigger("reset"));
-    $("#user_submit").click(this.submitUsers.bind(this));
+    {% if user.is_admin %}
+      $("#user_submit").click(this.submitUsers.bind(this));
+    {% endif %}
   }
 
   restartPyload() {
@@ -73,7 +81,7 @@ class SettingsUI {
       .fail(() => {
         uiHandler.indicateFail("{{_('Error occurred')}}");
       });
-  }
+  };
 
   quitPyload() {
     $.post("{{url_for('api.rpc', func='kill')}}")
@@ -89,50 +97,51 @@ class SettingsUI {
 
   initUsersAdmin() {
     $("#password_box").on('click', '#login_password_button', (event) => {
-      const passwd = $("#login_new_password").val();
-      const passwdConfirm = $("#login_new_password2").val();
+      event.stopPropagation();
+      event.preventDefault();
+      const passwd = $("#user_newpw").val();
+      const $passwdConfirm = $("#user_confpw");
+      const passwdConfirm = $passwdConfirm.prop('disabled', true).val();
       if (passwd === passwdConfirm) {
-        $.ajax({
-          method: "POST",
+        $.post({
           url: "{{url_for('json.change_password')}}",
-          data: $("#password_form").serialize(),
-          async: true,
+          dataType: 'json',
+          contentType: 'application/json',
+          data: JSON.stringify(formToObject("#password_form")),
           success: () => {
             uiHandler.indicateSuccess("{{_('Password successfully changed')}}");
           }
         }).fail(() => {
           uiHandler.indicateFail("{{_('Error occurred')}}");
+        }).always(() => {
+          $passwdConfirm.prop('disabled', false);
         });
         $('#password_box').modal('hide');
       } else {
         alert("{{_('Passwords did not match.')}}");
       }
-      event.stopPropagation();
-      event.preventDefault();
     });
 
-    $(".is_admin").each(function() {
-      const userName = $(this).attr("name").split("|")[0];
-      $(this).on("change", { userName }, function(event) {
-        const checked = $(this).is(":checked");
-        const permsList = $(`#${userName}\\|perms`);
-        permsList.prop('disabled', checked);
-        if (checked) {
-          permsList.val([]);
-        }
-      });
+    $(document).on("change", ".is_admin", (event) => {
+      const userName = $(event.currentTarget).attr("name").split("|")[0];
+      const checked = $(event.currentTarget).is(":checked");
+      const permsList = $(`#${userName}\\|perms`);
+
+      permsList.prop("disabled", checked);
+      if (checked) {
+        permsList.val([]);
+      }
     });
 
-    $(".change_password").each(function() {
-      const userName = $(this).attr("id").split("|")[1];
-      $(this).on("click", { userName }, function(event) {
-        $("#password_form").trigger("reset");
-        $("#password_box #user_login").val(userName);
-      });
+    $(document).on("click", ".change_password", (event) => {
+      const userName = $(event.target).attr("id").split("|")[0];
+
+      $("#password_form").trigger("reset");
+      $("#password_box #user_login").val(userName);
     });
 
     $('#password_box').on('shown.bs.modal', () => {
-      $('#login_current_password').focus();
+      $('#user_curpw').focus();
     });
 
     $("#user_add").click(() => {
@@ -140,8 +149,32 @@ class SettingsUI {
       $("#user_add_form").trigger("reset");
     });
 
-    $("#new_role").change(function() {
-      const checked = $(this).is(":checked");
+    $(document).off("click", ".delete_user").on("click", ".delete_user", (event) => {
+      event.stopPropagation();
+      event.preventDefault();
+      const userName = $(event.currentTarget).attr("id").split("|")[0];
+      uiHandler.yesNoDialog("{{_('Are you sure you want to delete the user {}?')}}".replace("{}", userName), (answer) => {
+          if (answer) {
+            uiHandler.indicateLoad();
+            $.post({
+              url: "{{url_for('json.update_users')}}",
+              dataType: 'json',
+              contentType: 'application/json',
+              data: JSON.stringify({update_data: {[`${userName}|delete`]: true}}),
+              success: () => {
+                sessionStorage.setItem("activeTab", "#users");
+                window.location.assign(window.location.href.replace(/#.*$/, ''));
+              }
+            }).fail(() => {
+              uiHandler.indicateFail("{{_('Error occurred')}}");
+            });
+          }
+        }
+      );
+    });
+
+    $("#new_role").change((event) => {
+      const checked = $(event.currentTarget).is(":checked");
       const permsList = $("#new_perms");
       permsList.prop('disabled', checked);
       if (checked) {
@@ -149,7 +182,7 @@ class SettingsUI {
       }
     });
 
-    $("#new_user_button").click(function(event) {
+    $("#new_user_button").click((event) => {
       $(this).prop('disabled', true);
       const $userForm = $("#user_add_form");
       const $userName = $("#new_user");
@@ -160,14 +193,12 @@ class SettingsUI {
         const passwd = $("#new_password").val();
         const passwdConfirm = $("#new_password2").val();
         if (passwd === passwdConfirm) {
-          $.ajax({
-            method: "POST",
+          $.post({
             url: "{{url_for('json.add_user')}}",
-            async: true,
             data: $userForm.serialize(),
             success: () => {
               sessionStorage.setItem("activeTab", "#users");
-              window.location.assign(window.location.href);
+              window.location.assign(window.location.href.replace(/#.*$/, ''));
             }
           }).fail(() => {
             uiHandler.indicateFail("{{_('Error occurred')}}");
@@ -198,17 +229,19 @@ class SettingsUI {
         results = pluginList;
       }
 
-      pluginListPanel.empty();
+      pluginListPanel.empty().on('click', 'li', this.menuClick.bind(this));
 
       if (results.length) {
+        const $fragment = $(document.createDocumentFragment());
         results.forEach(p => {
           resultTemplate.clone().find('.plugin-row')
             .attr('id', `plugin|${p[0]}`)
             .text(p[1])
             .removeAttr('class')
-            .click(this.menuClick.bind(this))
-            .end().appendTo(pluginListPanel);
+            .end()
+            .appendTo($fragment);
         });
+        pluginListPanel.append($fragment);
       } else {
         pluginListPanel.append(noresultTemplate);
       }
@@ -244,11 +277,11 @@ class SettingsUI {
 
   configSubmit(event) {
     const category = $(event.currentTarget).attr('id').split("_")[0];
-    $.ajax({
-      method: "POST",
-      url: `{{url_for('json.save_config')}}?category=${category}`,
-      data: $(`#${category}_form`).serialize(),
-      async: true,
+    $.post({
+      url: "{{url_for('json.save_config')}}",
+      dataType: 'json',
+      contentType: 'application/json',
+      data: JSON.stringify({category: category, config: formToObject(`#${category}_form`)}),
       success: () => {
         uiHandler.indicateSuccess("{{_('Settings saved')}}");
       }
@@ -261,14 +294,14 @@ class SettingsUI {
 
   addAccount(event) {
     $(event.currentTarget).prop('disabled', true);
-    $.ajax({
-      method: "POST",
+    $.post({
       url: "{{url_for('json.add_account')}}",
-      async: true,
-      data: $("#add_account_form").serialize(),
+      dataType: 'json',
+      contentType: 'application/json',
+      data: JSON.stringify(formToObject("#add_account_form")),
       success: () => {
         sessionStorage.setItem("activeTab", "#accounts");
-        window.location.reload();
+        window.location.assign(window.location.href.replace(/#.*$/, ''));
       }
     }).fail(() => {
       uiHandler.indicateFail("{{_('Error occurred')}}");
@@ -278,14 +311,14 @@ class SettingsUI {
 
   submitUsers(event) {
     uiHandler.indicateLoad();
-    $.ajax({
-      method: "POST",
+    $.post({
       url: "{{url_for('json.update_users')}}",
-      data: $("#user_form").serialize(),
-      async: true,
+      dataType: 'json',
+      contentType: 'application/json',
+      data: JSON.stringify({update_data: formToObject("#user_form")}),
       success: () => {
         sessionStorage.setItem("activeTab", "#users");
-        window.location.reload();
+        window.location.assign(window.location.href.replace(/#.*$/, ''));
       }
     }).fail(() => {
       uiHandler.indicateFail("{{_('Error occurred')}}");
@@ -295,14 +328,12 @@ class SettingsUI {
 
   submitAccounts(event) {
     uiHandler.indicateLoad();
-    $.ajax({
-      method: "POST",
+    $.post({
       url: "{{url_for('json.update_accounts')}}",
       data: $("#account_form").serialize(),
-      async: true,
       success: () => {
         sessionStorage.setItem("activeTab", "#accounts");
-        window.location.reload();
+        window.location.assign(window.location.href.replace(/#.*$/, ''));
       }
     }).fail(() => {
       uiHandler.indicateFail("{{_('Error occurred')}}");
@@ -311,7 +342,7 @@ class SettingsUI {
   }
 
   initPathChooser() {
-    $("#path_type0, #path_type1").click(function() {
+    $("#path_type0, #path_type1").click(() => {
       const iframe = document.getElementById('chooser_ifrm').contentWindow;
       const isAbsolute = $(this).val() === "1";
       if (isAbsolute !== iframe.isabsolute) {
@@ -357,6 +388,211 @@ class SettingsUI {
     $("#chooser_confirm_button").prop("disabled", !iframe.submit);
     $("#path_type0").prop("checked", !iframe.isabsolute);
     $("#path_type1").prop("checked", iframe.isabsolute);
+  }
+}
+
+class ApikeysUI {
+  constructor() {
+    this.currentUserName = "";
+    this.initApiKeyGen();
+  }
+
+  initApiKeyGen() {
+    $('#apikeys_box').on('shown.bs.modal', (event) => {
+      this.currentUserName = $(event.relatedTarget).attr("id").split("|")[0];
+      this.loadApiKeys();
+    }).off('click', '#apikeyAddBtn').on('click', '#apikeyAddBtn', (event) => {
+      this.modalGenerateApikey().then((key) => {
+        this.modalShowApikey(key).then(() => {
+          this.loadApiKeys();
+          this.modalSwitch("Main");
+        })
+      }).catch(() => {
+        this.modalSwitch("Main");
+      })
+    }).off('click', '.delete_apikey').on('click', '.delete_apikey', (event) => {
+      const keyId = $(event.currentTarget).attr("id").split("|")[0];
+      uiHandler.yesNoDialog("{{_('Are you sure you want to delete this API key?')}}", (answer) => {
+        if (answer) {
+          this.deleteApiKey(keyId).then(() => {
+            this.loadApiKeys();
+          }).catch((errMsg) => {
+            uiHandler.indicateFail(errMsg);
+          })
+        }
+      });
+    });
+    this.modalSwitch("Main");
+  }
+
+  modalGenerateApikey() {
+    return new Promise((resolve, reject) => {
+      this.modalSwitch("Gen");
+      $('#apikeyUser').val(this.currentUserName);
+      const apikeyExpiration = $('#apikeyExpiration');
+      const now = new Date();
+      const plusOneMinute = new Date(now.getTime() + 60000);
+      apikeyExpiration.attr('min', timestampToLocalISOTime(plusOneMinute));
+      $("#apikeyGenSubmitBtn").off('click').on('click', (event) => {
+        if ($("#apikeyGenForm")[0].reportValidity()) {
+          $(event.currentTarget).prop('disabled', true);
+          const password = $('#apikeyPassword').val().trim();
+          const keyName = $('#apikeyName').val().trim();
+          let expiresAt = apikeyExpiration.val().trim();
+          expiresAt = expiresAt ? new Date(expiresAt).getTime() : 0
+          if (this.currentUserName && password && keyName) {
+            this.generateApiKey(password, keyName, expiresAt).then((key) => {
+              resolve(key);
+            }).catch((errMsg) => {
+              uiHandler.indicateFail(errMsg);
+              reject();
+            });
+          }
+          $(event.currentTarget).prop('disabled', false);
+        }
+      });
+      $("#apikeyGenCancelBtn").off('click').on('click', (event) => {
+        reject();
+      });
+    })
+  }
+
+  modalShowApikey(key) {
+    return new Promise((resolve) => {
+      const apikeyKey = $("#apikeyGeneratedKey");
+      this.modalSwitch("Copy");
+      apikeyKey.val(key);
+      $('#apikeyCopyDismissBtn').one('click', (event) => {
+        apikeyKey.val("");
+        resolve();
+      })
+      $('#apikeyCopyBtn').off('click').on('click', (event) => {
+        const btn = $(event.currentTarget);
+        navigator.clipboard.writeText(key).then(() => {
+          const originalContent = btn.html();
+          const originalClass = btn.attr('class');
+          btn.html('<span class="glyphicon glyphicon-ok"></span> Copied!');
+          btn.attr('class', "btn btn-success");
+          setTimeout(() => {
+            btn.html(originalContent);
+            btn.attr('class', originalClass);
+          }, 2500);
+        })
+      })
+    })
+  }
+
+  modalSwitch(mode) {
+    const modes = ["Main", "Gen", "Copy"]
+    modes.forEach(m => {
+      const methodName = m === mode ? "removeClass" : "addClass";
+      $(`#apikey${m}Content`)[methodName]('hidden');
+      $(`#apikey${m}Footer`)[methodName]('hidden');
+    })
+    $('#apikeyGenForm').trigger('reset');
+    $('#apikeyCopyForm').trigger('reset');
+    $("#apikeyGeneratedKey").val('');
+  }
+
+  loadApiKeys() {
+    uiHandler.indicateLoad();
+    const tbody = $('#apikeysTbody');
+    $.post({
+      url: "{{url_for('json.get_apikeys')}}",
+      dataType: 'json',
+      contentType: 'application/json',
+      data: JSON.stringify({ user: this.currentUserName }),
+      success: (response) => {
+        uiHandler.indicateFinish();
+        if (!response.success) {
+          tbody.html('<tr><td colspan="5" class="text-danger">Error loading API keys</td></tr>');
+          return;
+        }
+
+        if (!response.data || response.data.length === 0) {
+          tbody.html('<tr><td colspan="5" class="text-center">No API keys yet</td></tr>');
+          return;
+        }
+
+        let html = '';
+        $.each(response.data, (index, keyInfo) => {
+          const createdDate = new Date(keyInfo.created_at).toLocaleString();
+          const expiresDate = keyInfo.expires_at ? new Date(keyInfo.expires_at).toLocaleString() : 'Never';
+          const lastUsedDate = keyInfo.last_used ? new Date(keyInfo.last_used).toLocaleString() : 'Never';
+          html += `
+                    <tr>
+                        <td>${keyInfo.name}</td>
+                        <td>${createdDate}</td>
+                        <td>${expiresDate}</td>
+                        <td>${lastUsedDate}</td>
+                        <td>
+                            <button class="btn btn-xs btn-danger delete_apikey" id="${keyInfo.id}|delkey">
+                                <span class="glyphicon glyphicon-trash"></span> Delete
+                            </button>
+                        </td>
+                    </tr>
+                `;
+        });
+        tbody.html(html);
+      },
+    }).fail(() => {
+      uiHandler.indicateFinish();
+      tbody.html('<tr><td colspan="5" class="text-danger">Error loading API keys</td></tr>');
+    });
+  }
+
+  generateApiKey(password, keyName, expiresAt) {
+    return new Promise((resolve, reject) => {
+      uiHandler.indicateLoad();
+      $.post({
+        url: "{{url_for('json.generate_apikey')}}",
+        dataType: 'json',
+        contentType: 'application/json',
+        data: JSON.stringify({
+          user: this.currentUserName,
+          password: password,
+          name: keyName,
+          expires: expiresAt,
+        }),
+        success: (response) => {
+          uiHandler.indicateFinish();
+          if (!response.success) {
+            reject(response.error);
+          } else {
+            resolve(response.data.key);
+          }
+        }
+      }).fail(() => {
+        uiHandler.indicateFinish();
+        reject("{{_('Error occurred')}}");
+      });
+    })
+  }
+
+  deleteApiKey(keyId) {
+    return new Promise((resolve, reject) => {
+      uiHandler.indicateLoad();
+      $.post({
+        url: "{{url_for('json.delete_apikey')}}",
+        dataType: 'json',
+        contentType: 'application/json',
+        data: JSON.stringify({
+          user: this.currentUserName,
+          key: Number(keyId),
+        }),
+        success: (response)=> {
+          uiHandler.indicateFinish();
+          if (!response.success) {
+            reject(response.error);
+          } else {
+            resolve();
+          }
+        }
+      }).fail(() => {
+        uiHandler.indicateFinish();
+        reject("{{_('Error occurred')}}");
+      });
+    })
   }
 }
 

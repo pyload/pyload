@@ -1,12 +1,10 @@
-# -*- coding: utf-8 -*-
-
 from ..base.xfs_downloader import XFSDownloader
 
 
 class DropDownload(XFSDownloader):
     __name__ = "DropDownload"
     __type__ = "downloader"
-    __version__ = "0.04"
+    __version__ = "0.05"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?drop\.download/\w{12}"
@@ -23,7 +21,7 @@ class DropDownload(XFSDownloader):
     __authors__ = [("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
     PLUGIN_DOMAIN = "drop.download"
-    LINK_PATTERN = r'<a href="(https://s\d+\.drop\.download.+?)"'
+    LINK_PATTERN = r'<a .*href="(https://s\d+\.drop\.download.+?)"'
 
     DL_LIMIT_PATTERN = r"You have reached the download-limit: [\d.,]+\s*[a-zA-Z]* for last (\d+ days)"
 

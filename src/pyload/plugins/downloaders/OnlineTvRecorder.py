@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-
-
 from pyload.core.network.http.exceptions import BadHeader
 
 from .Http import Http

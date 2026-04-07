@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import bitmath
 
 from .check import is_mapping, is_iterable

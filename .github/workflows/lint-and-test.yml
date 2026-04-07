@@ -1,5 +1,8 @@
 name: Lint & Test
 
+permissions:
+  contents: read
+
 on:
   pull_request:
     branches:
@@ -32,7 +35,7 @@ jobs:
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: ${{ github.event_name == 'pull_request' && format('refs/pull/{0}/merge', github.event.pull_request.number) || github.ref_name }}
 
@@ -46,7 +49,7 @@ jobs:
         run: sudo apt-get update && sudo apt-get -y --no-install-recommends install libcurl4-openssl-dev
 
       - name: Set up Python environment
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ env.runner_python_version }}
 
@@ -54,7 +57,7 @@ jobs:
         run: echo "day_of_year=$(date +%j)" >> $GITHUB_ENV
 
       - name: Set up cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             ${{ env.pythonLocation }}
@@ -84,7 +87,7 @@ jobs:
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: ${{ github.event_name == 'pull_request' && format('refs/pull/{0}/merge', github.event.pull_request.number) || github.ref_name }}
 
@@ -99,7 +102,7 @@ jobs:
         run: sudo apt-get update && sudo apt-get -y --no-install-recommends install libcurl4-openssl-dev
 
       - name: Set up Python environment
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
           architecture: ${{ matrix.architecture }}
@@ -111,7 +114,7 @@ jobs:
 
       - name: Set up cache
         if: "!startsWith(matrix.os, 'windows')"
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             ${{ env.pythonLocation }}

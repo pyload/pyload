@@ -1,15 +1,14 @@
-# -*- coding: utf-8 -*-
-
 import os
 import re
 
+from pyload.core.utils.fs import safejoin
 from pyload.plugins.base.extractor import ArchiveError, BaseExtractor
 
 
 class HjSplit(BaseExtractor):
     __name__ = "HjSplit"
     __type__ = "extractor"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __status__ = "testing"
 
     __description__ = """HJSPLIT extractor plugin"""
@@ -38,7 +37,7 @@ class HjSplit(BaseExtractor):
 
         #: eventually Multipart Files
         files.extend(
-            os.path.join(dir, os.path.basename(_f))
+            safejoin(dir, os.path.basename(_f))
             for _f in filter(self.ismultipart, [_x[1]['name'] for _x in self.pyfile.package().get_children().items()])
             if self._RE_PART.sub("", name) == self._RE_PART.sub("", _f)
         )
@@ -85,7 +84,7 @@ class HjSplit(BaseExtractor):
                     size_total += os.path.getsize(chunks[i])
 
         #: Now do the actual merge
-        with open(os.path.join(self.dest, name), "wb") as output_file:
+        with open(safejoin(self.dest, name), "wb") as output_file:
             size_written = 0
             for part_filename in chunks:
                 self.log_debug("Merging part", part_filename)

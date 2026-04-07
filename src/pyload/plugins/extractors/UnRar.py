@@ -1,11 +1,10 @@
-# -*- coding: utf-8 -*-
-
 import os
 import re
 import subprocess
 
 from pyload import PKGDIR
 from pyload.core.utils.convert import to_str
+from pyload.core.utils.fs import safejoin
 from pyload.plugins.base.extractor import ArchiveError, BaseExtractor, CRCError, PasswordError
 from pyload.plugins.helpers import renice
 
@@ -13,7 +12,7 @@ from pyload.plugins.helpers import renice
 class UnRar(BaseExtractor):
     __name__ = "UnRar"
     __type__ = "extractor"
-    __version__ = "1.48"
+    __version__ = "1.49"
     __status__ = "testing"
 
     __config__ = [
@@ -68,7 +67,7 @@ class UnRar(BaseExtractor):
     def find(cls):
         try:
             if os.name == "nt":
-                cls.CMD = os.path.join(PKGDIR, "lib", "RAR.exe")
+                cls.CMD = safejoin(PKGDIR, "lib", "RAR.exe")
             else:
                 cls.CMD = "rar"
 
@@ -81,7 +80,7 @@ class UnRar(BaseExtractor):
         except OSError:
             try:
                 if os.name == "nt":
-                    cls.CMD = os.path.join(PKGDIR, "lib", "UnRAR.exe")
+                    cls.CMD = safejoin(PKGDIR, "lib", "UnRAR.exe")
                 else:
                     cls.CMD = "unrar"
 
@@ -129,7 +128,7 @@ class UnRar(BaseExtractor):
                 raise ArchiveError("Cannot find smallest file")
 
             try:
-                extracted = os.path.join(self.dest, smallest if self.fullpath else os.path.basename(smallest))
+                extracted = safejoin(self.dest, smallest if self.fullpath else os.path.basename(smallest))
                 try:
                     os.remove(extracted)
                 except OSError:
@@ -169,7 +168,7 @@ class UnRar(BaseExtractor):
                 dir = os.path.dirname(self.filename)
                 name = self._RE_FIXNAME.search(out).group(1)
 
-                self.filename = os.path.join(dir, name)
+                self.filename = safejoin(dir, name)
 
         return True
 
@@ -226,7 +225,7 @@ class UnRar(BaseExtractor):
 
         #: eventually multi-part files
         files.extend(
-            os.path.join(dir, os.path.basename(_f))
+            safejoin(dir, os.path.basename(_f))
             for _f in filter(self.ismultipart, os.listdir(dir))
             if self._RE_PART.sub("", name) == self._RE_PART.sub("", _f)
         )
@@ -327,7 +326,7 @@ class UnRar(BaseExtractor):
 
                 if not self.fullpath:
                     f = os.path.basename(f)
-                f = os.path.join(self.dest, f)
+                f = safejoin(self.dest, f)
                 files.add(f)
 
             self.smallest = smallest

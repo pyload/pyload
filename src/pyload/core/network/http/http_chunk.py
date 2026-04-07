@@ -1,18 +1,11 @@
-# -*- coding: utf-8 -*-
-
 import codecs
 import os
 import re
 import time
-import urllib.parse
-from email.header import decode_header as parse_mime_header
-from ntpath import basename as ntpath_basename
-from posixpath import basename as posixpath_basename
 
 import pycurl
 
-from ...utils import parse, purge
-from ...utils.web.parse import http_header as parse_header_line
+from ...utils import web
 from .http_headers import HttpHeaders
 from .http_request import HTTPRequest
 
@@ -135,9 +128,12 @@ class HTTPChunk(HTTPRequest):
 
         self.code = 0  #: last http code, set by parent
 
+        self.allow_private_ip = False
         self.aborted = False  # indicates that the chunk aborted gracefully
 
         self.c = pycurl.Curl()
+
+        self.auth = None
 
         self._header_buffer = b""
         self._body_buffer = None
@@ -191,6 +187,7 @@ class HTTPChunk(HTTPRequest):
         )
         self.c.setopt(pycurl.WRITEFUNCTION, self._write_body_callback)
         self.c.setopt(pycurl.HEADERFUNCTION, self._write_header_callback)
+        self.c.setopt(pycurl.PREREQFUNCTION, self._pre_request_callback)
 
         # request all bytes, since some servers in russia seems to have a defect
         # arithmetic unit
@@ -288,75 +285,14 @@ class HTTPChunk(HTTPRequest):
 
         disposition_value = self.response_headers.get("Content-Disposition")
         if disposition_value:
-            disposition_type, disposition_params = parse_header_line(disposition_value)
+            try:
+                filename = web.parse.disposition(disposition_value, location, self.p.url)
+            except ValueError as exc:
+                self.log.warning(exc)
 
-            fname = None
-            if 'filename*' in disposition_params:
-                fname = disposition_params['filename*']
-                m = re.search(r'=\?([^?]+)\?([QB])\?([^?]*)\?=', fname, re.I)  #: rfc2047
-                if m is not None:
-                    data, encoding = parse_mime_header(fname)[0]
-                    try:
-                        fname = data.decode(encoding)
-                    except LookupError:
-                        self.log.warning(f"Content-Disposition: | error: No decoder found for {encoding}")
-                        fname = None
-                    except UnicodeEncodeError:
-                        self.log.warning(f"Content-Disposition: | error: Error when decoding string from {encoding}")
-                        fname = None
-
-                else:
-                    m = re.search(r'(.+?)\'(.*)\'(.+)', fname)
-                    if m is not None:
-                        encoding, lang, data = m.groups()
-                        try:
-                            fname = urllib.parse.unquote(data, encoding=encoding, errors="strict")
-                        except LookupError:
-                            self.log.warning(f"Content-Disposition: | error: No decoder found for {encoding}")
-                            fname = None
-                        except UnicodeDecodeError:
-                            self.log.warning(f"Content-Disposition: | error: Error when decoding string from {encoding}")
-                            fname = None
-
-                    else:
-                        fname = None
-
-            if fname is None:
-                if 'filename' in disposition_params:
-                    fname = disposition_params['filename']
-                    m = re.search(r'=\?([^?]+)\?([QB])\?([^?]*)\?=', fname, re.I)  #: rfc2047
-                    if m is not None:
-                        data, encoding = parse_mime_header(m.group(0))[0]
-                        try:
-                            fname = data.decode(encoding)
-                        except LookupError:
-                            fname = None
-                            self.log.warning(f"Content-Disposition: | error: No decoder found for {encoding}")
-                        except UnicodeEncodeError:
-                            fname = None
-                            self.log.warning(f"Content-Disposition: | error: Error when decoding string from {encoding}")
-                    else:
-                        try:
-                            fname = urllib.parse.unquote(fname, encoding="iso-8859-1", errors="strict")
-                        except UnicodeDecodeError:
-                            fname = None
-                            self.log.warning("Content-Disposition: | error: Error when decoding string from iso-8859-1.")
-
-                elif disposition_type.lower() == "attachment":
-                    if location is not None:
-                        fname = parse.name(location)
-                    else:
-                        fname = parse.name(self.p.url)
-
-            if fname is not None:
-                #: Drop unsafe characters
-                fname = posixpath_basename(fname)
-                fname = ntpath_basename(fname)
-                fname = purge.name(fname, sep="")
-                fname = fname.lstrip('.')
-
-                self.log.debug(f"Content-Disposition: {fname}")
-                self.p.update_disposition(fname)
+            if filename:
+                self.log.debug(f"Content-Disposition: {filename}")
+                self.p.update_disposition(filename)
 
     def stop(self):
         """

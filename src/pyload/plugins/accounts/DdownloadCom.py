@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import pycurl
 
 from ..base.xfs_account import XFSAccount
@@ -19,9 +17,15 @@ class DdownloadCom(XFSAccount):
     PLUGIN_URL = "http://ddownload.com"
 
     PREMIUM_PATTERN = r">Premium Member<"
-    TRAFFIC_LEFT_PATTERN = r'available</div>\s*<div class="stat-card-value">\s*(?:<sup>(?P<U>[^<>]+)</sup>)?(?P<S>-?\d+|[Uu]nlimited)\s*</div>'
+    TRAFFIC_LEFT_PATTERN = r'\s*<span id="trafficValue">(?P<S>-?\d+)</span>'
+    TRAFFIC_LEFT_UNIT = "MB"
     VALID_UNTIL_PATTERN = r'class="expires">([\w ]+)<'
 
     def setup(self):
         super(DdownloadCom, self).setup()
         self.req.http.c.setopt(pycurl.USERAGENT, "pyLoad/{}".format(self.pyload.version))
+
+    def parse_traffic(self, size, unit=None):  #: returns bytes
+        self.log_debug(f"Size: {size}", f"Unit: {unit or 'N/D'}")
+        # to match with ddownload's dashboard value, we need to convert the traffic value in a different way
+        return int(int(size) / 1000 * 1024**3)

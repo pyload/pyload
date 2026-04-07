@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from ..base.decrypter import BaseDecrypter
 
 import re

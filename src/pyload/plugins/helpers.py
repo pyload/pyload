@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 
 # TODO: Move to utils directory in 0.6.x
 

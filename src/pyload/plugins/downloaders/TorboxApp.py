@@ -1,11 +1,7 @@
-# -*- coding: utf-8 -*-
-
 import json
 import re
 import time
 import urllib.parse
-
-import pycurl
 
 from pyload.core.network.http.exceptions import BadHeader
 
@@ -15,10 +11,10 @@ from ..base.multi_downloader import MultiDownloader
 class TorboxApp(MultiDownloader):
     __name__ = "TorboxApp"
     __type__ = "downloader"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
-    __pattern__ = r"https://store-\d+\.wnam\.tb-cdn\.io/dld/.*|(?P<APIURL>https://api\.torbox\.app/v1/api/(?P<ENDPOINT>webdl|torrents)/requestdl\?.*redirect=true.*)"
+    __pattern__ = r"https://store-\d+\.wnam\.tb-cdn\.io/dld/.*|(?P<APIURL>https://api\.torbox\.app/v1/api/(?P<ENDPOINT>webdl|torrents|usenet)/requestdl\?.*redirect=true.*)"
     __config__ = [
         ("enabled", "bool", "Activated", True),
         ("use_premium", "bool", "Use premium account if available", True),
@@ -62,10 +58,11 @@ class TorboxApp(MultiDownloader):
                 url_p = urllib.parse.urlparse(api_url)
                 parse_qs = urllib.parse.parse_qs(url_p.query)
                 endpoint = m.group("ENDPOINT")
+                id_identifier = {"webdl": "web_id", "torrents": "torrent_id", "usenet": "usenet_id"}[endpoint]
                 api_data = self.api_request(f"{endpoint}/mylist",
                                             api_key=parse_qs["token"][0],
                                             get={
-                                                "id": parse_qs["web_id" if endpoint == "webdl" else "torrent_id"][0]
+                                                "id": parse_qs[id_identifier][0]
                                             })
 
                 if api_data.get("success", False) and api_data.get("data"):

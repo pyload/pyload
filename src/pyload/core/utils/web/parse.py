@@ -1,15 +1,18 @@
-# -*- coding: utf-8 -*-
 
 # import hashlib
 # import mimetypes
-# import re
+import re
 import urllib.parse
+from email.header import decode_header as parse_mime_header
+from ntpath import basename as ntpath_basename
+from posixpath import basename as posixpath_basename
+
+from ..purge import name as safe_nm
+from . import format, purge
 
 # import tld
 # from ..check import isiterable
 
-from . import format, purge
-from ..purge import name as safe_nm
 
 
 # from .check import is_host, is_port
@@ -150,3 +153,93 @@ def http_header(line):
                 value = value.replace('\\\\', '\\').replace('\\"', '"')
             pdict[name] = value
     return key, pdict
+
+
+def disposition(disposition_value, location=None, fallback_url=None):
+    """
+    Extract and sanitize filename from a Content-Disposition header value.
+    """
+    def _extract_filename_star(_disposition_params):
+        """Extract filename from filename* parameter (RFC 5987)."""
+        if 'filename*' not in _disposition_params:
+            return None
+
+        _filename = _disposition_params['filename*']
+
+        # Try RFC 2047 encoding
+        m = re.search(r'=\?([^?]+)\?([QB])\?([^?]*)\?=', _filename, re.I)
+        if m is not None:
+            try:
+                data, encoding = parse_mime_header(_filename)[0]
+                return data.decode(encoding)
+            except (LookupError, UnicodeEncodeError) as exc:
+                raise ValueError(f"Content-Disposition: | error: {exc}")
+
+        # Try RFC 5987 encoding
+        m = re.search(r'(.+?)\'(.*)\'(.+)', _filename)
+        if m is not None:
+            encoding, lang, data = m.groups()
+            try:
+                return urllib.parse.unquote(data, encoding=encoding, errors="strict")
+            except (LookupError, UnicodeDecodeError) as exc:
+                raise ValueError(f"Content-Disposition: | error: {exc}")
+
+        return None
+
+    def _extract_filename(_disposition_params):
+        """Extract filename from filename parameter."""
+        if 'filename' not in _disposition_params:
+            return None
+
+        _filename = _disposition_params['filename']
+
+        # Try RFC 2047 encoding
+        m = re.search(r'=\?([^?]+)\?([QB])\?([^?]*)\?=', _filename, re.I)
+        if m is not None:
+            try:
+                data, encoding = parse_mime_header(m.group(0))[0]
+                return data.decode(encoding)
+            except (LookupError, UnicodeEncodeError) as exc:
+                raise ValueError(f"Content-Disposition: | error: {exc}")
+
+        # Try URL decoding
+        try:
+            return urllib.parse.unquote(_filename, encoding="iso-8859-1", errors="strict")
+        except UnicodeDecodeError:
+            raise ValueError("Content-Disposition: | error: Error when decoding string from iso-8859-1.")
+
+    def _extract_attachment_filename(_disposition_type, _location, _fallback_url):
+        """Extract filename for attachment disposition type."""
+        if _disposition_type.lower() != "attachment":
+            return None
+
+        # Import lazily to avoid circular imports with pyload.core.utils.parse
+        from ..parse import name as parse_name
+
+        if _location is not None:
+            return parse_name(_location)
+        elif _fallback_url is not None:
+            return parse_name(_fallback_url)
+
+        return None
+
+    def _sanitize_filename(_filename):
+        """Drop unsafe characters from filename."""
+        _filename = posixpath_basename(_filename)
+        _filename = ntpath_basename(_filename)
+        _filename = safe_nm(_filename)
+        _filename = _filename.lstrip('.')
+
+        return _filename
+
+    disposition_type, disposition_params = http_header(disposition_value)
+    filename = (
+        _extract_filename_star(disposition_params) or
+        _extract_filename(disposition_params) or
+        _extract_attachment_filename(disposition_type, location, fallback_url)
+    )
+
+    if filename:
+        return _sanitize_filename(filename)
+
+    return None

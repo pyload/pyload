@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import re
 
 from pyload.core.utils.misc import eval_js

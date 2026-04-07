@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import random
 
 from ..base.simple_downloader import SimpleDownloader

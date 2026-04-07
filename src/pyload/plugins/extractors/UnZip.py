@@ -1,17 +1,16 @@
-# -*- coding: utf-8 -*-
-
 import os
 import sys
 import zipfile
 import fnmatch
 
+from pyload.core.utils.fs import safejoin
 from pyload.plugins.base.extractor import ArchiveError, BaseExtractor, CRCError, PasswordError
 
 
 class UnZip(BaseExtractor):
     __name__ = "UnZip"
     __type__ = "extractor"
-    __version__ = "1.28"
+    __version__ = "1.29"
     __status__ = "stable"
 
     __description__ = """ZIP extractor plugin"""
@@ -55,7 +54,7 @@ class UnZip(BaseExtractor):
     def list(self, password=None):
         with zipfile.ZipFile(self.filename, "r") as z:
             z.setpassword(password)
-            self.files = [os.path.join(self.dest, _f)
+            self.files = [safejoin(self.dest, _f)
                           for _f in z.namelist()
                           if _f[-1] != os.path.sep]
 
@@ -84,11 +83,11 @@ class UnZip(BaseExtractor):
         try:
             with zipfile.ZipFile(self.filename, "r") as z:
                 z.setpassword(password)
-                members = (member for member in z.namelist()  
+                members = (member for member in z.namelist()
                            if not any(fnmatch.fnmatch(member, exclusion)
                            for exclusion in self.excludefiles))
                 z.extractall(self.dest, members = members)
-                self.files = [os.path.join(self.dest, _f)
+                self.files = [safejoin(self.dest, _f)
                               for _f in z.namelist()
                               if _f[-1] != os.path.sep and _f in members]
 

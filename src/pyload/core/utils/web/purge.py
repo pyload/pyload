@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import html
 import re
 from email.header import decode_header as decode_rfc2047_header

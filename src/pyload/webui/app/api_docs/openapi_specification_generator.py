@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #       ____________
 #   ___/       |    \_____________ _                 _ ___
 #  /        ___/    |    _ __ _  _| |   ___  __ _ __| |   \
@@ -44,7 +43,7 @@ class OpenAPISpecificationGenerator:
         self.spec: dict[str, Any] = {
             "info": {
                 "title": "pyLoad API Documentation - OpenAPI",
-                "version": "1.1.0"
+                "version": "1.2.0"
             },
             "openapi": "3.1.1",
             "tags": [{
@@ -55,13 +54,14 @@ class OpenAPISpecificationGenerator:
             "components": {
                 "schemas": {},
                 "securitySchemes": {
-                    "basicAuth": {
-                        "type": "http",
-                        "scheme": "basic",
+                    "ApiKeyAuth": {
+                        "type": "apiKey",
+                        "in": "header",
+                        "name": "X-API-Key",
                     }
                 }
             },
-            "security": [{"basicAuth": []}]
+            "security": [{"ApiKeyAuth": []}]
         }
 
     def generate_openapi_json(self) -> dict[str, Any]:

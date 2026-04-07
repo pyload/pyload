@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from builtins import object, str
 from json import loads
 from logging import log

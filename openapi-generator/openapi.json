@@ -1,7 +1,7 @@
 {
   "info": {
     "title": "pyLoad API Documentation - OpenAPI",
-    "version": "1.1.0"
+    "version": "1.2.0"
   },
   "openapi": "3.1.1",
   "tags": [
@@ -385,8 +385,8 @@
     },
     "/api/check_urls": {
       "post": {
-        "summary": "Gets urls and returns pluginname mapped to list of matched urls.",
-        "description": "Gets urls and returns pluginname mapped to list of matched urls.",
+        "summary": "Gets urls and returns plugin name mapped to list of matched urls.",
+        "description": "Gets urls and returns plugin name mapped to list of matched urls.",
         "tags": [
           "pyLoad REST"
         ],
@@ -2784,14 +2784,17 @@
             "title": "Validuntil"
           },
           "login": {
+            "default": "",
             "title": "Login",
             "type": "string"
           },
           "options": {
+            "default": {},
             "title": "Options",
             "type": "object"
           },
           "valid": {
+            "default": false,
             "title": "Valid",
             "type": "boolean"
           },
@@ -2809,21 +2812,16 @@
             "title": "Trafficleft"
           },
           "premium": {
+            "default": false,
             "title": "Premium",
             "type": "boolean"
           },
           "type": {
+            "default": "",
             "title": "Type",
             "type": "string"
           }
         },
-        "required": [
-          "login",
-          "options",
-          "valid",
-          "premium",
-          "type"
-        ],
         "title": "AccountInfo",
         "type": "object"
       },
@@ -3444,15 +3442,16 @@
       }
     },
     "securitySchemes": {
-      "basicAuth": {
-        "type": "http",
-        "scheme": "basic"
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-Key"
       }
     }
   },
   "security": [
     {
-      "basicAuth": []
+      "ApiKeyAuth": []
     }
   ]
 }

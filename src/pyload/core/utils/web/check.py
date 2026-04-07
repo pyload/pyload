@@ -1,138 +1,161 @@
-# -*- coding: utf-8 -*-
-
-import os
+import ipaddress
 import random
 import re
 import time
 
-from ...network.request_factory import get_url
-# import validators
-from ..convert import to_str
-from . import format
-
-# import idna
-# import requests
+from .convert import host_to_ip
 
 
-# from .convert import splitaddress
-
-
-# def is_ipv4(value):
-# try:
-# validators.ipv4(value)
-# except validators.ValidationFailure:
-# return False
-# return True
-
-
-# def is_ipv6(value):
-# try:
-# validators.ipv6(value)
-# except validators.ValidationFailure:
-# return False
-# return True
-
-
-# def is_ip(value):
-# return is_ipv4(value) or is_ipv6(value)
-
-
-# def is_port(value):
-#     return 0 <= value <= 65535
-
-
-# _RE_ISH = re.compile(r"(?!-)[\w^_]{1,63}(?<!-)$", flags=re.I)
-
-# def is_host(value):
-#     MAX_HOSTNAME_LEN = 253
-#     try:
-#         # returns bytestring, then encode to str
-#         value = to_str(idna.encode(value))
-#     except AttributeError:
-#         pass
-#     if value.endswith("."):
-#         value = value[:-1]
-#     if not value or len(value) > MAX_HOSTNAME_LEN:
-#         return False
-#     return all(map(_RE_ISH.match, value.split(".")))
-
-
-# def is_socket(value):
-# ip, port = splitaddress(value)
-# return is_ip(ip) and is_port(port)
-
-
-# def is_endpoint(value):
-#     host, port = splitaddress(value)
-#     return is_host(host) and is_port(port)
-
-
-# def is_online(url, *args, **kwargs):
-#     online = True
-#     url = format.url(url)
-
-#     kwargs.setdefault("allow_redirects", True)
-#     kwargs.setdefault("verify", False)
-#     try:
-#         requests.head(url, *args, **kwargs).raise_for_status()
-#     except requests.TooManyRedirects:
-#         online = True
-#     except (requests.ConnectionError, requests.ConnectTimeout):
-#         online = None
-#     except requests.RequestException:
-#         online = False
-
-#     return online
-
-
-# def is_resource(url, *args, **kwargs):
-#     url = format.url(url)
-
-#     kwargs.setdefault("allow_redirects", True)
-#     kwargs.setdefault("verify", False)
-#     r = requests.head(url, *args, **kwargs)
-
-#     if "content-disposition" in r.headers:
-#         return True
-
-#     mime = ""
-#     content = r.headers.get("content-type")
-#     if content:
-#         mime, _, _ = content.rpartition("charset=")
-#     else:
-#         from . import parse
-
-#         name = parse.name(url)
-#         _, ext = os.path.splitext(name)
-#         if ext:
-#             mime = parse.mime(name)
-
-#     if "html" not in mime:
-#         return True
-
-#     return False
-
-
-# TODO: Recheck in 0.5.x
-# def is_url(url):
-#     url = format.url(url)
-#     try:
-#         return validators.url(url)
-#     except validators.ValidationFailure:
-#         return False
-
-def get_public_ipv4():
+def is_ipv4_address(value):
     """
-    retrieve current public ipv4.
+    Check whether the provided string is a valid IPv4 address.
+
+    Parameters:
+    - value (str): The input string to validate as an IPv4 address.
+
+    Returns:
+    - bool: True if the value is a valid IPv4 address, False otherwise.
     """
-    services = [
-        ("https://ipv4.icanhazip.com/", r"(\S+)"),
-        ("https://checkip.amazonaws.com/", r"(\S+)"),
-        ("https://whatismyip.akamai.com/", r"(\S+)"),
-        ("http://checkip.dyndns.org/", r".*Current IP Address: (\S+)</body>.*"),
-        ("https://api4.ipify.org/", r"(\S+)"),
-        ("https://v4.ident.me/", r"(\S+)"),
-    ]
+    try:
+        ipaddress.IPv4Address(value)
+    except ipaddress.AddressValueError:
+        return False
+    else:
+        return True
+
+
+def is_ipv6_address(value):
+    """
+    Check whether the provided string is a valid IPv6 address.
+
+    Parameters:
+    - value (str): The input string to validate as an IPv6 address.
+
+    Returns:
+    - bool: True if the value is a valid IPv6 address, False otherwise.
+    """
+    try:
+        ipaddress.IPv6Address(value)
+    except ipaddress.AddressValueError:
+        return False
+    else:
+        return True
+
+
+def is_ip_address(value):
+    """
+    Check whether the provided string is a valid IPv4 or IPv6 address.
+
+    Parameters:
+    - value (str): The input string to validate as an IP address.
+
+    Returns:
+    - bool: True if the value is a valid IPv4 or IPv6 address, False otherwise.
+    """
+    try:
+        ipaddress.ip_address(value)
+        return True
+    except ValueError:
+        return False
+
+
+def is_loopback_address(value):
+    """
+    Determine whether the provided address or hostname is a loopback address.
+
+    This function supports IPv4, IPv6 and IPv4-mapped IPv6 addresses that are prefixed with
+    '::ffff:' by stripping that prefix before validation. If the input cannot
+    be parsed as an IP address, the function treats the string 'localhost'
+    as a loopback host.
+
+    Parameters:
+    - value (str): The input address or hostname to check.
+
+    Returns:
+    - bool: True if the value is a loopback address/hostname, False otherwise.
+    """
+    if value.startswith("::ffff:"):
+        value = value[7:]
+
+    try:
+        return ipaddress.ip_address(value).is_loopback
+    except ValueError:
+        return value == "localhost"
+
+
+def is_global_address(value):
+    """
+    Check whether the provided address is a globally routable IP address.
+
+    Parameters:
+    - value (str): The input address to check (IPv4 or IPv6).
+
+    Returns:
+    - bool: True if the value is a global (publicly routable) IP address,
+      False for non-global addresses or if the input is invalid.
+    """
+    try:
+        return ipaddress.ip_address(value).is_global
+    except ValueError:
+        return False
+
+
+def is_global_host(value):
+    """
+    Check whether the provided host address resolves to a globally routable IP address.
+
+    Parameters:
+    - value (str): The input host to check.
+
+    Returns:
+    - bool: True if the value is a global (publicly routable) host,
+      False for non-global addresses or if the input is invalid.
+    """
+    ips = host_to_ip(value)
+    return ips and all((is_global_address(ip) for ip in ips))
+
+
+def is_port(value):
+    """
+    Validate whether an integer is a valid TCP/UDP port number.
+
+    Parameters:
+    - value (int): The port number to validate.
+
+    Returns:
+    - bool: True if 0 <= value <= 65535, False otherwise.
+    """
+    return 0 <= value <= 65535
+
+
+def get_public_address(addr_type="ipv4"):
+    """
+    Attempt to retrieve the machine's public IPv4 or IPv6 address.
+
+    Returns:
+    - str: The public IPv4 or IPv6 address as returned by the external service, or
+      an empty string if all attempts fail.
+    """
+    from ...network.request_factory import get_url
+    if addr_type == "ipv4":
+        services = [
+            ("https://ipv4.icanhazip.com/", r"(\S+)"),
+            ("https://checkip.amazonaws.com/", r"(\S+)"),
+            ("https://whatismyip.akamai.com/", r"(\S+)"),
+            ("http://checkip.dyndns.org/", r".*Current IP Address: (\S+)</body>.*"),
+            ("https://api4.ipify.org/", r"(\S+)"),
+            ("https://v4.ident.me/", r"(\S+)"),
+        ]
+
+    elif addr_type == "ipv6":
+        services = [
+            ("https://ipv6.icanhazip.com/", r"(\S+)"),
+            ("https://api6.ipify.org/", r"(\S+)"),
+            ("https://v6.ident.me/", r"(\S+)"),
+        ]
+
+    else:
+        raise TypeError(f"Unsupported IP address type: {addr_type}")
 
     ip = ""
     for i in range(10):
@@ -146,4 +169,3 @@ def get_public_ipv4():
             time.sleep(0.5)
 
     return ip
-

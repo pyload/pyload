@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import os
 import re
 import select
@@ -16,7 +14,7 @@ from pyload.core.network.exceptions import Abort
 from pyload.core.utils import format
 from pyload.core.utils.convert import to_bytes, to_str
 from pyload.core.utils.struct.lock import lock
-from pyload.core.utils.web.check import get_public_ipv4
+from pyload.core.utils.web.check import get_public_address
 
 from ..base.addon import threaded
 from ..base.downloader import BaseDownloader
@@ -803,7 +801,7 @@ class XDCC(BaseDownloader):
 
     def xdcc_initiate_passive(self, xdcc_token):
         # Send CTCP DCC SEND reply with our ip/port
-        external_ip = get_public_ipv4()
+        external_ip = get_public_address()
         ip_int = struct.unpack("!I", socket.inet_aton(external_ip))[0]
 
         self.irc_client.send_private_message(

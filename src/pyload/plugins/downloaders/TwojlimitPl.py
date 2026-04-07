@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import json
 
 from ..base.multi_downloader import MultiDownloader

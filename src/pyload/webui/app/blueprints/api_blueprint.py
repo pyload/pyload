@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import traceback
 from ast import literal_eval
 from itertools import chain
@@ -12,7 +11,7 @@ from flask.json import jsonify
 from pyload import APPID
 
 from ..api_docs.openapi_specification_generator import OpenAPISpecificationGenerator
-from ..helpers import apikey_auth, csrf_exempt, is_authenticated, render_template
+from ..helpers import apikey_auth, csrf_exempt, is_authenticated
 
 bp = flask.Blueprint("api", __name__)
 log = getLogger(APPID)
@@ -33,7 +32,7 @@ def rpc(func, args=""):
     # Enforce HTTP method for the API method
     expected = api._required_http_method_for_api(func)
     if expected is None:
-        return jsonify({'error': "Forbidden"}), 403
+        return jsonify({'error': "Not Found"}), 404
 
     actual = flask.request.method
     if actual != expected:
@@ -41,15 +40,15 @@ def rpc(func, args=""):
         log.error(err_message)
         return jsonify({'error': err_message}), 405
 
-    # Get user info from API auth or session
+    # Get user info from API key or http session
     if not hasattr(flask.g, 'user_info'):
-        return jsonify({'error': "Unauthorized - Login required"}), 401
+        return jsonify({'error': "Login required"}), 401
 
     # Check permissions
     user_info = flask.g.user_info
     if not api.is_authorized(func, {"role": user_info["role"], "permission": user_info["permission"]}):
         log.error(f"API access denied for function '{func}'")
-        return jsonify({'error': "Unauthorized - Insufficient permissions"}), 401
+        return jsonify({'error': "Access denied"}), 401
 
     # get path parameters
     args = args.split(",")
@@ -79,7 +78,12 @@ def rpc(func, args=""):
                 **{x: _parse_parameter(y) for x, y in kwargs.items()},
             ))
     except Exception as exc:
-        response = jsonify(error=str(exc), traceback=traceback.format_exc()), 500
+        api.pyload.log.error(f"API error in '{func}'",
+            exc_info=api.pyload.debug > 1,
+            stack_info=api.pyload.debug > 2
+        )
+
+        response = jsonify({"error": "Internal server error"}), 500
 
     return response
 
@@ -100,13 +104,47 @@ def _parse_parameter(param: str) -> Any:
 @bp.route("/api/openapi.json", methods=["GET"])
 def api_docs():
     """Return OpenAPI specification JSON"""
-    openapi_spec = OpenAPISpecificationGenerator(api=flask.current_app.config["PYLOAD_API"]).generate_openapi_json()
+    api = flask.current_app.config["PYLOAD_API"]
+
+    s = flask.session
+    basic_auth = flask.request.authorization
+
+    if basic_auth:
+        user_info = api.check_auth(basic_auth.username, basic_auth.password)
+        if not user_info:
+            return "Forbidden", 403
+    elif not is_authenticated(s):
+        return "Authentication required", 401, {'WWW-Authenticate': 'Basic realm="Login Required"'}
+    else:
+        user_info = {"role": s["role"], "permission": s["perms"], "id": s["id"]}
+
+    if user_info["role"] != 0:  #: Role.ADMIN
+        return "Forbidden", 403
+
+    openapi_spec = OpenAPISpecificationGenerator(api=api).generate_openapi_json()
     return openapi_spec
 
 
 @bp.route("/api", methods=["GET"], strict_slashes=False)
 def swagger_ui():
     """Serve Swagger UI with the API documentation"""
+    api = flask.current_app.config["PYLOAD_API"]
+
+    s = flask.session
+    basic_auth = flask.request.authorization
+
+    if basic_auth:
+        user_info = api.check_auth(basic_auth.username, basic_auth.password)
+        if not user_info:
+            return "Forbidden", 403
+    elif not is_authenticated(s):
+        return "Authentication required", 401, {'WWW-Authenticate': 'Basic realm="Login Required"'}
+    else:
+        user_info = {"role": s["role"], "permission": s["perms"], "id": s["id"]}
+
+    if user_info["role"] != 0:  #: Role.ADMIN
+        return "Forbidden", 403
+
     return flask.send_from_directory("static", "swagger.html")
 
 

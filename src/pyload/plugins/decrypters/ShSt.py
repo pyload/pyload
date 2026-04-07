@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import pycurl
 
 from ..base.decrypter import BaseDecrypter

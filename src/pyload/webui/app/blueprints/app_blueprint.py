@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import datetime
 import mimetypes
 import operator
@@ -16,7 +14,7 @@ from pyload import APPID, PKGDIR
 from pyload.core.utils import format
 
 from ..helpers import (
-    clear_session, csrf_exempt, get_permission, get_redirect_url, is_authenticated, login_required, permlist,
+    clear_session, get_permission, get_redirect_url, is_authenticated, login_required, permlist,
     render_base, render_template, set_session, static_file_url)
 
 _RE_LOGLINE = re.compile(r"\[([\d\-]+) ([\d:]+)\] +([A-Z]+) +(.+?) (.*)")
@@ -45,7 +43,6 @@ def robots():
 
 # TODO: Rewrite login route using flask-login
 @bp.route("/login", methods=["GET", "POST"], endpoint="login")
-@csrf_exempt
 def login():
     api = flask.current_app.config["PYLOAD_API"]
 

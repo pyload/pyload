@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import gc
 import string
 import time

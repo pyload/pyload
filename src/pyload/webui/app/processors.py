@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import flask
 
 from .helpers import parse_permissions, parse_userdata

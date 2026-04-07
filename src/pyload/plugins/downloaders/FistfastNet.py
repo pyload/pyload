@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from ..base.xfs_downloader import XFSDownloader
 
 

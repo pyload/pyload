@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import time
 from functools import partial, wraps
 from threading import Condition, Lock, RLock, current_thread

@@ -1,11 +1,10 @@
-# -*- coding: utf-8 -*-
-
 import os
 import re
 import subprocess
 
 from pyload import PKGDIR
 from pyload.core.utils.convert import to_str
+from pyload.core.utils.fs import safejoin
 from pyload.plugins.base.extractor import ArchiveError, BaseExtractor, CRCError, PasswordError
 from pyload.plugins.helpers import renice
 
@@ -13,7 +12,7 @@ from pyload.plugins.helpers import renice
 class SevenZip(BaseExtractor):
     __name__ = "SevenZip"
     __type__ = "extractor"
-    __version__ = "0.39"
+    __version__ = "0.40"
     __status__ = "testing"
 
     __description__ = """7-Zip extractor plugin"""
@@ -86,7 +85,7 @@ class SevenZip(BaseExtractor):
     def find(cls):
         try:
             if os.name == "nt":
-                cls.CMD = os.path.join(PKGDIR, "lib", "7z.exe")
+                cls.CMD = safejoin(PKGDIR, "lib", "7z.exe")
 
             p = subprocess.Popen(
                 [cls.CMD], stdout=subprocess.PIPE, stderr=subprocess.PIPE, encoding="utf-8"
@@ -135,7 +134,7 @@ class SevenZip(BaseExtractor):
                 raise ArchiveError("Cannot find smallest file")
 
             try:
-                extracted = os.path.join(self.dest, smallest if self.fullpath else os.path.basename(smallest))
+                extracted = safejoin(self.dest, smallest if self.fullpath else os.path.basename(smallest))
                 try:
                     os.remove(extracted)
                 except OSError as exc:
@@ -200,7 +199,7 @@ class SevenZip(BaseExtractor):
 
         #: eventually multi-part files
         files.extend(
-            os.path.join(dir, os.path.basename(_f))
+            safejoin(dir, os.path.basename(_f))
             for _f in filter(self.ismultipart, os.listdir(dir))
             if self._RE_PART.sub("", name) == self._RE_PART.sub("", _f)
         )
@@ -298,7 +297,7 @@ class SevenZip(BaseExtractor):
 
                 if not self.fullpath:
                     f = os.path.basename(f)
-                f = os.path.join(self.dest, f)
+                f = safejoin(self.dest, f)
                 files.add(f)
 
             self.smallest = smallest

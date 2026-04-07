@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-
-
 from functools import wraps
 from threading import RLock
 from types import MethodType
@@ -134,6 +131,12 @@ class AddonManager:
                     if not plugin_class:
                         continue
 
+                    if plugin_class.__status__ == "broken":
+                        self.pyload.log.error(self._("Cannot activate broken addon: {}").format(plugin_name))
+                        self.pyload.config.set_plugin(plugin_name, "enabled", False)
+                        inactive.append(plugin_name)
+                        continue
+
                     plugin = plugin_class(self.pyload, self)
                     plugins.append(plugin)
                     self.plugin_map[plugin_name] = plugin
@@ -176,16 +179,21 @@ class AddonManager:
         if not plugin_class:
             return
 
-        self.pyload.log.debug(f"Addon loaded: {plugin_name}")
+        if plugin_class.__status__ == "broken":
+            self.pyload.log.error(self._("Cannot activate broken addon: {}").format(plugin_name))
+            self.pyload.config.set_plugin(plugin_name, "enabled", False)
 
-        plugin = plugin_class(self.pyload, self)
-        self.plugins.append(plugin)
-        self.plugin_map[plugin_name] = plugin
+        else:
+            self.pyload.log.debug(f"Addon loaded: {plugin_name}")
 
-        self._add_module_rpcs(plugin_module)
+            plugin = plugin_class(self.pyload, self)
+            self.plugins.append(plugin)
+            self.plugin_map[plugin_name] = plugin
 
-        # call core Ready
-        start_new_thread(plugin.core_ready, tuple())
+            self._add_module_rpcs(plugin_module)
+
+            # call core Ready
+            start_new_thread(plugin.core_ready, tuple())
 
     def deactivate_addon(self, plugin_name):
         for inst in self.plugins:
@@ -201,7 +209,7 @@ class AddonManager:
 
         # remove periodic call
         res = self.pyload.scheduler.remove_job(addon.cb)
-        self.pyload.log.debug(f"Removed callback {res}")
+        self.pyload.log.debug(f"ADDON {plugin_name}: Removed callback {res}")
 
         # remove rpc calls
         try:

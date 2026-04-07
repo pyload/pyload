@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import json
 import re
 
@@ -11,7 +10,7 @@ from ..base.simple_downloader import SimpleDownloader
 class FilerNet(SimpleDownloader):
     __name__ = "FilerNet"
     __type__ = "downloader"
-    __version__ = "0.35"
+    __version__ = "0.36"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?filer\.net/get/(?P<ID>\w+)"
@@ -36,7 +35,20 @@ class FilerNet(SimpleDownloader):
     # See https://filer.net/api
     API_URL = "https://filer.net/api/"
 
-    def api_request(self, method, is_post=True, **kwargs):
+    def api_request(self, method, user=None, password=None):
+        try:
+            if user and password:
+                self.req.add_auth(f"{user}:{password}")
+            json_data = self.load(f"{self.API_URL}{method}.json")
+        except BadHeader as exc:
+            json_data = exc.content
+        finally:
+            if user and password:
+                self.req.remove_auth()
+
+        return json.loads(json_data)
+
+    def old_api_request(self, method, is_post=True, **kwargs):
         try:
             if is_post:
                 json_data = self.load(self.API_URL + method, post=kwargs)
@@ -51,16 +63,17 @@ class FilerNet(SimpleDownloader):
         info = {}
         file_id = re.match(self.__pattern__, url).group("ID")
 
-        api_data = self.api_request(f"file/{file_id}")
-        if api_data.get("message") == "File not found":
-            info["status"] = 1
-        else:
+        api_data = self.api_request(f"status/{file_id}")
+        if api_data["code"] == 200:
+            data = api_data["data"]
             info.update({
-                "name": api_data["name"],
-                "size": api_data["size"],
-                "premium_only": api_data["premiumOnly"],
-                "status": 2
+                "name": data["file_name"],
+                "size": data["file_size"],
+                "premium_only": data["premium_only"],
+                "status": 2,  #: online
             })
+        else:
+            info["status"] = 1  #: offline
 
         return info
 
@@ -68,30 +81,50 @@ class FilerNet(SimpleDownloader):
         if self.info["premium_only"] is True and not self.premium:
             self.fail(self._("File can be downloaded by premium users only"))
 
+        if self.account:
+            self.fail(self._("Free account downloads are unsupported"))
+
         file_id = self.info["pattern"]["ID"]
 
         self.captcha = HCaptcha(pyfile)
         captcha_response = self.captcha.challenge(self.HCAPTCHA_KEY)
-
-        api_data = self.api_request(f"file/request/{file_id}", is_post=False, hCaptchaToken=captcha_response)
+        api_data = self.old_api_request(f"file/request/{file_id}", False, hCaptchaToken=captcha_response)
         error = api_data.get("error")
         if error:
             self.log_error(error)
             if error == "HOURLY_DOWNLOAD_LIMIT":
                 self.retry(wait=3600)
-            elif error == "CONCURRENT_DOWNLOAD_LIMIT":
+            elif error in ("CONCURRENT_DOWNLOAD_LIMIT", "TICKET_LIMIT_REACHED"):
                 self.temp_offline()
             else:
                 self.fail(error)
 
+
         wait_time = api_data["wt"]
         self.wait(wait_time)
-        api_data = self.api_request("file/download", ticket=api_data["t"])
-        if "error" in api_data:
-            self.fail(api_data["error"])
+        api_data = self.old_api_request("file/download", True, ticket=api_data["t"])
+        error = api_data.get("error")
+        if error:
+            self.log_error(error)
+            if error == "HOURLY_DOWNLOAD_LIMIT":
+                self.retry(wait=3600)
+            else:
+                self.fail(error)
         else:
             self.link = api_data["downloadUrl"]
 
     def handle_premium(self, pyfile):
-        self.handle_free(pyfile)
+        file_id = self.info["pattern"]["ID"]
+
+        user = self.account.user
+        password = self.account.info["login"]["password"]
+        api_data = self.api_request(f"dl/{file_id}", user, password)
+        code = api_data["code"]
+        if code == 200:
+            self.link = api_data["data"]["download_url"]
+
+        elif code == 429:
+            self.temp_offline(self._("Concurrent download limit reached"))
+        elif code == 503:
+            self.temp_offline(self._("No download server available"))
 

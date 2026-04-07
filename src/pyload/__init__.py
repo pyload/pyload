@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #       ____________
 #   ___/       |    \_____________ _                 _ ___
 #  /        ___/    |    _ __ _  _| |   ___  __ _ __| |   \
@@ -21,9 +20,7 @@ import _locale
 import semver
 
 # Info
-
 APPID = "pyload"
-
 PKGNAME = "pyload-ng"
 PKGDIR = str(importlib.resources.files(__name__))
 
@@ -36,16 +33,29 @@ except importlib.metadata.PackageNotFoundError:
     __version__ =  "0.5.0"
 __version_info__ = semver.parse_version_info(__version__)
 
+# Application wide global storage
+class __storage:
+    def get(self, name, default=None):
+        return self.__dict__.get(name, default)
+    def items(self):
+        return self.__dict__.items()
+    def keys(self):
+        return self.__dict__.keys()
+    def values(self):
+        return self.__dict__.values()
+    def clear(self):
+        self.__dict__.clear()
+    def __contains__(self, name):
+        return name in self.__dict__
+g = __storage()
 
 # Locale
-
 locale.setlocale(locale.LC_ALL, "")
 if os.name == "nt":
     _locale._getdefaultlocale = lambda *args: ["en_US", "utf_8_sig"]
 
 
 # Exception logger
-
 exc_logger = logging.getLogger("exception")
 
 

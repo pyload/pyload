@@ -43,8 +43,7 @@ function renderTweetHtml(tweet) {
 }
 
 $(function () {
-  $.ajax({
-      type: 'GET',
+  $.get({
       url: "https://script.google.com/macros/s/AKfycbwXJoDipzpsyYPx58-s33WA4nYJLwD3VouY2zwKcCZNsxCTvUQ/exec",
       dataType: "jsonp",
       context: {},

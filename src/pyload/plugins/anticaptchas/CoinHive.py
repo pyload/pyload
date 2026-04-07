@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 import re
 
 from ..base.captcha_service import CaptchaService
