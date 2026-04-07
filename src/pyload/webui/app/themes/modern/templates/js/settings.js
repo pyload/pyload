@@ -97,6 +97,8 @@ class SettingsUI {
 
   initUsersAdmin() {
     $("#password_box").on('click', '#login_password_button', (event) => {
+      event.stopPropagation();
+      event.preventDefault();
       const passwd = $("#user_newpw").val();
       const $passwdConfirm = $("#user_confpw");
       const passwdConfirm = $passwdConfirm.prop('disabled', true).val();
@@ -118,8 +120,6 @@ class SettingsUI {
       } else {
         alert("{{_('Passwords did not match.')}}");
       }
-      event.stopPropagation();
-      event.preventDefault();
     });
 
     $(document).on("change", ".is_admin", (event) => {
@@ -150,6 +150,8 @@ class SettingsUI {
     });
 
     $(document).off("click", ".delete_user").on("click", ".delete_user", (event) => {
+      event.stopPropagation();
+      event.preventDefault();
       const userName = $(event.currentTarget).attr("id").split("|")[0];
       uiHandler.yesNoDialog("{{_('Are you sure you want to delete the user {}?')}}".replace("{}", userName), (answer) => {
           if (answer) {
@@ -167,8 +169,6 @@ class SettingsUI {
               uiHandler.indicateFail("{{_('Error occurred')}}");
             });
           }
-          event.stopPropagation();
-          event.preventDefault();
         }
       );
     });
