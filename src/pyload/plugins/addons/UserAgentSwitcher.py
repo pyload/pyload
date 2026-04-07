@@ -28,9 +28,7 @@ class UserAgentSwitcher(BaseAddon):
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
     def download_preparing(self, pyfile):
-        if not isinstance(pyfile.plugin.req, HTTPRequest) and not isinstance(
-            pyfile.plugin.req, Browser
-        ):
+        if not isinstance(pyfile.plugin.req, (HTTPRequest, Browser)):
             return
 
         connecttimeout = self.config.get("connecttimeout")
