@@ -6,9 +6,8 @@ import flask
 from flask.json import jsonify
 from werkzeug.utils import secure_filename
 
-from pyload import PKGDIR
 from pyload.core.api import Role
-from pyload.core.utils import format
+from pyload.core.utils import format, fs
 
 from ..helpers import get_permission, login_required, permlist, render_template, set_permission
 
@@ -108,7 +107,7 @@ def package():
 
 @bp.route("/json/package_order", methods=["POST"], endpoint="package_order")
 # @apiver_check
-@login_required("ADD")
+@login_required("MODIFY")
 @expect_json
 def package_order(pack_id, pos):
     api = flask.current_app.config["PYLOAD_API"]
@@ -122,7 +121,7 @@ def package_order(pack_id, pos):
 
 @bp.route("/json/abort_link", methods=["POST"], endpoint="abort_link")
 # @apiver_check
-@login_required("DELETE")
+@login_required("MODIFY")
 @expect_json
 def abort_link(link_id):
     api = flask.current_app.config["PYLOAD_API"]
@@ -136,7 +135,7 @@ def abort_link(link_id):
 
 @bp.route("/json/link_order", methods=["POST"], endpoint="link_order")
 # @apiver_check
-@login_required("ADD")
+@login_required("MODIFY")
 @expect_json
 def link_order(file_id, pos):
     api = flask.current_app.config["PYLOAD_API"]
@@ -169,7 +168,7 @@ def add_package():
             safe_filename = secure_filename(file.filename)
             upload_path = os.path.join(api.get_cachedir(), "upload")
             os.makedirs(upload_path, exist_ok=True)
-            file_path = os.path.join(upload_path, safe_filename)
+            file_path = fs.safejoin(upload_path, safe_filename)
             file.save(file_path)
             links.insert(0, file_path)
 
@@ -222,7 +221,7 @@ def edit_package(pack_id, pack_name, pack_folder, pack_pwd):
 
 @bp.route("/json/set_captcha", methods=["GET", "POST"], endpoint="set_captcha")
 # @apiver_check
-@login_required("ADD")
+@login_required("STATUS")
 def set_captcha():
     api = flask.current_app.config["PYLOAD_API"]
 
@@ -353,7 +352,7 @@ def update_accounts():
 @bp.route("/json/change_password", methods=["POST"], endpoint="change_password")
 # @apiver_check
 # @fresh_login_required
-@login_required("ACCOUNTS")
+@login_required("ADMIN")
 @expect_json
 def change_password(user_login, user_curpw, user_newpw):
     api = flask.current_app.config["PYLOAD_API"]
