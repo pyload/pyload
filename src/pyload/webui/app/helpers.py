@@ -347,9 +347,7 @@ def apikey_auth(func):
 
             else:
                 # Log failed API key authentication
-                log_api_key = f"{api_key[:4]}********{api_key[-4:]}"
-                if len(api_key) <= 8:
-                    log_api_key = "*" * 8
+                log_api_key = f"{api_key[:4]}********{api_key[-4:]}" if len(api_key) > 8 else "*" * 8
                 log.error(f"API authentication failed using API key {log_api_key} [CLIENT: {client_ip}]")
                 return flask.json.jsonify({"error": key_info["error"]}), 401
 
