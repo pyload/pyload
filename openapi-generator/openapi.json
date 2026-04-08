@@ -2249,7 +2249,7 @@
                   "section": {
                     "type": "string",
                     "default": "core",
-                    "description": "'plugin' or 'core"
+                    "description": "'plugin' or 'core'"
                   }
                 },
                 "required": [
