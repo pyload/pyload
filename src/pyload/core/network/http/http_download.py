@@ -26,7 +26,7 @@ class HTTPDownload:
         referer=None,
         cj=None,
         bucket=None,
-        options={},
+        options=None,
         status_notify=None,
         disposition=False,
     ):
@@ -37,7 +37,7 @@ class HTTPDownload:
         self.referer = referer
         self.cj = cj  #: cookiejar if cookies are needed
         self.bucket = bucket
-        self.options = options
+        self.options = options or {}
         self.disposition = disposition
         #: all arguments
 
