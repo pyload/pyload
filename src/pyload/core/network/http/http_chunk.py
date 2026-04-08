@@ -269,7 +269,9 @@ class HTTPChunk(HTTPRequest):
 
         if self.range and self.arrived > self.size:
             self.aborted = True  #: tell parent to ignore the pycurl Exception
-            return 0  #: close if chunk has enough data
+            return 0  #: close the stansfer if chunk has enough data
+
+        return None  #: Everything is OK, please continue
 
     def parse_header(self):
         """

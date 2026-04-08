@@ -345,6 +345,8 @@ class HTTPDownload:
         for chunk in self.chunks:
             if chunk.c == handle:
                 return chunk
+        else:
+            return None
 
     def close_chunk(self, chunk):
         try:
