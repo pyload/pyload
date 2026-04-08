@@ -221,7 +221,7 @@ class Api:
         :param category:
         :param option:
         :param value: new config value
-        :param section: 'plugin' or 'core
+        :param section: 'plugin' or 'core'
         """
         try:
             try:
@@ -1723,7 +1723,6 @@ class Api:
             return {
                 "success": self.pyload.db.delete_user_apikey(user_id, key_id),
             }
-            return
 
     def check_apikey(self, apikey: str) -> dict[str, Any]:
         """
