@@ -378,8 +378,12 @@ class Package {
     uiHandler.indicateLoad();
     $.post({
       url: "{{url_for('json.move_package')}}",
-      data: { id: this.id, dest: ((this.ui.type + 1) % 2) },
-      traditional: true
+      dataType: 'json',
+      contentType: 'application/json',
+      data: JSON.stringify({
+        pack_id: this.id,
+        dest: ((this.ui.type + 1) % 2)
+      }),
     })
       .done(() => {
         $(this.ele).remove();
@@ -404,8 +408,12 @@ class Package {
         for (let i = 1; i <= length / 2; i++) {
           $.post({
             url: "{{url_for('json.link_order')}}",
-            data: { fid: data.links[length - i].fid, pos: i - 1 },
-            traditional: true
+            dataType: 'json',
+            contentType: 'application/json',
+            data: JSON.stringify({
+              file_id: data.links[length - i].fid,
+              pos: i - 1
+            }),
           }).fail(() => {
             uiHandler.indicateFail();
           });
