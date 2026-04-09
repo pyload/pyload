@@ -2622,6 +2622,11 @@
                     "type": "string",
                     "format": "binary",
                     "description": "file content"
+                  },
+                  "dest": {
+                    "$ref": "#/components/schemas/Destination",
+                    "default": 0,
+                    "description": "`Destination`"
                   }
                 },
                 "required": [

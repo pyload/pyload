@@ -1105,12 +1105,13 @@ class Api:
     @legacy("uploadContainer")
     @permission(Perms.ADD)
     @post
-    def upload_container(self, filename: str, data: bytes) -> None:
+    def upload_container(self, filename: str, data: bytes, dest: Destination = Destination.COLLECTOR) -> None:
         """
         Uploads and adds a container file to pyLoad.
 
         :param filename: file name - extension is important, so it can correctly decrypt
         :param data: file content
+        :param dest: `Destination`
         """
         upload_path = os.path.join(self.pyload.tempdir, "upload")
         os.makedirs(upload_path, exist_ok=True)
@@ -1119,7 +1120,7 @@ class Api:
         with open(fs.safejoin(upload_path, filename), "wb") as th:
             th.write(data)
 
-        self.add_package(th.name, [th.name], Destination.COLLECTOR)
+        self.add_package(th.name, [th.name], dest)
 
     @legacy("orderPackage")
     @permission(Perms.MODIFY)
