@@ -487,6 +487,32 @@ class MegaCoNz(BaseDownloader):
                 self.pyfile.name = name
                 self.skip(self._("File exists."))
 
+    def find_root_node(self, res_f):
+        """
+        Build a tree of the folder nodes. Return the handle of the top-most node.
+        """
+        tree = {}
+        for node in res_f:
+            if node['t'] == 1 and node['h'] and node['p']:
+                tree[node['h']] = node['p']
+
+        for key, val in tree.items():
+            if val not in tree:
+                return key
+
+    def build_key_dict(self, node_k):
+        """
+        Take a node's k value, and produce a dictionary.
+        """
+        dict = {}
+        node_k = node_k.split('/')
+        for key_data in node_k:
+            h = key_data[:key_data.index(':')]
+            l = key_data[key_data.index(':') + 1:]
+            dict[h] = l
+
+        return dict
+
     def process(self, pyfile):
         node_id = self.info['pattern']['NID']
         public = node_id in ("", None)
@@ -511,9 +537,17 @@ class MegaCoNz(BaseDownloader):
             elif isinstance(res, dict) and 'e' in res:
                 mega.check_error(res['e'])
 
+            root_handle = self.find_root_node(res['f'])
+            self.log_debug("Root Folder Handle: {}".format(root_handle))
             for node in res['f']:
                 if node['t'] == 0 and ":" in node["k"] and node['h'] == node_id:
-                    master_key = MegaCrypto.decrypt_key(node['k'][node['k'].index(':') + 1:], master_key)
+                    keys = self.build_key_dict(node['k'])
+                    file_key = keys[root_handle]
+                    if not file_key:
+                        self.log_error(self._("Root folder handle not found in file keys"))
+                        self.fail(self._("Root folder handle not found in file keys"))
+
+                    master_key = MegaCrypto.decrypt_key(file_key, master_key)
                     break
 
             else:
