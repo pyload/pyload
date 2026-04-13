@@ -47,8 +47,8 @@ def is_safe_url(location):
     # This mitigates CVE-2023-24329 and similar parser bypasses
     location = location.lstrip(" \t\n\r\x0b\x0c")
 
-    # Handle empty or obviously bad input
-    if not location:
+    # Handle empty or obviously bad input like protocol-relative
+    if not location or location.startswith('//'):
         return False
 
     # Use urljoin against the current host_url to resolve relatives
@@ -64,23 +64,27 @@ def is_safe_url(location):
     test_split = urlsplit(test_url)
 
     # Strict checks:
-    # 1. Scheme must be http or https (or empty for relative)
+    # 1. Scheme must be http or https (or empty for relative) and match the original scheme
     # 2. Netloc (host + port) must match the application's host
-    # 3. Reject protocol-relative URLs (//evil.com) explicitly if desired
     if test_parsed.scheme not in ('', 'http', 'https'):
+        return False
+
+    # If there's a protocol (scheme) but no host (netloc), it's likely malformed
+    if test_split.scheme and not test_split.netloc:
         return False
 
     # Reject if netloc differs (this catches absolute external URLs)
     if test_parsed.netloc and test_parsed.netloc != base_parsed.netloc:
         return False
 
-    # Optional: explicitly reject protocol-relative (starts with //)
-    if location.lstrip().startswith('//'):
-        return False
+    if test_split.scheme:
+        # Extra hardening: ensure the final path doesn't contain dangerous schemes in edge cases
+        if test_split.scheme not in ('http', 'https'):
+            return False
 
-    # Extra hardening: ensure the final path doesn't contain dangerous schemes in edge cases
-    if test_split.scheme and test_split.scheme not in ('http', 'https'):
-        return False
+        # Reject if scheme differs (this catches explicit cross protocol)
+        if test_split.scheme != base_parsed.scheme:
+            return False
 
     return True
 
