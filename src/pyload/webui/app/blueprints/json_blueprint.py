@@ -9,7 +9,7 @@ from werkzeug.utils import secure_filename
 from pyload.core.api import Role
 from pyload.core.utils import format, fs
 
-from ..helpers import get_permission, login_required, permlist, render_template, set_permission
+from ..helpers import clear_all_user_sessions, get_permission, login_required, permlist, render_template, set_permission
 
 bp = flask.Blueprint("json", __name__)
 
@@ -360,6 +360,7 @@ def change_password(user_login, user_curpw, user_newpw):
     if not done:
         return jsonify(False), 403  #: Wrong password
 
+    clear_all_user_sessions(user_login)
     return jsonify(True)
 
 @bp.route("/json/add_user", methods=["POST"], endpoint="add_user")
@@ -401,22 +402,29 @@ def update_users(update_data):
     # NOTE: messy code...
     for userdata in all_users.values():
         name = userdata.name
-        users[name] = {"perms": get_permission(userdata.permission)}
+        users[name] = {
+            "permission": userdata.permission,
+            "perms": get_permission(userdata.permission)
+        }
         users[name]["perms"]["admin"] = userdata.role == 0
         users[name]["role"] = userdata.role
 
     s = flask.session
     for name in list(users):
+        was_changed = False
         data = users[name]
         if update_data.get(f"{name}|delete"):
             if name != s["name"]:
                 api.remove_user(name)
                 del users[name]
+                clear_all_user_sessions(name)
             continue
         if update_data.get(f"{name}|admin"):
+            was_changed = data["role"] != 0
             data["role"] = 0
             data["perms"]["admin"] = True
-        elif name != s["name"]:
+        elif name != s["name"]:  #: deny removing 'self' admin role
+            was_changed = data["role"] != 1
             data["role"] = 1
             data["perms"]["admin"] = False
 
@@ -427,9 +435,13 @@ def update_users(update_data):
         for perm in update_data.get(f"{name}|perms", []):
             data["perms"][perm] = True
 
-        data["permission"] = set_permission(data["perms"])
+        new_permission = set_permission(data["perms"])
+        was_changed = was_changed or data["permission"] != new_permission
+        data["permission"] = new_permission
 
         api.set_user_permission(name, data["permission"], data["role"])
+        if was_changed:
+            clear_all_user_sessions(name)
 
     return jsonify(True)
 
