@@ -420,11 +420,11 @@ def update_users(update_data):
                 clear_all_user_sessions(name)
             continue
         if update_data.get(f"{name}|admin"):
-            was_changed = data["role"] != 0
+            was_changed = was_changed or data["role"] != 0
             data["role"] = 0
             data["perms"]["admin"] = True
         elif name != s["name"]:  #: deny removing 'self' admin role
-            was_changed = data["role"] != 1
+            was_changed = was_changed or data["role"] != 1
             data["role"] = 1
             data["perms"]["admin"] = False
 
