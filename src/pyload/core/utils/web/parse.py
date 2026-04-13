@@ -7,6 +7,7 @@ from email.header import decode_header as parse_mime_header
 from ntpath import basename as ntpath_basename
 from posixpath import basename as posixpath_basename
 
+from ..parse import name as parse_name
 from ..purge import name as safe_nm
 from . import format, purge
 
@@ -212,9 +213,6 @@ def disposition(disposition_value, location=None, fallback_url=None):
         """Extract filename for attachment disposition type."""
         if _disposition_type.lower() != "attachment":
             return None
-
-        # Import lazily to avoid circular imports with pyload.core.utils.parse
-        from ..parse import name as parse_name
 
         if _location is not None:
             return parse_name(_location)
