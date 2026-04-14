@@ -62,19 +62,6 @@ class DarkiboxCom(BaseDownloader):
 
         def replacer(match):
             word = match.group(0)
-            try:
-                index = int(word, 36) if radix <= 36 else int(word) if word.isdigit() else -1
-            except ValueError:
-                index = -1
-
-            # Try to find the keyword index by converting the word from the
-            # base used by the packer
-            try:
-                idx = int(word, radix) if radix <= 36 else 0
-            except ValueError:
-                idx = 0
-
-            # The packer replaces each word token with keywords[index] if set
             for i, kw in enumerate(keywords):
                 if base_n(i, radix) == word:
                     return kw if kw else word
