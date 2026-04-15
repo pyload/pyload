@@ -118,6 +118,8 @@ def name(url, safe_name=True):
         name = us.query.split("=", 1)[::-1][0].split("&", 1)[0]
     if not name:
         name = ".".join(us.netloc.split(".")[:-1])
+    if us.fragment:
+        name += f"#{us.fragment}"
 
     return safe_nm(name) if safe_name else name
 

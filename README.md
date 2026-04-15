@@ -164,13 +164,17 @@ Invoke `build_locale` before building the package (eg. `bdist_wheel`).
 python3 -m venv .venv
 source .venv/bin/activate
 ```
-* Install pyLoad as editable install
+* Install pyLoad as editable install with main and test dependencies
 ```
-pip install -e .
+pip install -e ".[test]"
 ```
 * Run pyLoad in debug mode
 ```
 pyload -d
+```
+* To run the tests locally
+```
+pytest tests
 ```
 
 ### API specification
