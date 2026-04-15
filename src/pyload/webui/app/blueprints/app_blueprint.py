@@ -61,6 +61,7 @@ def login():
             return render_template("login.html", errors=True)
 
         set_session(user_info)
+        flask.current_app.session_interface.regenerate(flask.session)
         log.info(f"User '{sanitized_user}' successfully logged in using Web Client [CLIENT: {client_ip}]")
         flask.flash("Logged in successfully")
 

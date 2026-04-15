@@ -47,17 +47,21 @@ class WebServerThread(threading.Thread):
         )
 
         if self.use_ssl:
-            try:
-                self.server.ssl_adapter = BuiltinSSLAdapter(
-                    self.certfile, self.keyfile, self.certchain
-                )
-            except Exception as exc:
-                self.log.error(
-                    self._("Cannot use HTTPS: {}").format(exc),
-                    exc_info=self.pyload.debug,
-                    stack_info=self.pyload.debug > 2,
-                )
+            if self.certfile and self.keyfile:
+                try:
+                    self.server.ssl_adapter = BuiltinSSLAdapter(
+                        self.certfile, self.keyfile, self.certchain
+                    )
+                except Exception as exc:
+                    self.log.error(
+                        self._("Cannot use HTTPS: {}").format(exc),
+                        exc_info=self.pyload.debug,
+                        stack_info=self.pyload.debug > 2,
+                    )
+                    self.use_ssl = False
+            else:
                 self.use_ssl = False
+                self.log.warning(self._("*** Use HTTPS is ENABLED but no certificate and/or key file(s) are provided! ***"))
 
         #: hack cheroot to use our custom logger
         self.server.error_log = lambda *args, **kwargs: self.log.log(
