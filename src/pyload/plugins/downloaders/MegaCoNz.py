@@ -342,7 +342,7 @@ class MegaClient:
 class MegaCoNz(BaseDownloader):
     __name__ = "MegaCoNz"
     __type__ = "downloader"
-    __version__ = "0.59"
+    __version__ = "0.60"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?mega(?:\.co)?\.nz/(?:file/(?P<ID1>[\w^_]+)#(?P<K1>[\w\-,=]+)|folder/(?P<ID2>[\w^_]+)#(?P<K2>[\w\-,=]+)/file/(?P<NID>[\w^_]+)|#!(?P<ID3>[\w^_]+)!(?P<K3>[\w\-,=]+))"
@@ -542,7 +542,7 @@ class MegaCoNz(BaseDownloader):
             for node in res['f']:
                 if node['t'] == 0 and ":" in node["k"] and node['h'] == node_id:
                     keys = self.build_key_dict(node['k'])
-                    file_key = keys[root_handle]
+                    file_key = keys.get(root_handle)
                     if not file_key:
                         self.log_error(self._("Root folder handle not found in file keys"))
                         self.fail(self._("Root folder handle not found in file keys"))
