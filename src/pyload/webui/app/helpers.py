@@ -356,8 +356,9 @@ def apikey_auth(func):
         client_ip = flask.request.headers.get("X-Forwarded-For", "").split(",")[0].strip() or flask.request.remote_addr
 
         # Check for API key in header
-        api_key = flask.request.headers.get("X-API-Key")
-        if api_key:
+        api_key = flask.request.headers.get("X-API-Key", None)
+        if api_key is not None:
+            error = "Invalid API key"
             if api_key.startswith("pl_"):
                 # Look up the API key in the database
                 key_info = api.check_apikey(api_key)
@@ -382,8 +383,6 @@ def apikey_auth(func):
                         return decorated(*args, **kwargs)
                 else:
                     error = key_info["error"]
-            else:
-                error = "Invalid API key"
 
             # Log failed API key authentication
             log_api_key = f"{api_key[:4]}********{api_key[-4:]}" if len(api_key) > 8 else "*" * 8
@@ -392,9 +391,9 @@ def apikey_auth(func):
 
         else:
             # No API auth - still use the decorated function but rely on session auth
-            csrf.protect()
             s = flask.session
             if is_authenticated(s):
+                csrf.protect()
                 user_info = {
                     "id": s["id"],
                     "name": s["name"],
@@ -404,9 +403,9 @@ def apikey_auth(func):
                 flask.g.user_info = user_info
                 return decorated(*args, **kwargs)
             else:
-                user = s.get("name")
+                user = s.get("name", "unknown")
                 # Sanitize username for logging
-                sanitized_user = user.replace("\n", "\\n").replace("\r", "\\r") if user else "unknown"
+                sanitized_user = user.replace("\n", "\\n").replace("\r", "\\r")
                 log.error(f"API authentication failed for user '{sanitized_user}' using session [CLIENT: {client_ip}]")
                 return flask.json.jsonify({"error": "Invalid API credentials"}), 401
 
