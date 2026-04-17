@@ -100,6 +100,7 @@ class DownloadThread(PluginThread):
                     self.pyload.log.warning(
                         self._("Download is offline: {}").format(pyfile.name)
                     )
+                    self.pyload.files.check_package_finished(pyfile)
                 elif msg == "temp. offline":
                     pyfile.set_status("temp. offline")
                     self.pyload.log.warning(

@@ -397,11 +397,16 @@ class FileDatabaseMethods:
     @style.queue
     def get_unfinished(self, pid):
         """
-        return list of max length 3 ids with pyfiles in package not finished or
-        processed.
+        return list of max length 3 ids with pyfiles in package not:
+        - finished (0)
+        - offline (1)
+        - skipped (4)
+        - processed (13)
         """
-        self.c.execute(
-            "SELECT id FROM links WHERE package=? AND status NOT IN (0, 4, 13) LIMIT 3",
+        self.c.execute("""
+            SELECT id FROM links WHERE package=?
+            AND status NOT IN (0, 1, 4, 13) LIMIT 3
+            """,
             (str(pid),),
         )
         return [r[0] for r in self.c]
