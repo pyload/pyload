@@ -524,27 +524,6 @@ def renice(pid, value):
         pass
 
 
-def forward(source, destination, recv_timeout=None, buffering=1024):
-    """
-    Forward data from one socket to another
-    """
-    timeout = source.gettimeout()
-    source.settimeout(recv_timeout)
-    try:
-        raw_data = source.recv(buffering)
-    except socket.timeout:
-        pass
-    else:
-        while raw_data:
-            destination.sendall(raw_data)
-            try:
-                raw_data = source.recv(buffering)
-            except socket.timeout:
-                break
-
-    source.settimeout(timeout)
-
-
 def compute_checksum(filename, hashtype):
     file = os.fsdecode(filename)
 
@@ -664,3 +643,17 @@ def ttl_cache(maxsize=128, typed=False, ttl=-1):
             return ttl_func(ttl_hash, *args, **kwargs)
         return functools.update_wrapper(wrapped, func)
     return wrapper
+
+
+def hexdump(data: bytes, prefix: str = ""):
+    res = ""
+    if data:
+        res += f"{prefix} [{len(data)} bytes]\n"
+        for i in range(0, len(data), 16):
+            chunk = data[i:i+16]
+            hex_part = " ".join(f"{b:02x}" for b in chunk)
+            ascii_part = "".join(chr(b) if 32 <= b <= 126 else "." for b in chunk)
+            res += f"{prefix}  {i:04x}  {hex_part:<48}  {ascii_part}\n"
+        res += "\n"
+
+    return res
