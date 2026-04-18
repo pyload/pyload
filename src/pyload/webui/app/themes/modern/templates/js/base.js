@@ -231,6 +231,91 @@ class UIHandler {
     $goto_top.click(() => this.scrollToTop());
     this.initPasswordReveal();
     this.initButtonHandlers();
+    this.initContainerDragAndDrop();
+  }
+
+  initContainerDragAndDrop() {
+    const allowedExts = ["dlc", "ccf", "rsdf", "txt"];
+    const $overlay = $(
+      '<div id="container_drop_overlay">' +
+        '<div class="container_drop_overlay_message">' +
+          "{{_('Drop container file to add to queue')}}" +
+        "</div>" +
+      "</div>"
+    ).css({
+      display: "none",
+      position: "fixed",
+      top: 0, left: 0, right: 0, bottom: 0,
+      background: "rgba(0, 150, 220, 0.25)",
+      border: "4px dashed #0099dd",
+      zIndex: 99999,
+      pointerEvents: "none",
+      textAlign: "center",
+      color: "#fff",
+      textShadow: "0 2px 4px rgba(0,0,0,0.6)",
+      fontSize: "2em",
+      lineHeight: "100vh"
+    }).appendTo("body");
+
+    let dragDepth = 0;
+    const hasFiles = (dt) => dt && Array.from(dt.types || []).indexOf("Files") !== -1;
+
+    $(window).on("dragenter.containerdrop", (event) => {
+      if (!hasFiles(event.originalEvent.dataTransfer)) return;
+      if (dragDepth++ === 0) $overlay.css("display", "block");
+    });
+    $(window).on("dragleave.containerdrop", () => {
+      if (--dragDepth <= 0) {
+        dragDepth = 0;
+        $overlay.css("display", "none");
+      }
+    });
+    $(window).on("dragover.containerdrop", (event) => {
+      if (hasFiles(event.originalEvent.dataTransfer)) {
+        event.preventDefault();
+      }
+    });
+    $(window).on("drop.containerdrop", (event) => {
+      const dt = event.originalEvent.dataTransfer;
+      if (!hasFiles(dt)) return;
+      event.preventDefault();
+      dragDepth = 0;
+      $overlay.css("display", "none");
+      const files = Array.from(dt.files || []);
+      if (files.length === 0) return;
+      files.forEach((file) => this.uploadDroppedContainer(file, allowedExts));
+    });
+  }
+
+  uploadDroppedContainer(file, allowedExts) {
+    const ext = file.name.split(".").pop().toLowerCase();
+    if (allowedExts.indexOf(ext) === -1) {
+      this.indicateFail("{{_('Unsupported file type')}}" + ": " + file.name);
+      return;
+    }
+    const formData = new FormData();
+    formData.append("add_file", file);
+    formData.append("add_name", "");
+    formData.append("add_dest", "1");
+    formData.append("add_links", "");
+
+    this.indicateLoad();
+    $.post({
+      url: "{{url_for('json.add_package')}}",
+      data: formData,
+      processData: false,
+      contentType: false,
+      success: () => {
+        this.indicateSuccess("{{_('Container added to queue')}}");
+        const re = /\/queue\/?$/i;
+        if (window.location.toString().match(re)) {
+          window.location.assign(window.location.href.replace(/#.*$/, ""));
+        }
+      },
+      error: () => {
+        this.indicateFail("{{_('Upload failed')}}");
+      }
+    });
   }
 
   handleScroll($goto_top, $stickyNav, navHeight) {
