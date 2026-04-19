@@ -134,7 +134,7 @@ jobs:
 
       - name: Run unit tests
         if: startsWith(matrix.os, 'ubuntu') && matrix.python-version == '3.13'
-        run: python3 -m pytest tests/unit --cov-report markdown-append:$GITHUB_STEP_SUMMARY
+        run: python3 -m pytest tests/unit --cov pyload --cov-report markdown-append:$GITHUB_STEP_SUMMARY
 
       - name: Run integration tests
         if: startsWith(matrix.os, 'ubuntu') && matrix.python-version == '3.13'
