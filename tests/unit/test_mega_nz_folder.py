@@ -3,7 +3,7 @@ import re
 from pyload.plugins.decrypters.MegaCoNzFolder import MegaCoNzFolder
 
 
-class TestParse:
+class TestMegaNzFolder:
     def test_folder_pattern(self):
         url = 'https://mega.nz/folder/abc123#789def_abcdef123'
         actual = re.match(MegaCoNzFolder.__pattern__, url).groupdict()
