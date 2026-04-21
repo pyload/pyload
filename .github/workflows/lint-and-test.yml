@@ -133,11 +133,18 @@ jobs:
         run: tox -e ${{ matrix.toxenv || env.toxenv }} --sitepackages --workdir ${{ env.toxworkdir }}
 
       - name: Run unit tests
-        if: startsWith(matrix.os, 'ubuntu') && matrix.python-version == '3.13'
-        run: python3 -m pytest tests/unit --cov pyload --cov-report markdown-append:$GITHUB_STEP_SUMMARY
+        shell: bash
+        run: |
+          COVERAGE_ARGS=""
+
+          # Only run tests with coverage for one os & python version combination
+          if [[ "${{ matrix.os }}" == ubuntu* && "${{ matrix.python-version }}" == "3.13" ]]; then
+            COVERAGE_ARGS="--cov pyload --cov-report markdown-append:$GITHUB_STEP_SUMMARY"
+          fi
+
+          python3 -m pytest tests/unit $COVERAGE_ARGS
 
       - name: Run integration tests
-        if: startsWith(matrix.os, 'ubuntu') && matrix.python-version == '3.13'
         run: python3 -m pytest tests/integration
 
       - name: Test OpenAPI spec generator
