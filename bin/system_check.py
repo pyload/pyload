@@ -93,18 +93,12 @@ def main():
             "Install OpenSSL if you want to create a secure connection to the core."
         )
 
-    if not js:
-        print("no JavaScript engine found")
-        print(
-            "You will need this for some Click'N'Load links. Install Spidermonkey, ossp-js, pyv8 or rhino"
-        )
-
     if core_err:
         print("The system check has detected some errors:\n")
         for err in core_err:
             print(err)
     else:
-        print("No Problems detected, pyLoad should work fine.")
+        print("No problems detected, pyLoad should work fine.")
 
     if core_info:
         print("\nPossible improvements for pyload:\n")

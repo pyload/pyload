@@ -9,14 +9,13 @@ from pyload.core.utils.struct.lock import lock
 from pyload.core.utils.web.convert import host_to_ip
 
 from ..base.addon import BaseAddon, threaded
-from ..helpers import forward
 
 
 # TODO: IPv6 support
 class ClickNLoad(BaseAddon):
     __name__ = "ClickNLoad"
     __type__ = "addon"
-    __version__ = "0.65"
+    __version__ = "0.66"
     __status__ = "testing"
 
     __config__ = [
@@ -142,14 +141,53 @@ class ClickNLoad(BaseAddon):
                     self._("Server was not exited gracefully, shutdown forced")
                 )
 
+    @threaded
+    def _forward(self, source, destination, finished_event=None, recv_timeout=None, buffering=1024):
+        """
+        Forward data from one socket to another
+        """
+        source.settimeout(recv_timeout)
+        try:
+            while True:
+                try:
+                    data = source.recv(buffering)
+                    if not data:  # Peer closed the connection cleanly
+                        break
+
+                    try:
+                        destination.sendall(data)
+                    except (ConnectionResetError, BrokenPipeError, OSError) as e:
+                        break
+
+                except (ConnectionResetError, BrokenPipeError, OSError) as e:
+                    break
+
+        finally:
+            for sock in (source, destination):
+                if sock:
+                    #  Graceful shutdown
+                    try:
+                        sock.shutdown(socket.SHUT_RDWR)
+                    except OSError:
+                        pass  # Socket may already be closed
+
+        if finished_event:
+            finished_event.set()
+
     @lock
     @threaded
-    def forward(self, client_socket, backend_socket, queue=False):
+    def forward_request(self, client_socket, backend_socket, queue=False):
         if queue:
             old_ids = set(pack.pid for pack in self.pyload.api.get_collector())
 
-        forward(client_socket, backend_socket, recv_timeout=0.5)
-        forward(backend_socket, client_socket)
+        e1 = threading.Event()
+        e2 = threading.Event()
+        self._forward(client_socket, backend_socket, recv_timeout=0.75, finished_event=e1)
+        self._forward(backend_socket, client_socket, recv_timeout=0.75, finished_event=e2)
+
+        # Wait for both directions to finish
+        e1.wait()
+        e2.wait()
 
         if queue:
             new_ids = set(pack.pid for pack in self.pyload.api.get_collector())
@@ -235,14 +273,14 @@ class ClickNLoad(BaseAddon):
                                 context.verify_mode = ssl.CERT_NONE
                                 backend_socket = context.wrap_socket(backend_socket, server_hostname=self.web_addr[0])
 
-                            except Exception as exc:
+                            except ssl.SSLError as exc:
                                 self.log_error(self._("SSL error: {}").format(exc))
                                 client_socket.close()
                                 continue
 
                         backend_socket.connect(self.web_addr)
 
-                        self.forward(
+                        self.forward_request(
                             client_socket,
                             backend_socket,
                             self.config.get("dest") == "queue",
