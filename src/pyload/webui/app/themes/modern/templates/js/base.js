@@ -235,7 +235,7 @@ class UIHandler {
   }
 
   initContainerDragAndDrop() {
-    const allowedExts = ["dlc", "ccf", "rsdf", "txt"];
+    const allowedExts = ["ccf", "dlc","rsdf", "torrent", "txt"];
     const $overlay = $(
       '<div id="container_drop_overlay">' +
         '<div class="container_drop_overlay_message">' +
