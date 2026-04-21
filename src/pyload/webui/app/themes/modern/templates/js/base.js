@@ -243,11 +243,12 @@ class UIHandler {
         "</div>" +
       "</div>"
     ).css({
-      display: "none",
+      display: "block",
       position: "fixed",
       top: 0, left: 0, right: 0, bottom: 0,
-      background: "rgba(0, 150, 220, 0.25)",
-      border: "4px dashed #0099dd",
+      opacity: 0,
+      transition: "opacity 0.25s ease-in-out",
+      background: "rgba(23, 84, 31, 0.8)",
       zIndex: 99999,
       pointerEvents: "none",
       textAlign: "center",
@@ -262,12 +263,12 @@ class UIHandler {
 
     $(window).on("dragenter.containerdrop", (event) => {
       if (!hasFiles(event.originalEvent.dataTransfer)) return;
-      if (dragDepth++ === 0) $overlay.css("display", "block");
+      if (dragDepth++ === 0) $overlay.css("opacity", 1);
     });
     $(window).on("dragleave.containerdrop", () => {
       if (--dragDepth <= 0) {
         dragDepth = 0;
-        $overlay.css("display", "none");
+        $overlay.css("opacity", 0);
       }
     });
     $(window).on("dragover.containerdrop", (event) => {
@@ -280,7 +281,7 @@ class UIHandler {
       if (!hasFiles(dt)) return;
       event.preventDefault();
       dragDepth = 0;
-      $overlay.css("display", "none");
+      $overlay.css("opacity", 0);
       const files = Array.from(dt.files || []);
       if (files.length === 0) return;
       files.forEach((file) => this.uploadDroppedContainer(file, allowedExts));
