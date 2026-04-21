@@ -290,7 +290,7 @@ class UIHandler {
   uploadDroppedContainer(file, allowedExts) {
     const ext = file.name.split(".").pop().toLowerCase();
     if (allowedExts.indexOf(ext) === -1) {
-      this.indicateFail("{{_('Unsupported file type')}}" + ": " + file.name);
+      this.indicateFail("{{_('Unsupported container type')}}" + ": " + ext);
       return;
     }
     const formData = new FormData();
