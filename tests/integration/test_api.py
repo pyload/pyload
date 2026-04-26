@@ -170,3 +170,30 @@ class TestPackages:
         )
 
         assert response.status_code == 200
+
+    def test_package_folder_is_sanitized(self, api_key, client):
+        # Add a dummy package to the collector
+        response = client.post(
+            "/api/add_package",
+            json={
+                "name": "https://TEST strange package:name\\",
+                "links": [
+                    "https://localhost/non-existent-file.zip"
+                ],
+                "dest": 0
+            },
+            headers={API_KEY_HEADER: api_key}
+        )
+
+        assert response.status_code == 200
+        package_id = response.text
+
+        # Get package data for dummy package
+        response = client.get(
+            "api/get_package_data",
+            query_string={"package_id": package_id},
+            headers={API_KEY_HEADER: api_key}
+        )
+
+        assert response.status_code == 200
+        assert response.json["folder"] == "TEST_strange_packagename"

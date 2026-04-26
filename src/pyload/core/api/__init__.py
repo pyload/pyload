@@ -559,17 +559,8 @@ class Api:
         else:
             folder = ""
 
-        folder = (
-            folder.replace("http://", "")
-            .replace("https://", "")
-            .replace("../", "_")
-            .replace("..\\", "_")
-            .replace(":", "")
-            .replace("/", "_")
-            .replace("\\", "_")
-            .replace("\r", "_")
-            .replace("\n", "_")
-        )
+        folder = folder.replace("http://", "").replace("https://", "")
+        folder = secure_filename(folder)
 
         sanitized_name = name.replace("\n", "\\n").replace("\r", "\\r")
         package_id = self.pyload.files.add_package(sanitized_name, folder, Destination(dest))
