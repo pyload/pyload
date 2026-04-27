@@ -197,3 +197,27 @@ class TestPackages:
 
         assert response.status_code == 200
         assert response.json["folder"] == "TEST_strange_packagename"
+
+        # Update package folder
+        response = client.post(
+            "/api/set_package_data",
+            json={
+                "package_id": package_id,
+                "data": {
+                    "_folder": "/users/root/"
+                }
+            },
+            headers={API_KEY_HEADER: api_key}
+        )
+
+        assert response.status_code == 200
+
+        # Get package data for updated dummy package
+        response = client.get(
+            "api/get_package_data",
+            query_string={"package_id": package_id},
+            headers={API_KEY_HEADER: api_key}
+        )
+
+        assert response.status_code == 200
+        assert response.json["folder"] == "users_root"
