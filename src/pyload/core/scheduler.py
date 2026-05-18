@@ -107,8 +107,9 @@ class PriorityQueue:
         self.queue = []
         self.lock = Lock()
 
+    @lock
     def __iter__(self):
-        return iter(self.queue)
+        return iter(list(self.queue)) # Copy list, then iterate
 
     def __delitem__(self, key):
         del self.queue[key]

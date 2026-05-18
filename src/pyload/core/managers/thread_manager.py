@@ -93,15 +93,13 @@ class ThreadManager:
         """
         self.timestamp = time.time() + timedelta(minutes=5).total_seconds()
 
-        if rid in self.info_results:
-            data = self.info_results[rid]
-            self.info_results[rid] = {}
-            return data
-        else:
-            return {}
+        data = self.info_results.pop(rid, {})
+        return data
 
     @lock
     def set_info_results(self, rid, result):
+        if rid not in self.info_results:
+            self.info_results[rid] = {}
         self.info_results[rid].update(result)
 
     def get_active_files(self):
@@ -216,13 +214,16 @@ class ThreadManager:
         checks if there are need for increasing or reducing thread count.
         """
         if len(self.threads) == self.pyload.config.get("download", "max_downloads"):
+            # thread count matches, do nothing
             return
         elif len(self.threads) < self.pyload.config.get("download", "max_downloads"):
+            # we need to increase thread count, add one thread
             self.create_download_thread()
         else:
-            free = [x for x in self.threads if not x.active]
-            if free:
-                free[0].put("quit")
+            # we need to decrease thread count, remove one thread
+            idle_threads = [x for x in self.threads if not x.active]
+            if idle_threads:
+                idle_threads[0].stop()
 
     # def clean_pycurl(self):
     # """

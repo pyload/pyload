@@ -1,8 +1,8 @@
 import inspect
 import os
+import queue
 import shutil
 import sqlite3
-from queue import Queue
 from threading import Event, Thread
 
 from ... import exc_logger
@@ -77,11 +77,13 @@ class DatabaseThread(Thread):
         self.conn = None
         self.c = None
 
-        self.jobs = Queue()
+        self.jobs = queue.Queue()
 
         self.setuplock = Event()
 
         style.set_db(self)
+
+        self.running = True
 
     def setup(self):
         self.start()
@@ -107,18 +109,58 @@ class DatabaseThread(Thread):
 
         self.setuplock.set()
 
-        while True:
-            j = self.jobs.get()
-            if j == "quit":
+        self.running = True
+        while self.running:
+            try:
+                j = self.jobs.get(timeout=5)
+
+                # Check for shutdown signal
+                if j == "quit":
+                    break
+
+                try:
+                    j.process_job()
+                except Exception as exc:
+                    self.core.log.error(
+                        f"Database job failed: {exc}",
+                        exc_info=True
+                    )
+
+            except queue.Empty:
+                # Timeout occurred - check if we should exit
+                if not self.running:
+                    break
+                # Otherwise continue - timeout is normal
+                continue
+
+            except Exception as exc:
+                self.core.log.error(
+                    f"DatabaseThread error: {exc}",
+                    exc_info=True
+                )
+                # Don't crash - continue processing
+
+        # cleanup connections
+        try:
+            if self.c:
                 self.c.close()
+        except Exception:
+            pass
+
+        try:
+            if self.conn:
                 self.conn.close()
-                break
-            j.process_job()
+        except Exception:
+            pass
 
     @style.queue
     def shutdown(self):
         self.conn.commit()
-        self.jobs.put("quit")
+        self.running = False
+        try:
+            self.jobs.put("quit", timeout=1)
+        except queue.Full:
+            pass
 
     def _check_version(self):
         """

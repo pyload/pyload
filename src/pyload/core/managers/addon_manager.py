@@ -163,6 +163,7 @@ class AddonManager:
 
         self.plugins = plugins
 
+    @lock
     def activate_addon(self, plugin_name):
 
         # check if already loaded
@@ -195,6 +196,7 @@ class AddonManager:
             # call core Ready
             start_new_thread(plugin.core_ready, tuple())
 
+    @lock
     def deactivate_addon(self, plugin_name):
         for inst in self.plugins:
             if inst.__name__ == plugin_name:

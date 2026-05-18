@@ -515,7 +515,7 @@ class Core:
             # self.evm.fire('pyload:stopping')
 
             for thread in self.thread_manager.threads:
-                thread.put("quit")
+                thread.stop()
 
             for pyfile in list(self.files.cache.values()):
                 pyfile.abort_download()

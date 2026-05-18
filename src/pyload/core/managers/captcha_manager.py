@@ -13,6 +13,7 @@ class CaptchaManager:
 
         self.ids = 0  #: Only for internal purpose
 
+    @lock
     def new_task(self, captcha_format, params, result_type):
         task = CaptchaTask(self.ids, captcha_format, params, result_type)
         self.ids += 1

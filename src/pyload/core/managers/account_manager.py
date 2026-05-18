@@ -39,6 +39,7 @@ class AccountManager:
         self.init_account_plugins()
         self.load_accounts()
 
+    @lock
     def get_account_plugin(self, plugin):
         """
         get account instance for plugin or None if anonymous.
