@@ -11,7 +11,7 @@ from urllib.parse import unquote
 import flask
 
 from pyload import APPID, PKGDIR
-from pyload.core.utils import format
+from pyload.core.utils import format, fs
 
 from ..helpers import (
     clear_session, get_permission, get_redirect_url, is_authenticated, login_required, permlist,
@@ -177,10 +177,20 @@ def files():
 @login_required("DOWNLOAD")
 def get_file(path):
     api = flask.current_app.config["PYLOAD_API"]
-    path = unquote(path).replace("..", "")
-    directory = api.get_config_value("general", "storage_folder")
-    return flask.send_from_directory(directory, path, as_attachment=True)
+    try:
+        storage_folder = api.get_config_value("general", "storage_folder")
+        full_path = fs.safejoin(*[storage_folder] + unquote(path).split("/"))
+        if not os.path.isfile(full_path):
+            flask.abort(404)
 
+        return flask.send_file(
+            full_path,
+            as_attachment=True,
+            download_name=os.path.basename(full_path)
+        )
+    except ValueError:
+        log.warning(f"Path traversal attempt blocked: {path}")
+        flask.abort(403)
 
 @bp.route("/settings", endpoint="settings")
 @login_required("SETTINGS")
