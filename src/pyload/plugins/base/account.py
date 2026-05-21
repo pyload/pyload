@@ -116,6 +116,7 @@ class BaseAccount(BasePlugin):
         """
         raise NotImplementedError
 
+    @lock
     def login(self):
         self.clean()
         self.sync()
@@ -164,6 +165,7 @@ class BaseAccount(BasePlugin):
 
             return bool(self.info["login"]["valid"])
 
+    @lock
     def logout(self):
         """
         Invalidate the account timestamp so relogin will be forced next time.
@@ -180,6 +182,7 @@ class BaseAccount(BasePlugin):
         return self.sync(reverse=True)
 
     # TODO: Recheck in 0.6.x
+    @lock
     def sync(self, reverse=False):
         """
         Sync self.accounts[self.user] -> self.info or self.info ->
