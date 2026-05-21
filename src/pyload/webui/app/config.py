@@ -9,6 +9,7 @@ class BaseConfig:
     DEBUG = False
     TESTING = False
     SESSION_COOKIE_SAMESITE = "Lax"
+    MAX_CONTENT_LENGTH = 16 * 1024 * 1024  #: 16 Megabytes
     #: Extensions
     # BCRYPT_LOG_ROUNDS = 13
     # DEBUG_TB_ENABLED = False
