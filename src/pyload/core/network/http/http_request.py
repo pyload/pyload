@@ -423,7 +423,7 @@ class HTTPRequest:
             if error_code == pycurl.E_WRITE_ERROR and self.exception:
                 raise self.exception from None
             elif error_code == pycurl.E_ABORTED_BY_CALLBACK:
-                raise Fail("Refusing request to Server-Side host") from None
+                raise Fail(f"Refusing request to Server-Side host <{url}>") from None
             else:
                 raise
         finally:
