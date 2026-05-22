@@ -19,7 +19,7 @@ from ...utils.convert import to_bytes, to_str
 from ...utils.web.check import is_global_address
 from ...utils.web.parse import http_header as parse_header_line
 from ...utils.web.purge import unescape as html_unescape
-from ..exceptions import Abort
+from ..exceptions import Abort, Fail
 from .exceptions import BadHeader
 from .http_headers import HttpHeaders
 
@@ -419,8 +419,11 @@ class HTTPRequest:
         try:
             self.c.perform()
         except pycurl.error as exc:
-            if exc.args[0] == pycurl.E_WRITE_ERROR and self.exception:
+            error_code = exc.args[0]
+            if error_code == pycurl.E_WRITE_ERROR and self.exception:
                 raise self.exception from None
+            elif error_code == pycurl.E_ABORTED_BY_CALLBACK:
+                raise Fail("Refusing request to Server-Side host") from None
             else:
                 raise
         finally:
