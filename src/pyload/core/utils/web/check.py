@@ -6,6 +6,10 @@ import time
 from .convert import host_to_ip
 
 
+_NAT64_WELL_KNOWN = ipaddress.IPv6Network("64:ff9b::/96")
+_NAT64_DISCOVERY = ipaddress.IPv6Network("64:ff9b:1::/48")
+
+
 def is_ipv4_address(value):
     """
     Check whether the provided string is a valid IPv4 address.
@@ -42,6 +46,44 @@ def is_ipv6_address(value):
         return True
 
 
+def is_embedded_ipv4(value):
+    """Extract an embedded IPv4 address from an IPv6 address, if present.
+
+        This function identifies and returns the embedded IPv4 address from
+        common IPv6 transition mechanisms:
+
+        - IPv4-mapped IPv6 addresses (::ffff:0:0/96)
+        - 6to4 addresses (2002::/16)
+        - NAT64 addresses (well-known prefix 64:ff9b::/96 and discovery prefixes)
+
+        Parameters:
+            value (ipaddress.IPv6Address | str): An IPv6 address or string to inspect.
+
+        Returns:
+            ipaddress.IPv4Address | None: The embedded IPv4 address if found,
+                otherwise None.
+
+        Notes:
+            - Returns None for regular IPv6 addresses that do not embed an IPv4 address.
+            - For NAT64, it extracts the last 4 bytes of the IPv6 address.
+            - This is typically used internally for handling dual-stack or
+              IPv4-over-IPv6 scenarios.
+        """
+    try:
+        addr = ipaddress.IPv6Address(value)
+    except ipaddress.AddressValueError:
+        return None
+
+    if addr.ipv4_mapped is not None:
+        return addr.ipv4_mapped
+    if addr.sixtofour is not None:  # 2002::/16 6to4
+        return addr.sixtofour
+    if addr in _NAT64_WELL_KNOWN or addr in _NAT64_DISCOVERY:
+        return ipaddress.IPv4Address(addr.packed[-4:])
+
+    return None
+
+
 def is_ip_address(value):
     """
     Check whether the provided string is a valid IPv4 or IPv6 address.
@@ -63,8 +105,8 @@ def is_loopback_address(value):
     """
     Determine whether the provided address or hostname is a loopback address.
 
-    This function supports IPv4, IPv6 and IPv4-mapped IPv6 addresses that are prefixed with
-    '::ffff:' by stripping that prefix before validation. If the input cannot
+    This function supports IPv4, IPv6 and IPv6 transition-encoding forms (IPv4-mapped,
+    6to4, NAT64) that wrap an IPv4 loopback. If the input cannot
     be parsed as an IP address, the function treats the string 'localhost'
     as a loopback host.
 
@@ -78,9 +120,16 @@ def is_loopback_address(value):
         value = value[7:]
 
     try:
-        return ipaddress.ip_address(value).is_loopback
+        addr = ipaddress.ip_address(value)
     except ValueError:
         return value == "localhost"
+
+    if isinstance(addr, ipaddress.IPv6Address):
+        embedded_addr = is_embedded_ipv4(addr)
+        if embedded_addr is not None:
+            addr = embedded_addr
+
+    return addr.is_loopback
 
 
 def is_global_address(value):
@@ -95,9 +144,15 @@ def is_global_address(value):
       False for non-global addresses or if the input is invalid.
     """
     try:
-        return ipaddress.ip_address(value).is_global
+        addr = ipaddress.ip_address(value)
     except ValueError:
         return False
+
+    embedded_addr = is_embedded_ipv4(addr)
+    if embedded_addr is not None:
+        addr = embedded_addr
+
+    return addr.is_global
 
 
 def is_global_host(value):
