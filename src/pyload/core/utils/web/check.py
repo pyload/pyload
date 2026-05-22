@@ -116,9 +116,6 @@ def is_loopback_address(value):
     Returns:
     - bool: True if the value is a loopback address/hostname, False otherwise.
     """
-    if value.startswith("::ffff:"):
-        value = value[7:]
-
     try:
         addr = ipaddress.ip_address(value)
     except ValueError:
@@ -148,9 +145,10 @@ def is_global_address(value):
     except ValueError:
         return False
 
-    embedded_addr = is_embedded_ipv4(addr)
-    if embedded_addr is not None:
-        addr = embedded_addr
+    if isinstance(addr, ipaddress.IPv6Address):
+        embedded_addr = is_embedded_ipv4(addr)
+        if embedded_addr is not None:
+            addr = embedded_addr
 
     return addr.is_global
 
