@@ -11,7 +11,7 @@ from flask.json import jsonify
 from pyload import APPID
 
 from ..api_docs.openapi_specification_generator import OpenAPISpecificationGenerator
-from ..helpers import apikey_auth, csrf_exempt, is_authenticated
+from ..helpers import apikey_auth, csrf_exempt, is_authenticated, rate_limit
 
 bp = flask.Blueprint("api", __name__)
 log = getLogger(APPID)
@@ -22,6 +22,7 @@ log = getLogger(APPID)
 @bp.route("/api/<func>/<args>", methods=["GET", "POST"], endpoint="rpc")
 # @apiver_check
 @apikey_auth
+@rate_limit(count=100, period=60)  #: 100/minute
 def rpc(func, args=""):
     if func.startswith("_"):
         flask.flash(f"Invalid API call '{func}'")
