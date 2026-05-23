@@ -3,7 +3,7 @@ from threading import RLock
 
 from ..datatypes.enums import Destination
 from ..utils.struct.lock import lock
-from .event_manager import InsertEvent, ReloadAllEvent, RemoveEvent, UpdateEvent
+from .event_manager import InsertEvent, RemoveEvent, UpdateEvent
 
 
 def change(func):
@@ -133,8 +133,10 @@ class FileManager:
         self.pyload.db.add_links(data, package)
         self.pyload.thread_manager.create_info_thread(data, package)
 
-        # TODO: change from reload_all event to package update event
-        self.pyload.event_manager.add_event(ReloadAllEvent("collector"))
+        p = self.get_package(package)
+        self.pyload.event_manager.add_event(
+            UpdateEvent("pack", package, "collector" if not p.queue else "queue")
+        )
 
     # ----------------------------------------------------------------------
     @lock
