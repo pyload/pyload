@@ -174,6 +174,11 @@ class SevenZip(BaseExtractor):
     def extract(self, password=None, file=None):
         command = "x" if self.fullpath else "e"
 
+        # Validate file list BEFORE extraction to prevent path traversal
+        file_list = self.list(password)
+        if file_list:
+            self._validate_archive_entries(file_list)
+
         p = self.call_cmd(command, "-o" + self.dest, self.filename, file, password=password)
 
         #: Communicate and retrieve stderr

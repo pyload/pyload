@@ -1,7 +1,7 @@
+import fnmatch
 import os
 import sys
 import zipfile
-import fnmatch
 
 from pyload.core.utils.fs import safejoin
 from pyload.plugins.base.extractor import ArchiveError, BaseExtractor, CRCError, PasswordError
@@ -83,12 +83,17 @@ class UnZip(BaseExtractor):
         try:
             with zipfile.ZipFile(self.filename, "r") as z:
                 z.setpassword(password)
-                members = (member for member in z.namelist()
+
+                # Validate file list BEFORE extraction to prevent path traversal
+                namelist = z.namelist()
+                self._validate_archive_entries(namelist)
+
+                members = (member for member in namelist
                            if not any(fnmatch.fnmatch(member, exclusion)
                            for exclusion in self.excludefiles))
-                z.extractall(self.dest, members = members)
+                z.extractall(self.dest, members=members)
                 self.files = [safejoin(self.dest, _f)
-                              for _f in z.namelist()
+                              for _f in namelist
                               if _f[-1] != os.path.sep and _f in members]
 
             return self.files

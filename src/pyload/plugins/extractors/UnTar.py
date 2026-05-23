@@ -72,6 +72,10 @@ class UnTar(BaseExtractor):
 
         try:
             with tarfile.open(self.filename, errorlevel=2) as t:
+                # Validate file list BEFORE extraction to prevent path traversal
+                members = t.getmembers()
+                self._validate_archive_entries([m.name for m in members])
+
                 _safe_extractall(t, self.dest)
                 self.files = t.getnames()
             return self.files
