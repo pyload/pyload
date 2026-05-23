@@ -1,6 +1,6 @@
 import os
 import time
-import urllib
+import urllib.parse
 from logging import getLogger
 
 import pycurl
@@ -134,7 +134,7 @@ class HTTPDownload:
         except pycurl.error as exc:
             #: code 33 - no resume
             code = exc.args[0]
-            if code == 33:
+            if code == pycurl.E_HTTP_RANGE_ERROR:
                 #: try again without resume
                 self.log.debug("Errno 33 -> Restart without resume")
 
@@ -143,9 +143,10 @@ class HTTPDownload:
                     self.close_chunk(chunk)
 
                 return self._download(chunks, False)
-            elif code == 42:
+            elif code == pycurl.E_ABORTED_BY_CALLBACK:
                 hostname = urllib.parse.urlparse(self.url).hostname
-                raise Fail(f"Refusing to download from Server-Side host '{hostname}'")
+                bad_ip = next((chunk.request.bad_ip for chunk in self.chunks if chunk.request.bad_ip), None)
+                raise Fail(f"Refusing to download from Server-Side host ('{hostname}' resolves to {bad_ip})")
 
             else:
                 raise
