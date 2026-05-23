@@ -58,7 +58,7 @@ class ArchiveQueue:
 class ExtractArchive(BaseAddon):
     __name__ = "ExtractArchive"
     __type__ = "addon"
-    __version__ = "1.73"
+    __version__ = "1.74"
     __status__ = "testing"
 
     __config__ = [
@@ -564,7 +564,6 @@ class ExtractArchive(BaseAddon):
 
         raise Exception(self._("Extract failed"))
 
-    @expose
     def get_passwords(self, reload=True):
         """
         List of saved passwords.
