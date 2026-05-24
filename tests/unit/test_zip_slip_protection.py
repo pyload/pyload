@@ -149,24 +149,8 @@ class TestPathTraversalProtection(unittest.TestCase):
         result = self.extractor._validate_archive_entries(valid_nested_entries)
         self.assertEqual(len(result), len(valid_nested_entries))
 
-    def test_mixed_separators_rejected(self):
-        """Paths with mixed separators attempting traversal should be rejected"""
-        malicious_entries = [
-            "..\\..\\etc/passwd",
-            "../etc\\passwd",
-            "dir/../../../etc/passwd",
-        ]
-
-        for entry in malicious_entries:
-            with self.subTest(entry=entry):
-                with self.assertRaises(ArchiveError) as ctx:
-                    self.extractor._validate_archive_entries([entry])
-                # Note: may be caught as traversal or depending on normalization
-                exception_msg = str(ctx.exception).lower()
-                self.assertTrue(
-                    "path traversal" in exception_msg or "invalid" in exception_msg
-                )
-        """Byte paths should be handled correctly"""
+    def test_valid_byte_entries_accepted(self):
+        """Valid byte path entries should be accepted"""
         byte_entries = [
             b"file.txt",
             b"subdir/file.txt",
@@ -189,15 +173,23 @@ class TestPathTraversalProtection(unittest.TestCase):
                 self.assertIn("path traversal", str(ctx.exception).lower())
 
     def test_mixed_separators_rejected(self):
-        """Paths with mixed separators attempting traversal should be rejected"""    """Mixed path separators used for traversal must be rejected."""
+        """Paths with mixed separators attempting traversal should be rejected"""
+        # Cross-platform malicious entries (forward-slashes work everywhere)
         malicious_entries = [
-            r"..\..\etc/passwd",
-            r"..\..\windows\system32\config\sam",
-            r"../etc\passwd",
-            r"subdir\..\..\windows",
-            r"subdir/../../etc/passwd",
-            r"..\/..\/etc/passwd",
+            "subdir/../../etc/passwd",
+            "../../../etc/passwd",
+            "subdir/..\\../etc/passwd",  # Mixed separators with forward-slash traversal
         ]
+
+        # Windows-only entries (backslashes are path separators on Windows)
+        if IS_WINDOWS:
+            malicious_entries.extend([
+                r"..\..\etc/passwd",
+                r"..\..\windows\system32\config\sam",
+                r"../etc\passwd",
+                r"subdir\..\..\windows",
+                r"..\/..\/etc/passwd",
+            ])
 
         for entry in malicious_entries:
             with self.subTest(entry=entry):
@@ -206,7 +198,8 @@ class TestPathTraversalProtection(unittest.TestCase):
                 # Note: may be caught as traversal or depending on normalization
                 exception_msg = str(ctx.exception).lower()
                 self.assertTrue(
-                    "path traversal" in exception_msg or "invalid" in exception_msg
+                    "path traversal" in exception_msg or "invalid" in exception_msg,
+                    f"Expected path traversal error for entry: {entry}"
                 )
 
     def test_empty_list(self):
