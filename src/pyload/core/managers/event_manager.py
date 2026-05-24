@@ -25,6 +25,7 @@ class EventManager:
 
     @lock
     def get_events(self, uuid):
+        self.clean()  #: purge inactive clients before processing new ones
         events = []
         for client in self.clients:
             if client.uuid == uuid:

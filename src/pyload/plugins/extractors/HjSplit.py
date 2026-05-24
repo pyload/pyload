@@ -55,6 +55,17 @@ class HjSplit(BaseExtractor):
         size_total = 0
         name = os.path.basename(self.filename)[:-4]
 
+        # Validate output filename to prevent path traversal
+        output_path = safejoin(self.dest, name)
+        try:
+            from pyload.core.utils.fs import is_within_directory
+            if not is_within_directory(self.dest, output_path):
+                raise ArchiveError(
+                    f"Attempted path traversal in archive: {name}"
+                )
+        except ValueError:
+            raise ArchiveError(f"Invalid path in archive: {name}")
+
         chunks = sorted(self.chunks())
         num_chunks = len(chunks)
 
@@ -84,7 +95,7 @@ class HjSplit(BaseExtractor):
                     size_total += os.path.getsize(chunks[i])
 
         #: Now do the actual merge
-        with open(safejoin(self.dest, name), "wb") as output_file:
+        with open(output_path, "wb") as output_file:
             size_written = 0
             for part_filename in chunks:
                 self.log_debug("Merging part", part_filename)

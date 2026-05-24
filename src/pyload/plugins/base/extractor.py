@@ -1,6 +1,8 @@
 import os
 import re
 
+from pyload.core.utils.fs import is_within_directory
+
 from .plugin import BasePlugin
 
 
@@ -184,3 +186,63 @@ class BaseExtractor(BasePlugin):
         Set extraction progress
         """
         return self.pyfile.set_progress(int(x))
+
+    def _validate_archive_entries(self, file_list):
+        """
+        Validate that all archive entries are within the destination directory.
+        Prevents Zip Slip / path traversal attacks.
+
+        :param file_list: List of file paths from archive
+        :return: List of validated file paths, raises ArchiveError if paths are unsafe
+        """
+        validated = []
+        for entry in file_list:
+            # Normalize the entry path
+            entry_path = os.fsdecode(entry) if isinstance(entry, bytes) else entry
+
+            # Reject absolute paths (both Unix and Windows)
+            if os.path.isabs(entry_path):
+                raise ArchiveError(
+                    f"Attempted path traversal in archive: {entry}"
+                )
+
+            # Reject Unix-style absolute paths (starts with /)
+            if entry_path.startswith('/'):
+                raise ArchiveError(
+                    f"Attempted path traversal in archive: {entry}"
+                )
+
+            # Reject Windows UNC paths (\\server\share or //server/share)
+            if entry_path.startswith('\\\\') or entry_path.startswith('//'):
+                raise ArchiveError(
+                    f"Attempted path traversal in archive: {entry}"
+                )
+
+            # Reject paths with drive letters on Windows (C:, D:, etc)
+            if len(entry_path) >= 2 and entry_path[1] == ':':
+                raise ArchiveError(
+                    f"Attempted path traversal in archive: {entry}"
+                )
+
+            # Remove leading slashes and traversal sequences
+            entry_path = entry_path.lstrip(os.sep).lstrip("/").lstrip("\\")
+
+            # Construct full extraction path
+            full_path = os.path.normpath(os.path.join(self.dest, entry_path))
+
+            # Verify the file would be extracted within destination
+            try:
+                if not is_within_directory(self.dest, full_path):
+                    raise ArchiveError(
+                        f"Attempted path traversal in archive: {entry}"
+                    )
+            except ValueError:
+                # is_within_directory can raise ValueError for invalid paths
+                raise ArchiveError(
+                    f"Invalid path in archive: {entry}"
+                )
+
+            validated.append(entry_path)
+
+        return validated
+
