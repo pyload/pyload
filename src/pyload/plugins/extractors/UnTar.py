@@ -6,16 +6,6 @@ from pyload.core.utils.fs import is_within_directory, safejoin
 from pyload.plugins.base.extractor import ArchiveError, BaseExtractor, CRCError
 
 
-# Fix for tarfile CVE-2007-4559
-def _safe_extractall(tar, path=".", members=None, *, numeric_owner=False):
-    for member in tar.getmembers():
-        member_path = os.path.join(path, member.name)
-        if not is_within_directory(path, member_path):
-            raise ArchiveError("Attempted Path Traversal in Tar File (CVE-2007-4559)")
-
-    tar.extractall(path, members, numeric_owner=numeric_owner)
-
-
 class UnTar(BaseExtractor):
     __name__ = "UnTar"
     __type__ = "extractor"
@@ -67,6 +57,27 @@ class UnTar(BaseExtractor):
         else:
             t.close()
 
+    def _safe_extractall(self, tar, path=".", members=None, *, numeric_owner=False):
+        """
+        Safely extract TAR members with validation for path traversal and symlink escapes.
+        
+        :param tar: tarfile.TarFile object
+        :param path: Destination directory
+        :param members: List of members to extract (None = all)
+        :param numeric_owner: Whether to use numeric owner IDs
+        """
+        for member in tar.getmembers():
+            member_path = os.path.join(path, member.name)
+            if not is_within_directory(path, member_path):
+                raise ArchiveError("Attempted Path Traversal in Tar File (CVE-2007-4559)")
+
+            # Validate symlink targets to prevent symlink escape attacks
+            if member.issym() or member.islnk():
+                link_target = member.linkname
+                self._validate_symlink_target(member.name, link_target, path)
+
+        tar.extractall(path, members, numeric_owner=numeric_owner)
+
     def extract(self, password=None):
         self.verify(password)
 
@@ -76,7 +87,7 @@ class UnTar(BaseExtractor):
                 members = t.getmembers()
                 self._validate_archive_entries([m.name for m in members])
 
-                _safe_extractall(t, self.dest)
+                self._safe_extractall(t, self.dest)
                 self.files = t.getnames()
             return self.files
 

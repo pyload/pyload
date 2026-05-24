@@ -2,15 +2,43 @@
 Unit tests for path traversal ("Zip Slip") attack prevention in archive extractors.
 """
 import os
+import platform
 import sys
 import tempfile
 import unittest
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, Mock, patch
 
 # Add src to path for imports
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../src'))
 
 from pyload.plugins.base.extractor import ArchiveError, BaseExtractor
+
+# Platform detection
+IS_WINDOWS = platform.system() == "Windows"
+IS_LINUX = platform.system() == "Linux"
+IS_MACOS = platform.system() == "Darwin"
+
+
+def can_create_symlinks():
+    """Check if the current system can create symlinks."""
+    try:
+        test_dir = tempfile.mkdtemp()
+        test_link = os.path.join(test_dir, "test_link")
+        test_target = os.path.join(test_dir, "test_target")
+        # Create a target file
+        with open(test_target, 'w') as f:
+            f.write("test")
+        # Try to create a symlink
+        os.symlink(test_target, test_link)
+        # Clean up
+        import shutil
+        shutil.rmtree(test_dir)
+        return True
+    except (OSError, NotImplementedError):
+        return False
+
+
+SYMLINKS_SUPPORTED = can_create_symlinks()
 
 
 class TestPathTraversalProtection(unittest.TestCase):
@@ -62,9 +90,12 @@ class TestPathTraversalProtection(unittest.TestCase):
         malicious_entries = [
             "../etc/passwd",
             "../../etc/shadow",
-            "..\\..\\windows\\system32\\config\\sam",
             "subdir/../../etc/passwd",
         ]
+        
+        # Add Windows-specific entries
+        if IS_WINDOWS:
+            malicious_entries.append("..\\..\\windows\\system32\\config\\sam")
 
         for entry in malicious_entries:
             with self.subTest(entry=entry):
@@ -77,9 +108,14 @@ class TestPathTraversalProtection(unittest.TestCase):
         malicious_entries = [
             "/etc/passwd",
             "/root/.ssh/id_rsa",
-            "C:\\Windows\\System32\\config\\sam",
-            "D:\\sensitive\\data.txt",
         ]
+        
+        # Add Windows-specific paths if on Windows
+        if IS_WINDOWS:
+            malicious_entries.extend([
+                "C:\\Windows\\System32\\config\\sam",
+                "D:\\sensitive\\data.txt",
+            ])
 
         for entry in malicious_entries:
             with self.subTest(entry=entry):
@@ -153,11 +189,14 @@ class TestPathTraversalProtection(unittest.TestCase):
                 self.assertIn("path traversal", str(ctx.exception).lower())
 
     def test_mixed_separators_rejected(self):
-        """Paths with mixed separators attempting traversal should be rejected"""
+        """Paths with mixed separators attempting traversal should be rejected"""    """Mixed path separators used for traversal must be rejected."""
         malicious_entries = [
-            "..\\..\\etc/passwd",
-            "../etc\\passwd",
-            "subdir\\..\\..\\windows",
+            r"..\..\etc/passwd",
+            r"..\..\windows\system32\config\sam",
+            r"../etc\passwd",
+            r"subdir\..\..\windows",
+            r"subdir/../../etc/passwd",
+            r"..\/..\/etc/passwd",
         ]
 
         for entry in malicious_entries:
@@ -271,6 +310,156 @@ class TestPathTraversalProtection(unittest.TestCase):
         result = self.extractor._validate_archive_entries(entries)
         self.assertEqual(len(result), 2)
 
+    def test_symlink_target_validation_safe(self):
+        """Safe symlink targets pointing within destination should be accepted"""
+        safe_targets = [
+            ("link", "file.txt", True),  # Link to file in same directory
+            ("link", "subdir/file.txt", True),  # Link to file in subdirectory
+            ("subdir/link", "../file.txt", True),  # Link back to parent (but within dest)
+            ("subdir/link", "file.txt", True),  # Link up one level
+        ]
+
+        for symlink_path, target, should_pass in safe_targets:
+            with self.subTest(symlink_path=symlink_path, target=target):
+                if should_pass:
+                    # Should not raise
+                    self.extractor._validate_symlink_target(symlink_path, target, self.temp_dir)
+                else:
+                    with self.assertRaises(ArchiveError):
+                        self.extractor._validate_symlink_target(symlink_path, target, self.temp_dir)
+
+    def test_symlink_target_traversal_rejected(self):
+        """Symlink targets pointing outside destination should be rejected"""
+        malicious_targets = [
+            ("link", "../../etc/passwd"),
+            ("link", "../../../root/.ssh/id_rsa"),
+            ("subdir/link", "../../etc/passwd"),
+            ("link", "/etc/passwd"),  # Absolute target
+        ]
+
+        for symlink_path, target in malicious_targets:
+            with self.subTest(symlink_path=symlink_path, target=target):
+                with self.assertRaises(ArchiveError) as ctx:
+                    self.extractor._validate_symlink_target(symlink_path, target, self.temp_dir)
+                exception_msg = str(ctx.exception).lower()
+                self.assertTrue(
+                    "outside" in exception_msg or "absolute" in exception_msg
+                )
+
+    def test_symlink_absolute_target_rejected(self):
+        """Symlink with absolute targets should be rejected"""
+        absolute_targets = [
+            ("link", "/etc/passwd"),
+            ("link", "/root/.ssh/id_rsa"),
+        ]
+        
+        # Add Windows-specific paths if on Windows
+        if IS_WINDOWS:
+            absolute_targets.append(("link", "C:\\Windows\\System32"))
+
+        for symlink_path, target in absolute_targets:
+            with self.subTest(symlink_path=symlink_path, target=target):
+                with self.assertRaises(ArchiveError) as ctx:
+                    self.extractor._validate_symlink_target(symlink_path, target, self.temp_dir)
+                exception_msg = str(ctx.exception).lower()
+                # Should reject due to absolute path or pointing outside
+                self.assertTrue(
+                    "absolute" in exception_msg or "outside" in exception_msg
+                )
+
+    def test_symlink_with_drive_letter_rejected(self):
+        """Symlink targets with Windows drive letters should be rejected"""
+        if not IS_WINDOWS:
+            self.skipTest("Drive letter test only applicable on Windows")
+        
+        with self.assertRaises(ArchiveError) as ctx:
+            self.extractor._validate_symlink_target("link", "D:\\sensitive\\data", self.temp_dir)
+        exception_msg = str(ctx.exception).lower()
+        self.assertTrue("absolute" in exception_msg or "invalid" in exception_msg)
+
+
+class TestTarSymlinkProtection(unittest.TestCase):
+    """Test symlink protection in TAR extractor"""
+
+    def setUp(self):
+        """Set up test fixtures"""
+        self.temp_dir = tempfile.mkdtemp()
+        sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../src'))
+
+    def tearDown(self):
+        """Clean up test fixtures"""
+        import shutil
+        if os.path.exists(self.temp_dir):
+            shutil.rmtree(self.temp_dir)
+
+    @unittest.skipIf(not SYMLINKS_SUPPORTED, "Symlinks not supported on this system")
+    def test_malicious_symlink_in_tar_rejected(self):
+        """TAR with symlinks pointing outside destination should be rejected"""
+        import io
+        import tarfile
+        from unittest.mock import Mock
+
+        from pyload.plugins.extractors.UnTar import UnTar
+
+        # Create a TAR with a malicious symlink
+        tar_buffer = io.BytesIO()
+        with tarfile.open(fileobj=tar_buffer, mode='w') as tar:
+            # Add a regular file
+            file_info = tarfile.TarInfo(name="file.txt")
+            file_info.size = 5
+            tar.addfile(file_info, io.BytesIO(b"hello"))
+
+            # Add a symlink pointing outside the destination
+            symlink_info = tarfile.TarInfo(name="link")
+            symlink_info.type = tarfile.SYMTYPE
+            symlink_info.linkname = "../../etc/passwd"
+            tar.addfile(symlink_info)
+
+        tar_buffer.seek(0)
+
+        # Try to extract - should raise ArchiveError
+        with tarfile.open(fileobj=tar_buffer, mode='r') as tar:
+            mock_pyfile = Mock()
+            mock_pyfile.m.pyload = Mock()
+            untar = UnTar(mock_pyfile, "test.tar", self.temp_dir)
+            with self.assertRaises(ArchiveError) as ctx:
+                untar._safe_extractall(tar, self.temp_dir)
+            self.assertIn("symlink", str(ctx.exception).lower())
+
+    @unittest.skipIf(not SYMLINKS_SUPPORTED, "Symlinks not supported on this system")
+    def test_safe_symlink_in_tar_accepted(self):
+        """TAR with safe symlinks (pointing within destination) should be accepted"""
+        import io
+        import tarfile
+        from unittest.mock import Mock
+
+        from pyload.plugins.extractors.UnTar import UnTar
+
+        # Create a TAR with safe symlinks
+        tar_buffer = io.BytesIO()
+        with tarfile.open(fileobj=tar_buffer, mode='w') as tar:
+            # Add a regular file
+            file_info = tarfile.TarInfo(name="file.txt")
+            file_info.size = 5
+            tar.addfile(file_info, io.BytesIO(b"hello"))
+
+            # Add a safe symlink (points to file within destination)
+            symlink_info = tarfile.TarInfo(name="link")
+            symlink_info.type = tarfile.SYMTYPE
+            symlink_info.linkname = "file.txt"
+            tar.addfile(symlink_info)
+
+        tar_buffer.seek(0)
+
+        # Should extract successfully
+        with tarfile.open(fileobj=tar_buffer, mode='r') as tar:
+            mock_pyfile = Mock()
+            mock_pyfile.m.pyload = Mock()
+            untar = UnTar(mock_pyfile, "test.tar", self.temp_dir)
+            # Should not raise an exception
+            untar._safe_extractall(tar, self.temp_dir)
+            untar._safe_extractall(tar, self.temp_dir)
+
 
 class TestUnZipPathTraversal(unittest.TestCase):
     """Test path traversal protection in UnZip extractor"""
@@ -296,5 +485,211 @@ class TestUnZipPathTraversal(unittest.TestCase):
         mock_z.namelist.return_value = ["../etc/passwd", "file.txt"]
         mock_z.testzip.return_value = None  # No bad files
         mock_z.setpassword = MagicMock()
-if __name__ == "__main__":
-    unittest.main()
+        mock_zipfile.return_value.__enter__.return_value = mock_z
+
+        # Create UnZip instance with mocked pyfile
+        mock_pyfile = Mock()
+        mock_pyfile.m.pyload = Mock()
+        unzip = UnZip(mock_pyfile, "test.zip", self.temp_dir)
+
+        # Extraction should raise ArchiveError due to path traversal
+        with self.assertRaises(ArchiveError):
+            unzip.extract()
+
+
+class TestZipSymlinkProtection(unittest.TestCase):
+    """Test symlink protection in UnZip extractor"""
+
+    def setUp(self):
+        """Set up test fixtures"""
+        self.temp_dir = tempfile.mkdtemp()
+        sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../src'))
+
+    def tearDown(self):
+        """Clean up test fixtures"""
+        import shutil
+        if os.path.exists(self.temp_dir):
+            shutil.rmtree(self.temp_dir)
+
+    @unittest.skipIf(not SYMLINKS_SUPPORTED, "Symlinks not supported on this system")
+    def test_zip_detects_symlinks(self):
+        """UnZip should detect and validate symlinks"""
+        import io
+        import stat
+        import zipfile
+        from unittest.mock import Mock
+
+        from pyload.plugins.extractors.UnZip import UnZip
+
+        # Create a ZIP with a symlink entry
+        zip_buffer = io.BytesIO()
+        with zipfile.ZipFile(zip_buffer, 'w') as z:
+            # Add a regular file
+            z.writestr("file.txt", "hello")
+
+            # Add a symlink by manually creating a ZipInfo with Unix symlink attributes
+            symlink_info = zipfile.ZipInfo("link")
+            # Set external attributes: Unix file mode S_IFLNK | permissions
+            symlink_info.external_attr = (stat.S_IFLNK | 0o644) << 16
+            z.writestr(symlink_info, "../../etc/passwd")
+
+        zip_buffer.seek(0)
+
+        # Create UnZip instance
+        mock_pyfile = Mock()
+        mock_pyfile.m.pyload = Mock()
+        unzip = UnZip(mock_pyfile, "test.zip", self.temp_dir)
+
+        # Test _is_zip_symlink method
+        with zipfile.ZipFile(zip_buffer, 'r') as z:
+            symlink_entry = z.infolist()[1]  # Get the symlink entry
+            self.assertTrue(unzip._is_zip_symlink(symlink_entry), "Should detect symlink entry")
+
+            # Test symlink validation
+            with self.assertRaises(ArchiveError) as ctx:
+                unzip._validate_zip_symlinks(z)
+            self.assertIn("symlink", str(ctx.exception).lower())
+
+
+class TestRarSymlinkProtection(unittest.TestCase):
+    """Test symlink protection in UnRar extractor"""
+
+    def setUp(self):
+        """Set up test fixtures"""
+        self.temp_dir = tempfile.mkdtemp()
+        sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../src'))
+
+    def tearDown(self):
+        """Clean up test fixtures"""
+        import shutil
+        if os.path.exists(self.temp_dir):
+            shutil.rmtree(self.temp_dir)
+
+    @unittest.skipIf(not SYMLINKS_SUPPORTED, "Symlinks not supported on this system")
+    def test_rar_skips_symlinks_with_ol_switch(self):
+        """UnRar should skip symlinks using -ol- switch in call_cmd"""
+        import re
+        from unittest.mock import MagicMock, Mock, patch
+
+        from pyload.plugins.extractors.UnRar import UnRar
+
+        # Create UnRar instance
+        mock_pyfile = Mock()
+        mock_pyfile.m.pyload = Mock()
+        unrar = UnRar(mock_pyfile, "test.rar", self.temp_dir)
+        unrar.VERSION = "5.70"  # Set a version
+        unrar._RE_FILES = re.compile(
+            r"^([* ])\s*([ACHIRS.rw\-]+)\s+(\d+)(?:\s+\d+)?(?:\s+(?:\d+%|-->|<--))?\s+([\d-]+)\s+([\d:]+)(?:\s+[0-9A-F]{8})?\s+(.+)",
+            re.M
+        )
+        
+        # Mock subprocess.Popen to capture the command
+        with patch('pyload.plugins.extractors.UnRar.subprocess.Popen') as mock_popen:
+            mock_process = Mock()
+            mock_process.communicate.return_value = ('', '')
+            mock_process.returncode = 0
+            # Mock stdout.read to return empty immediately (end of stream)
+            mock_process.stdout.read.return_value = b''
+            mock_popen.return_value = mock_process
+            
+            # Mock the list method to return empty list (avoiding the need for _find_smallest_file)
+            with patch.object(unrar, 'list', return_value=[]):
+                # Call extract
+                unrar.extract(password=None)
+            
+            # Verify that call_cmd was invoked and -ol- switch is in the command
+            args, kwargs = mock_popen.call_args
+            command = args[0]
+            
+            # Check that -ol- is in the command (should be present to skip symlinks)
+            self.assertIn('-ol-', command, "UnRar extract should include -ol- switch to skip symlinks")
+
+    def test_rar_path_traversal_protection_before_extraction(self):
+        """UnRar should validate path traversal before extraction"""
+        from unittest.mock import Mock, patch
+
+        from pyload.plugins.extractors.UnRar import UnRar
+
+        # Create UnRar instance
+        mock_pyfile = Mock()
+        mock_pyfile.m.pyload = Mock()
+        unrar = UnRar(mock_pyfile, "test.rar", self.temp_dir)
+        
+        # Mock the list method to return a malicious path
+        with patch.object(unrar, 'list', return_value=[os.path.join(self.temp_dir, "../etc/passwd")]):
+            # Attempting extraction with traversal should raise ArchiveError
+            with self.assertRaises(ArchiveError):
+                unrar.extract(password=None)
+
+
+class TestSevenZipSymlinkProtection(unittest.TestCase):
+    """Test symlink protection in SevenZip extractor"""
+
+    def setUp(self):
+        """Set up test fixtures"""
+        self.temp_dir = tempfile.mkdtemp()
+        sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../src'))
+
+    def tearDown(self):
+        """Clean up test fixtures"""
+        import shutil
+        if os.path.exists(self.temp_dir):
+            shutil.rmtree(self.temp_dir)
+
+    def test_7zip_detects_symlinks_before_extraction(self):
+        """SevenZip should detect symlinks in archive list before extraction"""
+        from unittest.mock import Mock, patch
+
+        from pyload.plugins.extractors.SevenZip import SevenZip
+
+        # Create SevenZip instance
+        mock_pyfile = Mock()
+        mock_pyfile.m.pyload = Mock()
+        sevenzp = SevenZip(mock_pyfile, "test.7z", self.temp_dir)
+
+        # Mock the call_cmd to return list output with a symlink
+        def mock_call_cmd(*args, **kwargs):
+            mock_process = Mock()
+            if "l" in args and "-slt" in args:
+                # Simulate 7z list -slt output with a symlink
+                output = """
+Path = regular_file.txt
+Size = 1024
+Attributes = .....
+
+Path = link_to_file
+Size = 0
+Attributes = l rwxr-xr-x
+
+Path = another_file.txt
+Size = 512
+Attributes = .....
+"""
+                mock_process.communicate.return_value = (output, "")
+            else:
+                mock_process.communicate.return_value = ("", "")
+            mock_process.returncode = 0
+            return mock_process
+
+        with patch.object(sevenzp, 'call_cmd', side_effect=mock_call_cmd):
+            # Attempting extraction with symlinks should raise ArchiveError
+            with self.assertRaises(ArchiveError) as ctx:
+                sevenzp._detect_7zip_symlinks(password=None)
+            self.assertIn("symlink", str(ctx.exception).lower())
+
+    def test_7zip_path_traversal_protection_before_extraction(self):
+        """SevenZip should validate path traversal before extraction"""
+        from unittest.mock import Mock, patch
+
+        from pyload.plugins.extractors.SevenZip import SevenZip
+
+        # Create SevenZip instance
+        mock_pyfile = Mock()
+        mock_pyfile.m.pyload = Mock()
+        sevenzp = SevenZip(mock_pyfile, "test.7z", self.temp_dir)
+
+        # Mock the list method to return a malicious path
+        with patch.object(sevenzp, 'list', return_value=[os.path.join(self.temp_dir, "../etc/passwd")]):
+            # Attempting extraction with traversal should raise ArchiveError
+            with self.assertRaises(ArchiveError):
+                sevenzp.extract(password=None)
