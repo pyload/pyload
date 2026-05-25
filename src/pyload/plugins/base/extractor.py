@@ -197,38 +197,48 @@ class BaseExtractor(BasePlugin):
         """
         validated = []
         for entry in file_list:
-            # Normalize the entry path
-            entry_path = os.fsdecode(entry) if isinstance(entry, bytes) else entry
+            if not entry:
+                raise ArchiveError("Invalid archive entry: empty path")
 
-            # Reject absolute paths (both Unix and Windows)
-            if os.path.isabs(entry_path):
-                raise ArchiveError(
-                    f"Attempted path traversal in archive: {entry}"
-                )
+            if isinstance(entry, bytes):
+                # Normalize the entry path
+                entry = os.fsdecode(entry)
 
-            # Reject Unix-style absolute paths (starts with /)
-            if entry_path.startswith('/'):
-                raise ArchiveError(
-                    f"Attempted path traversal in archive: {entry}"
-                )
+            # Reject null bytes
+            if "\x00" in entry:
+                raise ArchiveError(f"Archive entry contains Null: {entry}")
 
-            # Reject Windows UNC paths (\\server\share or //server/share)
-            if entry_path.startswith('\\\\') or entry_path.startswith('//'):
-                raise ArchiveError(
-                    f"Attempted path traversal in archive: {entry}"
-                )
+            # Normalize all separators to forward slashes first
+            normalized = entry.replace("\\", "/")
 
-            # Reject paths with drive letters on Windows (C:, D:, etc)
-            if len(entry_path) >= 2 and entry_path[1] == ':':
-                raise ArchiveError(
-                    f"Attempted path traversal in archive: {entry}"
-                )
+            # Reject absolute paths (also catches UNC paths)
+            if normalized.startswith("/"):
+                raise ArchiveError(f"Attempted path traversal in archive: {entry}")
 
-            # Remove leading slashes and traversal sequences
-            entry_path = entry_path.lstrip(os.sep).lstrip("/").lstrip("\\")
+            # Check for invalid Windows characters
+            invalid_chars = '<>:"|?*'
+            for char in invalid_chars:
+                if char in normalized:
+                    raise ArchiveError(f"Archive entry contains illegal character '{char}': {entry}")
+
+            # Split and check for traversal
+            parts = [part for part in normalized.split('/')]
+
+            # Check for directory traversal
+            level = 0
+            for i, part in enumerate(parts):
+                is_last = i == len(parts) - 1
+                if part == '..':
+                    level -= 1
+                elif part == '' and not is_last:
+                    raise ArchiveError(f"Invalid archive entry: {entry}")
+                elif part not in ('', '.'):
+                    level += 1
+                if level < 0:
+                    raise ArchiveError(f"Attempted path traversal in archive: {entry}")
 
             # Construct full extraction path
-            full_path = os.path.normpath(os.path.join(self.dest, entry_path))
+            full_path = os.path.realpath(os.path.join(self.dest, normalized))
 
             # Verify the file would be extracted within destination
             try:
@@ -242,7 +252,7 @@ class BaseExtractor(BasePlugin):
                     f"Invalid path in archive: {entry}"
                 )
 
-            validated.append(entry_path)
+            validated.append(normalized)
 
         return validated
 

@@ -88,11 +88,12 @@ class TestPathTraversalProtection(unittest.TestCase):
     def test_path_traversal_parent_dir_rejected(self):
         """Path traversal with ../ should be rejected"""
         malicious_entries = [
+            "..",
             "../etc/passwd",
             "../../etc/shadow",
             "subdir/../../etc/passwd",
         ]
-        
+
         # Add Windows-specific entries
         if IS_WINDOWS:
             malicious_entries.append("..\\..\\windows\\system32\\config\\sam")
@@ -109,7 +110,7 @@ class TestPathTraversalProtection(unittest.TestCase):
             "/etc/passwd",
             "/root/.ssh/id_rsa",
         ]
-        
+
         # Add Windows-specific paths if on Windows
         if IS_WINDOWS:
             malicious_entries.extend([
@@ -121,7 +122,17 @@ class TestPathTraversalProtection(unittest.TestCase):
             with self.subTest(entry=entry):
                 with self.assertRaises(ArchiveError) as ctx:
                     self.extractor._validate_archive_entries([entry])
-                self.assertIn("path traversal", str(ctx.exception).lower())
+                exception_msg = str(ctx.exception).lower()
+                self.assertTrue(
+                    any(phrase in exception_msg for phrase in [
+                        "path traversal",
+                        "illegal character",
+                        "invalid archive",
+                        "invalid path"
+                    ]),
+                    f"Expected traversal or invalid path error for entry: {entry}\n"
+                    f"Got: {ctx.exception}"
+                )
 
     def test_leading_slashes_stripped(self):
         """Leading slashes should be stripped and files normalized"""
@@ -174,34 +185,58 @@ class TestPathTraversalProtection(unittest.TestCase):
 
     def test_mixed_separators_rejected(self):
         """Paths with mixed separators attempting traversal should be rejected"""
-        # Cross-platform malicious entries (forward-slashes work everywhere)
+        # These should be rejected on ALL platforms (Linux, Windows, macOS)
         malicious_entries = [
+            # Pure forward slashes (universal)
+            "subdir//file",
             "subdir/../../etc/passwd",
             "../../../etc/passwd",
-            "subdir/..\\../etc/passwd",  # Mixed separators with forward-slash traversal
+            "../etc/passwd",
+            "deep/subdir/../../../../../etc/shadow",
+
+            # Mixed separators (the tricky ones)
+            "subdir/..\\../etc/passwd",
+            "subdir\\..\\../etc/passwd",
+            "..\\../etc/passwd",
+            "../..\\etc/passwd",
+            "subdir/..\\..\\windows\\system32\\config\\sam",
+
+            # Use forward slashes instead of "\/" to avoid deprecation warning
+            "../../etc/passwd",
+            "..\\../etc/passwd",
+
+            # Absolute paths (should also be rejected)
+            "/etc/passwd",
+            "/var/lib/secrets",
+            "C:\\Windows\\System32\\config\\SAM",
+            "\\etc\\passwd",
         ]
 
-        # Windows-only entries (backslashes are path separators on Windows)
+        # Add more Windows-specific cases only when running on Windows
         if IS_WINDOWS:
             malicious_entries.extend([
-                r"..\..\etc/passwd",
-                r"..\..\windows\system32\config\sam",
-                r"../etc\passwd",
-                r"subdir\..\..\windows",
-                r"..\/..\/etc/passwd",
+                r"..\..\windows\system32\drivers\etc\hosts",
+                r"subdir\..\..\..\..\windows",
+                r"C:..\windows\system32",
+                r"file.txt:hidden"
             ])
 
         for entry in malicious_entries:
             with self.subTest(entry=entry):
                 with self.assertRaises(ArchiveError) as ctx:
                     self.extractor._validate_archive_entries([entry])
-                # Note: may be caught as traversal or depending on normalization
+
                 exception_msg = str(ctx.exception).lower()
                 self.assertTrue(
-                    "path traversal" in exception_msg or "invalid" in exception_msg,
-                    f"Expected path traversal error for entry: {entry}"
+                    any(phrase in exception_msg for phrase in [
+                        "path traversal",
+                        "illegal character",
+                        "invalid archive",
+                        "invalid path"
+                    ]),
+                    f"Expected traversal or invalid path error for entry: {entry}\n"
+                    f"Got: {ctx.exception}"
                 )
-
     def test_empty_list(self):
         """Empty entry list should be handled gracefully"""
         result = self.extractor._validate_archive_entries([])
@@ -284,6 +319,7 @@ class TestPathTraversalProtection(unittest.TestCase):
     def test_special_characters_in_valid_names(self):
         """Special characters in valid filenames should be allowed"""
         entries = [
+            "...",
             "file-name.txt",
             "file_name.txt",
             "file.name.txt",
@@ -345,7 +381,7 @@ class TestPathTraversalProtection(unittest.TestCase):
             ("link", "/etc/passwd"),
             ("link", "/root/.ssh/id_rsa"),
         ]
-        
+
         # Add Windows-specific paths if on Windows
         if IS_WINDOWS:
             absolute_targets.append(("link", "C:\\Windows\\System32"))
@@ -364,7 +400,7 @@ class TestPathTraversalProtection(unittest.TestCase):
         """Symlink targets with Windows drive letters should be rejected"""
         if not IS_WINDOWS:
             self.skipTest("Drive letter test only applicable on Windows")
-        
+
         with self.assertRaises(ArchiveError) as ctx:
             self.extractor._validate_symlink_target("link", "D:\\sensitive\\data", self.temp_dir)
         exception_msg = str(ctx.exception).lower()
@@ -575,7 +611,7 @@ class TestRarSymlinkProtection(unittest.TestCase):
             r"^([* ])\s*([ACHIRS.rw\-]+)\s+(\d+)(?:\s+\d+)?(?:\s+(?:\d+%|-->|<--))?\s+([\d-]+)\s+([\d:]+)(?:\s+[0-9A-F]{8})?\s+(.+)",
             re.M
         )
-        
+
         # Mock subprocess.Popen to capture the command
         with patch('pyload.plugins.extractors.UnRar.subprocess.Popen') as mock_popen:
             mock_process = Mock()
@@ -584,16 +620,16 @@ class TestRarSymlinkProtection(unittest.TestCase):
             # Mock stdout.read to return empty immediately (end of stream)
             mock_process.stdout.read.return_value = b''
             mock_popen.return_value = mock_process
-            
+
             # Mock the list method to return empty list (avoiding the need for _find_smallest_file)
             with patch.object(unrar, 'list', return_value=[]):
                 # Call extract
                 unrar.extract(password=None)
-            
+
             # Verify that call_cmd was invoked and -ol- switch is in the command
             args, kwargs = mock_popen.call_args
             command = args[0]
-            
+
             # Check that -ol- is in the command (should be present to skip symlinks)
             self.assertIn('-ol-', command, "UnRar extract should include -ol- switch to skip symlinks")
 
@@ -607,7 +643,7 @@ class TestRarSymlinkProtection(unittest.TestCase):
         mock_pyfile = Mock()
         mock_pyfile.m.pyload = Mock()
         unrar = UnRar(mock_pyfile, "test.rar", self.temp_dir)
-        
+
         # Mock the list method to return a malicious path
         with patch.object(unrar, 'list', return_value=[os.path.join(self.temp_dir, "../etc/passwd")]):
             # Attempting extraction with traversal should raise ArchiveError
