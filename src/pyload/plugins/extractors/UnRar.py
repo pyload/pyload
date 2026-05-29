@@ -2,6 +2,13 @@ import os
 import re
 import subprocess
 
+# test: python -m src.pyload.plugins.extractors.UnRar
+
+if __name__ == "__main__":
+    import sys
+    # fix: ModuleNotFoundError: No module named 'pyload'
+    sys.path.insert(0, os.path.normpath(os.path.dirname(__file__) + "/../../.."))
+
 from pyload import PKGDIR
 from pyload.core.utils.convert import to_str
 from pyload.core.utils.fs import safejoin
@@ -196,13 +203,26 @@ class UnRar(BaseExtractor):
         # Validate file list BEFORE extraction to prevent path traversal
         file_list = self.list(password)
         if file_list:
+            self.log_debug(f"extract: file_list: {file_list}")
             self._validate_archive_entries(file_list)
 
+        self.log_debug(f"extract: archive entries are valid")
+
+        self.log_debug(f"extract: extracting to {self.dest}")
+
+        # "rar x" does not create self.dest
+        os.makedirs(self.dest, exist_ok=True)
+
         p = self.call_cmd(command, self.filename, file, self.dest, password=password)
+
+        self.log_debug(f"extract: p={p}")
 
         #: Communicate and retrieve stderr
         self.progress(p)
         out, err = (to_str(r).strip() if r else "" for r in p.communicate())
+
+        self.log_debug(f"extract: out={out}")
+        self.log_debug(f"extract: err={err}")
 
         if err:
             if self._RE_BADPWD.search(err):
@@ -218,6 +238,8 @@ class UnRar(BaseExtractor):
 
             else:  #: Raise error if anything is on stderr
                 raise ArchiveError(err)
+
+        self.log_debug(f"extract: p.returncode={p.returncode}")
 
         if p.returncode and p.returncode != 10:  #: RARX_NOFILES:
             raise ArchiveError(self._("Process return code: {}").format(p.returncode))
@@ -243,6 +265,7 @@ class UnRar(BaseExtractor):
 
     def list(self, password=None):
         if not self.files:
+            self.log_debug(f"UnRar.list: calling _find_smallest_file")
             self._find_smallest_file(password=password)
 
         return self.files
@@ -293,6 +316,10 @@ class UnRar(BaseExtractor):
         self.log_debug("EXECUTE " + " ".join(call))
 
         call = [to_str(cmd) for cmd in call]
+
+        import shlex
+        self.log_debug(f"call_cmd: call: {shlex.join(call)}")
+
         p = subprocess.Popen(call, stdout=subprocess.PIPE, stderr=subprocess.PIPE, encoding="utf-8")
 
         renice(p.pid, self.priority)
@@ -313,6 +340,7 @@ class UnRar(BaseExtractor):
     def _find_smallest_file(self, password=None):
         if not self.smallest:
             command = "v" if self.fullpath else "l"
+            self.log_debug(f"UnRar._find_smallest_file: command={command}")
             p = self.call_cmd(command, "-v", self.filename, password=password)
             out, err = (_r.strip() if _r else "" for _r in p.communicate())
 
@@ -322,22 +350,216 @@ class UnRar(BaseExtractor):
             if err:  #: Only log error at this point
                 self.log_error(err)
 
+            self.log_debug(f"UnRar._find_smallest_file: self.fullpath={self.fullpath}")
+
+            self.log_debug(f"UnRar._find_smallest_file: self.dest={self.dest}")
+
             smallest = (None, 0)
             files = set()
             f_grp = 5 if float(self.VERSION) >= 5 else 1
+            # self.log_debug(f"UnRar._find_smallest_file: out={out}")
             for groups in self._RE_FILES.findall(out):
+                self.log_debug(f"UnRar._find_smallest_file: groups={groups}")
                 s = int(groups[2])
                 f = groups[f_grp].strip()
+                self.log_debug(f"UnRar._find_smallest_file: f={f}")
 
                 if smallest[1] == 0 or smallest[1] > s > 0:
                     smallest = (f, s)
 
+                r'''
                 if not self.fullpath:
                     f = os.path.basename(f)
+                    self.log_debug(f"UnRar._find_smallest_file: basename -> f={f}")
+                '''
+
+                # 5f4f0fa5fe 2026-03-15 f = safejoin(self.dest, f)
+                # 7680874837 2022-03-19 f = os.path.join(self.dest, f)
+                # bec7ac7995 2022-03-19 f = os.path.join(self.dest, f)
+                # edfc2907fa 2020-12-05 files.add(os.path.join(self.dest, f))
+                #   stupid GammaC0de broke git history
+                #   by moving and patching files in the same commit
+                #   a: src/pyload/plugins/base/unrar.py
+                #   b: src/pyload/plugins/extractors/UnRar.py
+                # 9b18d0b09c 2018-12-17 result.add(os.path.join(self.dest, os.path.basename(filename)))
+                # bec75defda 2018-10-16 result.add(os.path.join(self.dest, os.path.basename(f)))
+                # 1244d3ecd5 2018-12-05 rename
+                #   a: src/pyload/plugins/internal/unrar.py
+                #   b: src/pyload/plugins/base/unrar.py
+                # d8096353ba 2015-12-14 result.add(fsjoin(self.dest, os.path.basename(f)))
+                # ...
+                # -> always has been like this: self.files has absolute file paths
+                # so BaseExtractor._validate_archive_entries is wrong since
+                # ad249dd5b0 2026-05-26 if normalized.startswith("/"):
+                # f09201955c 2026-05-23 if os.path.isabs(entry_path):
+                r'''
                 f = safejoin(self.dest, f)
+                self.log_debug(f"UnRar._find_smallest_file: safejoin -> f={f}")
+                '''
+
+                self.make_it_break = True
+                if getattr(self, "make_it_break", False):
+                    self.log_debug(f"UnRar._find_smallest_file: make_it_break=True")
+                    r'''
+                    if not self.fullpath:
+                        f = os.path.basename(f)
+                        self.log_debug(f"UnRar._find_smallest_file: basename -> f={f}")
+                    '''
+                    f = safejoin(self.dest, f)
+                    self.log_debug(f"UnRar._find_smallest_file: safejoin -> f={f}")
+                else:
+                    self.log_debug(f"UnRar._find_smallest_file: make_it_break=False")
                 files.add(f)
+
+            # test: ArchiveError: Attempted path traversal in archive
+            # files.add("/bad/absolute/path")
+            # files.add("../../../bad/relative/path")
 
             self.smallest = smallest
             self.files = list(files)
 
         return self.smallest
+
+
+if __name__ == "__main__":
+
+    # FIXME refactor with src/pyload/plugins/decrypters/SerienfansOrg.py
+    # FIXME log_debug should work
+    import logging
+    from pyload.core.managers.file_manager import FileManager
+    from pyload.core.network.request_factory import RequestFactory
+    pyload_config = {
+        "general": {
+            "ssl_verify": False, # Verify SSL certificates
+        },
+        "download": {
+            "ipv6": True, # allow ipv6
+            "interface": "", # Download interface to bind (IP Address)
+            "limit_speed": None,
+        },
+        "proxy": {
+            "enabled": False,
+        },
+    }
+    pyload_plugin_config = {
+        "UnRar": {
+            "ignore_warnings": False, # Ignore unrar warnings
+            "ignore_file_attributes": False, # Ignore File Attributes
+        },
+    }
+    class MockConfig:
+        def get(self, scope, key):
+            try:
+                return pyload_config[scope][key]
+            except KeyError:
+                pass
+            print("MockConfig.get", scope, key)
+            return None
+        def get_plugin(self, scope, key):
+            try:
+                return pyload_plugin_config[scope][key]
+            except KeyError:
+                pass
+            print("MockConfig.get_plugin", scope, key)
+            return None
+    class MockPyload:
+        log = logging.getLogger(__name__)
+        #debug = 1 # compact debug log
+        debug = 2 # trace debug log
+        config = MockConfig()
+        tempdir = "/tmp/pyLoad" # pyload.tempdir
+        def __init__(self):
+            self.log.setLevel(logging.DEBUG)
+            self.files = self.file_manager = FileManager(self)
+            self.req = self.request_factory = RequestFactory(self)
+        def _(self, *a, **k):
+            # translator function?
+            return a[0]
+    mock_pyload = MockPyload()
+    class MockPackage:
+        password = None
+    class MockPyFile:
+        url = "http://localhost:99999999/"
+        id = 123
+        # set status for check_status in pyload/plugins/base/hoster.py
+        # pyload.core.datatypes.enums.DownloadStatus.STARTING = 7
+        status = 7
+        abort = False
+        _ = mock_pyload._
+        def __init__(
+            # actually "manager" is pyload.files
+            # self.files = self.file_manager = FileManager(self)
+            # self, manager, id, url, name, size, status, error, pluginname, package, order
+            self, *args, **kwargs
+        ):
+            if args:
+                print("MockPyFile.__init__: args", args, kwargs)
+                manager, id, url, name, size, status, error, pluginname, package, order = args
+                self.id = id
+                self.url = url
+                self.name = name
+                self.size = size
+                self.status = status
+            #self.m = self.manager = manager
+            self.m = self.manager = mock_pyload.files
+            self._package = MockPackage()
+        def package(self):
+            return self._package
+        def set_progress(self, progress_percent):
+            print(f"pyfile.set_progress: {progress_percent}%")
+
+
+    import sys
+
+    filename = sys.argv[1] # path/to/test.rar
+
+    try:
+        password = sys.argv[2]
+    except IndexError:
+        password = None
+
+    out = filename + ".out"
+
+    pyfile = MockPyFile()
+
+    assert os.path.exists(filename)
+
+    # set self.VERSION
+    assert UnRar.find() == True
+
+    # # force absolute path
+    # filename = os.path.abspath(filename)
+
+    unrar = UnRar(pyfile, filename, out)
+
+    # not working
+    r'''
+    import logging
+    logger = logging.getLogger(__name__)
+    logger.setLevel(logging.DEBUG)
+    for n in ("debug", "error", "warning", "info"):
+        setattr(unrar, f"log_{n}", getattr(logger, n))
+    '''
+
+    for n in ("debug", "error", "warning", "info"):
+        setattr(unrar, f"log_{n}", print)
+
+    # # ensure unrar is using absolute path
+    # assert unrar.fullpath == True
+
+    unrar.make_it_break = True
+
+    # FIXME ArchiveError: Attempted path traversal in archive
+    # self._validate_archive_entries(file_list)
+    files = unrar.extract(password=password)
+    print("extracted files:", files)
+
+r'''
+echo hello >test.txt
+rar a test.rar test.txt
+# good: relative filepath
+python -m src.pyload.plugins.extractors.UnRar test.rar
+# bad: absolute filepath
+# ArchiveError: Attempted path traversal in archive
+python -m src.pyload.plugins.extractors.UnRar "$PWD"/test.rar
+'''

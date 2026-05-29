@@ -136,6 +136,10 @@ class BaseExtractor(BasePlugin):
         self.filename = filename
         self.name = os.path.basename(filename)
         self.out = out
+        self.log_debug(f"FIXME why absolute path: BaseExtractor.out={self.out}")
+        print(f"FIXME why absolute path: BaseExtractor.out={self.out}")
+        import traceback
+        traceback.print_stack()
         self.fullpath = fullpath
         self.overwrite = overwrite
         self.excludefiles = excludefiles or []
