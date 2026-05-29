@@ -332,8 +332,20 @@ class UnRar(BaseExtractor):
                 if smallest[1] == 0 or smallest[1] > s > 0:
                     smallest = (f, s)
 
+                # no!
+                # this was added in
+                # edfc2907fa833b44a7bb7b758af432089973c1e9
+                # fix extract archive functionality (#3797)
+                # https://github.com/pyload/pyload/pull/3797
+                # but this makes no sense
+                # why should we
+                # convert a path like "path/to/file.txt" to "file.txt"
+                # this never makes sense
+                # no matter the value of self.fullpath
+                r'''
                 if not self.fullpath:
                     f = os.path.basename(f)
+                '''
                 f = safejoin(self.dest, f)
                 files.add(f)
 
