@@ -179,6 +179,9 @@ class SevenZip(BaseExtractor):
         if file_list:
             self._validate_archive_entries(file_list)
 
+        # Detect symlinks BEFORE extraction
+        self._detect_7zip_symlinks(password)
+
         p = self.call_cmd(command, "-o" + self.dest, self.filename, file, password=password)
 
         #: Communicate and retrieve stderr
@@ -197,6 +200,9 @@ class SevenZip(BaseExtractor):
 
         if p.returncode > 1:
             raise ArchiveError(self._("Process return code: {}").format(p.returncode))
+
+        # Post-extraction paranoid check: validate any symlinks that were created
+        self._validate_extracted_symlinks()
 
     def chunks(self):
         files = []
@@ -309,3 +315,50 @@ class SevenZip(BaseExtractor):
             self.files = list(files)
 
         return self.smallest
+
+    def _detect_7zip_symlinks(self, password=None):
+        """
+        Detect symlinks in 7-Zip archive by parsing detailed list output.
+        Raises ArchiveError if symlinks are found to prevent extraction.
+
+        :param password: Archive password if needed
+        :raises ArchiveError: If symlinks are detected in the archive
+        """
+        symlinks = []
+
+        try:
+            p = self.call_cmd("l", "-slt", self.filename, password=password)
+            out, err = (r.strip() if r else "" for r in p.communicate())
+
+            if p.returncode > 1:
+                self.log_warning(f"Cannot list archive details: {err}")
+                return  # Silently skip symlink detection on list errors
+
+            # Parse the detailed list output
+            # Format: Path = <filename>
+            #         Attributes = <perms with 'l' for symlinks>
+            current_file = None
+            for line in out.split('\n'):
+                # Track current file
+                if line.startswith('Path = '):
+                    current_file = line[7:].strip()
+
+                # Check if this file is a symlink by looking at Attributes
+                # Format: Attributes = l rwxr-xr-x or with 'l' somewhere in attributes
+                elif line.startswith('Attributes = ') and current_file:
+                    attrs = line[13:].strip()
+                    # Symlinks are indicated by 'l' in the attributes
+                    if attrs.startswith('l') or ' l ' in attrs or attrs.endswith('l'):
+                        symlinks.append(current_file)
+                        self.log_warning(f"Found symlink in archive: {current_file}")
+
+            if symlinks:
+                raise ArchiveError(
+                    f"Archive contains {len(symlinks)} symlink(s) - extraction blocked for security: {', '.join(symlinks[:5])}"
+                )
+
+        except ArchiveError:
+            raise
+        except Exception as e:
+            self.log_warning(f"Error detecting symlinks in 7-Zip archive: {e}")
+            # Don't fail hard on detection errors, post-extraction check will catch issues

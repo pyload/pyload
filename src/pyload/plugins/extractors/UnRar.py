@@ -284,6 +284,9 @@ class UnRar(BaseExtractor):
         if self.config.get("ignore_file_attributes", False):
             args.append("-ai")
 
+        # Skip symbolic links to prevent symlink escape attacks
+        args.append("-ol-")
+
         # NOTE: return codes are not reliable, some kind of threading, cleanup
         # whatever issue
         call = [self.CMD, command] + args + [arg for arg in xargs if arg]

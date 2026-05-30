@@ -1,4 +1,5 @@
 import json
+import math
 import os
 import time
 from functools import wraps
@@ -464,7 +465,7 @@ def rate_limit(count=100, period=60):
             if len(request_history[client_ip]) >= count:
                 # Calculate when the limit will reset
                 oldest_request = min(request_history[client_ip])
-                retry_after = int(oldest_request + period - current_time) + 1
+                retry_after = max(0, math.ceil(oldest_request + period - current_time))
 
                 # Log rate limit violation
                 log = flask.current_app.logger
