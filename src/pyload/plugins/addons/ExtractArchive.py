@@ -296,12 +296,11 @@ class ExtractArchive(BaseAddon):
                         matched = True
 
                         for fid, fname, fout in targets:
-                            name = os.path.basename(fname)
-
                             if not exists(fname):
                                 self.log_debug(name, "File not found")
                                 continue
 
+                            name = os.path.basename(fname)
                             self.log_info(name, self._("Extract to: {}").format(fout))
                             try:
                                 pyfile = self.pyload.files.get_file(fid)

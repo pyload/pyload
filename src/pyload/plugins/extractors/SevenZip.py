@@ -108,6 +108,7 @@ class SevenZip(BaseExtractor):
 
     def init(self):
         self.smallest = None
+        self.files_raw = None
         self.archive_encryption = None
 
     def verify(self, password=None):
@@ -175,13 +176,14 @@ class SevenZip(BaseExtractor):
         command = "x" if self.fullpath else "e"
 
         # Validate file list BEFORE extraction to prevent path traversal
-        file_list = self.list(password)
+        file_list = self._list_raw(password)
         if file_list:
             self._validate_archive_entries(file_list)
 
         # Detect symlinks BEFORE extraction
         self._detect_7zip_symlinks(password)
 
+        # Now do actual extraction
         p = self.call_cmd(command, "-o" + self.dest, self.filename, file, password=password)
 
         #: Communicate and retrieve stderr
@@ -286,6 +288,12 @@ class SevenZip(BaseExtractor):
 
         return self.archive_encryption
 
+    def _list_raw(self, password=None):
+        if not self.files_raw:
+            self._find_smallest_file(password=password)
+
+        return self.files_raw
+
     def _find_smallest_file(self, password=None):
         if not self.smallest:
             p = self.call_cmd("l", self.filename, password=password)
@@ -299,9 +307,12 @@ class SevenZip(BaseExtractor):
 
             smallest = (None, 0)
             files = set()
+            files_raw = set()
             for groups in self._RE_FILES.findall(out):
                 s = int(groups[3])
                 f = groups[-1].strip()
+
+                files_raw.add(f)
 
                 if smallest[1] == 0 or smallest[1] > s > 0:
                     smallest = (f, s)
@@ -312,6 +323,7 @@ class SevenZip(BaseExtractor):
                 files.add(f)
 
             self.smallest = smallest
+            self.files_raw = list(files_raw)
             self.files = list(files)
 
         return self.smallest

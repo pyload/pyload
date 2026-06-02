@@ -107,6 +107,7 @@ class UnRar(BaseExtractor):
 
     def init(self):
         self.smallest = None
+        self.files_raw = None
         self.archive_encryption = None
 
     def verify(self, password=None):
@@ -194,7 +195,7 @@ class UnRar(BaseExtractor):
         command = "x" if self.fullpath else "e"
 
         # Validate file list BEFORE extraction to prevent path traversal
-        file_list = self.list(password)
+        file_list = self._list_raw(password)
         if file_list:
             self._validate_archive_entries(file_list)
 
@@ -309,6 +310,12 @@ class UnRar(BaseExtractor):
             self.archive_encryption = (encrypted_header, encrypted_files)
 
         return self.archive_encryption
+
+    def _list_raw(self, password=None):
+        if not self.files_raw:
+            self._find_smallest_file(password)
+
+        return self.files_raw
 
     def _find_smallest_file(self, password=None):
         if not self.smallest:

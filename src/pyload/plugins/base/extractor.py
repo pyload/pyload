@@ -1,3 +1,4 @@
+import ntpath
 import os
 import re
 
@@ -207,6 +208,11 @@ class BaseExtractor(BasePlugin):
             # Reject null bytes
             if "\x00" in entry:
                 raise ArchiveError(f"Archive entry contains Null: {entry}")
+
+            # Reject if entry includes a drive letter
+            drive = ntpath.splitdrive(entry)[0]
+            if drive:
+                raise ArchiveError(f"Attempted path traversal in archive: {entry}")
 
             # Normalize all separators to forward slashes first
             normalized = entry.replace("\\", "/")
