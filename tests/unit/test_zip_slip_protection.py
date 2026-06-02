@@ -645,7 +645,7 @@ class TestRarSymlinkProtection(unittest.TestCase):
         unrar = UnRar(mock_pyfile, "test.rar", self.temp_dir)
 
         # Mock the list method to return a malicious path
-        with patch.object(unrar, 'list', return_value=[os.path.join(self.temp_dir, "../etc/passwd")]):
+        with patch.object(unrar, '_list_raw', return_value=[os.path.join(self.temp_dir, "../etc/passwd")]):
             # Attempting extraction with traversal should raise ArchiveError
             with self.assertRaises(ArchiveError):
                 unrar.extract(password=None)
