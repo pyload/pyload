@@ -265,7 +265,7 @@ class ExtractArchive(BaseAddon):
                     )
                     for fdata in pypack.get_children().values()
                 }.values()
-            )  #: : Remove duplicates
+            )  #: Remove duplicates
 
             #: Check as long there are unseen files
             while files_ids:
@@ -577,13 +577,13 @@ class ExtractArchive(BaseAddon):
             passwords = []
 
             file = os.fsdecode(self.config.get("passwordfile"))
-            with open(file) as fp:
+            with open(file, encoding="utf-8-sig") as fp:
                 for pw in fp.read().splitlines():
                     passwords.append(pw)
 
         except IOError as exc:
             if exc.errno == 2:
-                fp = open(file, mode="w")
+                fp = open(file, mode="w", encoding="utf-8-sig")
                 fp.close()
 
             else:
@@ -601,7 +601,7 @@ class ExtractArchive(BaseAddon):
             self.passwords = uniquify([password] + self.passwords)
 
             file = os.fsdecode(self.config.get("passwordfile"))
-            with open(file, mode="w") as fp:
+            with open(file, mode="w", encoding="utf-8-sig") as fp:
                 for pw in self.passwords:
                     fp.write(pw + "\n")
 
