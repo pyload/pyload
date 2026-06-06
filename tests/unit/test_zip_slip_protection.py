@@ -715,7 +715,7 @@ Attributes = .....
         with patch.object(sevenzp, 'call_cmd', side_effect=mock_call_cmd):
             # Attempting extraction with symlinks should raise ArchiveError
             with self.assertRaises(ArchiveError) as ctx:
-                sevenzp._detect_7zip_symlinks(password=None)
+                sevenzp.extract(password=None)
             self.assertIn("symlink", str(ctx.exception).lower())
 
     def test_7zip_path_traversal_protection_before_extraction(self):
@@ -729,8 +729,36 @@ Attributes = .....
         mock_pyfile.m.pyload = Mock()
         sevenzp = SevenZip(mock_pyfile, "test.7z", self.temp_dir)
 
-        # Mock the list method to return a malicious path
-        with patch.object(sevenzp, 'list', return_value=[os.path.join(self.temp_dir, "../etc/passwd")]):
+        # Mock the call_cmd to return list output with a malicious path
+        def mock_call_cmd(*args, **kwargs):
+            mock_process = Mock()
+            if "l" in args and "-slt" in args:
+                # Simulate 7z list -slt output with a malicious path
+                output = """
+Listing archive: test.7z
+
+--
+Path = test.7z
+Type = 7z
+Physical Size = 1234567
+Headers Size = 4567
+Method = LZMA2:1536k
+Solid = +
+Blocks = 1
+
+----------
+Path = ../etc/passwd
+Size = 1024
+Attributes = .....
+"""
+                mock_process.communicate.return_value = (output, "")
+            else:
+                mock_process.communicate.return_value = ("", "")
+            mock_process.returncode = 0
+            return mock_process
+
+        with patch.object(sevenzp, 'call_cmd', side_effect=mock_call_cmd):
             # Attempting extraction with traversal should raise ArchiveError
-            with self.assertRaises(ArchiveError):
+            with self.assertRaises(ArchiveError) as ctx:
                 sevenzp.extract(password=None)
+            self.assertIn("traversal", str(ctx.exception).lower())
