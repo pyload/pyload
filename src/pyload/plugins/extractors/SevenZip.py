@@ -339,7 +339,7 @@ class SevenZip(BaseExtractor):
                 f = file_path
                 if not self.fullpath:
                     f = os.path.basename(f)
-                full_path = safejoin(self.dest, f)
+                full_path = safejoin(self.dest, f, traversal=False)  # We check for path traversal on extraction
 
                 entries.append({
                     'path': file_path,
