@@ -750,7 +750,7 @@ def safepath(value):
         return path
 
 
-def safejoin(*args):
+def safejoin(*args, traversal=True):
     """
     Join path components and return a sanitized path ensuring no path traversal.
 
@@ -772,8 +772,9 @@ def safejoin(*args):
     base = args[0]
     safe_joined = safepath(os.path.join(*args))
 
-    if not is_within_directory(base, safe_joined):
-        raise ValueError("Path traversal attempt detected")
+    if traversal:
+        if not is_within_directory(base, safe_joined):
+            raise ValueError("Path traversal attempt detected")
 
     return safe_joined
 
