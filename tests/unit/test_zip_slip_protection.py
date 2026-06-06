@@ -682,6 +682,18 @@ class TestSevenZipSymlinkProtection(unittest.TestCase):
             if "l" in args and "-slt" in args:
                 # Simulate 7z list -slt output with a symlink
                 output = """
+Listing archive: test.7z
+
+--
+Path = test.7z
+Type = 7z
+Physical Size = 1234567
+Headers Size = 4567
+Method = LZMA2:1536k
+Solid = +
+Blocks = 1
+
+----------
 Path = regular_file.txt
 Size = 1024
 Attributes = .....
