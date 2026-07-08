@@ -13,9 +13,9 @@ import flask
 from pyload import APPID, PKGDIR
 from pyload.core.utils import format, fs
 
-from ..helpers import (
-    clear_session, get_permission, get_redirect_url, is_authenticated, login_required, permlist,
-    render_base, render_template, set_session, static_file_url)
+from ..helpers import (clear_session, get_permission, get_redirect_url,
+                       is_authenticated, login_required, permlist, render_base,
+                       render_template, set_session, static_file_url)
 
 _RE_LOGLINE = re.compile(r"\[([\d\-]+) ([\d:]+)\] +([A-Z]+) +(.+?) (.*)")
 
@@ -39,6 +39,31 @@ def render(filename):
 @bp.route("/robots.txt", endpoint="robots")
 def robots():
     return "User-agent: *\nDisallow: /"
+
+
+@bp.route("/manifest.json", endpoint="manifest")
+def manifest():
+    return flask.jsonify({
+        "name": "pyLoad",
+        "short_name": "pyLoad",
+        "start_url": flask.url_for("app.dashboard"),
+        "display": "standalone",
+        "scope": "/",
+        "background_color": "#ffffff",
+        "theme_color": "#007bff",
+        "icons": [
+            {
+                "src": static_file_url("img/favicon.ico"),
+                "sizes": "64x64 128x128 256x256",
+                "type": "image/x-icon"
+            }
+        ]
+    })
+
+
+@bp.route("/service-worker.js", endpoint="service_worker")
+def service_worker():
+    return flask.send_from_directory("static", "service-worker.js", mimetype="application/javascript")
 
 
 # TODO: Rewrite login route using flask-login
