@@ -31,6 +31,11 @@ def favicon():
 
 @bp.route("/web/<path:filename>", endpoint="web")
 def render(filename):
+    # Allow login.html without authentication, protect all other files
+    if filename != "login.html" and not is_authenticated():
+        location = flask.url_for("app.login", next="index")
+        return flask.redirect(location)
+
     mimetype = mimetypes.guess_type(filename)[0] or "text/html"
     data = render_template(filename)
     return flask.Response(data, mimetype=mimetype)

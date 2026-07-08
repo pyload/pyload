@@ -10,18 +10,8 @@ def handle_404_error(exc):
     return render_template('error.html', messages=messages), 404
 
 def handle_exception_error(exc):
-    try:
-        code = exc.code
-        desc = exc.desc
-    except AttributeError:
-        code = 500
-        desc = exc
-
     flask.current_app.logger.debug(exc, exc_info=True)
-
-    message = f"Error {code}: {desc}"
-    flask.current_app.logger.error(message, exc_info=True)
-    return render_template("error.html", messages=[message]), code
+    return render_template("error.html", messages=["Error: exception occurred while processing the request"]), 500
 
 
 def handle_csrf_error(exc):
