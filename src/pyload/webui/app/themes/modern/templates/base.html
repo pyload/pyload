@@ -45,19 +45,6 @@
   // see: https://stackoverflow.com/a/64158043
   let FF_FOUC_FIX;
 </script>
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function () {
-      navigator.serviceWorker.register('{{ url_for('app.service_worker') }}')
-        .then(function (registration) {
-          console.log('pyLoad Service Worker registered:', registration);
-        })
-        .catch(function (error) {
-          console.warn('pyLoad Service Worker registration failed:', error);
-        });
-    });
-  }
-</script>
 </head>
 
 <body>

@@ -61,11 +61,6 @@ def manifest():
     })
 
 
-@bp.route("/service-worker.js", endpoint="service_worker")
-def service_worker():
-    return flask.send_from_directory("static", "service-worker.js", mimetype="application/javascript")
-
-
 # TODO: Rewrite login route using flask-login
 @bp.route("/login", methods=["GET", "POST"], endpoint="login")
 def login():
