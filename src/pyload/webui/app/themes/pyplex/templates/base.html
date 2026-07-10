@@ -11,9 +11,11 @@
   <link rel="stylesheet" type="text/css" href="{{theme_static('css/base.css')}}" />
 
   <link rel="icon" href="{{theme_static('img/favicon.ico')}}" />
+  <link rel="manifest" href="{{ url_for('app.manifest') }}">
+  <meta name="theme-color" content="#007bff">
   <meta name="csrf-token" content="{{ csrf_token() }}" />
 
-<style type="text/css">
+  <style type="text/css">
 .ui-icon,
 .ui-widget-content .ui-icon {
   background-image: url("{{theme_static('img/ui-icons_444444_256x240.png')}}");
