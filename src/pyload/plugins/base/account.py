@@ -495,7 +495,7 @@ class BaseAccount(BasePlugin):
 
         else:
             self.user = user
-            self.info.clear()
+            self.sync()
             self.req.close()
 
             self.req = self.pyload.request_factory.get_request(
