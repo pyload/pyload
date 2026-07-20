@@ -271,6 +271,23 @@ class SettingsUI {
       traditional: true,
       success: (response) => {
         panel.html(response);
+
+        // Inject client-side-only setting when webui section is shown
+        if (category === 'core' && section === 'webui') {
+          const $table = panel.find('table.settable').first();
+          if ($table.length > 0 && $table.find('#client_reset_yesno_row').length === 0) {
+            const $row = $(`<tr id="client_reset_yesno_row">
+              <td><label for="client_reset_yesno" style="font-size: 14px; font-weight: 400;">{{_('Reset "Don\'t ask again" answers')}}:</label></td>
+              <td>
+                <input type="checkbox" id="client_reset_yesno"/>
+              </td>
+            </tr>`);
+            $table.append($row);
+            $('#client_reset_yesno').on('change', (event) => {
+              localStorage.setItem("ui.reset_yesno", event.target.checked);
+            });
+          }
+        }
       }
     });
   }
@@ -283,6 +300,11 @@ class SettingsUI {
       contentType: 'application/json',
       data: JSON.stringify({category: category, config: formToObject(`#${category}_form`)}),
       success: () => {
+        if (localStorage.getItem('ui.reset_yesno') === 'true') {
+          sessionStorage.removeItem('yesNoSettings');
+        }
+        $('#client_reset_yesno').prop('checked', false);
+        localStorage.removeItem("ui.reset_yesno");
         uiHandler.indicateSuccess("{{_('Settings saved')}}");
       }
     }).fail(() => {
