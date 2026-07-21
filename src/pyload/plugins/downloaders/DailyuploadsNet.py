@@ -6,7 +6,7 @@ from ..base.xfs_downloader import XFSDownloader
 class DailyuploadsNet(XFSDownloader):
     __name__ = "DailyuploadsNet"
     __type__ = "downloader"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?dailyuploads\.net/\w+"
@@ -24,7 +24,7 @@ class DailyuploadsNet(XFSDownloader):
 
     PLUGIN_DOMAIN = "dailyuploads.net"
 
-    NAME_PATTERN = r'<textarea readonly="" .+?>https://dailyuploads.net/\w+?/(?P<N>.+?)<'
+    NAME_PATTERN = r'name="fname" value="(?P<N>.+?)"'
     SIZE_PATTERN = r"<small>\((?P<S>[\d.,]+) (?P<U>bytes)\)</small>"
 
     LINK_PATTERN = r'<a href="(https?://cdn\d+.dailyuploads.net/.+?)">'
