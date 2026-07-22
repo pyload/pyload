@@ -3,9 +3,11 @@ Unit tests for path traversal ("Zip Slip") attack prevention in archive extracto
 """
 import os
 import platform
+import stat
 import sys
 import tempfile
 import unittest
+import zipfile
 from unittest.mock import MagicMock, Mock, patch
 
 # Add src to path for imports
@@ -578,6 +580,70 @@ class TestZipSymlinkProtection(unittest.TestCase):
             with self.assertRaises(ArchiveError) as ctx:
                 unzip._validate_zip_symlinks(z)
             self.assertIn("symlink", str(ctx.exception).lower())
+
+
+class TestUnZipExtractionBehavior(unittest.TestCase):
+    """Regression tests for normal UnZip extraction behavior."""
+
+    def setUp(self):
+        self.temp_dir = tempfile.mkdtemp()
+        self.archive_path = os.path.join(self.temp_dir, "test.zip")
+        self.mock_pyfile = Mock()
+        self.mock_pyfile.m.pyload = Mock()
+
+    def tearDown(self):
+        import shutil
+        shutil.rmtree(self.temp_dir)
+
+    def test_extract_returns_non_excluded_files_and_omits_directories(self):
+        """Extraction should preserve the selected files without listing directories."""
+        from pyload.plugins.extractors.UnZip import UnZip
+
+        with zipfile.ZipFile(self.archive_path, "w") as archive:
+            archive.writestr("folder/", "")
+            archive.writestr("folder/keep.txt", "keep")
+            archive.writestr("skip.txt", "skip")
+
+        unzip = UnZip(
+            self.mock_pyfile,
+            self.archive_path,
+            self.temp_dir,
+            excludefiles=["skip.txt"],
+        )
+
+        self.assertEqual(
+            unzip.list(),
+            [
+                os.path.join(self.temp_dir, "folder", "keep.txt"),
+                os.path.join(self.temp_dir, "skip.txt"),
+            ],
+        )
+        self.assertEqual(
+            unzip.extract(),
+            [os.path.join(self.temp_dir, "folder", "keep.txt")],
+        )
+        self.assertTrue(os.path.isfile(os.path.join(self.temp_dir, "folder", "keep.txt")))
+        self.assertFalse(os.path.exists(os.path.join(self.temp_dir, "skip.txt")))
+
+    def test_extract_keeps_archive_open_after_safe_symlink_validation(self):
+        """Safe symlink metadata must not close the archive before extraction."""
+        from pyload.plugins.extractors.UnZip import UnZip
+
+        with zipfile.ZipFile(self.archive_path, "w") as archive:
+            archive.writestr("file.txt", "contents")
+            symlink = zipfile.ZipInfo("link")
+            symlink.external_attr = (stat.S_IFLNK | 0o644) << 16
+            archive.writestr(symlink, "file.txt")
+
+        unzip = UnZip(self.mock_pyfile, self.archive_path, self.temp_dir)
+
+        self.assertEqual(
+            unzip.extract(),
+            [
+                os.path.join(self.temp_dir, "file.txt"),
+                os.path.join(self.temp_dir, "link"),
+            ],
+        )
 
 
 class TestRarSymlinkProtection(unittest.TestCase):
