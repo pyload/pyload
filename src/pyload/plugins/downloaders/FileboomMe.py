@@ -150,7 +150,7 @@ class FileboomMe(SimpleDownloader):
             free_download_key=None,
             captcha_challenge=None,
             captcha_response=None,
-            auth_token=self.account.info["data"]["token"],
+            auth_token=self.account.get_data("token"),
         )
 
         self.link = json_data["url"]

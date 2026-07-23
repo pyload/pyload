@@ -104,7 +104,7 @@ class RapiduNet(SimpleDownloader):
             "getFileDownload",
             id=self.info["pattern"]["ID"],
             login=self.account.user,
-            password=self.account.info["login"]["password"],
+            password=self.account.get_login("password"),
         )
 
         if "message" in api_data:

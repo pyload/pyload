@@ -53,7 +53,7 @@ class RealdebridComTorrent(SimpleDecrypter):
             if "error_code" in res:
                 if res["error_code"] == 8:  #: token expired, refresh the token and retry
                     self.account.relogin()
-                    if not self.account.info["login"]["valid"]:
+                    if not self.account.get_login("valid"):
                         return res
 
                     else:
@@ -118,7 +118,7 @@ class RealdebridComTorrent(SimpleDecrypter):
                     if "error_code" in api_data:
                         if api_data["error_code"] == 8:  #: token expired, refresh the token and retry
                             self.account.relogin()
-                            if not self.account.info["login"]["valid"]:
+                            if not self.account.get_login("valid"):
                                 self.exit_error(_("Token refresh has failed"))
 
                             else:

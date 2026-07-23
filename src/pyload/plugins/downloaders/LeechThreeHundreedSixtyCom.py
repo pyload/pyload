@@ -28,7 +28,7 @@ class LeechThreeHundreedSixtyCom(MultiDownloader):
     def handle_premium(self, pyfile):
         json_data = self.load(
             "https://leech360.com/generate",
-            get={"token": self.account.info["data"]["token"], "link": pyfile.url},
+            get={"token": self.account.get_data("token"), "link": pyfile.url},
         )
         api_data = json.loads(json_data)
 

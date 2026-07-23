@@ -82,7 +82,7 @@ class TorboxApp(MultiDownloader):
             self.link = None
 
     def handle_premium(self, pyfile):
-        api_key = self.account.info["login"]["password"]
+        api_key = self.account.get_login("password")
 
         post = {"link": pyfile.url}
         password = self.get_password()

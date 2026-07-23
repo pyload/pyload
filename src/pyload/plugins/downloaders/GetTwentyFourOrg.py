@@ -38,7 +38,7 @@ class GetTwentyFourOrg(MultiDownloader):
         rc = self.api_request(
             "debrid/geturl",
             email=self.account.user,
-            passwd_sha256=self.account.info["data"]["passwd_sha256"],
+            passwd_sha256=self.account.get_data("passwd_sha256"),
             link=pyfile.url,
         )
         if rc.get("ok") is True:

@@ -60,7 +60,7 @@ class MultishareCz(MultiDownloader):
             "download-link",
             link=pyfile.url,
             login=self.account.user,
-            password=self.account.info["login"]["password"],
+            password=self.account.get_login("password"),
         )
 
         self.chunk_limit = api_data["chunks"]

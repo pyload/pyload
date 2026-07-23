@@ -284,7 +284,7 @@ class MegaClient:
 
         if hasattr(self.plugin, "account"):
             if self.plugin.account:
-                mega_session_id = self.plugin.account.info["data"].get(
+                mega_session_id = self.plugin.account.get_data("data").get(
                     "mega_session_id", None
                 )
 

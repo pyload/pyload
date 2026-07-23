@@ -53,7 +53,7 @@ class MegaDebridEu(MultiDownloader):
             res = self.api_request(
                 "getLink",
                 get=args(
-                    token=self.account.info["data"]["cache_info"][self.account.user][
+                    token=self.account.get_data("cache_info")[self.account.user][
                         "token"
                     ]
                 ),

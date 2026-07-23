@@ -117,7 +117,7 @@ class FilerNet(SimpleDownloader):
         file_id = self.info["pattern"]["ID"]
 
         user = self.account.user
-        password = self.account.info["login"]["password"]
+        password = self.account.get_login("password")
         api_data = self.api_request(f"dl/{file_id}", user, password)
         code = api_data["code"]
         if code == 200:

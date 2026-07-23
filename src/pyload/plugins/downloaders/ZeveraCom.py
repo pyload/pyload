@@ -40,7 +40,7 @@ class ZeveraCom(MultiDownloader):
 
     def handle_premium(self, pyfile):
         res = self.api_request(
-            "transfer/directdl", self.account.info["login"]["password"], src=pyfile.url
+            "transfer/directdl", self.account.get_login("password"), src=pyfile.url
         )
         if res["status"] == "success":
             self.link = res["location"]

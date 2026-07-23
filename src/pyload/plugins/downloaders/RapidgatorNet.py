@@ -97,7 +97,7 @@ class RapidgatorNet(SimpleDownloader):
     def handle_premium(self, pyfile):
         json_data = self.api_request(
             "file/info",
-            sid=self.account.info["data"]["sid"],
+                    sid=self.account.get_data("sid"),
             url=pyfile.url
         )
 
@@ -107,7 +107,7 @@ class RapidgatorNet(SimpleDownloader):
 
         json_data = self.api_request(
             "file/download",
-            sid=self.account.info["data"]["sid"],
+                    sid=self.account.get_data("sid"),
             url=pyfile.url
         )
         self.link = json_data["url"]

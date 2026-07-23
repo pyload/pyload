@@ -133,7 +133,7 @@ class Keep2ShareCc(SimpleDownloader):
         if self.info["access"] == "private":
             self.fail(self._("This is a private file"))
         elif self.premium:
-            req["auth_token"] = self.account.info["data"]["token"]
+            req["auth_token"] = self.account.get_data("token")
         elif self.info["access"] == "premium" or self.info["free_access"] is False:
             self.fail(self._("File can be downloaded by premium users only"))
 

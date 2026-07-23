@@ -91,7 +91,7 @@ class FikperCom(SimpleDownloader):
 
     def handle_premium(self, pyfile):
         file_id = self.info["pattern"]["ID"]
-        api_key = self.account.info["login"]["password"]
+        api_key = self.account.get_login("password")
         api_data = self.api_request(f"api/file/download/{file_id}", api_key=api_key)
         if self.req.code != 200:
             self.log_error(self._("API error"), api_data)

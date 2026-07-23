@@ -110,7 +110,7 @@ class BaseHoster(BasePlugin):
             pass
 
         try:
-            pw = self.account.info["login"]["password"]
+            pw = self.account.get_login("password")
             hidden_pw = "*" * 10
             args = tuple(arg.replace(pw, hidden_pw) for arg in args if arg)
         except (AttributeError, KeyError, TypeError):
@@ -162,7 +162,7 @@ class BaseHoster(BasePlugin):
                 self.classname, self.account.user
             )
             # NOTE: Avoid one unnecessary get_info call by `self.account.premium` here
-            self.premium = self.account.info["data"]["premium"]
+            self.premium = self.account.get_data("premium")
         else:
             self.req = self.pyload.request_factory.get_request(self.classname)
             self.premium = False

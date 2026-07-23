@@ -60,7 +60,7 @@ class DebridlinkFrTorrent(SimpleDecrypter):
                     api_data["error"] == "badToken"
                 ):  #: token expired, refresh the token and retry
                     self.account.relogin()
-                    if not self.account.info["login"]["valid"]:
+                    if not self.account.get_login("valid"):
                         return api_data
 
                     else:

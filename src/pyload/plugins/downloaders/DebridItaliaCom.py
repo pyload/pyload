@@ -38,7 +38,7 @@ class DebridItaliaCom(MultiDownloader):
             "generate",
             link=pyfile.url.replace("https://", "http://"),
             u=self.account.user,
-            p=self.account.info["login"]["password"],
+            p=self.account.get_login("password"),
         )
 
         m = re.search(r"ERROR:(.*)", self.data)

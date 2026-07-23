@@ -49,7 +49,7 @@ class DebridlinkFr(MultiDownloader):
     API_URL = "https://debrid-link.fr/api/"
 
     def api_request(self, method, get=None, post=None):
-        api_token = self.account.info["data"].get("api_token", None)
+        api_token = self.account.get_data("api_token")
         if api_token:
             self.req.http.set_header("Authorization", f"Bearer {api_token}")
         self.req.http.c.setopt(pycurl.USERAGENT, "pyLoad/{}".format(self.pyload.version))

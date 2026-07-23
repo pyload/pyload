@@ -44,7 +44,7 @@ class NitrobitNet(SimpleDownloader):
         self.data = self.load(
             "http://www.nitrobit.net/ajax/unlock.php",
             get={
-                "password": self.account.info["login"]["password"],
+                "password": self.account.get_login("password"),
                 "file": self.info["pattern"]["ID"],
                 "keep": "false",
                 "_": current_millis,

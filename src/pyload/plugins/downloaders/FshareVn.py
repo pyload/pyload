@@ -155,8 +155,8 @@ class FshareVn(SimpleDownloader):
             if password:
                 api_data = self.api_request(
                     "session/download",
-                    session_id=self.account.info["data"]["session_id"],
-                    token=self.account.info["data"]["token"],
+                    session_id=self.account.get_data("session_id"),
+                    token=self.account.get_data("token"),
                     url=pyfile.url,
                     password=password,
                 )
@@ -164,8 +164,8 @@ class FshareVn(SimpleDownloader):
             else:
                 api_data = self.api_request(
                     "session/download",
-                    session_id=self.account.info["data"]["session_id"],
-                    token=self.account.info["data"]["token"],
+                    session_id=self.account.get_data("session_id"),
+                    token=self.account.get_data("token"),
                     url=pyfile.url,
                 )
 

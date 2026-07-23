@@ -80,7 +80,7 @@ class AlldebridCom(MultiDownloader):
             post={
                 "link": pyfile.url,
                 "password": self.get_password(),
-                "apikey": self.account.info["login"]["password"],
+                "apikey": self.account.get_login("password"),
             },
         )
 
@@ -129,7 +129,7 @@ class AlldebridCom(MultiDownloader):
                 api_data = self.api_request(
                     "link/streaming",
                     post={
-                        "apikey": self.account.info["login"]["password"],
+                                        "apikey": self.account.get_login("password"),
                         "id": unlock_id,
                         "stream": stream_id,
                     },
@@ -145,7 +145,7 @@ class AlldebridCom(MultiDownloader):
                         api_data = self.api_request(
                             "link/delayed",
                             post={
-                                "apikey": self.account.info["login"]["password"],
+                                "apikey": self.account.get_login("password"),
                                 "id": delayed_id,
                             },
                         )

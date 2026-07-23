@@ -358,3 +358,410 @@ class TestCookieJarClearing:
             acc.pyload.request_factory.remove_cookie_jar(acc.classname, user)
 
         assert len(cleared) == 0
+
+
+class TestConcurrentAccountAccess:
+    """Tests to ensure account accessors are thread-safe and don't raise under concurrent mutations."""
+
+    def test_get_login_thread_safe_no_exception(self):
+        import threading
+
+        from pyload.plugins.base.account import BaseAccount
+
+        class FakeReq:
+            def close(self):
+                pass
+
+        class FakeRequestFactory:
+            def get_request(self, *args, **kwargs):
+                return FakeReq()
+
+        class FakeLog:
+            def debug(self, *a, **k):
+                pass
+            def info(self, *a, **k):
+                pass
+            def warning(self, *a, **k):
+                pass
+            def error(self, *a, **k):
+                pass
+
+        class FakeCore:
+            def __init__(self):
+                self._ = lambda s: s
+                self.request_factory = FakeRequestFactory()
+                self.log = FakeLog()
+                self.debug = 0
+                self.version = "test"
+                self.tempdir = "."
+                self.config = type("C", (), {"get": lambda *a, **k: False})()
+
+        class DummyAccount(BaseAccount):
+            def periodical_task(self):
+                pass
+            def signin(self, user, password, data):
+                pass
+            def grab_info(self, user, password, data):
+                return {}
+
+        manager = type("M", (), {})()
+        manager.pyload = FakeCore()
+
+        accounts = {
+            "user1": {
+                "password": "secret",
+                "options": {},
+                "plugin": None,
+                "premium": True,
+                "stats": [0, 0],
+                "timestamp": 0,
+                "valid": True,
+                "type": "Test",
+            }
+        }
+
+        acc = DummyAccount(manager, accounts)
+        acc.sync()
+
+        exceptions = []
+
+        def writer():
+            for i in range(100):
+                # Directly mutate self.info (should be protected by lock)
+                if i % 2 == 0:
+                    acc.info = {"login": {}, "data": {}}
+                else:
+                    acc.info = {"login": {"password": "secret"}, "data": {}}
+
+        def reader():
+            for _ in range(100):
+                try:
+                    _ = acc.get_login("password")
+                except Exception as e:
+                    exceptions.append(e)
+
+        t1 = threading.Thread(target=writer)
+        t2 = threading.Thread(target=reader)
+        t1.start(); t2.start()
+        t1.join(); t2.join()
+
+        # No exceptions should occur due to @lock decorator protecting access
+        assert exceptions == []
+
+    def test_get_data_thread_safe_no_exception(self):
+        import threading
+        from pyload.plugins.base.account import BaseAccount
+
+        class FakeReq:
+            def close(self):
+                pass
+
+        class FakeRequestFactory:
+            def get_request(self, *args, **kwargs):
+                return FakeReq()
+
+        class FakeLog:
+            def debug(self, *a, **k):
+                pass
+            def info(self, *a, **k):
+                pass
+            def warning(self, *a, **k):
+                pass
+            def error(self, *a, **k):
+                pass
+
+        class FakeCore:
+            def __init__(self):
+                self._ = lambda s: s
+                self.request_factory = FakeRequestFactory()
+                self.log = FakeLog()
+                self.debug = 0
+                self.version = "test"
+                self.tempdir = "."
+                self.config = type("C", (), {"get": lambda *a, **k: False})()
+
+        class DummyAccount(BaseAccount):
+            def periodical_task(self):
+                pass
+            def signin(self, user, password, data):
+                pass
+            def grab_info(self, user, password, data):
+                return {}
+
+        manager = type("M", (), {})()
+        manager.pyload = FakeCore()
+
+        accounts = {
+            "user1": {
+                "password": "secret",
+                "options": {},
+                "plugin": None,
+                "premium": True,
+                "stats": [0, 0],
+                "timestamp": 0,
+                "valid": True,
+                "type": "Test",
+                "cache_info": {"user1": {"token": "abc"}},
+            }
+        }
+
+        acc = DummyAccount(manager, accounts)
+        acc.sync()
+
+        exceptions = []
+
+        def writer():
+            for i in range(100):
+                # Directly mutate self.info (should be protected by lock)
+                if i % 2 == 0:
+                    acc.info = {"login": {"password": "secret"}, "data": {}}
+                else:
+                    acc.info = {"login": {"password": "secret"}, "data": {"token": "abc"}}
+
+        def reader():
+            for _ in range(100):
+                try:
+                    _ = acc.get_data("token")
+                except Exception as e:
+                    exceptions.append(e)
+
+        t1 = threading.Thread(target=writer)
+        t2 = threading.Thread(target=reader)
+        t1.start(); t2.start()
+        t1.join(); t2.join()
+
+        # No exceptions should occur due to @lock decorator protecting access
+        assert exceptions == []
+
+    def test_multiple_accounts_concurrent_operations(self):
+        """Test concurrent operations on multiple active accounts from different threads."""
+        import threading
+        from pyload.plugins.base.account import BaseAccount
+
+        class FakeReq:
+            def close(self):
+                pass
+
+        class FakeRequestFactory:
+            def get_request(self, *args, **kwargs):
+                return FakeReq()
+
+        class FakeLog:
+            def debug(self, *a, **k):
+                pass
+            def info(self, *a, **k):
+                pass
+            def warning(self, *a, **k):
+                pass
+            def error(self, *a, **k):
+                pass
+
+        class FakeCore:
+            def __init__(self):
+                self._ = lambda s: s
+                self.request_factory = FakeRequestFactory()
+                self.log = FakeLog()
+                self.debug = 0
+                self.version = "test"
+                self.tempdir = "."
+                self.config = type("C", (), {"get": lambda *a, **k: False})()
+
+        class DummyAccount(BaseAccount):
+            def periodical_task(self):
+                pass
+            def signin(self, user, password, data):
+                pass
+            def grab_info(self, user, password, data):
+                return {}
+
+        manager = type("M", (), {})()
+        manager.pyload = FakeCore()
+
+        # Create multiple accounts to simulate different active users
+        accounts_pool = {}
+        for user_idx in range(1, 4):
+            user_id = f"user{user_idx}"
+            accounts_pool[user_id] = {
+                "password": f"secret_{user_idx}",
+                "options": {"limit": [str(user_idx)]},
+                "plugin": None,
+                "premium": user_idx % 2 == 0,  # user2 is premium
+                "stats": [user_idx, 0],
+                "timestamp": 1000 * user_idx,
+                "valid": True,
+                "type": "TestPlugin",
+                "token": f"token_{user_idx}",
+            }
+
+        exceptions = []
+        operation_count = [0]
+
+        # Create individual account instances
+        accounts = {}
+        for user_id, account_data in accounts_pool.items():
+            acc_instance = DummyAccount(manager, {user_id: account_data})
+            acc_instance.sync()
+            accounts[user_id] = acc_instance
+
+        def account_reader(user_id, num_ops=50):
+            try:
+                acc = accounts[user_id]
+                for _ in range(num_ops):
+                    _ = acc.get_login("password")
+                    _ = acc.premium
+                    _ = acc.get_data("token")
+                    operation_count[0] += 1
+            except Exception as e:
+                exceptions.append((user_id, e))
+
+        def account_writer(user_id, num_ops=50):
+            try:
+                acc = accounts[user_id]
+                for i in range(num_ops):
+                    if i % 3 == 0:
+                        acc.sync()
+                    _ = acc.get_login("password")
+                    _ = acc.premium
+                    operation_count[0] += 1
+            except Exception as e:
+                exceptions.append((user_id, e))
+
+        # Create threads for concurrent operations on different accounts
+        threads = []
+        for user_id in accounts.keys():
+            t_reader = threading.Thread(target=account_reader, args=(user_id,))
+            t_writer = threading.Thread(target=account_writer, args=(user_id,))
+            threads.append(t_reader)
+            threads.append(t_writer)
+
+        for t in threads:
+            t.start()
+        for t in threads:
+            t.join()
+
+        # Verify no exceptions occurred and operations completed
+        assert exceptions == [], f"Exceptions occurred: {exceptions}"
+        assert operation_count[0] > 0, "No operations completed"
+
+    def test_concurrent_downloads_with_multiple_accounts_same_type(self):
+        """Test concurrent downloads using multiple accounts of the same plugin type."""
+        import threading
+        from pyload.plugins.base.account import BaseAccount
+
+        class FakeReq:
+            def close(self):
+                pass
+
+        class FakeRequestFactory:
+            def get_request(self, *args, **kwargs):
+                return FakeReq()
+
+        class FakeLog:
+            def debug(self, *a, **k):
+                pass
+            def info(self, *a, **k):
+                pass
+            def warning(self, *a, **k):
+                pass
+            def error(self, *a, **k):
+                pass
+
+        class FakeCore:
+            def __init__(self):
+                self._ = lambda s: s
+                self.request_factory = FakeRequestFactory()
+                self.log = FakeLog()
+                self.debug = 0
+                self.version = "test"
+                self.tempdir = "."
+                self.config = type("C", (), {"get": lambda *a, **k: False})()
+
+        class DummyAccount(BaseAccount):
+            def periodical_task(self):
+                pass
+            def signin(self, user, password, data):
+                pass
+            def grab_info(self, user, password, data):
+                return {}
+
+        manager = type("M", (), {})()
+        manager.pyload = FakeCore()
+
+        # Create multiple accounts of the SAME TYPE (e.g., all RapidGator accounts)
+        # Simulating different user accounts for the same service
+        accounts_data = {}
+        for user_idx in range(1, 4):
+            user_id = f"rapidgator_user{user_idx}"
+            accounts_data[user_id] = {
+                "password": f"password_{user_idx}",
+                "options": {"max_connections": ["5"]},
+                "plugin": None,
+                "premium": True,
+                "stats": [user_idx * 10, 0],
+                "timestamp": 2000 + user_idx,
+                "valid": True,
+                "type": "RapidgatorNet",
+                "traffic_limit": 1000 * user_idx,
+            }
+
+        # Create a single account manager with multiple same-type accounts
+        manager_accounts = DummyAccount(manager, accounts_data)
+        manager_accounts.sync()
+
+        exceptions = []
+        successful_downloads = [0]
+        user_usage_count = {}
+
+        def simulate_download(download_id, user_id, num_operations=20):
+            """Simulate a download operation using a specific account."""
+            try:
+                # Pre-download checks
+                _ = manager_accounts.get_login("password")
+                _ = manager_accounts.premium
+
+                # Simulate download preprocessing
+                for _ in range(num_operations):
+                    _ = manager_accounts.get_data("traffic_limit")
+                    if manager_accounts.premium:
+                        _ = manager_accounts.get_login("password")
+
+                user_usage_count[user_id] = user_usage_count.get(user_id, 0) + 1
+                successful_downloads[0] += 1
+
+            except Exception as e:
+                exceptions.append((download_id, user_id, e))
+
+        def download_worker(num_downloads=15):
+            """Worker thread that processes multiple downloads."""
+            user_ids = list(accounts_data.keys())
+            for dl_idx in range(num_downloads):
+                # Select account in round-robin fashion
+                selected_user = user_ids[dl_idx % len(user_ids)]
+                simulate_download(
+                    download_id=f"dl_{threading.current_thread().name}_{dl_idx}",
+                    user_id=selected_user,
+                    num_operations=10
+                )
+
+        # Create multiple worker threads simulating parallel downloads
+        workers = []
+        num_workers = 3
+        for i in range(num_workers):
+            worker_thread = threading.Thread(
+                target=download_worker,
+                args=(10,),
+                name=f"worker_{i}"
+            )
+            workers.append(worker_thread)
+
+        for worker in workers:
+            worker.start()
+        for worker in workers:
+            worker.join()
+
+        # Verify successful completion
+        assert exceptions == [], f"Exceptions during downloads: {exceptions}"
+        assert successful_downloads[0] > 0, "No downloads completed successfully"
+        assert successful_downloads[0] == num_workers * 10, "Not all downloads completed"
+        assert len(user_usage_count) > 0, "No accounts were used"
+

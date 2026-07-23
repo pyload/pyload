@@ -65,7 +65,7 @@ class TenluaVn(SimpleDownloader):
         self.handle_download()
 
     def handle_premium(self, pyfile):
-        sid = self.account.info["data"]["sid"]
+        sid = self.account.get_data("sid")
         self.handle_download(sid)
 
     def handle_download(self, sid=None):

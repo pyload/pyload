@@ -27,10 +27,10 @@ class BaseAccount(BasePlugin):
     TUNE_TIMEOUT = True  #: Automatically tune relogin interval
 
     def __init__(self, manager, accounts):
-        self._init(manager.pyload)
-
-        self.m = self.manager = manager
         self.lock = threading.RLock()
+
+        self._init(manager.pyload)
+        self.m = self.manager = manager
 
         self.accounts = accounts  # TODO: Recheck in 0.6.x
         self.user = None
@@ -43,10 +43,12 @@ class BaseAccount(BasePlugin):
 
         self.init()
 
+    @lock
     def __bool__(self):
         return self.user is not None
 
     @property
+    @lock
     def logged(self):
         """
         Checks if user is still logged in.
@@ -70,6 +72,7 @@ class BaseAccount(BasePlugin):
     def premium(self):
         return bool(self.get_data("premium"))
 
+    @lock
     def _log(self, level, plugintype, pluginname, args, kwargs):
         log = getattr(self.pyload.log, level)
 
@@ -211,6 +214,7 @@ class BaseAccount(BasePlugin):
     def relogin(self):
         return self.login()
 
+    @lock
     def reset(self):
         self.sync()
 
@@ -228,13 +232,22 @@ class BaseAccount(BasePlugin):
 
         self.syncback()
 
+    @lock
     def get_info(self, refresh=True):
         """
         Retrieve account infos for a user, do **not** overwrite this method! just use
         it to retrieve infos in downloader plugins. see `grab_info`
 
-        :return: dictionary with information
+        :return: dictionary with information (defensive copy to prevent external mutations)
         """
+        # Normalize self.info structure upfront
+        if not hasattr(self, "info") or not isinstance(self.info, dict):
+            self.info = {"login": {}, "data": {}}
+        else:
+            self.info.setdefault("login", {})
+            self.info.setdefault("data", {})
+
+        # Check login status and relogin if needed
         if not self.logged:
             if self.relogin():
                 refresh = True
@@ -242,11 +255,16 @@ class BaseAccount(BasePlugin):
                 refresh = False
                 self.reset()
 
-        if refresh and self.info["login"]["valid"]:
+        # Refresh account info if valid
+        if refresh and self.info["login"].get("valid"):
             self.log_info(
                 self._("Grabbing account info for user `{}`...").format(self.user)
             )
-            self.info = self._grab_info()
+
+            # _grab_info updates and returns self.info
+            new_info = self._grab_info()
+            if isinstance(new_info, dict):
+                self.info = new_info
 
             self.syncback()
 
@@ -254,16 +272,25 @@ class BaseAccount(BasePlugin):
                 "Account info for user `{}`: {}".format(self.user, self.info)
             )
 
-        return self.info
+        return copy.copy(self.info)
 
+    @lock
     def get_login(self, key=None, default=None):
-        d = self.get_info()["login"]
-        return d.get(key, default) if key else d
+        # Ensure self.info is properly initialized
+        if not hasattr(self, "info") or not isinstance(self.info, dict):
+            self.info = {"login": {}, "data": {}}
+        login = self.info.get("login") or {}
+        return login.get(key, default) if key else login
 
+    @lock
     def get_data(self, key=None, default=None):
-        d = self.get_info()["data"]
-        return d.get(key, default) if key else d
+        # Ensure self.info is properly initialized
+        if not hasattr(self, "info") or not isinstance(self.info, dict):
+            self.info = {"login": {}, "data": {}}
+        data = self.info.get("data") or {}
+        return data.get(key, default) if key else data
 
+    @lock
     def _grab_info(self):
         try:
             data = self.grab_info(
@@ -495,7 +522,7 @@ class BaseAccount(BasePlugin):
 
         else:
             self.user = user
-            self.info.clear()
+            self.sync()
             self.req.close()
 
             self.req = self.pyload.request_factory.get_request(

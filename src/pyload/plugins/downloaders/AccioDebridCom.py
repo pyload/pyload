@@ -43,7 +43,7 @@ class AccioDebridCom(MultiDownloader):
     def handle_premium(self, pyfile):
         try:
             res = self.api_response("getLink",
-                                    get=args(token=self.account.info['data']['cache_info'][self.account.user]['token']),
+                                    get=args(token=self.account.get_data('cache_info')[self.account.user]['token']),
                                     post=args(link=pyfile.url))
 
         except BadHeader as exc:

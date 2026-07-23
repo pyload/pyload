@@ -49,7 +49,7 @@ class LinkifierCom(MultiDownloader):
         json_data = self.api_request(
             "stream",
             self.account.user,
-            self.account.info["login"]["password"],
+            self.account.get_login("password"),
             url=pyfile.url,
         )
 

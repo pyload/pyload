@@ -355,7 +355,7 @@ class FilejokerNet(XFSDownloader):
         api_data = self.api_request(
             "download1",
             file_code=self.info["pattern"]["ID"],
-            session=self.account.info["data"]["session"],
+            session=self.account.get_data("session"),
         )
 
         if "error" in api_data:
@@ -372,7 +372,7 @@ class FilejokerNet(XFSDownloader):
             "download2",
             file_code=self.info["pattern"]["ID"],
             download_id=api_data["download_id"],
-            session=self.account.info["data"]["session"],
+            session=self.account.get_data("session"),
         )
 
         if "error" in api_data:

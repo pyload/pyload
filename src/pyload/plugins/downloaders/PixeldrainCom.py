@@ -41,7 +41,7 @@ class PixeldrainCom(SimpleDownloader):
 
     def setup(self):
         if self.premium:
-            self.req.add_auth(":{}".format(self.account.info["login"]["password"]))
+            self.req.add_auth(":{}".format(self.account.get_login("password")))
 
     def handle_free(self, pyfile):
         file_id = self.info["pattern"]["ID"]
