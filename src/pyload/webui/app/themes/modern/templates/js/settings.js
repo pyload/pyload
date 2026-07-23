@@ -286,6 +286,14 @@ class SettingsUI {
             $('#client_reset_yesno').on('change', (event) => {
               localStorage.setItem("ui.reset_yesno", event.target.checked);
             });
+            const $checkbox = $('#client_reset_yesno');
+            if (sessionStorage.getItem('yesNoSettings') === null) {
+              $checkbox.prop('checked', true);
+              $checkbox.prop('disabled', true);
+            } else {
+              $checkbox.prop('checked', false);
+              $checkbox.prop('disabled', false);
+            }
           }
         }
       }
