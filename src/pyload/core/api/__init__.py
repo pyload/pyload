@@ -150,7 +150,7 @@ class Api:
         self._ = core._
 
         # API key cache
-        self._apikey_cache = {}  # Format: {key_id: (timestamp, data)}
+        self._apikey_cache = {}  # Format: {apikey: (timestamp, data)}
         self._apikey_cache_lock = RLock()
 
     def _required_http_method_for_api(self, func_name: str) -> Optional[str]:
@@ -1633,11 +1633,11 @@ class Api:
             with self._apikey_cache_lock:
                 # Remove all cache entries where the cached_data has matching user_id
                 keys_to_delete = [
-                    key_id for key_id, (_, data) in self._apikey_cache.items()
+                    apikey for apikey, (_, data) in self._apikey_cache.items()
                     if data.get("user_id") == user_id
                 ]
-                for key_id in keys_to_delete:
-                    del self._apikey_cache[key_id]
+                for apikey in keys_to_delete:
+                    del self._apikey_cache[apikey]
 
         return self.pyload.db.remove_user(user)
 
@@ -1734,7 +1734,13 @@ class Api:
             result = self.pyload.db.delete_user_apikey(user_id, key_id)
             if result:
                 with self._apikey_cache_lock:
-                    self._apikey_cache.pop(key_id, None)  # remove from cache
+                    # Remove any cached entries that correspond to this key_id
+                    keys_to_delete = [
+                        apikey for apikey, (_, data) in self._apikey_cache.items()
+                        if data.get("id") == key_id
+                    ]
+                    for apikey in keys_to_delete:
+                        del self._apikey_cache[apikey]
 
             return {
                 "success": result,
@@ -1765,14 +1771,14 @@ class Api:
         # Check cache first (skip if ttl is 0)
         if ttl > 0:
             with self._apikey_cache_lock:
-                if key_id in self._apikey_cache:
-                    cache_time, cached_data = self._apikey_cache[key_id]
+                if apikey in self._apikey_cache:
+                    cache_time, cached_data = self._apikey_cache[apikey]
                     if now - cache_time < ttl * 1000:
                         # Cache hit - verify expiration in case key expired during cache window
                         expires_at = cached_data["expires_at"]
                         if 0 < expires_at <= now:
                             # Key expired, remove from cache and fail
-                            del self._apikey_cache[key_id]
+                            del self._apikey_cache[apikey]
                             return {
                                 "success": False,
                                 "error": "API key has expired",
@@ -1786,7 +1792,7 @@ class Api:
                             }
                     else:
                         # Cache expired - remove it
-                        del self._apikey_cache[key_id]
+                        del self._apikey_cache[apikey]
 
         # Cache miss - query database
         key_data = self.pyload.db.check_apikey(key_id, apikey[-43:])
@@ -1799,7 +1805,7 @@ class Api:
         # Cache the successful validation result (only if ttl > 0)
         if ttl > 0:
             with self._apikey_cache_lock:
-                self._apikey_cache[key_id] = (now, key_data)
+                self._apikey_cache[apikey] = (now, key_data)
 
         self.pyload.db.update_apikey_last_used(key_id)
         return {

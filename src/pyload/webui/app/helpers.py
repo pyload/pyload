@@ -340,7 +340,7 @@ def apikey_auth(func):
     2. Store user info in flask.g
     3. Not create or use sessions
 
-    If no API auth is provided, it will use session-based authentication.
+    If no API key is provided, it will use session-based authentication.
 
     Note: This decorator automatically makes the endpoint CSRF exempt to allow API access.
     """
