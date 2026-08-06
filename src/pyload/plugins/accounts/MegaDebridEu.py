@@ -14,7 +14,7 @@ def args(**kwargs):
 class MegaDebridEu(MultiAccount):
     __name__ = "MegaDebridEu"
     __type__ = "account"
-    __version__ = "0.37"
+    __version__ = "0.38"
     __status__ = "testing"
 
     __config__ = [
@@ -33,6 +33,7 @@ class MegaDebridEu(MultiAccount):
 
     LOGIN_TIMEOUT = -1
 
+    # See https://www.mega-debrid.eu/index.php?page=api
     API_URL = "https://www.mega-debrid.eu/api.php"
 
     def api_request(self, action, get=None, post=None):
@@ -49,8 +50,10 @@ class MegaDebridEu(MultiAccount):
 
     def grab_hosters(self, user, password, data):
         hosters = []
+        cache_info = data.get("cache_info", {})
+        token = cache_info.get(user, {}).get("token")
         try:
-            res = self.api_request("getHostersList")
+            res = self.api_request("getHostersList", args(token=token))
 
         except BadHeader as exc:
             if exc.code == 405:
