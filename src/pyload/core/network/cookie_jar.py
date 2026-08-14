@@ -1,13 +1,18 @@
+import threading
 import time
 from datetime import timedelta
 
+from pyload.core.utils.struct.lock import lock
+
 
 class CookieJar:
-    def __init__(self, pluginname, account=None):
+    def __init__(self, plugin_name, account=None):
         self.cookies = {}
-        self.plugin = pluginname
+        self.plugin = plugin_name
         self.account = account
+        self.lock = threading.RLock()
 
+    @lock
     def set_cookies(self, cookie_list):
         """
         Add cookies to the jar.
@@ -25,9 +30,11 @@ class CookieJar:
             elif isinstance(cookie, tuple) and len(cookie) == 3:
                 self.set_cookie(*cookie)
 
+    @lock
     def get_cookies(self):
         return list(self.cookies.values())
 
+    @lock
     def parse_cookie(self, name):
         if name in self.cookies:
             return self.cookies[name].split("\t")[6]
@@ -37,17 +44,18 @@ class CookieJar:
     def get_cookie(self, name):
         return self.parse_cookie(name)
 
-    def set_cookie(
-        self,
-        domain,
-        name,
-        value,
-        path="/",
-        exp=time.time() + timedelta(days=31).total_seconds(),  #: 31 days retention
-    ):
-        self.cookies[
-            name
-        ] = f".{domain}\tTRUE\t{path}\tFALSE\t{exp}\t{name}\t{value}"
+    def set_cookie(self, domain, name, value, path="/", exp=None):
+        """
+        Set a cookie. `exp` is seconds since epoch. If not provided, defaults
+        to now + 31 days.
+        """
+        if exp is None:
+            exp = time.time() + timedelta(days=31).total_seconds()
 
+        cookie_str = f".{domain}\tTRUE\t{path}\tFALSE\t{exp}\t{name}\t{value}"
+        with self.lock:
+            self.cookies[name] = cookie_str
+
+    @lock
     def clear(self):
         self.cookies = {}
