@@ -210,7 +210,7 @@ class UIHandler {
     $goto_top.toggleClass('hidden', !this.topbuttonVisible).affix({ offset: { top: 100 } });
     const navCss = this.stickynavlCss($(window).scrollTop(), navHeight);
     const modalTop = navHeight + parseFloat((navCss.top || `${-navHeight}`.replace('px', ''))) + 5;
-    $(".modal .modal-dialog").css({top: `${modalTop}px`});
+    $(".modal .modal-dialog").css({ top: `${modalTop}px` });
     $stickyNav.css(navCss);
 
     const addlinksMinHeight = getScrollBarHeight() + Math.round(parseFloat($("#add_links").css("line-height").replace('px', '')));
@@ -235,12 +235,12 @@ class UIHandler {
   }
 
   initContainerDragAndDrop() {
-    const allowedExts = ["ccf", "dlc","rsdf", "torrent", "txt"];
+    const allowedExts = ["ccf", "dlc", "rsdf", "torrent", "txt"];
     const $overlay = $(
       '<div id="container_drop_overlay">' +
-        '<div class="container_drop_overlay_message" style="color: #fff">' +
-          "{{_('Drop container file to add to queue')}}" +
-        "</div>" +
+      '<div class="container_drop_overlay_message" style="color: #fff">' +
+      "{{_('Drop container file to add to queue')}}" +
+      "</div>" +
       "</div>"
     ).css({
       display: "block",
@@ -329,7 +329,7 @@ class UIHandler {
     }
     const navCss = this.stickynavlCss(scrollTop, navHeight);
     const modalTop = navHeight + parseFloat((navCss.top || `${-navHeight}`).replace('px', '')) + 5;
-    $(".modal .modal-dialog").css({top: `${modalTop}px`});
+    $(".modal .modal-dialog").css({ top: `${modalTop}px` });
     $stickyNav.css(navCss);
   }
 
@@ -344,7 +344,7 @@ class UIHandler {
   }
 
   initPasswordReveal() {
-    $('input[type=password].reveal-pass').map(function() {
+    $('input[type=password].reveal-pass').map(function () {
       const reveal_id = Date.now();
 
       $(this).wrap("<div class=\"form-group has-feedback\"></div>");
@@ -352,7 +352,7 @@ class UIHandler {
       button.attr("data-reveal-pass-id", reveal_id);
       $(this).after(button);
       $(this).attr("data-reveal-pass-id", reveal_id);
-      $(this).on('input', function() {
+      $(this).on('input', function () {
         const visible = Boolean($(this).val());
         $(this).siblings(`button[data-reveal-pass-id="${$(this).attr("data-reveal-pass-id")}"]`).toggleClass('hidden', !visible);
       });
@@ -371,9 +371,9 @@ class UIHandler {
   }
 
   initButtonHandlers() {
-    $('.btn, input[type="radio"]').focus(function() { this.blur(); });
+    $('.btn, input[type="radio"]').focus(function () { this.blur(); });
 
-    $("#add_form").submit(function(event) {
+    $("#add_form").submit(function (event) {
       event.preventDefault();
       const formData = new FormData(this);
       const $this = $(this);
@@ -523,7 +523,7 @@ class UIHandler {
     const callerId = callStack[1].split('/').at(-1)
     const yesNoSettings = JSON.parse(sessionStorage.getItem('yesNoSettings') || "{}");
     const storedAnswer = yesNoSettings[callerId];
-    if (storedAnswer === undefined)  {
+    if (storedAnswer === undefined) {
       const visibleModals = $('.modal.in');
       if (visibleModals.length > 0) {
         const activeModal = visibleModals.first();
@@ -584,7 +584,7 @@ var uiHandler = new UIHandler();
 const formToObject = (form) => {
   const obj = {};
 
-  $(form).find("input, select, textarea").each(function() {
+  $(form).find("input, select, textarea").each(function () {
     let value;
     const $el = $(this);
     const name = $el.attr("name");
@@ -627,12 +627,12 @@ const parseUri = () => {
   return $add_links.val(e);
 };
 
-Array.prototype.remove = function(from, to) {
-    let left;
-    const rest = this.slice(((to || from) + 1) || this.length);
-    this.length = (left = from < 0) != null ? left : this.length + {from};
-    if (this.length === 0) { return []; }
-    return this.push.apply(this, rest);
+Array.prototype.remove = function (from, to) {
+  let left;
+  const rest = this.slice(((to || from) + 1) || this.length);
+  this.length = (left = from < 0) != null ? left : this.length + { from };
+  if (this.length === 0) { return []; }
+  return this.push.apply(this, rest);
 };
 
 const getScrollBarHeight = () => {
@@ -659,6 +659,73 @@ const getScrollBarHeight = () => {
 
   return (w1 - w2);
 };
+
+const faviconPath = "{{theme_static('img/favicon.ico')}}";
+const faviconLink = document.getElementById('app-favicon');
+const faviconImage = new Image();
+faviconImage.src = faviconPath;
+
+let badgeShown = false;
+let previousCaptchaState = false;
+let isTabActive = true;
+
+const drawFaviconBadge = (canvas) => {
+  const ctx = canvas.getContext('2d');
+  const size = canvas.width;
+  const dotRadius = Math.max(10, Math.round(size * 0.20));
+  const x = size - dotRadius - 6;
+  const y = size - dotRadius - 6;
+
+  ctx.fillStyle = '#d9534f';
+  ctx.strokeStyle = '#8b3a36';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.arc(x, y, dotRadius, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
+};
+
+const updateFaviconBadge = (showBadge) => {
+  const isNewCaptcha = !previousCaptchaState && showBadge;
+  previousCaptchaState = showBadge;
+
+  if (!faviconLink) return;
+  const shouldShowBadge = !isTabActive && isNewCaptcha;
+
+  if (!shouldShowBadge) {
+    faviconLink.href = faviconPath;
+    return;
+  }
+
+  if (!faviconImage.complete || faviconImage.naturalWidth === 0) {
+    faviconImage.onload = () => updateFaviconBadge(showBadge);
+    faviconLink.href = faviconPath;
+    return;
+  }
+
+  const canvas = document.createElement('canvas');
+  canvas.width = 128;
+  canvas.height = 128;
+  const ctx = canvas.getContext('2d');
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.drawImage(faviconImage, 0, 0, canvas.width, canvas.height);
+  drawFaviconBadge(canvas);
+  faviconLink.href = canvas.toDataURL('image/png');
+};
+
+$(window).on('focus', () => {
+  isTabActive = true;
+  updateFaviconBadge(badgeShown);
+});
+
+$(window).on('blur', () => {
+  isTabActive = false;
+});
+
+$(document).on('visibilitychange', () => {
+  isTabActive = !document.hidden;
+});
 
 $(() => {
   uiHandler.initUI()
@@ -697,6 +764,7 @@ const loadJsonToContent = (message) => {
   $("#actives").text(message.active);
   $("#actives_from").text(message.queue);
   $("#actives_total").text(message.total);
+  updateFaviconBadge(Boolean(message.captcha));
   const $cap_info = $(".cap_info");
   if (message.captcha) {
     const notificationVisible = ($cap_info.css("display") !== "none");
