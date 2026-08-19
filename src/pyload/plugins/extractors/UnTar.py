@@ -9,12 +9,15 @@ from pyload.plugins.base.extractor import ArchiveError, BaseExtractor, CRCError
 class UnTar(BaseExtractor):
     __name__ = "UnTar"
     __type__ = "extractor"
-    __version__ = "0.08"
+    __version__ = "0.09"
     __status__ = "stable"
 
     __description__ = """TAR extractor plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
+    __authors__ = [
+        ("Walter Purcaro", "vuolter@gmail.com"),
+        ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com"),
+    ]
 
     VERSION = "{}.{}.{}".format(
         sys.version_info[0], sys.version_info[1], sys.version_info[2]
@@ -60,7 +63,7 @@ class UnTar(BaseExtractor):
     def _safe_extractall(self, tar, path=".", members=None, *, numeric_owner=False):
         """
         Safely extract TAR members with validation for path traversal and symlink escapes.
-        
+
         :param tar: tarfile.TarFile object
         :param path: Destination directory
         :param members: List of members to extract (None = all)
@@ -70,6 +73,8 @@ class UnTar(BaseExtractor):
             member_path = os.path.join(path, member.name)
             if not is_within_directory(path, member_path):
                 raise ArchiveError("Attempted Path Traversal in Tar File (CVE-2007-4559)")
+            if member.isdev():
+                raise ArchiveError("Device files are not allowed in TAR archives.")
 
             # Validate symlink targets to prevent symlink escape attacks
             if member.issym() or member.islnk():
