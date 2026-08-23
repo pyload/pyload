@@ -131,7 +131,6 @@ class ThreadManager:
                 stack_info=self.pyload.debug > 2,
             )
             self.reconnecting.clear()
-        self.check_thread_count()
 
         try:
             self.assign_job()
@@ -209,14 +208,15 @@ class ThreadManager:
 
         self.reconnecting.clear()
 
-    def check_thread_count(self):
+    def check_thread_count(self, extra=0):
         """
         checks if there are need for increasing or reducing thread count.
         """
-        if len(self.threads) == self.pyload.config.get("download", "max_downloads"):
+        target_count = self.pyload.config.get("download", "max_downloads") + extra
+        if len(self.threads) == target_count:
             # thread count matches, do nothing
             return
-        elif len(self.threads) < self.pyload.config.get("download", "max_downloads"):
+        elif len(self.threads) < target_count:
             # we need to increase thread count, add one thread
             self.create_download_thread()
         else:
@@ -248,42 +248,47 @@ class ThreadManager:
         # if self.downloaded > 20:
         #    if not self.clean_pycurl(): return
 
-        free_threads = [x for x in self.threads if not x.active]
-
-        inuse_plugins = set(
-            [
-                (x.active.pluginname, self.get_limit(x))
-                for x in self.threads
-                if x.active and x.active.has_plugin()
-            ]
-        )
-        # (pluginname, dl_limit, active_count)
-        inuse_plugins = [
-            (
-                x[0],
-                x[1],
-                len(
-                    [
-                        y
-                        for y in self.threads
-                        if y.active and y.active.pluginname == x[0]
-                    ]
-                ),
-            )
-            for x in inuse_plugins
+        inuse_plugin_threads = [
+            x
+            for x in self.threads
+            if x.active and x.active.has_plugin()
         ]
 
-        over_limit_plugins = [x[0] for x in inuse_plugins if x[2] >= x[1] > 0]
-
-        occupied_plugins = sorted(
+        # (plugin_name, dl_limit, active_count)
+        inuse_plugins = set(
             [
-                x.active.pluginname
-                for x in self.threads
-                if x.active and x.active.has_plugin() and not x.active.plugin.multi_dl
+                (
+                    x.active.pluginname,
+                    self.get_limit(x),
+                    len([y for y in self.threads if y.active and y.active.pluginname == x.active.pluginname]),
+                )
+                for x in inuse_plugin_threads
             ]
-            + over_limit_plugins
         )
 
+        # plugins that are over their download limit (e.g., 3 active download for a plugin with limit 3)
+        over_limit_plugins = [
+            x[0] for x in inuse_plugins
+            if x[2] >= x[1] > 0
+        ]
+        # plugins that are waiting for a very long time (e.g., waiting for download slot)
+        long_waiting_plugins = [
+            x.active.pluginname
+            for x in inuse_plugin_threads
+            if getattr(x.active.plugin, "long_waiting", False)
+        ]
+        # non-parallel plugins are those that do not support multiple simultaneous downloads
+        non_parallel_plugins = [
+            x.active.pluginname
+            for x in inuse_plugin_threads
+            if not getattr(x.active.plugin, "multi_dl", True)
+        ]
+
+        # long waiting plugins are not counted towards the download limit, so we add them as extra
+        self.check_thread_count(extra=len(long_waiting_plugins))
+        free_threads = [x for x in self.threads if not x.active]
+
+        occupied_plugins = sorted(over_limit_plugins + long_waiting_plugins + non_parallel_plugins)
         occupied_plugins = tuple(set(occupied_plugins))  # remove duplicates
         job = self.pyload.files.get_job(occupied_plugins)
         if job:
