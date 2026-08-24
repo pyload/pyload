@@ -405,16 +405,6 @@ class AggregatedDownload:
         with self.lock:
             self._browsers.pop(tid, None)
 
-    # @property
-    # def abort(self):
-    #     return self._abort
-    #
-    # @abort.setter
-    # def abort(self, value):
-    #     if value and not self._abort:
-    #         self.abort_all()
-    #     self._abort = value
-
     @property
     def size(self):
         return self.total_size
