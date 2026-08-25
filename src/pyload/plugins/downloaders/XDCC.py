@@ -61,8 +61,8 @@ class IRC:
         return self.irc_sock in fdset[0]
 
     def _get_response_line(self, timeout=5):
-        start_time = time.time()
-        while time.time() - start_time < timeout:
+        start_time = time.monotonic()
+        while time.monotonic() - start_time < timeout:
             if self._data_available():
                 receive_bytes = self.irc_sock.recv(1 << 10)
                 try:
@@ -107,8 +107,8 @@ class IRC:
     @lock
     def _handle_motd(self):
         motd_start = False
-        start_time = time.time()
-        while time.time() - start_time < 30:
+        start_time = time.monotonic()
+        while time.monotonic() - start_time < 30:
             origin, command, args = self.get_irc_command()
             if command == '375':  #: RPL_MOTDSTART
                 motd_start = True
@@ -149,8 +149,8 @@ class IRC:
             if self.get_server_capabilities("tls", force_query=True, end_caps=False):
                 self.plugin.log_debug(self._("TLS via STARTTLS supported, attempting connection upgrade"))
                 self.irc_sock.send(to_bytes("STARTTLS\r\n"))
-                start_time = time.time()
-                while time.time() - start_time < 30:
+                start_time = time.monotonic()
+                while time.monotonic() - start_time < 30:
                     origin, command, args = self.get_irc_command()
                     if command == '670':  #: RPL_STARTTLS
                         starttls_acknowledged = True
@@ -206,8 +206,8 @@ class IRC:
             to_bytes("USER {} {} bla :{}\r\n".format(self.ident, host, self.realname))
         )
 
-        start_time = time.time()
-        while time.time() - start_time < 30:
+        start_time = time.monotonic()
+        while time.monotonic() - start_time < 30:
             origin, command, args = self.get_irc_command()
             if command == "001":  #: RPL_WELCOME
                 self.connected = True
@@ -277,8 +277,8 @@ class IRC:
             if force_query or not self.server_capabilities:
                 self.irc_sock.send(to_bytes("CAP LS\r\nPING :{}\r\n".format(self.host)))
                 self.sent_caps = True
-                start_time = time.time()
-                while time.time() - start_time < 30:
+                start_time = time.monotonic()
+                while time.monotonic() - start_time < 30:
                     origin, command, args = self.get_irc_command()
                     if command == 'CAP' and args[1] == 'LS':
                         self.server_capabilities = dict(
@@ -382,8 +382,8 @@ class IRC:
         self.plugin.log_info(self._("Joining channel {}").format(chan))
         self.irc_sock.send(to_bytes("JOIN {}\r\n".format(chan)))
 
-        start_time = time.time()
-        while time.time() - start_time < 30:
+        start_time = time.monotonic()
+        while time.monotonic() - start_time < 30:
             origin, command, args = self.get_irc_command()
 
             #: ERR_KEYSET, ERR_CHANNELISFULL, ERR_INVITEONLYCHAN, ERR_BANNEDFROMCHAN, ERR_BADCHANNELKEY
@@ -429,8 +429,8 @@ class IRC:
 
         self.send_private_message(bot, "identify {}".format(password))
 
-        start_time = time.time()
-        while time.time() - start_time < 30:
+        start_time = time.monotonic()
+        while time.monotonic() - start_time < 30:
             origin, command, args = self.get_irc_command()
 
             if origin is None or command is None or args is None:
@@ -468,8 +468,8 @@ class IRC:
 
         self.send_private_message(bot, "enter #{} {} {}".format(chan, self.nick, password))
 
-        start_time = time.time()
-        while time.time() - start_time < 30:
+        start_time = time.monotonic()
+        while time.monotonic() - start_time < 30:
             origin, command, args = self.get_irc_command()
 
             if origin is None or command is None or args is None:
@@ -506,8 +506,8 @@ class IRC:
         self.plugin.log_info(self._("Checking if bot '{}' is online").format(bot))
         self.irc_sock.send(to_bytes("WHOIS {}\r\n".format(bot)))
 
-        start_time = time.time()
-        while time.time() - start_time < 30:
+        start_time = time.monotonic()
+        while time.monotonic() - start_time < 30:
             origin, command, args = self.get_irc_command()
             if (
                 command == "401"
@@ -550,7 +550,7 @@ class IRC:
     @lock
     def xdcc_request_pack(self, bot, pack):
         self.plugin.log_info(self._("Requesting pack #{}").format(pack))
-        self.xdcc_request_time = time.time()
+        self.xdcc_request_time = time.monotonic()
         self.send_private_message(bot, "xdcc send #{}".format(pack))
 
     @lock
@@ -579,7 +579,7 @@ class IRC:
     def xdcc_query_queue_status(self, bot):
         if self.xdcc_request_time:
             self.plugin.log_info(self._("Requesting XDCC queue status"))
-            self.xdcc_queue_query_time = time.time()
+            self.xdcc_queue_query_time = time.monotonic()
             self.send_private_message(bot, "xdcc queue")
 
         else:
@@ -609,8 +609,8 @@ class IRC:
                 ctcp=True
             )
 
-            start_time = time.time()
-            while time.time() - start_time < 30:
+            start_time = time.monotonic()
+            while time.monotonic() - start_time < 30:
                 origin, command, args = self.get_irc_command()
 
                 # Private message from bot to us?
@@ -668,8 +668,8 @@ class IRC:
         self.send_private_message(bot, "xdcc info #{}".format(pack))
 
         info = {}
-        start_time = time.time()
-        while time.time() - start_time < 90:
+        start_time = time.monotonic()
+        while time.monotonic() - start_time < 90:
             origin, command, args = self.get_irc_command()
 
             # Private message from bot to us?
@@ -971,7 +971,7 @@ class XDCC(BaseDownloader):
                                 if self.queued_time:
                                     if (
                                         queued_timeout
-                                        and time.time() - self.queued_time
+                                        and time.monotonic() - self.queued_time
                                         > queued_timeout
                                     ):
                                         self.irc_client.xdcc_remove_queued(bot)
@@ -992,7 +992,7 @@ class XDCC(BaseDownloader):
 
                                     elif (
                                         queue_query_interval
-                                        and time.time()
+                                        and time.monotonic()
                                         - self.irc_client.xdcc_queue_query_time
                                         > queue_query_interval
                                     ):
@@ -1000,7 +1000,7 @@ class XDCC(BaseDownloader):
 
                                 elif self.last_response_time:
                                     if (
-                                        time.time() - self.last_response_time
+                                        time.monotonic() - self.last_response_time
                                         > response_timeout
                                     ):
                                         self.irc_client.xdcc_request_pack(bot, pack)
@@ -1009,7 +1009,7 @@ class XDCC(BaseDownloader):
                                 else:
                                     if (
                                         self.irc_client.xdcc_request_time
-                                        and time.time()
+                                        and time.monotonic()
                                         - self.irc_client.xdcc_request_time
                                         > response_timeout
                                     ):
@@ -1107,7 +1107,7 @@ class XDCC(BaseDownloader):
             "All Slots Full",
             "You have a DCC pending",
         ):
-            self.last_response_time = time.time()
+            self.last_response_time = time.monotonic()
 
         elif "you must be on a known channel to request a pack" in text:
             self.log_error(self._("Invalid channel"))
@@ -1157,7 +1157,7 @@ class XDCC(BaseDownloader):
             else:
                 m = self.RE_QUEUED.search(text)
                 if m:
-                    self.queued_time = self.last_response_time = time.time()
+                    self.queued_time = self.last_response_time = time.monotonic()
                     self.log_info(self._("Got queued at position {}").format(m.group(1)))
 
                 else:
@@ -1167,7 +1167,7 @@ class XDCC(BaseDownloader):
                             self._(
                                 "Waiting in the queue for about {}, current position {}, estimated remaining wait time: {}"
                             ).format(
-                                format.time(time.time() - self.queued_time),
+                                format.time(time.monotonic() - self.queued_time),
                                 m.group(1),
                                 m.group(2),
                             )

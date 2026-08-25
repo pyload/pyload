@@ -68,7 +68,7 @@ class ThreadManager:
         start a thread which fetches online status and other infos
         data = [ .. () .. ]
         """
-        self.timestamp = time.time() + timedelta(minutes=5).total_seconds()
+        self.timestamp = time.monotonic() + timedelta(minutes=5).total_seconds()
 
         InfoThread(self, data, pid)
 
@@ -77,7 +77,7 @@ class ThreadManager:
         """
         creates a thread to fetch online status, returns result id.
         """
-        self.timestamp = time.time() + timedelta(minutes=5).total_seconds()
+        self.timestamp = time.monotonic() + timedelta(minutes=5).total_seconds()
 
         rid = self.result_ids
         self.result_ids += 1
@@ -91,7 +91,7 @@ class ThreadManager:
         """
         returns result and clears it.
         """
-        self.timestamp = time.time() + timedelta(minutes=5).total_seconds()
+        self.timestamp = time.monotonic() + timedelta(minutes=5).total_seconds()
 
         data = self.info_results.pop(rid, {})
         return data
@@ -145,7 +145,7 @@ class ThreadManager:
             # it may be failed non-critical so we try it again
             self.assign_job()
 
-        if (self.info_cache or self.info_results) and self.timestamp < time.time():
+        if (self.info_cache or self.info_results) and self.timestamp < time.monotonic():
             self.info_cache.clear()
             self.info_results.clear()
             self.pyload.log.debug("Cleared Result cache")

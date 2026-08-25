@@ -126,7 +126,7 @@ class Notifier(BaseAddon):
         ):
             return
 
-        elapsed_time = time.time() - self.last_notify
+        elapsed_time = time.monotonic() - self.last_notify
 
         if elapsed_time < self.config.get("sendinterval", 1):
             return
@@ -151,5 +151,5 @@ class Notifier(BaseAddon):
             return True
 
         finally:
-            self.last_notify = time.time()
+            self.last_notify = time.monotonic()
             self.notifications += 1

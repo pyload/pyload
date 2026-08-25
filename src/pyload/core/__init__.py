@@ -473,7 +473,7 @@ class Core:
                 sys.exit(os.EX_SOFTWARE)  #: this kind of stuff should not be here!
 
     def is_client_connected(self):
-        return (self.last_client_connected + 30) > time.time()
+        return (self.last_client_connected + 30) > time.monotonic()
 
     def restart(self):
         self.log.info(self._("pyLoad is restarting..."))

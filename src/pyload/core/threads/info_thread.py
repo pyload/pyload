@@ -118,7 +118,7 @@ class InfoThread(PluginThread):
 
             self.m.info_results[self.rid]["ALL_INFO_FETCHED"] = {}
 
-        self.m.timestamp = time.time() + timedelta(minutes=5).total_seconds()
+        self.m.timestamp = time.monotonic() + timedelta(minutes=5).total_seconds()
 
     def update_db(self, plugin, result):
         self.pyload.files.update_file_info(result, self.pid)

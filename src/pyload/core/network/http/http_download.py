@@ -218,7 +218,7 @@ class HTTPDownload:
                 if ret != pycurl.E_CALL_MULTI_PERFORM:
                     break
 
-            t = time.time()
+            t = time.monotonic()
 
             #: reduce these calls
             while last_finish_check + 0.5 < t:

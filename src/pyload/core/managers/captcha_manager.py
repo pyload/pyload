@@ -103,11 +103,11 @@ class CaptchaTask:
         """
         let the captcha wait secs for the solution.
         """
-        self.wait_until = max(time.time() + sec, self.wait_until)
+        self.wait_until = max(time.monotonic() + sec, self.wait_until)
         self.status = "waiting"
 
     def is_waiting(self):
-        if self.result or self.error or time.time() > self.wait_until:
+        if self.result or self.error or time.monotonic() > self.wait_until:
             return False
 
         return True
@@ -143,7 +143,7 @@ class CaptchaTask:
             self.status = "shared-user"
 
     def timed_out(self):
-        return time.time() > self.wait_until
+        return time.monotonic() > self.wait_until
 
     def invalid(self):
         """

@@ -104,7 +104,7 @@ class RWLock(object):
         if not blocking:
             endtime = -1
         elif timeout is not None:
-            endtime = time.time() + timeout
+            endtime = time.monotonic() + timeout
         else:
             endtime = None
         me = current_thread()
@@ -132,7 +132,7 @@ class RWLock(object):
                         self.__readers[me] = self.__readers.get(me, 0) + 1
                         return
                 if timeout is not None:
-                    remaining = endtime - time.time()
+                    remaining = endtime - time.monotonic()
                     if remaining <= 0:
                         # Timeout has expired, signal caller of this.
                         raise RuntimeError("Acquiring read lock timed out")
@@ -157,7 +157,7 @@ class RWLock(object):
 
         """
         if timeout is not None:
-            endtime = time.time() + timeout
+            endtime = time.monotonic() + timeout
         me, upgradewriter = current_thread(), False
         self.__condition.acquire()
         try:
@@ -210,7 +210,7 @@ class RWLock(object):
                         self.__pendingwriters = self.__pendingwriters[1:]
                         return
                 if timeout is not None:
-                    remaining = endtime - time.time()
+                    remaining = endtime - time.monotonic()
                     if remaining <= 0:
                         # Timeout has expired, signal caller of this.
                         if upgradewriter:

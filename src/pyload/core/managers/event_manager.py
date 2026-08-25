@@ -20,7 +20,7 @@ class EventManager:
     def clean(self):
         self.clients[:] = [
             c for c in self.clients
-            if c.last_active + 30 >= time.time()
+            if c.last_active + 30 >= time.monotonic()
         ]
 
     @lock
@@ -29,7 +29,7 @@ class EventManager:
         events = []
         for client in self.clients:
             if client.uuid == uuid:
-                client.last_active = time.time()
+                client.last_active = time.monotonic()
                 while client.new_events():
                     events.append(client.pop_event().to_list())
                 break
@@ -50,7 +50,7 @@ class EventManager:
 class Client:
     def __init__(self, uuid):
         self.uuid = uuid
-        self.last_active = time.time()
+        self.last_active = time.monotonic()
         self.events = []
 
     def new_events(self):

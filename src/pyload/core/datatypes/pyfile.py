@@ -63,7 +63,7 @@ class PyFile:
         self.plugin = None
         # self.download = None
 
-        self.wait_until = 0  #: time.time() + time to wait
+        self.wait_until = 0  #: time.monotonic() + time to wait
 
         # status attributes
         self.active = False  #: obsolete?
@@ -223,7 +223,7 @@ class PyFile:
         """
         formats and return wait time in human readable format.
         """
-        seconds = int(self.wait_until - time.time())
+        seconds = int(self.wait_until - time.monotonic())
         return format.time(seconds, literally=False)
 
     def format_size(self):

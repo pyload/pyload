@@ -213,7 +213,7 @@ class XDCCRequest:
 
     def _download_loop(self):
         # recv loop for dcc socket
-        last_update = time.time()
+        last_update = time.monotonic()
         num_recv_len = 0
         recv_list = [self.dcc_sock]
 
@@ -252,7 +252,7 @@ class XDCCRequest:
                 self._write_func(data)
                 self._send_ack()
 
-            now = time.time()
+            now = time.monotonic()
             timespan = now - last_update
             if timespan > 1:
                 # calc speed once per second, averaging over 3 seconds

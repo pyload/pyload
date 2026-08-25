@@ -52,7 +52,7 @@ class AntiCaptcha(BaseAddon):
         credits = self.db.retrieve("credits", {"balance": 0, "time": 0})
 
         #: Docs says: "Please don't call this method more often than once in 30 seconds"
-        if time.time() - credits["time"] >= 30:
+        if time.monotonic() - credits["time"] >= 30:
             api_data = self.api_request(
                 "getBalance", {"clientKey": self.config.get("passkey")}
             )
@@ -60,7 +60,7 @@ class AntiCaptcha(BaseAddon):
                 self.log_error(self._("API error"), api_data["errorDescription"])
                 return 0
 
-            credits = {"balance": api_data["balance"], "time": time.time()}
+            credits = {"balance": api_data["balance"], "time": time.monotonic()}
             self.db.store("credits", credits)
 
         balance = credits["balance"]

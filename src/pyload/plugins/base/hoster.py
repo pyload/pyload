@@ -320,7 +320,7 @@ class BaseHoster(BasePlugin):
             return False
 
         old_wait_until = self.pyfile.wait_until
-        new_wait_until = time.time() + wait_time + float(not strict)
+        new_wait_until = time.monotonic() + wait_time + float(not strict)
 
         self.log_debug(
             "WAIT set to timestamp {}".format(new_wait_until),
@@ -340,7 +340,7 @@ class BaseHoster(BasePlugin):
         if seconds is not None:
             self.set_wait(seconds)
 
-        wait_time = self.pyfile.wait_until - time.time()
+        wait_time = self.pyfile.wait_until - time.monotonic()
 
         if wait_time < 1:
             self.log_warning(self._("Invalid wait time interval"))
@@ -366,12 +366,12 @@ class BaseHoster(BasePlugin):
                 self.log_warning(self._("Reconnection ignored due logged account"))
 
         if not self.want_reconnect or self.account:
-            while self.pyfile.wait_until > time.time():
+            while self.pyfile.wait_until > time.monotonic():
                 self.check_status()
                 time.sleep(2)
 
         else:
-            while self.pyfile.wait_until > time.time():
+            while self.pyfile.wait_until > time.monotonic():
                 self.check_status()
                 self.thread.m.reconnecting.wait(1)
 

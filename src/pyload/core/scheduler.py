@@ -37,7 +37,7 @@ class Scheduler:
 
     def add_job(self, t, call, args=None, kwargs=None, threaded=True):
         d = Deferred()
-        t += time.time()
+        t += time.monotonic()
         j = Job(t, call, args or [], kwargs or {}, d, threaded)
         self.queue.put((t, j))
         return d
@@ -65,7 +65,7 @@ class Scheduler:
             if not j:
                 break
             else:
-                if t <= time.time():
+                if t <= time.monotonic():
                     j.start()
                 else:
                     self.queue.put((t, j))

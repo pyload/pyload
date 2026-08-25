@@ -50,7 +50,7 @@ class UpdateManager(BaseAddon):
         self.periodical.start(10)
 
     def init(self):
-        self.info.update({"pyload": False, "plugins": False, "last_check": time.time()})
+        self.info.update({"pyload": False, "plugins": False, "last_check": time.monotonic()})
         self.mtimes = {}  #: Store modification time for each plugin
         self.event_map = {"all_downloads_processed": "all_downloads_processed"}
 
@@ -76,7 +76,7 @@ class UpdateManager(BaseAddon):
 
         if (
             self.config.get("checkperiod")
-            and time.time()
+            and time.monotonic()
             - max(
                 self.MIN_CHECK_INTERVAL,
                 timedelta(hours=self.config.get("checkinterval")).total_seconds(),
@@ -174,7 +174,7 @@ class UpdateManager(BaseAddon):
         newversion = self.server_response(0)
 
         self.info["pyload"] = False
-        self.info["last_check"] = time.time()
+        self.info["last_check"] = time.monotonic()
 
         if not newversion:
             exitcode = 0
