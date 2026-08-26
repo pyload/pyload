@@ -232,6 +232,79 @@ class UIHandler {
     this.initPasswordReveal();
     this.initButtonHandlers();
     this.initContainerDragAndDrop();
+    this.initFaviconBadge();
+  }
+
+  initFaviconBadge() {
+    const faviconNormal = "{{theme_static('img/favicon.ico')}}";
+    const faviconDomElement = document.getElementById('app-favicon');
+    const faviconImage = new Image();
+    faviconImage.src = faviconNormal;
+
+    let previousCaptchaState = true;
+    let isTabActive = true;
+    let isBadgeVisible = false;
+
+    const drawFaviconBadge = (canvas) => {
+      const ctx = canvas.getContext('2d');
+      const size = canvas.width;
+      const dotRadius = Math.max(10, Math.round(size * 0.20));
+      const x = size - dotRadius - 6;
+      const y = size - dotRadius - 6;
+
+      ctx.fillStyle = '#d9534f';
+      ctx.strokeStyle = '#8b3a36';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(x, y, dotRadius, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+    };
+
+    this.updateFaviconBadge = (showBadge) => {
+      const isNewCaptcha = !previousCaptchaState && showBadge;
+      previousCaptchaState = showBadge;
+
+      if (!faviconDomElement) return;
+
+      if (isTabActive) {
+        if (isBadgeVisible) {
+          faviconDomElement.href = faviconNormal;
+          isBadgeVisible = false;
+        }
+        return;
+      }
+
+      if (isNewCaptcha) {
+        // Image not ready yet, defer drawing the badge until it's loaded
+        if (!faviconImage.complete || faviconImage.naturalWidth === 0) {
+          faviconImage.onload = () => this.updateFaviconBadge(showBadge);
+          return;
+        }
+
+        const canvas = document.createElement('canvas');
+        canvas.width = 128;
+        canvas.height = 128;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+
+        ctx.clearRect(0, 0, 128, 128);
+        ctx.drawImage(faviconImage, 0, 0, 128, 128);
+        drawFaviconBadge(canvas);
+        faviconDomElement.href = canvas.toDataURL('image/png');
+        isBadgeVisible = true;
+      }
+    };
+
+    const setTabActive = (active) => {
+      if (isTabActive === active) return;
+      isTabActive = active;
+      this.updateFaviconBadge(previousCaptchaState);
+    };
+
+    $(window).on('focus', () => setTabActive(true));
+    $(window).on('blur',  () => setTabActive(false));
+    $(document).on('visibilitychange', () => setTabActive(!document.hidden));
   }
 
   initContainerDragAndDrop() {
@@ -660,73 +733,6 @@ const getScrollBarHeight = () => {
   return (w1 - w2);
 };
 
-const faviconPath = "{{theme_static('img/favicon.ico')}}";
-const faviconLink = document.getElementById('app-favicon');
-const faviconImage = new Image();
-faviconImage.src = faviconPath;
-
-let badgeShown = false;
-let previousCaptchaState = false;
-let isTabActive = true;
-
-const drawFaviconBadge = (canvas) => {
-  const ctx = canvas.getContext('2d');
-  const size = canvas.width;
-  const dotRadius = Math.max(10, Math.round(size * 0.20));
-  const x = size - dotRadius - 6;
-  const y = size - dotRadius - 6;
-
-  ctx.fillStyle = '#d9534f';
-  ctx.strokeStyle = '#8b3a36';
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.arc(x, y, dotRadius, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.stroke();
-};
-
-const updateFaviconBadge = (showBadge) => {
-  const isNewCaptcha = !previousCaptchaState && showBadge;
-  previousCaptchaState = showBadge;
-
-  if (!faviconLink) return;
-  const shouldShowBadge = !isTabActive && isNewCaptcha;
-
-  if (!shouldShowBadge) {
-    faviconLink.href = faviconPath;
-    return;
-  }
-
-  if (!faviconImage.complete || faviconImage.naturalWidth === 0) {
-    faviconImage.onload = () => updateFaviconBadge(showBadge);
-    faviconLink.href = faviconPath;
-    return;
-  }
-
-  const canvas = document.createElement('canvas');
-  canvas.width = 128;
-  canvas.height = 128;
-  const ctx = canvas.getContext('2d');
-
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.drawImage(faviconImage, 0, 0, canvas.width, canvas.height);
-  drawFaviconBadge(canvas);
-  faviconLink.href = canvas.toDataURL('image/png');
-};
-
-$(window).on('focus', () => {
-  isTabActive = true;
-  updateFaviconBadge(badgeShown);
-});
-
-$(window).on('blur', () => {
-  isTabActive = false;
-});
-
-$(document).on('visibilitychange', () => {
-  isTabActive = !document.hidden;
-});
-
 $(() => {
   uiHandler.initUI()
 
@@ -764,7 +770,7 @@ const loadJsonToContent = (message) => {
   $("#actives").text(message.active);
   $("#actives_from").text(message.queue);
   $("#actives_total").text(message.total);
-  updateFaviconBadge(Boolean(message.captcha));
+  uiHandler.updateFaviconBadge(Boolean(message.captcha));
   const $cap_info = $(".cap_info");
   if (message.captcha) {
     const notificationVisible = ($cap_info.css("display") !== "none");
