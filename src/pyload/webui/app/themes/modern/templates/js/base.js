@@ -237,6 +237,7 @@ class UIHandler {
 
   initFaviconBadge() {
     const faviconNormal = "{{theme_static('img/favicon.ico')}}";
+    let faviconBadge = null;
     const faviconDomElement = document.getElementById('app-favicon');
     const faviconImage = new Image();
     faviconImage.src = faviconNormal;
@@ -245,13 +246,20 @@ class UIHandler {
     let isTabActive = true;
     let isBadgeVisible = false;
 
-    const drawFaviconBadge = (canvas) => {
+    const drawFaviconBadge = () => {
+      const size = 128;
+      const canvas = document.createElement('canvas');
+      canvas.width = size;
+      canvas.height = size;
       const ctx = canvas.getContext('2d');
-      const size = canvas.width;
+      if (!ctx) return;
+
       const dotRadius = Math.max(10, Math.round(size * 0.20));
       const x = size - dotRadius - 6;
       const y = size - dotRadius - 6;
 
+      ctx.clearRect(0, 0, size, size);
+      ctx.drawImage(faviconImage, 0, 0, size, size);
       ctx.fillStyle = '#d9534f';
       ctx.strokeStyle = '#8b3a36';
       ctx.lineWidth = 2;
@@ -259,6 +267,8 @@ class UIHandler {
       ctx.arc(x, y, dotRadius, 0, Math.PI * 2);
       ctx.fill();
       ctx.stroke();
+
+      return canvas.toDataURL('image/png');
     };
 
     this.updateFaviconBadge = (showBadge) => {
@@ -282,16 +292,10 @@ class UIHandler {
           return;
         }
 
-        const canvas = document.createElement('canvas');
-        canvas.width = 128;
-        canvas.height = 128;
-        const ctx = canvas.getContext('2d');
-        if (!ctx) return;
-
-        ctx.clearRect(0, 0, 128, 128);
-        ctx.drawImage(faviconImage, 0, 0, 128, 128);
-        drawFaviconBadge(canvas);
-        faviconDomElement.href = canvas.toDataURL('image/png');
+        if (!faviconBadge) {
+          faviconBadge = drawFaviconBadge();
+        }
+        faviconDomElement.href = faviconBadge;
         isBadgeVisible = true;
       }
     };
