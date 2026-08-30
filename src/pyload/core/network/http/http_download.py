@@ -144,6 +144,7 @@ class HTTPDownload:
 
                 return self._download(chunks, False)
             elif code == pycurl.E_ABORTED_BY_CALLBACK:
+                # HTTPRequest.allow_private_ip == False
                 hostname = urllib.parse.urlparse(self.url).hostname
                 bad_ip = next((chunk.request.bad_ip for chunk in self.chunks if chunk.request.bad_ip), None)
                 raise Fail(f"Refusing to download from Server-Side host ('{hostname}' resolves to {bad_ip})")
