@@ -273,49 +273,86 @@ class FileDatabaseMethods:
 
     @style.queue
     def reorder_package(self, p, position, no_move=False):
+        """
+        Reorder a package within its queue.
+        """
         if position == -1:
             position = self._next_package_order(p.queue)
-        if not no_move:
-            if p.order > position:
-                self.c.execute(
-                    "UPDATE packages SET packageorder=packageorder+1 WHERE packageorder >= ? AND packageorder < ? AND queue=? AND packageorder >= 0",
-                    (position, p.order, p.queue),
-                )
-            elif p.order < position:
-                self.c.execute(
-                    "UPDATE packages SET packageorder=packageorder-1 WHERE packageorder <= ? AND packageorder > ? AND queue=? AND packageorder >= 0",
-                    (position, p.order, p.queue),
-                )
 
-        self.c.execute(
-            "UPDATE packages SET packageorder=? WHERE id=?", (position, str(p.id))
-        )
+        if position == p.order:
+            return  # nothing to do
+
+        with self.conn:  # ensure atomic operation
+            if not no_move:
+                if p.order > position:
+                    # moving up → make room by pushing others down
+                    self.c.execute(
+                        """UPDATE packages
+                           SET packageorder = packageorder + 1
+                           WHERE packageorder >= ? AND packageorder < ?
+                             AND queue = ? AND packageorder >= 0""",
+                        (position, p.order, p.queue),
+                    )
+                else:
+                    # moving down → close the gap by pulling others up
+                    self.c.execute(
+                        """UPDATE packages
+                           SET packageorder = packageorder - 1
+                           WHERE packageorder <= ? AND packageorder > ?
+                             AND queue = ? AND packageorder >= 0""",
+                        (position, p.order, p.queue),
+                    )
+
+            # put the package in its final position
+            self.c.execute(
+                "UPDATE packages SET packageorder=? WHERE id=?",
+                (position, p.id),
+            )
 
     @style.queue
     def reorder_link(self, f, position):
         """
         reorder link with f as dict for pyfile.
         """
-        if f["order"] > position:
-            self.c.execute(
-                "UPDATE links SET linkorder=linkorder+1 WHERE linkorder >= ? AND linkorder < ? AND package=?",
-                (position, f["order"], f["package"]),
-            )
-        elif f["order"] < position:
-            self.c.execute(
-                "UPDATE links SET linkorder=linkorder-1 WHERE linkorder <= ? AND linkorder > ? AND package=?",
-                (position, f["order"], f["package"]),
-            )
+        with self.conn:  # ensure atomic operation
+            if f["order"] > position:
+                # moving up → make room by pushing others down
+                self.c.execute(
+                    """UPDATE links
+                       SET linkorder = linkorder + 1
+                       WHERE linkorder >= ? AND linkorder < ?
+                         AND package=?""",
+                    (position, f["order"], f["package"]),
+                )
+            elif f["order"] < position:
+                # moving down → close the gap by pulling others up
+                self.c.execute(
+                    """UPDATE links
+                       SET linkorder = linkorder - 1
+                       WHERE linkorder <= ? AND linkorder > ?
+                         AND package=?""",
+                    (position, f["order"], f["package"]),
+                )
 
-        self.c.execute("UPDATE links SET linkorder=? WHERE id=?", (position, f["id"]))
+            # put the link in its final position
+            self.c.execute(
+                "UPDATE links SET linkorder=? WHERE id=?",
+                (position, f["id"])
+            )
 
     @style.queue
     def clear_package_order(self, p):
-        self.c.execute("UPDATE packages SET packageorder=? WHERE id=?", (-1, str(p.id)))
-        self.c.execute(
-            "UPDATE packages SET packageorder=packageorder-1 WHERE packageorder > ? AND queue=? AND id != ?",
-            (p.order, p.queue, str(p.id)),
-        )
+        with self.conn:  # ensure atomic operation
+            self.c.execute(
+                "UPDATE packages SET packageorder=? WHERE id=?",
+                (-1, str(p.id))
+            )
+            self.c.execute(
+                """UPDATE packages
+                   SET packageorder = packageorder - 1
+                   WHERE packageorder > ? AND queue=? AND id != ?""",
+                (p.order, p.queue, str(p.id)),
+            )
 
     @style.async_
     def restart_file(self, id):
@@ -408,10 +445,11 @@ class FileDatabaseMethods:
 
     @style.queue
     def delete_finished(self):
-        self.c.execute("DELETE FROM links WHERE status IN (0,4)")
-        self.c.execute(
-            "DELETE FROM packages WHERE NOT EXISTS(SELECT 1 FROM links WHERE packages.id=links.package)"
-        )
+        with self.conn:  # ensure atomic operation
+            self.c.execute("DELETE FROM links WHERE status IN (0,4)")
+            self.c.execute(
+                "DELETE FROM packages WHERE NOT EXISTS(SELECT 1 FROM links WHERE packages.id=links.package)"
+            )
 
     @style.queue
     def restart_failed(self):

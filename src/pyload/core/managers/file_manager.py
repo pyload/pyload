@@ -340,6 +340,10 @@ class FileManager:
                     self.job_cache[occupied].append("empty")
                 else:
                     pyfile = self.get_file(id)
+                    # Handle case where file was deleted but still in cache
+                    if pyfile is None and self.job_cache[occupied]:
+                        # Try next file in cache
+                        return self.get_job(occupied)
             else:
                 jobs = self.pyload.db.get_job(occupied)
                 jobs.reverse()
@@ -349,6 +353,9 @@ class FileManager:
                 else:
                     self.job_cache[occupied].extend(jobs)
                     pyfile = self.get_file(self.job_cache[occupied].pop())
+                    # Handle case where file was deleted
+                    if pyfile is None and self.job_cache[occupied]:
+                        return self.get_job(occupied)
 
         else:
             self.job_cache = {}  #: better not caching too much
@@ -361,6 +368,9 @@ class FileManager:
                 pyfile = None
             else:
                 pyfile = self.get_file(self.job_cache[occupied].pop())
+                # Handle case where file was deleted
+                if pyfile is None and self.job_cache[occupied]:
+                    return self.get_job(occupied)
 
             # TODO: maybe the new job has to be approved...
 
@@ -372,7 +382,7 @@ class FileManager:
         """
         return job for decrypting.
         """
-        if "decrypt" in self.job_cache:
+        if "decrypt" in self.job_cache and self.job_cache["decrypt"] == "empty":
             return None
 
         plugins = tuple(
@@ -480,58 +490,68 @@ class FileManager:
 
     @lock
     @change
-    def set_package_location(self, id, queue):
+    def set_package_location(self, package_id, queue):
         """
-        push package to queue.
+        move package to queue / collector.
         """
         queue = queue.value
-        p = self.pyload.db.get_package(id)
+        p = self.pyload.db.get_package(package_id)
+        if not p:
+            return
+
+        old_queue = p.queue
         oldorder = p.order
 
-        e = RemoveEvent("pack", id, "collector" if not p.queue else "queue")
+        e = RemoveEvent("pack", package_id, "collector" if not old_queue else "queue")
         self.pyload.event_manager.add_event(e)
 
+        # Clear package order in old queue and adjust other packages
         self.pyload.db.clear_package_order(p)
 
-        p = self.pyload.db.get_package(id)
-
+        # Update package location
+        p = self.pyload.db.get_package(package_id)
         p.queue = queue
         self.pyload.db.update_package(p)
 
+        # Reorder package to end of new queue
         self.pyload.db.reorder_package(p, -1, True)
 
-        packs = self.package_cache.values()
+        # Update cached packages in old queue (database already updated by clear_package_order)
+        packs = list(self.package_cache.values())
         for pack in packs:
-            if pack.queue != queue and pack.order > oldorder:
+            if pack.queue == old_queue and pack.order > oldorder and pack.id != package_id:
                 pack.order -= 1
                 pack.notify_change()
 
         self.pyload.db.commit()
-        self.release_package(id)
-        p = self.get_package(id)
 
-        e = InsertEvent("pack", id, p.order, "collector" if not p.queue else "queue")
+        self.release_package(package_id)
+        p = self.get_package(package_id)
+
+        e = InsertEvent("pack", package_id, p.order, "collector" if not p.queue else "queue")
         self.pyload.event_manager.add_event(e)
 
     @lock
     @change
     def reorder_package(self, id, position):
         p = self.get_package(id)
+        if not p:
+            return
 
+        old_position = p.order
         e = RemoveEvent("pack", id, "collector" if not p.queue else "queue")
         self.pyload.event_manager.add_event(e)
         self.pyload.db.reorder_package(p, position)
 
-        packs = self.package_cache.values()
+        packs = list(self.package_cache.values())
         for pack in packs:
-            if pack.queue != p.queue or pack.order < 0 or pack == p:
+            if pack.queue != p.queue or pack.order < 0 or pack.id == id:
                 continue
-            if p.order > position:
-                if pack.order >= position and pack.order < p.order:
+            if old_position > position:
+                if pack.order >= position and pack.order < old_position:
                     pack.order += 1
                     pack.notify_change()
-            elif p.order < position:
-                if pack.order <= position and pack.order > p.order:
+            elif old_position < position:
                     pack.order -= 1
                     pack.notify_change()
 
@@ -545,27 +565,35 @@ class FileManager:
     @change
     def reorder_file(self, id, position):
         f = self.get_file_data(id)
+        if not f:
+            return
         f = f[id]
+
+        p = self.get_package(f["package"])
+        if not p:
+            return
+
+        old_position = f["order"]
 
         e = RemoveEvent(
             "file",
             id,
-            "collector" if not self.get_package(f["package"]).queue else "queue",
+            "collector" if not p.queue else "queue",
         )
         self.pyload.event_manager.add_event(e)
 
         self.pyload.db.reorder_link(f, position)
 
-        pyfiles = self.cache.values()
+        pyfiles = list(self.cache.values())
         for pyfile in pyfiles:
-            if pyfile.packageid != f["package"] or pyfile.order < 0:
+            if pyfile.packageid != f["package"] or pyfile.order < 0 or pyfile.id == id:
                 continue
-            if f["order"] > position:
-                if pyfile.order >= position and pyfile.order < f["order"]:
+            if old_position > position:
+                if pyfile.order >= position and pyfile.order < old_position:
                     pyfile.order += 1
                     pyfile.notify_change()
-            elif f["order"] < position:
-                if pyfile.order <= position and pyfile.order > f["order"]:
+            elif old_position < position:
+                if pyfile.order <= position and pyfile.order > old_position:
                     pyfile.order -= 1
                     pyfile.notify_change()
 
@@ -578,7 +606,7 @@ class FileManager:
             "file",
             id,
             position,
-            "collector" if not self.get_package(f["package"]).queue else "queue",
+            "collector" if not p.queue else "queue",
         )
         self.pyload.event_manager.add_event(e)
 
