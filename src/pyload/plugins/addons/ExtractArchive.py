@@ -297,7 +297,7 @@ class ExtractArchive(BaseAddon):
 
                         for fid, fname, fout in targets:
                             if not exists(fname):
-                                self.log_debug(name, "File not found")
+                                self.log_debug(fname, "File not found")
                                 continue
 
                             name = os.path.basename(fname)
