@@ -539,6 +539,9 @@ class FileManager:
             return
 
         old_position = p.order
+        if old_position == position:
+            return
+
         e = RemoveEvent("pack", id, "collector" if not p.queue else "queue")
         self.pyload.event_manager.add_event(e)
         self.pyload.db.reorder_package(p, position)
@@ -547,11 +550,13 @@ class FileManager:
         for pack in packs:
             if pack.queue != p.queue or pack.order < 0 or pack.id == id:
                 continue
+
             if old_position > position:
-                if pack.order >= position and pack.order < old_position:
+                if position <= pack.order < old_position:
                     pack.order += 1
                     pack.notify_change()
             elif old_position < position:
+                if old_position < pack.order <= position:
                     pack.order -= 1
                     pack.notify_change()
 
