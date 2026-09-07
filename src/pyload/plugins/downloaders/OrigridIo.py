@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # pyLoad hoster plugin for Origrid (https://origrid.io)
 #
 # Origrid serves everything a downloader needs from plain HTML: no captcha, no
@@ -38,18 +36,29 @@ class OrigridIo(SimpleDownloader):
 
     # Name and size come from stable data-origrid anchors, not from CSS classes.
     NAME_PATTERN = r'data-origrid="name"[^>]*>(?P<N>[^<]+)<'
-    # Bytes crudos en vez de "306.1 MB": no hay que parsear unidades ni depender
-    # del locale del servidor, y no pierde precision al redondear.
-    SIZE_PATTERN = r'data-origrid-bytes="(?P<S>\d+)"' 
-    OFFLINE_PATTERN = r"This link doesn&#39;t lead to a file|This link doesn't lead to a file"
+    SIZE_PATTERN = r'data-origrid-bytes="(?P<S>\d+)"'
+    # Two distinct dead-link states, and the page distinguishes them:
+    #   - unknown id     -> "This link doesn't lead to a file"
+    #   - expired file   -> banner carrying data-origrid="offline"
+    # The anchor comes first because it is the stable one: the visible copy is
+    # translated and rewritten, the attribute is not.
+    # The expired case was missing until 2026-09-07. Without it the link matched
+    # neither online nor offline, so pyLoad treated it as a temporary error and
+    # retried in a loop instead of marking it dead.
+    OFFLINE_PATTERN = (
+        r'data-origrid="offline"'
+        r"|This link doesn&#39;t lead to a file|This link doesn't lead to a file"
+    )
 
     # The download anchor is present in the server HTML (no JS needed). The token
     # is single-use-ish and short-lived, so it is read per request rather than cached.
     LINK_FREE_PATTERN = r'data-origrid="download"[^>]*href="(?P<L>/dl/[^"]+)"'
 
+    URL_REPLACEMENTS = [(__pattern__ + ".*", r"https://origrid.io/d/\g<ID>")]
+
     def setup(self):
-        # Origrid puts no cap on concurrent downloads and serves 302s to storage
-        # with Accept-Ranges, so resuming and chunking are both safe.
+        # Origrid sets no cap on concurrent downloads and redirects (302) to
+        # storage with Accept-Ranges, so resuming and chunking are both safe.
         self.multi_dl = True
         self.resume_download = True
         self.chunk_limit = -1
