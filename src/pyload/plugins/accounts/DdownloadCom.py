@@ -12,7 +12,7 @@ from ..helpers import parse_html_form, search_pattern
 class DdownloadCom(XFSAccount):
     __name__ = "DdownloadCom"
     __type__ = "account"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __status__ = "testing"
 
     __description__ = """Ddownload.com account plugin"""
