@@ -7,7 +7,7 @@ from ..base.account import BaseAccount
 class FilerNet(BaseAccount):
     __name__ = "FilerNet"
     __type__ = "account"
-    __version__ = "0.18"
+    __version__ = "0.20"
     __status__ = "testing"
 
     __description__ = """Filer.net account plugin"""
@@ -24,7 +24,7 @@ class FilerNet(BaseAccount):
         try:
             if user and password:
                 self.req.add_auth(f"{user}:{password}")
-            json_data = self.load(f"{self.API_URL}{method}.json")
+            json_data = self.load(f"{self.API_URL}{method}.json", redirect=False)
         except BadHeader as exc:
             json_data = exc.content
         finally:
@@ -35,13 +35,15 @@ class FilerNet(BaseAccount):
 
     def grab_info(self, user, password, data):
         api_data = self.api_request("profile", user, password)
-        premium = api_data["premium"]
+        user_data = api_data.get("data", {})
+        premium = user_data.get("premium", False)
         if premium:
-            validuntil = api_data["data"]["until"]
-            trafficleft = api_data["data"]["traffic_left"]
+            until = user_data.get("until")
+            validuntil = until if until and until is not False else None
+            trafficleft = user_data.get("traffic_left", 0)
         else:
             validuntil = None
-            trafficleft = None
+            trafficleft = 0
 
         return {
             "premium": premium,
@@ -51,5 +53,5 @@ class FilerNet(BaseAccount):
 
     def signin(self, user, password, data):
         api_data = self.api_request("profile", user, password)
-        if api_data["code"] != 200:
-            self.fail_login(api_data["status"])
+        if api_data.get("code") != 200:
+            self.fail_login(api_data.get("status", "unknown"))
