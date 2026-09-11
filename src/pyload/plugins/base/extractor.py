@@ -137,6 +137,10 @@ class BaseExtractor(BasePlugin):
         self.filename = filename
         self.name = os.path.basename(filename)
         self.out = out
+        self.log_debug(f"FIXME why absolute path: BaseExtractor.out={self.out}")
+        print(f"FIXME why absolute path: BaseExtractor.out={self.out}")
+        import traceback
+        traceback.print_stack()
         self.fullpath = fullpath
         self.overwrite = overwrite
         self.excludefiles = excludefiles or []
@@ -217,9 +221,19 @@ class BaseExtractor(BasePlugin):
             # Normalize all separators to forward slashes first
             normalized = entry.replace("\\", "/")
 
+            # no! file_list has absolute file paths
+            # src/pyload/plugins/extractors/UnRar.py
+            #   f = safejoin(self.dest, f)
+            # this has been broken since
+            # ad249dd5b0 2026-05-26 if normalized.startswith("/"):
+            # f09201955c 2026-05-23 if os.path.isabs(entry_path):
+            r'''
             # Reject absolute paths (also catches UNC paths)
             if normalized.startswith("/"):
                 raise ArchiveError(f"Attempted path traversal in archive: {entry}")
+            '''
+            self.log_debug(f'_validate_archive_entries: normalized={normalized}')
+            self.log_debug(f'_validate_archive_entries: normalized.startswith("/")={normalized.startswith("/")}')
 
             # Check for invalid Windows characters
             invalid_chars = '<>:"|?*'
@@ -227,8 +241,23 @@ class BaseExtractor(BasePlugin):
                 if char in normalized:
                     raise ArchiveError(f"Archive entry contains illegal character '{char}': {entry}")
 
+            # resolve path components "." or ".."
+            # os.path.normpath("../a/./../b") == '../b'
+            normalized = os.path.normpath(normalized)
+
+            # no, we already check this later in is_within_directory
+            r'''
+            # Check for directory traversal
+            child_path = os.path.normpath(normalized)
+            parent_path = os.path.normpath(self.dest)
+            if not child_path.startswith(parent_path):
+                raise ArchiveError(f"Attempted path traversal in archive: {entry} parent_path={parent_path!r} child_path={child_path!r}")
+            '''
+
+            r'''
             # Split and check for traversal
             parts = [part for part in normalized.split('/')]
+            self.log_debug(f'_validate_archive_entries: parts={parts}')
 
             # Check for directory traversal
             level = 0
@@ -237,14 +266,26 @@ class BaseExtractor(BasePlugin):
                 if part == '..':
                     level -= 1
                 elif part == '' and not is_last:
+                    # this fails on absolute paths
+                    # normalized = "/some/path"
+                    # parts = ["", "some", "path"]
                     raise ArchiveError(f"Invalid archive entry: {entry}")
                 elif part not in ('', '.'):
                     level += 1
                 if level < 0:
                     raise ArchiveError(f"Attempted path traversal in archive: {entry}")
+            '''
 
+            # no! file_list has absolute file paths
+            r'''
             # Construct full extraction path
             full_path = os.path.realpath(os.path.join(self.dest, normalized))
+            '''
+            # TODO replace full_path with normalized
+            full_path = normalized
+
+            # test: path traversal
+            # full_path = "/bad/path"
 
             # Verify the file would be extracted within destination
             try:

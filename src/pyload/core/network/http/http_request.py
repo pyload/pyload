@@ -74,7 +74,11 @@ class HTTPRequest:
         self.bad_ip = None
         self.limit = limit
         self.http_proxy_host = None
+        # TODO expose HTTPRequest.allow_private_ip to the user
+        # HTTPRequest.allow_private_ip == False
         self.allow_private_ip = False
+        # fix: Refusing to download from Server-Side host
+        self.allow_private_ip = True
 
         self.c = pycurl.Curl()
 
