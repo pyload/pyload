@@ -256,6 +256,7 @@ class Api:
             ("webui", "ssl_keyfile"),
             ("webui", "ssl_certchain"),
             ("webui", "use_ssl"),
+            ("webui", "allow_iframe"),
         }
 
         ADMIN_ONLY_PLUGIN_OPTIONS = {

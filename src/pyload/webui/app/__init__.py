@@ -63,9 +63,10 @@ class App:
 
         @app.after_request
         def set_security_headers(response):
-            response.headers["Content-Security-Policy"] = "frame-ancestors 'self';"
+            if not app.config["PYLOAD_API"].get_config_value("webui", "allow_iframe"):
+                response.headers["Content-Security-Policy"] = "frame-ancestors 'self';"
+                response.headers["X-Frame-Options"] = "SAMEORIGIN"
             response.headers["X-Content-Type-Options"] = "nosniff"
-            response.headers["X-Frame-Options"] = "SAMEORIGIN"
             response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
             response.headers["Permissions-Policy"] = "geolocation=(), camera=(), microphone=()"
             if app.config["PYLOAD_API"].get_config_value("webui", "use_ssl"):
