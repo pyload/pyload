@@ -10,7 +10,7 @@ class YadiSk(SimpleDownloader):
     __version__ = "0.13"
     __status__ = "testing"
 
-    __pattern__ = r"https?://(?:yadi\.sk|disk\.yandex\.[ru|com])/d/[\w\-]+"
+    __pattern__ = r"https?://(?:yadi\.sk|disk\.yandex\.(?:ru|com))/d/[\w\-]+"
     __config__ = [
         ("enabled", "bool", "Activated", True),
         ("use_premium", "bool", "Use premium account if available", True),
