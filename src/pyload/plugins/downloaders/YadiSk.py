@@ -48,13 +48,20 @@ class YadiSk(SimpleDownloader):
                 try:
                     api_data = json.loads(m.group(1))
                     info["sk"] = api_data.get("environment", {}).get("sk")
-                    folder_path = [v for k,v in api_data.get("resources", {}).items() if not v.get("children")][0].get("path", "")
-                    if folder_path:
-                        folder_info = self.api_request("fetch-list", hash=folder_path, offset=0, withSizes=True, sk=info["sk"])
-                        files = [f for f in folder_info.get("resources", []) if f.get("type", "") == "file"]
-                        info["name"] = files[0]["name"]
-                        info["size"] = files[0]["meta"]["size"]
-                        info["path"] = files[0]["path"]
+                    leaf_item = [v for k,v in api_data.get("resources", {}).items() if not v.get("children")][0]
+                    if leaf_item.get("type") == "dir":
+                        folder_info = self.api_request(
+                            "fetch-list",
+                            hash=leaf_item.get("path", ""),
+                            offset=0,
+                            withSizes=True,
+                            sk=info["sk"]
+                        )
+                        leaf_item = [f for f in folder_info.get("resources", []) if f.get("type", "") == "file"][0]
+
+                    info["name"] = leaf_item.get("name")
+                    info["size"] = leaf_item.get("meta", {}).get("size")
+                    info["path"] = leaf_item.get("path")
 
                 except Exception as exc:
                     info["status"] = 8
