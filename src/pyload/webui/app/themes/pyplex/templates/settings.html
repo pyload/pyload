@@ -8,7 +8,8 @@
 {% endblock %}
 
 {% block footer %}
-<script type="text/javascript" src="{{theme_template('js/settings.js')}}"></script>
+  <script type="module" src="{{theme_static('vendor/lean-qr/lean-qr.min.mjs')}}"></script>
+  <script type="text/javascript" src="{{theme_template('js/settings.js')}}"></script>
 {% endblock %}
 
 {% block pageactions %}
@@ -376,14 +377,19 @@
           </form>
         </div>
         <div id="apikeyCopyContent" class="hidden">
-          <div class="alert alert-warning text-center"><h4 class="modal-title text-center">{{_("API Key generated successfully")}}</h4><br>{{_("Please save this key in a secure location,")}}<br><strong>{{_("You won't be able to see it again!")}}</strong></div>
+          <div id="apikeyCopyNotice" class="alert alert-warning" style="position: relative; min-height: 100px;">
+            <lean-qr id="apikeyQr" style="position: absolute; left: 15px; top: 50%; width: 90px; height: 90px; margin-top: -45px;"></lean-qr>
+            <div style="position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-50%); text-align: center;">
+              <h4 class="modal-title">{{_("API Key generated successfully")}}</h4><br>{{_("Please save this key in a secure location,")}}<br><strong>{{_("You won't be able to see it again!")}}</strong>
+            </div>
+          </div>
           <div class="input-group">
             <input type="text" id="apikeyGeneratedKey" class="form-control font-mono" style="cursor: text" value="" readonly>
             <span class="input-group-btn">
-              <button class="btn btn-primary" type="button" id="apikeyCopyBtn" style="margin-left: 5px; float: left">
-                <span class="glyphicon glyphicon-copy" style="margin-right: 5px;"></span>{{_("Copy")}}
+              <button class="btn btn-primary" type="button" id="apikeyCopyBtn" style="margin-left: 5px;">
+                <span class="glyphicon glyphicon-copy"></span>{{_("Copy")}}
               </button>
-          </span>
+            </span>
           </div>
         </div>
       </div>
@@ -397,7 +403,7 @@
           <button class="btn btn-warning" id="apikeyGenCancelBtn" style="margin-right: 5px; float: right" type="button">{{_("Cancel")}}</button>
         </div>
         <div id="apikeyCopyFooter" class="hidden">
-          <button class="btn btn-warning btn-block" id="apikeyCopyDismissBtn" style="margin-right: 5px; float: right" type="button">{{_("I've saved my key")}}</button>
+          <button class="btn btn-warning btn-block" id="apikeyCopyDismissBtn" type="button">{{_("I've saved my key")}}</button>
         </div>
       </div>
     </div>

@@ -490,10 +490,13 @@ class ApikeysUI {
   modalShowApikey(key) {
     return new Promise((resolve) => {
       const apikeyKey = $("#apikeyGeneratedKey");
+      const apikeyQr = $("#apikeyQr");
       this.modalSwitch("Copy");
       apikeyKey.val(key);
+      apikeyQr.attr("value", key);
       $('#apikeyCopyDismissBtn').one('click', (event) => {
         apikeyKey.val("");
+        apikeyQr.attr("value", "");
         resolve();
       })
       $('#apikeyCopyBtn').off('click').on('click', (event) => {
@@ -522,6 +525,7 @@ class ApikeysUI {
     $('#apikeyGenForm').trigger('reset');
     $('#apikeyCopyForm').trigger('reset');
     $("#apikeyGeneratedKey").val('');
+    $("#apikeyQr").attr("value", "");
   }
 
   loadApiKeys() {
