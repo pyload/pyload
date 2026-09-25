@@ -334,7 +334,7 @@ class ThreadManager:
                 thread = DecrypterThread(self, job)
 
     def get_limit(self, thread):
-        if thread.active.plugin.account:
+        if thread.active.plugin.account and getattr(thread.active.plugin, "accounts", None):
             account_limit = max(
                 int(
                     thread.active.plugin.account.get_account_data(
