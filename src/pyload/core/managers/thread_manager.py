@@ -334,17 +334,22 @@ class ThreadManager:
                 thread = DecrypterThread(self, job)
 
     def get_limit(self, thread):
-        if thread.active.plugin.account and getattr(thread.active.plugin, "accounts", None):
-            account_limit = max(
-                int(
-                    thread.active.plugin.account.get_account_data(
-                        thread.active.plugin.account.user
-                    )["options"].get("limit_dl", ["0"])[0]
-                ),
-                0,
-            )
-        else:
-            account_limit = 0
+        account_limit = 0
+        account = thread.active.plugin.account
+        if account:
+            try:
+                account_limit = max(
+                    int(
+                        account.get_account_data(account.user)["options"].get("limit_dl", ["0"])[0]
+                    ),
+                    0
+                )
+            except Exception as exc:
+                self.pyload.log.error(
+                    "Error occurred while fetching account limits: {}".format(exc),
+                    exc_info=self.pyload.debug > 1,
+                    stack_info=self.pyload.debug > 2
+                )
 
         plugin_limit = (
             max(thread.active.plugin.limit_dl, 0)
