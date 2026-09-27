@@ -3,8 +3,9 @@
 {% block title %}pyLoad - {{_('Settings')}}{% endblock %}
 
 {% block head %}
-<meta id="plugins-list" data-plugin='{{conf.plugin|tojson}}'/>
-<link rel="stylesheet" type="text/css" href="{{theme_static('css/settings.css')}}" />
+  <meta id="plugins-list" data-plugin='{{conf.plugin|tojson}}' />
+  <meta id="path-prefix" content='{{path_prefix}}' />
+  <link rel="stylesheet" type="text/css" href="{{theme_static('css/settings.css')}}" />
 {% endblock %}
 
 {% block footer %}

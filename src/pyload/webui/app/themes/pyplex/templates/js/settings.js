@@ -493,7 +493,19 @@ class ApikeysUI {
       const apikeyQr = $("#apikeyQr");
       this.modalSwitch("Copy");
       apikeyKey.val(key);
-      apikeyQr.attr("value", key);
+
+      const protocol = window.location.protocol;
+      const host = window.location.hostname;
+      const port = window.location.port || (protocol === "https:" ? "443" : "80");
+      let pathPrefix = $("#path-prefix").attr("content") || "";
+      if (pathPrefix.endsWith("/")) {
+        pathPrefix = pathPrefix.slice(0, -1);
+      }
+      const ssl = protocol === "https:" ? "true" : "false";
+      const deepLink = `${protocol}//${host}${window.location.port ? `:${port}` : ''}/${pathPrefix ? `${pathPrefix}/` : ''}qr-redirector#host=${host}&port=${port}&path=${pathPrefix}&ssl=${ssl}&key=${key}`;
+
+      apikeyQr.attr("value", deepLink);
+
       $('#apikeyCopyDismissBtn').one('click', (event) => {
         apikeyKey.val("");
         apikeyQr.attr("value", "");

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile App Redirector</title>
+    <style>
+        #download-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        #download-options p {
+            flex-basis: 100%;
+            margin: 0;
+        }
+
+        #download-options[hidden] {
+            display: none;
+        }
+
+        #download-options a {
+            display: inline-block;
+            line-height: 0;
+        }
+
+        #download-options img {
+            width: 240px;
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <p>Opening app, please wait...</p>
+    <section id="download-options" hidden>
+        <p>If the app didn't open, choose a download source:</p>
+        <a href="https://github.com/pyload/pyload-android/releases/latest">
+            <img alt="Download the latest release on GitHub" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzNjAiIGhlaWdodD0iMTM1IiB2aWV3Qm94PSIwIDAgMzYwIDEzNSI+PHJlY3QgeD0iMiIgeT0iMiIgd2lkdGg9IjM1NiIgaGVpZ2h0PSIxMzEiIHJ4PSIxOCIgZmlsbD0iIzA1MDUwNSIgc3Ryb2tlPSIjYWFhIiBzdHJva2Utd2lkdGg9IjMiLz48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgyNCAyMCkiIGZpbGw9IndoaXRlIj48cGF0aCBkPSJNNTYgM0MyNiAzIDIgMjcgMiA1N2MwIDI0IDE2IDQ1IDM4IDUyIDMgMSA0LTEgNC0zdi0xMGMtMTUgMy0xOS03LTE5LTctMi02LTYtOC02LTgtNS0zIDAtMyAwLTMgNSAwIDggNiA4IDYgNSA4IDEyIDYgMTUgNSAxLTQgMy02IDQtNy0xMi0xLTI1LTYtMjUtMjcgMC02IDItMTEgNi0xNS0xLTItMy04IDEtMTUgMCAwIDUtMiAxNiA2YTU1IDU1IDAgMCAxIDI5IDBjMTEtOCAxNi02IDE2LTYgNCA3IDIgMTMgMSAxNSA0IDQgNiA5IDYgMTUgMCAyMS0xMyAyNi0yNSAyNyAyIDIgNCA1IDQgMTB2MTVjMCAyIDEgNCA0IDMgMjItNyAzOC0yOCAzOC01MkMxMTAgMjcgODYgMyA1NiAzeiIgdHJhbnNmb3JtPSJzY2FsZSguODgpIi8+PC9nPjx0ZXh0IHg9IjE1MCIgeT0iNDgiIGZpbGw9IndoaXRlIiBmb250LWZhbWlseT0iQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSIyMiIgbGV0dGVyLXNwYWNpbmc9IjIiPkRPV05MT0FEIE9OPC90ZXh0Pjx0ZXh0IHg9IjE1MCIgeT0iOTYiIGZpbGw9IndoaXRlIiBmb250LWZhbWlseT0iQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSIzNiIgZm9udC13ZWlnaHQ9ImJvbGQiPkdpdEh1YjwvdGV4dD48dGV4dCB4PSIxNTAiIHk9IjExOSIgZmlsbD0iI2NjYyIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTUiPkxhdGVzdCBSZWxlYXNlPC90ZXh0Pjwvc3ZnPg==">
+        </a>
+        <a href="https://f-droid.org/packages/org.pyload.android.client/">
+            <img alt="Get it on F-Droid" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzNjAiIGhlaWdodD0iMTM1IiB2aWV3Qm94PSIwIDAgMzYwIDEzNSI+PHJlY3QgeD0iMiIgeT0iMiIgd2lkdGg9IjM1NiIgaGVpZ2h0PSIxMzEiIHJ4PSIxOCIgZmlsbD0iIzA1MDUwNSIgc3Ryb2tlPSIjYWFhIiBzdHJva2Utd2lkdGg9IjMiLz48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgyNCAxNykiPjxwYXRoIGQ9Ik0xNCAyMSA1IDltOTUgMTIgOS0xMiIgc3Ryb2tlPSIjOWNjYzAwIiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxyZWN0IHg9IjEwIiB5PSIyMiIgd2lkdGg9Ijk0IiBoZWlnaHQ9IjMxIiByeD0iOCIgZmlsbD0iIzgwY2MwMCIvPjxjaXJjbGUgY3g9IjM0IiBjeT0iMzciIHI9IjYiIGZpbGw9IndoaXRlIi8+PGNpcmNsZSBjeD0iODAiIGN5PSIzNyIgcj0iNiIgZmlsbD0id2hpdGUiLz48cmVjdCB4PSIxMCIgeT0iNTciIHdpZHRoPSI5NCIgaGVpZ2h0PSI1MCIgcng9IjciIGZpbGw9IiMxNjgwZDUiLz48Y2lyY2xlIGN4PSI1NyIgY3k9IjgyIiByPSIyMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDc1MmEwIiBzdHJva2Utd2lkdGg9IjUiLz48Y2lyY2xlIGN4PSI1NyIgY3k9IjgyIiByPSI5IiBmaWxsPSIjMDc1MmEwIi8+PC9nPjx0ZXh0IHg9IjEzOSIgeT0iNDUiIGZpbGw9IndoaXRlIiBmb250LWZhbWlseT0iQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSIyNCIgbGV0dGVyLXNwYWNpbmc9IjMiPkdFVCBJVCBPTjwvdGV4dD48dGV4dCB4PSIxMzkiIHk9Ijk5IiBmaWxsPSJ3aGl0ZSIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iNDMiIGZvbnQtd2VpZ2h0PSJib2xkIj5GLURyb2lkPC90ZXh0Pjwvc3ZnPg==">
+        </a>
+    </section>
+
+    <script type="text/javascript">
+        // 1. Grab the client-side secret parameters after the '#'
+        const secretFragment = window.location.hash;
+
+        if (secretFragment) {
+            // 2. Construct your app's custom intent deep-link
+            const appDeepLink = "org.pyload.android.client://addserver?" + secretFragment.substring(1); // Remove the '#' from the fragment
+
+            // 3. Proactively trigger the redirect to your app
+            window.location.href = appDeepLink;
+
+            // 4. If the app isn't installed, let the user choose a download source.
+            setTimeout(() => {
+                document.querySelector("#download-options").hidden = false;
+            }, 3000);
+        } else {
+            document.body.innerHTML = "<p>Error: No server info provided in the link.</p>";
+        }
+    </script>
+</body>
+</html>

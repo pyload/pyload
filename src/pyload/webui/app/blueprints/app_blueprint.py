@@ -66,6 +66,11 @@ def manifest():
     })
 
 
+@bp.route("/qr-redirector", endpoint="qr_redirector")
+def qr_redirector():
+    return flask.send_from_directory("static", "qr-redirector.html")
+
+
 # TODO: Rewrite login route using flask-login
 @bp.route("/login", methods=["GET", "POST"], endpoint="login")
 def login():
@@ -297,6 +302,7 @@ def settings():
     context = {
         "conf": {"plugin": plugin_menu, "general": conf_menu, "accs": accs, "admin": admin_menu},
         "types": api.get_account_types(),
+        "path_prefix": api.get_config_value("webui", "prefix"),
     }
     return render_template("settings.html", **context)
 
