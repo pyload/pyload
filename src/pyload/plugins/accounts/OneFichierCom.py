@@ -9,7 +9,7 @@ from ..base.account import BaseAccount
 class OneFichierCom(BaseAccount):
     __name__ = "OneFichierCom"
     __type__ = "account"
-    __version__ = "0.25"
+    __version__ = "0.26"
     __status__ = "testing"
 
     __description__ = """1fichier.com account plugin"""
@@ -20,7 +20,7 @@ class OneFichierCom(BaseAccount):
         ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com"),
     ]
 
-    VALID_UNTIL_PATTERN = r'valid until <span style="font-weight:bold">(\d+\-\d+\-\d+)<'
+    VALID_UNTIL_PATTERN = r'Your plan, until (\d+\-\d+\-\d+)'
 
     def grab_info(self, user, password, data):
         validuntil = None
