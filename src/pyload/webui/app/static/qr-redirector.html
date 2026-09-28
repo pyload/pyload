@@ -34,9 +34,9 @@
     </style>
 </head>
 <body>
-    <p>Opening app, please wait...</p>
+    <p id="opening-message">Opening pyLoad app, please wait...</p>
     <section id="download-options" hidden>
-        <p>If the app didn't open, choose a download source:</p>
+        <p>pyLoad app failed to open.<br>Get it from:</p>
         <a href="https://github.com/pyload/pyload-android/releases/latest">
             <img alt="Download the latest release on GitHub" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzNjAiIGhlaWdodD0iMTM1IiB2aWV3Qm94PSIwIDAgMzYwIDEzNSI+PHJlY3QgeD0iMiIgeT0iMiIgd2lkdGg9IjM1NiIgaGVpZ2h0PSIxMzEiIHJ4PSIxOCIgZmlsbD0iIzA1MDUwNSIgc3Ryb2tlPSIjYWFhIiBzdHJva2Utd2lkdGg9IjMiLz48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgyNCAyMCkiIGZpbGw9IndoaXRlIj48cGF0aCBkPSJNNTYgM0MyNiAzIDIgMjcgMiA1N2MwIDI0IDE2IDQ1IDM4IDUyIDMgMSA0LTEgNC0zdi0xMGMtMTUgMy0xOS03LTE5LTctMi02LTYtOC02LTgtNS0zIDAtMyAwLTMgNSAwIDggNiA4IDYgNSA4IDEyIDYgMTUgNSAxLTQgMy02IDQtNy0xMi0xLTI1LTYtMjUtMjcgMC02IDItMTEgNi0xNS0xLTItMy04IDEtMTUgMCAwIDUtMiAxNiA2YTU1IDU1IDAgMCAxIDI5IDBjMTEtOCAxNi02IDE2LTYgNCA3IDIgMTMgMSAxNSA0IDQgNiA5IDYgMTUgMCAyMS0xMyAyNi0yNSAyNyAyIDIgNCA1IDQgMTB2MTVjMCAyIDEgNCA0IDMgMjItNyAzOC0yOCAzOC01MkMxMTAgMjcgODYgMyA1NiAzeiIgdHJhbnNmb3JtPSJzY2FsZSguODgpIi8+PC9nPjx0ZXh0IHg9IjE1MCIgeT0iNDgiIGZpbGw9IndoaXRlIiBmb250LWZhbWlseT0iQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSIyMiIgbGV0dGVyLXNwYWNpbmc9IjIiPkRPV05MT0FEIE9OPC90ZXh0Pjx0ZXh0IHg9IjE1MCIgeT0iOTYiIGZpbGw9IndoaXRlIiBmb250LWZhbWlseT0iQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSIzNiIgZm9udC13ZWlnaHQ9ImJvbGQiPkdpdEh1YjwvdGV4dD48dGV4dCB4PSIxNTAiIHk9IjExOSIgZmlsbD0iI2NjYyIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTUiPkxhdGVzdCBSZWxlYXNlPC90ZXh0Pjwvc3ZnPg==">
         </a>
@@ -58,6 +58,7 @@
 
             // 4. If the app isn't installed, let the user choose a download source.
             setTimeout(() => {
+                document.querySelector("#opening-message").hidden = true;
                 document.querySelector("#download-options").hidden = false;
             }, 3000);
         } else {
