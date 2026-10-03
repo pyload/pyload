@@ -604,15 +604,15 @@ class UIHandler {
       const visibleModals = $('.modal.in');
       if (visibleModals.length > 0) {
         const activeModal = visibleModals.first();
-        const modalTitle = activeModal.find('.modal-title');
+        const modalHeader = activeModal.find('.modal-header');
         const modalBody = activeModal.find('.modal-body');
         const modalFooter = activeModal.find('.modal-footer');
 
-        const originalTitle = modalTitle.text().trim();
+        const originalTitle = modalHeader.text().trim();
         const originalBody = modalBody.html().trim();
 
         modalFooter.addClass("hidden");
-        modalTitle.text('{{_("Confirmation")}}');
+        modalHeader.text('{{_("Confirmation")}}');
         modalBody.html(
           '<p>' + question + '</p>' +
           `<div style="margin-bottom: 25px;"><input type="checkbox" id="dontAskAgain2"><label for="dontAskAgain2" style="font-weight: normal; margin-left: 4px; user-select: none;">{{_("Don't ask again")}}</label></div>` +
@@ -623,7 +623,7 @@ class UIHandler {
         modalBody.one('click', '#okButton, #cancelButton', (event) => {
           const answer = $(event.target).attr("id") === "okButton";
           const dontAskAgain = $('#dontAskAgain2').is(':checked');
-          modalTitle.text(originalTitle);
+          modalHeader.text(originalTitle);
           modalBody.html(originalBody);
           modalFooter.removeClass('hidden');
           if (dontAskAgain) {
