@@ -1637,9 +1637,10 @@ class Api:
         """
         deletes a user login.
         """
-        user_id = self.pyload.db.get_user_id(user)
-        if user_id:
-            with self._apikey_cache_lock:
+        with self._apikey_cache_lock:
+            user_id = self.pyload.db.get_user_id(user)
+            removed = self.pyload.db.remove_user(user)
+            if removed and user_id:
                 # Remove all cache entries where the cached_data has matching user_id
                 keys_to_delete = [
                     apikey for apikey, (_, data) in self._apikey_cache.items()
@@ -1648,7 +1649,6 @@ class Api:
                 for apikey in keys_to_delete:
                     del self._apikey_cache[apikey]
 
-        removed = self.pyload.db.remove_user(user)
         if removed:
             self._invalidate_user_sessions(user)
         return removed
@@ -1740,27 +1740,27 @@ class Api:
         :param key_id: ID of the API key to delete
         :return: dict with `success` as True if deleted, False otherwise
         """
-        user_id = self.pyload.db.get_user_id(user)
-        if not user_id:
-            return {
-                "success": False,
-                "error": "Invalid username",
-            }
-        else:
+        with self._apikey_cache_lock:
+            user_id = self.pyload.db.get_user_id(user)
+            if not user_id:
+                return {
+                    "success": False,
+                    "error": "Invalid username",
+                }
+
             result = self.pyload.db.delete_user_apikey(user_id, key_id)
             if result:
-                with self._apikey_cache_lock:
-                    # Remove any cached entries that correspond to this key_id
-                    keys_to_delete = [
-                        apikey for apikey, (_, data) in self._apikey_cache.items()
-                        if data.get("id") == key_id
-                    ]
-                    for apikey in keys_to_delete:
-                        del self._apikey_cache[apikey]
+                # Remove any cached entries that correspond to this key_id.
+                keys_to_delete = [
+                    apikey for apikey, (_, data) in self._apikey_cache.items()
+                    if data.get("id") == key_id
+                ]
+                for apikey in keys_to_delete:
+                    del self._apikey_cache[apikey]
 
-            return {
-                "success": result,
-            }
+        return {
+            "success": result,
+        }
 
     def check_apikey(self, apikey: str, ttl: int = 5 * 60) -> dict[str, Any]:
         """
@@ -1782,11 +1782,11 @@ class Api:
 
         key_id = int(apikey[4:4 + int(apikey[3])])
 
-        now = int(time.time() * 1000)
+        with self._apikey_cache_lock:
+            now = int(time.time() * 1000)
 
-        # Check cache first (skip if ttl is 0)
-        if ttl > 0:
-            with self._apikey_cache_lock:
+            # Check cache first (skip if ttl is 0)
+            if ttl > 0:
                 if apikey in self._apikey_cache:
                     cache_time, cached_data = self._apikey_cache[apikey]
                     if now - cache_time < ttl * 1000:
@@ -1810,17 +1810,16 @@ class Api:
                         # Cache expired - remove it
                         del self._apikey_cache[apikey]
 
-        # Cache miss - query database
-        key_data = self.pyload.db.check_apikey(key_id, apikey[-43:])
-        if not key_data:
-            return {
-                "success": False,
-                "error": "Invalid or expired API key",
-            }
+            # Keep validation and cache population serialized with key deletion.
+            key_data = self.pyload.db.check_apikey(key_id, apikey[-43:])
+            if not key_data:
+                return {
+                    "success": False,
+                    "error": "Invalid or expired API key",
+                }
 
-        # Cache the successful validation result (only if ttl > 0)
-        if ttl > 0:
-            with self._apikey_cache_lock:
+            # Cache the successful validation result (only if ttl > 0).
+            if ttl > 0:
                 self._apikey_cache[apikey] = (now, key_data)
 
         self.pyload.db.update_apikey_last_used(key_id)
