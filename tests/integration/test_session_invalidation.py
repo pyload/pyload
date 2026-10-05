@@ -32,21 +32,19 @@ def _remove_user(client, api_key, username):
     assert response.status_code == 200
 
 
-def test_set_user_permission_invalidates_logged_in_user(
-    app, api_key, resilient_client
-):
+def test_set_user_permission_invalidates_logged_in_user(app, api_key, client):
     app.config.update({"WTF_CSRF_ENABLED": False})
     username = f"session_role_test_{int(time.time() * 1000)}"
     password = "initial_password"
     user_client = _create_logged_in_user(
-        app, resilient_client, api_key, username, password
+        app, client, api_key, username, password
     )
 
     try:
         response = user_client.get("/api/get_userdir")
         assert response.status_code == 200
 
-        response = resilient_client.post(
+        response = client.post(
             "/api/set_user_permission",
             query_string={"user": username, "permission": 0, "role": 1},
             headers={API_KEY_HEADER: api_key},
@@ -56,16 +54,16 @@ def test_set_user_permission_invalidates_logged_in_user(
         response = user_client.get("/api/get_userdir")
         assert response.status_code == 401
     finally:
-        _remove_user(resilient_client, api_key, username)
+        _remove_user(client, api_key, username)
 
 
 def test_set_user_permission_invalidates_the_current_session(
-    app, api_key, resilient_client
+    app, api_key, client
 ):
     app.config.update({"WTF_CSRF_ENABLED": False})
     username = f"session_self_role_test_{int(time.time() * 1000)}"
     user_client = _create_logged_in_user(
-        app, resilient_client, api_key, username, "initial_password"
+        app, client, api_key, username, "initial_password"
     )
 
     try:
@@ -79,24 +77,22 @@ def test_set_user_permission_invalidates_the_current_session(
         response = user_client.get("/api/get_userdir")
         assert response.status_code == 401
     finally:
-        _remove_user(resilient_client, api_key, username)
+        _remove_user(client, api_key, username)
 
 
-def test_change_password_invalidates_logged_in_user(
-    app, api_key, resilient_client
-):
+def test_change_password_invalidates_logged_in_user(app, api_key, client):
     app.config.update({"WTF_CSRF_ENABLED": False})
     username = f"session_password_test_{int(time.time() * 1000)}"
     old_password = "initial_password"
     user_client = _create_logged_in_user(
-        app, resilient_client, api_key, username, old_password
+        app, client, api_key, username, old_password
     )
 
     try:
         response = user_client.get("/api/get_userdir")
         assert response.status_code == 200
 
-        response = resilient_client.post(
+        response = client.post(
             "/api/change_password",
             query_string={
                 "user": username,
@@ -111,4 +107,4 @@ def test_change_password_invalidates_logged_in_user(
         response = user_client.get("/api/get_userdir")
         assert response.status_code == 401
     finally:
-        _remove_user(resilient_client, api_key, username)
+        _remove_user(client, api_key, username)
