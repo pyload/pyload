@@ -142,10 +142,10 @@ jobs:
             COVERAGE_ARGS="--cov pyload --cov-report markdown-append:$GITHUB_STEP_SUMMARY"
           fi
 
-          python3 -m pytest tests/unit $COVERAGE_ARGS
+          python3 -m pytest tests/unit -W "ignore::DeprecationWarning:flask_session.filesystem.filesystem" $COVERAGE_ARGS
 
       - name: Run integration tests
-        run: python3 -m pytest tests/integration
+        run: python3 -m pytest tests/integration -W "ignore::DeprecationWarning:flask_session.filesystem.filesystem"
 
       - name: Test OpenAPI spec generator
         if: startsWith(matrix.os, 'ubuntu') && matrix.python-version == '3.13'
