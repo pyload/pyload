@@ -113,31 +113,34 @@ def clear_session(session=flask.session, permanent=True):
 
 
 def clear_all_user_sessions(username):
-    session_dir = flask.current_app.config['SESSION_FILE_DIR']
+    if flask.has_request_context() and flask.session.get("name") == username:
+        clear_session()
+
+    session_dir = flask.current_app.config["SESSION_FILE_DIR"]
+    serializer = flask.current_app.session_interface.serializer
     sessions_cleared = 0
 
     def _read_session_file(filepath):
-        session_data = {}
+        with open(filepath, "rb") as f:
+            timeout_bytes = f.read(4)
+            if len(timeout_bytes) != 4:
+                raise ValueError(f"Invalid session file header: {filepath}")
+            return serializer.decode(f.read())
 
-        if os.path.exists(filepath):
-            with open(filepath, 'rb') as f:
-                timeout_bytes = f.read(4)  # Read the 4-byte timeout header
-                if len(timeout_bytes) == 4:
-                    # timeout = struct.unpack("I", timeout_bytes)[0]   # little-endian unsigned int
-                    session_data = flask.current_app.session_interface.serializer.decode(f.read())
+    try:
+        entries = os.scandir(session_dir)
+    except FileNotFoundError:
+        return sessions_cleared
 
-        return session_data
-
-    if os.path.exists(session_dir):
-        for filename in os.listdir(session_dir):
-            filepath = os.path.join(session_dir, filename)
-            try:
-                session_info = _read_session_file(filepath)
-                if isinstance(session_info, dict) and session_info.get("name") == username:
-                    os.remove(filepath)
-                    sessions_cleared += 1
-            except Exception:
+    with entries:
+        for entry in entries:
+            if not entry.is_file(follow_symlinks=False):
                 continue
+            filepath = entry.path
+            session_info = _read_session_file(filepath)
+            if isinstance(session_info, dict) and session_info.get("name") == username:
+                os.remove(filepath)
+                sessions_cleared += 1
 
     return sessions_cleared
 

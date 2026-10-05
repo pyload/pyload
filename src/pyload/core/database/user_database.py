@@ -204,6 +204,30 @@ class UserDatabaseMethods:
         self.c.execute("UPDATE users SET role=? WHERE name=?", (role, username))
 
     @style.queue
+    def set_user_permission(self, username, perms, role):
+        """
+        Update a user's permission flags and role atomically.
+
+        Returns whether an existing user's authorization values changed.
+        """
+        self.c.execute(
+            "SELECT permission, role FROM users WHERE name=?",
+            (username,),
+        )
+        current = self.c.fetchone()
+        if not current:
+            return False
+
+        if current == (perms, role):
+            return False
+
+        self.c.execute(
+            "UPDATE users SET permission=?, role=? WHERE name=?",
+            (perms, role, username),
+        )
+        return True
+
+    @style.queue
     def user_exists(self, username):
         """
         Check if a user exists in the database.

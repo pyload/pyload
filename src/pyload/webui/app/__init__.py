@@ -19,6 +19,7 @@ from .extensions import EXTENSIONS, THEMES
 from .filters import TEMPLATE_FILTERS
 from .globals import TEMPLATE_GLOBALS
 from .handlers import ERROR_HANDLERS
+from .helpers import clear_all_user_sessions
 from .processors import CONTEXT_PROCESSORS
 
 
@@ -110,6 +111,8 @@ class App:
     @classmethod
     def _configure_session(cls, app, path_prefix):
         api = app.config["PYLOAD_API"]
+
+        api.set_session_invalidator(lambda user: clear_all_user_sessions(user))
 
         use_ssl = api.get_config_value("webui", "use_ssl")
         webui_port = api.get_config_value("webui", "port")

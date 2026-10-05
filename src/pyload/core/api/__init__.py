@@ -152,6 +152,14 @@ class Api:
         # API key cache
         self._apikey_cache = {}  # Format: {apikey: (timestamp, data)}
         self._apikey_cache_lock = RLock()
+        self._session_invalidator = None
+
+    def set_session_invalidator(self, invalidator: Optional[Callable[[str], int]]) -> None:
+        self._session_invalidator = invalidator
+
+    def _invalidate_user_sessions(self, user: str) -> None:
+        if self._session_invalidator is not None:
+            self._session_invalidator(user)
 
     def _required_http_method_for_api(self, func_name: str) -> Optional[str]:
         """
@@ -1640,7 +1648,10 @@ class Api:
                 for apikey in keys_to_delete:
                     del self._apikey_cache[apikey]
 
-        return self.pyload.db.remove_user(user)
+        removed = self.pyload.db.remove_user(user)
+        if removed:
+            self._invalidate_user_sessions(user)
+        return removed
 
     @legacy("changePassword")
     @post
@@ -1648,13 +1659,17 @@ class Api:
         """
         changes password for specific user.
         """
-        return self.pyload.db.change_password(user, oldpw, newpw)
+        changed = self.pyload.db.change_password(user, oldpw, newpw)
+        if changed:
+            self._invalidate_user_sessions(user)
+        return changed
 
     @legacy("setUserPermission")
     @post
     def set_user_permission(self, user: str, permission: int, role: int) -> None:
-        self.pyload.db.set_permission(user, permission)
-        self.pyload.db.set_role(user, role)
+        changed = self.pyload.db.set_user_permission(user, permission, role)
+        if changed:
+            self._invalidate_user_sessions(user)
 
     def generate_apikey(self, user: str, password: str, name: str = "API Key", expires: Optional[int] = None) -> dict[str, Any]:
         """
