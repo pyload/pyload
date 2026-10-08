@@ -13,9 +13,19 @@ import flask
 from pyload import APPID, PKGDIR
 from pyload.core.utils import format, fs
 
-from ..helpers import (clear_session, get_permission, get_redirect_url,
-                       is_authenticated, login_required, permlist, render_base,
-                       render_template, set_session, static_file_url)
+from ..helpers import (
+    clear_session,
+    get_client_ip,
+    get_permission,
+    get_redirect_url,
+    is_authenticated,
+    login_required,
+    permlist,
+    render_base,
+    render_template,
+    set_session,
+    static_file_url,
+)
 
 _RE_LOGLINE = re.compile(r"\[([\d\-]+) ([\d:]+)\] +([A-Z]+) +(.+?) (.*)")
 
@@ -83,7 +93,7 @@ def login():
         password = flask.request.form["password"]
         user_info = api.check_auth(user, password)
 
-        client_ip = flask.request.headers.get("X-Forwarded-For", "").split(',')[0].strip() or flask.request.remote_addr
+        client_ip = get_client_ip()
 
         sanitized_user = user.replace("\n", "\\n").replace("\r", "\\r")
         if not user_info:

@@ -5,7 +5,7 @@ Tests cover:
 - Basic rate limiting functionality
 - Valid time periods (1, 60, 3600, 86400 seconds)
 - Multiple IPs
-- X-Forwarded-For header handling
+- Ignores untrusted X-Forwarded-For headers
 - Rate limit headers
 - 429 response format
 - Sliding window behavior
@@ -18,7 +18,8 @@ from unittest.mock import Mock, patch
 
 import flask
 
-from pyload.webui.app.helpers import rate_limit
+from pyload.webui.app import App
+from pyload.webui.app.helpers import get_client_ip, rate_limit
 
 
 class TestRateLimitDecorator(unittest.TestCase):
@@ -195,46 +196,117 @@ class TestRateLimitDecorator(unittest.TestCase):
         )
         self.assertEqual(response.status_code, 200)
 
-    def test_rate_limit_x_forwarded_for_header(self):
-        """Test that X-Forwarded-For header is used for IP detection."""
-        # Make requests with X-Forwarded-For header
+    def test_rate_limit_ignores_x_forwarded_for_header(self):
+        """Rotating X-Forwarded-For cannot change the peer's rate-limit bucket."""
         for i in range(5):
             response = self.client.get(
                 '/api/test-basic',
-                headers={'X-Forwarded-For': '10.0.0.1, 192.168.1.1'}
+                headers={'X-Forwarded-For': f'10.0.0.{i}'},
+                environ_base={'REMOTE_ADDR': '192.168.1.1'},
             )
             self.assertEqual(response.status_code, 200)
 
-        # 6th request should be blocked
         response = self.client.get(
             '/api/test-basic',
-            headers={'X-Forwarded-For': '10.0.0.1, 192.168.1.1'}
+            headers={'X-Forwarded-For': '10.0.0.99'},
+            environ_base={'REMOTE_ADDR': '192.168.1.1'},
         )
         self.assertEqual(response.status_code, 429)
 
-        # Different X-Forwarded-For IP should work
+        # A distinct TCP peer gets a separate bucket.
         response = self.client.get(
             '/api/test-basic',
-            headers={'X-Forwarded-For': '10.0.0.2'}
+            headers={'X-Forwarded-For': '10.0.0.1'},
+            environ_base={'REMOTE_ADDR': '192.168.1.2'},
         )
         self.assertEqual(response.status_code, 200)
 
-    def test_rate_limit_x_forwarded_for_takes_first_ip(self):
-        """Test that only the first IP in X-Forwarded-For is used."""
-        # Make requests with same first IP but different second IP
+    def test_rate_limit_ignores_forwarded_chain(self):
+        """Changes to the forwarded chain cannot change the rate-limit bucket."""
         for i in range(5):
             response = self.client.get(
                 '/api/test-basic',
-                headers={'X-Forwarded-For': f'10.0.0.1, 192.168.1.{i}'}
+                headers={'X-Forwarded-For': f'10.0.0.{i}, 192.168.1.{i}'},
+                environ_base={'REMOTE_ADDR': '192.168.1.1'},
             )
             self.assertEqual(response.status_code, 200)
 
-        # Should be blocked because first IP (10.0.0.1) is the same
         response = self.client.get(
             '/api/test-basic',
-            headers={'X-Forwarded-For': '10.0.0.1, 192.168.1.99'}
+            headers={'X-Forwarded-For': '10.0.0.99, 192.168.1.99'},
+            environ_base={'REMOTE_ADDR': '192.168.1.1'},
         )
         self.assertEqual(response.status_code, 429)
+
+    def test_client_ip_ignores_forwarded_headers_without_proxy_fix(self):
+        app = flask.Flask(__name__)
+        App._configure_proxy_fix(app, trusted_proxy_count=0)
+
+        @app.route("/")
+        def client_ip():
+            return get_client_ip()
+
+        response = app.test_client().get(
+            "/",
+            headers={"X-Forwarded-For": "203.0.113.99"},
+            environ_base={"REMOTE_ADDR": "192.168.1.1"},
+        )
+        self.assertEqual(response.text, "192.168.1.1")
+
+    def test_client_ip_uses_configured_trusted_proxy_hop(self):
+        app = flask.Flask(__name__)
+        App._configure_proxy_fix(app, trusted_proxy_count=1)
+
+        @app.route("/")
+        def client_ip():
+            return get_client_ip()
+
+        response = app.test_client().get(
+            "/",
+            headers={"X-Forwarded-For": "198.51.100.10, 203.0.113.20"},
+            environ_base={"REMOTE_ADDR": "192.0.2.1"},
+        )
+        self.assertEqual(response.text, "203.0.113.20")
+
+    def test_rate_limit_uses_proxyfix_resolved_client_ip(self):
+        app = flask.Flask(__name__)
+
+        @app.route("/")
+        @rate_limit(count=2, period=60)
+        def limited_endpoint():
+            return "ok"
+
+        App._configure_proxy_fix(app, trusted_proxy_count=1)
+        client = app.test_client()
+
+        for x_forwarded_for in (
+            "198.51.100.10, 203.0.113.20",
+            "198.51.100.11, 203.0.113.20",
+        ):
+            response = client.get(
+                "/",
+                headers={"X-Forwarded-For": x_forwarded_for},
+                environ_base={"REMOTE_ADDR": "192.0.2.1"},
+            )
+            self.assertEqual(response.status_code, 200)
+
+        response = client.get(
+            "/",
+            headers={"X-Forwarded-For": "198.51.100.12, 203.0.113.20"},
+            environ_base={"REMOTE_ADDR": "192.0.2.1"},
+        )
+        self.assertEqual(response.status_code, 429)
+
+        response = client.get(
+            "/",
+            headers={"X-Forwarded-For": "198.51.100.10, 203.0.113.21"},
+            environ_base={"REMOTE_ADDR": "192.0.2.1"},
+        )
+        self.assertEqual(response.status_code, 200)
+
+    def test_proxy_fix_rejects_negative_trusted_proxy_count(self):
+        with self.assertRaises(ValueError):
+            App._configure_proxy_fix(flask.Flask(__name__), trusted_proxy_count=-1)
 
     def test_rate_limit_response_format(self):
         """Test the format of the 429 response."""

@@ -296,11 +296,19 @@ def is_loopback_request(request=flask.request, check_source=True):
         ):
             return False
 
-    remote_addr = request.remote_addr
-    if not remote_addr:
-        return False
+    return is_loopback_address(get_client_ip(request, ignore_proxyfix=True))
 
-    return is_loopback_address(remote_addr)
+
+def get_client_ip(request=flask.request, ignore_proxyfix=False):
+    remote_addr = request.remote_addr or "unknown"
+
+    if ignore_proxyfix:
+        # Return the TCP peer address before any trusted-proxy middleware rewrites it.
+        proxy_fix_original = request.environ.get("werkzeug.proxy_fix.orig", {})
+        return proxy_fix_original.get("REMOTE_ADDR", remote_addr)
+
+    # Return the peer address resolved by the configured trusted-proxy middleware.
+    return remote_addr
 
 
 def login_required(perm):
@@ -356,8 +364,7 @@ def apikey_auth(func):
         api = flask.current_app.config["PYLOAD_API"]
         log = flask.current_app.logger
 
-        # Get client IP, safely handling X-Forwarded-For
-        client_ip = flask.request.headers.get("X-Forwarded-For", "").split(",")[0].strip() or flask.request.remote_addr
+        client_ip = get_client_ip()
 
         # Check for API key in header
         api_key = flask.request.headers.get("X-API-Key", None)
@@ -445,11 +452,7 @@ def rate_limit(count=100, period=60):
 
         @wraps(func)
         def wrapper(*args, **kwargs):
-            # Get client IP, handling X-Forwarded-For for proxies
-            client_ip = flask.request.headers.get("X-Forwarded-For", "").split(",")[0].strip() or flask.request.remote_addr
-            if not client_ip:
-                # If we can't determine IP, allow the request (fail open)
-                return func(*args, **kwargs)
+            client_ip = get_client_ip()
 
             current_time = time.time()
             cutoff_time = current_time - period

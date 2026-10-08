@@ -11,6 +11,7 @@ import os
 
 import flask
 import jinja2
+from werkzeug.middleware.proxy_fix import ProxyFix
 from werkzeug.serving import WSGIRequestHandler
 
 from .blueprints import BLUEPRINTS
@@ -139,6 +140,14 @@ class App:
         app.config["PYLOAD_API"] = pycore.api
 
     @classmethod
+    def _configure_proxy_fix(cls, app, trusted_proxy_count):
+        if trusted_proxy_count < 0:
+            raise ValueError("Trusted proxy count must not be negative")
+
+        if trusted_proxy_count:
+            app.wsgi_app = ProxyFix(app.wsgi_app, x_for=trusted_proxy_count)
+
+    @classmethod
     def _configure_logging(cls, app, pycore):
         # Inject our custom logger
         app.logger = pycore.log.getChild("webui")
@@ -149,6 +158,7 @@ class App:
         cls._configure_logging(app, pycore)
         cls._configure_api(app, pycore)
         cls._configure_config(app, develop)
+        cls._configure_proxy_fix(app, pycore.config.get("webui", "trusted_proxies"))
         cls._configure_templating(app)
         cls._configure_json_encoding(app)
         cls._configure_session(app, path_prefix or r"/")
