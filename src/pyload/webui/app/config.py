@@ -22,7 +22,7 @@ class ProductionConfig(BaseConfig):
     ENV = "production"
     SECRET_KEY = random_string(16)
     #: Extensions
-    CACHE_TYPE = "simple"
+    CACHE_TYPE = "SimpleCache"
     # SESSION_USE_SIGNER = True
 
 
