@@ -1,3 +1,4 @@
+import hmac  # Only imported for its secure string comparison function
 import os
 
 from cryptography.hazmat.primitives import hashes
@@ -58,7 +59,8 @@ def _check_password(hashed, clear):
     salt = hashed[:32]
     to_compare = _salted_password(clear, salt)
 
-    return hashed == to_compare
+    # CRITICAL: Always use compare_digest instead of `==` to prevent timing attacks!
+    return hmac.compare_digest(hashed, to_compare)
 
 
 class UserDatabaseMethods:

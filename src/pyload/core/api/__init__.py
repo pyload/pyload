@@ -259,12 +259,13 @@ class Api:
             ("proxy", "type"),
             ("proxy", "username"),
             ("reconnect", "script"),
+            ("webui", "allow_iframe"),
             ("webui", "host"),
             ("webui", "ssl_certfile"),
             ("webui", "ssl_keyfile"),
             ("webui", "ssl_certchain"),
+            ("webui", "trusted_proxies"),
             ("webui", "use_ssl"),
-            ("webui", "allow_iframe"),
         }
 
         ADMIN_ONLY_PLUGIN_OPTIONS = {
@@ -1451,7 +1452,6 @@ class Api:
         return os.path.realpath(self.pyload.tempdir)
 
     #: Old API
-    @permission(Perms.ANY)
     @get
     def getUserData(self, username: str, password: str) -> OldUserData:
         """
@@ -1469,7 +1469,6 @@ class Api:
         else:
             return OldUserData()
 
-    @permission(Perms.ANY)
     @get
     def get_userdata(self, username: str, password: str) -> UserData:
         """
