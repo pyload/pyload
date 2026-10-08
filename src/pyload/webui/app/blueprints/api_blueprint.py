@@ -1,4 +1,3 @@
-import traceback
 from ast import literal_eval
 from itertools import chain
 from logging import getLogger
@@ -7,6 +6,7 @@ from urllib.parse import unquote
 
 import flask
 from flask.json import jsonify
+from werkzeug.exceptions import RequestEntityTooLarge
 
 from pyload import APPID
 
@@ -56,12 +56,12 @@ def rpc(func, args=""):
     if len(args) == 1 and not args[0]:
         args = []
 
-    # get query parameters
-    kwargs = {}
-    for x, y in chain(flask.request.args.items(), flask.request.form.items()):
-        kwargs[x] = unquote(y)
-
     try:
+        # get query parameters
+        kwargs = {}
+        for x, y in chain(flask.request.args.items(), flask.request.form.items()):
+            kwargs[x] = unquote(y)
+
         if flask.request.mimetype == "application/json":
             # get JSON request body
             json_request_body = flask.request.get_json()
@@ -69,15 +69,24 @@ def rpc(func, args=""):
         elif flask.request.mimetype == "multipart/form-data":
             # get uploaded file - currently only single file upload possible
             name, file = next(iter(flask.request.files.items()))
+            max_upload_size = flask.current_app.config.get("MAX_CONTENT_LENGTH")
+            if max_upload_size is None:
+                max_upload_size = 16 * 1024 * 1024  #: 16 Megabytes
+            file_data = file.read(max_upload_size + 1)
+            if len(file_data) > max_upload_size:
+                raise RequestEntityTooLarge()
+
             response = jsonify(getattr(api, func)(
                 **{x: _parse_parameter(y) for x, y in kwargs.items()},
-                **{name: file.read()}
+                **{name: file_data}
             ))
         else:
             response = jsonify(getattr(api, func)(
                 *[_parse_parameter(x) for x in args],
                 **{x: _parse_parameter(y) for x, y in kwargs.items()},
             ))
+    except RequestEntityTooLarge:
+        return jsonify({"error": "Request body too large"}), 413
     except Exception as exc:
         flask.current_app.logger.error(f"API error in '{func}'",
             exc_info=api.pyload.debug > 1,
