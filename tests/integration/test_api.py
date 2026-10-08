@@ -1,8 +1,27 @@
 import time
+from io import BytesIO
+
 import pytest
 
 
 API_KEY_HEADER = "X-API-KEY"
+
+
+def test_oversized_multipart_api_upload_returns_413(app, client, api_key, monkeypatch):
+    monkeypatch.setitem(app.config, "MAX_CONTENT_LENGTH", 1024)
+
+    response = client.post(
+        "/api/check_online_status_container",
+        data={
+            "urls": "[]",
+            "container": "test.bin",
+            "data": (BytesIO(b"x" * 2048), "test.bin"),
+        },
+        headers={API_KEY_HEADER: api_key},
+    )
+
+    assert response.status_code == 413
+    assert response.json == {"error": "Request body too large"}
 
 
 class TestAuthorization:
