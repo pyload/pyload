@@ -40,7 +40,7 @@ def local_check(func):
                 if is_loopback_request(check_source=False):
                     return func(*args, **kwargs)
 
-        flask.current_app.logger.error("Refusing Connection")
+        flask.current_app.logger.error(f"local_check: Refusing Connection from {remote_addr}")
         return "Forbidden", 403
 
     return wrapper
