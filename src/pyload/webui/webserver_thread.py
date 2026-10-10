@@ -1,4 +1,5 @@
 import logging
+import os
 import threading
 
 from cheroot import wsgi
@@ -47,7 +48,7 @@ class WebServerThread(threading.Thread):
         )
 
         if self.use_ssl:
-            if self.certfile and self.keyfile:
+            if self.certfile and self.keyfile and os.path.exists(self.certfile) and os.path.exists(self.keyfile):
                 try:
                     self.server.ssl_adapter = BuiltinSSLAdapter(
                         self.certfile, self.keyfile, self.certchain
