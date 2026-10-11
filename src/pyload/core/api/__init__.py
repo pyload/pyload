@@ -539,7 +539,7 @@ class Api:
                     bleft=pyfile.get_bytes_left(),
                     size=pyfile.get_size(),
                     format_size=pyfile.format_size(),
-                    percent=pyfile.get_percent(),
+                    percent=int(pyfile.get_percent() + 0.5),
                     status=pyfile.status,
                     statusmsg=pyfile.get_status_name(),
                     format_wait=pyfile.format_wait(),
