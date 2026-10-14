@@ -139,7 +139,7 @@ class UnTar(BaseExtractor):
             try:
                 if not is_within_directory(dest_path, target_path):
                     raise ArchiveError(
-                        f"Link '{member.name}' points outside the destination."
+                        f"Symlink or hard link '{member.name}' points outside the destination."
                     )
             except ValueError as exc:
                 raise ArchiveError(
