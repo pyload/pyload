@@ -491,6 +491,88 @@ class TestTarSymlinkProtection(unittest.TestCase):
             untar._safe_extractall(tar, self.temp_dir)
             untar._safe_extractall(tar, self.temp_dir)
 
+    def test_data_filter_permissions_and_ownership_are_applied(self):
+        """TAR extraction applies data-filter permissions without changing archive info."""
+        import io
+        import tarfile
+        from unittest.mock import Mock, patch
+
+        from pyload.plugins.extractors.UnTar import UnTar
+
+        tar_buffer = io.BytesIO()
+        with tarfile.open(fileobj=tar_buffer, mode="w") as archive:
+            file_info = tarfile.TarInfo(name="privileged")
+            file_info.mode = 0o6755
+            file_info.uid = 123
+            file_info.gid = 456
+            file_info.uname = "archive-user"
+            file_info.gname = "archive-group"
+            file_info.size = 1
+            archive.addfile(file_info, io.BytesIO(b"x"))
+
+            non_executable = tarfile.TarInfo(name="non-executable")
+            non_executable.mode = 0o666
+            non_executable.size = 1
+            archive.addfile(non_executable, io.BytesIO(b"x"))
+
+            directory = tarfile.TarInfo(name="directory")
+            directory.type = tarfile.DIRTYPE
+            directory.mode = 0o777
+            archive.addfile(directory)
+
+            symlink = tarfile.TarInfo(name="link")
+            symlink.type = tarfile.SYMTYPE
+            symlink.linkname = "directory/../privileged"
+            symlink.mode = 0o777
+            archive.addfile(symlink)
+
+        tar_buffer.seek(0)
+        with tarfile.open(fileobj=tar_buffer, mode="r") as archive:
+            original_members = archive.getmembers()
+            mock_pyfile = Mock()
+            mock_pyfile.m.pyload = Mock()
+            untar = UnTar(mock_pyfile, "test.tar", self.temp_dir)
+
+            with patch.object(archive, "extractall") as extractall:
+                untar._safe_extractall(archive, self.temp_dir)
+
+            extracted_members = list(extractall.call_args.args[1])
+            (
+                privileged,
+                non_executable_member,
+                filtered_directory,
+                filtered_symlink,
+            ) = extracted_members
+
+            self.assertIsNot(privileged, original_members[0])
+            self.assertEqual(privileged.mode, 0o755)
+            self.assertIsNone(privileged.uid)
+            self.assertIsNone(privileged.gid)
+            self.assertIsNone(privileged.uname)
+            self.assertIsNone(privileged.gname)
+            self.assertEqual(original_members[0].mode, 0o6755)
+            self.assertEqual(original_members[0].uid, 123)
+            self.assertEqual(non_executable_member.mode, 0o644)
+            self.assertIsNone(filtered_directory.mode)
+            self.assertEqual(filtered_symlink.linkname, "privileged")
+            self.assertIsNone(filtered_symlink.mode)
+
+    def test_data_filter_rejects_unrecognized_special_members(self):
+        """TAR extraction must reject special member types other than files and links."""
+        import tarfile
+        from unittest.mock import Mock
+
+        from pyload.plugins.extractors.UnTar import UnTar
+
+        special = tarfile.TarInfo(name="special")
+        special.type = b"X"
+        mock_pyfile = Mock()
+        mock_pyfile.m.pyload = Mock()
+        untar = UnTar(mock_pyfile, "test.tar", self.temp_dir)
+
+        with self.assertRaisesRegex(ArchiveError, "Special files"):
+            untar._filter_tar_member(special, self.temp_dir)
+
 
 class TestUnZipPathTraversal(unittest.TestCase):
     """Test path traversal protection in UnZip extractor"""

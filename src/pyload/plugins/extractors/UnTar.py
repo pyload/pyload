@@ -1,3 +1,4 @@
+import copy
 import os
 import sys
 import tarfile
@@ -9,7 +10,7 @@ from pyload.plugins.base.extractor import ArchiveError, BaseExtractor, CRCError
 class UnTar(BaseExtractor):
     __name__ = "UnTar"
     __type__ = "extractor"
-    __version__ = "0.09"
+    __version__ = "0.10"
     __status__ = "stable"
 
     __description__ = """TAR extractor plugin"""
@@ -62,7 +63,7 @@ class UnTar(BaseExtractor):
 
     def _safe_extractall(self, tar, path=".", members=None, *, numeric_owner=False):
         """
-        Safely extract TAR members with validation for path traversal and symlink escapes.
+        Extract TAR members using data-filter rules on all supported Python versions.
 
         :param tar: tarfile.TarFile object
         :param path: Destination directory
@@ -76,12 +77,76 @@ class UnTar(BaseExtractor):
             if member.isdev():
                 raise ArchiveError("Device files are not allowed in TAR archives.")
 
-            # Validate symlink targets to prevent symlink escape attacks
-            if member.issym() or member.islnk():
-                link_target = member.linkname
-                self._validate_symlink_target(member.name, link_target, path)
+        extraction_members = members if members is not None else tar.getmembers()
 
-        tar.extractall(path, members, numeric_owner=numeric_owner)
+        def filtered_members():
+            for member in extraction_members:
+                yield self._filter_tar_member(member, path)
+
+        tar.extractall(path, filtered_members(), numeric_owner=numeric_owner)
+
+    @staticmethod
+    def _filter_tar_member(member: tarfile.TarInfo, dest_path: str):
+        """Apply the security rules of tarfile's ``data`` extraction filter."""
+        filtered_member = copy.copy(member)
+        dest_path = os.path.realpath(dest_path)
+
+        name = member.name.lstrip("/" + os.sep)
+        if name != member.name:
+            filtered_member.name = name
+        if os.path.isabs(name):
+            raise ArchiveError("Absolute paths are not allowed in TAR archives.")
+
+        target_path = os.path.realpath(os.path.join(dest_path, name))
+        try:
+            if not is_within_directory(dest_path, target_path):
+                raise ArchiveError(
+                    "Attempted Path Traversal in Tar File (CVE-2007-4559)"
+                )
+        except ValueError as exc:
+            raise ArchiveError("Invalid path in TAR archive.") from exc
+
+        mode = member.mode
+        if mode is not None:
+            mode &= 0o755
+            if member.isreg() or member.islnk():
+                if not mode & 0o100:
+                    mode &= ~0o111
+                mode |= 0o600
+            elif member.isdir() or member.issym():
+                mode = None
+            else:
+                raise ArchiveError("Special files are not allowed in TAR archives.")
+            setattr(filtered_member, "mode", mode)
+
+        for attribute in ("uid", "gid", "uname", "gname"):
+            setattr(filtered_member, attribute, None)
+
+        if member.issym() or member.islnk():
+            linkname = member.linkname
+            if os.path.isabs(linkname):
+                raise ArchiveError(
+                    f"Symlink '{member.name}' with absolute target: {linkname}"
+                )
+            linkname = os.path.normpath(linkname)
+            filtered_member.linkname = linkname
+
+            if member.issym():
+                link_path = os.path.join(dest_path, os.path.dirname(name), linkname)
+            else:
+                link_path = os.path.join(dest_path, linkname)
+            target_path = os.path.realpath(link_path)
+            try:
+                if not is_within_directory(dest_path, target_path):
+                    raise ArchiveError(
+                        f"Link '{member.name}' points outside the destination."
+                    )
+            except ValueError as exc:
+                raise ArchiveError(
+                    f"Invalid link target in TAR archive: {linkname}"
+                ) from exc
+
+        return filtered_member
 
     def extract(self, password=None):
         self.verify(password)
