@@ -1,12 +1,10 @@
 import mimetypes
 import os
 import re
-import urllib
 
 from pyload.core.network.exceptions import Fail
 from pyload.core.network.http.exceptions import BadHeader
 from pyload.core.utils import format, fs, parse
-from pyload.core.utils.web.check import is_global_host
 
 from ..helpers import exists
 from .hoster import BaseHoster
