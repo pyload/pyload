@@ -25,7 +25,7 @@ def host_to_ip(hostname):
     try:
         IPs = [
             result [4][0]
-            for result in socket.getaddrinfo(hostname, None, family=socket.AF_INET, type=socket.SOCK_STREAM)
+            for result in socket.getaddrinfo(hostname, None, family=socket.AF_UNSPEC, type=socket.SOCK_STREAM)
         ]
     except socket.gaierror:
         IPs = []
