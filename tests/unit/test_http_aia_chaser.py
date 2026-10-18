@@ -7,21 +7,24 @@ from pyload.core.utils.web import check
 
 
 def test_is_global_host_requires_all_resolved_addresses_to_be_global(monkeypatch):
-    monkeypatch.setitem(
-        check.__dict__,
-        "host_to_ip",
-        lambda host: ["8.8.8.8", "1.1.1.1"],
-    )
+    resolved_addresses = [
+        (["8.8.8.8", "1.1.1.1"], True),
+        (["2001:4860:4860::8888", "2606:4700:4700::1111"], True),
+        (["8.8.8.8", "169.254.169.254"], False),
+        (["2001:4860:4860::8888", "fe80::1"], False),
+        (["8.8.8.8", "::ffff:10.0.0.1"], False),
+        (["8.8.8.8", "2002:0a00:0001::"], False),
+        (["8.8.8.8", "64:ff9b::a00:1"], False),
+    ]
 
-    assert check.is_global_host("example.test") is True
+    for addresses, expected in resolved_addresses:
+        monkeypatch.setitem(
+            check.__dict__,
+            "host_to_ip",
+            lambda host, addresses=addresses: addresses,
+        )
 
-    monkeypatch.setitem(
-        check.__dict__,
-        "host_to_ip",
-        lambda host: ["8.8.8.8", "169.254.169.254"],
-    )
-
-    assert check.is_global_host("example.test") is False
+        assert check.is_global_host("example.test") is expected
 
 
 def test_validate_aia_url_rejects_private_destination(monkeypatch):
@@ -60,7 +63,8 @@ def test_validate_aia_url_rejects_non_http_scheme():
         safe_aia_chaser._validate_aia_url("file:///etc/passwd")
 
 
-def test_aia_chaser_rejects_private_initial_host(monkeypatch):
+@pytest.mark.parametrize("host", ["127.0.0.1", "::1", "fe80::1"])
+def test_aia_chaser_rejects_private_initial_host(monkeypatch, host):
     chaser = safe_aia_chaser.SafeAiaChaser.__new__(
         safe_aia_chaser.SafeAiaChaser
     )
@@ -68,7 +72,7 @@ def test_aia_chaser_rejects_private_initial_host(monkeypatch):
     monkeypatch.setitem(
         safe_aia_chaser.__dict__,
         "is_global_host",
-        lambda host: False,
+        lambda resolved_host: check.is_global_address(resolved_host),
     )
     monkeypatch.setattr(
         safe_aia_chaser.AiaChaser,
@@ -77,7 +81,7 @@ def test_aia_chaser_rejects_private_initial_host(monkeypatch):
     )
 
     with pytest.raises(ValueError, match="non-global destination"):
-        chaser.fetch_host_cert("127.0.0.1")
+        chaser.fetch_host_cert(host)
 
 
 def test_aia_chaser_rejects_private_issuer_before_fetching(monkeypatch):
