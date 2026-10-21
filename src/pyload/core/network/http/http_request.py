@@ -11,7 +11,6 @@ import certifi
 import pycurl
 from aia_chaser import AiaChaser
 from cryptography.hazmat.primitives.serialization import Encoding
-from .safe_aia_chaser import SafeAiaChaser
 
 from pyload import APPID
 
@@ -295,7 +294,7 @@ class HTTPRequest:
             url = f"{url}?{get}"
 
         if self.ssl_aiachaser and url.startswith("https://"):
-            chaser = SafeAiaChaser(allow_private_ip=self.allow_private_ip)
+            chaser = AiaChaser(allow_private_ip=self.allow_private_ip)
             try:
                 pem_data = "".join([
                     cert.public_bytes(encoding=Encoding.PEM).decode("ascii")
