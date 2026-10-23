@@ -20,7 +20,8 @@ class DdownloadCom(XFSAccount):
     __authors__ = [("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
     PLUGIN_DOMAIN = "ddownload.com"
-    PLUGIN_URL = "https://ddownload.com"
+    PLUGIN_URL = "https://ddownload.com/account"
+    LOGIN_URL = "https://ddownload.com/login"
 
     PREMIUM_PATTERN = r'<[^<]+ma-ultimate-pill[^>]+>Ultimate<'
     TRAFFIC_LEFT_PATTERN = r'\s*<span id="trafficValue">(?P<S>-?\d+)</span>'
