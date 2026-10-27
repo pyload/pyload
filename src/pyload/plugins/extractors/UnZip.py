@@ -168,7 +168,7 @@ class UnZip(BaseExtractor):
     def _check_archive_encryption(self, z):
         """Check if the ZIP archive is encrypted."""
         encrypted = any(
-            zip_info.flag_bits & zipfile._MASK_ENCRYPTED
+            zip_info.flag_bits & 1  #: zipfile._MASK_ENCRYPTED
             for zip_info in z.infolist()
         )
         return encrypted
