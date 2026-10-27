@@ -8,7 +8,7 @@ from pyload.plugins.base.extractor import ArchiveError, BaseExtractor
 class HjSplit(BaseExtractor):
     __name__ = "HjSplit"
     __type__ = "extractor"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __status__ = "testing"
 
     __description__ = """HJSPLIT extractor plugin"""
@@ -52,7 +52,7 @@ class HjSplit(BaseExtractor):
         return [self.filename[:-4]]
 
     def extract(self, password=None):
-        size_total = 0
+        required_size = 0
         name = os.path.basename(self.filename)[:-4]
 
         # Validate output filename to prevent path traversal
@@ -89,10 +89,13 @@ class HjSplit(BaseExtractor):
                     if os.path.getsize(chunks[i]) != chunk_size:
                         raise ArchiveError(f"Invalid chunk size for chunk '{chunks[i]}'")
 
-                    size_total += chunk_size
+                    required_size += chunk_size
 
                 else:
-                    size_total += os.path.getsize(chunks[i])
+                    required_size += os.path.getsize(chunks[i])
+
+        # Validate free space BEFORE creating output file and merging
+        self._check_free_space(required_size)
 
         #: Now do the actual merge
         with open(output_path, "wb") as output_file:
@@ -106,7 +109,7 @@ class HjSplit(BaseExtractor):
                         if f_buffer:
                             output_file.write(f_buffer)
                             size_written += len(f_buffer)
-                            self.pyfile.set_progress((size_written * 100) // size_total)
+                            self.pyfile.set_progress((size_written * 100) // required_size)
                         else:
                             break
 
