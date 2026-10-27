@@ -1,4 +1,5 @@
 import copy
+import fnmatch
 import os
 import sys
 import tarfile
@@ -10,7 +11,7 @@ from pyload.plugins.base.extractor import ArchiveError, BaseExtractor, CRCError
 class UnTar(BaseExtractor):
     __name__ = "UnTar"
     __type__ = "extractor"
-    __version__ = "0.10"
+    __version__ = "0.11"
     __status__ = "stable"
 
     __description__ = """TAR extractor plugin"""
@@ -48,7 +49,7 @@ class UnTar(BaseExtractor):
             self.files = [safejoin(self.dest, _f) for _f in t.getnames()]
         return self.files
 
-    def verify(self, password=None):
+    def verify_password(self, password=None):
         try:
             t = tarfile.open(self.filename, errorlevel=1)
 
@@ -149,7 +150,7 @@ class UnTar(BaseExtractor):
         return filtered_member
 
     def extract(self, password=None):
-        self.verify(password)
+        self.verify_password(password)
 
         try:
             with tarfile.open(self.filename, errorlevel=2) as t:
@@ -157,8 +158,25 @@ class UnTar(BaseExtractor):
                 members = t.getmembers()
                 self._validate_archive_entries([m.name for m in members])
 
-                self._safe_extractall(t, self.dest)
-                self.files = t.getnames()
+                # Filter excluded files
+                active_members = [
+                    member
+                    for member in members
+                    if not any(
+                        fnmatch.fnmatch(member.name, exclusion)
+                        for exclusion in self.excludefiles
+                    )
+                ]
+
+                # Check free space BEFORE extraction
+                required_size = sum(
+                    m.size for m in active_members
+                    if m.isreg() or m.islnk()
+                )
+                self._check_free_space(required_size)
+
+                self._safe_extractall(t, self.dest, members=active_members)
+                self.files = [m.name for m in active_members]
             return self.files
 
         except tarfile.ExtractError as exc:

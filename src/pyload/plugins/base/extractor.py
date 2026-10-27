@@ -2,7 +2,7 @@ import ntpath
 import os
 import re
 
-from pyload.core.utils.fs import is_within_directory
+from pyload.core.utils.fs import free_space, is_within_directory
 
 from .plugin import BasePlugin
 
@@ -28,7 +28,7 @@ class PasswordError(Exception):
 class BaseExtractor(BasePlugin):
     __name__ = "BaseExtractor"
     __type__ = "base"
-    __version__ = "0.50"
+    __version__ = "0.51"
     __status__ = "stable"
 
     __description__ = """Base extractor plugin"""
@@ -154,7 +154,7 @@ class BaseExtractor(BasePlugin):
     def dest(self):
         return os.fsdecode(self.out)
 
-    def verify(self, password=None):
+    def verify_password(self, password=None):
         """
         Testing with Extractors built-in method Raise error if password is needed,
         integrity is questionable or else
@@ -350,3 +350,52 @@ class BaseExtractor(BasePlugin):
                     # Re-raise to alert about the attack attempt
                     raise
 
+    def _get_free_space(self):
+        """
+        Get available free space in bytes at destination directory.
+
+        :return: Available free space in bytes, or None if undetermined
+        """
+        dest = os.path.realpath(self.dest)
+        while dest and not os.path.exists(dest):
+            parent = os.path.dirname(dest)
+            if parent == dest:
+                break
+            dest = parent
+
+        if not os.path.exists(dest):
+            return None
+
+        return free_space(dest)
+
+    def _check_free_space(self, required_size):
+        """
+        Validate that destination filesystem has enough free space to extract required_size bytes,
+        respecting the general.min_free_space setting.
+
+        :param required_size: Total uncompressed size in bytes
+        :raises ArchiveError: If available space is insufficient
+        """
+        if required_size is None or required_size < 0:
+            return
+
+        avail_free_space = self._get_free_space()
+        if avail_free_space is None:
+            return
+
+        min_free_space = 0
+        try:
+            cfg_min = self.pyload.config.get("general", "min_free_space")
+            if cfg_min is not None:
+                min_free_space = int(cfg_min) * 1024 * 1024
+        except (TypeError, ValueError):
+            min_free_space = 0
+
+        usable_space = avail_free_space - min_free_space
+
+        if required_size > usable_space:
+            raise ArchiveError(
+                f"Insufficient disk space for extraction: requires {required_size} bytes, "
+                f"available {avail_free_space} bytes (min_free_space reserved: {min_free_space} bytes, "
+                f"usable: {max(0, usable_space)} bytes)"
+            )

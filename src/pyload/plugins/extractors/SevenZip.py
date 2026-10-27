@@ -1,3 +1,4 @@
+import fnmatch
 import os
 import re
 import subprocess
@@ -12,7 +13,7 @@ from pyload.plugins.helpers import renice
 class SevenZip(BaseExtractor):
     __name__ = "SevenZip"
     __type__ = "extractor"
-    __version__ = "0.41"
+    __version__ = "0.42"
     __status__ = "testing"
 
     __description__ = """7-Zip extractor plugin"""
@@ -111,7 +112,7 @@ class SevenZip(BaseExtractor):
         self.archive_encryption = None
         self.archive_info = []
 
-    def verify(self, password=None):
+    def verify_password(self, password=None):
         # First we check if the header (file list) is protected
         # if the header is protected, we can verify the password very fast without hassle.
         # otherwise, we find the smallest file in the archive and then try to extract it
@@ -175,6 +176,24 @@ class SevenZip(BaseExtractor):
 
         # Detect symlinks BEFORE extraction
         self._detect_7zip_symlinks(password)
+
+        # Validate free space BEFORE extraction
+        if file:
+            required_size = sum(
+                entry.get("size", 0)
+                for entry in archive_info
+                if entry["path"] == file
+            )
+        else:
+            required_size = sum(
+                entry.get("size", 0)
+                for entry in archive_info
+                if not any(
+                    fnmatch.fnmatch(entry["path"], exclusion)
+                    for exclusion in self.excludefiles
+                )
+            )
+        self._check_free_space(required_size)
 
         # Now do actual extraction
         p = self.call_cmd(command, "-o" + self.dest, self.filename, file, password=password)

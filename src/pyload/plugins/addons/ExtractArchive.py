@@ -1,7 +1,7 @@
 import os
 from builtins import NameError
 
-from pyload.core.utils.fs import safename
+from pyload.core.utils.fs import free_space, safename
 from pyload.core.utils.purge import uniquify
 
 from ..base.addon import BaseAddon, expose, threaded
@@ -58,7 +58,7 @@ class ArchiveQueue:
 class ExtractArchive(BaseAddon):
     __name__ = "ExtractArchive"
     __type__ = "addon"
-    __version__ = "1.74"
+    __version__ = "1.75"
     __status__ = "testing"
 
     __config__ = [
@@ -86,6 +86,8 @@ class ExtractArchive(BaseAddon):
             "*.nfo,*.DS_Store,index.dat,thumb.db",
         ),
         ("recursive", "bool", "Extract archives in archives", True),
+        ("max_depth", "int", "Maximum levels of nested archives to extract", 5),
+        ("max_extracted_size", "int", "Maximum extracted size per package in MiB (0 for unlimited)", 0),
         ("waitall", "bool", "Run after all downloads was processed", False),
         ("priority", "int", "Process priority", 0),
     ]
@@ -210,6 +212,10 @@ class ExtractArchive(BaseAddon):
         recursive = self.config.get("recursive")
         keepbroken = self.config.get("keepbroken")
 
+        max_depth = self.config.get("max_depth", 0)
+
+        max_extracted_size_bytes = self.config.get("max_extracted_size", 0) * 1024 * 1024
+
         extensions = [
             x.lstrip(".").lower() for x in to_list(self.config.get("extensions"))
         ]
@@ -256,6 +262,8 @@ class ExtractArchive(BaseAddon):
 
             matched = False
             success = True
+            aggregate_extracted_bytes = 0
+            processed_archives = set()
             files_ids = list(
                 {
                     fdata["name"]: (
@@ -268,7 +276,14 @@ class ExtractArchive(BaseAddon):
             )  #: Remove duplicates
 
             #: Check as long there are unseen files
+            current_depth = 0
             while files_ids:
+                if current_depth > max_depth:
+                    self.log_warning(
+                        self._("Maximum recursion depth ({}) reached, stopping recursive extraction").format(max_depth)
+                    )
+                    break
+
                 new_files_ids = []
 
                 if extensions:  #: Include only specified archive types
@@ -299,6 +314,14 @@ class ExtractArchive(BaseAddon):
                             if not exists(fname):
                                 self.log_debug(fname, "File not found")
                                 continue
+
+                            real_fname = os.path.realpath(fname)
+                            if real_fname in processed_archives:
+                                self.log_warning(
+                                    self._("Skipping already processed archive: {}").format(real_fname)
+                                )
+                                continue
+                            processed_archives.add(real_fname)
 
                             name = os.path.basename(fname)
                             self.log_info(name, self._("Extract to: {}").format(fout))
@@ -344,6 +367,26 @@ class ExtractArchive(BaseAddon):
                             ]
                             self.log_debug(f"Extracted files: {new_files}")
 
+                            for filename in new_files:
+                                if os.path.isfile(filename):
+                                    try:
+                                        aggregate_extracted_bytes += os.path.getsize(filename)
+                                    except OSError:
+                                        pass
+
+                            if (
+                                max_extracted_size_bytes > 0
+                                and aggregate_extracted_bytes > max_extracted_size_bytes
+                            ):
+                                self.log_error(
+                                    name,
+                                    self._("Aggregate extracted size ({} bytes) exceeded quota ({} bytes)").format(
+                                        aggregate_extracted_bytes, max_extracted_size_bytes
+                                    )
+                                )
+                                success = False
+                                break
+
                             new_folders = []
                             for _f in new_files:
                                 _d = os.path.dirname(_f)
@@ -364,13 +407,22 @@ class ExtractArchive(BaseAddon):
                                     continue
 
                                 if recursive and os.path.isfile(filename):
-                                    new_files_ids.append(
-                                        (fid, filename, os.path.dirname(filename))
-                                    )  #: Append as new target
+                                    if current_depth + 1 > max_depth:
+                                        self.log_warning(
+                                            self._("Skipping nested archive '{}': maximum recursion depth ({}) reached").format(
+                                                os.path.basename(filename), max_depth
+                                            )
+                                        )
+                                    else:
+                                        new_files_ids.append(
+                                            (fid, filename, os.path.dirname(filename))
+                                        )  #: Append as new target
 
                             self.m.dispatch_event("archive_extracted", pyfile, archive)
 
                 files_ids = new_files_ids  #: Also check extracted files
+                if files_ids:
+                    current_depth += 1
 
             if matched:
                 if success:
@@ -430,6 +482,16 @@ class ExtractArchive(BaseAddon):
 
         pyfile.set_status("processing")
 
+        avail_space = free_space(archive.dest)
+        if avail_space is not None:
+            min_free = self.pyload.config.get("general", "min_free_space") * 1024 * 1024
+            if avail_space < min_free:
+                raise ArchiveError(
+                    self._("Not enough free space on device: {} bytes available, {} bytes required").format(
+                        avail_space, min_free
+                    )
+                )
+
         encrypted = False
         try:
             self.log_debug(f"Password: {password or None}")
@@ -444,7 +506,7 @@ class ExtractArchive(BaseAddon):
                     pyfile.set_custom_status(self._("archive testing"))
                     pyfile.set_progress(0)
                     self.log_debug("Verifying using password: {}".format(pw or "None"))
-                    archive.verify(pw)
+                    archive.verify_password(pw)
                     pyfile.set_progress(100)
 
                 except PasswordError:
