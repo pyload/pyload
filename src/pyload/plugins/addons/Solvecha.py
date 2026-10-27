@@ -23,7 +23,7 @@ class Solvecha(BaseAddon):
     __description__ = """Send image captchas to solvecha.com"""
     __license__ = "GPLv3"
     __authors__ = [
-        ("Marin Solutions", "support[AT]solvecha[DOT]com"),
+        ("Solvecha", "hello[AT]marin[DOT]sh"),
     ]
 
     #: Only image (text) captchas are supported, no token based captchas
@@ -35,25 +35,6 @@ class Solvecha(BaseAddon):
     def api_request(self, method, post):
         json_data = self.load(self.API_URL + method, post=json.dumps(post))
         return json.loads(json_data)
-
-    def get_credits(self):
-        credits = self.db.retrieve("credits", {"balance": 0, "time": 0})
-
-        if time.monotonic() - credits["time"] >= 30:
-            api_data = self.api_request(
-                "getBalance", {"clientKey": self.config.get("passkey")}
-            )
-            if api_data["errorId"] != 0:
-                self.log_error(self._("API error"), api_data["errorDescription"])
-                return 0
-
-            credits = {"balance": api_data["balance"], "time": time.monotonic()}
-            self.db.store("credits", credits)
-
-        balance = credits["balance"]
-        self.log_info(self._("Credits left: {:.2f}$").format(balance))
-
-        return balance
 
     @threaded
     def _process_captcha(self, task, timeout):
@@ -120,13 +101,6 @@ class Solvecha(BaseAddon):
             return
 
         if self.pyload.is_client_connected() and self.config.get("check_client"):
-            return
-
-        credits = self.get_credits()
-        if credits <= 0:
-            self.log_error(
-                self._("Your captcha solvecha.com account has not enough credits")
-            )
             return
 
         timeout = min(max(int(self.config.get("timeout")), 60), 3999)
