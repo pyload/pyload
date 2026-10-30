@@ -44,7 +44,7 @@ class DataportCz(SimpleDownloader):
         else:
             self.error(self._("Captcha not found"))
 
-        self.download("http://www.dataport.cz{}".format(action, post=inputs))
+        self.download("http://www.dataport.cz{}".format(action), post=inputs)
 
         check = self.scan_download(
             {
