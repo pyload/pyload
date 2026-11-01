@@ -125,7 +125,9 @@ class HTTPChunk:
         self.fp = None  #: file handle
         self.BOMChecked = False
 
-        # Speed calculation
+        # # Speed calculation
+        # self.sleep = 0.0
+        # self.last_size = 0
 
         # Create wrapped HTTPRequest with parent's configuration
         self.request = HTTPRequest(cookies=self.p.cj, options=self.p.options)
@@ -243,6 +245,17 @@ class HTTPChunk:
         # Rate limiting
         if self.p.bucket:
             time.sleep(self.p.bucket.consumed(size))
+        #
+        # else:
+        #     # Avoid small buffers, increasing sleep time slowly if buffer size gets smaller
+        #     # otherwise reduce sleep time percentual (values are based on tests)
+        #     # So in general cpu time is saved without reducing bandwidth too much
+        #     if size < self.last_size:
+        #         self.sleep += 0.002
+        #     else:
+        #         self.sleep *= 0.7
+        #     self.last_size = size
+        #     time.sleep(self.sleep)
 
         # Check if chunk is complete
         if self.range and self.arrived > self.size:

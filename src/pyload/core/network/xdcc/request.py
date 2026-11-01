@@ -23,8 +23,10 @@ class XDCCRequest:
         self.received = 0
         self.speeds = [0, 0, 0]
 
-        self.sleep = 0.000
-        self.last_recv_size = 0
+        # # Speed calculation
+        # self.sleep = 0.0
+        # self.last_recv_size = 0
+
         self.send_64bits_ack = False
 
         self.abort = False
@@ -62,20 +64,20 @@ class XDCCRequest:
 
         if self.bucket:
             time.sleep(self.bucket.consumed(size))
-
-        else:
-            # Avoid small buffers, increasing sleep time slowly if buffer size gets smaller
-            # otherwise reduce sleep time percentequal (values are based on tests)
-            # So in general cpu time is saved without reducing bandwidth too much
-
-            if size < self.last_recv_size:
-                self.sleep += 0.002
-            else:
-                self.sleep *= 0.7
-
-            self.last_recv_size = size
-
-            time.sleep(self.sleep)
+        #
+        # else:
+        #     # Avoid small buffers, increasing sleep time slowly if buffer size gets smaller
+        #     # otherwise reduce sleep time percentequal (values are based on tests)
+        #     # So in general cpu time is saved without reducing bandwidth too much
+        #
+        #     if size < self.last_recv_size:
+        #         self.sleep += 0.002
+        #     else:
+        #         self.sleep *= 0.7
+        #
+        #     self.last_recv_size = size
+        #
+        #     time.sleep(self.sleep)
 
     def _send_ack(self):
         # acknowledge data by sending number of received bytes
