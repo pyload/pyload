@@ -20,6 +20,14 @@
   margin-right: auto;
   margin-left: auto;
 }
+@media (min-width: 768px) {
+  .logdiv {
+    height: auto;
+    min-height: 60px;
+    max-height: calc(100vh - 245px);
+    max-height: calc(100dvh - 245px);
+  }
+}
 .logform
 {
   display: table;
