@@ -27,6 +27,20 @@
     max-height: calc(100vh - 245px);
     max-height: calc(100dvh - 245px);
   }
+  .logform {
+    margin: 5px auto 0 auto;
+    padding-top: 0;
+  }
+  .logform .form-control {
+    margin: 0;
+  }
+  #content > div:first-child hr {
+    margin: 5px 0;
+  }
+  #body-wrapper + hr {
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
 }
 .logform
 {
