@@ -102,6 +102,7 @@ class Package {
   }
 
   initialize() {
+    {% set has_extract = has_service("ExtractArchive.extract_package") %}
     if (!this.ele) {
       this.createElement();
     } else {
@@ -134,7 +135,9 @@ class Package {
     $(imgs[5]).click((e) => this.editPackage(e));
     $(imgs[6]).click((e) => this.movePackage(e));
     $(imgs[7]).click((e) => this.editOrder(e));
+    {% if has_extract %}
     $(imgs[8]).click((e) => this.extractPackage(e));
+    {% endif %}
 
     $(this.ele).find('.packagename').click(() => this.toggle());
   }
