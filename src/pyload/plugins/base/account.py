@@ -282,13 +282,19 @@ class BaseAccount(BasePlugin):
         login = self.info.get("login") or {}
         return login.get(key, default) if key else login
 
-    @lock
     def get_data(self, key=None, default=None):
-        # Ensure self.info is properly initialized
-        if not hasattr(self, "info") or not isinstance(self.info, dict):
-            self.info = {"login": {}, "data": {}}
-        data = self.info.get("data") or {}
-        return data.get(key, default) if key else data
+        self.lock.acquire()
+        try:
+            try:
+                info = self.info
+            except AttributeError:
+                info = None
+            if not isinstance(info, dict):
+                info = self.info = {"login": {}, "data": {}}
+            data = info.get("data") or {}
+            return data if not key else data.get(key, default)
+        finally:
+            self.lock.release()
 
     @lock
     def _grab_info(self):
