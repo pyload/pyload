@@ -12,7 +12,10 @@
 .logdiv
 {
   width: 100%;
-  height: 46vh;
+  height: auto;
+  min-height: 60px;
+  max-height: calc(100vh - 330px);
+  max-height: calc(100dvh - 330px);
   overflow: auto;
   border: 1px solid #cdcdcd;
   outline: 1px solid #cdcdcd;
@@ -22,31 +25,25 @@
 }
 @media (min-width: 768px) {
   .logdiv {
-    height: auto;
-    min-height: 60px;
     max-height: calc(100vh - 245px);
     max-height: calc(100dvh - 245px);
-  }
-  .logform {
-    margin: 5px auto 0 auto;
-    padding-top: 0;
-  }
-  .logform .form-control {
-    margin: 0;
-  }
-  #content > div:first-child hr {
-    margin: 5px 0;
-  }
-  #body-wrapper + hr {
-    margin-top: 5px;
-    margin-bottom: 5px;
   }
 }
 .logform
 {
   display: table;
-  margin: 0 auto 0 auto;
-  padding-top: 5px;
+  margin: 5px auto 0 auto;
+  padding-top: 0;
+}
+.logform .form-control {
+  margin: 0;
+}
+#content > div:first-child hr {
+  margin: 5px 0;
+}
+#body-wrapper + hr {
+  margin-top: 5px;
+  margin-bottom: 5px;
 }
 .logtable
 {
