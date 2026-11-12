@@ -34,10 +34,14 @@ def local_check(func):
             remote_addr = get_client_ip(ignore_proxyfix=True)
             local_addr = g.get("web_addr")
             if local_addr == remote_addr:
+                if flask.request.method == "OPTIONS":
+                    return "", 200
                 return func(*args, **kwargs)
 
             else:
                 if is_loopback_request(check_source=False):
+                    if flask.request.method == "OPTIONS":
+                        return "", 200
                     return func(*args, **kwargs)
 
             flask.current_app.logger.error(f"local_check: Refusing Connection from {remote_addr}")
@@ -59,9 +63,8 @@ def add_cors(response):
     })
     return response
 
-
-@bp.route("/flash/", methods=["GET", "POST"], endpoint="index")
-@bp.route("/flash/<id>", methods=["GET", "POST"], endpoint="index")
+@bp.route("/flash/", methods=["GET", "POST", "OPTIONS"], endpoint="index")
+@bp.route("/flash/<id>", methods=["GET", "POST", "OPTIONS"], endpoint="index")
 @config_check(["ClickNLoad", "enabled", "plugin"], "Click'N'Load is disabled")
 @local_check
 @csrf_exempt
@@ -69,7 +72,7 @@ def index(id="0"):
     return "JDownloader\r\n"
 
 
-@bp.route("/flash/add", methods=["POST"], endpoint="add")
+@bp.route("/flash/add", methods=["POST", "OPTIONS"], endpoint="add")
 @config_check(["ClickNLoad", "enabled", "plugin"], "Click'N'Load is disabled")
 @local_check
 @csrf_exempt
@@ -99,7 +102,7 @@ def add():
     return "success\r\n"
 
 
-@bp.route("/flash/addcrypted", methods=["POST"], endpoint="addcrypted")
+@bp.route("/flash/addcrypted", methods=["POST", "OPTIONS"], endpoint="addcrypted")
 @config_check(["ClickNLoad", "enabled", "plugin"], "Click'N'Load is disabled")
 @local_check
 @csrf_exempt
@@ -132,7 +135,7 @@ def addcrypted():
         return "success\r\n"
 
 
-@bp.route("/flash/addcrypted2", methods=["POST"], endpoint="addcrypted2")
+@bp.route("/flash/addcrypted2", methods=["POST", "OPTIONS"], endpoint="addcrypted2")
 @config_check(["ClickNLoad", "enabled", "plugin"], "Click'N'Load is disabled")
 @local_check
 @csrf_exempt
@@ -166,8 +169,9 @@ def addcrypted2():
 
     try:
         jk = eval_js(f"{jk} f()")
-        key = bytes.fromhex(jk)
-    except ValueError:
+        key = bytes.fromhex(str(jk).strip())
+    except Exception as exc:
+        flask.current_app.logger.error(f"ClickNLoad key decryption failed: {exc}")
         return "Could not decrypt key", 500
 
     if len(key) != 16:
@@ -198,8 +202,8 @@ def addcrypted2():
         return "success\r\n"
 
 
-@bp.route("/flashgot", methods=["POST"], endpoint="flashgot")
-@bp.route("/flashgot_pyload", methods=["POST"], endpoint="flashgot")
+@bp.route("/flashgot", methods=["POST", "OPTIONS"], endpoint="flashgot")
+@bp.route("/flashgot_pyload", methods=["POST", "OPTIONS"], endpoint="flashgot")
 @config_check(["ClickNLoad", "enabled", "plugin"], "Click'N'Load is disabled")
 @local_check
 @csrf_exempt
@@ -222,7 +226,7 @@ def flashgot():
         api.generate_and_add_packages(urls, Destination.QUEUE if autostart else Destination.COLLECTOR)
 
 
-@bp.route("/crossdomain.xml", endpoint="crossdomain")
+@bp.route("/crossdomain.xml", methods=["GET", "OPTIONS"], endpoint="crossdomain")
 @config_check(["ClickNLoad", "enabled", "plugin"], "Click'N'Load is disabled")
 @local_check
 @csrf_exempt
@@ -235,7 +239,7 @@ def crossdomain():
     return rep
 
 
-@bp.route("/flash/checkSupportForUrl", methods=["POST"], endpoint="checksupport")
+@bp.route("/flash/checkSupportForUrl", methods=["POST", "OPTIONS"], endpoint="checksupport")
 @config_check(["ClickNLoad", "enabled", "plugin"], "Click'N'Load is disabled")
 @local_check
 @csrf_exempt
@@ -249,7 +253,7 @@ def checksupport():
     return str(supported).lower()
 
 
-@bp.route("/jdcheck.js", endpoint="jdcheck")
+@bp.route("/jdcheck.js", methods=["GET", "OPTIONS"], endpoint="jdcheck")
 @config_check(["ClickNLoad", "enabled", "plugin"], "Click'N'Load is disabled")
 @local_check
 @csrf_exempt

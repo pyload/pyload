@@ -142,13 +142,13 @@ class ClickNLoad(BaseAddon):
                 )
 
     @threaded
-    def _forward(self, source, destination, finished_event=None, recv_timeout=None, buffering=1024):
+    def _forward(self, source, destination, stop_event=None, finished_event=None, recv_timeout=1.0, buffering=4096):
         """
         Forward data from one socket to another
         """
         source.settimeout(recv_timeout)
         try:
-            while True:
+            while not (stop_event and stop_event.is_set()):
                 try:
                     data = source.recv(buffering)
                     if not data:  # Peer closed the connection cleanly
@@ -156,23 +156,20 @@ class ClickNLoad(BaseAddon):
 
                     try:
                         destination.sendall(data)
-                    except (ConnectionResetError, BrokenPipeError, OSError) as e:
+                    except (ConnectionResetError, BrokenPipeError, OSError):
                         break
 
-                except (ConnectionResetError, BrokenPipeError, OSError) as e:
+                except socket.timeout:
+                    if stop_event and stop_event.is_set():
+                        break
+                    continue
+
+                except (ConnectionResetError, BrokenPipeError, OSError):
                     break
 
         finally:
-            for sock in (source, destination):
-                if sock:
-                    #  Graceful shutdown
-                    try:
-                        sock.shutdown(socket.SHUT_RDWR)
-                    except OSError:
-                        pass  # Socket may already be closed
-
-        if finished_event:
-            finished_event.set()
+            if finished_event:
+                finished_event.set()
 
     @lock
     @threaded
@@ -182,20 +179,28 @@ class ClickNLoad(BaseAddon):
 
         e1 = threading.Event()
         e2 = threading.Event()
-        self._forward(client_socket, backend_socket, recv_timeout=0.75, finished_event=e1)
-        self._forward(backend_socket, client_socket, recv_timeout=0.75, finished_event=e2)
+        self._forward(client_socket, backend_socket, stop_event=e2, finished_event=e1, recv_timeout=0.5)
+        self._forward(backend_socket, client_socket, stop_event=e1, finished_event=e2, recv_timeout=0.5)
 
-        # Wait for both directions to finish
-        e1.wait()
-        e2.wait()
+        # Wait for backend response to finish (up to 30 seconds)
+        e2.wait(30.0)
+        e2.set()
+        e1.wait(2.0)
 
         if queue:
             new_ids = set(pack.pid for pack in self.pyload.api.get_collector())
             for id in new_ids - old_ids:
                 self.pyload.api.push_to_queue(id)
 
-        backend_socket.close()
-        client_socket.close()
+        for sock in (backend_socket, client_socket):
+            try:
+                sock.shutdown(socket.SHUT_RDWR)
+            except OSError:
+                pass
+            try:
+                sock.close()
+            except OSError:
+                pass
 
     @threaded
     def proxy(self):
