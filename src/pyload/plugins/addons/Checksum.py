@@ -42,7 +42,7 @@ def compute_checksum(local_file, algorithm, progress_notify=None, abort=None):
             last = 0
 
             with open(local_file, mode="rb") as fp:
-                for chunk in iter(lambda: fp.read(8192), ""):
+                for chunk in iter(lambda: fp.read(8192), b""):
                     if abort and abort():
                         return False
 
