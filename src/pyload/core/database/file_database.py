@@ -265,7 +265,7 @@ class FileDatabaseMethods:
             data,
         )
         urls = [x[3] for x in data]
-        placeholders = ','.join('?' * len(urls))  # Create a parameterized query with the correct number of placeholders
+        placeholders = ("?," * len(urls))[:-1]  # Create a parameterized query with the correct number of placeholders
         self.c.execute(f"SELECT id FROM links WHERE url IN ({placeholders})", urls)
 
         ids = [int(row[0]) for row in self.c.fetchall()]
@@ -401,11 +401,13 @@ class FileDatabaseMethods:
         # plugins which are processed in collector
         pre = ("DLC", "TXT", "CCF", "RSDF")
 
+        placeholders_occupied = ("?," * len(occupied))[:-1]
+        placeholders_pre = ("?," * len(pre))[:-1]
         self.c.execute(
             f"""
             SELECT l.id FROM links as l
             INNER JOIN packages as p ON l.package=p.id
-            WHERE ((p.queue=1 AND l.plugin NOT IN ({",".join("?" * len(occupied))})) OR l.plugin IN ({",".join("?" * len(pre))})) AND l.status IN (2,3,14)
+            WHERE ((p.queue=1 AND l.plugin NOT IN ({placeholders_occupied})) OR l.plugin IN ({placeholders_pre})) AND l.status IN (2,3,14)
             ORDER BY p.packageorder ASC, l.linkorder ASC
             LIMIT 5
             """,
@@ -419,11 +421,12 @@ class FileDatabaseMethods:
         """
         returns pyfile ids with suited plugins.
         """
+        placeholders = ("?," * len(plugins))[:-1]
         self.c.execute(
             f"""
             SELECT l.id FROM links as l
             INNER JOIN packages as p ON l.package=p.id
-            WHERE l.plugin IN ({",".join("?" * len(plugins))}) AND l.status IN (2,3,14)
+            WHERE l.plugin IN ({placeholders}) AND l.status IN (2,3,14)
             ORDER BY p.packageorder ASC, l.linkorder ASC LIMIT 5
             """,
             plugins,
