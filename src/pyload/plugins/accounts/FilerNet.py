@@ -7,7 +7,7 @@ from ..base.account import BaseAccount
 class FilerNet(BaseAccount):
     __name__ = "FilerNet"
     __type__ = "account"
-    __version__ = "0.18"
+    __version__ = "0.19"
     __status__ = "testing"
 
     __description__ = """Filer.net account plugin"""
@@ -20,11 +20,11 @@ class FilerNet(BaseAccount):
     # See https://filer.net/api
     API_URL = "https://filer.net/api/"
 
-    def api_request(self, method, user=None, password=None):
+    def api_request(self, method, user=None, password=None, redirect=True):
         try:
             if user and password:
                 self.req.add_auth(f"{user}:{password}")
-            json_data = self.load(f"{self.API_URL}{method}.json")
+            json_data = self.load(f"{self.API_URL}{method}.json", redirect=redirect)
         except BadHeader as exc:
             json_data = exc.content
         finally:
@@ -35,7 +35,7 @@ class FilerNet(BaseAccount):
 
     def grab_info(self, user, password, data):
         api_data = self.api_request("profile", user, password)
-        premium = api_data["premium"]
+        premium = api_data["data"]["premium"]
         if premium:
             validuntil = api_data["data"]["until"]
             trafficleft = api_data["data"]["traffic_left"]

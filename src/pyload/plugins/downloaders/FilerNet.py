@@ -10,7 +10,7 @@ from ..base.simple_downloader import SimpleDownloader
 class FilerNet(SimpleDownloader):
     __name__ = "FilerNet"
     __type__ = "downloader"
-    __version__ = "0.36"
+    __version__ = "0.37"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?filer\.net/get/(?P<ID>\w+)"
@@ -35,11 +35,11 @@ class FilerNet(SimpleDownloader):
     # See https://filer.net/api
     API_URL = "https://filer.net/api/"
 
-    def api_request(self, method, user=None, password=None):
+    def api_request(self, method, user=None, password=None, redirect=True):
         try:
             if user and password:
                 self.req.add_auth(f"{user}:{password}")
-            json_data = self.load(f"{self.API_URL}{method}.json")
+            json_data = self.load(f"{self.API_URL}{method}.json", redirect=redirect)
         except BadHeader as exc:
             json_data = exc.content
         finally:
@@ -118,9 +118,9 @@ class FilerNet(SimpleDownloader):
 
         user = self.account.user
         password = self.account.get_login("password")
-        api_data = self.api_request(f"dl/{file_id}", user, password)
+        api_data = self.api_request(f"dl/{file_id}", user, password, redirect=False)
         code = api_data["code"]
-        if code == 200:
+        if code in (200, 302):
             self.link = api_data["data"]["download_url"]
 
         elif code == 429:
