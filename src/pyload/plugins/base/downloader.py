@@ -13,7 +13,7 @@ from .hoster import BaseHoster
 class BaseDownloader(BaseHoster):
     __name__ = "BaseDownloader"
     __type__ = "downloader"
-    __version__ = "0.84"
+    __version__ = "0.85"
     __status__ = "stable"
 
     __pattern__ = r"^unmatchable$"
@@ -113,6 +113,7 @@ class BaseDownloader(BaseHoster):
                     not self.no_fallback
                     and self.config.get("fallback", True)
                     and self.premium
+                    and exc.args[0] != "offline"
                 ):
                     self.restart(premium=False)
 
