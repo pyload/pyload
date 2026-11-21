@@ -2,12 +2,12 @@
 # import hashlib
 # import mimetypes
 import re
+import unicodedata
 import urllib.parse
 from email.header import decode_header as parse_mime_header
 from ntpath import basename as ntpath_basename
 from posixpath import basename as posixpath_basename
 
-from ..parse import name as parse_name
 from ..purge import name as safe_nm
 from . import format, purge
 
@@ -161,6 +161,11 @@ def http_header(line):
 def disposition(disposition_value, location=None, fallback_url=None):
     """
     Extract and sanitize filename from a Content-Disposition header value.
+
+    :param disposition_value: Content-Disposition header value to parse.
+    :param location: The current value of the `location` header.
+    :param fallback_url: The original request URL.
+    :return: Sanitized filename, or None if no filename can be extracted.
     """
     def _extract_filename_star(_disposition_params):
         """Extract filename from filename* parameter (RFC 5987)."""
@@ -206,15 +211,21 @@ def disposition(disposition_value, location=None, fallback_url=None):
                 raise ValueError(f"Content-Disposition: | error: {exc}")
 
         # Try URL decoding
+        # Try to decode the value as UTF-8 first, then fall back to ISO-8859-1 if that fails
         try:
-            return urllib.parse.unquote(_filename, encoding="iso-8859-1", errors="strict")
-        except UnicodeDecodeError:
-            raise ValueError("Content-Disposition: | error: Error when decoding string from iso-8859-1.")
+            return urllib.parse.unquote(_filename.encode("iso-8859-1"), encoding="utf-8", errors="strict")
+        except (UnicodeEncodeError, UnicodeDecodeError):
+            try:
+                return urllib.parse.unquote(_filename, encoding="iso-8859-1", errors="strict")
+            except UnicodeDecodeError:
+                raise ValueError("Content-Disposition: | error: Unable to decode filename parameter")
 
     def _extract_attachment_filename(_disposition_type, _location, _fallback_url):
         """Extract filename for attachment disposition type."""
         if _disposition_type.lower() != "attachment":
             return None
+
+        from ..parse import name as parse_name
 
         if _location is not None:
             return parse_name(_location)
@@ -224,10 +235,22 @@ def disposition(disposition_value, location=None, fallback_url=None):
         return None
 
     def _sanitize_filename(_filename):
-        """Drop unsafe characters from filename."""
+        """
+        Drop unsafe characters from filename.
+        """
+
+        # 1. Strip path components (prevent directory traversal)
         _filename = posixpath_basename(_filename)
         _filename = ntpath_basename(_filename)
+        # 2. Strip control chars (Cc, e.g., null bytes) and format chars (Cf, e.g., RTL override U+202E)
+        _filename = "".join(
+            ch for ch in _filename
+            if unicodedata.category(ch) not in ("Cc", "Cf")
+        )
+        # 3. remove unsafe characters (e.g., slashes, colons, asterisks, question marks, etc.)
+        #    and Windows reserved device names (CON, PRN, etc.)
         _filename = safe_nm(_filename)
+        # 4. Strip leading dots (prevent hidden files)
         _filename = _filename.lstrip('.')
 
         return _filename
