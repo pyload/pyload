@@ -8,6 +8,8 @@ from .convert import host_to_ip
 
 _NAT64_WELL_KNOWN = ipaddress.IPv6Network("64:ff9b::/96")
 _NAT64_DISCOVERY = ipaddress.IPv6Network("64:ff9b:1::/48")
+_IPV4_TRANSLATED = ipaddress.IPv6Network("::ffff:0:0:0/96")
+_IPV4_COMPATIBLE = ipaddress.IPv6Network("::/96")
 
 
 def is_ipv4_address(value):
@@ -55,6 +57,8 @@ def is_embedded_ipv4(value):
         - IPv4-mapped IPv6 addresses (::ffff:0:0/96)
         - 6to4 addresses (2002::/16)
         - NAT64 addresses (well-known prefix 64:ff9b::/96 and discovery prefixes)
+        - IPv4-translated addresses (::ffff:0:0:0/96)
+        - IPv4-compatible addresses (::/96)
 
         Parameters:
             value (ipaddress.IPv6Address | str): An IPv6 address or string to inspect.
@@ -65,7 +69,8 @@ def is_embedded_ipv4(value):
 
         Notes:
             - Returns None for regular IPv6 addresses that do not embed an IPv4 address.
-            - For NAT64, it extracts the last 4 bytes of the IPv6 address.
+            - For NAT64, IPv4-translated, and IPv4-compatible forms, it extracts the
+              last 4 bytes of the IPv6 address.
             - This is typically used internally for handling dual-stack or
               IPv4-over-IPv6 scenarios.
         """
@@ -79,6 +84,10 @@ def is_embedded_ipv4(value):
     if addr.sixtofour is not None:  # 2002::/16 6to4
         return addr.sixtofour
     if addr in _NAT64_WELL_KNOWN or addr in _NAT64_DISCOVERY:
+        return ipaddress.IPv4Address(addr.packed[-4:])
+    if addr in _IPV4_TRANSLATED:
+        return ipaddress.IPv4Address(addr.packed[-4:])
+    if addr in _IPV4_COMPATIBLE and not (addr.is_unspecified or addr.is_loopback):
         return ipaddress.IPv4Address(addr.packed[-4:])
 
     return None
@@ -106,7 +115,7 @@ def is_loopback_address(value):
     Determine whether the provided address or hostname is a loopback address.
 
     This function supports IPv4, IPv6 and IPv6 transition-encoding forms (IPv4-mapped,
-    6to4, NAT64) that wrap an IPv4 loopback. If the input cannot
+    6to4, NAT64, IPv4-translated, IPv4-compatible) that wrap an IPv4 loopback. If the input cannot
     be parsed as an IP address, the function treats the string 'localhost'
     as a loopback host.
 

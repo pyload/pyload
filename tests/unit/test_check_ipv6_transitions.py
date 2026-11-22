@@ -75,6 +75,42 @@ def test_is_global_address_rejects_nat64_internal(addr):
     assert is_global_address(addr) is False
 
 
+# IPv4-translated (RFC 2765 / SIIT) - ::ffff:0:0:0/96
+
+@pytest.mark.parametrize(
+    "addr",
+    [
+        "::ffff:0:127.0.0.1",
+        "::ffff:0:7f00:1",
+        "::ffff:0:10.0.0.1",
+        "::ffff:0:172.16.0.1",
+        "::ffff:0:192.168.1.1",
+        "::ffff:0:169.254.169.254",
+        "::ffff:0:a9fe:a9fe",
+    ],
+)
+def test_is_global_address_rejects_ipv4_translated_internal(addr):
+    assert is_global_address(addr) is False
+
+
+# IPv4-compatible (RFC 4291) - ::/96
+
+@pytest.mark.parametrize(
+    "addr",
+    [
+        "::127.0.0.1",
+        "::7f00:1",
+        "::10.0.0.1",
+        "::172.16.0.1",
+        "::192.168.1.1",
+        "::169.254.169.254",
+        "::a9fe:a9fe",
+    ],
+)
+def test_is_global_address_rejects_ipv4_compatible_internal(addr):
+    assert is_global_address(addr) is False
+
+
 # Teredo - block the prefix wholesale; the IPv4 in the last 32 bits is the
 # client's external address, not a destination.
 
@@ -89,7 +125,7 @@ def test_is_global_address_rejects_teredo(addr):
     assert is_global_address(addr) is False
 
 
-# Positive cases - public destinations remain reachable, including 6to4
+# Positive cases - public destinations remain reachable, including transition
 # wraps of a public IPv4 (no need to penalise those).
 
 @pytest.mark.parametrize(
@@ -99,6 +135,9 @@ def test_is_global_address_rejects_teredo(addr):
         "1.1.1.1",
         "2001:4860:4860::8888",  # Google Public DNS over IPv6
         "2002:0808:0808::",      # 6to4 wrap of 8.8.8.8 (public v4)
+        "64:ff9b::8.8.8.8",      # NAT64 wrap of 8.8.8.8 (public v4)
+        "::ffff:0:8.8.8.8",      # IPv4-translated wrap of 8.8.8.8 (public v4)
+        "::8.8.8.8",             # IPv4-compatible wrap of 8.8.8.8 (public v4)
     ],
 )
 def test_is_global_address_allows_public(addr):
@@ -116,12 +155,24 @@ def test_is_global_address_allows_public(addr):
         "::ffff:127.0.0.1",
         "2002:7f00:0001::",
         "64:ff9b::7f00:1",
+        "::ffff:0:127.0.0.1",
+        "::ffff:0:7f00:1",
+        "::127.0.0.1",
+        "::7f00:1",
     ],
 )
 def test_is_loopback_address_recognises_transition_forms(addr):
     assert is_loopback_address(addr) is True
 
 
-def test_is_loopback_address_rejects_public_6to4_wrap():
-    # 6to4 wrap of 8.8.8.8 is not loopback
-    assert is_loopback_address("2002:0808:0808::") is False
+@pytest.mark.parametrize(
+    "addr",
+    [
+        "2002:0808:0808::",
+        "64:ff9b::8.8.8.8",
+        "::ffff:0:8.8.8.8",
+        "::8.8.8.8",
+    ],
+)
+def test_is_loopback_address_rejects_public_transition_wraps(addr):
+    assert is_loopback_address(addr) is False
