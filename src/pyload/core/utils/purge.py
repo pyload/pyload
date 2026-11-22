@@ -33,6 +33,8 @@ _WINBADWORDS = (
     "lpt9",
     "con",
     "prn",
+    "aux",
+    "nul",
 )
 
 
