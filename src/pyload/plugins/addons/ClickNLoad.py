@@ -15,7 +15,7 @@ from ..base.addon import BaseAddon, threaded
 class ClickNLoad(BaseAddon):
     __name__ = "ClickNLoad"
     __type__ = "addon"
-    __version__ = "0.66"
+    __version__ = "0.67"
     __status__ = "testing"
 
     __config__ = [
@@ -42,67 +42,78 @@ class ClickNLoad(BaseAddon):
         self.do_exit = False
         self.exit_done = threading.Event()
         self.backend_found = threading.Event()
+        self.web_addr = None
+        self.web_af = None
 
-        self.pyload.scheduler.add_job(5, self._find_backend, threaded=False)
-
-    @threaded
     def _find_backend(self):
-        if self.pyload.config.get("webui", "enabled"):
-            web_host = self.pyload.config.get("webui", "host")
-            web_port = self.pyload.config.get("webui", "port")
-            if web_host == "0.0.0.0":
-                web_host = "127.0.0.1"
-            elif web_host == "::":
-                web_host = "::1"
+        if not self.pyload.config.get("webui", "enabled"):
+            return False
+
+        web_host = self.pyload.config.get("webui", "host")
+        web_port = self.pyload.config.get("webui", "port")
+        if web_host == "0.0.0.0":
+            web_host = "127.0.0.1"
+        elif web_host == "::":
+            web_host = "::1"
+
+        try:
+            addrinfo = socket.getaddrinfo(
+                web_host, web_port, socket.AF_UNSPEC,
+                socket.SOCK_STREAM, 0, socket.AI_PASSIVE,
+            )
+        except socket.gaierror:
+            self.log_error(
+                self._("Could not resolve backend server, ClickNLoad cannot start")
+            )
+            return False
+
+        for addr in addrinfo:
+            test_socket = socket.socket(addr[0], socket.SOCK_STREAM)
+            test_socket.settimeout(1)
 
             try:
-                addrinfo = socket.getaddrinfo(
-                    web_host, web_port, socket.AF_UNSPEC,
-                    socket.SOCK_STREAM, 0, socket.AI_PASSIVE,
-                )
-            except socket.gaierror:
-                self.log_error(
-                    self._("Could not resolve backend server, ClickNLoad cannot start")
-                )
-                return
-
-            for addr in addrinfo:
-                test_socket = socket.socket(addr[0], socket.SOCK_STREAM)
-                test_socket.settimeout(1)
-
-                try:
-                    test_socket.connect(addr[4])
-
-                except socket.error:
-                    continue
-
+                test_socket.connect(addr[4])
                 test_socket.shutdown(socket.SHUT_WR)
-                self.web_addr = addr[4]
-                self.web_af = addr[0]
+            except socket.error:
+                continue
+            finally:
+                test_socket.close()
 
-                #: save backend address for later use
-                g.web_addr = addr[4][0]
+            self.web_addr = addr[4]
+            self.web_af = addr[0]
 
-                self.log_debug(
-                    self._("Backend found on {}://{}:{}").format(
-                        "https" if self.pyload.webserver.use_ssl else "http",
-                        f"[{self.web_addr[0]}]" if ":" in self.web_addr[0] else self.web_addr[0],
-                        self.web_addr[1]
-                    )
+            #: save backend address for later use
+            g.web_addr = addr[4][0]
+
+            self.log_debug(
+                self._("Backend found on {}://{}:{}").format(
+                    "https" if self.pyload.webserver.use_ssl else "http",
+                    f"[{self.web_addr[0]}]" if ":" in self.web_addr[0] else self.web_addr[0],
+                    self.web_addr[1],
                 )
-                self.backend_found.set()
-                break
+            )
+            self.backend_found.set()
+            return True
 
-            else:
-                self.log_error(
-                    self._("Could not connect to backend server, ClickNLoad cannot start")
-                )
+        return False
 
     @threaded
-    def _activate(self):
-        self.backend_found.wait(20)
-        if self.backend_found.is_set():
-            self.proxy()
+    def _activate(self, timeout=60, retry_interval=2):
+        deadline = time.monotonic() + timeout
+        while time.monotonic() < deadline:
+            if self.do_exit or self.pyload.exiting:
+                return
+
+            if self._find_backend():
+                self.proxy()
+                return
+
+            time.sleep(retry_interval)
+
+        if not (self.do_exit or self.pyload.exiting):
+            self.log_error(
+                self._("Could not connect to backend server, ClickNLoad cannot start")
+            )
 
     def activate(self):
         if not self.pyload.config.get("webui", "enabled"):
@@ -111,6 +122,7 @@ class ClickNLoad(BaseAddon):
             )
             return
 
+        self.do_exit = False
         self._activate()
 
     def deactivate(self):
