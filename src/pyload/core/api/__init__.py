@@ -16,7 +16,6 @@ from threading import RLock
 from typing import Any, Callable, Optional
 from urllib.parse import urlparse
 
-import flask
 from werkzeug.utils import secure_filename
 
 from pyload import PKGDIR
@@ -236,54 +235,12 @@ class Api:
         :param value: new config value
         :param section: 'plugin' or 'core'
         """
-        try:
-            try:
-                user_info = flask.g.user_info
-            except AttributeError:
-                user_info = flask.session
-
-        # Attempt to access outside an active Flask request
-        except RuntimeError:
-            user_info = {"role": Role.ADMIN}
-        is_admin = user_info.get("role") == Role.ADMIN
-
-        ADMIN_ONLY_CORE_OPTIONS = {
-            ("general", "ssl_verify"),
-            ("general", "storage_folder"),
-            ("log", "syslog_host"),
-            ("log", "syslog_port"),
-            ("proxy", "enabled"),
-            ("proxy", "host"),
-            ("proxy", "password"),
-            ("proxy", "socks_resolve_dns"),
-            ("proxy", "type"),
-            ("proxy", "username"),
-            ("reconnect", "script"),
-            ("webui", "allow_iframe"),
-            ("webui", "host"),
-            ("webui", "ssl_certfile"),
-            ("webui", "ssl_keyfile"),
-            ("webui", "ssl_certchain"),
-            ("webui", "trusted_proxies"),
-            ("webui", "use_ssl"),
-        }
-
-        ADMIN_ONLY_PLUGIN_OPTIONS = {
-            ("AntiVirus", "avfile"),
-            ("AntiVirus", "avargs"),
-        }
-
         if section == "core":
             if category == "general" and option == "storage_folder":
                 # Forbid setting the download folder inside dangerous locations
                 blocked_dirs = [PKGDIR, self.pyload.userdir]
                 if any(fs.is_within_directory(d, value) for d in blocked_dirs):
                     return
-
-            # Require ADMIN role for security-critical settings
-            if (category, option) in ADMIN_ONLY_CORE_OPTIONS and not is_admin:
-                self.pyload.log.error(self._("Writing config value {}/{} requires Admin role").format(category, option))
-                return
 
             self.pyload.config.set(category, option, value)
 
@@ -294,11 +251,6 @@ class Api:
                 self.pyload.request_factory.update_bucket()
 
         elif section == "plugin":
-            # Require ADMIN role for security-critical settings
-            if (category, option) in ADMIN_ONLY_PLUGIN_OPTIONS and not is_admin:
-                self.pyload.log.error(self._("Writing config value {}/{} requires Admin role").format(category, option))
-                return
-
             self.pyload.config.set_plugin(category, option, value)
 
         self.pyload.addon_manager.dispatch_event(

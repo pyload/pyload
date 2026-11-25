@@ -209,7 +209,11 @@ Instead, if changes have been made to the API, re-generate the specification fil
 
 which will update the `openapi.json` file in place.
 
-## Report a Vulnerability
+## Security
+
+Normal users should **never** be granted the `SETTINGS` permission. The `SETTINGS` permission provides full control over all core and plugin configurations (including download locations, external scripts, proxies, and network settings) and must be reserved strictly for trusted administrators.
+
+### Report a Vulnerability
 
 Please refer to [SECURITY](https://github.com/pyload/pyload/blob/main/SECURITY.md) to read our security policy.
 
