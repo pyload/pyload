@@ -6,6 +6,7 @@ import time
 from pyload import PKGDIR
 
 from ... import exc_logger
+from ..utils import purge
 
 # CONFIG_VERSION
 __version__ = 2
@@ -31,7 +32,7 @@ class ConfigParser:
     """
 
     _CONFLINE = re.compile(
-        r'\s*(?P<T>.+?)\s+(?P<N>[^ ]+?)\s*:\s*"(?P<D>.+?)"\s*=\s?(?P<V>.*)'
+        r'\s*(?P<T>.+?)\s+(?P<N>[^ ]+?)\s*:\s*"(?P<D>(?:\\.|[^"\\])*)"\s*=\s?(?P<V>.*)'
     )
     _SECTLINE = re.compile(r'(.+?)\s+-\s+"(.+?)":')
     _VERSION = re.compile(r"\s*version\s*:\s*(\d+)")
@@ -179,7 +180,7 @@ class ConfigParser:
 
                             typ = m.group("T")
                             option = m.group("N")
-                            desc = m.group("D").strip()
+                            desc = m.group("D").strip().replace('\\"', '"').replace("\\\\", "\\")
                             value = m.group("V").strip()
 
                             if value.startswith("["):
@@ -238,7 +239,9 @@ class ConfigParser:
             os.chmod(filename, 0o600)
             fp.write(f"version: {__version__} \n")
             for section in sorted(config.keys()):
-                fp.write(f'\n{section} - "{config[section]["desc"]}":\n')
+                sec_desc = purge.chars(str(config[section]["desc"]), "\r\n").replace("\\", "\\\\").replace('"', '\\"')
+                sec_name = purge.chars(str(section), "\r\n").strip()
+                fp.write(f'\n{sec_name} - "{sec_desc}":\n')
 
                 for option, data in sorted(
                     config[section].items(), key=lambda _x: _x[0]
@@ -246,15 +249,21 @@ class ConfigParser:
                     if option in ("desc", "outline"):
                         continue
 
+                    opt_name = purge.chars(str(option), "\r\n").strip()
+                    opt_type = purge.chars(str(data["type"]), "\r\n").strip()
+                    opt_desc = purge.chars(str(data["desc"]), "\r\n").replace("\\", "\\\\").replace('"', '\\"')
+
                     if isinstance(data["value"], list):
                         value = "[ \n"
                         for x in data["value"]:
-                            value += f"\t\t{x},\n"
+                            clean_item = purge.chars(str(x), "\r\n").strip()
+                            value += f"\t\t{clean_item},\n"
                         value += "\t\t]\n"
                     else:
-                        value = str(data["value"]) + "\n"
+                        clean_val = purge.chars(str(data["value"]), "\r\n")
+                        value = clean_val + "\n"
 
-                    fp.write(f'\t{data["type"]} {option} : "{data["desc"]}" = {value}')
+                    fp.write(f'\t{opt_type} {opt_name} : "{opt_desc}" = {value}')
 
     def cast(self, typ, value):
         """
@@ -267,10 +276,20 @@ class ConfigParser:
             return float(value)
 
         elif typ == "str":
-            return "" if value is None else str(value)
+            if value is None:
+                return ""
+            val_str = str(value)
+            if "\r" in val_str or "\n" in val_str or "\0" in val_str:
+                raise ValueError("Config string value must not contain newline or control characters")
+            return val_str
 
         elif typ == "bytes":
-            return b"" if value is None else bytes(value)
+            if value is None:
+                return b""
+            val_bytes = bytes(value)
+            if b"\r" in val_bytes or b"\n" in val_bytes or b"\0" in val_bytes:
+                raise ValueError("Config bytes must not contain newline or control characters")
+            return val_bytes
 
         elif typ == "bool":
             value = "" if value is None else str(value)
@@ -298,13 +317,17 @@ class ConfigParser:
             return value
 
         elif typ in ("file", "folder"):
-            return (
-                ""
-                if value in (None, "")
-                else os.path.realpath(os.path.expanduser(os.fsdecode(value)))
-            )
+            if value in (None, ""):
+                return ""
+            val_str = os.fsdecode(value)
+            if "\r" in val_str or "\n" in val_str or "\0" in val_str:
+                raise ValueError(f"Config path for {typ} must not contain newline or control characters")
+            return os.path.realpath(os.path.expanduser(val_str))
 
         else:
+            if isinstance(value, str):
+                if "\r" in value or "\n" in value or "\0" in value:
+                    raise ValueError("Config value must not contain newline or control characters")
             return value
 
     def save(self):

@@ -235,27 +235,54 @@ class Api:
         :param value: new config value
         :param section: 'plugin' or 'core'
         """
-        if section == "core":
-            if category == "general" and option == "storage_folder":
-                # Forbid setting the download folder inside dangerous locations
-                blocked_dirs = [PKGDIR, self.pyload.userdir]
-                if any(fs.is_within_directory(d, value) for d in blocked_dirs):
-                    return
+        # Reject newlines or control characters early
+        if isinstance(value, str) and ("\r" in value or "\n" in value or "\0" in value):
+            self.pyload.log.error(
+                self._("Config value for {}/{} cannot contain newline or control characters").format(
+                    category, option
+                )
+            )
+            return
 
-            self.pyload.config.set(category, option, value)
+        if isinstance(value, list) and any(
+            isinstance(x, str) and ("\r" in x or "\n" in x or "\0" in x) for x in value
+        ):
+            self.pyload.log.error(
+                self._("Config list item for {}/{} cannot contain newline or control characters").format(
+                    category, option
+                )
+            )
+            return
 
-            if category == "download" and option in (
-                "limit_speed",
-                "max_speed",
-            ):  #: not such a nice method to update the limit
-                self.pyload.request_factory.update_bucket()
+        try:
+            if section == "core":
+                if category == "general" and option == "storage_folder":
+                    # Forbid setting the download folder inside dangerous locations
+                    blocked_dirs = [PKGDIR, self.pyload.userdir]
+                    if any(fs.is_within_directory(d, value) for d in blocked_dirs):
+                        return
 
-        elif section == "plugin":
-            self.pyload.config.set_plugin(category, option, value)
+                self.pyload.config.set(category, option, value)
 
-        self.pyload.addon_manager.dispatch_event(
-            "config_changed", category, option, value, section
-        )
+                if category == "download" and option in (
+                    "limit_speed",
+                    "max_speed",
+                ):  #: not such a nice method to update the limit
+                    self.pyload.request_factory.update_bucket()
+
+            elif section == "plugin":
+                self.pyload.config.set_plugin(category, option, value)
+
+            self.pyload.addon_manager.dispatch_event(
+                "config_changed", category, option, value, section
+            )
+        except ValueError as exc:
+            self.pyload.log.error(
+                self._("Failed to set config value {}/{}: {}").format(
+                    category, option, exc
+                )
+            )
+            return
 
     @legacy("getConfig")
     @permission(Perms.SETTINGS)
