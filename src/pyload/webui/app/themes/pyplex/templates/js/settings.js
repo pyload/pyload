@@ -514,12 +514,12 @@ class ApikeysUI {
       $('#apikeyCopyBtn').off('click').on('click', (event) => {
         const btn = $(event.currentTarget);
         navigator.clipboard.writeText(key).then(() => {
-          const originalContent = btn.html();
+          const originalContent = btn.contents();
           const originalClass = btn.attr('class');
-          btn.html('<span class="glyphicon glyphicon-ok"></span> Copied!');
+          btn.empty().append($('<span>').addClass('glyphicon glyphicon-ok'), ' Copied!');
           btn.attr('class', "btn btn-success");
           setTimeout(() => {
-            btn.html(originalContent);
+            btn.empty().append(originalContent);
             btn.attr('class', originalClass);
           }, 2500);
         })
@@ -551,39 +551,41 @@ class ApikeysUI {
       success: (response) => {
         uiHandler.indicateFinish();
         if (!response.success) {
-          tbody.html('<tr><td colspan="5" class="text-danger">Error loading API keys</td></tr>');
+          tbody.empty().append($('<tr>').append($('<td>').attr('colspan', 5).addClass('text-danger').text('Error loading API keys')));
           return;
         }
 
         if (!response.data || response.data.length === 0) {
-          tbody.html('<tr><td colspan="5" class="text-center">No API keys yet</td></tr>');
+          tbody.empty().append($('<tr>').append($('<td>').attr('colspan', 5).addClass('text-center').text('No API keys yet')));
           return;
         }
 
-        let html = '';
+        tbody.empty();
         $.each(response.data, (index, keyInfo) => {
           const createdDate = new Date(keyInfo.created_at).toLocaleString();
           const expiresDate = keyInfo.expires_at ? new Date(keyInfo.expires_at).toLocaleString() : 'Never';
           const lastUsedDate = keyInfo.last_used ? new Date(keyInfo.last_used).toLocaleString() : 'Never';
-          html += `
-                    <tr>
-                        <td>${keyInfo.name}</td>
-                        <td>${createdDate}</td>
-                        <td>${expiresDate}</td>
-                        <td>${lastUsedDate}</td>
-                        <td>
-                            <button class="btn btn-xs btn-danger delete_apikey" id="${keyInfo.id}|delkey">
-                                <span class="glyphicon glyphicon-trash"></span> Delete
-                            </button>
-                        </td>
-                    </tr>
-                `;
+
+          const tr = $('<tr>');
+          $('<td>').text(keyInfo.name).appendTo(tr);
+          $('<td>').text(createdDate).appendTo(tr);
+          $('<td>').text(expiresDate).appendTo(tr);
+          $('<td>').text(lastUsedDate).appendTo(tr);
+
+          const actionTd = $('<td>');
+          const delBtn = $('<button>')
+            .addClass('btn btn-xs btn-danger delete_apikey')
+            .attr('id', `${keyInfo.id}|delkey`)
+            .append($('<span>').addClass('glyphicon glyphicon-trash'), ' Delete');
+          actionTd.append(delBtn);
+          tr.append(actionTd);
+
+          tbody.append(tr);
         });
-        tbody.html(html);
       },
     }).fail(() => {
       uiHandler.indicateFinish();
-      tbody.html('<tr><td colspan="5" class="text-danger">Error loading API keys</td></tr>');
+      tbody.empty().append($('<tr>').append($('<td>').attr('colspan', 5).addClass('text-danger').text('Error loading API keys')));
     });
   }
 
